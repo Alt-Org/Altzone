@@ -114,8 +114,7 @@ namespace Battle.View.Game
         /// @{
 
         /// <summary>
-        /// Public method that gets called when the local player pressed the give up button.<br/>
-        /// No functionality yet.
+        /// Public method that gets called when the local player pressed the give up button.
         /// </summary>
         public void UiInputOnLocalPlayerGiveUp()
         {
@@ -559,6 +558,12 @@ namespace Battle.View.Game
             }
         }
 
+        /// <summary>
+        /// Private handler method for EventBattleShieldTakeDamage QuantumEvent.<br/>
+        /// Handles calling BattleUiPlayerInfoHandler.UpdateDefenceVisual in <see cref="_uiController"/>'s <see cref="BattleUiController.PlayerInfoHandler">PlayerInfoHandler</see>.
+        /// </summary>
+        ///
+        /// <param name="e">The event data.</param>
         private void QEventOnShieldTakeDamage(EventBattleShieldTakeDamage e)
         {
             if (e.Team == LocalPlayerTeam)
@@ -567,6 +572,12 @@ namespace Battle.View.Game
             }
         }
 
+        /// <summary>
+        /// Private handler method for EventBattleGiveUpStateChange QuantumEvent.<br/>
+        /// Handles calling BattleUiGiveUpButtonHandler.UpdateState in <see cref="_uiController"/>'s <see cref="BattleUiController.GiveUpButtonHandler">GiveUpButtonHandler</see>.
+        /// </summary>
+        ///
+        /// <param name="e">The event data.</param>
         private void QEventOnGiveUpStateChange(EventBattleGiveUpStateChange e)
         {
             if (e.Team == LocalPlayerTeam)
