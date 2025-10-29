@@ -1,6 +1,6 @@
 /// @file BattlePlayerViewController.cs
 /// <summary>
-/// Contains a class BattlePlayerViewController which handles player sprites and animations.
+/// Contains @cref{Battle.View.Player,BattlePlayerViewController} class which handles player sprites and animations.
 /// </summary>
 ///
 /// This script:<br/>
