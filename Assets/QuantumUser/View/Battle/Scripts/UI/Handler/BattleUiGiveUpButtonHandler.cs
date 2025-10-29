@@ -7,8 +7,8 @@
 /// Handles give up button functionality.
 
 using UnityEngine;
-using Quantum;
 using TMPro;
+using Quantum;
 
 using Altzone.Scripts.BattleUiShared;
 using Battle.View.Game;
