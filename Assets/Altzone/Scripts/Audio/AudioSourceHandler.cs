@@ -21,13 +21,13 @@ public class AudioSourceHandler : MonoBehaviour
 
     public void SetAudioClip(AudioClip audio) { _audioSource.clip = audio; }
 
-    public void SetPlayAudioClip(AudioClip audio, bool loop) { SetAudioClip(audio); SetLoop(loop); Play(); }
+    public void SetPlayAudioClip(AudioClip audio, bool loop, float pitch) { SetAudioClip(audio); SetLoop(loop); SetPitch(pitch); Play(); }
 
     public void SetLoop(bool value) { _audioSource.loop = value; }
 
     public bool IsInUse() { return _audioSource.clip != null; }
 
-    public void Clear() { Stop(); _audioSource.clip = null; }
+    public void Clear() { Stop(); _audioSource.clip = null; _audioSource.pitch = 1f; }
 
     public void Play()
     {
@@ -39,6 +39,8 @@ public class AudioSourceHandler : MonoBehaviour
     public void Stop() { StopCoroutine(_playbackCoroutine); _audioSource.Stop(); }
 
     public void Continue() { _audioSource.UnPause(); StartCoroutine(WaitForPlaybackFinish()); }
+
+    public void SetPitch(float pitch) { _audioSource.pitch = pitch; }
 
     private IEnumerator WaitForPlaybackFinish()
     {

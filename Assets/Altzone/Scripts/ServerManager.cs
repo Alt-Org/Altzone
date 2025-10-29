@@ -82,7 +82,7 @@ public class ServerManager : MonoBehaviour
 
     #region Getters & Setters
 
-    public string AccessToken { get => PlayerPrefs.GetString("accessToken", string.Empty); set => PlayerPrefs.SetString("accessToken", value); }
+    public string AccessToken { get => PlayerPrefs.GetInt("AutomaticLogin", 0) == 1 ? PlayerPrefs.GetString("accessToken", string.Empty) : string.Empty; set => PlayerPrefs.SetString("accessToken", value); }
     public int AccessTokenExpiration { get => _accessTokenExpiration; set => _accessTokenExpiration = value; }
     public ServerPlayer Player { get => _player; set => _player = value; }
     public ServerClan Clan
@@ -1169,7 +1169,9 @@ public class ServerManager : MonoBehaviour
                     }));
                 }
 
-                ClanTasks clanTasks = new(TaskVersionType.Normal,tasks);
+                ClanTasks clanTasks;
+                if(GameConfig.Get().GameVersionType is VersionType.Standard) clanTasks = new(TaskVersionType.Normal,tasks);
+                else clanTasks = new(TaskVersionType.Education, tasks);
 
                 if (callback != null)
                     callback(clanTasks);
