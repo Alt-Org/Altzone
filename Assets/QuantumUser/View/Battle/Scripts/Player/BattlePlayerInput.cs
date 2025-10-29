@@ -66,6 +66,9 @@ namespace Battle.View.Player
             _characterNumber = characterNumber;
         }
 
+        /// <summary>
+        /// Called when the player presses the give up button.
+        /// </summary>
         public void OnGiveUp()
         {
             _onGiveUp = true;
@@ -135,8 +138,10 @@ namespace Battle.View.Player
         /// <value>Saved character number from character swapping input.</value>
         private int _characterNumber = -1;
 
+        /// <value>Give up button state</value>
         private bool _onGiveUp = false;
 
+        /// <value>Bool to block screen input</value>
         private bool _blockScreenInput = false;
 
         /// @}
