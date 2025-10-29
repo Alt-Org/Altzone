@@ -1,6 +1,6 @@
 /// @file BattleUiGameOverHandler.cs
 /// <summary>
-/// Has a class BattleUiDiamondsHandler which handles setting collected diamond amount text.
+/// Contains @cref{Battle.View.UI,BattleUiDiamondsHandler} class which handles setting collected diamond amount text.
 /// </summary>
 ///
 /// This script:<br/>
@@ -33,7 +33,7 @@ namespace Battle.View.UI
         [SerializeField] private TMP_Text _diamondText;
 
         /// @}
-        
+
         /// <value>Is the %UI element visible or not.</value>
         public bool IsVisible => MovableUiElement.gameObject.activeSelf;
 

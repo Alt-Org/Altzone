@@ -1,26 +1,29 @@
 /// @file BattleGameControlQSystem.cs
 /// <summary>
-/// Controls the overall game state flow in Quantum simulation.
+/// Contains @cref{Battle.QSimulation.Game,BattleGameControlQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which controls the overall game flow in %Quantum simulation.
 /// </summary>
-///
-/// This system initializes the battle grid and player manager, and controls game state transitions from initialization to active gameplay.
 
 //#define DEBUG_LOG_STATE
 
 using UnityEngine;
 using UnityEngine.Scripting;
+
 using Quantum;
+using Photon.Deterministic;
 
 using Battle.QSimulation.Player;
 using Battle.QSimulation.SoulWall;
-using Photon.Deterministic;
 
 namespace Battle.QSimulation.Game
 {
-    /**
-     *  Systems that monitor game state:
-     *  -ProjectileSpawnerSystem
-     */
+    /// <summary>
+    /// <span class="brief-h">%Game control <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
+    /// Controls the overall game flow in %Quantum simulation.
+    /// </summary>
+    ///
+    /// Initializes BattleGridManager and BattlePlayerManager.<br/>
+    /// Registers players to BattlePlayerManager when they connect.<br/>
+    /// Controls game state transitions from initialization to active gameplay.
     [Preserve]
     public unsafe class BattleGameControlQSystem : SystemMainThread, ISignalOnPlayerAdded, ISignalOnPlayerDisconnected
     {
@@ -73,7 +76,7 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
-        /// Handles game over logic.
+        /// Called when the game ends. Updates the game session state and calls the BattleViewGameOver Event and BattleOnGameOver Signal.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>

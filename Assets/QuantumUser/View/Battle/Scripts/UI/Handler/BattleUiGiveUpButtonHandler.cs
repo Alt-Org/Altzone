@@ -1,6 +1,6 @@
 /// @file BattleUiGiveUpButtonHandler.cs
 /// <summary>
-/// Has a class BattleUiGiveUpButtonHandler which handles give up button functionality.
+/// Contains @cref{Battle.View.UI,BattleUiGiveUpButtonHandler} class which handles give up button functionality.
 /// </summary>
 ///
 /// This script:<br/>

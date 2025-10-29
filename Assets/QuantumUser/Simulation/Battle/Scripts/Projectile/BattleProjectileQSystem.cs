@@ -1,12 +1,7 @@
 /// @file BattleProjectileQSystem.cs
 /// <summary>
-/// Controls projectile's movements and reactions to collisions.
+/// Contains @cref{Battle.QSimulation.Projectile,BattleProjectileQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which controls projectile's movements and reactions to collisions.
 /// </summary>
-///
-/// This system:<br/>
-/// Launches projectile when battle starts and updates its movements.<br/>
-/// Handles projectile's collisionflags to ensure projectile doesn't hit more than one SoulWall segment at a time.<br/>
-/// Contains logic for handling the projectile colliding with different entities.
 
 using System.Runtime.CompilerServices;
 
@@ -24,6 +19,11 @@ namespace Battle.QSimulation.Projectile
     /// <span class="brief-h">%Projectile <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
     /// Handles projectile logic, including projectile's movements and reactions to collisionsignals.
     /// </summary>
+    /// 
+    /// This system:<br/>
+    /// Launches projectile when battle starts and updates its movements.<br/>
+    /// Handles projectile's collisionflags to ensure projectile doesn't hit more than one SoulWall segment at a time.<br/>
+    /// Contains logic for handling the projectile colliding with different entities.
     [Preserve]
     public unsafe class BattleProjectileQSystem : SystemMainThreadFilter<BattleProjectileQSystem.Filter>, ISignalBattleOnGameOver
     {

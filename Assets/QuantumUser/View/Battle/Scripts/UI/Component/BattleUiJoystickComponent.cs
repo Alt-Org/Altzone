@@ -1,6 +1,6 @@
 /// @file BattleUiJoystickComponent.cs
 /// <summary>
-/// Has a class BattleUiJoystickComponent which handles joystick drag input.
+/// Contains @cref{Battle.View.UI,BattleUiJoystickComponent} class which handles joystick drag input.
 /// </summary>
 ///
 /// This script:<br/>

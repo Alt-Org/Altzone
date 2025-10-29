@@ -1,6 +1,6 @@
 /// @file BattleGameViewController.cs
 /// <summary>
-/// Has a class BattleGameViewController which controls the %Battle %UI elements.
+/// Contains @cref{Battle.View.Game,BattleGameViewController} class which controls the %Battle %UI elements.
 /// </summary>
 ///
 /// This script:<br/>
