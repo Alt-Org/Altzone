@@ -38,6 +38,8 @@ namespace Battle.View.UI
         /// @ref BattleUiGiveUpButtonHandler-SerializeFields
         [SerializeField] private OnPointerDownButton _giveUpButton;
 
+        /// <summary>[SerializeField] Reference to the Text component of the give up info text.</summary>
+        /// @ref BattleUiGiveUpButtonHandler-SerializeFields
         [SerializeField] private TextMeshProUGUI _giveUpButtonInfoText;
 
         /// @}
@@ -58,6 +60,12 @@ namespace Battle.View.UI
             MovableUiElement.gameObject.SetActive(show);
         }
 
+        /// <summary>
+        /// Updates the give up info text state.
+        /// </summary>
+        ///
+        /// <param name="slot">The slot of the player</param>
+        /// <param name="stateUpdate">Type of the give up state update.</param>
         public void UpdateState(BattlePlayerSlot slot, BattleGiveUpStateUpdate stateUpdate)
         {
             if (_buttonInfoState == ButtonInfoState.TeamGiveUp) return;
@@ -104,6 +112,10 @@ namespace Battle.View.UI
 
             UpdateInfoText();
         }
+
+        /// <summary>
+        /// States for the give up info text.
+        /// </summary>
         private enum ButtonInfoState
         {
             Normal,
@@ -113,6 +125,9 @@ namespace Battle.View.UI
             TeamGiveUp
         }
 
+        /// <summary>
+        /// Current state of the give up info text.
+        /// </summary>
         private ButtonInfoState _buttonInfoState;
 
         /// <summary>
@@ -126,6 +141,9 @@ namespace Battle.View.UI
             _giveUpButton.onClick.AddListener(_uiController.GameViewController.UiInputOnLocalPlayerGiveUp);
         }
 
+        /// <summary>
+        /// Private helper method for updating give up button info text based on <see cref="ButtonInfoState"/>.
+        /// </summary>
         private void UpdateInfoText()
         {
             switch (_buttonInfoState)
