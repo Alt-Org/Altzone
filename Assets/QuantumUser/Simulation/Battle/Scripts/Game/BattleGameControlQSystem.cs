@@ -72,6 +72,12 @@ namespace Battle.QSimulation.Game
             }
         }
 
+        /// <summary>
+        /// Handles game over logic.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="winningTeam">The team that won the match.</param>
         public static void OnGameOver(Frame f, BattleTeamNumber winningTeam)
         {
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
