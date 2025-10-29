@@ -26,7 +26,7 @@ namespace Battle.QSimulation.Player
         /// Calls BattlePlayerManager::SpawnPlayer for players that are in the game.
         /// </summary>
         ///
-        /// <param name="f">Current simulation frame</param>
+        /// <param name="f">Current simulation frame.</param>
         public static void SpawnPlayers(Frame f)
         {
             foreach (BattlePlayerManager.PlayerHandle playerHandle in BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f))
@@ -37,6 +37,14 @@ namespace Battle.QSimulation.Player
             }
         }
 
+        /// <summary>
+        /// Handles logic when a player abandons the game.
+        /// </summary>
+        ///
+        /// Updates give up state and calls <see cref="BattlePlayerQSystem.HandleGiveUpLogic">HandleGiveUpLogic</see> method which handles the rest of the logic.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Handle of the player who abandoned.</param>
         public static void HandlePlayerAbandoned(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
             playerHandle.PlayerGiveUpState = true;
@@ -122,6 +130,13 @@ namespace Battle.QSimulation.Player
         /// Relays the appropriate input data to each player in the game
         /// </summary>
         ///
+        /// Update method has been split into subprocesses.<br/>
+        /// <see cref="BattlePlayerQSystem.GetInput">GetInput</see><br/>
+        /// <see cref="BattlePlayerQSystem.HandleGiveUpInput">HandleGiveUpInput</see><br/>
+        /// <see cref="BattlePlayerQSystem.HandleCharacterSwapping">HandleCharacterSwapping</see><br/>
+        /// <see cref="BattlePlayerQSystem.HandleOutOfPlay">HandleOutOfPlay</see><br/>
+        /// <see cref="BattlePlayerQSystem.HandleInPlay">HandleInPlay</see>
+        ///
         /// <param name="f">Current simulation frame</param>
         public override void Update(Frame f)
         {
@@ -157,6 +172,17 @@ namespace Battle.QSimulation.Player
             }
         }
 
+        /// <summary>
+        /// Private helper method for retrieving the correct input (bot, abandoned, active player).<br/>
+        /// Subprocess of the <see cref="BattlePlayerQSystem.Update">Update</see> method.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Handle of the player.</param>
+        /// <param name="playerData">Player data component.</param>
+        /// <param name="stackInputStorage">Temporary input storage for bots and abandoned players.</param>
+        ///
+        /// <returns>Pointer to the player's input.</returns>
         private Input* GetInput(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, Input* stackInputStorage)
         {
             Input* input;
@@ -187,6 +213,14 @@ namespace Battle.QSimulation.Player
             return input;
         }
 
+        /// <summary>
+        /// Private helper method for handling when a player gives up or abandons the match.
+        /// </summary>
+        ///
+        /// Used by <see cref="BattlePlayerQSystem.HandleGiveUpInput">HandleGiveUpInput</see> and <see cref="BattlePlayerQSystem.HandlePlayerAbandoned">HandlePlayerAbandoned</see>.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Handle of the player.</param>
         private static void HandleGiveUpLogic(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
             BattlePlayerSlot slot = playerHandle.Slot;
@@ -229,6 +263,18 @@ namespace Battle.QSimulation.Player
             BattleGameControlQSystem.OnGameOver(f, winningTeam);
         }
 
+        /// <summary>
+        /// Private helper method for handling player input for giving up during the game play.<br/>
+        /// Subprocess of the <see cref="BattlePlayerQSystem.Update">Update</see> method.
+        /// </summary>
+        ///
+        /// Updates give up state and calls <see cref="BattlePlayerQSystem.HandleGiveUpLogic">HandleGiveUpLogic</see> method which handles the rest of the logic.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="input">Pointer to the player's input data.</param>
+        /// <param name="playerHandle">Handle of the player.</param>
+        ///
+        /// <returns>True if the give up input was processed.</returns>
         private bool HandleGiveUpInput(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle)
         {
             if (!input->GiveUpInput) return false;
@@ -238,6 +284,17 @@ namespace Battle.QSimulation.Player
 
             return true;
         }
+
+        /// <summary>
+        /// Private helper method for handling character swapping.<br/>
+        /// Subprocess of the <see cref="BattlePlayerQSystem.Update">Update</see> method.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="input">Pointer to the player's input data.</param>
+        /// <param name="playerHandle">Handle of the player.</param>
+        ///
+        /// <returns>True if character swapped.</returns>
         private bool HandleCharacterSwapping(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle)
         {
             if (input->PlayerCharacterNumber > -1 && playerHandle.AllowCharacterSwapping)
@@ -248,6 +305,15 @@ namespace Battle.QSimulation.Player
             return false;
         }
 
+        /// <summary>
+        /// Private helper method for handling player logic when out of play or any of its substates.<br/>
+        /// Subprocess of the <see cref="BattlePlayerQSystem.Update">Update</see> method.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Handle of the player.</param>
+        ///
+        /// <returns>True if the player is out of play or out of play respawn.</returns>
         private bool HandleOutOfPlay(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
             // handle auto respawning
@@ -279,6 +345,17 @@ namespace Battle.QSimulation.Player
             return false;
         }
 
+        /// <summary>
+        /// Private helper method for handling player logic and updates when state is in play.<br/>
+        /// Subprocess of the <see cref="BattlePlayerQSystem.Update">Update</see> method.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="input">Pointer to the player's input data.</param>
+        /// <param name="playerHandle">Handle of the player.</param>
+        /// <param name="playerData">Pointer to the player's data component</param>
+        /// <param name="playerEntity">Reference to the player's entity</param>
+        /// <param name="playerTransform">Pointer to the player's transform component.</param>
         private void HandleInPlay(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity, Transform2D* playerTransform)
         {
 
