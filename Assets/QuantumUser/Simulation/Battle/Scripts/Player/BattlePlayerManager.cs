@@ -1,10 +1,8 @@
 /// @file BattlePlayerManager.cs
 /// <summary>
-/// The manager script for player logic.
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerManager} class which handles player logic.<br/>
+/// Also contains @cref{Battle.QSimulation.Player,BattlePlayerPlayeStateExtension} class which has extension methods for BattlePlayerPlayState enum.
 /// </summary>
-///
-/// The manager handles initializing players that are present in the game, as well as spawning and despawning player characters.<br/>
-/// This script also contains the public and private PlayerHandle structs.
 
 //#define DEBUG_PLAYER_STAT_OVERRIDE
 
@@ -19,18 +17,82 @@ using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player
 {
+    /// <summary>
+    /// Extension class for BattlePlayerPlayState enum.<br/>
+    /// Implements extension methods for BattlePlayerPlayState enum.
+    /// </summary>
+    ///
+    /// This is used to ease checking the subsstates of the BattlePlayerPlayState enum.<br/>
+    /// Checking superstates also checks if the current state is one of the substates of the superstate.<br/>
+    /// Checks for states that have no substates are also implemented for consistency.
     public static class BattlePlayerPlayStateExtension
     {
+        /// <summary>
+        /// Checks if the play state of player is <see cref="Quantum.BattlePlayerPlayState.NotInGame">NotInGame</see>.
+        /// </summary>
+        ///
+        /// <param name="state">Player play state.</param>
+        ///
+        /// <returns>True if play state is <see cref="Quantum.BattlePlayerPlayState.NotInGame">NotInGame</see>.</returns>
         public static bool IsNotInGame(this BattlePlayerPlayState state)           => state is BattlePlayerPlayState.NotInGame;
+
+        /// <summary>
+        /// Checks if the play state of player is any of the substates that count as <b>InGame</b>.
+        /// </summary>
+        ///
+        /// <param name="state">Player play state.</param>
+        ///
+        /// <returns>True if play state is not <see cref="Quantum.BattlePlayerPlayState.NotInGame">NotInGame</see>.</returns>
+        public static bool IsInGame(this BattlePlayerPlayState state)              => state is not BattlePlayerPlayState.NotInGame;
+
+        /// <summary>
+        /// Checks if the play state of player is any of the substates that count as <see cref="Quantum.BattlePlayerPlayState.OutOfPlay">OutOfPlay</see>.
+        /// </summary>
+        ///
+        /// <param name="state">Player play state.</param>
+        ///
+        /// <returns>
+        /// True if play state is
+        /// <see cref="Quantum.BattlePlayerPlayState.OutOfPlay">OutOfPlay</see> or
+        /// <see cref="Quantum.BattlePlayerPlayState.OutOfPlayRespawning">OutOfPlayRespawning</see> or
+        /// <see cref="Quantum.BattlePlayerPlayState.OutOfPlayFinal">OutOfPlayFinal</see>.
+        /// </returns>
         public static bool IsOutOfPlay(this BattlePlayerPlayState state)           => state is BattlePlayerPlayState.OutOfPlay or BattlePlayerPlayState.OutOfPlayRespawning or BattlePlayerPlayState.OutOfPlayFinal;
+
+        /// <summary>
+        /// Checks if the play state of player is <see cref="Quantum.BattlePlayerPlayState.OutOfPlayRespawning">OutOfPlayRespawning</see>.
+        /// </summary>
+        ///
+        /// <param name="state">Player play state.</param>
+        ///
+        /// <returns>True if play state is <see cref="Quantum.BattlePlayerPlayState.OutOfPlayRespawning">OutOfPlayRespawning</see>.</returns>
         public static bool IsOutOfPlayRespawning(this BattlePlayerPlayState state) => state is BattlePlayerPlayState.OutOfPlayRespawning;
+
+        /// <summary>
+        /// Checks if the play state of player is <see cref="Quantum.BattlePlayerPlayState.OutOfPlayFinal">OutOfPlayFinal</see>.
+        /// </summary>
+        ///
+        /// <param name="state">Player play state.</param>
+        ///
+        /// <returns>True if play state is <see cref="Quantum.BattlePlayerPlayState.OutOfPlayFinal">OutOfPlayFinal</see>.</returns>
         public static bool IsOutOfPlayFinal(this BattlePlayerPlayState state)      => state is BattlePlayerPlayState.OutOfPlayFinal;
+
+        /// <summary>
+        /// Checks if the play state of player is <see cref="Quantum.BattlePlayerPlayState.InPlay">InPlay</see>.
+        /// </summary>
+        ///
+        /// <param name="state">Player play state.</param>
+        ///
+        /// <returns>True if play state is <see cref="Quantum.BattlePlayerPlayState.InPlay">InPlay</see>.</returns>
         public static bool IsInPlay(this BattlePlayerPlayState state)              => state is BattlePlayerPlayState.InPlay;
     }
 
     /// <summary>
     /// Provides static methods to initialize, spawn, despawn, and query player-related data.
     /// </summary>
+    ///
+    /// Handles initializing players that are present in the game, as well as spawning and despawning player characters.<br/>
+    /// Also contains the public and private PlayerHandle structs.
     public static unsafe class BattlePlayerManager
     {
         #region Public
@@ -123,6 +185,20 @@ namespace Battle.QSimulation.Player
             playerManagerData->PlayerCount++;
 
             f.Events.BattleViewPlayerConnected(data);
+        }
+
+        /// <summary>
+        /// Marks the player as abandoned.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerRef">Reference to the player.</param>
+        public static void MarkAbandoned(Frame f, PlayerRef playerRef)
+        {
+            BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
+            PlayerHandleInternal playerHandle = new PlayerHandleInternal(playerManagerData, PlayerHandleInternal.GetPlayerIndex(playerManagerData, playerRef));
+            playerHandle.IsAbandoned = true;
+            BattlePlayerQSystem.HandlePlayerAbandoned(f, playerHandle.ConvertToPublic());
         }
 
         /// <summary>
@@ -439,6 +515,7 @@ namespace Battle.QSimulation.Player
                 playerHandle.PlayState = BattlePlayerPlayState.OutOfPlay;
                 playerHandle.IsBot = isBot;
                 playerHandle.AllowCharacterSwapping = true;
+                playerHandle.PlayerGiveUpState = false;
                 playerHandle.SetCharacterEntities(playerCharacterEntityArray);
             }
         }
@@ -583,6 +660,12 @@ namespace Battle.QSimulation.Player
             public bool IsBot
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.IsBot; }
 
+            /// <summary>
+            /// Public getter for IsAbandoned.
+            /// </summary>
+            public bool IsAbandoned
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.IsAbandoned; }
+
             public FrameTimer RespawnTimer
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.RespawnTimer;
@@ -603,6 +686,12 @@ namespace Battle.QSimulation.Player
 
             public BattlePlayerCharacterState SelectedCharacterState
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterState; }
+
+            public bool PlayerGiveUpState
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayerGiveUpState;
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _internalHandle.PlayerGiveUpState = value;
+            }
 
             //} Public Properties
 
@@ -838,6 +927,15 @@ namespace Battle.QSimulation.Player
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->IsBot[Index] = value;
             }
 
+            /// <summary>
+            /// Gets and sets player's IsAbandoned state.
+            /// </summary>
+            public bool IsAbandoned
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->IsAbandoned[Index];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->IsAbandoned[Index] = value;
+            }
+
             public FrameTimer RespawnTimer
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->RespawnTimer[Index];
@@ -868,6 +966,12 @@ namespace Battle.QSimulation.Player
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] get => GetCharacterState(SelectedCharacterNumber);
                 [MethodImpl(MethodImplOptions.AggressiveInlining)] set => SetCharacterState(SelectedCharacterNumber, value);
+            }
+
+            public bool PlayerGiveUpState
+            {
+              [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->PlayerGiveUpStates[Index];
+              [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _playerManagerData->PlayerGiveUpStates[Index] = value;
             }
 
             public FPVector2 SpawnPosition

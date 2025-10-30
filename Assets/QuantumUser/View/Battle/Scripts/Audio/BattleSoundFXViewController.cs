@@ -1,6 +1,6 @@
 /// @file BattleSoundFXViewController.cs
 /// <summary>
-/// Has a class BattleSoundFXViewController which handles playing sound effects.
+/// Contains @cref{Battle.View.Audio,BattleSoundFXViewController} class which handles playing sound effects.
 /// </summary>
 ///
 /// This script:<br/>

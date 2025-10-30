@@ -1,6 +1,6 @@
 /// @file BattleUiMultiOrientationElement.cs
 /// <summary>
-/// Has a class BattleUiMultiOrientationElement which sets the %Battle Ui multi orientation element's data.
+/// Contains @cref{Altzone.Scripts.BattleUiShared,BattleUiMultiOrientationElement} class which sets the %Battle Ui multi orientation element's data.
 /// </summary>
 ///
 /// This script:<br/>

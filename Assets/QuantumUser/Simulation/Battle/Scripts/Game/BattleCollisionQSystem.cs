@@ -1,9 +1,7 @@
 /// @file BattleCollisionQSystem.cs
 /// <summary>
-/// Handles all collisions in the game.
+/// Contains @cref{Battle.QSimulation.Game,BattleCollisionQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which handles all collisions in the game.
 /// </summary>
-///
-/// This system reacts to ISignalOnTrigger2D signals. Depending on which entities are colliding, the appropriate methods in other systems are called.
 
 using UnityEngine;
 using UnityEngine.Scripting;
@@ -22,6 +20,8 @@ namespace Battle.QSimulation.Game
     /// <span class="brief-h">Collision <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum SystemSignalsOnly@u-exlink</a> @systemslink</span><br/>
     /// Handles all collisions in the game. Reacts only when it receives a signal upon collision.
     /// </summary>
+    ///
+    /// This system reacts to ISignalOnTrigger2D signals. Depending on which entities are colliding, the appropriate methods in other systems are called.
     [Preserve]
     public unsafe class BattleCollisionQSystem : SystemSignalsOnly, ISignalOnTrigger2D
     {

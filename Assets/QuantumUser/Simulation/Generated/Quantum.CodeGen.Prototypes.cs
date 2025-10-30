@@ -364,6 +364,8 @@ namespace Quantum.Prototypes {
     [ArrayLengthAttribute(4)]
     public QBoolean[] IsBot = new QBoolean[4];
     [ArrayLengthAttribute(4)]
+    public QBoolean[] IsAbandoned = new QBoolean[4];
+    [ArrayLengthAttribute(4)]
     public Quantum.Prototypes.FrameTimerPrototype[] RespawnTimer = new Quantum.Prototypes.FrameTimerPrototype[4];
     [ArrayLengthAttribute(4)]
     public QBoolean[] AllowCharacterSwapping = new QBoolean[4];
@@ -375,6 +377,8 @@ namespace Quantum.Prototypes {
     public MapEntityId[] AllCharacters = new MapEntityId[12];
     [ArrayLengthAttribute(12)]
     public Quantum.QEnum32<BattlePlayerCharacterState>[] AllCharactersStates = new Quantum.QEnum32<BattlePlayerCharacterState>[12];
+    [ArrayLengthAttribute(4)]
+    public QBoolean[] PlayerGiveUpStates = new QBoolean[4];
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerManagerDataQSingleton component = default;
         Materialize((Frame)f, ref component, in context);
@@ -390,6 +394,9 @@ namespace Quantum.Prototypes {
         }
         for (int i = 0, count = PrototypeValidator.CheckLength(IsBot, 4, in context); i < count; ++i) {
           *result.IsBot.GetPointer(i) = this.IsBot[i];
+        }
+        for (int i = 0, count = PrototypeValidator.CheckLength(IsAbandoned, 4, in context); i < count; ++i) {
+          *result.IsAbandoned.GetPointer(i) = this.IsAbandoned[i];
         }
         for (int i = 0, count = PrototypeValidator.CheckLength(RespawnTimer, 4, in context); i < count; ++i) {
           this.RespawnTimer[i].Materialize(frame, ref *result.RespawnTimer.GetPointer(i), in context);
@@ -408,6 +415,9 @@ namespace Quantum.Prototypes {
         }
         for (int i = 0, count = PrototypeValidator.CheckLength(AllCharactersStates, 12, in context); i < count; ++i) {
           *result.AllCharactersStates.GetPointer(i) = this.AllCharactersStates[i];
+        }
+        for (int i = 0, count = PrototypeValidator.CheckLength(PlayerGiveUpStates, 4, in context); i < count; ++i) {
+          *result.PlayerGiveUpStates.GetPointer(i) = this.PlayerGiveUpStates[i];
         }
     }
   }
@@ -553,6 +563,7 @@ namespace Quantum.Prototypes {
     public Button RotationInput;
     public FP RotationValue;
     public Int32 PlayerCharacterNumber;
+    public QBoolean GiveUpInput;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
         result.MovementInput = this.MovementInput;
@@ -562,6 +573,7 @@ namespace Quantum.Prototypes {
         result.RotationInput = this.RotationInput;
         result.RotationValue = this.RotationValue;
         result.PlayerCharacterNumber = this.PlayerCharacterNumber;
+        result.GiveUpInput = this.GiveUpInput;
         MaterializeUser(frame, ref result, in context);
     }
   }

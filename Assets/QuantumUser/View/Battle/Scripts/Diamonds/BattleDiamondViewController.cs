@@ -1,6 +1,6 @@
 /// @file BattleDiamondViewController.cs
 /// <summary>
-/// Has a class BattleDiamondViewController which handles diamonds visual functionality.
+/// Contains @cref{Battle.View.Diamond,BattleDiamondViewController} class which handles diamonds visual functionality.
 /// </summary>
 ///
 /// This script:<br/>

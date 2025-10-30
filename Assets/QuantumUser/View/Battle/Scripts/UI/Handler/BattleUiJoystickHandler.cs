@@ -1,6 +1,6 @@
 /// @file BattleUiJoystickHandler.cs
 /// <summary>
-/// Has a class BattleUiJoystickHandler which handles the on-screen joysticks.
+/// Contains @cref{Battle.View.UI,BattleUiJoystickHandler} class which handles the on-screen joysticks.
 /// </summary>
 ///
 /// This script:<br/>
@@ -128,7 +128,7 @@ namespace Battle.View.UI
         {
             // Connecting listeners for the joystick input
             if (_moveJoystickComponent != null) _moveJoystickComponent.OnJoystickInput += _uiController.GameViewController.UiInputOnJoystickMovement;
-            
+
             if (_rotateJoystickComponent != null)
             {
                 _rotateJoystickComponent.OnJoystickXAxisInput += _uiController.GameViewController.UiInputOnJoystickRotation;

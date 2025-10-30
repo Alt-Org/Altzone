@@ -1,10 +1,8 @@
 /// @file BattlePlayerMovementController.cs
 /// <summary>
-/// Handles player input, movement and rotations.
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerMovementController} class
+/// which contains the primary method for handling player movement as well as individual helper methods for moving and rotating players.
 /// </summary>
-///
-/// Gets player's Quantum.Input and updates player's position and rotation depending on player's actions.
-/// Handles moving, rotating and teleporting players and all their hitboxes.
 
 using UnityEngine;
 using UnityEngine.Scripting;
@@ -18,8 +16,11 @@ using Battle.QSimulation.Game;
 namespace Battle.QSimulation.Player
 {
     /// <summary>
-    /// Handles player input, movement and rotations.
+    /// Handles player movement and rotation
     /// </summary>
+    ///
+    /// Contains the primary @cref{BattlePlayerMovementController,UpdateMovement} method for handling player movement, which is used by BattlePlayerQSystem.<br/>
+    /// Also contains individual helper methods for moving and rotating players, which can be used by other scripts.
     [Preserve]
     public static unsafe class BattlePlayerMovementController
     {
@@ -258,7 +259,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="gridPosition">The grid position of the player.</param>
         /// <param name="clampedPosition">The resulting clamped position of the player.</param>
-        /// 
+        ///
         /// <returns>True if the position changed from clamping, false if it remained the same.</returns>
         private static bool ClampPosition(BattlePlayerDataQComponent* playerData, BattleGridPosition gridPosition, out FPVector2 clampedPosition)
         {
@@ -300,7 +301,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="position">The world position of the player.</param>
         /// <param name="clampedPosition">The resulting clamped position of the player.</param>
-        /// 
+        ///
         /// <returns>True if the position changed from clamping, false if it remained the same.</returns>
         private static bool ClampPosition(BattlePlayerDataQComponent* playerData, FPVector2 position, out FPVector2 clampedPosition)
         {

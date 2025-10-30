@@ -1,6 +1,6 @@
 /// @file BattleUiGameOverHandler.cs
 /// <summary>
-/// Has a class BattleUiGameOverHandler which handles showing the game over popup.
+/// Contains @cref{Battle.View.UI,BattleUiGameOverHandler} class which handles showing the game over popup.
 /// </summary>
 ///
 /// This script:<br/>
