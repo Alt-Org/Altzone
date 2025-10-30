@@ -135,11 +135,9 @@ namespace Battle.QSimulation.Diamond
             Transform2D* arenaTransform = f.Unsafe.GetPointer<Transform2D>(arenaBorderEntity);
             FP diamondRadius = f.Unsafe.GetPointer<PhysicsCollider2D>(diamondEntity)->Shape.Circle.Radius;
 
-            // calculate how far off from other entity's position is the projectile supposed to hit it's surface
             FPVector2 offsetVector = diamondTransform->Position - arenaTransform->Position;
             FP collisionOffset = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, arenaBorder->Normal)).Y;
 
-            // if projectile accidentally went inside another entity, lift it out
             if (collisionOffset - diamondRadius < arenaBorder->CollisionMinOffset)
             {
                 diamondTransform->Position += arenaBorder->Normal * (arenaBorder->CollisionMinOffset - collisionOffset + diamondRadius);
