@@ -199,8 +199,6 @@ public class Raid_InventoryPage : MonoBehaviour
         }
 
         int InventorySize = raid_InventoryHandler.InventorySize;
-        raid_InventoryHandler.MediumItemMaxAmount = raid_InventoryHandler.MediumItemMaxAmount;
-        raid_InventoryHandler.LargeItemMaxAmount = raid_InventoryHandler.LargeItemMaxAmount;
 
         for (int i = 0; i < Mathf.Min(InventorySize, ListOfUIItems.Count); i++)
         {

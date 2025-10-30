@@ -12,6 +12,6 @@ public class Raid_EndMenu : MonoBehaviour
     //TODO: This is used for testing / debugging only, remove when releasing demo
     public void Restart() 
     {
-        SceneManager.LoadScene("40-Raid");
+        SceneManager.LoadScene("41-QuantumRaid");
     }
 }
