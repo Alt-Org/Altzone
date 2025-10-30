@@ -63,7 +63,7 @@ namespace Battle.QSimulation.Diamond
         {
             // unpack filter
             BattleDiamondDataQComponent* diamondData = filter.DiamondData;
-            Transform2D* transform = filter.Transform;
+            Transform2D*                 transform   = filter.Transform;
 
             BattleDiamondQSpec diamondSpec = BattleQConfig.GetDiamondSpec(f);
 
@@ -109,7 +109,7 @@ namespace Battle.QSimulation.Diamond
             if (diamond->IsTraveling) return;
 
             BattleDiamondCounterQSingleton* diamondCounter = f.Unsafe.GetPointerSingleton<BattleDiamondCounterQSingleton>();
-            BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
+            BattlePlayerDataQComponent*     playerData     = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
 
             // increase right team's diamondcounter
             if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha) diamondCounter->AlphaDiamonds++;
@@ -123,9 +123,9 @@ namespace Battle.QSimulation.Diamond
         /// that gets called when <see cref="Quantum.ISignalBattleOnDiamondHitArenaBorder">ISignalBattleOnDiamondHitArenaBorder</see> is sent.</span><br/>
         /// Reflects the diamonds travel direction off of the arena border.
         /// @warning
-        /// This method should only be called via Quantum signal. 
+        /// This method should only be called via Quantum signal.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="diamond">Pointer to the diamond component.</param>
         /// <param name="diamondEntity">EntityRef of the diamond.</param>
@@ -133,8 +133,8 @@ namespace Battle.QSimulation.Diamond
         public void BattleOnDiamondHitArenaBorder(Frame f, BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity)
         {
             Transform2D* diamondTransform = f.Unsafe.GetPointer<Transform2D>(diamondEntity);
-            Transform2D* arenaTransform = f.Unsafe.GetPointer<Transform2D>(arenaBorderEntity);
-            FP diamondRadius = f.Unsafe.GetPointer<PhysicsCollider2D>(diamondEntity)->Shape.Circle.Radius;
+            Transform2D* arenaTransform   = f.Unsafe.GetPointer<Transform2D>(arenaBorderEntity);
+            FP diamondRadius              = f.Unsafe.GetPointer<PhysicsCollider2D>(diamondEntity)->Shape.Circle.Radius;
 
             FPVector2 offsetVector = diamondTransform->Position - arenaTransform->Position;
             FP collisionOffset = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, arenaBorder->Normal)).Y;
@@ -158,9 +158,9 @@ namespace Battle.QSimulation.Diamond
         private static void CreateDiamonds(Frame f, FPVector2 wallPosition, FPVector2 wallNormal, BattleDiamondQSpec diamondSpec)
         {
             // diamond temp variables
-            FP                 diamondTargetDistance;
-            FPVector2          diamondLaunchDirection;
-            FP                 diamondTravelSpeed;
+            FP        diamondTargetDistance;
+            FPVector2 diamondLaunchDirection;
+            FP        diamondTravelSpeed;
 
             // diamond variables
             EntityRef                    diamondEntity;
@@ -169,10 +169,9 @@ namespace Battle.QSimulation.Diamond
 
             for (int i = 0; i < diamondSpec.SpawnAmount; i++)
             {
+                // set diamond temp variables
                 diamondTargetDistance = f.RNG->NextInclusive(diamondSpec.TravelDistanceMin, diamondSpec.TravelDistanceMax);
-
                 diamondLaunchDirection = FPVector2.Rotate(wallNormal, FP.Deg2Rad * f.RNG->NextInclusive(-diamondSpec.SpawnAngleDeg / 2, diamondSpec.SpawnAngleDeg / 2));
-
                 diamondTravelSpeed = diamondSpec.TravelSpeed;
 
                 // create diamond
