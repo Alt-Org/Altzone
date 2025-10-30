@@ -12,7 +12,6 @@ using Battle.QSimulation.Goal;
 using Battle.QSimulation.Player;
 using Battle.QSimulation.Diamond;
 using Battle.QSimulation.SoulWall;
-using Photon.Deterministic;
 
 namespace Battle.QSimulation.Game
 {
