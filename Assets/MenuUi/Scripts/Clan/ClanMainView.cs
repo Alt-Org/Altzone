@@ -36,6 +36,11 @@ public class ClanMainView : MonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button _joinClanButton;
 
+    //[Header("Pop Ups")]
+    //[SerializeField] private ClanLeavingPopUp _leaveClanPopUp;
+    //[SerializeField] private ClanJoiningPopUp _joinClanPopUp;
+    //[SerializeField] private GameObject _swipeBlockOverlay;
+
     private void OnEnable()
     {
         ToggleClanPanel(false);
@@ -120,4 +125,57 @@ public class ClanMainView : MonoBehaviour
             if (success) Reset();
         }));
     }
+
+    /*private void ShowOverlay (bool on)
+    {
+        _swipeBlockOverlay.SetActive(on);
+    }*/
+
+    //private void ShowLeaveClanPopUp()
+    //{
+    //    //ShowOverlay(true);
+    //    _leaveClanPopUp.Show(
+    //        onConfirm: () =>
+    //        {
+    //            LeaveClan();
+    //            //ShowOverlay(false);
+    //        },
+    //        onCancel: () =>
+    //        {
+    //            //ShowOverlay(false);
+    //        });
+    //}
+
+    //private void ShowJoinClanPopUp(ServerClan clan)
+    //{
+    //    //ShowOverlay(true);
+    //    _joinClanPopUp.Show(
+    //        onConfirm: () =>
+    //        {
+    //            if(clan != null)
+    //            {
+    //                _leaveClanPopUp.Show(
+    //                    onConfirm: () =>
+    //                    {
+    //                        //LeaveClan();
+    //                        JoinClan(clan);
+    //                        //ShowOverlay(false);
+    //                    },
+    //                    onCancel: () =>
+    //                    {
+    //                        //ShowOverlay(false);
+    //                    });
+    //            }
+    //            else
+    //            {
+    //                JoinClan(clan);
+    //                //ShowOverlay(false);
+    //            }
+
+    //        },
+    //        onCancel: () =>
+    //        {
+    //            //ShowOverlay(false);
+    //        });
+    //}
 }
