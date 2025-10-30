@@ -1,3 +1,8 @@
+/// @file BattleUiJoystickIconSetter.cs
+/// <summary>
+/// Contains @cref{Altzone.Scripts.BattleUiShared,BattleUiJoystickIconSetter} class which handles setting the joystick icon.
+/// </summary>
+
 using UnityEngine;
 using UnityEngine.UI;
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;

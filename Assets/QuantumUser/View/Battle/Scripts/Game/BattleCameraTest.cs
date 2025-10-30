@@ -1,6 +1,6 @@
 /// @file BattleCameraTest.cs
 /// <summary>
-/// Has a class BattleCameraTest for BattleCamera testing.
+/// Contains @cref{Battle.View.Game,BattleCameraTest} class for BattleCamera testing.
 /// </summary>
 ///
 /// This script:<br/>

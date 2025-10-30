@@ -1,6 +1,6 @@
 /// @file BattleUiAnnouncementHandler.cs
 /// <summary>
-/// Has a class BattleUiAnnouncementHandler which handles showing the announcement/countdown text.
+/// Contains @cref{Battle.View.UI,BattleUiAnnouncementHandler} class which handles showing the announcement/countdown text.
 /// </summary>
 ///
 /// This script:<br/>
