@@ -30,6 +30,31 @@ namespace Battle.View.Diamond
             {
                 transform.rotation = Quaternion.Euler(90, 180, 0);
             }
+
+            _spriteRenderer = GetComponent<SpriteRenderer>();
+
+            Color color = _spriteRenderer.color;
+            color.a = 0.5f;
+            _spriteRenderer.color = color;
+
+            QuantumEvent.Subscribe<EventBattleDiamondLanded>(this, QEventOnDiamondLanded);
         }
+
+        /// <summary>
+        /// Private handler method for EventBattleDiamondLanded QuantumEvent.<br/>
+        /// Sets the alpha of the diamond sprite to 1.
+        /// </summary>
+        /// 
+        /// <param name="e">The event data.</param>
+        private void QEventOnDiamondLanded(EventBattleDiamondLanded e)
+        {
+            if (e.Entity != EntityRef) return;
+
+            Color color = _spriteRenderer.color;
+            color.a = 1f;
+            _spriteRenderer.color = color;
+        }
+
+        private SpriteRenderer _spriteRenderer;
     }
 }

@@ -102,8 +102,12 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattleDiamondDataQComponent))]
   public unsafe partial class BattleDiamondDataQComponentPrototype : ComponentPrototype<Quantum.BattleDiamondDataQComponent> {
-    public Quantum.QEnum32<BattleTeamNumber> OwnerTeam;
-    public FP TimeUntilDisappearance;
+    public Quantum.Prototypes.FrameTimerPrototype LifetimeTimer;
+    public QBoolean IsTraveling;
+    public FP TravelSpeed;
+    public FPVector2 TravelDirection;
+    public FPVector2 StartPosition;
+    public FP TargetDistance;
     partial void MaterializeUser(Frame frame, ref Quantum.BattleDiamondDataQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattleDiamondDataQComponent component = default;
@@ -111,8 +115,12 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattleDiamondDataQComponent result, in PrototypeMaterializationContext context = default) {
-        result.OwnerTeam = this.OwnerTeam;
-        result.TimeUntilDisappearance = this.TimeUntilDisappearance;
+        this.LifetimeTimer.Materialize(frame, ref result.LifetimeTimer, in context);
+        result.IsTraveling = this.IsTraveling;
+        result.TravelSpeed = this.TravelSpeed;
+        result.TravelDirection = this.TravelDirection;
+        result.StartPosition = this.StartPosition;
+        result.TargetDistance = this.TargetDistance;
         MaterializeUser(frame, ref result, in context);
     }
   }

@@ -172,6 +172,10 @@ namespace Battle.QSimulation.Game
                     Debug.Log("[CollisionSystem] Diamond hit player");
                     f.Signals.BattleOnDiamondHitPlayer(diamond, info.Entity, playerHitbox, info.Other);
                 }
+                else if (f.Unsafe.TryGetPointer(info.Other, out BattleArenaBorderQComponent* arenaBorder))
+                {
+                    f.Signals.BattleOnDiamondHitArenaBorder(diamond, info.Entity, arenaBorder, info.Other);
+                }
             }
         }
     }
