@@ -16,11 +16,11 @@ namespace Altzone.Scripts.AvatarPartsInfo
         [SerializeField] private Sprite _avatarImage;
         [SerializeField] private Sprite _iconImage;
 
-        public string Name { get; }
-        public string Id { get; }
-        public string VisibleName { get; }
-        public Sprite AvatarImage { get; }
-        public Sprite IconImage { get; }
+        public string Name { get => _name; set => _name = value; }
+        public string Id { get => _id; set => _id = value; }
+        public string VisibleName { get => _visibleName; set => _visibleName = value; }
+        public Sprite AvatarImage { get => _avatarImage; set => _avatarImage = value; }
+        public Sprite IconImage { get => _iconImage; set => _iconImage = value; }
 
         public bool IsValid => !string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Id);
     }
