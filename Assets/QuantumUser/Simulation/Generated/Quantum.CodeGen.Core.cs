@@ -1560,7 +1560,7 @@ namespace Quantum {
     void BattleOnDiamondHitPlayer(Frame f, BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity);
   }
   public unsafe partial interface ISignalBattleOnDiamondHitArenaBorder : ISignal {
-    void BattleOnDiamondHitArenaBorder(Frame f, BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattleArenaBorderQComponent* arenaBorder);
+    void BattleOnDiamondHitArenaBorder(Frame f, BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity);
   }
   public unsafe partial interface ISignalBattleOnGameOver : ISignal {
     void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity);
@@ -1694,12 +1694,12 @@ namespace Quantum {
           }
         }
       }
-      public void BattleOnDiamondHitArenaBorder(BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattleArenaBorderQComponent* arenaBorder) {
+      public void BattleOnDiamondHitArenaBorder(BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity) {
         var array = _f._ISignalBattleOnDiamondHitArenaBorderSystems;
         for (Int32 i = 0; i < array.Length; ++i) {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
-            s.BattleOnDiamondHitArenaBorder(_f, diamond, diamondEntity, arenaBorder);
+            s.BattleOnDiamondHitArenaBorder(_f, diamond, diamondEntity, arenaBorder, arenaBorderEntity);
           }
         }
       }

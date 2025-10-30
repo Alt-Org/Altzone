@@ -128,8 +128,23 @@ namespace Battle.QSimulation.Diamond
         /// <param name="diamond">Pointer to the diamond component.</param>
         /// <param name="diamondEntity">EntityRef of the diamond.</param>
         /// <param name="arenaBorder">Pointer to the arena border component.</param>
-        public void BattleOnDiamondHitArenaBorder(Frame f, BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattleArenaBorderQComponent* arenaBorder)
+        public void BattleOnDiamondHitArenaBorder(Frame f, BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity)
         {
+
+            Transform2D* diamondTransform = f.Unsafe.GetPointer<Transform2D>(diamondEntity);
+            Transform2D* arenaTransform = f.Unsafe.GetPointer<Transform2D>(arenaBorderEntity);
+            FP diamondRadius = f.Unsafe.GetPointer<PhysicsCollider2D>(diamondEntity)->Shape.Circle.Radius;
+
+            // calculate how far off from other entity's position is the projectile supposed to hit it's surface
+            FPVector2 offsetVector = diamondTransform->Position - arenaTransform->Position;
+            FP collisionOffset = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, arenaBorder->Normal)).Y;
+
+            // if projectile accidentally went inside another entity, lift it out
+            if (collisionOffset - diamondRadius < arenaBorder->CollisionMinOffset)
+            {
+                diamondTransform->Position += arenaBorder->Normal * (arenaBorder->CollisionMinOffset - collisionOffset + diamondRadius);
+            }
+
             diamond->TravelDirection = FPVector2.Reflect(diamond->TravelDirection, arenaBorder->Normal).Normalized;
         }
 

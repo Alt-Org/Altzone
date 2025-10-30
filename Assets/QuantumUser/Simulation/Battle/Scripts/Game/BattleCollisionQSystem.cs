@@ -175,7 +175,7 @@ namespace Battle.QSimulation.Game
                 }
                 else if (f.Unsafe.TryGetPointer(info.Other, out BattleArenaBorderQComponent* arenaBorder))
                 {
-                    f.Signals.BattleOnDiamondHitArenaBorder(diamond, info.Entity, arenaBorder);
+                    f.Signals.BattleOnDiamondHitArenaBorder(diamond, info.Entity, arenaBorder, info.Other);
                 }
             }
         }
