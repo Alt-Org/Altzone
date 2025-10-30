@@ -5,6 +5,7 @@
 ///
 /// @bigtext{Filled with data from @ref BattleDiamondQSpec.asset "BattleDiamondQSpec" data asset.}
 
+using Photon.Deterministic;
 using Quantum;
 
 namespace Battle.QSimulation.Diamond
@@ -23,18 +24,18 @@ namespace Battle.QSimulation.Diamond
         /// <value>Amount of diamonds spawned per destroyed SoulWall segment.</value>
         public int SpawnAmount;
         /// <value>The angle range within which a diamond's launch angle is selected from.</value>
-        public int SpawnAngleDeg;
+        public FP SpawnAngleDeg;
         /// <value>The minimum travel distance a diamond can be assigned.</value>
-        public float TravelDistanceMin;
+        public FP TravelDistanceMin;
         /// <value>The maximum travel distance a diamond can be assigned.</value>
-        public float TravelDistanceMax;
+        public FP TravelDistanceMax;
         /// <value>The travel speed of diamonds.</value>
-        public int TravelSpeed;
+        public FP TravelSpeed;
         /// <value>The vertical distance from a diamonds target distance at which the diamond will begin slowing down.</value>
-        public float BreakDistance;
+        public FP BreakDistance;
         /// <value>The force by which a diamond slows down.</value>
-        public float BreakForce;
+        public FP BreakForce;
         /// <value>Time in seconds a diamond will remain on the arena after it stops traveling.</value>
-        public float LifetimeSec;
+        public FP LifetimeSec;
     }
 }
