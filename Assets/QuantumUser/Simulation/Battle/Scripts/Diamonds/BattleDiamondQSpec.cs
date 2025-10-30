@@ -5,6 +5,7 @@
 ///
 /// @bigtext{Filled with data from @ref BattleDiamondQSpec.asset "BattleDiamondQSpec" data asset.}
 
+// Quantum usings
 using Quantum;
 
 namespace Battle.QSimulation.Diamond

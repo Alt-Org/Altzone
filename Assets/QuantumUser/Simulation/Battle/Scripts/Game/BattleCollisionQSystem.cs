@@ -3,10 +3,14 @@
 /// Contains @cref{Battle.QSimulation.Game,BattleCollisionQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which handles all collisions in the game.
 /// </summary>
 
+// Unity usings
 using UnityEngine;
 using UnityEngine.Scripting;
+
+// Quantum usings
 using Quantum;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Projectile;
 using Battle.QSimulation.Goal;
 using Battle.QSimulation.Player;

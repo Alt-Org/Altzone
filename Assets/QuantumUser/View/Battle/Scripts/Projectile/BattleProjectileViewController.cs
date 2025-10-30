@@ -3,9 +3,13 @@
 /// Handles projectile's sprite changes and its trail's color.
 /// </summary>
 
+// Unity usings
 using UnityEngine;
+
+// Quantum usings
 using Quantum;
 
+// Battle View usings
 using Battle.View.Game;
 
 namespace Battle.View.Projectile

@@ -6,8 +6,13 @@
 /// This script:<br/>
 /// Handles diamonds visual functionality.
 
+// Unity usings
 using UnityEngine;
+
+// Quantum usings
 using Quantum;
+
+// Battle View usings
 using Battle.View.Game;
 
 namespace Battle.View.Diamond

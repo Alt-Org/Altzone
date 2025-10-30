@@ -6,16 +6,23 @@
 /// This script:<br/>
 /// Initializes %Battle %UI elements, and controls their visibility and functionality.
 
+// Unity usings
 using UnityEngine;
+
+// Quantum usings
 using Quantum;
 using Photon.Deterministic;
 
+// Altzone usings
 using Altzone.Scripts.Audio;
 using Altzone.Scripts.BattleUiShared;
 using Altzone.Scripts.Lobby;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Player;
+
+// Battle View usings
 using Battle.View.Audio;
 using Battle.View.Effect;
 using Battle.View.UI;

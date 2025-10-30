@@ -4,6 +4,7 @@
 /// which is a default none/empty <see cref="Battle.View.Player.BattlePlayerClassNoneViewController">class %view controller</see> with no additional view logic.
 /// </summary>
 
+// Quantum usings
 using Quantum;
 
 namespace Battle.View.Player

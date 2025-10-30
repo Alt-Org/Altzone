@@ -6,13 +6,18 @@
 
 //#define DEBUG_PLAYER_STAT_OVERRIDE
 
+// System usings
 using System.Runtime.CompilerServices;
+
+// Unity usings
 using UnityEngine;
 
+// Quantum usings
 using Quantum;
 using Quantum.Collections;
 using Photon.Deterministic;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player

@@ -6,11 +6,17 @@
 /// This script:<br/>
 /// Handles give up button functionality.
 
+// Unity usings
 using UnityEngine;
 using TMPro;
+
+// Quantum usings
 using Quantum;
 
+// Altzone usings
 using Altzone.Scripts.BattleUiShared;
+
+// Battle View usings
 using Battle.View.Game;
 
 namespace Battle.View.UI

@@ -6,12 +6,15 @@
 /// This script:<br/>
 /// Handles displaying the player's character's stats for debug purposes.
 
+// System usings
 using System;
 
+// Unity usings
 using UnityEngine;
-using Quantum;
-
 using TMPro;
+
+// Quantum usings
+using Quantum;
 
 namespace Battle.View.UI
 {

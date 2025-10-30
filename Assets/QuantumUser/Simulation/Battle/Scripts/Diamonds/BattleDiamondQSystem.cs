@@ -3,11 +3,14 @@
 /// Contains @cref{Battle.QSimulation.Diamond,BattleDiamondQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which handles spawning, managing and destroying diamonds.
 /// </summary>
 
+// Unity usings
 using UnityEngine.Scripting;
 
+// Quantum usings
 using Quantum;
 using Photon.Deterministic;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Diamond
