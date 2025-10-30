@@ -5,8 +5,8 @@
 ///
 /// @bigtext{Filled with data from @ref BattleDiamondQSpec.asset "BattleDiamondQSpec" data asset.}
 
-using Photon.Deterministic;
 using Quantum;
+using Photon.Deterministic;
 
 namespace Battle.QSimulation.Diamond
 {
