@@ -445,7 +445,7 @@ namespace Battle.View.Game
                 LocalPlayerTeam == BattleTeamNumber.TeamBeta
             );
 
-            AudioManager.Instance.PlayMusic("Battle");
+            AudioManager.Instance.PlayMusic("Battle", MusicHandler.MusicSwitchType.Immediate);
         }
 
         /// <summary>
