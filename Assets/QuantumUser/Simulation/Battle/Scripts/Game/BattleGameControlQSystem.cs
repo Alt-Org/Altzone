@@ -5,12 +5,15 @@
 
 //#define DEBUG_LOG_STATE
 
+// Unity usings
 using UnityEngine;
 using UnityEngine.Scripting;
 
+// Quantum usings
 using Quantum;
 using Photon.Deterministic;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Player;
 using Battle.QSimulation.SoulWall;
 

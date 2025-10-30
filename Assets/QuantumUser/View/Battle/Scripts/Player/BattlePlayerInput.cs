@@ -9,16 +9,22 @@
 /// Handles movement and rotation input based on chosen input methods. <br/>
 /// Handles obtaining data from device gyroscope.
 
+// Unity usings
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+// Quantum usings
 using Quantum;
 using Input = Quantum.Input;
 using Photon.Deterministic;
 
+// Prg usings
 using Prg.Scripts.Common;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
+
+// Battle View usings
 using Battle.View.Game;
 
 using MovementInputType = SettingsCarrier.BattleMovementInputType;
