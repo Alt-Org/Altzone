@@ -117,6 +117,15 @@ namespace Altzone.Scripts.Audio
         private int _localTrackId = 0;
         #endregion
 
+        #region Preview
+        [SerializeField] private float _previewTime = 10f;
+
+        private bool _trackPreviewActive = false;
+
+        private JukeboxTrackButtonHandler _currentPreviewMusicTrackHandler = null;
+        private Coroutine _currentPreviewTrackCoroutine;
+        #endregion
+
         #region Events & Delegates
         public delegate ChunkPointer GetFreeJukeboxTrackQueueHandler();
         public event GetFreeJukeboxTrackQueueHandler OnGetFreeJukeboxTrackQueueHandler;
@@ -614,7 +623,7 @@ namespace Altzone.Scripts.Audio
         /// <returns>Track name that is playing.</returns>
         public string PlayTrack(TrackQueueData trackQueueData)
         {
-            if (trackQueueData == null || _trackEndingControlCoroutine != null || (_playbackPaused && _currentTrackQueueData != null)) return null;
+            if (trackQueueData == null || _trackEndingControlCoroutine != null || (_playbackPaused && _currentTrackQueueData != null) || _trackPreviewActive) return null;
 
             string name = "";
 
@@ -692,15 +701,19 @@ namespace Altzone.Scripts.Audio
                 while (true)
                 {
                     if (!_trackQueue[_trackQueuePointer].InUse()) TryFindValidQueueData();
-                    if (seconds < _trackQueue[_trackQueuePointer].MusicTrack.Music.length) break;
+
+                    if (seconds < _trackQueue[_trackQueuePointer].MusicTrack.Music.length)
+                        break;
+
+                    _currentTrackQueueData = _trackQueue[_trackQueuePointer];
 
                     seconds -= _trackQueue[_trackQueuePointer].MusicTrack.Music.length;
 
                     _trackQueuePointer++;
+                    Debug.LogError("continue: " + _trackQueuePointer);
                     if (_trackQueuePointer >= _trackQueue.Count) _trackQueuePointer = 0;
 
-                    if (!_trackQueue[_trackQueuePointer].InUse()) TryFindValidQueueData();
-
+                    //if (!_trackQueue[_trackQueuePointer].InUse()) TryFindValidQueueData();
                 }
 
                 _musicElapsedTime = seconds;
@@ -715,7 +728,7 @@ namespace Altzone.Scripts.Audio
 
             if (OnSetSongInfo != null) OnSetSongInfo.Invoke(_currentTrackQueueData.MusicTrack);
 
-            return AudioManager.Instance.ContinueMusic("Jukebox", _currentTrackQueueData.MusicTrack, _musicElapsedTime);
+            return AudioManager.Instance.ContinueMusic("Jukebox", _currentTrackQueueData.MusicTrack, MusicHandler.MusicSwitchType.CrossFade, _musicElapsedTime);
         }
 
         public void StopJukebox()
@@ -750,7 +763,7 @@ namespace Altzone.Scripts.Audio
         {
             if (_trackQueuePointer >= _trackQueue.Count && _loopPlayType == PlaylistLoopType.LoopPlaylist) //Keep playing the current playlist.
                 _trackQueuePointer = 0;
-            //Debug.LogError("next, _trackQueuePointer: " + _trackQueuePointer);
+
             if (_trackQueuePointer < _trackQueue.Count && !_trackQueue[_trackQueuePointer].InUse() && !TryFindValidQueueData())
             {
                 Debug.LogError("Next track is null and JukeboxManager failed to find a valid music track!");
@@ -796,7 +809,7 @@ namespace Altzone.Scripts.Audio
 
                 if (name == null)
                 {
-                    Debug.LogError("JukeboxManager: Next tracks name is null!");
+                    //Debug.LogError("JukeboxManager: Next tracks name is null!");
                     return null;
                 }
 
@@ -1070,6 +1083,67 @@ namespace Altzone.Scripts.Audio
             Debug.LogError("Failed to find previous TrackQueueData!");
             return null;
         }
+        #endregion
+
+        #region Preview
+        public void PlayPreview(JukeboxTrackButtonHandler buttonHandler)
+        {
+            if (_currentPreviewMusicTrackHandler != null)
+            {
+                _currentPreviewMusicTrackHandler.StopDiskSpin();
+                _currentPreviewMusicTrackHandler = null;
+            }
+
+            if (_currentPreviewTrackCoroutine != null)
+            {
+                StopCoroutine(_currentPreviewTrackCoroutine);
+                _currentPreviewTrackCoroutine = null;
+            }
+
+            string name = AudioManager.Instance.PlayMusic("Jukebox", buttonHandler.MusicTrack, MusicHandler.MusicSwitchType.CrossFade);
+
+            if (name == null)
+            {
+                Debug.LogError("Failed to start music preview playback.");
+                return;
+            }
+
+            _trackPreviewActive = true;
+
+            if (OnSetSongInfo != null) OnSetSongInfo.Invoke(buttonHandler.MusicTrack);
+
+            buttonHandler.StartDiskSpin();
+
+            _currentPreviewMusicTrackHandler = buttonHandler;
+            _currentPreviewTrackCoroutine = StartCoroutine(MusicReviewPlaybackControl());
+        }
+
+        private IEnumerator MusicReviewPlaybackControl()
+        {
+            float timer = 0f;
+
+            while (timer < _previewTime)
+            {
+                yield return null;
+                timer += Time.deltaTime;
+            }
+
+            _currentPreviewMusicTrackHandler.StopDiskSpin();
+            _currentPreviewMusicTrackHandler = null;
+
+            _trackPreviewActive = false;
+
+            string name = ContinueTrack(false);
+
+            if (name == null)
+            {
+                Debug.LogError("Failed to continue track playback.");
+                yield break;
+            }
+
+            if (OnSetSongInfo != null) OnSetSongInfo.Invoke(_currentTrackQueueData.MusicTrack);
+        }
+
         #endregion
 
         private string CreateLocalUserTrackQueueId(string musicTrackId)
