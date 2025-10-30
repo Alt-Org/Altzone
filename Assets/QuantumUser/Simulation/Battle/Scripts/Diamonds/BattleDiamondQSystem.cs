@@ -19,7 +19,7 @@ namespace Battle.QSimulation.Diamond
     /// </summary>
     ///
     /// This system:<br/>
-    /// Spawns diamonds when BattleCollisionQSystem calls the OnProjectileHitSoulWall method upon SoulWall segment's destruction.<br/>
+    /// Spawns diamonds when BattleCollisionQSystem calls the @cref{BattleDiamondQSystem,OnProjectileHitSoulWall} method upon SoulWall segment's destruction.<br/>
     /// Filters all diamond entities and handles their lifetime.<br/>
     /// Destroys diamonds when player collects them by colliding with them or if diamond's lifetime ends.
     [Preserve]
@@ -36,7 +36,7 @@ namespace Battle.QSimulation.Diamond
         }
 
         /// <summary>
-        /// A method called by BattleCollisionQSystem when the projectile collides with a soul wall. If the projectile is not in the held state, calls CreateDiamonds to spawn a diamond.
+        /// A method called by BattleCollisionQSystem when the projectile collides with a soul wall. If the projectile is not in the held state, calls <see cref="CreateDiamonds"/> to spawn a diamond.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
