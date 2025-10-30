@@ -50,7 +50,7 @@ public class ServerManager : MonoBehaviour
     public static string SERVERADDRESS { get
         {
             if(AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild) return DEVADDRESS;
-            else return LATESTDEVBUILDADDRESS;
+            else return DEVADDRESS;//LATESTDEVBUILDADDRESS;
         }
     }
 
