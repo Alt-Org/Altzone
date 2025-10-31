@@ -17,9 +17,15 @@ namespace MenuUi.Scripts.Window
 
         public WindowDef NaviTarget { get => _naviTarget; }
 
-        public IEnumerator Navigate()
+        virtual public IEnumerator Navigate()
         {
-            Debug.Log($"naviTarget {_naviTarget} isCurrentPopOutWindow {_isCurrentPopOutWindow}", _naviTarget);
+            yield return Navigate(_naviTarget);
+
+        }
+
+        protected IEnumerator Navigate(WindowDef naviTarget)
+        {
+            Debug.Log($"naviTarget {naviTarget} isCurrentPopOutWindow {_isCurrentPopOutWindow}", naviTarget);
             var windowManager = WindowManager.Get();
             yield return new WaitUntil(() => windowManager.ExecutionLevel == 0);
             if (_isCurrentPopOutWindow)
@@ -30,7 +36,7 @@ namespace MenuUi.Scripts.Window
             var windowCount = windowManager.WindowCount;
             if (windowCount > 1)
             {
-                var targetIndex = windowManager.FindIndex(_naviTarget);
+                var targetIndex = windowManager.FindIndex(naviTarget);
                 if (targetIndex == 1)
                 {
                     windowManager.GoBack();
@@ -38,14 +44,14 @@ namespace MenuUi.Scripts.Window
                 }
                 if (targetIndex > 1)
                 {
-                    windowManager.Unwind(_naviTarget);
+                    windowManager.Unwind(naviTarget);
                     windowManager.GoBack();
                     yield break;
                 }
             }
             if (_useNonDefaultWindow == true)
                 DataCarrier.AddData(DataCarrier.RequestedWindow, _targetWindow);
-            windowManager.ShowWindow(_naviTarget);
+            windowManager.ShowWindow(naviTarget);
         }
 #if UNITY_EDITOR
         [CustomEditor(typeof(WindowNavigation))]
@@ -56,7 +62,7 @@ namespace MenuUi.Scripts.Window
             protected SerializedProperty TargetWindow;
             protected SerializedProperty IsCurrentPopOutWindow;
 
-            private void OnEnable()
+            protected virtual void OnEnable()
             {
                 NaviTarget = serializedObject.FindProperty(nameof(_naviTarget));
                 UseNonDefaultWindow = serializedObject.FindProperty(nameof(_useNonDefaultWindow));

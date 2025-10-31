@@ -216,18 +216,20 @@ public class DailyTaskManager : AltMonoBehaviour
         PlayerData playerData = null;
         Storefront.Get().GetPlayerTasks(content => clanTasks = content);
         StartCoroutine(GetPlayerData(content => playerData = content)); //MQTT message tells if we need to fetch the data again.
-        //if (playerData == null || !playerData.HasClanId)
-        //{
+        if (playerData == null || !playerData.HasClanId)
+        {
             if (gameVersion == VersionType.Education)
                 clanTasks = GenerateEducationTasks();
             else
                 clanTasks = TESTGenerateNormalTasks();
-        /*}
+        }
         else
         StartCoroutine(ServerManager.Instance.GetPlayerTasksFromServer(content =>
         {
             if (content != null)
-                clanTasks = content;
+            {
+                //clanTasks = content;
+            }
             else
             {
                 Debug.LogError("Could not connect to server and receive quests.");
@@ -238,61 +240,60 @@ public class DailyTaskManager : AltMonoBehaviour
                     clanTasks = TESTGenerateNormalTasks();
                 Debug.LogWarning("Using locally generated tasks.");
             }
-        }));*/
+        }));
 
         yield return new WaitUntil(() => clanTasks != null);
 
         ClanTasks referenceTasks = gameVersion == VersionType.Education ? GenerateEducationTasks() : GenerateNormalTasks();
         ClanTasks validatedTasks = gameVersion == VersionType.Education ? new(TaskVersionType.Education, new()) : new(TaskVersionType.Normal, new());
-
-        for (int i = 0; i < clanTasks.Tasks.Count; i++)
-        {
-            for (int j = 0; j < referenceTasks.Tasks.Count; j++)
+        if (referenceTasks.TaskVersionType == clanTasks.TaskVersionType)
+            for (int i = 0; i < clanTasks.Tasks.Count; i++)
             {
-                if (clanTasks.TaskVersionType == TaskVersionType.Education && clanTasks.Tasks[i].EducationCategory == referenceTasks.Tasks[j].EducationCategory)
+                for (int j = 0; j < referenceTasks.Tasks.Count; j++)
                 {
-                    switch (clanTasks.Tasks[i].EducationCategory)
+                    if (clanTasks.TaskVersionType == TaskVersionType.Education && clanTasks.Tasks[i].EducationCategory == referenceTasks.Tasks[j].EducationCategory)
                     {
-                        case EducationCategoryType.Action:
-                            {
-                                if (clanTasks.Tasks[i].EducationActionType == referenceTasks.Tasks[j].EducationActionType)
-                                    validatedTasks.Tasks.Add(clanTasks.Tasks[i]);
-                                break;
-                            }
-                        case EducationCategoryType.Social:
-                            {
-                                if (clanTasks.Tasks[i].EducationSocialType == referenceTasks.Tasks[j].EducationSocialType)
-                                    validatedTasks.Tasks.Add(clanTasks.Tasks[i]);
-                                break;
-                            }
-                        case EducationCategoryType.Story:
-                            {
-                                if (clanTasks.Tasks[i].EducationStoryType == referenceTasks.Tasks[j].EducationStoryType)
-                                    validatedTasks.Tasks.Add(clanTasks.Tasks[i]);
-                                break;
-                            }
-                        case EducationCategoryType.Culture:
-                            {
-                                if (clanTasks.Tasks[i].EducationCultureType == referenceTasks.Tasks[j].EducationCultureType)
-                                    validatedTasks.Tasks.Add(clanTasks.Tasks[i]);
-                                break;
-                            }
-                        case EducationCategoryType.Ethical:
-                            {
-                                if (clanTasks.Tasks[i].EducationEthicalType == referenceTasks.Tasks[j].EducationEthicalType)
-                                    validatedTasks.Tasks.Add(clanTasks.Tasks[i]);
-                                break;
-                            }
+                        switch (clanTasks.Tasks[i].EducationCategory)
+                        {
+                            case EducationCategoryType.Action:
+                                {
+                                    if (clanTasks.Tasks[i].EducationActionType == referenceTasks.Tasks[j].EducationActionType)
+                                        validatedTasks.Tasks.Add(clanTasks.Tasks[i]);
+                                    break;
+                                }
+                            case EducationCategoryType.Social:
+                                {
+                                    if (clanTasks.Tasks[i].EducationSocialType == referenceTasks.Tasks[j].EducationSocialType)
+                                        validatedTasks.Tasks.Add(clanTasks.Tasks[i]);
+                                    break;
+                                }
+                            case EducationCategoryType.Story:
+                                {
+                                    if (clanTasks.Tasks[i].EducationStoryType == referenceTasks.Tasks[j].EducationStoryType)
+                                        validatedTasks.Tasks.Add(clanTasks.Tasks[i]);
+                                    break;
+                                }
+                            case EducationCategoryType.Culture:
+                                {
+                                    if (clanTasks.Tasks[i].EducationCultureType == referenceTasks.Tasks[j].EducationCultureType)
+                                        validatedTasks.Tasks.Add(clanTasks.Tasks[i]);
+                                    break;
+                                }
+                            case EducationCategoryType.Ethical:
+                                {
+                                    if (clanTasks.Tasks[i].EducationEthicalType == referenceTasks.Tasks[j].EducationEthicalType)
+                                        validatedTasks.Tasks.Add(clanTasks.Tasks[i]);
+                                    break;
+                                }
+                        }
+                    }
+                    else if (clanTasks.TaskVersionType == TaskVersionType.Normal)
+                    {
+                        if (clanTasks.Tasks[i].Type == referenceTasks.Tasks[j].Type)
+                            validatedTasks.Tasks.Add(clanTasks.Tasks[i]);
                     }
                 }
-                else if (clanTasks.TaskVersionType == TaskVersionType.Normal)
-                {
-                    if (clanTasks.Tasks[i].Type == referenceTasks.Tasks[j].Type)
-                        validatedTasks.Tasks.Add(clanTasks.Tasks[i]);
-                }
             }
-        }
-
         // Generate a list of working tasks if none of the tasks from server were validated
         if (validatedTasks.Tasks.Count == 0)
         {

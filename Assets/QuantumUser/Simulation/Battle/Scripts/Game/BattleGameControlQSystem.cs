@@ -1,26 +1,28 @@
 /// @file BattleGameControlQSystem.cs
 /// <summary>
-/// Controls the overall game state flow in Quantum simulation.
+/// Contains @cref{Battle.QSimulation.Game,BattleGameControlQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which controls the overall game flow in %Quantum simulation.
 /// </summary>
-///
-/// This system initializes the battle grid and player manager, and controls game state transitions from initialization to active gameplay.
 
 //#define DEBUG_LOG_STATE
 
 using UnityEngine.Scripting;
+
 using Quantum;
+using Photon.Deterministic;
 
 using Battle.QSimulation.Player;
 using Battle.QSimulation.SoulWall;
-using UnityEngine;
-using Photon.Deterministic;
 
 namespace Battle.QSimulation.Game
 {
-    /**
-     *  Systems that monitor game state:
-     *  -ProjectileSpawnerSystem
-     */
+    /// <summary>
+    /// <span class="brief-h">%Game control <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
+    /// Controls the overall game flow in %Quantum simulation.
+    /// </summary>
+    ///
+    /// Initializes BattleGridManager and BattlePlayerManager.<br/>
+    /// Registers players to BattlePlayerManager when they connect.<br/>
+    /// Controls game state transitions from initialization to active gameplay.
     [Preserve]
     public unsafe class BattleGameControlQSystem : SystemMainThread, ISignalOnPlayerAdded
     {
@@ -62,6 +64,14 @@ namespace Battle.QSimulation.Game
             BattlePlayerManager.RegisterPlayer(f, playerRef);
         }
 
+        /// <summary>
+        /// Called when the game ends. Updates the game session state and calls the BattleViewGameOver Event and BattleOnGameOver Signal.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="winningTeam">The team that won the game.</param>
+        /// <param name="projectile">Pointer reference to the projectile.</param>
+        /// <param name="projectileEntity">The projectile entity.</param>
         public static void OnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
         {
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();

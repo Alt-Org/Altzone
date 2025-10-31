@@ -48,7 +48,7 @@ namespace Battle.QSimulation.Game
         {
             return f.FindAsset(f.FindAsset(f.RuntimeConfig.BattleConfig).BattlePlayerSpec);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BattlePlayerBotQSpec GetPlayerBotSpec(Frame f)
         {
