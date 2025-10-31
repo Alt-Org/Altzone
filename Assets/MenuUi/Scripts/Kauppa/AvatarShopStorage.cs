@@ -5,6 +5,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
+using Altzone.Scripts.AvatarPartsInfo;
 
 public class AvatarShopStorage : ShopPanelStorage
 {
@@ -69,46 +70,40 @@ public class AvatarShopStorage : ShopPanelStorage
 
         foreach(AvatarPartsReference.AvatarPartCategoryInfo avatarSectiondata in avatarPartsData)
         {
-            if (avatarSectiondata == null || avatarSectiondata.AvatarCategories.Count <= 0)
+            if (avatarSectiondata == null || avatarSectiondata.AvatarParts.Count <= 0)
             {
                 Debug.LogWarning($"Cannot find avatar parts from section {avatarSectiondata.SetName}.");
                 continue;
             }
 
-            foreach(AvatarPartsReference.AvatarClassCategoryInfo avatarsubData in avatarSectiondata.AvatarCategories)
+           
+            foreach (AvatarPartInfo avatarpartData in avatarSectiondata.AvatarParts)
             {
-                if (avatarsubData == null || avatarsubData.Parts.Count <= 0)
+                if (avatarpartData == null)
                 {
                     continue;
                 }
 
-                foreach (AvatarPartsReference.AvatarPartInfo avatarpartData in avatarsubData.Parts)
+                if (_rarityToParent.TryGetValue(FurnitureRarity.Rare, out Transform _parent))
                 {
-                    if (avatarpartData == null)
+                    if (_rarityToPrefab.TryGetValue(FurnitureRarity.Rare, out GameFurnitureVisualizer _prefab))
                     {
-                        continue;
-                    }
-
-                    if (_rarityToParent.TryGetValue(FurnitureRarity.Rare, out Transform _parent))
-                    {
-                        if (_rarityToPrefab.TryGetValue(FurnitureRarity.Rare, out GameFurnitureVisualizer _prefab))
-                        {
-                            Debug.Log("Furniture of " + avatarpartData.Id + "" + avatarpartData.Name + " is created");
-                            var newItem = Instantiate(_prefab, _parent);
-                            newItem.Initialize(avatarpartData, _popUp);
-                            gameFurnituresOnScene.Add(newItem);
-                        }
-                        else
-                        {
-                            //Debug.LogWarning($"Prefab for Rarity {avatarpartData.Rarity} is not defined!");
-                        }
+                        Debug.Log("Furniture of " + avatarpartData.Id + "" + avatarpartData.Name + " is created");
+                        var newItem = Instantiate(_prefab, _parent);
+                        newItem.Initialize(avatarpartData, _popUp);
+                        gameFurnituresOnScene.Add(newItem);
                     }
                     else
                     {
-                        //Debug.LogWarning($"Parent for Rarity {avatarpartData.Rarity} is not defined!");
+                        //Debug.LogWarning($"Prefab for Rarity {avatarpartData.Rarity} is not defined!");
                     }
                 }
+                else
+                {
+                    //Debug.LogWarning($"Parent for Rarity {avatarpartData.Rarity} is not defined!");
+                }
             }
+           
         }
 
         //Randomize

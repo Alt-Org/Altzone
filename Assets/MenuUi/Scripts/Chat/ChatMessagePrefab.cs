@@ -75,7 +75,7 @@ public class ChatMessagePrefab : MonoBehaviour
     /// </summary>
     internal void SetProfilePicture(AvatarData avatar)
     {
-        _faceAvatar.UpdateVisuals(AvatarDesignLoader.Instance.LoadAvatarDesign(avatar));
+        _faceAvatar.UpdateVisuals(AvatarDesignLoader.Instance.CreateAvatarVisualData(avatar));
     }
 
     internal void SetErrorColor()

@@ -46,7 +46,7 @@ public class MessageObjectHandler : MonoBehaviour
     }
     public void SetMessageInfo(ChatMessage message, Action<MessageObjectHandler> selectMessageAction)
     {
-        if (message.Avatar != null) _avatar.UpdateVisuals(AvatarDesignLoader.Instance.LoadAvatarDesign(message.Avatar));
+        if (message.Avatar != null) _avatar.UpdateVisuals(AvatarDesignLoader.Instance.CreateAvatarVisualData(message.Avatar));
         _id = message.Id;
         _text.text = message.Message;
         _selectMessageAction = selectMessageAction;
@@ -57,7 +57,7 @@ public class MessageObjectHandler : MonoBehaviour
 
     public void SetPreviewMessageInfo(ChatMessage message)
     {
-        if (message.Avatar != null) _avatar.UpdateVisuals(AvatarDesignLoader.Instance.LoadAvatarDesign(message.Avatar));
+        if (message.Avatar != null) _avatar.UpdateVisuals(AvatarDesignLoader.Instance.CreateAvatarVisualData(message.Avatar));
         _id = message.Id;
         _text.text = message.Message;
         _name.text = message.Username;

@@ -5,6 +5,7 @@ using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine.UI;
 using TMPro;
 using Altzone.Scripts.Language;
+using Altzone.Scripts.AvatarPartsInfo;
 
 public class ConfirmationPopupHandler : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class ConfirmationPopupHandler : MonoBehaviour
     [SerializeField] private Button _declineButton;
 
     private GameFurniture furniture;
-    private AvatarPartsReference.AvatarPartInfo avatarpart;
+    private AvatarPartInfo avatarpart;
 
     private void OnEnable()
     {
@@ -52,7 +53,7 @@ public class ConfirmationPopupHandler : MonoBehaviour
         }
     }
 
-    private void SetPopupActiveAvatarPart(AvatarPartsReference.AvatarPartInfo part)
+    private void SetPopupActiveAvatarPart(AvatarPartInfo part)
     {
         if (Background != null) Background.SetActive(true);
 
