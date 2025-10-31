@@ -21,9 +21,12 @@ public class DailyTaskOwnTask : MonoBehaviour
 
     [Header("Current task")]
     [SerializeField] private TextMeshProUGUI _taskDescription;
+    [SerializeField] private TextMeshProUGUI _taskCategory;
+    [SerializeField] private GameObject _taskRewardsField;
     [SerializeField] private TextMeshProUGUI _taskPointsReward;
     [SerializeField] private TextMeshProUGUI _taskCoinsReward;
     [SerializeField] private Image _taskTypeImage;
+    [SerializeField] private Image _taskBackground;
     [Space]
     [SerializeField] private Image _taskProgressFillImage;
     [SerializeField] private RectTransform _taskProgressLayoutGroup;
@@ -32,6 +35,8 @@ public class DailyTaskOwnTask : MonoBehaviour
     [Range(0f, 2f)]
     [SerializeField] private float _progressMarkerXScale = 0.05f;
     [SerializeField] private TMP_Text _testTaskProgressValue; //TODO: Remove when testing done.
+
+    private PlayerTask _currentTask;
 
     private List<GameObject> _taskProgressMarkers = new List<GameObject>();
 
@@ -60,20 +65,38 @@ public class DailyTaskOwnTask : MonoBehaviour
 
     private MoodType _moodType = MoodType.Ok;
 
+    [Header("Education Category Colors")]
+    [SerializeField] private Color _actionCategoryColor;
+    [SerializeField] private Color _socialCategoryColor;
+    [SerializeField] private Color _storyCategoryColor;
+    [SerializeField] private Color _cultureCategoryColor;
+    [SerializeField] private Color _ethicalCategoryColor;
+    [SerializeField] private Color _defaultColor;
+
     private void Start()
     {
         CreateProgressBarMarkers(_progressMarkersMaxAmount);
         SetMood(MoodType.Ok);
+        SettingsCarrier.OnLanguageChanged += UpdateLanguage;
+    }
+
+    private void OnDestroy()
+    {
+        SettingsCarrier.OnLanguageChanged -= UpdateLanguage;
     }
 
     #region Task
 
     public IEnumerator SetDailyTask(PlayerTask data)
     {
-        _taskDescription.text = data.Title;
+        _currentTask = data;
+        SetTaskTitle(data, SettingsCarrier.Instance.Language);
+        SetTaskCategory(data, SettingsCarrier.Instance.Language);
         _taskPointsReward.text = "" + data.Points;
         _taskCoinsReward.text = "" + data.Coins;
+        _taskRewardsField.SetActive(true);
         _taskTypeImage.sprite = _cardImageReference.GetTaskImage(data);
+        _taskTypeImage.enabled = true;
 
         yield return new WaitUntil(() => (_taskProgressMarkers.Count != 0));
 
@@ -132,14 +155,82 @@ public class DailyTaskOwnTask : MonoBehaviour
 
     public void ClearCurrentTask()
     {
+        _currentTask = null;
         _taskDescription.text = "";
+        _taskCategory.text = "";
         _taskPointsReward.text = "";
         _taskCoinsReward.text = "";
+        _taskRewardsField.SetActive(false);
+        _taskTypeImage.enabled = false;
+        _taskBackground.color = _defaultColor;
 
         SetProgressBarMarkers(0);
     }
 
+    private void SetTaskTitle(PlayerTask task, SettingsCarrier.LanguageType language)
+    {
+        _taskDescription.text = language == SettingsCarrier.LanguageType.Finnish ? task.Title : task.EnglishTitle;
+    }
+
+    private void SetTaskCategory(PlayerTask task, SettingsCarrier.LanguageType language)
+    {
+        if (task.Type != TaskNormalType.Undefined)
+        {
+            _taskCategory.text = "";
+        }
+        else
+        {
+            switch (task.EducationCategory)
+            {
+                case EducationCategoryType.Action:
+                    {
+                        _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Toiminnallinen pelilukutaito" : "Functional game literacy";
+                        _taskBackground.color = _actionCategoryColor;
+                        break;
+                    }
+                case EducationCategoryType.Social:
+                    {
+                        _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Sosiaalinen pelilukutaito" : "Social game literacy";
+                        _taskBackground.color = _socialCategoryColor;
+                        break;
+                    }
+                case EducationCategoryType.Story:
+                    {
+                        _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Tarinallinen pelilukutaito" : "Story-based game literacy";
+                        _taskBackground.color = _storyCategoryColor;
+                        break;
+                    }
+                case EducationCategoryType.Culture:
+                    {
+                        _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Kulttuurinen pelilukutaito" : "Cultural game literacy";
+                        _taskBackground.color = _cultureCategoryColor;
+                        break;
+                    }
+                case EducationCategoryType.Ethical:
+                    {
+                        _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Eettinen pelilukutaito" : "Ethical game literacy";
+                        _taskBackground.color = _ethicalCategoryColor;
+                        break;
+                    }
+                default:
+                    {
+                        _taskCategory.text = "";
+                        _taskBackground.color = _defaultColor;
+                        break;
+                    }
+            }
+        }
+    }
     #endregion
+
+    private void UpdateLanguage(SettingsCarrier.LanguageType language)
+    {
+        if (_currentTask != null)
+        {
+            SetTaskTitle(_currentTask, language);
+            SetTaskCategory(_currentTask, language);
+        }
+    }
 
     public void SetMood(MoodType type)
     {

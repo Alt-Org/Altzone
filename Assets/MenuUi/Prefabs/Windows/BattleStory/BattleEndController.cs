@@ -35,6 +35,14 @@ public class BattleEndController : MonoBehaviour
         _leaveButton.onClick.AddListener(LeaveToMain);
 
         bool? winner = DataCarrier.GetData<bool?>(DataCarrier.BattleWinner, false);
+
+        if (winner.HasValue)
+        {
+            var dtListenerBattle = gameObject.GetComponent<DailyTaskProgressListenerBattle>();
+            if (winner.Value) dtListenerBattle.WinBattle();
+            dtListenerBattle.PlayBattle();
+        }
+
         if (winner.HasValue) StartCoroutine(PlayAnimation(winner.Value));
         else SwitchToStory();
     }
