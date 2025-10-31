@@ -1,12 +1,7 @@
 /// @file BattleDiamondQSystem.cs
 /// <summary>
-/// Handles spawning, managing and destroying diamonds.
+/// Contains @cref{Battle.QSimulation.Diamond,BattleDiamondQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which handles spawning, managing and destroying diamonds.
 /// </summary>
-///
-/// This system:<br/>
-/// Spawns diamonds when BattleCollisionQSystem calls the OnProjectileHitSoulWall method upon SoulWall segment's destruction.<br/>
-/// Filters all diamond entities and handles their lifetime.<br/>
-/// Destroys diamonds when player collects them by colliding with them or if diamond's lifetime ends.
 
 using UnityEngine.Scripting;
 
@@ -21,6 +16,11 @@ namespace Battle.QSimulation.Diamond
     /// <span class="brief-h">%Diamond <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
     /// Handles spawning diamonds, managing their lifetime and destroying them.
     /// </summary>
+    ///
+    /// This system:<br/>
+    /// Spawns diamonds when BattleCollisionQSystem calls the OnProjectileHitSoulWall method upon SoulWall segment's destruction.<br/>
+    /// Filters all diamond entities and handles their lifetime.<br/>
+    /// Destroys diamonds when player collects them by colliding with them or if diamond's lifetime ends.
     [Preserve]
     public unsafe class BattleDiamondQSystem : SystemMainThreadFilter<BattleDiamondQSystem.Filter>, ISignalBattleOnDiamondHitPlayer
     {

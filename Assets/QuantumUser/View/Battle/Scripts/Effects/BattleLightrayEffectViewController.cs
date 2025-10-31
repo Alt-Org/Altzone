@@ -1,6 +1,6 @@
 /// @file BattleLightrayEffectViewController.cs
 /// <summary>
-/// Has a class BattleLightrayEffectViewController which handles lightray effects visual functionality.
+/// Contains @cref{Battle.View.Effect,BattleLightrayEffectViewController} class which handles lightray effects visual functionality.
 /// </summary>
 ///
 /// This script:<br/>

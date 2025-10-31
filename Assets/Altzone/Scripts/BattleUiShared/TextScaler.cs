@@ -1,6 +1,6 @@
 /// @file TextScaler.cs
 /// <summary>
-/// Has a class TextScaler which is a text scaler for <a href="https://docs.unity3d.com/Packages/com.unity.ugui@2.0/api/TMPro.TextMeshProUGUI.html">TextMeshProUGUI@u-exlink</a>.
+/// Contains @cref{Altzone.Scripts.BattleUiShared,TextScaler} class which is a text scaler for <a href="https://docs.unity3d.com/Packages/com.unity.ugui@2.0/api/TMPro.TextMeshProUGUI.html">TextMeshProUGUI@u-exlink</a>.
 /// </summary>
 ///
 /// This script:<br/>

@@ -1,6 +1,6 @@
 /// @file OnPointerDownButton.cs
 /// <summary>
-/// Has a helper class OnPointerDownButton for invoking a UnityEvent on pointer down.
+/// Contains @cref{OnPointerDownButton} helper class for invoking a UnityEvent on pointer down.
 /// </summary>
 ///
 /// This script:<br/>

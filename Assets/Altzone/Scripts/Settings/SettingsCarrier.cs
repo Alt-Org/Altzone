@@ -349,9 +349,9 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1);
         soundVolume = PlayerPrefs.GetFloat("SoundVolume", 1);
 
-        jukeboxSoulhome = PlayerPrefs.GetInt("JukeboxSoulHome") != 0;
-        jukeboxUI = PlayerPrefs.GetInt("JukeboxUI") != 0;
-        jukeboxBattle = PlayerPrefs.GetInt("JukeboxBattle") != 0;
+        jukeboxSoulhome = PlayerPrefs.GetInt("JukeboxSoulHome", 1) != 0;
+        jukeboxUI = PlayerPrefs.GetInt("JukeboxUI",1) != 0;
+        jukeboxBattle = PlayerPrefs.GetInt("JukeboxBattle", 0) != 0;
 
         _battleShowDebugStatsOverlay = PlayerPrefs.GetInt(BattleShowDebugStatsOverlayKey, 0) == 1;
 

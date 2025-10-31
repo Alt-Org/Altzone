@@ -1,7 +1,6 @@
 /// @file BattlePlayerClassProjector.cs
 /// <summary>
-/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassProjector} class,
-/// which handles player character class logic for the Projector class.
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassProjector} class which handles player character class logic for the Projector class.
 /// </summary>
 
 using Battle.QSimulation.Game;
