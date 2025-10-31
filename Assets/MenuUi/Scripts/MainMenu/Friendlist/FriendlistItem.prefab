@@ -39,7 +39,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000030517578, y: 0.000076293945}
+  m_AnchoredPosition: {x: 0, y: 0.000076293945}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8292185179536986267
@@ -145,7 +145,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f8e89eba3bfdb0e4c8004951f986c2d8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3276a1201226881489e50592aa3f20ae, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -279,7 +279,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82ff94710a8902d4f9a3783e49667957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _friendPanel: {fileID: 1300871504727383136}
+  _friendPanel: {fileID: 0}
   _avatarImage: {fileID: 1215942248757426221}
   _onlineStatusIndicator: {fileID: 5560187034957675401}
   _nameText: {fileID: 5823090110037391635}
@@ -378,7 +378,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 52.15
+  m_fontSize: 61.45
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

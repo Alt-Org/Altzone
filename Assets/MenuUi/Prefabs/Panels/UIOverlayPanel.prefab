@@ -3980,8 +3980,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5826626199672867732}
   - {fileID: 7684453214813514216}
+  - {fileID: 5826626199672867732}
   - {fileID: 5007824331407061772}
   - {fileID: 6683848995077346710}
   m_Father: {fileID: 677027254571369416}
@@ -4252,25 +4252,14 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3796510745134904802, guid: 4166eed610b532e45b4083c6612c5b46,
         type: 3}
-      propertyPath: _friendlistContent
+      propertyPath: _friendlistPanel
       value: 
-      objectReference: {fileID: 6550129438020381498}
-    - target: {fileID: 3796510745134904802, guid: 4166eed610b532e45b4083c6612c5b46,
-        type: 3}
-      propertyPath: _friendlistItemPrefab
-      value: 
-      objectReference: {fileID: 7997588044454193022, guid: e73c3c28a22c220489ca431108e9e1be,
-        type: 3}
+      objectReference: {fileID: 7447256740506097720}
     - target: {fileID: 3796510745134904802, guid: 4166eed610b532e45b4083c6612c5b46,
         type: 3}
       propertyPath: _openFriendlistButton
       value: 
       objectReference: {fileID: 822501225229554681}
-    - target: {fileID: 5009179366929904872, guid: 4166eed610b532e45b4083c6612c5b46,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5564049113085551447, guid: 4166eed610b532e45b4083c6612c5b46,
         type: 3}
       propertyPath: m_Pivot.x
@@ -4407,8 +4396,7 @@ PrefabInstance:
       value: FriendlistPanel
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 5009179366929904872, guid: 4166eed610b532e45b4083c6612c5b46, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4166eed610b532e45b4083c6612c5b46, type: 3}
@@ -4418,7 +4406,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 17802412149514979}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 7447256740506097720}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5ec988aa04a5d81478660a3459d247f0, type: 3}
@@ -4430,9 +4418,9 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 17802412149514979}
   m_PrefabAsset: {fileID: 0}
---- !u!224 &6550129438020381498 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 6546407801417730521, guid: 4166eed610b532e45b4083c6612c5b46,
+--- !u!1 &7447256740506097720 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7450862257970281179, guid: 4166eed610b532e45b4083c6612c5b46,
     type: 3}
   m_PrefabInstance: {fileID: 17802412149514979}
   m_PrefabAsset: {fileID: 0}

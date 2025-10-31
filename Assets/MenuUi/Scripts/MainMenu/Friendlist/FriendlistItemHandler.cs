@@ -7,6 +7,7 @@ using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using System;
+using MenuUi.Scripts.AvatarEditor;
 
 public class FriendlistItem : MonoBehaviour
 
@@ -18,37 +19,53 @@ public class FriendlistItem : MonoBehaviour
     [SerializeField] private Image _clanLogo;
     [SerializeField] private Button _removefriendButton;
 
+    private bool _isOnline = true;
+    private AvatarFaceLoader _avatarFaceLoader;
     private Action _onRemoveClick;
 
-    void Start()
-    {
-
-    }
-    //Katso vinkint avatariin ja logoon leaderboardista
-
-    /* public void Initialize(PlayerData playerData, AvatarVisualData avatarVisualData = null, ClanData clanData = null, bool isOnline = false, Action onRemoveClick)
+  
+    public void Initialize(string name, PlayerData playerData = null, AvatarVisualData avatarVisualData = null, ClanLogo clanLogo = null, bool isOnline = true, Action onRemoveClick = null)
    {
-        _nameText.text = playerData.name;
+        _nameText.text = name;
+        _isOnline = isOnline;
         _onRemoveClick = onRemoveClick;
-      
-        if (avatarVisualData != null)
-        {
-            _avatarImage.GetComponent<AvatarFaceLoader>()?.UpdateVisuals(avatarVisualData);
-        }
 
+
+       if (avatarVisualData != null)
+        {
+            avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
+            if (avatarVisualData != null)
+            {
+                _avatarImage.GetComponent<AvatarFaceLoader>().UpdateVisuals(avatarVisualData);
+            }
+        }
         if (clanLogo != null)
         {
-         _clanLogo.sprite = clanLogo;
+         var clanHeart = _clanLogo.GetComponent<ClanHeartColorSetter>();
+            if(clanHeart != null)
+            {
+                clanHeart.SetHeartColors(clanLogo);
+            }
         }
+        UpdateOnlineStatusIndicator();
+        
 
-        _onlineStatusIndicator.color = isOnline ? Color.green : Color.red;
-    
         _removefriendButton.onClick.RemoveAllListeners();
         _removefriendButton.onClick.AddListener(() =>
         {
             _onRemoveClick?.Invoke();
         });
 
-    }*/
+    }
+    private void UpdateOnlineStatusIndicator()
+    {
+        _onlineStatusIndicator.color = _isOnline ? Color.green : Color.red;
+    }
+
+    public void SetOnlineStatus (bool isOnline)
+    {
+        _isOnline = isOnline;
+        UpdateOnlineStatusIndicator();
+    }
 }
 
