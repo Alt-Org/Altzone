@@ -9,10 +9,9 @@ using UnityEngine.UI;
 
 public class LoadOutController : MonoBehaviour
 {
-    //Skripti kiinnitetty DefenceViewiin samaan objektiin missä ModelController ja LoadOutButtonit vedetty sinne laatikoihin.. ?
     [SerializeField] private List<Button> _loadoutButtons;
+    [SerializeField] private ModelController _modelController;
 
-    private ModelController _modelController;
     private PlayerData _player;
 
     private void Awake()
@@ -30,10 +29,9 @@ public class LoadOutController : MonoBehaviour
         {
             int loadoutIndex = i;
             if (_loadoutButtons[i] != null)
-                _loadoutButtons[i].onClick.AddListener(() => OnPressLoadout(loadoutIndex));
+                _loadoutButtons[i].onClick.AddListener(() => OnPressLoadout(loadoutIndex, _player));
         } 
     }
-    //Pitäisikö tähän lisätä OnDestroy-metodi? 
 
     private void HandlePlayerDataReady(PlayerData data)
     {
@@ -41,40 +39,61 @@ public class LoadOutController : MonoBehaviour
         RefreshButtons();
     }
 
-    private void OnPressLoadout(int loadoutIndex)
+    private void OnPressLoadout(int loadoutIndex, PlayerData player) 
     {
-        if (_player == null) return;
 
-        if (loadoutIndex == 0)
+        if (player == null)
         {
-            
-            _player.ApplyLoadout(0);
-            RefreshButtons();
-            Storefront.Get().SavePlayerData(_player, null);
-            return;
+            Debug.LogError("OnPressLoadout called with null PlayerData parameter");
         }
+   
 
-        TeamLoadOut slot = _player.LoadOuts[loadoutIndex - 1];
-        bool isEmpty = (slot == null) || slot.IsEmpty;
-
-        if (isEmpty)
+        Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, p =>
         {
-            // Tämä nyt väliaikainen ratkaisu, hyväksyy tallenuksen aina automaattisesti
-            bool userConfirmed = true;
-            if (userConfirmed)
+            if (p == null)
             {
-                _player.SaveCurrentTeamToLoadout(loadoutIndex);
-                _player.ApplyLoadout(loadoutIndex);
-                RefreshButtons();
-                Storefront.Get().SavePlayerData(_player, null);
+                Debug.LogError("Failed to retrieve PlayerData from Storefront");
+                return;
             }
-            return;
-        }
 
-        
-        _player.ApplyLoadout(loadoutIndex);
-        RefreshButtons();
-        Storefront.Get().SavePlayerData(_player, null);
+            _player = p;
+            player = p;
+
+            if (loadoutIndex == 0)
+            {
+                _player.ApplyLoadout(0);
+                RefreshButtons();
+                Storefront.Get().SavePlayerData(player, null);
+                return;
+            }
+
+            if (loadoutIndex < 0 || loadoutIndex > player.LoadOuts.Length)
+            {
+                Debug.LogError($"Invalid loadout index {loadoutIndex}. Player has {player.LoadOuts.Length} loadouts.");
+                return;
+            }
+
+            TeamLoadOut slot = _player.LoadOuts[loadoutIndex - 1];
+            bool isEmpty = (slot == null) || slot.IsEmpty;
+
+            if (isEmpty)
+            {
+                // Tämä on nyt väliaikainen ratkaisu, hyväksyy tallennuksen aina automaattisesti
+                bool userConfirmed = true;
+                if (userConfirmed)
+                {
+                    player.SaveCurrentTeamToLoadout(loadoutIndex);
+                    player.ApplyLoadout(loadoutIndex);
+                    RefreshButtons();
+                    Storefront.Get().SavePlayerData(player, null);
+                }
+                return;
+            }
+
+            player.ApplyLoadout(loadoutIndex);
+            RefreshButtons();
+            Storefront.Get().SavePlayerData(player, null);
+        });
     }
 
     private void RefreshButtons()
