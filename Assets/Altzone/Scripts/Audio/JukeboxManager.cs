@@ -1165,7 +1165,7 @@ namespace Altzone.Scripts.Audio
         {
             Name = name;
             Type = type;
-            PackedTrackQueueDatas = serverMusicTracks.jukeboxSongs.ToList();
+            PackedTrackQueueDatas = serverMusicTracks.jukeboxSongs != null ? serverMusicTracks.jukeboxSongs.ToList(): new();
         }
 
         public List<TrackQueueData> GetTrackQueueList(string localUserId)
