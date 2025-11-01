@@ -22,7 +22,7 @@ namespace Photon.Client
     #endif
 
 
-    public class PhotonWebSocket
+    public class WebSocket
     {
         private Uri mUrl;
         private string mProxyAddress;
@@ -32,7 +32,7 @@ namespace Photon.Client
 
         public Action<LogLevel, string> DebugReturn { get; set; }
 
-        public PhotonWebSocket(Uri url, string proxyAddress, string protocols = null)
+        public WebSocket(Uri url, string proxyAddress, string protocols = null)
         {
             this.mUrl = url;
             this.mProxyAddress = proxyAddress;
