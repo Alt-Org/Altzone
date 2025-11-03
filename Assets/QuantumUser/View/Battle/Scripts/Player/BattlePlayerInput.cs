@@ -276,6 +276,23 @@ namespace Battle.View.Player
                     }
                     break;
 
+                case MovementInputType.FollowPointer:
+                    if (mouseDown)
+                    {
+                        movementInputInfo.MovementInput = BattleMovementInputType.PositionMove;
+                        movementInputInfo.MovementPositionMove = new FPVector2
+                        (
+                            FP.FromFloat_UNSAFE(unityPosition.x),
+                            FP.FromFloat_UNSAFE(unityPosition.z)
+                        );
+                    }
+                    else
+                    {
+                        movementInputInfo.MovementInput = BattleMovementInputType.None;
+                        movementInputInfo.MovementPositionMove = FPVector2.Zero;
+                    }
+                        break;
+
                 case MovementInputType.Swipe:
                     bool _swipePerformed = false;
 
