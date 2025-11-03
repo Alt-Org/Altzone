@@ -75,16 +75,18 @@ namespace Battle.View.Player
         private struct MovementInputInfo
         {
             public BattleMovementInputType MovementInput;
-            public bool MovementDirectionIsNormalized;
-            public BattleGridPosition MovementPosition;
-            public FPVector2 MovementDirection;
+            public bool                    MovementDirectionIsNormalized;
+            public BattleGridPosition      MovementPositionTarget;
+            public FPVector2               MovementPositionMove;
+            public FPVector2               MovementDirection;
 
-            public MovementInputInfo(BattleMovementInputType movementInput, bool movementDirectionIsNormalized, BattleGridPosition movementPosition, FPVector2 movementDirection)
+            public MovementInputInfo(BattleMovementInputType movementInput, bool movementDirectionIsNormalized, BattleGridPosition movementPositionTarget, FPVector2 movementPositionMove, FPVector2 movementDirection)
             {
-                MovementInput = movementInput;
+                MovementInput                 = movementInput;
                 MovementDirectionIsNormalized = movementDirectionIsNormalized;
-                MovementPosition = movementPosition;
-                MovementDirection = movementDirection;
+                MovementPositionTarget        = movementPositionTarget;
+                MovementPositionMove          = movementPositionMove;
+                MovementDirection             = movementDirection;
             }
         }
 
@@ -94,7 +96,7 @@ namespace Battle.View.Player
         private struct RotationInputInfo
         {
             public bool RotationInput;
-            public FP RotationValue;
+            public FP   RotationValue;
 
             public RotationInputInfo(bool rotationInput, FP rotationValue)
             {
@@ -206,7 +208,7 @@ namespace Battle.View.Player
             bool mouseClick = !twoFingers && mouseDown && !_mouseDownPrevious;
             _mouseDownPrevious = mouseDown;
 
-            MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero);
+            MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero, FPVector2.Zero);
             RotationInputInfo rotationInputInfo = new(false, FP._0);
 
             if (!_characterSelectionInput)
@@ -258,15 +260,15 @@ namespace Battle.View.Player
         /// <param name="deltaTime">Time since previous frame</param>
         private MovementInputInfo GetMovementInput(bool mouseDown, bool mouseClick, Vector3 unityPosition, FP deltaTime)
         {
-            MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero);
+            MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero, FPVector2.Zero);
 
             switch (_movementInputType)
             {
                 case MovementInputType.PointAndClick:
                     if (mouseClick)
                     {
-                        movementInputInfo.MovementInput = BattleMovementInputType.Position;
-                        movementInputInfo.MovementPosition = new()
+                        movementInputInfo.MovementInput = BattleMovementInputType.PositionTarget;
+                        movementInputInfo.MovementPositionTarget = new()
                         {
                             Row = BattleGridManager.WorldYPositionToGridRow(FP.FromFloat_UNSAFE(unityPosition.z)),
                             Col = BattleGridManager.WorldXPositionToGridCol(FP.FromFloat_UNSAFE(unityPosition.x))
