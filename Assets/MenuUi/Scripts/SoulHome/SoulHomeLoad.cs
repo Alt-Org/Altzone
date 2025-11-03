@@ -52,6 +52,11 @@ namespace MenuUI.Scripts.SoulHome {
         void Start()
         {
             _roomAmount = ServerManager.Instance.Clan != null ? ServerManager.Instance.Clan.playerCount: 1;
+            if (_roomAmount > 30)
+            {
+                Debug.LogError($"Clan has more players ({_roomAmount}) than allowed, setting room count to 30.");
+                _roomAmount = 30;
+            }
             StartCoroutine(HomeLoad());
             //TestCode();
             StartCoroutine(LoadRooms());
@@ -142,7 +147,7 @@ namespace MenuUI.Scripts.SoulHome {
                 if(_furnitureList != null)
                 foreach (Furniture furniture in _furnitureList)
                 {
-                    if(furniture.Room >= 0 && furniture.Position.x >= 0 && furniture.Position.y >= 0)
+                    if(furniture.Room >= 0 && furniture.Room < _roomAmount && furniture.Position.x >= 0 && furniture.Position.y >= 0)
                     {
                         soulHome.Room[furniture.Room].Furnitures.Add(furniture);
                     }

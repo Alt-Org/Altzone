@@ -1,10 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Altzone.Scripts.Model.Poco.Game;
-using UnityEngine;
 using System.Linq;
+using System.Xml.Linq;
+using Altzone.Scripts.Model.Poco.Game;
 using UnityEditor;
+using UnityEngine;
 
 namespace Altzone.Scripts.ReferenceSheets
 {
@@ -150,9 +151,12 @@ namespace Altzone.Scripts.ReferenceSheets
         public Sprite PosterImage;
         public Sprite RibbonImage;
         public string VisibleName;
+        public string EnglishName;
         public string SetName;
+        public string SetNameEnglish;
         public string ArtistName;
         public string ArtisticDescription;
+        public string EnglishArtisticDescription;
         public string DiagnoseNumber;
 
         public FurnitureInfo(FurnitureInfoObject data, FurnitureSetInfo setData)
@@ -161,9 +165,12 @@ namespace Altzone.Scripts.ReferenceSheets
             PosterImage = data.PosterImage;
             RibbonImage = data.RibbonImage;
             VisibleName = data.VisibleName;
+            EnglishName = data.EnglishName;
             SetName = setData.SetName;
+            SetNameEnglish = setData.SetNameEnglish;
             ArtistName = setData.ArtistName;
             ArtisticDescription = data.ArtisticDescription;
+            EnglishArtisticDescription = data.EnglishArtisticDescription;
             DiagnoseNumber = data.DiagnoseNumber;
         }
     }
@@ -172,11 +179,13 @@ namespace Altzone.Scripts.ReferenceSheets
     public class FurnitureInfoObject
     {        
         public string Name;
+        public string EnglishName;
         public Sprite Image;
         public Sprite PosterImage;
         public Sprite RibbonImage;
         public string VisibleName;
         public string ArtisticDescription;
+        public string EnglishArtisticDescription;
         public string DiagnoseNumber;
         public BaseFurniture BaseFurniture;
     }
@@ -185,9 +194,9 @@ namespace Altzone.Scripts.ReferenceSheets
     public class FurnitureSetInfo
     {
         public string SetName;
+        public string SetNameEnglish;
         public string ArtistName;
         
         public List<FurnitureInfoObject> list;
     }
-
 }

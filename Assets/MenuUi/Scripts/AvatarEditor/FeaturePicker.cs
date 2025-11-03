@@ -45,7 +45,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private int _pageCount = 0;
         private Transform _characterImage;
 
-        private CharacterClassID _characterClassID;
+        private CharacterClassType _characterClassType;
         private System.Action _restoreDefaultColor;
         private RectTransform _swipeArea;
 
@@ -184,7 +184,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _selectedFeatures[slot] = "0";
             _avatarEditorCharacterHandle.SetMainCharacterImage((FeatureSlot)slot, null);
 
-            if (_characterClassID == CharacterClassID.Confluent)
+            if (_characterClassType == CharacterClassType.Confluent)
                 _avatarEditorCharacterHandle.SetSecondaryCharacterImage((FeatureSlot)slot, null);
         }
 
@@ -192,6 +192,9 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             SetFeature(featureToChange, slot);
             _restoreDefaultColor?.Invoke();
+
+            if (slot == 4)
+                gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
 
         private void SetFeature(AvatarPartsReference.AvatarPartInfo featureToChange, int slot)
@@ -199,7 +202,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _selectedFeatures[slot] = featureToChange.Id;
             _avatarEditorCharacterHandle.SetMainCharacterImage((FeatureSlot)slot, featureToChange.AvatarImage);
 
-            if (_characterClassID == CharacterClassID.Confluent)
+            if (_characterClassType == CharacterClassType.Confluent)
                 _avatarEditorCharacterHandle.SetSecondaryCharacterImage((FeatureSlot)slot, featureToChange.AvatarImage);
             else
                 _avatarEditorCharacterHandle.SetSecondaryCharacterHidden();
@@ -239,18 +242,39 @@ namespace MenuUi.Scripts.AvatarEditor
             SetCategoryNameText(_currentlySelectedCategory);
         }
 
-        private void SetCategoryNameText(FeatureSlot category){
-            string name = category switch
+        private void SetCategoryNameText(FeatureSlot category)
+        {
+            string name = string.Empty;
+
+            if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
             {
-                FeatureSlot.Hair => "Hiukset",
-                FeatureSlot.Eyes => "Silmät",
-                FeatureSlot.Nose => "Nenä",
-                FeatureSlot.Mouth => "Suu",
-                FeatureSlot.Body => "Keho",
-                FeatureSlot.Hands => "Kädet",
-                FeatureSlot.Feet => "Jalat",
-                _ => "Virhe",
-            };
+                name = category switch
+                {
+                    FeatureSlot.Hair => "Hiukset",
+                    FeatureSlot.Eyes => "Silmät",
+                    FeatureSlot.Nose => "Nenä",
+                    FeatureSlot.Mouth => "Suu",
+                    FeatureSlot.Body => "Keho",
+                    FeatureSlot.Hands => "Kädet",
+                    FeatureSlot.Feet => "Jalat",
+                    _ => "Virhe",
+                };
+            }
+            else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+            {
+                name = category switch
+                {
+                    FeatureSlot.Hair => "Hair",
+                    FeatureSlot.Eyes => "Eyes",
+                    FeatureSlot.Nose => "Nose",
+                    FeatureSlot.Mouth => "Mouth",
+                    FeatureSlot.Body => "Body",
+                    FeatureSlot.Hands => "Hands",
+                    FeatureSlot.Feet => "Feet",
+                    _ => "Error",
+                };
+            }
+
             _categoryText.text = name;
         }
 
@@ -315,9 +339,9 @@ namespace MenuUi.Scripts.AvatarEditor
             return null;
         }
 
-        public void SetCharacterClassID(CharacterClassID id)
+        public void SetCharacterClassID(CharacterClassType type)
         {
-            _characterClassID = id;
+            _characterClassType = type;
         }
 
         public void RestoreDefaultColorToFeature(System.Action restore)

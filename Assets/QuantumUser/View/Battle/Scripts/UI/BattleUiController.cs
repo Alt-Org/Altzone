@@ -1,6 +1,6 @@
 /// @file BattleUiController.cs
 /// <summary>
-/// Has a class BattleUiController which controls the %Battle %UI.
+/// Contains @cref{Battle.View.UI,BattleUiController} class which controls the %Battle %UI.
 /// </summary>
 ///
 /// This script:<br/>
@@ -31,6 +31,9 @@ namespace Battle.View.UI
 
         /// <summary>Reference to BattleUiAnnouncementHandler which handles showing the countdown.</summary>Part of @ref UIHandlerReferences.
         public BattleUiAnnouncementHandler AnnouncementHandler;
+
+        /// <summary>Reference to BattleUiLoadScreenHandler which handles the loading screen before the game starts.</summary>Part of @ref UIHandlerReferences.
+        public BattleUiLoadScreenHandler LoadScreenHandler;
 
         /// <summary>Reference to BattleUiGameOverHandler which handles showing the game over popup.</summary>Part of @ref UIHandlerReferences.
         public BattleUiGameOverHandler GameOverHandler;

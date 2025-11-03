@@ -170,13 +170,15 @@ namespace MenuUi.Scripts.CharacterGallery
 
             GameObject slot = Instantiate(_characterSlotPrefab, parent);
 
-            CharacterClassID classID = CustomCharacter.GetClassID(charID);
-            string className = _classReference.GetName(classID);
-            Color bgColor = _classReference.GetColor(classID);
-            Color bgAltColor = _classReference.GetAlternativeColor(classID);
+            CharacterClassType classType = CustomCharacter.GetClass(charID);
+            string className = _classReference.GetName(classType);
+            Color bgColor = _classReference.GetColor(classType);
+            Color bgAltColor = _classReference.GetAlternativeColor(classType);
+            Sprite classIcon = _classReference.GetCornerIcon(classType);
+
 
             CharacterSlot charSlot = slot.GetComponent<CharacterSlot>();
-            charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, className, charID);
+            charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, className, classIcon, charID);
 
             _characterSlots.Add(charSlot);
 
@@ -248,31 +250,31 @@ namespace MenuUi.Scripts.CharacterGallery
                     break;
 
                 case FilterType.Desensitizer: // Only showing desensitizers
-                    FilterForClassID(CharacterClassID.Desensitizer);
+                    FilterForClassID(CharacterClassType.Desensitizer);
                     break;
 
                 case FilterType.Trickster: // Only showing tricksters
-                    FilterForClassID(CharacterClassID.Trickster);
+                    FilterForClassID(CharacterClassType.Trickster);
                     break;
 
                 case FilterType.Obedient: // Only showing obedients
-                    FilterForClassID(CharacterClassID.Obedient);
+                    FilterForClassID(CharacterClassType.Obedient);
                     break;
 
                 case FilterType.Projector: // Only showing projectors
-                    FilterForClassID(CharacterClassID.Projector);
+                    FilterForClassID(CharacterClassType.Projector);
                     break;
 
                 case FilterType.Retroflector: // Only showing retroflectors
-                    FilterForClassID(CharacterClassID.Retroflector);
+                    FilterForClassID(CharacterClassType.Retroflector);
                     break;
 
                 case FilterType.Confluent: // Only showing confluents
-                    FilterForClassID(CharacterClassID.Confluent);
+                    FilterForClassID(CharacterClassType.Confluent);
                     break;
 
                 case FilterType.Intellectualizer: // Only showing intellectualizers
-                    FilterForClassID(CharacterClassID.Intellectualizer);
+                    FilterForClassID(CharacterClassType.Intellectualizer);
                     break;
             }
 
@@ -282,11 +284,11 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
-        private void FilterForClassID(CharacterClassID classID)
+        private void FilterForClassID(CharacterClassType classType)
         {
             foreach (CharacterSlot characterSlot in _characterSlots)
             {
-                if (CustomCharacter.GetClassID(characterSlot.Character.Id) == classID)
+                if (CustomCharacter.GetClass(characterSlot.Character.Id) == classType)
                 {
                     if (!characterSlot.gameObject.activeSelf) characterSlot.gameObject.SetActive(true);
                 }

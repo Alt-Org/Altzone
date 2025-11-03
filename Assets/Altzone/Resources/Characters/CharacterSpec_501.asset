@@ -15,25 +15,26 @@ MonoBehaviour:
   Id: 501
   CharacterId: 501
   IsApproved: 1
-  Name: Ahmiminen
+  FinnishName: Ahmiminen
+  EnglishName: Overeating
   ClassType: 500
-  CharacterDescription: "Ahmimisella on pakonomainen suhde ruokaan. Sy\xF6minen on
-    h\xE4nelle tapa k\xE4sitell\xE4 tunteita, tuoden h\xE4nelle lohtua ja kontrollia
-    - erityisesti h\xE4nen tuntiessaan olonsa hyl\xE4tyksi, tai eristyksiss\xE4 olevaksi.
-    Ruoka on Ahmimiselle kuin alati l\xE4sn\xE4 oleva kumppani, joka kulkee h\xE4nen
-    rinnallaan p\xE4iv\xE4st\xE4 toiseen ja pystyy auttamaan h\xE4nt\xE4 h\xE4d\xE4n
-    hetkell\xE4.\r\n\nAhmimisen puolustuksena tunnetila-ammuksia vastaan on hotdog-kilpi,
-    josta h\xE4n haukkaa palasen ammuksen osuessa h\xE4neen, muuttaen sen muotoa
-    ja kokoa pelin edetess\xE4.\r\n"
-  CharacterShortDescription: "Sis\xE4ist\xE4 tyhjyytt\xE4\xE4n ruualla t\xE4ytt\xE4v\xE4
-    suursy\xF6m\xE4ri  "
+  CharacterDescriptionFinnish: "Ahmatilla on pakonomainen suhde ruokaan. Se on h\xE4nelle
+    kuin alati l\xE4sn\xE4 oleva kumppani, joka kulkee h\xE4nen rinnallaan p\xE4iv\xE4st\xE4
+    toiseen ja pystyy auttamaan h\xE4nt\xE4 h\xE4d\xE4n hetkell\xE4. Ruuan mukana
+    h\xE4n nielee my\xF6s sanat ja tunteet, joita ei ole turvallista jakaa muille.\r\n\nAhmatin
+    puolustuksena tunnetila-ammuksia vastaan on hotdog-kilpi, josta h\xE4n haukkaa
+    palasen ammuksen osuessa h\xE4neen, muuttaen sen muotoa ja kokoa pelin edetess\xE4.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Sis\xE4ist\xE4 tyhjyytt\xE4\xE4n ruualla t\xE4ytt\xE4v\xE4
+    suursy\xF6m\xE4ri"
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: b10576cd877c5c347966ad393961b2e3, type: 2}
   Hp:
     Level: 4
     Coefficient: 3
   Speed:
     Level: 3
-    Coefficient: 6
+    Coefficient: 0
   CharacterSize:
     Level: 12
     Coefficient: 1
@@ -45,6 +46,7 @@ MonoBehaviour:
     Coefficient: 2
   GalleryImage: {fileID: 21300000, guid: dfdefd46f5298ca45bfe06badbfaa956, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 22114bcbecda0604f946f84ccad950f6, type: 3}
+  CharPhotoSeries: {fileID: 21300000, guid: a4724e0d21a15af4896ec8f0ab6a8020, type: 3}
   BattleEntityPrototype:
     Id:
       Value: 1326039720161495895

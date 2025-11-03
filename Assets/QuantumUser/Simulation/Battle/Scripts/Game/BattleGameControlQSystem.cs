@@ -1,24 +1,28 @@
 /// @file BattleGameControlQSystem.cs
 /// <summary>
-/// Controls the overall game state flow in Quantum simulation.
+/// Contains @cref{Battle.QSimulation.Game,BattleGameControlQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which controls the overall game flow in %Quantum simulation.
 /// </summary>
-///
-/// This system initializes the battle grid and player manager, and controls game state transitions from initialization to active gameplay.
 
 //#define DEBUG_LOG_STATE
 
 using UnityEngine.Scripting;
+
 using Quantum;
+using Photon.Deterministic;
 
 using Battle.QSimulation.Player;
 using Battle.QSimulation.SoulWall;
 
 namespace Battle.QSimulation.Game
 {
-    /**
-     *  Systems that monitor game state:
-     *  -ProjectileSpawnerSystem
-     */
+    /// <summary>
+    /// <span class="brief-h">%Game control <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
+    /// Controls the overall game flow in %Quantum simulation.
+    /// </summary>
+    ///
+    /// Initializes BattleGridManager and BattlePlayerManager.<br/>
+    /// Registers players to BattlePlayerManager when they connect.<br/>
+    /// Controls game state transitions from initialization to active gameplay.
     [Preserve]
     public unsafe class BattleGameControlQSystem : SystemMainThread, ISignalOnPlayerAdded
     {
@@ -60,6 +64,14 @@ namespace Battle.QSimulation.Game
             BattlePlayerManager.RegisterPlayer(f, playerRef);
         }
 
+        /// <summary>
+        /// Called when the game ends. Updates the game session state and calls the BattleViewGameOver Event and BattleOnGameOver Signal.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="winningTeam">The team that won the game.</param>
+        /// <param name="projectile">Pointer reference to the projectile.</param>
+        /// <param name="projectileEntity">The projectile entity.</param>
         public static void OnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
         {
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
@@ -91,7 +103,14 @@ namespace Battle.QSimulation.Game
                 case BattleGameState.InitializeGame:
                     if (gameSession->GameInitialized)
                     {
-                        f.Events.BattleViewWaitForPlayers();
+                        BattleWaitForPlayersData data = new();
+                        string[] playerNames = BattleParameters.GetPlayerNames(f);
+                        for (int i = 0; i < playerNames.Length; i++)
+                        {
+                            data.PlayerNames[i] = playerNames[i];
+                        }
+
+                        f.Events.BattleViewWaitForPlayers(data);
                         gameSession->State = BattleGameState.WaitForPlayers;
                     }
                     break;
@@ -99,6 +118,7 @@ namespace Battle.QSimulation.Game
                 case BattleGameState.WaitForPlayers:
                     if (BattlePlayerManager.IsAllPlayersRegistered(f))
                     {
+                        f.Events.BattleViewAllPlayersConnected();
                         f.Events.BattleViewInit();
                         gameSession->State = BattleGameState.CreateMap;
                     }
@@ -106,29 +126,38 @@ namespace Battle.QSimulation.Game
 
                 case BattleGameState.CreateMap:
                     CreateMap(f);
-                    f.Events.BattleViewActivate();
-                    gameSession->State = BattleGameState.Countdown;
+                    gameSession->State = BattleGameState.WaitToStart;
+                    break;
+
+                case BattleGameState.WaitToStart:
+                    gameSession->LoadDelaySec -= f.DeltaTime;
+
+                    if (gameSession->LoadDelaySec <= FP._0)
+                    {
+                        f.Events.BattleViewActivate();
+                        gameSession->State = BattleGameState.Countdown;
+                    }
                     break;
 
                 // Countdown state handling
                 case BattleGameState.Countdown:
-                    gameSession->TimeUntilStart -= f.DeltaTime;
+                    gameSession->TimeUntilStartSec -= f.DeltaTime;
 
                     // Transition from Countdown to GetReadyToPlay
-                    if (gameSession->TimeUntilStart < 1)
+                    if (gameSession->TimeUntilStartSec < FP._1)
                     {
                         f.Events.BattleViewGetReadyToPlay();
                         gameSession->State = BattleGameState.GetReadyToPlay;
-                        gameSession->TimeUntilStart = 1; // Set 1 second for the GetReadyToPlay state
+                        gameSession->TimeUntilStartSec = FP._1; // Set 1 second for the GetReadyToPlay state
                     }
                     break;
 
                 // GetReadyToPlay state handling
                 case BattleGameState.GetReadyToPlay:
-                    gameSession->TimeUntilStart -= f.DeltaTime;
+                    gameSession->TimeUntilStartSec -= f.DeltaTime;
 
                     // Transition from GetReadyToPlay to Playing
-                    if (gameSession->TimeUntilStart <= 0)
+                    if (gameSession->TimeUntilStartSec <= FP._0)
                     {
                         f.Events.BattleViewGameStart();
                         gameSession->State = BattleGameState.Playing;

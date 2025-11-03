@@ -6,7 +6,7 @@ namespace Altzone.Scripts.Model.Poco.Game
 {
     public abstract class TricksterClassCharacter : BaseCharacter
     {
-        public override CharacterClassID ClassID => CharacterClassID.Trickster;
+        public override CharacterClassType ClassType => CharacterClassType.Trickster;
 
         //Enums should equal 16.
         protected TricksterClassCharacter()
@@ -15,7 +15,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             _characterSizeStrength = ValueStrength.Weak;
             _hpStrength = ValueStrength.Medium;
             _defenceStrength = ValueStrength.VeryWeak;
-            _speedStrength = ValueStrength.Strong;
+            _speedStrength = ValueStrength.None;
             InitializeValues();
         }
     }

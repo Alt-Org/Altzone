@@ -11,6 +11,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using MenuUi.Scripts.Window;
 using Newtonsoft.Json.Linq;
 using System;
+using Altzone.Scripts.Language;
 
 [System.Serializable]
 public class CharacterData
@@ -31,7 +32,7 @@ public class HahmonValinta : AltMonoBehaviour
     [SerializeField] private Button lockInButton;
     [SerializeField] private CharacterData[] characterData;
     [SerializeField] private GameObject popupWindow; // Reference to the pop-up window panel
-    [SerializeField] private TextMeshProUGUI characterNameText; // Reference to the Text component for character name
+    [SerializeField] private TextLanguageSelectorCaller characterNameText; // Reference to the Text component for character name
     [SerializeField] private WindowNavigation _windowNavigation;
 
     private int selectedCharacterIndex = -1;
@@ -82,6 +83,7 @@ public class HahmonValinta : AltMonoBehaviour
 
         // Update the character name text
         //characterNameText.text = data.characterName;
+        characterNameText.SetText(SettingsCarrier.Instance.Language, new string[1] { data.characterName });
 
         // Log the selected character's name
         Debug.Log("Selected character: " + data.characterName);

@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Altzone.Scripts.Common;
-using Altzone.Scripts.Model.Poco.Attributes;
+using Prg.Scripts.Common.Extensions;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2.Internal;
@@ -33,14 +33,14 @@ namespace Altzone.Scripts.Model.Poco.Player
         Huono_Haviaja
     };
 
-    [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
+    [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class PlayerData
     {
-        [PrimaryKey] public string Id;
-        [ForeignKey(nameof(ClanData)), Optional] public string ClanId;
-        [ForeignKey(nameof(CustomCharacter)), Optional] public int SelectedCharacterId;
-        [ForeignKey(nameof(CustomCharacter)), Optional] public CustomCharacterListObject[] SelectedCharacterIds = new CustomCharacterListObject[3] { new(Id: CharacterID.None), new(Id: CharacterID.None), new(Id: CharacterID.None) };
-        [Unique] public string Name;
+        public string Id;
+        public string ClanId;
+        public int SelectedCharacterId;
+        public CustomCharacterListObject[] SelectedCharacterIds = new CustomCharacterListObject[3] { new(Id: CharacterID.None), new(Id: CharacterID.None), new(Id: CharacterID.None) };
+        public string Name;
 
         private List<CustomCharacter> _characterList;
 
@@ -76,7 +76,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         /// <summary>
         /// Unique string to identify this player across devices and systems.
         /// </summary>
-        [Unique] public string UniqueIdentifier;
+        public string UniqueIdentifier;
 
         public bool HasClanId => !string.IsNullOrEmpty(ClanId);
 
@@ -131,12 +131,12 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public PlayerData(string id, string clanId, int currentCustomCharacterId, string[]currentBattleCharacterIds, string name, int backpackCapacity, string uniqueIdentifier, List<CustomCharacter> characters)
         {
-            Assert.IsTrue(id.IsPrimaryKey());
+            Assert.IsTrue(id.IsSet());
             Assert.IsTrue(clanId.IsNullOEmptyOrNonWhiteSpace());
             //Assert.IsTrue(currentCustomCharacterId >= 0);
-            Assert.IsTrue(name.IsMandatory());
+            Assert.IsTrue(name.IsSet());
             Assert.IsTrue(backpackCapacity >= 0);
-            Assert.IsTrue(uniqueIdentifier.IsMandatory());
+            Assert.IsTrue(uniqueIdentifier.IsSet());
             Id = id;
             ClanId = clanId ?? string.Empty;
             SelectedCharacterId = currentCustomCharacterId;
@@ -149,12 +149,12 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public PlayerData(ServerPlayer player, bool limited = false)
         {
-            Assert.IsTrue(player._id.IsPrimaryKey());
+            Assert.IsTrue(player._id.IsSet());
             Assert.IsTrue(player.clan_id.IsNullOEmptyOrNonWhiteSpace());
             //Assert.IsTrue(player.currentCustomCharacterId >= 0);
-            Assert.IsTrue(player.name.IsMandatory());
+            Assert.IsTrue(player.name.IsSet());
             if (!limited) Assert.IsTrue(player.backpackCapacity >= 0);
-            Assert.IsTrue(player.uniqueIdentifier.IsMandatory());
+            Assert.IsTrue(player.uniqueIdentifier.IsSet());
             Id = player._id;
             ClanId = player.clan_id ?? string.Empty;
             SelectedCharacterId = (int)(player.currentAvatarId == null ? 0 : player.currentAvatarId);
@@ -172,12 +172,12 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public void UpdatePlayerData(ServerPlayer player)
         {
-            Assert.IsTrue(player._id.IsPrimaryKey());
+            Assert.IsTrue(player._id.IsSet());
             Assert.IsTrue(player.clan_id.IsNullOEmptyOrNonWhiteSpace());
             //Assert.IsTrue(player.currentCustomCharacterId >= 0);
-            Assert.IsTrue(player.name.IsMandatory());
+            Assert.IsTrue(player.name.IsSet());
             Assert.IsTrue(player.backpackCapacity >= 0);
-            Assert.IsTrue(player.uniqueIdentifier.IsMandatory());
+            Assert.IsTrue(player.uniqueIdentifier.IsSet());
             Id = player._id;
             ClanId = player.clan_id ?? string.Empty;
             SelectedCharacterId = (int)(player.currentAvatarId == null ? 0 : player.currentAvatarId);
@@ -229,7 +229,6 @@ namespace Altzone.Scripts.Model.Poco.Player
             }
 
             _characterList = newCustomCharacters;
-            Debug.LogWarning(_characterList.Count + " : " + _characterList[0].ServerID);
 
             Patch();
         }

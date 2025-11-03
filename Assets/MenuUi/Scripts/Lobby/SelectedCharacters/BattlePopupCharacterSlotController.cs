@@ -14,6 +14,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
     {
         [SerializeField] private BattlePopupSelectedCharacter[] _selectedCharacterSlots;
         [SerializeField] private bool _isInRoom;
+        [SerializeField] private Sprite _dragAndDropIcon;
 
 
         private void Awake()
@@ -22,7 +23,9 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             {
                 foreach (BattlePopupSelectedCharacter slot in _selectedCharacterSlots)
                 {
-                    slot.SetOpenEditPanelListener();
+                    //slot.SetOpenEditPanelListener();
+                    slot._cornerIcon.overrideSprite = _dragAndDropIcon;
+                    slot._resistanceIcon.gameObject.SetActive(false);
                 }
             }
             else
@@ -60,7 +63,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                     }
                     else
                     {
-                        CustomCharacter matchingCharacter = playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i].ServerID);
+                        CustomCharacter matchingCharacter = playerData.CustomCharacters?.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i].ServerID);
                         charID = matchingCharacter == null || playerData.SelectedCharacterIds[i].CharacterID == CharacterID.None ? CharacterID.None : matchingCharacter.Id;
                     }
 
@@ -91,7 +94,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                     _selectedCharacterSlots[i].SetEmpty(false);
                     continue;
                 }
-                
+
                 PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(selectedCharacterIds[i].ToString());
                 int[] statsForCharacter = stats != null ? stats[(i * 5)..(i * 5 + 5)] : null;
                 _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false, statsForCharacter);

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Text;
+using Altzone.Scripts.Chat;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -60,17 +61,31 @@ public class ChatPreviewController : MonoBehaviour
 
         _chatButtonDefaultAnchors[0] = _chatButtonRect.anchorMin;
         _chatButtonDefaultAnchors[1] = _chatButtonRect.anchorMax;
-        _chatButtonShrinkAnchors[0] = new Vector2(0.85f, 0.82f);
-        _chatButtonShrinkAnchors[1] = new Vector2(1, 1.3f);
+        _chatButtonShrinkAnchors[0] = new Vector2(0f, 0.82f);
+        _chatButtonShrinkAnchors[1] = new Vector2(0.15f, 1.3f);
+    }
+
+    private void Start()
+    {
+        ChatListener.OnActiveChannelChanged += ChannelChange;
+        ChatChannel.OnMessageHistoryReceived += FetchMessagesFromActive;
+        ChatChannel.OnMessageReceived += FetchMessagesFromActive;
+    }
+
+    private void OnDestroy()
+    {
+        ChatListener.OnActiveChannelChanged -= ChannelChange;
+        ChatChannel.OnMessageHistoryReceived -= FetchMessagesFromActive;
+        ChatChannel.OnMessageReceived -= FetchMessagesFromActive;
     }
 
     private void OnEnable()
     {
         if (ChatListener.Instance)
         {
-            ChatListener.Instance.ChatPreviewController = this;
-            OnActiveChatWindowChange(ChatListener.Instance._activeChatChannel);
-            ToggleChatMessages(ChatListener.Instance._chatPreviewIsEnabled, false);
+            //ChatListener.Instance.ChatPreviewController = this;
+            OnActiveChatWindowChange(ChatListener.Instance.GetActiveChannel);
+            ToggleChatMessages(ChatListener.Instance.ChatPreviewIsEnabled, false);
         }
     }
 
@@ -78,7 +93,7 @@ public class ChatPreviewController : MonoBehaviour
     {
         if (ChatListener.Instance)
         {
-            ChatListener.Instance.ChatPreviewController = null;
+            //ChatListener.Instance.ChatPreviewController = null;
         }
     }
 
@@ -97,7 +112,7 @@ public class ChatPreviewController : MonoBehaviour
         _backgroundImage.enabled = value;
         _chatMessagesContainer.SetActive(value);
         _isEnabled = value;
-        ChatListener.Instance._chatPreviewIsEnabled = value;
+        ChatListener.Instance.ChatPreviewIsEnabled = value;
 
         if (value)
             _chatButtonAnim.clip = _chatButtonExpandAnim;
@@ -124,7 +139,7 @@ public class ChatPreviewController : MonoBehaviour
 
         // Refresh the chat messages to see if we have received new messages while the chat was hidden.
         if (value)
-            OnActiveChatWindowChange(ChatListener.Instance._activeChatChannel);
+            OnActiveChatWindowChange(ChatListener.Instance.GetActiveChannel);
     }
 
 
@@ -151,6 +166,22 @@ public class ChatPreviewController : MonoBehaviour
         noMessagesTextGameobject.SetActive(true); 
     }
 
+    internal void ChannelChange(ChatChannelType type)
+    {
+        MessageReceived(ChatListener.Instance.GetChatChannel(type));
+    }
+
+    internal void FetchMessagesFromActive(ChatChannelType type)
+    {
+        if (type == ChatListener.Instance.GetActiveChannel.ChatChannelType)
+            MessageReceived(ChatListener.Instance.GetChatChannel(type));
+    }
+
+    internal void FetchMessagesFromActive(ChatChannelType type, ChatMessage message = null)
+    {
+        if(type == ChatListener.Instance.GetActiveChannel.ChatChannelType)
+        MessageReceived(ChatListener.Instance.GetChatChannel(type));
+    }
 
     /// <summary>
     /// Retrieves the latest chat messages from _chatMessages list and displays them in the preview window.
@@ -158,7 +189,7 @@ public class ChatPreviewController : MonoBehaviour
     /// <param name="channel">Chat messages channel</param>
     internal void MessageReceived(ChatChannel channel)
     {
-        if (ChatListener.Instance._chatMessages.Count == 0)
+        if (ChatListener.Instance.ChatMessages == null || ChatListener.Instance.ChatMessages.Count == 0)
             return;
 
         ChatMessage[] recentMessages = new ChatMessage[chatMessageAmount];
@@ -166,11 +197,11 @@ public class ChatPreviewController : MonoBehaviour
 
         // Checks the x amount of most recent chat messages that match the given chat channel name
 
-        for (int i = ChatListener.Instance._chatMessages.Count - 1; i >= 0; i--)
+        for (int i = ChatListener.Instance.ChatMessages.Count - 1; i >= 0; i--)
         {
-            ChatMessage message = ChatListener.Instance._chatMessages[i];
+            ChatMessage message = ChatListener.Instance.ChatMessages[i];
 
-            if (message._channel._channelName != channel._channelName)
+            if (message.Channel.ChannelName != channel.ChannelName)
                 continue;
 
             recentMessages[index++] = message;
@@ -185,11 +216,8 @@ public class ChatPreviewController : MonoBehaviour
             if (noMessagesTextGameobject.activeSelf)
                 noMessagesTextGameobject.SetActive(false);
 
-            TextMeshProUGUI textMeshProUGUI = _chatMessageGameobjects[i].GetComponentInChildren<TextMeshProUGUI>();
-
             ChatMessagePrefab chatMessagePrefab = _chatMessageGameobjects[i].GetComponent<ChatMessagePrefab>();
-            chatMessagePrefab.SetProfilePicture(channel._chatChannelType);
-            StartCoroutine(SetShortenedMessageOnDelay(chatMessagePrefab, textMeshProUGUI,  recentMessages[i]._message));
+            chatMessagePrefab.SetInfo(recentMessages[i]);
         }
     }
 

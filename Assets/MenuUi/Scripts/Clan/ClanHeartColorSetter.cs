@@ -66,6 +66,25 @@ public class ClanHeartColorSetter : MonoBehaviour
         }
     }
 
+    public void SetHeartColors(ClanLogo logo) 
+    {
+        _heartPieceHandlers = _heartContainer.GetComponentsInChildren<HeartPieceColorHandler>();
+
+        int i = 0;
+        foreach (var piece in logo.pieceColors)
+        {
+            if (i >= _heartPieceHandlers.Length) break; //estetään virhe, jos värejä on enemmän kuin käsittelijöitä taulukoissa
+            if (!ColorUtility.TryParseHtmlString("#" + piece, out Color colour)) colour = Color.white;
+            _heartPieceHandlers[i].Initialize(i, colour);
+
+            i++;
+        }
+        for (; i < _heartPieceHandlers.Length; i++) //Täydennetään logosta puuttuvt värit
+        {
+            _heartPieceHandlers[i].Initialize(i, Color.red); //kovakoodataan tähän hetkeksi valkoinen oletukseksi
+        }
+    }
+
     public void SetHeartColor(Color color)
     {
         _heartPieceHandlers = _heartContainer.GetComponentsInChildren<HeartPieceColorHandler>();

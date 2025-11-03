@@ -16,6 +16,7 @@ using Altzone.Scripts.Model.Poco.Player;
 
 using MenuUi.Scripts.Lobby.SelectedCharacters;
 using MenuUi.Scripts.Signals;
+using Altzone.Scripts.Language;
 
 namespace MenuUi.Scripts.Lobby.InRoom
 {
@@ -53,10 +54,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
         [SerializeField] private Button _buttonRaidTest;
 
         [Header("Player names")]
-        [SerializeField] private TMP_Text _nameP1;
-        [SerializeField] private TMP_Text _nameP2;
-        [SerializeField] private TMP_Text _nameP3;
-        [SerializeField] private TMP_Text _nameP4;
+        [SerializeField] private TextLanguageSelectorCaller _nameP1;
+        [SerializeField] private TextLanguageSelectorCaller _nameP2;
+        [SerializeField] private TextLanguageSelectorCaller _nameP3;
+        [SerializeField] private TextLanguageSelectorCaller _nameP4;
 
         [Header("Selected characters")]
         [SerializeField] private BattlePopupCharacterSlotController _selectedCharactersP1;
@@ -124,6 +125,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
             LobbyManager.LobbyOnPlayerPropertiesUpdate -= OnPlayerPropertiesUpdate;
             LobbyManager.LobbyOnMasterClientSwitched -= OnMasterClientSwitched;
             PhotonRealtimeClient.RemoveCallbackTarget(this);
+            if (_onEnableCoroutineHolder != null) StopCoroutine(_onEnableCoroutineHolder);
+            _onEnableCoroutineHolder = null;
         }
 
         private void OnDestroy()
@@ -285,7 +288,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
             // Check other players first is they have reserved some player positions etc. from the room already.
             foreach (var player in PhotonRealtimeClient.GetCurrentRoomPlayers())
             {
-                Debug.LogWarning(player.NickName);
                 if (!player.Equals(localPlayer))
                 {
                     CheckOtherPlayer(player);
@@ -300,10 +302,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
             SetButtonActive(_buttonPlayerP4, _interactablePlayerP4);
 
             // Setting player name texts
-            if (_nameP1 != null) _nameP1.text = _captionPlayerP1;
-            if (_nameP2 != null) _nameP2.text = _captionPlayerP2;
-            if (_nameP3 != null) _nameP3.text = _captionPlayerP3;
-            if (_nameP4 != null) _nameP4.text = _captionPlayerP4;
+            if (_nameP1 != null) _nameP1.SetText(_captionPlayerP1);
+            if (_nameP2 != null) _nameP2.SetText(_captionPlayerP2);
+            if (_nameP3 != null) _nameP3.SetText(_captionPlayerP3);
+            if (_nameP4 != null) _nameP4.SetText(_captionPlayerP4);
 
             // Setting start game button interactable status
             _buttonStartPlay.interactable = _interactableStartPlay;
@@ -316,15 +318,47 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             LobbyRoom room = PhotonRealtimeClient.LobbyCurrentRoom;
             int masterTeam = GetTeam(_masterClientPosition);
-            if (masterTeam == 0)
+            if (masterTeam == 1)
             {
-                if (_upperTeamText != null) _upperTeamText.text = room.GetCustomProperty<string>(TeamBetaNameKey);
-                if (_lowerTeamText != null) _lowerTeamText.text = room.GetCustomProperty<string>(TeamAlphaNameKey);
+                if (_upperTeamText != null)
+                {
+                    string clanName = room.GetCustomProperty<string>(TeamBetaNameKey);
+                    if (string.IsNullOrEmpty(clanName))
+                    {
+                        clanName = "Team Jouko";
+                    }
+                    _upperTeamText.text = clanName;
+                }
+                if (_lowerTeamText != null)
+                {
+                    string clanName = room.GetCustomProperty<string>(TeamAlphaNameKey);
+                    if (string.IsNullOrEmpty(clanName))
+                    {
+                        clanName = "Team Kaarina";
+                    }
+                    _lowerTeamText.text = clanName;
+                }
             }
             else
             {
-                if (_upperTeamText != null) _upperTeamText.text = room.GetCustomProperty<string>(TeamAlphaNameKey);
-                if (_lowerTeamText != null) _lowerTeamText.text = room.GetCustomProperty<string>(TeamBetaNameKey);
+                if (_upperTeamText != null)
+                {
+                    string clanName = room.GetCustomProperty<string>(TeamAlphaNameKey);
+                    if (string.IsNullOrEmpty(clanName))
+                    {
+                        clanName = "Team Kaarina";
+                    }
+                    _upperTeamText.text = clanName;
+                }
+                if (_lowerTeamText != null)
+                {
+                    string clanName = room.GetCustomProperty<string>(TeamBetaNameKey);
+                    if (string.IsNullOrEmpty(clanName))
+                    {
+                        clanName = "Team Jouko";
+                    }
+                    _lowerTeamText.text = clanName;
+                }
             }
         }
 
@@ -442,10 +476,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
             _interactablePlayerP4 = true;
             _interactableStartPlay = false;
 
-            _captionPlayerP1 = "Pelaaja 1";
-            _captionPlayerP2 = "Pelaaja 2";
-            _captionPlayerP3 = "Pelaaja 3";
-            _captionPlayerP4 = "Pelaaja 4";
+            _captionPlayerP1 = "";
+            _captionPlayerP2 = "";
+            _captionPlayerP3 = "";
+            _captionPlayerP4 = "";
         }
 
         private static void SetButtonActive(Selectable selectable, bool active, bool interactable = true)

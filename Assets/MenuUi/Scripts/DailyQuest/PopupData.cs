@@ -8,6 +8,7 @@ public struct PopupData
         OwnTask,
         CancelTask,
         ClanMilestone,
+        MultipleChoice,
     }
     private PopupDataType _type;
     public PopupDataType Type { get { return _type; } }
@@ -19,6 +20,7 @@ public struct PopupData
             case "own_task": return PopupDataType.OwnTask;
             case "cancel_task": return PopupDataType.CancelTask;
             case "clan_milestone": return PopupDataType.ClanMilestone;
+            case "multiple_choice": return PopupDataType.MultipleChoice;
             default: return PopupDataType.OwnTask;
         }
     }
@@ -81,4 +83,13 @@ public struct PopupData
     //    _ownPage = task;
     //    _type = PopupDataType.OwnTask;
     //}
+
+    public PopupData(PlayerTask task)
+    {
+        _ownPage = task;
+        _clanRewardData = null;
+        _type = PopupDataType.MultipleChoice;
+        _location = null;
+        _dailyTaskCardIndex = null;
+    }
 }

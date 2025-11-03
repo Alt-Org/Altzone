@@ -1006,6 +1006,7 @@ GameObject:
   - component: {fileID: 1734710242770040130}
   - component: {fileID: 7028172671795795762}
   - component: {fileID: 7857842808610992800}
+  - component: {fileID: 7904892725945174813}
   m_Layer: 5
   m_Name: Notice_Name
   m_TagString: Untagged
@@ -1089,7 +1090,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36.95
+  m_fontSize: 34.1
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1133,6 +1134,22 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7904892725945174813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1743797075091184422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Klaanin nime\xE4 ei voi vaihtaa my\xF6hemmin. joten valitse asiallinen
+    nimi, josta voit olla ylpe\xE4 silloinkin kun \xE4itisi liittyy klaaniin."
+  _englishText: Clan name cannot be changed later. So choose a name even your mother
+    would be proud of.
 --- !u!1 &2168665064770011487
 GameObject:
   m_ObjectHideFlags: 0
@@ -1264,6 +1281,7 @@ GameObject:
   - component: {fileID: 6796298721307214570}
   - component: {fileID: 2611419194142287183}
   - component: {fileID: 438228538016007858}
+  - component: {fileID: 5602850644458039003}
   m_Layer: 0
   m_Name: GoalLabel
   m_TagString: Untagged
@@ -1346,7 +1364,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 44.45
+  m_fontSize: 41.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1390,6 +1408,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5602850644458039003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2256479640962505194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Tavoite
+  _englishText: Goal
 --- !u!1 &2291231069522614479
 GameObject:
   m_ObjectHideFlags: 0
@@ -1611,6 +1643,7 @@ GameObject:
   - component: {fileID: 4436667224235885394}
   - component: {fileID: 4465368236929069273}
   - component: {fileID: 7920861144282954626}
+  - component: {fileID: 5766867130230373048}
   m_Layer: 0
   m_Name: LanguageLabel
   m_TagString: Untagged
@@ -1693,7 +1726,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 51.3
+  m_fontSize: 47.4
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1737,6 +1770,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5766867130230373048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2471359762953305937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Kieli
+  _englishText: Language
 --- !u!1 &2557675851324654603
 GameObject:
   m_ObjectHideFlags: 0
@@ -2174,6 +2221,7 @@ GameObject:
   - component: {fileID: 5019712739824181944}
   - component: {fileID: 7447982320076678826}
   - component: {fileID: 612124536865880912}
+  - component: {fileID: 4921313698047722585}
   m_Layer: 5
   m_Name: Notice
   m_TagString: Untagged
@@ -2258,7 +2306,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 43.65
+  m_fontSize: 40.3
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2302,6 +2350,24 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4921313698047722585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3079550343720922087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Ymm\xE4rr\xE4n, ett\xE4 olen m\xE4\xE4ritt\xE4nyt klaanilleni ehdotukset,
+    joita klaanin liittyv\xE4t eiv\xE4t v\xE4ltt\xE4m\xE4tt\xE4 noudata, enk\xE4
+    voi erottaa klaaniin liittyvi\xE4 ilman demokraattista \xE4\xE4nestyst\xE4."
+  _englishText: I understand that the infromation I have set for the caln are only
+    suggestions and members aren't required to fully follow them and I annot expel
+    them without others consent.
 --- !u!1 &3246474714967904090
 GameObject:
   m_ObjectHideFlags: 0
@@ -2696,6 +2762,7 @@ GameObject:
   - component: {fileID: 6275617418579703694}
   - component: {fileID: 7374488728893183243}
   - component: {fileID: 3562672005952579831}
+  - component: {fileID: 8909862421395589800}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -2778,7 +2845,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 66.8
+  m_fontSize: 61.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2822,6 +2889,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8909862421395589800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4275928203425297319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Klaanin arvot
+  _englishText: Clan values
 --- !u!1 &4365717369725594917
 GameObject:
   m_ObjectHideFlags: 0
@@ -2834,6 +2915,7 @@ GameObject:
   - component: {fileID: 1056845330210291464}
   - component: {fileID: 279821342623300223}
   - component: {fileID: 2433447281438143520}
+  - component: {fileID: 6232749209572281568}
   m_Layer: 5
   m_Name: Placeholder
   m_TagString: Untagged
@@ -2980,6 +3062,20 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &6232749209572281568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4365717369725594917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Klaanin nimi...
+  _englishText: Clan name...
 --- !u!1 &4394549059287662978
 GameObject:
   m_ObjectHideFlags: 0
@@ -4303,6 +4399,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _valueSelectorObject: {fileID: 1522905625465808281}
   _activateButton: {fileID: 6192158681132152622}
+  _scrollRectComponent: {fileID: 0}
   _labelTogglePrefab: {fileID: 9142154561159488018, guid: 4b98591facea2684886cb562c2ba5460,
     type: 3}
   _labelImagePrefab: {fileID: 3140534817053600678, guid: 116db0f2cdec84749957449664b3fe38,
@@ -6005,6 +6102,7 @@ GameObject:
   - component: {fileID: 6287063439550747354}
   - component: {fileID: 1448636654417983974}
   - component: {fileID: 9056951438832623223}
+  - component: {fileID: 331054037063892681}
   m_Layer: 0
   m_Name: AgeLabel
   m_TagString: Untagged
@@ -6087,7 +6185,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 45.7
+  m_fontSize: 42.2
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6131,6 +6229,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &331054037063892681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8423525472521199633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Ik\xE4luokka"
+  _englishText: Age group
 --- !u!1 &8524788342168156148
 GameObject:
   m_ObjectHideFlags: 0
@@ -6666,7 +6778,7 @@ PrefabInstance:
     - target: {fileID: 5029625442628242303, guid: 1973ba674bd1e39488f5ad71181caf28,
         type: 3}
       propertyPath: m_fontSize
-      value: 42.2
+      value: 39
       objectReference: {fileID: 0}
     - target: {fileID: 5377643931811425935, guid: 1973ba674bd1e39488f5ad71181caf28,
         type: 3}
@@ -6831,7 +6943,7 @@ PrefabInstance:
     - target: {fileID: 5029625442628242303, guid: 1973ba674bd1e39488f5ad71181caf28,
         type: 3}
       propertyPath: m_fontSize
-      value: 43.4
+      value: 40.1
       objectReference: {fileID: 0}
     - target: {fileID: 5051431190338678266, guid: 1973ba674bd1e39488f5ad71181caf28,
         type: 3}

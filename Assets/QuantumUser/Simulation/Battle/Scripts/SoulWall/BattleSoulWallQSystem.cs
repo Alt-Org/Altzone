@@ -1,10 +1,7 @@
 /// @file BattleSoulWallQSystem.cs
 /// <summary>
-/// Handles creating and destroying SoulWalls.
+/// Contains @cref{Battle.QSimulation.SoulWall,BattleSoulWallQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which handles creating and destroying SoulWalls.
 /// </summary>
-///
-/// This system creates SoulWalls based on BattleArena and SoulWall Specs when GameControlSystem calls CreateSoulWalls method during the map creation.<br/>
-/// Also destroys SoulWall segment when BattleCollisionQSystem calls the collision method.
 
 using UnityEngine;
 using UnityEngine.Scripting;
@@ -20,6 +17,9 @@ namespace Battle.QSimulation.SoulWall
     /// <span class="brief-h">%SoulWall <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum SystemSignalsOnly@u-exlink</a> @systemslink</span><br/>
     /// Handles creating SoulWalls and reacting to the projectile colliding with them.
     /// </summary>
+    ///
+    /// This system creates SoulWalls based on BattleArena and SoulWall Specs when GameControlSystem calls CreateSoulWalls method during the map creation.<br/>
+    /// Also destroys SoulWall segment when BattleCollisionQSystem calls the collision method.
     [Preserve]
     public unsafe class BattleSoulWallQSystem : SystemSignalsOnly
     {
@@ -44,23 +44,20 @@ namespace Battle.QSimulation.SoulWall
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="soulWall">Pointer to the SoulWall component.</param>
-        /// <param name="soulWallEntity">EntityRef of the SoulWall.</param>
-        public static void OnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
+        /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
+        /// <param name="soulWallCollisionData">Collision data related to the soul wall.</param>
+        public static void OnProjectileHitSoulWall(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.SoulWallCollisionData* soulWallCollisionData)
         {
-            if (projectile->IsHeld) return;
+            if (projectileCollisionData->Projectile->IsHeld) return;
             Debug.Log("Soul wall hit");
 
-            if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.SoulWall)) return;
-
-            if (soulWall->Row == BattleSoulWallRow.Last)
+            if (soulWallCollisionData->SoulWall->Row == BattleSoulWallRow.Last)
             {
                 FP battleLightrayRotation = 0;
                 BattleLightrayColor battleLightrayColor = BattleLightrayColor.Red;
                 BattleLightraySize battleLightraySize = (BattleLightraySize)f.RNG->NextInclusive(0, 2);
 
-                switch (soulWall->Team)
+                switch (soulWallCollisionData->SoulWall->Team)
                 {
                     case BattleTeamNumber.TeamAlpha:
                         battleLightrayRotation = f.RNG->NextInclusive(-50, 50);
@@ -72,16 +69,16 @@ namespace Battle.QSimulation.SoulWall
                         break;
                 }
 
-                Transform2D* soulWallTransform = f.Unsafe.GetPointer<Transform2D>(soulWallEntity);
+                Transform2D* soulWallTransform = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->OtherEntity);
 
-                f.Events.BattleLastRowWallDestroyed(soulWall->WallNumber, soulWall->Team, battleLightrayRotation, battleLightrayColor, battleLightraySize);
+                f.Events.BattleLastRowWallDestroyed(soulWallCollisionData->SoulWall->WallNumber, soulWallCollisionData->SoulWall->Team, battleLightrayRotation, battleLightrayColor, battleLightraySize);
             }
 
             // Destroy the SoulWall entity
             f.Events.BattlePlaySoundFX(BattleSoundFX.WallBroken);
-            f.Destroy(soulWallEntity);
+            f.Destroy(projectileCollisionData->OtherEntity);
 
-            BattleProjectileQSystem.SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.SoulWall);
+            BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.SoulWall);
         }
 
         /// <summary>

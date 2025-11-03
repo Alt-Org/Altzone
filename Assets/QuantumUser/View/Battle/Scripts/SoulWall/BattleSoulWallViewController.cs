@@ -61,7 +61,8 @@ namespace Battle.View.SoulWall
             transform.localScale = new Vector3(scale, scale, scale);
 
             // color emotionIndicator
-            _emotionIndicatorSpriteRenderer.color = _emotionIndicatorColors[e.EmotionIndicatorColorIndex];
+            //_emotionIndicatorSpriteRenderer.color = _emotionIndicatorColors[e.EmotionIndicatorColorIndex];
+            _emotionIndicatorSpriteRenderer.color = Color.gray;
 
             // debug
             if (_useDebugSprites)

@@ -24,14 +24,6 @@ public class BattleStartHandler : MonoBehaviour
     [SerializeField]
     private Sprite _tableAboveSprite;
 
-    [Header("Battle Players panel")]
-    [SerializeField]
-    private GameObject _battlePlayersPanel;
-    [SerializeField]
-    private BattlePopupCharacterSlotController[] _characterSlotControllers;
-    [SerializeField]
-    private TextMeshProUGUI[] _playerNames;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -62,23 +54,34 @@ public class BattleStartHandler : MonoBehaviour
         _loadImage.transform.localScale = new Vector2(1f, 1f);
         _battleStartText.gameObject.SetActive(false);
         //_timerText.gameObject.SetActive(false);
-        float timeleft = startTime/1000f;
+        //float timeleft = startTime/1000f;
         float frametimeleft = 0;
 
         foreach (Sprite sprite in _startAnimationSprites)
         {
-            frametimeleft += _animationFrameTime;
-            _loadImage.sprite = sprite;
-            do
+            if (sprite != _startAnimationSprites[_startAnimationSprites.Count - 1])
             {
+                frametimeleft += _animationFrameTime;
+                _loadImage.sprite = sprite;
+                do
+                {
+                    yield return null;
+                    //timeleft -= Time.deltaTime;
+                    frametimeleft -= Time.deltaTime;
+                } while (frametimeleft > 0);
+            }
+            else
+            {
+                _loadImage.sprite = sprite;
                 yield return null;
-                timeleft -= Time.deltaTime;
-                frametimeleft -= Time.deltaTime;
-            } while (frametimeleft > 0);
+                break;
+            }
         }
-        _battleStartText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(3);
+        LobbyManager.Instance.IsStartFinished = true;
+
         //_timerText.gameObject.SetActive(true);
-        do
+        /*do
         {
             //_timerText.text = Mathf.CeilToInt(timeleft).ToString();
 
@@ -86,30 +89,12 @@ public class BattleStartHandler : MonoBehaviour
             {
                 _loadImage.sprite = _tableAboveSprite;
                 _loadImage.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
-                _battlePlayersPanel.SetActive(true);
-                SetPlayerInfos();
             }
             //float scale = 1f + 0.4f * (1 - (Mathf.Clamp(timeleft,0,3f) / 3f));
             //_loadImage.transform.localScale = new Vector2(scale, scale);
 
             yield return null;
             timeleft -= Time.deltaTime;
-        } while (timeleft > 0f);
-    }
-
-    private void SetPlayerInfos()
-    {
-        if (PhotonRealtimeClient.LobbyCurrentRoom == null) return;
-        
-        foreach (LobbyPlayer player in PhotonRealtimeClient.GetCurrentRoomPlayers())
-        {
-            int playerPos = PhotonLobbyRoom.GetPlayerPos(player);
-            if (!PhotonLobbyRoom.IsValidPlayerPos(playerPos)) continue;
-
-            _playerNames[playerPos - 1].text = player.NickName;
-            int[] characters = player.GetCustomProperty(PhotonLobbyRoom.PlayerPrefabIdsKey, new int[3]);
-            _characterSlotControllers[playerPos - 1].SetCharacters(characters);
-            _characterSlotControllers[playerPos - 1].gameObject.SetActive(true);
-        }
+        } while (timeleft > 0f);*/
     }
 }

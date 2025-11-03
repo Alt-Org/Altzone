@@ -48,7 +48,8 @@ public class AvatarDefaultReference : ScriptableObject
     /// </param>
     public List<AvatarDefaultPartInfo> GetByCharacterId(int Id)
     {
-        if(!Enum.IsDefined(typeof(CharacterID), Id)) Id = 701;
+        if (!Enum.IsDefined(typeof(CharacterID), Id)) Id = 701;
+        else if (CustomCharacter.IsTestCharacter((CharacterID)Id)) Id = 701;
         return (Get("0" + Id.ToString()[0] + Id.ToString()));
     }
 

@@ -1,6 +1,6 @@
 /// @file BattleProjectileQSpec.cs
 /// <summary>
-/// Class for defining the projectile's initial values.
+/// Contains @cref{Battle.QSimulation.Projectile,BattleProjectileQSpec} class for defining the projectile's initial values.
 /// </summary>
 ///
 /// @bigtext{Filled with data from @ref BattleProjectileQSpec.asset "BattleProjectileQSpec" data asset.}
@@ -38,6 +38,10 @@ namespace Battle.QSimulation.Projectile
         [Tooltip("Amount which speedpotential is increased")]
         /// <value>Amount which SpeedPotential is increased.</value>
         public FP SpeedIncrement;
+
+        [Tooltip("Maximum speed the projectile can reach")]
+        /// <value>Maximum speed the projectile can reach.</value>
+        public FP SpeedMax;
 
         [Tooltip("Timer for speeding up the ball")]
         /// <value>Timer for speeding up the ball.</value>

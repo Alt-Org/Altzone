@@ -20,6 +20,7 @@ public static class PollManager // Handles the polls from creation to loading to
     private static ClanData clan = null;
 
     public static Action<FurniturePollType> ShowVotingPopup;
+    public static event Action OnPollCreated;
 
     // Create poll for GameFurniture
     public static void CreateFurniturePoll(FurniturePollType furniturePollType, GameFurniture furniture)
@@ -33,13 +34,15 @@ public static class PollManager // Handles the polls from creation to loading to
 
         PollData pollData = new FurniturePollData(id, clanMembers, furniturePollType, furniture);
         pollDataList.Add(pollData);
-
+        
         ShowVotingPopup?.Invoke(furniturePollType);
 
         //PrintPollList();
         SaveClanData();
 
         PollMonitor.Instance?.StartMonitoring();
+
+        OnPollCreated?.Invoke();
     }
 
     // Create poll for StorageFurniture
@@ -57,13 +60,15 @@ public static class PollManager // Handles the polls from creation to loading to
 
         PollData pollData = new FurniturePollData(id, clanMembers, furniturePollType, gameFurniture);
         pollDataList.Add(pollData);
-
+        
         ShowVotingPopup?.Invoke(furniturePollType);
 
         //PrintPollList();
         SaveClanData();
 
         PollMonitor.Instance?.StartMonitoring();
+
+        OnPollCreated?.Invoke();
     }
 
     public static void BuildPolls(List<ServerPoll> polls)
@@ -102,7 +107,6 @@ public static class PollManager // Handles the polls from creation to loading to
             Debug.Log(output);
         }
     }
-
     public static void DebugPrintAllActivePolls()
     {
         Debug.Log("----- Active Polls Start -----");

@@ -69,5 +69,7 @@ public class PollPopup : MonoBehaviour // Controls the popup display for polls
         VotingActions.ReloadPollList?.Invoke();
 
         gameObject.SetActive(false);
+
+        gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
     }
 }
