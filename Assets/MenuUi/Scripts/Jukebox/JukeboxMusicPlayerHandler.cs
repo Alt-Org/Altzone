@@ -330,7 +330,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
                         //Debug.LogError("add history");
                         JukeboxTrackQueueHandler handler = GetTrackQueueHandler(queueData.Pointer);
 
-                        handler.SetTrack(queueData.Id, queueData.MusicTrack, playbackHistoryData.Target1.LinearIndex, queueData.UserOwned, JukeboxManager.Instance.GetTrackFavoriteType(queueData.MusicTrack));
+                        handler.SetTrack(queueData.ServerSongData.id, queueData.MusicTrack, playbackHistoryData.Target1.LinearIndex, queueData.UserOwned, JukeboxManager.Instance.GetTrackFavoriteType(queueData.MusicTrack));
                         handler.SetVisibility(true);
 
                         break;
@@ -342,13 +342,14 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
                         //Debug.LogError("insert history");
                         JukeboxTrackQueueHandler handler = GetInsertedJukeboxTrackQueueHandler(chunkIndex, poolIndex);
 
-                        handler.SetTrack(queueData.Id, queueData.MusicTrack, queueData.LinearIndex, queueData.UserOwned, JukeboxManager.Instance.GetTrackFavoriteType(queueData.MusicTrack));
+                        handler.SetTrack(queueData.ServerSongData.id, queueData.MusicTrack, queueData.LinearIndex, queueData.UserOwned, JukeboxManager.Instance.GetTrackFavoriteType(queueData.MusicTrack));
                         handler.SetVisibility(true);
 
                         break;
                     }
                 case JukeboxManager.PlaybackHistoryType.Hide:
                     {
+                        Debug.LogError(queueData.Pointer);
                         _queueHandlerChunks[queueData.Pointer.ChunkIndex].Pool[queueData.Pointer.PoolIndex].SetVisibility(false);
 
                         break;
