@@ -41,6 +41,7 @@ public class ServerManager : MonoBehaviour
 
     [SerializeField] private bool _automaticallyLogIn = false;
     private int _accessTokenExpiration;
+    private string _accessToken;
     public bool isLoggedIn = false;
     [SerializeField] private bool _skipServerFurniture = false;
     private static string ADDRESS = "https://altzone.fi/api/";
@@ -50,7 +51,7 @@ public class ServerManager : MonoBehaviour
     public static string SERVERADDRESS { get
         {
             if(AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild) return DEVADDRESS;
-            else return LATESTDEVBUILDADDRESS;
+            else return DEVADDRESS;//LATESTDEVBUILDADDRESS;
         }
     }
 
@@ -82,7 +83,19 @@ public class ServerManager : MonoBehaviour
 
     #region Getters & Setters
 
-    public string AccessToken { get => PlayerPrefs.GetInt("AutomaticLogin", 0) == 1 ? PlayerPrefs.GetString("accessToken", string.Empty) : string.Empty; set => PlayerPrefs.SetString("accessToken", value); }
+    public string AccessToken
+    {
+        get
+        {
+            if (!string.IsNullOrWhiteSpace(_accessToken)) return _accessToken;
+            else return PlayerPrefs.GetInt("AutomaticLogin", 0) == 1 ? PlayerPrefs.GetString("accessToken", string.Empty) : string.Empty;
+        }
+        set
+        {
+            _accessToken = value;
+            PlayerPrefs.SetString("accessToken", value);
+        }
+    }
     public int AccessTokenExpiration { get => _accessTokenExpiration; set => _accessTokenExpiration = value; }
     public ServerPlayer Player { get => _player; set => _player = value; }
     public ServerClan Clan
@@ -246,6 +259,7 @@ public class ServerManager : MonoBehaviour
         // If in the future we force log in, this default player is not necessary.
         playerSettings.PlayerGuid = "12345";
         isLoggedIn = false;
+        _accessToken = null;
 
         OnLogInStatusChanged?.Invoke(false);
 
@@ -1570,7 +1584,7 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator SendClanVoteToServer(string voteid, bool answer, Action<ServerPoll> callback)
     {
-        string body = JObject.FromObject(new { voting_id = voteid, choice = answer }).ToString();
+        string body = JObject.FromObject(new { voting_id = voteid, choice = answer?"accept":"decline" }).ToString();
 
         yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "voting/", body, AccessToken, request =>
         {
@@ -1737,13 +1751,13 @@ public class ServerManager : MonoBehaviour
     #region Jukebox
     public IEnumerator GetJukeboxClanPlaylist(Action<ServerPlaylist> callback)
     {
-        StartCoroutine(WebRequests.Get(SERVERADDRESS + "clan/jukebox", AccessToken, request =>
+        StartCoroutine(WebRequests.Get(SERVERADDRESS + "jukebox", AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 Debug.LogWarning(result);
-                ServerPlaylist playlist = result["data"]["Object"].ToObject<ServerPlaylist>();
+                ServerPlaylist playlist = result["data"]["Jukebox"].ToObject<ServerPlaylist>();
 
                 if (callback != null)
                     callback(playlist);
@@ -1773,7 +1787,7 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator UpdateJukeboxClanPlaylistToServer(string body, Action<bool> callback)
     {
-        yield return StartCoroutine(WebRequests.Put(SERVERADDRESS + "clan/jukebox", body, AccessToken, request =>
+        yield return StartCoroutine(WebRequests.Put(SERVERADDRESS + "jukebox", body, AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
