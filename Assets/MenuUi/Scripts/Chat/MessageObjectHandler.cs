@@ -17,7 +17,6 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private Button _button;
     [SerializeField] private GameObject _addReactionsControls;
     [SerializeField] private GameObject _reactionsPanel;
-    [SerializeField] private GameObject _deleteButttons;
     private string _id;
     private Image _image;
     private Action<MessageObjectHandler> _selectMessageAction;
@@ -71,7 +70,6 @@ public class MessageObjectHandler : MonoBehaviour
             _image.color = Color.gray;
         }
         _addReactionsControls.SetActive(true);
-        _deleteButttons.SetActive(true);
 
         _selectMessageAction.Invoke(this);
     }
@@ -85,7 +83,6 @@ public class MessageObjectHandler : MonoBehaviour
             _image.color = Color.white;
         }
         _addReactionsControls.SetActive(false);
-        _deleteButttons.SetActive(false);
     }
 
     public void SetMessageInactive()

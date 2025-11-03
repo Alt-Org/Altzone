@@ -11,12 +11,11 @@ public class ChatMessageScript : MonoBehaviour
     public RectTransform textBackground;
     public TextMeshProUGUI messageText;
     public RectTransform panel;
-
     [SerializeField] private VerticalLayoutGroup _messageVerticalLayoutGroup;
 
-    public float heightStep = 30f; // Korkeus, jonka verran tausta kasvaa jokaisen lis�rivin my�t�.
+    public float _BackgroundPadding = 30f; // Korkeus, jonka verran tausta kasvaa jokaisen lisärivin myötä.
 
-    private int _lastLineCount = 0; // Tallentaa viimeksi lasketun rivim��r�n.
+    private float _lastLineCount = 0; // Tallentaa viimeksi lasketun rivim��r�n.
     private float _initialHeight; // Alkuper�inen taustan korkeus, joka asetetaan alussa.
 
 
@@ -36,11 +35,17 @@ public class ChatMessageScript : MonoBehaviour
         // Dynaamisesti muuttaa taustan korkeutta ja paneelia tekstin rivim��r�n mukaan.
         if (textBackground != null && messageText != null)
         {
-            int lineCount = messageText.textInfo.lineCount; // Haetaan nykyinen rivim��r� tekstist�.
+            float lineCount = messageText.textInfo.lineCount; // Haetaan nykyinen rivim��r� tekstist�.
 
             if (lineCount != _lastLineCount)
             {
-                float newHeight = _initialHeight + (lineCount - 1) * heightStep;
+                //Old version
+                //float newHeight = _initialHeight + (lineCount - 1) * heightStep;
+
+
+                /// This is more better as prefferedHeight will take the height it needs to fit in with the text and
+                /// _BackgroundPadding is for padding so that textBackground wouldn't be too short
+                float newHeight = messageText.preferredHeight + _BackgroundPadding;
 
                 textBackground.sizeDelta = new Vector2(textBackground.sizeDelta.x, newHeight);
 
@@ -48,10 +53,12 @@ public class ChatMessageScript : MonoBehaviour
 
                 _lastLineCount = lineCount;
 
-                // Adjust the spacing so that the reaction panel stays at the bottom line of the message
-                float originalSpacing = _messageVerticalLayoutGroup.spacing;
-                float newSpacing = originalSpacing * 0.2f * (lineCount - 1);
-                _messageVerticalLayoutGroup.spacing += newSpacing;
+                ///Old Line Incase needed
+                //float originalSpacing = _messageVerticalLayoutGroup.spacing;
+                //float newSpacing = originalSpacing * 0.2f * (lineCount - 1);
+                //_messageVerticalLayoutGroup.spacing += newSpacing;
+
+                ///Uskoisin että me voidaan vaan käyttää verticallayouttia vaan
             }
         }
     }
