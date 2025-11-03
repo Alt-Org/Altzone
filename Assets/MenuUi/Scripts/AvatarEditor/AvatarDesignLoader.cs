@@ -152,22 +152,20 @@ public class AvatarDesignLoader : AltMonoBehaviour
         var playerAvatar = _avatarEditorController.PlayerAvatar;
         //old declaration -> new PlayerAvatar(defaultAvatars[0]);
 
-        //MCGYVERED TOGETHER NEEDS TO CHANGE VVVVVVVVVVVVVVV
-        List<string> featureIds = new List<string>();
-        var list = Enum.GetValues(typeof(FeatureSlot));
-        foreach (FeatureSlot feature in list)
-        {
-            featureIds.Add(playerAvatar.GetPartId(feature));
-            Debug.Log("The added featureId is " + playerAvatar.GetPartId(feature));
-        }
-        //END OF MCGYVERING
-
         playerData.AvatarData = new(
             playerAvatar.Name,
-            featureIds,
+            null,
             playerAvatar.Color,
             playerAvatar.Scale
         );
+
+        var list = Enum.GetValues(typeof(FeatureSlot));
+        foreach (FeatureSlot feature in list) //This could possibly be replaced with turning the partlist into ServerAvatar and then giving that to the AvatarData.
+        {
+            playerData.AvatarData.SetPieceID((AvatarPiece)feature, int.Parse(playerAvatar.GetPartId(feature)));
+            Debug.Log("The added featureId is " + playerAvatar.GetPartId(feature));
+        }
+
     }
 
     private void PopulateAvatarPieces(AvatarVisualData avatarVisualData, AvatarData avatarData)

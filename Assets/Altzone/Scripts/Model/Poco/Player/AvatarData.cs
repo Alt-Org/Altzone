@@ -104,7 +104,7 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
             _ => -1,
         };
 
-        private void SetPieceID(AvatarPiece piece, int id)
+        public void SetPieceID(AvatarPiece piece, int id)
         {
             switch (piece)
             {
