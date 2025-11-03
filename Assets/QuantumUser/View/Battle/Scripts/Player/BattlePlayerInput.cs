@@ -9,6 +9,8 @@
 /// Handles movement and rotation input based on chosen input methods. <br/>
 /// Handles obtaining data from device gyroscope.
 
+//#define DEBUG_INPUT_TYPE_OVERRIDE
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -184,6 +186,11 @@ namespace Battle.View.Player
             _swipeMaxDistance  = SettingsCarrier.Instance.BattleSwipeMaxDistance;
             _swipeSensitivity  = SettingsCarrier.Instance.BattleSwipeSensitivity;
             _gyroMinAngle      = SettingsCarrier.Instance.BattleGyroMinAngle;
+
+#if DEBUG_INPUT_TYPE_OVERRIDE
+            _movementInputType = MovementInputType.FollowPointer;
+            _rotationInputType = RotationInputType.TwoFinger;
+#endif
 
             if (AttitudeSensor.current != null)
             {
