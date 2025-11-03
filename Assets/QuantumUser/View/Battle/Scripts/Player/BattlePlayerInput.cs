@@ -231,13 +231,14 @@ namespace Battle.View.Player
 
             Input i = new()
             {
-                MovementInput = movementInputInfo.MovementInput,
+                MovementInput                 = movementInputInfo.MovementInput,
                 MovementDirectionIsNormalized = movementInputInfo.MovementDirectionIsNormalized,
-                MovementPosition = movementInputInfo.MovementPosition,
-                MovementDirection = movementInputInfo.MovementDirection,
-                RotationInput = rotationInputInfo.RotationInput,
-                RotationValue = rotationInputInfo.RotationValue,
-                PlayerCharacterNumber = _characterNumber
+                MovementPositionTarget        = movementInputInfo.MovementPositionTarget,
+                MovementPositionMove          = movementInputInfo.MovementPositionMove,
+                MovementDirection             = movementInputInfo.MovementDirection,
+                RotationInput                 = rotationInputInfo.RotationInput,
+                RotationValue                 = rotationInputInfo.RotationValue,
+                PlayerCharacterNumber         = _characterNumber
             };
 
             callback.SetInput(i, DeterministicInputFlags.Repeatable);
