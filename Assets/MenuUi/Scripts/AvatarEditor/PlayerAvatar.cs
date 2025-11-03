@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
-using WebSocketSharp;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
@@ -18,7 +17,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 //Only assign the value if the string contains only numbers and letters and if the current value is null or empty
                 if (!HasSpecialCharacters(value))
                 {_name = value;}
-                else if (_name.IsNullOrEmpty())
+                else if (string.IsNullOrEmpty(_name))
                 { _name = ""; }
             }
         }
