@@ -152,7 +152,7 @@ public class HahmonValinta : AltMonoBehaviour
 
             if (serverCharacters.Count < 3)
             {
-                List<CharacterID> characters = SelectStartingCharacter(id);
+                List<CharacterID> characters = /*SelectStartingCharacter(id);*/ SelectAllCharacters(); // Temporarily overridden.
                 foreach (var character in characters)
                 {
                     callFinished = false;
@@ -161,7 +161,7 @@ public class HahmonValinta : AltMonoBehaviour
                         if (callback != null)
                         {
                             Debug.Log("CustomCharacter added: " + character);
-                            _playerData.SelectedCharacterIds[i].SetData(callback._id, (CharacterID)int.Parse(callback.characterId));
+                            if(i< _playerData.SelectedCharacterIds.Length) _playerData.SelectedCharacterIds[i].SetData(callback._id, (CharacterID)int.Parse(callback.characterId));
                             characterAdded = true;
                         }
                         else
@@ -280,5 +280,17 @@ public class HahmonValinta : AltMonoBehaviour
                 break;
         }
         return list;
+    }
+
+    public List<CharacterID> SelectAllCharacters()
+    {
+        var list = new List<CharacterID>();
+
+        var featureTypes = Enum.GetValues(typeof(CharacterID));
+        foreach (CharacterID feature in featureTypes)
+        {
+            list.Add(feature);
+        }
+            return list;
     }
 }
