@@ -3,10 +3,13 @@
 /// Handles projectile's sprite changes and it's trail.
 /// </summary>
 
-using System.Collections.Generic;
+// Unity usings
 using UnityEngine;
+
+// Quantum usings
 using Quantum;
 
+// Battle View usings
 using Battle.View.Game;
 
 namespace Battle.View.Projectile

@@ -1,11 +1,12 @@
 /// @file BattleUiPlayerInfoComponent.cs
 /// <summary>
-/// Has a class BattleUiPlayerInfoComponent which holds references related to a BattleUiPlayerInfo prefab.
+/// Contains @cref{Battle.View.UI,BattleUiPlayerInfoComponent} class which holds references related to a BattleUiPlayerInfo prefab.
 /// </summary>
 ///
 /// This script:<br/>
 /// Holds references related to a BattleUiPlayerInfo prefab.
 
+// Unity usings
 using UnityEngine;
 using TMPro;
 

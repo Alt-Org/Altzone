@@ -1,12 +1,14 @@
 /// @file BattleProjectileQSpec.cs
 /// <summary>
-/// Class for defining the projectile's initial values.
+/// Contains @cref{Battle.QSimulation.Projectile,BattleProjectileQSpec} class for defining the projectile's initial values.
 /// </summary>
 ///
 /// @bigtext{Filled with data from @ref BattleProjectileQSpec.asset "BattleProjectileQSpec" data asset.}
 
+// Unity usings
 using UnityEngine;
 
+// Quantum usings
 using Quantum;
 using Photon.Deterministic;
 

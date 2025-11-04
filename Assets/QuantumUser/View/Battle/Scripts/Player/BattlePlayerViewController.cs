@@ -1,19 +1,26 @@
 /// @file BattlePlayerViewController.cs
 /// <summary>
-/// Contains a class BattlePlayerViewController which handles player sprites and animations.
+/// Contains @cref{Battle.View.Player,BattlePlayerViewController} class which handles player sprites and animations.
 /// </summary>
 ///
 /// This script:<br/>
 /// Handles player sprites and animations.
 
+// System usings
 using System.Collections;
+
+// Unity usings
 using UnityEngine;
 
+// Quantum usings
 using Quantum;
 using Photon.Deterministic;
 
-using Battle.View.Game;
+// Battle QSimulation usings
 using Battle.QSimulation.Player;
+
+// Battle View usings
+using Battle.View.Game;
 
 namespace Battle.View.Player
 {

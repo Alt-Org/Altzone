@@ -233,9 +233,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    OwnerTeam:
+    LifetimeTimer:
+      Mode: 0
+      Frames: 0
+      Seconds:
+        RawValue: 0
+    IsTraveling:
       Value: 0
-    TimeUntilDisappearance:
+    TravelSpeed:
+      RawValue: 0
+    TravelDirection:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+    StartPosition:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+    TargetDistance:
       RawValue: 0
 --- !u!1 &7722483135608033401
 GameObject:
@@ -311,12 +328,12 @@ SpriteRenderer:
   m_SortingLayerID: 483117371
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: e2d6337b471c65447bcb711aec757fff, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 479fbd4792be1e74eb7b016ff016d221, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 2.1333334, y: 2.1333334}
+  m_Size: {x: 1.8333334, y: 2.1333334}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

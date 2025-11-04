@@ -1,9 +1,12 @@
+// Unity usings
 using UnityEngine;
 
+// Quantum usings
 using Quantum;
 using Input = Quantum.Input;
 using Photon.Deterministic;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player

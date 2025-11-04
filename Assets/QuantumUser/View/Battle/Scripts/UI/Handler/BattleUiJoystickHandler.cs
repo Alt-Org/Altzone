@@ -1,13 +1,15 @@
 /// @file BattleUiJoystickHandler.cs
 /// <summary>
-/// Has a class BattleUiJoystickHandler which handles the on-screen joysticks.
+/// Contains @cref{Battle.View.UI,BattleUiJoystickHandler} class which handles the on-screen joysticks.
 /// </summary>
 ///
 /// This script:<br/>
 /// Handles %Battle Ui joystick functionality.
 
+// Unity usings
 using UnityEngine;
 
+// Altzone usings
 using Altzone.Scripts.BattleUiShared;
 
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
@@ -114,10 +116,6 @@ namespace Battle.View.UI
 
             // Setting BattleUiMovableElementData to movable element
             if (data != null) movableElement.SetData(data);
-
-            // Setting correct icon to the joystick
-            BattleUiJoystickIconSetter iconSetter = movableElement.GetComponent<BattleUiJoystickIconSetter>();
-            if (iconSetter != null) iconSetter.SetIcon(uiElementType);
         }
 
         /// <summary>
@@ -128,7 +126,7 @@ namespace Battle.View.UI
         {
             // Connecting listeners for the joystick input
             if (_moveJoystickComponent != null) _moveJoystickComponent.OnJoystickInput += _uiController.GameViewController.UiInputOnJoystickMovement;
-            
+
             if (_rotateJoystickComponent != null)
             {
                 _rotateJoystickComponent.OnJoystickXAxisInput += _uiController.GameViewController.UiInputOnJoystickRotation;

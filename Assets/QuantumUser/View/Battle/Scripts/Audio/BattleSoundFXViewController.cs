@@ -1,15 +1,21 @@
 /// @file BattleSoundFXViewController.cs
 /// <summary>
-/// Has a class BattleSoundFXViewController which handles playing sound effects.
+/// Contains @cref{Battle.View.Audio,BattleSoundFXViewController} class which handles playing sound effects.
 /// </summary>
 ///
 /// This script:<br/>
 /// Handles playing sound effects.
 
-using UnityEngine;
-using Quantum;
+// System usings
 using System;
 
+// Unity usings
+using UnityEngine;
+
+// Quantum usings
+using Quantum;
+
+// Altzone usings
 using Altzone.Scripts.Audio;
 
 namespace Battle.View.Audio

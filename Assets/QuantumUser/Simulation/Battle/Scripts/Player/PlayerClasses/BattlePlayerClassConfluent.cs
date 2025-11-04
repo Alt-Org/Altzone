@@ -1,16 +1,15 @@
 /// @file BattlePlayerClassConfluent.cs
 /// <summary>
-/// Contains the logic for Confluent class characters.
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassConfluent} class which contains the logic for Confluent class characters.
 /// </summary>
-///
-/// Contains code for Confluent class characters.
 
+// Quantum usings
+using Quantum;
+using Photon.Deterministic;
+
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Projectile;
-
-using Photon.Deterministic;
-using Quantum;
-using UnityEngine;
 
 namespace Battle.QSimulation.Player
 {

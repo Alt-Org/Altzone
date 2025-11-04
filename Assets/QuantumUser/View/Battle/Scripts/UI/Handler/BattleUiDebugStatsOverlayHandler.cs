@@ -1,17 +1,20 @@
 /// @file BattleUiDebugStatsOverlayHandler.cs
 /// <summary>
-/// Has a class BattleUiDebugStatsOverlayHandler which displays character's stats.
+/// Contains @cref{Battle.View.UI,BattleUiDebugStatsOverlayHandler} class which displays character's stats.
 /// </summary>
 ///
 /// This script:<br/>
 /// Handles displaying the player's character's stats for debug purposes.
 
+// System usings
 using System;
 
+// Unity usings
 using UnityEngine;
-using Quantum;
-
 using TMPro;
+
+// Quantum usings
+using Quantum;
 
 namespace Battle.View.UI
 {
@@ -72,7 +75,7 @@ namespace Battle.View.UI
             /// <summary>
             /// Set's the font size to both #Name and #Value <a href="https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/api/TMPro.TMP_Text.html">TMP_Text@u-exlink</a> components.
             /// </summary>
-            /// 
+            ///
             /// <param name="size"></param>
             public void SetSize(float size)
             {

@@ -1,16 +1,14 @@
 /// @file BattleUiAnnouncementHandler.cs
 /// <summary>
-/// Has a class BattleUiAnnouncementHandler which handles showing the announcement/countdown text.
+/// Contains @cref{Battle.View.UI,BattleUiAnnouncementHandler} class which handles showing the announcement/countdown text.
 /// </summary>
 ///
 /// This script:<br/>
 /// Handles showing the announcement/countdown text.
 
+// Unity usings
 using UnityEngine;
-
 using TMPro;
-
-using Altzone.Scripts.BattleUiShared;
 
 namespace Battle.View.UI
 {

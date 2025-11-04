@@ -1,16 +1,22 @@
 /// @file BattleUiLoadScreenHandler.cs
 /// <summary>
-/// Has the class BattleUiLoadScreentHandler, which handles setting the visibility of the battle loading screen and updating it whenever a player connects to the game.
+/// Contains @cref{Battle.View.UI,BattleUiLoadScreentHandler} class, which handles setting the visibility of the battle loading screen and updating it whenever a player connects to the game.
 /// </summary>
 ///
 /// This script:<br/>
 /// Handles setting the visibility of the battle loading screen and updating it whenever a player connects to the game.
 
+// Unity usings
 using UnityEngine;
-using Quantum;
 using TMPro;
 
+// Quantum usings
+using Quantum;
+
+// Altzone usings
 using MenuUi.Scripts.Lobby.SelectedCharacters;
+
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 
 namespace Battle.View.UI
@@ -46,7 +52,7 @@ namespace Battle.View.UI
         /// Calls the correct BattlePopupCharacterSlotController::SetCharacters method to set the character icons.<br/>
         /// Changes the alpha of the player name on the loading screen to indicate the player has connected.
         /// </summary>
-        /// 
+        ///
         /// <param name="playerSlot">The slot of the player.</param>
         /// <param name="characterIds">An array of the character IDs of the players selected characters.</param>
         public void PlayerConnected(BattlePlayerSlot playerSlot, int[] characterIds, int[] characterClasses)
@@ -85,7 +91,7 @@ namespace Battle.View.UI
         /// <summary>
         /// For each player slot for which PlayerType is set to Player, the corresponding player name UI element is enabled and set to that player's name.
         /// </summary>
-        /// 
+        ///
         /// <param name="playerSlotTypes"></param>
         /// <param name="playerNames"></param>
         public void Show(BattleParameters.PlayerType[] playerSlotTypes, FixedArray<QString64> playerNames)

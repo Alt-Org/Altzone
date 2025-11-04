@@ -1,15 +1,19 @@
 /// @file BattlePlayerClassManager.cs
 /// <summary>
-/// The manager script for player class logic.
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassManager} class which handles player class logic.
+/// Also contains @cref{Battle.QSimulation.Player,BattlePlayerClassBase} and @cref{Battle.QSimulation.Player,BattlePlayerClassBase<T>} classes which player class implementations derive from.
 /// </summary>
-///
-/// The manager handles initializing classes that are present in the game, and routing events forward to the individual classes.<br/>
-/// This script also contains the base classes that class implementations derive from.
 
+// System usings
 using System.Collections.Generic;
+
+// Unity usings
 using UnityEngine;
+
+// Quantum usings
 using Quantum;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player

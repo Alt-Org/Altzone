@@ -1,12 +1,13 @@
 /// @file BattleUiJoystickComponent.cs
 /// <summary>
-/// Has a class BattleUiJoystickComponent which handles joystick drag input.
+/// Contains @cref{Battle.View.UI,BattleUiJoystickComponent} class which handles joystick drag input.
 /// </summary>
 ///
 /// This script:<br/>
 /// Handles %Battle Ui joystick drag input functionality.
 /// Implements IPointerDownHandler, IDragHandler and IPointerUpHandler interfaces.
 
+// Unity usings
 using UnityEngine;
 using UnityEngine.EventSystems;
 

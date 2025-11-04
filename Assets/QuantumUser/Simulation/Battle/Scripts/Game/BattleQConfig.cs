@@ -1,8 +1,11 @@
+// System usings
 using System;
 using System.Runtime.CompilerServices;
 
+// Quantum usings
 using Quantum;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Projectile;
 using Battle.QSimulation.SoulWall;
 using Battle.QSimulation.Diamond;
@@ -48,7 +51,7 @@ namespace Battle.QSimulation.Game
         {
             return f.FindAsset(f.FindAsset(f.RuntimeConfig.BattleConfig).BattlePlayerSpec);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BattlePlayerBotQSpec GetPlayerBotSpec(Frame f)
         {

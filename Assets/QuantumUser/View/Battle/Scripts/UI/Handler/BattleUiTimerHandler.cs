@@ -1,18 +1,19 @@
 /// @file BattleUiTimerHandler.cs
 /// <summary>
-/// Has a class BattleUiTimerHandler which handles setting the timer text.
+/// Contains @cref{Battle.View.UI,BattleUiTimerHandler} class which handles setting the timer text.
 /// </summary>
 ///
 /// This script:<br/>
 /// Handles setting the timer text.
 
+// Unity usings
 using UnityEngine;
-
-using Quantum;
-using Photon.Deterministic;
-
 using TMPro;
 
+// Quantum usings
+using Photon.Deterministic;
+
+// Altzone usings
 using Altzone.Scripts.BattleUiShared;
 
 namespace Battle.View.UI

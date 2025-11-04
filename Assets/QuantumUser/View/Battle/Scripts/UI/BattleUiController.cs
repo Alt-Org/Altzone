@@ -1,13 +1,15 @@
 /// @file BattleUiController.cs
 /// <summary>
-/// Has a class BattleUiController which controls the %Battle %UI.
+/// Contains @cref{Battle.View.UI,BattleUiController} class which controls the %Battle %UI.
 /// </summary>
 ///
 /// This script:<br/>
 /// Holds references to all of the @ref UIHandlerReferences and @ref DebugUIHandlerReferences, and the BattleGameViewController script.
 
+// Unity usings
 using UnityEngine;
 
+// Battle View usings
 using Battle.View.Game;
 
 namespace Battle.View.UI
