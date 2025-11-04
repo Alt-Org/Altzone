@@ -150,10 +150,12 @@ namespace Battle.QSimulation.Projectile
 
                 case SpeedChange.Increment:
                     projectile->Speed = FPMath.Min(projectile->Speed + projectile->SpeedIncrement, projectile->SpeedMax);
+                    f.Events.BattleProjectileChangeSpeed(projectile->Speed);
                     break;
 
                 case SpeedChange.Reset:
                     projectile->Speed = projectile->SpeedBase;
+                    f.Events.BattleProjectileChangeSpeed(projectile->Speed);
                     break;
             }
         }
@@ -399,6 +401,8 @@ namespace Battle.QSimulation.Projectile
             projectile->IsLaunched = true;
 
             SetHeld(f, projectile, false);
+
+            f.Events.BattleProjectileChangeSpeed(projectile->Speed);
 
             Debug.Log("Projectile Launched");
         }
