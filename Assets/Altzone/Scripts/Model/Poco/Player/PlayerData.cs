@@ -136,87 +136,6 @@ namespace Altzone.Scripts.Model.Poco.Player
             }
         }
 
-        /// <summary>
-        /// Loads the chosen loadout into SelectedCharacterIds (makes it the active team).
-        /// </summary>
-        public void ApplyLoadout(int index)
-        {
-            if (index < 0 || index > LoadOuts.Length)
-
-            {
-                Debug.LogError($"Invalid index {index}. Allowed range is 0 - {LoadOuts.Length}");
-                return;
-            }
-            if (index == 0)
-            {
-                // "Current": does not copy anything. Free editing without autosave to a slot.
-                SelectedLoadOut = 0;
-                return;
-            }
-
-            TeamLoadOut selectedSlot = LoadOuts[index - 1];
-            if (selectedSlot == null || selectedSlot.Slots == null) return;
-
-            // Copies values from the saved slot to the active team (without sharing references)
-            for (int i = 0; i < 3; i++)
-            {
-                CustomCharacterListObject savedMember = selectedSlot.Slots[i];
-                if (savedMember == null) savedMember = new CustomCharacterListObject();
-
-                if (SelectedCharacterIds[i] == null)
-                    SelectedCharacterIds[i] = new CustomCharacterListObject();
-
-                SelectedCharacterIds[i].SetData(savedMember.ServerID, savedMember.CharacterID);
-            }
-
-            SelectedLoadOut = index;
-        }
-
-        /// <summary>
-        /// Saves the current active team (SelectedCharacterIds) into the chosen slot (1-3).
-        /// Creates new instances so references are not shared with SelectedCharacterIds
-        /// </summary>
-        public void SaveCurrentTeamToLoadout(int index)
-        {
-            if (index <= 0 || index > LoadOuts.Length)
-            {
-                Debug.LogError($"Invalid index {index}. Allowed range is 1 - {LoadOuts.Length}");
-                return;
-            }
-
-            if (LoadOuts[index - 1] == null)
-                LoadOuts[index - 1] = new TeamLoadOut();
-
-            if (LoadOuts[index - 1].Slots == null)
-                LoadOuts[index - 1].Slots = new CustomCharacterListObject[3];
-
-            for (int i = 0; i < 3; i++)
-            {
-                CustomCharacterListObject activeMember = SelectedCharacterIds[i];
-                if (activeMember == null) activeMember = new CustomCharacterListObject();
-
-                // Create a new object and copy VALUES (not the reference)
-                CustomCharacterListObject savedCopy = new CustomCharacterListObject();
-                savedCopy.SetData(activeMember.ServerID, activeMember.CharacterID);
-
-                LoadOuts[index - 1].Slots[i] = savedCopy;
-            }
-        }
-
-        /// <summary>
-        /// This is called whenever the user changes the team in the UI.
-        /// If a saved slot (1-3) is selected, changes are saved immediately to that slot.
-        /// </summary>
-        public void OnCurrentTeamChanged_AutoSave()
-        {
-            if (SelectedLoadOut > 0)
-            {
-                SaveCurrentTeamToLoadout(SelectedLoadOut);
-            }
-            Storefront.Get().SavePlayerData(this, null);
-        }
-
-
         public PlayerData(string id, string clanId, int currentCustomCharacterId, string[] currentBattleCharacterIds, string name, int backpackCapacity, string uniqueIdentifier, List<CustomCharacter> characters)
         {
             Assert.IsTrue(id.IsSet());
@@ -366,6 +285,86 @@ namespace Altzone.Scripts.Model.Poco.Player
             return
                 $"{nameof(Id)}: {Id}, {nameof(ClanId)}: {ClanId}, {nameof(SelectedCharacterId)}: {SelectedCharacterId}," +
                 $"{nameof(SelectedCharacterIds)}: {string.Join<CustomCharacterListObject>(",", SelectedCharacterIds)}, {nameof(Name)}: {Name}, {nameof(BackpackCapacity)}: {BackpackCapacity}, {nameof(UniqueIdentifier)}: {UniqueIdentifier}";
+        }
+
+        /// <summary>
+        /// Loads the chosen loadout into SelectedCharacterIds (makes it the active team).
+        /// </summary>
+        public void ApplyLoadout(int index)
+        {
+            if (index < 0 || index > LoadOuts.Length)
+
+            {
+                Debug.LogError($"Invalid index {index}. Allowed range is 0 - {LoadOuts.Length}");
+                return;
+            }
+            if (index == 0)
+            {
+                // "Current": does not copy anything. Free editing without autosave to a slot.
+                SelectedLoadOut = 0;
+                return;
+            }
+
+            TeamLoadOut selectedSlot = LoadOuts[index - 1];
+            if (selectedSlot == null || selectedSlot.Slots == null) return;
+
+            // Copies values from the saved slot to the active team (without sharing references)
+            for (int i = 0; i < 3; i++)
+            {
+                CustomCharacterListObject savedMember = selectedSlot.Slots[i];
+                if (savedMember == null) savedMember = new CustomCharacterListObject();
+
+                if (SelectedCharacterIds[i] == null)
+                    SelectedCharacterIds[i] = new CustomCharacterListObject();
+
+                SelectedCharacterIds[i].SetData(savedMember.ServerID, savedMember.CharacterID);
+            }
+
+            SelectedLoadOut = index;
+        }
+
+        /// <summary>
+        /// Saves the current active team (SelectedCharacterIds) into the chosen slot (1-3).
+        /// Creates new instances so references are not shared with SelectedCharacterIds
+        /// </summary>
+        public void SaveCurrentTeamToLoadout(int index)
+        {
+            if (index <= 0 || index > LoadOuts.Length)
+            {
+                Debug.LogError($"Invalid index {index}. Allowed range is 1 - {LoadOuts.Length}");
+                return;
+            }
+
+            if (LoadOuts[index - 1] == null)
+                LoadOuts[index - 1] = new TeamLoadOut();
+
+            if (LoadOuts[index - 1].Slots == null)
+                LoadOuts[index - 1].Slots = new CustomCharacterListObject[3];
+
+            for (int i = 0; i < 3; i++)
+            {
+                CustomCharacterListObject activeMember = SelectedCharacterIds[i];
+                if (activeMember == null) activeMember = new CustomCharacterListObject();
+
+                // Create a new object and copy VALUES (not the reference)
+                CustomCharacterListObject savedCopy = new CustomCharacterListObject();
+                savedCopy.SetData(activeMember.ServerID, activeMember.CharacterID);
+
+                LoadOuts[index - 1].Slots[i] = savedCopy;
+            }
+        }
+
+        /// <summary>
+        /// This is called whenever the user changes the team in the UI.
+        /// If a saved slot (1-3) is selected, changes are saved immediately to that slot.
+        /// </summary>
+        public void OnCurrentTeamChanged_AutoSave()
+        {
+            if (SelectedLoadOut > 0)
+            {
+                SaveCurrentTeamToLoadout(SelectedLoadOut);
+            }
+            Storefront.Get().SavePlayerData(this, null);
         }
 
 

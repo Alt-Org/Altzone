@@ -6,11 +6,16 @@ using MenuUi.Scripts.CharacterGallery;
 using MenuUi.Scripts.Signals;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class LoadOutController : MonoBehaviour
 {
     [SerializeField] private List<Button> _loadoutButtons;
     [SerializeField] private ModelController _modelController;
+    [SerializeField] private GameObject _confirmPanel;
+    [SerializeField] private TMP_Text _confirmText;
+    [SerializeField] private Button _confirmYes;
+    [SerializeField] private Button _confirmNo;
 
     private PlayerData _player;
 
@@ -62,6 +67,7 @@ public class LoadOutController : MonoBehaviour
             if (loadoutIndex == 0)
             {
                 _player.ApplyLoadout(0);
+                SignalBus.OnReloadCharacterGalleryRequestedSignal();
                 RefreshButtons();
                 Storefront.Get().SavePlayerData(player, null);
                 return;
@@ -78,21 +84,55 @@ public class LoadOutController : MonoBehaviour
 
             if (isEmpty)
             {
-                // Tämä on nyt väliaikainen ratkaisu, hyväksyy tallennuksen aina automaattisesti
-                bool userConfirmed = true;
-                if (userConfirmed)
-                {
-                    player.SaveCurrentTeamToLoadout(loadoutIndex);
-                    player.ApplyLoadout(loadoutIndex);
-                    RefreshButtons();
-                    Storefront.Get().SavePlayerData(player, null);
-                }
+                SaveToEmptySlot(loadoutIndex, player);
+                
                 return;
             }
 
             player.ApplyLoadout(loadoutIndex);
+            SignalBus.OnReloadCharacterGalleryRequestedSignal();
             RefreshButtons();
             Storefront.Get().SavePlayerData(player, null);
+        });
+    }
+
+    private void SaveToEmptySlot(int loadoutIndex, PlayerData player)
+    {
+        if (_confirmPanel == null || _confirmYes == null || _confirmNo == null)
+        {
+          
+            player.SaveCurrentTeamToLoadout(loadoutIndex);
+            player.ApplyLoadout(loadoutIndex);
+            SignalBus.OnReloadCharacterGalleryRequestedSignal();
+            RefreshButtons();
+            Storefront.Get().SavePlayerData(player, null);
+            return;
+        }
+
+        _confirmPanel.SetActive(true);
+        if (_confirmText != null)
+            _confirmText.text = $"Tallennetaanko nykyinen tiimi slottiin {loadoutIndex}?";
+
+        
+        _confirmYes.onClick.RemoveAllListeners();
+        _confirmNo.onClick.RemoveAllListeners();
+
+        _confirmYes.onClick.AddListener(() =>
+        {
+            
+            player.SaveCurrentTeamToLoadout(loadoutIndex);
+            player.ApplyLoadout(loadoutIndex);
+            SignalBus.OnReloadCharacterGalleryRequestedSignal();
+            RefreshButtons();
+            Storefront.Get().SavePlayerData(player, null);
+
+            _confirmPanel.SetActive(false);
+        });
+
+        _confirmNo.onClick.AddListener(() =>
+        {
+           
+            _confirmPanel.SetActive(false);
         });
     }
 
@@ -102,8 +142,11 @@ public class LoadOutController : MonoBehaviour
 
         for (int i = 0; i < _loadoutButtons.Count; i++)
         {
-            if (_loadoutButtons[i] != null)
-                _loadoutButtons[i].interactable = (selected != i);
+            //if (_loadoutButtons[i] != null)
+            //    _loadoutButtons[i].interactable = (selected != i);
+            bool isSelected = (selected == i);
+            bool shouldDisable = isSelected && i != 0; // 0 pysyy aina klikattavana
+            _loadoutButtons[i].interactable = !shouldDisable;
         }
     }
     

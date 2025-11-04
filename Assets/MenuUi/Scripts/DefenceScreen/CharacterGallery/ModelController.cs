@@ -228,6 +228,8 @@ namespace MenuUi.Scripts.CharacterGallery
                 var store = Storefront.Get();
                 store.SavePlayerData(_playerData, null);
             }));
+
+            _playerData.OnCurrentTeamChanged_AutoSave();
         }
 
 
