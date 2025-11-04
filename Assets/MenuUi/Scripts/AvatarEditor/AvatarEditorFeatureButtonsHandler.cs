@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Altzone.Scripts.AvatarPartsInfo;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,7 +21,7 @@ public class AvatarEditorFeatureButtonsHandler : MonoBehaviour
     /// <summary>
     /// Used for feature button indexes 1 to 7.
     /// </summary>
-    public void SetOnClick(Action<AvatarPartsReference.AvatarPartInfo, int> method, AvatarPartsReference.AvatarPartInfo avatarPartInfo, int characterSlot, int buttonSlot)
+    public void SetOnClick(Action<AvatarPartInfo, int> method, AvatarPartInfo avatarPartInfo, int characterSlot, int buttonSlot)
     {
         if (_slots[buttonSlot].onClick != null)
             _slots[buttonSlot].onClick.RemoveAllListeners();

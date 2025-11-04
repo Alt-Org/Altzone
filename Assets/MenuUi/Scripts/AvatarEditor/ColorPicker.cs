@@ -87,8 +87,17 @@ namespace MenuUi.Scripts.AvatarEditor
             return Color.white;
         }
 
-        public void SetLoadedColors(string colorCode, List<string> features)
+        public void SetLoadedColors(PlayerAvatar avatar)
         {
+            string colorCode = avatar.Color;
+            List<string> avatarFeatures = new List<string>{ avatar.HairId, 
+                                                            avatar.EyesId,
+                                                            avatar.NoseId,
+                                                            avatar.MouthId,
+                                                            avatar.BodyId,
+                                                            avatar.HandsId,
+                                                            avatar.FeetId
+                                                            };
             if (string.IsNullOrWhiteSpace(colorCode) && ColorUtility.TryParseHtmlString(colorCode, out Color color))
                 SetColor(color);
             //for (int i = 0; i < _currentColor.Count; i++)
