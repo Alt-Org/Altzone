@@ -327,7 +327,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
                 case JukeboxManager.PlaybackHistoryType.Add:
                     {
                         queueData.Pointer = GetFreeJukeboxTrackQueueHandler();
-                        //Debug.LogError("add history");
+                        Debug.LogError("add history");
                         JukeboxTrackQueueHandler handler = GetTrackQueueHandler(queueData.Pointer);
 
                         handler.SetTrack(queueData.ServerSongData.id, queueData.MusicTrack, playbackHistoryData.Target1.LinearIndex, queueData.UserOwned, JukeboxManager.Instance.GetTrackFavoriteType(queueData.MusicTrack));
@@ -339,8 +339,10 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
                     {
                         int chunkIndex = Mathf.FloorToInt(queueData.LinearIndex / JukeboxManager.Instance.TrackChunkSize);
                         int poolIndex = (queueData.LinearIndex % JukeboxManager.Instance.TrackChunkSize);
-                        //Debug.LogError("insert history");
+                        Debug.LogError("insert history");
                         JukeboxTrackQueueHandler handler = GetInsertedJukeboxTrackQueueHandler(chunkIndex, poolIndex);
+
+                        queueData.Pointer = new(chunkIndex, poolIndex);
 
                         handler.SetTrack(queueData.ServerSongData.id, queueData.MusicTrack, queueData.LinearIndex, queueData.UserOwned, JukeboxManager.Instance.GetTrackFavoriteType(queueData.MusicTrack));
                         handler.SetVisibility(true);

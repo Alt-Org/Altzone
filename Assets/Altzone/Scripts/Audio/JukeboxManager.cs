@@ -487,7 +487,7 @@ namespace Altzone.Scripts.Audio
                 yield break;
             }
 
-            UpdateLocalPlaylist(serverPlaylistData);
+            UpdateTrackQueue(serverPlaylistData);
             PlayServerTrack(serverPlaylistData.currentSong);
 
             //SaveTrackQueueToPlaylist();
@@ -566,7 +566,7 @@ namespace Altzone.Scripts.Audio
             done(true);
         }
 
-        private void UpdateLocalPlaylist(ServerPlaylist serverPlaylist)
+        private void UpdateTrackQueue(ServerPlaylist serverPlaylist)
         {
             //List<ServerSong> foundInServer = new List<ServerSong>();
             List<ServerCompareData> deleteDatas = new List<ServerCompareData>();
@@ -709,7 +709,7 @@ namespace Altzone.Scripts.Audio
             {
                 _musicTrackStartTime = System.DateTimeOffset.FromUnixTimeMilliseconds(serverCurrentSong.startedAt).DateTime;
                 Debug.LogError(_musicTrackStartTime.ToString());
-                //ContinueTrack(false);
+                ContinueTrack(false);
             }
             else
             {
@@ -836,7 +836,7 @@ namespace Altzone.Scripts.Audio
                     seconds -= _trackQueue[_trackQueuePointer].MusicTrack.Music.length;
 
                     _trackQueuePointer++;
-                    Debug.LogError("continue: " + _trackQueuePointer);
+                    //Debug.LogError("continue: " + _trackQueuePointer);
                     if (_trackQueuePointer >= _trackQueue.Count) _trackQueuePointer = 0;
 
                     //if (!_trackQueue[_trackQueuePointer].InUse()) TryFindValidQueueData();
@@ -882,11 +882,19 @@ namespace Altzone.Scripts.Audio
                 _musicElapsedTime += Time.deltaTime;
             }
 
+            yield return new WaitUntil(() => _serverOperationAvailable);
+
             PlayNextJukeboxTrack();
         }
 
         private string PlayNextJukeboxTrack()
         {
+            //if (_currentPlaylist.Type == PlaylistType.Clan)
+            //{
+            //    StartCoroutine(UpdateLocalClanPlaylist(null, null));
+            //    return null;
+            //}
+
             if (_trackQueuePointer >= _trackQueue.Count && _loopPlayType == PlaylistLoopType.LoopPlaylist) //Keep playing the current playlist.
                 _trackQueuePointer = 0;
 
