@@ -204,11 +204,13 @@ namespace Battle.QSimulation.Player
                 {
                     MovementInput                 = BattleMovementInputType.None,
                     MovementDirectionIsNormalized = false,
-                    MovementPosition              = new BattleGridPosition {Col = 0, Row = 0},
+                    MovementPositionTarget        = new BattleGridPosition {Col = 0, Row = 0},
+                    MovementPositionMove          = FPVector2.Zero,
                     MovementDirection             = FPVector2.Zero,
                     RotationInput                 = false,
                     RotationValue                 = FP._0,
-                    PlayerCharacterNumber         = -1
+                    PlayerCharacterNumber         = -1,
+                    GiveUpInput                   = false
                 };
             }
             else

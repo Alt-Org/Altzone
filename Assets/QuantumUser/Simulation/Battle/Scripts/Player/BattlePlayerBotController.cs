@@ -104,7 +104,8 @@ namespace Battle.QSimulation.Player
                 MovementDirection             = FPVector2.Zero,
                 RotationInput                 = false,
                 RotationValue                 = FP._0,
-                PlayerCharacterNumber         = -1
+                PlayerCharacterNumber         = -1,
+                GiveUpInput                   = false
             };
         }
     }
