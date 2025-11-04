@@ -211,8 +211,9 @@ MonoBehaviour:
   _trailObject: {fileID: 1752140748539139874, guid: aad0a919ac48bc5419b1a6432ecd5708,
     type: 3}
   _trailIncreaseSpeed: 1
-  _maxTrailAmount: 5
+  _maxTrailCount: 10
   _trailDelaySec: 0.05
+  _trailScaleDegreesAmount: 0.05
 --- !u!212 &230413543846935773
 SpriteRenderer:
   m_ObjectHideFlags: 0
