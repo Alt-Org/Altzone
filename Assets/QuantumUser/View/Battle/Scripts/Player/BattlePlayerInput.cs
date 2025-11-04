@@ -299,7 +299,7 @@ namespace Battle.View.Player
                         movementInputInfo.MovementInput = BattleMovementInputType.None;
                         movementInputInfo.MovementPositionMove = FPVector2.Zero;
                     }
-                        break;
+                    break;
 
                 case MovementInputType.Swipe:
                     bool _swipePerformed = false;
