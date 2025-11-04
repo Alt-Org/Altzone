@@ -208,6 +208,44 @@ public class ServerManager : MonoBehaviour
                 }
             }));
             yield return new WaitUntil(() => gettingCharacter == false);
+
+
+            bool callFinished = false;
+            bool characterAdded = false;
+            List<CharacterID> newCharacters = new List<CharacterID>();
+
+            var charIds = Enum.GetValues(typeof(CharacterID));
+            foreach (CharacterID id in charIds)
+            {
+                if (characters.FirstOrDefault(x => x.Id == id) == null)
+                    if (!CustomCharacter.IsTestCharacter(id))
+                        newCharacters.Add(id);
+            }
+            foreach (var character in newCharacters)
+            {
+                callFinished = false;
+                StartCoroutine(AddCustomCharactersToServer(character, callback =>
+                {
+                    if (callback != null)
+                    {
+                        Debug.Log("CustomCharacter added: " + character);
+                        characterAdded = true;
+                    }
+                    else
+                    {
+                        Debug.Log("CustomCharacter adding failed.");
+                    }
+                    callFinished = true;
+                }));
+                yield return new WaitUntil(() => callFinished == true);
+            }
+            if (characterAdded)
+            {
+                callFinished = false;
+                StartCoroutine(UpdateCustomCharacters((c, characterList) => { callFinished = c; characters = characterList; }));
+            }
+            new WaitUntil(() => callFinished == true);
+
             yield return StartCoroutine(GetPlayerTasksFromServer(tasks =>
             {
                 if (tasks == null)
@@ -519,9 +557,9 @@ public class ServerManager : MonoBehaviour
         }
     }
 
-    public IEnumerator UpdateCustomCharacters(Action<bool> callback)
+    public IEnumerator UpdateCustomCharacters(Action<bool, List<CustomCharacter>> callback)
     {
-        if (Player == null) { callback(false); yield break; }
+        if (Player == null) { callback(false, null); yield break; }
         List<CustomCharacter> characters = null;
         bool gettingCharacter = true;
         yield return StartCoroutine(GetCustomCharactersFromServer(characterList =>
@@ -547,8 +585,8 @@ public class ServerManager : MonoBehaviour
 
         playerData.BuildCharacterLists(characters);
         storefront.SavePlayerData(playerData, null);
-        if (characters == null) callback(false);
-        else callback(true);
+        if (characters == null) callback(false, characters);
+        else callback(true, characters);
     }
 
     public IEnumerator ServiceHeartBeat()
@@ -1383,8 +1421,17 @@ public class ServerManager : MonoBehaviour
         if (id.Equals(CharacterID.None))
         {
             Debug.LogError("Cannot find Player.");
+            callback(null);
             yield break;
         }
+        if (CustomCharacter.IsTestCharacter(id)) { callback(null); yield break; }
+
+        ReadOnlyCollection<BaseCharacter> allItems = null;
+        Storefront.Get().GetAllBaseCharacterYield(result => allItems = result);
+
+        BaseCharacter character = allItems.FirstOrDefault(x => x.Id == id);
+
+        if (character == null) { callback(null); yield break; }
 
         ServerCharacter serverCharacter = new(id);
 

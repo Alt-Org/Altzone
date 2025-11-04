@@ -176,7 +176,7 @@ public class HahmonValinta : AltMonoBehaviour
                 if (characterAdded)
                 {
                     callFinished = false;
-                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters(c => callFinished = c));
+                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters((c, list) => callFinished = c));
                 }
                 new WaitUntil(() => callFinished == true);
 
@@ -286,10 +286,10 @@ public class HahmonValinta : AltMonoBehaviour
     {
         var list = new List<CharacterID>();
 
-        var featureTypes = Enum.GetValues(typeof(CharacterID));
-        foreach (CharacterID feature in featureTypes)
+        var charIds = Enum.GetValues(typeof(CharacterID));
+        foreach (CharacterID id in charIds)
         {
-            list.Add(feature);
+            list.Add(id);
         }
             return list;
     }
