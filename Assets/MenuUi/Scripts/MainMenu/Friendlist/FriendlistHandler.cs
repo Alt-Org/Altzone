@@ -2,9 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; // lisätty
+using UnityEngine.UI;
 using Altzone.Scripts.Model.Poco.Clan;
-using Altzone.Scripts.Model.Poco.Player; // tarvittava kirjasto serverin tietoja hakemista varten ?
+using Altzone.Scripts.Model.Poco.Player;
+
 
 public class FriendlistHandler : MonoBehaviour
 
@@ -68,13 +69,28 @@ public class FriendlistHandler : MonoBehaviour
         foreach (var player in onlinePlayers)
         {
             string playerName = player.name;
-            
 
+             
+            PlayerData playerData = player.PlayerData;
+            //ClanLogo clanLogo = player.ClanData?.Logo;
+            AvatarVisualData avatarVisualData = null;
+            if (playerData != null && player.PlayerData.SelectedCharacterId != 0)
+            {
+                avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(player.PlayerData);
+            }
+         
 
             FriendlistItem newItem = Instantiate(_friendlistItemPrefab, _friendlistContent);
             newItem.Initialize(
-                 playerName
-                
+                 playerName,
+                 playerData: player.PlayerData,
+                 avatarVisualData: avatarVisualData,
+                 //clanLogo: clanLogo,
+                 isOnline: true,
+                 onRemoveClick: () => { }
+
+                 
+
                  );
             _friendlistItems.Add( newItem );
         }

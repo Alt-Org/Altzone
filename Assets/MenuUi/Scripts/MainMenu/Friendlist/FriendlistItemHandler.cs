@@ -13,17 +13,16 @@ public class FriendlistItem : MonoBehaviour
 
 {
     [SerializeField] private GameObject _friendPanel;
-    [SerializeField] private Image _avatarImage;
+    [SerializeField] private AvatarFaceLoader _avatarFaceLoader;
     [SerializeField] private Image _onlineStatusIndicator;
     [SerializeField] private TMPro.TextMeshProUGUI _nameText;
-    [SerializeField] private Image _clanLogo;
+    [SerializeField] private ClanHeartColorSetter _clanHeart;
     [SerializeField] private Button _removefriendButton;
 
     private bool _isOnline = true;
-    private AvatarFaceLoader _avatarFaceLoader;
     private Action _onRemoveClick;
-
-  
+    
+   
     public void Initialize(string name, PlayerData playerData = null, AvatarVisualData avatarVisualData = null, ClanLogo clanLogo = null, bool isOnline = true, Action onRemoveClick = null)
    {
         _nameText.text = name;
@@ -31,22 +30,16 @@ public class FriendlistItem : MonoBehaviour
         _onRemoveClick = onRemoveClick;
 
 
-       if (avatarVisualData != null)
+        if (avatarVisualData != null)
         {
-            avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
-            if (avatarVisualData != null)
-            {
-                _avatarImage.GetComponent<AvatarFaceLoader>().UpdateVisuals(avatarVisualData);
-            }
+            _avatarFaceLoader.UpdateVisuals(avatarVisualData);
         }
+    
         if (clanLogo != null)
         {
-         var clanHeart = _clanLogo.GetComponent<ClanHeartColorSetter>();
-            if(clanHeart != null)
-            {
-                clanHeart.SetHeartColors(clanLogo);
-            }
+            _clanHeart.SetHeartColors(clanLogo);
         }
+        
         UpdateOnlineStatusIndicator();
         
 
