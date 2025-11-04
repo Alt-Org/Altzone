@@ -107,10 +107,10 @@ namespace Battle.View.Projectile
                 transform.rotation = Quaternion.Euler(90, 180, 0);
             }
 
-            QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, OnChangeEmotionState);
-            QuantumEvent.Subscribe<EventBattleProjectileChangeSpeed>(this, OnProjectileChangeSpeed);
-            QuantumEvent.Subscribe<EventBattleProjectileChangeGlowStrength>(this, OnProjectileChangeGlowStrength);
-            QuantumEvent.Subscribe<EventBattleViewGameOver>(this, OnGameOver);
+            QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
+            QuantumEvent.Subscribe<EventBattleProjectileChangeSpeed>(this, QEventOnProjectileChangeSpeed);
+            QuantumEvent.Subscribe<EventBattleProjectileChangeGlowStrength>(this, QEventOnProjectileChangeGlowStrength);
+            QuantumEvent.Subscribe<EventBattleViewGameOver>(this, QEventOnGameOver);
 
             BattleGameViewController.AssignProjectileReference(gameObject);
         }
@@ -208,7 +208,7 @@ namespace Battle.View.Projectile
         /// </summary>
         /// 
         /// <param name="e">BattleProjectileChangeSpeed Event</param>
-        private void OnProjectileChangeSpeed(EventBattleProjectileChangeSpeed e)
+        private void QEventOnProjectileChangeSpeed(EventBattleProjectileChangeSpeed e)
         {
             float newSpeed = (float)e.NewSpeed;
 
@@ -256,7 +256,7 @@ namespace Battle.View.Projectile
         /// </summary>
         ///
         /// <param name="e">BattleChangeEmotionState Event</param>
-        private void OnChangeEmotionState(EventBattleChangeEmotionState e)
+        private void QEventOnChangeEmotionState(EventBattleChangeEmotionState e)
         {
             _spriteRenderer.sprite = _sprites[(int)e.Emotion];
             _spriteGlowRenderer.color = _colorGlows[(int)e.Emotion].Alpha(_glowStrength);
@@ -273,7 +273,7 @@ namespace Battle.View.Projectile
         /// </summary>
         ///
         /// <param name="e">BattleProjectileChangeGlowStrength Event</param>
-        private void OnProjectileChangeGlowStrength(EventBattleProjectileChangeGlowStrength e)
+        private void QEventOnProjectileChangeGlowStrength(EventBattleProjectileChangeGlowStrength e)
         {
             _glowStrength = (float)e.Strength;
             _spriteGlowRenderer.color = _spriteGlowRenderer.color.Alpha(_glowStrength);
@@ -285,7 +285,7 @@ namespace Battle.View.Projectile
         /// </summary>
         /// 
         /// <param name="e">BattleViewGameOver Event</param>
-        private void OnGameOver(EventBattleViewGameOver e)
+        private void QEventOnGameOver(EventBattleViewGameOver e)
         {
             _trailRenderer.enabled = false;
 
