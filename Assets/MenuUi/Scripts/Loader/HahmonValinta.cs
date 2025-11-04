@@ -289,7 +289,8 @@ public class HahmonValinta : AltMonoBehaviour
         var charIds = Enum.GetValues(typeof(CharacterID));
         foreach (CharacterID id in charIds)
         {
-            list.Add(id);
+            if (!CustomCharacter.IsTestCharacter(id) && id != CharacterID.None)
+                list.Add(id);
         }
             return list;
     }

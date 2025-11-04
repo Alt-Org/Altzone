@@ -218,7 +218,7 @@ public class ServerManager : MonoBehaviour
             foreach (CharacterID id in charIds)
             {
                 if (characters.FirstOrDefault(x => x.Id == id) == null)
-                    if (!CustomCharacter.IsTestCharacter(id))
+                    if (!CustomCharacter.IsTestCharacter(id) && id != CharacterID.None)
                         newCharacters.Add(id);
             }
             foreach (var character in newCharacters)
