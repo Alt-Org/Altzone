@@ -6,11 +6,14 @@
 /// This script:<br/>
 /// Handles setting the timer text.
 
+// Unity usings
 using UnityEngine;
 using TMPro;
 
+// Quantum usings
 using Photon.Deterministic;
 
+// Altzone usings
 using Altzone.Scripts.BattleUiShared;
 
 namespace Battle.View.UI

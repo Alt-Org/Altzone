@@ -208,6 +208,12 @@ MonoBehaviour:
   - {r: 1, g: 0.4156863, b: 0, a: 0}
   - {r: 0.7960785, g: 0, b: 0.003921569, a: 0}
   - {r: 1, g: 0.56078434, b: 0.6784314, a: 0}
+  _trailObject: {fileID: 1752140748539139874, guid: aad0a919ac48bc5419b1a6432ecd5708,
+    type: 3}
+  _trailIncreaseSpeed: 1
+  _maxTrailCount: 10
+  _trailDelaySec: 0.05
+  _trailScaleDegreesAmount: 0.05
 --- !u!212 &230413543846935773
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -302,7 +308,7 @@ TrailRenderer:
   m_SortingLayerID: 483117371
   m_SortingLayer: 2
   m_SortingOrder: 1
-  m_Time: 0.3
+  m_Time: 0.15
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
@@ -701,37 +707,38 @@ MonoBehaviour:
   Prototype:
     IsLaunched:
       Value: 0
-    IsMoving:
+    IsHeld:
       Value: 0
+    IsPassed:
+      Value: 0
+    EmotionBase:
+      Value: 0
+    EmotionCurrent:
+      Value: 0
+    CollisionFlags:
+    - Value: 0
+    - Value: 0
     Speed:
       RawValue: 0
-    SpeedMultiplierArray:
-    - RawValue: 0
-    - RawValue: 0
-    - RawValue: 0
-    - RawValue: 0
-    - RawValue: 0
-    SpeedPotential:
-      RawValue: 0
-    SpeedIncrement:
-      RawValue: 0
-    AccelerationTimer:
-      RawValue: 0
-    AccelerationTimerDuration:
-      RawValue: 0
+    Position:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
     Direction:
       X:
         RawValue: 0
       Y:
         RawValue: 0
+    Attack:
+      RawValue: 0
     Radius:
       RawValue: 0
-    Emotion:
-      Value: 0
-    Attack:
+    SpeedBase:
+      RawValue: 0
+    SpeedIncrement:
+      RawValue: 0
+    SpeedMax:
       RawValue: 0
     AttackMax:
       RawValue: 0
-    CollisionFlags:
-    - Value: 0
-    - Value: 0

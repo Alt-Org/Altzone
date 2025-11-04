@@ -3,11 +3,13 @@
 /// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassConfluent} class which contains the logic for Confluent class characters.
 /// </summary>
 
+// Quantum usings
+using Quantum;
+using Photon.Deterministic;
+
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Projectile;
-
-using Photon.Deterministic;
-using Quantum;
 
 namespace Battle.QSimulation.Player
 {

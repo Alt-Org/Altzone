@@ -7,6 +7,7 @@
 /// Handles %Battle Ui joystick drag input functionality.
 /// Implements IPointerDownHandler, IDragHandler and IPointerUpHandler interfaces.
 
+// Unity usings
 using UnityEngine;
 using UnityEngine.EventSystems;
 

@@ -4,13 +4,16 @@
 /// which contains the primary method for handling player movement as well as individual helper methods for moving and rotating players.
 /// </summary>
 
+// Unity usings
 using UnityEngine;
 using UnityEngine.Scripting;
 
+// Quantum usings
 using Quantum;
 using Input = Quantum.Input;
 using Photon.Deterministic;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player
@@ -50,11 +53,26 @@ namespace Battle.QSimulation.Player
             //{ handle movement
 
             // handle movement input
-            if (input->MovementInput != BattleMovementInputType.None)
+            switch (input->MovementInput)
             {
-                // get players TargetPosition
-                if (input->MovementInput == BattleMovementInputType.Direction)
-                {
+                case BattleMovementInputType.None:
+                    break;
+
+                case BattleMovementInputType.PositionTarget:
+                    ClampPosition(playerData, input->MovementPositionTarget, out playerData->TargetPosition);
+                    playerData->HasTargetPosition = true;
+                    break;
+
+                case BattleMovementInputType.PositionMove:
+                    positionNext = FPVector2.MoveTowards(transform->Position, input->MovementPositionMove, playerData->Stats.Speed * f.DeltaTime);
+                    if (ClampPosition(playerData, positionNext, out FPVector2 clampedNext))
+                    {
+                        positionNext = clampedNext;
+                    }
+                    playerData->TargetPosition = positionNext;
+                    break;
+
+                case BattleMovementInputType.Direction:
                     FPVector2 movementDirection = input->MovementDirection * (input->MovementDirectionIsNormalized ? playerData->Stats.Speed : FP._1);
                     positionNext = transform->Position + FPVector2.ClampMagnitude(movementDirection, playerData->Stats.Speed) * f.DeltaTime;
                     if (ClampPosition(playerData, positionNext, out FPVector2 clampedPosition))
@@ -62,14 +80,7 @@ namespace Battle.QSimulation.Player
                         positionNext = clampedPosition;
                     }
                     playerData->TargetPosition = positionNext;
-                }
-                else
-                {
-                    ClampPosition(playerData, input->MovementPosition, out playerData->TargetPosition);
-                    playerData->HasTargetPosition = true;
-                }
-
-                Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", playerData->TargetPosition);
+                    break;
             }
 
             // handle target position based movement
@@ -291,7 +302,6 @@ namespace Battle.QSimulation.Player
             clampedPosition = BattleGridManager.GridPositionToWorldPosition(clampedGridPosition);
 
             return gridPosition.Col != clampedGridPosition.Col || gridPosition.Row != clampedGridPosition.Row;
-
         }
 
         /// <summary>
