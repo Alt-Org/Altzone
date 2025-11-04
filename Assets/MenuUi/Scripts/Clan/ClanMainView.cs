@@ -5,6 +5,7 @@ using Altzone.Scripts;
 using UnityEngine.UI;
 using Altzone.Scripts.Window;
 using System.Collections.Generic;
+using UnityEngine.Events;
 
 public class ClanMainView : MonoBehaviour
 {
@@ -35,11 +36,12 @@ public class ClanMainView : MonoBehaviour
 
     [Header("Buttons")]
     [SerializeField] private Button _joinClanButton;
+    [SerializeField] private Button _leaveClanButton;
 
-    //[Header("Pop Ups")]
-    //[SerializeField] private ClanLeavingPopUp _leaveClanPopUp;
-    //[SerializeField] private ClanJoiningPopUp _joinClanPopUp;
-    //[SerializeField] private GameObject _swipeBlockOverlay;
+    [Header("pop ups")]
+    [SerializeField] private ClanLeavingPopUp _leaveClanPopUp;
+    [SerializeField] private ClanJoiningPopUp _joinClanPopUp;
+    [SerializeField] private GameObject _swipeBlockOverlay;
 
     private void OnEnable()
     {
@@ -54,12 +56,22 @@ public class ClanMainView : MonoBehaviour
             SetClanProfile(data);
 
             _joinClanButton.onClick.RemoveAllListeners();
-            _joinClanButton.onClick.AddListener(() => { JoinClan(clan); });
+            _joinClanButton.onClick.AddListener(() => { ShowJoinClanPopUp(clan); });
+
         }
         else if (ServerManager.Instance.Clan != null)
         {
             _clanHeart.SetOwnClanHeart = true;
             Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) => SetClanProfile(clanData));
+
+            _leaveClanButton.onClick.RemoveAllListeners();
+            _leaveClanButton.onClick.AddListener(() => { ShowLeaveClanPopUp(); });
+        }
+        else
+        {
+            _clanHeart.SetOwnClanHeart = false;
+            _inClanButtons.SetActive(false);
+            _notInClanButtons.SetActive(true);
         }
     }
 
@@ -99,6 +111,8 @@ public class ClanMainView : MonoBehaviour
         _clanMembers.text = _clanActivityRanking.text = _clanWinsRanking.text = "-1";
         _clanPassword.text = _clanGoal.text = _clanAge.text = "";
         _flagImage.SetFlag(Language.None);
+        _inClanButtons.SetActive(false);
+        _notInClanButtons.SetActive(true);
     }
 
     private void ToggleClanPanel(bool isInClan)
@@ -126,56 +140,70 @@ public class ClanMainView : MonoBehaviour
         }));
     }
 
-    /*private void ShowOverlay (bool on)
+    public void LeaveClan(UnityAction<bool> onComplete)
+    {
+        StartCoroutine(ServerManager.Instance.LeaveClan(success =>
+        {
+            Debug.Log("[ClanMainView] LeaveClan callback, success=" + success);
+            if (success) Reset();
+            onComplete?.Invoke(success);
+        }));
+    }
+
+    private void ShowOverlay (bool on)
     {
         _swipeBlockOverlay.SetActive(on);
-    }*/
+    }
 
-    //private void ShowLeaveClanPopUp()
-    //{
-    //    //ShowOverlay(true);
-    //    _leaveClanPopUp.Show(
-    //        onConfirm: () =>
-    //        {
-    //            LeaveClan();
-    //            //ShowOverlay(false);
-    //        },
-    //        onCancel: () =>
-    //        {
-    //            //ShowOverlay(false);
-    //        });
-    //}
+    private void ShowLeaveClanPopUp()
+    {
+        ShowOverlay(true);
+        _leaveClanPopUp.Show(
+            onConfirm: () =>
+            {
+                LeaveClan();
+                ShowOverlay(false);
+            },
+            onCancel: () =>
+            {
+                ShowOverlay(false);
+            });
+    }
 
-    //private void ShowJoinClanPopUp(ServerClan clan)
-    //{
-    //    //ShowOverlay(true);
-    //    _joinClanPopUp.Show(
-    //        onConfirm: () =>
-    //        {
-    //            if(clan != null)
-    //            {
-    //                _leaveClanPopUp.Show(
-    //                    onConfirm: () =>
-    //                    {
-    //                        //LeaveClan();
-    //                        JoinClan(clan);
-    //                        //ShowOverlay(false);
-    //                    },
-    //                    onCancel: () =>
-    //                    {
-    //                        //ShowOverlay(false);
-    //                    });
-    //            }
-    //            else
-    //            {
-    //                JoinClan(clan);
-    //                //ShowOverlay(false);
-    //            }
+    private void ShowJoinClanPopUp(ServerClan clan)
+    {
+        ShowOverlay(true);
+        _joinClanPopUp.Show(
+            onConfirm: () =>
+            {
+                if (ServerManager.Instance.Clan != null && ServerManager.Instance.Clan._id != clan._id)
+                {
+                    _leaveClanPopUp.Show(
+                        onConfirm: () =>
+                        {
+                            LeaveClan(success =>
+                            {
+                                if(!success) return;
+                                JoinClan(clan);
+                            });
+                            
+                            ShowOverlay(false);
+                        },
+                        onCancel: () =>
+                        {
+                            ShowOverlay(false);
+                        });
+                }
+                else
+                {
+                    JoinClan(clan);
+                    ShowOverlay(false);
+                }
 
-    //        },
-    //        onCancel: () =>
-    //        {
-    //            //ShowOverlay(false);
-    //        });
-    //}
+            },
+            onCancel: () =>
+            {
+                ShowOverlay(false);
+            });
+    }
 }
