@@ -1,6 +1,6 @@
 /// @file BattleProjectileViewController.cs
 /// <summary>
-/// Handles projectile's sprite changes and its trail.
+/// Handles projectile's sprite changes and it's trail.
 /// </summary>
 
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace Battle.View.Projectile
 {
     /// <summary>
     /// <span class="brief-h">%Projectile view <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.</span><br/>
-    /// Handles projectile's sprite changes and its trail.
+    /// Handles projectile's sprite changes and it's trail.
     /// </summary>
     public class BattleProjectileViewController : QuantumEntityViewComponent
     {
@@ -57,11 +57,15 @@ namespace Battle.View.Projectile
 
         /// <summary>[SerializeField] Maximum amount of trail segments that can be active.</summary>
         /// @ref BattleProjectileViewController-SerializeFields
-        [SerializeField] private int _maxTrailAmount;
+        [SerializeField] private int _maxTrailCount;
 
         /// <summary>[SerializeField] The delay in seconds for each trail segment's movement.</summary>
         /// @ref BattleProjectileViewController-SerializeFields
         [SerializeField] private float _trailDelaySec;
+
+        /// <summary>[SerializeField] The amount by which each segment gets smaller compared to the previous one.</summary>
+        /// @ref BattleProjectileViewController-SerializeFields
+        [SerializeField] private float _trailScaleDegreesAmount;
 
         /// @}
 
@@ -74,22 +78,25 @@ namespace Battle.View.Projectile
         /// <param name="_">Current simulation frame.</param>
         public override void OnActivate(Frame _)
         {
-            _trailObjects = new GameObject[_maxTrailAmount];
-            _trailSpriteRenderers = new SpriteRenderer[_maxTrailAmount];
+            _trailObjects = new GameObject[_maxTrailCount];
+            _trailSpriteRenderers = new SpriteRenderer[_maxTrailCount];
 
-            _savedPositionQueue = new Queue<SavedPosition>[_maxTrailAmount];
-            _savedPositionPool = new List<SavedPosition>[_maxTrailAmount];
+            _trailDelayFrames = (int)(_trailDelaySec / Time.fixedDeltaTime);
 
-            for (int i = 0; i < _maxTrailAmount; i++)
+            _savedPositionsCount = _trailDelayFrames * (_maxTrailCount + 1);
+            _savedPositions = new Vector3[_savedPositionsCount];
+
+            for (int i = 0; i < _maxTrailCount; i++)
             {
                 _trailObjects[i] = Instantiate(_trailObject);
+                if (BattleGameViewController.LocalPlayerTeam == BattleTeamNumber.TeamBeta)
+                {
+                    _trailObjects[i].transform.rotation = Quaternion.Euler(90, 180, 0);
+                }
                 float scaleFactor = 1 - (i + 1) * 0.05f;
                 _trailObjects[i].transform.localScale *= scaleFactor;
                 _trailObjects[i].SetActive(false);
                 _trailSpriteRenderers[i] = _trailObjects[i].GetComponent<SpriteRenderer>();
-
-                _savedPositionQueue[i] = new Queue<SavedPosition>();
-                _savedPositionPool[i] = new List<SavedPosition>();
             }
 
             if (BattleGameViewController.LocalPlayerTeam == BattleTeamNumber.TeamBeta)
@@ -109,22 +116,28 @@ namespace Battle.View.Projectile
         private float _glowStrength;
 
         /// <value>Current amount of active trail segments.</value>
-        private int _currentTrailAmount;
+        private int _currentTrailCount;
 
         /// <value>The speed value at which the trail was last updated.</value>
         private float _previousTrailIncrementSpeed;
 
-        /// <value>The projectile's current speed value.</value>
-        private float _currentSpeed;
-
         /// <value>The projectile's base speed value.</value>
         private float _baseSpeed;
 
-        /// <value></value>
-        private Queue<SavedPosition>[] _savedPositionQueue;
+        /// <value>The time at which FixedUpdate last happened.</value>
+        private float _previousFixedUpdateTime;
 
-        /// <value></value>
-        private List<SavedPosition>[] _savedPositionPool;
+        /// <value>The trail delay presented in fixed update frames.</value>
+        private int _trailDelayFrames;
+
+        /// <value>The index to which the current position is to be saved.</value>
+        private int _savedPositionsIndex;
+
+        /// <value>The amount of snapshotted positions that are saved for trail logic.</value>
+        private int _savedPositionsCount;
+
+        /// <value>An array containing all saved position snapshots.</value>
+        private Vector3[] _savedPositions;
 
         /// <value>An array containing all the trail segment gameobjects.</value>
         private GameObject[] _trailObjects;
@@ -133,18 +146,17 @@ namespace Battle.View.Projectile
         private SpriteRenderer[] _trailSpriteRenderers;
 
         /// <summary>
-        /// Private class to create timestamped position objects from for use in handling trail segment delayed movement.
+        /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.FixedUpdate.html">FixedUpdate@u-exlink</a> method. Handles updating the saved position array at fixed intervals.
         /// </summary>
-        private class SavedPosition
+        private void FixedUpdate()
         {
-            /// <value>Saved position of the projectile.</value>
-            public Vector3 Position;
-            /// <value>Timestamp of when this position was saved.</value>
-            public float Time;
+            UpdateTrailArray();
+
+            _previousFixedUpdateTime = Time.time;
         }
 
         /// <summary>
-        /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.Update.html">Update@u-exlink</a> method. Handles calling HandleTrail to update each trail segment's position.
+        /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.Update.html">Update@u-exlink</a> method. Handles updating the trail every frame.
         /// </summary>
         private void Update()
         {
@@ -152,45 +164,38 @@ namespace Battle.View.Projectile
         }
 
         /// <summary>
-        /// Handles updating the position of each trail segment.
+        /// Handles updating the saved position array.
+        /// </summary>
+        private void UpdateTrailArray()
+        {
+            _savedPositionsIndex = (_savedPositionsIndex + 1) % _savedPositionsCount;
+
+            _savedPositions[_savedPositionsIndex] = transform.position;
+        }
+
+        /// <summary>
+        /// Handles updating the position of each active segment of the trail.
         /// </summary>
         private void HandleTrail()
         {
-            for (int i = 0; i < _currentTrailAmount; i++)
+            for (int i = 0; i < _currentTrailCount; i++)
             {
+                int currentDelayPositionIndex  = _savedPositionsIndex - _trailDelayFrames * (i + 1);
+                int previousDelayPositionIndex = currentDelayPositionIndex - 1;
+                currentDelayPositionIndex      = (_savedPositionsCount + currentDelayPositionIndex) % _savedPositionsCount;
+                previousDelayPositionIndex     = (_savedPositionsCount + previousDelayPositionIndex) % _savedPositionsCount;
 
-                SavedPosition position = null;
-                if (_savedPositionPool[i].Count > 1)
-                {
-                    position = _savedPositionPool[i][0];
-                    _savedPositionPool[i].Remove(position);
+                Vector3 currentDelayPosition  = _savedPositions[currentDelayPositionIndex];
+                Vector3 previousDelayPosition = _savedPositions[previousDelayPositionIndex];
 
-                    position.Position = transform.position;
-                    position.Time = Time.time;
-                }
-                else
-                {
-                    position = new SavedPosition();
-                    position.Position = transform.position;
-                    position.Time = Time.time;
-                }
+                if (currentDelayPosition == null) break;
 
-                _savedPositionQueue[i].Enqueue(position);
+                Vector3 positionDifference = currentDelayPosition - previousDelayPosition;
+                float timeDifference       = Time.time - _previousFixedUpdateTime;
 
-                SavedPosition delayPosition = null;
-                while (_savedPositionQueue[i].Count > 0)
-                {
-                    var peek = _savedPositionQueue[i].Peek();
-                    if (peek == null || position.Time - peek.Time < _trailDelaySec * (i + 1)) break;
+                timeDifference /= Time.fixedDeltaTime;
 
-                    delayPosition = _savedPositionQueue[i].Dequeue();
-                    _savedPositionPool[i].Add(delayPosition);
-                }
-
-                if (delayPosition != null)
-                {
-                    _trailObjects[i].transform.position = delayPosition.Position;
-                }
+                _trailObjects[i].transform.position = previousDelayPosition + positionDifference * timeDifference;
             }
         }
 
@@ -204,39 +209,42 @@ namespace Battle.View.Projectile
         {
             float newSpeed = (float)e.NewSpeed;
 
-            if (_baseSpeed == 0) _baseSpeed = newSpeed;
-            if (_previousTrailIncrementSpeed == 0) _previousTrailIncrementSpeed = newSpeed;
-
-            _currentSpeed = newSpeed;
+            if (_baseSpeed == 0)
+            {
+                _baseSpeed                   = newSpeed;
+                _previousTrailIncrementSpeed = newSpeed;
+            }
 
             if (newSpeed == _baseSpeed)
             {
-                for (int i = 0; i < _currentTrailAmount; i++)
+                for (int i = 0; i < _currentTrailCount; i++)
                 {
                     _trailObjects[i].SetActive(false);
-                    _savedPositionQueue[i].Clear();
-                    _savedPositionPool[i].Clear();
                 }
 
-                _currentTrailAmount = 0;
+                _currentTrailCount = 0;
                 _previousTrailIncrementSpeed = _baseSpeed;
 
                 return;
             }
 
-            if (_currentTrailAmount == _maxTrailAmount)
+            if (_currentTrailCount >= _maxTrailCount)
             {
                 return;
             }
 
-            while (_currentSpeed - _previousTrailIncrementSpeed >= _trailIncreaseSpeed)
-            { 
-                _currentTrailAmount++;
-                _trailObjects[_currentTrailAmount - 1].SetActive(true);
-                _trailObjects[_currentTrailAmount - 1].transform.position = transform.position;
+            float speedDelta = newSpeed - _previousTrailIncrementSpeed;
+            int newTrailAmount = _currentTrailCount + Mathf.FloorToInt(speedDelta / _trailIncreaseSpeed);
+            newTrailAmount = Mathf.Min(newTrailAmount, _maxTrailCount);
 
-                _previousTrailIncrementSpeed += _trailIncreaseSpeed;
+            for (int i = _currentTrailCount; i < newTrailAmount; i++)
+            {
+                _trailObjects[i].SetActive(true);
+                _trailObjects[i].transform.position = transform.position;
             }
+
+            _currentTrailCount = newTrailAmount;
+            _previousTrailIncrementSpeed = _baseSpeed + _trailIncreaseSpeed * _currentTrailCount;
         }
 
         /// <summary>
@@ -278,14 +286,12 @@ namespace Battle.View.Projectile
         {
             _trailRenderer.enabled = false;
 
-            for (int i = 0; i < _currentTrailAmount; i++)
+            for (int i = 0; i < _currentTrailCount; i++)
             {
                 _trailObjects[i].SetActive(false);
-                _savedPositionQueue[i].Clear();
-                _savedPositionPool[i].Clear();
             }
 
-            _currentTrailAmount = 0;
+            _currentTrailCount = 0;
             _previousTrailIncrementSpeed = _baseSpeed;
         }
     }
