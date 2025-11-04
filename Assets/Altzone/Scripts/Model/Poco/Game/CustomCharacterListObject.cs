@@ -15,7 +15,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public CustomCharacterListObject(string serverId = null, CharacterID Id = CharacterID.None)
         {
             if (serverId != null) ServerID = serverId;
-            else ServerID = string.Empty;
+            else ServerID = null;
             CharacterID = Id;
             if(CustomCharacter.IsTestCharacter(CharacterID)) IsTestCharacter = true;
             else IsTestCharacter = false;
@@ -24,7 +24,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public void SetData(string serverId = null, CharacterID Id = CharacterID.None)
         {
             if (serverId != null) ServerID = serverId;
-            else ServerID = string.Empty;
+            else ServerID = null;
             CharacterID = Id;
             if (CustomCharacter.IsTestCharacter(CharacterID)) IsTestCharacter = true;
             else IsTestCharacter = false;

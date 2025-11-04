@@ -8,6 +8,7 @@ input
     button RotationInput;
     FP RotationValue;
     int PlayerCharacterNumber;
+    bool GiveUpInput;
 }
 
 enum BattleMovementInputType

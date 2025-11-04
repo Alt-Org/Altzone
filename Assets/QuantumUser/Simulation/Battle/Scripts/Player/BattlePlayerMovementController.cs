@@ -4,13 +4,16 @@
 /// which contains the primary method for handling player movement as well as individual helper methods for moving and rotating players.
 /// </summary>
 
+// Unity usings
 using UnityEngine;
 using UnityEngine.Scripting;
 
+// Quantum usings
 using Quantum;
 using Input = Quantum.Input;
 using Photon.Deterministic;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player

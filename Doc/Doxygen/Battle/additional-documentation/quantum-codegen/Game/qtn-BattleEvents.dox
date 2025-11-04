@@ -46,10 +46,14 @@
 ///   @copybrief Quantum.EventBattlePlaySoundFX
 /// - <b>synced event</b> @ref BattleLastRowWallDestroyed { int WallNumber; BattleTeamNumber Team; FP LightrayRotation; BattleLightrayColor LightrayColor; BattleLightraySize LightraySize }  
 ///   @copybrief Quantum.EventBattleLastRowWallDestroyed
+/// - <b>synced event</b> @ref BattleDiamondLanded { EntityRef Entity }  
+///   @copybrief Quantum.EventBattleDiamondLanded
 /// - <b>synced event</b> @ref BattleCharacterTakeDamage { EntityRef Entity; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; FP HealthPercentage }  
 ///   @copybrief Quantum.EventBattleCharacterTakeDamage
 /// - <b>synced event</b> @ref BattleShieldTakeDamage { EntityRef Entity; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; FP DefenceValue }  
 ///   @copybrief Quantum.EventBattleShieldTakeDamage
+/// - <b>synced event</b> @ref BattleGiveUpStateChange {BattleTeamNumber Team; BattlePlayerSlot Slot; BattleGiveUpStateChange StateUpdate }  
+///   @copybrief Quantum.EventBattleGiveUpStateChange
 ///
 /// ### Debug events
 /// - <b>synced event</b> @ref BattleDebugUpdateStatsOverlay { BattleCharacterBase Character}  
@@ -232,6 +236,17 @@
 ///
 /// ---
 ///
+/// ---
+///
+/// @anchor BattleDiamondLanded
+/// ### BattleDiamondLanded
+/// @copybrief Quantum.EventBattleDiamondLanded
+///
+/// Generated Class @cref{Quantum,EventBattleDiamondLanded}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleDiamondLanded}
+///
+/// ---
+///
 /// @anchor BattleCharacterTakeDamage
 /// ### BattleCharacterTakeDamage
 /// @copybrief Quantum.EventBattleCharacterTakeDamage
@@ -247,6 +262,15 @@
 ///
 /// Generated Class @cref{Quantum,EventBattleShieldTakeDamage}  
 /// Generated Method @cref{Quantum,Frame.FrameEvents.BattleShieldTakeDamage}
+///
+/// ---
+///
+/// @anchor BattleGiveUpStateChange
+/// ### BattleGiveUpStateChange
+/// @copybrief Quantum.EventBattleGiveUpStateChange
+///
+/// Generated Class @cref{Quantum,EventBattleGiveUpStateChange}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleGiveUpStateChange}
 ///
 /// ---
 /// ---
@@ -385,6 +409,14 @@
 /// Destroys StoneCharacterPiece behind the SoulWall segment and spawns a lightray from the crack.<br/>  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
+/// @class Quantum::EventBattleDiamondLanded
+/// <summary>
+/// Synced event. Used when a diamond stops traveling across the arena.
+/// </summary>
+///
+/// Sets the alpha of the diamond sprite to 1.<br/>  
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
 /// @class Quantum::EventBattleCharacterTakeDamage
 /// <summary>
 /// Synced event. Used when a character takes damage.
@@ -399,6 +431,14 @@
 /// </summary>
 ///
 /// Used to update the UI to reflect change in character's defence.<br/>  
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattleGiveUpStateChange
+/// <summary>
+/// Synced event. Used when player changes give up state.
+/// </summary>
+///
+/// Used to update the UI to reflect change in player's give up state.<br/>  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
 /// @class Quantum::EventBattleDebugUpdateStatsOverlay

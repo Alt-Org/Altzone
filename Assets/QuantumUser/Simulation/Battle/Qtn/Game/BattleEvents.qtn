@@ -101,6 +101,11 @@ synced event BattleLastRowWallDestroyed
     BattleLightraySize LightraySize;
 }
 
+synced event BattleDiamondLanded
+{
+    EntityRef Entity;
+}
+
 synced event BattleCharacterSelected
 {
     BattlePlayerSlot Slot;
@@ -123,6 +128,13 @@ synced event BattleShieldTakeDamage
     BattlePlayerSlot Slot;
     int CharacterNumber;
     FP DefenceValue;
+}
+
+synced event BattleGiveUpStateChange
+{
+    BattleTeamNumber Team;
+    BattlePlayerSlot Slot;
+    BattleGiveUpStateUpdate StateUpdate;
 }
 
 //} Gameplay events

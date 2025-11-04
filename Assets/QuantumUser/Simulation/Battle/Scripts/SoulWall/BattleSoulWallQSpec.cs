@@ -4,6 +4,7 @@
 /// </summary>
 /// @bigtext{Filled with data from @ref BattleSoulWallQSpec.asset "BattleSoulWallQSpec" data asset.}
 
+// Quantum usings
 using Quantum;
 
 namespace Battle.QSimulation.SoulWall
