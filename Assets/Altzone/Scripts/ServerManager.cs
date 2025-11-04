@@ -735,13 +735,28 @@ public class ServerManager : MonoBehaviour
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                ServerPlayer playerInfo = Player;
+                JObject result = JObject.Parse(player);
+                //Debug.LogWarning(result);
+                ServerPlayer playerInfo = result.ToObject<ServerPlayer>();
+
+                if (playerInfo.name != null) Player.name = playerInfo.name;
+                //if (playerInfo.uniqueIdentifier != null) Player.uniqueIdentifier = playerInfo.uniqueIdentifier;
+                if (playerInfo.clan_id != null) Player.clan_id = playerInfo.clan_id;
+                if (playerInfo.currentAvatarId != null) Player.currentAvatarId = playerInfo.currentAvatarId;
+                if (playerInfo.battleCharacter_ids != null) Player.battleCharacter_ids = playerInfo.battleCharacter_ids;
+                if (playerInfo.above13 != null) Player.above13 = playerInfo.above13;
+                if (playerInfo.parentalAuth != null) Player.parentalAuth = playerInfo.parentalAuth;
+                if (playerInfo.avatar != null) Player.avatar = playerInfo.avatar;
+                if (playerInfo.gameStatistics != null) Player.gameStatistics = playerInfo.gameStatistics;
+                if (playerInfo.DailyTask != null) Player.DailyTask = playerInfo.DailyTask;
+                if (playerInfo.clanRole_id != null) Player.clanRole_id = playerInfo.clanRole_id;
+                if (playerInfo.clanLogo != null) Player.clanLogo = playerInfo.clanLogo;
 
 
                 //Player = playerInfo;
 
                 if (callback != null)
-                    callback(playerInfo);
+                    callback(Player);
             }
             else
             {
