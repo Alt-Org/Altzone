@@ -23,7 +23,6 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _clanActivityRanking;
     [SerializeField] private TextMeshProUGUI _clanPassword;
     [SerializeField] private TextMeshProUGUI _clanGoal;
-    [SerializeField] private TextMeshProUGUI _clanAge;
 
     [Header("Other settings fields")]
     [SerializeField] GameObject _clanOpenObject;
@@ -37,15 +36,37 @@ public class ClanMainView : MonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button _joinClanButton;
     [SerializeField] private Button _leaveClanButton;
+    [SerializeField] private Button _linkButton;
 
     [Header("pop ups")]
     [SerializeField] private ClanLeavingPopUp _leaveClanPopUp;
     [SerializeField] private ClanJoiningPopUp _joinClanPopUp;
     [SerializeField] private GameObject _swipeBlockOverlay;
 
+    [Header("Icons")]
+    [SerializeField] private Image _clanAgeImage;
+    [SerializeField] private List<AgeIcon> _ageIcons = new List<AgeIcon>();
+
+    [System.Serializable]
+    private struct AgeIcon
+    {
+        public ClanAge age;
+        public Sprite icon;
+    }
+
+    private Sprite GetAgeSprite(ClanAge age)
+    {
+        foreach (var ai in _ageIcons)
+        {
+            if (ai.age == age) return ai.icon;
+        }
+        return null;
+    }
+
     private void OnEnable()
     {
         ToggleClanPanel(false);
+        OpenLink();
 
         ServerClan clan = DataCarrier.GetData<ServerClan>(DataCarrier.ClanListing, suppressWarning: true);
         if (clan != null)
@@ -75,6 +96,15 @@ public class ClanMainView : MonoBehaviour
         }
     }
 
+    private void OpenLink()
+    {
+        string url = "https://altzone.fi/fi/clans/6740af56d977418ddbe08e29";
+        _linkButton.onClick.AddListener(() =>
+        {
+            Application.OpenURL(url);
+        });
+    }
+
     private void SetClanProfile(ClanData clan)
     {
         ToggleClanPanel(true);
@@ -91,7 +121,11 @@ public class ClanMainView : MonoBehaviour
         _clanPhrase.text = clan.Phrase;
         _flagImage.SetFlag(clan.Language);
         _clanGoal.text = ClanDataTypeConverter.GetGoalText(clan.Goals);
-        _clanAge.text = ClanDataTypeConverter.GetAgeText(clan.ClanAge);
+
+        var ageSprite = GetAgeSprite(clan.ClanAge);
+        _clanAgeImage.sprite = ageSprite;
+        _clanAgeImage.preserveAspect = true;
+        _clanAgeImage.enabled = ageSprite != null;
 
         _valuePanel.SetValues(clan.Values);
 
@@ -109,10 +143,16 @@ public class ClanMainView : MonoBehaviour
         _clanName.text = "Clan Name";
         _clanPhrase.text = "Clan Phrase";
         _clanMembers.text = _clanActivityRanking.text = _clanWinsRanking.text = "-1";
-        _clanPassword.text = _clanGoal.text = _clanAge.text = "";
         _flagImage.SetFlag(Language.None);
         _inClanButtons.SetActive(false);
         _notInClanButtons.SetActive(true);
+
+        _clanPassword.text = _clanGoal.text = "";
+        if (_clanAgeImage != null)
+        {
+            _clanAgeImage.sprite = null;
+            _clanAgeImage.enabled = false;
+        }
     }
 
     private void ToggleClanPanel(bool isInClan)
