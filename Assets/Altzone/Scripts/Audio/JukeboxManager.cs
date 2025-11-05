@@ -146,7 +146,7 @@ namespace Altzone.Scripts.Audio
         public delegate void ClearJukeboxVisual();
         public event ClearJukeboxVisual OnClearJukeboxVisuals;
 
-        public delegate void SetVisibleElapsedTime(float timeElapsed);
+        public delegate void SetVisibleElapsedTime(float musicTrackLength, float timeElapsed);
         public event SetVisibleElapsedTime OnSetVisibleElapsedTime;
 
         //public delegate void SetPlayButtonImages(bool value);
@@ -571,9 +571,8 @@ namespace Altzone.Scripts.Audio
             //List<ServerSong> foundInServer = new List<ServerSong>();
             List<ServerCompareData> deleteDatas = new List<ServerCompareData>();
             List<ServerCompareData> addDatas = new List<ServerCompareData>();
-
-            Debug.LogError(serverPlaylist.songQueue.Count);
             List<ServerSong> serverSongs = serverPlaylist.songQueue;
+
             //Filter out local users tracks.
             //for (int j = 0; j < serverPlaylist.songQueue.Count; j++)
             //{
@@ -708,7 +707,7 @@ namespace Altzone.Scripts.Audio
             if (_currentTrackQueueData != null && serverCurrentSong.songId == _currentTrackQueueData.ServerSongData.songId)
             {
                 _musicTrackStartTime = System.DateTimeOffset.FromUnixTimeMilliseconds(serverCurrentSong.startedAt).DateTime;
-                Debug.LogError(_musicTrackStartTime.ToString());
+                //Debug.LogError(_musicTrackStartTime.ToString());
                 ContinueTrack(false);
             }
             else
@@ -749,11 +748,13 @@ namespace Altzone.Scripts.Audio
         /// <returns>Track name that is playing.</returns>
         public string PlayTrack(TrackQueueData trackQueueData, bool forcePlay)
         {
-            if (!forcePlay && (trackQueueData == null || _trackEndingControlCoroutine != null || (_playbackPaused && _currentTrackQueueData != null) || _trackPreviewActive)) return null;
+            if (!forcePlay && PlayTrackBlockingCheck(trackQueueData) || _trackPreviewActive) return null;
 
             string name = "";
 
             //MusicTrack validMusicTrack = GetNotHatedMusicTrack(trackQueueData);
+
+            _currentTrackQueueData = trackQueueData;
 
             if (_jukeboxMuted)
             {
@@ -761,11 +762,11 @@ namespace Altzone.Scripts.Audio
             }
             else
             {
-                name = AudioManager.Instance.PlayMusic("Jukebox", trackQueueData.MusicTrack);
+                name = AudioManager.Instance.PlayMusic("Jukebox", trackQueueData.MusicTrack, MusicHandler.MusicSwitchType.CrossFade);
 
                 if (string.IsNullOrEmpty(name))
                 {
-                    Debug.LogError("Failed to play jukebox music track!");
+                    Debug.LogWarning("Failed to play jukebox music track!");
                     return null;
                 }
 
@@ -774,7 +775,6 @@ namespace Altzone.Scripts.Audio
 
             if (OnSetSongInfo != null) OnSetSongInfo.Invoke(trackQueueData.MusicTrack);
 
-            _currentTrackQueueData = trackQueueData;
             _musicElapsedTime = 0f;
 
             if (_trackEndingControlCoroutine != null) StopCoroutine( _trackEndingControlCoroutine);
@@ -783,6 +783,11 @@ namespace Altzone.Scripts.Audio
             //Debug.LogError(_musicElapsedTime + " | " + _currentTrackQueueData.MusicTrack.Music.length);
             //OnSetPlayButtonImages?.Invoke(true);
             return name;
+        }
+
+        private bool PlayTrackBlockingCheck(TrackQueueData trackQueueData)
+        {
+            return trackQueueData == null || _trackEndingControlCoroutine != null || (_playbackPaused && _currentTrackQueueData != null);
         }
 
         /// <returns><c>True</c> if paused.</returns>
@@ -804,7 +809,7 @@ namespace Altzone.Scripts.Audio
                     PlayTrack();
             }
             else
-                AudioManager.Instance.PlayFallBackTrack();
+                AudioManager.Instance.PlayFallBackTrack(MusicHandler.MusicSwitchType.CrossFade);
 
             if (_playbackPaused) StopJukebox();
 
@@ -816,6 +821,8 @@ namespace Altzone.Scripts.Audio
 
         public string ContinueTrack(bool muteActivation)
         {
+            if (_trackPreviewActive) return null;
+
             if (_playbackPaused) _playbackPaused = false;
 
             if (_trackQueuePointer >= _trackQueue.Count) _trackQueuePointer = 0;
@@ -828,18 +835,13 @@ namespace Altzone.Scripts.Audio
                 {
                     if (!_trackQueue[_trackQueuePointer].InUse()) TryFindValidQueueData();
 
-                    if (seconds < _trackQueue[_trackQueuePointer].MusicTrack.Music.length)
-                        break;
+                    if (seconds < _trackQueue[_trackQueuePointer].MusicTrack.Music.length) break;
 
                     _currentTrackQueueData = _trackQueue[_trackQueuePointer];
-
                     seconds -= _trackQueue[_trackQueuePointer].MusicTrack.Music.length;
-
                     _trackQueuePointer++;
-                    //Debug.LogError("continue: " + _trackQueuePointer);
-                    if (_trackQueuePointer >= _trackQueue.Count) _trackQueuePointer = 0;
 
-                    //if (!_trackQueue[_trackQueuePointer].InUse()) TryFindValidQueueData();
+                    if (_trackQueuePointer >= _trackQueue.Count) _trackQueuePointer = 0;
                 }
 
                 _musicElapsedTime = seconds;
@@ -851,6 +853,8 @@ namespace Altzone.Scripts.Audio
             //OnSetPlayButtonImages?.Invoke(true);
 
             //MusicTrack musicTrack = GetNotHatedMusicTrack();
+
+            if (_currentTrackQueueData == null) return null;
 
             if (OnSetSongInfo != null) OnSetSongInfo.Invoke(_currentTrackQueueData.MusicTrack);
 
@@ -876,7 +880,7 @@ namespace Altzone.Scripts.Audio
             {
                 if (_currentTrackQueueData == null || !_currentTrackQueueData.InUse() || _musicElapsedTime >= _currentTrackQueueData.MusicTrack.Music.length) break;
 
-                if (OnSetVisibleElapsedTime != null) OnSetVisibleElapsedTime.Invoke(_musicElapsedTime);
+                if (!_trackPreviewActive && OnSetVisibleElapsedTime != null) OnSetVisibleElapsedTime.Invoke(_currentTrackQueueData.MusicTrack.Music.length, _musicElapsedTime);
                 
                 yield return null;
                 _musicElapsedTime += Time.deltaTime;
@@ -1260,7 +1264,7 @@ namespace Altzone.Scripts.Audio
 
             if (name == null)
             {
-                Debug.LogError("Failed to start music preview playback.");
+                Debug.LogWarning("Failed to start music preview playback.");
                 return;
             }
 
@@ -1280,6 +1284,8 @@ namespace Altzone.Scripts.Audio
 
             while (timer < _previewTime)
             {
+                if (OnSetVisibleElapsedTime != null) OnSetVisibleElapsedTime.Invoke(_currentPreviewMusicTrackHandler.MusicTrack.Music.length, timer);
+
                 yield return null;
                 timer += Time.deltaTime;
             }
@@ -1293,7 +1299,7 @@ namespace Altzone.Scripts.Audio
 
             if (name == null)
             {
-                Debug.LogError("Failed to continue track playback.");
+                Debug.LogWarning("Failed to continue track playback.");
                 yield break;
             }
 

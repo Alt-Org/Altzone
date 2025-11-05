@@ -327,7 +327,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
                 case JukeboxManager.PlaybackHistoryType.Add:
                     {
                         queueData.Pointer = GetFreeJukeboxTrackQueueHandler();
-                        Debug.LogError("add history");
+                        //Debug.LogError("add history");
                         JukeboxTrackQueueHandler handler = GetTrackQueueHandler(queueData.Pointer);
 
                         handler.SetTrack(queueData.ServerSongData.id, queueData.MusicTrack, playbackHistoryData.Target1.LinearIndex, queueData.UserOwned, JukeboxManager.Instance.GetTrackFavoriteType(queueData.MusicTrack));
@@ -339,7 +339,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
                     {
                         int chunkIndex = Mathf.FloorToInt(queueData.LinearIndex / JukeboxManager.Instance.TrackChunkSize);
                         int poolIndex = (queueData.LinearIndex % JukeboxManager.Instance.TrackChunkSize);
-                        Debug.LogError("insert history");
+                        //Debug.LogError("insert history");
                         JukeboxTrackQueueHandler handler = GetInsertedJukeboxTrackQueueHandler(chunkIndex, poolIndex);
 
                         queueData.Pointer = new(chunkIndex, poolIndex);
@@ -351,7 +351,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
                     }
                 case JukeboxManager.PlaybackHistoryType.Hide:
                     {
-                        Debug.LogError(queueData.Pointer);
+                        //Debug.LogError(queueData.Pointer);
                         _queueHandlerChunks[queueData.Pointer.ChunkIndex].Pool[queueData.Pointer.PoolIndex].SetVisibility(false);
 
                         break;
@@ -398,14 +398,14 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
     //}
     #endregion
 
-    private void UpdateMusicElapsedTime(float elapsedTime)
+    private void UpdateMusicElapsedTime(float musicTrackLength, float elapsedTime)
     {
         //string minutes = (elapsedTime / 60f).ToString().Split('.')[0];
         //string seconds = (elapsedTime % 60).ToString().Split('.')[0];
 
         //_trackPlayTimeText.text = $"{minutes}:{((seconds.Length == 1) ? ("0" + seconds) : seconds)}";
         if (JukeboxManager.Instance.CurrentTrackQueueData.InUse())
-            _trackPlayTimeSlider.value = elapsedTime / JukeboxManager.Instance.CurrentTrackQueueData.MusicTrack.Music.length;
+            _trackPlayTimeSlider.value = elapsedTime / musicTrackLength;
     }
 
     #region Optimizations
