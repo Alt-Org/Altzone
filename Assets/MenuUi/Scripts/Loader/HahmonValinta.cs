@@ -12,6 +12,7 @@ using MenuUi.Scripts.Window;
 using Newtonsoft.Json.Linq;
 using System;
 using Altzone.Scripts.Language;
+using Altzone.Scripts.ReferenceSheets;
 
 [System.Serializable]
 public class CharacterData
@@ -83,7 +84,7 @@ public class HahmonValinta : AltMonoBehaviour
 
         // Update the character name text
         //characterNameText.text = data.characterName;
-        characterNameText.SetText(SettingsCarrier.Instance.Language, new string[1] { data.characterName });
+        characterNameText.SetText(SettingsCarrier.Instance.Language, new string[1] { ClassReference.Instance.GetName(CustomCharacter.GetClass(data.uniqueID))});
 
         // Log the selected character's name
         Debug.Log("Selected character: " + data.characterName);
