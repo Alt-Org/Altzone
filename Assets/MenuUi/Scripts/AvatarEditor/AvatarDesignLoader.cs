@@ -152,8 +152,8 @@ public class AvatarDesignLoader : AltMonoBehaviour
         var playerAvatar = _avatarEditorController?.PlayerAvatar;
         if (playerAvatar == null)
         {
-            //playerAvatar = new PlayerAvatar(defaultAvatars[0]);
-        //}
+            playerAvatar = new PlayerAvatar(defaultAvatars[0]);
+        }
         playerData.AvatarData = new(
             playerAvatar.Name,
             null,
@@ -167,7 +167,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
             playerData.AvatarData.SetPieceID((AvatarPiece)feature, int.Parse(playerAvatar.GetPartId(feature)));
             Debug.Log("The added featureId is " + playerAvatar.GetPartId(feature));
         }
-        }
+        //}
 
     }
 
