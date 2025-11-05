@@ -616,8 +616,7 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator GetOtherPlayerFromServer(string id, Action<ServerPlayer> callback, bool dailyTask = false)
     {
-        if (Player != null)
-            Debug.LogWarning("Player already exists. Consider using ServerManager.Instance.Player if the most up to data data from server is not needed.");
+       
 
         string withDailyTask = "";
         if (dailyTask)withDailyTask= "?with=DailyTask";
@@ -629,7 +628,7 @@ public class ServerManager : MonoBehaviour
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 Debug.LogWarning(result);
                 ServerPlayer player = result["data"]["Player"].ToObject<ServerPlayer>();
-                Player = player;
+                
 
                 if (callback != null)
                     callback(player);

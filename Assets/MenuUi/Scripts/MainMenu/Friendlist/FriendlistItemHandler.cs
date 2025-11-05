@@ -23,7 +23,7 @@ public class FriendlistItem : MonoBehaviour
     private Action _onRemoveClick;
     
    
-    public void Initialize(string name, PlayerData playerData = null, AvatarVisualData avatarVisualData = null, ClanLogo clanLogo = null, bool isOnline = true, Action onRemoveClick = null)
+    public void Initialize(string name, AvatarVisualData avatarVisualData = null, ClanLogo clanLogo = null, bool isOnline = true, Action onRemoveClick = null)
    {
         _nameText.text = name;
         _isOnline = isOnline;

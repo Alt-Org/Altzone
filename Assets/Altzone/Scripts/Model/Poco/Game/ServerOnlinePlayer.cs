@@ -8,6 +8,4 @@ public class ServerOnlinePlayer
 {
     public string _id { get; set; }
     public string name { get; set; }
-    public PlayerData PlayerData { get; set; }
-    public ClanData ClanData { get; set; }
 }

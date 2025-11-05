@@ -5,9 +5,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
+using System.Threading;
+using Assets.Altzone.Scripts.Model.Poco.Player;
 
 
-public class FriendlistHandler : MonoBehaviour
+public class FriendlistHandler : AltMonoBehaviour
 
 {
 
@@ -57,6 +59,11 @@ public class FriendlistHandler : MonoBehaviour
 
     private void BuildOnlinePlayerList(List<ServerOnlinePlayer> onlinePlayers)
     {
+        StartCoroutine(BuildOnlineList(onlinePlayers));
+    }
+
+    private IEnumerator BuildOnlineList(List<ServerOnlinePlayer> onlinePlayers)
+    {
         UpdateOnlineFriendsCount(onlinePlayers);
 
         foreach (var item in _friendlistItems)
@@ -69,23 +76,29 @@ public class FriendlistHandler : MonoBehaviour
         foreach (var player in onlinePlayers)
         {
             string playerName = player.name;
+            ServerPlayer serverPlayer = null;
+            bool timeout = false;
 
-             
-            PlayerData playerData = player.PlayerData;
-            //ClanLogo clanLogo = player.ClanData?.Logo;
+            StartCoroutine(ServerManager.Instance.GetOtherPlayerFromServer(player._id, c => serverPlayer = c));
+            StartCoroutine(WaitUntilTimeout(3, c => timeout = c));
+            yield return new WaitUntil(()=>serverPlayer != null || timeout);
+
+
+            ClanLogo clanLogo = null;
             AvatarVisualData avatarVisualData = null;
-            if (playerData != null && player.PlayerData.SelectedCharacterId != 0)
+
+            if (serverPlayer != null)
             {
-                avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(player.PlayerData);
+                clanLogo = serverPlayer.clanLogo;
+                avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(new AvatarData(serverPlayer.name,serverPlayer.avatar));
             }
          
 
             FriendlistItem newItem = Instantiate(_friendlistItemPrefab, _friendlistContent);
             newItem.Initialize(
                  playerName,
-                 playerData: player.PlayerData,
                  avatarVisualData: avatarVisualData,
-                 //clanLogo: clanLogo,
+                 clanLogo: clanLogo,
                  isOnline: true,
                  onRemoveClick: () => { }
 
