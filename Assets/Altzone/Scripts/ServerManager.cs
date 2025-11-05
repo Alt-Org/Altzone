@@ -1822,13 +1822,13 @@ public class ServerManager : MonoBehaviour
     #region Jukebox
     public IEnumerator GetJukeboxClanPlaylist(Action<ServerPlaylist> callback)
     {
-        StartCoroutine(WebRequests.Get(SERVERADDRESS + "clan/jukebox", AccessToken, request =>
+        StartCoroutine(WebRequests.Get(SERVERADDRESS + "jukebox", AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 Debug.LogWarning(result);
-                ServerPlaylist playlist = result["data"]["Object"].ToObject<ServerPlaylist>();
+                ServerPlaylist playlist = result["data"]["Jukebox"].ToObject<ServerPlaylist>();
 
                 if (callback != null)
                     callback(playlist);
