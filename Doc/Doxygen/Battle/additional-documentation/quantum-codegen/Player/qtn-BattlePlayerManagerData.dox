@@ -60,6 +60,9 @@
 /// @var array Quantum.BattlePlayerManagerDataQSingleton::IsBot
 /// <summary>Bool array of bot states for all players.</summary>
 ///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::IsAbandoned
+/// <summary>Bool array of abandoned states of all players.</summary>
+///
 /// @var array Quantum.BattlePlayerManagerDataQSingleton::RespawnTimer;
 /// <summary>Array for character respawn timers.</summary>
 ///
@@ -78,3 +81,5 @@
 /// @var array Quantum.BattlePlayerManagerDataQSingleton::AllCharactersStates
 /// <summary>Array of all characters states.</summary>
 ///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::PlayerGiveUpStates
+/// <summary>Bool array of give up states of all players.</summary>

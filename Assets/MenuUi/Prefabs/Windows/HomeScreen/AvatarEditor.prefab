@@ -414,7 +414,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 240.9
+  m_fontSize: 213.5
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -630,25 +630,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _avatarClassInfoList:
   - Name: Confluent
-    Type: 0
+    Type: 600
     list:
     - Name: Besties
       id: 601
       DivanImage: {r: 1, g: 0, b: 0.5451832, a: 1}
   - Name: Intellectualizer
-    Type: 0
+    Type: 700
     list:
     - Name: Researcher
       id: 701
       DivanImage: {r: 0.020222664, g: 0, b: 1, a: 1}
   - Name: Desensitizer
-    Type: 0
+    Type: 100
     list:
     - Name: Bodybuilder
       id: 102
       DivanImage: {r: 0.5622641, g: 0.06259162, b: 0.06259162, a: 1}
   - Name: Trickster
-    Type: 0
+    Type: 200
     list:
     - Name: Comedian
       id: 201
@@ -657,13 +657,13 @@ MonoBehaviour:
       id: 203
       DivanImage: {r: 0.06666667, g: 0.6, b: 0, a: 1}
   - Name: Projector
-    Type: 0
+    Type: 400
     list:
     - Name: Grafitiartist
       id: 401
       DivanImage: {r: 1, g: 0.55447966, b: 0, a: 1}
   - Name: Retroflector
-    Type: 0
+    Type: 500
     list:
     - Name: Overeater
       id: 501
@@ -672,7 +672,7 @@ MonoBehaviour:
       id: 502
       DivanImage: {r: 0, g: 0.68235296, b: 1, a: 1}
   - Name: Obedient
-    Type: 0
+    Type: 300
     list:
     - Name: Preacher
       id: 301
@@ -4925,7 +4925,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48.35
+  m_fontSize: 42.85
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5073,6 +5073,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _avatarEditorCharacterHandle: {fileID: 5197823364483463630}
+  _avatarEditorController: {fileID: 814479154280025250}
   _featureButtonsHandler: {fileID: 4606869012896251470}
   _characterImageParent: {fileID: 5291960247044874626}
   _featureButtonsParent: {fileID: 8128324292538002168}

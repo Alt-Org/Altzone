@@ -1,5 +1,8 @@
+// System usings
 using System;
 using System.Runtime.CompilerServices;
+
+// Quantum usings
 using Quantum;
 
 namespace Battle.QSimulation.Game

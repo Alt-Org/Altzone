@@ -3,10 +3,15 @@
 /// Contains @cref{Battle.View.UI,BattleUiCharacterFrameComponent} class which controls character icon frames.
 /// </summary>
 
+// System usings
 using System;
-using Quantum;
+
+// Unity usings
 using UnityEngine;
 using UnityEngine.UI;
+
+// Quantum usings
+using Quantum;
 
 namespace Battle.View.UI
 {

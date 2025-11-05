@@ -59,7 +59,7 @@ namespace Altzone.Scripts.Chat
         internal string _id;
         private string _username;
 
-        private bool chatPreviewIsEnabled;
+        private bool chatPreviewIsEnabled = true;
 
         private WebSocket _socket;
         //private ChatController _chatController;                 // Controller for the main chat

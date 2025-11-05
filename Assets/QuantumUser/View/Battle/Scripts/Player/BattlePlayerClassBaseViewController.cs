@@ -5,8 +5,11 @@
 /// Works together with @cref{Battle.View.Player,BattlePlayerViewController}, which handles the shared player view logic.
 /// </summary>
 
-using Quantum;
+// Unity usings
 using UnityEngine;
+
+// Quantum usings
+using Quantum;
 
 namespace Battle.View.Player
 {

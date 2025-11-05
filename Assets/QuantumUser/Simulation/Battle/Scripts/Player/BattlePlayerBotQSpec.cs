@@ -1,5 +1,6 @@
-using Photon.Deterministic;
+// Quantum usings
 using Quantum;
+using Photon.Deterministic;
 
 namespace Battle.QSimulation.Player
 {
