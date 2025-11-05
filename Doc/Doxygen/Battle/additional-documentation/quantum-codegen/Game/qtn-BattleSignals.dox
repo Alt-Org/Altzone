@@ -6,7 +6,7 @@
 /// ## Signals
 /// - <b>signal</b> @ref BattleOnDiamondHitPlayer (BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)   
 ///   @copybrief Quantum.ISignalBattleOnDiamondHitPlayer
-/// - <b>signal</b> @ref BattleOnGameOver (BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)   
+/// - <b>signal</b> @ref BattleOnGameOver (BattleTeamNumber winningTeam)   
 ///   @copybrief Quantum.ISignalBattleOnGameOver
 ///
 /// ---

@@ -6,8 +6,10 @@
 /// This script:<br/>
 /// Handles %Battle Ui joystick functionality.
 
+// Unity usings
 using UnityEngine;
 
+// Altzone usings
 using Altzone.Scripts.BattleUiShared;
 
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;

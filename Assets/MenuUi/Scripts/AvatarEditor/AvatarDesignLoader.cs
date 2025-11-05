@@ -140,7 +140,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
         if (playerData.AvatarData?.Validate() == true)
             return;
 
-        Debug.Log("AvatarData is null or invalid. Using default data.");
+        Debug.LogWarning("AvatarData is null or invalid. Using default data.");
 
         var defaultAvatars = _avatarDefaultReference.GetByCharacterId(playerData.SelectedCharacterId);
         if (defaultAvatars == null || defaultAvatars.Count == 0)
@@ -149,9 +149,11 @@ public class AvatarDesignLoader : AltMonoBehaviour
             return;
         }
 
-        var playerAvatar = _avatarEditorController.PlayerAvatar;
-        //old declaration -> new PlayerAvatar(defaultAvatars[0]);
-
+        var playerAvatar = _avatarEditorController?.PlayerAvatar;
+        if (playerAvatar == null)
+        {
+            playerAvatar = new PlayerAvatar(defaultAvatars[0]);
+        }
         playerData.AvatarData = new(
             playerAvatar.Name,
             null,
@@ -165,6 +167,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
             playerData.AvatarData.SetPieceID((AvatarPiece)feature, int.Parse(playerAvatar.GetPartId(feature)));
             Debug.Log("The added featureId is " + playerAvatar.GetPartId(feature));
         }
+        //}
 
     }
 

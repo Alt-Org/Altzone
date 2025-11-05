@@ -89,7 +89,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 if (success)
                 {
-                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters(result =>
+                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters((result, chaList) =>
                     {
                         if (result)
                         {

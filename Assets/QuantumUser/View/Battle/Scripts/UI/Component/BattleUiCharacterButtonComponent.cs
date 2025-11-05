@@ -6,10 +6,12 @@
 /// This script:<br/>
 /// Handles a BattleUiPlayerInfo prefab's character button visuals and component references.
 
+// Unity usings
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+// Altzone usings
 using Altzone.Scripts.ModelV2;
 
 namespace Battle.View.UI

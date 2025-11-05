@@ -4,10 +4,15 @@
 /// which is a <see cref="Battle.View.Player.BattlePlayerClassProjectorViewController">class %view controller</see> for the Projector character class.
 /// </summary>
 
-using Battle.View.Game;
-using Photon.Deterministic;
-using Quantum;
+// Unity usings
 using UnityEngine;
+
+// Quantum usings
+using Quantum;
+using Photon.Deterministic;
+
+// Battle View usings
+using Battle.View.Game;
 
 namespace Battle.View.Player
 {

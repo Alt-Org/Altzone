@@ -1,7 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using Quantum;
+// Unity usings
 using UnityEngine;
+
+// Quantum usings
+using Quantum;
 
 namespace Battle.QSimulation.Player
 {

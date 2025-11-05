@@ -114,7 +114,7 @@ namespace MenuUi.Scripts.AvatarEditor
             return input.Any(ch => !char.IsLetterOrDigit(ch));
         }
 
-        private void SortAndAssignByID(string avatarPartId)
+        public void SortAndAssignByID(string avatarPartId)
         {
             if(string.IsNullOrEmpty(avatarPartId)) {  return; }
             if(avatarPartId.Length  < 7) { return; }

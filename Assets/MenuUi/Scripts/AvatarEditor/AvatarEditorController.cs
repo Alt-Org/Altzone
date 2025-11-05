@@ -199,7 +199,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private void AssignPartToPlayerData(AvatarData playerAvatarData, FeatureSlot feature, string id)
         {
             int convertedID;
-            if(System.Int32.TryParse(id, out int intID))
+            if(int.TryParse(id, out int intID))
             {
                 convertedID = intID;
             }

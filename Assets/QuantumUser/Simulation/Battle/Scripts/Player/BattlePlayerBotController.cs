@@ -1,9 +1,12 @@
+// Unity usings
 using UnityEngine;
 
+// Quantum usings
 using Quantum;
 using Input = Quantum.Input;
 using Photon.Deterministic;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player
@@ -47,7 +50,7 @@ namespace Battle.QSimulation.Player
                 }
                 else
                 {
-                    movementInput = BattleMovementInputType.Position;
+                    movementInput = BattleMovementInputType.PositionTarget;
                 }
             }
 
@@ -96,11 +99,13 @@ namespace Battle.QSimulation.Player
             {
                 MovementInput                 = movementInput,
                 MovementDirectionIsNormalized = false,
-                MovementPosition              = predictedGridPosition,
+                MovementPositionTarget        = predictedGridPosition,
+                MovementPositionMove          = FPVector2.Zero,
                 MovementDirection             = FPVector2.Zero,
                 RotationInput                 = false,
                 RotationValue                 = FP._0,
-                PlayerCharacterNumber         = -1
+                PlayerCharacterNumber         = -1,
+                GiveUpInput                   = false
             };
         }
     }

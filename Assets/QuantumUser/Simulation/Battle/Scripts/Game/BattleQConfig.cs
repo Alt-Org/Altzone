@@ -1,8 +1,11 @@
+// System usings
 using System;
 using System.Runtime.CompilerServices;
 
+// Quantum usings
 using Quantum;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Projectile;
 using Battle.QSimulation.SoulWall;
 using Battle.QSimulation.Diamond;

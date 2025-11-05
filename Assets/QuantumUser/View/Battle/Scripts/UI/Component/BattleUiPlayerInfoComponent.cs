@@ -6,6 +6,7 @@
 /// This script:<br/>
 /// Holds references related to a BattleUiPlayerInfo prefab.
 
+// Unity usings
 using UnityEngine;
 using TMPro;
 
