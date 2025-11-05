@@ -214,54 +214,61 @@ public class ServerManager : MonoBehaviour
             bool characterAdded = false;
             List<CharacterID> newCharacters = new List<CharacterID>();
 
-            var charIds = Enum.GetValues(typeof(CharacterID));
-            foreach (CharacterID id in charIds)
+            DataStore storefront = Storefront.Get();
+            PlayerData playerData = null;
+
+            storefront.GetPlayerData(Player.uniqueIdentifier, p => playerData = p);
+            if (playerData != null && playerData.SelectedCharacterId != 0 && playerData.SelectedCharacterId != -1)
             {
-                if (characters.FirstOrDefault(x => x.Id == id) == null)
-                    if (!CustomCharacter.IsTestCharacter(id) && id != CharacterID.None)
-                        newCharacters.Add(id);
-            }
-            foreach (var character in newCharacters)
-            {
-                callFinished = false;
-                StartCoroutine(AddCustomCharactersToServer(character, callback =>
+                var charIds = Enum.GetValues(typeof(CharacterID));
+                foreach (CharacterID id in charIds)
                 {
-                    if (callback != null)
+                    if (characters == null || characters.FirstOrDefault(x => x.Id == id) == null)
+                        if (!CustomCharacter.IsTestCharacter(id) && id != CharacterID.None)
+                            newCharacters.Add(id);
+                }
+                foreach (var character in newCharacters)
+                {
+                    callFinished = false;
+                    StartCoroutine(AddCustomCharactersToServer(character, callback =>
                     {
-                        Debug.Log("CustomCharacter added: " + character);
-                        characterAdded = true;
+                        if (callback != null)
+                        {
+                            Debug.Log("CustomCharacter added: " + character);
+                            characterAdded = true;
+                        }
+                        else
+                        {
+                            Debug.Log("CustomCharacter adding failed.");
+                        }
+                        callFinished = true;
+                    }));
+                    yield return new WaitUntil(() => callFinished == true);
+                }
+                if (characterAdded)
+                {
+                    callFinished = false;
+                    StartCoroutine(UpdateCustomCharacters((c, characterList) => { callFinished = c; characters = characterList; }));
+                }
+                new WaitUntil(() => callFinished == true);
+
+                yield return StartCoroutine(GetPlayerTasksFromServer(tasks =>
+                {
+                    if (tasks == null)
+                    {
+                        Debug.LogError("Failed to fetch task data.");
+                        gettingTasks = false;
                     }
                     else
                     {
-                        Debug.Log("CustomCharacter adding failed.");
+                        Storefront.Get().SavePlayerTasks(tasks, tasks =>
+                        {
+                            gettingTasks = false;
+                        });
                     }
-                    callFinished = true;
                 }));
-                yield return new WaitUntil(() => callFinished == true);
+                yield return new WaitUntil(() => gettingTasks == false);
             }
-            if (characterAdded)
-            {
-                callFinished = false;
-                StartCoroutine(UpdateCustomCharacters((c, characterList) => { callFinished = c; characters = characterList; }));
-            }
-            new WaitUntil(() => callFinished == true);
-
-            yield return StartCoroutine(GetPlayerTasksFromServer(tasks =>
-            {
-                if (tasks == null)
-                {
-                    Debug.LogError("Failed to fetch task data.");
-                    gettingTasks = false;
-                }
-                else
-                {
-                    Storefront.Get().SavePlayerTasks(tasks, tasks =>
-                    {
-                        gettingTasks = false;
-                    });
-                }
-            }));
-            yield return new WaitUntil(() => gettingTasks == false);
             SetPlayerValues(Player, characters);
 
             OnLogInStatusChanged?.Invoke(true);
@@ -669,9 +676,6 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator GetOtherPlayerFromServer(string id, Action<ServerPlayer> callback, bool dailyTask = false)
     {
-        if (Player != null)
-            Debug.LogWarning("Player already exists. Consider using ServerManager.Instance.Player if the most up to data data from server is not needed.");
-
         string withDailyTask = "";
         if (dailyTask)withDailyTask= "?with=DailyTask";
 
@@ -682,7 +686,6 @@ public class ServerManager : MonoBehaviour
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 //Debug.LogWarning(result);
                 ServerPlayer player = result["data"]["Player"].ToObject<ServerPlayer>();
-                Player = player;
 
                 if (callback != null)
                     callback(player);
