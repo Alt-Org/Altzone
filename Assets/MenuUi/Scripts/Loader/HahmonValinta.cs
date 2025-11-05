@@ -161,7 +161,7 @@ public class HahmonValinta : AltMonoBehaviour
                         if (callback != null)
                         {
                             Debug.Log("CustomCharacter added: " + character);
-                            if(i< _playerData.SelectedCharacterIds.Length) _playerData.SelectedCharacterIds[i].SetData(callback._id, (CharacterID)int.Parse(callback.characterId));
+                            //if (i < _playerData.SelectedCharacterIds.Length) _playerData.SelectedCharacterIds[i].SetData(callback._id, (CharacterID)int.Parse(callback.characterId));
                             characterAdded = true;
                         }
                         else
@@ -176,9 +176,16 @@ public class HahmonValinta : AltMonoBehaviour
                 if (characterAdded)
                 {
                     callFinished = false;
-                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters((c, list) => callFinished = c));
+                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters((c, list) => callFinished = c, true));
                 }
                 new WaitUntil(() => callFinished == true);
+
+                var gameConfig = GameConfig.Get();
+                var playerSettings = gameConfig.PlayerSettings;
+                var playerGuid = playerSettings.PlayerGuid;
+                DataStore storefront = Storefront.Get();
+
+                storefront.GetPlayerData(playerGuid, p => _playerData = p);
 
                 string[] serverList = new string[_playerData.SelectedCharacterIds.Length];
 

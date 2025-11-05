@@ -564,7 +564,7 @@ public class ServerManager : MonoBehaviour
         }
     }
 
-    public IEnumerator UpdateCustomCharacters(Action<bool, List<CustomCharacter>> callback)
+    public IEnumerator UpdateCustomCharacters(Action<bool, List<CustomCharacter>> callback, bool setCharacters = false)
     {
         if (Player == null) { callback(false, null); yield break; }
         List<CustomCharacter> characters = null;
@@ -591,6 +591,12 @@ public class ServerManager : MonoBehaviour
         storefront.GetPlayerData(Player.uniqueIdentifier, p => playerData = p);
 
         playerData.BuildCharacterLists(characters);
+        if (setCharacters) { 
+            playerData.SelectedCharacterIds = new CustomCharacterListObject[3] {
+            new(serverId : characters.FirstOrDefault(x=> x.Id == CharacterID.Booksmart).ServerID, Id: CharacterID.Booksmart),
+            new(serverId : characters.FirstOrDefault(x=> x.Id == CharacterID.Artist).ServerID,Id: CharacterID.Artist),
+            new(serverId : characters.FirstOrDefault(x=> x.Id == CharacterID.Soulsisters).ServerID,Id: CharacterID.Soulsisters) };
+        }
         storefront.SavePlayerData(playerData, null);
         if (characters == null) callback(false, characters);
         else callback(true, characters);
