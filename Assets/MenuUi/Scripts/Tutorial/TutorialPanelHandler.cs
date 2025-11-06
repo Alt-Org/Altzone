@@ -42,7 +42,7 @@ public class TutorialPanelHandler : MonoBehaviour
 
     private IEnumerator SetPosition()
     {
-        yield return new WaitForEndOfFrame();
+        //yield return new WaitForEndOfFrame();
         if (_cutOut != null && _imageToCutOut != null)
         {
             _cutOut.GetComponent<RectTransform>().anchorMin = new(0.5f, 0.5f);
@@ -54,7 +54,7 @@ public class TutorialPanelHandler : MonoBehaviour
             float screenHeight = _fadeLayer.GetComponent<RectTransform>().rect.height;
 
             float widththreshold = screenWidth * 0.25f;
-            yield return null;
+
             float cutoutRightEdge = screenWidth / 2 + _cutOut.transform.localPosition.x + _cutOut.GetComponent<RectTransform>().sizeDelta.x / 2;
 
             if ((screenWidth - cutoutRightEdge) < widththreshold)
@@ -85,6 +85,7 @@ public class TutorialPanelHandler : MonoBehaviour
                 if (screenWidth - cutoutRightEdge < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(-300 + (screenWidth - cutoutRightEdge), 0);
             }
         }
+        yield return null;
     }
 
     private void FlipInfo(bool flip = true)
