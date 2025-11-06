@@ -2321,6 +2321,7 @@ MonoBehaviour:
   - {fileID: 3984643438151318275}
   - {fileID: 7330036960297510779}
   _animator: {fileID: 7494783457682047064}
+  _pageTurnImage: {fileID: 0}
 --- !u!114 &6741419406297277345
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4128,25 +4129,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _avatarClassInfoList:
   - Name: Confluent
-    id: 600
+    Type: 0
     list:
     - Name: Besties
       id: 601
       DivanImage: {r: 1, g: 0, b: 0.5451832, a: 1}
   - Name: Intellectualizer
-    id: 700
+    Type: 0
     list:
     - Name: Researcher
       id: 701
       DivanImage: {r: 0.020222664, g: 0, b: 1, a: 1}
   - Name: Desensitizer
-    id: 100
+    Type: 0
     list:
     - Name: Bodybuilder
       id: 102
       DivanImage: {r: 0.5622641, g: 0.06259162, b: 0.06259162, a: 1}
   - Name: Trickster
-    id: 200
+    Type: 0
     list:
     - Name: Comedian
       id: 201
@@ -4155,13 +4156,13 @@ MonoBehaviour:
       id: 203
       DivanImage: {r: 0.06666667, g: 0.6, b: 0, a: 1}
   - Name: Projector
-    id: 400
+    Type: 0
     list:
     - Name: Grafitiartist
       id: 401
       DivanImage: {r: 1, g: 0.55447966, b: 0, a: 1}
   - Name: Retroflector
-    id: 500
+    Type: 0
     list:
     - Name: Overeater
       id: 501
@@ -4170,7 +4171,7 @@ MonoBehaviour:
       id: 502
       DivanImage: {r: 0, g: 0.68235296, b: 1, a: 1}
   - Name: Obedient
-    id: 300
+    Type: 0
     list:
     - Name: Preacher
       id: 301
