@@ -18,29 +18,49 @@ public class ClanJoiningPopUp : MonoBehaviour
 
     private void Awake()
     {
+        if (_canvasGroup)
+        {
+            _canvasGroup.alpha = 0f;
+            _canvasGroup.interactable = false;
+            _canvasGroup.blocksRaycasts = false;
+        }
+
         gameObject.SetActive(false);
     }
 
     public void Show(UnityAction onConfirm, UnityAction onCancel = null,
         string bodyText = "Olet liittymässä uuteen klaaniin. Jatketaanko?")
     {
+        gameObject.SetActive(true);
+
         _onConfirm = onConfirm;
         _onCancel = onCancel;
 
         _bodyText.text = bodyText;
 
+        UnhookButtons();
+
+        if (_canvasGroup)
+        {
+            _canvasGroup.alpha = 1f;
+            _canvasGroup.interactable = true;
+            _canvasGroup.blocksRaycasts = true;
+        }
+
         SetButtons(true);
         HookButtons();
-
-        gameObject.SetActive(true);
-        _canvasGroup.alpha = 1f;
     }
 
     public void Hide()
     {
-        //setbuttons(false);
+        SetButtons(false);
         UnhookButtons();
-        //_canvasgroup.alpha = 0f;
+        if (_canvasGroup)
+        {
+            _canvasGroup.alpha = 0f;
+            _canvasGroup.interactable = false;
+            _canvasGroup.blocksRaycasts = false;
+        }
         gameObject.SetActive(false);
     }
 
@@ -48,8 +68,10 @@ public class ClanJoiningPopUp : MonoBehaviour
     {
         if (_confirmButton)
         {
+            _confirmButton.onClick.RemoveAllListeners();
             _confirmButton.onClick.AddListener(() =>
             {
+                Debug.Log("Confirm button clicked");
                 SetButtons(false);
                 _onConfirm?.Invoke();
                 Hide();
@@ -58,6 +80,7 @@ public class ClanJoiningPopUp : MonoBehaviour
 
         if (_cancelButton)
         {
+            _cancelButton.onClick.RemoveAllListeners();
             _cancelButton.onClick.AddListener(() =>
             {
                 SetButtons(false);
@@ -88,6 +111,12 @@ public class ClanJoiningPopUp : MonoBehaviour
         if (_cancelButton)
         {
             _cancelButton.interactable = interactable;
+        }
+
+        if (_canvasGroup)
+        {
+            _canvasGroup.interactable = interactable;
+            _canvasGroup.blocksRaycasts = interactable;
         }
     }
 }

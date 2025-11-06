@@ -70,7 +70,6 @@ public class ClanLeavingPopUp : MonoBehaviour
             _confirmButton.onClick.RemoveAllListeners();
             _confirmButton.onClick.AddListener(() =>
             {
-                Debug.Log("Confirm button clicked");
                 SetButtons(false);
                 _onConfirm?.Invoke();
                 Hide();

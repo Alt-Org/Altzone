@@ -41,6 +41,7 @@ public class ClanMainView : MonoBehaviour
     [Header("pop ups")]
     [SerializeField] private ClanLeavingPopUp _leaveClanPopUp;
     [SerializeField] private ClanJoiningPopUp _joinClanPopUp;
+    [SerializeField] private ClanSearchPopup _clanPopup;
     [SerializeField] private GameObject _swipeBlockOverlay;
 
     [Header("Icons")]
@@ -77,7 +78,7 @@ public class ClanMainView : MonoBehaviour
             SetClanProfile(data);
 
             _joinClanButton.onClick.RemoveAllListeners();
-            _joinClanButton.onClick.AddListener(() => { ShowJoinClanPopUp(clan); });
+            _joinClanButton.onClick.AddListener(() => { ShowClanPopup(clan); });
 
         }
         else if (ServerManager.Instance.Clan != null)
@@ -118,7 +119,7 @@ public class ClanMainView : MonoBehaviour
         // Show clan profile data
         _clanName.text = clan.Name;
         _clanMembers.text = "Jäsenmäärä: " + clan.Members.Count;
-        _clanPhrase.text = clan.Phrase;
+        _clanPhrase.text = string.IsNullOrWhiteSpace(clan.Phrase) ? "Klaanilla ei ole mottoa" : clan.Phrase;
         _flagImage.SetFlag(clan.Language);
         _clanGoal.text = ClanDataTypeConverter.GetGoalText(clan.Goals);
 
@@ -209,6 +210,17 @@ public class ClanMainView : MonoBehaviour
                 ShowOverlay(false);
             });
     }
+
+    private void ShowClanPopup(ServerClan clan)
+    {
+        ShowOverlay(true); 
+        _clanPopup.Show(clan, onJoin: () =>
+        {
+            _clanPopup.Hide();
+            ShowJoinClanPopUp(clan);
+        });
+    }
+
 
     private void ShowJoinClanPopUp(ServerClan clan)
     {
