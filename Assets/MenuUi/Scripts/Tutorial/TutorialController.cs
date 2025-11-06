@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
+using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine;
 
 public class TutorialController : AltMonoBehaviour
 {
     [SerializeField] private List<TutorialPanelHandler> _tutorialPanelList;
     [SerializeField] private string _tutorialPanelName;
+    [SerializeField] private SwipeUI _swipe;
 
     private int _currentPage=0;
     private string _playerName = string.Empty;
@@ -43,6 +45,14 @@ public class TutorialController : AltMonoBehaviour
         else
         {
             PlayerPrefs.SetInt(_tutorialPanelName + "_" + _playerName, 1);
+        }
+    }
+
+    public void RefreshPositions()
+    {
+        foreach(var tutorialPanel in _tutorialPanelList)
+        {
+            tutorialPanel.UpdatePosition();
         }
     }
 
