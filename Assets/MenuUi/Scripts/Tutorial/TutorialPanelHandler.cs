@@ -27,7 +27,7 @@ public class TutorialPanelHandler : MonoBehaviour
 
         }
 
-        StartCoroutine(SetPosition());
+        if (gameObject.activeSelf) StartCoroutine(SetPosition());
     }
 
     private void OnEnable()
@@ -37,7 +37,7 @@ public class TutorialPanelHandler : MonoBehaviour
 
     public void UpdatePosition()
     {
-        StartCoroutine(SetPosition());
+        if (gameObject.activeSelf) StartCoroutine(SetPosition());
     }
 
     private IEnumerator SetPosition()
