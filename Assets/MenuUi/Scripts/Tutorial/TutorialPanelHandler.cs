@@ -54,24 +54,35 @@ public class TutorialPanelHandler : MonoBehaviour
             float screenHeight = _fadeLayer.GetComponent<RectTransform>().rect.height;
 
             float widththreshold = screenWidth * 0.25f;
-
-            float cutoutRightEdge = screenWidth / 2 + _cutOut.transform.position.x + _cutOut.GetComponent<RectTransform>().sizeDelta.x / 2;
+            yield return null;
+            float cutoutRightEdge = screenWidth / 2 + _cutOut.transform.localPosition.x + _cutOut.GetComponent<RectTransform>().sizeDelta.x / 2;
 
             if ((screenWidth - cutoutRightEdge) < widththreshold)
             {
-                float cutoutLeftEdge = screenWidth / 2 + _cutOut.transform.position.x - _cutOut.GetComponent<RectTransform>().sizeDelta.x / 2;
+                float cutoutLeftEdge = screenWidth / 2 + _cutOut.transform.localPosition.x - _cutOut.GetComponent<RectTransform>().sizeDelta.x / 2;
 
                 if ((cutoutLeftEdge) < widththreshold)
                 {
                     FlipInfo();
+                    if(cutoutLeftEdge < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(300 - cutoutLeftEdge, 0);
                 }
                 else
                 {
                     if (screenWidth - cutoutRightEdge < cutoutLeftEdge)
                     {
                         FlipInfo();
+                        if (cutoutLeftEdge < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(300 - cutoutLeftEdge, 0);
+                    }
+                    else
+                    {
+                        if (screenWidth - cutoutRightEdge < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(-300 + (screenWidth - cutoutRightEdge), 0);
                     }
                 }
+
+            }
+            else
+            {
+                if (screenWidth - cutoutRightEdge < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(-300 + (screenWidth - cutoutRightEdge), 0);
             }
         }
     }
@@ -82,9 +93,9 @@ public class TutorialPanelHandler : MonoBehaviour
         {
             _arrow.GetComponent<RectTransform>().anchorMin = new(0, 0.5f);
             _arrow.GetComponent<RectTransform>().anchorMax = new(0, 0.5f);
-            _arrow.GetComponent<RectTransform>().pivot = new(1, 0.5f);
+            _arrow.GetComponent<RectTransform>().pivot = new(0, 0.5f);
             _arrow.GetComponent<RectTransform>().rotation = Quaternion.Euler(0,180,0);
-            _infoText.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 180, 0);
+            _infoText.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, 0);
         }
         else
         {
@@ -94,6 +105,5 @@ public class TutorialPanelHandler : MonoBehaviour
             _arrow.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, 0);
             _infoText.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, 0);
         }
-            _arrow.transform.localPosition = Vector3.zero;
     }
 }
