@@ -284,6 +284,7 @@ public class ServerManager : MonoBehaviour
                     OnClanFetchFinished?.Invoke();
                     if (clan == null)
                     {
+                        _firstJoin = true;
                         return;
                     }
 
