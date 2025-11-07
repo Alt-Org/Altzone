@@ -178,7 +178,7 @@ public class HahmonValinta : AltMonoBehaviour
                 if (characterAdded)
                 {
                     callFinished2 = false;
-                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters((c, list) => callFinished = c, true));
+                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters((c, list) => callFinished2 = c, true));
                 }
                 else
                 {
