@@ -92,6 +92,7 @@ public class HahmonValinta : AltMonoBehaviour
 
     public IEnumerator LockInCharacter(CharacterID id)
     {
+        lockInButton.interactable = false;
         // Check if a character is selected
         if (id != CharacterID.None)
         {
@@ -233,12 +234,14 @@ public class HahmonValinta : AltMonoBehaviour
                 popupWindow.SetActive(false);
 
                 StartCoroutine(_windowNavigation.Navigate());
+                lockInButton.interactable = true;
                 yield break;
             }
             else
             {
                 Debug.LogWarning("Player already had starting characters set.");
                 StartCoroutine(_windowNavigation.Navigate());
+                lockInButton.interactable = true;
             }
 
         }
@@ -246,6 +249,7 @@ public class HahmonValinta : AltMonoBehaviour
         {
             // No character selected, log a message or handle the case as needed
             Debug.Log("No character selected.");
+            lockInButton.interactable = true;
         }
     }
 
