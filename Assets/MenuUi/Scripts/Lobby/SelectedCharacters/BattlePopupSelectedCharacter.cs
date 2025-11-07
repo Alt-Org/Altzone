@@ -83,7 +83,10 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         public void SetEmpty(bool isEditable)
         {
             _spriteImage.enabled = false;
-            if (_classColorBorderImage != null) _classColorBorderImage.color = Color.white;
+            if (_classColorBorderImage != null) _classColorBorderImage.enabled = false;
+            if (_classColorImage != null) _classColorImage.color = Color.white;
+            if (_cornerIcon != null) _cornerIcon.enabled = false;
+            if (_resistanceIcon != null) _resistanceIcon.enabled = false;
 
             if (_piechartPreview != null) _piechartPreview.ClearChart();
             _characterId = CharacterID.None;
