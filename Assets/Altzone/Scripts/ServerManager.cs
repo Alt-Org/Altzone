@@ -38,6 +38,7 @@ public class ServerManager : MonoBehaviour
     private ServerClan _clan;                   // Clan info from server
     private ServerStock _stock;                 // Stock info from server
     private List<ServerOnlinePlayer> _onlinePlayers;
+    private bool _firstJoin = true;
 
     [SerializeField] private bool _automaticallyLogIn = false;
     private int _accessTokenExpiration;
@@ -110,6 +111,7 @@ public class ServerManager : MonoBehaviour
     }
     public ServerStock Stock { get => _stock; set => _stock = value; }
     public List<ServerOnlinePlayer> OnlinePlayers { get => _onlinePlayers;}
+    public bool FirstJoin { get => _firstJoin; set => _firstJoin = value; }
 
     #endregion
 
@@ -148,6 +150,7 @@ public class ServerManager : MonoBehaviour
     public void RaiseClanChangedEvent()
     {
         OnClanChanged?.Invoke(Clan);
+        _firstJoin = false;
     }
 
     /// <summary>
