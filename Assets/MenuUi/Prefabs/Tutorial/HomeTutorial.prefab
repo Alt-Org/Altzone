@@ -281,6 +281,7 @@ GameObject:
   - component: {fileID: 1977912142396107029}
   - component: {fileID: 4038678770551754119}
   - component: {fileID: 7836600333001924303}
+  - component: {fileID: 8714839361063131114}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -407,6 +408,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8714839361063131114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1399209420802094968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "T\xE4m\xE4 vie sinut Vartioston kivilinnaan (Klaanitalo)"
+  _englishText: This takes you to the Guards castle (Clan house)
 --- !u!1 &1650593524885081240
 GameObject:
   m_ObjectHideFlags: 0
@@ -418,6 +433,7 @@ GameObject:
   - component: {fileID: 350520925497448958}
   - component: {fileID: 3183729660708274795}
   - component: {fileID: 4147031503518945520}
+  - component: {fileID: 7520543937660338378}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -544,6 +560,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7520543937660338378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1650593524885081240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "T\xE4ss\xE4 n\xE4kyy t\xE4ll\xE4 hetkell\xE4 valitut hahmosi."
+  _englishText: Here you can see your currently selected battle characters.
 --- !u!1 &1848967637838772969
 GameObject:
   m_ObjectHideFlags: 0
@@ -1819,6 +1849,7 @@ GameObject:
   - component: {fileID: 3440139063097886427}
   - component: {fileID: 1313916648368600304}
   - component: {fileID: 8905940016193656844}
+  - component: {fileID: 572248640527613548}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1946,6 +1977,22 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &572248640527613548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8831062749129125336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "T\xE4st\xE4 p\xE4\xE4see \nHahmoGalleriaan, \njossa voit valita
+    hahmosi battle\xE4 varten."
+  _englishText: "From here you can get to \nCharacterGallery\nwhere you can choose
+    your battle characters."
 --- !u!1 &9180829695458908997
 GameObject:
   m_ObjectHideFlags: 0
@@ -2039,6 +2086,16 @@ PrefabInstance:
         type: 3}
       propertyPath: _imageToCutOut
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _englishText
+      value: This is the Home-screen button (The screen we currently are in.)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _finnishText
+      value: "T\xE4m\xE4 on koti-sivun painike (Eli sivu jossa juuri nyt ollaan)"
       objectReference: {fileID: 0}
     - target: {fileID: 8096678758041759329, guid: 09d5130a97124924e906394830620820,
         type: 3}
@@ -2196,6 +2253,17 @@ PrefabInstance:
       propertyPath: _imageToCutOut
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _englishText
+      value: Here you can find clans Daily Tasks. (Not ready yet.)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _finnishText
+      value: "T\xE4\xE4lt\xE4 l\xF6ytyy klaanin DailyTaskit. (Eiv\xE4t t\xE4ysin
+        valmiita viel\xE4)"
+      objectReference: {fileID: 0}
     - target: {fileID: 8096678758041759329, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: m_text
@@ -2343,6 +2411,19 @@ PrefabInstance:
       propertyPath: _imageToCutOut
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _englishText
+      value: Here is the games shop where you can buy new furniture for your clan
+        or maybe you are interested in a new look for your avatar. (Not ready yet.)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _finnishText
+      value: "T\xE4\xE4lt\xE4 l\xF6ytyy pelin kauppa, jonka kautta klaanille voidaan
+        ostaa huonekaluja tai sitten vaikka uusia vaatteita hahmollesi. (Ei ihan
+        valmis viel\xE4)"
+      objectReference: {fileID: 0}
     - target: {fileID: 8096678758041759329, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: m_text
@@ -2485,6 +2566,18 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TutorialPanelStorage
+      objectReference: {fileID: 0}
+    - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _englishText
+      value: By pressing here you can get to clan storage where the clans furniture
+        is stored.
+      objectReference: {fileID: 0}
+    - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _finnishText
+      value: "T\xE4st\xE4 painamalla p\xE4\xE4see klaanin varastoon, jossa huonekaluja
+        s\xE4ilytet\xE4\xE4n."
       objectReference: {fileID: 0}
     - target: {fileID: 8096678758041759329, guid: 09d5130a97124924e906394830620820,
         type: 3}
@@ -2863,6 +2956,18 @@ PrefabInstance:
       propertyPath: _imageToCutOut
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _englishText
+      value: Here you can find clans polls which are used to choose which furniture
+        to buy. And how the clan is managed. (Not ready yet.)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _finnishText
+      value: "T\xE4\xE4lt\xE4 l\xF6ytyy klaanin \xE4\xE4nestykset, joilla p\xE4\xE4tet\xE4\xE4n
+        mit\xE4 klaani ostaa ja miten klaania hallinnoidaan. (Ei ihan valmis viel\xE4)"
+      objectReference: {fileID: 0}
     - target: {fileID: 8096678758041759329, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: m_text
@@ -3004,6 +3109,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TutorialPanelBattle
+      objectReference: {fileID: 0}
+    - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _finnishText
+      value: "T\xE4st\xE4 painamalla p\xE4\xE4set battleen "
+      objectReference: {fileID: 0}
+    - target: {fileID: 8096678758041759329, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: m_text
+      value: "T\xE4st\xE4 painamalla p\xE4\xE4set battleen "
       objectReference: {fileID: 0}
     - target: {fileID: 8260917805380307090, guid: 09d5130a97124924e906394830620820,
         type: 3}

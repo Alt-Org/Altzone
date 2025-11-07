@@ -488,6 +488,7 @@ GameObject:
   - component: {fileID: 4513970597317658139}
   - component: {fileID: 311926686469661299}
   - component: {fileID: 8096678758041759329}
+  - component: {fileID: 6849510987660642057}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -614,3 +615,17 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6849510987660642057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4855816887531943254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "T\xE4st\xE4 painamalla p\xE4\xE4stet battleen "
+  _englishText: By pressing here you can get to Battle.
