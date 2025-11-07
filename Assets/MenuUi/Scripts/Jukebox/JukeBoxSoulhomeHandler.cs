@@ -101,6 +101,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         JukeboxManager.Instance.OnStopJukeboxVisuals += StopJukeboxVisuals;
         JukeboxManager.Instance.OnClearJukeboxVisuals += ClearJukeboxVisuals;
         //JukeboxManager.Instance.OnSetPlayButtonImages += SetPlayButtonStates;
+        JukeboxManager.Instance.OnJukeboxMute += SetMuteImage;
 
         if (JukeboxManager.Instance.CurrentTrackQueueData != null)
             SetSongInfo(JukeboxManager.Instance.CurrentTrackQueueData.MusicTrack);
@@ -114,6 +115,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         JukeboxManager.Instance.OnStopJukeboxVisuals -= StopJukeboxVisuals;
         JukeboxManager.Instance.OnClearJukeboxVisuals -= ClearJukeboxVisuals;
         //JukeboxManager.Instance.OnSetPlayButtonImages -= SetPlayButtonStates;
+        JukeboxManager.Instance.OnJukeboxMute -= SetMuteImage;
 
         StopJukeboxVisuals();
     }
