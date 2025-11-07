@@ -369,6 +369,7 @@ GameObject:
   - component: {fileID: 6431766280157278892}
   - component: {fileID: 2240869828962601643}
   - component: {fileID: 9170390003633487035}
+  - component: {fileID: 1579522225556494887}
   m_Layer: 5
   m_Name: BackGround
   m_TagString: Untagged
@@ -477,6 +478,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1579522225556494887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4640740677239110532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cabc7ab297e9ab44a96e83ec36e516df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blockType: 0
+  _swipe: {fileID: 0}
 --- !u!1 &4855816887531943254
 GameObject:
   m_ObjectHideFlags: 0
