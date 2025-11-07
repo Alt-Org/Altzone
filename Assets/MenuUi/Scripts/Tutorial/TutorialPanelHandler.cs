@@ -42,7 +42,7 @@ public class TutorialPanelHandler : MonoBehaviour
 
     private IEnumerator SetPosition()
     {
-        //yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
         if (_cutOut != null && _imageToCutOut != null)
         {
             _cutOut.GetComponent<RectTransform>().anchorMin = new(0.5f, 0.5f);
