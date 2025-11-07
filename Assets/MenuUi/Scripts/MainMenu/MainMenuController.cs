@@ -43,7 +43,7 @@ namespace MenuUi.Scripts.MainMenu
 
             if (jukeboxMainMenu)
             {
-                if (string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
+                if (JukeboxManager.Instance != null && string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
                     AudioManager.Instance?.PlayMusic("MainMenu");
             }
             else
