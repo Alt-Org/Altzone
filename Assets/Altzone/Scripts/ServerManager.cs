@@ -1847,38 +1847,51 @@ public class ServerManager : MonoBehaviour
         yield break;
     }
 
-    public IEnumerator UpdateJukeboxClanPlaylistToServer(Playlist data, Action<bool> callback)
+    public IEnumerator AddJukeboxClanMusicTrack(Action<bool> callback, MusicTrack musicTrack)
     {
         string body = JObject.FromObject(
             new
             {
-                jukeboxSongs = data.PackedTrackQueueDatas
+                songId = musicTrack.Id,
+                songDurationSeconds = (int)musicTrack.Music.length
             },
             JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
         ).ToString();
 
-        yield return UpdateJukeboxClanPlaylistToServer(body, callback);
-    }
-
-    public IEnumerator UpdateJukeboxClanPlaylistToServer(string body, Action<bool> callback)
-    {
-        yield return StartCoroutine(WebRequests.Put(SERVERADDRESS + "jukebox", body, AccessToken, request =>
+        StartCoroutine(WebRequests.Post(SERVERADDRESS + "jukebox", body, AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
                 if (callback != null)
-                {
                     callback(true);
-                }
             }
             else
             {
                 if (callback != null)
-                {
                     callback(false);
-                }
             }
         }));
+
+        yield break;
+    }
+
+    public IEnumerator DeleteJukeboxClanMusicTrack(Action<bool> callback, string musicTrackUniqueId)
+    {
+        StartCoroutine(WebRequests.Delete(SERVERADDRESS + "jukebox/" + musicTrackUniqueId, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+
+        yield break;
     }
     #endregion
 

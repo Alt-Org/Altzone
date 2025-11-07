@@ -67,6 +67,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     private List<string> _playlistNames;
 
+    private string _previousAreaName = "";
+
     public delegate void ChangeJukeBoxSong(MusicTrack track);
     public static event ChangeJukeBoxSong OnChangeJukeBoxSong;
 
@@ -251,13 +253,20 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
         if (toggle)
         {
+            _previousAreaName = AudioManager.Instance?.CurrentAreaName;
+            AudioManager.Instance?.SetCurrentAreaCategoryName("Jukebox");
+
             JukeboxManager.Instance.TryPlayTrack();
         }
         else
         {
-            bool jukeboxSoulhome = SettingsCarrier.Instance.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Soulhome);
+            AudioManager.Instance?.SetCurrentAreaCategoryName(_previousAreaName);
 
-            if (!jukeboxSoulhome) AudioManager.Instance.PlayMusic("Soulhome", "");
+            //bool jukeboxSoulhome = SettingsCarrier.Instance.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Soulhome);
+
+            //if (!jukeboxSoulhome) AudioManager.Instance.PlayFallBackTrack(MusicHandler.MusicSwitchType.CrossFade);
+
+            AudioManager.Instance.PlayMusic(_previousAreaName, MusicHandler.MusicSwitchType.CrossFade);
 
             //if (JukeboxManager.Instance.CurrentTrackQueueData != null) SetSongInfo(JukeboxManager.Instance.GetNotHatedMusicTrack());
         }

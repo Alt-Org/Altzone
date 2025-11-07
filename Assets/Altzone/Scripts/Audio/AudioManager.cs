@@ -19,6 +19,9 @@ namespace Altzone.Scripts.Audio
         private SFXHandler _sFXHandler;
         private MusicHandler _musicHandler;
 
+        private string _currentAreaName = "";
+        public string CurrentAreaName { get { return _currentAreaName; } }
+
         private string _fallbackMusicCategory = "";
         public string FallbackMusicCategory { get { return _fallbackMusicCategory; } }
         private string _fallbackMusicTrack = "";
@@ -158,6 +161,7 @@ namespace Altzone.Scripts.Audio
         #endregion
 
         #region Music
+        public void SetCurrentAreaCategoryName(string name) { _currentAreaName = name; }
 
         public List<MusicTrack> GetMusicList(string categoryName) { return _musicHandler.GetMusicList(categoryName); }
 
@@ -264,8 +268,11 @@ namespace Altzone.Scripts.Audio
             //Debug.LogError(categoryName + ", " + trackName);
             if (!CanPlay(categoryName))
             {
-                _fallbackMusicCategory = categoryName;
-                _fallbackMusicTrack = trackName;
+                if (categoryName.ToLower() != "Jukebox".ToLower())
+                {
+                    _fallbackMusicCategory = categoryName;
+                    _fallbackMusicTrack = trackName;
+                }
                 return false;
             }
 
@@ -286,6 +293,7 @@ namespace Altzone.Scripts.Audio
 
         public string PlayFallBackTrack(MusicSwitchType switchType)
         {
+            //Debug.LogError("fallback play: " + _fallbackMusicCategory);
             return _musicHandler.PlayMusic(_fallbackMusicCategory, _fallbackMusicTrack, switchType);
         }
 
@@ -293,12 +301,13 @@ namespace Altzone.Scripts.Audio
         {
             if (_musicHandler == null) _musicHandler = GetComponent<MusicHandler>();
 
+            //Debug.LogError("CanPlay: category check: " + categoryName);
             if (_musicHandler.CurrentCategory == null) return true; //Dont block if category is null.
 
             bool currentCategoryJukebox = _musicHandler.CurrentCategory.Name.ToLower() == "Jukebox".ToLower();
             bool hasCurrentTrack = JukeboxManager.Instance.CurrentTrackQueueData != null;
 
-            if (!currentCategoryJukebox || currentCategoryJukebox && !hasCurrentTrack) return true; //Dont block if category is jukebox but current track is null.
+            if (/*!currentCategoryJukebox ||*/ currentCategoryJukebox && !hasCurrentTrack) return true; //Dont block if category is jukebox but current track is null.
 
             SettingsCarrier carrier = SettingsCarrier.Instance;
 
@@ -306,13 +315,21 @@ namespace Altzone.Scripts.Audio
             bool jukeboxMainMenu = carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.MainMenu);
             bool jukeboxBattle = carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Battle);
             bool blockPlayRequest = (
-                (jukeboxSoulhome && categoryName.ToLower() == "Soulhome".ToLower())
-                || (jukeboxMainMenu && categoryName.ToLower() == "MainMenu".ToLower())
-                || (jukeboxBattle && categoryName.ToLower() == "Battle".ToLower())
+                (categoryName.ToLower() == "Soulhome".ToLower() && jukeboxSoulhome)
+                || (categoryName.ToLower() == "MainMenu".ToLower() && jukeboxMainMenu)
+                || (categoryName.ToLower() == "Battle".ToLower() && jukeboxBattle)
+                || (categoryName.ToLower() == "Jukebox".ToLower()
+                && ( !jukeboxSoulhome && _currentAreaName.ToLower() == "Soulhome".ToLower()
+                || !jukeboxMainMenu && _currentAreaName.ToLower() == "MainMenu".ToLower()
+                || !jukeboxBattle && _currentAreaName.ToLower() == "Battle".ToLower()))
                 );
 
-            if (blockPlayRequest) return false; //Block if current category is jukebox and has current track.
-
+            //Debug.LogError("jukebox playback soulhome: " + jukeboxSoulhome);
+            //Debug.LogError("jukebox playback mainmenu: " + jukeboxMainMenu);
+            //Debug.LogError("jukebox playback battle: " + jukeboxBattle);
+            //Debug.LogError("CanPlay blocking result: " + blockPlayRequest);
+            if (blockPlayRequest) return false; //Block playback.
+            
             return true;
         }
 

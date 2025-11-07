@@ -301,6 +301,12 @@ namespace Altzone.Scripts.Audio
 
         private void StartMusicPlayback(AudioSource source, AudioClip audio)
         {
+            if (_musicStartTime >= audio.length || _musicStartTime < 0)
+            {
+                Debug.LogWarning("_musicStartTime is out of range! value: " + _musicStartTime);
+                _musicStartTime = 0f;
+            }
+
             source.clip = audio;
             source.time = _musicStartTime;
             _musicStartTime = 0f;
