@@ -382,7 +382,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
 
     private void TrackRemoved(int chunkIndex, int poolIndex, int linearIndex)
     {
-        JukeboxManager.Instance.DeleteFromQueue(linearIndex);
+        JukeboxManager.Instance.DeleteFromQueue(linearIndex, true);
         _queueHandlerChunks[chunkIndex].Pool[poolIndex].Clear();
         ReduceQueueHandlerChunkActiveCount(chunkIndex);
         OptimizeVisualQueueChunksCheck();
@@ -400,12 +400,12 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
 
     private void UpdateMusicElapsedTime(float musicTrackLength, float elapsedTime)
     {
+        JukeboxManager manager = JukeboxManager.Instance;
         //string minutes = (elapsedTime / 60f).ToString().Split('.')[0];
         //string seconds = (elapsedTime % 60).ToString().Split('.')[0];
 
         //_trackPlayTimeText.text = $"{minutes}:{((seconds.Length == 1) ? ("0" + seconds) : seconds)}";
-        if (JukeboxManager.Instance.CurrentTrackQueueData.InUse())
-            _trackPlayTimeSlider.value = elapsedTime / musicTrackLength;
+        _trackPlayTimeSlider.value = elapsedTime / musicTrackLength;
     }
 
     #region Optimizations

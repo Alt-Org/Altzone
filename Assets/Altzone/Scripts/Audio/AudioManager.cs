@@ -293,7 +293,7 @@ namespace Altzone.Scripts.Audio
 
         public string PlayFallBackTrack(MusicSwitchType switchType)
         {
-            Debug.LogError("fallback play: " + _fallbackMusicCategory);
+            //Debug.LogError("fallback play: " + _fallbackMusicCategory);
             return _musicHandler.PlayMusic(_fallbackMusicCategory, _fallbackMusicTrack, switchType);
         }
 
