@@ -76,6 +76,8 @@ namespace MenuUI.Scripts.SoulHome
         {
             bool jukeboxSoulhome = SettingsCarrier.Instance.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Soulhome);
 
+            AudioManager.Instance?.SetCurrentAreaCategoryName("Soulhome");
+
             if (JukeboxManager.Instance.CurrentTrackQueueData != null && jukeboxSoulhome)
             {
                 if (string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))

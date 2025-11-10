@@ -92,6 +92,7 @@ public class HahmonValinta : AltMonoBehaviour
 
     public IEnumerator LockInCharacter(CharacterID id)
     {
+        lockInButton.interactable = false;
         // Check if a character is selected
         if (id != CharacterID.None)
         {
@@ -139,7 +140,7 @@ public class HahmonValinta : AltMonoBehaviour
             {
                 if (characterList == null)
                 {
-                    Debug.LogError("Failed to fetch Custom Characters.");
+                    //Debug.LogError("Failed to fetch Custom Characters.");
                     gettingCharacter = false;
                     serverCharacters = new();
                 }
@@ -149,7 +150,7 @@ public class HahmonValinta : AltMonoBehaviour
                     serverCharacters = characterList;
                 }
             }));
-            new WaitUntil(() => gettingCharacter == false);
+            yield return new WaitUntil(() => gettingCharacter == false);
 
             if (serverCharacters.Count < 3)
             {
@@ -174,12 +175,17 @@ public class HahmonValinta : AltMonoBehaviour
                     yield return new WaitUntil(() => callFinished == true);
                     i++;
                 }
+                var callFinished2 = false;
                 if (characterAdded)
                 {
-                    callFinished = false;
-                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters((c, list) => callFinished = c, true));
+                    callFinished2 = false;
+                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters((c, list) => callFinished2 = c, true));
                 }
-                new WaitUntil(() => callFinished == true);
+                else
+                {
+                    callFinished2 = true;
+                }
+                yield return new WaitUntil(() => callFinished2 == true);
 
                 var gameConfig = GameConfig.Get();
                 var playerSettings = gameConfig.PlayerSettings;
@@ -203,22 +209,22 @@ public class HahmonValinta : AltMonoBehaviour
                         battleCharacter_ids = serverList
 
                     }).ToString();
-                callFinished = false;
+                var callFinished3 = false;
                 StartCoroutine(ServerManager.Instance.UpdatePlayerToServer(body, callback =>
                 {
                     if (callback != null)
                     {
                         Debug.Log("Profile info updated.");
                         var store = Storefront.Get();
-                        store.SavePlayerData(_playerData, null);
+                        //store.SavePlayerData(_playerData, null);
                     }
                     else
                     {
                         Debug.Log("Profile info update failed.");
                     }
-                    callFinished = true;
+                    callFinished3 = true;
                 }));
-                new WaitUntil(() => callFinished == true);
+                yield return new WaitUntil(() => callFinished3 == true);
 
                 // Reset the selected character index and disable the lock-in button
                 selectedCharacterIndex = -1;
@@ -228,12 +234,14 @@ public class HahmonValinta : AltMonoBehaviour
                 popupWindow.SetActive(false);
 
                 StartCoroutine(_windowNavigation.Navigate());
+                lockInButton.interactable = true;
                 yield break;
             }
             else
             {
                 Debug.LogWarning("Player already had starting characters set.");
                 StartCoroutine(_windowNavigation.Navigate());
+                lockInButton.interactable = true;
             }
 
         }
@@ -241,6 +249,7 @@ public class HahmonValinta : AltMonoBehaviour
         {
             // No character selected, log a message or handle the case as needed
             Debug.Log("No character selected.");
+            lockInButton.interactable = true;
         }
     }
 

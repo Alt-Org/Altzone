@@ -15,19 +15,29 @@ public class MainMenuTutorialController : MonoBehaviour
     {
         _currentWindow = _swipe.CurrentPage;
         _swipe.OnCurrentPageChanged += ChangeWindow;
+        EmotionSelectorPopupScript.OnEmotionInsertFinished += ChangeWindow;
         ChangeWindow();
+    }
+
+    private void OnDestroy()
+    {
+        EmotionSelectorPopupScript.OnEmotionInsertFinished -= ChangeWindow;
     }
 
     private void ChangeWindow()
     {
-
+        Debug.LogWarning(!EmotionSelectorPopupScript.EmotionInsertedToday);
+        if (!EmotionSelectorPopupScript.EmotionInsertedToday) return;
         var tutorial = GetTutorial(_currentWindow);
         if (tutorial != null)
             tutorial.gameObject.SetActive(false);
         _currentWindow = _swipe.CurrentPage;
         tutorial = GetTutorial(_currentWindow);
-        if (tutorial != null) 
+        if (tutorial != null)
+        {
             tutorial.gameObject.SetActive(true);
+            tutorial.RefreshPositions();
+        }
     }
 
     private TutorialController GetTutorial(int page)
