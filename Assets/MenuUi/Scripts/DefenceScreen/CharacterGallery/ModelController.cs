@@ -229,7 +229,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 store.SavePlayerData(_playerData, null);
             }));
 
-            _playerData.OnCurrentTeamChanged_AutoSave();
+            //_playerData.OnCurrentTeamChanged_AutoSave();
         }
 
 

@@ -359,14 +359,14 @@ namespace Altzone.Scripts.Model.Poco.Player
         /// This is called whenever the user changes the team in the UI.
         /// If a saved slot (1-3) is selected, changes are saved immediately to that slot.
         /// </summary>
-        public void OnCurrentTeamChanged_AutoSave()
-        {
-            if (SelectedLoadOut > 0)
-            {
-                SaveCurrentTeamToLoadout(SelectedLoadOut);
-            }
-            Storefront.Get().SavePlayerData(this, null);
-        }
+        //public void OnCurrentTeamChanged_AutoSave()
+        //{
+        //    if (SelectedLoadOut > 0)
+        //    {
+        //        SaveCurrentTeamToLoadout(SelectedLoadOut);
+        //    }
+        //    Storefront.Get().SavePlayerData(this, null);
+        //}
 
 
     }
