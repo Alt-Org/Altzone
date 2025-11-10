@@ -22,6 +22,7 @@ public class Chat : AltMonoBehaviour
     private GameObject _currentContent; // Tällä hetkellä aktiivinen chatin content
 
     [Header("Send buttons")]
+    [SerializeField] private GameObject _sendButtonUI;
     [SerializeField] private GameObject _sendButtonSadness;
     [SerializeField] private GameObject _sendButtonAnger;
     [SerializeField] private GameObject _sendButtonJoy;
@@ -98,6 +99,7 @@ public class Chat : AltMonoBehaviour
 
     public delegate void SelectedMessageChanged(MessageObjectHandler handler);
     public static event SelectedMessageChanged OnSelectedMessageChanged;
+    private bool _reactionAvailable = false; //Katsoo jos textboxissa on tekstiä tai ei
 
     private void Start()
     {
@@ -183,6 +185,7 @@ public class Chat : AltMonoBehaviour
         }
         else // send a message
         {
+            _reactionAvailable = false;
             _lastSendButtonUsed = buttonUsed;
 
             // Check which message prefab should be used
@@ -253,7 +256,6 @@ public class Chat : AltMonoBehaviour
         if (_inputField != null && !string.IsNullOrEmpty(_inputField.text) && _inputField.text.Trim().Length >= 3)
         {
             string inputText = _inputField.text.Trim();
-
             // Tarkistaa, onko syöte komento
             if (inputText == _delete)
             {
@@ -278,6 +280,7 @@ public class Chat : AltMonoBehaviour
             if (_currentContent == _globalChat)
                 _globalChat.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             MinimizeOptions();
+            _lastSendButtonUsed.GetComponent<Button>().interactable = false;
         }
         else
         {
@@ -292,6 +295,7 @@ public class Chat : AltMonoBehaviour
         if (buttonText != null)
         {
             string textFromButton = buttonText.text;
+            _reactionAvailable = true;
             MinimizeOptions();
             _inputField.text = textFromButton;
             GameObject sendButton = _sendButtons[0];
@@ -514,7 +518,26 @@ public class Chat : AltMonoBehaviour
     public void OpenQuickMessages()
     {
         _quickMessages.SetActive(true);
-        _InputArea.SetActive(false);
+        ///This is so that the reaction UI will stay visiable but not useable
+        foreach(Transform child in _InputArea.transform)
+        {
+            if(child.gameObject == _sendButtonUI)
+            {
+            _lastSendButtonUsed.GetComponent<Button>().interactable = false;
+
+                ///Incase if the user happens to have emotion selection on 
+                foreach (var button in _sendButtons)
+                {
+                    button.SetActive(_lastSendButtonUsed == button);
+                }
+                _sendButtonsAreClosed = true;
+
+                continue;
+            }
+
+
+            child.gameObject.SetActive(false);
+        }
         CloseOnButtonClick(true);
     }
 
@@ -524,7 +547,19 @@ public class Chat : AltMonoBehaviour
     public void MinimizeOptions()
     {
         _quickMessages.SetActive(false);
-        _InputArea.SetActive(true);
+        ///This is so that the reaction comes back being useable
+        ///To give user a visual interpretation that they cant put a reaction till there's been text inserted
+        foreach (Transform child in _InputArea.transform)
+        {
+            //Checks if there's text in textbox
+            if (child.gameObject == _sendButtonUI && _reactionAvailable)
+            {
+            _lastSendButtonUsed.GetComponent<Button>().interactable = true;
+            continue;
+            }
+
+            child.gameObject.SetActive(true);
+        }
 
         // Deactivate all but last used button
         foreach (var button in _sendButtons)
