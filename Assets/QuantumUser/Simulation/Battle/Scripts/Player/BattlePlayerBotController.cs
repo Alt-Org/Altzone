@@ -1,3 +1,8 @@
+/// @file BattlePlayerBotController.cs
+/// <summary>
+/// Contains @cref{Battle.QSimulation.Game,BattlePlayerBotController} class which handles the bot AI logic and implements helper methods for handling bots.
+/// </summary>
+
 // Unity usings
 using UnityEngine;
 
@@ -11,8 +16,23 @@ using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player
 {
+    /// <summary>
+    /// Handles the bot logic and implements helper methods for handling bots.
+    /// </summary>
+    ///
+    /// Bot AI is handled by generating input in @cref{GetBotInput} that can be processed by the player like any other Input.
+    /// Bot behavior and other spec settings are defined in @cref{BattlePlayerBotQSpec}.
     public static unsafe class BattlePlayerBotController
     {
+        /// <summary>
+        /// Helper method to get characters for a bot.
+        /// </summary>
+        ///
+        /// Characters are retrieved from @cref{BattlePlayerBotQSpec}.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        ///
+        /// <returns>Array of characters for a bot.</returns>
         public static BattleCharacterBase[] GetBotCharacters(Frame f)
         {
             BattlePlayerBotQSpec playerBotSpec = BattleQConfig.GetPlayerBotSpec(f);
@@ -25,6 +45,16 @@ namespace Battle.QSimulation.Player
             return botCharacters;
         }
 
+        /// <summary>
+        /// Handles bot AI by predicting the projectile and generating the input for a bot.
+        /// </summary>
+        ///
+        /// Bot behavior spec settings is defined in @cref{BattlePlayerBotQSpec}.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="isInPlay">Bool to check if bot is in play.</param>
+        /// <param name="playerData">Pointer to player's BattlePlayerDataQComponent.</param>
+        /// <param name="outBotInput">Pointer to where bot's %Quantum Input will be written.</param>
         public static void GetBotInput(Frame f, bool isInPlay, BattlePlayerDataQComponent* playerData, Input* outBotInput)
         {
             BattlePlayerBotQSpec playerBotSpec = BattleQConfig.GetPlayerBotSpec(f);
