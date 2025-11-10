@@ -22,7 +22,7 @@ namespace Battle.QSimulation.Player
     /// Handles player movement and rotation
     /// </summary>
     ///
-    /// Contains the primary @cref{BattlePlayerMovementController,UpdateMovement} method for handling player movement, which is used by BattlePlayerQSystem.<br/>
+    /// Contains the primary @cref{BattlePlayerMovementController,UpdateMovement} method which handles player movement, and is called by BattlePlayerQSystem.<br/>
     /// Also contains individual helper methods for moving and rotating players, which can be used by other scripts.
     [Preserve]
     public static unsafe class BattlePlayerMovementController
