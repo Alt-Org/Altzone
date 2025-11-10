@@ -13,24 +13,14 @@ namespace Battle.QSimulation.Player
 {
     public static unsafe class BattlePlayerBotController
     {
-        public static BattleCharacterBase[] GetBotCharacters()
+        public static BattleCharacterBase[] GetBotCharacters(Frame f)
         {
+            BattlePlayerBotQSpec playerBotSpec = BattleQConfig.GetPlayerBotSpec(f);
+
             BattleCharacterBase[] botCharacters = new BattleCharacterBase[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
             for (int i = 0; i < botCharacters.Length; i++)
             {
-                botCharacters[i] = new()
-                {
-                    Id = 0,
-                    Class = (int)BattlePlayerCharacterClass.None,
-                    Stats = new()
-                    {
-                        Hp = 15,
-                        Speed = 10,
-                        CharacterSize = 4,
-                        Attack = 5,
-                        Defence = 250
-                    }
-                };
+                botCharacters[i] = playerBotSpec.BotCharacter;
             }
             return botCharacters;
         }
