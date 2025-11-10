@@ -1229,6 +1229,7 @@ MonoBehaviour:
     type: 2}
   _avatarVisualDataScriptableObject: {fileID: 11400000, guid: 5924f2967fcfeb0469785ea0b5f3d2b2,
     type: 2}
+  _avatarEditorController: {fileID: 0}
 --- !u!1 &2841744647683358310
 GameObject:
   m_ObjectHideFlags: 0
@@ -2061,7 +2062,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4887226456954314320}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -4097,7 +4098,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8908832541426885941}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -4840,7 +4841,6 @@ MonoBehaviour:
   _friendlistScrollView: {fileID: 581922613440923606}
   _closeFriendlistButton: {fileID: 9153431622890362902}
   _openFriendlistButton: {fileID: 3331328123676332516}
-  _friendlistItemPrefab: {fileID: 0}
 --- !u!114 &9153431622890362902 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9167282252674251509, guid: 4166eed610b532e45b4083c6612c5b46,
