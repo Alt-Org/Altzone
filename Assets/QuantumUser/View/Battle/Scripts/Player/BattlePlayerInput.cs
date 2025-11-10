@@ -1,13 +1,11 @@
 /// @file BattlePlayerInput.cs
 /// <summary>
-/// Handles subscribing to QuantumCallBack and polling player inputs for Quantum.
+/// Contains @cref{Battle.View.Player,BattlePlayerInput} class 
+/// which handles subscribing to QuantumCallBack and polling player inputs for Quantum.<br/>
+/// Input is processed and compiled into an input struct, which is passed over to the Quantum simulation when polled by Quantum.
 /// </summary>
 ///
-/// This script:<br/>
-/// Subscribes to QuantumCallBack.<br/>
-/// Polls player inputs for Quantum.<br/>
-/// Handles movement and rotation input based on chosen input methods. <br/>
-/// Handles obtaining data from device gyroscope.
+/// See [{PlayerInput}](#page-concepts-player-input) for more info.
 
 // Unity usings
 using UnityEngine;
@@ -34,7 +32,8 @@ namespace Battle.View.Player
 {
     /// <summary>
     /// <span class="brief-h">%Player input <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.</span><br/>
-    /// Handles subscribing to QuantumCallBack and polling player inputs for %Quantum.
+    /// Handles subscribing to QuantumCallBack and polling player inputs for %Quantum.<br/>
+    /// Input is processed and compiled into an input struct, which is passed over to the %Quantum simulation when polled by %Quantum.
     /// </summary>
     public class BattlePlayerInput : MonoBehaviour
     {
