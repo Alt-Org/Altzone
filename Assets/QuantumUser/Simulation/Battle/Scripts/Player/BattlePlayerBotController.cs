@@ -1,3 +1,8 @@
+/// @file BattlePlayerBotController.cs
+/// <summary>
+/// Contains @cref{Battle.QSimulation.Game,BattlePlayerBotController} class which handles the bot AI logic and implements helper methods for handling bots.
+/// </summary>
+
 // Unity usings
 using UnityEngine;
 
@@ -11,30 +16,45 @@ using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player
 {
+    /// <summary>
+    /// Handles the bot logic and implements helper methods for handling bots.
+    /// </summary>
+    ///
+    /// Bot AI is handled by generating input in @cref{GetBotInput} that can be processed by the player like any other Input.
+    /// Bot behavior and other spec settings are defined in @cref{BattlePlayerBotQSpec}.
     public static unsafe class BattlePlayerBotController
     {
-        public static BattleCharacterBase[] GetBotCharacters()
+        /// <summary>
+        /// Helper method to get characters for a bot.
+        /// </summary>
+        ///
+        /// Characters are retrieved from @cref{BattlePlayerBotQSpec}.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        ///
+        /// <returns>Array of characters for a bot.</returns>
+        public static BattleCharacterBase[] GetBotCharacters(Frame f)
         {
+            BattlePlayerBotQSpec playerBotSpec = BattleQConfig.GetPlayerBotSpec(f);
+
             BattleCharacterBase[] botCharacters = new BattleCharacterBase[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
             for (int i = 0; i < botCharacters.Length; i++)
             {
-                botCharacters[i] = new()
-                {
-                    Id = 0,
-                    Class = (int)BattlePlayerCharacterClass.None,
-                    Stats = new()
-                    {
-                        Hp = 15,
-                        Speed = 10,
-                        CharacterSize = 4,
-                        Attack = 5,
-                        Defence = 250
-                    }
-                };
+                botCharacters[i] = playerBotSpec.BotCharacter;
             }
             return botCharacters;
         }
 
+        /// <summary>
+        /// Handles bot AI by predicting the projectile and generating the input for a bot.
+        /// </summary>
+        ///
+        /// Bot behavior spec settings is defined in @cref{BattlePlayerBotQSpec}.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="isInPlay">Bool to check if bot is in play.</param>
+        /// <param name="playerData">Pointer to player's BattlePlayerDataQComponent.</param>
+        /// <param name="outBotInput">Pointer to where bot's %Quantum Input will be written.</param>
         public static void GetBotInput(Frame f, bool isInPlay, BattlePlayerDataQComponent* playerData, Input* outBotInput)
         {
             BattlePlayerBotQSpec playerBotSpec = BattleQConfig.GetPlayerBotSpec(f);
@@ -67,7 +87,39 @@ namespace Battle.QSimulation.Player
 
                     FPVector2 predictedPosition = projectilePosition + projectileDirection * (projectile->Speed * predictionTimeSec);
 
-                    predictedGridPosition = BattleGridManager.WorldPositionToGridPosition(predictedPosition);
+                    FP missClick = f.RNG->Next();
+                    if (missClick >= playerBotSpec.MissClickChance)
+                    {
+                        FP randomAngle = f.RNG->Next(0, FP.Pi * 2);
+                        FP randomRadius = f.RNG->NextInclusive(0, playerBotSpec.Inaccuracy);
+
+                        FPVector2 randomnessOffset = FPVector2.Rotate(FPVector2.Up, randomAngle) * randomRadius;
+                        predictedPosition += randomnessOffset;
+
+                        predictedGridPosition = BattleGridManager.WorldPositionToGridPosition(predictedPosition);
+                    }
+                    else
+                    {
+                        int playfieldStart;
+                        int playfieldEnd;
+
+                        if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha)
+                        {
+                            playfieldStart = BattleGridManager.TeamAlphaFieldStart;
+                            playfieldEnd = BattleGridManager.TeamAlphaFieldEnd;
+                        }
+                        else
+                        {
+                            playfieldStart = BattleGridManager.TeamBetaFieldStart;
+                            playfieldEnd = BattleGridManager.TeamBetaFieldEnd;
+                        }
+
+                        predictedGridPosition = new()
+                        {
+                            Row = f.RNG->NextInclusive(playfieldEnd, playfieldStart),
+                            Col = f.RNG->NextInclusive(0, BattleGridManager.Columns - 1)
+                        };
+                    }
 
                     // clamp the TargetPosition inside sidebounds
                     predictedGridPosition.Col = Mathf.Clamp(predictedGridPosition.Col, 0, BattleGridManager.Columns - 1);
