@@ -67,7 +67,39 @@ namespace Battle.QSimulation.Player
 
                     FPVector2 predictedPosition = projectilePosition + projectileDirection * (projectile->Speed * predictionTimeSec);
 
-                    predictedGridPosition = BattleGridManager.WorldPositionToGridPosition(predictedPosition);
+                    FP missClick = f.RNG->Next();
+                    if (missClick >= playerBotSpec.MissClickChance)
+                    {
+                        FP randomAngle = f.RNG->Next(0, FP.Pi * 2);
+                        FP randomRadius = f.RNG->NextInclusive(0, playerBotSpec.Inaccuracy);
+
+                        FPVector2 randomnessOffset = FPVector2.Rotate(FPVector2.Up, randomAngle) * randomRadius;
+                        predictedPosition += randomnessOffset;
+
+                        predictedGridPosition = BattleGridManager.WorldPositionToGridPosition(predictedPosition);
+                    }
+                    else
+                    {
+                        int playfieldStart;
+                        int playfieldEnd;
+
+                        if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha)
+                        {
+                            playfieldStart = BattleGridManager.TeamAlphaFieldStart;
+                            playfieldEnd = BattleGridManager.TeamAlphaFieldEnd;
+                        }
+                        else
+                        {
+                            playfieldStart = BattleGridManager.TeamBetaFieldStart;
+                            playfieldEnd = BattleGridManager.TeamBetaFieldEnd;
+                        }
+
+                        predictedGridPosition = new()
+                        {
+                            Row = f.RNG->NextInclusive(playfieldEnd, playfieldStart),
+                            Col = f.RNG->NextInclusive(0, BattleGridManager.Columns - 1)
+                        };
+                    }
 
                     // clamp the TargetPosition inside sidebounds
                     predictedGridPosition.Col = Mathf.Clamp(predictedGridPosition.Col, 0, BattleGridManager.Columns - 1);
