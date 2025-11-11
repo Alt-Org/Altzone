@@ -3,13 +3,18 @@
 /// Contains @cref{Battle.QSimulation.Projectile,BattleProjectileQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which controls projectile's movements and reactions to collisions.
 /// </summary>
 
+// System usings
 using System.Runtime.CompilerServices;
 
+// Unity usings
 using UnityEngine;
 using UnityEngine.Scripting;
+
+// Quantum usings
 using Quantum;
 using Photon.Deterministic;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Player;
 
@@ -19,7 +24,7 @@ namespace Battle.QSimulation.Projectile
     /// <span class="brief-h">%Projectile <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
     /// Handles projectile logic, including projectile's movements and reactions to collisionsignals.
     /// </summary>
-    /// 
+    ///
     /// This system:<br/>
     /// Launches projectile when battle starts and updates its movements.<br/>
     /// Handles projectile's collisionflags to ensure projectile doesn't hit more than one SoulWall segment at a time.<br/>
@@ -145,10 +150,12 @@ namespace Battle.QSimulation.Projectile
 
                 case SpeedChange.Increment:
                     projectile->Speed = FPMath.Min(projectile->Speed + projectile->SpeedIncrement, projectile->SpeedMax);
+                    f.Events.BattleProjectileChangeSpeed(projectile->Speed);
                     break;
 
                 case SpeedChange.Reset:
                     projectile->Speed = projectile->SpeedBase;
+                    f.Events.BattleProjectileChangeSpeed(projectile->Speed);
                     break;
             }
         }
@@ -295,9 +302,9 @@ namespace Battle.QSimulation.Projectile
 
             if (handleCollision)
             {
-                FPVector2 direction = FPVector2.Zero;
-                if      (collisionType == BattlePlayerCollisionType.Reflect)  direction = FPVector2.Reflect(projectile->Direction, normal).Normalized;
-                else if (collisionType == BattlePlayerCollisionType.Override) direction = normal;
+                FPVector2 direction;
+                if (collisionType == BattlePlayerCollisionType.Reflect) direction = FPVector2.Reflect(projectile->Direction, normal).Normalized;
+                else                                                    direction = normal;
 
                 HandleIntersection(f, projectile, projectileEntity, otherEntity, normal, collisionMinOffset);
                 UpdateVelocity(f, projectile, direction, speedChange);
@@ -316,22 +323,23 @@ namespace Battle.QSimulation.Projectile
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="winningTeam">The BattleTeamNumber of the team that won.</param>
-        /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="projectileEntity">EntityRef of the projectile.</param>
-        public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
+        public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam)
         {
-            SetHeld(f, projectile, true);
+            EntityRef projectileEntity = GetProjectileEntity(f);
 
-            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
+            BattleProjectileQComponent* projectile          = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntity);
+            Transform2D*                projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
+
+            SetHeld(f, projectile, true);
 
             // move the projectile out of bounds after a goal is scored
             switch (winningTeam)
             {
                 case BattleTeamNumber.TeamAlpha:
-                    projectileTransform->Position += new FPVector2(0, 10);
+                    projectileTransform->Position = new FPVector2(0, 25);
                     break;
                 case BattleTeamNumber.TeamBeta:
-                    projectileTransform->Position += new FPVector2(0, -10);
+                    projectileTransform->Position = new FPVector2(0, -25);
                     break;
             }
         }
@@ -341,6 +349,20 @@ namespace Battle.QSimulation.Projectile
         #endregion Public
 
         #region Private Static Methods
+
+        /// <summary>
+        /// Private helper method to get projectile entity
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        ///
+        /// <returns>Returns projectile entity.</returns>
+        private static EntityRef GetProjectileEntity(Frame f)
+        {
+            ComponentFilter<BattleProjectileQComponent> filter = f.Filter<BattleProjectileQComponent>();
+            filter.Next(out EntityRef entity, out _);
+            return entity;
+        }
 
         /// <summary>
         /// Launches the projectile from an unlaunched state, setting its initial values.
@@ -379,6 +401,8 @@ namespace Battle.QSimulation.Projectile
             projectile->IsLaunched = true;
 
             SetHeld(f, projectile, false);
+
+            f.Events.BattleProjectileChangeSpeed(projectile->Speed);
 
             Debug.Log("Projectile Launched");
         }

@@ -134,7 +134,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         private void UpdateGameType(GameTypeInfo gameTypeInfo)
         {
             _gameTypeIcon.sprite = gameTypeInfo.Icon;
-            _gameTypeName.SetText(/*gameTypeInfo.Name*/"Ego Clash"); //Temporarily overwritten until matchmaking is ready.
+            _gameTypeName.SetText(gameTypeInfo.Name);
             _gameTypeDescription.SetText(gameTypeInfo.Description);
             _selectedGameType = gameTypeInfo.gameType;
 
@@ -158,7 +158,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             {
                 if (gameTypeInfo.gameType == _selectedGameType)
                 {
-                    _gameTypeName.SetText(/*gameTypeInfo.Name*/"Ego Clash"); //Temporarily overwritten until matchmaking is ready.
+                    _gameTypeName.SetText(gameTypeInfo.Name);
                     _gameTypeDescription.SetText(gameTypeInfo.Description);
                 }
             }

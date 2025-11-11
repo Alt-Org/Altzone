@@ -6,8 +6,13 @@
 /// This script:<br/>
 /// Handles lightray effects visual functionality.
 
+// System usings
 using System.Collections.Generic;
+
+// Unity usings
 using UnityEngine;
+
+// Quantum usings
 using Quantum;
 
 namespace Battle.View.Effect

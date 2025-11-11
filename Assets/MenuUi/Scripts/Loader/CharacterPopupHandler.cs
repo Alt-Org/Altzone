@@ -21,7 +21,7 @@ public class CharacterPopupHandler : MonoBehaviour
     {
         if (id <= popupOptions.Count)
         {
-            string cname = popupOptions[id].className;
+            //string cname = popupOptions[id].className;
 
             if (popupOptions[id].characterImage == null)
             {
@@ -31,12 +31,12 @@ public class CharacterPopupHandler : MonoBehaviour
             {
                 charaterImage.sprite = popupOptions[id].characterImage;
             }
-            classChoiseText.text = $"Oletko varma että haluat edustaa {cname} suojelijaluokkaa pelaajien keskuudessa?"; //character name switching
+            //classChoiseText.text = $"Oletko varma että haluat edustaa {cname} suojelijaluokkaa pelaajien keskuudessa?"; //character name switching
         }
         else //backup image and text just in case an error happens or something
         {
             charaterImage.sprite = backupImage;
-            classChoiseText.text = "Oletko varma että haluat edustaa ERROR suojelijaluokkaa pelaajien keskuudessa?";
+            //classChoiseText.text = "Oletko varma että haluat edustaa ERROR suojelijaluokkaa pelaajien keskuudessa?";
         }
     }
 }

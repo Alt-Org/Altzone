@@ -17,11 +17,21 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
     [SerializeField] private Button _sadButton;
     [SerializeField] private Button _angryButton;
 
-    bool _bSwitch = true;
+    static bool _bSwitch = true;
+
+    public static bool EmotionInsertedToday => !_bSwitch;
 
     // Creates the variable that is used to get the list of the moods.
     private PlayerData _playerData;
 
+    public delegate void EmotionInsertFinished();
+    public static event EmotionInsertFinished OnEmotionInsertFinished;
+
+
+    private void Awake()
+    {
+        _bSwitch = true;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -34,8 +44,15 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
             if (DateTime.Parse(_playerData.emotionSelectorDate) == DateTime.Today) _bSwitch = false;
         }
 
-        // Opens the popup unless the player has given input the same day.
-        _popupPrefab.SetActive(_bSwitch);
+        if (_bSwitch)
+        {
+            // Opens the popup unless the player has given input the same day.
+            _popupPrefab.SetActive(_bSwitch);
+        }
+        else
+        {
+            OnEmotionInsertFinished?.Invoke();
+        }
 
         // Listeners that listen what button has been pressed and does the method given.
         // The buttons have their own mood so its easier to add the mood to the list.
@@ -89,7 +106,8 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
 
         // Saves the playerdata that has been changed.
         StartCoroutine(SavePlayerData(_playerData, null));
-        
+        _bSwitch = false;
         ClosePopup();
+        OnEmotionInsertFinished?.Invoke();
     }
 }

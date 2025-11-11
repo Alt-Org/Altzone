@@ -6,7 +6,10 @@
 /// This script:<br/>
 /// Handles stone characters visual functionality.
 
+// Unity usings
 using UnityEngine;
+
+// Quantum usings
 using Quantum;
 
 namespace Battle.View

@@ -1,5 +1,7 @@
+// System usings
 using System.Runtime.CompilerServices;
 
+// Quantum usings
 using Quantum;
 using Photon.Deterministic;
 

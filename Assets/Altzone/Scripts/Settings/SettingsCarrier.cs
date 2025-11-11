@@ -46,6 +46,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public enum BattleMovementInputType
     {
         PointAndClick,
+        FollowPointer,
         Swipe,
         Joystick
     }
@@ -146,7 +147,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
             PlayerPrefs.SetString("LanguageType", ParseLanguage(value));
             OnLanguageChanged?.Invoke(_language);
         }
-    } 
+    }
 
     private TextSize _textSize;
     public TextSize Textsize { get => _textSize; }

@@ -3,12 +3,13 @@
 /// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassProjector} class which handles player character class logic for the Projector class.
 /// </summary>
 
+// Quantum usings
+using Quantum;
+using Photon.Deterministic;
+
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Projectile;
-using Photon.Deterministic;
-using Quantum;
-using static Battle.QSimulation.Player.BattlePlayerManager;
-using static Battle.QSimulation.Projectile.BattleProjectileQSystem;
 
 namespace Battle.QSimulation.Player
 {
@@ -75,7 +76,7 @@ namespace Battle.QSimulation.Player
             else
             {
                 BattleProjectileQSystem.HandleIntersection(f, projectileCollisionData->Projectile, projectileCollisionData->ProjectileEntity, projectileCollisionData->OtherEntity, shieldCollisionData->PlayerShieldHitbox->Normal, shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset);
-                BattleProjectileQSystem.UpdateVelocity(f, projectileCollisionData->Projectile, shieldCollisionData->PlayerShieldHitbox->Normal, SpeedChange.Increment);
+                BattleProjectileQSystem.UpdateVelocity(f, projectileCollisionData->Projectile, shieldCollisionData->PlayerShieldHitbox->Normal, BattleProjectileQSystem.SpeedChange.Increment);
             }
         }
 
@@ -87,7 +88,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Handle for the player.</param>
         /// <param name="playerData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference for the player.</param>
-        public override unsafe void OnUpdate(Frame f, PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
+        public override unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
             BattlePlayerClassProjectorDataQComponent* data = GetClassData(f, playerEntity);
             if (!data->IsHoldingProjectile)

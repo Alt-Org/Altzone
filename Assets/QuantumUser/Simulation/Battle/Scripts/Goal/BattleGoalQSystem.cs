@@ -3,10 +3,14 @@
 /// Contains @cref{Battle.QSimulation.Goal,BattleGoalQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which triggers the end of the game when the projectile hits a goal.
 /// </summary>
 
+// Unity usings
 using UnityEngine;
 using UnityEngine.Scripting;
+
+// Quantum usings
 using Quantum;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Goal
@@ -40,7 +44,7 @@ namespace Battle.QSimulation.Goal
                 _ => BattleTeamNumber.NoTeam
             };
 
-            BattleGameControlQSystem.OnGameOver(f, winningTeam, goalCollisionData->Projectile, goalCollisionData->ProjectileEntity);
+            BattleGameControlQSystem.OnGameOver(f, winningTeam);
 
             goalCollisionData->Goal->HasTriggered = true;
 
