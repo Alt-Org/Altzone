@@ -457,6 +457,7 @@ public class DailyTaskManager : AltMonoBehaviour
             serverTask.type = "";
             serverTask.educationCategoryType = educationTasks[i].educationCategoryType;
             serverTask.educationCategoryTaskType = educationTasks[i].educationCategoryTaskType;
+            serverTask.isPlaceHolder = true;
 
             tasklist.Add(new(serverTask));
         }
@@ -597,15 +598,17 @@ public class DailyTaskManager : AltMonoBehaviour
             yield break;
         }
 
-        StartCoroutine(ServerManager.Instance.UnreservePlayerTaskFromServer(data => unreserveResult = data));
-        coroutineTimeout = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
-        yield return new WaitUntil(() => (unreserveResult != null || timeout != null));
+        if (!playerData.Task.Offline)
+        {
+            StartCoroutine(ServerManager.Instance.UnreservePlayerTaskFromServer(data => unreserveResult = data));
+            coroutineTimeout = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+            yield return new WaitUntil(() => (unreserveResult != null || timeout != null));
 
-        if (unreserveResult == null)
-            Debug.LogError($"Failed to unreserve task id: {playerData.Task.Id}");
+            if (unreserveResult == null)
+                Debug.LogError($"Failed to unreserve task id: {playerData.Task.Id}");
 
-        StopCoroutine(coroutineTimeout);
-
+            StopCoroutine(coroutineTimeout);
+        }
         //Save player data.
         playerData.Task.ClearProgress();
         playerData.Task.ClearPlayerId();
@@ -895,19 +898,22 @@ public class DailyTaskManager : AltMonoBehaviour
             callback(false);
             yield break;
         }
-
-        StartCoroutine(ServerManager.Instance.ReservePlayerTaskFromServer(playerTask.Id, data => reserveResult = data));
-        coroutineTimeout = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
-        yield return new WaitUntil(() => (reserveResult != null || timeout != null));
-
-        if (reserveResult == null)
+        if (!playerTask.Offline)
         {
-            Debug.LogError($"Failed to reserve task id: {playerTask.Id}");
-            callback(false);
-            yield break;
-        }
+            StartCoroutine(ServerManager.Instance.ReservePlayerTaskFromServer(playerTask.Id, data => reserveResult = data));
+            coroutineTimeout = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, data => timeout = data));
+            yield return new WaitUntil(() => (reserveResult != null || timeout != null));
 
-        StopCoroutine(coroutineTimeout);
+            if (reserveResult == null)
+            {
+                Debug.LogError($"Failed to reserve task id: {playerTask.Id}");
+                callback(false);
+                yield break;
+            }
+
+            StopCoroutine(coroutineTimeout);
+        }
+        else reserveResult = playerTask;
 
         playerData.Task = reserveResult;
         _currentPlayerData = playerData;

@@ -153,6 +153,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         private TaskEducationStoryType _educationStoryType;
         private TaskEducationCultureType _educationCultureType;
         private TaskEducationEthicalType _educationEthicalType;
+        private bool _offline;
 
         public string Id { get => _id;}
         public int Amount { get => _amount;}
@@ -195,6 +196,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public TaskEducationStoryType EducationStoryType { get => _educationStoryType;}
         public TaskEducationCultureType EducationCultureType { get => _educationCultureType;}
         public TaskEducationEthicalType EducationEthicalType {  get => _educationEthicalType;}
+        public bool Offline { get => _offline; }
 
         public PlayerTask(ServerPlayerTask task)
         {
@@ -209,6 +211,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             _playerId = string.IsNullOrWhiteSpace(task.player_id) ? "" : task.player_id;
             _startedAt = task.startedAt;
             _educationCategory = GetEducationTypeEnum(task.educationCategoryType);
+            _offline =  task.isPlaceHolder;
 
             switch (task.educationCategoryType)
             {
@@ -699,6 +702,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public string startedAt;
         public string educationCategoryType;
         public string educationCategoryTaskType;
+        public bool isPlaceHolder;
 
         public class TaskTitle
         {
