@@ -36,6 +36,7 @@ namespace MenuUi.Scripts.AvatarEditor
             AvatarClassInfo classObject = null;
             foreach (AvatarClassInfo classInfo in _avatarClassInfoList)
             {
+                Debug.Log("Script GetCharacterPrefabInfo: going over classInfo.Type: " + classInfo.Type);
                 if (classInfo.Type == characterClass)
                 {
                     classObject = classInfo;

@@ -41,9 +41,11 @@ namespace MenuUi.Scripts.MainMenu
             _swipe = GetComponentInParent<SwipeUI>();
             StartCoroutine(CheckWindowSize());
 
+            AudioManager.Instance?.SetCurrentAreaCategoryName("MainMenu");
+
             if (jukeboxMainMenu)
             {
-                if (string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
+                if (JukeboxManager.Instance != null && string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
                     AudioManager.Instance?.PlayMusic("MainMenu");
             }
             else

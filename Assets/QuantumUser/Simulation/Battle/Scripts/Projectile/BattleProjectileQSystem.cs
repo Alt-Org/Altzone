@@ -150,10 +150,12 @@ namespace Battle.QSimulation.Projectile
 
                 case SpeedChange.Increment:
                     projectile->Speed = FPMath.Min(projectile->Speed + projectile->SpeedIncrement, projectile->SpeedMax);
+                    f.Events.BattleProjectileChangeSpeed(projectile->Speed);
                     break;
 
                 case SpeedChange.Reset:
                     projectile->Speed = projectile->SpeedBase;
+                    f.Events.BattleProjectileChangeSpeed(projectile->Speed);
                     break;
             }
         }
@@ -300,9 +302,9 @@ namespace Battle.QSimulation.Projectile
 
             if (handleCollision)
             {
-                FPVector2 direction = FPVector2.Zero;
-                if      (collisionType == BattlePlayerCollisionType.Reflect)  direction = FPVector2.Reflect(projectile->Direction, normal).Normalized;
-                else if (collisionType == BattlePlayerCollisionType.Override) direction = normal;
+                FPVector2 direction;
+                if (collisionType == BattlePlayerCollisionType.Reflect) direction = FPVector2.Reflect(projectile->Direction, normal).Normalized;
+                else                                                    direction = normal;
 
                 HandleIntersection(f, projectile, projectileEntity, otherEntity, normal, collisionMinOffset);
                 UpdateVelocity(f, projectile, direction, speedChange);
@@ -399,6 +401,8 @@ namespace Battle.QSimulation.Projectile
             projectile->IsLaunched = true;
 
             SetHeld(f, projectile, false);
+
+            f.Events.BattleProjectileChangeSpeed(projectile->Speed);
 
             Debug.Log("Projectile Launched");
         }

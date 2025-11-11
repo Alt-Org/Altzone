@@ -40,6 +40,8 @@
 /// ### Gameplay events
 /// - <b>synced event</b> @ref BattleChangeEmotionState { BattleEmotionState Emotion }  
 ///   @copybrief Quantum.EventBattleChangeEmotionState
+/// - <b>synced event</b> @ref BattleProjectileChangeSpeed { FP NewSpeed }  
+///   @copybrief Quantum.EventBattleProjectileChangeSpeed
 /// - <b>synced event</b> @ref BattleProjectileChangeGlowStrength { FP Strength }  
 ///   @copybrief Quantum.EventBattleProjectileChangeGlowStrength
 /// - <b>event</b> @ref BattlePlaySoundFX { BattleSoundFX Effect }  
@@ -206,6 +208,15 @@
 ///
 /// Generated Class @cref{Quantum,EventBattleChangeEmotionState}  
 /// Generated Method @cref{Quantum,Frame.FrameEvents.BattleChangeEmotionState}
+///
+/// ---
+///
+/// @anchor BattleProjectileChangeSpeed
+/// ### BattleProjectileChangeSpeed
+/// @copybrief Quantum.EventBattleProjectileChangeSpeed
+///
+/// Generated Class @cref{Quantum,EventBattleProjectileChangeSpeed  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleProjectileChangeSpeed}
 ///
 /// ---
 ///
@@ -383,6 +394,13 @@
 /// @class Quantum::EventBattleChangeEmotionState
 /// <summary>
 /// Synced event. Used to change sprites etc. during game depending on given BattleEmotionState.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattleProjectileChangeSpeed
+/// <summary>
+/// Synced event. Used to update the projectile's trail based on it's speed.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleEvents.qtn}

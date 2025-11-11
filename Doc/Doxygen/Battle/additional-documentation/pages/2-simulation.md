@@ -166,6 +166,7 @@ In **%Battle** all [Quantum Events🡵] are located in BattleEvents.qtn file.
 | @crefd{Quantum}   | @cref{Quantum,EventBattleViewSetRotationJoystickVisibility} | @copybrief Quantum.EventBattleViewSetRotationJoystickVisibility |
 |                                                                                                                                                 |||
 | @crefd{Quantum}   | @cref{Quantum,EventBattleChangeEmotionState}                | @copybrief Quantum.EventBattleChangeEmotionState                |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleProjectileChangeSpeed}             | @copybrief Quantum.EventBattleProjectileChangeSpeed             |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleProjectileChangeGlowStrength}      | @copybrief Quantum.EventBattleProjectileChangeGlowStrength      |
 | @crefd{Quantum}   | @cref{Quantum,EventBattlePlaySoundFX}                       | @copybrief Quantum.EventBattlePlaySoundFX                       |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleLastRowWallDestroyed}              | @copybrief Quantum.EventBattleLastRowWallDestroyed              |

@@ -82,6 +82,11 @@ synced event BattleChangeEmotionState
     BattleEmotionState Emotion;
 }
 
+synced event BattleProjectileChangeSpeed
+{
+    FP NewSpeed;
+}
+
 synced event BattleProjectileChangeGlowStrength
 {
     FP Strength;

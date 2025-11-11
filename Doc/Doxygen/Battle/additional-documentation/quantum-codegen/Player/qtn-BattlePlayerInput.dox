@@ -34,8 +34,11 @@
 /// @var Quantum::BattleMovementInputType Quantum::BattleMovementInputType::None
 /// <summary>Player does not want to move.</summary>
 ///
-/// @var Quantum::BattleMovementInputType Quantum::BattleMovementInputType::Position
-/// <summary>The player wants to move to a position.</summary>
+/// @var Quantum::BattleMovementInputType Quantum::BattleMovementInputType::PositionTarget
+/// <summary>The player wants to move to a target position.</summary>
+///
+/// @var Quantum::BattleMovementInputType Quantum::BattleMovementInputType::PositionMove
+/// <summary>The player wants to move towards a position.</summary>
 ///
 /// @var Quantum::BattleMovementInputType Quantum::BattleMovementInputType::Direction
-/// <summary>The player wants to move to a direction.</summary>
+/// <summary>The player wants to move in a direction.</summary>

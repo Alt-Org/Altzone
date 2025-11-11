@@ -116,10 +116,6 @@ namespace Battle.View.UI
 
             // Setting BattleUiMovableElementData to movable element
             if (data != null) movableElement.SetData(data);
-
-            // Setting correct icon to the joystick
-            BattleUiJoystickIconSetter iconSetter = movableElement.GetComponent<BattleUiJoystickIconSetter>();
-            if (iconSetter != null) iconSetter.SetIcon(uiElementType);
         }
 
         /// <summary>

@@ -7,6 +7,8 @@
 ///
 /// See [{PlayerInput}](#page-concepts-player-input) for more info.
 
+//#define DEBUG_INPUT_TYPE_OVERRIDE
+
 // Unity usings
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -87,16 +89,18 @@ namespace Battle.View.Player
         private struct MovementInputInfo
         {
             public BattleMovementInputType MovementInput;
-            public bool MovementDirectionIsNormalized;
-            public BattleGridPosition MovementPosition;
-            public FPVector2 MovementDirection;
+            public bool                    MovementDirectionIsNormalized;
+            public BattleGridPosition      MovementPositionTarget;
+            public FPVector2               MovementPositionMove;
+            public FPVector2               MovementDirection;
 
-            public MovementInputInfo(BattleMovementInputType movementInput, bool movementDirectionIsNormalized, BattleGridPosition movementPosition, FPVector2 movementDirection)
+            public MovementInputInfo(BattleMovementInputType movementInput, bool movementDirectionIsNormalized, BattleGridPosition movementPositionTarget, FPVector2 movementPositionMove, FPVector2 movementDirection)
             {
-                MovementInput = movementInput;
+                MovementInput                 = movementInput;
                 MovementDirectionIsNormalized = movementDirectionIsNormalized;
-                MovementPosition = movementPosition;
-                MovementDirection = movementDirection;
+                MovementPositionTarget        = movementPositionTarget;
+                MovementPositionMove          = movementPositionMove;
+                MovementDirection             = movementDirection;
             }
         }
 
@@ -106,7 +110,7 @@ namespace Battle.View.Player
         private struct RotationInputInfo
         {
             public bool RotationInput;
-            public FP RotationValue;
+            public FP   RotationValue;
 
             public RotationInputInfo(bool rotationInput, FP rotationValue)
             {
@@ -198,6 +202,11 @@ namespace Battle.View.Player
             _swipeSensitivity  = SettingsCarrier.Instance.BattleSwipeSensitivity;
             _gyroMinAngle      = SettingsCarrier.Instance.BattleGyroMinAngle;
 
+#if DEBUG_INPUT_TYPE_OVERRIDE
+            _movementInputType = MovementInputType.FollowPointer;
+            _rotationInputType = RotationInputType.TwoFinger;
+#endif
+
             if (AttitudeSensor.current != null)
             {
                 InputSystem.EnableDevice(AttitudeSensor.current);
@@ -223,7 +232,7 @@ namespace Battle.View.Player
             _mouseDownPrevious = mouseDown;
 
             // set default input info
-            MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero);
+            MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero, FPVector2.Zero);
             RotationInputInfo rotationInputInfo = new(false, FP._0);
 
             // check button input
@@ -252,13 +261,14 @@ namespace Battle.View.Player
 
             Input i = new()
             {
-                MovementInput = movementInputInfo.MovementInput,
+                MovementInput                 = movementInputInfo.MovementInput,
                 MovementDirectionIsNormalized = movementInputInfo.MovementDirectionIsNormalized,
-                MovementPosition = movementInputInfo.MovementPosition,
-                MovementDirection = movementInputInfo.MovementDirection,
-                RotationInput = rotationInputInfo.RotationInput,
-                RotationValue = rotationInputInfo.RotationValue,
-                PlayerCharacterNumber = _characterNumber,
+                MovementPositionTarget        = movementInputInfo.MovementPositionTarget,
+                MovementPositionMove          = movementInputInfo.MovementPositionMove,
+                MovementDirection             = movementInputInfo.MovementDirection,
+                RotationInput                 = rotationInputInfo.RotationInput,
+                RotationValue                 = rotationInputInfo.RotationValue,
+                PlayerCharacterNumber         = _characterNumber,
                 GiveUpInput = _onGiveUp
             };
 
@@ -287,19 +297,36 @@ namespace Battle.View.Player
         /// <param name="deltaTime">Time since previous frame</param>
         private MovementInputInfo GetMovementInput(bool mouseDown, bool mouseClick, Vector3 unityPosition, FP deltaTime)
         {
-            MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero);
+            MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero, FPVector2.Zero);
 
             switch (_movementInputType)
             {
                 case MovementInputType.PointAndClick:
                     if (mouseClick)
                     {
-                        movementInputInfo.MovementInput = BattleMovementInputType.Position;
-                        movementInputInfo.MovementPosition = new()
+                        movementInputInfo.MovementInput = BattleMovementInputType.PositionTarget;
+                        movementInputInfo.MovementPositionTarget = new()
                         {
                             Row = BattleGridManager.WorldYPositionToGridRow(FP.FromFloat_UNSAFE(unityPosition.z)),
                             Col = BattleGridManager.WorldXPositionToGridCol(FP.FromFloat_UNSAFE(unityPosition.x))
                         };
+                    }
+                    break;
+
+                case MovementInputType.FollowPointer:
+                    if (mouseDown)
+                    {
+                        movementInputInfo.MovementInput = BattleMovementInputType.PositionMove;
+                        movementInputInfo.MovementPositionMove = new FPVector2
+                        (
+                            FP.FromFloat_UNSAFE(unityPosition.x),
+                            FP.FromFloat_UNSAFE(unityPosition.z)
+                        );
+                    }
+                    else
+                    {
+                        movementInputInfo.MovementInput = BattleMovementInputType.None;
+                        movementInputInfo.MovementPositionMove = FPVector2.Zero;
                     }
                     break;
 

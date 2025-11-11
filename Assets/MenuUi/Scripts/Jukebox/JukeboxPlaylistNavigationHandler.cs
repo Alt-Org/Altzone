@@ -80,6 +80,7 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
             JukeboxTrackButtonHandler buttonHandler = jukeboxTrackButton.GetComponent<JukeboxTrackButtonHandler>();
             //buttonHandler.OnTrackPressed += JukeboxManager.Instance.PlayPlaylist;
             buttonHandler.OnTrackPressed += JukeboxManager.Instance.QueueTrack;
+            buttonHandler.OnPreviewPressed += JukeboxManager.Instance.PlayPreview;
             buttonHandler.Clear();
             tracksChunk.Add(buttonHandler);
         }
@@ -169,7 +170,7 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
         if (string.IsNullOrEmpty(value)) //Set all track button handlers visible that have a music track.
             foreach (Chunk<JukeboxTrackButtonHandler> chunk in _buttonHandlerChunks)
                 foreach (JukeboxTrackButtonHandler handler in chunk.Pool)
-                    if (handler.CurrentTrack != null)
+                    if (handler.MusicTrack != null)
                         handler.SetVisibility(true);
 
         int textDirection = (_previousSearchLength < value.Length) ? 1 : -1; //1: Forward, -1: Backward.
@@ -188,11 +189,11 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
             {
                 JukeboxTrackButtonHandler handler = chunk.Pool[j];
 
-                if ((handler.CurrentTrack == null || handler.CurrentTrack.Music == null) ||
+                if ((handler.MusicTrack == null || handler.MusicTrack.Music == null) ||
                     ((textDirection == 1 && hiddenTrackChunkData.Pool[j]) ||
                     (textDirection == -1 && !hiddenTrackChunkData.Pool[j]))) continue;
 
-                bool visible = handler.CurrentTrack.Name.Contains(value, System.StringComparison.CurrentCultureIgnoreCase);
+                bool visible = handler.MusicTrack.Name.Contains(value, System.StringComparison.CurrentCultureIgnoreCase);
 
                 if ((textDirection == 1 && visible) || (textDirection == -1 && !visible)) continue;
 
