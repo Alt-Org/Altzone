@@ -761,7 +761,7 @@ public class ServerManager : MonoBehaviour
                 if (playerInfo.parentalAuth != null) Player.parentalAuth = playerInfo.parentalAuth;
                 if (playerInfo.avatar != null) Player.avatar = playerInfo.avatar;
                 if (playerInfo.gameStatistics != null) Player.gameStatistics = playerInfo.gameStatistics;
-                if (playerInfo.DailyTask != null) Player.DailyTask = playerInfo.DailyTask;
+                if (playerInfo.DailyTask != null ) Player.DailyTask = playerInfo.DailyTask;
                 if (playerInfo.clanRole_id != null) Player.clanRole_id = playerInfo.clanRole_id;
                 if (playerInfo.clanLogo != null) Player.clanLogo = playerInfo.clanLogo;
 
