@@ -241,7 +241,7 @@ namespace Battle.QSimulation.Player
 
                 BattleCharacterBase[] battleBaseCharacters = !isBot
                                                            ? f.GetPlayerData(playerHandle.PlayerRef).Characters
-                                                           : BattlePlayerBotController.GetBotCharacters();
+                                                           : BattlePlayerBotController.GetBotCharacters(f);
 
                 EntityRef[] playerCharacterEntityArray = new EntityRef[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
 

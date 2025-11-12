@@ -117,6 +117,15 @@ namespace Altzone.Scripts.Audio
         private int _localTrackId = 0;
         #endregion
 
+        #region Preview
+        [SerializeField] private float _previewTime = 10f;
+
+        private bool _trackPreviewActive = false;
+
+        private JukeboxTrackButtonHandler _currentPreviewMusicTrackHandler = null;
+        private Coroutine _currentPreviewTrackCoroutine;
+        #endregion
+
         #region Events & Delegates
         public delegate ChunkPointer GetFreeJukeboxTrackQueueHandler();
         public event GetFreeJukeboxTrackQueueHandler OnGetFreeJukeboxTrackQueueHandler;
@@ -137,7 +146,7 @@ namespace Altzone.Scripts.Audio
         public delegate void ClearJukeboxVisual();
         public event ClearJukeboxVisual OnClearJukeboxVisuals;
 
-        public delegate void SetVisibleElapsedTime(float timeElapsed);
+        public delegate void SetVisibleElapsedTime(float musicTrackLength, float timeElapsed);
         public event SetVisibleElapsedTime OnSetVisibleElapsedTime;
 
         //public delegate void SetPlayButtonImages(bool value);
@@ -145,6 +154,9 @@ namespace Altzone.Scripts.Audio
 
         //public delegate void PlaylistPlay();
         //public event PlaylistPlay OnPlaylistPlay;
+
+        public delegate void JukeboxMute(bool value);
+        public event JukeboxMute OnJukeboxMute;
 
         public delegate void PlaylistChange();
         public event PlaylistChange OnQueueChange;
@@ -190,16 +202,19 @@ namespace Altzone.Scripts.Audio
         {
             StartCoroutine(GetPlayerData());
 
-            yield return new WaitUntil(() => _currentPlayerData != null);
+            yield return new WaitUntil(() => _currentPlayerData != null && AudioManager.Instance != null);
 
             ServerPlaylist playlistData = null;
-            bool? timeoutCallback = null;
+            //bool? timeoutCallback = null;
+            bool? success = null;
 
-            StartCoroutine(GetClanPlaylist((data) => timeoutCallback = data, (data) => playlistData = data));
+            //StartCoroutine(GetClanPlaylist((data) => timeoutCallback = data, (data) => playlistData = data));
 
-            yield return new WaitUntil(() => (playlistData != null || timeoutCallback != null));
+            StartCoroutine(UpdateLocalClanPlaylist((successData) => success = successData, (serverPlaylistData) => playlistData = serverPlaylistData));
 
-            if (timeoutCallback != null) yield break;
+            yield return new WaitUntil(() => (success != null));
+
+            if (!success.Value) yield break;
 
             //playlistData.jukeboxSongs.AddRange(TESTCreateServerMusicList()); //COMMENT WHEN DONE TESTING!
 
@@ -221,7 +236,7 @@ namespace Altzone.Scripts.Audio
 
             _musicTrackFavorites = GetFavoriteDatas();
 
-            CreateTrackQueueFromCurrentPlaylist();
+            //CreateTrackQueueFromCurrentPlaylist();
             _playlistReady = true;
 
             if (OnQueueChange != null) OnQueueChange.Invoke();
@@ -232,10 +247,12 @@ namespace Altzone.Scripts.Audio
             //    _trackQueuePointer++;
             //}
 
-            _musicTrackStartTime = System.DateTime.Now; //TODO: Replace "System.DateTime.Now" with correct music track start time from server.
-            _jukeboxMuted = true;
-            PlayNextJukeboxTrack();
-            _jukeboxMuted = false;
+            //_musicTrackStartTime = System.DateTime.Now; //TODO: Replace "System.DateTime.Now" with correct music track start time from server.
+            //_jukeboxMuted = true;
+            //PlayNextJukeboxTrack();
+            //_jukeboxMuted = false;
+
+            _playlistServerFetchCoroutine = StartCoroutine(ServerPlaylistFetchLoop());
         }
 
         private IEnumerator GetPlayerData()
@@ -378,18 +395,31 @@ namespace Altzone.Scripts.Audio
         //    return false;
         //}
 
-        public void SendPlaylistChangesToServer()
-        {
-            if (!_serverOperationAvailable || _currentPlaylist == null || _currentPlaylist != null && _currentPlaylist.Type != PlaylistType.Clan) return;
+        //public void SendPlaylistChangesToServer(PlaybackHistoryType type)
+        //{
+        //    if (!_serverOperationAvailable || _currentPlaylist == null || _currentPlaylist != null && _currentPlaylist.Type != PlaylistType.Clan) return;
 
-            //SaveTrackQueueToPlaylist();
+        //    switch (type)
+        //    {
+        //        case PlaybackHistoryType.Add:
+        //            {
 
-            StartCoroutine(UpdateClanPlaylist());
-        }
+        //                break;
+        //            }
+        //        case PlaybackHistoryType.Delete:
+        //            {
+
+        //                break;
+        //            }
+        //    }
+
+        //    //SaveTrackQueueToPlaylist();
+        //    //StartCoroutine(UpdateClanPlaylist());
+        //}
 
         //public bool RemoveTrackOnPlaylist(string trackName, string playlistName)
         //{
-            
+
 
         //    return false;
         //}
@@ -399,17 +429,18 @@ namespace Altzone.Scripts.Audio
 
         //}
 
-        private void SaveTrackQueueToPlaylist()
-        {
-            List<string> packedTrackQueueDatas = new List<string>();
+        //private void SaveTrackQueueToPlaylist()
+        //{
+        //    List<string> packedTrackQueueDatas = new List<string>();
 
-            foreach (TrackQueueData track in _trackQueue)
-                if (track.InUse())
-                    packedTrackQueueDatas.Add(track.Id);
+        //    foreach (TrackQueueData track in _trackQueue)
+        //        if (track.InUse())
+        //            packedTrackQueueDatas.Add(track.ServerSongData);
 
-            _currentPlaylist.PackedTrackQueueDatas = packedTrackQueueDatas;
-        }
+        //    _currentPlaylist.PackedTrackQueueDatas = packedTrackQueueDatas;
+        //}
 
+        #region Server
         private IEnumerator GetClanPlaylist(System.Action<bool?> timeoutCallback, System.Action<ServerPlaylist> playlistData)
         {
             bool? timeout = null;
@@ -431,93 +462,160 @@ namespace Altzone.Scripts.Audio
             playlistData(serverPlaylist);
         }
 
-        private IEnumerator UpdateClanPlaylist()
+        private void UpdateLocalClanPlaylist() { StartCoroutine(UpdateLocalClanPlaylist(null, null)); }
+
+        private IEnumerator UpdateLocalClanPlaylist(System.Action<bool> successCallback, System.Action<ServerPlaylist> serverPlaylistCallback)
         {
-            ServerPlaylist playlistData = null;
+            ServerPlaylist serverPlaylistData = null;
+            bool? timeout = null;
+            //bool? callback = null;
+
+            _serverOperationAvailable = false;
+
+            if (_playlistServerFetchCoroutine != null)
+            {
+                StopCoroutine(_playlistServerFetchCoroutine);
+                _playlistServerFetchCoroutine = null;
+            }
+
+            StartCoroutine(GetClanPlaylist((data) => timeout = data, (data) => serverPlaylistData = data));
+
+            yield return new WaitUntil(() => (serverPlaylistData != null || timeout != null));
+
+            if (serverPlaylistData == null)
+            {
+                _serverOperationAvailable = true;
+
+                if (successCallback != null) successCallback(false);
+
+                yield break;
+            }
+
+            UpdateTrackQueue(serverPlaylistData);
+            StartCoroutine(PlayServerTrack(serverPlaylistData.currentSong));
+
+            //SaveTrackQueueToPlaylist();
+
+            //StartCoroutine(ServerManager.Instance.UpdateJukeboxClanPlaylistToServer(new Playlist("clear", PlaylistType.Custom, new List<string>()), (data) => callback = data)); //Purge clan playlist.
+            //StartCoroutine(ServerManager.Instance.UpdateJukeboxClanPlaylistToServer(_currentPlaylist, (data) => callback = data));
+            //StartCoroutine(WaitUntilTimeout(_timeoutSeconds, (data) => timeout = data));
+
+            //yield return new WaitUntil(() => (callback != null || timeout != null));
+
+            //if (timeout != null || callback != null && !callback.Value)
+            //{
+            //    Debug.LogError("Failed to update server clan playlist!");
+            //    _serverOperationAvailable = true;
+            //    yield break;
+            //}
+
+            _serverOperationAvailable = true;
+
+            _playlistServerFetchCoroutine = StartCoroutine(ServerPlaylistFetchLoop());
+            Debug.Log("Clan playlist server update successful.");
+
+            if (serverPlaylistCallback != null) serverPlaylistCallback(serverPlaylistData);
+            if (successCallback != null) successCallback(true);
+        }
+
+        private IEnumerator DeleteTrackFromServer(System.Action<bool> successCallback, string musicTrackUniqueId)
+        {
             bool? timeout = null;
             bool? callback = null;
 
             _serverOperationAvailable = false;
 
-            if (_playlistServerFetchCoroutine != null) StopCoroutine(_playlistServerFetchCoroutine);
-
-            StartCoroutine(GetClanPlaylist((data) => timeout = data, (data) => playlistData = data));
-
-            yield return new WaitUntil(() => (playlistData != null || timeout != null));
-
-            if (playlistData == null)
-            {
-                _serverOperationAvailable = true;
-                yield break;
-            }
-
-            UpdateLocalPlaylist(playlistData);
-            SaveTrackQueueToPlaylist();
-
-            //StartCoroutine(ServerManager.Instance.UpdateJukeboxClanPlaylistToServer(new Playlist("clear", PlaylistType.Custom, new List<string>()), (data) => callback = data)); //Purge clan playlist.
-            StartCoroutine(ServerManager.Instance.UpdateJukeboxClanPlaylistToServer(_currentPlaylist, (data) => callback = data));
+            StartCoroutine(ServerManager.Instance.DeleteJukeboxClanMusicTrack((data) => callback = data, musicTrackUniqueId));
             StartCoroutine(WaitUntilTimeout(_timeoutSeconds, (data) => timeout = data));
 
             yield return new WaitUntil(() => (callback != null || timeout != null));
 
             if (timeout != null || callback != null && !callback.Value)
             {
-                Debug.LogError("Failed to update server clan playlist!");
+                Debug.LogError("Failed to delete music track from clan playlist!");
                 _serverOperationAvailable = true;
+
+                if (successCallback != null) successCallback(false);
+
                 yield break;
             }
 
             _serverOperationAvailable = true;
 
-            _playlistServerFetchCoroutine = StartCoroutine(ServerPlaylistFetchLoop());
-            Debug.Log("Clan playlist server update successful.");
+            if (successCallback != null) successCallback(true);
         }
 
-        private void UpdateLocalPlaylist(ServerPlaylist serverPlaylist)
+        private IEnumerator AddTrackToServer(System.Action<bool> done, MusicTrack musicTrack)
         {
-            List<string> foundInServer = new List<string>();
+            bool? timeout = null;
+            bool? callback = null;
+
+            _serverOperationAvailable = false;
+
+            StartCoroutine(ServerManager.Instance.AddJukeboxClanMusicTrack((data) => callback = data, musicTrack));
+            StartCoroutine(WaitUntilTimeout(_timeoutSeconds, (data) => timeout = data));
+
+            yield return new WaitUntil(() => (callback != null || timeout != null));
+
+            if (timeout != null || callback != null && !callback.Value)
+            {
+                Debug.LogError("Failed to add music track to clan playlist!");
+                _serverOperationAvailable = true;
+                done(false);
+
+                yield break;
+            }
+
+            _serverOperationAvailable = true;
+            done(true);
+        }
+
+        private void UpdateTrackQueue(ServerPlaylist serverPlaylist)
+        {
+            //List<ServerSong> foundInServer = new List<ServerSong>();
             List<ServerCompareData> deleteDatas = new List<ServerCompareData>();
             List<ServerCompareData> addDatas = new List<ServerCompareData>();
+            List<ServerSong> serverSongs = serverPlaylist.songQueue;
 
             //Filter out local users tracks.
-            for (int j = 0; j < serverPlaylist.jukeboxSongs.Count; j++)
-            {
-                string[] datas = serverPlaylist.jukeboxSongs[j].Split('_');
+            //for (int j = 0; j < serverPlaylist.songQueue.Count; j++)
+            //{
+            //    string data = serverPlaylist.songQueue[j].playerId;
 
-                if (datas[0] == _currentPlayerData.Id) continue;
+            //    if (data == _currentPlayerData.Id) continue;
 
-                foundInServer.Add(serverPlaylist.jukeboxSongs[j]);
-            }
+            //    foundInServer.Add(serverPlaylist.songQueue[j]);
+            //}
 
             //Gather all possible addable and deletable tracks.
             int i = 0;
 
-            while (i < foundInServer.Count || i < _trackQueue.Count)
+            while (i < serverSongs.Count || i < _trackQueue.Count)
             {
-                if (i < foundInServer.Count && i < _trackQueue.Count && foundInServer[i] == _trackQueue[i].Id) //Skip.
+                if (i < serverSongs.Count && i < _trackQueue.Count && _trackQueue[i].InUse() && serverSongs[i].id == _trackQueue[i].ServerSongData.id) //Skip.
                 {
                     i++;
                     continue;
                 }
 
-                if (i < foundInServer.Count) //Server, look up what will be added.
+                if (i < serverSongs.Count) //Server, look up what will be added.
                 {
-                    int serverIndex = _trackQueue.FindIndex((data) => foundInServer[i] == data.Id);
+                    int serverIndex = _trackQueue.FindIndex((data) => data.ServerSongData != null && serverSongs[i].id == data.ServerSongData.id);
 
-                    if (serverIndex == -1) addDatas.Add(new(foundInServer[i], i));
+                    if (serverIndex == -1) addDatas.Add(new(serverSongs[i], i));
                 }
 
-                if (i < _trackQueue.Count) //Local, look up what will be deleted.
+                if (i < _trackQueue.Count && _trackQueue[i].InUse()) //Local, look up what will be deleted.
                 {
-                    if (_trackQueue[i].Id.Split('_')[0] == _currentPlayerData.Id || !_trackQueue[i].InUse()) //Skip owned track or deactivated slot.
-                    {
-                        i++;
-                        continue;
-                    }
+                    //if (_trackQueue[i].ServerSongData.playerId == _currentPlayerData.Id || !_trackQueue[i].InUse()) //Skip owned track or deactivated slot.
+                    //{
+                    //    i++;
+                    //    continue;
+                    //}
 
-                    int localIndex = foundInServer.FindIndex((data) => _trackQueue[i].Id == data);
+                    int localIndex = serverSongs.FindIndex((data) => _trackQueue[i].ServerSongData.id == data.id);
 
-                    if (localIndex == -1) deleteDatas.Add(new(_trackQueue[i].Id, -1));
+                    if (localIndex == -1) deleteDatas.Add(new(_trackQueue[i].ServerSongData, -1));
                 }
 
                 i++;
@@ -526,16 +624,29 @@ namespace Altzone.Scripts.Audio
             //Remove local tracks.
             foreach (ServerCompareData deleteData in deleteDatas)
             {
-                TrackQueueData data = _trackQueue.Find((data) => deleteData.Id == data.Id);
+                TrackQueueData data = _trackQueue.Find((data) => (data.ServerSongData != null && deleteData.ServerSongData.songId == data.ServerSongData.songId));
 
-                AddPlaybackHistory(PlaybackHistoryType.Delete, data);
-                DeleteFromQueue(data.LinearIndex);
+                if (data.Pointer != null)
+                {
+                    AddPlaybackHistory(PlaybackHistoryType.Delete, data);
+
+                    if (OnQueueChange != null) OnQueueChange.Invoke();
+                }
+
+                DeleteFromQueue(data.ServerSongData.id);
             }
-
+            
             //Add server tracks.
             foreach (ServerCompareData addData in addDatas)
-                InsertToQueueList(GetMusicTrack(addData.Id.Split('_')[1]), addData.Index, addData.Id, false);
+            {
+                ServerSong temp = addData.ServerSongData;
+
+                AddToQueueList(new TrackQueueData(temp, GetMusicTrack(temp.songId), _currentPlayerData.Id == temp.playerId));
+            }
+
+            if (OnQueueChange != null) OnQueueChange.Invoke();
         }
+        #endregion
 
         public MusicTrack GetMusicTrack(string musicTrackId)
         {
@@ -554,8 +665,8 @@ namespace Altzone.Scripts.Audio
         /// <returns></returns>
         private IEnumerator ServerPlaylistFetchLoop()
         {
-            ServerPlaylist playlistData = null;
-            bool? timeout = null;
+            //ServerPlaylist playlistData = null;
+            bool? success = null;
             float timer = 0f;
  
             while (timer < _playlistServerFetchFrequency)
@@ -564,13 +675,19 @@ namespace Altzone.Scripts.Audio
                 timer += Time.deltaTime;
             }
 
-            StartCoroutine(GetClanPlaylist((data) => timeout = data, (data) => playlistData = data));
+            StartCoroutine(UpdateLocalClanPlaylist((successData) => success = successData, null));
 
-            yield return new WaitUntil(() => (playlistData != null || timeout != null));
+            yield return new WaitUntil(() => (success != null));
 
-            if (playlistData == null) yield break;
+            //StartCoroutine(GetClanPlaylist((data) => timeout = data, (data) => playlistData = data));
 
-            UpdateLocalPlaylist(playlistData);
+            //yield return new WaitUntil(() => (playlistData != null || timeout != null));
+
+            //if (playlistData == null) yield break;
+
+            //UpdateLocalPlaylist(playlistData);
+
+            if (!success.Value) yield break;
 
             _playlistServerFetchCoroutine = StartCoroutine(ServerPlaylistFetchLoop());
         }
@@ -592,33 +709,77 @@ namespace Altzone.Scripts.Audio
         #region Playback
         //public void SetLooping(bool looping, bool loopOne) { _loopLastTrack = looping; }
 
+        private IEnumerator PlayServerTrack(ServerCurrentSong serverCurrentSong)
+        {
+            yield return new WaitUntil(() => _currentPlaylist != null);
+
+            if (serverCurrentSong == null)
+            {
+                if (OnStopJukeboxVisuals != null) OnStopJukeboxVisuals.Invoke();
+                if (OnClearJukeboxVisuals != null) OnClearJukeboxVisuals.Invoke();
+
+                AudioManager.Instance.PlayFallBackTrack(MusicHandler.MusicSwitchType.CrossFade);
+                _currentTrackQueueData = null;
+
+                yield break;
+            }
+
+            System.DateTime gmtTime = System.DateTimeOffset.FromUnixTimeMilliseconds(serverCurrentSong.startedAt).DateTime;
+
+            _musicTrackStartTime = gmtTime.ToLocalTime();
+            
+            if (_currentTrackQueueData != null && _currentTrackQueueData.ServerSongData != null && serverCurrentSong.songId == _currentTrackQueueData.ServerSongData.songId)
+            {
+                ContinueTrack(false);
+            }
+            else
+            {
+                MusicTrack musicTrack = GetMusicTrack(serverCurrentSong.songId);
+
+                if (musicTrack == null)
+                {
+                    Debug.LogError("Could not find jukebox music track by song id: " + serverCurrentSong.songId);
+                    yield break;
+                }
+
+                _currentTrackQueueData = new TrackQueueData(new(serverCurrentSong), musicTrack);
+
+                ContinueTrack(false);
+            }
+        }
+
         public string TryPlayTrack()
         {
             if (_jukeboxMuted) return null;
-
+            //Debug.LogError(_currentTrackQueueData != null);
+            //Debug.LogError(_currentPlaylist != null && _currentPlaylist.Type != PlaylistType.Clan);
             if (_currentTrackQueueData != null)
                 return ContinueTrack(false);
-            else
+            else if (_currentPlaylist != null && _currentPlaylist.Type != PlaylistType.Clan)
                 return PlayNextJukeboxTrack();
+            else
+                return null;
         }
 
         /// <summary>
         /// Plays the current track.
         /// </summary>
         /// <returns>Track name that is playing.</returns>
-        public string PlayTrack() { return PlayTrack(_currentTrackQueueData); }
+        public string PlayTrack() { return PlayTrack(_currentTrackQueueData, false); }
 
         /// <summary>
         /// Plays the track found in given <c>TrackQueueData</c>.
         /// </summary>
         /// <returns>Track name that is playing.</returns>
-        public string PlayTrack(TrackQueueData trackQueueData)
+        public string PlayTrack(TrackQueueData trackQueueData, bool forcePlay)
         {
-            if (trackQueueData == null || _trackEndingControlCoroutine != null || (_playbackPaused && _currentTrackQueueData != null)) return null;
+            if (!forcePlay && PlayTrackBlockingCheck(trackQueueData) || _trackPreviewActive) return null;
 
             string name = "";
 
             //MusicTrack validMusicTrack = GetNotHatedMusicTrack(trackQueueData);
+
+            _currentTrackQueueData = trackQueueData;
 
             if (_jukeboxMuted)
             {
@@ -626,11 +787,11 @@ namespace Altzone.Scripts.Audio
             }
             else
             {
-                name = AudioManager.Instance.PlayMusic("Jukebox", trackQueueData.MusicTrack);
+                name = AudioManager.Instance.PlayMusic("Jukebox", trackQueueData.MusicTrack, MusicHandler.MusicSwitchType.CrossFade);
 
                 if (string.IsNullOrEmpty(name))
                 {
-                    Debug.LogError("Failed to play jukebox music track!");
+                    Debug.LogWarning("Failed to play jukebox music track!");
                     return null;
                 }
 
@@ -639,22 +800,30 @@ namespace Altzone.Scripts.Audio
 
             if (OnSetSongInfo != null) OnSetSongInfo.Invoke(trackQueueData.MusicTrack);
 
-            _currentTrackQueueData = trackQueueData;
             _musicElapsedTime = 0f;
 
             if (_trackEndingControlCoroutine != null) StopCoroutine( _trackEndingControlCoroutine);
 
             _trackEndingControlCoroutine = StartCoroutine(TrackEndingControl());
-            //Debug.LogError(_musicElapsedTime + " | " + _currentTrackQueueData.MusicTrack.Music.length);
+
             //OnSetPlayButtonImages?.Invoke(true);
             return name;
+        }
+
+        private bool PlayTrackBlockingCheck(TrackQueueData trackQueueData)
+        {
+            return trackQueueData == null || _trackEndingControlCoroutine != null || (_playbackPaused && _currentTrackQueueData != null);
         }
 
         /// <returns><c>True</c> if paused.</returns>
         public bool PlaybackToggle(bool muteActivation)
         {
             if (muteActivation)
+            {
                 _jukeboxMuted = !_jukeboxMuted;
+
+                if (_jukeboxMuted && _trackPreviewActive) StopMusicPreview();
+            }
             else
                 _playbackPaused = !_playbackPaused;
 
@@ -669,7 +838,7 @@ namespace Altzone.Scripts.Audio
                     PlayTrack();
             }
             else
-                AudioManager.Instance.PlayFallBackTrack();
+                AudioManager.Instance.PlayFallBackTrack(MusicHandler.MusicSwitchType.CrossFade);
 
             if (_playbackPaused) StopJukebox();
 
@@ -681,6 +850,8 @@ namespace Altzone.Scripts.Audio
 
         public string ContinueTrack(bool muteActivation)
         {
+            if (_trackPreviewActive || _currentPlaylist == null) return null;
+
             if (_playbackPaused) _playbackPaused = false;
 
             if (_trackQueuePointer >= _trackQueue.Count) _trackQueuePointer = 0;
@@ -689,18 +860,27 @@ namespace Altzone.Scripts.Audio
             {
                 float seconds = (float)System.DateTime.Now.Subtract(_musicTrackStartTime).TotalMilliseconds / 1000f;
 
-                while (true)
+                while (_trackQueue.Count != 0)
                 {
-                    if (!_trackQueue[_trackQueuePointer].InUse()) TryFindValidQueueData();
+                    //Debug.LogError("continue seconds left: " + seconds);
+                    if (!_trackQueue[_trackQueuePointer].InUse() && !TryFindValidQueueData())
+                    {
+                        if (_currentTrackQueueData != null) break;
+
+                        if (OnStopJukeboxVisuals != null) OnStopJukeboxVisuals.Invoke();
+                        if (OnClearJukeboxVisuals != null) OnClearJukeboxVisuals.Invoke();
+
+                        return null;
+                    }
+
+                    //Debug.LogError("seconds: " + seconds + ", music length: " + _trackQueue[_trackQueuePointer].MusicTrack.Music.length);
                     if (seconds < _trackQueue[_trackQueuePointer].MusicTrack.Music.length) break;
 
+                    _currentTrackQueueData = _trackQueue[_trackQueuePointer];
                     seconds -= _trackQueue[_trackQueuePointer].MusicTrack.Music.length;
-
                     _trackQueuePointer++;
+
                     if (_trackQueuePointer >= _trackQueue.Count) _trackQueuePointer = 0;
-
-                    if (!_trackQueue[_trackQueuePointer].InUse()) TryFindValidQueueData();
-
                 }
 
                 _musicElapsedTime = seconds;
@@ -713,9 +893,14 @@ namespace Altzone.Scripts.Audio
 
             //MusicTrack musicTrack = GetNotHatedMusicTrack();
 
+            if (_currentTrackQueueData == null) return null;
+
             if (OnSetSongInfo != null) OnSetSongInfo.Invoke(_currentTrackQueueData.MusicTrack);
 
-            return AudioManager.Instance.ContinueMusic("Jukebox", _currentTrackQueueData.MusicTrack, _musicElapsedTime);
+            if (!_jukeboxMuted)
+                return AudioManager.Instance.ContinueMusic("Jukebox", _currentTrackQueueData.MusicTrack, MusicHandler.MusicSwitchType.CrossFade, _musicElapsedTime);
+            else
+                return null;
         }
 
         public void StopJukebox()
@@ -732,25 +917,36 @@ namespace Altzone.Scripts.Audio
         private IEnumerator TrackEndingControl()
         {
             if (_currentTrackQueueData == null || !_currentTrackQueueData.InUse()) yield break;
-            //Debug.LogError($"Track length: {_currentTrackQueueData.MusicTrack.Music.length}, start time: {_musicElapsedTime}");
+
             while (true)
             {
                 if (_currentTrackQueueData == null || !_currentTrackQueueData.InUse() || _musicElapsedTime >= _currentTrackQueueData.MusicTrack.Music.length) break;
 
-                if (OnSetVisibleElapsedTime != null) OnSetVisibleElapsedTime.Invoke(_musicElapsedTime);
+                if (!_trackPreviewActive && OnSetVisibleElapsedTime != null) OnSetVisibleElapsedTime.Invoke(_currentTrackQueueData.MusicTrack.Music.length, _musicElapsedTime);
                 
                 yield return null;
                 _musicElapsedTime += Time.deltaTime;
             }
 
-            PlayNextJukeboxTrack();
+            yield return new WaitUntil(() => _serverOperationAvailable);
+
+            if (_currentPlaylist.Type != PlaylistType.Clan)
+                PlayNextJukeboxTrack();
+            else
+                UpdateLocalClanPlaylist();
         }
 
         private string PlayNextJukeboxTrack()
         {
+            //if (_currentPlaylist.Type == PlaylistType.Clan)
+            //{
+            //    StartCoroutine(UpdateLocalClanPlaylist(null, null));
+            //    return null;
+            //}
+
             if (_trackQueuePointer >= _trackQueue.Count && _loopPlayType == PlaylistLoopType.LoopPlaylist) //Keep playing the current playlist.
                 _trackQueuePointer = 0;
-            //Debug.LogError("next, _trackQueuePointer: " + _trackQueuePointer);
+
             if (_trackQueuePointer < _trackQueue.Count && !_trackQueue[_trackQueuePointer].InUse() && !TryFindValidQueueData())
             {
                 Debug.LogError("Next track is null and JukeboxManager failed to find a valid music track!");
@@ -767,45 +963,30 @@ namespace Altzone.Scripts.Audio
 
             if (_loopPlayType == PlaylistLoopType.LoopOne)
             {
-                name = PlayTrack(_currentTrackQueueData);
+                name = PlayTrack(_currentTrackQueueData, false);
             }
             else if (_trackQueuePointer < _trackQueue.Count) //Play the next track in queue.
             {
-                JukeboxTrackQueueHandler queueHandler = null;
+                if (_currentPlaylist.Type != PlaylistType.Clan) MovePreviousTrackToLast();
 
-                _currentTrackQueueData = GetPreviousTrackQueueData();
-
-                // Move played track to last in JukeboxMusicPlayerHandler if active.
-                if (_currentTrackQueueData != null && _currentTrackQueueData.Pointer != null && OnGetTrackQueueHandler != null)
-                    queueHandler = OnGetTrackQueueHandler.Invoke(_currentTrackQueueData.Pointer);
-
-                if (queueHandler != null)
-                {
-                    OnQueueToLast.Invoke(_currentTrackQueueData.Pointer, _currentTrackQueueData.LinearIndex);
-                    //Debug.LogError("Hide: " + _currentTrackQueueData.LinearIndex);
-                    queueHandler.Clear();
-                }
-                else if (_currentTrackQueueData != null)
-                {
-                    //Debug.LogError(_currentTrackQueueData.InUse());
-                    AddPlaybackHistory(PlaybackHistoryType.MoveToLast, _currentTrackQueueData);
-                }
-                //Debug.LogError("move, trackQueuePointer: " + _currentTrackQueueData.LinearIndex);
                 // Play next track.
-                name = PlayTrack(_trackQueue[_trackQueuePointer]);
+                name = PlayTrack(_trackQueue[_trackQueuePointer], false);
 
                 if (name == null)
                 {
-                    Debug.LogError("JukeboxManager: Next tracks name is null!");
+                    //Debug.LogError("JukeboxManager: Next tracks name is null!");
                     return null;
                 }
 
-                _musicTrackStartTime = System.DateTime.Now;
+                //_musicTrackStartTime = System.DateTime.Now;
 
                 // Hide current tracks visual part in JukeboxMusicPlayerHandler.
-                AddPlaybackHistory(PlaybackHistoryType.Hide, _currentTrackQueueData);
+                if (_currentTrackQueueData != null)
+                {
+                    AddPlaybackHistory(PlaybackHistoryType.Hide, _currentTrackQueueData);
 
-                if (OnQueueChange != null) OnQueueChange.Invoke();
+                    if (OnQueueChange != null) OnQueueChange.Invoke();
+                }
 
                 _trackQueuePointer++;
             }
@@ -816,7 +997,7 @@ namespace Altzone.Scripts.Audio
                 StopJukebox();
 
                 if (!string.IsNullOrEmpty(manager.FallbackMusicCategory))
-                    manager.PlayMusic(manager.FallbackMusicCategory, manager.FallbackMusicTrack);
+                    manager.PlayMusic(manager.FallbackMusicCategory, manager.FallbackMusicTrack, MusicHandler.MusicSwitchType.CrossFade);
 
                 if (OnStopJukeboxVisuals != null)
                 {
@@ -830,6 +1011,25 @@ namespace Altzone.Scripts.Audio
             return name;
         }
 
+        private void MovePreviousTrackToLast()
+        {
+            JukeboxTrackQueueHandler queueHandler = null;
+
+            _currentTrackQueueData = GetPreviousTrackQueueData();
+
+            // Move played track to last in JukeboxMusicPlayerHandler if active.
+            if (_currentTrackQueueData != null && _currentTrackQueueData.Pointer != null && OnGetTrackQueueHandler != null)
+                queueHandler = OnGetTrackQueueHandler.Invoke(_currentTrackQueueData.Pointer);
+
+            if (queueHandler != null)
+            {
+                OnQueueToLast.Invoke(_currentTrackQueueData.Pointer, _currentTrackQueueData.LinearIndex);
+                queueHandler.Clear();
+            }
+            else if (_currentTrackQueueData != null)
+                AddPlaybackHistory(PlaybackHistoryType.MoveToLast, _currentTrackQueueData);
+        }
+
         /// <summary>
         /// Used when the <c>_trackQueuePointer</c> points to a removed track.
         /// </summary>
@@ -837,12 +1037,12 @@ namespace Altzone.Scripts.Audio
         private bool TryFindValidQueueData()
         {
             int startIndex = _trackQueuePointer + 1;
-            //Debug.LogError("before: " + _trackQueuePointer);
+
             for (int i = startIndex; i < _trackQueue.Count; i++)
                 if (_trackQueue[i].InUse())
                 {
                     _trackQueuePointer = i;
-                    //Debug.LogError("after: " + _trackQueuePointer);
+
                     return true;
                 }
 
@@ -850,11 +1050,11 @@ namespace Altzone.Scripts.Audio
                 if (_trackQueue[i].InUse())
                 {
                     _trackQueuePointer = i;
-                    //Debug.LogError("after: " + _trackQueuePointer);
+
                     return true;
                 }
 
-            Debug.LogError("JukeboxManager: Could not find a valid TrackQueueData from _trackQueue list!");
+            Debug.LogWarning("JukeboxManager: Could not find a valid TrackQueueData from _trackQueue list!");
             return false;
         }
         #endregion
@@ -884,7 +1084,7 @@ namespace Altzone.Scripts.Audio
 
             // Try finding existing playback history.
             for (int i = 0; i < _playbackHistory.Count; i++)
-                if ((_playbackHistory[i].Target1.TrackQueueData.Id == trackQueueHandler.Id))
+                if ((_playbackHistory[i].Target1.TrackQueueData.ServerSongData.id == trackQueueHandler.ServerSongData.id))
                 {
                     historyData = _playbackHistory[i];
                     break;
@@ -935,15 +1135,17 @@ namespace Altzone.Scripts.Audio
         /// </summary>
         public void QueueTrack(MusicTrack musicTrack)
         {
-            if (_trackQueuePointer != 0 && _currentTrackQueueData != null)
-                InsertToLastOnQueueList(musicTrack, CreateLocalUserTrackQueueId(musicTrack.Id));
-            else if (_currentTrackQueueData != null)
-                AddToQueueList(musicTrack, false);
-            else
-            {
-                AddToQueueList(musicTrack, false);
-                PlayNextJukeboxTrack();
-            }
+            StartCoroutine(AddToServerSongQueue(musicTrack, false));
+
+            //if (_trackQueuePointer != 0 && _currentTrackQueueData != null)
+            //    InsertToLastOnQueueList(musicTrack/*, CreateLocalUserTrackQueueId(musicTrack.Id)*/);
+            //else if (_currentTrackQueueData != null)
+                //StartCoroutine(AddToQueueList(musicTrack, false));
+            //else
+            //{
+            //    StartCoroutine(AddToQueueList(musicTrack, false));
+            //    //PlayNextJukeboxTrack();
+            //}
         }
 
         private void CreateTrackQueueFromCurrentPlaylist()
@@ -953,40 +1155,57 @@ namespace Altzone.Scripts.Audio
                 if (OnGetFreeJukeboxTrackQueueHandler != null) trackQueueData.Pointer = OnGetFreeJukeboxTrackQueueHandler.Invoke();
 
                 trackQueueData.SetFavoriteData(GetTrackFavoriteType(trackQueueData.MusicTrack));
-                AddToQueueList(trackQueueData, true);
+                AddToQueueList(trackQueueData);
 
-                int uniqueInt = int.Parse(trackQueueData.Id.Split('_')[2]);
+                //int uniqueInt = int.Parse(trackQueueData.ServerSongData.id);
 
-                if (_localTrackId <= uniqueInt) _localTrackId = uniqueInt;
+                //if (_localTrackId <= uniqueInt) _localTrackId = uniqueInt;
             }
         }
 
-        private void AddToQueueList(MusicTrack musicTrack, bool dontSendToServer)
+        private IEnumerator AddToServerSongQueue(MusicTrack musicTrack, bool dontSendToServer)
         {
-            AddToQueueList(new TrackQueueData(CreateLocalUserTrackQueueId(musicTrack.Id), _trackQueue.Count, null, musicTrack, true, GetTrackFavoriteType(musicTrack)), dontSendToServer);
+            if (!_serverOperationAvailable) yield break;
+
+            bool? done = null;
+
+            StartCoroutine(AddTrackToServer((data) => done = data, musicTrack));
+
+            yield return new WaitUntil(() => done != null);
+
+            UpdateLocalClanPlaylist();
+
+            //AddToQueueList(new TrackQueueData(CreateLocalUserTrackQueueId(musicTrack.Id), _trackQueue.Count, null, musicTrack, true, GetTrackFavoriteType(musicTrack)), dontSendToServer);
         }
 
-        private void AddToQueueList(TrackQueueData trackQueueData, bool dontSendToServer)
+        private void AddToQueueList(TrackQueueData trackQueueData)
         {
+            trackQueueData.LinearIndex = _trackQueue.Count;
             _trackQueue.Add(trackQueueData);
             AddPlaybackHistory(PlaybackHistoryType.Add, trackQueueData);
 
-            if (!dontSendToServer) SendPlaylistChangesToServer();
+            //if (!dontSendToServer) SendPlaylistChangesToServer(PlaybackHistoryType.Add);
 
             if (OnQueueChange != null) OnQueueChange.Invoke();
         }
 
-        private void InsertToLastOnQueueList(MusicTrack musicTrack, string trackQueueDataId)
+        private IEnumerator InsertToLastOnQueueList(MusicTrack musicTrack/*, string trackQueueDataId*/)
         {
-            int linearIndex = _trackQueuePointer - 1;
+            //int linearIndex = _trackQueuePointer - 1;
+            bool? done = null;
 
-            InsertToQueueList(musicTrack, linearIndex, trackQueueDataId, true);
+            StartCoroutine(AddTrackToServer((data) => done = data, musicTrack));
+
+            yield return new WaitUntil(() => done != null);
+
+            UpdateLocalClanPlaylist();
+            //InsertToQueueList(musicTrack, linearIndex, , true);
         }
 
-        private void InsertToQueueList(MusicTrack musicTrack, int insertIndex, string trackQueueDataId, bool addTypeOverride)
+        private void InsertToQueueList(MusicTrack musicTrack, int insertIndex, ServerSong serverSong, bool addTypeOverride, bool applyVisualChanges)
         {
             int skippedAmount = 0;
-            TrackQueueData trackQueueData = new(trackQueueDataId, insertIndex, null, musicTrack, true, GetTrackFavoriteType(musicTrack));
+            TrackQueueData trackQueueData = new(serverSong, insertIndex, null, musicTrack, true, GetTrackFavoriteType(musicTrack));
 
             _trackQueue.Insert(insertIndex, trackQueueData);
 
@@ -997,9 +1216,9 @@ namespace Altzone.Scripts.Audio
 
             if (insertIndex <= _trackQueuePointer) _trackQueuePointer++;
 
-            SendPlaylistChangesToServer();
+            //SendPlaylistChangesToServer(PlaybackHistoryType.Add);
 
-            if (OnQueueChange != null) OnQueueChange.Invoke();
+            if (applyVisualChanges && OnQueueChange != null) OnQueueChange.Invoke();
 
             // Update every TrackQueueData and JukeboxTrackQueueHandler linear index that is ahead of the inserted TrackQueueData.
             for (int i = insertIndex + 1; i < _trackQueue.Count; i++)
@@ -1013,12 +1232,18 @@ namespace Altzone.Scripts.Audio
             }
         }
 
-        public void DeleteFromQueue(int linearIndex)
+        public void DeleteFromQueue(int linearIndex, bool updateServer)
         {
             //Debug.LogError("delete, chunk: " + _trackQueue[linearIndex].Pointer.ChunkIndex + ", pool: " + _trackQueue[linearIndex].Pointer.PoolIndex);
-            //Debug.LogError("delete, trackQueuePointer: " + linearIndex);
+            if (updateServer) StartCoroutine(DeleteTrackFromServer(null, _trackQueue[linearIndex].ServerSongData.id));
+
             _trackQueue[linearIndex].Clear();
-            if (_serverOperationAvailable) SendPlaylistChangesToServer();
+            //if (_serverOperationAvailable) SendPlaylistChangesToServer(PlaybackHistoryType.Delete);
+        }
+
+        public void DeleteFromQueue(string uniqueId)
+        {
+            _trackQueue.Find((data) => data.ServerSongData != null && uniqueId == data.ServerSongData.id)?.Clear();
         }
 
         /// <summary>
@@ -1030,7 +1255,7 @@ namespace Altzone.Scripts.Audio
             if (_trackQueuePointer >= _trackQueue.Count) TryFindValidQueueData();
 
             Queue<int> freeIndexes = new();
-            string currentTrackId = _trackQueue[_trackQueuePointer].Id;
+            string currentTrackId = _trackQueue[_trackQueuePointer].ServerSongData.id;
 
             for (int i = 0; i < _trackQueue.Count; i++)
             {
@@ -1048,7 +1273,7 @@ namespace Altzone.Scripts.Audio
                     freeIndexes.Enqueue(i);
             }
 
-            _trackQueuePointer = _trackQueue.FindIndex((data) => data.Id == currentTrackId);
+            _trackQueuePointer = _trackQueue.FindIndex((data) => data.ServerSongData.id == currentTrackId);
             //_currentTrackQueueData = GetPreviousTrackQueueData();
 
             ClearPlaybackHistory();
@@ -1072,22 +1297,110 @@ namespace Altzone.Scripts.Audio
         }
         #endregion
 
-        private string CreateLocalUserTrackQueueId(string musicTrackId)
+        #region Preview
+        public void PlayPreview(JukeboxTrackButtonHandler buttonHandler)
         {
-            // LocalTrackId is supposed to be always unique so that TrackQueueData can be connected to the PlaybackHistory data operations.
-            _localTrackId++;
-            // PlayerId is used to see witch track can be removed by the local user in clan playlist.
-            return $"{_currentPlayerData.Id}_{musicTrackId}_{_localTrackId}"; // PlayerId _ MusicTrackName _ LocalMusicTrackId
+            if (_currentPreviewMusicTrackHandler != null)
+            {
+                _currentPreviewMusicTrackHandler.StopDiskSpin();
+                _currentPreviewMusicTrackHandler = null;
+            }
+
+            if (_currentPreviewTrackCoroutine != null)
+            {
+                StopCoroutine(_currentPreviewTrackCoroutine);
+                _currentPreviewTrackCoroutine = null;
+            }
+
+            string name = AudioManager.Instance.PlayMusic("Jukebox", buttonHandler.MusicTrack, MusicHandler.MusicSwitchType.CrossFade);
+
+            if (name == null)
+            {
+                Debug.LogWarning("Failed to start music preview playback.");
+                return;
+            }
+
+            if (OnJukeboxMute != null) OnJukeboxMute.Invoke(false);
+
+            _jukeboxMuted = false;
+            _trackPreviewActive = true;
+
+            if (OnSetSongInfo != null) OnSetSongInfo.Invoke(buttonHandler.MusicTrack);
+
+            buttonHandler.StartDiskSpin();
+
+            _currentPreviewMusicTrackHandler = buttonHandler;
+            _currentPreviewTrackCoroutine = StartCoroutine(MusicReviewPlaybackControl());
         }
+
+        private IEnumerator MusicReviewPlaybackControl()
+        {
+            float timer = 0f;
+
+            while (timer < _previewTime)
+            {
+                if (OnSetVisibleElapsedTime != null) OnSetVisibleElapsedTime.Invoke(_currentPreviewMusicTrackHandler.MusicTrack.Music.length, timer);
+
+                yield return null;
+                timer += Time.deltaTime;
+            }
+
+            StopMusicPreview();
+        }
+
+        private void StopMusicPreview()
+        {
+            if (_currentPreviewTrackCoroutine != null)
+            {
+                StopCoroutine(_currentPreviewTrackCoroutine);
+                _currentPreviewTrackCoroutine = null;
+            }
+
+            _currentPreviewMusicTrackHandler.StopDiskSpin();
+            _currentPreviewMusicTrackHandler = null;
+
+            _trackPreviewActive = false;
+
+            if (_currentTrackQueueData == null)
+            {
+                AudioManager.Instance.PlayFallBackTrack(MusicHandler.MusicSwitchType.CrossFade);
+
+                if (OnStopJukeboxVisuals != null) OnStopJukeboxVisuals.Invoke();
+                if (OnClearJukeboxVisuals != null) OnClearJukeboxVisuals.Invoke();
+
+                return;
+            }
+
+            string name = ContinueTrack(false);
+
+            if (name == null)
+            {
+                Debug.LogWarning("Failed to continue track playback.");
+                return;
+            }
+
+            if (OnSetSongInfo != null) OnSetSongInfo.Invoke(_currentTrackQueueData.MusicTrack);
+        }
+        #endregion
+
+        //private string CreateLocalUserTrackQueueId(string musicTrackId)
+        //{
+        //    // LocalTrackId is supposed to be always unique so that TrackQueueData can be connected to the PlaybackHistory data operations.
+        //    _localTrackId++;
+        //    // PlayerId is used to see witch track can be removed by the local user in clan playlist.
+        //    return $"{_currentPlayerData.Id}_{musicTrackId}_{_localTrackId}"; // PlayerId _ MusicTrackName _ LocalMusicTrackId
+        //}
 
         private class ServerCompareData
         {
-            public string Id;
+            //public string Id;
+            public ServerSong ServerSongData;
             public int Index;
 
-            public ServerCompareData(string id, int index)
+            public ServerCompareData(ServerSong serverSong, int index)
             {
-                Id = id;
+                //Id = id;
+                ServerSongData = serverSong;
                 Index = index;
             }
         }
@@ -1107,28 +1420,40 @@ namespace Altzone.Scripts.Audio
 
     public class TrackQueueData
     {
-        public string Id; //Fromat: UserId_MusicTrackId_LocalPlaylistTrackId
+        //public string Id; //Fromat: UserId_MusicTrackId_LocalPlaylistTrackId
+        public ServerSong ServerSongData;
         public int LinearIndex;
         public ChunkPointer Pointer;
         public MusicTrack MusicTrack;
         public bool UserOwned;
         public JukeboxManager.MusicTrackFavoriteType FavoriteType;
 
-        public TrackQueueData(string id, int linearIndex, ChunkPointer pointer, MusicTrack track, bool userOwned, JukeboxManager.MusicTrackFavoriteType favoriteType)
+        public TrackQueueData(ServerSong serverSong, MusicTrack musicTrack)
         {
-            SetData(id, linearIndex, pointer, track, userOwned, favoriteType);
+            SetData(serverSong, -1, null, musicTrack, false, JukeboxManager.MusicTrackFavoriteType.Neutral);
         }
 
-        public bool InUse() { return !string.IsNullOrEmpty(Id); }
+        public TrackQueueData(ServerSong serverSong, MusicTrack musicTrack, bool userOwned)
+        {
+            SetData(serverSong, -1, null, musicTrack, userOwned, JukeboxManager.MusicTrackFavoriteType.Neutral);
+        }
+
+        public TrackQueueData(ServerSong serverSong, int linearIndex, ChunkPointer pointer, MusicTrack track, bool userOwned, JukeboxManager.MusicTrackFavoriteType favoriteType)
+        {
+            SetData(serverSong, linearIndex, pointer, track, userOwned, favoriteType);
+        }
+
+        public bool InUse() { return ServerSongData != null; }
 
         public void SetData(TrackQueueData data, int linearIndex)
         {
-            SetData(data.Id, linearIndex, data.Pointer, data.MusicTrack, data.UserOwned, data.FavoriteType);
+            SetData(data.ServerSongData, linearIndex, data.Pointer, data.MusicTrack, data.UserOwned, data.FavoriteType);
         }
 
-        public void SetData(string id, int linearIndex, ChunkPointer pointer, MusicTrack track, bool userOwned, JukeboxManager.MusicTrackFavoriteType favoriteType)
+        public void SetData(ServerSong serverSong, int linearIndex, ChunkPointer pointer, MusicTrack track, bool userOwned, JukeboxManager.MusicTrackFavoriteType favoriteType)
         {
-            Id = id;
+            //Id = id;
+            ServerSongData = serverSong;
             LinearIndex = linearIndex;
             Pointer = pointer;
             MusicTrack = track;
@@ -1140,9 +1465,12 @@ namespace Altzone.Scripts.Audio
 
         public void Clear()
         {
-            Id = "";
+            //Id = "";
+            ServerSongData = null;
             LinearIndex = -1;
+
             if (Pointer != null) Pointer.Delete();
+
             Pointer = null;
             MusicTrack = null;
         }
@@ -1152,9 +1480,9 @@ namespace Altzone.Scripts.Audio
     {
         public string Name;
         public JukeboxManager.PlaylistType Type;
-        public List<string> PackedTrackQueueDatas; //Fromat: UserId_MusicTrackId_LocalPlaylistTrackId
+        public List<ServerSong> PackedTrackQueueDatas; //Fromat: UserId_MusicTrackId_LocalPlaylistTrackId
 
-        public Playlist(string name, JukeboxManager.PlaylistType type, List<string> serverMusicTracks)
+        public Playlist(string name, JukeboxManager.PlaylistType type, List<ServerSong> serverMusicTracks)
         {
             Name = name;
             Type = type;
@@ -1165,21 +1493,21 @@ namespace Altzone.Scripts.Audio
         {
             Name = name;
             Type = type;
-            PackedTrackQueueDatas = serverMusicTracks.jukeboxSongs != null ? serverMusicTracks.jukeboxSongs.ToList(): new();
+            PackedTrackQueueDatas = serverMusicTracks.songQueue.ToList();
         }
 
         public List<TrackQueueData> GetTrackQueueList(string localUserId)
         {
             List<TrackQueueData> queueHandlers = new();
             List<MusicTrack> musicTracks = new(AudioManager.Instance.GetMusicList("Jukebox"));
-            //Debug.LogError(PackedTrackQueueDatas.Count);
+
             for (int i = 0; i < PackedTrackQueueDatas.Count; i++)
             {
-                string[] trackQueuePackedData = PackedTrackQueueDatas[i].Split('_');
+                //string[] trackQueuePackedData = PackedTrackQueueDatas[i].Split('_');
 
-                string userId = trackQueuePackedData[0];
-                string musicTrackId = trackQueuePackedData[1];
-                string localPlaylistTrackId = trackQueuePackedData[2];
+                string userId = PackedTrackQueueDatas[i].playerId;
+                string musicTrackId = PackedTrackQueueDatas[i].songId;
+                string uniquePlaylistTrackId = PackedTrackQueueDatas[i].id;
 
                 //Debug.LogError("userId: " + userId + ", musicId: " + musicTrackId);
                 foreach (MusicTrack track in musicTracks)

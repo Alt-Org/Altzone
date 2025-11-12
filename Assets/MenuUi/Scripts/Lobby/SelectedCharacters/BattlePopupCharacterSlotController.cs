@@ -24,8 +24,8 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                 foreach (BattlePopupSelectedCharacter slot in _selectedCharacterSlots)
                 {
                     //slot.SetOpenEditPanelListener();
-                    slot._cornerIcon.overrideSprite = _dragAndDropIcon;
-                    slot._resistanceIcon.gameObject.SetActive(false);
+                    //slot._cornerIcon.overrideSprite = _dragAndDropIcon;
+                    //slot._resistanceIcon.gameObject.SetActive(false);
                 }
             }
             else

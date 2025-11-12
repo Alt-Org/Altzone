@@ -54,6 +54,7 @@ public class ClanSearchView : MonoBehaviour
         _currentPage = 0;
         _loadMoreButton.SetActive(false);
         _listedClans.Clear();
+        _clanPopup.SetActive(false);
     }
 
     private void LoadMoreClans()

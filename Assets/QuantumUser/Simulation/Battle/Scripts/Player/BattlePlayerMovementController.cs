@@ -109,7 +109,7 @@ namespace Battle.QSimulation.Player
             {
                 // set target angle
                 FP maxAngle = FP.Rad_45 * input->RotationValue;
-                FP maxAllowedAngle = spec.MaxRotationAngleDeg;
+                FP maxAllowedAngle = spec.MaxRotationAngleDeg * FP.Deg2Rad;
                 maxAngle = FPMath.Clamp(maxAngle, -maxAllowedAngle, maxAllowedAngle);
 
                 // rotates to left

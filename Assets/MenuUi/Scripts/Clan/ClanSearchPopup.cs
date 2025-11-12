@@ -40,7 +40,7 @@ public class ClanSearchPopup : MonoBehaviour
                 ValueImageHandle imageHandler = label.GetComponent<ValueImageHandle>();
                 imageHandler.SetLabelInfo(value);
             }
-
+            _joinClanButton.onClick.RemoveAllListeners();
             _joinClanButton.onClick.AddListener(() => { clanListing.JoinButtonPressed(); });
         }
     }

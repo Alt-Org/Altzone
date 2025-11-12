@@ -96,6 +96,7 @@ public class LeaderboardView : MonoBehaviour
                             ClanData clanData = ranking.Clan;
                             ServerClan serverClan = ranking.ServerClan;
 
+
                             if (rank < 4) //The top three are displayed on the podium
                             {
                                 _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, clanData, serverClan);
@@ -137,8 +138,9 @@ public class LeaderboardView : MonoBehaviour
 
                             if (ranking.Player.SelectedCharacterId != 0)
                             {
-                                avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(ranking.Player);
+                                avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(ranking.Player);
                             }
+
 
                             if (rank < 4) //The top three are displayed on the podium
                             {
@@ -179,8 +181,9 @@ public class LeaderboardView : MonoBehaviour
 
                             if (playerData.SelectedCharacterId != 0)
                             {
-                                avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
+                                avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData);
                             }
+
 
                             if (rank < 4)
                         {

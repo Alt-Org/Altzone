@@ -38,6 +38,7 @@ public class ServerManager : MonoBehaviour
     private ServerClan _clan;                   // Clan info from server
     private ServerStock _stock;                 // Stock info from server
     private List<ServerOnlinePlayer> _onlinePlayers;
+    private bool _firstJoin = true;
 
     [SerializeField] private bool _automaticallyLogIn = false;
     private int _accessTokenExpiration;
@@ -110,6 +111,7 @@ public class ServerManager : MonoBehaviour
     }
     public ServerStock Stock { get => _stock; set => _stock = value; }
     public List<ServerOnlinePlayer> OnlinePlayers { get => _onlinePlayers;}
+    public bool FirstJoin { get => _firstJoin; set => _firstJoin = value; }
 
     #endregion
 
@@ -148,6 +150,7 @@ public class ServerManager : MonoBehaviour
     public void RaiseClanChangedEvent()
     {
         OnClanChanged?.Invoke(Clan);
+        _firstJoin = false;
     }
 
     /// <summary>
@@ -281,6 +284,7 @@ public class ServerManager : MonoBehaviour
                     OnClanFetchFinished?.Invoke();
                     if (clan == null)
                     {
+                        _firstJoin = true;
                         return;
                     }
 
@@ -757,7 +761,7 @@ public class ServerManager : MonoBehaviour
                 if (playerInfo.parentalAuth != null) Player.parentalAuth = playerInfo.parentalAuth;
                 if (playerInfo.avatar != null) Player.avatar = playerInfo.avatar;
                 if (playerInfo.gameStatistics != null) Player.gameStatistics = playerInfo.gameStatistics;
-                if (playerInfo.DailyTask != null) Player.DailyTask = playerInfo.DailyTask;
+                if (playerInfo.DailyTask != null ) Player.DailyTask = playerInfo.DailyTask;
                 if (playerInfo.clanRole_id != null) Player.clanRole_id = playerInfo.clanRole_id;
                 if (playerInfo.clanLogo != null) Player.clanLogo = playerInfo.clanLogo;
 
@@ -1843,38 +1847,51 @@ public class ServerManager : MonoBehaviour
         yield break;
     }
 
-    public IEnumerator UpdateJukeboxClanPlaylistToServer(Playlist data, Action<bool> callback)
+    public IEnumerator AddJukeboxClanMusicTrack(Action<bool> callback, MusicTrack musicTrack)
     {
         string body = JObject.FromObject(
             new
             {
-                jukeboxSongs = data.PackedTrackQueueDatas
+                songId = musicTrack.Id,
+                songDurationSeconds = (int)musicTrack.Music.length
             },
             JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
         ).ToString();
 
-        yield return UpdateJukeboxClanPlaylistToServer(body, callback);
-    }
-
-    public IEnumerator UpdateJukeboxClanPlaylistToServer(string body, Action<bool> callback)
-    {
-        yield return StartCoroutine(WebRequests.Put(SERVERADDRESS + "jukebox", body, AccessToken, request =>
+        StartCoroutine(WebRequests.Post(SERVERADDRESS + "jukebox", body, AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
                 if (callback != null)
-                {
                     callback(true);
-                }
             }
             else
             {
                 if (callback != null)
-                {
                     callback(false);
-                }
             }
         }));
+
+        yield break;
+    }
+
+    public IEnumerator DeleteJukeboxClanMusicTrack(Action<bool> callback, string musicTrackUniqueId)
+    {
+        StartCoroutine(WebRequests.Delete(SERVERADDRESS + "jukebox/" + musicTrackUniqueId, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+
+        yield break;
     }
     #endregion
 

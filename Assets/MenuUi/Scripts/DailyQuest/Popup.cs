@@ -144,6 +144,11 @@ public class Popup : MonoBehaviour
             {
                 Instance.SetOptionButtons(data.Value.OwnPage);
             }
+
+            if (data.Value.Type == PopupData.PopupDataType.CancelTask)
+            {
+                Instance._messageTexts[1].text = message; // Set cancel task text
+            }
         }
 
         // Show the popup and get the result
@@ -276,6 +281,8 @@ public class Popup : MonoBehaviour
 
     private void SetMessage(PlayerTask task)
     {
+        if (task == null) return;
+
         for (int i = 0; i < _messageTexts.Count; i++)
         {
             if (!_messageTexts[i].IsActive()) continue;
