@@ -13,10 +13,15 @@ public class ClanSearchView : MonoBehaviour
     [SerializeField] private GameObject _loadMoreButton;
     [SerializeField] private GameObject _clanPopup;
 
+    [SerializeField] private ClanConfirmPopup _confirmPopup;
+    [SerializeField] private GameObject _overlay;
+
     private int _currentPage;    // Current page found in pagination data
     private int _totalPages;     // Total pages in pagination data
     private List<ClanListing> _listedClans = new();
     private ClanSearchFilters _filters = new ClanSearchFilters() { clanName = "" };
+
+    private bool _isJoining;
 
     private void Awake()
     {
@@ -34,6 +39,8 @@ public class ClanSearchView : MonoBehaviour
     private void OnDisable()
     {
         _filtersPanel.OnFiltersChanged -= UpdateFilters;
+        if(_overlay) _overlay.SetActive(false);
+        if(_clanPopup) _clanPopup.SetActive(false);
     }
 
     private void Reset()
@@ -71,11 +78,23 @@ public class ClanSearchView : MonoBehaviour
             clanListing.Clan = clan;
             _listedClans.Add(clanListing);
 
-            clanListing.OpenProfileButton.onClick.RemoveAllListeners();
+            /*clanListing.OpenProfileButton.onClick.RemoveAllListeners();
             clanListing.OpenProfileButton.onClick.AddListener(() =>
             {
                 _clanPopup.SetActive(true);
                 _clanPopup.GetComponent<ClanSearchPopup>().SetClanInfo(clan, clanListing);
+            });*/
+
+            clanListing.OpenProfileButton.onClick.RemoveAllListeners();
+            clanListing.OpenProfileButton.onClick.AddListener(() =>
+            {
+                _clanPopup.SetActive(true);
+
+                var popup = _clanPopup.GetComponent<ClanSearchPopup>();
+                popup.Show(clan, onJoin: () =>
+                {
+                    ShowJoinFlow(clan);
+                });
             });
 
             if (ServerManager.Instance.Clan != null && clanListing.Clan._id == ServerManager.Instance.Clan._id)
@@ -129,5 +148,130 @@ public class ClanSearchView : MonoBehaviour
             if (!valuesfromServer.Contains(value)) return false;
         }
         return true;
+    }
+
+    private void ShowOverlay(bool on)
+    {
+        if (_overlay) _overlay.SetActive(on);
+    }
+
+    private string GetCurrentClanName()
+    {
+        var clanName = ServerManager.Instance.Clan;
+        if (clanName != null)
+        {
+            return new ClanData(clanName).Name;
+        }
+
+        return "nykyisestä klaanista";
+    }
+
+    // Opens the join flow pop ups depending on whether the player is already in a clan or not
+    private void ShowJoinFlow(ServerClan clan)
+    {
+        bool isInSomeClan = ServerManager.Instance.Clan != null;
+        bool isDifferent = isInSomeClan && ServerManager.Instance.Clan._id != clan._id;
+
+        if (isDifferent)
+        {
+            ShowLeaveAndJoinPopup(clan);
+        }
+        else
+        {
+            ShowJoinClanPopUp(clan);
+        }
+    }
+
+    private void ShowJoinClanPopUp(ServerClan clan)
+    {
+        string targetName = new ClanData(clan).Name;
+
+        ShowOverlay(true);
+
+
+        _confirmPopup.Show(
+            bodyText: "Haluatko liittyä klaaniin " + targetName + "?",
+            onConfirm: () =>
+            {
+                if (_isJoining) return;
+                _isJoining = true;
+
+                StartCoroutine(ServerManager.Instance.JoinClan(clan, newClan =>
+                {
+                    _isJoining = false;
+
+                    if (newClan != null)
+                    {
+                        ServerManager.Instance.RaiseClanChangedEvent();
+                    }
+
+                    ShowOverlay(false);
+                    _clanPopup.SetActive(false);
+                }));
+            },
+            onCancel: () =>
+            {
+                ShowOverlay(false);
+            },
+            confirmText: "Liity",
+            cancelText: "Peruuta",
+            style: "join"
+            );
+    }
+
+    private void ShowLeaveAndJoinPopup(ServerClan clan)
+    {
+        var currentClanName = GetCurrentClanName();
+        var targetClanName = new ClanData(clan).Name;
+
+        string warningText = "Olet jo jäsen klaanissa " + currentClanName + "." +
+            " Haluatko varmasti poistua nykyisestä klaanista ja liittyä klaaniin " + targetClanName + "?";
+
+        ShowOverlay(true);
+
+        _confirmPopup.Show(
+            bodyText: warningText,
+
+            onConfirm: () =>
+            {
+                if (_isJoining) return;
+                _isJoining = true;
+
+                StartCoroutine(ServerManager.Instance.LeaveClan(success =>
+                {
+                    if (!success)
+                    {
+                        _isJoining = false;
+                        ShowOverlay(false);
+                        return;
+                    }
+
+                    StartCoroutine(ServerManager.Instance.JoinClan(clan, newClan =>
+                    {
+                        _isJoining = false;   
+
+                        if (newClan == null)
+                        {
+                            ShowOverlay(false);
+                            return;
+                        }
+
+                        if (newClan != null)
+                        {
+                            ServerManager.Instance.RaiseClanChangedEvent();
+                            // (ei RemoveDataa jos sitä ei ole)
+                        }
+
+                        //ServerManager.Instance.RaiseClanChangedEvent();
+                        ShowOverlay(false);
+                        _clanPopup.SetActive(false);
+                    }));
+                }));
+            },
+            onCancel: () => { ShowOverlay(false); },
+                confirmText: "Liity",
+                cancelText: "Peruuta",
+                style: "leave"
+            );
     }
 }

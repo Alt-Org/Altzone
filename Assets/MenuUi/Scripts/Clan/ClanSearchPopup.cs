@@ -51,6 +51,7 @@ public class ClanSearchPopup : MonoBehaviour
         ClanData clanData = new ClanData(clan);
 
         gameObject.SetActive(true);
+        if (_joinClanButton) _joinClanButton.interactable = true;       
 
         _clanName.text = clanData.Name;
         _clanDescription.text = clanData.Phrase;
