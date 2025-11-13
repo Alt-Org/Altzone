@@ -34,6 +34,7 @@ public class FriendlistHandler : AltMonoBehaviour
         _closeFriendlistButton.onClick.AddListener(CloseFriendlist);
 
         ServerManager.OnOnlinePlayersChanged += BuildOnlinePlayerList;
+        CloseFriendlist();
 
     }
 
