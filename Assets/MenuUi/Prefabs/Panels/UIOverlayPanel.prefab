@@ -4250,11 +4250,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5704505538415407603}
     m_Modifications:
-    - target: {fileID: 3796510745134904802, guid: 4166eed610b532e45b4083c6612c5b46,
+    - target: {fileID: 55323537301969969, guid: 4166eed610b532e45b4083c6612c5b46,
         type: 3}
-      propertyPath: _friendlistPanel
-      value: 
-      objectReference: {fileID: 7447256740506097720}
+      propertyPath: m_fontSize
+      value: 48.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1240641360596839814, guid: 4166eed610b532e45b4083c6612c5b46,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 61.1
+      objectReference: {fileID: 0}
     - target: {fileID: 3796510745134904802, guid: 4166eed610b532e45b4083c6612c5b46,
         type: 3}
       propertyPath: _openFriendlistButton
@@ -4385,6 +4390,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -60
       objectReference: {fileID: 0}
+    - target: {fileID: 6313335730416126735, guid: 4166eed610b532e45b4083c6612c5b46,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 42.65
+      objectReference: {fileID: 0}
     - target: {fileID: 6546407801417730521, guid: 4166eed610b532e45b4083c6612c5b46,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -4406,7 +4416,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 17802412149514979}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7447256740506097720}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5ec988aa04a5d81478660a3459d247f0, type: 3}
@@ -4415,12 +4425,6 @@ MonoBehaviour:
 --- !u!224 &5550763520609190324 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5564049113085551447, guid: 4166eed610b532e45b4083c6612c5b46,
-    type: 3}
-  m_PrefabInstance: {fileID: 17802412149514979}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &7447256740506097720 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7450862257970281179, guid: 4166eed610b532e45b4083c6612c5b46,
     type: 3}
   m_PrefabInstance: {fileID: 17802412149514979}
   m_PrefabAsset: {fileID: 0}
