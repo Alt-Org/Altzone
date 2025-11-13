@@ -71,6 +71,7 @@ namespace MenuUi.Scripts.CharacterGallery
         private void Awake()
         {
             ServerManager.OnLogInStatusChanged += StartLoading;
+            SettingsCarrier.OnLanguageChanged += LanguageChanged;
             SignalBus.OnRandomSelectedCharactersRequested += SetRandomSelectedCharactersToEmptySlots;
             SignalBus.OnReloadCharacterGalleryRequested += OnReloadRequested;
             SignalBus.OnSelectedDefenceCharacterChanged += HandleCharacterSelected;
@@ -103,6 +104,7 @@ namespace MenuUi.Scripts.CharacterGallery
         private void OnDestroy()
         {
             ServerManager.OnLogInStatusChanged -= StartLoading;
+            SettingsCarrier.OnLanguageChanged -= LanguageChanged;
             SignalBus.OnRandomSelectedCharactersRequested -= SetRandomSelectedCharactersToEmptySlots;
             SignalBus.OnReloadCharacterGalleryRequested -= OnReloadRequested;
             SignalBus.OnSelectedDefenceCharacterChanged -= HandleCharacterSelected;
@@ -118,6 +120,7 @@ namespace MenuUi.Scripts.CharacterGallery
             }
         }
 
+        private void LanguageChanged(SettingsCarrier.LanguageType language) => OnReloadRequested();
 
         private void OnReloadRequested()
         {

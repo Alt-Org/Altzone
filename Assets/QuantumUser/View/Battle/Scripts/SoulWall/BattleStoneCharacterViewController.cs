@@ -1,12 +1,15 @@
 /// @file BattleStoneCharacterViewController.cs
 /// <summary>
-/// Has a class BattleStoneCharacterViewController which handles stone characters visual functionality.
+/// Contains @cref{Battle.View,BattleStoneCharacterViewController} class which handles stone characters visual functionality.
 /// </summary>
 ///
 /// This script:<br/>
 /// Handles stone characters visual functionality.
 
+// Unity usings
 using UnityEngine;
+
+// Quantum usings
 using Quantum;
 
 namespace Battle.View

@@ -1,6 +1,6 @@
 /// @file BattleUiMovableElementData.cs
 /// <summary>
-/// Has a serializable class BattleUiMovableElementData which holds %Battle Ui element's data to be saved.
+/// Contains @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElementData} serializable class which holds %Battle Ui element's data to be saved.
 /// </summary>
 ///
 /// This script:<br/>

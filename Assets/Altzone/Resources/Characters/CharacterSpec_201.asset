@@ -14,19 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 201
   CharacterId: 201
-  IsApproved: 1
-  Name: "Vitsinv\xE4\xE4ntely"
+  IsApproved: 0
+  FinnishName: Huumori
+  EnglishName: Joking
   ClassType: 200
-  CharacterDescription: "Vitsinv\xE4\xE4ntely on kaveriporukkansa ilopilleri. N\xE4hden
-    hauskuuden kaikessa, h\xE4nen seurassaan meno pysyy rentona eik\xE4 tylsyys uhkaa.
-    Hyv\xE4ntuulisena ja aina hilpe\xE4 heitto kielen p\xE4\xE4ll\xE4, h\xE4n on
-    haluttua seuraa kunnes huumorin olisi aika astua sivuun tehden tilaa aidolle
-    yhteydelle. T\xE4ll\xF6in muut huomaavat Vitsinv\xE4\xE4ntelyn pit\xE4v\xE4nkin
-    heit\xE4 loitolla ja paljastavan h\xE4nen ainoan oikean yst\xE4v\xE4ns\xE4, sarkasmin.\r\n\nVitsinv\xE4\xE4ntely
-    torjuu h\xE4nt\xE4 l\xE4hestyv\xE4t tunnetila-ammukset harhauttavat naurukohtaukset
-    aiheuttavalla pierutyynyll\xE4\xE4n.\r\n"
-  CharacterShortDescription: "Pierutyynyll\xE4 ja kekseli\xE4isyydell\xE4 hauskuuttava
-    leikinlaskija. "
+  CharacterDescriptionFinnish: "Vitsinv\xE4\xE4nt\xE4j\xE4 on kaveriporukkansa ilopilleri.
+    N\xE4hden hauskuuden kaikessa, h\xE4nen seurassaan meno pysyy rentona eik\xE4
+    tylsyys uhkaa. Hyv\xE4ntuulisena ja aina hilpe\xE4 heitto kielen p\xE4\xE4ll\xE4,
+    h\xE4n on haluttua seuraa kunnes huumorin olisi aika astua sivuun tehden tilaa
+    aidolle yhteydelle. T\xE4ll\xF6in muut huomaavat Vitsinv\xE4\xE4nt\xE4j\xE4n
+    pit\xE4v\xE4nkin heit\xE4 loitolla, sill\xE4 onko h\xE4nell\xE4 sarkasmin lis\xE4ksi
+    mit\xE4\xE4n muuta annettavaa? \r\n\nVitsinv\xE4\xE4nt\xE4j\xE4 torjuu h\xE4nt\xE4
+    l\xE4hestyv\xE4t tunnetila-ammukset harhauttavat naurukohtaukset aiheuttavalla
+    pierutyynyll\xE4\xE4n.\n\r\n\xC4py-lehden p\xE4\xE4toimittajana insin\xF6\xF6riopiskeluaikoinaan.\r\n"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Pierutyynyll\xE4 ja kekseli\xE4isyydell\xE4
+    hauskuuttava leikinlaskija. "
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 74984fd1c07e51a4b961d5900f79212d, type: 2}
   Hp:
     Level: 2
@@ -45,6 +49,7 @@ MonoBehaviour:
     Coefficient: 7
   GalleryImage: {fileID: 21300000, guid: c6e675e43a2f15f448e640f616d6bfbb, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: f80202b1297003e4bb5d5b25be260306, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
       Value: 1441497658329801111

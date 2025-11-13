@@ -15,17 +15,19 @@ MonoBehaviour:
   Id: 602
   CharacterId: 602
   IsApproved: 1
-  Name: Pihkaantuminen
+  FinnishName: Ihastuminen
+  EnglishName: Limerence
   ClassType: 600
-  CharacterDescription: "Pihkaantuminen on nuoripari t\xE4ysin toistensa lumoissa.
-    Toisilleen kaikki kaikessa, he l\xF6ysiv\xE4t toisistaan turvaa ja rakkautta,
-    jota he eiv\xE4t muualta saaneet. Omassa lemmen kuplassaan he eiv\xE4t tarvitse
-    muita, eiv\xE4tk\xE4 muut heit\xE4 ymm\xE4rt\xE4isik\xE4\xE4n. Heid\xE4n kiintymyksens\xE4
-    ja omistautumisensa toisilleen on niin vahvaa, ett\xE4 heid\xE4n yksil\xF6identiteettins\xE4
-    ovat kietoutuneet tiiviisti yhteen ja he k\xE4ytt\xE4v\xE4t t\xE4t\xE4 yhteytt\xE4
-    tehokkaasti hyv\xE4kseen.\r\nPihkaantuminen suojautuu tunnetila-ammukselta muodostamalla
-    syd\xE4nkuplan, joka symboloi heid\xE4n toisiltaan saamaa turvaa.\r\n"
-  CharacterShortDescription: 'Lemmenkuplansa lumoissa kuhertelevat kyyhkyset '
+  CharacterDescriptionFinnish: "Pihkaantuneet ovat nuoripari t\xE4ysin toistensa
+    lumoissa. Toisilleen kaikki kaikessa, he l\xF6ysiv\xE4t toisistaan turvaa ja
+    rakkautta, jota he eiv\xE4t muualta saaneet. Omassa lemmen kuplassaan he eiv\xE4t
+    tarvitse muita, eiv\xE4tk\xE4 muut heit\xE4 ymm\xE4rt\xE4isik\xE4\xE4n. Tosirakkaudessa
+    ei ole konfliktia eik\xE4 v\xE4limatkaa. Kun on yht\xE4, ei toista voi satuttaa.\r\n\nPihkaantuneet
+    suojautuvat tunnetila-ammukselta muodostamalla syd\xE4nkuplan, joka symboloi
+    heid\xE4n toisiltaan saamaa turvaa.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: Lemmenkuplansa lumoissa kuhertelevat kyyhkyset
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 5ec05f18528981f45b8551c2e4f70e6e, type: 2}
   Hp:
     Level: 2
@@ -44,6 +46,7 @@ MonoBehaviour:
     Coefficient: 2
   GalleryImage: {fileID: 21300000, guid: 71f85a25d859be84e99e559858e424d0, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 0dfcec7123e6302499e8eb190ea9a7a8, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
       Value: 1402699471887754154

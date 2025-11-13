@@ -77,7 +77,7 @@ public class BattleStartHandler : MonoBehaviour
                 break;
             }
         }
-
+        yield return new WaitForSeconds(3);
         LobbyManager.Instance.IsStartFinished = true;
 
         //_timerText.gameObject.SetActive(true);

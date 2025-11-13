@@ -1,20 +1,20 @@
 /// @file BattleProjectileQSystem.cs
 /// <summary>
-/// Controls projectile's movements and reactions to collisions.
+/// Contains @cref{Battle.QSimulation.Projectile,BattleProjectileQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which controls projectile's movements and reactions to collisions.
 /// </summary>
-///
-/// This system:<br/>
-/// Launches projectile when battle starts and updates its movements.<br/>
-/// Handles projectile's collisionflags to ensure projectile doesn't hit more than one SoulWall segment at a time.<br/>
-/// Contains logic for handling the projectile colliding with different entities.
 
+// System usings
 using System.Runtime.CompilerServices;
 
+// Unity usings
 using UnityEngine;
 using UnityEngine.Scripting;
+
+// Quantum usings
 using Quantum;
 using Photon.Deterministic;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Player;
 
@@ -24,10 +24,25 @@ namespace Battle.QSimulation.Projectile
     /// <span class="brief-h">%Projectile <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
     /// Handles projectile logic, including projectile's movements and reactions to collisionsignals.
     /// </summary>
+    ///
+    /// This system:<br/>
+    /// Launches projectile when battle starts and updates its movements.<br/>
+    /// Handles projectile's collisionflags to ensure projectile doesn't hit more than one SoulWall segment at a time.<br/>
+    /// Contains logic for handling the projectile colliding with different entities.
     [Preserve]
     public unsafe class BattleProjectileQSystem : SystemMainThreadFilter<BattleProjectileQSystem.Filter>, ISignalBattleOnGameOver
     {
         #region Public
+
+        /// <summary>
+        /// Defines how the projectile's speed should be updated
+        /// </summary>
+        public enum SpeedChange
+        {
+            None,
+            Increment,
+            Reset
+        }
 
         /// <summary>
         /// Filter for filtering projectile entities
@@ -109,30 +124,39 @@ namespace Battle.QSimulation.Projectile
         }
 
         /// <summary>
-        /// Sets the direction of the projectile and recalculates its speed based on emotion.
+        /// Sets the direction of the projectile and adjusting its speed depending on the specified <see cref="SpeedChange"/> behavior.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="direction">The new direction for the projectile.</param>
-        /// <param name="speedIncreaseAmount">The amount the projectile's speed should increase.</param>
-        /// <param name="resetSpeed">True if the projectile's speed should be reset to base, false if it should remain as is.</param>
-        public static void UpdateVelocity(Frame f, BattleProjectileQComponent* projectile, FPVector2 direction, FP speedIncreaseAmount, bool resetSpeed = false)
+        /// <param name="speedChange">Determines how the projectile's speed should be updated.</param>
+        /// <param name="passed">Checking if player has passed the projectile.</param>
+        public static void UpdateVelocity(Frame f, BattleProjectileQComponent* projectile, FPVector2 direction, SpeedChange speedChange, bool passed = false)
         {
             // set new projectile direction
             projectile->Direction = direction;
 
+            projectile->IsPassed = passed;
+
             // update the projectile's speed based on speed potential and multiply by emotion (disabled)
             //projectile->Speed = projectile->SpeedPotential * projectile->SpeedMultiplierArray[(int)projectile->Emotion];
 
-            // increment or reset the speed of the projectile
-            if (!resetSpeed)
+            // if not none; increment or reset the speed of the projectile
+            switch (speedChange)
             {
-                projectile->Speed = FPMath.Min(projectile->Speed + speedIncreaseAmount, projectile->SpeedMax);
-            }
-            else
-            {
-                projectile->Speed = projectile->SpeedBase;
+                case SpeedChange.None:
+                    break;
+
+                case SpeedChange.Increment:
+                    projectile->Speed = FPMath.Min(projectile->Speed + projectile->SpeedIncrement, projectile->SpeedMax);
+                    f.Events.BattleProjectileChangeSpeed(projectile->Speed);
+                    break;
+
+                case SpeedChange.Reset:
+                    projectile->Speed = projectile->SpeedBase;
+                    f.Events.BattleProjectileChangeSpeed(projectile->Speed);
+                    break;
             }
         }
 
@@ -220,20 +244,19 @@ namespace Battle.QSimulation.Projectile
         /// <param name="collisionTriggerType">The collision type of the collision, informing what the projectile has hit.</param>
         public static void OnProjectileCollision(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, void* data, BattleCollisionTriggerType collisionTriggerType)
         {
-            if (projectileCollisionData->ProjectileHeld) return;
+            if (projectileCollisionData->Projectile->IsHeld) return;
 
             // unpack projectileCollisionData
             BattleProjectileQComponent* projectile       = projectileCollisionData->Projectile;
-            EntityRef                   projectileEntity = projectileCollisionData->CollidingEntity;
+            EntityRef                   projectileEntity = projectileCollisionData->ProjectileEntity;
             EntityRef                   otherEntity      = projectileCollisionData->OtherEntity;
 
             // set default values
             BattlePlayerCollisionType collisionType        = BattlePlayerCollisionType.Reflect;
             bool                      handleCollision      = false;
-            bool                      resetSpeed           = false;
             FPVector2                 normal               = FPVector2.Zero;
             FP                        collisionMinOffset   = FP._0;
-            FP                        speedIncrementAmount = 0;
+            SpeedChange speedChange = SpeedChange.None;
 
             // handle the specific collision type
             switch (collisionTriggerType)
@@ -256,8 +279,8 @@ namespace Battle.QSimulation.Projectile
 
                     normal             = soulWall->Normal;
                     collisionMinOffset = soulWall->CollisionMinOffset;
-                    resetSpeed         = true;
-                    handleCollision    = true;
+                    speedChange = SpeedChange.Reset;
+                    handleCollision = true;
                     break;
 
                 case BattleCollisionTriggerType.Shield:
@@ -266,10 +289,10 @@ namespace Battle.QSimulation.Projectile
 
                     if (ProjectileHitPlayerShield(f, projectile, dataPtr, out normal))
                     {
-                        collisionType        = playerHitbox->CollisionType;
-                        collisionMinOffset   = playerHitbox->CollisionMinOffset;
-                        speedIncrementAmount = projectile->SpeedIncrement;
-                        handleCollision      = true;
+                        collisionType      = playerHitbox->CollisionType;
+                        collisionMinOffset = playerHitbox->CollisionMinOffset;
+                        speedChange        = SpeedChange.Increment;
+                        handleCollision    = true;
                     }
                     break;
 
@@ -279,12 +302,12 @@ namespace Battle.QSimulation.Projectile
 
             if (handleCollision)
             {
-                FPVector2 direction = FPVector2.Zero;
-                if      (collisionType == BattlePlayerCollisionType.Reflect)  direction = FPVector2.Reflect(projectile->Direction, normal);
-                else if (collisionType == BattlePlayerCollisionType.Override) direction = normal;
+                FPVector2 direction;
+                if (collisionType == BattlePlayerCollisionType.Reflect) direction = FPVector2.Reflect(projectile->Direction, normal).Normalized;
+                else                                                    direction = normal;
 
                 HandleIntersection(f, projectile, projectileEntity, otherEntity, normal, collisionMinOffset);
-                UpdateVelocity(f, projectile, direction, speedIncrementAmount, resetSpeed);
+                UpdateVelocity(f, projectile, direction, speedChange);
             }
 
             SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Projectile);
@@ -300,22 +323,23 @@ namespace Battle.QSimulation.Projectile
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="winningTeam">The BattleTeamNumber of the team that won.</param>
-        /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="projectileEntity">EntityRef of the projectile.</param>
-        public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
+        public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam)
         {
-            SetHeld(f, projectile, true);
+            EntityRef projectileEntity = GetProjectileEntity(f);
 
-            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
+            BattleProjectileQComponent* projectile          = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntity);
+            Transform2D*                projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
+
+            SetHeld(f, projectile, true);
 
             // move the projectile out of bounds after a goal is scored
             switch (winningTeam)
             {
                 case BattleTeamNumber.TeamAlpha:
-                    projectileTransform->Position += new FPVector2(0, 10);
+                    projectileTransform->Position = new FPVector2(0, 25);
                     break;
                 case BattleTeamNumber.TeamBeta:
-                    projectileTransform->Position += new FPVector2(0, -10);
+                    projectileTransform->Position = new FPVector2(0, -25);
                     break;
             }
         }
@@ -325,6 +349,20 @@ namespace Battle.QSimulation.Projectile
         #endregion Public
 
         #region Private Static Methods
+
+        /// <summary>
+        /// Private helper method to get projectile entity
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        ///
+        /// <returns>Returns projectile entity.</returns>
+        private static EntityRef GetProjectileEntity(Frame f)
+        {
+            ComponentFilter<BattleProjectileQComponent> filter = f.Filter<BattleProjectileQComponent>();
+            filter.Next(out EntityRef entity, out _);
+            return entity;
+        }
 
         /// <summary>
         /// Launches the projectile from an unlaunched state, setting its initial values.
@@ -364,6 +402,8 @@ namespace Battle.QSimulation.Projectile
 
             SetHeld(f, projectile, false);
 
+            f.Events.BattleProjectileChangeSpeed(projectile->Speed);
+
             Debug.Log("Projectile Launched");
         }
 
@@ -391,7 +431,7 @@ namespace Battle.QSimulation.Projectile
 
             if (teammateHandle.PlayState.IsInPlay())
             {
-                EntityRef teammateEntity = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot).SelectedCharacter;
+                EntityRef teammateEntity = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot).SelectedCharacterEntity;
 
                 Transform2D* playerTransform   = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
                 Transform2D* teammateTransform = f.Unsafe.GetPointer<Transform2D>(teammateEntity);

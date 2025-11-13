@@ -1,6 +1,6 @@
 /// @file Utils.cs
 /// <summary>
-/// Has a class Utils which has utility methods for view.
+/// Contains @cref{Battle.View,Utils} class which has utility methods for view.
 /// </summary>
 ///
 /// This script:<br/>
@@ -19,7 +19,7 @@ namespace Battle.View
         /// <summary>
         /// Try get latest predicted %Quantum <a href="https://doc.photonengine.com/quantum/current/manual/frames">Frame@u-exlink</a>.
         /// </summary>
-        /// 
+        ///
         /// <param name="frame">The latest predicted %Quantum <a href="https://doc.photonengine.com/quantum/current/manual/frames">Frame@u-exlink</a> or null.</param>
         ///
         /// <returns>True if getting the frame was successful and false if not.</returns>

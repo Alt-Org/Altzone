@@ -15,25 +15,23 @@ MonoBehaviour:
   Id: 505
   CharacterId: 505
   IsApproved: 0
-  Name: Marttyyriys
+  FinnishName: Marttyyrius
+  EnglishName: Martyrdom
   ClassType: 500
-  CharacterDescription: "Marttyyri on torjujista raskain \u2013 h\xE4n ei kanna suojakilpe\xE4,
-    sill\xE4 h\xE4n on se kilpi. H\xE4n asettuu tietoisesti muiden tielle, vastaanottaa
-    iskut omalla kehollaan ja tekee tuskastaan merkityksen. H\xE4nen k\xE4rsimyksens\xE4
-    muuttuu oikeutukseksi: mit\xE4 enemm\xE4n h\xE4n kest\xE4\xE4, sit\xE4 enemm\xE4n
-    h\xE4n kokee t\xE4ytt\xE4v\xE4ns\xE4 teht\xE4v\xE4ns\xE4. T\xE4m\xE4 itsetuhoinen
-    uhrautuminen tekee h\xE4nest\xE4 yht\xE4 aikaa jalon ja traagisen hahmon \u2013
-    sill\xE4 kuka en\xE4\xE4 n\xE4kee h\xE4nen sis\xE4ist\xE4 kipuaan, jos kaikki
-    huomio keskittyy h\xE4nen kaatumiseensa muiden puolesta?\r\n\nMarttyyri torjuu
-    tunnetila-ammukset seisomalla liikkumatta niiden edess\xE4. H\xE4nen kivikova
-    olemuksensa halkeilee iskujen alla, mutta h\xE4n palaa aina takaisin, sill\xE4
-    ilman k\xE4rsimyst\xE4 h\xE4n ei tunne olevansa olemassa.\r\n\nKun h\xE4n viimein
-    sortuu, h\xE4nen ruumiistaan nousee hohtava Pyhyys \u2013 kova, kirkas aura,
-    joka j\xE4\xE4 kent\xE4lle hetkeksi. T\xE4m\xE4 Pyhyys voidaan poimia ja k\xE4ytt\xE4\xE4
-    my\xF6hemmin Ry\xF6st\xF6ss\xE4 lis\xE4el\xE4m\xE4n\xE4, jolloin marttyyrin uhri
-    muuttuu kollektiiviseksi hy\xF6dyn v\xE4lineeksi."
-  CharacterShortDescription: "Uhrautumisesta pyhyytt\xE4 synnytt\xE4v\xE4, j\xE4ljess\xE4\xE4n
-    voimaa j\xE4tt\xE4v\xE4."
+  CharacterDescriptionFinnish: "Marttyyriys on defenssi, joka rakentuu uhrautumisesta.
+    Sen tarkoitus on ottaa vastaan se, mit\xE4 muut eiv\xE4t kest\xE4, ja tehd\xE4
+    kivusta merkitys. Marttyyri ei v\xE4ist\xE4 tunteita, vaan seisoo liikkumatta
+    niiden edess\xE4. Mit\xE4 raskaampia iskut, sit\xE4 vahvemmin h\xE4n kokee t\xE4ytt\xE4v\xE4ns\xE4
+    teht\xE4v\xE4ns\xE4. Se tarjoaa illuusion jaloudesta ja hallinnasta, mutta samalla
+    piilottaa h\xE4nen aidon itsens\xE4 ja k\xE4rsimyksen\xE4 muilta.\r\n\nPeliss\xE4
+    marttyyrin suojana toimii h\xE4nen oma kehonsa. H\xE4n pys\xE4ytt\xE4\xE4 tunnetila-ammukset,
+    kunnes sortuu iskujen alla, ja h\xE4nen ruumiistaan nouseva hohtava pyhyys j\xE4\xE4
+    kent\xE4lle. Pyhyys voidaan poimia ja k\xE4ytt\xE4\xE4 Ry\xF6st\xF6ss\xE4 lis\xE4el\xE4m\xE4n\xE4,
+    jolloin marttyyrin uhraus muuttuu liittolaisten hyv\xE4ksi.\r\n"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Uhrautumisesta pyhyytt\xE4 synnytt\xE4v\xE4,
+    j\xE4ljess\xE4\xE4n voimaa j\xE4tt\xE4v\xE4."
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 90853665bd935954eabb138cf07b0563, type: 2}
   Hp:
     Level: 1
@@ -52,7 +50,8 @@ MonoBehaviour:
     Coefficient: 2
   GalleryImage: {fileID: 21300000, guid: 52f1a9a84148a7d4d80825b318f255de, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: d7563a354f58ed140ad75acb05fdb952, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
-      Value: 0
+      Value: 1368889510318669513
   BattleUiSprite: {fileID: 0}

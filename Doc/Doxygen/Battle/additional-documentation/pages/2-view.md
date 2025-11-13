@@ -39,25 +39,28 @@
 **View Controllers** are used to change **entities**'s sprites, animations, effects, etc.  
 In **%Battle** **View Controllers** have **"ViewController"** suffix. [[Naming]](#index-naming)
 
-|  Namespace                                          || Class                                                        | Description                                                      |
-| :------------------ | :----------------------------- | :----------------------------------------------------------- | :--------------------------------------------------------------- |
-| @crefd{Battle.View} | @crefd{Battle.View,Game}       | @cref{Battle.View.Game,BattleGameViewController}             | @copybrief Battle.View.Game.BattleGameViewController             |
-| @crefd{Battle.View} | @crefd{Battle.View,Game}       | @cref{Battle.View.Game,BattleGridViewController}             | @copybrief Battle.View.Game.BattleGridViewController             |
-|                                                                                                                                                                                     ||||
-| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerViewController}         | @copybrief Battle.View.Player.BattlePlayerViewController         |
-|                                                                                                                                                                                     ||||
-| @crefd{Battle.View} | @crefd{Battle.View,SoulWall}   | @cref{Battle.View.SoulWall,BattleSoulWallViewController}     | @copybrief Battle.View.SoulWall.BattleSoulWallViewController     |
-|                                                                                                                                                                                     ||||
-| @crefd{Battle.View} | @crefd{Battle.View,Projectile} | @cref{Battle.View.Projectile,BattleProjectileViewController} | @copybrief Battle.View.Projectile.BattleProjectileViewController |
-|                                                                                                                                                                                     ||||
-| @crefd{Battle.View} | @crefd{Battle.View,Diamond}    | @cref{Battle.View.Diamond,BattleDiamondViewController}       | @copybrief Battle.View.Diamond.BattleDiamondViewController       |
-|                                                                                                                                                                                     ||||
-| @crefd{Battle.View} | @crefd{Battle.View,Effect}     | @cref{Battle.View.Effect,BattleLightrayEffectViewController} | @copybrief Battle.View.Effect.BattleLightrayEffectViewController |
-| @crefd{Battle.View} | @crefd{Battle.View,Effect}     | @cref{Battle.View.Effect,BattleScreenEffectViewController}   | @copybrief Battle.View.Effect.BattleScreenEffectViewController   |
-|                                                                                                                                                                                     ||||
-| @crefd{Battle.View} | @crefd{Battle.View,Audio}      | @cref{Battle.View.Audio,BattleSoundFXViewController}         | @copybrief Battle.View.Audio.BattleSoundFXViewController         |
-|                                                                                                                                                                                     ||||
-| @crefd{Battle.View}                                 || @cref{Battle.View,BattleStoneCharacterViewController}        | @copybrief Battle.View.BattleStoneCharacterViewController        |
+|  Namespace                                          || Class                                                              | Description                                                            |
+| :------------------ | :----------------------------- | :----------------------------------------------------------------- | :--------------------------------------------------------------------- |
+| @crefd{Battle.View} | @crefd{Battle.View,Game}       | @cref{Battle.View.Game,BattleGameViewController}                   | @copybrief Battle.View.Game.BattleGameViewController                   |
+| @crefd{Battle.View} | @crefd{Battle.View,Game}       | @cref{Battle.View.Game,BattleGridViewController}                   | @copybrief Battle.View.Game.BattleGridViewController                   |
+|                                                                                                                                                                                                 ||||
+| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerViewController}               | @copybrief Battle.View.Player.BattlePlayerViewController               |
+| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerClassBaseViewController}      | @copybrief Battle.View.Player.BattlePlayerClassBaseViewController      |
+| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerClassNoneViewController}      | @copybrief Battle.View.Player.BattlePlayerClassNoneViewController      |
+| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerClassProjectorViewController} | @copybrief Battle.View.Player.BattlePlayerClassProjectorViewController |
+|                                                                                                                                                                                                 ||||
+| @crefd{Battle.View} | @crefd{Battle.View,SoulWall}   | @cref{Battle.View.SoulWall,BattleSoulWallViewController}           | @copybrief Battle.View.SoulWall.BattleSoulWallViewController           |
+|                                                                                                                                                                                                 ||||
+| @crefd{Battle.View} | @crefd{Battle.View,Projectile} | @cref{Battle.View.Projectile,BattleProjectileViewController}       | @copybrief Battle.View.Projectile.BattleProjectileViewController       |
+|                                                                                                                                                                                                 ||||
+| @crefd{Battle.View} | @crefd{Battle.View,Diamond}    | @cref{Battle.View.Diamond,BattleDiamondViewController}             | @copybrief Battle.View.Diamond.BattleDiamondViewController             |
+|                                                                                                                                                                                                 ||||
+| @crefd{Battle.View} | @crefd{Battle.View,Effect}     | @cref{Battle.View.Effect,BattleLightrayEffectViewController}       | @copybrief Battle.View.Effect.BattleLightrayEffectViewController       |
+| @crefd{Battle.View} | @crefd{Battle.View,Effect}     | @cref{Battle.View.Effect,BattleScreenEffectViewController}         | @copybrief Battle.View.Effect.BattleScreenEffectViewController         |
+|                                                                                                                                                                                                 ||||
+| @crefd{Battle.View} | @crefd{Battle.View,Audio}      | @cref{Battle.View.Audio,BattleSoundFXViewController}               | @copybrief Battle.View.Audio.BattleSoundFXViewController               |
+|                                                                                                                                                                                                 ||||
+| @crefd{Battle.View}                                 || @cref{Battle.View,BattleStoneCharacterViewController}              | @copybrief Battle.View.BattleStoneCharacterViewController              |
 
 <br/>
 

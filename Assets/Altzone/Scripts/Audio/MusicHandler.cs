@@ -42,11 +42,19 @@ namespace Altzone.Scripts.Audio
 
         private bool _musicSwitchInProgress = false;
 
+        private float _musicStartTime = 0f;
+
         public enum MusicListDirection
         {
             Next,
             Previous,
             None
+        }
+
+        public enum MusicSwitchType
+        {
+            Immediate,
+            CrossFade
         }
 
         public void SetMaxVolume(float volume)
@@ -77,25 +85,33 @@ namespace Altzone.Scripts.Audio
             return musicCategory.MusicTracks;
         }
 
-        public string PlayMusic(string categoryName, int trackId)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Track name if successfully started the track playback.</returns>
+        public string PlayMusicById(string categoryName, string trackId, MusicSwitchType switchType)
         {
             MusicCategory currentCategory = _musicReference.GetCategory(categoryName);
 
             if (currentCategory == null) return null;
 
-            MusicTrack musicTrack = currentCategory.Get(trackId);
+            MusicTrack musicTrack = currentCategory.GetById(trackId);
 
             if (musicTrack == null) return null;
 
             if (categoryName.ToLower() == "MainMenu".ToLower())
                 _mainMenuMusicName = SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic);
 
-            SwitchMusic(currentCategory, musicTrack);
+            SwitchMusic(currentCategory, musicTrack, switchType);
 
             return musicTrack.Name;
         }
 
-        public string PlayMusic(string categoryName, string trackName)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Track name if successfully started the track playback.</returns>
+        public string PlayMusic(string categoryName, string trackName, MusicSwitchType switchType)
         {
             MusicCategory currentCategory = _musicReference.GetCategory(categoryName);
 
@@ -110,12 +126,16 @@ namespace Altzone.Scripts.Audio
 
             if (musicTrack == null) return null;
 
-            SwitchMusic(currentCategory, musicTrack);
-
+            SwitchMusic(currentCategory, musicTrack, switchType);
+            
             return musicTrack.Name;
         }
 
-        public string PlayMusic(string categoryName, MusicTrack musicTrack)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Track name if successfully started the track playback.</returns>
+        public string PlayMusic(string categoryName, MusicTrack musicTrack, MusicSwitchType switchType)
         {
             MusicCategory currentCategory = _musicReference.GetCategory(categoryName);
 
@@ -124,9 +144,29 @@ namespace Altzone.Scripts.Audio
             if (categoryName.ToLower() == "MainMenu".ToLower())
                 _mainMenuMusicName = SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic);
 
-            SwitchMusic(currentCategory, musicTrack);
+            SwitchMusic(currentCategory, musicTrack, switchType);
 
             return musicTrack.Name;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Track name if successfully started the track playback.</returns>
+        public string PlayMusic(string categoryName, string trackName, MusicSwitchType switchType, float startLocation)
+        {
+            _musicStartTime = startLocation;
+            return PlayMusic(categoryName, trackName, switchType);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Track name if successfully started the track playback.</returns>
+        public string PlayMusic(string categoryName, MusicTrack musicTrack, MusicSwitchType switchType, float startLocation)
+        {
+            _musicStartTime = startLocation;
+            return PlayMusic(categoryName, musicTrack, switchType);
         }
 
         public string GetTrackName()
@@ -148,6 +188,8 @@ namespace Altzone.Scripts.Audio
                 _musicChannel2.Stop();
                 _musicChannel2.clip = null;
             }
+
+            _currentTrack = null;
         }
 
         public List<MusicTrack> GetMusicList()
@@ -157,9 +199,7 @@ namespace Altzone.Scripts.Audio
             return null;
         }
 
-        #region CrossFade
-
-        public void SwitchMusic(MusicCategory musicCategory, MusicTrack musicTrack)
+        public void SwitchMusic(MusicCategory musicCategory, MusicTrack musicTrack, MusicSwitchType switchType)
         {
             if (_currentTrack == musicTrack) return;
 
@@ -168,7 +208,7 @@ namespace Altzone.Scripts.Audio
 
             if (_musicSwitchInProgress)
             {
-                if (_nextUpTrack == null) CalculateAcceleratedResumeTime();
+                if (_nextUpTrack != null) CalculateAcceleratedResumeTime(); //Wrong?
 
                 _nextUpCategory = musicCategory;
                 _nextUpTrack = musicTrack;
@@ -177,10 +217,10 @@ namespace Altzone.Scripts.Audio
 
             _currentCategory = musicCategory;
             _currentTrack = musicTrack;
-            StartCoroutine(SwitchMusic(MusicListDirection.None, null));
+            StartCoroutine(SwitchMusic(MusicListDirection.None, null, switchType));
         }
 
-        public IEnumerator SwitchMusic(MusicListDirection direction, System.Action<string> newTrackName)
+        public IEnumerator SwitchMusic(MusicListDirection direction, System.Action<string> newTrackName, MusicSwitchType switchType)
         {
             MusicTrack musicTrack;
 
@@ -229,7 +269,12 @@ namespace Altzone.Scripts.Audio
 
             _musicSwitchInProgress = true;
             StartMusicPlayback((_primaryChannel == 2 ? _musicChannel1 : _musicChannel2), musicTrack.Music);
-            StartCoroutine(CrossFadeTracks(dData => done = dData, _primaryChannel));
+
+            if (switchType == MusicSwitchType.CrossFade)
+                StartCoroutine(CrossFadeTracks(dData => done = dData, _primaryChannel));
+            else
+                SwitchTracksImmediately(dData => done = dData, _primaryChannel);
+
             yield return new WaitUntil(() => done != null);
 
             StopMusic(_primaryChannel);
@@ -245,7 +290,7 @@ namespace Altzone.Scripts.Audio
                 _nextUpCategory = null;
                 _nextUpTrack = null;
 
-                StartCoroutine(SwitchMusic(MusicListDirection.None, null));
+                StartCoroutine(SwitchMusic(MusicListDirection.None, null, switchType));
             }
         }
 
@@ -256,7 +301,15 @@ namespace Altzone.Scripts.Audio
 
         private void StartMusicPlayback(AudioSource source, AudioClip audio)
         {
+            if (_musicStartTime >= audio.length || _musicStartTime < 0)
+            {
+                Debug.LogWarning("_musicStartTime is out of range! value: " + _musicStartTime);
+                _musicStartTime = 0f;
+            }
+
             source.clip = audio;
+            source.time = _musicStartTime;
+            _musicStartTime = 0f;
             source.Play();
         }
 
@@ -291,6 +344,21 @@ namespace Altzone.Scripts.Audio
 
             done(true);
         }
-        #endregion
+
+        private void SwitchTracksImmediately(System.Action<bool> done, int primaryChannel)
+        {
+            if (primaryChannel == 2)
+            {
+                _musicChannel1.volume = _maxVolume;
+                _musicChannel2.volume = 0f;
+            }
+            else
+            {
+                _musicChannel1.volume = 0f;
+                _musicChannel2.volume = _maxVolume;
+            }
+
+            done(true);
+        }
     }
 }

@@ -96,7 +96,7 @@ namespace Altzone.Scripts
         /// <summary>
         /// Gets <c>PlayerTasks</c> entity.
         /// </summary>
-        public void GetPlayerTasks( Action<List<PlayerTask>> callback)
+        public void GetPlayerTasks( Action<ClanTasks> callback)
         {
             _localModels.GetPlayerTasks(callback);
         }
@@ -104,7 +104,7 @@ namespace Altzone.Scripts
         /// <summary>
         /// Saves <c>PlayerTasks</c> entity.
         /// </summary>
-        public void SavePlayerTasks(List<PlayerTask> tasks, Action<List<PlayerTask>> callback)
+        public void SavePlayerTasks(ClanTasks tasks, Action<ClanTasks> callback)
         {
             _localModels.SavePlayerTasks(tasks, callback);
         }

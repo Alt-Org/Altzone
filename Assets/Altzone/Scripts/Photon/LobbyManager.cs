@@ -23,12 +23,13 @@ using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby.Wrappers;
+using Altzone.Scripts.Window;
+using Altzone.Scripts.Audio;
 using Altzone.Scripts.AzDebug;
 using Altzone.PhotonSerializer;
 
 using Battle.QSimulation.Game;
 using PlayerType = Battle.QSimulation.Game.BattleParameters.PlayerType;
-using Altzone.Scripts.Window;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -109,8 +110,11 @@ namespace Altzone.Scripts.Lobby
 
         public static LobbyManager Instance { get; private set; }
         public bool IsStartFinished {set => _isStartFinished = value; }
+        public static bool IsActive { get => _isActive;}
 
-        private static bool isActive = false;
+        private static bool _isActive = false;
+
+        public bool RunnerActive => _runner != null;
 
         #region Delegates & Events
 
@@ -217,14 +221,14 @@ namespace Altzone.Scripts.Lobby
             {
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
-                isActive = false;
-                if (!isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
+                _isActive = false;
+                if (!_isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
             }
         }
 
         public void OnEnable()
         {
-            if(!isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
+            if(!_isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
         }
 
         public void OnDisable()
@@ -246,8 +250,8 @@ namespace Altzone.Scripts.Lobby
         }
         public void Activate()
         {
-            if (isActive) { Debug.LogWarning("LobbyManager is already active."); return; }
-            isActive = true;
+            if (_isActive) { Debug.LogWarning("LobbyManager is already active."); return; }
+            _isActive = true;
             PhotonRealtimeClient.Client.AddCallbackTarget(this);
             PhotonRealtimeClient.Client.StateChanged += OnStateChange;
             this.Subscribe<ReserveFreePositionEvent>(OnReserveFreePositionEvent);
@@ -411,7 +415,8 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator CheckIfBattleCanStart()
         {
-            yield return new WaitForSeconds(0.2f);
+            yield break;
+            yield return new WaitForSeconds(0.5f);
             yield return new WaitUntil(() => _posChangeQueue.Count == 0 && !_playerPosChangeInProgress);
             Room room = PhotonRealtimeClient.CurrentRoom;
             if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
@@ -870,7 +875,7 @@ namespace Altzone.Scripts.Lobby
         private IEnumerator StartTheGameplay(bool isCloseRoom, string blueTeamName, string redTeamName)
         {
             // TODO: Select random characters if some are not selected
-            //if (!PhotonBattleRoom.IsValidAllSelectedCharacters()) 
+            //if (!PhotonBattleRoom.IsValidAllSelectedCharacters())
             //{
             //    StartingGameFailed();
             //    throw new UnityException("can't start game, everyone needs to have 3 defence characters selected");
@@ -983,6 +988,11 @@ namespace Altzone.Scripts.Lobby
                     yield return null;
                 }
 
+                /*for (int i=0; i < playerTypes.Length; i++)
+                {
+                    if(playerTypes[i] == PlayerType.None) playerTypes[i] = PlayerType.Bot;
+                } Disabled for now, reactivate when the bots work a little better again.*/
+
                 data = new()
                 {
                     StartTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
@@ -1019,7 +1029,7 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator StartQuantum(StartGameData data)
         {
-            Debug.Log(data.ToString());
+            Debug.Log("Starting Quantum");
             string battleID = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(BattleID);
 
             // Getting the index of own user id from the player slot user id array to determine which player slot is for local player.
@@ -1074,12 +1084,10 @@ namespace Altzone.Scripts.Lobby
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleLoad);
             _isStartFinished = false;
 
-            yield return new WaitForEndOfFrame();
-
+            yield return new WaitUntil(() => OnStartTimeSet != null);
             if (sendTime == 0) sendTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             long timeToStart = (sendTime + STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             long startTime = sendTime + timeToStart;
-
             do
             {
                 if (OnStartTimeSet != null)
@@ -1091,6 +1099,8 @@ namespace Altzone.Scripts.Lobby
             } while (startTime > DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
 
             yield return new WaitUntil(()=>_isStartFinished);
+
+            AudioManager.Instance.StopMusic();
 
             //Move to Battle and start Runner
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Battle);
@@ -1142,10 +1152,16 @@ namespace Altzone.Scripts.Lobby
 
         public static void ExitQuantum(bool winningTeam, float gameLengthSec)
         {
-            QuantumRunner.ShutdownAll();
-            DebugLogFileHandler.ContextExit();
+            CloseRunner();
             DataCarrier.AddData(DataCarrier.BattleWinner,winningTeam);
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleStory);
+        }
+
+        public static void CloseRunner()
+        {
+            AudioManager.Instance.StopMusic();
+            QuantumRunner.ShutdownAll();
+            DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.MenuUI);
         }
 
         public static void ExitBattleStory()
@@ -1479,7 +1495,7 @@ namespace Altzone.Scripts.Lobby
 
         public void OnEvent(EventData photonEvent)
         {
-            Debug.Log($"Received PhotonEvent {photonEvent.Code}");
+            if(photonEvent.Code != 103) Debug.Log($"Received PhotonEvent {photonEvent.Code}");
 
             switch (photonEvent.Code)
             {
@@ -1687,7 +1703,7 @@ namespace Altzone.Scripts.Lobby
                  $"\nPlayerSlotTypes: {string.Join(", ",PlayerSlotTypes)}" +
                  $"\nProjectileInitialEmotion: {ProjectileInitialEmotion}" +
                  $"\nMapId: {MapId}" +
-                 $"\nPlayerCount: {PlayerCount}";  
+                 $"\nPlayerCount: {PlayerCount}";
         }
     }
 }

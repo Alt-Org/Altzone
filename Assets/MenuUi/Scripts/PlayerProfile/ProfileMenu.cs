@@ -129,7 +129,15 @@ public class ProfileMenu : AltMonoBehaviour
             carbonUnit = "kg";
         }
 
-        _CarbonText.text = $"Hiilijalanjälki\n{carbonDisplay:F1}{carbonUnit}/CO2"; // Hiilijalanjälki teksti
+        // Hiilijananjälki teksti
+        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+        {
+            _CarbonText.text = $"Hiilijalanjälki\n{carbonDisplay:F1}{carbonUnit}/CO2";
+        }
+        else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+        {
+            _CarbonText.text = $"Carbon Footprint\n{carbonDisplay:F1}{carbonUnit}/CO2";
+        }
 
         // Päivittää peliajan
         if (secondsCount >= 60f)
@@ -329,20 +337,36 @@ public class ProfileMenu : AltMonoBehaviour
             {
                 if (clan == null)
                 {
-                    _rolesErrorMessage.text = "Klaania ei löydetty.";
-                    Debug.LogError("Klaanitietojen haku epäonnistui.");
+                    if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+                    {
+                        _rolesErrorMessage.text = "Klaania ei löydetty.";
+                        Debug.LogError("Klaanitietojen haku epäonnistui.");
+                    }
+                    else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                    {
+                        _rolesErrorMessage.text = "Clan not found.";
+                        Debug.LogError("Failed to fetch clan data.");
+                    }
                     return;
                 }
 
                 _clanData = clan;
                 _playerClanNameText.text = _clanData.Name;
-                _rolesErrorMessage.text = "Rooleja ei voitu hakea.";
 
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+                {
+                    _rolesErrorMessage.text = "Rooleja ei voitu hakea.";
+                }
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                {
+                    _rolesErrorMessage.text = "Could not fetch clan roles.";
+                }
                 _clanID = _playerData.ClanId;
                 _url = "https://altzone.fi/clans/" + _playerData.ClanId;
             });
 
-            if(_otherPlayerProfile)
+
+            if (_otherPlayerProfile)
             {
                 _weekEmotions.ShowOtherPlayerEmotions();
             }

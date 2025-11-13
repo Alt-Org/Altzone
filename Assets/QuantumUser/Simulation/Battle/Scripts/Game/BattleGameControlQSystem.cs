@@ -1,28 +1,34 @@
 /// @file BattleGameControlQSystem.cs
 /// <summary>
-/// Controls the overall game state flow in Quantum simulation.
+/// Contains @cref{Battle.QSimulation.Game,BattleGameControlQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which controls the overall game flow in %Quantum simulation.
 /// </summary>
-///
-/// This system initializes the battle grid and player manager, and controls game state transitions from initialization to active gameplay.
 
 //#define DEBUG_LOG_STATE
 
+// Unity usings
+using UnityEngine;
 using UnityEngine.Scripting;
-using Quantum;
 
+// Quantum usings
+using Quantum;
+using Photon.Deterministic;
+
+// Battle QSimulation usings
 using Battle.QSimulation.Player;
 using Battle.QSimulation.SoulWall;
-using UnityEngine;
-using Photon.Deterministic;
 
 namespace Battle.QSimulation.Game
 {
-    /**
-     *  Systems that monitor game state:
-     *  -ProjectileSpawnerSystem
-     */
+    /// <summary>
+    /// <span class="brief-h">%Game control <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
+    /// Controls the overall game flow in %Quantum simulation.
+    /// </summary>
+    ///
+    /// Initializes BattleGridManager and BattlePlayerManager.<br/>
+    /// Registers players to BattlePlayerManager when they connect.<br/>
+    /// Controls game state transitions from initialization to active gameplay.
     [Preserve]
-    public unsafe class BattleGameControlQSystem : SystemMainThread, ISignalOnPlayerAdded
+    public unsafe class BattleGameControlQSystem : SystemMainThread, ISignalOnPlayerAdded, ISignalOnPlayerDisconnected
     {
         /// <summary>
         /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System OnInit method</a> gets called when the system is initialized.</span><br/>
@@ -62,14 +68,30 @@ namespace Battle.QSimulation.Game
             BattlePlayerManager.RegisterPlayer(f, playerRef);
         }
 
-        public static void OnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
+        public void OnPlayerDisconnected(Frame f, PlayerRef playerRef)
+        {
+            BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
+            if (gameSession->State != BattleGameState.GameOver)
+            {
+                Debug.LogWarningFormat("Player: {0} has disconnected", playerRef);
+                BattlePlayerManager.MarkAbandoned(f, playerRef);
+            }
+        }
+
+        /// <summary>
+        /// Called when the game ends. Updates the game session state and calls the BattleViewGameOver Event and BattleOnGameOver Signal.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="winningTeam">The team that won the match.</param>
+        public static void OnGameOver(Frame f, BattleTeamNumber winningTeam)
         {
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
             f.Events.BattleViewGameOver(winningTeam, gameSession->GameTimeSec);
             gameSession->State = BattleGameState.GameOver;
 
             BattleTeamNumber WinningTeam = winningTeam;
-            f.Signals.BattleOnGameOver(WinningTeam, projectile, projectileEntity);
+            f.Signals.BattleOnGameOver(WinningTeam);
         }
 
         /// <summary>

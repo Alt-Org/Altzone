@@ -1,11 +1,12 @@
 /// @file BattleCamera.cs
 /// <summary>
-/// Has a class BattleCamera which handles %Battle camera.
+/// Contains @cref{Battle.View.Game,BattleCamera} class which handles %Battle camera.
 /// </summary>
 ///
 /// This script:<br/>
 /// Handles %Battle camera functionality.
 
+// Unity usings
 using UnityEngine;
 using UnityEngine.Assertions;
 

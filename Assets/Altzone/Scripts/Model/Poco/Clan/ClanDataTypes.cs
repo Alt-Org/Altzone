@@ -114,8 +114,31 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
     public static class ClanDataTypeConverter
     {
-             public static string GetAgeText(ClanAge age)
+        public static string GetAgeText(ClanAge age)
         {
+            switch (SettingsCarrier.Instance.Language)
+            {
+                case SettingsCarrier.LanguageType.Finnish:
+                    return age switch
+                    {
+                        ClanAge.None => "Ikäryhmä",
+                        ClanAge.Teenagers => "Teinit",
+                        ClanAge.Toddlers => "Taaperot",
+                        ClanAge.Adults => "Aikuiset",
+                        ClanAge.All => "Kaikki",
+                        _ => "",
+                    };
+                case SettingsCarrier.LanguageType.English:
+                    return age switch
+                    {
+                        ClanAge.None => "Age Group",
+                        ClanAge.Teenagers => "Teenagers",
+                        ClanAge.Toddlers => "Toddlers",
+                        ClanAge.Adults => "Adults",
+                        ClanAge.All => "Everyone",
+                        _ => "",
+                    };
+            }
             return age switch
             {
                 ClanAge.None => "Ikäryhmä",
@@ -130,6 +153,33 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public static string GetLanguageText(Language language)
         {
+            switch (SettingsCarrier.Instance.Language)
+            {
+                case SettingsCarrier.LanguageType.Finnish:
+                    return language switch
+                    {
+                        Language.None => "Kieli",
+                        Language.Finnish => "suomi",
+                        Language.Swedish => "svenska",
+                        Language.English => "English",
+                        Language.Spanish => "espanol",
+                        Language.Russian => "venäjä",
+                        Language.Ukrainian => "ukraina",
+                        _ => "",
+                    };
+                case SettingsCarrier.LanguageType.English:
+                    return language switch
+                    {
+                        Language.None => "Language",
+                        Language.Finnish => "suomi",
+                        Language.Swedish => "svenska",
+                        Language.English => "English",
+                        Language.Spanish => "espanol",
+                        Language.Russian => "russian",
+                        Language.Ukrainian => "ukrainian",
+                        _ => "",
+                    };
+            }
             return language switch
             {
                 Language.None => "Kieli / Språk / Language",
@@ -145,6 +195,29 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public static string GetGoalText(Goals goal)
         {
+            switch (SettingsCarrier.Instance.Language)
+            {
+                case SettingsCarrier.LanguageType.Finnish:
+                    return goal switch
+                    {
+                        Goals.None => "Tavoite",
+                        Goals.Fiilistely => "Fiilistely",
+                        Goals.Grindaus => "Grindaus",
+                        Goals.Intohimoisuus => "Intohimoisuus",
+                        Goals.Keraily => "Keraily",
+                        _ => "",
+                    };
+                case SettingsCarrier.LanguageType.English:
+                    return goal switch
+                    {
+                        Goals.None => "Goals",
+                        Goals.Fiilistely => "Vibing",
+                        Goals.Grindaus => "Grind",
+                        Goals.Intohimoisuus => "Passion",
+                        Goals.Keraily => "Collection",
+                        _ => "",
+                    };
+            }
             return goal switch
             {
                 Goals.None => "Tavoite",
@@ -158,6 +231,29 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public static string GetActivityText(ClanActivity activity)
         {
+            switch (SettingsCarrier.Instance.Language)
+            {
+                case SettingsCarrier.LanguageType.Finnish:
+                    return activity switch
+                    {
+                        ClanActivity.None => "Aktiivisuus",
+                        ClanActivity.VeryActive => "Erittäin aktiivinen",
+                        ClanActivity.Active => "Aktiivinen",
+                        ClanActivity.OccasionallyActive => "Satunnainen",
+                        ClanActivity.RarelyActive => "Harvoin paikalla",
+                        _ => "",
+                    };
+                case SettingsCarrier.LanguageType.English:
+                    return activity switch
+                    {
+                        ClanActivity.None => "Activity",
+                        ClanActivity.VeryActive => "Very Active",
+                        ClanActivity.Active => "Active",
+                        ClanActivity.OccasionallyActive => "Occasionally Active",
+                        ClanActivity.RarelyActive => "Rarely Active",
+                        _ => "",
+                    };
+            }
             return activity switch
             {
                 ClanActivity.None => "Aktiivisuus",
@@ -171,6 +267,29 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public static string GetRankingText(ClanRanking ranking)
         {
+            switch (SettingsCarrier.Instance.Language)
+            {
+                case SettingsCarrier.LanguageType.Finnish:
+                    return ranking switch
+                    {
+                        ClanRanking.None => "Sijoitus",
+                        ClanRanking.Top10 => "Top 10",
+                        ClanRanking.Top25 => "Top 25",
+                        ClanRanking.Top50 => "Top 50",
+                        ClanRanking.Top100 => "Top 100",
+                        _ => "",
+                    };
+                case SettingsCarrier.LanguageType.English:
+                    return ranking switch
+                    {
+                        ClanRanking.None => "Ranking",
+                        ClanRanking.Top10 => "Top 10",
+                        ClanRanking.Top25 => "Top 25",
+                        ClanRanking.Top50 => "Top 50",
+                        ClanRanking.Top100 => "Top 100",
+                        _ => "",
+                    };
+            }
             return ranking switch
             {
                 ClanRanking.None => "Sijoitus",
@@ -184,14 +303,39 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public static string GetMembersText(ClanMembers members)
         {
+            switch (SettingsCarrier.Instance.Language)
+            {
+                case SettingsCarrier.LanguageType.Finnish:
+                    return members switch
+                    {
+                        ClanMembers.None => "Jäsenmäärä",
+                        ClanMembers.Small => "Pieni (1-5)",
+                        ClanMembers.Medium => "Keskikokoinen (6-10)",
+                        ClanMembers.Large => "Suuri (11-20)",
+                        ClanMembers.VeryLarge => "Hyvin suuri (21-28)",
+                        ClanMembers.Huge => "Valtava (29+)",
+                        _ => "",
+                    };
+                case SettingsCarrier.LanguageType.English:
+                    return members switch
+                    {
+                        ClanMembers.None => "Member count",
+                        ClanMembers.Small => "Small (1-5)",
+                        ClanMembers.Medium => "Medium (6-10)",
+                        ClanMembers.Large => "Large (11-20)",
+                        ClanMembers.VeryLarge => "Very Large (21-28)",
+                        ClanMembers.Huge => "Huge (29+)",
+                        _ => "",
+                    };
+            }
             return members switch
             {
                 ClanMembers.None => "Jäsenmäärä",
-                ClanMembers.Small => "Pieni (1-10)",
-                ClanMembers.Medium => "Keskikokoinen (11-25)",
-                ClanMembers.Large => "Suuri (26-50)",
-                ClanMembers.VeryLarge => "Hyvin suuri (51-100)",
-                ClanMembers.Huge => "Valtava (100+)",
+                ClanMembers.Small => "Pieni (1-5)",
+                ClanMembers.Medium => "Keskikokoinen (6-10)",
+                ClanMembers.Large => "Suuri (11-20)",
+                ClanMembers.VeryLarge => "Hyvin suuri (21-28)",
+                ClanMembers.Huge => "Valtava (29+)",
                 _ => "",
             };
         }

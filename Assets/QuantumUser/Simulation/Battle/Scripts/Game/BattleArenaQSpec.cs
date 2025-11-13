@@ -1,10 +1,11 @@
 /// @file BattleArenaQSpec.cs
 /// <summary>
-/// Class for defining the battlearena layout, settings and spawn positions.
+/// Contains @cref{Battle.QSimulation.Game,BattleArenaQSpec} class for defining the battlearena layout, settings and spawn positions.
 /// </summary>
 ///
 /// @bigtext{Filled with data from @ref BattleArenaQSpec.asset "BattleArenaQSpec" data asset.}
 
+// Quantum usings
 using Quantum;
 using Photon.Deterministic;
 

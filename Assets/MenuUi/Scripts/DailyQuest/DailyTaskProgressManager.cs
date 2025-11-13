@@ -117,6 +117,18 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationActionType.PlayBattle: HandleSimpleTask(value); break;
             case TaskEducationActionType.SwitchSoulhomeMusic: HandleSimpleTask(value); break;
             case TaskEducationActionType.WinBattle: HandleSimpleTask(value); break;
+            case TaskEducationActionType.MakeMusicWithButtons: HandleSimpleTask(value); break;
+            case TaskEducationActionType.MakeCharacterFast: HandleSimpleTask(value); break;
+            case TaskEducationActionType.MakeCharacterDurable: HandleSimpleTask(value); break;
+            case TaskEducationActionType.MakeCharacterStrong: HandleSimpleTask(value); break;
+            case TaskEducationActionType.MakeCharacterBig: HandleSimpleTask(value); break;
+            case TaskEducationActionType.ChangeAvatarClothes: HandleSimpleTask(value); break;
+            case TaskEducationActionType.ChangeItemsPosition: HandleSimpleTask(value); break;
+            case TaskEducationActionType.UseAllItemsSoulhome: HandleSimpleTask(value); break;
+            case TaskEducationActionType.FindVariableValueInGame: HandleSimpleTask(value); break;
+            case TaskEducationActionType.Find3ImportantButtons: HandleSimpleTask(value); break;
+            case TaskEducationActionType.FindBug: HandleSimpleTask(value); break;
+            case TaskEducationActionType.CreateClanPlaylist: HandleSimpleTask(value); break;
             default: break;
         }
     }
@@ -137,6 +149,15 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationSocialType.EditCharacterAvatar: HandleSimpleTask(value); break;
             case TaskEducationSocialType.EmoteDuringBattle: HandleSimpleTask(value); break;
             case TaskEducationSocialType.WriteChatMessageClan: HandleSimpleTask(value); break;
+            case TaskEducationSocialType.ChatAddReaction: HandleSimpleTask(value); break;
+            case TaskEducationSocialType.FindAllChatOptions: HandleSimpleTask(value); break;
+            case TaskEducationSocialType.UseAllChatFeelings: HandleSimpleTask(value); break;
+            case TaskEducationSocialType.DefinePlayerStyle: HandleSimpleTask(value); break;
+            case TaskEducationSocialType.WriteChatMessageGlobal: HandleSimpleTask(value); break;
+            case TaskEducationSocialType.ClanVote: HandleSimpleTask(value); break;
+            case TaskEducationSocialType.SuggestItemFleaMarket: HandleSimpleTask(value); break;
+            case TaskEducationSocialType.AddItemFleaMarket: HandleSimpleTask(value); break;
+            case TaskEducationSocialType.ChangeClanMotto: HandleSimpleTask(value); break;
             default: break;
         }
     }
@@ -154,9 +175,12 @@ public class DailyTaskProgressManager : AltMonoBehaviour
         {
             case TaskEducationStoryType.ClickCharacterDescription: HandleSimpleTask(value); break;
             case TaskEducationStoryType.ContinueClanStory: HandleSimpleTask(value); break;
-            case TaskEducationStoryType.FindSybolicalFurniture: HandleSimpleTask(value); break;
+            case TaskEducationStoryType.Press3SymbolFurniture: HandleSimpleTask(value); break;
             case TaskEducationStoryType.FindSymbolicalGraphics: HandleSimpleTask(value); break;
             case TaskEducationStoryType.RecognizeSoundClue: HandleSimpleTask(value); break;
+            case TaskEducationStoryType.CreateUnifiedInterior: HandleSimpleTask(value); break;
+            case TaskEducationStoryType.RecognizeCharacterMechanic: HandleSimpleTask(value); break;
+            case TaskEducationStoryType.WhereGameHappens: HandleSimpleTask(value); break;
             default: break;
         }
     }
@@ -177,6 +201,8 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationCultureType.GamesGenreTypes: HandleSimpleTask(value); break;
             case TaskEducationCultureType.SetProfilePlayerType: HandleSimpleTask(value); break;
             case TaskEducationCultureType.SimiliarToAGame: HandleSimpleTask(value); break;
+            case TaskEducationCultureType.FindPowerOrEqualityWindow: HandleSimpleTask(value); break;
+            case TaskEducationCultureType.ClanCulturalGuideline: HandleSimpleTask(value); break;
             default: break;
         }
     }
@@ -197,6 +223,11 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationEthicalType.ClickQuestionable: HandleSimpleTask(value); break;
             case TaskEducationEthicalType.UseOnlyNegativeEmotes: HandleSimpleTask(value); break;
             case TaskEducationEthicalType.UseOnlyPositiveEmotes: HandleSimpleTask(value); break;
+            case TaskEducationEthicalType.PressSustainableConsumptionObjects: HandleSimpleTask(value); break;
+            case TaskEducationEthicalType.PressValuesObjects: HandleSimpleTask(value); break;
+            case TaskEducationEthicalType.ChangeLanguage: HandleSimpleTask(value); break;
+            case TaskEducationEthicalType.PressPrizeItems: HandleSimpleTask(value); break;
+            case TaskEducationEthicalType.ChooseEthicallyBetterCharacter: HandleSimpleTask(value); break;
             default: break;
         }
     }

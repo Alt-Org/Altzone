@@ -15,14 +15,18 @@ MonoBehaviour:
   Id: 204
   CharacterId: 204
   IsApproved: 1
-  Name: Vietteleminen
+  FinnishName: Vietteleminen
+  EnglishName: Seduction
   ClassType: 200
-  CharacterDescription: "Vietteleminen on huumaava sekoitus kauneutta ja romantiikkaa.
+  CharacterDescriptionFinnish: "Viettelij\xE4 on huumaava sekoitus kauneutta ja romantiikkaa.
     Leikkis\xE4n kutsuva pilke silm\xE4kulmissaan, h\xE4n varmistaa etteiv\xE4t ruusuiset
     lemmenleikit etene pintaa syvemm\xE4lle, miss\xE4 h\xE4n hiljaa kaipaa jotain
     pysyv\xE4\xE4. Paetessaan viimeisimm\xE4lt\xE4 saaliiltaan, h\xE4n s\xE4rkee
-    samalla oman syd\xE4mens\xE4 aina uudestaan. \r\n"
-  CharacterShortDescription: "Savusilm\xE4inen ja ruusuntuoksuinen syd\xE4ntens\xE4rkij\xE4. "
+    samalla oman syd\xE4mens\xE4 aina uudestaan. J\xE4tt\xE4j\xE4 ei ikin\xE4 tule
+    j\xE4tetyksi.\r\n"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Savusilm\xE4inen ja ruusuntuoksuinen syd\xE4ntens\xE4rkij\xE4."
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: fe1d8876c828b8348a0888f0a56faaad, type: 2}
   Hp:
     Level: 2
@@ -41,6 +45,7 @@ MonoBehaviour:
     Coefficient: 7
   GalleryImage: {fileID: 21300000, guid: 7bbb9287049b29b4d992d9b6e19ce2d8, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: dd309955bb3e3ca4c972cf5aa4b067b9, type: 3}
+  CharPhotoSeries: {fileID: 21300000, guid: da8884c145acb754495de6ae21c6fcd0, type: 3}
   BattleEntityPrototype:
     Id:
       Value: 1279321672100397795

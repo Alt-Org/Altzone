@@ -8,6 +8,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using MenuUi.Scripts.DefenceScreen.CharacterGallery;
 using MenuUi.Scripts.Signals;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
+using Altzone.Scripts.ReferenceSheets;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -28,6 +29,8 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private PieChartPreview _piechartPreview;
         [SerializeField] private Material _grayScaleMaterial;
         [SerializeField] private Button _addCharacterButton;
+        [SerializeField] private Image _classIcon;
+        [SerializeField] private ClassReference _classReference;
 
         private static Material _grayscaleMaterialInstance;
 
@@ -86,7 +89,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 if (success)
                 {
-                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters(result =>
+                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters((result, chaList) =>
                     {
                         if (result)
                         {
@@ -123,6 +126,12 @@ namespace MenuUi.Scripts.CharacterGallery
             _backgroundLowerImage.color = bgColor;
             _backgroundUpperImage.color = bgAltColor;
             _originalSlot = originalSlot;
+
+            if (_classIcon && _classReference)
+            {
+                _classIcon.sprite = _classReference.GetCornerIcon(CustomCharacter.GetClass(id));
+                _classIcon.enabled = _classIcon.sprite != null;
+            }
         }
 
 

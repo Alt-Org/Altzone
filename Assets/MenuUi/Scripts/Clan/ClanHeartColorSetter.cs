@@ -73,15 +73,15 @@ public class ClanHeartColorSetter : MonoBehaviour
         int i = 0;
         foreach (var piece in logo.pieceColors)
         {
-            if (i >= _heartPieceHandlers.Length) break; //estet‰‰n virhe, jos v‰rej‰ on enemm‰n kuin k‰sittelijˆit‰ taulukoissa
+            if (i >= _heartPieceHandlers.Length) break; //estet√§√§n virhe, jos v√§rej√§ on enemm√§n kuin k√§sittelij√∂it√§ taulukoissa
             if (!ColorUtility.TryParseHtmlString("#" + piece, out Color colour)) colour = Color.white;
             _heartPieceHandlers[i].Initialize(i, colour);
 
             i++;
         }
-        for (; i < _heartPieceHandlers.Length; i++) //T‰ydennet‰‰n logosta puuttuvt v‰rit
+        for (; i < _heartPieceHandlers.Length; i++) //T√§ydennet√§√§n logosta puuttuvt v√§rit
         {
-            _heartPieceHandlers[i].Initialize(i, Color.white); //kovakoodataan t‰h‰n hetkeksi valkoinen oletukseksi
+            _heartPieceHandlers[i].Initialize(i, Color.red); //kovakoodataan t√§h√§n hetkeksi valkoinen oletukseksi
         }
     }
 

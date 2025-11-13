@@ -1,20 +1,28 @@
 /// @file BattleGameViewController.cs
 /// <summary>
-/// Has a class BattleGameViewController which controls the %Battle %UI elements.
+/// Contains @cref{Battle.View.Game,BattleGameViewController} class which controls the %Battle %UI elements.
 /// </summary>
 ///
 /// This script:<br/>
 /// Initializes %Battle %UI elements, and controls their visibility and functionality.
 
+// Unity usings
 using UnityEngine;
+
+// Quantum usings
 using Quantum;
 using Photon.Deterministic;
 
+// Altzone usings
+using Altzone.Scripts.Audio;
 using Altzone.Scripts.BattleUiShared;
 using Altzone.Scripts.Lobby;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Player;
+
+// Battle View usings
 using Battle.View.Audio;
 using Battle.View.Effect;
 using Battle.View.UI;
@@ -113,12 +121,12 @@ namespace Battle.View.Game
         /// @{
 
         /// <summary>
-        /// Public method that gets called when the local player pressed the give up button.<br/>
-        /// No functionality yet.
+        /// Public method that gets called when the local player pressed the give up button.
         /// </summary>
         public void UiInputOnLocalPlayerGiveUp()
         {
             Debug.Log("Give up button pressed!");
+            _playerInput.OnGiveUp();
         }
 
         /// <summary>
@@ -212,12 +220,17 @@ namespace Battle.View.Game
             // Subscribing to other View Init events
             QuantumEvent.Subscribe<EventBattleStoneCharacterPieceViewInit>(this, QEventOnStoneCharacterPieceViewInit);
 
+            // subscribing to UI control events
+            QuantumEvent.Subscribe<EventBattleViewSetRotationJoystickVisibility>(this, QEventOnSetRotationJoystickVisibility);
+
             // Subscribing to Gameplay events
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
             QuantumEvent.Subscribe<EventBattleLastRowWallDestroyed>(this, QEventOnLastRowWallDestroyed);
             QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
+            QuantumEvent.Subscribe<EventBattleCharacterSelected>(this, QEventCharacterSelected);
             QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
             QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
+            QuantumEvent.Subscribe<EventBattleGiveUpStateChange>(this, QEventOnGiveUpStateChange);
 
             // Subscribing to Debug events
             QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
@@ -250,25 +263,27 @@ namespace Battle.View.Game
         /// Private handler method for EventBattleViewPlayerConnected QuantumEvent.<br/>
         /// Handles calling BattleUiLoadScreenHandler::PlayerConnected through #_uiController with the slot and character IDs of the connected player.
         /// </summary>
-        /// 
+        ///
         /// <param name="e">The event data.</param>
         private void QEventOnViewPlayerConnected(EventBattleViewPlayerConnected e)
         {
             BattlePlayerSlot playerSlot = e.Data.PlayerSlot;
             int[] characterIds = new int[3];
-            for (int i = 0; i < characterIds.Length; i++)
+            int[] characterClasses = new int[3];
+            for (int i = 0; i < 3; i++)
             {
                 characterIds[i] = e.Data.Characters[i].Id;
+                characterClasses[i] = e.Data.Characters[i].Class;
             }
 
-            _uiController.LoadScreenHandler.PlayerConnected(playerSlot, characterIds);
+            _uiController.LoadScreenHandler.PlayerConnected(playerSlot, characterIds, characterClasses);
         }
 
         /// <summary>
         /// Private handler method for EventBattleViewAllPlayersConnected QuantumEvent.<br/>
         /// Handles calling BattleUiAnnouncementHandler::ClearAnnouncerTextField once all players have successfully joined the game.
         /// </summary>
-        /// 
+        ///
         /// <param name="e">The event data.</param>
         private void QEventOnViewAllPlayersConnected(EventBattleViewAllPlayersConnected e)
         {
@@ -332,14 +347,11 @@ namespace Battle.View.Game
                 _uiController.JoystickHandler.SetLocked(true);
             }
 
-            // Commented out code to hide the ui elements which shouldn't be shown at this point, but the code will be used later
-            /*
             if (_uiController.GiveUpButtonHandler != null)
             {
                 BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.GiveUpButton);
                 if (data != null) _uiController.GiveUpButtonHandler.MovableUiElement.SetData(data);
             }
-            */
 
             if (_uiController.PlayerInfoHandler != null)
             {
@@ -351,6 +363,7 @@ namespace Battle.View.Game
                     PlayerType.LocalPlayer,
                     "Minä",
                     new int[3] { localPlayerData.Characters[0].Id, localPlayerData.Characters[1].Id, localPlayerData.Characters[2].Id },
+                    new int[3] { localPlayerData.Characters[0].Class, localPlayerData.Characters[1].Class, localPlayerData.Characters[2].Class },
                     new float[3] { (float)localPlayerData.Characters[0].Stats.Defence, (float)localPlayerData.Characters[1].Stats.Defence, (float)localPlayerData.Characters[2].Stats.Defence },
                     SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.PlayerInfo)
                 );
@@ -363,6 +376,7 @@ namespace Battle.View.Game
                         PlayerType.LocalTeammate,
                         "Tiimiläinen",
                         new int[3] { localTeammateData.Characters[0].Id, localTeammateData.Characters[1].Id, localTeammateData.Characters[2].Id },
+                        new int[3] { localTeammateData.Characters[0].Class, localTeammateData.Characters[1].Class, localTeammateData.Characters[2].Class },
                         new float[3] { (float)localTeammateData.Characters[0].Stats.Defence, (float)localTeammateData.Characters[1].Stats.Defence, (float)localTeammateData.Characters[2].Stats.Defence },
                         SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo)
                     );
@@ -386,6 +400,22 @@ namespace Battle.View.Game
         }
 
         /// <summary>
+        /// Private handler method for EventBattleViewSetRotationJoystickVisibility QuantumEvent.<br/>
+        /// Sets the rotation control joystick to be shown or hidden, if that control method is selected.
+        /// </summary>
+        ///
+        /// <param name="e">The event data.</param>
+        private void QEventOnSetRotationJoystickVisibility(EventBattleViewSetRotationJoystickVisibility e)
+        {
+            if (e.Slot != LocalPlayerSlot) return;
+
+            if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick)
+            {
+                _uiController.JoystickHandler.SetShow(e.IsVisible, BattleUiElementType.RotateJoystick);
+            }
+        }
+
+        /// <summary>
         /// Private handler method for EventBattleViewActivate QuantumEvent.<br/>
         /// Handles showing %UI elements and initializing BattleCamera scale and rotation.
         /// </summary>
@@ -399,6 +429,7 @@ namespace Battle.View.Game
 
             // Show UI elements
             if (_uiController.DiamondsHandler != null) _uiController.DiamondsHandler.SetShow(true);
+            if (_uiController.GiveUpButtonHandler != null) _uiController.GiveUpButtonHandler.SetShow(true);
             if (SettingsCarrier.Instance.BattleMovementInput == BattleMovementInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.MoveJoystick);
             if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.RotateJoystick);
             if (SettingsCarrier.Instance.BattleShowDebugStatsOverlay) _uiController.DebugStatsOverlayHandler.SetShow(true);
@@ -413,6 +444,8 @@ namespace Battle.View.Game
                 new(SettingsCarrier.Instance.BattleArenaPosX * 0.01f, SettingsCarrier.Instance.BattleArenaPosY * 0.01f),
                 LocalPlayerTeam == BattleTeamNumber.TeamBeta
             );
+
+            AudioManager.Instance.PlayMusic("Battle", MusicHandler.MusicSwitchType.Immediate);
         }
 
         /// <summary>
@@ -513,6 +546,11 @@ namespace Battle.View.Game
             _soundFXViewController.PlaySound(e.Effect);
         }
 
+        private void QEventCharacterSelected(EventBattleCharacterSelected e)
+        {
+            _uiController.PlayerInfoHandler.SetSelected(e.Slot, e.CharacterNumber);
+        }
+
         /// <summary>
         /// Private handler method for EventBattleCharacterTakeDamage QuantumEvent.<br/>
         /// Handles calling BattleUiPlayerInfoHandler::UpdateHealthVisual in #_uiController's BattleUiController::PlayerInfoHandler.
@@ -527,11 +565,31 @@ namespace Battle.View.Game
             }
         }
 
+        /// <summary>
+        /// Private handler method for EventBattleShieldTakeDamage QuantumEvent.<br/>
+        /// Handles calling BattleUiPlayerInfoHandler.UpdateDefenceVisual in <see cref="_uiController"/>'s <see cref="BattleUiController.PlayerInfoHandler">PlayerInfoHandler</see>.
+        /// </summary>
+        ///
+        /// <param name="e">The event data.</param>
         private void QEventOnShieldTakeDamage(EventBattleShieldTakeDamage e)
         {
             if (e.Team == LocalPlayerTeam)
             {
                 _uiController.PlayerInfoHandler.UpdateDefenceVisual(e.Slot, e.CharacterNumber, (float)e.DefenceValue);
+            }
+        }
+
+        /// <summary>
+        /// Private handler method for EventBattleGiveUpStateChange QuantumEvent.<br/>
+        /// Handles calling BattleUiGiveUpButtonHandler.UpdateState in <see cref="_uiController"/>'s <see cref="BattleUiController.GiveUpButtonHandler">GiveUpButtonHandler</see>.
+        /// </summary>
+        ///
+        /// <param name="e">The event data.</param>
+        private void QEventOnGiveUpStateChange(EventBattleGiveUpStateChange e)
+        {
+            if (e.Team == LocalPlayerTeam)
+            {
+                _uiController.GiveUpButtonHandler.UpdateState(e.Slot, e.StateUpdate);
             }
         }
 
@@ -595,9 +653,9 @@ namespace Battle.View.Game
                         break;
 
                     case BattleGameState.Playing:
-                        // Updating diamonds (at the moment shows only alpha team's diamonds)
+                        // Updating diamonds
                         BattleDiamondCounterQSingleton diamondCounter = frame.GetSingleton<BattleDiamondCounterQSingleton>();
-                        _uiController.DiamondsHandler.SetDiamondsText(diamondCounter.AlphaDiamonds);
+                        _uiController.DiamondsHandler.SetDiamondsText(LocalPlayerTeam == BattleTeamNumber.TeamAlpha ? diamondCounter.AlphaDiamonds : diamondCounter.BetaDiamonds);
 
                         // Updating timer text
                         _uiController.TimerHandler.FormatAndSetTimerText(gameSession.GameTimeSec);

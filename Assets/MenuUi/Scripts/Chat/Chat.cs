@@ -189,22 +189,27 @@ public class Chat : AltMonoBehaviour
             if(buttonUsed == _sendButtonSadness)
             {
                 SendChatMessage(Mood.Sad);
+                gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Sadness);
             }
             else if (buttonUsed == _sendButtonAnger)
             {
                 SendChatMessage(Mood.Angry);
+                gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Anger);
             }
             else if (buttonUsed == _sendButtonJoy)
             {
                 SendChatMessage(Mood.Happy);
+                gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Joy);
             }
             else if (buttonUsed == _sendButtonPlayful)
             {
                 SendChatMessage(Mood.Wink);
+                gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Playful);
             }
             else if (buttonUsed == _sendButtonLove)
             {
                 SendChatMessage(Mood.Love);
+                gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Love);
             }
         }
     }
@@ -267,7 +272,11 @@ public class Chat : AltMonoBehaviour
             ChatListener.Instance.SendMessage(_inputField.text, mood, ChatListener.Instance.ActiveChatChannel);
             //DisplayMessage(_inputField.text, GetMessagePrefab(mood, true));
             _inputField.text = "";
-            this.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+            GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+            if (_currentContent == _clanChatContent)
+                _clanChatContent.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+            if (_currentContent == _globalChatContent)
+                _globalChatContent.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             MinimizeOptions();
         }
         else
@@ -463,6 +472,7 @@ public class Chat : AltMonoBehaviour
         _languageChat.SetActive(false);
         _clanChat.SetActive(false);
 
+        gameObject.GetComponent<FindAllChatOptions>().ChatOptionFound(FindAllChatOptions.ChatType.Global);
         RefreshChat(ChatChannelType.Global);
 
         Debug.Log("Global Chat aktivoitu");
@@ -479,7 +489,9 @@ public class Chat : AltMonoBehaviour
         _languageChat.SetActive(false);
         _globalChat.SetActive(false);
 
+        gameObject.GetComponent<FindAllChatOptions>().ChatOptionFound(FindAllChatOptions.ChatType.Clan);
         RefreshChat(ChatChannelType.Clan);
+        
         Debug.Log("Klaani Chat aktivoitu");
     }
 
@@ -493,6 +505,8 @@ public class Chat : AltMonoBehaviour
         _languageChat.SetActive(true);
         _globalChat.SetActive(false);
         _clanChat.SetActive(false);
+
+        gameObject.GetComponent<FindAllChatOptions>().ChatOptionFound(FindAllChatOptions.ChatType.Language);
 
         Debug.Log("Kielivalinnan mukainen Chat aktivoitu");
     }

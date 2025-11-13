@@ -3,7 +3,10 @@
 /// Handles SoulWall graphics. If debug mode is active, uses colored boxes instead of sprites.
 /// </summary>
 
+// Unity usings
 using UnityEngine;
+
+// Quantum usings
 using Quantum;
 
 namespace Battle.View.SoulWall

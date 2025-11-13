@@ -170,6 +170,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             if (!limited) Task = player.DailyTask != null ? new(player.DailyTask): null;
         }
 
+
         public void UpdatePlayerData(ServerPlayer player)
         {
             Assert.IsTrue(player._id.IsSet());
@@ -229,7 +230,6 @@ namespace Altzone.Scripts.Model.Poco.Player
             }
 
             _characterList = newCustomCharacters;
-            Debug.LogWarning(_characterList.Count + " : " + _characterList[0].ServerID);
 
             Patch();
         }

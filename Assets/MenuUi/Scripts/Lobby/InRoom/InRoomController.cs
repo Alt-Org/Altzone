@@ -10,6 +10,9 @@ using UnityEngine.UI;
 using SignalBus = MenuUi.Scripts.Signals.SignalBus;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
 using System.Collections.Generic;
+using Altzone.Scripts.Language;
+using System;
+using Random = UnityEngine.Random;
 
 namespace MenuUi.Scripts.Lobby.InRoom
 {
@@ -19,8 +22,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
     public class InRoomController : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI _title;
-        [SerializeField] private TextMeshProUGUI _conflictText;
-        [SerializeField, TextArea(1, 5)] private List<string> _conflicts;
+        [SerializeField] private TextLanguageSelectorCaller _conflictText;
+        [SerializeField] private List<Conflicts> _conflicts;
         [SerializeField] private Button _startGameButton;
         [SerializeField] private Button _backButton;
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
@@ -139,10 +142,29 @@ namespace MenuUi.Scripts.Lobby.InRoom
             {
                 int selectedConflict = Random.Range(0, _conflicts.Count);
                 if (selectedConflict == previousConflict) continue;
-                _conflictText.text = _conflicts[selectedConflict];
+                _conflictText.SetText(_conflicts[selectedConflict].ConlictText);
                 yield return new WaitForSecondsRealtime(7);
             }
             
+        }
+    }
+    [Serializable]
+    public class Conflicts
+    {
+        [SerializeField, TextArea(1, 5)] private string _finnishConflictText;
+        [SerializeField, TextArea(1, 5)] private string _englishConflictText;
+
+        public string ConlictText
+        {
+            get
+            {
+                switch (SettingsCarrier.Instance.Language)
+                {
+                    case SettingsCarrier.LanguageType.Finnish: return _finnishConflictText;
+                    case SettingsCarrier.LanguageType.English: return _englishConflictText;
+                    default: return _finnishConflictText;
+                }
+            }
         }
     }
 }

@@ -1,12 +1,9 @@
-using System.Linq;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.DefenceScreen.CharacterGallery;
+using MenuUi.Scripts.Signals;
 using UnityEngine;
 using UnityEngine.UI;
-using Altzone.Scripts.ModelV2;
-using Altzone.Scripts.ReferenceSheets;
-using MenuUi.Scripts.Signals;
-using System;
 
 namespace MenuUi.Scripts.Lobby.SelectedCharacters
 {
@@ -19,6 +16,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
     {
         [Header("Character slot references")]
         [SerializeField] private Image _spriteImage;
+        [SerializeField] private Image _classColorBorderImage;
         [SerializeField] private Image _classColorImage;
         [SerializeField] private PieChartPreview _piechartPreview;
         [SerializeField] public Image _cornerIcon;
@@ -56,7 +54,8 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             _spriteImage.enabled = true;
 
             CharacterClassType charClassType = CustomCharacter.GetClass(charID);
-            if (_classColorImage != null) _classColorImage.sprite = ClassReference.Instance.GetFrame(charClassType);
+            if (_classColorBorderImage != null) _classColorBorderImage.sprite = ClassReference.Instance.GetFrame(charClassType);
+            if (_classColorImage != null) _classColorImage.color = ClassReference.Instance.GetColor(charClassType);
             if (_cornerIcon != null) _cornerIcon.sprite = ClassReference.Instance.GetCornerIcon(charClassType);
             if (_resistanceIcon != null) _resistanceIcon.sprite = ClassReference.Instance.GetResistanceIcon(charClassType);
 
@@ -84,7 +83,10 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         public void SetEmpty(bool isEditable)
         {
             _spriteImage.enabled = false;
+            if (_classColorBorderImage != null) _classColorBorderImage.enabled = false;
             if (_classColorImage != null) _classColorImage.color = Color.white;
+            if (_cornerIcon != null) _cornerIcon.enabled = false;
+            if (_resistanceIcon != null) _resistanceIcon.enabled = false;
 
             if (_piechartPreview != null) _piechartPreview.ClearChart();
             _characterId = CharacterID.None;

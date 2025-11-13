@@ -46,11 +46,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _audioSource: {fileID: 0}
   _goalHit:
-    Clip: {fileID: 0}
-    VolumeScale: 1
+    Active: 0
+    Name: 
   _sideWallHit:
-    Clip: {fileID: 0}
-    VolumeScale: 1
+    Active: 0
+    Name: 
   _wallBroken:
-    Clip: {fileID: 8300000, guid: 3c7bb8f93a5ef644a8b6e29cb1eba772, type: 3}
-    VolumeScale: 0.75
+    Active: 1
+    Name: WallHit1

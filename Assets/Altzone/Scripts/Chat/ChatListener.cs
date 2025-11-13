@@ -59,7 +59,7 @@ namespace Altzone.Scripts.Chat
         internal string _id;
         private string _username;
 
-        private bool chatPreviewIsEnabled;
+        private bool chatPreviewIsEnabled = true;
 
         private WebSocket _socket;
         //private ChatController _chatController;                 // Controller for the main chat
@@ -200,14 +200,13 @@ namespace Altzone.Scripts.Chat
         private async void OpenSocket()
         {
             Dictionary<string, string> header = new Dictionary<string, string> { { "Authorization", $"Bearer {AccessToken}" } };
-            Debug.LogWarning(AccessToken);
-            Debug.LogWarning("Connecting to chat.");
+            Debug.Log("Connecting to chat.");
             if (_socket == null)
             {
                 _socket = new("wss://devapi.altzone.fi/ws/chat", header);
             }
 
-            _socket.OnOpen += () => { Debug.LogWarning("Connected to chat."); _id = ServerManager.Instance.Player._id; TestMessage(); };
+            _socket.OnOpen += () => { Debug.Log("Connected to chat."); _id = ServerManager.Instance.Player._id; TestMessage(); };
             _socket.OnError += (errorMessage) => Debug.LogError($"Error: {errorMessage}");
             _socket.OnClose += (code) => Debug.LogWarning($"Disconnected from chat: {code}");
             _socket.OnMessage += HandleMessage;
@@ -218,8 +217,10 @@ namespace Altzone.Scripts.Chat
         private async void CloseSocket()
         {
             _id = null;
-            await _socket.Close();
+            if (_socket != null)
+                await _socket.Close();
             if(_socketPolling != null)StopCoroutine(_socketPolling);
+            _socket = null;
         }
 
         private void HandleAccountChange(bool loggedIn)

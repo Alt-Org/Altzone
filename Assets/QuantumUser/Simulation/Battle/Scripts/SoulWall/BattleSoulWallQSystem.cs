@@ -1,16 +1,17 @@
 /// @file BattleSoulWallQSystem.cs
 /// <summary>
-/// Handles creating and destroying SoulWalls.
+/// Contains @cref{Battle.QSimulation.SoulWall,BattleSoulWallQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which handles creating and destroying SoulWalls.
 /// </summary>
-///
-/// This system creates SoulWalls based on BattleArena and SoulWall Specs when GameControlSystem calls CreateSoulWalls method during the map creation.<br/>
-/// Also destroys SoulWall segment when BattleCollisionQSystem calls the collision method.
 
+// Unity usings
 using UnityEngine;
 using UnityEngine.Scripting;
+
+// Quantum usings
 using Quantum;
 using Photon.Deterministic;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Projectile;
 using Battle.QSimulation.Game;
 
@@ -20,6 +21,9 @@ namespace Battle.QSimulation.SoulWall
     /// <span class="brief-h">%SoulWall <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum SystemSignalsOnly@u-exlink</a> @systemslink</span><br/>
     /// Handles creating SoulWalls and reacting to the projectile colliding with them.
     /// </summary>
+    ///
+    /// This system creates SoulWalls based on BattleArena and SoulWall Specs when GameControlSystem calls CreateSoulWalls method during the map creation.<br/>
+    /// Also destroys SoulWall segment when BattleCollisionQSystem calls the collision method.
     [Preserve]
     public unsafe class BattleSoulWallQSystem : SystemSignalsOnly
     {

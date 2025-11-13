@@ -44,7 +44,7 @@ namespace Photon.Client
     /// </summary>
     public class SocketWebTcp : PhotonSocket, IDisposable
     {
-        private PhotonWebSocket sock;
+        private WebSocket sock;
 
         private readonly object syncer = new object();
 
@@ -129,7 +129,7 @@ namespace Photon.Client
 
             try
             {
-                this.sock = new PhotonWebSocket(new Uri(this.ConnectAddress), proxyServerAddress, this.SerializationProtocol);
+                this.sock = new WebSocket(new Uri(this.ConnectAddress), proxyServerAddress, this.SerializationProtocol);
                 this.sock.DebugReturn = (LogLevel l, string s) =>
                                         {
                                             if (this.State != PhotonSocketState.Disconnected)

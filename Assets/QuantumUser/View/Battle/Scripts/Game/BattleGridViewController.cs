@@ -1,13 +1,15 @@
 /// @file BattleGridViewController.cs
 /// <summary>
-/// Has a class BattleGridViewController which handles the %Battle arena grid's visuals.
+/// Contains @cref{Battle.View.Game,BattleGridViewController} class which handles the %Battle arena grid's visuals.
 /// </summary>
 ///
 /// This script:<br/>
 /// Handles %Battle arena grid's visual functionality.
 
+// Unity usings
 using UnityEngine;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 
 namespace Battle.View.Game

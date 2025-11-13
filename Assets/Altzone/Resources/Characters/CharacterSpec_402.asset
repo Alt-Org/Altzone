@@ -14,11 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 402
   CharacterId: 402
-  IsApproved: 0
-  Name: "Riidankylv\xE4minen"
+  IsApproved: 1
+  FinnishName: "Syyllist\xE4minen"
+  EnglishName: Scapegoating
   ClassType: 400
-  CharacterDescription: 
-  CharacterShortDescription: 
+  CharacterDescriptionFinnish: 
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: 
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 0359596f2309630459d767f930e4a3b4, type: 2}
   Hp:
     Level: 3
@@ -37,7 +40,8 @@ MonoBehaviour:
     Coefficient: 4
   GalleryImage: {fileID: 21300000, guid: 33b5fc674b3e83040a138df3ef3960da, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: e25d9f1e6b2f29a468e1bc8ec3fa4dcb, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
-      Value: 1285704993508594025
+      Value: 1302691685303402647
   BattleUiSprite: {fileID: 0}

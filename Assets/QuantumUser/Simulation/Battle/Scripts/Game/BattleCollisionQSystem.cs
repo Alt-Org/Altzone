@@ -1,14 +1,16 @@
 /// @file BattleCollisionQSystem.cs
 /// <summary>
-/// Handles all collisions in the game.
+/// Contains @cref{Battle.QSimulation.Game,BattleCollisionQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which handles all collisions in the game.
 /// </summary>
-///
-/// This system reacts to ISignalOnTrigger2D signals. Depending on which entities are colliding, the appropriate methods in other systems are called.
 
+// Unity usings
 using UnityEngine;
 using UnityEngine.Scripting;
+
+// Quantum usings
 using Quantum;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Projectile;
 using Battle.QSimulation.Goal;
 using Battle.QSimulation.Player;
@@ -21,15 +23,16 @@ namespace Battle.QSimulation.Game
     /// <span class="brief-h">Collision <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum SystemSignalsOnly@u-exlink</a> @systemslink</span><br/>
     /// Handles all collisions in the game. Reacts only when it receives a signal upon collision.
     /// </summary>
+    ///
+    /// This system reacts to ISignalOnTrigger2D signals. Depending on which entities are colliding, the appropriate methods in other systems are called.
     [Preserve]
     public unsafe class BattleCollisionQSystem : SystemSignalsOnly, ISignalOnTrigger2D
     {
         public struct ProjectileCollisionData
         {
             public BattleProjectileQComponent* Projectile;
-            public EntityRef CollidingEntity;
+            public EntityRef ProjectileEntity;
             public EntityRef OtherEntity;
-            public bool ProjectileHeld;
         }
 
         public struct ArenaBorderCollisionData
@@ -56,7 +59,7 @@ namespace Battle.QSimulation.Game
         public struct GoalCollisionData
         {
             public BattleProjectileQComponent* Projectile;
-            public EntityRef CollidingEntity;
+            public EntityRef ProjectileEntity;
             public BattleGoalQComponent* Goal;
         }
 
@@ -81,9 +84,8 @@ namespace Battle.QSimulation.Game
                 ProjectileCollisionData projectileCollisionData = new()
                 {
                     Projectile = projectile,
-                    CollidingEntity = info.Entity,
-                    OtherEntity = info.Other,
-                    ProjectileHeld = false
+                    ProjectileEntity = info.Entity,
+                    OtherEntity = info.Other
                 };
 
                 switch (collisionTrigger->Type)
@@ -157,7 +159,7 @@ namespace Battle.QSimulation.Game
                             GoalCollisionData goalCollisionData = new()
                             {
                                 Projectile = projectile,
-                                CollidingEntity = info.Entity,
+                                ProjectileEntity = info.Entity,
                                 Goal = f.Unsafe.GetPointer<BattleGoalQComponent>(info.Other)
                             };
                             BattleGoalQSystem.OnProjectileHitGoal(f, &goalCollisionData);
@@ -173,6 +175,10 @@ namespace Battle.QSimulation.Game
                 {
                     Debug.Log("[CollisionSystem] Diamond hit player");
                     f.Signals.BattleOnDiamondHitPlayer(diamond, info.Entity, playerHitbox, info.Other);
+                }
+                else if (f.Unsafe.TryGetPointer(info.Other, out BattleArenaBorderQComponent* arenaBorder))
+                {
+                    f.Signals.BattleOnDiamondHitArenaBorder(diamond, info.Entity, arenaBorder, info.Other);
                 }
             }
         }

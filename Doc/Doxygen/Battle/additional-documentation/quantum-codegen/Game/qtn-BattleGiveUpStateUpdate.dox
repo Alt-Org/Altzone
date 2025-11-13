@@ -1,0 +1,30 @@
+/// @file BattleGiveUpStateUpdate.qtn
+/// <summary>
+/// Contains enum that defines different give up state updates.
+/// </summary>
+///
+/// ## Generated Enums
+/// - @cref{Quantum,BattleGiveUpStateUpdate}  
+///   @copybrief Quantum.BattleGiveUpStateUpdate
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattleGiveUpStateUpdate
+/// <summary>
+/// Enum that defines different give up state updates used by @ref BattleGiveUpStateChange event.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleGiveUpStateUpdate.qtn}
+
+/// @var Quantum::BattleGiveUpStateUpdate Quantum::BattleGiveUpStateUpdate::GiveUpVote
+/// Player is voting to give up.
+///
+/// @var Quantum::BattleGiveUpStateUpdate Quantum::BattleGiveUpStateUpdate::Abandoned
+/// Player has abandoned the match.
+///
+/// @var Quantum::BattleGiveUpStateUpdate Quantum::BattleGiveUpStateUpdate::GiveUpVoteCancel
+/// Player is canceling give up vote.
+///
+/// @var Quantum::BattleGiveUpStateUpdate Quantum::BattleGiveUpStateUpdate::GiveUpNow
+/// Player has given up without vote.  
+/// Used when there is no teammate.

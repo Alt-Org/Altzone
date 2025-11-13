@@ -14,16 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 202
   CharacterId: 202
-  IsApproved: 1
-  Name: Jekkuilija
+  IsApproved: 0
+  FinnishName: Ilveily
+  EnglishName: Pranking
   ClassType: 200
-  CharacterDescription: "Jeikkuilija on H\xE4m\xE4\xE4jien oikukas ja ilkikurinen
+  CharacterDescriptionFinnish: "Jeikkuilija on H\xE4m\xE4\xE4jien oikukas ja ilkikurinen
     soturi, joka tekee taistelusta kaoottisen pelin. H\xE4n ei pys\xE4hdy kohtaamaan
     hy\xF6kk\xE4yksi\xE4 suoraan, vaan v\xE4ist\xE4\xE4 ne tekem\xE4ll\xE4 tilanteista
     arvaamattomia. H\xE4nen taktiikkansa on h\xE4m\xE4t\xE4, h\xE4irit\xE4 ja n\xE4pelt\xE4\xE4
     viimeisen\xE4.\r\n\nJeikkuilijan suojakilpen\xE4 toimii naamari, joka antaa h\xE4nelle
     kyvyn h\xE4m\xE4t\xE4 tunnetila-ammuksia t\xE4ysin odottamattomalla ilveilyll\xE4.\r\n"
-  CharacterShortDescription: Oikukas ja ilkikurinen soturi
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: 
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 5d490b9fb5f49e644a6f88cced79a450, type: 2}
   Hp:
     Level: 2
@@ -42,6 +45,7 @@ MonoBehaviour:
     Coefficient: 7
   GalleryImage: {fileID: 21300000, guid: 95be75f57c8fa0348969e12a3058ec56, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 22f309944be80af4aba33ff694f4d7f9, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
       Value: 1533843990975050063

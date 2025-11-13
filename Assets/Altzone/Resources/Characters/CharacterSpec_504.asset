@@ -15,10 +15,13 @@ MonoBehaviour:
   Id: 504
   CharacterId: 504
   IsApproved: 0
-  Name: "P\xF6ssyttely"
+  FinnishName: "P\xF6ssyttelij\xE4"
+  EnglishName: Stoning
   ClassType: 500
-  CharacterDescription: 
-  CharacterShortDescription: 
+  CharacterDescriptionFinnish: 
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: 
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 261fb5b112dc75a4f9eb81028edc7957, type: 2}
   Hp:
     Level: 2
@@ -37,6 +40,7 @@ MonoBehaviour:
     Coefficient: 2
   GalleryImage: {fileID: 21300000, guid: d81e0766cb30dfd448de58ee7b563d78, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: bda08c8e8f859e24e881950d6c71ec96, type: 3}
+  CharPhotoSeries: {fileID: 21300000, guid: 7d70091c5c5ff034ab1798ad513c9cb9, type: 3}
   BattleEntityPrototype:
     Id:
       Value: 0

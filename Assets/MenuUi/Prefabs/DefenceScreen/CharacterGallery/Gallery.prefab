@@ -93,7 +93,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 34.8
+  m_fontSize: 36
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -470,6 +470,7 @@ GameObject:
   - component: {fileID: 4952187155362728409}
   - component: {fileID: 8777328917046022958}
   - component: {fileID: 856792233953465623}
+  - component: {fileID: 4143963562664654593}
   m_Layer: 5
   m_Name: LockedText
   m_TagString: Untagged
@@ -616,6 +617,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4143963562664654593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3745916842524643093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: 'Tiedostamattomat suojautumismekanismit:'
+  _englishText: 'Unconscious defencesoldiers:'
 --- !u!1 &4161809861694874942
 GameObject:
   m_ObjectHideFlags: 0
@@ -718,6 +733,7 @@ GameObject:
   - component: {fileID: 135787272448726084}
   - component: {fileID: 3589425074965034689}
   - component: {fileID: 5827182310047562413}
+  - component: {fileID: 2015162059404216592}
   m_Layer: 5
   m_Name: UnlockedText
   m_TagString: Untagged
@@ -864,6 +880,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2015162059404216592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4770416591653735465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: 'Tiedostetut suojautumismekanismit:'
+  _englishText: 'Conscious defencesoldiers:'
 --- !u!1 &5503711758838490542
 GameObject:
   m_ObjectHideFlags: 0

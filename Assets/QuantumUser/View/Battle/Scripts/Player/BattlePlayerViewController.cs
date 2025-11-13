@@ -1,19 +1,26 @@
 /// @file BattlePlayerViewController.cs
 /// <summary>
-/// Has a class BattlePlayerViewController which handles player sprites and animations.
+/// Contains @cref{Battle.View.Player,BattlePlayerViewController} class which handles player sprites and animations.
 /// </summary>
 ///
 /// This script:<br/>
 /// Handles player sprites and animations.
 
+// System usings
 using System.Collections;
+
+// Unity usings
 using UnityEngine;
 
+// Quantum usings
 using Quantum;
 using Photon.Deterministic;
 
-using Battle.View.Game;
+// Battle QSimulation usings
 using Battle.QSimulation.Player;
+
+// Battle View usings
+using Battle.View.Game;
 
 namespace Battle.View.Player
 {
@@ -28,13 +35,19 @@ namespace Battle.View.Player
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
+        [Header("References")]
+
+        /// <summary>[SerializeField] Reference to an override class view controller.</summary>
+        /// @ref BattlePlayerViewController-SerializeFields
+        [SerializeField] private BattlePlayerClassBaseViewController _classViewControllerOverride;
+
         /// <summary>[SerializeField] Animator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> that handles player animations.</summary>
         /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private Animator _animator;
 
         /// <summary>[SerializeField] %Player's child <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> where heart sprite is located.</summary>
         /// @ref BattlePlayerViewController-SerializeFields
-        [SerializeField] private GameObject _heart;
+        //[SerializeField] private GameObject _heart;
 
         /// <summary>[SerializeField] Array of character <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.</summary>
         /// @ref BattlePlayerViewController-SerializeFields
@@ -43,6 +56,16 @@ namespace Battle.View.Player
         /// <summary>[SerializeField] %Player's local player indicator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</summary>
         /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private GameObject _localPlayerIndicator;
+
+        /// <summary>[SerializeField] Reference to a character sprite without shield.</summary>
+        /// @ref BattlePlayerViewController-SerializeFields
+        [SerializeField] private Sprite _noShieldSprite;
+
+        /// <summary>[SerializeField] Reference to the shield hit particle system.</summary>
+        /// @ref BattlePlayerViewController-SerializeFields
+        [SerializeField] private ParticleSystem _shieldHitParticle;
+
+        [Header("Settings")]
 
         /// <summary>[SerializeField] The transparency effect's range.</summary>
         /// @ref BattlePlayerViewController-SerializeFields
@@ -64,19 +87,17 @@ namespace Battle.View.Player
         /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private int _damageFlashAmount = 5;
 
-        [SerializeField] private Sprite _noShieldSprite;
-
-        [SerializeField] private ParticleSystem _shieldHitParticle;
-
         /// @}
 
         /// <summary>
         /// Public method that is called when entity is activated upon its creation.<br/>
-        /// Sets the player model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>. Handles subscribing to QuantumEvents.
+        /// Calls <see cref="PreInitSetup"/> and subscribes to <see cref="Quantum.EventBattlePlayerViewInit">EventBattlePlayerViewInit</see> event with a lambda, which
+        /// sets the player model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>. Handles subscribing to QuantumEvents.
         /// </summary>
         ///
         /// <param name="_">Current simulation frame.</param>
-        public override void OnActivate(Frame _) => QuantumEvent.Subscribe(this, (EventBattlePlayerViewInit e) => {
+        public override void OnActivate(Frame _) { PreInitSetup(); QuantumEvent.Subscribe(this, (EventBattlePlayerViewInit e) =>
+        {
             if (EntityRef != e.Entity) return;
             if (!PredictedFrame.Exists(e.Entity)) return;
 
@@ -94,7 +115,7 @@ namespace Battle.View.Player
             {
                 GameObject characterGameObjects = _characterGameObjects[1];
                 characterGameObjects.SetActive(true);
-                _heart.SetActive(false);
+                //_heart.SetActive(false);
                 _spriteRenderer = characterGameObjects.GetComponent<SpriteRenderer>();
             }
 
@@ -103,9 +124,24 @@ namespace Battle.View.Player
                 _localPlayerIndicator.SetActive(true);
             }
 
+            if (_classViewControllerOverride != null)
+            {
+                if(_classViewControllerOverride.Class == e.Class)
+                {
+                    Destroy(_classViewController);
+                    _classViewController = _classViewControllerOverride;
+                }
+                else
+                {
+                    Debug.LogErrorFormat("[BattlePlayerViewController] Class view controller missmatch! Expected {0}, got {1}", e.Class, _classViewControllerOverride.Class);
+                    Destroy(_classViewControllerOverride);
+                }
+            }
+            _classViewController.OnViewInit(this, e.Entity, e.Slot, e.CharacterId);
+
             QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
             QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
-        });
+        });}
 
         /// <summary>
         /// Public method that is called when the view should update.<br/>
@@ -138,6 +174,8 @@ namespace Battle.View.Player
             //        _spriteRenderer.color = tempColor;
             //    }
             //}
+
+            _classViewController.OnUpdateView();
         }
 
         /// <value>Reference to the active character's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SpriteRenderer.html">SpriteRenderer@u-exlink</a>.</value>
@@ -145,6 +183,18 @@ namespace Battle.View.Player
 
         /// <value>Holder variable for the damage flash coroutine.</value>
         private Coroutine _damageFlashCoroutine = null;
+
+        /// <value>Reference to the active class view controller.</value>
+        private BattlePlayerClassBaseViewController _classViewController;
+
+        /// <summary>
+        /// Handles setup that needs to happen before <see cref="Quantum.EventBattlePlayerViewInit">EventBattlePlayerViewInit</see> event is received.<br/>
+        /// Currently this is needed for initializing character's class as none.
+        /// </summary>
+        private void PreInitSetup()
+        {
+            _classViewController = gameObject.AddComponent<BattlePlayerClassNoneViewController>();
+        }
 
         /// <summary>
         /// Updates the player model's position.
@@ -209,14 +259,21 @@ namespace Battle.View.Player
                 StopCoroutine(_damageFlashCoroutine);
             }
             _damageFlashCoroutine = StartCoroutine(DamageFlashCoroutine());
+
+            _classViewController.OnCharacterTakeDamage(e);
         }
 
+        /// <summary>
+        /// Handler method for EventBattleShieldTakeDamage QuantumEvent.<br/>
+        /// </summary>
+        ///
+        /// <param name="e">The event data.</param>
         private void QEventOnShieldTakeDamage(EventBattleShieldTakeDamage e)
         {
             if (EntityRef != e.Entity) return;
             if (!PredictedFrame.Exists(e.Entity)) return;
 
-            if (e.DefenceValue <= FP._0)
+            if (e.DefenceValue <= FP._0 && _noShieldSprite != null)
             {
                 _spriteRenderer.sprite = _noShieldSprite;
             }
@@ -225,6 +282,8 @@ namespace Battle.View.Player
             {
                 _shieldHitParticle.Play();
             }
+
+            _classViewController.OnShieldTakeDamage(e);
         }
 
         /// <summary>

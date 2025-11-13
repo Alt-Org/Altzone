@@ -1,13 +1,18 @@
 /// @file BattleLightrayEffectViewController.cs
 /// <summary>
-/// Has a class BattleLightrayEffectViewController which handles lightray effects visual functionality.
+/// Contains @cref{Battle.View.Effect,BattleLightrayEffectViewController} class which handles lightray effects visual functionality.
 /// </summary>
 ///
 /// This script:<br/>
 /// Handles lightray effects visual functionality.
 
+// System usings
 using System.Collections.Generic;
+
+// Unity usings
 using UnityEngine;
+
+// Quantum usings
 using Quantum;
 
 namespace Battle.View.Effect

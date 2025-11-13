@@ -14,19 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 103
   CharacterId: 103
-  IsApproved: 1
-  Name: PTSD
+  IsApproved: 0
+  FinnishName: Traumaattisuus
+  EnglishName: PTSD
   ClassType: 100
-  CharacterDescription: "PTSD on rintamalta kotiinpalannut posttraumaattinen ihmisraunio,
-    jonka k\xE4sittelem\xE4tt\xF6m\xE4t sotatraumat kummittelevat mieless\xE4 viel\xE4
-    vuosienkin j\xE4lkeen. Yritt\xE4ess\xE4\xE4n sopeutua normaaliin el\xE4m\xE4\xE4n
-    PTSD on puskenut muistot taisteluissa koetuista kauheuksista taka-alalle, mutta
-    t\xE4m\xE4 alituinen pakoilu on vienyt h\xE4nt\xE4 vain pelastuksen tuolle puolen
-    ja h\xE4neen pinttynyt paha olo tulee esiin yll\xE4tt\xE4en arkisissa tilanteissa,
-    est\xE4en h\xE4nt\xE4 saavuttamasta haluamaansa rauhaa.\r\n\nPTSDn suojakilpen\xE4
-    toimii kiv\xE4\xE4ri, jolla veteraani suojautui vihollisilta rintamalla. T\xE4h\xE4n
-    tuttuun aseeseen h\xE4n turvautuu my\xF6s siviiliss\xE4 tunnetila-ammusten uhatessa.\r\n"
-  CharacterShortDescription: "Ruudinkatkuisten muistojen riivaama rintamaselviytyj\xE4."
+  CharacterDescriptionFinnish: "PTSD on defenssi, joka rakentuu torjutusta menneisyydest\xE4.
+    Sen tarkoitus on pit\xE4\xE4 traumat loitolla, mutta samalla se tuo ne takaisin
+    arjen varjoihin. Postraumaattinen ei kohtaa muistojaan suoraan, vaan yritt\xE4\xE4
+    puskea ne taka-alalle, kunnes ne purkautuvat yll\xE4tt\xE4en, v\xE4\xE4r\xE4ss\xE4
+    paikassa ja v\xE4\xE4r\xE4\xE4n aikaan. Se tarjoaa hetken tunteen selviytymisest\xE4,
+    mutta est\xE4\xE4 h\xE4nt\xE4 saavuttamasta pysyv\xE4\xE4 rauhaa.\r\n\nPeliss\xE4
+    postraumaattisen suojakilpen\xE4 toimii rintamalta tuttu kiv\xE4\xE4ri. Se ei
+    ammu, vaan torjuu l\xE4hestyv\xE4t tunnetila-ammukset samalla tavalla kuin aikoinaan
+    vihollisen tulen. T\xE4m\xE4 tuttu ase tuo turvaa, mutta sitoo h\xE4net menneisyyteen,
+    est\xE4en h\xE4nt\xE4 vapautumasta sen otteesta.\r\n"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Ruudinkatkuisten muistojen riivaama rintamaselviytyj\xE4. "
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: f79c6efe173dffa47b5bd2fa311b124d, type: 2}
   Hp:
     Level: 1
@@ -45,6 +49,7 @@ MonoBehaviour:
     Coefficient: 1
   GalleryImage: {fileID: 21300000, guid: a73266eb06e44d14d8111a344c92a7c7, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 83244fd950a33cf469738a1e3325b4ac, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
       Value: 1350730571434209158

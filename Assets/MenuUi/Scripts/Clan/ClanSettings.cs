@@ -124,6 +124,7 @@ public class ClanSettings : MonoBehaviour
 
         Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
         {
+            string previousPhrase = clanData.Phrase;
             clanData.Phrase = _clanPhraseField.text;
             clanData.Language = _languageList.SelectedLanguage;
             clanData.Goals = _goalSelection.GoalsRange;
@@ -143,6 +144,11 @@ public class ClanSettings : MonoBehaviour
                 if (success)
                 {
                     WindowManager.Get().GoBack();
+
+                    if (!string.IsNullOrEmpty(previousPhrase) && previousPhrase != clanData.Phrase)
+                        gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+
+                    gameObject.GetComponent<ClanCulturalPractices>().SettingsChanged(clanData);
                 }
                 else
                 {

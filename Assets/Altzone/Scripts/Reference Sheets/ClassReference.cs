@@ -6,49 +6,56 @@ namespace Altzone.Scripts.ReferenceSheets
     //[CreateAssetMenu(menuName = "ALT-Zone/ClassReference", fileName = "ClassReference")]
     public class ClassReference : ScriptableObject
     {
-        [SerializeField] private string _desensitizerName;
+        [SerializeField] private string _desensitizerNameFinnish;
+        [SerializeField] private string _desensitizerNameEnglish;
         [SerializeField] private Color _desensitizerColor;
         [SerializeField] private Color _desensitizerAlternativeColor;
         [SerializeField] private Sprite _desensitizerFrame;
         [SerializeField] private Sprite _desensitizerCornerIcon;
         [SerializeField] private Sprite _desensitizerResistanceIcon;
 
-        [Space, SerializeField] private string _tricksterName;
+        [Space, SerializeField] private string _tricksterNameFinnish;
+        [SerializeField] private string _tricksterNameEnglish;
         [SerializeField] private Color _tricksterColor;
         [SerializeField] private Color _tricksterAlternativeColor;
         [SerializeField] private Sprite _tricksterFrame;
         [SerializeField] private Sprite _tricksterCornerIcon;
         [SerializeField] private Sprite _tricksterResistanceIcon;
 
-        [Space, SerializeField] private string _obedientName;
+        [Space, SerializeField] private string _obedientNameFinnish;
+        [SerializeField] private string _obedientNameEnglish;
         [SerializeField] private Color _obedientColor;
         [SerializeField] private Color _obedientAlternativeColor;
         [SerializeField] private Sprite _obedientFrame;
         [SerializeField] private Sprite _obedientCornerIcon;
         [SerializeField] private Sprite _obedientResistanceIcon;
 
-        [Space, SerializeField] private string _projectorName;
+        [Space, SerializeField] private string _projectorNameFinnish;
+        [SerializeField] private string _projectorNameEnglish;
         [SerializeField] private Color _projectorColor;
         [SerializeField] private Color _projectorAlternativeColor;
         [SerializeField] private Sprite _projectorFrame;
         [SerializeField] private Sprite _projectorCornerIcon;
         [SerializeField] private Sprite _projectorResistanceIcon;
 
-        [Space, SerializeField] private string _retroflectorName;
+        [Space, SerializeField] private string _retroflectorNameFinnish;
+        [SerializeField] private string _retroflectorNameEnglish;
         [SerializeField] private Color _retroflectorColor;
         [SerializeField] private Color _retroflectorAlternativeColor;
         [SerializeField] private Sprite _retroflectorFrame;
         [SerializeField] private Sprite _retroflectorCornerIcon;
         [SerializeField] private Sprite _retroflectorResistanceIcon;
 
-        [Space, SerializeField] private string _confluentName;
+        [Space, SerializeField] private string _confluentNameFinnish;
+        [SerializeField] private string _confluentNameEnglish;
         [SerializeField] private Color _confluentColor;
         [SerializeField] private Color _confluentAlternativeColor;
         [SerializeField] private Sprite _confluentFrame;
         [SerializeField] private Sprite _confluentCornerIcon;
         [SerializeField] private Sprite _confluentResistanceIcon;
 
-        [Space, SerializeField] private string _intellectualizerName;
+        [Space, SerializeField] private string _intellectualizerNameFinnish;
+        [SerializeField] private string _intellectualizerNameEnglish;
         [SerializeField] private Color _intellectualizerColor;
         [SerializeField] private Color _intellectualizerAlternativeColor;
         [SerializeField] private Sprite _intellectualizerFrame;
@@ -78,25 +85,32 @@ namespace Altzone.Scripts.ReferenceSheets
         /// <returns>Class name as string.</returns>
         public string GetName(CharacterClassType classType)
         {
-            switch (classType)
+            return SettingsCarrier.Instance.Language switch
             {
-                case CharacterClassType.Desensitizer:
-                    return _desensitizerName;
-                case CharacterClassType.Trickster:
-                    return _tricksterName;
-                case CharacterClassType.Obedient:
-                    return _obedientName;
-                case CharacterClassType.Projector:
-                    return _projectorName;
-                case CharacterClassType.Retroflector:
-                    return _retroflectorName;
-                case CharacterClassType.Confluent:
-                    return _confluentName;
-                case CharacterClassType.Intellectualizer:
-                    return _intellectualizerName;
-            }
-
-            return "No class name";
+                SettingsCarrier.LanguageType.Finnish => classType switch
+                {
+                    CharacterClassType.Desensitizer => _desensitizerNameFinnish,
+                    CharacterClassType.Trickster => _tricksterNameFinnish,
+                    CharacterClassType.Obedient => _obedientNameFinnish,
+                    CharacterClassType.Projector => _projectorNameFinnish,
+                    CharacterClassType.Retroflector => _retroflectorNameFinnish,
+                    CharacterClassType.Confluent => _confluentNameFinnish,
+                    CharacterClassType.Intellectualizer => _intellectualizerNameFinnish,
+                    _ => "No class name",
+                },
+                SettingsCarrier.LanguageType.English => classType switch
+                {
+                    CharacterClassType.Desensitizer => _desensitizerNameEnglish,
+                    CharacterClassType.Trickster => _tricksterNameEnglish,
+                    CharacterClassType.Obedient => _obedientNameEnglish,
+                    CharacterClassType.Projector => _projectorNameEnglish,
+                    CharacterClassType.Retroflector => _retroflectorNameEnglish,
+                    CharacterClassType.Confluent => _confluentNameEnglish,
+                    CharacterClassType.Intellectualizer => _intellectualizerNameEnglish,
+                    _ => "No class name",
+                },
+                _ => "No class name",
+            };
         }
 
 

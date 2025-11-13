@@ -1,6 +1,6 @@
 /// @file BattleUiMovableJoystickElement.cs
 /// <summary>
-/// Has a class BattleUiMovableJoystickElement which sets the %Battle Ui movable joystick element's data.
+/// Contains @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableJoystickElement} which sets the %Battle Ui movable joystick element's data.
 /// </summary>
 ///
 /// This script:<br/>

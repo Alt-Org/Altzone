@@ -442,6 +442,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4897486333446758923}
   - component: {fileID: 8509604158101261262}
+  - component: {fileID: 5388152090742717096}
   m_Layer: 0
   m_Name: AddChatMessageReactions
   m_TagString: Untagged
@@ -503,6 +504,25 @@ MonoBehaviour:
   _reactionObject: {fileID: 7645454467474436397, guid: d360a481996e56b458ef77575cef6216,
     type: 3}
   _openMoreButton: {fileID: 5946895988784392763}
+--- !u!114 &5388152090742717096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2300524914144210914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 1
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 6
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &2516152344154220295
 GameObject:
   m_ObjectHideFlags: 0

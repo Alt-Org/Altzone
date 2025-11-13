@@ -1,15 +1,19 @@
 /// @file BattlePlayerClassManager.cs
 /// <summary>
-/// The manager script for player class logic.
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassManager} class which handles player class logic.
+/// Also contains @cref{Battle.QSimulation.Player,BattlePlayerClassBase} and @cref{Battle.QSimulation.Player,BattlePlayerClassBase<T>} classes which player class implementations derive from.
 /// </summary>
-/// 
-/// The manager handles initializing classes that are present in the game, and routing events forward to the individual classes.<br/>
-/// This script also contains the base classes that class implementations derive from.
 
+// System usings
 using System.Collections.Generic;
+
+// Unity usings
 using UnityEngine;
+
+// Quantum usings
 using Quantum;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player
@@ -24,15 +28,15 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Returns a pointer reference to the class data of the specified player entity.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
         /// <returns>A pointer reference to the player's class data.</returns>
         protected T* GetClassData(Frame f, EntityRef playerEntity)
         {
-            if (!f.Unsafe.TryGetPointer<T>(playerEntity, out T* component))
+            if (!f.Unsafe.TryGetPointer(playerEntity, out T* component))
             {
-                Debug.LogErrorFormat("[PlayerCharacterClass] Class data for {0} could not be found!", playerEntity);
+                Debug.LogErrorFormat("[PlayerCharacterClass] Class data ({0}) for {1} could not be found!", typeof(T).Name, playerEntity);
             }
             return component;
         }
@@ -54,7 +58,7 @@ namespace Battle.QSimulation.Player
         /// Virtual OnCreate method that can be implemented.<br/>
         /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnCreate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnCreate</see> method.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer reference to the player data.</param>
@@ -65,7 +69,7 @@ namespace Battle.QSimulation.Player
         /// Virtual OnSpawn method that can be implemented.<br/>
         /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnSpawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnSpawn</see> method.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer reference to the player data.</param>
@@ -74,9 +78,9 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnDespawn method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnDespawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnDespawn</see> method. 
+        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnDespawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnDespawn</see> method.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer reference to the player data.</param>
@@ -85,9 +89,9 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnProjectileHitPlayerHitbox method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnProjectileHitPlayerHitbox(Frame, BattleProjectileQComponent*, EntityRef, BattlePlayerHitboxQComponent*, EntityRef)">OnProjectileHitPlayerHitbox</see> method. 
+        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnProjectileHitPlayerHitbox(Frame, BattleProjectileQComponent*, EntityRef, BattlePlayerHitboxQComponent*, EntityRef)">OnProjectileHitPlayerHitbox</see> method.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
         /// <param name="playerCollisionData">Collision data related to the player character.</param>
@@ -95,9 +99,9 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnProjectileHitPlayerShield method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnProjectileHitPlayerShield(Frame, BattleProjectileQComponent*, EntityRef, BattlePlayerHitboxQComponent*, EntityRef)">OnProjectileHitPlayerShield</see> method.  
+        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnProjectileHitPlayerShield(Frame, BattleProjectileQComponent*, EntityRef, BattlePlayerHitboxQComponent*, EntityRef)">OnProjectileHitPlayerShield</see> method.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
         /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
@@ -105,9 +109,9 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnUpdate method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnUpdate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnUpdate</see> method.  
+        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnUpdate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnUpdate</see> method.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer reference to the player data.</param>
@@ -141,13 +145,11 @@ namespace Battle.QSimulation.Player
                     break;
 
                 case BattlePlayerCharacterClass.Obedient:
-                    if (s_classArray[ClassIndexObedient] != null) break;
-                    //s_classArray[ClassIndexObedient] = new BattlePlayerClassObedient();
                     break;
 
                 case BattlePlayerCharacterClass.Projector:
                     if (s_classArray[ClassIndexProjector] != null) break;
-                    //s_classArray[ClassIndexProjector] = new BattlePlayerClassProjector();
+                    s_classArray[ClassIndexProjector] = new BattlePlayerClassProjector();
                     break;
 
                 case BattlePlayerCharacterClass.Retroflector:
@@ -157,7 +159,7 @@ namespace Battle.QSimulation.Player
 
                 case BattlePlayerCharacterClass.Confluent:
                     if (s_classArray[ClassIndexConfluent] != null) break;
-                    //s_classArray[ClassIndexConfluent] = new BattlePlayerClassConfluent();
+                    s_classArray[ClassIndexConfluent] = new BattlePlayerClassConfluent();
                     break;
 
                 case BattlePlayerCharacterClass.Intellectualizer:
@@ -232,7 +234,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Calls the OnProjectileHitPlayerCharacter method of the class of the given player character, if it is implemented.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
         /// <param name="playerCollisionData">Collision data related to the player character.</param>
@@ -248,7 +250,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Calls the OnProjectileHitPlayerShield method of the class of the given player character, if it is implemented.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
         /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
@@ -286,18 +288,16 @@ namespace Battle.QSimulation.Player
         private const int ClassIndexDesensitizer = 0;
         /// <value>Constant for Trickster class index.</value>
         private const int ClassIndexTrickster = 1;
-        /// <value>Constant for Obedient class index.</value>
-        private const int ClassIndexObedient = 2;
         /// <value>Constant for Projector class index.</value>
-        private const int ClassIndexProjector = 3;
+        private const int ClassIndexProjector = 2;
         /// <value>Constant for Retroflector class index.</value>
-        private const int ClassIndexRetroflector = 4;
+        private const int ClassIndexRetroflector = 3;
         /// <value>Constant for Confluent class index.</value>
-        private const int ClassIndexConfluent = 5;
+        private const int ClassIndexConfluent = 4;
         /// <value>Constant for Intellectualizer class index.</value>
-        private const int ClassIndexIntellectualizer = 6;
+        private const int ClassIndexIntellectualizer = 5;
         /// <value>Constant for the amount of classes that exist.</value>
-        private const int ClassCount = 7;
+        private const int ClassCount = 6;
 
         /// <summary>Enum for the different values GetClass can return.</summary>
         private enum ReturnCode
@@ -327,10 +327,10 @@ namespace Battle.QSimulation.Player
                 BattlePlayerCharacterClass.None             => ClassIndexNoCode,
                 BattlePlayerCharacterClass.Desensitizer     => ClassIndexDesensitizer,
                 //BattlePlayerCharacterClass.Trickster        => ClassIndexTrickster,
-                //BattlePlayerCharacterClass.Obedient         => ClassIndexObedient,
-                //BattlePlayerCharacterClass.Projector        => ClassIndexProjector,
+                BattlePlayerCharacterClass.Obedient         => ClassIndexNoCode,
+                BattlePlayerCharacterClass.Projector        => ClassIndexProjector,
                 //BattlePlayerCharacterClass.Retroflector     => ClassIndexRetroflector,
-                //BattlePlayerCharacterClass.Confluent        => ClassIndexConfluent,
+                BattlePlayerCharacterClass.Confluent        => ClassIndexConfluent,
                 //BattlePlayerCharacterClass.Intellectualizer => ClassIndexIntellectualizer,
 
                 _ => ClassIndexError,

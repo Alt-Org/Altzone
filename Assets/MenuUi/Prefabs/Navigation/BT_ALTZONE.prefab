@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5605123097364247570}
   - component: {fileID: 1464072023170409797}
   - component: {fileID: 308892020117293080}
+  - component: {fileID: 6630397923675625260}
   m_Layer: 5
   m_Name: GameTypeDescription
   m_TagString: Untagged
@@ -93,7 +94,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 92.05
+  m_fontSize: 25.15
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -137,6 +138,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6630397923675625260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 225878210645548293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99bef45c2704bb147a99ddcb380f3986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: '{0}'
+  _englishText: '{0}'
 --- !u!1 &712389070812600571
 GameObject:
   m_ObjectHideFlags: 0
@@ -279,10 +294,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _audioSelection: 1
-  _audioType: 0
+  _audioCategory: 
   _audioName: ButtonNote1
-  _audioId: 0
+  _audioPlayType: 0
   _playType: 1
 --- !u!114 &481920314722820250
 MonoBehaviour:
@@ -311,8 +325,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gameTypeIcon: {fileID: 4195016133995181226}
-  _gameTypeName: {fileID: 4286611103024941188}
-  _gameTypeDescription: {fileID: 308892020117293080}
+  _gameTypeName: {fileID: 5506662389302960120}
+  _gameTypeDescription: {fileID: 6630397923675625260}
   _gameTypeSelectionMenu: {fileID: 1035428136390477515}
   _gameTypeOptionPrefab: {fileID: 6162357150708090788, guid: 063b8b648f06e444a86f257dbd778d45,
     type: 3}
@@ -330,6 +344,7 @@ GameObject:
   - component: {fileID: 6191323660208548291}
   - component: {fileID: 6546195978669329787}
   - component: {fileID: 573197122534685490}
+  - component: {fileID: 2395883116899021083}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -456,6 +471,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2395883116899021083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 929649092082170342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Muokkaa pelin UI:ta
+  _englishText: Modify battle UI
 --- !u!1 &1035428136390477515
 GameObject:
   m_ObjectHideFlags: 0
@@ -631,6 +660,7 @@ GameObject:
   - component: {fileID: 144875622607232000}
   - component: {fileID: 1142081370042422517}
   - component: {fileID: 7670077142323526103}
+  - component: {fileID: 2959859187775780355}
   m_Layer: 5
   m_Name: TitleText
   m_TagString: Untagged
@@ -757,6 +787,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2959859187775780355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1332335860280158736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Valitse pelimuoto
+  _englishText: Select gamemode
 --- !u!1 &1338049890811300251
 GameObject:
   m_ObjectHideFlags: 0
@@ -903,10 +947,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _audioSelection: 0
-  _audioType: 2
+  _audioCategory: 
   _audioName: 
-  _audioId: 0
+  _audioPlayType: 0
   _playType: 0
 --- !u!114 &6815281318415764221
 MonoBehaviour:
@@ -1177,6 +1220,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _naviTarget: {fileID: 11400000, guid: 1fff23e50793f8842abc5f329389d473, type: 2}
+  _useNonDefaultWindow: 0
+  _targetWindow: 0
   _isCurrentPopOutWindow: 0
 --- !u!1 &3809160610226073594
 GameObject:
@@ -1264,6 +1309,7 @@ GameObject:
   - component: {fileID: 2840258868702923156}
   - component: {fileID: 3864479218320992974}
   - component: {fileID: 4286611103024941188}
+  - component: {fileID: 5506662389302960120}
   m_Layer: 5
   m_Name: GameTypeName
   m_TagString: Untagged
@@ -1346,7 +1392,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 114.2
+  m_fontSize: 31.25
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1390,6 +1436,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5506662389302960120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5534462392527469585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99bef45c2704bb147a99ddcb380f3986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: '{0}'
+  _englishText: '{0}'
 --- !u!1 &7040704995595200732
 GameObject:
   m_ObjectHideFlags: 0
@@ -1401,6 +1461,7 @@ GameObject:
   - component: {fileID: 708155514536497804}
   - component: {fileID: 867351780219234636}
   - component: {fileID: 6123858429916447274}
+  - component: {fileID: 298374722512911409}
   m_Layer: 5
   m_Name: PlayText
   m_TagString: Untagged
@@ -1483,7 +1544,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 208.9
+  m_fontSize: 57.15
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1527,6 +1588,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &298374722512911409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7040704995595200732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: PELAA
+  _englishText: PLAY
 --- !u!1 &7781299229734621769
 GameObject:
   m_ObjectHideFlags: 0
@@ -1695,7 +1770,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1262423278850306854
 RectTransform:
   m_ObjectHideFlags: 0

@@ -1,6 +1,6 @@
 /// @file BattleUiMovableElement.cs
 /// <summary>
-/// Has a class BattleUiMovableElement which sets the %Battle Ui element's position and transparency.
+/// Contains @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement} class which sets the %Battle Ui element's position and transparency.
 /// </summary>
 ///
 /// This script:<br/>
