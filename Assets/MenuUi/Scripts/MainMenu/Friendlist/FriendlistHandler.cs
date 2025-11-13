@@ -90,7 +90,7 @@ public class FriendlistHandler : AltMonoBehaviour
             if (serverPlayer != null)
             {
                 clanLogo = serverPlayer.clanLogo;
-                avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(new AvatarData(serverPlayer.name,serverPlayer.avatar));
+                avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(new AvatarData(serverPlayer.name,serverPlayer.avatar));
             }
          
 
