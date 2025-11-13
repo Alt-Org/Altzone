@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using Altzone.Scripts.Window;
 using System.Collections.Generic;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 public class ClanMainView : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _clanPhrase;
     [SerializeField] private TextMeshProUGUI _clanMembers;
     [SerializeField] private TextMeshProUGUI _clanWinsRanking;
-    [SerializeField] private TextMeshProUGUI _clanActivityRanking;
+    //[SerializeField] private TextMeshProUGUI _clanActivityRanking;
     [SerializeField] private TextMeshProUGUI _clanPassword;
     [SerializeField] private TextMeshProUGUI _clanGoal;
 
@@ -40,7 +41,7 @@ public class ClanMainView : MonoBehaviour
 
     [Header("pop ups")]
     [SerializeField] private ClanSearchPopup _clanPopup;
-    [SerializeField] private GameObject _swipeBlockOverlay;
+    [SerializeField] private GameObject _overlay;
     [SerializeField] private ClanConfirmPopup _confirmPopup;
 
     [Header("Icons")]
@@ -63,10 +64,14 @@ public class ClanMainView : MonoBehaviour
         return null;
     }
 
+    //prevents multiple join requests
     private bool _isJoining;
 
     private void OnEnable()
     {
+        // Clear selection to prevent button highlight staying on screen
+        EventSystem.current.SetSelectedGameObject(null);
+
         ToggleClanPanel(false);
         OpenLink();
 
@@ -98,19 +103,28 @@ public class ClanMainView : MonoBehaviour
             });
 
             _leaveClanButton.onClick.RemoveAllListeners();
-            _leaveClanButton.onClick.AddListener(() => { ShowLeaveClanPopUp(); });
+            _leaveClanButton.onClick.AddListener(() =>
+            {
+                ShowLeaveClanPopUp();
+            });
         }
         else
         {
             _clanHeart.SetOwnClanHeart = false;
             _inClanButtons.SetActive(false);
             _notInClanButtons.SetActive(true);
+
+            if (_joinClanButton != null)
+            {
+                _joinClanButton.gameObject.SetActive(false);
+            }
         }
     }
 
     private void OpenLink()
     {
         string url = "https://altzone.fi/fi/clans/6740af56d977418ddbe08e29";
+        _linkButton.onClick.RemoveAllListeners();
         _linkButton.onClick.AddListener(() =>
         {
             Application.OpenURL(url);
@@ -125,7 +139,13 @@ public class ClanMainView : MonoBehaviour
         bool isInClan = ServerManager.Instance.Clan != null && clan.Id == ServerManager.Instance.Clan._id;
         _inClanButtons.SetActive(isInClan);
         _notInClanButtons.SetActive(!isInClan);
-        _joinClanButton.interactable = clan.IsOpen;
+        //_joinClanButton.interactable = clan.IsOpen;
+        if (_joinClanButton != null)
+        {
+            // Näytä liity-nappi vain jos pelaaja EI ole tämän klaanin jäsen
+            _joinClanButton.gameObject.SetActive(!isInClan);
+            _joinClanButton.interactable = clan.IsOpen && !isInClan;
+        }
 
         // Show clan profile data
         _clanName.text = clan.Name;
@@ -145,7 +165,7 @@ public class ClanMainView : MonoBehaviour
         _clanLockedObject.SetActive(!clan.IsOpen);
 
         // Temp values for testing
-        _clanActivityRanking.text = _clanWinsRanking.text = "-1";
+        //_clanActivityRanking.text = _clanWinsRanking.text = "-1";
         _clanPassword.text = "";
     }
 
@@ -154,12 +174,18 @@ public class ClanMainView : MonoBehaviour
         ToggleClanPanel(false);
         _clanName.text = "Clan Name";
         _clanPhrase.text = "Clan Phrase";
-        _clanMembers.text = _clanActivityRanking.text = _clanWinsRanking.text = "-1";
+        _clanMembers.text = _clanWinsRanking.text = "-1";
         _flagImage.SetFlag(Language.None);
         _inClanButtons.SetActive(false);
         _notInClanButtons.SetActive(true);
 
+        if (_joinClanButton != null)
+        {
+            _joinClanButton.gameObject.SetActive(false);
+        }
+
         _clanPassword.text = _clanGoal.text = "";
+
         if (_clanAgeImage != null)
         {
             _clanAgeImage.sprite = null;
@@ -217,7 +243,7 @@ public class ClanMainView : MonoBehaviour
 
     private void ShowOverlay (bool on)
     {
-        _swipeBlockOverlay.SetActive(on);
+        _overlay.SetActive(on);
     }
 
     private string GetCurrentClanName()
@@ -237,6 +263,8 @@ public class ClanMainView : MonoBehaviour
         var currentClanName = GetCurrentClanName();
 
         ShowOverlay(true);
+        Debug.Log("[ClanMainView] ShowLeaveClanPopUp called, overlay enabled.");
+
         _confirmPopup.Show(
             bodyText: "Haluatko varmasti poistua klaanista " + currentClanName + "?",
             onConfirm: () =>
@@ -251,7 +279,7 @@ public class ClanMainView : MonoBehaviour
             confirmText: "Poistu",
             cancelText: "Peruuta",
             style: "leave"
-            );
+        );
     }
 
     private void ShowClanPopup(ServerClan clan)
@@ -279,7 +307,8 @@ public class ClanMainView : MonoBehaviour
 
         string warningText = "Olet jo jäsen klaanissa " + currentClanName + "." +
             " Haluatko varmasti poistua nykyisestä klaanista ja liittyä klaaniin " + targetClanName + "?";
-      ShowOverlay(true);
+
+        //ShowOverlay(true);
 
         _confirmPopup.Show(
             bodyText: warningText,
@@ -287,7 +316,8 @@ public class ClanMainView : MonoBehaviour
             {
                 LeaveClan(success =>
                 {
-                    if(!success) { ShowOverlay(false); return; }
+                    // first leave current clan, then join new clan
+                    if (!success) { ShowOverlay(false); return; }
                     JoinClan(clan);              
                 });                              
             },

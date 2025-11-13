@@ -116,6 +116,7 @@ public class ClanSearchView : MonoBehaviour
         //FilterListings();
     }
 
+
     private void UpdateFilters(ClanSearchFilters newFilters)
     {
         _filters = newFilters;

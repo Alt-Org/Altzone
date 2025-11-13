@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Altzone.Scripts.Language;
 using Altzone.Scripts.Model.Poco.Clan;
 using TMPro;
@@ -19,7 +17,7 @@ public class ClanSearchPopup : MonoBehaviour
     [SerializeField] private GameObject _labelImagePrefab;
     [SerializeField] private Button _joinClanButton;
 
-    public void SetClanInfo(ServerClan clan, ClanListing clanListing)
+    /*public void SetClanInfo(ServerClan clan, ClanListing clanListing)
     {
         if (clan != null)
         {
@@ -43,15 +41,14 @@ public class ClanSearchPopup : MonoBehaviour
             _joinClanButton.onClick.RemoveAllListeners();
             _joinClanButton.onClick.AddListener(() => { clanListing.JoinButtonPressed(); });
         }
-    }
+    }*/
 
     public void Show(ServerClan clan, UnityAction onJoin)
     {
         if (clan == null) return;
         ClanData clanData = new ClanData(clan);
 
-        gameObject.SetActive(true);
-        if (_joinClanButton) _joinClanButton.interactable = true;       
+        gameObject.SetActive(true);  
 
         _clanName.text = clanData.Name;
         _clanDescription.text = clanData.Phrase;
@@ -68,8 +65,17 @@ public class ClanSearchPopup : MonoBehaviour
             imageHandler.SetLabelInfo(value);
         }
 
+        bool isMember =
+            ServerManager.Instance.Clan != null &&
+            clan._id == ServerManager.Instance.Clan._id;
+
+        _joinClanButton.gameObject.SetActive(!isMember);
+
         _joinClanButton.onClick.RemoveAllListeners();
-        _joinClanButton.onClick.AddListener(() => { onJoin?.Invoke(); });
+        if(!isMember)
+        {
+            _joinClanButton.onClick.AddListener(() => { onJoin?.Invoke(); });
+        }
     }
 
     public void Hide()

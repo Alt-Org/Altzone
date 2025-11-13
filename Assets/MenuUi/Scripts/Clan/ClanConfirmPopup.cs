@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -32,6 +30,9 @@ public class ClanConfirmPopup : MonoBehaviour
     {
         gameObject.SetActive(true);
 
+        if (_confirmBtn) _confirmBtn.interactable = true;
+        if (_cancelBtn) _cancelBtn.interactable = true;
+
         if (_body)
         {
             _body.text = bodyText;
@@ -47,19 +48,25 @@ public class ClanConfirmPopup : MonoBehaviour
             _cancelLabel.text = cancelText;
         }
 
-        _confirmBtn.onClick.RemoveAllListeners();
-        _confirmBtn.onClick.AddListener(() =>
+        if (_confirmBtn)
         {
-            onConfirm?.Invoke();
-            Hide();
-        });
+            _confirmBtn.onClick.RemoveAllListeners();
+            _confirmBtn.onClick.AddListener(() =>
+            {
+                onConfirm?.Invoke();
+                Hide();
+            });
+        }
 
-        _cancelBtn.onClick.RemoveAllListeners();
-        _cancelBtn.onClick.AddListener(() =>
+        if (_cancelBtn)
         {
-            onCancel?.Invoke();
-            Hide();
-        });
+            _cancelBtn.onClick.RemoveAllListeners();
+            _cancelBtn.onClick.AddListener(() =>
+            {
+                onCancel?.Invoke();
+                Hide();
+            });
+        }
 
         if (_canvasGroup != null)
         {
