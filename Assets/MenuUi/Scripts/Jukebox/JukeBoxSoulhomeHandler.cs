@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class JukeBoxSoulhomeHandler : MonoBehaviour
 {
     [SerializeField] private GameObject _jukeboxObject;
+    [SerializeField] private JukeboxPlaylistNavigationHandler _playlistNavigationHandler;
 
     [Header("Disk")]
     [SerializeField] private List<Image> _diskImage;
@@ -18,6 +19,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     //[Header("Multiple locations")]
     [SerializeField] private List<TMP_Text> _trackNames;
+    [SerializeField] private List<TMP_Text> _trackCreditsNames;
     //[SerializeField] private List<Button> _playButtons;
     //[SerializeField] private List<Image> _playButtonImages;
     //[SerializeField] private List<Button> _trackGoBackButtons;
@@ -50,6 +52,9 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     [SerializeField] private Button _addMusicInfoButton;
     [SerializeField] private GameObject _addMusicInfoPopup;
+
+    [SerializeField] private JukeboxInfoPopupHandler _jukeboxInfoPopupHandler;
+
     private Coroutine _diskSpinCoroutine;
 
     public bool JukeBoxOpen { get => _jukeboxObject.activeSelf; }
@@ -93,6 +98,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
         _soundMuteButton.onClick.AddListener(() => MuteJukeboxToggle());
         _addMusicInfoButton.onClick.AddListener(() => { _addMusicInfoPopup.SetActive(true); });
+
+        _playlistNavigationHandler.OnInfoPressed += OpenMusicTrackInfoPopup;
     }
 
     private void OnEnable()
@@ -278,8 +285,11 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     {
         if (track == null) return;
 
+        string credits = track.JukeboxInfo.GetArtistNames();
+
         foreach (TMP_Text text in _trackNames) text.text = track.Name;
-        foreach (Image image in _diskImage) image.sprite = track.Info.Disk;
+        foreach (TMP_Text text in _trackCreditsNames) text.text = credits;
+        foreach (Image image in _diskImage) image.sprite = track.JukeboxInfo.Disk;
 
         if (_diskSpinCoroutine != null)
         {
@@ -304,5 +314,11 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    private void OpenMusicTrackInfoPopup(MusicTrack musicTrack, JukeboxManager.MusicTrackFavoriteType likeType)
+    {
+
+        _jukeboxInfoPopupHandler.Set(musicTrack, likeType);
     }
 }

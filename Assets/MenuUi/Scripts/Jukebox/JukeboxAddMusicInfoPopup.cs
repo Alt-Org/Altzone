@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AddMusicInfoPopup : MonoBehaviour
+public class JukeboxAddMusicInfoPopup : MonoBehaviour
 {
     [SerializeField] private List<Button> _closePopupButtons;
     [SerializeField] private Button _webLinkButton;

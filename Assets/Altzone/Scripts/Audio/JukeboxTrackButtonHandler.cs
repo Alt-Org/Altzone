@@ -5,17 +5,21 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Button))]
 public class JukeboxTrackButtonHandler : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _trackNameText;
+    [SerializeField] private TextAutoScroll _trackNameAutoScroll;
+    [SerializeField] private TextMeshProUGUI _trackCreditsNamesText;
+    [SerializeField] private TextAutoScroll _trackCreditsNamesAutoScroll;
+    [Space]
     [SerializeField] private Image _trackImage;
     [SerializeField] private float _diskRotationSpeed = 100f;
     [SerializeField] private Button _addButton;
     [SerializeField] private FavoriteButtonHandler _favoriteButtonHandler;
     [SerializeField] private Button _previewButton;
+    [SerializeField] private Button _infoButton;
 
-    private int _trackLinearIndex = 0;
+    //private int _trackLinearIndex = 0;
 
     private MusicTrack _musicTrack = null;
     public MusicTrack MusicTrack {  get { return _musicTrack; } }
@@ -29,23 +33,34 @@ public class JukeboxTrackButtonHandler : MonoBehaviour
     public delegate void PreviewPressed(JukeboxTrackButtonHandler buttonHandler);
     public event PreviewPressed OnPreviewPressed;
 
+    public delegate void InfoPressed(MusicTrack musicTrack, JukeboxManager.MusicTrackFavoriteType likeType);
+    public event InfoPressed OnInfoPressed;
+
     private void Awake()
     {
         _addButton.onClick.AddListener(() => AddButtonClicked());
         _previewButton.onClick.AddListener(() => PreviewButtonClicked());
+
+        if (_infoButton != null) _infoButton.onClick.AddListener(() => InfoButtonClicked());
     }
 
     //public bool InUse() { return _currentTrack != null; }
 
     public void AddButtonClicked() { if (_musicTrack != null) OnTrackPressed.Invoke(_musicTrack); }
+
     public void PreviewButtonClicked() { if (_musicTrack != null) OnPreviewPressed.Invoke(this); }
+
+    public void InfoButtonClicked() { if (_musicTrack != null) OnInfoPressed.Invoke(_musicTrack, _favoriteButtonHandler.MusicTrackLikeType); }
 
     public void SetTrack(MusicTrack musicTrack, int trackLinearIndex, JukeboxManager.MusicTrackFavoriteType likeType)
     {
-        _trackLinearIndex = trackLinearIndex;
+        //_trackLinearIndex = trackLinearIndex;
         _musicTrack = musicTrack;
         _trackNameText.text = musicTrack.Name;
-        _trackImage.sprite = musicTrack.Info.Disk;
+        _trackNameAutoScroll.ContentChange();
+        _trackCreditsNamesText.text = musicTrack.JukeboxInfo.GetArtistNames();
+        _trackCreditsNamesAutoScroll.ContentChange();
+        _trackImage.sprite = musicTrack.JukeboxInfo.Disk;
         gameObject.SetActive(true);
         _favoriteButtonHandler.Setup(likeType, musicTrack.Id);
     }
