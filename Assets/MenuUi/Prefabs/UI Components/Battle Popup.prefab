@@ -1872,6 +1872,10 @@ MonoBehaviour:
   _buttonPlayerP2: {fileID: 559190539013904401}
   _buttonPlayerP3: {fileID: 0}
   _buttonPlayerP4: {fileID: 0}
+  _toggleBotPlayerP1: {fileID: 0}
+  _toggleBotPlayerP2: {fileID: 0}
+  _toggleBotPlayerP3: {fileID: 0}
+  _toggleBotPlayerP4: {fileID: 0}
   _buttonStartPlay: {fileID: 0}
   _buttonRaidTest: {fileID: 0}
   _nameP1: {fileID: 0}
@@ -5268,6 +5272,10 @@ MonoBehaviour:
   _buttonPlayerP2: {fileID: 1830425297749066807}
   _buttonPlayerP3: {fileID: 6942399835953398676}
   _buttonPlayerP4: {fileID: 5706244243901746648}
+  _toggleBotPlayerP1: {fileID: 2167390428124968753}
+  _toggleBotPlayerP2: {fileID: 7612355748481144541}
+  _toggleBotPlayerP3: {fileID: 205149277104793505}
+  _toggleBotPlayerP4: {fileID: 341113451705426562}
   _buttonStartPlay: {fileID: 2958878656600820561}
   _buttonRaidTest: {fileID: 0}
   _nameP1: {fileID: 8206444440830178104}
@@ -15883,7 +15891,7 @@ PrefabInstance:
     - target: {fileID: 4380480119154547102, guid: 1335c77fb45904842a7783f1ba479a62,
         type: 3}
       propertyPath: m_Name
-      value: ToggleSwitch
+      value: BotTogglePos1
       objectReference: {fileID: 0}
     - target: {fileID: 7483590805758421809, guid: 1335c77fb45904842a7783f1ba479a62,
         type: 3}
@@ -15905,6 +15913,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1335c77fb45904842a7783f1ba479a62, type: 3}
+--- !u!114 &2167390428124968753 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3863800984437120121, guid: 1335c77fb45904842a7783f1ba479a62,
+    type: 3}
+  m_PrefabInstance: {fileID: 3137571441664699208}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &3684825595832617644 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1777168962825183716, guid: 1335c77fb45904842a7783f1ba479a62,
@@ -16773,7 +16793,7 @@ PrefabInstance:
     - target: {fileID: 4380480119154547102, guid: 1335c77fb45904842a7783f1ba479a62,
         type: 3}
       propertyPath: m_Name
-      value: ToggleSwitch
+      value: BotTogglePos4
       objectReference: {fileID: 0}
     - target: {fileID: 7483590805758421809, guid: 1335c77fb45904842a7783f1ba479a62,
         type: 3}
@@ -16795,6 +16815,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1335c77fb45904842a7783f1ba479a62, type: 3}
+--- !u!114 &341113451705426562 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3863800984437120121, guid: 1335c77fb45904842a7783f1ba479a62,
+    type: 3}
+  m_PrefabInstance: {fileID: 3541265710291336955}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &2994013764172701471 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1777168962825183716, guid: 1335c77fb45904842a7783f1ba479a62,
@@ -16912,7 +16944,7 @@ PrefabInstance:
     - target: {fileID: 4380480119154547102, guid: 1335c77fb45904842a7783f1ba479a62,
         type: 3}
       propertyPath: m_Name
-      value: Toggle
+      value: BotTogglePos3
       objectReference: {fileID: 0}
     - target: {fileID: 7483590805758421809, guid: 1335c77fb45904842a7783f1ba479a62,
         type: 3}
@@ -16934,6 +16966,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1335c77fb45904842a7783f1ba479a62, type: 3}
+--- !u!114 &205149277104793505 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3863800984437120121, guid: 1335c77fb45904842a7783f1ba479a62,
+    type: 3}
+  m_PrefabInstance: {fileID: 3982920020856388568}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &3454236078224235068 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1777168962825183716, guid: 1335c77fb45904842a7783f1ba479a62,
@@ -19091,7 +19135,7 @@ PrefabInstance:
     - target: {fileID: 4380480119154547102, guid: 1335c77fb45904842a7783f1ba479a62,
         type: 3}
       propertyPath: m_Name
-      value: ToggleSwitch
+      value: BotTogglePos2
       objectReference: {fileID: 0}
     - target: {fileID: 7483590805758421809, guid: 1335c77fb45904842a7783f1ba479a62,
         type: 3}
@@ -19119,6 +19163,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 6645764656511240868}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7612355748481144541 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3863800984437120121, guid: 1335c77fb45904842a7783f1ba479a62,
+    type: 3}
+  m_PrefabInstance: {fileID: 6645764656511240868}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &6721666594526202818
 PrefabInstance:
   m_ObjectHideFlags: 0
