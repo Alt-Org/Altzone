@@ -331,7 +331,11 @@ namespace Altzone.Scripts.Lobby
             {
                 // Getting first free position from the room and creating the photon hashtables for setting property
                 freePosition = PhotonLobbyRoom.GetFirstFreePlayerPos();
-                if (!PhotonLobbyRoom.IsValidPlayerPos(freePosition)) yield break;
+                if (!PhotonLobbyRoom.IsValidPlayerPos(freePosition))
+                {
+                    PhotonRealtimeClient.LeaveRoom();
+                    yield break;
+                }
                 StartCoroutine(RequestPositionChange(freePosition));
                 string positionKey = PhotonBattleRoom.GetPositionKey(freePosition);
 

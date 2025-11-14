@@ -193,7 +193,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 }));
             }
 
-            yield return new WaitUntil(() => player.GetCustomProperty(PlayerPositionKey, 0) != 0);
+            yield return new WaitUntil(() => player.GetCustomProperty(PlayerPositionKey, 0) != 0 || !PhotonRealtimeClient.InRoom);
+            if (!PhotonRealtimeClient.InRoom) yield break;
 
             UpdateCharactersAndStatsKey();
             _firstOnEnable = false;
