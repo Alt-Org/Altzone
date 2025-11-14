@@ -40,12 +40,12 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private void SetPositionBotToggle(int positionIndex, bool value)
         {
-            Debug.Log($"SetPlayerPosition {positionIndex}");
+            Debug.Log($"SetPositionBotToggle {positionIndex}:{value}");
             if (positionIndex < 0 || positionIndex >= PositionMap.Length)
             {
                 throw new UnityException($"invalid positionIndex: {positionIndex}");
             }
-            this.Publish(new LobbyManager.PlayerPosEvent(PositionMap[positionIndex]));
+            this.Publish(new LobbyManager.BotToggleEvent(PositionMap[positionIndex], value));
         }
 
         [System.Serializable]
