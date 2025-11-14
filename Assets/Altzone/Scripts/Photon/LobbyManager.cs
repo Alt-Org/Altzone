@@ -543,7 +543,7 @@ namespace Altzone.Scripts.Lobby
 
             StartCoroutine(LeaveMatchmaking());
         }
-
+        #region Matchmaking
         private IEnumerator StartMatchmaking(GameType gameType)
         {
             // Closing the room so that no others can join
@@ -877,6 +877,7 @@ namespace Altzone.Scripts.Lobby
                     break;
             }
         }
+        #endregion
 
         private IEnumerator StartTheGameplay(bool isCloseRoom, string blueTeamName, string redTeamName)
         {
@@ -1280,6 +1281,103 @@ namespace Altzone.Scripts.Lobby
             _playerPosChangeInProgress = false;
             yield break;
         }
+
+        private IEnumerator SetBot(int playerPosition, bool active)
+        {
+            yield return new WaitUntil(() => !_playerPosChangeInProgress);
+
+            _playerPosChangeInProgress = true;
+            // Checking if any of the players in the room are already in the position (value is anything else than empty string) and if so return.
+            if (PhotonBattleRoom.CheckIfPositionIsFree(playerPosition) == false)
+            {
+                Debug.LogWarning("Requested position is not free.");
+                _playerPosChangeInProgress = false;
+                yield break;
+            }
+
+            Assert.IsTrue(PhotonLobbyRoom.IsValidGameplayPosOrGuest(playerPosition));
+
+            // Initializing hash tables for setting the new position as taken
+            string newPositionKey = PhotonBattleRoom.GetPositionKey(playerPosition);
+
+            LobbyPhotonHashtable newPosition;
+            LobbyPhotonHashtable expectedValue;
+            if (active)
+            {
+                newPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, "Bot" } });
+                expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, "" } }); // Expecting the new position to be empty
+
+                if (PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(newPosition, expectedValue))
+                {
+                    float timeout = Time.time + 1f;
+                    bool success = false;
+                    while (Time.time < timeout)
+                    {
+                        // Checking if the position is set to have a Bot
+                        if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(newPositionKey) == "Bot")
+                        {
+                            success = true;
+                            break;
+                        }
+                        else if (!PhotonBattleRoom.CheckIfPositionIsFree(playerPosition))
+                        {
+                            Debug.LogWarning($"Failed to reserve the position {playerPosition}. This likely because somebody already is in this position.");
+                            break;
+                        }
+                        yield return new WaitForSeconds(0.1f);
+                    }
+
+                    if (success)
+                    {
+                        Debug.Log($"Set Bot to position {playerPosition}");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"Failed to reserve the position {playerPosition}. This likely because somebody already is in this position.");
+                }
+            }
+            else
+            {
+                newPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, "" } });
+                expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { newPositionKey, "Bot" } }); // Expecting the position to have a bot
+
+                if (PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(newPosition, expectedValue))
+                {
+                    float timeout = Time.time + 1f;
+                    bool success = false;
+                    while (Time.time < timeout)
+                    {
+                        // Checking if the position is set to have a Bot
+                        if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(newPositionKey) == "")
+                        {
+                            success = true;
+                            break;
+                        }
+                        else if (PhotonBattleRoom.CheckIfPositionIsFree(playerPosition))
+                        {
+                            Debug.LogWarning($"Slot is free? Wait? How did you end up here?");
+                            success = true;
+                            break;
+                        }
+                        yield return new WaitForSeconds(0.1f);
+                    }
+
+                    if (success)
+                    {
+                        Debug.Log($"Set Bot to position {playerPosition}");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"Failed to reserve the position {playerPosition}. This likely because somebody already is in this position.");
+                }
+            }
+
+            _playerPosChangeInProgress = false;
+            yield break;
+        }
+
 
         public void SetPlayerQuantumCharacters(List<CustomCharacter> characters)
         {
