@@ -1288,9 +1288,15 @@ namespace Altzone.Scripts.Lobby
 
             _playerPosChangeInProgress = true;
             // Checking if any of the players in the room are already in the position (value is anything else than empty string) and if so return.
-            if (PhotonBattleRoom.CheckIfPositionIsFree(playerPosition) == false)
+            if (PhotonBattleRoom.CheckIfPositionIsFree(playerPosition) == false && active)
             {
                 Debug.LogWarning("Requested position is not free.");
+                _playerPosChangeInProgress = false;
+                yield break;
+            }
+            else if (!PhotonBattleRoom.CheckIfPositionIsFree(playerPosition) == false && !active)
+            {
+                Debug.LogWarning("Requested is already empty.");
                 _playerPosChangeInProgress = false;
                 yield break;
             }
@@ -1365,7 +1371,7 @@ namespace Altzone.Scripts.Lobby
 
                     if (success)
                     {
-                        Debug.Log($"Set Bot to position {playerPosition}");
+                        Debug.Log($"Freed position {playerPosition}");
                     }
                 }
                 else
