@@ -301,6 +301,10 @@ namespace Altzone.Scripts.Battle.Photon
         }
 
         /// <summary>
+        /// Check if the player position has a bot in LobbyCurrentRoom. If position value is not one of the existing positions, checks PlayerPosition1.
+        /// </summary>
+        /// <param name="position">Player position value as integer.</param>
+        /// <returns>True if the position has a bot, false if it does not.</returns>
         public static bool CheckIfPositionHasBot(int position)
         {
             string positionKey = GetPositionKey(position);
@@ -314,6 +318,24 @@ namespace Altzone.Scripts.Battle.Photon
         }
 
         public static int GetBotCount()
+        {
+            int count = 0;
+            string positionKey = GetPositionKey(PlayerPosition1);
+            string positionValue = PhotonRealtimeClient.LobbyCurrentRoom?.GetCustomProperty<string>(positionKey);
+            if(positionValue == "Bot") count++;
+            positionKey = GetPositionKey(PlayerPosition2);
+            positionValue = PhotonRealtimeClient.LobbyCurrentRoom?.GetCustomProperty<string>(positionKey);
+            if (positionValue == "Bot") count++;
+            positionKey = GetPositionKey(PlayerPosition3);
+            positionValue = PhotonRealtimeClient.LobbyCurrentRoom?.GetCustomProperty<string>(positionKey);
+            if (positionValue == "Bot") count++;
+            positionKey = GetPositionKey(PlayerPosition4);
+            positionValue = PhotonRealtimeClient.LobbyCurrentRoom?.GetCustomProperty<string>(positionKey);
+            if (positionValue == "Bot") count++;
+
+            return count;
+        }
+
         /// <summary>
         /// Get the corresponding position key to a position value.
         /// </summary>
