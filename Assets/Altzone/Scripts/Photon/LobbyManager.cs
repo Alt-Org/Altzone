@@ -445,7 +445,7 @@ namespace Altzone.Scripts.Lobby
 
         private void OnBotToggleEvent(BotToggleEvent data)
         {
-            
+            StartCoroutine(SetBot(data.PlayerPosition, data.BotActive));
         }
 
         private IEnumerator RequestPositionChange(int position)
