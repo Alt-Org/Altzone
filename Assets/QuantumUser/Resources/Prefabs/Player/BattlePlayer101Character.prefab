@@ -25,17 +25,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: BattlePlayer101Character
       objectReference: {fileID: 0}
-    - target: {fileID: 5555457871378360869, guid: 3dabbd57053cc831eb011c465c487e14,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7425350154965914569, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 1858086102, guid: 8c856d74abb0c9f4eb0687ee9636a53e,
         type: 3}
+    - target: {fileID: 8135540043133844610, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.71
+      objectReference: {fileID: 0}
+    - target: {fileID: 8135540043133844610, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.03
+      objectReference: {fileID: 0}
     - target: {fileID: 8780164584391443545, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: m_LocalPosition.x

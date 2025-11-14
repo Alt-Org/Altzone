@@ -674,31 +674,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 457baf15096b8ad448adc0786c98732a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activeChatChannel:
-    _id: 
-    _channelName: 
-    _chatChannelType: 3
-    _firstMsgIndex: 1
-    _lastMsgIndex: 0
-  _globalChatChannel:
-    _id: 
-    _channelName: 
-    _chatChannelType: 3
-    _firstMsgIndex: 1
-    _lastMsgIndex: 0
-  _clanChatChannel:
-    _id: 
-    _channelName: 
-    _chatChannelType: 3
-    _firstMsgIndex: 1
-    _lastMsgIndex: 0
-  _countryChatChannel:
-    _id: 
-    _channelName: 
-    _chatChannelType: 3
-    _firstMsgIndex: 1
-    _lastMsgIndex: 0
-  _chatChannels: []
   _chatMessages: []
 --- !u!4 &1704802351
 Transform:
@@ -727,6 +702,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cb188fff0722d646b41d1e9c384deb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _chat: {fileID: 0}
+  _messagePrefabs: []
 --- !u!1001 &2585506312612423824
 PrefabInstance:
   m_ObjectHideFlags: 0

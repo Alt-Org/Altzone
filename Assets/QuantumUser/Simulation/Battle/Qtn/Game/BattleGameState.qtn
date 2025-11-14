@@ -3,7 +3,7 @@ enum BattleGameState
   InitializeGame,
   WaitForPlayers,
   CreateMap,
-  ReadyToStart,
+  WaitToStart,
   Countdown,
   GetReadyToPlay,
   Playing,

@@ -55,7 +55,7 @@ namespace MenuUi.Scripts.Loader
         {
             if (!_videoPlaying && !_videoEnded)
             {
-                if (PlayerPrefs.GetInt("skipIntroVideo", 0) == 0)
+                if (PlayerPrefs.GetInt("SkipIntroVideo", 0) == 0)
                 {
                     //_introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>().loopPointReached += CheckOver;
                     if (Application.platform is RuntimePlatform.WebGLPlayer)

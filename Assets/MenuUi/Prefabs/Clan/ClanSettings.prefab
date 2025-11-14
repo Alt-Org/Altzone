@@ -384,7 +384,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36.85
+  m_fontSize: 34.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -801,7 +801,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 44.1
+  m_fontSize: 40.7
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1409,6 +1409,7 @@ GameObject:
   - component: {fileID: 8102441929471715051}
   - component: {fileID: 4369470982488992643}
   - component: {fileID: 2744039800164740701}
+  - component: {fileID: 5551671524841479087}
   m_Layer: 0
   m_Name: ClanSettings
   m_TagString: Untagged
@@ -1486,6 +1487,25 @@ MonoBehaviour:
   _selectLanguagePanel: {fileID: 6962975081989132392}
   _editHeartPanel: {fileID: 3214654671535499508}
   _editValuesPanel: {fileID: 202944389429737228}
+--- !u!114 &5551671524841479087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1962603411562589380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 1
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 14
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &1994256843219378594
 GameObject:
   m_ObjectHideFlags: 0
@@ -1978,7 +1998,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 19.45
+  m_fontSize: 18
   m_fontSizeBase: 5
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2696,7 +2716,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 37.3
+  m_fontSize: 34.45
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3128,7 +3148,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.35
+  m_fontSize: 28
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3265,7 +3285,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20.85
+  m_fontSize: 19.25
   m_fontSizeBase: 5
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3802,7 +3822,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 67.85
+  m_fontSize: 61.75
   m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4096,7 +4116,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18.8
+  m_fontSize: 17.35
   m_fontSizeBase: 5
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4323,7 +4343,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.35
+  m_fontSize: 28
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5855,6 +5875,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _naviTarget: {fileID: 11400000, guid: dec6696e02e9d4744a8d905d598a48ce, type: 2}
+  _useNonDefaultWindow: 0
+  _targetWindow: 0
   _isCurrentPopOutWindow: 0
 --- !u!1 &7870603527789790753
 GameObject:
@@ -5997,7 +6019,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 80
+  m_fontSize: 77.3
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6134,7 +6156,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42.05
+  m_fontSize: 38.8
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6273,7 +6295,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 31.3
+  m_fontSize: 28.9
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6701,6 +6723,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _naviTarget: {fileID: 11400000, guid: dec6696e02e9d4744a8d905d598a48ce, type: 2}
+  _useNonDefaultWindow: 0
+  _targetWindow: 0
   _isCurrentPopOutWindow: 0
 --- !u!1 &8839218256196801361
 GameObject:
@@ -8818,7 +8842,7 @@ PrefabInstance:
     - target: {fileID: 5029625442628242303, guid: 1973ba674bd1e39488f5ad71181caf28,
         type: 3}
       propertyPath: m_fontSize
-      value: 32.95
+      value: 30.45
       objectReference: {fileID: 0}
     - target: {fileID: 5051431190338678266, guid: 1973ba674bd1e39488f5ad71181caf28,
         type: 3}
@@ -10193,7 +10217,7 @@ PrefabInstance:
     - target: {fileID: 2199488499600492946, guid: c5bddb70cfcd71d4683c5c6819209308,
         type: 3}
       propertyPath: m_fontSize
-      value: 31.75
+      value: 26.8
       objectReference: {fileID: 0}
     - target: {fileID: 4463451107186381493, guid: c5bddb70cfcd71d4683c5c6819209308,
         type: 3}
@@ -10465,7 +10489,7 @@ PrefabInstance:
     - target: {fileID: 5029625442628242303, guid: 1973ba674bd1e39488f5ad71181caf28,
         type: 3}
       propertyPath: m_fontSize
-      value: 33.85
+      value: 31.25
       objectReference: {fileID: 0}
     - target: {fileID: 5377643931811425935, guid: 1973ba674bd1e39488f5ad71181caf28,
         type: 3}
@@ -10671,7 +10695,7 @@ PrefabInstance:
     - target: {fileID: 2199488499600492946, guid: c5bddb70cfcd71d4683c5c6819209308,
         type: 3}
       propertyPath: m_fontSize
-      value: 31.75
+      value: 26.8
       objectReference: {fileID: 0}
     - target: {fileID: 4463451107186381493, guid: c5bddb70cfcd71d4683c5c6819209308,
         type: 3}
@@ -10840,7 +10864,7 @@ PrefabInstance:
     - target: {fileID: 2199488499600492946, guid: c5bddb70cfcd71d4683c5c6819209308,
         type: 3}
       propertyPath: m_fontSize
-      value: 35.1
+      value: 31.15
       objectReference: {fileID: 0}
     - target: {fileID: 6865229239137791869, guid: c5bddb70cfcd71d4683c5c6819209308,
         type: 3}

@@ -1,0 +1,14 @@
+component BattlePlayerClassProjectorDataQComponent
+{
+    [HideInInspector]
+    bool IsHoldingProjectile;
+    [HideInInspector]
+    EntityRef HeldProjectileEntity;
+    [HideInInspector]
+    int HoldStartFrame;
+    [HideInInspector]
+    FP HeldProjectileAngleRadians;
+    [HideInInspector]
+    FP HeldProjectileDistance;
+    FP RotationDurationFrames;
+}

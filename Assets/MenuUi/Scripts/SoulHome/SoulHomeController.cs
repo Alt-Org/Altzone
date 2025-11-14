@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using Altzone.Scripts.GA;
 using Altzone.Scripts.Audio;
 using Altzone.Scripts.ReferenceSheets;
+using Altzone.Scripts.Language;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -20,7 +21,7 @@ namespace MenuUI.Scripts.SoulHome
     public class SoulHomeController : MonoBehaviour
     {
         [SerializeField]
-        private TextMeshProUGUI _clanName;
+        private TextLanguageSelectorCaller _clanName;
         [SerializeField]
         private TextMeshProUGUI _roomName;
         [SerializeField]
@@ -63,7 +64,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (ServerManager.Instance.Clan != null)
             {
-                _clanName.text = $"Klaanin {ServerManager.Instance.Clan.name} Sielunkoti";
+                _clanName.SetText(SettingsCarrier.Instance.Language,new string[1]{ServerManager.Instance.Clan.name});
             }
             EditModeTrayResize();
             _audioManager = AudioManager.Instance;
@@ -73,10 +74,17 @@ namespace MenuUI.Scripts.SoulHome
 
         public void OnEnable()
         {
-            if (JukeboxManager.Instance.CurrentMusicTrack != null)
-                _jukeBoxPopup.PlayTrack();
+            bool jukeboxSoulhome = SettingsCarrier.Instance.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Soulhome);
+
+            AudioManager.Instance?.SetCurrentAreaCategoryName("Soulhome");
+
+            if (JukeboxManager.Instance.CurrentTrackQueueData != null && jukeboxSoulhome)
+            {
+                if (string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
+                    _musicName.text = _audioManager.PlayMusic("Soulhome", "");
+            }
             else
-                _musicName.text = AudioManager.Instance?.PlayMusic("Soulhome", "");
+                _musicName.text = _audioManager.PlayMusic("Soulhome", "");
 
             EditModeTrayResize();
             if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.OpenSoulHome();
@@ -183,14 +191,16 @@ namespace MenuUI.Scripts.SoulHome
                 _editButton.interactable = true;
                 _editTray.GetComponent<RectTransform>().pivot = new(0, 0.5f);
                 _editTray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-                _editButtonText.text = "Avaa\nMuokkaustila";
+                if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _editButtonText.SetText("Avaa\nMuokkaustila");
+                else if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _editButtonText.SetText("Open\nModification mode");
             }
             else
             {
                 //_editButton.interactable = false;
                 //_editTray.GetComponent<RectTransform>().pivot = new(1, 0.5f);
                 //_editTray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-                _editButtonText.text = "Sulje\nMuokkaustila";
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _editButtonText.text = "Sulje\nMuokkaustila";
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _editButtonText.SetText("Close\nModification mode");
             }
         }
 

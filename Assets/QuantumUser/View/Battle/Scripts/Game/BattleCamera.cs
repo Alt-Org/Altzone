@@ -1,20 +1,70 @@
+/// @file BattleCamera.cs
+/// <summary>
+/// Contains @cref{Battle.View.Game,BattleCamera} class which handles %Battle camera.
+/// </summary>
+///
+/// This script:<br/>
+/// Handles %Battle camera functionality.
+
+// Unity usings
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Battle.View.Game
 {
+    /// <summary>
+    /// <span class="brief-h">%Battle camera <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.</span><br/>
+    /// Handles %Battle camera functionality.
+    /// </summary>
     public class BattleCamera : MonoBehaviour
     {
+        /// @anchor BattleCamera-SerializeFields
+        /// @name SerializeField variables
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// @{
+
+        /// <summary>[SerializeField] Reference to the <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Camera.html">Camera@u-exlink</a>.</summary>
+        /// @ref BattleCamera-SerializeFields
         [SerializeField] private Camera _camera;
+
+        /// <summary>[SerializeField] .</summary>
+        /// @ref BattleCamera-SerializeFields
         [SerializeField] private Vector2 _targetSizeMin;
+
+        /// <summary>[SerializeField] .</summary>
+        /// @ref BattleCamera-SerializeFields
         [SerializeField] private Vector2 _targetSizeMax;
+
+        /// <summary>[SerializeField] .</summary>
+        /// @ref BattleCamera-SerializeFields
         [SerializeField] private float   _targetDistance;
+
+        /// <summary>[SerializeField] .</summary>
+        /// @ref BattleCamera-SerializeFields
         [SerializeField] private Color _colorOff;
+
+        /// <summary>[SerializeField] .</summary>
+        /// @ref BattleCamera-SerializeFields
         [SerializeField] private Color _colorOutOfBounds;
+
+        /// <summary>[SerializeField] .</summary>
+        /// @ref BattleCamera-SerializeFields
         [SerializeField] private Color _colorDebug;
 
+        /// @}
+
+        /// <summary>
+        /// Public static getter for #_camera in #s_instance.
+        /// </summary>
         public static Camera Camera => s_instance._camera;
 
+        /// <summary>
+        /// Public static method to set view variables for positioning the camera.
+        /// </summary>
+        ///
+        /// <param name="scale">The %Battle arena scale.</param>
+        /// <param name="offset">The %Battle arena offset.</param>
+        /// <param name="rotate">If the camera should rotate or not.</param>
         public static void SetView(float scale, Vector2 offset, bool rotate)
         {
             s_instance._scale = 1.0f / scale;
@@ -28,6 +78,9 @@ namespace Battle.View.Game
             s_instance._prevAspect = -1f;
         }
 
+        /// <summary>
+        /// Public static method to set view variables for having the camera off.
+        /// </summary>
         public static void UnsetView()
         {
             s_instance._camera.backgroundColor = s_instance._colorOff;
@@ -36,21 +89,36 @@ namespace Battle.View.Game
             s_instance._active = false;
         }
 
+        /// <value>.</value>
         private static readonly Rect s_fixedRect = new(0, 0, 1, 1);
 
+        /// <value>Singleton instance of BattleArena.</value>
         private static BattleCamera s_instance;
 
+        /// <value>If the camera is active or not.</value>
         private bool _active;
 
+        /// <value>.</value>
         private float _targetAspect;
+
+        /// <value>.</value>
         private Vector2 _targetExtendsMax;
 
+        /// <value>The %Battle arena scale.</value>
         private float   _scale;
+
+        /// <value>The %Battle arena offset.</value>
         private Vector2 _offset;
+
+        /// <value>If the camera should rotate or not.</value>
         private bool    _rotate;
 
+        /// <value>.</value>
         private float _prevAspect;
 
+        /// <summary>
+        /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.Awake.html">Awake@u-exlink</a> method which .
+        /// </summary>
         private void Awake()
         {
             Assert.IsNotNull(_camera, "_camera must be assigned in Editor");
@@ -63,6 +131,9 @@ namespace Battle.View.Game
             UnsetView();
         }
 
+        /// <summary>
+        /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.Update.html">Update@u-exlink</a> method which .
+        /// </summary>
         private void Update()
         {
             if (!_active) return;
@@ -137,6 +208,9 @@ namespace Battle.View.Game
             _prevAspect = aspect;
         }
 
+        /// <summary>
+        /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.OnPreCull.html">OnPreCull@u-exlink</a> method which .
+        /// </summary>
         private void OnPreCull()
         {
             // https://forum.unity.com/threads/force-camera-aspect-ratio-16-9-in-viewport.385541/

@@ -14,6 +14,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
     {
         [SerializeField] private BattlePopupSelectedCharacter[] _selectedCharacterSlots;
         [SerializeField] private bool _isInRoom;
+        [SerializeField] private Sprite _dragAndDropIcon;
 
 
         private void Awake()
@@ -22,7 +23,9 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             {
                 foreach (BattlePopupSelectedCharacter slot in _selectedCharacterSlots)
                 {
-                    slot.SetOpenEditPanelListener();
+                    //slot.SetOpenEditPanelListener();
+                    //slot._cornerIcon.overrideSprite = _dragAndDropIcon;
+                    //slot._resistanceIcon.gameObject.SetActive(false);
                 }
             }
             else
@@ -54,14 +57,14 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                 for (int i = 0; i < _selectedCharacterSlots.Length; i++)
                 {
                     CharacterID charID;
-                    if (playerData.SelectedTestCharacterIds.Length > i && playerData.SelectedTestCharacterIds[i] != (int)CharacterID.None)
+                    if (playerData.SelectedCharacterIds.Length < i)
                     {
-                        charID = (CharacterID)playerData.SelectedTestCharacterIds[i];
+                        charID = CharacterID.None;
                     }
                     else
                     {
-                        CustomCharacter matchingCharacter = playerData.CustomCharacters.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i]);
-                        charID = matchingCharacter == null || playerData.SelectedCharacterIds[i] == ((int)CharacterID.None).ToString() ? CharacterID.None : matchingCharacter.Id;
+                        CustomCharacter matchingCharacter = playerData.CustomCharacters?.FirstOrDefault(x => x.ServerID == playerData.SelectedCharacterIds[i].ServerID);
+                        charID = matchingCharacter == null || playerData.SelectedCharacterIds[i].CharacterID == CharacterID.None ? CharacterID.None : matchingCharacter.Id;
                     }
 
                     if (charID is CharacterID.None)
@@ -91,7 +94,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                     _selectedCharacterSlots[i].SetEmpty(false);
                     continue;
                 }
-                
+
                 PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(selectedCharacterIds[i].ToString());
                 int[] statsForCharacter = stats != null ? stats[(i * 5)..(i * 5 + 5)] : null;
                 _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false, statsForCharacter);

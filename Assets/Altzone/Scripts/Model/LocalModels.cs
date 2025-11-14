@@ -265,11 +265,11 @@ namespace Altzone.Scripts.Model
                 throw new UnityException($"CustomCharacter not found for {customCharacterId}");
             }
             var characterClass =
-                _storageData.CharacterClasses.FirstOrDefault(x => x.Id == customCharacter.CharacterClassID);
+                _storageData.CharacterClasses.FirstOrDefault(x => x.Type == customCharacter.CharacterClassType);
             if (characterClass == null)
             {
                 // Create fake CharacterClass so we can return 'valid' object even character class has been deleted.
-                characterClass = CharacterClass.CreateDummyFor(customCharacter.CharacterClassID);
+                characterClass = CharacterClass.CreateDummyFor(customCharacter.CharacterClassType);
             }
             return BattleCharacter.Create(customCharacter, characterClass);
         }
@@ -298,12 +298,12 @@ namespace Altzone.Scripts.Model
             callback(new ReadOnlyCollection<CustomCharacter>(_storageData.CustomCharacters));
         }
 
-        internal void GetPlayerTasks(Action<List<PlayerTask>> callback)
+        internal void GetPlayerTasks(Action<ClanTasks> callback)
         {
             callback(_storageData.PlayerTasks);
         }
 
-        internal void SavePlayerTasks(List<PlayerTask> tasks, Action<List<PlayerTask>> callback)
+        internal void SavePlayerTasks(ClanTasks tasks, Action<ClanTasks> callback)
         {
             _storageData.PlayerTasks = tasks;
             callback(_storageData.PlayerTasks);
@@ -341,7 +341,7 @@ namespace Altzone.Scripts.Model
             Debug.LogWarning("Creating new Default Storage.");
             var storageData = new StorageData();
 
-            storageData.Characters = new CharacterStorage().CharacterList;
+            storageData.Characters = CharacterStorage.Instance.CharacterList;
             //storageData.CharacterClasses.AddRange(CreateDefaultModels.CreateCharacterClasses());
             storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(storageData.Characters));
 
@@ -403,6 +403,6 @@ namespace Altzone.Scripts.Model
         public List<GameFurniture> GameFurniture = new();
         public List<PlayerData> PlayerData = new();
         public List<ClanData> ClanData = new();
-        public List<PlayerTask> PlayerTasks= null;
+        public ClanTasks PlayerTasks= null;
     }
 }

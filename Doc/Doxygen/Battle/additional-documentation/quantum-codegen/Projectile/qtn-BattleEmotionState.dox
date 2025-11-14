@@ -1,0 +1,32 @@
+/// @file BattleEmotionState.qtn
+/// <summary>
+/// Contains enum with different emotions.
+/// </summary>
+///
+/// ## Generated Enums
+/// - @cref{Quantum,BattleEmotionState}  
+///   @copybrief Quantum.BattleEmotionState
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattleEmotionState
+/// <summary>
+/// Emotions that are used for choosing projectile's graphics and arena's special effects.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleEmotionState.qtn}
+
+/// @var Quantum::BattleEmotionState Quantum::BattleEmotionState::Sadness
+/// <summary>Projectile is using the effects of Sadness emotion.</summary>
+///
+/// @var Quantum::BattleEmotionState Quantum::BattleEmotionState::Joy
+/// <summary>Projectile is using the effects of Joy emotion.</summary>
+///
+/// @var Quantum::BattleEmotionState Quantum::BattleEmotionState::Playful
+/// <summary>Projectile is using the effects of Playful emotion.</summary>
+///
+/// @var Quantum::BattleEmotionState Quantum::BattleEmotionState::Aggression
+/// <summary>Projectile is using the effects of Aggression emotion.</summary>
+///
+/// @var Quantum::BattleEmotionState Quantum::BattleEmotionState::Love
+/// <summary>Projectile is using the effects of Love emotion.</summary>

@@ -99,7 +99,7 @@ namespace MenuUI.Scripts.SoulHome
         private IEnumerator StartActions()
         {
             yield return new WaitUntil(() => _loadScript.LoadFinished);
-            AudioManager.Instance?.PlayMusic("Soulhome", "");
+            //AudioManager.Instance?.PlayMusic("Soulhome", "");
             _camera = GetComponent<Camera>();
             SetCameraBounds();
 
@@ -678,6 +678,7 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     CheckFurnitureList(_selectedFurniture);
                     if (_mainScreen.SelectedFurnitureTray != null) _mainScreen.RemoveTrayItem(_mainScreen.SelectedFurnitureTray);
+                    if (_selectedFurniture.GetComponent<FurnitureHandling>().Slot != null) gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
                 }
                 else
                 {

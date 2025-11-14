@@ -81,7 +81,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             }*/
             _topInfoPanel.Reset();
             UpdateTitle();
-            _topInfoPanel.LobbyText = string.Empty;
+            _topInfoPanel.LobbyTextLiteral = string.Empty;
             StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
         }
 
@@ -135,13 +135,13 @@ namespace MenuUi.Scripts.Lobby.InLobby
         {
             if (!PhotonRealtimeClient.InLobby && !PhotonRealtimeClient.InRoom)
             {
-                _topInfoPanel.LobbyText = "Wait";
+                _topInfoPanel.LobbyTextLiteral = "Wait";
                 return;
             }
             UpdateTitle();
             var playerCount = PhotonRealtimeClient.CountOfPlayers;
-            _topInfoPanel.LobbyText = $"Alue: {_currentRegion} : {PhotonRealtimeClient.GetPing()} ms";
-            _topInfoPanel.PlayerCountText = $"Pelaajia online: {playerCount}";
+            _topInfoPanel.LobbyText = new string[2] { _currentRegion, PhotonRealtimeClient.GetPing().ToString()};
+            _topInfoPanel.PlayerCountText = playerCount.ToString();
         }
 
         /*public void OnDisconnected(DisconnectCause cause)

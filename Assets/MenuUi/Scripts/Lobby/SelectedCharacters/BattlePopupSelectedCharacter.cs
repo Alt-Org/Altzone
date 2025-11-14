@@ -1,12 +1,9 @@
-using System.Linq;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.DefenceScreen.CharacterGallery;
+using MenuUi.Scripts.Signals;
 using UnityEngine;
 using UnityEngine.UI;
-using Altzone.Scripts.ModelV2;
-using Altzone.Scripts.ReferenceSheets;
-using MenuUi.Scripts.Signals;
-using System;
 
 namespace MenuUi.Scripts.Lobby.SelectedCharacters
 {
@@ -19,11 +16,11 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
     {
         [Header("Character slot references")]
         [SerializeField] private Image _spriteImage;
+        [SerializeField] private Image _classColorBorderImage;
         [SerializeField] private Image _classColorImage;
         [SerializeField] private PieChartPreview _piechartPreview;
-
-        [Header("Reference sheet")]
-        [SerializeField] private ClassReference _classReference;
+        [SerializeField] public Image _cornerIcon;
+        [SerializeField] public Image _resistanceIcon;
 
         private CharacterID _characterId;
 
@@ -33,9 +30,8 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
         private void OnDestroy()
         {
-            _button.onClick.RemoveAllListeners();
+            if (_button != null) _button.onClick.RemoveAllListeners();
         }
-
 
         // Method for adding the edit panel listener because in KotiView the button should open defence gallery using SetMainMenuWindowIndex script instead
         public void SetOpenEditPanelListener() 
@@ -57,8 +53,11 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             _spriteImage.sprite = galleryImage;
             _spriteImage.enabled = true;
 
-            CharacterClassID charClassID = CustomCharacter.GetClassID(charID);
-            if (_classColorImage != null) _classColorImage.color = _classReference.GetColor(charClassID);
+            CharacterClassType charClassType = CustomCharacter.GetClass(charID);
+            if (_classColorBorderImage != null) _classColorBorderImage.sprite = ClassReference.Instance.GetFrame(charClassType);
+            if (_classColorImage != null) _classColorImage.color = ClassReference.Instance.GetColor(charClassType);
+            if (_cornerIcon != null) _cornerIcon.sprite = ClassReference.Instance.GetCornerIcon(charClassType);
+            if (_resistanceIcon != null) _resistanceIcon.sprite = ClassReference.Instance.GetResistanceIcon(charClassType);
 
             _characterId = charID;
 
@@ -84,7 +83,10 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         public void SetEmpty(bool isEditable)
         {
             _spriteImage.enabled = false;
+            if (_classColorBorderImage != null) _classColorBorderImage.enabled = false;
             if (_classColorImage != null) _classColorImage.color = Color.white;
+            if (_cornerIcon != null) _cornerIcon.enabled = false;
+            if (_resistanceIcon != null) _resistanceIcon.enabled = false;
 
             if (_piechartPreview != null) _piechartPreview.ClearChart();
             _characterId = CharacterID.None;

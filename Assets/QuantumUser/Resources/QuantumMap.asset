@@ -356,7 +356,9 @@ MonoBehaviour:
           Value: 0
         State:
           Value: 0
-        TimeUntilStart:
+        LoadDelaySec:
+          RawValue: 98304
+        TimeUntilStartSec:
           RawValue: 262144
         GameTimeSec:
           RawValue: 0
@@ -375,6 +377,11 @@ MonoBehaviour:
         - _index: 0
         - _index: 0
         - _index: 0
+        IsBot:
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
         RespawnTimer:
         - Mode: 0
           Frames: 0
@@ -425,6 +432,11 @@ MonoBehaviour:
         - Value: 0
         - Value: 0
         - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        PlayerGiveUpStates:
         - Value: 0
         - Value: 0
         - Value: 0

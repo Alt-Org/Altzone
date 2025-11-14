@@ -14,17 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 302
   CharacterId: 302
-  IsApproved: 0
-  Name: "Miellytt\xE4minen"
+  IsApproved: 1
+  FinnishName: "Miellytt\xE4minen"
+  EnglishName: Pleasing
   ClassType: 300
-  CharacterDescription: 
-  CharacterShortDescription: 
+  CharacterDescriptionFinnish: 
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: 
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 35e1452ed2a9f8942a0e1d4154fba839, type: 2}
   Hp:
     Level: 10
     Coefficient: 0
   Speed:
-    Level: 10
+    Level: 5
     Coefficient: 0
   CharacterSize:
     Level: 10
@@ -37,6 +40,7 @@ MonoBehaviour:
     Coefficient: 0
   GalleryImage: {fileID: 21300000, guid: 6c85587376e507643909eaff042ba9fe, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: fbc34837037a6644facbc034a827c758, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
       Value: 1275357583760430902

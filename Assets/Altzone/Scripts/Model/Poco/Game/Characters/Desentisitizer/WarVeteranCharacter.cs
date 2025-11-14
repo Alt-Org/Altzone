@@ -14,7 +14,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             _defaultDefence = 12;
             _defaultHp = 1;
             _defaultCharacterSize = 8;
-            _defaultSpeed = 3;
+            _defaultSpeed = 2;
             InitializeValues();
         }
     }

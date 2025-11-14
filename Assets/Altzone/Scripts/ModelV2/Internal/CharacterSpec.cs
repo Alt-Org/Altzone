@@ -52,21 +52,25 @@ namespace Altzone.Scripts.ModelV2.Internal
         /// <remarks>
         /// When game support localization this will be localization id for this player character.
         /// </remarks>
-        [Header("General Attributes")] public string Name;
+        [Header("General Attributes")] public string FinnishName;
+        [Header("General Attributes")] public string EnglishName;
 
         /// <summary>
         /// Player character class.
         /// </summary>
-        public CharacterClassID ClassType;
+        public CharacterClassType ClassType;
         /// <summary>
         /// A long description of the character. If you want a short description use <see cref="CharacterShortDescription"/>.
         /// </summary>
         [TextArea(10, 20)]
-        public string CharacterDescription;
+        public string CharacterDescriptionFinnish;
+        [TextArea(10, 20)]
+        public string CharacterDescriptionEnglish;
         /// <summary>
         /// A short few word description of the character.
         /// </summary>
-        public string CharacterShortDescription;
+        public string CharacterShortDescriptionFinnish;
+        public string CharacterShortDescriptionEnglish;
 
         #endregion
 
@@ -92,6 +96,8 @@ namespace Altzone.Scripts.ModelV2.Internal
 
         public Sprite GalleryHeadImage;
 
+        public Sprite CharPhotoSeries;
+
         #endregion
 
         #region Battle Asset References
@@ -113,7 +119,55 @@ namespace Altzone.Scripts.ModelV2.Internal
         /// Missing fields or values makes player character invalid because
         /// they can cause e.g. undefined behaviour or NRE at runtime.
         /// </remarks>
-        public bool IsValid => (ClassType != CharacterClassID.None || CharacterId == CharacterID.Test) 
+
+        public string Name
+        {
+            get
+            {
+                switch (SettingsCarrier.Instance.Language)
+                {
+                    case SettingsCarrier.LanguageType.Finnish:
+                        return FinnishName;
+                    case SettingsCarrier.LanguageType.English:
+                        return EnglishName;
+                    default:
+                        return FinnishName;
+                }
+            }
+        }
+
+        public string CharacterDescription
+        {
+            get
+            {
+                switch (SettingsCarrier.Instance.Language)
+                {
+                    case SettingsCarrier.LanguageType.Finnish:
+                        return CharacterDescriptionFinnish;
+                    case SettingsCarrier.LanguageType.English:
+                        return CharacterDescriptionEnglish;
+                    default:
+                        return FinnishName;
+                }
+            }
+        }
+        public string CharacterShortDescription
+        {
+            get
+            {
+                switch (SettingsCarrier.Instance.Language)
+                {
+                    case SettingsCarrier.LanguageType.Finnish:
+                        return CharacterShortDescriptionFinnish;
+                    case SettingsCarrier.LanguageType.English:
+                        return CharacterShortDescriptionEnglish;
+                    default:
+                        return CharacterShortDescriptionFinnish;
+                }
+            }
+        }
+
+        public bool IsValid => (ClassType != CharacterClassType.None || CharacterId == CharacterID.Test) 
                                && !string.IsNullOrWhiteSpace(Id)
                                && !string.IsNullOrWhiteSpace(name);
 

@@ -1,4 +1,4 @@
-using Altzone.Scripts.Model.Poco.Game;
+﻿using Altzone.Scripts.Model.Poco.Game;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,6 +26,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private TMP_Text _statDescription;
         [SerializeField] private GameObject _contents;
         [SerializeField] private TMP_Text _developmentName;
+
 
         private StatsWindowController _controller;
         StatInfo _statInfo;
@@ -68,38 +69,59 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             _statInfo = _controller.GetStatInfo(_statType);
             _statIcon.sprite = _statInfo.Image;
             _statBackground.color = _statInfo.StatBoxColor;
-            _statDescription.text = _statInfo.Description;
-            _statName.text = _statInfo.Name;
+
+            switch (SettingsCarrier.Instance.Language)
+            {
+                case SettingsCarrier.LanguageType.Finnish:
+                    _statName.text = _statInfo.Name;
+                    _statDescription.text = _statInfo.Description;
+                    break;
+
+                case SettingsCarrier.LanguageType.English:
+                    _statName.text = string.IsNullOrEmpty(_statInfo.EnglishName) ? _statInfo.Name : _statInfo.EnglishName;
+                    _statDescription.text = string.IsNullOrEmpty(_statInfo.EnglishDescription) ? _statInfo.Description : _statInfo.EnglishDescription;
+                    break;
+
+                default:
+                    goto case SettingsCarrier.LanguageType.Finnish;
+            }
 
             string developmentName = string.Empty;
             ValueStrength statStrenght = _controller.GetStatStrength(_statType);
-            switch(statStrenght)
+            switch (SettingsCarrier.Instance.Language)
             {
-                case ValueStrength.VeryStrong:
-                    developmentName = "Mestari";
+                case SettingsCarrier.LanguageType.Finnish:
+                    switch (statStrenght)
+                    {
+                        case ValueStrength.VeryStrong: developmentName = "Mestari"; break;
+                        case ValueStrength.Strong: developmentName = "Asiantuntija"; break;
+                        case ValueStrength.SemiStrong: developmentName = "Kokenut"; break;
+                        case ValueStrength.Medium: developmentName = "Perusosaaja"; break;
+                        case ValueStrength.SemiWeak: developmentName = "Harjoittelija"; break;
+                        case ValueStrength.Weak: developmentName = "Aloittelija"; break;
+                        case ValueStrength.VeryWeak: developmentName = "Taidoton"; break;
+                        case ValueStrength.None:
+                        default: developmentName = "Ei tietoa"; break;
+                    }
                     break;
-                case ValueStrength.Strong:
-                    developmentName = "Asiantuntija";
+
+                case SettingsCarrier.LanguageType.English:
+                    switch (statStrenght)
+                    {
+                        case ValueStrength.VeryStrong: developmentName = "Master"; break;
+                        case ValueStrength.Strong: developmentName = "Expert"; break;
+                        case ValueStrength.SemiStrong: developmentName = "Experienced"; break;
+                        case ValueStrength.Medium: developmentName = "Competent"; break;
+                        case ValueStrength.SemiWeak: developmentName = "Apprentice"; break;
+                        case ValueStrength.Weak: developmentName = "Beginner"; break;
+                        case ValueStrength.VeryWeak: developmentName = "Unskilled"; break;
+                        case ValueStrength.None:
+                        default: developmentName = "No data"; break;
+                    }
                     break;
-                case ValueStrength.SemiStrong:
-                    developmentName = "Kokenut";
-                    break;
-                case ValueStrength.Medium:
-                    developmentName = "Perusosaaja";
-                    break;
-                case ValueStrength.SemiWeak:
-                    developmentName = "Harjoittelija";
-                    break;
-                case ValueStrength.Weak:
-                    developmentName = "Aloittelija";
-                    break;
-                case ValueStrength.VeryWeak:
-                    developmentName = "Taidoton";
-                    break;
-                case ValueStrength.None:
-                default:
-                    developmentName = "Ei tietoa";
-                    break;
+
+                default: 
+                    goto case SettingsCarrier.LanguageType.Finnish;
             }
             _developmentName.text = developmentName;
 
@@ -152,7 +174,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 return false;
             }
 
-            if (_controller.GetCurrentCharacterClass() == CharacterClassID.Obedient) // obedient characters can't be modified
+            if (_controller.GetCurrentCharacterClass() == CharacterClassType.Obedient) // obedient characters can't be modified
             {
                 PopupSignalBus.OnChangePopupInfoSignal("Tottelijoita ei voi muokata.");
                 return false;

@@ -71,6 +71,7 @@ namespace MenuUi.Scripts.CharacterGallery
         private void Awake()
         {
             ServerManager.OnLogInStatusChanged += StartLoading;
+            SettingsCarrier.OnLanguageChanged += LanguageChanged;
             SignalBus.OnRandomSelectedCharactersRequested += SetRandomSelectedCharactersToEmptySlots;
             SignalBus.OnReloadCharacterGalleryRequested += OnReloadRequested;
             SignalBus.OnSelectedDefenceCharacterChanged += HandleCharacterSelected;
@@ -103,6 +104,7 @@ namespace MenuUi.Scripts.CharacterGallery
         private void OnDestroy()
         {
             ServerManager.OnLogInStatusChanged -= StartLoading;
+            SettingsCarrier.OnLanguageChanged -= LanguageChanged;
             SignalBus.OnRandomSelectedCharactersRequested -= SetRandomSelectedCharactersToEmptySlots;
             SignalBus.OnReloadCharacterGalleryRequested -= OnReloadRequested;
             SignalBus.OnSelectedDefenceCharacterChanged -= HandleCharacterSelected;
@@ -118,6 +120,7 @@ namespace MenuUi.Scripts.CharacterGallery
             }
         }
 
+        private void LanguageChanged(SettingsCarrier.LanguageType language) => OnReloadRequested();
 
         private void OnReloadRequested()
         {
@@ -139,18 +142,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 _playerData = playerData;
 
                 // Getting selected character ids as CharacterID array
-                CharacterID[] selectedCharacterIds = GetCharacterIDs(playerData.SelectedCharacterIds);
-
-                // Going through test character ids to set them to selected character ids if there is any selected
-                if (playerData.SelectedTestCharacterIds != null)
-                {
-                    for (int i = 0; i < playerData.SelectedTestCharacterIds.Length; i++)
-                    {
-                        if (playerData.SelectedTestCharacterIds[i] == (int)CharacterID.None) continue;
-
-                        selectedCharacterIds[i] = (CharacterID)playerData.SelectedTestCharacterIds[i];
-                    }
-                }
+                CustomCharacterListObject[] selectedCharacterIds = playerData.SelectedCharacterIds;
 
                 // Getting custom characters, ensuring no duplicate characters if account is bugged
                 var characters = playerData.CustomCharacters.GroupBy(x => x.Id).Select(x => x.First()).ToList();
@@ -190,29 +182,33 @@ namespace MenuUi.Scripts.CharacterGallery
             string newServerId = _playerData.CustomCharacters.FirstOrDefault(x => x.Id == newCharacterId)?.ServerID;
             if (newServerId == null || newServerId == ((int)CharacterID.None).ToString())
             {
-                if (_playerData.SelectedTestCharacterIds.Length > slot)
+                if (_playerData.SelectedCharacterIds.Length > slot)
                 if (CustomCharacter.IsTestCharacter(newCharacterId))
                 {
-                    _playerData.SelectedTestCharacterIds[slot] = (int)newCharacterId;
+                        _playerData.SelectedCharacterIds[slot].SetData(Id: newCharacterId);
                 }
                 else
                 {
-                    _playerData.SelectedTestCharacterIds[slot] = (int)CharacterID.None;
+                    _playerData.SelectedCharacterIds[slot].SetData();
                 }
-
-                _playerData.SelectedCharacterIds[slot] = null;
             }
-            else if (newServerId != _playerData.SelectedCharacterIds[slot])
+            else if (newServerId != _playerData.SelectedCharacterIds[slot].ServerID)
             {
-                _playerData.SelectedCharacterIds[slot] = newServerId;
-                if(_playerData.SelectedTestCharacterIds.Length > slot) _playerData.SelectedTestCharacterIds[slot] = (int)CharacterID.None;
+                _playerData.SelectedCharacterIds[slot].SetData(newServerId, newCharacterId);
+            }
+
+            string[] serverList = new string[_playerData.SelectedCharacterIds.Length];
+
+            for(int i = 0; i < _playerData.SelectedCharacterIds.Length; i++)
+            {
+                serverList[i] = _playerData.SelectedCharacterIds[i].ServerID;
             }
 
             string body = JObject.FromObject(
             new
             {
                 _id = _playerData.Id,
-                battleCharacter_ids = _playerData.SelectedCharacterIds
+                battleCharacter_ids = serverList
 
             }).ToString();
 
@@ -245,21 +241,21 @@ namespace MenuUi.Scripts.CharacterGallery
 
             for (int i = 0; i < _playerData.SelectedCharacterIds.Length; i++)
             {
-                if (string.IsNullOrEmpty(_playerData.SelectedCharacterIds[i]) || _playerData.SelectedCharacterIds[i] == ((int)CharacterID.None).ToString())
+                if (_playerData.SelectedCharacterIds[i].CharacterID == CharacterID.None)
                 {
                     bool suitableCharacterFound = false;
                     CustomCharacter character = null;
                     do
                     {
                         character = characters[UnityEngine.Random.Range(0, characters.Count)];
-                        if (!_playerData.SelectedCharacterIds.Contains(character.ServerID))
+                        if (_playerData.SelectedCharacterIds.FirstOrDefault(c=>c.ServerID == character.ServerID) == null)
                         {
                             suitableCharacterFound = true;
                         }
 
                     } while (!suitableCharacterFound);
 
-                    _playerData.SelectedCharacterIds[i] = character.ServerID;
+                    _playerData.SelectedCharacterIds[i].SetData(character.ServerID, character.Id);
                 }
             }
             var store = Storefront.Get();

@@ -1,0 +1,103 @@
+/// @file BattleUi.prefab
+/// <summary>
+/// Prefab of %Battle's UI.
+/// </summary>
+///
+/// BattleUi-prefab holds all %Battle's %UI GameObjects.
+///
+/// ### Structure
+/// - **BattleUi**  
+///   All @uihandlerslink are attached to this GameObject and @dirref{Altzone,Assets/Altzone/Resources/Prefabs/BattleUiShared} -prefabs are instantiated as children.
+///     - *Components:*
+///         - RectTransform
+///         - @cref{Battle.View.UI,BattleUiController}
+///         - @cref{Battle.View.UI,BattleUiAnnouncementHandler}
+///         - @cref{Battle.View.UI,BattleUiGameOverHandler}
+///         - @cref{Battle.View.UI,BattleUiTimerHandler}
+///         - @cref{Battle.View.UI,BattleUiDiamondsHandler}
+///         - @cref{Battle.View.UI,BattleUiGiveUpButtonHandler}
+///         - @cref{Battle.View.UI,BattleUiPlayerInfoHandler}
+///         - @cref{Battle.View.UI,BattleUiJoystickHandler}
+///         - @cref{Battle.View.UI,BattleUiDebugStatsOverlayHandler}
+///         - Canvas
+///         - CanvasScaler
+///         - GraphicRaycaster
+///     - *Children:*
+///         - **BattleUiTimer** (@ref BattleUiTimer.prefab)  
+///           Displays game timer.
+///         - **AnnouncementText**  
+///           Displays on-screen notifications such as the countdown.
+///             - *Components:*
+///                 - RectTransform
+///                 - @cref{Altzone.Scripts.BattleUiShared,TextScaler}
+///                 - CanvasRenderer
+///                 - TextMeshPro - Text (UI)
+///                 - WorkSans-Regular SDF Material (Material)
+///         - **BattleUiPlayerInfo1** (@ref BattleUiPlayerInfo.prefab)  
+///           Displays local player's player info.
+///         - **BattleUiPlayerInfo2** (@ref BattleUiPlayerInfo.prefab)  
+///           Displays teammate's player info.
+///         - **GameOverView**  
+///           End of game popup which has button to exit game.
+///             - *Components:*
+///                 - RectTransform
+///             - *Children:*
+///                 - **background**
+///                     - *Components:*
+///                         - Image
+///                 - **TitleText**
+///                     - *Components:*
+///                         - TextMeshPro - Text (UI)
+///                 - **GoalByText**
+///                     - *Components:*
+///                         - TextMeshPro - Text (UI)
+///                 - **RestartButton**
+///                     - *Components:*
+///                         - Image
+///                         - Button
+///                     - *Children:*
+///                         - **Text (TMP)**
+///                             - *Components:*
+///                                 - RectTransform
+///                                 - CanvasRenderer
+///                                 - TextMeshPro - Text (UI)
+///                 - **ExitGameButton**
+///                     - *Components:*
+///                         - Image
+///                         - Button
+///                     - *Children:*
+///                         - **Text (TMP)**
+///                             - *Components:*
+///                                 - RectTransform
+///                                 - CanvasRenderer
+///                                 - TextMeshPro - Text (UI)
+///                 - *Shared components:*
+///                     - RectTransform
+///                     - CanvasRenderer
+///         - **DebugStatsOverlay**  
+///           Debug overlay for displaying currently selected character's stats.
+///             - *Components:*
+///                 - RectTransform
+///             - *Children:*
+///                 - **ImpactForceHolder**
+///                 - **HpHolder**
+///                 - **SpeedHolder**
+///                 - **CharSizeHolder**
+///                 - **DefenceHolder**
+///                 - *Shared components:*
+///                     - RectTransform
+///                 - *Shared children:*
+///                     - **StatName**
+///                     - **StatValue**
+///                     - *Shared components:*
+///                         - RectTransform
+///                         - CanvasRenderer
+///                         - TextMeshPro - Text (UI)
+///         - **BattleUiDiamonds** (@ref BattleUiDiamonds.prefab)  
+///           Display's diamonds collected during the match.
+///         - **BattleUiGiveUpButton** (@ref BattleUiGiveUpButton.prefab)  
+///           Button for giving up the game.
+///         - **BattleUiJoystick1** (@ref BattleUiJoystick.prefab)  
+///           Movement on-screen joystick.
+///         - **BattleUiJoystick2** (@ref BattleUiJoystick.prefab)  
+///           Rotation on-screen joystick.

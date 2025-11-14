@@ -23,12 +23,13 @@ using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby.Wrappers;
+using Altzone.Scripts.Window;
+using Altzone.Scripts.Audio;
 using Altzone.Scripts.AzDebug;
 using Altzone.PhotonSerializer;
 
 using Battle.QSimulation.Game;
 using PlayerType = Battle.QSimulation.Game.BattleParameters.PlayerType;
-using Altzone.Scripts.Window;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -87,7 +88,7 @@ namespace Altzone.Scripts.Lobby
         [Header("Battle Map reference")]
         [SerializeField] private BattleMapReference _battleMapReference;
 
-        private const long STARTDELAY = 6000;
+        private const long STARTDELAY = 2000;
 
         private QuantumRunner _runner = null;
 
@@ -105,8 +106,15 @@ namespace Altzone.Scripts.Lobby
 
         private List<string> _posChangeQueue = new();
 
+        private bool _isStartFinished = false;
+
         public static LobbyManager Instance { get; private set; }
-        private static bool isActive = false;
+        public bool IsStartFinished {set => _isStartFinished = value; }
+        public static bool IsActive { get => _isActive;}
+
+        private static bool _isActive = false;
+
+        public bool RunnerActive => _runner != null;
 
         #region Delegates & Events
 
@@ -213,14 +221,14 @@ namespace Altzone.Scripts.Lobby
             {
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
-                isActive = false;
-                if (!isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
+                _isActive = false;
+                if (!_isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
             }
         }
 
         public void OnEnable()
         {
-            if(!isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
+            if(!_isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
         }
 
         public void OnDisable()
@@ -242,8 +250,8 @@ namespace Altzone.Scripts.Lobby
         }
         public void Activate()
         {
-            if (isActive) { Debug.LogWarning("LobbyManager is already active."); return; }
-            isActive = true;
+            if (_isActive) { Debug.LogWarning("LobbyManager is already active."); return; }
+            _isActive = true;
             PhotonRealtimeClient.Client.AddCallbackTarget(this);
             PhotonRealtimeClient.Client.StateChanged += OnStateChange;
             this.Subscribe<ReserveFreePositionEvent>(OnReserveFreePositionEvent);
@@ -402,22 +410,25 @@ namespace Altzone.Scripts.Lobby
 
                 }
             }
-            return true;
+            return pos1Set && pos2Set && pos3Set && pos4Set;
         }
 
         private IEnumerator CheckIfBattleCanStart()
         {
-            yield return new WaitUntil(()=> _posChangeQueue.Count == 0 && !_playerPosChangeInProgress);
-
+            yield break;
+            yield return new WaitForSeconds(0.5f);
+            yield return new WaitUntil(() => _posChangeQueue.Count == 0 && !_playerPosChangeInProgress);
+            Room room = PhotonRealtimeClient.CurrentRoom;
             if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
             {
-                Room room = PhotonRealtimeClient.CurrentRoom;
-                if (room.PlayerCount != room.MaxPlayers) yield break;
-
-                if (CheckIfAllPlayersInPosition())
+                while (room.PlayerCount >= room.MaxPlayers)
                 {
-                    GameType gameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
-                    if (gameType == GameType.Custom) OnStartPlayingEvent(new());
+                    if (CheckIfAllPlayersInPosition())
+                    {
+                        GameType gameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                        if (gameType == GameType.Custom) OnStartPlayingEvent(new());
+                    }
+                    yield return null;
                 }
             }
             _canBattleStartCheckHolder = null;
@@ -864,7 +875,7 @@ namespace Altzone.Scripts.Lobby
         private IEnumerator StartTheGameplay(bool isCloseRoom, string blueTeamName, string redTeamName)
         {
             // TODO: Select random characters if some are not selected
-            //if (!PhotonBattleRoom.IsValidAllSelectedCharacters()) 
+            //if (!PhotonBattleRoom.IsValidAllSelectedCharacters())
             //{
             //    StartingGameFailed();
             //    throw new UnityException("can't start game, everyone needs to have 3 defence characters selected");
@@ -906,6 +917,7 @@ namespace Altzone.Scripts.Lobby
             // Checking player positions before starting gameplay
             players = room.Players.Values.ToList();
             string[] playerUserIds = new string[4] { "", "", "", "" };
+            string[] playerUserNames = new string[4] { "", "", "", "" };
             PlayerType[] playerTypes = new PlayerType[4] { PlayerType.None, PlayerType.None, PlayerType.None, PlayerType.None, };
 
             int playerCount = 0;
@@ -931,6 +943,7 @@ namespace Altzone.Scripts.Lobby
                 }
                 playerTypes[playerPos-1] = PlayerType.Player;
                 playerUserIds[playerPos - 1] = roomPlayer.UserId;
+                playerUserNames[playerPos - 1] = roomPlayer.NickName;
                 playerCount += 1;
             }
 
@@ -975,10 +988,16 @@ namespace Altzone.Scripts.Lobby
                     yield return null;
                 }
 
+                /*for (int i=0; i < playerTypes.Length; i++)
+                {
+                    if(playerTypes[i] == PlayerType.None) playerTypes[i] = PlayerType.Bot;
+                } Disabled for now, reactivate when the bots work a little better again.*/
+
                 data = new()
                 {
                     StartTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                     PlayerSlotUserIds = playerUserIds,
+                    PlayerSlotUserNames = playerUserNames,
                     PlayerSlotTypes = playerTypes,
                     ProjectileInitialEmotion = startingEmotion,
                     MapId = mapId,
@@ -1010,7 +1029,7 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator StartQuantum(StartGameData data)
         {
-            Debug.Log(data.ToString());
+            Debug.Log("Starting Quantum");
             string battleID = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(BattleID);
 
             // Getting the index of own user id from the player slot user id array to determine which player slot is for local player.
@@ -1039,6 +1058,7 @@ namespace Altzone.Scripts.Lobby
                 BattleConfig     = _battleQConfig,
                 BattleParameters = new()
                 {
+                    PlayerNames = data.PlayerSlotUserNames,
                     PlayerSlotTypes = data.PlayerSlotTypes,
                     PlayerSlotUserIDs = data.PlayerSlotUserIds,
                     PlayerCount = data.PlayerCount,
@@ -1062,28 +1082,25 @@ namespace Altzone.Scripts.Lobby
 
             //Start Battle Countdown
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleLoad);
+            _isStartFinished = false;
 
-            if(sendTime == 0) sendTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            long timeToStart = (sendTime+ STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            yield return new WaitUntil(() => OnStartTimeSet != null);
+            if (sendTime == 0) sendTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            long timeToStart = (sendTime + STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             long startTime = sendTime + timeToStart;
-
-            yield return new WaitForEndOfFrame();
-
             do
             {
-                if(OnStartTimeSet != null)
+                if (OnStartTimeSet != null)
                 {
-                    OnStartTimeSet?.Invoke(timeToStart);
+                    OnStartTimeSet?.Invoke(0);
                     break;
                 }
                 yield return null;
             } while (startTime > DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
-            timeToStart = (sendTime + STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-            if (timeToStart > STARTDELAY) timeToStart = STARTDELAY;
+            yield return new WaitUntil(()=>_isStartFinished);
 
-            if(timeToStart > 0)
-            yield return new WaitForSeconds(timeToStart / 1000f);
+            AudioManager.Instance.StopMusic();
 
             //Move to Battle and start Runner
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Battle);
@@ -1093,19 +1110,25 @@ namespace Altzone.Scripts.Lobby
             DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.Battle);
             DebugLogFileHandler.FileOpen(battleID, (int)playerSlot);
 
-            Task<bool> task = StartRunner(sessionRunnerArguments);
+            int retryCount=0;
+            do
+            {
+                Task<bool> task = StartRunner(sessionRunnerArguments);
 
-            yield return new WaitUntil(() => task.IsCompleted);
-            if(task.Result)
-            {
-                _player.PlayerSlot = playerSlot;
-                _player.UserID = userId;
-                _runner?.Game.AddPlayer(_player);
-            }
-            else
-            {
-                OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
-            }
+                yield return new WaitUntil(() => task.IsCompleted);
+                if (task.Result)
+                {
+                    _player.PlayerSlot = playerSlot;
+                    _player.UserID = userId;
+                    _runner?.Game.AddPlayer(_player);
+                    break;
+                }
+                else
+                {
+                    retryCount++;
+                    if (retryCount == 5) { OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu); break; }
+                }
+            } while (true);
         }
 
         private async Task<bool> StartRunner(SessionRunner.Arguments sessionRunnerArguments)
@@ -1129,10 +1152,16 @@ namespace Altzone.Scripts.Lobby
 
         public static void ExitQuantum(bool winningTeam, float gameLengthSec)
         {
-            QuantumRunner.ShutdownAll();
-            DebugLogFileHandler.ContextExit();
+            CloseRunner();
             DataCarrier.AddData(DataCarrier.BattleWinner,winningTeam);
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleStory);
+        }
+
+        public static void CloseRunner()
+        {
+            AudioManager.Instance.StopMusic();
+            QuantumRunner.ShutdownAll();
+            DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.MenuUI);
         }
 
         public static void ExitBattleStory()
@@ -1259,7 +1288,7 @@ namespace Altzone.Scripts.Lobby
 
                 if(character == null || character.Id is CharacterID.None)
                 {
-                    character = new(PlayerCharacterPrototypes.GetCharacter("-1").BaseCharacter);
+                    character = new(PlayerCharacterPrototypes.GetCharacter("-1",true).BaseCharacter);
                 }
 
                 var stats = new BattlePlayerStats()
@@ -1274,7 +1303,7 @@ namespace Altzone.Scripts.Lobby
                 _player.Characters[i] = new BattleCharacterBase()
                 {
                     Id            = (int)character.Id,
-                    Class         = (int)character.CharacterClassID,
+                    Class         = (int)character.CharacterClassType,
                     Stats         = stats,
                 };
             }
@@ -1466,7 +1495,7 @@ namespace Altzone.Scripts.Lobby
 
         public void OnEvent(EventData photonEvent)
         {
-            Debug.Log($"Received PhotonEvent {photonEvent.Code}");
+            if(photonEvent.Code != 103) Debug.Log($"Received PhotonEvent {photonEvent.Code}");
 
             switch (photonEvent.Code)
             {
@@ -1630,6 +1659,7 @@ namespace Altzone.Scripts.Lobby
     {
         public long StartTime { get; set; }
         public string[] PlayerSlotUserIds { get; set; }
+        public string[] PlayerSlotUserNames { get; set; }
         public PlayerType[] PlayerSlotTypes { get; set; }
         public Emotion ProjectileInitialEmotion { get; set; }
         public string MapId { get; set; }
@@ -1641,6 +1671,7 @@ namespace Altzone.Scripts.Lobby
             byte[] bytes = new byte[0];
             Serializer.Serialize(b.StartTime, ref bytes);
             Serializer.Serialize(b.PlayerSlotUserIds, ref bytes);
+            Serializer.Serialize(b.PlayerSlotUserNames, ref bytes);
             Serializer.Serialize(b.PlayerSlotTypes.Cast<int>().ToArray(), ref bytes);
             Serializer.Serialize((int)b.ProjectileInitialEmotion, ref bytes);
             Serializer.Serialize(b.MapId, ref bytes);
@@ -1655,6 +1686,7 @@ namespace Altzone.Scripts.Lobby
             int offset = 0;
             result.StartTime = Serializer.DeserializeLong(data, ref offset);
             result.PlayerSlotUserIds = Serializer.DeserializeStringArray(data, ref offset);
+            result.PlayerSlotUserNames = Serializer.DeserializeStringArray(data, ref offset);
             result.PlayerSlotTypes = Serializer.DeserializeIntArray(data, ref offset).Cast<PlayerType>().ToArray();
             result.ProjectileInitialEmotion = (Emotion)Serializer.DeserializeInt(data, ref offset);
             result.MapId = Serializer.DeserializeString(data, ref offset);
@@ -1667,10 +1699,11 @@ namespace Altzone.Scripts.Lobby
         {
             return $"Start time: {StartTime}" +
                  $"\nPlayerSlotUserIds: {string.Join(", ", PlayerSlotUserIds)}" +
+                 $"\nPlayerSlotUserNames: {string.Join(", ", PlayerSlotUserNames)}" +
                  $"\nPlayerSlotTypes: {string.Join(", ",PlayerSlotTypes)}" +
                  $"\nProjectileInitialEmotion: {ProjectileInitialEmotion}" +
                  $"\nMapId: {MapId}" +
-                 $"\nPlayerCount: {PlayerCount}";  
+                 $"\nPlayerCount: {PlayerCount}";
         }
     }
 }

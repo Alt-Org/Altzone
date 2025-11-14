@@ -17,8 +17,8 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField]private GameObject _defaultAvatarImagePrefab;
         [SerializeField]private GameObject _confluenceAvatarImagePrefab;
         PlayerData _playerData = null;
-        private CharacterClassID _characterClassID;
-        private CharacterClassID _previousID = CharacterClassID.None;
+        private CharacterClassType _characterClassType;
+        private CharacterClassType _previousType = CharacterClassType.None;
 
         public void RefreshPlayerCurrentCharacter()
         {
@@ -29,14 +29,15 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private AvatarInfo GetCharacterPrefabInfo_bkp(int prefabId)
         {
-            CharacterClassID characterClass = CustomCharacter.GetClassID((CharacterID)prefabId);
-            _previousID = _characterClassID;
-            _characterClassID = characterClass;
+            CharacterClassType characterClass = CustomCharacter.GetClass((CharacterID)prefabId);
+            _previousType = _characterClassType;
+            _characterClassType = characterClass;
 
             AvatarClassInfo classObject = null;
             foreach (AvatarClassInfo classInfo in _avatarClassInfoList)
             {
-                if (classInfo.id == characterClass)
+                Debug.Log("Script GetCharacterPrefabInfo: going over classInfo.Type: " + classInfo.Type);
+                if (classInfo.Type == characterClass)
                 {
                     classObject = classInfo;
                     break;
@@ -46,8 +47,8 @@ namespace MenuUi.Scripts.AvatarEditor
             if (classObject == null)
             {
                 classObject = _avatarClassInfoList[0];
-                _characterClassID = classObject.id;
-                Debug.LogError($"Could not select AvatarClassInfo! Current character class id is: {characterClass}. Using first AvatarClassInfo: {_avatarClassInfoList[0].id}.");
+                _characterClassType = classObject.Type;
+                Debug.LogError($"Could not select AvatarClassInfo! Current character class id is: {characterClass}. Using first AvatarClassInfo: {_avatarClassInfoList[0].Type}.");
             }
 
             AvatarInfo character = null;
@@ -76,13 +77,13 @@ namespace MenuUi.Scripts.AvatarEditor
             if (character != null)
                 _divanImage.color = character.DivanImage;
 
-            if(_previousID == CharacterClassID.None)
+            if(_previousType == CharacterClassType.None)
                 ResetAvatarDataToDefaults();
         }
 
-        public CharacterClassID GetCharacterClassID()
+        public CharacterClassType GetCharacterClass()
         {
-            return _characterClassID;
+            return _characterClassType;
         }
 
         private void ResetAvatarDataToDefaults()
@@ -110,7 +111,7 @@ namespace MenuUi.Scripts.AvatarEditor
     public class AvatarClassInfo
     {
         public string Name;
-        public CharacterClassID id;
+        public CharacterClassType Type;
         public List<AvatarInfo> list;
     }
 }

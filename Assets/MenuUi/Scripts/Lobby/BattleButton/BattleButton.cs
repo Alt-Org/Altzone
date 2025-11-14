@@ -7,6 +7,7 @@ using MenuUi.Scripts.SwipeNavigation;
 using Altzone.Scripts.Lobby;
 using TMPro;
 using Altzone.Scripts.Window;
+using Altzone.Scripts.Language;
 
 namespace MenuUi.Scripts.Lobby.BattleButton
 {
@@ -17,8 +18,8 @@ namespace MenuUi.Scripts.Lobby.BattleButton
     public class BattleButton : MonoBehaviour
     {
         [SerializeField] private Image _gameTypeIcon;
-        [SerializeField] private TMP_Text _gameTypeName;
-        [SerializeField] private TMP_Text _gameTypeDescription;
+        [SerializeField] private TextLanguageSelectorCaller _gameTypeName;
+        [SerializeField] private TextLanguageSelectorCaller _gameTypeDescription;
         [SerializeField] private GameObject _gameTypeSelectionMenu;
         [SerializeField] private GameObject _gameTypeOptionPrefab;
         [SerializeField] private Button _openBattleUiEditorButton;
@@ -38,6 +39,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         {
             _swipe = FindObjectOfType<SwipeUI>();
             _swipe.OnCurrentPageChanged += CloseGameTypeSelection;
+            SettingsCarrier.OnLanguageChanged += ChangeLanguage;
 
             _gameTypeSelectionMenu.SetActive(false); // Close selection menu so that it's not open when game opens
 
@@ -86,6 +88,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             _button.onClick.RemoveListener(RequestBattlePopup);
             _swipe.OnCurrentPageChanged -= CloseGameTypeSelection;
             _openBattleUiEditorButton.onClick.RemoveListener(OnOpenBattleUiEditorButtonPressed);
+            SettingsCarrier.OnLanguageChanged -= ChangeLanguage;
         }
 
 
@@ -131,8 +134,8 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         private void UpdateGameType(GameTypeInfo gameTypeInfo)
         {
             _gameTypeIcon.sprite = gameTypeInfo.Icon;
-            _gameTypeName.text = gameTypeInfo.Name;
-            _gameTypeDescription.text = gameTypeInfo.Description;
+            _gameTypeName.SetText(gameTypeInfo.Name);
+            _gameTypeDescription.SetText(gameTypeInfo.Description);
             _selectedGameType = gameTypeInfo.gameType;
 
             // Saving battle button selected game type to playerprefs
@@ -147,6 +150,32 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
             // Opening battle popup after selecting a game type
             SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
+        }
+
+        private void ChangeLanguage(SettingsCarrier.LanguageType language)
+        {
+            foreach (GameTypeInfo gameTypeInfo in _gameTypeReference.GetGameTypeInfos())
+            {
+                if (gameTypeInfo.gameType == _selectedGameType)
+                {
+                    _gameTypeName.SetText(gameTypeInfo.Name);
+                    _gameTypeDescription.SetText(gameTypeInfo.Description);
+                }
+            }
+
+            for (int i = 0; i < _gameTypeOptionList.Count; i++)
+            {
+                GameTypeOption gameTypeOption = _gameTypeOptionList[i];
+
+                foreach (GameTypeInfo gameTypeInfo in _gameTypeReference.GetGameTypeInfos())
+                {
+                    if (gameTypeInfo.gameType == gameTypeOption.Info.gameType)
+                    {
+                        bool selected = gameTypeInfo.gameType == _selectedGameType;
+                        gameTypeOption.SetInfo(gameTypeInfo, selected);
+                    }
+                }
+            }
         }
 
 

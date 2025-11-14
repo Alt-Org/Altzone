@@ -15,23 +15,26 @@ MonoBehaviour:
   Id: 403
   CharacterId: 403
   IsApproved: 1
-  Name: Projisointi
+  FinnishName: Projisointi
+  EnglishName: Projection
   ClassType: 400
-  CharacterDescription: "Projisointi on yksin\xE4inen ja kipe\xE4sti hyv\xE4ksynt\xE4\xE4
-    kaipaava hahmo, joka pyrkii muiden tunteita mukailemalla sulautumaan joukkoon
-    ja v\xE4lttelee omien tunteidensa n\xE4ytt\xE4mist\xE4 porukasta erottumisen
-    pelosta. H\xE4n nauraa ja paheksuu muiden mukana, vaikkei se oikeasti hyv\xE4lt\xE4
-    tuntuisikaan ja h\xE4nen sisimp\xE4ns\xE4 alkaisi rakoilla.\r\n\nProjisoinnin
+  CharacterDescriptionFinnish: "Peilinn\xE4ytt\xE4j\xE4 on yksin\xE4inen ja kipe\xE4sti
+    hyv\xE4ksynt\xE4\xE4 kaipaava hahmo, joka pyrkii muiden tunteita mukailemalla
+    sulautumaan joukkoon ja v\xE4lttelee omien tunteidensa n\xE4ytt\xE4mist\xE4 porukasta
+    erottumisen pelosta. H\xE4n nauraa ja paheksuu muiden mukana, vaikkei se oikeasti
+    hyv\xE4lt\xE4 tuntuisikaan ja h\xE4nen sisimp\xE4ns\xE4 alkaisi rakoilla.\r\n\nPeilinn\xE4ytt\xE4j\xE4n
     suojana tunnetila-ammukselta toimii nimens\xE4 mukaisesti peili, jonka taakse
-    h\xE4n piilottaa todellisen, haavoittuvaisen itsens\xE4.\r\n"
-  CharacterShortDescription: 
+    h\xE4n piilottaa todellisen, haavoittuvaisen itsens\xE4.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: Porukkaan kuin porukkaan sulautuva kameleontti.
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 6b7ac866905eded4aa7979294c2e13af, type: 2}
   Hp:
     Level: 3
     Coefficient: 5
   Speed:
-    Level: 4
-    Coefficient: 4
+    Level: 3
+    Coefficient: 0
   CharacterSize:
     Level: 8
     Coefficient: 6
@@ -43,7 +46,8 @@ MonoBehaviour:
     Coefficient: 4
   GalleryImage: {fileID: 21300000, guid: 2ca1e227698614648a591da5ac1ec55c, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 30598a04f7d857f4b92aeb3d92854b0c, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
-      Value: 1455379395159882281
+      Value: 1373315289179166438
   BattleUiSprite: {fileID: 0}

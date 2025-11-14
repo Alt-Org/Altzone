@@ -1,0 +1,25 @@
+/// @file BattleGoal.qtn
+/// <summary>
+/// Contains component used for both goals.
+/// </summary>
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattleGoalQComponent}  
+///   @copybrief Quantum.BattleGoalQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleGoalQComponent
+/// <summary>
+/// Keeps track of both team's goals.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleGoal.qtn}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @var BattleTeamNumber Quantum.BattleGoalQComponent::TeamNumber
+/// <summary>Which team the goal belongs to.</summary>
+///
+/// @var bool Quantum.BattleGoalQComponent::HasTriggered
+/// <summary>Has the projectile gone into the goal or not.</summary>

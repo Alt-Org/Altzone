@@ -1,23 +1,41 @@
+/// @file BattleSoulWallQSystem.cs
+/// <summary>
+/// Contains @cref{Battle.QSimulation.SoulWall,BattleSoulWallQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which handles creating and destroying SoulWalls.
+/// </summary>
+
+// Unity usings
 using UnityEngine;
 using UnityEngine.Scripting;
+
+// Quantum usings
 using Quantum;
 using Photon.Deterministic;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Projectile;
 using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.SoulWall
 {
+    /// <summary>
+    /// <span class="brief-h">%SoulWall <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum SystemSignalsOnly@u-exlink</a> @systemslink</span><br/>
+    /// Handles creating SoulWalls and reacting to the projectile colliding with them.
+    /// </summary>
+    ///
+    /// This system creates SoulWalls based on BattleArena and SoulWall Specs when GameControlSystem calls CreateSoulWalls method during the map creation.<br/>
+    /// Also destroys SoulWall segment when BattleCollisionQSystem calls the collision method.
     [Preserve]
     public unsafe class BattleSoulWallQSystem : SystemSignalsOnly
     {
         /// <summary>
-        /// Creates soulwalls based on BattleArena and SoulWall Specs during map creation phase.<br/>
-        /// (this method should only be called once by GameControlSystem during the map creation)
+        /// Creates soulwalls based on BattleArena and SoulWall Specs during map creation phase.
+        /// @warning
+        /// This method should only be called once by GameControlSystem during the map creation
         /// </summary>
-        /// <param name="f">Current Quantum Frame</param>
-        /// <param name="battleArenaSpec">The BattleArenaSpec</param>
-        /// <param name="soulWallSpec">The SoulWallSpec</param>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="battleArenaSpec">The BattleArenaSpec.</param>
+        /// <param name="soulWallSpec">The SoulWallSpec.</param>
         public static void CreateSoulWalls(Frame f, BattleArenaQSpec battleArenaSpec, BattleSoulWallQSpec soulWallSpec)
         {
             // create soulwall entities on both sides of the arena
@@ -25,20 +43,25 @@ namespace Battle.QSimulation.SoulWall
             CreateSoulWalls(f, BattleTeamNumber.TeamBeta,  battleArenaSpec.SoulWallTeamBetaTemplates,  soulWallSpec.SoulWallPrototypes);
         }
 
-        public static void OnProjectileHitSoulWall(Frame f, BattleProjectileQComponent* projectile, BattleSoulWallQComponent* soulWall, EntityRef soulWallEntity)
+        /// <summary>
+        /// Called by BattleCollisionQSystem. Destroys the soulwall entity that was hit and sends forward the appropriate event that spawns a lightray if the soul wall hit was in the last row.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
+        /// <param name="soulWallCollisionData">Collision data related to the soul wall.</param>
+        public static void OnProjectileHitSoulWall(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.SoulWallCollisionData* soulWallCollisionData)
         {
-            if (projectile->IsHeld) return;
+            if (projectileCollisionData->Projectile->IsHeld) return;
             Debug.Log("Soul wall hit");
 
-            if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.SoulWall)) return;
-
-            if (soulWall->Row == BattleSoulWallRow.Last)
+            if (soulWallCollisionData->SoulWall->Row == BattleSoulWallRow.Last)
             {
                 FP battleLightrayRotation = 0;
                 BattleLightrayColor battleLightrayColor = BattleLightrayColor.Red;
                 BattleLightraySize battleLightraySize = (BattleLightraySize)f.RNG->NextInclusive(0, 2);
 
-                switch (soulWall->Team)
+                switch (soulWallCollisionData->SoulWall->Team)
                 {
                     case BattleTeamNumber.TeamAlpha:
                         battleLightrayRotation = f.RNG->NextInclusive(-50, 50);
@@ -50,25 +73,26 @@ namespace Battle.QSimulation.SoulWall
                         break;
                 }
 
-                Transform2D* soulWallTransform = f.Unsafe.GetPointer<Transform2D>(soulWallEntity);
+                Transform2D* soulWallTransform = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->OtherEntity);
 
-                f.Events.BattleLastRowWallDestroyed(soulWall->WallNumber, soulWall->Team, battleLightrayRotation, battleLightrayColor, battleLightraySize);
+                f.Events.BattleLastRowWallDestroyed(soulWallCollisionData->SoulWall->WallNumber, soulWallCollisionData->SoulWall->Team, battleLightrayRotation, battleLightrayColor, battleLightraySize);
             }
 
             // Destroy the SoulWall entity
             f.Events.BattlePlaySoundFX(BattleSoundFX.WallBroken);
-            f.Destroy(soulWallEntity);
+            f.Destroy(projectileCollisionData->OtherEntity);
 
-            BattleProjectileQSystem.SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.SoulWall);
+            BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.SoulWall);
         }
 
         /// <summary>
-        /// Private helper method (for the public <see cref="CreateSoulWalls(Frame, BattleArenaQSpec BattleSoulWallQSpec)">CreateSoulWalls</see>) that creates soulwalls on one side of the arena.
+        /// Private helper method (for the public <see cref="CreateSoulWalls(Frame, BattleArenaQSpec, BattleSoulWallQSpec)">CreateSoulWalls</see>) that creates soulwalls on one side of the arena.
         /// </summary>
-        /// <param name="f">Current Quantum Frame</param>
-        /// <param name="teamNumber">The teamNumber of the team whose side is being created</param>
-        /// <param name="soulWallTemplates">An array of soulwall templates that are used to create the soulwalls </param>
-        /// <param name="soulWallPrototypes">An array of entityPrototypes that can be created</param>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="teamNumber">The teamNumber of the team whose side is being created.</param>
+        /// <param name="soulWallTemplates">An array of soulwall templates that are used to create the soulwalls.</param>
+        /// <param name="soulWallPrototypes">An array of entityPrototypes that can be created.</param>
         private static void CreateSoulWalls(Frame f, BattleTeamNumber teamNumber, BattleSoulWallTemplate[] soulWallTemplates, AssetRef<EntityPrototype>[] soulWallPrototypes)
         {
             // soulwall temp variables

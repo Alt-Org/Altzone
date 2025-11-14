@@ -83,7 +83,7 @@ MonoBehaviour:
   - Name: Jukebox
     MusicTracks:
     - Name: In Awe
-      Id: 0
+      Id: 1
       Music: {fileID: 8300000, guid: 6ab022fd759eb2e418ff0169150f67b1, type: 3}
       Info:
         Disk: {fileID: 21300000, guid: 81162641724050f49a330eb23c9e6437, type: 3}
@@ -92,7 +92,7 @@ MonoBehaviour:
         ArtistName: 
         ArtistLogo: {fileID: 0}
     - Name: Lingering Smoothness
-      Id: 0
+      Id: 2
       Music: {fileID: 8300000, guid: 206d22de247615540869e783709230d4, type: 3}
       Info:
         Disk: {fileID: 21300000, guid: 19b45a0d55711f845848895c797669f4, type: 3}
@@ -101,7 +101,7 @@ MonoBehaviour:
         ArtistName: 
         ArtistLogo: {fileID: 0}
     - Name: Emotional Waves
-      Id: 0
+      Id: 3
       Music: {fileID: 8300000, guid: 77263ef85cbf60a448b496bdd8029a11, type: 3}
       Info:
         Disk: {fileID: 21300000, guid: 3311b13ccf7415f4fa621aa45aa51153, type: 3}
@@ -110,7 +110,7 @@ MonoBehaviour:
         ArtistName: 
         ArtistLogo: {fileID: 0}
     - Name: Soul
-      Id: 0
+      Id: 4
       Music: {fileID: 8300000, guid: 5dbc7fd70bf96ac4eb223411d552b66d, type: 3}
       Info:
         Disk: {fileID: 21300000, guid: 117ff4b0aae501d49a04904563a17686, type: 3}
@@ -119,7 +119,7 @@ MonoBehaviour:
         ArtistName: 
         ArtistLogo: {fileID: 0}
     - Name: Soul Atmos
-      Id: 0
+      Id: 5
       Music: {fileID: 8300000, guid: 280c87abcfabe804f8b177e519c22c11, type: 3}
       Info:
         Disk: {fileID: 21300000, guid: 117ff4b0aae501d49a04904563a17686, type: 3}
@@ -128,7 +128,7 @@ MonoBehaviour:
         ArtistName: 
         ArtistLogo: {fileID: 0}
     - Name: Falling Bird
-      Id: 0
+      Id: 6
       Music: {fileID: 8300000, guid: 45bf53d82e22ced439d9560c0e31b037, type: 3}
       Info:
         Disk: {fileID: 21300000, guid: 6b10d61836065ad4d8bc5ddfad23d3d3, type: 3}
@@ -137,7 +137,7 @@ MonoBehaviour:
         ArtistName: 
         ArtistLogo: {fileID: 0}
     - Name: Distance
-      Id: 0
+      Id: 7
       Music: {fileID: 8300000, guid: 2808b6d784c8ecf48a6919b72cdb9c06, type: 3}
       Info:
         Disk: {fileID: 21300000, guid: 6957832f4a74ee14c9f03cdc8f995195, type: 3}
@@ -146,7 +146,7 @@ MonoBehaviour:
         ArtistName: 
         ArtistLogo: {fileID: 0}
     - Name: Plan
-      Id: 0
+      Id: 8
       Music: {fileID: 8300000, guid: b8e3d06e14517a444a15d3c1dda63890, type: 3}
       Info:
         Disk: {fileID: 21300000, guid: 4007812c850e50346ba11eb93c2f66fe, type: 3}
@@ -155,7 +155,7 @@ MonoBehaviour:
         ArtistName: 
         ArtistLogo: {fileID: 0}
     - Name: Long Road
-      Id: 0
+      Id: 9
       Music: {fileID: 8300000, guid: 819a980e15eacf1469137f9181e19580, type: 3}
       Info:
         Disk: {fileID: 21300000, guid: 0b536641e5d23b24ebbb60bc93ddecbb, type: 3}
@@ -164,7 +164,7 @@ MonoBehaviour:
         ArtistName: 
         ArtistLogo: {fileID: 0}
     - Name: Rush Hour
-      Id: 0
+      Id: 10
       Music: {fileID: 8300000, guid: 01dfc73aee345a44194f962eb650da1c, type: 3}
       Info:
         Disk: {fileID: 21300000, guid: 72f1b5abf57b2464687cdde20e1f49c7, type: 3}
@@ -173,7 +173,7 @@ MonoBehaviour:
         ArtistName: 
         ArtistLogo: {fileID: 0}
     - Name: Whos Done It
-      Id: 0
+      Id: 11
       Music: {fileID: 8300000, guid: 6056954e6aff69c44a71d5a26ee562c2, type: 3}
       Info:
         Disk: {fileID: 21300000, guid: f25c59a813e262c49b27164f6f822355, type: 3}
@@ -182,7 +182,7 @@ MonoBehaviour:
         ArtistName: 
         ArtistLogo: {fileID: 0}
     - Name: Diamonds
-      Id: 0
+      Id: 12
       Music: {fileID: 8300000, guid: 6c5fdaf6878a12648a3282219febb859, type: 3}
       Info:
         Disk: {fileID: 21300000, guid: 80dc1405a92a74b40a3f0352fa09880a, type: 3}
@@ -191,7 +191,7 @@ MonoBehaviour:
         ArtistName: 
         ArtistLogo: {fileID: 0}
     - Name: What Are You Waiting For
-      Id: 0
+      Id: 13
       Music: {fileID: 8300000, guid: 63438e473d43b704f964b57f42d7238a, type: 3}
       Info:
         Disk: {fileID: 21300000, guid: f4fe93746e3923a46b244ecae7f3ea40, type: 3}
@@ -199,9 +199,36 @@ MonoBehaviour:
         SubGenre: 
         ArtistName: 
         ArtistLogo: {fileID: 0}
+    - Name: Drifting Souls
+      Id: 14
+      Music: {fileID: 8300000, guid: 3f6ebf0b65466e348bb2f61b51b6cbce, type: 3}
+      Info:
+        Disk: {fileID: 21300000, guid: 93c87d3ff2040d64a898d271a62d50c9, type: 3}
+        Genre: 
+        SubGenre: 
+        ArtistName: 
+        ArtistLogo: {fileID: 0}
+    - Name: Universe
+      Id: 15
+      Music: {fileID: 8300000, guid: 4132f30316a128b4d84b1d455f006d61, type: 3}
+      Info:
+        Disk: {fileID: 21300000, guid: f184a079e9e6c4348948cb4fa8e2d2b9, type: 3}
+        Genre: 
+        SubGenre: 
+        ArtistName: 
+        ArtistLogo: {fileID: 0}
+    - Name: Vision
+      Id: 16
+      Music: {fileID: 8300000, guid: 2e1da64bb55a05a44846a0812e4b6332, type: 3}
+      Info:
+        Disk: {fileID: 21300000, guid: 117ff4b0aae501d49a04904563a17686, type: 3}
+        Genre: 
+        SubGenre: 
+        ArtistName: 
+        ArtistLogo: {fileID: 0}
   - Name: Battle
     MusicTracks:
-    - Name: Background
+    - Name: BattleArenaBackground2
       Id: 0
       Music: {fileID: 8300000, guid: 758bd14066e6f0b058986ad96437108c, type: 3}
       Info:
@@ -231,6 +258,33 @@ MonoBehaviour:
     - Name: RaidBGSpedUp
       Id: 0
       Music: {fileID: 8300000, guid: 53a628cde6ebfe740aac606b4f222381, type: 3}
+      Info:
+        Disk: {fileID: 0}
+        Genre: 
+        SubGenre: 
+        ArtistName: 
+        ArtistLogo: {fileID: 0}
+    - Name: BattleBackgroundMusicNew
+      Id: 0
+      Music: {fileID: 8300000, guid: eb40165a85831714ea60438443911054, type: 3}
+      Info:
+        Disk: {fileID: 0}
+        Genre: 
+        SubGenre: 
+        ArtistName: 
+        ArtistLogo: {fileID: 0}
+    - Name: Win
+      Id: 0
+      Music: {fileID: 8300000, guid: 903e9f99f8a6c6246acf075bb536ca61, type: 3}
+      Info:
+        Disk: {fileID: 0}
+        Genre: 
+        SubGenre: 
+        ArtistName: 
+        ArtistLogo: {fileID: 0}
+    - Name: Lose
+      Id: 0
+      Music: {fileID: 8300000, guid: 8024ede57df755144a8b7f8302dd24a0, type: 3}
       Info:
         Disk: {fileID: 0}
         Genre: 

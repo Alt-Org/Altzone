@@ -15,10 +15,22 @@ MonoBehaviour:
   Id: 503
   CharacterId: 503
   IsApproved: 0
-  Name: Anoreksia
+  FinnishName: Anoreksia
+  EnglishName: Anorexia
   ClassType: 500
-  CharacterDescription: 
-  CharacterShortDescription: 
+  CharacterDescriptionFinnish: "Anoreksia k\xE4\xE4nt\xE4\xE4 vihamielisyyden itse\xE4\xE4n
+    vastaan. Sen sijaan, ett\xE4 h\xE4n ilmaisisi tunteensa ulosp\xE4in, h\xE4n torjuu
+    ne kurittamalla omaa kehoaan. Jokainen n\xE4l\xE4n hetki on keino tukahduttaa
+    pelko ja hallita sis\xE4ist\xE4 kaaosta \u2013 retroflektio, jossa energia, joka
+    kuuluisi ulos, k\xE4\xE4ntyy sis\xE4\xE4np\xE4in tuhoavaksi voimaksi. H\xE4nen
+    voimansa hupenevat, mutta samalla h\xE4n vakuuttaa itselleen olevansa vahvempi
+    kuin tunteensa.\r\n\nAnoreksian suojakilpi on ymp\xE4rille kietoutuva mittanauha,
+    joka toimii h\xE4nen kontrollinsa symbolina. Lopulta mittanauha katoaa, ja paljastaa
+    vain hauraan hahmon, joka ei en\xE4\xE4 jaksa torjua."
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Itsens\xE4 kurittava, mittanauhalla torjuva
+    hauras selviytyj\xE4."
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 0}
   Hp:
     Level: 0
@@ -35,8 +47,9 @@ MonoBehaviour:
   Defence:
     Level: 0
     Coefficient: 0
-  GalleryImage: {fileID: 0}
-  GalleryHeadImage: {fileID: 0}
+  GalleryImage: {fileID: 21300000, guid: f7b73dd5a41318d43aca22d47ebc23c1, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: 7f0ccc03fc025544cbd6e5592ec3f5f4, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
       Value: 0

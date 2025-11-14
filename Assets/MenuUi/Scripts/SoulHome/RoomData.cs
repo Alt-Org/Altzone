@@ -415,6 +415,7 @@ namespace MenuUI.Scripts.SoulHome
 
         private bool CheckFurniturePosition(int row, int column, FurnitureGrid gridtoCheck, FurnitureHandling furniture, Vector2 backupHit, bool useBackup)
         {
+            bool? check = null;
             if (furniture.Furniture.Place is FurniturePlacement.FloorByWall)
             {
                 Vector2Int furnitureSize = furniture.GetFurnitureSizeRotated();
@@ -457,9 +458,13 @@ namespace MenuUI.Scripts.SoulHome
                     if (rotatedRow == 0) { }
                     else if (furniture.TempSpriteDirection is not FurnitureHandling.Direction.Left)
                     {
-                        furniture.RotateFurniture(FurnitureHandling.Direction.Left);
-                        row = rotatedRow;
-                        column = rotatedColumn;
+                        if (furniture.FurnitureSpriteLeft == null && (!furniture.SpriteCanBeFlipped || furniture.FurnitureSpriteRight == null)) check = false;
+                        else
+                        {
+                            furniture.RotateFurniture(FurnitureHandling.Direction.Left);
+                            row = rotatedRow;
+                            column = rotatedColumn;
+                        }
                     }
                 }
                 else if (endColumn == _slotColumns - 1)
@@ -467,30 +472,37 @@ namespace MenuUI.Scripts.SoulHome
                     if (rotatedRow == 0) { }
                     else if (furniture.TempSpriteDirection is not FurnitureHandling.Direction.Right)
                     {
-                        furniture.RotateFurniture(FurnitureHandling.Direction.Right);
-                        row = rotatedRow;
-                        column = rotatedColumn;
+                        if (furniture.FurnitureSpriteRight == null && (!furniture.SpriteCanBeFlipped || furniture.FurnitureSpriteLeft == null)) check = false;
+                        else
+                        {
+                            furniture.RotateFurniture(FurnitureHandling.Direction.Right);
+                            row = rotatedRow;
+                            column = rotatedColumn;
+                        }
                     }
                 }
             }
 
             if(gridtoCheck is FurnitureGrid.BackWall)
             {
+                if (furniture.FurnitureSpriteFront == null && (!furniture.SpriteCanBeFlipped || furniture.FurnitureSpriteBack == null)) check = false;
                 furniture.RotateFurniture(FurnitureHandling.Direction.Front);
             }
             else if (gridtoCheck is FurnitureGrid.RightWall)
             {
+                if (furniture.FurnitureSpriteRight == null && (!furniture.SpriteCanBeFlipped || furniture.FurnitureSpriteLeft == null)) check = false;
                 furniture.RotateFurniture(FurnitureHandling.Direction.Right);
             }
             else if (gridtoCheck is FurnitureGrid.LeftWall)
             {
+                if (furniture.FurnitureSpriteLeft == null && (!furniture.SpriteCanBeFlipped || furniture.FurnitureSpriteRight == null)) check = false;
                 furniture.RotateFurniture(FurnitureHandling.Direction.Left);
             }
 
 
-            bool check = CheckFurniturePosition(row, column, gridtoCheck, furniture.Furniture);
-            SetSlotValidity(row, column, gridtoCheck, furniture.Furniture, check);
-            return check;
+            if(check == null) check = CheckFurniturePosition(row, column, gridtoCheck, furniture.Furniture);
+            SetSlotValidity(row, column, gridtoCheck, furniture.Furniture, (bool)check);
+            return (bool)check;
         }
 
         private void SetFurniture(int row, int column, FurnitureGrid grid, Furniture furniture)

@@ -8,7 +8,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
 
 
-        public override CharacterClassID ClassID => CharacterClassID.Confluent;
+        public override CharacterClassType ClassType => CharacterClassType.Confluent;
 
         //Enums should equal about 20.
         protected ConfluentClassCharacter()
@@ -17,7 +17,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             _characterSizeStrength = ValueStrength.Strong;
             _hpStrength = ValueStrength.SemiWeak;
             _defenceStrength = ValueStrength.Strong;
-            _speedStrength = ValueStrength.Medium;
+            _speedStrength = ValueStrength.None;
             InitializeValues();
         }
     }

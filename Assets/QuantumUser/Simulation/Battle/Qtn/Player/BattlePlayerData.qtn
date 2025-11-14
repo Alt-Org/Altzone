@@ -24,7 +24,10 @@ component BattlePlayerDataQComponent
     EntityRef HitboxShieldEntity;
     EntityRef HitboxCharacterEntity;
 
+    bool DisableRotation;
     FrameTimer DamageCooldown;
+
+    FP MovementCooldownSec;
 }
 
 //} PlayerData
@@ -43,6 +46,8 @@ struct BattlePlayerHitboxTemplate
 {
     [FreeOnComponentRemoved] list<BattlePlayerHitboxColliderTemplate> ColliderTemplateList;
     BattlePlayerCollisionType CollisionType;
+
+    FP NormalAngleDeg;
 }
 
 component BattlePlayerDataTemplateQComponent
@@ -52,6 +57,8 @@ component BattlePlayerDataTemplateQComponent
 
     BattlePlayerHitboxTemplate HitboxShield;
     BattlePlayerHitboxTemplate HitboxCharacter;
+
+    bool DisableRotation;
 }
 
 //} PlayerDataTemplate
