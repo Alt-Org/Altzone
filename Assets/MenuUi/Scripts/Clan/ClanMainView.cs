@@ -139,10 +139,9 @@ public class ClanMainView : MonoBehaviour
         bool isInClan = ServerManager.Instance.Clan != null && clan.Id == ServerManager.Instance.Clan._id;
         _inClanButtons.SetActive(isInClan);
         _notInClanButtons.SetActive(!isInClan);
-        //_joinClanButton.interactable = clan.IsOpen;
         if (_joinClanButton != null)
         {
-            // Näytä liity-nappi vain jos pelaaja EI ole tämän klaanin jäsen
+            // Show join button only if not in clan
             _joinClanButton.gameObject.SetActive(!isInClan);
             _joinClanButton.interactable = clan.IsOpen && !isInClan;
         }

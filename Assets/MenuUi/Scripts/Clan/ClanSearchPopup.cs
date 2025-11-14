@@ -16,6 +16,7 @@ public class ClanSearchPopup : MonoBehaviour
     [SerializeField] private Transform _labelsField;
     [SerializeField] private GameObject _labelImagePrefab;
     [SerializeField] private Button _joinClanButton;
+    [SerializeField] private Button _openClanMainView;
 
     /*public void SetClanInfo(ServerClan clan, ClanListing clanListing)
     {
@@ -69,13 +70,29 @@ public class ClanSearchPopup : MonoBehaviour
             ServerManager.Instance.Clan != null &&
             clan._id == ServerManager.Instance.Clan._id;
 
-        _joinClanButton.gameObject.SetActive(!isMember);
+        if(_joinClanButton != null)
+        {
+            _joinClanButton.gameObject.SetActive(!isMember);
+
+            _joinClanButton.onClick.RemoveAllListeners();
+            if (!isMember)
+            {
+                _joinClanButton.onClick.AddListener(() => { onJoin?.Invoke(); });
+            }
+        }
+
+        if(_openClanMainView != null)
+        {
+            _openClanMainView.gameObject.SetActive(isMember);
+        }
+
+        /*_joinClanButton.gameObject.SetActive(!isMember);
 
         _joinClanButton.onClick.RemoveAllListeners();
         if(!isMember)
         {
             _joinClanButton.onClick.AddListener(() => { onJoin?.Invoke(); });
-        }
+        }*/
     }
 
     public void Hide()
