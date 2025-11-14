@@ -256,6 +256,7 @@ namespace Altzone.Scripts.Lobby
             PhotonRealtimeClient.Client.StateChanged += OnStateChange;
             this.Subscribe<ReserveFreePositionEvent>(OnReserveFreePositionEvent);
             this.Subscribe<PlayerPosEvent>(OnPlayerPosEvent);
+            this.Subscribe<BotToggleEvent>(OnBotToggleEvent);
             this.Subscribe<StartRoomEvent>(OnStartRoomEvent);
             this.Subscribe<StartPlayingEvent>(OnStartPlayingEvent);
             this.Subscribe<StartRaidTestEvent>(OnStartRaidTestEvent);
@@ -440,6 +441,11 @@ namespace Altzone.Scripts.Lobby
             {
                 _requestPositionChangeHolder = StartCoroutine(RequestPositionChange(data.PlayerPosition));
             }
+        }
+
+        private void OnBotToggleEvent(BotToggleEvent data)
+        {
+            
         }
 
         private IEnumerator RequestPositionChange(int position)
@@ -1587,6 +1593,23 @@ namespace Altzone.Scripts.Lobby
             public override string ToString()
             {
                 return $"{nameof(PlayerPosition)}: {PlayerPosition}";
+            }
+        }
+
+        public class BotToggleEvent
+        {
+            public readonly int PlayerPosition;
+            public readonly bool BotActive;
+
+            public BotToggleEvent(int playerPosition, bool value)
+            {
+                PlayerPosition = playerPosition;
+                BotActive = value;
+            }
+
+            public override string ToString()
+            {
+                return $"{nameof(PlayerPosition)}: {PlayerPosition}, {nameof(BotActive)}: {BotActive}";
             }
         }
 

@@ -11,7 +11,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
     /// </summary>
     public class PlayerPositionButtons : MonoBehaviour
     {
-        [SerializeField] private Button[] buttons;
+        [SerializeField] private PlayerPos[] positions;
 
         private static readonly int[] PositionMap =
         {
@@ -20,10 +20,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private void Start()
         {
-            for (var i = 0; i < buttons.Length; ++i)
+            for (var i = 0; i < positions.Length; ++i)
             {
                 var capturedPositionIndex = i;
-                buttons[i].onClick.AddListener(() => SetPlayerPosition(capturedPositionIndex));
+                positions[i]._button.onClick.AddListener(() => SetPlayerPosition(capturedPositionIndex));
+                positions[i]._botToggle.onValueChanged.AddListener((value) => SetPositionBotToggle(capturedPositionIndex, value));
             }
         }
 
@@ -35,6 +36,23 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 throw new UnityException($"invalid positionIndex: {positionIndex}");
             }
             this.Publish(new LobbyManager.PlayerPosEvent(PositionMap[positionIndex]));
+        }
+
+        private void SetPositionBotToggle(int positionIndex, bool value)
+        {
+            Debug.Log($"SetPlayerPosition {positionIndex}");
+            if (positionIndex < 0 || positionIndex >= PositionMap.Length)
+            {
+                throw new UnityException($"invalid positionIndex: {positionIndex}");
+            }
+            this.Publish(new LobbyManager.PlayerPosEvent(PositionMap[positionIndex]));
+        }
+
+        [System.Serializable]
+        private class PlayerPos
+        {
+            public Button _button;
+            public Toggle _botToggle;
         }
     }
 }
