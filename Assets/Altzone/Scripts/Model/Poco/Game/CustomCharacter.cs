@@ -55,7 +55,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public int DefenceSegmentCount;
 
         public const int STATMAXCOMBINED = 50;
-        public const int STATMAXLEVEL = 24;
+        public const int STATMAXLEVEL = 6;
         public const int STATMINLEVEL = 1;
 
         public CustomCharacter(CharacterID id, int hp, int speed, int resistance, int attack, int defence)
