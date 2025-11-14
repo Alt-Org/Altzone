@@ -300,6 +300,18 @@ namespace Altzone.Scripts.Battle.Photon
             return true;
         }
 
+        public static bool CheckIfPositionHasBot(int position)
+        {
+            string positionKey = GetPositionKey(position);
+            string positionValue = PhotonRealtimeClient.LobbyCurrentRoom?.GetCustomProperty<string>(positionKey);
+            if (!string.Equals(positionValue, "Bot"))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         /// <summary>
         /// Get the corresponding position key to a position value.
         /// </summary>

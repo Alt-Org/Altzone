@@ -17,6 +17,7 @@ using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Lobby.SelectedCharacters;
 using MenuUi.Scripts.Signals;
 using Altzone.Scripts.Language;
+using Prg.Scripts.Common.Unity;
 
 namespace MenuUi.Scripts.Lobby.InRoom
 {
@@ -289,6 +290,22 @@ namespace MenuUi.Scripts.Lobby.InRoom
             _localPlayerPosition = localPlayer.GetCustomProperty(PlayerPositionKey, 0);
 
             CheckMasterClient();
+
+            //Check if positions have bots
+            bool botActive1 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition1);
+            _toggleBotPlayerP1.GetComponent<ToggleSliderHandler>().SetState(botActive1);
+            if (botActive1) _captionPlayerP1 = "Bot";
+            bool botActive2 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition1);
+            _toggleBotPlayerP2.GetComponent<ToggleSliderHandler>().SetState(botActive2);
+            if (botActive2) _captionPlayerP2 = "Bot";
+            bool botActive3 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition1);
+            _toggleBotPlayerP3.GetComponent<ToggleSliderHandler>().SetState(botActive3);
+            if (botActive3) _captionPlayerP3 = "Bot";
+            bool botActive4 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition1);
+            _toggleBotPlayerP4.GetComponent<ToggleSliderHandler>().SetState(botActive4);
+            if (botActive4) _captionPlayerP4 = "Bot";
+
+
             // Check other players first is they have reserved some player positions etc. from the room already.
             foreach (var player in PhotonRealtimeClient.GetCurrentRoomPlayers())
             {
@@ -300,10 +317,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
             CheckLocalPlayer(localPlayer);
 
             // Setting player position buttons active status
-            SetButtonActive(_buttonPlayerP1, _interactablePlayerP1);
-            SetButtonActive(_buttonPlayerP2, _interactablePlayerP2);
-            SetButtonActive(_buttonPlayerP3, _interactablePlayerP3);
-            SetButtonActive(_buttonPlayerP4, _interactablePlayerP4);
+            SetButtonActive(_buttonPlayerP1, _interactablePlayerP1 && !botActive1);
+            SetButtonActive(_buttonPlayerP2, _interactablePlayerP2 && !botActive2);
+            SetButtonActive(_buttonPlayerP3, _interactablePlayerP3 && !botActive3);
+            SetButtonActive(_buttonPlayerP4, _interactablePlayerP4 && !botActive4);
 
             // Setting bot toggle buttons.
             SetButtonActive(_toggleBotPlayerP1, _interactablePlayerP1, localPlayer.IsMasterClient);
