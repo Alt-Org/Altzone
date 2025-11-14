@@ -300,6 +300,7 @@ namespace Altzone.Scripts.Battle.Photon
             return true;
         }
 
+        /// <summary>
         public static bool CheckIfPositionHasBot(int position)
         {
             string positionKey = GetPositionKey(position);
@@ -312,6 +313,7 @@ namespace Altzone.Scripts.Battle.Photon
             return true;
         }
 
+        public static int GetBotCount()
         /// <summary>
         /// Get the corresponding position key to a position value.
         /// </summary>

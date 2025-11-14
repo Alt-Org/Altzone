@@ -1518,6 +1518,11 @@ namespace Altzone.Scripts.Lobby
                 }
             }
 
+            Room room = PhotonRealtimeClient.CurrentRoom;
+            int playerCount = room.PlayerCount;
+            int botCount = PhotonBattleRoom.GetBotCount();
+
+            if (playerCount + botCount < room.MaxPlayers && !PhotonRealtimeClient.CurrentRoom.IsOpen) PhotonRealtimeClient.OpenRoom();
             LobbyOnPlayerLeftRoom?.Invoke(new(otherPlayer));
         }
 
@@ -1666,9 +1671,15 @@ namespace Altzone.Scripts.Lobby
 
         public void OnPlayerEnteredRoom(Player newPlayer)
         {
+            Room room = PhotonRealtimeClient.CurrentRoom;
+            int playerCount = room.PlayerCount;
+            int botCount = PhotonBattleRoom.GetBotCount();
+
             LobbyOnPlayerEnteredRoom?.Invoke(new(newPlayer));
 
-            if(_canBattleStartCheckHolder == null) _canBattleStartCheckHolder = StartCoroutine(CheckIfBattleCanStart());
+            if(playerCount+botCount >= room.MaxPlayers) PhotonRealtimeClient.CloseRoom();
+
+            if (_canBattleStartCheckHolder == null) _canBattleStartCheckHolder = StartCoroutine(CheckIfBattleCanStart());
         }
         public void OnRoomPropertiesUpdate(PhotonHashtable propertiesThatChanged) { LobbyOnRoomPropertiesUpdate?.Invoke(new(propertiesThatChanged)); }
         public void OnPlayerPropertiesUpdate(Player targetPlayer, PhotonHashtable changedProps) { LobbyOnPlayerPropertiesUpdate?.Invoke(new(targetPlayer),new(changedProps)); }
