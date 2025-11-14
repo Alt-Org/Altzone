@@ -295,13 +295,13 @@ namespace MenuUi.Scripts.Lobby.InRoom
             bool botActive1 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition1);
             _toggleBotPlayerP1.GetComponent<ToggleSliderHandler>().SetState(botActive1);
             if (botActive1) _captionPlayerP1 = "Bot";
-            bool botActive2 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition1);
+            bool botActive2 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition2);
             _toggleBotPlayerP2.GetComponent<ToggleSliderHandler>().SetState(botActive2);
             if (botActive2) _captionPlayerP2 = "Bot";
-            bool botActive3 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition1);
+            bool botActive3 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition3);
             _toggleBotPlayerP3.GetComponent<ToggleSliderHandler>().SetState(botActive3);
             if (botActive3) _captionPlayerP3 = "Bot";
-            bool botActive4 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition1);
+            bool botActive4 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition4);
             _toggleBotPlayerP4.GetComponent<ToggleSliderHandler>().SetState(botActive4);
             if (botActive4) _captionPlayerP4 = "Bot";
 
