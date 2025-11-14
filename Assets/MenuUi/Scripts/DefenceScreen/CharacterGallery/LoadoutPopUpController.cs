@@ -5,9 +5,12 @@ using UnityEngine.Events;
 
 public class LoadoutPopUpController : MonoBehaviour
 {
-    
 
-    void Awake() => gameObject.SetActive(false);
+
+    void Awake()
+    {
+        gameObject.SetActive(false);
+    }
 
     public void Open()
     {

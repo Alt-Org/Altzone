@@ -140,6 +140,7 @@ namespace MenuUi.Scripts.CharacterGallery
             StartCoroutine(GetPlayerData(playerData =>
             {
                 _playerData = playerData;
+                _playerData.EnsurePopupLoadoutsInitialized();
 
                 // Getting selected character ids as CharacterID array
                 CustomCharacterListObject[] selectedCharacterIds = playerData.SelectedCharacterIds;
