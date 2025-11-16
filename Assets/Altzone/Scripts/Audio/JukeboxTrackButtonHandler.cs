@@ -62,7 +62,8 @@ public class JukeboxTrackButtonHandler : MonoBehaviour
         _trackCreditsNamesAutoScroll.ContentChange();
         _trackImage.sprite = musicTrack.JukeboxInfo.Disk;
         gameObject.SetActive(true);
-        _favoriteButtonHandler.Setup(likeType, musicTrack.Id);
+
+        if (_favoriteButtonHandler != null) _favoriteButtonHandler.Setup(likeType, musicTrack.Id);
     }
 
     public void Clear() { _musicTrack = null; gameObject.SetActive(false); }

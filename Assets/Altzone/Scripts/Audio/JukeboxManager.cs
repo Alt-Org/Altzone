@@ -45,6 +45,7 @@ namespace Altzone.Scripts.Audio
         private bool _playbackPaused = false;
 
         private bool _jukeboxMuted = false;
+        public bool JukeboxMuted { get {  return _jukeboxMuted; } }
 
         private float _musicElapsedTime = 0f;
         #endregion

@@ -59,7 +59,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -289,7 +289,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 34.55
+  m_fontSize: 18
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -343,7 +343,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4522520093816211803}
   - component: {fileID: 7723191662846576346}
-  - component: {fileID: 38490209565006907}
+  - component: {fileID: 7608521305797305928}
   m_Layer: 5
   m_Name: JukeboxWebLink
   m_TagString: Untagged
@@ -386,7 +386,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AspectMode: 2
   m_AspectRatio: 2.5
---- !u!114 &38490209565006907
+--- !u!114 &7608521305797305928
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -395,6 +395,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 7800842583340073421}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96152fdc443974c4087e8a806aca5a60, type: 3}
+  m_Script: {fileID: 11500000, guid: da40c50f6fded41498eee6b554a375b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _weblinkLabel: {fileID: 8091829079963573650}
+  _weblinkButton: {fileID: 2973785001944522270}

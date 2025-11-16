@@ -13,7 +13,8 @@ public class JukeboxInfoPopupHandler : MonoBehaviour
     [SerializeField] private Button _closeBackgroundButton;
 
     [SerializeField] private Transform _webLinksContentTransform;
-    //private List<> _weblinkButtons ;
+    private List<JukeboxWebLinkHandler> _weblinkButtons = new List<JukeboxWebLinkHandler>();
+    private int _weblinkPointer = -1;
 
     private void Awake()
     {
@@ -21,23 +22,43 @@ public class JukeboxInfoPopupHandler : MonoBehaviour
         _closeBackgroundButton.onClick.AddListener(() => Close());
     }
 
-    public void Set(MusicTrack musicTrack, JukeboxManager.MusicTrackFavoriteType favoriteType)
+    #region Weblink
+    private JukeboxWebLinkHandler GetFreeWeblinkSlot()
     {
-        if (musicTrack.JukeboxInfo.Artists.Count != 0)
-        {
-            ArtistReference artist = musicTrack.JukeboxInfo.Artists[0].Artist;
+        _weblinkPointer++;
 
+        if (_weblinkPointer >= _weblinkButtons.Count)
+        {
+            JukeboxWebLinkHandler handler = Instantiate(_webLinkButtonPrefab, _webLinksContentTransform).GetComponent<JukeboxWebLinkHandler>();
+            _weblinkButtons.Add(handler);
         }
 
-        _buttonHandler.SetTrack(musicTrack, -1, favoriteType);
+        return _weblinkButtons[_weblinkPointer];
+    }
 
+    private void ClearWeblinks()
+    {
+        while (_weblinkPointer >= 0)
+        {
+            _weblinkButtons[_weblinkPointer].Clear();
+            _weblinkPointer--;
+        }
+    }
+    #endregion
+
+    public void Set(MusicTrack musicTrack, JukeboxManager.MusicTrackFavoriteType favoriteType)
+    {
+        if (_buttonHandler.MusicTrack != null && _buttonHandler.MusicTrack.Id != musicTrack.Id) ClearWeblinks();
+
+        List<ArtistInfo> artists = musicTrack.JukeboxInfo.Artists;
+
+        if (artists.Count != 0)
+            foreach (ArtistInfo artist in artists)
+                GetFreeWeblinkSlot().Set(artist.Artist);
+
+        _buttonHandler.SetTrack(musicTrack, -1, favoriteType);
         gameObject.SetActive(true);
     }
 
     public void Close() { gameObject.SetActive(false); }
-
-    private void ClearWeblinks()
-    {
-
-    }
 }

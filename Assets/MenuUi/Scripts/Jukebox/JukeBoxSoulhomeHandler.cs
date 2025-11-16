@@ -47,6 +47,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     [SerializeField] private Button _soundMuteButton;
     [SerializeField] private Image _soundMuteImage;
 
+    [SerializeField] private Button _secondarySoundUnmuteButton;
+
     [SerializeField] private FavoriteButtonHandler _favoriteButtonHandler;
     [SerializeField] private TextAutoScroll _textAutoScroll;
 
@@ -99,6 +101,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         _soundMuteButton.onClick.AddListener(() => MuteJukeboxToggle());
         _addMusicInfoButton.onClick.AddListener(() => { _addMusicInfoPopup.SetActive(true); });
 
+        _secondarySoundUnmuteButton.onClick.AddListener(() => UnmuteOnlyButton());
+
         _playlistNavigationHandler.OnInfoPressed += OpenMusicTrackInfoPopup;
     }
 
@@ -127,6 +131,13 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         StopJukeboxVisuals();
     }
 
+    private void UnmuteOnlyButton()
+    {
+        if (!JukeboxManager.Instance.JukeboxMuted) return;
+
+        MuteJukeboxToggle();
+    }
+
     private void MuteJukeboxToggle()
     {
         bool result = JukeboxManager.Instance.PlaybackToggle(true);
@@ -135,10 +146,12 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         {
             SetMuteImage(true);
             StopJukeboxVisuals();
+            _secondarySoundUnmuteButton.gameObject.SetActive(true);
         }
         else //Playing
         {
             SetMuteImage(false);
+            _secondarySoundUnmuteButton.gameObject.SetActive(false);
 
             if (_diskSpinCoroutine != null)
             {
