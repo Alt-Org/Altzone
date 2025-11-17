@@ -303,16 +303,32 @@ namespace MenuUi.Scripts.Lobby.InRoom
             //Check if positions have bots
             bool botActive1 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition1);
             _toggleBotPlayerP1.GetComponent<ToggleSliderHandler>().SetState(botActive1);
-            if (botActive1) _captionPlayerP1 = "Bot";
+            if (botActive1)
+            {
+                _captionPlayerP1 = "Bot";
+                _selectedCharactersP1.SetBotCharacters();
+            }
             bool botActive2 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition2);
             _toggleBotPlayerP2.GetComponent<ToggleSliderHandler>().SetState(botActive2);
-            if (botActive2) _captionPlayerP2 = "Bot";
+            if (botActive2)
+            {
+                _captionPlayerP2 = "Bot";
+                _selectedCharactersP2.SetBotCharacters();
+            }
             bool botActive3 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition3);
             _toggleBotPlayerP3.GetComponent<ToggleSliderHandler>().SetState(botActive3);
-            if (botActive3) _captionPlayerP3 = "Bot";
+            if (botActive3)
+            {
+                _captionPlayerP3 = "Bot";
+                _selectedCharactersP3.SetBotCharacters();
+            }
             bool botActive4 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition4);
             _toggleBotPlayerP4.GetComponent<ToggleSliderHandler>().SetState(botActive4);
-            if (botActive4) _captionPlayerP4 = "Bot";
+            if (botActive4)
+            {
+                _captionPlayerP4 = "Bot";
+                _selectedCharactersP4.SetBotCharacters();
+            }
 
 
             // Check other players first is they have reserved some player positions etc. from the room already.
