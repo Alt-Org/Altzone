@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2677938690068024349}
   - component: {fileID: 3310955047608577415}
   - component: {fileID: 2245342582527431817}
+  - component: {fileID: 5732409875625601348}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -137,6 +138,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5732409875625601348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2363849920651645321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "T\xE4yt\xE4 paikka botilla"
+  _englishText: Fill the slot with a bot
 --- !u!1 &3215243402657950225
 GameObject:
   m_ObjectHideFlags: 0
