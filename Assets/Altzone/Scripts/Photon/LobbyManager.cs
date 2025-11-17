@@ -964,6 +964,19 @@ namespace Altzone.Scripts.Lobby
                 playerCount += 1;
             }
 
+            int j = 1;
+            foreach(PlayerType type in playerTypes)
+            {
+                if(type == PlayerType.None)
+                {
+                    string positionKey = PhotonBattleRoom.GetPositionKey(j);
+                    string positionValue = PhotonRealtimeClient.LobbyCurrentRoom?.GetCustomProperty<string>(positionKey);
+                    if (positionValue == "Bot") playerTypes[j-1] = PlayerType.Bot;
+                    playerUserNames[j - 1] = "Bot";
+                }
+                j++;
+            }
+
             // Getting starting emotion from current room custom properties
             Emotion startingEmotion = (Emotion)room.GetCustomProperty(PhotonBattleRoom.StartingEmotionKey, (int)Emotion.Blank);
 
@@ -1005,10 +1018,11 @@ namespace Altzone.Scripts.Lobby
                     yield return null;
                 }
 
-                /*for (int i=0; i < playerTypes.Length; i++)
+                if(PhotonBattleRoom.IsBotFillActive())
+                for (int i=0; i < playerTypes.Length; i++)
                 {
-                    if(playerTypes[i] == PlayerType.None) playerTypes[i] = PlayerType.Bot;
-                } Disabled for now, reactivate when the bots work a little better again.*/
+                        if (playerTypes[i] == PlayerType.None) { playerTypes[i] = PlayerType.Bot;}
+                }
 
                 data = new()
                 {
