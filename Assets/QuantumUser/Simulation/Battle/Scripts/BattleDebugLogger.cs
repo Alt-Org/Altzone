@@ -82,6 +82,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Creates a BattleDebugLogger instance using the given type <typeparamref name="T"/> as a source.
         /// </summary>
+        /// @ref BattleDebugLogger-CreateMethods
         ///
         /// <typeparam name="T">The type used as source when creating the instance.</typeparam>
         /// 
@@ -95,6 +96,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Creates a BattleDebugLogger instance using the specified type <paramref name="source"/> as a source.
         /// </summary>
+        /// @ref BattleDebugLogger-CreateMethods
         ///
         /// <param name="source">The type used as source when creating the instance.</param>
         /// 
@@ -108,6 +110,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Creates a BattleDebugLogger instance using the specified string <paramref name="source"/> as a source.
         /// </summary>
+        /// @ref BattleDebugLogger-CreateMethods
         ///
         /// <param name="source">The name of the source used when creating the instance.</param>
         /// 
@@ -124,6 +127,8 @@ namespace Battle.QSimulation
         /// @anchor BattleDebugLogger-StaticLogMethods
         /// @name Static Log Methods
         /// Static Log methods that can be used without a BattleDebugLogger instance.
+        ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         /// @{
         #region Public Static Log Methods
 
@@ -132,6 +137,7 @@ namespace Battle.QSimulation
         /// using the given <paramref name="source"/> when formatting the Log message.<br/>
         /// Output Log message: [%Battle] [(source)] (message)
         /// </summary>
+        /// @ref BattleDebugLogger-StaticLogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -148,6 +154,7 @@ namespace Battle.QSimulation
         /// using the given %Quantum frame <paramref name="f"/> and <paramref name="source"/> when formatting the Log message.<br/>
         /// Output Log message: [%Battle] [(frame number)] [(source)] (message)
         /// </summary>
+        /// @ref BattleDebugLogger-StaticLogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -165,6 +172,7 @@ namespace Battle.QSimulation
         /// using the given <paramref name="source"/> when formatting the Log message.<br/>
         /// Output Log message: [%Battle] [(source)] (formatted message)
         /// </summary>
+        /// @ref BattleDebugLogger-StaticLogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -182,6 +190,7 @@ namespace Battle.QSimulation
         /// using the given %Quantum frame <paramref name="f"/> and <paramref name="source"/> when formatting the Log message.<br/>
         /// Output Log message: [%Battle] [(source)] (formatted message)
         /// </summary>
+        /// @ref BattleDebugLogger-StaticLogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -200,6 +209,7 @@ namespace Battle.QSimulation
         /// using the given <paramref name="source"/> when formatting the Warning Log message.<br/>
         /// Output Warning Log message: [%Battle] [(source)] (message)
         /// </summary>
+        /// @ref BattleDebugLogger-StaticLogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -216,6 +226,7 @@ namespace Battle.QSimulation
         /// using the given %Quantum frame <paramref name="f"/> and <paramref name="source"/> when formatting the Warning Log message.<br/>
         /// Output Warning Log message: [%Battle] [(frame number)] [(source)] (message)
         /// </summary>
+        /// @ref BattleDebugLogger-StaticLogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -233,6 +244,7 @@ namespace Battle.QSimulation
         /// using the given <paramref name="source"/> when formatting the Warning Log message.<br/>
         /// Output Warning Log message: [%Battle] [(source)] (formatted message)
         /// </summary>
+        /// @ref BattleDebugLogger-StaticLogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -250,6 +262,7 @@ namespace Battle.QSimulation
         /// using the given %Quantum frame <paramref name="f"/> and <paramref name="source"/> when formatting the Warning Log message.<br/>
         /// Output Warning Log message: [%Battle] [(frame number)] [(source)] (formatted message)
         /// </summary>
+        /// @ref BattleDebugLogger-StaticLogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -268,6 +281,7 @@ namespace Battle.QSimulation
         /// using the given <paramref name="source"/> when formatting the Error Log message.<br/>
         /// Output Error Log message: [%Battle] [(source)] (message)
         /// </summary>
+        /// @ref BattleDebugLogger-StaticLogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -284,6 +298,7 @@ namespace Battle.QSimulation
         /// using the given %Quantum frame <paramref name="f"/> and <paramref name="source"/> when formatting the Error Log message.<br/>
         /// Output Error Log message: [%Battle] [(frame number)] [(source)] (message)
         /// </summary>
+        /// @ref BattleDebugLogger-StaticLogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -301,6 +316,7 @@ namespace Battle.QSimulation
         /// using the given <paramref name="source"/> when formatting the Error Log message.<br/>
         /// Output Error Log message: [%Battle] [(source)] (formatted message)
         /// </summary>
+        /// @ref BattleDebugLogger-StaticLogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -318,6 +334,7 @@ namespace Battle.QSimulation
         /// using the given %Quantum frame <paramref name="f"/> and <paramref name="source"/> when formatting the Error Log message.<br/>
         /// Output Error Log message: [%Battle] [(frame number)] [(source)] (formatted message)
         /// </summary>
+        /// @ref BattleDebugLogger-StaticLogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -337,6 +354,8 @@ namespace Battle.QSimulation
         /// @anchor BattleDebugLogger-LogMethods
         /// @name Log Methods
         /// Public Log methods that can only be used with a BattleDebugLogger instance.
+        ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         /// @{
         #region Public Log Methods
 
@@ -345,6 +364,7 @@ namespace Battle.QSimulation
         /// Uses the source given when creating a BattleDebugLogger instance to format the Log message.<br/>
         /// Output Log message: [%Battle] [(source)] (message)
         /// </summary>
+        /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         /// 
@@ -360,6 +380,7 @@ namespace Battle.QSimulation
         /// Uses the given %Quantum frame <paramref name="f"/> and the source given when creating a BattleDebugLogger instance to format the Log message.<br/>
         /// Output Log message: [%Battle] [(frame number)] [(source)] (message)
         /// </summary>
+        /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         /// 
@@ -376,6 +397,7 @@ namespace Battle.QSimulation
         /// Uses the source given when creating a BattleDebugLogger instance to format the Log message.<br/>
         /// Output Log message: [%Battle] [(source)] (formatted message)
         /// </summary>
+        /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -392,6 +414,7 @@ namespace Battle.QSimulation
         /// Uses the given %Quantum frame <paramref name="f"/> and the source given when creating a BattleDebugLogger instance to format the Log message.<br/>
         /// Output Log message: [%Battle] [(frame number)] [(source)] (formatted message)
         /// </summary>
+        /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -409,6 +432,7 @@ namespace Battle.QSimulation
         /// Uses the source given when creating a BattleDebugLogger instance to format the Warning Log message.<br/>
         /// Output Warning Log message: [%Battle] [(source)] (message)
         /// </summary>
+        /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         /// 
@@ -424,6 +448,7 @@ namespace Battle.QSimulation
         /// Uses the given %Quantum frame <paramref name="f"/> and the source given when creating a BattleDebugLogger instance to format the Warning Log message.<br/>
         /// Output Warning Log message: [%Battle] [(frame number)] [(source)] (message)
         /// </summary>
+        /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         /// 
@@ -440,6 +465,7 @@ namespace Battle.QSimulation
         /// Uses the source given when creating a BattleDebugLogger instance to format the Warning Log message.<br/>
         /// Output Warning Log message: [%Battle] [(source)] (formatted message)
         /// </summary>
+        /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -456,6 +482,7 @@ namespace Battle.QSimulation
         /// Uses the given %Quantum frame <paramref name="f"/> and the source given when creating a BattleDebugLogger instance to format the Warning Log message.<br/>
         /// Output Warning Log message: [%Battle] [(frame number)] [(source)] (formatted message)
         /// </summary>
+        /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -473,6 +500,7 @@ namespace Battle.QSimulation
         /// Uses the source given when creating a BattleDebugLogger instance to format the Error Log message.<br/>
         /// Output Error Log message: [%Battle] [(source)] (message)
         /// </summary>
+        /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         /// 
@@ -488,6 +516,7 @@ namespace Battle.QSimulation
         /// Uses the given %Quantum frame <paramref name="f"/> and the source given when creating a BattleDebugLogger instance to format the Error Log message.<br/>
         /// Output Error Log message: [%Battle] [(frame number)] [(source)] (message)
         /// </summary>
+        /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         /// 
@@ -504,6 +533,7 @@ namespace Battle.QSimulation
         /// Uses the source given when creating a BattleDebugLogger instance to format the Error Log message.<br/>
         /// Output Error Log message: [%Battle] [(source)] (formatted message)
         /// </summary>
+        /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -520,6 +550,7 @@ namespace Battle.QSimulation
         /// Uses the given %Quantum frame <paramref name="f"/> and the source given when creating a BattleDebugLogger instance to format the Error Log message.<br/>
         /// Output Error Log message: [%Battle] [(frame number)] [(source)] (formatted message)
         /// </summary>
+        /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -535,22 +566,22 @@ namespace Battle.QSimulation
         #endregion Public Log Methods
         /// @}
 
-        /// <value>Constant format for log messages when called through static methods.</value>
+        /// <summary>Constant format for log messages when called through static methods.</summary>
         private const string StaticFormat                  = "[Battle] [{0:D6}] [{1}] {2}";
-        /// <value>Constant format for log messages when called through static methods with no %Quantum frame given.</value>
+        /// <summary>Constant format for log messages when called through static methods with no %Quantum frame given.</summary>
         private const string StaticFormatNoFrame           = "[Battle] [{0}] {1}";
-        /// <value>Constant format template for Log messages used to create the no %Quantum frame message format when creating a BattleDebugLogger instance.</value>
+        /// <summary>Constant format template for Log messages used to create the no %Quantum frame message format when creating a BattleDebugLogger instance.</summary>
         private const string InstanceFormatTemplate        = "[Battle] [{{0:D6}}] [{0}] {{1}}";
-        /// <value>Constant format template for Log messages used to create the message format when creating a BattleDebugLogger instance.</value>
+        /// <summary>Constant format template for Log messages used to create the message format when creating a BattleDebugLogger instance.</summary>
         private const string InstanceFormatNoFrameTemplate = "[Battle] [{0}] {{0}}";
 
-        /// <value>Saved Log message format, set when creating a BattleDebugLogger instance.</value>
+        /// <summary>Saved Log message format, set when creating a BattleDebugLogger instance.</summary>
         private readonly string _format;
-        /// <value>Saved no %Quantum frame Log message format, set when creating a BattleDebugLogger instance.</value>
+        /// <summary>Saved no %Quantum frame Log message format, set when creating a BattleDebugLogger instance.</summary>
         private readonly string _formatNoFrame;
 
         /// <summary>
-        /// Constructor method called when Any of the Create methods are called.<br/>
+        /// Private constructor method called when any of the @ref BattleDebugLogger-CreateMethods "Create methods" are called.<br/>
         /// Creates the Log message formats used when calling Log methods based on constant templates.
         /// </summary>
         /// 
