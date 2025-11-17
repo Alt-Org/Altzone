@@ -570,9 +570,9 @@ namespace Battle.QSimulation
         private const string StaticFormat                  = "[Battle] [{0:D6}] [{1}] {2}";
         /// <summary>Constant format for log messages when called through static methods with no %Quantum frame given.</summary>
         private const string StaticFormatNoFrame           = "[Battle] [{0}] {1}";
-        /// <summary>Constant format template for Log messages used to create the no %Quantum frame message format when creating a BattleDebugLogger instance.</summary>
-        private const string InstanceFormatTemplate        = "[Battle] [{{0:D6}}] [{0}] {{1}}";
         /// <summary>Constant format template for Log messages used to create the message format when creating a BattleDebugLogger instance.</summary>
+        private const string InstanceFormatTemplate        = "[Battle] [{{0:D6}}] [{0}] {{1}}";
+        /// <summary>Constant format template for Log messages used to create the no %Quantum frame message format when creating a BattleDebugLogger instance.</summary>
         private const string InstanceFormatNoFrameTemplate = "[Battle] [{0}] {{0}}";
 
         /// <summary>Saved Log message format, set when creating a BattleDebugLogger instance.</summary>
