@@ -346,6 +346,8 @@ namespace Battle.QSimulation
         /// Output Log message: [%Battle] [(source)] (message)
         /// </summary>
         ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
+        /// 
         /// <param name="message">The message that is Logged.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Log(string message)
@@ -359,6 +361,8 @@ namespace Battle.QSimulation
         /// Output Log message: [%Battle] [(frame number)] [(source)] (message)
         /// </summary>
         ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
+        /// 
         /// <param name="f">The %Quantum frame used when formatting the Log message.</param>
         /// <param name="message">The message that is Logged.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -406,6 +410,8 @@ namespace Battle.QSimulation
         /// Output Warning Log message: [%Battle] [(source)] (message)
         /// </summary>
         ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
+        /// 
         /// <param name="message">The message that is Logged.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Warning(string message)
@@ -419,6 +425,8 @@ namespace Battle.QSimulation
         /// Output Warning Log message: [%Battle] [(frame number)] [(source)] (message)
         /// </summary>
         ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
+        /// 
         /// <param name="f">The %Quantum frame used when formatting the Warning Log message.</param>
         /// <param name="message">The message that is Logged.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -466,6 +474,8 @@ namespace Battle.QSimulation
         /// Output Error Log message: [%Battle] [(source)] (message)
         /// </summary>
         ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
+        /// 
         /// <param name="message">The message that is Logged.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Error(string message)
@@ -479,6 +489,8 @@ namespace Battle.QSimulation
         /// Output Error Log message: [%Battle] [(frame number)] [(source)] (message)
         /// </summary>
         ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
+        /// 
         /// <param name="f">The %Quantum frame used when formatting the Error Log message.</param>
         /// <param name="message">The message that is Logged.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
