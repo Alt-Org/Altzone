@@ -318,6 +318,19 @@ namespace Altzone.Scripts.Battle.Photon
             return true;
         }
 
+        public static bool IsBotFillActive()
+        {
+            bool? fillValue = PhotonRealtimeClient.LobbyCurrentRoom?.GetCustomProperty<bool>(BotFillKey);
+            if (fillValue == null)
+            {
+                return false;
+            }
+            else
+            {
+                return (bool)fillValue;
+            }
+        }
+
         public static int GetBotCount()
         {
             int count = 0;

@@ -47,7 +47,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         [Header("Settings"), SerializeField] private TextMeshProUGUI _upperTeamText;
         [SerializeField] private TextMeshProUGUI _lowerTeamText;
-        [SerializeField] private Toggle _toggleFillSlots;
+        [SerializeField] private Toggle _toggleBotFill;
         [SerializeField] private Button _buttonPlayerP1;
         [SerializeField] private Button _buttonPlayerP2;
         [SerializeField] private Button _buttonPlayerP3;
@@ -118,7 +118,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             LobbyManager.LobbyOnPlayerPropertiesUpdate += OnPlayerPropertiesUpdate;
             LobbyManager.LobbyOnMasterClientSwitched += OnMasterClientSwitched;
 
-            _toggleFillSlots.onValueChanged.AddListener(SetFillBotToggle);
+            _toggleBotFill.onValueChanged.AddListener(SetFillBotToggle);
 
             PhotonRealtimeClient.AddCallbackTarget(this);
             if (_onEnableCoroutineHolder == null) _onEnableCoroutineHolder = StartCoroutine(OnEnableInRoom());
@@ -132,7 +132,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             LobbyManager.LobbyOnRoomPropertiesUpdate -= OnRoomPropertiesUpdate;
             LobbyManager.LobbyOnPlayerPropertiesUpdate -= OnPlayerPropertiesUpdate;
             LobbyManager.LobbyOnMasterClientSwitched -= OnMasterClientSwitched;
-            _toggleFillSlots.onValueChanged.RemoveListener(SetFillBotToggle);
+            _toggleBotFill.onValueChanged.RemoveListener(SetFillBotToggle);
             PhotonRealtimeClient.RemoveCallbackTarget(this);
             if (_onEnableCoroutineHolder != null) StopCoroutine(_onEnableCoroutineHolder);
             _onEnableCoroutineHolder = null;
@@ -296,6 +296,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
             CheckMasterClient();
 
+            // Check if bot fill is active
+            bool botFillActive = PhotonBattleRoom.IsBotFillActive();
+            _toggleBotFill.GetComponent<ToggleSliderHandler>().SetState(botFillActive);
+
             //Check if positions have bots
             bool botActive1 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition1);
             _toggleBotPlayerP1.GetComponent<ToggleSliderHandler>().SetState(botActive1);
@@ -332,6 +336,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
             SetButtonActive(_toggleBotPlayerP2, _interactablePlayerP2, localPlayer.IsMasterClient);
             SetButtonActive(_toggleBotPlayerP3, _interactablePlayerP3, localPlayer.IsMasterClient);
             SetButtonActive(_toggleBotPlayerP4, _interactablePlayerP4, localPlayer.IsMasterClient);
+
+            SetButtonActive(_toggleBotFill, true, localPlayer.IsMasterClient);
 
             // Setting player name texts
             if (_nameP1 != null) _nameP1.SetText(_captionPlayerP1);
