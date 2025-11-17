@@ -581,9 +581,11 @@ namespace Battle.QSimulation
         private readonly string _formatNoFrame;
 
         /// <summary>
-        /// Private constructor method called when any of the @ref BattleDebugLogger-CreateMethods "Create methods" are called.<br/>
+        /// Private constructor method called when any of the <b>Create methods</b> are called.<br/>
         /// Creates the Log message formats used when calling Log methods based on constant templates.
         /// </summary>
+        ///
+        /// See @ref BattleDebugLogger-CreateMethods "Create methods"
         /// 
         /// <param name="source">The name of the source used when creating the Log message formats.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
