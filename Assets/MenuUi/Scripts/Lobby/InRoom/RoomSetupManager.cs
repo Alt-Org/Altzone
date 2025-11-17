@@ -47,6 +47,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         [Header("Settings"), SerializeField] private TextMeshProUGUI _upperTeamText;
         [SerializeField] private TextMeshProUGUI _lowerTeamText;
+        [SerializeField] private Toggle _toggleFillSlots;
         [SerializeField] private Button _buttonPlayerP1;
         [SerializeField] private Button _buttonPlayerP2;
         [SerializeField] private Button _buttonPlayerP3;
@@ -117,6 +118,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
             LobbyManager.LobbyOnPlayerPropertiesUpdate += OnPlayerPropertiesUpdate;
             LobbyManager.LobbyOnMasterClientSwitched += OnMasterClientSwitched;
 
+            _toggleFillSlots.onValueChanged.AddListener(SetFillBotToggle);
+
             PhotonRealtimeClient.AddCallbackTarget(this);
             if (_onEnableCoroutineHolder == null) _onEnableCoroutineHolder = StartCoroutine(OnEnableInRoom());
         }
@@ -129,6 +132,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             LobbyManager.LobbyOnRoomPropertiesUpdate -= OnRoomPropertiesUpdate;
             LobbyManager.LobbyOnPlayerPropertiesUpdate -= OnPlayerPropertiesUpdate;
             LobbyManager.LobbyOnMasterClientSwitched -= OnMasterClientSwitched;
+            _toggleFillSlots.onValueChanged.RemoveListener(SetFillBotToggle);
             PhotonRealtimeClient.RemoveCallbackTarget(this);
             if (_onEnableCoroutineHolder != null) StopCoroutine(_onEnableCoroutineHolder);
             _onEnableCoroutineHolder = null;
@@ -508,6 +512,12 @@ namespace MenuUi.Scripts.Lobby.InRoom
             _captionPlayerP2 = "";
             _captionPlayerP3 = "";
             _captionPlayerP4 = "";
+        }
+
+        private void SetFillBotToggle(bool value)
+        {
+            Debug.Log($"SetFillBotToggle {value}");
+            this.Publish(new LobbyManager.BotFillToggleEvent(value));
         }
 
         private static void SetButtonActive(Selectable selectable, bool active, bool interactable = true)

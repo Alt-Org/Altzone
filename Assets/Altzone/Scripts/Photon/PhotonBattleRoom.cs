@@ -42,6 +42,7 @@ namespace Altzone.Scripts.Battle.Photon
         public const string RoomNameKey = "n";
         public const string PasswordKey = "pw";
         public const string GameTypeKey = "gt";
+        public const string BotFillKey = "bf";
         public const string IsMatchmakingKey = "mm";
         public const string SoulhomeRank = "sr";
         public const string SoulhomeRankVariance = "rv";

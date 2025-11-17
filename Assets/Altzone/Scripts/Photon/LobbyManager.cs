@@ -257,6 +257,7 @@ namespace Altzone.Scripts.Lobby
             this.Subscribe<ReserveFreePositionEvent>(OnReserveFreePositionEvent);
             this.Subscribe<PlayerPosEvent>(OnPlayerPosEvent);
             this.Subscribe<BotToggleEvent>(OnBotToggleEvent);
+            this.Subscribe<BotFillToggleEvent>(OnBotFillToggleEvent);
             this.Subscribe<StartRoomEvent>(OnStartRoomEvent);
             this.Subscribe<StartPlayingEvent>(OnStartPlayingEvent);
             this.Subscribe<StartRaidTestEvent>(OnStartRaidTestEvent);
@@ -450,6 +451,11 @@ namespace Altzone.Scripts.Lobby
         private void OnBotToggleEvent(BotToggleEvent data)
         {
             StartCoroutine(SetBot(data.PlayerPosition, data.BotActive));
+        }
+
+        private void OnBotFillToggleEvent(BotFillToggleEvent data)
+        {
+            StartCoroutine(SetBotFill(data.BotFillActive));
         }
 
         private IEnumerator RequestPositionChange(int position)
@@ -1388,6 +1394,70 @@ namespace Altzone.Scripts.Lobby
             yield break;
         }
 
+        private IEnumerator SetBotFill(bool active)
+        {
+            LobbyPhotonHashtable newValue;
+            if (active)
+            {
+                newValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { PhotonBattleRoom.BotFillKey, true } });
+
+                if (PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(newValue))
+                {
+                    float timeout = Time.time + 1f;
+                    bool success = false;
+                    while (Time.time < timeout)
+                    {
+                        // Checking if the position is set to have a Bot
+                        if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<bool>(PhotonBattleRoom.BotFillKey) == true)
+                        {
+                            success = true;
+                            break;
+                        }
+                        yield return new WaitForSeconds(0.1f);
+                    }
+
+                    if (success)
+                    {
+                        Debug.Log($"Set BotFill to {active}");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"Failed to activate bot fill. Something borke really bad.");
+                }
+            }
+            else
+            {
+                newValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { PhotonBattleRoom.BotFillKey, false } });
+
+                if (PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(newValue))
+                {
+                    float timeout = Time.time + 1f;
+                    bool success = false;
+                    while (Time.time < timeout)
+                    {
+                        // Checking if the position is set to have a Bot
+                        if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<bool>(PhotonBattleRoom.BotFillKey) == false)
+                        {
+                            success = true;
+                            break;
+                        }
+                        yield return new WaitForSeconds(0.1f);
+                    }
+
+                    if (success)
+                    {
+                        Debug.Log($"Set BotFill to {active}");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"Failed to activate bot fill. Something borke really bad.");
+                }
+            }
+
+            yield break;
+        }
 
         public void SetPlayerQuantumCharacters(List<CustomCharacter> characters)
         {
@@ -1729,6 +1799,21 @@ namespace Altzone.Scripts.Lobby
             public override string ToString()
             {
                 return $"{nameof(PlayerPosition)}: {PlayerPosition}, {nameof(BotActive)}: {BotActive}";
+            }
+        }
+
+        public class BotFillToggleEvent
+        {
+            public readonly bool BotFillActive;
+
+            public BotFillToggleEvent( bool value)
+            {
+                BotFillActive = value;
+            }
+
+            public override string ToString()
+            {
+                return $"{nameof(BotFillActive)}: {BotFillActive}";
             }
         }
 
