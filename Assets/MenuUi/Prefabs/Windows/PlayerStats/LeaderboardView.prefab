@@ -12887,12 +12887,22 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1177530891263587228, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1196992516727074209, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_Size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1202927817492883387, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1335773121849168371, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
@@ -12951,6 +12961,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSize
       value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 2291731349468919962, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: _jukeboxSoulhomeHandler
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2298189892219336953, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
@@ -13578,7 +13593,8 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1612773304301820197, guid: e41290d0959bdfe47b62024b1a7a3c44, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -14281,6 +14297,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 6671283327967015739, guid: 3a035a942e5180d45947bdb51427e49d,
+        type: 3}
+      propertyPath: _audioName
+      value: GeneralButton1
       objectReference: {fileID: 0}
     - target: {fileID: 8282733639787932103, guid: 3a035a942e5180d45947bdb51427e49d,
         type: 3}
@@ -15708,6 +15729,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4950838862836973002}
     m_Modifications:
+    - target: {fileID: 73450033447205, guid: 57890b7dbec8a984abb7d8148eefe9f6, type: 3}
+      propertyPath: _audioName
+      value: GeneralButton1
+      objectReference: {fileID: 0}
     - target: {fileID: 61407169753043854, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_IsActive
@@ -15912,7 +15937,7 @@ PrefabInstance:
     - target: {fileID: 2641932565321544379, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.94188035
+      value: 0.95971566
       objectReference: {fileID: 0}
     - target: {fileID: 3081794801813880773, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -15925,15 +15950,20 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3367900827602880882, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: _audioName
+      value: GeneralButton1
+      objectReference: {fileID: 0}
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.86688036
+      value: 0.88466954
       objectReference: {fileID: 0}
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.1975
+      value: 0.19766153
       objectReference: {fileID: 0}
     - target: {fileID: 3482542752552871026, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -15941,6 +15971,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: c022ef603dbc77d4490ec6282ece8daa,
         type: 3}
+    - target: {fileID: 3516221185116983424, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: _audioName
+      value: GeneralButton1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4318569536778292902, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: _jukeboxSoulhomeHandler
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4752411910388067599, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -16509,7 +16549,7 @@ PrefabInstance:
     - target: {fileID: 7827142668286818857, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.1975
+      value: 0.19766153
       objectReference: {fileID: 0}
     - target: {fileID: 8020515439083824472, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -16629,12 +16669,12 @@ PrefabInstance:
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.94188035
+      value: 0.95971566
       objectReference: {fileID: 0}
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.86688036
+      value: 0.88466954
       objectReference: {fileID: 0}
     - target: {fileID: 9134924696600337670, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -16646,7 +16686,8 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -48.937042
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3621669665314598681, guid: 57890b7dbec8a984abb7d8148eefe9f6, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 7695168990374541661, guid: 57890b7dbec8a984abb7d8148eefe9f6,

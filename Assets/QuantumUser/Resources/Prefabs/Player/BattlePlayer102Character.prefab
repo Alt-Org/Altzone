@@ -8,40 +8,108 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 486391669144605290, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: _noShieldSprite
+      value: 
+      objectReference: {fileID: 417417699, guid: 998252c15cd122741b0789aedf9e7cf1,
+        type: 3}
+    - target: {fileID: 2108341854519884208, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 526397472, guid: 998252c15cd122741b0789aedf9e7cf1,
+        type: 3}
     - target: {fileID: 2108341854519884208, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.003921569
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2108341854519884208, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.101960786
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2108341854519884208, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.32156864
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5521468026819928245, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: m_Name
       value: BattlePlayer102Character
       objectReference: {fileID: 0}
+    - target: {fileID: 5676148915008888439, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676148915008888439, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676148915008888439, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676148915008888439, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676148915008888439, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676148915008888439, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676148915008888439, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 5799568555206037606, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: Prototype.HitboxShield.ColliderTemplateList.Array.data[0].Position.Y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7425350154965914569, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1540991004, guid: 998252c15cd122741b0789aedf9e7cf1,
+        type: 3}
     - target: {fileID: 7425350154965914569, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.0045389733
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7425350154965914569, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.10121129
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7425350154965914569, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.3207547
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8135540043133844610, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.41
+      objectReference: {fileID: 0}
+    - target: {fileID: 8135540043133844610, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.23
       objectReference: {fileID: 0}
     - target: {fileID: 8780164584391443545, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}

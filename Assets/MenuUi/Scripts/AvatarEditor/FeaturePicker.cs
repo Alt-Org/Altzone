@@ -14,6 +14,7 @@ namespace MenuUi.Scripts.AvatarEditor
     {
         [Header("References")]
         [SerializeField] private AvatarEditorCharacterHandle _avatarEditorCharacterHandle;
+        [SerializeField] private AvatarEditorController _avatarEditorController;
         [SerializeField] private AvatarEditorFeatureButtonsHandler _featureButtonsHandler;
         [SerializeField] private Transform _characterImageParent;
         [SerializeField] private Transform _featureButtonsParent;
@@ -220,6 +221,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private void SetFeatureToNone(int slot)
         {
             _featureState.SetSelectedFeature(slot, "0");
+            _avatarEditorController.PlayerAvatar.SortAndAssignByID("0");
             UpdateCharacterImage((FeatureSlot)slot, null);
         }
 
@@ -235,6 +237,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private void SetFeature(AvatarPartInfo feature, int slot)
         {
             _featureState.SetSelectedFeature(slot, feature.Id);
+            _avatarEditorController.PlayerAvatar.SortAndAssignByID(feature.Id);
             UpdateCharacterImage((FeatureSlot)slot, feature.AvatarImage);
         }
 

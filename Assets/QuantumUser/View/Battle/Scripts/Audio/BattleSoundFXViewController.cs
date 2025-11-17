@@ -6,10 +6,16 @@
 /// This script:<br/>
 /// Handles playing sound effects.
 
-using UnityEngine;
-using Quantum;
+// System usings
 using System;
 
+// Unity usings
+using UnityEngine;
+
+// Quantum usings
+using Quantum;
+
+// Altzone usings
 using Altzone.Scripts.Audio;
 
 namespace Battle.View.Audio

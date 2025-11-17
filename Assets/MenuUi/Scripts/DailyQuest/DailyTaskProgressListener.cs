@@ -153,13 +153,14 @@ public class DailyTaskProgressListener : MonoBehaviour
 
         if (_educationCategoryType != EducationCategoryType.None)
         {
-            switch (task.EducationCategory)
+            if (_educationCategoryType != task.EducationCategory) return;
+            switch (_educationCategoryType)
             {
-                case EducationCategoryType.Action: _on = (_educationCategoryActionType == task.EducationActionType); break;
-                case EducationCategoryType.Social: _on = (_educationCategorySocialType == task.EducationSocialType); break;
-                case EducationCategoryType.Story: _on = (_educationCategoryStoryType == task.EducationStoryType); break;
-                case EducationCategoryType.Culture: _on = (_educationCategoryCultureType == task.EducationCultureType); break;
-                case EducationCategoryType.Ethical: _on = (_educationCategoryEthicalType == task.EducationEthicalType); break;
+                case EducationCategoryType.Action: if (_educationCategoryActionType == task.EducationActionType) { _on = true;} break;
+                case EducationCategoryType.Social: if(_educationCategorySocialType == task.EducationSocialType){ _on = true; } break;
+                case EducationCategoryType.Story: if(_educationCategoryStoryType == task.EducationStoryType){ _on = true;} break;
+                case EducationCategoryType.Culture: if(_educationCategoryCultureType == task.EducationCultureType){ _on = true;} break;
+                case EducationCategoryType.Ethical: if(_educationCategoryEthicalType == task.EducationEthicalType){ _on = true;} break;
                 default: _on = false; break;
             }
         }

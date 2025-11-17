@@ -3,11 +3,15 @@
 /// Contains @cref{Battle.QSimulation.SoulWall,BattleSoulWallQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which handles creating and destroying SoulWalls.
 /// </summary>
 
+// Unity usings
 using UnityEngine;
 using UnityEngine.Scripting;
+
+// Quantum usings
 using Quantum;
 using Photon.Deterministic;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Projectile;
 using Battle.QSimulation.Game;
 

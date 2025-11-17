@@ -14,7 +14,7 @@ public class ClanListing : MonoBehaviour
     [SerializeField] private Button _joinButton;
     [field: SerializeField] public Button OpenProfileButton { get; private set; }
     [SerializeField] private Button _returnToMainClanViewButton;
-
+    [SerializeField] private Button _returnToMainMenuButton;
     [SerializeField] private TextMeshProUGUI _clanName;
     [SerializeField] private TextLanguageSelectorCaller _clanMembers;
     [SerializeField] private Image _lockImage;
@@ -118,9 +118,11 @@ public class ClanListing : MonoBehaviour
             {
                 return;
             }
-
+            if (ServerManager.Instance.FirstJoin)
+                _returnToMainMenuButton.onClick.Invoke();
+            else
+                _returnToMainClanViewButton.onClick.Invoke();
             ServerManager.Instance.RaiseClanChangedEvent();
-            _returnToMainClanViewButton.onClick.Invoke();
         }));
     }
 }

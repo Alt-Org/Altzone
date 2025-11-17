@@ -6,8 +6,10 @@
 /// This script:<br/>
 /// Handles %Battle arena grid's visual functionality.
 
+// Unity usings
 using UnityEngine;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 
 namespace Battle.View.Game

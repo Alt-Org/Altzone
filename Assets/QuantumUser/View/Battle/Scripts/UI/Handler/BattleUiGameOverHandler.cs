@@ -6,6 +6,7 @@
 /// This script:<br/>
 /// Handles showing the game over popup.
 
+// Unity usings
 using UnityEngine;
 using UnityEngine.UI;
 

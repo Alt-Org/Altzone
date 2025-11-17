@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 102
   CharacterId: 102
-  IsApproved: 0
+  IsApproved: 1
   FinnishName: Ylikunto
   EnglishName: Overtraining
   ClassType: 100
@@ -50,6 +50,7 @@ MonoBehaviour:
     Coefficient: 1
   GalleryImage: {fileID: 21300000, guid: 8269c6e6e87cbed4486c70953683aad1, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 972dfcd017cc29948b10a9f15ba8624f, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
       Value: 1364834009955602738

@@ -43,6 +43,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         FindVariableValueInGame,
         Find3ImportantButtons,
         FindBug,
+        CreateClanPlaylist,
     }
 
     public enum TaskEducationSocialType
@@ -68,7 +69,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         FindSymbolicalGraphics,
         ContinueClanStory,
-        FindSybolicalFurniture,
+        Press3SymbolFurniture,
         ClickCharacterDescription,
         RecognizeSoundClue,
         CreateUnifiedInterior,
@@ -84,6 +85,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         SimiliarToAGame,
         SetProfilePlayerType,
         FindPowerOrEqualityWindow,
+        ClanCulturalGuideline,
     }
 
     public enum TaskEducationEthicalType
@@ -95,6 +97,9 @@ namespace Altzone.Scripts.Model.Poco.Game
         ClickEthical,
         PressSustainableConsumptionObjects,
         PressValuesObjects,
+        ChangeLanguage,
+        PressPrizeItems,
+        ChooseEthicallyBetterCharacter,
     }
 
     #endregion
@@ -148,6 +153,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         private TaskEducationStoryType _educationStoryType;
         private TaskEducationCultureType _educationCultureType;
         private TaskEducationEthicalType _educationEthicalType;
+        private bool _offline;
 
         public string Id { get => _id;}
         public int Amount { get => _amount;}
@@ -190,6 +196,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public TaskEducationStoryType EducationStoryType { get => _educationStoryType;}
         public TaskEducationCultureType EducationCultureType { get => _educationCultureType;}
         public TaskEducationEthicalType EducationEthicalType {  get => _educationEthicalType;}
+        public bool Offline { get => _offline; }
 
         public PlayerTask(ServerPlayerTask task)
         {
@@ -204,6 +211,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             _playerId = string.IsNullOrWhiteSpace(task.player_id) ? "" : task.player_id;
             _startedAt = task.startedAt;
             _educationCategory = GetEducationTypeEnum(task.educationCategoryType);
+            _offline =  task.isPlaceHolder;
 
             switch (task.educationCategoryType)
             {
@@ -356,6 +364,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskEducationActionType.FindBug;
                     }
+                case "create_clan_playlist":
+                    {
+                        return TaskEducationActionType.CreateClanPlaylist;
+                    }
                 default:
                     {
                         return TaskEducationActionType.PlayBattle;
@@ -450,9 +462,9 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskEducationStoryType.RecognizeSoundClue;
                     }
-                case "find_symbolical_furniture":
+                case "press_3_symbol_furniture":
                     {
-                        return TaskEducationStoryType.FindSybolicalFurniture;
+                        return TaskEducationStoryType.Press3SymbolFurniture;
                     }
                 case "find_ui_symbolics":
                     {
@@ -505,6 +517,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskEducationCultureType.FindPowerOrEqualityWindow;
                     }
+                case "choose_cultural_guideline_cultural_description":
+                    {
+                        return TaskEducationCultureType.ClanCulturalGuideline;
+                    }
                 default:
                     {
                         return TaskEducationCultureType.ClickKnownArtIdeaPerson;
@@ -543,6 +559,18 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case "press_values_objects":
                     {
                         return TaskEducationEthicalType.PressValuesObjects;
+                    }
+                case "change_language":
+                    {
+                        return TaskEducationEthicalType.ChangeLanguage;
+                    }
+                case "press_prize_giving_items":
+                    {
+                        return TaskEducationEthicalType.PressPrizeItems;
+                    }
+                case "choose_ethically_better_character":
+                    {
+                        return TaskEducationEthicalType.ChooseEthicallyBetterCharacter;
                     }
                 default:
                     {
@@ -674,6 +702,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public string startedAt;
         public string educationCategoryType;
         public string educationCategoryTaskType;
+        public bool isPlaceHolder;
 
         public class TaskTitle
         {

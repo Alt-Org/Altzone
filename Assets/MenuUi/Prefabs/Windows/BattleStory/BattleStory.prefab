@@ -221,6 +221,7 @@ GameObject:
   - component: {fileID: 6020025676430530690}
   - component: {fileID: 6095943317931075601}
   - component: {fileID: 5864010284921444558}
+  - component: {fileID: 3268368973928768534}
   m_Layer: 5
   m_Name: BattleEndScreen
   m_TagString: Untagged
@@ -306,6 +307,25 @@ MonoBehaviour:
   _victoryDefeatAnimation: {fileID: 8895837872162491454}
   _victoryAnimation: {fileID: 7400000, guid: ec988039abdcf6b42919713f4d593a9a, type: 2}
   _defeatAnimation: {fileID: 7400000, guid: 81d9297b61f6323409e4f5539052e3f1, type: 2}
+--- !u!114 &3268368973928768534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 390142228745168544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aea3fc3f58a078d47a1091cb420e6fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 0
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &742984938797470971
 GameObject:
   m_ObjectHideFlags: 0

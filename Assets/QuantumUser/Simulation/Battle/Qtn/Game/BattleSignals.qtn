@@ -1,4 +1,6 @@
 // other signals
 signal BattleOnDiamondHitPlayer(BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity);
 
-signal BattleOnGameOver(BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity);
+signal BattleOnDiamondHitArenaBorder(BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity);
+
+signal BattleOnGameOver(BattleTeamNumber winningTeam);
