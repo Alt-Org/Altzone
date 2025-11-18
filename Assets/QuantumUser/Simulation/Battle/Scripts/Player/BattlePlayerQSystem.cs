@@ -66,6 +66,7 @@ namespace Battle.QSimulation.Player
         public static void OnProjectileHitPlayerCharacter(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerCharacterCollisionData* playerCollisionData)
         {
             // Temp disabled
+            BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
             return;
 
             if (projectileCollisionData->Projectile->IsHeld) return;
