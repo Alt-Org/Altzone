@@ -3106,8 +3106,8 @@ MonoBehaviour:
     type: 3}
   selectedValues: 
   maxSelections: 5
-  selectedColorHex: '#00FF00'
-  unselectedColorHex: '#FFFFFF'
+  selectedColorHex: '#0dd236'
+  unselectedColorHex: '#a0a0a0'
 --- !u!1 &4143045520671894157
 GameObject:
   m_ObjectHideFlags: 0
@@ -6333,10 +6333,10 @@ MonoBehaviour:
   m_ChildAlignment: 1
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 80, y: 80}
+  m_CellSize: {x: 750, y: 100}
   m_Spacing: {x: 8, y: 8}
   m_Constraint: 1
-  m_ConstraintCount: 8
+  m_ConstraintCount: 1
 --- !u!114 &7535376702217599479
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10481,7 +10481,7 @@ PrefabInstance:
     - target: {fileID: 5029625442628242303, guid: 1973ba674bd1e39488f5ad71181caf28,
         type: 3}
       propertyPath: m_fontSize
-      value: 28.05
+      value: 29
       objectReference: {fileID: 0}
     - target: {fileID: 5029625442628242303, guid: 1973ba674bd1e39488f5ad71181caf28,
         type: 3}
