@@ -1765,15 +1765,17 @@ namespace Altzone.Scripts.Lobby
 
         public void OnPlayerEnteredRoom(Player newPlayer)
         {
-            Room room = PhotonRealtimeClient.CurrentRoom;
-            int playerCount = room.PlayerCount;
-            int botCount = PhotonBattleRoom.GetBotCount();
+            if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+            {
+                Room room = PhotonRealtimeClient.CurrentRoom;
+                int playerCount = room.PlayerCount;
+                int botCount = PhotonBattleRoom.GetBotCount();
 
+                if (playerCount + botCount == room.MaxPlayers && room.IsOpen) PhotonRealtimeClient.CloseRoom();
+
+                if (_canBattleStartCheckHolder == null) _canBattleStartCheckHolder = StartCoroutine(CheckIfBattleCanStart());
+            }
             LobbyOnPlayerEnteredRoom?.Invoke(new(newPlayer));
-
-            if(playerCount+botCount >= room.MaxPlayers && room.IsOpen) PhotonRealtimeClient.CloseRoom();
-
-            if (_canBattleStartCheckHolder == null) _canBattleStartCheckHolder = StartCoroutine(CheckIfBattleCanStart());
         }
         public void OnRoomPropertiesUpdate(PhotonHashtable propertiesThatChanged) { LobbyOnRoomPropertiesUpdate?.Invoke(new(propertiesThatChanged)); }
         public void OnPlayerPropertiesUpdate(Player targetPlayer, PhotonHashtable changedProps) { LobbyOnPlayerPropertiesUpdate?.Invoke(new(targetPlayer),new(changedProps)); }

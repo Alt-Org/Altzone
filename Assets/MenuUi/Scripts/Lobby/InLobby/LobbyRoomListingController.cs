@@ -53,6 +53,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             }
             _photonRoomList.OnRoomsUpdated += UpdateStatus;
             LobbyManager.LobbyOnJoinedRoom += OnJoinedRoom;
+            LobbyManager.LobbyOnJoinRoomFailed += OnJoinedRoomFailed;
             LobbyWindowNavigationHandler.OnLobbyWindowChangeRequest += SwitchToRoom;
         }
 
@@ -187,6 +188,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
             this.Publish(new LobbyManager.StartRoomEvent());
         }
 
+        public void OnJoinedRoomFailed(short returnCode, string message)
+        {
+            CreateCustomRoom();
+        }
+
         public void SwitchToRoom()
         {
             _roomSwitcher.SwitchRoom(InLobbyController.SelectedGameType);
@@ -218,9 +224,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
             {
                 case ReasonType.FullRoom:
                     PopupSignalBus.OnChangePopupInfoSignal("Virhe pelin etsimisessä, huone on täysi.");
+                    CreateCustomRoom();
                     break;
                 case ReasonType.RoomLeader:
                     PopupSignalBus.OnChangePopupInfoSignal("Huoneen johtaja poisti sinut huoneesta.");
+                    CreateCustomRoom();
                     break;
             }
             SignalBus.OnCloseBattlePopupRequestedSignal();
