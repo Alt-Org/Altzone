@@ -252,11 +252,11 @@ namespace Battle.QSimulation.Projectile
             EntityRef                   otherEntity      = projectileCollisionData->OtherEntity;
 
             // set default values
-            BattlePlayerCollisionType collisionType        = BattlePlayerCollisionType.Reflect;
-            bool                      handleCollision      = false;
-            FPVector2                 normal               = FPVector2.Zero;
-            FP                        collisionMinOffset   = FP._0;
-            SpeedChange speedChange = SpeedChange.None;
+            BattlePlayerCollisionType collisionType      = BattlePlayerCollisionType.Reflect;
+            bool                      handleCollision    = false;
+            FPVector2                 normal             = FPVector2.Zero;
+            FP                        collisionMinOffset = FP._0;
+            SpeedChange               speedChange        = SpeedChange.None;
 
             // handle the specific collision type
             switch (collisionTriggerType)
@@ -279,21 +279,36 @@ namespace Battle.QSimulation.Projectile
 
                     normal             = soulWall->Normal;
                     collisionMinOffset = soulWall->CollisionMinOffset;
-                    speedChange = SpeedChange.Reset;
-                    handleCollision = true;
+                    speedChange        = SpeedChange.Reset;
+                    handleCollision    = true;
                     break;
 
                 case BattleCollisionTriggerType.Shield:
                     BattleCollisionQSystem.PlayerShieldCollisionData* dataPtr = (BattleCollisionQSystem.PlayerShieldCollisionData*)data;
-                    BattlePlayerHitboxQComponent* playerHitbox = dataPtr->PlayerShieldHitbox;
+                    BattlePlayerHitboxQComponent* playerShieldHitbox = dataPtr->PlayerShieldHitbox;
 
-                    if (ProjectileHitPlayerShield(f, projectile, dataPtr, out normal))
-                    {
-                        collisionType      = playerHitbox->CollisionType;
-                        collisionMinOffset = playerHitbox->CollisionMinOffset;
-                        speedChange        = SpeedChange.Increment;
-                        handleCollision    = true;
-                    }
+                    if (!ProjectileHitPlayerShield(f, projectile, dataPtr, out normal)) break;
+                    
+                    collisionType      = playerShieldHitbox->CollisionType;
+                    collisionMinOffset = playerShieldHitbox->CollisionMinOffset;
+                    speedChange        = SpeedChange.Increment;
+                    handleCollision    = true;
+                    
+                    break;
+
+                case BattleCollisionTriggerType.Player:
+                    BattlePlayerHitboxQComponent* playerCharacterHitbox = ((BattleCollisionQSystem.PlayerCharacterCollisionData*)data)->PlayerCharacterHitbox;
+
+                    if (projectile->EmotionCurrent == BattleEmotionState.Love) break;
+
+                    if (FPVector2.Dot(playerCharacterHitbox->Normal, projectile->Direction.Normalized) > 0) break;
+
+                    normal             = playerCharacterHitbox->Normal;
+                    collisionType      = playerCharacterHitbox->CollisionType;
+                    collisionMinOffset = playerCharacterHitbox->CollisionMinOffset;
+                    speedChange        = SpeedChange.Increment;
+                    handleCollision    = true;
+                    
                     break;
 
                 default:
