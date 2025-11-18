@@ -301,7 +301,7 @@ namespace Battle.QSimulation.Projectile
 
                     if (projectile->EmotionCurrent == BattleEmotionState.Love) break;
 
-                    if (FPVector2.Dot(playerCharacterHitbox->Normal, projectile->Direction.Normalized) > 0) break;
+                    if (FPVector2.Dot(playerCharacterHitbox->Normal, projectile->Direction.Normalized) >= 0) break;
 
                     normal             = playerCharacterHitbox->Normal;
                     collisionType      = playerCharacterHitbox->CollisionType;
