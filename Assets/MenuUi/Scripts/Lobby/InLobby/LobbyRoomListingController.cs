@@ -224,12 +224,10 @@ namespace MenuUi.Scripts.Lobby.InLobby
             {
                 case ReasonType.FullRoom:
                     PopupSignalBus.OnChangePopupInfoSignal("Virhe pelin etsimisessä, huone on täysi.");
-                    CreateCustomRoom();
                     //CreateCustomRoom();
                     break;
                 case ReasonType.RoomLeader:
                     PopupSignalBus.OnChangePopupInfoSignal("Huoneen johtaja poisti sinut huoneesta.");
-                    CreateCustomRoom();
                     //CreateCustomRoom();
                     break;
             }
