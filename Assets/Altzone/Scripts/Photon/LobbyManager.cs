@@ -1012,7 +1012,7 @@ namespace Altzone.Scripts.Lobby
                 });
 
                 yield return null;
-                if (isCloseRoom)
+                if (isCloseRoom && PhotonRealtimeClient.CurrentRoom.IsOpen)
                 {
                     PhotonRealtimeClient.CloseRoom(false);
                     yield return null;
@@ -1360,6 +1360,10 @@ namespace Altzone.Scripts.Lobby
                     if (success)
                     {
                         Debug.Log($"Set Bot to position {playerPosition}");
+                        Room room = PhotonRealtimeClient.CurrentRoom;
+                        int playerCount = room.PlayerCount;
+                        int botCount = PhotonBattleRoom.GetBotCount();
+                        if (playerCount + botCount >= room.MaxPlayers) PhotonRealtimeClient.CloseRoom();
                     }
                 }
                 else
@@ -1396,6 +1400,8 @@ namespace Altzone.Scripts.Lobby
                     if (success)
                     {
                         Debug.Log($"Freed position {playerPosition}");
+                        Room room = PhotonRealtimeClient.CurrentRoom;
+                        if (!room.IsOpen) PhotonRealtimeClient.OpenRoom();
                     }
                 }
                 else
@@ -1765,7 +1771,7 @@ namespace Altzone.Scripts.Lobby
 
             LobbyOnPlayerEnteredRoom?.Invoke(new(newPlayer));
 
-            if(playerCount+botCount >= room.MaxPlayers) PhotonRealtimeClient.CloseRoom();
+            if(playerCount+botCount >= room.MaxPlayers && room.IsOpen) PhotonRealtimeClient.CloseRoom();
 
             if (_canBattleStartCheckHolder == null) _canBattleStartCheckHolder = StartCoroutine(CheckIfBattleCanStart());
         }
