@@ -334,6 +334,8 @@ namespace Altzone.Scripts.Lobby
                 freePosition = PhotonLobbyRoom.GetFirstFreePlayerPos();
                 if (!PhotonLobbyRoom.IsValidPlayerPos(freePosition))
                 {
+                    //PhotonRealtimeClient.LeaveRoom();
+                    this.Publish<GetKickedEvent>(new(GetKickedEvent.ReasonType.FullRoom));
                     yield break;
                 }
                 StartCoroutine(RequestPositionChange(freePosition));
