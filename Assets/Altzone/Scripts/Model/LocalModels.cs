@@ -431,6 +431,7 @@ namespace Altzone.Scripts.Model
         {
             _characters = characters;
         }
+        
         internal StorageData()
         {
             StorageVersion = 0;
