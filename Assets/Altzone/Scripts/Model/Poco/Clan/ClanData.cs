@@ -51,6 +51,9 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public static event AdDataUpdated OnAdDataUpdated;
 
         [JsonConstructor]
+        private ClanData()
+        {
+
         }
         public ClanData(string id, string name, string tag, int gameCoins)
         {
