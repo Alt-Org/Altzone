@@ -37,6 +37,8 @@ namespace Prg.Scripts.Common.Unity
             {
                 if (value) _sliderSwitch.value = _sliderSwitch.maxValue;
                 else _sliderSwitch.value = _sliderSwitch.minValue;
+                if (_toggle.isOn) _toggle.targetGraphic.color = Color.blue;
+                else _toggle.targetGraphic.color = Color.white;
             }
 
             OnToggleStateChanged?.Invoke(value);
