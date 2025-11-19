@@ -66,7 +66,7 @@ public class JukeboxTrackQueueHandler : MonoBehaviour
             _trackNameText.text = "";
 
         if (GetVisibility())
-            _textAutoScroll.ContentChange();
+            _textAutoScroll.SetContent(musicTrack.Name);
         else
             _textAutoScroll.DisableCoroutines();
 

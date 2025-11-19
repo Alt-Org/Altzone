@@ -13,7 +13,14 @@ public class TextSizeCloner : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
 
-        _targetText.fontSize = _referenceText.fontSize;
+        if (_targetText != null)
+            _targetText.fontSize = _referenceText.fontSize;
+        else
+        {
+            TMPro.TMP_Text tMPText = GetComponent<TMPro.TMP_Text>();
+
+            if (tMPText != null) tMPText.fontSize = _referenceText.fontSize;
+        }
 
         if (_hideReferenceInGame) _referenceText.gameObject.SetActive(false);
     }

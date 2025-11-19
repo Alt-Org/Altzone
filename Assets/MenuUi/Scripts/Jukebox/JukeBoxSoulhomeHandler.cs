@@ -12,14 +12,15 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     [SerializeField] private JukeboxPlaylistNavigationHandler _playlistNavigationHandler;
 
     [Header("Disk")]
-    [SerializeField] private List<Image> _diskImage;
-    [SerializeField] private List<Transform> _diskTransform;
-    [SerializeField] private float _diskRotationSpeed = 100f;
-    [SerializeField] private Sprite _emptyDisk;
+    //[SerializeField] private List<Image> _diskImage;
+    //[SerializeField] private List<Transform> _diskTransform;
+    //[SerializeField] private float _diskRotationSpeed = 100f;
+    //[SerializeField] private Sprite _emptyDisk;
+    [SerializeField] private JukeboxMainDiskHandler _mainDiskHandler;
 
     //[Header("Multiple locations")]
-    [SerializeField] private List<TMP_Text> _trackNames;
-    [SerializeField] private List<TMP_Text> _trackCreditsNames;
+    [SerializeField] private List<TextAutoScroll> _trackNames;
+    [SerializeField] private List<TextAutoScroll> _trackCreditsNames;
     //[SerializeField] private List<Button> _playButtons;
     //[SerializeField] private List<Image> _playButtonImages;
     //[SerializeField] private List<Button> _trackGoBackButtons;
@@ -47,21 +48,21 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     [SerializeField] private Button _soundMuteButton;
     [SerializeField] private Image _soundMuteImage;
 
-    [SerializeField] private Button _secondarySoundUnmuteButton;
-
     [SerializeField] private FavoriteButtonHandler _favoriteButtonHandler;
-    [SerializeField] private TextAutoScroll _textAutoScroll;
+    //[SerializeField] private TextAutoScroll _textAutoScroll;
 
     [SerializeField] private Button _addMusicInfoButton;
     [SerializeField] private GameObject _addMusicInfoPopup;
 
     [SerializeField] private JukeboxInfoPopupHandler _jukeboxInfoPopupHandler;
+    [SerializeField] private JukeboxTextPopup _jukeboxTextPopup;
 
     private Coroutine _diskSpinCoroutine;
 
     public bool JukeBoxOpen { get => _jukeboxObject.activeSelf; }
 
     private const string NoSongName = "Ei valittua biisiä";
+    private const string NoCreditsNames = "...";
 
     private enum JukeboxWindowType
     {
@@ -101,9 +102,11 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         _soundMuteButton.onClick.AddListener(() => MuteJukeboxToggle());
         _addMusicInfoButton.onClick.AddListener(() => { _addMusicInfoPopup.SetActive(true); });
 
-        _secondarySoundUnmuteButton.onClick.AddListener(() => UnmuteOnlyButton());
-
         _playlistNavigationHandler.OnInfoPressed += OpenMusicTrackInfoPopup;
+        _mainDiskHandler.OnMultiUseButtonPressed += UnmuteOnlyButton;
+        JukeboxManager.Instance.OnPreviewStart += JukeboxPreviewPlaybackStart;
+        JukeboxManager.Instance.OnPreviewEnd += JukeboxPreviewPlaybackEnd;
+        JukeboxManager.Instance.OnShowTextPopup += _jukeboxTextPopup.Set;
     }
 
     private void OnEnable()
@@ -117,7 +120,10 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         if (JukeboxManager.Instance.CurrentTrackQueueData != null)
             SetSongInfo(JukeboxManager.Instance.CurrentTrackQueueData.MusicTrack);
         else
-            foreach (TMP_Text text in _trackNames) text.text = NoSongName;
+        {
+            foreach (TextAutoScroll text in _trackNames) text.SetContent(NoSongName);
+            foreach (TextAutoScroll text in _trackCreditsNames) text.SetContent(NoCreditsNames);
+        }
     }
 
     private void OnDisable()
@@ -131,9 +137,10 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         StopJukeboxVisuals();
     }
 
+    #region Mute
     private void UnmuteOnlyButton()
     {
-        if (!JukeboxManager.Instance.JukeboxMuted) return;
+        if (!JukeboxManager.Instance.JukeboxMuted || JukeboxManager.Instance.TrackPreviewActive) return;
 
         MuteJukeboxToggle();
     }
@@ -146,25 +153,40 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         {
             SetMuteImage(true);
             StopJukeboxVisuals();
-            _secondarySoundUnmuteButton.gameObject.SetActive(true);
+
+            _mainDiskHandler.ToggleIndicatorHolder(true);
+            _mainDiskHandler.ToggleCustomIndicatorImage(true);
+            _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.None);
         }
         else //Playing
         {
             SetMuteImage(false);
-            _secondarySoundUnmuteButton.gameObject.SetActive(false);
 
-            if (_diskSpinCoroutine != null)
+            //if (_diskSpinCoroutine != null)
+            //{
+            //    StopCoroutine(_diskSpinCoroutine);
+            //    _diskSpinCoroutine = null;
+            //    foreach (Transform rotationT in _diskTransform) rotationT.rotation = Quaternion.identity;
+            //}
+
+            //_diskSpinCoroutine = StartCoroutine(SpinDisks());
+
+            if (JukeboxManager.Instance.CurrentTrackQueueData != null)
             {
-                StopCoroutine(_diskSpinCoroutine);
-                _diskSpinCoroutine = null;
-                foreach (Transform rotationT in _diskTransform) rotationT.rotation = Quaternion.identity;
+                _mainDiskHandler.StartSpinDisk();
+                _mainDiskHandler.ToggleIndicatorHolder(false);
             }
-
-            _diskSpinCoroutine = StartCoroutine(SpinDisks());
+            else
+            {
+                _mainDiskHandler.ToggleIndicatorHolder(true);
+                _mainDiskHandler.ToggleCustomIndicatorImage(false);
+                _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.Empty);
+            }
         }
     }
 
     private void SetMuteImage(bool onOff) { _soundMuteImage.gameObject.SetActive(onOff); }
+    #endregion
 
     //private void PlaylistChange(int value)
     //{
@@ -213,6 +235,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         if (result) //Stopped
         {
             StopJukeboxVisuals();
+            _mainDiskHandler.ToggleIndicatorHolder(true);
+            _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.Stopped);
         }
         else //Playing
         {
@@ -220,10 +244,12 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
             {
                 StopCoroutine(_diskSpinCoroutine);
                 _diskSpinCoroutine = null;
-                foreach (Transform rotationT in _diskTransform) rotationT.rotation = Quaternion.identity;
+                //foreach (Transform rotationT in _diskTransform) rotationT.rotation = Quaternion.identity;
             }
 
-            _diskSpinCoroutine = StartCoroutine(SpinDisks());
+            //_diskSpinCoroutine = StartCoroutine(SpinDisks());
+            _mainDiskHandler.ToggleIndicatorHolder(false);
+            _mainDiskHandler.StartSpinDisk();
         }
     }
 
@@ -250,6 +276,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     //public string PlayTrack() { return JukeboxManager.Instance.PlayTrack(); }
 
+    #region Visuals
     public void StopJukeboxVisuals()
     {
         if (_diskSpinCoroutine != null)
@@ -257,16 +284,20 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
             StopCoroutine(_diskSpinCoroutine);
             _diskSpinCoroutine = null;
 
-            foreach (Transform rotationT in _diskTransform) rotationT.rotation = Quaternion.identity;
+            //foreach (Transform rotationT in _diskTransform) rotationT.rotation = Quaternion.identity;
         }
 
+        _mainDiskHandler.StopSpinDisk();
         OnChangeJukeBoxSong?.Invoke(null);
     }
 
     public void ClearJukeboxVisuals()
     {
-        foreach (TMP_Text text in _trackNames) text.text = NoSongName;
-        foreach (Image image in _diskImage) image.sprite = _emptyDisk;
+        foreach (TextAutoScroll text in _trackNames) text.SetContent(NoSongName);
+        foreach (TextAutoScroll text in _trackCreditsNames) text.SetContent(NoCreditsNames);
+        //foreach (Image image in _diskImage) image.sprite = _emptyDisk;
+        _mainDiskHandler.ClearDisk();
+        _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.Empty);
     }
 
     public void ToggleJukeboxScreen(bool toggle)
@@ -300,38 +331,66 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
         string credits = track.JukeboxInfo.GetArtistNames();
 
-        foreach (TMP_Text text in _trackNames) text.text = track.Name;
-        foreach (TMP_Text text in _trackCreditsNames) text.text = credits;
-        foreach (Image image in _diskImage) image.sprite = track.JukeboxInfo.Disk;
+        foreach (TextAutoScroll text in _trackNames) text.SetContent(track.Name);
+        foreach (TextAutoScroll text in _trackCreditsNames) text.SetContent(credits);
+        //foreach (Image image in _diskImage) image.sprite = track.JukeboxInfo.Disk;
+        _mainDiskHandler.SetDisk(track.JukeboxInfo.Disk);
 
-        if (_diskSpinCoroutine != null)
-        {
-            StopCoroutine(_diskSpinCoroutine);
-            _diskSpinCoroutine = null;
-            foreach (Transform rotationT in _diskTransform) rotationT.rotation = Quaternion.identity;
-        }
+        //if (_diskSpinCoroutine != null)
+        //{
+        //    StopCoroutine(_diskSpinCoroutine);
+        //    _diskSpinCoroutine = null;
+        //    foreach (Transform rotationT in _diskTransform) rotationT.rotation = Quaternion.identity;
+        //}
 
-        if (_jukeboxObject.activeSelf && track.Music != null) _diskSpinCoroutine = StartCoroutine(SpinDisks());
+        if (!JukeboxManager.Instance.JukeboxMuted && _jukeboxObject.activeSelf && track.Music != null && _mainDiskHandler.StartSpinDisk())
+                _mainDiskHandler.ToggleIndicatorHolder(false);
+        //_diskSpinCoroutine = StartCoroutine(SpinDisks());
+        //else
+        //    _mainDiskHandler.StopSpinDisk();
 
-        _textAutoScroll.ContentChange();
+        //_textAutoScroll.ContentChange();
         _favoriteButtonHandler.Setup(JukeboxManager.Instance.GetTrackFavoriteType(track), track.Id);
 
         OnChangeJukeBoxSong?.Invoke(track);
     }
+    #endregion
 
-    private IEnumerator SpinDisks()
-    {
-        while (true)
-        {
-            foreach (Transform rotationT in _diskTransform) rotationT.Rotate(Vector3.forward * -_diskRotationSpeed * Time.deltaTime);
+    //private IEnumerator SpinDisks()
+    //{
+    //    while (true)
+    //    {
+    //        foreach (Transform rotationT in _diskTransform) rotationT.Rotate(Vector3.forward * -_diskRotationSpeed * Time.deltaTime);
 
-            yield return null;
-        }
-    }
+    //        yield return null;
+    //    }
+    //}
 
     private void OpenMusicTrackInfoPopup(MusicTrack musicTrack, JukeboxManager.MusicTrackFavoriteType likeType)
     {
 
         _jukeboxInfoPopupHandler.Set(musicTrack, likeType);
+    }
+
+    private void JukeboxPreviewPlaybackStart()
+    {
+        _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.Preview);
+        _mainDiskHandler.ToggleIndicatorHolder(true);
+        _mainDiskHandler.ToggleCustomIndicatorImage(false);
+    }
+
+    private void JukeboxPreviewPlaybackEnd()
+    {
+        bool muted = JukeboxManager.Instance.JukeboxMuted;
+
+        if (muted)
+        {
+            _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.None);
+            _mainDiskHandler.ToggleCustomIndicatorImage(true);
+        }
+        else
+        {
+            _mainDiskHandler.ToggleIndicatorHolder(false);
+        }
     }
 }

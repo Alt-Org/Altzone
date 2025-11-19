@@ -122,6 +122,7 @@ namespace Altzone.Scripts.Audio
         [SerializeField] private float _previewTime = 10f;
 
         private bool _trackPreviewActive = false;
+        public bool TrackPreviewActive {  get { return _trackPreviewActive; } }
 
         private JukeboxTrackButtonHandler _currentPreviewMusicTrackHandler = null;
         private Coroutine _currentPreviewTrackCoroutine;
@@ -170,6 +171,15 @@ namespace Altzone.Scripts.Audio
 
         public delegate void FavoriteButtonChange(string musicTrackId, MusicTrackFavoriteType favoriteType);
         public event FavoriteButtonChange OnFavoriteButtonChange;
+
+        public delegate void PreviewStart();
+        public event PreviewStart OnPreviewStart;
+
+        public delegate void PreviewEnd();
+        public event PreviewEnd OnPreviewEnd;
+
+        public delegate void ShowTextPopup(string text);
+        public event ShowTextPopup OnShowTextPopup;
         #endregion
 
         private void Awake()
@@ -279,7 +289,6 @@ namespace Altzone.Scripts.Audio
 
             if (string.IsNullOrEmpty(rawData)) //First time setup.
             {
-
                 foreach (MusicTrack track in musicTracks)
                     favoriteDatas.Add(new(track.Id, MusicTrackFavoriteType.Neutral));
 
@@ -519,14 +528,14 @@ namespace Altzone.Scripts.Audio
             if (successCallback != null) successCallback(true);
         }
 
-        private IEnumerator DeleteTrackFromServer(System.Action<bool> successCallback, string musicTrackUniqueId)
+        private IEnumerator DeleteTrackFromServer(System.Action<bool> successCallback, string trackUniqueId, string trackName)
         {
             bool? timeout = null;
             bool? callback = null;
 
             _serverOperationAvailable = false;
 
-            StartCoroutine(ServerManager.Instance.DeleteJukeboxClanMusicTrack((data) => callback = data, musicTrackUniqueId));
+            StartCoroutine(ServerManager.Instance.DeleteJukeboxClanMusicTrack((data) => callback = data, trackUniqueId));
             StartCoroutine(WaitUntilTimeout(_timeoutSeconds, (data) => timeout = data));
 
             yield return new WaitUntil(() => (callback != null || timeout != null));
@@ -542,6 +551,8 @@ namespace Altzone.Scripts.Audio
             }
 
             _serverOperationAvailable = true;
+
+            if (OnShowTextPopup != null) OnShowTextPopup.Invoke($"Kappale: {trackName}, poistettu.");
 
             if (successCallback != null) successCallback(true);
         }
@@ -566,6 +577,8 @@ namespace Altzone.Scripts.Audio
 
                 yield break;
             }
+
+            if (OnShowTextPopup != null) OnShowTextPopup.Invoke($"Kappale: {musicTrack.Name}, lisätty.");
 
             _serverOperationAvailable = true;
             done(true);
@@ -1236,7 +1249,9 @@ namespace Altzone.Scripts.Audio
         public void DeleteFromQueue(int linearIndex, bool updateServer)
         {
             //Debug.LogError("delete, chunk: " + _trackQueue[linearIndex].Pointer.ChunkIndex + ", pool: " + _trackQueue[linearIndex].Pointer.PoolIndex);
-            if (updateServer) StartCoroutine(DeleteTrackFromServer(null, _trackQueue[linearIndex].ServerSongData.id));
+            TrackQueueData data = _trackQueue[linearIndex];
+
+            if (updateServer) StartCoroutine(DeleteTrackFromServer(null, data.ServerSongData.id, data.MusicTrack.Name));
 
             _trackQueue[linearIndex].Clear();
             //if (_serverOperationAvailable) SendPlaylistChangesToServer(PlaybackHistoryType.Delete);
@@ -1328,6 +1343,8 @@ namespace Altzone.Scripts.Audio
 
             if (OnSetSongInfo != null) OnSetSongInfo.Invoke(buttonHandler.MusicTrack);
 
+            if (OnPreviewStart != null) OnPreviewStart.Invoke();
+
             buttonHandler.StartDiskSpin();
 
             _currentPreviewMusicTrackHandler = buttonHandler;
@@ -1381,6 +1398,8 @@ namespace Altzone.Scripts.Audio
             }
 
             if (OnSetSongInfo != null) OnSetSongInfo.Invoke(_currentTrackQueueData.MusicTrack);
+
+            if (OnPreviewEnd != null) OnPreviewEnd.Invoke();
         }
         #endregion
 

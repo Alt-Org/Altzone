@@ -11,15 +11,20 @@ public class JukeboxInfoPopupHandler : MonoBehaviour
     [SerializeField] private JukeboxTrackButtonHandler _buttonHandler;
     [SerializeField] private Button _closeButton;
     [SerializeField] private Button _closeBackgroundButton;
-
+    [Space]
     [SerializeField] private Transform _webLinksContentTransform;
     private List<JukeboxWebLinkHandler> _weblinkButtons = new List<JukeboxWebLinkHandler>();
     private int _weblinkPointer = -1;
+
+    [SerializeField] private BasicFavoriteHandler _favoriteHandler;
 
     private void Awake()
     {
         _closeButton.onClick.AddListener(() => Close());
         _closeBackgroundButton.onClick.AddListener(() => Close());
+
+        _buttonHandler.OnPreviewPressed += JukeboxManager.Instance.PlayPreview;
+        _buttonHandler.OnTrackPressed += JukeboxManager.Instance.QueueTrack;
     }
 
     #region Weblink
@@ -50,9 +55,11 @@ public class JukeboxInfoPopupHandler : MonoBehaviour
     {
         if (_buttonHandler.MusicTrack != null && _buttonHandler.MusicTrack.Id != musicTrack.Id) ClearWeblinks();
 
+        _favoriteHandler.Setup(JukeboxManager.Instance.GetTrackFavoriteType(musicTrack), musicTrack.Id);
+
         List<ArtistInfo> artists = musicTrack.JukeboxInfo.Artists;
 
-        if (artists.Count != 0)
+        if (artists.Count != 0 && (_buttonHandler.MusicTrack == null || _buttonHandler.MusicTrack.Id != musicTrack.Id))
             foreach (ArtistInfo artist in artists)
                 GetFreeWeblinkSlot().Set(artist.Artist);
 

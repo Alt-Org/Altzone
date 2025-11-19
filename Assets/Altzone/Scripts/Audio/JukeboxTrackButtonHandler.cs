@@ -15,18 +15,16 @@ public class JukeboxTrackButtonHandler : MonoBehaviour
     [SerializeField] private Image _trackImage;
     [SerializeField] private float _diskRotationSpeed = 100f;
     [SerializeField] private Button _addButton;
-    [SerializeField] private FavoriteButtonHandler _favoriteButtonHandler;
+    [SerializeField] private FavoriteHandlerBase _favoriteButtonHandler;
+    [Space]
     [SerializeField] private Button _previewButton;
     [SerializeField] private Button _infoButton;
-
-    //private int _trackLinearIndex = 0;
 
     private MusicTrack _musicTrack = null;
     public MusicTrack MusicTrack {  get { return _musicTrack; } }
 
     private Coroutine _diskSpinCoroutine;
 
-    //public delegate void TrackPressed(int startIndex);
     public delegate void TrackPressed(MusicTrack musicTrack);
     public event TrackPressed OnTrackPressed;
 
@@ -44,8 +42,6 @@ public class JukeboxTrackButtonHandler : MonoBehaviour
         if (_infoButton != null) _infoButton.onClick.AddListener(() => InfoButtonClicked());
     }
 
-    //public bool InUse() { return _currentTrack != null; }
-
     public void AddButtonClicked() { if (_musicTrack != null) OnTrackPressed.Invoke(_musicTrack); }
 
     public void PreviewButtonClicked() { if (_musicTrack != null) OnPreviewPressed.Invoke(this); }
@@ -54,12 +50,11 @@ public class JukeboxTrackButtonHandler : MonoBehaviour
 
     public void SetTrack(MusicTrack musicTrack, int trackLinearIndex, JukeboxManager.MusicTrackFavoriteType likeType)
     {
-        //_trackLinearIndex = trackLinearIndex;
         _musicTrack = musicTrack;
-        _trackNameText.text = musicTrack.Name;
-        _trackNameAutoScroll.ContentChange();
-        _trackCreditsNamesText.text = musicTrack.JukeboxInfo.GetArtistNames();
-        _trackCreditsNamesAutoScroll.ContentChange();
+        //_trackNameText.text = musicTrack.Name;
+        _trackNameAutoScroll.SetContent(musicTrack.Name);
+        //_trackCreditsNamesText.text = musicTrack.JukeboxInfo.GetArtistNames();
+        _trackCreditsNamesAutoScroll.SetContent(musicTrack.JukeboxInfo.GetArtistNames());
         _trackImage.sprite = musicTrack.JukeboxInfo.Disk;
         gameObject.SetActive(true);
 
