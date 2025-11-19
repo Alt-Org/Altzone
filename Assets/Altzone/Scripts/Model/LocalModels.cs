@@ -12,6 +12,8 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2.Internal;
 using Altzone.Scripts.Settings;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Prg.Scripts.Common.Unity;
 using UnityEngine;
 #if UNITY_WEBGL
@@ -360,11 +362,19 @@ namespace Altzone.Scripts.Model
         private static StorageData LoadStorage(string storagePath)
         {
             var jsonText = File.ReadAllText(storagePath, Encoding);
-            var storageData = JsonUtility.FromJson<StorageData>(jsonText);
+            StorageData storageData;
+            JObject parsedData = JObject.Parse(jsonText);
+            Debug.LogWarning(parsedData);
+            if (int.Parse(parsedData["StorageVersion"].ToString()) != STORAGEVERSION) storageData = CreateDefaultStorage(storagePath);
 
-            if (storageData?.StorageVersion != STORAGEVERSION) storageData = CreateDefaultStorage(storagePath);
             else
             {
+                storageData = parsedData.ToObject<StorageData>(
+                    JsonSerializer.Create(new JsonSerializerSettings {
+                        TypeNameHandling = TypeNameHandling.Auto,
+                        NullValueHandling = NullValueHandling.Ignore,
+                    }));
+
                 storageData.Characters = CharacterStorage.Instance.CharacterList;
 
                 // Loading custom characters
@@ -381,7 +391,15 @@ namespace Altzone.Scripts.Model
 
         private static void SaveStorage(StorageData storageData, string storagePath)
         {
-            var jsonText = JsonUtility.ToJson(storageData);
+            string jsonText = JObject.FromObject(
+                    storageData,
+                    JsonSerializer.CreateDefault(new JsonSerializerSettings {
+            NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore,
+            TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto,
+            Formatting = Newtonsoft.Json.Formatting.Indented,
+        })
+                ).ToString();
+            //Debug.LogWarning(jsonText);
             File.WriteAllText(storagePath, jsonText, Encoding);
             WebGlFsSyncFs();
         }
