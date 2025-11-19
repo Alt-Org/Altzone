@@ -16,22 +16,45 @@ public class ClanSettings : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _clanName;
     [SerializeField] private TextMeshProUGUI _clanMembers;
     [SerializeField] private TextMeshProUGUI _clanWinsRanking;
-    [SerializeField] private TextMeshProUGUI _clanActivityRanking;
+    //[SerializeField] private TextMeshProUGUI _clanActivityRanking;
+
+    [Header("Motto")]
+    [SerializeField] private TextMeshProUGUI _clanPhraseText;
+    [SerializeField] private TMP_InputField _clanPhraseField;
+    [SerializeField] private GameObject _clanPhrasePopup;
+
+    [Header("Rules (display texts)")]
+    [SerializeField] private TextMeshProUGUI _rule1Text;
+    [SerializeField] private TextMeshProUGUI _rule2Text;
+    [SerializeField] private TextMeshProUGUI _rule3Text;
+
+    [Header("Rules (popup inputs)")]
+    [SerializeField] private TMP_InputField _rule1Input;
+    [SerializeField] private TMP_InputField _rule2Input;
+    [SerializeField] private TMP_InputField _rule3Input;
+
+    [SerializeField] private GameObject _rulesPopup;
 
     [Header("Inputs")]
-    [SerializeField] private TMP_InputField _clanPhraseField;
+    //[SerializeField] private TMP_InputField _clanPhraseField;
     [SerializeField] private GameObject _clanPassword;
     [SerializeField] private TMP_InputField _clanPasswordField;
     [SerializeField] private Toggle _clanOpenToggle;
-    [SerializeField] private ClanGoalSelection _goalSelection;
-    [SerializeField] private ClanAgeSelection _ageSelection;
+    //[SerializeField] private ClanGoalSelection _goalSelection;
+
+    [Header("Age")]
+    //[SerializeField] private ClanAgeSelection _ageSelection;
+    [SerializeField] private ClanAgeList _ageSelection;
+    [SerializeField] private Image _ageImage;
+
+    [SerializeField] private GameObject _agePopup;
 
     [Header("Language")]
     [SerializeField] private ClanLanguageList _languageList;
     [SerializeField] private LanguageFlagImage _flagImageSetter;
 
     [Header("Other settings fields")]
-    [SerializeField] private ClanRightsPanel _clanRightsPanel;
+    //[SerializeField] private ClanRightsPanel _clanRightsPanel;
     [SerializeField] private ClanHeartColorChanger _heartColorChanger;
     [SerializeField] private ClanHeartColorSetter _heartColorSetter;
     [SerializeField] private ValueSelectionController _valueSelection;
@@ -70,16 +93,40 @@ public class ClanSettings : MonoBehaviour
             // Initialize settings
             _clanName.text = clan.Name;
             _clanMembers.text = "Jäsenmäärä: " + clan.Members.Count.ToString();
-            _clanActivityRanking.text = _clanWinsRanking.text = "-1";
+            //_clanActivityRanking.text = _clanWinsRanking.text = "-1";
 
+            //Motto
+            _clanPhraseText.text = clan.Phrase;
             _clanPhraseField.text = clan.Phrase;
+            _clanPhrasePopup.SetActive(false);
+
             _clanOpenToggle.isOn = !clan.IsOpen;
             _clanPassword.SetActive(!clan.IsOpen);
 
-            _goalSelection.Initialize(clan.Goals);
-            _ageSelection.Initialize(clan.ClanAge);
+            // Rules
+            /*List<string> rules = clan.Rules ?? new List<string>();
 
-            _clanRightsPanel.InitializeRightsToggles(clan.ClanRights);
+            string rule1 = rules.Count > 0 ? rules[0] : string.Empty;
+            string rule2 = rules.Count > 1 ? rules[1] : string.Empty;
+            string rule3 = rules.Count > 2 ? rules[2] : string.Empty;
+
+            _rule1Text.text = rule1;
+            _rule2Text.text = rule2;
+            _rule3Text.text = rule3;
+
+            _rule1Input.text = rule1;
+            _rule2Input.text = rule2;
+            _rule3Input.text = rule3;*/
+
+            _rulesPopup.SetActive(false);
+
+            //Age           
+            _ageSelection.Initialize(clan.ClanAge);
+            _agePopup.SetActive(false);
+            UpdateAgeDisplay();
+
+            //_goalSelection.Initialize(clan.Goals);
+            //_clanRightsPanel.InitializeRightsToggles(clan.ClanRights);
 
             _languageList.Initialize(clan.Language);
             _flagImageSetter.SetFlag(clan.Language);
@@ -122,12 +169,19 @@ public class ClanSettings : MonoBehaviour
     {
         _saveButton.interactable = false;
 
+        if (_valueSelection.SelectedValues.Count == 0)
+        {
+            _errorPopup.ActivatePopUp("Valitse vähintään yksi arvo klaanille.");
+            _saveButton.interactable = true;
+            return;
+        }
+
         Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
         {
             string previousPhrase = clanData.Phrase;
             clanData.Phrase = _clanPhraseField.text;
             clanData.Language = _languageList.SelectedLanguage;
-            clanData.Goals = _goalSelection.GoalsRange;
+            //clanData.Goals = _goalSelection.GoalsRange;
             clanData.ClanAge = _ageSelection.ClanAgeRange;
 
             clanData.Values = _valueSelection.SelectedValues;
@@ -136,8 +190,8 @@ public class ClanSettings : MonoBehaviour
             // These are not saved at the moment
             bool isOpen = !_clanOpenToggle.isOn;
             string password = _clanPasswordField.text;
-            clanData.ClanRights = _clanRightsPanel.ClanRights;
-            
+            //clanData.ClanRights = _clanRightsPanel.ClanRights;
+
             StartCoroutine(ServerManager.Instance.UpdateClanToServer(clanData, success =>
             {
                 _saveButton.interactable = true;
@@ -165,9 +219,9 @@ public class ClanSettings : MonoBehaviour
             bool hasMadeEdits = _heartColorChanger.IsAnyPieceChanged()
                 || clanData.Phrase != _clanPhraseField.text
                 || clanData.Language != _languageList.SelectedLanguage
-                || clanData.Goals != _goalSelection.GoalsRange
+                /*|| clanData.Goals != _goalSelection.GoalsRange*/
                 || clanData.ClanAge != _ageSelection.ClanAgeRange
-                || !clanData.ClanRights.SequenceEqual(_clanRightsPanel.ClanRights)
+                /*|| !clanData.ClanRights.SequenceEqual(_clanRightsPanel.ClanRights)*/
                 || clanData.Values != _selectedValues;
 
             if (hasMadeEdits)
@@ -181,4 +235,69 @@ public class ClanSettings : MonoBehaviour
         });
     }
     public void OnClickContinueEditingClanSettings() => _cancelConfirmationPopup.SetActive(false);
+
+    private void UpdateAgeDisplay()
+    {
+        if (_ageSelection == null) return;
+
+        var age = _ageSelection.ClanAgeRange;
+
+        if (_ageImage != null)
+        {
+            var sprite = _ageSelection.GetSelectedAgeSprite();
+            _ageImage.sprite = sprite;
+            _ageImage.preserveAspect = true;
+            _ageImage.enabled = sprite != null;
+        }
+    }
+
+    public void OnAgeSelectionConfirmed()
+    {
+        // Käytetään aina _ageSelectionin nykyistä valintaa
+        UpdateAgeDisplay();
+    }
+
+
+    public void OpenClanPhrasePopup()
+    {
+        _clanPhrasePopup.SetActive(true);
+        _clanPhraseField.text = _clanPhraseText.text;
+    }
+
+    public void ConfirmClanPhraseEdit()
+    {
+        _clanPhraseText.text = _clanPhraseField.text;
+        _clanPhrasePopup.SetActive(false);
+    }
+
+    public void CancelClanPhraseEdit()
+    {
+        _clanPhrasePopup.SetActive(false);
+    }
+
+    public void OpenClanRulesPopup()
+    {
+        _rulesPopup.SetActive(true);
+        _rule1Input.text = _rule1Text.text;
+        _rule2Input.text = _rule2Text.text;
+        _rule3Input.text = _rule3Text.text;
+    }
+
+    public void ConfirmClanRulesEdit()
+    {
+        _rule1Text.text = _rule1Input.text;
+        _rule2Text.text = _rule2Input.text;
+        _rule3Text.text = _rule3Input.text;
+        _rulesPopup.SetActive(false);
+    }
+
+    public void CancelClanRulesEdit()
+    {
+        _rulesPopup.SetActive(false);
+    }
+
+    public void OpenClanAgePopup()
+    {
+        _agePopup.SetActive(true);
+    }
 }
