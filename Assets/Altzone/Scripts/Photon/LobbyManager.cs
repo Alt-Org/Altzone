@@ -470,7 +470,8 @@ namespace Altzone.Scripts.Lobby
                 // Checking if the new position is free before raising event to master client
                 if (PhotonBattleRoom.CheckIfPositionIsFree(position) == false)
                 {
-                    Debug.LogWarning($"Failed to reserve the position {position}. This likely because somebody already is in this position.");
+                    if(PhotonBattleRoom.CheckIfPositionHasBot(position)) Debug.LogWarning($"Failed to reserve the position {position} because there is a bot in the slot.");
+                    else Debug.LogWarning($"Failed to reserve the position {position}. This likely because somebody already is in this position.");
                     _requestPositionChangeHolder = null;
                     yield break;
                 }
@@ -1766,17 +1767,16 @@ namespace Altzone.Scripts.Lobby
 
         public void OnPlayerEnteredRoom(Player newPlayer)
         {
+            Room room = PhotonRealtimeClient.CurrentRoom;
+            int playerCount = room.PlayerCount;
+            int botCount = PhotonBattleRoom.GetBotCount();
             if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
             {
-                Room room = PhotonRealtimeClient.CurrentRoom;
-                int playerCount = room.PlayerCount;
-                int botCount = PhotonBattleRoom.GetBotCount();
-
                 if (playerCount + botCount == room.MaxPlayers && room.IsOpen) PhotonRealtimeClient.CloseRoom();
 
                 if (_canBattleStartCheckHolder == null) _canBattleStartCheckHolder = StartCoroutine(CheckIfBattleCanStart());
             }
-            LobbyOnPlayerEnteredRoom?.Invoke(new(newPlayer));
+            if (playerCount + botCount <= room.MaxPlayers) LobbyOnPlayerEnteredRoom?.Invoke(new(newPlayer));
         }
         public void OnRoomPropertiesUpdate(PhotonHashtable propertiesThatChanged) { LobbyOnRoomPropertiesUpdate?.Invoke(new(propertiesThatChanged)); }
         public void OnPlayerPropertiesUpdate(Player targetPlayer, PhotonHashtable changedProps) { LobbyOnPlayerPropertiesUpdate?.Invoke(new(targetPlayer),new(changedProps)); }
