@@ -4911,6 +4911,7 @@ GameObject:
   - component: {fileID: 5450073778133877388}
   - component: {fileID: 6413329215453710600}
   - component: {fileID: 1515431173570265335}
+  - component: {fileID: 4827914253696279655}
   m_Layer: 5
   m_Name: LanguageSelectorButtons
   m_TagString: Untagged
@@ -4980,6 +4981,25 @@ MonoBehaviour:
   _finnishSelectButton: {fileID: 4639676066320827845}
   _englishSelectButton: {fileID: 5633020879072162165}
   _navigation: {fileID: 0}
+--- !u!114 &4827914253696279655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1798650250546327745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 4
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 7
 --- !u!1 &1841362306327012445
 GameObject:
   m_ObjectHideFlags: 0
@@ -18117,6 +18137,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1419938151864024810}
   - component: {fileID: 2471068837817712015}
+  - component: {fileID: 2842288990891522039}
   m_Layer: 5
   m_Name: MainMenuMusicSelection
   m_TagString: Untagged
@@ -18178,6 +18199,25 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2842288990891522039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5929723440728914972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 5
+  _educationCategoryActionType: 4
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &5951396631308139250
 GameObject:
   m_ObjectHideFlags: 0
