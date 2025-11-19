@@ -26,6 +26,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public List<HeartPieceData> ClanHeartPieces = new();
         public ClanRoleRights[] ClanRights = new ClanRoleRights[3];
 
+        [JsonIgnore]
         public ClanInventory Inventory = new();
 
         public List<PollData> Polls = new();
