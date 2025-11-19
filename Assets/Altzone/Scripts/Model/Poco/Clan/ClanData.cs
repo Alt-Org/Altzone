@@ -56,6 +56,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         {
 
         }
+        
         public ClanData(string id, string name, string tag, int gameCoins)
         {
             Assert.IsTrue(id.IsSet());
