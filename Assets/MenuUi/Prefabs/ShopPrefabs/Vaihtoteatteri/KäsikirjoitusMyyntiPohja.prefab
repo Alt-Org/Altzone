@@ -351,10 +351,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 8341378575056358552}
+        m_TargetAssemblyTypeName: EsineDisplay, MainMenu
+        m_MethodName: OnStallClick
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -390,3 +390,5 @@ MonoBehaviour:
   items: {fileID: 11400000, guid: cecb0ece863eed949813a62605dd88b4, type: 2}
   price: {fileID: 7179073579465683295}
   contentImage: {fileID: 3076712100754815630}
+  ClanStallPopup: {fileID: 4239014958816181346, guid: 2ca5c1571081ab84c8eff2e5f8741acd,
+    type: 3}

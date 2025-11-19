@@ -21,4 +21,5 @@ public class EsineDisplay : MonoBehaviour
     {
         //VotingActions.PassKauppaItem?.Invoke(this);
     }
+
 }
