@@ -17,7 +17,7 @@ namespace Battle.QSimulation.Player
     /// Class containing code overriding shield/projectile collisions to have the projectile always reflect off of the character's shield based on a calculated normal.
     /// </summary>
     ///
-    /// @bigtext{See [{Player Character Class Confluent}](#page-wip-concepts-playerclass-confluent) for more info.}
+    /// @bigtext{See [{Player Character Class 600 Confluent}](#page-concepts-player-class-600-confluent) for more info.}
     public class BattlePlayerClassConfluent : BattlePlayerClassBase
     {
         /// <summary>The BattlePlayerCharacterClass this class is for.</summary>
