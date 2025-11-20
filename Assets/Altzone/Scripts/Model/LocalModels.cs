@@ -398,7 +398,7 @@ namespace Altzone.Scripts.Model
                         NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore,
                         TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto,
                         Formatting = Newtonsoft.Json.Formatting.Indented,
-                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                        //ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                     })
                 ).ToString();
             //Debug.LogWarning(jsonText);

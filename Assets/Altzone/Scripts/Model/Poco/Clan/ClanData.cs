@@ -23,19 +23,20 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public bool IsOpen;
 
         public List<ClanValues> Values = new();
+        [JsonIgnore]
         public List<HeartPieceData> ClanHeartPieces = new();
         public ClanRoleRights[] ClanRights = new ClanRoleRights[3];
 
         [JsonIgnore]
         public ClanInventory Inventory = new();
-
+        [JsonIgnore]
         public List<PollData> Polls = new();
 
         public AdStoreObject _adData;
         public AdStoreObject AdData {
             get { return _adData != null ? _adData : _adData = new(null, null); }
             set { _adData = value; CallAdDataUpdate(); } }
-
+        [JsonIgnore]
         public List<ClanMember> Members = new();
         public List<RaidRoom> Rooms = new();
 
