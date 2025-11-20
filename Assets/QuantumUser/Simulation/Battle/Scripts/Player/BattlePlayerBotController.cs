@@ -1,6 +1,6 @@
 /// @file BattlePlayerBotController.cs
 /// <summary>
-/// Contains @cref{Battle.QSimulation.Game,BattlePlayerBotController} class which handles the bot AI logic and implements helper methods for handling bots.
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerBotController} class which handles the bot AI logic and implements helper methods for handling bots.
 /// </summary>
 
 // Unity usings
