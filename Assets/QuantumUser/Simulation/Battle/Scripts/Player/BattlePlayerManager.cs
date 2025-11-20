@@ -62,7 +62,7 @@ namespace Battle.QSimulation.Player
         /// <see cref="Quantum.BattlePlayerPlayState.OutOfPlayRespawning">OutOfPlayRespawning</see> or
         /// <see cref="Quantum.BattlePlayerPlayState.OutOfPlayFinal">OutOfPlayFinal</see>.
         /// </returns>
-        public static bool IsOutOfPlay(this BattlePlayerPlayState state)           => state is BattlePlayerPlayState.OutOfPlay or BattlePlayerPlayState.OutOfPlayRespawning or BattlePlayerPlayState.OutOfPlayFinal;
+        public static bool IsOutOfPlay(this BattlePlayerPlayState state) => state is BattlePlayerPlayState.OutOfPlay or BattlePlayerPlayState.OutOfPlayRespawning or BattlePlayerPlayState.OutOfPlayFinal;
 
         /// <summary>
         /// Checks if the play state of player is <see cref="Quantum.BattlePlayerPlayState.OutOfPlayRespawning">OutOfPlayRespawning</see>.
@@ -80,7 +80,7 @@ namespace Battle.QSimulation.Player
         /// <param name="state">Player play state.</param>
         ///
         /// <returns>True if play state is <see cref="Quantum.BattlePlayerPlayState.OutOfPlayFinal">OutOfPlayFinal</see>.</returns>
-        public static bool IsOutOfPlayFinal(this BattlePlayerPlayState state)      => state is BattlePlayerPlayState.OutOfPlayFinal;
+        public static bool IsOutOfPlayFinal(this BattlePlayerPlayState state) => state is BattlePlayerPlayState.OutOfPlayFinal;
 
         /// <summary>
         /// Checks if the play state of player is <see cref="Quantum.BattlePlayerPlayState.InPlay">InPlay</see>.
@@ -89,7 +89,7 @@ namespace Battle.QSimulation.Player
         /// <param name="state">Player play state.</param>
         ///
         /// <returns>True if play state is <see cref="Quantum.BattlePlayerPlayState.InPlay">InPlay</see>.</returns>
-        public static bool IsInPlay(this BattlePlayerPlayState state)              => state is BattlePlayerPlayState.InPlay;
+        public static bool IsInPlay(this BattlePlayerPlayState state) => state is BattlePlayerPlayState.InPlay;
     }
 
     /// <summary>
