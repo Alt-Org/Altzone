@@ -1,11 +1,9 @@
 /// @file BattlePlayerInput.cs
 /// <summary>
-/// Contains @cref{Battle.View.Player,BattlePlayerInput} class 
+/// Contains @cref{Battle.View.Player,BattlePlayerInput} class
 /// which handles subscribing to QuantumCallBack and polling player inputs for Quantum.<br/>
 /// Input is processed and compiled into an input struct, which is passed over to the Quantum simulation when polled by Quantum.
 /// </summary>
-///
-/// See [{PlayerInput}](#page-concepts-player-input) for more info.
 
 //#define DEBUG_INPUT_TYPE_OVERRIDE
 
@@ -37,6 +35,10 @@ namespace Battle.View.Player
     /// Handles subscribing to QuantumCallBack and polling player inputs for %Quantum.<br/>
     /// Input is processed and compiled into an input struct, which is passed over to the %Quantum simulation when polled by %Quantum.
     /// </summary>
+    ///
+    /// See [{PlayerInput}](#page-concepts-player-input) for more info.
+    ///
+    /// [{Player Overview}](#page-concepts-player-overview)
     public class BattlePlayerInput : MonoBehaviour
     {
         /// @name Input methods
