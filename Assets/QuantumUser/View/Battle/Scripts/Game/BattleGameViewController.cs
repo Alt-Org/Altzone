@@ -41,7 +41,7 @@ namespace Battle.View.Game
     /// </summary>
     ///
     /// Handles any functionality needed by the @uihandlerslink which need to access other parts of %Battle, for example triggering the selection of another character.
-    /// Accesses all of the @ref UIHandlerReferences through the BattleUiController reference variable #_uiController.<br/>
+    /// Accesses all of the @ref UIHandlerReferences through the BattleUiController reference variable <see cref="BattleGameViewController._uiController">_uiController</see>.<br/>
     public class BattleGameViewController : QuantumCallbacks
     {
         #region SerializeFields
@@ -101,7 +101,7 @@ namespace Battle.View.Game
         #region Public - Static Methods
 
         /// <summary>
-        /// Public static method for assigning #ProjectileReference.
+        /// Public static method for assigning <see cref="BattleGameViewController.ProjectileReference">ProjectileReference</see>.
         /// </summary>
         ///
         /// <param name="projectileReference">The projectile <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</param>
@@ -131,7 +131,8 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Public method that gets called when the local player selected another character.<br/>
-        /// Calls BattlePlayerInput::OnCharacterSelected method in #_playerInput.
+        /// Calls <see cref="BattlePlayerInput.OnCharacterSelected"/> method
+        /// in <see cref="BattleGameViewController._playerInput">_playerInput</see>.
         /// </summary>
         ///
         /// <param name="characterNumber">The character number which the local player selected.</param>
@@ -144,7 +145,8 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Public method that gets called when local player gives movement joystick input.
-        /// Calls BattlePlayerInput::OnJoystickMovement method in #_playerInput.
+        /// Calls <see cref="Battle.View.Player.BattlePlayerInput.OnJoystickMovement">OnJoystickMovement</see> method
+        /// in <see cref="BattleGameViewController._playerInput">_playerInput</see>.
         /// </summary>
         ///
         /// <param name="input">The movement direction Vector2.</param>
@@ -156,7 +158,8 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Public method that gets called when local player gives rotation joystick input.
-        /// Calls BattlePlayerInput::OnJoystickRotation method in #_playerInput.
+        /// Calls <see cref="Battle.View.Player.BattlePlayerInput.OnJoystickRotation">OnJoystickRotation</see> method
+        /// in <see cref="BattleGameViewController._playerInput">_playerInput</see>.
         /// </summary>
         ///
         /// <param name="input">The rotation input as float.</param>
@@ -245,7 +248,8 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleViewWaitForPlayers QuantumEvent.<br/>
-        /// Handles initializing BattleUiController::AnnouncementHandler in #_uiController with waiting for players text.
+        /// Handles initializing <see cref="Battle.View.UI.BattleUiController.AnnouncementHandler">AnnouncementHandler</see>
+        /// in <see cref="BattleGameViewController._uiController">_uiController</see> with waiting for players text.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -261,7 +265,8 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleViewPlayerConnected QuantumEvent.<br/>
-        /// Handles calling BattleUiLoadScreenHandler::PlayerConnected through #_uiController with the slot and character IDs of the connected player.
+        /// Handles calling <see cref="Battle.View.UI.BattleUiLoadScreenHandler.PlayerConnected">PlayerConnected</see>
+        /// through <see cref="BattleGameViewController._uiController">_uiController</see> with the slot and character IDs of the connected player.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -281,7 +286,7 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleViewAllPlayersConnected QuantumEvent.<br/>
-        /// Handles calling BattleUiAnnouncementHandler::ClearAnnouncerTextField once all players have successfully joined the game.
+        /// Handles calling <see cref="Battle.View.UI.BattleUiAnnouncementHandler.ClearAnnouncerTextField">ClearAnnouncerTextField</see> once all players have successfully joined the game.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -292,8 +297,10 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventViewInit QuantumEvent.<br/>
-        /// Handles initializing the @ref UIHandlerReferences scripts and #_gridViewController.
+        /// Handles initializing the <b>UIHandlerReferences</b> scripts and <see cref="BattleGameViewController._gridViewController">_gridViewController</see>.
         /// </summary>
+        ///
+        /// See @ref UIHandlerReferences for more info.
         ///
         /// <param name="e">The event data.</param>
         private void QEventOnViewInit(EventBattleViewInit e)
@@ -387,7 +394,7 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleStoneCharacterPieceViewInit QuantumEvent.<br/>
-        /// Handles initializing #_stoneCharacterViewController.
+        /// Handles initializing <see cref="BattleGameViewController._stoneCharacterViewController"/>.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -451,7 +458,7 @@ namespace Battle.View.Game
         /// <summary>
         /// Private handler method for EventBattleViewGetReadyToPlay QuantumEvent.<br/>
         /// Handles showing end of countdown text in BattleUiController::AnnouncementHandler<br/>
-        /// and calling BattleUiJoystickHandler::SetLocked false to unlock joysticks to allow player movement and rotation.
+        /// and calling <see cref="Battle.View.UI.BattleUiJoystickHandler.SetLocked">SetLocked</see> false to unlock joysticks to allow player movement and rotation.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -466,7 +473,7 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleViewGameStart QuantumEvent.<br/>
-        /// Handles clearing BattleUiController::AnnouncementHandler text and showing the game timer.
+        /// Handles clearing <see cref="Battle.View.UI.BattleUiController.AnnouncementHandler">AnnouncementHandler</see> text and showing the game timer.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -481,7 +488,7 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleViewGameOver QuantumEvent.<br/>
-        /// Handles hiding %UI elements, showing BattleUiController::GameOverHandler and setting EndOfGameData variables.
+        /// Handles hiding %UI elements, showing <see cref="Battle.View.UI.BattleUiController.GameOverHandler">GameOverHandler</see> and setting EndOfGameData variables.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -505,7 +512,8 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleChangeEmotionState QuantumEvent.<br/>
-        /// Handles calling BattleScreenEffectViewController::ChangeColor in #_screenEffectViewController.
+        /// Handles calling <see cref="Battle.View.Effect.BattleScreenEffectViewController.ChangeColor">ChangeColor</see>
+        /// in <see cref="BattleGameViewController._screenEffectViewController">_screenEffectViewController</see>.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -517,8 +525,10 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleLastRowWallDestroyed QuantumEvent.<br/>
-        /// Handles calling BattleStoneCharacterViewController::DestroyCharacterPart in #_stoneCharacterViewController<br/>
-        /// and BattleLightrayEffectViewController::SpawnLightray in #_lightrayEffectViewController.
+        /// Handles calling <see cref="BattleStoneCharacterViewController.DestroyCharacterPart">DestroyCharacterPart</see>
+        /// in <see cref="BattleGameViewController._stoneCharacterViewController">_stoneCharacterViewController</see><br/>
+        /// and <see cref="Battle.View.Effect.BattleLightrayEffectViewController.SpawnLightray">SpawnLightray</see>
+        /// in <see cref="BattleGameViewController._lightrayEffectViewController">_lightrayEffectViewController</see>.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -537,7 +547,8 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattlePlaySoundFX QuantumEvent.<br/>
-        /// Handles calling BattleSoundFXViewController::PlaySound in #_soundFXViewController.
+        /// Handles calling <see cref="Battle.View.Audio.BattleSoundFXViewController.PlaySound">PlaySound</see>
+        /// in <see cref="BattleGameViewController._soundFXViewController">_soundFXViewController</see>.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -553,7 +564,9 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleCharacterTakeDamage QuantumEvent.<br/>
-        /// Handles calling BattleUiPlayerInfoHandler::UpdateHealthVisual in #_uiController's BattleUiController::PlayerInfoHandler.
+        /// Handles calling <see cref="Battle.View.UI.BattleUiPlayerInfoHandler.UpdateHealthVisual">UpdateHealthVisual</see>
+        /// in <see cref="BattleGameViewController._uiController">_uiController's</see>
+        /// <see cref="Battle.View.UI.BattleUiController.PlayerInfoHandler">PlayerInfoHandler</see>.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -567,7 +580,9 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleShieldTakeDamage QuantumEvent.<br/>
-        /// Handles calling BattleUiPlayerInfoHandler.UpdateDefenceVisual in <see cref="_uiController"/>'s <see cref="BattleUiController.PlayerInfoHandler">PlayerInfoHandler</see>.
+        /// Handles calling <see cref="Battle.View.UI.BattleUiPlayerInfoHandler.UpdateDefenceVisual">UpdateDefenceVisual</see> in
+        /// <see cref="BattleGameViewController._uiController">_uiController's</see>
+        /// <see cref="Battle.View.UI.BattleUiController.PlayerInfoHandler">PlayerInfoHandler</see>.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -581,7 +596,9 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleGiveUpStateChange QuantumEvent.<br/>
-        /// Handles calling BattleUiGiveUpButtonHandler.UpdateState in <see cref="_uiController"/>'s <see cref="BattleUiController.GiveUpButtonHandler">GiveUpButtonHandler</see>.
+        /// Handles calling <see cref="Battle.View.UI.BattleUiGiveUpButtonHandler.UpdateState">UpdateState</see>
+        /// in <see cref="BattleGameViewController._uiController">_uiController's</see>
+        /// <see cref="Battle.View.UI.BattleUiController.GiveUpButtonHandler">GiveUpButtonHandler</see>.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -595,7 +612,10 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleDebugUpdateStatsOverlay QuantumEvent.<br/>
-        /// Handles setting stats to BattleUiController::DebugStatsOverlayHandler in #_uiController using BattleUiDebugStatsOverlayHandler::SetStats method.
+        /// Handles setting stats
+        /// to <see cref="Battle.View.UI.BattleUiController.DebugStatsOverlayHandler"/>
+        /// in <see cref="BattleGameViewController._uiController">_uiController</see>
+        /// using <see cref="Battle.View.UI.BattleUiDebugStatsOverlayHandler.SetStats">SetStats</see> method.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -609,7 +629,8 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleDebugOnScreenMessage QuantumEvent.<br/>
-        /// Handles calling BattleUiAnnouncementHandler::SetDebugtext in #_uiController's BattleUiController::AnnouncementHandler.
+        /// Handles calling <see cref="Battle.View.UI.BattleUiAnnouncementHandler.SetDebugtext">SetDebugtext</see>
+        /// in <see cref="BattleGameViewController._uiController">_uiController's</see> BattleUiController::AnnouncementHandler.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
