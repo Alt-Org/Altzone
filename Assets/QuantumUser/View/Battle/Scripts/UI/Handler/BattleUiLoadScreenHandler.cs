@@ -55,6 +55,7 @@ namespace Battle.View.UI
         ///
         /// <param name="playerSlot">The slot of the player.</param>
         /// <param name="characterIds">An array of the character IDs of the players selected characters.</param>
+        /// <param name="characterClasses">An array of the character classes of the players selected characters.</param>
         public void PlayerConnected(BattlePlayerSlot playerSlot, int[] characterIds, int[] characterClasses)
         {
             int slotIndex = playerSlot switch
