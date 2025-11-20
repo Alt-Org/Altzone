@@ -23,7 +23,7 @@ namespace Battle.View.UI
 {
     public class BattleUiLoadScreenHandler : MonoBehaviour
     {
-        /// @anchor BattleUiAnnouncementHandler-SerializeFields
+        /// @anchor BattleUiLoadScreenHandler-SerializeFields
         /// @name SerializeField variables
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
