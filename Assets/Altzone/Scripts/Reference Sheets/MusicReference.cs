@@ -1,21 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Altzone.Scripts.Interface;
-using System.Runtime.CompilerServices;
+using Altzone.Scripts.Audio;
 
 namespace Altzone.Scripts.ReferenceSheets
 {
     //[CreateAssetMenu(fileName = "MusicReference", menuName = "ScriptableObjects/MusicReferenceScriptableObject")]
-    public enum MusicCategoryType
-    {
-        None,
-        MainMenu,
-        SoulHome,
-        Jukebox,
-        Battle,
-        Raid,
-        Other
-    }
 
     public enum MusicGenreType
     {
@@ -110,7 +99,7 @@ namespace Altzone.Scripts.ReferenceSheets
             return null;
         }
 
-        public MusicCategory GetCategory(MusicCategoryType categoryType)
+        public MusicCategory GetCategory(AudioCategoryType categoryType)
         {
             foreach (MusicCategory category in _musicCategories)
                 if (category.Type == categoryType)
@@ -129,7 +118,7 @@ namespace Altzone.Scripts.ReferenceSheets
                 return null;
         }
 
-        public List<MusicTrack> GetTracksOfCategoryName(MusicCategoryType categoryType)
+        public List<MusicTrack> GetTracksOfCategoryName(AudioCategoryType categoryType)
         {
             MusicCategory category = GetCategory(categoryType);
 
@@ -162,7 +151,7 @@ namespace Altzone.Scripts.ReferenceSheets
             return null;
         }
 
-        public MusicTrack GetTrack(MusicCategoryType categoryType, string trackName)
+        public MusicTrack GetTrack(AudioCategoryType categoryType, string trackName)
         {
             MusicCategory category = GetCategory(categoryType);
 
@@ -188,7 +177,7 @@ namespace Altzone.Scripts.ReferenceSheets
             return null;
         }
 
-        public MusicTrack GetTrackById(MusicCategoryType categoryType, string trackId)
+        public MusicTrack GetTrackById(AudioCategoryType categoryType, string trackId)
         {
             MusicCategory category = GetCategory(categoryType);
 
@@ -212,7 +201,7 @@ namespace Altzone.Scripts.ReferenceSheets
     public class MusicCategory
     {
         public string Name;
-        public MusicCategoryType Type;
+        public AudioCategoryType Type;
 
         public List<MusicTrack> MusicTracks;
 

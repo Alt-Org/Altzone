@@ -1,11 +1,23 @@
 using System;
 using System.Collections.Generic;
 using Altzone.Scripts.ReferenceSheets;
+using Assets.Altzone.Scripts.Reference_Sheets;
 using UnityEngine;
 using static Altzone.Scripts.Audio.MusicHandler;
 
 namespace Altzone.Scripts.Audio
 {
+    public enum AudioCategoryType
+    {
+        None,
+        MainMenu,
+        SoulHome,
+        Jukebox,
+        Battle,
+        Raid,
+        Other
+    }
+
     public enum AudioSourceType
     {
         Sfx,
@@ -73,21 +85,86 @@ namespace Altzone.Scripts.Audio
         /// <param name="categoryName">Category name where the sfx sound resides in. (Note: Can be left empty but it is recommended to be given.)</param>
         /// <param name="sFXname">Name of the sfx audio that is wanted.</param>
         /// <returns>Returns the <c>AudioChannelPath</c> wich can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
+        [Obsolete]
         public ActiveChannelPath? PlaySfxAudio(string categoryName, string sFXname)
         {
             return _sFXHandler.Play(categoryName, sFXname, _musicHandler.MainMenuMusicName, 1f);
         }
 
-        public ActiveChannelPath? PlaySfxAudio(string categoryName, string sFXname, float pitch)
+        /// <summary>
+        /// Plays a sfx sound by given CategoryName and SFXName.
+        /// </summary>
+        /// <param name="categoryName">Category name where the sfx sound resides in. (Note: Can be left empty but it is recommended to be given.)</param>
+        /// <param name="sFXname">Name of the sfx audio that is wanted.</param>
+        /// <param name="pitch">Optional.</param>
+        /// <returns>Returns the <c>AudioChannelPath</c> wich can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
+        public ActiveChannelPath? PlaySfxAudio(string categoryName, string sFXname, float pitch = 1f)
         {
             return _sFXHandler.Play(categoryName, sFXname, _musicHandler.MainMenuMusicName, pitch);
         }
 
-        public ActiveChannelPath? PlaySfxAudio(string categoryName, string sFXname, int note)
+        /// <summary>
+        /// Plays a sfx sound by given CategoryName and SFXName.
+        /// </summary>
+        /// <param name="categoryType">Category type where the sfx sound resides in. (Note: Can use None value but it is recommended to give a specific type.)</param>
+        /// <param name="sFXname">Name of the sfx audio that is wanted.</param>
+        /// <param name="pitch">Optional.</param>
+        /// <returns>Returns the <c>AudioChannelPath</c> wich can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
+        public ActiveChannelPath? PlaySfxAudio(AudioCategoryType categoryType, string sFXname, float pitch = 1f)
+        {
+            return _sFXHandler.Play(categoryType, sFXname, _musicHandler.MainMenuMusicName, pitch);
+        }
+
+        /// <summary>
+        /// Plays a sfx sound by given CategoryName and SFXName.
+        /// </summary>
+        /// <param name="battleSFXName">Battle type name of the sfx audio that is wanted.</param>
+        /// <param name="pitch">Optional.</param>
+        /// <returns>Returns the <c>AudioChannelPath</c> wich can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
+        public ActiveChannelPath? PlayBattleSfxAudio(BattleSFXNameTypes battleSFXName, float pitch = 1f)
+        {
+            return _sFXHandler.Play(AudioCategoryType.Battle, battleSFXName, _musicHandler.MainMenuMusicName, pitch);
+        }
+
+        /// <summary>
+        /// Plays a sfx sound by given CategoryName and SFXName.
+        /// </summary>
+        /// <param name="categoryName">Category name where the sfx sound resides in. (Note: Can be left empty but it is recommended to be given.)</param>
+        /// <param name="sFXname">Name of the sfx audio that is wanted.</param>
+        /// <param name="note">Optional.</param>
+        /// <returns>Returns the <c>AudioChannelPath</c> wich can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
+        public ActiveChannelPath? PlaySfxAudio(string categoryName, string sFXname, int note = 1)
         {
             float pitch = Mathf.Pow(1.05946f, note);
 
             return _sFXHandler.Play(categoryName, sFXname, _musicHandler.MainMenuMusicName, pitch);
+        }
+
+        /// <summary>
+        /// Plays a sfx sound by given CategoryName and SFXName.
+        /// </summary>
+        /// <param name="categoryType">Category type where the sfx sound resides in. (Note: Can be left empty but it is recommended to be given.)</param>
+        /// <param name="sFXname">Name of the sfx audio that is wanted.</param>
+        /// <param name="note">Optional.</param>
+        /// <returns>Returns the <c>AudioChannelPath</c> wich can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
+        public ActiveChannelPath? PlaySfxAudio(AudioCategoryType categoryType, string sFXname, int note = 1)
+        {
+            float pitch = Mathf.Pow(1.05946f, note);
+
+            return _sFXHandler.Play(categoryType, sFXname, _musicHandler.MainMenuMusicName, pitch);
+        }
+
+        /// <summary>
+        /// Plays a sfx sound by given CategoryName and SFXName.
+        /// </summary>
+        /// <param name="battleSFXName">Name of the sfx audio that is wanted.</param>
+        /// <param name="note">Optional.</param>
+        /// <returns>Returns the <c>AudioChannelPath</c> wich can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
+        public ActiveChannelPath? PlayBattleSfxAudio(BattleSFXNameTypes battleSFXName, int note = 1)
+        {
+            float pitch = Mathf.Pow(1.05946f, note);
+
+            return _sFXHandler.Play(AudioCategoryType.Battle, battleSFXName, _musicHandler.MainMenuMusicName, pitch);
         }
 
         #region SFX All Commands
