@@ -4,7 +4,6 @@
 /// </summary>
 
 // Unity usings
-using UnityEngine;
 using UnityEngine.Scripting;
 
 // Quantum usings
@@ -27,6 +26,15 @@ namespace Battle.QSimulation.SoulWall
     [Preserve]
     public unsafe class BattleSoulWallQSystem : SystemSignalsOnly
     {
+        /// <summary>
+        /// Initializes this classes BattleDebugLogger instance.<br/>
+        /// This method is exclusively for debug logging purposes.
+        /// </summary>
+        public static void Init()
+        {
+            s_debugLogger = BattleDebugLogger.Create<BattleSoulWallQSystem>();
+        }
+
         /// <summary>
         /// Creates soulwalls based on BattleArena and SoulWall Specs during map creation phase.
         /// @warning
@@ -53,7 +61,7 @@ namespace Battle.QSimulation.SoulWall
         public static void OnProjectileHitSoulWall(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.SoulWallCollisionData* soulWallCollisionData)
         {
             if (projectileCollisionData->Projectile->IsHeld) return;
-            Debug.Log("Soul wall hit");
+            s_debugLogger.Log(f, "Soul wall hit");
 
             if (soulWallCollisionData->SoulWall->Row == BattleSoulWallRow.Last)
             {
@@ -84,6 +92,9 @@ namespace Battle.QSimulation.SoulWall
 
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.SoulWall);
         }
+
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private static BattleDebugLogger s_debugLogger;
 
         /// <summary>
         /// Private helper method (for the public <see cref="CreateSoulWalls(Frame, BattleArenaQSpec, BattleSoulWallQSpec)">CreateSoulWalls</see>) that creates soulwalls on one side of the arena.
@@ -155,6 +166,21 @@ namespace Battle.QSimulation.SoulWall
                 soulWall->Normal             = soulWallNormal;
                 soulWall->CollisionMinOffset = soulWallScale * FP._0_50;
                 soulWall->WallNumber         = counter;
+
+                s_debugLogger.LogFormat(f, "SoulWall created\n" +
+                                        "Team:               {0}\n" +
+                                        "Emotion:            {1}\n" +
+                                        "Row:                {2}\n" +
+                                        "Normal:             {3}\n" +
+                                        "CollisionMinOffset: {4}\n" +
+                                        "WallNumber:         {5}",
+                                        soulWall->Team,
+                                        soulWall->Emotion,
+                                        soulWall->Row,
+                                        soulWall->Normal,
+                                        soulWall->CollisionMinOffset,
+                                        soulWall->WallNumber
+                                        );
 
                 // increment helper counter
                 counter++;
