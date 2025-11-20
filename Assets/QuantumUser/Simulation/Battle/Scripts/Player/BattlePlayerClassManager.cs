@@ -88,8 +88,8 @@ namespace Battle.QSimulation.Player
         public virtual unsafe void OnDespawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
 
         /// <summary>
-        /// Virtual OnProjectileHitPlayerHitbox method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnProjectileHitPlayerHitbox(Frame, BattleProjectileQComponent*, EntityRef, BattlePlayerHitboxQComponent*, EntityRef)">OnProjectileHitPlayerHitbox</see> method.
+        /// Virtual OnProjectileHitPlayerCharacter method that can be implemented.<br/>
+        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnProjectileHitPlayerCharacter(Frame, BattleCollisionQSystem.ProjectileCollisionData*, BattleCollisionQSystem.PlayerCharacterCollisionData*)>OnProjectileHitPlayerHitbox</see> method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -99,7 +99,7 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnProjectileHitPlayerShield method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnProjectileHitPlayerShield(Frame, BattleProjectileQComponent*, EntityRef, BattlePlayerHitboxQComponent*, EntityRef)">OnProjectileHitPlayerShield</see> method.
+        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnProjectileHitPlayerShield(Frame, BattleCollisionQSystem.ProjectileCollisionData*, BattleCollisionQSystem.PlayerShieldCollisionData*)">OnProjectileHitPlayerShield</see> method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
