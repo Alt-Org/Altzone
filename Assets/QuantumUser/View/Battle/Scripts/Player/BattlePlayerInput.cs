@@ -271,8 +271,9 @@ namespace Battle.View.Player
 
             //{ create and set input
 
-            Input i = new()
+            Input input = new()
             {
+                IsValid                       = true,
                 MovementInput                 = movementInputInfo.MovementInput,
                 MovementDirectionIsNormalized = movementInputInfo.MovementDirectionIsNormalized,
                 MovementPositionTarget        = movementInputInfo.MovementPositionTarget,
@@ -281,7 +282,7 @@ namespace Battle.View.Player
                 RotationInput                 = rotationInputInfo.RotationInput,
                 RotationValue                 = rotationInputInfo.RotationValue,
                 PlayerCharacterNumber         = _characterNumber,
-                GiveUpInput = _onGiveUp
+                GiveUpInput                   = _onGiveUp
             };
 
             DeterministicInputFlags inputFlags = DeterministicInputFlags.Repeatable;
@@ -318,7 +319,7 @@ namespace Battle.View.Player
             _previousTime = Time.time;
 
             // reset
-            _onGiveUp = false;
+            _onGiveUp        = false;
             _characterNumber = -1;
         }
 
