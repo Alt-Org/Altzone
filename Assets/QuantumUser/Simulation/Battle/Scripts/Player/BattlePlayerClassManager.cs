@@ -316,13 +316,17 @@ namespace Battle.QSimulation.Player
         /// </summary>
         private enum ReturnCode
         {
-            /// A class was retrieved.
+            /// <summary>A class was retrieved.</summary>
             ClassRetrieved = 0,
+
+            /// <summary>
             /// No class was retrieved.<br/>
             /// Used when a character class has no code associated with it.
-            NoClass        = 1,
-            /// Class could not be retrieved.
-            Error          = 2
+            /// </summary>
+            NoClass = 1,
+
+            /// <summary>Class could not be retrieved.</summary>
+            Error = 2
         }
 
         /// <value>An array containing all of the class scripts that have been implemented and can be used.</value>
@@ -336,7 +340,7 @@ namespace Battle.QSimulation.Player
         /// </summary>
         ///
         /// <param name="characterClass">The player character class that's C# class is to be retrieved.</param>
-        /// <param name="playerClass">The player character C# class that is retrieved. (out param)</param>
+        /// <param name="playerClass">The player character C# class that is retrieved. (<b>out param</b>)</param>
         ///
         /// <returns>Result of the method call as a <see cref="BattlePlayerClassManager.ReturnCode">ReturnCode</see>.</returns>
         private static ReturnCode GetClass(BattlePlayerCharacterClass characterClass, out BattlePlayerClassBase playerClass)
