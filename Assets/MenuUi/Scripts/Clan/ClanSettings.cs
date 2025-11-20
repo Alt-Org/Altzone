@@ -66,6 +66,10 @@ public class ClanSettings : MonoBehaviour
     [SerializeField] private Button _setValuesButton;
     [SerializeField] private Button _saveButton;
 
+    [Header("Tabline buttons")]
+    [SerializeField] private GameObject _editViewButtons;
+    [SerializeField] private GameObject _buttonsInClan;
+
     [Header("Popups")]
     [SerializeField] private PopupController _errorPopup;
     [SerializeField] private GameObject _cancelConfirmationPopup;
@@ -76,15 +80,18 @@ public class ClanSettings : MonoBehaviour
     [SerializeField] private GameObject _editHeartPanel;
     [SerializeField] private GameObject _editValuesPanel;
 
+    [SerializeField] private ClanMainView _clanMainView;
+
     private List<HeartPieceData> _heartPieces;
     private List<ClanValues> _selectedValues = new();
 
     private void OnEnable()
     {
+
         Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clan) =>
         {
             // Show correct panel
-            _mainSettingsPanel.SetActive(true);
+            _mainSettingsPanel.SetActive(false);
             _editHeartPanel.SetActive(false);
             _selectLanguagePanel.SetActive(false);
             _editValuesPanel.SetActive(false);
@@ -154,6 +161,7 @@ public class ClanSettings : MonoBehaviour
             _heartColorChanger.InitializeClanHeart(_heartPieces);
             _heartColorSetter.SetHeartColors(_heartPieces);
 
+            _saveButton.onClick.RemoveAllListeners();
             _saveButton.onClick.AddListener(SaveClanSettings);
         });
     }
@@ -187,6 +195,12 @@ public class ClanSettings : MonoBehaviour
             clanData.Values = _valueSelection.SelectedValues;
             clanData.ClanHeartPieces = _heartPieces;
 
+            if (_clanMainView != null)
+            {                
+                _clanMainView.UpdateProfileFromSettings(clanData);
+                ShowProfileAndNormalButtons();
+            }
+
             // These are not saved at the moment
             bool isOpen = !_clanOpenToggle.isOn;
             string password = _clanPasswordField.text;
@@ -196,9 +210,7 @@ public class ClanSettings : MonoBehaviour
             {
                 _saveButton.interactable = true;
                 if (success)
-                {
-                    WindowManager.Get().GoBack();
-
+                {               
                     if (!string.IsNullOrEmpty(previousPhrase) && previousPhrase != clanData.Phrase)
                         gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
 
@@ -222,19 +234,43 @@ public class ClanSettings : MonoBehaviour
                 /*|| clanData.Goals != _goalSelection.GoalsRange*/
                 || clanData.ClanAge != _ageSelection.ClanAgeRange
                 /*|| !clanData.ClanRights.SequenceEqual(_clanRightsPanel.ClanRights)*/
-                || clanData.Values != _selectedValues;
+                || !clanData.Values.SequenceEqual(_selectedValues) /*clanData.Values != _selectedValues*/;
 
             if (hasMadeEdits)
             {
                 _cancelConfirmationPopup.SetActive(true);
             }
-            else
+           else
             {
-                WindowManager.Get().GoBack();
+                ShowProfileAndNormalButtons();
             }
         });
     }
     public void OnClickContinueEditingClanSettings() => _cancelConfirmationPopup.SetActive(false);
+
+    public void OnClickDiscardClanSettingEdits()
+    {
+        _cancelConfirmationPopup.SetActive(false);
+
+        ResetHeartColorChanger();
+
+        ShowProfileAndNormalButtons();
+    }
+
+    private void ShowProfileAndNormalButtons()
+    {
+        if (_clanMainView != null)
+        {
+            _clanMainView.ShowProfilePage();
+        }
+
+        if (_editViewButtons != null)
+            _editViewButtons.SetActive(false);
+
+        if (_buttonsInClan != null)
+            _buttonsInClan.SetActive(true);
+    }
+
 
     private void UpdateAgeDisplay()
     {
@@ -253,7 +289,6 @@ public class ClanSettings : MonoBehaviour
 
     public void OnAgeSelectionConfirmed()
     {
-        // Käytetään aina _ageSelectionin nykyistä valintaa
         UpdateAgeDisplay();
     }
 

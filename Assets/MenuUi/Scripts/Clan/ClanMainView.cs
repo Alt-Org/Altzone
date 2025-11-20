@@ -13,6 +13,7 @@ public class ClanMainView : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private GameObject _inClanPanel;
     [SerializeField] private GameObject _noClanPanel;
+    [SerializeField] private GameObject _clanSettings;
 
     [SerializeField] private ClanLeaderboard _leaderboard;
 
@@ -131,6 +132,14 @@ public class ClanMainView : MonoBehaviour
         });
     }
 
+    public void UpdateProfileFromSettings(ClanData updatedClanData)
+    {
+        if (updatedClanData == null) return;    
+
+        _clanHeart.SetOwnClanHeart = true;
+        SetClanProfile(updatedClanData);
+    }
+
     private void SetClanProfile(ClanData clan)
     {
         ToggleClanPanel(true);
@@ -238,6 +247,31 @@ public class ClanMainView : MonoBehaviour
             }
             onComplete?.Invoke(success);
         }));
+    }
+
+    public void ShowProfilePage()
+    {
+        if (_inClanPanel != null)
+        {
+            _inClanPanel.SetActive(true);
+        }
+
+        if (_clanSettings != null)
+        {
+            _clanSettings.SetActive(false);
+        }
+    }
+
+    public void ShowSettingsPage()
+    {
+        if (_inClanPanel != null)
+        {
+            _inClanPanel.SetActive(false);
+        }
+        if (_clanSettings != null)
+        {
+            _clanSettings.SetActive(true);
+        }
     }
 
     private void ShowOverlay (bool on)
