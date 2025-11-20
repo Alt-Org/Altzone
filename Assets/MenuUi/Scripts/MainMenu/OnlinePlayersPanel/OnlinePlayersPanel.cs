@@ -1,0 +1,120 @@
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Player;
+using System.Threading;
+using Assets.Altzone.Scripts.Model.Poco.Player;
+
+
+public class OnlinePlayersPanel : AltMonoBehaviour
+
+{
+
+    // UI-komponentit
+
+    [SerializeField] private GameObject _onlinePlayersPanel;
+    [SerializeField] private TMPro.TextMeshProUGUI _onlineTitle;
+    [SerializeField] private RectTransform _onlinePlayersPanelContent;
+    [SerializeField] private ScrollRect _onlinePlayersPanelScrollView;
+    [SerializeField] private Button _closeOnlinePlayersPanelButton;
+    [SerializeField] private Button _openOnlinePlayersPanelButton;
+    [SerializeField] private FriendlistItem _onlinePlayersPanelItemPrefab;
+
+    private List<FriendlistItem> _onlinePlayersPanelItems = new List<FriendlistItem>();
+
+
+    // Start is called before the first frame update
+    void Start()
+
+    {
+        _openOnlinePlayersPanelButton.onClick.AddListener(OpenOnlinePlayersPanel);
+        _closeOnlinePlayersPanelButton.onClick.AddListener(CloseOnlinePlayersPanel);
+
+        ServerManager.OnOnlinePlayersChanged += BuildOnlinePlayerList;
+        CloseOnlinePlayersPanel();
+        
+    }
+
+    private void OnEnable()
+    {
+        BuildOnlinePlayerList(ServerManager.Instance.OnlinePlayers);
+    }
+
+    private void OnDestroy()
+    {
+        ServerManager.OnOnlinePlayersChanged -= BuildOnlinePlayerList;
+    }
+
+    public void CloseOnlinePlayersPanel()
+    {
+        _onlinePlayersPanel.SetActive(true);
+    }
+
+    public void OpenOnlinePlayersPanel()
+    {
+        _onlinePlayersPanel.SetActive(false);
+    }
+
+    private void BuildOnlinePlayerList(List<ServerOnlinePlayer> onlinePlayers)
+    {
+        StartCoroutine(BuildOnlineList(onlinePlayers));
+    }
+
+    private IEnumerator BuildOnlineList(List<ServerOnlinePlayer> onlinePlayers)
+    {
+        UpdateOnlineFriendsCount(onlinePlayers);
+
+        foreach (var item in _onlinePlayersPanelItems)
+        {
+            Destroy(item.gameObject);
+        }
+
+        _onlinePlayersPanelItems.Clear();
+
+        foreach (var player in onlinePlayers)
+        {
+            string playerName = player.name;
+            ServerPlayer serverPlayer = null;
+            bool timeout = false;
+
+            StartCoroutine(ServerManager.Instance.GetOtherPlayerFromServer(player._id, c => serverPlayer = c));
+            StartCoroutine(WaitUntilTimeout(3, c => timeout = c));
+            yield return new WaitUntil(() => serverPlayer != null || timeout);
+
+
+            ClanLogo clanLogo = null;
+            AvatarVisualData avatarVisualData = null;
+
+            if (serverPlayer != null)
+            {
+                clanLogo = serverPlayer.clanLogo;
+                avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(new AvatarData(serverPlayer.name, serverPlayer.avatar));
+            }
+
+
+            FriendlistItem newItem = Instantiate(_onlinePlayersPanelItemPrefab, _onlinePlayersPanelContent);
+            newItem.Initialize(
+                 playerName,
+                 avatarVisualData: avatarVisualData,
+                 clanLogo: clanLogo,
+                 isOnline: true,
+                 onRemoveClick: () => { }
+
+
+
+                 );
+            _onlinePlayersPanelItems.Add(newItem);
+        }
+    }
+
+    private void UpdateOnlineFriendsCount(List<ServerOnlinePlayer> onlinePlayers)
+    {
+        int onlinePlayerCount = onlinePlayers.Count;
+
+        _onlineTitle.text = $"Online-pelaajia {onlinePlayerCount}";
+    }
+
+}
