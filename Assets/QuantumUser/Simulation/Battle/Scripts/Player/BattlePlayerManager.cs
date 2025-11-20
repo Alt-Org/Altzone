@@ -1,7 +1,7 @@
 /// @file BattlePlayerManager.cs
 /// <summary>
 /// Contains @cref{Battle.QSimulation.Player,BattlePlayerManager} class which handles player logic.<br/>
-/// Also contains @cref{Battle.QSimulation.Player,BattlePlayerPlayeStateExtension} class which has extension methods for BattlePlayerPlayState enum.
+/// Also contains @cref{Battle.QSimulation.Player,BattlePlayerPlayStateExtension} class which has extension methods for BattlePlayerPlayState enum.
 /// </summary>
 
 //#define DEBUG_PLAYER_STAT_OVERRIDE
