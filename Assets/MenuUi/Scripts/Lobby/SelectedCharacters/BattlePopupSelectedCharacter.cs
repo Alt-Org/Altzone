@@ -1,4 +1,5 @@
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.DefenceScreen.CharacterGallery;
 using MenuUi.Scripts.Signals;
@@ -96,7 +97,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         {
             _spriteImage.enabled = false;
             if (_classColorBorderImage != null) _classColorBorderImage.enabled = false;
-            if (_classColorImage != null) _classColorImage.color = Color.white;
+            if (_classColorImage != null) _classColorImage.color = Color.gray;
             if (_cornerIcon != null) _cornerIcon.enabled = false;
             if (_resistanceIcon != null) _resistanceIcon.enabled = false;
 
@@ -105,6 +106,20 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
             if (_button == null) _button = GetComponent<Button>();
             _button.enabled = isEditable;
+        }
+
+        public void SetBot()
+        {
+            PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter("0");
+            _spriteImage.sprite = charInfo.GalleryHeadImage;
+            _spriteImage.enabled = true;
+            if (_classColorBorderImage != null) _classColorBorderImage.enabled = false;
+            if (_classColorImage != null) _classColorImage.color = Color.gray;
+            if (_cornerIcon != null) _cornerIcon.enabled = false;
+            if (_resistanceIcon != null) _resistanceIcon.enabled = false;
+
+            if (_piechartPreview != null) _piechartPreview.ClearChart();
+            _characterId = CharacterID.None;
         }
     }
 }
