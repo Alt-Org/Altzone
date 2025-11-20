@@ -7,6 +7,7 @@ using Altzone.Scripts.Store;
 using Altzone.Scripts.Voting;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Newtonsoft.Json;
 
 namespace Altzone.Scripts.Model.Poco.Clan
 {
@@ -25,6 +26,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public List<HeartPieceData> ClanHeartPieces = new();
         public ClanRoleRights[] ClanRights = new ClanRoleRights[3];
 
+        [JsonIgnore]
         public ClanInventory Inventory = new();
 
         public List<PollData> Polls = new();
@@ -49,6 +51,12 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public delegate void AdDataUpdated();
         public static event AdDataUpdated OnAdDataUpdated;
 
+        [JsonConstructor]
+        private ClanData()
+        {
+
+        }
+        
         public ClanData(string id, string name, string tag, int gameCoins)
         {
             Assert.IsTrue(id.IsSet());

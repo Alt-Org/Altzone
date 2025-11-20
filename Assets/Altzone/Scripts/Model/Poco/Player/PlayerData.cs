@@ -12,6 +12,7 @@ using Altzone.Scripts.Voting;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Newtonsoft.Json;
 
 namespace Altzone.Scripts.Model.Poco.Player
 {
@@ -99,7 +100,8 @@ namespace Altzone.Scripts.Model.Poco.Player
                         continue;
                     }
 
-                    CustomCharacter character = isTestCharacter ? CustomCharacters.FirstOrDefault(x => x.Id == lId) : CustomCharacters.FirstOrDefault(x => x.ServerID == serverId);
+                    CustomCharacter character = null;
+                    if (CustomCharacters != null) character = isTestCharacter ? CustomCharacters.FirstOrDefault(x => x.Id == lId) : CustomCharacters.FirstOrDefault(x => x.ServerID == serverId);
                     if(character == null) continue;
                     list.Add(character);
                 }
@@ -127,6 +129,12 @@ namespace Altzone.Scripts.Model.Poco.Player
                 }
                 _playerDataEmotionList = list;
             }
+        }
+
+        [JsonConstructor]
+        private PlayerData()
+        {
+
         }
 
         public PlayerData(string id, string clanId, int currentCustomCharacterId, string[]currentBattleCharacterIds, string name, int backpackCapacity, string uniqueIdentifier, List<CustomCharacter> characters)
