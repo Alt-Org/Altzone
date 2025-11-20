@@ -22,7 +22,7 @@ public class JukeboxMainDiskHandler : MonoBehaviour
     private List<string> _indicatorTexts = new List<string>()
     {
         "",
-        "Esikatselu\r\nP‰‰ll‰",
+        "Esikuuntelu\r\nP‰‰ll‰",
         "Jukeboxi\r\nMykistetty",
         "Pys‰ytetty",
         "Soittolista\r\nTyhj‰"

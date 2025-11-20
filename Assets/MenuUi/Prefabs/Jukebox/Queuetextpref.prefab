@@ -653,7 +653,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2264e2b8f17f2fa4cb364cf6c9400166, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _defaultPosition: 0
+  _defaultHorizontalPosition: 0.5
+  _horizontalStartPosition: 0
+  _verticalPosition: 0.5
   _scrollSpeed: 0.3
   _edgeWaitTime: 1
 --- !u!1 &8968269194942016460
@@ -669,6 +671,7 @@ GameObject:
   - component: {fileID: 1181991709233650580}
   - component: {fileID: 7737323698428508920}
   - component: {fileID: 7053987766509215450}
+  - component: {fileID: 1199497742368240018}
   m_Layer: 5
   m_Name: Queuetextpref
   m_TagString: Untagged
@@ -768,6 +771,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AspectMode: 1
   m_AspectRatio: 6
+--- !u!114 &1199497742368240018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8968269194942016460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cabc7ab297e9ab44a96e83ec36e516df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blockType: 0
+  _swipe: {fileID: 0}
 --- !u!1001 &2491500677283713516
 PrefabInstance:
   m_ObjectHideFlags: 0
