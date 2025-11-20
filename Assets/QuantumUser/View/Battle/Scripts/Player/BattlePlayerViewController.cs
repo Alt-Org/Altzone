@@ -145,7 +145,7 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Public method that is called when the view should update.<br/>
-        /// Calls #UpdateModelPositionAdjustment to update the player model's position
+        /// Calls <see cref="BattlePlayerViewController.UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to update the player model's position
         /// </summary>
         public override void OnUpdateView()
         {
@@ -246,7 +246,7 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Handler method for EventBattleCharacterTakeDamage QuantumEvent.<br/>
-        /// Starts #DamageFlashCoroutine.
+        /// Starts <see cref="BattlePlayerViewController.DamageFlashCoroutine">DamageFlashCoroutine</see>.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
