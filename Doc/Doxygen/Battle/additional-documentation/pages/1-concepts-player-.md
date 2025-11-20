@@ -1,10 +1,17 @@
 # Player concepts {#page-concepts-player}
-%Quantum handles recognizing players through a [PlayerRef🡵](https://doc-api.photonengine.com/en/quantum/current/struct_quantum_1_1_player_ref.html), but we prefer to use **PlayerSlot** as defined by us whenever possible.  
-Each player has data with them that isn't connected to any specific character under the player's control.  
-Each player controls multiple character entities.  
-See [{Player slots and teams}](#page-concepts-player-slots-teams)  
-See [{Player manager data}](#page-concepts-player-manager-data)  
-See [{Player character entity}](#page-concepts-player-character-entity)
+
+### Overview {#page-concepts-player-overview}
+%Quantum handles recognizing **Players** through a [PlayerRef🡵](https://doc-api.photonengine.com/en/quantum/current/struct_quantum_1_1_player_ref.html), but we prefer to use **PlayerSlot** as defined by us whenever possible.  
+Each **Player** has an assigned **PlayerSlot** and a **TeamNumber**.  
+Each **Player** has **data** with them that **isn't connected to any specific character** under the **Player**'s control.  
+Each **Player** controls multiple **Character Entities** which also have some data associated with them.  
+See [{Player Slots and Teams}](#page-concepts-player-slots-teams)  
+See [{Player Manager Data}](#page-concepts-player-manager-data)  
+See [{Player Character Entity}](#page-concepts-player-character-entity)
+
+**Other topics**  
+See [{Joining and initializing}](#page-concepts-player-initializing)  
+See [{Player Input}](#page-concepts-player-input)  
 
 ```dot
 digraph Player {
@@ -28,7 +35,7 @@ digraph Player {
 }
 ```
 
-## Player slots and teams {#page-concepts-player-slots-teams}
+## Player Slots and Teams {#page-concepts-player-slots-teams}
 Each player has an assigned @cref{Quantum,BattlePlayerSlot} and a @cref{Quantum,BattleTeamNumber}.  
 The possible slots are 1-4.  
 The teams are TeamAlpha and TeamBeta.  
@@ -62,7 +69,7 @@ graph PlayerSlotsAndTeams {
 
 <br/>
 
-## Player manager data {#page-concepts-player-manager-data}
+## Player Manager Data {#page-concepts-player-manager-data}
 Player data not connected to individual player characters is handled by @cref{Battle.QSimulation.Player,BattlePlayerManager}.  
 The [{PlayerManagerData}](#page-concepts-player-simulation-playermanagerdata) %Quantum singleton component is used to store player data.
 The [{PlayerHandle}](#page-concepts-player-simulation-playerhandle) struct allows the code to access player manager data of specific individual players.  
@@ -128,9 +135,9 @@ digraph PlayerJoining {
 
 <br/>
 
-## PlayerInput {#page-concepts-player-input}
+## Player Input {#page-concepts-player-input}
 Players can interact with the game through moving and rotating their character, as well as switching between their available characters.  
-Player inputs are processed and compiled into a @ref Quantum.Input "Quantum input struct" on the Unity/View side in @cref{Battle.View.Player,BattlePlayerInput}. The created struct is passed over to %Quantum.  
+Player inputs are processed and compiled into a @ref Quantum.Input "Quantum input struct" on the Unity/View side in [{PlayerInput}](#page-concepts-player-view-input). The created struct is passed over to %Quantum.  
 %Quantum synchronises the struct for all connected clients, and classes on the [{Quantum simulation}](#page-concepts-player-simulation) side use the contained data.
 
 See [Input🡵](https://doc.photonengine.com/quantum/current/manual/input) %Quantum's documentation for more info.
@@ -177,7 +184,7 @@ digraph PlayerInputGraph {
 
 <br/>
 
-## Player character entity {#page-concepts-player-character-entity}
+## Player Character Entity {#page-concepts-player-character-entity}
 Each player controls three character %Quantum entities in the game.  
 For each player one character is present on the stage at a time and @cref{Battle.QSimulation.Player,BattlePlayerManager} handles spawning and despawning character entities when switching between them.
 
@@ -202,8 +209,11 @@ digraph PlayerCharacterEntities {
 These entities are created based on Unity prefabs. Entities are controlled by %Quantum simulation.  
 The Unity prefab root GameObject contains a %Quantum entity prototype component, where the entity is defined.
 
-During gameplay the player character exists both as a %Quantum entity inside [{Simulation}](#page-concepts-player-simulation) and a Unity gameObject inside **Unity View**. %Quantum links the gameObject and entity together.  
-The entity contains %Quantum components used by the %Quantum simulation. The most significant of these is the [{PlayerData (Quantum component)}](#page-concepts-player-simulation-playerdata), which is our own defined data relating to player character entities.  
+During gameplay the player character exists both as a %Quantum entity inside [{Simulation}](#page-concepts-player-simulation) and a Unity gameObject inside **Unity View**. %Quantum links the gameObject and entity together.
+
+The entity contains %Quantum components used by the %Quantum simulation. The most significant of these is the [{PlayerData (Quantum component)}](#page-concepts-player-simulation-playerdata), which is our own defined data relating to player character entities and optionally **Class Data Component**.  
+See [{Player Character Classes}](#page-concepts-player-characters-classes)
+
 The Unity root gameObject has the child object PlayerViewModel, containing all things related to the visible elements of player characters. The attached @cref{Battle.View.Player,BattlePlayerViewController} component implements **Unity View/Visual** logic for player characters.
 
 ```dot
@@ -222,12 +232,13 @@ digraph PlayerCharacterEntity {
 
     node [shape=box, style=filled, color="#F159E4", fontcolor="#F159E4", fillcolor=black];
 
-    Entity         [label="Quantum Entity"];
-    Transform2D    [label="Transform2D\n(Quantum component)"];
-    PlayerData     [label="PlayerDataQComponent\n(Quantum component)"];
-    View           [label="Quantum view\n(Quantum component)"];
+    Entity          [label="Quantum Entity"];
+    Transform2D     [label="Transform2D\n(Quantum component)"];
+    PlayerData      [label="PlayerDataQComponent\n(Quantum component)"];
+    PlayerClassData [label="PlayerClassDataQComponent\n(Quantum component)\n(Optional)", style=dashed];
+    View            [label="Quantum view\n(Quantum component)"];
 
-    Entity -> Transform2D, PlayerData, View;
+    Entity -> Transform2D, PlayerData, PlayerClassData, View;
   }
 
   subgraph cluster_unity {
@@ -237,16 +248,58 @@ digraph PlayerCharacterEntity {
 
     node [shape=box, style=filled, color="#41C7F1", fontcolor="#41C7F1", fillcolor=black];
 
-    RootGameObject       [label="Root\n(GameObject)"];
-    ViewModel            [label="View model\n(GameObject)"];
-    PlayerViewController [label="Player View Controller\n(Unity MonoBehavior)"];
+    RootGameObject            [label="Root\n(GameObject)"];
+    ViewModel                 [label="View model\n(GameObject)"];
+    PlayerViewController      [label="PlayerViewController\n(QuantumEntityViewComponent)\n(Unity Monobehavior)"];
+    PlayerClassViewController [label="PlayerClassViewController\n(Subclass of BattlePlayerClassBaseViewController)"];
 
-    RootGameObject -> ViewModel -> PlayerViewController;
+    RootGameObject -> ViewModel -> PlayerViewController, PlayerClassViewController;
   }
 
   Entity -> RootGameObject;
 }
 ```
+
+<br/>
+
+## Player Character Classes {#page-concepts-player-characters-classes}
+Player character classes function by having implementable methods that are called in certain situations during a game, such as when a projectile collides with a player character. Classes can also implement an update method. These methods can be used to implement functionality on top of for example the default collision methods to change how different character classes function.
+
+See [{Player Character Class List}](#page-concepts-player-characters-class-list) for list of all character classes.
+
+Character classes are implemented by creating a unique C# class that inherits one of the two base @cref{Battle.QSimulation.Player,BattlePlayerClassBase} classes defined in BattlePlayerClassManager.cs. These classes can choose to implement any of the available methods for functionality. Character classes can also optionally have a data QComponent for additional data the class will use. When a character class has a data QComponent, the C# class inherits the generic version of the base class using the data QComponent as the generic type parameter.
+
+**Example**:
+
+**Qtn code**
+```
+component BattlePlayerClassExample2DataQComponent
+{
+  // ...
+}
+```
+
+**C# code**
+```cs
+// Without data QComponent
+public class BattlePlayerClassExample1 : BattlePlayerClassBase
+{
+  // ...
+}
+
+// With data QComponent
+public class BattlePlayerClassExample2 : BattlePlayerClassBase<BattlePlayerClassExample2DataQComponent>
+{
+  // ...
+}
+```
+
+<br/>
+
+The C# classes are stateless and there is only one instance for each character class which are loaded and managed by @cref{Battle.QSimulation.Player,BattlePlayerClassManager}.  
+Scripts such as @cref{Battle.QSimulation.Player,BattlePlayerQSystem} call methods in @cref{Battle.QSimulation.Player,BattlePlayerClassManager}, which then in turn call the corresponding method for the character class of the specified player character. This way each characters possible character class methods are always correctly called.
+
+The data QComponents are attached to the [{Player Character Entities}](#page-concepts-player-character-entity) which is used by the C# class of the corresponding character class.
 
 <br/>
 
@@ -258,7 +311,7 @@ digraph PlayerCharacterEntity {
 
 <br/>
 
-### Overview {#page-concepts-player-simulation-overview}
+### Simulation Code Overview {#page-concepts-player-simulation-overview}
 
 ```dot
 digraph PlayerSimulation {
@@ -292,6 +345,9 @@ The @cref{Quantum,BattlePlayerManagerDataQSingleton} struct is a %Quantum single
 <br/>
 
 ### PlayerManager {#page-concepts-player-simulation-playermanager}
+The @cref{Battle.QSimulation.Player,BattlePlayerManager} handles player management, allowing other classes to focus on gameplay logic.  
+Provides static methods to initialize, spawn, despawn, and query player-related data.  
+Handles initializing players that are present in the game, as well as spawning and despawning player characters and also contains [{Playerhandle}](#page-concepts-player-simulation-playerhandle) struct.
 
 <br/>
 
@@ -308,20 +364,91 @@ The @cref{Quantum,BattlePlayerDataQComponent} struct is defined in and generated
 <br/>
 
 ### PlayerQSystem {#page-concepts-player-simulation-playerqsystem}
-@cref{Battle.QSimulation.Player,BattlePlayerQSystem} contains the primary %Quantum player logic. This %Quantum system contains code for handling collisions and the update method for player characters.
+The @cref{Battle.QSimulation.Player,BattlePlayerQSystem} contains the primary %Quantum player logic. This %Quantum system contains code for handling collisions and the update method for player characters.
 Other classes are utilized for specific aspects of player logic.
 See [{PlayerMovementController}](#page-concepts-player-simulation-playerqsystem-movement-controller)
-See [{PlayerBotController}]()
+See [{PlayerBotController}](#page-concepts-player-simulation-botcontroller)
 
 <br/>
 
 ### PlayerMovementController {#page-concepts-player-simulation-playerqsystem-movement-controller}
-@cref{Battle.QSimulation.Player,BattlePlayerMovementController} contains the primary @cref{Battle.QSimulation.Player.BattlePlayerMovementController,UpdateMovement} method which handles player movement, and is called by [{BattlePlayerQSystem}](#page-concepts-player-simulation-playerqsystem).
+The @cref{Battle.QSimulation.Player,BattlePlayerMovementController} contains the primary @cref{Battle.QSimulation.Player.BattlePlayerMovementController,UpdateMovement} method which handles player movement, and is called by [{BattlePlayerQSystem}](#page-concepts-player-simulation-playerqsystem).
 Also contains individual helper methods for moving and rotating players, which can be used by other scripts.
 
 <br/>
 
 ### PlayerBotController {#page-concepts-player-simulation-botcontroller}
+The @cref{Battle.QSimulation.Player,BattlePlayerBotController} Contains the @cref{Battle.QSimulation.Player.BattlePlayerBotController,GetBotInput} method which handles bot movement logic, and is called by [{BattlePlayerQSystem}](#page-concepts-player-simulation-playerqsystem).  
+Bots have a base character which is retrieved from @cref{Battle.QSimulation.Player,BattlePlayerBotQSpec} using @cref{Battle.QSimulation.Player.BattlePlayerBotController,GetBotCharacters} method.  
+In a match each bot uses three instances of the base character.
+
+## View {#page-concepts-player-view}
+
+<br/>
+
+### View Code Overview {#page-concepts-player-view-overview}
+```dot
+digraph PlayerView {
+  color=white;
+  fontcolor=white;
+  bgcolor=black;
+
+  node [shape=box, style=filled, color=white, fontcolor=white, fillcolor=black];
+  edge [color=gray];
+
+  Quantum                   [label="Quantum"];
+  PlayerInputGameobject     [label="PlayerInput\n(Gameobject in scene)"];
+  PlayerGameobject          [label="Player\n(Gameobject instance)"];
+
+  node [color="#41C7F1", fontcolor="#41C7F1"];
+
+  PlayerViewController      [label="PlayerViewController\n(QuantumEntityViewComponent)\n(Unity Monobehavior)\n\nAttached to each player gameobject\nHandles player view logic."];
+  PlayerClassViewController [label="PlayerClassViewController\n(Subclass of BattlePlayerClassBaseViewController)\n\nAttached to each player gameobject\nHandles player class view logic."];
+  PlayerInput               [label="PlayerInput\n\(Unity Monobehavior)\n\nAttached to gameobject in scene\nHandles subscribing to QuantumCallBack and polling player inputs for Quantum."];
+
+  node [color=transparent, fontcolor=white];
+
+  InputLink                 [label="Sends Input to Quantum"];
+  UpdateLink                [label="Gets updates from Quantum\nOnActivate\nOnUpdateView\nQuantum Events"];
+  ClassPlayerLink           [label="Forwards OnUpdateView\nand common Quantum Events"];
+  ClassQuantumLink          [label="Gets updates from Quantum\nClass specific Quantum Events"];
+
+  Quantum -> InputLink [dir=back];
+  InputLink -> PlayerInput [dir=none];
+  Quantum -> UpdateLink [dir=none];
+  UpdateLink -> PlayerViewController [dir=forwards];
+  PlayerViewController -> ClassPlayerLink [dir=none];
+  Quantum -> ClassQuantumLink [dir=none];
+  ClassPlayerLink, ClassQuantumLink -> PlayerClassViewController [dir=forwards];
+
+  edge [dir=none];
+
+  PlayerInput -> PlayerInputGameobject;
+  PlayerViewController, PlayerClassViewController -> PlayerGameobject;
+}
+```
+
+
+<br/>
+
+### PlayerInput {#page-concepts-player-view-input}
+The @cref{Battle.View.Player,BattlePlayerInput} is processed and compiled into an input struct, which is passed over to the %Quantum simulation when polled by %Quantum.
+
+<br/>
+
+### PlayerViewController {#page-concepts-player-view-controller}
+The @cref{Battle.View.Player,BattlePlayerViewController} handles player view logic.  
+[{PlayerClassViewControllers}](#page-concepts-player-view-class-controller) are tied to this class.
+
+<br/>
+
+### PlayerClassViewControllers {#page-concepts-player-view-class-controller}
+Every player character class can optionally have a view controller which extends the @cref{Battle.View.Player,BattlePlayerClassBaseViewController}.
+It can be optionally implemented and attached to player viewmodel in prefab to handle class view logic.
+If no player class view controller is attached then @cref{Battle.View.Player,BattlePlayerClassNoneViewController} is attached.
+As stated before the player class view controller is optional and can be omitted for player character classes that need no additional view logic.  
+**PlayerClassViewControllers** are tied to [{PlayerViewController}](#page-concepts-player-view-controller).  
+See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
 
 <br/>
 
@@ -329,13 +456,9 @@ Also contains individual helper methods for moving and rotating players, which c
 
 <br/>
 
-### Character classes {#page-concepts-player-characters-classes}
-Player character classes function by having implementable methods that are called in certain situations during a game, such as when a projectile collides with a player character. Classes can also implement an update method. These methods can be used to implement functionality on top of for example the default collision methods to change how different character classes function.
+## Player Character Class List {#page-concepts-player-characters-class-list}
 
-Character classes are implemented by creating a unique class that inherits one of the two BattlePlayerClassBase classes defined in BattlePlayerClassManager.cs. These classes can choose to implement any of the available methods for functionality. Character classes can also optionally have a data QComponent for additional data the class will use.
+@subpage page-concepts-player-class-400-projector  
+@subpage page-concepts-player-class-600-confluent
 
-Scripts such as BattlePlayerQSystem call methods in BattlePlayerClassManager, which then in turn call the corresponding method for the character class of the specified player character. This way each characters possible character class methods are always correctly called.
-
-<br/>
-
----
+See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
