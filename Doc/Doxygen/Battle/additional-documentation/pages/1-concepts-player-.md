@@ -1,6 +1,6 @@
 # Player concepts {#page-concepts-player}
 
-### Overview {#page-concepts-player-overview}
+## Overview {#page-concepts-player-overview}
 %Quantum handles recognizing **Players** through a [PlayerRef🡵](https://doc-api.photonengine.com/en/quantum/current/struct_quantum_1_1_player_ref.html), but we prefer to use **PlayerSlot** as defined by us whenever possible.  
 Each **Player** has an assigned **PlayerSlot** and a **TeamNumber**.  
 Each **Player** has **data** with them that **isn't connected to any specific character** under the **Player**'s control.  
