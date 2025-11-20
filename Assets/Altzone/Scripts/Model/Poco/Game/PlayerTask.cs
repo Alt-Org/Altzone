@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
@@ -197,6 +198,10 @@ namespace Altzone.Scripts.Model.Poco.Game
         public TaskEducationCultureType EducationCultureType { get => _educationCultureType;}
         public TaskEducationEthicalType EducationEthicalType {  get => _educationEthicalType;}
         public bool Offline { get => _offline; }
+
+        [JsonConstructor]
+        private PlayerTask()
+        { }
 
         public PlayerTask(ServerPlayerTask task)
         {
