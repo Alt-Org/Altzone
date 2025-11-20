@@ -93,8 +93,12 @@ namespace Battle.QSimulation.Player
     }
 
     /// <summary>
+    /// PlayerManager handles player management, allowing other classes to focus on gameplay logic.<br/>
     /// Provides static methods to initialize, spawn, despawn, and query player-related data.
     /// </summary>
+    ///
+    /// [{Player Overview}](#page-concepts-player-overview)<br/>
+    /// [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview)
     ///
     /// Handles initializing players that are present in the game, as well as spawning and despawning player characters.<br/>
     /// Also contains the public and private PlayerHandle structs.
@@ -595,6 +599,9 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Public helper struct for getting player information.
         /// </summary>
+        ///
+        /// [{Player Overview}](#page-concepts-player-overview)<br/>
+        /// [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview)
         ///
         /// This is a public wrapper for the private PlayerHandleInternal that is used by the BattlePlayerManager internally.<br/>
         /// This only exposes the parts of the PlayerHandleInternal that is meant to be accessible outside of BattlePlayerManager.
