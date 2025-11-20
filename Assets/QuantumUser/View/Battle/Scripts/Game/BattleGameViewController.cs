@@ -19,6 +19,7 @@ using Altzone.Scripts.BattleUiShared;
 using Altzone.Scripts.Lobby;
 
 // Battle QSimulation usings
+using Battle.QSimulation;
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Player;
 
@@ -125,7 +126,7 @@ namespace Battle.View.Game
         /// </summary>
         public void UiInputOnLocalPlayerGiveUp()
         {
-            Debug.Log("Give up button pressed!");
+            _debugLogger.Log("Give up button pressed");
             _playerInput.OnGiveUp();
         }
 
@@ -139,7 +140,7 @@ namespace Battle.View.Game
         {
             _playerInput.OnCharacterSelected(characterNumber);
 
-            Debug.Log($"Character number {characterNumber} selected!");
+            _debugLogger.LogFormat("Character number {0} button pressed!", characterNumber);
         }
 
         /// <summary>
@@ -183,6 +184,9 @@ namespace Battle.View.Game
 
         #endregion Public
 
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private BattleDebugLogger _debugLogger;
+
         /// @name EndOfGameData variables
         /// Private variables which contain end of game data to pass on to LobbyManager.
         /// @{
@@ -203,6 +207,8 @@ namespace Battle.View.Game
         /// </summary>
         private void Awake()
         {
+            _debugLogger = BattleDebugLogger.Create<BattleGameViewController>();
+
             // Showing announcement handler and setting view pre-activate loading text
             _uiController.AnnouncementHandler.SetShow(true);
             _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.Loading);
@@ -634,7 +640,7 @@ namespace Battle.View.Game
                 if (frame.TryGetSingletonEntityRef<BattleGameSessionQSingleton>(out var entity) == false)
                 {
                     // If the GameSession singleton is not found, display an error message
-                    Debug.LogError("GameSession singleton not found -- BattleUIHandler");
+                    _debugLogger.Error(frame, "GameSession singleton not found -- BattleUIHandler");
                     return;
                 }
 
