@@ -1,7 +1,8 @@
 /// @file BattlePlayerClassManager.cs
 /// <summary>
 /// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassManager} class which handles player class logic.
-/// Also contains @cref{Battle.QSimulation.Player,BattlePlayerClassBase} and @cref{Battle.QSimulation.Player,BattlePlayerClassBase<T>} classes which player class implementations derive from.
+/// Also contains @cref{Battle.QSimulation.Player,BattlePlayerClassBase} and @cref{Battle.QSimulation.Player,BattlePlayerClassBase<T>} classes
+/// which player class implementations derive from.
 /// </summary>
 
 // System usings
@@ -56,7 +57,8 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnCreate method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnCreate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnCreate</see> method.
+        /// Called by the public BattlePlayerClassManager
+        /// <see cref="BattlePlayerClassManager.OnCreate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnCreate</see> method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -67,7 +69,8 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnSpawn method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnSpawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnSpawn</see> method.
+        /// Called by the public BattlePlayerClassManager
+        /// <see cref="BattlePlayerClassManager.OnSpawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnSpawn</see> method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -78,7 +81,8 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnDespawn method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnDespawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnDespawn</see> method.
+        /// Called by the public BattlePlayerClassManager
+        /// <see cref="BattlePlayerClassManager.OnDespawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnDespawn</see> method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -89,7 +93,10 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnProjectileHitPlayerCharacter method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnProjectileHitPlayerCharacter(Frame, BattleCollisionQSystem.ProjectileCollisionData*, BattleCollisionQSystem.PlayerCharacterCollisionData*)>OnProjectileHitPlayerHitbox</see> method.
+        /// Called by the public BattlePlayerClassManager
+        /// <see cref="BattlePlayerClassManager.OnProjectileHitPlayerCharacter(Frame, BattleCollisionQSystem.ProjectileCollisionData*, BattleCollisionQSystem.PlayerCharacterCollisionData*)">
+        /// OnProjectileHitPlayerHitbox
+        /// </see> method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -99,7 +106,10 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnProjectileHitPlayerShield method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnProjectileHitPlayerShield(Frame, BattleCollisionQSystem.ProjectileCollisionData*, BattleCollisionQSystem.PlayerShieldCollisionData*)">OnProjectileHitPlayerShield</see> method.
+        /// Called by the public BattlePlayerClassManager
+        /// <see cref="BattlePlayerClassManager.OnProjectileHitPlayerShield(Frame, BattleCollisionQSystem.ProjectileCollisionData*, BattleCollisionQSystem.PlayerShieldCollisionData*)">
+        /// OnProjectileHitPlayerShield
+        /// </see> method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -109,7 +119,8 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnUpdate method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnUpdate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnUpdate</see> method.
+        /// Called by the public BattlePlayerClassManager
+        /// <see cref="BattlePlayerClassManager.OnUpdate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnUpdate</see> method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
