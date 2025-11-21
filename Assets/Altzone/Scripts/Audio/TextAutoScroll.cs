@@ -7,7 +7,11 @@ using UnityEngine.UI;
 public class TextAutoScroll : MonoBehaviour
 {
     [Range(0f, 1f)]
-    [SerializeField] private float _defaultPosition = 0f;
+    [SerializeField] private float _defaultHorizontalPosition = 0.5f;
+    [Range(0f, 1f)]
+    [SerializeField] private float _horizontalStartPosition = 0f;
+    [Range(0f, 1f)]
+    [SerializeField] private float _verticalPosition = 0.5f;
     [Range(0f, 1f)]
     [SerializeField] private float _scrollSpeed = 0.3f;
     [SerializeField] private float _edgeWaitTime = 1f;
@@ -21,7 +25,8 @@ public class TextAutoScroll : MonoBehaviour
     private RectTransform _parentRect;
     private ContentSizeFitter _contentSizeFitter;
     private float _scrollProgress = 0f;
-    private float _scrollDirection = 1f;
+    private float _scrollDirection = -1f;
+    private string _textInQueue = null;
 
     void Awake()
     {
@@ -53,20 +58,31 @@ public class TextAutoScroll : MonoBehaviour
         if (_contentSetCoroutine != null) StopCoroutine(_contentSetCoroutine);
     }
 
-    public void ContentChange()
+    public void SetContent(string text)
     {
+        _textInQueue = text;
         DisableCoroutines();
+
         if (isActiveAndEnabled) _contentSetCoroutine = StartCoroutine(ContentSet());
     }
 
     private IEnumerator ContentSet()
     {
-        yield return new WaitUntil(() => !string.IsNullOrEmpty(_text.text));
+        yield return new WaitUntil(() => !string.IsNullOrEmpty(_textInQueue));
 
-        if (_selfRect.sizeDelta.x > _parentRect.sizeDelta.x)
-            _scrollCoroutine = StartCoroutine(Scroll());
+        _text.text = _textInQueue;
+        _textInQueue = null;
+        _scrollDirection = -1f;
+
+        yield return new WaitForEndOfFrame();
+
+        if (_selfRect.sizeDelta.x > 0f)
+        {
+            _selfRect.pivot = new Vector2(_horizontalStartPosition, _verticalPosition);
+            _scrollCoroutine = StartCoroutine(Wait());
+        }
         else
-            _selfRect.pivot = new Vector2(_defaultPosition, 0.5f);
+            _selfRect.pivot = new Vector2(_defaultHorizontalPosition, _verticalPosition);
     }
 
     private IEnumerator Scroll()
@@ -82,7 +98,7 @@ public class TextAutoScroll : MonoBehaviour
 
             if (!Valid(progress, targetValue)) progress = targetValue;
 
-            _selfRect.pivot = new Vector2(Mathf.Lerp(0f, 1f, progress), 0.5f);
+            _selfRect.pivot = new Vector2(Mathf.Lerp(0f, 1f, progress), _verticalPosition);
         }
 
         _waitCoroutine = StartCoroutine(Wait());

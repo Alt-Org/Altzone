@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Altzone.Scripts.Audio;
+using Assets.Altzone.Scripts.Reference_Sheets;
 using UnityEngine;
 
 namespace Altzone.Scripts.ReferenceSheets
@@ -56,6 +58,30 @@ namespace Altzone.Scripts.ReferenceSheets
 
             return null;
         }
+
+        /// <returns>First SoundEffect that is found in given SoundCategory name.</returns>
+        public SoundEffect Get(AudioCategoryType CategoryType, string SoundName)
+        {
+            foreach (SoundCategory category in _soundCategories)
+                if (category.Type == CategoryType)
+                    foreach (SoundEffect sfx in category.SoundEffects)
+                        if (sfx.Name.ToLower() == SoundName.ToLower())
+                            return sfx;
+
+            return null;
+        }
+
+        /// <returns>First SoundEffect that is found in given SoundCategory name.</returns>
+        public SoundEffect Get(AudioCategoryType CategoryType, BattleSFXNameTypes SoundTypeName)
+        {
+            foreach (SoundCategory category in _soundCategories)
+                if (category.Type == CategoryType)
+                    foreach (SoundEffect sfx in category.SoundEffects)
+                        if (sfx.BattleName == SoundTypeName)
+                            return sfx;
+
+            return null;
+        }
     }
 
     public enum SoundPlayType
@@ -69,6 +95,7 @@ namespace Altzone.Scripts.ReferenceSheets
     public class SoundCategory
     {
         public string Name;
+        public AudioCategoryType Type;
         public List<SoundEffect> SoundEffects;
     }
 
@@ -76,6 +103,7 @@ namespace Altzone.Scripts.ReferenceSheets
     public class SoundEffect
     {
         public string Name;
+        public BattleSFXNameTypes BattleName;
         public SoundPlayType Type;
         public AudioClip Audio;
         [Range(0f, 10f)]

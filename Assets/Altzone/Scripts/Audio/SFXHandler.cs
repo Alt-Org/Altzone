@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Altzone.Scripts.ReferenceSheets;
+using Assets.Altzone.Scripts.Reference_Sheets;
 using UnityEngine;
 
 namespace Altzone.Scripts.Audio
@@ -95,6 +96,55 @@ namespace Altzone.Scripts.Audio
                 return null;
             }
 
+            Play(soundEffect, pitch);
+
+            return _activeChannels[_activeChannels.Count - 1];
+        }
+
+        public ActiveChannelPath? Play(AudioCategoryType categoryType, string sFXName, string mainMenuMusicName, float pitch)
+        {
+            SoundEffect soundEffect = null;
+
+            if (categoryType != AudioCategoryType.None)
+            {
+                if (categoryType == AudioCategoryType.MainMenu) // MainMenu
+                    soundEffect = _sFXReference.Get("MainMenu_" + mainMenuMusicName, sFXName);
+                else // Other
+                    soundEffect = _sFXReference.Get(categoryType, sFXName);
+            }
+            else
+                soundEffect = _sFXReference.Get(sFXName);
+
+            if (soundEffect == null)
+            {
+                Debug.LogError($"Sound: {sFXName}, in category: {categoryType.ToString()}, could not be found from SFX Reference sheet.");
+                return null;
+            }
+
+            Play(soundEffect, pitch);
+
+            return _activeChannels[_activeChannels.Count - 1];
+        }
+
+        public ActiveChannelPath? Play(AudioCategoryType categoryType, BattleSFXNameTypes battleSFXName, string mainMenuMusicName, float pitch)
+        {
+            SoundEffect soundEffect = null;
+
+            if (categoryType != AudioCategoryType.None) soundEffect = _sFXReference.Get(categoryType, battleSFXName);
+
+            if (soundEffect == null)
+            {
+                Debug.LogError($"Sound: {battleSFXName.ToString()}, in category: {categoryType.ToString()}, could not be found from SFX Reference sheet.");
+                return null;
+            }
+
+            Play(soundEffect, pitch);
+
+            return _activeChannels[_activeChannels.Count - 1];
+        }
+
+        private ActiveChannelPath? Play(SoundEffect soundEffect, float pitch)
+        {
             if (soundEffect.Type == SoundPlayType.OneShot)
             {
                 _oneShotChannel.pitch = pitch;
@@ -107,9 +157,10 @@ namespace Altzone.Scripts.Audio
             return _activeChannels[_activeChannels.Count - 1];
         }
 
+        [System.Obsolete]
         public bool PlaybackOperation(SFXPlaybackOperationType type, string name) { return PlaybackOperation(type, name, 1f); }
 
-        public bool PlaybackOperation(SFXPlaybackOperationType type, string name, float pitch)
+        public bool PlaybackOperation(SFXPlaybackOperationType type, string name, float pitch = 1f)
         {
             foreach (ActiveChannelPath channel in _activeChannels)
             {
@@ -146,7 +197,7 @@ namespace Altzone.Scripts.Audio
 
         public bool PlaybackOperation(SFXPlaybackOperationType type, ActiveChannelPath channel) { return PlaybackOperation(type, channel, 1f); }
 
-        public bool PlaybackOperation(SFXPlaybackOperationType type, ActiveChannelPath channel, float pitch)
+        public bool PlaybackOperation(SFXPlaybackOperationType type, ActiveChannelPath channel, float pitch = 1f)
         {
             AudioChannelData data = GetAudioChannelData(channel);
 

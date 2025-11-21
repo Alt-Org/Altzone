@@ -43,6 +43,9 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
     private List<Chunk<bool>> _hiddenTrackHandlers = new List<Chunk<bool>>();
     private int _previousSearchLength = 0;
 
+    public delegate void InfoPressed(MusicTrack musicTrack, JukeboxManager.MusicTrackFavoriteType likeType);
+    public event InfoPressed OnInfoPressed;
+
     private void Start()
     {
         CreateButtonHandlersChunk();
@@ -81,6 +84,7 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
             //buttonHandler.OnTrackPressed += JukeboxManager.Instance.PlayPlaylist;
             buttonHandler.OnTrackPressed += JukeboxManager.Instance.QueueTrack;
             buttonHandler.OnPreviewPressed += JukeboxManager.Instance.PlayPreview;
+            buttonHandler.OnInfoPressed += OpenMusicTrackInfoPopup;
             buttonHandler.Clear();
             tracksChunk.Add(buttonHandler);
         }
@@ -162,6 +166,11 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
 
         _buttonHandlerChunkPointer = 0;
         _buttonHandlerPoolPointer = 0;
+    }
+
+    private void OpenMusicTrackInfoPopup(MusicTrack musicTrack, JukeboxManager.MusicTrackFavoriteType likeType)
+    {
+        OnInfoPressed.Invoke(musicTrack, likeType);
     }
 
     #region Filtering
