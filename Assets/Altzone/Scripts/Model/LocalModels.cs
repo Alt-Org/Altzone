@@ -373,6 +373,7 @@ namespace Altzone.Scripts.Model
                     JsonSerializer.Create(new JsonSerializerSettings {
                         TypeNameHandling = TypeNameHandling.Auto,
                         NullValueHandling = NullValueHandling.Ignore,
+                        Converters = { new ColourConverter() },
                     }));
                 storageData = new(loadedData);
 
@@ -398,6 +399,7 @@ namespace Altzone.Scripts.Model
                         NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore,
                         TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto,
                         Formatting = Newtonsoft.Json.Formatting.Indented,
+                        Converters = { new ColourConverter() },
                         //ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                     })
                 ).ToString();

@@ -23,7 +23,6 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public bool IsOpen;
 
         public List<ClanValues> Values = new();
-        [JsonIgnore]
         public List<HeartPieceData> ClanHeartPieces = new();
         public ClanRoleRights[] ClanRights = new ClanRoleRights[3];
 
