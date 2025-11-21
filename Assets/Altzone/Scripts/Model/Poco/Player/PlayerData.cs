@@ -55,7 +55,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         public int BackpackCapacity;
 
         public PlayerTask Task = null;
-        [JsonIgnore]
+
         public AvatarData AvatarData;
 
         public int points = 0;
