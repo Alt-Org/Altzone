@@ -28,6 +28,15 @@ namespace Battle.QSimulation.Player
     public static unsafe class BattlePlayerMovementController
     {
         /// <summary>
+        /// Initializes this classes BattleDebugLogger instance.<br/>
+        /// This method is exclusively for debug logging purposes.
+        /// </summary>
+        public static void Init()
+        {
+            s_debugLogger = BattleDebugLogger.Create(typeof(BattlePlayerMovementController));
+        }
+
+        /// <summary>
         /// Handles player's movement and rotation.
         /// </summary>
         ///
@@ -120,7 +129,7 @@ namespace Battle.QSimulation.Player
                     {
                         playerData->RotationOffset = maxAngle;
                     }
-                    Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", playerData->RotationOffset);
+                    s_debugLogger.LogFormat(f, "Leaning left(rotation: {0}", playerData->RotationOffset);
                 }
 
                 // rotates to right
@@ -131,7 +140,7 @@ namespace Battle.QSimulation.Player
                     {
                         playerData->RotationOffset = maxAngle;
                     }
-                    Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", playerData->RotationOffset);
+                    s_debugLogger.LogFormat(f, "Leaning right(rotation: {0}", playerData->RotationOffset);
                 }
             }
 
@@ -220,6 +229,9 @@ namespace Battle.QSimulation.Player
             transform->Teleport(f, position, rotation);
             TeleportHitbox(f, playerData, transform);
         }
+
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private static BattleDebugLogger s_debugLogger;
 
         /// <summary>
         /// Private method for moving and rotating all of the player's hitboxes to the player's current position and rotation.

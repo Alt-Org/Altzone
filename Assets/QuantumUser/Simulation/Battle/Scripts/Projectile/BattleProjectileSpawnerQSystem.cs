@@ -4,7 +4,6 @@
 /// </summary>
 
 // Unity usings
-using UnityEngine;
 using UnityEngine.Scripting;
 
 // Quantum usings
@@ -46,6 +45,8 @@ namespace Battle.QSimulation.Projectile
         /// <param name="f">Current simulation frame.</param>
         public override void OnInit(Frame f)
         {
+            _debugLogger = BattleDebugLogger.Create<BattleProjectileSpawnerQSystem>();
+
             // create a new entity
             EntityRef entity = f.Create();
 
@@ -56,8 +57,8 @@ namespace Battle.QSimulation.Projectile
             BattleProjectileSpawnerQComponent* spawner = f.Unsafe.GetPointer<BattleProjectileSpawnerQComponent>(entity);
             spawner->HasSpawned = false;
 
-            Debug.Log("ProjectileSpawnerSystem initialized");
-            Debug.Log($"Entity created with ProjectileSpawner component: {entity}");
+            _debugLogger.Log(f, "ProjectileSpawnerSystem initialized");
+            _debugLogger.Log(f, $"Entity created with ProjectileSpawner component: {entity}");
         }
 
         /// <summary>
@@ -79,7 +80,7 @@ namespace Battle.QSimulation.Projectile
             // ensure the projectile is spawned only once
             if (!filter.Spawner->HasSpawned)
             {
-                Debug.Log("Projectile should spawn");
+                _debugLogger.Log(f, "Projectile should spawn");
                 BattleProjectileQSpec  spec = BattleQConfig.GetProjectileSpec(f);
                 SpawnProjectile(f, spec.ProjectilePrototype);
 
@@ -87,6 +88,9 @@ namespace Battle.QSimulation.Projectile
                 filter.Spawner->HasSpawned = true;
             }
         }
+
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private BattleDebugLogger _debugLogger;
 
         /// <summary>
         /// Creates a projectile entity using the specified prototype and initializes its components.

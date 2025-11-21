@@ -7,7 +7,6 @@
 using System.Runtime.CompilerServices;
 
 // Unity usings
-using UnityEngine;
 using UnityEngine.Scripting;
 
 // Quantum usings
@@ -190,6 +189,14 @@ namespace Battle.QSimulation.Projectile
 
         #region Public - Gameflow Methods
 
+        /// <summary>
+        /// Initializes this classes BattleDebugLogger instance.<br/>
+        /// This method is exclusively for debug logging purposes.
+        /// </summary>
+        public static void Init()
+        {
+            s_debugLogger = BattleDebugLogger.Create<BattleProjectileQSystem>();
+        }
 
         /// <summary>
         /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a> gets called every frame.</span><br/>
@@ -363,6 +370,9 @@ namespace Battle.QSimulation.Projectile
 
         #endregion Public
 
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private static BattleDebugLogger s_debugLogger;
+
         #region Private Static Methods
 
         /// <summary>
@@ -419,7 +429,7 @@ namespace Battle.QSimulation.Projectile
 
             f.Events.BattleProjectileChangeSpeed(projectile->Speed);
 
-            Debug.Log("Projectile Launched");
+            s_debugLogger.Log(f, "Projectile Launched");
         }
 
         /// <summary>
@@ -461,7 +471,7 @@ namespace Battle.QSimulation.Projectile
             // if player is in the same grid cell as teammate, change the projectile to love emotion
             if (isOnTopOfTeammate)
             {
-                Debug.Log("[ProjectileSystem] changing projectile emotion to Love");
+                s_debugLogger.Log(f, "changing projectile emotion to Love");
                 SetEmotion(f, projectile, BattleEmotionState.Love);
                 shieldCollisionData->IsLoveProjectileCollision = true;
 

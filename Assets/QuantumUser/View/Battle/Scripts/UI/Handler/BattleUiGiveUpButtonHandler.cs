@@ -16,6 +16,9 @@ using Quantum;
 // Altzone usings
 using Altzone.Scripts.BattleUiShared;
 
+// Battle QSimulation usings
+using Battle.QSimulation;
+
 // Battle View usings
 using Battle.View.Game;
 
@@ -91,18 +94,18 @@ namespace Battle.View.UI
                                          ? ButtonInfoState.TeamGiveUp
                                          : ButtonInfoState.TeammateGiveUp;
                     }
-                        break;
+                    break;
 
                 case BattleGiveUpStateUpdate.Abandoned:
                     if (slot == BattleGameViewController.LocalPlayerSlot)
                     {
-                        Debug.LogWarning("Active local client marked as abandoned");
+                        _debugLogger.Warning("Active local client marked as abandoned");
                     }
                     else
                     {
                         _buttonInfoState = ButtonInfoState.TeammateAbandoned;
                     }
-                        break;
+                    break;
 
                 case BattleGiveUpStateUpdate.GiveUpVoteCancel:
                     _buttonInfoState = ButtonInfoState.Normal;
@@ -118,6 +121,9 @@ namespace Battle.View.UI
 
             UpdateInfoText();
         }
+
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private BattleDebugLogger _debugLogger;
 
         /// <summary>
         /// States for the give up info text.
@@ -142,6 +148,8 @@ namespace Battle.View.UI
         /// </summary>
         private void Awake()
         {
+            _debugLogger = BattleDebugLogger.Create<BattleUiGiveUpButtonHandler>();
+
             _buttonInfoState = ButtonInfoState.Normal;
             UpdateInfoText();
             _giveUpButton.onClick.AddListener(_uiController.GameViewController.UiInputOnLocalPlayerGiveUp);
