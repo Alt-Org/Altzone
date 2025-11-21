@@ -21,9 +21,9 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     [SerializeField] private ScrollRect _onlinePlayersPanelScrollView;
     [SerializeField] private Button _closeOnlinePlayersPanelButton;
     [SerializeField] private Button _openOnlinePlayersPanelButton;
-    [SerializeField] private FriendlistItem _onlinePlayersPanelItemPrefab;
+    [SerializeField] private OnlinePlayersPanelItem _onlinePlayersPanelItemPrefab;
 
-    private List<FriendlistItem> _onlinePlayersPanelItems = new List<FriendlistItem>();
+    private List<OnlinePlayersPanelItem> _onlinePlayersPanelItems = new List<OnlinePlayersPanelItem>();
 
 
     // Start is called before the first frame update
@@ -50,12 +50,12 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
     public void CloseOnlinePlayersPanel()
     {
-        _onlinePlayersPanel.SetActive(true);
+        _onlinePlayersPanel.SetActive(false);
     }
 
     public void OpenOnlinePlayersPanel()
     {
-        _onlinePlayersPanel.SetActive(false);
+        _onlinePlayersPanel.SetActive(true);
     }
 
     private void BuildOnlinePlayerList(List<ServerOnlinePlayer> onlinePlayers)
@@ -95,7 +95,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             }
 
 
-            FriendlistItem newItem = Instantiate(_onlinePlayersPanelItemPrefab, _onlinePlayersPanelContent);
+            OnlinePlayersPanelItem newItem = Instantiate(_onlinePlayersPanelItemPrefab, _onlinePlayersPanelContent);
             newItem.Initialize(
                  playerName,
                  avatarVisualData: avatarVisualData,
