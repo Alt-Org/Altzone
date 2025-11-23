@@ -17,6 +17,18 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private Button _button;
     [SerializeField] private GameObject _addReactionsControls;
     [SerializeField] private GameObject _reactionsPanel;
+
+
+    [Header("Base Message")]
+    [SerializeField] public Vector2 _BaseMessageBankerSize;
+    [SerializeField] public RectTransform _BaseMessageSize;
+    [SerializeField] private ChatMessageScript BackgroundSize;
+    [SerializeField] private GameObject ReactionField;
+    public GameObject ReactionSize;
+    public GameObject ExpandedReactionSize;
+    public Vector2 rect;
+    public Vector2 rect2;
+
     private string _id;
     private Image _image;
     private Action<MessageObjectHandler> _selectMessageAction;
@@ -30,6 +42,33 @@ public class MessageObjectHandler : MonoBehaviour
         _button.onClick.AddListener(SetMessageActive);
         _image = _button.GetComponent<Image>();
         Chat.OnSelectedMessageChanged += SetMessageInactive;
+
+
+        rect = new Vector2(_BaseMessageSize.sizeDelta.x, _BaseMessageSize.sizeDelta.y + ReactionSize.GetComponent<RectTransform>().sizeDelta.y);
+        rect2 = new Vector2(_BaseMessageSize.sizeDelta.x, _BaseMessageSize.sizeDelta.y + ExpandedReactionSize.GetComponent<RectTransform>().sizeDelta.y);
+    }
+
+    ///Changes the Basemessages size
+    public void sizeCall()
+    {
+        //adds extra size if there reactions have been put or not
+        float extraPadding;
+        if (ReactionField.transform.childCount > 0)
+            extraPadding = 100;
+        else
+            extraPadding = 0f;
+
+        //Checks if reaction panel is active and checks which reaction pannel is on
+        if (ReactionSize.activeSelf)
+            if(ExpandedReactionSize.activeSelf)
+                _BaseMessageSize.sizeDelta = new Vector2(rect2.x, Mathf.Max(150, _BaseMessageBankerSize.y + rect2.y + extraPadding));
+            else
+                _BaseMessageSize.sizeDelta = new Vector2(rect.x, Mathf.Max(150, _BaseMessageBankerSize.y + rect.y + extraPadding));
+
+        //reverts back to orignal
+        else
+        _BaseMessageSize.sizeDelta = new Vector2(_BaseMessageBankerSize.x, Mathf.Max(150, _BaseMessageBankerSize.y + extraPadding));
+
     }
 
     private void OnDestroy()
@@ -50,7 +89,7 @@ public class MessageObjectHandler : MonoBehaviour
         _text.text = message.Message;
         _selectMessageAction = selectMessageAction;
         _name.text = message.Username;
-        _time.text = $"{message.Timestamp.Hour}:{message.Timestamp.Minute}";
+        _time.text = $"{message.Timestamp.Hour}:{message.Timestamp.Minute:D2}";
         _date.text = $"{message.Timestamp.Day}/{message.Timestamp.Month}/{message.Timestamp.Year}";
     }
 
@@ -72,6 +111,7 @@ public class MessageObjectHandler : MonoBehaviour
         _addReactionsControls.SetActive(true);
 
         _selectMessageAction.Invoke(this);
+        sizeCall();
     }
 
     private void SetMessageInactive(MessageObjectHandler handler)
@@ -83,6 +123,7 @@ public class MessageObjectHandler : MonoBehaviour
             _image.color = Color.white;
         }
         _addReactionsControls.SetActive(false);
+        sizeCall();
     }
 
     public void SetMessageInactive()

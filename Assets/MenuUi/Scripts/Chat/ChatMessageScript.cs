@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using Photon.Deterministic;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class ChatMessageScript : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class ChatMessageScript : MonoBehaviour
 
     private float _lastLineCount = 0; // Tallentaa viimeksi lasketun rivim��r�n.
     private float _initialHeight; // Alkuper�inen taustan korkeus, joka asetetaan alussa.
+    public MessageObjectHandler _messageHandler;
 
 
     private void Start()
@@ -50,9 +52,12 @@ public class ChatMessageScript : MonoBehaviour
                 textBackground.sizeDelta = new Vector2(textBackground.sizeDelta.x, newHeight);
 
                 textBackground.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(textBackground.parent.GetComponent<RectTransform>().sizeDelta.x, newHeight);
-
                 _lastLineCount = lineCount;
 
+
+                _messageHandler._BaseMessageBankerSize = new Vector2(_messageHandler._BaseMessageSize.sizeDelta.x, newHeight);
+
+                _messageHandler.sizeCall();
                 ///Old Line Incase needed
                 //float originalSpacing = _messageVerticalLayoutGroup.spacing;
                 //float newSpacing = originalSpacing * 0.2f * (lineCount - 1);

@@ -21,6 +21,7 @@ public class ChatReactionHandler : MonoBehaviour
     public string _messageID;
     public int _count = 0;
     public bool _selected;
+    public static ChatReactionHandler Instance;
 
     public void SetReactionInfo(Sprite image, string messageID, Mood mood)
     {

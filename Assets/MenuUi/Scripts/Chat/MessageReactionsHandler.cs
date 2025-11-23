@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Chat;
@@ -29,17 +30,20 @@ public class MessageReactionsHandler : MonoBehaviour
     private List<GameObject> _reactions = new();
     private List<ChatReactionHandler> _reactionHandlers = new();
     private List<int> _commonReactions = new();
-
     private bool _longClick = false;
 
+    public static MessageReactionsHandler Instance;
+
+    private Mood _mood;
     void Start()
     {
         _openMoreButton.onClick.AddListener((() => { _allReactionsPanel.SetActive(true); _commonReactionsPanel.SetActive(false);}));
 
         ReactionObjectHandler.OnReactionPressed += AddReaction;
+        //ChatChannel.OnReactionReceived += RefreshReactionCoroutine();
 
         GenarateReactionObjects();
-        //CreateReactionInteractions();
+        CreateReactionInteractions();
         PickCommonReactions();
     }
 
@@ -166,7 +170,8 @@ public class MessageReactionsHandler : MonoBehaviour
 
             chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler));
             chatReactionHandler.LongClickButton.onLongClick.AddListener(() => ShowUsers(chatReactionHandler));
-            //chatReactionHandler.Button.onClick.AddListener(() => _chatScript.MinimizeOptions());
+
+
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
 
@@ -227,6 +232,7 @@ public class MessageReactionsHandler : MonoBehaviour
         LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
         //_chatScript.UpdateContentLayout(reactionsField);
     }
+
 
     [Serializable]
     private class ReactionObject
