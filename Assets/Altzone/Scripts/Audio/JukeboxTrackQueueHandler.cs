@@ -1,7 +1,9 @@
+using System.Collections;
 using Altzone.Scripts.Audio;
 using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
@@ -14,6 +16,12 @@ public class JukeboxTrackQueueHandler : MonoBehaviour
     [SerializeField] private Button _deleteButton;
     [SerializeField] private TextAutoScroll _textAutoScroll;
     [SerializeField] private FavoriteButtonHandler _favoriteButtonHandler;
+    [Space]
+    [SerializeField] private float _buttonPressCancelTime = 0.25f;
+
+    private bool _buttonInputCanceled = false;
+
+    private Coroutine _buttonCancelCoroutine;
 
     private string _id; // Id that is used with JukeboxManager.
     public string Id { get { return _id; } }
@@ -52,6 +60,39 @@ public class JukeboxTrackQueueHandler : MonoBehaviour
         SetVisibility(false);
     }
 
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        if (_buttonCancelCoroutine != null)
+        {
+            StopCoroutine(CancelButtonPress());
+            _buttonCancelCoroutine = null;
+        }
+
+        _buttonCancelCoroutine = StartCoroutine(CancelButtonPress());
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        if (_buttonCancelCoroutine != null)
+        {
+            StopCoroutine(CancelButtonPress());
+            _buttonCancelCoroutine = null;
+        }
+    }
+
+    private IEnumerator CancelButtonPress()
+    {
+        float timer = 0f;
+
+        while (timer < _buttonPressCancelTime)
+        {
+            yield return null;
+            timer += Time.deltaTime;
+        }
+
+        _buttonInputCanceled = true;
+    }
+
     public bool InUse() { return !string.IsNullOrEmpty(_id); }
 
     public void SetTrack(string id, MusicTrack musicTrack, int linearIndex, bool userOwned, JukeboxManager.MusicTrackFavoriteType likeType)
@@ -83,5 +124,5 @@ public class JukeboxTrackQueueHandler : MonoBehaviour
 
     public bool GetVisibility() { return gameObject.activeSelf; }
 
-    private void Delete() { OnDeleteEvent.Invoke(_chunkIndex, _poolIndex, _linearIndex); }
+    private void Delete() { if (!_buttonInputCanceled) OnDeleteEvent.Invoke(_chunkIndex, _poolIndex, _linearIndex); }
 }

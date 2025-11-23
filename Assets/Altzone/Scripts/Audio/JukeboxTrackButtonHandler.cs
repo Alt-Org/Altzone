@@ -3,9 +3,10 @@ using Altzone.Scripts.Audio;
 using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class JukeboxTrackButtonHandler : MonoBehaviour
+public class JukeboxTrackButtonHandler : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
     [SerializeField] private TextMeshProUGUI _trackNameText;
     [SerializeField] private TextAutoScroll _trackNameAutoScroll;
@@ -19,11 +20,16 @@ public class JukeboxTrackButtonHandler : MonoBehaviour
     [Space]
     [SerializeField] private Button _previewButton;
     [SerializeField] private Button _infoButton;
+    [Space]
+    [SerializeField] private float _buttonPressCancelTime = 0.25f;
+
+    private bool _buttonInputCanceled = false;
 
     private MusicTrack _musicTrack = null;
     public MusicTrack MusicTrack {  get { return _musicTrack; } }
 
     private Coroutine _diskSpinCoroutine;
+    private Coroutine _buttonCancelCoroutine;
 
     public delegate void TrackPressed(MusicTrack musicTrack);
     public event TrackPressed OnTrackPressed;
@@ -42,11 +48,59 @@ public class JukeboxTrackButtonHandler : MonoBehaviour
         if (_infoButton != null) _infoButton.onClick.AddListener(() => InfoButtonClicked());
     }
 
-    public void AddButtonClicked() { if (_musicTrack != null) OnTrackPressed.Invoke(_musicTrack); }
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        if (_buttonCancelCoroutine != null)
+        {
+            StopCoroutine(CancelButtonPress());
+            _buttonCancelCoroutine = null;
+        }
 
-    public void PreviewButtonClicked() { if (_musicTrack != null) OnPreviewPressed.Invoke(this); }
+        _buttonCancelCoroutine = StartCoroutine(CancelButtonPress());
+    }
 
-    public void InfoButtonClicked() { if (_musicTrack != null) OnInfoPressed.Invoke(_musicTrack, _favoriteButtonHandler.MusicTrackLikeType); }
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        if (_buttonCancelCoroutine != null)
+        {
+            StopCoroutine(CancelButtonPress());
+            _buttonCancelCoroutine = null;
+        }
+    }
+
+    private IEnumerator CancelButtonPress()
+    {
+        float timer = 0f;
+
+        while (timer < _buttonPressCancelTime)
+        {
+            yield return null;
+            timer += Time.deltaTime;
+        }
+
+        _buttonInputCanceled = true;
+    }
+
+    public void AddButtonClicked()
+    {
+        if (!_buttonInputCanceled && _musicTrack != null) OnTrackPressed.Invoke(_musicTrack);
+
+        _buttonInputCanceled = false;
+    }
+
+    public void PreviewButtonClicked()
+    {
+        if (!_buttonInputCanceled && _musicTrack != null) OnPreviewPressed.Invoke(this);
+
+        _buttonInputCanceled = false;
+    }
+
+    public void InfoButtonClicked()
+    {
+        if (!_buttonInputCanceled && _musicTrack != null) OnInfoPressed.Invoke(_musicTrack, _favoriteButtonHandler.MusicTrackLikeType);
+
+        _buttonInputCanceled = false;
+    }
 
     public void SetTrack(MusicTrack musicTrack, int trackLinearIndex, JukeboxManager.MusicTrackFavoriteType likeType)
     {

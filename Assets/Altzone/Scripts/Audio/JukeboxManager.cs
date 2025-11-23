@@ -9,6 +9,8 @@ namespace Altzone.Scripts.Audio
 {
     public class JukeboxManager : AltMonoBehaviour
     {
+        private long _trackTimeErrorMargin = 100000000;
+
         public static JukeboxManager Instance { get; private set; }
 
         private PlayerData _currentPlayerData = null;
@@ -729,22 +731,29 @@ namespace Altzone.Scripts.Audio
 
             if (serverCurrentSong == null)
             {
-                if (OnStopJukeboxVisuals != null) OnStopJukeboxVisuals.Invoke();
-                if (OnClearJukeboxVisuals != null) OnClearJukeboxVisuals.Invoke();
+                if (!_trackPreviewActive)
+                {
+                    if (OnStopJukeboxVisuals != null) OnStopJukeboxVisuals.Invoke();
+                    if (OnClearJukeboxVisuals != null) OnClearJukeboxVisuals.Invoke();
 
-                AudioManager.Instance.PlayFallBackTrack(MusicHandler.MusicSwitchType.CrossFade);
+                    AudioManager.Instance.PlayFallBackTrack(MusicHandler.MusicSwitchType.CrossFade);
+                }
+
                 _currentTrackQueueData = null;
 
                 yield break;
             }
 
             System.DateTime gmtTime = System.DateTimeOffset.FromUnixTimeMilliseconds(serverCurrentSong.startedAt).DateTime;
+            System.DateTime localTime = gmtTime.ToLocalTime();
 
-            _musicTrackStartTime = gmtTime.ToLocalTime();
-            
+            bool timeCloseEnough = Mathf.Abs(localTime.Ticks - _musicTrackStartTime.Ticks) <= _trackTimeErrorMargin;
+
+            _musicTrackStartTime = localTime;
+
             if (_currentTrackQueueData != null && _currentTrackQueueData.ServerSongData != null && serverCurrentSong.songId == _currentTrackQueueData.ServerSongData.songId)
             {
-                ContinueTrack(false);
+                ContinueTrack(false, !timeCloseEnough);
             }
             else
             {
@@ -758,7 +767,7 @@ namespace Altzone.Scripts.Audio
 
                 _currentTrackQueueData = new TrackQueueData(new(serverCurrentSong), musicTrack);
 
-                ContinueTrack(false);
+                ContinueTrack(false, !timeCloseEnough);
             }
         }
 
@@ -862,7 +871,7 @@ namespace Altzone.Scripts.Audio
                 return _playbackPaused;
         }
 
-        public string ContinueTrack(bool muteActivation)
+        public string ContinueTrack(bool muteActivation, bool forcePlay = false)
         {
             if (_trackPreviewActive || _currentPlaylist == null) return null;
 
@@ -912,7 +921,7 @@ namespace Altzone.Scripts.Audio
             if (OnSetSongInfo != null) OnSetSongInfo.Invoke(_currentTrackQueueData.MusicTrack);
 
             if (!_jukeboxMuted)
-                return AudioManager.Instance.ContinueMusic("Jukebox", _currentTrackQueueData.MusicTrack, MusicHandler.MusicSwitchType.CrossFade, _musicElapsedTime);
+                return AudioManager.Instance.ContinueMusic("Jukebox", _currentTrackQueueData.MusicTrack, MusicHandler.MusicSwitchType.CrossFade, _musicElapsedTime, forcePlay);
             else
                 return null;
         }
@@ -1328,7 +1337,7 @@ namespace Altzone.Scripts.Audio
                 _currentPreviewTrackCoroutine = null;
             }
 
-            string name = AudioManager.Instance.PlayMusic("Jukebox", buttonHandler.MusicTrack, MusicHandler.MusicSwitchType.CrossFade);
+            string name = AudioManager.Instance.ContinueMusic("Jukebox", buttonHandler.MusicTrack, MusicHandler.MusicSwitchType.CrossFade, 0f, true);
 
             if (name == null)
             {
@@ -1389,7 +1398,7 @@ namespace Altzone.Scripts.Audio
                 return;
             }
 
-            string name = ContinueTrack(false);
+            string name = ContinueTrack(false, true);
 
             if (name == null)
             {

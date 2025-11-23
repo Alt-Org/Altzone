@@ -138,6 +138,12 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         StopJukeboxVisuals();
     }
 
+    private void MutedFromSettingsIndicator()
+    {
+        _mainDiskHandler.ToggleCustomIndicatorImage(false);
+        _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.VolumeZero);
+    }
+
     #region Mute
     private void UnmuteOnlyButton()
     {
@@ -155,9 +161,13 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
             SetMuteImage(true);
             StopJukeboxVisuals();
 
-            _mainDiskHandler.ToggleIndicatorHolder(true);
-            _mainDiskHandler.ToggleCustomIndicatorImage(true);
-            _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.None);
+            if (AudioManager.Instance.GetMusicVolume() != 0)
+            {
+                _mainDiskHandler.ToggleCustomIndicatorImage(true);
+                _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.None);
+            }
+            else
+                MutedFromSettingsIndicator();
         }
         else //Playing
         {
@@ -175,13 +185,21 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
             if (JukeboxManager.Instance.CurrentTrackQueueData != null)
             {
                 _mainDiskHandler.StartSpinDisk();
-                _mainDiskHandler.ToggleIndicatorHolder(false);
+
+                if (AudioManager.Instance.GetMusicVolume() != 0)
+                    _mainDiskHandler.ToggleIndicatorHolder(false);
+                else
+                    MutedFromSettingsIndicator();
             }
             else
             {
-                _mainDiskHandler.ToggleIndicatorHolder(true);
-                _mainDiskHandler.ToggleCustomIndicatorImage(false);
-                _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.Empty);
+                if (AudioManager.Instance.GetMusicVolume() != 0)
+                {
+                    _mainDiskHandler.ToggleCustomIndicatorImage(false);
+                    _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.Empty);
+                }
+                else
+                    MutedFromSettingsIndicator();
             }
         }
     }
@@ -236,8 +254,10 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         if (result) //Stopped
         {
             StopJukeboxVisuals();
-            _mainDiskHandler.ToggleIndicatorHolder(true);
-            _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.Stopped);
+            if (AudioManager.Instance.GetMusicVolume() != 0)
+                _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.Stopped);
+            else
+                MutedFromSettingsIndicator();
         }
         else //Playing
         {
@@ -298,7 +318,14 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         foreach (TextAutoScroll text in _trackCreditsNames) text.SetContent(NoCreditsNames);
         //foreach (Image image in _diskImage) image.sprite = _emptyDisk;
         _mainDiskHandler.ClearDisk();
-        _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.Empty);
+
+        if (AudioManager.Instance.GetMusicVolume() != 0)
+        {
+            _mainDiskHandler.ToggleCustomIndicatorImage(false);
+            _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.Empty);
+        }
+        else
+            MutedFromSettingsIndicator();
     }
 
     public void ToggleJukeboxScreen(bool toggle)
@@ -310,7 +337,16 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
             _previousAreaName = AudioManager.Instance?.CurrentAreaName;
             AudioManager.Instance?.SetCurrentAreaCategoryName("Jukebox");
 
-            JukeboxManager.Instance.TryPlayTrack();
+            if (string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
+            {
+                if (AudioManager.Instance.GetMusicVolume() != 0)
+                {
+                    _mainDiskHandler.ToggleCustomIndicatorImage(false);
+                    _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.Empty);
+                }
+                else
+                    MutedFromSettingsIndicator();
+            }
         }
         else
         {
@@ -345,7 +381,12 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         //}
 
         if (!JukeboxManager.Instance.JukeboxMuted && _jukeboxObject.activeSelf && track.Music != null && _mainDiskHandler.StartSpinDisk())
+        {
+            if (AudioManager.Instance.GetMusicVolume() != 0)
                 _mainDiskHandler.ToggleIndicatorHolder(false);
+            else
+                MutedFromSettingsIndicator();
+        }
         //_diskSpinCoroutine = StartCoroutine(SpinDisks());
         //else
         //    _mainDiskHandler.StopSpinDisk();
@@ -369,15 +410,18 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     private void OpenMusicTrackInfoPopup(MusicTrack musicTrack, JukeboxManager.MusicTrackFavoriteType likeType)
     {
-
         _jukeboxInfoPopupHandler.Set(musicTrack, likeType);
     }
 
     private void JukeboxPreviewPlaybackStart()
     {
-        _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.Preview);
-        _mainDiskHandler.ToggleIndicatorHolder(true);
-        _mainDiskHandler.ToggleCustomIndicatorImage(false);
+        if (AudioManager.Instance.GetMusicVolume() != 0)
+        {
+            _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.Preview);
+            _mainDiskHandler.ToggleCustomIndicatorImage(false);
+        }
+        else
+            MutedFromSettingsIndicator();
     }
 
     private void JukeboxPreviewPlaybackEnd()
@@ -387,6 +431,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         if (muted)
         {
             _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.None);
+            _mainDiskHandler.ToggleIndicatorHolder(true);
             _mainDiskHandler.ToggleCustomIndicatorImage(true);
         }
         else

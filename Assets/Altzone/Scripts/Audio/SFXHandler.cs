@@ -98,7 +98,13 @@ namespace Altzone.Scripts.Audio
 
             Play(soundEffect, pitch);
 
-            return _activeChannels[_activeChannels.Count - 1];
+            if ((_activeChannels.Count - 1) >= 0)
+                return _activeChannels[_activeChannels.Count - 1];
+            else
+            {
+                Debug.LogError("SFX Handler Error: Active channels is empty!");
+                return null;
+            }
         }
 
         public ActiveChannelPath? Play(AudioCategoryType categoryType, string sFXName, string mainMenuMusicName, float pitch)
@@ -126,7 +132,7 @@ namespace Altzone.Scripts.Audio
             return _activeChannels[_activeChannels.Count - 1];
         }
 
-        public ActiveChannelPath? Play(AudioCategoryType categoryType, BattleSFXNameTypes battleSFXName, string mainMenuMusicName, float pitch)
+        public ActiveChannelPath? Play(AudioCategoryType categoryType, BattleSFXNameTypes battleSFXName, float pitch)
         {
             SoundEffect soundEffect = null;
 

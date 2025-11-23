@@ -25,7 +25,8 @@ public class JukeboxMainDiskHandler : MonoBehaviour
         "Esikuuntelu\r\nPäällä",
         "Jukeboxi\r\nMykistetty",
         "Pysäytetty",
-        "Soittolista\r\nTyhjä"
+        "Soittolista\r\nTyhjä",
+        "Mykistetty\r\nAsetuksista"
     };
 
     public enum JukeboxDiskTextType
@@ -34,7 +35,8 @@ public class JukeboxMainDiskHandler : MonoBehaviour
         Preview = 1,
         Muted = 2,
         Stopped = 3,
-        Empty = 4
+        Empty = 4,
+        VolumeZero = 5
     }
 
     private void Awake()
@@ -77,7 +79,11 @@ public class JukeboxMainDiskHandler : MonoBehaviour
 
     public void ToggleIndicatorHolder(bool value) { _offlineIndicatorContent.SetActive(value); }
 
-    public void SetIndicatorText(JukeboxDiskTextType textType) { _indicatorText.text = _indicatorTexts[(int)textType]; }
+    public void SetIndicatorText(JukeboxDiskTextType textType)
+    {
+        _indicatorText.text = _indicatorTexts[(int)textType];
+        ToggleIndicatorHolder(true);
+    }
 
     public void ToggleCustomIndicatorImage(bool value) { _customIndicatorImageHolder.SetActive(value); }
 }

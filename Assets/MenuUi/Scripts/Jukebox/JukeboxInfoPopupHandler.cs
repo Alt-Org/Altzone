@@ -53,7 +53,7 @@ public class JukeboxInfoPopupHandler : MonoBehaviour
 
     public void Set(MusicTrack musicTrack, JukeboxManager.MusicTrackFavoriteType favoriteType)
     {
-        if (_buttonHandler.MusicTrack != null && _buttonHandler.MusicTrack.Id != musicTrack.Id) ClearWeblinks();
+        if (_buttonHandler.MusicTrack == null || _buttonHandler.MusicTrack.Id != musicTrack.Id) ClearWeblinks();
 
         _favoriteHandler.Setup(JukeboxManager.Instance.GetTrackFavoriteType(musicTrack), musicTrack.Id);
 
