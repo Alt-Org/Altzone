@@ -20,7 +20,7 @@ public class JukeboxWebLinkHandler : MonoBehaviour
     {
         if (artist == null || string.IsNullOrEmpty(artist.WebsiteAddress))
         {
-            if (string.IsNullOrEmpty(_weblinkAddress)) Clear();
+            if (!string.IsNullOrEmpty(_weblinkAddress)) Clear();
 
             return;
         }

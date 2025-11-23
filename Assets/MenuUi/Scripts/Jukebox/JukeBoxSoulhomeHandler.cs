@@ -5,6 +5,7 @@ using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using MenuUI.Scripts;
 
 public class JukeBoxSoulhomeHandler : MonoBehaviour
 {
@@ -55,7 +56,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     [SerializeField] private GameObject _addMusicInfoPopup;
 
     [SerializeField] private JukeboxInfoPopupHandler _jukeboxInfoPopupHandler;
-    [SerializeField] private JukeboxTextPopup _jukeboxTextPopup;
+    [SerializeField] private PopupController _jukeboxTextPopup;
 
     private Coroutine _diskSpinCoroutine;
 
@@ -106,7 +107,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         _mainDiskHandler.OnMultiUseButtonPressed += UnmuteOnlyButton;
         JukeboxManager.Instance.OnPreviewStart += JukeboxPreviewPlaybackStart;
         JukeboxManager.Instance.OnPreviewEnd += JukeboxPreviewPlaybackEnd;
-        JukeboxManager.Instance.OnShowTextPopup += _jukeboxTextPopup.Set;
+        JukeboxManager.Instance.OnShowTextPopup += _jukeboxTextPopup.ActivatePopUp;
     }
 
     private void OnEnable()

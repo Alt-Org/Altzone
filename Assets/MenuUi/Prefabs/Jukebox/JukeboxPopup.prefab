@@ -6752,7 +6752,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8688054413247614924}
-  - component: {fileID: 6252735096740047753}
+  - component: {fileID: 4917569250199051583}
   m_Layer: 5
   m_Name: PlaylistChangesPopup
   m_TagString: Untagged
@@ -6780,7 +6780,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &6252735096740047753
+--- !u!114 &4917569250199051583
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6789,12 +6789,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1940426461911277833}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2528f8926846524a962596bab2b7e01, type: 3}
+  m_Script: {fileID: 11500000, guid: f147c74fba287cf4d8590ec7690fdb54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _text: {fileID: 8170284323113750439}
-  _content: {fileID: 4822972600870096504}
-  _visibleTime: 1.5
+  _popup: {fileID: 4822972600870096504}
+  _textColour: {r: 0, g: 0, b: 0, a: 1}
+  _backgroundColour: {r: 0.87843144, g: 0.5372549, b: 0.011764707, a: 1}
+  _popupWaitDelay: 1.5
 --- !u!1 &1957552574520335315
 GameObject:
   m_ObjectHideFlags: 0
@@ -22973,7 +22974,7 @@ MonoBehaviour:
   _addMusicInfoButton: {fileID: 2279481656677874301}
   _addMusicInfoPopup: {fileID: 9033784410076784515}
   _jukeboxInfoPopupHandler: {fileID: 4135530626436824425}
-  _jukeboxTextPopup: {fileID: 6252735096740047753}
+  _jukeboxTextPopup: {fileID: 4917569250199051583}
 --- !u!114 &4463676468065454329
 MonoBehaviour:
   m_ObjectHideFlags: 0
