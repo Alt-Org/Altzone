@@ -578,7 +578,7 @@ namespace Altzone.Scripts.Audio
                 yield break;
             }
 
-            if (OnShowTextPopup != null) OnShowTextPopup.Invoke($"Kappale: {musicTrack.Name}, lis‰tty.");
+            if (OnShowTextPopup != null) OnShowTextPopup.Invoke($"Kappale: {musicTrack.Name}, lis√§tty.");
 
             _serverOperationAvailable = true;
             done(true);
@@ -710,12 +710,12 @@ namespace Altzone.Scripts.Audio
         {
             return new List<string>()
             {
-                "k‰ytt‰j‰1_1_1",
-                "k‰ytt‰j‰1_5_2",
-                "k‰ytt‰j‰2_7_1",
-                "k‰ytt‰j‰2_2_2",
-                "k‰ytt‰j‰3_7_1",
-                "k‰ytt‰j‰2_6_3",
+                "kayttaja1_1_1",
+                "kayttaja1_5_2",
+                "kayttaja2_7_1",
+                "kayttaja2_2_2",
+                "kayttaja3_7_1",
+                "kayttaja2_6_3",
             };
         }
         #endregion
