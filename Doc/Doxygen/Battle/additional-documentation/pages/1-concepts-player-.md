@@ -299,8 +299,6 @@ Scripts such as [{PlayerQSystem}](#page-concepts-player-simulation-playerqsystem
 which then in turn call the corresponding method for the character class of the specified player character. This way each characters possible character class methods
 are always correctly called.
 
-The data QComponents are attached to the [{Player Character Entities}](#page-concepts-player-character-entity) which is used by the C# class of the corresponding character class.
-
 <br/>
 
 ### Player Character Class List {#page-concepts-player-characters-class-list}
@@ -429,6 +427,8 @@ component BattlePlayerClassExample2DataQComponent
   // ...
 }
 ```
+
+The data QComponents are attached to the [{Player Character Entities}](#page-concepts-player-character-entity) which is used by the C# class of the corresponding character class.
 
 See [{PlayerClass}](#page-concepts-player-simulation-playerclass)  
 See [{Player Character Classes}](#page-concepts-player-characters-classes)
