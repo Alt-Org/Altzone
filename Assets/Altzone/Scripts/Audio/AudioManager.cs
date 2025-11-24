@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.ReferenceSheets;
 using Assets.Altzone.Scripts.Reference_Sheets;
@@ -68,6 +69,13 @@ namespace Altzone.Scripts.Audio
             _musicHandler = GetComponent<MusicHandler>();
 
             if (SettingsCarrier.Instance == null) return;
+
+            StartCoroutine(WaitForSettingsCarrier());
+        }
+
+        private IEnumerator WaitForSettingsCarrier()
+        {
+            yield return new WaitUntil(() => SettingsCarrier.Instance != null);
 
             UpdateMaxVolume();
         }
