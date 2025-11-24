@@ -294,16 +294,19 @@ Player character classes function by having implementable methods that are calle
 Classes can also implement an update method. These methods can be used to implement functionality on top of for example
 the default collision methods to change how different character classes function.
 
-See [{Player Character Class List}](#page-concepts-player-characters-class-list) for list of all character classes.
-
-<br/>
-
 The C# classes are stateless and there is only one instance for each character class which are loaded and managed by [{PlayerClassManager}](#page-concepts-player-simulation-classmanager).  
 Scripts such as [{PlayerQSystem}](#page-concepts-player-simulation-playerqsystem) call methods in [{PlayerClassManager}](#page-concepts-player-simulation-classmanager),
 which then in turn call the corresponding method for the character class of the specified player character. This way each characters possible character class methods
 are always correctly called.
 
 The data QComponents are attached to the [{Player Character Entities}](#page-concepts-player-character-entity) which is used by the C# class of the corresponding character class.
+
+<br/>
+
+### Player Character Class List {#page-concepts-player-characters-class-list}
+
+@subpage page-concepts-player-class-400-projector  
+@subpage page-concepts-player-class-600-confluent
 
 <br/>
 
@@ -513,18 +516,5 @@ public class BattlePlayerClassExampleViewController : BattlePlayerClassBaseViewC
   // ...
 }
 ```
-
-See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
-
-<br/>
-
----
-
-<br/>
-
-## Player Character Class List {#page-concepts-player-characters-class-list}
-
-@subpage page-concepts-player-class-400-projector  
-@subpage page-concepts-player-class-600-confluent
 
 See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
