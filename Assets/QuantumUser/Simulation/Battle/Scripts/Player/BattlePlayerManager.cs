@@ -5,7 +5,6 @@
 /// </summary>
 
 //#define DEBUG_PLAYER_STAT_OVERRIDE
-//#define DEBUG_LOG_VERBOSE
 
 // System usings
 using System.Runtime.CompilerServices;
