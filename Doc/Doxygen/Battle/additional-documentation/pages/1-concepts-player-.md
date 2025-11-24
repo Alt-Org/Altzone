@@ -352,18 +352,32 @@ digraph PlayerSimulation {
   edge [color=gray];
 
   PlayerManager            [label="PlayerManager\n\nHandles player management,\nallowing other classes to focus on gameplay logic."];
-  PlayerManagerData        [label="PlayerManagerData\n\nPlayerManager related data\naccessed by other classes through PlayerHandle."];
+  PlayerManagerData        [label="PlayerManagerData\n(Quantum singleton)\n\nPlayerManager related data\naccessed by other classes through PlayerHandle."];
   PlayerHandle             [label="PlayerHandle\n\nA struct defined in PlayerManager,\nwhich allows other classes to access PlayerManagerData for each individual player."];
   PlayerQSystem            [label="PlayerQSystem\n\nHandles primary gameplay logic for players.\nUses other classes for specific player logic."];
   PlayerMovementController [label="PlayerMovementController\n\nHandles the logic for moving and rotating player characters."];
+  PlayerClassManager       [label="PlayerClassManager\n\nHandles the initial loading of player classes\nand routes individual game events\nto the correct class scripts."];
+  PlayerClass              [label="PlayerClass\n\n.Handles class gameplay for players\nin a character class."];
+  PlayerClassData          [label="PlayerClassData\n(Quantum component)\n\nAn individual player character's data\nwhich is specific to a player character class."];
   PlayerBotController      [label="PlayerBotController\n\nHandles AI and other logic for bots."];
-  PlayerData               [label="PlayerData\n\nAn individual player character's data."];
+  PlayerData               [label="PlayerData\n(Quantum component)\n\nAn individual player character's data."];
 
-  PlayerManager -> PlayerManagerData, PlayerHandle [dir=none];
-  PlayerManagerData -> PlayerHandle [dir=none];
-  PlayerManager, PlayerHandle -> PlayerQSystem [dir=back];
+  edge [dir=none];
+
+  PlayerManager -> PlayerManagerData, PlayerHandle;
+  PlayerManagerData -> PlayerHandle;
+
+  PlayerManager, PlayerQSystem -> PlayerData -> PlayerMovementController, PlayerBotController;
+  PlayerClass -> PlayerClassData;
+
+  edge [dir=forwards];
+
+  PlayerManager -> PlayerClassManager -> PlayerClass;
   PlayerQSystem -> PlayerMovementController, PlayerBotController;
-  PlayerManager, PlayerQSystem, PlayerMovementController, PlayerBotController -> PlayerData [dir=none];
+
+  edge [dir=back];
+
+  PlayerManager, PlayerHandle, PlayerClassManager -> PlayerQSystem;
 }
 ```
 <br/>
@@ -423,7 +437,7 @@ Also contains individual helper methods for moving and rotating players, which c
 
 ### PlayerClassManager {#page-concepts-player-simulation-classmanager}
 
-The @cref{Battle.QSimulation.Player,BattlePlayerClassManager} handles the initial loading of [{PlayerClass}](#page-concepts-player-simulation-playerclass)
+The @cref{Battle.QSimulation.Player,BattlePlayerClassManager} handles the initial loading of [{PlayerClasses}](#page-concepts-player-simulation-playerclass)
 and routes individual game events to the correct class scripts.  
 The [{PlayerClasses}](#page-concepts-player-simulation-playerclass) are stateless and there is only one instance loaded at a time.  
 Scripts such as [{PlayerQSystem}](#page-concepts-player-simulation-playerqsystem) call methods in **PlayerClassManager**,
@@ -544,7 +558,7 @@ digraph PlayerView {
 
 ### PlayerInput {#page-concepts-player-view-input}
 
-The @cref{Battle.View.Player,BattlePlayerInput} is processed and compiled into an input struct, which is passed over to the %Quantum simulation when polled by %Quantum.
+The @cref{Battle.View.Player,BattlePlayerInput} is processed and compiled into an input struct, which is passed over to the %Quantum Simulation when polled by %Quantum.
 
 See [{Player Input}](#page-concepts-player-input) for more info.
 
