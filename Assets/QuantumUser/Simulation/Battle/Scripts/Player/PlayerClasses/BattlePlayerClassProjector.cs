@@ -17,6 +17,8 @@ namespace Battle.QSimulation.Player
     /// %Player character class logic for the Projector class.
     /// </summary>
     ///
+    /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.}<br/>
+    /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
     /// @bigtext{See [{Player Character Class 400 Projector}](#page-concepts-player-class-400-projector) for more info.}
     public class BattlePlayerClassProjector : BattlePlayerClassBase<BattlePlayerClassProjectorDataQComponent>
     {
