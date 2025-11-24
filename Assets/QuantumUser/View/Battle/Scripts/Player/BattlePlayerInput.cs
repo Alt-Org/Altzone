@@ -154,7 +154,7 @@ namespace Battle.View.Player
         /// <summary>Bool for if the next tap will activate double tap logic.</summary>
         private bool _doubleTapPossible = false;
 
-        /// <summary>Saved reference to the double tap window coroutine.</summary>
+        /// <summary>Saved world position of the previous tap position used for double tap input validating.</summary>
         private Coroutine _doubleTapWindowCoroutine;
 
         /// <value>Saved character number from character swapping input.</value>
@@ -242,12 +242,6 @@ namespace Battle.View.Player
             bool mouseDown = ClickStateHandler.GetClickState() is ClickState.Start or ClickState.Hold or ClickState.Move;
             bool twoFingers = ClickStateHandler.GetClickType() is ClickType.TwoFingerOrScroll;
             bool mouseClick = !twoFingers && mouseDown && !_mouseDownPrevious;
-
-            if (!mouseDown && _mouseDownPrevious && _doubleTapWindowCoroutine == null)
-            {
-                _doubleTapWindowCoroutine = StartCoroutine(DoubleTapWindow());
-            }
-
             _mouseDownPrevious = mouseDown;
 
             // set default input info
@@ -298,6 +292,11 @@ namespace Battle.View.Player
             callback.SetInput(i, DeterministicInputFlags.Repeatable);
 
             //} create and set input
+
+            if (mouseClick && _doubleTapWindowCoroutine == null)
+            {
+                _doubleTapWindowCoroutine = StartCoroutine(DoubleTapWindow());
+            }
 
             _previousTime = Time.time;
 
