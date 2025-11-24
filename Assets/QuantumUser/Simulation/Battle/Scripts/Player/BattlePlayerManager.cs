@@ -20,7 +20,6 @@ using Photon.Deterministic;
 
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
-using System.Diagnostics;
 
 namespace Battle.QSimulation.Player
 {
@@ -1286,12 +1285,6 @@ namespace Battle.QSimulation.Player
             string message = string.Format(messageformat, args);
             s_debugLogger.Error(f, message);
             f.Events.BattleDebugOnScreenMessage(message);
-        }
-
-        [Conditional("DEBUG_LOG_VERBOSE")]
-        private static void DebugLogVerbose()
-        {
-
         }
 
         #endregion Private - Static Methods
