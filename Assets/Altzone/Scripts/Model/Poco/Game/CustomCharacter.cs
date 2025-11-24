@@ -195,7 +195,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case StatType.Attack:
                     while (true)
                     {
-                        if (playerData.DiamondSpeed >= GetPriceToNextLevel(statType) || SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials) // Change this back to DiamondAttack if we move back to using separate resources.
+                        if (playerData.DiamondSpeed >= GetPriceToNextLevel(statType) || SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials && _attack < STATMAXLEVEL) // Change this back to DiamondAttack if we move back to using separate resources.
                         {
                             increase = true;
                             _attack/*SegmentCount*/++;
@@ -211,7 +211,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case StatType.Defence:
                     while (true)
                     {
-                        if (playerData.DiamondSpeed >= GetPriceToNextLevel(statType) || SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials) // Change this back to DiamondDefence if we move back to using separate resources.
+                        if ((playerData.DiamondSpeed >= GetPriceToNextLevel(statType) || SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials) && _defence < STATMAXLEVEL) // Change this back to DiamondDefence if we move back to using separate resources.
                         {
                             increase = true;
                             _defence/*SegmentCount*/++;
@@ -227,16 +227,19 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case StatType.CharacterSize:
                     if (SettingsCarrier.Instance.StatDebuggingMode)
                     {
-                        if (true) // Change this back to DiamondHP if we move back to using separate resources.
+                        while (true)
                         {
-                            increase = true;
-                            _characterSize/*SegmentCount*/++;
-                            count--;
+                            if (_characterSize < STATMAXLEVEL) // Change this back to DiamondHP if we move back to using separate resources.
+                            {
+                                increase = true;
+                                _characterSize/*SegmentCount*/++;
+                                count--;
+                            }
+                            else break;
+                            //int segmentsForNext = BaseCharacter.GetSegmentAmount(_characterBase, statType, Attack + 1);
+                            //if (segmentsForNext <= AttackSegmentCount) { AttackSegmentCount -= segmentsForNext; Attack++; }
+                            if (count < 1) break;
                         }
-                        else break;
-                        //int segmentsForNext = BaseCharacter.GetSegmentAmount(_characterBase, statType, Attack + 1);
-                        //if (segmentsForNext <= AttackSegmentCount) { AttackSegmentCount -= segmentsForNext; Attack++; }
-                        if (count < 1) break;
                     }
                     else
                         Debug.LogError("CharacterSize cannot be increased.");
@@ -244,7 +247,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case StatType.Hp:
                     while (true)
                     {
-                        if (playerData.DiamondSpeed >= GetPriceToNextLevel(statType) || SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials) // Change this back to DiamondHP if we move back to using separate resources.
+                        if (playerData.DiamondSpeed >= GetPriceToNextLevel(statType) || SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials && _hp < STATMAXLEVEL) // Change this back to DiamondHP if we move back to using separate resources.
                         {
                             increase = true;
                             _hp/*SegmentCount*/++;
@@ -260,16 +263,19 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case StatType.Speed:
                     if (SettingsCarrier.Instance.StatDebuggingMode)
                     {
-                        if (true) // Change this back to DiamondHP if we move back to using separate resources.
+                        while (true)
                         {
-                            increase = true;
-                            _speed/*SegmentCount*/++;
-                            count--;
+                            if (_speed < STATMAXLEVEL) // Change this back to DiamondHP if we move back to using separate resources.
+                            {
+                                increase = true;
+                                _speed/*SegmentCount*/++;
+                                count--;
+                            }
+                            else break;
+                            //int segmentsForNext = BaseCharacter.GetSegmentAmount(_characterBase, statType, Attack + 1);
+                            //if (segmentsForNext <= AttackSegmentCount) { AttackSegmentCount -= segmentsForNext; Attack++; }
+                            if (count < 1) break;
                         }
-                        else break;
-                        //int segmentsForNext = BaseCharacter.GetSegmentAmount(_characterBase, statType, Attack + 1);
-                        //if (segmentsForNext <= AttackSegmentCount) { AttackSegmentCount -= segmentsForNext; Attack++; }
-                        if (count < 1) break;
                     }
                     else
                         Debug.LogError("Speed cannot be increased.");
@@ -293,7 +299,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case StatType.Attack:
                     while (true)
                     {
-                        if (playerData.Eraser >= 1 || SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials) // Change this back to DiamondAttack if we move back to using separate resources.
+                        if (playerData.Eraser >= 1 || SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials && _attack > STATMINLEVEL) // Change this back to DiamondAttack if we move back to using separate resources.
                         {
                             decrease = true;
                             _attack/*SegmentCount*/--;
@@ -308,7 +314,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case StatType.Defence:
                     while (true)
                     {
-                        if (playerData.Eraser >= 1 || SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials) // Change this back to DiamondDefence if we move back to using separate resources.
+                        if (playerData.Eraser >= 1 || SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials && _defence > STATMINLEVEL) // Change this back to DiamondDefence if we move back to using separate resources.
                         {
                             decrease = true;
                             _defence/*SegmentCount*/--;
@@ -323,16 +329,19 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case StatType.CharacterSize:
                     if (SettingsCarrier.Instance.StatDebuggingMode)
                     {
-                        if (playerData.Eraser >= 1 || SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials) // Change this back to DiamondHP if we move back to using separate resources.
+                        while (true)
                         {
-                            decrease = true;
-                            _characterSize/*SegmentCount*/--;
-                            count--;
+                            if (playerData.Eraser >= 1 || SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials && _characterSize > STATMINLEVEL) // Change this back to DiamondHP if we move back to using separate resources.
+                            {
+                                decrease = true;
+                                _characterSize/*SegmentCount*/--;
+                                count--;
+                            }
+                            else break;
+                            //int segmentsForNext = BaseCharacter.GetSegmentAmount(_characterBase, statType, Attack + 1);
+                            //if (segmentsForNext <= AttackSegmentCount) { AttackSegmentCount -= segmentsForNext; Attack++; }
+                            if (count < 1) break;
                         }
-                        else break;
-                        //int segmentsForNext = BaseCharacter.GetSegmentAmount(_characterBase, statType, Attack + 1);
-                        //if (segmentsForNext <= AttackSegmentCount) { AttackSegmentCount -= segmentsForNext; Attack++; }
-                        if (count < 1) break;
                     }
                     else
                         Debug.LogError("CharacterSize cannot be decreased.");
@@ -340,7 +349,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case StatType.Hp:
                     while (true)
                     {
-                        if (playerData.Eraser >= 1 || SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials) // Change this back to DiamondHP if we move back to using separate resources.
+                        if (playerData.Eraser >= 1 || SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials && _hp > STATMINLEVEL) // Change this back to DiamondHP if we move back to using separate resources.
                         {
                             decrease = true;
                             _hp/*SegmentCount*/--;
@@ -355,16 +364,19 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case StatType.Speed:
                     if (SettingsCarrier.Instance.StatDebuggingMode)
                     {
-                        if (playerData.Eraser >= 1 || SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials) // Change this back to DiamondHP if we move back to using separate resources.
+                        while (true)
                         {
-                            decrease = true;
-                            _speed/*SegmentCount*/--;
-                            count--;
+                            if (playerData.Eraser >= 1 || SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials && _speed > STATMINLEVEL) // Change this back to DiamondHP if we move back to using separate resources.
+                            {
+                                decrease = true;
+                                _speed/*SegmentCount*/--;
+                                count--;
+                            }
+                            else break;
+                            //int segmentsForNext = BaseCharacter.GetSegmentAmount(_characterBase, statType, Attack + 1);
+                            //if (segmentsForNext <= AttackSegmentCount) { AttackSegmentCount -= segmentsForNext; Attack++; }
+                            if (count < 1) break;
                         }
-                        else break;
-                        //int segmentsForNext = BaseCharacter.GetSegmentAmount(_characterBase, statType, Attack + 1);
-                        //if (segmentsForNext <= AttackSegmentCount) { AttackSegmentCount -= segmentsForNext; Attack++; }
-                        if (count < 1) break;
                     }
                     else
                     Debug.LogError("Speed cannot be decreased.");
