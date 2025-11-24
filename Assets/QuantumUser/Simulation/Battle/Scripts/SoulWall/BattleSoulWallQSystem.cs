@@ -43,6 +43,48 @@ namespace Battle.QSimulation.SoulWall
             CreateSoulWalls(f, BattleTeamNumber.TeamBeta,  battleArenaSpec.SoulWallTeamBetaTemplates,  soulWallSpec.SoulWallPrototypes);
         }
 
+        public static void CreateAbilitySoulWallTest(Frame f, BattleTeamNumber teamNumber, FPVector2 spawnPosition)
+        {
+            // soulwall variables
+            EntityRef soulWallEntity;
+            BattleSoulWallQComponent* soulWall;
+            Transform2D* soulWallTransform;
+            PhysicsCollider2D* soulWallCollider;
+
+            // create entity
+            soulWallEntity = f.Create(BattleQConfig.GetSoulWallSpec(f).SoulWallPrototypes[1]);
+
+            // get components
+            soulWall          = f.Unsafe.GetPointer<BattleSoulWallQComponent>(soulWallEntity);
+            soulWallTransform = f.Unsafe.GetPointer<Transform2D>(soulWallEntity);
+            soulWallCollider  = f.Unsafe.GetPointer<PhysicsCollider2D>(soulWallEntity);
+
+            FPVector2 soulWallColliderExtents = soulWallCollider->Shape.Box.Extents;
+            FP soulWallScale = BattleGridManager.GridScaleFactor;
+
+            // initialize soulwall component
+            soulWall->Team               = teamNumber;
+            soulWall->Emotion            = BattleEmotionState.Sadness;
+            soulWall->Row                = BattleSoulWallRow.First;
+            soulWall->Normal             = new FPVector2(0, teamNumber == BattleTeamNumber.TeamAlpha ? FP._1 : FP.Minus_1);
+            soulWall->CollisionMinOffset = soulWallScale * FP._0_50;
+            soulWall->WallNumber         = -1;
+
+            // initialize collider
+            soulWallCollider->Shape = Shape2D.CreateBox(
+                soulWallColliderExtents * soulWallScale,
+                new FPVector2(
+                    (soulWallColliderExtents.X - FP._0_50) * soulWallScale,
+                    (-soulWallColliderExtents.Y + FP._0_50) * soulWallScale
+                )
+            );
+
+            // teleport entity
+            soulWallTransform->Teleport(f, spawnPosition, FP._0);
+
+            f.Events.BattleSoulWallViewInit(soulWallEntity, soulWallScale, (int)soulWall->Emotion, 0);
+        }
+
         /// <summary>
         /// Called by BattleCollisionQSystem. Destroys the soulwall entity that was hit and sends forward the appropriate event that spawns a lightray if the soul wall hit was in the last row.
         /// </summary>
