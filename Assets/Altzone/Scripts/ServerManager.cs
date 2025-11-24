@@ -393,6 +393,12 @@ public class ServerManager : MonoBehaviour
             }
             else
             {
+                foreach (CustomCharacter character in characters)
+                {
+                    if(!character.AreStatsValid())
+                        StartUpdatingCustomCharacterToServer(character);
+                }
+
                 playerData.BuildCharacterLists(characters);
             }
             playerData.UpdatePlayerData(player);

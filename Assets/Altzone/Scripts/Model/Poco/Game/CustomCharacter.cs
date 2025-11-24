@@ -455,5 +455,36 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             return (int)Id % 100 == 0;
         }
+
+        public bool AreStatsValid()
+        {
+            bool valid = true;
+            if (Hp > 6 || Hp < _characterBase.DefaultHp)
+            {
+                _hp = _characterBase.DefaultHp;
+                valid = false;
+            }
+            if (Attack > 6 || Attack < _characterBase.DefaultAttack)
+            {
+                _attack = _characterBase.DefaultAttack;
+                valid = false;
+            }
+            if (Speed > 6 || Speed < _characterBase.DefaultSpeed)
+            {
+                _speed = _characterBase.DefaultSpeed;
+                valid = false;
+            }
+            if (Defence > 6 || Defence < _characterBase.DefaultDefence)
+            {
+                _defence = _characterBase.DefaultDefence;
+                valid = false;
+            }
+            if (CharacterSize > 6 || CharacterSize < _characterBase.DefaultCharacterSize)
+            {
+                _characterSize = _characterBase.DefaultCharacterSize;
+                valid = false;
+            }
+            return valid;
+        }
     }
 }
