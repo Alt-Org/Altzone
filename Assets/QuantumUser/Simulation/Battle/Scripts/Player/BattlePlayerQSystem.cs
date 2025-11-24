@@ -371,7 +371,6 @@ namespace Battle.QSimulation.Player
             if (input->AbilityActivate)
             {
                 playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0_50);
-                Debug.LogError(playerData->AbilityActivateBufferSec.IsRunning(f));
             }
 
             if (!playerData->AbilityCooldownSec.IsRunning(f) && playerData->AbilityActivateBufferSec.IsRunning(f))
