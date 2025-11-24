@@ -40,7 +40,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             _debugToggle.onValueChanged.AddListener(value =>
             {
                 SettingsCarrier.Instance.StatDebuggingMode = value;
-                //_controller.InvokeOnUpgradeMaterialAmountChanged();
+                _controller.InvokeOnDebugModeChanged();
             });
 
             _addUpgradeMaterialsButton.onClick.AddListener(AddUpgradeMaterials);

@@ -41,6 +41,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         public delegate void StatUpdatedHandler(StatType statType);
         public event StatUpdatedHandler OnStatUpdated;
 
+        public delegate void DebugModeChanged();
+        public event DebugModeChanged OnDebugModeChanged;
+
 
         private void Awake()
         {
@@ -319,6 +322,11 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         public void InvokeOnUpgradeMaterialAmountChanged()
         {
             OnUpgradeMaterialAmountChanged.Invoke();
+        }
+
+        public void InvokeOnDebugModeChanged()
+        {
+            OnDebugModeChanged.Invoke();
         }
 
 
