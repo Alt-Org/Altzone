@@ -149,6 +149,7 @@ namespace Battle.QSimulation.Player
 
             *outBotInput = new Input()
             {
+                IsValid                       = true,
                 MovementInput                 = movementInput,
                 MovementDirectionIsNormalized = false,
                 MovementPositionTarget        = predictedGridPosition,

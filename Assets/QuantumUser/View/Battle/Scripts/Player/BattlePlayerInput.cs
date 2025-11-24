@@ -24,6 +24,7 @@ using Photon.Deterministic;
 using Prg.Scripts.Common;
 
 // Battle QSimulation usings
+using Battle.QSimulation;
 using Battle.QSimulation.Game;
 
 // Battle View usings
@@ -193,6 +194,9 @@ namespace Battle.View.Player
         /// <value>Reference to the play device's attitude sensor aka gyroscope.</value>
         private AttitudeSensor _attitudeSensor;
 
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private BattleDebugLogger _debugLogger;
+
         /// @}
 
         /// <summary>
@@ -202,6 +206,8 @@ namespace Battle.View.Player
         /// </summary>
         private void OnEnable()
         {
+            _debugLogger = BattleDebugLogger.Create<BattlePlayerInput>();
+            
             _movementInputType = SettingsCarrier.Instance.BattleMovementInput;
             _rotationInputType = SettingsCarrier.Instance.BattleRotationInput;
             _swipeMinDistance  = SettingsCarrier.Instance.BattleSwipeMinDistance;
@@ -210,8 +216,13 @@ namespace Battle.View.Player
             _gyroMinAngle      = SettingsCarrier.Instance.BattleGyroMinAngle;
 
 #if DEBUG_INPUT_TYPE_OVERRIDE
+            _debugLogger.Warning("DEBUG_INPUT_TYPE_OVERRIDE enabled!");
+
             _movementInputType = MovementInputType.FollowPointer;
             _rotationInputType = RotationInputType.TwoFinger;
+
+            _debugLogger.WarningFormat("Using MovementInputType {0} override", _movementInputType);
+            _debugLogger.WarningFormat("Using RotationInputType {0} override", _rotationInputType);
 #endif
 
             if (AttitudeSensor.current != null)
@@ -269,8 +280,9 @@ namespace Battle.View.Player
 
             //{ create and set input
 
-            Input i = new()
+            Input input = new()
             {
+                IsValid                       = true,
                 MovementInput                 = movementInputInfo.MovementInput,
                 MovementDirectionIsNormalized = movementInputInfo.MovementDirectionIsNormalized,
                 MovementPositionTarget        = movementInputInfo.MovementPositionTarget,
@@ -283,7 +295,34 @@ namespace Battle.View.Player
                 AbilityActivate               = Time.time - _lastTapTime < 0.5f && mouseClick && Vector3.Distance(_lastTapPosition, unityPosition) < 1f
             };
 
-            callback.SetInput(i, DeterministicInputFlags.Repeatable);
+            DeterministicInputFlags inputFlags = DeterministicInputFlags.Repeatable;
+
+            _debugLogger.LogFormat("({0}) Sending input\n" +
+                                   "struct: {{\n" +
+                                   "    MovementInput:                 {1},\n" +
+                                   "    MovementDirectionIsNormalized: {2},\n" +
+                                   "    MovementPositionTarget:        {3},\n" +
+                                   "    MovementPositionMove:          {4},\n" +
+                                   "    MovementDirection:             {5},\n" +
+                                   "    RotationInput:                 {6},\n" +
+                                   "    RotationValue:                 {7},\n" +
+                                   "    PlayerCharacterNumber:         {8},\n" +
+                                   "    GiveUpInput:                   {9}\n" +
+                                   "}},\n" +
+                                   "flags: {10}",
+                                   BattleGameViewController.LocalPlayerSlot,
+                                   input.MovementInput,
+                                   input.MovementDirectionIsNormalized,
+                                   input.MovementPositionTarget.ConvertToString(),
+                                   input.MovementPositionMove,
+                                   input.MovementDirection,
+                                   input.RotationInput,
+                                   input.RotationValue,
+                                   input.PlayerCharacterNumber,
+                                   input.GiveUpInput,
+                                   inputFlags);
+
+            callback.SetInput(input, inputFlags);
 
             //} create and set input
 
@@ -292,7 +331,7 @@ namespace Battle.View.Player
             _previousTime = Time.time;
 
             // reset
-            _onGiveUp = false;
+            _onGiveUp        = false;
             _characterNumber = -1;
         }
 

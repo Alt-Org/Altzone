@@ -560,18 +560,20 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Input))]
   public unsafe partial class InputPrototype : StructPrototype {
+    public QBoolean IsValid;
     public Quantum.QEnum32<BattleMovementInputType> MovementInput;
     public QBoolean MovementDirectionIsNormalized;
     public Quantum.Prototypes.BattleGridPositionPrototype MovementPositionTarget;
     public FPVector2 MovementPositionMove;
     public FPVector2 MovementDirection;
-    public Button RotationInput;
+    public QBoolean RotationInput;
     public FP RotationValue;
     public Int32 PlayerCharacterNumber;
     public QBoolean GiveUpInput;
     public QBoolean AbilityActivate;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
+        result.IsValid = this.IsValid;
         result.MovementInput = this.MovementInput;
         result.MovementDirectionIsNormalized = this.MovementDirectionIsNormalized;
         this.MovementPositionTarget.Materialize(frame, ref result.MovementPositionTarget, in context);

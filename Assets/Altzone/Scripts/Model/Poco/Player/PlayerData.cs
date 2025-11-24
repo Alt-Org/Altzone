@@ -55,7 +55,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         public int BackpackCapacity;
 
         public PlayerTask Task = null;
-        [JsonIgnore]
+
         public AvatarData AvatarData;
 
         public int points = 0;
@@ -210,7 +210,7 @@ namespace Altzone.Scripts.Model.Poco.Player
 
             Patch();
 
-            if (_characterList.Contains(character)) ServerManager.Instance.StartUpdatingCustomCharacterToServer(character);
+            if (_characterList.Contains(character) && !SettingsCarrier.Instance.StatDebuggingMode) ServerManager.Instance.StartUpdatingCustomCharacterToServer(character);
             else Storefront.Get().SavePlayerData(this, null);
         }
 
