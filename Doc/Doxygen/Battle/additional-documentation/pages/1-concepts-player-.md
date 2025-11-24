@@ -7,9 +7,11 @@ but we prefer to use **PlayerSlot** as defined by us whenever possible.
 Each **Player** has an assigned **PlayerSlot** and a **TeamNumber**.  
 Each **Player** has **data** with them that **isn't connected to any specific character** under the **Player**'s control.  
 Each **Player** controls multiple **Character Entities** which also have some data associated with them.  
+Each **Character Entity** has a player character class that it belongs to.  
 See [{Player Slots and Teams}](#page-concepts-player-slots-teams)  
 See [{Player Manager Data}](#page-concepts-player-manager-data)  
-See [{Player Character Entity}](#page-concepts-player-character-entity)
+See [{Player Character Entity}](#page-concepts-player-character-entity)  
+See [{Player Character Classes}](#page-concepts-player-characters-classes)
 
 **Other topics**  
 
@@ -209,6 +211,7 @@ digraph PlayerInputGraph {
 Each player controls three character %Quantum entities in the game.  
 For each player one character is present on the stage at a time and [{PlayerManager}](#page-concepts-player-simulation-playermanager) handles spawning and
 despawning character entities when switching between them.
+Each **Character Entity** has a [{Player Character Class}](#page-concepts-player-characters-classes) that it belongs to.
 
 ```dot
 digraph PlayerCharacterEntities {
@@ -244,8 +247,9 @@ During gameplay the player character exists both as a %Quantum entity inside [{S
 %Quantum links the gameObject and entity together.
 
 The entity contains %Quantum components used by the %Quantum simulation. The most significant of these is the [{PlayerData (Quantum component)}](#page-concepts-player-simulation-playerdata),
-which is our own defined data relating to player character entities and optionally **Class Data Component**.  
-See [{Player Character Classes}](#page-concepts-player-characters-classes)
+which is our own defined data relating to player character entities and optionally **Class Data Component**.
+
+See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
 
 The Unity root gameObject has the child object PlayerViewModel, containing all things related to the visible elements of player characters.
 The attached [{PlayerViewController}](#page-concepts-player-view-controller) component implements **Unity View/Visual** logic for player characters.
@@ -402,9 +406,10 @@ This contains data specific to each [{Player character entity}](#page-concepts-p
 
 The @cref{Battle.QSimulation.Player,BattlePlayerQSystem} contains the primary %Quantum player logic.
 This %Quantum system contains code for handling collisions and the update method for player characters.
-Other classes are utilized for specific aspects of player logic.  
-See [{PlayerMovementController}](#page-concepts-player-simulation-playerqsystem-movement-controller)  
-See [{PlayerBotController}](#page-concepts-player-simulation-botcontroller)
+Other classes are utilized for specific aspects of player logic.
+
+See [{PlayerMovementController}](#page-concepts-player-simulation-playerqsystem-movement-controller) for more info.  
+See [{PlayerBotController}](#page-concepts-player-simulation-botcontroller) for more info.
 
 <br/>
 
@@ -418,8 +423,13 @@ Also contains individual helper methods for moving and rotating players, which c
 
 ### PlayerClassManager {#page-concepts-player-simulation-classmanager}
 
-The @cref{Battle.QSimulation.Player,BattlePlayerClassManager} handles the initial loading of player classes and routes individual game events to the correct class scripts.  
-See [{Player Character Classes}](#page-concepts-player-characters-classes)
+The @cref{Battle.QSimulation.Player,BattlePlayerClassManager} handles the initial loading of [{PlayerClass}](#page-concepts-player-simulation-playerclass)
+and routes individual game events to the correct class scripts.  
+The [{PlayerClasses}](#page-concepts-player-simulation-playerclass) are stateless and there is only one instance loaded at a time.  
+Scripts such as [{PlayerQSystem}](#page-concepts-player-simulation-playerqsystem) call methods in **PlayerClassManager**,
+which then in turn call the corresponding method for the character class of the specified player character.
+
+See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
 
 <br/>
 
@@ -451,7 +461,7 @@ Scripts such as [{PlayerQSystem}](#page-concepts-player-simulation-playerqsystem
 which then in turn call the corresponding method for the character class of the specified player character. This way each characters possible character class methods
 are always correctly called.
 
-See [{Player Character Classes}](#page-concepts-player-characters-classes)
+See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
 
 <br/>
 
@@ -469,8 +479,8 @@ component BattlePlayerClassExample2DataQComponent
 
 The **data QComponents** are attached to the [{Player Character Entities}](#page-concepts-player-character-entity) which is used by the C# class of the corresponding character class.
 
-See [{PlayerClass}](#page-concepts-player-simulation-playerclass)  
-See [{Player Character Classes}](#page-concepts-player-characters-classes)
+See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.  
+See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
 
 <br/>
 
@@ -534,7 +544,8 @@ digraph PlayerView {
 
 ### PlayerInput {#page-concepts-player-view-input}
 
-The @cref{Battle.View.Player,BattlePlayerInput} is processed and compiled into an input struct, which is passed over to the %Quantum simulation when polled by %Quantum.  
+The @cref{Battle.View.Player,BattlePlayerInput} is processed and compiled into an input struct, which is passed over to the %Quantum simulation when polled by %Quantum.
+
 See [{Player Input}](#page-concepts-player-input) for more info.
 
 <br/>
