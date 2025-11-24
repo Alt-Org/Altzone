@@ -11,6 +11,9 @@
 
 //#define DEBUG_INPUT_TYPE_OVERRIDE
 
+// System usings
+using System.Collections;
+
 // Unity usings
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -145,6 +148,12 @@ namespace Battle.View.Player
         /// <value>The float value received from the rotation joystick.</value>
         private float _joystickRotationValue;
 
+        private Vector3 _lastTapPosition;
+
+        private bool _doubleTapPossible = false;
+
+        private Coroutine _doubleTapWindowCoroutine;
+
         /// <value>Saved character number from character swapping input.</value>
         private int _characterNumber = -1;
 
@@ -230,6 +239,12 @@ namespace Battle.View.Player
             bool mouseDown = ClickStateHandler.GetClickState() is ClickState.Start or ClickState.Hold or ClickState.Move;
             bool twoFingers = ClickStateHandler.GetClickType() is ClickType.TwoFingerOrScroll;
             bool mouseClick = !twoFingers && mouseDown && !_mouseDownPrevious;
+
+            if (!mouseDown && _mouseDownPrevious && _doubleTapWindowCoroutine == null)
+            {
+                _doubleTapWindowCoroutine = StartCoroutine(DoubleTapWindow());
+            }
+
             _mouseDownPrevious = mouseDown;
 
             // set default input info
@@ -239,15 +254,18 @@ namespace Battle.View.Player
             // check button input
             if (_characterNumber > -1 || _onGiveUp) _blockScreenInput = true;
 
+            Vector2 clickPosition = Vector2.zero;
+            Vector3 unityPosition = Vector3.zero;
+
             // handles screen input
             if (!_blockScreenInput)
             {
-                Vector2 clickPosition = Vector2.zero;
-                Vector3 unityPosition = Vector3.zero;
                 if (mouseDown)
                 {
                     clickPosition = ClickStateHandler.GetClickPosition();
                     unityPosition = BattleCamera.Camera.ScreenToWorldPoint(clickPosition);
+
+                    _lastTapPosition = unityPosition;
                 }
 
                 movementInputInfo = GetMovementInput(mouseDown, mouseClick, unityPosition, deltaTime);
@@ -270,7 +288,8 @@ namespace Battle.View.Player
                 RotationInput                 = rotationInputInfo.RotationInput,
                 RotationValue                 = rotationInputInfo.RotationValue,
                 PlayerCharacterNumber         = _characterNumber,
-                GiveUpInput = _onGiveUp
+                GiveUpInput                   = _onGiveUp,
+                AbilityActivate               = _doubleTapPossible && mouseClick && Vector3.Distance(_lastTapPosition, unityPosition) < 1f
             };
 
             callback.SetInput(i, DeterministicInputFlags.Repeatable);
@@ -457,6 +476,17 @@ namespace Battle.View.Player
                 rot = new Vector3(0, 0, rot.z - 360f);
             }
             return rot.z;
+        }
+
+        private IEnumerator DoubleTapWindow()
+        {
+            _doubleTapPossible = true;
+
+            yield return new WaitForSeconds(0.5f);
+
+            _doubleTapPossible = false;
+
+            _doubleTapWindowCoroutine = null;
         }
 
         /// @}
