@@ -241,6 +241,8 @@ namespace Quantum.Prototypes {
     public QBoolean DisableRotation;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
     public FP MovementCooldownSec;
+    public Quantum.Prototypes.FrameTimerPrototype AbilityCooldownSec;
+    public Quantum.Prototypes.FrameTimerPrototype AbilityActivateBufferSec;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerDataQComponent component = default;
         Materialize((Frame)f, ref component, in context);
@@ -266,6 +268,8 @@ namespace Quantum.Prototypes {
         result.DisableRotation = this.DisableRotation;
         this.DamageCooldown.Materialize(frame, ref result.DamageCooldown, in context);
         result.MovementCooldownSec = this.MovementCooldownSec;
+        this.AbilityCooldownSec.Materialize(frame, ref result.AbilityCooldownSec, in context);
+        this.AbilityActivateBufferSec.Materialize(frame, ref result.AbilityActivateBufferSec, in context);
     }
   }
   [System.SerializableAttribute()]
@@ -565,6 +569,7 @@ namespace Quantum.Prototypes {
     public FP RotationValue;
     public Int32 PlayerCharacterNumber;
     public QBoolean GiveUpInput;
+    public QBoolean AbilityActivate;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
         result.MovementInput = this.MovementInput;
@@ -576,6 +581,7 @@ namespace Quantum.Prototypes {
         result.RotationValue = this.RotationValue;
         result.PlayerCharacterNumber = this.PlayerCharacterNumber;
         result.GiveUpInput = this.GiveUpInput;
+        result.AbilityActivate = this.AbilityActivate;
         MaterializeUser(frame, ref result, in context);
     }
   }
