@@ -14,6 +14,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private GameObject _contents;
         [SerializeField] private Image _touchBlocker;
         [SerializeField] private Toggle _unlimitedUpgradeMaterialsToggle;
+        [SerializeField] private Toggle _debugToggle;
         [SerializeField] private Button _addUpgradeMaterialsButton;
 
         private StatsWindowController _controller;
@@ -26,6 +27,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             _controller = FindObjectOfType<StatsWindowController>(true);
 
             _unlimitedUpgradeMaterialsToggle.isOn = SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials;
+            _debugToggle.isOn = SettingsCarrier.Instance.StatDebuggingMode;
             _addUpgradeMaterialsButton.interactable = !SettingsCarrier.Instance.UnlimitedStatUpgradeMaterials;
             
             _unlimitedUpgradeMaterialsToggle.onValueChanged.AddListener(value =>
@@ -35,6 +37,12 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 _controller.InvokeOnUpgradeMaterialAmountChanged();
             });
 
+            _debugToggle.onValueChanged.AddListener(value =>
+            {
+                SettingsCarrier.Instance.StatDebuggingMode = value;
+                //_controller.InvokeOnUpgradeMaterialAmountChanged();
+            });
+
             _addUpgradeMaterialsButton.onClick.AddListener(AddUpgradeMaterials);
         }
 
@@ -42,6 +50,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private void OnDestroy()
         {
             _unlimitedUpgradeMaterialsToggle.onValueChanged.RemoveAllListeners();
+            _debugToggle.onValueChanged.RemoveAllListeners();
             _addUpgradeMaterialsButton.onClick.RemoveAllListeners();
         }
 
