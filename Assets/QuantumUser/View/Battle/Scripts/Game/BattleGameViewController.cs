@@ -640,7 +640,7 @@ namespace Battle.View.Game
                 if (frame.TryGetSingletonEntityRef<BattleGameSessionQSingleton>(out var entity) == false)
                 {
                     // If the GameSession singleton is not found, display an error message
-                    _debugLogger.Error(frame, "GameSession singleton not found -- BattleUIHandler");
+                    _debugLogger.Error(frame, "GameSession singleton not found");
                     return;
                 }
 
