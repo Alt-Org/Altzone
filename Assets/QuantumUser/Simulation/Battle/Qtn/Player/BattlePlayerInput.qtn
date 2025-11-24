@@ -1,14 +1,15 @@
 input
 {
     BattleMovementInputType MovementInput;
-    bool MovementDirectionIsNormalized;
-    BattleGridPosition MovementPositionTarget;
-    FPVector2 MovementPositionMove;
-    FPVector2 MovementDirection;
-    button RotationInput;
-    FP RotationValue;
-    int PlayerCharacterNumber;
-    bool GiveUpInput;
+    bool                    MovementDirectionIsNormalized;
+    BattleGridPosition      MovementPositionTarget;
+    FPVector2               MovementPositionMove;
+    FPVector2               MovementDirection;
+    button                  RotationInput;
+    FP                      RotationValue;
+    int                     PlayerCharacterNumber;
+    bool                    GiveUpInput;
+    bool                    AbilityActivate;
 }
 
 enum BattleMovementInputType
