@@ -113,6 +113,69 @@ namespace Altzone.Scripts.Audio
         /// 
         /// </summary>
         /// <returns>Track name if successfully started the track playback.</returns>
+        public string PlayMusicById(AudioCategoryType categoryType, string trackId, MusicSwitchType switchType, bool forcePlay = false)
+        {
+            MusicCategory currentCategory = _musicReference.GetCategory(categoryType);
+
+            if (currentCategory == null) return null;
+
+            MusicTrack musicTrack = currentCategory.GetById(trackId);
+
+            if (musicTrack == null) return null;
+
+            if (categoryType == AudioCategoryType.MainMenu)
+                _mainMenuMusicName = SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic);
+
+            _musicStartTime = 0f;
+            SwitchMusic(currentCategory, musicTrack, switchType, forcePlay);
+
+            return musicTrack.Name;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Track name if successfully started the track playback.</returns>
+        public string PlayMusic(string categoryName, string trackName, MusicSwitchType switchType, float startLocation, bool forcePlay = false)
+        {
+            _musicStartTime = startLocation;
+            return PlayMusic(categoryName, trackName, switchType, forcePlay);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Track name if successfully started the track playback.</returns>
+        public string PlayMusic(AudioCategoryType categoryType, string trackName, MusicSwitchType switchType, float startLocation, bool forcePlay = false)
+        {
+            _musicStartTime = startLocation;
+            return PlayMusic(categoryType, trackName, switchType, forcePlay);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Track name if successfully started the track playback.</returns>
+        public string PlayMusic(string categoryName, MusicTrack musicTrack, MusicSwitchType switchType, float startLocation, bool forcePlay = false)
+        {
+            _musicStartTime = startLocation;
+            return PlayMusic(categoryName, musicTrack, switchType, forcePlay);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Track name if successfully started the track playback.</returns>
+        public string PlayMusic(AudioCategoryType categoryType, MusicTrack musicTrack, MusicSwitchType switchType, float startLocation, bool forcePlay = false)
+        {
+            _musicStartTime = startLocation;
+            return PlayMusic(categoryType, musicTrack, switchType, forcePlay);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Track name if successfully started the track playback.</returns>
         public string PlayMusic(string categoryName, string trackName, MusicSwitchType switchType, bool forcePlay = false)
         {
             MusicCategory currentCategory = _musicReference.GetCategory(categoryName);
@@ -120,9 +183,11 @@ namespace Altzone.Scripts.Audio
             if (currentCategory == null) return null;
 
             if (categoryName.ToLower() == "MainMenu".ToLower())
+            {
                 _mainMenuMusicName = SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic);
 
-            if (categoryName.ToLower() == "MainMenu".ToLower() && string.IsNullOrEmpty(trackName)) trackName = _mainMenuMusicName;
+                if (string.IsNullOrEmpty(trackName)) trackName = _mainMenuMusicName;
+            }
 
             MusicTrack musicTrack = currentCategory.Get(trackName);
 
@@ -131,6 +196,33 @@ namespace Altzone.Scripts.Audio
             _musicStartTime = 0f;
             SwitchMusic(currentCategory, musicTrack, switchType, forcePlay);
             
+            return musicTrack.Name;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Track name if successfully started the track playback.</returns>
+        public string PlayMusic(AudioCategoryType categoryType, string trackName, MusicSwitchType switchType, bool forcePlay = false)
+        {
+            MusicCategory currentCategory = _musicReference.GetCategory(categoryType);
+
+            if (currentCategory == null) return null;
+
+            if (categoryType == AudioCategoryType.MainMenu)
+            {
+                _mainMenuMusicName = SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic);
+
+                if (string.IsNullOrEmpty(trackName)) trackName = _mainMenuMusicName;
+            }
+
+            MusicTrack musicTrack = currentCategory.Get(trackName);
+
+            if (musicTrack == null) return null;
+
+            _musicStartTime = 0f;
+            SwitchMusic(currentCategory, musicTrack, switchType, forcePlay);
+
             return musicTrack.Name;
         }
 
@@ -156,20 +248,18 @@ namespace Altzone.Scripts.Audio
         /// 
         /// </summary>
         /// <returns>Track name if successfully started the track playback.</returns>
-        public string PlayMusic(string categoryName, string trackName, MusicSwitchType switchType, float startLocation, bool forcePlay = false)
+        public string PlayMusic(AudioCategoryType categoryType, MusicTrack musicTrack, MusicSwitchType switchType, bool forcePlay = false)
         {
-            _musicStartTime = startLocation;
-            return PlayMusic(categoryName, trackName, switchType, forcePlay);
-        }
+            MusicCategory currentCategory = _musicReference.GetCategory(categoryType);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns>Track name if successfully started the track playback.</returns>
-        public string PlayMusic(string categoryName, MusicTrack musicTrack, MusicSwitchType switchType, float startLocation, bool forcePlay = false)
-        {
-            _musicStartTime = startLocation;
-            return PlayMusic(categoryName, musicTrack, switchType, forcePlay);
+            if (currentCategory == null || musicTrack == null) return null;
+
+            if (categoryType == AudioCategoryType.MainMenu)
+                _mainMenuMusicName = SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic);
+
+            SwitchMusic(currentCategory, musicTrack, switchType, forcePlay);
+
+            return musicTrack.Name;
         }
 
         public string GetTrackName()
