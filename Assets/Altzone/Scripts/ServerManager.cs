@@ -384,12 +384,12 @@ public class ServerManager : MonoBehaviour
             {
                 ReadOnlyCollection<CustomCharacter> customCharacters = null;
                 storefront.GetAllDefaultCharacterYield(c => customCharacters = c);
-                List<CustomCharacter> character = new();
+                characters = new();
                 foreach (CustomCharacter characterItem in customCharacters)
                 {
-                    character.Add(characterItem);
+                    characters.Add(characterItem);
                 }
-                playerData.BuildCharacterLists(character);
+                playerData.BuildCharacterLists(characters);
             }
             else
             {
