@@ -148,10 +148,13 @@ namespace Battle.View.Player
         /// <value>The float value received from the rotation joystick.</value>
         private float _joystickRotationValue;
 
+        /// <summary>Saved world position of the previous tap position used for double tap input validating.</summary>
         private Vector3 _lastTapPosition;
 
+        /// <summary>Bool for if the next tap will activate double tap logic.</summary>
         private bool _doubleTapPossible = false;
 
+        /// <summary>Saved reference to the double tap window coroutine.</summary>
         private Coroutine _doubleTapWindowCoroutine;
 
         /// <value>Saved character number from character swapping input.</value>
@@ -478,6 +481,9 @@ namespace Battle.View.Player
             return rot.z;
         }
 
+        /// <summary>
+        /// Coroutine for setting _doubleTapPossible to false after 0.5 seconds.
+        /// </summary>
         private IEnumerator DoubleTapWindow()
         {
             _doubleTapPossible = true;
