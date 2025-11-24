@@ -11,9 +11,6 @@
 
 //#define DEBUG_INPUT_TYPE_OVERRIDE
 
-// System usings
-using System.Collections;
-
 // Unity usings
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -151,11 +148,8 @@ namespace Battle.View.Player
         /// <summary>Saved world position of the previous tap position used for double tap input validating.</summary>
         private Vector3 _lastTapPosition;
 
-        /// <summary>Bool for if the next tap will activate double tap logic.</summary>
-        private bool _doubleTapPossible = false;
-
-        /// <summary>Saved world position of the previous tap position used for double tap input validating.</summary>
-        private Coroutine _doubleTapWindowCoroutine;
+        /// <summary>Saved time stamp of the previous tap.</summary>
+        private float _lastTapTime;
 
         /// <value>Saved character number from character swapping input.</value>
         private int _characterNumber = -1;
@@ -286,17 +280,14 @@ namespace Battle.View.Player
                 RotationValue                 = rotationInputInfo.RotationValue,
                 PlayerCharacterNumber         = _characterNumber,
                 GiveUpInput                   = _onGiveUp,
-                AbilityActivate               = _doubleTapPossible && mouseClick && Vector3.Distance(_lastTapPosition, unityPosition) < 1f
+                AbilityActivate               = Time.time - _lastTapTime < 0.5f && mouseClick && Vector3.Distance(_lastTapPosition, unityPosition) < 1f
             };
 
             callback.SetInput(i, DeterministicInputFlags.Repeatable);
 
             //} create and set input
 
-            if (mouseClick && _doubleTapWindowCoroutine == null)
-            {
-                _doubleTapWindowCoroutine = StartCoroutine(DoubleTapWindow());
-            }
+            if (mouseClick) _lastTapTime = Time.time;
 
             _previousTime = Time.time;
 
@@ -478,20 +469,6 @@ namespace Battle.View.Player
                 rot = new Vector3(0, 0, rot.z - 360f);
             }
             return rot.z;
-        }
-
-        /// <summary>
-        /// Coroutine for setting _doubleTapPossible to false after 0.5 seconds.
-        /// </summary>
-        private IEnumerator DoubleTapWindow()
-        {
-            _doubleTapPossible = true;
-
-            yield return new WaitForSeconds(0.5f);
-
-            _doubleTapPossible = false;
-
-            _doubleTapWindowCoroutine = null;
         }
 
         /// @}
