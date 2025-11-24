@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
+using Newtonsoft.Json;
 using Prg;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -22,6 +23,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public CharacterClassType CharacterClassType => GetClass(Id);
         public int InsideCharacterID => GetInsideCharacterID(Id);
 
+        [JsonIgnore]
         public BaseCharacter CharacterBase { get => _characterBase;
             set
             {
@@ -57,6 +59,12 @@ namespace Altzone.Scripts.Model.Poco.Game
         public const int STATMAXCOMBINED = 50;
         public const int STATMAXLEVEL = 6;
         public const int STATMINLEVEL = 1;
+
+        [JsonConstructor]
+        private CustomCharacter()
+        {
+
+        }
 
         public CustomCharacter(CharacterID id, int hp, int speed, int resistance, int attack, int defence)
         {

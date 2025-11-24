@@ -144,6 +144,12 @@ namespace Quantum {
     GoalHit,
     SideWallHit,
     WallBroken,
+    DiamondPickUp,
+    SoulWallHitAggression,
+    SoulWallHitJoy,
+    SoulWallHitLove,
+    SoulWallHitPlayful,
+    SoulWallHitSadness,
   }
   public enum BattleTeamNumber : int {
     NoTeam = 0,
