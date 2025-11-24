@@ -23,15 +23,25 @@ digraph Player {
   edge [color=gray];
 
   Player              [label="Player"];
-  Data                [label="Data\nNot related to individual characters"];
+  Data                [label="Data\nNot related to individual characters", color="transparent"];
   PlayerRef           [label="PlayerRef\nUsed by Quantum"];
   PlayerSlot          [label="PlayerSlot\nDefined and preferred by us"];
-  CharacterEntities   [label="Character entities"];
-  CharacterEntityList [label="Character entity 1 | Character entity 2 | Character entity 3", shape=record];
+  CharacterEntities   [label="Character entities", color="transparent"];
+  CharacterEntityList [label="<0> Character entity 1 | <1> Character entity 2 | <2> Character entity 3", shape=record];
 
-  Player -> Data -> PlayerRef, PlayerSlot;
-  Player -> CharacterEntities;
-  CharacterEntities -> CharacterEntityList [dir=none];
+  node [color="transparent"];
+
+  CharacterData1      [label="Data\nRelated to a specific character"];
+  CharacterData2      [label="Data\nRelated to a specific character"];
+  CharacterData3      [label="Data\nRelated to a specific character"];
+
+  Player -> Data [dir=none];
+  Data -> PlayerRef, PlayerSlot;
+  Player -> CharacterEntities [dir=none];
+  CharacterEntities -> CharacterEntityList;
+  CharacterEntityList:0 -> CharacterData1;
+  CharacterEntityList:1 -> CharacterData2;
+  CharacterEntityList:2 -> CharacterData3;
 }
 ```
 
@@ -168,7 +178,7 @@ digraph PlayerInputGraph {
   subgraph cluster_simulation {
     color="#F159E4";
     fontcolor="#F159E4";
-    label = "Simulation";
+    label = "Quantum Simulation";
 
     node [color="#F159E4", fontcolor="#F159E4"];
 
@@ -198,11 +208,20 @@ digraph PlayerCharacterEntities {
   edge [color=gray];
 
   Player              [label="Player", shape=ellipse];
-  CharacterEntities   [label="Character entities"];
-  CharacterEntityList [label="Character entity 1\n(In play) | Character entity 2\n(Out of play) | Character entity 3\n(Out of play)", shape=record];
+  CharacterEntities   [label="Character entities", color="transparent"];
+  CharacterEntityList [label="<0> Character entity 1\n(In play) | <1> Character entity 2\n(Out of play) | <2> Character entity 3\n(Out of play)", shape=record];
 
-  Player -> CharacterEntities;
-  CharacterEntities -> CharacterEntityList [dir=none];
+  node [color="transparent"];
+
+  CharacterData1      [label="Data\nRelated to a specific character"];
+  CharacterData2      [label="Data\nRelated to a specific character"];
+  CharacterData3      [label="Data\nRelated to a specific character"];
+
+  Player -> CharacterEntities [dir=none];
+  CharacterEntities -> CharacterEntityList;
+  CharacterEntityList:0 -> CharacterData1;
+  CharacterEntityList:1 -> CharacterData2;
+  CharacterEntityList:2 -> CharacterData3;
 }
 ```
 
@@ -228,7 +247,7 @@ digraph PlayerCharacterEntity {
   subgraph cluster_quantum {
     color="#F159E4";
     fontcolor="#F159E4";
-    label = "Quantum";
+    label = "Quantum Simulation";
 
     node [shape=box, style=filled, color="#F159E4", fontcolor="#F159E4", fillcolor=black];
 
@@ -266,33 +285,6 @@ digraph PlayerCharacterEntity {
 Player character classes function by having implementable methods that are called in certain situations during a game, such as when a projectile collides with a player character. Classes can also implement an update method. These methods can be used to implement functionality on top of for example the default collision methods to change how different character classes function.
 
 See [{Player Character Class List}](#page-concepts-player-characters-class-list) for list of all character classes.
-
-Character classes are implemented by creating a unique C# class that inherits one of the two base @cref{Battle.QSimulation.Player,BattlePlayerClassBase} classes defined in BattlePlayerClassManager.cs. These classes can choose to implement any of the available methods for functionality. Character classes can also optionally have a data QComponent for additional data the class will use. When a character class has a data QComponent, the C# class inherits the generic version of the base class using the data QComponent as the generic type parameter.
-
-**Example**:
-
-**Qtn code**
-```
-component BattlePlayerClassExample2DataQComponent
-{
-  // ...
-}
-```
-
-**C# code**
-```cs
-// Without data QComponent
-public class BattlePlayerClassExample1 : BattlePlayerClassBase
-{
-  // ...
-}
-
-// With data QComponent
-public class BattlePlayerClassExample2 : BattlePlayerClassBase<BattlePlayerClassExample2DataQComponent>
-{
-  // ...
-}
-```
 
 <br/>
 
@@ -372,8 +364,53 @@ See [{PlayerBotController}](#page-concepts-player-simulation-botcontroller)
 <br/>
 
 ### PlayerMovementController {#page-concepts-player-simulation-playerqsystem-movement-controller}
-The @cref{Battle.QSimulation.Player,BattlePlayerMovementController} contains the primary @cref{Battle.QSimulation.Player.BattlePlayerMovementController,UpdateMovement} method which handles player movement, and is called by [{BattlePlayerQSystem}](#page-concepts-player-simulation-playerqsystem).
+The @cref{Battle.QSimulation.Player,BattlePlayerMovementController} contains the primary @cref{Battle.QSimulation.Player.BattlePlayerMovementController,UpdateMovement} method
+which handles player movement, and is called by [{BattlePlayerQSystem}](#page-concepts-player-simulation-playerqsystem).
 Also contains individual helper methods for moving and rotating players, which can be used by other scripts.
+
+<br/>
+
+### PlayerClassManager {#page-concepts-player-simulation-classmanager}
+
+<br/>
+
+### PlayerClass {#page-concepts-player-simulation-playerclass}
+
+Character classes are implemented by creating a unique C# class that inherits one of the two base @cref{Battle.QSimulation.Player,BattlePlayerClassBase} classes
+defined in BattlePlayerClassManager.cs. These classes can choose to implement any of the available methods for functionality.
+Character classes can also optionally have a [{PlayerClassData}](#page-concepts-player-simulation-classdata) **QComponent** for additional data the class will use.
+When a character class has a **data QComponent**, the C# class inherits the generic version of the base class using the **data QComponent** as the generic type parameter.
+
+**C# code example**
+```cs
+// Without data QComponent
+public class BattlePlayerClassExample1 : BattlePlayerClassBase
+{
+  // ...
+}
+
+// With data QComponent
+public class BattlePlayerClassExample2 : BattlePlayerClassBase<BattlePlayerClassExample2DataQComponent>
+{
+  // ...
+}
+```
+
+<br/>
+
+### PlayerClassData (%Quantum component) {#page-concepts-player-simulation-classdata}
+Every player character class can optionally have a data QComponent for additional data the **class** will use.
+
+**Qtn code example**
+```
+component BattlePlayerClassExample2DataQComponent
+{
+  // ...
+}
+```
+
+See [{PlayerClass}](#page-concepts-player-simulation-playerclass)  
+See [{Player Character Classes}](#page-concepts-player-characters-classes)
 
 <br/>
 
@@ -438,16 +475,25 @@ The @cref{Battle.View.Player,BattlePlayerInput} is processed and compiled into a
 
 ### PlayerViewController {#page-concepts-player-view-controller}
 The @cref{Battle.View.Player,BattlePlayerViewController} handles player view logic.  
-[{PlayerClassViewControllers}](#page-concepts-player-view-class-controller) are tied to this class.
+[{PlayerClassViewControllers}](#page-concepts-player-view-class-controller), which are tied to this C# class, handle character class specific view logic.
 
 <br/>
 
 ### PlayerClassViewControllers {#page-concepts-player-view-class-controller}
 Every player character class can optionally have a view controller which extends the @cref{Battle.View.Player,BattlePlayerClassBaseViewController}.
-It can be optionally implemented and attached to player viewmodel in prefab to handle class view logic.
+It can be optionally implemented and attached to player viewmodel in prefab to handle character class view logic.
 If no player class view controller is attached then @cref{Battle.View.Player,BattlePlayerClassNoneViewController} is attached.
 As stated before the player class view controller is optional and can be omitted for player character classes that need no additional view logic.  
-**PlayerClassViewControllers** are tied to [{PlayerViewController}](#page-concepts-player-view-controller).  
+**PlayerClassViewControllers** are tied to [{PlayerViewController}](#page-concepts-player-view-controller).
+
+**C# code example**
+```cs
+public class BattlePlayerClassExampleViewController : BattlePlayerClassBaseViewController
+{
+  // ...
+}
+```
+
 See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
 
 <br/>
