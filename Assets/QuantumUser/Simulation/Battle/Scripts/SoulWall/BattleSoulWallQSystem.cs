@@ -43,6 +43,9 @@ namespace Battle.QSimulation.SoulWall
             CreateSoulWalls(f, BattleTeamNumber.TeamBeta,  battleArenaSpec.SoulWallTeamBetaTemplates,  soulWallSpec.SoulWallPrototypes);
         }
 
+        /// <summary>
+        /// Temporary method for ability testing.
+        /// </summary>
         public static void CreateAbilitySoulWallTest(Frame f, BattleTeamNumber teamNumber, FPVector2 spawnPosition)
         {
             // soulwall variables
