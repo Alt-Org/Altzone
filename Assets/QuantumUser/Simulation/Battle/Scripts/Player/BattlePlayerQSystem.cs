@@ -14,6 +14,7 @@ using Photon.Deterministic;
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Projectile;
+using Battle.QSimulation.SoulWall;
 
 namespace Battle.QSimulation.Player
 {
@@ -230,7 +231,8 @@ namespace Battle.QSimulation.Player
                     RotationInput                 = false,
                     RotationValue                 = FP._0,
                     PlayerCharacterNumber         = -1,
-                    GiveUpInput                   = false
+                    GiveUpInput                   = false,
+                    AbilityActivate               = false
                 };
             }
 
@@ -395,6 +397,16 @@ namespace Battle.QSimulation.Player
         /// <param name="playerTransform">Pointer to the player's transform component.</param>
         private void HandleInPlay(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity, Transform2D* playerTransform)
         {
+            if (input->AbilityActivate)
+            {
+                playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0_50);
+            }
+
+            if (!playerData->AbilityCooldownSec.IsRunning(f) && playerData->AbilityActivateBufferSec.IsRunning(f))
+            {
+                AbilityActivate(f, playerData, playerTransform);
+            }
+
             if (playerData->CurrentDefence <= FP._0)
             {
                 s_debugLogger.LogFormat(f, "({0}) Current characters shield destroyed!", playerHandle.Slot);
@@ -404,6 +416,29 @@ namespace Battle.QSimulation.Player
 
             BattlePlayerClassManager.OnUpdate(f, playerHandle, playerData, playerEntity);
             BattlePlayerMovementController.UpdateMovement(f, playerData, playerTransform, input);
+        }
+
+        private void AbilityActivate(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* playerTransform)
+        {
+            if (playerData->CharacterId == 601)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    BattleSoulWallQSystem.CreateAbilitySoulWallTest(f, playerData->TeamNumber, playerTransform->Position + new FPVector2(f.RNG->NextInclusive(-1, 1), f.RNG->NextInclusive(-1, 1)).Normalized * 2);
+                }
+
+                BattlePlayerManager.PlayerHandle playerHandle = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, playerData->Slot);
+
+                BattlePlayerManager.DespawnPlayer(f, playerData->Slot, kill: true);
+                playerHandle.SetOutOfPlayRespawning();
+                playerHandle.RespawnTimer = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).AutoRespawnTimeSec);
+            }
+            else
+            {
+                BattleSoulWallQSystem.CreateAbilitySoulWallTest(f, playerData->TeamNumber, playerTransform->Position);
+            }
+
+            playerData->AbilityCooldownSec = FrameTimer.FromSeconds(f, FP._3);
         }
     }
 }

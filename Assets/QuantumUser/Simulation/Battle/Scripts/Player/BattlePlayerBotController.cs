@@ -158,7 +158,8 @@ namespace Battle.QSimulation.Player
                 RotationInput                 = false,
                 RotationValue                 = FP._0,
                 PlayerCharacterNumber         = -1,
-                GiveUpInput                   = false
+                GiveUpInput                   = false,
+                AbilityActivate               = false
             };
         }
     }

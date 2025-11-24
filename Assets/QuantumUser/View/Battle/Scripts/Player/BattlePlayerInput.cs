@@ -146,6 +146,12 @@ namespace Battle.View.Player
         /// <value>The float value received from the rotation joystick.</value>
         private float _joystickRotationValue;
 
+        /// <summary>Saved world position of the previous tap position used for double tap input validating.</summary>
+        private Vector3 _lastTapPosition;
+
+        /// <summary>Saved time stamp of the previous tap.</summary>
+        private float _lastTapTime;
+
         /// <value>Saved character number from character swapping input.</value>
         private int _characterNumber = -1;
 
@@ -250,15 +256,18 @@ namespace Battle.View.Player
             // check button input
             if (_characterNumber > -1 || _onGiveUp) _blockScreenInput = true;
 
+            Vector2 clickPosition = Vector2.zero;
+            Vector3 unityPosition = Vector3.zero;
+
             // handles screen input
             if (!_blockScreenInput)
             {
-                Vector2 clickPosition = Vector2.zero;
-                Vector3 unityPosition = Vector3.zero;
                 if (mouseDown)
                 {
                     clickPosition = ClickStateHandler.GetClickPosition();
                     unityPosition = BattleCamera.Camera.ScreenToWorldPoint(clickPosition);
+
+                    _lastTapPosition = unityPosition;
                 }
 
                 movementInputInfo = GetMovementInput(mouseDown, mouseClick, unityPosition, deltaTime);
@@ -282,7 +291,8 @@ namespace Battle.View.Player
                 RotationInput                 = rotationInputInfo.RotationInput,
                 RotationValue                 = rotationInputInfo.RotationValue,
                 PlayerCharacterNumber         = _characterNumber,
-                GiveUpInput                   = _onGiveUp
+                GiveUpInput                   = _onGiveUp,
+                AbilityActivate               = Time.time - _lastTapTime < 0.5f && mouseClick && Vector3.Distance(_lastTapPosition, unityPosition) < 1f
             };
 
             DeterministicInputFlags inputFlags = DeterministicInputFlags.Repeatable;
@@ -315,6 +325,8 @@ namespace Battle.View.Player
             callback.SetInput(input, inputFlags);
 
             //} create and set input
+
+            if (mouseClick) _lastTapTime = Time.time;
 
             _previousTime = Time.time;
 
