@@ -1171,6 +1171,9 @@ namespace Battle.QSimulation.Player
             f.Events.BattleDebugUpdateStatsOverlay(playerData->Slot, playerData->Stats);
             f.Events.BattleCharacterSelected(playerData->Slot, characterNumber);
 
+            playerData->AbilityCooldownSec = FrameTimer.FromSeconds(f, FP._3);
+            playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0); ;
+
             playerHandle.PlayState = BattlePlayerPlayState.InPlay;
 
             f.Events.BattleViewSetRotationJoystickVisibility(!playerData->DisableRotation, playerData->Slot);
