@@ -2,17 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HorizontalScrollRect : BaseScrollRect
 {
+    public override bool VerticallyScrollable
+    {
+        get { return false; }
+    }
+
+    public override Scrollbar VerticalScrollbar
+    {
+        get { return null; }
+    }
+
     public override ScrollbarVisibility VerticalScrollbarVisibilityMode
     {
         get { return HorizontalScrollbarVisibilityMode; }
     }
+
     public override float VerticalScrollbarSpacing
     {
         get { return 0f; }
     }
+
 #if UNITY_EDITOR
     [MenuItem("GameObject/UI/Horizontal Scroll Rect", false, 10)]
     static void CreateCustomGameObject(MenuCommand menuCommand)
