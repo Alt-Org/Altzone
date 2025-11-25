@@ -94,7 +94,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 33.45
+  m_fontSize: 72
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -236,7 +236,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1777168962825183716}
-  - component: {fileID: 3863800984437120121}
+  - component: {fileID: 5959940900565822945}
   - component: {fileID: 5246541879123165658}
   m_Layer: 5
   m_Name: ToggleSwitch
@@ -266,7 +266,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &3863800984437120121
+--- !u!114 &5959940900565822945
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -275,7 +275,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4380480119154547102}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Script: {fileID: 11500000, guid: 8938ee023159d5f4bbe9c0b98d58776e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -291,7 +291,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.4056604, g: 0.4056604, b: 0.4056604, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -306,14 +306,20 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 749314137864123864}
+  m_TargetGraphic: {fileID: 0}
   toggleTransition: 1
   graphic: {fileID: 0}
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
+  _sliderSwitch: {fileID: 7623205683329264522}
+  _background: {fileID: 3612572125838640521}
+  _fill: {fileID: 347978467920542678}
+  _handle: {fileID: 749314137864123864}
+  _oncolour: {r: 0.007843138, g: 0.21495119, b: 0.9843137, a: 1}
+  _offcolour: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &5246541879123165658
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -326,7 +332,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83eaeae8d470a104aa9f0be5d3f08e84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _toggle: {fileID: 3863800984437120121}
+  _toggle: {fileID: 5959940900565822945}
   _sliderSwitch: {fileID: 7623205683329264522}
 --- !u!1 &6133719727344286439
 GameObject:
