@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
@@ -48,3 +49,4 @@ namespace UnityEditor.UI
         }
     }
 }
+#endif
