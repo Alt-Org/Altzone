@@ -55,9 +55,9 @@ public class ChatMessageScript : MonoBehaviour
                 _lastLineCount = lineCount;
 
 
-                _messageHandler._BaseMessageBankerSize = new Vector2(_messageHandler._BaseMessageSize.sizeDelta.x, newHeight);
+                _messageHandler._baseMessageBankerSize = new Vector2(_messageHandler._baseMessageSize.sizeDelta.x, newHeight);
 
-                _messageHandler.sizeCall();
+                _messageHandler.SizeCall();
                 ///Old Line Incase needed
                 //float originalSpacing = _messageVerticalLayoutGroup.spacing;
                 //float newSpacing = originalSpacing * 0.2f * (lineCount - 1);

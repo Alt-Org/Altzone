@@ -696,14 +696,14 @@ MonoBehaviour:
   _button: {fileID: 797248425732977057}
   _addReactionsControls: {fileID: 6600255325117062062}
   _reactionsPanel: {fileID: 5136230035178387175}
-  _BaseMessageBankerSize: {x: 0, y: 0}
-  _BaseMessageSize: {fileID: 3363965265471710657}
-  BackgroundSize: {fileID: 2103742428301501262}
-  ReactionField: {fileID: 5136230035178387175}
-  ReactionSize: {fileID: 6600255325117062062}
-  ExpandedReactionSize: {fileID: 9161950515590385300}
-  rect: {x: 0, y: 0}
-  rect2: {x: 0, y: 0}
+  _baseMessageBankerSize: {x: 0, y: 0}
+  _baseMessageSize: {fileID: 3363965265471710657}
+  backgroundSize: {fileID: 2103742428301501262}
+  reactionField: {fileID: 5136230035178387175}
+  _reactionSize: {fileID: 6600255325117062062}
+  _expandedReactionSize: {fileID: 9161950515590385300}
+  ReactionSize: {x: 0, y: 0}
+  ExpandedReactionSize: {x: 0, y: 0}
 --- !u!1 &5136230035178387175
 GameObject:
   m_ObjectHideFlags: 0
@@ -1864,12 +1864,12 @@ PrefabInstance:
     - target: {fileID: 6177702421137226723, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 6177702421137226723, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 6177702421137226723, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}

@@ -20,14 +20,14 @@ public class MessageObjectHandler : MonoBehaviour
 
 
     [Header("Base Message")]
-    [SerializeField] public Vector2 _BaseMessageBankerSize;
-    [SerializeField] public RectTransform _BaseMessageSize;
-    [SerializeField] private ChatMessageScript BackgroundSize;
-    [SerializeField] private GameObject ReactionField;
-    public GameObject ReactionSize;
-    public GameObject ExpandedReactionSize;
-    public Vector2 rect;
-    public Vector2 rect2;
+    public Vector2 _baseMessageBankerSize;
+    public RectTransform _baseMessageSize;
+    [SerializeField] private ChatMessageScript backgroundSize;
+    [SerializeField] private GameObject reactionField;
+    public GameObject _reactionSize;
+    public GameObject _expandedReactionSize;
+    [SerializeField] private Vector2 _vectorReactionSize;
+    [SerializeField] private Vector2 _vectorExpandedReactionSize;
 
     private string _id;
     private Image _image;
@@ -44,30 +44,30 @@ public class MessageObjectHandler : MonoBehaviour
         Chat.OnSelectedMessageChanged += SetMessageInactive;
 
 
-        rect = new Vector2(_BaseMessageSize.sizeDelta.x, _BaseMessageSize.sizeDelta.y + ReactionSize.GetComponent<RectTransform>().sizeDelta.y);
-        rect2 = new Vector2(_BaseMessageSize.sizeDelta.x, _BaseMessageSize.sizeDelta.y + ExpandedReactionSize.GetComponent<RectTransform>().sizeDelta.y);
+        _vectorReactionSize = new Vector2(_baseMessageSize.sizeDelta.x, _baseMessageSize.sizeDelta.y + _reactionSize.GetComponent<RectTransform>().sizeDelta.y);
+        _vectorExpandedReactionSize = new Vector2(_baseMessageSize.sizeDelta.x, _baseMessageSize.sizeDelta.y + _expandedReactionSize.GetComponent<RectTransform>().sizeDelta.y);
     }
 
     ///Changes the Basemessages size
-    public void sizeCall()
+    public void SizeCall()
     {
         //adds extra size if there reactions have been put or not
         float extraPadding;
-        if (ReactionField.transform.childCount > 0)
+        if (reactionField.transform.childCount > 0)
             extraPadding = 100;
         else
             extraPadding = 0f;
 
         //Checks if reaction panel is active and checks which reaction pannel is on
-        if (ReactionSize.activeSelf)
-            if(ExpandedReactionSize.activeSelf)
-                _BaseMessageSize.sizeDelta = new Vector2(rect2.x, Mathf.Max(150, _BaseMessageBankerSize.y + rect2.y + extraPadding));
+        if (_reactionSize.activeSelf)
+            if(_expandedReactionSize.activeSelf)
+                _baseMessageSize.sizeDelta = new Vector2(_vectorExpandedReactionSize.x, Mathf.Max(150, _baseMessageBankerSize.y + _vectorExpandedReactionSize.y + extraPadding));
             else
-                _BaseMessageSize.sizeDelta = new Vector2(rect.x, Mathf.Max(150, _BaseMessageBankerSize.y + rect.y + extraPadding));
+                _baseMessageSize.sizeDelta = new Vector2(_vectorReactionSize.x, Mathf.Max(150, _baseMessageBankerSize.y + _vectorReactionSize.y + extraPadding));
 
         //reverts back to orignal
         else
-        _BaseMessageSize.sizeDelta = new Vector2(_BaseMessageBankerSize.x, Mathf.Max(150, _BaseMessageBankerSize.y + extraPadding));
+        _baseMessageSize.sizeDelta = new Vector2(_baseMessageBankerSize.x, Mathf.Max(150, _baseMessageBankerSize.y + extraPadding));
 
     }
 
@@ -111,7 +111,7 @@ public class MessageObjectHandler : MonoBehaviour
         _addReactionsControls.SetActive(true);
 
         _selectMessageAction.Invoke(this);
-        sizeCall();
+        SizeCall();
     }
 
     private void SetMessageInactive(MessageObjectHandler handler)
@@ -123,7 +123,7 @@ public class MessageObjectHandler : MonoBehaviour
             _image.color = Color.white;
         }
         _addReactionsControls.SetActive(false);
-        sizeCall();
+        SizeCall();
     }
 
     public void SetMessageInactive()

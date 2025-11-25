@@ -37,7 +37,7 @@ public class MessageReactionsHandler : MonoBehaviour
     private Mood _mood;
     void Start()
     {
-        _openMoreButton.onClick.AddListener((() => { _allReactionsPanel.SetActive(true); _commonReactionsPanel.SetActive(false);}));
+        _openMoreButton.onClick.AddListener((() => { _allReactionsPanel.SetActive(true); _selectedMessage.SizeCall(); _commonReactionsPanel.SetActive(false);}));
 
         ReactionObjectHandler.OnReactionPressed += AddReaction;
         //ChatChannel.OnReactionReceived += RefreshReactionCoroutine();
@@ -226,8 +226,10 @@ public class MessageReactionsHandler : MonoBehaviour
     {
         HorizontalLayoutGroup reactionsField = reaction.GetComponentInParent<HorizontalLayoutGroup>();
 
+        reaction.transform.SetParent(null);
         _reactionHandlers.Remove(reaction);
         Destroy(reaction.gameObject);
+        _selectedMessage.SizeCall();
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
         //_chatScript.UpdateContentLayout(reactionsField);
