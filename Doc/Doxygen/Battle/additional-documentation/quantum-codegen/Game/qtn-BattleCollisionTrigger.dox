@@ -1,0 +1,52 @@
+/// @file BattleCollisionTrigger.qtn
+/// <summary>
+/// Contains enum and component for defining entity's collider trigger type.
+/// </summary>
+///
+/// ## Generated Enums
+/// - @cref{Quantum,BattleCollisionTriggerType}  
+///   @copybrief Quantum.BattleCollisionTriggerType
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattleCollisionTriggerQComponent}  
+///   @copybrief Quantum.BattleCollisionTriggerQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattleCollisionTriggerType
+/// <summary>
+/// Identifies the type of a collision trigger.  
+/// Used by the @cref{Quantum,BattleCollisionTriggerQComponent}.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleCollisionTrigger.qtn}
+
+/// @var Quantum::BattleCollisionTriggerType Quantum::BattleCollisionTriggerType::ArenaBorder
+/// <summary>Collision trigger type of ArenaBorder.</summary>
+///
+/// @var Quantum::BattleCollisionTriggerType Quantum::BattleCollisionTriggerType::SoulWall
+/// <summary>Collision trigger type of SoulWall.</summary>
+///
+/// @var Quantum::BattleCollisionTriggerType Quantum::BattleCollisionTriggerType::Player
+/// <summary>Collision trigger type of Player.</summary>
+///
+/// @var Quantum::BattleCollisionTriggerType Quantum::BattleCollisionTriggerType::Shield
+/// <summary>Collision trigger type of Shield.</summary>
+///
+/// @var Quantum::BattleCollisionTriggerType Quantum::BattleCollisionTriggerType::Goal
+/// <summary>Collision trigger type of %Goal.</summary>
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleCollisionTriggerQComponent
+/// <summary>
+/// Component that marks the entity as a collision trigger and contains the type of the collision trigger component that the entity has.
+/// </summary>
+///
+/// Streamlines identifying entities as something that can be collided with  
+/// and retrieving the component that is unique to the type of entity that has been collided with.
+///
+/// @bigtext{Generated from @ref BattleCollisionTrigger.qtn}
+
+/// @var BattleCollisionTriggerType Quantum.BattleCollisionTriggerQComponent::Type
+/// <summary>The type of the collision trigger component that the entity has.</summary>

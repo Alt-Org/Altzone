@@ -166,8 +166,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48e675e69aca0364c86fef9678cb8ca5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _classColorReference: {fileID: 11400000, guid: 3b5ea09e8ee0a3c4fb7574a299b54fe0,
-    type: 2}
+  _classReference: {fileID: 0}
+  _statsReference: {fileID: 0}
+  _swipeBlocker: {fileID: 0}
+  _statsPanel: {fileID: 0}
+  _infoPanel: {fileID: 0}
+  _galleryView: {fileID: 0}
 --- !u!1 &4616821119609717950
 GameObject:
   m_ObjectHideFlags: 0
@@ -626,7 +630,7 @@ MonoBehaviour:
   scrollBar: {fileID: 5285508694747393431}
   buttons:
   - {fileID: 3464599174550219240}
-  - {fileID: 543557417575270503}
+  - {fileID: 0}
   swipeTime: 0.1
   currentPage: 0
   _startTouch: {x: 0, y: 0}
@@ -1764,6 +1768,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSize
       value: 48
+      objectReference: {fileID: 0}
+    - target: {fileID: 6229977473892362797, guid: 4ab03391b3dcfa54496511f4e4eb6183,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -5.200012
       objectReference: {fileID: 0}
     - target: {fileID: 6280354545367010364, guid: 4ab03391b3dcfa54496511f4e4eb6183,
         type: 3}
@@ -3501,18 +3510,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 3938623713968794597}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &543557417575270503 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3540911162307666818, guid: 6518d8aaf4a34de4897d176df7531b31,
-    type: 3}
-  m_PrefabInstance: {fileID: 3938623713968794597}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &791499895240211964 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4346876959553689113, guid: 6518d8aaf4a34de4897d176df7531b31,

@@ -15,38 +15,43 @@ MonoBehaviour:
   Id: 701
   CharacterId: 701
   IsApproved: 1
-  Name: Viisastelu
+  FinnishName: Viisastelu
+  EnglishName: Intellectualizing
   ClassType: 700
-  CharacterDescription: "Viisastelu on pohjattomalla nippelitiedolla varustautunut
+  CharacterDescriptionFinnish: "Viisastelija on pohjattomalla nippelitiedolla varustautunut
     intellektuaali, jonka itsetunto on nidottu \xE4lykkyyteen. H\xE4n pyrkii hallitsemaan
     keskusteluja, n\xE4p\xE4yttelee toisia yhdentekevist\xE4 mokista ja k\xE4ytt\xE4\xE4
     esoteerista kielt\xE4 tehd\xE4kseen muihin vaikutuksen \xE4lynlahjoillaan. Aina
-    oikeassa, Viisastelu ei ikin\xE4 my\xF6nn\xE4 omia virheit\xE4\xE4n ja tekee
-    kaikkensa pysy\xE4kseen niskan p\xE4\xE4ll\xE4 mielten mittel\xF6iss\xE4.\r\n\nTunnetila-ammuksen
-    l\xE4hestyess\xE4 Viisastelu avaa tietokirjansa, j\xE4tt\xE4en kent\xE4lle ammuksen
-    tulevan lentoradan ennustavia kaavioita. Kaavioiden, ja Viisastelun p\xE4temisen,
-    lis\xE4\xE4ntyess\xE4 ne alkavat kuitenkin sotkea kentt\xE4\xE4, tehden joukkuekavereiden
-    t\xE4ht\xE4yksest\xE4 sekavaa.\r\n"
-  CharacterShortDescription: "Tietokirjansa sis\xE4ll\xF6ll\xE4 leijuva n\xE4s\xE4viisas
-    \xE4lykk\xF6. "
+    oikeassa, Viisastelija ei ikin\xE4 my\xF6nn\xE4 omia virheit\xE4\xE4n ja tekee
+    kaikkensa pysy\xE4kseen niskan p\xE4\xE4ll\xE4 mielten mittel\xF6iss\xE4. Auta
+    armias, jos joku luulisi h\xE4nt\xE4 tyhm\xE4ksi.\r\n\nTunnetila-ammuksen l\xE4hestyess\xE4
+    Viisastelija avaa tietokirjansa, j\xE4tt\xE4en kent\xE4lle ammuksen tulevan lentoradan
+    ennustavia kaavioita. Kaavioiden, ja Viisastelijan p\xE4temisen, lis\xE4\xE4ntyess\xE4
+    ne alkavat kuitenkin sotkea kentt\xE4\xE4, tehden joukkuekavereiden t\xE4ht\xE4yksest\xE4
+    sekavaa.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Tietokirjansa sis\xE4ll\xF6ll\xE4 leijuva n\xE4s\xE4viisas
+    \xE4lykk\xF6."
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: d45a4a5ca80cf764488149170ac09bf3, type: 2}
   Hp:
-    Level: 8
+    Level: 2
     Coefficient: 4
   Speed:
-    Level: 6
-    Coefficient: 5
+    Level: 4
+    Coefficient: 0
   CharacterSize:
-    Level: 8
+    Level: 2
     Coefficient: 6
   Attack:
-    Level: 10
+    Level: 3
     Coefficient: 4
   Defence:
-    Level: 3
+    Level: 1
     Coefficient: 5
   GalleryImage: {fileID: 21300000, guid: f18115989b2eb6c41814556747fde0dc, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 2ccdcaed0f15de247bb4518861d2e213, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
       Value: 1282133958245688852

@@ -15,35 +15,40 @@ MonoBehaviour:
   Id: 603
   CharacterId: 603
   IsApproved: 1
-  Name: "Valveenv\xE4lttely"
+  FinnishName: "V\xE4syminen"
+  EnglishName: Chronic fatigue
   ClassType: 600
-  CharacterDescription: "Valveenv\xE4lttely pakenee ylikuormittavaa todellisuutta
+  CharacterDescriptionFinnish: "Valveenv\xE4lttelij\xE4 pakenee ylikuormittavaa todellisuutta
     unimaailmaan. Uni on h\xE4nelle keino irtautua ja saada turvaa ymp\xE4rist\xF6st\xE4,
     jossa h\xE4nen tunteensa ja tarpeensa ovat toissijaisia ja miss\xE4 h\xE4nen
     oma identiteettins\xE4 on kadonnut muihin mukautumisen j\xE4ljilt\xE4. Alati
-    v\xE4synyt, Valveenv\xE4lttely selviytyy p\xE4iv\xE4st\xE4 tiet\xE4en, ett\xE4
-    pian h\xE4n voi taas nukahtaa.\r\n\nTunnetila-ammuksen tullessa Valveenv\xE4lttely
+    v\xE4synyt, Valveenv\xE4lttelij\xE4 selviytyy p\xE4iv\xE4st\xE4 tiet\xE4en, ett\xE4
+    pian h\xE4n voi taas nukahtaa ja vaipua maailmaan ilman ylivoimaisia valintoja,
+    vastuuta ja konfliktia.\r\n\nTunnetila-ammuksen tullessa Valveenv\xE4lttelij\xE4
     kietoutuu suojapeittonsa alle, paeten hetkeksi h\xE4nt\xE4 uhkaavalta vaaralta
-    unten maille.\r\n"
-  CharacterShortDescription: 'Peiton alla maailmaa pakeneva unikeko '
+    unten maille.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: Peiton alla maailmaa pakeneva unikeko
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 90969f0d5f4fd634094177939fc112a7, type: 2}
   Hp:
     Level: 2
     Coefficient: 5
   Speed:
-    Level: 2
-    Coefficient: 4
+    Level: 1
+    Coefficient: 0
   CharacterSize:
-    Level: 12
+    Level: 3
     Coefficient: 2
   Attack:
-    Level: 2
+    Level: 1
     Coefficient: 7
   Defence:
-    Level: 11
+    Level: 1
     Coefficient: 2
   GalleryImage: {fileID: 21300000, guid: 9aa5e625812e131439a894722f0b1d66, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 1db187b168a56284dab8d4b21a59b65a, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
       Value: 1435907982705750939

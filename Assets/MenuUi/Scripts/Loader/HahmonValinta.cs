@@ -11,6 +11,8 @@ using Altzone.Scripts.Model.Poco.Game;
 using MenuUi.Scripts.Window;
 using Newtonsoft.Json.Linq;
 using System;
+using Altzone.Scripts.Language;
+using Altzone.Scripts.ReferenceSheets;
 
 [System.Serializable]
 public class CharacterData
@@ -31,7 +33,7 @@ public class HahmonValinta : AltMonoBehaviour
     [SerializeField] private Button lockInButton;
     [SerializeField] private CharacterData[] characterData;
     [SerializeField] private GameObject popupWindow; // Reference to the pop-up window panel
-    [SerializeField] private TextMeshProUGUI characterNameText; // Reference to the Text component for character name
+    [SerializeField] private TextLanguageSelectorCaller characterNameText; // Reference to the Text component for character name
     [SerializeField] private WindowNavigation _windowNavigation;
 
     private int selectedCharacterIndex = -1;
@@ -82,6 +84,7 @@ public class HahmonValinta : AltMonoBehaviour
 
         // Update the character name text
         //characterNameText.text = data.characterName;
+        characterNameText.SetText(SettingsCarrier.Instance.Language, new string[1] { ClassReference.Instance.GetName(CustomCharacter.GetClass(data.uniqueID))});
 
         // Log the selected character's name
         Debug.Log("Selected character: " + data.characterName);
@@ -89,6 +92,7 @@ public class HahmonValinta : AltMonoBehaviour
 
     public IEnumerator LockInCharacter(CharacterID id)
     {
+        lockInButton.interactable = false;
         // Check if a character is selected
         if (id != CharacterID.None)
         {
@@ -102,7 +106,7 @@ public class HahmonValinta : AltMonoBehaviour
                 _playerData.SelectedCharacterId = (int)id;
 
                 string noCharacter = ((int)CharacterID.None).ToString();
-                _playerData.SelectedCharacterIds = new string[3] { noCharacter, noCharacter, noCharacter };
+                _playerData.SelectedCharacterIds = new CustomCharacterListObject[3] { new(Id: CharacterID.None), new(Id: CharacterID.None), new(Id: CharacterID.None) };
 
                 string body = JObject.FromObject(
                     new
@@ -136,7 +140,7 @@ public class HahmonValinta : AltMonoBehaviour
             {
                 if (characterList == null)
                 {
-                    Debug.LogError("Failed to fetch Custom Characters.");
+                    //Debug.LogError("Failed to fetch Custom Characters.");
                     gettingCharacter = false;
                     serverCharacters = new();
                 }
@@ -146,11 +150,11 @@ public class HahmonValinta : AltMonoBehaviour
                     serverCharacters = characterList;
                 }
             }));
-            new WaitUntil(() => gettingCharacter == false);
+            yield return new WaitUntil(() => gettingCharacter == false);
 
             if (serverCharacters.Count < 3)
             {
-                List<CharacterID> characters = SelectStartingCharacter(id);
+                List<CharacterID> characters = /*SelectStartingCharacter(id);*/ SelectAllCharacters(); // Temporarily overridden.
                 foreach (var character in characters)
                 {
                     callFinished = false;
@@ -159,7 +163,7 @@ public class HahmonValinta : AltMonoBehaviour
                         if (callback != null)
                         {
                             Debug.Log("CustomCharacter added: " + character);
-                            _playerData.SelectedCharacterIds[i] = callback._id;
+                            //if (i < _playerData.SelectedCharacterIds.Length) _playerData.SelectedCharacterIds[i].SetData(callback._id, (CharacterID)int.Parse(callback.characterId));
                             characterAdded = true;
                         }
                         else
@@ -171,36 +175,56 @@ public class HahmonValinta : AltMonoBehaviour
                     yield return new WaitUntil(() => callFinished == true);
                     i++;
                 }
+                var callFinished2 = false;
                 if (characterAdded)
                 {
-                    callFinished = false;
-                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters(c => callFinished = c));
+                    callFinished2 = false;
+                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters((c, list) => callFinished2 = c, true));
                 }
-                new WaitUntil(() => callFinished == true);
+                else
+                {
+                    callFinished2 = true;
+                }
+                yield return new WaitUntil(() => callFinished2 == true);
+
+                var gameConfig = GameConfig.Get();
+                var playerSettings = gameConfig.PlayerSettings;
+                var playerGuid = playerSettings.PlayerGuid;
+                DataStore storefront = Storefront.Get();
+
+                storefront.GetPlayerData(playerGuid, p => _playerData = p);
+
+                string[] serverList = new string[_playerData.SelectedCharacterIds.Length];
+
+                for (i = 0; i < _playerData.SelectedCharacterIds.Length; i++)
+                {
+                    serverList[i] = _playerData.SelectedCharacterIds[i].ServerID;
+                }
+
                 string body = JObject.FromObject(
                     new
                     {
                         _id = _playerData.Id,
                         currentAvatarId = _playerData.SelectedCharacterId,
-                        battleCharacter_ids = _playerData.SelectedCharacterIds
+                        battleCharacter_ids = serverList
 
                     }).ToString();
-                callFinished = false;
+                var callFinished3 = false;
                 StartCoroutine(ServerManager.Instance.UpdatePlayerToServer(body, callback =>
                 {
                     if (callback != null)
                     {
                         Debug.Log("Profile info updated.");
                         var store = Storefront.Get();
-                        store.SavePlayerData(_playerData, null);
+                        //store.SavePlayerData(_playerData, null);
                     }
                     else
                     {
                         Debug.Log("Profile info update failed.");
                     }
-                    callFinished = true;
+                    callFinished3 = true;
                 }));
-                new WaitUntil(() => callFinished == true);
+                yield return new WaitUntil(() => callFinished3 == true);
 
                 // Reset the selected character index and disable the lock-in button
                 selectedCharacterIndex = -1;
@@ -210,12 +234,14 @@ public class HahmonValinta : AltMonoBehaviour
                 popupWindow.SetActive(false);
 
                 StartCoroutine(_windowNavigation.Navigate());
+                lockInButton.interactable = true;
                 yield break;
             }
             else
             {
                 Debug.LogWarning("Player already had starting characters set.");
                 StartCoroutine(_windowNavigation.Navigate());
+                lockInButton.interactable = true;
             }
 
         }
@@ -223,6 +249,7 @@ public class HahmonValinta : AltMonoBehaviour
         {
             // No character selected, log a message or handle the case as needed
             Debug.Log("No character selected.");
+            lockInButton.interactable = true;
         }
     }
 
@@ -233,11 +260,11 @@ public class HahmonValinta : AltMonoBehaviour
         {
             case CharacterID.Bodybuilder:
                 list.Add(CharacterID.Bodybuilder);
-                list.Add(CharacterID.Joker);
+                list.Add(CharacterID.Conman);
                 list.Add(CharacterID.Religious);
                 break;
-            case CharacterID.Comedian:
-                list.Add(CharacterID.Comedian);
+            case CharacterID.Joker:
+                list.Add(CharacterID.Joker);
                 list.Add(CharacterID.Racist);
                 list.Add(CharacterID.Religious);
                 break;
@@ -270,5 +297,18 @@ public class HahmonValinta : AltMonoBehaviour
                 break;
         }
         return list;
+    }
+
+    public List<CharacterID> SelectAllCharacters()
+    {
+        var list = new List<CharacterID>();
+
+        var charIds = Enum.GetValues(typeof(CharacterID));
+        foreach (CharacterID id in charIds)
+        {
+            if (!CustomCharacter.IsTestCharacter(id) && id != CharacterID.None)
+                list.Add(id);
+        }
+            return list;
     }
 }

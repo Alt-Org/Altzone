@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Language;
 using Altzone.Scripts.Model.Poco.Clan;
 using TMPro;
 using UnityEngine;
@@ -9,7 +10,7 @@ public class ClanSearchPopup : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _clanName;
     [SerializeField] private TextMeshProUGUI _clanDescription;
-    [SerializeField] private TextMeshProUGUI _clanMembers;
+    [SerializeField] private TextLanguageSelectorCaller _clanMembers;
     [SerializeField] private ClanHeartColorSetter _clanHeart;
     [SerializeField] private TextMeshProUGUI _winsRankText;
     [SerializeField] private TextMeshProUGUI _activityRankText;
@@ -25,7 +26,7 @@ public class ClanSearchPopup : MonoBehaviour
 
             _clanName.text = clanData.Name;
             _clanDescription.text = clanData.Phrase;
-            _clanMembers.text = "Jäsenet: " + clan.playerCount + "/25";
+            _clanMembers.SetText(SettingsCarrier.Instance.Language, new string[1] { clan.playerCount + "/25" });
             _clanHeart.SetOtherClanColors(clanData);
             _winsRankText.text = clanListing.WinsRank.text;
             _activityRankText.text = clanListing.ActivityRank.text;
@@ -38,7 +39,7 @@ public class ClanSearchPopup : MonoBehaviour
                 ValueImageHandle imageHandler = label.GetComponent<ValueImageHandle>();
                 imageHandler.SetLabelInfo(value);
             }
-
+            _joinClanButton.onClick.RemoveAllListeners();
             _joinClanButton.onClick.AddListener(() => { clanListing.JoinButtonPressed(); });
         }
     }

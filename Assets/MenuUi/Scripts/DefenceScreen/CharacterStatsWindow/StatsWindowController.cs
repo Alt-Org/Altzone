@@ -41,6 +41,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         public delegate void StatUpdatedHandler(StatType statType);
         public event StatUpdatedHandler OnStatUpdated;
 
+        public delegate void DebugModeChanged();
+        public event DebugModeChanged OnDebugModeChanged;
+
 
         private void Awake()
         {
@@ -130,7 +133,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             }
 
             // Setting _isSelected if _customCharacter is one of the characters the player has selected. Checking also for character id for test characters 
-            _isSelected = _playerData.SelectedCharacterIds.Contains(_customCharacter.ServerID) || _playerData.SelectedTestCharacterIds.Contains((int)_customCharacter.Id);
+            _isSelected = _playerData.SelectedCharacterIds.FirstOrDefault(c=> !c.IsTestCharacter ? c.ServerID == _customCharacter.ServerID : c.CharacterID == _customCharacter.Id) != null;
         }
 
 
@@ -162,9 +165,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// Get currently displayed character's class id.
         /// </summary>
         /// <returns>Current character's CharacterClassID.</returns>
-        public CharacterClassID GetCurrentCharacterClass()
+        public CharacterClassType GetCurrentCharacterClass()
         {
-            return CustomCharacter.GetClassID(_characterId);
+            return CustomCharacter.GetClass(_characterId);
         }
 
 
@@ -174,7 +177,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>Current character's ClassName.</returns>
         public string GetCurrentCharacterClassName()
         {
-            return _classReference.GetName(CustomCharacter.GetClassID(_characterId));
+            return _classReference.GetName(CustomCharacter.GetClass(_characterId));
         }
 
 
@@ -184,8 +187,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>Current character class alternative color as Color.</returns>
         public Color GetCurrentCharacterClassAlternativeColor()
         {
-            CharacterClassID classID = GetCurrentCharacterClass();
-            return _classReference.GetAlternativeColor(classID);
+            CharacterClassType classType = GetCurrentCharacterClass();
+            return _classReference.GetAlternativeColor(classType);
         }
 
 
@@ -195,8 +198,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>Current character class color as Color.</returns>
         public Color GetCurrentCharacterClassColor()
         {
-            CharacterClassID classID = GetCurrentCharacterClass();
-            return _classReference.GetColor(classID);
+            CharacterClassType classType = GetCurrentCharacterClass();
+            return _classReference.GetColor(classType);
         }
 
 
@@ -321,6 +324,11 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             OnUpgradeMaterialAmountChanged.Invoke();
         }
 
+        public void InvokeOnDebugModeChanged()
+        {
+            OnDebugModeChanged.Invoke();
+        }
+
 
         /// <summary>
         /// Try to decrease player's upgrade material by the amount specified.
@@ -331,13 +339,13 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             if (CheckIfEnoughUpgradeMaterial(amount)) 
             {
-                _playerData.DiamondSpeed -= amount;
-                OnUpgradeMaterialAmountChanged.Invoke();
+                //_playerData.DiamondSpeed -= amount;
+                //OnUpgradeMaterialAmountChanged.Invoke();
                 return true;
             }
             else
             {
-                PopupSignalBus.OnChangePopupInfoSignal("Ei tarpeeksi kyyneli‰.");
+                PopupSignalBus.OnChangePopupInfoSignal("Ei tarpeeksi kyyneli√§.");
                 return false;
             }
         }
@@ -450,6 +458,19 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             return (int)BaseCharacter.GetStatValueFP(statType, level);
         }
 
+        public Sprite GetCurrentCharacterPhotoSeries()
+        {
+            var info = PlayerCharacterPrototypes.GetCharacter(((int)_characterId).ToString());
+            if (info == null)
+            {
+                return null;
+            }
+            else
+            {
+                return info.CharPhotoSeries;
+            }
+        }
+
 
         /// <summary>
         /// Get stat's strength.
@@ -485,19 +506,26 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>True if stat can be increased false if stat can't be increased.</returns>
         public bool CanIncreaseStat(StatType statType, bool showPopupMessages = false)
         {
-            if (showPopupMessages)
+            if (!SettingsCarrier.Instance.StatDebuggingMode)
             {
                 if (!CheckCombinedLevelCap())
                 {
-                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi p‰ivitt‰‰ taitoa, taitojen summa on enint‰‰n {CustomCharacter.STATMAXCOMBINED}.");
+                    if (showPopupMessages) PopupSignalBus.OnChangePopupInfoSignal($"Et voi p√§ivitt√§√§ taitoa, taitojen summa on enint√§√§n {CustomCharacter.STATMAXCOMBINED}.");
+                    return false;
                 }
-                else if (!CheckStatLevelCap(statType))
+                else if (GetStatStrength(statType) == ValueStrength.None)
                 {
-                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi p‰ivitt‰‰ taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
+                    if (showPopupMessages) PopupSignalBus.OnChangePopupInfoSignal($"T√§t√§ taitoa ei voi muokata.");
+                    return false;
                 }
             }
+            if (!CheckStatLevelCap(statType))
+            {
+                if (showPopupMessages) PopupSignalBus.OnChangePopupInfoSignal($"Et voi p√§ivitt√§√§ taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
+                return false;
+            }
 
-            return statType != StatType.None && CheckCombinedLevelCap() && CheckStatLevelCap(statType);
+            return statType != StatType.None;
         }
 
 
@@ -518,25 +546,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
                 if (diamondsDecreased)
                 {
-                    switch (statType)
-                    {
-                        case StatType.Speed:
-                            _customCharacter.Speed++;
-                            break;
-                        case StatType.Attack:
-                            _customCharacter.Attack++;
-                            break;
-                        case StatType.Hp:
-                            _customCharacter.Hp++;
-                            break;
-                        case StatType.CharacterSize:
-                            _customCharacter.CharacterSize++;
-                            break;
-                        case StatType.Defence:
-                            _customCharacter.Defence++;
-                            break;
-                    }
-                    success = true;
+                    success = _customCharacter.IncreaseStat(statType);
                 }
             }
 
@@ -544,7 +554,10 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             {
                 _statsUpdated = true;
                 _playerData.UpdateCustomCharacter(_customCharacter);
+                OnUpgradeMaterialAmountChanged.Invoke();
                 OnStatUpdated.Invoke(statType);
+                gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+                gameObject.GetComponent<DailyTaskProgressListenerCharacterStats>().UpdateProgressByStatType(statType);
             }
 
             return success;
@@ -559,12 +572,25 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>True if stat can be decreased false if stat can't be decreased.</returns>
         public bool CanDecreaseStat(StatType statType, bool showPopupMessages = false)
         {
-            if (showPopupMessages && !(GetStat(statType) > GetBaseStat(statType)))
+            if(!SettingsCarrier.Instance.StatDebuggingMode){
+                if (showPopupMessages && !(GetStat(statType) > GetBaseStat(statType)))
+                {
+                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi v√§hent√§√§ pohjataitoa.");
+                    return false;
+                }
+                else if (GetStatStrength(statType) == ValueStrength.None)
+                {
+                    PopupSignalBus.OnChangePopupInfoSignal($"T√§t√§ taitoa ei voi muokata.");
+                    return false;
+                }
+            }
+            if (GetStat(statType) <= CustomCharacter.STATMINLEVEL)
             {
-                PopupSignalBus.OnChangePopupInfoSignal($"Et voi v‰hent‰‰ pohjataitoa.");
+                if (showPopupMessages) PopupSignalBus.OnChangePopupInfoSignal($"Et voi p√§ivitt√§√§ taitoa, minimi on {CustomCharacter.STATMINLEVEL}.");
+                return false;
             }
 
-            return GetStat(statType) > CustomCharacter.STATMINLEVEL && GetStat(statType) > GetBaseStat(statType);
+            return GetStat(statType) > CustomCharacter.STATMINLEVEL;
         }
 
 
@@ -581,25 +607,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (CanDecreaseStat(statType, true))
             {
-                switch (statType)
-                {
-                    case StatType.Speed:
-                        _customCharacter.Speed--;
-                        break;
-                    case StatType.Attack:
-                        _customCharacter.Attack--;
-                        break;
-                    case StatType.Hp:
-                        _customCharacter.Hp--;
-                        break;
-                    case StatType.CharacterSize:
-                        _customCharacter.CharacterSize--;
-                        break;
-                    case StatType.Defence:
-                        _customCharacter.Defence--;
-                        break;
-                }
-                success = true;
+                success = _customCharacter.DecreaseStat(statType);
             }
 
             if (success)
@@ -607,6 +615,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 _statsUpdated = true;
                 _playerData.UpdateCustomCharacter(_customCharacter);
                 OnStatUpdated.Invoke(statType);
+                gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             }
 
             return success;

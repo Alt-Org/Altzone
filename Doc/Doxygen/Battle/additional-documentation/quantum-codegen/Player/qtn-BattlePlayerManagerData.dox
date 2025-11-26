@@ -1,0 +1,85 @@
+/// @file BattlePlayerManagerData.qtn
+/// <summary>
+/// Contains enum and component used for managing all players's all characters and their states.
+/// </summary>
+///
+/// ## Generated Enums
+/// - @cref{Quantum,BattlePlayerPlayState}  
+///   @copybrief Quantum.BattlePlayerPlayState
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattlePlayerManagerDataQSingleton}  
+///   @copybrief Quantum.BattlePlayerManagerDataQSingleton
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattlePlayerPlayState
+/// <summary>
+/// Player state enum used to track the state of each player.
+/// </summary>
+///
+/// Tracks the state of the player itself and is detached from characters that the player uses.  
+/// Each PlayerSlot has a play state associated with it including slots that have no player.
+///
+/// @bigtext{Generated from @ref BattlePlayerManagerData.qtn}
+
+/// @var Quantum::BattlePlayerPlayState Quantum::BattlePlayerPlayState::NotInGame
+/// <summary>Player is not in game.</summary>
+///
+/// @var Quantum::BattlePlayerPlayState Quantum::BattlePlayerPlayState::OutOfPlay
+/// <summary>Player is in the game but has no character in the arena.</summary>
+///
+/// @var Quantum::BattlePlayerPlayState Quantum::BattlePlayerPlayState::OutOfPlayRespawning
+/// <summary>Player is in the game but their character is respawning.</summary>
+///
+/// @var Quantum::BattlePlayerPlayState Quantum::BattlePlayerPlayState::OutOfPlayFinal
+/// <summary>Player is in the game but they have ran out of characters.</summary>
+///
+/// @var Quantum::BattlePlayerPlayState Quantum::BattlePlayerPlayState::InPlay
+/// <summary>Player is in the game and has character in the arena.</summary>
+///
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattlePlayerManagerDataQSingleton
+/// <summary>
+/// Singleton component that manages players's states, playerRefs, characters, etc.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerManagerData.qtn}
+
+/// @var int Quantum.BattlePlayerManagerDataQSingleton::PlayerCount
+/// <summary>How many players are in the game session.</summary>
+///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::PlayStates
+/// <summary>Array of all characters's current PlayStates.</summary>
+///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::PlayerRefs
+/// <summary>Array of all PlayerRefs.</summary>
+///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::IsBot
+/// <summary>Bool array of bot states for all players.</summary>
+///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::IsAbandoned
+/// <summary>Bool array of abandoned states of all players.</summary>
+///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::RespawnTimer;
+/// <summary>Array for character respawn timers.</summary>
+///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::AllowCharacterSwapping;
+/// <summary>Check if player is able to swap characters.</summary>
+///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::SelectedCharacters
+/// <summary>Array of all currently selected characters.</summary>
+///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::SelectedCharacterNumbers
+/// <summary>Array of characters's numbers that are currently selected.</summary>
+///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::AllCharacters
+/// <summary>Array of all characters in the game session.</summary>
+///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::AllCharactersStates
+/// <summary>Array of all characters states.</summary>
+///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::PlayerGiveUpStates
+/// <summary>Bool array of give up states of all players.</summary>

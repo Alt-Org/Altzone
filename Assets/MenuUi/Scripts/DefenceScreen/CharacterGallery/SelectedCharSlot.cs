@@ -27,6 +27,8 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private TMP_Text _defenceText;
         [SerializeField] private TMP_Text _charSizeText;
 
+        [Space, SerializeField] private Image _classIcon;
+
         private void Awake()
         {
             if (_slotButton != null) _slotButton.onClick.AddListener(SignalBus.OnDefenceGalleryEditPanelRequestedSignal);
@@ -37,13 +39,16 @@ namespace MenuUi.Scripts.CharacterGallery
             _slotButton.onClick.RemoveAllListeners();
         }
 
-        public void SetInfo(CustomCharacter customCharacter, Sprite sprite, Color bgColor, Color bgAltColor, string name, string className)
+        public void SetInfo(CustomCharacter customCharacter, Sprite sprite, Color bgColor, Color bgAltColor, string name, string className, Sprite classIcon)
         {
             _characterImage.sprite = sprite;
             _characterNameText.text = name;
             _className.text = className;
             _backgroundLowerImage.color = bgColor;
             _backgroundUpperImage.color = bgAltColor;
+            _classIcon.sprite = classIcon;
+
+
             if (customCharacter != null)
             {
                 _pieChartPreview.UpdateChart(customCharacter.Id);

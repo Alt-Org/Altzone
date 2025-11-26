@@ -28,6 +28,7 @@ public class OnlinePlayerHandler : AltMonoBehaviour
 
     private void BuildOnlinePlayerList(List<ServerOnlinePlayer> list)
     {
+        if (!gameObject.activeSelf) return;
         foreach (Transform t in _content)
         {
             Destroy(t.gameObject);

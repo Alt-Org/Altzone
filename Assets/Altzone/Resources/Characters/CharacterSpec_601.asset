@@ -15,35 +15,40 @@ MonoBehaviour:
   Id: 601
   CharacterId: 601
   IsApproved: 1
-  Name: Sielunsisaruus
+  FinnishName: Symbioosi
+  EnglishName: Symbiosis
   ClassType: 600
-  CharacterDescription: "Sielunsisaruus on erottamaton kaksikko. Ulkopuolisille he
-    vaikuttavat kesken\xE4\xE4n kikattavilta bestiksilt\xE4, joiden ajatuksetkin
+  CharacterDescriptionFinnish: "Sielunsiskot ovat erottamaton kaksikko. Ulkopuolisille
+    he vaikuttavat kesken\xE4\xE4n kikattavilta bestiksilt\xE4, joiden ajatuksetkin
     virtaavat yhteen. He jakavat yhdess\xE4 riemut ja surut ja antavat toisilleen
     voimaa ja tukea. Heid\xE4n s\xE4rkym\xE4tt\xF6m\xE4n siteens\xE4 taustalla on
     kuitenkin salaisuus, jonka varjeleminen ja kanssael\xE4minen on tehnyt heist\xE4
-    yht\xE4.\r\nUhattuna Sielunsisaruus suojaa toisiaan puhaltamalla purkkapallon,
-    joka torjuu heit\xE4 kohti tulevan tunnetila-ammuksen.\r\n"
-  CharacterShortDescription: 'Taaimmaisen pulpettirivin erottamattomat ja purkantuoksuiset
-    bestikset '
+    yht\xE4, ja jonka painoa he eiv\xE4t yksin jaksaisi kantaa.\r\n\nUhattuina Sielunsiskot
+    suojaavat toisiaan puhaltamalla purkkapallon, joka torjuu heit\xE4 kohti tulevan
+    tunnetila-ammuksen.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: Taaimmaisen pulpettirivin erottamattomat ja purkantuoksuiset
+    bestikset
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 60f6f3d30c455c348833976e49b74d00, type: 2}
   Hp:
     Level: 2
     Coefficient: 5
   Speed:
-    Level: 2
-    Coefficient: 4
+    Level: 1
+    Coefficient: 0
   CharacterSize:
-    Level: 12
+    Level: 3
     Coefficient: 2
   Attack:
-    Level: 2
+    Level: 1
     Coefficient: 7
   Defence:
-    Level: 11
+    Level: 1
     Coefficient: 2
   GalleryImage: {fileID: 21300000, guid: 13a8471a6fe8dfd42ac7926700a46b7d, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: d57bc6fecfb4edf48a0351eaeb132a06, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
       Value: 1460331066001143074

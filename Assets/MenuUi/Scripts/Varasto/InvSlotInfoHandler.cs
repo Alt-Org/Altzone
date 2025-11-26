@@ -36,7 +36,19 @@ public class InvSlotInfoHandler : MonoBehaviour
         if (_icon.sprite == null) _icon.sprite = furn.Sprite;
 
         // Name
-        _topText.text = furn.VisibleName;
+        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+        {
+            _topText.text = furn.VisibleName;
+        }
+        else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+        {
+            _topText.text = furn.Info != null ? furn.Info.EnglishName : furn.VisibleName;
+        }
+        else
+        {
+            _topText.text = furn.VisibleName; // Fallback if the language is null
+        }
+
 
         // Weight
         switch (sortingBy)
@@ -58,8 +70,21 @@ public class InvSlotInfoHandler : MonoBehaviour
                 break;
         }
 
-        // Name
-        _inSoulHomeText.text = "Sielunkodissa";
+        // In Soul Home panel text
+        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+        {
+            _inSoulHomeText.text = "Sielunkodissa";
+        }
+        else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+        {
+            _inSoulHomeText.text = "In Soul Home";
+        }
+        else
+        {
+            _inSoulHomeText.text = "In Soul Home"; // Default fallback if the language is null
+        }
+
+        // Show/hide In Soul Home panel (original if/else)
         if (furn.Position == new Vector2Int(-1, -1))
         {
             _inSoulHomePanel.SetActive(false);
@@ -69,18 +94,41 @@ public class InvSlotInfoHandler : MonoBehaviour
             _inSoulHomePanel.SetActive(true);
         }
 
-        // Marked for selling
-        _markedForSellingText.text = "Myynnissä";
+        // Marked for Selling panel text
+        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+        {
+            _markedForSellingText.text = "Myynnissä";
+        }
+        else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+        {
+            _markedForSellingText.text = "In Selling";
+        }
+        else
+        {
+            _markedForSellingText.text = "In Selling"; // Default fallback if the language is null
+        }
         _markedForSellingPanel.SetActive(furn.ClanFurniture.VotedToSell);
 
-        // In voting
-        _inVotingText.text = "Äänestyksessä";
+        // In Voting panel text
+        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+        {
+            _inVotingText.text = "Äänestyksessä";
+        }
+        else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+        {
+            _inVotingText.text = "In Voting";
+        }
+        else
+        {
+            _inVotingText.text = "In Voting"; // Default fallback if the language is null
+        }
         _inVotingPanel.SetActive(furn.ClanFurniture.InVoting);
 
         // Coin
         if (sortingBy == 0 || sortingBy == 1) _coin.SetActive(true);
         else _coin.SetActive(false);
     }
+
 
     private Color GetColorByRarity(string rarity)
     {

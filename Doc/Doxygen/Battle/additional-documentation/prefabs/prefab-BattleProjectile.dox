@@ -1,0 +1,31 @@
+/// @file BattleProjectile.prefab
+/// <summary>
+/// Prefab for the projectile.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleProjectile**
+///     - *Components:*
+///         - Transform
+///         - %Quantum Entity Prototype
+///             - @cref{Quantum,BattleProjectileQComponent}
+///         - %Quantum Entity View
+///     - *Children:*
+///         - **ProjectileViewModel**
+///             - *Components:*
+///                 - Transform
+///                 - @cref{Battle.View.Projectile,BattleProjectileViewController}
+///                 - SpriteRenderer
+///                 - TrailRenderer
+///             - *Children:*
+///                 - **Glow**
+///                     - Transform
+///                     - SpriteRenderer
+///                     - Sprites-Default (Material)
+
+/// @file BattleProjectileEntityPrototype.qprototype
+/// <summary>
+/// EntityPrototype counterpart of @ref BattleProjectile.prefab
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).

@@ -1,50 +1,87 @@
-using System.Runtime.CompilerServices;
+/// @file BattlePlayerMovementController.cs
+/// <summary>
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerMovementController} class
+/// which contains the primary method for handling player movement as well as individual helper methods for moving and rotating players.
+/// </summary>
 
+// Unity usings
 using UnityEngine;
 using UnityEngine.Scripting;
 
+// Quantum usings
 using Quantum;
 using Input = Quantum.Input;
-using Quantum.Collections;
 using Photon.Deterministic;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
-using UnityEditor;
 
 namespace Battle.QSimulation.Player
 {
     /// <summary>
-    /// Handles player input, movement and rotations.<br/>
+    /// Handles player movement and rotation
     /// </summary>
+    ///
+    /// Contains the primary @cref{BattlePlayerMovementController,UpdateMovement} method for handling player movement, which is used by BattlePlayerQSystem.<br/>
+    /// Also contains individual helper methods for moving and rotating players, which can be used by other scripts.
     [Preserve]
     public static unsafe class BattlePlayerMovementController
     {
         /// <summary>
+        /// Initializes this classes BattleDebugLogger instance.<br/>
+        /// This method is exclusively for debug logging purposes.
+        /// </summary>
+        public static void Init()
+        {
+            s_debugLogger = BattleDebugLogger.Create(typeof(BattlePlayerMovementController));
+        }
+
+        /// <summary>
         /// Handles player's movement and rotation.
         /// </summary>
+        ///
         /// Checks Quantum Input for player's actions.<br/>
         /// When movement action is taken: Checks and updates player's TargetPosition based on input.<br/>
         /// When rotation action is taken: updates player's RotationOffset based on input.<br/>
         /// When rotation action is not taken: updates player's RotationOffset back to zero.<br/>
         /// Always: updates player's position and rotation based on the current TargetPosition and RotationOffset.<br/>
-        /// <param name="f">Current Quantum Frame</param>
-        /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter</a>.</param>
-        /// <param name="input">Player's Quantum Input</param>
+        ///
+        /// <param name="f">Current %Quantum %Frame.</param>
+        /// <param name="playerData">Pointer to player's BattlePlayerDataQComponent.</param>
+        /// <param name="transform">Pointer to player's transform component.</param>
+        /// <param name="input">Pointer to player's Quantum Input.</param>
         public static void UpdateMovement(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, Input* input)
         {
+            BattlePlayerQSpec spec = BattleQConfig.GetPlayerSpec(f);
+
             // constant
-            FP rotationSpeed = FP._10;
+            FP rotationSpeed = spec.RotationSpeed;
 
             FPVector2 positionNext = transform->Position;
 
             //{ handle movement
 
             // handle movement input
-            if (input->MovementInput != BattleMovementInputType.None)
+            switch (input->MovementInput)
             {
-                // get players TargetPosition
-                if (input->MovementInput == BattleMovementInputType.Direction)
-                {
+                case BattleMovementInputType.None:
+                    break;
+
+                case BattleMovementInputType.PositionTarget:
+                    ClampPosition(playerData, input->MovementPositionTarget, out playerData->TargetPosition);
+                    playerData->HasTargetPosition = true;
+                    break;
+
+                case BattleMovementInputType.PositionMove:
+                    positionNext = FPVector2.MoveTowards(transform->Position, input->MovementPositionMove, playerData->Stats.Speed * f.DeltaTime);
+                    if (ClampPosition(playerData, positionNext, out FPVector2 clampedNext))
+                    {
+                        positionNext = clampedNext;
+                    }
+                    playerData->TargetPosition = positionNext;
+                    break;
+
+                case BattleMovementInputType.Direction:
                     FPVector2 movementDirection = input->MovementDirection * (input->MovementDirectionIsNormalized ? playerData->Stats.Speed : FP._1);
                     positionNext = transform->Position + FPVector2.ClampMagnitude(movementDirection, playerData->Stats.Speed) * f.DeltaTime;
                     if (ClampPosition(playerData, positionNext, out FPVector2 clampedPosition))
@@ -52,14 +89,7 @@ namespace Battle.QSimulation.Player
                         positionNext = clampedPosition;
                     }
                     playerData->TargetPosition = positionNext;
-                }
-                else
-                {
-                    ClampPosition(playerData, input->MovementPosition, out playerData->TargetPosition);
-                    playerData->HasTargetPosition = true;
-                }
-
-                Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", playerData->TargetPosition);
+                    break;
             }
 
             // handle target position based movement
@@ -84,11 +114,12 @@ namespace Battle.QSimulation.Player
             //{ handle rotation
 
             // handle rotation input
-            if (input->RotationInput)
+            if (input->RotationInput && !playerData->DisableRotation)
             {
                 // set target angle
                 FP maxAngle = FP.Rad_45 * input->RotationValue;
-                maxAngle = FPMath.Clamp(maxAngle, -FP.Rad_45, FP.Rad_45);
+                FP maxAllowedAngle = spec.MaxRotationAngleDeg * FP.Deg2Rad;
+                maxAngle = FPMath.Clamp(maxAngle, -maxAllowedAngle, maxAllowedAngle);
 
                 // rotates to left
                 if (maxAngle > playerData->RotationOffset)
@@ -98,7 +129,7 @@ namespace Battle.QSimulation.Player
                     {
                         playerData->RotationOffset = maxAngle;
                     }
-                    Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", playerData->RotationOffset);
+                    s_debugLogger.LogFormat(f, "Leaning left(rotation: {0}", playerData->RotationOffset);
                 }
 
                 // rotates to right
@@ -109,10 +140,10 @@ namespace Battle.QSimulation.Player
                     {
                         playerData->RotationOffset = maxAngle;
                     }
-                    Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", playerData->RotationOffset);
+                    s_debugLogger.LogFormat(f, "Leaning right(rotation: {0}", playerData->RotationOffset);
                 }
             }
-            
+
             // returns player to 0 rotation when RotateMotion-input ends
             if (!input->RotationInput && playerData->RotationOffset != 0)
             {
@@ -140,18 +171,43 @@ namespace Battle.QSimulation.Player
             MoveAndRotate(f, playerData, transform, positionNext, playerData->RotationBase + playerData->RotationOffset);
         }
 
+        /// <summary>
+        /// Moves the player to the specified position while updating the hitbox.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerData">Pointer to the player's data component.</param>
+        /// <param name="transform">Pointer to the player's transform component.</param>
+        /// <param name="position">World position to move to.</param>
         public static void Move(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, FPVector2 position)
         {
             transform->Position = position;
             MoveHitbox(f, playerData, transform);
         }
 
+        /// <summary>
+        /// Rotates the player to the specified angle while updating the hitbox.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerData">Pointer to the player's data component.</param>
+        /// <param name="transform">Pointer to the player's transform component.</param>
+        /// <param name="radians">Target rotation angle in radians.</param>
         public static void Rotate(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, FP radians)
         {
             transform->Rotation = radians;
             MoveHitbox(f, playerData, transform);
         }
 
+        /// <summary>
+        /// Moves and rotates the player to the specified position and angle while updating the hitbox.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerData">Pointer to the player's data component.</param>
+        /// <param name="transform">Pointer to the player's transform component.</param>
+        /// <param name="position">World position to move to.</param>
+        /// <param name="radians">Target rotation angle in radians.</param>
         public static void MoveAndRotate(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, FPVector2 position, FP radians)
         {
             transform->Position = position;
@@ -159,12 +215,31 @@ namespace Battle.QSimulation.Player
             MoveHitbox(f, playerData, transform);
         }
 
+        /// <summary>
+        /// Instantly moves and rotates the player to the specified position and rotation, and teleports the hitbox.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerData">Pointer to the player's data component.</param>
+        /// <param name="transform">Pointer to the player's transform component.</param>
+        /// <param name="position">New world position.</param>
+        /// <param name="rotation">New rotation in radians.</param>
         public static void Teleport(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform, FPVector2 position, FP rotation)
         {
             transform->Teleport(f, position, rotation);
             TeleportHitbox(f, playerData, transform);
         }
 
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private static BattleDebugLogger s_debugLogger;
+
+        /// <summary>
+        /// Private method for moving and rotating all of the player's hitboxes to the player's current position and rotation.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerData">Pointer to the player's data component.</param>
+        /// <param name="transform">Pointer to the player's transform component.</param>
         private static void MoveHitbox(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform)
         {
             Transform2D* shieldTransform = f.Unsafe.GetPointer<Transform2D>(playerData->HitboxShieldEntity);
@@ -175,9 +250,18 @@ namespace Battle.QSimulation.Player
             characterTransform->Position = transform->Position;
             characterTransform->Rotation = transform->Rotation;
 
-            f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity)->Normal = FPVector2.Rotate(FPVector2.Up, transform->Rotation);
+            BattlePlayerHitboxQComponent* shieldComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity);
+
+            shieldComponent->Normal = FPVector2.Rotate(shieldComponent->NormalBase, transform->Rotation);
         }
 
+        /// <summary>
+        /// Private method for instantly teleporting all of player's hitboxes to the specified position and rotation.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerData">Pointer to the player's data component.</param>
+        /// <param name="transform">Pointer to the player's transform component.</param>
         private static void TeleportHitbox(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform)
         {
             Transform2D* shieldTransform = f.Unsafe.GetPointer<Transform2D>(playerData->HitboxShieldEntity);
@@ -186,9 +270,20 @@ namespace Battle.QSimulation.Player
             shieldTransform->Teleport(f, transform->Position, transform->Rotation);
             characterTransform->Teleport(f, transform->Position, transform->Rotation);
 
-            f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity)->Normal = FPVector2.Rotate(FPVector2.Up, transform->Rotation);
+            BattlePlayerHitboxQComponent* shieldComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity);
+
+            shieldComponent->Normal = FPVector2.Rotate(shieldComponent->NormalBase, transform->Rotation);
         }
 
+        /// <summary>
+        /// Clamps the grid position of the player to the playfield of their team.
+        /// </summary>
+        ///
+        /// <param name="playerData">Pointer to the player's data component.</param>
+        /// <param name="gridPosition">The grid position of the player.</param>
+        /// <param name="clampedPosition">The resulting clamped position of the player.</param>
+        ///
+        /// <returns>True if the position changed from clamping, false if it remained the same.</returns>
         private static bool ClampPosition(BattlePlayerDataQComponent* playerData, BattleGridPosition gridPosition, out FPVector2 clampedPosition)
         {
             BattleGridPosition clampedGridPosition;
@@ -219,9 +314,17 @@ namespace Battle.QSimulation.Player
             clampedPosition = BattleGridManager.GridPositionToWorldPosition(clampedGridPosition);
 
             return gridPosition.Col != clampedGridPosition.Col || gridPosition.Row != clampedGridPosition.Row;
-
         }
 
+        /// <summary>
+        /// Clamps the world position of the player to the playfield of their team.
+        /// </summary>
+        ///
+        /// <param name="playerData">Pointer to the player's data component.</param>
+        /// <param name="position">The world position of the player.</param>
+        /// <param name="clampedPosition">The resulting clamped position of the player.</param>
+        ///
+        /// <returns>True if the position changed from clamping, false if it remained the same.</returns>
         private static bool ClampPosition(BattlePlayerDataQComponent* playerData, FPVector2 position, out FPVector2 clampedPosition)
         {
             BattleGridPosition gridPosition = BattleGridManager.WorldPositionToGridPosition(position);

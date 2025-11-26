@@ -3,6 +3,7 @@ using System;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Altzone.Scripts.Chat;
 
 /// <summary>
 /// ChatController handles sending new chat messages and displaying received chat messages on the Global, Country and Clan chat windows.
@@ -47,13 +48,13 @@ public class ChatController : MonoBehaviour
         #region Chat Window initialization
 
         _chatWindows = new ChatWindow[] { _globalChatWindow, _clanChatWindow, _countryChatWindow };
-        _globalChatWindow.ChannelType = ChatListener.ChatChannelType.Global;
-        _clanChatWindow.ChannelType = ChatListener.ChatChannelType.Clan;
-        _countryChatWindow.ChannelType = ChatListener.ChatChannelType.Country;
+        _globalChatWindow.ChannelType = ChatChannelType.Global;
+        _clanChatWindow.ChannelType = ChatChannelType.Clan;
+        _countryChatWindow.ChannelType = ChatChannelType.Country;
 
-        _globalChatWindow.ChangeToWindowButton.onClick.AddListener(() => OnChatWindowChanged(ChatListener.ChatChannelType.Global));
-        _clanChatWindow.ChangeToWindowButton.onClick.AddListener(() => OnChatWindowChanged(ChatListener.ChatChannelType.Clan));
-        _countryChatWindow.ChangeToWindowButton.onClick.AddListener(() => OnChatWindowChanged(ChatListener.ChatChannelType.Country));
+        _globalChatWindow.ChangeToWindowButton.onClick.AddListener(() => OnChatWindowChanged(ChatChannelType.Global));
+        _clanChatWindow.ChangeToWindowButton.onClick.AddListener(() => OnChatWindowChanged(ChatChannelType.Clan));
+        _countryChatWindow.ChangeToWindowButton.onClick.AddListener(() => OnChatWindowChanged(ChatChannelType.Country));
 
         #endregion
 
@@ -62,14 +63,14 @@ public class ChatController : MonoBehaviour
 
     private void Start()
     {
-        ChatListener.Instance.ChatController = this;
+        //ChatListener.Instance.ChatController = this;
 
-        OnChatWindowChanged(ChatListener.Instance._activeChatChannel._chatChannelType);
+        OnChatWindowChanged(ChatListener.Instance.ActiveChatChannel);
 
         // If we have received chat messages before opening chat for the first time, display those messages.
-        if (ChatListener.Instance._chatMessages != null)
+        if (ChatListener.Instance.ChatMessages != null)
         {
-            foreach (var message in ChatListener.Instance._chatMessages)
+            foreach (var message in ChatListener.Instance.ChatMessages)
                 InstantiateChatMessagePrefab(message, false);
         }
     }
@@ -87,7 +88,7 @@ public class ChatController : MonoBehaviour
         if (message == "")
             return;
 
-        object[] dataToSend = new object[] { ChatListener.Instance._username, _chatMessageInputField.text, _moodDropdown.value, ChatListener.Instance._activeChatChannel._chatChannelType };
+        object[] dataToSend = new object[] {_chatMessageInputField.text, _moodDropdown.value, ChatListener.Instance.ActiveChatChannel };
         _chatMessageInputField.text = null;
     }
 
@@ -101,30 +102,30 @@ public class ChatController : MonoBehaviour
     {
         ChatWindow chatWindow;
 
-        if (!(chatWindow = Array.Find(_chatWindows, item => item.ChannelType == message._channel._chatChannelType)))
+        if (!(chatWindow = Array.Find(_chatWindows, item => item.ChannelType == message.Channel.ChatChannelType)))
             return null;
 
         ChatMessagePrefab chatMessageInstance;
 
         // Own messages are on right, other player messages on left
-        if (message._username == ChatListener.Instance._username)
+        if (message.Username == ChatListener.Instance.Username)
             chatMessageInstance = Instantiate(_chatMessageLocalPrefab, chatWindow.RectTransform).GetComponent<ChatMessagePrefab>();
         else
             chatMessageInstance = Instantiate(_chatMessageOthersPrefab, chatWindow.RectTransform).GetComponent<ChatMessagePrefab>();
 
-        chatMessageInstance.SetName(message._username);
-        chatMessageInstance.SetMessage(message._message);
+        chatMessageInstance.SetName(message.Username);
+        chatMessageInstance.SetMessage(message.Username);
         //chatMessageInstance.SetMessage(message._id + " - " + message._message);
-        chatMessageInstance.SetMood(message._mood);
-        chatMessageInstance.SetProfilePicture(message._channel._chatChannelType);
+        chatMessageInstance.SetMood(message.Mood);
+        //chatMessageInstance.SetProfilePicture(message.Channel.ChatChannelType);
         chatMessageInstance.SetFontSize(_fontSize);
 
         if (instantiateOnTop)
             chatMessageInstance.gameObject.transform.SetSiblingIndex(1);
 
         // Check if message id is 1 meaning that the message is first message in chat. If not, there are older messages on server so we set 'ToggleLoadMoreButton' active.
-        if (ActiveChatWindow)
-            ActiveChatWindow?.ToggleLoadMoreButton(!(ChatListener.Instance._activeChatChannel._firstMsgIndex <= 1));
+        //if (ActiveChatWindow)
+            //ActiveChatWindow?.ToggleLoadMoreButton(!(ChatListener.Instance._activeChatChannel.FirstMsgIndex <= 1));
 
         ForceRebuild(chatWindow.RectTransform);
 
@@ -138,10 +139,10 @@ public class ChatController : MonoBehaviour
     /// <remarks>
     /// This function gets called when Global, Clan or Country button gets pressed in the UI.
     /// </remarks>
-    internal void OnChatWindowChanged(ChatListener.ChatChannelType channelType)
+    internal void OnChatWindowChanged(ChatChannelType channelType)
     {
         ChatWindow chatWindow = Array.Find(_chatWindows, item => item.ChannelType == channelType);
-        int activeChatChannelIndex = Array.FindIndex(ChatListener.Instance._chatChannels, item => item._chatChannelType == channelType);
+        int activeChatChannelIndex = Array.FindIndex(ChatListener.Instance.ChatChannels, item => item.ChatChannelType == channelType);
 
         // Changes the desired window active and disable others
         foreach (ChatWindow window in _chatWindows)
@@ -151,13 +152,13 @@ public class ChatController : MonoBehaviour
         }
 
         ActiveChatWindow = chatWindow;
-        ChatListener.Instance._activeChatChannel = ChatListener.Instance._chatChannels[activeChatChannelIndex];
-        ActiveChatWindow.ToggleLoadMoreButton(!(ChatListener.Instance._activeChatChannel._firstMsgIndex <= 1));
-        _chatroomNameText.text = ChatListener.Instance._activeChatChannel._channelName;
+        //ChatListener.Instance._activeChatChannel = ChatListener.Instance._chatChannels[activeChatChannelIndex];
+        //ActiveChatWindow.ToggleLoadMoreButton(!(ChatListener.Instance._activeChatChannel.FirstMsgIndex <= 1));
+        _chatroomNameText.text = ChatListener.Instance.GetActiveChannel.ChannelName;
         ForceRebuild(ActiveChatWindow.RectTransform);
 
         // Refreshes the preview chat (the small chat) window messages
-        ChatListener.Instance?.ChatPreviewController?.OnActiveChatWindowChange(ChatListener.Instance._activeChatChannel);
+        //ChatListener.Instance?.ChatPreviewController?.OnActiveChatWindowChange(ChatListener.Instance._activeChatChannel);
     }
 
     /// <summary>
@@ -166,13 +167,13 @@ public class ChatController : MonoBehaviour
     /// <param name="chatName"></param>
     public void OnClanChatChanged(string chatName)
     {
-        int clanChannelIndex = Array.FindIndex(ChatListener.Instance._chatChannels, item => item._chatChannelType == ChatListener.ChatChannelType.Clan);
+        int clanChannelIndex = Array.FindIndex(ChatListener.Instance.ChatChannels, item => item.ChatChannelType == ChatChannelType.Clan);
 
-        ChatChannel clanChannel = ChatListener.Instance._chatChannels[clanChannelIndex];
+        ChatChannel clanChannel = ChatListener.Instance.ChatChannels[clanChannelIndex];
         clanChannel.Reset();
-        clanChannel._channelName = chatName;
+        //clanChannel.ChannelName = chatName;
 
-        _chatroomNameText.text = ChatListener.Instance._activeChatChannel._channelName;
+        _chatroomNameText.text = ChatListener.Instance.GetActiveChannel.ChannelName;
     }
 
     public void ShowErrorMessage(string errorText)
@@ -184,7 +185,7 @@ public class ChatController : MonoBehaviour
 
     public void DeleteChatHistory(ChatChannel channel)
     {
-        ChatWindow chatWindow = Array.Find(_chatWindows, item => item.ChannelType == channel._chatChannelType);
+        ChatWindow chatWindow = Array.Find(_chatWindows, item => item.ChannelType == channel.ChatChannelType);
         RectTransform rectTransform = chatWindow.RectTransform;
 
         foreach (Transform child in rectTransform)

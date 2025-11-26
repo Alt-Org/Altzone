@@ -11,7 +11,10 @@ public class PlayStyle : MonoBehaviour
     public TextMeshProUGUI styleText; // TMP text field
     public Button leftButton; // Left button
     public Button rightButton; // Right button
-    public string[] styles; // Style selection
+
+    [Header("Styles per Language")]
+    public string[] finnishStyles; // Finnish 
+    public string[] englishStyles; // English 
 
     private int currentIndex = 0; // Tracks the selected style
 
@@ -19,6 +22,16 @@ public class PlayStyle : MonoBehaviour
     {
         get => currentIndex;
         set => currentIndex = value;
+    }
+
+    private string[] CurrentStyles
+    {
+        get
+        {
+            if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                return englishStyles;
+            return finnishStyles; // Default to Finnish
+        }
     }
 
     void Start()
@@ -40,6 +53,8 @@ public class PlayStyle : MonoBehaviour
     // Updates the style text
     private void UpdateStyleText()
     {
+        var styles = CurrentStyles; // Pick the list based on language
+
         if (Enum.GetNames(typeof(PlayStyles)).Length > 0)
         {
             if (styles.Length > currentIndex)
@@ -55,23 +70,26 @@ public class PlayStyle : MonoBehaviour
 
     private void SelectPreviousStyle()
     {
-        currentIndex = (currentIndex - 1 + Enum.GetNames(typeof(PlayStyles)).Length) % Enum.GetNames(typeof(PlayStyles)).Length;
+        int count = Enum.GetNames(typeof(PlayStyles)).Length;
+        currentIndex = (currentIndex - 1 + count) % count;
         UpdateStyleText();
         SaveCurrentIndex();
     }
-
 
     private void SelectNextStyle()
     {
-        currentIndex = (currentIndex + 1) % Enum.GetNames(typeof(PlayStyles)).Length;
+        int count = Enum.GetNames(typeof(PlayStyles)).Length;
+        currentIndex = (currentIndex + 1) % count;
         UpdateStyleText();
         SaveCurrentIndex();
     }
 
-    // Saves the currentindex as a playerpref.
+    // Saves the current index as a playerpref.
     private void SaveCurrentIndex()
     {
         PlayerPrefs.SetInt("CurrentPlayStyleIndex", currentIndex);
         PlayerPrefs.Save();
+
+        gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
     }
 }

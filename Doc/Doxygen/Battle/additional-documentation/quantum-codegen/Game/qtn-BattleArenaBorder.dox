@@ -1,0 +1,30 @@
+/// @file BattleArenaBorder.qtn
+/// <summary>
+/// Contains component used for sidewalls.
+/// </summary>
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattleArenaBorderQComponent}  
+///   @copybrief Quantum.BattleArenaBorderQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleArenaBorderQComponent
+/// <summary>
+/// Component for left and right borders of play arena. Used to calculate projectile bounces.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleArenaBorder.qtn}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @var FPVector2 Quantum.BattleArenaBorderQComponent::Normal
+/// <summary>
+/// Arena border's <a href="https://en.wikipedia.org/wiki/Normal_(geometry)">Normal vector@u-exlink</a>.
+/// Affects the way projectile bounces off of the border.
+/// </summary>
+///
+/// @var FP Quantum.BattleArenaBorderQComponent::CollisionMinOffset
+/// <summary>How much projectile is allowed to accidentally penetrate into arena border before it's forcibly lifted out.</summary>
+///
+/// Used as a precaution to minimize cases where projectile gets stuck inside other entities.

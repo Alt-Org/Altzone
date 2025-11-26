@@ -22,6 +22,7 @@ namespace Altzone.Editor.CustomEditors
         SerializedProperty Defence;
         SerializedProperty GalleryImage;
         SerializedProperty GalleryHeadImage;
+        SerializedProperty CharPhotoSeries;
         SerializedProperty BattleEntityPrototype;
         SerializedProperty BattleUiSprite;
 
@@ -41,6 +42,7 @@ namespace Altzone.Editor.CustomEditors
             Defence = serializedObject.FindProperty(nameof(CharacterSpec.Defence));
             GalleryImage = serializedObject.FindProperty(nameof(CharacterSpec.GalleryImage));
             GalleryHeadImage = serializedObject.FindProperty(nameof(CharacterSpec.GalleryHeadImage));
+            CharPhotoSeries= serializedObject.FindProperty(nameof(CharacterSpec.CharPhotoSeries));
             BattleEntityPrototype = serializedObject.FindProperty(nameof(CharacterSpec.BattleEntityPrototype));
             BattleUiSprite = serializedObject.FindProperty(nameof(CharacterSpec.BattleUiSprite));
         }
@@ -114,13 +116,22 @@ namespace Altzone.Editor.CustomEditors
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("General Attributes", EditorStyles.boldLabel);
-            script.Name = EditorGUILayout.TextField("Name", script.Name);
-            script.ClassType = (CharacterClassID)EditorGUILayout.EnumPopup("Character Type", script.ClassType);
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Finnish");
+            script.FinnishName = EditorGUILayout.TextField("Name", script.FinnishName);
             EditorGUILayout.LabelField("Character Description");
             GUIStyle style = EditorStyles.textField;
             style.wordWrap = true;
-            script.CharacterDescription = EditorGUILayout.TextArea(script.CharacterDescription, style);
-            script.CharacterShortDescription = EditorGUILayout.TextField("Character Short Description", script.CharacterShortDescription);
+            script.CharacterDescriptionFinnish = EditorGUILayout.TextArea(script.CharacterDescriptionFinnish, style);
+            script.CharacterShortDescriptionFinnish = EditorGUILayout.TextField("Character Short Description", script.CharacterShortDescriptionFinnish);
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("English");
+            script.EnglishName = EditorGUILayout.TextField("Name", script.EnglishName);
+            EditorGUILayout.LabelField("Character Description");
+            script.CharacterDescriptionEnglish = EditorGUILayout.TextArea(script.CharacterDescriptionEnglish, style);
+            script.CharacterShortDescriptionEnglish = EditorGUILayout.TextField("Character Short Description", script.CharacterShortDescriptionEnglish);
+            EditorGUILayout.Space();
+            script.ClassType = (CharacterClassType)EditorGUILayout.EnumPopup("Character Type", script.ClassType);
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Special Attributes", EditorStyles.boldLabel);
@@ -144,6 +155,7 @@ namespace Altzone.Editor.CustomEditors
             EditorGUILayout.Space();
             EditorGUILayout.PropertyField(GalleryImage);
             EditorGUILayout.PropertyField(GalleryHeadImage);
+            EditorGUILayout.PropertyField(CharPhotoSeries);
 
             EditorGUILayout.Space();
             EditorGUILayout.PropertyField(BattleEntityPrototype);

@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
+  m_Name: CharacterSpec_104
+  m_EditorClassIdentifier: 
+  Id: 104
+  CharacterId: 104
+  IsApproved: 1
+  FinnishName: Kiusaaminen
+  EnglishName: Bullying
+  ClassType: 100
+  CharacterDescriptionFinnish: "Kiusaaminen on defenssi, joka k\xE4tkee oman ep\xE4varmuutensa
+    alistamalla muita. Se etsii suosiota ja valtaa n\xF6yryytt\xE4m\xE4ll\xE4 heikompiaan,
+    jolloin oma haavoittuvuus j\xE4\xE4 n\xE4kym\xE4tt\xF6miin. N\xE4enn\xE4inen
+    vahvuus on kuitenkin pelkoa: jos kiusaaminen joutuisi kohtaamaan tunteensa suoraan,
+    sen rakentama ylivoima romahtaisi.\r\n\nPeliss\xE4 kiusaamisen erikoisuus on,
+    ett\xE4 se k\xE4ytt\xE4\xE4 kilpens\xE4 menett\xE4nytt\xE4 tiimikaveria omana
+    suojanaan. Kun tunnetila-ammus osuu, se osuu kiusatun kautta, mutta t\xE4m\xE4n
+    HP ei laske \u2013 kiusaaminen s\xE4ilytt\xE4\xE4 toverin hengiss\xE4, mutta
+    samalla k\xE4ytt\xE4\xE4 t\xE4t\xE4 h\xE4ik\xE4ilem\xE4tt\xF6m\xE4sti hyv\xE4kseen."
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Heikompiaan kilpen\xE4 k\xE4ytt\xE4v\xE4, armoton
+    ja kylm\xE4 tyranni."
+  CharacterShortDescriptionEnglish: 
+  CharacterStats: {fileID: 11400000, guid: d5417892b75656244ad4e42fd4cdeb9a, type: 2}
+  Hp:
+    Level: 1
+    Coefficient: 7
+  Speed:
+    Level: 2
+    Coefficient: 0
+  CharacterSize:
+    Level: 2
+    Coefficient: 4
+  Attack:
+    Level: 2
+    Coefficient: 2
+  Defence:
+    Level: 3
+    Coefficient: 1
+  GalleryImage: {fileID: 21300000, guid: 19cc03f29a899ae49bcd7b2f5ee54612, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: 4f3530e4c17f5544bbdf05e44eff383b, type: 3}
+  CharPhotoSeries: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 1340680004139379478
+  BattleUiSprite: {fileID: 0}

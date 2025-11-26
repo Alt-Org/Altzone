@@ -90,6 +90,7 @@ GameObject:
   - component: {fileID: 8655163248595062648}
   - component: {fileID: 2772616211571145321}
   - component: {fileID: 4247753172218462768}
+  - component: {fileID: 4980898632107298806}
   m_Layer: 5
   m_Name: BronzeShopItem
   m_TagString: Untagged
@@ -250,6 +251,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _acceptButton: {fileID: 8655163248595062648}
+--- !u!114 &4980898632107298806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 436845431913420909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 4
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &2582442863878075617
 GameObject:
   m_ObjectHideFlags: 0

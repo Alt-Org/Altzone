@@ -7,13 +7,18 @@ using System.Collections;
 using MenuUi.Scripts.TabLine;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Common;
+using Altzone.Scripts.Chat;
 
 public class Chat : AltMonoBehaviour
 {
     [Header("Chat")]
     [SerializeField] private GameObject _languageChat;
+    [SerializeField] private GameObject _languageChatContent;
     [SerializeField] private GameObject _globalChat;
+    [SerializeField] private GameObject _globalChatContent;
     [SerializeField] private GameObject _clanChat;
+    [SerializeField] private GameObject _clanChatContent;
     private GameObject _currentContent; // Tällä hetkellä aktiivinen chatin content
 
     [Header("Send buttons")]
@@ -96,15 +101,18 @@ public class Chat : AltMonoBehaviour
 
     private void Start()
     {
+        ChatChannel.OnMessageHistoryReceived += RefreshChat;
+        ChatChannel.OnMessageReceived += DisplayMessage;
+
         // Alustaa chatit ja asettaa kielichatin oletukseksi
-        _currentContent = _languageChat;
-        Debug.Log("Language Chat is Active");
+        _currentContent = _clanChat;
+        Debug.Log("Clan Chat is Active");
 
-        messagesByChat[_languageChat] = new List<MessageObjectHandler>();
-        messagesByChat[_globalChat] = new List<MessageObjectHandler>();
-        messagesByChat[_clanChat] = new List<MessageObjectHandler>();
+        messagesByChat[_languageChatContent] = new List<MessageObjectHandler>();
+        messagesByChat[_globalChatContent] = new List<MessageObjectHandler>();
+        messagesByChat[_clanChatContent] = new List<MessageObjectHandler>();
 
-        LanguageChatActive();
+        ClanChatActive();
         _tablineScript.ActivateTabButton(1);
         AddResponses();
 
@@ -135,11 +143,17 @@ public class Chat : AltMonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        ChatChannel.OnMessageHistoryReceived -= RefreshChat;
+        ChatChannel.OnMessageReceived -= DisplayMessage;
+    }
+
     private void AddResponses()
     {
         StartCoroutine(GetPlayerData(data =>
         {
-            List<string> messageList = _chatResponseList.GetChatResponses((CharacterClassID)((data.SelectedCharacterId / 100) * 100));
+            List<string> messageList = _chatResponseList.GetChatResponses((CharacterClassType)((data.SelectedCharacterId / 100) * 100));
             foreach (string message in messageList)
             {
                 GameObject messageObject = Instantiate(_quickMessagePrefab, _chatResponseContent.transform);
@@ -174,28 +188,61 @@ public class Chat : AltMonoBehaviour
             // Check which message prefab should be used
             if(buttonUsed == _sendButtonSadness)
             {
-                SendChatMessage(_messagePrefabBlue);
+                SendChatMessage(Mood.Sad);
+                gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Sadness);
             }
             else if (buttonUsed == _sendButtonAnger)
             {
-                SendChatMessage(_messagePrefabRed);
+                SendChatMessage(Mood.Angry);
+                gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Anger);
             }
             else if (buttonUsed == _sendButtonJoy)
             {
-                SendChatMessage(_messagePrefabYellow);
+                SendChatMessage(Mood.Happy);
+                gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Joy);
             }
             else if (buttonUsed == _sendButtonPlayful)
             {
-                SendChatMessage(_messagePrefabOrange);
+                SendChatMessage(Mood.Wink);
+                gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Playful);
             }
             else if (buttonUsed == _sendButtonLove)
             {
-                SendChatMessage(_messagePrefabPink);
+                SendChatMessage(Mood.Love);
+                gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Love);
             }
         }
     }
 
-    public void SendChatMessage(GameObject messagePrefab)
+    private GameObject GetMessagePrefab(Mood mood, bool ownMsg)
+    {
+        if (ownMsg)
+        {
+            return mood switch
+            {
+                Mood.Love => _messagePrefabPink,
+                Mood.Happy => _messagePrefabYellow,
+                Mood.Sad => _messagePrefabBlue,
+                Mood.Wink => _messagePrefabOrange,
+                Mood.Angry => _messagePrefabRed,
+                _ => null,
+            };
+        }
+        else
+        {
+            return mood switch
+            {
+                Mood.Love => _otherMessages[4],
+                Mood.Happy => _otherMessages[2],
+                Mood.Sad => _otherMessages[0],
+                Mood.Wink => _otherMessages[3],
+                Mood.Angry => _otherMessages[1],
+                _ => null,
+            };
+        }
+    }
+
+    public void SendChatMessage(Mood mood)
     {
         // Lähettää käyttäjän syöttämän viestin aktiiviseen chattiin
         if (_currentContent == null)
@@ -222,10 +269,14 @@ public class Chat : AltMonoBehaviour
                 _inputField.text = "";
                 return;
             }
-
-            DisplayMessage(_inputField.text, messagePrefab);
+            ChatListener.Instance.SendMessage(_inputField.text, mood, ChatListener.Instance.ActiveChatChannel);
+            //DisplayMessage(_inputField.text, GetMessagePrefab(mood, true));
             _inputField.text = "";
-            this.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+            GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+            if (_currentContent == _clanChatContent)
+                _clanChatContent.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+            if (_currentContent == _globalChatContent)
+                _globalChatContent.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             MinimizeOptions();
         }
         else
@@ -251,15 +302,45 @@ public class Chat : AltMonoBehaviour
             Debug.LogError("Virhe: TMP_Text ei löydy painikkeesta.");
         }
     }
+    private void RefreshChat(ChatChannelType chatChannelType) => StartCoroutine(RefreshChatCoroutine(chatChannelType));
+    private IEnumerator RefreshChatCoroutine(ChatChannelType chatChannelType)
+    {
+        if (chatChannelType is ChatChannelType.Global)
+            yield return new WaitUntil(() => ChatListener.Instance.GlobalChatFetched);
+        if (chatChannelType is ChatChannelType.Clan)
+            yield return new WaitUntil(()=> ChatListener.Instance.ClanChatFetched);
+        if (gameObject.activeSelf)
+        {
+            DeleteAllMessages();
+            List<ChatMessage> messageList = ChatListener.Instance.GetChatChannel(chatChannelType).ChatMessages;
+            if(messageList != null)
+            foreach(ChatMessage message in messageList)
+            {
+                bool ownMsg = message?.SenderId == ServerManager.Instance.Player._id;
+                DisplayMessage(message, GetMessagePrefab(message.Mood, ownMsg));
+            }
+        }
+    }
+
+    private void DisplayMessage(ChatChannelType channelType,ChatMessage message)
+    {
+        Debug.LogWarning($"Test1: {channelType} {ChatListener.Instance.ActiveChatChannel}");
+        if (channelType != ChatListener.Instance.ActiveChatChannel) return;
+        Debug.LogWarning("Test2");
+        bool ownMsg = message?.SenderId == ServerManager.Instance.Player._id;
+        GameObject messagePrefab = GetMessagePrefab(message.Mood, ownMsg);
+
+        DisplayMessage(message, messagePrefab);
+    }
 
     // Näyttää viestin aktiivisessa chatti-ikkunassa
-    public void DisplayMessage(string messageText, GameObject messagePrefab)
+    public void DisplayMessage(ChatMessage message, GameObject messagePrefab)
     {
         if (messagePrefab != null)
         {
             GameObject newMessage = Instantiate(messagePrefab, _currentContent.transform);
 
-            newMessage.GetComponent<MessageObjectHandler>().SetMessageInfo(messageText, null, SelectMessage);
+            newMessage.GetComponent<MessageObjectHandler>().SetMessageInfo(message, SelectMessage);
 
             //AddMessageInteraction(newMessage);
 
@@ -377,20 +458,22 @@ public class Chat : AltMonoBehaviour
 
         messagesByChat[_currentContent].Clear();
 
-        // Disable message interaction elements
-        _deleteButtons.SetActive(false);
         DisableReactionPanel();
     }
 
     // Aktivoi globaalin chatin
     public void GlobalChatActive()
     {
-        _currentContent = _globalChat;
+        _currentContent = _globalChatContent;
+        ChatListener.Instance.ActiveChatChannel = ChatChannelType.Global;
         _currentScrollRect = _globalChatScrollRect;
 
         _globalChat.SetActive(true);
         _languageChat.SetActive(false);
         _clanChat.SetActive(false);
+
+        gameObject.GetComponent<FindAllChatOptions>().ChatOptionFound(FindAllChatOptions.ChatType.Global);
+        RefreshChat(ChatChannelType.Global);
 
         Debug.Log("Global Chat aktivoitu");
     }
@@ -398,25 +481,32 @@ public class Chat : AltMonoBehaviour
     // Aktivoi klaanichatin
     public void ClanChatActive()
     {
-        _currentContent = _clanChat;
+        _currentContent = _clanChatContent;
+        ChatListener.Instance.ActiveChatChannel = ChatChannelType.Clan;
         _currentScrollRect = _clanChatScrollRect;
 
         _clanChat.SetActive(true);
         _languageChat.SetActive(false);
         _globalChat.SetActive(false);
 
+        gameObject.GetComponent<FindAllChatOptions>().ChatOptionFound(FindAllChatOptions.ChatType.Clan);
+        RefreshChat(ChatChannelType.Clan);
+        
         Debug.Log("Klaani Chat aktivoitu");
     }
 
     // Aktivoi kielichatin
     public void LanguageChatActive()
     {
-        _currentContent = _languageChat;
+        _currentContent = _languageChatContent;
+        ChatListener.Instance.ActiveChatChannel = ChatChannelType.Country;
         _currentScrollRect = _languageChatScrollRect;
 
         _languageChat.SetActive(true);
         _globalChat.SetActive(false);
         _clanChat.SetActive(false);
+
+        gameObject.GetComponent<FindAllChatOptions>().ChatOptionFound(FindAllChatOptions.ChatType.Language);
 
         Debug.Log("Kielivalinnan mukainen Chat aktivoitu");
     }

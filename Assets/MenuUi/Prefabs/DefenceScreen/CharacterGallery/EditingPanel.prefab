@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7575852947494159402}
   - component: {fileID: 8252062722859949185}
   - component: {fileID: 4873729512373761633}
+  - component: {fileID: 6343855748492216498}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -137,6 +138,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6343855748492216498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 621772573814548979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Hahmoluokka
+  _englishText: Character class
 --- !u!1 &1037593369606687354
 GameObject:
   m_ObjectHideFlags: 0
@@ -571,6 +586,7 @@ GameObject:
   - component: {fileID: 3021520399484218644}
   - component: {fileID: 3589425074965034689}
   - component: {fileID: 5827182310047562413}
+  - component: {fileID: 6117548578006235160}
   m_Layer: 5
   m_Name: GalleryCharactersText
   m_TagString: Untagged
@@ -697,6 +713,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6117548578006235160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4770416591653735465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: 'Suojautumismekanismit:'
+  _englishText: "\rProtection mechanisms:"
 --- !u!1 &4874610571167452839
 GameObject:
   m_ObjectHideFlags: 0
@@ -709,6 +739,7 @@ GameObject:
   - component: {fileID: 3535410290677450142}
   - component: {fileID: 8555860404566742490}
   - component: {fileID: 8614597964242640291}
+  - component: {fileID: 6686949842177209940}
   m_Layer: 5
   m_Name: DefenceCharactersText
   m_TagString: Untagged
@@ -855,6 +886,20 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &6686949842177209940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4874610571167452839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: 'Muokkaa puolustusjoukkoa:'
+  _englishText: "\rEdit the defense team:"
 --- !u!1 &5076659952958224532
 GameObject:
   m_ObjectHideFlags: 0
@@ -1117,8 +1162,32 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3547355873501957344, guid: 20fb54da13688ec41b91a3819de69ee2,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4239574235990969888}
   m_SourcePrefab: {fileID: 100100000, guid: 20fb54da13688ec41b91a3819de69ee2, type: 3}
+--- !u!1 &3827928205086874816 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3547355873501957344, guid: 20fb54da13688ec41b91a3819de69ee2,
+    type: 3}
+  m_PrefabInstance: {fileID: 298703450195890208}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4239574235990969888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3827928205086874816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: 1. suojasi
+  _englishText: 1st protection
 --- !u!224 &6484617402347780612 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6762374876794546724, guid: 20fb54da13688ec41b91a3819de69ee2,
@@ -1258,8 +1327,32 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3547355873501957344, guid: 20fb54da13688ec41b91a3819de69ee2,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8842230332181950530}
   m_SourcePrefab: {fileID: 100100000, guid: 20fb54da13688ec41b91a3819de69ee2, type: 3}
+--- !u!1 &2647922041462824301 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3547355873501957344, guid: 20fb54da13688ec41b91a3819de69ee2,
+    type: 3}
+  m_PrefabInstance: {fileID: 1550912063682597261}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8842230332181950530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2647922041462824301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: 2. suojasi
+  _englishText: 2nd protection
 --- !u!224 &5214388064087325609 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6762374876794546724, guid: 20fb54da13688ec41b91a3819de69ee2,
@@ -1399,8 +1492,32 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3547355873501957344, guid: 20fb54da13688ec41b91a3819de69ee2,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8121052822540154638}
   m_SourcePrefab: {fileID: 100100000, guid: 20fb54da13688ec41b91a3819de69ee2, type: 3}
+--- !u!1 &1526988855652060232 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3547355873501957344, guid: 20fb54da13688ec41b91a3819de69ee2,
+    type: 3}
+  m_PrefabInstance: {fileID: 2596968508313419944}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8121052822540154638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1526988855652060232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: 3. suojasi
+  _englishText: 3rd protection
 --- !u!114 &5956022024752633765 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8548469126411933453, guid: 20fb54da13688ec41b91a3819de69ee2,

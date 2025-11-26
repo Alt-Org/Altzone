@@ -15,39 +15,45 @@ MonoBehaviour:
   Id: 401
   CharacterId: 401
   IsApproved: 1
-  Name: Provosointi
+  FinnishName: Provosointi
+  EnglishName: Provocation
   ClassType: 400
-  CharacterDescription: "Provosointi on tarinankertoja, joka kommunikoi taiteensa
-    kautta. H\xE4nen teoksensa ovat tapa k\xE4sitell\xE4 tunteita, l\xF6yt\xE4\xE4
+  CharacterDescriptionFinnish: "Provokaattori on tarinankertoja, joka kommunikoi
+    taiteensa kautta. H\xE4nen teoksensa ovat tapa k\xE4sitell\xE4 tunteita, l\xF6yt\xE4\xE4
     hopeareunuksia h\xE4nt\xE4 vaivaavista koettelemuksista ja sanoa ne asiat, mihin
-    ei l\xF6ydy sanoja. Provosoinnilla on my\xF6s syv\xE4 halu koskettaa muita ihmisi\xE4,
+    ei l\xF6ydy sanoja. H\xE4nell\xE4 on my\xF6s syv\xE4 halu koskettaa muita ihmisi\xE4,
     luoda heiss\xE4 reaktioita ja kokemuksia sek\xE4 haastaa heid\xE4n n\xE4kemyksi\xE4\xE4n
     taiteensa v\xE4lityksell\xE4. H\xE4nen tarinansa on kaikkien luettavissa, mutta
-    se aukeaa vain niille, jotka katsovat pintaa syvemm\xE4lle.\r\n\nProvosointi
+    se aukeaa vain niille, jotka katsovat pintaa syvemm\xE4lle. Vaikka Provokaattori
+    vuodattaa itsens\xE4 kankaalle, piiloutuu h\xE4n my\xF6s teostensa taakse. Kipe\xE4n
+    kritiikin iskiess\xE4 kyse ei olekaan h\xE4nest\xE4, vaan kaikki on silkkaa metaforaa.\r\n\r\nProvokaattori
     kantaa mukanaan spraypulloa, jota suihkuttelemalla h\xE4n ohjaa tunnetila-ammukset
     tiimil\xE4isi\xE4\xE4n kohden, k\xE4ytt\xE4en taiteensa luomaa et\xE4isyytt\xE4
-    suojanaan. \r\n"
-  CharacterShortDescription: "Taiteellaan reaktioita hakeva ja n\xE4kemyksi\xE4 haastava
-    tarinankertoja "
+    suojanaan. \r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Taiteellaan reaktioita hakeva ja n\xE4kemyksi\xE4
+    haastava tarinankertoja"
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 112eae0352546614eb6f0e604f298fbe, type: 2}
   Hp:
-    Level: 3
+    Level: 0
     Coefficient: 5
   Speed:
-    Level: 4
-    Coefficient: 4
+    Level: 5
+    Coefficient: 0
   CharacterSize:
-    Level: 8
+    Level: 3
     Coefficient: 6
   Attack:
-    Level: 7
+    Level: 2
     Coefficient: 3
   Defence:
-    Level: 10
+    Level: 3
     Coefficient: 4
   GalleryImage: {fileID: 21300000, guid: c3ccef0c9c6027b46848eb4ad73c7a2d, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: e79a0768bf2ec0f46ac14e6d222af8cb, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
-      Value: 1286399208554013761
+      Value: 1421404513080050552
   BattleUiSprite: {fileID: 0}

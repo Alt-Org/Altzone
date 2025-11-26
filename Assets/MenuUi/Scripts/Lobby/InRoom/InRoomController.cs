@@ -9,6 +9,10 @@ using UnityEngine.UI;
 
 using SignalBus = MenuUi.Scripts.Signals.SignalBus;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
+using System.Collections.Generic;
+using Altzone.Scripts.Language;
+using System;
+using Random = UnityEngine.Random;
 
 namespace MenuUi.Scripts.Lobby.InRoom
 {
@@ -18,7 +22,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
     public class InRoomController : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI _title;
-        [SerializeField] private TextMeshProUGUI _battleID;
+        [SerializeField] private TextLanguageSelectorCaller _conflictText;
+        [SerializeField] private List<Conflicts> _conflicts;
         [SerializeField] private Button _startGameButton;
         [SerializeField] private Button _backButton;
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
@@ -40,6 +45,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             {
                 case GameType.Custom:
                     if (_title != null) StartCoroutine(SetRoomTitle());
+                    if (_conflictText != null) StartCoroutine(CycleConflicts());
                     break;
                 case GameType.Random2v2:
                     //if (_title != null) _title.text = "Keräily 2v2";
@@ -125,6 +131,40 @@ namespace MenuUi.Scripts.Lobby.InRoom
             string roomName = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PhotonLobbyRoom.RoomNameKey);
             if (string.IsNullOrEmpty(roomName)) roomName = PhotonRealtimeClient.LobbyCurrentRoom.Name;
             _title.text = roomName;
+        }
+
+        private IEnumerator CycleConflicts()
+        {
+            if (_conflicts == null || _conflicts.Count == 0) yield break;
+            yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
+            int previousConflict = -1;
+            while (PhotonRealtimeClient.InRoom)
+            {
+                int selectedConflict = Random.Range(0, _conflicts.Count);
+                if (selectedConflict == previousConflict) continue;
+                _conflictText.SetText(_conflicts[selectedConflict].ConlictText);
+                yield return new WaitForSecondsRealtime(7);
+            }
+            
+        }
+    }
+    [Serializable]
+    public class Conflicts
+    {
+        [SerializeField, TextArea(1, 5)] private string _finnishConflictText;
+        [SerializeField, TextArea(1, 5)] private string _englishConflictText;
+
+        public string ConlictText
+        {
+            get
+            {
+                switch (SettingsCarrier.Instance.Language)
+                {
+                    case SettingsCarrier.LanguageType.Finnish: return _finnishConflictText;
+                    case SettingsCarrier.LanguageType.English: return _englishConflictText;
+                    default: return _finnishConflictText;
+                }
+            }
         }
     }
 }

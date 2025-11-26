@@ -57,7 +57,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 return;
             }
 
-            if (_controller.GetCurrentCharacterClass() == CharacterClassID.Obedient) // obedient characters can't be modified
+            if (_controller.GetCurrentCharacterClass() == CharacterClassType.Obedient) // obedient characters can't be modified
             {
                 PopupSignalBus.OnChangePopupInfoSignal("Tottelijoita ei voi muokata.");
                 ClosePopUp();

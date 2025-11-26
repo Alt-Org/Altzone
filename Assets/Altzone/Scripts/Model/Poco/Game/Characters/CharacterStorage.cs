@@ -56,6 +56,12 @@ namespace Altzone.Scripts.Model.Poco.Game
         internal void UpdateList()
         {
             if(_characterList == null)_characterList = new List<BaseCharacter>();
+
+            for(int i = _characterList.Count-1; i>=0;  i--)
+            {
+                if(_characterList[i] == null) _characterList.RemoveAt(i);
+            }
+
             //This finds every class that inherits the BaseCharacter class (and isn't abstract class like the CharacterClass classes)
             //and calls their constructor followed by adding them to the characterlist.
             foreach (Type type in Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(BaseCharacter))))

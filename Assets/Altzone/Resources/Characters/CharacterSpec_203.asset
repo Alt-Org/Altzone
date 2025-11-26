@@ -15,34 +15,43 @@ MonoBehaviour:
   Id: 203
   CharacterId: 203
   IsApproved: 1
-  Name: Huijaaminen
+  FinnishName: Huijaaminen
+  EnglishName: Deception
   ClassType: 200
-  CharacterDescription: "Huijaaminen saa muut jopa kyseenalaistamaan omat ajatuksensa.
-    H\xE4n pystyy viekkailla valheillaan pit\xE4m\xE4\xE4n ihmiset sopivalla et\xE4isyydell\xE4
-    ja vieritt\xE4m\xE4\xE4n syyn aina toisten niskoille. Harhauttavat silm\xE4nk\xE4\xE4nt\xF6temput
-    ja illuusiot menev\xE4t kuitenkin niin syv\xE4lle, ett\xE4 h\xE4nen on itsens\xE4kin
-    vaikea en\xE4\xE4 n\xE4hd\xE4 niiden l\xE4vitse.\r\n\nHuijaamisen suojakilpen\xE4
-    toimii v\xE4\xE4rennetty korttipakka, jonka avulla h\xE4n ohjaa tunnetila-ammukset
-    poisp\xE4in itsest\xE4\xE4n.\r"
-  CharacterShortDescription: 'Charmikas ja hopeakielinen manipuloija '
+  CharacterDescriptionFinnish: "Huijaaminen on defenssi, joka rakentaa ymp\xE4rilleen
+    kulissien maailman. Sen tarkoitus on h\xE4m\xE4rt\xE4\xE4 todellisuutta ja johdattaa
+    huomio pois omasta haavoittuvuudesta. Huijari ei kohtaa tunnetiloja suoraan,
+    vaan saa muut ep\xE4ilem\xE4\xE4n omia havaintojaan ja ajatteluaan. Se tarjoaa
+    hetken illuusion hallinnasta ja ylivoimasta, mutta samalla et\xE4\xE4nnytt\xE4\xE4
+    yksil\xF6n aidosta yhteydest\xE4 muihin.\r\n\nPeliss\xE4 huijarin suojakilpen\xE4
+    toimii kiilt\xE4v\xE4 vihre\xE4 urheiluauto. Se ei heikkene iskuista, vaan ponnauttaa
+    tunnetila-ammuksen yll\xE4tt\xE4viin suuntiin \u2013 joskus vastustajaa kohti,
+    joskus kaaokseksi, joka osuu kenet tahansa. Huijaaminen luo siten turvaa vain
+    n\xE4enn\xE4isesti, sill\xE4 sen arvaamattomuus voi k\xE4\xE4nty\xE4 my\xF6s
+    liittolaisia vastaan."
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: Arvaamattomasti tunteet kimmottava, illuusioon
+    verhoutuva defenssi.
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 11e8f352fa68f5640a735c87c46dd673, type: 2}
   Hp:
-    Level: 2
+    Level: 1
     Coefficient: 4
   Speed:
-    Level: 10
-    Coefficient: 2
-  CharacterSize:
     Level: 6
+    Coefficient: 0
+  CharacterSize:
+    Level: 2
     Coefficient: 6
   Attack:
-    Level: 7
+    Level: 2
     Coefficient: 5
   Defence:
-    Level: 5
+    Level: 2
     Coefficient: 7
   GalleryImage: {fileID: 21300000, guid: cfee47f40c406b048980cbc48970234f, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: d6b28ed8c5bee024a8a6798e363271a6, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
       Value: 1399946060019305741

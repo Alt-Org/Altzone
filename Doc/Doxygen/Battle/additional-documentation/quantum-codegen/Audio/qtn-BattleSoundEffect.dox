@@ -1,0 +1,29 @@
+/// @file BattleSoundEffect.qtn
+/// <summary>
+/// Contains enum that has all battle sound effects.
+/// </summary>
+///
+/// ## Generated Enums
+/// - @cref{Quantum,BattleSoundFX}  
+///   @copybrief Quantum.BattleSoundFX
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattleSoundFX
+/// <summary>
+/// Enum that defines sound effects in battle.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleSoundEffect.qtn}
+
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::SoulWallHit
+/// <summary>Play sound when projectile hit SoulWall.</summary>
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::GoalHit
+/// <summary>Play sound when projectile hit goal.</summary>
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::SideWallHit
+/// <summary>Play sound when projectile hit SideWall.</summary>
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::WallBroken
+/// <summary>Play sound when SoulWall is broken.</summary>

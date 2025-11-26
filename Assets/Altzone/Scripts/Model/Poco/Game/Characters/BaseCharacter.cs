@@ -53,7 +53,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         [SerializeField] protected ValueStrength _defenceStrength = ValueStrength.None;
 
         public CharacterID Id { get => _id;}
-        public virtual CharacterClassID ClassID { get => GetClassID(Id); }
+        public virtual CharacterClassType ClassType { get => GetClass(Id); }
         public int Hp { get => _hp;}
         public int DefaultHp { get => _defaultHp; set { _defaultHp = value; SaveData(); } }
         public int Speed { get => _speed;}
@@ -102,12 +102,12 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             return type switch
             {
-                StatType.None       => (FP)(-1),
-                StatType.Attack     => GetAttackValue(level),
-                StatType.Defence    => GetDefenceValue(level),
+                StatType.None          => (FP)(-1),
+                StatType.Attack        => GetAttackValue(level),
+                StatType.Defence       => GetDefenceValue(level),
                 StatType.CharacterSize => GetCharacterSizeValue(level),
-                StatType.Hp         => GetHpValue(level),
-                StatType.Speed      => GetSpeedValue(level),
+                StatType.Hp            => GetHpValue(level),
+                StatType.Speed         => GetSpeedValue(level),
 
                 _ => (FP)(-1),
             };
@@ -117,30 +117,30 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             return level switch
             {
-                 1 =>   5,
-                 2 =>  10,
+                 1 =>  10,
+                 2 =>  15,
                  3 =>  20,
-                 4 =>  30,
-                 5 =>  40,
-                 6 =>  50,
-                 7 =>  60,
-                 8 =>  70,
-                 9 =>  80,
-                10 =>  90,
-                11 => 100,
-                12 => 110,
-                13 => 120,
-                14 => 130,
-                15 => 140,
-                16 => 150,
-                17 => 160,
-                18 => 170,
-                19 => 180,
-                20 => 190,
-                21 => 200,
-                22 => 210,
-                23 => 220,
-                24 => 230,
+                 4 =>  25,
+                 5 =>  30,
+                 6 =>  35,
+                 /*7 => 12,
+                 8 => 14,
+                 9 => 16,
+                10 => 18,
+                11 => 20,
+                12 => 22,
+                13 => 24,
+                14 => 26,
+                15 => 28,
+                16 => 30,
+                17 => 32,
+                18 => 34,
+                19 => 36,
+                20 => 38,
+                21 => 40,
+                22 => 42,
+                23 => 44,
+                24 => 46,*/
 
                 _ => -1,
             };
@@ -150,13 +150,13 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             return level switch
             {
-                 1 =>  50,
-                 2 =>  75,
-                 3 => 100,
-                 4 => 125,
-                 5 => 150,
-                 6 => 175,
-                 7 => 200,
+                 1 =>  250,
+                 2 =>  375,
+                 3 => 500,
+                 4 => 625,
+                 5 => 750,
+                 6 => 875,
+                 /*7 => 200,
                  8 => 225,
                  9 => 250,
                 10 => 275,
@@ -173,7 +173,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                 21 => 550,
                 22 => 575,
                 23 => 600,
-                24 => 625,
+                24 => 625,*/
 
                 _ => -1,
             };
@@ -216,30 +216,30 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             return level switch
             {
-                 1 =>   5,
-                 2 =>  10,
-                 3 =>  20,
-                 4 =>  30,
-                 5 =>  40,
-                 6 =>  50,
-                 7 =>  60,
-                 8 =>  70,
-                 9 =>  80,
-                10 =>  90,
-                11 => 100,
-                12 => 110,
-                13 => 120,
-                14 => 130,
-                15 => 140,
-                16 => 150,
-                17 => 160,
-                18 => 170,
-                19 => 180,
-                20 => 190,
-                21 => 200,
-                22 => 210,
-                23 => 220,
-                24 => 230,
+                 1 =>   15,
+                 2 =>   30,
+                 3 =>  45,
+                 4 =>  60,
+                 5 =>  75,
+                 6 =>  90,
+                 /*7 =>  36,
+                 8 =>  42,
+                 9 =>  48,
+                10 =>  54,
+                11 =>  60,
+                12 =>  66,
+                13 =>  72,
+                14 =>  78,
+                15 =>  84,
+                16 =>  90,
+                17 =>  96,
+                18 => 102,
+                19 => 108,
+                20 => 114,
+                21 => 120,
+                22 => 126,
+                23 => 132,
+                24 => 138,*/
 
                 _ => -1,
             };
@@ -249,30 +249,12 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             return level switch
             {
-                 1 =>  4,
-                 2 =>  4,
-                 3 =>  4,
-                 4 =>  6,
-                 5 =>  6,
-                 6 =>  6,
-                 7 =>  8,
-                 8 =>  8,
-                 9 =>  8,
-                10 =>  8,
-                11 => 10,
-                12 => 10,
-                13 => 10,
-                14 => 10,
-                15 => 12,
-                16 => 12,
-                17 => 12,
-                18 => 12,
-                19 => 14,
-                20 => 14,
-                21 => 14,
-                22 => 16,
-                23 => 16,
-                24 => 16,
+                 1 =>  10,
+                 2 =>  12,
+                 3 =>  14,
+                 4 =>  16,
+                 5 =>  18,
+                 6 =>  20,
 
                 _ => -1,
             };
@@ -441,10 +423,10 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         #endregion
 
-        public static CharacterClassID GetClassID(CharacterID id)
+        public static CharacterClassType GetClass(CharacterID id)
         {
-            CharacterClassID ClassId = (CharacterClassID)((((int)id) / 100) * 100);
-            return ClassId;
+            CharacterClassType ClassType = (CharacterClassType)((((int)id) / 100) * 100);
+            return ClassType;
         }
     }
 }

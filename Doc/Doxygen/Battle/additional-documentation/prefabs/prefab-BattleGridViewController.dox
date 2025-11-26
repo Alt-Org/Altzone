@@ -1,0 +1,16 @@
+/// @file BattleGridViewController.prefab
+/// <summary>
+/// Prefab for the Grid.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleGridViewController**
+///     - *Components:*
+///         - Transform
+///         - @cref{Battle.View.Game,BattleGridViewController}
+///     - *Children:*
+///         - **GridCell**
+///             - *Components:*
+///                 - Transform
+///                 - SpriteRenderer
+///                 - Sprites-Default (Material)

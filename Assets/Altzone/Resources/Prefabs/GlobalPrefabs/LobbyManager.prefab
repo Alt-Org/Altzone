@@ -45,6 +45,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _naviTarget: {fileID: 11400000, guid: 2f5b2d9d5d0943f439cefe593f938d9c, type: 2}
+  _useNonDefaultWindow: 0
+  _targetWindow: 0
   _isCurrentPopOutWindow: 0
 --- !u!1 &3985247889818281885
 GameObject:
@@ -91,7 +93,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _naviTarget: {fileID: 11400000, guid: 788f9d753ce503045bfe455e66f76270, type: 2}
-  _isCurrentPopOutWindow: 0
+  _useNonDefaultWindow: 0
+  _targetWindow: 0
+  _isCurrentPopOutWindow: 1
 --- !u!1 &4221137947122957600
 GameObject:
   m_ObjectHideFlags: 0
@@ -151,44 +155,48 @@ MonoBehaviour:
       Id:
         Value: 1499697656464696716
     PlayerNickname: 
+    UserID: 
     PlayerSlot: 0
     Characters:
     - Id: 0
       Class: 0
-      Hp:
-        RawValue: 0
-      Speed:
-        RawValue: 0
-      CharacterSize:
-        RawValue: 0
-      Attack:
-        RawValue: 0
-      Defence:
-        RawValue: 0
+      Stats:
+        Hp:
+          RawValue: 0
+        Speed:
+          RawValue: 0
+        CharacterSize:
+          RawValue: 0
+        Attack:
+          RawValue: 0
+        Defence:
+          RawValue: 0
     - Id: 0
       Class: 0
-      Hp:
-        RawValue: 0
-      Speed:
-        RawValue: 0
-      CharacterSize:
-        RawValue: 0
-      Attack:
-        RawValue: 0
-      Defence:
-        RawValue: 0
+      Stats:
+        Hp:
+          RawValue: 0
+        Speed:
+          RawValue: 0
+        CharacterSize:
+          RawValue: 0
+        Attack:
+          RawValue: 0
+        Defence:
+          RawValue: 0
     - Id: 0
       Class: 0
-      Hp:
-        RawValue: 0
-      Speed:
-        RawValue: 0
-      CharacterSize:
-        RawValue: 0
-      Attack:
-        RawValue: 0
-      Defence:
-        RawValue: 0
+      Stats:
+        Hp:
+          RawValue: 0
+        Speed:
+          RawValue: 0
+        CharacterSize:
+          RawValue: 0
+        Attack:
+          RawValue: 0
+        Defence:
+          RawValue: 0
   _quantumBattleMap: {fileID: 11400000, guid: 1229d24fffb0b0d459dd9ee59b53aa87, type: 2}
   _quantumBattleSimulationConfig: {fileID: 11400000, guid: 4f67e7d642209df49a61ad5e088c044b,
     type: 2}
@@ -260,6 +268,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _naviTarget: {fileID: 11400000, guid: 3fd4e51ea1a059243886ffd6333b0a53, type: 2}
+  _useNonDefaultWindow: 0
+  _targetWindow: 0
   _isCurrentPopOutWindow: 0
 --- !u!1 &6052538246458574000
 GameObject:
@@ -306,6 +316,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _naviTarget: {fileID: 11400000, guid: 0efae5d4b274fae498c862116f9067a9, type: 2}
+  _useNonDefaultWindow: 0
+  _targetWindow: 0
   _isCurrentPopOutWindow: 0
 --- !u!1 &6294811056158181536
 GameObject:
@@ -352,6 +364,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _naviTarget: {fileID: 11400000, guid: 4fd2d13144793604a80032bc175f1eaf, type: 2}
+  _useNonDefaultWindow: 0
+  _targetWindow: 0
   _isCurrentPopOutWindow: 0
 --- !u!1 &8174425274012440085
 GameObject:
@@ -398,4 +412,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _naviTarget: {fileID: 11400000, guid: 4c5d517bed931614fbd87d8d3b1ad238, type: 2}
+  _useNonDefaultWindow: 0
+  _targetWindow: 0
   _isCurrentPopOutWindow: 0

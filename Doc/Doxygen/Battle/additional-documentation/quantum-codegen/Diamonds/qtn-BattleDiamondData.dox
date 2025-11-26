@@ -1,0 +1,40 @@
+/// @file BattleDiamondData.qtn
+/// <summary>
+/// Contains component used for diamonds, that handles their lifetimes.
+/// </summary>
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattleDiamondDataQComponent}  
+///   @copybrief Quantum.BattleDiamondDataQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleDiamondDataQComponent
+/// <summary>
+/// Keeps track of each diamond's lifetime and owner team.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleDiamondData.qtn}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @var FrameTimer Quantum.BattleDiamondDataQComponent::LifetimeTimer
+/// <summary>A timer used to despawn a diamond after it ends.</summary>
+///
+/// @var bool Quantum.BattleDiamondDataQComponent::IsTraveling
+/// <summary>True if diamond is currently moving across the arena, false if not.</summary>
+///
+/// @var FP Quantum.BattleDiamondDataQComponent::TravelSpeed
+/// <summary>The speed at which a diamond is currently moving.</summary>
+///
+/// @var FPVector2 Quantum.BattleDiamondDataQComponent::TravelDirection
+/// <summary>The direction in which a diamond is currently moving.</summary>
+///
+/// @var FPVector2 Quantum.BattleDiamondDataQComponent::StartPosition
+/// <summary>
+/// The position which the diamond began traveling from.  
+/// Used to calculate when it reaches its target distance.
+/// </summary>
+///
+/// @var FP Quantum.BattleDiamondDataQComponent::TargetDistance
+/// <summary>The vertical distance which a diamond will travel before stopping.</summary>

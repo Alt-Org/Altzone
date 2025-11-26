@@ -56,15 +56,21 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         _playerImage.gameObject.SetActive(false);
     }
 
-    //private void OnDestroy()
-    //{
-    //    if (_taskData != null)
-    //    {
-    //        _taskData.OnTaskSelected -= TaskSelected;
-    //        _taskData.OnTaskDeselected -= TaskDeselected;
-    //        _taskData.OnTaskUpdated -= UpdateProgressBar;
-    //    }
-    //}
+    private void Start()
+    {
+        SettingsCarrier.OnLanguageChanged += UpdateLanguage;
+    }
+
+    private void OnDestroy()
+    {
+        SettingsCarrier.OnLanguageChanged -= UpdateLanguage;
+        //    if (_taskData != null)
+        //    {
+        //        _taskData.OnTaskSelected -= TaskSelected;
+        //        _taskData.OnTaskDeselected -= TaskDeselected;
+        //        _taskData.OnTaskUpdated -= UpdateProgressBar;
+        //    }
+    }
 
     public virtual void OnBeginDrag(PointerEventData eventData)
     {
@@ -143,7 +149,18 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
     public void PopulateData()
     {
-        _taskShort.text = _taskData.Title;
+        // Use the current language to pick the correct title
+        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+        {
+            _taskShort.text = _taskData.EnglishTitle;
+            //_taskContent.text = _taskData.EnglishContent; // if you have a content field
+        }
+        else
+        {
+            _taskShort.text = _taskData.Title;
+            //_taskContent.text = _taskData.Content;
+        }
+
         _taskDebugID.text = _taskData.Id.ToString();
         _taskPoints.text = _taskData.Points.ToString();
         _taskCoins.text = _taskData.Coins.ToString();
@@ -152,6 +169,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
         _TaskImage.sprite = _cardImageReference.GetTaskImage(_taskData);
     }
+
 
     private string GetShortDescription(TaskNormalType taskType)
     {
@@ -192,5 +210,15 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         SwitchWindow(TaskWindowType.Available);
         _playerImage.gameObject.SetActive(false);
         _taskData.ClearPlayerId();
+    }
+
+    private void UpdateLanguage(SettingsCarrier.LanguageType language)
+    {
+        _taskShort.text = language switch
+        {
+            SettingsCarrier.LanguageType.Finnish => _taskData.Title,
+            SettingsCarrier.LanguageType.English => _taskData.EnglishTitle,
+            _ => _taskData.Title,
+        };
     }
 }

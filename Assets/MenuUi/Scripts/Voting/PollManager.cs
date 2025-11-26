@@ -20,6 +20,7 @@ public static class PollManager // Handles the polls from creation to loading to
     private static ClanData clan = null;
 
     public static Action<FurniturePollType> ShowVotingPopup;
+    public static event Action OnPollCreated;
 
     private static KojuTrayPopulator trayPopulator;
 
@@ -40,13 +41,15 @@ public static class PollManager // Handles the polls from creation to loading to
 
         PollData pollData = new FurniturePollData(id, clanMembers, furniturePollType, furniture);
         pollDataList.Add(pollData);
-
+        
         ShowVotingPopup?.Invoke(furniturePollType);
 
         // PrintPollList();
         SaveClanData();
 
         PollMonitor.Instance?.StartMonitoring();
+
+        OnPollCreated?.Invoke();
     }
 
     // Create poll for StorageFurniture
@@ -64,13 +67,15 @@ public static class PollManager // Handles the polls from creation to loading to
 
         PollData pollData = new FurniturePollData(id, clanMembers, furniturePollType, gameFurniture);
         pollDataList.Add(pollData);
-
+        
         ShowVotingPopup?.Invoke(furniturePollType);
 
         //PrintPollList();
         SaveClanData();
 
         PollMonitor.Instance?.StartMonitoring();
+
+        OnPollCreated?.Invoke();
     }
 
     // Create poll for Role Promotion
@@ -135,7 +140,6 @@ public static class PollManager // Handles the polls from creation to loading to
             Debug.Log(output);
         }
     }
-
     public static void DebugPrintAllActivePolls()
     {
         Debug.Log("----- Active Polls Start -----");
