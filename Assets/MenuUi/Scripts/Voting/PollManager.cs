@@ -9,6 +9,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Voting;
 using MenuUi.Scripts.Storage;
+using MenuUI.Scripts;
 
 public static class PollManager // Handles the polls from creation to loading to ending them
 {
@@ -27,6 +28,43 @@ public static class PollManager // Handles the polls from creation to loading to
     public static void RegisterTrayPopulator(KojuTrayPopulator populator)
     {
         trayPopulator = populator;
+    }
+
+    // Create poll for GameFurniture
+    public static void CreateShopFurniturePoll(FurniturePollType furniturePollType, GameFurniture furniture, Action<bool> callback)
+    {
+        ServerManager.Instance.BuyShopItem(furniture.Name, result =>
+        {
+            if (result)
+            {
+                LoadClanData();
+
+                string id = GetFirstAvailableId();
+
+                List<string> clanMembers = new List<string>();
+                if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
+
+                PollData pollData = new FurniturePollData(id, clanMembers, furniturePollType, furniture);
+                pollDataList.Add(pollData);
+
+                ShowVotingPopup?.Invoke(furniturePollType);
+
+                // PrintPollList();
+                SaveClanData();
+
+                PollMonitor.Instance?.StartMonitoring();
+
+                OnPollCreated?.Invoke();
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                SignalBus.OnChangePopupInfoSignal("Tavaran ostoäänestyksen luominen epäonnistui.");
+                if (callback != null)
+                    callback(false);
+            }
+        });
     }
 
     // Create poll for GameFurniture
