@@ -9,21 +9,112 @@ public class PlayMusic : MonoBehaviour
     [SerializeField] private MusicHandler.MusicSwitchType _musicSwitchType;
     [SerializeField] AudioCategoryType _musicCategory;
     [SerializeField] string _musicName;
+    [Header("If in a jukebox area")]
+    [SerializeField] private bool _useJukeboxSection = false;
+    [SerializeField] private TMPro.TextMeshProUGUI _musicNameText;
+    [SerializeField] private SettingsCarrier.JukeboxPlayArea _currentJukeboxPlayArea;
 
-    void Start() { StartCoroutine(StartTrackControl()); }
+    private string returnString = "";
 
-    private IEnumerator StartTrackControl()
+    void OnEnable() { StartCoroutine(WaitForRequierdClasses()); }
+
+    private IEnumerator WaitForRequierdClasses()
     {
         yield return new WaitUntil(() => (AudioManager.Instance != null && MusicReference.Instance != null));
+
+        if (_useJukeboxSection)
+            StartTrackControlExpanded();
+        else
+            StartTrackControlStandard();
+    }
+
+    private void StartTrackControlExpanded()
+    {
+        AudioManager.Instance?.SetCurrentAreaCategoryName(_musicCategory.ToString());
+
+        bool allowedToPlay = SettingsCarrier.Instance.CanPlayJukeboxInArea(_currentJukeboxPlayArea);
+
+        if (JukeboxManager.Instance != null && allowedToPlay)
+        {
+            string result = JukeboxManager.Instance.TryPlayTrack();
+
+            if (!string.IsNullOrEmpty(result))
+            {
+                if (_musicNameText != null)
+                    _musicNameText.text = result;
+                else
+                    returnString = result;
+
+                return;
+            }
+        }
+        else
+            Debug.LogWarning("Could not try to start jukebox playback.");
 
         MusicTrack startMusicTrack = MusicReference.Instance.GetTrack(_musicCategory, _musicName);
 
         if (startMusicTrack == null)
         {
             Debug.LogError("Start track is null!");
-            yield break;
+            return;
         }
 
-        AudioManager.Instance.PlayMusic(_musicCategory, startMusicTrack, _musicSwitchType);
+        returnString = AudioManager.Instance.PlayMusic(_musicCategory, startMusicTrack, _musicSwitchType);
+    }
+
+    private void StartTrackControlStandard()
+    {
+        AudioManager.Instance?.SetCurrentAreaCategoryName(_musicCategory.ToString());
+
+        MusicTrack startMusicTrack = MusicReference.Instance.GetTrack(_musicCategory, _musicName);
+
+        if (startMusicTrack == null)
+        {
+            Debug.LogError("Start track is null!");
+            return;
+        }
+
+        returnString = AudioManager.Instance.PlayMusic(_musicCategory, startMusicTrack, _musicSwitchType);
+    }
+
+    /// <summary>
+    /// Plays the given track or the jukebox if jukebox playback is allowed from settings.
+    /// </summary>
+    /// <param name="musicCategory"></param>
+    /// <param name="musicName"></param>
+    /// <param name="musicSwitchType"></param>
+    /// <param name="currentJukeboxPlayArea"></param>
+    /// <returns>Name of the track that started playing or null if it failed to start.</returns>
+    public static string Play(AudioCategoryType musicCategory, string musicName, MusicHandler.MusicSwitchType musicSwitchType, SettingsCarrier.JukeboxPlayArea currentJukeboxPlayArea)
+    {
+        PlayMusic playMusic = new PlayMusic();
+
+        playMusic._musicCategory = musicCategory;
+        playMusic._musicName = musicName;
+        playMusic._musicSwitchType = musicSwitchType;
+        playMusic._currentJukeboxPlayArea = currentJukeboxPlayArea;
+        playMusic.StartTrackControlExpanded();
+
+        return new string(playMusic.returnString);
+    }
+
+    /// <summary>
+    /// Plays the given track.
+    /// </summary>
+    /// <param name="musicCategory"></param>
+    /// <param name="musicName"></param>
+    /// <param name="musicSwitchType"></param>
+    /// <param name="currentJukeboxPlayArea"></param>
+    /// <returns>Name of the track that started playing or null if it failed to start.</returns>
+    public static string Play(AudioCategoryType musicCategory, string musicName, MusicHandler.MusicSwitchType musicSwitchType)
+    {
+        PlayMusic playMusic = new PlayMusic();
+
+        playMusic._musicCategory = musicCategory;
+        playMusic._musicName = musicName;
+        playMusic._musicSwitchType = musicSwitchType;
+        playMusic.StartTrackControlStandard();
+
+        return new string(playMusic.returnString);
     }
 }

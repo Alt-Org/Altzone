@@ -74,17 +74,17 @@ namespace MenuUI.Scripts.SoulHome
 
         public void OnEnable()
         {
-            bool jukeboxSoulhome = SettingsCarrier.Instance.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Soulhome);
+            //bool jukeboxSoulhome = SettingsCarrier.Instance.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Soulhome);
 
-            AudioManager.Instance?.SetCurrentAreaCategoryName("Soulhome");
+            //AudioManager.Instance?.SetCurrentAreaCategoryName("Soulhome");
 
-            if (JukeboxManager.Instance.CurrentTrackQueueData != null && jukeboxSoulhome)
-            {
-                if (string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
-                    _musicName.text = _audioManager.PlayMusic("Soulhome", "");
-            }
-            else
-                _musicName.text = _audioManager.PlayMusic("Soulhome", "");
+            //if (JukeboxManager.Instance.CurrentTrackQueueData != null && jukeboxSoulhome)
+            //{
+            //    if (string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
+            //        _musicName.text = _audioManager.PlayMusic("Soulhome", "");
+            //}
+            //else
+            //    _musicName.text = _audioManager.PlayMusic("Soulhome", "");
 
             EditModeTrayResize();
             if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.OpenSoulHome();
