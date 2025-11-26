@@ -1690,6 +1690,7 @@ public class ServerManager : MonoBehaviour
 
     #endregion
 
+    #region Shop
     public IEnumerator GetClanShopListFromServer(Action<List<GameFurniture>> callback)
     {
         yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "clan-shop/items/", AccessToken, request =>
@@ -1720,7 +1721,29 @@ public class ServerManager : MonoBehaviour
             }
         }));
     }
+    public void BuyShopItem(string itemName, Action<bool> callback) => StartCoroutine(BuyShopItemToServer(itemName, callback));
+    public IEnumerator BuyShopItemToServer(string itemName, Action<bool> callback)
+    {
+        string body = JObject.FromObject(new { itemName = itemName }).ToString();
 
+        yield return StartCoroutine(WebRequests.Post(DEVADDRESS + "clan-shop/buy", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
+    #endregion
+
+    #region Stall
     public IEnumerator GetClanStall(string clan_id, Action<AdStoreObject> callback)
     {
         yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "stall/"+clan_id, AccessToken, request =>
@@ -1771,6 +1794,7 @@ public class ServerManager : MonoBehaviour
             }
         }));
     }
+    #endregion
 
     #region Leaderboard
     public IEnumerator GetClanLeaderboardFromServer(Action<List<ClanLeaderboard>> callback)
