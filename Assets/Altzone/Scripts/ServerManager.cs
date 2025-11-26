@@ -463,6 +463,12 @@ public class ServerManager : MonoBehaviour
 
             }); 
         });
+        yield return new WaitUntil(() => clanData != null);
+
+        yield return StartCoroutine(GetClanPlayers(members =>
+        {
+            if (members != null) clanData.Members = members;
+        }));
 
         yield return StartCoroutine(GetClanVoteListFromServer(polls =>
         {
@@ -537,11 +543,6 @@ public class ServerManager : MonoBehaviour
                     clanData.Inventory = inventory;
                 }
             }
-        }));
-
-        yield return StartCoroutine(GetClanPlayers(members =>
-        {
-            if(members!= null) clanData.Members = members;
         }));
 
         // Saves clan data including its items.
