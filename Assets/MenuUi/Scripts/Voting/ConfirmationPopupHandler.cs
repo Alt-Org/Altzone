@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 using Altzone.Scripts.Language;
 using Altzone.Scripts.AvatarPartsInfo;
+using System.Collections;
 
 public class ConfirmationPopupHandler : MonoBehaviour
 {
@@ -76,9 +77,13 @@ public class ConfirmationPopupHandler : MonoBehaviour
         }
     }
 
-    public void CreatePollPopup()
+    public void CreatePollPopup() => StartCoroutine(CreatePollPopupCoroutine());
+
+    public IEnumerator CreatePollPopupCoroutine()
     {
-        if (furniture != null) PollManager.CreateFurniturePoll(FurniturePollType.Buying, furniture);
+        bool? result = null;
+        if (furniture != null) PollManager.CreateShopFurniturePoll(FurniturePollType.Buying, furniture, c => result = c);
+        yield return new WaitUntil(()=> result.HasValue);
         VotingActions.ReloadPollList?.Invoke();
 
         FindObjectOfType<SwipeUI>(true).CurrentPage = 3;
