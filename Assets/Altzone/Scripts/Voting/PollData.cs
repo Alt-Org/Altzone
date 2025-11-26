@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
@@ -65,14 +66,39 @@ namespace Altzone.Scripts.Voting
         public PollData(ServerPoll poll)
         {
             Id = poll._id;
-            StartTime = ((DateTimeOffset)DateTime.Parse(poll.startedAt)).ToUnixTimeSeconds();
+            StartTime = poll.startedAt !=null ?((DateTimeOffset)DateTime.Parse(poll.startedAt)).ToUnixTimeSeconds(): 0;
             EndTime = ((DateTimeOffset)DateTime.Parse(poll.endsOn)).ToUnixTimeSeconds();
             GameFurniture gameFurniture = null;
             Storefront.Get().GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == poll.shopItemName));
             Sprite = gameFurniture.FurnitureInfo.Image;
-            NotVoted = poll.player_ids.ToList();
+
+            List<string> clanMembers = new List<string>();
+            ClanData clan = null;
+            Storefront.Get().GetClanData(ServerManager.Instance.Player.clan_id, c => clan=c);
+            if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
+
+            NotVoted = clanMembers;
             YesVotes = new List<PollVoteData>();
             NoVotes = new List<PollVoteData>();
+            foreach (PollVote vote in poll.votes)
+            {
+                if (vote.choice == "accept")
+                {
+                    if (NotVoted.Contains(vote.player_id))
+                    {
+                        YesVotes.Add(new(vote.player_id, clan.Members.Find(member => vote.player_id == member.Id)?.Name, true));
+                        NotVoted.Remove(vote.player_id);
+                    }
+                }
+                else if(vote.choice == "decline")
+                {
+                    if (NotVoted.Contains(vote.player_id))
+                    {
+                        NoVotes.Add(new(vote.player_id, clan.Members.Find(member => vote.player_id == member.Id)?.Name, true));
+                        NotVoted.Remove(vote.player_id);
+                    }
+                }
+            }
         }
 
         public void AddVote(bool answer)
