@@ -1742,6 +1742,25 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
+    public IEnumerator AddCoinsToClan(int amount, Action<bool> callback)
+    {
+        string body = JObject.FromObject(new { amount = amount }).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(DEVADDRESS + "shop/clanCoins", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
     #endregion
 
     #region Stall
