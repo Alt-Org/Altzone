@@ -22,8 +22,15 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     [SerializeField] private Button _closeOnlinePlayersPanelButton;
     [SerializeField] private Button _openOnlinePlayersPanelButton;
     [SerializeField] private OnlinePlayersPanelItem _onlinePlayersPanelItemPrefab;
+    [SerializeField] private Button _viewClanPlayersButton;
+    [SerializeField] private Button _viewAllPlayersButton;
+
+    private bool _isClanPlayersView = true;
 
     private List<OnlinePlayersPanelItem> _onlinePlayersPanelItems = new List<OnlinePlayersPanelItem>();
+   
+    private List<ServerOnlinePlayer> _clanPlayers = new List<ServerOnlinePlayer>();
+    private List<ServerOnlinePlayer> _allPlayers = new List<ServerOnlinePlayer>();
 
 
     // Start is called before the first frame update
@@ -32,6 +39,8 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     {
         _openOnlinePlayersPanelButton.onClick.AddListener(OpenOnlinePlayersPanel);
         _closeOnlinePlayersPanelButton.onClick.AddListener(CloseOnlinePlayersPanel);
+        _viewClanPlayersButton.onClick.AddListener(ViewClanPlayers);
+        _viewAllPlayersButton.onClick.AddListener(ViewAllPlayers);
 
         ServerManager.OnOnlinePlayersChanged += BuildOnlinePlayerList;
         CloseOnlinePlayersPanel();
@@ -58,6 +67,18 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         _onlinePlayersPanel.SetActive(true);
     }
 
+    private void ViewClanPlayers()
+    {
+        _isClanPlayersView = true;
+        UpdatePlayerList(_clanPlayers);
+    }
+
+    private void ViewAllPlayers()
+    {
+        _isClanPlayersView = false;
+        UpdatePlayerList(_allPlayers);
+    }
+
     private void BuildOnlinePlayerList(List<ServerOnlinePlayer> onlinePlayers)
     {
         StartCoroutine(BuildOnlineList(onlinePlayers));
@@ -67,12 +88,17 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     {
         UpdateOnlineFriendsCount(onlinePlayers);
 
+
         foreach (var item in _onlinePlayersPanelItems)
         {
             Destroy(item.gameObject);
         }
 
         _onlinePlayersPanelItems.Clear();
+        /*
+        _clanPlayers.Clear();
+        _allPlayers.Clear();
+        */
 
         foreach (var player in onlinePlayers)
         {
@@ -83,7 +109,16 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             StartCoroutine(ServerManager.Instance.GetOtherPlayerFromServer(player._id, c => serverPlayer = c));
             StartCoroutine(WaitUntilTimeout(3, c => timeout = c));
             yield return new WaitUntil(() => serverPlayer != null || timeout);
-
+            /*
+            if (serverPlayer != null && serverPlayer.clanLogo != null)
+            {
+                _clanPlayers.Add(player); // Pelaaja on klaanin jäsen
+            }
+            else
+            {
+                _allPlayers.Add(player); // Pelaaja ei ole klaanissa
+            } Remember to add updating the list
+            */
 
             ClanLogo clanLogo = null;
             AvatarVisualData avatarVisualData = null;
