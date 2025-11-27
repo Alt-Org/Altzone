@@ -93,6 +93,8 @@ namespace Altzone.Scripts.Audio
             _musicChannel2.volume = 0f;
         }
 
+        public void SetMainMenuMusicName(string name) { _mainMenuMusicName = name; }
+
         public List<MusicTrack> GetMusicList(string categoryName)
         {
             MusicCategory musicCategory = _musicReference.GetCategory(categoryName);

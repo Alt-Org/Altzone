@@ -338,7 +338,13 @@ namespace Altzone.Scripts.Audio
                 _fallbackMusicTrack = trackName;
             }
 
-            if (!CanPlay(categoryName)) return false;
+            if (!CanPlay(categoryName))
+            {
+                if (categoryName.ToLower() == "MainMenu".ToLower())
+                    _musicHandler.SetMainMenuMusicName(SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic));
+
+                return false;
+            }
 
             return true;
         }
