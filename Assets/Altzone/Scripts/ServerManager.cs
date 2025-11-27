@@ -1664,7 +1664,9 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
-    public IEnumerator SendClanVoteToServer(string voteid, bool answer, Action<ServerPoll> callback)
+    public void SendClanVoteToServer(string voteid, bool answer, Action<ServerPoll> callback) => StartCoroutine(SendClanVoteToServerCoroutine(voteid, answer, callback));
+
+    public IEnumerator SendClanVoteToServerCoroutine(string voteid, bool answer, Action<ServerPoll> callback)
     {
         string body = JObject.FromObject(new { voting_id = voteid, choice = answer?"accept":"decline" }).ToString();
 

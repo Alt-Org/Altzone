@@ -118,15 +118,21 @@ namespace Altzone.Scripts.Voting
                     return;
                 }
 
-                PollVoteData newPollVote = new(player.Id, player.Name, answer);
-
-                if (NotVoted.Contains(player.Id))
+                ServerManager.Instance.SendClanVoteToServer(Id, answer, callback =>
                 {
-                    if (answer) YesVotes.Add(newPollVote);
-                    else NoVotes.Add(newPollVote);
+                    if (answer)
+                    {
+                        PollVoteData newPollVote = new(player.Id, player.Name, answer);
 
-                    NotVoted.Remove(player.Id);
-                }
+                        if (NotVoted.Contains(player.Id))
+                        {
+                            if (answer) YesVotes.Add(newPollVote);
+                            else NoVotes.Add(newPollVote);
+
+                            NotVoted.Remove(player.Id);
+                        }
+                    }
+                });
             }
 
             //PlayerVoteData newPlayerVote = new PlayerVoteData(Id, answer);
