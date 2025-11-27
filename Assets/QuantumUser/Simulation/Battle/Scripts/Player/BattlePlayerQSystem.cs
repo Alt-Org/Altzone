@@ -397,6 +397,8 @@ namespace Battle.QSimulation.Player
         /// <param name="playerTransform">Pointer to the player's transform component.</param>
         private void HandleInPlay(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity, Transform2D* playerTransform)
         {
+            bool updateMovement = true;
+
             if (input->AbilityActivate)
             {
                 playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0_50);
@@ -405,6 +407,7 @@ namespace Battle.QSimulation.Player
             if (!playerData->AbilityCooldownSec.IsRunning(f) && playerData->AbilityActivateBufferSec.IsRunning(f))
             {
                 AbilityActivate(f, playerData, playerTransform);
+                updateMovement = false;
             }
 
             if (playerData->CurrentDefence <= FP._0)
@@ -415,7 +418,7 @@ namespace Battle.QSimulation.Player
             }
 
             BattlePlayerClassManager.OnUpdate(f, playerHandle, playerData, playerEntity);
-            BattlePlayerMovementController.UpdateMovement(f, playerData, playerTransform, input);
+            if (updateMovement) BattlePlayerMovementController.UpdateMovement(f, playerData, playerTransform, input);
         }
 
         private void AbilityActivate(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* playerTransform)
