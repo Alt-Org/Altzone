@@ -21,7 +21,7 @@ public class IconButtonHandler : MonoBehaviour
     private ClanValues _value;
 
     private string _selectedColorHex = "#00FF00";   // Vihreä
-    private string _unselectedColorHex = "#CBCBCB"; // Valkoinen
+    private string _unselectedColorHex = "#CBCBCB"; // Harmaa
 
     private Action<ClanValues, Action<bool>> _selectionMethod;
 

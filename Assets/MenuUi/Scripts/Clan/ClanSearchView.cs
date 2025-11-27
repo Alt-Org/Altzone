@@ -190,7 +190,6 @@ public class ClanSearchView : MonoBehaviour
 
         ShowOverlay(true);
 
-
         _confirmPopup.Show(
             bodyText: "Haluatko liittyä klaaniin " + targetName + "?",
             onConfirm: () =>

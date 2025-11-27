@@ -12,6 +12,8 @@ public class ClanConfirmPopup : MonoBehaviour
     [SerializeField] private Button _confirmBtn;
     [SerializeField] private Button _cancelBtn;
 
+    private UnityAction _onCancel;
+
     private void Awake()
     {
         if (_canvasGroup)
@@ -20,15 +22,16 @@ public class ClanConfirmPopup : MonoBehaviour
             _canvasGroup.interactable = false;
             _canvasGroup.blocksRaycasts = false;
         }
-
-        gameObject.SetActive(false);
     }
 
     public void Show(string bodyText, UnityAction onConfirm, UnityAction onCancel = null,
                      string confirmText = "OK", string cancelText = "Peruuta",
                      string style = "default")
     {
+        transform.SetAsLastSibling();
         gameObject.SetActive(true);
+
+        _onCancel = onCancel;
 
         if (_confirmBtn) _confirmBtn.interactable = true;
         if (_cancelBtn) _cancelBtn.interactable = true;
@@ -61,11 +64,7 @@ public class ClanConfirmPopup : MonoBehaviour
         if (_cancelBtn)
         {
             _cancelBtn.onClick.RemoveAllListeners();
-            _cancelBtn.onClick.AddListener(() =>
-            {
-                onCancel?.Invoke();
-                Hide();
-            });
+            _cancelBtn.onClick.AddListener(HandleCancel);
         }
 
         if (_canvasGroup != null)
@@ -74,6 +73,17 @@ public class ClanConfirmPopup : MonoBehaviour
             _canvasGroup.interactable = true;
             _canvasGroup.blocksRaycasts = true;
         }
+    }
+
+    private void HandleCancel()
+    {
+        _onCancel?.Invoke(); 
+        Hide();
+    }
+
+    public void CloseWithoutSaving()
+    {
+        HandleCancel();
     }
 
     public void Hide()

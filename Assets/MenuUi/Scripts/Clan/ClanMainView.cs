@@ -32,6 +32,7 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] LanguageFlagImage _flagImage;
     [SerializeField] GameObject _inClanButtons;
     [SerializeField] GameObject _notInClanButtons;
+    [SerializeField] GameObject _editViewButtons;
     [SerializeField] ClanValuePanel _valuePanel;
     [SerializeField] ClanHeartColorSetter _clanHeart;
 
@@ -72,6 +73,8 @@ public class ClanMainView : MonoBehaviour
     {
         // Clear selection to prevent button highlight staying on screen
         EventSystem.current.SetSelectedGameObject(null);
+
+        ResetViewState();
 
         ToggleClanPanel(false);
         OpenLink();
@@ -119,6 +122,34 @@ public class ClanMainView : MonoBehaviour
             {
                 _joinClanButton.gameObject.SetActive(false);
             }
+        }
+    }
+
+    private void ResetViewState()
+    {
+        if(_inClanPanel != null)
+        {
+            _inClanPanel.SetActive(true);
+        }
+
+        if (_clanSettings != null)
+        {
+            _clanSettings.SetActive(false);
+        }
+
+        if (_inClanButtons != null)
+        {
+            _inClanButtons.SetActive(true);
+        }
+
+        if (_editViewButtons != null)
+        {
+            _editViewButtons.SetActive(false);
+        }
+
+        if (_overlay != null)
+        {
+            _overlay.SetActive(false);
         }
     }
 
@@ -274,6 +305,21 @@ public class ClanMainView : MonoBehaviour
         }
     }
 
+    public void OnClickEditClanSettings()
+    {
+        ShowSettingsPage();
+
+        if(_inClanButtons != null)
+        {
+           _inClanButtons.SetActive(false);
+        }
+
+        if(_editViewButtons != null)
+        {
+            _editViewButtons.SetActive(true);
+        }
+    }
+
     private void ShowOverlay (bool on)
     {
         _overlay.SetActive(on);
@@ -289,7 +335,6 @@ public class ClanMainView : MonoBehaviour
 
         return "nykyisestä klaanista";
     }
-
 
     private void ShowLeaveClanPopUp()
     {
@@ -315,6 +360,7 @@ public class ClanMainView : MonoBehaviour
         );
     }
 
+
     private void ShowClanPopup(ServerClan clan)
     {
         ShowOverlay(true); 
@@ -333,6 +379,16 @@ public class ClanMainView : MonoBehaviour
         });
     }
 
+    public void CloseClanSearchPopup()
+    {
+        if(_clanPopup != null)
+        {
+            _clanPopup.Hide();
+            
+        }
+        ShowOverlay(false);
+    }
+
     private void ShowLeaveAndJoinPopup(ServerClan clan)
     {
         var currentClanName = GetCurrentClanName();
@@ -341,7 +397,7 @@ public class ClanMainView : MonoBehaviour
         string warningText = "Olet jo jäsen klaanissa " + currentClanName + "." +
             " Haluatko varmasti poistua nykyisestä klaanista ja liittyä klaaniin " + targetClanName + "?";
 
-        //ShowOverlay(true);
+        ShowOverlay(true);
 
         _confirmPopup.Show(
             bodyText: warningText,
@@ -369,6 +425,7 @@ public class ClanMainView : MonoBehaviour
         var targetClanName = new ClanData(clan).Name;
 
         ShowOverlay(true);
+
         _confirmPopup.Show(
             bodyText: "Haluatko liittyä klaaniin " + targetClanName + "?",
 
