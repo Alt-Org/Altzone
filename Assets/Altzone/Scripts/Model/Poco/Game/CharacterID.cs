@@ -41,6 +41,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         Anorectic = CharacterClassType.Retroflector + 3, //503
         Stoner = CharacterClassType.Retroflector + 4, //504
         Martyr = CharacterClassType.Retroflector + 5, //505
+        SelfHarm = CharacterClassType.Retroflector + 6, //506
 
         // Confluent class characters
         ConfluentTest = CharacterClassType.Confluent,
