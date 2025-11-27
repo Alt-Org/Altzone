@@ -250,8 +250,8 @@ namespace Battle.View.Player
             _mouseDownPrevious = mouseDown;
 
             // set double tap ability variables
-            float doubleTapInterval = 0.2f;
-            float doubleTapDistance = 1.0f;
+            const float DoubleTapInterval = 0.2f;
+            const float DoubleTapDistance = 1.0f;
 
             // set default input info
             MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero, FPVector2.Zero);
@@ -294,7 +294,7 @@ namespace Battle.View.Player
                 RotationValue                 = rotationInputInfo.RotationValue,
                 PlayerCharacterNumber         = _characterNumber,
                 GiveUpInput                   = _onGiveUp,
-                AbilityActivate               = Time.time - _lastTapTime < doubleTapInterval && mouseClick && Vector3.Distance(_lastTapPosition, unityPosition) < doubleTapDistance
+                AbilityActivate               = Time.time - _lastTapTime < DoubleTapInterval && mouseClick && Vector3.Distance(_lastTapPosition, unityPosition) < DoubleTapDistance
             };
 
             DeterministicInputFlags inputFlags = DeterministicInputFlags.Repeatable;
