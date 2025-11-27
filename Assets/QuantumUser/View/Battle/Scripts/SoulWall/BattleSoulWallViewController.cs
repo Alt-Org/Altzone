@@ -62,6 +62,9 @@ namespace Battle.View.SoulWall
 
             BattleDebugLogger debugLogger = BattleDebugLogger.Create<BattleSoulWallViewController>();
 
+            _spriteRenderer.enabled = true;
+            _emotionIndicatorSpriteRenderer.enabled = true;
+
             // scale gameobject
             float scale = (float)e.ModelScale;
             transform.localScale = new Vector3(scale, scale, scale);
