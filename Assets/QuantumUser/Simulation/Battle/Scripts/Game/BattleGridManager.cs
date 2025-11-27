@@ -7,6 +7,14 @@ using Photon.Deterministic;
 
 namespace Battle.QSimulation.Game
 {
+    public static class BattleGridPositionExtension
+    {
+        public static string ConvertToString(this BattleGridPosition gridPosition)
+        {
+            return string.Format("BattleGridPosition{{ Row: {0}, Col: {1} }}", gridPosition.Row, gridPosition.Col);
+        }
+    }
+
     public static class BattleGridManager
     {
         // fields are meant to be constant and should not be changed after init

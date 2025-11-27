@@ -47,15 +47,15 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         [Header("Settings"), SerializeField] private TextMeshProUGUI _upperTeamText;
         [SerializeField] private TextMeshProUGUI _lowerTeamText;
-        [SerializeField] private Toggle _toggleBotFill;
+        [SerializeField] private SliderToggle _toggleBotFill;
         [SerializeField] private Button _buttonPlayerP1;
         [SerializeField] private Button _buttonPlayerP2;
         [SerializeField] private Button _buttonPlayerP3;
         [SerializeField] private Button _buttonPlayerP4;
-        [SerializeField] private Toggle _toggleBotPlayerP1;
-        [SerializeField] private Toggle _toggleBotPlayerP2;
-        [SerializeField] private Toggle _toggleBotPlayerP3;
-        [SerializeField] private Toggle _toggleBotPlayerP4;
+        [SerializeField] private SliderToggle _toggleBotPlayerP1;
+        [SerializeField] private SliderToggle _toggleBotPlayerP2;
+        [SerializeField] private SliderToggle _toggleBotPlayerP3;
+        [SerializeField] private SliderToggle _toggleBotPlayerP4;
         [SerializeField] private Button _buttonStartPlay;
         [SerializeField] private Button _buttonRaidTest;
 
@@ -298,32 +298,32 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
             // Check if bot fill is active
             bool botFillActive = PhotonBattleRoom.IsBotFillActive();
-            _toggleBotFill.GetComponent<ToggleSliderHandler>().SetState(botFillActive);
+            _toggleBotFill.SetState(botFillActive);
 
             //Check if positions have bots
             bool botActive1 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition1);
-            _toggleBotPlayerP1.GetComponent<ToggleSliderHandler>().SetState(botActive1);
+            _toggleBotPlayerP1.SetState(botActive1);
             if (botActive1)
             {
                 _captionPlayerP1 = "Bot";
                 _selectedCharactersP1.SetBotCharacters();
             }
             bool botActive2 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition2);
-            _toggleBotPlayerP2.GetComponent<ToggleSliderHandler>().SetState(botActive2);
+            _toggleBotPlayerP2.SetState(botActive2);
             if (botActive2)
             {
                 _captionPlayerP2 = "Bot";
                 _selectedCharactersP2.SetBotCharacters();
             }
             bool botActive3 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition3);
-            _toggleBotPlayerP3.GetComponent<ToggleSliderHandler>().SetState(botActive3);
+            _toggleBotPlayerP3.SetState(botActive3);
             if (botActive3)
             {
                 _captionPlayerP3 = "Bot";
                 _selectedCharactersP3.SetBotCharacters();
             }
             bool botActive4 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition4);
-            _toggleBotPlayerP4.GetComponent<ToggleSliderHandler>().SetState(botActive4);
+            _toggleBotPlayerP4.SetState(botActive4);
             if (botActive4)
             {
                 _captionPlayerP4 = "Bot";

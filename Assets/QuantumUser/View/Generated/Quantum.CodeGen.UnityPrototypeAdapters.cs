@@ -97,6 +97,8 @@ namespace Quantum.Prototypes.Unity {
     public QBoolean DisableRotation;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
     public FP MovementCooldownSec;
+    public Quantum.Prototypes.FrameTimerPrototype AbilityCooldownSec;
+    public Quantum.Prototypes.FrameTimerPrototype AbilityActivateBufferSec;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerDataQComponentPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerDataQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerDataQComponentPrototype();
@@ -119,6 +121,8 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.DisableRotation, out result.DisableRotation);
       converter.Convert(this.DamageCooldown, out result.DamageCooldown);
       converter.Convert(this.MovementCooldownSec, out result.MovementCooldownSec);
+      converter.Convert(this.AbilityCooldownSec, out result.AbilityCooldownSec);
+      converter.Convert(this.AbilityActivateBufferSec, out result.AbilityActivateBufferSec);
       ConvertUser(converter, ref result);
       return result;
     }
