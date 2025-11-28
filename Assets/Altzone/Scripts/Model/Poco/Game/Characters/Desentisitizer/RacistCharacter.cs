@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    //[CreateAssetMenu(menuName = "ALT-Zone/RacistCharacter", fileName = "RacistCharacterStats")]
+    [CreateAssetMenu(menuName = "ALT-Zone/Characters/RacistCharacter", fileName = "RacistCharacterStats")]
     public class RacistCharacter : DesentisitizerClassCharacter
     {
         public RacistCharacter()

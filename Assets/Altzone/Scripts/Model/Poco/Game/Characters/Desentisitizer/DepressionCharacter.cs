@@ -2,12 +2,12 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    [CreateAssetMenu(menuName = "ALT-Zone/Characters/BodybuilderCharacter", fileName = "BodybuilderCharacterStats")]
-    public class BodybuilderCharacter : DesentisitizerClassCharacter
+    [CreateAssetMenu(menuName = "ALT-Zone/Characters/DepressionCharacter", fileName = "DepressionCharacterStats")]
+    public class DepressionCharacter : DesentisitizerClassCharacter
     {
-        public BodybuilderCharacter()
+        public DepressionCharacter()
         {
-            _id = CharacterID.Bodybuilder;
+            _id = CharacterID.Depression;
             _defaultAttack = 6;
             _defaultDefence = 12;
             _defaultHp = 1;
