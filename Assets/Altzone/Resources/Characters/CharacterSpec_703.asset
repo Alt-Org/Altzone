@@ -18,19 +18,23 @@ MonoBehaviour:
   FinnishName: Pakko-oireisuus
   EnglishName: OCD
   ClassType: 700
-  CharacterDescriptionFinnish: "Pakko-oireinen hallitsee tunteitaan rutiinein ja
-    rituaalein. N\xE4iden monimutkaisten seremonioiden suorittaminen antaa h\xE4nelle
-    itsen\xE4isyyden ja kontrollin tuntoa, ja est\xE4\xE4 h\xE4nt\xE4 altistumasta
-    sis\xE4isen maailmansa ennalta-arvaamattomille ja kaoottisille oikuille. Poistaakseen
-    mieleens\xE4 pinttyneet ep\xE4puhtaudet, h\xE4n k\xE4y l\xE4pi k\xE4siens\xE4
-    jokaisen uurteen, kunnes ne loistavat t\xE4ydellisen tahrattomina.\r\n\nPakko-oireisen
-    turvana toimii h\xE4nen mukanaan kantama saippuapala, jolla h\xE4n metodisesti
-    puhdistautuu tunnetila-ammuksen uhatessa. Peseminen saa saippuan vaahtoutumaan,
-    j\xE4tt\xE4en j\xE4lkeens\xE4 joukkuekavereiden t\xE4ht\xE4\xE4mist\xE4 haittaavia
-    saippuakuplia.\r"
+  CharacterDescriptionFinnish: "Kun Pakko-oireisuus asettuu ihmiseen asumaan, se
+    saa t\xE4m\xE4n j\xE4rjest\xE4m\xE4\xE4n el\xE4m\xE4ns\xE4 s\xE4\xE4nn\xF6iksi,
+    jotka lupaavat turvaa. Ihminen alkaa toistaa tekoja, koska niiss\xE4 piilee hetken
+    rauha \u2014 tunne siit\xE4, ett\xE4 kaaosta voi hallita, jos vain tekee kaiken
+    oikein. H\xE4n pesee, tarkistaa ja j\xE4rjest\xE4\xE4, kunnes rituaalit alkavat
+    hallita h\xE4nt\xE4 enemm\xE4n kuin h\xE4n niit\xE4. Pakko-oireisuus antaa illuusion
+    hallinnasta, mutta samalla se vie tilaa vapaudelta: mit\xE4 puhtaammaksi h\xE4n
+    yritt\xE4\xE4 tulla, sit\xE4 likaisemmalta maailma alkaa n\xE4ytt\xE4\xE4.\r\n\nVuorovaikutuskent\xE4ll\xE4
+    (Ego Clash) Pakko-oireisen suojana toimii saippuapala, jolla h\xE4n pesee k\xE4si\xE4\xE4n
+    jokaisen tunnetila-ammuksen l\xE4hestyess\xE4. Pesu saa saippuan vaahtoutumaan
+    ja j\xE4tt\xE4\xE4 kent\xE4lle liukuvia saippuakuplia, jotka v\xE4\xE4rist\xE4v\xE4t
+    n\xE4kyvyytt\xE4 ja sotkevat t\xE4ht\xE4yst\xE4 \u2014 niin vihollisilta kuin
+    liittolaisiltakin. Mit\xE4 useammin h\xE4n pesee, sit\xE4 vaikeampi h\xE4nen
+    ymp\xE4rilleen on n\xE4hd\xE4. Lopulta h\xE4n katoaa omaan vaahtoonsa, saavuttaen
+    t\xE4ydellisen \u2014 mutta yksin\xE4isen \u2014 puhtauden.\r"
   CharacterDescriptionEnglish: 
-  CharacterShortDescriptionFinnish: "P\xE4\xE4nsis\xE4isten riittiens\xE4 neuroottinen
-    orja."
+  CharacterShortDescriptionFinnish: "Tunteensa pois pesev\xE4, rituaaliensa orja. "
   CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 1692823243e71c0488237f3e67ef980a, type: 2}
   Hp:
@@ -41,7 +45,7 @@ MonoBehaviour:
     Coefficient: 0
   CharacterSize:
     Level: 2
-    Coefficient: 6
+    Coefficient: 0
   Attack:
     Level: 2
     Coefficient: 4

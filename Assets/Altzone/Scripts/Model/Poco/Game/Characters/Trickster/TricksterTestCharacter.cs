@@ -10,11 +10,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         public TricksterTestCharacter()
         {
             _id = CharacterID.TricksterTest;
-            _defaultAttack = 8;
-            _defaultDefence = 4;
-            _defaultHp = 2;
-            _defaultCharacterSize = 4;
-            _defaultSpeed = 4;
+            _defaultAttack = 2;
+            _defaultDefence = 2;
+            _defaultHp = 1;
+            _defaultCharacterSize = 2;
+            _defaultSpeed = 6;
             InitializeValues();
         }
     }

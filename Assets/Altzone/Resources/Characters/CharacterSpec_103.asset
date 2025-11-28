@@ -14,22 +14,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 103
   CharacterId: 103
-  IsApproved: 0
+  IsApproved: 1
   FinnishName: Traumaattisuus
   EnglishName: PTSD
   ClassType: 100
-  CharacterDescriptionFinnish: "PTSD on defenssi, joka rakentuu torjutusta menneisyydest\xE4.
-    Sen tarkoitus on pit\xE4\xE4 traumat loitolla, mutta samalla se tuo ne takaisin
-    arjen varjoihin. Postraumaattinen ei kohtaa muistojaan suoraan, vaan yritt\xE4\xE4
-    puskea ne taka-alalle, kunnes ne purkautuvat yll\xE4tt\xE4en, v\xE4\xE4r\xE4ss\xE4
-    paikassa ja v\xE4\xE4r\xE4\xE4n aikaan. Se tarjoaa hetken tunteen selviytymisest\xE4,
-    mutta est\xE4\xE4 h\xE4nt\xE4 saavuttamasta pysyv\xE4\xE4 rauhaa.\r\n\nPeliss\xE4
-    postraumaattisen suojakilpen\xE4 toimii rintamalta tuttu kiv\xE4\xE4ri. Se ei
-    ammu, vaan torjuu l\xE4hestyv\xE4t tunnetila-ammukset samalla tavalla kuin aikoinaan
-    vihollisen tulen. T\xE4m\xE4 tuttu ase tuo turvaa, mutta sitoo h\xE4net menneisyyteen,
-    est\xE4en h\xE4nt\xE4 vapautumasta sen otteesta.\r\n"
+  CharacterDescriptionFinnish: "Kun Traumaattisuus asettuu ihmiseen asumaan, se saa
+    t\xE4m\xE4n el\xE4m\xE4\xE4n menneisyyden kaikuissa kuin ne olisivat yh\xE4 totta.
+    Jokainen aisti ja reaktio valpastuu varoitukseksi, vaikka vaara olisi jo ohi.
+    Ihminen alkaa v\xE4ltell\xE4 muistoja, jotka tuntuvat liian raskailta kantaa,
+    ja rakentaa ymp\xE4rilleen n\xE4kym\xE4tt\xF6m\xE4n suojan, joka pit\xE4\xE4
+    kivun loitolla mutta my\xF6s el\xE4m\xE4n et\xE4\xE4ll\xE4. Traumaattisuus ei
+    kysy lupaa \u2013 se aktivoituu silloin, kun mieli yritt\xE4\xE4 unohtaa, ja
+    muistuttaa, ettei mik\xE4\xE4n unohdu ennen kuin se on tullut kohdatuksi.\r\n\nVuorovaikutuskent\xE4ll\xE4
+    (Ego Clash) traumaattisuuden suojakilpi on potero, jonka h\xE4n kaivaa itselleen
+    aina tunnetila-ammuksen l\xE4hestyess\xE4. H\xE4n painautuu syv\xE4lle maahan,
+    suojaa p\xE4\xE4ns\xE4 ja odottaa myrskyn menev\xE4n ohi. Potero on tuttu ja
+    turvallinen, mutta se on my\xF6s vankila \u2013 siell\xE4 ei n\xE4e, kuka l\xE4hestyy,
+    eik\xE4 kuule, mit\xE4 todella sanotaan. Jokainen uusi isku syvent\xE4\xE4 kuoppaa,
+    ja lopulta potero on niin syv\xE4, ettei h\xE4n en\xE4\xE4 l\xF6yd\xE4 tiet\xE4
+    yl\xF6s.\r"
   CharacterDescriptionEnglish: 
-  CharacterShortDescriptionFinnish: "Ruudinkatkuisten muistojen riivaama rintamaselviytyj\xE4. "
+  CharacterShortDescriptionFinnish: "Menetysten varjoihin kaivautuva, turvaansa kahlittu
+    selviytyj\xE4."
   CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: f79c6efe173dffa47b5bd2fa311b124d, type: 2}
   Hp:
@@ -40,7 +46,7 @@ MonoBehaviour:
     Coefficient: 0
   CharacterSize:
     Level: 2
-    Coefficient: 4
+    Coefficient: 0
   Attack:
     Level: 2
     Coefficient: 2
