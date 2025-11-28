@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
+  m_Name: CharacterSpec_506
+  m_EditorClassIdentifier: 
+  Id: 506
+  CharacterId: 506
+  IsApproved: 0
+  FinnishName: Itsetuhoisuus
+  EnglishName: Self-Harm
+  ClassType: 500
+  CharacterDescriptionFinnish: "Kun Itsetuhoisuus asettuu ihmiseen asumaan, se saa
+    t\xE4m\xE4n etsim\xE4\xE4n hallintaa siit\xE4, mik\xE4 sattuu. Ihminen alkaa
+    k\xE4ytt\xE4\xE4 kipua rajana tunteille, jotka muuten valuisivat yli \u2014 hetken
+    h\xE4n tiet\xE4\xE4 varmasti, miss\xE4 itse loppuu ja maailma alkaa. Kipu muuttuu
+    kieleksi, jolla h\xE4n puhuu silloin, kun sanat eiv\xE4t riit\xE4. Itsetuhoisuus
+    tarjoaa lohtua vain siksi, ett\xE4 se on omaa tekoa, oma valinta kaaoksen keskell\xE4.
+    Mutta samalla se vie yh\xE4 kauemmas siit\xE4 mahdollisuudesta, ett\xE4 joku
+    toinen voisi koskettaa ilman, ett\xE4 sattuu.\r\n\nItsetuhoisuuden suojakilpi
+    vuorovaikutuskent\xE4ll\xE4 (Ego Clash) on verinen viiva, joka muodostuu iholle
+    j\xE4\xE4v\xE4st\xE4 viillosta. Jokainen tunnetila-ammus, joka osuu Itsetuhoisuuteen,
+    tuottaa kuitenkin pienemm\xE4n verij\xE4ljen kuin edellinen haava. Lopulta Itsetuhoisuus
+    j\xE4\xE4 hiljaisuuteen, jossa tunteet eiv\xE4t en\xE4\xE4 l\xF6yd\xE4 tiet\xE4\xE4n
+    ulos.\r\n"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Itseens\xE4 j\xE4lki\xE4 viilt\xE4v\xE4, kivun
+    hallitsija. "
+  CharacterShortDescriptionEnglish: 
+  CharacterStats: {fileID: 11400000, guid: 7f34dd59ec3012e48ab2a4e332fac48e, type: 2}
+  Hp:
+    Level: 1
+    Coefficient: 3
+  Speed:
+    Level: 3
+    Coefficient: 0
+  CharacterSize:
+    Level: 3
+    Coefficient: 0
+  Attack:
+    Level: 3
+    Coefficient: 5
+  Defence:
+    Level: 3
+    Coefficient: 2
+  GalleryImage: {fileID: 0}
+  GalleryHeadImage: {fileID: 0}
+  CharPhotoSeries: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 0
+  BattleUiSprite: {fileID: 0}
