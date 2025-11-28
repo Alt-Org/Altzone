@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
+  m_Name: CharacterSpec_605
+  m_EditorClassIdentifier: 
+  Id: 605
+  CharacterId: 605
+  IsApproved: 1
+  FinnishName: Jengikulttuuri
+  EnglishName: Tribalism
+  ClassType: 600
+  CharacterDescriptionFinnish: 
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: 
+  CharacterShortDescriptionEnglish: 
+  CharacterStats: {fileID: 11400000, guid: 74f626c1c4f23b841ae72d02289ea8f5, type: 2}
+  Hp:
+    Level: 2
+    Coefficient: 5
+  Speed:
+    Level: 1
+    Coefficient: 0
+  CharacterSize:
+    Level: 12
+    Coefficient: 2
+  Attack:
+    Level: 2
+    Coefficient: 7
+  Defence:
+    Level: 11
+    Coefficient: 2
+  GalleryImage: {fileID: 0}
+  GalleryHeadImage: {fileID: 0}
+  CharPhotoSeries: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 1376512642337364809
+  BattleUiSprite: {fileID: 0}

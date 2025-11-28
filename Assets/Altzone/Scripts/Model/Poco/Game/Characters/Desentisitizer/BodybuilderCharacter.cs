@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    //[CreateAssetMenu(menuName = "ALT-Zone/BodybuilderCharacter", fileName = "BodybuilderCharacterStats")]
+    [CreateAssetMenu(menuName = "ALT-Zone/Characters/BodybuilderCharacter", fileName = "BodybuilderCharacterStats")]
     public class BodybuilderCharacter : DesentisitizerClassCharacter
     {
         public BodybuilderCharacter()

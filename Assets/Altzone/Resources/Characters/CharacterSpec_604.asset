@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: CharacterSpec_604
   m_EditorClassIdentifier: 
   Id: 604
-  CharacterId: -1
-  IsApproved: 0
+  CharacterId: 604
+  IsApproved: 1
   FinnishName: Heimoidentiteetti
   EnglishName: Tribalism
   ClassType: 600
@@ -22,26 +22,26 @@ MonoBehaviour:
   CharacterDescriptionEnglish: 
   CharacterShortDescriptionFinnish: 
   CharacterShortDescriptionEnglish: 
-  CharacterStats: {fileID: 0}
+  CharacterStats: {fileID: 11400000, guid: 988af3acb4da38649bb848ada1380894, type: 2}
   Hp:
-    Level: 0
-    Coefficient: 0
+    Level: 2
+    Coefficient: 5
   Speed:
-    Level: 0
+    Level: 1
     Coefficient: 0
   CharacterSize:
-    Level: 0
-    Coefficient: 0
+    Level: 12
+    Coefficient: 2
   Attack:
-    Level: 0
-    Coefficient: 0
+    Level: 2
+    Coefficient: 7
   Defence:
-    Level: 0
-    Coefficient: 0
+    Level: 11
+    Coefficient: 2
   GalleryImage: {fileID: 0}
   GalleryHeadImage: {fileID: 0}
   CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
-      Value: 0
+      Value: 1366221629889033733
   BattleUiSprite: {fileID: 0}

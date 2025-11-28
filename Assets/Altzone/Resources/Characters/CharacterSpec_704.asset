@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
+  m_Name: CharacterSpec_704
+  m_EditorClassIdentifier: 
+  Id: 703
+  CharacterId: 703
+  IsApproved: 1
+  FinnishName: Pakko-oireisuus
+  EnglishName: OCD
+  ClassType: 700
+  CharacterDescriptionFinnish: "Pakko-oireinen hallitsee tunteitaan rutiinein ja
+    rituaalein. N\xE4iden monimutkaisten seremonioiden suorittaminen antaa h\xE4nelle
+    itsen\xE4isyyden ja kontrollin tuntoa, ja est\xE4\xE4 h\xE4nt\xE4 altistumasta
+    sis\xE4isen maailmansa ennalta-arvaamattomille ja kaoottisille oikuille. Poistaakseen
+    mieleens\xE4 pinttyneet ep\xE4puhtaudet, h\xE4n k\xE4y l\xE4pi k\xE4siens\xE4
+    jokaisen uurteen, kunnes ne loistavat t\xE4ydellisen tahrattomina.\r\n\nPakko-oireisen
+    turvana toimii h\xE4nen mukanaan kantama saippuapala, jolla h\xE4n metodisesti
+    puhdistautuu tunnetila-ammuksen uhatessa. Peseminen saa saippuan vaahtoutumaan,
+    j\xE4tt\xE4en j\xE4lkeens\xE4 joukkuekavereiden t\xE4ht\xE4\xE4mist\xE4 haittaavia
+    saippuakuplia.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "P\xE4\xE4nsis\xE4isten riittiens\xE4 neuroottinen
+    orja."
+  CharacterShortDescriptionEnglish: 
+  CharacterStats: {fileID: 11400000, guid: 1692823243e71c0488237f3e67ef980a, type: 2}
+  Hp:
+    Level: 3
+    Coefficient: 4
+  Speed:
+    Level: 4
+    Coefficient: 0
+  CharacterSize:
+    Level: 2
+    Coefficient: 0
+  Attack:
+    Level: 2
+    Coefficient: 4
+  Defence:
+    Level: 1
+    Coefficient: 5
+  GalleryImage: {fileID: 21300000, guid: adadb8d1ce960d541b724ace4e9be2e9, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: 45dcc8b217e36d742b4cc2da1a1daa98, type: 3}
+  CharPhotoSeries: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 1346816199840703491
+  BattleUiSprite: {fileID: 0}
