@@ -8,6 +8,6 @@ namespace Altzone.Scripts.Model.Poco.Clan
         None = 0,
         Member = 1,
         Officer = 2,
-        Admin = 4
+        Admin = 3
     }
 }

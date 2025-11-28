@@ -18,6 +18,13 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
     private List<GameObject> Polls = new List<GameObject>();
     private PlayerData player;
 
+    [SerializeField] private PollInfoPopup pollInfoPopupWindow;
+
+    private void Start()
+    {
+        pollInfoPopupWindow?.InitializeIfNeeded();
+    }
+
     private void OnEnable()
     {
         Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data =>

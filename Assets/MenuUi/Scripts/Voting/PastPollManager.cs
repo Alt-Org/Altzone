@@ -10,7 +10,6 @@ public class PastPollManager : MonoBehaviour // Handles the Ui display for past 
 
     public static Action OnPastPollsChanged;
 
-
     private List<GameObject> PastPolls = new List<GameObject>();
 
     private void OnEnable()
