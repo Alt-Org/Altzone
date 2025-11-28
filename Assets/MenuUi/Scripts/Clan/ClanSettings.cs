@@ -49,7 +49,6 @@ public class ClanSettings : MonoBehaviour
     [SerializeField] private ClanLanguageList _languageList;
     [SerializeField] private LanguageFlagImage _flagImageSetter;
     [SerializeField] private GameObject _languagePopup;
-    [SerializeField] private Button _setLanguageButton;
 
     [Header("Values")]
     [SerializeField] private ValueSelectionController _valueSelection;
@@ -388,7 +387,7 @@ public class ClanSettings : MonoBehaviour
         HidePopup(_languagePopup);
     }
 
-    public void CloseLanguagePopup()
+    public void CancelLanguagePopup()
     {
         HidePopup(_languagePopup);
     }
