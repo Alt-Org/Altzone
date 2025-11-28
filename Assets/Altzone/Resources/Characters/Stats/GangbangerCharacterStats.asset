@@ -9,18 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3cfedd79548143498105ddb1b4ec8b8, type: 3}
-  m_Name: MaternalFixationCharacterStats
+  m_Script: {fileID: 11500000, guid: b083bc53783715840958be3a676172f1, type: 3}
+  m_Name: GangbangerCharacterStats
   m_EditorClassIdentifier: 
-  _id: 305
+  _id: 605
   active: 1
-  _defaultHp: 10
-  _hpStrength: 0
-  _defaultSpeed: 5
+  _defaultHp: 1
+  _hpStrength: 5
+  _defaultSpeed: 1
   _speedStrength: 0
-  _defaultCharacterSize: 10
+  _defaultCharacterSize: 3
   _characterSizeStrength: 0
-  _defaultAttack: 10
-  _attackStrength: 0
-  _defaultDefence: 10
-  _defenceStrength: 0
+  _defaultAttack: 2
+  _attackStrength: 7
+  _defaultDefence: 2
+  _defenceStrength: 2

@@ -62,6 +62,6 @@ namespace Altzone.Scripts.Model.Poco.Game
         Capitalist = CharacterClassType.Intellectualizer + 2, //702
         ObsessiveCompulsive = CharacterClassType.Intellectualizer + 3, //703
         Overcompilator = CharacterClassType.Intellectualizer + 4, //704
-        NitPicker = CharacterClassType.Intellectualizer + 5 //705
+        Nitpicker = CharacterClassType.Intellectualizer + 5 //705
     }
 }
