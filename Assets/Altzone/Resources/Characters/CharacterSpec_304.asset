@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
+  m_Name: CharacterSpec_304
+  m_EditorClassIdentifier: 
+  Id: 304
+  CharacterId: 304
+  IsApproved: 0
+  FinnishName: Muodinorja
+  EnglishName: Fashionism
+  ClassType: 0
+  CharacterDescriptionFinnish: "Kun Muotihulluus asettuu ihmiseen asumaan, se saa
+    t\xE4m\xE4n peilaamaan itse\xE4\xE4n jatkuvasti ulkoap\xE4in. Ihminen alkaa etsi\xE4
+    hyv\xE4ksynt\xE4\xE4 heijastamalla takaisin sen, mit\xE4 ymp\xE4rist\xF6 ihannoi
+    \u2013 kuin jokainen uusi tyyli tai rooli voisi hetkeksi korvata oman ep\xE4varmuuden.
+    H\xE4n el\xE4\xE4 ihailun ja inspiraation virrassa, mutta mik\xE4\xE4n niist\xE4
+    ei kanna pitk\xE4lle, sill\xE4 mik\xE4\xE4n ei ole t\xE4ysin h\xE4nen omaansa.
+    Muotihulluus yll\xE4pit\xE4\xE4 tunnetta elinvoimasta, vaikka todellisuudessa
+    se on vain loputonta uudelleen keksimist\xE4, ettei tarvitsisi kohdata sit\xE4,
+    kuka on ilman koristeita.\r\n\nVuorovaikutuskent\xE4ll\xE4 (Ego Clash) h\xE4nen
+    suojakilpen\xE4\xE4n toimii Pinterest-logo, joka nappaa l\xE4hestyv\xE4t tunnetila-ammukset
+    kuin ideat verkosta. Jokainen osuma saa Muotihulluuden vaihtamaan ulkon\xE4k\xF6\xE4\xE4n.
+    Kun kilpi lopulta romahtaa, Muotihulluus j\xE4\xE4 alastomana seisomaan ilman
+    inspiraation virtaa \u2013 eik\xE4 tied\xE4, mit\xE4 pukea ylleen.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Inspiraatioihin hukkuva, muiden ideoista identiteetti\xE4\xE4n
+    kokoava seuraaja."
+  CharacterShortDescriptionEnglish: 
+  CharacterStats: {fileID: 11400000, guid: 4eb023d1588c5f743954f3bd01670185, type: 2}
+  Hp:
+    Level: 3
+    Coefficient: 0
+  Speed:
+    Level: 3
+    Coefficient: 0
+  CharacterSize:
+    Level: 4
+    Coefficient: 0
+  Attack:
+    Level: 4
+    Coefficient: 0
+  Defence:
+    Level: 3
+    Coefficient: 0
+  GalleryImage: {fileID: 21300000, guid: df7b30cddc4c5ba42a15e0d7dc95a7bb, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: 3112e7614ff70b54c8587fbd6a8cb851, type: 3}
+  CharPhotoSeries: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 0
+  BattleUiSprite: {fileID: 0}
