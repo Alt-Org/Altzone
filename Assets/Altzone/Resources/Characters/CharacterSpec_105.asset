@@ -10,38 +10,38 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
-  m_Name: CharacterSpec_604
+  m_Name: CharacterSpec_105
   m_EditorClassIdentifier: 
-  Id: 604
-  CharacterId: 604
+  Id: 105
+  CharacterId: 105
   IsApproved: 1
-  FinnishName: Heimoidentiteetti
-  EnglishName: Tribalism
-  ClassType: 600
+  FinnishName: Ylimielisyys
+  EnglishName: Arrogance
+  ClassType: 100
   CharacterDescriptionFinnish: 
   CharacterDescriptionEnglish: 
   CharacterShortDescriptionFinnish: 
   CharacterShortDescriptionEnglish: 
-  CharacterStats: {fileID: 11400000, guid: 988af3acb4da38649bb848ada1380894, type: 2}
+  CharacterStats: {fileID: 11400000, guid: 4aa213ecdf2e13c41a17f24882eb8876, type: 2}
   Hp:
-    Level: 2
-    Coefficient: 5
-  Speed:
     Level: 1
+    Coefficient: 7
+  Speed:
+    Level: 2
     Coefficient: 0
   CharacterSize:
-    Level: 12
-    Coefficient: 2
+    Level: 8
+    Coefficient: 4
   Attack:
-    Level: 2
-    Coefficient: 7
-  Defence:
-    Level: 11
+    Level: 6
     Coefficient: 2
-  GalleryImage: {fileID: 0}
-  GalleryHeadImage: {fileID: 0}
+  Defence:
+    Level: 12
+    Coefficient: 1
+  GalleryImage: {fileID: 21300000, guid: 19cc03f29a899ae49bcd7b2f5ee54612, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: 4f3530e4c17f5544bbdf05e44eff383b, type: 3}
   CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
-      Value: 1366221629889033733
+      Value: 1479277049343305243
   BattleUiSprite: {fileID: 0}

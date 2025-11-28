@@ -10,38 +10,38 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
-  m_Name: CharacterSpec_604
+  m_Name: CharacterSpec_304
   m_EditorClassIdentifier: 
-  Id: 604
-  CharacterId: 604
+  Id: 304
+  CharacterId: 304
   IsApproved: 1
-  FinnishName: Heimoidentiteetti
-  EnglishName: Tribalism
-  ClassType: 600
+  FinnishName: Muotihulluus
+  EnglishName: Fashionism
+  ClassType: 300
   CharacterDescriptionFinnish: 
   CharacterDescriptionEnglish: 
   CharacterShortDescriptionFinnish: 
   CharacterShortDescriptionEnglish: 
-  CharacterStats: {fileID: 11400000, guid: 988af3acb4da38649bb848ada1380894, type: 2}
+  CharacterStats: {fileID: 11400000, guid: e411591fd2348c84dbd4d94646e98e7a, type: 2}
   Hp:
-    Level: 2
-    Coefficient: 5
+    Level: 10
+    Coefficient: 0
   Speed:
-    Level: 1
+    Level: 5
     Coefficient: 0
   CharacterSize:
-    Level: 12
-    Coefficient: 2
+    Level: 10
+    Coefficient: 0
   Attack:
-    Level: 2
-    Coefficient: 7
+    Level: 10
+    Coefficient: 0
   Defence:
-    Level: 11
-    Coefficient: 2
-  GalleryImage: {fileID: 0}
-  GalleryHeadImage: {fileID: 0}
-  CharPhotoSeries: {fileID: 0}
+    Level: 10
+    Coefficient: 0
+  GalleryImage: {fileID: 21300000, guid: 110fd2bb2bc393f4ab351a34a5889066, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: e3f6ea3c5805b324bb400ff6990ca7ad, type: 3}
+  CharPhotoSeries: {fileID: 21300000, guid: ea11942a1e5aed44c9622bff21630def, type: 3}
   BattleEntityPrototype:
     Id:
-      Value: 1366221629889033733
+      Value: 1417332270692313974
   BattleUiSprite: {fileID: 0}

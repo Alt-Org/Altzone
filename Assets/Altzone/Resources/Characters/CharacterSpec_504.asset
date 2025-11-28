@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 504
   CharacterId: 504
-  IsApproved: 0
+  IsApproved: 1
   FinnishName: "P\xF6ssyttelij\xE4"
   EnglishName: Stoning
   ClassType: 500
@@ -31,7 +31,7 @@ MonoBehaviour:
     Coefficient: 0
   CharacterSize:
     Level: 2
-    Coefficient: 1
+    Coefficient: 0
   Attack:
     Level: 3
     Coefficient: 5
@@ -43,5 +43,5 @@ MonoBehaviour:
   CharPhotoSeries: {fileID: 21300000, guid: 7d70091c5c5ff034ab1798ad513c9cb9, type: 3}
   BattleEntityPrototype:
     Id:
-      Value: 0
+      Value: 1483803971126383635
   BattleUiSprite: {fileID: 0}
