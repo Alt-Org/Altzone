@@ -14,7 +14,7 @@ public class PlayMusic : MonoBehaviour
     [SerializeField] private TMPro.TextMeshProUGUI _musicNameText;
     [SerializeField] private SettingsCarrier.JukeboxPlayArea _currentJukeboxPlayArea;
 
-    private string returnString = "";
+    //private string returnString = "";
 
     void OnEnable() { StartCoroutine(WaitForRequierdClasses()); }
 
@@ -28,7 +28,7 @@ public class PlayMusic : MonoBehaviour
             StartTrackControlStandard();
     }
 
-    private void StartTrackControlExpanded()
+    private string StartTrackControlExpanded()
     {
         AudioManager.Instance?.SetCurrentAreaCategoryName(_musicCategory.ToString());
 
@@ -43,9 +43,9 @@ public class PlayMusic : MonoBehaviour
                 if (_musicNameText != null)
                     _musicNameText.text = result;
                 else
-                    returnString = result;
+                    return result;
 
-                return;
+                return "";
             }
         }
         else
@@ -56,13 +56,13 @@ public class PlayMusic : MonoBehaviour
         if (startMusicTrack == null)
         {
             Debug.LogError("Start track is null!");
-            return;
+            return "";
         }
 
-        returnString = AudioManager.Instance.PlayMusic(_musicCategory, startMusicTrack, _musicSwitchType);
+        return AudioManager.Instance.PlayMusic(_musicCategory, startMusicTrack, _musicSwitchType);
     }
 
-    private void StartTrackControlStandard()
+    private string StartTrackControlStandard()
     {
         AudioManager.Instance?.SetCurrentAreaCategoryName(_musicCategory.ToString());
 
@@ -71,10 +71,10 @@ public class PlayMusic : MonoBehaviour
         if (startMusicTrack == null)
         {
             Debug.LogError("Start track is null!");
-            return;
+            return "";
         }
 
-        returnString = AudioManager.Instance.PlayMusic(_musicCategory, startMusicTrack, _musicSwitchType);
+        return AudioManager.Instance.PlayMusic(_musicCategory, startMusicTrack, _musicSwitchType);
     }
 
     /// <summary>
@@ -93,9 +93,8 @@ public class PlayMusic : MonoBehaviour
         playMusic._musicName = musicName;
         playMusic._musicSwitchType = musicSwitchType;
         playMusic._currentJukeboxPlayArea = currentJukeboxPlayArea;
-        playMusic.StartTrackControlExpanded();
 
-        return new string(playMusic.returnString);
+        return new string(playMusic.StartTrackControlExpanded());
     }
 
     /// <summary>
@@ -113,8 +112,7 @@ public class PlayMusic : MonoBehaviour
         playMusic._musicCategory = musicCategory;
         playMusic._musicName = musicName;
         playMusic._musicSwitchType = musicSwitchType;
-        playMusic.StartTrackControlStandard();
 
-        return new string(playMusic.returnString);
+        return new string(playMusic.StartTrackControlStandard());
     }
 }

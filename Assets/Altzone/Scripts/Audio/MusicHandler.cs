@@ -318,11 +318,7 @@ namespace Altzone.Scripts.Audio
                 JukeboxManager.Instance.StopJukebox();
 
             bool revertSwitch = (_primaryChannel == 1 ? _musicChannel1 : _musicChannel2).clip == musicTrack.Music;
-            //Debug.LogError("revertSwitch: " + revertSwitch);
-            //Debug.LogError("_musicChannel1: " + (_musicChannel1.clip == musicTrack.Music));
-            //if (_musicChannel1.clip != null) Debug.LogError("_musicChannel1: " + _musicChannel1.clip.name + " / " + musicTrack.Music.name);
-            //Debug.LogError("_musicChannel2: " + (_musicChannel2.clip == musicTrack.Music));
-            //if (_musicChannel2.clip != null) Debug.LogError("_musicChannel2: " + _musicChannel2.clip.name + " / " + musicTrack.Music.name);
+
             if (!revertSwitch && _musicSwitchInProgress)
             {
                 HandleNextTrack(musicTrack);
@@ -357,13 +353,11 @@ namespace Altzone.Scripts.Audio
 
             MusicTrack musicTrack = MusicDirectionControl(newTrackName, direction);
 
-            //bool revertSwitch = (_primaryChannel == 2 ? _musicChannel1 : _musicChannel2).clip == musicTrack.Music;
-
             if (!revertSwitch && (musicTrack == null || _musicSwitchInProgress))
             {
                 if (newTrackName != null) newTrackName("");
 
-                HandleNextTrack(musicTrack);
+                if (_musicSwitchInProgress) HandleNextTrack(musicTrack);
 
                 yield break;
             }
@@ -412,16 +406,13 @@ namespace Altzone.Scripts.Audio
 
         private void HandleNextTrack(MusicTrack musicTrack)
         {
-            if (_musicSwitchInProgress)
-            {
-                _nextUpCategory = _currentCategory;
-                _nextUpTrack = musicTrack;
+            _nextUpCategory = _currentCategory;
+            _nextUpTrack = musicTrack;
 
-                if (!_acceleratedCrossFadeOneShot && _nextUpTrack != null)
-                {
-                    CalculateAcceleratedResumeTime();
-                    _acceleratedCrossFadeOneShot = true;
-                }
+            if (!_acceleratedCrossFadeOneShot && _nextUpTrack != null)
+            {
+                CalculateAcceleratedResumeTime();
+                _acceleratedCrossFadeOneShot = true;
             }
         }
 
@@ -444,9 +435,7 @@ namespace Altzone.Scripts.Audio
 
         private void CalculateAcceleratedResumeTime()
         {
-            //Debug.LogError(_crossFadeTimer + "| " + (_crossFadeTimer / _crossFadeDuration));
             _crossFadeTimer = _acceleratedCrossFadeDuration * (_crossFadeTimer / _crossFadeDuration);
-            //Debug.LogError(_crossFadeTimer + "| "+ (_crossFadeTimer / _acceleratedCrossFadeDuration));
         }
 
         private void StartMusicPlayback(AudioSource source, AudioClip audio)
