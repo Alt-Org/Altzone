@@ -116,6 +116,10 @@
 /// <summary>Character's current defence value.</summary>
 /// Part of @ref PlayerState "[Player's current state related data]"
 ///
+/// @var bool Quantum::BattlePlayerDataQComponent::DisableRotation
+/// <summary>Whether rotating the character is disabled or not.</summary>
+/// Part of @ref PlayerState "[Player's current state related data]"
+///
 /// @var FrameTimer Quantum::BattlePlayerDataQComponent::DamageCooldown
 /// <summary>Timer used for the cooldown on the character taking damage.</summary>
 /// Part of @ref PlayerState "[Player's current state related data]"
@@ -131,6 +135,26 @@
 /// @var EntityRef Quantum::BattlePlayerDataQComponent::HitboxCharacterEntity
 /// <summary>An entity that contains all the character hitboxes.</summary>
 /// Part of @ref PlayerHitboxEntities "[Player's hitboxEntities]"
+/// @}
+
+/// @anchor Bot
+/// @name Bot related data
+/// @{
+/// @var FP Quantum::BattlePlayerDataQComponent::MovementCooldownSec
+/// <summary>Cooldown between bot movements in seconds.</summary>
+/// Part of @ref Bot "[Bot related data]"
+/// @}
+
+/// @anchor PlayerAbilities
+/// @name Ability related data
+/// @{
+/// @var FrameTimer Quantum::BattlePlayerDataQComponent::AbilityCooldownSec
+/// <summary>Cooldown for using a character's ability in seconds.</summary>
+/// Part of @ref PlayerAbilities "[Ability related data]"
+///
+/// @var FrameTimer Quantum::BattlePlayerDataQComponent::AbilityActivateBufferSec
+/// <summary>Buffer after an ability is used in which it will be activated if cooldown ends.</summary>
+/// Part of @ref PlayerAbilities "[Ability related data]"
 /// @}
 
 // ---------------------------------------------------------------------------------------------------- //

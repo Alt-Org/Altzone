@@ -3,10 +3,13 @@
 /// Contains @cref{Battle.QSimulation.Goal,BattleGoalQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which triggers the end of the game when the projectile hits a goal.
 /// </summary>
 
-using UnityEngine;
+// Unity usings
 using UnityEngine.Scripting;
+
+// Quantum usings
 using Quantum;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Goal
@@ -21,6 +24,15 @@ namespace Battle.QSimulation.Goal
     [Preserve]
     public unsafe class BattleGoalQSystem : SystemSignalsOnly
     {
+        /// <summary>
+        /// Initializes this classes BattleDebugLogger instance.<br/>
+        /// This method is exclusively for debug logging purposes.
+        /// </summary>
+        public static void Init()
+        {
+            s_debugLogger = BattleDebugLogger.Create<BattleGoalQSystem>();
+        }
+
         /// <summary>
         /// Called by BattleCollisionQSystem. If the goal has not already been triggered and projectile is not in held state, calls the OnGameOver method in BattleGameControlQSystem.
         /// </summary>
@@ -40,11 +52,14 @@ namespace Battle.QSimulation.Goal
                 _ => BattleTeamNumber.NoTeam
             };
 
-            BattleGameControlQSystem.OnGameOver(f, winningTeam, goalCollisionData->Projectile, goalCollisionData->ProjectileEntity);
+            BattleGameControlQSystem.OnGameOver(f, winningTeam);
 
             goalCollisionData->Goal->HasTriggered = true;
 
-            Debug.LogFormat("[BattleGoalQSystem] GameOver {0} Goal", winningTeam.ToString());
+            s_debugLogger.LogFormat(f, "GameOver {0} Goal", winningTeam.ToString());
         }
+
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private static BattleDebugLogger s_debugLogger;
     }
 }

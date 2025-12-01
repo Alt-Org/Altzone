@@ -5,8 +5,10 @@
 ///
 /// @bigtext{Filled with data from @ref BattleProjectileQSpec.asset "BattleProjectileQSpec" data asset.}
 
+// Unity usings
 using UnityEngine;
 
+// Quantum usings
 using Quantum;
 using Photon.Deterministic;
 

@@ -41,6 +41,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         public delegate void StatUpdatedHandler(StatType statType);
         public event StatUpdatedHandler OnStatUpdated;
 
+        public delegate void DebugModeChanged();
+        public event DebugModeChanged OnDebugModeChanged;
+
 
         private void Awake()
         {
@@ -321,6 +324,11 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             OnUpgradeMaterialAmountChanged.Invoke();
         }
 
+        public void InvokeOnDebugModeChanged()
+        {
+            OnDebugModeChanged.Invoke();
+        }
+
 
         /// <summary>
         /// Try to decrease player's upgrade material by the amount specified.
@@ -498,23 +506,26 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>True if stat can be increased false if stat can't be increased.</returns>
         public bool CanIncreaseStat(StatType statType, bool showPopupMessages = false)
         {
-            if (showPopupMessages)
+            if (!SettingsCarrier.Instance.StatDebuggingMode)
             {
                 if (!CheckCombinedLevelCap())
                 {
-                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, taitojen summa on enintään {CustomCharacter.STATMAXCOMBINED}.");
-                }
-                else if (!CheckStatLevelCap(statType))
-                {
-                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
+                    if (showPopupMessages) PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, taitojen summa on enintään {CustomCharacter.STATMAXCOMBINED}.");
+                    return false;
                 }
                 else if (GetStatStrength(statType) == ValueStrength.None)
                 {
-                    PopupSignalBus.OnChangePopupInfoSignal($"Tätä taitoa ei voi muokata.");
+                    if (showPopupMessages) PopupSignalBus.OnChangePopupInfoSignal($"Tätä taitoa ei voi muokata.");
+                    return false;
                 }
             }
+            if (!CheckStatLevelCap(statType))
+            {
+                if (showPopupMessages) PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
+                return false;
+            }
 
-            return statType != StatType.None && CheckCombinedLevelCap() && CheckStatLevelCap(statType) && GetStatStrength(statType) != ValueStrength.None;
+            return statType != StatType.None;
         }
 
 
@@ -561,16 +572,25 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>True if stat can be decreased false if stat can't be decreased.</returns>
         public bool CanDecreaseStat(StatType statType, bool showPopupMessages = false)
         {
-            if (showPopupMessages && !(GetStat(statType) > GetBaseStat(statType)))
-            {
-                PopupSignalBus.OnChangePopupInfoSignal($"Et voi vähentää pohjataitoa.");
+            if(!SettingsCarrier.Instance.StatDebuggingMode){
+                if (showPopupMessages && !(GetStat(statType) > GetBaseStat(statType)))
+                {
+                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi vähentää pohjataitoa.");
+                    return false;
+                }
+                else if (GetStatStrength(statType) == ValueStrength.None)
+                {
+                    PopupSignalBus.OnChangePopupInfoSignal($"Tätä taitoa ei voi muokata.");
+                    return false;
+                }
             }
-            else if (GetStatStrength(statType) == ValueStrength.None)
+            if (GetStat(statType) <= CustomCharacter.STATMINLEVEL)
             {
-                PopupSignalBus.OnChangePopupInfoSignal($"Tätä taitoa ei voi muokata.");
+                if (showPopupMessages) PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, minimi on {CustomCharacter.STATMINLEVEL}.");
+                return false;
             }
 
-            return GetStat(statType) > CustomCharacter.STATMINLEVEL && GetStat(statType) > GetBaseStat(statType) && GetStatStrength(statType) != ValueStrength.None;
+            return GetStat(statType) > CustomCharacter.STATMINLEVEL;
         }
 
 

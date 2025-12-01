@@ -542,6 +542,7 @@ RectTransform:
   - {fileID: 6111546397118085680}
   - {fileID: 8021993414719466779}
   - {fileID: 5872830137075860331}
+  - {fileID: 935206260146651245}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -626,6 +627,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _overlayObject: {fileID: 8247631838125921094}
   _allowedScene: {fileID: 11400000, guid: c881f0f29be52964abbf5c2cdb552f31, type: 2}
+--- !u!1 &8304067013974970627
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 935206260146651245}
+  m_Layer: 5
+  m_Name: TutorialPopUp
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &935206260146651245
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8304067013974970627}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7695168990374541661}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -1813.8461, y: 0}
+  m_SizeDelta: {x: -193.84613, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &8306397102818127506
 GameObject:
   m_ObjectHideFlags: 0

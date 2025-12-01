@@ -9,16 +9,25 @@
 /// Handles movement and rotation input based on chosen input methods. <br/>
 /// Handles obtaining data from device gyroscope.
 
+//#define DEBUG_INPUT_TYPE_OVERRIDE
+
+// Unity usings
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+// Quantum usings
 using Quantum;
 using Input = Quantum.Input;
 using Photon.Deterministic;
 
+// Prg usings
 using Prg.Scripts.Common;
 
+// Battle QSimulation usings
+using Battle.QSimulation;
 using Battle.QSimulation.Game;
+
+// Battle View usings
 using Battle.View.Game;
 
 using MovementInputType = SettingsCarrier.BattleMovementInputType;
@@ -64,7 +73,14 @@ namespace Battle.View.Player
         public void OnCharacterSelected(int characterNumber)
         {
             _characterNumber = characterNumber;
-            _characterSelectionInput = true;
+        }
+
+        /// <summary>
+        /// Called when the player presses the give up button.
+        /// </summary>
+        public void OnGiveUp()
+        {
+            _onGiveUp = true;
         }
 
         /// @}
@@ -75,16 +91,18 @@ namespace Battle.View.Player
         private struct MovementInputInfo
         {
             public BattleMovementInputType MovementInput;
-            public bool MovementDirectionIsNormalized;
-            public BattleGridPosition MovementPosition;
-            public FPVector2 MovementDirection;
+            public bool                    MovementDirectionIsNormalized;
+            public BattleGridPosition      MovementPositionTarget;
+            public FPVector2               MovementPositionMove;
+            public FPVector2               MovementDirection;
 
-            public MovementInputInfo(BattleMovementInputType movementInput, bool movementDirectionIsNormalized, BattleGridPosition movementPosition, FPVector2 movementDirection)
+            public MovementInputInfo(BattleMovementInputType movementInput, bool movementDirectionIsNormalized, BattleGridPosition movementPositionTarget, FPVector2 movementPositionMove, FPVector2 movementDirection)
             {
-                MovementInput = movementInput;
+                MovementInput                 = movementInput;
                 MovementDirectionIsNormalized = movementDirectionIsNormalized;
-                MovementPosition = movementPosition;
-                MovementDirection = movementDirection;
+                MovementPositionTarget        = movementPositionTarget;
+                MovementPositionMove          = movementPositionMove;
+                MovementDirection             = movementDirection;
             }
         }
 
@@ -94,7 +112,7 @@ namespace Battle.View.Player
         private struct RotationInputInfo
         {
             public bool RotationInput;
-            public FP RotationValue;
+            public FP   RotationValue;
 
             public RotationInputInfo(bool rotationInput, FP rotationValue)
             {
@@ -128,11 +146,20 @@ namespace Battle.View.Player
         /// <value>The float value received from the rotation joystick.</value>
         private float _joystickRotationValue;
 
+        /// <summary>Saved world position of the previous tap position used for double tap input validating.</summary>
+        private Vector3 _lastTapPosition;
+
+        /// <summary>Saved time stamp of the previous tap.</summary>
+        private float _lastTapTime;
+
         /// <value>Saved character number from character swapping input.</value>
         private int _characterNumber = -1;
 
-        /// <value>Bool for if a character swap input was performed.</value>
-        private bool _characterSelectionInput = false;
+        /// <value>Give up button state</value>
+        private bool _onGiveUp = false;
+
+        /// <value>Bool to block screen input</value>
+        private bool _blockScreenInput = false;
 
         /// @}
 
@@ -167,6 +194,9 @@ namespace Battle.View.Player
         /// <value>Reference to the play device's attitude sensor aka gyroscope.</value>
         private AttitudeSensor _attitudeSensor;
 
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private BattleDebugLogger _debugLogger;
+
         /// @}
 
         /// <summary>
@@ -176,12 +206,24 @@ namespace Battle.View.Player
         /// </summary>
         private void OnEnable()
         {
+            _debugLogger = BattleDebugLogger.Create<BattlePlayerInput>();
+
             _movementInputType = SettingsCarrier.Instance.BattleMovementInput;
             _rotationInputType = SettingsCarrier.Instance.BattleRotationInput;
             _swipeMinDistance  = SettingsCarrier.Instance.BattleSwipeMinDistance;
             _swipeMaxDistance  = SettingsCarrier.Instance.BattleSwipeMaxDistance;
             _swipeSensitivity  = SettingsCarrier.Instance.BattleSwipeSensitivity;
             _gyroMinAngle      = SettingsCarrier.Instance.BattleGyroMinAngle;
+
+#if DEBUG_INPUT_TYPE_OVERRIDE
+            _debugLogger.Warning("DEBUG_INPUT_TYPE_OVERRIDE enabled!");
+
+            _movementInputType = MovementInputType.FollowPointer;
+            _rotationInputType = RotationInputType.TwoFinger;
+
+            _debugLogger.WarningFormat("Using MovementInputType {0} override", _movementInputType);
+            _debugLogger.WarningFormat("Using RotationInputType {0} override", _rotationInputType);
+#endif
 
             if (AttitudeSensor.current != null)
             {
@@ -201,18 +243,29 @@ namespace Battle.View.Player
         {
             FP deltaTime = FP.FromFloat_UNSAFE(Time.time - _previousTime);
 
+            // set common input variables
             bool mouseDown = ClickStateHandler.GetClickState() is ClickState.Start or ClickState.Hold or ClickState.Move;
             bool twoFingers = ClickStateHandler.GetClickType() is ClickType.TwoFingerOrScroll;
             bool mouseClick = !twoFingers && mouseDown && !_mouseDownPrevious;
             _mouseDownPrevious = mouseDown;
 
-            MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero);
+            // set double tap ability variables
+            const float DoubleTapInterval = 0.2f;
+            const float DoubleTapDistance = 1.0f;
+
+            // set default input info
+            MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero, FPVector2.Zero);
             RotationInputInfo rotationInputInfo = new(false, FP._0);
 
-            if (!_characterSelectionInput)
+            // check button input
+            if (_characterNumber > -1 || _onGiveUp) _blockScreenInput = true;
+
+            Vector2 clickPosition = Vector2.zero;
+            Vector3 unityPosition = Vector3.zero;
+
+            // handles screen input
+            if (!_blockScreenInput)
             {
-                Vector2 clickPosition = Vector2.zero;
-                Vector3 unityPosition = Vector3.zero;
                 if (mouseDown)
                 {
                     clickPosition = ClickStateHandler.GetClickPosition();
@@ -224,23 +277,67 @@ namespace Battle.View.Player
             }
             else if (!mouseDown)
             {
-                _characterSelectionInput = false;
+                _blockScreenInput = false;
             }
 
-            Input i = new()
+            //{ create and set input
+
+            Input input = new()
             {
-                MovementInput = movementInputInfo.MovementInput,
+                IsValid                       = true,
+                MovementInput                 = movementInputInfo.MovementInput,
                 MovementDirectionIsNormalized = movementInputInfo.MovementDirectionIsNormalized,
-                MovementPosition = movementInputInfo.MovementPosition,
-                MovementDirection = movementInputInfo.MovementDirection,
-                RotationInput = rotationInputInfo.RotationInput,
-                RotationValue = rotationInputInfo.RotationValue,
-                PlayerCharacterNumber = _characterNumber
+                MovementPositionTarget        = movementInputInfo.MovementPositionTarget,
+                MovementPositionMove          = movementInputInfo.MovementPositionMove,
+                MovementDirection             = movementInputInfo.MovementDirection,
+                RotationInput                 = rotationInputInfo.RotationInput,
+                RotationValue                 = rotationInputInfo.RotationValue,
+                PlayerCharacterNumber         = _characterNumber,
+                GiveUpInput                   = _onGiveUp,
+                AbilityActivate               = Time.time - _lastTapTime < DoubleTapInterval && mouseClick && Vector3.Distance(_lastTapPosition, unityPosition) < DoubleTapDistance
             };
 
-            callback.SetInput(i, DeterministicInputFlags.Repeatable);
+            DeterministicInputFlags inputFlags = DeterministicInputFlags.Repeatable;
+
+            _debugLogger.LogFormat("({0}) Sending input\n" +
+                                   "struct: {{\n" +
+                                   "    MovementInput:                 {1},\n" +
+                                   "    MovementDirectionIsNormalized: {2},\n" +
+                                   "    MovementPositionTarget:        {3},\n" +
+                                   "    MovementPositionMove:          {4},\n" +
+                                   "    MovementDirection:             {5},\n" +
+                                   "    RotationInput:                 {6},\n" +
+                                   "    RotationValue:                 {7},\n" +
+                                   "    PlayerCharacterNumber:         {8},\n" +
+                                   "    GiveUpInput:                   {9}\n" +
+                                   "}},\n" +
+                                   "flags: {10}",
+                                   BattleGameViewController.LocalPlayerSlot,
+                                   input.MovementInput,
+                                   input.MovementDirectionIsNormalized,
+                                   input.MovementPositionTarget.ConvertToString(),
+                                   input.MovementPositionMove,
+                                   input.MovementDirection,
+                                   input.RotationInput,
+                                   input.RotationValue,
+                                   input.PlayerCharacterNumber,
+                                   input.GiveUpInput,
+                                   inputFlags);
+
+            callback.SetInput(input, inputFlags);
+
+            //} create and set input
+
+            if (mouseClick)
+            {
+                _lastTapTime = Time.time;
+                _lastTapPosition = unityPosition;
+            }
+
             _previousTime = Time.time;
 
+            // reset
+            _onGiveUp        = false;
             _characterNumber = -1;
         }
 
@@ -258,19 +355,36 @@ namespace Battle.View.Player
         /// <param name="deltaTime">Time since previous frame</param>
         private MovementInputInfo GetMovementInput(bool mouseDown, bool mouseClick, Vector3 unityPosition, FP deltaTime)
         {
-            MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero);
+            MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero, FPVector2.Zero);
 
             switch (_movementInputType)
             {
                 case MovementInputType.PointAndClick:
                     if (mouseClick)
                     {
-                        movementInputInfo.MovementInput = BattleMovementInputType.Position;
-                        movementInputInfo.MovementPosition = new()
+                        movementInputInfo.MovementInput = BattleMovementInputType.PositionTarget;
+                        movementInputInfo.MovementPositionTarget = new()
                         {
                             Row = BattleGridManager.WorldYPositionToGridRow(FP.FromFloat_UNSAFE(unityPosition.z)),
                             Col = BattleGridManager.WorldXPositionToGridCol(FP.FromFloat_UNSAFE(unityPosition.x))
                         };
+                    }
+                    break;
+
+                case MovementInputType.FollowPointer:
+                    if (mouseDown)
+                    {
+                        movementInputInfo.MovementInput = BattleMovementInputType.PositionMove;
+                        movementInputInfo.MovementPositionMove = new FPVector2
+                        (
+                            FP.FromFloat_UNSAFE(unityPosition.x),
+                            FP.FromFloat_UNSAFE(unityPosition.z)
+                        );
+                    }
+                    else
+                    {
+                        movementInputInfo.MovementInput = BattleMovementInputType.None;
+                        movementInputInfo.MovementPositionMove = FPVector2.Zero;
                     }
                     break;
 

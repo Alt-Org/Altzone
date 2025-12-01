@@ -6,11 +6,17 @@
 /// This script:<br/>
 /// Handles setting the visibility of the battle loading screen and updating it whenever a player connects to the game.
 
+// Unity usings
 using UnityEngine;
-using Quantum;
 using TMPro;
 
+// Quantum usings
+using Quantum;
+
+// Altzone usings
 using MenuUi.Scripts.Lobby.SelectedCharacters;
+
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 
 namespace Battle.View.UI

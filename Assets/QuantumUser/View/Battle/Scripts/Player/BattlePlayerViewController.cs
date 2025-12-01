@@ -6,14 +6,22 @@
 /// This script:<br/>
 /// Handles player sprites and animations.
 
+// System usings
 using System.Collections;
+
+// Unity usings
 using UnityEngine;
 
+// Quantum usings
 using Quantum;
 using Photon.Deterministic;
 
-using Battle.View.Game;
+// Battle QSimulation usings
+using Battle.QSimulation;
 using Battle.QSimulation.Player;
+
+// Battle View usings
+using Battle.View.Game;
 
 namespace Battle.View.Player
 {
@@ -40,7 +48,7 @@ namespace Battle.View.Player
 
         /// <summary>[SerializeField] %Player's child <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> where heart sprite is located.</summary>
         /// @ref BattlePlayerViewController-SerializeFields
-        [SerializeField] private GameObject _heart;
+        //[SerializeField] private GameObject _heart;
 
         /// <summary>[SerializeField] Array of character <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.</summary>
         /// @ref BattlePlayerViewController-SerializeFields
@@ -108,7 +116,7 @@ namespace Battle.View.Player
             {
                 GameObject characterGameObjects = _characterGameObjects[1];
                 characterGameObjects.SetActive(true);
-                _heart.SetActive(false);
+                //_heart.SetActive(false);
                 _spriteRenderer = characterGameObjects.GetComponent<SpriteRenderer>();
             }
 
@@ -126,7 +134,7 @@ namespace Battle.View.Player
                 }
                 else
                 {
-                    Debug.LogErrorFormat("[BattlePlayerViewController] Class view controller missmatch! Expected {0}, got {1}", e.Class, _classViewControllerOverride.Class);
+                    _debugLogger.ErrorFormat("Class view controller missmatch! Expected {0}, got {1}", e.Class, _classViewControllerOverride.Class);
                     Destroy(_classViewControllerOverride);
                 }
             }
@@ -171,6 +179,9 @@ namespace Battle.View.Player
             _classViewController.OnUpdateView();
         }
 
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private BattleDebugLogger _debugLogger;
+
         /// <value>Reference to the active character's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SpriteRenderer.html">SpriteRenderer@u-exlink</a>.</value>
         private SpriteRenderer _spriteRenderer;
 
@@ -186,6 +197,8 @@ namespace Battle.View.Player
         /// </summary>
         private void PreInitSetup()
         {
+            _debugLogger = BattleDebugLogger.Create<BattlePlayerViewController>();
+
             _classViewController = gameObject.AddComponent<BattlePlayerClassNoneViewController>();
         }
 

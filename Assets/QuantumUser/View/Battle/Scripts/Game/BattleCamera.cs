@@ -6,6 +6,7 @@
 /// This script:<br/>
 /// Handles %Battle camera functionality.
 
+// Unity usings
 using UnityEngine;
 using UnityEngine.Assertions;
 

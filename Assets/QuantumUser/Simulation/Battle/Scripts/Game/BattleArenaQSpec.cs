@@ -5,6 +5,7 @@
 ///
 /// @bigtext{Filled with data from @ref BattleArenaQSpec.asset "BattleArenaQSpec" data asset.}
 
+// Quantum usings
 using Quantum;
 using Photon.Deterministic;
 

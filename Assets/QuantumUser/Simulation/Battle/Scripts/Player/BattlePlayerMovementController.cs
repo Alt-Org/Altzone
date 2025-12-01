@@ -4,13 +4,16 @@
 /// which contains the primary method for handling player movement as well as individual helper methods for moving and rotating players.
 /// </summary>
 
+// Unity usings
 using UnityEngine;
 using UnityEngine.Scripting;
 
+// Quantum usings
 using Quantum;
 using Input = Quantum.Input;
 using Photon.Deterministic;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player
@@ -24,6 +27,15 @@ namespace Battle.QSimulation.Player
     [Preserve]
     public static unsafe class BattlePlayerMovementController
     {
+        /// <summary>
+        /// Initializes this classes BattleDebugLogger instance.<br/>
+        /// This method is exclusively for debug logging purposes.
+        /// </summary>
+        public static void Init()
+        {
+            s_debugLogger = BattleDebugLogger.Create(typeof(BattlePlayerMovementController));
+        }
+
         /// <summary>
         /// Handles player's movement and rotation.
         /// </summary>
@@ -50,11 +62,26 @@ namespace Battle.QSimulation.Player
             //{ handle movement
 
             // handle movement input
-            if (input->MovementInput != BattleMovementInputType.None)
+            switch (input->MovementInput)
             {
-                // get players TargetPosition
-                if (input->MovementInput == BattleMovementInputType.Direction)
-                {
+                case BattleMovementInputType.None:
+                    break;
+
+                case BattleMovementInputType.PositionTarget:
+                    ClampPosition(playerData, input->MovementPositionTarget, out playerData->TargetPosition);
+                    playerData->HasTargetPosition = true;
+                    break;
+
+                case BattleMovementInputType.PositionMove:
+                    positionNext = FPVector2.MoveTowards(transform->Position, input->MovementPositionMove, playerData->Stats.Speed * f.DeltaTime);
+                    if (ClampPosition(playerData, positionNext, out FPVector2 clampedNext))
+                    {
+                        positionNext = clampedNext;
+                    }
+                    playerData->TargetPosition = positionNext;
+                    break;
+
+                case BattleMovementInputType.Direction:
                     FPVector2 movementDirection = input->MovementDirection * (input->MovementDirectionIsNormalized ? playerData->Stats.Speed : FP._1);
                     positionNext = transform->Position + FPVector2.ClampMagnitude(movementDirection, playerData->Stats.Speed) * f.DeltaTime;
                     if (ClampPosition(playerData, positionNext, out FPVector2 clampedPosition))
@@ -62,14 +89,7 @@ namespace Battle.QSimulation.Player
                         positionNext = clampedPosition;
                     }
                     playerData->TargetPosition = positionNext;
-                }
-                else
-                {
-                    ClampPosition(playerData, input->MovementPosition, out playerData->TargetPosition);
-                    playerData->HasTargetPosition = true;
-                }
-
-                Debug.LogFormat("[PlayerMovementSystem] Mouse clicked (mouse position: {0}", playerData->TargetPosition);
+                    break;
             }
 
             // handle target position based movement
@@ -98,7 +118,7 @@ namespace Battle.QSimulation.Player
             {
                 // set target angle
                 FP maxAngle = FP.Rad_45 * input->RotationValue;
-                FP maxAllowedAngle = spec.MaxRotationAngleDeg;
+                FP maxAllowedAngle = spec.MaxRotationAngleDeg * FP.Deg2Rad;
                 maxAngle = FPMath.Clamp(maxAngle, -maxAllowedAngle, maxAllowedAngle);
 
                 // rotates to left
@@ -109,7 +129,7 @@ namespace Battle.QSimulation.Player
                     {
                         playerData->RotationOffset = maxAngle;
                     }
-                    Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", playerData->RotationOffset);
+                    s_debugLogger.LogFormat(f, "Leaning left(rotation: {0}", playerData->RotationOffset);
                 }
 
                 // rotates to right
@@ -120,7 +140,7 @@ namespace Battle.QSimulation.Player
                     {
                         playerData->RotationOffset = maxAngle;
                     }
-                    Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", playerData->RotationOffset);
+                    s_debugLogger.LogFormat(f, "Leaning right(rotation: {0}", playerData->RotationOffset);
                 }
             }
 
@@ -210,6 +230,9 @@ namespace Battle.QSimulation.Player
             TeleportHitbox(f, playerData, transform);
         }
 
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private static BattleDebugLogger s_debugLogger;
+
         /// <summary>
         /// Private method for moving and rotating all of the player's hitboxes to the player's current position and rotation.
         /// </summary>
@@ -291,7 +314,6 @@ namespace Battle.QSimulation.Player
             clampedPosition = BattleGridManager.GridPositionToWorldPosition(clampedGridPosition);
 
             return gridPosition.Col != clampedGridPosition.Col || gridPosition.Row != clampedGridPosition.Row;
-
         }
 
         /// <summary>

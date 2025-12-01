@@ -10,11 +10,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         public SlaveOfTheLawCharacter() : base()
         {
             _id = CharacterID.SlaveOfTheLaw;
-            _defaultAttack = 14;
-            _defaultDefence = 12;
-            _defaultHp = 14;
-            _defaultCharacterSize = 8;
-            _defaultSpeed = 4;
+            _defaultAttack = 4;
+            _defaultDefence = 4;
+            _defaultHp = 4;
+            _defaultCharacterSize = 3;
+            _defaultSpeed = 3;
             InitializeValues();
         }
     }

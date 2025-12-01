@@ -5082,7 +5082,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2732905750668515878
 Transform:
   m_ObjectHideFlags: 0
@@ -5203,7 +5203,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _classViewControllerOverride: {fileID: 0}
   _animator: {fileID: 0}
-  _heart: {fileID: 3969168272333082471}
   _characterGameObjects:
   - {fileID: 5555457871378360869}
   - {fileID: 7918865761784379886}
@@ -5483,7 +5482,7 @@ MonoBehaviour:
           X: 1
           Y: 1
       CollisionType:
-        Value: 0
+        Value: 1
       NormalAngleDeg:
         RawValue: 0
     DisableRotation:

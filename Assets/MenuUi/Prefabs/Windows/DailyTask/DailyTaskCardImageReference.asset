@@ -41,7 +41,7 @@ MonoBehaviour:
       CultureType: 0
       EthicalType: 0
       ActionType: 0
-      Image: {fileID: 21300000, guid: d08bb926975fe914db0bce7a11f2da00, type: 3}
+      Image: {fileID: 21300000, guid: 81e72b5658b35834c9f6ab43ca609568, type: 3}
     - Name: Add New Friend
       SocialType: 1
       StoryType: 0
@@ -229,14 +229,14 @@ MonoBehaviour:
       CultureType: 3
       EthicalType: 0
       ActionType: 0
-      Image: {fileID: 21300000, guid: e8f6a951a8437e249894b36c389e3aa9, type: 3}
+      Image: {fileID: 21300000, guid: d2158cdb033aff841957afb2223c8de8, type: 3}
     - Name: Set Profile Player Type
       SocialType: 0
       StoryType: 0
       CultureType: 4
       EthicalType: 0
       ActionType: 0
-      Image: {fileID: 21300000, guid: df5ef5dc8cd69354d977b2d0f6162940, type: 3}
+      Image: {fileID: 21300000, guid: c920e3dea7a1b784887814e9f452220b, type: 3}
     - Name: Find Power Or Equality Window
       SocialType: 0
       StoryType: 0
@@ -244,6 +244,13 @@ MonoBehaviour:
       EthicalType: 0
       ActionType: 0
       Image: {fileID: 21300000, guid: df791322838c19a4a9a6122aa9c96e44, type: 3}
+    - Name: Clan Cultural Guideline
+      SocialType: 0
+      StoryType: 0
+      CultureType: 6
+      EthicalType: 0
+      ActionType: 0
+      Image: {fileID: 21300000, guid: 03815529a5b48624fa99bc52d7b3c16a, type: 3}
   - Name: Ethical
     BaseType: 4
     SubCategories:
@@ -296,6 +303,27 @@ MonoBehaviour:
       EthicalType: 6
       ActionType: 0
       Image: {fileID: 21300000, guid: a97b4b8bd7c837e49a7e0ebb5f03ab91, type: 3}
+    - Name: Change Language
+      SocialType: 0
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 7
+      ActionType: 0
+      Image: {fileID: 21300000, guid: 4897612041ae10b468d2ce69630a2897, type: 3}
+    - Name: PressPrizeItems
+      SocialType: 0
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 8
+      ActionType: 0
+      Image: {fileID: 21300000, guid: 5abcf9f5031969a4aaf68076fd4eb690, type: 3}
+    - Name: Choose Ethically Better Character
+      SocialType: 0
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 9
+      ActionType: 0
+      Image: {fileID: 21300000, guid: a97b4b8bd7c837e49a7e0ebb5f03ab91, type: 3}
   - Name: Action
     BaseType: 5
     SubCategories:
@@ -326,7 +354,7 @@ MonoBehaviour:
       CultureType: 0
       EthicalType: 0
       ActionType: 3
-      Image: {fileID: 21300000, guid: 74936fbe9ef5db447bb9f37883e76fd6, type: 3}
+      Image: {fileID: 21300000, guid: 8512f77e076ec1f4cb6cb5febe12cae5, type: 3}
     - Name: Switch Soulhome Music
       SocialType: 0
       StoryType: 0
@@ -411,3 +439,10 @@ MonoBehaviour:
       EthicalType: 0
       ActionType: 15
       Image: {fileID: 21300000, guid: 1a74604aff48c6741a60bcc86a680baf, type: 3}
+    - Name: Create Clan Playlist
+      SocialType: 0
+      StoryType: 0
+      CultureType: 0
+      EthicalType: 0
+      ActionType: 16
+      Image: {fileID: 21300000, guid: 2f2e05c663f70fa40a8b708842caabfd, type: 3}

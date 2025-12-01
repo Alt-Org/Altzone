@@ -46,6 +46,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public enum BattleMovementInputType
     {
         PointAndClick,
+        FollowPointer,
         Swipe,
         Joystick
     }
@@ -116,6 +117,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
     public const string UnlimitedStatUpgradeMaterialsKey = "UnlimitedStatUpgrade";
 
+    public const string StatDebuggingModeKey = "StatDebugging";
+
     public const string TopBarStyleSettingKey = "TopBarStyleSetting";
 
     // Settings variables
@@ -146,7 +149,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
             PlayerPrefs.SetString("LanguageType", ParseLanguage(value));
             OnLanguageChanged?.Invoke(_language);
         }
-    } 
+    }
 
     private TextSize _textSize;
     public TextSize Textsize { get => _textSize; }
@@ -175,6 +178,18 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
             if (_unlimitedStatUpgradeMaterials == value) return;
             _unlimitedStatUpgradeMaterials = value;
             PlayerPrefs.SetInt(UnlimitedStatUpgradeMaterialsKey, value ? 1 : 0);
+        }
+    }
+
+    private bool _statDebuggingMode;
+    public bool StatDebuggingMode
+    {
+        get => _statDebuggingMode;
+        set
+        {
+            if (_statDebuggingMode == value) return;
+            _statDebuggingMode = value;
+            PlayerPrefs.SetInt(StatDebuggingModeKey, value ? 1 : 0);
         }
     }
 
@@ -368,6 +383,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _battleGyroMinAngle = PlayerPrefs.GetFloat(BattleGyroMinAngleKey, BattleGyroMinAngleDefault);
 
         _unlimitedStatUpgradeMaterials = PlayerPrefs.GetInt(UnlimitedStatUpgradeMaterialsKey, 1) == 1;
+
+        _statDebuggingMode = /*PlayerPrefs.GetInt(StatDebuggingModeKey, 1) == 1*/true;
 
         _topBarStyleSetting = (TopBarStyle)PlayerPrefs.GetInt(TopBarStyleSettingKey, 1);
 

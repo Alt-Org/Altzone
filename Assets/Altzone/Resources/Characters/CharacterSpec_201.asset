@@ -14,38 +14,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 201
   CharacterId: 201
-  IsApproved: 0
+  IsApproved: 1
   FinnishName: Huumori
   EnglishName: Joking
   ClassType: 200
-  CharacterDescriptionFinnish: "Vitsinv\xE4\xE4nt\xE4j\xE4 on kaveriporukkansa ilopilleri.
-    N\xE4hden hauskuuden kaikessa, h\xE4nen seurassaan meno pysyy rentona eik\xE4
-    tylsyys uhkaa. Hyv\xE4ntuulisena ja aina hilpe\xE4 heitto kielen p\xE4\xE4ll\xE4,
-    h\xE4n on haluttua seuraa kunnes huumorin olisi aika astua sivuun tehden tilaa
-    aidolle yhteydelle. T\xE4ll\xF6in muut huomaavat Vitsinv\xE4\xE4nt\xE4j\xE4n
-    pit\xE4v\xE4nkin heit\xE4 loitolla, sill\xE4 onko h\xE4nell\xE4 sarkasmin lis\xE4ksi
-    mit\xE4\xE4n muuta annettavaa? \r\n\nVitsinv\xE4\xE4nt\xE4j\xE4 torjuu h\xE4nt\xE4
-    l\xE4hestyv\xE4t tunnetila-ammukset harhauttavat naurukohtaukset aiheuttavalla
-    pierutyynyll\xE4\xE4n.\n\r\n\xC4py-lehden p\xE4\xE4toimittajana insin\xF6\xF6riopiskeluaikoinaan.\r\n"
+  CharacterDescriptionFinnish: "Kun Huumori asettuu ihmiseen asumaan, h\xE4n saa
+    t\xE4m\xE4n k\xE4\xE4nt\xE4m\xE4\xE4n jokaisen tunteen vitsiksi ennen kuin se
+    ehtii koskettaa. Nauru muuttuu suojaksi, jonka takaa ei en\xE4\xE4 kuulu, mit\xE4
+    oikeasti tuntuu. Ihminen oppii pit\xE4m\xE4\xE4n ilmapiirin kevyen\xE4, sill\xE4
+    hiljaisuus voisi paljastaa jotakin todellista. Huumori alkaa t\xE4ytt\xE4\xE4
+    kaiken sen, mik\xE4 ennen oli yhteytt\xE4 \u2014 ja mit\xE4 enemm\xE4n h\xE4n
+    saa muut nauramaan, sit\xE4 syvemm\xE4lle oma yksin\xE4isyys piiloutuu.\r\n\nVuorovaikutuskent\xE4ll\xE4
+    (Ego Clash) Huumori torjuu tunnetila-ammukset pierutyynyll\xE4\xE4n, joka p\xE4\xE4st\xE4\xE4
+    joka kerta erilaisen \xE4\xE4nen ja muuttaa ammusten suunnan arvaamattomasti.
+    Mit\xE4 vakavammaksi tilanne k\xE4y, sit\xE4 absurdimmaksi h\xE4nen huumorinsa
+    muuttuu \u2013 ja juuri siin\xE4 piilee sek\xE4 h\xE4nen voimansa ett\xE4 yksin\xE4isyytens\xE4.\r"
   CharacterDescriptionEnglish: 
-  CharacterShortDescriptionFinnish: "Pierutyynyll\xE4 ja kekseli\xE4isyydell\xE4
-    hauskuuttava leikinlaskija. "
+  CharacterShortDescriptionFinnish: "Pierutyynyll\xE4 hauskuuttava, kekseli\xE4isyydell\xE4
+    leikinlaskija. "
   CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 74984fd1c07e51a4b961d5900f79212d, type: 2}
   Hp:
-    Level: 2
+    Level: 1
     Coefficient: 4
   Speed:
-    Level: 4
+    Level: 6
     Coefficient: 0
   CharacterSize:
-    Level: 6
-    Coefficient: 6
+    Level: 2
+    Coefficient: 0
   Attack:
-    Level: 7
+    Level: 2
     Coefficient: 5
   Defence:
-    Level: 5
+    Level: 2
     Coefficient: 7
   GalleryImage: {fileID: 21300000, guid: c6e675e43a2f15f448e640f616d6bfbb, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: f80202b1297003e4bb5d5b25be260306, type: 3}

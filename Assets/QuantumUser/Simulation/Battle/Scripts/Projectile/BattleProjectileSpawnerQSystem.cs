@@ -3,11 +3,14 @@
 /// Contains @cref{Battle.QSimulation.Projectile,BattleProjectileSpawnerQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which spawns the projectile when game starts.
 /// </summary>
 
-using UnityEngine;
+// Unity usings
 using UnityEngine.Scripting;
 
-using Photon.Deterministic;
+// Quantum usings
 using Quantum;
+using Photon.Deterministic;
+
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Projectile
@@ -17,7 +20,7 @@ namespace Battle.QSimulation.Projectile
     /// Handles spawning the projectile at the beginning of the game.<br/>
     /// </summary>
     ///
-    /// An invisible entity with BattleProjectileSpawnerQComponent is created when system is initiated, 
+    /// An invisible entity with BattleProjectileSpawnerQComponent is created when system is initiated,
     /// which is then used to spawn the projectile when BattleGameState is changed to "Playing".
     [Preserve]
     public unsafe class BattleProjectileSpawnerQSystem : SystemMainThreadFilter<BattleProjectileSpawnerQSystem.Filter>
@@ -42,6 +45,8 @@ namespace Battle.QSimulation.Projectile
         /// <param name="f">Current simulation frame.</param>
         public override void OnInit(Frame f)
         {
+            _debugLogger = BattleDebugLogger.Create<BattleProjectileSpawnerQSystem>();
+
             // create a new entity
             EntityRef entity = f.Create();
 
@@ -52,8 +57,8 @@ namespace Battle.QSimulation.Projectile
             BattleProjectileSpawnerQComponent* spawner = f.Unsafe.GetPointer<BattleProjectileSpawnerQComponent>(entity);
             spawner->HasSpawned = false;
 
-            Debug.Log("ProjectileSpawnerSystem initialized");
-            Debug.Log($"Entity created with ProjectileSpawner component: {entity}");
+            _debugLogger.Log(f, "ProjectileSpawnerSystem initialized");
+            _debugLogger.Log(f, $"Entity created with ProjectileSpawner component: {entity}");
         }
 
         /// <summary>
@@ -75,7 +80,7 @@ namespace Battle.QSimulation.Projectile
             // ensure the projectile is spawned only once
             if (!filter.Spawner->HasSpawned)
             {
-                Debug.Log("Projectile should spawn");
+                _debugLogger.Log(f, "Projectile should spawn");
                 BattleProjectileQSpec  spec = BattleQConfig.GetProjectileSpec(f);
                 SpawnProjectile(f, spec.ProjectilePrototype);
 
@@ -83,6 +88,9 @@ namespace Battle.QSimulation.Projectile
                 filter.Spawner->HasSpawned = true;
             }
         }
+
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private BattleDebugLogger _debugLogger;
 
         /// <summary>
         /// Creates a projectile entity using the specified prototype and initializes its components.
