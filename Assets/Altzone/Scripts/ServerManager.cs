@@ -1947,8 +1947,6 @@ public class ServerManager : MonoBehaviour
     }
     #endregion
 
-    #endregion
-
     #region Leaderboard
     public IEnumerator GetClanLeaderboardFromServer(Action<List<ClanLeaderboard>> callback)
     {
