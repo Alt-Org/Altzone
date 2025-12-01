@@ -14,6 +14,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private StatType _statType;
         [SerializeField] private Image _statIcon;
         [SerializeField] private Image _statBackground;
+        [SerializeField] private Image _statLock;
         [SerializeField] private TMP_Text _statName;
         [SerializeField] private TMP_Text _statLevel;
         [SerializeField] private TMP_Text _statLevel2;
@@ -40,6 +41,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             if (_statValue != null) _controller.OnStatUpdated += UpdateStatValue;
             if (_statValue != null) UpdateStatValue(_statType);
             if (_statLevel != null) UpdateStatLevel(_statType);
+            if (_statLock != null) _controller.OnDebugModeChanged += CheckStatLock;
+            CheckStatLock();
         }
 
         private void Awake()
@@ -149,6 +152,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             }
             int statLevel = _controller.GetStat(statType);
             _statNextLevelValue.text = _controller.GetStatValue(statType,statLevel+1).ToString();
+            CheckStatLock();
         }
 
         private void UpdateDiamondCost(StatType statType)
@@ -191,6 +195,17 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         {
             if (!CanUpdateCharacter()) return;
             _controller.TryDecreaseStat(_statType);
+        }
+
+        private void CheckStatLock()
+        {
+            if (_statLock != null)
+                if (!SettingsCarrier.Instance.StatDebuggingMode)
+                {
+                    if (_statType is StatType.Speed or StatType.CharacterSize) _statLock.enabled = true;
+                    else _statLock.enabled = false;
+                }
+                else _statLock.enabled = false;
         }
     }
 }

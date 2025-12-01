@@ -10,10 +10,10 @@ namespace Altzone.Scripts.Model.Poco.Game
         public ConfluentTestCharacter() : base()
         {
             _id = CharacterID.ConfluentTest;
-            _defaultAttack = 2;
-            _defaultDefence = 11;
-            _defaultHp = 2;
-            _defaultCharacterSize = 12;
+            _defaultAttack = 1;
+            _defaultDefence = 4;
+            _defaultHp = 1;
+            _defaultCharacterSize = 3;
             _defaultSpeed = 1;
             InitializeValues();
         }

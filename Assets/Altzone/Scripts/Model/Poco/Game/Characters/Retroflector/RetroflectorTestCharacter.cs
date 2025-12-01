@@ -10,10 +10,10 @@ namespace Altzone.Scripts.Model.Poco.Game
         public RetroflectorTestCharacter() : base()
         {
             _id = CharacterID.RetroflectorTest;
-            _defaultAttack = 6;
-            _defaultDefence = 8;
-            _defaultHp = 4;
-            _defaultCharacterSize = 12;
+            _defaultAttack = 3;
+            _defaultDefence = 3;
+            _defaultHp = 1;
+            _defaultCharacterSize = 3;
             _defaultSpeed = 3;
             InitializeValues();
         }

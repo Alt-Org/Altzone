@@ -10,11 +10,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         public GraffitiartistCharacter() : base()
         {
             _id = CharacterID.Artist;
-            _defaultAttack = 7;
-            _defaultDefence = 10;
-            _defaultHp = 3;
-            _defaultCharacterSize = 8;
-            _defaultSpeed = 3;
+            _defaultAttack = 2;
+            _defaultDefence = 3;
+            _defaultHp = 6;
+            _defaultCharacterSize = 3;
+            _defaultSpeed = 5;
             InitializeValues();
         }
     }
