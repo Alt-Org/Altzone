@@ -207,7 +207,7 @@ namespace Battle.View.Player
         private void OnEnable()
         {
             _debugLogger = BattleDebugLogger.Create<BattlePlayerInput>();
-            
+
             _movementInputType = SettingsCarrier.Instance.BattleMovementInput;
             _rotationInputType = SettingsCarrier.Instance.BattleRotationInput;
             _swipeMinDistance  = SettingsCarrier.Instance.BattleSwipeMinDistance;
@@ -249,6 +249,10 @@ namespace Battle.View.Player
             bool mouseClick = !twoFingers && mouseDown && !_mouseDownPrevious;
             _mouseDownPrevious = mouseDown;
 
+            // set double tap ability variables
+            const float DoubleTapInterval = 0.2f;
+            const float DoubleTapDistance = 1.0f;
+
             // set default input info
             MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero, FPVector2.Zero);
             RotationInputInfo rotationInputInfo = new(false, FP._0);
@@ -266,8 +270,6 @@ namespace Battle.View.Player
                 {
                     clickPosition = ClickStateHandler.GetClickPosition();
                     unityPosition = BattleCamera.Camera.ScreenToWorldPoint(clickPosition);
-
-                    _lastTapPosition = unityPosition;
                 }
 
                 movementInputInfo = GetMovementInput(mouseDown, mouseClick, unityPosition, deltaTime);
@@ -292,7 +294,7 @@ namespace Battle.View.Player
                 RotationValue                 = rotationInputInfo.RotationValue,
                 PlayerCharacterNumber         = _characterNumber,
                 GiveUpInput                   = _onGiveUp,
-                AbilityActivate               = Time.time - _lastTapTime < 0.5f && mouseClick && Vector3.Distance(_lastTapPosition, unityPosition) < 1f
+                AbilityActivate               = Time.time - _lastTapTime < DoubleTapInterval && mouseClick && Vector3.Distance(_lastTapPosition, unityPosition) < DoubleTapDistance
             };
 
             DeterministicInputFlags inputFlags = DeterministicInputFlags.Repeatable;
@@ -326,7 +328,11 @@ namespace Battle.View.Player
 
             //} create and set input
 
-            if (mouseClick) _lastTapTime = Time.time;
+            if (mouseClick)
+            {
+                _lastTapTime = Time.time;
+                _lastTapPosition = unityPosition;
+            }
 
             _previousTime = Time.time;
 

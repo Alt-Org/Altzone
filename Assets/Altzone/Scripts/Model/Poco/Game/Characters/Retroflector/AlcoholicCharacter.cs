@@ -10,10 +10,10 @@ namespace Altzone.Scripts.Model.Poco.Game
         public AlcoholicCharacter(): base()
         {
             _id = CharacterID.Alcoholic;
-            _defaultAttack = 9;
-            _defaultDefence = 8;
+            _defaultAttack = 3;
+            _defaultDefence = 3;
             _defaultHp = 1;
-            _defaultCharacterSize = 10;
+            _defaultCharacterSize = 3;
             _defaultSpeed = 3;
             InitializeValues();
         }
