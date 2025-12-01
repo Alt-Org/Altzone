@@ -10,11 +10,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         public ObsessiveCompulsiveCharacter() : base()
         {
             _id = CharacterID.ObsessiveCompulsive;
-            _defaultAttack = 10;
-            _defaultDefence = 3;
-            _defaultHp = 8;
-            _defaultCharacterSize = 8;
-            _defaultSpeed = 6;
+            _defaultAttack = 2;
+            _defaultDefence = 1;
+            _defaultHp = 3;
+            _defaultCharacterSize = 2;
+            _defaultSpeed = 4;
             InitializeValues();
         }
     }
