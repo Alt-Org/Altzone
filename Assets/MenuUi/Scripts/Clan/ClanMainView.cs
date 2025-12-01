@@ -40,6 +40,7 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private Button _joinClanButton;
     [SerializeField] private Button _leaveClanButton;
     [SerializeField] private Button _linkButton;
+    [SerializeField] private GameObject _editButton;
 
     [Header("pop ups")]
     [SerializeField] private ClanSearchPopup _clanPopup;
@@ -153,6 +154,22 @@ public class ClanMainView : MonoBehaviour
         }
     }
 
+    private bool CanCurrentPlayerEditClan(ClanData clan)
+    {
+        var player = ServerManager.Instance.Player;
+        if (player == null) return false;
+
+        if (player.clan_id != clan.Id) return false;
+
+        var roleId = player.clanRole_id;
+        if (string.IsNullOrEmpty(roleId)) return false;
+
+        var role = clan.ClanRoles?.Find(r => r._id == roleId);
+        if (role?.rights == null) return false;
+
+        return role.rights.edit_clan_data;
+    }
+
     private void OpenLink()
     {
         string url = "https://altzone.fi/fi/clans/6740af56d977418ddbe08e29";
@@ -184,6 +201,11 @@ public class ClanMainView : MonoBehaviour
             // Show join button only if not in clan
             _joinClanButton.gameObject.SetActive(!isInClan);
             _joinClanButton.interactable = clan.IsOpen && !isInClan;
+        }
+
+        if(_editButton != null)
+        {
+            _editButton.SetActive(CanCurrentPlayerEditClan(clan));
         }
 
         // Show clan profile data

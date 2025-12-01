@@ -154,6 +154,26 @@ public class ClanSettings : MonoBehaviour
         });
     }
 
+    private bool CanCurrentPlayerEditClan(ClanData clanData)
+    {
+        var serverManager = ServerManager.Instance;
+        if (serverManager == null) return false;
+
+        var player = serverManager.Player;
+        if (player == null) return false;
+    
+        if (player.clan_id != clanData.Id) return false;
+
+        var roleId = player.clanRole_id;
+        if (string.IsNullOrEmpty(roleId)) return false;
+
+        var role = clanData.ClanRoles?.Find(r => r._id == roleId);
+        if (role == null || role.rights == null) return false;
+
+        return role.rights.edit_clan_data;
+    }
+
+
     public void SaveClanSettings()
     {
         _saveButton.interactable = false;
@@ -167,6 +187,13 @@ public class ClanSettings : MonoBehaviour
 
         Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
         {
+            if (!CanCurrentPlayerEditClan(clanData))
+            {
+                _errorPopup.ActivatePopUp("Mites pääsit tähän ikkunaan? Sinulla ei ole oikeuksia muokata klaanin asetuksia.");
+                _saveButton.interactable = true;
+                return;
+            }
+
             string previousPhrase = clanData.Phrase;
             clanData.Phrase = _clanPhraseField.text;
             clanData.Language = _languageList.SelectedLanguage;
