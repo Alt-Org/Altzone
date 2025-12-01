@@ -26,6 +26,11 @@ public class HorizontalScrollRect : BaseScrollRect
         get { return 0f; }
     }
 
+    protected override void OnEnable()
+    {
+        verticallyScrollable = false;
+    }
+
 #if UNITY_EDITOR
     [MenuItem("GameObject/UI/Horizontal Scroll Rect", false, 10)]
     static void CreateCustomGameObject(MenuCommand menuCommand)
