@@ -7,6 +7,8 @@ namespace Altzone.Scripts.Audio
 {
     public class MusicHandler : MonoBehaviour
     {
+        public static MusicHandler Instance;
+
         [SerializeField] private MusicReference _musicReference;
 
         private MusicSection _currentSection = MusicSection.None;
@@ -37,13 +39,16 @@ namespace Altzone.Scripts.Audio
         private MusicTrack _nextUpTrack;
 
         private float _crossFadeTimer = 0f;
+        private bool _musicSwitchInProgress = false;
+        private bool _acceleratedCrossFadeOneShot = false;
 
         private string _mainMenuMusicName = "";
         public string MainMenuMusicName { get => _mainMenuMusicName; }
 
-        private bool _musicSwitchInProgress = false;
-
         private float _musicStartTime = 0f;
+
+        private Coroutine _switchCoroutine;
+        private Coroutine _crossfadeCoroutine;
 
         public enum MusicListDirection
         {
@@ -70,12 +75,25 @@ namespace Altzone.Scripts.Audio
 
         private void Awake()
         {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            else
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+
             _musicChannel1.loop = true;
             _musicChannel2.loop = true;
-
+            
             _musicChannel1.volume = 0f;
             _musicChannel2.volume = 0f;
         }
+
+        public void SetMainMenuMusicName(string name) { _mainMenuMusicName = name; }
 
         public List<MusicTrack> GetMusicList(string categoryName)
         {
@@ -299,24 +317,33 @@ namespace Altzone.Scripts.Audio
             if (_currentCategory != null && _currentCategory.Name.ToLower() == "Jukebox".ToLower() && musicCategory.Name.ToLower() != "Jukebox".ToLower())
                 JukeboxManager.Instance.StopJukebox();
 
-            if (_musicSwitchInProgress)
-            {
-                if (_nextUpTrack != null) CalculateAcceleratedResumeTime(); //Wrong?
+            bool revertSwitch = (_primaryChannel == 1 ? _musicChannel1 : _musicChannel2).clip == musicTrack.Music;
 
-                _nextUpCategory = musicCategory;
-                _nextUpTrack = musicTrack;
+            if (!revertSwitch && _musicSwitchInProgress)
+            {
+                HandleNextTrack(musicTrack);
+
                 return;
             }
 
             _currentCategory = musicCategory;
             _currentTrack = musicTrack;
-            StartCoroutine(SwitchMusic(MusicListDirection.None, null, switchType));
+
+            if (_switchCoroutine != null)
+            {
+                StopCoroutine(_switchCoroutine);
+                _switchCoroutine = null;
+
+                if (_musicSwitchInProgress) _primaryChannel = ((_primaryChannel == 1) ? 2 : 1);
+
+                if (revertSwitch) _crossFadeTimer = (_acceleratedCrossFadeOneShot ? _acceleratedCrossFadeDuration - _crossFadeTimer : _crossFadeDuration - _crossFadeTimer);
+            }
+
+            _switchCoroutine = StartCoroutine(SwitchMusic(MusicListDirection.None, null, switchType, revertSwitch));
         }
 
-        public IEnumerator SwitchMusic(MusicListDirection direction, System.Action<string> newTrackName, MusicSwitchType switchType)
+        public IEnumerator SwitchMusic(MusicListDirection direction, System.Action<string> newTrackName, MusicSwitchType switchType, bool revertSwitch = false)
         {
-            MusicTrack musicTrack;
-
             if (_currentCategory == null)
             {
                 if (newTrackName != null) newTrackName("");
@@ -324,47 +351,35 @@ namespace Altzone.Scripts.Audio
                 yield break;
             }
 
-            if (newTrackName != null && direction != MusicListDirection.None)
-            {
-                if (direction == MusicListDirection.Next)
-                    _currentTrackIndex += 1;
-                else
-                    _currentTrackIndex -= 1;
+            MusicTrack musicTrack = MusicDirectionControl(newTrackName, direction);
 
-                if (_currentTrackIndex >= _currentCategory.MusicTracks.Count)
-                    _currentTrackIndex = 0;
-                else if (_currentTrackIndex < 0)
-                    _currentTrackIndex = _currentCategory.MusicTracks.Count - 1;
-
-                musicTrack = _currentCategory.MusicTracks[_currentTrackIndex];
-            }
-            else
-                musicTrack = _currentTrack;
-
-            if (musicTrack == null || _musicSwitchInProgress)
+            if (!revertSwitch && (musicTrack == null || _musicSwitchInProgress))
             {
                 if (newTrackName != null) newTrackName("");
 
-                if (_musicSwitchInProgress)
-                {
-                    if (_nextUpTrack == null) CalculateAcceleratedResumeTime();
-
-                    _nextUpCategory = _currentCategory;
-                    _nextUpTrack = musicTrack;
-                }
+                if (_musicSwitchInProgress) HandleNextTrack(musicTrack);
 
                 yield break;
             }
 
-            if (newTrackName != null) newTrackName(musicTrack.Name);
-
             bool? done = null;
 
+            if (newTrackName != null) newTrackName(musicTrack.Name);
+
             _musicSwitchInProgress = true;
-            StartMusicPlayback((_primaryChannel == 2 ? _musicChannel1 : _musicChannel2), musicTrack.Music);
+
+            if (!revertSwitch) StartMusicPlayback((_primaryChannel == 2 ? _musicChannel1 : _musicChannel2), musicTrack.Music);
 
             if (switchType == MusicSwitchType.CrossFade)
-                StartCoroutine(CrossFadeTracks(dData => done = dData, _primaryChannel));
+            {
+                if (_crossfadeCoroutine != null)
+                {
+                    StopCoroutine(_crossfadeCoroutine);
+                    _crossfadeCoroutine = null;
+                }
+
+                _crossfadeCoroutine = StartCoroutine(CrossFadeTracks(dData => done = dData, _primaryChannel, revertSwitch));
+            }
             else
                 SwitchTracksImmediately(dData => done = dData, _primaryChannel);
 
@@ -383,8 +398,39 @@ namespace Altzone.Scripts.Audio
                 _nextUpCategory = null;
                 _nextUpTrack = null;
 
-                StartCoroutine(SwitchMusic(MusicListDirection.None, null, switchType));
+                _switchCoroutine = StartCoroutine(SwitchMusic(MusicListDirection.None, null, switchType));
             }
+            else
+                _acceleratedCrossFadeOneShot = false;
+        }
+
+        private void HandleNextTrack(MusicTrack musicTrack)
+        {
+            _nextUpCategory = _currentCategory;
+            _nextUpTrack = musicTrack;
+
+            if (!_acceleratedCrossFadeOneShot && _nextUpTrack != null)
+            {
+                CalculateAcceleratedResumeTime();
+                _acceleratedCrossFadeOneShot = true;
+            }
+        }
+
+        private MusicTrack MusicDirectionControl(System.Action<string> newTrackName, MusicListDirection direction)
+        {
+            if (newTrackName == null || direction == MusicListDirection.None) return _currentTrack;
+
+            if (direction == MusicListDirection.Next)
+                _currentTrackIndex += 1;
+            else
+                _currentTrackIndex -= 1;
+
+            if (_currentTrackIndex >= _currentCategory.MusicTracks.Count)
+                _currentTrackIndex = 0;
+            else if (_currentTrackIndex < 0)
+                _currentTrackIndex = _currentCategory.MusicTracks.Count - 1;
+
+            return _currentCategory.MusicTracks[_currentTrackIndex];
         }
 
         private void CalculateAcceleratedResumeTime()
@@ -406,17 +452,17 @@ namespace Altzone.Scripts.Audio
             source.Play();
         }
 
-        private IEnumerator CrossFadeTracks(System.Action<bool> done, int primaryChannel)
+        private IEnumerator CrossFadeTracks(System.Action<bool> done, int primaryChannel, bool revert)
         {
-            _crossFadeTimer = 0f;
+            if (!revert) _crossFadeTimer = 0f;
 
-            while (_crossFadeTimer < _crossFadeDuration)
+            while (_nextUpCategory == null ? _crossFadeTimer < _crossFadeDuration : _crossFadeTimer < _acceleratedCrossFadeDuration)
             {
                 yield return null;
 
                 float progression;
 
-                if (_nextUpCategory == null)
+                if (!_acceleratedCrossFadeOneShot)
                     progression = _crossFadeCurve.Evaluate(_crossFadeTimer / _crossFadeDuration);
                 else
                     progression = _crossFadeCurve.Evaluate(_crossFadeTimer / _acceleratedCrossFadeDuration);
