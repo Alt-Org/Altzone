@@ -86,7 +86,18 @@ public class ConfirmationPopupHandler : MonoBehaviour
         yield return new WaitUntil(()=> result.HasValue);
         VotingActions.ReloadPollList?.Invoke();
 
-        FindObjectOfType<SwipeUI>(true).CurrentPage = 3;
+    public IEnumerator CreatePollPopup(GameFurniture furniture)
+    {
+        if (furniture != null)
+        {
+            bool? pollCreated = null;
+            StartCoroutine(ServerManager.Instance.BuyItemToClanFromServer(furniture.Name, value=> pollCreated= value));
+            yield return new WaitUntil(() => pollCreated != null);
+            PollManager.CreateFurniturePoll(FurniturePollType.Buying, furniture); 
+            VotingActions.ReloadPollList?.Invoke();
+
+            FindObjectOfType<SwipeUI>(true).CurrentPage = 3;
+        }
 
         ClosePopup();
     }
