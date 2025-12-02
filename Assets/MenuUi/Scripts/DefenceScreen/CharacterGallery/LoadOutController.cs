@@ -17,6 +17,14 @@ public class LoadOutController : MonoBehaviour
     [SerializeField] private Button _confirmYes;
     [SerializeField] private Button _confirmNo;
 
+    //Loadout 2
+    [SerializeField] private bool _useZeroSlotButton = true;
+
+    [Header("Dynamic inline loadouts")]
+    [SerializeField] private Button _loadoutButtonTemplate;
+    [SerializeField] private Button _addLoadoutButton;        
+    [SerializeField] private Transform _buttonsParent;        
+
     private PlayerData _player;
 
     private void Awake()
@@ -32,10 +40,15 @@ public class LoadOutController : MonoBehaviour
     {
         for (int i = 0; i < _loadoutButtons.Count; i++)
         {
-            int loadoutIndex = i;
-            if (_loadoutButtons[i] != null)
-                _loadoutButtons[i].onClick.AddListener(() => OnPressLoadout(loadoutIndex, _player));
-        } 
+            int buttonIndex = i;
+            if (_loadoutButtons[i] == null) continue;
+
+            _loadoutButtons[i].onClick.AddListener(() =>
+            {
+                int loadoutIndex = ButtonIndexToLoadoutIndex(buttonIndex);
+                OnPressLoadout(loadoutIndex, _player);
+            });
+        }
     }
 
     private void HandlePlayerDataReady(PlayerData data)
@@ -44,6 +57,28 @@ public class LoadOutController : MonoBehaviour
         RefreshButtons();
     }
 
+    //loadout 2
+
+    /// <summary>
+    /// Converts a UI button index to a loadout index used in PlayerData:
+    /// -If _useZeroSlotButton is true, button index matches loadout index (0,1,2,...).
+    /// -If _useZeroSlotButton is false, loadout indexes start from 1, so 0 -> 1, 1 -> 2, etc.
+    /// </summary>
+    private int ButtonIndexToLoadoutIndex(int buttonIndex)
+    {
+        if (_useZeroSlotButton)
+        {
+            return buttonIndex;
+        }
+        else
+        {
+            return buttonIndex + 1;
+        }
+    }
+
+    /// <summary>
+    /// Handles loadout button presses, applies or saves loadouts as needed
+    /// </summary>
     private void OnPressLoadout(int loadoutIndex, PlayerData player) 
     {
 
@@ -95,7 +130,9 @@ public class LoadOutController : MonoBehaviour
             Storefront.Get().SavePlayerData(player, null);
         });
     }
-
+    /// <summary>
+    /// Saves the current team to an empty loadout slot, optionally asking for confirmation
+    /// </summary>
     private void SaveToEmptySlot(int loadoutIndex, PlayerData player)
     {
         if (_confirmPanel == null || _confirmYes == null || _confirmNo == null)
@@ -137,20 +174,105 @@ public class LoadOutController : MonoBehaviour
     }
 
     private void RefreshButtons()
-    { 
-        int selected = _player.SelectedLoadOut;
+    {
+        if (_player == null) return;
+        int selectedLoadout = _player.SelectedLoadOut;
 
         for (int i = 0; i < _loadoutButtons.Count; i++)
         {
-            //if (_loadoutButtons[i] != null)
-            //    _loadoutButtons[i].interactable = (selected != i);
-            bool isSelected = (selected == i);
-            bool shouldDisable = isSelected && i != 0; // 0 pysyy aina klikattavana
-            _loadoutButtons[i].interactable = !shouldDisable;
+            Button btn = _loadoutButtons[i];
+            if (btn == null) continue;
+
+            int loadoutIndex = ButtonIndexToLoadoutIndex(i);
+            bool isSelected = (selectedLoadout == loadoutIndex);
+
+            bool shouldDisable;
+
+            if (_useZeroSlotButton)
+            {
+
+                if (isSelected && loadoutIndex != 0)
+                {
+                    shouldDisable = true;
+                }
+                else
+                {
+                    shouldDisable = false;
+                }
+            }
+            else
+            {
+                
+                if (isSelected)
+                {
+                    shouldDisable = true;
+                }
+                else
+                {
+                    shouldDisable = false;
+                }
+            }
+
+            btn.interactable = !shouldDisable;
         }
     }
+
+    /// <summary>
+    /// -Adds a new loadout button before the "+" button, if a free slot exists in PlayerData
+    /// -Currently limited by the length of PlayerData.LoadOuts (no more buttons can be added once the array is full)
+    /// </summary>
+    public void AddNewLoadoutSlot()
+    {
+
+        if (_player == null)
+        {
+            Debug.LogWarning("AddNewLoadoutSlot called but _player is null");
+            return;
+        }
+        if (_loadoutButtonTemplate == null || _buttonsParent == null)
+        {
+            Debug.LogWarning("AddNewLoadoutSlot: template or parent is not set");
+            return;
+        }
+
+        int newLoadoutIndex = ButtonIndexToLoadoutIndex(_loadoutButtons.Count);
+
+        
+        if (newLoadoutIndex <= 0 || newLoadoutIndex > _player.LoadOuts.Length)
+        {
+            Debug.LogWarning($"No more loadout slots available in PlayerData (trying to use {newLoadoutIndex})");
+            return;
+        }
+
+        
+        Button newButton = Instantiate(_loadoutButtonTemplate, _buttonsParent);
+        newButton.gameObject.SetActive(true);
+
+        int insertIndex = _addLoadoutButton.transform.GetSiblingIndex();
+        newButton.transform.SetSiblingIndex(insertIndex);
+
+        TMP_Text numberLabel = newButton.GetComponentInChildren<TMP_Text>();
+        if (numberLabel != null)
+        {
+            numberLabel.text = newLoadoutIndex.ToString();
+        }
+
+        
+        _loadoutButtons.Add(newButton);
+
+        int buttonIndex = _loadoutButtons.Count - 1;
+        newButton.onClick.RemoveAllListeners();
+        newButton.onClick.AddListener(() =>
+        {
+            int loadoutIdx = ButtonIndexToLoadoutIndex(buttonIndex);
+            OnPressLoadout(loadoutIdx, _player);
+        });
+
+        RefreshButtons();
+    }
+}
     
 
 
-}
+
 

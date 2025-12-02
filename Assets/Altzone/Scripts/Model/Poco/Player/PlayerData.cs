@@ -60,9 +60,10 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public int points = 0;
 
-        public TeamLoadOut[] LoadOuts = new TeamLoadOut[]
+        public TeamLoadOut[] LoadOuts = new TeamLoadOut[8]
         {
-            new TeamLoadOut(), new TeamLoadOut(), new TeamLoadOut()
+            new TeamLoadOut(), new TeamLoadOut(), new TeamLoadOut(), new TeamLoadOut(),
+            new TeamLoadOut(), new TeamLoadOut(), new TeamLoadOut(), new TeamLoadOut()
         };
 
         public int SelectedLoadOut = 0;
@@ -170,6 +171,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             UniqueIdentifier = uniqueIdentifier;
 
             EnsurePopupLoadoutsInitialized();
+            EnsureLoadoutsInitialized();
         }
 
         public PlayerData(ServerPlayer player, bool limited = false)
@@ -195,6 +197,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             if (!limited) Task = player.DailyTask != null ? new(player.DailyTask) : null;
 
             EnsurePopupLoadoutsInitialized();
+            EnsureLoadoutsInitialized();
         }
 
 
@@ -222,6 +225,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             if (daysBetweenInput == null) daysBetweenInput = "0";
 
             EnsurePopupLoadoutsInitialized();
+            EnsureLoadoutsInitialized();
         }
 
         public void UpdateCustomCharacter(CustomCharacter character)
@@ -381,14 +385,14 @@ namespace Altzone.Scripts.Model.Poco.Player
         /// This is called whenever the user changes the team in the UI.
         /// If a saved slot (1-3) is selected, changes are saved immediately to that slot.
         /// </summary>
-        //public void OnCurrentTeamChanged_AutoSave()
-        //{
-        //    if (SelectedLoadOut > 0)
-        //    {
-        //        SaveCurrentTeamToLoadout(SelectedLoadOut);
-        //    }
-        //    Storefront.Get().SavePlayerData(this, null);
-        //}
+        public void OnCurrentTeamChanged_AutoSave()
+        {
+            if (SelectedLoadOut > 0 && SelectedLoadOut <= LoadOuts.Length)
+            {
+                SaveCurrentTeamToLoadout(SelectedLoadOut);
+            }
+            Storefront.Get().SavePlayerData(this, null);
+        }
 
 
         /// <summary>
@@ -422,6 +426,20 @@ namespace Altzone.Scripts.Model.Poco.Player
                 new CustomCharacterListObject(Id: CharacterID.None),
                 new CustomCharacterListObject(Id: CharacterID.None)
                     };
+            }
+        }
+
+        public void EnsureLoadoutsInitialized()
+        {
+            if (LoadOuts == null || LoadOuts.Length != 8)
+            {
+                LoadOuts = new TeamLoadOut[8];
+            }
+
+            for (int i = 0; i < LoadOuts.Length; i++)
+            {
+                if (LoadOuts[i] == null)
+                    LoadOuts[i] = new TeamLoadOut();
             }
         }
 
