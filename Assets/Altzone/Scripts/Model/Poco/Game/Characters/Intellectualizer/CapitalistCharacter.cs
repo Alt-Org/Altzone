@@ -10,11 +10,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         public CapitalistCharacter() : base()
         {
             _id = CharacterID.Capitalist;
-            _defaultAttack = 10;
-            _defaultDefence = 3;
-            _defaultHp = 8;
-            _defaultCharacterSize = 8;
-            _defaultSpeed = 6;
+            _defaultAttack = 2;
+            _defaultDefence = 2;
+            _defaultHp = 2;
+            _defaultCharacterSize = 2;
+            _defaultSpeed = 4;
             InitializeValues();
         }
     }

@@ -278,10 +278,10 @@ public class Chat : AltMonoBehaviour
             //DisplayMessage(_inputField.text, GetMessagePrefab(mood, true));
             _inputField.text = "";
             GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
-            if (_currentContent == _clanChat)
-                _clanChat.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
-            if (_currentContent == _globalChat)
-                _globalChat.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+            if (_currentContent == _clanChatContent)
+                _clanChatContent.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+            if (_currentContent == _globalChatContent)
+                _globalChatContent.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             MinimizeOptions();
             _lastSendButtonUsed.GetComponent<Button>().interactable = false;
         }

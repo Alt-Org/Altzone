@@ -10,10 +10,10 @@ namespace Altzone.Scripts.Model.Poco.Game
         public WarVeteranCharacter()
         {
             _id = CharacterID.WarVeteran;
-            _defaultAttack = 6;
-            _defaultDefence = 12;
+            _defaultAttack = 2;
+            _defaultDefence = 3;
             _defaultHp = 1;
-            _defaultCharacterSize = 8;
+            _defaultCharacterSize = 2;
             _defaultSpeed = 2;
             InitializeValues();
         }

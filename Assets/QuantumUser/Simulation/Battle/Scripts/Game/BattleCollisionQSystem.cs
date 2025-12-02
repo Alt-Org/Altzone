@@ -4,7 +4,6 @@
 /// </summary>
 
 // Unity usings
-using UnityEngine;
 using UnityEngine.Scripting;
 
 // Quantum usings
@@ -64,6 +63,15 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
+        /// Initializes this classes BattleDebugLogger instance.<br/>
+        /// This method is exclusively for debug logging purposes.
+        /// </summary>
+        public static void Init()
+        {
+            s_debugLogger = BattleDebugLogger.Create<BattleCollisionQSystem>();
+        }
+
+        /// <summary>
         /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
         /// that gets called when <a href="https://doc-api.photonengine.com/en/quantum/current/interface_quantum_1_1_i_signal_on_trigger2_d.html">ISignalOnTrigger2D@u-exlink</a> is sent.</span><br/>
         /// Handles all 2D trigger collisions in the game.<br/>
@@ -92,7 +100,7 @@ namespace Battle.QSimulation.Game
                 {
                     case BattleCollisionTriggerType.ArenaBorder:
                         {
-                            Debug.Log("[CollisionSystem] Projectile hit ArenaBorder");
+                            s_debugLogger.Log(f, "Projectile hit ArenaBorder");
                             if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Projectile)) break;
 
                             ArenaBorderCollisionData arenaBorderCollisionData = new()
@@ -106,7 +114,7 @@ namespace Battle.QSimulation.Game
 
                     case BattleCollisionTriggerType.SoulWall:
                         {
-                            Debug.Log("[CollisionSystem] Projectile hit SoulWall");
+                            s_debugLogger.Log(f, "Projectile hit SoulWall");
                             if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Projectile)) break;
                             if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.SoulWall)) break;
 
@@ -122,7 +130,7 @@ namespace Battle.QSimulation.Game
 
                     case BattleCollisionTriggerType.Player:
                         {
-                            Debug.Log("[CollisionSystem] Projectile hit Player Character");
+                            s_debugLogger.Log(f, "Projectile hit Player Character");
                             if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Player)) break;
 
                             PlayerCharacterCollisionData playerCollisionData = new()
@@ -130,6 +138,7 @@ namespace Battle.QSimulation.Game
                                 PlayerCharacterHitbox = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(info.Other)
                             };
                             //f.Events.PlaySoundEvent(SoundEffect.SideWallHit);
+                            BattleProjectileQSystem.OnProjectileCollision(f, &projectileCollisionData, &playerCollisionData, BattleCollisionTriggerType.Player);
                             BattlePlayerQSystem.OnProjectileHitPlayerCharacter(f, &projectileCollisionData, &playerCollisionData);
                             BattlePlayerClassManager.OnProjectileHitPlayerCharacter(f, &projectileCollisionData, &playerCollisionData);
                             break;
@@ -137,7 +146,7 @@ namespace Battle.QSimulation.Game
 
                     case BattleCollisionTriggerType.Shield:
                         {
-                            Debug.Log("[CollisionSystem] Projectile hit Player Shield");
+                            s_debugLogger.Log(f, "Projectile hit Player Shield");
                             if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Projectile)) break;
                             if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Player)) break;
 
@@ -154,7 +163,7 @@ namespace Battle.QSimulation.Game
 
                     case BattleCollisionTriggerType.Goal:
                         {
-                            Debug.Log("[CollisionSystem] Projectile hit Goal");
+                            s_debugLogger.Log(f, "Projectile hit Goal");
 
                             GoalCollisionData goalCollisionData = new()
                             {
@@ -173,14 +182,18 @@ namespace Battle.QSimulation.Game
             {
                 if (f.Unsafe.TryGetPointer(info.Other, out BattlePlayerHitboxQComponent* playerHitbox))
                 {
-                    Debug.Log("[CollisionSystem] Diamond hit player");
+                    s_debugLogger.Log(f, "Diamond hit player");
                     f.Signals.BattleOnDiamondHitPlayer(diamond, info.Entity, playerHitbox, info.Other);
                 }
                 else if (f.Unsafe.TryGetPointer(info.Other, out BattleArenaBorderQComponent* arenaBorder))
                 {
+                    s_debugLogger.Log(f, "Diamond hit ArenaBorder");
                     f.Signals.BattleOnDiamondHitArenaBorder(diamond, info.Entity, arenaBorder, info.Other);
                 }
             }
         }
+
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private static BattleDebugLogger s_debugLogger;
     }
 }

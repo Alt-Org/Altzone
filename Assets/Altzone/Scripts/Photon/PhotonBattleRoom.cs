@@ -42,6 +42,7 @@ namespace Altzone.Scripts.Battle.Photon
         public const string RoomNameKey = "n";
         public const string PasswordKey = "pw";
         public const string GameTypeKey = "gt";
+        public const string BotFillKey = "bf";
         public const string IsMatchmakingKey = "mm";
         public const string SoulhomeRank = "sr";
         public const string SoulhomeRankVariance = "rv";
@@ -298,6 +299,55 @@ namespace Altzone.Scripts.Battle.Photon
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Check if the player position has a bot in LobbyCurrentRoom. If position value is not one of the existing positions, checks PlayerPosition1.
+        /// </summary>
+        /// <param name="position">Player position value as integer.</param>
+        /// <returns>True if the position has a bot, false if it does not.</returns>
+        public static bool CheckIfPositionHasBot(int position)
+        {
+            string positionKey = GetPositionKey(position);
+            string positionValue = PhotonRealtimeClient.LobbyCurrentRoom?.GetCustomProperty<string>(positionKey);
+            if (!string.Equals(positionValue, "Bot"))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool IsBotFillActive()
+        {
+            bool? fillValue = PhotonRealtimeClient.LobbyCurrentRoom?.GetCustomProperty<bool>(BotFillKey);
+            if (fillValue == null)
+            {
+                return false;
+            }
+            else
+            {
+                return (bool)fillValue;
+            }
+        }
+
+        public static int GetBotCount()
+        {
+            int count = 0;
+            string positionKey = GetPositionKey(PlayerPosition1);
+            string positionValue = PhotonRealtimeClient.LobbyCurrentRoom?.GetCustomProperty<string>(positionKey);
+            if(positionValue == "Bot") count++;
+            positionKey = GetPositionKey(PlayerPosition2);
+            positionValue = PhotonRealtimeClient.LobbyCurrentRoom?.GetCustomProperty<string>(positionKey);
+            if (positionValue == "Bot") count++;
+            positionKey = GetPositionKey(PlayerPosition3);
+            positionValue = PhotonRealtimeClient.LobbyCurrentRoom?.GetCustomProperty<string>(positionKey);
+            if (positionValue == "Bot") count++;
+            positionKey = GetPositionKey(PlayerPosition4);
+            positionValue = PhotonRealtimeClient.LobbyCurrentRoom?.GetCustomProperty<string>(positionKey);
+            if (positionValue == "Bot") count++;
+
+            return count;
         }
 
         /// <summary>
