@@ -70,15 +70,15 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     private void ViewClanPlayers()
     {
         _isClanPlayersView = true;
-        UpdatePlayerList(_clanPlayers);
+       UpdatePlayerList();
     }
 
     private void ViewAllPlayers()
     {
         _isClanPlayersView = false;
-        UpdatePlayerList(_allPlayers);
+       UpdatePlayerList();
     }
-
+    
     private void BuildOnlinePlayerList(List<ServerOnlinePlayer> onlinePlayers)
     {
         StartCoroutine(BuildOnlineList(onlinePlayers));
@@ -95,10 +95,10 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         }
 
         _onlinePlayersPanelItems.Clear();
-        /*
+        
         _clanPlayers.Clear();
         _allPlayers.Clear();
-        */
+        
 
         foreach (var player in onlinePlayers)
         {
@@ -109,7 +109,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             StartCoroutine(ServerManager.Instance.GetOtherPlayerFromServer(player._id, c => serverPlayer = c));
             StartCoroutine(WaitUntilTimeout(3, c => timeout = c));
             yield return new WaitUntil(() => serverPlayer != null || timeout);
-            /*
+            
             if (serverPlayer != null && serverPlayer.clanLogo != null)
             {
                 _clanPlayers.Add(player); // Pelaaja on klaanin jäsen
@@ -117,8 +117,8 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             else
             {
                 _allPlayers.Add(player); // Pelaaja ei ole klaanissa
-            } Remember to add updating the list
-            */
+            } 
+            
 
             ClanLogo clanLogo = null;
             AvatarVisualData avatarVisualData = null;
@@ -150,6 +150,11 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         int onlinePlayerCount = onlinePlayers.Count;
 
         _onlineTitle.text = $"Online-pelaajia {onlinePlayerCount}";
+    }
+
+    private void UpdatePlayerList()
+    {
+
     }
 
 }
