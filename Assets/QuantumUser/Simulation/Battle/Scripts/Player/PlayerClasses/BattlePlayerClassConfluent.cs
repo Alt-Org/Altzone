@@ -1,6 +1,6 @@
 /// @file BattlePlayerClassConfluent.cs
 /// <summary>
-/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassConfluent} class which contains the logic for Confluent class characters.
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassConfluent} class which handles player character class logic for the 600/Confluent class.
 /// </summary>
 
 // Quantum usings
@@ -14,7 +14,7 @@ using Battle.QSimulation.Projectile;
 namespace Battle.QSimulation.Player
 {
     /// <summary>
-    /// Class containing code overriding shield/projectile collisions to have the projectile always reflect off of the character's shield based on a calculated normal.
+    /// %Player character class logic for the 600/Confluent class.
     /// </summary>
     ///
     /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.}<br/>

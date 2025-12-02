@@ -1,6 +1,6 @@
 /// @file BattlePlayerClassProjector.cs
 /// <summary>
-/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassProjector} class which handles player character class logic for the Projector class.
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassProjector} class which handles player character class logic for the 400/Projector class.
 /// </summary>
 
 // Quantum usings
@@ -14,7 +14,7 @@ using Battle.QSimulation.Projectile;
 namespace Battle.QSimulation.Player
 {
     /// <summary>
-    /// %Player character class logic for the Projector class.
+    /// %Player character class logic for the 400/Projector class.
     /// </summary>
     ///
     /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.}<br/>
