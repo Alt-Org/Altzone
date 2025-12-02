@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Game;
@@ -18,6 +19,11 @@ public abstract class ShopPanelStorage : MonoBehaviour
     {
         getFurnitureAction += HandleGameFurnitureCreation;
         Storefront.Get().GetAllGameFurnitureYield(getFurnitureAction);
+    }
+
+    private void OnEnable()
+    {
+        if(getFurnitureAction != null) Storefront.Get().GetAllGameFurnitureYield(getFurnitureAction);
     }
     protected virtual void HandleGameFurnitureCreation(ReadOnlyCollection<GameFurniture> gameFurnitures)
     {

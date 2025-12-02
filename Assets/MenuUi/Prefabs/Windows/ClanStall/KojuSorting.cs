@@ -83,9 +83,13 @@ public class KojuSorting : MonoBehaviour
 
         // Get all KojuItemSlot components under itemsParent (the panel)
         KojuItemSlot[] slots = itemsParent.GetComponentsInChildren<KojuItemSlot>(true);
+        if (slots.Length == 0) return;
 
-        foreach (var slot in slots)
+        // Slot 0 is reserved and should be skipped from sorting due to the poster card occupying it
+        for (int i = 1; i < slots.Length; i++) 
         {
+            var slot = slots[i];
+
             // Look for any card in the slot, ignoring the empty visuals
             FurnitureCardUI cardInSlot = null;
             foreach (Transform child in slot.transform)
@@ -131,20 +135,20 @@ public class KojuSorting : MonoBehaviour
         // Assign cards back to slots in sorted order
         for (int i = 0; i < slotCardPairs.Count; i++)
         {
-            var targetSlot = slots[i];
+            var targetSlot = slots[i + 1];
             var card = slotCardPairs[i].card;
 
             card.transform.SetParent(targetSlot.transform, false);
 
             targetSlot.KojuEmptyVisual.SetActive(false);
 
-            Debug.Log($"Moved card '{card.name}' to slot '{targetSlot.name}' at position {i}");
+            Debug.Log($"Moved card '{card.name}' to slot '{targetSlot.name}' at position {i + 1}");
         }
 
-        for (int i = slotCardPairs.Count; i < slots.Length; i++)
+        // Show empty visuals for any remaining slots
+        for (int i = slotCardPairs.Count + 1; i < slots.Length; i++)
         {
             slots[i].KojuEmptyVisual.SetActive(true);
         }
     }
-
 }

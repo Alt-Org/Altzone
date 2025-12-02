@@ -13337,7 +13337,7 @@ GameObject:
   - component: {fileID: 5174221974168090045}
   - component: {fileID: 6758133837151880663}
   - component: {fileID: 8974195091115181778}
-  - component: {fileID: 2151242641353940057}
+  - component: {fileID: 5551407068030142962}
   m_Layer: 0
   m_Name: Varmistus
   m_TagString: Untagged
@@ -13464,7 +13464,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &2151242641353940057
+--- !u!114 &5551407068030142962
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -13473,11 +13473,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3257633753255819349}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Script: {fileID: 11500000, guid: 99bef45c2704bb147a99ddcb380f3986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _finnishText: "Haluatko varmasti \xE4\xE4nest\xE4\xE4?"
-  _englishText: Are you sure you want to start a vote for this item?
+  _finnishText: '{0}'
+  _englishText: '{0}'
 --- !u!1 &3274495072330718492
 GameObject:
   m_ObjectHideFlags: 0
@@ -16084,7 +16084,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Background: {fileID: 8389003531615729201}
-  _confirmText: {fileID: 8974195091115181778}
+  _confirmText: {fileID: 5551407068030142962}
   _acceptButton: {fileID: 6435421168607672169}
   _declineButton: {fileID: 1201087625212750532}
 --- !u!1 &4403274603618974323
