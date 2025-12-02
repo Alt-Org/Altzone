@@ -1,4 +1,4 @@
-# Player Character Class 400 Projector {#page-concepts-player-class-400-projector}
+# Player Character Class 400 - Projector {#page-concepts-player-class-400-projector}
 
 - **Simulation**
     - Has simulation logic  
