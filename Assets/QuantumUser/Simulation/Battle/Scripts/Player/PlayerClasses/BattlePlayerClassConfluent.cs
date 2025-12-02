@@ -19,7 +19,7 @@ namespace Battle.QSimulation.Player
     ///
     /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.}<br/>
     /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
-    /// @bigtext{See [{Player Character Class 600 Confluent}](#page-concepts-player-class-600-confluent) for more info.}
+    /// @bigtext{See [{Player Character Class 600 - Confluent}](#page-concepts-player-class-600-confluent) for more info.}
     public class BattlePlayerClassConfluent : BattlePlayerClassBase
     {
         /// <summary>The BattlePlayerCharacterClass this class is for.</summary>

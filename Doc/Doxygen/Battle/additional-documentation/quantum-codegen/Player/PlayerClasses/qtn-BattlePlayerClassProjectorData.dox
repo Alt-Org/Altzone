@@ -14,9 +14,9 @@
 /// %Player character class data for the Projector class.
 /// </summary>
 ///
-/// @bigtext{See [{PlayerClassData (Quantum component)}](#page-concepts-player-simulation-classdata) for more info.}  
+/// @bigtext{See [{PlayerClassData}](#page-concepts-player-simulation-classdata) for more info.}  
 /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}  
-/// @bigtext{See [{Player Character Class 400 Projector}](#page-concepts-player-class-400-projector) for more info.}
+/// @bigtext{See [{Player Character Class 400 - Projector}](#page-concepts-player-class-400-projector) for more info.}
 ///
 /// @bigtext{Generated from @ref BattlePlayerClassProjectorData.qtn}
 
@@ -27,7 +27,7 @@
 /// <summary>Reference to the projectile entity being held.</summary>
 ///
 /// @var int Quantum.BattlePlayerClassProjectorDataQComponent::HoldStartFrame
-/// <summary>%Frame when the player started holding the projectile.</summary>
+/// <summary>%Quantum Simulation frame on which the player started holding the projectile.</summary>
 ///
 /// @var FP Quantum.BattlePlayerClassProjectorDataQComponent::HeldProjectileAngleRadians
 /// <summary>Angle (in radians) from up to the held projectile.</summary>
@@ -36,4 +36,4 @@
 /// <summary>Distance from the player to the held projectile.</summary>
 ///
 /// @var FP Quantum.BattlePlayerClassProjectorDataQComponent::RotationDurationFrames
-/// <summary>Frames needed to complete a rotation.</summary>
+/// <summary>%Quantum Simulation frames needed to complete a rotation.</summary>
