@@ -22,8 +22,8 @@ namespace Battle.View.Player
     /// Provides hooks for derived classes to implement character class specific view logic.
     /// Works together with @cref{Battle.View.Player,BattlePlayerViewController}, which handles the shared player view logic.
     ///
-    /// See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.<br/>
-    /// See [{PlayerClassViewControllers}](#page-concepts-player-view-class-controller) for more info.
+    /// See [{PlayerClassViewControllers}](#page-concepts-player-view-class-controller) for more info.<br/>
+    /// See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
     public abstract class BattlePlayerClassBaseViewController : MonoBehaviour
     {
         /// <summary>Must be implemented by derived class view controllers.</summary>
