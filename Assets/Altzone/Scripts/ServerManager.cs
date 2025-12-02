@@ -384,15 +384,21 @@ public class ServerManager : MonoBehaviour
             {
                 ReadOnlyCollection<CustomCharacter> customCharacters = null;
                 storefront.GetAllDefaultCharacterYield(c => customCharacters = c);
-                List<CustomCharacter> character = new();
+                characters = new();
                 foreach (CustomCharacter characterItem in customCharacters)
                 {
-                    character.Add(characterItem);
+                    characters.Add(characterItem);
                 }
-                playerData.BuildCharacterLists(character);
+                playerData.BuildCharacterLists(characters);
             }
             else
             {
+                foreach (CustomCharacter character in characters)
+                {
+                    if(!character.AreStatsValid())
+                        StartUpdatingCustomCharacterToServer(character);
+                }
+
                 playerData.BuildCharacterLists(characters);
             }
             playerData.UpdatePlayerData(player);
@@ -761,7 +767,7 @@ public class ServerManager : MonoBehaviour
                 if (playerInfo.parentalAuth != null) Player.parentalAuth = playerInfo.parentalAuth;
                 if (playerInfo.avatar != null) Player.avatar = playerInfo.avatar;
                 if (playerInfo.gameStatistics != null) Player.gameStatistics = playerInfo.gameStatistics;
-                if (playerInfo.DailyTask != null) Player.DailyTask = playerInfo.DailyTask;
+                if (playerInfo.DailyTask != null ) Player.DailyTask = playerInfo.DailyTask;
                 if (playerInfo.clanRole_id != null) Player.clanRole_id = playerInfo.clanRole_id;
                 if (playerInfo.clanLogo != null) Player.clanLogo = playerInfo.clanLogo;
 

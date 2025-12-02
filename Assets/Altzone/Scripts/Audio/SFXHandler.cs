@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Altzone.Scripts.ReferenceSheets;
+using Assets.Altzone.Scripts.Reference_Sheets;
 using UnityEngine;
 
 namespace Altzone.Scripts.Audio
@@ -7,6 +8,8 @@ namespace Altzone.Scripts.Audio
     [RequireComponent(typeof(AudioSource))]
     public class SFXHandler : MonoBehaviour
     {
+        public static SFXHandler Instance;
+
         [SerializeField] private SFXReference _sFXReference;
 
         [SerializeField] private int _initialAudioChannelChunkAmount = 4;
@@ -26,6 +29,17 @@ namespace Altzone.Scripts.Audio
             Continue,
             Clear,
             Pitch
+        }
+
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+                Destroy(gameObject);
+            else
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
         }
 
         private void Start()
@@ -75,6 +89,14 @@ namespace Altzone.Scripts.Audio
             return soundEffect.Volume * _maxVolume;
         }
 
+        /// <summary>
+        /// Plays a sound effect by given category name and SFXName.
+        /// </summary>
+        /// <param name="categoryName"></param>
+        /// <param name="sFXName"></param>
+        /// <param name="mainMenuMusicName"></param>
+        /// <param name="pitch"></param>
+        /// <returns>Either the ActiveChannelPath or null if sound effect type is oneshot.</returns>
         public ActiveChannelPath? Play(string categoryName, string sFXName, string mainMenuMusicName, float pitch)
         {
             SoundEffect soundEffect = null;
@@ -95,21 +117,72 @@ namespace Altzone.Scripts.Audio
                 return null;
             }
 
+            return Play(soundEffect, pitch);
+        }
+
+        public ActiveChannelPath? Play(AudioCategoryType categoryType, string sFXName, string mainMenuMusicName, float pitch)
+        {
+            SoundEffect soundEffect = null;
+
+            if (categoryType != AudioCategoryType.None)
+            {
+                if (categoryType == AudioCategoryType.MainMenu) // MainMenu
+                    soundEffect = _sFXReference.Get("MainMenu_" + mainMenuMusicName, sFXName);
+                else // Other
+                    soundEffect = _sFXReference.Get(categoryType, sFXName);
+            }
+            else
+                soundEffect = _sFXReference.Get(sFXName);
+
+            if (soundEffect == null)
+            {
+                Debug.LogError($"Sound: {sFXName}, in category: {categoryType.ToString()}, could not be found from SFX Reference sheet.");
+                return null;
+            }
+
+            return Play(soundEffect, pitch);
+        }
+
+        /// <summary>
+        /// Used for Battle sound effects.
+        /// </summary>
+        public ActiveChannelPath? Play(AudioCategoryType categoryType, BattleSFXNameTypes battleSFXName, float pitch)
+        {
+            SoundEffect soundEffect = null;
+
+            if (categoryType != AudioCategoryType.None) soundEffect = _sFXReference.Get(categoryType, battleSFXName);
+
+            if (soundEffect == null)
+            {
+                Debug.LogError($"Sound: {battleSFXName.ToString()}, in category: {categoryType.ToString()}, could not be found from SFX Reference sheet.");
+                return null;
+            }
+
+            return Play(soundEffect, pitch);
+        }
+
+        private ActiveChannelPath? Play(SoundEffect soundEffect, float pitch)
+        {
             if (soundEffect.Type == SoundPlayType.OneShot)
             {
                 _oneShotChannel.pitch = pitch;
                 _oneShotChannel.PlayOneShot(soundEffect.Audio, GetVolume(soundEffect));
+
                 return null;
             }
-            else
-                GetFreeAudioSourceHandler(soundEffect).SetPlayAudioClip(soundEffect.Audio, (soundEffect.Type == SoundPlayType.Loop), pitch);
 
-            return _activeChannels[_activeChannels.Count - 1];
+            GetFreeAudioSourceHandler(soundEffect).SetPlayAudioClip(soundEffect.Audio, (soundEffect.Type == SoundPlayType.Loop), pitch);
+
+            if ((_activeChannels.Count - 1) >= 0)
+                return _activeChannels[_activeChannels.Count - 1];
+            else
+            {
+                Debug.LogError("SFX Handler Error: Active channels is empty!");
+                return null;
+            }
         }
 
-        public bool PlaybackOperation(SFXPlaybackOperationType type, string name) { return PlaybackOperation(type, name, 1f); }
-
-        public bool PlaybackOperation(SFXPlaybackOperationType type, string name, float pitch)
+        public bool PlaybackOperation(SFXPlaybackOperationType type, string name, float pitch = 1f)
         {
             foreach (ActiveChannelPath channel in _activeChannels)
             {
@@ -144,9 +217,7 @@ namespace Altzone.Scripts.Audio
             return false;
         }
 
-        public bool PlaybackOperation(SFXPlaybackOperationType type, ActiveChannelPath channel) { return PlaybackOperation(type, channel, 1f); }
-
-        public bool PlaybackOperation(SFXPlaybackOperationType type, ActiveChannelPath channel, float pitch)
+        public bool PlaybackOperation(SFXPlaybackOperationType type, ActiveChannelPath channel, float pitch = 1f)
         {
             AudioChannelData data = GetAudioChannelData(channel);
 
@@ -238,7 +309,7 @@ namespace Altzone.Scripts.Audio
                             data.SoundEffectData = soundEffect;
                             data.audioSourceHandler.SetVolume(GetVolume(soundEffect));
 
-                            return GetAudioChannelData(i, j).audioSourceHandler;
+                            return data.audioSourceHandler;
                         }
 
             //No free AudioSourceHandlers found. Creating new AudioSourceHandler chunk.

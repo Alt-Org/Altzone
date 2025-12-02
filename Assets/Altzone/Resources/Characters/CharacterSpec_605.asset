@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
+  m_Name: CharacterSpec_605
+  m_EditorClassIdentifier: 
+  Id: 605
+  CharacterId: 605
+  IsApproved: 1
+  FinnishName: Jengikulttuuri
+  EnglishName: Gangism
+  ClassType: 600
+  CharacterDescriptionFinnish: "Kun Jengikulttuuri asettuu ihmiseen asumaan, se saa
+    t\xE4m\xE4n rakentamaan identiteettins\xE4 yhteenkuuluvuuden varaan. Ihminen
+    alkaa etsi\xE4 voimaa siit\xE4, ett\xE4 kuuluu johonkin, miss\xE4 lojaalisuus
+    on laki ja eroavaisuus uhka. H\xE4n oppii n\xE4ytt\xE4m\xE4\xE4n kovuutta, koska
+    pehmeys voisi murtaa ryhm\xE4n yhten\xE4isyyden. Jengikulttuuri antaa tunteen
+    merkityksest\xE4 ja suojasta, mutta samalla se sitoo yksil\xF6n joukkoon, jossa
+    oma \xE4\xE4ni hukkuu yhteiseen huutoon. Kuuluminen antaa voimaa, mutta est\xE4\xE4
+    kysym\xE4st\xE4, kuka on silloin, kun ket\xE4\xE4n muuta ei ole vierell\xE4.\r\n\nVuorovaikutuskent\xE4ll\xE4
+    (Ego Clash) Jengikulttuurin suojakilpen\xE4 toimii jengitakki, joka hehkuu yhteis\xF6n
+    v\xE4reiss\xE4 ja symbolissa. Kun tunnetila-ammus osuu johonkin jengin j\xE4senist\xE4,
+    kaikkien takit reagoivat: kimmelt\xE4v\xE4t hetken ja vahvistavat toisiaan, torjuen
+    iskun yhdess\xE4. Jos yksi kaatuu, muutkin kaatuvat ja j\xE4ljelle j\xE4\xE4
+    vain kasa samanlaisia, tyhji\xE4 kuoria.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: 'Yhteen sulautunut, lojaaliuttaan panssarina
+    kantava jengisoturi. '
+  CharacterShortDescriptionEnglish: 
+  CharacterStats: {fileID: 11400000, guid: dedcca6404df91843b73063f8ba52b15, type: 2}
+  Hp:
+    Level: 1
+    Coefficient: 5
+  Speed:
+    Level: 1
+    Coefficient: 0
+  CharacterSize:
+    Level: 3
+    Coefficient: 0
+  Attack:
+    Level: 2
+    Coefficient: 7
+  Defence:
+    Level: 2
+    Coefficient: 2
+  GalleryImage: {fileID: 21300000, guid: fbc21b1152b52ea468fea725e9b1ed99, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: acaa97b5b4effa043bf130652965e73a, type: 3}
+  CharPhotoSeries: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 1376512642337364809
+  BattleUiSprite: {fileID: 0}

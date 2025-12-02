@@ -18,17 +18,21 @@ MonoBehaviour:
   FinnishName: Symbioosi
   EnglishName: Symbiosis
   ClassType: 600
-  CharacterDescriptionFinnish: "Sielunsiskot ovat erottamaton kaksikko. Ulkopuolisille
-    he vaikuttavat kesken\xE4\xE4n kikattavilta bestiksilt\xE4, joiden ajatuksetkin
-    virtaavat yhteen. He jakavat yhdess\xE4 riemut ja surut ja antavat toisilleen
-    voimaa ja tukea. Heid\xE4n s\xE4rkym\xE4tt\xF6m\xE4n siteens\xE4 taustalla on
-    kuitenkin salaisuus, jonka varjeleminen ja kanssael\xE4minen on tehnyt heist\xE4
-    yht\xE4, ja jonka painoa he eiv\xE4t yksin jaksaisi kantaa.\r\n\nUhattuina Sielunsiskot
-    suojaavat toisiaan puhaltamalla purkkapallon, joka torjuu heit\xE4 kohti tulevan
-    tunnetila-ammuksen.\r"
+  CharacterDescriptionFinnish: "Kun Symbioosi asettuu ihmiseen asumaan, se saa t\xE4m\xE4n
+    kadottamaan rajansa rakkauden nimiss\xE4. Ihminen alkaa hengitt\xE4\xE4 toisen
+    tahtiin, tunnistaa omat tunteensa vain suhteessa siihen, mit\xE4 toinen tarvitsee.
+    L\xE4heisyys muuttuu selviytymisen ehdoksi \u2013 kuin yhteys olisi ainoa paikka,
+    jossa on lupa olla olemassa. Symbioosi luo l\xE4mm\xF6n, joka tuntuu turvalta,
+    mutta sen sis\xE4ll\xE4 erillisyys alkaa kuihtua. Jokainen jaettu tunne sitoo
+    lujemmin, kunnes ero ei tunnu mahdolliselta ilman, ett\xE4 jotain itsest\xE4
+    hajoaa.\n\r\nVuorovaikutuskent\xE4ll\xE4 (Ego Clash) Symbioosin suojakilpen\xE4
+    toimii yhteinen purkkakupla, joka laajenee heid\xE4n ymp\xE4rilleen suojaten
+    heid\xE4t yhdess\xE4. Kupla torjuu tunnetila-ammukset hitaalla, pehme\xE4ll\xE4
+    liikkeell\xE4 \u2013 kuin hidastettu hengenveto. Kun kupla lopulta puhkeaa, toinen
+    j\xE4\xE4 yleens\xE4 pid\xE4tt\xE4m\xE4\xE4n hengityst\xE4 liian kauan.\r"
   CharacterDescriptionEnglish: 
-  CharacterShortDescriptionFinnish: Taaimmaisen pulpettirivin erottamattomat ja purkantuoksuiset
-    bestikset
+  CharacterShortDescriptionFinnish: "Toistensa ilmaa hengitt\xE4v\xE4t, purkkakuplaan
+    sulkeutuneet sielunsiskot. "
   CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 60f6f3d30c455c348833976e49b74d00, type: 2}
   Hp:
@@ -38,13 +42,13 @@ MonoBehaviour:
     Level: 1
     Coefficient: 0
   CharacterSize:
-    Level: 12
-    Coefficient: 2
+    Level: 3
+    Coefficient: 0
   Attack:
-    Level: 2
+    Level: 1
     Coefficient: 7
   Defence:
-    Level: 11
+    Level: 1
     Coefficient: 2
   GalleryImage: {fileID: 21300000, guid: 13a8471a6fe8dfd42ac7926700a46b7d, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: d57bc6fecfb4edf48a0351eaeb132a06, type: 3}

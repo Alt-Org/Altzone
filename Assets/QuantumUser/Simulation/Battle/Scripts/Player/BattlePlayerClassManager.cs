@@ -8,9 +8,6 @@
 // System usings
 using System.Collections.Generic;
 
-// Unity usings
-using UnityEngine;
-
 // Quantum usings
 using Quantum;
 
@@ -40,7 +37,7 @@ namespace Battle.QSimulation.Player
         {
             if (!f.Unsafe.TryGetPointer(playerEntity, out T* component))
             {
-                Debug.LogErrorFormat("[PlayerCharacterClass] Class data ({0}) for {1} could not be found!", typeof(T).Name, playerEntity);
+                BattleDebugLogger.ErrorFormat(f, "BattlePlayerClassBase", "Class data ({0}) for {1} could not be found!", typeof(T).Name, playerEntity);
             }
             return component;
         }
@@ -141,6 +138,14 @@ namespace Battle.QSimulation.Player
     /// </summary>
     public unsafe static class BattlePlayerClassManager
     {
+        /// <summary>
+        /// Initializes this classes BattleDebugLogger instance.<br/>
+        /// This method is exclusively for debug logging purposes.
+        /// </summary>
+        public static void Init()
+        {
+            s_debugLogger = BattleDebugLogger.Create(typeof(BattlePlayerClassManager));
+        }
 
         /// <summary>
         /// Loads the specified class to be ready for use, if it is implemented.
@@ -203,7 +208,7 @@ namespace Battle.QSimulation.Player
 
             if (returnCode == ReturnCode.Error)
             {
-                Debug.LogWarningFormat("[PlayerClassManager] The {0} class could not be initialized!", playerData->CharacterClass);
+                s_debugLogger.WarningFormat("The {0} class could not be initialized!", playerData->CharacterClass);
                 return;
             }
             if (returnCode == ReturnCode.NoClass)
@@ -341,6 +346,9 @@ namespace Battle.QSimulation.Player
         /// <value>A dictionary used for tracking which classes have already had an error message sent regarding their missing implementation.</value>
         private static Dictionary<BattlePlayerCharacterClass, bool> s_errorMessagesSent = new();
 
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private static BattleDebugLogger s_debugLogger;
+
         /// <summary>
         /// Returns the class script of the specified class from the class array, if it is implemented.
         /// </summary>
@@ -378,7 +386,7 @@ namespace Battle.QSimulation.Player
 
                 if (!s_errorMessagesSent[characterClass])
                 {
-                    Debug.LogWarningFormat("[PlayerClassManager] The {0} class is not currently implemented!", characterClass);
+                    s_debugLogger.WarningFormat("The {0} class is not currently implemented!", characterClass);
                     s_errorMessagesSent[characterClass] = true;
                 }
 
@@ -389,13 +397,13 @@ namespace Battle.QSimulation.Player
 
             if (classObj == null)
             {
-                Debug.LogErrorFormat("[PlayerClassManager] The {0} class is not in the class array!", characterClass);
+                s_debugLogger.ErrorFormat("The {0} class is not in the class array!", characterClass);
                 return ReturnCode.Error;
             }
 
             if (classObj.Class != characterClass)
             {
-                Debug.LogErrorFormat("[PlayerClassManager] Mapping of character classes is incorrect! Expected {0}, got {1}", characterClass, classObj.Class);
+                s_debugLogger.ErrorFormat("Mapping of character classes is incorrect! Expected {0}, got {1}", characterClass, classObj.Class);
                 return ReturnCode.Error;
             }
 

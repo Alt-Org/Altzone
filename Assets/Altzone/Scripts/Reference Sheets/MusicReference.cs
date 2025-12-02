@@ -1,10 +1,65 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Altzone.Scripts.Interface;
+using Altzone.Scripts.Audio;
 
 namespace Altzone.Scripts.ReferenceSheets
 {
     //[CreateAssetMenu(fileName = "MusicReference", menuName = "ScriptableObjects/MusicReferenceScriptableObject")]
+
+    public enum MusicGenreType
+    {
+        None,
+        Pop,
+        Electronic,
+        Jazz,
+        Blues,
+        Reggae,
+        RAndB,
+        HipHop,
+        Rock,
+        Metal,
+        Punk,
+        Folk,
+        Country,
+        Latin,
+        Instrumental,
+        NewAge,
+        Indie,
+        Classical
+    }
+
+    public enum MusicMoodType
+    {
+        None,
+        Happy,
+        Hopeful,
+        Cheerful,
+        Excited,
+        Warm,
+        Love,
+        Romantic,
+        Bright,
+        Goofy,
+        Calm,
+        Sad,
+        Angry,
+        Aggressive,
+        Dark,
+        Cold,
+        Gloomy,
+        Tense,
+        Stressed,
+        Desperate,
+        Defeated,
+        Fearful,
+        Cautious,
+        Panic,
+        Uneasy,
+        Awe,
+        Bored,
+        Sorrow,
+    }
+
     public class MusicReference : ScriptableObject
     {
         [SerializeField] private List<MusicCategory> _musicCategories = new List<MusicCategory>();
@@ -44,13 +99,33 @@ namespace Altzone.Scripts.ReferenceSheets
             return null;
         }
 
-        public List<MusicTrack> GetTracksOfCategoryName(string categoryName)
+        public MusicCategory GetCategory(AudioCategoryType categoryType)
         {
             foreach (MusicCategory category in _musicCategories)
-                if (category.Name.ToLower() == categoryName.ToLower())
-                    return category.MusicTracks;
+                if (category.Type == categoryType)
+                    return category;
 
             return null;
+        }
+
+        public List<MusicTrack> GetTracksOfCategoryName(string categoryName)
+        {
+            MusicCategory category = GetCategory(categoryName);
+
+            if (category != null)
+                return category.MusicTracks;
+            else
+                return null;
+        }
+
+        public List<MusicTrack> GetTracksOfCategoryName(AudioCategoryType categoryType)
+        {
+            MusicCategory category = GetCategory(categoryType);
+
+            if (category != null)
+                return category.MusicTracks;
+            else
+                return null;
         }
 
         public List<string> ConvertToStringList(List<MusicTrack> tracks)
@@ -65,11 +140,52 @@ namespace Altzone.Scripts.ReferenceSheets
 
         public MusicTrack GetTrack(string categoryName, string trackName)
         {
-            foreach (MusicCategory category in _musicCategories)
-                if (category.Name.ToLower() == categoryName.ToLower())
-                    foreach (MusicTrack track in category.MusicTracks)
-                        if (track.Name.ToLower() == trackName.ToLower())
-                            return track;
+            MusicCategory category = GetCategory(categoryName);
+
+            if (category == null) return null;
+
+            foreach (MusicTrack track in category.MusicTracks)
+                if (track.Name.ToLower() == trackName.ToLower())
+                    return track;
+
+            return null;
+        }
+
+        public MusicTrack GetTrack(AudioCategoryType categoryType, string trackName)
+        {
+            MusicCategory category = GetCategory(categoryType);
+
+            if (category == null) return null;
+
+            foreach (MusicTrack track in category.MusicTracks)
+                if (track.Name.ToLower() == trackName.ToLower())
+                    return track;
+
+            return null;
+        }
+
+        public MusicTrack GetTrackById(string categoryName, string trackId)
+        {
+            MusicCategory category = GetCategory(categoryName);
+
+            if (category == null) return null;
+
+            foreach (MusicTrack track in category.MusicTracks)
+                if (track.Id == trackId)
+                    return track;
+
+            return null;
+        }
+
+        public MusicTrack GetTrackById(AudioCategoryType categoryType, string trackId)
+        {
+            MusicCategory category = GetCategory(categoryType);
+
+            if (category == null) return null;
+
+            foreach (MusicTrack track in category.MusicTracks)
+                if (track.Id == trackId)
+                    return track;
 
             return null;
         }
@@ -85,6 +201,8 @@ namespace Altzone.Scripts.ReferenceSheets
     public class MusicCategory
     {
         public string Name;
+        public AudioCategoryType Type;
+
         public List<MusicTrack> MusicTracks;
 
         public MusicTrack Get(string name)
@@ -116,19 +234,46 @@ namespace Altzone.Scripts.ReferenceSheets
         public string Name;
         public string Id;
         public AudioClip Music;
-        public MusicTrackInfo Info;
+        public JukeboxMusicTrackInfo JukeboxInfo;
     }
 
     [System.Serializable]
-    public class MusicTrackInfo
+    public class JukeboxMusicTrackInfo
     {
         [Header("Jukebox")]
         public Sprite Disk;
-        public string Genre;
-        public string SubGenre;
+        public MusicGenreType Genre;
+        public MusicMoodType Mood;
 
-        [Header("Artist Info")]
-        public string ArtistName;
-        public Sprite ArtistLogo;
+        public List<ArtistInfo> Artists;
+
+        public string GetArtistNames()
+        {
+            if (Artists.Count == 0) return "";
+
+            string names = Artists[0].Name;
+
+            for (int i = 1; i < Artists.Count; i++) names += ", " + Artists[i].Name;
+
+            return names;
+        }
+    }
+
+    [System.Serializable]
+    public class ArtistInfo
+    {
+        public string Name;
+        public ArtistReference Artist;
+        public List<ArtistRoleType> Roles;
+
+        public enum ArtistRoleType
+        {
+            Producer,
+            Composer,
+            Arrangement,
+            Writer,
+            Singer,
+            Mixing,
+        }
     }
 }

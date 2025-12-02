@@ -147,6 +147,8 @@ public class ClanSettings : MonoBehaviour
 
                     if (!string.IsNullOrEmpty(previousPhrase) && previousPhrase != clanData.Phrase)
                         gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+
+                    gameObject.GetComponent<ClanCulturalPractices>().SettingsChanged(clanData);
                 }
                 else
                 {

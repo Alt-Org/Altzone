@@ -81,6 +81,8 @@ public class SelectionBox : MonoBehaviour
         _onSelectionChange.Invoke();
 
         SetText(_manualValues[_index]);
+
+        gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
     }
 
     private void SetText(string text) { _text.text = text; }

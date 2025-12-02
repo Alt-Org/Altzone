@@ -152,6 +152,7 @@ namespace Battle.QSimulation.Player
 
             *outBotInput = new Input()
             {
+                IsValid                       = true,
                 MovementInput                 = movementInput,
                 MovementDirectionIsNormalized = false,
                 MovementPositionTarget        = predictedGridPosition,
@@ -160,7 +161,8 @@ namespace Battle.QSimulation.Player
                 RotationInput                 = false,
                 RotationValue                 = FP._0,
                 PlayerCharacterNumber         = -1,
-                GiveUpInput                   = false
+                GiveUpInput                   = false,
+                AbilityActivate               = false
             };
         }
     }

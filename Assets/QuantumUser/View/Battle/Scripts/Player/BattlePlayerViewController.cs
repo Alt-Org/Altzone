@@ -14,6 +14,7 @@ using Quantum;
 using Photon.Deterministic;
 
 // Battle QSimulation usings
+using Battle.QSimulation;
 using Battle.QSimulation.Player;
 
 // Battle View usings
@@ -133,7 +134,7 @@ namespace Battle.View.Player
                 }
                 else
                 {
-                    Debug.LogErrorFormat("[BattlePlayerViewController] Class view controller missmatch! Expected {0}, got {1}", e.Class, _classViewControllerOverride.Class);
+                    _debugLogger.ErrorFormat("Class view controller missmatch! Expected {0}, got {1}", e.Class, _classViewControllerOverride.Class);
                     Destroy(_classViewControllerOverride);
                 }
             }
@@ -178,6 +179,9 @@ namespace Battle.View.Player
             _classViewController.OnUpdateView();
         }
 
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private BattleDebugLogger _debugLogger;
+
         /// <value>Reference to the active character's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SpriteRenderer.html">SpriteRenderer@u-exlink</a>.</value>
         private SpriteRenderer _spriteRenderer;
 
@@ -193,6 +197,8 @@ namespace Battle.View.Player
         /// </summary>
         private void PreInitSetup()
         {
+            _debugLogger = BattleDebugLogger.Create<BattlePlayerViewController>();
+
             _classViewController = gameObject.AddComponent<BattlePlayerClassNoneViewController>();
         }
 

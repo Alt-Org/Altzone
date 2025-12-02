@@ -10,10 +10,10 @@ namespace Altzone.Scripts.Model.Poco.Game
         public MartyrCharacter() : base()
         {
             _id = CharacterID.Martyr;
-            _defaultAttack = 6;
-            _defaultDefence = 8;
+            _defaultAttack = 3;
+            _defaultDefence = 3;
             _defaultHp = 1;
-            _defaultCharacterSize = 12;
+            _defaultCharacterSize = 3;
             _defaultSpeed = 3;
             InitializeValues();
         }
