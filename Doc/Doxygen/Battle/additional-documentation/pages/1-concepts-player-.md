@@ -413,7 +413,7 @@ exposing some parts to the **rest of the game**.
 
 <br/>
 
-### PlayerData (%Quantum component) {#page-concepts-player-simulation-playerdata}
+### PlayerData (%Quantum Component) {#page-concepts-player-simulation-playerdata}
 
 The @cref{Quantum,BattlePlayerDataQComponent} struct is defined in and generated from BattlePlayerData.qtn.
 This contains data specific to each [{Player character entity}](#page-concepts-player-character-entity) used by the **%Quantum Simulation** during gameplay.
@@ -484,7 +484,7 @@ See [{Player Character Classes}](#page-concepts-player-characters-classes) for m
 
 <br/>
 
-### PlayerClassData (%Quantum component) {#page-concepts-player-simulation-classdata}
+### PlayerClassData (%Quantum Component) {#page-concepts-player-simulation-classdata}
 
 Every **Player Character Class** can optionally have a **Data QComponent** for additional data.
 
