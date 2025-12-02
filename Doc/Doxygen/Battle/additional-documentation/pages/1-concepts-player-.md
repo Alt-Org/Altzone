@@ -57,7 +57,7 @@ The possible **Slots** are **1-4**.
 The **Teams** are **TeamAlpha** and **TeamBeta**.  
 **Players** in **Slots** **1** and **2** are in **TeamAlpha** and **Players** in **Slots** **3** and **4** in **TeamBeta**.  
 **Guest** and **Spectator** slots also exist, but are not currently used in %Battle.  
-The enums for **Player Slots** and **Teams** are defined in [{Simulation}](#page-concepts-player-simulation).
+The enums for **Player Slots** and **Teams** are defined in [{Quantum Simulation}](#page-concepts-player-simulation).
 
 ```dot
 graph PlayerSlotsAndTeams {
@@ -102,7 +102,7 @@ The [{PlayerHandle}](#page-concepts-player-simulation-playerhandle) struct allow
 to [{PlayerManager}](#page-concepts-player-simulation-playermanager), which processes the **Player**'s data and registers them as having joined.
 
 Once all **Players** have joined, @cref{Battle.QSimulation.Game,BattleGameControlQSystem} tells [{PlayerManager}](#page-concepts-player-simulation-playermanager)
-to create [{Player character entities}](#page-concepts-player-character-entity) for all **Players**.
+to create [{Player Character Entities}](#page-concepts-player-character-entity) for all **Players**.
 
 ```dot
 digraph PlayerJoining {
@@ -162,7 +162,7 @@ digraph PlayerJoining {
 as well as switching between their available [{Player Character Entities}](#page-concepts-player-character-entity)
 **Player Inputs** are processed and compiled into a @ref Quantum.Input "Quantum Input Struct" on the **Unity/View** side in [{PlayerInput}](#page-concepts-player-view-input).
 The created **struct** is passed over to **%Quantum Simulation**.  
-**%Quantum** synchronises the **struct** for all connected **clients**, and classes on the [{Quantum simulation}](#page-concepts-player-simulation) side use the contained data.
+**%Quantum** synchronises the **struct** for all connected **clients**, and classes on the [{Quantum Simulation}](#page-concepts-player-simulation) side use the contained data.
 
 See [Input🡵](https://doc.photonengine.com/quantum/current/manual/input) **%Quantum**'s documentation for more info.
 
@@ -245,10 +245,10 @@ digraph PlayerCharacterEntities {
 These **Entities** are created based on **Unity Prefabs**. **Entities** are controlled by **%Quantum Simulation**.  
 The **Unity Prefab root GameObject** contains a **%Quantum Entity Prototype** component, where the **Entity** is defined.
 
-During gameplay the **Player Character** exists both as a **%Quantum Entity** inside [{Simulation}](#page-concepts-player-simulation) and a **Unity GameObject** inside **Unity View**.
+During gameplay the **Player Character** exists both as a **%Quantum Entity** inside [{Quantum Simulation}](#page-concepts-player-simulation) and a **Unity GameObject** inside **Unity View**.
 %Quantum links the gameObject and entity together.
 
-The **Entity** contains **%Quantum Components** used by the **%Quantum Simulation**. The most significant of these is the [{PlayerData (Quantum component)}](#page-concepts-player-simulation-playerdata),
+The **Entity** contains **%Quantum Components** used by the **%Quantum Simulation**. The most significant of these is the [{PlayerData}](#page-concepts-player-simulation-playerdata),
 which is our own defined data relating to **Player Character Entities** and optionally **Class Data Component**.
 
 See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
@@ -318,7 +318,7 @@ the default collision logic, and/or view update logic. Changing how different **
 @bigtext{**Implementation**}
 
 In **%Quantum Simulation**, every **Player Character Class** can optionally have a unique **C#** [{PlayerClass}](#page-concepts-player-simulation-playerclass).  
-**Character Classes** can also optionally have a [{PlayerClassData (Quantum component)}](#page-concepts-player-simulation-classdata) **QComponent**
+**Character Classes** can also optionally have a [{PlayerClassData}](#page-concepts-player-simulation-classdata) **QComponent**
 attached to the [{Player Character Entities}](#page-concepts-player-character-entity) for additional data the **Class** will use.  
 The **C#** [{PlayerClass}](#page-concepts-player-simulation-playerclass) are stateless and
 there is only one instance for each **Character Class** which are loaded and managed by [{PlayerClassManager}](#page-concepts-player-simulation-classmanager).
@@ -405,7 +405,7 @@ See [{Joining and Initializing}](#page-concepts-player-initializing) for more in
 ### PlayerHandle {#page-concepts-player-simulation-playerhandle}
 
 The @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandle} struct defined in [{PlayerManager}](#page-concepts-player-simulation-playermanager) allows
-the code to access [{Player manager data}](#page-concepts-player-manager-data) of each individual **Player**.
+the code to access [{Player Manager Data}](#page-concepts-player-manager-data) of each individual **Player**.
 
 There is both a **private** @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandleInternal} struct containing all the data for **use internally**
 within [{PlayerManager}](#page-concepts-player-simulation-playermanager), and the **public** @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandle}
@@ -416,7 +416,7 @@ exposing some parts to the **rest of the game**.
 ### PlayerData (%Quantum Component) {#page-concepts-player-simulation-playerdata}
 
 The @cref{Quantum,BattlePlayerDataQComponent} struct is defined in and generated from BattlePlayerData.qtn.
-This contains data specific to each [{Player character entity}](#page-concepts-player-character-entity) used by the **%Quantum Simulation** during gameplay.
+This contains data specific to each [{Player Character Entity}](#page-concepts-player-character-entity) used by the **%Quantum Simulation** during gameplay.
 
 <br/>
 
