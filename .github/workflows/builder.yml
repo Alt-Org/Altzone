@@ -1,77 +1,52 @@
 name: Build project
 
 on:
-  push:
-    branches:
-      - main
-      - Production
+  schedule:
+    - cron: '0 3 * * *'
+    - cron: '0 10 * * *'
+    - cron: '0 15 * * *'
+  workflow_dispatch:
 
 jobs:
-  buildForAllSupportedPlatforms:
-    name: Build for ${{ matrix.targetPlatform }}
+  buildWebGL:
+    name: Build WebGL
     runs-on: [self-hosted, unity]
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - targetPlatform: WebGL
-            branch: main
-          - targetPlatform: WebGL
-            branch: Production
-          - targetPlatform: Android
-            branch: Production
 
     steps:
       - name: Set current date as build version
         run: echo "BUILD_VERSION=$(date +'%d.%m.%Y')" >> $GITHUB_ENV
 
-      - name: Check branch match
-        if: github.ref_name == matrix.branch
-        run: echo "Building for branch ${{ matrix.branch }} and target ${{ matrix.targetPlatform }}"
-
       - uses: actions/checkout@v4
-        if: github.ref_name == matrix.branch
         with:
           fetch-depth: 0
           lfs: true
 
       - uses: actions/cache@v3
-        if: github.ref_name == matrix.branch
         with:
           path: Library
-          key: Library-${{ matrix.targetPlatform }}
+          key: Library-WebGL
           restore-keys: Library-
 
-      - if: github.ref_name == matrix.branch && matrix.targetPlatform == 'Android'
-        name: Clean up workspace
-        run: |
-          echo "Cleaning up build and temp folders..."
-          rm -rf build/*
-          rm -rf Temp obj
-          echo "Cleanup complete."
-
       - uses: game-ci/unity-builder@v4
-        if: github.ref_name == matrix.branch
-        timeout-minutes: 100
+        timeout-minutes: 70
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          targetPlatform: ${{ matrix.targetPlatform }}
+          targetPlatform: WebGL
           webGlCompression: Brotli
-          androidExportType: 'androidAppBundle'
           versioning: Custom
           version: ${{ env.BUILD_VERSION }}
+          dockerCpuLimit: 3
+          dockerMemoryLimit: 10g
 
       - uses: actions/upload-artifact@v4
-        if: github.ref_name == matrix.branch
         with:
-          name: Build-${{ matrix.targetPlatform }}
-          path: build/${{ matrix.targetPlatform }}
+          name: Build-WebGL
+          path: build/WebGL
           retention-days: 1
 
       - name: Mark build complete
-        if: github.ref_name == matrix.branch && matrix.targetPlatform == 'WebGL'
         run: |
           touch "/tmp/runner/github/${GITHUB_REF_NAME}-${GITHUB_RUN_ID}"

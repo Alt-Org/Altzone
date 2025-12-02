@@ -10,10 +10,10 @@ namespace Altzone.Scripts.Model.Poco.Game
         public StonerCharacter() : base()
         {
             _id = CharacterID.Stoner;
-            _defaultAttack = 8;
-            _defaultDefence = 9;
-            _defaultHp = 2;
-            _defaultCharacterSize = 6;
+            _defaultAttack = 3;
+            _defaultDefence = 3;
+            _defaultHp = 1;
+            _defaultCharacterSize = 2;
             _defaultSpeed = 3;
             InitializeValues();
         }

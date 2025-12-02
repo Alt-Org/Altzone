@@ -18,15 +18,22 @@ MonoBehaviour:
   FinnishName: Ahmiminen
   EnglishName: Overeating
   ClassType: 500
-  CharacterDescriptionFinnish: "Ahmatilla on pakonomainen suhde ruokaan. Se on h\xE4nelle
-    kuin alati l\xE4sn\xE4 oleva kumppani, joka kulkee h\xE4nen rinnallaan p\xE4iv\xE4st\xE4
-    toiseen ja pystyy auttamaan h\xE4nt\xE4 h\xE4d\xE4n hetkell\xE4. Ruuan mukana
-    h\xE4n nielee my\xF6s sanat ja tunteet, joita ei ole turvallista jakaa muille.\r\n\nAhmatin
-    puolustuksena tunnetila-ammuksia vastaan on hotdog-kilpi, josta h\xE4n haukkaa
-    palasen ammuksen osuessa h\xE4neen, muuttaen sen muotoa ja kokoa pelin edetess\xE4.\r"
+  CharacterDescriptionFinnish: "Kun Ahmiminen asettuu ihmiseen asumaan, se saa t\xE4m\xE4n
+    t\xE4ytt\xE4m\xE4\xE4n hiljaisuuden nielemisell\xE4. Ihminen alkaa etsi\xE4 lohtua
+    asioista, jotka voi ottaa sis\xE4\xE4n ilman, ett\xE4 niit\xE4 tarvitsee jakaa.
+    Jokainen suupala, sana tai tunne muuttuu yritykseksi t\xE4ytt\xE4\xE4 jotakin,
+    mille ei ole nime\xE4. H\xE4n ei uskalla p\xE4\xE4st\xE4\xE4 kipua ulos, joten
+    h\xE4n ottaa sen sis\xE4\xE4n yh\xE4 uudelleen \u2013 kunnes keho alkaa kantaa
+    sen, mit\xE4 mieli ei jaksa. Ahmiminen tekee selviytymisest\xE4 rituaalin, jossa
+    lohtu ja rangaistus maistuvat samalta.\r\n\nVuorovaikutuskent\xE4ll\xE4 (Ego
+    Clash) Ahmimisen suojakilpen\xE4 toimii hotdog, josta h\xE4n haukkaa palasen
+    aina tunnetila-ammuksen osuessa h\xE4neen. Jokainen tunteen osuma t\xE4ten pienent\xE4\xE4
+    kilpe\xE4 ja tekee pelaamisesta vaikeampaa. Kun hotdog lopulta katoaa kokonaan,
+    Ahmiminen romahtaa lattialle \u2013 ei n\xE4l\xE4st\xE4, vaan siit\xE4, ett\xE4
+    mik\xE4\xE4n ei en\xE4\xE4 t\xE4yt\xE4.\r"
   CharacterDescriptionEnglish: 
-  CharacterShortDescriptionFinnish: "Sis\xE4ist\xE4 tyhjyytt\xE4\xE4n ruualla t\xE4ytt\xE4v\xE4
-    suursy\xF6m\xE4ri"
+  CharacterShortDescriptionFinnish: "Sis\xE4ist\xE4 tyhjyytt\xE4\xE4n ruualla t\xE4ytt\xE4v\xE4,
+    tunteensa nielev\xE4 suursy\xF6m\xE4ri."
   CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: b10576cd877c5c347966ad393961b2e3, type: 2}
   Hp:
@@ -37,7 +44,7 @@ MonoBehaviour:
     Coefficient: 0
   CharacterSize:
     Level: 3
-    Coefficient: 1
+    Coefficient: 0
   Attack:
     Level: 3
     Coefficient: 5

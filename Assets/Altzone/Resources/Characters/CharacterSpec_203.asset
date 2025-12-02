@@ -18,20 +18,23 @@ MonoBehaviour:
   FinnishName: Huijaaminen
   EnglishName: Deception
   ClassType: 200
-  CharacterDescriptionFinnish: "Huijaaminen on defenssi, joka rakentaa ymp\xE4rilleen
-    kulissien maailman. Sen tarkoitus on h\xE4m\xE4rt\xE4\xE4 todellisuutta ja johdattaa
-    huomio pois omasta haavoittuvuudesta. Huijari ei kohtaa tunnetiloja suoraan,
-    vaan saa muut ep\xE4ilem\xE4\xE4n omia havaintojaan ja ajatteluaan. Se tarjoaa
-    hetken illuusion hallinnasta ja ylivoimasta, mutta samalla et\xE4\xE4nnytt\xE4\xE4
-    yksil\xF6n aidosta yhteydest\xE4 muihin.\r\n\nPeliss\xE4 huijarin suojakilpen\xE4
-    toimii kiilt\xE4v\xE4 vihre\xE4 urheiluauto. Se ei heikkene iskuista, vaan ponnauttaa
-    tunnetila-ammuksen yll\xE4tt\xE4viin suuntiin \u2013 joskus vastustajaa kohti,
-    joskus kaaokseksi, joka osuu kenet tahansa. Huijaaminen luo siten turvaa vain
-    n\xE4enn\xE4isesti, sill\xE4 sen arvaamattomuus voi k\xE4\xE4nty\xE4 my\xF6s
-    liittolaisia vastaan."
+  CharacterDescriptionFinnish: "Kun Huijaaminen asettuu ihmiseen asumaan, se saa
+    t\xE4m\xE4n rakentamaan todellisuuden, jota voi hallita. Ihminen alkaa suojata
+    itse\xE4\xE4n luomalla tarinoita, joissa h\xE4n on aina askelen edell\xE4 \u2013
+    kunhan kukaan ei huomaa, mit\xE4 pinnan alla tapahtuu. H\xE4n k\xE4ytt\xE4\xE4
+    sanoja, eleit\xE4 ja rooleja kuin pelin nappuloita, joiden avulla voi ohjata
+    muiden katseet pois omasta haavoittuvuudesta. Hetkeksi h\xE4n tuntee olevansa
+    turvassa, kun kukaan ei n\xE4e l\xE4pi. Mutta mit\xE4 enemm\xE4n h\xE4n v\xE4\xE4rist\xE4\xE4
+    totuutta, sit\xE4 enemm\xE4n h\xE4n eksyy omiin kulisseihinsa \u2013 ja lopulta
+    unohtaa, milt\xE4 aitous tuntui.\r\n\nVuorovaikutuskent\xE4ll\xE4 (Ego Clash)
+    Huijaamisen suojakilpi on kiilt\xE4v\xE4 vihre\xE4 urheiluauto, joka ponnauttaa
+    tunnetila-ammukset yll\xE4tt\xE4viin suuntiin. Osuma voi k\xE4\xE4nty\xE4 vastustajaa
+    kohti tai singota kaaokseksi, joka osuu kehen tahansa. Auto ei heikkene iskuista,
+    vaan loistaa entist\xE4 kirkkaammin \u2013 kunnes lopulta se pett\xE4\xE4 kuljettajansa,
+    ja Huijaaminen j\xE4\xE4 yksin p\xF6lypilven keskelle.\r"
   CharacterDescriptionEnglish: 
   CharacterShortDescriptionFinnish: Arvaamattomasti tunteet kimmottava, illuusioon
-    verhoutuva defenssi.
+    verhoutuja.
   CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 11e8f352fa68f5640a735c87c46dd673, type: 2}
   Hp:
@@ -42,7 +45,7 @@ MonoBehaviour:
     Coefficient: 0
   CharacterSize:
     Level: 2
-    Coefficient: 6
+    Coefficient: 0
   Attack:
     Level: 2
     Coefficient: 5

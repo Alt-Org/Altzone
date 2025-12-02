@@ -37,7 +37,7 @@ public class BaseScrollRect : UIBehaviour, IInitializePotentialDragHandler, IBeg
     }
 
     [SerializeField]
-    private bool horizontallyScrollable = true;
+    protected bool horizontallyScrollable = true;
     public virtual bool HorizontallyScrollable
     {
         get { return horizontallyScrollable; }
@@ -45,7 +45,7 @@ public class BaseScrollRect : UIBehaviour, IInitializePotentialDragHandler, IBeg
     }
 
     [SerializeField]
-    private bool verticallyScrollable = true;
+    protected bool verticallyScrollable = true;
     public virtual bool VerticallyScrollable
     {
         get { return verticallyScrollable; }
