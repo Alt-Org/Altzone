@@ -24,6 +24,9 @@ namespace Battle.QSimulation.Player
     /// Contains a method for retrieving the class data component attached to the player character entity.<br/>
     /// Class scripts should extend this class if they make use of a class data component.
     /// </summary>
+    ///
+    /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.}<br/>
+    /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
     public abstract unsafe class BattlePlayerClassBase<T> : BattlePlayerClassBase where T : unmanaged, IComponent
     {
         /// <summary>
@@ -48,6 +51,9 @@ namespace Battle.QSimulation.Player
     /// Contains a reference to the associated BattlePlayerCharacterClass enum and virtual methods for the different events the class can respond to.<br/>
     /// Class scripts should extend this class if they do not make use of a class data component.
     /// </summary>
+    ///
+    /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.}<br/>
+    /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
     public abstract unsafe class BattlePlayerClassBase
     {
         /// <summary>
