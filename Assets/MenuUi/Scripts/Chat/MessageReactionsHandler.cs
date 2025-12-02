@@ -24,6 +24,9 @@ public class MessageReactionsHandler : MonoBehaviour
     [SerializeField] private List<ReactionObject> _reactionList;
     [SerializeField] private GameObject _reactionObject;
 
+    /*[Header("Added Features")]
+    [SerializeField] private GameObject CanvasChat;
+    */
     [Header("Buttons")]
     [SerializeField] private Button _openMoreButton;
 
@@ -39,16 +42,53 @@ public class MessageReactionsHandler : MonoBehaviour
     {
         _openMoreButton.onClick.AddListener((() => { _allReactionsPanel.SetActive(true); _selectedMessage.SizeCall(); _commonReactionsPanel.SetActive(false);}));
 
+
+
+        ChatChannel.OnReactionReceived += RefreshReaction;
+
+
         ReactionObjectHandler.OnReactionPressed += AddReaction;
-        //ChatChannel.OnReactionReceived += RefreshReactionCoroutine();
 
         GenarateReactionObjects();
         CreateReactionInteractions();
         PickCommonReactions();
     }
 
+
+
+    /// <summary>
+    /// Old code does not work
+    /// </summary>
+   /*void ReactionRefresh(ChatChannelType chatChannelType, ChatMessage reaction) => StartCoroutine(ReactionRefreshCoroutine(chatChannelType, reaction));
+
+    IEnumerator ReactionRefreshCoroutine(ChatChannelType chatChannelType, ChatMessage reaction)
+    {
+        if (chatChannelType is ChatChannelType.Global)
+            yield return new WaitUntil(() => ChatListener.Instance.GlobalChatFetched);
+        if (chatChannelType is ChatChannelType.Clan)
+            yield return new WaitUntil(() => ChatListener.Instance.ClanChatFetched);
+
+        if(CanvasChat.gameObject.activeSelf)
+        {
+            List<ChatMessage> messagelist = ChatListener.Instance.GetChatChannel(chatChannelType).ChatMessages;
+            if(messagelist != null)
+            {
+                foreach (ChatMessage message in messagelist)
+                {
+                    Sprite reactionSprite = _reactionList.FirstOrDefault(x => x.Mood == message.mood)?.Sprite;
+                    bool ownRct = message?.SenderId == ServerManager.Instance.Player._id;
+                    AddReaction(reactionSprite, message, ChatReactionHandler.Instance.SetReactionInfo(ownRct, message.Mood));
+                }
+            }
+        }
+
+    }*/
+
     private void OnDestroy()
     {
+
+        ChatChannel.OnReactionReceived -= RefreshReaction;
+
         ReactionObjectHandler.OnReactionPressed -= AddReaction;
     }
 
@@ -135,6 +175,42 @@ public class MessageReactionsHandler : MonoBehaviour
             button.onClick.AddListener(() => AddReaction(commonReaction));*/
         }
     }
+
+    private void SaveReactions(ChatMessage message)
+    {
+        foreach (var reaction in message.Reactions)
+        {
+            Debug.LogWarning("Saved reaction");
+        }
+    }
+
+    //converts the string into mood
+    private Mood ConvertVoid(string emojiString)
+    {
+        if (Enum.TryParse(emojiString, out Mood mood)) {
+            return mood;
+        }
+
+        return Mood.None;
+    }
+
+    //Saves and refreshes the reactions
+    //Some reason doesnt do that now as it will just fetch its messages reaction type :/
+    private void RefreshReaction(ChatChannelType chatChannelType, ChatMessage message)
+    {
+        Debug.Log("Reaction receive form " + message.Id);
+
+        SaveReactions(message);
+
+
+        foreach (var reaction in message.Reactions)
+        {
+            //Mood moodEnum = ConvertVoid(reaction.emoji);
+
+            AddReaction(message.Id, message.Mood);
+        }
+    }
+
 
     /// <summary>
     /// Adds the chosen reaction to the selected message.

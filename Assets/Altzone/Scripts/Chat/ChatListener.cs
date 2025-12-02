@@ -252,6 +252,17 @@ namespace Altzone.Scripts.Chat
             Debug.LogWarning(JObject.Parse(json));
             JToken middleresult = JObject.Parse(json)["message"];
             ServerChatMessage message = middleresult["message"].ToObject<ServerChatMessage>();
+
+
+
+            //Debug test to see why reaction global does not work
+
+            /*Debug.LogWarning("FIND ME EVENT RAW = [" + middleresult["event"] + "]");
+            Debug.LogWarning("FIND ME EVENT ToString = [" + middleresult["event"].ToString() + "]");
+            Debug.LogWarning("FIND ME EVENT RAW = [" + middleresult["chat"] + "]");
+            Debug.LogWarning("FIND ME EVENT ToString = [" + middleresult["chat"].ToString() + "]");
+            */
+
             if (middleresult["event"].ToString().Equals("newMessage"))
             {
                 if (middleresult["chat"].ToString().Equals("clan")) _clanChatChannel.AddNewMessage(new(message));
@@ -259,6 +270,14 @@ namespace Altzone.Scripts.Chat
             }
             else if (middleresult["event"].ToString().Equals("newReaction"))
             {
+                //quick check to see if reaction ever goes to globan or stays in clan
+               // Debug.LogWarning("FIND ME --------- NEW REACTION ---------- 0");
+               // Debug.LogWarning("FIND ME Reaction Event = [" + middleresult["event"] + "] 1");
+               // Debug.LogWarning("FIND ME Reaction Chat = [" + middleresult["chat"] + "] 2");
+                Debug.LogWarning("FIND ME ID = " + message._id);
+
+                ///For some reason it does get diff ID but it always says the reaction is set in clan and not in global
+                ///not sure why that like that as message works just fine
                 if (middleresult["chat"].ToString().Equals("clan")) _clanChatChannel.UpdateReactions(message._id, message.reactions);
                 else if (middleresult["chat"].ToString().Equals("global")) _globalChatChannel.UpdateReactions(message._id, message.reactions);
             }
