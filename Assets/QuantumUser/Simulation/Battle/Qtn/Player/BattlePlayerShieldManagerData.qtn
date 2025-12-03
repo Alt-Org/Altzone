@@ -1,0 +1,5 @@
+singleton component BattlePlayerShieldManagerDataQSingleton
+{
+    array<int>[BATTLE_PLAYER_CHARACTER_TOTAL_COUNT] PlayerShieldCounts;
+    array<BattleEntityID>[BATTLE_PLAYER_SHIELD_TOTAL_COUNT] PlayerShieldEntityIDs;
+}
