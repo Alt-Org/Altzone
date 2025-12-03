@@ -234,6 +234,8 @@ namespace Battle.QSimulation.Player
             /// Retrieves player index based on slot.
             /// </summary>
             ///
+            /// Exposed in public PlayerHandle as low level
+            ///
             /// <param name="slot">The slot of the player.</param>
             /// <returns>The index of the given player.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
