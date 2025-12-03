@@ -1,6 +1,6 @@
 /// @file BattleUiLoadScreenHandler.cs
 /// <summary>
-/// Contains @cref{Battle.View.UI,BattleUiLoadScreentHandler} class, which handles setting the visibility of the battle loading screen and updating it whenever a player connects to the game.
+/// Contains @cref{Battle.View.UI,BattleUiLoadScreenHandler} class, which handles setting the visibility of the battle loading screen and updating it whenever a player connects to the game.
 /// </summary>
 ///
 /// This script:<br/>
@@ -23,7 +23,7 @@ namespace Battle.View.UI
 {
     public class BattleUiLoadScreenHandler : MonoBehaviour
     {
-        /// @anchor BattleUiAnnouncementHandler-SerializeFields
+        /// @anchor BattleUiLoadScreenHandler-SerializeFields
         /// @name SerializeField variables
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
@@ -55,6 +55,7 @@ namespace Battle.View.UI
         ///
         /// <param name="playerSlot">The slot of the player.</param>
         /// <param name="characterIds">An array of the character IDs of the players selected characters.</param>
+        /// <param name="characterClasses">An array of the character classes of the players selected characters.</param>
         public void PlayerConnected(BattlePlayerSlot playerSlot, int[] characterIds, int[] characterClasses)
         {
             int slotIndex = playerSlot switch

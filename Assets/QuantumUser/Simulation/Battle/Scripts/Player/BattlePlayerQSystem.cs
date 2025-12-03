@@ -23,6 +23,9 @@ namespace Battle.QSimulation.Player
     /// Handles the quantum side of player logic.
     /// </summary>
     ///
+    /// [{Player Overview}](#page-concepts-player-overview)<br/>
+    /// [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview)
+    ///
     /// This system contains methods called by BattleCollisionQSystem that deal damage to players and shields, as well as sending input data forward for movement and character switching.
     [Preserve]
     public unsafe class BattlePlayerQSystem : SystemMainThread
