@@ -137,6 +137,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
             if (clan.polls != null) Polls = clan.polls;
             else if (Polls == null) Polls = new();
             Rooms = new();
+            ClanRoles = clan.roles;
         }
 
         public void CallDataUpdate()
