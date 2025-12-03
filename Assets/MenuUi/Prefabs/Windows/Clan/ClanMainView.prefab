@@ -11142,6 +11142,16 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5598040310740287438, guid: c5bddb70cfcd71d4683c5c6819209308,
+        type: 3}
+      propertyPath: _englishText
+      value: Join
+      objectReference: {fileID: 0}
+    - target: {fileID: 5598040310740287438, guid: c5bddb70cfcd71d4683c5c6819209308,
+        type: 3}
+      propertyPath: _finnishText
+      value: Liity
+      objectReference: {fileID: 0}
     - target: {fileID: 6865229239137791869, guid: c5bddb70cfcd71d4683c5c6819209308,
         type: 3}
       propertyPath: m_Name
@@ -11364,6 +11374,16 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5598040310740287438, guid: c5bddb70cfcd71d4683c5c6819209308,
+        type: 3}
+      propertyPath: _englishText
+      value: Create
+      objectReference: {fileID: 0}
+    - target: {fileID: 5598040310740287438, guid: c5bddb70cfcd71d4683c5c6819209308,
+        type: 3}
+      propertyPath: _finnishText
+      value: Luo
+      objectReference: {fileID: 0}
     - target: {fileID: 6865229239137791869, guid: c5bddb70cfcd71d4683c5c6819209308,
         type: 3}
       propertyPath: m_Name
@@ -11502,7 +11522,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _naviTarget: {fileID: 11400000, guid: 61a4cbe88e24d13439d73a445c64a793, type: 2}
+  _naviTarget: {fileID: 11400000, guid: da267440bc28e8e42a2de37a4a58656b, type: 2}
   _useNonDefaultWindow: 0
   _targetWindow: 0
   _isCurrentPopOutWindow: 0

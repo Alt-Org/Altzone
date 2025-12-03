@@ -9,7 +9,7 @@ public class AgreementController : MonoBehaviour
     [SerializeField] private Button _createButton;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         _createButton.interactable = false;
         _agreementToggle.onValueChanged.AddListener(OnToggleChanged);
@@ -18,5 +18,11 @@ public class AgreementController : MonoBehaviour
     private void OnToggleChanged(bool isOn)
     {
         _createButton.interactable = isOn;
+    }
+
+    public void ResetState()
+    {
+        _agreementToggle.isOn = false;
+        OnToggleChanged(false);
     }
 }

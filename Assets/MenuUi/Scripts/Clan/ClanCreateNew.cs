@@ -53,6 +53,7 @@ public class ClanCreateNew : MonoBehaviour
 
     [Header("Popups")]
     [SerializeField] private GameObject _raycastBlocker;
+    [SerializeField] private AgreementController _agreementController;
 
     private Color _selectedHeartColor;
     private Color _defaultHeartColor;
@@ -120,6 +121,11 @@ public class ClanCreateNew : MonoBehaviour
         {
             Color color = ColorConstants.GetColorConstant(colorButton.color);
             colorButton.button.onClick.AddListener(() => SetHeartColor(color));
+        }
+
+        if (_agreementController != null)
+        {
+            _agreementController.ResetState();
         }
     }
 
@@ -278,6 +284,18 @@ public class ClanCreateNew : MonoBehaviour
             }
             windowManager.ShowWindow(_naviTarget);
         }));
+    }
+
+    public void CancelCreate()
+    {
+        Reset();
+        IWindowManager windowManager = WindowManager.Get();
+        if (windowManager == null)
+        {
+            Debug.LogError("WindowManager not found – ei voida navigoida takaisin.");
+            return;
+        }
+        windowManager.GoBack();
     }
 
     private bool CheckClanInputsValidity(string clanName, bool isOpen, string password, Language language, ClanValues[] values)
