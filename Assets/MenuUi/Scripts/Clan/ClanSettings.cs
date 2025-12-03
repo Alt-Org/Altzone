@@ -180,7 +180,7 @@ public class ClanSettings : MonoBehaviour
 
         if (_valueSelection.SelectedValues.Count == 0)
         {
-            _errorPopup.ActivatePopUp("Valitse vähintään yksi arvo klaanille.");
+            SignalBus.OnChangePopupInfoSignal("Valitse vähintään yksi arvo klaanille.");
             _saveButton.interactable = true;
             return;
         }
@@ -189,7 +189,7 @@ public class ClanSettings : MonoBehaviour
         {
             if (!CanCurrentPlayerEditClan(clanData))
             {
-                _errorPopup.ActivatePopUp("Mites pääsit tähän ikkunaan? Sinulla ei ole oikeuksia muokata klaanin asetuksia.");
+                SignalBus.OnChangePopupInfoSignal("Mites pääsit tähän ikkunaan? Sinulla ei ole oikeuksia muokata klaanin asetuksia.");
                 _saveButton.interactable = true;
                 return;
             }
@@ -226,7 +226,7 @@ public class ClanSettings : MonoBehaviour
                 }
                 else
                 {
-                    _errorPopup.ActivatePopUp("Asetusten tallentaminen ei onnistunut.");
+                    SignalBus.OnChangePopupInfoSignal("Asetusten tallentaminen ei onnistunut.");
                 }
             }));
         });
