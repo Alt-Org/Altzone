@@ -17,9 +17,9 @@ singleton component BattlePlayerManagerDataQSingleton
     array<bool>[BATTLE_PLAYER_SLOT_COUNT] IsAbandoned;
     array<FrameTimer>[BATTLE_PLAYER_SLOT_COUNT] RespawnTimer;
     array<bool>[BATTLE_PLAYER_SLOT_COUNT] AllowCharacterSwapping;
-    array<EntityRef>[BATTLE_PLAYER_SLOT_COUNT] SelectedCharacters;
+    array<BattleEntityID>[BATTLE_PLAYER_SLOT_COUNT] SelectedCharacterEntityIDs;
     array<int>[BATTLE_PLAYER_SLOT_COUNT] SelectedCharacterNumbers;
-    array<EntityRef>[BATTLE_PLAYER_CHARACTER_TOTAL_COUNT] AllCharacters;
+    array<BattleEntityID>[BATTLE_PLAYER_CHARACTER_TOTAL_COUNT] AllCharacterIDs;
     array<BattlePlayerCharacterState>[BATTLE_PLAYER_CHARACTER_TOTAL_COUNT] AllCharactersStates;
     array<bool>[BATTLE_PLAYER_SLOT_COUNT] PlayerGiveUpStates;
 }
