@@ -48,6 +48,13 @@ synced event BattlePlayerViewInit
     FP ModelScale;
 }
 
+synced event BattleShieldViewInit
+{
+    EntityRef Entity;
+    BattlePlayerSlot Slot;
+    FP ModelScale;
+}
+
 synced event BattleSoulWallViewInit
 {
     EntityRef Entity;
