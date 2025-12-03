@@ -193,6 +193,7 @@ namespace Battle.QSimulation.Player
         {
             #region Public Static Methods
 
+            // Exposed in public PlayerHandle
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static BattlePlayerSlot GetSlot(int playerIndex)
             {
@@ -210,6 +211,8 @@ namespace Battle.QSimulation.Player
             /// <summary>
             /// Retrieves team number based on slot.
             /// </summary>
+            ///
+            /// Exposed in public PlayerHandle
             ///
             /// <param name="slot">The slot of the player.</param>
             /// <returns>The BattleTeamNumber of the given player.</returns>
@@ -331,6 +334,8 @@ namespace Battle.QSimulation.Player
             /// Checks if a given character number is valid.
             /// </summary>
             ///
+            /// Exposed in public PlayerHandle
+            ///
             /// <param name="characterNumber">The character number to verify.</param>
             /// <returns>True if the given character number is valid, false if it is not.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -353,6 +358,8 @@ namespace Battle.QSimulation.Player
             /// <summary>
             /// Gets/Sets player's PlayState.
             /// </summary>
+            ///
+            /// Getter exposed in public PlayerHandle
             public BattlePlayerPlayState PlayState
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -364,6 +371,8 @@ namespace Battle.QSimulation.Player
             /// <summary>
             /// Gets/Sets player's PlayerRef.
             /// </summary>
+            ///
+            /// Getter exposed in public PlayerHandle
             public PlayerRef PlayerRef
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -372,6 +381,7 @@ namespace Battle.QSimulation.Player
                 set => _playerManagerData->PlayerRefs[Index] = value;
             }
 
+            // Getter exposed in public PlayerHandle
             public bool IsBot
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -383,6 +393,8 @@ namespace Battle.QSimulation.Player
             /// <summary>
             /// Gets and sets player's IsAbandoned state.
             /// </summary>
+            ///
+            /// Getter exposed in public PlayerHandle
             public bool IsAbandoned
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -391,6 +403,8 @@ namespace Battle.QSimulation.Player
                 set => _playerManagerData->IsAbandoned[Index] = value;
             }
 
+            // Getter exposed in public PlayerHandle
+            // Setter exposed in public PlayerHandle
             public FrameTimer RespawnTimer
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -399,6 +413,8 @@ namespace Battle.QSimulation.Player
                 set => _playerManagerData->RespawnTimer[Index] = value;
             }
 
+            // Getter exposed in public PlayerHandle
+            // Setter exposed in public PlayerHandle
             public bool AllowCharacterSwapping
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -411,6 +427,8 @@ namespace Battle.QSimulation.Player
             /// Gets player's SelectedCharacterEntity.<br/>
             /// The SelectedCharacterEntity is a EntityRef to the character that is currently in play.
             /// </summary>
+            ///
+            /// Exposed in public PlayerHandle
             public BattleEntityID SelectedCharacterEntityID
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->SelectedCharacterEntityIDs[Index]; }
 
@@ -418,9 +436,12 @@ namespace Battle.QSimulation.Player
             /// Gets player's SelectedCharacterNumber.<br/>
             /// The SelectedCharacterNumber is the number of the character that is currently in play.
             /// </summary>
+            ///
+            /// Exposed in public PlayerHandle
             public int SelectedCharacterNumber
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->SelectedCharacterNumbers[Index]; }
 
+            // Getter exposed in public PlayerHandle
             public BattlePlayerCharacterState SelectedCharacterState
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -429,6 +450,8 @@ namespace Battle.QSimulation.Player
                 set => SetCharacterState(SelectedCharacterNumber, value);
             }
 
+            // Getter exposed in public PlayerHandle
+            // Setter exposed in public PlayerHandle
             public bool PlayerGiveUpState
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -490,6 +513,8 @@ namespace Battle.QSimulation.Player
             /// Sets player's SelectedCharacter and updates SelectedCharacterNumber based on <paramref name="characterNumber"/>.<br/>
             /// The SelectedCharacter is a EntityRef to the character that is currently in play.
             /// </summary>
+            ///
+            /// Exposed in public PlayerHandle
             ///
             /// <param name="characterNumber">CharacterNumber of the player's character you want to set.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
