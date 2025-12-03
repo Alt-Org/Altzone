@@ -67,9 +67,12 @@ namespace MenuUi.Scripts.AvatarEditor
         void OnEnable()
         {
             _characterLoader.RefreshPlayerCurrentCharacter();
-            _modeList[0].SetActive(false);
-            _modeList[1].SetActive(false);
-            _modeList[2].SetActive(false);
+            if (_featurePicker != null)
+                _featurePicker.gameObject.SetActive(false);
+            if (_colorPicker != null)
+                _colorPicker.gameObject.SetActive(false);
+            if (_avatarScaler != null)
+                _avatarScaler.gameObject.SetActive(false);
             _currentMode = _defaultMode;
             CharacterLoaded();
         }
