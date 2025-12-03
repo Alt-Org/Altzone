@@ -90,15 +90,16 @@ namespace Battle.View.Game
 
         #region Public - Static Properties
 
-        /// <value>The local player's BattlePlayerSlot.</value>
+        /// <summary>The local player's BattlePlayerSlot.</summary>
         public static BattlePlayerSlot LocalPlayerSlot { get; private set; }
 
-        /// <value>The local player's BattleTeamNumber.</value>
+        /// <summary>The local player's BattleTeamNumber.</summary>
         public static BattleTeamNumber LocalPlayerTeam { get; private set; }
 
-        /// <value>Reference to the projectile's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</value>
+        /// <summary>Reference to the projectile's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</summary>
         public static GameObject ProjectileReference { get; private set; }
 
+        /// <summary>Reference to the UiController.</summary>
         public static BattleUiController UiController => s_instance._uiController;
 
         #endregion Public - Static Properties
@@ -191,6 +192,7 @@ namespace Battle.View.Game
 
         #endregion Public
 
+        /// <summary>Private static reference to an instance of BattleGameViewController.</summary>
         private static BattleGameViewController s_instance;
 
         /// <summary>This classes BattleDebugLogger instance.</summary>
