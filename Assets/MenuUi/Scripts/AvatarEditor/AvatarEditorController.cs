@@ -88,18 +88,32 @@ namespace MenuUi.Scripts.AvatarEditor
         private void GoIntoMode(AvatarEditorMode mode)
         {
             SetSaveableData();
-            _modeList[(int)_currentMode].SetActive(false);
+            _featurePicker.gameObject.SetActive(false);
+            _colorPicker.gameObject.SetActive(false);
+            _avatarScaler.gameObject.SetActive(false);
             _currentMode = mode;
 
             _featureButtonsBase.SetActive(mode != AvatarEditorMode.AvatarScaler);
 
             if (_currentMode == AvatarEditorMode.FeaturePicker)
+            {
                 _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClass());
+                _featurePicker.gameObject.SetActive(true);
+                return;
+            }
 
             if (_currentMode == AvatarEditorMode.ColorPicker)
+            {
                 _colorPicker.SelectFeature(_currentlySelectedCategory);
+                _colorPicker.gameObject.SetActive(true);
+                return;
+            }
 
-            _modeList[(int)_currentMode].SetActive(true);
+            if (_currentMode == AvatarEditorMode.AvatarScaler)
+            {
+                _avatarScaler.gameObject.SetActive(true);
+                return;
+            }
         }
 
         #endregion
