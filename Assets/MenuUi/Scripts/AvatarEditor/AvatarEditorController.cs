@@ -36,18 +36,16 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private AvatarVisualDataScriptableObject _visualDataScriptableObject;
         [SerializeField] private GameObject _avatarVisualsParent;
         [SerializeField] private GameObject _featureButtonsBase;
+        [SerializeField] private FeaturePicker _featurePicker;
+        [SerializeField] private ColorPicker _colorPicker;
+        [SerializeField] private AvatarScaler _avatarScaler;
 
         private FeatureSlot _currentlySelectedCategory;
         private PlayerAvatar _playerAvatar;
-        private FeaturePicker _featurePicker;
-        private ColorPicker _colorPicker;
-        private AvatarScaler _avatarScaler;
 
         void Awake()
         {
-            _featurePicker = _modeList[0].GetComponent<FeaturePicker>();
-            _colorPicker = _modeList[1].GetComponent<ColorPicker>();
-            _avatarScaler = _modeList[2].GetComponent<AvatarScaler>();
+
         }
 
         void Start()
