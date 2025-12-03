@@ -456,7 +456,7 @@ namespace Battle.QSimulation.Projectile
 
             if (teammateHandle.PlayState.IsInPlay())
             {
-                EntityRef teammateEntity = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot).SelectedCharacterEntity;
+                EntityRef teammateEntity = BattleEntityManager.Get(f, BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot).SelectedCharacterEntityID);
 
                 Transform2D* playerTransform   = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
                 Transform2D* teammateTransform = f.Unsafe.GetPointer<Transform2D>(teammateEntity);
