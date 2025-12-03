@@ -26,7 +26,6 @@ namespace MenuUi.Scripts.AvatarEditor
 
         [SerializeField] private CharacterLoader _characterLoader;
         [SerializeField] private List<GameObject> _modeList;
-        [SerializeField] private List<Button> _switchModeButtons;
         [Space]
         [SerializeField] private Button _saveButton;
         [SerializeField] private Button _defaultButton;
@@ -56,9 +55,13 @@ namespace MenuUi.Scripts.AvatarEditor
             _saveButton.onClick.AddListener(() => StartCoroutine(SaveAvatarData()));
             _defaultButton.onClick.AddListener(() => SetDefaultAvatar());
             _revertButton.onClick.AddListener(() => RevertAvatarChanges());
-            _featureModeButton.onClick.AddListener(delegate { GoIntoMode(AvatarEditorMode.FeaturePicker); });
-            _colorModeButton.onClick.AddListener(delegate { GoIntoMode(AvatarEditorMode.ColorPicker); });
-            _scaleModeButton.onClick.AddListener(delegate { GoIntoMode(AvatarEditorMode.AvatarScaler); });
+
+            if (_featureModeButton != null && _featurePicker != null)
+                _featureModeButton.onClick.AddListener(delegate { GoIntoMode(AvatarEditorMode.FeaturePicker); });
+            if (_colorModeButton != null && _colorPicker != null)
+                _colorModeButton.onClick.AddListener(delegate { GoIntoMode(AvatarEditorMode.ColorPicker); });
+            if (_scaleModeButton != null && _avatarScaler != null)
+                _scaleModeButton.onClick.AddListener(delegate { GoIntoMode(AvatarEditorMode.AvatarScaler); });
         }
 
         void OnEnable()
