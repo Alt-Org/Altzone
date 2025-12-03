@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6941196017106160998}
   - component: {fileID: 6318226639611977352}
   - component: {fileID: 3130567833437425977}
+  - component: {fileID: 7150023071694282106}
   m_Layer: 0
   m_Name: BattleSimulationData
   m_TagString: Untagged
@@ -236,25 +237,59 @@ MonoBehaviour:
     - _index: 0
     - _index: 0
     - _index: 0
-    SelectedCharacters:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    AllCharacters:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
+    IsBot:
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    IsAbandoned:
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    RespawnTimer:
+    - Mode: 0
+      Frames: 0
+      Seconds:
+        RawValue: 0
+    - Mode: 0
+      Frames: 0
+      Seconds:
+        RawValue: 0
+    - Mode: 0
+      Frames: 0
+      Seconds:
+        RawValue: 0
+    - Mode: 0
+      Frames: 0
+      Seconds:
+        RawValue: 0
+    AllowCharacterSwapping:
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    SelectedCharacterEntityIDs: 00000000000000000000000000000000
     SelectedCharacterNumbers: 00000000000000000000000000000000
+    AllCharacterIDs: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+    AllCharactersStates:
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    PlayerGiveUpStates:
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
 --- !u!114 &3130567833437425977
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -270,3 +305,21 @@ MonoBehaviour:
   Prototype:
     AlphaDiamonds: 0
     BetaDiamonds: 0
+--- !u!114 &7150023071694282106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5403119264126220646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ab1d496529555a488469eea10e67a01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    RegisteredEntities: []
+    EntityOffscreenPositionOffset:
+      Row: 0
+      Col: 0
+    EntitySpacing: 0
