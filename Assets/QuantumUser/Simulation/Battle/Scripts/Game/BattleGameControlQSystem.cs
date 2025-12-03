@@ -48,6 +48,7 @@ namespace Battle.QSimulation.Game
 
             BattleArenaQSpec battleArenaSpec = BattleQConfig.GetArenaSpec(f);
 
+            BattleEntityManager.Init(f, new BattleGridPosition() { Row = -5, Col = -5 }, 3);
             BattleGridManager.Init(battleArenaSpec);
             BattlePlayerManager.Init(f, battleArenaSpec);
 
