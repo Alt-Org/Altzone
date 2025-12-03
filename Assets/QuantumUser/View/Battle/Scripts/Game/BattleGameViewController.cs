@@ -6,6 +6,8 @@
 /// This script:<br/>
 /// Initializes %Battle %UI elements, and controls their visibility and functionality.
 
+//#define DEBUG_OVERLAY_ENABLED_OVERRIDE
+
 // Unity usings
 using UnityEngine;
 
@@ -97,6 +99,8 @@ namespace Battle.View.Game
         /// <value>Reference to the projectile's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</value>
         public static GameObject ProjectileReference { get; private set; }
 
+        public static BattleUiController UiController => s_instance._uiController;
+
         #endregion Public - Static Properties
 
         #region Public - Static Methods
@@ -187,6 +191,8 @@ namespace Battle.View.Game
 
         #endregion Public
 
+        private static BattleGameViewController s_instance;
+
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private BattleDebugLogger _debugLogger;
 
@@ -210,6 +216,10 @@ namespace Battle.View.Game
         /// </summary>
         private void Awake()
         {
+            s_instance = this;
+
+            BattleDebugOverlay.Init();
+
             _debugLogger = BattleDebugLogger.Create<BattleGameViewController>();
 
             // Showing announcement handler and setting view pre-activate loading text
@@ -242,7 +252,6 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleGiveUpStateChange>(this, QEventOnGiveUpStateChange);
 
             // Subscribing to Debug events
-            QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
             QuantumEvent.Subscribe<EventBattleDebugOnScreenMessage>(this, QEventDebugOnScreenMessage);
         }
 
@@ -320,6 +329,8 @@ namespace Battle.View.Game
                 LocalPlayerSlot = BattlePlayerManager.PlayerHandle.GetSlot(f, playerRef);
                 LocalPlayerTeam = BattlePlayerManager.PlayerHandle.GetTeamNumber(LocalPlayerSlot);
             }
+
+            BattleDebugOverlayLink.SetLocalPlayerSlot(LocalPlayerSlot);
 
             // Initializing BattleGridViewController
             if (_gridViewController != null)
@@ -445,11 +456,15 @@ namespace Battle.View.Game
             if (_uiController.GiveUpButtonHandler != null) _uiController.GiveUpButtonHandler.SetShow(true);
             if (SettingsCarrier.Instance.BattleMovementInput == BattleMovementInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.MoveJoystick);
             if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.RotateJoystick);
-            if (SettingsCarrier.Instance.BattleShowDebugStatsOverlay) _uiController.DebugStatsOverlayHandler.SetShow(true);
+            if (SettingsCarrier.Instance.BattleShowDebugStatsOverlay) _uiController.DebugOverlayHandler.SetShow(true);
             /* These UI elements aren't ready and shouldn't be shown yet
             if (_uiController.GiveUpButtonHandler != null) _uiController.GiveUpButtonHandler.SetShow(true);
             */
             if (_uiController.PlayerInfoHandler != null) _uiController.PlayerInfoHandler.SetShow(true);
+
+#if DEBUG_OVERLAY_ENABLED_OVERRIDE
+            _uiController.DebugOverlayHandler.SetShow(true);
+#endif
 
             // Load settings and set BattleCamera to show game scene with previously loaded settings
             BattleCamera.SetView(
@@ -617,23 +632,6 @@ namespace Battle.View.Game
         }
 
         /// <summary>
-        /// Private handler method for EventBattleDebugUpdateStatsOverlay QuantumEvent.<br/>
-        /// Handles setting stats
-        /// to <see cref="Battle.View.UI.BattleUiController.DebugStatsOverlayHandler"/>
-        /// in <see cref="BattleGameViewController._uiController">_uiController</see>
-        /// using <see cref="Battle.View.UI.BattleUiDebugStatsOverlayHandler.SetStats">SetStats</see> method.
-        /// </summary>
-        ///
-        /// <param name="e">The event data.</param>
-        private void QEventDebugOnUpdateStatsOverlay(EventBattleDebugUpdateStatsOverlay e)
-        {
-            if (!SettingsCarrier.Instance.BattleShowDebugStatsOverlay) return;
-            if (e.Slot != LocalPlayerSlot) return;
-
-            _uiController.DebugStatsOverlayHandler.SetStats(e.Stats);
-        }
-
-        /// <summary>
         /// Private handler method for EventBattleDebugOnScreenMessage QuantumEvent.<br/>
         /// Handles calling <see cref="Battle.View.UI.BattleUiAnnouncementHandler.SetDebugtext">SetDebugtext</see>
         /// in <see cref="BattleGameViewController._uiController">_uiController's</see> BattleUiController::AnnouncementHandler.
@@ -647,7 +645,7 @@ namespace Battle.View.Game
 
         /// @}
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.Update.html">Update@u-exlink</a> method. Handles %UI updates based on the game's state and countdown.
