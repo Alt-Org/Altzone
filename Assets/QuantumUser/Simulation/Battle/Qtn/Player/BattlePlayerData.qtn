@@ -21,8 +21,10 @@ component BattlePlayerDataQComponent
     FP CurrentHp;
     FP CurrentDefence;
 
-    EntityRef HitboxShieldEntity;
-    EntityRef HitboxCharacterEntity;
+    EntityRef CharacterHitboxEntity;
+
+    int ShieldCount;
+    EntityRef AttachedShield;
 
     bool DisableRotation;
     FrameTimer DamageCooldown;
@@ -58,7 +60,6 @@ component BattlePlayerDataTemplateQComponent
     int GridExtendTop;
     int GridExtendBottom;
 
-    BattlePlayerHitboxTemplate HitboxShield;
     BattlePlayerHitboxTemplate HitboxCharacter;
 
     bool DisableRotation;
