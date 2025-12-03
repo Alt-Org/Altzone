@@ -423,6 +423,9 @@ namespace Battle.QSimulation.Player
 
         private void AbilityActivate(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* playerTransform)
         {
+            //{ Ability test
+            /*
+
             if (playerData->CharacterId == 601)
             {
                 for (int i = 0; i < 4; i++)
@@ -440,6 +443,9 @@ namespace Battle.QSimulation.Player
             {
                 BattleSoulWallQSystem.CreateAbilitySoulWallTest(f, playerData->TeamNumber, playerTransform->Position);
             }
+
+            /**/
+            //} Ability test
 
             playerData->AbilityCooldownSec = FrameTimer.FromSeconds(f, FP._3);
         }
