@@ -1,0 +1,9 @@
+component BattlePlayerShieldDataQComponent
+{
+    list<EntityRef> HitboxEntities;
+}
+
+component BattlePlayerShieldDataTemplateQComponent
+{
+    [FreeOnComponentRemoved] list<BattlePlayerHitboxTemplate> HitboxList;
+}
