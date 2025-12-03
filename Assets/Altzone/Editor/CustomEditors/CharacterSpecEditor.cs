@@ -23,7 +23,8 @@ namespace Altzone.Editor.CustomEditors
         SerializedProperty GalleryImage;
         SerializedProperty GalleryHeadImage;
         SerializedProperty CharPhotoSeries;
-        SerializedProperty BattleEntityPrototype;
+        SerializedProperty BattleCharacterEntityPrototype;
+        SerializedProperty BattleShieldEntityPrototypes;
         SerializedProperty BattleUiSprite;
 
         int _prevHp = 0;
@@ -43,7 +44,8 @@ namespace Altzone.Editor.CustomEditors
             GalleryImage = serializedObject.FindProperty(nameof(CharacterSpec.GalleryImage));
             GalleryHeadImage = serializedObject.FindProperty(nameof(CharacterSpec.GalleryHeadImage));
             CharPhotoSeries= serializedObject.FindProperty(nameof(CharacterSpec.CharPhotoSeries));
-            BattleEntityPrototype = serializedObject.FindProperty(nameof(CharacterSpec.BattleEntityPrototype));
+            BattleCharacterEntityPrototype = serializedObject.FindProperty(nameof(CharacterSpec.BattleCharacterEntityPrototype));
+            BattleShieldEntityPrototypes = serializedObject.FindProperty(nameof(CharacterSpec.BattleShieldEntityPrototypes));
             BattleUiSprite = serializedObject.FindProperty(nameof(CharacterSpec.BattleUiSprite));
         }
         public override void OnInspectorGUI()
@@ -158,7 +160,8 @@ namespace Altzone.Editor.CustomEditors
             EditorGUILayout.PropertyField(CharPhotoSeries);
 
             EditorGUILayout.Space();
-            EditorGUILayout.PropertyField(BattleEntityPrototype);
+            EditorGUILayout.PropertyField(BattleCharacterEntityPrototype);
+            EditorGUILayout.PropertyField(BattleShieldEntityPrototypes);
             EditorGUILayout.PropertyField(BattleUiSprite);
 
             EditorGUILayout.LabelField("");

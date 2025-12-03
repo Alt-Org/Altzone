@@ -15,10 +15,13 @@ MonoBehaviour:
   Id: 200
   CharacterId: 200
   IsApproved: 1
-  Name: "TestiH\xE4m\xE4\xE4j\xE4"
+  FinnishName: 
+  EnglishName: 
   ClassType: 200
-  CharacterDescription: 
-  CharacterShortDescription: 
+  CharacterDescriptionFinnish: 
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: 
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 8e7f54e8dde394e4e9a8eea460dd239d, type: 2}
   Hp:
     Level: 2
@@ -28,7 +31,7 @@ MonoBehaviour:
     Coefficient: 0
   CharacterSize:
     Level: 4
-    Coefficient: 6
+    Coefficient: 0
   Attack:
     Level: 8
     Coefficient: 5
@@ -38,7 +41,11 @@ MonoBehaviour:
   GalleryImage: {fileID: 49914648, guid: 0b8c7df743389e04b9b2394020e2274c, type: 3}
   GalleryHeadImage: {fileID: 3323784572005849981, guid: 6b7f8f6787aebdc4da339e49694e1f45,
     type: 3}
-  BattleEntityPrototype:
+  CharPhotoSeries: {fileID: 0}
+  BattleCharacterEntityPrototype:
+    Id:
+      Value: 1499697656464696716
+  BattleShieldEntityPrototype:
     Id:
       Value: 0
   BattleUiSprite: {fileID: 0}

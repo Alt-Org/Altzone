@@ -31,7 +31,7 @@ MonoBehaviour:
     Coefficient: 0
   CharacterSize:
     Level: 12
-    Coefficient: 2
+    Coefficient: 0
   Attack:
     Level: 2
     Coefficient: 7
@@ -42,7 +42,10 @@ MonoBehaviour:
   GalleryHeadImage: {fileID: 3323784572005849981, guid: 6b7f8f6787aebdc4da339e49694e1f45,
     type: 3}
   CharPhotoSeries: {fileID: 0}
-  BattleEntityPrototype:
+  BattleCharacterEntityPrototype:
+    Id:
+      Value: 1499697656464696716
+  BattleShieldEntityPrototype:
     Id:
       Value: 0
   BattleUiSprite: {fileID: 0}
