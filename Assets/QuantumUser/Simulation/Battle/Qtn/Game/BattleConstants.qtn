@@ -1,5 +1,13 @@
 #define BATTLE_PLAYER_SLOT_COUNT 4
+
 #define BATTLE_PLAYER_CHARACTER_COUNT 3
 #define BATTLE_PLAYER_CHARACTER_TOTAL_COUNT 12 // PLAYER_SLOT_COUNT * PLAYER_CHARACTER_COUNT
-// If you change PLAYER_SLOT_COUNT or PLAYER_CHARACTER_COUNT, then you have to recalculate and change PLAYER_CHARACTER_TOTAL_COUNT. We would do it automatically, but Quantum won't let us. :|
+// If you change PLAYER_SLOT_COUNT or PLAYER_CHARACTER_COUNT, then you have to recalculate and change PLAYER_CHARACTER_TOTAL_COUNT.
+
+#define BATTLE_PLAYER_SHIELD_COUNT 4
+#define BATTLE_PLAYER_SHIELD_TOTAL_COUNT 48 // BATTLE_PLAYER_SLOT_COUNT * BATTLE_PLAYER_CHARACTER_COUNT * BATTLE_PLAYER_SHIELD_COUNT
+// If you change PLAYER_SLOT_COUNT, PLAYER_CHARACTER_COUNT or PLAYER_SHIELD_COUNT, then you have to recalculate and change PLAYER_SHIELD_TOTAL_COUNT.
+
 #define BATTLE_EMOTION_STATE_COUNT 5
+
+// We would recalculate constants that depend on other constants automatically, but Quantum won't let us. :|
