@@ -14641,6 +14641,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1818236088458065665}
+    - target: {fileID: 2638525837745221040, guid: dc468a25645564a49a18ec276da29701,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 143.97641
+      objectReference: {fileID: 0}
     - target: {fileID: 3180312868584938442, guid: dc468a25645564a49a18ec276da29701,
         type: 3}
       propertyPath: m_Pivot.x
@@ -14741,10 +14746,55 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6391581331259734287, guid: dc468a25645564a49a18ec276da29701,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6391581331259734287, guid: dc468a25645564a49a18ec276da29701,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6444254054494446514, guid: dc468a25645564a49a18ec276da29701,
         type: 3}
       propertyPath: m_Name
       value: ClanAgeEditPopup
+      objectReference: {fileID: 0}
+    - target: {fileID: 6444254054494446514, guid: dc468a25645564a49a18ec276da29701,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8260255664634262569, guid: dc468a25645564a49a18ec276da29701,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8260255664634262569, guid: dc468a25645564a49a18ec276da29701,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8260255664634262569, guid: dc468a25645564a49a18ec276da29701,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 863.85846
+      objectReference: {fileID: 0}
+    - target: {fileID: 8260255664634262569, guid: dc468a25645564a49a18ec276da29701,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 143.97641
+      objectReference: {fileID: 0}
+    - target: {fileID: 8260255664634262569, guid: dc468a25645564a49a18ec276da29701,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 431.92923
+      objectReference: {fileID: 0}
+    - target: {fileID: 8260255664634262569, guid: dc468a25645564a49a18ec276da29701,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -71.988205
       objectReference: {fileID: 0}
     - target: {fileID: 8487194575979402916, guid: dc468a25645564a49a18ec276da29701,
         type: 3}
@@ -18647,6 +18697,16 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1818236088458065665}
+    - target: {fileID: 3591766822102233055, guid: eb5986d35f8114c49af442a9df68a4d2,
+        type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3591766822102233055, guid: eb5986d35f8114c49af442a9df68a4d2,
+        type: 3}
+      propertyPath: m_PreserveAspect
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4310673399706148762, guid: eb5986d35f8114c49af442a9df68a4d2,
         type: 3}
       propertyPath: m_Name
@@ -18655,7 +18715,7 @@ PrefabInstance:
     - target: {fileID: 4310673399706148762, guid: eb5986d35f8114c49af442a9df68a4d2,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5820841870566273132, guid: eb5986d35f8114c49af442a9df68a4d2,
         type: 3}
@@ -18666,6 +18726,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_characterSpacing
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8795773016246923382, guid: eb5986d35f8114c49af442a9df68a4d2,
+        type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8795773016246923382, guid: eb5986d35f8114c49af442a9df68a4d2,
+        type: 3}
+      propertyPath: m_PixelsPerUnitMultiplier
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

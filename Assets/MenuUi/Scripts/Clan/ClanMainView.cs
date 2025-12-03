@@ -205,7 +205,7 @@ public class ClanMainView : MonoBehaviour
 
         if(_editButton != null)
         {
-            _editButton.SetActive(CanCurrentPlayerEditClan(clan));
+            //_editButton.SetActive(CanCurrentPlayerEditClan(clan));
         }
 
         // Show clan profile data

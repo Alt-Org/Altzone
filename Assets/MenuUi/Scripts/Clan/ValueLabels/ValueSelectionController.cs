@@ -129,4 +129,12 @@ public class ValueSelectionController : MonoBehaviour
             labelHandlerSelected._selectButton.onClick.AddListener(() => RemoveSelectedValue(labelHandlerSelected));
         }
     }
+
+    public void ResetSelection()
+    {
+        SelectedValues.Clear();
+        CreateLabels();
+        UpdateSelectedDisplay();
+        StartCoroutine(ResetScrollPosition());
+    }
 }
