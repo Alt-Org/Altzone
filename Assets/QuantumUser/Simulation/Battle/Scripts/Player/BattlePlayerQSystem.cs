@@ -175,7 +175,7 @@ namespace Battle.QSimulation.Player
 
                 if (playerHandle.PlayState.IsInPlay())
                 {
-                    playerEntity = playerHandle.SelectedCharacterEntity;
+                    playerEntity = BattleEntityManager.Get(f, playerHandle.SelectedCharacterEntityID);
                     playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerEntity);
                     playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
                 }
@@ -417,7 +417,12 @@ namespace Battle.QSimulation.Player
             {
                 s_debugLogger.LogFormat(f, "({0}) Current characters shield destroyed!", playerHandle.Slot);
 
-                f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity)->IsActive = false;
+                BattlePlayerShieldDataQComponent* shieldDataQComponent = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(BattleEntityManager.Get(f, playerData->ActiveShieldEntityID));
+
+                foreach (EntityRef hitboxShieldEntity in f.ResolveList(shieldDataQComponent->HitboxEntities))
+                {
+                    f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(hitboxShieldEntity)->IsActive = false;
+                }
             }
 
             BattlePlayerClassManager.OnUpdate(f, playerHandle, playerData, playerEntity);
