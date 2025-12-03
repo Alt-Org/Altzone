@@ -25,7 +25,6 @@ namespace MenuUi.Scripts.AvatarEditor
         private AvatarEditorMode _currentMode = AvatarEditorMode.FeaturePicker;
 
         [SerializeField] private CharacterLoader _characterLoader;
-        [SerializeField] private List<GameObject> _modeList;
         [Space]
         [SerializeField] private Button _saveButton;
         [SerializeField] private Button _defaultButton;
@@ -44,11 +43,6 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private FeatureSlot _currentlySelectedCategory;
         private PlayerAvatar _playerAvatar;
-
-        void Awake()
-        {
-
-        }
 
         void Start()
         {
