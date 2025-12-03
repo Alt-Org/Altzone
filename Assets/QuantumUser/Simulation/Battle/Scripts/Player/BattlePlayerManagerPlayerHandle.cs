@@ -20,8 +20,6 @@ namespace Battle.QSimulation.Player
     /// </summary>
     public static unsafe partial class BattlePlayerManager
     {
-        #region Public PlayerHandle struct
-
         /// <summary>
         /// Public helper struct for getting player information.
         /// </summary>
@@ -33,7 +31,7 @@ namespace Battle.QSimulation.Player
         /// This only exposes the parts of the PlayerHandleInternal that is meant to be accessible outside of BattlePlayerManager.
         public struct PlayerHandle
         {
-            //{ Public Static Methods
+            #region Public Static Methods
 
             public static BattlePlayerSlot GetSlot(Frame f, PlayerRef playerRef)
             {
@@ -41,7 +39,6 @@ namespace Battle.QSimulation.Player
                 int playerIndex = PlayerHandleInternal.GetPlayerIndex(playerManagerData, playerRef);
                 return PlayerHandleInternal.GetSlot(playerIndex);
             }
-
 
             /// <summary>
             /// Retrieves team number based on slot.
@@ -77,7 +74,7 @@ namespace Battle.QSimulation.Player
                 return array;
             }
 
-            //{ Public static methods - Low level
+            #region Public static methods - Low level
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static PlayerHandle Low_GetPlayerHandleFromInternal(BattlePlayerManagerDataQSingleton* playerManagerData, int playerIndex)
@@ -88,11 +85,11 @@ namespace Battle.QSimulation.Player
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static int Low_GetPlayerIndex(BattlePlayerSlot slot) => PlayerHandleInternal.GetPlayerIndex(slot);
 
-            //} Public static methods - Low level
+            #endregion Public static methods - Low level
 
-            //} Public Static Methods
+            #endregion Public Static Methods
 
-            //{ Public Properties
+            #region Public Properties
 
             public BattlePlayerPlayState PlayState
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayState; }
@@ -145,9 +142,9 @@ namespace Battle.QSimulation.Player
                 set => _internalHandle.PlayerGiveUpState = value;
             }
 
-            //} Public Properties
+            #endregion Public Properties
 
-            //{ Public Methods
+            #region Public Methods
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public BattlePlayerCharacterState GetCharacterState(int characterNumber) => _internalHandle.GetCharacterState(characterNumber);
@@ -172,9 +169,9 @@ namespace Battle.QSimulation.Player
                 _internalHandle.PlayState = BattlePlayerPlayState.OutOfPlayFinal;
             }
 
-            //} Public Methods
+            #endregion Public Methods
 
-            //{ Private
+            #region Private
 
             private PlayerHandleInternal _internalHandle;
 
@@ -184,12 +181,8 @@ namespace Battle.QSimulation.Player
                 _internalHandle = internalHandle;
             }
 
-            //} Private
+            #endregion Private
         }
-
-        #endregion Public PlayerHandle struct
-
-        #region Private PlayerHandleInternal struct
 
         /// <summary>
         /// Internal helper struct for player operations and state management in BattlePlayerManager.<br/>
@@ -198,7 +191,7 @@ namespace Battle.QSimulation.Player
         /// </summary>
         private struct PlayerHandleInternal
         {
-            //{ Public Static Methods
+            #region Public Static Methods
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static BattlePlayerSlot GetSlot(int playerIndex)
@@ -351,9 +344,9 @@ namespace Battle.QSimulation.Player
                 return true;
             }
 
-            //} Public Static Methods
+            #endregion Public Static Methods
 
-            //{ Public Properties
+            #region Public Properties
 
             public int Index { get; set; }
 
@@ -447,7 +440,7 @@ namespace Battle.QSimulation.Player
             public FPVector2 SpawnPosition
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => s_spawnPoints[Index]; }
 
-            //} Public Properties
+            #endregion Public Properties
 
             /// <summary>
             /// Constructor for PlayerHandleInternal.
@@ -462,7 +455,7 @@ namespace Battle.QSimulation.Player
                 _playerManagerData = playerManagerData;
             }
 
-            //{ Public Methods
+            #region Public Methods
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public PlayerHandle ConvertToPublic()
@@ -554,14 +547,16 @@ namespace Battle.QSimulation.Player
                 );
             }
 
-            //} Public Methods
+            #endregion Public Methods
 
-            //{ Private Fields
+            #region Private Fields
+
             /// <summary>Pointer to the BattlePlayerManagerDataQSingleton.</summary>
             private BattlePlayerManagerDataQSingleton* _playerManagerData;
-            //} Private Fields
 
-            //{ Private Methods
+            #endregion Private Fields
+
+            #region Private Methods
 
             /// <summary>Calculates the index where player's characters start in the BattlePlayerManagerDataQSingleton.</summary>
             [MethodImpl(MethodImplOptions.AggressiveInlining)] private int GetCharacterOffset() => Index * Constants.BATTLE_PLAYER_CHARACTER_COUNT;
@@ -569,9 +564,7 @@ namespace Battle.QSimulation.Player
             /// <summary>Calculates the index of player's character in the BattlePlayerManagerDataQSingleton.</summary>
             [MethodImpl(MethodImplOptions.AggressiveInlining)] private int GetCharacterIndex(int characterNumber) => GetCharacterOffset() + characterNumber;
 
-            //} Private Methods
+            #endregion Private Methods
         }
-
-        #endregion Private PlayerHandleInternal struct
     }
 }
