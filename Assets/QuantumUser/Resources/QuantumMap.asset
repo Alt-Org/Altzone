@@ -46,6 +46,7 @@ MonoBehaviour:
     - rid: 9189874137361809408
     - rid: 9189874137361809409
     - rid: 9189874137361809410
+    - rid: 9189874137361809411
   - Components:
     - rid: 3915831314950914048
     - rid: 3915831314950914049
@@ -349,6 +350,15 @@ MonoBehaviour:
         AlphaDiamonds: 0
         BetaDiamonds: 0
     - rid: 9189874137361809409
+      type: {class: BattleEntityManagerDataQSingletonPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
+      data:
+        RegisteredEntities: []
+        EntityOffscreenPositionOffset:
+          Row: 0
+          Col: 0
+        EntitySpacing: 0
+    - rid: 9189874137361809410
       type: {class: BattleGameSessionQSingletonPrototype, ns: Quantum.Prototypes,
         asm: Quantum.Simulation}
       data:
@@ -362,7 +372,7 @@ MonoBehaviour:
           RawValue: 262144
         GameTimeSec:
           RawValue: 0
-    - rid: 9189874137361809410
+    - rid: 9189874137361809411
       type: {class: BattlePlayerManagerDataQSingletonPrototype, ns: Quantum.Prototypes,
         asm: Quantum.Simulation}
       data:
@@ -409,25 +419,9 @@ MonoBehaviour:
         - Value: 0
         - Value: 0
         - Value: 0
-        SelectedCharacters:
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
+        SelectedCharacterEntityIDs: 00000000000000000000000000000000
         SelectedCharacterNumbers: 00000000000000000000000000000000
-        AllCharacters:
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
+        AllCharacterIDs: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
         AllCharactersStates:
         - Value: 0
         - Value: 0
