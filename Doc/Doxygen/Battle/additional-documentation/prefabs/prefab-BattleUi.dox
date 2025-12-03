@@ -18,7 +18,7 @@
 ///         - @cref{Battle.View.UI,BattleUiGiveUpButtonHandler}
 ///         - @cref{Battle.View.UI,BattleUiPlayerInfoHandler}
 ///         - @cref{Battle.View.UI,BattleUiJoystickHandler}
-///         - @cref{Battle.View.UI,BattleUiDebugStatsOverlayHandler}
+///         - @cref{Battle.View.UI,BattleUiDebugOverlayHandler}
 ///         - Canvas
 ///         - CanvasScaler
 ///         - GraphicRaycaster
@@ -74,25 +74,6 @@
 ///                 - *Shared components:*
 ///                     - RectTransform
 ///                     - CanvasRenderer
-///         - **DebugStatsOverlay**  
-///           Debug overlay for displaying currently selected character's stats.
-///             - *Components:*
-///                 - RectTransform
-///             - *Children:*
-///                 - **ImpactForceHolder**
-///                 - **HpHolder**
-///                 - **SpeedHolder**
-///                 - **CharSizeHolder**
-///                 - **DefenceHolder**
-///                 - *Shared components:*
-///                     - RectTransform
-///                 - *Shared children:*
-///                     - **StatName**
-///                     - **StatValue**
-///                     - *Shared components:*
-///                         - RectTransform
-///                         - CanvasRenderer
-///                         - TextMeshPro - Text (UI)
 ///         - **BattleUiDiamonds** (@ref BattleUiDiamonds.prefab)  
 ///           Display's diamonds collected during the match.
 ///         - **BattleUiGiveUpButton** (@ref BattleUiGiveUpButton.prefab)  
@@ -101,3 +82,11 @@
 ///           Movement on-screen joystick.
 ///         - **BattleUiJoystick2** (@ref BattleUiJoystick.prefab)  
 ///           Rotation on-screen joystick.
+///         - **DebugOverlay**  
+///           Display's debug overlay.
+///             - *Components:*
+///                 - RectTransform
+///             - *Children:*
+///                 - **Entry**
+///                 - *Components:*
+///                     - RectTransform
