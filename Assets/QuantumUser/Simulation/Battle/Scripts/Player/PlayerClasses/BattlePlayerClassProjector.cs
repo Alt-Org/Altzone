@@ -104,7 +104,7 @@ namespace Battle.QSimulation.Player
             BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot);
             if (teammateHandle.PlayState.IsOutOfPlay()) return;
 
-            EntityRef teammateEntity = teammateHandle.SelectedCharacterEntity;
+            EntityRef teammateEntity = BattleEntityManager.Get(f, teammateHandle.SelectedCharacterEntityID);
 
             if (teammateHandle.PlayState.IsInPlay())
             {
