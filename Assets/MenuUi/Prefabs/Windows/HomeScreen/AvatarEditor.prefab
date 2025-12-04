@@ -414,7 +414,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 213.5
+  m_fontSize: 277.4
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1859,18 +1859,20 @@ MonoBehaviour:
   - {fileID: 6616430018071325128}
   - {fileID: 2941429319359562109}
   - {fileID: 2338193101018425800}
-  _switchModeButtons:
-  - {fileID: 2449637548112983563}
-  - {fileID: 7062417031246654650}
-  - {fileID: 7805913219505966146}
   _saveButton: {fileID: 514047907050185031}
   _defaultButton: {fileID: 6265736950872179190}
   _revertButton: {fileID: 595827395000033889}
+  _featureModeButton: {fileID: 2449637548112983563}
+  _colorModeButton: {fileID: 7062417031246654650}
+  _scaleModeButton: {fileID: 7805913219505966146}
   _defaultMode: 0
   _visualDataScriptableObject: {fileID: 11400000, guid: 5924f2967fcfeb0469785ea0b5f3d2b2,
     type: 2}
   _avatarVisualsParent: {fileID: 631322718943489897}
   _featureButtonsBase: {fileID: 4867203219669639312}
+  _featurePicker: {fileID: 5559116631486768876}
+  _colorPicker: {fileID: 8658832208992312227}
+  _avatarScaler: {fileID: 4024662555546223721}
 --- !u!114 &161865825665755407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3925,7 +3927,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 67.7
+  m_fontSize: 72
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4925,7 +4927,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42.85
+  m_fontSize: 55.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
