@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2243875951298469219}
   - component: {fileID: 7293491093636343906}
   - component: {fileID: 1017557427478231576}
+  - component: {fileID: 7840421240709399793}
   m_Layer: 5
   m_Name: KojuSlot
   m_TagString: Untagged
@@ -163,6 +164,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   kojuEmptyVisual: {fileID: 6323629144753460450}
+--- !u!114 &7840421240709399793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1992715369758776530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cabc7ab297e9ab44a96e83ec36e516df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blockType: 0
+  _swipe: {fileID: 0}
 --- !u!1001 &5504954717491988528
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -300,7 +315,11 @@ PrefabInstance:
     - {fileID: 1391070535376580973, guid: 97cd4458e32112c48b2bfb241be4cef0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1992715369758776530, guid: 97cd4458e32112c48b2bfb241be4cef0,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 522298154908414424}
   m_SourcePrefab: {fileID: 100100000, guid: 97cd4458e32112c48b2bfb241be4cef0, type: 3}
 --- !u!224 &2056215147116314952 stripped
 RectTransform:
@@ -314,3 +333,17 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 5504954717491988528}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &522298154908414424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6323629144753460450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cabc7ab297e9ab44a96e83ec36e516df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blockType: 0
+  _swipe: {fileID: 0}

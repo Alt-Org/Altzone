@@ -543,6 +543,7 @@ GameObject:
   - component: {fileID: 7004798611793443685}
   - component: {fileID: 340476170072257372}
   - component: {fileID: 4737202916440548119}
+  - component: {fileID: 4817638181576216690}
   m_Layer: 5
   m_Name: KojuCard
   m_TagString: Untagged
@@ -710,6 +711,20 @@ MonoBehaviour:
   rarityColorImage: {fileID: 134117561995355558}
   rarityColourReference: {fileID: 11400000, guid: 994101a8dd6935c4c8ab9f6709e0b18e,
     type: 2}
+--- !u!114 &4817638181576216690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1992715369758776530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cabc7ab297e9ab44a96e83ec36e516df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blockType: 0
+  _swipe: {fileID: 0}
 --- !u!1 &2399652319628791859
 GameObject:
   m_ObjectHideFlags: 0
