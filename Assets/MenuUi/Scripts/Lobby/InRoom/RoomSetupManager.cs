@@ -348,12 +348,12 @@ namespace MenuUi.Scripts.Lobby.InRoom
             SetButtonActive(_buttonPlayerP4, _interactablePlayerP4 && !botActive4);
 
             // Setting bot toggle buttons.
-            SetButtonActive(_toggleBotPlayerP1, _interactablePlayerP1, localPlayer.IsMasterClient);
-            SetButtonActive(_toggleBotPlayerP2, _interactablePlayerP2, localPlayer.IsMasterClient);
-            SetButtonActive(_toggleBotPlayerP3, _interactablePlayerP3, localPlayer.IsMasterClient);
-            SetButtonActive(_toggleBotPlayerP4, _interactablePlayerP4, localPlayer.IsMasterClient);
+            SetButtonActive(_toggleBotPlayerP1, /*_interactablePlayerP1*/false, /*localPlayer.IsMasterClient*/ false);
+            SetButtonActive(_toggleBotPlayerP2, /*_interactablePlayerP2 */ false, /*localPlayer.IsMasterClient*/ false);
+            SetButtonActive(_toggleBotPlayerP3, /*_interactablePlayerP3 */ false, /*localPlayer.IsMasterClient*/ false);
+            SetButtonActive(_toggleBotPlayerP4, /*_interactablePlayerP4 */ false, /*localPlayer.IsMasterClient*/ false);
 
-            SetButtonActive(_toggleBotFill, true, localPlayer.IsMasterClient);
+            SetButtonActive(_toggleBotFill, /*true*/false, /*localPlayer.IsMasterClient*/ false);
 
             // Setting player name texts
             if (_nameP1 != null) _nameP1.SetText(_captionPlayerP1);

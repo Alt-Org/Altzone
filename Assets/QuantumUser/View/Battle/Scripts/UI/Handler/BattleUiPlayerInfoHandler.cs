@@ -117,8 +117,9 @@ namespace Battle.View.UI
         /// </summary>
         ///
         /// <param name="playerType">The PlayerType which info to set.</param>
-        /// <param name="playerName">The player's name.</param>
-        /// <param name="characterIds">The player's selected characters CharacterIds as a int array.</param>
+        /// <param name="playerName">Name of the player.</param>
+        /// <param name="characterIds">An array of the character IDs of the players selected characters.</param>
+        /// <param name="characterClasses">An array of the character classes of the players selected characters.</param>
         /// <param name="characterDefenceNumbers">Array of defence values for each character.</param>
         /// <param name="data">The BattleUiMovableElementData for this UI element.</param>
         public void SetInfo(PlayerType playerType, string playerName, int[] characterIds, int[] characterClasses, float[] characterDefenceNumbers, BattleUiMovableElementData data)

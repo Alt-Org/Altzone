@@ -1,4 +1,4 @@
-# WIP Player Character Class Confluent {#page-wip-concepts-playerclass-confluent}
+# Player Character Class 600 - Confluent {#page-concepts-player-class-600-confluent}
 
 - **Simulation**
     - Has simulation logic  

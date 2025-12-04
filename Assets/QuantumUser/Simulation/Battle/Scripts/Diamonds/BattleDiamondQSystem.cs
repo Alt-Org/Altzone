@@ -133,6 +133,7 @@ namespace Battle.QSimulation.Diamond
         /// <param name="diamond">Pointer to the diamond component.</param>
         /// <param name="diamondEntity">EntityRef of the diamond.</param>
         /// <param name="arenaBorder">Pointer to the arena border component.</param>
+        /// <param name="arenaBorderEntity">EntityRef of the arena border.</param>
         public void BattleOnDiamondHitArenaBorder(Frame f, BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity)
         {
             Transform2D* diamondTransform = f.Unsafe.GetPointer<Transform2D>(diamondEntity);
@@ -156,6 +157,7 @@ namespace Battle.QSimulation.Diamond
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
+        /// <param name="wallPosition">Position of the soulwall where the diamonds spawn at.</param>
         /// <param name="wallNormal">Normal of the SoulWall.</param>
         /// <param name="diamondSpec">The DiamondSpec.</param>
         private static void CreateDiamonds(Frame f, FPVector2 wallPosition, FPVector2 wallNormal, BattleDiamondQSpec diamondSpec)
