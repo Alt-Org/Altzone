@@ -169,8 +169,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2289421494833026756}
   m_HandleRect: {fileID: 6560118901320178165}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 1
+  m_Value: 0.9999998
+  m_Size: 0.6019495
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -801,6 +801,7 @@ GameObject:
   - component: {fileID: 5761323270631803478}
   - component: {fileID: 3429575369123947051}
   - component: {fileID: 5346082318373919585}
+  - component: {fileID: 1434320897276160900}
   m_Layer: 0
   m_Name: VerticalScrollView-Grid
   m_TagString: Untagged
@@ -898,6 +899,25 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1434320897276160900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 613682083854256444}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6613b2bc63ff3a0459ee4cc5d9d450a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _avatarPartsReference: {fileID: 11400000, guid: 671ccbc5ba5e0df42acde4b71995e434,
+    type: 2}
+  _content: {fileID: 8120368686879677751}
+  _avatarPartCategoryGridCellPrefab: {fileID: 90728682598853689, guid: 69cf2c325ff7d4e4eb01540c8a82384c,
+    type: 3}
+  _avatarDefaultReference: {fileID: 11400000, guid: f0ae9649bfeccae44b56bd5283132b71,
+    type: 2}
 --- !u!1 &631322718943489897
 GameObject:
   m_ObjectHideFlags: 0
