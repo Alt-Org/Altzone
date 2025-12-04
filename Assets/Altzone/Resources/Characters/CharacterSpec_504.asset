@@ -14,34 +14,48 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 504
   CharacterId: 504
-  IsApproved: 0
+  IsApproved: 1
   FinnishName: "P\xF6ssyttelij\xE4"
   EnglishName: Stoning
   ClassType: 500
-  CharacterDescriptionFinnish: 
+  CharacterDescriptionFinnish: "Kun P\xF6ssyttely asettuu ihmiseen asumaan, se saa
+    t\xE4m\xE4n pehment\xE4m\xE4\xE4n todellisuutta, kun se tuntuu liian ter\xE4v\xE4lt\xE4.
+    Ihminen alkaa etsi\xE4 rauhaa sumusta, jossa mik\xE4\xE4n ei satu, mutta mik\xE4\xE4n
+    ei my\xF6sk\xE4\xE4n tunnu. Savu kietoutuu h\xE4nen ja maailman v\xE4liin kuin
+    lempe\xE4 unohdus, joka lupaa helpotusta mutta vie suunnan. P\xF6ssyttely ei
+    riist\xE4 kipua pois \u2013 se vain siirt\xE4\xE4 sen kauemmas, kunnes kaikki
+    alkaa n\xE4ytt\xE4\xE4 samalta harmaalta v\xE4litilalta, jossa on helpompi leijua
+    kuin el\xE4\xE4.\r\n\nVuorovaikutuskent\xE4ll\xE4 (Ego Clash) P\xF6ssyttelyn
+    suojakilpen\xE4 toimii tihe\xE4 savuverho, joka kietoutuu defenssisoturin ymp\xE4rille
+    tunnetila-ammuksen l\xE4hestyess\xE4. Savu est\xE4\xE4 osumat, mutta my\xF6s
+    sumentaa kaiken \u2013 kentt\xE4, liittolaiset ja viholliset katoavat hetkeksi
+    n\xE4kyvist\xE4. P\xF6ssyttely ei paranna haavoja, vaan lykk\xE4\xE4 niiden tunnistamista:
+    mit\xE4 pidemp\xE4\xE4n savu pysyy ilmassa, sit\xE4 vaikeampaa on l\xF6yt\xE4\xE4
+    takaisin todellisuuteen.\r"
   CharacterDescriptionEnglish: 
-  CharacterShortDescriptionFinnish: 
+  CharacterShortDescriptionFinnish: "Marihuanasavuun k\xE4tkeytyv\xE4, todellisuuden
+    pakenija. "
   CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 261fb5b112dc75a4f9eb81028edc7957, type: 2}
   Hp:
-    Level: 2
+    Level: 1
     Coefficient: 3
   Speed:
     Level: 3
     Coefficient: 0
   CharacterSize:
-    Level: 6
-    Coefficient: 1
+    Level: 2
+    Coefficient: 0
   Attack:
-    Level: 8
+    Level: 3
     Coefficient: 5
   Defence:
-    Level: 9
+    Level: 3
     Coefficient: 2
   GalleryImage: {fileID: 21300000, guid: d81e0766cb30dfd448de58ee7b563d78, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: bda08c8e8f859e24e881950d6c71ec96, type: 3}
   CharPhotoSeries: {fileID: 21300000, guid: 7d70091c5c5ff034ab1798ad513c9cb9, type: 3}
   BattleEntityPrototype:
     Id:
-      Value: 0
+      Value: 1483803971126383635
   BattleUiSprite: {fileID: 0}

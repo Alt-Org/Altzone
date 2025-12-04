@@ -3,13 +3,17 @@
 /// Contains @cref{Battle.QSimulation.Projectile,BattleProjectileQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which controls projectile's movements and reactions to collisions.
 /// </summary>
 
+// System usings
 using System.Runtime.CompilerServices;
 
-using UnityEngine;
+// Unity usings
 using UnityEngine.Scripting;
+
+// Quantum usings
 using Quantum;
 using Photon.Deterministic;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Player;
 
@@ -19,7 +23,7 @@ namespace Battle.QSimulation.Projectile
     /// <span class="brief-h">%Projectile <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
     /// Handles projectile logic, including projectile's movements and reactions to collisionsignals.
     /// </summary>
-    /// 
+    ///
     /// This system:<br/>
     /// Launches projectile when battle starts and updates its movements.<br/>
     /// Handles projectile's collisionflags to ensure projectile doesn't hit more than one SoulWall segment at a time.<br/>
@@ -145,10 +149,12 @@ namespace Battle.QSimulation.Projectile
 
                 case SpeedChange.Increment:
                     projectile->Speed = FPMath.Min(projectile->Speed + projectile->SpeedIncrement, projectile->SpeedMax);
+                    f.Events.BattleProjectileChangeSpeed(projectile->Speed);
                     break;
 
                 case SpeedChange.Reset:
                     projectile->Speed = projectile->SpeedBase;
+                    f.Events.BattleProjectileChangeSpeed(projectile->Speed);
                     break;
             }
         }
@@ -183,6 +189,14 @@ namespace Battle.QSimulation.Projectile
 
         #region Public - Gameflow Methods
 
+        /// <summary>
+        /// Initializes this classes BattleDebugLogger instance.<br/>
+        /// This method is exclusively for debug logging purposes.
+        /// </summary>
+        public static void Init()
+        {
+            s_debugLogger = BattleDebugLogger.Create<BattleProjectileQSystem>();
+        }
 
         /// <summary>
         /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a> gets called every frame.</span><br/>
@@ -245,11 +259,11 @@ namespace Battle.QSimulation.Projectile
             EntityRef                   otherEntity      = projectileCollisionData->OtherEntity;
 
             // set default values
-            BattlePlayerCollisionType collisionType        = BattlePlayerCollisionType.Reflect;
-            bool                      handleCollision      = false;
-            FPVector2                 normal               = FPVector2.Zero;
-            FP                        collisionMinOffset   = FP._0;
-            SpeedChange speedChange = SpeedChange.None;
+            BattlePlayerCollisionType collisionType      = BattlePlayerCollisionType.Reflect;
+            bool                      handleCollision    = false;
+            FPVector2                 normal             = FPVector2.Zero;
+            FP                        collisionMinOffset = FP._0;
+            SpeedChange               speedChange        = SpeedChange.None;
 
             // handle the specific collision type
             switch (collisionTriggerType)
@@ -272,21 +286,36 @@ namespace Battle.QSimulation.Projectile
 
                     normal             = soulWall->Normal;
                     collisionMinOffset = soulWall->CollisionMinOffset;
-                    speedChange = SpeedChange.Reset;
-                    handleCollision = true;
+                    speedChange        = SpeedChange.Reset;
+                    handleCollision    = true;
                     break;
 
                 case BattleCollisionTriggerType.Shield:
                     BattleCollisionQSystem.PlayerShieldCollisionData* dataPtr = (BattleCollisionQSystem.PlayerShieldCollisionData*)data;
-                    BattlePlayerHitboxQComponent* playerHitbox = dataPtr->PlayerShieldHitbox;
+                    BattlePlayerHitboxQComponent* playerShieldHitbox = dataPtr->PlayerShieldHitbox;
 
-                    if (ProjectileHitPlayerShield(f, projectile, dataPtr, out normal))
-                    {
-                        collisionType      = playerHitbox->CollisionType;
-                        collisionMinOffset = playerHitbox->CollisionMinOffset;
-                        speedChange        = SpeedChange.Increment;
-                        handleCollision    = true;
-                    }
+                    if (!ProjectileHitPlayerShield(f, projectile, dataPtr, out normal)) break;
+                    
+                    collisionType      = playerShieldHitbox->CollisionType;
+                    collisionMinOffset = playerShieldHitbox->CollisionMinOffset;
+                    speedChange        = SpeedChange.Increment;
+                    handleCollision    = true;
+                    
+                    break;
+
+                case BattleCollisionTriggerType.Player:
+                    BattlePlayerHitboxQComponent* playerCharacterHitbox = ((BattleCollisionQSystem.PlayerCharacterCollisionData*)data)->PlayerCharacterHitbox;
+
+                    if (projectile->EmotionCurrent == BattleEmotionState.Love) break;
+
+                    if (FPVector2.Dot(playerCharacterHitbox->Normal, projectile->Direction.Normalized) >= 0) break;
+
+                    normal             = playerCharacterHitbox->Normal;
+                    collisionType      = playerCharacterHitbox->CollisionType;
+                    collisionMinOffset = playerCharacterHitbox->CollisionMinOffset;
+                    speedChange        = SpeedChange.Increment;
+                    handleCollision    = true;
+                    
                     break;
 
                 default:
@@ -295,9 +324,9 @@ namespace Battle.QSimulation.Projectile
 
             if (handleCollision)
             {
-                FPVector2 direction = FPVector2.Zero;
-                if      (collisionType == BattlePlayerCollisionType.Reflect)  direction = FPVector2.Reflect(projectile->Direction, normal).Normalized;
-                else if (collisionType == BattlePlayerCollisionType.Override) direction = normal;
+                FPVector2 direction;
+                if (collisionType == BattlePlayerCollisionType.Reflect) direction = FPVector2.Reflect(projectile->Direction, normal).Normalized;
+                else                                                    direction = normal;
 
                 HandleIntersection(f, projectile, projectileEntity, otherEntity, normal, collisionMinOffset);
                 UpdateVelocity(f, projectile, direction, speedChange);
@@ -316,22 +345,23 @@ namespace Battle.QSimulation.Projectile
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="winningTeam">The BattleTeamNumber of the team that won.</param>
-        /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="projectileEntity">EntityRef of the projectile.</param>
-        public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam, BattleProjectileQComponent* projectile, EntityRef projectileEntity)
+        public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam)
         {
-            SetHeld(f, projectile, true);
+            EntityRef projectileEntity = GetProjectileEntity(f);
 
-            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
+            BattleProjectileQComponent* projectile          = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntity);
+            Transform2D*                projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
+
+            SetHeld(f, projectile, true);
 
             // move the projectile out of bounds after a goal is scored
             switch (winningTeam)
             {
                 case BattleTeamNumber.TeamAlpha:
-                    projectileTransform->Position += new FPVector2(0, 10);
+                    projectileTransform->Position = new FPVector2(0, 25);
                     break;
                 case BattleTeamNumber.TeamBeta:
-                    projectileTransform->Position += new FPVector2(0, -10);
+                    projectileTransform->Position = new FPVector2(0, -25);
                     break;
             }
         }
@@ -340,7 +370,24 @@ namespace Battle.QSimulation.Projectile
 
         #endregion Public
 
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private static BattleDebugLogger s_debugLogger;
+
         #region Private Static Methods
+
+        /// <summary>
+        /// Private helper method to get projectile entity
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        ///
+        /// <returns>Returns projectile entity.</returns>
+        private static EntityRef GetProjectileEntity(Frame f)
+        {
+            ComponentFilter<BattleProjectileQComponent> filter = f.Filter<BattleProjectileQComponent>();
+            filter.Next(out EntityRef entity, out _);
+            return entity;
+        }
 
         /// <summary>
         /// Launches the projectile from an unlaunched state, setting its initial values.
@@ -380,7 +427,9 @@ namespace Battle.QSimulation.Projectile
 
             SetHeld(f, projectile, false);
 
-            Debug.Log("Projectile Launched");
+            f.Events.BattleProjectileChangeSpeed(projectile->Speed);
+
+            s_debugLogger.Log(f, "Projectile Launched");
         }
 
         /// <summary>
@@ -422,7 +471,7 @@ namespace Battle.QSimulation.Projectile
             // if player is in the same grid cell as teammate, change the projectile to love emotion
             if (isOnTopOfTeammate)
             {
-                Debug.Log("[ProjectileSystem] changing projectile emotion to Love");
+                s_debugLogger.Log(f, "changing projectile emotion to Love");
                 SetEmotion(f, projectile, BattleEmotionState.Love);
                 shieldCollisionData->IsLoveProjectileCollision = true;
 

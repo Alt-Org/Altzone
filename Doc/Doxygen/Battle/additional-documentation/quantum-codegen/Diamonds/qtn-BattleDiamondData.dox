@@ -18,12 +18,23 @@
 
 // ---------------------------------------------------------------------------------------------------- //
 
-/// @var BattleTeamNumber Quantum.BattleDiamondDataQComponent::OwnerTeam
+/// @var FrameTimer Quantum.BattleDiamondDataQComponent::LifetimeTimer
+/// <summary>A timer used to despawn a diamond after it ends.</summary>
+///
+/// @var bool Quantum.BattleDiamondDataQComponent::IsTraveling
+/// <summary>True if diamond is currently moving across the arena, false if not.</summary>
+///
+/// @var FP Quantum.BattleDiamondDataQComponent::TravelSpeed
+/// <summary>The speed at which a diamond is currently moving.</summary>
+///
+/// @var FPVector2 Quantum.BattleDiamondDataQComponent::TravelDirection
+/// <summary>The direction in which a diamond is currently moving.</summary>
+///
+/// @var FPVector2 Quantum.BattleDiamondDataQComponent::StartPosition
 /// <summary>
-/// Will be used to identify which team diamond belongs to and prevent wrong team from picking it up.<br/>
-/// Currently unused (but defined when diamonds are created). This variable will be needed, when diamonds are changed to spawn on opponent's destroyed
-/// SoulWall's position and then floated to own team's side of the arena.
+/// The position which the diamond began traveling from.  
+/// Used to calculate when it reaches its target distance.
 /// </summary>
 ///
-/// @var FP Quantum.BattleDiamondDataQComponent::TimeUntilDisappearance
-/// <summary>Keeps count of diamond's lifetime. Diamond entity is destroyed when counter reaches 0.</summary>
+/// @var FP Quantum.BattleDiamondDataQComponent::TargetDistance
+/// <summary>The vertical distance which a diamond will travel before stopping.</summary>

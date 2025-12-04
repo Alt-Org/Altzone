@@ -6,11 +6,9 @@
 /// This script:<br/>
 /// Handles showing the announcement/countdown text.
 
+// Unity usings
 using UnityEngine;
-
 using TMPro;
-
-using Altzone.Scripts.BattleUiShared;
 
 namespace Battle.View.UI
 {

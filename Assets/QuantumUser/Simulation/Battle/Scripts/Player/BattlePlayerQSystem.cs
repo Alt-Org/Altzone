@@ -3,12 +3,18 @@
 /// Contains @cref{Battle.QSimulation.Player,BattlePlayerQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which handles the quantum side of player logic.
 /// </summary>
 
+// Unity usings
 using UnityEngine.Scripting;
+
+// Quantum usings
 using Quantum;
+using Input = Quantum.Input;
 using Photon.Deterministic;
 
-using Battle.QSimulation.Projectile;
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
+using Battle.QSimulation.Projectile;
+using Battle.QSimulation.SoulWall;
 
 namespace Battle.QSimulation.Player
 {
@@ -22,10 +28,19 @@ namespace Battle.QSimulation.Player
     public unsafe class BattlePlayerQSystem : SystemMainThread
     {
         /// <summary>
+        /// Initializes this classes BattleDebugLogger instance.<br/>
+        /// This method is exclusively for debug logging purposes.
+        /// </summary>
+        public static void Init()
+        {
+            s_debugLogger = BattleDebugLogger.Create<BattlePlayerQSystem>();
+        }
+
+        /// <summary>
         /// Calls BattlePlayerManager::SpawnPlayer for players that are in the game.
         /// </summary>
         ///
-        /// <param name="f">Current simulation frame</param>
+        /// <param name="f">Current simulation frame.</param>
         public static void SpawnPlayers(Frame f)
         {
             foreach (BattlePlayerManager.PlayerHandle playerHandle in BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f))
@@ -34,6 +49,20 @@ namespace Battle.QSimulation.Player
 
                 BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, 0);
             }
+        }
+
+        /// <summary>
+        /// Handles logic when a player abandons the game.
+        /// </summary>
+        ///
+        /// Updates give up state and calls <see cref="BattlePlayerQSystem.HandleGiveUpLogic">HandleGiveUpLogic</see> method which handles the rest of the logic.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Handle of the player who abandoned.</param>
+        public static void HandlePlayerAbandoned(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
+        {
+            playerHandle.PlayerGiveUpState = true;
+            HandleGiveUpLogic(f, playerHandle);
         }
 
         /// <summary>
@@ -46,6 +75,7 @@ namespace Battle.QSimulation.Player
         public static void OnProjectileHitPlayerCharacter(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerCharacterCollisionData* playerCollisionData)
         {
             // Temp disabled
+            BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
             return;
 
             if (projectileCollisionData->Projectile->IsHeld) return;
@@ -115,11 +145,18 @@ namespace Battle.QSimulation.Player
         /// Relays the appropriate input data to each player in the game
         /// </summary>
         ///
+        /// Update method has been split into subprocesses.<br/>
+        /// see @cref{BattlePlayerQSystem,GetInput}<br/>
+        /// see @cref{BattlePlayerQSystem,HandleGiveUpInput}<br/>
+        /// see @cref{BattlePlayerQSystem,HandleCharacterSwapping}<br/>
+        /// see @cref{BattlePlayerQSystem,HandleOutOfPlay}<br/>
+        /// see @cref{BattlePlayerQSystem,HandleInPlay}
+        ///
         /// <param name="f">Current simulation frame</param>
         public override void Update(Frame f)
         {
             Input* input;
-            Input botInput;
+            Input stackInputStorage;
 
             EntityRef playerEntity = EntityRef.None;
             BattlePlayerDataQComponent* playerData = null;
@@ -140,50 +177,271 @@ namespace Battle.QSimulation.Player
                     playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
                 }
 
-                if (!playerHandle.IsBot)
+                input = GetInput(f, playerHandle, playerData, &stackInputStorage);
+
+                if (HandleGiveUpInput(f, input, playerHandle)) continue;
+                if (HandleCharacterSwapping(f, input, playerHandle)) continue;
+                if (HandleOutOfPlay(f, playerHandle)) continue;
+
+                HandleInPlay(f, input, playerHandle, playerData, playerEntity, playerTransform);
+            }
+        }
+
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private static BattleDebugLogger s_debugLogger;
+
+        /// <summary>
+        /// Private helper method for retrieving the correct input (bot, abandoned, active player).<br/>
+        /// Subprocess of the <see cref="BattlePlayerQSystem.Update">Update</see> method.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Handle of the player.</param>
+        /// <param name="playerData">Player data component.</param>
+        /// <param name="stackInputStorage">Temporary input storage for bots and abandoned players.</param>
+        ///
+        /// <returns>Pointer to the player's input.</returns>
+        private Input* GetInput(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, Input* stackInputStorage)
+        {
+            Input* input = stackInputStorage;
+
+            bool isValid = false;
+
+            if (playerHandle.IsBot)
+            {
+                BattlePlayerBotController.GetBotInput(f, playerHandle.PlayState.IsInPlay(), playerData, input);
+                isValid = input->IsValid;
+            }
+            else if (!playerHandle.IsAbandoned)
+            {
+                input = f.GetPlayerInput(playerHandle.PlayerRef);
+                isValid = input->IsValid;
+            }
+
+            if (!isValid)
+            {
+                input = stackInputStorage;
+                *stackInputStorage = new Input
                 {
-                    input = f.GetPlayerInput(playerHandle.PlayerRef);
+                    MovementInput                 = BattleMovementInputType.None,
+                    MovementDirectionIsNormalized = false,
+                    MovementPositionTarget        = new BattleGridPosition { Col = 0, Row = 0 },
+                    MovementPositionMove          = FPVector2.Zero,
+                    MovementDirection             = FPVector2.Zero,
+                    RotationInput                 = false,
+                    RotationValue                 = FP._0,
+                    PlayerCharacterNumber         = -1,
+                    GiveUpInput                   = false,
+                    AbilityActivate               = false
+                };
+            }
+
+            return input;
+        }
+
+        /// <summary>
+        /// Private helper method for handling when a player gives up or abandons the match.
+        /// </summary>
+        ///
+        /// Used by <see cref="BattlePlayerQSystem.HandleGiveUpInput">HandleGiveUpInput</see> and <see cref="BattlePlayerQSystem.HandlePlayerAbandoned">HandlePlayerAbandoned</see>.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Handle of the player.</param>
+        private static bool HandleGiveUpLogic(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
+        {
+            BattlePlayerSlot slot = playerHandle.Slot;
+            BattleTeamNumber team = BattlePlayerManager.PlayerHandle.GetTeamNumber(playerHandle.Slot);
+
+            if (!playerHandle.PlayerGiveUpState)
+            {
+                f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.GiveUpVoteCancel);
+                return false;
+            }
+
+            BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, slot);
+            if (!teammateHandle.PlayState.IsNotInGame())
+            {
+                if (!playerHandle.IsAbandoned)
+                {
+                    f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.GiveUpVote);
                 }
                 else
                 {
-                    input = &botInput;
-                    BattlePlayerBotController.GetBotInput(f, playerHandle.PlayState.IsInPlay(), playerData, input);
+                    f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.Abandoned);
                 }
-
-                if (input->PlayerCharacterNumber > -1 && playerHandle.AllowCharacterSwapping)
-                {
-                    BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, input->PlayerCharacterNumber);
-                    continue;
-                }
-
-                if (playerHandle.PlayState.IsOutOfPlayRespawning() && !playerHandle.RespawnTimer.IsRunning(f) && playerHandle.AllowCharacterSwapping)
-                {
-                    int i;
-                    for (i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
-                    {
-                        if (playerHandle.GetCharacterState(i) == BattlePlayerCharacterState.Alive)
-                        {
-                            BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, i);
-                            break;
-                        }
-                    }
-                    if (i == Constants.BATTLE_PLAYER_CHARACTER_COUNT)
-                    {
-                        playerHandle.SetOutOfPlayFinal();
-                    }
-                    continue;
-                }
-
-                if (playerHandle.PlayState.IsOutOfPlay()) continue;
-
-                if (playerData->CurrentDefence <= FP._0)
-                {
-                    f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity)->IsActive = false;
-                }
-
-                BattlePlayerClassManager.OnUpdate(f, playerHandle, playerData, playerEntity);
-                BattlePlayerMovementController.UpdateMovement(f, playerData, playerTransform, input);
+                if (!teammateHandle.PlayerGiveUpState) return false;
             }
+            else
+            {
+                f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.GiveUpNow);
+            }
+
+            BattleTeamNumber winningTeam = team switch
+            {
+                BattleTeamNumber.TeamAlpha => BattleTeamNumber.TeamBeta,
+                BattleTeamNumber.TeamBeta => BattleTeamNumber.TeamAlpha,
+
+                _ => BattleTeamNumber.NoTeam
+            };
+
+            BattleGameControlQSystem.OnGameOver(f, winningTeam);
+            return true;
+        }
+
+        /// <summary>
+        /// Private helper method for handling player input for giving up during the game play.<br/>
+        /// Subprocess of the <see cref="BattlePlayerQSystem.Update">Update</see> method.
+        /// </summary>
+        ///
+        /// Updates give up state and calls <see cref="BattlePlayerQSystem.HandleGiveUpLogic">HandleGiveUpLogic</see> method which handles the rest of the logic.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="input">Pointer to the player's input data.</param>
+        /// <param name="playerHandle">Handle of the player.</param>
+        ///
+        /// <returns>True if the give up input was processed.</returns>
+        private bool HandleGiveUpInput(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle)
+        {
+            if (!input->GiveUpInput) return false;
+
+            playerHandle.PlayerGiveUpState = !playerHandle.PlayerGiveUpState;
+
+            s_debugLogger.LogFormat(f, "({0}) Give up input received, new state: {1}", playerHandle.Slot, playerHandle.PlayerGiveUpState);
+
+            return HandleGiveUpLogic(f, playerHandle);
+        }
+
+        /// <summary>
+        /// Private helper method for handling character swapping.<br/>
+        /// Subprocess of the <see cref="BattlePlayerQSystem.Update">Update</see> method.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="input">Pointer to the player's input data.</param>
+        /// <param name="playerHandle">Handle of the player.</param>
+        ///
+        /// <returns>True if character swapped.</returns>
+        private bool HandleCharacterSwapping(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle)
+        {
+            if (input->PlayerCharacterNumber < 0) return false;
+
+            s_debugLogger.LogFormat(f, "({0}) Character swap input received", playerHandle.Slot);
+
+            if (!playerHandle.AllowCharacterSwapping)
+            {
+                s_debugLogger.LogFormat(f, "({0}) Character swap input rejected, as AllowCharacterSwapping == false", playerHandle.Slot);
+                return false;
+            }
+
+            s_debugLogger.LogFormat(f, "({0}) Swapping to character number: {1}", playerHandle.Slot, input->PlayerCharacterNumber);
+
+            BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, input->PlayerCharacterNumber);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Private helper method for handling player logic when out of play or any of its substates.<br/>
+        /// Subprocess of the <see cref="BattlePlayerQSystem.Update">Update</see> method.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Handle of the player.</param>
+        ///
+        /// <returns>True if the player is out of play or out of play respawn.</returns>
+        private bool HandleOutOfPlay(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
+        {
+            // handle auto respawning
+            if (playerHandle.PlayState.IsOutOfPlayRespawning() && !playerHandle.RespawnTimer.IsRunning(f) && playerHandle.AllowCharacterSwapping)
+            {
+                int i;
+
+                // try to spawn next character
+                for (i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
+                {
+                    if (playerHandle.GetCharacterState(i) == BattlePlayerCharacterState.Alive)
+                    {
+                        s_debugLogger.LogFormat(f,"({0}) Auto spawning character number: {1}", playerHandle.Slot, i);
+
+                        BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, i);
+                        break;
+                    }
+                }
+
+                // handle out of characters
+                if (i == Constants.BATTLE_PLAYER_CHARACTER_COUNT)
+                {
+                    s_debugLogger.LogFormat(f, "({0}) Player is out of characters!", playerHandle.Slot);
+
+                    playerHandle.SetOutOfPlayFinal();
+                }
+
+                return true;
+            }
+
+            if (playerHandle.PlayState.IsOutOfPlay()) return true;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Private helper method for handling player logic and updates when state is in play.<br/>
+        /// Subprocess of the <see cref="BattlePlayerQSystem.Update">Update</see> method.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="input">Pointer to the player's input data.</param>
+        /// <param name="playerHandle">Handle of the player.</param>
+        /// <param name="playerData">Pointer to the player's data component</param>
+        /// <param name="playerEntity">Reference to the player's entity</param>
+        /// <param name="playerTransform">Pointer to the player's transform component.</param>
+        private void HandleInPlay(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity, Transform2D* playerTransform)
+        {
+            bool updateMovement = true;
+
+            if (input->AbilityActivate)
+            {
+                playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0_50);
+            }
+
+            if (!playerData->AbilityCooldownSec.IsRunning(f) && playerData->AbilityActivateBufferSec.IsRunning(f))
+            {
+                AbilityActivate(f, playerData, playerTransform);
+                updateMovement = false;
+            }
+
+            if (playerData->CurrentDefence <= FP._0)
+            {
+                s_debugLogger.LogFormat(f, "({0}) Current characters shield destroyed!", playerHandle.Slot);
+
+                f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity)->IsActive = false;
+            }
+
+            BattlePlayerClassManager.OnUpdate(f, playerHandle, playerData, playerEntity);
+            if (updateMovement) BattlePlayerMovementController.UpdateMovement(f, playerData, playerTransform, input);
+        }
+
+        private void AbilityActivate(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* playerTransform)
+        {
+            if (playerData->CharacterId == 601)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    BattleSoulWallQSystem.CreateAbilitySoulWallTest(f, playerData->TeamNumber, playerTransform->Position + new FPVector2(f.RNG->NextInclusive(-1, 1), f.RNG->NextInclusive(-1, 1)).Normalized * 2);
+                }
+
+                BattlePlayerManager.PlayerHandle playerHandle = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, playerData->Slot);
+
+                BattlePlayerManager.DespawnPlayer(f, playerData->Slot, kill: true);
+                playerHandle.SetOutOfPlayRespawning();
+                playerHandle.RespawnTimer = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).AutoRespawnTimeSec);
+            }
+            else
+            {
+                BattleSoulWallQSystem.CreateAbilitySoulWallTest(f, playerData->TeamNumber, playerTransform->Position);
+            }
+
+            playerData->AbilityCooldownSec = FrameTimer.FromSeconds(f, FP._3);
         }
     }
 }

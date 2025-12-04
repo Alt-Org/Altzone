@@ -6,6 +6,7 @@
 /// This script:<br/>
 /// Handles %Battle camera testing functionality.
 
+// Unity usings
 using UnityEngine;
 
 namespace Battle.View.Game

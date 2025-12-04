@@ -28,6 +28,9 @@ component BattlePlayerDataQComponent
     FrameTimer DamageCooldown;
 
     FP MovementCooldownSec;
+
+    FrameTimer AbilityCooldownSec;
+    FrameTimer AbilityActivateBufferSec;
 }
 
 //} PlayerData

@@ -14,23 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 502
   CharacterId: 502
-  IsApproved: 0
+  IsApproved: 1
   FinnishName: Alkoholismi
   EnglishName: Alcoholism
   ClassType: 500
-  CharacterDescriptionFinnish: "Alkoholisti hakee tukea ja turvaa viinasta. Juominen
-    on h\xE4nelle tapa turruttaa ep\xE4varmuuksia ja saada rohkeutta, jota h\xE4n
-    kokee tarvitsevansa toimiakseen sosiaalisissa tilanteissa. Humalassa h\xE4n on
-    kuin toinen, parempi, versio itsest\xE4\xE4n, kuin arkisen ja mit\xE4\xE4nsanomattoman
-    kuoren sis\xE4lt\xE4 paljastuva supersankari. Alkoholi kuitenkin est\xE4\xE4
-    h\xE4nt\xE4 olemasta haavoittuvainen ja l\xF6yt\xE4m\xE4st\xE4 todellista yhteytt\xE4
-    toisiin, ja johtaa illan pimentyess\xE4 sekavaan k\xE4yt\xF6kseen ja v\xE4ist\xE4m\xE4tt\xF6m\xE4\xE4n
-    morkkikseen aamun kajossa.\r\n\nAlkoholistin juodessa h\xE4nen suojakilpens\xE4
-    muoto muuttuu, mik\xE4 saa tunnetila-ammukset kimpoamaan ennalta-arvaamattomaan
-    suuntaan.\r"
+  CharacterDescriptionFinnish: "Kun Alkoholismi asettuu ihmiseen asumaan, se saa
+    t\xE4m\xE4n hakemaan l\xE4mp\xF6\xE4 nesteest\xE4, joka lupaa rohkeutta mutta
+    vie todellisuuden mukanaan. Ihminen alkaa uskoa, ett\xE4 yhteys syntyy helpommin,
+    kun reuna pehmenee ja sanat virtaavat vapaammin. Hetkeksi maailma tuntuu siedett\xE4v\xE4lt\xE4,
+    jopa kauniilta \u2013 kunnes juoma alkaa puhua h\xE4nen puolestaan. Alkoholismi
+    tarjoaa lohdun, joka kest\xE4\xE4 vain y\xF6n yli, ja j\xE4tt\xE4\xE4 aamulla
+    tyhjyyden, joka pyyt\xE4\xE4 lis\xE4\xE4. Se suojaa h\xE4pe\xE4lt\xE4, mutta
+    hinnaksi tulee kyky kohdata itse\xE4\xE4n selvin silmin.\r\n\nAlkoholistin juodessa
+    h\xE4nen suojakilpens\xE4 muoto muuttuu, mik\xE4 saa tunnetila-ammukset kimpoamaan
+    ennalta-arvaamattomaan suuntaan.\r"
   CharacterDescriptionEnglish: 
-  CharacterShortDescriptionFinnish: "Nousuhumalan ja morkkiksen v\xE4lill\xE4 liit\xE4v\xE4
-    y\xF6lintu"
+  CharacterShortDescriptionFinnish: "Nousuhumalan tunteensa hukuttava,  morkkiksen
+    v\xE4lill\xE4 liit\xE4v\xE4 y\xF6lintu."
   CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: e0dcda479cce71544906f70dd2112c96, type: 2}
   Hp:
@@ -40,13 +40,13 @@ MonoBehaviour:
     Level: 3
     Coefficient: 0
   CharacterSize:
-    Level: 10
-    Coefficient: 1
+    Level: 3
+    Coefficient: 0
   Attack:
-    Level: 9
+    Level: 3
     Coefficient: 5
   Defence:
-    Level: 8
+    Level: 3
     Coefficient: 2
   GalleryImage: {fileID: 21300000, guid: 1ad7ef75f9ecfb945b0d71f9b329269c, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 586b64090f07a7946bfa670f3ee1a33e, type: 3}

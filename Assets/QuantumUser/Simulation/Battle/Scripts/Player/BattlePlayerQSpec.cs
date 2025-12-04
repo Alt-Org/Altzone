@@ -5,10 +5,12 @@
 ///
 /// @bigtext{Filled with data from @ref BattlePlayerQSpec.asset "BattlelayerQSpec" data asset.}
 
+// Unity usings
 using UnityEngine;
 
-using Photon.Deterministic;
+// Quantum usings
 using Quantum;
+using Photon.Deterministic;
 
 namespace Battle.QSimulation.Player
 {

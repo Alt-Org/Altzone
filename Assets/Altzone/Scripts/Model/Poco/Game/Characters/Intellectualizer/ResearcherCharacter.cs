@@ -10,11 +10,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         public ResearcherCharacter() : base()
         {
             _id = CharacterID.Booksmart;
-            _defaultAttack = 10;
-            _defaultDefence = 3;
-            _defaultHp = 8;
-            _defaultCharacterSize = 8;
-            _defaultSpeed = 6;
+            _defaultAttack = 3;
+            _defaultDefence = 1;
+            _defaultHp = 2;
+            _defaultCharacterSize = 2;
+            _defaultSpeed = 4;
             InitializeValues();
         }
     }

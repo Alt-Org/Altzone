@@ -97,6 +97,8 @@ namespace Quantum.Prototypes.Unity {
     public QBoolean DisableRotation;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
     public FP MovementCooldownSec;
+    public Quantum.Prototypes.FrameTimerPrototype AbilityCooldownSec;
+    public Quantum.Prototypes.FrameTimerPrototype AbilityActivateBufferSec;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerDataQComponentPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerDataQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerDataQComponentPrototype();
@@ -119,6 +121,8 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.DisableRotation, out result.DisableRotation);
       converter.Convert(this.DamageCooldown, out result.DamageCooldown);
       converter.Convert(this.MovementCooldownSec, out result.MovementCooldownSec);
+      converter.Convert(this.AbilityCooldownSec, out result.AbilityCooldownSec);
+      converter.Convert(this.AbilityActivateBufferSec, out result.AbilityActivateBufferSec);
       ConvertUser(converter, ref result);
       return result;
     }
@@ -156,6 +160,8 @@ namespace Quantum.Prototypes.Unity {
     [ArrayLengthAttribute(4)]
     public QBoolean[] IsBot = new QBoolean[4];
     [ArrayLengthAttribute(4)]
+    public QBoolean[] IsAbandoned = new QBoolean[4];
+    [ArrayLengthAttribute(4)]
     public Quantum.Prototypes.FrameTimerPrototype[] RespawnTimer = new Quantum.Prototypes.FrameTimerPrototype[4];
     [ArrayLengthAttribute(4)]
     public QBoolean[] AllowCharacterSwapping = new QBoolean[4];
@@ -167,6 +173,8 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.QuantumEntityPrototype[] AllCharacters = new Quantum.QuantumEntityPrototype[12];
     [ArrayLengthAttribute(12)]
     public Quantum.QEnum32<BattlePlayerCharacterState>[] AllCharactersStates = new Quantum.QEnum32<BattlePlayerCharacterState>[12];
+    [ArrayLengthAttribute(4)]
+    public QBoolean[] PlayerGiveUpStates = new QBoolean[4];
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerManagerDataQSingletonPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerManagerDataQSingletonPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerManagerDataQSingletonPrototype();
@@ -174,12 +182,14 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.PlayStates, out result.PlayStates);
       converter.Convert(this.PlayerRefs, out result.PlayerRefs);
       converter.Convert(this.IsBot, out result.IsBot);
+      converter.Convert(this.IsAbandoned, out result.IsAbandoned);
       converter.Convert(this.RespawnTimer, out result.RespawnTimer);
       converter.Convert(this.AllowCharacterSwapping, out result.AllowCharacterSwapping);
       converter.Convert(this.SelectedCharacters, out result.SelectedCharacters);
       converter.Convert(this.SelectedCharacterNumbers, out result.SelectedCharacterNumbers);
       converter.Convert(this.AllCharacters, out result.AllCharacters);
       converter.Convert(this.AllCharactersStates, out result.AllCharactersStates);
+      converter.Convert(this.PlayerGiveUpStates, out result.PlayerGiveUpStates);
       ConvertUser(converter, ref result);
       return result;
     }

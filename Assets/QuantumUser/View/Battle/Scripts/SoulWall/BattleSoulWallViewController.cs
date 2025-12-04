@@ -3,8 +3,12 @@
 /// Handles SoulWall graphics. If debug mode is active, uses colored boxes instead of sprites.
 /// </summary>
 
+// Unity usings
 using UnityEngine;
+
+// Quantum usings
 using Quantum;
+using Battle.QSimulation;
 
 namespace Battle.View.SoulWall
 {
@@ -56,9 +60,16 @@ namespace Battle.View.SoulWall
         {
             if (EntityRef != e.Entity) return;
 
+            BattleDebugLogger debugLogger = BattleDebugLogger.Create<BattleSoulWallViewController>();
+
+            _spriteRenderer.enabled = true;
+            _emotionIndicatorSpriteRenderer.enabled = true;
+
             // scale gameobject
             float scale = (float)e.ModelScale;
             transform.localScale = new Vector3(scale, scale, scale);
+
+            debugLogger.LogFormat("SoulWall view initialized with scale {0}", scale);
 
             // color emotionIndicator
             //_emotionIndicatorSpriteRenderer.color = _emotionIndicatorColors[e.EmotionIndicatorColorIndex];

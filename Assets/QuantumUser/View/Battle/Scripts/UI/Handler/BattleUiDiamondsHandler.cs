@@ -6,9 +6,11 @@
 /// This script:<br/>
 /// Handles setting collected diamond amount text.
 
+// Unity usings
 using UnityEngine;
 using TMPro;
 
+// Altzone usings
 using Altzone.Scripts.BattleUiShared;
 
 namespace Battle.View.UI

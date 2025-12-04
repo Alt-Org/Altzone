@@ -74,16 +74,6 @@ namespace MenuUI.Scripts.SoulHome
 
         public void OnEnable()
         {
-            bool jukeboxSoulhome = SettingsCarrier.Instance.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Soulhome);
-
-            if (JukeboxManager.Instance.CurrentTrackQueueData != null && jukeboxSoulhome)
-            {
-                if (string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
-                    _musicName.text = _audioManager.PlayMusic("Soulhome", "");
-            }
-            else
-                _musicName.text = _audioManager.PlayMusic("Soulhome", "");
-
             EditModeTrayResize();
             if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.OpenSoulHome();
             JukeBoxSoulhomeHandler.OnChangeJukeBoxSong += SetSongName;

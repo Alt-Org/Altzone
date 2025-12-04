@@ -39,6 +39,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Toggle _swipeMovementToggle;
         [SerializeField] private Toggle _pointAndClickMovementToggle;
         [SerializeField] private Toggle _joystickMovementToggle;
+        [SerializeField] private Toggle _followPointerMovementToggle;
         [Space]
         [SerializeField] private Toggle _twoFingerRotationToggle;
         [SerializeField] private Toggle _swipeRotationToggle;
@@ -159,6 +160,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _swipeMovementToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.Swipe, BattleRotationInputType.TwoFinger); });
             _pointAndClickMovementToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.PointAndClick, BattleRotationInputType.TwoFinger); });
             _joystickMovementToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.Joystick, BattleRotationInputType.Joystick); });
+            _followPointerMovementToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.FollowPointer, BattleRotationInputType.TwoFinger); });
 
             _twoFingerRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, BattleRotationInputType.TwoFinger); });
             _swipeRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, BattleRotationInputType.Swipe); });
@@ -385,7 +387,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Toggling rotation toggles isOn based on rotation type and visibility based on movement type
             _twoFingerRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.TwoFinger);
-            _twoFingerRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.Swipe || movementType == BattleMovementInputType.PointAndClick);
+            _twoFingerRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.Swipe || movementType == BattleMovementInputType.PointAndClick || movementType == BattleMovementInputType.FollowPointer);
 
             _swipeRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.Swipe);
             _swipeRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.PointAndClick);

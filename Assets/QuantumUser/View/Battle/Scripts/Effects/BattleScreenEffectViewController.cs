@@ -7,6 +7,7 @@
 /// Changes screen overlay's color.<br/>
 /// Toggles particle systems on both sides of the screen to active/inactive.
 
+// Unity usings
 using UnityEngine;
 
 namespace Battle.View.Effect

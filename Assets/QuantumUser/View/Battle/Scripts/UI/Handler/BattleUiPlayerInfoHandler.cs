@@ -6,11 +6,17 @@
 /// This script:<br/>
 /// Handles %Battle %UI player and teammate info visual functionality through BattleUiPlayerInfoComponent.
 
+// Unity usings
 using UnityEngine;
 
-using Altzone.Scripts.BattleUiShared;
-using Battle.View.Game;
+// Quantum usings
 using Quantum;
+
+// Altzone usings
+using Altzone.Scripts.BattleUiShared;
+
+// Battle View usings
+using Battle.View.Game;
 
 namespace Battle.View.UI
 {
