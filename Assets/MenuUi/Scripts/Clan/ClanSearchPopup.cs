@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class ClanSearchPopup : MonoBehaviour
 {
@@ -17,6 +18,29 @@ public class ClanSearchPopup : MonoBehaviour
     [SerializeField] private GameObject _labelImagePrefab;
     [SerializeField] private Button _joinClanButton;
     [SerializeField] private Button _openClanMainView;
+
+    [SerializeField] private GameObject _clanOpenObject;
+    [SerializeField] private GameObject _clanLockedObject;
+
+    [SerializeField] private LanguageFlagImage _flagImage;
+    [SerializeField] private Image _clanAgeImage;
+    [SerializeField] private List<AgeIcon> _ageIcons = new List<AgeIcon>();
+
+    [System.Serializable]
+    private struct AgeIcon
+    {
+        public ClanAge age;
+        public Sprite icon;
+    }
+
+    private Sprite GetAgeSprite(ClanAge age)
+    {
+        foreach (var ai in _ageIcons)
+        {
+            if (ai.age == age) return ai.icon;
+        }
+        return null;
+    }
 
     /*public void SetClanInfo(ServerClan clan, ClanListing clanListing)
     {
@@ -56,7 +80,23 @@ public class ClanSearchPopup : MonoBehaviour
         _clanMembers.SetText(SettingsCarrier.Instance.Language, new string[1] { clan.playerCount + "/25" });
         _clanHeart.SetOtherClanColors(clanData);
 
-        if(_winsRankText) _winsRankText.text = "-";
+        if (_clanOpenObject != null) _clanOpenObject.SetActive(clanData.IsOpen);
+        if (_clanLockedObject != null) _clanLockedObject.SetActive(!clanData.IsOpen);
+
+        if (_flagImage != null)
+        {
+            _flagImage.SetFlag(clanData.Language);
+        }
+
+        if (_clanAgeImage != null)
+        {
+            var ageSprite = GetAgeSprite(clanData.ClanAge);
+            _clanAgeImage.sprite = ageSprite;
+            _clanAgeImage.preserveAspect = true;
+            _clanAgeImage.enabled = ageSprite != null;
+        }
+
+        if (_winsRankText) _winsRankText.text = "-";
 
         foreach (Transform child in _labelsField) Destroy(child.gameObject);
         foreach (ClanValues value in clanData.Values)
