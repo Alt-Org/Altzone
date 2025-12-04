@@ -241,6 +241,10 @@ public class LoadOutController : MonoBehaviour
         if (newLoadoutIndex <= 0 || newLoadoutIndex > _player.LoadOuts.Length)
         {
             Debug.LogWarning($"No more loadout slots available in PlayerData (trying to use {newLoadoutIndex})");
+
+            if (_addLoadoutButton != null)
+                _addLoadoutButton.gameObject.SetActive(false);
+
             return;
         }
 

@@ -66,11 +66,11 @@ public class LoadoutRowController : AltMonoBehaviour
                 continue;
             }
 
-            
+
             btn.onClick.RemoveListener(OnCharSlotClicked);
             btn.onClick.AddListener(OnCharSlotClicked);
 
-          
+
             btn.interactable = true;
             btn.enabled = true;
         }
@@ -157,11 +157,23 @@ public class LoadoutRowController : AltMonoBehaviour
         TeamLoadOut loadout = null;
         int index = _loadoutIndex - 1;
 
-        if (player.PopupLoadOuts != null &&
+        if (_loadoutIndex <= 3)
+        {
+            if (player.LoadOuts != null &&
+                index >= 0 &&
+                index < player.LoadOuts.Length)
+            {
+                loadout = player.LoadOuts[index];
+            }
+        }
+        else
+        {
+            if (player.PopupLoadOuts != null &&
             index >= 0 &&
             index < player.PopupLoadOuts.Length)
-        {
-            loadout = player.PopupLoadOuts[index];
+            {
+                loadout = player.PopupLoadOuts[index];
+            }
         }
 
         for (int i = 0; i < _slotViews.Length; i++)
@@ -218,7 +230,7 @@ public class LoadoutRowController : AltMonoBehaviour
         }
         else
         {
-            
+
             SaveCurrentTeamIntoThisLoadout();
         }
     }
@@ -232,33 +244,40 @@ public class LoadoutRowController : AltMonoBehaviour
         {
             if (player == null) return;
 
-            int index = _loadoutIndex - 1;
-            if (player.PopupLoadOuts == null ||
-                index < 0 ||
-                index >= player.PopupLoadOuts.Length)
+            if (_loadoutIndex <= 3)
             {
-                return;
+                player.SaveCurrentTeamToLoadout(_loadoutIndex);
             }
-
-            EnsurePopupRowInitialized(player, index);
-
-            for (int slotIndex = 0; slotIndex < 3; slotIndex++)
+            else
             {
-                CustomCharacterListObject active;
-
-                if (slotIndex < player.SelectedCharacterIds.Length &&
-                    player.SelectedCharacterIds[slotIndex] != null)
+                int index = _loadoutIndex - 1;
+                if (player.PopupLoadOuts == null ||
+                    index < 0 ||
+                    index >= player.PopupLoadOuts.Length)
                 {
-                    active = player.SelectedCharacterIds[slotIndex];
-                }
-                else
-                {
-                    active = new CustomCharacterListObject();
+                    return;
                 }
 
-                CustomCharacterListObject copy = new CustomCharacterListObject();
-                copy.SetData(active.ServerID, active.CharacterID);
-                player.PopupLoadOuts[index].Slots[slotIndex] = copy;
+                EnsurePopupRowInitialized(player, index);
+
+                for (int slotIndex = 0; slotIndex < 3; slotIndex++)
+                {
+                    CustomCharacterListObject active;
+
+                    if (slotIndex < player.SelectedCharacterIds.Length &&
+                        player.SelectedCharacterIds[slotIndex] != null)
+                    {
+                        active = player.SelectedCharacterIds[slotIndex];
+                    }
+                    else
+                    {
+                        active = new CustomCharacterListObject();
+                    }
+
+                    var copy = new CustomCharacterListObject();
+                    copy.SetData(active.ServerID, active.CharacterID);
+                    player.PopupLoadOuts[index].Slots[slotIndex] = copy;
+                }
             }
 
             Storefront.Get().SavePlayerData(player, null);
@@ -268,8 +287,10 @@ public class LoadoutRowController : AltMonoBehaviour
                 LoadoutPopupContext.ActiveRowIndex = -1;
             }
 
+            SignalBus.OnReloadCharacterGalleryRequestedSignal();
             Redraw();
-        }));
+        }
+            ));
     }
 
     /// <summary>
@@ -281,6 +302,17 @@ public class LoadoutRowController : AltMonoBehaviour
         StartCoroutine(GetPlayerData(delegate (PlayerData player)
         {
             if (player == null) return;
+
+            if (_loadoutIndex <= 3)
+            {
+                player.ApplyLoadout(_loadoutIndex);
+
+                LoadoutPopupContext.SelectedPopupIndex = _loadoutIndex;
+                Storefront.Get().SavePlayerData(player, null);
+
+                SignalBus.OnReloadCharacterGalleryRequestedSignal();
+                return;
+            }
 
             int index = _loadoutIndex - 1;
             if (player.PopupLoadOuts == null || index < 0 || index >= player.PopupLoadOuts.Length)
@@ -321,7 +353,7 @@ public class LoadoutRowController : AltMonoBehaviour
                 }
             }
 
-            // Mark this popup loadout as "selected"
+
             LoadoutPopupContext.SelectedPopupIndex = _loadoutIndex;
 
             Storefront.Get().SavePlayerData(player, null);
