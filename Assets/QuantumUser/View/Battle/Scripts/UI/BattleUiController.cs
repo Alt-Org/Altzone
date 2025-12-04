@@ -62,8 +62,8 @@ namespace Battle.View.UI
         /// These handler scripts handle visual functionality for the debug %UI.
         /// @{
 
-        /// <summary>Reference to BattleUiDebugStatsOverlayHandler which displays the character's stats.</summary>Part of @ref DebugUIHandlerReferences.
-        public BattleUiDebugStatsOverlayHandler DebugStatsOverlayHandler;
+        /// <summary>Reference to BattleUiDebugOverlayHandler which displays the debug info.</summary>Part of @ref DebugUIHandlerReferences.
+        public BattleUiDebugOverlayHandler DebugOverlayHandler;
 
         /// @}
     }

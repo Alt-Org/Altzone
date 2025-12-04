@@ -146,12 +146,6 @@ synced event BattleGiveUpStateChange
 
 //{ Debug events
 
-synced event BattleDebugUpdateStatsOverlay
-{
-    BattlePlayerSlot Slot;
-    BattlePlayerStats Stats;
-}
-
 synced event BattleDebugOnScreenMessage
 {
     QString<512> Message;

@@ -120,6 +120,15 @@ namespace Battle.QSimulation.Player
         {
             s_debugLogger = BattleDebugLogger.Create(typeof(BattlePlayerManager));
 
+            s_debugOverlayStats = BattleDebugOverlayLink.AddEntries(new string[]
+            {
+                "Stat Hp",
+                "Stat Speed",
+                "Stat CharacterSize",
+                "Stat Attack",
+                "Stat Defence"
+            });
+
             s_debugLogger.Log(f, "Init");
 
             for (int i = 0; i < s_spawnPoints.Length; i++)
@@ -819,6 +828,9 @@ namespace Battle.QSimulation.Player
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private static BattleDebugLogger s_debugLogger;
 
+        /// <summary>Debug overlay entry number for stats.</summary>
+        private static int s_debugOverlayStats;
+
         private static readonly FPVector2[] s_spawnPoints = new FPVector2[Constants.BATTLE_PLAYER_SLOT_COUNT];
 
         #region Private - PlayerHandleInternal struct
@@ -1243,7 +1255,16 @@ namespace Battle.QSimulation.Player
             playerData->TargetPosition = worldPosition;
 
             playerHandle.SetSelectedCharacter(characterNumber);
-            f.Events.BattleDebugUpdateStatsOverlay(playerData->Slot, playerData->Stats);
+
+            BattleDebugOverlayLink.SetEntries(playerData->Slot, s_debugOverlayStats, new object[]
+            {
+                playerData->Stats.Hp,
+                playerData->Stats.Speed,
+                playerData->Stats.CharacterSize,
+                playerData->Stats.Attack,
+                playerData->Stats.Defence
+            });
+
             f.Events.BattleCharacterSelected(playerData->Slot, characterNumber);
 
             playerData->AbilityCooldownSec = FrameTimer.FromSeconds(f, FP._3);
