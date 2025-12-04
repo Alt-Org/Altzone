@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Suomi
+  m_text: Teinit
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
   m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
@@ -150,10 +150,10 @@ GameObject:
   - component: {fileID: 3926898860120246810}
   - component: {fileID: 7402884695911227722}
   - component: {fileID: 1329856812590544654}
-  - component: {fileID: 2242673963180583961}
   - component: {fileID: 1801630362516069462}
+  - component: {fileID: 4949582761603566018}
   m_Layer: 0
-  m_Name: ClanLanguageListItem
+  m_Name: ClanAgeListItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -280,21 +280,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
---- !u!114 &2242673963180583961
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3592300980806303187}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e68c8d75542d6f42aa53c266c9afbdd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _toggle: {fileID: 1329856812590544654}
-  _languageText: {fileID: 7916248436925301640}
-  _flagImage: {fileID: 4833712630863153395}
 --- !u!114 &1801630362516069462
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -311,6 +296,20 @@ MonoBehaviour:
   _toggleOffColor: {r: 0, g: 0, b: 0, a: 0.003921569}
   _image: {fileID: 7402884695911227722}
   _toggle: {fileID: 1329856812590544654}
+--- !u!114 &4949582761603566018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3592300980806303187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 463d1403feb05c045bc0304a63882db9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _iconImage: {fileID: 4833712630863153395}
+  _label: {fileID: 7916248436925301640}
 --- !u!1 &5209437172922114812
 GameObject:
   m_ObjectHideFlags: 0
@@ -323,7 +322,7 @@ GameObject:
   - component: {fileID: 3824382190612884455}
   - component: {fileID: 4833712630863153395}
   m_Layer: 0
-  m_Name: Flag
+  m_Name: Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -376,7 +375,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: c4fa6dcac97b03f408802486524dd804, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3bc99553c80a2644b9f793790ec49d50, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1

@@ -61,6 +61,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         Teenagers,
         Toddlers,
         Adults,
+        Elderly,
         All
     }
 
@@ -125,6 +126,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
                         ClanAge.Teenagers => "Teinit",
                         ClanAge.Toddlers => "Taaperot",
                         ClanAge.Adults => "Aikuiset",
+                        ClanAge.Elderly => "Iäkkäät",
                         ClanAge.All => "Kaikki",
                         _ => "",
                     };
@@ -135,6 +137,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
                         ClanAge.Teenagers => "Teenagers",
                         ClanAge.Toddlers => "Toddlers",
                         ClanAge.Adults => "Adults",
+                        ClanAge.Elderly => "Elderly",
                         ClanAge.All => "Everyone",
                         _ => "",
                     };
@@ -145,6 +148,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
                 ClanAge.Teenagers => "Teinit",
                 ClanAge.Toddlers => "Taaperot",
                 ClanAge.Adults => "Aikuiset",
+                ClanAge.Elderly => "Iäkkäät",
                 ClanAge.All => "Kaikki",
                 _ => "",
             };

@@ -24,7 +24,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public List<ClanValues> Values = new();
         public List<HeartPieceData> ClanHeartPieces = new();
-        public ClanRoleRights[] ClanRights = new ClanRoleRights[3];
+        public List<ClanRoles> ClanRoles = new ();
 
         [JsonIgnore]
         public ClanInventory Inventory = new();
@@ -100,6 +100,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
             }
             IsOpen = clan.isOpen;
             if (clan.polls != null) Polls = clan.polls;
+            ClanRoles = clan.roles;
         }
 
         public void UpdateClanData(ServerClan clan)
@@ -136,6 +137,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
             if (clan.polls != null) Polls = clan.polls;
             else if (Polls == null) Polls = new();
             Rooms = new();
+            ClanRoles = clan.roles;
         }
 
         public void CallDataUpdate()
