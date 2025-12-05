@@ -4,42 +4,54 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
 using Altzone.Scripts.AvatarPartsInfo;
+using NUnit.Framework.Constraints;
 
-public class ScrollBarCategoryLoader : MonoBehaviour
+namespace MenuUi.Scripts.AvatarEditor
 {
-    [SerializeField] private AvatarPartsReference _avatarPartsReference;
-    [SerializeField] private Transform _content;
-    [SerializeField] private GameObject _avatarPartCategoryGridCellPrefab;
-    private GameObject _emptyCell;
-    [SerializeField] private AvatarDefaultReference _avatarDefaultReference;
-    private List<AvatarPartInfo> _avatarPartInfo;
-    private List<string> _allCategoryIds;
-    // Start is called before the first frame update
-    void Start()
-    {
-        _emptyCell = new GameObject("EmptyCell", typeof(RectTransform));
-        Instantiate(_emptyCell, _content);
-        _allCategoryIds = _avatarPartsReference.GetAllCategoryIds();
 
-        foreach (var categoryID in _allCategoryIds)
+    public class ScrollBarCategoryLoader : MonoBehaviour
+    {
+        [SerializeField] private AvatarPartsReference _avatarPartsReference;
+        [SerializeField] private ScrollBarFeatureLoader _scrollBarFeatureLoader;
+        [SerializeField] private Transform _content;
+        [SerializeField] private GameObject _avatarPartCategoryGridCellPrefab;
+        private GameObject _emptyCell;
+        [SerializeField] private AvatarDefaultReference _avatarDefaultReference;
+        private List<AvatarPartInfo> _avatarPartInfo;
+        private List<string> _allCategoryIds;
+        // Start is called before the first frame update
+        void Start()
         {
-            _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryID);
-            AddCell(_avatarPartInfo[1].IconImage);
+            _emptyCell = new GameObject("EmptyCell", typeof(RectTransform));
+            Instantiate(_emptyCell, _content);
+            _allCategoryIds = _avatarPartsReference.GetAllCategoryIds();
+
+            foreach (var categoryID in _allCategoryIds)
+            {
+                _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryID);
+                AddCell(_avatarPartInfo[0].IconImage, categoryID);
+            }
+            Instantiate(_emptyCell, _content);
         }
-        Instantiate(_emptyCell, _content);
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
+        // Update is called once per frame
+        void Update()
+        {
         
-    }
+        }
 
-    private void AddCell(Sprite sprite)
-    {
-        GameObject _gridCell = Instantiate(_avatarPartCategoryGridCellPrefab, _content);
-        Image _avatarPart = _gridCell.transform.Find("FeatureImage").GetComponent<Image>();
-        _avatarPart.sprite = sprite;
+        private void AddCell(Sprite sprite, string categoryId)
+        {
+            GameObject _gridCell = Instantiate(_avatarPartCategoryGridCellPrefab, _content);
+            Image _avatarPart = _gridCell.transform.Find("FeatureImage").GetComponent<Image>();
+            _avatarPart.sprite = sprite;
 
+            Button _button = _gridCell.GetComponent<Button>();
+            if (_scrollBarFeatureLoader == null)
+            {
+                Debug.LogError("_scrollbarfeatureloader is null");
+            }
+            _button.onClick.AddListener(() => _scrollBarFeatureLoader.RefreshFeatureListItems(categoryId));
+        }
     }
 }

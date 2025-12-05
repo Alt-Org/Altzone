@@ -5,59 +5,62 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ScrollBarContentLoader : MonoBehaviour
+namespace MenuUi.Scripts.AvatarEditor
 {
-    [SerializeField] private AvatarPartsReference _avatarPartsReference;
-    [SerializeField] private Transform _content;
-    [SerializeField] private GameObject _gridCellPrefab;
-    [SerializeField] private Sprite _testSprite;
-    private List<AvatarPartInfo> _avatarPartInfo;
-    private List<string> _allAvatarCategoryIds;
-
-    // Start is called before the first frame update
-    void Start()
+    public class ScrollBarFeatureLoader : MonoBehaviour
     {
-        _allAvatarCategoryIds = _avatarPartsReference.GetAllCategoryIds();
+        [SerializeField] private AvatarPartsReference _avatarPartsReference;
+        [SerializeField] private Transform _content;
+        [SerializeField] private GameObject _gridCellPrefab;
+        [SerializeField] private Sprite _testSprite;
+        private List<AvatarPartInfo> _avatarPartInfo;
+        private List<string> _allAvatarCategoryIds;
 
-
-        RefreshFeatureListItems("21");
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    private void OnEnable()
-    {
-
-    }
-
-    private void AddCell(Sprite sprite)
-    {
-        GameObject _gridCell = Instantiate(_gridCellPrefab, _content);
-        Image _avatarPart = _gridCell.transform.Find("FeatureImage").GetComponent<Image>();
-        _avatarPart.sprite = sprite;
-
-        Button _button = _gridCell.GetComponent<Button>();
-    }
-
-    private void RefreshFeatureListItems(string categoryId)
-    {
-        DestroyFeatureListItems();
-        _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
-        foreach (var part in _avatarPartInfo)
+        // Start is called before the first frame update
+        void Start()
         {
-            AddCell(part.IconImage);
-        }
-    }
+            _allAvatarCategoryIds = _avatarPartsReference.GetAllCategoryIds();
 
-    private void DestroyFeatureListItems()
-    {
-        foreach (Transform child in _content.transform)
-        {
-            Destroy(child.gameObject);
+
+            RefreshFeatureListItems("21");
         }
-    }  
+
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
+
+        private void OnEnable()
+        {
+
+        }
+
+        private void AddCell(Sprite sprite)
+        {
+            GameObject _gridCell = Instantiate(_gridCellPrefab, _content);
+            Image _avatarPart = _gridCell.transform.Find("FeatureImage").GetComponent<Image>();
+            _avatarPart.sprite = sprite;
+
+            Button _button = _gridCell.GetComponent<Button>();
+        }
+
+        public void RefreshFeatureListItems(string categoryId)
+        {
+            DestroyFeatureListItems();
+            _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
+            foreach (var part in _avatarPartInfo)
+            {
+                AddCell(part.IconImage);
+            }
+        }
+
+        private void DestroyFeatureListItems()
+        {
+            foreach (Transform child in _content.transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }  
+    }
 }
