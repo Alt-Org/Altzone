@@ -13,17 +13,18 @@ public class ScrollBarCategoryLoader : MonoBehaviour
     private GameObject _emptyCell;
     [SerializeField] private AvatarDefaultReference _avatarDefaultReference;
     private List<AvatarPartInfo> _avatarPartInfo;
-    private List<string> _testlist;
+    private List<string> _allCategoryIds;
     // Start is called before the first frame update
     void Start()
     {
         _emptyCell = new GameObject("EmptyCell", typeof(RectTransform));
         Instantiate(_emptyCell, _content);
-        _testlist = new List<string> { "10", "21", "22", "23", "31", "32", "33" };
-        foreach (var categoryID in _testlist)
+        _allCategoryIds = _avatarPartsReference.GetAllCategoryIds();
+
+        foreach (var categoryID in _allCategoryIds)
         {
             _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryID);
-            AddCell(_avatarPartInfo[0].IconImage);
+            AddCell(_avatarPartInfo[1].IconImage);
         }
         Instantiate(_emptyCell, _content);
     }
