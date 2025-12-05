@@ -10,18 +10,22 @@ public class ScrollBarCategoryLoader : MonoBehaviour
     [SerializeField] private AvatarPartsReference _avatarPartsReference;
     [SerializeField] private Transform _content;
     [SerializeField] private GameObject _avatarPartCategoryGridCellPrefab;
+    private GameObject _emptyCell;
     [SerializeField] private AvatarDefaultReference _avatarDefaultReference;
     private List<AvatarPartInfo> _avatarPartInfo;
     private List<string> _testlist;
     // Start is called before the first frame update
     void Start()
     {
+        _emptyCell = new GameObject("EmptyCell", typeof(RectTransform));
+        Instantiate(_emptyCell, _content);
         _testlist = new List<string> { "10", "21", "22", "23", "31", "32", "33" };
         foreach (var categoryID in _testlist)
         {
             _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryID);
             AddCell(_avatarPartInfo[0].IconImage);
         }
+        Instantiate(_emptyCell, _content);
     }
 
     // Update is called once per frame
