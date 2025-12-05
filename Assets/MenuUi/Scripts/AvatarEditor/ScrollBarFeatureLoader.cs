@@ -21,6 +21,7 @@ public class ScrollBarContentLoader : MonoBehaviour
 
 
         RefreshFeatureListItems("21");
+        DestroyFeatureListItems();
     }
 
     // Update is called once per frame
@@ -39,15 +40,23 @@ public class ScrollBarContentLoader : MonoBehaviour
         GameObject _gridCell = Instantiate(_gridCellPrefab, _content);
         Image _avatarPart = _gridCell.transform.Find("FeatureImage").GetComponent<Image>();
         _avatarPart.sprite = sprite;
-
     }
 
     private void RefreshFeatureListItems(string categoryId)
     {
+        DestroyFeatureListItems();
         _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
         foreach (var part in _avatarPartInfo)
         {
             AddCell(part.IconImage);
         }
     }
+
+    private void DestroyFeatureListItems()
+    {
+        foreach (Transform child in _content.transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }  
 }
