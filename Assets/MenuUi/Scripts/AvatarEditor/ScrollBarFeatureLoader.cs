@@ -12,15 +12,15 @@ public class ScrollBarContentLoader : MonoBehaviour
     [SerializeField] private GameObject _gridCellPrefab;
     [SerializeField] private Sprite _testSprite;
     private List<AvatarPartInfo> _avatarPartInfo;
+    private List<string> _allAvatarCategoryIds;
 
     // Start is called before the first frame update
     void Start()
     {
-        _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory("10");
-        foreach (var part in _avatarPartInfo)
-        {
-            AddCell(part.IconImage);
-        }
+        _allAvatarCategoryIds = _avatarPartsReference.GetAllCategoryIds();
+
+
+        RefreshFeatureListItems("21");
     }
 
     // Update is called once per frame
@@ -40,5 +40,14 @@ public class ScrollBarContentLoader : MonoBehaviour
         Image _avatarPart = _gridCell.transform.Find("FeatureImage").GetComponent<Image>();
         _avatarPart.sprite = sprite;
 
+    }
+
+    private void RefreshFeatureListItems(string categoryId)
+    {
+        _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
+        foreach (var part in _avatarPartInfo)
+        {
+            AddCell(part.IconImage);
+        }
     }
 }
