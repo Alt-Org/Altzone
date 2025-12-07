@@ -470,36 +470,39 @@ public class ServerManager : MonoBehaviour
             if (members != null) clanData.Members = members;
         }));
 
-        yield return StartCoroutine(GetClanVoteListFromServer(polls =>
+        if (Stock == null)
         {
-            if (polls != null)
+            yield return StartCoroutine(GetStockFromServer(clan, stock =>
             {
-                clanData.Polls.Clear();
-                foreach (ServerPoll poll in polls)
+                if (stock == null)
                 {
-
-                    PollData pollData = new FurniturePollData(poll);
-                    clanData.Polls.Add(pollData);
+                    StartCoroutine(PostStockToServer(stock =>
+                    {
+                        if (stock != null)
+                        {
+                            Stock = stock;
+                        }
+                    }));
                 }
-                RaiseClanPollsChangedEvent();
-            }
-        }));
-
+            }));
+        }
+        bool furnitureFetchFinished = true;
         // Get Clan Items
         yield return StartCoroutine(GetStockItemsFromServer(Stock, new List<ServerItem>(), null, 0, items =>
         {
+            furnitureFetchFinished = false;
             if (items != null)
             {
                 ClanInventory inventory = new();
                 List<ClanFurniture> clanFurniture = new();
-                if (!_skipServerFurniture)
+            if (!_skipServerFurniture)
+            {
+                foreach (ServerItem item in items)
                 {
-                    foreach (ServerItem item in items)
-                    {
-                        //Debug.LogWarning($"Id: {item._id}, Name: {item.name}");
-                        if (item._id == null || item.name == null) continue;
-                        clanFurniture.Add(new ClanFurniture(item._id, item.name/*.Trim().ToLower(CultureInfo.GetCultureInfo("en-US")).Replace(" ", ".")*/));
-                    }
+                    //Debug.LogWarning($"Id: {item._id}, Name: {item.name}");
+                    if (item._id == null || item.name == null) continue;
+                    clanFurniture.Add(new ClanFurniture(item._id, item.name/*.Trim().ToLower(CultureInfo.GetCultureInfo("en-US")).Replace(" ", ".")*/));
+                }
                 }
                 else
                 {
@@ -516,7 +519,26 @@ public class ServerManager : MonoBehaviour
                     clanData.Inventory = inventory;
                 }
             }
+            furnitureFetchFinished = true;
         }));
+
+        yield return new WaitUntil(() => furnitureFetchFinished);
+
+        bool stallFurnitureFetchFinished = true;
+        if (!_skipServerFurniture)
+        {
+            stallFurnitureFetchFinished = false;
+            yield return StartCoroutine(GetOwnFleaMarketItemsFromServer(callback =>
+            {
+                foreach (var item in callback)
+                {
+                    clanData.Inventory.Furniture.Add(item);
+                }
+                stallFurnitureFetchFinished = true;
+            }));
+        }
+
+        yield return new WaitUntil(() => stallFurnitureFetchFinished);
 
         yield return StartCoroutine(GetClanStall(clan._id, stall =>
         {
