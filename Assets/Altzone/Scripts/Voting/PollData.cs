@@ -66,8 +66,8 @@ namespace Altzone.Scripts.Voting
         public PollData(ServerPoll poll)
         {
             Id = poll._id;
-            StartTime = poll.startedAt !=null ?((DateTimeOffset)DateTime.Parse(poll.startedAt)).ToUnixTimeSeconds(): 0;
-            EndTime = ((DateTimeOffset)DateTime.Parse(poll.endsOn)).ToUnixTimeSeconds();
+            StartTime = poll.startedAt !=null ?((DateTimeOffset)DateTime.Parse(poll.startedAt).ToLocalTime()).ToUnixTimeSeconds(): 0;
+            EndTime = ((DateTimeOffset)DateTime.Parse(poll.endsOn).ToLocalTime()).ToUnixTimeSeconds();
 
             List<string> clanMembers = new List<string>();
             ClanData clan = null;
