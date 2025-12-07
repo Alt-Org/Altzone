@@ -535,9 +535,9 @@ public class ServerManager : MonoBehaviour
                 foreach (ServerPoll poll in polls)
                 {
 
-                    if (poll.type == "flea_market_sell_item" || poll.type == "buying_item")
+                    if (poll.type == "flea_market_sell_item" || poll.type == "shop_buy_item")
                     {
-                        PollData pollData = new FurniturePollData(poll);
+                        FurniturePollData pollData = new FurniturePollData(poll, clanData);
                         clanData.Polls.Add(pollData);
                     }
                 }
