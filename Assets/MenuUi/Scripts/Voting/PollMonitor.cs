@@ -19,6 +19,16 @@ public class PollMonitor : MonoBehaviour // Monitors active polls to check if th
         DontDestroyOnLoad(gameObject); 
     }
 
+    private void Start()
+    {
+        ServerManager.OnClanPollsChanged += PollManager.BuildPolls;
+    }
+
+    private void OnDestroy()
+    {
+        ServerManager.OnClanPollsChanged -= PollManager.BuildPolls;
+    }
+
     // Start monitoring when a poll begins
     public void StartMonitoring()
     {
