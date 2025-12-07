@@ -485,33 +485,6 @@ public class ServerManager : MonoBehaviour
             }
         }));
 
-        yield return StartCoroutine(GetClanStall(clan._id, stall =>
-        {
-            if(stall == null) Debug.LogWarning("Failed to get stall data.");
-            else
-            {
-                clanData.AdData = stall;
-            }
-        }));
-
-        // Creates or fetches the most up to date clan Stock before saving.
-        if (Stock == null)
-        {
-            yield return StartCoroutine(GetStockFromServer(clan, stock =>
-            {
-                if (stock == null)
-                {
-                    StartCoroutine(PostStockToServer(stock =>
-                    {
-                        if (stock != null)
-                        {
-                            Stock = stock;
-                        }
-                    }));
-                }
-            }));
-        }
-
         // Get Clan Items
         yield return StartCoroutine(GetStockItemsFromServer(Stock, new List<ServerItem>(), null, 0, items =>
         {
@@ -542,6 +515,33 @@ public class ServerManager : MonoBehaviour
                     inventory.Furniture = clanFurniture;
                     clanData.Inventory = inventory;
                 }
+            }
+        }));
+
+        yield return StartCoroutine(GetClanStall(clan._id, stall =>
+        {
+            if (stall == null) Debug.LogWarning("Failed to get stall data.");
+            else
+            {
+                clanData.AdData = stall;
+            }
+        }));
+
+        yield return StartCoroutine(GetClanVoteListFromServer(polls =>
+        {
+            if (polls != null)
+            {
+                clanData.Polls.Clear();
+                foreach (ServerPoll poll in polls)
+                {
+
+                    if (poll.type == "flea_market_sell_item" || poll.type == "buying_item")
+                    {
+                        PollData pollData = new FurniturePollData(poll);
+                        clanData.Polls.Add(pollData);
+                    }
+                }
+                RaiseClanPollsChangedEvent();
             }
         }));
 
