@@ -273,11 +273,9 @@ namespace Altzone.Scripts.Chat
                 //quick check to see if reaction ever goes to globan or stays in clan
                // Debug.LogWarning("FIND ME --------- NEW REACTION ---------- 0");
                // Debug.LogWarning("FIND ME Reaction Event = [" + middleresult["event"] + "] 1");
-               // Debug.LogWarning("FIND ME Reaction Chat = [" + middleresult["chat"] + "] 2");
+                Debug.LogWarning("FIND ME Reaction Chat = [" + middleresult["chat"] + "] 2");
                 Debug.LogWarning("FIND ME ID = " + message._id);
 
-                ///For some reason it does get diff ID but it always says the reaction is set in clan and not in global
-                ///not sure why that like that as message works just fine
                 if (middleresult["chat"].ToString().Equals("clan")) _clanChatChannel.UpdateReactions(message._id, message.reactions);
                 else if (middleresult["chat"].ToString().Equals("global")) _globalChatChannel.UpdateReactions(message._id, message.reactions);
             }

@@ -483,6 +483,7 @@ public class Chat : AltMonoBehaviour
 
         gameObject.GetComponent<FindAllChatOptions>().ChatOptionFound(FindAllChatOptions.ChatType.Global);
         RefreshChat(ChatChannelType.Global);
+        MessageReactionsHandler.Instance.RefreshReaction(ChatChannelType.Global, null);
 
         Debug.Log("Global Chat aktivoitu");
     }
@@ -500,6 +501,7 @@ public class Chat : AltMonoBehaviour
 
         gameObject.GetComponent<FindAllChatOptions>().ChatOptionFound(FindAllChatOptions.ChatType.Clan);
         RefreshChat(ChatChannelType.Clan);
+        MessageReactionsHandler.Instance.RefreshReaction(ChatChannelType.Clan, null);
 
         Debug.Log("Klaani Chat aktivoitu");
     }

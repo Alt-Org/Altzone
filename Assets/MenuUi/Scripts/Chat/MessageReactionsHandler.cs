@@ -40,8 +40,7 @@ public class MessageReactionsHandler : MonoBehaviour
     private Mood _mood;
     void Start()
     {
-        _openMoreButton.onClick.AddListener((() => { _allReactionsPanel.SetActive(true); _selectedMessage.SizeCall(); _commonReactionsPanel.SetActive(false);}));
-
+        _openMoreButton.onClick.AddListener((() => { _allReactionsPanel.SetActive(true); _selectedMessage.SizeCall(); _commonReactionsPanel.SetActive(false); }));
 
 
         ChatChannel.OnReactionReceived += RefreshReaction;
@@ -54,35 +53,6 @@ public class MessageReactionsHandler : MonoBehaviour
         PickCommonReactions();
     }
 
-
-
-    /// <summary>
-    /// Old code does not work
-    /// </summary>
-   /*void ReactionRefresh(ChatChannelType chatChannelType, ChatMessage reaction) => StartCoroutine(ReactionRefreshCoroutine(chatChannelType, reaction));
-
-    IEnumerator ReactionRefreshCoroutine(ChatChannelType chatChannelType, ChatMessage reaction)
-    {
-        if (chatChannelType is ChatChannelType.Global)
-            yield return new WaitUntil(() => ChatListener.Instance.GlobalChatFetched);
-        if (chatChannelType is ChatChannelType.Clan)
-            yield return new WaitUntil(() => ChatListener.Instance.ClanChatFetched);
-
-        if(CanvasChat.gameObject.activeSelf)
-        {
-            List<ChatMessage> messagelist = ChatListener.Instance.GetChatChannel(chatChannelType).ChatMessages;
-            if(messagelist != null)
-            {
-                foreach (ChatMessage message in messagelist)
-                {
-                    Sprite reactionSprite = _reactionList.FirstOrDefault(x => x.Mood == message.mood)?.Sprite;
-                    bool ownRct = message?.SenderId == ServerManager.Instance.Player._id;
-                    AddReaction(reactionSprite, message, ChatReactionHandler.Instance.SetReactionInfo(ownRct, message.Mood));
-                }
-            }
-        }
-
-    }*/
 
     private void OnDestroy()
     {
@@ -164,8 +134,8 @@ public class MessageReactionsHandler : MonoBehaviour
             }
 
             ReactionObject reactionData = _reactionList.FirstOrDefault(x => x.Mood == mood);
-            if(reactionData != null)
-            handler.SetInfo(reactionData.Mood, reactionData.Sprite, _selectedMessage.Id);
+            if (reactionData != null)
+                handler.SetInfo(reactionData.Mood, reactionData.Sprite, _selectedMessage.Id);
 
             /*if (!commonReaction.TryGetComponent(out Button button))
             {
@@ -176,38 +146,33 @@ public class MessageReactionsHandler : MonoBehaviour
         }
     }
 
-    private void SaveReactions(ChatMessage message)
+
+    public void RefreshReaction(ChatChannelType chatChannelType, ChatMessage message) => StartCoroutine(RefreshReactionCoroutine(chatChannelType, message));
+
+
+
+    //Am not 100% yet if this system works yet fully as right now the object that adds the reactions is inactive therefore this system is never called
+    private IEnumerator RefreshReactionCoroutine(ChatChannelType chatChannelType, ChatMessage message)
     {
-        foreach (var reaction in message.Reactions)
+        Debug.LogWarning("FIND ME when before channel is called");
+        if (chatChannelType is ChatChannelType.Global)
+            yield return new WaitUntil(() => ChatListener.Instance.GlobalChatFetched);
+        if (chatChannelType is ChatChannelType.Clan)
+            yield return new WaitUntil(() => ChatListener.Instance.ClanChatFetched);
+
+        Debug.LogWarning("FIND ME before system calls");
+        if (gameObject.activeSelf)
         {
-            Debug.LogWarning("Saved reaction");
-        }
-    }
+            List<ChatMessage> reactionList = ChatListener.Instance.GetChatChannel(chatChannelType).ChatMessages;
+            if (reactionList != null)
+            {
+                foreach (ChatMessage reaction in reactionList)
+                {
+                    Debug.LogWarning("FIND ME AFTER SYSTEM IS CALLED");
+                    AddReaction(message.Id, message.Mood);
+                }
 
-    //converts the string into mood
-    private Mood ConvertVoid(string emojiString)
-    {
-        if (Enum.TryParse(emojiString, out Mood mood)) {
-            return mood;
-        }
-
-        return Mood.None;
-    }
-
-    //Saves and refreshes the reactions
-    //Some reason doesnt do that now as it will just fetch its messages reaction type :/
-    private void RefreshReaction(ChatChannelType chatChannelType, ChatMessage message)
-    {
-        Debug.Log("Reaction receive form " + message.Id);
-
-        SaveReactions(message);
-
-
-        foreach (var reaction in message.Reactions)
-        {
-            //Mood moodEnum = ConvertVoid(reaction.emoji);
-
-            AddReaction(message.Id, message.Mood);
+            }
         }
     }
 
@@ -224,7 +189,7 @@ public class MessageReactionsHandler : MonoBehaviour
 
             HorizontalLayoutGroup reactionsField = _selectedMessage.ReactionsPanel.GetComponentInChildren<HorizontalLayoutGroup>();
 
-            Sprite reactionSprite =_reactionList.FirstOrDefault(x => x.Mood == mood)?.Sprite;
+            Sprite reactionSprite = _reactionList.FirstOrDefault(x => x.Mood == mood)?.Sprite;
 
             // Checks if chosen reaction is already added to the selected message. If so, deletes it.
             foreach (ChatReactionHandler addedReaction in _reactionHandlers)
@@ -246,13 +211,10 @@ public class MessageReactionsHandler : MonoBehaviour
 
             chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler));
             chatReactionHandler.LongClickButton.onLongClick.AddListener(() => ShowUsers(chatReactionHandler));
-
-
-
             LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
 
             _selectedMessage.SetMessageInactive();
-            
+
             gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
     }
