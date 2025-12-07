@@ -250,6 +250,10 @@ public static class PollManager // Handles the polls from creation to loading to
 
     public static void LoadClanData()
     {
+        DataStore store = Storefront.Get();
+        PlayerData player = null;
+        ClanData clan = null;
+
         store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
 
         if (player != null && player.ClanId != null)
@@ -265,6 +269,10 @@ public static class PollManager // Handles the polls from creation to loading to
 
     public static void SaveClanData()
     {
+        DataStore store = Storefront.Get();
+        PlayerData player = null;
+        ClanData clan = null;
+
         store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
 
         if (player != null && player.ClanId != null)
@@ -280,6 +288,16 @@ public static class PollManager // Handles the polls from creation to loading to
     public static void EndPoll(string pollId)
     {
         LoadClanData();
+
+        DataStore store = Storefront.Get();
+        PlayerData player = null;
+        ClanData clan = null;
+        store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
+
+        if (player != null && player.ClanId != null)
+        {
+            store.GetClanData(player.ClanId, data => clan = data);
+        }
 
         PollData pollData = GetPollData(pollId);
         if (pollData == null)
@@ -361,7 +379,6 @@ public static class PollManager // Handles the polls from creation to loading to
         pastPollDataList.Add(pollData);
 
         // Save clan data and refresh UI
-        DataStore store = Storefront.Get();
         store.SaveClanData(clan, savedClan =>
         {
             clan = savedClan;
