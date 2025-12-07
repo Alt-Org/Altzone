@@ -1790,7 +1790,9 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
-    public IEnumerator SellItemOnStall(string item_id, int price, Action<bool> callback)
+    public void SellItemOnStall(string item_id, int price, Action<bool> callback) => StartCoroutine(SellItemOnStallToServer(item_id, price, callback));
+
+    public IEnumerator SellItemOnStallToServer(string item_id, int price, Action<bool> callback)
     {
         string body = JObject.FromObject(
             new

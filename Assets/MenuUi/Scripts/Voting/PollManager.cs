@@ -91,29 +91,31 @@ public static class PollManager // Handles the polls from creation to loading to
     }
 
     // Create poll for StorageFurniture
-    public static void CreateFurniturePoll(FurniturePollType furniturePollType, StorageFurniture furniture)
+    public static void CreateFurnitureSellPoll(FurniturePollType furniturePollType, StorageFurniture furniture)
     {
-        LoadClanData();
+        ServerManager.Instance.SellItemOnStall(furniture.Id, (int)furniture.Value, callback => {
+            LoadClanData();
 
-        string id = GetFirstAvailableId();
+            string id = GetFirstAvailableId();
 
-        List<string> clanMembers = new List<string>();
-        if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
+            List<string> clanMembers = new List<string>();
+            if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
 
-        GameFurniture gameFurniture = null;
-        store.GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == furniture.Name));
+            GameFurniture gameFurniture = null;
+            store.GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == furniture.Name));
 
-        PollData pollData = new FurniturePollData(id, clanMembers, furniturePollType, gameFurniture);
-        pollDataList.Add(pollData);
-        
-        ShowVotingPopup?.Invoke(furniturePollType);
+            PollData pollData = new FurniturePollData(id, clanMembers, furniturePollType, gameFurniture);
+            pollDataList.Add(pollData);
 
-        //PrintPollList();
-        SaveClanData();
+            ShowVotingPopup?.Invoke(furniturePollType);
 
-        PollMonitor.Instance?.StartMonitoring();
+            //PrintPollList();
+            SaveClanData();
 
-        OnPollCreated?.Invoke();
+            PollMonitor.Instance?.StartMonitoring();
+
+            OnPollCreated?.Invoke();
+        });
     }
 
     // Create poll for Role Promotion

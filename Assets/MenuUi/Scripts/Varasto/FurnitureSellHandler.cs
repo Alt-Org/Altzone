@@ -40,7 +40,7 @@ namespace MenuUi.Scripts.Storage
                 if (Furniture.ClanFurniture.VotedToSell) return;
                 if (Furniture.Position != new Vector2Int(-1, -1)) return; // In soulhome
 
-                PollManager.CreateFurniturePoll(FurniturePollType.Selling, Furniture);
+                PollManager.CreateFurnitureSellPoll(FurniturePollType.Selling, Furniture);
 
                 Furniture.ClanFurniture.InVoting = true;
 
