@@ -1744,6 +1744,73 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
+    public IEnumerator GetOwnFleaMarketItemsFromServer(Action<List<ClanFurniture>> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "fleamarket", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                //ServerPlayer player = result["data"]["Object"].ToObject<ServerPlayer>();
+                JArray middleresult = (JArray)result["data"]["FleaMarketItem"];
+
+                List<ClanFurniture> furniturelist = new();
+                foreach (var item in middleresult)
+                {
+                    if (item["clan_id"].ToString() == Clan._id)
+                    {
+                        Debug.LogWarning("FleaMarketFetch");
+                        string id = item["_id"].ToString();
+                        string name = item["name"].ToString();
+                        ClanFurniture furniture = new(id, name);
+                        if (furniture != null)
+                            furniturelist.Add(furniture);
+                    }
+                }
+
+                if (callback != null)
+                    callback(furniturelist);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator GetFleaMarketItemsFromServer(Action<List<GameFurniture>> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "fleamarket", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                //ServerPlayer player = result["data"]["Object"].ToObject<ServerPlayer>();
+                JArray middleresult = (JArray)result["data"]["FleaMarketItem"];
+
+                List<GameFurniture> furniturelist = new();
+                foreach (var item in middleresult)
+                {
+                    string name = item["name"].ToString();
+                    GameFurniture furniture = StorageFurnitureReference.Instance.GetGameFurniture(name);
+                    if (furniture != null)
+                        furniturelist.Add(furniture);
+                }
+
+                if (callback != null)
+                    callback(furniturelist);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
     public IEnumerator AddCoinsToClan(int amount, Action<bool> callback)
     {
         string body = JObject.FromObject(new { amount = amount }).ToString();
