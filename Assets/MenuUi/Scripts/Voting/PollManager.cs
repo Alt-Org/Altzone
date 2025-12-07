@@ -154,7 +154,6 @@ public static class PollManager // Handles the polls from creation to loading to
     public static void BuildPolls()
     {
         pollDataList.Clear();
-        currentPollDataList.Clear();
         pastPollDataList.Clear();
         LoadClanData();
         List<PollData> list = new();
