@@ -151,16 +151,41 @@ public static class PollManager // Handles the polls from creation to loading to
         PollMonitor.Instance?.StartMonitoring();
     }
 
+    public static void BuildPolls()
+    {
+        pollDataList.Clear();
+        currentPollDataList.Clear();
+        pastPollDataList.Clear();
+        LoadClanData();
+        List<PollData> list = new();
+        foreach (var poll in pollDataList)
+        {
+            list.Add(poll);
+        }
+        foreach (var poll in list)
+        {
+            if(poll is FurniturePollData)
+            {
+                FurniturePollData furniturePoll=(FurniturePollData)poll;
+                if (furniturePoll.FurniturePollType is FurniturePollType.Buying)
+                    CreateBuyFurniturePoll(furniturePoll.FurniturePollType, furniturePoll.Furniture, poll.Id);
+                if (furniturePoll.FurniturePollType is FurniturePollType.Selling)
+                    CreateSellFurniturePoll(furniturePoll.FurniturePollType, new(new(furniturePoll.Furniture.Id, furniturePoll.Furniture.Name), furniturePoll.Furniture), poll.Id);
+            }
+        }
+
+        SaveClanData();
+    }
+
     public static void BuildPolls(List<ServerPoll> polls)
     {
+        pollDataList.Clear();
         LoadClanData();
-
         List<string> clanMembers = new List<string>();
         if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
-
         foreach (ServerPoll poll in polls)
         {
-            PollData pollData = new FurniturePollData(poll);
+            PollData pollData = new FurniturePollData(poll, clan);
             pollDataList.Add(pollData);
         }
 
