@@ -532,6 +532,7 @@ public class ServerManager : MonoBehaviour
             {
                 foreach (var item in callback)
                 {
+                    item.VotedToSell = true;
                     clanData.Inventory.Furniture.Add(item);
                 }
                 stallFurnitureFetchFinished = true;
