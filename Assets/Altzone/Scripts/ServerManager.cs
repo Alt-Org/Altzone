@@ -1668,7 +1668,7 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator SendClanVoteToServerCoroutine(string voteid, bool answer, Action<ServerPoll> callback)
     {
-        string body = JObject.FromObject(new { voting_id = voteid, choice = answer?"accept":"decline" }).ToString();
+        string body = JObject.FromObject(new { voting_id = voteid, choice = answer?"accept":"reject" }).ToString();
 
         yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "voting/", body, AccessToken, request =>
         {
