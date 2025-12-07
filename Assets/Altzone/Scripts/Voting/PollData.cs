@@ -68,9 +68,6 @@ namespace Altzone.Scripts.Voting
             Id = poll._id;
             StartTime = poll.startedAt !=null ?((DateTimeOffset)DateTime.Parse(poll.startedAt)).ToUnixTimeSeconds(): 0;
             EndTime = ((DateTimeOffset)DateTime.Parse(poll.endsOn)).ToUnixTimeSeconds();
-            GameFurniture gameFurniture = null;
-            Storefront.Get().GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == poll.shopItemName));
-            Sprite = gameFurniture.FurnitureInfo.Image;
 
             List<string> clanMembers = new List<string>();
             ClanData clan = null;
@@ -154,16 +151,22 @@ namespace Altzone.Scripts.Voting
             Furniture = furniture;
         }
 
-        public FurniturePollData(ServerPoll poll)
+        public FurniturePollData(ServerPoll poll ,ClanData clanData)
         : base(poll)
         {
-            if(poll.type == "selling_item")
-                FurniturePollType = FurniturePollType.Selling;
-            else if(poll.type == "buying_item")
-                FurniturePollType = FurniturePollType.Buying;
-
             GameFurniture gameFurniture = null;
-            Storefront.Get().GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == poll.shopItemName));
+            if (poll.type == "flea_market_sell_item")
+            {
+                FurniturePollType = FurniturePollType.Selling;
+                ClanFurniture clanFurniture = clanData.Inventory.Furniture.First(item => item.Id == poll.fleaMarketItem_id);
+                Storefront.Get().GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == clanFurniture.GameFurnitureName));
+            }
+            else if(poll.type == "shop_buy_item")
+            {
+                FurniturePollType = FurniturePollType.Buying;
+                Storefront.Get().GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == poll.shopItemName));
+            }
+            Sprite = gameFurniture.FurnitureInfo.Image;
             Furniture = gameFurniture;
         }
     }
