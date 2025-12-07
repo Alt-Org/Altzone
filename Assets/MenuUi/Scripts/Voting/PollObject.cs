@@ -106,7 +106,7 @@ public class PollObject : MonoBehaviour
                 // Format and show local time. Example: "20.6. 13:50"
                 TimeLeftText.text = endDateTime.ToString("d.M. HH:mm");
 
-                PollManager.EndPoll(pollId);
+                //PollManager.EndPoll(pollId);
 
                 yield break;
             }
