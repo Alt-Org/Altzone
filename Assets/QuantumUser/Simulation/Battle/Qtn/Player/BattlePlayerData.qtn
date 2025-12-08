@@ -24,6 +24,7 @@ component BattlePlayerDataQComponent
     EntityRef CharacterHitboxEntity;
 
     int ShieldCount;
+    int AttachedShieldNumber;
     EntityRef AttachedShield;
 
     bool DisableRotation;
