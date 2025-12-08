@@ -22,16 +22,13 @@ namespace MenuUi.Scripts.AvatarEditor
         // Start is called before the first frame update
         void Start()
         {
-            _emptyCell = new GameObject("EmptyCell", typeof(RectTransform));
-            Instantiate(_emptyCell, _content);
             _allCategoryIds = _avatarPartsReference.GetAllCategoryIds();
 
             foreach (var categoryID in _allCategoryIds)
             {
                 _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryID);
-                AddCell(_avatarPartInfo[0].IconImage, categoryID);
+                AddCategoryCell(_avatarPartInfo[0].IconImage, categoryID);
             }
-            Instantiate(_emptyCell, _content);
         }
 
         // Update is called once per frame
@@ -40,7 +37,7 @@ namespace MenuUi.Scripts.AvatarEditor
         
         }
 
-        private void AddCell(Sprite sprite, string categoryId)
+        private void AddCategoryCell(Sprite sprite, string categoryId)
         {
             GameObject _gridCell = Instantiate(_avatarPartCategoryGridCellPrefab, _content);
             Image _avatarPart = _gridCell.transform.Find("FeatureImage").GetComponent<Image>();
