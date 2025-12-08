@@ -73,16 +73,16 @@ namespace Battle.View.UI
         /// Updates the give up info text state.
         /// </summary>
         ///
-        /// <param name="slot">The slot of the player</param>
+        /// <param name="playerSlot">The slot of the player</param>
         /// <param name="stateUpdate">Type of the give up state update.</param>
-        public void UpdateState(BattlePlayerSlot slot, BattleGiveUpStateUpdate stateUpdate)
+        public void UpdateState(BattlePlayerSlot playerSlot, BattleGiveUpStateUpdate stateUpdate)
         {
             if (_buttonInfoState == ButtonInfoState.TeamGiveUp) return;
 
             switch (stateUpdate)
             {
                 case BattleGiveUpStateUpdate.GiveUpVote:
-                    if (slot == BattleGameViewController.LocalPlayerSlot)
+                    if (playerSlot == BattleGameViewController.LocalPlayerSlot)
                     {
                         _buttonInfoState = _buttonInfoState is ButtonInfoState.TeammateGiveUp or ButtonInfoState.TeammateAbandoned
                                          ? ButtonInfoState.TeamGiveUp
@@ -97,7 +97,7 @@ namespace Battle.View.UI
                     break;
 
                 case BattleGiveUpStateUpdate.Abandoned:
-                    if (slot == BattleGameViewController.LocalPlayerSlot)
+                    if (playerSlot == BattleGameViewController.LocalPlayerSlot)
                     {
                         _debugLogger.Warning("Active local client marked as abandoned");
                     }

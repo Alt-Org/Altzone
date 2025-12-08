@@ -1071,8 +1071,10 @@ public class ServerManager : MonoBehaviour
             JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
         ).ToString();
 
-        yield return UpdateClanToServer(body, callback);
-        Storefront.Get().SaveClanData(data, null);
+        yield return UpdateClanToServer(body, callback =>
+        {
+            if (callback) Storefront.Get().SaveClanData(data, null);
+        });
     }
 
     public IEnumerator UpdateClanToServer(string body, Action<bool> callback)
@@ -1082,12 +1084,6 @@ public class ServerManager : MonoBehaviour
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                JObject result = JObject.Parse(request.downloadHandler.text);
-                ServerClan clan = result["data"]["Clan"].ToObject<ServerClan>();
-                Clan = clan;
-
-                StartCoroutine(SaveClanFromServerToDataStorage(Clan));
-
                 if (callback != null)
                 {
                     callback(true);

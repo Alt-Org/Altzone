@@ -23,6 +23,9 @@ namespace Battle.QSimulation.Player
     /// Handles the quantum side of player logic.
     /// </summary>
     ///
+    /// [{Player Overview}](#page-concepts-player-overview)<br/>
+    /// [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview)
+    ///
     /// This system contains methods called by BattleCollisionQSystem that deal damage to players and shields, as well as sending input data forward for movement and character switching.
     [Preserve]
     public unsafe class BattlePlayerQSystem : SystemMainThread
@@ -423,6 +426,9 @@ namespace Battle.QSimulation.Player
 
         private void AbilityActivate(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* playerTransform)
         {
+            //{ Ability test
+            /*
+
             if (playerData->CharacterId == 601)
             {
                 for (int i = 0; i < 4; i++)
@@ -440,6 +446,9 @@ namespace Battle.QSimulation.Player
             {
                 BattleSoulWallQSystem.CreateAbilitySoulWallTest(f, playerData->TeamNumber, playerTransform->Position);
             }
+
+            /**/
+            //} Ability test
 
             playerData->AbilityCooldownSec = FrameTimer.FromSeconds(f, FP._3);
         }
