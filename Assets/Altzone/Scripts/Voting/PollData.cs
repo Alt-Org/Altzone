@@ -158,7 +158,8 @@ namespace Altzone.Scripts.Voting
             if (poll.type == "flea_market_sell_item")
             {
                 FurniturePollType = FurniturePollType.Selling;
-                ClanFurniture clanFurniture = clanData.Inventory.Furniture.First(item => item.Id == poll.fleaMarketItem_id);
+                ClanFurniture clanFurniture = clanData.Inventory.Furniture.FirstOrDefault(item => item.Id == poll.fleaMarketItem_id);
+                if (clanFurniture == null) return;
                 Storefront.Get().GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == clanFurniture.GameFurnitureName));
                 if(!IsExpired) clanFurniture.InVoting = true;
             }

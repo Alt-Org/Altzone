@@ -561,6 +561,7 @@ public class ServerManager : MonoBehaviour
                     if (poll.type == "flea_market_sell_item" || poll.type == "shop_buy_item")
                     {
                         FurniturePollData pollData = new FurniturePollData(poll, clanData);
+                        if (pollData.Furniture == null) continue;
                         clanData.Polls.Add(pollData);
                     }
                 }

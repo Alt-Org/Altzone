@@ -29,7 +29,19 @@ namespace MenuUi.Scripts.Storage
 
         private void Start()
         {
-            _suggestSaleButton.onClick.AddListener(CreatePoll);
+            _suggestSaleButton.onClick.AddListener(SellOrReturn);
+        }
+
+        private void SellOrReturn()
+        {
+            if(Furniture.ClanFurniture.VotedToSell)
+                StartCoroutine(ServerManager.Instance.ReturnItemToStock(Furniture.Id, result =>
+                {
+                    Debug.LogWarning("Returned furniture to stock");
+                    Furniture.ClanFurniture.VotedToSell = false;
+                }));
+            else
+                CreatePoll();
         }
 
         private void CreatePoll()
@@ -63,6 +75,7 @@ namespace MenuUi.Scripts.Storage
                 _suggestSaleButton.interactable = true;
                 _suggestSaleButtonImage.color = _enabledColor;
             }
+
         }
     }
 }
