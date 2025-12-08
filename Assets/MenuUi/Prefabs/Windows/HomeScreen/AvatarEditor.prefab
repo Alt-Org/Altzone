@@ -1700,7 +1700,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2597,6 +2597,7 @@ MonoBehaviour:
   _gridCellPrefab: {fileID: 90728682598853689, guid: 69cf2c325ff7d4e4eb01540c8a82384c,
     type: 3}
   _testSprite: {fileID: 0}
+  _featurePicker: {fileID: 5559116631486768876}
 --- !u!1 &3166851151785697890
 GameObject:
   m_ObjectHideFlags: 0

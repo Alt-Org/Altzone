@@ -13,6 +13,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Transform _content;
         [SerializeField] private GameObject _gridCellPrefab;
         [SerializeField] private Sprite _testSprite;
+        [SerializeField] private FeaturePicker _featurePicker;
         private List<AvatarPartInfo> _avatarPartInfo;
         private List<string> _allAvatarCategoryIds;
 
@@ -36,7 +37,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         }
 
-        private void AddFeatureCell(Sprite sprite)
+        private void AddFeatureCell(Sprite sprite, AvatarPartInfo part)
         {
             GameObject _gridCell = Instantiate(_gridCellPrefab, _content);
             Image _avatarPart = _gridCell.transform.Find("FeatureImage").GetComponent<Image>();
@@ -44,6 +45,8 @@ namespace MenuUi.Scripts.AvatarEditor
             _avatarPart.sprite = sprite;
 
             Button _button = _gridCell.GetComponent<Button>();
+
+            _button.onClick.AddListener(() => _featurePicker.SetFeature(part, 0));
         }
 
         public void RefreshFeatureListItems(string categoryId)
@@ -52,7 +55,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
             foreach (var part in _avatarPartInfo)
             {
-                AddFeatureCell(part.IconImage);
+                AddFeatureCell(part.IconImage, part);
             }
         }
 

@@ -234,7 +234,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
 
-        private void SetFeature(AvatarPartInfo feature, int slot)
+        public void SetFeature(AvatarPartInfo feature, int slot)
         {
             _featureState.SetSelectedFeature(slot, feature.Id);
             _avatarEditorController.PlayerAvatar.SortAndAssignByID(feature.Id);
