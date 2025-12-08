@@ -22,7 +22,8 @@ public class DailyTaskProgressListenerCharacterStats : DailyTaskProgressListener
                 _educationCategoryActionType = TaskEducationActionType.MakeCharacterBig;
                 break;
         }
-
-        UpdateProgress("1");
+        if (_educationCategoryActionType == DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationActionType)
+            DailyTaskProgressManager.Instance.UpdateTaskProgress(_educationCategoryActionType, "1");
+        //UpdateProgress("1");
     }
 }
