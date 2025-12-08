@@ -273,10 +273,9 @@ public class PollObject : MonoBehaviour
                     {
                         memberName = targetMember.Name;
 
-                        if (!string.IsNullOrEmpty(targetMember.Role) &&
-                            Enum.TryParse(targetMember.Role, true, out ClanMemberRole parsedRole))
+                        if (targetMember.Role != null)
                         {
-                            roleName = parsedRole.ToString();
+                            roleName = targetMember.Role.name.ToString();
                         }
                         else
                         {
@@ -462,7 +461,7 @@ public class PollObject : MonoBehaviour
         }
 
         ClanMemberRole currentRole = ClanMemberRole.None;
-        string roleString = targetMember.Role?.Trim();
+        string roleString = targetMember.Role.name?.Trim();
 
         if (!string.IsNullOrEmpty(roleString) &&
             Enum.TryParse(roleString, true, out ClanMemberRole parsedRole))

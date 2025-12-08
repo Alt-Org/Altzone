@@ -330,7 +330,7 @@ public static class PollManager // Handles the polls from creation to loading to
                 var member = clan.Members.FirstOrDefault(m => m.Id == clanRolePoll.TargetPlayerId);
                 if (member != null)
                 {
-                    member.Role = clanRolePoll.TargetRole.ToString();
+                    //member.Role = clanRolePoll.TargetRole.ToString();
                     Debug.Log($"Poll passed: promoted {member.Name} to {clanRolePoll.TargetRole}");
                 }
                 else
