@@ -87,14 +87,14 @@ namespace Battle.View.UI
                     Value = Instantiate(_entryTemplate, _entryParent).GetComponent<TMP_Text>()
                 };
 
-                entry.Name.gameObject.name = name + " (Name)";
-                entry.Value.gameObject.name = name + " (Value)";
+                entry.Name  .gameObject.name = name + " (Name)";
+                entry.Value .gameObject.name = name + " (Value)";
 
-                entry.Name.fontSize = _entryFontSize;
-                entry.Value.fontSize = _entryFontSize;
+                entry.Name  .fontSize = _entryFontSize;
+                entry.Value .fontSize = _entryFontSize;
 
-                entry.Name.gameObject.SetActive(true);
-                entry.Value.gameObject.SetActive(true);
+                entry.Name  .gameObject.SetActive(true);
+                entry.Value .gameObject.SetActive(true);
 
                 entry.Name.text = name;
 
