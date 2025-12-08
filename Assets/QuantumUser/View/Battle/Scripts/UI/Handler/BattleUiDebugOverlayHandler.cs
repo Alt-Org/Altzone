@@ -81,7 +81,7 @@ namespace Battle.View.UI
         {
             foreach(string name in names)
             {
-                Entry entry = new Entry()
+                Entry entry = new()
                 {
                     Name = Instantiate(_entryTemplate, _entryParent).GetComponent<TMP_Text>(),
                     Value = Instantiate(_entryTemplate, _entryParent).GetComponent<TMP_Text>()
