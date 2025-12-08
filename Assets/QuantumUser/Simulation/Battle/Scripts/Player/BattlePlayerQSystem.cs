@@ -218,6 +218,21 @@ namespace Battle.QSimulation.Player
             else if (!playerHandle.IsAbandoned)
             {
                 input = f.GetPlayerInput(playerHandle.PlayerRef);
+
+                BattleInputDebugUtils.InputDebugInfo inputDebugInfo = BattleInputDebugUtils.GenerateDebugInfo(input);
+
+                if (inputDebugInfo.NotEmpty)
+                {
+                    s_debugLogger.LogFormat(f,
+                                            "({0}) Received input ({1}) ({2})\n" +
+                                            "struct: {3}",
+                                            playerHandle.Slot,
+                                            input->DebugNumber,
+                                            inputDebugInfo.Summary,
+                                            inputDebugInfo.Struct
+                    );
+                }
+
                 isValid = input->IsValid;
             }
 
