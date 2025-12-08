@@ -162,6 +162,8 @@ namespace Battle.View.Player
         /// <value>Bool to block screen input</value>
         private bool _blockScreenInput = false;
 
+        private int _inputDebugNumber;
+
         /// @}
 
         /// @name Setting variables
@@ -208,6 +210,7 @@ namespace Battle.View.Player
         private void OnEnable()
         {
             _debugLogger = BattleDebugLogger.Create<BattlePlayerInput>();
+            _inputDebugNumber = 0;
 
             _movementInputType = SettingsCarrier.Instance.BattleMovementInput;
             _rotationInputType = SettingsCarrier.Instance.BattleRotationInput;
@@ -286,6 +289,7 @@ namespace Battle.View.Player
             Input input = new()
             {
                 IsValid                       = true,
+                DebugNumber                   = _inputDebugNumber,
                 MovementInput                 = movementInputInfo.MovementInput,
                 MovementDirectionIsNormalized = movementInputInfo.MovementDirectionIsNormalized,
                 MovementPositionTarget        = movementInputInfo.MovementPositionTarget,
@@ -293,37 +297,30 @@ namespace Battle.View.Player
                 MovementDirection             = movementInputInfo.MovementDirection,
                 RotationInput                 = rotationInputInfo.RotationInput,
                 RotationValue                 = rotationInputInfo.RotationValue,
+                AbilityActivate               = Time.time - _lastTapTime < DoubleTapInterval && mouseClick && Vector3.Distance(_lastTapPosition, unityPosition) < DoubleTapDistance,
                 PlayerCharacterNumber         = _characterNumber,
-                GiveUpInput                   = _onGiveUp,
-                AbilityActivate               = Time.time - _lastTapTime < DoubleTapInterval && mouseClick && Vector3.Distance(_lastTapPosition, unityPosition) < DoubleTapDistance
+                GiveUpInput                   = _onGiveUp
             };
 
             DeterministicInputFlags inputFlags = DeterministicInputFlags.Repeatable;
 
-            _debugLogger.LogFormat("({0}) Sending input\n" +
-                                   "struct: {{\n" +
-                                   "    MovementInput:                 {1},\n" +
-                                   "    MovementDirectionIsNormalized: {2},\n" +
-                                   "    MovementPositionTarget:        {3},\n" +
-                                   "    MovementPositionMove:          {4},\n" +
-                                   "    MovementDirection:             {5},\n" +
-                                   "    RotationInput:                 {6},\n" +
-                                   "    RotationValue:                 {7},\n" +
-                                   "    PlayerCharacterNumber:         {8},\n" +
-                                   "    GiveUpInput:                   {9}\n" +
-                                   "}},\n" +
-                                   "flags: {10}",
-                                   BattleGameViewController.LocalPlayerSlot,
-                                   input.MovementInput,
-                                   input.MovementDirectionIsNormalized,
-                                   input.MovementPositionTarget.ConvertToString(),
-                                   input.MovementPositionMove,
-                                   input.MovementDirection,
-                                   input.RotationInput,
-                                   input.RotationValue,
-                                   input.PlayerCharacterNumber,
-                                   input.GiveUpInput,
-                                   inputFlags);
+            unsafe
+            {
+                BattleInputDebugUtils.InputDebugInfo inputDebugInfo = BattleInputDebugUtils.GenerateDebugInfo(&input);
+
+                if (inputDebugInfo.NotEmpty)
+                {
+                    _debugLogger.LogFormat("({0}) Sending input ({1}) ({2})\n" +
+                                                           "struct: {3}\n" +
+                                                           "flags: {4}",
+                                                           BattleGameViewController.LocalPlayerSlot,
+                                                           input.DebugNumber,
+                                                           inputDebugInfo.Summary,
+                                                           inputDebugInfo.Struct,
+                                                           inputFlags
+                    );
+                }
+            }
 
             callback.SetInput(input, inputFlags);
 
@@ -336,6 +333,8 @@ namespace Battle.View.Player
             }
 
             _previousTime = Time.time;
+
+            _inputDebugNumber++;
 
             // reset
             _onGiveUp        = false;
