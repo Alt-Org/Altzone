@@ -10,7 +10,7 @@ using MenuUi.Scripts.Window;
 using Altzone.Scripts;
 using System.Linq;
 
-public class ClanSettings : MonoBehaviour
+public class ClanSettings : AltMonoBehaviour
 {
     [Header("Static text fields")]
     [SerializeField] private TextMeshProUGUI _clanName;
@@ -348,6 +348,18 @@ public class ClanSettings : MonoBehaviour
 
     public void CancelClanPhraseEdit()
     {
+        if(DailyTaskProgressManager.Instance.CurrentPlayerTask != null
+            && DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationSocialType == Altzone.Scripts.Model.Poco.Game.TaskEducationSocialType.ChangeClanMotto)
+        {
+            StartCoroutine(GetClanData(c =>
+            {
+                if(c != null)
+                {
+                    if(!string.IsNullOrWhiteSpace(_clanPhraseField.text) && c.Phrase != _clanPhraseField.text)
+                        DailyTaskProgressManager.Instance.UpdateTaskProgress(Altzone.Scripts.Model.Poco.Game.TaskEducationSocialType.ChangeClanMotto, "1");
+                }
+            }));
+        }
         HidePopup(_clanPhrasePopup);
     }
 
