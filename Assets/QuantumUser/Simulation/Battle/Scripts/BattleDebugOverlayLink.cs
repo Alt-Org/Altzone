@@ -14,13 +14,14 @@ using Quantum;
 namespace Battle.QSimulation
 {
     /// <summary>
-    /// Wrapper class for handling debug info in Simulation.<br/>
+    /// Simulation side wrapper class for <see cref="Battle.View.BattleDebugOverlay">BattleDebugOverlay</see> which handles debug info.<br/>
     /// Implements wrapper methods to control the debug overlay.
     /// </summary>
     public static class BattleDebugOverlayLink
     {
         /// <summary>
-        /// Establishes link between View and Simulation.
+        /// Establishes debug link between %View and Simulation.<br/>
+        /// Called by <see cref="Battle.View.BattleDebugOverlay.Init">BattleDebugOverlay.Init</see>.
         /// </summary>
         ///
         /// <param name="addEntryFnRef"><see cref="Battle.View.BattleDebugOverlay.AddEntry">BattleDebugOverlay.AddEntry</see> function reference.</param>
@@ -194,7 +195,13 @@ namespace Battle.QSimulation
             s_setEntriesFnRef(entryNumber, values);
         }
 
-        /// <summary>Reference to local player slot</summary>
+        /// <summary>Reference to local player slot.</summary>
+        ///
+        /// Used to filter debug info for local player.<br/>
+        /// See <see cref="AddEntry(BattlePlayerSlot, string)">AddEntry</see><br/>
+        /// See <see cref="AddEntries(BattlePlayerSlot, string[])">AddEntries</see><br/>
+        /// See <see cref="SetEntry(BattlePlayerSlot, int, object)">SetEntry</see><br/>
+        /// See <see cref="SetEntries(BattlePlayerSlot, int, object[])">SetEntries</see>
         private static BattlePlayerSlot s_localPlayerSlot;
 
         /// <summary>Function reference to <see cref="Battle.View.BattleDebugOverlay.AddEntry">BattleDebugOverlay.AddEntry</see></summary>
