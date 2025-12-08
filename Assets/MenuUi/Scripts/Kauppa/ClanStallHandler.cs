@@ -36,7 +36,7 @@ public class ClanStallPopupHandler : MonoBehaviour
     {
         gameObject.SetActive(true);
     }
-    
+    /*
     private void OnDisable()
     {
         for (int i = content.transform.childCount; i > 0; i--)
@@ -44,7 +44,7 @@ public class ClanStallPopupHandler : MonoBehaviour
             Destroy(content.transform.GetChild(i - 1).gameObject);
         }
     }
-    
+    */
     private IEnumerator RandomFurniture()
     {
         ReadOnlyCollection<GameFurniture> allGameFurniture = null;
