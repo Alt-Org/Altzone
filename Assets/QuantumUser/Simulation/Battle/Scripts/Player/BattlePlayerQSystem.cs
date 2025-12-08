@@ -417,7 +417,7 @@ namespace Battle.QSimulation.Player
             {
                 s_debugLogger.LogFormat(f, "({0}) Current characters shield destroyed!", playerHandle.Slot);
 
-                BattlePlayerShieldDataQComponent* shieldDataQComponent = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(BattleEntityManager.Get(f, playerData->ActiveShieldEntityID));
+                BattlePlayerShieldDataQComponent* shieldDataQComponent = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(playerData->AttachedShield);
 
                 foreach (EntityRef hitboxShieldEntity in f.ResolveList(shieldDataQComponent->HitboxEntities))
                 {
