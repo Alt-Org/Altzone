@@ -42,31 +42,7 @@ public class ClanSearchPopup : MonoBehaviour
         return null;
     }
 
-    /*public void SetClanInfo(ServerClan clan, ClanListing clanListing)
-    {
-        if (clan != null)
-        {
-            ClanData clanData = new ClanData(clan);
-
-            _clanName.text = clanData.Name;
-            _clanDescription.text = clanData.Phrase;
-            _clanMembers.SetText(SettingsCarrier.Instance.Language, new string[1] { clan.playerCount + "/25" });
-            _clanHeart.SetOtherClanColors(clanData);
-            _winsRankText.text = clanListing.WinsRank.text;
-            _activityRankText.text = clanListing.ActivityRank.text;
-
-            // Clan values
-            foreach (Transform child in _labelsField) Destroy(child.gameObject);
-            foreach (ClanValues value in clanData.Values)
-            {
-                GameObject label = Instantiate(_labelImagePrefab, _labelsField);
-                ValueImageHandle imageHandler = label.GetComponent<ValueImageHandle>();
-                imageHandler.SetLabelInfo(value);
-            }
-            _joinClanButton.onClick.RemoveAllListeners();
-            _joinClanButton.onClick.AddListener(() => { clanListing.JoinButtonPressed(); });
-        }
-    }*/
+    private const int _maxClanMembers = 30;
 
     public void Show(ServerClan clan, UnityAction onJoin)
     {
@@ -77,7 +53,7 @@ public class ClanSearchPopup : MonoBehaviour
 
         _clanName.text = clanData.Name;
         _clanDescription.text = clanData.Phrase;
-        _clanMembers.SetText(SettingsCarrier.Instance.Language, new string[1] { clan.playerCount + "/25" });
+        _clanMembers.SetText(SettingsCarrier.Instance.Language, new string[1] { clan.playerCount + "/" + _maxClanMembers });
         _clanHeart.SetOtherClanColors(clanData);
 
         if (_clanOpenObject != null) _clanOpenObject.SetActive(clanData.IsOpen);
@@ -110,14 +86,38 @@ public class ClanSearchPopup : MonoBehaviour
             ServerManager.Instance.Clan != null &&
             clan._id == ServerManager.Instance.Clan._id;
 
-        if(_joinClanButton != null)
+        // Check if clan is full
+        bool isFull = clan.playerCount >= _maxClanMembers;
+
+        if (_joinClanButton != null)
         {
             _joinClanButton.gameObject.SetActive(!isMember);
 
             _joinClanButton.onClick.RemoveAllListeners();
+
             if (!isMember)
             {
-                _joinClanButton.onClick.AddListener(() => { onJoin?.Invoke(); });
+                _joinClanButton.interactable = !isFull;
+
+                var buttonText = _joinClanButton.GetComponentInChildren<TextMeshProUGUI>();
+
+                if (buttonText != null)
+                {
+                    if (isFull)
+                    {
+                        buttonText.text = "Klaani täynnä";
+                    }
+                    else
+                    {
+                        buttonText.text = "Liity";
+                    }
+                }
+
+                if (!isFull)
+                {
+                    _joinClanButton.onClick.AddListener(() => { onJoin?.Invoke(); });
+                }
+                
             }
         }
 
@@ -125,14 +125,6 @@ public class ClanSearchPopup : MonoBehaviour
         {
             _openClanMainView.gameObject.SetActive(isMember);
         }
-
-        /*_joinClanButton.gameObject.SetActive(!isMember);
-
-        _joinClanButton.onClick.RemoveAllListeners();
-        if(!isMember)
-        {
-            _joinClanButton.onClick.AddListener(() => { onJoin?.Invoke(); });
-        }*/
     }
 
     public void Hide()
