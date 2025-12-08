@@ -16,10 +16,24 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private FeaturePicker _featurePicker;
         private List<AvatarPartInfo> _avatarPartInfo;
         private List<string> _allAvatarCategoryIds;
+        private Dictionary<string, int> _featureCategoryIdToFeatureSlotInt;
 
         // Start is called before the first frame update
         void Start()
         {
+            // This feels stupid, but the old code uses ints that don't seem related to the feature slot id:s in any way
+            // to set the features so I can't figure out a better way to do this for now.
+            _featureCategoryIdToFeatureSlotInt = new Dictionary<string, int>
+            {
+                { "10", 0 }, // Hair
+                { "21", 1 }, // Eyes
+                { "22", 2 }, // Nose
+                { "23", 3 }, // Mouth
+                { "31", 4 }, // Body
+                { "32", 5 }, // Hands
+                { "33", 6 }  // Feet
+            };
+
             _allAvatarCategoryIds = _avatarPartsReference.GetAllCategoryIds();
             // Load default features for featuregrid
             if (_allAvatarCategoryIds != null)
@@ -45,8 +59,8 @@ namespace MenuUi.Scripts.AvatarEditor
             _avatarPart.sprite = sprite;
 
             Button _button = _gridCell.GetComponent<Button>();
-
-            _button.onClick.AddListener(() => _featurePicker.SetFeature(part, 0));
+                                                // This could propably be more readable
+            _button.onClick.AddListener(() => _featurePicker.SetFeature(part, _featureCategoryIdToFeatureSlotInt[GetFeatureCategoryFromFeatureId(part.Id)]));
         }
 
         public void RefreshFeatureListItems(string categoryId)
@@ -65,6 +79,19 @@ namespace MenuUi.Scripts.AvatarEditor
             {
                 Destroy(child.gameObject);
             }
-        }  
+        }
+
+        private string GetFeatureCategoryFromFeatureId(string featureId)
+        {
+            if (featureId == null)
+            {
+                Debug.LogError("featureId is null");
+                return "";
+            }
+            else
+            {
+                return featureId.Substring(0, 2);
+            }
+        }
     }
 }
