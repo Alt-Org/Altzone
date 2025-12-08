@@ -29,9 +29,9 @@ namespace Battle.QSimulation
         /// <param name="setEntryFnRef"><see cref="Battle.View.BattleDebugOverlay.SetEntry">BattleDebugOverlay.SetEntry</see> function reference.</param>
         /// <param name="setEntriesFnRef"><see cref="Battle.View.BattleDebugOverlay.SetEntries">BattleDebugOverlay.SetEntries</see> function reference.</param>
         public static void InitLink(
-            Func<string, int>  addEntryFnRef,
+            Func<string, int>    addEntryFnRef,
             Func<string[], int>  addEntriesFnRef,
-            Action<int,object> setEntryFnRef,
+            Action<int,object>   setEntryFnRef,
             Action<int,object[]> setEntriesFnRef
         )
         {
