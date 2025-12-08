@@ -43,6 +43,7 @@ public class ClanSearchPopup : MonoBehaviour
     }
 
     private const int _maxClanMembers = 30;
+    private const int _maxValues = 3;
 
     public void Show(ServerClan clan, UnityAction onJoin)
     {
@@ -75,11 +76,20 @@ public class ClanSearchPopup : MonoBehaviour
         if (_winsRankText) _winsRankText.text = "-";
 
         foreach (Transform child in _labelsField) Destroy(child.gameObject);
+
+        int showValues = 0;
         foreach (ClanValues value in clanData.Values)
         {
+            if(showValues >= _maxValues)
+            {
+                break;
+            }
+
             GameObject label = Instantiate(_labelImagePrefab, _labelsField);
             ValueImageHandle imageHandler = label.GetComponent<ValueImageHandle>();
             imageHandler.SetLabelInfo(value);
+
+            showValues++;
         }
 
         bool isMember =

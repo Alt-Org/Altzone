@@ -39,7 +39,7 @@ public class ClanCreateNew : MonoBehaviour
     [Header("Warnings")]
     [SerializeField] private GameObject _nameWarningOutline;
     [SerializeField] private GameObject _passwordWarningOutline;
-    //[SerializeField] private GameObject _goalWarningOutline;
+    [SerializeField] private GameObject _ageWarningOutline;
     [SerializeField] private GameObject _languageWarningOutline;
     [SerializeField] private GameObject _valuesWarningOutline;
     [SerializeField] private PopupController _warningPopup;
@@ -96,7 +96,7 @@ public class ClanCreateNew : MonoBehaviour
 
         _nameWarningOutline.SetActive(false);
         _passwordWarningOutline.SetActive(false);
-        //_goalWarningOutline.SetActive(false);
+        _ageWarningOutline.SetActive(false);
         _passwordWarningOutline.SetActive(false);
         _languageWarningOutline.SetActive(false);
         _valuesWarningOutline.SetActive(false);
@@ -207,7 +207,7 @@ public class ClanCreateNew : MonoBehaviour
         List<HeartPieceData> clanHeartPieces = new();
         for (int i = 0; i < 50; i++) clanHeartPieces.Add(new HeartPieceData(i, _selectedHeartColor));
 
-        if (!CheckClanInputsValidity(clanName, isOpen, password, language, values))
+        if (!CheckClanInputsValidity(clanName, isOpen, password, language, age, values))
         {
             return;
         }
@@ -298,7 +298,13 @@ public class ClanCreateNew : MonoBehaviour
         windowManager.GoBack();
     }
 
-    private bool CheckClanInputsValidity(string clanName, bool isOpen, string password, Language language, ClanValues[] values)
+    private bool CheckClanInputsValidity(
+        string clanName,
+        bool isOpen,
+        string password,
+        Language language,
+        ClanAge age,
+        ClanValues[] values)
     {
         bool validInputs = true;
 
@@ -338,13 +344,13 @@ public class ClanCreateNew : MonoBehaviour
         }
         else _languageWarningOutline.SetActive(false);
 
-        /*if (goal == Goals.None)
+        if (age == ClanAge.None)
         {
-            _goalWarningOutline.SetActive(true);
-            _warningPopup.ActivatePopUp("Valitse klaanin tavoite");
+            _ageWarningOutline.SetActive(true);
+            _warningPopup.ActivatePopUp("Valitse klaanin ikäraja");
             validInputs = false;
         }
-        else _goalWarningOutline.SetActive(false);*/
+        else _ageWarningOutline.SetActive(false);
 
         if (values.Length < 3)
         {
