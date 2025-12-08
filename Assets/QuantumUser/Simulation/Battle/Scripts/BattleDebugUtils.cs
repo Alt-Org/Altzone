@@ -1,5 +1,7 @@
+// Quantum usings
 using Quantum;
 
+// Battle QSimulation usings
 using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation
