@@ -73,7 +73,7 @@ namespace Battle.View
         }
 
         /// <summary>
-        /// Sets value of a existing entry in debug overlay.
+        /// Sets value of an existing entry in debug overlay.
         /// </summary>
         ///
         /// Sets value of an existing entry at @a entryNumber.<br/>
