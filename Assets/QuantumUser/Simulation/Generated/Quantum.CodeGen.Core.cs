@@ -820,32 +820,35 @@ namespace Quantum {
   public unsafe partial struct Input {
     public const Int32 SIZE = 80;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(16)]
+    [FieldOffset(20)]
     public QBoolean IsValid;
+    [FieldOffset(4)]
+    public Int32 DebugNumber;
     [FieldOffset(0)]
     public BattleMovementInputType MovementInput;
-    [FieldOffset(20)]
+    [FieldOffset(24)]
     public QBoolean MovementDirectionIsNormalized;
-    [FieldOffset(28)]
+    [FieldOffset(32)]
     public BattleGridPosition MovementPositionTarget;
     [FieldOffset(64)]
     public FPVector2 MovementPositionMove;
     [FieldOffset(48)]
     public FPVector2 MovementDirection;
-    [FieldOffset(24)]
+    [FieldOffset(28)]
     public QBoolean RotationInput;
     [FieldOffset(40)]
     public FP RotationValue;
-    [FieldOffset(4)]
-    public Int32 PlayerCharacterNumber;
     [FieldOffset(12)]
-    public QBoolean GiveUpInput;
-    [FieldOffset(8)]
     public QBoolean AbilityActivate;
+    [FieldOffset(8)]
+    public Int32 PlayerCharacterNumber;
+    [FieldOffset(16)]
+    public QBoolean GiveUpInput;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 19249;
         hash = hash * 31 + IsValid.GetHashCode();
+        hash = hash * 31 + DebugNumber.GetHashCode();
         hash = hash * 31 + (Int32)MovementInput;
         hash = hash * 31 + MovementDirectionIsNormalized.GetHashCode();
         hash = hash * 31 + MovementPositionTarget.GetHashCode();
@@ -853,9 +856,9 @@ namespace Quantum {
         hash = hash * 31 + MovementDirection.GetHashCode();
         hash = hash * 31 + RotationInput.GetHashCode();
         hash = hash * 31 + RotationValue.GetHashCode();
+        hash = hash * 31 + AbilityActivate.GetHashCode();
         hash = hash * 31 + PlayerCharacterNumber.GetHashCode();
         hash = hash * 31 + GiveUpInput.GetHashCode();
-        hash = hash * 31 + AbilityActivate.GetHashCode();
         return hash;
       }
     }
@@ -875,6 +878,7 @@ namespace Quantum {
     static partial void SerializeCodeGen(void* ptr, FrameSerializer serializer) {
         var p = (Input*)ptr;
         serializer.Stream.Serialize((Int32*)&p->MovementInput);
+        serializer.Stream.Serialize(&p->DebugNumber);
         serializer.Stream.Serialize(&p->PlayerCharacterNumber);
         QBoolean.Serialize(&p->AbilityActivate, serializer);
         QBoolean.Serialize(&p->GiveUpInput, serializer);
@@ -1718,6 +1722,7 @@ namespace Quantum {
       if ((int)player >= (int)_globals->input.Length) { throw new System.ArgumentOutOfRangeException("player"); }
       var i = _globals->input.GetPointer(player);
       i->IsValid = input.IsValid;
+      i->DebugNumber = input.DebugNumber;
       i->MovementInput = input.MovementInput;
       i->MovementDirectionIsNormalized = input.MovementDirectionIsNormalized;
       i->MovementPositionTarget = input.MovementPositionTarget;
@@ -1725,9 +1730,9 @@ namespace Quantum {
       i->MovementDirection = input.MovementDirection;
       i->RotationInput = input.RotationInput;
       i->RotationValue = input.RotationValue;
+      i->AbilityActivate = input.AbilityActivate;
       i->PlayerCharacterNumber = input.PlayerCharacterNumber;
       i->GiveUpInput = input.GiveUpInput;
-      i->AbilityActivate = input.AbilityActivate;
     }
     public Input* GetPlayerInput(PlayerRef player) {
       if ((int)player >= (int)_globals->input.Length) { throw new System.ArgumentOutOfRangeException("player"); }
