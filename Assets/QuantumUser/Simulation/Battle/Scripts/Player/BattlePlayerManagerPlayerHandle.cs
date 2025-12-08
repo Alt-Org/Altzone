@@ -125,7 +125,7 @@ namespace Battle.QSimulation.Player
                 set => _internalHandle.AllowCharacterSwapping = value;
             }
 
-            public int SelectedCharacterEntityID
+            public BattleEntityID SelectedCharacterEntityID
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterEntityID; }
 
             public int SelectedCharacterNumber
