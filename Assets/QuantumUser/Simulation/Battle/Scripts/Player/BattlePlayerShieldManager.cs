@@ -174,6 +174,17 @@ namespace Battle.QSimulation.Player
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DespawnShield(Frame f, BattlePlayerSlot playerSlot, int characterNumber, int shieldNumber)
+        {
+            if (!IsValidShieldNumber(f, playerSlot, shieldNumber, characterNumber)) return;
+
+            int playerIndex = BattlePlayerManager.PlayerHandle.Low_GetPlayerIndex(playerSlot);
+            int shieldIndex = GetShieldIndex(playerIndex, characterNumber, shieldNumber);
+
+            BattleEntityManager.Return(f, GetPlayerShieldManagerData(f)->PlayerShieldEntityIDs[shieldIndex]);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetShieldIndex(int playerIndex, int characterNumber, int shieldNumber)
         {
             return GetShieldOffset(playerIndex, characterNumber) + shieldNumber;
