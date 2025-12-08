@@ -174,7 +174,6 @@ In **%Battle** all [Quantum Events🡵] are located in BattleEvents.qtn file.
 | @crefd{Quantum}   | @cref{Quantum,EventBattleCharacterTakeDamage}               | @copybrief Quantum.EventBattleCharacterTakeDamage               |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleShieldTakeDamage}                  | @copybrief Quantum.EventBattleShieldTakeDamage                  |
 |                                                                                                                                                 |||
-| @crefd{Quantum}   | @cref{Quantum,EventBattleDebugUpdateStatsOverlay}           | @copybrief Quantum.EventBattleDebugUpdateStatsOverlay           |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleDebugOnScreenMessage}              | @copybrief Quantum.EventBattleDebugOnScreenMessage              |
 
 <br/>
