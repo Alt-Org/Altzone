@@ -111,6 +111,7 @@ namespace Quantum.Prototypes.Unity {
     public FP CurrentDefence;
     public Quantum.QuantumEntityPrototype CharacterHitboxEntity;
     public Int32 ShieldCount;
+    public Int32 AttachedShieldNumber;
     public Quantum.QuantumEntityPrototype AttachedShield;
     public QBoolean DisableRotation;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
@@ -136,6 +137,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.CurrentDefence, out result.CurrentDefence);
       converter.Convert(this.CharacterHitboxEntity, out result.CharacterHitboxEntity);
       converter.Convert(this.ShieldCount, out result.ShieldCount);
+      converter.Convert(this.AttachedShieldNumber, out result.AttachedShieldNumber);
       converter.Convert(this.AttachedShield, out result.AttachedShield);
       converter.Convert(this.DisableRotation, out result.DisableRotation);
       converter.Convert(this.DamageCooldown, out result.DamageCooldown);

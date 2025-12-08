@@ -1224,51 +1224,53 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerDataQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 176;
+    public const Int32 SIZE = 184;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(28)]
+    [FieldOffset(32)]
     public PlayerRef PlayerRef;
     [FieldOffset(4)]
     public BattlePlayerSlot Slot;
     [FieldOffset(8)]
     public BattleTeamNumber TeamNumber;
-    [FieldOffset(12)]
+    [FieldOffset(16)]
     public Int32 CharacterId;
     [FieldOffset(0)]
     public BattlePlayerCharacterClass CharacterClass;
-    [FieldOffset(136)]
+    [FieldOffset(144)]
     public BattlePlayerStats Stats;
-    [FieldOffset(20)]
-    public Int32 GridExtendTop;
-    [FieldOffset(16)]
-    public Int32 GridExtendBottom;
-    [FieldOffset(36)]
-    public QBoolean HasTargetPosition;
-    [FieldOffset(120)]
-    public FPVector2 TargetPosition;
-    [FieldOffset(80)]
-    public FP RotationBase;
-    [FieldOffset(88)]
-    public FP RotationOffset;
-    [FieldOffset(64)]
-    public FP CurrentHp;
-    [FieldOffset(56)]
-    public FP CurrentDefence;
-    [FieldOffset(48)]
-    public EntityRef CharacterHitboxEntity;
     [FieldOffset(24)]
-    public Int32 ShieldCount;
+    public Int32 GridExtendTop;
+    [FieldOffset(20)]
+    public Int32 GridExtendBottom;
     [FieldOffset(40)]
-    public EntityRef AttachedShield;
-    [FieldOffset(32)]
-    public QBoolean DisableRotation;
-    [FieldOffset(112)]
-    public FrameTimer DamageCooldown;
-    [FieldOffset(72)]
-    public FP MovementCooldownSec;
-    [FieldOffset(104)]
-    public FrameTimer AbilityCooldownSec;
+    public QBoolean HasTargetPosition;
+    [FieldOffset(128)]
+    public FPVector2 TargetPosition;
+    [FieldOffset(88)]
+    public FP RotationBase;
     [FieldOffset(96)]
+    public FP RotationOffset;
+    [FieldOffset(72)]
+    public FP CurrentHp;
+    [FieldOffset(64)]
+    public FP CurrentDefence;
+    [FieldOffset(56)]
+    public EntityRef CharacterHitboxEntity;
+    [FieldOffset(28)]
+    public Int32 ShieldCount;
+    [FieldOffset(12)]
+    public Int32 AttachedShieldNumber;
+    [FieldOffset(48)]
+    public EntityRef AttachedShield;
+    [FieldOffset(36)]
+    public QBoolean DisableRotation;
+    [FieldOffset(120)]
+    public FrameTimer DamageCooldown;
+    [FieldOffset(80)]
+    public FP MovementCooldownSec;
+    [FieldOffset(112)]
+    public FrameTimer AbilityCooldownSec;
+    [FieldOffset(104)]
     public FrameTimer AbilityActivateBufferSec;
     public override Int32 GetHashCode() {
       unchecked { 
@@ -1289,6 +1291,7 @@ namespace Quantum {
         hash = hash * 31 + CurrentDefence.GetHashCode();
         hash = hash * 31 + CharacterHitboxEntity.GetHashCode();
         hash = hash * 31 + ShieldCount.GetHashCode();
+        hash = hash * 31 + AttachedShieldNumber.GetHashCode();
         hash = hash * 31 + AttachedShield.GetHashCode();
         hash = hash * 31 + DisableRotation.GetHashCode();
         hash = hash * 31 + DamageCooldown.GetHashCode();
@@ -1303,6 +1306,7 @@ namespace Quantum {
         serializer.Stream.Serialize((Int32*)&p->CharacterClass);
         serializer.Stream.Serialize((Int32*)&p->Slot);
         serializer.Stream.Serialize((Int32*)&p->TeamNumber);
+        serializer.Stream.Serialize(&p->AttachedShieldNumber);
         serializer.Stream.Serialize(&p->CharacterId);
         serializer.Stream.Serialize(&p->GridExtendBottom);
         serializer.Stream.Serialize(&p->GridExtendTop);

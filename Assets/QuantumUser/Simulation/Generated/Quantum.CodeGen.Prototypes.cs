@@ -276,6 +276,7 @@ namespace Quantum.Prototypes {
     public FP CurrentDefence;
     public MapEntityId CharacterHitboxEntity;
     public Int32 ShieldCount;
+    public Int32 AttachedShieldNumber;
     public MapEntityId AttachedShield;
     public QBoolean DisableRotation;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
@@ -304,6 +305,7 @@ namespace Quantum.Prototypes {
         result.CurrentDefence = this.CurrentDefence;
         PrototypeValidator.FindMapEntity(this.CharacterHitboxEntity, in context, out result.CharacterHitboxEntity);
         result.ShieldCount = this.ShieldCount;
+        result.AttachedShieldNumber = this.AttachedShieldNumber;
         PrototypeValidator.FindMapEntity(this.AttachedShield, in context, out result.AttachedShield);
         result.DisableRotation = this.DisableRotation;
         this.DamageCooldown.Materialize(frame, ref result.DamageCooldown, in context);
