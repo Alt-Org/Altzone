@@ -39,6 +39,7 @@ public class OnlinePlayersPanelItem : MonoBehaviour
         {
             _clanHeart.SetHeartColors(clanLogo);
         }
+       
 
         UpdateOnlineStatusIndicator();
 

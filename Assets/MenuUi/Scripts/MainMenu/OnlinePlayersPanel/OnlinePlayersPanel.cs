@@ -42,6 +42,8 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         _viewClanPlayersButton.onClick.AddListener(ViewClanPlayers);
         _viewAllPlayersButton.onClick.AddListener(ViewAllPlayers);
 
+        
+
         ServerManager.OnOnlinePlayersChanged += BuildOnlinePlayerList;
         CloseOnlinePlayersPanel();
         
@@ -88,6 +90,9 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     {
         UpdateOnlineFriendsCount(onlinePlayers);
 
+        _clanPlayers.Clear();
+        _allPlayers.Clear();
+
 
         foreach (var item in _onlinePlayersPanelItems)
         {
@@ -96,8 +101,6 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
         _onlinePlayersPanelItems.Clear();
         
-        _clanPlayers.Clear();
-        _allPlayers.Clear();
         
 
         foreach (var player in onlinePlayers)
@@ -109,16 +112,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             StartCoroutine(ServerManager.Instance.GetOtherPlayerFromServer(player._id, c => serverPlayer = c));
             StartCoroutine(WaitUntilTimeout(3, c => timeout = c));
             yield return new WaitUntil(() => serverPlayer != null || timeout);
-            
-            if (serverPlayer != null && serverPlayer.clanLogo != null)
-            {
-                _clanPlayers.Add(player); // Pelaaja on klaanin jäsen
-            }
-            else
-            {
-                _allPlayers.Add(player); // Pelaaja ei ole klaanissa
-            } 
-            
+
 
             ClanLogo clanLogo = null;
             AvatarVisualData avatarVisualData = null;
@@ -127,6 +121,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             {
                 clanLogo = serverPlayer.clanLogo;
                 avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(new AvatarData(serverPlayer.name, serverPlayer.avatar));
+
             }
 
 
