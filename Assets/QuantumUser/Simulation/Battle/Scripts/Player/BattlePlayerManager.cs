@@ -410,6 +410,7 @@ namespace Battle.QSimulation.Player
                             CharacterHitboxEntity = playerHitboxCharacterEntity,
 
                             ShieldCount           = playerCharacterShieldCount,
+                            AttachedShieldNumber  = 0,
                             AttachedShield        = BattlePlayerShieldManager.GetShieldEntity(f, playerSlot, playerCharacterNumber, 0),
 
                             DisableRotation       = playerCharacterDataTemplate->DisableRotation,
@@ -464,7 +465,7 @@ namespace Battle.QSimulation.Player
 
                         // teleport hitboxes
                         Transform2D* characterTransform = f.Unsafe.GetPointer<Transform2D>(playerCharacterEntity);
-                        Transform2D* shieldTransform = f.Unsafe.GetPointer<Transform2D>(BattleEntityManager.Get(f, playerDataPtr->ActiveShieldEntityID));
+                        Transform2D* shieldTransform = f.Unsafe.GetPointer<Transform2D>(playerDataPtr->AttachedShield);
                         BattlePlayerMovementController.Teleport(f, playerDataPtr, characterTransform, shieldTransform, characterTransform->Position, playerDataPtr->RotationBase);
 
                         // set playerManagerData for player character
@@ -590,7 +591,7 @@ namespace Battle.QSimulation.Player
             EntityRef character = BattleEntityManager.Get(f, playerHandle.GetCharacterEntityID(characterNumber));
             BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(character);
             Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(character);
-            Transform2D* shieldTransform = f.Unsafe.GetPointer<Transform2D>(BattleEntityManager.Get(f, playerData->ActiveShieldEntityID));
+            Transform2D* shieldTransform = f.Unsafe.GetPointer<Transform2D>(playerData->AttachedShield);
 
             FPVector2 worldPosition;
 
@@ -649,11 +650,11 @@ namespace Battle.QSimulation.Player
 
             BattleEntityManager.Return(f, playerHandle.SelectedCharacterEntityID);
 
-            BattleEntityManager.Return(f, playerData->ActiveShieldEntityID);
+            BattlePlayerShieldManager.DespawnShield(f, playerData->Slot, playerHandle.SelectedCharacterNumber, playerData->AttachedShieldNumber);
 
             // teleport hitboxes
             Transform2D* characterTransform = f.Unsafe.GetPointer<Transform2D>(BattleEntityManager.Get(f, playerHandle.SelectedCharacterEntityID));
-            Transform2D* shieldTransform = f.Unsafe.GetPointer<Transform2D>(BattleEntityManager.Get(f, playerData->ActiveShieldEntityID));
+            Transform2D* shieldTransform = f.Unsafe.GetPointer<Transform2D>(playerData->AttachedShield);
             BattlePlayerMovementController.Teleport(f, playerData, characterTransform, shieldTransform, characterTransform->Position, playerData->RotationBase);
 
             playerData->TargetPosition = f.Unsafe.GetPointer<Transform2D>(selectedCharacter)->Position;
