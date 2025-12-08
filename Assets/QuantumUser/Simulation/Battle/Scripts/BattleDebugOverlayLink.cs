@@ -94,6 +94,7 @@ namespace Battle.QSimulation
         /// </summary>
         ///
         /// Adds new entries and sets their @a names.<br/>
+        /// Adds as many entries as there are elements in the @a names array.<br/>
         /// To set entries' values call @cref{SetEntry} or @cref{SetEntries} methods with the @em entryNumber you want to set.
         ///
         /// <param name="names">An array of strings used to set entry names.</param>
@@ -109,6 +110,7 @@ namespace Battle.QSimulation
         /// </summary>
         ///
         /// Adds new entries and sets their @a names.<br/>
+        /// Adds as many entries as there are elements in the @a names array.<br/>
         /// To set entries' values call @cref{SetEntry} or @cref{SetEntries} methods with the @em entryNumber you want to set.
         ///
         /// If @a playerSlot is not the same as local player slot then method call will be ignored and minus one is returned.
@@ -165,7 +167,7 @@ namespace Battle.QSimulation
         /// Simulation side wrapper method for <see cref="Battle.View.BattleDebugOverlay.SetEntries">BattleDebugOverlay.SetEntries</see> method.
         /// </summary>
         ///
-        /// Sets values of existing entries starting at @a entryNumber.<br/>
+        /// Sets values of existing entries from @a entryNumber to @a entrynumber + length of the @a values array.<br/>
         /// To add new entries first call @cref{AddEntry} or @cref{AddEntries} methods.
         ///
         /// <param name="entryNumber">Entry number used to identify the first entry.</param>
@@ -179,7 +181,7 @@ namespace Battle.QSimulation
         /// Filtered based on <paramref name="playerSlot"/>.
         /// </summary>
         ///
-        /// Sets values of existing entries starting at @a entryNumber.<br/>
+        /// Sets values of existing entries from @a entryNumber to @a entrynumber + length of the @a values array.<br/>
         /// To add new entries first call @cref{AddEntry} or @cref{AddEntries} methods.
         ///
         /// If @a playerSlot is not the same as local player slot then method call will be ignored and minus one is returned.
