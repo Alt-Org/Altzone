@@ -9,6 +9,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Voting;
 using MenuUi.Scripts.Storage;
+using MenuUI.Scripts;
 
 public static class PollManager // Handles the polls from creation to loading to ending them
 {
@@ -22,23 +23,59 @@ public static class PollManager // Handles the polls from creation to loading to
     public static Action<FurniturePollType> ShowVotingPopup;
     public static event Action OnPollCreated;
 
-    // Create poll for GameFurniture
-    public static void CreateFurniturePoll(FurniturePollType furniturePollType, GameFurniture furniture)
-    {
-        LoadClanData();
+    private static KojuTrayPopulator trayPopulator;
 
-        string id = GetFirstAvailableId();
+    public static void RegisterTrayPopulator(KojuTrayPopulator populator)
+    {
+        trayPopulator = populator;
+    }
+
+    // Create poll for GameFurniture
+    public static void CreateShopFurniturePoll(FurniturePollType furniturePollType, GameFurniture furniture, Action<bool> callback)
+    {
+        ServerManager.Instance.BuyShopItem(furniture.Name, result =>
+        {
+            if (result)
+            {
+                ShowVotingPopup?.Invoke(furniturePollType);
+
+                OnPollCreated?.Invoke();
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                SignalBus.OnChangePopupInfoSignal("Tavaran ostoäänestyksen luominen epäonnistui.");
+                if (callback != null)
+                    callback(false);
+            }
+        });
+    }
+
+    // Create poll for GameFurniture
+    public static void CreateBuyFurniturePoll(FurniturePollType furniturePollType, GameFurniture furniture, string id, bool fetchData = false)
+    {
+        if(fetchData)LoadClanData();
+
+
+        DataStore store = Storefront.Get();
+        PlayerData player = null;
+        ClanData clan = null;
+        store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
+
+        if (player != null && player.ClanId != null)
+        {
+            store.GetClanData(player.ClanId, data => clan = data);
+        }
 
         List<string> clanMembers = new List<string>();
         if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
 
         PollData pollData = new FurniturePollData(id, clanMembers, furniturePollType, furniture);
-        pollDataList.Add(pollData);
-        
-        ShowVotingPopup?.Invoke(furniturePollType);
+        //currentPollDataList.Add(pollData);
 
-        //PrintPollList();
-        SaveClanData();
+        // PrintPollList();
+        if (fetchData) SaveClanData();
 
         PollMonitor.Instance?.StartMonitoring();
 
@@ -46,11 +83,29 @@ public static class PollManager // Handles the polls from creation to loading to
     }
 
     // Create poll for StorageFurniture
-    public static void CreateFurniturePoll(FurniturePollType furniturePollType, StorageFurniture furniture)
+    public static void CreateFurnitureSellPoll(FurniturePollType furniturePollType, StorageFurniture furniture)
     {
-        LoadClanData();
+        ServerManager.Instance.SellItemOnStall(furniture.Id, (int)furniture.Value, callback => {
+            
+            ShowVotingPopup?.Invoke(furniturePollType);
 
-        string id = GetFirstAvailableId();
+            OnPollCreated?.Invoke();
+        });
+    }
+
+    public static void CreateSellFurniturePoll(FurniturePollType furniturePollType, StorageFurniture furniture, string id, bool fetchData = false)
+    {
+        if (fetchData) LoadClanData();
+
+        DataStore store = Storefront.Get();
+        PlayerData player = null;
+        ClanData clan = null;
+        store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
+
+        if (player != null && player.ClanId != null)
+        {
+            store.GetClanData(player.ClanId, data => clan = data);
+        }
 
         List<string> clanMembers = new List<string>();
         if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
@@ -59,29 +114,77 @@ public static class PollManager // Handles the polls from creation to loading to
         store.GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == furniture.Name));
 
         PollData pollData = new FurniturePollData(id, clanMembers, furniturePollType, gameFurniture);
-        pollDataList.Add(pollData);
-        
-        ShowVotingPopup?.Invoke(furniturePollType);
+        //currentPollDataList.Add(pollData);
 
         //PrintPollList();
-        SaveClanData();
+        if (fetchData) SaveClanData();
 
         PollMonitor.Instance?.StartMonitoring();
 
         OnPollCreated?.Invoke();
     }
 
-    public static void BuildPolls(List<ServerPoll> polls)
+    // Create poll for Role Promotion
+    public static void CreateRolePromotionPoll(string targetPlayerId, ClanMemberRole targetRole)
     {
         LoadClanData();
 
+        if (clan == null || player == null)
+        {
+            Debug.LogWarning("Clan or player data not loaded.");
+            return;
+        }
+
+        string pollId = GetFirstAvailableId();
+
+        List<string> voterIds = clan.Members.Select(m => m.Id).ToList();
+        Sprite placeholderSprite = null;
+        long pollDurationMinutes = 1;
+
+        var poll = new ClanRolePollData(pollId, placeholderSprite, voterIds, pollDurationMinutes, targetPlayerId, targetRole);
+
+        pollDataList.Add(poll);
+        SaveClanData();
+
+        Debug.Log($"Role promotion poll created for {targetPlayerId} {targetRole}");
+
+        PollMonitor.Instance?.StartMonitoring();
+    }
+
+    public static void BuildPolls()
+    {
+        pollDataList.Clear();
+        pastPollDataList.Clear();
+        LoadClanData();
+        List<PollData> list = new();
+        foreach (var poll in pollDataList)
+        {
+            list.Add(poll);
+        }
+        foreach (var poll in list)
+        {
+            if(poll is FurniturePollData)
+            {
+                FurniturePollData furniturePoll=(FurniturePollData)poll;
+                if (furniturePoll.FurniturePollType is FurniturePollType.Buying)
+                    CreateBuyFurniturePoll(furniturePoll.FurniturePollType, furniturePoll.Furniture, poll.Id);
+                if (furniturePoll.FurniturePollType is FurniturePollType.Selling)
+                    CreateSellFurniturePoll(furniturePoll.FurniturePollType, new(new(furniturePoll.Furniture.Id, furniturePoll.Furniture.Name), furniturePoll.Furniture), poll.Id);
+            }
+        }
+
+        SaveClanData();
+    }
+
+    public static void BuildPolls(List<ServerPoll> polls)
+    {
+        pollDataList.Clear();
+        LoadClanData();
         List<string> clanMembers = new List<string>();
         if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
-
         foreach (ServerPoll poll in polls)
         {
-
-            PollData pollData = new FurniturePollData(poll);
+            PollData pollData = new FurniturePollData(poll, clan);
             pollDataList.Add(pollData);
         }
 
@@ -122,7 +225,6 @@ public static class PollManager // Handles the polls from creation to loading to
         Debug.Log("----- Active Polls End -----");
     }
 
-
     // Create a unique ID for the poll
     private static string GetFirstAvailableId()
     {
@@ -147,6 +249,10 @@ public static class PollManager // Handles the polls from creation to loading to
 
     public static void LoadClanData()
     {
+        DataStore store = Storefront.Get();
+        PlayerData player = null;
+        ClanData clan = null;
+
         store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
 
         if (player != null && player.ClanId != null)
@@ -162,6 +268,10 @@ public static class PollManager // Handles the polls from creation to loading to
 
     public static void SaveClanData()
     {
+        DataStore store = Storefront.Get();
+        PlayerData player = null;
+        ClanData clan = null;
+
         store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
 
         if (player != null && player.ClanId != null)
@@ -178,6 +288,16 @@ public static class PollManager // Handles the polls from creation to loading to
     {
         LoadClanData();
 
+        DataStore store = Storefront.Get();
+        PlayerData player = null;
+        ClanData clan = null;
+        store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
+
+        if (player != null && player.ClanId != null)
+        {
+            store.GetClanData(player.ClanId, data => clan = data);
+        }
+
         PollData pollData = GetPollData(pollId);
         if (pollData == null)
         {
@@ -185,61 +305,86 @@ public static class PollManager // Handles the polls from creation to loading to
             return;
         }
 
+        // Calculate yes votes threshold (33% of total clan members) (Proper Vote Counting)
+        int requiredYesVotes = Mathf.CeilToInt(clan.Members.Count * 0.33f);
         int yesCount = pollData.YesVotes.Count;
         int noCount = pollData.NoVotes.Count;
 
-        bool votePassed = yesCount > noCount;
+        // Poll passes only if both conditions are true
+        bool votePassed = yesCount >= requiredYesVotes && yesCount > noCount;
+        // Proper poll calculation ends here
 
-        FurniturePollData furniturePollData = null;
-        if (pollData is FurniturePollData fpd)
+        // Simple Poll Vote Counting (Testing Only)
+        //int yesCount = pollData.YesVotes.Count;
+        //int noCount = pollData.NoVotes.Count;
+
+        //bool votePassed = yesCount > noCount;
+        // Simple Poll Vote Counting ends here
+
+        // Handle ClanRolePollData
+        if (pollData is ClanRolePollData clanRolePoll)
         {
-            furniturePollData = fpd;
-
-            if (furniturePollData.FurniturePollType == FurniturePollType.Selling)
+            // Use the proper votePassed calculation instead of the simple count comparison
+            if (votePassed)
             {
-                int idx = clan.Inventory.Furniture.FindIndex(furn => furn.GameFurnitureName == furniturePollData.Furniture.Name);
-
-                if (idx < 0)
+                var member = clan.Members.FirstOrDefault(m => m.Id == clanRolePoll.TargetPlayerId);
+                if (member != null)
                 {
-                    Debug.LogWarning($"Furniture not found for poll: {furniturePollData.Furniture.Name}");
-                    return;
-                }
-
-                var clanFurniture = clan.Inventory.Furniture[idx];
-
-                Debug.Log($"Before update - Furniture: {clanFurniture.GameFurnitureName}, VotedToSell={clanFurniture.VotedToSell}, InVoting={clanFurniture.InVoting}");
-
-
-                if (votePassed)
-                {
-                    clanFurniture.VotedToSell = true;
-                    clanFurniture.InVoting = false;
+                    member.Role = clanRolePoll.TargetRole.ToString();
+                    Debug.Log($"Poll passed: promoted {member.Name} to {clanRolePoll.TargetRole}");
                 }
                 else
                 {
-                    clanFurniture.VotedToSell = false;
+                    Debug.LogWarning("Member not found in ClanRolePollData.");
+                }
+            }
+            else
+            {
+                Debug.Log($"Clan role poll for {clanRolePoll.TargetPlayerId} did not pass. Yes votes: {yesCount}, required: {requiredYesVotes}"); // Change this into a comment when debugging polls without the member count restriction
+            }
+        }
+
+        // Handle FurniturePollData and other polls
+        else if (pollData is FurniturePollData furniturePollData)
+        {
+            int idx = clan.Inventory.Furniture.FindIndex(furn => furn.GameFurnitureName == furniturePollData.Furniture.Name);
+            if (idx < 0)
+            {
+                Debug.LogWarning($"Furniture not found for poll: {furniturePollData.Furniture.Name}");
+            }
+            else
+            {
+                var clanFurniture = clan.Inventory.Furniture[idx];
+
+                if (furniturePollData.FurniturePollType == FurniturePollType.Selling)
+                {
+                    clanFurniture.VotedToSell = votePassed;
                     clanFurniture.InVoting = false;
+
+                    if (!votePassed)
+                    {
+                        Debug.Log($"Furniture poll for {furniturePollData.Furniture.Name} did not pass. Yes votes: {yesCount}, required: {requiredYesVotes}");
+                    }
                 }
 
                 clan.Inventory.Furniture[idx] = clanFurniture;
 
-                Debug.Log($"After update - VotedToSell: {clanFurniture.VotedToSell}, InVoting: {clanFurniture.InVoting}");
+                Debug.Log($"After update - Furniture: {clanFurniture.GameFurnitureName}, VotedToSell: {clanFurniture.VotedToSell}, InVoting: {clanFurniture.InVoting}"); // Change this into a comment when debugging polls without the member count restriction
             }
         }
 
+        // Move poll from active to past
         pollDataList.Remove(pollData);
         pastPollDataList.Add(pollData);
 
-        DataStore store = Storefront.Get();
+        // Save clan data and refresh UI
         store.SaveClanData(clan, savedClan =>
         {
             clan = savedClan;
-            Debug.Log("Clan data saved with updated VotedToSell and InVoting flags.");
+            Debug.Log("Clan data saved after ending poll.");
 
-            // Verify furniture flags after save
-            var savedFurniture = clan.Inventory.Furniture.FirstOrDefault(f => f.GameFurnitureName == furniturePollData?.Furniture.Name);
-            Debug.Log($"After save - Furniture VotedToSell: {savedFurniture?.VotedToSell}, InVoting: {savedFurniture?.InVoting}");
-
+            // Refresh UI
+            trayPopulator?.RefreshTray();
             VotingActions.ReloadPollList?.Invoke();
             PastPollManager.OnPastPollsChanged?.Invoke();
 
@@ -248,8 +393,8 @@ public static class PollManager // Handles the polls from creation to loading to
                 PollMonitor.Instance?.StopMonitoring();
             }
         });
-    }
 
+    }
 
     // Checks for expired polls and ends those that have expired
     public static void CheckAndExpirePolls()

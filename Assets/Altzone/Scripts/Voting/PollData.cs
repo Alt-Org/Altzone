@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
@@ -65,14 +66,36 @@ namespace Altzone.Scripts.Voting
         public PollData(ServerPoll poll)
         {
             Id = poll._id;
-            StartTime = ((DateTimeOffset)DateTime.Parse(poll.startedAt)).ToUnixTimeSeconds();
-            EndTime = ((DateTimeOffset)DateTime.Parse(poll.endsOn)).ToUnixTimeSeconds();
-            GameFurniture gameFurniture = null;
-            Storefront.Get().GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == poll.shopItemName));
-            Sprite = gameFurniture.FurnitureInfo.Image;
-            NotVoted = poll.player_ids.ToList();
+            StartTime = poll.startedAt !=null ?((DateTimeOffset)DateTime.Parse(poll.startedAt).ToLocalTime()).ToUnixTimeSeconds(): 0;
+            EndTime = ((DateTimeOffset)DateTime.Parse(poll.endsOn).ToLocalTime()).ToUnixTimeSeconds();
+
+            List<string> clanMembers = new List<string>();
+            ClanData clan = null;
+            Storefront.Get().GetClanData(ServerManager.Instance.Player.clan_id, c => clan=c);
+            if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
+
+            NotVoted = clanMembers;
             YesVotes = new List<PollVoteData>();
             NoVotes = new List<PollVoteData>();
+            foreach (PollVote vote in poll.votes)
+            {
+                if (vote.choice == "accept")
+                {
+                    if (NotVoted.Contains(vote.player_id))
+                    {
+                        YesVotes.Add(new(vote.player_id, clan.Members.Find(member => vote.player_id == member.Id)?.Name, true));
+                        NotVoted.Remove(vote.player_id);
+                    }
+                }
+                else if(vote.choice == "decline")
+                {
+                    if (NotVoted.Contains(vote.player_id))
+                    {
+                        NoVotes.Add(new(vote.player_id, clan.Members.Find(member => vote.player_id == member.Id)?.Name, true));
+                        NotVoted.Remove(vote.player_id);
+                    }
+                }
+            }
         }
 
         public void AddVote(bool answer)
@@ -92,15 +115,21 @@ namespace Altzone.Scripts.Voting
                     return;
                 }
 
-                PollVoteData newPollVote = new(player.Id, player.Name, answer);
-
-                if (NotVoted.Contains(player.Id))
+                ServerManager.Instance.SendClanVoteToServer(Id, answer, callback =>
                 {
-                    if (answer) YesVotes.Add(newPollVote);
-                    else NoVotes.Add(newPollVote);
+                    if (answer)
+                    {
+                        PollVoteData newPollVote = new(player.Id, player.Name, answer);
 
-                    NotVoted.Remove(player.Id);
-                }
+                        if (NotVoted.Contains(player.Id))
+                        {
+                            if (answer) YesVotes.Add(newPollVote);
+                            else NoVotes.Add(newPollVote);
+
+                            NotVoted.Remove(player.Id);
+                        }
+                    }
+                });
             }
 
             //PlayerVoteData newPlayerVote = new PlayerVoteData(Id, answer);
@@ -122,16 +151,24 @@ namespace Altzone.Scripts.Voting
             Furniture = furniture;
         }
 
-        public FurniturePollData(ServerPoll poll)
+        public FurniturePollData(ServerPoll poll ,ClanData clanData)
         : base(poll)
         {
-            if(poll.type == "selling_item")
-                FurniturePollType = FurniturePollType.Selling;
-            else if(poll.type == "buying_item")
-                FurniturePollType = FurniturePollType.Buying;
-
             GameFurniture gameFurniture = null;
-            Storefront.Get().GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == poll.shopItemName));
+            if (poll.type == "flea_market_sell_item")
+            {
+                FurniturePollType = FurniturePollType.Selling;
+                ClanFurniture clanFurniture = clanData.Inventory.Furniture.FirstOrDefault(item => item.Id == poll.fleaMarketItem_id);
+                if (clanFurniture == null) return;
+                Storefront.Get().GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == clanFurniture.GameFurnitureName));
+                if(!IsExpired) clanFurniture.InVoting = true;
+            }
+            else if(poll.type == "shop_buy_item")
+            {
+                FurniturePollType = FurniturePollType.Buying;
+                Storefront.Get().GetAllGameFurnitureYield(result => gameFurniture = result.First(item => item.Name == poll.shopItemName));
+            }
+            Sprite = gameFurniture.FurnitureInfo.Image;
             Furniture = gameFurniture;
         }
     }
