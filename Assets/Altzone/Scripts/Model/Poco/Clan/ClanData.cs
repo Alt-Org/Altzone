@@ -133,7 +133,6 @@ namespace Altzone.Scripts.Model.Poco.Clan
                     i++;
                 }
             IsOpen = clan.isOpen;
-            Roles = clan.roles;
             if (clan.polls != null) Polls = clan.polls;
             else if (Polls == null) Polls = new();
             Rooms = new();

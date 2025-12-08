@@ -87,11 +87,11 @@ public class ClanRightsDebugger : MonoBehaviour
         }
 
         // Log the player's role
-        Debug.Log($"clanMember.Role string value: {clanMember.Role}");
+        Debug.Log($"clanMember.Role string value: {clanMember.Role.name}");
 
         // Convert string to enum
-        if (!Enum.TryParse(clanMember.Role, out ClanMemberRole parsedRole))
-        {
+        /*if (!Enum.TryParse(clanMember.Role, out ClanMemberRole parsedRole))
+        /{
             Debug.LogWarning($"Invalid role value: {clanMember.Role}");
             yield break;
         }
@@ -108,7 +108,7 @@ public class ClanRightsDebugger : MonoBehaviour
 
         // Log the rights that come with the role
         ClanRoleRights rights = clanData.ClanRights[roleIndex];
-        Debug.Log($"Player Role: {clanMember.Role}, Rights: {rights}");
+        Debug.Log($"Player Role: {clanMember.Role}, Rights: {rights}");*/
     }
 
     private int GetRoleIndex(ClanMemberRole role)
