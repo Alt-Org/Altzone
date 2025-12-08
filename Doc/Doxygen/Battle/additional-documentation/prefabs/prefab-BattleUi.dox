@@ -87,6 +87,9 @@
 ///             - *Components:*
 ///                 - RectTransform
 ///             - *Children:*
-///                 - **Entry**
-///                 - *Components:*
+///                 - **EntryTemplate**  
+///                   Template for creating entries.
+///                   - *Components:*
 ///                     - RectTransform
+///                     - TextMeshPro - Text (UI)
+///                     - CanvasRenderer
