@@ -57,6 +57,7 @@ namespace Battle.View
         /// </summary>
         ///
         /// Adds new entries and sets their @a names.<br/>
+        /// Adds as many entries as there are elements in the @a names array.<br/>
         /// To set entries' values call @cref{SetEntry} or @cref{SetEntries} methods with the @em entryNumber you want to set.
         ///
         /// <param name="names">An array of strings used to set entry names.</param>
@@ -97,7 +98,7 @@ namespace Battle.View
         /// Sets values of multiple existing entries in debug overlay.
         /// </summary>
         ///
-        /// Sets values of existing entries starting at @a entryNumber.<br/>
+        /// Sets values of existing entries from @a entryNumber to @a entrynumber + length of the @a values array.<br/>
         /// To add new entries first call @cref{AddEntry} or @cref{AddEntries} methods.
         ///
         /// <param name="entryNumber">Entry number used to identify the first entry.</param>
