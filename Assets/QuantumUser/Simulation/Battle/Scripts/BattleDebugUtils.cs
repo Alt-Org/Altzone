@@ -2,7 +2,6 @@ using Quantum;
 
 using Battle.QSimulation.Game;
 
-
 namespace Battle.QSimulation
 {
     public static unsafe class BattleInputDebugUtils
