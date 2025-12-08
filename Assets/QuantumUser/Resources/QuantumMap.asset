@@ -47,6 +47,7 @@ MonoBehaviour:
     - rid: 9189874137361809409
     - rid: 9189874137361809410
     - rid: 9189874137361809411
+    - rid: 9189874137361809412
   - Components:
     - rid: 3915831314950914048
     - rid: 3915831314950914049
@@ -419,9 +420,25 @@ MonoBehaviour:
         - Value: 0
         - Value: 0
         - Value: 0
-        SelectedCharacterEntityIDs: 00000000000000000000000000000000
+        SelectedCharacterEntityIDs:
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
         SelectedCharacterNumbers: 00000000000000000000000000000000
-        AllCharacterIDs: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+        AllCharacterIDs:
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
         AllCharactersStates:
         - Value: 0
         - Value: 0
@@ -440,3 +457,57 @@ MonoBehaviour:
         - Value: 0
         - Value: 0
         - Value: 0
+    - rid: 9189874137361809412
+      type: {class: BattlePlayerShieldManagerDataQSingletonPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
+      data:
+        PlayerShieldCounts: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+        PlayerShieldEntityIDs:
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0
+        - Int: 0

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6318226639611977352}
   - component: {fileID: 3130567833437425977}
   - component: {fileID: 7150023071694282106}
+  - component: {fileID: 1459027085368994728}
   m_Layer: 0
   m_Name: BattleSimulationData
   m_TagString: Untagged
@@ -269,9 +270,25 @@ MonoBehaviour:
     - Value: 0
     - Value: 0
     - Value: 0
-    SelectedCharacterEntityIDs: 00000000000000000000000000000000
+    SelectedCharacterEntityIDs:
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
     SelectedCharacterNumbers: 00000000000000000000000000000000
-    AllCharacterIDs: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+    AllCharacterIDs:
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
     AllCharactersStates:
     - Value: 0
     - Value: 0
@@ -323,3 +340,66 @@ MonoBehaviour:
       Row: 0
       Col: 0
     EntitySpacing: 0
+--- !u!114 &1459027085368994728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5403119264126220646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76ba1ebe560844840bc0cbe9343482a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    PlayerShieldCounts: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+    PlayerShieldEntityIDs:
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
+    - Int: 0
