@@ -14,7 +14,8 @@ namespace Battle.View.UI
 {
     /// <summary>
     /// <span class="brief-h">DebugOverlay @uihandlerlink (<a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>).</span><br/>
-    /// Handles displaying the debug info.
+    /// Handles displaying the debug info.<br/>
+    /// Controlled by <see cref="BattleDebugOverlay"/>.
     /// </summary>
     public class BattleUiDebugOverlayHandler : MonoBehaviour
     {
@@ -24,32 +25,32 @@ namespace Battle.View.UI
         /// @{
 
         /// <summary>[SerializeField] Reference to the GameObject which can be used to hide or show the overlay.</summary>
-        /// @ref BattleUiDebugOverlayHandler-SerializeFields
+        /// @ref BattleUiDebugOverlayHandler-SerializeFields "SerializeFields"
         [Tooltip("Reference to the GameObject which can be used to hide or show the overlay")]
         [SerializeField] private GameObject _view;
 
         /// <summary>[SerializeField] Reference to the GameObject which is used as template when instantiating entries.</summary>
-        /// @ref BattleUiDebugOverlayHandler-SerializeFields
+        /// @ref BattleUiDebugOverlayHandler-SerializeFields "SerializeFields"
         [Tooltip("Reference to the GameObject which is used as template when instantiating entries")]
         [SerializeField] private GameObject _entryTemplate;
 
         /// <summary>[SerializeField] Reference to the Transform which the entries are parented to.</summary>
-        /// @ref BattleUiDebugOverlayHandler-SerializeFields
+        /// @ref BattleUiDebugOverlayHandler-SerializeFields "SerializeFields"
         [Tooltip("Reference to the Transform which the entries are parented to")]
         [SerializeField] private Transform _entryParent;
 
         /// <summary>[SerializeField] The entry height.</summary>
-        /// @ref BattleUiDebugOverlayHandler-SerializeFields
+        /// @ref BattleUiDebugOverlayHandler-SerializeFields "SerializeFields"
         [Tooltip("The entry height")]
         [SerializeField] private float _entryHeight;
 
         /// <summary>[SerializeField] The entry margin.</summary>
-        /// @ref BattleUiDebugOverlayHandler-SerializeFields
+        /// @ref BattleUiDebugOverlayHandler-SerializeFields "SerializeFields"
         [Tooltip("The entry margin")]
         [SerializeField] private float _entryMargin;
 
         /// <summary>[SerializeField] The entry font size.</summary>
-        /// @ref BattleUiDebugOverlayHandler-SerializeFields
+        /// @ref BattleUiDebugOverlayHandler-SerializeFields "SerializeFields"
         [Tooltip("The entry font size")]
         [SerializeField] private float _entryFontSize;
 
@@ -69,7 +70,7 @@ namespace Battle.View.UI
         }
 
         /// <summary>
-        /// Method for adding multiple entries.
+        /// Method for adding multiple new entries.
         /// </summary>
         ///
         /// Creates as many entries as there are elements in the @a names array.<br/>
@@ -105,7 +106,7 @@ namespace Battle.View.UI
         }
 
         /// <summary>
-        /// Method for setting multiple entries.
+        /// Method for setting multiple existing entries.
         /// </summary>
         ///
         /// Sets multiple entries from @a entryNumber to @a entrynumber + length of the @a textArray.<br/>
@@ -146,7 +147,7 @@ namespace Battle.View.UI
         }
 
         /// <summary>
-        /// Method for updating entries' layouts.
+        /// Method for updating entries' layout.
         /// </summary>
         ///
         /// Positions and scales entries.<br/>
