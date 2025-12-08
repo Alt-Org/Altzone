@@ -242,7 +242,10 @@ public class PollObject : MonoBehaviour
             {
                 string furnitureName = furniturePollData.Furniture.Name ?? "Unknown Item";
                 string priceText = furniturePollData.Furniture.Value.ToString();
-                PollDescriptionText.text = $"Buying {furnitureName} for {priceText}";
+                if(furniturePollData.FurniturePollType is FurniturePollType.Buying)
+                    PollDescriptionText.text = $"Buying {furnitureName} for {priceText}";
+                else if(furniturePollData.FurniturePollType is FurniturePollType.Selling)
+                    PollDescriptionText.text = $"Suggesting {furnitureName} to be sold for {priceText}";
             }
         }
 
