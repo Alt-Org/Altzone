@@ -19,7 +19,6 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private Toggle _openClanToggle;
     [SerializeField] private TMP_InputField _clanPasswordField;
     [SerializeField] private GameObject _clanPasswordRoot;
-    //[SerializeField] private ClanGoalSelection _clanGoalSelection;
     [SerializeField] private ClanLanguageList _languageSelection;
     [SerializeField] private ValueSelectionController _valueSelection;
     [SerializeField] private LanguageFlagImage _flagImage;
@@ -97,7 +96,6 @@ public class ClanCreateNew : MonoBehaviour
         _nameWarningOutline.SetActive(false);
         _passwordWarningOutline.SetActive(false);
         _ageWarningOutline.SetActive(false);
-        _passwordWarningOutline.SetActive(false);
         _languageWarningOutline.SetActive(false);
         _valuesWarningOutline.SetActive(false);
 
@@ -108,7 +106,6 @@ public class ClanCreateNew : MonoBehaviour
 
         _ageSelection.Initialize(ClanAge.None);
         UpdateAgeDisplay();
-        //_clanGoalSelection.Initialize(Goals.Fiilistely);
 
         _flagImage.SetFlag(Language.None);
         _languageSelection.Initialize(Language.None);
@@ -120,6 +117,7 @@ public class ClanCreateNew : MonoBehaviour
         foreach (ColorButton colorButton in _colorButtons)
         {
             Color color = ColorConstants.GetColorConstant(colorButton.color);
+            colorButton.button.onClick.RemoveAllListeners();
             colorButton.button.onClick.AddListener(() => SetHeartColor(color));
         }
 
@@ -200,7 +198,6 @@ public class ClanCreateNew : MonoBehaviour
         bool isOpen = !_openClanToggle.isOn;
         string password = _clanPasswordField.text;
         Language language = _languageSelection.SelectedLanguage;
-        //Goals goal = _clanGoalSelection.GoalsRange;
         ClanAge age = _ageSelection.ClanAgeRange;
         ClanRoleRights[] clanRights = _defaultRights;
         ClanValues[] values = _valueSelection.SelectedValues.ToArray();
@@ -236,7 +233,6 @@ public class ClanCreateNew : MonoBehaviour
             phrase = phrase,
             isOpen = isOpen,
             language = language,
-            //goal = goal,
             ageRange = age,
             labels = serverValues,
             clanLogo = logo
@@ -244,8 +240,6 @@ public class ClanCreateNew : MonoBehaviour
 
         StartCoroutine(ServerManager.Instance.PostClanToServer(serverClan, clan =>
         {
-            Debug.Log("CreateClan callback, clan = " + (clan == null ? "NULL" : clan.name));
-
             if (clan == null)
             {
                 _warningPopup.ActivatePopUp(
@@ -286,7 +280,7 @@ public class ClanCreateNew : MonoBehaviour
         }));
     }
 
-    public void CancelCreate()
+    /*public void CancelCreate()
     {
         Reset();
         IWindowManager windowManager = WindowManager.Get();
@@ -296,7 +290,7 @@ public class ClanCreateNew : MonoBehaviour
             return;
         }
         windowManager.GoBack();
-    }
+    }*/
 
     private bool CheckClanInputsValidity(
         string clanName,
