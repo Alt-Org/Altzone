@@ -20,9 +20,9 @@ namespace MenuUi.Scripts.AvatarEditor
         void Start()
         {
             _allAvatarCategoryIds = _avatarPartsReference.GetAllCategoryIds();
-
-
-            RefreshFeatureListItems("21");
+            // Load default features for featuregrid
+            if (_allAvatarCategoryIds != null)
+                RefreshFeatureListItems(_allAvatarCategoryIds[0]);
         }
 
         // Update is called once per frame
@@ -36,10 +36,11 @@ namespace MenuUi.Scripts.AvatarEditor
 
         }
 
-        private void AddCell(Sprite sprite)
+        private void AddFeatureCell(Sprite sprite)
         {
             GameObject _gridCell = Instantiate(_gridCellPrefab, _content);
             Image _avatarPart = _gridCell.transform.Find("FeatureImage").GetComponent<Image>();
+            // Need to find a way to make sprites look same size in grid
             _avatarPart.sprite = sprite;
 
             Button _button = _gridCell.GetComponent<Button>();
@@ -51,7 +52,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
             foreach (var part in _avatarPartInfo)
             {
-                AddCell(part.IconImage);
+                AddFeatureCell(part.IconImage);
             }
         }
 
