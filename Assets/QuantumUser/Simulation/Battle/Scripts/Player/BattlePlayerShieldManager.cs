@@ -216,8 +216,7 @@ namespace Battle.QSimulation.Player
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static BattlePlayerShieldManagerDataQSingleton* GetPlayerShieldManagerData(Frame f)
         {
-            BattlePlayerShieldManagerDataQSingleton* playerShieldManagerData;
-            if (!f.Unsafe.TryGetPointerSingleton(out playerShieldManagerData))
+            if (!f.Unsafe.TryGetPointerSingleton(out BattlePlayerShieldManagerDataQSingleton* playerShieldManagerData))
             {
                 BattleDebugLogger.Error(f, nameof(BattlePlayerShieldManager), "PlayerShieldManagerData singleton not found!");
             }

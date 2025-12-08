@@ -570,8 +570,7 @@ namespace Battle.QSimulation.Player
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static BattlePlayerManagerDataQSingleton* GetPlayerManagerData(Frame f)
         {
-            BattlePlayerManagerDataQSingleton* playerManagerData;
-            if (!f.Unsafe.TryGetPointerSingleton(out playerManagerData))
+            if (!f.Unsafe.TryGetPointerSingleton(out BattlePlayerManagerDataQSingleton* playerManagerData))
             {
                 s_debugLogger.Error(f, "PlayerManagerData singleton not found!");
             }

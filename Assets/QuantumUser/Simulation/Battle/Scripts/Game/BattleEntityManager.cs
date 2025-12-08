@@ -64,8 +64,7 @@ namespace Battle.QSimulation.Game
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static BattleEntityManagerDataQSingleton* GetEntityManagerData(Frame f)
         {
-            BattleEntityManagerDataQSingleton* entityManagerData;
-            if (!f.Unsafe.TryGetPointerSingleton(out entityManagerData))
+            if (!f.Unsafe.TryGetPointerSingleton(out BattleEntityManagerDataQSingleton* entityManagerData))
             {
                 BattleDebugLogger.Error(f, nameof(BattleEntityManager), "EntityManagerData singleton not found!");
             }
