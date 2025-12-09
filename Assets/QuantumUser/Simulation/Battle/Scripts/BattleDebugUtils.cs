@@ -52,7 +52,6 @@ namespace Battle.QSimulation
         /// <returns><see cref="InputDebugInfo"/> data.</returns>
         public static InputDebugInfo GenerateDebugInfo(Input* input)
         {
-
             string inputDebugSummary = "";
 
             bool inputNotEmpty = false;
