@@ -30,65 +30,72 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         public static int CreateShields(Frame f, BattlePlayerSlot playerSlot, int playerCharacterNumber, int playerCharacterId, EntityRef playerCharacterEntity)
         {
-            EntityRef playerShieldEntity;
-            BattleEntityID[] shieldEntityIDs;
-
+            // get entity prototypes
             AssetRef<EntityPrototype>[] playerShieldEntityPrototypes = BattleAltzoneLink.GetShieldPrototypes(playerCharacterId);
             if (playerShieldEntityPrototypes.Length < 1)
             {
                 playerShieldEntityPrototypes = BattleAltzoneLink.GetShieldPrototypes(0);
             }
 
-            shieldEntityIDs = new BattleEntityID[playerShieldEntityPrototypes.Length];
+            BattleEntityID[] shieldEntityIDs = new BattleEntityID[playerShieldEntityPrototypes.Length];
 
-            playerShieldEntity = new EntityRef();
-
+            // create entities
             for (int shieldEntityIndex = 0; shieldEntityIndex < playerShieldEntityPrototypes.Length; shieldEntityIndex++)
             {
-                // create entity
-                playerShieldEntity = f.Create(playerShieldEntityPrototypes[shieldEntityIndex]);
+                EntityRef playerShieldEntity = f.Create(playerShieldEntityPrototypes[shieldEntityIndex]);
 
+                // get template data
                 BattlePlayerShieldDataTemplateQComponent* playerShieldDataTemplate = f.Unsafe.GetPointer<BattlePlayerShieldDataTemplateQComponent>(playerShieldEntity);
+                QList<BattlePlayerHitboxTemplate>         shieldHitboxTemplateList = f.ResolveList(playerShieldDataTemplate->HitboxList);
 
-                BattlePlayerShieldDataQComponent playerShieldData = new BattlePlayerShieldDataQComponent();
-                playerShieldData.HitboxEntities = f.AllocateList<EntityRef>();
+                //{ initialize shield component
+
+                BattlePlayerShieldDataQComponent playerShieldData = new()
+                {
+                    PlayerEntity   = playerCharacterEntity,
+                    HitboxEntities = f.AllocateList<EntityRef>(),
+                    IsActive       = true
+                };
+
                 QList<EntityRef> playerShieldHitboxEntities = f.ResolveList(playerShieldData.HitboxEntities);
 
-                QList<BattlePlayerHitboxTemplate> shieldHitboxList = f.ResolveList(playerShieldDataTemplate->HitboxList);
+                //} initialize shield component
 
-                for (int shieldHitboxEntityIndex = 0; shieldHitboxEntityIndex < shieldHitboxList.Count; shieldHitboxEntityIndex++)
+                // create shield hitbox entities
+                for (int shieldHitboxEntityIndex = 0; shieldHitboxEntityIndex < shieldHitboxTemplateList.Count; shieldHitboxEntityIndex++)
                 {
-                    EntityRef playerShieldHitboxTargetEntity = f.Create();
+                    EntityRef playerShieldHitboxEntity = f.Create();
 
-                    BattlePlayerHitboxType playerHitboxType = BattlePlayerHitboxType.Shield;
-                    BattlePlayerCollisionType playerHitboxCollisionType = shieldHitboxList[shieldHitboxEntityIndex].CollisionType;
-                    FPVector2 playerHitboxNormal = FPVector2.Rotate(FPVector2.Up, FP.Deg2Rad * shieldHitboxList[shieldHitboxEntityIndex].NormalAngleDeg);
+                    // set hitbox variables
+                    BattlePlayerHitboxType    playerHitboxType          = BattlePlayerHitboxType.Shield;
+                    BattlePlayerCollisionType playerHitboxCollisionType = shieldHitboxTemplateList[shieldHitboxEntityIndex].CollisionType;
+                    FPVector2                 playerHitboxNormal        = FPVector2.Rotate(FPVector2.Up, FP.Deg2Rad * shieldHitboxTemplateList[shieldHitboxEntityIndex].NormalAngleDeg);
+                    int                       playerHitboxHeight        = 0;
 
+                    // get hitbox template data
+                    f.TryResolveList(shieldHitboxTemplateList[shieldHitboxEntityIndex].ColliderTemplateList, out QList<BattlePlayerHitboxColliderTemplate> playerShieldHitboxListColliderTemplate);
+
+                    // initialize collisionTrigger
                     BattleCollisionTriggerQComponent collisionTrigger = BattleCollisionQSystem.CreateCollisionTriggerComponent(BattleCollisionTriggerType.Shield);
 
-                    QList<BattlePlayerHitboxColliderTemplate> playerShieldHitboxListColliderTemplate;
+                    //{ initialize hitbox collider
 
-                    f.TryResolveList(shieldHitboxList[shieldHitboxEntityIndex].ColliderTemplateList, out playerShieldHitboxListColliderTemplate);
-
-                    // initialize hitBox collider
                     PhysicsCollider2D playerHitboxCollider = PhysicsCollider2D.Create(f,
                         shape: Shape2D.CreatePersistentCompound(),
                         isTrigger: true
                     );
 
-                    // inititalize hitbox height
-                    int playerHitboxHeight = 0;
-
+                    // create hitbox collider shape
                     foreach (BattlePlayerHitboxColliderTemplate playerShieldHitboxColliderTemplate in playerShieldHitboxListColliderTemplate)
                     {
                         playerHitboxHeight = Mathf.Max(playerShieldHitboxColliderTemplate.Position.Y, playerHitboxHeight);
 
-                        FPVector2 playerHitboxExtents = new FPVector2(
+                        FPVector2 playerHitboxExtents = new(
                             (FP)playerShieldHitboxColliderTemplate.Size.X * BattleGridManager.GridScaleFactor * FP._0_50,
                             (FP)playerShieldHitboxColliderTemplate.Size.Y * BattleGridManager.GridScaleFactor * FP._0_50
                         );
 
-                        FPVector2 playerHitboxPosition = new FPVector2(
+                        FPVector2 playerHitboxPosition = new(
                             ((FP)playerShieldHitboxColliderTemplate.Position.X - FP._0_50) * BattleGridManager.GridScaleFactor + playerHitboxExtents.X,
                             ((FP)playerShieldHitboxColliderTemplate.Position.Y + FP._0_50) * BattleGridManager.GridScaleFactor - playerHitboxExtents.Y
                         );
@@ -97,37 +104,38 @@ namespace Battle.QSimulation.Player
                         playerHitboxCollider.Shape.Compound.AddShape(f, ref playerHitboxColliderPart);
                     }
 
-                    // initialize hitBox component
-                    BattlePlayerHitboxQComponent playerHitbox = new BattlePlayerHitboxQComponent
+                    //} initialize hitbox collider
+
+                    // initialize hitbox component
+                    BattlePlayerHitboxQComponent playerHitbox = new()
                     {
                         ParentEntity       = playerCharacterEntity,
-                        HitboxType         = playerShieldHitboxType,
-                        CollisionType      = playerShieldHitboxCollisionType,
-                        Normal             = playerShieldHitboxNormal,
-                        NormalBase         = playerShieldHitboxNormal,
-                        CollisionMinOffset = ((FP)playerShieldHitboxHeight + FP._0_50) * BattleGridManager.GridScaleFactor
+                        HitboxType         = playerHitboxType,
+                        CollisionType      = playerHitboxCollisionType,
+                        Normal             = playerHitboxNormal,
+                        NormalBase         = playerHitboxNormal,
+                        CollisionMinOffset = ((FP)playerHitboxHeight + FP._0_50) * BattleGridManager.GridScaleFactor
                     };
 
-                    //} initialize collisionTrigger component
+                    // initialize hitbox entity
+                    f.Add(playerShieldHitboxEntity, playerHitbox);
+                    f.Add<Transform2D>(playerShieldHitboxEntity);
+                    f.Add(playerShieldHitboxEntity, playerHitboxCollider);
+                    f.Add(playerShieldHitboxEntity, collisionTrigger);
 
-                    f.Add(playerShieldHitboxTargetEntity, playerHitbox);
-                    f.Add<Transform2D>(playerShieldHitboxTargetEntity);
-                    f.Add(playerShieldHitboxTargetEntity, playerHitboxCollider);
-                    f.Add(playerShieldHitboxTargetEntity, collisionTrigger);
+                    playerShieldHitboxEntities.Add(playerShieldHitboxEntity);
+                } // create shield hitbox entities
 
-                    playerShieldHitboxEntities.Add(playerShieldHitboxTargetEntity);
-                }
-
-                shieldEntityIDs[shieldEntityIndex] = BattleEntityManager.Register(f, playerShieldEntity);
-
-                playerShieldData.PlayerEntity = playerCharacterEntity;
-                playerShieldData.IsActive = true;
-
+                // initialize entity
                 f.Remove<BattlePlayerShieldDataTemplateQComponent>(playerShieldEntity);
                 f.Add(playerShieldEntity, playerShieldData);
 
+                // register entity
+                shieldEntityIDs[shieldEntityIndex] = BattleEntityManager.Register(f, playerShieldEntity);
+
+                // initialize view
                 f.Events.BattleShieldViewInit(playerShieldEntity, playerSlot, BattleGridManager.GridScaleFactor);
-            }
+            } // create entities
 
             SetShieldEntityIDs(f, playerSlot, playerCharacterNumber, shieldEntityIDs);
 
