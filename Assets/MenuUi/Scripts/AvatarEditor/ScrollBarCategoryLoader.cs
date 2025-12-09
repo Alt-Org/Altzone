@@ -38,7 +38,7 @@ namespace MenuUi.Scripts.AvatarEditor
         // Update is called once per frame
         void Update()
         {
-        
+
         }
 
         private void AddCategoryCell(Sprite sprite, string categoryId)
@@ -59,6 +59,8 @@ namespace MenuUi.Scripts.AvatarEditor
             float viewPortHeight = _CategoryGrid.rect.height;
             float spacing = 0.05f * viewPortHeight;
             _verticalLayoutGroup.spacing = spacing;
+            _verticalLayoutGroup.padding.left = Mathf.CeilToInt(0.1f * _CategoryGrid.rect.width);
+            _verticalLayoutGroup.padding.right = Mathf.CeilToInt(0.1f * _CategoryGrid.rect.width);
 
             _cellHeight = (viewPortHeight - spacing * 2) / 3;
             foreach (RectTransform child in _content)
