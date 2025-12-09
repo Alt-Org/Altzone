@@ -262,7 +262,7 @@ namespace Battle.QSimulation.Player
                                                 playerCharacterNumber,
                                                 playerCharacterId,
                                                 playerClass
-                                                );
+                        );
 
                         // get entity prototypes
                         playerCharacterEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(playerCharacterId);
@@ -283,7 +283,7 @@ namespace Battle.QSimulation.Player
                                                     playerCharacterNumber,
                                                     playerCharacterId,
                                                     playerClass
-                                                    );
+                            );
                         }
 
                         // create entity
