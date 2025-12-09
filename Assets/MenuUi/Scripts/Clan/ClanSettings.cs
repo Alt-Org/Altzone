@@ -31,6 +31,7 @@ public class ClanSettings : AltMonoBehaviour
     [SerializeField] private TMP_InputField _rule1Input;
     [SerializeField] private TMP_InputField _rule2Input;
     [SerializeField] private TMP_InputField _rule3Input;
+    [SerializeField] private RulesSelectionController _ruleSelection;
     [SerializeField] private GameObject _rulesPopup;
 
     [Header("Password")]
@@ -111,19 +112,23 @@ public class ClanSettings : AltMonoBehaviour
             _clanPassword.SetActive(!clan.IsOpen);
 
             // Rules init
-            /*List<string> rules = clan.Rules ?? new List<string>();
+            //List<string> rules = clan.Rules ?? new List<string>();
 
-            string rule1 = rules.Count > 0 ? rules[0] : string.Empty;
-            string rule2 = rules.Count > 1 ? rules[1] : string.Empty;
-            string rule3 = rules.Count > 2 ? rules[2] : string.Empty;
+            string rule1 = clan.Rules.Count > 0 ?
+            _rule1Text.text = ClanDataTypeConverter.GetRulesText(clan.Rules[0]) : string.Empty;
+            string rule2 = clan.Rules.Count > 1 ?
+            _rule1Text.text = ClanDataTypeConverter.GetRulesText(clan.Rules[1]) : string.Empty;
+            string rule3 = clan.Rules.Count > 2 ?
+            _rule1Text.text = ClanDataTypeConverter.GetRulesText(clan.Rules[2]) : string.Empty;
 
             _rule1Text.text = rule1;
             _rule2Text.text = rule2;
             _rule3Text.text = rule3;
 
-            _rule1Input.text = rule1;
+            /*_rule1Input.text = rule1;
             _rule2Input.text = rule2;
             _rule3Input.text = rule3;*/
+            _ruleSelection.SetSelected(clan.Rules);
             _rulesPopup.SetActive(false);
 
             //Age init     
@@ -373,9 +378,21 @@ public class ClanSettings : AltMonoBehaviour
 
     public void ConfirmClanRulesEdit()
     {
-        _rule1Text.text = _rule1Input.text;
-        _rule2Text.text = _rule2Input.text;
-        _rule3Text.text = _rule3Input.text;
+        ClanData clan = null;
+        Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (c=>clan=c));
+        if (clan != null)
+        {
+            string rule1 = clan.Rules.Count > 0 ?
+            _rule1Text.text = ClanDataTypeConverter.GetRulesText(clan.Rules[0]) : string.Empty;
+            string rule2 = clan.Rules.Count > 1 ?
+            _rule1Text.text = ClanDataTypeConverter.GetRulesText(clan.Rules[1]) : string.Empty;
+            string rule3 = clan.Rules.Count > 2 ?
+            _rule1Text.text = ClanDataTypeConverter.GetRulesText(clan.Rules[2]) : string.Empty;
+
+            _rule1Text.text = rule1;
+            _rule2Text.text = rule2;
+            _rule3Text.text = rule3;
+        }
         HidePopup(_rulesPopup);
     }
 

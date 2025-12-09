@@ -37,6 +37,7 @@ public class RulesSelectionController : MonoBehaviour
 
     public void SetSelected(List<Rules> selected)
     {
+        if(_selectedRuleList == null) _selectedRuleList = new() { _selectedRule1, _selectedRule2, _selectedRule3 };
         SelectedRules = new(selected);
         CreateLabels();
         UpdateSelectedDisplay();
