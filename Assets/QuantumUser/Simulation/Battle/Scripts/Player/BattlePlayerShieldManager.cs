@@ -15,7 +15,7 @@ using Quantum.Collections;
 
 namespace Battle.QSimulation.Player
 {
-    public unsafe static class BattlePlayerShieldManager
+    public static unsafe class BattlePlayerShieldManager
     {
         /// <summary>
         /// </summary>
