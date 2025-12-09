@@ -13,12 +13,15 @@ namespace MenuUi.Scripts.AvatarEditor
     {
         [SerializeField] private AvatarPartsReference _avatarPartsReference;
         [SerializeField] private ScrollBarFeatureLoader _scrollBarFeatureLoader;
-        [SerializeField] private Transform _content;
+        [SerializeField] private RectTransform _content;
         [SerializeField] private GameObject _avatarPartCategoryGridCellPrefab;
         private GameObject _emptyCell;
         [SerializeField] private AvatarDefaultReference _avatarDefaultReference;
         private List<AvatarPartInfo> _avatarPartInfo;
         private List<string> _allCategoryIds;
+        private float _cellHeight;
+        [SerializeField] private RectTransform _CategoryGrid;
+        [SerializeField] private VerticalLayoutGroup _verticalLayoutGroup;
         // Start is called before the first frame update
         void Start()
         {
@@ -29,6 +32,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryID);
                 AddCategoryCell(_avatarPartInfo[0].IconImage, categoryID);
             }
+            UpdateCellSize();
         }
 
         // Update is called once per frame
@@ -49,6 +53,26 @@ namespace MenuUi.Scripts.AvatarEditor
                 Debug.LogError("_scrollbarfeatureloader is null");
             }
             _button.onClick.AddListener(() => _scrollBarFeatureLoader.RefreshFeatureListItems(categoryId));
+        }
+        public void UpdateCellSize()
+        {
+            float viewPortHeight = _CategoryGrid.rect.height;
+            float spacing = 0.05f * viewPortHeight;
+            _verticalLayoutGroup.spacing = spacing;
+
+            _cellHeight = (viewPortHeight - spacing * 2) / 3;
+            foreach (RectTransform child in _content)
+            {
+                LayoutElement le = child.GetComponent<LayoutElement>();
+                if (le != null)
+                {
+                    le.preferredHeight = _cellHeight;
+                }
+                else
+                {
+                    Debug.LogError("is null");
+                }
+            }
         }
     }
 }
