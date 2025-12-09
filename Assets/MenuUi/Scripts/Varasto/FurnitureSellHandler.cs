@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Altzone.Scripts.Voting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -41,19 +42,20 @@ namespace MenuUi.Scripts.Storage
                     Furniture.ClanFurniture.VotedToSell = false;
                 }));
             else
-                CreatePoll();
+                StartCoroutine(CreatePoll());
         }
 
-        private void CreatePoll()
+        private IEnumerator CreatePoll()
         {
             if (Furniture != null)
             {
-                if (Furniture.ClanFurniture.InVoting) return;
-                if (Furniture.ClanFurniture.VotedToSell) return;
-                if (Furniture.Position != new Vector2Int(-1, -1)) return; // In soulhome
-
-                PollManager.CreateFurnitureSellPoll(FurniturePollType.Selling, Furniture);
-
+                if (Furniture.ClanFurniture.InVoting) yield break;
+                if (Furniture.ClanFurniture.VotedToSell) yield break;
+                if (Furniture.Position != new Vector2Int(-1, -1)) yield break; // In soulhome
+                bool? result = null;
+                PollManager.CreateFurnitureSellPoll(FurniturePollType.Selling, Furniture, c => result = c);
+                yield return new WaitUntil(() => result.HasValue);
+                VotingActions.ReloadPollList?.Invoke();
                 Furniture.ClanFurniture.InVoting = true;
 
                 UpdateInfoAction?.Invoke(Furniture.ClanFurniture.InVoting);
