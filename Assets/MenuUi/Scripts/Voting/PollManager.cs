@@ -13,8 +13,8 @@ using MenuUI.Scripts;
 
 public static class PollManager // Handles the polls from creation to loading to ending them
 {
-    private static List<PollData> pollDataList = new List<PollData>();
-    private static List<PollData> pastPollDataList = new List<PollData>();
+    //private static List<PollData> pollDataList = new List<PollData>();
+    //private static List<PollData> pastPollDataList = new List<PollData>();
 
     private static DataStore store = Storefront.Get();
     private static PlayerData player = null;
@@ -40,6 +40,17 @@ public static class PollManager // Handles the polls from creation to loading to
                 ShowVotingPopup?.Invoke(furniturePollType);
 
                 OnPollCreated?.Invoke();
+                if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null)
+                {
+                    if (DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationSocialType == TaskEducationSocialType.ClanVote)
+                    {
+                        DailyTaskProgressManager.Instance.UpdateTaskProgress(TaskEducationSocialType.ClanVote, "1");
+                    }
+                    else if (DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationSocialType == TaskEducationSocialType.CreateNewVote)
+                    {
+                        DailyTaskProgressManager.Instance.UpdateTaskProgress(TaskEducationSocialType.CreateNewVote, "1");
+                    }
+                }
                 if (callback != null)
                     callback(true);
             }
@@ -50,6 +61,7 @@ public static class PollManager // Handles the polls from creation to loading to
                     callback(false);
             }
         });
+
     }
 
     // Create poll for GameFurniture
@@ -83,14 +95,38 @@ public static class PollManager // Handles the polls from creation to loading to
     }
 
     // Create poll for StorageFurniture
-    public static void CreateFurnitureSellPoll(FurniturePollType furniturePollType, StorageFurniture furniture)
+    public static void CreateFurnitureSellPoll(FurniturePollType furniturePollType, StorageFurniture furniture, Action<bool> callback)
     {
-        ServerManager.Instance.SellItemOnStall(furniture.Id, (int)furniture.Value, callback => {
-            
-            ShowVotingPopup?.Invoke(furniturePollType);
+        ServerManager.Instance.SellItemOnStall(furniture.Id, (int)furniture.Value, result => {
 
-            OnPollCreated?.Invoke();
+            if (result)
+            {
+                ShowVotingPopup?.Invoke(furniturePollType);
+
+                OnPollCreated?.Invoke();
+                if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null)
+                {
+                    if (DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationSocialType == TaskEducationSocialType.ClanVote)
+                    {
+                        DailyTaskProgressManager.Instance.UpdateTaskProgress(TaskEducationSocialType.ClanVote, "1");
+                    }
+                    else if (DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationSocialType == TaskEducationSocialType.CreateNewVote)
+                    {
+                        DailyTaskProgressManager.Instance.UpdateTaskProgress(TaskEducationSocialType.CreateNewVote, "1");
+                    }
+                }
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                SignalBus.OnChangePopupInfoSignal("Tavaran myyntiäänestyksen luominen epäonnistui.");
+                if (callback != null)
+                    callback(false);
+            }
         });
+        if (callback != null)
+            callback(false);
     }
 
     public static void CreateSellFurniturePoll(FurniturePollType furniturePollType, StorageFurniture furniture, string id, bool fetchData = false)
@@ -143,7 +179,7 @@ public static class PollManager // Handles the polls from creation to loading to
 
         var poll = new ClanRolePollData(pollId, placeholderSprite, voterIds, pollDurationMinutes, targetPlayerId, targetRole);
 
-        pollDataList.Add(poll);
+        PollManagerData.Instance.pollDataList.Add(poll);
         SaveClanData();
 
         Debug.Log($"Role promotion poll created for {targetPlayerId} {targetRole}");
@@ -153,39 +189,22 @@ public static class PollManager // Handles the polls from creation to loading to
 
     public static void BuildPolls()
     {
-        pollDataList.Clear();
-        pastPollDataList.Clear();
         LoadClanData();
-        List<PollData> list = new();
-        foreach (var poll in pollDataList)
-        {
-            list.Add(poll);
-        }
-        foreach (var poll in list)
-        {
-            if(poll is FurniturePollData)
-            {
-                FurniturePollData furniturePoll=(FurniturePollData)poll;
-                if (furniturePoll.FurniturePollType is FurniturePollType.Buying)
-                    CreateBuyFurniturePoll(furniturePoll.FurniturePollType, furniturePoll.Furniture, poll.Id);
-                if (furniturePoll.FurniturePollType is FurniturePollType.Selling)
-                    CreateSellFurniturePoll(furniturePoll.FurniturePollType, new(new(furniturePoll.Furniture.Id, furniturePoll.Furniture.Name), furniturePoll.Furniture), poll.Id);
-            }
-        }
 
-        SaveClanData();
+        //SaveClanData();
+        PollMonitor.Instance?.StartMonitoring();
     }
 
     public static void BuildPolls(List<ServerPoll> polls)
     {
-        pollDataList.Clear();
+        PollManagerData.Instance.pollDataList.Clear();
         LoadClanData();
         List<string> clanMembers = new List<string>();
         if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
         foreach (ServerPoll poll in polls)
         {
             PollData pollData = new FurniturePollData(poll, clan);
-            pollDataList.Add(pollData);
+            PollManagerData.Instance.pollDataList.Add(pollData);
         }
 
         SaveClanData();
@@ -193,9 +212,9 @@ public static class PollManager // Handles the polls from creation to loading to
 
     private static void PrintPollList()
     {
-        for (int i = 0; i < pollDataList.Count; i++)
+        for (int i = 0; i < PollManagerData.Instance.pollDataList.Count; i++)
         {
-            PollData pollData = pollDataList[i];
+            PollData pollData = PollManagerData.Instance.pollDataList[i];
             DateTime dateTimeEnd = DateTimeOffset.FromUnixTimeSeconds(pollData.EndTime).DateTime;
 
             // Basic information common to all PollDatas
@@ -213,7 +232,7 @@ public static class PollManager // Handles the polls from creation to loading to
     public static void DebugPrintAllActivePolls()
     {
         Debug.Log("----- Active Polls Start -----");
-        foreach (var poll in pollDataList)
+        foreach (var poll in PollManagerData.Instance.pollDataList)
         {
             string furnitureName = "(unknown)";
             if (poll is FurniturePollData fPoll)
@@ -232,19 +251,19 @@ public static class PollManager // Handles the polls from creation to loading to
         do
         {
             newId = Guid.NewGuid().ToString();
-        } while (pollDataList.Any(poll => poll.Id == newId));
+        } while (PollManagerData.Instance.pollDataList.Any(poll => poll.Id == newId));
 
         return newId;
     }
 
     public static List<PollData> GetPollList()
     {
-        return pollDataList;
+        return PollManagerData.Instance.pollDataList;
     }
 
     public static PollData GetPollData(string id)
     {
-        return pollDataList.FirstOrDefault(x => x.Id == id);
+        return PollManagerData.Instance.pollDataList.FirstOrDefault(x => x.Id == id);
     }
 
     public static void LoadClanData()
@@ -261,7 +280,18 @@ public static class PollManager // Handles the polls from creation to loading to
 
             if (clan?.Polls != null)
             {
-                pollDataList = clan.Polls;
+                List<PollData> pollDataList = new();
+                List<PollData> pastPollDataList = new();
+                foreach (var poll in clan.Polls)
+                {
+                    if (poll.IsExpired)
+                    {
+                        pastPollDataList.Add(poll);
+                    }
+                    else pollDataList.Add(poll);
+                }
+                PollManagerData.Instance.pollDataList = pollDataList;
+                PollManagerData.Instance.pastPollDataList = pastPollDataList;
             }
         }
     }
@@ -278,7 +308,7 @@ public static class PollManager // Handles the polls from creation to loading to
         {
             store.GetClanData(player.ClanId, data => clan = data);
 
-            clan.Polls = pollDataList;
+            clan.Polls = PollManagerData.Instance.pollDataList;
             store.SaveClanData(clan, data => clan = data);
         }
     }
@@ -286,7 +316,7 @@ public static class PollManager // Handles the polls from creation to loading to
     // Ends the poll and determines if it passed, and updates clan inventory accordingly (WIP)
     public static void EndPoll(string pollId)
     {
-        LoadClanData();
+        //LoadClanData();
 
         DataStore store = Storefront.Get();
         PlayerData player = null;
@@ -374,8 +404,8 @@ public static class PollManager // Handles the polls from creation to loading to
         }
 
         // Move poll from active to past
-        pollDataList.Remove(pollData);
-        pastPollDataList.Add(pollData);
+        PollManagerData.Instance.pollDataList.Remove(pollData);
+        PollManagerData.Instance.pastPollDataList.Add(pollData);
 
         // Save clan data and refresh UI
         store.SaveClanData(clan, savedClan =>
@@ -388,7 +418,7 @@ public static class PollManager // Handles the polls from creation to loading to
             VotingActions.ReloadPollList?.Invoke();
             PastPollManager.OnPastPollsChanged?.Invoke();
 
-            if (pollDataList.Count == 0)
+            if (PollManagerData.Instance.pollDataList.Count == 0)
             {
                 PollMonitor.Instance?.StopMonitoring();
             }
@@ -399,9 +429,9 @@ public static class PollManager // Handles the polls from creation to loading to
     // Checks for expired polls and ends those that have expired
     public static void CheckAndExpirePolls()
     {
-        if (pollDataList == null || pollDataList.Count == 0) return;
+        if (PollManagerData.Instance.pollDataList == null || PollManagerData.Instance.pollDataList.Count == 0) return;
 
-        List<PollData> expiredPolls = pollDataList.Where(p => p.IsExpired).ToList();
+        List<PollData> expiredPolls = PollManagerData.Instance.pollDataList.Where(p => p.IsExpired).ToList();
 
         foreach (var poll in expiredPolls)
         {
@@ -412,14 +442,14 @@ public static class PollManager // Handles the polls from creation to loading to
 
     public static PollData GetAnyPollData(string id)
     {
-        var poll = pollDataList.FirstOrDefault(p => p.Id == id);
+        var poll = PollManagerData.Instance.pollDataList.FirstOrDefault(p => p.Id == id);
         if (poll != null) return poll;
 
-        return pastPollDataList.FirstOrDefault(p => p.Id == id);
+        return PollManagerData.Instance.pastPollDataList.FirstOrDefault(p => p.Id == id);
     }
 
     public static List<PollData> GetPastPollList()
     {
-        return pastPollDataList;
+        return PollManagerData.Instance.pastPollDataList;
     }
 }
