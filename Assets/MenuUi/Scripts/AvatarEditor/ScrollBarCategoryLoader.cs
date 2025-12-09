@@ -39,6 +39,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 AddCategoryCell(_avatarPartInfo[0].IconImage, categoryID);
             }
             UpdateCellSize();
+            _content.anchoredPosition = new Vector2(_CategoryGrid.anchoredPosition.x, _CategoryGrid.anchoredPosition.y + _cellHeight + _spacing);
         }
 
         public void OnEndDrag(PointerEventData eventData)
