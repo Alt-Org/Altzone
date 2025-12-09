@@ -123,7 +123,7 @@ public class Popup : MonoBehaviour
                 if (currentTaskId == null)
                     Instance._acceptConfirmButtonText.text = "Valitse";
                 else
-                    Instance._acceptConfirmButtonText.text = "Vaihda Teht‰v‰";
+                    Instance._acceptConfirmButtonText.text = "Vaihda Teht√§v√§";
             }
 
             if (data.Value.Location != null)
@@ -338,6 +338,15 @@ public class Popup : MonoBehaviour
 
                     if (_result.HasValue && _result.Value == false)
                         StartCoroutine(Cooldown(60f));
+                    else if(_result.HasValue && _result.Value == true)
+                    {
+                        if (TaskEducationStoryType.WhereGameHappens == DailyTaskProgressManager.Instance.CurrentPlayerTask?.EducationStoryType
+                        && data.EducationStoryType == TaskEducationStoryType.WhereGameHappens)
+                            DailyTaskProgressManager.Instance.UpdateTaskProgress(TaskEducationStoryType.WhereGameHappens, "1");
+                        else if(TaskEducationCultureType.GamesGenreTypes == DailyTaskProgressManager.Instance.CurrentPlayerTask?.EducationCultureType
+                        && data.EducationCultureType == TaskEducationCultureType.GamesGenreTypes)
+                            DailyTaskProgressManager.Instance.UpdateTaskProgress(TaskEducationCultureType.GamesGenreTypes, "1");
+                    }
                 });
                 _optionButtons[i].gameObject.SetActive(true);
             }

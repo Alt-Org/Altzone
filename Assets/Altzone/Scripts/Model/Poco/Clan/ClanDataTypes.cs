@@ -113,6 +113,23 @@ namespace Altzone.Scripts.Model.Poco.Clan
         Huge
     }
 
+    public enum Rules
+    {
+        FairGame,
+        ActivityWeekly,
+        ActivityDaily,
+        NoToxicity,
+        Teamwork,
+        KickUnderperformers,
+        AbsencesNoted,
+        NoSpam,
+        WorkRoles,
+        FairTrade,
+        JoinJointProjects,
+        DiplomacyWithOthers,
+        Positivity,
+    }
+
     public static class ClanDataTypeConverter
     {
         public static string GetAgeText(ClanAge age)
@@ -388,5 +405,27 @@ namespace Altzone.Scripts.Model.Poco.Clan
                 _ => "",
             };
         }
+
+        public static string GetRulesText(Rules rules)
+        {
+            return rules switch
+            {
+                Rules.FairGame => "Reilu peli",
+                Rules.ActivityWeekly => "Aktiivisuusvaatimus viikoittain",
+                Rules.ActivityDaily => "Aktiivisuusvaatimus päivittäin",
+                Rules.NoToxicity => "Ei toksista käytöstä",
+                Rules.Teamwork => "Yhteistyö ennen sooloilua",
+                Rules.KickUnderperformers => "Minimitasovaatimuksen alittavat pelaajat kickataan",
+                Rules.AbsencesNoted => "Poissaolot ilmoitettava",
+                Rules.NoSpam => "Klaanichattiin ei spämmäystä",
+                Rules.WorkRoles => "Roolikohtainen osallistuminen",
+                Rules.FairTrade => "Kaupankäynti klaanin sisällä reilua",
+                Rules.JoinJointProjects => "Osallistuminen yhteisiin projekteihin",
+                Rules.DiplomacyWithOthers => "Diplomatia muiden klaanien kanssa",
+                Rules.Positivity => "Positiivinen ilmapiiri",
+                _ => "",
+            };
+        }
+
     }
 }
