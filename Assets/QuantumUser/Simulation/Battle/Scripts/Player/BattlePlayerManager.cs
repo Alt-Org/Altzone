@@ -165,7 +165,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Creates all character entities for each player in the game, inititalizing data, hitboxes and view components.
+        /// Creates all character entities for each player in the game, initializing data, hitboxes and view components.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -264,7 +264,7 @@ namespace Battle.QSimulation.Player
                                                 playerClass
                                                 );
 
-                        // entity prototypes
+                        // get entity prototypes
                         playerCharacterEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(playerCharacterId);
                         if (playerCharacterEntityPrototype == null)
                         {
@@ -337,7 +337,7 @@ namespace Battle.QSimulation.Player
                             isTrigger: true
                         );
 
-                        // inititalize hitbox height
+                        // initialize hitbox height
                         playerHitboxHeight = 0;
 
                         foreach (BattlePlayerHitboxColliderTemplate playerHitboxColliderTemplate in playerHitboxListCharacterColliderTemplate)
@@ -452,8 +452,7 @@ namespace Battle.QSimulation.Player
 
                         //} initialize playerData
 
-                        //initialize entity
-
+                        // initialize entity
                         f.Remove<BattlePlayerDataTemplateQComponent>(playerCharacterEntity);
                         f.Add(playerCharacterEntity, playerData, out BattlePlayerDataQComponent* playerDataPtr);
 
