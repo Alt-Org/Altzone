@@ -150,7 +150,7 @@ namespace Battle.QSimulation.Player
                                           characterNumber,
                                           shieldEntityIDs.Length,
                                           Constants.BATTLE_PLAYER_SHIELD_COUNT
-                                          );
+                );
                 return;
             }
 
