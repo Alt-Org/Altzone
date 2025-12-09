@@ -145,6 +145,44 @@ namespace Battle.QSimulation.Player
             return shieldEntityIDs.Length;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static EntityRef GetShieldEntity(Frame f, BattlePlayerSlot playerSlot, int characterNumber, int shieldNumber)
+        {
+            if (!IsValidShieldNumber(f, playerSlot, shieldNumber, characterNumber)) return EntityRef.None;
+
+            int playerIndex = BattlePlayerManager.PlayerHandle.Low_GetPlayerIndex(playerSlot);
+            int shieldIndex = GetShieldIndex(playerIndex, characterNumber, shieldNumber);
+
+            return BattleEntityManager.Get(f, GetPlayerShieldManagerData(f)->PlayerShieldEntityIDs[shieldIndex]);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DespawnShield(Frame f, BattlePlayerSlot playerSlot, int characterNumber, int shieldNumber)
+        {
+            if (!IsValidShieldNumber(f, playerSlot, shieldNumber, characterNumber)) return;
+
+            int playerIndex = BattlePlayerManager.PlayerHandle.Low_GetPlayerIndex(playerSlot);
+            int shieldIndex = GetShieldIndex(playerIndex, characterNumber, shieldNumber);
+
+            BattleEntityManager.Return(f, GetPlayerShieldManagerData(f)->PlayerShieldEntityIDs[shieldIndex]);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsValidShieldNumber(Frame f, BattlePlayerSlot playerSlot, int shieldNumber, int characterNumber)
+        {
+            if (!BattlePlayerManager.PlayerHandle.IsValidCharacterNumber(characterNumber)) return false;
+
+            int characterIndex = BattlePlayerManager.PlayerHandle.Low_GetPlayerIndex(playerSlot) * Constants.BATTLE_PLAYER_CHARACTER_COUNT + characterNumber;
+
+            if (shieldNumber < 0 || shieldNumber > GetPlayerShieldManagerData(f)->PlayerShieldCounts[characterIndex] - 1)
+            {
+                s_debugLogger.ErrorFormat(f, "({0}) shield number {1} is not valid for character number {2}", playerSlot, shieldNumber, characterNumber);
+                return false;
+            }
+
+            return true;
+        }
+
         private static BattleDebugLogger s_debugLogger;
 
         private static void SetShieldEntityIDs(Frame f, BattlePlayerSlot playerSlot, int characterNumber, BattleEntityID[] shieldEntityIDs)
@@ -173,28 +211,6 @@ namespace Battle.QSimulation.Player
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static EntityRef GetShieldEntity(Frame f, BattlePlayerSlot playerSlot, int characterNumber, int shieldNumber)
-        {
-            if (!IsValidShieldNumber(f, playerSlot, shieldNumber, characterNumber)) return EntityRef.None;
-
-            int playerIndex = BattlePlayerManager.PlayerHandle.Low_GetPlayerIndex(playerSlot);
-            int shieldIndex = GetShieldIndex(playerIndex, characterNumber, shieldNumber);
-
-            return BattleEntityManager.Get(f, GetPlayerShieldManagerData(f)->PlayerShieldEntityIDs[shieldIndex]);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DespawnShield(Frame f, BattlePlayerSlot playerSlot, int characterNumber, int shieldNumber)
-        {
-            if (!IsValidShieldNumber(f, playerSlot, shieldNumber, characterNumber)) return;
-
-            int playerIndex = BattlePlayerManager.PlayerHandle.Low_GetPlayerIndex(playerSlot);
-            int shieldIndex = GetShieldIndex(playerIndex, characterNumber, shieldNumber);
-
-            BattleEntityManager.Return(f, GetPlayerShieldManagerData(f)->PlayerShieldEntityIDs[shieldIndex]);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetShieldIndex(int playerIndex, int characterNumber, int shieldNumber)
         {
             return GetShieldOffset(playerIndex, characterNumber) + shieldNumber;
@@ -205,22 +221,6 @@ namespace Battle.QSimulation.Player
         {
             return playerIndex * Constants.BATTLE_PLAYER_CHARACTER_COUNT * Constants.BATTLE_PLAYER_SHIELD_COUNT
                    + characterNumber * Constants.BATTLE_PLAYER_SHIELD_COUNT;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool IsValidShieldNumber(Frame f, BattlePlayerSlot playerSlot, int shieldNumber, int characterNumber)
-        {
-            if (!BattlePlayerManager.PlayerHandle.IsValidCharacterNumber(characterNumber)) return false;
-
-            int characterIndex = BattlePlayerManager.PlayerHandle.Low_GetPlayerIndex(playerSlot) * Constants.BATTLE_PLAYER_CHARACTER_COUNT + characterNumber;
-
-            if (shieldNumber < 0 || shieldNumber > GetPlayerShieldManagerData(f)->PlayerShieldCounts[characterIndex] - 1)
-            {
-                s_debugLogger.ErrorFormat(f, "({0}) shield number {1} is not valid for character number {2}", playerSlot, shieldNumber, characterNumber);
-                return false;
-            }
-
-            return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
