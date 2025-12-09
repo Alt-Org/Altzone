@@ -966,9 +966,9 @@ MonoBehaviour:
   m_Content: {fileID: 4207114766707577365}
   m_Horizontal: 0
   m_Vertical: 1
-  m_MovementType: 1
+  m_MovementType: 2
   m_Elasticity: 0.1
-  m_Inertia: 1
+  m_Inertia: 0
   m_DecelerationRate: 0.135
   m_ScrollSensitivity: 1
   m_Viewport: {fileID: 992649476381943219}
@@ -1003,6 +1003,7 @@ MonoBehaviour:
     type: 2}
   _CategoryGrid: {fileID: 1698640924197942680}
   _verticalLayoutGroup: {fileID: 5399473208936656064}
+  _scrollRect: {fileID: 5821299491006676406}
 --- !u!1 &1209530618597823404
 GameObject:
   m_ObjectHideFlags: 0
