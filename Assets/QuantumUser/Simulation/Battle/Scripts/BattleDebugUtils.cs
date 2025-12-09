@@ -1,6 +1,7 @@
 /// @file BattleDebugUtils.cs
 /// <summary>
-/// Contains @cref{Battle.QSimulation,BattleInputDebugUtils} class which handles input debug info.
+/// Debug utility code.<br/>
+/// Contains @cref{Battle.QSimulation,BattleInputDebugUtils} class which provides input debugging utilities.
 /// </summary>
 
 // Quantum usings
@@ -12,7 +13,7 @@ using Battle.QSimulation.Game;
 namespace Battle.QSimulation
 {
     /// <summary>
-    /// Handles input debug info.
+    /// Provides input debugging utilities.
     /// </summary>
     public static unsafe class BattleInputDebugUtils
     {
