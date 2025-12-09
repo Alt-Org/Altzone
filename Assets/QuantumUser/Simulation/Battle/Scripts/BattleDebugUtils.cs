@@ -1,3 +1,8 @@
+/// @file BattleDebugUtils.cs
+/// <summary>
+/// Contains @cref{Battle.QSimulation,BattleInputDebugUtils} class which handles input debug info.
+/// </summary>
+
 // Quantum usings
 using Quantum;
 
@@ -6,12 +11,27 @@ using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation
 {
+    /// <summary>
+    /// Handles input debug info.
+    /// </summary>
     public static unsafe class BattleInputDebugUtils
     {
+        /// <summary>
+        /// Struct containing input debug info data.<br/>
+        /// Used as the return type of <see cref="GenerateDebugInfo"/>.
+        /// </summary>
         public struct InputDebugInfo
         {
+            /// <summary>
+            /// Is the input not empty.<br/>
+            /// Input is considered empty when player takes no action.
+            /// </summary>
             public bool NotEmpty;
+
+            /// <summary>Summary of the actions that the player wants to take as a string.</summary>
             public string Summary;
+
+            /// <summary>A string representation of the full input struct.</summary>
             public string Struct;
 
             public InputDebugInfo(bool notEmpty, string summary, string @struct)
@@ -22,6 +42,13 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Generates info from player <paramref name="input"/> that is used for debugging.
+        /// </summary>
+        ///
+        /// <param name="input">Pointer to player input</param>
+        ///
+        /// <returns><see cref="InputDebugInfo"/> data.</returns>
         public static InputDebugInfo GenerateDebugInfo(Input* input)
         {
 
