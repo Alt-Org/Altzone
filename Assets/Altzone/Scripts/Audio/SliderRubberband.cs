@@ -38,7 +38,7 @@ public class SliderRubberband : MonoBehaviour
         {
             yield return null;
             timer += Time.deltaTime;
-            Debug.LogError(timer);
+
             _slider.value = Mathf.Lerp(sliderStartLocation, estimatedLocation, _rubberbandCurve.Evaluate(timer / _rubberbandDuration));
         }
 

@@ -414,7 +414,6 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
 
         if (_sliderRubberbandActive && _currentTrackLength != musicTrackLength)
         {
-            Debug.LogError(_currentTrackLength + " | " + musicTrackLength);
             if (_sliderAnimationCoroutine != null)
             {
                 StopCoroutine(_sliderAnimationCoroutine);
@@ -425,7 +424,6 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
 
         if (!_sliderRubberbandActive && Mathf.Abs(_trackPlayTimeSlider.value - (elapsedTime / musicTrackLength)) > _sliderRubberbandAnimationTreshold)
         {
-            Debug.LogError(_sliderRubberbandActive + "" + Mathf.Abs(_trackPlayTimeSlider.value - (elapsedTime / musicTrackLength)) +" > " + _sliderRubberbandAnimationTreshold);
             _currentTrackLength = musicTrackLength;
             _sliderRubberbandActive = true;
             _sliderAnimationCoroutine = StartCoroutine(_sliderRubberband.StartRubberband(elapsedTime, musicTrackLength, (data) => _sliderRubberbandActive = !data));

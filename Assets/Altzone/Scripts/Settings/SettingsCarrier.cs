@@ -391,6 +391,17 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _mainMenuMusicName = PlayerPrefs.GetString("MainMenuMusic");
     }
 
+    public void SetVolume(SoundType type, float value)
+    {
+        switch (type)
+        {
+            case SoundType.menu: menuVolume = value; PlayerPrefs.SetFloat("MenuVolume", value); break;
+            case SoundType.music: musicVolume = value; PlayerPrefs.SetFloat("MusicVolume", value); break;
+            case SoundType.sound:  soundVolume = value; PlayerPrefs.SetFloat("SoundVolume", value); break;
+            default: break;
+        }
+    }
+
     // SentVolume combines masterVolume and another volume chosen by the sent type
     public float SentVolume(SoundType type)
     {

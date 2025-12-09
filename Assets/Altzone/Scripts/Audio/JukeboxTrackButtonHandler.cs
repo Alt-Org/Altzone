@@ -8,9 +8,7 @@ using UnityEngine.UI;
 
 public class JukeboxTrackButtonHandler : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
-    [SerializeField] private TextMeshProUGUI _trackNameText;
     [SerializeField] private TextAutoScroll _trackNameAutoScroll;
-    [SerializeField] private TextMeshProUGUI _trackCreditsNamesText;
     [SerializeField] private TextAutoScroll _trackCreditsNamesAutoScroll;
     [Space]
     [SerializeField] private Image _trackImage;
@@ -34,7 +32,7 @@ public class JukeboxTrackButtonHandler : MonoBehaviour, IBeginDragHandler, IEndD
     public delegate void TrackPressed(MusicTrack musicTrack);
     public event TrackPressed OnTrackPressed;
 
-    public delegate void PreviewPressed(JukeboxTrackButtonHandler buttonHandler);
+    public delegate void PreviewPressed(JukeboxTrackButtonHandler buttonHandler, float previewDuration = -1);
     public event PreviewPressed OnPreviewPressed;
 
     public delegate void InfoPressed(MusicTrack musicTrack, JukeboxManager.MusicTrackFavoriteType likeType);

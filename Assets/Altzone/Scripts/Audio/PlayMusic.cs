@@ -14,8 +14,6 @@ public class PlayMusic : MonoBehaviour
     [SerializeField] private TMPro.TextMeshProUGUI _musicNameText;
     [SerializeField] private SettingsCarrier.JukeboxPlayArea _currentJukeboxPlayArea;
 
-    //private string returnString = "";
-
     void OnEnable() { StartCoroutine(WaitForRequierdClasses()); }
 
     private IEnumerator WaitForRequierdClasses()
