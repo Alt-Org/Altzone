@@ -13,8 +13,8 @@ enum BattlePlayerCollisionType
 
 component BattlePlayerHitboxQComponent
 {
-    EntityRef PlayerEntity;
     bool IsActive;
+    EntityRef ParentEntity;
     BattlePlayerHitboxType HitboxType;
     BattlePlayerCollisionType CollisionType;
     FPVector2 Normal;

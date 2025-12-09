@@ -100,13 +100,13 @@ namespace Battle.QSimulation.Player
                     // initialize hitBox component
                     BattlePlayerHitboxQComponent playerHitbox = new BattlePlayerHitboxQComponent
                     {
-                        PlayerEntity       = playerCharacterEntity,
                         IsActive           = true,
                         HitboxType         = playerHitboxType,
                         CollisionType      = playerHitboxCollisionType,
                         Normal             = playerHitboxNormal,
                         NormalBase         = playerHitboxNormal,
                         CollisionMinOffset = ((FP)playerHitboxHeight + FP._0_50) * BattleGridManager.GridScaleFactor
+                        ParentEntity       = playerCharacterEntity,
                     };
 
                     //} initialize collisionTrigger component

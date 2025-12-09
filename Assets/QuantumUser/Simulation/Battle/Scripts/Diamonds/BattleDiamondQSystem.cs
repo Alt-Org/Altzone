@@ -112,7 +112,7 @@ namespace Battle.QSimulation.Diamond
             if (diamond->IsTraveling) return;
 
             BattleDiamondCounterQSingleton* diamondCounter = f.Unsafe.GetPointerSingleton<BattleDiamondCounterQSingleton>();
-            BattlePlayerDataQComponent*     playerData     = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->PlayerEntity);
+            BattlePlayerDataQComponent*     playerData     = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerHitbox->ParentEntity);
 
             // increase right team's diamondcounter
             if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha) diamondCounter->AlphaDiamonds++;

@@ -53,17 +53,17 @@ namespace Battle.QSimulation.Player
             if (!shieldCollisionData->PlayerShieldHitbox->IsActive) return;
             if (projectileCollisionData->Projectile->IsHeld) return;
 
-            BattlePlayerClassProjectorDataQComponent* data = GetClassData(f, shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
+            BattlePlayerClassProjectorDataQComponent* data = GetClassData(f, shieldCollisionData->PlayerShieldHitbox->ParentEntity);
             bool grab = !projectileCollisionData->Projectile->IsPassed;
 
             if (grab)
             {
-                BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity)->Slot);
+                BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntity)->Slot);
                 if (!teammateHandle.PlayState.IsInPlay()) grab = false;
             }
             if (grab)
             {
-                Transform2D* transformPlayer = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
+                Transform2D* transformPlayer = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->ParentEntity);
                 Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->ProjectileEntity);
 
                 FPVector2 toProjectile = transformProjectile->Position - transformPlayer->Position;
