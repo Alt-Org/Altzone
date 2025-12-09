@@ -350,8 +350,7 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerHitboxQComponent))]
   public unsafe class BattlePlayerHitboxQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerHitboxQComponent> {
-    public MapEntityId PlayerEntity;
-    public QBoolean IsActive;
+    public MapEntityId ParentEntity;
     public Quantum.QEnum32<BattlePlayerHitboxType> HitboxType;
     public Quantum.QEnum32<BattlePlayerCollisionType> CollisionType;
     public FPVector2 Normal;
@@ -363,8 +362,7 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattlePlayerHitboxQComponent result, in PrototypeMaterializationContext context = default) {
-        PrototypeValidator.FindMapEntity(this.PlayerEntity, in context, out result.PlayerEntity);
-        result.IsActive = this.IsActive;
+        PrototypeValidator.FindMapEntity(this.ParentEntity, in context, out result.ParentEntity);
         result.HitboxType = this.HitboxType;
         result.CollisionType = this.CollisionType;
         result.Normal = this.Normal;
@@ -470,14 +468,18 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerShieldDataQComponent))]
   public unsafe class BattlePlayerShieldDataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerShieldDataQComponent> {
+    public MapEntityId PlayerEntity;
+    [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
     public MapEntityId[] HitboxEntities = {};
+    public QBoolean IsActive;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerShieldDataQComponent component = default;
         Materialize((Frame)f, ref component, in context);
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattlePlayerShieldDataQComponent result, in PrototypeMaterializationContext context = default) {
+        PrototypeValidator.FindMapEntity(this.PlayerEntity, in context, out result.PlayerEntity);
         if (this.HitboxEntities.Length == 0) {
           result.HitboxEntities = default;
         } else {
@@ -488,6 +490,7 @@ namespace Quantum.Prototypes {
             list.Add(tmp);
           }
         }
+        result.IsActive = this.IsActive;
     }
   }
   [System.SerializableAttribute()]

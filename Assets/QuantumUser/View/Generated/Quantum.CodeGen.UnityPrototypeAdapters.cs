@@ -150,8 +150,7 @@ namespace Quantum.Prototypes.Unity {
   }
   [System.SerializableAttribute()]
   public unsafe partial class BattlePlayerHitboxQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerHitboxQComponentPrototype> {
-    public Quantum.QuantumEntityPrototype PlayerEntity;
-    public QBoolean IsActive;
+    public Quantum.QuantumEntityPrototype ParentEntity;
     public Quantum.QEnum32<BattlePlayerHitboxType> HitboxType;
     public Quantum.QEnum32<BattlePlayerCollisionType> CollisionType;
     public FPVector2 Normal;
@@ -160,8 +159,7 @@ namespace Quantum.Prototypes.Unity {
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerHitboxQComponentPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerHitboxQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerHitboxQComponentPrototype();
-      converter.Convert(this.PlayerEntity, out result.PlayerEntity);
-      converter.Convert(this.IsActive, out result.IsActive);
+      converter.Convert(this.ParentEntity, out result.ParentEntity);
       converter.Convert(this.HitboxType, out result.HitboxType);
       converter.Convert(this.CollisionType, out result.CollisionType);
       converter.Convert(this.Normal, out result.Normal);
@@ -173,12 +171,17 @@ namespace Quantum.Prototypes.Unity {
   }
   [System.SerializableAttribute()]
   public unsafe partial class BattlePlayerShieldDataQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerShieldDataQComponentPrototype> {
+    public Quantum.QuantumEntityPrototype PlayerEntity;
+    [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
     public Quantum.QuantumEntityPrototype[] HitboxEntities = {};
+    public QBoolean IsActive;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerShieldDataQComponentPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerShieldDataQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerShieldDataQComponentPrototype();
+      converter.Convert(this.PlayerEntity, out result.PlayerEntity);
       converter.Convert(this.HitboxEntities, out result.HitboxEntities);
+      converter.Convert(this.IsActive, out result.IsActive);
       ConvertUser(converter, ref result);
       return result;
     }
