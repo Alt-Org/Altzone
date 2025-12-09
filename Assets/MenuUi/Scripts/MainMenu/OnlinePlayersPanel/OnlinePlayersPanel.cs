@@ -119,6 +119,11 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
             if (serverPlayer != null)
             {
+                _allPlayers.Add(player);
+                if(serverPlayer.clan_id == ServerManager.Instance.Clan._id)
+                {
+                    _clanPlayers.Add(player);
+                }
                 clanLogo = serverPlayer.clanLogo;
                 avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(new AvatarData(serverPlayer.name, serverPlayer.avatar));
 

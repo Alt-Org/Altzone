@@ -1039,7 +1039,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.1, y: 0.29}
   m_AnchorMax: {x: 0.925, y: 0.9}
-  m_AnchoredPosition: {x: -0.0000013113022, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -0.0000026226044, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5787533169938191542
@@ -1272,6 +1272,8 @@ MonoBehaviour:
   _openOnlinePlayersPanelButton: {fileID: 0}
   _onlinePlayersPanelItemPrefab: {fileID: 3731211414751999882, guid: 9a493b27b8acd32439563ee755ffad82,
     type: 3}
+  _viewClanPlayersButton: {fileID: 8100628190002584462}
+  _viewAllPlayersButton: {fileID: 6370592406215537766}
 --- !u!1 &7713513259232091147
 GameObject:
   m_ObjectHideFlags: 0
