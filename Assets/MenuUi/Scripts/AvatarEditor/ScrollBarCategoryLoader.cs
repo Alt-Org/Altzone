@@ -116,6 +116,19 @@ namespace MenuUi.Scripts.AvatarEditor
             }
 
             _scrollRect.content.anchoredPosition = target;
+
+            OnClamp(targetYPos);
+        }
+
+        private void OnClamp(float targetYPos)
+        {
+            float totalCellSize = _cellHeight + _spacing;
+            int topIndex = Mathf.RoundToInt(targetYPos /totalCellSize);
+            int centerIndex = topIndex + 1;
+
+            var centerCell = _scrollRect.content.GetChild(centerIndex);
+
+            centerCell.GetComponent<Button>().onClick.Invoke();
         }
     }
 }
