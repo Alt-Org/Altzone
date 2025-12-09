@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Clan;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RulesSelectionController : MonoBehaviour
+public class RulesSelectionController : AltMonoBehaviour
 {
     [Header("Objects")]
     [SerializeField] private GameObject _rulesSelectorObject;

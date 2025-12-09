@@ -204,7 +204,7 @@ public class ClanSettings : AltMonoBehaviour
             clanData.Language = _languageList.SelectedLanguage;
             //clanData.Goals = _goalSelection.GoalsRange;
             clanData.ClanAge = _ageSelection.ClanAgeRange;
-
+            clanData.Rules = _ruleSelection.SelectedRules;
             clanData.Values = _valueSelection.SelectedValues;
             clanData.ClanHeartPieces = _heartPieces;
 
@@ -378,26 +378,43 @@ public class ClanSettings : AltMonoBehaviour
 
     public void ConfirmClanRulesEdit()
     {
-        ClanData clan = null;
-        Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (c=>clan=c));
-        if (clan != null)
-        {
-            string rule1 = clan.Rules.Count > 0 ?
-            _rule1Text.text = ClanDataTypeConverter.GetRulesText(clan.Rules[0]) : string.Empty;
-            string rule2 = clan.Rules.Count > 1 ?
-            _rule1Text.text = ClanDataTypeConverter.GetRulesText(clan.Rules[1]) : string.Empty;
-            string rule3 = clan.Rules.Count > 2 ?
-            _rule1Text.text = ClanDataTypeConverter.GetRulesText(clan.Rules[2]) : string.Empty;
+        string rule1 = _ruleSelection.SelectedRules.Count > 0 ?
+        ClanDataTypeConverter.GetRulesText(_ruleSelection.SelectedRules[0]) : string.Empty;
+        string rule2 = _ruleSelection.SelectedRules.Count > 1 ?
+        ClanDataTypeConverter.GetRulesText(_ruleSelection.SelectedRules[1]) : string.Empty;
+        string rule3 = _ruleSelection.SelectedRules.Count > 2 ?
+        ClanDataTypeConverter.GetRulesText(_ruleSelection.SelectedRules[2]) : string.Empty;
 
-            _rule1Text.text = rule1;
-            _rule2Text.text = rule2;
-            _rule3Text.text = rule3;
+        if (rule1 != _rule1Text.text || rule2 != _rule2Text.text|| rule3 != _rule3Text.text)
+        {
+            if (DailyTaskProgressManager.Instance.CurrentPlayerTask?.EducationCultureType == Altzone.Scripts.Model.Poco.Game.TaskEducationCultureType.ClanCulturalGuideline)
+                DailyTaskProgressManager.Instance.UpdateTaskProgress(Altzone.Scripts.Model.Poco.Game.TaskEducationCultureType.ClanCulturalGuideline, "1");
         }
+
+        _rule1Text.text = rule1;
+        _rule2Text.text = rule2;
+        _rule3Text.text = rule3;
         HidePopup(_rulesPopup);
     }
 
     public void CancelClanRulesEdit()
     {
+        string rule1 = _ruleSelection.SelectedRules.Count > 0 ?
+        ClanDataTypeConverter.GetRulesText(_ruleSelection.SelectedRules[0]) : string.Empty;
+        string rule2 = _ruleSelection.SelectedRules.Count > 1 ?
+        ClanDataTypeConverter.GetRulesText(_ruleSelection.SelectedRules[1]) : string.Empty;
+        string rule3 = _ruleSelection.SelectedRules.Count > 2 ?
+        ClanDataTypeConverter.GetRulesText(_ruleSelection.SelectedRules[2]) : string.Empty;
+
+        if (rule1 != _rule1Text.text || rule2 != _rule2Text.text || rule3 != _rule3Text.text)
+        {
+            if (DailyTaskProgressManager.Instance.CurrentPlayerTask?.EducationCultureType == Altzone.Scripts.Model.Poco.Game.TaskEducationCultureType.ClanCulturalGuideline)
+                DailyTaskProgressManager.Instance.UpdateTaskProgress(Altzone.Scripts.Model.Poco.Game.TaskEducationCultureType.ClanCulturalGuideline, "1");
+        }
+
+        _rule1Text.text = rule1;
+        _rule2Text.text = rule2;
+        _rule3Text.text = rule3;
         HidePopup(_rulesPopup);
     }
 
