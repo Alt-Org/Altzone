@@ -361,7 +361,6 @@ namespace Battle.QSimulation.Player
                         // initialize hitBox component
                         playerHitbox = new BattlePlayerHitboxQComponent
                         {
-                            IsActive           = true,
                             ParentEntity       = playerCharacterEntity,
                             HitboxType         = playerHitboxType,
                             CollisionType      = playerHitboxCollisionType,

@@ -445,7 +445,9 @@ namespace Battle.QSimulation.Projectile
         {
             normal = FPVector2.Zero;
 
-            if (!shieldCollisionData->PlayerShieldHitbox->IsActive) return false;
+            BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntity);
+
+            if (!playerShieldData->IsActive) return false;
             if (projectile->EmotionCurrent == BattleEmotionState.Love) return false;
 
             BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntity);

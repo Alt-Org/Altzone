@@ -13,7 +13,6 @@ enum BattlePlayerCollisionType
 
 component BattlePlayerHitboxQComponent
 {
-    bool IsActive;
     EntityRef ParentEntity;
     BattlePlayerHitboxType HitboxType;
     BattlePlayerCollisionType CollisionType;

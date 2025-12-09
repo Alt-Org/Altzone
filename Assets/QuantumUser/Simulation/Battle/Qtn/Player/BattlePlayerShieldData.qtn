@@ -1,6 +1,8 @@
 component BattlePlayerShieldDataQComponent
 {
-    list<EntityRef> HitboxEntities;
+    EntityRef PlayerEntity;
+    [FreeOnComponentRemoved] list<EntityRef> HitboxEntities;
+    bool IsActive;
 }
 
 component BattlePlayerShieldDataTemplateQComponent

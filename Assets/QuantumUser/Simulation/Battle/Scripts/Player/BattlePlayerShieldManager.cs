@@ -100,13 +100,12 @@ namespace Battle.QSimulation.Player
                     // initialize hitBox component
                     BattlePlayerHitboxQComponent playerHitbox = new BattlePlayerHitboxQComponent
                     {
-                        IsActive           = true,
-                        HitboxType         = playerHitboxType,
-                        CollisionType      = playerHitboxCollisionType,
-                        Normal             = playerHitboxNormal,
-                        NormalBase         = playerHitboxNormal,
-                        CollisionMinOffset = ((FP)playerHitboxHeight + FP._0_50) * BattleGridManager.GridScaleFactor
                         ParentEntity       = playerCharacterEntity,
+                        HitboxType         = playerShieldHitboxType,
+                        CollisionType      = playerShieldHitboxCollisionType,
+                        Normal             = playerShieldHitboxNormal,
+                        NormalBase         = playerShieldHitboxNormal,
+                        CollisionMinOffset = ((FP)playerShieldHitboxHeight + FP._0_50) * BattleGridManager.GridScaleFactor
                     };
 
                     //} initialize collisionTrigger component
@@ -120,6 +119,9 @@ namespace Battle.QSimulation.Player
                 }
 
                 shieldEntityIDs[shieldEntityIndex] = BattleEntityManager.Register(f, playerShieldEntity);
+
+                playerShieldData.PlayerEntity = playerCharacterEntity;
+                playerShieldData.IsActive = true;
 
                 f.Remove<BattlePlayerShieldDataTemplateQComponent>(playerShieldEntity);
                 f.Add(playerShieldEntity, playerShieldData);

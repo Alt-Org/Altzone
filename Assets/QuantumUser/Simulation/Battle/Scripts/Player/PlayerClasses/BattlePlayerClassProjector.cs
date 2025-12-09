@@ -50,7 +50,9 @@ namespace Battle.QSimulation.Player
         /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
         public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData)
         {
-            if (!shieldCollisionData->PlayerShieldHitbox->IsActive) return;
+            BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntity);
+
+            if (!playerShieldData->IsActive) return;
             if (projectileCollisionData->Projectile->IsHeld) return;
 
             BattlePlayerClassProjectorDataQComponent* data = GetClassData(f, shieldCollisionData->PlayerShieldHitbox->ParentEntity);
