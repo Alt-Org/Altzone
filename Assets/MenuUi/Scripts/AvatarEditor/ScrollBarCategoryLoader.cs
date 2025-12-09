@@ -22,7 +22,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private List<AvatarPartInfo> _avatarPartInfo;
         private List<string> _allCategoryIds;
         private float _cellHeight;
-        [SerializeField] private RectTransform _CategoryGrid;
+        [SerializeField] private RectTransform _categoryGrid;
         [SerializeField] private VerticalLayoutGroup _verticalLayoutGroup;
         [SerializeField] private ScrollRect _scrollRect;
         private float _spacing = 0;
@@ -32,14 +32,17 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             
             _allCategoryIds = _avatarPartsReference.GetAllCategoryIds();
-
-            foreach (var categoryID in _allCategoryIds)
+            for (int i = 0; i < 3; i++)
             {
-                _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryID);
-                AddCategoryCell(_avatarPartInfo[0].IconImage, categoryID);
+                foreach (var categoryID in _allCategoryIds)
+                {
+                    _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryID);
+                    AddCategoryCell(_avatarPartInfo[0].IconImage, categoryID);
+                }
             }
+
             UpdateCellSize();
-            _content.anchoredPosition = new Vector2(_CategoryGrid.anchoredPosition.x, _CategoryGrid.anchoredPosition.y + _cellHeight + _spacing);
+            _content.anchoredPosition = new Vector2(_categoryGrid.anchoredPosition.x, _categoryGrid.anchoredPosition.y + (_cellHeight + _spacing) * 3);
         }
 
         public void OnEndDrag(PointerEventData eventData)
@@ -68,11 +71,11 @@ namespace MenuUi.Scripts.AvatarEditor
         }
         private void UpdateCellSize()
         {
-            _viewPortHeight = _CategoryGrid.rect.height;
+            _viewPortHeight = _categoryGrid.rect.height;
             _spacing = 0.05f * _viewPortHeight;
             _verticalLayoutGroup.spacing = _spacing;
-            _verticalLayoutGroup.padding.left = Mathf.CeilToInt(0.1f * _CategoryGrid.rect.width);
-            _verticalLayoutGroup.padding.right = Mathf.CeilToInt(0.1f * _CategoryGrid.rect.width);
+            _verticalLayoutGroup.padding.left = Mathf.CeilToInt(0.1f * _categoryGrid.rect.width);
+            _verticalLayoutGroup.padding.right = Mathf.CeilToInt(0.1f * _categoryGrid.rect.width);
 
             _cellHeight = (_viewPortHeight - _spacing * 2) / 3;
             foreach (RectTransform child in _content)
