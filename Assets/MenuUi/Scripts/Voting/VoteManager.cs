@@ -55,7 +55,7 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
 
     private IEnumerator FetchPollsCoroutine()
     {
-        Debug.LogWarning("Fetching Polls");
+        Debug.Log("Fetching Polls");
         bool ready = false;
         yield return StartCoroutine(ServerManager.Instance.GetClanVoteListFromServer(polls =>
         {
@@ -74,12 +74,10 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
                     {
                         FurniturePollData pollData = new FurniturePollData(poll, clanData);
                         if (pollData.Furniture == null) continue;
-                        Debug.LogWarning(pollData.Furniture.Name);
                         clanData.Polls.Add(pollData);
                     }
                 }
                 Storefront.Get().SaveClanData(clanData, null);
-                Debug.LogWarning("Sending Polls Changed");
                 ServerManager.Instance.RaiseClanPollsChangedEvent();
             }
             ready = true;
