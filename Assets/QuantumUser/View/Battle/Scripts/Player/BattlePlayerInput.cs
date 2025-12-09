@@ -126,25 +126,25 @@ namespace Battle.View.Player
         /// Variables related to current input states.
         /// @{
 
-        /// <value>Saved time from previous frame.</value>
+        /// <summary>Saved time from previous frame.</summary>
         private float _previousTime;
 
-        /// <value>Bool for if a press input was received in the previous frame.</value>
+        /// <summary>Bool for if a press input was received in the previous frame.</vasummarylue>
         private bool _mouseDownPrevious;
 
-        /// <value>Bool for if swipe movement has started and not stopped.</value>
+        /// <summary>Bool for if swipe movement has started and not stopped.</summary>
         private bool _swipeMovementStarted = false;
 
-        /// <value>Initial saved vector when rotation input is first detected.</value>
+        /// <summary>Initial saved vector when rotation input is first detected.</summary>
         private Vector2 _rotationStartVector;
 
-        /// <value>Initial saved vector when movement input is first detected.</value>
+        /// <summary>Initial saved vector when movement input is first detected.</summary>
         private Vector3 _movementStartVector;
 
-        /// <value>The vector received from the movement joystick.</value>
+        /// <summary>The vector received from the movement joystick.</summary>
         private Vector2 _joystickMovementVector;
 
-        /// <value>The float value received from the rotation joystick.</value>
+        /// <summary>The float value received from the rotation joystick.</summary>
         private float _joystickRotationValue;
 
         /// <summary>Saved world position of the previous tap position used for double tap input validating.</summary>
@@ -153,15 +153,16 @@ namespace Battle.View.Player
         /// <summary>Saved time stamp of the previous tap.</summary>
         private float _lastTapTime;
 
-        /// <value>Saved character number from character swapping input.</value>
+        /// <summary>Saved character number from character swapping input.</summary>
         private int _characterNumber = -1;
 
-        /// <value>Give up button state</value>
+        /// <summary>Give up button state</summary>
         private bool _onGiveUp = false;
 
-        /// <value>Bool to block screen input</value>
+        /// <summary>Bool to block screen input</summary>
         private bool _blockScreenInput = false;
 
+        /// <summary>Debug number for keeping track of inputs.</summary>
         private int _inputDebugNumber;
 
         /// @}
