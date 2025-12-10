@@ -26,7 +26,7 @@ MonoBehaviour:
   - active: 1
     title: Vaihda taustamusiikki
     englishTitle: Switching Music
-    description: "Vaihda k\xE4ytt\xF6liittym\xE4n taustamusiikki."
+    description: "Vaihda k\xE4ytt\xF6liittym\xE4n taustamusiikki asetuksista."
     englishDescription: Change the background music
     amount: 1
     coins: 10
@@ -47,9 +47,9 @@ MonoBehaviour:
     title: "Tee n\xE4pp\xE4imill\xE4 musiikkia"
     englishTitle: Make music with buttons
     description: "Alapainikkeiden painaminen j\xE4rjestyksess\xE4 synnytt\xE4\xE4
-      melodiaa - osaatko soittaa jotain tuttua? Soita Ukko Nooa melodia"
+      melodiaa - osaatko soittaa jotain tuttua? Soita Ukko Nooa melodia (1,1,1,3,2,2,2,4,3,3,2,2,1))"
     englishDescription: Pressing the bottom buttons in order creates a melody - are
-      you able to play something familiar? Play twinkle twinkle little star
+      you able to play something familiar? Play Gubben Noak(1,1,1,3,2,2,2,4,3,3,2,2,1)
     amount: 1
     coins: 10
     points: 100
@@ -78,8 +78,9 @@ MonoBehaviour:
   - active: 1
     title: Muokkaa pelihahmosta voimakas
     englishTitle: Make your character strong
-    description: 
-    englishDescription: 
+    description: Tee jostakin hahmostasi mahdollissimman voimakas (taso 6).
+    englishDescription: 'Make one of your character as powerful as possible (level
+      6). '
     amount: 1
     coins: 10
     points: 100
@@ -118,7 +119,8 @@ MonoBehaviour:
   - active: 1
     title: "Luo uusi \xE4\xE4nestys"
     englishTitle: Start a poll
-    description: "Aloita uusi \xE4\xE4nestys josta klaanisi voi \xE4\xE4nest\xE4\xE4"
+    description: "Aloita uusi \xE4\xE4nestys josta klaanisi voi \xE4\xE4nest\xE4\xE4
+      (Aloita osto\xE4\xE4nestys kaupasta tai myynti\xE4\xE4nestys varastosta)."
     englishDescription: Start a new poll for your clan to vote on
     amount: 1
     coins: 100
@@ -128,8 +130,10 @@ MonoBehaviour:
   - active: 1
     title: Paina pelihahmon kuvausta
     englishTitle: View a characters description
-    description: 
-    englishDescription: 
+    description: "Hahmogalleriassa jokaisen hahmon tiedoist pit\xE4isi l\xF6yty\xE4
+      hahmon tarina ja kuvaus, paina sit\xE4."
+    englishDescription: CharacterGallery conatins information and story about all
+      of the characters. Go there, find a description and press it.
     amount: 1
     coins: 100
     points: 10
@@ -148,9 +152,9 @@ MonoBehaviour:
     educationCategoryTaskType: define_player_style
   - active: 1
     title: Paina asiaa, jonka voi ostaa
-    englishTitle: 
-    description: 
-    englishDescription: 
+    englishTitle: Press something you can buy
+    description: "Etsi jotain mit\xE4 pysyty ostamaan pelin valuttalla."
+    englishDescription: Look for something that you can buy with games currency.
     amount: 1
     coins: 100
     points: 10
@@ -189,8 +193,10 @@ MonoBehaviour:
   - active: 1
     title: "K\xE4yt\xE4 kaikkia eri tunne-emojeita"
     englishTitle: Use all different feeling emojis
-    description: 
-    englishDescription: 
+    description: "Chatiss\xE4 viestit voivat olla viitt\xE4 eri tunne tyyppi\xE4.
+      Kokeile k\xE4ytt\xE4\xE4 n\xE4it\xE4 kaikkia"
+    englishDescription: Chatmessages contain five different types of emotions, try
+      all ofm them.
     amount: 1
     coins: 100
     points: 10
@@ -248,10 +254,12 @@ MonoBehaviour:
     educationCategoryType: story
     educationCategoryTaskType: recognize_character_mechanic
   - active: 1
-    title: "Etsi ja klikkaa kest\xE4v\xE4\xE4n kuluttamiseen liittyvi\xE4 asioita"
-    englishTitle: 
-    description: 
-    englishDescription: 
+    title: "Kest\xE4v\xE4 kuluttaminen"
+    englishTitle: Sustainable consumption
+    description: "Etsi ja klikkaa kest\xE4v\xE4\xE4n kuluttamiseen liittyvi\xE4 asioita
+      (Vihje: Pelaajan ja klaanin profiilit)"
+    englishDescription: 'Search and click something related to sustainable consumption.
+      (Hint: Player and clan profiles.)'
     amount: 1
     coins: 100
     points: 10
@@ -260,8 +268,11 @@ MonoBehaviour:
   - active: 1
     title: Klikkaa tunnettuihin teoksiin, ideoihin tai ihmisiin viittaavia asioita
     englishTitle: Click on known art, ideas and things related to people
-    description: 
-    englishDescription: 
+    description: "Etsi tunnettuihin teoksiin, ideoihin tai ihmisiin viittaavia elementtej\xE4
+      ja pid\xE4 niit\xE4 pohjassa kolme sekuntia. (Vihje: Kojun mainoksen muokkaus)"
+    englishDescription: 'Look for references to  known art, ideas and things related
+      to people. Select by holding them down for three seconds. (Hint: Stalls ad
+      modification window)'
     amount: 1
     coins: 100
     points: 10
@@ -278,10 +289,11 @@ MonoBehaviour:
     educationCategoryType: culture
     educationCategoryTaskType: what_style_types_game_has
   - active: 1
-    title: "Etsi ja klikkaa arvoihin liittyvi\xE4 asioita"
-    englishTitle: 
-    description: 
-    englishDescription: 
+    title: "L\xF6yd\xE4 arvoja pelist\xE4"
+    englishTitle: Find values in the game
+    description: "Etsi ja klikkaa arvoihin liittyvi\xE4 asioita (Vihje: klaanit)"
+    englishDescription: 'Search and click for something related to peoples values.
+      (Hint: Clans might have something)'
     amount: 1
     coins: 100
     points: 10
@@ -290,8 +302,10 @@ MonoBehaviour:
   - active: 1
     title: "Osallistu \xE4\xE4nestykseen"
     englishTitle: Participate in a poll
-    description: 
-    englishDescription: 
+    description: "Mene \xE4\xE4nestyssivulle ja anna \xE4\xE4nesi, jos \xE4\xE4nestyksi\xE4
+      ei ole meneill\xE4\xE4n voin my\xF6s luoda omasi."
+    englishDescription: Go to the vote page and give your vote. If no polls are under
+      way tou can always start your own.
     amount: 1
     coins: 100
     points: 10
@@ -300,8 +314,8 @@ MonoBehaviour:
   - active: 1
     title: Ehdota klaanissa tavara kirpputorille
     englishTitle: Suggest to buying/selling an item on the flea market
-    description: 
-    englishDescription: 
+    description: "Aloita varastossa myynti\xE4\xE4nestys huonekalusta."
+    englishDescription: In storage, start a sell vote.
     amount: 1
     coins: 100
     points: 10
@@ -310,8 +324,10 @@ MonoBehaviour:
   - active: 1
     title: "Lis\xE4\xE4 hyv\xE4ksytty tavara klaanin kirpputorille"
     englishTitle: Add an accepted item into the clans flea market
-    description: 
-    englishDescription: 
+    description: "Mene klaanin kojulle ja lis\xE4\xE4 tavaraa kojuun, mik\xE4li alapalkissa
+      ei ole huonekaluja kokeile tehd\xE4 ensin myynti \xE4\xE4nestys jolla yksi
+      huonekaluista voidaan lis\xE4t\xE4 kojulle."
+    englishDescription: Goto clans stall and add a furniture into one of its slots.
     amount: 1
     coins: 100
     points: 10
@@ -320,8 +336,10 @@ MonoBehaviour:
   - active: 1
     title: Vaihda klaanin motto
     englishTitle: Change the motto of the clan
-    description: 
-    englishDescription: 
+    description: "Mene klaanin profiilisivulle ja sielt\xE4 klaanin muokkaukseen
+      (yl\xE4palkin oikeassa reunassa oleva ratas) ja kirjoita uusi motto klaanille."
+    englishDescription: Go to clans profile and enable the edit mode (cog on the
+      top right corner) then modify the clans motto.
     amount: 1
     coins: 100
     points: 10
@@ -331,8 +349,10 @@ MonoBehaviour:
     title: "Etsi k\xE4ytt\xF6liittym\xE4st\xE4 ikkuna, joka k\xE4sittelee valtaa
       tai tasa-arvoa"
     englishTitle: Find a window in the UI that deals with power and equality
-    description: "Pid\xE4 kuvaketta painettuna 3 sekuntia"
-    englishDescription: Press the image for 3 seconds
+    description: "Pid\xE4 kuvaketta, joka kuvastaa valtaa tai tasaarvoa, painettuna
+      3 sekuntia. (Vihje: Todenn\xE4k\xF6isesti n\xE4et sen jo nyt.)"
+    englishDescription: 'Press the image that represent power of rule of equality
+      for 3 seconds. (Hint: you might be seeing something fitting this right now.)'
     amount: 1
     coins: 100
     points: 10
@@ -372,7 +392,8 @@ MonoBehaviour:
   - active: 1
     title: Pelin rajallisuus
     englishTitle: Game Limitations
-    description: "Etsi piilotettu bugi, paina sit\xE4 3 sekuntia"
+    description: "Etsi piilotettu bugi, paina sit\xE4 3 sekuntia. Vinkki: kurkkaa
+      vanhempien asetukset."
     englishDescription: Find a hidden bug, and press it for 3 seconds
     amount: 1
     coins: 100
@@ -403,8 +424,11 @@ MonoBehaviour:
   - active: 1
     title: "Paina kolmea symboliikkaa sis\xE4lt\xE4v\xE4\xE4 huonekalua"
     englishTitle: Press three pieces of furniture with symbolism
-    description: 
-    englishDescription: 
+    description: "Varastossa, valitse kolme eri symboliikkaa sis\xE4lt\xE4v\xE4\xE4
+      huonekalua. (Valinta tehd\xE4\xE4n painamalla huonekalua kolme sekuntia pohjassa,
+      lopuksi paina ilmaantuvaa ikkunaa ja hyv\xE4ksy valintasi.) "
+    englishDescription: In storage, choose three different furniture that have symbolisism.
+      (Selection happen by holdeing the furniture down for three seconds)
     amount: 1
     coins: 100
     points: 10
@@ -425,16 +449,18 @@ MonoBehaviour:
   - active: 1
     title: "Pelin toimintakulttuuri (yhteis\xF6n k\xE4yt\xE4nn\xF6t)"
     englishTitle: Game practice culture (community practices)
-    description: Valitse klaanille toimintakulttuuriset ohjeet
-    englishDescription: Choose cultural practice rules for the clan
+    description: "Mene klaanin profiilinmuokkaukseen ja valitse klaanille toimintakulttuuriset
+      ohjeet/s\xE4\xE4nn\xF6t"
+    englishDescription: Go to clan profile modification window and choose cultural
+      practice rules for the clan
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: culture
     educationCategoryTaskType: choose_cultural_guideline_cultural_description
   - active: 1
-    title: Arvot
-    englishTitle: Values
+    title: Hahmojen eroavat arvot
+    englishTitle: Characters differing values
     description: "N\xE4et kaksi pelihahmoa rinnakkain ja heid\xE4n kuvauksensa \u2013
       valitse kustakin parista se hahmo, jonka toiminta edustaa mielest\xE4si eettisesti
       parempaa vaihtoehtoa"
@@ -459,8 +485,10 @@ MonoBehaviour:
   - active: 1
     title: Pelaa ottelu
     englishTitle: Play battle
-    description: 
-    englishDescription: 
+    description: "Pelaa yksi ottelu (Lopputuloskessa ei v\xE4li\xE4, vaan sill\xE4
+      ett\xE4 yritit.)"
+    englishDescription: Play one battle (Outcome doesn't matter, just that you tried
+      your best)
     amount: 1
     coins: 100
     points: 10
