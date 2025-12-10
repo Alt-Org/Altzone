@@ -149,30 +149,37 @@ public class PollObject : MonoBehaviour
 
     public void AddVote(bool answer)
     {
-        pollData.AddVote(answer);
-
-        // --- DEBUG CHECK ---
-        DataStore store = Storefront.Get();
-        PlayerData player = null;
-        store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
-
-        if (player != null)
+        pollData.AddVote(answer, result =>
         {
-            bool inYes = pollData.YesVotes.Any(v => v.PlayerId == player.Id);
-            bool inNo = pollData.NoVotes.Any(v => v.PlayerId == player.Id);
-            bool inNotVoted = pollData.NotVoted.Contains(player.Id);
 
-            Debug.Log($"[Poll Debug] Player '{player.Name}' voted: " +
-                      $"Yes={inYes}, No={inNo}, NotVoted={inNotVoted}");
-        }
-        else
-        {
-            Debug.LogWarning("[Poll Debug] Player data not found!");
-        }
-        // -------------------
+            // --- DEBUG CHECK ---
+            DataStore store = Storefront.Get();
+            PlayerData player = null;
+            store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
 
-        SetValues();
-        VotingActions.ReloadPollList?.Invoke();
+            if (player != null)
+            {
+                bool inYes = pollData.YesVotes.Any(v => v.PlayerId == player.Id);
+                bool inNo = pollData.NoVotes.Any(v => v.PlayerId == player.Id);
+                bool inNotVoted = pollData.NotVoted.Contains(player.Id);
+
+                Debug.Log($"[Poll Debug] Player '{player.Name}' voted: " +
+                          $"Yes={inYes}, No={inNo}, NotVoted={inNotVoted}");
+            }
+            else
+            {
+                Debug.LogWarning("[Poll Debug] Player data not found!");
+            }
+            // -------------------
+
+            SetValues();
+            VotingActions.ReloadPollList?.Invoke();
+            if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null
+                                && DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationSocialType == Altzone.Scripts.Model.Poco.Game.TaskEducationSocialType.ClanVote)
+            {
+                DailyTaskProgressManager.Instance.UpdateTaskProgress(Altzone.Scripts.Model.Poco.Game.TaskEducationSocialType.ClanVote, "1");
+            }
+        });
 
         gameObject.SetActive(false);
     }

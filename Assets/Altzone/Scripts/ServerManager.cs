@@ -1684,9 +1684,9 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
-    public void SendClanVoteToServer(string voteid, bool answer, Action<ServerPoll> callback) => StartCoroutine(SendClanVoteToServerCoroutine(voteid, answer, callback));
+    public void SendClanVoteToServer(string voteid, bool answer, Action<bool> callback) => StartCoroutine(SendClanVoteToServerCoroutine(voteid, answer, callback));
 
-    public IEnumerator SendClanVoteToServerCoroutine(string voteid, bool answer, Action<ServerPoll> callback)
+    public IEnumerator SendClanVoteToServerCoroutine(string voteid, bool answer, Action<bool> callback)
     {
         string body = JObject.FromObject(new { voting_id = voteid, choice = answer?"accept":"reject" }).ToString();
 
@@ -1694,19 +1694,19 @@ public class ServerManager : MonoBehaviour
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                JObject result = JObject.Parse(request.downloadHandler.text);
+                //JObject result = JObject.Parse(request.downloadHandler.text);
                 //Debug.LogWarning(result);
 
-                ServerPoll poll = new();
-                poll = result["data"]["Voting"].ToObject<ServerPoll>();
+                //ServerPoll poll = new();
+                //poll = result["data"]["Voting"].ToObject<ServerPoll>();
 
                 if (callback != null)
-                    callback(poll);
+                    callback(true);
             }
             else
             {
                 if (callback != null)
-                    callback(null);
+                    callback(false);
             }
         }));
     }

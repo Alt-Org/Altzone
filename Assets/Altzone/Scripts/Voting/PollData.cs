@@ -87,7 +87,7 @@ namespace Altzone.Scripts.Voting
                         NotVoted.Remove(vote.player_id);
                     }
                 }
-                else if(vote.choice == "decline")
+                else if(vote.choice == "reject")
                 {
                     if (NotVoted.Contains(vote.player_id))
                     {
@@ -98,7 +98,7 @@ namespace Altzone.Scripts.Voting
             }
         }
 
-        public void AddVote(bool answer)
+        public void AddVote(bool answer, Action<bool> callback)
         {
             DataStore store = Storefront.Get();
             PlayerData player = null;
@@ -115,20 +115,25 @@ namespace Altzone.Scripts.Voting
                     return;
                 }
 
-                ServerManager.Instance.SendClanVoteToServer(Id, answer, callback =>
+                ServerManager.Instance.SendClanVoteToServer(Id, answer, result =>
                 {
-                    if (answer)
+                    if (result)
                     {
-                        PollVoteData newPollVote = new(player.Id, player.Name, answer);
-
-                        if (NotVoted.Contains(player.Id))
+                        if (answer)
                         {
-                            if (answer) YesVotes.Add(newPollVote);
-                            else NoVotes.Add(newPollVote);
+                            PollVoteData newPollVote = new(player.Id, player.Name, answer);
 
-                            NotVoted.Remove(player.Id);
+                            if (NotVoted.Contains(player.Id))
+                            {
+                                if (answer) YesVotes.Add(newPollVote);
+                                else NoVotes.Add(newPollVote);
+
+                                NotVoted.Remove(player.Id);
+                            }
                         }
                     }
+                    if (callback != null)
+                        callback(result);
                 });
             }
 
