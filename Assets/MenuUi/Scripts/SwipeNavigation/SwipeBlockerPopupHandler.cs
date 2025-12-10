@@ -9,6 +9,12 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         private List<GameObject> _openPopupsList = new();
 
+        private void OnEnable()
+        {
+            _openPopupsList.Clear();
+            _blocker.gameObject.SetActive(false);
+        }
+
         public void OpenPopup(GameObject popup)
         {
             if (popup == null) return;
