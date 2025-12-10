@@ -1,5 +1,94 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &9475006273943778
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 4239014958816181346, guid: 2ca5c1571081ab84c8eff2e5f8741acd,
+    type: 3}
+  m_PrefabInstance: {fileID: 1477323911991745534}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7047601807968470578}
+  m_Layer: 0
+  m_Name: 'ClanStallPopup (Missing Prefab with guid: 2ca5c1571081ab84c8eff2e5f8741acd)'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7047601807968470578
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 8452868117321342412, guid: 2ca5c1571081ab84c8eff2e5f8741acd,
+    type: 3}
+  m_PrefabInstance: {fileID: 1477323911991745534}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9475006273943778}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6657618467743306629}
+  - {fileID: 8816441857386836121}
+  m_Father: {fileID: 8406726487919743066}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &2513390543284032311
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 9223372036854775806, guid: 2ca5c1571081ab84c8eff2e5f8741acd,
+    type: 3}
+  m_PrefabInstance: {fileID: 1477323911991745534}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8816441857386836121}
+  - component: {fileID: 2802810154726064318}
+  m_Layer: 0
+  m_Name: Placeholder for referenced MonoBehaviour in Prefab instance (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8816441857386836121
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 9223372036854775805, guid: 2ca5c1571081ab84c8eff2e5f8741acd,
+    type: 3}
+  m_PrefabInstance: {fileID: 1477323911991745534}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2513390543284032311}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7047601807968470578}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2802810154726064318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 3631333658590927680, guid: 2ca5c1571081ab84c8eff2e5f8741acd,
+    type: 3}
+  m_PrefabInstance: {fileID: 1477323911991745534}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2513390543284032311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 650014c7eb684f34c989908d5efb2953, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  kojuSlot: {fileID: 0}
+  kojuCard: {fileID: 0}
+  content: {fileID: 0}
 --- !u!1 &2946997330590361080
 GameObject:
   m_ObjectHideFlags: 0
@@ -58,6 +147,43 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!1 &5015217532618286567
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 9223372036854775807, guid: 2ca5c1571081ab84c8eff2e5f8741acd,
+    type: 3}
+  m_PrefabInstance: {fileID: 1477323911991745534}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6657618467743306629}
+  m_Layer: 0
+  m_Name: Placeholder for referenced RectTransform in Prefab instance (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6657618467743306629
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 5252357134638565499, guid: 2ca5c1571081ab84c8eff2e5f8741acd,
+    type: 3}
+  m_PrefabInstance: {fileID: 1477323911991745534}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5015217532618286567}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7047601807968470578}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &50438452199682246
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -495,12 +621,17 @@ PrefabInstance:
     - target: {fileID: 4239014958816181346, guid: 2ca5c1571081ab84c8eff2e5f8741acd,
         type: 3}
       propertyPath: m_Name
-      value: ClanStallPopup
+      value: 'ClanStallPopup (Missing Prefab with guid: 2ca5c1571081ab84c8eff2e5f8741acd)'
       objectReference: {fileID: 0}
     - target: {fileID: 4239014958816181346, guid: 2ca5c1571081ab84c8eff2e5f8741acd,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4239014958816181346, guid: 2ca5c1571081ab84c8eff2e5f8741acd,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 4284221068622736040, guid: 2ca5c1571081ab84c8eff2e5f8741acd,
         type: 3}
@@ -875,30 +1006,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2ca5c1571081ab84c8eff2e5f8741acd, type: 3}
---- !u!114 &2802810154726064318 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3631333658590927680, guid: 2ca5c1571081ab84c8eff2e5f8741acd,
-    type: 3}
-  m_PrefabInstance: {fileID: 1477323911991745534}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 650014c7eb684f34c989908d5efb2953, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!224 &6657618467743306629 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5252357134638565499, guid: 2ca5c1571081ab84c8eff2e5f8741acd,
-    type: 3}
-  m_PrefabInstance: {fileID: 1477323911991745534}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &7047601807968470578 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 8452868117321342412, guid: 2ca5c1571081ab84c8eff2e5f8741acd,
-    type: 3}
-  m_PrefabInstance: {fileID: 1477323911991745534}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5430780416171565987
 PrefabInstance:
   m_ObjectHideFlags: 0
