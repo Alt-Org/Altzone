@@ -13,7 +13,7 @@ using System;
 namespace MenuUi.Scripts.AvatarEditor
 {
 
-    public class ScrollBarCategoryLoader : MonoBehaviour, IEndDragHandler
+    public class ScrollBarCategoryLoader : MonoBehaviour
     {
         [SerializeField] private AvatarPartsReference _avatarPartsReference;
         [SerializeField] private RectTransform _categoryGridContent;
@@ -32,16 +32,14 @@ namespace MenuUi.Scripts.AvatarEditor
         private float _actualVerticalPadding;
         private float _viewPortHeight;
         private readonly int _cellsShownAtATime = 3;
+        public float cellHeight => _cellHeight;
+        public float spacing => _actualSpacing;
+
         // Start is called before the first frame update
         void Start()
         {
             // Used to "start the scroll position not at the top"
             //_categoryGridContent.anchoredPosition = new Vector2(_categoryGrid.anchoredPosition.x, _categoryGrid.anchoredPosition.y + (_cellHeight + _actualSpacing) * 3);
-        }
-
-        public void OnEndDrag(PointerEventData eventData)
-        {
-            ClampToCenter();
         }
 
         public void UpdateCellSize()
@@ -68,49 +66,6 @@ namespace MenuUi.Scripts.AvatarEditor
                     Debug.LogError("is null");
                 }
             }
-        }
-
-        private void ClampToCenter()
-        {
-            float totalCellSize = _cellHeight + _actualSpacing;
-
-            float contentYPos = _categoryGridScrollRect.content.anchoredPosition.y;
-
-            int nearestIndex = Mathf.RoundToInt(contentYPos / totalCellSize);
-
-            float targetYPos = nearestIndex * totalCellSize;
-
-            StartCoroutine(Clamp(targetYPos));
-        }
-
-        IEnumerator Clamp(float targetYPos)
-        {
-            Vector2 pos = _categoryGridScrollRect.content.anchoredPosition;
-            Vector2 target = new(pos.x, targetYPos);
-
-            float t = 0f;
-
-            while (t < 1)
-            {
-                t += Time.deltaTime * 5f;
-                _categoryGridScrollRect.content.anchoredPosition = Vector2.Lerp(pos, target, t);
-                yield return null;
-            }
-
-            _categoryGridScrollRect.content.anchoredPosition = target;
-
-            OnClamp(targetYPos);
-        }
-
-        private void OnClamp(float targetYPos)
-        {
-            float totalCellSize = _cellHeight + _actualSpacing;
-            int topIndex = Mathf.RoundToInt(targetYPos / totalCellSize);
-            int centerIndex = topIndex + 1;
-
-            var centerCell = _categoryGridScrollRect.content.GetChild(centerIndex);
-
-            centerCell.GetComponent<Button>().onClick.Invoke();
         }
 
         //Planning to add better way to add the category images later
