@@ -24,6 +24,9 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _clanWinsRanking;
     [SerializeField] private TextMeshProUGUI _clanPassword;
     [SerializeField] private TextMeshProUGUI _clanGoal;
+    [SerializeField] private TextMeshProUGUI _rule1Text;
+    [SerializeField] private TextMeshProUGUI _rule2Text;
+    [SerializeField] private TextMeshProUGUI _rule3Text;
 
     [Header("Other settings fields")]
     [SerializeField] GameObject _clanOpenObject;
@@ -160,6 +163,8 @@ public class ClanMainView : MonoBehaviour
 
         if (player.clan_id != clan.Id) return false;
 
+        return true; //Remove this later when we actually want to block unauthorized edits to clanprofile.
+
         var roleId = player.clanRole_id;
         if (string.IsNullOrEmpty(roleId)) return false;
 
@@ -223,6 +228,17 @@ public class ClanMainView : MonoBehaviour
 
         _clanOpenObject.SetActive(clan.IsOpen);
         _clanLockedObject.SetActive(!clan.IsOpen);
+
+        string rule1 = clan.Rules.Count > 0 ?
+            _rule1Text.text = ClanDataTypeConverter.GetRulesText(clan.Rules[0]) : string.Empty;
+        string rule2 = clan.Rules.Count > 1 ?
+        _rule1Text.text = ClanDataTypeConverter.GetRulesText(clan.Rules[1]) : string.Empty;
+        string rule3 = clan.Rules.Count > 2 ?
+        _rule1Text.text = ClanDataTypeConverter.GetRulesText(clan.Rules[2]) : string.Empty;
+
+        _rule1Text.text = rule1;
+        _rule2Text.text = rule2;
+        _rule3Text.text = rule3;
 
         // Temp values for testing
         //_clanActivityRanking.text = _clanWinsRanking.text = "-1";

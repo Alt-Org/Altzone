@@ -26,7 +26,6 @@ public class MainMenuTutorialController : MonoBehaviour
 
     private void ChangeWindow()
     {
-        Debug.LogWarning(!EmotionSelectorPopupScript.EmotionInsertedToday);
         if (!EmotionSelectorPopupScript.EmotionInsertedToday) return;
         var tutorial = GetTutorial(_currentWindow);
         if (tutorial != null)

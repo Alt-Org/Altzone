@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+
 public class PollMonitor : MonoBehaviour // Monitors active polls to check if they should be expired
 {
     public static PollMonitor Instance { get; private set; }
@@ -15,8 +16,22 @@ public class PollMonitor : MonoBehaviour // Monitors active polls to check if th
         }
 
         Instance = this;
+        DontDestroyOnLoad(gameObject); 
     }
 
+    private void Start()
+    {
+        ServerManager.OnClanPollsChanged += BuildPolls;
+    }
+
+    private void OnDestroy()
+    {
+        ServerManager.OnClanPollsChanged -= BuildPolls;
+    }
+
+    private void BuildPolls() => PollManager.BuildPolls();
+
+    // Start monitoring when a poll begins
     public void StartMonitoring()
     {
         if (checkRoutine == null)
@@ -27,6 +42,7 @@ public class PollMonitor : MonoBehaviour // Monitors active polls to check if th
         }
     }
 
+    // Stop monitoring when there are no polls left
     public void StopMonitoring()
     {
         if (checkRoutine != null)
@@ -41,7 +57,7 @@ public class PollMonitor : MonoBehaviour // Monitors active polls to check if th
     private IEnumerator CheckExpiredPollsRoutine()
     {
         while (true)
-        {   
+        {
             PollManager.CheckAndExpirePolls();
 
             if (PollManager.GetPollList().Count == 0)
@@ -51,7 +67,6 @@ public class PollMonitor : MonoBehaviour // Monitors active polls to check if th
             }
 
             Debug.Log("[PollMonitor] Checking for expired polls");
-
             yield return new WaitForSeconds(5f);
         }
     }
