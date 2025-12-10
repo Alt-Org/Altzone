@@ -8635,6 +8635,7 @@ GameObject:
   - component: {fileID: 8054936657784651339}
   - component: {fileID: 7195579485155147480}
   - component: {fileID: 1674170789972189171}
+  - component: {fileID: 4080212528527459200}
   m_Layer: 0
   m_Name: VarastoView
   m_TagString: MainMenuWindow
@@ -8703,6 +8704,27 @@ MonoBehaviour:
   kojuSortButton: {fileID: 294025733247104220}
   varastoSortingText: {fileID: 4657281749696662068}
   varastoSortButton: {fileID: 250944136488560207}
+--- !u!114 &4080212528527459200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4630219702230872246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8490714f975da03478ab7a23b04d10ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 3
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
+  _limitToThis: 1
+  _limitedButtons: []
 --- !u!1 &4655332915086843181
 GameObject:
   m_ObjectHideFlags: 0
@@ -9661,6 +9683,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 78f79ba9f70b32541a4d2f3dcd36594b, type: 3}
   _furnitureReference: {fileID: 11400000, guid: f3234f639b53fbb43ac862d3033a3142,
     type: 2}
+  _dailyTaskSelectButtons: {fileID: 4869790637311906334}
   _icon: {fileID: 8519892625710803590}
   _name: {fileID: 3180367175630157816}
   _weight: {fileID: 2593518236119892584}
@@ -9797,6 +9820,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 78f79ba9f70b32541a4d2f3dcd36594b, type: 3}
   _furnitureReference: {fileID: 11400000, guid: f3234f639b53fbb43ac862d3033a3142,
     type: 2}
+  _dailyTaskSelectButtons: {fileID: 0}
   _icon: {fileID: 0}
   _name: {fileID: 0}
   _weight: {fileID: 0}
@@ -16601,7 +16625,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 5144557706844902026}
+    m_TransformParent: {fileID: 5090924236510620696}
     m_Modifications:
     - target: {fileID: 190456095295517285, guid: faf3d3e322be9a940a310f9404492cd8,
         type: 3}
@@ -18138,14 +18162,6 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 8382358179720365468, guid: 57890b7dbec8a984abb7d8148eefe9f6, type: 3}
     m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 7695168990374541661, guid: 57890b7dbec8a984abb7d8148eefe9f6,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7044304595006862596}
-    - targetCorrespondingSourceObject: {fileID: 7695168990374541661, guid: 57890b7dbec8a984abb7d8148eefe9f6,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2973226842990003491}
     - targetCorrespondingSourceObject: {fileID: 2853600601693954760, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       insertIndex: -1
@@ -18174,6 +18190,14 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 9134281851535742248}
+    - targetCorrespondingSourceObject: {fileID: 7712695879676282831, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      insertIndex: 3
+      addedObject: {fileID: 7044304595006862596}
+    - targetCorrespondingSourceObject: {fileID: 7712695879676282831, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      insertIndex: 4
+      addedObject: {fileID: 2973226842990003491}
     - targetCorrespondingSourceObject: {fileID: 3317417012910731388, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       insertIndex: -1
@@ -18187,6 +18211,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1898437261284476720}
+    - targetCorrespondingSourceObject: {fileID: 380158908593822016, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4869790637311906334}
   m_SourcePrefab: {fileID: 100100000, guid: 57890b7dbec8a984abb7d8148eefe9f6, type: 3}
 --- !u!224 &262983000881142699 stripped
 RectTransform:
@@ -18271,6 +18299,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb907510ee6a3054589606cf24e7d2ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2947887518599770775 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 380158908593822016, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 3292017627997481943}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4869790637311906334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2947887518599770775}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8490714f975da03478ab7a23b04d10ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 2
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 2
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
+  _limitToThis: 1
+  _limitedButtons: []
 --- !u!114 &3014677971190111301 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 322518866647742354, guid: 57890b7dbec8a984abb7d8148eefe9f6,
@@ -18295,6 +18350,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &5090924236510620696 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7712695879676282831, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 3292017627997481943}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &5144557706844902026 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7695168990374541661, guid: 57890b7dbec8a984abb7d8148eefe9f6,
@@ -19767,7 +19828,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 5144557706844902026}
+    m_TransformParent: {fileID: 5090924236510620696}
     m_Modifications:
     - target: {fileID: 105288048767405188, guid: 1c4803e545a5e4a4084a4040bf1c9008,
         type: 3}
@@ -20414,6 +20475,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 19.346687
       objectReference: {fileID: 0}
+    - target: {fileID: 8869476066704906533, guid: 1c4803e545a5e4a4084a4040bf1c9008,
+        type: 3}
+      propertyPath: _dtSelectButtons
+      value: 
+      objectReference: {fileID: 4080212528527459200}
     - target: {fileID: 8882790979620935928, guid: 1c4803e545a5e4a4084a4040bf1c9008,
         type: 3}
       propertyPath: m_SizeDelta.y
