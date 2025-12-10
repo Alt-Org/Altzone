@@ -540,7 +540,7 @@ public class ServerManager : MonoBehaviour
         }
 
         yield return new WaitUntil(() => stallFurnitureFetchFinished);
-
+        store.SaveClanData(clanData, null);
         yield return StartCoroutine(GetClanStall(clan._id, stall =>
         {
             if (stall == null) Debug.LogWarning("Failed to get stall data.");
