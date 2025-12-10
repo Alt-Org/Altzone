@@ -31,9 +31,17 @@ public class ClanCreateNew : MonoBehaviour
 
     [Header("Clan Heart")]
     [SerializeField] private ClanHeartColorSetter _heartColorSetter;
-    [SerializeField] private ClanHeartColorSetter _heartColorSetterPopup;
+    //[SerializeField] private ClanHeartColorSetter _heartColorSetterPopup;
+    [SerializeField] private ClanHeartColorChanger _heartColorChanger;
     [SerializeField] private ColorButton[] _colorButtons;
     [SerializeField] private GameObject _heartEditPopup;
+    [SerializeField] private Toggle _fillWholeHeartToggle;
+    [SerializeField] private TMP_Text _heartModeLabel;
+    [SerializeField] private string _wholeHeartText = "Tila: väritä koko sydän";
+    [SerializeField] private string _pieceModeText = "Tila: muokkaa palaa kerrallaan";
+    [SerializeField] private Image _toggleIcon;
+    [SerializeField] private Sprite _iconWholeHeart;
+    [SerializeField] private Sprite _iconPieceMode;
 
     [Header("Warnings")]
     [SerializeField] private GameObject _nameWarningOutline;
@@ -54,8 +62,11 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private GameObject _raycastBlocker;
     [SerializeField] private AgreementController _agreementController;
 
-    private Color _selectedHeartColor;
+    //private Color _selectedHeartColor;
+
     private Color _defaultHeartColor;
+    private List<HeartPieceData> _heartPieces;
+
     private readonly ClanRoleRights[] _defaultRights = new ClanRoleRights[3]  {
         ClanRoleRights.None,
         ClanRoleRights.EditSoulHome,
@@ -77,6 +88,25 @@ public class ClanCreateNew : MonoBehaviour
         if(_clanPasswordRoot != null)
         {
             _clanPasswordRoot.SetActive(!isOpen);
+        }
+    }
+
+    private void OnFillWholeHeartToggleChanged(bool isOn)
+    {
+        if (_heartModeLabel != null)
+        {
+            _heartModeLabel.text = isOn ? _pieceModeText : _wholeHeartText;
+        }
+
+        if (_toggleIcon != null)
+        {
+            _toggleIcon.sprite = isOn ? _iconPieceMode : _iconWholeHeart;
+        }
+
+        if (_heartColorChanger != null)
+        {
+            bool fillWholeHeart = !isOn;          
+            _heartColorChanger.SetFillWholeHeart(fillWholeHeart);
         }
     }
 
@@ -112,13 +142,42 @@ public class ClanCreateNew : MonoBehaviour
         _closeLanguageSelect.onClick.RemoveAllListeners();
         _closeLanguageSelect.onClick.AddListener(() => _flagImage.SetFlag(_languageSelection.SelectedLanguage));
 
-        _defaultHeartColor = ColorConstants.GetColorConstant(_colorButtons[0].color);
-        SetHeartColor(_defaultHeartColor);
-        foreach (ColorButton colorButton in _colorButtons)
+        if(_colorButtons != null && _colorButtons.Length > 0)
         {
-            Color color = ColorConstants.GetColorConstant(colorButton.color);
-            colorButton.button.onClick.RemoveAllListeners();
-            colorButton.button.onClick.AddListener(() => SetHeartColor(color));
+            _defaultHeartColor = ColorConstants.GetColorConstant(_colorButtons[0].color);
+        }
+        else
+        {
+            _defaultHeartColor = Color.red;
+        }
+
+        _heartPieces = new List<HeartPieceData>();
+        const int pieceCount = 50;
+        for (int i = 0; i < pieceCount; i++)
+        {
+            _heartPieces.Add(new HeartPieceData(i, _defaultHeartColor));
+        }
+
+        if (_heartColorChanger != null)
+        {
+            _heartColorChanger.InitializeClanHeart(new List<HeartPieceData>(_heartPieces));
+        }
+        if(_heartColorSetter != null)
+        {
+            _heartColorSetter.SetHeartColors(new List<HeartPieceData>(_heartPieces));
+        }
+
+        if (_fillWholeHeartToggle != null)
+        {
+            _fillWholeHeartToggle.onValueChanged.RemoveAllListeners();
+            _fillWholeHeartToggle.onValueChanged.AddListener(OnFillWholeHeartToggleChanged);
+
+            _fillWholeHeartToggle.isOn = false;
+            OnFillWholeHeartToggleChanged(_fillWholeHeartToggle.isOn);
+        }
+        else if (_heartColorChanger != null)
+        {          
+            _heartColorChanger.SetFillWholeHeart(true);
         }
 
         if (_agreementController != null)
@@ -145,7 +204,7 @@ public class ClanCreateNew : MonoBehaviour
             _raycastBlocker.SetActive(false);
     }
 
-    private void SetHeartColor(Color color)
+    /*private void SetHeartColor(Color color)
     {
         _selectedHeartColor = color;
         _heartColorSetter.SetHeartColor(_selectedHeartColor);
@@ -155,7 +214,51 @@ public class ClanCreateNew : MonoBehaviour
     public void CancelHeartEdit()
     {
         SetHeartColor(_defaultHeartColor);
+    }*/
+
+   public void OpenHeartEditPopup()
+    {
+        if (_heartColorChanger != null && _heartPieces != null)
+        {
+            _heartColorChanger.InitializeClanHeart(_heartPieces);
+            if (_fillWholeHeartToggle != null)
+            {
+                OnFillWholeHeartToggleChanged(_fillWholeHeartToggle.isOn);
+            }
+        }
+        ShowPopup(_heartEditPopup);
     }
+
+   public void ConfirmHeartEdit()
+    {
+        if (_heartColorChanger != null)
+        {
+            _heartPieces = _heartColorChanger.GetHeartPieceDatas();
+
+            if (_heartColorSetter != null)
+            {
+                _heartColorSetter.SetHeartColors(_heartPieces);
+            }
+        }
+
+        HidePopup(_heartEditPopup);
+    }
+
+    public void CancelHeartEdit()
+    {
+        if (_heartColorChanger != null && _heartPieces != null)
+        {
+            _heartColorChanger.InitializeClanHeart(_heartPieces);          
+        }
+
+        if (_heartColorSetter != null && _heartPieces != null)
+        {
+            _heartColorSetter.SetHeartColors(_heartPieces);
+        }
+
+        HidePopup(_heartEditPopup);
+    }
+
 
     private void UpdateAgeDisplay()
     {
@@ -201,8 +304,21 @@ public class ClanCreateNew : MonoBehaviour
         ClanAge age = _ageSelection.ClanAgeRange;
         ClanRoleRights[] clanRights = _defaultRights;
         ClanValues[] values = _valueSelection.SelectedValues.ToArray();
-        List<HeartPieceData> clanHeartPieces = new();
-        for (int i = 0; i < 50; i++) clanHeartPieces.Add(new HeartPieceData(i, _selectedHeartColor));
+
+        //List<HeartPieceData> clanHeartPieces = new();
+        //for (int i = 0; i < 50; i++) clanHeartPieces.Add(new HeartPieceData(i, _selectedHeartColor));
+
+        List<HeartPieceData> clanHeartPieces;
+        if (_heartPieces != null && _heartPieces.Count > 0)
+        {
+            clanHeartPieces = new List<HeartPieceData>(_heartPieces);
+        }
+        else
+        {
+            clanHeartPieces = new List<HeartPieceData>();
+            const int pieceCount = 50;
+            for (int i = 0; i < pieceCount; i++) clanHeartPieces.Add(new HeartPieceData(i, _defaultHeartColor));
+        }
 
         if (!CheckClanInputsValidity(clanName, isOpen, password, language, age, values))
         {
