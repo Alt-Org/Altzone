@@ -68,13 +68,6 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public int SelectedLoadOut = 0;
 
-        public TeamLoadOut[] PopupLoadOuts = new TeamLoadOut[8]
-        {
-            new TeamLoadOut(), new TeamLoadOut(), new TeamLoadOut(), new TeamLoadOut(),
-            new TeamLoadOut(), new TeamLoadOut(), new TeamLoadOut(), new TeamLoadOut()
-        };
-
-
         public PlayStyles playStyles;
 
         public string emotionSelectorDate = null;
@@ -170,7 +163,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             BackpackCapacity = backpackCapacity;
             UniqueIdentifier = uniqueIdentifier;
 
-            EnsurePopupLoadoutsInitialized();
+            
             EnsureLoadoutsInitialized();
         }
 
@@ -196,7 +189,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             AvatarData = player.avatar != null ? new(player.name, player.avatar) : null;
             if (!limited) Task = player.DailyTask != null ? new(player.DailyTask) : null;
 
-            EnsurePopupLoadoutsInitialized();
+           
             EnsureLoadoutsInitialized();
         }
 
@@ -224,7 +217,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             if (_playerDataEmotionList == null || _playerDataEmotionList.Count == 0) playerDataEmotionList = new List<Emotion> { Emotion.Blank, Emotion.Love, Emotion.Playful, Emotion.Joy, Emotion.Sorrow, Emotion.Anger, Emotion.Blank };
             if (daysBetweenInput == null) daysBetweenInput = "0";
 
-            EnsurePopupLoadoutsInitialized();
+            
             EnsureLoadoutsInitialized();
         }
 
@@ -356,6 +349,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         /// </summary>
         public void SaveCurrentTeamToLoadout(int index)
         {
+
             if (index <= 0 || index > LoadOuts.Length)
             {
                 Debug.LogError($"Invalid index {index}. Allowed range is 1 - {LoadOuts.Length}");
@@ -378,6 +372,7 @@ namespace Altzone.Scripts.Model.Poco.Player
                 savedCopy.SetData(activeMember.ServerID, activeMember.CharacterID);
 
                 LoadOuts[index - 1].Slots[i] = savedCopy;
+
             }
         }
 
@@ -387,46 +382,14 @@ namespace Altzone.Scripts.Model.Poco.Player
         /// </summary>
         public void OnCurrentTeamChanged_AutoSave()
         {
+
             if (SelectedLoadOut > 0 && SelectedLoadOut <= LoadOuts.Length)
             {
                 SaveCurrentTeamToLoadout(SelectedLoadOut);
             }
             Storefront.Get().SavePlayerData(this, null);
-        }
 
 
-        /// <summary>
-        /// Ensures that PopupLoadOuts is properly initialized
-        ///
-        /// - If the array is null or has the wrong size, a new 8-element array is created
-        /// - If any element is null, a new TeamLoadOut is created for it
-        /// - If a TeamLoadOut has no slot array or the slot array has the wrong size,
-        ///   a new 3-slot array is created with all slots set to CharacterID.None
-        /// </summary>
-        public void EnsurePopupLoadoutsInitialized()
-        {
-            if (PopupLoadOuts == null || PopupLoadOuts.Length != 8)
-            {
-                PopupLoadOuts = new TeamLoadOut[8]
-                {
-            new TeamLoadOut(), new TeamLoadOut(), new TeamLoadOut(), new TeamLoadOut(),
-            new TeamLoadOut(), new TeamLoadOut(), new TeamLoadOut(), new TeamLoadOut()
-                };
-            }
-            for (int i = 0; i < PopupLoadOuts.Length; i++)
-            {
-                if (PopupLoadOuts[i] == null)
-                    PopupLoadOuts[i] = new TeamLoadOut();
-
-                if (PopupLoadOuts[i].Slots == null || PopupLoadOuts[i].Slots.Length != 3)
-
-                    PopupLoadOuts[i].Slots = new CustomCharacterListObject[3]
-                    {
-                new CustomCharacterListObject(Id: CharacterID.None),
-                new CustomCharacterListObject(Id: CharacterID.None),
-                new CustomCharacterListObject(Id: CharacterID.None)
-                    };
-            }
         }
 
         public void EnsureLoadoutsInitialized()
@@ -442,6 +405,7 @@ namespace Altzone.Scripts.Model.Poco.Player
                     LoadOuts[i] = new TeamLoadOut();
             }
         }
+
 
     }
 }

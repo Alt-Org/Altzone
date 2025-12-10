@@ -54,6 +54,7 @@ public class LoadOutController : MonoBehaviour
     private void HandlePlayerDataReady(PlayerData data)
     {
         _player = data;
+
         RefreshButtons();
     }
 
@@ -86,7 +87,8 @@ public class LoadOutController : MonoBehaviour
         {
             Debug.LogError("OnPressLoadout called with null PlayerData parameter");
         }
-   
+
+      
 
         Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, p =>
         {
@@ -98,6 +100,8 @@ public class LoadOutController : MonoBehaviour
 
             _player = p;
             player = p;
+
+            
 
             if (loadoutIndex == 0)
             {
@@ -135,6 +139,7 @@ public class LoadOutController : MonoBehaviour
     /// </summary>
     private void SaveToEmptySlot(int loadoutIndex, PlayerData player)
     {
+
         if (_confirmPanel == null || _confirmYes == null || _confirmNo == null)
         {
           
@@ -273,7 +278,16 @@ public class LoadOutController : MonoBehaviour
         });
 
         RefreshButtons();
+
+        int nextIndex = ButtonIndexToLoadoutIndex(_loadoutButtons.Count);
+        if (nextIndex <= 0 || nextIndex > _player.LoadOuts.Length)
+        {
+            if (_addLoadoutButton != null)
+                _addLoadoutButton.gameObject.SetActive(false);
+        }
     }
+
+   
 }
     
 

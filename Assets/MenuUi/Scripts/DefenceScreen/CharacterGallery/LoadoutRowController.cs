@@ -22,6 +22,8 @@ public class LoadoutRowController : AltMonoBehaviour
 {
     [Header("Loadout slot index for this row (1..8)")]
     [SerializeField] private int _loadoutIndex = 1;
+    public int LoadoutIndex => _loadoutIndex;
+
 
     [Header("Row background for selection highlight")]
     [SerializeField] private Image _rowBackground;
@@ -67,8 +69,8 @@ public class LoadoutRowController : AltMonoBehaviour
             }
 
 
-            btn.onClick.RemoveListener(OnCharSlotClicked);
-            btn.onClick.AddListener(OnCharSlotClicked);
+            btn.onClick.RemoveAllListeners();
+            //btn.onClick.AddListener(OnCharSlotClicked);
 
 
             btn.interactable = true;
@@ -91,11 +93,11 @@ public class LoadoutRowController : AltMonoBehaviour
     /// Called when any character slot in this row is clicked,
     /// sets this row active and opens the edit panel
     /// </summary>
-    private void OnCharSlotClicked()
-    {
-        LoadoutPopupContext.ActiveRowIndex = _loadoutIndex;
-        SignalBus.OnDefenceGalleryEditPanelRequestedSignal();
-    }
+    //private void OnCharSlotClicked()
+    //{
+    //    LoadoutPopupContext.ActiveRowIndex = _loadoutIndex;
+    //    SignalBus.OnDefenceGalleryEditPanelRequestedSignal();
+    //}
 
     /// <summary>
     /// Called from the row background Button OnClick.
@@ -156,26 +158,14 @@ public class LoadoutRowController : AltMonoBehaviour
     {
         TeamLoadOut loadout = null;
         int index = _loadoutIndex - 1;
-
-        if (_loadoutIndex <= 3)
-        {
+        
             if (player.LoadOuts != null &&
                 index >= 0 &&
                 index < player.LoadOuts.Length)
             {
                 loadout = player.LoadOuts[index];
             }
-        }
-        else
-        {
-            if (player.PopupLoadOuts != null &&
-            index >= 0 &&
-            index < player.PopupLoadOuts.Length)
-            {
-                loadout = player.PopupLoadOuts[index];
-            }
-        }
-
+        
         for (int i = 0; i < _slotViews.Length; i++)
         {
             BattlePopupSelectedCharacter view = _slotViews[i];
@@ -224,15 +214,31 @@ public class LoadoutRowController : AltMonoBehaviour
     /// </summary>
     public void OnSaveButtonClicked()
     {
-        if (_saveConfirmPopup != null)
-        {
-            _saveConfirmPopup.Open(this);
-        }
-        else
-        {
 
-            SaveCurrentTeamIntoThisLoadout();
-        }
+        //SetLoadoutAsCurrentTeam();
+
+        StartCoroutine(GetPlayerData(player =>
+        {
+            if (player == null) return;
+
+
+            player.ApplyLoadout(_loadoutIndex);
+
+            LoadoutPopupContext.ActiveRowIndex = _loadoutIndex;
+            LoadoutPopupContext.SelectedPopupIndex = _loadoutIndex;
+
+            Storefront.Get().SavePlayerData(player, null);
+
+           
+            LoadoutPopupContext.ActiveRowIndex = _loadoutIndex;
+
+            
+            SignalBus.OnDefenceGalleryEditPanelRequestedSignal();
+            SignalBus.OnReloadCharacterGalleryRequestedSignal();
+        }));
+
+
+       
     }
 
     /// <summary>
@@ -244,41 +250,8 @@ public class LoadoutRowController : AltMonoBehaviour
         {
             if (player == null) return;
 
-            if (_loadoutIndex <= 3)
-            {
-                player.SaveCurrentTeamToLoadout(_loadoutIndex);
-            }
-            else
-            {
-                int index = _loadoutIndex - 1;
-                if (player.PopupLoadOuts == null ||
-                    index < 0 ||
-                    index >= player.PopupLoadOuts.Length)
-                {
-                    return;
-                }
 
-                EnsurePopupRowInitialized(player, index);
-
-                for (int slotIndex = 0; slotIndex < 3; slotIndex++)
-                {
-                    CustomCharacterListObject active;
-
-                    if (slotIndex < player.SelectedCharacterIds.Length &&
-                        player.SelectedCharacterIds[slotIndex] != null)
-                    {
-                        active = player.SelectedCharacterIds[slotIndex];
-                    }
-                    else
-                    {
-                        active = new CustomCharacterListObject();
-                    }
-
-                    var copy = new CustomCharacterListObject();
-                    copy.SetData(active.ServerID, active.CharacterID);
-                    player.PopupLoadOuts[index].Slots[slotIndex] = copy;
-                }
-            }
+            player.SaveCurrentTeamToLoadout(_loadoutIndex);
 
             Storefront.Get().SavePlayerData(player, null);
 
@@ -303,85 +276,18 @@ public class LoadoutRowController : AltMonoBehaviour
         {
             if (player == null) return;
 
-            if (_loadoutIndex <= 3)
-            {
-                player.ApplyLoadout(_loadoutIndex);
+
+            player.ApplyLoadout(_loadoutIndex);
 
                 LoadoutPopupContext.SelectedPopupIndex = _loadoutIndex;
                 Storefront.Get().SavePlayerData(player, null);
 
                 SignalBus.OnReloadCharacterGalleryRequestedSignal();
                 return;
-            }
-
-            int index = _loadoutIndex - 1;
-            if (player.PopupLoadOuts == null || index < 0 || index >= player.PopupLoadOuts.Length)
-            {
-                return;
-            }
-
-            TeamLoadOut loadout = player.PopupLoadOuts[index];
-            if (loadout == null || loadout.Slots == null) return;
-
-            // Ensure SelectedCharacterIds has 3 slots
-            if (player.SelectedCharacterIds == null ||
-                player.SelectedCharacterIds.Length != 3)
-            {
-                player.SelectedCharacterIds = new CustomCharacterListObject[3]
-                {
-                    new CustomCharacterListObject(Id: CharacterID.None),
-                    new CustomCharacterListObject(Id: CharacterID.None),
-                    new CustomCharacterListObject(Id: CharacterID.None)
-                };
-            }
-
-            for (int slotIndex = 0; slotIndex < 3; slotIndex++)
-            {
-                CustomCharacterListObject saved = null;
-                if (slotIndex < loadout.Slots.Length)
-                {
-                    saved = loadout.Slots[slotIndex];
-                }
-
-                if (saved == null)
-                {
-                    player.SelectedCharacterIds[slotIndex].SetData();
-                }
-                else
-                {
-                    player.SelectedCharacterIds[slotIndex].SetData(saved.ServerID, saved.CharacterID);
-                }
-            }
-
-
-            LoadoutPopupContext.SelectedPopupIndex = _loadoutIndex;
-
-            Storefront.Get().SavePlayerData(player, null);
-
-            // Refresh both gallery and popup visuals
-            SignalBus.OnReloadCharacterGalleryRequestedSignal();
+            
         }));
     }
 
-    /// <summary>
-    /// Ensures the popup row and its slot array exist and have 3 elements
-    /// </summary>
-    private void EnsurePopupRowInitialized(PlayerData player, int index)
-    {
-        if (player.PopupLoadOuts[index] == null)
-        {
-            player.PopupLoadOuts[index] = new TeamLoadOut();
-        }
-
-        if (player.PopupLoadOuts[index].Slots == null ||
-            player.PopupLoadOuts[index].Slots.Length != 3)
-        {
-            player.PopupLoadOuts[index].Slots = new CustomCharacterListObject[3];
-            player.PopupLoadOuts[index].Slots[0] = new CustomCharacterListObject(Id: CharacterID.None);
-            player.PopupLoadOuts[index].Slots[1] = new CustomCharacterListObject(Id: CharacterID.None);
-            player.PopupLoadOuts[index].Slots[2] = new CustomCharacterListObject(Id: CharacterID.None);
-        }
-    }
 
     /// <summary>
     /// Updates the row background color based on whether this row is selected.
