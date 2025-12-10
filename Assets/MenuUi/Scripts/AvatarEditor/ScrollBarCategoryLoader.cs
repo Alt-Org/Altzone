@@ -44,7 +44,6 @@ namespace MenuUi.Scripts.AvatarEditor
             ClampToCenter();
         }
 
-        private void AddCategoryCell(Sprite sprite, string categoryId)
         public void UpdateCellSize()
         {
             _viewPortHeight = _categoryGrid.rect.height;
