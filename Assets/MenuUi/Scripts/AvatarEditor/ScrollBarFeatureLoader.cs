@@ -40,16 +40,17 @@ namespace MenuUi.Scripts.AvatarEditor
                 RefreshFeatureListItems(_allAvatarCategoryIds[0]);
         }
 
-        private void AddFeatureCell(Sprite sprite, AvatarPartInfo part)
+        private void AddFeatureCell(Sprite cellImage, AvatarPartInfo avatarPart)
         {
-            GameObject _gridCell = Instantiate(_gridCellPrefab, _featureGridContent);
-            Image _avatarPart = _gridCell.transform.Find("FeatureImage").GetComponent<Image>();
-            // Need to find a way to make sprites look same size in grid
-            _avatarPart.sprite = sprite;
+            GameObject gridCell = Instantiate(_gridCellPrefab, _featureGridContent);
+            Image avatarPartImage = gridCell.transform.Find("FeatureImage").GetComponent<Image>();
+            Button button = gridCell.GetComponent<Button>();
 
-            Button _button = _gridCell.GetComponent<Button>();
-                                                // This could propably be more readable
-            _button.onClick.AddListener(() => _featurePicker.SetFeature(part, _featureCategoryIdToFeatureSlotInt[GetFeatureCategoryFromFeatureId(part.Id)]));
+            string featureCategoryid = GetFeatureCategoryFromFeatureId(avatarPart.Id);
+            int featurePickerPartSlot = _featureCategoryIdToFeatureSlotInt[featureCategoryid];
+            // Need to find a way to make sprites look same size in grid
+            avatarPartImage.sprite = cellImage;
+            button.onClick.AddListener(() => _featurePicker.SetFeature(avatarPart, featurePickerPartSlot));
         }
 
         public void RefreshFeatureListItems(string categoryId)
