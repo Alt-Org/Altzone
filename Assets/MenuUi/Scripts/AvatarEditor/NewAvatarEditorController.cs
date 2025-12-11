@@ -3,22 +3,25 @@ using System.Collections.Generic;
 using MenuUi.Scripts.AvatarEditor;
 using UnityEngine;
 
-public class NewAvatarEditorController : MonoBehaviour
+namespace MenuUi.scripts.AvatarEditor
 {
-    [SerializeField] ScrollBarCategoryLoader _categoryLoader;
-    [SerializeField] ScrollBarFeatureLoader _featureLoader;
-
-
-    // Start is called before the first frame update
-    void Start()
+    public class NewAvatarEditorController : MonoBehaviour
     {
-        _categoryLoader.SetCategoryCells((categoryId) => _featureLoader.RefreshFeatureListItems(categoryId));
-        _categoryLoader.UpdateCellSize();
-    }
+        [SerializeField] ScrollBarCategoryLoader _categoryLoader;
+        [SerializeField] ScrollBarFeatureLoader _featureLoader;
 
-    // Update is called once per frame
-    void Update()
-    {
+
+        // Start is called before the first frame update
+        void Start()
+        {
+            _categoryLoader.SetCategoryCells((categoryId) => _featureLoader.RefreshFeatureListItems(categoryId));
+            _categoryLoader.UpdateCellSize();
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
         
+        }
     }
 }

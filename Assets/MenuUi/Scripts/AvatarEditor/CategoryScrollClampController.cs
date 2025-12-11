@@ -5,53 +5,56 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CategoryScrollClampController : MonoBehaviour, IEndDragHandler
+namespace MenuUi.scripts.AvatarEditor
 {
-    [SerializeField] private ScrollRect _categoryGridScrollRect;
-    [SerializeField] private ScrollBarCategoryLoader _categoryLoader;
-    // Start is called before the first frame update
-    public void OnEndDrag(PointerEventData eventData)
+    public class CategoryScrollClampController : MonoBehaviour, IEndDragHandler
     {
-        ClampToCenter();
-    }
-
-    private void ClampToCenter()
-    {
-        float totalCellSize = _categoryLoader.cellHeight + _categoryLoader.spacing;
-        float contentYPosition = _categoryGridScrollRect.content.anchoredPosition.y;
-        int nearestIndex = Mathf.RoundToInt(contentYPosition / totalCellSize);
-        float targetYPosition = nearestIndex * totalCellSize;
-
-        StartCoroutine(Clamp(targetYPosition));
-    }
-
-    IEnumerator Clamp(float targetYPos)
-    {
-        Vector2 pos = _categoryGridScrollRect.content.anchoredPosition;
-        Vector2 target = new(pos.x, targetYPos);
-
-        float t = 0f;
-
-        while (t < 1)
+        [SerializeField] private ScrollRect _categoryGridScrollRect;
+        [SerializeField] private ScrollBarCategoryLoader _categoryLoader;
+        // Start is called before the first frame update
+        public void OnEndDrag(PointerEventData eventData)
         {
-            t += Time.deltaTime * 5f;
-            _categoryGridScrollRect.content.anchoredPosition = Vector2.Lerp(pos, target, t);
-            yield return null;
+            ClampToCenter();
         }
 
-        _categoryGridScrollRect.content.anchoredPosition = target;
+        private void ClampToCenter()
+        {
+            float totalCellSize = _categoryLoader.cellHeight + _categoryLoader.spacing;
+            float contentYPosition = _categoryGridScrollRect.content.anchoredPosition.y;
+            int nearestIndex = Mathf.RoundToInt(contentYPosition / totalCellSize);
+            float targetYPosition = nearestIndex * totalCellSize;
 
-        OnClamp(targetYPos);
-    }
+            StartCoroutine(Clamp(targetYPosition));
+        }
 
-    private void OnClamp(float targetYPos)
-    {
-        float totalCellSize = _categoryLoader.cellHeight + _categoryLoader.spacing;
-        int topIndex = Mathf.RoundToInt(targetYPos / totalCellSize);
-        int centerIndex = topIndex + 1;
+        IEnumerator Clamp(float targetYPos)
+        {
+            Vector2 pos = _categoryGridScrollRect.content.anchoredPosition;
+            Vector2 target = new(pos.x, targetYPos);
 
-        var centerCell = _categoryGridScrollRect.content.GetChild(centerIndex);
+            float t = 0f;
 
-        centerCell.GetComponent<Button>().onClick.Invoke();
+            while (t < 1)
+            {
+                t += Time.deltaTime * 5f;
+                _categoryGridScrollRect.content.anchoredPosition = Vector2.Lerp(pos, target, t);
+                yield return null;
+            }
+
+            _categoryGridScrollRect.content.anchoredPosition = target;
+
+            OnClamp(targetYPos);
+        }
+
+        private void OnClamp(float targetYPos)
+        {
+            float totalCellSize = _categoryLoader.cellHeight + _categoryLoader.spacing;
+            int topIndex = Mathf.RoundToInt(targetYPos / totalCellSize);
+            int centerIndex = topIndex + 1;
+
+            var centerCell = _categoryGridScrollRect.content.GetChild(centerIndex);
+
+            centerCell.GetComponent<Button>().onClick.Invoke();
+        }
     }
 }

@@ -40,17 +40,6 @@ namespace MenuUi.Scripts.AvatarEditor
                 RefreshFeatureListItems(_allAvatarCategoryIds[0]);
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
-        private void OnEnable()
-        {
-
-        }
-
         private void AddFeatureCell(Sprite sprite, AvatarPartInfo part)
         {
             GameObject _gridCell = Instantiate(_gridCellPrefab, _content);
