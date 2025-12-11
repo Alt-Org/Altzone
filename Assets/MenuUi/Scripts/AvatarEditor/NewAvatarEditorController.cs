@@ -7,6 +7,7 @@ namespace MenuUi.scripts.AvatarEditor
 {
     public class NewAvatarEditorController : MonoBehaviour
     {
+        //Planning to add this to the original AvatarEditorController, but find it easier to do in it's own script while making it
         [SerializeField] ScrollBarCategoryLoader _categoryLoader;
         [SerializeField] ScrollBarFeatureLoader _featureLoader;
 

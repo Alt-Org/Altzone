@@ -83,10 +83,10 @@ namespace MenuUi.Scripts.AvatarEditor
         private void AddCategoryCell(string FeatureCategoryId, Sprite CellImage, Action<string> buttonFunction)
         {
             GameObject gridCell = Instantiate(_avatarPartCategoryGridCellPrefab, _categoryGridContent);
-            Image avatarpart = gridCell.transform.Find("FeatureImage").GetComponent<Image>();
+            Image avatarPartImage = gridCell.transform.Find("FeatureImage").GetComponent<Image>();
             Button button = gridCell.GetComponent<Button>();
 
-            avatarpart.sprite = CellImage;
+            avatarPartImage.sprite = CellImage;
             button.interactable = false;
             button.onClick.AddListener(() => buttonFunction.Invoke(FeatureCategoryId)); 
         }
