@@ -22,6 +22,9 @@ namespace MenuUi.Scripts.CharacterGallery
         // Array of character slots in selected grid
         [SerializeField] private SelectedCharacterEditingSlot[] _selectedCharacterSlots;
 
+        private bool _openedFromLoadout = false;
+        private int _currentLoadoutIndex = -1;
+
         private void Awake()
         {
             _swipe = FindObjectOfType<SwipeUI>();
@@ -31,7 +34,8 @@ namespace MenuUi.Scripts.CharacterGallery
 
             _galleryView.OnGalleryCharactersSet += SetCharacters;
             _galleryView.OnFilterChanged += HandleFilterChanged;
-            SignalBus.OnDefenceGalleryEditPanelRequested += OpenPopup;
+            SignalBus.OnDefenceGalleryEditPanelRequested += OpenPopupFromSelected;
+            SignalBus.OnDefenceGalleryEditPanelRequestedForLoadout += OpenPopupFromLoadout;
 
             for (int i = 0; i < _selectedCharacterSlots.Length; i++)
             {
@@ -52,7 +56,9 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             _galleryView.OnGalleryCharactersSet -= SetCharacters;
             _galleryView.OnFilterChanged -= HandleFilterChanged;
-            SignalBus.OnDefenceGalleryEditPanelRequested -= OpenPopup;
+            SignalBus.OnDefenceGalleryEditPanelRequested -= OpenPopupFromSelected;
+            SignalBus.OnDefenceGalleryEditPanelRequestedForLoadout += OpenPopupFromLoadout;
+
 
             foreach (SelectedCharacterEditingSlot slot in _selectedCharacterSlots)
             {
@@ -83,6 +89,8 @@ namespace MenuUi.Scripts.CharacterGallery
         public void ClosePopup()
         {
             gameObject.SetActive(false);
+            _openedFromLoadout = false;
+            _currentLoadoutIndex = -1;
             if (_charactersUpdated) SignalBus.OnReloadCharacterGalleryRequestedSignal();
         }
 
@@ -126,11 +134,20 @@ namespace MenuUi.Scripts.CharacterGallery
                 // Returning selected character to original slot
                 selectedCharacterSlot.SelectedCharacter.ReturnToOriginalSlot();
                 selectedCharacterSlot.SelectedCharacter = null;
-                SignalBus.OnSelectedDefenceCharacterChangedSignal(CharacterID.None, selectedCharacterSlot.SlotIndex);
+
+                if (_openedFromLoadout)
+                {
+                    SignalBus.OnLoadoutDefenceCharacterChangedSignal(CharacterID.None, selectedCharacterSlot.SlotIndex, _currentLoadoutIndex);
+                }
+                else
+                {
+                    SignalBus.OnSelectedDefenceCharacterChangedSignal(CharacterID.None, selectedCharacterSlot.SlotIndex);
+                }
+                   
                 _charactersUpdated = true;
+                return;
             }
-            else
-            {
+            
                 // Checking if the pressed slot is a CharacterSlot
                 CharacterSlot characterSlot = pressedSlot as CharacterSlot;
                 if (characterSlot == null) return;
@@ -151,9 +168,17 @@ namespace MenuUi.Scripts.CharacterGallery
                 characterSlot.Character.SetSelectedVisuals();
                 selectedCharacterSlot.SelectedCharacter = characterSlot.Character;
                 characterSlot.gameObject.SetActive(false);
-                SignalBus.OnSelectedDefenceCharacterChangedSignal(characterSlot.Character.Id, selectedCharacterSlot.SlotIndex);
-                _charactersUpdated = true;
+             if (_openedFromLoadout)
+            {
+                SignalBus.OnLoadoutDefenceCharacterChangedSignal(characterSlot.Character.Id, selectedCharacterSlot.SlotIndex, _currentLoadoutIndex);
             }
+            else
+            {
+                SignalBus.OnSelectedDefenceCharacterChangedSignal(characterSlot.Character.Id, selectedCharacterSlot.SlotIndex);
+            }
+
+                _charactersUpdated = true;
+            
         }
 
 
@@ -168,6 +193,19 @@ namespace MenuUi.Scripts.CharacterGallery
                     slot.SelectedCharacter.OriginalSlot.gameObject.SetActive(false);
                 }
             }
+        }
+        private void OpenPopupFromSelected()
+        {
+            _openedFromLoadout = false;
+            _currentLoadoutIndex = -1;
+            OpenPopup();
+        }
+
+        private void OpenPopupFromLoadout(int loadoutIndex)
+        {
+            _openedFromLoadout = true;
+            _currentLoadoutIndex = loadoutIndex;
+            OpenPopup();
         }
     }
 }
