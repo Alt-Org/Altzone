@@ -44,19 +44,19 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void Start()
         {
-            InitializeComponents();
-            SetupButtonListeners();
+            //InitializeComponents();
+            //SetupButtonListeners();
         }
 
         private void OnEnable()
         {
-            InitializeDefaultState();
-            SubscribeToEvents();
+            //InitializeDefaultState();
+            //SubscribeToEvents();
         }
 
         private void OnDisable()
         {
-            UnsubscribeFromEvents();
+            //UnsubscribeFromEvents();
             _animationController.StopAllAnimations();
             _pageTurnImage.enabled = false;
         }

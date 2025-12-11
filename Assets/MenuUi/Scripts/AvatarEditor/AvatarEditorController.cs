@@ -48,14 +48,14 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             _saveButton.onClick.AddListener(() => StartCoroutine(SaveAvatarData()));
             _defaultButton.onClick.AddListener(() => SetDefaultAvatar());
-            _revertButton.onClick.AddListener(() => RevertAvatarChanges());
+            //_revertButton.onClick.AddListener(() => RevertAvatarChanges());
 
-            if (_featureModeButton != null && _featurePicker != null)
+            /*if (_featureModeButton != null && _featurePicker != null)
                 _featureModeButton.onClick.AddListener(delegate { GoIntoMode(AvatarEditorMode.FeaturePicker); });
             if (_colorModeButton != null && _colorPicker != null)
                 _colorModeButton.onClick.AddListener(delegate { GoIntoMode(AvatarEditorMode.ColorPicker); });
             if (_scaleModeButton != null && _avatarScaler != null)
-                _scaleModeButton.onClick.AddListener(delegate { GoIntoMode(AvatarEditorMode.AvatarScaler); });
+                _scaleModeButton.onClick.AddListener(delegate { GoIntoMode(AvatarEditorMode.AvatarScaler); });*/
         }
 
         void OnEnable()
@@ -74,7 +74,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private void CharacterLoaded()
         {
             StartCoroutine(LoadAvatarData());
-            GoIntoMode(_defaultMode);
+            //GoIntoMode(_defaultMode);
         }
 
         #region Mode selection

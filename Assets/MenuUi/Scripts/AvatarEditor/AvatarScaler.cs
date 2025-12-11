@@ -23,7 +23,7 @@ namespace MenuUi.Scripts.AvatarEditor{
         private float _initialDistance;
         private RectTransform _touchArea;
 
-        void Start(){
+        /*void Start(){
             _buttons[0].onClick.AddListener(ScaleDownHorizontally);
             _buttons[1].onClick.AddListener(ScaleUpVertically);
             _buttons[2].onClick.AddListener(ScaleUpHorizontally);
@@ -35,8 +35,8 @@ namespace MenuUi.Scripts.AvatarEditor{
                     button.gameObject.SetActive(false);
                 }
             }           
-        }
-        void OnEnable()
+        }*/
+        /*void OnEnable()
         {
             _bookBackground.enabled = false;
             SetCharacterImage();
@@ -44,7 +44,7 @@ namespace MenuUi.Scripts.AvatarEditor{
         void OnDisable()
         {
             _bookBackground.enabled = true;
-        }
+        }*/
 
         void Update()
         {

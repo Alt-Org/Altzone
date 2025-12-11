@@ -11,12 +11,21 @@ namespace MenuUi.scripts.AvatarEditor
         [SerializeField] ScrollBarCategoryLoader _categoryLoader;
         [SerializeField] ScrollBarFeatureLoader _featureLoader;
 
+        //disabling for now
+        [SerializeField] private GameObject _editorMenu;
+        [SerializeField] private GameObject _switchModeButtons;
+        [SerializeField] private GameObject _revertButton;
+
 
         // Start is called before the first frame update
         void Start()
         {
             _categoryLoader.SetCategoryCells((categoryId) => _featureLoader.RefreshFeatureListItems(categoryId));
             _categoryLoader.UpdateCellSize();
+
+            _switchModeButtons.SetActive(false);
+            _editorMenu.SetActive(false);
+            _revertButton.SetActive(false);
         }
 
         // Update is called once per frame
