@@ -14,7 +14,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private GameObject _gridCellPrefab;
         [SerializeField] private FeaturePicker _featurePicker;
         [SerializeField] private Color _highlightColor = new(0f, 0f, 0f, 0.5f);
-        [SerializeField] private Color _backgroundColor = new(168f, 168f, 168f, 0.7f);
+        [SerializeField] private Color _backgroundColor = new(0.5f, 0.5f, 0.5f, 0.7f);
         [SerializeField] private AvatarEditorController _avatarEditorController;
 
         private List<AvatarPartInfo> _avatarPartInfo;
