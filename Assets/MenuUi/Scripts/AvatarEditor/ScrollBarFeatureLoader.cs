@@ -14,6 +14,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private GameObject _gridCellPrefab;
         [SerializeField] private FeaturePicker _featurePicker;
         [SerializeField] private Color _highlightColor = new(0f, 0f, 0f, 0.5f);
+        [SerializeField] private Color _backgroundColor = new(168f, 168f, 168f, 0.7f);
         [SerializeField] private AvatarEditorController _avatarEditorController;
 
         private List<AvatarPartInfo> _avatarPartInfo;
@@ -21,6 +22,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private Dictionary<string, int> _featureCategoryIdToFeatureSlotInt;
         private bool _isSelectedFeature = false;
         private PlayerAvatar _playeravatar;
+        private Image _selectedCellImage;
         
 
         // Start is called before the first frame update
@@ -44,13 +46,15 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             GameObject gridCell = Instantiate(_gridCellPrefab, _featureGridContent);
             Image avatarPartImage = gridCell.transform.Find("FeatureImage").GetComponent<Image>();
+            Image gridCellBackgroundImage = gridCell.transform.Find("BackgroundImage").GetComponent<Image>();
             Button button = gridCell.GetComponent<Button>();
             _playeravatar = _avatarEditorController.PlayerAvatar;
             string featureCategoryid = GetFeatureCategoryFromFeatureId(avatarPart.Id);
             int featurePickerPartSlot = _featureCategoryIdToFeatureSlotInt[featureCategoryid];
             // Need to find a way to make sprites look same size in grid
             avatarPartImage.sprite = cellImage;
-            button.onClick.AddListener(() => _featurePicker.SetFeature(avatarPart, featurePickerPartSlot));
+
+            AddListeners(button, avatarPart, featurePickerPartSlot, gridCellBackgroundImage);
 
             if (avatarPart.Id == _playeravatar.GetPartId((FeatureSlot)featurePickerPartSlot))
             {
@@ -59,10 +63,31 @@ namespace MenuUi.Scripts.AvatarEditor
 
             if (_isSelectedFeature)
             {
-                Image gridCellBackgroundImage = gridCell.transform.Find("BackgroundImage").GetComponent<Image>();
                 gridCellBackgroundImage.color = _highlightColor;
                 _isSelectedFeature = false;
+                _selectedCellImage = gridCellBackgroundImage;
             }
+            else
+                gridCellBackgroundImage.color = _backgroundColor;
+        }
+
+        private void UpdateHighlightedCell(Image NewSelectedCellImage)
+        {
+            if (_selectedCellImage != null)
+            {
+                _selectedCellImage.color = _backgroundColor;
+                _selectedCellImage = NewSelectedCellImage;
+                _selectedCellImage.color = _highlightColor;
+            }
+        }
+
+        private void AddListeners(Button button, AvatarPartInfo avatarPart, int featurePickerPartSlot, Image gridCellBackgroundImage)
+        {
+            button.onClick.AddListener(() =>
+            {
+                _featurePicker.SetFeature(avatarPart, featurePickerPartSlot);
+                UpdateHighlightedCell(gridCellBackgroundImage);
+            });
         }
 
         public void RefreshFeatureListItems(string categoryId)
