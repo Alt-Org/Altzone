@@ -12,7 +12,6 @@ using System;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
-
     public class ScrollBarCategoryLoader : MonoBehaviour
     {
         [SerializeField] private AvatarPartsReference _avatarPartsReference;

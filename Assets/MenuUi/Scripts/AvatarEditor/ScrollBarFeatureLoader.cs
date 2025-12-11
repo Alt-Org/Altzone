@@ -10,10 +10,10 @@ namespace MenuUi.Scripts.AvatarEditor
     public class ScrollBarFeatureLoader : MonoBehaviour
     {
         [SerializeField] private AvatarPartsReference _avatarPartsReference;
-        [SerializeField] private Transform _content;
+        [SerializeField] private Transform _featureGridContent;
         [SerializeField] private GameObject _gridCellPrefab;
-        [SerializeField] private Sprite _testSprite;
         [SerializeField] private FeaturePicker _featurePicker;
+
         private List<AvatarPartInfo> _avatarPartInfo;
         private List<string> _allAvatarCategoryIds;
         private Dictionary<string, int> _featureCategoryIdToFeatureSlotInt;
@@ -42,7 +42,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void AddFeatureCell(Sprite sprite, AvatarPartInfo part)
         {
-            GameObject _gridCell = Instantiate(_gridCellPrefab, _content);
+            GameObject _gridCell = Instantiate(_gridCellPrefab, _featureGridContent);
             Image _avatarPart = _gridCell.transform.Find("FeatureImage").GetComponent<Image>();
             // Need to find a way to make sprites look same size in grid
             _avatarPart.sprite = sprite;
@@ -56,7 +56,7 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             DestroyFeatureListItems();
             _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
-            foreach (var part in _avatarPartInfo)
+            foreach (AvatarPartInfo part in _avatarPartInfo)
             {
                 AddFeatureCell(part.IconImage, part);
             }
@@ -64,7 +64,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void DestroyFeatureListItems()
         {
-            foreach (Transform child in _content.transform)
+            foreach (Transform child in _featureGridContent.transform)
             {
                 Destroy(child.gameObject);
             }

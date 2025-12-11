@@ -52,7 +52,7 @@ namespace MenuUi.scripts.AvatarEditor
             int topIndex = Mathf.RoundToInt(targetYPos / totalCellSize);
             int centerIndex = topIndex + 1;
 
-            var centerCell = _categoryGridScrollRect.content.GetChild(centerIndex);
+            Transform centerCell = _categoryGridScrollRect.content.GetChild(centerIndex);
 
             centerCell.GetComponent<Button>().onClick.Invoke();
         }
