@@ -470,7 +470,7 @@ namespace Battle.View.Game
                 LocalPlayerTeam == BattleTeamNumber.TeamBeta
             );
 
-            BattleAudioController.PlayMusic();
+            BattleAudioViewController.PlayMusic();
         }
 
         /// <summary>
@@ -565,13 +565,13 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattlePlaySoundFX QuantumEvent.<br/>
-        /// Handles calling <see cref="Battle.View.Audio.BattleAudioController.PlaySoundFX">PlaySound</see>
+        /// Handles calling <see cref="Battle.View.Audio.BattleAudioViewController.PlaySoundFX">PlaySound</see>
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
         private void QEventPlaySoundFX(EventBattlePlaySoundFX e)
         {
-            BattleAudioController.PlaySoundFX(e.Effect);
+            BattleAudioViewController.PlaySoundFX(e.Effect);
         }
 
         private void QEventCharacterSelected(EventBattleCharacterSelected e)

@@ -1,6 +1,6 @@
-/// @file BattleAudioController.cs
+/// @file BattleAudioViewController.cs
 /// <summary>
-/// Contains @cref{Battle.View.Audio,BattleAudioController} class which handles playing audio in Battle.
+/// Contains @cref{Battle.View.Audio,BattleAudioViewController} class which handles playing audio in Battle.
 /// </summary>
 
 // System usings
@@ -18,7 +18,7 @@ namespace Battle.View.Audio
     /// <summary>
     /// Handles playing audio in Battle.
     /// </summary>
-    public static class BattleAudioController
+    public static class BattleAudioViewController
     {
         /// <summary>
         /// Starts the Battle music.
