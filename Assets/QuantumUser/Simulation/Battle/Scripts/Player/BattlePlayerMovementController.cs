@@ -245,17 +245,19 @@ namespace Battle.QSimulation.Player
         /// <param name="transform">Pointer to the player's transform component.</param>
         private static void MoveHitbox(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform)
         {
-            Transform2D* shieldTransform = f.Unsafe.GetPointer<Transform2D>(playerData->HitboxShieldEntity);
             Transform2D* characterTransform = f.Unsafe.GetPointer<Transform2D>(playerData->HitboxCharacterEntity);
+            Transform2D* shieldTransform = f.Unsafe.GetPointer<Transform2D>(playerData->HitboxShieldEntity);
 
-            shieldTransform->Position = transform->Position;
-            shieldTransform->Rotation = transform->Rotation;
             characterTransform->Position = transform->Position;
             characterTransform->Rotation = transform->Rotation;
+            shieldTransform->Position = transform->Position;
+            shieldTransform->Rotation = transform->Rotation;
 
-            BattlePlayerHitboxQComponent* shieldComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity);
-
-            shieldComponent->Normal = FPVector2.Rotate(shieldComponent->NormalBase, transform->Rotation);
+            BattlePlayerHitboxQComponent* characterComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxCharacterEntity);
+            BattlePlayerHitboxQComponent* shieldComponent    = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity);
+            
+            characterComponent->Normal = FPVector2.Rotate(characterComponent->NormalBase, transform->Rotation);
+            shieldComponent->Normal    = FPVector2.Rotate(shieldComponent->NormalBase, transform->Rotation);
         }
 
         /// <summary>
@@ -267,15 +269,17 @@ namespace Battle.QSimulation.Player
         /// <param name="transform">Pointer to the player's transform component.</param>
         private static void TeleportHitbox(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform)
         {
-            Transform2D* shieldTransform = f.Unsafe.GetPointer<Transform2D>(playerData->HitboxShieldEntity);
             Transform2D* characterTransform = f.Unsafe.GetPointer<Transform2D>(playerData->HitboxCharacterEntity);
+            Transform2D* shieldTransform = f.Unsafe.GetPointer<Transform2D>(playerData->HitboxShieldEntity);
 
-            shieldTransform->Teleport(f, transform->Position, transform->Rotation);
             characterTransform->Teleport(f, transform->Position, transform->Rotation);
+            shieldTransform->Teleport(f, transform->Position, transform->Rotation);
 
-            BattlePlayerHitboxQComponent* shieldComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity);
+            BattlePlayerHitboxQComponent* characterComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxCharacterEntity);
+            BattlePlayerHitboxQComponent* shieldComponent    = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity);
 
-            shieldComponent->Normal = FPVector2.Rotate(shieldComponent->NormalBase, transform->Rotation);
+            characterComponent->Normal = FPVector2.Rotate(characterComponent->NormalBase, transform->Rotation);
+            shieldComponent->Normal    = FPVector2.Rotate(shieldComponent->NormalBase, transform->Rotation);
         }
 
         /// <summary>
