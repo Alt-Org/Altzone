@@ -16,7 +16,6 @@ using Quantum;
 using Photon.Deterministic;
 
 // Altzone usings
-using Altzone.Scripts.Audio;
 using Altzone.Scripts.BattleUiShared;
 using Altzone.Scripts.Lobby;
 
@@ -73,10 +72,6 @@ namespace Battle.View.Game
         /// <summary>[SerializeField] Reference to BattleLightrayEffectViewController which handles lightray effects visibility.</summary>
         /// @ref BattleGameViewController-SerializeFields
         [SerializeField] private BattleLightrayEffectViewController _lightrayEffectViewController;
-
-        /// <summary>[SerializeField] Reference to BattleSoundFXViewController which plays sound effects.</summary>
-        /// @ref BattleGameViewController-SerializeFields
-        [SerializeField] private BattleSoundFXViewController _soundFXViewController;
 
         /// <summary>[SerializeField] Reference to BattlePlayerInput which polls player input for %Quantum.</summary>
         /// @ref BattleGameViewController-SerializeFields
@@ -475,7 +470,7 @@ namespace Battle.View.Game
                 LocalPlayerTeam == BattleTeamNumber.TeamBeta
             );
 
-            AudioManager.Instance.PlayMusic("Battle", MusicHandler.MusicSwitchType.Immediate);
+            BattleAudioViewController.PlayMusic();
         }
 
         /// <summary>
@@ -570,14 +565,13 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattlePlaySoundFX QuantumEvent.<br/>
-        /// Handles calling <see cref="Battle.View.Audio.BattleSoundFXViewController.PlaySound">PlaySound</see>
-        /// in <see cref="BattleGameViewController._soundFXViewController">_soundFXViewController</see>.
+        /// Handles calling <see cref="Battle.View.Audio.BattleAudioViewController.PlaySoundFX">PlaySound</see>
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
         private void QEventPlaySoundFX(EventBattlePlaySoundFX e)
         {
-            _soundFXViewController.PlaySound(e.Effect);
+            BattleAudioViewController.PlaySoundFX(e.Effect);
         }
 
         private void QEventCharacterSelected(EventBattleCharacterSelected e)
