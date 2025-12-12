@@ -471,7 +471,7 @@ namespace Battle.View.Game
                 LocalPlayerTeam == BattleTeamNumber.TeamBeta
             );
 
-            AudioManager.Instance.PlayMusic("Battle", MusicHandler.MusicSwitchType.Immediate);
+            BattleAudioController.PlayMusic();
         }
 
         /// <summary>
@@ -566,14 +566,13 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattlePlaySoundFX QuantumEvent.<br/>
-        /// Handles calling <see cref="Battle.View.Audio.BattleSoundFXViewController.PlaySound">PlaySound</see>
-        /// in <see cref="BattleGameViewController._soundFXViewController">_soundFXViewController</see>.
+        /// Handles calling <see cref="Battle.View.Audio.BattleAudioController.PlaySoundFX">PlaySound</see>
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
         private void QEventPlaySoundFX(EventBattlePlaySoundFX e)
         {
-            BattleSoundFXController.PlaySound(e.Effect);
+            BattleAudioController.PlaySoundFX(e.Effect);
         }
 
         private void QEventCharacterSelected(EventBattleCharacterSelected e)
