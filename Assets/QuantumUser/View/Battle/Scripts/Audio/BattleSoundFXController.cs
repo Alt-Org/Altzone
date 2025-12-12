@@ -3,6 +3,9 @@
 /// Contains @cref{Battle.View.Audio,BattleSoundFXController} class which handles playing sound effects.
 /// </summary>
 
+// System usings
+using System.Runtime.CompilerServices;
+
 // Quantum usings
 using Quantum;
 
@@ -22,6 +25,7 @@ namespace Battle.View.Audio
         /// </summary>
         ///
         /// <param name="effect">The BattleSoundFX which to play.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void PlaySound(BattleSoundFX effect)
         {
             AudioManager.Instance.PlayBattleSfxAudio((BattleSFXNameTypes)effect);
