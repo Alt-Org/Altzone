@@ -31,15 +31,16 @@ namespace MenuUi.Scripts.AvatarEditor
         private float _actualSpacing;
         private float _actualVerticalPadding;
         private float _viewPortHeight;
+        private int _uniqueCellAmount;
         private readonly int _cellsShownAtATime = 3;
         public float cellHeight => _cellHeight;
         public float spacing => _actualSpacing;
+        public int uniqueCellAmount => _uniqueCellAmount;
 
         // Start is called before the first frame update
         void Start()
         {
-            // Used to "start the scroll position not at the top"
-            //_categoryGridContent.anchoredPosition = new Vector2(_categoryGrid.anchoredPosition.x, _categoryGrid.anchoredPosition.y + (_cellHeight + _actualSpacing) * 3);
+    
         }
 
         public void UpdateCellSize()
@@ -66,6 +67,10 @@ namespace MenuUi.Scripts.AvatarEditor
                     Debug.LogError("is null");
                 }
             }
+
+            _uniqueCellAmount = _categoryGridContent.transform.childCount / 3;
+            // Grid position starts in the middle
+            _categoryGridContent.anchoredPosition = new Vector2(_categoryGrid.anchoredPosition.x, _categoryGrid.anchoredPosition.y + (_cellHeight + _actualSpacing) * _uniqueCellAmount);
         }
 
         //Planning to add better way to add the category images later
@@ -74,10 +79,13 @@ namespace MenuUi.Scripts.AvatarEditor
             DestroyCategoryCells();
             _allCategoryIds = _avatarPartsReference.GetAllCategoryIds();
 
-            foreach (string categoryId in _allCategoryIds)
+            for (int i = 0; i < 3; i++)
             {
-                _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
-                AddCategoryCell(categoryId, _avatarPartInfo[0].IconImage, buttonFunction);
+                foreach (string categoryId in _allCategoryIds)
+                {
+                    _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
+                    AddCategoryCell(categoryId, _avatarPartInfo[0].IconImage, buttonFunction);
+                }
             }
         }
 

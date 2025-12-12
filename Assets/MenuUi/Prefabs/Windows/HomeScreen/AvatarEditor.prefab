@@ -500,7 +500,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 243.1
+  m_fontSize: 243.15
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -973,6 +973,7 @@ GameObject:
   - component: {fileID: 5821299491006676406}
   - component: {fileID: 5035703801643578294}
   - component: {fileID: 3342798204221298985}
+  - component: {fileID: 723594174419062081}
   m_Layer: 5
   m_Name: CategoryGrid
   m_TagString: Untagged
@@ -1106,6 +1107,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _categoryGridScrollRect: {fileID: 5821299491006676406}
   _categoryLoader: {fileID: 5035703801643578294}
+--- !u!114 &723594174419062081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963549779580140712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 470fed7d35b6cf04a8873af271ba8d45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scrollRect: {fileID: 5821299491006676406}
+  _categoryGridContent: {fileID: 4207114766707577365}
+  _categoryLoader: {fileID: 5035703801643578294}
+  _categoryGridViewport: {fileID: 992649476381943219}
 --- !u!1 &1209530618597823404
 GameObject:
   m_ObjectHideFlags: 0
@@ -5738,7 +5755,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48.75
+  m_fontSize: 48.8
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
