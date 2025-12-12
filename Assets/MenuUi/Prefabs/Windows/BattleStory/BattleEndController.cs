@@ -38,9 +38,18 @@ public class BattleEndController : MonoBehaviour
 
         if (winner.HasValue)
         {
-            var dtListenerBattle = gameObject.GetComponent<DailyTaskProgressListenerBattle>();
-            if (winner.Value) dtListenerBattle.WinBattle();
-            dtListenerBattle.PlayBattle();
+            if (winner.Value)
+                if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null
+                && DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationActionType == Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.WinBattle)
+                {
+                    DailyTaskProgressManager.Instance.UpdateTaskProgress(Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.WinBattle, "1");
+                }
+
+            if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null
+            && DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationActionType == Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.PlayBattle)
+            {
+                DailyTaskProgressManager.Instance.UpdateTaskProgress(Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.PlayBattle, "1");
+            }
         }
 
         if (winner.HasValue) StartCoroutine(PlayAnimation(winner.Value));

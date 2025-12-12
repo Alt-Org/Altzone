@@ -21,13 +21,15 @@ public class PollMonitor : MonoBehaviour // Monitors active polls to check if th
 
     private void Start()
     {
-        ServerManager.OnClanPollsChanged += PollManager.BuildPolls;
+        ServerManager.OnClanPollsChanged += BuildPolls;
     }
 
     private void OnDestroy()
     {
-        ServerManager.OnClanPollsChanged -= PollManager.BuildPolls;
+        ServerManager.OnClanPollsChanged -= BuildPolls;
     }
+
+    private void BuildPolls() => PollManager.BuildPolls();
 
     // Start monitoring when a poll begins
     public void StartMonitoring()

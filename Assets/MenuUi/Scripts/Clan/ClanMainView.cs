@@ -164,6 +164,8 @@ public class ClanMainView : MonoBehaviour
 
         if (player.clan_id != clan.Id) return false;
 
+        return true; //Remove this later when we actually want to block unauthorized edits to clanprofile.
+
         var roleId = player.clanRole_id;
         if (string.IsNullOrEmpty(roleId)) return false;
 

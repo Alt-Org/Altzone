@@ -347,6 +347,18 @@ public class ClanSettings : AltMonoBehaviour
 
     public void ConfirmClanPhraseEdit()
     {
+        if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null
+            && DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationSocialType == Altzone.Scripts.Model.Poco.Game.TaskEducationSocialType.ChangeClanMotto)
+        {
+            StartCoroutine(GetClanData(c =>
+            {
+                if (c != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(_clanPhraseField.text) && c.Phrase != _clanPhraseField.text)
+                        DailyTaskProgressManager.Instance.UpdateTaskProgress(Altzone.Scripts.Model.Poco.Game.TaskEducationSocialType.ChangeClanMotto, "1");
+                }
+            }));
+        }
         _clanPhraseText.text = _clanPhraseField.text;
         HidePopup(_clanPhrasePopup);
     }

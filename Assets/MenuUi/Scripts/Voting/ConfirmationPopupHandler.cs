@@ -85,6 +85,7 @@ public class ConfirmationPopupHandler : MonoBehaviour
         if (furniture != null) PollManager.CreateShopFurniturePoll(FurniturePollType.Buying, furniture, c => result = c);
         yield return new WaitUntil(()=> result.HasValue);
         VotingActions.ReloadPollList?.Invoke();
+        ClosePopup();
     }
 
     private void BuyAvatarPiece()

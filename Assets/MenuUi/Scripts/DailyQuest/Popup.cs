@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
+using MenuUI.Scripts;
 
 public class Popup : MonoBehaviour
 {
@@ -337,7 +338,10 @@ public class Popup : MonoBehaviour
                     _result = MultipleChoiceOptions.Instance.GetResult(data, option);
 
                     if (_result.HasValue && _result.Value == false)
-                        StartCoroutine(Cooldown(60f));
+                    {
+                        StartCoroutine(Cooldown(10f));
+                        SignalBus.OnChangePopupInfoSignal("Väärä vastaus, yritä uudestaan.");
+                    }
                     else if(_result.HasValue && _result.Value == true)
                     {
                         if (TaskEducationStoryType.WhereGameHappens == DailyTaskProgressManager.Instance.CurrentPlayerTask?.EducationStoryType
