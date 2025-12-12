@@ -74,10 +74,6 @@ namespace Battle.View.Game
         /// @ref BattleGameViewController-SerializeFields
         [SerializeField] private BattleLightrayEffectViewController _lightrayEffectViewController;
 
-        /// <summary>[SerializeField] Reference to BattleSoundFXViewController which plays sound effects.</summary>
-        /// @ref BattleGameViewController-SerializeFields
-        [SerializeField] private BattleSoundFXViewController _soundFXViewController;
-
         /// <summary>[SerializeField] Reference to BattlePlayerInput which polls player input for %Quantum.</summary>
         /// @ref BattleGameViewController-SerializeFields
         [SerializeField] private BattlePlayerInput _playerInput;
@@ -577,7 +573,7 @@ namespace Battle.View.Game
         /// <param name="e">The event data.</param>
         private void QEventPlaySoundFX(EventBattlePlaySoundFX e)
         {
-            _soundFXViewController.PlaySound(e.Effect);
+            BattleSoundFXController.PlaySound(e.Effect);
         }
 
         private void QEventCharacterSelected(EventBattleCharacterSelected e)
