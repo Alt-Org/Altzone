@@ -61,6 +61,14 @@ public class ClanSettings : AltMonoBehaviour
     [SerializeField] private ClanHeartColorSetter _heartColorSetter;
     [SerializeField] private GameObject _editHeartPanel;
 
+    [SerializeField] private Toggle _fillWholeHeartToggle;
+    [SerializeField] private TMP_Text _heartModeLabel;
+    [SerializeField] private string _wholeHeartText = "Tila: väritä koko sydän";
+    [SerializeField] private string _pieceModeText = "Tila: muokkaa palaa kerrallaan";
+    [SerializeField] private Image _toggleIcon;
+    [SerializeField] private Sprite _iconWholeHeart;
+    [SerializeField] private Sprite _iconPieceMode;
+
     [Header("Other settings fields")]
     //[SerializeField] private ClanRightsPanel _clanRightsPanel;
     [SerializeField] private GameObject _swipeBlockOverlay;
@@ -149,10 +157,32 @@ public class ClanSettings : AltMonoBehaviour
             _selectedValues = clan.Values;
 
             // Heart init
-            clan.ClanHeartPieces ??= new();
+            /*clan.ClanHeartPieces ??= new();
             _heartPieces = clan.ClanHeartPieces;
             _heartColorChanger.InitializeClanHeart(_heartPieces);
-            _heartColorSetter.SetHeartColors(_heartPieces);
+            _heartColorSetter.SetHeartColors(_heartPieces);*/
+
+            clan.ClanHeartPieces ??= new();
+            _heartPieces = clan.ClanHeartPieces;
+
+            if(_heartColorChanger != null && _heartPieces != null)
+                _heartColorChanger.InitializeClanHeart(_heartPieces);
+
+            if(_heartColorSetter != null && _heartPieces != null)
+                _heartColorSetter.SetHeartColors(_heartPieces);
+
+            if (_fillWholeHeartToggle != null)
+            {
+                _fillWholeHeartToggle.onValueChanged.RemoveAllListeners();
+                _fillWholeHeartToggle.onValueChanged.AddListener(OnFillWholeHeartToggleChanged);
+
+                _fillWholeHeartToggle.isOn = false;
+                OnFillWholeHeartToggleChanged(_fillWholeHeartToggle.isOn);
+            }
+            else if (_heartColorChanger != null)
+            {
+                _heartColorChanger.SetFillWholeHeart(true);
+            }
 
             _saveButton.onClick.RemoveAllListeners();
             _saveButton.onClick.AddListener(SaveClanSettings);
@@ -312,17 +342,52 @@ public class ClanSettings : AltMonoBehaviour
             _buttonsInClan.SetActive(true);
     }
 
+    private void OnFillWholeHeartToggleChanged(bool isOn)
+    {
+        if (_heartModeLabel != null)
+        {
+            _heartModeLabel.text = isOn ? _pieceModeText : _wholeHeartText;
+        }
+
+        if (_toggleIcon != null)
+        {
+            _toggleIcon.sprite = isOn ? _iconPieceMode : _iconWholeHeart;
+        }
+
+        if (_heartColorChanger != null)
+        {
+            bool fillWholeHeart = !isOn;
+            _heartColorChanger.SetFillWholeHeart(fillWholeHeart);
+        }
+    }
+
     public void SetClanHeartFromColorChanges()
     {
         _heartPieces = _heartColorChanger.GetHeartPieceDatas();
         _heartColorSetter.SetHeartColors(_heartPieces);
     }
 
-    public void ResetHeartColorChanger() => _heartColorChanger.InitializeClanHeart(_heartPieces);
+    public void ResetHeartColorChanger()
+    {
+        if (_heartColorChanger != null && _heartPieces != null)
+        {
+            _heartColorChanger.InitializeClanHeart(_heartPieces);
+        }
+
+        if (_heartColorSetter != null && _heartPieces != null)
+        {
+            _heartColorSetter.SetHeartColors(_heartPieces);
+        }
+    }
 
     public void OpenHeartEditPopup()
     {
         ResetHeartColorChanger();
+
+        if(_fillWholeHeartToggle != null)
+        {
+            OnFillWholeHeartToggleChanged(_fillWholeHeartToggle.isOn);
+        }
 
         ShowPopup(_editHeartPanel);
     }

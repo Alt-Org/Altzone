@@ -22,7 +22,6 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _clanPhrase;
     [SerializeField] private TextMeshProUGUI _clanMembers;
     [SerializeField] private TextMeshProUGUI _clanWinsRanking;
-    //[SerializeField] private TextMeshProUGUI _clanActivityRanking;
     [SerializeField] private TextMeshProUGUI _clanPassword;
     [SerializeField] private TextMeshProUGUI _clanGoal;
     [SerializeField] private TextMeshProUGUI _rule1Text;
