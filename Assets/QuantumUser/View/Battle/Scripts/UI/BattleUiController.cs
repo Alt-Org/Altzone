@@ -31,28 +31,36 @@ namespace Battle.View.UI
         /// Handler scripts control the visual functionality of the %UI prefabs and GameObjects.
         /// @{
 
-        /// <summary>Reference to BattleUiAnnouncementHandler which handles showing the countdown.</summary>Part of @ref UIHandlerReferences.
+        /// <summary>Reference to BattleUiAnnouncementHandler which handles showing the countdown.</summary>
+        /// Part of @ref UIHandlerReferences.
         public BattleUiAnnouncementHandler AnnouncementHandler;
 
-        /// <summary>Reference to BattleUiLoadScreenHandler which handles the loading screen before the game starts.</summary>Part of @ref UIHandlerReferences.
+        /// <summary>Reference to BattleUiLoadScreenHandler which handles the loading screen before the game starts.</summary>
+        /// Part of @ref UIHandlerReferences.
         public BattleUiLoadScreenHandler LoadScreenHandler;
 
-        /// <summary>Reference to BattleUiGameOverHandler which handles showing the game over popup.</summary>Part of @ref UIHandlerReferences.
+        /// <summary>Reference to BattleUiGameOverHandler which handles showing the game over popup.</summary>
+        /// Part of @ref UIHandlerReferences.
         public BattleUiGameOverHandler GameOverHandler;
 
-        /// <summary>Reference to BattleUiTimerHandler which handles the game timer.</summary>Part of @ref UIHandlerReferences.
+        /// <summary>Reference to BattleUiTimerHandler which handles the game timer.</summary>
+        /// Part of @ref UIHandlerReferences.
         public BattleUiTimerHandler TimerHandler;
 
-        /// <summary>Reference to BattleUiDiamondsHandler which handles displaying the diamonds acquired during the game.</summary>Part of @ref UIHandlerReferences.
+        /// <summary>Reference to BattleUiDiamondsHandler which handles displaying the diamonds acquired during the game.</summary>
+        /// Part of @ref UIHandlerReferences.
         public BattleUiDiamondsHandler DiamondsHandler;
 
-        /// <summary>Reference to BattleUiGiveUpButtonHandler which handles the give up button.</summary>Part of @ref UIHandlerReferences.
+        /// <summary>Reference to BattleUiGiveUpButtonHandler which handles the give up button.</summary>
+        /// Part of @ref UIHandlerReferences.
         public BattleUiGiveUpButtonHandler GiveUpButtonHandler;
 
-        /// <summary>Reference to BattleUiPlayerInfoHandler which handles the local player's and teammate's player info.</summary>Part of @ref UIHandlerReferences.
+        /// <summary>Reference to BattleUiPlayerInfoHandler which handles the local player's and teammate's player info.</summary>
+        /// Part of @ref UIHandlerReferences.
         public BattleUiPlayerInfoHandler PlayerInfoHandler;
 
-        /// <summary>Reference to BattleUiJoystickHandler which handles the joysticks.</summary>Part of @ref UIHandlerReferences.
+        /// <summary>Reference to BattleUiJoystickHandler which handles the joysticks.</summary>
+        /// Part of @ref UIHandlerReferences.
         public BattleUiJoystickHandler JoystickHandler;
 
         /// @}
@@ -62,8 +70,13 @@ namespace Battle.View.UI
         /// These handler scripts handle visual functionality for the debug %UI.
         /// @{
 
-        /// <summary>Reference to BattleUiDebugOverlayHandler which displays the debug info.</summary>Part of @ref DebugUIHandlerReferences.
+        /// <summary>Reference to BattleUiDebugOverlayHandler which displays the debug info.</summary>
+        /// Part of @ref DebugUIHandlerReferences.
         public BattleUiDebugOverlayHandler DebugOverlayHandler;
+
+        /// <summary>Reference to BattleUiDebugConsoleHandler which displays the debug console.</summary>
+        /// Part of @ref DebugUIHandlerReferences.
+        public BattleUiDebugConsoleHandler DebugConsoleHandler;
 
         /// @}
     }
