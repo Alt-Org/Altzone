@@ -129,7 +129,7 @@ namespace Battle.View.Player
         /// <summary>Saved time from previous frame.</summary>
         private float _previousTime;
 
-        /// <summary>Bool for if a press input was received in the previous frame.</vasummarylue>
+        /// <summary>Bool for if a press input was received in the previous frame.</summary>
         private bool _mouseDownPrevious;
 
         /// <summary>Bool for if swipe movement has started and not stopped.</summary>
