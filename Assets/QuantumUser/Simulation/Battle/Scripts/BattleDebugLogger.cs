@@ -3,11 +3,20 @@
 /// Contains @cref{Battle.QSimulation,BattleDebugLogger} class which provides custom debug logging methods for use in %Battle.
 /// </summary>
 
+//#define DEBUG_ASSERT_ENABLED_OVERRIDE
+#define DEBUG_ASSERT_DISABLED_OVERRIDE
+
+#if (!DEBUG_ASSERT_DISABLED_OVERRIDE && (UNITY_EDITOR || DEBUG_ASSERT_ENABLED_OVERRIDE))
+#define DEBUG_ASSERT
+#endif
+
 // System usings
+using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 // Unity usings
-using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 // Quantum usings
 using Quantum;
@@ -33,7 +42,7 @@ namespace Battle.QSimulation
     /// **Log methods:**<br/>
     /// The Log method name structure consists of first the **Log type**, optionally followed by **"Format"**.<br/>
     /// `(Log type)(Format?)`
-    /// 
+    ///
     /// **Log method types:**<br/>
     /// |         |                                             |
     /// | :------ | :------------------------------------------ |
@@ -73,6 +82,25 @@ namespace Battle.QSimulation
     /// ```
     public class BattleDebugLogger
     {
+        public enum LogType
+        {
+            Log,
+            Warning,
+            Error
+        }
+
+        [Flags]
+        public enum LogTarget
+        {
+            UnityConsole,
+            OnScreenConsole
+        }
+
+        public static void InitOnScreenConsoleLink(Action<LogType, string, string> addLogToOnScreenConsoleFnRef)
+        {
+            s_addLogToOnScreenConsoleFnRef = addLogToOnScreenConsoleFnRef;
+        }
+
         /// @anchor BattleDebugLogger-CreateMethods
         /// @name Create Methods
         /// Methods for creating a BattleDebugLogger instance.
@@ -85,7 +113,7 @@ namespace Battle.QSimulation
         /// @ref BattleDebugLogger-CreateMethods
         ///
         /// <typeparam name="T">The type used as source when creating the instance.</typeparam>
-        /// 
+        ///
         /// <returns>The created BattleDebugLogger instance.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BattleDebugLogger Create<T>()
@@ -99,7 +127,7 @@ namespace Battle.QSimulation
         /// @ref BattleDebugLogger-CreateMethods
         ///
         /// <param name="source">The type used as source when creating the instance.</param>
-        /// 
+        ///
         /// <returns>The created BattleDebugLogger instance.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BattleDebugLogger Create(System.Type source)
@@ -113,7 +141,7 @@ namespace Battle.QSimulation
         /// @ref BattleDebugLogger-CreateMethods
         ///
         /// <param name="source">The name of the source used when creating the instance.</param>
-        /// 
+        ///
         /// <returns>The created BattleDebugLogger instance.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BattleDebugLogger Create(string source)
@@ -144,9 +172,10 @@ namespace Battle.QSimulation
         /// <param name="source">The name of the source used when formatting the Log message.</param>
         /// <param name="message">The message that is Logged.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Log(string source, string message)
+        public static void Log(string source, string message, LogTarget logTarget = LogTarget.UnityConsole)
         {
-            Debug.LogFormat(StaticFormatNoFrame, source, message);
+            if (logTarget.HasFlag(LogTarget.UnityConsole)) Debug.LogFormat(StaticFormatUnityNoFrame, source, message);
+            if (logTarget.HasFlag(LogTarget.OnScreenConsole)) s_addLogToOnScreenConsoleFnRef(LogType.Log, string.Format(StaticSourceFormatOnScreenNoFrame, source), message);
         }
 
         /// <summary>
@@ -162,9 +191,16 @@ namespace Battle.QSimulation
         /// <param name="source">The name of the source used when formatting the Log message.</param>
         /// <param name="message">The message that is Logged.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Log(Frame f, string source, string message)
+        public static void Log(Frame f, string source, string message, LogTarget logTarget = LogTarget.UnityConsole)
         {
-            Debug.LogFormat(StaticFormat, f.Number, source, message);
+            if (logTarget.HasFlag(LogTarget.UnityConsole)) Debug.LogFormat(StaticFormatUnity, f.Number, source, message);
+            if (logTarget.HasFlag(LogTarget.OnScreenConsole)) s_addLogToOnScreenConsoleFnRef(LogType.Log, string.Format(StaticSourceFormatOnScreen, f.Number, source), message);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void LogFormat(string source, string format, params object[] args)
+        {
+            Log(source, string.Format(format, args));
         }
 
         /// <summary>
@@ -180,11 +216,16 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void LogFormat(string source, string format, params object[] args)
+        public static void LogFormat(string source, string format, LogTarget logTarget, params object[] args)
         {
-            Log(source, string.Format(format, args));
+            Log(source, string.Format(format, args), logTarget);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void LogFormat(Frame f, string source, string format, params object[] args)
+        {
+            Log(f, source, string.Format(format, args));
+        }
         /// <summary>
         /// Logs a formatted message based on the given <paramref name="format"/> and <paramref name="args"/>
         /// using the given %Quantum frame <paramref name="f"/> and <paramref name="source"/> when formatting the Log message.<br/>
@@ -199,9 +240,9 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void LogFormat(Frame f, string source, string format, params object[] args)
+        public static void LogFormat(Frame f, string source, string format, LogTarget logTarget, params object[] args)
         {
-            Log(f, source, string.Format(format, args));
+            Log(f, source, string.Format(format, args), logTarget);
         }
 
         /// <summary>
@@ -216,9 +257,10 @@ namespace Battle.QSimulation
         /// <param name="source">The name of the source used when formatting the Warning Log message.</param>
         /// <param name="message">The message that is Logged.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Warning(string source, string message)
+        public static void Warning(string source, string message, LogTarget logTarget = LogTarget.UnityConsole)
         {
-            Debug.LogWarningFormat(StaticFormatNoFrame, source, message);
+            if (logTarget.HasFlag(LogTarget.UnityConsole)) Debug.LogWarningFormat(StaticFormatUnityNoFrame, source, message);
+            if (logTarget.HasFlag(LogTarget.OnScreenConsole)) s_addLogToOnScreenConsoleFnRef(LogType.Warning, string.Format(StaticSourceFormatOnScreenNoFrame, source), message);
         }
 
         /// <summary>
@@ -234,9 +276,16 @@ namespace Battle.QSimulation
         /// <param name="source">The name of the source used when formatting the Warning Log message.</param>
         /// <param name="message">The message that is Logged.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Warning(Frame f, string source, string message)
+        public static void Warning(Frame f, string source, string message, LogTarget logTarget = LogTarget.UnityConsole)
         {
-            Debug.LogWarningFormat(StaticFormat, f.Number, source, message);
+            if (logTarget.HasFlag(LogTarget.UnityConsole)) Debug.LogWarningFormat(StaticFormatUnity, f.Number, source, message);
+            if (logTarget.HasFlag(LogTarget.OnScreenConsole)) s_addLogToOnScreenConsoleFnRef(LogType.Warning, string.Format(StaticSourceFormatOnScreen, f.Number, source), message);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void WarningFormat(string source, string format, params object[] args)
+        {
+            Warning(source, string.Format(format, args));
         }
 
         /// <summary>
@@ -252,9 +301,15 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WarningFormat(string source, string format, params object[] args)
+        public static void WarningFormat(string source, string format, LogTarget logTarget, params object[] args)
         {
-            Warning(source, string.Format(format, args));
+            Warning(source, string.Format(format, args), logTarget);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void WarningFormat(Frame f, string source, string format, params object[] args)
+        {
+            Warning(f, source, string.Format(format, args));
         }
 
         /// <summary>
@@ -271,9 +326,9 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WarningFormat(Frame f, string source, string format, params object[] args)
+        public static void WarningFormat(Frame f, string source, string format, LogTarget logTarget, params object[] args)
         {
-            Warning(f, source, string.Format(format, args));
+            Warning(f, source, string.Format(format, args), logTarget);
         }
 
         /// <summary>
@@ -288,9 +343,10 @@ namespace Battle.QSimulation
         /// <param name="source">The name of the source used when formatting the Error Log message.</param>
         /// <param name="message">The message that is Logged.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Error(string source, string message)
+        public static void Error(string source, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
         {
-            Debug.LogErrorFormat(StaticFormatNoFrame, source, message);
+            if (logTarget.HasFlag(LogTarget.UnityConsole)) Debug.LogErrorFormat(StaticFormatUnityNoFrame, source, message);
+            if (logTarget.HasFlag(LogTarget.OnScreenConsole)) s_addLogToOnScreenConsoleFnRef(LogType.Error, string.Format(StaticSourceFormatOnScreenNoFrame, source), message);
         }
 
         /// <summary>
@@ -306,9 +362,16 @@ namespace Battle.QSimulation
         /// <param name="source">The name of the source used when formatting the Warning Log message.</param>
         /// <param name="message">The message that is Logged.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Error(Frame f, string source, string message)
+        public static void Error(Frame f, string source, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
         {
-            Debug.LogErrorFormat(StaticFormat, f.Number, source, message);
+            if (logTarget.HasFlag(LogTarget.UnityConsole)) Debug.LogErrorFormat(StaticFormatUnity, f.Number, source, message);
+            if (logTarget.HasFlag(LogTarget.OnScreenConsole)) s_addLogToOnScreenConsoleFnRef(LogType.Error, string.Format(StaticSourceFormatOnScreen, f.Number, source), message);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ErrorFormat(string source, string format, params object[] args)
+        {
+            Error(source, string.Format(format, args));
         }
 
         /// <summary>
@@ -324,9 +387,15 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ErrorFormat(string source, string format, params object[] args)
+        public static void ErrorFormat(string source, string format, LogTarget logTarget, params object[] args)
         {
-            Error(source, string.Format(format, args));
+            Error(source, string.Format(format, args), logTarget);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ErrorFormat(Frame f, string source, string format, params object[] args)
+        {
+            Error(f, source, string.Format(format, args));
         }
 
         /// <summary>
@@ -343,13 +412,137 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ErrorFormat(Frame f, string source, string format, params object[] args)
+        public static void ErrorFormat(Frame f, string source, string format, LogTarget logTarget, params object[] args)
         {
-            Error(f, source, string.Format(format, args));
+            Error(f, source, string.Format(format, args), logTarget);
         }
 
         #endregion Public Static Log Methods
         /// @}
+
+        #region Public Static Assert Methods
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DevAssert(string source, bool condition, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
+        {
+            if (!condition)
+            {
+                Error(source, message, logTarget);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DevAssert(Frame f, string source, bool condition, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
+        {
+            if (!condition)
+            {
+                Error(f, source, message, logTarget);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DevAssert(string source, Func<bool> assertCode, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
+        {
+            if (!assertCode())
+            {
+                Error(source, message, logTarget);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DevAssert(Frame f, string source, Func<bool> assertCode, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
+        {
+            if (!assertCode())
+            {
+                Error(f, source, message, logTarget);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DevAssertFormat(string source, bool condition, string format, params object[] args)
+        {
+            if (!condition)
+            {
+                ErrorFormat(source, format, args);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DevAssertFormat(string source, bool condition, string format, LogTarget logTarget, params object[] args)
+        {
+            if (!condition)
+            {
+                ErrorFormat(source, format, logTarget, args);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DevAssertFormat(Frame f, string source, bool condition, string format, params object[] args)
+        {
+            if (!condition)
+            {
+                ErrorFormat(f, source, format, args);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DevAssertFormat(Frame f, string source, bool condition, string format, LogTarget logTarget, params object[] args)
+        {
+            if (!condition)
+            {
+                ErrorFormat(f, source, format, logTarget, args);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DevAssertFormat(string source, Func<bool> assertCode, string format, params object[] args)
+        {
+            if (!assertCode())
+            {
+                ErrorFormat(source, format, args);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DevAssertFormat(string source, Func<bool> assertCode, string format, LogTarget logTarget, params object[] args)
+        {
+            if (!assertCode())
+            {
+                ErrorFormat(source, format, logTarget, args);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DevAssertFormat(Frame f, string source, Func<bool> assertCode, string format, params object[] args)
+        {
+            if (!assertCode())
+            {
+                ErrorFormat(f, source, format, args);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DevAssertFormat(Frame f, string source, Func<bool> assertCode, string format, LogTarget logTarget, params object[] args)
+        {
+            if (!assertCode())
+            {
+                ErrorFormat(f, source, format, logTarget, args);
+            }
+        }
+
+        #endregion Public Static Assert Methods
 
         /// @anchor BattleDebugLogger-LogMethods
         /// @name Log Methods
@@ -367,12 +560,13 @@ namespace Battle.QSimulation
         /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
-        /// 
+        ///
         /// <param name="message">The message that is Logged.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Log(string message)
+        public void Log(string message, LogTarget logTarget = LogTarget.UnityConsole)
         {
-            Debug.LogFormat(_formatNoFrame, message);
+            if (logTarget.HasFlag(LogTarget.UnityConsole)) Debug.LogFormat(_instanceFormatUnityNoFrame, message);
+            if (logTarget.HasFlag(LogTarget.OnScreenConsole)) s_addLogToOnScreenConsoleFnRef(LogType.Log, string.Format(_instanceSourceFormatOnScreenNoFrame), message);
         }
 
         /// <summary>
@@ -383,13 +577,20 @@ namespace Battle.QSimulation
         /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
-        /// 
+        ///
         /// <param name="f">The %Quantum frame used when formatting the Log message.</param>
         /// <param name="message">The message that is Logged.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Log(Frame f, string message)
+        public void Log(Frame f, string message, LogTarget logTarget = LogTarget.UnityConsole)
         {
-            Debug.LogFormat(_format, f.Number, message);
+            if (logTarget.HasFlag(LogTarget.UnityConsole)) Debug.LogFormat(_instanceFormatUnity, f.Number, message);
+            if (logTarget.HasFlag(LogTarget.OnScreenConsole)) s_addLogToOnScreenConsoleFnRef(LogType.Log, string.Format(_instanceSourceFormatOnScreen, f.Number), message);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void LogFormat(string format, params object[] args)
+        {
+            Log(string.Format(format, args));
         }
 
         /// <summary>
@@ -404,9 +605,15 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void LogFormat(string format, params object[] args)
+        public void LogFormat(string format, LogTarget logTarget, params object[] args)
         {
-            Log(string.Format(format, args));
+            Log(string.Format(format, args), logTarget);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void LogFormat(Frame f, string format, params object[] args)
+        {
+            Log(f, string.Format(format, args));
         }
 
         /// <summary>
@@ -422,9 +629,9 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void LogFormat(Frame f, string format, params object[] args)
+        public void LogFormat(Frame f, string format, LogTarget logTarget, params object[] args)
         {
-            Log(f, string.Format(format, args));
+            Log(f, string.Format(format, args), logTarget);
         }
 
         /// <summary>
@@ -435,12 +642,13 @@ namespace Battle.QSimulation
         /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
-        /// 
+        ///
         /// <param name="message">The message that is Logged.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Warning(string message)
+        public void Warning(string message, LogTarget logTarget = LogTarget.UnityConsole)
         {
-            Debug.LogWarningFormat(_formatNoFrame, message);
+            if (logTarget.HasFlag(LogTarget.UnityConsole)) Debug.LogWarningFormat(_instanceFormatUnityNoFrame, message);
+            if (logTarget.HasFlag(LogTarget.OnScreenConsole)) s_addLogToOnScreenConsoleFnRef(LogType.Warning, string.Format(_instanceSourceFormatOnScreenNoFrame), message);
         }
 
         /// <summary>
@@ -451,13 +659,20 @@ namespace Battle.QSimulation
         /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
-        /// 
+        ///
         /// <param name="f">The %Quantum frame used when formatting the Warning Log message.</param>
         /// <param name="message">The message that is Logged.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Warning(Frame f, string message)
+        public void Warning(Frame f, string message, LogTarget logTarget = LogTarget.UnityConsole)
         {
-            Debug.LogWarningFormat(_format, f.Number, message);
+            if (logTarget.HasFlag(LogTarget.UnityConsole)) Debug.LogWarningFormat(_instanceFormatUnity, f.Number, message);
+            if (logTarget.HasFlag(LogTarget.OnScreenConsole)) s_addLogToOnScreenConsoleFnRef(LogType.Warning, string.Format(_instanceSourceFormatOnScreen, f.Number), message);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WarningFormat(string format, params object[] args)
+        {
+            Warning(string.Format(format, args));
         }
 
         /// <summary>
@@ -472,9 +687,15 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WarningFormat(string format, params object[] args)
+        public void WarningFormat(string format, LogTarget logTarget, params object[] args)
         {
-            Warning(string.Format(format, args));
+            Warning(string.Format(format, args), logTarget);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WarningFormat(Frame f, string format, params object[] args)
+        {
+            Warning(f, string.Format(format, args));
         }
 
         /// <summary>
@@ -490,9 +711,9 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WarningFormat(Frame f, string format, params object[] args)
+        public void WarningFormat(Frame f, string format, LogTarget logTarget, params object[] args)
         {
-            Warning(f, string.Format(format, args));
+            Warning(f, string.Format(format, args), logTarget);
         }
 
         /// <summary>
@@ -503,12 +724,13 @@ namespace Battle.QSimulation
         /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
-        /// 
+        ///
         /// <param name="message">The message that is Logged.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Error(string message)
+        public void Error(string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
         {
-            Debug.LogErrorFormat(_formatNoFrame, message);
+            if (logTarget.HasFlag(LogTarget.UnityConsole)) Debug.LogErrorFormat(_instanceFormatUnityNoFrame, message);
+            if (logTarget.HasFlag(LogTarget.OnScreenConsole)) s_addLogToOnScreenConsoleFnRef(LogType.Error, string.Format(_instanceSourceFormatOnScreenNoFrame), message);
         }
 
         /// <summary>
@@ -519,13 +741,20 @@ namespace Battle.QSimulation
         /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
-        /// 
+        ///
         /// <param name="f">The %Quantum frame used when formatting the Error Log message.</param>
         /// <param name="message">The message that is Logged.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Error(Frame f, string message)
+        public void Error(Frame f, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
         {
-            Debug.LogErrorFormat(_format, f.Number, message);
+            if (logTarget.HasFlag(LogTarget.UnityConsole)) Debug.LogErrorFormat(_instanceFormatUnity, f.Number, message);
+            if (logTarget.HasFlag(LogTarget.OnScreenConsole)) s_addLogToOnScreenConsoleFnRef(LogType.Error, string.Format(_instanceSourceFormatOnScreen, f.Number), message);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void ErrorFormat(string format, params object[] args)
+        {
+            Error(string.Format(format, args));
         }
 
         /// <summary>
@@ -540,9 +769,15 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void ErrorFormat(string format, params object[] args)
+        public void ErrorFormat(string format, LogTarget logTarget, params object[] args)
         {
-            Error(string.Format(format, args));
+            Error(string.Format(format, args), logTarget);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void ErrorFormat(Frame f, string format, params object[] args)
+        {
+            Error(f, string.Format(format, args));
         }
 
         /// <summary>
@@ -558,27 +793,168 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void ErrorFormat(Frame f, string format, params object[] args)
+        public void ErrorFormat(Frame f, string format, LogTarget logTarget, params object[] args)
         {
-            Error(f, string.Format(format, args));
+            Error(f, string.Format(format, args), logTarget);
         }
 
         #endregion Public Log Methods
         /// @}
 
+        #region Public Assert Methods
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void DevAssert(bool condition, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
+        {
+            if (!condition)
+            {
+                Error(message, logTarget);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void DevAssert(Frame f, bool condition, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
+        {
+            if (!condition)
+            {
+                Error(f, message, logTarget);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void DevAssert(Func<bool> assertCode, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
+        {
+            if (!assertCode())
+            {
+                Error(message, logTarget);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void DevAssert(Frame f, Func<bool> assertCode, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
+        {
+            if (!assertCode())
+            {
+                Error(f, message, logTarget);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void DevAssertFormat(bool condition, string format, params object[] args)
+        {
+            if (!condition)
+            {
+                ErrorFormat(format, args);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void DevAssertFormat(bool condition, string format, LogTarget logTarget, params object[] args)
+        {
+            if (!condition)
+            {
+                ErrorFormat(format, logTarget, args);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void DevAssertFormat(Frame f, bool condition, string format, params object[] args)
+        {
+            if (!condition)
+            {
+                ErrorFormat(f, format, args);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void DevAssertFormat(Frame f, bool condition, string format, LogTarget logTarget, params object[] args)
+        {
+            if (!condition)
+            {
+                ErrorFormat(f, format, logTarget, args);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void DevAssertFormat(Func<bool> assertCode, string format, params object[] args)
+        {
+            if (!assertCode())
+            {
+                ErrorFormat(format, args);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void DevAssertFormat(Func<bool> assertCode, string format, LogTarget logTarget, params object[] args)
+        {
+            if (!assertCode())
+            {
+                ErrorFormat(format, logTarget, args);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void DevAssertFormat(Frame f, Func<bool> assertCode, string format, params object[] args)
+        {
+            if (!assertCode())
+            {
+                ErrorFormat(f, format, args);
+            }
+        }
+
+        [Conditional("DEBUG_ASSERT")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void DevAssertFormat(Frame f, Func<bool> assertCode, string format, LogTarget logTarget, params object[] args)
+        {
+            if (!assertCode())
+            {
+                ErrorFormat(f, format, logTarget, args);
+            }
+        }
+
+        #endregion Public Assert Methods
+
         /// <summary>Constant format for log messages when called through static methods.</summary>
-        private const string StaticFormat                  = "[Battle] [{0:D6}] [{1}] {2}";
+        private const string StaticFormatUnity                          = "[Battle] [{0:D6}] [{1}] {2}";
         /// <summary>Constant format for log messages when called through static methods with no %Quantum frame given.</summary>
-        private const string StaticFormatNoFrame           = "[Battle] [{0}] {1}";
+        private const string StaticFormatUnityNoFrame                   = "[Battle] [{0}] {1}";
         /// <summary>Constant format template for Log messages used to create the message format when creating a BattleDebugLogger instance.</summary>
-        private const string InstanceFormatTemplate        = "[Battle] [{{0:D6}}] [{0}] {{1}}";
+        private const string InstanceFormatUnityTemplate                = "[Battle] [{{0:D6}}] [{0}] {{1}}";
         /// <summary>Constant format template for Log messages used to create the no %Quantum frame message format when creating a BattleDebugLogger instance.</summary>
-        private const string InstanceFormatNoFrameTemplate = "[Battle] [{0}] {{0}}";
+        private const string InstanceFormatUnityNoFrameTemplate         = "[Battle] [{0}] {{0}}";
+
+
+        /// <summary>Constant format for log messages when called through static methods.</summary>
+        private const string StaticSourceFormatOnScreen                  = "[{0:D6}] [{1}]";
+        /// <summary>Constant format for log messages when called through static methods with no %Quantum frame given.</summary>
+        private const string StaticSourceFormatOnScreenNoFrame           = "[{0}]";
+        /// <summary>Constant format template for Log messages used to create the message format when creating a BattleDebugLogger instance.</summary>
+        private const string InstanceSourceFormatOnScreenTemplate        = "[{{0:D6}}] [{0}]";
+        /// <summary>Constant format template for Log messages used to create the no %Quantum frame message format when creating a BattleDebugLogger instance.</summary>
+        private const string InstanceSourceFormatOnScreenNoFrameTemplate = "[{0}]";
 
         /// <summary>Saved Log message format, set when creating a BattleDebugLogger instance.</summary>
-        private readonly string _format;
+        private readonly string _instanceFormatUnity;
         /// <summary>Saved no %Quantum frame Log message format, set when creating a BattleDebugLogger instance.</summary>
-        private readonly string _formatNoFrame;
+        private readonly string _instanceFormatUnityNoFrame;
+
+        /// <summary>Saved Log message format, set when creating a BattleDebugLogger instance.</summary>
+        private readonly string _instanceSourceFormatOnScreen;
+        /// <summary>Saved no %Quantum frame Log message format, set when creating a BattleDebugLogger instance.</summary>
+        private readonly string _instanceSourceFormatOnScreenNoFrame;
+
+        private static Action<LogType, string, string> s_addLogToOnScreenConsoleFnRef;
 
         /// <summary>
         /// Private constructor method called when any of the <b>Create methods</b> are called.<br/>
@@ -586,13 +962,15 @@ namespace Battle.QSimulation
         /// </summary>
         ///
         /// See @ref BattleDebugLogger-CreateMethods "Create methods"
-        /// 
+        ///
         /// <param name="source">The name of the source used when creating the Log message formats.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private BattleDebugLogger(string source)
         {
-            _format        = string.Format(InstanceFormatTemplate, source);
-            _formatNoFrame = string.Format(InstanceFormatNoFrameTemplate, source);
+            _instanceFormatUnity        = string.Format(InstanceFormatUnityTemplate, source);
+            _instanceFormatUnityNoFrame = string.Format(InstanceFormatUnityNoFrameTemplate, source);
+            _instanceSourceFormatOnScreen = string.Format(InstanceSourceFormatOnScreenTemplate, source);
+            _instanceSourceFormatOnScreenNoFrame = string.Format(InstanceSourceFormatOnScreenNoFrameTemplate, source);
         }
     }
 }
