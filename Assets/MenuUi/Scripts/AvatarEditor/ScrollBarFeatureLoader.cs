@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.AvatarPartsInfo;
+using MenuUi.scripts.AvatarEditor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,7 +23,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private Dictionary<string, int> _featureCategoryIdToFeatureSlotInt;
         private bool _isSelectedFeature = false;
         private PlayerAvatar _playeravatar;
-        private Image _selectedCellImage;
+        private GridCellHandler _selectedCellHandler;
         
 
         // Start is called before the first frame update
@@ -45,16 +46,16 @@ namespace MenuUi.Scripts.AvatarEditor
         private void AddFeatureCell(Sprite cellImage, AvatarPartInfo avatarPart)
         {
             GameObject gridCell = Instantiate(_gridCellPrefab, _featureGridContent);
-            Image avatarPartImage = gridCell.transform.Find("FeatureImage").GetComponent<Image>();
-            Image gridCellBackgroundImage = gridCell.transform.Find("BackgroundImage").GetComponent<Image>();
-            Button button = gridCell.GetComponent<Button>();
+            GridCellHandler handler = gridCell.GetComponent<GridCellHandler>();
+
             _playeravatar = _avatarEditorController.PlayerAvatar;
             string featureCategoryid = GetFeatureCategoryFromFeatureId(avatarPart.Id);
             int featurePickerPartSlot = _featureCategoryIdToFeatureSlotInt[featureCategoryid];
-            // Need to find a way to make sprites look same size in grid
-            avatarPartImage.sprite = cellImage;
 
-            AddListeners(button, avatarPart, featurePickerPartSlot, gridCellBackgroundImage);
+            // Need to find a way to make sprites look same size in grid
+            handler.SetValues(cellImage: cellImage);
+
+            AddListeners(handler, avatarPart, featurePickerPartSlot);
 
             if (avatarPart.Id == _playeravatar.GetPartId((FeatureSlot)featurePickerPartSlot))
             {
@@ -63,30 +64,33 @@ namespace MenuUi.Scripts.AvatarEditor
 
             if (_isSelectedFeature)
             {
-                gridCellBackgroundImage.color = _highlightColor;
+                handler.SetValues(backgroundColor: _highlightColor);
+                _selectedCellHandler = handler;
                 _isSelectedFeature = false;
-                _selectedCellImage = gridCellBackgroundImage;
             }
             else
-                gridCellBackgroundImage.color = _backgroundColor;
-        }
-
-        private void UpdateHighlightedCell(Image NewSelectedCellImage)
-        {
-            if (_selectedCellImage != null)
             {
-                _selectedCellImage.color = _backgroundColor;
-                _selectedCellImage = NewSelectedCellImage;
-                _selectedCellImage.color = _highlightColor;
+                handler.SetValues(backgroundColor: _backgroundColor);
             }
         }
 
-        private void AddListeners(Button button, AvatarPartInfo avatarPart, int featurePickerPartSlot, Image gridCellBackgroundImage)
+        private void UpdateHighlightedCell(GridCellHandler handler)
         {
-            button.onClick.AddListener(() =>
+            if (_selectedCellHandler != null)
+            {
+                _selectedCellHandler.SetValues(backgroundColor: _backgroundColor);
+            }
+            
+            _selectedCellHandler = handler;
+            handler.SetValues(backgroundColor: _highlightColor);
+        }
+
+        private void AddListeners(GridCellHandler handler, AvatarPartInfo avatarPart, int featurePickerPartSlot)
+        {
+            handler.SetValues(onClick: () =>
             {
                 _featurePicker.SetFeature(avatarPart, featurePickerPartSlot);
-                UpdateHighlightedCell(gridCellBackgroundImage);
+                UpdateHighlightedCell(handler);
             });
         }
 

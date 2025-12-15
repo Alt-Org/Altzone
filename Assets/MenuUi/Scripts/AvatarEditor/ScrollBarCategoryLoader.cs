@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.Composites;
 using System;
+using MenuUi.scripts.AvatarEditor;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
@@ -92,14 +93,9 @@ namespace MenuUi.Scripts.AvatarEditor
         private void AddCategoryCell(string FeatureCategoryId, Sprite CellImage, Action<string> buttonFunction)
         {
             GameObject gridCell = Instantiate(_avatarPartCategoryGridCellPrefab, _categoryGridContent);
-            Image avatarPartImage = gridCell.transform.Find("FeatureImage").GetComponent<Image>();
-            Image gridCellBackgroundImage = gridCell.transform.Find("BackgroundImage").GetComponent<Image>();
-            Button button = gridCell.GetComponent<Button>();
+            GridCellHandler handler = gridCell.GetComponent<GridCellHandler>();
 
-            gridCellBackgroundImage.color = _backgroundColor;
-            avatarPartImage.sprite = CellImage;
-            button.interactable = false;
-            button.onClick.AddListener(() => buttonFunction.Invoke(FeatureCategoryId)); 
+            handler.SetValues(CellImage, _backgroundColor, () => buttonFunction.Invoke(FeatureCategoryId), false);
         }
 
         private void DestroyCategoryCells()
