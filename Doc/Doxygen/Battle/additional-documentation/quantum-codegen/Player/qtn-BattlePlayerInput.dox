@@ -3,16 +3,31 @@
 /// Contains enum for player's input.
 /// </summary>
 ///
+/// ## Generated Structs
+/// - @cref{Quantum,Input}  
+///   @copybrief Quantum.Input
+///
 /// ## Generated Enums
 /// - @cref{Quantum,BattleMovementInputType}  
 ///   @copybrief Quantum.BattleMovementInputType
 
 // ---------------------------------------------------------------------------------------------------- //
 
+/// @struct Quantum::Input
+/// <summary>
+/// A %Quantum input struct that defines the player input data that is used in the game.
+/// </summary>
+///
+/// See [{PlayerInput}](#page-concepts-player-input) for more information.
+///
+/// @bigtext{Generated from @ref BattlePlayerInput.qtn}
+
 /// @enum Quantum::BattleMovementInputType
 /// <summary>
 /// Player input enum used by the input and movement logic.
 /// </summary>
+///
+/// See @cref{Quantum,Input} for more information.
 ///
 /// @bigtext{Generated from @ref BattlePlayerInput.qtn}
 

@@ -25,7 +25,7 @@ public class ClanValuesUIManager : MonoBehaviour
 
     [Header("Selection Colors (Hex)")]
     [SerializeField] private string selectedColorHex = "#00FF00";   // Vihreä
-    [SerializeField] private string unselectedColorHex = "#FFFFFF"; // Valkoinen
+    [SerializeField] private string unselectedColorHex = "#CBCBCB"; // Valkoinen
 
     private Dictionary<ClanValues, Sprite> iconDictionary;
     private List<IconButtonHandler> createdButtons = new List<IconButtonHandler>();
@@ -74,7 +74,16 @@ public class ClanValuesUIManager : MonoBehaviour
 
             iconDictionary.TryGetValue(value, out Sprite sprite);
 
-            handler.Initialize(sprite, value, selectedColorHex, unselectedColorHex, (ActionValue, callback) => OnValueSelected(ActionValue, callback));
+            // Use enum name as label. Replace with labelReference lookup if you have a method for text labels.
+            string label = value.ToString();
+
+            handler.Initialize(
+                sprite,
+                value,
+                label,
+                selectedColorHex,
+                unselectedColorHex,
+                (ActionValue, callback) => OnValueSelected(ActionValue, callback));
 
             createdButtons.Add(handler);
         }

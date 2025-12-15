@@ -1,10 +1,7 @@
 /// @file BattlePlayerViewController.cs
 /// <summary>
-/// Contains @cref{Battle.View.Player,BattlePlayerViewController} class which handles player sprites and animations.
+/// Contains @cref{Battle.View.Player,BattlePlayerViewController} class which handles player view logic.
 /// </summary>
-///
-/// This script:<br/>
-/// Handles player sprites and animations.
 
 // System usings
 using System.Collections;
@@ -27,8 +24,11 @@ namespace Battle.View.Player
 {
     /// <summary>
     /// <span class="brief-h">%Player's <a href="https://doc-api.photonengine.com/en/quantum/current/class_quantum_1_1_quantum_entity_view_component.html">QuantumEntityViewComponent@u-exlink</a>.</span><br/>
-    /// Handles player sprites and animations.
+    /// Handles player view logic.
     /// </summary>
+    ///
+    /// [{Player Overview}](#page-concepts-player-overview)<br/>
+    /// [{Player View Code Overview}](#page-concepts-player-view-overview)
     public unsafe class BattlePlayerViewController : QuantumEntityViewComponent
     {
         /// @anchor BattlePlayerViewController-SerializeFields
@@ -146,7 +146,7 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Public method that is called when the view should update.<br/>
-        /// Calls #UpdateModelPositionAdjustment to update the player model's position
+        /// Calls <see cref="BattlePlayerViewController.UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to update the player model's position
         /// </summary>
         public override void OnUpdateView()
         {
@@ -252,7 +252,7 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Handler method for EventBattleCharacterTakeDamage QuantumEvent.<br/>
-        /// Starts #DamageFlashCoroutine.
+        /// Starts <see cref="BattlePlayerViewController.DamageFlashCoroutine">DamageFlashCoroutine</see>.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>

@@ -1,7 +1,8 @@
 /// @file BattlePlayerClassManager.cs
 /// <summary>
 /// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassManager} class which handles player class logic.
-/// Also contains @cref{Battle.QSimulation.Player,BattlePlayerClassBase} and @cref{Battle.QSimulation.Player,BattlePlayerClassBase<T>} classes which player class implementations derive from.
+/// Also contains @cref{Battle.QSimulation.Player,BattlePlayerClassBase} and @cref{Battle.QSimulation.Player,BattlePlayerClassBase<T>} classes
+/// which player class implementations derive from.
 /// </summary>
 
 // System usings
@@ -20,6 +21,9 @@ namespace Battle.QSimulation.Player
     /// Contains a method for retrieving the class data component attached to the player character entity.<br/>
     /// Class scripts should extend this class if they make use of a class data component.
     /// </summary>
+    ///
+    /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.}<br/>
+    /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
     public abstract unsafe class BattlePlayerClassBase<T> : BattlePlayerClassBase where T : unmanaged, IComponent
     {
         /// <summary>
@@ -44,6 +48,9 @@ namespace Battle.QSimulation.Player
     /// Contains a reference to the associated BattlePlayerCharacterClass enum and virtual methods for the different events the class can respond to.<br/>
     /// Class scripts should extend this class if they do not make use of a class data component.
     /// </summary>
+    ///
+    /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.}<br/>
+    /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
     public abstract unsafe class BattlePlayerClassBase
     {
         /// <summary>
@@ -53,7 +60,8 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnCreate method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnCreate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnCreate</see> method.
+        /// Called by the public BattlePlayerClassManager
+        /// <see cref="BattlePlayerClassManager.OnCreate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnCreate</see> method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -64,7 +72,8 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnSpawn method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnSpawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnSpawn</see> method.
+        /// Called by the public BattlePlayerClassManager
+        /// <see cref="BattlePlayerClassManager.OnSpawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnSpawn</see> method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -75,7 +84,8 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnDespawn method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnDespawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnDespawn</see> method.
+        /// Called by the public BattlePlayerClassManager
+        /// <see cref="BattlePlayerClassManager.OnDespawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnDespawn</see> method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -85,8 +95,11 @@ namespace Battle.QSimulation.Player
         public virtual unsafe void OnDespawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
 
         /// <summary>
-        /// Virtual OnProjectileHitPlayerHitbox method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnProjectileHitPlayerHitbox(Frame, BattleProjectileQComponent*, EntityRef, BattlePlayerHitboxQComponent*, EntityRef)">OnProjectileHitPlayerHitbox</see> method.
+        /// Virtual OnProjectileHitPlayerCharacter method that can be implemented.<br/>
+        /// Called by the public BattlePlayerClassManager
+        /// <see cref="BattlePlayerClassManager.OnProjectileHitPlayerCharacter(Frame, BattleCollisionQSystem.ProjectileCollisionData*, BattleCollisionQSystem.PlayerCharacterCollisionData*)">
+        /// OnProjectileHitPlayerHitbox
+        /// </see> method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -96,7 +109,10 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnProjectileHitPlayerShield method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnProjectileHitPlayerShield(Frame, BattleProjectileQComponent*, EntityRef, BattlePlayerHitboxQComponent*, EntityRef)">OnProjectileHitPlayerShield</see> method.
+        /// Called by the public BattlePlayerClassManager
+        /// <see cref="BattlePlayerClassManager.OnProjectileHitPlayerShield(Frame, BattleCollisionQSystem.ProjectileCollisionData*, BattleCollisionQSystem.PlayerShieldCollisionData*)">
+        /// OnProjectileHitPlayerShield
+        /// </see> method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -106,7 +122,8 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Virtual OnUpdate method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager <see cref="BattlePlayerClassManager.OnUpdate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnUpdate</see> method.
+        /// Called by the public BattlePlayerClassManager
+        /// <see cref="BattlePlayerClassManager.OnUpdate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnUpdate</see> method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -304,12 +321,23 @@ namespace Battle.QSimulation.Player
         /// <value>Constant for the amount of classes that exist.</value>
         private const int ClassCount = 6;
 
-        /// <summary>Enum for the different values GetClass can return.</summary>
+        /// <summary>
+        /// Enum that defines the <see cref="BattlePlayerClassManager.GetClass">GetClass</see> method's return codes.<br/>
+        /// Used to communicate the result of method call.
+        /// </summary>
         private enum ReturnCode
         {
+            /// <summary>A class was retrieved.</summary>
             ClassRetrieved = 0,
-            NoClass        = 1,
-            Error          = 2
+
+            /// <summary>
+            /// No class was retrieved.<br/>
+            /// Used when a character class has no code associated with it.
+            /// </summary>
+            NoClass = 1,
+
+            /// <summary>Class could not be retrieved.</summary>
+            Error = 2
         }
 
         /// <value>An array containing all of the class scripts that have been implemented and can be used.</value>
@@ -325,7 +353,10 @@ namespace Battle.QSimulation.Player
         /// Returns the class script of the specified class from the class array, if it is implemented.
         /// </summary>
         ///
-        /// <param name="characterClass">The class that's script is to be retrieved.</param>
+        /// <param name="characterClass">The player character class that's C# class is to be retrieved.</param>
+        /// <param name="playerClass">The player character C# class that is retrieved. (<b>out param</b>)</param>
+        ///
+        /// <returns>Result of the method call as a <see cref="BattlePlayerClassManager.ReturnCode">ReturnCode</see>.</returns>
         private static ReturnCode GetClass(BattlePlayerCharacterClass characterClass, out BattlePlayerClassBase playerClass)
         {
             playerClass = null;

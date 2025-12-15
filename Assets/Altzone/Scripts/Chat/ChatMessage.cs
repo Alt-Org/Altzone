@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using static ServerChatMessage;
@@ -61,7 +62,7 @@ namespace Altzone.Scripts.Chat
             _channel = ChatListener.Instance.GetChatChannel(message.type);
             if(message.feeling != null)_mood = (Mood)Enum.Parse(typeof(Mood), message.feeling);
             _reactions = message.reactions;
-            _timestamp = DateTime.Parse(message.createdAt);
+            _timestamp = DateTime.ParseExact(message.createdAt, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
         }
 
         public bool Equals(ChatMessage other)

@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: DailyTaskConfig
   m_EditorClassIdentifier: 
   _normalDailyTasks:
-  - title: "L\xE4het\xE4 viesti"
+  - active: 0
+    title: "L\xE4het\xE4 viesti"
     englishTitle: 
     description: 
     englishDescription: 
@@ -22,16 +23,18 @@ MonoBehaviour:
     points: 10
     type: write_chat_message
   _educationDailyTasks:
-  - title: Vaihda taustamusiikki
+  - active: 1
+    title: Vaihda taustamusiikki
     englishTitle: Switching Music
-    description: "Vaihda k\xE4ytt\xF6liittym\xE4n taustamusiikki."
+    description: "Vaihda k\xE4ytt\xF6liittym\xE4n taustamusiikki asetuksista."
     englishDescription: Change the background music
     amount: 1
     coins: 10
     points: 100
     educationCategoryType: action
     educationCategoryTaskType: change_song_soulhome
-  - title: Muokkaa hahmosi statseja
+  - active: 0
+    title: Muokkaa hahmosi statseja
     englishTitle: Edit Character Stats
     description: 
     englishDescription: 
@@ -40,18 +43,20 @@ MonoBehaviour:
     points: 100
     educationCategoryType: action
     educationCategoryTaskType: change_character_stats
-  - title: "Tee n\xE4pp\xE4imill\xE4 musiikkia"
+  - active: 1
+    title: "Tee n\xE4pp\xE4imill\xE4 musiikkia"
     englishTitle: Make music with buttons
     description: "Alapainikkeiden painaminen j\xE4rjestyksess\xE4 synnytt\xE4\xE4
-      melodiaa - osaatko soittaa jotain tuttua? Soita Ukko Nooa melodia"
+      melodiaa - osaatko soittaa jotain tuttua? Soita Ukko Nooa melodia (1,1,1,3,2,2,2,4,3,3,2,2,1))"
     englishDescription: Pressing the bottom buttons in order creates a melody - are
-      you able to play something familiar? Play twinkle twinkle little star
+      you able to play something familiar? Play Gubben Noak(1,1,1,3,2,2,2,4,3,3,2,2,1)
     amount: 1
     coins: 10
     points: 100
     educationCategoryType: action
     educationCategoryTaskType: make_music_with_buttons
-  - title: Muokkaa pelihahmosta nopea
+  - active: 0
+    title: Muokkaa pelihahmosta nopea
     englishTitle: Make your character fast
     description: 
     englishDescription: 
@@ -60,7 +65,8 @@ MonoBehaviour:
     points: 100
     educationCategoryType: action
     educationCategoryTaskType: change_character_be_fast
-  - title: "Muokkaa pelihahmosta kest\xE4v\xE4"
+  - active: 0
+    title: "Muokkaa pelihahmosta kest\xE4v\xE4"
     englishTitle: Make your character strong
     description: 
     englishDescription: 
@@ -69,16 +75,19 @@ MonoBehaviour:
     points: 100
     educationCategoryType: action
     educationCategoryTaskType: change_character_be_resistant
-  - title: Muokkaa pelihahmosta voimakas
+  - active: 1
+    title: Muokkaa pelihahmosta voimakas
     englishTitle: Make your character strong
-    description: 
-    englishDescription: 
+    description: Tee jostakin hahmostasi mahdollissimman voimakas (taso 6).
+    englishDescription: 'Make one of your character as powerful as possible (level
+      6). '
     amount: 1
     coins: 10
     points: 100
     educationCategoryType: action
     educationCategoryTaskType: change_character_be_strong
-  - title: Muokkaa pelihahmosta isokokoinen
+  - active: 0
+    title: Muokkaa pelihahmosta isokokoinen
     englishTitle: Make your character big
     description: 
     englishDescription: 
@@ -87,7 +96,8 @@ MonoBehaviour:
     points: 100
     educationCategoryType: action
     educationCategoryTaskType: change_character_be_large
-  - title: "L\xE4het\xE4 viesti klaanissa"
+  - active: 1
+    title: "L\xE4het\xE4 viesti klaanissa"
     englishTitle: Send a clan message
     description: "L\xE4het\xE4 viesti klaanisi j\xE4senille klaanin omassa chatissa."
     englishDescription: Send a message to the other clan members in your clan chat
@@ -96,7 +106,8 @@ MonoBehaviour:
     points: 10
     educationCategoryType: social
     educationCategoryTaskType: write_chat_message_clan
-  - title: "Muokkaa avatarisi ulkon\xE4k\xF6\xE4"
+  - active: 0
+    title: "Muokkaa avatarisi ulkon\xE4k\xF6\xE4"
     englishTitle: Change your avatars appearance
     description: 
     englishDescription: 
@@ -105,25 +116,31 @@ MonoBehaviour:
     points: 10
     educationCategoryType: social
     educationCategoryTaskType: change_avatar_outlook
-  - title: "Luo uusi \xE4\xE4nestys"
+  - active: 1
+    title: "Luo uusi \xE4\xE4nestys"
     englishTitle: Start a poll
-    description: "Aloita uusi \xE4\xE4nestys josta klaanisi voi \xE4\xE4nest\xE4\xE4"
+    description: "Aloita uusi \xE4\xE4nestys josta klaanisi voi \xE4\xE4nest\xE4\xE4
+      (Aloita osto\xE4\xE4nestys kaupasta tai myynti\xE4\xE4nestys varastosta)."
     englishDescription: Start a new poll for your clan to vote on
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: social
     educationCategoryTaskType: create_clan_voting
-  - title: Paina pelihahmon kuvausta
+  - active: 1
+    title: Paina pelihahmon kuvausta
     englishTitle: View a characters description
-    description: 
-    englishDescription: 
+    description: "Hahmogalleriassa jokaisen hahmon tiedoist pit\xE4isi l\xF6yty\xE4
+      hahmon tarina ja kuvaus, paina sit\xE4."
+    englishDescription: CharacterGallery conatins information and story about all
+      of the characters. Go there, find a description and press it.
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: story
     educationCategoryTaskType: press_character_description
-  - title: "M\xE4\xE4rittele pelaajatyylisi pelaajaprofiiliin"
+  - active: 0
+    title: "M\xE4\xE4rittele pelaajatyylisi pelaajaprofiiliin"
     englishTitle: Choose your gaming style in your profile
     description: "M\xE4\xE4rittele pelaajaprofiilissasi oletko aktiivipelaaja, harrastaja,
       kilpapelaaja, vai mik\xE4?"
@@ -133,16 +150,18 @@ MonoBehaviour:
     points: 10
     educationCategoryType: social
     educationCategoryTaskType: define_player_style
-  - title: Paina asiaa, jonka voi ostaa
-    englishTitle: 
-    description: 
-    englishDescription: 
+  - active: 1
+    title: Paina asiaa, jonka voi ostaa
+    englishTitle: Press something you can buy
+    description: "Etsi jotain mit\xE4 pysyty ostamaan pelin valuttalla."
+    englishDescription: Look for something that you can buy with games currency.
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: ethical
     educationCategoryTaskType: press_money_stuff
-  - title: Vaihda avatarisi vaatteita
+  - active: 0
+    title: Vaihda avatarisi vaatteita
     englishTitle: Change your avatars clothes
     description: 
     englishDescription: 
@@ -151,7 +170,8 @@ MonoBehaviour:
     points: 10
     educationCategoryType: action
     educationCategoryTaskType: change_avatar_clothes
-  - title: Reagoi emojilla viestiin
+  - active: 0
+    title: Reagoi emojilla viestiin
     englishTitle: React to a message with an emoji
     description: 
     englishDescription: 
@@ -160,7 +180,8 @@ MonoBehaviour:
     points: 10
     educationCategoryType: social
     educationCategoryTaskType: react_emoji_chat
-  - title: "L\xF6yd\xE4 kaikki chat-vaihtoehdot"
+  - active: 0
+    title: "L\xF6yd\xE4 kaikki chat-vaihtoehdot"
     englishTitle: Find all chat options
     description: 
     englishDescription: 
@@ -169,16 +190,20 @@ MonoBehaviour:
     points: 10
     educationCategoryType: social
     educationCategoryTaskType: find_all_chat_options
-  - title: "K\xE4yt\xE4 kaikkia eri tunne-emojeita"
+  - active: 1
+    title: "K\xE4yt\xE4 kaikkia eri tunne-emojeita"
     englishTitle: Use all different feeling emojis
-    description: 
-    englishDescription: 
+    description: "Chatiss\xE4 viestit voivat olla viitt\xE4 eri tunne tyyppi\xE4.
+      Kokeile k\xE4ytt\xE4\xE4 n\xE4it\xE4 kaikkia"
+    englishDescription: Chatmessages contain five different types of emotions, try
+      all ofm them.
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: social
     educationCategoryTaskType: use_all_chat_feelings
-  - title: Vaihda sielunkodin esineen asentoa
+  - active: 0
+    title: Vaihda sielunkodin esineen asentoa
     englishTitle: Change the placement of an item in soul home
     description: 
     englishDescription: 
@@ -187,7 +212,8 @@ MonoBehaviour:
     points: 10
     educationCategoryType: action
     educationCategoryTaskType: change_items_position
-  - title: "K\xE4yt\xE4 kaikki sielunkotisi esineet"
+  - active: 0
+    title: "K\xE4yt\xE4 kaikki sielunkotisi esineet"
     englishTitle: Use all items in your soul home
     description: 
     englishDescription: 
@@ -196,7 +222,8 @@ MonoBehaviour:
     points: 10
     educationCategoryType: action
     educationCategoryTaskType: use_all_items_soulhome
-  - title: "L\xE4het\xE4 viesti global chatissa"
+  - active: 0
+    title: "L\xE4het\xE4 viesti global chatissa"
     englishTitle: Send a message in globat chat
     description: "L\xE4het\xE4 viesti kaikille pelaajille pelin globaalissa chatissa."
     englishDescription: Send a message to all players in the games global chat
@@ -205,7 +232,8 @@ MonoBehaviour:
     points: 10
     educationCategoryType: social
     educationCategoryTaskType: write_chat_message_global
-  - title: "Tee yhten\xE4inen sisustus"
+  - active: 1
+    title: "Tee yhten\xE4inen sisustus"
     englishTitle: Create unified interior
     description: "Sisusta sielunkotiin huone, jossa on k\xE4ytetty vain yhden malliston
       huonekaluja"
@@ -215,7 +243,8 @@ MonoBehaviour:
     points: 10
     educationCategoryType: story
     educationCategoryTaskType: create_unified_interior
-  - title: Tunnista pelihahmon tarinallinen mekaniikka
+  - active: 0
+    title: Tunnista pelihahmon tarinallinen mekaniikka
     englishTitle: Recognize a characters mechanic
     description: 
     englishDescription: 
@@ -224,25 +253,33 @@ MonoBehaviour:
     points: 10
     educationCategoryType: story
     educationCategoryTaskType: recognize_character_mechanic
-  - title: "Etsi ja klikkaa kest\xE4v\xE4\xE4n kuluttamiseen liittyvi\xE4 asioita"
-    englishTitle: 
-    description: 
-    englishDescription: 
+  - active: 1
+    title: "Kest\xE4v\xE4 kuluttaminen"
+    englishTitle: Sustainable consumption
+    description: "Etsi ja klikkaa kest\xE4v\xE4\xE4n kuluttamiseen liittyvi\xE4 asioita
+      (Vihje: Pelaajan ja klaanin profiilit)"
+    englishDescription: 'Search and click something related to sustainable consumption.
+      (Hint: Player and clan profiles.)'
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: ethical
     educationCategoryTaskType: press_sustainable_consumption_objects
-  - title: Klikkaa tunnettuihin teoksiin, ideoihin tai ihmisiin viittaavia asioita
+  - active: 1
+    title: Klikkaa tunnettuihin teoksiin, ideoihin tai ihmisiin viittaavia asioita
     englishTitle: Click on known art, ideas and things related to people
-    description: 
-    englishDescription: 
+    description: "Etsi tunnettuihin teoksiin, ideoihin tai ihmisiin viittaavia elementtej\xE4
+      ja pid\xE4 niit\xE4 pohjassa kolme sekuntia. (Vihje: Kojun mainoksen muokkaus)"
+    englishDescription: 'Look for references to  known art, ideas and things related
+      to people. Select by holding them down for three seconds. (Hint: Stalls ad
+      modification window)'
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: culture
     educationCategoryTaskType: press_famous_thing_referring_objects
-  - title: Peligenret ja lajityypit
+  - active: 1
+    title: Peligenret ja lajityypit
     englishTitle: Game Genre types
     description: "M\xE4\xE4rit\xE4 mik\xE4 on t\xE4m\xE4n pelin lajityyppi"
     englishDescription: Discern and name this games genre
@@ -251,62 +288,78 @@ MonoBehaviour:
     points: 10
     educationCategoryType: culture
     educationCategoryTaskType: what_style_types_game_has
-  - title: "Etsi ja klikkaa arvoihin liittyvi\xE4 asioita"
-    englishTitle: 
-    description: 
-    englishDescription: 
+  - active: 1
+    title: "L\xF6yd\xE4 arvoja pelist\xE4"
+    englishTitle: Find values in the game
+    description: "Etsi ja klikkaa arvoihin liittyvi\xE4 asioita (Vihje: klaanit)"
+    englishDescription: 'Search and click for something related to peoples values.
+      (Hint: Clans might have something)'
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: ethical
     educationCategoryTaskType: press_values_objects
-  - title: "Osallistu \xE4\xE4nestykseen"
+  - active: 1
+    title: "Osallistu \xE4\xE4nestykseen"
     englishTitle: Participate in a poll
-    description: 
-    englishDescription: 
+    description: "Mene \xE4\xE4nestyssivulle ja anna \xE4\xE4nesi, jos \xE4\xE4nestyksi\xE4
+      ei ole meneill\xE4\xE4n voin my\xF6s luoda omasi."
+    englishDescription: Go to the vote page and give your vote. If no polls are under
+      way tou can always start your own.
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: social
     educationCategoryTaskType: participate_clan_voting
-  - title: Ehdota klaanissa tavara kirpputorille
+  - active: 1
+    title: Ehdota klaanissa tavara kirpputorille
     englishTitle: Suggest to buying/selling an item on the flea market
-    description: 
-    englishDescription: 
+    description: "Aloita varastossa myynti\xE4\xE4nestys huonekalusta."
+    englishDescription: In storage, start a sell vote.
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: social
     educationCategoryTaskType: suggest_item_to_flea_market
-  - title: "Lis\xE4\xE4 hyv\xE4ksytty tavara klaanin kirpputorille"
+  - active: 1
+    title: "Lis\xE4\xE4 hyv\xE4ksytty tavara klaanin kirpputorille"
     englishTitle: Add an accepted item into the clans flea market
-    description: 
-    englishDescription: 
+    description: "Mene klaanin kojulle ja lis\xE4\xE4 tavaraa kojuun, mik\xE4li alapalkissa
+      ei ole huonekaluja kokeile tehd\xE4 ensin myynti \xE4\xE4nestys jolla yksi
+      huonekaluista voidaan lis\xE4t\xE4 kojulle."
+    englishDescription: Goto clans stall and add a furniture into one of its slots.
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: social
     educationCategoryTaskType: add_item_to_flea_market
-  - title: Vaihda klaanin motto
+  - active: 1
+    title: Vaihda klaanin motto
     englishTitle: Change the motto of the clan
-    description: 
-    englishDescription: 
+    description: "Mene klaanin profiilisivulle ja sielt\xE4 klaanin muokkaukseen
+      (yl\xE4palkin oikeassa reunassa oleva ratas) ja kirjoita uusi motto klaanille."
+    englishDescription: Go to clans profile and enable the edit mode (cog on the
+      top right corner) then modify the clans motto.
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: social
     educationCategoryTaskType: change_clan_motto
-  - title: "Etsi k\xE4ytt\xF6liittym\xE4st\xE4 ikkuna, joka k\xE4sittelee valtaa
+  - active: 1
+    title: "Etsi k\xE4ytt\xF6liittym\xE4st\xE4 ikkuna, joka k\xE4sittelee valtaa
       tai tasa-arvoa"
     englishTitle: Find a window in the UI that deals with power and equality
-    description: "Pid\xE4 kuvaketta painettuna 3 sekuntia"
-    englishDescription: Press the image for 3 seconds
+    description: "Pid\xE4 kuvaketta, joka kuvastaa valtaa tai tasaarvoa, painettuna
+      3 sekuntia. (Vihje: Todenn\xE4k\xF6isesti n\xE4et sen jo nyt.)"
+    englishDescription: 'Press the image that represent power of rule of equality
+      for 3 seconds. (Hint: you might be seeing something fitting this right now.)'
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: culture
     educationCategoryTaskType: find_power_or_equality_referring_window
-  - title: "L\xF6yd\xE4 muuttuja toiminnassa"
+  - active: 0
+    title: "L\xF6yd\xE4 muuttuja toiminnassa"
     englishTitle: Find a variable value in game
     description: 
     englishDescription: 
@@ -315,7 +368,8 @@ MonoBehaviour:
     points: 10
     educationCategoryType: action
     educationCategoryTaskType: find_variable_value_in_game
-  - title: "Etsi kolme t\xE4rke\xE4\xE4 painiketta"
+  - active: 0
+    title: "Etsi kolme t\xE4rke\xE4\xE4 painiketta"
     englishTitle: Find three important buttons
     description: "Etsi k\xE4ytt\xF6liittym\xE4n kannalta mielest\xE4si 3 t\xE4rkeint\xE4
       painiketta"
@@ -325,7 +379,8 @@ MonoBehaviour:
     points: 10
     educationCategoryType: action
     educationCategoryTaskType: find_3_important_buttons
-  - title: Pelin tarina
+  - active: 1
+    title: Pelin tarina
     englishTitle: Story
     description: "Miss\xE4 peli tarinan mukaan tapahtuu?"
     englishDescription: According to the lore, where can you find some action?
@@ -334,16 +389,19 @@ MonoBehaviour:
     points: 10
     educationCategoryType: story
     educationCategoryTaskType: where_game_happens
-  - title: Pelin rajallisuus
+  - active: 1
+    title: Pelin rajallisuus
     englishTitle: Game Limitations
-    description: "Etsi piilotettu bugi, paina sit\xE4 3 sekuntia"
+    description: "Etsi piilotettu bugi, paina sit\xE4 3 sekuntia. Vinkki: kurkkaa
+      vanhempien asetukset."
     englishDescription: Find a hidden bug, and press it for 3 seconds
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: action
     educationCategoryTaskType: find_bug
-  - title: Luo soittolista klaanille
+  - active: 0
+    title: Luo soittolista klaanille
     englishTitle: Create a playlist for the clan
     description: 
     englishDescription: 
@@ -352,7 +410,8 @@ MonoBehaviour:
     points: 10
     educationCategoryType: action
     educationCategoryTaskType: create_clan_playlist
-  - title: "Katso kieliasetukset ja klikkaa kohtia jotka muuttuvat eri kielien v\xE4lill\xE4"
+  - active: 0
+    title: "Katso kieliasetukset ja klikkaa kohtia jotka muuttuvat eri kielien v\xE4lill\xE4"
     englishTitle: Look at the language settings and click on things that change between
       different languages
     description: 
@@ -362,16 +421,21 @@ MonoBehaviour:
     points: 10
     educationCategoryType: ethical
     educationCategoryTaskType: change_language
-  - title: "Paina kolmea symboliikkaa sis\xE4lt\xE4v\xE4\xE4 huonekalua"
+  - active: 1
+    title: "Paina kolmea symboliikkaa sis\xE4lt\xE4v\xE4\xE4 huonekalua"
     englishTitle: Press three pieces of furniture with symbolism
-    description: 
-    englishDescription: 
+    description: "Varastossa, valitse kolme eri symboliikkaa sis\xE4lt\xE4v\xE4\xE4
+      huonekalua. (Valinta tehd\xE4\xE4n painamalla huonekalua kolme sekuntia pohjassa,
+      lopuksi paina ilmaantuvaa ikkunaa ja hyv\xE4ksy valintasi.) "
+    englishDescription: In storage, choose three different furniture that have symbolisism.
+      (Selection happen by holdeing the furniture down for three seconds)
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: story
     educationCategoryTaskType: press_3_symbol_furniture
-  - title: Palkitseminen ja houkuttelu
+  - active: 1
+    title: Palkitseminen ja houkuttelu
     englishTitle: Rewarding and temptation
     description: Tunnista kohta, jossa peli palkitsee sinua tavalla, joka houkuttelee
       jatkamaan pelaamista
@@ -382,17 +446,21 @@ MonoBehaviour:
     points: 10
     educationCategoryType: ethical
     educationCategoryTaskType: press_prize_giving_items
-  - title: "Pelin toimintakulttuuri (yhteis\xF6n k\xE4yt\xE4nn\xF6t)"
+  - active: 1
+    title: "Pelin toimintakulttuuri (yhteis\xF6n k\xE4yt\xE4nn\xF6t)"
     englishTitle: Game practice culture (community practices)
-    description: Valitse klaanille toimintakulttuuriset ohjeet
-    englishDescription: Choose cultural practice rules for the clan
+    description: "Mene klaanin profiilinmuokkaukseen ja valitse klaanille toimintakulttuuriset
+      ohjeet/s\xE4\xE4nn\xF6t"
+    englishDescription: Go to clan profile modification window and choose cultural
+      practice rules for the clan
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: culture
     educationCategoryTaskType: choose_cultural_guideline_cultural_description
-  - title: Arvot
-    englishTitle: Values
+  - active: 1
+    title: Hahmojen eroavat arvot
+    englishTitle: Characters differing values
     description: "N\xE4et kaksi pelihahmoa rinnakkain ja heid\xE4n kuvauksensa \u2013
       valitse kustakin parista se hahmo, jonka toiminta edustaa mielest\xE4si eettisesti
       parempaa vaihtoehtoa"
@@ -404,8 +472,9 @@ MonoBehaviour:
     points: 10
     educationCategoryType: ethical
     educationCategoryTaskType: choose_ethically_better_character
-  - title: Pelimekaniikka
-    englishTitle: Game mechanics
+  - active: 1
+    title: Voita taistelu
+    englishTitle: Win battle
     description: Voita yksi taistelu
     englishDescription: Win one ego clash
     amount: 1
@@ -413,12 +482,27 @@ MonoBehaviour:
     points: 10
     educationCategoryType: action
     educationCategoryTaskType: win_battle
-  - title: Pelaa ottelu
+  - active: 1
+    title: Pelaa ottelu
     englishTitle: Play battle
-    description: 
-    englishDescription: 
+    description: "Pelaa yksi ottelu (Lopputuloskessa ei v\xE4li\xE4, vaan sill\xE4
+      ett\xE4 yritit.)"
+    englishDescription: Play one battle (Outcome doesn't matter, just that you tried
+      your best)
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: action
     educationCategoryTaskType: play_battle
+  - active: 1
+    title: Valitse keskettavin intron osa
+    englishTitle: Choose the most touching intro section
+    description: "Mene introtarinaan (asetuksista) ja valitse mielest\xE4si vaikuttavin
+      paneeli"
+    englishDescription: Go into the introstory (from settings) and choose the most
+      touching panel
+    amount: 1
+    coins: 100
+    points: 10
+    educationCategoryType: story
+    educationCategoryTaskType: choose_most_touching_intro
