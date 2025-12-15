@@ -113,21 +113,6 @@ namespace Battle.QSimulation
     /// ```
     public class BattleDebugLogger
     {
-        void TestMethod()
-        {
-            int[] exampleArray = new int[1];
-            DevAssert(() =>
-            {
-                for (int i = 0; i < exampleArray.Length; i++)
-                {
-                    if (exampleArray[i] < 0) return false;
-                }
-                return true;
-            },
-            "Example message"
-            );
-        }
-
         /// <summary>
         /// Enum for log types.
         /// </summary>
