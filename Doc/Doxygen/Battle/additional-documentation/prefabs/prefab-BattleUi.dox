@@ -19,6 +19,7 @@
 ///         - @cref{Battle.View.UI,BattleUiPlayerInfoHandler}
 ///         - @cref{Battle.View.UI,BattleUiJoystickHandler}
 ///         - @cref{Battle.View.UI,BattleUiDebugOverlayHandler}
+///         - @cref{Battle.View.UI,BattleUiDebugConsoleHandler}
 ///         - Canvas
 ///         - CanvasScaler
 ///         - GraphicRaycaster
@@ -89,6 +90,21 @@
 ///             - *Children:*
 ///                 - **EntryTemplate**  
 ///                   Template for creating entries.
+///                   - *Components:*
+///                     - RectTransform
+///                     - TextMeshPro - Text (UI)
+///                     - CanvasRenderer
+///         - **DebugConsole**  
+///           Display's debug console.
+///             - *Components:*
+///                 - RectTransform
+///             - *Children:*
+///                 - **Background**
+///                   - *Components:*
+///                     - RectTransform
+///                     - CanvasRenderer
+///                     - Image
+///                 - **TextField**
 ///                   - *Components:*
 ///                     - RectTransform
 ///                     - TextMeshPro - Text (UI)
