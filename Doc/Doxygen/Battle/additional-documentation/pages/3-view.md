@@ -58,7 +58,7 @@ In **%Battle** **View Controllers** have **"ViewController"** suffix. [[Naming]]
 | @crefd{Battle.View} | @crefd{Battle.View,Effect}     | @cref{Battle.View.Effect,BattleLightrayEffectViewController}       | @copybrief Battle.View.Effect.BattleLightrayEffectViewController       |
 | @crefd{Battle.View} | @crefd{Battle.View,Effect}     | @cref{Battle.View.Effect,BattleScreenEffectViewController}         | @copybrief Battle.View.Effect.BattleScreenEffectViewController         |
 |                                                                                                                                                                                                 ||||
-| @crefd{Battle.View} | @crefd{Battle.View,Audio}      | @cref{Battle.View.Audio,BattleSoundFXViewController}               | @copybrief Battle.View.Audio.BattleSoundFXViewController               |
+| @crefd{Battle.View} | @crefd{Battle.View,Audio}      | @cref{Battle.View.Audio,BattleAudioViewController}                 | @copybrief Battle.View.Audio.BattleAudioViewController                 |
 |                                                                                                                                                                                                 ||||
 | @crefd{Battle.View}                                 || @cref{Battle.View,BattleStoneCharacterViewController}              | @copybrief Battle.View.BattleStoneCharacterViewController              |
 
