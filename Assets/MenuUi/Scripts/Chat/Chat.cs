@@ -101,13 +101,17 @@ public class Chat : AltMonoBehaviour
     public static event SelectedMessageChanged OnSelectedMessageChanged;
     private bool _reactionAvailable = false; //Katsoo jos textboxissa on tekstiä tai ei
 
+    private bool _reactionCall = false;
 
     public static Chat instance;
+
+    public List<GameObject> _reactionList = new List<GameObject>();
 
     private void Start()
     {
         ChatChannel.OnMessageHistoryReceived += RefreshChat;
         ChatChannel.OnMessageReceived += DisplayMessage;
+        ReactionObjectHandler.OnReactionPressed += RefreshReaction;
 
         // Alustaa chatit ja asettaa kielichatin oletukseksi
         _currentContent = _clanChat;
@@ -152,6 +156,7 @@ public class Chat : AltMonoBehaviour
     {
         ChatChannel.OnMessageHistoryReceived -= RefreshChat;
         ChatChannel.OnMessageReceived -= DisplayMessage;
+        ReactionObjectHandler.OnReactionPressed -= RefreshReaction;
     }
 
     private void AddResponses()
@@ -348,6 +353,7 @@ public class Chat : AltMonoBehaviour
         {
 
             GameObject newMessage = Instantiate(messagePrefab, _currentContent.transform);
+            _reactionList.Add(newMessage);
 
             newMessage.GetComponent<MessageObjectHandler>().SetMessageInfo(message, SelectMessage);
 
@@ -473,37 +479,86 @@ public class Chat : AltMonoBehaviour
     // Aktivoi globaalin chatin
     public void GlobalChatActive()
     {
-        _currentContent = _globalChatContent;
-        ChatListener.Instance.ActiveChatChannel = ChatChannelType.Global;
-        _currentScrollRect = _globalChatScrollRect;
+        if (!_reactionCall)
+        {
+            _currentContent = _globalChatContent;
+            ChatListener.Instance.ActiveChatChannel = ChatChannelType.Global;
+            _currentScrollRect = _globalChatScrollRect;
 
-        _globalChat.SetActive(true);
-        _languageChat.SetActive(false);
-        _clanChat.SetActive(false);
+            _globalChat.SetActive(true);
+            _languageChat.SetActive(false);
+            _clanChat.SetActive(false);
 
-        gameObject.GetComponent<FindAllChatOptions>().ChatOptionFound(FindAllChatOptions.ChatType.Global);
-        RefreshChat(ChatChannelType.Global);
-        MessageReactionsHandler.Instance.RefreshReaction(ChatChannelType.Global, null);
+            gameObject.GetComponent<FindAllChatOptions>().ChatOptionFound(FindAllChatOptions.ChatType.Global);
+            RefreshChat(ChatChannelType.Global);
+            _reactionCall = true;
+            GlobalChatActive();
+            Debug.Log("Global Chat aktivoitu");
+        }
 
-        Debug.Log("Global Chat aktivoitu");
+        //Gets called After the message is done uploading
+        else if (_reactionCall)
+        {
+            //Goes over all the messages there is put so that reactions can be added after
+            foreach(GameObject message in _reactionList)
+                if (message != null)
+                {
+                    Transform child = message.transform.Find("Controls/Reactions/AddChatMessageReactions");
+                    child.gameObject.SetActive(true);
+                    RefreshReaction(null, Mood.None);
+                    child.gameObject.SetActive(false);
+
+                    //Debug.LogWarning(child.gameObject.activeSelf + " Global Chat is here");
+                    Debug.LogWarning("FIND ME GLOBAL CHAT IS CALLED");
+                }
+
+            _reactionCall = false;
+            _reactionList.Clear();
+        }
+
+        
     }
 
     // Aktivoi klaanichatin
     public void ClanChatActive()
     {
-        _currentContent = _clanChatContent;
-        ChatListener.Instance.ActiveChatChannel = ChatChannelType.Clan;
-        _currentScrollRect = _clanChatScrollRect;
+        if (!_reactionCall)
+        {
+            _currentContent = _clanChatContent;
+            ChatListener.Instance.ActiveChatChannel = ChatChannelType.Clan;
+            _currentScrollRect = _clanChatScrollRect;
 
-        _clanChat.SetActive(true);
-        _languageChat.SetActive(false);
-        _globalChat.SetActive(false);
+            _clanChat.SetActive(true);
+            _languageChat.SetActive(false);
+            _globalChat.SetActive(false);
 
-        gameObject.GetComponent<FindAllChatOptions>().ChatOptionFound(FindAllChatOptions.ChatType.Clan);
-        RefreshChat(ChatChannelType.Clan);
-        MessageReactionsHandler.Instance.RefreshReaction(ChatChannelType.Clan, null);
+            gameObject.GetComponent<FindAllChatOptions>().ChatOptionFound(FindAllChatOptions.ChatType.Clan);
 
-        Debug.Log("Klaani Chat aktivoitu");
+            RefreshChat(ChatChannelType.Clan);
+            _reactionCall = true;
+            ClanChatActive();
+            Debug.Log("Klaani Chat aktivoitu");
+        }
+        //Gets called After the message is done uploading
+        else if(_reactionCall)
+        {
+            foreach (GameObject message in _reactionList)
+                if (message != null)
+                {
+                    //Finds the set gameobject we need to find
+                    //please change the names of set basemessage object changed names in here
+                    Transform child = message.transform.Find("Controls/Reactions/AddChatMessageReactions");
+
+                    child.gameObject.SetActive(true);
+                    RefreshReaction(null, Mood.None);
+                    child.gameObject.SetActive(false);
+                    //Debug.LogWarning(child.gameObject.activeSelf + " Clan Chat is here");
+                }
+            _reactionCall = false;
+            _reactionList.Clear();
+        }
+
+        
     }
 
     // Aktivoi kielichatin
@@ -604,6 +659,47 @@ public class Chat : AltMonoBehaviour
 
         VerticalLayoutGroup currentLayout = _currentContent.GetComponentInChildren<VerticalLayoutGroup>();
         LayoutRebuilder.ForceRebuildLayoutImmediate(currentLayout.GetComponent<RectTransform>());
+    }
+
+
+    //Refreshes the set reactions
+    private void RefreshReaction(string Id, Mood mood)
+    {
+        Debug.LogWarning("FIND ME when before channel is called");
+
+        Debug.LogWarning("FIND ME before system calls");
+        if (gameObject.activeSelf)
+        {
+            //Checks if its on the right message before importing reactions
+
+
+            List<ReactionObjectHandler> _reactionData = new List<ReactionObjectHandler>();
+
+
+            //Checks if the list is empty or not
+            if (_reactionData != null)
+            {
+                foreach (ReactionObjectHandler reaction in _reactionData)
+                {
+                    //Checks if its on the right message
+                    if (reaction.Id == Id)
+                    {
+                        Debug.LogWarning("FIND ME AFTER SYSTEM IS CALLED");
+
+                        MessageReactionsHandler.Instance.AddReaction(reaction.Id, reaction.Mood);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("FIND ME - Set Message ID isn't correct");
+                        break;
+                    }
+                }
+
+            }
+            else Debug.LogWarning("Find me - there's no reactions!");
+            _reactionList.Clear();
+
+        }
     }
 
 

@@ -36,6 +36,7 @@ public class MessageObjectHandler : MonoBehaviour
     public GameObject ReactionsPanel { get => _reactionsPanel;}
     public string Id { get => _id;}
 
+    public static MessageObjectHandler ObjectActive; 
     // Start is called before the first frame update
     void Start()
     {

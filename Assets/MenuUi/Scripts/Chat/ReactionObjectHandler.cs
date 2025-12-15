@@ -12,6 +12,7 @@ public class ReactionObjectHandler : MonoBehaviour
     private string _id;
 
     public Mood Mood => _mood;
+    public string Id => _id;
 
     public delegate void ReactionPressed(string id, Mood mood);
     public static event ReactionPressed OnReactionPressed;

@@ -43,7 +43,6 @@ public class MessageReactionsHandler : MonoBehaviour
         _openMoreButton.onClick.AddListener((() => { _allReactionsPanel.SetActive(true); _selectedMessage.SizeCall(); _commonReactionsPanel.SetActive(false); }));
 
 
-        ChatChannel.OnReactionReceived += RefreshReaction;
 
 
         ReactionObjectHandler.OnReactionPressed += AddReaction;
@@ -56,8 +55,6 @@ public class MessageReactionsHandler : MonoBehaviour
 
     private void OnDestroy()
     {
-
-        ChatChannel.OnReactionReceived -= RefreshReaction;
 
         ReactionObjectHandler.OnReactionPressed -= AddReaction;
     }
@@ -147,41 +144,15 @@ public class MessageReactionsHandler : MonoBehaviour
     }
 
 
-    public void RefreshReaction(ChatChannelType chatChannelType, ChatMessage message) => StartCoroutine(RefreshReactionCoroutine(chatChannelType, message));
 
-
-
-    //Am not 100% yet if this system works yet fully as right now the object that adds the reactions is inactive therefore this system is never called
-    private IEnumerator RefreshReactionCoroutine(ChatChannelType chatChannelType, ChatMessage message)
-    {
-        Debug.LogWarning("FIND ME when before channel is called");
-        if (chatChannelType is ChatChannelType.Global)
-            yield return new WaitUntil(() => ChatListener.Instance.GlobalChatFetched);
-        if (chatChannelType is ChatChannelType.Clan)
-            yield return new WaitUntil(() => ChatListener.Instance.ClanChatFetched);
-
-        Debug.LogWarning("FIND ME before system calls");
-        if (gameObject.activeSelf)
-        {
-            List<ChatMessage> reactionList = ChatListener.Instance.GetChatChannel(chatChannelType).ChatMessages;
-            if (reactionList != null)
-            {
-                foreach (ChatMessage reaction in reactionList)
-                {
-                    Debug.LogWarning("FIND ME AFTER SYSTEM IS CALLED");
-                    AddReaction(message.Id, message.Mood);
-                }
-
-            }
-        }
-    }
 
 
     /// <summary>
     /// Adds the chosen reaction to the selected message.
     /// </summary>
-    private void AddReaction(string _id, Mood mood)
+    public void AddReaction(string _id, Mood mood)
     {
+        Debug.LogWarning("FIND ME - IF ADD REACRTION GETS CALLED - C1");
         if (_selectedMessage != null)
         {
             string messageID = _selectedMessage.Id;
@@ -216,6 +187,9 @@ public class MessageReactionsHandler : MonoBehaviour
             _selectedMessage.SetMessageInactive();
 
             gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+
+
+            Debug.LogWarning("FIND ME CALLED THAT IF REACTION IS ACTIVE OR NOT");
         }
     }
 
