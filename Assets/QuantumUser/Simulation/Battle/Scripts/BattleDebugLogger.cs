@@ -51,11 +51,12 @@ namespace Battle.QSimulation
     /// | Error   | Logs an Error Log message in console.       |
     ///
     /// **Log method arguments:**<br/>
-    /// |                  |                                                                         |
-    /// | :--------------- | :---------------------------------------------------------------------- |
-    /// | f                | %Quantum frame for use in message formatting.<br/>                      |
-    /// | source           | Source text for use in message formatting.<br/>                         |
-    /// | message / format | The message or message format for the formatted message that is Logged. |
+    /// |                  |                                                                              |
+    /// | :--------------- | :--------------------------------------------------------------------------- |
+    /// | f                | %Quantum frame for use in message formatting.<br/>                           |
+    /// | source           | Source text for use in message formatting.<br/>                              |
+    /// | message / format | The message or message format for the formatted message that is Logged.<br/> |
+    /// | logTarget        | Target output console for log messages.                                      |
     ///
     /// **Static and Instance methods:**<br/>
     /// All Static Log methods take source as an argument.<br/>
@@ -71,17 +72,65 @@ namespace Battle.QSimulation
     /// followed by an arbitrary amount of arguments for formatting.<br/>
     /// The format string and arguments are formatted same as when using [System.String.Format@u-exlink](https://learn.microsoft.com/en-us/dotnet/api/system.string.format).
     ///
+    /// **Log Target**<br/>
+    /// Methods that takes the @cref{LogTarget} as an argument have the option to choose which console output will be used.<br/>
+    /// Default output console for logs of type Log and Warning will be Unity console and logs of type Error will be logged to both.<br/>
+    /// With @cref{LogTarget} you can choose to manually use on-screen console with all log types.
+    ///
+    /// @anchor BattleDebugLogger-AssertMethodsDoc
+    /// **Assert methods:**<br/>
+    /// Like Log methods, there are both a static and non-static version for use in different contexts.<br/>
+    /// Like Log methods, there's also assert format methods.<br/>
+    /// Assert methods take same arguments as Log methods but have additional `condition` or `assertCode` argument which is before `message` or `format`.<br/>
+    /// Assert methods that take in `condition` arguments simply assert that condition is true otherwise logs an error.<br/>
+    /// Assert methods that take in `assertCode` arguments runs the assertion code and asserts that it returns true otherwise logs an error.<br/>
+    /// Assert methods are only compiled and assertion code is ran when `DEBUG_ASSERT` is defined.
+    ///
     /// **Examples:**<br/>
     /// ```cs
     /// BattleDebugLogger.Log(f, nameof(ExampleClass), "Example message");
     /// BattleDebugLogger.WarningFormat(nameof(ExampleClass), "Example format {0}", value);
     ///
+    /// BattleDebugLogger.DevAssert(nameof(ExampleClass), exampleValue > -1, "Example message");
+    ///
+    ///
+    ///
     /// BattleDebugLogger debugLogger = BattleDebugLogger.Create<ExampleClass>();
+    ///
     /// debugLogger.ErrorFormat(f, "Example format {0} {1}", value1, value2);
     /// debugLogger.Log("Example message");
+    /// debugLogger.Log("Example message", BattleDebugLogger.LogTarget.OnScreenConsole);
+    ///
+    /// debugLogger.DevAssert(f, exampleValue > -1, "Example message");
+    /// debugLogger.DevAssert(() =>
+    /// {
+    ///     for (int i = 0; i < exampleArray.Length; i++)
+    ///     {
+    ///         if (exampleArray[i] < 0) return false;
+    ///     }
+    ///     return true;
+    /// }, "Example message");
     /// ```
     public class BattleDebugLogger
     {
+        void TestMethod()
+        {
+            int[] exampleArray = new int[1];
+            DevAssert(() =>
+            {
+                for (int i = 0; i < exampleArray.Length; i++)
+                {
+                    if (exampleArray[i] < 0) return false;
+                }
+                return true;
+            },
+            "Example message"
+            );
+        }
+
+        /// <summary>
+        /// Enum for log types.
+        /// </summary>
         public enum LogType
         {
             Log,
@@ -89,6 +138,9 @@ namespace Battle.QSimulation
             Error
         }
 
+        /// <summary>
+        /// Enum for target console output.
+        /// </summary>
         [Flags]
         public enum LogTarget
         {
@@ -96,6 +148,11 @@ namespace Battle.QSimulation
             OnScreenConsole
         }
 
+        /// <summary>
+        /// Establishes link between <see cref="Battle.View.UI.BattleUiDebugConsoleHandler">BattleUiDebugConsoleHandler</see>.
+        /// </summary>
+        ///
+        /// <param name="addLogToOnScreenConsoleFnRef"><see cref="Battle.View.UI.BattleUiDebugConsoleHandler.AddLog">BattleUiDebugConsoleHandler.AddLog</see> function reference.</param>
         public static void InitOnScreenConsoleLink(Action<LogType, string, string> addLogToOnScreenConsoleFnRef)
         {
             s_addLogToOnScreenConsoleFnRef = addLogToOnScreenConsoleFnRef;
@@ -163,7 +220,8 @@ namespace Battle.QSimulation
         /// <summary>
         /// Logs the given <paramref name="message"/>
         /// using the given <paramref name="source"/> when formatting the Log message.<br/>
-        /// Output Log message: [%Battle] [(source)] (message)
+        /// Output Log message: [%Battle] [(source)] (message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
         /// @ref BattleDebugLogger-StaticLogMethods
         ///
@@ -171,6 +229,7 @@ namespace Battle.QSimulation
         ///
         /// <param name="source">The name of the source used when formatting the Log message.</param>
         /// <param name="message">The message that is Logged.</param>
+        /// <param name="logTarget">The target output console.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Log(string source, string message, LogTarget logTarget = LogTarget.UnityConsole)
         {
@@ -181,7 +240,8 @@ namespace Battle.QSimulation
         /// <summary>
         /// Logs the given <paramref name="message"/>
         /// using the given %Quantum frame <paramref name="f"/> and <paramref name="source"/> when formatting the Log message.<br/>
-        /// Output Log message: [%Battle] [(frame number)] [(source)] (message)
+        /// Output Log message: [%Battle] [(frame number)] [(source)] (message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
         /// @ref BattleDebugLogger-StaticLogMethods
         ///
@@ -190,17 +250,12 @@ namespace Battle.QSimulation
         /// <param name="f">The %Quantum frame used when formatting the Log message.</param>
         /// <param name="source">The name of the source used when formatting the Log message.</param>
         /// <param name="message">The message that is Logged.</param>
+        /// <param name="logTarget">The target output console.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Log(Frame f, string source, string message, LogTarget logTarget = LogTarget.UnityConsole)
         {
             if (logTarget.HasFlag(LogTarget.UnityConsole)) Debug.LogFormat(StaticFormatUnity, f.Number, source, message);
             if (logTarget.HasFlag(LogTarget.OnScreenConsole)) s_addLogToOnScreenConsoleFnRef(LogType.Log, string.Format(StaticSourceFormatOnScreen, f.Number, source), message);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void LogFormat(string source, string format, params object[] args)
-        {
-            Log(source, string.Format(format, args));
         }
 
         /// <summary>
@@ -216,16 +271,31 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void LogFormat(string source, string format, params object[] args)
+        {
+            Log(source, string.Format(format, args));
+        }
+
+        /// <summary>
+        /// Logs a formatted message based on the given <paramref name="format"/> and <paramref name="args"/>
+        /// using the given <paramref name="source"/> when formatting the Log message.<br/>
+        /// Output Log message: [%Battle] [(source)] (formatted message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
+        /// </summary>
+        /// @ref BattleDebugLogger-StaticLogMethods
+        ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
+        ///
+        /// <param name="source">The name of the source used when formatting the Log message.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
+        /// <param name="logTarget">The target output console.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void LogFormat(string source, string format, LogTarget logTarget, params object[] args)
         {
             Log(source, string.Format(format, args), logTarget);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void LogFormat(Frame f, string source, string format, params object[] args)
-        {
-            Log(f, source, string.Format(format, args));
-        }
         /// <summary>
         /// Logs a formatted message based on the given <paramref name="format"/> and <paramref name="args"/>
         /// using the given %Quantum frame <paramref name="f"/> and <paramref name="source"/> when formatting the Log message.<br/>
@@ -240,6 +310,27 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void LogFormat(Frame f, string source, string format, params object[] args)
+        {
+            Log(f, source, string.Format(format, args));
+        }
+
+        /// <summary>
+        /// Logs a formatted message based on the given <paramref name="format"/> and <paramref name="args"/>
+        /// using the given %Quantum frame <paramref name="f"/> and <paramref name="source"/> when formatting the Log message.<br/>
+        /// Output Log message: [%Battle] [(source)] (formatted message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
+        /// </summary>
+        /// @ref BattleDebugLogger-StaticLogMethods
+        ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
+        ///
+        /// <param name="f">The %Quantum frame used when formatting the Log message.</param>
+        /// <param name="source">The name of the source used when formatting the Log message.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
+        /// <param name="logTarget">The target output console.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void LogFormat(Frame f, string source, string format, LogTarget logTarget, params object[] args)
         {
             Log(f, source, string.Format(format, args), logTarget);
@@ -248,7 +339,8 @@ namespace Battle.QSimulation
         /// <summary>
         /// Logs the given <paramref name="message"/> as a Warning
         /// using the given <paramref name="source"/> when formatting the Warning Log message.<br/>
-        /// Output Warning Log message: [%Battle] [(source)] (message)
+        /// Output Warning Log message: [%Battle] [(source)] (message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
         /// @ref BattleDebugLogger-StaticLogMethods
         ///
@@ -256,6 +348,7 @@ namespace Battle.QSimulation
         ///
         /// <param name="source">The name of the source used when formatting the Warning Log message.</param>
         /// <param name="message">The message that is Logged.</param>
+        /// <param name="logTarget">The target output console.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Warning(string source, string message, LogTarget logTarget = LogTarget.UnityConsole)
         {
@@ -266,7 +359,8 @@ namespace Battle.QSimulation
         /// <summary>
         /// Logs the given <paramref name="message"/> as a Warning
         /// using the given %Quantum frame <paramref name="f"/> and <paramref name="source"/> when formatting the Warning Log message.<br/>
-        /// Output Warning Log message: [%Battle] [(frame number)] [(source)] (message)
+        /// Output Warning Log message: [%Battle] [(frame number)] [(source)] (message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
         /// @ref BattleDebugLogger-StaticLogMethods
         ///
@@ -275,17 +369,12 @@ namespace Battle.QSimulation
         /// <param name="f">The %Quantum frame used when formatting the Warning Log message.</param>
         /// <param name="source">The name of the source used when formatting the Warning Log message.</param>
         /// <param name="message">The message that is Logged.</param>
+        /// <param name="logTarget">The target output console.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Warning(Frame f, string source, string message, LogTarget logTarget = LogTarget.UnityConsole)
         {
             if (logTarget.HasFlag(LogTarget.UnityConsole)) Debug.LogWarningFormat(StaticFormatUnity, f.Number, source, message);
             if (logTarget.HasFlag(LogTarget.OnScreenConsole)) s_addLogToOnScreenConsoleFnRef(LogType.Warning, string.Format(StaticSourceFormatOnScreen, f.Number, source), message);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WarningFormat(string source, string format, params object[] args)
-        {
-            Warning(source, string.Format(format, args));
         }
 
         /// <summary>
@@ -301,15 +390,29 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void WarningFormat(string source, string format, params object[] args)
+        {
+            Warning(source, string.Format(format, args));
+        }
+
+        /// <summary>
+        /// Logs a formatted message based on the given <paramref name="format"/> and <paramref name="args"/> as a Warning
+        /// using the given <paramref name="source"/> when formatting the Warning Log message.<br/>
+        /// Output Warning Log message: [%Battle] [(source)] (formatted message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
+        /// </summary>
+        /// @ref BattleDebugLogger-StaticLogMethods
+        ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
+        ///
+        /// <param name="source">The name of the source used when formatting the Warning Log message.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
+        /// <param name="logTarget">The target output console.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WarningFormat(string source, string format, LogTarget logTarget, params object[] args)
         {
             Warning(source, string.Format(format, args), logTarget);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WarningFormat(Frame f, string source, string format, params object[] args)
-        {
-            Warning(f, source, string.Format(format, args));
         }
 
         /// <summary>
@@ -326,6 +429,27 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void WarningFormat(Frame f, string source, string format, params object[] args)
+        {
+            Warning(f, source, string.Format(format, args));
+        }
+
+        /// <summary>
+        /// Logs a formatted message based on the given <paramref name="format"/> and <paramref name="args"/> as a Warning
+        /// using the given %Quantum frame <paramref name="f"/> and <paramref name="source"/> when formatting the Warning Log message.<br/>
+        /// Output Warning Log message: [%Battle] [(frame number)] [(source)] (formatted message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
+        /// </summary>
+        /// @ref BattleDebugLogger-StaticLogMethods
+        ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
+        ///
+        /// <param name="f">The %Quantum frame used when formatting the Warning Log message.</param>
+        /// <param name="source">The name of the source used when formatting the Warning Log message.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
+        /// <param name="logTarget">The target output console.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WarningFormat(Frame f, string source, string format, LogTarget logTarget, params object[] args)
         {
             Warning(f, source, string.Format(format, args), logTarget);
@@ -334,7 +458,8 @@ namespace Battle.QSimulation
         /// <summary>
         /// Logs the given <paramref name="message"/> as an Error
         /// using the given <paramref name="source"/> when formatting the Error Log message.<br/>
-        /// Output Error Log message: [%Battle] [(source)] (message)
+        /// Output Error Log message: [%Battle] [(source)] (message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
         /// @ref BattleDebugLogger-StaticLogMethods
         ///
@@ -342,6 +467,7 @@ namespace Battle.QSimulation
         ///
         /// <param name="source">The name of the source used when formatting the Error Log message.</param>
         /// <param name="message">The message that is Logged.</param>
+        /// <param name="logTarget">The target output console.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Error(string source, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
         {
@@ -352,7 +478,8 @@ namespace Battle.QSimulation
         /// <summary>
         /// Logs the given <paramref name="message"/> as an Error
         /// using the given %Quantum frame <paramref name="f"/> and <paramref name="source"/> when formatting the Error Log message.<br/>
-        /// Output Error Log message: [%Battle] [(frame number)] [(source)] (message)
+        /// Output Error Log message: [%Battle] [(frame number)] [(source)] (message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
         /// @ref BattleDebugLogger-StaticLogMethods
         ///
@@ -361,17 +488,12 @@ namespace Battle.QSimulation
         /// <param name="f">The %Quantum frame used when formatting the Error Log message.</param>
         /// <param name="source">The name of the source used when formatting the Warning Log message.</param>
         /// <param name="message">The message that is Logged.</param>
+        /// <param name="logTarget">The target output console.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Error(Frame f, string source, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
         {
             if (logTarget.HasFlag(LogTarget.UnityConsole)) Debug.LogErrorFormat(StaticFormatUnity, f.Number, source, message);
             if (logTarget.HasFlag(LogTarget.OnScreenConsole)) s_addLogToOnScreenConsoleFnRef(LogType.Error, string.Format(StaticSourceFormatOnScreen, f.Number, source), message);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ErrorFormat(string source, string format, params object[] args)
-        {
-            Error(source, string.Format(format, args));
         }
 
         /// <summary>
@@ -387,15 +509,29 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ErrorFormat(string source, string format, params object[] args)
+        {
+            Error(source, string.Format(format, args));
+        }
+
+        /// <summary>
+        /// Logs a formatted message based on the given <paramref name="format"/> and <paramref name="args"/> as an Error
+        /// using the given <paramref name="source"/> when formatting the Error Log message.<br/>
+        /// Output Error Log message: [%Battle] [(source)] (formatted message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
+        /// </summary>
+        /// @ref BattleDebugLogger-StaticLogMethods
+        ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
+        ///
+        /// <param name="source">The name of the source used when formatting the Error Log message.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
+        /// <param name="logTarget">The target output console.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ErrorFormat(string source, string format, LogTarget logTarget, params object[] args)
         {
             Error(source, string.Format(format, args), logTarget);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ErrorFormat(Frame f, string source, string format, params object[] args)
-        {
-            Error(f, source, string.Format(format, args));
         }
 
         /// <summary>
@@ -412,6 +548,27 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ErrorFormat(Frame f, string source, string format, params object[] args)
+        {
+            Error(f, source, string.Format(format, args));
+        }
+
+        /// <summary>
+        /// Logs a formatted message based on the given <paramref name="format"/> and <paramref name="args"/> as an Error
+        /// using the given %Quantum frame <paramref name="f"/> and <paramref name="source"/> when formatting the Error Log message.<br/>
+        /// Output Error Log message: [%Battle] [(frame number)] [(source)] (formatted message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
+        /// </summary>
+        /// @ref BattleDebugLogger-StaticLogMethods
+        ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
+        ///
+        /// <param name="f">The %Quantum frame used when formatting the Error Log message.</param>
+        /// <param name="source">The name of the source used when formatting the Error Log message.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
+        /// <param name="logTarget">The target output console.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ErrorFormat(Frame f, string source, string format, LogTarget logTarget, params object[] args)
         {
             Error(f, source, string.Format(format, args), logTarget);
@@ -420,8 +577,29 @@ namespace Battle.QSimulation
         #endregion Public Static Log Methods
         /// @}
 
+        /// @anchor BattleDebugLogger-StaticAssertMethods
+        /// @name Static Assert Methods
+        /// Static Assert Methods that can be used without a BattleDebugLogger instance.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        /// @{
         #region Public Static Assert Methods
 
+        /// <summary>
+        /// Asserts that <paramref name="condition"/> is true during debugging
+        /// and logs an <see cref="Error(string, string, LogTarget)"/> log message if it is false.<br/>
+        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-StaticAssertMethods
+        ///
+        /// When assertion fails, logs an error using <see cref="Error(string, string, LogTarget)"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="source">The name of the source used when formatting the Error Log message.</param>
+        /// <param name="condition">Condition must be true, otherwise logs an error.</param>
+        /// <param name="message">The message that is Logged.</param>
+        /// <param name="logTarget">The target output console.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssert(string source, bool condition, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
@@ -432,6 +610,22 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="condition"/> is true during debugging
+        /// and logs an <see cref="Error(Frame, string, string, LogTarget)"/> log message if it is false.<br/>
+        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-StaticAssertMethods
+        ///
+        /// When assertion fails, logs an error using <see cref="Error(Frame, string, string, LogTarget)"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="f">The %Quantum frame used when formatting the Error Log message.</param>
+        /// <param name="source">The name of the source used when formatting the Warning Log message.</param>
+        /// <param name="condition">Condition must be true, otherwise logs an error.</param>
+        /// <param name="message">The message that is Logged.</param>
+        /// <param name="logTarget">The target output console.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssert(Frame f, string source, bool condition, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
@@ -442,6 +636,22 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="assertCode"/> returns true during debugging
+        /// and logs an <see cref="Error(string, string, LogTarget)"/> log message if it is false.<br/>
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-StaticAssertMethods
+        ///
+        /// Runs assertion code which can be any complicated check.<br/>
+        /// When assertion code fails, logs an error using <see cref="Error(string, string, LogTarget)"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="source">The name of the source used when formatting the Error Log message.</param>
+        /// <param name="assertCode">Assertion code must return true, otherwise logs an error.</param>
+        /// <param name="message">The message that is Logged.</param>
+        /// <param name="logTarget">The target output console.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssert(string source, Func<bool> assertCode, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
@@ -452,6 +662,23 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="assertCode"/> returns true during debugging
+        /// and logs an <see cref="Error(Frame, string, string, LogTarget)"/> log message if it is false.<br/>
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-StaticAssertMethods
+        ///
+        /// Runs assertion code which can be any complicated check.<br/>
+        /// When assertion code fails, logs an error using <see cref="Error(Frame, string, string, LogTarget)"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="f">The %Quantum frame used when formatting the Error Log message.</param>
+        /// <param name="source">The name of the source used when formatting the Warning Log message.</param>
+        /// <param name="assertCode">Assertion code must return true, otherwise logs an error.</param>
+        /// <param name="message">The message that is Logged.</param>
+        /// <param name="logTarget">The target output console.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssert(Frame f, string source, Func<bool> assertCode, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
@@ -462,6 +689,21 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="condition"/> is true during debugging
+        /// and logs an <see cref="ErrorFormat(string, string, object[])"/> log message if it is false.<br/>
+        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-StaticAssertMethods
+        ///
+        /// When assertion fails, logs an error using <see cref="ErrorFormat(string, string, object[])"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="source">The name of the source used when formatting the Error Log message.</param>
+        /// <param name="condition">Condition must be true, otherwise logs an error.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssertFormat(string source, bool condition, string format, params object[] args)
@@ -472,6 +714,22 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="condition"/> is true during debugging
+        /// and logs an <see cref="ErrorFormat(string, string, LogTarget, object[])"/> log message if it is false.<br/>
+        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-StaticAssertMethods
+        ///
+        /// When assertion fails, logs an error using <see cref="ErrorFormat(string, string, LogTarget, object[])"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="source">The name of the source used when formatting the Error Log message.</param>
+        /// <param name="condition">Condition must be true, otherwise logs an error.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="logTarget">The target output console.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssertFormat(string source, bool condition, string format, LogTarget logTarget, params object[] args)
@@ -482,6 +740,22 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="condition"/> is true during debugging
+        /// and logs an <see cref="ErrorFormat(Frame, string, string, object[])"/> log message if it is false.<br/>
+        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-StaticAssertMethods
+        ///
+        /// When assertion fails, logs an error using <see cref="ErrorFormat(Frame, string, string, object[])"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="f">The %Quantum frame used when formatting the Error Log message.</param>
+        /// <param name="source">The name of the source used when formatting the Error Log message.</param>
+        /// <param name="condition">Condition must be true, otherwise logs an error.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssertFormat(Frame f, string source, bool condition, string format, params object[] args)
@@ -492,6 +766,23 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="condition"/> is true during debugging
+        /// and logs an <see cref="ErrorFormat(Frame, string, string, LogTarget, object[])"/> log message if it is false.<br/>
+        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-StaticAssertMethods
+        ///
+        /// When assertion fails, logs an error using <see cref="ErrorFormat(Frame, string, string, LogTarget, object[])"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="f">The %Quantum frame used when formatting the Error Log message.</param>
+        /// <param name="source">The name of the source used when formatting the Error Log message.</param>
+        /// <param name="condition">Condition must be true, otherwise logs an error.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="logTarget">The target output console.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssertFormat(Frame f, string source, bool condition, string format, LogTarget logTarget, params object[] args)
@@ -502,6 +793,22 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="assertCode"/> returns true during debugging
+        /// and logs an <see cref="ErrorFormat(string, string, object[])"/> log message if it is false.<br/>
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-StaticAssertMethods
+        ///
+        /// Runs assertion code which can be any complicated check.<br/>
+        /// When assertion code fails, logs an error using <see cref="ErrorFormat(string, string, object[])"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="source">The name of the source used when formatting the Error Log message.</param>
+        /// <param name="assertCode">Assertion code must return true, otherwise logs an error.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssertFormat(string source, Func<bool> assertCode, string format, params object[] args)
@@ -512,6 +819,23 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="assertCode"/> returns true during debugging
+        /// and logs an <see cref="ErrorFormat(string, string, LogTarget, object[])"/> log message if it is false.<br/>
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-StaticAssertMethods
+        ///
+        /// Runs assertion code which can be any complicated check.<br/>
+        /// When assertion code fails, logs an error using <see cref="ErrorFormat(string, string, LogTarget, object[])"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="source">The name of the source used when formatting the Error Log message.</param>
+        /// <param name="assertCode">Assertion code must return true, otherwise logs an error.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="logTarget">The target output console.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssertFormat(string source, Func<bool> assertCode, string format, LogTarget logTarget, params object[] args)
@@ -522,6 +846,23 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="assertCode"/> returns true during debugging
+        /// and logs an <see cref="ErrorFormat(Frame, string, string, object[])"/> log message if it is false.<br/>
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-StaticAssertMethods
+        ///
+        /// Runs assertion code which can be any complicated check.<br/>
+        /// When assertion code fails, logs an error using <see cref="ErrorFormat(Frame, string, string, object[])"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="f">The %Quantum frame used when formatting the Error Log message.</param>
+        /// <param name="source">The name of the source used when formatting the Error Log message.</param>
+        /// <param name="assertCode">Assertion code must return true, otherwise logs an error.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssertFormat(Frame f, string source, Func<bool> assertCode, string format, params object[] args)
@@ -532,6 +873,24 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="assertCode"/> returns true during debugging
+        /// and logs an <see cref="ErrorFormat(Frame, string, string, LogTarget, object[])"/> log message if it is false.<br/>
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-StaticAssertMethods
+        ///
+        /// Runs assertion code which can be any complicated check.<br/>
+        /// When assertion code fails, logs an error using <see cref="ErrorFormat(Frame, string, string, LogTarget, object[])"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="f">The %Quantum frame used when formatting the Error Log message.</param>
+        /// <param name="source">The name of the source used when formatting the Error Log message.</param>
+        /// <param name="assertCode">Assertion code must return true, otherwise logs an error.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="logTarget">The target output console.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssertFormat(Frame f, string source, Func<bool> assertCode, string format, LogTarget logTarget, params object[] args)
@@ -543,6 +902,7 @@ namespace Battle.QSimulation
         }
 
         #endregion Public Static Assert Methods
+        /// @}
 
         /// @anchor BattleDebugLogger-LogMethods
         /// @name Log Methods
@@ -555,13 +915,15 @@ namespace Battle.QSimulation
         /// <summary>
         /// Logs the given <paramref name="message"/>.<br/>
         /// Uses the source given when creating a BattleDebugLogger instance to format the Log message.<br/>
-        /// Output Log message: [%Battle] [(source)] (message)
+        /// Output Log message: [%Battle] [(source)] (message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
         /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
         /// <param name="message">The message that is Logged.</param>
+        /// <param name="logTarget">The target output console.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Log(string message, LogTarget logTarget = LogTarget.UnityConsole)
         {
@@ -572,7 +934,8 @@ namespace Battle.QSimulation
         /// <summary>
         /// Logs the given <paramref name="message"/>.<br/>
         /// Uses the given %Quantum frame <paramref name="f"/> and the source given when creating a BattleDebugLogger instance to format the Log message.<br/>
-        /// Output Log message: [%Battle] [(frame number)] [(source)] (message)
+        /// Output Log message: [%Battle] [(frame number)] [(source)] (message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
         /// @ref BattleDebugLogger-LogMethods
         ///
@@ -580,17 +943,12 @@ namespace Battle.QSimulation
         ///
         /// <param name="f">The %Quantum frame used when formatting the Log message.</param>
         /// <param name="message">The message that is Logged.</param>
+        /// <param name="logTarget">The target output console.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Log(Frame f, string message, LogTarget logTarget = LogTarget.UnityConsole)
         {
             if (logTarget.HasFlag(LogTarget.UnityConsole)) Debug.LogFormat(_instanceFormatUnity, f.Number, message);
             if (logTarget.HasFlag(LogTarget.OnScreenConsole)) s_addLogToOnScreenConsoleFnRef(LogType.Log, string.Format(_instanceSourceFormatOnScreen, f.Number), message);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void LogFormat(string format, params object[] args)
-        {
-            Log(string.Format(format, args));
         }
 
         /// <summary>
@@ -605,15 +963,28 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void LogFormat(string format, params object[] args)
+        {
+            Log(string.Format(format, args));
+        }
+
+        /// <summary>
+        /// Logs a formatted message based on the given <paramref name="format"/> and <paramref name="args"/><br/>
+        /// Uses the source given when creating a BattleDebugLogger instance to format the Log message.<br/>
+        /// Output Log message: [%Battle] [(source)] (formatted message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
+        /// </summary>
+        /// @ref BattleDebugLogger-LogMethods
+        ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
+        ///
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
+        /// <param name="logTarget">The target output console.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void LogFormat(string format, LogTarget logTarget, params object[] args)
         {
             Log(string.Format(format, args), logTarget);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void LogFormat(Frame f, string format, params object[] args)
-        {
-            Log(f, string.Format(format, args));
         }
 
         /// <summary>
@@ -629,6 +1000,26 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void LogFormat(Frame f, string format, params object[] args)
+        {
+            Log(f, string.Format(format, args));
+        }
+
+        /// <summary>
+        /// Logs a formatted message based on the given <paramref name="format"/> and <paramref name="args"/><br/>
+        /// Uses the given %Quantum frame <paramref name="f"/> and the source given when creating a BattleDebugLogger instance to format the Log message.<br/>
+        /// Output Log message: [%Battle] [(frame number)] [(source)] (formatted message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
+        /// </summary>
+        /// @ref BattleDebugLogger-LogMethods
+        ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
+        ///
+        /// <param name="f">The %Quantum frame used when formatting the Log message.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
+        /// <param name="logTarget">The target output console.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void LogFormat(Frame f, string format, LogTarget logTarget, params object[] args)
         {
             Log(f, string.Format(format, args), logTarget);
@@ -637,13 +1028,15 @@ namespace Battle.QSimulation
         /// <summary>
         /// Logs the given <paramref name="message"/> as a Warning.<br/>
         /// Uses the source given when creating a BattleDebugLogger instance to format the Warning Log message.<br/>
-        /// Output Warning Log message: [%Battle] [(source)] (message)
+        /// Output Warning Log message: [%Battle] [(source)] (message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
         /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
         /// <param name="message">The message that is Logged.</param>
+        /// <param name="logTarget">The target output console.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Warning(string message, LogTarget logTarget = LogTarget.UnityConsole)
         {
@@ -654,7 +1047,8 @@ namespace Battle.QSimulation
         /// <summary>
         /// Logs the given <paramref name="message"/> as a Warning.<br/>
         /// Uses the given %Quantum frame <paramref name="f"/> and the source given when creating a BattleDebugLogger instance to format the Warning Log message.<br/>
-        /// Output Warning Log message: [%Battle] [(frame number)] [(source)] (message)
+        /// Output Warning Log message: [%Battle] [(frame number)] [(source)] (message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
         /// @ref BattleDebugLogger-LogMethods
         ///
@@ -662,17 +1056,12 @@ namespace Battle.QSimulation
         ///
         /// <param name="f">The %Quantum frame used when formatting the Warning Log message.</param>
         /// <param name="message">The message that is Logged.</param>
+        /// <param name="logTarget">The target output console.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Warning(Frame f, string message, LogTarget logTarget = LogTarget.UnityConsole)
         {
             if (logTarget.HasFlag(LogTarget.UnityConsole)) Debug.LogWarningFormat(_instanceFormatUnity, f.Number, message);
             if (logTarget.HasFlag(LogTarget.OnScreenConsole)) s_addLogToOnScreenConsoleFnRef(LogType.Warning, string.Format(_instanceSourceFormatOnScreen, f.Number), message);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WarningFormat(string format, params object[] args)
-        {
-            Warning(string.Format(format, args));
         }
 
         /// <summary>
@@ -687,15 +1076,28 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WarningFormat(string format, params object[] args)
+        {
+            Warning(string.Format(format, args));
+        }
+
+        /// <summary>
+        /// Logs a formatted message based on the given <paramref name="format"/> and <paramref name="args"/> as a Warning.<br/>
+        /// Uses the source given when creating a BattleDebugLogger instance to format the Warning Log message.<br/>
+        /// Output Warning Log message: [%Battle] [(source)] (formatted message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
+        /// </summary>
+        /// @ref BattleDebugLogger-LogMethods
+        ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
+        ///
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
+        /// <param name="logTarget">The target output console.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WarningFormat(string format, LogTarget logTarget, params object[] args)
         {
             Warning(string.Format(format, args), logTarget);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WarningFormat(Frame f, string format, params object[] args)
-        {
-            Warning(f, string.Format(format, args));
         }
 
         /// <summary>
@@ -711,6 +1113,26 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WarningFormat(Frame f, string format, params object[] args)
+        {
+            Warning(f, string.Format(format, args));
+        }
+
+        /// <summary>
+        /// Logs a formatted message based on the given <paramref name="format"/> and <paramref name="args"/> as a Warning.<br/>
+        /// Uses the given %Quantum frame <paramref name="f"/> and the source given when creating a BattleDebugLogger instance to format the Warning Log message.<br/>
+        /// Output Warning Log message: [%Battle] [(frame number)] [(source)] (formatted message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
+        /// </summary>
+        /// @ref BattleDebugLogger-LogMethods
+        ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
+        ///
+        /// <param name="f">The %Quantum frame used when formatting the Warning Log message.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
+        /// <param name="logTarget">The target output console.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WarningFormat(Frame f, string format, LogTarget logTarget, params object[] args)
         {
             Warning(f, string.Format(format, args), logTarget);
@@ -719,13 +1141,15 @@ namespace Battle.QSimulation
         /// <summary>
         /// Logs the given <paramref name="message"/> as an Error.<br/>
         /// Uses the source given when creating a BattleDebugLogger instance to format the Error Log message.<br/>
-        /// Output Error Log message: [%Battle] [(source)] (message)
+        /// Output Error Log message: [%Battle] [(source)] (message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
         /// @ref BattleDebugLogger-LogMethods
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
         /// <param name="message">The message that is Logged.</param>
+        /// <param name="logTarget">The target output console.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Error(string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
         {
@@ -736,7 +1160,8 @@ namespace Battle.QSimulation
         /// <summary>
         /// Logs the given <paramref name="message"/> as an Error.<br/>
         /// Uses the given %Quantum frame <paramref name="f"/> and the source given when creating a BattleDebugLogger instance to format the Error Log message.<br/>
-        /// Output Error Log message: [%Battle] [(frame number)] [(source)] (message)
+        /// Output Error Log message: [%Battle] [(frame number)] [(source)] (message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
         /// @ref BattleDebugLogger-LogMethods
         ///
@@ -744,17 +1169,12 @@ namespace Battle.QSimulation
         ///
         /// <param name="f">The %Quantum frame used when formatting the Error Log message.</param>
         /// <param name="message">The message that is Logged.</param>
+        /// <param name="logTarget">The target output console.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Error(Frame f, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
         {
             if (logTarget.HasFlag(LogTarget.UnityConsole)) Debug.LogErrorFormat(_instanceFormatUnity, f.Number, message);
             if (logTarget.HasFlag(LogTarget.OnScreenConsole)) s_addLogToOnScreenConsoleFnRef(LogType.Error, string.Format(_instanceSourceFormatOnScreen, f.Number), message);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void ErrorFormat(string format, params object[] args)
-        {
-            Error(string.Format(format, args));
         }
 
         /// <summary>
@@ -769,15 +1189,28 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void ErrorFormat(string format, params object[] args)
+        {
+            Error(string.Format(format, args));
+        }
+
+        /// <summary>
+        /// Logs a formatted message based on the given <paramref name="format"/> and <paramref name="args"/> as an Error.<br/>
+        /// Uses the source given when creating a BattleDebugLogger instance to format the Error Log message.<br/>
+        /// Output Error Log message: [%Battle] [(source)] (formatted message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
+        /// </summary>
+        /// @ref BattleDebugLogger-LogMethods
+        ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
+        ///
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
+        /// <param name="logTarget">The target output console.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ErrorFormat(string format, LogTarget logTarget, params object[] args)
         {
             Error(string.Format(format, args), logTarget);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void ErrorFormat(Frame f, string format, params object[] args)
-        {
-            Error(f, string.Format(format, args));
         }
 
         /// <summary>
@@ -793,6 +1226,26 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void ErrorFormat(Frame f, string format, params object[] args)
+        {
+            Error(f, string.Format(format, args));
+        }
+
+        /// <summary>
+        /// Logs a formatted message based on the given <paramref name="format"/> and <paramref name="args"/> as an Error.<br/>
+        /// Uses the given %Quantum frame <paramref name="f"/> and the source given when creating a BattleDebugLogger instance to format the Error Log message.<br/>
+        /// Output Error Log message: [%Battle] [(frame number)] [(source)] (formatted message)<br/>
+        /// Output console can be chosen by using <paramref name="logTarget"/>.
+        /// </summary>
+        /// @ref BattleDebugLogger-LogMethods
+        ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
+        ///
+        /// <param name="f">The %Quantum frame used when formatting the Error Log message.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
+        /// <param name="logTarget">The target output console.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ErrorFormat(Frame f, string format, LogTarget logTarget, params object[] args)
         {
             Error(f, string.Format(format, args), logTarget);
@@ -801,8 +1254,28 @@ namespace Battle.QSimulation
         #endregion Public Log Methods
         /// @}
 
+        /// @anchor BattleDebugLogger-AssertMethods
+        /// @name Assert Methods
+        /// Public Assert methods that can only be used with a BattleDebugLogger instance.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        /// @{
         #region Public Assert Methods
 
+        /// <summary>
+        /// Asserts that <paramref name="condition"/> is true during debugging
+        /// and logs an <see cref="Error(string, LogTarget)"/> log message if it is false.<br/>
+        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-AssertMethods
+        ///
+        /// When assertion fails, logs an error using <see cref="Error(string, LogTarget)"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="condition">Condition must be true, otherwise logs an error.</param>
+        /// <param name="message">The message that is Logged.</param>
+        /// <param name="logTarget">The target output console.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssert(bool condition, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
@@ -813,6 +1286,21 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="condition"/> is true during debugging
+        /// and logs an <see cref="Error(Frame, string, LogTarget)"/> log message if it is false.<br/>
+        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-AssertMethods
+        ///
+        /// When assertion fails, logs an error using <see cref="Error(Frame, string, LogTarget)"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="f">The %Quantum frame used when formatting the Error Log message.</param>
+        /// <param name="condition">Condition must be true, otherwise logs an error.</param>
+        /// <param name="message">The message that is Logged.</param>
+        /// <param name="logTarget">The target output console.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssert(Frame f, bool condition, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
@@ -823,6 +1311,21 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="assertCode"/> returns true during debugging
+        /// and logs an <see cref="Error(string, LogTarget)"/> log message if it is false.<br/>
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-AssertMethods
+        ///
+        /// Runs assertion code which can be any complicated check.<br/>
+        /// When assertion code fails, logs an error using <see cref="Error(string, LogTarget)"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="assertCode">Assertion code must return true, otherwise logs an error.</param>
+        /// <param name="message">The message that is Logged.</param>
+        /// <param name="logTarget">The target output console.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssert(Func<bool> assertCode, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
@@ -833,6 +1336,22 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="assertCode"/> returns true during debugging
+        /// and logs an <see cref="Error(Frame, string, LogTarget)"/> log message if it is false.<br/>
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-AssertMethods
+        ///
+        /// Runs assertion code which can be any complicated check.<br/>
+        /// When assertion code fails, logs an error using <see cref="Error(Frame, string, LogTarget)"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="f">The %Quantum frame used when formatting the Error Log message.</param>
+        /// <param name="assertCode">Assertion code must return true, otherwise logs an error.</param>
+        /// <param name="message">The message that is Logged.</param>
+        /// <param name="logTarget">The target output console.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssert(Frame f, Func<bool> assertCode, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
@@ -843,6 +1362,20 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="condition"/> is true during debugging
+        /// and logs an <see cref="ErrorFormat(string, object[])"/> log message if it is false.<br/>
+        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-AssertMethods
+        ///
+        /// When assertion fails, logs an error using <see cref="ErrorFormat(string, object[])"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="condition">Condition must be true, otherwise logs an error.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssertFormat(bool condition, string format, params object[] args)
@@ -853,6 +1386,21 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="condition"/> is true during debugging
+        /// and logs an <see cref="ErrorFormat(string, LogTarget, object[])"/> log message if it is false.<br/>
+        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-AssertMethods
+        ///
+        /// When assertion fails, logs an error using <see cref="ErrorFormat(string, LogTarget, object[])"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="condition">Condition must be true, otherwise logs an error.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="logTarget">The target output console.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssertFormat(bool condition, string format, LogTarget logTarget, params object[] args)
@@ -863,6 +1411,21 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="condition"/> is true during debugging
+        /// and logs an <see cref="ErrorFormat(Frame, string, object[])"/> log message if it is false.<br/>
+        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-AssertMethods
+        ///
+        /// When assertion fails, logs an error using <see cref="ErrorFormat(Frame, string, object[])"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="f">The %Quantum frame used when formatting the Error Log message.</param>
+        /// <param name="condition">Condition must be true, otherwise logs an error.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssertFormat(Frame f, bool condition, string format, params object[] args)
@@ -873,6 +1436,22 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="condition"/> is true during debugging
+        /// and logs an <see cref="ErrorFormat(Frame, string, LogTarget, object[])"/> log message if it is false.<br/>
+        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-AssertMethods
+        ///
+        /// When assertion fails, logs an error using <see cref="ErrorFormat(Frame, string, LogTarget, object[])"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="f">The %Quantum frame used when formatting the Error Log message.</param>
+        /// <param name="condition">Condition must be true, otherwise logs an error.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="logTarget">The target output console.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssertFormat(Frame f, bool condition, string format, LogTarget logTarget, params object[] args)
@@ -883,6 +1462,21 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="assertCode"/> returns true during debugging
+        /// and logs an <see cref="ErrorFormat(string, object[])"/> log message if it is false.<br/>
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-AssertMethods
+        ///
+        /// Runs assertion code which can be any complicated check.<br/>
+        /// When assertion code fails, logs an error using <see cref="ErrorFormat(string, object[])"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="assertCode">Assertion code must return true, otherwise logs an error.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssertFormat(Func<bool> assertCode, string format, params object[] args)
@@ -893,6 +1487,22 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="assertCode"/> returns true during debugging
+        /// and logs an <see cref="ErrorFormat(string, LogTarget, object[])"/> log message if it is false.<br/>
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-AssertMethods
+        ///
+        /// Runs assertion code which can be any complicated check.<br/>
+        /// When assertion code fails, logs an error using <see cref="ErrorFormat(string, LogTarget, object[])"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="assertCode">Assertion code must return true, otherwise logs an error.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="logTarget">The target output console.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssertFormat(Func<bool> assertCode, string format, LogTarget logTarget, params object[] args)
@@ -903,6 +1513,22 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="assertCode"/> returns true during debugging
+        /// and logs an <see cref="ErrorFormat(Frame, string, object[])"/> log message if it is false.<br/>
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-AssertMethods
+        ///
+        /// Runs assertion code which can be any complicated check.<br/>
+        /// When assertion code fails, logs an error using <see cref="ErrorFormat(Frame, string, object[])"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="f">The %Quantum frame used when formatting the Error Log message.</param>
+        /// <param name="assertCode">Assertion code must return true, otherwise logs an error.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssertFormat(Frame f, Func<bool> assertCode, string format, params object[] args)
@@ -913,6 +1539,23 @@ namespace Battle.QSimulation
             }
         }
 
+        /// <summary>
+        /// Asserts that <paramref name="assertCode"/> returns true during debugging
+        /// and logs an <see cref="ErrorFormat(Frame, string, LogTarget, object[])"/> log message if it is false.<br/>
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// </summary>
+        /// @ref BattleDebugLogger-AssertMethods
+        ///
+        /// Runs assertion code which can be any complicated check.<br/>
+        /// When assertion code fails, logs an error using <see cref="ErrorFormat(Frame, string, LogTarget, object[])"/> method.
+        ///
+        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert methods" for more info.
+        ///
+        /// <param name="f">The %Quantum frame used when formatting the Error Log message.</param>
+        /// <param name="assertCode">Assertion code must return true, otherwise logs an error.</param>
+        /// <param name="format">The message string to be Logged after formatting.</param>
+        /// <param name="logTarget">The target output console.</param>
+        /// <param name="args">The arguments for formatting the message string.</param>
         [Conditional("DEBUG_ASSERT")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssertFormat(Frame f, Func<bool> assertCode, string format, LogTarget logTarget, params object[] args)
@@ -924,10 +1567,11 @@ namespace Battle.QSimulation
         }
 
         #endregion Public Assert Methods
+        /// @}
 
-        /// <summary>Constant format for log messages when called through static methods.</summary>
+        /// <summary>Constant format for Log messages when called through static methods.</summary>
         private const string StaticFormatUnity                          = "[Battle] [{0:D6}] [{1}] {2}";
-        /// <summary>Constant format for log messages when called through static methods with no %Quantum frame given.</summary>
+        /// <summary>Constant format for Log messages when called through static methods with no %Quantum frame given.</summary>
         private const string StaticFormatUnityNoFrame                   = "[Battle] [{0}] {1}";
         /// <summary>Constant format template for Log messages used to create the message format when creating a BattleDebugLogger instance.</summary>
         private const string InstanceFormatUnityTemplate                = "[Battle] [{{0:D6}}] [{0}] {{1}}";
@@ -935,13 +1579,13 @@ namespace Battle.QSimulation
         private const string InstanceFormatUnityNoFrameTemplate         = "[Battle] [{0}] {{0}}";
 
 
-        /// <summary>Constant format for log messages when called through static methods.</summary>
+        /// <summary>Constant format for on-screen Log messages when called through static methods.</summary>
         private const string StaticSourceFormatOnScreen                  = "[{0:D6}] [{1}]";
-        /// <summary>Constant format for log messages when called through static methods with no %Quantum frame given.</summary>
+        /// <summary>Constant format for on-screen Log messages when called through static methods with no %Quantum frame given.</summary>
         private const string StaticSourceFormatOnScreenNoFrame           = "[{0}]";
-        /// <summary>Constant format template for Log messages used to create the message format when creating a BattleDebugLogger instance.</summary>
+        /// <summary>Constant format template for on-screen Log messages used to create the message format when creating a BattleDebugLogger instance.</summary>
         private const string InstanceSourceFormatOnScreenTemplate        = "[{{0:D6}}] [{0}]";
-        /// <summary>Constant format template for Log messages used to create the no %Quantum frame message format when creating a BattleDebugLogger instance.</summary>
+        /// <summary>Constant format template for on-screen Log messages used to create the no %Quantum frame message format when creating a BattleDebugLogger instance.</summary>
         private const string InstanceSourceFormatOnScreenNoFrameTemplate = "[{0}]";
 
         /// <summary>Saved Log message format, set when creating a BattleDebugLogger instance.</summary>
@@ -949,11 +1593,12 @@ namespace Battle.QSimulation
         /// <summary>Saved no %Quantum frame Log message format, set when creating a BattleDebugLogger instance.</summary>
         private readonly string _instanceFormatUnityNoFrame;
 
-        /// <summary>Saved Log message format, set when creating a BattleDebugLogger instance.</summary>
+        /// <summary>Saved on-screen Log message format, set when creating a BattleDebugLogger instance.</summary>
         private readonly string _instanceSourceFormatOnScreen;
-        /// <summary>Saved no %Quantum frame Log message format, set when creating a BattleDebugLogger instance.</summary>
+        /// <summary>Saved no %Quantum frame on-screen Log message format, set when creating a BattleDebugLogger instance.</summary>
         private readonly string _instanceSourceFormatOnScreenNoFrame;
 
+        /// <summary>Function reference to <see cref="Battle.View.UI.BattleUiDebugConsoleHandler.AddLog">BattleUiDebugConsoleHandler.AddLog</see>.</summary>
         private static Action<LogType, string, string> s_addLogToOnScreenConsoleFnRef;
 
         /// <summary>
