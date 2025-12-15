@@ -330,7 +330,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6953732945845760404}
   - component: {fileID: 5279864431135113409}
-  - component: {fileID: 871886554033393077}
+  - component: {fileID: 7644326366261742650}
   m_Layer: 0
   m_Name: Content
   m_TagString: Untagged
@@ -353,7 +353,7 @@ RectTransform:
   m_Father: {fileID: 6757148182920504816}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
@@ -369,9 +369,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalFit: 0
+  m_HorizontalFit: 2
   m_VerticalFit: 0
---- !u!114 &871886554033393077
+--- !u!114 &7644326366261742650
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -380,32 +380,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 421959979289178802}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89724a78097b7c54e8309e0280f755c7, type: 3}
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
     m_Left: 0
     m_Right: 0
-    m_Top: 10
-    m_Bottom: 10
+    m_Top: 0
+    m_Bottom: 0
   m_ChildAlignment: 3
-  _startCorner: 0
-  _gridFit: 3
-  _minDynamicColumns: 2
-  _maxDynamicColumns: 4
-  _minDynamicRows: 2
-  _maxDynamicRows: 4
-  _columnAmount: 1
-  _rowAmount: 2
-  _gridCellSize: 1
-  _minCellSize: {x: 50, y: 50}
-  _maxCellSize: {x: 50, y: 50}
-  _preferredCellSize: {x: 0, y: 0}
-  _cellAspectRatio: 1
-  _prefab: {fileID: 0}
-  _cellSpacing: {x: 10, y: 10}
-  _preventScalingOutOfParentBounds: 0
-  _setLayoutElementPreferredSize: 0
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 100, y: 100}
+  m_Spacing: {x: 0, y: 0}
+  m_Constraint: 2
+  m_ConstraintCount: 2
 --- !u!1 &461384785420813752
 GameObject:
   m_ObjectHideFlags: 0
@@ -2494,8 +2483,8 @@ GameObject:
   - component: {fileID: 6793832228989784560}
   - component: {fileID: 8510645619658458094}
   - component: {fileID: 1331890393510774319}
-  - component: {fileID: 3593095164721151397}
   - component: {fileID: 9613805567932932}
+  - component: {fileID: 2041666044855621765}
   m_Layer: 0
   m_Name: FeatureGrid
   m_TagString: Untagged
@@ -2561,37 +2550,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3593095164721151397
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3122048933972789589}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86a6ac2cbdfc56347bcf51ef5592b643, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  content: {fileID: 6953732945845760404}
-  horizontallyScrollable: 1
-  verticallyScrollable: 1
-  scrollingMovementType: 1
-  elasticity: 0.1
-  inertia: 1
-  decelerationRate: 0.135
-  scrollSensitivity: 1
-  viewportRectTransform: {fileID: 6757148182920504816}
-  horizontalScrollbar: {fileID: 0}
-  verticalScrollbar: {fileID: 0}
-  horizontalScrollbarVisibility: 0
-  verticalScrollbarVisibility: 0
-  horizontalScrollbarSpacing: 0
-  verticalScrollbarSpacing: 0
-  forwardUnusedEventsToContainer: 0
-  onValueChanged:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &9613805567932932
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2610,9 +2568,47 @@ MonoBehaviour:
   _gridCellPrefab: {fileID: 90728682598853689, guid: 69cf2c325ff7d4e4eb01540c8a82384c,
     type: 3}
   _featurePicker: {fileID: 5559116631486768876}
+  _avatarEditorController: {fileID: 814479154280025250}
+  _featureGrid: {fileID: 6793832228989784560}
+  _gridLayoutGroup: {fileID: 7644326366261742650}
+  _scrollrect: {fileID: 2041666044855621765}
+  _viewPort: {fileID: 6757148182920504816}
+  _horizontalPadding: 0.042
+  _verticalPadding: 0.0504
+  _verticalSpacing: 0.033
+  _horizontalSpacing: 0.033
   _highlightColor: {r: 0.14351194, g: 0.7075472, b: 0.26663968, a: 0.5}
   _backgroundColor: {r: 0.7490195, g: 0.7490195, b: 0.7490195, a: 0.59607846}
-  _avatarEditorController: {fileID: 814479154280025250}
+--- !u!114 &2041666044855621765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3122048933972789589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Content: {fileID: 6953732945845760404}
+  m_Horizontal: 1
+  m_Vertical: 0
+  m_MovementType: 1
+  m_Elasticity: 0.1
+  m_Inertia: 1
+  m_DecelerationRate: 0.135
+  m_ScrollSensitivity: 1
+  m_Viewport: {fileID: 6757148182920504816}
+  m_HorizontalScrollbar: {fileID: 0}
+  m_VerticalScrollbar: {fileID: 0}
+  m_HorizontalScrollbarVisibility: 0
+  m_VerticalScrollbarVisibility: 0
+  m_HorizontalScrollbarSpacing: 0
+  m_VerticalScrollbarSpacing: 0
+  m_OnValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &3166851151785697890
 GameObject:
   m_ObjectHideFlags: 0
@@ -3873,7 +3869,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 41.45
+  m_fontSize: 39.85
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4603,7 +4599,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 41.45
+  m_fontSize: 39.85
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5529,7 +5525,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 41.45
+  m_fontSize: 39.85
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5680,7 +5676,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50.25
+  m_fontSize: 48.9
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

@@ -11,12 +11,20 @@ namespace MenuUi.Scripts.AvatarEditor
     public class ScrollBarFeatureLoader : MonoBehaviour
     {
         [SerializeField] private AvatarPartsReference _avatarPartsReference;
-        [SerializeField] private Transform _featureGridContent;
+        [SerializeField] private RectTransform _featureGridContent;
         [SerializeField] private GameObject _gridCellPrefab;
         [SerializeField] private FeaturePicker _featurePicker;
+        [SerializeField] private AvatarEditorController _avatarEditorController;
+        [SerializeField] private RectTransform _featureGrid;
+        [SerializeField] private GridLayoutGroup _gridLayoutGroup;
+        [SerializeField] private ScrollRect _scrollrect;
+        [SerializeField] private RectTransform _viewPort;
+        [SerializeField, Range(0f, 0.3f)] private float _horizontalPadding = 0.1f;
+        [SerializeField, Range(0f, 0.2f)] private float _verticalPadding = 0.05f;
+        [SerializeField, Range(0f, 0.3f)] private float _verticalSpacing = 0.05f;
+        [SerializeField, Range(0f, 0.3f)] private float _horizontalSpacing = 0.05f;
         [SerializeField] private Color _highlightColor = new(0f, 0f, 0f, 0.5f);
         [SerializeField] private Color _backgroundColor = new(0.5f, 0.5f, 0.5f, 0.7f);
-        [SerializeField] private AvatarEditorController _avatarEditorController;
 
         private List<AvatarPartInfo> _avatarPartInfo;
         private List<string> _allAvatarCategoryIds;
@@ -24,7 +32,14 @@ namespace MenuUi.Scripts.AvatarEditor
         private bool _isSelectedFeature = false;
         private PlayerAvatar _playeravatar;
         private GridCellHandler _selectedCellHandler;
-        
+        private float _cellHeight;
+        private float _actualVerticalSpacing;
+        private float _actualHorizontalSpacing;
+        private float _actualVerticalPadding;
+        private float _viewPortHeight;
+        private float _contentWidth;
+        private int _rowAmount = 2;
+
 
         // Start is called before the first frame update
         void Start()
@@ -41,6 +56,27 @@ namespace MenuUi.Scripts.AvatarEditor
                 { "32", 5 }, // Hands
                 { "33", 6 }  // Feet
             };
+        }
+
+        public void UpdateCellSize()
+        {
+            _viewPortHeight = _viewPort.rect.height;
+            _actualHorizontalSpacing = _horizontalSpacing * _scrollrect.viewport.rect.width;
+            _actualVerticalSpacing = _verticalSpacing * _viewPortHeight;
+            _actualVerticalPadding = _verticalPadding * _featureGrid.rect.height;
+            _gridLayoutGroup.spacing = new Vector2(_actualHorizontalSpacing, _actualVerticalSpacing);
+            _gridLayoutGroup.padding.left = Mathf.CeilToInt(_horizontalPadding * _scrollrect.viewport.rect.width);
+            _gridLayoutGroup.padding.right = Mathf.CeilToInt(_horizontalPadding * _scrollrect.viewport.rect.width);
+            _gridLayoutGroup.padding.top = Mathf.CeilToInt(_actualVerticalPadding);
+            _gridLayoutGroup.padding.bottom = Mathf.CeilToInt(_actualVerticalPadding);
+
+            _cellHeight = (_viewPortHeight
+                - _gridLayoutGroup.padding.top
+                - _gridLayoutGroup.padding.bottom
+                - (_rowAmount - 1) * _actualVerticalSpacing)
+                / _rowAmount;
+
+            _gridLayoutGroup.cellSize = new Vector2(_cellHeight, _cellHeight);
         }
 
         private void AddFeatureCell(Sprite cellImage, AvatarPartInfo avatarPart)

@@ -25,6 +25,7 @@ namespace MenuUi.scripts.AvatarEditor
             _categoryLoader.UpdateCellSize();
             _colorLoader.SetColorCells();
             _colorLoader.UpdateCellSize();
+            _featureLoader.UpdateCellSize();
 
             StartCoroutine(Wait());
         }
