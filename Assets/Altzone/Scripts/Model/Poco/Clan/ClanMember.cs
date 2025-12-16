@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using Assets.Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Model.Poco.Player;
 using Newtonsoft.Json;
 
@@ -32,6 +33,9 @@ namespace Altzone.Scripts.Model.Poco.Clan
             _name = player.name;
             _player = player;
         }
+
+        public AvatarData AvatarData =>
+            _player.avatar != null ? new AvatarData(Name, _player.avatar) : null;
 
         public PlayerData GetPlayerData()
         {
