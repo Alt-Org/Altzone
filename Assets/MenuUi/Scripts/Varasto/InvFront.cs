@@ -34,6 +34,7 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private List<Sprite> _icons; // Place images in this list for use as icons, but also, the exact name of the image must be set in the GameFurniture string Filename
         [SerializeField] private StorageFurnitureReference _furnitureReference;
 
+        [SerializeField] private DailyTaskSelectButtons _dailyTaskSelectButtons;
 
         [Header("Information GameObject")]
         [SerializeField] private Image _icon;
@@ -279,6 +280,7 @@ namespace MenuUi.Scripts.Storage
 
         private void MakeSlots()
         {
+            if (_dailyTaskSelectButtons) _dailyTaskSelectButtons.ResetList();
             for (int i = 0; i < _items.Count; i++)
             {
                 GameObject newSlot = Instantiate(_invSlot, _content);
@@ -290,7 +292,9 @@ namespace MenuUi.Scripts.Storage
                     OnShowInfo(capturedSlotVal);
                 });
                 _slotsList.Add(newSlot);
+                if (_dailyTaskSelectButtons) _dailyTaskSelectButtons.AddButton(new(newSlot.GetComponent<Button>(), newSlot.GetComponent<InvSlotInfoHandler>().Icon));
             }
+            if (_dailyTaskSelectButtons) _dailyTaskSelectButtons.RefreshListeners();
             //Instantiate(_buySlot, _content);
         }
 

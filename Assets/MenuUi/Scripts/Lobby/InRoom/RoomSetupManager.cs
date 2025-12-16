@@ -254,10 +254,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
             {
                 characterIds[i] = (int)battleCharacter[i].Id;
             }
-            foreach (var characterId in characterIds)
+            /*foreach (var characterId in characterIds)
             {
                 Debug.LogWarning(characterId);
-            }
+            }*/
             return characterIds;
         }
 

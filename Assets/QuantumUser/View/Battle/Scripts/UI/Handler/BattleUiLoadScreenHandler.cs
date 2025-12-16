@@ -53,12 +53,12 @@ namespace Battle.View.UI
         /// Changes the alpha of the player name on the loading screen to indicate the player has connected.
         /// </summary>
         ///
-        /// <param name="playerSlot">The slot of the player.</param>
+        /// <param name="slot">The slot of the player.</param>
         /// <param name="characterIds">An array of the character IDs of the players selected characters.</param>
         /// <param name="characterClasses">An array of the character classes of the players selected characters.</param>
-        public void PlayerConnected(BattlePlayerSlot playerSlot, int[] characterIds, int[] characterClasses)
+        public void PlayerConnected(BattlePlayerSlot slot, int[] characterIds, int[] characterClasses)
         {
-            int slotIndex = playerSlot switch
+            int slotIndex = slot switch
             {
                 BattlePlayerSlot.Slot1 => 0,
                 BattlePlayerSlot.Slot2 => 1,
@@ -67,7 +67,7 @@ namespace Battle.View.UI
                 _ => -1,
             };
 
-            int frameIndex = playerSlot switch
+            int frameIndex = slot switch
             {
                 BattlePlayerSlot.Slot1 => 0,
                 BattlePlayerSlot.Slot2 => 3,
@@ -86,7 +86,7 @@ namespace Battle.View.UI
                 _characterFrameComponents[frameIndex + i].SetCharacterFrame((BattlePlayerCharacterClass)characterClasses[i]);
             }
 
-            _playerNames[(int)playerSlot - 1].alpha = 1;
+            _playerNames[(int)slot - 1].alpha = 1;
         }
 
         /// <summary>

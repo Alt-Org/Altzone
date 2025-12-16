@@ -557,7 +557,36 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                 OnUpgradeMaterialAmountChanged.Invoke();
                 OnStatUpdated.Invoke(statType);
                 gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
-                gameObject.GetComponent<DailyTaskProgressListenerCharacterStats>().UpdateProgressByStatType(statType);
+                switch (statType)
+                {
+                    case StatType.Attack:
+                        if (TaskEducationActionType.MakeCharacterStrong == DailyTaskProgressManager.Instance.CurrentPlayerTask?.EducationActionType
+                            && _customCharacter.Attack == CustomCharacter.STATMAXLEVEL)
+                            DailyTaskProgressManager.Instance.UpdateTaskProgress(TaskEducationActionType.MakeCharacterStrong, "1");
+                        break;
+                    case StatType.Defence:
+                        if (TaskEducationActionType.MakeCharacterDurable == DailyTaskProgressManager.Instance.CurrentPlayerTask?.EducationActionType
+                            && _customCharacter.Defence == CustomCharacter.STATMAXLEVEL)
+                            DailyTaskProgressManager.Instance.UpdateTaskProgress(TaskEducationActionType.MakeCharacterDurable, "1");
+                        break;
+                    case StatType.CharacterSize:
+                        if (TaskEducationActionType.MakeCharacterBig == DailyTaskProgressManager.Instance.CurrentPlayerTask?.EducationActionType
+                            && _customCharacter.CharacterSize == CustomCharacter.STATMAXLEVEL)
+                            DailyTaskProgressManager.Instance.UpdateTaskProgress(TaskEducationActionType.MakeCharacterBig, "1");
+                        break;
+                    case StatType.Hp:
+                        if (TaskEducationActionType.MakeCharacterDurable == DailyTaskProgressManager.Instance.CurrentPlayerTask?.EducationActionType
+                            && _customCharacter.Hp == CustomCharacter.STATMAXLEVEL)
+                            DailyTaskProgressManager.Instance.UpdateTaskProgress(TaskEducationActionType.MakeCharacterDurable, "1");
+                        break;
+                    case StatType.Speed:
+                        if (TaskEducationActionType.MakeCharacterFast == DailyTaskProgressManager.Instance.CurrentPlayerTask?.EducationActionType
+                            && _customCharacter.Speed == CustomCharacter.STATMAXLEVEL)
+                            DailyTaskProgressManager.Instance.UpdateTaskProgress(TaskEducationActionType.MakeCharacterFast, "1");
+                        break;
+                    default:
+                        break;
+                }
             }
 
             return success;

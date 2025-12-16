@@ -55,7 +55,7 @@ namespace MenuUI.Scripts.SoulHome
             foreach (FurnitureListObject listObject in list.Get())
             {
                 GameObject furnitureObject = _furnitureRefrence.GetSoulHomeTrayFurnitureObject(listObject.Name);
-                if (furnitureObject == null) return;
+                if (furnitureObject == null) continue;
 
                 if (_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
                 GameObject furnitureSlot = Instantiate(_traySlotObject, _trayContent.transform);

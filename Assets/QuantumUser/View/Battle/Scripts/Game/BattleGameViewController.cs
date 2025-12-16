@@ -6,6 +6,9 @@
 /// This script:<br/>
 /// Initializes %Battle %UI elements, and controls their visibility and functionality.
 
+//#define DEBUG_OVERLAY_ENABLED_OVERRIDE
+//#define DEBUG_CONSOLE_ENABLED
+
 // Unity usings
 using UnityEngine;
 
@@ -14,7 +17,6 @@ using Quantum;
 using Photon.Deterministic;
 
 // Altzone usings
-using Altzone.Scripts.Audio;
 using Altzone.Scripts.BattleUiShared;
 using Altzone.Scripts.Lobby;
 
@@ -72,10 +74,6 @@ namespace Battle.View.Game
         /// @ref BattleGameViewController-SerializeFields
         [SerializeField] private BattleLightrayEffectViewController _lightrayEffectViewController;
 
-        /// <summary>[SerializeField] Reference to BattleSoundFXViewController which plays sound effects.</summary>
-        /// @ref BattleGameViewController-SerializeFields
-        [SerializeField] private BattleSoundFXViewController _soundFXViewController;
-
         /// <summary>[SerializeField] Reference to BattlePlayerInput which polls player input for %Quantum.</summary>
         /// @ref BattleGameViewController-SerializeFields
         [SerializeField] private BattlePlayerInput _playerInput;
@@ -88,14 +86,17 @@ namespace Battle.View.Game
 
         #region Public - Static Properties
 
-        /// <value>The local player's BattlePlayerSlot.</value>
+        /// <summary>The local player's BattlePlayerSlot.</summary>
         public static BattlePlayerSlot LocalPlayerSlot { get; private set; }
 
-        /// <value>The local player's BattleTeamNumber.</value>
+        /// <summary>The local player's BattleTeamNumber.</summary>
         public static BattleTeamNumber LocalPlayerTeam { get; private set; }
 
-        /// <value>Reference to the projectile's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</value>
+        /// <summary>Reference to the projectile's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</summary>
         public static GameObject ProjectileReference { get; private set; }
+
+        /// <summary>Reference to the UiController.</summary>
+        public static BattleUiController UiController => s_instance._uiController;
 
         #endregion Public - Static Properties
 
@@ -187,6 +188,9 @@ namespace Battle.View.Game
 
         #endregion Public
 
+        /// <summary>Private static reference to an instance of BattleGameViewController.</summary>
+        private static BattleGameViewController s_instance;
+
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private BattleDebugLogger _debugLogger;
 
@@ -210,11 +214,18 @@ namespace Battle.View.Game
         /// </summary>
         private void Awake()
         {
+            s_instance = this;
+
+            BattleDebugOverlay.Init();
+
             _debugLogger = BattleDebugLogger.Create<BattleGameViewController>();
 
             // Showing announcement handler and setting view pre-activate loading text
             _uiController.AnnouncementHandler.SetShow(true);
             _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.Loading);
+#if DEBUG_CONSOLE_ENABLED
+            _uiController.DebugConsoleHandler.SetShow(true);
+#endif
 
             // Subscribing to Game Flow events
             QuantumEvent.Subscribe<EventBattleViewWaitForPlayers>(this, QEventOnViewWaitForPlayers);
@@ -242,7 +253,6 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleGiveUpStateChange>(this, QEventOnGiveUpStateChange);
 
             // Subscribing to Debug events
-            QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
             QuantumEvent.Subscribe<EventBattleDebugOnScreenMessage>(this, QEventDebugOnScreenMessage);
         }
 
@@ -320,6 +330,8 @@ namespace Battle.View.Game
                 LocalPlayerSlot = BattlePlayerManager.PlayerHandle.GetSlot(f, playerRef);
                 LocalPlayerTeam = BattlePlayerManager.PlayerHandle.GetTeamNumber(LocalPlayerSlot);
             }
+
+            BattleDebugOverlayLink.SetLocalPlayerSlot(LocalPlayerSlot);
 
             // Initializing BattleGridViewController
             if (_gridViewController != null)
@@ -445,11 +457,12 @@ namespace Battle.View.Game
             if (_uiController.GiveUpButtonHandler != null) _uiController.GiveUpButtonHandler.SetShow(true);
             if (SettingsCarrier.Instance.BattleMovementInput == BattleMovementInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.MoveJoystick);
             if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.RotateJoystick);
-            if (SettingsCarrier.Instance.BattleShowDebugStatsOverlay) _uiController.DebugStatsOverlayHandler.SetShow(true);
-            /* These UI elements aren't ready and shouldn't be shown yet
-            if (_uiController.GiveUpButtonHandler != null) _uiController.GiveUpButtonHandler.SetShow(true);
-            */
+            if (SettingsCarrier.Instance.BattleShowDebugStatsOverlay) _uiController.DebugOverlayHandler.SetShow(true);
             if (_uiController.PlayerInfoHandler != null) _uiController.PlayerInfoHandler.SetShow(true);
+
+#if DEBUG_OVERLAY_ENABLED_OVERRIDE
+            _uiController.DebugOverlayHandler.SetShow(true);
+#endif
 
             // Load settings and set BattleCamera to show game scene with previously loaded settings
             BattleCamera.SetView(
@@ -458,7 +471,7 @@ namespace Battle.View.Game
                 LocalPlayerTeam == BattleTeamNumber.TeamBeta
             );
 
-            AudioManager.Instance.PlayMusic("Battle", MusicHandler.MusicSwitchType.Immediate);
+            BattleAudioViewController.PlayMusic();
         }
 
         /// <summary>
@@ -553,14 +566,13 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattlePlaySoundFX QuantumEvent.<br/>
-        /// Handles calling <see cref="Battle.View.Audio.BattleSoundFXViewController.PlaySound">PlaySound</see>
-        /// in <see cref="BattleGameViewController._soundFXViewController">_soundFXViewController</see>.
+        /// Handles calling <see cref="Battle.View.Audio.BattleAudioViewController.PlaySoundFX">PlaySound</see>
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
         private void QEventPlaySoundFX(EventBattlePlaySoundFX e)
         {
-            _soundFXViewController.PlaySound(e.Effect);
+            BattleAudioViewController.PlaySoundFX(e.Effect);
         }
 
         private void QEventCharacterSelected(EventBattleCharacterSelected e)
@@ -617,23 +629,6 @@ namespace Battle.View.Game
         }
 
         /// <summary>
-        /// Private handler method for EventBattleDebugUpdateStatsOverlay QuantumEvent.<br/>
-        /// Handles setting stats
-        /// to <see cref="Battle.View.UI.BattleUiController.DebugStatsOverlayHandler"/>
-        /// in <see cref="BattleGameViewController._uiController">_uiController</see>
-        /// using <see cref="Battle.View.UI.BattleUiDebugStatsOverlayHandler.SetStats">SetStats</see> method.
-        /// </summary>
-        ///
-        /// <param name="e">The event data.</param>
-        private void QEventDebugOnUpdateStatsOverlay(EventBattleDebugUpdateStatsOverlay e)
-        {
-            if (!SettingsCarrier.Instance.BattleShowDebugStatsOverlay) return;
-            if (e.Slot != LocalPlayerSlot) return;
-
-            _uiController.DebugStatsOverlayHandler.SetStats(e.Stats);
-        }
-
-        /// <summary>
         /// Private handler method for EventBattleDebugOnScreenMessage QuantumEvent.<br/>
         /// Handles calling <see cref="Battle.View.UI.BattleUiAnnouncementHandler.SetDebugtext">SetDebugtext</see>
         /// in <see cref="BattleGameViewController._uiController">_uiController's</see> BattleUiController::AnnouncementHandler.
@@ -647,7 +642,7 @@ namespace Battle.View.Game
 
         /// @}
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.Update.html">Update@u-exlink</a> method. Handles %UI updates based on the game's state and countdown.

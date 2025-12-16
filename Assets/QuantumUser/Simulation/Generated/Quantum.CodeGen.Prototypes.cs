@@ -678,6 +678,7 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.Input))]
   public unsafe partial class InputPrototype : StructPrototype {
     public QBoolean IsValid;
+    public Int32 DebugNumber;
     public Quantum.QEnum32<BattleMovementInputType> MovementInput;
     public QBoolean MovementDirectionIsNormalized;
     public Quantum.Prototypes.BattleGridPositionPrototype MovementPositionTarget;
@@ -685,12 +686,13 @@ namespace Quantum.Prototypes {
     public FPVector2 MovementDirection;
     public QBoolean RotationInput;
     public FP RotationValue;
+    public QBoolean AbilityActivate;
     public Int32 PlayerCharacterNumber;
     public QBoolean GiveUpInput;
-    public QBoolean AbilityActivate;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
         result.IsValid = this.IsValid;
+        result.DebugNumber = this.DebugNumber;
         result.MovementInput = this.MovementInput;
         result.MovementDirectionIsNormalized = this.MovementDirectionIsNormalized;
         this.MovementPositionTarget.Materialize(frame, ref result.MovementPositionTarget, in context);
@@ -698,9 +700,9 @@ namespace Quantum.Prototypes {
         result.MovementDirection = this.MovementDirection;
         result.RotationInput = this.RotationInput;
         result.RotationValue = this.RotationValue;
+        result.AbilityActivate = this.AbilityActivate;
         result.PlayerCharacterNumber = this.PlayerCharacterNumber;
         result.GiveUpInput = this.GiveUpInput;
-        result.AbilityActivate = this.AbilityActivate;
         MaterializeUser(frame, ref result, in context);
     }
   }
