@@ -7,6 +7,7 @@
 /// Initializes %Battle %UI elements, and controls their visibility and functionality.
 
 //#define DEBUG_OVERLAY_ENABLED_OVERRIDE
+//#define DEBUG_CONSOLE_ENABLED
 
 // Unity usings
 using UnityEngine;
@@ -222,6 +223,9 @@ namespace Battle.View.Game
             // Showing announcement handler and setting view pre-activate loading text
             _uiController.AnnouncementHandler.SetShow(true);
             _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.Loading);
+#if DEBUG_CONSOLE_ENABLED
+            _uiController.DebugConsoleHandler.SetShow(true);
+#endif
 
             // Subscribing to Game Flow events
             QuantumEvent.Subscribe<EventBattleViewWaitForPlayers>(this, QEventOnViewWaitForPlayers);
@@ -454,9 +458,6 @@ namespace Battle.View.Game
             if (SettingsCarrier.Instance.BattleMovementInput == BattleMovementInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.MoveJoystick);
             if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.RotateJoystick);
             if (SettingsCarrier.Instance.BattleShowDebugStatsOverlay) _uiController.DebugOverlayHandler.SetShow(true);
-            /* These UI elements aren't ready and shouldn't be shown yet
-            if (_uiController.GiveUpButtonHandler != null) _uiController.GiveUpButtonHandler.SetShow(true);
-            */
             if (_uiController.PlayerInfoHandler != null) _uiController.PlayerInfoHandler.SetShow(true);
 
 #if DEBUG_OVERLAY_ENABLED_OVERRIDE
