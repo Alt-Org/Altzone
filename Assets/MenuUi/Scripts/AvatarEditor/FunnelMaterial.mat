@@ -22,11 +22,19 @@ Material:
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
-    m_TexEnvs: []
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Curve: 2
-    - _Width: 0.05
+    - _Curve: 2.01
+    - _Curve1: 2.64
+    - _Curve2: 1
+    - _EndWidth: 0.3
+    - _TipStart: 0.6
+    - _Width: 0.1
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.99607843, g: 0.5529412, b: 0, a: 1}
   m_BuildTextureStacks: []
