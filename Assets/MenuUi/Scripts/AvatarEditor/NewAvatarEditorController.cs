@@ -27,7 +27,16 @@ namespace MenuUi.scripts.AvatarEditor
             _colorLoader.UpdateCellSize();
             _featureLoader.UpdateCellSize();
 
+            StartCoroutine(ClickMiddleCategoryCellOnNextFrame());
+
             StartCoroutine(Wait());
+        }
+
+        // If this isn't done, function will be called too early and will not work
+        private IEnumerator ClickMiddleCategoryCellOnNextFrame()
+        {
+            yield return null;
+            _categoryLoader.ClickMiddleCategoryCell();
         }
 
         //This is stupid but i don't want to remove the old objects yet so it works for now to clean up the view
@@ -37,6 +46,7 @@ namespace MenuUi.scripts.AvatarEditor
             _switchModeButtons.SetActive(false);
             _editorMenu.SetActive(false);
             _revertButton.SetActive(false);
+            _categoryLoader.ClickMiddleCategoryCell();
         }
         // Update is called once per frame
         void Update()

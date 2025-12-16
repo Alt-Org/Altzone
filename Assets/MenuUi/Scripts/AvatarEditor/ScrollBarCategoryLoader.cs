@@ -70,8 +70,33 @@ namespace MenuUi.Scripts.AvatarEditor
             }
 
             _uniqueCellAmount = _categoryGridContent.transform.childCount / 3;
+
             // Grid position starts in the middle
-            _categoryGridContent.anchoredPosition = new Vector2(_categoryGrid.anchoredPosition.x, _categoryGrid.anchoredPosition.y + (_cellHeight + _actualSpacing) * _uniqueCellAmount);
+            SetGridPosition();
+        }
+
+        private void SetGridPosition()
+        {
+            _categoryGridContent.anchoredPosition = new Vector2(_categoryGrid.anchoredPosition.x,
+                _categoryGrid.anchoredPosition.y
+                + (_cellHeight + _actualSpacing)
+                * _uniqueCellAmount);
+        }
+
+        public void ClickMiddleCategoryCell()
+        {
+            float CellHeightWithSpacing = _cellHeight + _actualSpacing;
+            int topCellIndex = Mathf.RoundToInt(_categoryGridContent.anchoredPosition.y / CellHeightWithSpacing);
+            int middleCellIndex = topCellIndex + _cellsShownAtATime / 2;
+
+            Transform middleCell = _categoryGridContent.GetChild(middleCellIndex);
+            Button button = middleCell.GetComponent<Button>();
+
+            Debug.LogError(button);
+            Debug.LogError(middleCell);
+            Debug.LogError(middleCellIndex);
+
+            button.onClick.Invoke();
         }
 
         //Planning to add better way to add the category images later
@@ -80,6 +105,7 @@ namespace MenuUi.Scripts.AvatarEditor
             DestroyCategoryCells();
             _allCategoryIds = _avatarPartsReference.GetAllCategoryIds();
 
+            //make 3 sets of the available features for InfiniteScroll to work
             for (int i = 0; i < 3; i++)
             {
                 foreach (string categoryId in _allCategoryIds)
