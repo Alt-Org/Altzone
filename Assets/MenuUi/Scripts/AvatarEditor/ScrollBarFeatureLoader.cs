@@ -21,6 +21,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private RectTransform _viewPort;
         [SerializeField] private Image _leftFade;
         [SerializeField] private Image _rightFade;
+        [SerializeField] private ColorGridLoader _colorSelection;
         [SerializeField, Range(0f, 0.3f)] private float _horizontalPadding = 0.1f;
         [SerializeField, Range(0f, 0.2f)] private float _verticalPadding = 0.05f;
         [SerializeField, Range(0f, 0.3f)] private float _verticalSpacing = 0.05f;
@@ -163,6 +164,16 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public void RefreshFeatureListItems(string categoryId)
         {
+            // Don't Show Color Selection on hair
+            if (categoryId == "10")
+            {
+                _colorSelection.gameObject.SetActive(false);
+            }
+            else
+            {
+                _colorSelection.gameObject.SetActive(true);
+            }
+
             DestroyFeatureListItems();
             _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
             foreach (AvatarPartInfo part in _avatarPartInfo)

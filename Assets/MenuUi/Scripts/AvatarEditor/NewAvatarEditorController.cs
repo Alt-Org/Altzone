@@ -26,6 +26,7 @@ namespace MenuUi.scripts.AvatarEditor
             _colorLoader.SetColorCells();
             _colorLoader.UpdateCellSize();
             _featureLoader.UpdateCellSize();
+            _colorLoader.gameObject.SetActive(false);
 
             StartCoroutine(ClickMiddleCategoryCellOnNextFrame());
 
