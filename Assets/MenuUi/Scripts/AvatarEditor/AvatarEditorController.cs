@@ -25,47 +25,48 @@ namespace MenuUi.Scripts.AvatarEditor
         private AvatarEditorMode _currentMode = AvatarEditorMode.FeaturePicker;
 
         [SerializeField] private CharacterLoader _characterLoader;
-        [SerializeField] private List<GameObject> _modeList;
-        [SerializeField] private List<Button> _switchModeButtons;
         [Space]
         [SerializeField] private Button _saveButton;
         [SerializeField] private Button _defaultButton;
         [SerializeField] private Button _revertButton;
+        [SerializeField] private Button _featureModeButton;
+        [SerializeField] private Button _colorModeButton;
+        [SerializeField] private Button _scaleModeButton;
         [Space]
         [SerializeField] private AvatarEditorMode _defaultMode = AvatarEditorMode.FeaturePicker;
         [SerializeField] private AvatarVisualDataScriptableObject _visualDataScriptableObject;
         [SerializeField] private GameObject _avatarVisualsParent;
         [SerializeField] private GameObject _featureButtonsBase;
+        [SerializeField] private FeaturePicker _featurePicker;
+        [SerializeField] private ColorPicker _colorPicker;
+        [SerializeField] private AvatarScaler _avatarScaler;
 
         private FeatureSlot _currentlySelectedCategory;
         private PlayerAvatar _playerAvatar;
-        private FeaturePicker _featurePicker;
-        private ColorPicker _colorPicker;
-        private AvatarScaler _avatarScaler;
-
-        void Awake()
-        {
-            _featurePicker = _modeList[0].GetComponent<FeaturePicker>();
-            _colorPicker = _modeList[1].GetComponent<ColorPicker>();
-            _avatarScaler = _modeList[2].GetComponent<AvatarScaler>();
-        }
 
         void Start()
         {
             _saveButton.onClick.AddListener(() => StartCoroutine(SaveAvatarData()));
             _defaultButton.onClick.AddListener(() => SetDefaultAvatar());
             _revertButton.onClick.AddListener(() => RevertAvatarChanges());
-            _switchModeButtons[0].onClick.AddListener(delegate { GoIntoMode(AvatarEditorMode.FeaturePicker); });
-            _switchModeButtons[1].onClick.AddListener(delegate { GoIntoMode(AvatarEditorMode.ColorPicker); });
-            _switchModeButtons[2].onClick.AddListener(delegate { GoIntoMode(AvatarEditorMode.AvatarScaler); });
+
+            if (_featureModeButton != null && _featurePicker != null)
+                _featureModeButton.onClick.AddListener(delegate { GoIntoMode(AvatarEditorMode.FeaturePicker); });
+            if (_colorModeButton != null && _colorPicker != null)
+                _colorModeButton.onClick.AddListener(delegate { GoIntoMode(AvatarEditorMode.ColorPicker); });
+            if (_scaleModeButton != null && _avatarScaler != null)
+                _scaleModeButton.onClick.AddListener(delegate { GoIntoMode(AvatarEditorMode.AvatarScaler); });
         }
 
         void OnEnable()
         {
             _characterLoader.RefreshPlayerCurrentCharacter();
-            _modeList[0].SetActive(false);
-            _modeList[1].SetActive(false);
-            _modeList[2].SetActive(false);
+            if (_featurePicker != null)
+                _featurePicker.gameObject.SetActive(false);
+            if (_colorPicker != null)
+                _colorPicker.gameObject.SetActive(false);
+            if (_avatarScaler != null)
+                _avatarScaler.gameObject.SetActive(false);
             _currentMode = _defaultMode;
             CharacterLoaded();
         }
@@ -81,18 +82,32 @@ namespace MenuUi.Scripts.AvatarEditor
         private void GoIntoMode(AvatarEditorMode mode)
         {
             SetSaveableData();
-            _modeList[(int)_currentMode].SetActive(false);
+            _featurePicker.gameObject.SetActive(false);
+            _colorPicker.gameObject.SetActive(false);
+            _avatarScaler.gameObject.SetActive(false);
             _currentMode = mode;
 
             _featureButtonsBase.SetActive(mode != AvatarEditorMode.AvatarScaler);
 
             if (_currentMode == AvatarEditorMode.FeaturePicker)
+            {
                 _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClass());
+                _featurePicker.gameObject.SetActive(true);
+                return;
+            }
 
             if (_currentMode == AvatarEditorMode.ColorPicker)
+            {
                 _colorPicker.SelectFeature(_currentlySelectedCategory);
+                _colorPicker.gameObject.SetActive(true);
+                return;
+            }
 
-            _modeList[(int)_currentMode].SetActive(true);
+            if (_currentMode == AvatarEditorMode.AvatarScaler)
+            {
+                _avatarScaler.gameObject.SetActive(true);
+                return;
+            }
         }
 
         #endregion

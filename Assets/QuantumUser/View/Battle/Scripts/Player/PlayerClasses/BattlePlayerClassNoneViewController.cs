@@ -13,6 +13,9 @@ namespace Battle.View.Player
     /// <span class="brief-h">None <see cref="Battle.View.Player.BattlePlayerClassBaseViewController">class %view controller</see>.</span><br/>
     /// Default none/empty view controller with no additional view logic.
     /// </summary>
+    ///
+    /// See [{PlayerClassViewControllers}](#page-concepts-player-view-class-controller) for more info.<br/>
+    /// See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
     public class BattlePlayerClassNoneViewController : BattlePlayerClassBaseViewController
     {
         /// <summary>

@@ -28,13 +28,20 @@ public class KojuTrayPopulator : MonoBehaviour
     private PlayerData player;
     private ClanData clan;
 
-    // Track items moved to panel to avoid re-spawning them on re-populate
+    // Track items that are located on the panel instead of the tray to avoid respawning them when repopulating the tray
     private HashSet<string> movedFurnitureIds = new HashSet<string>();
 
     private void OnEnable()
     {
         // Populate tray and initialize StoreFront
+        PollManager.RegisterTrayPopulator(this);
         store = Storefront.Get();
+        StartCoroutine(PopulateTray());
+    }
+
+    // For refreshing the tray when a poll ends
+    public void RefreshTray()
+    {
         StartCoroutine(PopulateTray());
     }
 
@@ -44,6 +51,13 @@ public class KojuTrayPopulator : MonoBehaviour
         foreach (Transform child in panelContent)
         {
             Debug.Log($"Child name: {child.name}");
+
+            // Reserved slot for the poster
+            if (child.GetSiblingIndex() == 0)
+            {
+                continue;
+            }
+
             KojuFurnitureData data = child.GetComponent<KojuFurnitureData>();
             if (data == null)
             {
@@ -95,7 +109,7 @@ public class KojuTrayPopulator : MonoBehaviour
 
         if (votedToSellFurniture.Count == 0)
         {
-            Debug.LogWarning("No furniture voted to sell.");
+            Debug.Log("No furniture voted to sell.");
             yield break;
         }
 
@@ -104,7 +118,7 @@ public class KojuTrayPopulator : MonoBehaviour
 
         if (allGameFurniture == null || allGameFurniture.Count == 0)
         {
-            Debug.LogWarning("GameFurniture definitions missing.");
+            Debug.LogError("GameFurniture definitions missing.");
             yield break;
         }
 
@@ -116,6 +130,12 @@ public class KojuTrayPopulator : MonoBehaviour
         HashSet<string> panelFurnitureIds = new HashSet<string>();
         foreach (Transform child in panelContent)
         {
+            // Skip the first slot (locked slot)
+            if (child.GetSiblingIndex() == 0)
+            {
+                continue;
+            }
+
             KojuFurnitureData data = child.GetComponent<KojuFurnitureData>();
             if (data != null && !string.IsNullOrEmpty(data.StorageFurnitureId))
             {
@@ -196,6 +216,7 @@ public class KojuTrayPopulator : MonoBehaviour
         Debug.Log($"Spawned {spawnedCount} furniture cards in tray.");
     }
 
+    // Shows a popup warning when the panel is full, and the user tries to add more items
     public void ShowPanelFullWarning()
     {
         if (!isWarningActive)
@@ -204,6 +225,7 @@ public class KojuTrayPopulator : MonoBehaviour
         }
     }
 
+    // For the full panel warning
     private IEnumerator ShowWarningCoroutine()
     {
         isWarningActive = true;

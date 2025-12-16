@@ -68,6 +68,12 @@ public class ValueSelectionController : MonoBehaviour
 
     public void ToggleValue(ValueLabelHandler toggledHandler)
     {
+        if(SelectedValues.Contains(toggledHandler.labelInfo.values) && SelectedValues.Count == 1)
+        {
+            return;
+        }
+
+
         if (SelectedValues.Contains(toggledHandler.labelInfo.values))
         {
             ValueLabelHandler handlerOfRemoved = _labelHandlers.Find(handler => handler.labelInfo.values == toggledHandler.labelInfo.values);
@@ -76,7 +82,7 @@ public class ValueSelectionController : MonoBehaviour
         }
         else
         {
-            if (SelectedValues.Count < 5)
+            if (SelectedValues.Count < 3)
             {
                 SelectedValues.Add(toggledHandler.labelInfo.values);
                 ValueLabelHandler handlerOfSelected = _labelHandlers.Find(handler => handler.labelInfo.values == toggledHandler.labelInfo.values);
@@ -89,6 +95,11 @@ public class ValueSelectionController : MonoBehaviour
 
     public void RemoveSelectedValue(ValueLabelHandler removedHandler)
     {
+        if(SelectedValues.Count == 1)
+        {
+            return;
+        }
+
         if (_valueSelectorObject.activeSelf)
         {
             ValueLabelHandler handlerOfRemoved = _labelHandlers.Find(handler => handler.labelInfo.values == removedHandler.labelInfo.values);
@@ -117,5 +128,13 @@ public class ValueSelectionController : MonoBehaviour
 
             labelHandlerSelected._selectButton.onClick.AddListener(() => RemoveSelectedValue(labelHandlerSelected));
         }
+    }
+
+    public void ResetSelection()
+    {
+        SelectedValues.Clear();
+        CreateLabels();
+        UpdateSelectedDisplay();
+        StartCoroutine(ResetScrollPosition());
     }
 }

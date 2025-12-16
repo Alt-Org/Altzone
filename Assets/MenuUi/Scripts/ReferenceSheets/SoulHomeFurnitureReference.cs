@@ -27,7 +27,7 @@ namespace MenuUI.Scripts.SoulHome
         public GameObject GetSoulHomeTrayFurnitureObject(string name)
         {
             SoulhomeFurnitureInfoObject data = GetFurnitureData(name);
-            return data.TrayFurniture.gameObject;
+            return data?.TrayFurniture?.gameObject;
         }
 
 

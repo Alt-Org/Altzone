@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditorInternal;
@@ -7,6 +8,7 @@ using UnityEditorInternal;
 
 public class DailyTaskData
 {
+    public bool active;
     public string title;
     public string englishTitle;
     public string description;
@@ -51,7 +53,7 @@ public class DailyTaskConfig : ScriptableObject
     [SerializeField] private List<EducationDailyTaskData> _educationDailyTasks;
 
     public List<NormalDailyTaskData> GetNormalTasks() => _normalDailyTasks;
-    public List<EducationDailyTaskData> GetEducationTasks() => _educationDailyTasks;
+    public List<EducationDailyTaskData> GetEducationTasks() => _educationDailyTasks.Where(c => c.active).Select(c => c).ToList();
 }
 
 #region Editor script
