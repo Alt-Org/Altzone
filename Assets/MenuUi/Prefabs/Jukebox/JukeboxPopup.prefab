@@ -7777,6 +7777,7 @@ MonoBehaviour:
   _scrollSpeed: 0.3
   _edgeWaitTime: 1
   _fade: {fileID: 0}
+  _textSizeCloner: {fileID: 0}
 --- !u!114 &5845154054041262534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7789,6 +7790,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79636c1e9e1783f4599d2460e6c0d78c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _executeOnStart: 1
   _referenceText: {fileID: 407785512206361865}
   _targetText: {fileID: 5948675721710116894}
   _hideReferenceInGame: 1
@@ -22916,6 +22918,7 @@ MonoBehaviour:
   _scrollSpeed: 0.3
   _edgeWaitTime: 1
   _fade: {fileID: 0}
+  _textSizeCloner: {fileID: 0}
 --- !u!114 &4048251877459285498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22928,6 +22931,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79636c1e9e1783f4599d2460e6c0d78c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _executeOnStart: 1
   _referenceText: {fileID: 4823095475825484022}
   _targetText: {fileID: 3847250554851691966}
   _hideReferenceInGame: 1
@@ -37970,7 +37974,7 @@ PrefabInstance:
     - target: {fileID: 1091650499940009105, guid: b4ac7d41cc3421145a8e369fff3a7403,
         type: 3}
       propertyPath: m_text
-      value: "Todella pitk\xE4 kappaleen nimi"
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1587935672688869164, guid: b4ac7d41cc3421145a8e369fff3a7403,
         type: 3}
@@ -38077,16 +38081,55 @@ PrefabInstance:
       propertyPath: m_Name
       value: CurrentTrackNameText
       objectReference: {fileID: 0}
+    - target: {fileID: 3614668014619556471, guid: b4ac7d41cc3421145a8e369fff3a7403,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b,
+        type: 2}
+    - target: {fileID: 3614668014619556471, guid: b4ac7d41cc3421145a8e369fff3a7403,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
+        type: 2}
+    - target: {fileID: 3614668014619556471, guid: b4ac7d41cc3421145a8e369fff3a7403,
+        type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3711845220378368566, guid: b4ac7d41cc3421145a8e369fff3a7403,
         type: 3}
       propertyPath: m_Name
       value: CurrentTrackNameScrollView
+      objectReference: {fileID: 0}
+    - target: {fileID: 4910341689012665230, guid: b4ac7d41cc3421145a8e369fff3a7403,
+        type: 3}
+      propertyPath: _textSizeCloner
+      value: 
+      objectReference: {fileID: 2198812380765023157}
+    - target: {fileID: 8067931414450416594, guid: b4ac7d41cc3421145a8e369fff3a7403,
+        type: 3}
+      propertyPath: _executeOnStart
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b4ac7d41cc3421145a8e369fff3a7403, type: 3}
+--- !u!114 &2198812380765023157 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8067931414450416594, guid: b4ac7d41cc3421145a8e369fff3a7403,
+    type: 3}
+  m_PrefabInstance: {fileID: 8175384442235437159}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79636c1e9e1783f4599d2460e6c0d78c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &3842068654578924521 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4910341689012665230, guid: b4ac7d41cc3421145a8e369fff3a7403,
@@ -38126,7 +38169,7 @@ PrefabInstance:
     - target: {fileID: 1091650499940009105, guid: b4ac7d41cc3421145a8e369fff3a7403,
         type: 3}
       propertyPath: m_text
-      value: "Todella pitk\xE4 artisti nimi"
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1587935672688869164, guid: b4ac7d41cc3421145a8e369fff3a7403,
         type: 3}
@@ -38238,16 +38281,55 @@ PrefabInstance:
       propertyPath: m_fontSize
       value: 45
       objectReference: {fileID: 0}
+    - target: {fileID: 3614668014619556471, guid: b4ac7d41cc3421145a8e369fff3a7403,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b,
+        type: 2}
+    - target: {fileID: 3614668014619556471, guid: b4ac7d41cc3421145a8e369fff3a7403,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
+        type: 2}
+    - target: {fileID: 3614668014619556471, guid: b4ac7d41cc3421145a8e369fff3a7403,
+        type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3711845220378368566, guid: b4ac7d41cc3421145a8e369fff3a7403,
         type: 3}
       propertyPath: m_Name
       value: CurrentTrackCreditsScrollView
+      objectReference: {fileID: 0}
+    - target: {fileID: 4910341689012665230, guid: b4ac7d41cc3421145a8e369fff3a7403,
+        type: 3}
+      propertyPath: _textSizeCloner
+      value: 
+      objectReference: {fileID: 1824878661272017571}
+    - target: {fileID: 8067931414450416594, guid: b4ac7d41cc3421145a8e369fff3a7403,
+        type: 3}
+      propertyPath: _executeOnStart
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b4ac7d41cc3421145a8e369fff3a7403, type: 3}
+--- !u!114 &1824878661272017571 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8067931414450416594, guid: b4ac7d41cc3421145a8e369fff3a7403,
+    type: 3}
+  m_PrefabInstance: {fileID: 8549038915842421105}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79636c1e9e1783f4599d2460e6c0d78c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &3639260726610299647 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4910341689012665230, guid: b4ac7d41cc3421145a8e369fff3a7403,

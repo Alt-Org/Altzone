@@ -123,6 +123,12 @@ namespace Altzone.Scripts.Audio
         #region Preview
         [SerializeField] private float _previewTime = 10f;
 
+        public enum PreviewLocationType
+        {
+            Main,
+            Secondary
+        }
+
         private bool _trackPreviewActive = false;
         public bool TrackPreviewActive {  get { return _trackPreviewActive; } }
 
@@ -151,7 +157,7 @@ namespace Altzone.Scripts.Audio
         public delegate void ClearJukeboxVisual();
         public event ClearJukeboxVisual OnClearJukeboxVisuals;
 
-        public delegate void SetVisibleElapsedTime(float musicTrackLength, float timeElapsed);
+        public delegate void SetVisibleElapsedTime(float musicTrackLength, float timeElapsed, PreviewLocationType type);
         public event SetVisibleElapsedTime OnSetVisibleElapsedTime;
 
         //public delegate void SetPlayButtonImages(bool value);
@@ -773,17 +779,22 @@ namespace Altzone.Scripts.Audio
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public string TryPlayTrack()
         {
             if (_jukeboxMuted) return null;
-            //Debug.LogError(_currentTrackQueueData != null);
-            //Debug.LogError(_currentPlaylist != null && _currentPlaylist.Type != PlaylistType.Clan);
+
             if (_currentTrackQueueData != null)
                 return ContinueTrack(false);
             else if (_currentPlaylist != null && _currentPlaylist.Type != PlaylistType.Clan)
                 return PlayNextJukeboxTrack();
-            else
-                return null;
+            else if (OnSetSongInfo != null)
+                OnSetSongInfo.Invoke(null);
+
+            return null;
         }
 
         /// <summary>
@@ -947,7 +958,7 @@ namespace Altzone.Scripts.Audio
             {
                 if (_currentTrackQueueData == null || !_currentTrackQueueData.InUse() || _musicElapsedTime >= _currentTrackQueueData.MusicTrack.Music.length) break;
 
-                if (!_trackPreviewActive && OnSetVisibleElapsedTime != null) OnSetVisibleElapsedTime.Invoke(_currentTrackQueueData.MusicTrack.Music.length, _musicElapsedTime);
+                if (!_trackPreviewActive && OnSetVisibleElapsedTime != null) OnSetVisibleElapsedTime.Invoke(_currentTrackQueueData.MusicTrack.Music.length, _musicElapsedTime, PreviewLocationType.Main);
                 
                 yield return null;
                 _musicElapsedTime += Time.deltaTime;
@@ -1325,47 +1336,17 @@ namespace Altzone.Scripts.Audio
         #endregion
 
         #region Preview
-        public void PlayPreview(JukeboxTrackButtonHandler buttonHandler, float previewDuration = -1f)
+        public bool PlayPreview(JukeboxTrackButtonHandler buttonHandler, PreviewLocationType type, float previewDuration = -1f)
         {
-            if (_currentPreviewMusicTrackHandler != null)
-            {
-                _currentPreviewMusicTrackHandler.StopDiskSpin();
-                _currentPreviewMusicTrackHandler = null;
-            }
-
-            if (_currentPreviewTrackCoroutine != null)
-            {
-                StopCoroutine(_currentPreviewTrackCoroutine);
-                _currentPreviewTrackCoroutine = null;
-            }
-
-            string name = AudioManager.Instance.ContinueMusic("Jukebox", buttonHandler.MusicTrack, MusicHandler.MusicSwitchType.CrossFade, 0f, true);
-
-            if (name == null)
-            {
-                Debug.LogWarning("Failed to start music preview playback.");
-                return;
-            }
-
-            if (OnJukeboxMute != null) OnJukeboxMute.Invoke(false);
-
-            _jukeboxMuted = false;
-            _trackPreviewActive = true;
-
-            if (OnSetSongInfo != null) OnSetSongInfo.Invoke(buttonHandler.MusicTrack);
-
-            if (OnPreviewStart != null) OnPreviewStart.Invoke();
-
-            if (previewDuration == -1f) previewDuration = _previewTime;
+            if (!PlayPreview(buttonHandler.MusicTrack, type, previewDuration)) return false;
 
             buttonHandler.StartDiskSpin();
-
-            _currentPreviewMusicTrack = buttonHandler.MusicTrack;
             _currentPreviewMusicTrackHandler = buttonHandler;
-            _currentPreviewTrackCoroutine = StartCoroutine(MusicPreviewPlaybackControl(previewDuration));
+
+            return true;
         }
 
-        public void PlayPreview(MusicTrack musicTrack, float previewDuration = -1f)
+        public bool PlayPreview(MusicTrack musicTrack, PreviewLocationType type, float previewDuration = -1f)
         {
             if (_currentPreviewMusicTrackHandler != null)
             {
@@ -1384,7 +1365,7 @@ namespace Altzone.Scripts.Audio
             if (name == null)
             {
                 Debug.LogWarning("Failed to start music preview playback.");
-                return;
+                return false;
             }
 
             if (OnJukeboxMute != null) OnJukeboxMute.Invoke(false);
@@ -1399,16 +1380,18 @@ namespace Altzone.Scripts.Audio
             if (previewDuration == -1f) previewDuration = _previewTime;
 
             _currentPreviewMusicTrack = musicTrack;
-            _currentPreviewTrackCoroutine = StartCoroutine(MusicPreviewPlaybackControl(previewDuration));
+            _currentPreviewTrackCoroutine = StartCoroutine(MusicPreviewPlaybackControl(previewDuration, type));
+
+            return true;
         }
 
-        private IEnumerator MusicPreviewPlaybackControl(float previewTime)
+        private IEnumerator MusicPreviewPlaybackControl(float previewTime, PreviewLocationType type)
         {
             float timer = 0f;
 
             while (timer < previewTime)
             {
-                if (OnSetVisibleElapsedTime != null) OnSetVisibleElapsedTime.Invoke(_currentPreviewMusicTrack.Music.length, timer);
+                if (OnSetVisibleElapsedTime != null) OnSetVisibleElapsedTime.Invoke(_currentPreviewMusicTrack.Music.length, timer, type);
 
                 yield return null;
                 timer += Time.deltaTime;

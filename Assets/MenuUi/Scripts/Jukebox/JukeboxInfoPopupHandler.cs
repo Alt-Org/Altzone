@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 public class JukeboxInfoPopupHandler : MonoBehaviour
 {
-    //[SerializeField] private JukeboxTrackButtonHandler _buttonHandler;
     [Header("Close buttons")]
     [SerializeField] private Button _closeButton;
     [SerializeField] private Button _closeBackgroundButton;
@@ -50,7 +49,7 @@ public class JukeboxInfoPopupHandler : MonoBehaviour
 
     private void OnEnable()
     {
-        //JukeboxManager.Instance.OnPreviewEnd
+        if (JukeboxManager.Instance.TrackPreviewActive) JukeboxManager.Instance.StopMusicPreview();
     }
 
     private void OnDisable()
@@ -92,7 +91,8 @@ public class JukeboxInfoPopupHandler : MonoBehaviour
 
         if (artists.Count != 0 && (_musicTrack == null || _musicTrack.Id != musicTrack.Id))
             foreach (ArtistInfo artist in artists)
-                GetFreeWeblinkSlot().Set(artist.Artist);
+                if (artist.Artist != null && !string.IsNullOrEmpty(artist.Artist.WebsiteAddress))
+                    GetFreeWeblinkSlot().Set(artist.Artist);
 
         _musicTrack = musicTrack;
         _trackNameAutoScroll.SetContent(musicTrack.Name);

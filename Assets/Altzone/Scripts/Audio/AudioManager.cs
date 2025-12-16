@@ -310,7 +310,7 @@ namespace Altzone.Scripts.Audio
         /// Plays music track by given id.
         /// </summary>
         /// <returns>Played track name if successfully started playback.</returns>
-        public string PlayMusicById(string categoryName, string musicTrackId, MusicSwitchType switchType, bool forcePlay = false) //TODO: Modify "HandleFallBack" for empty track name input.
+        public string PlayMusicById(string categoryName, string musicTrackId, MusicSwitchType switchType, bool forcePlay = false)
         {
             if (!HandleFallBack(categoryName, "")) return "";
 
@@ -321,7 +321,7 @@ namespace Altzone.Scripts.Audio
         /// Plays music track by given id.
         /// </summary>
         /// <returns>Played track name if successfully started playback.</returns>
-        public string PlayMusicById(AudioCategoryType categoryType, string musicTrackId, MusicSwitchType switchType, bool forcePlay = false) //TODO: Modify "HandleFallBack" for empty track name input.
+        public string PlayMusicById(AudioCategoryType categoryType, string musicTrackId, MusicSwitchType switchType, bool forcePlay = false)
         {
             if (!HandleFallBack(categoryType, "")) return "";
 
@@ -360,28 +360,28 @@ namespace Altzone.Scripts.Audio
 
             if (_musicHandler.CurrentCategory == null) return true; //Dont block if category is null.
 
-            bool currentCategoryJukebox = _musicHandler.CurrentCategory.Name.ToLower() == "Jukebox".ToLower();
-            bool hasCurrentTrack = (JukeboxManager.Instance != null && JukeboxManager.Instance.CurrentTrackQueueData != null);
-
-            if (!currentCategoryJukebox || !hasCurrentTrack) return true; //Dont block if category is jukebox but current track is null.
-
             SettingsCarrier carrier = SettingsCarrier.Instance;
-
             bool jukeboxSoulhome = carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Soulhome);
             bool jukeboxMainMenu = carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.MainMenu);
             bool jukeboxBattle = carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Battle);
-            bool blockPlayRequest = (
-                (categoryName.ToLower() == "Soulhome".ToLower() && jukeboxSoulhome)
-                || (categoryName.ToLower() == "MainMenu".ToLower() && jukeboxMainMenu)
-                || (categoryName.ToLower() == "Battle".ToLower() && jukeboxBattle)
-                || (categoryName.ToLower() == "Jukebox".ToLower()
-                && ( !jukeboxSoulhome && _currentAreaName.ToLower() == "Soulhome".ToLower()
-                || !jukeboxMainMenu && _currentAreaName.ToLower() == "MainMenu".ToLower()
-                || !jukeboxBattle && _currentAreaName.ToLower() == "Battle".ToLower()))
+
+            bool keepJukeboxPlayback = categoryName.ToLower() != "Jukebox".ToLower() && JukeboxManager.Instance.CurrentTrackQueueData != null &&
+                (
+                    jukeboxSoulhome && _currentAreaName.ToLower() == "Soulhome".ToLower()
+                    || jukeboxMainMenu && _currentAreaName.ToLower() == "MainMenu".ToLower()
+                    || jukeboxBattle && _currentAreaName.ToLower() == "Battle".ToLower()
                 );
 
-            if (blockPlayRequest) return false; //Block playback.
-            
+            if (keepJukeboxPlayback) return false; //Block if there is a jukebox track playing and it's playback is allowed in current area.
+
+            bool blockPlayRequest = (
+                (_currentAreaName.ToLower() == "Soulhome".ToLower() && !jukeboxSoulhome)
+                || (_currentAreaName.ToLower() == "MainMenu".ToLower() && !jukeboxMainMenu)
+                || (_currentAreaName.ToLower() == "Battle".ToLower() && !jukeboxBattle)
+                );
+
+            if (blockPlayRequest && categoryName.ToLower() == "Jukebox".ToLower()) return false; //Block jukebox playback.
+
             return true;
         }
 

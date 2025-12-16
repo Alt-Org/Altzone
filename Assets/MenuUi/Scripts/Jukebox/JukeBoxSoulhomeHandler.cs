@@ -135,6 +135,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         //JukeboxManager.Instance.OnSetPlayButtonImages -= SetPlayButtonStates;
         JukeboxManager.Instance.OnJukeboxMute -= SetMuteImage;
 
+        ToggleJukeboxScreen(false);
         StopJukeboxVisuals();
     }
 
@@ -154,35 +155,20 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     private void MuteJukeboxToggle()
     {
-        bool result = JukeboxManager.Instance.PlaybackToggle(true);
+        JukeboxManager manager = JukeboxManager.Instance;
+        bool result = manager.PlaybackToggle(true);
 
         if (result) //Stopped
         {
             SetMuteImage(true);
             StopJukeboxVisuals();
-
-            if (AudioManager.Instance.GetMusicVolume() != 0)
-            {
-                _mainDiskHandler.ToggleCustomIndicatorImage(true);
-                _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.None);
-            }
-            else
-                MutedFromSettingsIndicator();
+            MainDiskIndicatorControl();
         }
         else //Playing
         {
             SetMuteImage(false);
 
-            //if (_diskSpinCoroutine != null)
-            //{
-            //    StopCoroutine(_diskSpinCoroutine);
-            //    _diskSpinCoroutine = null;
-            //    foreach (Transform rotationT in _diskTransform) rotationT.rotation = Quaternion.identity;
-            //}
-
-            //_diskSpinCoroutine = StartCoroutine(SpinDisks());
-
-            if (JukeboxManager.Instance.CurrentTrackQueueData != null)
+            if (manager.CurrentTrackQueueData != null)
             {
                 _mainDiskHandler.StartSpinDisk();
 
@@ -192,36 +178,14 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
                     MutedFromSettingsIndicator();
             }
             else
-            {
-                if (AudioManager.Instance.GetMusicVolume() != 0)
-                {
-                    _mainDiskHandler.ToggleCustomIndicatorImage(false);
-                    _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.Empty);
-                }
-                else
-                    MutedFromSettingsIndicator();
-            }
+                MainDiskIndicatorControl();
         }
+
+        if (manager.CurrentTrackQueueData == null && !manager.TrackPreviewActive) _mainDiskHandler.ClearDisk();
     }
 
     private void SetMuteImage(bool onOff) { _soundMuteImage.gameObject.SetActive(onOff); }
     #endregion
-
-    //private void PlaylistChange(int value)
-    //{
-
-    //}
-
-    //private void SetPlayButtonStates(bool value)
-    //{
-    //    foreach (Image image in _playButtonImages)
-    //    {
-    //        if (!value) //Stopped
-    //            image.sprite = _playSprite;
-    //        else //Playing
-    //            image.sprite = _stopSprite;
-    //    }
-    //}
 
     private void PlayStopButtonActivated()
     {
@@ -274,29 +238,6 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         }
     }
 
-    //private void SwitchMainWindow(JukeboxWindowType type)
-    //{
-    //    switch (_currentWindowType)
-    //    {
-    //        case JukeboxWindowType.PlaylistNavigation: _playlistNavigationWindow.SetActive(false); break;
-    //        case JukeboxWindowType.MusicPlayer: _musicPlayerWindow.SetActive(false); break;
-    //        case JukeboxWindowType.ManagePlaylist: _managePlaylistWindow.SetActive(false); break;
-    //    }
-
-    //    _currentWindowType = type;
-
-    //    switch (_currentWindowType)
-    //    {
-    //        case JukeboxWindowType.PlaylistNavigation: _playlistNavigationWindow.SetActive(true); break;
-    //        case JukeboxWindowType.MusicPlayer: _musicPlayerWindow.SetActive(true); break;
-    //        case JukeboxWindowType.ManagePlaylist: _managePlaylistWindow.SetActive(true); break;
-    //    }
-
-    //    _bottomBarObject.SetActive(!(_currentWindowType == JukeboxWindowType.MusicPlayer));
-    //}
-
-    //public string PlayTrack() { return JukeboxManager.Instance.PlayTrack(); }
-
     #region Visuals
     public void StopJukeboxVisuals()
     {
@@ -304,12 +245,11 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         {
             StopCoroutine(_diskSpinCoroutine);
             _diskSpinCoroutine = null;
-
-            //foreach (Transform rotationT in _diskTransform) rotationT.rotation = Quaternion.identity;
         }
 
-        _mainDiskHandler.StopSpinDisk();
-        OnChangeJukeBoxSong?.Invoke(null);
+        _mainDiskHandler.StopDiskSpin();
+
+        if (OnChangeJukeBoxSong != null) OnChangeJukeBoxSong.Invoke(null);
     }
 
     public void ClearJukeboxVisuals()
@@ -317,15 +257,9 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         foreach (TextAutoScroll text in _trackNames) text.SetContent(NoSongName);
         foreach (TextAutoScroll text in _trackCreditsNames) text.SetContent(NoCreditsNames);
         //foreach (Image image in _diskImage) image.sprite = _emptyDisk;
-        _mainDiskHandler.ClearDisk();
 
-        if (AudioManager.Instance.GetMusicVolume() != 0)
-        {
-            _mainDiskHandler.ToggleCustomIndicatorImage(false);
-            _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.Empty);
-        }
-        else
-            MutedFromSettingsIndicator();
+        _mainDiskHandler.ClearDisk();
+        MainDiskIndicatorControl();
     }
 
     public void ToggleJukeboxScreen(bool toggle)
@@ -334,37 +268,46 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
         if (toggle)
         {
-            _previousAreaName = AudioManager.Instance?.CurrentAreaName;
-            AudioManager.Instance?.SetCurrentAreaCategoryName("Jukebox");
+            JukeboxManager manager = JukeboxManager.Instance;
 
-            if (string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
+            SetMuteImage(manager.JukeboxMuted);
+
+            _previousAreaName = AudioManager.Instance.CurrentAreaName;
+            AudioManager.Instance.SetCurrentAreaCategoryName("Jukebox");
+
+            if (string.IsNullOrEmpty(manager.TryPlayTrack()))
             {
-                if (AudioManager.Instance.GetMusicVolume() != 0)
-                {
-                    _mainDiskHandler.ToggleCustomIndicatorImage(false);
-                    _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.Empty);
-                }
-                else
-                    MutedFromSettingsIndicator();
+                MainDiskIndicatorControl();
             }
+            else
+            {
+                _mainDiskHandler.ToggleIndicatorHolder(false);
+                _mainDiskHandler.StartSpinDisk();
+            }
+
+            if (manager.CurrentTrackQueueData == null && !manager.TrackPreviewActive) _mainDiskHandler.ClearDisk();
         }
         else
         {
-            AudioManager.Instance?.SetCurrentAreaCategoryName(_previousAreaName);
-
-            //bool jukeboxSoulhome = SettingsCarrier.Instance.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Soulhome);
-
-            //if (!jukeboxSoulhome) AudioManager.Instance.PlayFallBackTrack(MusicHandler.MusicSwitchType.CrossFade);
-
+            AudioManager.Instance.SetCurrentAreaCategoryName(_previousAreaName);
             AudioManager.Instance.PlayMusic(_previousAreaName, MusicHandler.MusicSwitchType.CrossFade);
-
-            //if (JukeboxManager.Instance.CurrentTrackQueueData != null) SetSongInfo(JukeboxManager.Instance.GetNotHatedMusicTrack());
+            _mainDiskHandler.StopDiskSpin();
         }
     }
 
     private void SetSongInfo(MusicTrack track)
     {
-        if (track == null) return;
+        if (track == null)
+        {
+            _mainDiskHandler.ClearDisk();
+
+            foreach (TextAutoScroll text in _trackNames) text.SetContent(NoSongName);
+            foreach (TextAutoScroll text in _trackCreditsNames) text.SetContent(NoCreditsNames);
+
+            if (!JukeboxManager.Instance.JukeboxMuted && _jukeboxObject.activeSelf) MainDiskIndicatorControl();
+
+            return;
+        }
 
         string credits = track.JukeboxInfo.GetArtistNames();
 
@@ -373,40 +316,36 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         //foreach (Image image in _diskImage) image.sprite = track.JukeboxInfo.Disk;
         _mainDiskHandler.SetDisk(track.JukeboxInfo.Disk);
 
-        //if (_diskSpinCoroutine != null)
-        //{
-        //    StopCoroutine(_diskSpinCoroutine);
-        //    _diskSpinCoroutine = null;
-        //    foreach (Transform rotationT in _diskTransform) rotationT.rotation = Quaternion.identity;
-        //}
-
         if (!JukeboxManager.Instance.JukeboxMuted && _jukeboxObject.activeSelf && track.Music != null && _mainDiskHandler.StartSpinDisk())
-        {
-            if (AudioManager.Instance.GetMusicVolume() != 0)
-                _mainDiskHandler.ToggleIndicatorHolder(false);
-            else
-                MutedFromSettingsIndicator();
-        }
-        //_diskSpinCoroutine = StartCoroutine(SpinDisks());
-        //else
-        //    _mainDiskHandler.StopSpinDisk();
+            MainDiskIndicatorControl();
 
-        //_textAutoScroll.ContentChange();
         _favoriteButtonHandler.Setup(JukeboxManager.Instance.GetTrackFavoriteType(track), track.Id);
-
         OnChangeJukeBoxSong?.Invoke(track);
     }
+
+    private void MainDiskIndicatorControl()
+    {
+        if (JukeboxManager.Instance.JukeboxMuted)
+        {
+            _mainDiskHandler.ToggleCustomIndicatorImage(true);
+            _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.None);
+        }
+        else if (AudioManager.Instance.GetMusicVolume() == 0)
+        {
+            MutedFromSettingsIndicator();
+        }
+        else if (JukeboxManager.Instance.CurrentTrackQueueData != null)
+        {
+            _mainDiskHandler.ToggleIndicatorHolder(false);
+            _mainDiskHandler.StartSpinDisk();
+        }
+        else
+        {
+            _mainDiskHandler.ToggleCustomIndicatorImage(false);
+            _mainDiskHandler.SetIndicatorText(JukeboxMainDiskHandler.JukeboxDiskTextType.Empty);
+        }
+    }
     #endregion
-
-    //private IEnumerator SpinDisks()
-    //{
-    //    while (true)
-    //    {
-    //        foreach (Transform rotationT in _diskTransform) rotationT.Rotate(Vector3.forward * -_diskRotationSpeed * Time.deltaTime);
-
-    //        yield return null;
-    //    }
-    //}
 
     private void OpenMusicTrackInfoPopup(MusicTrack musicTrack, JukeboxManager.MusicTrackFavoriteType likeType)
     {

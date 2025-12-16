@@ -24,7 +24,7 @@ public class JukeboxPreviewHandler : MonoBehaviour
     private Coroutine _switchIndicatorCoroutine;
     private Coroutine _sliderRubberbandCoroutine;
 
-    public delegate void StartPreview(MusicTrack musicTrack, float previewDuration = -1f);
+    public delegate bool StartPreview(MusicTrack musicTrack, JukeboxManager.PreviewLocationType type, float previewDuration = -1f);
     public event StartPreview OnStartPreview;
 
     public enum IndicatorType
@@ -88,7 +88,7 @@ public class JukeboxPreviewHandler : MonoBehaviour
         _sliderRubberbandActive = true;
         _buttonCanvasGroup.blocksRaycasts = false;
 
-        OnStartPreview.Invoke(_musicTrack, _musicTrack.Music.length);
+        OnStartPreview.Invoke(_musicTrack, JukeboxManager.PreviewLocationType.Secondary, _musicTrack.Music.length);
 
         StopLocalCoroutines();
 
@@ -120,8 +120,10 @@ public class JukeboxPreviewHandler : MonoBehaviour
         }
     }
 
-    private void UpdateSlider(float musicTrackLength, float elapsedTime)
+    private void UpdateSlider(float musicTrackLength, float elapsedTime, JukeboxManager.PreviewLocationType type)
     {
+        if (type != JukeboxManager.PreviewLocationType.Secondary) return;
+
         if (!JukeboxManager.Instance.TrackPreviewActive) return;
 
         if (!_sliderRubberbandActive) _previewSlider.value = elapsedTime / musicTrackLength;

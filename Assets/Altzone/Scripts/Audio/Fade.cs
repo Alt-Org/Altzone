@@ -8,7 +8,6 @@ namespace Altzone.Scripts.Audio
     public class Fade : MonoBehaviour
     {
         [SerializeField] private float _fadeDuration = 1f;
-        [SerializeField] private bool _fadeBackToVisible = false;
 
         private TMPro.TextMeshProUGUI _textMeshProUGUI;
         private Image _image;
@@ -48,22 +47,31 @@ namespace Altzone.Scripts.Audio
             }
         }
 
-        public void StartFade()
+        public void StartFadeOperation(FadeType type, bool forceOneWay = false)
         {
             _inUse = true;
-
             Reset();
-
-            StartCoroutine(FadeOperation(FadeType.Out, (data) => _inUse = !data));
+            StartCoroutine(FadeOperation(type, (data) => _inUse = !data, forceOneWay));
         }
 
-        public void StartFade(FadeType type, bool forceOneWay = false)
+        public IEnumerator StartFullFadeOperation(System.Action<bool> fadeOutDone, System.Action<bool> fadeInDone, bool forceOneWay = false)
         {
+            bool? result = null;
+
             _inUse = true;
-
             Reset();
+            StartCoroutine(FadeOperation(FadeType.Out, (data) => result = data, forceOneWay));
 
-            StartCoroutine(FadeOperation(type, (data) => _inUse = !data, forceOneWay));
+            yield return new WaitUntil(() => result != null);
+
+            fadeOutDone(true);
+            result = null;
+            StartCoroutine(FadeOperation(FadeType.In, (data) => result = data, forceOneWay));
+
+            yield return new WaitUntil(() => result != null);
+
+            _inUse = false;
+            fadeInDone(true);
         }
 
         public IEnumerator FadeOperation(FadeType type, System.Action<bool> done = null, bool forceOneWay = false)
@@ -87,16 +95,21 @@ namespace Altzone.Scripts.Audio
                 }
             }
 
-            if (!forceOneWay && type != FadeType.In && _fadeBackToVisible)
-            {
-                bool? fadeInDone = null;
-
-                StartCoroutine(FadeOperation(FadeType.In, (data) => fadeInDone = data));
-
-                yield return new WaitUntil(() => fadeInDone != null);
-            }
-
             done(true);
+        }
+
+        public void SetAlphaVisibility(bool visible)
+        {
+            float progress = visible ? 1f : 0f;
+
+            if (_textMeshProUGUI != null) _textMeshProUGUI.alpha = progress;
+
+            if (_image != null)
+            {
+                Color tempColor = _image.color;
+                tempColor.a = progress;
+                _image.color = tempColor;
+            }
         }
     }
 }

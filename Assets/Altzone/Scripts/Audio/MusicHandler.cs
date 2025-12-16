@@ -317,7 +317,7 @@ namespace Altzone.Scripts.Audio
             if (_currentCategory != null && _currentCategory.Name.ToLower() == "Jukebox".ToLower() && musicCategory.Name.ToLower() != "Jukebox".ToLower())
                 JukeboxManager.Instance.StopJukebox();
 
-            bool revertSwitch = (_primaryChannel == 1 ? _musicChannel1 : _musicChannel2).clip == musicTrack.Music;
+            bool revertSwitch = (!forcePlay && (_primaryChannel == 1 ? _musicChannel1 : _musicChannel2).clip == musicTrack.Music);
 
             if (!revertSwitch && _musicSwitchInProgress)
             {
@@ -333,7 +333,7 @@ namespace Altzone.Scripts.Audio
             {
                 StopCoroutine(_switchCoroutine);
                 _switchCoroutine = null;
-
+                
                 if (_musicSwitchInProgress) _primaryChannel = ((_primaryChannel == 1) ? 2 : 1);
 
                 if (revertSwitch) _crossFadeTimer = (_acceleratedCrossFadeOneShot ? _acceleratedCrossFadeDuration - _crossFadeTimer : _crossFadeDuration - _crossFadeTimer);
@@ -351,7 +351,8 @@ namespace Altzone.Scripts.Audio
                 yield break;
             }
 
-            MusicTrack musicTrack = MusicDirectionControl(newTrackName, direction);
+            MusicTrack musicTrack = (newTrackName != null ? MusicDirectionControl(newTrackName, direction) : _currentTrack);
+            //MusicTrack musicTrack = MusicDirectionControl(newTrackName, direction);
 
             if (!revertSwitch && (musicTrack == null || _musicSwitchInProgress))
             {
@@ -367,7 +368,7 @@ namespace Altzone.Scripts.Audio
             if (newTrackName != null) newTrackName(musicTrack.Name);
 
             _musicSwitchInProgress = true;
-
+            
             if (!revertSwitch) StartMusicPlayback((_primaryChannel == 2 ? _musicChannel1 : _musicChannel2), musicTrack.Music);
 
             if (switchType == MusicSwitchType.CrossFade)

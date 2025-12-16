@@ -132,7 +132,7 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
     private void FillSelectionButtonList()
     {
         /*if (string.IsNullOrEmpty(_currentPlaylistName))*/ ClearButtonHandlers();
-        List<MusicTrack> musicTracks = AudioManager.Instance.GetMusicList("Jukebox"); //TODO: Replace with what tracks the clan actually owns.
+        List<MusicTrack> musicTracks = AudioManager.Instance.GetMusicList("Jukebox"); //TODO: Replace with what tracks the clan actually owns when possible.
 
         for (int i = 0; i < musicTracks.Count; i++) GetFreeJukeboxTrackButtonHandler().SetTrack(musicTracks[i], i, JukeboxManager.Instance.GetTrackFavoriteType(musicTracks[i]));
 

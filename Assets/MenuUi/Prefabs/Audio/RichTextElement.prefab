@@ -173,6 +173,7 @@ MonoBehaviour:
   _scrollSpeed: 0.3
   _edgeWaitTime: 1
   _fade: {fileID: 270891593617761160}
+  _textStyleCloner: {fileID: 8067931414450416594}
 --- !u!114 &8067931414450416594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,9 +186,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79636c1e9e1783f4599d2460e6c0d78c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _executeOnStart: 0
   _referenceText: {fileID: 3614668014619556471}
-  _targetText: {fileID: 0}
-  _hideReferenceInGame: 1
+  _targetText: {fileID: 1091650499940009105}
 --- !u!114 &270891593617761160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,8 +201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43933883d33d2d14996b08c35e6b4ece, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fadeDuration: 1
-  _fadeBackToVisible: 0
+  _fadeDuration: 0.5
 --- !u!1 &3711845220378368566
 GameObject:
   m_ObjectHideFlags: 0
@@ -305,7 +305,7 @@ GameObject:
   - component: {fileID: 2704165044541535360}
   - component: {fileID: 3614668014619556471}
   m_Layer: 5
-  m_Name: TextSizeRef
+  m_Name: TextStyleRef
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

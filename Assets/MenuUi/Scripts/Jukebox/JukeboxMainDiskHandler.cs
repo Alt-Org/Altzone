@@ -61,6 +61,12 @@ public class JukeboxMainDiskHandler : MonoBehaviour
     private void Awake()
     {
         if (_multiUseButton != null) _multiUseButton.onClick.AddListener(() => OnMultiUseButtonPressed.Invoke());
+
+        _mainDiskRectTransform.anchorMin = _mainAnchorMinEnd;
+        _mainDiskRectTransform.anchorMax = _mainAnchorMaxEnd;
+
+        _secondaryDiskRectTransform.anchorMin = _secondaryAnchorMinEnd;
+        _secondaryDiskRectTransform.anchorMax = _secondaryAnchorMaxEnd;
     }
 
     #region Base
@@ -82,7 +88,7 @@ public class JukeboxMainDiskHandler : MonoBehaviour
         return true;
     }
 
-    public void StopSpinDisk()
+    public void StopDiskSpin()
     {
         if (_diskSpinCoroutine != null)
         {
@@ -93,7 +99,17 @@ public class JukeboxMainDiskHandler : MonoBehaviour
         _mainDiskImage.transform.rotation = Quaternion.identity;
     }
 
-    public void ClearDisk() { StopSpinDisk(); _mainDiskImage.sprite = _emptyDiskSprite; }
+    public void ClearDisk()
+    {
+        StopDiskSpin();
+        _mainDiskImage.sprite = _emptyDiskSprite;
+
+        _mainDiskRectTransform.anchorMin = _mainAnchorMinEnd;
+        _mainDiskRectTransform.anchorMax = _mainAnchorMaxEnd;
+
+        _secondaryDiskRectTransform.anchorMin = _secondaryAnchorMinEnd;
+        _secondaryDiskRectTransform.anchorMax = _secondaryAnchorMaxEnd;
+    }
 
     private IEnumerator SpinDisk()
     {
@@ -132,7 +148,7 @@ public class JukeboxMainDiskHandler : MonoBehaviour
         _secondaryDiskRectTransform.anchorMin = _secondaryAnchorMinStart;
         _secondaryDiskRectTransform.anchorMax = _secondaryAnchorMaxStart;
 
-        StopSpinDisk();
+        StopDiskSpin();
 
         StartCoroutine(SwitchDisk((data) => diskSwitchDone = data));
 
