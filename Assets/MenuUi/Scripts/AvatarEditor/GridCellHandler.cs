@@ -14,13 +14,18 @@ namespace MenuUi.scripts.AvatarEditor
         public void SetValues(Sprite cellImage = null,
             Color? backgroundColor = null,
             UnityEngine.Events.UnityAction onClick = null,
-            bool buttonIsInteractable = true)
+            bool buttonIsInteractable = true,
+            Color? cellImageColor = null)
         {
             _featureImage.preserveAspect = true;
 
             if (cellImage != null)
             {
                 _featureImage.sprite = cellImage;
+            }
+            else if (cellImageColor.HasValue)
+            {
+                _featureImage.color = cellImageColor.Value;
             }
 
             if (backgroundColor.HasValue)
@@ -34,6 +39,12 @@ namespace MenuUi.scripts.AvatarEditor
             }
             
             _button.interactable = buttonIsInteractable;
+        }
+
+        public void SetFeatureImageAnchors(Vector2 anchorMin, Vector2 anchorMax)
+        {
+            _featureImage.rectTransform.anchorMin = anchorMin;
+            _featureImage.rectTransform.anchorMax = anchorMax;
         }
     }
 }

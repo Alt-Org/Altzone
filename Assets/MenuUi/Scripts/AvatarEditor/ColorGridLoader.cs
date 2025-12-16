@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using MenuUi.scripts.AvatarEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,15 +22,14 @@ namespace MenuUi.Scripts.AvatarEditor
         private void AddColorCell(Color color)
         {
             GameObject colorGridCell = Instantiate(_gridCellPrefab, _colorGridContent);
-            Image colorImage = colorGridCell.transform.Find("FeatureImage").GetComponent<Image>();
-            Image backgroundImage = colorGridCell.transform.Find("BackgroundImage").GetComponent<Image>();
-            RectTransform colorImageRect = colorGridCell.transform.Find("FeatureImage").GetComponent<RectTransform>();
+            GridCellHandler handler = colorGridCell.GetComponent<GridCellHandler>();
 
-            colorImage.color = color;
-            colorImageRect.anchorMin = new Vector2(0.05f, 0.05f);
-            colorImageRect.anchorMax = new Vector2(0.95f, 0.95f);
-            backgroundImage.color = _backgroundColor;
-            AddListener();
+            Vector2 colorImageMinAnchors = new(0.05f, 0.05f);
+            Vector2 ColorImageMaxAnchors = new(0.95f, 0.95f);
+
+            handler.SetValues(cellImageColor: color, backgroundColor: _backgroundColor,
+                onClick: () => AddListener());
+            handler.SetFeatureImageAnchors(colorImageMinAnchors, ColorImageMaxAnchors);
         }
 
         public void SetColorCells()
