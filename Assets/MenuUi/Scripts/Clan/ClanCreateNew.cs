@@ -305,9 +305,6 @@ public class ClanCreateNew : MonoBehaviour
         ClanRoleRights[] clanRights = _defaultRights;
         ClanValues[] values = _valueSelection.SelectedValues.ToArray();
 
-        //List<HeartPieceData> clanHeartPieces = new();
-        //for (int i = 0; i < 50; i++) clanHeartPieces.Add(new HeartPieceData(i, _selectedHeartColor));
-
         List<HeartPieceData> clanHeartPieces;
         if (_heartPieces != null && _heartPieces.Count > 0)
         {
@@ -395,18 +392,6 @@ public class ClanCreateNew : MonoBehaviour
             windowManager.ShowWindow(_naviTarget);
         }));
     }
-
-    /*public void CancelCreate()
-    {
-        Reset();
-        IWindowManager windowManager = WindowManager.Get();
-        if (windowManager == null)
-        {
-            Debug.LogError("WindowManager not found – ei voida navigoida takaisin.");
-            return;
-        }
-        windowManager.GoBack();
-    }*/
 
     private bool CheckClanInputsValidity(
         string clanName,
