@@ -19,12 +19,13 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private GridLayoutGroup _gridLayoutGroup;
         [SerializeField] private ScrollRect _scrollrect;
         [SerializeField] private RectTransform _viewPort;
-        [SerializeField] private GameObject _leftFade;
-        [SerializeField] private GameObject _rightFade;
+        [SerializeField] private Image _leftFade;
+        [SerializeField] private Image _rightFade;
         [SerializeField, Range(0f, 0.3f)] private float _horizontalPadding = 0.1f;
         [SerializeField, Range(0f, 0.2f)] private float _verticalPadding = 0.05f;
         [SerializeField, Range(0f, 0.3f)] private float _verticalSpacing = 0.05f;
         [SerializeField, Range(0f, 0.3f)] private float _horizontalSpacing = 0.05f;
+        [SerializeField, Range(0f, 0.3f)] private float _fadeRange = 0.1f;
         [SerializeField] private Color _highlightColor = new(0f, 0f, 0f, 0.5f);
         [SerializeField] private Color _backgroundColor = new(0.5f, 0.5f, 0.5f, 0.7f);
 
@@ -41,7 +42,6 @@ namespace MenuUi.Scripts.AvatarEditor
         private float _viewPortHeight;
         private float _contentWidth;
         private int _rowAmount = 2;
-
 
         // Start is called before the first frame update
         void Start()
@@ -66,8 +66,17 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             float pos = normalizedPos.x;
 
-            _leftFade.gameObject.SetActive(pos > 0.01f);
-            _rightFade.gameObject.SetActive(pos < 0.99f);
+            float leftAlpha = Mathf.Clamp01(pos / _fadeRange);
+            float rightAlpha = Mathf.Clamp01((1f - pos) / _fadeRange);
+
+            Color leftColor = _leftFade.color;
+            Color rightColor = _rightFade.color;
+
+            leftColor.a = leftAlpha;
+            rightColor.a = rightAlpha;
+
+            _leftFade.color = leftColor;
+            _rightFade.color = rightColor;
         }
 
         public void UpdateCellSize()
