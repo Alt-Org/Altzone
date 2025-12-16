@@ -114,22 +114,30 @@ namespace Battle.QSimulation
     public class BattleDebugLogger
     {
         /// <summary>
-        /// Enum for log types.
+        /// Enum used to define log message types.
         /// </summary>
         public enum LogType
         {
+            /// <summary>Log message of type Log.</summary>
             Log,
+
+            /// <summary>Log message of type Warning.</summary>
             Warning,
+
+            /// <summary>Log message of type Error.</summary>
             Error
         }
 
         /// <summary>
-        /// Enum for target console output.
+        /// Enum used to define where to display log messages.
         /// </summary>
         [Flags]
         public enum LogTarget
         {
+            /// <summary>Logs messages to Unity console.</summary>
             UnityConsole,
+
+            /// <summary>Logs messages to on-screen console.</summary>
             OnScreenConsole
         }
 
