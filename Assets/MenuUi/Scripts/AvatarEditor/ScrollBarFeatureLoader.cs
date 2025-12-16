@@ -19,6 +19,8 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private GridLayoutGroup _gridLayoutGroup;
         [SerializeField] private ScrollRect _scrollrect;
         [SerializeField] private RectTransform _viewPort;
+        [SerializeField] private GameObject _leftFade;
+        [SerializeField] private GameObject _rightFade;
         [SerializeField, Range(0f, 0.3f)] private float _horizontalPadding = 0.1f;
         [SerializeField, Range(0f, 0.2f)] private float _verticalPadding = 0.05f;
         [SerializeField, Range(0f, 0.3f)] private float _verticalSpacing = 0.05f;
@@ -56,6 +58,16 @@ namespace MenuUi.Scripts.AvatarEditor
                 { "32", 5 }, // Hands
                 { "33", 6 }  // Feet
             };
+
+            _scrollrect.onValueChanged.AddListener(UpdateFade);
+        }
+
+        private void UpdateFade(Vector2 normalizedPos)
+        {
+            float pos = normalizedPos.x;
+
+            _leftFade.gameObject.SetActive(pos > 0.01f);
+            _rightFade.gameObject.SetActive(pos < 0.99f);
         }
 
         public void UpdateCellSize()
