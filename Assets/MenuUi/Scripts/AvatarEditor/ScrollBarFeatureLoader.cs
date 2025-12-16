@@ -64,6 +64,16 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void UpdateFade(Vector2 normalizedPos)
         {
+            if (_featureGridContent.rect.width < _scrollrect.viewport.rect.width)
+            {
+                _leftFade.gameObject.SetActive(false);
+                _rightFade.gameObject.SetActive(false);
+                return;
+            }
+
+            _leftFade.gameObject.SetActive(true);
+            _rightFade.gameObject.SetActive(true);
+
             float pos = normalizedPos.x;
 
             float leftAlpha = Mathf.Clamp01(pos / _fadeRange);
