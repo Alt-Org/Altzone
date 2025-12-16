@@ -16,6 +16,8 @@ namespace MenuUi.scripts.AvatarEditor
             UnityEngine.Events.UnityAction onClick = null,
             bool buttonIsInteractable = true)
         {
+            _featureImage.preserveAspect = true;
+
             if (cellImage != null)
             {
                 _featureImage.sprite = cellImage;
