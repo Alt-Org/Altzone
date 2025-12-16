@@ -23,7 +23,7 @@ public class OnlinePlayersPanelItem : MonoBehaviour
     private Action _onRemoveClick;
 
 
-    public void Initialize(string name, AvatarVisualData avatarVisualData = null, ClanLogo clanLogo = null, bool isOnline = true, Action onRemoveClick = null)
+    public void Initialize(string name, AvatarVisualData avatarVisualData = null, ClanLogo clanLogo = null, bool isOnline = true, Action onRemoveClick = null, bool hideClanLogo = false)
     {
         _nameText.text = name;
         _isOnline = isOnline;
@@ -35,11 +35,15 @@ public class OnlinePlayersPanelItem : MonoBehaviour
             _avatarFaceLoader.UpdateVisuals(avatarVisualData);
         }
 
-        if (clanLogo != null)
+        if (clanLogo != null && !hideClanLogo)
         {
             _clanHeart.SetHeartColors(clanLogo);
+            _clanHeart.gameObject.SetActive(true);
         }
-       
+        else
+        {
+            _clanHeart.gameObject.SetActive(false);
+        }
 
         UpdateOnlineStatusIndicator();
 

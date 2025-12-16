@@ -615,6 +615,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _audioCategory: 
+  _categoryType: 0
   _audioName: ButtonNote1
   _playType: 0
 --- !u!114 &240259994770038669
@@ -1922,6 +1923,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _audioCategory: 
+  _categoryType: 0
   _audioName: 
   _playType: 0
 --- !u!1001 &1695485140809395139
@@ -5612,7 +5614,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _openOnlinePlayersPanelButton
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 4088199273318804174}
     - target: {fileID: 7578220730834057096, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -6192,6 +6194,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4088199273318804174 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6378635790972055785, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 6933648834091686439}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &5655854606110825461 stripped

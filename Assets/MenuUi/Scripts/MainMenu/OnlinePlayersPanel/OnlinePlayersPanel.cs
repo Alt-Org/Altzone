@@ -12,8 +12,12 @@ using Assets.Altzone.Scripts.Model.Poco.Player;
 public class OnlinePlayersPanel : AltMonoBehaviour
 
 {
-
-    // UI-komponentit
+    private enum OnlinePlayersView
+    {
+        Clan,
+        All
+    }
+    
 
     [SerializeField] private GameObject _onlinePlayersPanel;
     [SerializeField] private TMPro.TextMeshProUGUI _onlineTitle;
@@ -25,24 +29,22 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     [SerializeField] private Button _viewClanPlayersButton;
     [SerializeField] private Button _viewAllPlayersButton;
 
-    private bool _isClanPlayersView = true;
+    private OnlinePlayersView _currentView = OnlinePlayersView.Clan;
 
     private List<OnlinePlayersPanelItem> _onlinePlayersPanelItems = new List<OnlinePlayersPanelItem>();
-   
     private List<ServerOnlinePlayer> _clanPlayers = new List<ServerOnlinePlayer>();
     private List<ServerOnlinePlayer> _allPlayers = new List<ServerOnlinePlayer>();
 
 
-    // Start is called before the first frame update
     void Start()
 
     {
         _openOnlinePlayersPanelButton.onClick.AddListener(OpenOnlinePlayersPanel);
         _closeOnlinePlayersPanelButton.onClick.AddListener(CloseOnlinePlayersPanel);
-        _viewClanPlayersButton.onClick.AddListener(ViewClanPlayers);
-        _viewAllPlayersButton.onClick.AddListener(ViewAllPlayers);
+        _viewClanPlayersButton.onClick.AddListener(() => SetView(OnlinePlayersView.Clan));
+        _viewAllPlayersButton.onClick.AddListener(() => SetView(OnlinePlayersView.All));
 
-        
+        SetView(_currentView);
 
         ServerManager.OnOnlinePlayersChanged += BuildOnlinePlayerList;
         CloseOnlinePlayersPanel();
@@ -51,7 +53,10 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
     private void OnEnable()
     {
-        BuildOnlinePlayerList(ServerManager.Instance.OnlinePlayers);
+        if (gameObject.activeInHierarchy) // Ensures the list is built only if the object is active
+        {
+            BuildOnlinePlayerList(ServerManager.Instance.OnlinePlayers);
+        }
     }
 
     private void OnDestroy()
@@ -69,17 +74,12 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         _onlinePlayersPanel.SetActive(true);
     }
 
-    private void ViewClanPlayers()
+    private void SetView(OnlinePlayersView view)
     {
-        _isClanPlayersView = true;
+        _currentView = view;
        UpdatePlayerList();
     }
 
-    private void ViewAllPlayers()
-    {
-        _isClanPlayersView = false;
-       UpdatePlayerList();
-    }
     
     private void BuildOnlinePlayerList(List<ServerOnlinePlayer> onlinePlayers)
     {
@@ -120,7 +120,8 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             if (serverPlayer != null)
             {
                 _allPlayers.Add(player);
-                if(serverPlayer.clan_id == ServerManager.Instance.Clan._id)
+
+                if(serverPlayer.clan_id == ServerManager.Instance.Clan._id/*|| player._id == ServerManager.Instance.Player._id*/)
                 {
                     _clanPlayers.Add(player);
                 }
@@ -129,14 +130,16 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
             }
 
+            bool hideLogo = _currentView == OnlinePlayersView.Clan; //Hide logo if we are in ClanView
 
             OnlinePlayersPanelItem newItem = Instantiate(_onlinePlayersPanelItemPrefab, _onlinePlayersPanelContent);
             newItem.Initialize(
                  playerName,
                  avatarVisualData: avatarVisualData,
-                 clanLogo: clanLogo,
+                 clanLogo: hideLogo ? null : clanLogo, //Set logo to null in Clanview
                  isOnline: true,
-                 onRemoveClick: () => { }
+                 onRemoveClick: () => { },
+                 hideClanLogo: hideLogo // Use hideLogo to control logo visibility
 
 
 
@@ -154,7 +157,22 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
     private void UpdatePlayerList()
     {
+        List<ServerOnlinePlayer> playersToShow = _currentView == OnlinePlayersView.Clan
+            ? _clanPlayers
+            : _allPlayers;
 
+        for (int i = 0; i < _onlinePlayersPanelItems.Count; i++)
+        {
+            var item = _onlinePlayersPanelItems[i];
+            if (i < playersToShow.Count)
+            {
+                item.gameObject.SetActive(true);
+            }
+            else
+            {
+                item.gameObject.SetActive(false);
+            }
+        }
     }
 
 }
