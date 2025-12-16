@@ -3,12 +3,7 @@
 /// Contains @cref{Battle.QSimulation,BattleDebugLogger} class which provides custom debug logging methods for use in %Battle.
 /// </summary>
 
-//#define DEBUG_ASSERT_ENABLED_OVERRIDE
-#define DEBUG_ASSERT_DISABLED_OVERRIDE
-
-#if (!DEBUG_ASSERT_DISABLED_OVERRIDE && (UNITY_EDITOR || DEBUG_ASSERT_ENABLED_OVERRIDE))
-#define DEBUG_ASSERT
-#endif
+#define DEBUG_ASSERT_ENABLED_OVERRIDE
 
 // System usings
 using System;
@@ -603,7 +598,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="condition"/> is true during debugging
         /// and logs an <see cref="Error(string, string, LogTarget)"/> log message if it is false.<br/>
-        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
@@ -615,7 +610,9 @@ namespace Battle.QSimulation
         /// <param name="condition">Condition must be true, otherwise logs an error.</param>
         /// <param name="message">The message that is Logged.</param>
         /// <param name="logTarget">The target output console.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssert(string source, bool condition, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
         {
@@ -628,7 +625,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="condition"/> is true during debugging
         /// and logs an <see cref="Error(Frame, string, string, LogTarget)"/> log message if it is false.<br/>
-        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
@@ -641,7 +638,9 @@ namespace Battle.QSimulation
         /// <param name="condition">Condition must be true, otherwise logs an error.</param>
         /// <param name="message">The message that is Logged.</param>
         /// <param name="logTarget">The target output console.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssert(Frame f, string source, bool condition, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
         {
@@ -654,7 +653,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="assertCode"/> returns true during debugging
         /// and logs an <see cref="Error(string, string, LogTarget)"/> log message if it is false.<br/>
-        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
@@ -667,7 +666,9 @@ namespace Battle.QSimulation
         /// <param name="assertCode">Assertion code must return true, otherwise logs an error.</param>
         /// <param name="message">The message that is Logged.</param>
         /// <param name="logTarget">The target output console.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssert(string source, Func<bool> assertCode, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
         {
@@ -680,7 +681,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="assertCode"/> returns true during debugging
         /// and logs an <see cref="Error(Frame, string, string, LogTarget)"/> log message if it is false.<br/>
-        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
@@ -694,7 +695,9 @@ namespace Battle.QSimulation
         /// <param name="assertCode">Assertion code must return true, otherwise logs an error.</param>
         /// <param name="message">The message that is Logged.</param>
         /// <param name="logTarget">The target output console.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssert(Frame f, string source, Func<bool> assertCode, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
         {
@@ -707,7 +710,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="condition"/> is true during debugging
         /// and logs an <see cref="ErrorFormat(string, string, object[])"/> log message if it is false.<br/>
-        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
@@ -719,7 +722,9 @@ namespace Battle.QSimulation
         /// <param name="condition">Condition must be true, otherwise logs an error.</param>
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssertFormat(string source, bool condition, string format, params object[] args)
         {
@@ -732,7 +737,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="condition"/> is true during debugging
         /// and logs an <see cref="ErrorFormat(string, string, LogTarget, object[])"/> log message if it is false.<br/>
-        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
@@ -745,7 +750,9 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="logTarget">The target output console.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssertFormat(string source, bool condition, string format, LogTarget logTarget, params object[] args)
         {
@@ -758,7 +765,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="condition"/> is true during debugging
         /// and logs an <see cref="ErrorFormat(Frame, string, string, object[])"/> log message if it is false.<br/>
-        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
@@ -771,7 +778,9 @@ namespace Battle.QSimulation
         /// <param name="condition">Condition must be true, otherwise logs an error.</param>
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssertFormat(Frame f, string source, bool condition, string format, params object[] args)
         {
@@ -784,7 +793,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="condition"/> is true during debugging
         /// and logs an <see cref="ErrorFormat(Frame, string, string, LogTarget, object[])"/> log message if it is false.<br/>
-        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
@@ -798,7 +807,9 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="logTarget">The target output console.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssertFormat(Frame f, string source, bool condition, string format, LogTarget logTarget, params object[] args)
         {
@@ -811,7 +822,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="assertCode"/> returns true during debugging
         /// and logs an <see cref="ErrorFormat(string, string, object[])"/> log message if it is false.<br/>
-        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
@@ -824,7 +835,9 @@ namespace Battle.QSimulation
         /// <param name="assertCode">Assertion code must return true, otherwise logs an error.</param>
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssertFormat(string source, Func<bool> assertCode, string format, params object[] args)
         {
@@ -837,7 +850,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="assertCode"/> returns true during debugging
         /// and logs an <see cref="ErrorFormat(string, string, LogTarget, object[])"/> log message if it is false.<br/>
-        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
@@ -851,7 +864,9 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="logTarget">The target output console.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssertFormat(string source, Func<bool> assertCode, string format, LogTarget logTarget, params object[] args)
         {
@@ -864,7 +879,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="assertCode"/> returns true during debugging
         /// and logs an <see cref="ErrorFormat(Frame, string, string, object[])"/> log message if it is false.<br/>
-        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
@@ -878,7 +893,9 @@ namespace Battle.QSimulation
         /// <param name="assertCode">Assertion code must return true, otherwise logs an error.</param>
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssertFormat(Frame f, string source, Func<bool> assertCode, string format, params object[] args)
         {
@@ -891,7 +908,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="assertCode"/> returns true during debugging
         /// and logs an <see cref="ErrorFormat(Frame, string, string, LogTarget, object[])"/> log message if it is false.<br/>
-        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
@@ -906,7 +923,9 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="logTarget">The target output console.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DevAssertFormat(Frame f, string source, Func<bool> assertCode, string format, LogTarget logTarget, params object[] args)
         {
@@ -1280,7 +1299,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="condition"/> is true during debugging
         /// and logs an <see cref="Error(string, LogTarget)"/> log message if it is false.<br/>
-        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
@@ -1291,7 +1310,9 @@ namespace Battle.QSimulation
         /// <param name="condition">Condition must be true, otherwise logs an error.</param>
         /// <param name="message">The message that is Logged.</param>
         /// <param name="logTarget">The target output console.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssert(bool condition, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
         {
@@ -1304,7 +1325,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="condition"/> is true during debugging
         /// and logs an <see cref="Error(Frame, string, LogTarget)"/> log message if it is false.<br/>
-        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
@@ -1316,7 +1337,9 @@ namespace Battle.QSimulation
         /// <param name="condition">Condition must be true, otherwise logs an error.</param>
         /// <param name="message">The message that is Logged.</param>
         /// <param name="logTarget">The target output console.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssert(Frame f, bool condition, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
         {
@@ -1329,7 +1352,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="assertCode"/> returns true during debugging
         /// and logs an <see cref="Error(string, LogTarget)"/> log message if it is false.<br/>
-        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
@@ -1341,7 +1364,9 @@ namespace Battle.QSimulation
         /// <param name="assertCode">Assertion code must return true, otherwise logs an error.</param>
         /// <param name="message">The message that is Logged.</param>
         /// <param name="logTarget">The target output console.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssert(Func<bool> assertCode, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
         {
@@ -1354,7 +1379,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="assertCode"/> returns true during debugging
         /// and logs an <see cref="Error(Frame, string, LogTarget)"/> log message if it is false.<br/>
-        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
@@ -1367,7 +1392,9 @@ namespace Battle.QSimulation
         /// <param name="assertCode">Assertion code must return true, otherwise logs an error.</param>
         /// <param name="message">The message that is Logged.</param>
         /// <param name="logTarget">The target output console.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssert(Frame f, Func<bool> assertCode, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
         {
@@ -1380,7 +1407,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="condition"/> is true during debugging
         /// and logs an <see cref="ErrorFormat(string, object[])"/> log message if it is false.<br/>
-        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
@@ -1391,7 +1418,9 @@ namespace Battle.QSimulation
         /// <param name="condition">Condition must be true, otherwise logs an error.</param>
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssertFormat(bool condition, string format, params object[] args)
         {
@@ -1404,7 +1433,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="condition"/> is true during debugging
         /// and logs an <see cref="ErrorFormat(string, LogTarget, object[])"/> log message if it is false.<br/>
-        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
@@ -1416,7 +1445,9 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="logTarget">The target output console.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssertFormat(bool condition, string format, LogTarget logTarget, params object[] args)
         {
@@ -1429,7 +1460,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="condition"/> is true during debugging
         /// and logs an <see cref="ErrorFormat(Frame, string, object[])"/> log message if it is false.<br/>
-        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
@@ -1441,7 +1472,9 @@ namespace Battle.QSimulation
         /// <param name="condition">Condition must be true, otherwise logs an error.</param>
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssertFormat(Frame f, bool condition, string format, params object[] args)
         {
@@ -1454,7 +1487,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="condition"/> is true during debugging
         /// and logs an <see cref="ErrorFormat(Frame, string, LogTarget, object[])"/> log message if it is false.<br/>
-        /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
@@ -1467,7 +1500,9 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="logTarget">The target output console.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssertFormat(Frame f, bool condition, string format, LogTarget logTarget, params object[] args)
         {
@@ -1480,7 +1515,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="assertCode"/> returns true during debugging
         /// and logs an <see cref="ErrorFormat(string, object[])"/> log message if it is false.<br/>
-        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
@@ -1492,7 +1527,9 @@ namespace Battle.QSimulation
         /// <param name="assertCode">Assertion code must return true, otherwise logs an error.</param>
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssertFormat(Func<bool> assertCode, string format, params object[] args)
         {
@@ -1505,7 +1542,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="assertCode"/> returns true during debugging
         /// and logs an <see cref="ErrorFormat(string, LogTarget, object[])"/> log message if it is false.<br/>
-        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
@@ -1518,7 +1555,9 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="logTarget">The target output console.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssertFormat(Func<bool> assertCode, string format, LogTarget logTarget, params object[] args)
         {
@@ -1531,7 +1570,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="assertCode"/> returns true during debugging
         /// and logs an <see cref="ErrorFormat(Frame, string, object[])"/> log message if it is false.<br/>
-        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
@@ -1544,7 +1583,9 @@ namespace Battle.QSimulation
         /// <param name="assertCode">Assertion code must return true, otherwise logs an error.</param>
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssertFormat(Frame f, Func<bool> assertCode, string format, params object[] args)
         {
@@ -1557,7 +1598,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Asserts that <paramref name="assertCode"/> returns true during debugging
         /// and logs an <see cref="ErrorFormat(Frame, string, LogTarget, object[])"/> log message if it is false.<br/>
-        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
+        /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT_ENABLED_OVERRIDE</c> or <c>UNITY_EDITOR</c> is defined.
         /// </summary>
         /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
@@ -1571,7 +1612,9 @@ namespace Battle.QSimulation
         /// <param name="format">The message string to be Logged after formatting.</param>
         /// <param name="logTarget">The target output console.</param>
         /// <param name="args">The arguments for formatting the message string.</param>
-        [Conditional("DEBUG_ASSERT")]
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DevAssertFormat(Frame f, Func<bool> assertCode, string format, LogTarget logTarget, params object[] args)
         {
