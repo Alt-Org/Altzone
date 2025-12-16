@@ -1627,9 +1627,9 @@ namespace Battle.QSimulation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private BattleDebugLogger(string source)
         {
-            _instanceFormatUnity        = string.Format(InstanceFormatUnityTemplate, source);
-            _instanceFormatUnityNoFrame = string.Format(InstanceFormatUnityNoFrameTemplate, source);
-            _instanceSourceFormatOnScreen = string.Format(InstanceSourceFormatOnScreenTemplate, source);
+            _instanceFormatUnity                 = string.Format(InstanceFormatUnityTemplate, source);
+            _instanceFormatUnityNoFrame          = string.Format(InstanceFormatUnityNoFrameTemplate, source);
+            _instanceSourceFormatOnScreen        = string.Format(InstanceSourceFormatOnScreenTemplate, source);
             _instanceSourceFormatOnScreenNoFrame = string.Format(InstanceSourceFormatOnScreenNoFrameTemplate, source);
         }
     }
