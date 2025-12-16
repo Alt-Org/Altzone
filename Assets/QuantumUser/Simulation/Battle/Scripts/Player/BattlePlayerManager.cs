@@ -531,7 +531,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Despawns a player's active character entity from the game. <br/>
         /// Verifies that the player has a character in play. <br/>
-        /// If <paramref name="kill"/> is set to true, the character's state is marked as dead prior to despawning. <br/>
+        /// If <paramref name="kill"/> is set to true, the character's state is marked as dead prior to despawning.<br/>
         /// Actual despawning handled by a separate private method.
         /// </summary>
         ///
