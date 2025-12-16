@@ -65,7 +65,8 @@ namespace Battle.QSimulation
     /// **Passing %Quantum frame:**<br/>
     /// All Log methods have two versions:<br/>
     /// One that takes a %Quantum frame as an argument.<br/>
-    /// One that doesn't.
+    /// One that doesn't.<br/>
+    /// If the %Quantum frame is available it can be printed in the log message.
     ///
     /// **Formatted Log messages:**<br/>
     /// Methods that have the **"Format"** suffix in the method name take a format string in place of the message
