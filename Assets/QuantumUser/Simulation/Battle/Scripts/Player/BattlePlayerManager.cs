@@ -626,7 +626,6 @@ namespace Battle.QSimulation.Player
             playerData->TargetPosition = worldPosition;
 
             playerHandle.SetSelectedCharacterID(characterNumber);
-            f.Events.BattleDebugUpdateStatsOverlay(playerData->Slot, playerData->Stats);
 
             BattleDebugOverlayLink.SetEntries(playerData->Slot, s_debugOverlayStats, new object[]
             {
