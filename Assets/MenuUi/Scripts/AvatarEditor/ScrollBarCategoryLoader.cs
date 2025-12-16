@@ -91,11 +91,6 @@ namespace MenuUi.Scripts.AvatarEditor
 
             Transform middleCell = _categoryGridContent.GetChild(middleCellIndex);
             Button button = middleCell.GetComponent<Button>();
-
-            Debug.LogError(button);
-            Debug.LogError(middleCell);
-            Debug.LogError(middleCellIndex);
-
             button.onClick.Invoke();
         }
 
