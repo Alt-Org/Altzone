@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Prg.Scripts.Common.Extensions;
 using Altzone.Scripts.Store;
 using Altzone.Scripts.Voting;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Newtonsoft.Json;
 
 namespace Altzone.Scripts.Model.Poco.Clan
 {
@@ -23,17 +23,19 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public List<ClanValues> Values = new();
         public List<HeartPieceData> ClanHeartPieces = new();
-        public ClanRoleRights[] ClanRights = new ClanRoleRights[3];
+        public List<ClanRoles> ClanRoles = new ();
+        public List<Rules> Rules = new ();
 
+        [JsonIgnore]
         public ClanInventory Inventory = new();
-
+        [JsonIgnore]
         public List<PollData> Polls = new();
 
         public AdStoreObject _adData;
         public AdStoreObject AdData {
             get { return _adData != null ? _adData : _adData = new(null, null); }
             set { _adData = value; CallAdDataUpdate(); } }
-
+        [JsonIgnore]
         public List<ClanMember> Members = new();
         public List<RaidRoom> Rooms = new();
 
@@ -49,6 +51,12 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public delegate void AdDataUpdated();
         public static event AdDataUpdated OnAdDataUpdated;
 
+        [JsonConstructor]
+        private ClanData()
+        {
+
+        }
+        
         public ClanData(string id, string name, string tag, int gameCoins)
         {
             Assert.IsTrue(id.IsSet());
@@ -90,8 +98,10 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
                 i++;
             }
+            Rules = new() { Clan.Rules.FairGame, Clan.Rules.NoToxicity, Clan.Rules.NoSpam };
             IsOpen = clan.isOpen;
             if (clan.polls != null) Polls = clan.polls;
+            ClanRoles = clan.roles;
         }
 
         public void UpdateClanData(ServerClan clan)
@@ -124,10 +134,12 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
                     i++;
                 }
+            Rules = new() { Clan.Rules.FairGame, Clan.Rules.NoToxicity, Clan.Rules.NoSpam };
             IsOpen = clan.isOpen;
             if (clan.polls != null) Polls = clan.polls;
             else if (Polls == null) Polls = new();
             Rooms = new();
+            ClanRoles = clan.roles;
         }
 
         public void CallDataUpdate()

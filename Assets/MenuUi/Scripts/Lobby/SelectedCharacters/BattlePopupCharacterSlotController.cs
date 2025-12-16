@@ -100,5 +100,24 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                 _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false, statsForCharacter);
             }
         }
+
+        /// <summary>
+        /// Set slots to teh bot mode where there is just a blank head in the slot if no characters are given.
+        /// </summary>
+        /// <param name="selectedCharacterIds">The selected character ids to display.</param>
+        public void SetBotCharacters(int[] selectedCharacterIds = null)
+        {
+            for (int i = 0; i < _selectedCharacterSlots.Length; i++)
+            {
+                if (selectedCharacterIds == null || selectedCharacterIds.Length > i || selectedCharacterIds[i] == (int)CharacterID.None)
+                {
+                    _selectedCharacterSlots[i].SetBot();
+                    continue;
+                }
+
+                PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(selectedCharacterIds[i].ToString());
+                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false);
+            }
+        }
     }
 }

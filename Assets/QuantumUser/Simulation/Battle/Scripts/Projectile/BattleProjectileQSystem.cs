@@ -7,7 +7,6 @@
 using System.Runtime.CompilerServices;
 
 // Unity usings
-using UnityEngine;
 using UnityEngine.Scripting;
 
 // Quantum usings
@@ -190,6 +189,14 @@ namespace Battle.QSimulation.Projectile
 
         #region Public - Gameflow Methods
 
+        /// <summary>
+        /// Initializes this classes BattleDebugLogger instance.<br/>
+        /// This method is exclusively for debug logging purposes.
+        /// </summary>
+        public static void Init()
+        {
+            s_debugLogger = BattleDebugLogger.Create<BattleProjectileQSystem>();
+        }
 
         /// <summary>
         /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a> gets called every frame.</span><br/>
@@ -252,11 +259,11 @@ namespace Battle.QSimulation.Projectile
             EntityRef                   otherEntity      = projectileCollisionData->OtherEntity;
 
             // set default values
-            BattlePlayerCollisionType collisionType        = BattlePlayerCollisionType.Reflect;
-            bool                      handleCollision      = false;
-            FPVector2                 normal               = FPVector2.Zero;
-            FP                        collisionMinOffset   = FP._0;
-            SpeedChange speedChange = SpeedChange.None;
+            BattlePlayerCollisionType collisionType      = BattlePlayerCollisionType.Reflect;
+            bool                      handleCollision    = false;
+            FPVector2                 normal             = FPVector2.Zero;
+            FP                        collisionMinOffset = FP._0;
+            SpeedChange               speedChange        = SpeedChange.None;
 
             // handle the specific collision type
             switch (collisionTriggerType)
@@ -279,21 +286,38 @@ namespace Battle.QSimulation.Projectile
 
                     normal             = soulWall->Normal;
                     collisionMinOffset = soulWall->CollisionMinOffset;
-                    speedChange = SpeedChange.Reset;
-                    handleCollision = true;
+                    speedChange        = SpeedChange.Reset;
+                    handleCollision    = true;
                     break;
 
                 case BattleCollisionTriggerType.Shield:
                     BattleCollisionQSystem.PlayerShieldCollisionData* dataPtr = (BattleCollisionQSystem.PlayerShieldCollisionData*)data;
-                    BattlePlayerHitboxQComponent* playerHitbox = dataPtr->PlayerShieldHitbox;
+                    BattlePlayerHitboxQComponent* playerShieldHitbox = dataPtr->PlayerShieldHitbox;
 
-                    if (ProjectileHitPlayerShield(f, projectile, dataPtr, out normal))
-                    {
-                        collisionType      = playerHitbox->CollisionType;
-                        collisionMinOffset = playerHitbox->CollisionMinOffset;
-                        speedChange        = SpeedChange.Increment;
-                        handleCollision    = true;
-                    }
+                    if (FPVector2.Dot(playerShieldHitbox->Normal, projectile->Direction.Normalized) >= 0) break;
+
+                    if (!ProjectileHitPlayerShield(f, projectile, dataPtr, out normal)) break;
+                    
+                    collisionType      = playerShieldHitbox->CollisionType;
+                    collisionMinOffset = playerShieldHitbox->CollisionMinOffset;
+                    speedChange        = SpeedChange.Increment;
+                    handleCollision    = true;
+                    
+                    break;
+
+                case BattleCollisionTriggerType.Player:
+                    BattlePlayerHitboxQComponent* playerCharacterHitbox = ((BattleCollisionQSystem.PlayerCharacterCollisionData*)data)->PlayerCharacterHitbox;
+
+                    if (projectile->EmotionCurrent == BattleEmotionState.Love) break;
+
+                    if (FPVector2.Dot(playerCharacterHitbox->Normal, projectile->Direction.Normalized) >= 0) break;
+
+                    normal             = playerCharacterHitbox->Normal;
+                    collisionType      = playerCharacterHitbox->CollisionType;
+                    collisionMinOffset = playerCharacterHitbox->CollisionMinOffset;
+                    speedChange        = SpeedChange.Increment;
+                    handleCollision    = true;
+                    
                     break;
 
                 default:
@@ -347,6 +371,9 @@ namespace Battle.QSimulation.Projectile
         #endregion Public - Gameflow Methods
 
         #endregion Public
+
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private static BattleDebugLogger s_debugLogger;
 
         #region Private Static Methods
 
@@ -404,7 +431,7 @@ namespace Battle.QSimulation.Projectile
 
             f.Events.BattleProjectileChangeSpeed(projectile->Speed);
 
-            Debug.Log("Projectile Launched");
+            s_debugLogger.Log(f, "Projectile Launched");
         }
 
         /// <summary>
@@ -446,7 +473,7 @@ namespace Battle.QSimulation.Projectile
             // if player is in the same grid cell as teammate, change the projectile to love emotion
             if (isOnTopOfTeammate)
             {
-                Debug.Log("[ProjectileSystem] changing projectile emotion to Love");
+                s_debugLogger.Log(f, "changing projectile emotion to Love");
                 SetEmotion(f, projectile, BattleEmotionState.Love);
                 shieldCollisionData->IsLoveProjectileCollision = true;
 

@@ -16,6 +16,8 @@ using Photon.Deterministic;
 // Battle QSimulation usings
 using Battle.QSimulation.Player;
 using Battle.QSimulation.SoulWall;
+using Battle.QSimulation.Goal;
+using Battle.QSimulation.Projectile;
 
 namespace Battle.QSimulation.Game
 {
@@ -40,12 +42,23 @@ namespace Battle.QSimulation.Game
         /// <param name="f">Current simulation frame.</param>
         public override void OnInit(Frame f)
         {
-            Log.Debug("[GameControlSystem] OnInit");
+            _debugLogger = BattleDebugLogger.Create<BattleGameControlQSystem>();
+
+            _debugLogger.Log("OnInit");
 
             BattleArenaQSpec battleArenaSpec = BattleQConfig.GetArenaSpec(f);
 
             BattleGridManager.Init(battleArenaSpec);
             BattlePlayerManager.Init(f, battleArenaSpec);
+
+            // Calling debug log Init methods for classes in Simulation
+            BattleCollisionQSystem.Init();
+            BattleGoalQSystem.Init();
+            BattlePlayerClassManager.Init();
+            BattlePlayerMovementController.Init();
+            BattlePlayerQSystem.Init();
+            BattleProjectileQSystem.Init();
+            BattleSoulWallQSystem.Init();
 
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
             gameSession->GameTimeSec = 0;
@@ -181,6 +194,9 @@ namespace Battle.QSimulation.Game
                     break;
             }
         }
+
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private BattleDebugLogger _debugLogger;
 
         /// <summary>
         /// Sets up the game map during the 'CreateMap' game state.

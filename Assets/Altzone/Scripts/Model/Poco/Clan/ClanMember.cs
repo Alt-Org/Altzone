@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Model.Poco.Player;
+using Newtonsoft.Json;
 
 namespace Altzone.Scripts.Model.Poco.Clan
 {
@@ -11,7 +12,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         private string _name;
         public string PlayerDataId;
         public string RaidRoomId;
-        public string Role;
+        public ClanRoles Role;
         private ServerPlayer _player;
 
         private int _leaderBoardWins = 0;
@@ -21,6 +22,9 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public string Name { get => _name; }
         public int LeaderBoardWins { get => _leaderBoardWins;}
         public int LeaderBoardCoins { get => _leaderBoardCoins;}
+
+        [JsonConstructor]
+        private ClanMember() { }
 
         public ClanMember(ServerPlayer player)
         {

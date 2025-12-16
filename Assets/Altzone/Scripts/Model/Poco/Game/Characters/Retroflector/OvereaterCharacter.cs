@@ -10,10 +10,10 @@ namespace Altzone.Scripts.Model.Poco.Game
         public OvereaterCharacter() : base()
         {
             _id = CharacterID.Overeater;
-            _defaultAttack = 6;
-            _defaultDefence = 8;
-            _defaultHp = 4;
-            _defaultCharacterSize = 12;
+            _defaultAttack = 3;
+            _defaultDefence = 1;
+            _defaultHp = 2;
+            _defaultCharacterSize = 4;
             _defaultSpeed = 3;
             InitializeValues();
         }

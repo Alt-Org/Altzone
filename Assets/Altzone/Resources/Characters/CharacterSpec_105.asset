@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
+  m_Name: CharacterSpec_105
+  m_EditorClassIdentifier: 
+  Id: 105
+  CharacterId: 105
+  IsApproved: 1
+  FinnishName: Ylimielisyys
+  EnglishName: Arrogance
+  ClassType: 100
+  CharacterDescriptionFinnish: "Kun Ylimielisyys asettuu ihmiseen asumaan, se saa
+    t\xE4m\xE4n rakentamaan identiteettins\xE4 suoritusten ja vertailun varaan. Ihminen
+    alkaa uskoa, ett\xE4 arvon tunne t\xE4ytyy ansaita \u2014 ett\xE4 rakkaus kuuluu
+    vain niille, jotka onnistuvat. Jokainen saavutus muuttuu hetkelliseksi helpotukseksi
+    ep\xE4ilyksen kipuun, ja jokainen ep\xE4onnistuminen uhkaa koko minuutta. H\xE4n
+    t\xE4ytt\xE4\xE4 tilan \xE4\xE4nekk\xE4\xE4ll\xE4 varmuudella, jotta kukaan ei
+    kuulisi, miten syv\xE4ll\xE4 sis\xE4ll\xE4 kaikuu riitt\xE4m\xE4tt\xF6myys. N\xE4in
+    h\xE4n alkaa el\xE4\xE4 ihailluksi tulemisen varassa, mutta menett\xE4\xE4 samalla
+    mahdollisuuden tulla aidosti kohdatuksi.\r\n\nVuorovaikutuskent\xE4ll\xE4 (Ego
+    Clash) Ylimielisyyden suojakilpi on kasa stipendej\xE4 ja palkintoja, jotka leijuvat
+    h\xE4nen ymp\xE4rill\xE4\xE4n ja torjuvat tunnetila-ammukset. Jokainen osuma
+    saa palkinnot v\xE4l\xE4ht\xE4m\xE4\xE4n kirkkaammin \u2014 kuin todisteena h\xE4nen
+    ylivertaisuudestaan \u2014 mutta samalla ne alkavat painaa yh\xE4 enemm\xE4n.
+    Kun kilpi lopulta murtuu, stipendit putoavat maahan kolisten, ja Ylimielisyys
+    romahtaa niiden mukana. Ilman kilpe\xE4\xE4n h\xE4n on vain ihminen, joka ei
+    osaa en\xE4\xE4 olla keskener\xE4inen.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Saavutustensa taakse k\xE4tkeytyv\xE4, haavoittuvuuttaan
+    pakoileva voittaja. "
+  CharacterShortDescriptionEnglish: 
+  CharacterStats: {fileID: 11400000, guid: f0bd7133e0d0ead42b1aadafb6102f7d, type: 2}
+  Hp:
+    Level: 1
+    Coefficient: 7
+  Speed:
+    Level: 2
+    Coefficient: 0
+  CharacterSize:
+    Level: 3
+    Coefficient: 0
+  Attack:
+    Level: 2
+    Coefficient: 2
+  Defence:
+    Level: 3
+    Coefficient: 1
+  GalleryImage: {fileID: 21300000, guid: 07178073bc37d1a40ae8466cac3f7fba, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: 349eaf769a46d1a40a337ef149828b99, type: 3}
+  CharPhotoSeries: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 1479277049343305243
+  BattleUiSprite: {fileID: 0}

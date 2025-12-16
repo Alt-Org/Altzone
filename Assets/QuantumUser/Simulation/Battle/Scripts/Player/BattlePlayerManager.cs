@@ -1,7 +1,7 @@
 /// @file BattlePlayerManager.cs
 /// <summary>
 /// Contains @cref{Battle.QSimulation.Player,BattlePlayerManager} class which handles player logic.<br/>
-/// Also contains @cref{Battle.QSimulation.Player,BattlePlayerPlayeStateExtension} class which has extension methods for BattlePlayerPlayState enum.
+/// Also contains @cref{Battle.QSimulation.Player,BattlePlayerPlayStateExtension} class which has extension methods for BattlePlayerPlayState enum.
 /// </summary>
 
 //#define DEBUG_PLAYER_STAT_OVERRIDE
@@ -39,7 +39,7 @@ namespace Battle.QSimulation.Player
         /// <param name="state">Player play state.</param>
         ///
         /// <returns>True if play state is <see cref="Quantum.BattlePlayerPlayState.NotInGame">NotInGame</see>.</returns>
-        public static bool IsNotInGame(this BattlePlayerPlayState state)           => state is BattlePlayerPlayState.NotInGame;
+        public static bool IsNotInGame(this BattlePlayerPlayState state) => state is BattlePlayerPlayState.NotInGame;
 
         /// <summary>
         /// Checks if the play state of player is any of the substates that count as <b>InGame</b>.
@@ -48,7 +48,7 @@ namespace Battle.QSimulation.Player
         /// <param name="state">Player play state.</param>
         ///
         /// <returns>True if play state is not <see cref="Quantum.BattlePlayerPlayState.NotInGame">NotInGame</see>.</returns>
-        public static bool IsInGame(this BattlePlayerPlayState state)              => state is not BattlePlayerPlayState.NotInGame;
+        public static bool IsInGame(this BattlePlayerPlayState state) => state is not BattlePlayerPlayState.NotInGame;
 
         /// <summary>
         /// Checks if the play state of player is any of the substates that count as <see cref="Quantum.BattlePlayerPlayState.OutOfPlay">OutOfPlay</see>.
@@ -62,7 +62,7 @@ namespace Battle.QSimulation.Player
         /// <see cref="Quantum.BattlePlayerPlayState.OutOfPlayRespawning">OutOfPlayRespawning</see> or
         /// <see cref="Quantum.BattlePlayerPlayState.OutOfPlayFinal">OutOfPlayFinal</see>.
         /// </returns>
-        public static bool IsOutOfPlay(this BattlePlayerPlayState state)           => state is BattlePlayerPlayState.OutOfPlay or BattlePlayerPlayState.OutOfPlayRespawning or BattlePlayerPlayState.OutOfPlayFinal;
+        public static bool IsOutOfPlay(this BattlePlayerPlayState state) => state is BattlePlayerPlayState.OutOfPlay or BattlePlayerPlayState.OutOfPlayRespawning or BattlePlayerPlayState.OutOfPlayFinal;
 
         /// <summary>
         /// Checks if the play state of player is <see cref="Quantum.BattlePlayerPlayState.OutOfPlayRespawning">OutOfPlayRespawning</see>.
@@ -80,7 +80,7 @@ namespace Battle.QSimulation.Player
         /// <param name="state">Player play state.</param>
         ///
         /// <returns>True if play state is <see cref="Quantum.BattlePlayerPlayState.OutOfPlayFinal">OutOfPlayFinal</see>.</returns>
-        public static bool IsOutOfPlayFinal(this BattlePlayerPlayState state)      => state is BattlePlayerPlayState.OutOfPlayFinal;
+        public static bool IsOutOfPlayFinal(this BattlePlayerPlayState state) => state is BattlePlayerPlayState.OutOfPlayFinal;
 
         /// <summary>
         /// Checks if the play state of player is <see cref="Quantum.BattlePlayerPlayState.InPlay">InPlay</see>.
@@ -89,12 +89,16 @@ namespace Battle.QSimulation.Player
         /// <param name="state">Player play state.</param>
         ///
         /// <returns>True if play state is <see cref="Quantum.BattlePlayerPlayState.InPlay">InPlay</see>.</returns>
-        public static bool IsInPlay(this BattlePlayerPlayState state)              => state is BattlePlayerPlayState.InPlay;
+        public static bool IsInPlay(this BattlePlayerPlayState state) => state is BattlePlayerPlayState.InPlay;
     }
 
     /// <summary>
+    /// PlayerManager handles player management, allowing other classes to focus on gameplay logic.<br/>
     /// Provides static methods to initialize, spawn, despawn, and query player-related data.
     /// </summary>
+    ///
+    /// [{Player Overview}](#page-concepts-player-overview)<br/>
+    /// [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview)
     ///
     /// Handles initializing players that are present in the game, as well as spawning and despawning player characters.<br/>
     /// Also contains the public and private PlayerHandle structs.
@@ -114,7 +118,9 @@ namespace Battle.QSimulation.Player
         /// <param name="battleArenaSpec">The spec of the arena.</param>
         public static void Init(Frame f, BattleArenaQSpec battleArenaSpec)
         {
-            Debug.Log("[PlayerManager] Init");
+            s_debugLogger = BattleDebugLogger.Create(typeof(BattlePlayerManager));
+
+            s_debugLogger.Log(f, "Init");
 
             for (int i = 0; i < s_spawnPoints.Length; i++)
             {
@@ -127,14 +133,28 @@ namespace Battle.QSimulation.Player
             playerManagerData->PlayerCount = 0;
 
             {
-                BattleParameters.PlayerType[] playerSlotTypes = BattleParameters.GetPlayerSlotTypes(f);
-                int                           playerCount     = BattleParameters.GetPlayerCount(f);
+                string[]                      playerSlotUserIDs = BattleParameters.GetPlayerSlotUserIDs(f);
+                BattleParameters.PlayerType[] playerSlotTypes   = BattleParameters.GetPlayerSlotTypes(f);
+                int                           playerCount       = BattleParameters.GetPlayerCount(f);
+
+                string[] playerDebugStrings = new string[playerSlotTypes.Length];
 
                 int playerCountCheckNumber = 0;
-                foreach (BattleParameters.PlayerType playerSlotType in playerSlotTypes)
+                for (int i = 0; i < playerSlotTypes.Length; i++)
                 {
-                    if (playerSlotType == BattleParameters.PlayerType.Player) playerCountCheckNumber++;
+                    if (playerSlotTypes[i] == BattleParameters.PlayerType.Player)
+                    {
+                        playerDebugStrings[i] = string.Format("{0}({1})", playerSlotTypes[i], playerSlotUserIDs[i]);
+                        playerCountCheckNumber++;
+                    }
+                    else
+                    {
+                        playerDebugStrings[i] = playerSlotTypes[i].ToString();
+                    }
                 }
+
+                s_debugLogger.LogFormat(f, "Expected players: {{ {0}, {1}, {2}, {3} }}", playerDebugStrings[0], playerDebugStrings[1], playerDebugStrings[2], playerDebugStrings[3]);
+                s_debugLogger.LogFormat(f, "Expected player count: {0}", playerCount);
 
                 if (playerCountCheckNumber != playerCount)
                 {
@@ -169,20 +189,17 @@ namespace Battle.QSimulation.Player
             PlayerHandleInternal        playerHandle   = PlayerHandleInternal.GetPlayerHandle(playerManagerData, playerSlot);
             BattleParameters.PlayerType playerSlotType = playerSlotTypes[playerHandle.Index];
 
+            s_debugLogger.LogFormat(f, "Registering Player({0}) in {1}", playerUserID, playerSlot);
+
             if (playerSlotType != BattleParameters.PlayerType.Player)
             {
-                Error(f, "Player is in {0} which is type of {1}",
-                    playerSlot,
-                    playerSlotType
-                );
+                Error(f, "Player({0}) is registered in {1} which is of type {2}", playerUserID, playerSlot, playerSlotType);
                 return;
             }
 
             if (playerSlotUserIDs[playerHandle.Index] != playerUserID)
             {
-                Error(f, "Player in {0} has incorrect UsedID",
-                    playerSlot
-                );
+                Error(f, "Player({0}) in {1} has incorrect UsedID, expected Player({2})", playerUserID, playerSlot, playerSlotUserIDs[playerHandle.Index]);
                 return;
             }
 
@@ -230,14 +247,20 @@ namespace Battle.QSimulation.Player
 
             for (int playerIndex = 0; playerIndex < Constants.BATTLE_PLAYER_SLOT_COUNT; playerIndex++)
             {
-                if (playerSlotTypes[playerIndex] == BattleParameters.PlayerType.None) continue;
+                BattlePlayerSlot playerSlot = PlayerHandleInternal.GetSlot(playerIndex);
+                BattleTeamNumber teamNumber = PlayerHandleInternal.GetTeamNumber(playerSlot);
+
+                s_debugLogger.LogFormat(f, "({0}) Creating player, type: {1}", playerSlot, playerSlotTypes[playerIndex]);
+
+                if (playerSlotTypes[playerIndex] == BattleParameters.PlayerType.None)
+                {
+                    s_debugLogger.LogFormat(f, "({0}) Skipping player creation, as type is None", playerSlot);
+                    continue;
+                }
 
                 bool isBot = playerSlotTypes[playerIndex] == BattleParameters.PlayerType.Bot;
 
                 PlayerHandleInternal playerHandle = new(playerManagerData, playerIndex);
-
-                BattlePlayerSlot playerSlot = PlayerHandleInternal.GetSlot(playerIndex);
-                BattleTeamNumber teamNumber = PlayerHandleInternal.GetTeamNumber(playerSlot);
 
                 BattleCharacterBase[] battleBaseCharacters = !isBot
                                                            ? f.GetPlayerData(playerHandle.PlayerRef).Characters
@@ -245,7 +268,7 @@ namespace Battle.QSimulation.Player
 
                 EntityRef[] playerCharacterEntityArray = new EntityRef[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
 
-                // create playerEntity for each characters
+                // create playerEntity for each character
                 {
                     //{ player temp variables
                     int                                 playerCharacterId;
@@ -309,17 +332,35 @@ namespace Battle.QSimulation.Player
                         playerCharacterId =                             battleBaseCharacters[playerCharacterNumber].Id;
                         playerClass       = (BattlePlayerCharacterClass)battleBaseCharacters[playerCharacterNumber].Class;
 
+                        s_debugLogger.LogFormat(f, "({0}) Creating character, number {1}\n" +
+                                                "Character ID:    {2},\n" +
+                                                "Character Class: {3}",
+                                                playerSlot,
+                                                playerCharacterNumber,
+                                                playerCharacterId,
+                                                playerClass
+                                                );
+
                         // entity prototype
                         playerEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(playerCharacterId);
                         if (playerEntityPrototype == null)
                         {
                             const int FallbackId = 0;
 
-                            Debug.LogWarningFormat("[PlayerManager] Failed to fetch player character entity prototype ID {0}\nUsing fallback ID {1}", playerCharacterId, FallbackId);
+                            s_debugLogger.WarningFormat(f, "({0}) Failed to fetch player character entity prototype ID {1}\nUsing fallback ID {2}", playerSlot, playerCharacterId, FallbackId);
 
                             playerCharacterId     = FallbackId;
                             playerClass           = BattlePlayerCharacterClass.None;
                             playerEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(playerCharacterId);
+
+                            s_debugLogger.LogFormat(f, "({0}) Creating fallback character, number {1}\n" +
+                                                    "Character ID:    {2},\n" +
+                                                    "Character Class: {3}",
+                                                    playerSlot,
+                                                    playerCharacterNumber,
+                                                    playerCharacterId,
+                                                    playerClass
+                                                    );
                         }
 
                         // create entity
@@ -397,7 +438,7 @@ namespace Battle.QSimulation.Player
                                 default:
                                     playerHitboxType          = (BattlePlayerHitboxType)(-1);
                                     playerHitboxCollisionType = (BattlePlayerCollisionType)(-1);
-                                    playerHitboxNormal        = FPVector2.Up;
+                                    playerHitboxNormal        = FPVector2.Zero;
                                     break;
                             }
 
@@ -479,14 +520,37 @@ namespace Battle.QSimulation.Player
                         };
 
 #if DEBUG_PLAYER_STAT_OVERRIDE
+                        s_debugLogger.Warning(f, "DEBUG_PLAYER_STAT_OVERRIDE enabled!");
+
                         playerData.Stats.Hp            = FP.FromString("3.0");
                         playerData.Stats.Speed         = FP.FromString("20.0");
                         playerData.Stats.CharacterSize = FP.FromString("1.0");
                         playerData.Stats.Attack        = FP.FromString("1.0");
                         playerData.Stats.Defence       = FP.FromString("1.0");
+
+                        s_debugLogger.WarningFormat("Using Hp {0} override", playerData.Stats.Hp);
+                        s_debugLogger.WarningFormat("Using Speed {0} override", playerData.Stats.Speed);
+                        s_debugLogger.WarningFormat("Using CharacterSize {0} override", playerData.Stats.CharacterSize);
+                        s_debugLogger.WarningFormat("Using Attack {0} override", playerData.Stats.Attack);
+                        s_debugLogger.WarningFormat("Using Defence {0} override", playerData.Stats.Defence);
 #endif
-                        playerData.CurrentHp = playerData.Stats.Hp;
+                        playerData.CurrentHp      = playerData.Stats.Hp;
                         playerData.CurrentDefence = playerData.Stats.Defence;
+
+                        s_debugLogger.LogFormat(f, "({0}) Character number {1} stats:\n" +
+                                                "Hp:            {2}\n" +
+                                                "Speed:         {3}\n" +
+                                                "CharacterSize: {4}\n" +
+                                                "Attack:        {5}\n" +
+                                                "Defence:       {6}",
+                                                playerSlot,
+                                                playerCharacterNumber,
+                                                playerData.Stats.Hp,
+                                                playerData.Stats.Speed,
+                                                playerData.Stats.CharacterSize,
+                                                playerData.Stats.Attack,
+                                                playerData.Stats.Defence
+                                                );
 
                         //} initialize playerData
 
@@ -522,6 +586,8 @@ namespace Battle.QSimulation.Player
                 playerHandle.AllowCharacterSwapping = true;
                 playerHandle.PlayerGiveUpState = false;
                 playerHandle.SetCharacterEntities(playerCharacterEntityArray);
+
+                s_debugLogger.LogFormat(f, "({0}) Player created successfully", playerSlot);
             }
         }
 
@@ -542,19 +608,19 @@ namespace Battle.QSimulation.Player
 
             if (playerHandle.PlayState.IsNotInGame())
             {
-                Debug.LogError("[PlayerManager] Can not spawn player that is not in game");
+                s_debugLogger.Error(f, "Can not spawn player that is not in game");
                 return;
             }
 
             if (!PlayerHandleInternal.IsValidCharacterNumber(characterNumber))
             {
-                Debug.LogErrorFormat("[PlayerManager] Invalid characterNumber = {0}", characterNumber);
+                s_debugLogger.ErrorFormat(f, "Invalid characterNumber = {0}", characterNumber);
                 return;
             }
 
             if (playerHandle.GetCharacterState(characterNumber) == BattlePlayerCharacterState.Dead)
             {
-                Debug.LogFormat("[PlayerManager] Player character {0} is dead and will not be spawned", characterNumber);
+                s_debugLogger.LogFormat(f, "Player character {0} is dead and will not be spawned", characterNumber);
                 return;
             }
 
@@ -578,7 +644,7 @@ namespace Battle.QSimulation.Player
 
             if (!playerHandle.PlayState.IsInPlay())
             {
-                Debug.LogError("[PlayerManager] Can not despawn player that is not in play");
+                s_debugLogger.Error(f, "Can not despawn player that is not in play");
                 return;
             }
 
@@ -596,6 +662,9 @@ namespace Battle.QSimulation.Player
         /// Public helper struct for getting player information.
         /// </summary>
         ///
+        /// [{Player Overview}](#page-concepts-player-overview)<br/>
+        /// [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview)
+        ///
         /// This is a public wrapper for the private PlayerHandleInternal that is used by the BattlePlayerManager internally.<br/>
         /// This only exposes the parts of the PlayerHandleInternal that is meant to be accessible outside of BattlePlayerManager.
         public struct PlayerHandle
@@ -608,6 +677,7 @@ namespace Battle.QSimulation.Player
                 int playerIndex = PlayerHandleInternal.GetPlayerIndex(playerManagerData, playerRef);
                 return PlayerHandleInternal.GetSlot(playerIndex);
             }
+
 
             /// <summary>
             /// Retrieves team number based on slot.
@@ -709,7 +779,7 @@ namespace Battle.QSimulation.Player
             {
                 if (!_internalHandle.PlayState.IsOutOfPlay())
                 {
-                    Debug.LogError("[PlayerManager] Can not set player that is not OutOfPlay as OutOfPlayRespawning");
+                    s_debugLogger.Error("Can not set player that is not OutOfPlay as OutOfPlayRespawning");
                     return;
                 }
                 _internalHandle.PlayState = BattlePlayerPlayState.OutOfPlayRespawning;
@@ -719,7 +789,7 @@ namespace Battle.QSimulation.Player
             {
                 if (!_internalHandle.PlayState.IsOutOfPlay())
                 {
-                    Debug.LogError("[PlayerManager] Can not set player that is not OutOfPlay as OutOfPlayFinal");
+                    s_debugLogger.Error("Can not set player that is not OutOfPlay as OutOfPlayFinal");
                     return;
                 }
                 _internalHandle.PlayState = BattlePlayerPlayState.OutOfPlayFinal;
@@ -745,6 +815,9 @@ namespace Battle.QSimulation.Player
         #endregion Public
 
         #region Private
+
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private static BattleDebugLogger s_debugLogger;
 
         private static readonly FPVector2[] s_spawnPoints = new FPVector2[Constants.BATTLE_PLAYER_SLOT_COUNT];
 
@@ -1128,7 +1201,7 @@ namespace Battle.QSimulation.Player
             }
             else
             {
-                Debug.LogFormat("[PlayerManager] Couldn't find PlayerManagerData singleton");
+                s_debugLogger.Log(f, "Couldn't find PlayerManagerData singleton");
                 return null;
             }
         }
@@ -1158,6 +1231,8 @@ namespace Battle.QSimulation.Player
                 worldPosition = playerHandle.SpawnPosition;
             }
 
+            s_debugLogger.LogFormat(f, "({0}) Spawning character number: {1}", playerData->Slot, characterNumber);
+
             playerData->PlayerRef = playerHandle.PlayerRef;
 
             BattlePlayerMovementController.Teleport(f, playerData, playerTransform,
@@ -1170,6 +1245,9 @@ namespace Battle.QSimulation.Player
             playerHandle.SetSelectedCharacter(characterNumber);
             f.Events.BattleDebugUpdateStatsOverlay(playerData->Slot, playerData->Stats);
             f.Events.BattleCharacterSelected(playerData->Slot, characterNumber);
+
+            playerData->AbilityCooldownSec = FrameTimer.FromSeconds(f, FP._3);
+            playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0); ;
 
             playerHandle.PlayState = BattlePlayerPlayState.InPlay;
 
@@ -1189,6 +1267,8 @@ namespace Battle.QSimulation.Player
             EntityRef selectedCharacter = playerHandle.SelectedCharacterEntity;
             BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(selectedCharacter);
             Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(selectedCharacter);
+
+            s_debugLogger.LogFormat(f, "({0}) Despawning character number: {1}", playerData->Slot, playerHandle.SelectedCharacterNumber);
 
             FPVector2 worldPosition = playerHandle.GetOutOfPlayPosition(playerHandle.SelectedCharacterNumber, playerData->TeamNumber);
 
@@ -1212,7 +1292,7 @@ namespace Battle.QSimulation.Player
         private static void Error(Frame f, string messageformat, params object[] args)
         {
             string message = string.Format(messageformat, args);
-            Debug.LogError("[PlayerManager] " + message);
+            s_debugLogger.Error(f, message);
             f.Events.BattleDebugOnScreenMessage(message);
         }
 

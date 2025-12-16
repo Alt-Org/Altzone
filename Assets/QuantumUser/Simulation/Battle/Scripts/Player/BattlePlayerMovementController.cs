@@ -22,11 +22,23 @@ namespace Battle.QSimulation.Player
     /// Handles player movement and rotation
     /// </summary>
     ///
-    /// Contains the primary @cref{BattlePlayerMovementController,UpdateMovement} method for handling player movement, which is used by BattlePlayerQSystem.<br/>
+    /// [{Player Overview}](#page-concepts-player-overview)<br/>
+    /// [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview)
+    ///
+    /// Contains the primary @cref{BattlePlayerMovementController,UpdateMovement} method which handles player movement, and is called by BattlePlayerQSystem.<br/>
     /// Also contains individual helper methods for moving and rotating players, which can be used by other scripts.
     [Preserve]
     public static unsafe class BattlePlayerMovementController
     {
+        /// <summary>
+        /// Initializes this classes BattleDebugLogger instance.<br/>
+        /// This method is exclusively for debug logging purposes.
+        /// </summary>
+        public static void Init()
+        {
+            s_debugLogger = BattleDebugLogger.Create(typeof(BattlePlayerMovementController));
+        }
+
         /// <summary>
         /// Handles player's movement and rotation.
         /// </summary>
@@ -120,7 +132,7 @@ namespace Battle.QSimulation.Player
                     {
                         playerData->RotationOffset = maxAngle;
                     }
-                    Debug.LogFormat("[PlayerRotatingSystem] Leaning left(rotation: {0}", playerData->RotationOffset);
+                    s_debugLogger.LogFormat(f, "Leaning left(rotation: {0}", playerData->RotationOffset);
                 }
 
                 // rotates to right
@@ -131,7 +143,7 @@ namespace Battle.QSimulation.Player
                     {
                         playerData->RotationOffset = maxAngle;
                     }
-                    Debug.LogFormat("[PlayerRotatingSystem] Leaning right(rotation: {0}", playerData->RotationOffset);
+                    s_debugLogger.LogFormat(f, "Leaning right(rotation: {0}", playerData->RotationOffset);
                 }
             }
 
@@ -221,6 +233,9 @@ namespace Battle.QSimulation.Player
             TeleportHitbox(f, playerData, transform);
         }
 
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private static BattleDebugLogger s_debugLogger;
+
         /// <summary>
         /// Private method for moving and rotating all of the player's hitboxes to the player's current position and rotation.
         /// </summary>
@@ -230,17 +245,19 @@ namespace Battle.QSimulation.Player
         /// <param name="transform">Pointer to the player's transform component.</param>
         private static void MoveHitbox(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform)
         {
-            Transform2D* shieldTransform = f.Unsafe.GetPointer<Transform2D>(playerData->HitboxShieldEntity);
             Transform2D* characterTransform = f.Unsafe.GetPointer<Transform2D>(playerData->HitboxCharacterEntity);
+            Transform2D* shieldTransform = f.Unsafe.GetPointer<Transform2D>(playerData->HitboxShieldEntity);
 
-            shieldTransform->Position = transform->Position;
-            shieldTransform->Rotation = transform->Rotation;
             characterTransform->Position = transform->Position;
             characterTransform->Rotation = transform->Rotation;
+            shieldTransform->Position = transform->Position;
+            shieldTransform->Rotation = transform->Rotation;
 
-            BattlePlayerHitboxQComponent* shieldComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity);
-
-            shieldComponent->Normal = FPVector2.Rotate(shieldComponent->NormalBase, transform->Rotation);
+            BattlePlayerHitboxQComponent* characterComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxCharacterEntity);
+            BattlePlayerHitboxQComponent* shieldComponent    = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity);
+            
+            characterComponent->Normal = FPVector2.Rotate(characterComponent->NormalBase, transform->Rotation);
+            shieldComponent->Normal    = FPVector2.Rotate(shieldComponent->NormalBase, transform->Rotation);
         }
 
         /// <summary>
@@ -252,15 +269,17 @@ namespace Battle.QSimulation.Player
         /// <param name="transform">Pointer to the player's transform component.</param>
         private static void TeleportHitbox(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* transform)
         {
-            Transform2D* shieldTransform = f.Unsafe.GetPointer<Transform2D>(playerData->HitboxShieldEntity);
             Transform2D* characterTransform = f.Unsafe.GetPointer<Transform2D>(playerData->HitboxCharacterEntity);
+            Transform2D* shieldTransform = f.Unsafe.GetPointer<Transform2D>(playerData->HitboxShieldEntity);
 
-            shieldTransform->Teleport(f, transform->Position, transform->Rotation);
             characterTransform->Teleport(f, transform->Position, transform->Rotation);
+            shieldTransform->Teleport(f, transform->Position, transform->Rotation);
 
-            BattlePlayerHitboxQComponent* shieldComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity);
+            BattlePlayerHitboxQComponent* characterComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxCharacterEntity);
+            BattlePlayerHitboxQComponent* shieldComponent    = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity);
 
-            shieldComponent->Normal = FPVector2.Rotate(shieldComponent->NormalBase, transform->Rotation);
+            characterComponent->Normal = FPVector2.Rotate(characterComponent->NormalBase, transform->Rotation);
+            shieldComponent->Normal    = FPVector2.Rotate(shieldComponent->NormalBase, transform->Rotation);
         }
 
         /// <summary>
