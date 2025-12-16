@@ -160,7 +160,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Creates a BattleDebugLogger instance using the given type <typeparamref name="T"/> as a source.
         /// </summary>
-        /// @ref BattleDebugLogger-CreateMethods
+        /// @ref BattleDebugLogger-CreateMethods "Create Methods"
         ///
         /// <typeparam name="T">The type used as source when creating the instance.</typeparam>
         ///
@@ -174,7 +174,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Creates a BattleDebugLogger instance using the specified type <paramref name="source"/> as a source.
         /// </summary>
-        /// @ref BattleDebugLogger-CreateMethods
+        /// @ref BattleDebugLogger-CreateMethods "Create Methods"
         ///
         /// <param name="source">The type used as source when creating the instance.</param>
         ///
@@ -188,7 +188,7 @@ namespace Battle.QSimulation
         /// <summary>
         /// Creates a BattleDebugLogger instance using the specified string <paramref name="source"/> as a source.
         /// </summary>
-        /// @ref BattleDebugLogger-CreateMethods
+        /// @ref BattleDebugLogger-CreateMethods "Create Methods"
         ///
         /// <param name="source">The name of the source used when creating the instance.</param>
         ///
@@ -216,7 +216,7 @@ namespace Battle.QSimulation
         /// Output Log message: [%Battle] [(source)] (message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticLogMethods
+        /// @ref BattleDebugLogger-StaticLogMethods "Static Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -236,7 +236,7 @@ namespace Battle.QSimulation
         /// Output Log message: [%Battle] [(frame number)] [(source)] (message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticLogMethods
+        /// @ref BattleDebugLogger-StaticLogMethods "Static Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -256,7 +256,7 @@ namespace Battle.QSimulation
         /// using the given <paramref name="source"/> when formatting the Log message.<br/>
         /// Output Log message: [%Battle] [(source)] (formatted message)
         /// </summary>
-        /// @ref BattleDebugLogger-StaticLogMethods
+        /// @ref BattleDebugLogger-StaticLogMethods "Static Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -275,7 +275,7 @@ namespace Battle.QSimulation
         /// Output Log message: [%Battle] [(source)] (formatted message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticLogMethods
+        /// @ref BattleDebugLogger-StaticLogMethods "Static Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -294,7 +294,7 @@ namespace Battle.QSimulation
         /// using the given %Quantum frame <paramref name="f"/> and <paramref name="source"/> when formatting the Log message.<br/>
         /// Output Log message: [%Battle] [(source)] (formatted message)
         /// </summary>
-        /// @ref BattleDebugLogger-StaticLogMethods
+        /// @ref BattleDebugLogger-StaticLogMethods "Static Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -314,7 +314,7 @@ namespace Battle.QSimulation
         /// Output Log message: [%Battle] [(source)] (formatted message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticLogMethods
+        /// @ref BattleDebugLogger-StaticLogMethods "Static Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -335,7 +335,7 @@ namespace Battle.QSimulation
         /// Output Warning Log message: [%Battle] [(source)] (message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticLogMethods
+        /// @ref BattleDebugLogger-StaticLogMethods "Static Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -355,7 +355,7 @@ namespace Battle.QSimulation
         /// Output Warning Log message: [%Battle] [(frame number)] [(source)] (message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticLogMethods
+        /// @ref BattleDebugLogger-StaticLogMethods "Static Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -375,7 +375,7 @@ namespace Battle.QSimulation
         /// using the given <paramref name="source"/> when formatting the Warning Log message.<br/>
         /// Output Warning Log message: [%Battle] [(source)] (formatted message)
         /// </summary>
-        /// @ref BattleDebugLogger-StaticLogMethods
+        /// @ref BattleDebugLogger-StaticLogMethods "Static Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -394,7 +394,7 @@ namespace Battle.QSimulation
         /// Output Warning Log message: [%Battle] [(source)] (formatted message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticLogMethods
+        /// @ref BattleDebugLogger-StaticLogMethods "Static Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -413,7 +413,7 @@ namespace Battle.QSimulation
         /// using the given %Quantum frame <paramref name="f"/> and <paramref name="source"/> when formatting the Warning Log message.<br/>
         /// Output Warning Log message: [%Battle] [(frame number)] [(source)] (formatted message)
         /// </summary>
-        /// @ref BattleDebugLogger-StaticLogMethods
+        /// @ref BattleDebugLogger-StaticLogMethods "Static Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -433,7 +433,7 @@ namespace Battle.QSimulation
         /// Output Warning Log message: [%Battle] [(frame number)] [(source)] (formatted message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticLogMethods
+        /// @ref BattleDebugLogger-StaticLogMethods "Static Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -454,7 +454,7 @@ namespace Battle.QSimulation
         /// Output Error Log message: [%Battle] [(source)] (message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticLogMethods
+        /// @ref BattleDebugLogger-StaticLogMethods "Static Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -474,7 +474,7 @@ namespace Battle.QSimulation
         /// Output Error Log message: [%Battle] [(frame number)] [(source)] (message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticLogMethods
+        /// @ref BattleDebugLogger-StaticLogMethods "Static Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -494,7 +494,7 @@ namespace Battle.QSimulation
         /// using the given <paramref name="source"/> when formatting the Error Log message.<br/>
         /// Output Error Log message: [%Battle] [(source)] (formatted message)
         /// </summary>
-        /// @ref BattleDebugLogger-StaticLogMethods
+        /// @ref BattleDebugLogger-StaticLogMethods "Static Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -513,7 +513,7 @@ namespace Battle.QSimulation
         /// Output Error Log message: [%Battle] [(source)] (formatted message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticLogMethods
+        /// @ref BattleDebugLogger-StaticLogMethods "Static Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -532,7 +532,7 @@ namespace Battle.QSimulation
         /// using the given %Quantum frame <paramref name="f"/> and <paramref name="source"/> when formatting the Error Log message.<br/>
         /// Output Error Log message: [%Battle] [(frame number)] [(source)] (formatted message)
         /// </summary>
-        /// @ref BattleDebugLogger-StaticLogMethods
+        /// @ref BattleDebugLogger-StaticLogMethods "Static Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -552,7 +552,7 @@ namespace Battle.QSimulation
         /// Output Error Log message: [%Battle] [(frame number)] [(source)] (formatted message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticLogMethods
+        /// @ref BattleDebugLogger-StaticLogMethods "Static Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -583,7 +583,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="Error(string, string, LogTarget)"/> log message if it is false.<br/>
         /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticAssertMethods
+        /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
         /// When assertion fails, logs an error using <see cref="Error(string, string, LogTarget)"/> method.
         ///
@@ -608,7 +608,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="Error(Frame, string, string, LogTarget)"/> log message if it is false.<br/>
         /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticAssertMethods
+        /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
         /// When assertion fails, logs an error using <see cref="Error(Frame, string, string, LogTarget)"/> method.
         ///
@@ -634,7 +634,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="Error(string, string, LogTarget)"/> log message if it is false.<br/>
         /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticAssertMethods
+        /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
         /// Runs assertion code which can be any complicated check.<br/>
         /// When assertion code fails, logs an error using <see cref="Error(string, string, LogTarget)"/> method.
@@ -660,7 +660,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="Error(Frame, string, string, LogTarget)"/> log message if it is false.<br/>
         /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticAssertMethods
+        /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
         /// Runs assertion code which can be any complicated check.<br/>
         /// When assertion code fails, logs an error using <see cref="Error(Frame, string, string, LogTarget)"/> method.
@@ -687,7 +687,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="ErrorFormat(string, string, object[])"/> log message if it is false.<br/>
         /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticAssertMethods
+        /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
         /// When assertion fails, logs an error using <see cref="ErrorFormat(string, string, object[])"/> method.
         ///
@@ -712,7 +712,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="ErrorFormat(string, string, LogTarget, object[])"/> log message if it is false.<br/>
         /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticAssertMethods
+        /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
         /// When assertion fails, logs an error using <see cref="ErrorFormat(string, string, LogTarget, object[])"/> method.
         ///
@@ -738,7 +738,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="ErrorFormat(Frame, string, string, object[])"/> log message if it is false.<br/>
         /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticAssertMethods
+        /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
         /// When assertion fails, logs an error using <see cref="ErrorFormat(Frame, string, string, object[])"/> method.
         ///
@@ -764,7 +764,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="ErrorFormat(Frame, string, string, LogTarget, object[])"/> log message if it is false.<br/>
         /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticAssertMethods
+        /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
         /// When assertion fails, logs an error using <see cref="ErrorFormat(Frame, string, string, LogTarget, object[])"/> method.
         ///
@@ -791,7 +791,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="ErrorFormat(string, string, object[])"/> log message if it is false.<br/>
         /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticAssertMethods
+        /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
         /// Runs assertion code which can be any complicated check.<br/>
         /// When assertion code fails, logs an error using <see cref="ErrorFormat(string, string, object[])"/> method.
@@ -817,7 +817,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="ErrorFormat(string, string, LogTarget, object[])"/> log message if it is false.<br/>
         /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticAssertMethods
+        /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
         /// Runs assertion code which can be any complicated check.<br/>
         /// When assertion code fails, logs an error using <see cref="ErrorFormat(string, string, LogTarget, object[])"/> method.
@@ -844,7 +844,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="ErrorFormat(Frame, string, string, object[])"/> log message if it is false.<br/>
         /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticAssertMethods
+        /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
         /// Runs assertion code which can be any complicated check.<br/>
         /// When assertion code fails, logs an error using <see cref="ErrorFormat(Frame, string, string, object[])"/> method.
@@ -871,7 +871,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="ErrorFormat(Frame, string, string, LogTarget, object[])"/> log message if it is false.<br/>
         /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-StaticAssertMethods
+        /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
         /// Runs assertion code which can be any complicated check.<br/>
         /// When assertion code fails, logs an error using <see cref="ErrorFormat(Frame, string, string, LogTarget, object[])"/> method.
@@ -911,7 +911,7 @@ namespace Battle.QSimulation
         /// Output Log message: [%Battle] [(source)] (message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-LogMethods
+        /// @ref BattleDebugLogger-LogMethods "Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -930,7 +930,7 @@ namespace Battle.QSimulation
         /// Output Log message: [%Battle] [(frame number)] [(source)] (message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-LogMethods
+        /// @ref BattleDebugLogger-LogMethods "Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -949,7 +949,7 @@ namespace Battle.QSimulation
         /// Uses the source given when creating a BattleDebugLogger instance to format the Log message.<br/>
         /// Output Log message: [%Battle] [(source)] (formatted message)
         /// </summary>
-        /// @ref BattleDebugLogger-LogMethods
+        /// @ref BattleDebugLogger-LogMethods "Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -967,7 +967,7 @@ namespace Battle.QSimulation
         /// Output Log message: [%Battle] [(source)] (formatted message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-LogMethods
+        /// @ref BattleDebugLogger-LogMethods "Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -985,7 +985,7 @@ namespace Battle.QSimulation
         /// Uses the given %Quantum frame <paramref name="f"/> and the source given when creating a BattleDebugLogger instance to format the Log message.<br/>
         /// Output Log message: [%Battle] [(frame number)] [(source)] (formatted message)
         /// </summary>
-        /// @ref BattleDebugLogger-LogMethods
+        /// @ref BattleDebugLogger-LogMethods "Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -1004,7 +1004,7 @@ namespace Battle.QSimulation
         /// Output Log message: [%Battle] [(frame number)] [(source)] (formatted message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-LogMethods
+        /// @ref BattleDebugLogger-LogMethods "Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -1024,7 +1024,7 @@ namespace Battle.QSimulation
         /// Output Warning Log message: [%Battle] [(source)] (message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-LogMethods
+        /// @ref BattleDebugLogger-LogMethods "Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -1043,7 +1043,7 @@ namespace Battle.QSimulation
         /// Output Warning Log message: [%Battle] [(frame number)] [(source)] (message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-LogMethods
+        /// @ref BattleDebugLogger-LogMethods "Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -1062,7 +1062,7 @@ namespace Battle.QSimulation
         /// Uses the source given when creating a BattleDebugLogger instance to format the Warning Log message.<br/>
         /// Output Warning Log message: [%Battle] [(source)] (formatted message)
         /// </summary>
-        /// @ref BattleDebugLogger-LogMethods
+        /// @ref BattleDebugLogger-LogMethods "Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -1080,7 +1080,7 @@ namespace Battle.QSimulation
         /// Output Warning Log message: [%Battle] [(source)] (formatted message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-LogMethods
+        /// @ref BattleDebugLogger-LogMethods "Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -1098,7 +1098,7 @@ namespace Battle.QSimulation
         /// Uses the given %Quantum frame <paramref name="f"/> and the source given when creating a BattleDebugLogger instance to format the Warning Log message.<br/>
         /// Output Warning Log message: [%Battle] [(frame number)] [(source)] (formatted message)
         /// </summary>
-        /// @ref BattleDebugLogger-LogMethods
+        /// @ref BattleDebugLogger-LogMethods "Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -1117,7 +1117,7 @@ namespace Battle.QSimulation
         /// Output Warning Log message: [%Battle] [(frame number)] [(source)] (formatted message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-LogMethods
+        /// @ref BattleDebugLogger-LogMethods "Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -1137,7 +1137,7 @@ namespace Battle.QSimulation
         /// Output Error Log message: [%Battle] [(source)] (message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-LogMethods
+        /// @ref BattleDebugLogger-LogMethods "Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -1156,7 +1156,7 @@ namespace Battle.QSimulation
         /// Output Error Log message: [%Battle] [(frame number)] [(source)] (message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-LogMethods
+        /// @ref BattleDebugLogger-LogMethods "Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -1175,7 +1175,7 @@ namespace Battle.QSimulation
         /// Uses the source given when creating a BattleDebugLogger instance to format the Error Log message.<br/>
         /// Output Error Log message: [%Battle] [(source)] (formatted message)
         /// </summary>
-        /// @ref BattleDebugLogger-LogMethods
+        /// @ref BattleDebugLogger-LogMethods "Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -1193,7 +1193,7 @@ namespace Battle.QSimulation
         /// Output Error Log message: [%Battle] [(source)] (formatted message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-LogMethods
+        /// @ref BattleDebugLogger-LogMethods "Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -1211,7 +1211,7 @@ namespace Battle.QSimulation
         /// Uses the given %Quantum frame <paramref name="f"/> and the source given when creating a BattleDebugLogger instance to format the Error Log message.<br/>
         /// Output Error Log message: [%Battle] [(frame number)] [(source)] (formatted message)
         /// </summary>
-        /// @ref BattleDebugLogger-LogMethods
+        /// @ref BattleDebugLogger-LogMethods "Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -1230,7 +1230,7 @@ namespace Battle.QSimulation
         /// Output Error Log message: [%Battle] [(frame number)] [(source)] (formatted message)<br/>
         /// Output console can be chosen by using <paramref name="logTarget"/>.
         /// </summary>
-        /// @ref BattleDebugLogger-LogMethods
+        /// @ref BattleDebugLogger-LogMethods "Log Methods"
         ///
         /// See @ref BattleDebugLogger-LogMethodsDoc "Log methods" for more info.
         ///
@@ -1260,7 +1260,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="Error(string, LogTarget)"/> log message if it is false.<br/>
         /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-AssertMethods
+        /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
         /// When assertion fails, logs an error using <see cref="Error(string, LogTarget)"/> method.
         ///
@@ -1284,7 +1284,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="Error(Frame, string, LogTarget)"/> log message if it is false.<br/>
         /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-AssertMethods
+        /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
         /// When assertion fails, logs an error using <see cref="Error(Frame, string, LogTarget)"/> method.
         ///
@@ -1309,7 +1309,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="Error(string, LogTarget)"/> log message if it is false.<br/>
         /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-AssertMethods
+        /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
         /// Runs assertion code which can be any complicated check.<br/>
         /// When assertion code fails, logs an error using <see cref="Error(string, LogTarget)"/> method.
@@ -1334,7 +1334,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="Error(Frame, string, LogTarget)"/> log message if it is false.<br/>
         /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-AssertMethods
+        /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
         /// Runs assertion code which can be any complicated check.<br/>
         /// When assertion code fails, logs an error using <see cref="Error(Frame, string, LogTarget)"/> method.
@@ -1360,7 +1360,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="ErrorFormat(string, object[])"/> log message if it is false.<br/>
         /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-AssertMethods
+        /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
         /// When assertion fails, logs an error using <see cref="ErrorFormat(string, object[])"/> method.
         ///
@@ -1384,7 +1384,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="ErrorFormat(string, LogTarget, object[])"/> log message if it is false.<br/>
         /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-AssertMethods
+        /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
         /// When assertion fails, logs an error using <see cref="ErrorFormat(string, LogTarget, object[])"/> method.
         ///
@@ -1409,7 +1409,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="ErrorFormat(Frame, string, object[])"/> log message if it is false.<br/>
         /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-AssertMethods
+        /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
         /// When assertion fails, logs an error using <see cref="ErrorFormat(Frame, string, object[])"/> method.
         ///
@@ -1434,7 +1434,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="ErrorFormat(Frame, string, LogTarget, object[])"/> log message if it is false.<br/>
         /// This method is only compiled when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-AssertMethods
+        /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
         /// When assertion fails, logs an error using <see cref="ErrorFormat(Frame, string, LogTarget, object[])"/> method.
         ///
@@ -1460,7 +1460,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="ErrorFormat(string, object[])"/> log message if it is false.<br/>
         /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-AssertMethods
+        /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
         /// Runs assertion code which can be any complicated check.<br/>
         /// When assertion code fails, logs an error using <see cref="ErrorFormat(string, object[])"/> method.
@@ -1485,7 +1485,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="ErrorFormat(string, LogTarget, object[])"/> log message if it is false.<br/>
         /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-AssertMethods
+        /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
         /// Runs assertion code which can be any complicated check.<br/>
         /// When assertion code fails, logs an error using <see cref="ErrorFormat(string, LogTarget, object[])"/> method.
@@ -1511,7 +1511,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="ErrorFormat(Frame, string, object[])"/> log message if it is false.<br/>
         /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-AssertMethods
+        /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
         /// Runs assertion code which can be any complicated check.<br/>
         /// When assertion code fails, logs an error using <see cref="ErrorFormat(Frame, string, object[])"/> method.
@@ -1537,7 +1537,7 @@ namespace Battle.QSimulation
         /// and logs an <see cref="ErrorFormat(Frame, string, LogTarget, object[])"/> log message if it is false.<br/>
         /// This method is only compiled and assertion code is ran when <c>DEBUG_ASSERT</c> is defined.
         /// </summary>
-        /// @ref BattleDebugLogger-AssertMethods
+        /// @ref BattleDebugLogger-AssertMethods "Assert Methods"
         ///
         /// Runs assertion code which can be any complicated check.<br/>
         /// When assertion code fails, logs an error using <see cref="ErrorFormat(Frame, string, LogTarget, object[])"/> method.
@@ -1599,7 +1599,7 @@ namespace Battle.QSimulation
         /// Creates the Log message formats used when calling Log methods based on constant templates.
         /// </summary>
         ///
-        /// See @ref BattleDebugLogger-CreateMethods "Create methods"
+        /// See @ref BattleDebugLogger-CreateMethods "Create Methods"
         ///
         /// <param name="source">The name of the source used when creating the Log message formats.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
