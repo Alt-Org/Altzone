@@ -14,7 +14,7 @@ namespace MenuUi.scripts.AvatarEditor
 
         //disabling for now
         [SerializeField] private GameObject _editorMenu;
-        [SerializeField] private GameObject _switchModeButtons;
+        //[SerializeField] private GameObject _switchModeButtons;
         [SerializeField] private GameObject _revertButton;
 
 
@@ -44,7 +44,7 @@ namespace MenuUi.scripts.AvatarEditor
         private IEnumerator Wait()
         {
             yield return new WaitForSeconds(1);
-            _switchModeButtons.SetActive(false);
+            //_switchModeButtons.SetActive(false);
             _editorMenu.SetActive(false);
             _revertButton.SetActive(false);
             _categoryLoader.ClickMiddleCategoryCell();
