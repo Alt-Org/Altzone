@@ -32,7 +32,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private readonly FeatureState _featureState = new();
         private readonly PageController _pageController = new();
         private readonly CategoryController _categoryController = new();
-        private readonly AnimationController _animationController = new();
+        //private readonly AnimationController _animationController = new();
 
         private RectTransform _swipeArea;
         private CharacterClassType _characterClassType;
@@ -306,7 +306,7 @@ namespace MenuUi.Scripts.AvatarEditor
         }
 
         public void SetCharacterClassID(CharacterClassType id) => _characterClassType = id;
-        public void RestoreDefaultColorToFeature(Action restore) => _restoreDefaultColor = restore;
+        //public void RestoreDefaultColorToFeature(Action restore) => _restoreDefaultColor = restore;
 
         public void SetLoadedFeatures(PlayerAvatar avatar)
         {
@@ -464,68 +464,68 @@ namespace MenuUi.Scripts.AvatarEditor
             CategoryIds.TryGetValue(slot, out var id) ? id : null;
     }
 
-    public class AnimationController
-    {
-        private Animator _animator;
-        private MonoBehaviour _coroutineRunner;
-        private Coroutine _currentCoroutine;
+    //public class AnimationController
+    //{
+    //    private Animator _animator;
+    //    private MonoBehaviour _coroutineRunner;
+    //    private Coroutine _currentCoroutine;
 
-        public void Initialize(Animator animator, MonoBehaviour coroutineRunner)
-        {
-            _animator = animator;
-            _coroutineRunner = coroutineRunner;
-        }
+    //    public void Initialize(Animator animator, MonoBehaviour coroutineRunner)
+    //    {
+    //        _animator = animator;
+    //        _coroutineRunner = coroutineRunner;
+    //    }
 
-        public IEnumerator PlayPageFlipAnimation(bool forward, AvatarEditorFeatureButtonsHandler featureHandler)
-        {
-            if (_animator == null || !_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
-                yield break;
+    //    public IEnumerator PlayPageFlipAnimation(bool forward, AvatarEditorFeatureButtonsHandler featureHandler)
+    //    {
+    //        if (_animator == null || !_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+    //            yield break;
 
-            SetupAnimationSides(forward, featureHandler);
-            PlayAnimation(forward);
+    //        SetupAnimationSides(forward, featureHandler);
+    //        PlayAnimation(forward);
 
-            yield return new WaitWhile(() => !_animator.GetCurrentAnimatorStateInfo(0).IsName("AnimationEnded"));
+    //        yield return new WaitWhile(() => !_animator.GetCurrentAnimatorStateInfo(0).IsName("AnimationEnded"));
 
-            _animator.SetTrigger("ResetToIdle");
-            CompleteAnimationSides(forward, featureHandler);
-        }
+    //        _animator.SetTrigger("ResetToIdle");
+    //        CompleteAnimationSides(forward, featureHandler);
+    //    }
 
-        private void SetupAnimationSides(bool forward, AvatarEditorFeatureButtonsHandler featureHandler)
-        {
-            if (forward)
-            {
-                featureHandler.ShowRightSide();
-                featureHandler.HideLeftSide();
-            }
-            else
-            {
-                featureHandler.ShowLeftSide();
-                featureHandler.HideRightSide();
-            }
-        }
+    //    private void SetupAnimationSides(bool forward, AvatarEditorFeatureButtonsHandler featureHandler)
+    //    {
+    //        if (forward)
+    //        {
+    //            featureHandler.ShowRightSide();
+    //            featureHandler.HideLeftSide();
+    //        }
+    //        else
+    //        {
+    //            featureHandler.ShowLeftSide();
+    //            featureHandler.HideRightSide();
+    //        }
+    //    }
 
-        private void PlayAnimation(bool forward)
-        {
-            _animator.Play(forward ? "PageFlip" : "BackPageFlip");
-        }
+    //    private void PlayAnimation(bool forward)
+    //    {
+    //        _animator.Play(forward ? "PageFlip" : "BackPageFlip");
+    //    }
 
-        private void CompleteAnimationSides(bool forward, AvatarEditorFeatureButtonsHandler featureHandler)
-        {
-            if (forward)
-                featureHandler.ShowLeftSide();
-            else
-                featureHandler.ShowRightSide();
-        }
+    //    private void CompleteAnimationSides(bool forward, AvatarEditorFeatureButtonsHandler featureHandler)
+    //    {
+    //        if (forward)
+    //            featureHandler.ShowLeftSide();
+    //        else
+    //            featureHandler.ShowRightSide();
+    //    }
 
-        public void StopAllAnimations()
-        {
-            if (_currentCoroutine != null)
-            {
-                _coroutineRunner.StopCoroutine(_currentCoroutine);
-                _currentCoroutine = null;
-            }
-        }
-    }
+    //    public void StopAllAnimations()
+    //    {
+    //        if (_currentCoroutine != null)
+    //        {
+    //            _coroutineRunner.StopCoroutine(_currentCoroutine);
+    //            _currentCoroutine = null;
+    //        }
+    //    }
+    //}
 
     public static class CategoryLocalizer
     {
