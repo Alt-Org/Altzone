@@ -245,14 +245,14 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             _avatarEditorCharacterHandle.SetMainCharacterImage(slot, sprite);
 
-            if (_characterClassType == CharacterClassType.Confluent)
-            {
-                _avatarEditorCharacterHandle.SetSecondaryCharacterImage(slot, sprite);
-            }
-            else
-            {
-                _avatarEditorCharacterHandle.SetSecondaryCharacterHidden();
-            }
+            //if (_characterClassType == CharacterClassType.Confluent)
+            //{
+            //    _avatarEditorCharacterHandle.SetSecondaryCharacterImage(slot, sprite);
+            //}
+            //else
+            //{
+                //_avatarEditorCharacterHandle.SetSecondaryCharacterHidden();
+            //}
         }
 
         #endregion
