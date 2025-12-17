@@ -39,7 +39,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private GameObject _featureButtonsBase;
         [SerializeField] private FeaturePicker _featurePicker;
         //[SerializeField] private ColorPicker _colorPicker;
-        [SerializeField] private AvatarScaler _avatarScaler;
+        //[SerializeField] private AvatarScaler _avatarScaler;
 
         private FeatureSlot _currentlySelectedCategory;
         private PlayerAvatar _playerAvatar;
@@ -65,8 +65,8 @@ namespace MenuUi.Scripts.AvatarEditor
                 _featurePicker.gameObject.SetActive(false);
             //if (_colorPicker != null)
             //    _colorPicker.gameObject.SetActive(false);
-            if (_avatarScaler != null)
-                _avatarScaler.gameObject.SetActive(false);
+            //if (_avatarScaler != null)
+            //    _avatarScaler.gameObject.SetActive(false);
             _currentMode = _defaultMode;
             CharacterLoaded();
         }
@@ -84,10 +84,10 @@ namespace MenuUi.Scripts.AvatarEditor
             SetSaveableData();
             _featurePicker.gameObject.SetActive(false);
             //_colorPicker.gameObject.SetActive(false);
-            _avatarScaler.gameObject.SetActive(false);
+            //_avatarScaler.gameObject.SetActive(false);
             _currentMode = mode;
 
-            _featureButtonsBase.SetActive(mode != AvatarEditorMode.AvatarScaler);
+            _featureButtonsBase.SetActive(true);
 
             if (_currentMode == AvatarEditorMode.FeaturePicker)
             {
@@ -103,11 +103,11 @@ namespace MenuUi.Scripts.AvatarEditor
             //    return;
             //}
 
-            if (_currentMode == AvatarEditorMode.AvatarScaler)
-            {
-                _avatarScaler.gameObject.SetActive(true);
-                return;
-            }
+            //if (_currentMode == AvatarEditorMode.AvatarScaler)
+            //{
+            //    _avatarScaler.gameObject.SetActive(true);
+            //    return;
+            //}
         }
 
         #endregion
@@ -137,7 +137,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _featurePicker.SetLoadedFeatures(_playerAvatar);
 
             //_colorPicker.SetLoadedColors(_playerAvatar);
-            _avatarScaler.SetLoadedScale(_playerAvatar.Scale);
+            //_avatarScaler.SetLoadedScale(_playerAvatar.Scale);
         }
 
         private void RevertAvatarChanges()
@@ -161,7 +161,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _featurePicker.SetLoadedFeatures(_playerAvatar);
 
             //_colorPicker.SetLoadedColors(_playerAvatar);
-            _avatarScaler.SetLoadedScale(_playerAvatar.Scale);
+            //_avatarScaler.SetLoadedScale(_playerAvatar.Scale);
         }
 
         #endregion
@@ -182,7 +182,7 @@ namespace MenuUi.Scripts.AvatarEditor
             savePlayerData.AvatarData = new(_playerAvatar.Name,
                 null,
                 "FFFFFF",
-                _avatarScaler.GetCurrentScale());
+                new Vector2(1,1));
 
             var features = Enum.GetValues(typeof(FeatureSlot));
             foreach (FeatureSlot feature in features)
