@@ -38,7 +38,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private GameObject _avatarVisualsParent;
         [SerializeField] private GameObject _featureButtonsBase;
         [SerializeField] private FeaturePicker _featurePicker;
-        [SerializeField] private ColorPicker _colorPicker;
+        //[SerializeField] private ColorPicker _colorPicker;
         [SerializeField] private AvatarScaler _avatarScaler;
 
         private FeatureSlot _currentlySelectedCategory;
@@ -63,8 +63,8 @@ namespace MenuUi.Scripts.AvatarEditor
             _characterLoader.RefreshPlayerCurrentCharacter();
             if (_featurePicker != null)
                 _featurePicker.gameObject.SetActive(false);
-            if (_colorPicker != null)
-                _colorPicker.gameObject.SetActive(false);
+            //if (_colorPicker != null)
+            //    _colorPicker.gameObject.SetActive(false);
             if (_avatarScaler != null)
                 _avatarScaler.gameObject.SetActive(false);
             _currentMode = _defaultMode;
@@ -83,7 +83,7 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             SetSaveableData();
             _featurePicker.gameObject.SetActive(false);
-            _colorPicker.gameObject.SetActive(false);
+            //_colorPicker.gameObject.SetActive(false);
             _avatarScaler.gameObject.SetActive(false);
             _currentMode = mode;
 
@@ -96,12 +96,12 @@ namespace MenuUi.Scripts.AvatarEditor
                 return;
             }
 
-            if (_currentMode == AvatarEditorMode.ColorPicker)
-            {
-                _colorPicker.SelectFeature(_currentlySelectedCategory);
-                _colorPicker.gameObject.SetActive(true);
-                return;
-            }
+            //if (_currentMode == AvatarEditorMode.ColorPicker)
+            //{
+            //    //_colorPicker.SelectFeature(_currentlySelectedCategory);
+            //    //_colorPicker.gameObject.SetActive(true);
+            //    return;
+            //}
 
             if (_currentMode == AvatarEditorMode.AvatarScaler)
             {
@@ -136,7 +136,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClass());
             _featurePicker.SetLoadedFeatures(_playerAvatar);
 
-            _colorPicker.SetLoadedColors(_playerAvatar);
+            //_colorPicker.SetLoadedColors(_playerAvatar);
             _avatarScaler.SetLoadedScale(_playerAvatar.Scale);
         }
 
@@ -160,7 +160,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClass());
             _featurePicker.SetLoadedFeatures(_playerAvatar);
 
-            _colorPicker.SetLoadedColors(_playerAvatar);
+            //_colorPicker.SetLoadedColors(_playerAvatar);
             _avatarScaler.SetLoadedScale(_playerAvatar.Scale);
         }
 
@@ -181,7 +181,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
             savePlayerData.AvatarData = new(_playerAvatar.Name,
                 null,
-                _colorPicker.GetCurrentColors(),
+                "FFFFFF",
                 _avatarScaler.GetCurrentScale());
 
             var features = Enum.GetValues(typeof(FeatureSlot));
@@ -204,7 +204,7 @@ namespace MenuUi.Scripts.AvatarEditor
             }
 
             // Käytetään julkista Color-propertya, ei private-kenttää
-            _visualDataScriptableObject.Color = _colorPicker.GetCurrentColorsAsColors();
+            //_visualDataScriptableObject.Color = _colorPicker.GetCurrentColorsAsColors();
 
             AvatarDesignLoader.Instance.InvokeOnAvatarDesignUpdate();
 
