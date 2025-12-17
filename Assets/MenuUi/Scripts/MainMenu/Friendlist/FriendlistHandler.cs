@@ -13,7 +13,6 @@ public class FriendlistHandler : AltMonoBehaviour
 
 {
 
-    // UI-komponentit
 
     [SerializeField] private GameObject _friendlistPanel;
     [SerializeField] private TMPro.TextMeshProUGUI _friendlistOnlineTitle;
@@ -26,7 +25,6 @@ public class FriendlistHandler : AltMonoBehaviour
     private List<FriendlistItem> _friendlistItems = new List<FriendlistItem>();
 
 
-    // Start is called before the first frame update
     void Start()
 
     {

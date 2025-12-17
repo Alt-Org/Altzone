@@ -157,14 +157,14 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
     private void UpdatePlayerList()
     {
-        List<ServerOnlinePlayer> playersToShow = _currentView == OnlinePlayersView.Clan
+        List<ServerOnlinePlayer> playersToShow = _currentView == OnlinePlayersView.Clan  // Determine which players to show based on the current view (Clan or All)
             ? _clanPlayers
             : _allPlayers;
 
-        for (int i = 0; i < _onlinePlayersPanelItems.Count; i++)
+        for (int i = 0; i < _onlinePlayersPanelItems.Count; i++)    // Loop through the panel items
         {
             var item = _onlinePlayersPanelItems[i];
-            if (i < playersToShow.Count)
+            if (i < playersToShow.Count) // If we are in Clan view, hide players that don't belong to the clan
             {
                 item.gameObject.SetActive(true);
             }
