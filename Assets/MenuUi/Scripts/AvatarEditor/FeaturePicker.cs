@@ -57,182 +57,182 @@ namespace MenuUi.Scripts.AvatarEditor
         private void OnDisable()
         {
             //UnsubscribeFromEvents();
-            _animationController.StopAllAnimations();
-            _pageTurnImage.enabled = false;
+            //_animationController.StopAllAnimations();
+            //_pageTurnImage.enabled = false;
         }
 
-        private void OnValidate()
-        {
-            ValidateReferences();
-        }
+        //private void OnValidate()
+        //{
+        //    ValidateReferences();
+        //}
 
         #endregion
 
         #region Initialization
 
-        private void InitializeComponents()
-        {
-            _swipeArea = GetComponent<RectTransform>();
-            _pageController.Initialize(FeaturesPerPage);
-            _categoryController.Initialize();
-            _animationController.Initialize(_animator, this);
-        }
+        //private void InitializeComponents()
+        //{
+        //    _swipeArea = GetComponent<RectTransform>();
+        //    _pageController.Initialize(FeaturesPerPage);
+        //    _categoryController.Initialize();
+        //    _animationController.Initialize(_animator, this);
+        //}
 
-        private void SetupButtonListeners()
-        {
-            if (_categoryButtons?.Count >= 2)
-            {
-                _categoryButtons[0].onClick.AddListener(() => _categoryController.LoadNextCategory());
-                _categoryButtons[1].onClick.AddListener(() => _categoryController.LoadPreviousCategory());
-            }
+        //private void SetupButtonListeners()
+        //{
+        //    if (_categoryButtons?.Count >= 2)
+        //    {
+        //        _categoryButtons[0].onClick.AddListener(() => _categoryController.LoadNextCategory());
+        //        _categoryButtons[1].onClick.AddListener(() => _categoryController.LoadPreviousCategory());
+        //    }
 
-            if (_pageButtons?.Count >= 2)
-            {
-                _pageButtons[0].onClick.AddListener(() => _pageController.LoadPage(true));
-                _pageButtons[1].onClick.AddListener(() => _pageController.LoadPage(false));
-            }
-        }
+        //    if (_pageButtons?.Count >= 2)
+        //    {
+        //        _pageButtons[0].onClick.AddListener(() => _pageController.LoadPage(true));
+        //        _pageButtons[1].onClick.AddListener(() => _pageController.LoadPage(false));
+        //    }
+        //}
 
-        private void InitializeDefaultState()
-        {
-            _categoryController.SetCurrentCategory(_defaultCategory);
-            SwitchFeatureCategory();
-        }
+        //private void InitializeDefaultState()
+        //{
+        //    _categoryController.SetCurrentCategory(_defaultCategory);
+        //    SwitchFeatureCategory();
+        //}
 
-        private void SubscribeToEvents()
-        {
-            SwipeHandler.OnSwipe += OnFeaturePickerSwipe;
-            _pageController.OnPageChanged += OnPageChanged;
-            _categoryController.OnCategoryChanged += OnCategoryChanged;
-        }
+        //private void SubscribeToEvents()
+        //{
+        //    SwipeHandler.OnSwipe += OnFeaturePickerSwipe;
+        //    _pageController.OnPageChanged += OnPageChanged;
+        //    _categoryController.OnCategoryChanged += OnCategoryChanged;
+        //}
 
-        private void UnsubscribeFromEvents()
-        {
-            SwipeHandler.OnSwipe -= OnFeaturePickerSwipe;
-            _pageController.OnPageChanged -= OnPageChanged;
-            _categoryController.OnCategoryChanged -= OnCategoryChanged;
-        }
+        //private void UnsubscribeFromEvents()
+        //{
+        //    SwipeHandler.OnSwipe -= OnFeaturePickerSwipe;
+        //    _pageController.OnPageChanged -= OnPageChanged;
+        //    _categoryController.OnCategoryChanged -= OnCategoryChanged;
+        //}
 
         #endregion
 
         #region Event Handlers
 
-        private void OnFeaturePickerSwipe(SwipeDirection direction, Vector2 start, Vector2 end)
-        {
-            if (!RectTransformUtility.RectangleContainsScreenPoint(_swipeArea, start))
-                return;
+        //private void OnFeaturePickerSwipe(SwipeDirection direction, Vector2 start, Vector2 end)
+        //{
+        //    if (!RectTransformUtility.RectangleContainsScreenPoint(_swipeArea, start))
+        //        return;
 
-            HandleSwipeInput(direction);
-        }
+        //    HandleSwipeInput(direction);
+        //}
 
-        private void OnPageChanged(int newPage, bool forward)
-        {
-            SetFeatureButtons();
-            StartCoroutine(_animationController.PlayPageFlipAnimation(forward, _featureButtonsHandler));
-        }
+        //private void OnPageChanged(int newPage, bool forward)
+        //{
+        //    SetFeatureButtons();
+        //    StartCoroutine(_animationController.PlayPageFlipAnimation(forward, _featureButtonsHandler));
+        //}
 
-        private void OnCategoryChanged(FeatureSlot newCategory)
-        {
-            SwitchFeatureCategory();
-        }
+        //private void OnCategoryChanged(FeatureSlot newCategory)
+        //{
+        //    SwitchFeatureCategory();
+        //}
 
         #endregion
 
         #region Input Handling
 
-        private void HandleSwipeInput(SwipeDirection direction)
-        {
-            switch (direction)
-            {
-                case SwipeDirection.Left:
-                    _pageController.LoadPage(true);
-                    break;
-                case SwipeDirection.Right:
-                    _pageController.LoadPage(false);
-                    break;
-                case SwipeDirection.Up:
-                    _categoryController.LoadNextCategory();
-                    break;
-                case SwipeDirection.Down:
-                    _categoryController.LoadPreviousCategory();
-                    break;
-            }
-        }
+        //private void HandleSwipeInput(SwipeDirection direction)
+        //{
+        //    switch (direction)
+        //    {
+        //        case SwipeDirection.Left:
+        //            _pageController.LoadPage(true);
+        //            break;
+        //        case SwipeDirection.Right:
+        //            _pageController.LoadPage(false);
+        //            break;
+        //        case SwipeDirection.Up:
+        //            _categoryController.LoadNextCategory();
+        //            break;
+        //        case SwipeDirection.Down:
+        //            _categoryController.LoadPreviousCategory();
+        //            break;
+        //    }
+        //}
 
         #endregion
 
         #region Feature Management
 
-        private void SwitchFeatureCategory()
-        {
-            var currentCategory = _categoryController.GetCurrentCategory();
-            var categoryFeatures = GetSpritesByCategory(currentCategory);
+        //private void SwitchFeatureCategory()
+        //{
+        //    var currentCategory = _categoryController.GetCurrentCategory();
+        //    var categoryFeatures = GetSpritesByCategory(currentCategory);
 
-            _featureState.SetCurrentCategoryFeatures(categoryFeatures);
-            _pageController.SetPageCount(Mathf.CeilToInt((categoryFeatures.Count + 1f) / FeaturesPerPage));
-            _pageController.ResetToFirstPage();
+        //    _featureState.SetCurrentCategoryFeatures(categoryFeatures);
+        //    _pageController.SetPageCount(Mathf.CeilToInt((categoryFeatures.Count + 1f) / FeaturesPerPage));
+        //    _pageController.ResetToFirstPage();
 
-            SetCategoryNameText(currentCategory);
-            SetFeatureButtons();
-        }
+        //    SetCategoryNameText(currentCategory);
+        //    SetFeatureButtons();
+        //}
 
-        private void SetFeatureButtons()
-        {
-            var currentPage = _pageController.GetCurrentPage();
-            var categoryFeatures = _featureState.GetCurrentCategoryFeatures();
-            var currentCategory = _categoryController.GetCurrentCategory();
+        //private void SetFeatureButtons()
+        //{
+        //    var currentPage = _pageController.GetCurrentPage();
+        //    var categoryFeatures = _featureState.GetCurrentCategoryFeatures();
+        //    var currentCategory = _categoryController.GetCurrentCategory();
 
-            for (int i = 0; i < FeaturesPerPage; i++)
-            {
-                if (ShouldShowNoneButton(i, currentPage))
-                {
-                    _featureButtonsHandler.SetOnClick(SetFeatureToNone, (int)currentCategory, i);
-                    continue;
-                }
+        //    for (int i = 0; i < FeaturesPerPage; i++)
+        //    {
+        //        if (ShouldShowNoneButton(i, currentPage))
+        //        {
+        //            _featureButtonsHandler.SetOnClick(SetFeatureToNone, (int)currentCategory, i);
+        //            continue;
+        //        }
 
-                int featureIndex = CalculateFeatureIndex(i, currentPage);
-                if (IsValidFeatureIndex(featureIndex, categoryFeatures.Count))
-                {
-                    var feature = categoryFeatures[featureIndex - 1];
-                    _featureButtonsHandler.SetOnClick(FeatureButtonClicked, feature, (int)currentCategory, i);
-                }
-                else
-                {
-                    _featureButtonsHandler.SetOff(i);
-                }
-            }
-        }
+        //        int featureIndex = CalculateFeatureIndex(i, currentPage);
+        //        if (IsValidFeatureIndex(featureIndex, categoryFeatures.Count))
+        //        {
+        //            var feature = categoryFeatures[featureIndex - 1];
+        //            _featureButtonsHandler.SetOnClick(FeatureButtonClicked, feature, (int)currentCategory, i);
+        //        }
+        //        else
+        //        {
+        //            _featureButtonsHandler.SetOff(i);
+        //        }
+        //    }
+        //}
 
-        private static bool ShouldShowNoneButton(int buttonIndex, int currentPage)
-        {
-            return buttonIndex == 0 && currentPage == 0;
-        }
+        //private static bool ShouldShowNoneButton(int buttonIndex, int currentPage)
+        //{
+        //    return buttonIndex == 0 && currentPage == 0;
+        //}
 
-        private static int CalculateFeatureIndex(int buttonIndex, int currentPage)
-        {
-            return buttonIndex + FeaturesPerPage * currentPage;
-        }
+        //private static int CalculateFeatureIndex(int buttonIndex, int currentPage)
+        //{
+        //    return buttonIndex + FeaturesPerPage * currentPage;
+        //}
 
-        private static bool IsValidFeatureIndex(int index, int featuresCount)
-        {
-            return index <= featuresCount;
-        }
+        //private static bool IsValidFeatureIndex(int index, int featuresCount)
+        //{
+        //    return index <= featuresCount;
+        //}
 
-        private void SetFeatureToNone(int slot)
-        {
-            _featureState.SetSelectedFeature(slot, "0");
-            _avatarEditorController.PlayerAvatar.SortAndAssignByID("0");
-            UpdateCharacterImage((FeatureSlot)slot, null);
-        }
+        //private void SetFeatureToNone(int slot)
+        //{
+        //    _featureState.SetSelectedFeature(slot, "0");
+        //    _avatarEditorController.PlayerAvatar.SortAndAssignByID("0");
+        //    UpdateCharacterImage((FeatureSlot)slot, null);
+        //}
 
-        private void FeatureButtonClicked(AvatarPartInfo feature, int slot)
-        {
-            SetFeature(feature, slot);
-            _restoreDefaultColor?.Invoke();
+        //private void FeatureButtonClicked(AvatarPartInfo feature, int slot)
+        //{
+        //    SetFeature(feature, slot);
+        //    _restoreDefaultColor?.Invoke();
 
-            if (slot == 4)
-                gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
-        }
+        //    if (slot == 4)
+        //        gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+        //}
 
         public void SetFeature(AvatarPartInfo feature, int slot)
         {
@@ -259,12 +259,12 @@ namespace MenuUi.Scripts.AvatarEditor
 
         #region UI Updates
 
-        private void SetCategoryNameText(FeatureSlot category)
-        {
-            if (_categoryText == null) return;
+        //private void SetCategoryNameText(FeatureSlot category)
+        //{
+        //    if (_categoryText == null) return;
 
-            _categoryText.text = CategoryLocalizer.GetLocalizedName(category);
-        }
+        //    _categoryText.text = CategoryLocalizer.GetLocalizedName(category);
+        //}
 
         #endregion
 
