@@ -489,7 +489,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 243.3
+  m_fontSize: 243.15
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2273,7 +2273,6 @@ MonoBehaviour:
   _avatarVisualsParent: {fileID: 631322718943489897}
   _featureButtonsBase: {fileID: 4867203219669639312}
   _featurePicker: {fileID: 5559116631486768876}
-  _colorPicker: {fileID: 8658832208992312227}
   _avatarScaler: {fileID: 4024662555546223721}
 --- !u!114 &161865825665755407
 MonoBehaviour:
@@ -2312,79 +2311,6 @@ MonoBehaviour:
   _editorMenu: {fileID: 6595069769439526530}
   _switchModeButtons: {fileID: 3969514156847101347}
   _revertButton: {fileID: 1261230353551953357}
---- !u!1 &2941429319359562109
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7740419154202185234}
-  - component: {fileID: 8658832208992312227}
-  m_Layer: 0
-  m_Name: ColorPicker
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!224 &7740419154202185234
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2941429319359562109}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8128324292538002168}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &8658832208992312227
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2941429319359562109}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 959439b5d5c26094dbd56cda5258fc91, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _avatarEditorCharacterHandle: {fileID: 5197823364483463630}
-  _featureButtonsHandler: {fileID: 4606869012896251470}
-  _colorButtonPrefab: {fileID: 7536046636313906788, guid: f93959c2131fe5b4286a750f7a439301,
-    type: 3}
-  _defaultColorButtonPrefab: {fileID: 7536046636313906788, guid: f93959c2131fe5b4286a750f7a439301,
-    type: 3}
-  _colors:
-  - {r: 1, g: 1, b: 1, a: 1}
-  - {r: 0, g: 0, b: 0, a: 1}
-  - {r: 1, g: 0, b: 0, a: 1}
-  - {r: 0, g: 0.061501026, b: 1, a: 1}
-  - {r: 1, g: 0.89107513, b: 0, a: 1}
-  - {r: 0.061753273, g: 1, b: 0, a: 1}
-  - {r: 1, g: 0, b: 1, a: 1}
-  _colorButtonPositions:
-  - {fileID: 7311598313904634036}
-  - {fileID: 8565766472340383103}
-  - {fileID: 3511854419011313151}
-  - {fileID: 8330333917445677448}
-  - {fileID: 8966306268441889965}
-  - {fileID: 8790806271686249174}
-  - {fileID: 2376745902853856728}
-  - {fileID: 4394103657356405076}
-  _characterImageParent: {fileID: 5291960247044874626}
-  _colorImage: {fileID: 21300000, guid: 5c28812a47a7fc9499672d414ebac12a, type: 3}
 --- !u!1 &3089668499891744208
 GameObject:
   m_ObjectHideFlags: 0
@@ -3875,7 +3801,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 39.8
+  m_fontSize: 39.7
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4605,7 +4531,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 39.8
+  m_fontSize: 39.7
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5606,7 +5532,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 39.8
+  m_fontSize: 39.7
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5757,7 +5683,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48.85
+  m_fontSize: 48.8
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5833,7 +5759,6 @@ RectTransform:
   - {fileID: 2154985229461260075}
   - {fileID: 368218602348670423}
   - {fileID: 6954260797360196332}
-  - {fileID: 7740419154202185234}
   - {fileID: 739248753390935821}
   - {fileID: 2939070885725647717}
   m_Father: {fileID: 3323787166554370220}
