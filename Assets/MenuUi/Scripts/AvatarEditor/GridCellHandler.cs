@@ -22,6 +22,7 @@ namespace MenuUi.scripts.AvatarEditor
             if (cellImage != null)
             {
                 _featureImage.sprite = cellImage;
+                _featureImage.type = Image.Type.Simple;
             }
             else if (cellImageColor.HasValue)
             {
