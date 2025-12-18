@@ -354,7 +354,7 @@ namespace Battle.QSimulation.Player
             /// Retrieves team number based on <paramref name="slot"/>.
             /// </summary>
             ///
-            /// @clink{Exposed:PlayerHandle.GetSlot} in public @cref{PlayerHandle}
+            /// @clink{Exposed:PlayerHandle.GetTeamNumber} in public @cref{PlayerHandle}
             /// 
             /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams)
             ///
@@ -379,7 +379,7 @@ namespace Battle.QSimulation.Player
             /// Retrieves player index based on <paramref name="slot"/>.
             /// </summary>
             ///
-            /// @clink{Exposed:PlayerHandle.GetSlot} in public @cref{PlayerHandle}
+            /// @clink{Exposed:PlayerHandle.GetPlayerIndex} in public @cref{PlayerHandle} as low level.
             /// 
             /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams)
             ///
@@ -493,7 +493,7 @@ namespace Battle.QSimulation.Player
             /// Checks if a given character number is valid.
             /// </summary>
             ///
-            /// @clink{Exposed:PlayerHandle.GetSlot} in public @cref{PlayerHandle}
+            /// @clink{Exposed:PlayerHandle.IsValidCharacterNumber} in public @cref{PlayerHandle}
             ///
             /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number)
             ///
@@ -523,7 +523,7 @@ namespace Battle.QSimulation.Player
             /// Gets/Sets player's PlayState.
             /// </summary>
             ///
-            /// Getter @clink{exposed:PlayerHandle.GetSlot} in public @cref{PlayerHandle}
+            /// Getter @clink{exposed:PlayerHandle.PlayState} in public @cref{PlayerHandle}
             public BattlePlayerPlayState PlayState
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -536,7 +536,7 @@ namespace Battle.QSimulation.Player
             /// Gets/Sets player's PlayerRef.
             /// </summary>
             ///
-            /// Getter @clink{exposed:PlayerHandle.GetSlot} in public @cref{PlayerHandle}
+            /// Getter @clink{exposed:PlayerHandle.PlayerRef} in public @cref{PlayerHandle}
             public PlayerRef PlayerRef
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -549,7 +549,7 @@ namespace Battle.QSimulation.Player
             /// Gets/Sets IsBot state.
             /// </summary>
             ///
-            /// Getter @clink{exposed:PlayerHandle.GetSlot} in public @cref{PlayerHandle}
+            /// Getter @clink{exposed:PlayerHandle.IsBot} in public @cref{PlayerHandle}
             public bool IsBot
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -562,7 +562,7 @@ namespace Battle.QSimulation.Player
             /// Gets/sets player's IsAbandoned state.
             /// </summary>
             ///
-            /// Getter @clink{exposed:PlayerHandle.GetSlot} in public @cref{PlayerHandle}
+            /// Getter @clink{exposed:PlayerHandle.IsAbandoned} in public @cref{PlayerHandle}
             public bool IsAbandoned
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -575,8 +575,8 @@ namespace Battle.QSimulation.Player
             /// Gets/Sets player's RespawnTimer.
             /// </summary>
             ///
-            /// Getter @clink{exposed:PlayerHandle.GetSlot} in public @cref{PlayerHandle}
-            /// setter @clink{exposed:PlayerHandle.GetSlot} in public @cref{PlayerHandle}
+            /// Getter @clink{exposed:PlayerHandle.RespawnTimer} in public @cref{PlayerHandle}
+            /// setter @clink{exposed:PlayerHandle.RespawnTimer} in public @cref{PlayerHandle}
             public FrameTimer RespawnTimer
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -589,8 +589,8 @@ namespace Battle.QSimulation.Player
             /// Gets/Sets player's AllowCharacterSwapping state.
             /// </summary>
             ///
-            /// Getter @clink{exposed:PlayerHandle.GetSlot} in public @cref{PlayerHandle}
-            /// setter @clink{exposed:PlayerHandle.GetSlot} in public @cref{PlayerHandle}
+            /// Getter @clink{exposed:PlayerHandle.AllowCharacterSwapping} in public @cref{PlayerHandle}
+            /// setter @clink{exposed:PlayerHandle.AllowCharacterSwapping} in public @cref{PlayerHandle}
             public bool AllowCharacterSwapping
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -604,7 +604,7 @@ namespace Battle.QSimulation.Player
             /// The SelectedCharacterID is the entity ID of the character that is currently in play.
             /// </summary>
             ///
-            /// @clink{Exposed:PlayerHandle.GetSlot} in public @cref{PlayerHandle}
+            /// @clink{Exposed:PlayerHandle.SelectedCharacterEntityID} in public @cref{PlayerHandle}
             public BattleEntityID SelectedCharacterEntityID
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->SelectedCharacterEntityIDs[Index]; }
 
@@ -612,7 +612,7 @@ namespace Battle.QSimulation.Player
             /// Gets player's SelectedCharacterNumber.
             /// </summary>
             ///
-            /// @clink{Exposed:PlayerHandle.GetSlot} in public @cref{PlayerHandle}
+            /// @clink{Exposed:PlayerHandle.SelectedCharacterNumber} in public @cref{PlayerHandle}
             ///
             /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number)
             public int SelectedCharacterNumber
@@ -622,7 +622,7 @@ namespace Battle.QSimulation.Player
             /// Gets/Sets player's SelectedCharacterState.
             /// </summary>
             ///
-            /// Getter @clink{exposed:PlayerHandle.GetSlot} in public @cref{PlayerHandle}
+            /// Getter @clink{exposed:PlayerHandle.SelectedCharacterState} in public @cref{PlayerHandle}
             public BattlePlayerCharacterState SelectedCharacterState
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -635,8 +635,8 @@ namespace Battle.QSimulation.Player
             /// Gets/Sets player's PlayerGiveUpState.
             /// </summary>
             ///
-            /// Getter @clink{exposed:PlayerHandle.GetSlot} in public @cref{PlayerHandle}
-            /// Setter @clink{exposed:PlayerHandle.GetSlot} in public @cref{PlayerHandle}
+            /// Getter @clink{exposed:PlayerHandle.PlayerGiveUpState} in public @cref{PlayerHandle}
+            /// Setter @clink{exposed:PlayerHandle.PlayerGiveUpState} in public @cref{PlayerHandle}
             public bool PlayerGiveUpState
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -672,7 +672,7 @@ namespace Battle.QSimulation.Player
             /// Converts PlayerHandleInternal to PlayerHandle
             /// </summary>
             /// 
-            /// <returns></returns>
+            /// <returns>This PlayerHandleInternal converted to a PlayerHandle.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public PlayerHandle ConvertToPublic()
             {
@@ -733,7 +733,7 @@ namespace Battle.QSimulation.Player
             /// The SelectedCharacterID is the entity ID of the character that is currently in play.
             /// </summary>
             ///
-            /// @clink{Exposed:PlayerHandle.GetSlot} in public @cref{PlayerHandle}
+            /// @clink{Exposed:PlayerHandle.SetSelectedCharacterID} in public @cref{PlayerHandle}
             ///
             /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number)
             ///
