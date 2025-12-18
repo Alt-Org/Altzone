@@ -145,7 +145,8 @@ namespace Battle.QSimulation.Player
 
             /// <summary>
             /// Retrieves player index based on given <paramref name="slot"/>.
-            /// @note Low level method! Player index is an internal concept to PlayerManager.
+            /// @note Low level method! <b>%Player index</b> is an internal concept to <b>PlayerManager</b>.<br/>
+            /// <b>%Player slot</b> is preferred when referencing specific players.
             /// </summary>
             ///
             /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams)
