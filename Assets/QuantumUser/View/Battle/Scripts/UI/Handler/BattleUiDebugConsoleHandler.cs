@@ -220,7 +220,7 @@ namespace Battle.View.UI
 
             int newIndex = (_entriesStartingIndex + _entriesCount - 1) % _entriesMax;
 
-            int endOfFirstLineIndex = message.IndexOf('\n', 0, _entryMessageLengthMax);
+            int endOfFirstLineIndex = message.IndexOf('\n', 0, Mathf.Min(_entryMessageLengthMax, message.Length));
 
             int messageShortLength = endOfFirstLineIndex > -1 ? endOfFirstLineIndex : _entryMessageLengthMax;
 
