@@ -182,6 +182,7 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="characterTransform">Pointer to the player's transform component.</param>
+        /// <param name="shieldTransform">Pointer to the shield's transform component.</param>
         /// <param name="position">World position to move to.</param>
         public static void Move(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* characterTransform, Transform2D* shieldTransform, FPVector2 position)
         {
@@ -211,6 +212,7 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="characterTransform">Pointer to the player's transform component.</param>
+        /// <param name="shieldTransform">Pointer to the shield's transform component.</param>
         /// <param name="position">World position to move to.</param>
         /// <param name="radians">Target rotation angle in radians.</param>
         public static void MoveAndRotate(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* characterTransform, Transform2D* shieldTransform, FPVector2 position, FP radians)
@@ -227,14 +229,15 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerData">Pointer to the player's data component.</param>
-        /// <param name="transform">Pointer to the player's transform component.</param>
+        /// <param name="characterTransform">Pointer to the player's transform component.</param>
+        /// <param name="shieldTransform">Pointer to the shield's transform component.</param>
         /// <param name="position">New world position.</param>
         /// <param name="rotation">New rotation in radians.</param>
         public static void Teleport(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* characterTransform, Transform2D* shieldTransform, FPVector2 position, FP rotation)
         {
             characterTransform->Teleport(f, position, rotation);
             shieldTransform->Teleport(f, position, rotation);
-            TeleportHitbox(f, playerData, characterTransform);
+            TeleportHitbox(f, playerData, characterTransform, shieldTransform);
         }
 
         /// <summary>This classes BattleDebugLogger instance.</summary>
@@ -247,6 +250,7 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="characterTransform">Pointer to the player's transform component.</param>
+        /// <param name="shieldTransform">Pointer to the shield's transform component.</param>
         private static void MoveHitbox(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* characterTransform, Transform2D* shieldTransform)
         {
             Transform2D* characterHitboxTransform = f.Unsafe.GetPointer<Transform2D>(playerData->CharacterHitboxEntity);
