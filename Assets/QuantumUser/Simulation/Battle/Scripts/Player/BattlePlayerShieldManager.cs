@@ -1,6 +1,6 @@
 /// @file BattlePlayerShieldManager.cs
 /// <summary>
-/// Contains @cref{Battle.QSimulation.Player,BattlePlayerShieldManager} class which handles player shield logic.<br/>
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerShieldManager} class which handles player shield logic.
 /// </summary>
 
 // System usings
