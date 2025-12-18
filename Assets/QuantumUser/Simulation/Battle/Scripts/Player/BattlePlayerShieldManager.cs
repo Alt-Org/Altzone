@@ -20,6 +20,12 @@ using Quantum.Collections;
 
 namespace Battle.QSimulation.Player
 {
+    /// <summary>
+    /// PlayerShieldManager handles player shield management, allowing other classes to focus on gameplay logic.<br/>
+    /// Provides static methods to create, retrieve, and despawn player shields.
+    /// </summary>
+    ///
+    /// Handles creating shield entities for player characters, as well as retrieving and despawning them.<br/>
     public static unsafe class BattlePlayerShieldManager
     {
         /// <summary>
