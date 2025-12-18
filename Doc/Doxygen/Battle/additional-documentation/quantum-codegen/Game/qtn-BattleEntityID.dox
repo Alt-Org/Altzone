@@ -1,0 +1,25 @@
+/// @file BattleEntityID.qtn
+/// <summary>
+/// Contains BattleEntityID struct.
+/// </summary>
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattleEntityID}  
+///   @copybrief Quantum.BattleEntityID
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleEntityID
+/// <summary>
+/// Struct used by @cref{Battle.QSimulation.Game,BattleEntityManager} to reference %Quantum entities.<br/>
+/// Wrapper for an `int` value.
+/// </summary>
+///
+/// [{Entity ID}](#page-concepts-entity-management-entity-id)
+///
+/// This struct exists to make code more readable by referencing entities with a named type instead of an `int` value.
+///
+/// @bigtext{Generated from @ref BattleEntityID.qtn}
+
+/// @var int Quantum::BattleEntityID::Int
+/// <summary>Underlying int value.</summary>
