@@ -438,7 +438,7 @@ namespace Battle.QSimulation.Player
                                 default:
                                     playerHitboxType          = (BattlePlayerHitboxType)(-1);
                                     playerHitboxCollisionType = (BattlePlayerCollisionType)(-1);
-                                    playerHitboxNormal        = FPVector2.Up;
+                                    playerHitboxNormal        = FPVector2.Zero;
                                     break;
                             }
 

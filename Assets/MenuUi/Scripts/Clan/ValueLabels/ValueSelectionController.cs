@@ -68,10 +68,10 @@ public class ValueSelectionController : MonoBehaviour
 
     public void ToggleValue(ValueLabelHandler toggledHandler)
     {
-        if(SelectedValues.Contains(toggledHandler.labelInfo.values) && SelectedValues.Count == 1)
+        /*if(SelectedValues.Contains(toggledHandler.labelInfo.values) && SelectedValues.Count == 1)
         {
             return;
-        }
+        }*/
 
 
         if (SelectedValues.Contains(toggledHandler.labelInfo.values))
@@ -85,6 +85,7 @@ public class ValueSelectionController : MonoBehaviour
             if (SelectedValues.Count < 3)
             {
                 SelectedValues.Add(toggledHandler.labelInfo.values);
+
                 ValueLabelHandler handlerOfSelected = _labelHandlers.Find(handler => handler.labelInfo.values == toggledHandler.labelInfo.values);
                 handlerOfSelected.Select();
             }
@@ -94,12 +95,7 @@ public class ValueSelectionController : MonoBehaviour
     }
 
     public void RemoveSelectedValue(ValueLabelHandler removedHandler)
-    {
-        if(SelectedValues.Count == 1)
-        {
-            return;
-        }
-
+    {     
         if (_valueSelectorObject.activeSelf)
         {
             ValueLabelHandler handlerOfRemoved = _labelHandlers.Find(handler => handler.labelInfo.values == removedHandler.labelInfo.values);

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 113408060160247262}
   - component: {fileID: 3276783352070757870}
   - component: {fileID: 7805653480155746906}
+  - component: {fileID: 8616383531703780797}
   m_Layer: 5
   m_Name: Love
   m_TagString: Untagged
@@ -120,6 +121,22 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8616383531703780797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 258150330934654517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioCategory: 
+  _categoryType: 1
+  _audioName: Select
+  _playType: 0
 --- !u!1 &733672722845291506
 GameObject:
   m_ObjectHideFlags: 0
@@ -132,6 +149,7 @@ GameObject:
   - component: {fileID: 7102190979471498098}
   - component: {fileID: 2520873361821904305}
   - component: {fileID: 412603562654641487}
+  - component: {fileID: 371224647884993574}
   m_Layer: 5
   m_Name: Playful
   m_TagString: Untagged
@@ -240,6 +258,22 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &371224647884993574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 733672722845291506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioCategory: 
+  _categoryType: 1
+  _audioName: Select
+  _playType: 0
 --- !u!1 &2611665608036841293
 GameObject:
   m_ObjectHideFlags: 0
@@ -394,6 +428,7 @@ GameObject:
   - component: {fileID: 3349060742835050346}
   - component: {fileID: 3515848050847721203}
   - component: {fileID: 6271544860854879646}
+  - component: {fileID: 8097617766616851098}
   m_Layer: 5
   m_Name: Sad
   m_TagString: Untagged
@@ -502,6 +537,22 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8097617766616851098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3516718262667511602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioCategory: 
+  _categoryType: 1
+  _audioName: Select
+  _playType: 0
 --- !u!1 &5686812790540011914
 GameObject:
   m_ObjectHideFlags: 0
@@ -514,6 +565,7 @@ GameObject:
   - component: {fileID: 976898925462022407}
   - component: {fileID: 1631249610235356575}
   - component: {fileID: 5640638360783855018}
+  - component: {fileID: 8570062421197260669}
   m_Layer: 5
   m_Name: Angry
   m_TagString: Untagged
@@ -622,6 +674,22 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8570062421197260669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5686812790540011914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioCategory: 
+  _categoryType: 1
+  _audioName: Select
+  _playType: 0
 --- !u!1 &7824471993887124948
 GameObject:
   m_ObjectHideFlags: 0
@@ -634,6 +702,7 @@ GameObject:
   - component: {fileID: 3023896997087026795}
   - component: {fileID: 5098868304218884187}
   - component: {fileID: 4378557477991665254}
+  - component: {fileID: 3669810463327350475}
   m_Layer: 5
   m_Name: Joy
   m_TagString: Untagged
@@ -742,6 +811,22 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3669810463327350475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7824471993887124948}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioCategory: 
+  _categoryType: 1
+  _audioName: Select
+  _playType: 0
 --- !u!1 &7831253444882793091
 GameObject:
   m_ObjectHideFlags: 0
