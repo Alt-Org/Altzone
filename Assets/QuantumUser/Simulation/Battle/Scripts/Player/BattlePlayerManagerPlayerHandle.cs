@@ -12,7 +12,8 @@ using Photon.Deterministic;
 
 namespace Battle.QSimulation.Player
 {
-    // Documentation in BattlePlayerManager.cs
+    // Contains PlayerHandle and PlayerHandleInternal structs
+    // Main class documentation in BattlePlayerManager.cs
     public static unsafe partial class BattlePlayerManager
     {
         /// <summary>
