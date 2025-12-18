@@ -55,8 +55,8 @@
 ///
 /// @bigtext{Generated from @ref BattlePlayerHitbox.qtn}
 
-/// @var EntityRef Quantum.BattlePlayerHitboxQComponent::PlayerEntity
-/// <summary>EntityRef to the player the hitbox belongs to.</summary>
+/// @var EntityRef Quantum.BattlePlayerHitboxQComponent::ParentEntity
+/// <summary>EntityRef to the entity the hitbox belongs to.</summary>
 ///
 /// @var BattlePlayerHitboxType Quantum.BattlePlayerHitboxQComponent::HitboxType
 /// <summary>Is the hitbox a character hitbox or a shield hitbox.</summary>
