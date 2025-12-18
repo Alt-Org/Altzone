@@ -1645,14 +1645,14 @@ public class ServerManager : MonoBehaviour
 
     #endregion
 
-    public IEnumerator GetFriendList(Action<List<ServerFriendPlayer>> callback)
+    public IEnumerator GetFriendlist(Action<List<ServerFriendPlayer>> callback)
     {
         yield return StartCoroutine(WebRequests.Get($"{SERVERADDRESS}friendship", AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
-                //Debug.LogWarning(result);
+                Debug.LogWarning(result);
                 List<ServerFriendPlayer> friendList = ((JArray)result["data"]["Object"]).ToObject<List<ServerFriendPlayer>>();
 
 
@@ -1664,6 +1664,97 @@ public class ServerManager : MonoBehaviour
             {
                 if (callback != null)
                     callback(null);
+            }
+        }));
+    }
+    public IEnumerator GetFriendlistRequests(Action<List<string>> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get($"{SERVERADDRESS}friendship/requests", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                List<string> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<string>>();
+
+
+
+                if (callback != null)
+                    callback(friendList);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator SendFriendRequest(string id, Action<bool> callback)
+    {
+        yield return StartCoroutine(WebRequests.Post($"{SERVERADDRESS}friendship/add/{id}", null, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                //Debug.LogWarning(result);
+                //List<bool> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<bool>>();
+
+
+
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
+    public IEnumerator FriendRequestAccept(string id, Action<bool> callback)
+    {
+        yield return StartCoroutine(WebRequests.Post($"{SERVERADDRESS}friendship/accept/{id}", null, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                //Debug.LogWarning(result);
+                //List<bool> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<bool>>();
+
+
+
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
+    public IEnumerator FriendDelete(string id, Action<bool> callback)
+    {
+        yield return StartCoroutine(WebRequests.Delete($"{SERVERADDRESS}friendship/{id}", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                //Debug.LogWarning(result);
+                //List<bool> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<bool>>();
+
+
+
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
             }
         }));
     }
