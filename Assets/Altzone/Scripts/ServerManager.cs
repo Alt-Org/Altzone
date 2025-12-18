@@ -219,6 +219,9 @@ public class ServerManager : MonoBehaviour
             bool characterAdded = false;
             List<CharacterID> newCharacters = new List<CharacterID>();
 
+            List<ServerFriendPlayer> friends = null;
+            List<ServerFriendRequest> friendRequests = null;
+
             DataStore storefront = Storefront.Get();
             PlayerData playerData = null;
 
@@ -255,7 +258,7 @@ public class ServerManager : MonoBehaviour
                     callFinished = false;
                     StartCoroutine(UpdateCustomCharacters((c, characterList) => { callFinished = c; characters = characterList; }));
                 }
-                yield return new WaitUntil(() => callFinished == true);
+                new WaitUntil(() => callFinished == true);
 
                 yield return StartCoroutine(GetPlayerTasksFromServer(tasks =>
                 {
@@ -274,33 +277,35 @@ public class ServerManager : MonoBehaviour
                 }));
                 yield return new WaitUntil(() => gettingTasks == false);
 
-                yield return StartCoroutine(GetFriendlist(tasks =>
+                yield return StartCoroutine(GetFriendlist(friendlist =>
                 {
-                    if (tasks == null)
+                    if (friendlist == null)
                     {
                         Debug.LogError("Failed to fetch friendlist data.");
                         gettingFriendlist = false;
                     }
                     else
                     {
+                        friends = friendlist;
                         gettingFriendlist = false;
                     }
                 }));
-                yield return StartCoroutine(GetFriendlistRequests(tasks =>
+                yield return StartCoroutine(GetFriendlistRequests(requests =>
                 {
-                    if (tasks == null)
+                    if (requests == null)
                     {
                         Debug.LogError("Failed to fetch friend request data.");
                         gettingFriendRequests = false;
                     }
                     else
                     {
+                        friendRequests = requests;
                         gettingFriendRequests = false;
                     }
                 }));
                 yield return new WaitUntil(() => gettingFriendlist == false && gettingFriendRequests == false);
             }
-            SetPlayerValues(Player, characters);
+            SetPlayerValues(Player, characters, friends, friendRequests);
 
             OnLogInStatusChanged?.Invoke(true);
             StartCoroutine(ServiceHeartBeat());
@@ -372,7 +377,7 @@ public class ServerManager : MonoBehaviour
     /// Sets Player values from server and saves it to DataStorage.
     /// </summary>
     /// <param name="player">ServerPlayer from server containing the most up to date player data.</param>
-    public void SetPlayerValues(ServerPlayer player, List<CustomCharacter> characters)
+    public void SetPlayerValues(ServerPlayer player, List<CustomCharacter> characters, List<ServerFriendPlayer> friends, List<ServerFriendRequest> friendRequests)
     {
         string clanId = player.clan_id;
 
@@ -430,6 +435,9 @@ public class ServerManager : MonoBehaviour
                 playerData.BuildCharacterLists(characters);
             }
             playerData.UpdatePlayerData(player);
+
+            playerData.friendPlayers = friends;
+            playerData.friendRequests = friendRequests;
         }
         PlayerPrefs.SetString("profileId", player.profile_id);
 

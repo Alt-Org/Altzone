@@ -70,6 +70,10 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
 
+        public List<ServerFriendPlayer> friendPlayers = new List<ServerFriendPlayer>();
+
+        public List<ServerFriendRequest> friendRequests = new List<ServerFriendRequest>();
+
         public ServerGameStatistics stats = null;
 
         public string ChosenMotto = null;
