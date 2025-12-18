@@ -1681,7 +1681,7 @@ public class ServerManager : MonoBehaviour
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 Debug.LogWarning(result);
-                List<ServerFriendPlayer> friendList = ((JArray)result["data"]["Object"]).ToObject<List<ServerFriendPlayer>>();
+                List<ServerFriendPlayer> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<ServerFriendPlayer>>();
 
 
 
@@ -1695,7 +1695,7 @@ public class ServerManager : MonoBehaviour
             }
         }));
     }
-    public IEnumerator GetFriendlistRequests(Action<List<string>> callback)
+    public IEnumerator GetFriendlistRequests(Action<List<ServerFriendRequest>> callback)
     {
         yield return StartCoroutine(WebRequests.Get($"{SERVERADDRESS}friendship/requests", AccessToken, request =>
         {
@@ -1703,7 +1703,7 @@ public class ServerManager : MonoBehaviour
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 Debug.LogWarning(result);
-                List<string> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<string>>();
+                List<ServerFriendRequest> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<ServerFriendRequest>>();
 
 
 
@@ -1720,11 +1720,11 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator SendFriendRequest(string id, Action<bool> callback)
     {
-        yield return StartCoroutine(WebRequests.Post($"{SERVERADDRESS}friendship/add/{id}", null, AccessToken, request =>
+        yield return StartCoroutine(WebRequests.Post($"{SERVERADDRESS}friendship/add/{id}", "", AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                JObject result = JObject.Parse(request.downloadHandler.text);
+                //JObject result = JObject.Parse(request.downloadHandler.text);
                 //Debug.LogWarning(result);
                 //List<bool> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<bool>>();
 
@@ -1743,11 +1743,12 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator FriendRequestAccept(string id, Action<bool> callback)
     {
-        yield return StartCoroutine(WebRequests.Post($"{SERVERADDRESS}friendship/accept/{id}", null, AccessToken, request =>
+        Debug.LogWarning("Accepting friend request");
+        yield return StartCoroutine(WebRequests.Post($"{SERVERADDRESS}friendship/accept/{id}", "", AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                JObject result = JObject.Parse(request.downloadHandler.text);
+                //JObject result = JObject.Parse(request.downloadHandler.text);
                 //Debug.LogWarning(result);
                 //List<bool> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<bool>>();
 
