@@ -131,11 +131,7 @@
 /// @anchor PlayerHitboxEntities
 /// @name Player's hitboxEntities
 /// @{
-/// @var EntityRef Quantum::BattlePlayerDataQComponent::HitboxShieldEntity
-/// <summary>An entity that contains all the shield hitboxes.</summary>
-/// Part of @ref PlayerHitboxEntities "[Player's hitboxEntities]"
-///
-/// @var EntityRef Quantum::BattlePlayerDataQComponent::HitboxCharacterEntity
+/// @var EntityRef Quantum::BattlePlayerDataQComponent::CharacterHitboxEntity
 /// <summary>An entity that contains all the character hitboxes.</summary>
 /// Part of @ref PlayerHitboxEntities "[Player's hitboxEntities]"
 /// @}
@@ -175,6 +171,9 @@
 ///
 /// @var BattlePlayerCollisionType Quantum::BattlePlayerHitboxTemplate::CollisionType
 /// <summary>Type of the hitbox, affects how the projectile bounces off of it.</summary>
+///
+/// @var FP Quantum::BattlePlayerHitboxTemplate::NormalAngleDeg
+/// <summary>The normal angle of the hitbox in degrees.</summary>
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -184,8 +183,8 @@
 /// @var int Quantum::BattlePlayerDataTemplateQComponent::GridExtendBottom
 /// <summary>How many GridCells the character extends below the center heart position.</summary>
 ///
-/// @var BattlePlayerHitboxTemplate Quantum::BattlePlayerDataTemplateQComponent::HitboxShield
-/// <summary>BattlePlayerHitboxTemplate that contains all shield colliders.</summary>
-///
 /// @var BattlePlayerHitboxTemplate Quantum::BattlePlayerDataTemplateQComponent::HitboxCharacter
 /// <summary>BattlePlayerHitboxTemplate that contains all character colliders.</summary>
+///
+/// @var bool Quantum::BattlePlayerDataTemplateQComponent::DisableRotation
+/// <summary>Bool for disabling rotation for character.</summary>
