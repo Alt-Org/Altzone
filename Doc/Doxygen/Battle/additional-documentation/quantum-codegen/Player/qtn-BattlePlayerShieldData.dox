@@ -1,0 +1,42 @@
+/// @file BattlePlayerShieldData.qtn
+/// <summary>
+/// Contains components used for player shield entities.
+/// </summary>
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattlePlayerShieldDataQComponent}  
+///   @copybrief Quantum.BattlePlayerShieldDataQComponent
+/// - @cref{Quantum,BattlePlayerShieldDataTemplateQComponent}  
+///   @copybrief Quantum.BattlePlayerShieldDataTemplateQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattlePlayerShieldDataQComponent
+/// <summary>
+/// Contains player shield's data, including it's associated player entity and hitbox entities.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerShieldData.qtn}
+
+/// @struct Quantum::BattlePlayerShieldDataTemplateQComponent
+/// <summary>
+/// Template for creating player shield entity.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerShieldData.qtn}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @var EntityRef Quantum::BattlePlayerShieldDataQComponent::PlayerEntity
+/// <summary>EntityRef of the player entity the shield belongs to.</summary>
+
+/// @var QListPtr<EntityRef> Quantum::BattlePlayerShieldDataQComponent::HitboxEntities
+/// <summary>List containing all hitbox entities of the shield.</summary>
+
+/// @var bool Quantum::BattlePlayerShieldDataQComponent::IsActive
+/// <summary>Bool value to indicate if the shield is currently active.</summary>
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @var QListPtr<BattlePlayerHitboxTemplate> Quantum::BattlePlayerShieldDataTemplateQComponent::HitboxList
+/// <summary>BattlePlayerHitboxTemplate list to allow creating multiple hitbox entities for one shield.</summary>
