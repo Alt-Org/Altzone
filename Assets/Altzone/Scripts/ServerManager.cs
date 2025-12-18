@@ -184,6 +184,8 @@ public class ServerManager : MonoBehaviour
             bool gettingPlayer = true;
             bool gettingCharacter = true;
             bool gettingTasks = true;
+            bool gettingFriendlist = true;
+            bool gettingFriendRequests = true;
             List<CustomCharacter> characters = null;
             // Checks if we can get Player & player Clan from the server
             yield return StartCoroutine(GetOwnPlayerFromServer(player =>
@@ -253,7 +255,7 @@ public class ServerManager : MonoBehaviour
                     callFinished = false;
                     StartCoroutine(UpdateCustomCharacters((c, characterList) => { callFinished = c; characters = characterList; }));
                 }
-                new WaitUntil(() => callFinished == true);
+                yield return new WaitUntil(() => callFinished == true);
 
                 yield return StartCoroutine(GetPlayerTasksFromServer(tasks =>
                 {
@@ -271,6 +273,32 @@ public class ServerManager : MonoBehaviour
                     }
                 }));
                 yield return new WaitUntil(() => gettingTasks == false);
+
+                yield return StartCoroutine(GetFriendlist(tasks =>
+                {
+                    if (tasks == null)
+                    {
+                        Debug.LogError("Failed to fetch friendlist data.");
+                        gettingFriendlist = false;
+                    }
+                    else
+                    {
+                        gettingFriendlist = false;
+                    }
+                }));
+                yield return StartCoroutine(GetFriendlistRequests(tasks =>
+                {
+                    if (tasks == null)
+                    {
+                        Debug.LogError("Failed to fetch friend request data.");
+                        gettingFriendRequests = false;
+                    }
+                    else
+                    {
+                        gettingFriendRequests = false;
+                    }
+                }));
+                yield return new WaitUntil(() => gettingFriendlist == false && gettingFriendRequests == false);
             }
             SetPlayerValues(Player, characters);
 
