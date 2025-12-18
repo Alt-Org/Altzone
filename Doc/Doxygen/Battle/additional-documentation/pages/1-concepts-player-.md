@@ -5,10 +5,12 @@
 **%Quantum** handles recognizing **Players** through a [PlayerRef🡵](https://doc-api.photonengine.com/en/quantum/current/struct_quantum_1_1_player_ref.html),
 but we prefer to use **PlayerSlot** as defined by us whenever possible.  
 Each **Player** has an assigned **PlayerSlot** and a **TeamNumber**.  
+Each Each **Player** has a **PlayState**.  
 Each **Player** has **data** with them that **isn't connected to any specific character** under the **Player**'s control.  
 Each **Player** controls multiple **Character Entities** which also have some data associated with them.  
 Each **Character Entity** has a player character class that it belongs to.  
 See [{Player Slots and Teams}](#page-concepts-player-slots-teams)  
+See [{Player PlayState}](#page-concepts-player-playstate)  
 See [{Player Manager Data}](#page-concepts-player-manager-data)  
 See [{Player Character Entity}](#page-concepts-player-character-entity)  
 See [{Player Character Classes}](#page-concepts-player-characters-classes)
@@ -85,11 +87,18 @@ graph PlayerSlotsAndTeams {
 
 <br/>
 
+## Player PlayState {#page-concepts-player-playstate}
+
+Each **Player** has a @cref{Quantum,BattlePlayerPlayState} used to track their state in the game, which is detached from [{Player Character Entities}](#page-concepts-player-character-entity) that the **Player** controls.  
+The **PlayStates** are linked to [{Player Slots}](#page-concepts-player-slots-teams) including slots that have no player.
+
+<br/>
+
 ## Player Manager Data {#page-concepts-player-manager-data}
 
 **Player data** not connected to individual [{Player Character Entities}](#page-concepts-player-character-entity) is handled
 by [{PlayerManager}](#page-concepts-player-simulation-playermanager).  
-The [{PlayerManagerData}](#page-concepts-player-simulation-playermanagerdata) **%Quantum Singleton Component** is used to store **Player Data**.
+The [{PlayerManagerData}](#page-concepts-player-simulation-playermanagerdata) **%Quantum Singleton Component** is used to store **Player Data**.  
 The [{PlayerHandle}](#page-concepts-player-simulation-playerhandle) struct allows the code to access **Player Manager Data** of specific individual **Players**.  
 **Player Manager Data** is defined and used in [{Simulation}](#page-concepts-player-simulation).
 
@@ -159,7 +168,7 @@ digraph PlayerJoining {
 ## Player Input {#page-concepts-player-input}
 
 **Players** can interact with the game through moving and rotating their [{Player Character Entity}](#page-concepts-player-character-entity),
-as well as switching between their available [{Player Character Entities}](#page-concepts-player-character-entity)
+as well as switching between their available [{Player Character Entities}](#page-concepts-player-character-entity).  
 **Player Inputs** are processed and compiled into a @ref Quantum.Input "Quantum Input Struct" on the **Unity/View** side in [{PlayerInput}](#page-concepts-player-view-input).
 The created **struct** is passed over to **%Quantum Simulation**.  
 **%Quantum** synchronises the **struct** for all connected **clients**, and classes on the [{Quantum Simulation}](#page-concepts-player-simulation) side use the contained data.
@@ -212,7 +221,7 @@ digraph PlayerInputGraph {
 
 Each **Player** controls **3** **Character %Quantum Entities** in the game.  
 For each **Player** one **Character** is present on the stage at a time and [{PlayerManager}](#page-concepts-player-simulation-playermanager) handles spawning and
-despawning **Character Entities** when switching between them.
+despawning **Character Entities** when switching between them.  
 Each **Character Entity** has a [{Player Character Class}](#page-concepts-player-characters-classes) that it belongs to.
 
 ```dot
@@ -299,6 +308,18 @@ digraph PlayerCharacterEntity {
   Entity -> RootGameObject;
 }
 ```
+
+<br/>
+
+### Player Character Number {#page-concepts-player-character-entity-character-number}
+
+Each **Character %Quantum Entity** is internally assigned a **character number** between 0 and 2, each corresponding to one of the **3 Characters** a **Player** controls. It is used to reference a specific **Character** for a given **Player**.
+
+<br/>
+
+### Player Character State {#page-concepts-player-character-entity-character-state}
+
+Each **Character %Quantum Entity** always has a @cref{Quantum,BattlePlayerCharacterState} indicating if the **Character** is **Alive** or **Dead**.
 
 <br/>
 
