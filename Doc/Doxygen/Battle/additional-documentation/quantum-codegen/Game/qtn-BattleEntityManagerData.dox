@@ -1,0 +1,28 @@
+/// @file BattleEntityManagerData.qtn
+/// <summary>
+/// Contains component used for managing %Quantum entities in the game.
+/// </summary>
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattleEntityManagerDataQSingleton}  
+///   @copybrief Quantum.BattleEntityManagerDataQSingleton
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleEntityManagerDataQSingleton
+/// <summary>
+/// Singleton component that manages registered entities.
+/// </summary>
+///
+/// See [{Entity Manager}](#page-concepts-entity-management-entity-manager) for more info.
+///
+/// @bigtext{Generated from @ref BattleEntityManagerData.qtn}
+
+/// @var QListPtr<EntityRef> Quantum.BattleEntityManagerDataQSingleton::RegisteredEntities
+/// <summary>List containing all registered entities.</summary>
+///
+/// @var BattleGridPosition Quantum.BattleEntityManagerDataQSingleton::EntityOffscreenPositionOffset
+/// <summary>The offscreen BattleGridPosition of the first registered entity.</summary>
+///
+/// @var int Quantum.BattleEntityManagerDataQSingleton::EntitySpacing
+/// <summary>Amount of grid spaces between entity offscreen positions.</summary>
