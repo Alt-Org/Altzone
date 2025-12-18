@@ -72,14 +72,14 @@
 /// @var array Quantum.BattlePlayerManagerDataQSingleton::AllowCharacterSwapping;
 /// <summary>Check if player is able to swap characters.</summary>
 ///
-/// @var array Quantum.BattlePlayerManagerDataQSingleton::SelectedCharacters
-/// <summary>Array of all currently selected characters.</summary>
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::SelectedCharacterEntityIDs
+/// <summary>Array of all currently selected characters' Entity IDs.</summary>
 ///
 /// @var array Quantum.BattlePlayerManagerDataQSingleton::SelectedCharacterNumbers
 /// <summary>Array of characters's numbers that are currently selected.</summary>
 ///
-/// @var array Quantum.BattlePlayerManagerDataQSingleton::AllCharacters
-/// <summary>Array of all characters in the game session.</summary>
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::AllCharacterIDs
+/// <summary>Array of entity IDs for all characters in the game session.</summary>
 ///
 /// @var array Quantum.BattlePlayerManagerDataQSingleton::AllCharactersStates
 /// <summary>Array of all characters states.</summary>
