@@ -10,14 +10,9 @@ using System.Runtime.CompilerServices;
 using Quantum;
 using Photon.Deterministic;
 
-// Battle QSimulation usings
-using Battle.QSimulation.Game;
-
 namespace Battle.QSimulation.Player
 {
-    /// <summary>
-    /// Contains the public and private PlayerHandle structs.
-    /// </summary>
+    // Documentation in BattlePlayerManager.cs
     public static unsafe partial class BattlePlayerManager
     {
         /// <summary>
@@ -380,7 +375,7 @@ namespace Battle.QSimulation.Player
             /// Retrieves player index based on <paramref name="slot"/>.
             /// </summary>
             ///
-            /// @clink{Exposed:PlayerHandle.GetPlayerIndex} in public @cref{PlayerHandle} as low level.
+            /// @clink{Exposed:PlayerHandle.Low_GetPlayerIndex} in public @cref{PlayerHandle} as low level.
             /// 
             /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams)
             ///
@@ -733,8 +728,6 @@ namespace Battle.QSimulation.Player
             /// Sets player's SelectedCharacterID and updates SelectedCharacterNumber based on <paramref name="characterNumber"/>.<br/>
             /// The SelectedCharacterID is the entity ID of the character that is currently in play.
             /// </summary>
-            ///
-            /// @clink{Exposed:PlayerHandle.SetSelectedCharacterID} in public @cref{PlayerHandle}
             ///
             /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number)
             ///
