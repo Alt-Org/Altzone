@@ -41,7 +41,7 @@
 
 /// @struct Quantum::BattlePlayerDataTemplateQComponent
 /// <summary>
-///
+/// Template for creating player character entity.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattlePlayerData.qtn}
@@ -166,7 +166,7 @@
 
 // ---------------------------------------------------------------------------------------------------- //
 
-/// @var list<BattlePlayerHitboxColliderTemplate> Quantum::BattlePlayerHitboxTemplate::ColliderTemplateList
+/// @var QListPtr<BattlePlayerHitboxColliderTemplate> Quantum::BattlePlayerHitboxTemplate::ColliderTemplateList
 /// <summary>List of colliders made using BattlePlayerHitboxColliderTemplate.</summary>
 ///
 /// @var BattlePlayerCollisionType Quantum::BattlePlayerHitboxTemplate::CollisionType
