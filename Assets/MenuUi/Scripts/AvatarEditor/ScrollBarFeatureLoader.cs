@@ -13,7 +13,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private AvatarPartsReference _avatarPartsReference;
         [SerializeField] private RectTransform _featureGridContent;
         [SerializeField] private GameObject _gridCellPrefab;
-        [SerializeField] private FeaturePicker _featurePicker;
+        [SerializeField] private FeatureSetter _featureSetter;
         [SerializeField] private AvatarEditorController _avatarEditorController;
         [SerializeField] private RectTransform _featureGrid;
         [SerializeField] private GridLayoutGroup _gridLayoutGroup;
@@ -157,7 +157,7 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             handler.SetValues(onClick: () =>
             {
-                _featurePicker.SetFeature(avatarPart, featurePickerPartSlot);
+                _featureSetter.SetFeature(avatarPart, featurePickerPartSlot);
                 UpdateHighlightedCell(handler);
             });
         }

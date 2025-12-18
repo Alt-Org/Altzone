@@ -809,9 +809,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3323787166554370220}
-  - component: {fileID: 814479154280025250}
   - component: {fileID: 161865825665755407}
   - component: {fileID: 7023965250681938522}
+  - component: {fileID: 8112127728846556094}
   m_Layer: 5
   m_Name: AvatarEditor
   m_TagString: Untagged
@@ -833,7 +833,6 @@ RectTransform:
   m_Children:
   - {fileID: 189091708179177446}
   - {fileID: 5291960247044874626}
-  - {fileID: 8128324292538002168}
   - {fileID: 3277561996375325905}
   - {fileID: 8147589403274372846}
   - {fileID: 3562267354548957245}
@@ -845,34 +844,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &814479154280025250
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2777738015282807615}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73978bc6ca34bdf4e838acacac9147ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _timeoutSeconds: 10
-  _avatarDefaultReference: {fileID: 11400000, guid: f0ae9649bfeccae44b56bd5283132b71,
-    type: 2}
-  _characterLoader: {fileID: 1111034374712263733}
-  _saveButton: {fileID: 514047907050185031}
-  _defaultButton: {fileID: 6265736950872179190}
-  _revertButton: {fileID: 595827395000033889}
-  _featureModeButton: {fileID: 0}
-  _colorModeButton: {fileID: 0}
-  _scaleModeButton: {fileID: 0}
-  _defaultMode: 0
-  _visualDataScriptableObject: {fileID: 11400000, guid: 5924f2967fcfeb0469785ea0b5f3d2b2,
-    type: 2}
-  _avatarVisualsParent: {fileID: 631322718943489897}
-  _featureButtonsBase: {fileID: 0}
-  _featurePicker: {fileID: 5559116631486768876}
 --- !u!114 &161865825665755407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -907,7 +878,32 @@ MonoBehaviour:
   _categoryLoader: {fileID: 5035703801643578294}
   _featureLoader: {fileID: 9613805567932932}
   _colorLoader: {fileID: 1919495896428952045}
-  _revertButton: {fileID: 1261230353551953357}
+  _characterLoader: {fileID: 1111034374712263733}
+  _timeoutSeconds: 10
+  _avatarDefaultReference: {fileID: 11400000, guid: f0ae9649bfeccae44b56bd5283132b71,
+    type: 2}
+  _featureSetter: {fileID: 8112127728846556094}
+  _visualDataScriptableObject: {fileID: 11400000, guid: 5924f2967fcfeb0469785ea0b5f3d2b2,
+    type: 2}
+  _saveButton: {fileID: 514047907050185031}
+  _revertButton: {fileID: 595827395000033889}
+  _defaultButton: {fileID: 6265736950872179190}
+--- !u!114 &8112127728846556094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2777738015282807615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48614b77414aa5a45bf04bb723adbd20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _avatarEditorController: {fileID: 7023965250681938522}
+  _avatarEditorCharacterHandle: {fileID: 5197823364483463630}
+  _avatarPartsReference: {fileID: 11400000, guid: 671ccbc5ba5e0df42acde4b71995e434,
+    type: 2}
 --- !u!1 &3089668499891744208
 GameObject:
   m_ObjectHideFlags: 0
@@ -1079,8 +1075,8 @@ MonoBehaviour:
   _featureGridContent: {fileID: 6953732945845760404}
   _gridCellPrefab: {fileID: 90728682598853689, guid: 69cf2c325ff7d4e4eb01540c8a82384c,
     type: 3}
-  _featurePicker: {fileID: 5559116631486768876}
-  _avatarEditorController: {fileID: 814479154280025250}
+  _featureSetter: {fileID: 8112127728846556094}
+  _avatarEditorController: {fileID: 7023965250681938522}
   _featureGrid: {fileID: 6793832228989784560}
   _gridLayoutGroup: {fileID: 7644326366261742650}
   _scrollrect: {fileID: 2041666044855621765}
@@ -1932,152 +1928,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
---- !u!1 &6595069769439526530
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8128324292538002168}
-  - component: {fileID: 2399024214802791907}
-  m_Layer: 0
-  m_Name: EditorMenu
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &8128324292538002168
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6595069769439526530}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 6954260797360196332}
-  m_Father: {fileID: 3323787166554370220}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 1, y: 1}
---- !u!222 &2399024214802791907
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6595069769439526530}
-  m_CullTransparentMesh: 1
---- !u!1 &6616430018071325128
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6954260797360196332}
-  - component: {fileID: 5559116631486768876}
-  - component: {fileID: 1539613970310451556}
-  - component: {fileID: 3041156061340642523}
-  m_Layer: 0
-  m_Name: FeaturePicker
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &6954260797360196332
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6616430018071325128}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8128324292538002168}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.04746101, y: 0.14067902}
-  m_AnchorMax: {x: 0.95400006, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &5559116631486768876
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6616430018071325128}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 85bea305a0240274597ea1949adfc812, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _avatarEditorCharacterHandle: {fileID: 5197823364483463630}
-  _avatarEditorController: {fileID: 814479154280025250}
-  _featureButtonsHandler: {fileID: 0}
-  _characterImageParent: {fileID: 5291960247044874626}
-  _featureButtonsParent: {fileID: 8128324292538002168}
-  _categoryText: {fileID: 0}
-  _avatarPartsReference: {fileID: 11400000, guid: 671ccbc5ba5e0df42acde4b71995e434,
-    type: 2}
-  _avatarDefaultReference: {fileID: 11400000, guid: f0ae9649bfeccae44b56bd5283132b71,
-    type: 2}
-  _defaultCategory: 0
-  _categoryButtons:
-  - {fileID: 0}
-  - {fileID: 0}
-  _pageButtons:
-  - {fileID: 0}
-  - {fileID: 0}
-  _animator: {fileID: 0}
-  _pageTurnImage: {fileID: 0}
---- !u!114 &1539613970310451556
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6616430018071325128}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abcb222a881e3234f98051491acc0259, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _swipeThreshold: 100
---- !u!114 &3041156061340642523
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6616430018071325128}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 0
-  _educationCategoryType: 5
-  _educationCategoryActionType: 10
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 3
-  _educationCategoryCultureType: 0
-  _educationCategoryEthicalType: 0
 --- !u!1 &6629516222835262970
 GameObject:
   m_ObjectHideFlags: 0
