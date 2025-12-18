@@ -1,3 +1,8 @@
+/// @file BattlePlayerShieldManager.cs
+/// <summary>
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerShieldManager} class which handles player shield logic.<br/>
+/// </summary>
+
 // System usings
 using System.Runtime.CompilerServices;
 
