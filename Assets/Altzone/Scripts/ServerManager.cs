@@ -1645,6 +1645,29 @@ public class ServerManager : MonoBehaviour
 
     #endregion
 
+    public IEnumerator GetFriendList(Action<List<ServerFriendPlayer>> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get($"{SERVERADDRESS}friendship", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                //Debug.LogWarning(result);
+                List<ServerFriendPlayer> friendList = ((JArray)result["data"]["Object"]).ToObject<List<ServerFriendPlayer>>();
+
+
+
+                if (callback != null)
+                    callback(friendList);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
     #region Battle
 
     public void SendDebugLogFile(List<IMultipartFormSection> formData, string secretKey, string id, Action<UnityWebRequest> callback)
