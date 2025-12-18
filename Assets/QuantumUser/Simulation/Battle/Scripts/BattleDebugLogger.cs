@@ -607,7 +607,7 @@ namespace Battle.QSimulation
         /// </summary>
         /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
-        /// When assertion fails, logs an error using <see cref="Error(string, string, LogTarget)"/> method.
+        /// When assertion fails, logs an error using @cref{BattleDebugLogger.Error(string\, string\, LogTarget)}.
         ///
         /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert Methods Overview" for more info.
         ///
