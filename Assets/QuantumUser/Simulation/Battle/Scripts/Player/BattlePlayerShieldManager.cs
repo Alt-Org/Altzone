@@ -18,6 +18,8 @@ namespace Battle.QSimulation.Player
     public static unsafe class BattlePlayerShieldManager
     {
         /// <summary>
+        /// Initializes this classes BattleDebugLogger instance.<br/>
+        /// This method is exclusively for debug logging purposes.
         /// </summary>
         public static void Init()
         {
@@ -25,9 +27,14 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
+        /// Creates all shield entities for specified player character, initializing data, hitboxes and view components.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerSlot">Slot of the specified player.</param>
+        /// <param name="playerCharacterNumber">The character number of the specified character.</param>
+        /// <param name="playerCharacterId">The ID of the specified character.</param>
+        /// <param name="playerCharacterEntity">EntityRef to the speficied character's entity.</param>
         public static int CreateShields(Frame f, BattlePlayerSlot playerSlot, int playerCharacterNumber, int playerCharacterId, EntityRef playerCharacterEntity)
         {
             // get entity prototypes
@@ -145,10 +152,20 @@ namespace Battle.QSimulation.Player
             return shieldEntityIDs.Length;
         }
 
+        /// <summary>
+        /// Retrieves a shield entity based on given <paramref name="shieldNumber"/> for specified player's specified character.
+        /// </summary>
+        /// 
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerSlot">Slot of the specified player.</param>
+        /// <param name="characterNumber">The character number of the specified character.</param>
+        /// <param name="shieldNumber">The shield number of the shield to be retrieved.</param>
+        /// 
+        /// <returns>EntityRef of the retrieved shield entity.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static EntityRef GetShieldEntity(Frame f, BattlePlayerSlot playerSlot, int characterNumber, int shieldNumber)
         {
-            if (!IsValidShieldNumber(f, playerSlot, shieldNumber, characterNumber)) return EntityRef.None;
+            if (!IsValidShieldNumber(f, playerSlot, characterNumber, shieldNumber)) return EntityRef.None;
 
             int playerIndex = BattlePlayerManager.PlayerHandle.Low_GetPlayerIndex(playerSlot);
             int shieldIndex = GetShieldIndex(playerIndex, characterNumber, shieldNumber);
@@ -156,10 +173,18 @@ namespace Battle.QSimulation.Player
             return BattleEntityManager.Get(f, GetPlayerShieldManagerData(f)->PlayerShieldEntityIDs[shieldIndex]);
         }
 
+        /// <summary>
+        /// Despawns the given shield entity based on given <paramref name="shieldNumber"/> for specified player's specified character.
+        /// </summary>
+        /// 
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerSlot">Slot of the specified player.</param>
+        /// <param name="characterNumber">The character number of the specified character.</param>
+        /// <param name="shieldNumber">The shield number of the shield to be despawned</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DespawnShield(Frame f, BattlePlayerSlot playerSlot, int characterNumber, int shieldNumber)
         {
-            if (!IsValidShieldNumber(f, playerSlot, shieldNumber, characterNumber)) return;
+            if (!IsValidShieldNumber(f, playerSlot, characterNumber, shieldNumber)) return;
 
             int playerIndex = BattlePlayerManager.PlayerHandle.Low_GetPlayerIndex(playerSlot);
             int shieldIndex = GetShieldIndex(playerIndex, characterNumber, shieldNumber);
@@ -167,8 +192,18 @@ namespace Battle.QSimulation.Player
             BattleEntityManager.Return(f, GetPlayerShieldManagerData(f)->PlayerShieldEntityIDs[shieldIndex]);
         }
 
+        /// <summary>
+        /// Verifies that the given <paramref name="shieldNumber"/> is valid for specified player's specified character.
+        /// </summary>
+        /// 
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerSlot">Slot of the specified player.</param>
+        /// <param name="characterNumber">The character number of the specified character.</param>
+        /// <param name="shieldNumber">The shield number to be verified.</param>
+        /// 
+        /// <returns>True if the shield number is valid, false if it isn't.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsValidShieldNumber(Frame f, BattlePlayerSlot playerSlot, int shieldNumber, int characterNumber)
+        public static bool IsValidShieldNumber(Frame f, BattlePlayerSlot playerSlot, int characterNumber, int shieldNumber)
         {
             if (!BattlePlayerManager.PlayerHandle.IsValidCharacterNumber(characterNumber)) return false;
 
@@ -183,8 +218,17 @@ namespace Battle.QSimulation.Player
             return true;
         }
 
+        /// <summary>This classes BattleDebugLogger instance.</summary>
         private static BattleDebugLogger s_debugLogger;
 
+        /// <summary>
+        /// Sets the shield entity IDs for specified player's specified character in BattlePlayerShieldManagerDataQSingleton.
+        /// </summary>
+        /// 
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerSlot">Slot of the specified player.</param>
+        /// <param name="characterNumber">The character number of the specified character.</param>
+        /// <param name="shieldEntityIDs">Array of shield entity IDs to be set.</param>
         private static void SetShieldEntityIDs(Frame f, BattlePlayerSlot playerSlot, int characterNumber, BattleEntityID[] shieldEntityIDs)
         {
             if (shieldEntityIDs.Length > Constants.BATTLE_PLAYER_SHIELD_COUNT)
@@ -210,12 +254,29 @@ namespace Battle.QSimulation.Player
             }
         }
 
+        /// <summary>
+        /// Retrieves the index in BattlePlayerShieldManagerDataQSingleton of a specified shield for a specified player character.
+        /// </summary>
+        /// 
+        /// <param name="playerIndex">Index of the specified player.</param>
+        /// <param name="characterNumber">The character number of the specified character.</param>
+        /// <param name="shieldNumber">The shield number of the specified shield.</param>
+        /// 
+        /// <returns>The index in BattlePlayerShieldManagerDataQSingleton for the specified shield.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetShieldIndex(int playerIndex, int characterNumber, int shieldNumber)
         {
             return GetShieldOffset(playerIndex, characterNumber) + shieldNumber;
         }
 
+        /// <summary>
+        /// Helper method for calculating the starting index offset in BattlePlayerShieldManagerDataQSingleton for a specified player character's shields.
+        /// </summary>
+        /// 
+        /// <param name="playerIndex">Index of the specified player.</param>
+        /// <param name="characterNumber">The character number of the specified character.</param>
+        /// 
+        /// <returns>The calculated starting index offset.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetShieldOffset(int playerIndex, int characterNumber)
         {
@@ -223,6 +284,13 @@ namespace Battle.QSimulation.Player
                    + characterNumber * Constants.BATTLE_PLAYER_SHIELD_COUNT;
         }
 
+        /// <summary>
+        /// Private helper method for getting the BattlePlayerShieldManagerDataQSingleton from the %Quantum %Frame.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        ///
+        /// <returns>Pointer reference to the PlayerShieldManagerData singleton.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static BattlePlayerShieldManagerDataQSingleton* GetPlayerShieldManagerData(Frame f)
         {
