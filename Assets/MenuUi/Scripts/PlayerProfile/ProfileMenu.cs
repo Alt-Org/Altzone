@@ -165,12 +165,14 @@ public class ProfileMenu : AltMonoBehaviour
         {
             AddAnswerOptions();
         }
+        _addFriendButton.onClick.AddListener(SendFriendRequest);
     }
     private void OnDisable()
     {
         _characterOptionsPopup.SetActive(false);
         _closePopupAreaButton.SetActive(false);
         ServerManager.OnLogInStatusChanged -= SetPlayerProfileValues;
+        _addFriendButton.onClick.RemoveListener(SendFriendRequest);
     }
 
     private void Reset()
@@ -419,6 +421,11 @@ public class ProfileMenu : AltMonoBehaviour
                 } 
             }
         }
+    }
+
+    private void SendFriendRequest()
+    {
+        StartCoroutine(ServerManager.Instance.SendFriendRequest(_playerData.Id, null));
     }
 
     private void SaveMinutes()
