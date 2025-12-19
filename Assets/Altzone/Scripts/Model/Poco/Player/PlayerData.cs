@@ -13,6 +13,7 @@ using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Newtonsoft.Json;
+using Assets.Altzone.Scripts.Model.Poco.Game;
 
 namespace Altzone.Scripts.Model.Poco.Player
 {
@@ -70,9 +71,9 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
 
-        public List<ServerFriendPlayer> friendPlayers = new List<ServerFriendPlayer>();
+        public List<FriendPlayer> friendPlayers = new List<FriendPlayer>();
 
-        public List<ServerFriendRequest> friendRequests = new List<ServerFriendRequest>();
+        public List<FriendRequest> friendRequests = new List<FriendRequest>();
 
         public ServerGameStatistics stats = null;
 

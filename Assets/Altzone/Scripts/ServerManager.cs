@@ -25,6 +25,7 @@ using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Store;
 using Altzone.Scripts.Chat;
 using Altzone.Scripts.Audio;
+using Assets.Altzone.Scripts.Model.Poco.Game;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -435,9 +436,20 @@ public class ServerManager : MonoBehaviour
                 playerData.BuildCharacterLists(characters);
             }
             playerData.UpdatePlayerData(player);
-
-            playerData.friendPlayers = friends;
-            playerData.friendRequests = friendRequests;
+            List<FriendPlayer> friendList = new();
+            if (friends != null)
+                foreach (var friend in friends)
+                {
+                    friendList.Add(new(friend));
+                }
+            List<FriendRequest> friendRequestList = new();
+            if(friendRequests != null)
+                foreach (var friendRequest in friendRequests)
+                {
+                    friendRequestList.Add(new(friendRequest));
+                }
+            playerData.friendPlayers = new(friendList);
+            playerData.friendRequests = new(friendRequestList);
         }
         PlayerPrefs.SetString("profileId", player.profile_id);
 
