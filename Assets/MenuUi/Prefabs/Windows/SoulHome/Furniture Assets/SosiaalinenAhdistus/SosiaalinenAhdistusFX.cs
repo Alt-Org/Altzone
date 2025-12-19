@@ -2,38 +2,62 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class SosiaalinenAhdistusFX : MonoBehaviour
-
 {
-    public Sprite sofaSprite; // image
-    // public float fadeSpeed = 0.1f; // fading speed
 
-    [Range(0.0f, 1.0f)]
-    public float alphaChange; // alpha change
+    [SerializeField] private float _alphaTime = 0.75f;
+
+    private SpriteRenderer[] _spriteRenderers;
+    private Material[] _materials;
+
+    private int _alphaAmount = Shader.PropertyToID("_AlphaAmount");
 
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        sofaSprite = GetComponent<SpriteRenderer> ().sprite; // points to the sprite of the renderer
-        
+        _spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+
+        _materials = new Material[_spriteRenderers.Length];
+        for (int i = 0; i < _spriteRenderers.Length; i++)
+        {
+            _materials[i] = _spriteRenderers[i].material;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private IEnumerator Vanish()
     {
+        float elapsedTime = 0f;
+        while(elapsedTime < _alphaTime)
+        {
+            elapsedTime += Time.deltaTime;
+            float lerpedAlpha = Mathf.Lerp(0f, 1f, (elapsedTime / _alphaTime));
 
-        // SetAlpha(fadeSpeed ); // setting the alpha according to the speed
+            for (int i = 0; i < _materials.Length; i++)
+            {
+                _materials[i].SetFloat(_alphaAmount, lerpedAlpha);
+            
+            }
+
+            yield return null;
+        }
+    }
+
+    private IEnumerator Appear()
+    {
+        float elapsedTime = 0f;
+        while(elapsedTime < _alphaTime)
+        {
+            elapsedTime += Time.deltaTime;
+            float lerpedAlpha = Mathf.Lerp(1f, 0f, (elapsedTime / _alphaTime));
+
+            for (int i = 0; i < _materials.Length; i++)
+            {
+                _materials[i].SetFloat(_alphaAmount, lerpedAlpha);
+            }
+
+            yield return null;
+        }
+    }
     
-    }
-
-    void SetAlpha(float alpha) // 
-    {
-
-    
-
-    }
-  
-
-
 }

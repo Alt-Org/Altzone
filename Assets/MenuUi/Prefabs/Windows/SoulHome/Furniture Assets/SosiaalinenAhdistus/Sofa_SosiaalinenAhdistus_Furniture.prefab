@@ -1,12 +1,12 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &1075554973274081708
+--- !u!1001 &4832257487142472853
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1337480067632720201}
+    m_TransformParent: {fileID: 3746260805964702950}
     m_Modifications:
     - target: {fileID: -4477838665465569415, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
@@ -36,12 +36,12 @@ PrefabInstance:
     - target: {fileID: -4477838665465569415, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
       propertyPath: m_SpriteTilingProperty.newSize.x
-      value: 6.9999995
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: -4477838665465569415, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
       propertyPath: m_SpriteTilingProperty.newSize.y
-      value: 5.0039062
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: -4477838665465569415, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
@@ -56,13 +56,13 @@ PrefabInstance:
     - target: {fileID: -724820267442525664, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
       propertyPath: _name
-      value: Sofa_SosiaalinenAhdistus_Furniture
+      value: Sofa_SosiaalinenAhdistus_Furrniture_SosiaalinenAhdistus
       objectReference: {fileID: 0}
     - target: {fileID: -724820267442525664, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
       propertyPath: _trayFurnitureObject
       value: 
-      objectReference: {fileID: 654435156322880275, guid: 8a0fc1ded7aa6f64fa25aa0643d3cf7e,
+      objectReference: {fileID: 9063021178738755379, guid: 4c9af91238d37aa41a21d45974af02cc,
         type: 3}
     - target: {fileID: -724820267442525664, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
@@ -133,17 +133,17 @@ PrefabInstance:
     - target: {fileID: 7560384329901659850, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
       propertyPath: m_Name
-      value: Sofa_SosiaalinenAhdistus_People_Furniture
+      value: Sofa_SosiaalinenAhdistus_Furrniture_SosiaalinenAhdistus_Furniture
       objectReference: {fileID: 0}
     - target: {fileID: 8424176910884188875, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
       propertyPath: m_Size.x
-      value: 6.9999995
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8424176910884188875, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
       propertyPath: m_Size.y
-      value: 5.0039062
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8424176910884188875, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
@@ -161,6 +161,11 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8424176910884188875, guid: 38ff1b40ed32bfe498bf97cd319e2494,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 383bc057f2afeb64dbaea067bcd1ba0e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -168,35 +173,34 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7560384329901659850, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8477161824410300860}
+      addedObject: {fileID: 6085906720842882386}
   m_SourcePrefab: {fileID: 100100000, guid: 38ff1b40ed32bfe498bf97cd319e2494, type: 3}
---- !u!1 &7351777784141700966 stripped
+--- !u!4 &2786503801884581620 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7323986473366213217, guid: 38ff1b40ed32bfe498bf97cd319e2494,
+    type: 3}
+  m_PrefabInstance: {fileID: 4832257487142472853}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3162725306321508959 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7560384329901659850, guid: 38ff1b40ed32bfe498bf97cd319e2494,
     type: 3}
-  m_PrefabInstance: {fileID: 1075554973274081708}
+  m_PrefabInstance: {fileID: 4832257487142472853}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8477161824410300860
+--- !u!114 &6085906720842882386
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7351777784141700966}
+  m_GameObject: {fileID: 3162725306321508959}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5259682344238af4d98f355ce630bad3, type: 3}
+  m_Script: {fileID: 11500000, guid: 21843918cc905b64395b5ce45f971efd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sofaSprite: {fileID: 21300000, guid: 6996659d967199540890bac5248144c0, type: 3}
-  alphaChange: 0.005
---- !u!4 &7730751364009712589 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7323986473366213217, guid: 38ff1b40ed32bfe498bf97cd319e2494,
-    type: 3}
-  m_PrefabInstance: {fileID: 1075554973274081708}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &8587143952865147688
+  _alphaTime: 0.75
+--- !u!1001 &6222112928569292423
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -232,12 +236,12 @@ PrefabInstance:
     - target: {fileID: -4477838665465569415, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
       propertyPath: m_SpriteTilingProperty.newSize.x
-      value: 6.9999995
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: -4477838665465569415, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
       propertyPath: m_SpriteTilingProperty.newSize.y
-      value: 5.0039062
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: -4477838665465569415, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
@@ -258,7 +262,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _trayFurnitureObject
       value: 
-      objectReference: {fileID: 654435156322880275, guid: 8a0fc1ded7aa6f64fa25aa0643d3cf7e,
+      objectReference: {fileID: 9063021178738755379, guid: 4c9af91238d37aa41a21d45974af02cc,
         type: 3}
     - target: {fileID: -724820267442525664, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
@@ -324,12 +328,12 @@ PrefabInstance:
     - target: {fileID: 8424176910884188875, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
       propertyPath: m_Size.x
-      value: 6.9999995
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8424176910884188875, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
       propertyPath: m_Size.y
-      value: 5.0039062
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8424176910884188875, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
@@ -347,18 +351,23 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8424176910884188875, guid: 38ff1b40ed32bfe498bf97cd319e2494,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: cd8eaf38c3a7d4345b5628c27c7fbdfc, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 7323986473366213217, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7730751364009712589}
+      addedObject: {fileID: 2786503801884581620}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 38ff1b40ed32bfe498bf97cd319e2494, type: 3}
---- !u!4 &1337480067632720201 stripped
+--- !u!4 &3746260805964702950 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7323986473366213217, guid: 38ff1b40ed32bfe498bf97cd319e2494,
     type: 3}
-  m_PrefabInstance: {fileID: 8587143952865147688}
+  m_PrefabInstance: {fileID: 6222112928569292423}
   m_PrefabAsset: {fileID: 0}
