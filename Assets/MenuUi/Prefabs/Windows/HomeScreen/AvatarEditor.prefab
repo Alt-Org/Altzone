@@ -862,7 +862,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Mist\xE4 minuuteni rakentuu?"
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
   m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
@@ -890,8 +890,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 46
+  m_fontSizeBase: 46
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1173,6 +1173,7 @@ MonoBehaviour:
   _saveButton: {fileID: 514047907050185031}
   _revertButton: {fileID: 595827395000033889}
   _defaultButton: {fileID: 6265736950872179190}
+  _textHandler: {fileID: 3300804670043043137}
 --- !u!114 &8112127728846556094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2222,6 +2223,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2386436734861273214}
+  - component: {fileID: 3300804670043043137}
   m_Layer: 0
   m_Name: SpeechBubble
   m_TagString: Untagged
@@ -2250,6 +2252,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3300804670043043137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6174744798541516119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23a44b7cf612d014fb9aaf91a009ad41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _text: {fileID: 2840973884410452234}
+  _phraseList:
+  - Kuka olen?
+  - "Mist\xE4 minuuteni rakentuu?"
+  - "Mit\xE4 minun tulisi olla?"
 --- !u!1 &6218768595699268609
 GameObject:
   m_ObjectHideFlags: 0

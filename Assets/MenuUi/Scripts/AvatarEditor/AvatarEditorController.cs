@@ -24,6 +24,7 @@ namespace MenuUi.scripts.AvatarEditor
         [SerializeField] private Button _saveButton;
         [SerializeField] private Button _revertButton;
         [SerializeField] private Button _defaultButton;
+        [SerializeField] private TextHandler _textHandler;
 
         private PlayerData _currentPlayerData;
         private PlayerAvatar _playerAvatar;
@@ -50,6 +51,7 @@ namespace MenuUi.scripts.AvatarEditor
         {
             _characterLoader.RefreshPlayerCurrentCharacter();
             StartCoroutine(LoadAvatarData());
+            _textHandler.SetRandomSpeechBubbleText();
         }
 
         private IEnumerator LoadAvatarData()
