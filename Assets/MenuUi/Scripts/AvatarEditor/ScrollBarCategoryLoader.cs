@@ -37,6 +37,8 @@ namespace MenuUi.Scripts.AvatarEditor
         public float cellHeight => _cellHeight;
         public float spacing => _actualSpacing;
         public int uniqueCellAmount => _uniqueCellAmount;
+        private string _currentlySelectedCategory = "10";
+        public string CurrentlySelectedCategory => _currentlySelectedCategory;
 
         // Start is called before the first frame update
         void Start()
@@ -116,7 +118,12 @@ namespace MenuUi.Scripts.AvatarEditor
             GameObject gridCell = Instantiate(_avatarPartCategoryGridCellPrefab, _categoryGridContent);
             GridCellHandler handler = gridCell.GetComponent<GridCellHandler>();
 
-            handler.SetValues(CellImage, _backgroundColor, () => buttonFunction.Invoke(FeatureCategoryId), false);
+            handler.SetValues(CellImage, _backgroundColor, () =>
+            {
+                buttonFunction.Invoke(FeatureCategoryId);
+                _currentlySelectedCategory = FeatureCategoryId;
+            },
+                false);
         }
 
         private void DestroyCategoryCells()

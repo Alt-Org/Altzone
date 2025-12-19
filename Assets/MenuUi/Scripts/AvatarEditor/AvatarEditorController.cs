@@ -40,8 +40,18 @@ namespace MenuUi.scripts.AvatarEditor
             _colorLoader.gameObject.SetActive(false);
 
             _saveButton.onClick.AddListener(() => StartCoroutine(SaveAvatarData()));
-            _defaultButton.onClick.AddListener(() => SetDefaultAvatar());
-            _revertButton.onClick.AddListener(() => RevertAvatarChanges());   
+
+            _defaultButton.onClick.AddListener(() =>
+            {
+                SetDefaultAvatar();
+                _featureLoader.RefreshFeatureListItems(_categoryLoader.CurrentlySelectedCategory);
+            });
+
+            _revertButton.onClick.AddListener(() =>
+            {
+                RevertAvatarChanges();
+                _featureLoader.RefreshFeatureListItems(_categoryLoader.CurrentlySelectedCategory);
+            });
 
             StartCoroutine(ClickMiddleCategoryCellOnNextFrame());
 
