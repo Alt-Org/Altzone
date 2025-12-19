@@ -40,12 +40,6 @@ namespace MenuUi.Scripts.AvatarEditor
         private string _currentlySelectedCategory = "10";
         public string CurrentlySelectedCategory => _currentlySelectedCategory;
 
-        // Start is called before the first frame update
-        void Start()
-        {
-    
-        }
-
         public void UpdateCellSize()
         {
             _viewPortHeight = _categoryGrid.rect.height;
@@ -67,7 +61,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 }
                 else
                 {
-                    Debug.LogError("is null");
+                    Debug.LogError("layoutelement is null");
                 }
             }
 
