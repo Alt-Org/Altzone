@@ -220,9 +220,24 @@ namespace Battle.View.Game
 
             _debugLogger = BattleDebugLogger.Create<BattleGameViewController>();
 
+            // ViewController Asserts
+            _debugLogger.DevAssert(_stoneCharacterViewController != null, nameof(_stoneCharacterViewController) + " is null!", BattleDebugLogger.LogTarget.UnityConsole);
+            _debugLogger.DevAssert(_lightrayEffectViewController != null, nameof(_lightrayEffectViewController) + " is null!", BattleDebugLogger.LogTarget.UnityConsole);
+            _debugLogger.DevAssert(_gridViewController           != null, nameof(_gridViewController)           + " is null!", BattleDebugLogger.LogTarget.UnityConsole);
+
+            // UI Asserts
+            _debugLogger.DevAssert(_uiController.DiamondsHandler     != null, nameof(_uiController.DiamondsHandler)     + " is null!", BattleDebugLogger.LogTarget.UnityConsole);
+            _debugLogger.DevAssert(_uiController.GiveUpButtonHandler != null, nameof(_uiController.GiveUpButtonHandler) + " is null!", BattleDebugLogger.LogTarget.UnityConsole);
+            _debugLogger.DevAssert(_uiController.PlayerInfoHandler   != null, nameof(_uiController.PlayerInfoHandler)   + " is null!", BattleDebugLogger.LogTarget.UnityConsole);
+            _debugLogger.DevAssert(_uiController.JoystickHandler     != null, nameof(_uiController.JoystickHandler)     + " is null!", BattleDebugLogger.LogTarget.UnityConsole);
+            _debugLogger.DevAssert(_uiController.TimerHandler        != null, nameof(_uiController.TimerHandler)        + " is null!", BattleDebugLogger.LogTarget.UnityConsole);
+            _debugLogger.DevAssert(_uiController.DebugOverlayHandler != null, nameof(_uiController.DebugOverlayHandler) + " is null!", BattleDebugLogger.LogTarget.UnityConsole);
+            _debugLogger.DevAssert(_uiController.DebugConsoleHandler != null, nameof(_uiController.DebugConsoleHandler) + " is null!", BattleDebugLogger.LogTarget.UnityConsole);
+
             // Showing announcement handler and setting view pre-activate loading text
             _uiController.AnnouncementHandler.SetShow(true);
             _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.Loading);
+
 #if DEBUG_CONSOLE_ENABLED
             _uiController.DebugConsoleHandler.SetShow(true);
 #endif
@@ -334,79 +349,60 @@ namespace Battle.View.Game
             BattleDebugOverlayLink.SetLocalPlayerSlot(LocalPlayerSlot);
 
             // Initializing BattleGridViewController
-            if (_gridViewController != null)
-            {
-                _gridViewController.SetGrid();
-            }
+            _gridViewController.SetGrid();
 
             //{ Initializing UI Handlers
+            _uiController.DiamondsHandler.SetDiamondsText(0);
 
-            if (_uiController.DiamondsHandler != null)
+            BattleUiMovableElementData dataDiamonds = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.Diamonds);
+            if (dataDiamonds != null) _uiController.DiamondsHandler.MovableUiElement.SetData(dataDiamonds);
+
+            BattleUiMovableElementData dataTimer = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.Timer);
+            if (dataTimer != null) _uiController.TimerHandler.MovableUiElement.SetData(dataTimer);
+
+            if (SettingsCarrier.Instance.BattleMovementInput == BattleMovementInputType.Joystick)
             {
-                _uiController.DiamondsHandler.SetDiamondsText(0);
-
-                BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.Diamonds);
-                if (data != null) _uiController.DiamondsHandler.MovableUiElement.SetData(data);
+                BattleUiMovableElementData dataMoveJoystick = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.MoveJoystick);
+                _uiController.JoystickHandler.SetInfo(BattleUiElementType.MoveJoystick, dataMoveJoystick);
             }
 
-            if (_uiController.TimerHandler != null)
+            if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick)
             {
-                BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.Timer);
-                if (data != null) _uiController.TimerHandler.MovableUiElement.SetData(data);
+                BattleUiMovableElementData dataRotateJoystick = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.RotateJoystick);
+                _uiController.JoystickHandler.SetInfo(BattleUiElementType.RotateJoystick, dataRotateJoystick);
             }
 
-            if (_uiController.JoystickHandler != null)
+            _uiController.JoystickHandler.SetLocked(true);
+
+            BattleUiMovableElementData dataGiveUpButton = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.GiveUpButton);
+            if (dataGiveUpButton != null) _uiController.GiveUpButtonHandler.MovableUiElement.SetData(dataGiveUpButton);
+
+            RuntimePlayer localPlayerData = f.GetPlayerData(playerRef);
+            RuntimePlayer localTeammateData = f.GetPlayerData(BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, LocalPlayerSlot).PlayerRef);
+
+            // Setting local player info
+            _uiController.PlayerInfoHandler.SetInfo(
+                PlayerType.LocalPlayer,
+                "Minä",
+                new int[3] { localPlayerData.Characters[0].Id, localPlayerData.Characters[1].Id, localPlayerData.Characters[2].Id },
+                new int[3] { localPlayerData.Characters[0].Class, localPlayerData.Characters[1].Class, localPlayerData.Characters[2].Class },
+                new float[3] { (float)localPlayerData.Characters[0].Stats.Defence, (float)localPlayerData.Characters[1].Stats.Defence, (float)localPlayerData.Characters[2].Stats.Defence },
+                SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.PlayerInfo)
+            );
+            _uiController.PlayerInfoHandler.SetShowPlayer(true);
+
+            // Setting local teammate info
+            if (localTeammateData != null)
             {
-                if (SettingsCarrier.Instance.BattleMovementInput == BattleMovementInputType.Joystick)
-                {
-                    BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.MoveJoystick);
-                    _uiController.JoystickHandler.SetInfo(BattleUiElementType.MoveJoystick, data);
-                }
-
-                if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick)
-                {
-                    BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.RotateJoystick);
-                    _uiController.JoystickHandler.SetInfo(BattleUiElementType.RotateJoystick, data);
-                }
-
-                _uiController.JoystickHandler.SetLocked(true);
-            }
-
-            if (_uiController.GiveUpButtonHandler != null)
-            {
-                BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.GiveUpButton);
-                if (data != null) _uiController.GiveUpButtonHandler.MovableUiElement.SetData(data);
-            }
-
-            if (_uiController.PlayerInfoHandler != null)
-            {
-                RuntimePlayer localPlayerData = f.GetPlayerData(playerRef);
-                RuntimePlayer localTeammateData = f.GetPlayerData(BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, LocalPlayerSlot).PlayerRef);
-
-                // Setting local player info
                 _uiController.PlayerInfoHandler.SetInfo(
-                    PlayerType.LocalPlayer,
-                    "Minä",
-                    new int[3] { localPlayerData.Characters[0].Id, localPlayerData.Characters[1].Id, localPlayerData.Characters[2].Id },
-                    new int[3] { localPlayerData.Characters[0].Class, localPlayerData.Characters[1].Class, localPlayerData.Characters[2].Class },
-                    new float[3] { (float)localPlayerData.Characters[0].Stats.Defence, (float)localPlayerData.Characters[1].Stats.Defence, (float)localPlayerData.Characters[2].Stats.Defence },
-                    SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.PlayerInfo)
+                    PlayerType.LocalTeammate,
+                    "Tiimiläinen",
+                    new int[3] { localTeammateData.Characters[0].Id, localTeammateData.Characters[1].Id, localTeammateData.Characters[2].Id },
+                    new int[3] { localTeammateData.Characters[0].Class, localTeammateData.Characters[1].Class, localTeammateData.Characters[2].Class },
+                    new float[3] { (float)localTeammateData.Characters[0].Stats.Defence, (float)localTeammateData.Characters[1].Stats.Defence, (float)localTeammateData.Characters[2].Stats.Defence },
+                    SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo)
                 );
-                _uiController.PlayerInfoHandler.SetShowPlayer(true);
-
-                // Setting local teammate info
-                if (localTeammateData != null)
-                {
-                    _uiController.PlayerInfoHandler.SetInfo(
-                        PlayerType.LocalTeammate,
-                        "Tiimiläinen",
-                        new int[3] { localTeammateData.Characters[0].Id, localTeammateData.Characters[1].Id, localTeammateData.Characters[2].Id },
-                        new int[3] { localTeammateData.Characters[0].Class, localTeammateData.Characters[1].Class, localTeammateData.Characters[2].Class },
-                        new float[3] { (float)localTeammateData.Characters[0].Stats.Defence, (float)localTeammateData.Characters[1].Stats.Defence, (float)localTeammateData.Characters[2].Stats.Defence },
-                        SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo)
-                    );
-                    _uiController.PlayerInfoHandler.SetShowTeammate(true);
-                }
+                _uiController.PlayerInfoHandler.SetShowTeammate(true);
             }
         }
 
@@ -453,12 +449,14 @@ namespace Battle.View.Game
             _uiController.LoadScreenHandler.Hide();
 
             // Show UI elements
-            if (_uiController.DiamondsHandler != null) _uiController.DiamondsHandler.SetShow(true);
-            if (_uiController.GiveUpButtonHandler != null) _uiController.GiveUpButtonHandler.SetShow(true);
+            _uiController.DiamondsHandler.SetShow(true);
+            _uiController.GiveUpButtonHandler.SetShow(true);
+            _uiController.PlayerInfoHandler.SetShow(true);
+
+            // Show optional UI elements
             if (SettingsCarrier.Instance.BattleMovementInput == BattleMovementInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.MoveJoystick);
             if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.RotateJoystick);
             if (SettingsCarrier.Instance.BattleShowDebugStatsOverlay) _uiController.DebugOverlayHandler.SetShow(true);
-            if (_uiController.PlayerInfoHandler != null) _uiController.PlayerInfoHandler.SetShow(true);
 
 #if DEBUG_OVERLAY_ENABLED_OVERRIDE
             _uiController.DebugOverlayHandler.SetShow(true);
@@ -553,15 +551,8 @@ namespace Battle.View.Game
         /// <param name="e">The event data.</param>
         private void QEventOnLastRowWallDestroyed(EventBattleLastRowWallDestroyed e)
         {
-            if (_stoneCharacterViewController != null)
-            {
-                _stoneCharacterViewController.DestroyCharacterPart(e.WallNumber, e.Team);
-            }
-
-            if (_lightrayEffectViewController != null)
-            {
-                _lightrayEffectViewController.SpawnLightray(e.WallNumber, e.LightrayColor);
-            }
+            _stoneCharacterViewController.DestroyCharacterPart(e.WallNumber, e.Team);
+            _lightrayEffectViewController.SpawnLightray(e.WallNumber, e.LightrayColor);
         }
 
         /// <summary>
