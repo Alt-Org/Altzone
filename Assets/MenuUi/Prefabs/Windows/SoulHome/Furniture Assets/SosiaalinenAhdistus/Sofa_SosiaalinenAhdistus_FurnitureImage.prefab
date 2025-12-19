@@ -8,6 +8,12 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4418724647606007923, guid: ebe216453bed92b4e8c477f4ff0cc3c3,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 272398772, guid: 77f84878f3a097a48afb07242223ab18,
+        type: 3}
     - target: {fileID: 5786908130519818191, guid: ebe216453bed92b4e8c477f4ff0cc3c3,
         type: 3}
       propertyPath: m_Pivot.x
@@ -111,8 +117,14 @@ PrefabInstance:
     - target: {fileID: 6752174233831251881, guid: ebe216453bed92b4e8c477f4ff0cc3c3,
         type: 3}
       propertyPath: m_Name
-      value: Sofa_SosiaalinenAhdistus_Furrniture_SosiaalinenAhdistus_FurnitureImage
+      value: Sofa_SosiaalinenAhdistus_FurnitureImage
       objectReference: {fileID: 0}
+    - target: {fileID: 9152013033603904840, guid: ebe216453bed92b4e8c477f4ff0cc3c3,
+        type: 3}
+      propertyPath: _furnitureObject
+      value: 
+      objectReference: {fileID: 4517818253078896717, guid: 6edfe24a4aa8e4346b98f311ab24a6e4,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -602,8 +602,8 @@ namespace MenuUI.Scripts.SoulHome
             furnitureObject.GetComponent<TrayFurniture>().Furniture = trayFurniture.GetComponent<FurnitureHandling>().Furniture;
             _selectedFurnitureTray = furnitureObject;
             //_tempSelectedFurnitureTray = _selectedFurnitureTray;
-            string name = furnitureObject.GetComponent<TrayFurniture>().Furniture.Name;
-            gameObject.GetComponent<FindSymbolicFurniture>().FurniturePressed(name);
+            //string name = furnitureObject.GetComponent<TrayFurniture>().Furniture.Name;
+            //gameObject.GetComponent<FindSymbolicFurniture>().FurniturePressed(name);
         }
 
         public void DeselectTrayFurniture()

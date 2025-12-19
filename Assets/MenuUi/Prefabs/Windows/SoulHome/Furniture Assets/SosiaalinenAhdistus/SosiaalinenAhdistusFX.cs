@@ -23,8 +23,19 @@ public class SosiaalinenAhdistusFX : MonoBehaviour
         {
             _materials[i] = _spriteRenderers[i].material;
         }
+        StartCoroutine(Cycle());
     }
 
+    private IEnumerator Cycle()
+    {
+        while (true)
+        {
+            yield return null;
+            yield return Vanish();
+            yield return new WaitForSeconds(1);
+            yield return Appear();
+        }
+    }
     private IEnumerator Vanish()
     {
         float elapsedTime = 0f;
