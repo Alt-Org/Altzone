@@ -11,7 +11,6 @@ namespace MenuUi.scripts.AvatarEditor
     {
         [SerializeField] private ScrollRect _categoryGridScrollRect;
         [SerializeField] private ScrollBarCategoryLoader _categoryLoader;
-        // Start is called before the first frame update
         public void OnEndDrag(PointerEventData eventData)
         {
             ClampToCenter();

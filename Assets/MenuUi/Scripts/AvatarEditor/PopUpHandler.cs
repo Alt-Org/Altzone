@@ -38,13 +38,16 @@ namespace MenuUi.scripts.AvatarEditor
             _characterCopyRect.anchorMin = new Vector2(0.15f, 0f);
             _characterCopyRect.anchorMax = new Vector2(0.6f, 0.85f);
 
-
             _popUp.SetActive(true);
         }
 
         public void HidePopUp()
         {
-            Destroy(_characterCopy);
+            if (_characterCopy != null)
+            {
+                Destroy(_characterCopy);
+            }
+
             _popUp.SetActive(false);
         }
     }

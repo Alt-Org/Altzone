@@ -12,7 +12,6 @@ namespace MenuUi.scripts.AvatarEditor
 {
     public class AvatarEditorController : AltMonoBehaviour
     {
-        //Planning to add this to the original AvatarEditorController, but find it easier to do in it's own script while making it
         [SerializeField] private ScrollBarCategoryLoader _categoryLoader;
         [SerializeField] private ScrollBarFeatureLoader _featureLoader;
         [SerializeField] private ColorGridLoader _colorLoader;
@@ -30,7 +29,6 @@ namespace MenuUi.scripts.AvatarEditor
         private PlayerData _currentPlayerData;
         private PlayerAvatar _playerAvatar;
 
-        // Start is called before the first frame update
         void Start()
         {
             _categoryLoader.SetCategoryCells((categoryId) => _featureLoader.RefreshFeatureListItems(categoryId));
@@ -40,7 +38,6 @@ namespace MenuUi.scripts.AvatarEditor
             _featureLoader.UpdateCellSize();
             _colorLoader.gameObject.SetActive(false);
 
-            //_saveButton.onClick.AddListener(() => StartCoroutine(SaveAvatarData()));
             _saveButton.onClick.AddListener(() => _popUpHandler.ShowPopUp());
 
             _popUpHandler.AddConfirmButtonListener(() =>
@@ -86,6 +83,41 @@ namespace MenuUi.scripts.AvatarEditor
             SetAllAvatarFeatures();
         }
 
+        private IEnumerator SaveAvatarData()
+        {
+            bool? timeout = null;
+            PlayerData playerData = null;
+            PlayerData savePlayerData = _currentPlayerData;
+
+            savePlayerData.AvatarData = new(_playerAvatar.Name,
+                null,
+                "FFFFFF",
+                new Vector2(1, 1));
+
+            var features = Enum.GetValues(typeof(FeatureSlot));
+            foreach (FeatureSlot feature in features)
+            {
+                AssignPartToPlayerData(savePlayerData.AvatarData, feature, _playerAvatar.GetPartId(feature));
+            }
+            StartCoroutine(SavePlayerData(savePlayerData, p => playerData = p));
+            yield return new WaitUntil(() => ((timeout != null) || (playerData != null)));
+
+            if (playerData == null)
+                yield break;
+
+            _currentPlayerData = playerData;
+
+            List<AvatarPiece> pieceIDs = Enum.GetValues(typeof(AvatarPiece)).Cast<AvatarPiece>().ToList();
+            foreach (AvatarPiece piece in pieceIDs)
+            {
+                _visualDataScriptableObject.SetAvatarPiece(piece, _featureSetter.GetCurrentlySelectedFeatureSprite(piece));
+            }
+
+            AvatarDesignLoader.Instance.InvokeOnAvatarDesignUpdate();
+
+            GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+        }
+
         // If this isn't done, function will be called too early and will not work
         private IEnumerator ClickMiddleCategoryCellOnNextFrame()
         {
@@ -121,41 +153,6 @@ namespace MenuUi.scripts.AvatarEditor
         private void RevertAvatarChanges()
         {
             SetAllAvatarFeatures();
-        }
-
-        private IEnumerator SaveAvatarData()
-        {
-            bool? timeout = null;
-            PlayerData playerData = null;
-            PlayerData savePlayerData = _currentPlayerData;
-
-            savePlayerData.AvatarData = new(_playerAvatar.Name,
-                null,
-                "FFFFFF",
-                new Vector2(1, 1));
-
-            var features = Enum.GetValues(typeof(FeatureSlot));
-            foreach (FeatureSlot feature in features)
-            {
-                AssignPartToPlayerData(savePlayerData.AvatarData, feature, _playerAvatar.GetPartId(feature));
-            }
-            StartCoroutine(SavePlayerData(savePlayerData, p => playerData = p));
-            yield return new WaitUntil(() => ((timeout != null) || (playerData != null)));
-
-            if (playerData == null)
-                yield break;
-
-            _currentPlayerData = playerData;
-
-            List<AvatarPiece> pieceIDs = Enum.GetValues(typeof(AvatarPiece)).Cast<AvatarPiece>().ToList();
-            foreach (AvatarPiece piece in pieceIDs)
-            {
-                _visualDataScriptableObject.SetAvatarPiece(piece, _featureSetter.GetCurrentlySelectedFeatureSprite(piece));
-            }
-
-            AvatarDesignLoader.Instance.InvokeOnAvatarDesignUpdate();
-
-            GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
 
         private void AssignPartToPlayerData(AvatarData playerAvatarData, FeatureSlot feature, string id)

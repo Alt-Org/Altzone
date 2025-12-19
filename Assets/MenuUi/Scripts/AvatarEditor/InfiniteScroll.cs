@@ -30,7 +30,6 @@ public class InfiniteScroll : MonoBehaviour, IDragHandler
 
         if (_categoryGridContent.anchoredPosition.y < _totalCellSize)
         {
-            //Canvas.ForceUpdateCanvases();
             _categoryGridContent.anchoredPosition = new Vector2(_categoryGridContent.anchoredPosition.x,
                 _categoryGridContent.anchoredPosition.y + _totalCellSize * _uniqueCellAmount - _spacing);
             _scrollRect.OnBeginDrag(eventData);
@@ -38,7 +37,6 @@ public class InfiniteScroll : MonoBehaviour, IDragHandler
 
         if (_categoryGridContent.anchoredPosition.y > _bottomLimit)
         {
-            //Canvas.ForceUpdateCanvases();
             _categoryGridContent.anchoredPosition = new Vector2(_categoryGridContent.anchoredPosition.x,
                 _categoryGridContent.anchoredPosition.y - _totalCellSize * _uniqueCellAmount + _spacing);
             _scrollRect.OnBeginDrag(eventData);

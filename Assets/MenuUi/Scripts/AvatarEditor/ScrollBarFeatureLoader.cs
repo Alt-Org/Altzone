@@ -31,24 +31,19 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Color _backgroundColor = new(0.5f, 0.5f, 0.5f, 0.7f);
 
         private List<AvatarPartInfo> _avatarPartInfo;
-        private List<string> _allAvatarCategoryIds;
         private Dictionary<string, int> _featureCategoryIdToFeatureSlotInt;
-        private bool _isSelectedFeature = false;
         private PlayerAvatar _playeravatar;
         private GridCellHandler _selectedCellHandler;
+        private bool _isSelectedFeature = false;
         private float _cellHeight;
         private float _actualVerticalSpacing;
         private float _actualHorizontalSpacing;
         private float _actualVerticalPadding;
         private float _viewPortHeight;
-        private float _contentWidth;
-        private int _rowAmount = 2;
+        private readonly int _rowAmount = 2;
 
-        // Start is called before the first frame update
         void Start()
         {
-            // This feels stupid, but the old code uses ints that don't seem related to the feature slot id:s in any way
-            // to set the features so I can't figure out a better way to do this for now.
             _featureCategoryIdToFeatureSlotInt = new Dictionary<string, int>
             {
                 { "10", 0 }, // Hair
@@ -120,7 +115,6 @@ namespace MenuUi.Scripts.AvatarEditor
             string featureCategoryid = GetFeatureCategoryFromFeatureId(avatarPart.Id);
             int featurePickerPartSlot = _featureCategoryIdToFeatureSlotInt[featureCategoryid];
 
-            // Need to find a way to make sprites look same size in grid
             handler.SetValues(cellImage: cellImage);
 
             AddListeners(handler, avatarPart, featurePickerPartSlot);
@@ -192,9 +186,9 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private string GetFeatureCategoryFromFeatureId(string featureId)
         {
-            if (featureId == null)
+            if (featureId.Length != 7)
             {
-                Debug.LogError("featureId is null");
+                Debug.LogError("featureId is invalid");
                 return "";
             }
             else
