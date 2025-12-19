@@ -25,6 +25,7 @@ namespace MenuUi.scripts.AvatarEditor
         [SerializeField] private Button _revertButton;
         [SerializeField] private Button _defaultButton;
         [SerializeField] private TextHandler _textHandler;
+        [SerializeField] private PopUpHandler _popUpHandler;
 
         private PlayerData _currentPlayerData;
         private PlayerAvatar _playerAvatar;
@@ -39,7 +40,13 @@ namespace MenuUi.scripts.AvatarEditor
             _featureLoader.UpdateCellSize();
             _colorLoader.gameObject.SetActive(false);
 
-            _saveButton.onClick.AddListener(() => StartCoroutine(SaveAvatarData()));
+            //_saveButton.onClick.AddListener(() => StartCoroutine(SaveAvatarData()));
+            _saveButton.onClick.AddListener(() => _popUpHandler.ShowPopUp());
+
+            _popUpHandler.AddConfirmButtonListener(() =>
+            {
+                StartCoroutine(SaveAvatarData());
+            });
 
             _defaultButton.onClick.AddListener(() =>
             {
