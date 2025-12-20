@@ -214,10 +214,13 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Public getter for SelectedCharacterEntityID.
+            /// Public getter for CharacterEntityGroupID.
             /// </summary>
-            public BattleEntityID SelectedCharacterEntityID
-            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterEntityID; }
+            public BattleEntityID CharacterEntityGroupID
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => _internalHandle.CharacterEntityGroupID;
+            }
 
             /// <summary>
             /// Public getter for SelectedCharacterNumber.
@@ -597,13 +600,17 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Gets player's SelectedCharacterEntityID.<br/>
-            /// The SelectedCharacterID is the entity ID of the character that is currently in play.
+            /// Gets/Sets player's CharacterEntityGroupID.
             /// </summary>
             ///
-            /// @clink{Exposed:PlayerHandle.SelectedCharacterEntityID} in public @cref{PlayerHandle}
-            public BattleEntityID SelectedCharacterEntityID
-            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->SelectedCharacterEntityIDs[Index]; }
+            /// Getter @clink{exposed:PlayerHandle.CharacterEntityGroupID} in public @cref{PlayerHandle}
+            public BattleEntityID CharacterEntityGroupID
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => _playerManagerData->AllCharacterEntityGroupIDs[Index];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                set => _playerManagerData->AllCharacterEntityGroupIDs[Index] = value;
+            }
 
             /// <summary>
             /// Gets player's SelectedCharacterNumber.
@@ -677,32 +684,6 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Gets player's Character entity ID based on <paramref name="characterNumber"/>.
-            /// </summary>
-            ///
-            /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number)
-            ///
-            /// <param name="characterNumber">CharacterNumber of the player's character you want to get.</param>
-            /// 
-            /// <returns>Entity ID of given Character.</returns>
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public BattleEntityID GetCharacterEntityID(int characterNumber) => _playerManagerData->AllCharacterIDs[GetCharacterIndex(characterNumber)];
-
-            /// <summary>
-            /// Saves player's Character entity IDs to BattlePlayerManagerDataQSingleton.
-            /// </summary>
-            ///
-            /// <param name="entityIDArray">The Character entity IDs as an array.</param>
-            public void SetCharacterEntityIDs(BattleEntityID[] entityIDArray)
-            {
-                int characterOffset = GetCharacterOffset();
-                for (int i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
-                {
-                    _playerManagerData->AllCharacterIDs[characterOffset + i] = entityIDArray[i];
-                }
-            }
-
-            /// <summary>
             /// Retrieves a player's Character's CharacterState based on <paramref name="characterNumber"/>.
             /// </summary>
             ///
@@ -726,30 +707,27 @@ namespace Battle.QSimulation.Player
             public void SetCharacterState(int characterNumber, BattlePlayerCharacterState state) => _playerManagerData->AllCharactersStates[GetCharacterIndex(characterNumber)] = state;
 
             /// <summary>
-            /// Sets player's SelectedCharacterID and updates SelectedCharacterNumber based on <paramref name="characterNumber"/>.<br/>
-            /// The SelectedCharacterID is the entity ID of the character that is currently in play.
+            /// Sets player's SelectedCharacterNumber based on <paramref name="characterNumber"/>.<br/>
             /// </summary>
             ///
             /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number)
             ///
             /// <param name="characterNumber">CharacterNumber of the player's character you want to set.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void SetSelectedCharacterID(int characterNumber)
+            public void SetSelectedCharacterNumber(int characterNumber)
             {
                 _playerManagerData->SelectedCharacterNumbers[Index] = characterNumber;
-                _playerManagerData->SelectedCharacterEntityIDs[Index] = _playerManagerData->AllCharacterIDs[GetCharacterIndex(characterNumber)];
             }
 
             /// <summary>
-            /// Unsets player's SelectedCharacterID and updates SelectedCharacterNumber.
+            /// Unsets player's SelectedCharacterNumber.
             /// </summary>
             ///
             /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number)
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void UnsetSelectedCharacterID()
+            public void UnsetSelectedCharacterNumber()
             {
                 _playerManagerData->SelectedCharacterNumbers[Index] = -1;
-                _playerManagerData->SelectedCharacterEntityIDs[Index] = (BattleEntityID)(-1);
             }
 
             #endregion Public Methods

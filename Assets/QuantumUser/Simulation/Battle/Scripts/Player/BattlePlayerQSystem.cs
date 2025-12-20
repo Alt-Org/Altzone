@@ -177,7 +177,7 @@ namespace Battle.QSimulation.Player
 
                 if (playerHandle.PlayState.IsInPlay())
                 {
-                    playerEntity = BattleEntityManager.Get(f, playerHandle.SelectedCharacterEntityID);
+                    playerEntity = BattleEntityManager.Get(f, playerHandle.CharacterEntityGroupID, playerHandle.SelectedCharacterNumber);
                     playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerEntity);
                     playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
                 }
