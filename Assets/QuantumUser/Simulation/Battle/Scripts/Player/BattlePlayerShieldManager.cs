@@ -55,7 +55,7 @@ namespace Battle.QSimulation.Player
                 playerShieldEntityPrototypes = BattleAltzoneLink.GetShieldPrototypes(0);
             }
 
-            BattleEntityID[] shieldEntityIDs = new BattleEntityID[playerShieldEntityPrototypes.Length];
+            EntityRef[] shieldEntities = new EntityRef[playerShieldEntityPrototypes.Length];
 
             // create entities
             for (int shieldEntityIndex = 0; shieldEntityIndex < playerShieldEntityPrototypes.Length; shieldEntityIndex++)
@@ -148,19 +148,33 @@ namespace Battle.QSimulation.Player
                 f.Remove<BattlePlayerShieldDataTemplateQComponent>(playerShieldEntity);
                 f.Add(playerShieldEntity, playerShieldData);
 
-                // register entity
-                shieldEntityIDs[shieldEntityIndex] = BattleEntityManager.Register(f, playerShieldEntity);
+                // add entity to array
+                shieldEntities[shieldEntityIndex] = playerShieldEntity;
 
                 // initialize view
                 f.Events.BattleShieldViewInit(playerShieldEntity, playerSlot, BattleGridManager.GridScaleFactor);
             } // create entities
 
-            SetShieldEntityIDs(f, playerSlot, playerCharacterNumber, shieldEntityIDs);
+            BattleEntityID shieldEntityGroupID = BattleEntityManager.Register(f, shieldEntities);
+
+            if (shieldEntities.Length > Constants.BATTLE_PLAYER_SHIELD_COUNT)
+            {
+                s_debugLogger.ErrorFormat(f, "({0}) Character number {1} has too many shield entities!\n" +
+                                          "Has: {2}\n" +
+                                          "Max allowed: {3}",
+                                          playerSlot,
+                                          playerCharacterNumber,
+                                          shieldEntities.Length,
+                                          Constants.BATTLE_PLAYER_SHIELD_COUNT
+                );
+            }
+
+            SetShieldEntityGroupID(f, playerSlot, playerCharacterNumber, shieldEntityGroupID);
 
             int playerCharacterIndex = BattlePlayerManager.PlayerHandle.Low_GetPlayerIndex(playerSlot) * Constants.BATTLE_PLAYER_CHARACTER_COUNT + playerCharacterNumber;
-            GetPlayerShieldManagerData(f)->PlayerShieldCounts[playerCharacterIndex] = shieldEntityIDs.Length;
+            GetPlayerShieldManagerData(f)->PlayerShieldCounts[playerCharacterIndex] = shieldEntities.Length;
 
-            return shieldEntityIDs.Length;
+            return shieldEntities.Length;
         }
 
         /// <summary>
@@ -178,10 +192,7 @@ namespace Battle.QSimulation.Player
         {
             if (!IsValidShieldNumber(f, playerSlot, characterNumber, shieldNumber)) return EntityRef.None;
 
-            int playerIndex = BattlePlayerManager.PlayerHandle.Low_GetPlayerIndex(playerSlot);
-            int shieldIndex = GetShieldIndex(playerIndex, characterNumber, shieldNumber);
-
-            return BattleEntityManager.Get(f, GetPlayerShieldManagerData(f)->PlayerShieldEntityIDs[shieldIndex]);
+            return BattleEntityManager.Get(f, GetPlayerShieldManagerData(f)->PlayerShieldEntityGroupIDs[GetShieldGroupIndex(playerSlot, characterNumber)], shieldNumber);
         }
 
         /// <summary>
@@ -197,10 +208,7 @@ namespace Battle.QSimulation.Player
         {
             if (!IsValidShieldNumber(f, playerSlot, characterNumber, shieldNumber)) return;
 
-            int playerIndex = BattlePlayerManager.PlayerHandle.Low_GetPlayerIndex(playerSlot);
-            int shieldIndex = GetShieldIndex(playerIndex, characterNumber, shieldNumber);
-
-            BattleEntityManager.Return(f, GetPlayerShieldManagerData(f)->PlayerShieldEntityIDs[shieldIndex]);
+            BattleEntityManager.Return(f, GetPlayerShieldManagerData(f)->PlayerShieldEntityGroupIDs[GetShieldGroupIndex(playerSlot, characterNumber)], shieldNumber);
         }
 
         /// <summary>
@@ -239,60 +247,28 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerSlot">Slot of the specified player.</param>
         /// <param name="characterNumber">The character number of the specified character.</param>
-        /// <param name="shieldEntityIDs">Array of shield entity IDs to be set.</param>
-        private static void SetShieldEntityIDs(Frame f, BattlePlayerSlot playerSlot, int characterNumber, BattleEntityID[] shieldEntityIDs)
+        /// <param name="shieldEntityGroupID">The entity group's ID to be set.</param>
+        private static void SetShieldEntityGroupID(Frame f, BattlePlayerSlot playerSlot, int characterNumber, BattleEntityID shieldEntityGroupID)
         {
-            if (shieldEntityIDs.Length > Constants.BATTLE_PLAYER_SHIELD_COUNT)
-            {
-                s_debugLogger.ErrorFormat(f, "({0}) Character number {1} has too many shield entities!\n" +
-                                          "Has: {2}\n" +
-                                          "Max allowed: {3}",
-                                          playerSlot,
-                                          characterNumber,
-                                          shieldEntityIDs.Length,
-                                          Constants.BATTLE_PLAYER_SHIELD_COUNT
-                );
-                return;
-            }
-
             BattlePlayerShieldManagerDataQSingleton* playerShieldManagerSingleton = GetPlayerShieldManagerData(f);
 
-            int playerIndex = BattlePlayerManager.PlayerHandle.Low_GetPlayerIndex(playerSlot);
-
-            for (int i = 0; i < shieldEntityIDs.Length; i++)
-            {
-                playerShieldManagerSingleton->PlayerShieldEntityIDs[GetShieldIndex(playerIndex, characterNumber, i)] = shieldEntityIDs[i];
-            }
+            playerShieldManagerSingleton->PlayerShieldEntityGroupIDs[GetShieldGroupIndex(playerSlot, characterNumber)] = shieldEntityGroupID;
         }
 
         /// <summary>
-        /// Retrieves the index in BattlePlayerShieldManagerDataQSingleton of a specified shield for a specified player character.
+        /// Retrieves the index in BattlePlayerShieldManagerDataQSingleton of the shield entity group for a specified player character.
         /// </summary>
         /// 
-        /// <param name="playerIndex">Index of the specified player.</param>
+        /// <param name="playerSlot">The BattlePlayerSlot of the specified player.</param>
         /// <param name="characterNumber">The character number of the specified character.</param>
-        /// <param name="shieldNumber">The shield number of the specified shield.</param>
         /// 
         /// <returns>The index in BattlePlayerShieldManagerDataQSingleton for the specified shield.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int GetShieldIndex(int playerIndex, int characterNumber, int shieldNumber)
+        private static int GetShieldGroupIndex(BattlePlayerSlot playerSlot, int characterNumber)
         {
-            return GetShieldOffset(playerIndex, characterNumber) + shieldNumber;
-        }
+            int playerIndex = BattlePlayerManager.PlayerHandle.Low_GetPlayerIndex(playerSlot);
 
-        /// <summary>
-        /// Helper method for calculating the starting index offset in BattlePlayerShieldManagerDataQSingleton for a specified player character's shields.
-        /// </summary>
-        /// 
-        /// <param name="playerIndex">Index of the specified player.</param>
-        /// <param name="characterNumber">The character number of the specified character.</param>
-        /// 
-        /// <returns>The calculated starting index offset.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int GetShieldOffset(int playerIndex, int characterNumber)
-        {
-            return playerIndex * Constants.BATTLE_PLAYER_CHARACTER_COUNT * Constants.BATTLE_PLAYER_SHIELD_COUNT
-                   + characterNumber * Constants.BATTLE_PLAYER_SHIELD_COUNT;
+            return playerIndex * Constants.BATTLE_PLAYER_CHARACTER_COUNT + characterNumber;
         }
 
         /// <summary>
