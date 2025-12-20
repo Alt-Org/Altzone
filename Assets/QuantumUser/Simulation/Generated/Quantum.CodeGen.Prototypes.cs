@@ -412,11 +412,9 @@ namespace Quantum.Prototypes {
     [ArrayLengthAttribute(4)]
     public QBoolean[] AllowCharacterSwapping = new QBoolean[4];
     [ArrayLengthAttribute(4)]
-    public Quantum.Prototypes.BattleEntityIDPrototype[] SelectedCharacterEntityIDs = new Quantum.Prototypes.BattleEntityIDPrototype[4];
-    [ArrayLengthAttribute(4)]
     public Int32[] SelectedCharacterNumbers = new Int32[4];
-    [ArrayLengthAttribute(12)]
-    public Quantum.Prototypes.BattleEntityIDPrototype[] AllCharacterIDs = new Quantum.Prototypes.BattleEntityIDPrototype[12];
+    [ArrayLengthAttribute(4)]
+    public Quantum.Prototypes.BattleEntityIDPrototype[] AllCharacterEntityGroupIDs = new Quantum.Prototypes.BattleEntityIDPrototype[4];
     [ArrayLengthAttribute(12)]
     public Quantum.QEnum32<BattlePlayerCharacterState>[] AllCharactersStates = new Quantum.QEnum32<BattlePlayerCharacterState>[12];
     [ArrayLengthAttribute(4)]
@@ -447,14 +445,11 @@ namespace Quantum.Prototypes {
         for (int i = 0, count = PrototypeValidator.CheckLength(AllowCharacterSwapping, 4, in context); i < count; ++i) {
           *result.AllowCharacterSwapping.GetPointer(i) = this.AllowCharacterSwapping[i];
         }
-        for (int i = 0, count = PrototypeValidator.CheckLength(SelectedCharacterEntityIDs, 4, in context); i < count; ++i) {
-          this.SelectedCharacterEntityIDs[i].Materialize(frame, ref *result.SelectedCharacterEntityIDs.GetPointer(i), in context);
-        }
         for (int i = 0, count = PrototypeValidator.CheckLength(SelectedCharacterNumbers, 4, in context); i < count; ++i) {
           result.SelectedCharacterNumbers[i] = this.SelectedCharacterNumbers[i];
         }
-        for (int i = 0, count = PrototypeValidator.CheckLength(AllCharacterIDs, 12, in context); i < count; ++i) {
-          this.AllCharacterIDs[i].Materialize(frame, ref *result.AllCharacterIDs.GetPointer(i), in context);
+        for (int i = 0, count = PrototypeValidator.CheckLength(AllCharacterEntityGroupIDs, 4, in context); i < count; ++i) {
+          this.AllCharacterEntityGroupIDs[i].Materialize(frame, ref *result.AllCharacterEntityGroupIDs.GetPointer(i), in context);
         }
         for (int i = 0, count = PrototypeValidator.CheckLength(AllCharactersStates, 12, in context); i < count; ++i) {
           *result.AllCharactersStates.GetPointer(i) = this.AllCharactersStates[i];
@@ -524,8 +519,8 @@ namespace Quantum.Prototypes {
   public unsafe partial class BattlePlayerShieldManagerDataQSingletonPrototype : ComponentPrototype<Quantum.BattlePlayerShieldManagerDataQSingleton> {
     [ArrayLengthAttribute(12)]
     public Int32[] PlayerShieldCounts = new Int32[12];
-    [ArrayLengthAttribute(48)]
-    public Quantum.Prototypes.BattleEntityIDPrototype[] PlayerShieldEntityIDs = new Quantum.Prototypes.BattleEntityIDPrototype[48];
+    [ArrayLengthAttribute(12)]
+    public Quantum.Prototypes.BattleEntityIDPrototype[] PlayerShieldEntityGroupIDs = new Quantum.Prototypes.BattleEntityIDPrototype[12];
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerShieldManagerDataQSingleton result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerShieldManagerDataQSingleton component = default;
@@ -536,8 +531,8 @@ namespace Quantum.Prototypes {
         for (int i = 0, count = PrototypeValidator.CheckLength(PlayerShieldCounts, 12, in context); i < count; ++i) {
           result.PlayerShieldCounts[i] = this.PlayerShieldCounts[i];
         }
-        for (int i = 0, count = PrototypeValidator.CheckLength(PlayerShieldEntityIDs, 48, in context); i < count; ++i) {
-          this.PlayerShieldEntityIDs[i].Materialize(frame, ref *result.PlayerShieldEntityIDs.GetPointer(i), in context);
+        for (int i = 0, count = PrototypeValidator.CheckLength(PlayerShieldEntityGroupIDs, 12, in context); i < count; ++i) {
+          this.PlayerShieldEntityGroupIDs[i].Materialize(frame, ref *result.PlayerShieldEntityGroupIDs.GetPointer(i), in context);
         }
         MaterializeUser(frame, ref result, in context);
     }

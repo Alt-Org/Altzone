@@ -1409,40 +1409,37 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerManagerDataQSingleton : Quantum.IComponentSingleton {
-    public const Int32 SIZE = 264;
+    public const Int32 SIZE = 216;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(128)]
+    [FieldOffset(80)]
     public Int32 PlayerCount;
-    [FieldOffset(112)]
+    [FieldOffset(64)]
     [FramePrinter.FixedArrayAttribute(typeof(BattlePlayerPlayState), 4)]
     private fixed Byte _PlayStates_[16];
-    [FieldOffset(148)]
+    [FieldOffset(100)]
     [FramePrinter.FixedArrayAttribute(typeof(PlayerRef), 4)]
     private fixed Byte _PlayerRefs_[16];
-    [FieldOffset(196)]
+    [FieldOffset(148)]
     [FramePrinter.FixedArrayAttribute(typeof(QBoolean), 4)]
     private fixed Byte _IsBot_[16];
-    [FieldOffset(180)]
+    [FieldOffset(132)]
     [FramePrinter.FixedArrayAttribute(typeof(QBoolean), 4)]
     private fixed Byte _IsAbandoned_[16];
-    [FieldOffset(232)]
+    [FieldOffset(184)]
     [FramePrinter.FixedArrayAttribute(typeof(FrameTimer), 4)]
     private fixed Byte _RespawnTimer_[32];
-    [FieldOffset(164)]
+    [FieldOffset(116)]
     [FramePrinter.FixedArrayAttribute(typeof(QBoolean), 4)]
     private fixed Byte _AllowCharacterSwapping_[16];
-    [FieldOffset(48)]
-    [FramePrinter.FixedArrayAttribute(typeof(BattleEntityID), 4)]
-    private fixed Byte _SelectedCharacterEntityIDs_[16];
-    [FieldOffset(132)]
+    [FieldOffset(84)]
     public fixed Int32 SelectedCharacterNumbers[4];
     [FieldOffset(0)]
-    [FramePrinter.FixedArrayAttribute(typeof(BattleEntityID), 12)]
-    private fixed Byte _AllCharacterIDs_[48];
-    [FieldOffset(64)]
+    [FramePrinter.FixedArrayAttribute(typeof(BattleEntityID), 4)]
+    private fixed Byte _AllCharacterEntityGroupIDs_[16];
+    [FieldOffset(16)]
     [FramePrinter.FixedArrayAttribute(typeof(BattlePlayerCharacterState), 12)]
     private fixed Byte _AllCharactersStates_[48];
-    [FieldOffset(212)]
+    [FieldOffset(164)]
     [FramePrinter.FixedArrayAttribute(typeof(QBoolean), 4)]
     private fixed Byte _PlayerGiveUpStates_[16];
     public FixedArray<BattlePlayerPlayState> PlayStates {
@@ -1475,14 +1472,9 @@ namespace Quantum {
         fixed (byte* p = _AllowCharacterSwapping_) { return new FixedArray<QBoolean>(p, 4, 4); }
       }
     }
-    public FixedArray<BattleEntityID> SelectedCharacterEntityIDs {
+    public FixedArray<BattleEntityID> AllCharacterEntityGroupIDs {
       get {
-        fixed (byte* p = _SelectedCharacterEntityIDs_) { return new FixedArray<BattleEntityID>(p, 4, 4); }
-      }
-    }
-    public FixedArray<BattleEntityID> AllCharacterIDs {
-      get {
-        fixed (byte* p = _AllCharacterIDs_) { return new FixedArray<BattleEntityID>(p, 4, 12); }
+        fixed (byte* p = _AllCharacterEntityGroupIDs_) { return new FixedArray<BattleEntityID>(p, 4, 4); }
       }
     }
     public FixedArray<BattlePlayerCharacterState> AllCharactersStates {
@@ -1505,9 +1497,8 @@ namespace Quantum {
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(IsAbandoned);
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(RespawnTimer);
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(AllowCharacterSwapping);
-        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(SelectedCharacterEntityIDs);
         fixed (Int32* p = SelectedCharacterNumbers) hash = hash * 31 + HashCodeUtils.GetArrayHashCode(p, 4);
-        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(AllCharacterIDs);
+        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(AllCharacterEntityGroupIDs);
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(AllCharactersStates);
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(PlayerGiveUpStates);
         return hash;
@@ -1515,8 +1506,7 @@ namespace Quantum {
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattlePlayerManagerDataQSingleton*)ptr;
-        FixedArray.Serialize(p->AllCharacterIDs, serializer, Statics.SerializeBattleEntityID);
-        FixedArray.Serialize(p->SelectedCharacterEntityIDs, serializer, Statics.SerializeBattleEntityID);
+        FixedArray.Serialize(p->AllCharacterEntityGroupIDs, serializer, Statics.SerializeBattleEntityID);
         FixedArray.Serialize(p->AllCharactersStates, serializer, Statics.SerializeBattlePlayerCharacterState);
         FixedArray.Serialize(p->PlayStates, serializer, Statics.SerializeBattlePlayerPlayState);
         serializer.Stream.Serialize(&p->PlayerCount);
@@ -1597,29 +1587,29 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerShieldManagerDataQSingleton : Quantum.IComponentSingleton {
-    public const Int32 SIZE = 240;
+    public const Int32 SIZE = 96;
     public const Int32 ALIGNMENT = 4;
-    [FieldOffset(192)]
+    [FieldOffset(48)]
     public fixed Int32 PlayerShieldCounts[12];
     [FieldOffset(0)]
-    [FramePrinter.FixedArrayAttribute(typeof(BattleEntityID), 48)]
-    private fixed Byte _PlayerShieldEntityIDs_[192];
-    public FixedArray<BattleEntityID> PlayerShieldEntityIDs {
+    [FramePrinter.FixedArrayAttribute(typeof(BattleEntityID), 12)]
+    private fixed Byte _PlayerShieldEntityGroupIDs_[48];
+    public FixedArray<BattleEntityID> PlayerShieldEntityGroupIDs {
       get {
-        fixed (byte* p = _PlayerShieldEntityIDs_) { return new FixedArray<BattleEntityID>(p, 4, 48); }
+        fixed (byte* p = _PlayerShieldEntityGroupIDs_) { return new FixedArray<BattleEntityID>(p, 4, 12); }
       }
     }
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 5279;
         fixed (Int32* p = PlayerShieldCounts) hash = hash * 31 + HashCodeUtils.GetArrayHashCode(p, 12);
-        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(PlayerShieldEntityIDs);
+        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(PlayerShieldEntityGroupIDs);
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattlePlayerShieldManagerDataQSingleton*)ptr;
-        FixedArray.Serialize(p->PlayerShieldEntityIDs, serializer, Statics.SerializeBattleEntityID);
+        FixedArray.Serialize(p->PlayerShieldEntityGroupIDs, serializer, Statics.SerializeBattleEntityID);
         serializer.Stream.SerializeBuffer(&p->PlayerShieldCounts[0], 12);
     }
   }
