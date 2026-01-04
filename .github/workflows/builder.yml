@@ -24,14 +24,16 @@ jobs:
       - name: Check if repository changed
         id: changes
         run: |
-          if git rev-parse HEAD~1 >/dev/null 2>&1; then
-            if git diff --quiet HEAD~1 HEAD; then
-              echo "changed=false" >> $GITHUB_OUTPUT
-            else
-              echo "changed=true" >> $GITHUB_OUTPUT
-            fi
+          STATE_FILE="/tmp/runner/last-built-${GITHUB_REF_NAME}.sha"
+          CURRENT_SHA=$(git rev-parse HEAD)
+
+          if [ -f "$STATE_FILE" ] && [ "$(cat $STATE_FILE)" = "$CURRENT_SHA" ]; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "Already built $CURRENT_SHA — skipping."
           else
             echo "changed=true" >> $GITHUB_OUTPUT
+            echo "$CURRENT_SHA" > "$STATE_FILE"
+            echo "New commit detected — building."
           fi
 
       - uses: actions/cache@v3
