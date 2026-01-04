@@ -21,13 +21,28 @@ jobs:
           fetch-depth: 0
           lfs: true
 
+      - name: Check if repository changed
+        id: changes
+        run: |
+          if git rev-parse HEAD~1 >/dev/null 2>&1; then
+            if git diff --quiet HEAD~1 HEAD; then
+              echo "changed=false" >> $GITHUB_OUTPUT
+            else
+              echo "changed=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
       - uses: actions/cache@v3
+        if: steps.changes.outputs.changed == 'true'
         with:
           path: Library
           key: Library-WebGL
           restore-keys: Library-
 
       - uses: game-ci/unity-builder@v4
+        if: steps.changes.outputs.changed == 'true'
         timeout-minutes: 70
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -42,11 +57,13 @@ jobs:
           dockerMemoryLimit: 10g
 
       - uses: actions/upload-artifact@v4
+        if: steps.changes.outputs.changed == 'true'
         with:
           name: Build-WebGL
           path: build/WebGL
           retention-days: 1
 
       - name: Mark build complete
+        if: steps.changes.outputs.changed == 'true'
         run: |
           touch "/tmp/runner/github/${GITHUB_REF_NAME}-${GITHUB_RUN_ID}"
