@@ -1,0 +1,28 @@
+var struct_quantum_1_1_battle_player_data_q_component =
+[
+    [ "GetHashCode", "struct_quantum_1_1_battle_player_data_q_component.html#a8effd89a682c3698853d98fe6a728e5a", null ],
+    [ "Serialize", "struct_quantum_1_1_battle_player_data_q_component.html#a9c37e1bab5ae1fc2e26000c0344678f4", null ],
+    [ "AbilityActivateBufferSec", "struct_quantum_1_1_battle_player_data_q_component.html#ad65d7b6546c7cc28c6dfde9eb67bebc6", null ],
+    [ "AbilityCooldownSec", "struct_quantum_1_1_battle_player_data_q_component.html#a48e6153c5a798ec7728767821e6b9daa", null ],
+    [ "ALIGNMENT", "struct_quantum_1_1_battle_player_data_q_component.html#afad3d280ea961b43a993bef83ebe5366", null ],
+    [ "CharacterClass", "struct_quantum_1_1_battle_player_data_q_component.html#ab76623786edfd23744c70d49fa080170", null ],
+    [ "CharacterId", "struct_quantum_1_1_battle_player_data_q_component.html#acd683b3cdaa3d7865dffbfa8abefb493", null ],
+    [ "CurrentDefence", "struct_quantum_1_1_battle_player_data_q_component.html#ac2035960358d6fde180d23e0f0f974b0", null ],
+    [ "CurrentHp", "struct_quantum_1_1_battle_player_data_q_component.html#aa0e1a442cc1cbddcd46f6b135f55980d", null ],
+    [ "DamageCooldown", "struct_quantum_1_1_battle_player_data_q_component.html#a4fe036eb4cd36bc1066d5f56f0c80d30", null ],
+    [ "DisableRotation", "struct_quantum_1_1_battle_player_data_q_component.html#a1f5c78520ff44b8b18771bd2590907bc", null ],
+    [ "GridExtendBottom", "struct_quantum_1_1_battle_player_data_q_component.html#afdf8e6ad775a25f63695598cad1370f1", null ],
+    [ "GridExtendTop", "struct_quantum_1_1_battle_player_data_q_component.html#afe0f8b4972edc33d4c9c4f8d15fbb919", null ],
+    [ "HasTargetPosition", "struct_quantum_1_1_battle_player_data_q_component.html#a2d4006d4d322737e3452b8cb760396be", null ],
+    [ "HitboxCharacterEntity", "struct_quantum_1_1_battle_player_data_q_component.html#a1d80788cead80e8ead82c36556e5fdc5", null ],
+    [ "HitboxShieldEntity", "struct_quantum_1_1_battle_player_data_q_component.html#afa5ac1ae97ce8355679b2982f8a9b793", null ],
+    [ "MovementCooldownSec", "struct_quantum_1_1_battle_player_data_q_component.html#ab36041316c0fdbd76f97f9ac6e2c32f2", null ],
+    [ "PlayerRef", "struct_quantum_1_1_battle_player_data_q_component.html#a18b1af32828b00dae0aa280a7f3b5f8c", null ],
+    [ "RotationBase", "struct_quantum_1_1_battle_player_data_q_component.html#a3e35ed1e071fe60ffb05d6fa29001e68", null ],
+    [ "RotationOffset", "struct_quantum_1_1_battle_player_data_q_component.html#ad01f2f8e566439c13c448421f47311bf", null ],
+    [ "SIZE", "struct_quantum_1_1_battle_player_data_q_component.html#a93041aba26c9d5c50033cf3ad7008087", null ],
+    [ "Slot", "struct_quantum_1_1_battle_player_data_q_component.html#ab052be46c8a7e654273b85c383e93979", null ],
+    [ "Stats", "struct_quantum_1_1_battle_player_data_q_component.html#a9bfa54edf673b398682e9c3342b9db91", null ],
+    [ "TargetPosition", "struct_quantum_1_1_battle_player_data_q_component.html#ab93fc51f34a0be5e25bd711a9c467ead", null ],
+    [ "TeamNumber", "struct_quantum_1_1_battle_player_data_q_component.html#a40652aecb187597e2de2d681ef70e3a2", null ]
+];

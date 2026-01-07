@@ -1,27 +1,7 @@
 var searchData=
 [
-  ['battle_0',['Battle',['../namespace_battle.html',1,'']]],
-  ['battle_3a_3ascripts_1',['Scripts',['../namespace_battle_1_1_scripts.html',1,'Battle']]],
-  ['battlearenaspec_2',['BattleArenaSpec',['../class_quantum_1_1_battle_arena_spec.html',1,'Quantum.BattleArenaSpec'],['../class_quantum_1_1_runtime_config.html#a6884e9647fa5a3393aee5affde88845f',1,'Quantum.RuntimeConfig.BattleArenaSpec']]],
-  ['battlearenaspec_2ecs_3',['BattleArenaSpec.cs',['../_battle_arena_spec_8cs.html',1,'']]],
-  ['battlecamera_4',['BattleCamera',['../class_quantum_user_1_1_scripts_1_1_battle_camera.html',1,'QuantumUser::Scripts']]],
-  ['battlecamera_2ecs_5',['BattleCamera.cs',['../_battle_camera_8cs.html',1,'']]],
-  ['battlecharacterbase_6',['BattleCharacterBase',['../struct_quantum_1_1_battle_character_base.html',1,'Quantum']]],
-  ['battlecharacterbase_2ecs_7',['BattleCharacterBase.cs',['../_battle_character_base_8cs.html',1,'']]],
-  ['battleplayerslot_8',['BattlePlayerSlot',['../namespace_quantum.html#a5d8482e2ed68dc153e9fee6463afb096',1,'Quantum']]],
-  ['battleteamnumber_9',['BattleTeamNumber',['../namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf',1,'Quantum']]],
-  ['battletest_10',['BattleTest',['../class_battle_1_1_scripts_1_1_battle_test.html',1,'Battle::Scripts']]],
-  ['battletest_2ecs_11',['BattleTest.cs',['../_battle_test_8cs.html',1,'']]],
-  ['beforesceneload_12',['BeforeSceneLoad',['../class_battle_1_1_scripts_1_1_battle_test.html#a9f90c9a7efd8c8e272a7dc9023d6687c',1,'Battle::Scripts::BattleTest']]],
-  ['bits_13',['Bits',['../struct_quantum_1_1_bit_set128.html#ab432bd9a285ed47d62ee9fca1cbf379b',1,'Quantum.BitSet128.Bits'],['../struct_quantum_1_1_bit_set2048.html#addb5fb5b2087502ecea669a69ab8f97c',1,'Quantum.BitSet2048.Bits'],['../struct_quantum_1_1_bit_set256.html#a58fe05514714759330a0d9bd11b418fb',1,'Quantum.BitSet256.Bits'],['../struct_quantum_1_1_bit_set4096.html#a8ba1b31d2f7fa18efd4999abdd21695f',1,'Quantum.BitSet4096.Bits'],['../struct_quantum_1_1_bit_set512.html#a53f902f284a8533f2bf3b2ba1c89a2e9',1,'Quantum.BitSet512.Bits'],['../struct_quantum_1_1_bit_set6.html#a3c44a2a1160c3c1b086376e5c20b8dde',1,'Quantum.BitSet6.Bits']]],
-  ['bitset128_14',['BitSet128',['../struct_quantum_1_1_bit_set128.html',1,'Quantum']]],
-  ['bitset2048_15',['BitSet2048',['../struct_quantum_1_1_bit_set2048.html',1,'Quantum']]],
-  ['bitset256_16',['BitSet256',['../struct_quantum_1_1_bit_set256.html',1,'Quantum']]],
-  ['bitset4096_17',['BitSet4096',['../struct_quantum_1_1_bit_set4096.html',1,'Quantum']]],
-  ['bitset512_18',['BitSet512',['../struct_quantum_1_1_bit_set512.html',1,'Quantum']]],
-  ['bitset6_19',['BitSet6',['../struct_quantum_1_1_bit_set6.html',1,'Quantum']]],
-  ['bitssize_20',['BitsSize',['../struct_quantum_1_1_bit_set128.html#a6fb8fbbd999a89e2b88c1bab53c973f4',1,'Quantum.BitSet128.BitsSize'],['../struct_quantum_1_1_bit_set2048.html#a377614a607c4a0e8debbb6e67b9a29c4',1,'Quantum.BitSet2048.BitsSize'],['../struct_quantum_1_1_bit_set256.html#aff457d71e08817775a7bb14ace9ea6d3',1,'Quantum.BitSet256.BitsSize'],['../struct_quantum_1_1_bit_set4096.html#a98ccbe00a9e28b7132f31d131f952983',1,'Quantum.BitSet4096.BitsSize'],['../struct_quantum_1_1_bit_set512.html#a88113f042815ffb595977f820ea35818',1,'Quantum.BitSet512.BitsSize'],['../struct_quantum_1_1_bit_set6.html#ab55ae8d68634f33e9ff1059131eec6a8',1,'Quantum.BitSet6.BitsSize']]],
-  ['boolean_21',['Boolean',['../namespace_quantum.html#a8bd15f799e0815a95f52b8a34fd2ba0e',1,'Quantum.Boolean'],['../namespace_quantum_1_1_prototypes.html#aa1312b53a189c87f0d3050d2eae48599',1,'Quantum.Prototypes.Boolean']]],
-  ['bottomgoal_22',['BottomGoal',['../namespace_quantum.html#afecfdc4d0312d2166be4e79cb1517806a456fe6f6d600baf38737b9065b249ac6',1,'Quantum']]],
-  ['byte_23',['Byte',['../namespace_quantum.html#ac9ad88cefb84fd6297360d9d08fa49b0',1,'Quantum.Byte'],['../namespace_quantum_1_1_prototypes.html#a282fa8f14823f51778aa07f136e70238',1,'Quantum.Prototypes.Byte']]]
+  ['1_2dconcepts_2d_2emd_0',['1-concepts-.md',['../1-concepts-_8md.html',1,'']]],
+  ['1_2dconcepts_2dplayer_2d_2emd_1',['1-concepts-player-.md',['../1-concepts-player-_8md.html',1,'']]],
+  ['1_2dconcepts_2dplayer_2dclass_2d400_2dprojector_2emd_2',['1-concepts-player-class-400-projector.md',['../1-concepts-player-class-400-projector_8md.html',1,'']]],
+  ['1_2dconcepts_2dplayer_2dclass_2d600_2dconfluent_2emd_3',['1-concepts-player-class-600-confluent.md',['../1-concepts-player-class-600-confluent_8md.html',1,'']]]
 ];

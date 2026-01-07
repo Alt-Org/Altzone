@@ -1,5 +1,21 @@
 var searchData=
 [
-  ['battleplayerslot_0',['BattlePlayerSlot',['../namespace_quantum.html#a5d8482e2ed68dc153e9fee6463afb096',1,'Quantum']]],
-  ['battleteamnumber_1',['BattleTeamNumber',['../namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf',1,'Quantum']]]
+  ['battlecollisiontriggertype_0',['BattleCollisionTriggerType',['../namespace_quantum.html#aa0ccecf0db3f0191c0c1228c4a6c8d81',1,'Quantum']]],
+  ['battleemotionstate_1',['BattleEmotionState',['../namespace_quantum.html#ad5e1966c7acd39a3ff3da658fbd8803b',1,'Quantum']]],
+  ['battlegamestate_2',['BattleGameState',['../namespace_quantum.html#a2b3485f9269e0898307bcaea8d009d7b',1,'Quantum']]],
+  ['battlegiveupstateupdate_3',['BattleGiveUpStateUpdate',['../namespace_quantum.html#a2825642b24aeb43b969ece14ffa169de',1,'Quantum']]],
+  ['battlelightraycolor_4',['BattleLightrayColor',['../namespace_quantum.html#a79d0fc3424513a7e430e7609e39109ab',1,'Quantum']]],
+  ['battlelightraysize_5',['BattleLightraySize',['../namespace_quantum.html#af98806bb54cd1a2aa63291a1e96991ab',1,'Quantum']]],
+  ['battlemovementinputtype_6',['BattleMovementInputType',['../namespace_quantum.html#a640ca4a7203626a46d94c4fa1d63db1d',1,'Quantum']]],
+  ['battleplayercharacterclass_7',['BattlePlayerCharacterClass',['../namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2e',1,'Quantum']]],
+  ['battleplayercharacterstate_8',['BattlePlayerCharacterState',['../namespace_quantum.html#ac833707607fdef72ea1658c65f5bda73',1,'Quantum']]],
+  ['battleplayercollisiontype_9',['BattlePlayerCollisionType',['../namespace_quantum.html#a01eee21efedc3589e0093548b801bf09',1,'Quantum']]],
+  ['battleplayerhitboxtype_10',['BattlePlayerHitboxType',['../namespace_quantum.html#a50beae2c9aef287abdf5814b724adaca',1,'Quantum']]],
+  ['battleplayerplaystate_11',['BattlePlayerPlayState',['../namespace_quantum.html#ab183bf00e5df3656dc5f32a8a0995153',1,'Quantum']]],
+  ['battleplayerslot_12',['BattlePlayerSlot',['../namespace_quantum.html#a5d8482e2ed68dc153e9fee6463afb096',1,'Quantum']]],
+  ['battleprojectilecollisionflags_13',['BattleProjectileCollisionFlags',['../namespace_quantum.html#a31cc68e38514c6f83a8582867e4f6ef9',1,'Quantum']]],
+  ['battlesoulwallrow_14',['BattleSoulWallRow',['../namespace_quantum.html#ade57910b1c199b624e1a537348197457',1,'Quantum']]],
+  ['battlesoundfx_15',['BattleSoundFX',['../namespace_quantum.html#ab1787f1ce82c5d51193c9f7ca86a8b4b',1,'Quantum']]],
+  ['battleteamnumber_16',['BattleTeamNumber',['../namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf',1,'Quantum']]],
+  ['buttoninfostate_17',['ButtonInfoState',['../class_battle_1_1_view_1_1_u_i_1_1_battle_ui_give_up_button_handler.html#a7309e7d8ea5d3a488cff2b3b93f64547',1,'Battle::View::UI::BattleUiGiveUpButtonHandler']]]
 ];

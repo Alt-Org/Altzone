@@ -1,0 +1,4 @@
+var struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_player_character_collision_data =
+[
+    [ "PlayerCharacterHitbox", "struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_player_character_collision_data.html#ad55ab64d73ce374c61a0f35b6195042c", null ]
+];
