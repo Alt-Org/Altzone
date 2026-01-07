@@ -24,11 +24,11 @@ namespace MenuUi.Scripts.AvatarEditor
             GridCellHandler handler = colorGridCell.GetComponent<GridCellHandler>();
 
             Vector2 colorImageMinAnchors = new(0.05f, 0.05f);
-            Vector2 ColorImageMaxAnchors = new(0.95f, 0.95f);
+            Vector2 colorImageMaxAnchors = new(0.95f, 0.95f);
 
             handler.SetValues(cellImageColor: color, backgroundColor: _backgroundColor,
                 onClick: () => AddListener());
-            handler.SetFeatureImageAnchors(colorImageMinAnchors, ColorImageMaxAnchors);
+            handler.SetFeatureImageAnchors(colorImageMinAnchors, colorImageMaxAnchors);
         }
 
         public void SetColorCells()
