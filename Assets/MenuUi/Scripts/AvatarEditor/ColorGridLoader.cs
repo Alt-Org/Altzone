@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using MenuUi.scripts.AvatarEditor;
 using UnityEngine;
 using UnityEngine.UI;
 

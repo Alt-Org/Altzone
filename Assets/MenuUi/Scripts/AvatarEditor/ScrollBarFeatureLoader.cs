@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.AvatarPartsInfo;
-using MenuUi.scripts.AvatarEditor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using System;
 
-namespace MenuUi.scripts.AvatarEditor
+namespace MenuUi.Scripts.AvatarEditor
 {
     public class PopUpHandler : MonoBehaviour
     {

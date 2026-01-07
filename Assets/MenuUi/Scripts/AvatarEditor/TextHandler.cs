@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-namespace MenuUi.scripts.AvatarEditor
+namespace MenuUi.Scripts.AvatarEditor
 {
     public class TextHandler : MonoBehaviour
     {

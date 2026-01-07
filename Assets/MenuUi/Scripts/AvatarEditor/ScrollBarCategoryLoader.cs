@@ -9,7 +9,6 @@ using System.Runtime.CompilerServices;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.Composites;
 using System;
-using MenuUi.scripts.AvatarEditor;
 
 namespace MenuUi.Scripts.AvatarEditor
 {

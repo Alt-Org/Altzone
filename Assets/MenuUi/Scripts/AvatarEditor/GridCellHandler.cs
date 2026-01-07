@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MenuUi.scripts.AvatarEditor
+namespace MenuUi.Scripts.AvatarEditor
 {
     public class GridCellHandler : MonoBehaviour
     {

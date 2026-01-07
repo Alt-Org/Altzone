@@ -5,7 +5,6 @@ using System.Linq.Expressions;
 using Altzone.Scripts.AvatarPartsInfo;
 using Altzone.Scripts.Model.Poco.Game;
 using Assets.Altzone.Scripts.Model.Poco.Player;
-using MenuUi.scripts.AvatarEditor;
 using MenuUi.Scripts.AvatarEditor;
 using UnityEngine;
 

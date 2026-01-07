@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Model.Poco.Player;
 using Assets.Altzone.Scripts.Model.Poco.Player;
-using MenuUi.scripts.AvatarEditor;
 using MenuUi.Scripts.AvatarEditor;
 using UnityEngine;
 

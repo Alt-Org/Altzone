@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using MenuUi.Scripts.AvatarEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace MenuUi.scripts.AvatarEditor
+namespace MenuUi.Scripts.AvatarEditor
 {
     public class CategoryScrollClampController : MonoBehaviour, IEndDragHandler
     {

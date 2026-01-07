@@ -3,12 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Player;
 using Assets.Altzone.Scripts.Model.Poco.Player;
-using MenuUi.Scripts.AvatarEditor;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
 
-namespace MenuUi.scripts.AvatarEditor
+namespace MenuUi.Scripts.AvatarEditor
 {
     public class AvatarEditorController : AltMonoBehaviour
     {
