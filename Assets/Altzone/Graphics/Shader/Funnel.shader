@@ -9,12 +9,13 @@ Shader "Unlit/Funnel"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "RenderType"="Transparent" "Queue"="Transparent" }
         LOD 100
 
         Pass
         {
             Blend SrcAlpha OneMinusSrcAlpha
+            ZWrite Off
 
             CGPROGRAM
             #pragma vertex vert
@@ -51,16 +52,18 @@ Shader "Unlit/Funnel"
                 float y = abs(i.uv.y - 0.5);
 
                 float t = 1.0 - x;
-
                 float curve1 = pow(t, _Curve1);
                 float curve2 = pow(curve1, _Curve2);
 
                 float halfWidth = lerp(0.5, _EndWidth, 1.0 - curve2);
 
-                if (y > halfWidth)
-                    discard;
+                float edgeDist = halfWidth - y;
 
-                return _Color;
+                float aa = max(fwidth(edgeDist), fwidth(y));
+
+                float alpha = smoothstep(0.0, aa, edgeDist);
+
+                return float4(_Color.rgb, _Color.a * alpha);
             }
             ENDCG
         }
