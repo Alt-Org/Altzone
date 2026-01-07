@@ -7,6 +7,8 @@ namespace MenuUi.Scripts.AvatarEditor
 {
     public class ColorGridLoader : MonoBehaviour
     {
+        // Now just makes the color selection cells. Functionality not implemented yet
+
         [SerializeField] private RectTransform _colorGridContent;
         [SerializeField] private RectTransform _colorSelection;
         [SerializeField] private GameObject _gridCellPrefab;
@@ -62,6 +64,8 @@ namespace MenuUi.Scripts.AvatarEditor
             }
         }
 
+
+        // Not implemented yet
         private void AddListener()
         {
 
