@@ -702,8 +702,9 @@ MonoBehaviour:
   reactionField: {fileID: 5136230035178387175}
   _reactionSize: {fileID: 6600255325117062062}
   _expandedReactionSize: {fileID: 9161950515590385300}
-  ReactionSize: {x: 0, y: 0}
-  ExpandedReactionSize: {x: 0, y: 0}
+  _vectorReactionSize: {x: 0, y: 0}
+  _vectorExpandedReactionSize: {x: 0, y: 0}
+  _reactionData: []
 --- !u!1 &5136230035178387175
 GameObject:
   m_ObjectHideFlags: 0
@@ -2099,6 +2100,11 @@ PrefabInstance:
     - target: {fileID: 8509604158101261262, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
       propertyPath: _selectedMessage
+      value: 
+      objectReference: {fileID: 5786829121231365026}
+    - target: {fileID: 8509604158101261262, guid: 76aa8b7d736fa8e44955cce276908e74,
+        type: 3}
+      propertyPath: _messageObjectHandler
       value: 
       objectReference: {fileID: 5786829121231365026}
     - target: {fileID: 8594807108680125298, guid: 76aa8b7d736fa8e44955cce276908e74,

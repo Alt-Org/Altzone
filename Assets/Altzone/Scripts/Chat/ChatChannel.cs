@@ -85,7 +85,6 @@ namespace Altzone.Scripts.Chat
             ChatMessage message = _chatMessages.FirstOrDefault(m => m.Id == id);
             if (message != null)
             {
-                Debug.LogWarning("FIND ME ChatChannel" + message.Id);
                 message.Reactions = reactions;
                 OnReactionReceived?.Invoke(_chatChannelType, message);
             }

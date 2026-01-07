@@ -29,6 +29,9 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private Vector2 _vectorReactionSize;
     [SerializeField] private Vector2 _vectorExpandedReactionSize;
 
+    //Stores the reactions
+    public List<ChatReactionHandler> _reactionDataList = new();
+
     private string _id;
     private Image _image;
     private Action<MessageObjectHandler> _selectMessageAction;
@@ -36,7 +39,6 @@ public class MessageObjectHandler : MonoBehaviour
     public GameObject ReactionsPanel { get => _reactionsPanel;}
     public string Id { get => _id;}
 
-    public static MessageObjectHandler ObjectActive; 
     // Start is called before the first frame update
     void Start()
     {
@@ -44,6 +46,10 @@ public class MessageObjectHandler : MonoBehaviour
         _image = _button.GetComponent<Image>();
         Chat.OnSelectedMessageChanged += SetMessageInactive;
 
+        foreach (var reactionData in _reactionDataList)
+        {
+        Chat.instance.ReactionChatCall(reactionData, gameObject);
+        }
 
         _vectorReactionSize = new Vector2(_baseMessageSize.sizeDelta.x, _baseMessageSize.sizeDelta.y + _reactionSize.GetComponent<RectTransform>().sizeDelta.y);
         _vectorExpandedReactionSize = new Vector2(_baseMessageSize.sizeDelta.x, _baseMessageSize.sizeDelta.y + _expandedReactionSize.GetComponent<RectTransform>().sizeDelta.y);

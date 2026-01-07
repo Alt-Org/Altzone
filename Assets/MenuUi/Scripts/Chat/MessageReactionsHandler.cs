@@ -35,11 +35,11 @@ public class MessageReactionsHandler : MonoBehaviour
     private List<int> _commonReactions = new();
     private bool _longClick = false;
 
-    public static MessageReactionsHandler Instance;
+    public MessageObjectHandler _messageObjectHandler;
 
-    private Mood _mood;
     void Start()
     {
+           
         _openMoreButton.onClick.AddListener((() => { _allReactionsPanel.SetActive(true); _selectedMessage.SizeCall(); _commonReactionsPanel.SetActive(false); }));
 
 
@@ -152,7 +152,6 @@ public class MessageReactionsHandler : MonoBehaviour
     /// </summary>
     public void AddReaction(string _id, Mood mood)
     {
-        Debug.LogWarning("FIND ME - IF ADD REACRTION GETS CALLED - C1");
         if (_selectedMessage != null)
         {
             string messageID = _selectedMessage.Id;
@@ -178,8 +177,10 @@ public class MessageReactionsHandler : MonoBehaviour
             GameObject newReaction = Instantiate(_addedReactionPrefab, reactionsField.transform);
             ChatReactionHandler chatReactionHandler = newReaction.GetComponentInChildren<ChatReactionHandler>();
             chatReactionHandler.SetReactionInfo(reactionSprite, messageID, mood);
+
             _reactionHandlers.Add(chatReactionHandler);
 
+            _messageObjectHandler._reactionDataList = new List<ChatReactionHandler>(_reactionHandlers); 
             chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler));
             chatReactionHandler.LongClickButton.onLongClick.AddListener(() => ShowUsers(chatReactionHandler));
             LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
@@ -187,9 +188,6 @@ public class MessageReactionsHandler : MonoBehaviour
             _selectedMessage.SetMessageInactive();
 
             gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
-
-
-            Debug.LogWarning("FIND ME CALLED THAT IF REACTION IS ACTIVE OR NOT");
         }
     }
 
@@ -240,6 +238,7 @@ public class MessageReactionsHandler : MonoBehaviour
 
         reaction.transform.SetParent(null);
         _reactionHandlers.Remove(reaction);
+        _messageObjectHandler._reactionDataList.Remove(reaction);
         Destroy(reaction.gameObject);
         _selectedMessage.SizeCall();
 
