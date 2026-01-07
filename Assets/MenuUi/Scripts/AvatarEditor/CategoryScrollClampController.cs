@@ -6,13 +6,23 @@ using UnityEngine.UI;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
-    public class CategoryScrollClampController : MonoBehaviour, IEndDragHandler
+    public class CategoryScrollClampController : MonoBehaviour, IEndDragHandler, IBeginDragHandler
     {
         [SerializeField] private ScrollRect _categoryGridScrollRect;
         [SerializeField] private ScrollBarCategoryLoader _categoryLoader;
+        private float _clampDuration = 0.2f; // in seconds
+        private Coroutine _clampCoroutine;
         public void OnEndDrag(PointerEventData eventData)
         {
             ClampToCenter();
+        }
+
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            if (_clampCoroutine != null)
+            {
+                StopCoroutine(_clampCoroutine);
+            }
         }
 
         private void ClampToCenter()
@@ -20,37 +30,38 @@ namespace MenuUi.Scripts.AvatarEditor
             float totalCellSize = _categoryLoader.cellHeight + _categoryLoader.spacing;
             float contentYPosition = _categoryGridScrollRect.content.anchoredPosition.y;
             int nearestIndex = Mathf.RoundToInt(contentYPosition / totalCellSize);
+            int targetIndex = nearestIndex + 1;
             float targetYPosition = nearestIndex * totalCellSize;
 
-            StartCoroutine(Clamp(targetYPosition));
+            _clampCoroutine = StartCoroutine(Clamp(targetYPosition, targetIndex));
         }
 
-        IEnumerator Clamp(float targetYPos)
+        IEnumerator Clamp(float targetYPos, int index)
         {
             Vector2 pos = _categoryGridScrollRect.content.anchoredPosition;
             Vector2 target = new(pos.x, targetYPos);
 
-            float t = 0f;
+            float elapsedTime = 0f;
 
-            while (t < 1)
+            // clamp "animation" plays for _clampDuration seconds
+            while (elapsedTime < _clampDuration)
             {
-                t += Time.deltaTime * 5f;
+                elapsedTime += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsedTime / _clampDuration);
                 _categoryGridScrollRect.content.anchoredPosition = Vector2.Lerp(pos, target, t);
                 yield return null;
             }
 
             _categoryGridScrollRect.content.anchoredPosition = target;
 
-            OnClamp(targetYPos);
+            OnClamp(targetYPos, index);
+
+            _clampCoroutine = null;
         }
 
-        private void OnClamp(float targetYPos)
+        private void OnClamp(float targetYPos, int index)
         {
-            float totalCellSize = _categoryLoader.cellHeight + _categoryLoader.spacing;
-            int topIndex = Mathf.RoundToInt(targetYPos / totalCellSize);
-            int centerIndex = topIndex + 1;
-
-            Transform centerCell = _categoryGridScrollRect.content.GetChild(centerIndex);
+            Transform centerCell = _categoryGridScrollRect.content.GetChild(index);
 
             centerCell.GetComponent<Button>().onClick.Invoke();
         }
