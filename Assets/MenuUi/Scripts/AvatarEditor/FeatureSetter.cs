@@ -26,10 +26,10 @@ namespace MenuUi.Scripts.AvatarEditor
         }
 
 
-        public string GetSelectedFeature(int index) =>
+        private string GetSelectedFeature(int index) =>
             index >= 0 && index < _selectedFeatures.Count ? _selectedFeatures[index] : null;
 
-        public void SetSelectedFeature(int index, string value)
+        private void SetSelectedFeature(int index, string value)
         {
             if (index >= 0 && index < _selectedFeatures.Count)
                 _selectedFeatures[index] = value;
