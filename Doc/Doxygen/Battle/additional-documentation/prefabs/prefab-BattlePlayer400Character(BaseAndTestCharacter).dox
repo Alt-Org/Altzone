@@ -1,0 +1,31 @@
+/// @file "BattlePlayer400Character(BaseAndTestCharacter).prefab"
+/// <summary>
+/// Prefab for projector class Base/Test character. This is used for testing purposes and as a base for creating other projector class characters.
+/// </summary>
+///
+/// This prefab is a variant of @ref "BattlePlayer000Character(BaseAndTestCharacter).prefab" and has a similar structure as the base prefab.  
+/// This prefab has **MovingShield** and @cref{Quantum,BattlePlayerClassProjectorDataQComponent}, which are not part of @ref "BattlePlayer000Character(BaseAndTestCharacter).prefab".
+///
+/// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}  
+/// @bigtext{See [{Player Character Class 400 - Projector}](#page-concepts-player-class-400-projector) for more info.}
+///
+/// ### Structure Overrides
+/// - **BattlePlayer400Character(BaseAndTestCharacter)**
+///     - *Components:*
+///         - %Quantum Entity Prototype
+///             - + @cref{Quantum,BattlePlayerClassProjectorDataQComponent}
+///     - *Children:*
+///         - **PlayerViewModel**
+///             - *Components:*
+///                 - @cref{Battle.View.Player,BattlePlayerViewController}
+///                     - + @cref{Battle.View.Player,BattlePlayerClassProjectorViewController}
+///             - *Children:*
+///                 - + **MovingShield**
+///
+
+/// @file "BattlePlayer400Character(BaseAndTestCharacter)EntityPrototype.qprototype"
+/// <summary>
+/// EntityPrototype counterpart of @ref "BattlePlayer400Character(BaseAndTestCharacter).prefab"
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).

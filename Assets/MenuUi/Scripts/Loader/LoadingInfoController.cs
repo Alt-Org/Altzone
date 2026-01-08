@@ -72,27 +72,57 @@ namespace MenuUi.Scripts.Loader
 
         public void SetInfoText(LogInStatus type)
         {
-            switch (type)
-            {
-                case LogInStatus.LogIn:
-                    _infoText.text = "Kirjaudutaan sisään";
+            switch (SettingsCarrier.Instance.Language) {
+                case SettingsCarrier.LanguageType.English:
+                    switch (type)
+                    {
+                        case LogInStatus.LogIn:
+                            _infoText.text = "Logging in";
+                            break;
+                        case LogInStatus.FetchPlayerData:
+                            _infoText.text = "Fetching player info";
+                            break;
+                        case LogInStatus.FetchClanData:
+                            _infoText.text = "Fetching clan info";
+                            break;
+                        case LogInStatus.Finished:
+                            _infoText.text = "Press here to continue.";
+                            break;
+                        case LogInStatus.MovingToMain:
+                            _infoText.text = "Moving to Main Menu";
+                            break;
+                        case LogInStatus.CheckSettingsData:
+                            _infoText.text = "Checking settings";
+                            break;
+                        default:
+                            break;
+                    }
                     break;
-                case LogInStatus.FetchPlayerData:
-                    _infoText.text = "Haetaan pelaajan tietoja";
-                    break;
-                case LogInStatus.FetchClanData:
-                    _infoText.text = "Haetaan klaanin tietoja";
-                    break;
-                case LogInStatus.Finished:
-                    _infoText.text = "Paina tästä siirtyäksesi pääikkunaan.";
-                    break;
-                case LogInStatus.MovingToMain:
-                    _infoText.text = "Siirrytään pääikkunaan";
-                    break;
-                case LogInStatus.CheckSettingsData:
-                    _infoText.text = "Tarkistetaan asetuksia";
-                    break;
+                case SettingsCarrier.LanguageType.Finnish:
                 default:
+                    switch (type)
+                    {
+                        case LogInStatus.LogIn:
+                            _infoText.text = "Kirjaudutaan sisään";
+                            break;
+                        case LogInStatus.FetchPlayerData:
+                            _infoText.text = "Haetaan pelaajan tietoja";
+                            break;
+                        case LogInStatus.FetchClanData:
+                            _infoText.text = "Haetaan klaanin tietoja";
+                            break;
+                        case LogInStatus.Finished:
+                            _infoText.text = "Paina tästä siirtyäksesi pääikkunaan.";
+                            break;
+                        case LogInStatus.MovingToMain:
+                            _infoText.text = "Siirrytään pääikkunaan";
+                            break;
+                        case LogInStatus.CheckSettingsData:
+                            _infoText.text = "Tarkistetaan asetuksia";
+                            break;
+                        default:
+                            break;
+                    }
                     break;
             }
 
@@ -104,6 +134,7 @@ namespace MenuUi.Scripts.Loader
         {
             Status = LogInStatus.Finished;
             StopCoroutine(LoadingProgress());
+            SetInfoText(Status);
             _loadingText.gameObject.SetActive(false);
         }
 
@@ -128,7 +159,16 @@ namespace MenuUi.Scripts.Loader
                 yield return new WaitForSeconds(1);
                 i++;
                 if (i == 4) i = 1;
-                _loadingText.text = "Ladataan"+ new string('.',i);
+                switch (SettingsCarrier.Instance.Language)
+                {
+                    case SettingsCarrier.LanguageType.English:
+                        _loadingText.text = "Loading" + new string('.', i);
+                        break;
+                    case SettingsCarrier.LanguageType.Finnish:
+                    default:
+                        _loadingText.text = "Ladataan" + new string('.', i);
+                        break;
+                }
             }
         }
     }

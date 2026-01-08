@@ -1,6 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Altzone.Scripts.Model.Poco.Attributes;
+using Prg.Scripts.Common.Extensions;
 using Altzone.Scripts.ReferenceSheets;
 using UnityEngine.Assertions;
 
@@ -67,12 +67,12 @@ namespace Altzone.Scripts.Model.Poco.Game
     /// Fields in original source are:<br />
     /// ID	huonekalun nimi	muoto	paino / kg	materiaali	kierrätys	prefabin nimi	tiedoston nimi	kuva
     /// </remarks>
-    [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
+    [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class GameFurniture
     {
-        [PrimaryKey] public string Id;
-        [Unique] public string Name;
-        [Mandatory] public string Shape;
+        public string Id;
+        public string Name;
+        public string Shape;
         public FurnitureRarity Rarity;
         public FurnitureSize Size;
         public FurnitureSize RotatedSize;
@@ -80,24 +80,24 @@ namespace Altzone.Scripts.Model.Poco.Game
         public double Weight;
         public float Value;
         public FurnitureInfo FurnitureInfo;
-        [Mandatory] public string Material;
-        [Mandatory] public string Recycling;
+        public string Material;
+        public string Recycling;
 
         /// <summary>
         /// This can be used for example to load UNITY assets by name for UI at runtime. 
         /// </summary>
-        [Optional] public string UnityKey;
+        public string UnityKey;
 
         public string Filename;
 
         public GameFurniture(string id, string name, FurnitureRarity rarity, FurnitureSize size, FurnitureSize rotatedSize, FurniturePlacement placementType, double weight, float value, string shape = "", string material = "", string recycling = "", string unityKey = "", string filename = "")
         {
-            Assert.IsTrue(id.IsPrimaryKey());
-            Assert.IsTrue(name.IsMandatory());
-            //Assert.IsTrue(shape.IsMandatory());
+            Assert.IsTrue(id.IsSet());
+            Assert.IsTrue(name.IsSet());
+            //Assert.IsTrue(shape.IsSet());
             Assert.IsTrue(weight >= 0);
-            //Assert.IsTrue(material.IsMandatory());
-            //Assert.IsTrue(recycling.IsMandatory());
+            //Assert.IsTrue(material.IsSet());
+            //Assert.IsTrue(recycling.IsSet());
             Assert.IsTrue(unityKey.IsNullOEmptyOrNonWhiteSpace());
             Assert.IsTrue(filename.IsNullOEmptyOrNonWhiteSpace());
             Id = id;
@@ -117,8 +117,8 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public GameFurniture(string id, BaseFurniture baseFurniture, FurnitureInfo furnitureInfo, string unityKey = "", string filename = "")
         {
-            Assert.IsTrue(id.IsPrimaryKey());
-            Assert.IsTrue(baseFurniture.Name.IsMandatory());
+            Assert.IsTrue(id.IsSet());
+            Assert.IsTrue(baseFurniture.Name.IsSet());
             //Assert.IsTrue(shape.IsMandatory());
             Assert.IsTrue(baseFurniture.Weight >= 0);
             //Assert.IsTrue(material.IsMandatory());
@@ -152,15 +152,15 @@ namespace Altzone.Scripts.Model.Poco.Game
     [Serializable]
     public class BaseFurniture
     {
-        [Unique] public string Name;
+        public string Name;
         public FurnitureRarity Rarity;
         public FurnitureSize Size;
         public FurnitureSize RotatedSize;
         public FurniturePlacement Placement;
         public double Weight;
         public float Value;
-        [Mandatory] public string Material;
-        [Mandatory] public string Recycling;
+        public string Material;
+        public string Recycling;
 
         public override string ToString()
         {

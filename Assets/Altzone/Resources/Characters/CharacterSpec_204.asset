@@ -15,32 +15,47 @@ MonoBehaviour:
   Id: 204
   CharacterId: 204
   IsApproved: 1
-  Name: Vietteleminen
+  FinnishName: Vietteleminen
+  EnglishName: Seduction
   ClassType: 200
-  CharacterDescription: "Vietteleminen on huumaava sekoitus kauneutta ja romantiikkaa.
-    Leikkis\xE4n kutsuva pilke silm\xE4kulmissaan, h\xE4n varmistaa etteiv\xE4t ruusuiset
-    lemmenleikit etene pintaa syvemm\xE4lle, miss\xE4 h\xE4n hiljaa kaipaa jotain
-    pysyv\xE4\xE4. Paetessaan viimeisimm\xE4lt\xE4 saaliiltaan, h\xE4n s\xE4rkee
-    samalla oman syd\xE4mens\xE4 aina uudestaan. \r\n"
-  CharacterShortDescription: "Savusilm\xE4inen ja ruusuntuoksuinen syd\xE4ntens\xE4rkij\xE4. "
+  CharacterDescriptionFinnish: "Kun Viettelij\xE4 asettuu ihmiseen asumaan, h\xE4n
+    saa t\xE4m\xE4n k\xE4tkem\xE4\xE4n kaipauksensa vieh\xE4tyksen taakse. Ihminen
+    alkaa etsi\xE4 yhteytt\xE4 katseilla ja eleill\xE4, jotka lupaavat paljon mutta
+    p\xE4\xE4st\xE4v\xE4t l\xE4helle vain hetken verran. Jokainen hymy muuttuu vakuutukseksi
+    siit\xE4, ett\xE4 h\xE4n on haluttu, vaikka todellisuudessa h\xE4n vain testaa,
+    onko rakkautta viel\xE4 olemassa. Viettelij\xE4 opettaa k\xE4\xE4nt\xE4m\xE4\xE4n
+    haavoittuvuuden leikiksi ja kaipuun estetiikaksi, jotta kipu pysyisi kauniina
+    ja et\xE4isen\xE4. Mutta jokainen uusi valloitus j\xE4tt\xE4\xE4 taakseen saman
+    tyhjyyden \u2013 sen, ett\xE4 todellinen l\xE4heisyys olisi ollut liian todellista
+    kestett\xE4v\xE4ksi.\r\n\nVuorovaikutuskent\xE4ll\xE4 (Ego Clash) Viettelij\xE4n
+    suojakilpi on tikkunekku, jota h\xE4n heilauttaa ilmassa kepe\xE4sti kuin syd\xE4menmuotoista
+    valtikkaa. Jokainen tunnetila-ammus, joka osuu siihen, kimmotetaan huolimattomasti
+    eri suuntaan \u2013 joskus kohti vastustajaa, joskus omia liittolaisia. H\xE4nen
+    suloisuutensa on h\xE4nen aseensa, ja sen makeus peitt\xE4\xE4 sen, ettei h\xE4n
+    itse maista mit\xE4\xE4n. Kun tikkunekko viimein murtuu, hymy katoaa ja j\xE4ljelle
+    j\xE4\xE4 vain hiljainen kaipaus, joka ei koskaan uskaltanut olla totta.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Ruusuilta tuoksuva, savusilm\xE4inen syd\xE4ntens\xE4rkij\xE4."
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: fe1d8876c828b8348a0888f0a56faaad, type: 2}
   Hp:
     Level: 2
     Coefficient: 4
   Speed:
-    Level: 11
-    Coefficient: 2
+    Level: 6
+    Coefficient: 0
   CharacterSize:
-    Level: 4
-    Coefficient: 6
+    Level: 2
+    Coefficient: 0
   Attack:
-    Level: 8
+    Level: 1
     Coefficient: 5
   Defence:
-    Level: 4
+    Level: 3
     Coefficient: 7
   GalleryImage: {fileID: 21300000, guid: 7bbb9287049b29b4d992d9b6e19ce2d8, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: dd309955bb3e3ca4c972cf5aa4b067b9, type: 3}
+  CharPhotoSeries: {fileID: 21300000, guid: da8884c145acb754495de6ae21c6fcd0, type: 3}
   BattleEntityPrototype:
     Id:
       Value: 1279321672100397795

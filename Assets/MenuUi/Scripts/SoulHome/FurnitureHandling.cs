@@ -82,6 +82,7 @@ namespace MenuUI.Scripts.SoulHome
         public Sprite FurnitureSpriteRight { get => _furnitureSpriteRight; set { if (!Application.isPlaying) _furnitureSpriteRight = value; } }
         public Sprite FurnitureSpriteLeft { get => _furnitureSpriteLeft; set { if (!Application.isPlaying) _furnitureSpriteLeft = value; } }
         public Sprite FurnitureSpriteBack { get => _furnitureSpriteBack; set { if (!Application.isPlaying) _furnitureSpriteBack = value; } }
+        public bool SpriteCanBeFlipped { get => _spriteCanBeFlipped;}
 
         // Start is called before the first frame update
         void Start()

@@ -12,6 +12,85 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c23ecbc9bb122c43a29f9ed987fc6c0, type: 3}
   m_Name: AvatarDefaults
   m_EditorClassIdentifier: 
+  _avatarDefaults:
+  - CharacterName: Meatwall
+    CharacterId: 1102
+    HairId: 1010101
+    EyesId: 2110101
+    NoseId: 2210101
+    MouthId: 2310101
+    BodyId: 3110101
+    HandsId: 3210101
+    FeetId: 
+    AlternativeVariations: []
+  - CharacterName: Jokester
+    CharacterId: 2201
+    HairId: 
+    EyesId: 
+    NoseId: 2220101
+    MouthId: 2320101
+    BodyId: 
+    HandsId: 
+    FeetId: 
+    AlternativeVariations: []
+  - CharacterName: Believer
+    CharacterId: 3301
+    HairId: 1030101
+    EyesId: 2130101
+    NoseId: 2230101
+    MouthId: 2330101
+    BodyId: 3130101
+    HandsId: 
+    FeetId: 3330101
+    AlternativeVariations: []
+  - CharacterName: Provocateur
+    CharacterId: 4401
+    HairId: 1040101
+    EyesId: 2140101
+    NoseId: 2240101
+    MouthId: 2340101
+    BodyId: 3140101
+    HandsId: 
+    FeetId: 3340101
+    AlternativeVariations: []
+  - CharacterName: Overeater
+    CharacterId: 5501
+    HairId: 1050101
+    EyesId: 2150101
+    NoseId: 2250101
+    MouthId: 2350101
+    BodyId: 
+    HandsId: 
+    FeetId: 
+    AlternativeVariations: []
+  - CharacterName: Soulsisters
+    CharacterId: 6601
+    HairId: 1060101
+    EyesId: 2160101
+    NoseId: 2260101
+    MouthId: 2360101
+    BodyId: 
+    HandsId: 
+    FeetId: 
+    AlternativeVariations:
+    - VariationName: Default-2
+      HairId: 1060102
+      EyesId: 2160102
+      NoseId: 2260101
+      MouthId: 2360101
+      BodyId: 
+      HandsId: 
+      FeetId: 
+  - CharacterName: Sleepy Sleeper
+    CharacterId: 6603
+    HairId: 1060201
+    EyesId: 2160201
+    NoseId: 2260201
+    MouthId: 2360201
+    BodyId: 3160101
+    HandsId: 3260101
+    FeetId: 
+    AlternativeVariations: []
   _info:
   - Name: Desentisizer
     Id: 01
@@ -164,6 +243,66 @@ MonoBehaviour:
         BodyId: 3160101
         HandsId: 3260101
         FeetId: 
+  - Name: Intellectualizer
+    Id: 07
+    Characters:
+    - Name: Booksmart
+      Id: 701
+      Variations:
+      - Name: Default
+        HairId: 1070101
+        EyesId: 2170101
+        NoseId: 
+        MouthId: 2370101
+        BodyId: 
+        HandsId: 
+        FeetId: 
+    - Name: Capitalist
+      Id: 702
+      Variations: []
+    - Name: OCD
+      Id: 703
+      Variations: []
+  - Name: Intellectualizer
+    Id: 07
+    Characters:
+    - Name: Booksmart
+      Id: 701
+      Variations:
+      - Name: Default
+        HairId: 1070101
+        EyesId: 2170101
+        NoseId: 
+        MouthId: 2370101
+        BodyId: 
+        HandsId: 
+        FeetId: 
+    - Name: Capitalist
+      Id: 702
+      Variations: []
+    - Name: OCD
+      Id: 703
+      Variations: []
+  - Name: Intellectualizer
+    Id: 07
+    Characters:
+    - Name: Booksmart
+      Id: 701
+      Variations:
+      - Name: Default
+        HairId: 1070101
+        EyesId: 2170101
+        NoseId: 
+        MouthId: 2370101
+        BodyId: 
+        HandsId: 
+        FeetId: 
+    - Name: Capitalist
+      Id: 702
+      Variations: []
+    - Name: OCD
+      Id: 703
+      Variations: []
   - Name: Intellectualizer
     Id: 07
     Characters:

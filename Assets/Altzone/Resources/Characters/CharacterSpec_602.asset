@@ -15,35 +15,45 @@ MonoBehaviour:
   Id: 602
   CharacterId: 602
   IsApproved: 1
-  Name: Pihkaantuminen
+  FinnishName: Ihastuminen
+  EnglishName: Limerence
   ClassType: 600
-  CharacterDescription: "Pihkaantuminen on nuoripari t\xE4ysin toistensa lumoissa.
-    Toisilleen kaikki kaikessa, he l\xF6ysiv\xE4t toisistaan turvaa ja rakkautta,
-    jota he eiv\xE4t muualta saaneet. Omassa lemmen kuplassaan he eiv\xE4t tarvitse
-    muita, eiv\xE4tk\xE4 muut heit\xE4 ymm\xE4rt\xE4isik\xE4\xE4n. Heid\xE4n kiintymyksens\xE4
-    ja omistautumisensa toisilleen on niin vahvaa, ett\xE4 heid\xE4n yksil\xF6identiteettins\xE4
-    ovat kietoutuneet tiiviisti yhteen ja he k\xE4ytt\xE4v\xE4t t\xE4t\xE4 yhteytt\xE4
-    tehokkaasti hyv\xE4kseen.\r\nPihkaantuminen suojautuu tunnetila-ammukselta muodostamalla
-    syd\xE4nkuplan, joka symboloi heid\xE4n toisiltaan saamaa turvaa.\r\n"
-  CharacterShortDescription: 'Lemmenkuplansa lumoissa kuhertelevat kyyhkyset '
+  CharacterDescriptionFinnish: "Kun Ihastuminen asettuu ihmiseen asumaan, se saa
+    t\xE4m\xE4n n\xE4kem\xE4\xE4n maailman toisen silmien kautta. Ihminen alkaa el\xE4\xE4
+    hetke\xE4, jossa kaikki tuntuu kirkkaammalta, koska katse on jaettu. Jokainen
+    kosketus vahvistaa tunnetta siit\xE4, ett\xE4 yksin\xE4isyys on vihdoin p\xE4\xE4ttynyt
+    \u2014 ett\xE4 on l\xF6ytynyt paikka, jossa voi lev\xE4t\xE4. Mutta samalla ihastuminen
+    sitoo h\xE4net unelmaan t\xE4ydellisyydest\xE4, jota todellisuus ei pysty kantamaan.
+    Kun toinen muuttuu peiliksi omalle kaipuulle, yhteys alkaa ohentua, ja rakkauden
+    l\xE4mp\xF6 vaihtuu varovaiseksi varjoksi, jota ei uskalla rikkoa sanomalla mit\xE4\xE4n
+    todellista.\r\n\nVuorovaikutuskent\xE4ll\xE4 (Ego Clash) Ihastuneet suojautuvat
+    tunnetila-ammuksilta syd\xE4menmuotoisella kuplalla, joka heijastaa heid\xE4n
+    v\xE4lisen tunnesiteens\xE4 voimaa. Kupla kasvaa heid\xE4n yhteisest\xE4 energiastaan,
+    mutta jokainen osuma heikent\xE4\xE4 sen pintaa. Kun syd\xE4nkupla lopulta puhkeaa,
+    he eiv\xE4t v\xE4ltt\xE4m\xE4tt\xE4 kuole \u2013 mutta he eiv\xE4t en\xE4\xE4
+    uskalla katsoa toisiaan samalla tavalla.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: Lemmenkuplansa lumoissa kuhertelevat kyyhkyset
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 5ec05f18528981f45b8551c2e4f70e6e, type: 2}
   Hp:
     Level: 2
     Coefficient: 5
   Speed:
-    Level: 2
-    Coefficient: 4
+    Level: 1
+    Coefficient: 0
   CharacterSize:
-    Level: 12
-    Coefficient: 2
+    Level: 3
+    Coefficient: 0
   Attack:
-    Level: 2
+    Level: 1
     Coefficient: 7
   Defence:
-    Level: 11
+    Level: 1
     Coefficient: 2
   GalleryImage: {fileID: 21300000, guid: 71f85a25d859be84e99e559858e424d0, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 0dfcec7123e6302499e8eb190ea9a7a8, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
       Value: 1402699471887754154

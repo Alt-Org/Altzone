@@ -15,36 +15,47 @@ MonoBehaviour:
   Id: 103
   CharacterId: 103
   IsApproved: 1
-  Name: PTSD
+  FinnishName: Traumaattisuus
+  EnglishName: PTSD
   ClassType: 100
-  CharacterDescription: "PTSD on rintamalta kotiinpalannut posttraumaattinen ihmisraunio,
-    jonka k\xE4sittelem\xE4tt\xF6m\xE4t sotatraumat kummittelevat mieless\xE4 viel\xE4
-    vuosienkin j\xE4lkeen. Yritt\xE4ess\xE4\xE4n sopeutua normaaliin el\xE4m\xE4\xE4n
-    PTSD on puskenut muistot taisteluissa koetuista kauheuksista taka-alalle, mutta
-    t\xE4m\xE4 alituinen pakoilu on vienyt h\xE4nt\xE4 vain pelastuksen tuolle puolen
-    ja h\xE4neen pinttynyt paha olo tulee esiin yll\xE4tt\xE4en arkisissa tilanteissa,
-    est\xE4en h\xE4nt\xE4 saavuttamasta haluamaansa rauhaa.\r\n\nPTSDn suojakilpen\xE4
-    toimii kiv\xE4\xE4ri, jolla veteraani suojautui vihollisilta rintamalla. T\xE4h\xE4n
-    tuttuun aseeseen h\xE4n turvautuu my\xF6s siviiliss\xE4 tunnetila-ammusten uhatessa.\r\n"
-  CharacterShortDescription: "Ruudinkatkuisten muistojen riivaama rintamaselviytyj\xE4."
+  CharacterDescriptionFinnish: "Kun Traumaattisuus asettuu ihmiseen asumaan, se saa
+    t\xE4m\xE4n el\xE4m\xE4\xE4n menneisyyden kaikuissa kuin ne olisivat yh\xE4 totta.
+    Jokainen aisti ja reaktio valpastuu varoitukseksi, vaikka vaara olisi jo ohi.
+    Ihminen alkaa v\xE4ltell\xE4 muistoja, jotka tuntuvat liian raskailta kantaa,
+    ja rakentaa ymp\xE4rilleen n\xE4kym\xE4tt\xF6m\xE4n suojan, joka pit\xE4\xE4
+    kivun loitolla mutta my\xF6s el\xE4m\xE4n et\xE4\xE4ll\xE4. Traumaattisuus ei
+    kysy lupaa \u2013 se aktivoituu silloin, kun mieli yritt\xE4\xE4 unohtaa, ja
+    muistuttaa, ettei mik\xE4\xE4n unohdu ennen kuin se on tullut kohdatuksi.\r\n\nVuorovaikutuskent\xE4ll\xE4
+    (Ego Clash) traumaattisuuden suojakilpi on potero, jonka h\xE4n kaivaa itselleen
+    aina tunnetila-ammuksen l\xE4hestyess\xE4. H\xE4n painautuu syv\xE4lle maahan,
+    suojaa p\xE4\xE4ns\xE4 ja odottaa myrskyn menev\xE4n ohi. Potero on tuttu ja
+    turvallinen, mutta se on my\xF6s vankila \u2013 siell\xE4 ei n\xE4e, kuka l\xE4hestyy,
+    eik\xE4 kuule, mit\xE4 todella sanotaan. Jokainen uusi isku syvent\xE4\xE4 kuoppaa,
+    ja lopulta potero on niin syv\xE4, ettei h\xE4n en\xE4\xE4 l\xF6yd\xE4 tiet\xE4
+    yl\xF6s.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Menetysten varjoihin kaivautuva, turvaansa kahlittu
+    selviytyj\xE4."
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: f79c6efe173dffa47b5bd2fa311b124d, type: 2}
   Hp:
     Level: 1
     Coefficient: 7
   Speed:
-    Level: 3
-    Coefficient: 6
+    Level: 2
+    Coefficient: 0
   CharacterSize:
-    Level: 8
-    Coefficient: 4
+    Level: 2
+    Coefficient: 0
   Attack:
-    Level: 6
+    Level: 2
     Coefficient: 2
   Defence:
-    Level: 12
+    Level: 3
     Coefficient: 1
   GalleryImage: {fileID: 21300000, guid: a73266eb06e44d14d8111a344c92a7c7, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 83244fd950a33cf469738a1e3325b4ac, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
       Value: 1350730571434209158

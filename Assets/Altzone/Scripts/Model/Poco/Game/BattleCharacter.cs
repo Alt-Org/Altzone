@@ -18,7 +18,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public readonly float Attack;
         public readonly float Defence;
 
-        public CharacterClassID CharacterClassID => CustomCharacter.GetClassID(CharacterID);
+        public CharacterClassType CharacterClass => CustomCharacter.GetClass(CharacterID);
 
         public BattleCharacter(CharacterID customCharacterId, string name,
             float hp, float speed, float resistance, float attack, float defence)

@@ -7,19 +7,29 @@ flags BattleProjectileCollisionFlags : Byte
 
 component BattleProjectileQComponent
 {
+    // state
     bool IsLaunched;
     bool IsHeld;
+    bool IsPassed;
+    BattleEmotionState EmotionBase;
+    BattleEmotionState EmotionCurrent;
+    array<BattleProjectileCollisionFlags>[2] CollisionFlags;
+
+    // variables
     FP Speed;
-    array<FP>[BATTLE_EMOTION_STATE_COUNT] SpeedMultiplierArray;
-    FP SpeedPotential;
-    FP SpeedIncrement;
-    FP AccelerationTimer;
-    FP AccelerationTimerDuration;
+    FPVector2 Position;
     FPVector2 Direction;
-    FP Radius;
-    BattleEmotionState Emotion;
     FP Attack;
+
+    // settings
+    FP Radius;
+    FP SpeedBase;
+    FP SpeedIncrement;
+    FP SpeedMax;
     FP AttackMax;
 
-    array<BattleProjectileCollisionFlags>[2] CollisionFlags;
+    //array<FP>[BATTLE_EMOTION_STATE_COUNT] SpeedMultiplierArray;
+    //FP SpeedPotential;
+    //FP AccelerationTimer;
+    //FP AccelerationTimerDuration;
 }

@@ -567,6 +567,80 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1506052118
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 242166412331822151, guid: b6b40b04b7b03de4791a1af7c02ca1f8,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 472.91104
+      objectReference: {fileID: 0}
+    - target: {fileID: 242166412331822151, guid: b6b40b04b7b03de4791a1af7c02ca1f8,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 538.31555
+      objectReference: {fileID: 0}
+    - target: {fileID: 242166412331822151, guid: b6b40b04b7b03de4791a1af7c02ca1f8,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.006588161
+      objectReference: {fileID: 0}
+    - target: {fileID: 242166412331822151, guid: b6b40b04b7b03de4791a1af7c02ca1f8,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 242166412331822151, guid: b6b40b04b7b03de4791a1af7c02ca1f8,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 242166412331822151, guid: b6b40b04b7b03de4791a1af7c02ca1f8,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 242166412331822151, guid: b6b40b04b7b03de4791a1af7c02ca1f8,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 242166412331822151, guid: b6b40b04b7b03de4791a1af7c02ca1f8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 242166412331822151, guid: b6b40b04b7b03de4791a1af7c02ca1f8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 242166412331822151, guid: b6b40b04b7b03de4791a1af7c02ca1f8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6365087238517817071, guid: b6b40b04b7b03de4791a1af7c02ca1f8,
+        type: 3}
+      propertyPath: m_Name
+      value: PollMonitor
+      objectReference: {fileID: 0}
+    - target: {fileID: 8632956781883003746, guid: b6b40b04b7b03de4791a1af7c02ca1f8,
+        type: 3}
+      propertyPath: pollInfoPopupWindow
+      value: 
+      objectReference: {fileID: 2804447203843726831, guid: 0e2e4d3f770bad94d936775e361a5a4a,
+        type: 3}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b6b40b04b7b03de4791a1af7c02ca1f8, type: 3}
 --- !u!1 &1556160748
 GameObject:
   m_ObjectHideFlags: 0
@@ -674,31 +748,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 457baf15096b8ad448adc0786c98732a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activeChatChannel:
-    _id: 
-    _channelName: 
-    _chatChannelType: 3
-    _firstMsgIndex: 1
-    _lastMsgIndex: 0
-  _globalChatChannel:
-    _id: 
-    _channelName: 
-    _chatChannelType: 3
-    _firstMsgIndex: 1
-    _lastMsgIndex: 0
-  _clanChatChannel:
-    _id: 
-    _channelName: 
-    _chatChannelType: 3
-    _firstMsgIndex: 1
-    _lastMsgIndex: 0
-  _countryChatChannel:
-    _id: 
-    _channelName: 
-    _chatChannelType: 3
-    _firstMsgIndex: 1
-    _lastMsgIndex: 0
-  _chatChannels: []
   _chatMessages: []
 --- !u!4 &1704802351
 Transform:
@@ -727,6 +776,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cb188fff0722d646b41d1e9c384deb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _chat: {fileID: 0}
+  _messagePrefabs: []
 --- !u!1001 &2585506312612423824
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1070,3 +1121,4 @@ SceneRoots:
   - {fileID: 667346631}
   - {fileID: 7892368298725135790}
   - {fileID: 2585506312612423824}
+  - {fileID: 1506052118}

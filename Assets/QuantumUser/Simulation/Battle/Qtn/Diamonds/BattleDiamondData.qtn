@@ -1,5 +1,9 @@
 component BattleDiamondDataQComponent
 {
-    BattleTeamNumber OwnerTeam;
-    FP TimeUntilDisappearance;
+    FrameTimer LifetimeTimer;
+    bool IsTraveling;
+    FP TravelSpeed;
+    FPVector2 TravelDirection;
+    FPVector2 StartPosition;
+    FP TargetDistance;
 }

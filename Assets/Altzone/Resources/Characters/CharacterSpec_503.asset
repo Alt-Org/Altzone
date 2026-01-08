@@ -14,30 +14,47 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 503
   CharacterId: 503
-  IsApproved: 0
-  Name: Anoreksia
+  IsApproved: 1
+  FinnishName: Anoreksia
+  EnglishName: Anorexia
   ClassType: 500
-  CharacterDescription: 
-  CharacterShortDescription: 
-  CharacterStats: {fileID: 0}
+  CharacterDescriptionFinnish: "Kun Anoreksia asettuu ihmiseen asumaan, se saa t\xE4m\xE4n
+    uskomaan, ett\xE4 hallinta on sama asia kuin rauha. Ihminen alkaa k\xE4\xE4nt\xE4\xE4
+    levottomuuden ja pelon kurinalaisuudeksi, joka kohdistuu omaan kehoon \u2014
+    kuin kipu ja n\xE4lk\xE4 voisivat pit\xE4\xE4 kaaoksen poissa. Jokainen kielt\xE4ytyminen
+    tuo hetkeksi tunteen voimasta, mutta samalla h\xE4n katoaa yh\xE4 syvemm\xE4lle
+    oman kontrollinsa varjoon. Anoreksia opettaa kielt\xE4ytym\xE4\xE4n el\xE4m\xE4st\xE4,
+    jotta voisi tuntea olevansa turvassa, vaikka juuri se turvallisuus on se, mik\xE4
+    h\xE4vi\xE4\xE4 ensimm\xE4isen\xE4.\r\n\nVuorovaikutuskent\xE4ll\xE4 (Ego Clash)
+    anoreksian suojakilpen\xE4 toimii tyhj\xE4 valkoinen lautanen \u2013 t\xE4ydellisyyden
+    ja hallinnan symboli. Jokainen tunnetila-ammus saa kilven pienentym\xE4\xE4n,
+    aivan kuin jokainen tunteen torjuminen kutistaisi h\xE4nen maailmansa. Kun lautanen
+    lopulta katoaa, paljastuu hauras hahmo, joka on kuluttanut loppuun paitsi voimansa,
+    my\xF6s suojansa. Torjunta on t\xE4ydellinen \u2013 ja siksi hengenvaarallinen.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Itse\xE4\xE4n n\xE4l\xE4ll\xE4 rankaiseva, tyhjyyden
+    t\xE4ytt\xE4j\xE4."
+  CharacterShortDescriptionEnglish: 
+  CharacterStats: {fileID: 11400000, guid: 82159d8c17c1d4740b7177639572ca30, type: 2}
   Hp:
-    Level: 0
-    Coefficient: 0
+    Level: 1
+    Coefficient: 3
   Speed:
-    Level: 0
+    Level: 3
     Coefficient: 0
   CharacterSize:
-    Level: 0
+    Level: 1
     Coefficient: 0
   Attack:
-    Level: 0
-    Coefficient: 0
+    Level: 3
+    Coefficient: 5
   Defence:
-    Level: 0
-    Coefficient: 0
-  GalleryImage: {fileID: 0}
-  GalleryHeadImage: {fileID: 0}
+    Level: 2
+    Coefficient: 2
+  GalleryImage: {fileID: 21300000, guid: f7b73dd5a41318d43aca22d47ebc23c1, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: 7f0ccc03fc025544cbd6e5592ec3f5f4, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
-      Value: 0
+      Value: 1511606100970463187
   BattleUiSprite: {fileID: 0}

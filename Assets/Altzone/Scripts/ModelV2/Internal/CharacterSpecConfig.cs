@@ -75,8 +75,8 @@ namespace Altzone.Scripts.ModelV2.Internal
         /// </summary>
         /// <param name="id">the character id</param>
         /// <returns>the PlayerCharacterPrototype or null if not found</returns>
-        public ModelV2.PlayerCharacterPrototype GetCharacter(string id) =>
-            _runtimePrototypes.FirstOrDefault(x => x.Id == id) ?? _fallBackPrototype;
+        public ModelV2.PlayerCharacterPrototype GetCharacter(string id, bool fallback) =>
+            _runtimePrototypes.FirstOrDefault(x => x.Id == id) ?? (fallback ? _fallBackPrototype: null);
 
         /// <summary>
         /// Gets current (configured) player character prototypes in the game.
@@ -115,7 +115,7 @@ namespace Altzone.Scripts.ModelV2.Internal
             var uniqueNames = new HashSet<string>();
             foreach (var character in instance._characters)
             {
-                if (character.ClassType == CharacterClassID.None && character.CharacterId != CharacterID.Test)
+                if (character.ClassType == CharacterClassType.None && character.CharacterId != CharacterID.Test)
                 {
                     Debug.LogError($"invalid ClassType {character}", character);
                     continue;

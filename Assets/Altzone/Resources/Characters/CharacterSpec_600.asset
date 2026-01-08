@@ -15,17 +15,20 @@ MonoBehaviour:
   Id: 600
   CharacterId: 600
   IsApproved: 1
-  Name: TestiSulautuja
+  FinnishName: TestiConfluent
+  EnglishName: TestConfluent
   ClassType: 600
-  CharacterDescription: 
-  CharacterShortDescription: 
+  CharacterDescriptionFinnish: 
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: 
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: c6fc0aeb106c39147a5c9673b10c9a44, type: 2}
   Hp:
     Level: 2
     Coefficient: 5
   Speed:
-    Level: 2
-    Coefficient: 4
+    Level: 1
+    Coefficient: 0
   CharacterSize:
     Level: 12
     Coefficient: 2
@@ -38,6 +41,7 @@ MonoBehaviour:
   GalleryImage: {fileID: 49914648, guid: 0b8c7df743389e04b9b2394020e2274c, type: 3}
   GalleryHeadImage: {fileID: 3323784572005849981, guid: 6b7f8f6787aebdc4da339e49694e1f45,
     type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
       Value: 0

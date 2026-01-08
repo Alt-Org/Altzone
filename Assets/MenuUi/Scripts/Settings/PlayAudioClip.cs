@@ -1,5 +1,4 @@
 using Altzone.Scripts.Audio;
-using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -14,8 +13,9 @@ enum PlayType
 public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
 {
     [SerializeField] string _audioCategory = "";
+    [SerializeField] AudioCategoryType _categoryType;
     [SerializeField] string _audioName = "";
-    [SerializeField] SoundPlayType _audioPlayType = SoundPlayType.Default;
+
     [SerializeField, Tooltip("Determines which event to use in order to play the audio clip. OnClick: sound will play when the button is released, OnPointerDown: sound will play when button press is started, Both: sound will play at both of these events")]
     private PlayType _playType = PlayType.OnClick;
 
@@ -61,7 +61,10 @@ public class PlayAudioClip : MonoBehaviour, IPointerDownHandler
             return;
         }
 
-        manager.PlaySfxAudio(_audioCategory, _audioName);
+        if (_categoryType != AudioCategoryType.None)
+            manager.PlaySfxAudio(_categoryType, _audioName, 1f);
+        else
+            manager.PlaySfxAudio(_audioCategory, _audioName);
     }
 
     public void OnPointerDown(PointerEventData eventData)

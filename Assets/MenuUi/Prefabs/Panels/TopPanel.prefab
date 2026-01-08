@@ -564,7 +564,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 44.1
+  m_fontSize: 48
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -759,6 +759,7 @@ GameObject:
   - component: {fileID: 4131663183866568055}
   - component: {fileID: 2220459957117421917}
   - component: {fileID: 3360418038761902357}
+  - component: {fileID: 2688736033951521283}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -897,6 +898,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
+--- !u!114 &2688736033951521283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4633130233667892654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioCategory: 
+  _categoryType: 1
+  _audioName: Select
+  _playType: 0
 --- !u!1 &4699019827900075299
 GameObject:
   m_ObjectHideFlags: 0
@@ -961,6 +978,7 @@ GameObject:
   - component: {fileID: 1111630474515074779}
   - component: {fileID: 533151615239802561}
   - component: {fileID: 4133910833838607258}
+  - component: {fileID: 1146064189310141320}
   m_Layer: 0
   m_Name: ClanButton
   m_TagString: Untagged
@@ -1089,6 +1107,22 @@ MonoBehaviour:
   _isCurrentPopOutWindow: 0
   _alternateNaviTarget: {fileID: 11400000, guid: da267440bc28e8e42a2de37a4a58656b,
     type: 2}
+--- !u!114 &1146064189310141320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4983552070814566051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioCategory: 
+  _categoryType: 1
+  _audioName: Select
+  _playType: 0
 --- !u!1 &5004810558358293138
 GameObject:
   m_ObjectHideFlags: 0
@@ -1577,9 +1611,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _audioCategory: Soulhome
-  _audioName: ButtonClick
-  _audioPlayType: 0
+  _audioCategory: 
+  _categoryType: 1
+  _audioName: Select
   _playType: 0
 --- !u!114 &3467556909806299412
 MonoBehaviour:
@@ -1631,6 +1665,8 @@ GameObject:
   - component: {fileID: 7990477652683786473}
   - component: {fileID: 4717476275841633432}
   - component: {fileID: 753495226827427253}
+  - component: {fileID: 3157596432357718539}
+  - component: {fileID: 2639610954332126333}
   m_Layer: 5
   m_Name: AddClanCoinsButton
   m_TagString: Untagged
@@ -1723,9 +1759,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _audioCategory: Soulhome
-  _audioName: ButtonClick
-  _audioPlayType: 1
+  _audioCategory: 
+  _categoryType: 1
+  _audioName: Select
   _playType: 0
 --- !u!114 &753495226827427253
 MonoBehaviour:
@@ -1757,6 +1793,40 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3157596432357718539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6393869949846683486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 5
+  _educationCategoryActionType: 13
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
+--- !u!114 &2639610954332126333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6393869949846683486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 835b61347be3afd42884914ff805f122, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _longClickStartThresholdTime: 0.2
+  _longClickThresholdTime: 3
+  _uniqueName: 
 --- !u!1 &6901067652087171277
 GameObject:
   m_ObjectHideFlags: 0
@@ -2131,7 +2201,7 @@ PrefabInstance:
     - target: {fileID: 4395214235301648805, guid: 242eb41c9b6db9841a5c6610aa625c54,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: -0.3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4395214235301648805, guid: 242eb41c9b6db9841a5c6610aa625c54,
         type: 3}
@@ -2141,7 +2211,7 @@ PrefabInstance:
     - target: {fileID: 4395214235301648805, guid: 242eb41c9b6db9841a5c6610aa625c54,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0.0000009536743
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4395214235301648805, guid: 242eb41c9b6db9841a5c6610aa625c54,
         type: 3}
@@ -2414,9 +2484,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _audioCategory: Soulhome
-  _audioName: ButtonClick
-  _audioPlayType: 1
+  _audioCategory: 
+  _categoryType: 1
+  _audioName: Select
   _playType: 0
 --- !u!114 &1684328267666134666 stripped
 MonoBehaviour:
@@ -2857,6 +2927,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 2756944372282398758}
+    - targetCorrespondingSourceObject: {fileID: 5490945982148460650, guid: 71a38dbc9d18bd44f9de8793036dbead,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8083166027690068061}
   m_SourcePrefab: {fileID: 100100000, guid: 71a38dbc9d18bd44f9de8793036dbead, type: 3}
 --- !u!1 &574872428332282056 stripped
 GameObject:
@@ -2956,6 +3030,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8083166027690068061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 574872428332282056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioCategory: 
+  _categoryType: 1
+  _audioName: Select
+  _playType: 0
 --- !u!224 &7757244758250276161 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2337047324238083555, guid: 71a38dbc9d18bd44f9de8793036dbead,
@@ -3077,13 +3167,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4436600911169614933, guid: 6ed76551af8adab4891c0672fecd2de6,
         type: 3}
+      propertyPath: _playType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4436600911169614933, guid: 6ed76551af8adab4891c0672fecd2de6,
+        type: 3}
       propertyPath: _audioName
-      value: ButtonClick
+      value: Select
+      objectReference: {fileID: 0}
+    - target: {fileID: 4436600911169614933, guid: 6ed76551af8adab4891c0672fecd2de6,
+        type: 3}
+      propertyPath: _categoryType
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4436600911169614933, guid: 6ed76551af8adab4891c0672fecd2de6,
         type: 3}
       propertyPath: _audioCategory
-      value: Soulhome
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5971149165010106801, guid: 6ed76551af8adab4891c0672fecd2de6,
         type: 3}

@@ -1,15 +1,16 @@
-using System.Collections.Generic;
-using System.Linq;
-using TMPro;
-using UnityEngine;
-using Altzone.Scripts.Model.Poco.Game;
-using Altzone.Scripts;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
-using UnityEngine.UI;
+using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using static SettingsCarrier;
 
 namespace MenuUi.Scripts.Storage
 {
@@ -33,6 +34,7 @@ namespace MenuUi.Scripts.Storage
         [SerializeField] private List<Sprite> _icons; // Place images in this list for use as icons, but also, the exact name of the image must be set in the GameFurniture string Filename
         [SerializeField] private StorageFurnitureReference _furnitureReference;
 
+        [SerializeField] private DailyTaskSelectButtons _dailyTaskSelectButtons;
 
         [Header("Information GameObject")]
         [SerializeField] private Image _icon;
@@ -278,6 +280,7 @@ namespace MenuUi.Scripts.Storage
 
         private void MakeSlots()
         {
+            if (_dailyTaskSelectButtons) _dailyTaskSelectButtons.ResetList();
             for (int i = 0; i < _items.Count; i++)
             {
                 GameObject newSlot = Instantiate(_invSlot, _content);
@@ -289,7 +292,9 @@ namespace MenuUi.Scripts.Storage
                     OnShowInfo(capturedSlotVal);
                 });
                 _slotsList.Add(newSlot);
+                if (_dailyTaskSelectButtons) _dailyTaskSelectButtons.AddButton(new(newSlot.GetComponent<Button>(), newSlot.GetComponent<InvSlotInfoHandler>().Icon));
             }
+            if (_dailyTaskSelectButtons) _dailyTaskSelectButtons.RefreshListeners();
             //Instantiate(_buySlot, _content);
         }
 
@@ -322,14 +327,28 @@ namespace MenuUi.Scripts.Storage
             SortStored();
         }
 
-        private void SortStored() // A very much hardcoded system for sorting 
+        private void SortStored() // A very much hardcoded system for sorting, language options contain a fallback if the chosen language is null
         {
+            var lang = SettingsCarrier.Instance.Language; // using helper might be a better way [switch (lang)],
+
             switch (_sortingBy)
             {
                 case 0:
-                    _sortingByText.text = "Järjestetty: Aakkoset";
+                    if (lang == SettingsCarrier.LanguageType.Finnish)
+                    {
+                        _sortingByText.text = "Järjestetty: Aakkoset";
+                    }
+                    else if (lang == SettingsCarrier.LanguageType.English)
+                    {
+                        _sortingByText.text = "Sorting: Alphabetical";
+                    }
+                    else
+                    {
+                        _sortingByText.text = "Sorting: Alphabetical";
+                    }
 
-                    _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                    _items.Sort((StorageFurniture a, StorageFurniture b) =>
+                    {
                         StorageFurniture first = _descendingOrder ? b : a;
                         StorageFurniture second = _descendingOrder ? a : b;
 
@@ -341,12 +360,24 @@ namespace MenuUi.Scripts.Storage
 
                         return 0;
                     });
-
                     break;
-                case 1:
-                    _sortingByText.text = "Järjestetty: Arvo";
 
-                    _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                case 1:
+                    if (lang == SettingsCarrier.LanguageType.Finnish)
+                    {
+                        _sortingByText.text = "Järjestetty: Arvo";
+                    }
+                    else if (lang == SettingsCarrier.LanguageType.English)
+                    {
+                        _sortingByText.text = "Sorting: Value";
+                    }
+                    else
+                    {
+                        _sortingByText.text = "Sorting: Value";
+                    }
+
+                    _items.Sort((StorageFurniture a, StorageFurniture b) =>
+                    {
                         StorageFurniture first = _descendingOrder ? b : a;
                         StorageFurniture second = _descendingOrder ? a : b;
 
@@ -361,12 +392,24 @@ namespace MenuUi.Scripts.Storage
 
                         return 0;
                     });
-
                     break;
-                case 2:
-                    _sortingByText.text = "Järjestetty: Paino";
 
-                    _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                case 2:
+                    if (lang == SettingsCarrier.LanguageType.Finnish)
+                    {
+                        _sortingByText.text = "Järjestetty: Paino";
+                    }
+                    else if (lang == SettingsCarrier.LanguageType.English)
+                    {
+                        _sortingByText.text = "Sorting: Weight";
+                    }
+                    else
+                    {
+                        _sortingByText.text = "Sorting: Weight";
+                    }
+
+                    _items.Sort((StorageFurniture a, StorageFurniture b) =>
+                    {
                         StorageFurniture first = _descendingOrder ? b : a;
                         StorageFurniture second = _descendingOrder ? a : b;
 
@@ -381,12 +424,24 @@ namespace MenuUi.Scripts.Storage
 
                         return 0;
                     });
-
                     break;
-                case 3:
-                    _sortingByText.text = "Järjestetty: Harvinaisuus";
 
-                    _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                case 3:
+                    if (lang == SettingsCarrier.LanguageType.Finnish)
+                    {
+                        _sortingByText.text = "Järjestetty: Harvinaisuus";
+                    }
+                    else if (lang == SettingsCarrier.LanguageType.English)
+                    {
+                        _sortingByText.text = "Sorting: Rarity";
+                    }
+                    else
+                    {
+                        _sortingByText.text = "Sorting: Rarity";
+                    }
+
+                    _items.Sort((StorageFurniture a, StorageFurniture b) =>
+                    {
                         StorageFurniture first = _descendingOrder ? b : a;
                         StorageFurniture second = _descendingOrder ? a : b;
 
@@ -401,12 +456,24 @@ namespace MenuUi.Scripts.Storage
 
                         return 0;
                     });
-
                     break;
-                case 4:
-                    _sortingByText.text = "Järjestetty: Linjasto";
 
-                    _items.Sort((StorageFurniture a, StorageFurniture b) => {
+                case 4:
+                    if (lang == SettingsCarrier.LanguageType.Finnish)
+                    {
+                        _sortingByText.text = "Järjestetty: Linjasto";
+                    }
+                    else if (lang == SettingsCarrier.LanguageType.English)
+                    {
+                        _sortingByText.text = "Sorting: Set";
+                    }
+                    else
+                    {
+                        _sortingByText.text = "Sorting: Set";
+                    }
+
+                    _items.Sort((StorageFurniture a, StorageFurniture b) =>
+                    {
                         StorageFurniture first = _descendingOrder ? b : a;
                         StorageFurniture second = _descendingOrder ? a : b;
 
@@ -421,11 +488,12 @@ namespace MenuUi.Scripts.Storage
 
                         return 0;
                     });
-
                     break;
             }
+
             SetSlots();
         }
+
 
         void OnShowInfo(int slotVal)
         {
@@ -437,13 +505,73 @@ namespace MenuUi.Scripts.Storage
             ScaleSprite(_furn, _icon.rectTransform);
 
             // Name
-            _name.text = _furn.SetName + " " + _furn.VisibleName;
-            
+            var lang = SettingsCarrier.Instance.Language;
+
+            string setNameLocalized; // Localizing name
+            if (lang == SettingsCarrier.LanguageType.Finnish)
+            {
+                setNameLocalized = _furn.Info.SetName; // Finnish default (Setname)
+            }
+            else if (lang == SettingsCarrier.LanguageType.English)
+            {
+                setNameLocalized = !string.IsNullOrEmpty(_furn.Info.SetNameEnglish)
+                    ? _furn.Info.SetNameEnglish
+                    : _furn.Info.SetName;
+            }
+            else
+            {
+                setNameLocalized = _furn.Info.SetName; // Fallback if the language is null
+            }
+
+            // Set the furniture name based on the localization
+            string furnitureNameLocalized = lang == SettingsCarrier.LanguageType.English
+                ? _furn.Info.EnglishName   // Englishname for english
+                : _furn.Info.VisibleName;  // Visiblename for Finnish
+
+            // Combine set name and furniture name
+            _name.text = setNameLocalized + " " + furnitureNameLocalized;
+
             //Artists name
-            _artist.text = _furn.Info != null ? "Suunnittelu: " + _furn.Info.ArtistName : "Unknown Artist";
-            
+            if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+            {
+                _artist.text = _furn.Info != null
+                    ? "Suunnittelu: " + _furn.Info.ArtistName
+                    : "Tuntematon suunnittelija";
+            }
+            else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+            {
+                _artist.text = _furn.Info != null
+                    ? "Design: " + _furn.Info.ArtistName
+                    : "Unknown Artist";
+            }
+            else
+            {
+                // Fallback if the language is Null 
+                _artist.text = _furn.Info != null
+                    ? "Design: " + _furn.Info.ArtistName
+                    : "Unknown Artist";
+            }
+
             //Artistic description
-            _artisticDescription.text = _furn.Info.ArtisticDescription;
+            if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+            {
+                _artisticDescription.text = _furn.Info != null
+                    ? _furn.Info.ArtisticDescription
+                    : null;
+            }
+            else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+            {
+                _artisticDescription.text = _furn.Info != null
+                    ? _furn.Info.EnglishArtisticDescription
+                    : null;
+            }
+            else
+            {
+                // Fallback if the language is null
+                _artisticDescription.text = _furn.Info != null
+                    ? _furn.Info.ArtisticDescription
+                    : null;
+            }
 
             // Weight
             _weight.text = _furn.Weight + " KG";

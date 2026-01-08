@@ -46,6 +46,13 @@ public class LeaderboardPodium : MonoBehaviour
     private PlayerData _secondPlayerData;
     private PlayerData _thirdPlayerData;
 
+    private string TruncateName(string name, int maxLength = 24)
+    {
+        if (string.IsNullOrEmpty(name)) return "";
+        if (name.Length <= maxLength) return name;
+        return name.Substring(0, maxLength - 3) + "...";
+    }
+
     public void InitilializePodium(int rank, string name, int points, ClanData clanData, ServerClan serverClan)
     {
         switch (rank)
@@ -96,7 +103,7 @@ public class LeaderboardPodium : MonoBehaviour
 
     private void InitializeFirstPlace(string firstName, int firstPoints, ClanData clanData = null, ServerClan serverClan = null, PlayerData playerData = null, ClanLogo logo= null)
     {
-        _firstName.text = firstName;
+        _firstName.text = TruncateName(firstName);
         _firstPoints.text = firstPoints.ToString();
 
         if (_isClanView)
@@ -121,10 +128,10 @@ public class LeaderboardPodium : MonoBehaviour
 
                 AvatarVisualData avatarVisualData = null;
 
-                if (/*ranking.Player.SelectedCharacterId != 201 &&*/ playerData.SelectedCharacterId != 0)
-                {
-                    avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
-                }
+               
+                
+                    avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData);
+                
                 if (avatarVisualData != null)
                 {
                     _firstAvatarHead.GetComponent<AvatarFaceLoader>().UpdateVisuals(avatarVisualData);
@@ -136,7 +143,7 @@ public class LeaderboardPodium : MonoBehaviour
 
     private void InitializeSecondPlace(string secondName, int secondPoints, ClanData clanData = null, ServerClan serverClan = null, PlayerData playerData = null, ClanLogo logo = null)
     {
-        _secondName.text = secondName;
+        _secondName.text = TruncateName(secondName);
         _secondPoints.text = secondPoints.ToString();
 
         if (_isClanView)
@@ -161,10 +168,10 @@ public class LeaderboardPodium : MonoBehaviour
 
                 AvatarVisualData avatarVisualData = null;
 
-                if (/*ranking.Player.SelectedCharacterId != 201 &&*/ playerData.SelectedCharacterId != 0)
-                {
-                    avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
-                }
+            
+                
+                    avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData);
+                
                 if (avatarVisualData != null)
                 {
                     _secondAvatarHead.GetComponent<AvatarFaceLoader>().UpdateVisuals(avatarVisualData);
@@ -175,7 +182,7 @@ public class LeaderboardPodium : MonoBehaviour
 
     private void InitializeThirdPlace(string thirdName, int thirdPoints, ClanData clanData = null, ServerClan serverClan = null, PlayerData playerData = null, ClanLogo logo = null)
     {
-        _thirdName.text = thirdName;
+        _thirdName.text =TruncateName(thirdName);
         _thirdPoints.text = thirdPoints.ToString();
 
         if (_isClanView)
@@ -204,10 +211,10 @@ public class LeaderboardPodium : MonoBehaviour
 
                 AvatarVisualData avatarVisualData = null;
 
-                if (/*ranking.Player.SelectedCharacterId != 201 &&*/ playerData.SelectedCharacterId != 0)
-                {
-                    avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(playerData);
-                }
+               
+                
+                    avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData);
+                
                 if (avatarVisualData != null)
                 {
                     _thirdAvatarHead.GetComponent<AvatarFaceLoader>().UpdateVisuals(avatarVisualData);

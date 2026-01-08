@@ -10,11 +10,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         public SleepyHeadCharacter() : base()
         {
             _id = CharacterID.SleepyHead;
-            _defaultAttack = 2;
-            _defaultDefence = 11;
+            _defaultAttack = 1;
+            _defaultDefence = 4;
             _defaultHp = 2;
-            _defaultCharacterSize = 12;
-            _defaultSpeed = 2;
+            _defaultCharacterSize = 3;
+            _defaultSpeed = 1;
             InitializeValues();
         }
     }

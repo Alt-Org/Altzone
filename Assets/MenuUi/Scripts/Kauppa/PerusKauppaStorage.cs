@@ -58,17 +58,31 @@ public class PerusKauppaStorage : ShopPanelStorage
 
     protected override void HandleGameFurnitureCreation(ReadOnlyCollection<GameFurniture> gameFurnitures)
     {
-        foreach(GameFurniture furniture in gameFurnitures)
+        StartCoroutine(ShopGameFurnitureCreation(gameFurnitures));
+    }
+
+    protected IEnumerator ShopGameFurnitureCreation(ReadOnlyCollection<GameFurniture> gameFurnitures)
+    {
+        List<GameFurniture> furnitures = null;
+        bool fetchingfurnitures = true;
+        StartCoroutine(ServerManager.Instance.GetClanShopListFromServer(r =>
+        {
+            furnitures = r;
+            fetchingfurnitures = false;
+        }));
+
+        yield return new WaitUntil(() => fetchingfurnitures == false);
+        foreach (GameFurniture furniture in gameFurnitures)
             this.gameFurnitures.Add(furniture);
 
         ListHelper.Shuffle(this.gameFurnitures);
 
-        foreach(GameFurniture furniture1 in gameFurnitures)
+        foreach(GameFurniture furniture1 in furnitures)
         {
             if (furniture1 == null)
             {
                 Debug.LogError("gameFurniture is null. Ensure it is assigned before calling Initialize.");
-                return;
+                yield break;
             }
 
             if (_rarityToParent.TryGetValue(furniture1.Rarity, out Transform _parent))

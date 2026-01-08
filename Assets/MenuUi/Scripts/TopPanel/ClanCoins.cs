@@ -55,20 +55,24 @@ namespace MenuUi.Scripts.TopPanel
 
         public void AddCoins(int addAmount)
         {
-            PlayerData playerData = null;
-
-            StartCoroutine(GetPlayerData(p => playerData = p));
-            if (playerData != null && playerData.HasClanId)
+            StartCoroutine(ServerManager.Instance.AddCoinsToClan(addAmount, result =>
             {
-                string clanId = playerData.ClanId;
-                StartCoroutine(GetClanData(p => _clanData = p, clanId));
-                if (_clanData != null)
+                PlayerData playerData = null;
+
+                StartCoroutine(GetPlayerData(p => playerData = p));
+                if (playerData != null && playerData.HasClanId)
                 {
-                    _clanData.GameCoins += addAmount;
-                    _clanCoinsAmountText.text = _clanData.GameCoins.ToString();
-                    return;
+                    string clanId = playerData.ClanId;
+                    StartCoroutine(GetClanData(p => _clanData = p, clanId));
+                    if (_clanData != null)
+                    {
+                        _clanData.GameCoins += addAmount;
+                        _clanCoinsAmountText.text = _clanData.GameCoins.ToString();
+                        Debug.Log($"Coins added: {addAmount}");
+                        return;
+                    }
                 }
-            }
+            }));
         }
     }
 }

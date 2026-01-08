@@ -32,7 +32,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 string lookupId = ((int)charID).ToString();
                 PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(lookupId);
                 
-                if (info.Id != lookupId)
+                if (info == null ||info.Id != lookupId)
                 {
                     _selectedCharSlots[i].SetCharacterVisibility(false);
                     continue;
@@ -42,11 +42,12 @@ namespace MenuUi.Scripts.CharacterGallery
                     _selectedCharSlots[i].SetCharacterVisibility(true);
                 }
 
-                CharacterClassID classID = CustomCharacter.GetClassID(charID);
-                Color bgColor = _classReference.GetColor(classID);
-                Color bgAltColor = _classReference.GetAlternativeColor(classID);
+                CharacterClassType classType = CustomCharacter.GetClass(charID);
+                Color bgColor = _classReference.GetColor(classType);
+                Color bgAltColor = _classReference.GetAlternativeColor(classType);
+                Sprite classIcon = _classReference.GetCornerIcon(classType);
 
-                _selectedCharSlots[i].SetInfo(selectedCharacters[i], info.GalleryImage,bgColor, bgAltColor, info.Name, _classReference.GetName(classID));
+                _selectedCharSlots[i].SetInfo(selectedCharacters[i], info.GalleryHeadImage,bgColor, bgAltColor, info.Name, _classReference.GetName(classType), classIcon);
             }
           
         }

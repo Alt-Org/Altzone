@@ -15,32 +15,48 @@ MonoBehaviour:
   Id: 101
   CharacterId: 101
   IsApproved: 1
-  Name: Vihapuhe
+  FinnishName: Vihapuhe
+  EnglishName: Hate Speech
   ClassType: 100
-  CharacterDescription: "Vihapuhe n\xE4kee maailman mustavalkoisena ja uskoo vankkumattomasti
-    oman ryhm\xE4ns\xE4 puhtauteen ja ylivertaisuuteen. H\xE4n on sinisilm\xE4inen
-    ja suvaitsematon soturi, joka kansanmielisen kiihkon voimaannuttamana on aina
-    etulinjassa puolustamassa aatettaan.\r\n\nVihapuheen suojakilpen\xE4 toimii suomenlippu,
-    joka antaa h\xE4nelle is\xE4nmaallista voimaa vastustaa tunnetila-ammuksia.\r\n"
-  CharacterShortDescription: "Is\xE4nmaallisen kiihkon voimaannuttama etulinjan taistelija."
+  CharacterDescriptionFinnish: "Kun Vihapuhe asettuu ihmiseen asumaan, h\xE4n saa
+    t\xE4m\xE4n pelk\xE4\xE4m\xE4\xE4n omaa ep\xE4varmuuttaan niin paljon, ett\xE4
+    siit\xE4 tulee varmuutta. Ihminen alkaa puhua kovaa, koska hiljaisuus tuntuisi
+    paljastumiselta. H\xE4n etsii todisteita, jotka vahvistavat h\xE4nen oikeutensa
+    olla oikeassa, ja torjuu kaiken, mik\xE4 voisi horjuttaa sit\xE4. Jokainen tunteen
+    aalto muuttuu sanaksi, jokainen kysymys v\xE4ittelyksi, jokainen haavoittuvuus
+    hy\xF6kk\xE4ykseksi. Vihapuhe opettaa uskomaan, ett\xE4 suoja on sama asia kuin
+    voima. Niin ihminen oppii k\xE4tkem\xE4\xE4n pelkonsa sanoihin, jotka sulkevat
+    toiset ulos. Samalla h\xE4n menett\xE4\xE4 yhteyden siihen, mit\xE4 nuo sanat
+    olivat alun perin suojaamassa \u2013 tarpeeseen tulla n\xE4hdyksi ja hyv\xE4ksytyksi.\r\n\nVuorovaikutuskent\xE4ll\xE4
+    (Ego Clash) Vihapuhe k\xE4ytt\xE4\xE4 suojanaan Suomen lippua, joka liehuu h\xE4nen
+    edess\xE4\xE4n kuin totuuden merkki. Jokainen tunnetila-ammus, joka osuu siihen,
+    vahvistaa h\xE4nen uskoaan omaan oikeuteensa. Mutta todellisuudessa jokainen
+    isku kovettaa h\xE4nt\xE4 hieman lis\xE4\xE4, ja v\xE4rit lipussa haalistuvat.
+    Kun lippu lopulta hiljenee, n\xE4kyviin j\xE4\xE4 vain tyhj\xE4 kentt\xE4 \u2014
+    ja se hetki, jolloin yhteys olisi ollut mahdollinen.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Varmuuden taakse k\xE4tkeytyv\xE4,  pelkonsa
+    kovettanut taistelija. "
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 43a885835704aa94a8649d5c7a6d471d, type: 2}
   Hp:
     Level: 1
     Coefficient: 7
   Speed:
-    Level: 3
-    Coefficient: 6
+    Level: 2
+    Coefficient: 0
   CharacterSize:
-    Level: 8
-    Coefficient: 4
+    Level: 3
+    Coefficient: 0
   Attack:
-    Level: 6
+    Level: 2
     Coefficient: 2
   Defence:
-    Level: 12
+    Level: 2
     Coefficient: 1
   GalleryImage: {fileID: 21300000, guid: ee90161b5d39ec9418fa0aa77146b2f1, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 3a91007670e94a042adbd4e5336367ef, type: 3}
+  CharPhotoSeries: {fileID: 21300000, guid: 5a467697ed5ac2c4e8be100d38987a22, type: 3}
   BattleEntityPrototype:
     Id:
       Value: 1529692275062825961

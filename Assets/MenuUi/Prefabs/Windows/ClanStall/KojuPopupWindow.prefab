@@ -1350,7 +1350,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -45.045837}
+  m_AnchoredPosition: {x: 0, y: -45.0459}
   m_SizeDelta: {x: 0, y: 60.291687}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6513019507352800917
@@ -1794,7 +1794,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1837,6 +1837,7 @@ GameObject:
   - component: {fileID: 400857129563694600}
   - component: {fileID: 4675585972277167548}
   - component: {fileID: 5863745566099032614}
+  - component: {fileID: 3590095376945198867}
   m_Layer: 5
   m_Name: KojuPopupWindow
   m_TagString: Untagged
@@ -1864,7 +1865,7 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 1}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &400857129563694600
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1921,6 +1922,25 @@ MonoBehaviour:
   removePopupBackground: {fileID: 4730214526186882222}
   rarityColourReference: {fileID: 11400000, guid: 994101a8dd6935c4c8ab9f6709e0b18e,
     type: 2}
+--- !u!114 &3590095376945198867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2082420161837013928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 1
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 13
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
 --- !u!1 &2413911997517120008
 GameObject:
   m_ObjectHideFlags: 0
@@ -2092,7 +2112,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 8}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -28.427734, y: -42.30005}
+  m_AnchoredPosition: {x: -28.427673, y: -42.30005}
   m_SizeDelta: {x: 363.0135, y: 175}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &7664754437684546916
@@ -3668,7 +3688,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6384110989186620371}
   - {fileID: 2457134173098979987}
@@ -3681,8 +3701,8 @@ RectTransform:
   - {fileID: 6941597314175588262}
   m_Father: {fileID: 190456095295517285}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.2, y: 0.3}
+  m_AnchorMax: {x: 0.8, y: 0.7}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3770,7 +3790,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -5356,7 +5376,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.17222223, y: 0.17333335}
   m_AnchorMax: {x: 0.8222223, y: 0.73333335}
-  m_AnchoredPosition: {x: -7.3721924, y: 30.98999}
+  m_AnchoredPosition: {x: -7.372162, y: 30.98999}
   m_SizeDelta: {x: -34.149, y: -61.98}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8318877374220989626

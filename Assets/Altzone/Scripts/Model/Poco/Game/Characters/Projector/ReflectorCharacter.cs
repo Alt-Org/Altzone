@@ -10,11 +10,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         public ReflectorCharacter() : base()
         {
             _id = CharacterID.Reflector;
-            _defaultAttack = 7;
-            _defaultDefence = 10;
-            _defaultHp = 3;
-            _defaultCharacterSize = 8;
-            _defaultSpeed = 4;
+            _defaultAttack = 3;
+            _defaultDefence = 3;
+            _defaultHp = 6;
+            _defaultCharacterSize = 2;
+            _defaultSpeed = 5;
             InitializeValues();
         }
     }

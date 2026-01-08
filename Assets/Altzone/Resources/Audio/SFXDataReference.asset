@@ -14,296 +14,306 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _soundCategories:
   - Name: Soulhome
+    Type: 2
     SoundEffects:
     - Name: ButtonClick
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: e5981b40496d06a41a40bbdf19979cc1, type: 3}
       Volume: 1
     - Name: RotateFurniture
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: c9c7e007b560e344999cf54981e48e63, type: 3}
       Volume: 1
     - Name: SetFurniture
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: 05159326a43b0174089e3f1feb831221, type: 3}
       Volume: 1
     - Name: RevertChanges
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: ac4fc31bbf40c154a9ab66f2a00b7829, type: 3}
       Volume: 1
     - Name: SaveChanges
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: 6ecdddc5bc5fe464695742e9c11bbfc2, type: 3}
       Volume: 1
     - Name: PopupError
+      BattleName: -1
       Type: 0
       Audio: {fileID: 8300000, guid: 795733a099b280d40aa73ff414c97408, type: 3}
       Volume: 1
   - Name: MainMenu_SlowSteps
+    Type: 1
     SoundEffects:
     - Name: NavButton1
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: f5a280cff51bdf047bf8ec595c31ead0, type: 3}
       Volume: 1
     - Name: NavButton2
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: 8c923384c7a2029499e9a46a9f8bf2d8, type: 3}
       Volume: 1
     - Name: NavButton3
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: dee48b466eea2944f8ea8c13aa271f14, type: 3}
       Volume: 1
     - Name: NavButton4
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: 80459d6b27dece14e869c3aee868869b, type: 3}
       Volume: 1
     - Name: NavButton5
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: 0f580d8b3d9b9414589280f3e5153676, type: 3}
       Volume: 1
-    - Name: GeneralButton1
-      Type: 1
-      Audio: {fileID: 8300000, guid: 6d68dc07417f2bf49853a357607003e1, type: 3}
-      Volume: 1
-    - Name: GeneralButton2
-      Type: 1
-      Audio: {fileID: 8300000, guid: 7ff11d8208748b546940124617d7b671, type: 3}
-      Volume: 1
-    - Name: GeneralButton3
-      Type: 1
-      Audio: {fileID: 8300000, guid: 43709208acf58104fbc7900b7abe386d, type: 3}
-      Volume: 1
-    - Name: GeneralButton4
-      Type: 1
-      Audio: {fileID: 8300000, guid: 84c8eab3299ce754bae9b46febe850c0, type: 3}
-      Volume: 1
-    - Name: GeneralButton5
-      Type: 1
-      Audio: {fileID: 8300000, guid: a703ad4f187dfc8408e9baca6c0b9f96, type: 3}
-      Volume: 1
-    - Name: GeneralButton6
-      Type: 1
-      Audio: {fileID: 8300000, guid: 92c73a53b254e9e45b5150dcafe1d900, type: 3}
-      Volume: 1
-    - Name: GeneralButton7
+    - Name: Select
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: bb1eea808470a4844bb0a05a348cc4f7, type: 3}
       Volume: 1
-    - Name: GeneralButton8
-      Type: 1
-      Audio: {fileID: 8300000, guid: 3dbe2bb3844eaf94ea6fa7ca41c4e6ca, type: 3}
-      Volume: 1
-    - Name: GeneralButton9
-      Type: 1
-      Audio: {fileID: 8300000, guid: a531a22b18c07c04db9ef13c66048efa, type: 3}
-      Volume: 1
-    - Name: GeneralButton10
+    - Name: Back
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: 447633e9a1e1914479d8b2c278f41fbc, type: 3}
       Volume: 1
-    - Name: GeneralButton11
-      Type: 1
-      Audio: {fileID: 8300000, guid: 4f60d77a16bc4c247ae26cdf17773bae, type: 3}
-      Volume: 1
-    - Name: GeneralButton12
-      Type: 1
-      Audio: {fileID: 8300000, guid: adec95356a1d8bc41bf0f867eeda4b52, type: 3}
-      Volume: 1
-    - Name: GeneralButton13
-      Type: 1
-      Audio: {fileID: 8300000, guid: 8fc24ebf44e06954aa87ffa5e9a5827d, type: 3}
-      Volume: 1
-    - Name: GeneralButton14
-      Type: 1
-      Audio: {fileID: 8300000, guid: f195fe1970eb9a94faac818d7a94873b, type: 3}
-      Volume: 1
-    - Name: GeneralButton15
-      Type: 1
-      Audio: {fileID: 8300000, guid: c3058f8eaedd1e843a6ffb724e6e1103, type: 3}
-      Volume: 1
   - Name: Battle_Common
+    Type: 4
     SoundEffects:
-    - Name: DiamondAppears
-      Type: 0
-      Audio: {fileID: 8300000, guid: a49df0fafb838bb4bb12d1db861d2180, type: 3}
-      Volume: 1
-    - Name: WallBreaking
-      Type: 0
-      Audio: {fileID: 8300000, guid: 95bda2344d4425241b2cbebfe061b59e, type: 3}
-      Volume: 1
-    - Name: WallHit1
+    - Name: SoulWallHitDefault
+      BattleName: 0
       Type: 0
       Audio: {fileID: 8300000, guid: 3c7bb8f93a5ef644a8b6e29cb1eba772, type: 3}
       Volume: 1
-    - Name: WallHit2
-      Type: 0
-      Audio: {fileID: 8300000, guid: 9ee533f3735a9234a9990c730eb654fc, type: 3}
-      Volume: 1
     - Name: DiamondPickUp
+      BattleName: 4
       Type: 0
-      Audio: {fileID: 8300000, guid: 088ecb10dc392be458c649955ad0b2f2, type: 3}
+      Audio: {fileID: 8300000, guid: 4c953d02f47355f47af2b79f59124e8a, type: 3}
       Volume: 1
-    - Name: ShieldChange
+    - Name: SoulWallHitAggression
+      BattleName: 5
       Type: 0
-      Audio: {fileID: 8300000, guid: 72fdaccb412f7d9478491db1f43c985d, type: 3}
+      Audio: {fileID: 8300000, guid: 7a26b5355f06b314eb50d59483f236ef, type: 3}
       Volume: 1
-    - Name: SlingShooting1
+    - Name: SoulWallHitJoy
+      BattleName: 6
       Type: 0
-      Audio: {fileID: 8300000, guid: 9c699d362cb65114fb5bbdceee987126, type: 3}
+      Audio: {fileID: 8300000, guid: ac032bdbb839dfd4da4f94569b816fb3, type: 3}
       Volume: 1
-    - Name: SlingShooting2
+    - Name: SoulWallHitLove
+      BattleName: 7
       Type: 0
-      Audio: {fileID: 8300000, guid: 0a928d8e1eec6ff4e97c4713c04f2cbd, type: 3}
+      Audio: {fileID: 8300000, guid: 61c4739c08b032947a6ba78b2dabf81b, type: 3}
       Volume: 1
-    - Name: SlingShooting3
+    - Name: SoulWallHitPlayful
+      BattleName: 8
       Type: 0
-      Audio: {fileID: 8300000, guid: 302fb91e9c4e0464f9b5dc2632dc1341, type: 3}
+      Audio: {fileID: 8300000, guid: 864cb86282dba8b4583834acc1c2cb36, type: 3}
+      Volume: 1
+    - Name: SoulWallHitSadness
+      BattleName: 9
+      Type: 0
+      Audio: {fileID: 8300000, guid: da221b876a825ce47a5c134f4190a2fd, type: 3}
+      Volume: 1
+    - Name: GoalHit
+      BattleName: 1
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: SideWallHit
+      BattleName: 2
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: WallBroken
+      BattleName: 0
+      Type: 0
+      Audio: {fileID: 0}
       Volume: 1
   - Name: Battle_Raid
+    Type: 5
     SoundEffects:
     - Name: BombExplosion
+      BattleName: -1
       Type: 0
       Audio: {fileID: 8300000, guid: 6df582f58fefab44da5d0351b103d429, type: 3}
       Volume: 1
     - Name: ItemPickUp
+      BattleName: -1
       Type: 0
       Audio: {fileID: 8300000, guid: 7c094d45351ce2547a7597b2c750c025, type: 3}
       Volume: 1
     - Name: EndingCountdown
+      BattleName: -1
       Type: 0
       Audio: {fileID: 8300000, guid: 2c54f83f26e59854aaef4729afb90a2a, type: 3}
       Volume: 1
     - Name: ToRaid
+      BattleName: -1
       Type: 0
       Audio: {fileID: 8300000, guid: cb37f5abcf80f874389aed000e2dc206, type: 3}
       Volume: 1
     - Name: BombSoundNew
+      BattleName: -1
       Type: 0
       Audio: {fileID: 8300000, guid: a83c17bfa715a8b4d9e7ca3a07b75c99, type: 3}
       Volume: 1
     - Name: PickUpNew
+      BattleName: -1
       Type: 0
       Audio: {fileID: 8300000, guid: 45d122e4b24b9204e9b34f1cdf7b3f98, type: 3}
       Volume: 1
   - Name: MainMenu_NightSky
+    Type: 1
     SoundEffects:
     - Name: NavButton1
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: 67f39b777d077014d96d90130f196d15, type: 3}
       Volume: 1
     - Name: NavButton2
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: ec1bb9968d6e0d642b06df6a44b04fa8, type: 3}
       Volume: 1
     - Name: NavButton3
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: 823613f2cd25ac041bc6f9a95ba6594f, type: 3}
       Volume: 1
     - Name: NavButton4
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: 2ac6bcb3357da7e4390437bc1e60b2cb, type: 3}
       Volume: 1
     - Name: NavButton5
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: 9a328233fbc6e4f438c9deaa025ec5e5, type: 3}
       Volume: 1
-    - Name: GeneralButton1
-      Type: 1
-      Audio: {fileID: 8300000, guid: 6533c01a55193b74cabeb280cdc62706, type: 3}
-      Volume: 1
-    - Name: GeneralButton2
-      Type: 1
-      Audio: {fileID: 8300000, guid: 80fdae1de7495894397da065c435c559, type: 3}
-      Volume: 1
-    - Name: GeneralButton3
-      Type: 1
-      Audio: {fileID: 8300000, guid: c49856c4af4407b47a7118a5d6308771, type: 3}
-      Volume: 1
-    - Name: GeneralButton4
-      Type: 1
-      Audio: {fileID: 8300000, guid: fdb4644190c6a664f9d80d58d91d0cc3, type: 3}
-      Volume: 1
-    - Name: GeneralButton5
-      Type: 1
-      Audio: {fileID: 8300000, guid: 023d9c45af1656544810f1c1c2d0cc48, type: 3}
-      Volume: 1
-    - Name: GeneralButton6
-      Type: 1
-      Audio: {fileID: 8300000, guid: 8bf646d6968192149ad0571d5bfe7c6c, type: 3}
-      Volume: 1
-    - Name: GeneralButton7
-      Type: 1
-      Audio: {fileID: 8300000, guid: a1bda673a942c2c4b9e8e3131c79dbed, type: 3}
-      Volume: 1
-    - Name: GeneralButton8
-      Type: 1
-      Audio: {fileID: 8300000, guid: 45b5e84d38974a64ab74d691b442c634, type: 3}
-      Volume: 1
-    - Name: GeneralButton9
+    - Name: Select
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: 392592a792a1d874e90c52dac8e3e416, type: 3}
       Volume: 1
-    - Name: GeneralButton10
-      Type: 1
-      Audio: {fileID: 8300000, guid: b16875550eaa9f4429c1319982a7cfba, type: 3}
-      Volume: 1
-    - Name: GeneralButton11
-      Type: 1
-      Audio: {fileID: 8300000, guid: 7864e9dd38806e045af9df16857f0e6e, type: 3}
-      Volume: 1
-    - Name: GeneralButton12
+    - Name: Back
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: 17d4ecd3f9b792c4b96ba9b7c0e546c5, type: 3}
       Volume: 1
   - Name: MainMenu_Colours
+    Type: 1
     SoundEffects:
     - Name: NavButton1
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: 62284e2f62edce146801a39503577485, type: 3}
       Volume: 1
     - Name: NavButton2
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: 08c9b4b882018ce4da4de537da3c4ae2, type: 3}
       Volume: 1
     - Name: NavButton3
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: ab2704b755c1a74499c5f7da55e84e31, type: 3}
       Volume: 1
     - Name: NavButton4
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: 7bde2733957e66941ad9b6ef81f11682, type: 3}
       Volume: 1
     - Name: NavButton5
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: 2166187a7e2d3474e8f750db67e1a0b6, type: 3}
       Volume: 1
-    - Name: GeneralButton1
+    - Name: Back
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: a5814ab938c77da44a18bc418920417b, type: 3}
       Volume: 1
-    - Name: GeneralButton2
+    - Name: Select
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: 35f6c7d355faeb6438d8458151aa7b10, type: 3}
       Volume: 1
   - Name: MainMenu_Vibes
+    Type: 1
     SoundEffects:
     - Name: NavButton1
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: 16d252b58792fce4792c264ad844e860, type: 3}
       Volume: 1
     - Name: NavButton2
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: 63b1cc9e032af14468ddaff7222d623f, type: 3}
       Volume: 1
     - Name: NavButton3
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: 8b4627b281bd01b4e88e5004d9442f5a, type: 3}
       Volume: 1
     - Name: NavButton4
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: d66895b5d3476cc47bce75d79e09da99, type: 3}
       Volume: 1
     - Name: NavButton5
+      BattleName: -1
       Type: 1
       Audio: {fileID: 8300000, guid: eddae29a8a8bf814d949829a16e6e60d, type: 3}
+      Volume: 1
+    - Name: Select
+      BattleName: -1
+      Type: 1
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: Back
+      BattleName: -1
+      Type: 1
+      Audio: {fileID: 0}
+      Volume: 1
+  - Name: General
+    Type: 1
+    SoundEffects:
+    - Name: Voting
+      BattleName: -1
+      Type: 1
+      Audio: {fileID: 8300000, guid: 87633fd5c46ffaf40b467a63f8af071d, type: 3}
+      Volume: 1
+    - Name: CharacterSelect
+      BattleName: -1
+      Type: 1
+      Audio: {fileID: 8300000, guid: f334c8d3a6c2fe149aab064163866782, type: 3}
+      Volume: 1
+    - Name: CharacterSelectConfirm
+      BattleName: -1
+      Type: 1
+      Audio: {fileID: 8300000, guid: e7510fd78bb42b84fbed1a372f633751, type: 3}
+      Volume: 1
+    - Name: LevelUp
+      BattleName: -1
+      Type: 1
+      Audio: {fileID: 8300000, guid: 99fafcf2c3eca6344a138f5aecddd15b, type: 3}
+      Volume: 1
+    - Name: PopupAccept
+      BattleName: -1
+      Type: 1
+      Audio: {fileID: 8300000, guid: 335242e1abb52b84cbbdc65539e68b6c, type: 3}
+      Volume: 1
+    - Name: PopupClose
+      BattleName: -1
+      Type: 1
+      Audio: {fileID: 8300000, guid: bbf344715405108429f986a539d04f3e, type: 3}
       Volume: 1

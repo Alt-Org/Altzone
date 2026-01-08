@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
+using MenuUI.Scripts;
 
 public class Popup : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class Popup : MonoBehaviour
         Accept,         //Accept task window
         Cancel,         //Cancel task window
         ClanMilestone,  //Clan milestone reward info window
+        MultipleChoice, //Multiple choice task window
     }
 
     [SerializeField] private DailyTaskCardImageReference _cardImageReference;
@@ -27,6 +29,9 @@ public class Popup : MonoBehaviour
     [SerializeField] private RectTransform _taskAcceptMovable;
     [SerializeField] private Image _taskAcceptImage;
     [Space]
+    [SerializeField] private Image _taskAcceptColorImage;
+    [SerializeField] private Image _taskCancelColorImage;
+    [Space]
     [SerializeField] private GameObject _taskCancelPopup;
     [Space]
     [Tooltip("Set every TMP text element here that is supposed to show a message from code.")]
@@ -37,6 +42,7 @@ public class Popup : MonoBehaviour
     [Space]
     [SerializeField] private TMP_Text _acceptConfirmButtonText;
     [Space]
+    [SerializeField] private TextMeshProUGUI _taskDescription;
     [SerializeField] private TextMeshProUGUI _taskPointsText;
     [SerializeField] private TextMeshProUGUI _taskCoinsText;
 
@@ -55,6 +61,22 @@ public class Popup : MonoBehaviour
     [SerializeField] private Image _clanMilestoneRewardImage;
     [SerializeField] private TMP_Text _clanMilestoneRewardAmountText;
     [SerializeField] private float _clanMilestoneRightDiff = 0.1f;
+
+    [Header("Popup Colors")]
+    [SerializeField] private Color _actionCategoryColor;
+    [SerializeField] private Color _socialCategoryColor;
+    [SerializeField] private Color _storyCategoryColor;
+    [SerializeField] private Color _cultureCategoryColor;
+    [SerializeField] private Color _ethicalCategoryColor;
+    [SerializeField] private Color _defaultColor;
+
+    [Header("Multiple choice")]
+    [SerializeField] private GameObject _multipleChoicePopup;
+    [SerializeField] private Image _taskMultipleChoiceColorImage;
+    [SerializeField] private Image _multipleChoiceTaskImage;
+    [SerializeField] private List<Button> _optionButtons;
+    [SerializeField] private TextMeshProUGUI _cooldownText;
+    private bool _isOnCooldown = false;
 
     private bool? _result;
 
@@ -102,7 +124,7 @@ public class Popup : MonoBehaviour
                 if (currentTaskId == null)
                     Instance._acceptConfirmButtonText.text = "Valitse";
                 else
-                    Instance._acceptConfirmButtonText.text = "Vaihda Teht�v�";
+                    Instance._acceptConfirmButtonText.text = "Vaihda Tehtävä";
             }
 
             if (data.Value.Location != null)
@@ -113,17 +135,30 @@ public class Popup : MonoBehaviour
 
             if (data.Value.OwnPage != null)
             {
-                Instance.SetTaskAcceptImage(data.Value.OwnPage);
+                Instance.SetTaskImage(data.Value.OwnPage, type);
+                Instance.SetTaskDescription(data.Value.OwnPage);
                 Instance.SetTaskRewardTexts(data.Value.OwnPage);
+                Instance.SetPopupTaskColor(data.Value.OwnPage, data.Value.Type);
+            }
+
+            if (data.Value.Type == PopupData.PopupDataType.MultipleChoice)
+            {
+                Instance.SetOptionButtons(data.Value.OwnPage);
+            }
+
+            if (data.Value.Type == PopupData.PopupDataType.CancelTask)
+            {
+                Instance._messageTexts[1].text = message; // Set cancel task text
             }
         }
 
         // Show the popup and get the result
-        yield return Instance.StartCoroutine(Instance.ShowPopup(message));
-        callback(Instance._result.Value); // Use the updated _result
+        yield return Instance.StartCoroutine(Instance.ShowPopup(data.Value.OwnPage));
+        callback(Instance._result.Value);
+
     }
 
-    private IEnumerator ShowPopup(string message)
+    private IEnumerator ShowPopup(PlayerTask task)
     {
         // Start fade in
         if (_fadeOutCoroutine != null)
@@ -132,7 +167,7 @@ public class Popup : MonoBehaviour
         _fadeInCoroutine = StartCoroutine(FadeIn());
 
         // Set the message text
-        SetMessage(message);
+        SetMessage(task);
 
         // Wait until one of the buttons is pressed
         yield return new WaitUntil(() => _result.HasValue);
@@ -146,9 +181,28 @@ public class Popup : MonoBehaviour
         Debug.Log($"Popup result: {_result}"); // Log the result for debugging
     }
 
-    private void SetTaskAcceptImage(PlayerTask data)
+
+    private void SetTaskImage(PlayerTask data, PopupWindowType type)
     {
-        _taskAcceptImage.sprite = _cardImageReference.GetTaskImage(data);
+        switch (type)
+        {
+            case PopupWindowType.Accept:
+                {
+                    _taskAcceptImage.sprite = _cardImageReference.GetTaskImage(data);
+                    return;
+                }
+            case PopupWindowType.MultipleChoice:
+                {
+                    _multipleChoiceTaskImage.sprite = _cardImageReference.GetTaskImage(data);
+                    return;
+                }
+            default: return;
+        }
+    }
+
+    private void SetTaskDescription(PlayerTask data)
+    {
+        _taskDescription.text = data.Content;
     }
 
     private void SetTaskRewardTexts(PlayerTask data)
@@ -157,11 +211,35 @@ public class Popup : MonoBehaviour
         _taskCoinsText.text = data.Coins.ToString();
     }
 
+    private void SetPopupTaskColor(PlayerTask data, PopupData.PopupDataType type)
+    {
+        Image targetImage = _taskAcceptColorImage;
+
+        if (type == PopupData.PopupDataType.CancelTask) targetImage = _taskCancelColorImage;
+
+        if (type == PopupData.PopupDataType.MultipleChoice) targetImage = _taskMultipleChoiceColorImage;
+
+        Color taskColor = _defaultColor;
+
+        switch (data.EducationCategory)
+        {
+            case EducationCategoryType.Action: taskColor = _actionCategoryColor; break;
+            case EducationCategoryType.Social: taskColor = _socialCategoryColor; break;
+            case EducationCategoryType.Story: taskColor = _storyCategoryColor; break;
+            case EducationCategoryType.Culture: taskColor = _cultureCategoryColor; break;
+            case EducationCategoryType.Ethical: taskColor = _ethicalCategoryColor; break;
+            default: break;
+        }
+
+        targetImage.color = taskColor;
+    }
+
     private void SwitchWindow(PopupWindowType type)
     {
         _taskAcceptPopup.SetActive(type == PopupWindowType.Accept);
         _taskCancelPopup.SetActive(type == PopupWindowType.Cancel);
         _clanMilestonePopup.SetActive(type == PopupWindowType.ClanMilestone);
+        _multipleChoicePopup.SetActive(type == PopupWindowType.MultipleChoice);
     }
 
     private void MoveMovableWindow(Vector3 location, PopupWindowType type)
@@ -202,12 +280,24 @@ public class Popup : MonoBehaviour
         popupGameObject.SetActive(false);
     }
 
-    private void SetMessage(string message)
+    private void SetMessage(PlayerTask task)
     {
-        foreach (var textItem in _messageTexts)
+        if (task == null) return;
+
+        for (int i = 0; i < _messageTexts.Count; i++)
         {
-            if(textItem.IsActive())
-                textItem.text = message;
+            if (!_messageTexts[i].IsActive()) continue;
+
+            if (i == 0) // First element should be the task title (for some reason)
+            {
+                _messageTexts[i].text = SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English // Simply, if english language is selected, show it in english
+                    ? task.EnglishTitle
+                    : task.Title;
+            }
+            else
+            {
+                _messageTexts[i].text = task.Content; // For others, just keep the original
+            }
         }
     }
 
@@ -215,5 +305,82 @@ public class Popup : MonoBehaviour
     {
         //_clanMilestoneRewardImage.sprite = sprite;
         _clanMilestoneRewardAmountText.text = $"{rewardAmount}x";
+    }
+
+    private void SetOptionButtons(PlayerTask data)
+    {
+        foreach (var button in _optionButtons)
+            button.onClick.RemoveAllListeners();
+        
+        List<string> options = MultipleChoiceOptions.Instance.GetTaskOptions(data);
+
+        //Shuffle the list
+        int n = options.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = Random.Range(0, n + 1);
+            string option = options[k];
+            options[k] = options[n];
+            options[n] = option;
+        }
+
+        for (int i = 0; i < _optionButtons.Count; i++)
+        {
+            if (i < options.Count)
+            {
+                string option = options[i];
+                _optionButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = option;
+                _optionButtons[i].onClick.AddListener(() =>
+                {
+                    if (_isOnCooldown) return;
+
+                    _result = MultipleChoiceOptions.Instance.GetResult(data, option);
+
+                    if (_result.HasValue && _result.Value == false)
+                    {
+                        StartCoroutine(Cooldown(10f));
+                        SignalBus.OnChangePopupInfoSignal("Väärä vastaus, yritä uudestaan.");
+                    }
+                    else if(_result.HasValue && _result.Value == true)
+                    {
+                        if (TaskEducationStoryType.WhereGameHappens == DailyTaskProgressManager.Instance.CurrentPlayerTask?.EducationStoryType
+                        && data.EducationStoryType == TaskEducationStoryType.WhereGameHappens)
+                            DailyTaskProgressManager.Instance.UpdateTaskProgress(TaskEducationStoryType.WhereGameHappens, "1");
+                        else if(TaskEducationCultureType.GamesGenreTypes == DailyTaskProgressManager.Instance.CurrentPlayerTask?.EducationCultureType
+                        && data.EducationCultureType == TaskEducationCultureType.GamesGenreTypes)
+                            DailyTaskProgressManager.Instance.UpdateTaskProgress(TaskEducationCultureType.GamesGenreTypes, "1");
+                    }
+                });
+                _optionButtons[i].gameObject.SetActive(true);
+            }
+            else
+            {
+                _optionButtons[i].gameObject.SetActive(false);
+            }
+        }
+    }
+
+    private IEnumerator Cooldown(float seconds)
+    {
+        _isOnCooldown = true;
+        _cooldownText.gameObject.SetActive(true);
+
+        foreach (var button in _optionButtons)
+            button.interactable = false;
+
+        float timeLeft = seconds;
+        while (timeLeft > 0)
+        {
+            _cooldownText.text = $"{Mathf.CeilToInt(timeLeft)}s";
+            yield return new WaitForSeconds(1f);
+            timeLeft--;
+        }
+
+        foreach (var button in _optionButtons)
+            button.interactable = true;
+
+        _cooldownText.gameObject.SetActive(false);
+        _isOnCooldown = false;
     }
 }

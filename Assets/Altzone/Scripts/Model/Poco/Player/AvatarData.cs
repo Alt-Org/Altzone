@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
@@ -19,52 +20,7 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
     [Serializable]
     public class AvatarData
     {
-        public AvatarData(string name, List<string> featureIds, string color, Vector2 scale)
-        {
-            Name = (string)name.Clone();
-            Hair = int.Parse(featureIds[0]);
-            Eyes = int.Parse(featureIds[1]);
-            Nose = int.Parse(featureIds[2]);
-            Mouth = int.Parse(featureIds[3]);
-            Clothes = int.Parse(featureIds[4]);
-            Feet = int.Parse(featureIds[5]);
-            Hands = int.Parse(featureIds[6]);
-            Color = new(color);
-            ScaleX = scale.x;
-            ScaleY = scale.y;
-        }
-
-        public AvatarData(string name, ServerAvatar data)
-        {
-            Name = (string)name.Clone();
-            Hair = data.hair;
-            Eyes = data.eyes;
-            Nose = data.nose;
-            Mouth = data.mouth;
-            Clothes = data.clothes;
-            Feet = data.feet;
-            Hands = data.hands;
-            Color = new(data.skinColor);
-            ScaleX = 1;
-            ScaleY = 1;
-        }
-
         public string Name;
-        public List<string> FeatureIds
-        {
-            get
-            {
-                List<string> list = new();
-                list.Add(Hair.ToString());
-                list.Add(Eyes.ToString());
-                list.Add(Nose.ToString());
-                list.Add(Mouth.ToString());
-                list.Add(Clothes.ToString());
-                list.Add(Feet.ToString());
-                list.Add(Hands.ToString());
-                return list;
-            }
-        }
         public int Hair;
         public int Eyes;
         public int Nose;
@@ -73,33 +29,94 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
         public int Feet;
         public int Hands;
         public string Color;
-        //public Vector2 Scale = new(ScaleX, ScaleY);
-        public float ScaleX;
-        public float ScaleY;
+        public Vector2 Scale = Vector2.one;
 
-        public bool Validate()
+        // Default constructor
+        public AvatarData() { }
+
+        // Constructor from feature IDs
+        public AvatarData(string name, List<string> featureIds, string color, Vector2 scale)
         {
-            if ((Name == null) ||
-                (FeatureIds == null || FeatureIds.Count == 0) ||
-                (string.IsNullOrWhiteSpace(Color)))
-                return (false);
+            if (featureIds != null && featureIds?.Count != 7)
+                throw new ArgumentException("FeatureIds must contain exactly 7 elements, provided list contains " + featureIds.Count.ToString());
 
-            return (true);
+            Name = name;
+            if (featureIds != null)
+            {
+                Hair = int.Parse(featureIds[0]);
+                Eyes = int.Parse(featureIds[1]);
+                Nose = int.Parse(featureIds[2]);
+                Mouth = int.Parse(featureIds[3]);
+                Clothes = int.Parse(featureIds[4]);
+                Feet = int.Parse(featureIds[5]);
+                Hands = int.Parse(featureIds[6]);
+            }
+            Color = color;
+            Scale = scale;
         }
 
-        public int GetPieceID(AvatarPiece piece)
+
+        // Constructor from server data
+        public AvatarData(string name, ServerAvatar serverData)
         {
-            return piece switch
+            Name = name;
+            Hair = serverData.hair;
+            Eyes = serverData.eyes;
+            Nose = serverData.nose;
+            Mouth = serverData.mouth;
+            Clothes = serverData.clothes;
+            Feet = serverData.feet;
+            Hands = serverData.hands;
+            Color = serverData.skinColor;
+            Scale = Vector2.one;
+        }
+
+        // Properties
+        public List<string> FeatureIds => new[] { Hair, Eyes, Nose, Mouth, Clothes, Feet, Hands }
+                                          .Select(id => id.ToString()).ToList();
+
+        public float ScaleX 
+        { 
+            get => Scale.x; 
+            set => Scale = new Vector2(value, Scale.y); 
+        }
+        
+        public float ScaleY 
+        { 
+            get => Scale.y; 
+            set => Scale = new Vector2(Scale.x, value); 
+        }
+
+        // Methods
+        public bool IsValid => !string.IsNullOrWhiteSpace(Name) && !string.IsNullOrWhiteSpace(Color);
+        
+        public bool Validate() => IsValid;
+
+        public int GetPieceID(AvatarPiece piece) => piece switch
+        {
+            AvatarPiece.Hair => Hair,
+            AvatarPiece.Eyes => Eyes,
+            AvatarPiece.Nose => Nose,
+            AvatarPiece.Mouth => Mouth,
+            AvatarPiece.Clothes => Clothes,
+            AvatarPiece.Feet => Feet,
+            AvatarPiece.Hands => Hands,
+            _ => -1,
+        };
+
+        public void SetPieceID(AvatarPiece piece, int id)
+        {
+            switch (piece)
             {
-                AvatarPiece.Hair => Hair,
-                AvatarPiece.Eyes => Eyes,
-                AvatarPiece.Nose => Nose,
-                AvatarPiece.Mouth => Mouth,
-                AvatarPiece.Clothes => Clothes,
-                AvatarPiece.Feet => Feet,
-                AvatarPiece.Hands => Hands,
-                _ => -1,
-            };
+                case AvatarPiece.Hair: Hair = id; break;
+                case AvatarPiece.Eyes: Eyes = id; break;
+                case AvatarPiece.Nose: Nose = id; break;
+                case AvatarPiece.Mouth: Mouth = id; break;
+                case AvatarPiece.Clothes: Clothes = id; break;
+                case AvatarPiece.Feet: Feet = id; break;
+                case AvatarPiece.Hands: Hands = id; break;
+            }
         }
     }
 }
+

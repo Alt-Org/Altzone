@@ -10,11 +10,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         public ConmanCharacter()
         {
             _id = CharacterID.Conman;
-            _defaultAttack = 7;
-            _defaultDefence = 5;
-            _defaultHp = 2;
-            _defaultCharacterSize = 6;
-            _defaultSpeed = 10;
+            _defaultAttack = 2;
+            _defaultDefence = 2;
+            _defaultHp = 1;
+            _defaultCharacterSize = 2;
+            _defaultSpeed = 6;
             InitializeValues();
         }
     }

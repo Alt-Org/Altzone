@@ -1,0 +1,30 @@
+/// @file BattleTeamNumber.qtn
+/// <summary>
+/// Contains enum of player teams.
+/// </summary>
+///
+/// ## Generated Enums
+/// - @cref{Quantum,BattleTeamNumber}  
+///   @copybrief Quantum.BattleTeamNumber
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattleTeamNumber
+/// <summary>
+/// Enum that defines the teams in battle.
+/// </summary>
+///
+/// This enum is used to represent teams in general.  
+/// Each [{Player}](#page-concepts-player) is assigned to a team.  
+/// See [{Player slots and teams}](#page-concepts-player-slots-teams) for more information.
+///
+/// @bigtext{Generated from @ref BattleTeamNumber.qtn}
+
+/// @var Quantum::BattleTeamNumber Quantum::BattleTeamNumber::NoTeam
+/// No team.
+///
+/// @var Quantum::BattleTeamNumber Quantum::BattleTeamNumber::TeamAlpha
+/// Alpha team.
+///
+/// @var Quantum::BattleTeamNumber Quantum::BattleTeamNumber::TeamBeta
+/// Beta team.

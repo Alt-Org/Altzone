@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _info:
   - SetName: Taakka
+    SetNameEnglish: Burden
     ArtistName: "Simo Ryh\xE4nen"
     list:
     - Name: Sofa
+      EnglishName: Sofa
       Image: {fileID: -1978675626, guid: 7c2470a4a5672df4bb80e5250cf54825, type: 3}
       PosterImage: {fileID: 21300000, guid: 5c84e0586f7c09646b20a02f677a9086, type: 3}
       RibbonImage: {fileID: 21300000, guid: 5e01e1e6ecdaf5e49af97484ff47e2a4, type: 3}
@@ -24,6 +26,9 @@ MonoBehaviour:
       ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
         huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
         Atlas-titaanin patsasta."
+      EnglishArtisticDescription: The theme is burden. It can be interpreted in multiple
+        ways, but the goal of the furnitures is to create a weighty impression. The
+        colors are inspired by the statue of the titan Atlas
       DiagnoseNumber: R45.0
       BaseFurniture:
         Name: Sofa_Taakka
@@ -36,6 +41,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: ArmChair
+      EnglishName: Arm Chair
       Image: {fileID: -498378044, guid: 7767254924d389249bccb2b7a765a93a, type: 3}
       PosterImage: {fileID: 21300000, guid: d1e77299ee9678447bc2741a44c09b7e, type: 3}
       RibbonImage: {fileID: 21300000, guid: 942f4a9d92c17284cab228f4fd6405a3, type: 3}
@@ -43,6 +49,9 @@ MonoBehaviour:
       ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
         huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
         Atlas-titaanin patsasta."
+      EnglishArtisticDescription: The theme is burden. It can be interpreted in multiple
+        ways, but the goal of the furnitures is to create a weighty impression. The
+        colors are inspired by the statue of the titan Atlas
       DiagnoseNumber: R45.0
       BaseFurniture:
         Name: ArmChair_Taakka
@@ -55,6 +64,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Mirror
+      EnglishName: Mirror
       Image: {fileID: -161112231, guid: ad3afe4e6fc144447a9680d150e6a742, type: 3}
       PosterImage: {fileID: 21300000, guid: f2935bb9a0efcc84a97b1b9649237eff, type: 3}
       RibbonImage: {fileID: 21300000, guid: 9792b24c7bbdc5442b27635238353c5d, type: 3}
@@ -62,6 +72,9 @@ MonoBehaviour:
       ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
         huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
         Atlas-titaanin patsasta."
+      EnglishArtisticDescription: The theme is burden. It can be interpreted in multiple
+        ways, but the goal of the furnitures is to create a weighty impression. The
+        colors are inspired by the statue of the titan Atlas
       DiagnoseNumber: R45.0
       BaseFurniture:
         Name: Mirror_Taakka
@@ -74,6 +87,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Floorlamp
+      EnglishName: Floor Lamp
       Image: {fileID: 109053680, guid: d78e035099366ca4c8d375b0e53d2a42, type: 3}
       PosterImage: {fileID: 21300000, guid: 69e28c0e8765dcc4a8341520aa879c35, type: 3}
       RibbonImage: {fileID: 21300000, guid: a71f776230f991045ab3ff713f67cfff, type: 3}
@@ -81,6 +95,9 @@ MonoBehaviour:
       ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
         huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
         Atlas-titaanin patsasta."
+      EnglishArtisticDescription: The theme is burden. It can be interpreted in multiple
+        ways, but the goal of the furnitures is to create a weighty impression. The
+        colors are inspired by the statue of the titan Atlas
       DiagnoseNumber: 
       BaseFurniture:
         Name: Floorlamp_Taakka
@@ -93,6 +110,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: CoffeeTable
+      EnglishName: Coffee Table
       Image: {fileID: -1372830714, guid: b920dbb0579dea643b33800a975ffc99, type: 3}
       PosterImage: {fileID: 21300000, guid: 39afa94c677560c4dbe0171e3abf1b53, type: 3}
       RibbonImage: {fileID: 21300000, guid: 5ce2cfc6c3b6a5a498c4dd5c0ffbed81, type: 3}
@@ -100,6 +118,9 @@ MonoBehaviour:
       ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
         huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
         Atlas-titaanin patsasta."
+      EnglishArtisticDescription: The theme is burden. It can be interpreted in multiple
+        ways, but the goal of the furnitures is to create a weighty impression. The
+        colors are inspired by the statue of the titan Atlas
       DiagnoseNumber: R45.0
       BaseFurniture:
         Name: CoffeeTable_Taakka
@@ -112,6 +133,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: SideTable
+      EnglishName: Side Table
       Image: {fileID: 399228340, guid: 09f23977174f0dd4896fcfe3edc5555b, type: 3}
       PosterImage: {fileID: 21300000, guid: 4cc423dfc62939a45a0eacb28a702629, type: 3}
       RibbonImage: {fileID: 21300000, guid: c234be026dc8fb643b56c2ced6520f5f, type: 3}
@@ -119,6 +141,9 @@ MonoBehaviour:
       ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
         huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
         Atlas-titaanin patsasta."
+      EnglishArtisticDescription: The theme is burden. It can be interpreted in multiple
+        ways, but the goal of the furnitures is to create a weighty impression. The
+        colors are inspired by the statue of the titan Atlas
       DiagnoseNumber: R45.0
       BaseFurniture:
         Name: SideTable_Taakka
@@ -131,6 +156,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Closet
+      EnglishName: Closet
       Image: {fileID: 2099301597, guid: 4b7d24540118a534993dcd36ff455c4e, type: 3}
       PosterImage: {fileID: 21300000, guid: 2fa21cf9213828d4fb3af06f3ac8c1ea, type: 3}
       RibbonImage: {fileID: 21300000, guid: 2f5d6dcc8ec2c5243b35566cce130cbb, type: 3}
@@ -138,6 +164,9 @@ MonoBehaviour:
       ArtisticDescription: "Teemana on Taakka. Sen voi tulkita monella tapaa, mutta
         huonekaluista on tarkoitus tulla painava vaikutelma. V\xE4rit mukailevat
         Atlas-titaanin patsasta."
+      EnglishArtisticDescription: The theme is burden. It can be interpreted in multiple
+        ways, but the goal of the furnitures is to create a weighty impression. The
+        colors are inspired by the statue of the titan Atlas
       DiagnoseNumber: R45.0
       BaseFurniture:
         Name: Closet_Taakka
@@ -150,9 +179,11 @@ MonoBehaviour:
         Material: 
         Recycling: 
   - SetName: Schrodinger
+    SetNameEnglish: Schrodinger
     ArtistName: SMKT
     list:
     - Name: Sink
+      EnglishName: Sink
       Image: {fileID: 21300000, guid: a521397346aa25e4cab9e4a0252a080c, type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 0}
@@ -162,6 +193,12 @@ MonoBehaviour:
         ettei tule leimatuksi mielisairaaksi tms. - kenest\xE4k\xE4\xE4n ei voi tiet\xE4\xE4
         mit\xE4 joku piilottelee. - miksi juuri wc-huonekalut (osalle turvapaikka
         kodinkin sis\xE4ll\xE4, esim. oven saa lukkoon)"
+      EnglishArtisticDescription: '- What are the things people have to hide from
+        themselves now and in history (For example, witch hunts, alchemists, believers
+        of paranormal activities) in order for them to avoid being labeled mentally
+        ill. - You can never know what someone is hiding. - But why exactly toilet
+        furniture (which acts as a haven for some, even inside their own home, for
+        example, they can lock their doors)'
       DiagnoseNumber: F20
       BaseFurniture:
         Name: Sink_Schrodinger
@@ -174,6 +211,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Toilet
+      EnglishName: Toilet
       Image: {fileID: 21300000, guid: 832ac9ead016f6744a986880d90f2239, type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 0}
@@ -183,6 +221,12 @@ MonoBehaviour:
         ettei tule leimatuksi mielisairaaksi tms. - kenest\xE4k\xE4\xE4n ei voi tiet\xE4\xE4
         mit\xE4 joku piilottelee. - miksi juuri wc-huonekalut (osalle turvapaikka
         kodinkin sis\xE4ll\xE4, esim. oven saa lukkoon)"
+      EnglishArtisticDescription: '- What are the things people have to hide from
+        themselves now and in history (For example, witch hunts, alchemists, believers
+        of paranormal activities) in order for them to avoid being labeled mentally
+        ill. - You can never know what someone is hiding. - But why exactly toilet
+        furniture (which acts as a haven for some, even inside their own home, for
+        example, they can lock their doors)'
       DiagnoseNumber: F20
       BaseFurniture:
         Name: Toilet_Schrodinger
@@ -195,6 +239,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Mirror
+      EnglishName: Mirror
       Image: {fileID: 21300000, guid: 1668e6a82af181649a95fd18184b69b4, type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 0}
@@ -204,6 +249,12 @@ MonoBehaviour:
         ettei tule leimatuksi mielisairaaksi tms. - kenest\xE4k\xE4\xE4n ei voi tiet\xE4\xE4
         mit\xE4 joku piilottelee. - miksi juuri wc-huonekalut (osalle turvapaikka
         kodinkin sis\xE4ll\xE4, esim. oven saa lukkoon)"
+      EnglishArtisticDescription: '- What are the things people have to hide from
+        themselves now and in history (For example, witch hunts, alchemists, believers
+        of paranormal activities) in order for them to avoid being labeled mentally
+        ill. - You can never know what someone is hiding. - But why exactly toilet
+        furniture (which acts as a haven for some, even inside their own home, for
+        example, they can lock their doors)'
       DiagnoseNumber: F20
       BaseFurniture:
         Name: Mirror_Schrodinger
@@ -216,6 +267,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Carpet
+      EnglishName: Carpet
       Image: {fileID: -1025061042, guid: 46339bd67ae6f014f85f9a28b83074cf, type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 0}
@@ -225,6 +277,12 @@ MonoBehaviour:
         ettei tule leimatuksi mielisairaaksi tms. - kenest\xE4k\xE4\xE4n ei voi tiet\xE4\xE4
         mit\xE4 joku piilottelee. - miksi juuri wc-huonekalut (osalle turvapaikka
         kodinkin sis\xE4ll\xE4, esim. oven saa lukkoon)"
+      EnglishArtisticDescription: '- What are the things people have to hide from
+        themselves now and in history (For example, witch hunts, alchemists, believers
+        of paranormal activities) in order for them to avoid being labeled mentally
+        ill. - You can never know what someone is hiding. - But why exactly toilet
+        furniture (which acts as a haven for some, even inside their own home, for
+        example, they can lock their doors)'
       DiagnoseNumber: F20
       BaseFurniture:
         Name: Carpet_Schrodinger
@@ -237,6 +295,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Bathtub
+      EnglishName: Bathtub
       Image: {fileID: 21300000, guid: e3b859c5b1a5e3744a94f2cc2cd31641, type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 0}
@@ -246,6 +305,12 @@ MonoBehaviour:
         ettei tule leimatuksi mielisairaaksi tms. - kenest\xE4k\xE4\xE4n ei voi tiet\xE4\xE4
         mit\xE4 joku piilottelee. - miksi juuri wc-huonekalut (osalle turvapaikka
         kodinkin sis\xE4ll\xE4, esim. oven saa lukkoon)"
+      EnglishArtisticDescription: '- What are the things people have to hide from
+        themselves now and in history (For example, witch hunts, alchemists, believers
+        of paranormal activities) in order for them to avoid being labeled mentally
+        ill. - You can never know what someone is hiding. - But why exactly toilet
+        furniture (which acts as a haven for some, even inside their own home, for
+        example, they can lock their doors)'
       DiagnoseNumber: F20
       BaseFurniture:
         Name: Bathtub_Schrodinger
@@ -258,14 +323,17 @@ MonoBehaviour:
         Material: 
         Recycling: 
   - SetName: Rakkaus
+    SetNameEnglish: Love
     ArtistName: Ida Vesterinen
     list:
     - Name: Sofa
+      EnglishName: Sofa
       Image: {fileID: 2111035950, guid: 1a72e77a6efdfd24db919d01d7a8dfb2, type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 21300000, guid: a922bd01507eab14291920a8c3e90ba4, type: 3}
       VisibleName: Sohva
       ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
+      EnglishArtisticDescription: Love yourself just the way you are.
       DiagnoseNumber: F41.8
       BaseFurniture:
         Name: Sofa_Rakkaus
@@ -278,11 +346,13 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: ArmChair
+      EnglishName: Armchair
       Image: {fileID: -1518666426, guid: 718483698bde05f4a9177b3766ec752c, type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 21300000, guid: af4f523a0ea1e2945b78bc9fff9b5edc, type: 3}
       VisibleName: Nojatuoli
       ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
+      EnglishArtisticDescription: Love yourself just the way you are.
       DiagnoseNumber: F41.8
       BaseFurniture:
         Name: ArmChair_Rakkaus
@@ -295,11 +365,13 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Closet
+      EnglishName: Closet
       Image: {fileID: -714799274, guid: a6f74e5435710c74da29a170bdf69a3b, type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 21300000, guid: 373abe5471349a442831803e0e53b3fc, type: 3}
       VisibleName: Kaappi
       ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
+      EnglishArtisticDescription: Love yourself just the way you are.
       DiagnoseNumber: F41.8
       BaseFurniture:
         Name: Closet_Rakkaus
@@ -312,11 +384,13 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Carpet
+      EnglishName: Carpet
       Image: {fileID: -15601349, guid: baee2d721999a8f4990aea6c6b3536e4, type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 21300000, guid: 8aa2e2c54d93c6447a8371395594c284, type: 3}
       VisibleName: Matto
       ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
+      EnglishArtisticDescription: Love yourself just the way you are.
       DiagnoseNumber: F41.8
       BaseFurniture:
         Name: Carpet_Rakkaus
@@ -328,15 +402,17 @@ MonoBehaviour:
         Value: 40
         Material: 
         Recycling: 
-    - Name: CoffeeTable
+    - Name: Coffeetable
+      EnglishName: Coffee Table
       Image: {fileID: 21300000, guid: ea79889aaa2005d43ba89abe29dd04e0, type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 21300000, guid: 902bcb2e3f9b84c45b50b551b7a47f03, type: 3}
       VisibleName: "Kahvip\xF6yt\xE4"
       ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
+      EnglishArtisticDescription: Love yourself just the way you are.
       DiagnoseNumber: F41.8
       BaseFurniture:
-        Name: CoffeeTable_Rakkaus
+        Name: Coffeetable_Rakkaus
         Rarity: 1
         Size: 22
         RotatedSize: 22
@@ -345,15 +421,17 @@ MonoBehaviour:
         Value: 60
         Material: 
         Recycling: 
-    - Name: DiningTable
+    - Name: Diningtable
+      EnglishName: Dining Table
       Image: {fileID: -821679160, guid: 94e11a3a27dffa84587d44509f722e7b, type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 21300000, guid: 1171a4d76d96caa4f97a646e7957432b, type: 3}
       VisibleName: "Ruokap\xF6yt\xE4"
       ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
+      EnglishArtisticDescription: Love yourself just the way you are.
       DiagnoseNumber: F41.8
       BaseFurniture:
-        Name: DiningTable_Rakkaus
+        Name: Diningtable_Rakkaus
         Rarity: 2
         Size: 16
         RotatedSize: 20
@@ -363,11 +441,13 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Bed
+      EnglishName: Bed
       Image: {fileID: 815919883, guid: dc6580df46820ee429b7e7b5fff9d53e, type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 21300000, guid: d2a92867abab8b14481a685595f02da5, type: 3}
       VisibleName: "S\xE4nky"
       ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
+      EnglishArtisticDescription: Love yourself just the way you are.
       DiagnoseNumber: F41.8
       BaseFurniture:
         Name: Bed_Rakkaus
@@ -380,11 +460,13 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Mirror
+      EnglishName: Mirror
       Image: {fileID: -863245616, guid: b521e14e44bb106429a8bf1160035e01, type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 21300000, guid: 38d68c0ad163dfb49ba33644ae14bec2, type: 3}
       VisibleName: Peili
       ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
+      EnglishArtisticDescription: Love yourself just the way you are.
       DiagnoseNumber: F41.8
       BaseFurniture:
         Name: Mirror_Rakkaus
@@ -397,11 +479,13 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: CeilingLamp
+      EnglishName: Ceiling Lamp
       Image: {fileID: -627347190, guid: 622f3fc6e612df2448b72d5a929b5de9, type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 21300000, guid: 47efd40d5bdc9be4883e6d0ced005245, type: 3}
       VisibleName: Kattolamppu
       ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
+      EnglishArtisticDescription: Love yourself just the way you are.
       DiagnoseNumber: F52.0
       BaseFurniture:
         Name: CeilingLamp_Rakkaus
@@ -414,15 +498,19 @@ MonoBehaviour:
         Material: 
         Recycling: 
   - SetName: Neuro
+    SetNameEnglish: Neuro
     ArtistName: "Simo Ryh\xE4nen"
     list:
     - Name: Chair
+      EnglishName: Chair
       Image: {fileID: -542428133, guid: e04086fbcd7d07f4fab56452eafc9b8b, type: 3}
       PosterImage: {fileID: 21300000, guid: 3a525ef8014e6d54fa755d1e3e0cd511, type: 3}
       RibbonImage: {fileID: 21300000, guid: 1c7a21751dfea0a49abd1496c39a796f, type: 3}
       VisibleName: Tuoli
       ArtisticDescription: "Tuoli kuvastaa harhakuvia tai fobiaa. Tuoli hieman muistuttaa
         jonkinlaista \xF6t\xF6kk\xE4\xE4."
+      EnglishArtisticDescription: Chair mirrors a delusion or a phobia. Chair slightly
+        resembles some kind of insect.
       DiagnoseNumber: R44.1
       BaseFurniture:
         Name: Chair_Neuro
@@ -435,12 +523,15 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Dresser
+      EnglishName: Dresser
       Image: {fileID: -989629432, guid: c13a038f10db45540a32ec27e8fd8eb0, type: 3}
       PosterImage: {fileID: 21300000, guid: 7334ae911a843274992c572e916b384c, type: 3}
       RibbonImage: {fileID: 21300000, guid: b1035b40bc0a2c14495e29df62d1d4d5, type: 3}
       VisibleName: Lipasto
       ArtisticDescription: "Lipasto n\xE4ytt\xE4\xE4 pelokkaalta tai ahdistuneelta
         ja pitelee p\xE4\xE4t\xE4\xE4n, ihan kuin k\xE4det hakeutuisivat kipualueelle."
+      EnglishArtisticDescription: The dresser seems afraid or anguished and holds
+        its head, as if its arms were reaching for the pain
       DiagnoseNumber: F41.1
       BaseFurniture:
         Name: Dresser_Neuro
@@ -453,12 +544,16 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Stool
+      EnglishName: Stool
       Image: {fileID: 21300000, guid: 2211fd783ba19f949850336199db229d, type: 3}
       PosterImage: {fileID: 21300000, guid: b47656ba61ae6a6499de74de2eb0526c, type: 3}
       RibbonImage: {fileID: 21300000, guid: 7bba17cb1aee52b40a41ca572b182658, type: 3}
       VisibleName: Penkki
       ArtisticDescription: "Neuro-huonekalusetin teemana on mielenterveyden vaikutus
         aivojen s\xE4hk\xF6iseen toimintaan. Jakkara kuvastaa teemaa yleisesti."
+      EnglishArtisticDescription: The theme of Neuro furniture is the impact of mental
+        health on the electrical activity of the brain. The stool reflects the theme
+        in general
       DiagnoseNumber: R41
       BaseFurniture:
         Name: Stool_Neuro
@@ -471,12 +566,15 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Clock
+      EnglishName: Clock
       Image: {fileID: -191785817, guid: 7eb890d72e3cf3f4da3fd6d0580bb91d, type: 3}
       PosterImage: {fileID: 21300000, guid: 2697d9b2d47bb9d4698039ae0d8f997a, type: 3}
       RibbonImage: {fileID: 21300000, guid: b1819bb45acdbe742a752a32abe574f1, type: 3}
       VisibleName: Kello
       ArtisticDescription: "Kello kuvastaa jakautunutta persoonallisuutta ja kaksisuuntaista
         mielenh\xE4iri\xF6t\xE4."
+      EnglishArtisticDescription: The clock reflects a split personality and bipolar
+        disorder
       DiagnoseNumber: F30
       BaseFurniture:
         Name: Clock_Neuro
@@ -489,14 +587,17 @@ MonoBehaviour:
         Material: 
         Recycling: 
   - SetName: Polarity
+    SetNameEnglish: Polarity
     ArtistName: "Simo Ryh\xE4nen"
     list:
     - Name: Chair
+      EnglishName: Chair
       Image: {fileID: -1910366402, guid: dec3d4f72adf8894bb90aa4167431d9e, type: 3}
       PosterImage: {fileID: 21300000, guid: a7e54c564c10cea4cb7dbf1a49610d9a, type: 3}
       RibbonImage: {fileID: 21300000, guid: d60ecf7423391294abee5cc0a2841879, type: 3}
       VisibleName: Tuoli
       ArtisticDescription: "Polarity-huonekalut kuvastavat kaksisuuntaista mielialah\xE4iri\xF6t\xE4."
+      EnglishArtisticDescription: The polarity furniture reflect bipolar disorder
       DiagnoseNumber: F31
       BaseFurniture:
         Name: Chair_Polarity
@@ -509,11 +610,13 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Bookshelf
+      EnglishName: Bookshelf
       Image: {fileID: 294977418, guid: a92cdd07072e60447a205559f0008b4a, type: 3}
       PosterImage: {fileID: 21300000, guid: 05bac8b45c7b40d468ab1f7ed732661e, type: 3}
       RibbonImage: {fileID: 21300000, guid: f6c85fb4cd7fa28438fbc1ad29a9e640, type: 3}
       VisibleName: Kirjahylly
       ArtisticDescription: "Polarity-huonekalut kuvastavat kaksisuuntaista mielialah\xE4iri\xF6t\xE4."
+      EnglishArtisticDescription: The polarity furniture reflect bipolar disorder
       DiagnoseNumber: F31
       BaseFurniture:
         Name: Bookshelf_Polarity
@@ -526,11 +629,13 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Table
+      EnglishName: Table
       Image: {fileID: -1827521093, guid: 1e251cd786a3aec478063211540f7507, type: 3}
       PosterImage: {fileID: 21300000, guid: f81722a441607b54d9598b460d0615c6, type: 3}
       RibbonImage: {fileID: 21300000, guid: e7baf1d6d426d8e4596f582425602e09, type: 3}
       VisibleName: "P\xF6yt\xE4"
       ArtisticDescription: "Polarity-huonekalut kuvastavat kaksisuuntaista mielialah\xE4iri\xF6t\xE4."
+      EnglishArtisticDescription: The polarity furniture reflect bipolar disorder
       DiagnoseNumber: F31
       BaseFurniture:
         Name: Table_Polarity
@@ -543,9 +648,11 @@ MonoBehaviour:
         Material: 
         Recycling: 
   - SetName: Muistoja
+    SetNameEnglish: Memories
     ArtistName: "T\xE4hti"
     list:
     - Name: Commode
+      EnglishName: Commode
       Image: {fileID: 903108585, guid: 9a35b534c9b0d1d438d97580b7dd3460, type: 3}
       PosterImage: {fileID: 21300000, guid: 8a7795a4b3a7e8f43bd24e9690398b8e, type: 3}
       RibbonImage: {fileID: 0}
@@ -553,6 +660,9 @@ MonoBehaviour:
       ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
         ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
         hetki\xE4"
+      EnglishArtisticDescription: During the remembrance of a person from the past,
+        it is possible to analyze their actions and draw conclusions, or just simply
+        remember the pleasant times
       DiagnoseNumber: F44
       BaseFurniture:
         Name: Commode_Muistoja
@@ -565,6 +675,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Pictures
+      EnglishName: Pictures
       Image: {fileID: -653159985, guid: 143d30fa3c208b74097e2a07f1de135b, type: 3}
       PosterImage: {fileID: 21300000, guid: b0464945903090047974ef801f436999, type: 3}
       RibbonImage: {fileID: 21300000, guid: e982f47f2cfd76448a71eb7ff35f7042, type: 3}
@@ -572,6 +683,9 @@ MonoBehaviour:
       ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
         ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
         hetki\xE4"
+      EnglishArtisticDescription: During the remembrance of a person from the past,
+        it is possible to analyze their actions and draw conclusions, or just simply
+        remember the pleasant times
       DiagnoseNumber: F44
       BaseFurniture:
         Name: Pictures_Muistoja
@@ -584,6 +698,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Sofa
+      EnglishName: Sofa
       Image: {fileID: -276021852, guid: 2a4e7a07747a4e64ab3e048b6f2362a3, type: 3}
       PosterImage: {fileID: 21300000, guid: 31d6bdd810e87ca458c23bc55631209c, type: 3}
       RibbonImage: {fileID: 21300000, guid: 88c0dffa01d38d943b3c734396cb28f9, type: 3}
@@ -591,6 +706,9 @@ MonoBehaviour:
       ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
         ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
         hetki\xE4"
+      EnglishArtisticDescription: During the remembrance of a person from the past,
+        it is possible to analyze their actions and draw conclusions, or just simply
+        remember the pleasant times
       DiagnoseNumber: F44
       BaseFurniture:
         Name: Sofa_Muistoja
@@ -603,6 +721,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Armchair
+      EnglishName: Armchair
       Image: {fileID: 1667950117, guid: 8dff8e402cc540d4a8d6a6ecd0dbe66e, type: 3}
       PosterImage: {fileID: 21300000, guid: 4fd6b70f7af4f4547806cdc708169b13, type: 3}
       RibbonImage: {fileID: 21300000, guid: e6ebfa53c02e89746b7833e10ac9f247, type: 3}
@@ -610,6 +729,9 @@ MonoBehaviour:
       ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
         ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
         hetki\xE4"
+      EnglishArtisticDescription: During the remembrance of a person from the past,
+        it is possible to analyze their actions and draw conclusions, or just simply
+        remember the pleasant times
       DiagnoseNumber: F44
       BaseFurniture:
         Name: Armchair_Muistoja
@@ -622,6 +744,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Coffeetable
+      EnglishName: Coffee Table
       Image: {fileID: -1670388164, guid: 2d7f413229d595b49a0aa29529a9c790, type: 3}
       PosterImage: {fileID: 21300000, guid: 62dd4c550edb7ca4c97387d8202d9ad3, type: 3}
       RibbonImage: {fileID: 0}
@@ -629,6 +752,9 @@ MonoBehaviour:
       ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
         ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
         hetki\xE4"
+      EnglishArtisticDescription: During the remembrance of a person from the past,
+        it is possible to analyze their actions and draw conclusions, or just simply
+        remember the pleasant times
       DiagnoseNumber: F44
       BaseFurniture:
         Name: Coffeetable_Muistoja
@@ -641,6 +767,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Drawings
+      EnglishName: Drawings
       Image: {fileID: -645727606, guid: c59a44a4e514d7341bb8e32e38e39f16, type: 3}
       PosterImage: {fileID: 21300000, guid: 3caf553ddf78b2b429dad50c4b0f75ac, type: 3}
       RibbonImage: {fileID: 21300000, guid: 0ab557a5620cd4a45a35afbf4fab9378, type: 3}
@@ -648,6 +775,9 @@ MonoBehaviour:
       ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
         ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
         hetki\xE4"
+      EnglishArtisticDescription: During the remembrance of a person from the past,
+        it is possible to analyze their actions and draw conclusions, or just simply
+        remember the pleasant times
       DiagnoseNumber: F44
       BaseFurniture:
         Name: Drawings_Muistoja
@@ -660,6 +790,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Ficus
+      EnglishName: Ficus
       Image: {fileID: 143282350, guid: 823e03013bcaf664da5b956b2c9817e1, type: 3}
       PosterImage: {fileID: 21300000, guid: ff89c78c47b2a164dbf142713c7487ee, type: 3}
       RibbonImage: {fileID: 21300000, guid: 9c76bf4751932874d863e1f851f8f45f, type: 3}
@@ -667,6 +798,9 @@ MonoBehaviour:
       ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
         ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
         hetki\xE4"
+      EnglishArtisticDescription: During the remembrance of a person from the past,
+        it is possible to analyze their actions and draw conclusions, or just simply
+        remember the pleasant times
       DiagnoseNumber: F44
       BaseFurniture:
         Name: Ficus_Muistoja
@@ -679,6 +813,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Flowers
+      EnglishName: Flowers
       Image: {fileID: -539711076, guid: cec279d7fdd77e34d9ccc2086662ec7a, type: 3}
       PosterImage: {fileID: 21300000, guid: 7e2f8d67b7095d54784e5258405cd14b, type: 3}
       RibbonImage: {fileID: 21300000, guid: 00543587ab4e8d84bbe09a0ffe5369d9, type: 3}
@@ -686,6 +821,9 @@ MonoBehaviour:
       ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
         ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
         hetki\xE4"
+      EnglishArtisticDescription: During the remembrance of a person from the past,
+        it is possible to analyze their actions and draw conclusions, or just simply
+        remember the pleasant times
       DiagnoseNumber: F44
       BaseFurniture:
         Name: Flowers_Muistoja
@@ -698,6 +836,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: NewCarpet
+      EnglishName: Carpet (New)
       Image: {fileID: 2146123883, guid: c7e943059c6673a4c90f8b308c2a870c, type: 3}
       PosterImage: {fileID: 21300000, guid: b285b9202522c03458d8d638a45bacc7, type: 3}
       RibbonImage: {fileID: 21300000, guid: 2ee37c9bcf82c95449cb9fca5c6b71a2, type: 3}
@@ -705,6 +844,9 @@ MonoBehaviour:
       ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
         ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
         hetki\xE4"
+      EnglishArtisticDescription: During the remembrance of a person from the past,
+        it is possible to analyze their actions and draw conclusions, or just simply
+        remember the pleasant times
       DiagnoseNumber: F44
       BaseFurniture:
         Name: NewCarpet_Muistoja
@@ -717,6 +859,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: OldCarpet
+      EnglishName: Carpet (Old)
       Image: {fileID: -1723923400, guid: 93d41fca7875d9947b1777eb9acb7d16, type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 0}
@@ -724,6 +867,9 @@ MonoBehaviour:
       ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
         ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
         hetki\xE4"
+      EnglishArtisticDescription: During the remembrance of a person from the past,
+        it is possible to analyze their actions and draw conclusions, or just simply
+        remember the pleasant times
       DiagnoseNumber: F44
       BaseFurniture:
         Name: OldCarpet_Muistoja
@@ -736,6 +882,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: NewWindow
+      EnglishName: Window (New)
       Image: {fileID: -1699903621, guid: 182e1f74b558be745a91b6375d757700, type: 3}
       PosterImage: {fileID: 21300000, guid: 05fda73e3249a694f869561d491873db, type: 3}
       RibbonImage: {fileID: 21300000, guid: b33f15a432b9d434eb2667e643835bd0, type: 3}
@@ -743,6 +890,9 @@ MonoBehaviour:
       ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
         ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
         hetki\xE4"
+      EnglishArtisticDescription: During the remembrance of a person from the past,
+        it is possible to analyze their actions and draw conclusions, or just simply
+        remember the pleasant times
       DiagnoseNumber: F44
       BaseFurniture:
         Name: NewWindow_Muistoja
@@ -755,6 +905,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: OldWindow
+      EnglishName: Window (Old)
       Image: {fileID: 751341215, guid: 9c11f8100be92dd4e8e3f7e6341b8ecb, type: 3}
       PosterImage: {fileID: 21300000, guid: b3480b44fb959a24da99a55e72a714b4, type: 3}
       RibbonImage: {fileID: 21300000, guid: 9d3e5aee57efa61489030dfa6b40b9ec, type: 3}
@@ -762,6 +913,9 @@ MonoBehaviour:
       ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
         ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
         hetki\xE4"
+      EnglishArtisticDescription: During the remembrance of a person from the past,
+        it is possible to analyze their actions and draw conclusions, or just simply
+        remember the pleasant times
       DiagnoseNumber: F44
       BaseFurniture:
         Name: OldWindow_Muistoja
@@ -774,6 +928,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Painting
+      EnglishName: Painting
       Image: {fileID: -648787027, guid: ba10ac9f2291fd040b2081b285ef8298, type: 3}
       PosterImage: {fileID: 21300000, guid: d3ea5e12da949e9409de5904ed9cffc6, type: 3}
       RibbonImage: {fileID: 21300000, guid: 8ee3b35388de26744a124ce82914021a, type: 3}
@@ -781,6 +936,9 @@ MonoBehaviour:
       ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
         ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
         hetki\xE4"
+      EnglishArtisticDescription: During the remembrance of a person from the past,
+        it is possible to analyze their actions and draw conclusions, or just simply
+        remember the pleasant times
       DiagnoseNumber: F44
       BaseFurniture:
         Name: Painting_Muistoja
@@ -793,6 +951,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: ToyFox
+      EnglishName: Toy Fox
       Image: {fileID: 1177845131, guid: 094f936181037244c8d1d29b484c90e0, type: 3}
       PosterImage: {fileID: 21300000, guid: 0697b80b65f9e0e4d9cae0fd2400bb18, type: 3}
       RibbonImage: {fileID: 21300000, guid: 316e964d0f1d6a5459c0e98487a205b8, type: 3}
@@ -800,6 +959,9 @@ MonoBehaviour:
       ArtisticDescription: "Muistaessan menneisyyden henkil\xF6 voi analyisoida tekojaan
         ja tehd\xE4 johtop\xE4\xE4t\xF6ksi\xE4 tai yksinkertaisesti muistaa miellytt\xE4vi\xE4
         hetki\xE4"
+      EnglishArtisticDescription: During the remembrance of a person from the past,
+        it is possible to analyze their actions and draw conclusions, or just simply
+        remember the pleasant times
       DiagnoseNumber: F44
       BaseFurniture:
         Name: ToyFox_Muistoja
@@ -812,14 +974,17 @@ MonoBehaviour:
         Material: 
         Recycling: 
   - SetName: Uni
+    SetNameEnglish: Sleep
     ArtistName: Vanelei
     list:
     - Name: Sofa
+      EnglishName: Sofa
       Image: {fileID: -395311538, guid: 27a27d546070c1e408175b1f15171428, type: 3}
       PosterImage: {fileID: 21300000, guid: 759a1e42241a9fd4a803d45888fd9c06, type: 3}
       RibbonImage: {fileID: 21300000, guid: 6132e6b37b55cea4d8b8529e51da5500, type: 3}
       VisibleName: Sohva
       ArtisticDescription: "Unet ovat t\xE4rke\xE4 portti alitajuntaan."
+      EnglishArtisticDescription: Dreams are an important gateway into the subconsciousness
       DiagnoseNumber: F52.0
       BaseFurniture:
         Name: Sofa_Uni
@@ -832,11 +997,13 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Bed
+      EnglishName: Bed
       Image: {fileID: -864293954, guid: b27973bcd7dd95e47954ab222c12fbe2, type: 3}
       PosterImage: {fileID: 21300000, guid: 88fc050c13abd014083f0129f5810a4c, type: 3}
       RibbonImage: {fileID: 21300000, guid: 6cf10eae28c7fb24b89b3131e24726cc, type: 3}
       VisibleName: "S\xE4nky"
       ArtisticDescription: "Unet ovat t\xE4rke\xE4 portti alitajuntaan."
+      EnglishArtisticDescription: Dreams are an important gateway into the subconsciousness
       DiagnoseNumber: F52.0
       BaseFurniture:
         Name: Bed_Uni
@@ -849,11 +1016,13 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Closet
+      EnglishName: Closet
       Image: {fileID: 250947397, guid: 89024992418f5c4499ae70952c6efed7, type: 3}
       PosterImage: {fileID: 21300000, guid: d361326ab4de58740a6cd149ddb4ff97, type: 3}
       RibbonImage: {fileID: 21300000, guid: 5df9f9af95eb2a24898d0426d6113194, type: 3}
       VisibleName: Kaappi
       ArtisticDescription: "Unet ovat t\xE4rke\xE4 portti alitajuntaan."
+      EnglishArtisticDescription: Dreams are an important gateway into the subconsciousness
       DiagnoseNumber: F52.0
       BaseFurniture:
         Name: Closet_Uni
@@ -865,19 +1034,23 @@ MonoBehaviour:
         Value: 240
         Material: 
         Recycling: 
-  - SetName: ColdFuture
+  - SetName: KylmaTulevaisuus
+    SetNameEnglish: ColdFuture
     ArtistName: Ida Vesterinen
     list:
     - Name: Hologram
+      EnglishName: Hologram
       Image: {fileID: 719040038, guid: b4831fd18e8e2e948a034f02bbcd3a13, type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 0}
       VisibleName: Hologrammi
       ArtisticDescription: "Milt\xE4 maailma n\xE4ytt\xE4\xE4, kun teknologia ja
         ilmastonmuutos kehittyy."
+      EnglishArtisticDescription: What will the world of tomorrow look like when
+        the technology advances, and the climate change progresses
       DiagnoseNumber: F0
       BaseFurniture:
-        Name: Hologram_ColdFuture
+        Name: Hologram_KylmaTulevaisuus
         Rarity: 2
         Size: 1
         RotatedSize: 5
@@ -887,15 +1060,18 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Sofa
+      EnglishName: Sofa
       Image: {fileID: -1180185098, guid: 0d86948a83d08c94083b1234ee903d16, type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 0}
       VisibleName: Sohva
       ArtisticDescription: "Milt\xE4 maailma n\xE4ytt\xE4\xE4, kun teknologia ja
         ilmastonmuutos kehittyy."
+      EnglishArtisticDescription: What will the world of tomorrow look like when
+        the technology advances, and the climate change progresses
       DiagnoseNumber: F0
       BaseFurniture:
-        Name: Sofa_ColdFuture
+        Name: Sofa_KylmaTulevaisuus
         Rarity: 0
         Size: 17
         RotatedSize: 25
@@ -905,9 +1081,11 @@ MonoBehaviour:
         Material: 
         Recycling: 
   - SetName: Kipu
+    SetNameEnglish: Pain
     ArtistName: Ville Julius
     list:
     - Name: Closet
+      EnglishName: Closet
       Image: {fileID: 2005414215, guid: 8bb44278ea388cb4e85d871ee055263b, type: 3}
       PosterImage: {fileID: 21300000, guid: bb9a8c0ec135e064cbe1196ba81e3e48, type: 3}
       RibbonImage: {fileID: 21300000, guid: 2925a14797543004db3c304b005738f8, type: 3}
@@ -915,6 +1093,9 @@ MonoBehaviour:
       ArtisticDescription: "Kipu on henkist\xE4 ja fyysist\xE4. Kipu on pysyv\xE4\xE4
         ja ohimenev\xE4\xE4. Kipu on tuskallista ja nautinnollista. Kipu on osa jokap\xE4iv\xE4ist\xE4
         el\xE4m\xE4\xE4."
+      EnglishArtisticDescription: Pain is both mental and physical. Pain is both
+        permanent and transient. Pain is both painful and pleasurable. Pain is a
+        part of everyday life.
       DiagnoseNumber: F45
       BaseFurniture:
         Name: Closet_Kipu
@@ -927,6 +1108,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Sofa
+      EnglishName: Sofa
       Image: {fileID: -1010160331, guid: ea747327d8c0a1841b8299133bdcb93e, type: 3}
       PosterImage: {fileID: 21300000, guid: 09b35a23552772b469bd847c275729c5, type: 3}
       RibbonImage: {fileID: 21300000, guid: 9f32b2e05450c1e4f85f48cec4b96521, type: 3}
@@ -934,6 +1116,9 @@ MonoBehaviour:
       ArtisticDescription: "Kipu on henkist\xE4 ja fyysist\xE4. Kipu on pysyv\xE4\xE4
         ja ohimenev\xE4\xE4. Kipu on tuskallista ja nautinnollista. Kipu on osa jokap\xE4iv\xE4ist\xE4
         el\xE4m\xE4\xE4."
+      EnglishArtisticDescription: Pain is both mental and physical. Pain is both
+        permanent and transient. Pain is both painful and pleasurable. Pain is a
+        part of everyday life.
       DiagnoseNumber: F45
       BaseFurniture:
         Name: Sofa_Kipu
@@ -946,6 +1131,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Chair
+      EnglishName: Chair
       Image: {fileID: 96773911, guid: 3b68f427ae685a944b8327899a3727f2, type: 3}
       PosterImage: {fileID: 21300000, guid: 1ca1430b75f5413438dcc388a7e7d056, type: 3}
       RibbonImage: {fileID: 21300000, guid: 3e7024cc1c20a5744850d34399abe47e, type: 3}
@@ -953,6 +1139,9 @@ MonoBehaviour:
       ArtisticDescription: "Kipu on henkist\xE4 ja fyysist\xE4. Kipu on pysyv\xE4\xE4
         ja ohimenev\xE4\xE4. Kipu on tuskallista ja nautinnollista. Kipu on osa jokap\xE4iv\xE4ist\xE4
         el\xE4m\xE4\xE4."
+      EnglishArtisticDescription: Pain is both mental and physical. Pain is both
+        permanent and transient. Pain is both painful and pleasurable. Pain is a
+        part of everyday life.
       DiagnoseNumber: F45
       BaseFurniture:
         Name: Chair_Kipu
@@ -965,6 +1154,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Table
+      EnglishName: Table
       Image: {fileID: 459369904, guid: e2dc0b56be754c8468fb61653e8be6b6, type: 3}
       PosterImage: {fileID: 21300000, guid: fc5d8c27472607744a3a139e0fded250, type: 3}
       RibbonImage: {fileID: 21300000, guid: b9d892a6620a8e646ae8db670390d6bb, type: 3}
@@ -972,6 +1162,9 @@ MonoBehaviour:
       ArtisticDescription: "Kipu on henkist\xE4 ja fyysist\xE4. Kipu on pysyv\xE4\xE4
         ja ohimenev\xE4\xE4. Kipu on tuskallista ja nautinnollista. Kipu on osa jokap\xE4iv\xE4ist\xE4
         el\xE4m\xE4\xE4."
+      EnglishArtisticDescription: Pain is both mental and physical. Pain is both
+        permanent and transient. Pain is both painful and pleasurable. Pain is a
+        part of everyday life.
       DiagnoseNumber: F45
       BaseFurniture:
         Name: Table_Kipu
@@ -984,6 +1177,7 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Plant
+      EnglishName: Plant
       Image: {fileID: 21300000, guid: ce8ccd95426cdc54b926069b66b83da5, type: 3}
       PosterImage: {fileID: 21300000, guid: 96301b22b64b228408e330654d8200c9, type: 3}
       RibbonImage: {fileID: 21300000, guid: a6b74a4c88311664c8a1847839358132, type: 3}
@@ -991,6 +1185,9 @@ MonoBehaviour:
       ArtisticDescription: "Kipu on henkist\xE4 ja fyysist\xE4. Kipu on pysyv\xE4\xE4
         ja ohimenev\xE4\xE4. Kipu on tuskallista ja nautinnollista. Kipu on osa jokap\xE4iv\xE4ist\xE4
         el\xE4m\xE4\xE4."
+      EnglishArtisticDescription: Pain is both mental and physical. Pain is both
+        permanent and transient. Pain is both painful and pleasurable. Pain is a
+        part of everyday life.
       DiagnoseNumber: F45
       BaseFurniture:
         Name: Plant_Kipu
@@ -1003,14 +1200,17 @@ MonoBehaviour:
         Material: 
         Recycling: 
   - SetName: Kiusaaminen
+    SetNameEnglish: Bullying
     ArtistName: Mavlu
     list:
     - Name: Sofa
+      EnglishName: Sofa
       Image: {fileID: 1626912963, guid: e4432fcfe063ad044bc201396b243caa, type: 3}
       PosterImage: {fileID: 21300000, guid: 887f85d33f4a40c449d15732b622452d, type: 3}
       RibbonImage: {fileID: 21300000, guid: c007ef680897316448fbae559470bca2, type: 3}
       VisibleName: Sohva
       ArtisticDescription: "Kiusaaminen nousee mieleen miss\xE4 vaan"
+      EnglishArtisticDescription: Bullying comes to mind everywhere
       DiagnoseNumber: F91.3
       BaseFurniture:
         Name: Sofa_Kiusaaminen
@@ -1023,11 +1223,13 @@ MonoBehaviour:
         Material: 
         Recycling: 
     - Name: Window
+      EnglishName: Window
       Image: {fileID: 21300000, guid: 5dce39d4408956e408711902774c1170, type: 3}
       PosterImage: {fileID: 21300000, guid: 1b4557461b968a543b339959fb3454ef, type: 3}
       RibbonImage: {fileID: 21300000, guid: 2b818da57e7a8b64bbe4465a43a6acf6, type: 3}
       VisibleName: Ikkuna
       ArtisticDescription: "Kiusaaminen nousee mieleen miss\xE4 vaan"
+      EnglishArtisticDescription: Bullying comes to mind everywhere
       DiagnoseNumber: F91.3
       BaseFurniture:
         Name: Window_Kiusaaminen

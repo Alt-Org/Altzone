@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.AvatarPartsInfo;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,7 +10,7 @@ public class GameFurniturePasser : MonoBehaviour
     [SerializeField] private Button _acceptButton;
 
     GameFurniture furniture;
-    AvatarPartsReference.AvatarPartInfo avatarpart;
+    AvatarPartInfo avatarpart;
 
     public void PassFurnitureToVoting()
     {
@@ -28,7 +29,7 @@ public class GameFurniturePasser : MonoBehaviour
         VotingActions.PassShopItemAvatar?.Invoke(avatarpart);
     }
 
-    public void SetAvatarPart(AvatarPartsReference.AvatarPartInfo part)
+    public void SetAvatarPart(AvatarPartInfo part)
     {
         avatarpart = part;
         _acceptButton.onClick.RemoveAllListeners();

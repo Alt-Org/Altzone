@@ -15,33 +15,47 @@ MonoBehaviour:
   Id: 202
   CharacterId: 202
   IsApproved: 1
-  Name: Jekkuilija
+  FinnishName: Ilveily
+  EnglishName: Pranking
   ClassType: 200
-  CharacterDescription: "Jeikkuilija on H\xE4m\xE4\xE4jien oikukas ja ilkikurinen
-    soturi, joka tekee taistelusta kaoottisen pelin. H\xE4n ei pys\xE4hdy kohtaamaan
-    hy\xF6kk\xE4yksi\xE4 suoraan, vaan v\xE4ist\xE4\xE4 ne tekem\xE4ll\xE4 tilanteista
-    arvaamattomia. H\xE4nen taktiikkansa on h\xE4m\xE4t\xE4, h\xE4irit\xE4 ja n\xE4pelt\xE4\xE4
-    viimeisen\xE4.\r\n\nJeikkuilijan suojakilpen\xE4 toimii naamari, joka antaa h\xE4nelle
-    kyvyn h\xE4m\xE4t\xE4 tunnetila-ammuksia t\xE4ysin odottamattomalla ilveilyll\xE4.\r\n"
-  CharacterShortDescription: Oikukas ja ilkikurinen soturi
+  CharacterDescriptionFinnish: "Kun Ilveily asettuu ihmiseen asumaan, se saa t\xE4m\xE4n
+    muuttamaan ep\xE4varmuuden leikiksi. Ihminen alkaa v\xE4ltell\xE4 todellisia
+    tunteita k\xE4\xE4nt\xE4m\xE4ll\xE4 ne aina yll\xE4tykseksi tai vitsiksi, aivan
+    kuin hallinta syntyisi kaaoksesta. H\xE4n luo tilanteita, joissa mik\xE4\xE4n
+    ei pysy vakavana, sill\xE4 vakavuus tuntuisi liian paljastavalta. Ilveily tuo
+    hetkellist\xE4 vapautta \u2014 naurua ja j\xE4nnityst\xE4 \u2014 mutta samalla
+    se hajottaa yhteyden: juuri kun kontakti olisi mahdollinen, h\xE4n k\xE4\xE4nt\xE4\xE4
+    sen peliksi, jonka s\xE4\xE4nn\xF6t vain h\xE4n tiet\xE4\xE4.\r\n\nVuorovaikutuskent\xE4ll\xE4
+    (Ego Clash) Ilveilyn suojakilpi on papaatti, joka vapauttaa tunnetila-ammusten
+    osuessa yll\xE4tt\xE4vi\xE4 r\xE4j\xE4hdyksi\xE4. Jokainen osuma voi k\xE4\xE4nt\xE4\xE4
+    pelin suunnan \u2013 ammus saattaa hajota, kimpoilla tai muuttaa kohdetta t\xE4ysin
+    sattumanvaraisesti. R\xE4j\xE4hdys ei vahingoita Ilveily\xE4, vaan antaa h\xE4nelle
+    hetken hallinnan tunteen kaaoksen keskell\xE4. Mutta kun papaatti viimein pamahtaa
+    tyhj\xE4n\xE4, j\xE4\xE4 j\xE4ljelle vain savu ja tyhjyys, eik\xE4 kukaan en\xE4\xE4
+    naura.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Papaateilla h\xE4mment\xE4v\xE4, arvaamattomasti
+    v\xE4ist\xE4v\xE4 jekkuilija."
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 5d490b9fb5f49e644a6f88cced79a450, type: 2}
   Hp:
     Level: 2
     Coefficient: 4
   Speed:
-    Level: 11
-    Coefficient: 2
+    Level: 6
+    Coefficient: 0
   CharacterSize:
-    Level: 4
-    Coefficient: 6
+    Level: 2
+    Coefficient: 0
   Attack:
-    Level: 8
+    Level: 2
     Coefficient: 5
   Defence:
-    Level: 4
+    Level: 1
     Coefficient: 7
   GalleryImage: {fileID: 21300000, guid: 95be75f57c8fa0348969e12a3058ec56, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 22f309944be80af4aba33ff694f4d7f9, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
       Value: 1533843990975050063

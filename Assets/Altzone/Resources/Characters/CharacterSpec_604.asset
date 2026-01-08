@@ -13,31 +13,48 @@ MonoBehaviour:
   m_Name: CharacterSpec_604
   m_EditorClassIdentifier: 
   Id: 604
-  CharacterId: -1
-  IsApproved: 0
-  Name: Heimoidentiteetti
+  CharacterId: 604
+  IsApproved: 1
+  FinnishName: Heimoidentiteetti
+  EnglishName: Tribalism
   ClassType: 600
-  CharacterDescription: 
-  CharacterShortDescription: 
-  CharacterStats: {fileID: 0}
+  CharacterDescriptionFinnish: "Kun Heimoidentiteetti asettuu ihmiseen asumaan, se
+    saa t\xE4m\xE4n etsim\xE4\xE4n turvaa samankaltaisuudesta. Ihminen alkaa m\xE4\xE4ritell\xE4
+    itsens\xE4 sen kautta, keit\xE4 \u201Cme\u201D olemme \u2014 ja kuinka \u201Cmuut\u201D
+    eroavat heist\xE4. Ryhm\xE4n rytmi vie mukanaan, ja yhteinen kieli antaa merkityksen,
+    jota yksin ei l\xF6ydy. Kuuluminen tuntuu rakkaudelta, mutta se vaatii hinnan:
+    hiljaisuuden silloin, kun ajatus poikkeaa joukosta. Heimoidentiteetti saa ihmisen
+    tuntemaan itsens\xE4 kokonaiseksi vain osana kokonaisuutta, ja siksi yksin oleminen
+    alkaa tuntua vaaralliselta.\r\n\nVuorovaikutuskent\xE4ll\xE4 (Ego Clash) Heimoidentiteetin
+    suojakilpen\xE4 toimii teatteriverho, joka sulkeutuu h\xE4nen ja h\xE4nen ryhm\xE4ns\xE4
+    ymp\xE4rille heti, kun tunnetila-ammus l\xE4hestyy. Ammus kimpoaa verhon pehme\xE4st\xE4
+    pinnasta, ik\xE4\xE4n kuin todellisuus ei p\xE4\xE4sisi heid\xE4n n\xE4ytelm\xE4\xE4ns\xE4
+    h\xE4iritsem\xE4\xE4n. Lopulta teatteriverho putoaa ja silloin kukaan heist\xE4
+    ei en\xE4\xE4 tied\xE4, onko esitys ohi vai jatkuuko se vain ilman yleis\xF6\xE4.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Yhteiseen rooliin pakkautuva, verhon taakse
+    vet\xE4ytyv\xE4 esiintyj\xE4joukko. "
+  CharacterShortDescriptionEnglish: 
+  CharacterStats: {fileID: 11400000, guid: 376f4b04fae13e6458e22560dea074cd, type: 2}
   Hp:
-    Level: 0
-    Coefficient: 0
+    Level: 1
+    Coefficient: 5
   Speed:
-    Level: 0
+    Level: 1
     Coefficient: 0
   CharacterSize:
-    Level: 0
+    Level: 3
     Coefficient: 0
   Attack:
-    Level: 0
-    Coefficient: 0
+    Level: 1
+    Coefficient: 7
   Defence:
-    Level: 0
-    Coefficient: 0
-  GalleryImage: {fileID: 0}
-  GalleryHeadImage: {fileID: 0}
+    Level: 2
+    Coefficient: 2
+  GalleryImage: {fileID: 21300000, guid: 9d93b918a5b04cb40b945c0131baa126, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: e0c453114abc7564b82cf0718a669316, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
-      Value: 0
+      Value: 1366221629889033733
   BattleUiSprite: {fileID: 0}

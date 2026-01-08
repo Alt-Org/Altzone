@@ -10,11 +10,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         public BullyCharacter()
         {
             _id = CharacterID.Bully;
-            _defaultAttack = 6;
-            _defaultDefence = 12;
+            _defaultAttack = 2;
+            _defaultDefence = 3;
             _defaultHp = 1;
-            _defaultCharacterSize = 8;
-            _defaultSpeed = 3;
+            _defaultCharacterSize = 2;
+            _defaultSpeed = 2;
             InitializeValues();
         }
     }

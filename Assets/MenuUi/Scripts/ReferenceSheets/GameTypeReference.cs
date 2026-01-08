@@ -30,8 +30,42 @@ namespace MenuUi.Scripts.ReferenceSheets
     public class GameTypeInfo
     {
         public Sprite Icon;
-        public string Name;
         public GameType gameType;
-        public string Description;
+        public string FinnishName;
+        public string FinnishDescription;
+        public string EnglishName;
+        public string EnglishDescription;
+
+        public string Name
+        {
+            get
+            {
+                switch (SettingsCarrier.Instance.Language)
+                {
+                    case SettingsCarrier.LanguageType.Finnish:
+                        return FinnishName;
+                    case SettingsCarrier.LanguageType.English:
+                        return EnglishName;
+                    default:
+                        return FinnishName;
+                }
+            }
+        }
+
+        public string Description
+        {
+            get
+            {
+                switch (SettingsCarrier.Instance.Language)
+                {
+                    case SettingsCarrier.LanguageType.Finnish:
+                        return FinnishDescription;
+                    case SettingsCarrier.LanguageType.English:
+                        return EnglishDescription;
+                    default:
+                        return FinnishDescription;
+                }
+            }
+        }
     }
 }

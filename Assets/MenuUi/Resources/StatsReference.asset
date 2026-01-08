@@ -14,28 +14,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _info:
   - StatType: 1
-    Name: Iskuvoima
     Image: {fileID: 21300000, guid: 22afc52c1384a5045a3df50c1b96db10, type: 3}
     StatBoxColor: {r: 1, g: 0.6313726, b: 0.003921569, a: 1}
+    Name: Iskuvoima
     Description: "Lis\xE4\xE4 iskuvoimaa"
+    EnglishName: Attack
+    EnglishDescription: Increases impact power
   - StatType: 2
-    Name: Puolustus
     Image: {fileID: 21300000, guid: 3099e70399adc4c41a32b716a56dfcc4, type: 3}
     StatBoxColor: {r: 0.94117653, g: 0.07058824, b: 0.07058824, a: 1}
+    Name: Puolustus
     Description: "Kuinka paljon kilpi kest\xE4\xE4 damagea"
+    EnglishName: Defence
+    EnglishDescription: How much damage can a shield take
   - StatType: 3
-    Name: Hahmon koko
     Image: {fileID: 21300000, guid: 33f4e728d16b98c46adba784d25cd9bf, type: 3}
     StatBoxColor: {r: 1, g: 0.6627451, b: 0.62352943, a: 1}
+    Name: Hahmon koko
     Description: Pelihahmon koko, kilven aktivoitumisalue kasvaa
+    EnglishName: Character size
+    EnglishDescription: "\rCharacter size, shield activation area increases"
   - StatType: 4
-    Name: Elinvoima
     Image: {fileID: 21300000, guid: 25a90b5c5a58baa48802c3136bd0479c, type: 3}
     StatBoxColor: {r: 0.44705886, g: 0.8431373, b: 0.3647059, a: 1}
+    Name: Elinvoima
     Description: "Kuinka kauan kest\xE4\xE4 hengiss\xE4 ja kuinka paljon kest\xE4\xE4
-      kivett\xF6mi\xE4 iskuja"
+      kilvett\xF6mi\xE4 iskuja"
+    EnglishName: Health points
+    EnglishDescription: How long will survive alive and how much can withstand unshielded
+      attacks
   - StatType: 5
-    Name: Nopeus
     Image: {fileID: 21300000, guid: 22665ecbaf952e542942eb17a5a4594f, type: 3}
     StatBoxColor: {r: 0.65882355, g: 0.8588236, b: 0.909804, a: 1}
+    Name: Nopeus
     Description: "Kuinka nopeasti hahmo liikkuu kent\xE4ll\xE4 paikasta toiseen"
+    EnglishName: Speed
+    EnglishDescription: How fast the character moves on the field

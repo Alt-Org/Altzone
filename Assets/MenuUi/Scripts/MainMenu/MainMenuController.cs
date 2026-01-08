@@ -36,10 +36,23 @@ namespace MenuUi.Scripts.MainMenu
 
         private void OnEnable()
         {
+            bool jukeboxMainMenu = carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.MainMenu);
+
             _swipe = GetComponentInParent<SwipeUI>();
             StartCoroutine(CheckWindowSize());
-            AudioManager.Instance?.PlayMusic("MainMenu");
-            LobbyManager.Instance.Activate();
+
+            AudioManager.Instance?.SetCurrentAreaCategoryName("MainMenu");
+
+            if (jukeboxMainMenu)
+            {
+                if (JukeboxManager.Instance != null && string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
+                    AudioManager.Instance?.PlayMusic("MainMenu");
+            }
+            else
+                AudioManager.Instance?.PlayMusic("MainMenu");
+
+            if(!LobbyManager.IsActive) LobbyManager.Instance.Activate();
+            if (LobbyManager.Instance.RunnerActive) LobbyManager.CloseRunner();
         }
 
         private void Start()

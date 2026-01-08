@@ -8,25 +8,53 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 486391669144605290, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: _noShieldSprite
+      value: 
+      objectReference: {fileID: -452145758, guid: 7b8af78343fa2f8418284c6a39fd8f33,
+        type: 3}
+    - target: {fileID: 2108341854519884208, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1035963932, guid: 7b8af78343fa2f8418284c6a39fd8f33,
+        type: 3}
     - target: {fileID: 2108341854519884208, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.043137256
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2108341854519884208, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2108341854519884208, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: m_Color.r
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5521468026819928245, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: m_Name
       value: BattlePlayer201Character
       objectReference: {fileID: 0}
+    - target: {fileID: 5555457871378360869, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7425350154965914569, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -2061461742, guid: 7b8af78343fa2f8418284c6a39fd8f33,
+        type: 3}
     - target: {fileID: 7425350154965914569, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.04088664
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7425350154965914569, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
@@ -36,7 +64,7 @@ PrefabInstance:
     - target: {fileID: 7425350154965914569, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       propertyPath: m_Color.r
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7918865761784379886, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}

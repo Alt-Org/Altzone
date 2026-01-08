@@ -14,35 +14,44 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 102
   CharacterId: 102
-  IsApproved: 0
-  Name: Lihamuuri
+  IsApproved: 1
+  FinnishName: Ylikunto
+  EnglishName: Overtraining
   ClassType: 100
-  CharacterDescription: "Lihamuuri on kurinalaisuuden ruumiillistuma. H\xE4nelle
-    punttisali on turvasatama, jonne vet\xE4yty\xE4 ja jossa treenaus ja kehollisen
-    t\xE4ydellisyyden tavoittelu keskitt\xE4v\xE4t ajatukset pois mielt\xE4 vaivaavista
-    tuntemuksista. H\xE4n k\xE4ytt\xE4\xE4 urheilun tuomia rutiineja ja kehonsa \xE4\xE4rirajoilta
-    l\xF6ytyvi\xE4 endorfiini-annoksia vaimentaakseen tunteita, joita ei ole valmis
-    kohtaamaan.\r\n\nTunnetila-ammuksen osuessa Lihamuuriin, h\xE4n pullistaa lihaksensa
-    mahdollisimman suuriksi, absorboiden h\xE4nt\xE4 uhkaavat tunteet kehoonsa.\r\n"
-  CharacterShortDescription: "Ruumiilliseen t\xE4ydellisyyteen keskittyv\xE4 karpaasi."
+  CharacterDescriptionFinnish: "Kun Ylikunto ottaa ihmisen valtaansa, keho alkaa
+    tehd\xE4 sen, mit\xE4 mieli ei en\xE4\xE4 jaksa: se jatkaa liikkumista, vaikka
+    tarkoitus olisi pys\xE4hty\xE4. Tunteet eiv\xE4t en\xE4\xE4 l\xF6yd\xE4 tiet\xE4
+    ulos, vaan j\xE4\xE4v\xE4t lihaksiin ja j\xE4nteisiin, jotka kiristyv\xE4t jokaisesta
+    yrityksest\xE4 lev\xE4t\xE4. Ihminen alkaa uskoa, ett\xE4 liike on sama kuin
+    el\xE4m\xE4, vaikka todellisuudessa se on pakoa uupumuksen reunalla. Kurinalaisuus
+    muuttuu rangaistukseksi, ja hiljaisuus, jota h\xE4n etsii, on lopulta kehon oma
+    pys\xE4htyminen.\r\n\nVuorovaikutuskent\xE4ll\xE4 (Ego Clash) Ylikunnon suojakilpi
+    ovat lihaksensa, jotka paisuvat tunnetila-ammuksen osuessa. Isku ei riko h\xE4nt\xE4,
+    vaan saa h\xE4net kasvamaan \u2013 kirjaimellisesti. Mit\xE4 enemm\xE4n h\xE4n
+    torjuu, sit\xE4 suuremmaksi h\xE4n paisuu \u2013 kunnes r\xE4j\xE4ht\xE4\xE4\r."
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Ruumiilliseen t\xE4ydellisyyteen keskittyv\xE4,
+    tunteensa torjuva karpaasi."
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 0a0a3cdff0ecc9741a81904da92d277b, type: 2}
   Hp:
     Level: 1
     Coefficient: 7
   Speed:
-    Level: 3
-    Coefficient: 6
+    Level: 2
+    Coefficient: 0
   CharacterSize:
-    Level: 8
-    Coefficient: 4
+    Level: 3
+    Coefficient: 0
   Attack:
-    Level: 6
+    Level: 3
     Coefficient: 2
   Defence:
-    Level: 12
+    Level: 3
     Coefficient: 1
   GalleryImage: {fileID: 21300000, guid: 8269c6e6e87cbed4486c70953683aad1, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 972dfcd017cc29948b10a9f15ba8624f, type: 3}
+  CharPhotoSeries: {fileID: 21300000, guid: 5a467697ed5ac2c4e8be100d38987a22, type: 3}
   BattleEntityPrototype:
     Id:
       Value: 1364834009955602738

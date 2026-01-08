@@ -14,29 +14,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 302
   CharacterId: 302
-  IsApproved: 0
-  Name: "Miellytt\xE4minen"
+  IsApproved: 1
+  FinnishName: "Miellytt\xE4minen"
+  EnglishName: Pleasing
   ClassType: 300
-  CharacterDescription: 
-  CharacterShortDescription: 
+  CharacterDescriptionFinnish: "Kun Miellytt\xE4minen asettuu ihmiseen asumaan, se
+    saa t\xE4m\xE4n mittaamaan arvonsa muiden tarpeilla. Ihminen alkaa kuunnella
+    niin tarkasti toisten odotuksia, ettei en\xE4\xE4 kuule omaa \xE4\xE4nt\xE4\xE4n.
+    H\xE4n sanoo kyll\xE4 silloinkin, kun syd\xE4n huutaa lepoa, ja tekee enemm\xE4n
+    kuin jaksaa, jotta kukaan ei voisi petty\xE4. Miellytt\xE4minen vakuuttaa, ett\xE4
+    rakkaus on palkinto, joka ansaitaan uhrautumalla. Mutta mit\xE4 enemm\xE4n h\xE4n
+    antaa, sit\xE4 v\xE4hemm\xE4n h\xE4n saa tilaa olla olemassa omana itsen\xE4\xE4n.\r\n\nVuorovaikutuskent\xE4ll\xE4
+    (Ego Clash) Miellytt\xE4misen suojakilpi on to do -lista, jota h\xE4n k\xE4ytt\xE4\xE4
+    suojanaan. Jokainen tunnetila-ammus joka osuu suojakilpeen lis\xE4\xE4 siihen
+    uuden teht\xE4v\xE4ksi, joka on hoidettava ennen kuin Miellytt\xE4minen saa lev\xE4t\xE4.
+    Lista ei kulu, vaan kasvaa, kunnes se kaatuu h\xE4nen ylleen \u2013 hautaa h\xE4net
+    t\xE4ydellisyyteen, jonka h\xE4n itse rakensi.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Auttamalla uupuva, hyv\xE4ksynt\xE4\xE4 velvollisuudesta
+    etsiv\xE4 supernainen. "
+  CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 35e1452ed2a9f8942a0e1d4154fba839, type: 2}
   Hp:
-    Level: 10
+    Level: 4
     Coefficient: 0
   Speed:
-    Level: 10
+    Level: 3
     Coefficient: 0
   CharacterSize:
-    Level: 10
+    Level: 3
     Coefficient: 0
   Attack:
-    Level: 10
+    Level: 4
     Coefficient: 0
   Defence:
-    Level: 10
+    Level: 4
     Coefficient: 0
   GalleryImage: {fileID: 21300000, guid: 6c85587376e507643909eaff042ba9fe, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: fbc34837037a6644facbc034a827c758, type: 3}
+  CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:
       Value: 1275357583760430902

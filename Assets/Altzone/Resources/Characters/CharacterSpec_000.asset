@@ -15,17 +15,20 @@ MonoBehaviour:
   Id: 0
   CharacterId: 0
   IsApproved: 1
-  Name: Test
+  FinnishName: Testi
+  EnglishName: Test
   ClassType: 0
-  CharacterDescription: Test Character of testing player base logic
-  CharacterShortDescription: Test Character of testing player base logic
+  CharacterDescriptionFinnish: Testihahmo testaamista varten
+  CharacterDescriptionEnglish: Test Character of testing player base logic
+  CharacterShortDescriptionFinnish: Testihahmo testaamista varten
+  CharacterShortDescriptionEnglish: Test Character of testing player base logic
   CharacterStats: {fileID: 11400000, guid: 469e351f5fcc4a943aee0f39959c4605, type: 2}
   Hp:
     Level: 7
     Coefficient: 4
   Speed:
-    Level: 7
-    Coefficient: 4
+    Level: 4
+    Coefficient: 0
   CharacterSize:
     Level: 7
     Coefficient: 4

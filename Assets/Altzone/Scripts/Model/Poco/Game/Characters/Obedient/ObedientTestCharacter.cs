@@ -10,11 +10,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         public ObedientTestCharacter() : base()
         {
             _id = CharacterID.ObedientTest;
-            _defaultAttack = 10;
-            _defaultDefence = 10;
-            _defaultHp = 10;
-            _defaultCharacterSize = 10;
-            _defaultSpeed = 10;
+            _defaultAttack = 4;
+            _defaultDefence = 4;
+            _defaultHp = 4;
+            _defaultCharacterSize = 3;
+            _defaultSpeed = 3;
             InitializeValues();
         }
     }

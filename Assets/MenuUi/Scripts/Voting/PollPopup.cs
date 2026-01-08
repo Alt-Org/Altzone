@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Altzone.Scripts.Voting;
 using TMPro;
 using UnityEngine;
@@ -64,10 +62,12 @@ public class PollPopup : MonoBehaviour // Controls the popup display for polls
 
     public void AddVote(bool answer)
     {
-        pollData.AddVote(answer);
+        pollData.AddVote(answer, null);
         SetValues();
         VotingActions.ReloadPollList?.Invoke();
 
         gameObject.SetActive(false);
+
+        gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
     }
 }
