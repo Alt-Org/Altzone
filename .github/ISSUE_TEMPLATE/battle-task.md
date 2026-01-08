@@ -3,6 +3,7 @@ name: Battle Taski
 about: Määritä battlen tehtävä, jonka voi tehdä jo käytännössä
 title: 'Task: Taskin Nimi'
 labels: Battle
+type: Task
 assignees:
 ---
 
