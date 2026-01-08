@@ -10,8 +10,27 @@ namespace MenuUi.Scripts.AvatarEditor
     {
         [SerializeField] private ScrollRect _categoryGridScrollRect;
         [SerializeField] private ScrollBarCategoryLoader _categoryLoader;
+        [SerializeField] private Button _topButton;
+        [SerializeField] private Button _bottomButton;
+        [SerializeField] private InfiniteScroll _infiniteScroll;
         private float _clampDuration = 0.2f; // in seconds
         private Coroutine _clampCoroutine;
+        private float _totalCellSize;
+        private float _contentYPosition;
+        private int _topIndex;
+
+        private void Start()
+        {
+            _topButton.onClick.AddListener(() =>
+            {
+                ClampToTopIndex();
+            });
+
+            _bottomButton.onClick.AddListener(() =>
+            {
+                ClampToBottomIndex();
+            });
+        }
         public void OnEndDrag(PointerEventData eventData)
         {
             ClampToCenter();
@@ -25,13 +44,35 @@ namespace MenuUi.Scripts.AvatarEditor
             }
         }
 
+        private void Calculate()
+        {
+            _totalCellSize = _categoryLoader.cellHeight + _categoryLoader.spacing;
+            _contentYPosition = _categoryGridScrollRect.content.anchoredPosition.y;
+            _topIndex = Mathf.RoundToInt(_contentYPosition / _totalCellSize);
+        }
+
+        private void ClampToBottomIndex()
+        {
+            Calculate();
+            int targetIndex = _topIndex + 2;
+            float targetYPosition = _topIndex * _totalCellSize + _totalCellSize;
+
+            _clampCoroutine = StartCoroutine(Clamp(targetYPosition, targetIndex));
+        }
+        public void ClampToTopIndex()
+        {
+            Calculate();
+            int targetIndex = _topIndex;
+            float targetYPosition = _topIndex * _totalCellSize - _totalCellSize;
+
+            _clampCoroutine = StartCoroutine(Clamp(targetYPosition, targetIndex));
+        }
+
         private void ClampToCenter()
         {
-            float totalCellSize = _categoryLoader.cellHeight + _categoryLoader.spacing;
-            float contentYPosition = _categoryGridScrollRect.content.anchoredPosition.y;
-            int nearestIndex = Mathf.RoundToInt(contentYPosition / totalCellSize);
-            int targetIndex = nearestIndex + 1;
-            float targetYPosition = nearestIndex * totalCellSize;
+            Calculate();
+            int targetIndex = _topIndex + 1;
+            float targetYPosition = _topIndex * _totalCellSize;
 
             _clampCoroutine = StartCoroutine(Clamp(targetYPosition, targetIndex));
         }
@@ -54,12 +95,12 @@ namespace MenuUi.Scripts.AvatarEditor
 
             _categoryGridScrollRect.content.anchoredPosition = target;
 
-            OnClamp(targetYPos, index);
+            OnClamp(index);
 
             _clampCoroutine = null;
         }
 
-        private void OnClamp(float targetYPos, int index)
+        private void OnClamp(int index)
         {
             Transform centerCell = _categoryGridScrollRect.content.GetChild(index);
 
