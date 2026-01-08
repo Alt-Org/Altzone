@@ -35,8 +35,8 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             _characterCopy = Instantiate(_character, _characterParent);
             _characterCopyRect = _characterCopy.GetComponent<RectTransform>();
-            _characterCopyRect.anchorMin = new Vector2(0.15f, 0f);
-            _characterCopyRect.anchorMax = new Vector2(0.6f, 0.85f);
+            _characterCopyRect.anchorMin = new Vector2(0f, 0.23f);
+            _characterCopyRect.anchorMax = new Vector2(0.8f, 0.6f);
 
             _popUp.SetActive(true);
         }
