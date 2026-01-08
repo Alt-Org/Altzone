@@ -23,12 +23,14 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             _topButton.onClick.AddListener(() =>
             {
-                ClampToTopIndex();
+                _topButton.interactable = false;
+                ClampToTopCell();
             });
 
             _bottomButton.onClick.AddListener(() =>
             {
-                ClampToBottomIndex();
+                _bottomButton.interactable = false;
+                ClampToBottomCell();
             });
         }
         public void OnEndDrag(PointerEventData eventData)
@@ -51,7 +53,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _topIndex = Mathf.RoundToInt(_contentYPosition / _totalCellSize);
         }
 
-        private void ClampToBottomIndex()
+        private void ClampToBottomCell()
         {
             Calculate();
             int targetIndex = _topIndex + 2;
@@ -59,7 +61,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
             _clampCoroutine = StartCoroutine(Clamp(targetYPosition, targetIndex));
         }
-        public void ClampToTopIndex()
+        public void ClampToTopCell()
         {
             Calculate();
             int targetIndex = _topIndex;
@@ -98,6 +100,11 @@ namespace MenuUi.Scripts.AvatarEditor
             OnClamp(index);
 
             _clampCoroutine = null;
+
+            _infiniteScroll.updateGrid();
+
+            _bottomButton.interactable = true;
+            _topButton.interactable = true;
         }
 
         private void OnClamp(int index)

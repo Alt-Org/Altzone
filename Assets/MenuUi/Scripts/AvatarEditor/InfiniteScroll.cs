@@ -14,16 +14,19 @@ public class InfiniteScroll : MonoBehaviour, IDragHandler
 
     private int _uniqueCellAmount;
     private float _totalCellSize;
-    private float _spacing;
     private float _contentHeight;
     private float _bottomLimit;
     private float _viewPortHeight;
 
     public void OnDrag(PointerEventData eventData)
     {
+        updateGrid(eventData);
+    }
+
+    public void updateGrid(PointerEventData eventData = null)
+    {
         _uniqueCellAmount = _categoryLoader.uniqueCellAmount;
         _totalCellSize = _categoryLoader.cellHeight + _categoryLoader.spacing;
-        _spacing = _categoryLoader.spacing;
         _contentHeight = _categoryGridContent.rect.height;
         _viewPortHeight = _categoryGridViewport.rect.height;
         _bottomLimit = _contentHeight - _viewPortHeight - _totalCellSize;
@@ -31,15 +34,22 @@ public class InfiniteScroll : MonoBehaviour, IDragHandler
         if (_categoryGridContent.anchoredPosition.y < _totalCellSize)
         {
             _categoryGridContent.anchoredPosition = new Vector2(_categoryGridContent.anchoredPosition.x,
-                _categoryGridContent.anchoredPosition.y + _totalCellSize * _uniqueCellAmount - _spacing);
-            _scrollRect.OnBeginDrag(eventData);
+                _categoryGridContent.anchoredPosition.y + _totalCellSize * _uniqueCellAmount);
+            if (eventData != null)
+            {
+                // If this isn't done, scroll does not loop before letting go and dragging again
+                _scrollRect.OnBeginDrag(eventData);
+            }
         }
 
         if (_categoryGridContent.anchoredPosition.y > _bottomLimit)
         {
             _categoryGridContent.anchoredPosition = new Vector2(_categoryGridContent.anchoredPosition.x,
-                _categoryGridContent.anchoredPosition.y - _totalCellSize * _uniqueCellAmount + _spacing);
-            _scrollRect.OnBeginDrag(eventData);
+                _categoryGridContent.anchoredPosition.y - _totalCellSize * _uniqueCellAmount);
+            if (eventData != null)
+            {
+                _scrollRect.OnBeginDrag(eventData);
+            }
         }
     }
 }
