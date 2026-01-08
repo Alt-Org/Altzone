@@ -15,8 +15,19 @@ namespace MenuUi.Scripts.AvatarEditor
             Color? cellImageColor = null,
             Color? backgroundColor = null,
             UnityEngine.Events.UnityAction onClick = null,
-            bool buttonIsInteractable = true)
+            bool? buttonIsInteractable = null)
         {
+
+            if (cellImage == null &&
+                cellImageColor == null &&
+                backgroundColor == null &&
+                onClick == null &&
+                buttonIsInteractable == null)
+            {
+                Debug.LogWarning("SetValues() called without any arguments");
+                return;
+            }
+
             _featureImage.preserveAspect = true;
 
             if (cellImage != null)
@@ -38,8 +49,11 @@ namespace MenuUi.Scripts.AvatarEditor
             {
                 _button.onClick.AddListener(onClick);
             }
-            
-            _button.interactable = buttonIsInteractable;
+
+            if (buttonIsInteractable.HasValue)
+            {
+                _button.interactable = buttonIsInteractable.Value;
+            }
         }
 
         public void SetFeatureImageAnchors(Vector2 anchorMin, Vector2 anchorMax)
