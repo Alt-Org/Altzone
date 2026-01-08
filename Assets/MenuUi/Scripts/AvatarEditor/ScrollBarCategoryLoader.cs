@@ -111,12 +111,12 @@ namespace MenuUi.Scripts.AvatarEditor
             GameObject gridCell = Instantiate(_avatarPartCategoryGridCellPrefab, _categoryGridContent);
             GridCellHandler handler = gridCell.GetComponent<GridCellHandler>();
 
-            handler.SetValues(CellImage, _backgroundColor, () =>
+            handler.SetValues(cellImage: CellImage, backgroundColor: _backgroundColor, onClick: () =>
             {
                 buttonFunction.Invoke(FeatureCategoryId);
                 _currentlySelectedCategory = FeatureCategoryId;
             },
-                false);
+                buttonIsInteractable: false);
         }
 
         private void DestroyCategoryCells()

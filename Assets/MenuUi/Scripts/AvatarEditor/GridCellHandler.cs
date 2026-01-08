@@ -12,10 +12,10 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Button _button;
 
         public void SetValues(Sprite cellImage = null,
+            Color? cellImageColor = null,
             Color? backgroundColor = null,
             UnityEngine.Events.UnityAction onClick = null,
-            bool buttonIsInteractable = true,
-            Color? cellImageColor = null)
+            bool buttonIsInteractable = true)
         {
             _featureImage.preserveAspect = true;
 
