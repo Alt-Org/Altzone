@@ -109,14 +109,17 @@ namespace MenuUi.Scripts.AvatarEditor
         private void AddCategoryCell(string FeatureCategoryId, Sprite CellImage, Action<string> buttonFunction)
         {
             GameObject gridCell = Instantiate(_avatarPartCategoryGridCellPrefab, _categoryGridContent);
-            GridCellHandler handler = gridCell.GetComponent<GridCellHandler>();
+            CategoryCellHandler handler = gridCell.GetComponent<CategoryCellHandler>();
 
-            handler.SetValues(cellImage: CellImage, backgroundColor: _backgroundColor, onClick: () =>
+            handler.SetValues(CellImage, _backgroundColor);
+
+            handler.SetOnClick(() =>
             {
                 buttonFunction.Invoke(FeatureCategoryId);
                 _currentlySelectedCategory = FeatureCategoryId;
-            },
-                buttonIsInteractable: false);
+            });
+
+            handler.ButtonIsInteractable(false);
         }
 
         private void DestroyCategoryCells()

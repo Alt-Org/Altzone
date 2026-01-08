@@ -32,7 +32,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private List<AvatarPartInfo> _avatarPartInfo;
         private Dictionary<string, int> _featureCategoryIdToFeatureSlotInt;
         private PlayerAvatar _playeravatar;
-        private GridCellHandler _selectedCellHandler;
+        private FeatureCellHandler _selectedCellHandler;
         private bool _isSelectedFeature = false;
         private float _cellHeight;
         private float _actualVerticalSpacing;
@@ -108,13 +108,13 @@ namespace MenuUi.Scripts.AvatarEditor
         private void AddFeatureCell(Sprite cellImage, AvatarPartInfo avatarPart)
         {
             GameObject gridCell = Instantiate(_gridCellPrefab, _featureGridContent);
-            GridCellHandler handler = gridCell.GetComponent<GridCellHandler>();
+            FeatureCellHandler handler = gridCell.GetComponent<FeatureCellHandler>();
 
             _playeravatar = _avatarEditorController.PlayerAvatar;
             string featureCategoryid = GetFeatureCategoryFromFeatureId(avatarPart.Id);
             int featurePickerPartSlot = _featureCategoryIdToFeatureSlotInt[featureCategoryid];
 
-            handler.SetValues(cellImage: cellImage);
+            handler.SetValues(cellImage, _highlightColor, _backgroundColor);
 
             AddListeners(handler, avatarPart, featurePickerPartSlot);
 
@@ -125,30 +125,30 @@ namespace MenuUi.Scripts.AvatarEditor
 
             if (_isSelectedFeature)
             {
-                handler.SetValues(backgroundColor: _highlightColor);
+                handler.Highlight(true);
                 _selectedCellHandler = handler;
                 _isSelectedFeature = false;
             }
             else
             {
-                handler.SetValues(backgroundColor: _backgroundColor);
+                handler.Highlight(false);
             }
         }
 
-        private void UpdateHighlightedCell(GridCellHandler handler)
+        private void UpdateHighlightedCell(FeatureCellHandler handler)
         {
             if (_selectedCellHandler != null)
             {
-                _selectedCellHandler.SetValues(backgroundColor: _backgroundColor);
+                _selectedCellHandler.Highlight(false);
             }
             
             _selectedCellHandler = handler;
-            handler.SetValues(backgroundColor: _highlightColor);
+            handler.Highlight(true);
         }
 
-        private void AddListeners(GridCellHandler handler, AvatarPartInfo avatarPart, int featurePickerPartSlot)
+        private void AddListeners(FeatureCellHandler handler, AvatarPartInfo avatarPart, int featurePickerPartSlot)
         {
-            handler.SetValues(onClick: () =>
+            handler.SetOnClick(onClick: () =>
             {
                 _featureSetter.SetFeature(avatarPart, featurePickerPartSlot);
                 UpdateHighlightedCell(handler);

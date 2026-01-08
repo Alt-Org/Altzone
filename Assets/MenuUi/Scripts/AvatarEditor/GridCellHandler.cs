@@ -1,25 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
-    public class GridCellHandler : MonoBehaviour
+    public abstract class GridCellHandler : MonoBehaviour
     {
         [SerializeField] private Image _backgroundImage;
-        [SerializeField] private Image _featureImage;
+        [SerializeField] protected Image _featureImage;
         [SerializeField] private Button _button;
+        private Color _highlightColor;
+        private Color _backgroundColor;
 
-        public void SetValues(Sprite cellImage = null,
-            Color? cellImageColor = null,
+        protected void SetValues(Sprite cellImage = null,
+            Color? higlightColor = null,
             Color? backgroundColor = null,
             UnityEngine.Events.UnityAction onClick = null,
             bool? buttonIsInteractable = null)
         {
 
             if (cellImage == null &&
-                cellImageColor == null &&
+                higlightColor == null &&
                 backgroundColor == null &&
                 onClick == null &&
                 buttonIsInteractable == null)
@@ -35,14 +38,16 @@ namespace MenuUi.Scripts.AvatarEditor
                 _featureImage.sprite = cellImage;
                 _featureImage.type = Image.Type.Simple;
             }
-            else if (cellImageColor.HasValue)
-            {
-                _featureImage.color = cellImageColor.Value;
-            }
 
             if (backgroundColor.HasValue)
             {
                 _backgroundImage.color = backgroundColor.Value;
+                _backgroundColor = backgroundColor.Value;
+            }
+
+            if (higlightColor.HasValue)
+            {
+                _highlightColor = higlightColor.Value;
             }
 
             if (onClick != null)
@@ -56,10 +61,16 @@ namespace MenuUi.Scripts.AvatarEditor
             }
         }
 
-        public void SetFeatureImageAnchors(Vector2 anchorMin, Vector2 anchorMax)
+        protected void Highlight(bool isHighlighted)
         {
-            _featureImage.rectTransform.anchorMin = anchorMin;
-            _featureImage.rectTransform.anchorMax = anchorMax;
+            if (isHighlighted)
+            {
+                _backgroundImage.color = _highlightColor;
+            }
+            else
+            {
+                _backgroundImage.color = _backgroundColor;
+            }
         }
     }
 }

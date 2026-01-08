@@ -13,7 +13,6 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private RectTransform _colorSelection;
         [SerializeField] private GameObject _gridCellPrefab;
         [SerializeField] private HorizontalLayoutGroup _colorGrid;
-        [SerializeField] private Color _backgroundColor = new(0, 0, 0);
         [SerializeField] private List<Color> _colors;
 
         private float _viewPortHeight;
@@ -23,14 +22,10 @@ namespace MenuUi.Scripts.AvatarEditor
         private void AddColorCell(Color color)
         {
             GameObject colorGridCell = Instantiate(_gridCellPrefab, _colorGridContent);
-            GridCellHandler handler = colorGridCell.GetComponent<GridCellHandler>();
+            ColorCellHandler handler = colorGridCell.GetComponent<ColorCellHandler>();
 
-            Vector2 colorImageMinAnchors = new(0.05f, 0.05f);
-            Vector2 colorImageMaxAnchors = new(0.95f, 0.95f);
-
-            handler.SetValues(cellImageColor: color, backgroundColor: _backgroundColor,
-                onClick: () => AddListener());
-            handler.SetFeatureImageAnchors(colorImageMinAnchors, colorImageMaxAnchors);
+            handler.SetColor(color);
+            handler.SetOnClick(() => AddListener());
         }
 
         public void SetColorCells()
