@@ -13,6 +13,9 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Sprite _desensitizerFrame;
         [SerializeField] private Sprite _desensitizerCornerIcon;
         [SerializeField] private Sprite _desensitizerResistanceIcon;
+        [SerializeField] private Sprite _desensitizerNameIconFinnish;
+        [SerializeField] private Sprite _desensitizerNameIconEnglish;
+        [SerializeField] private Sprite _desensitizerCharacter;
 
         [Space, SerializeField] private string _tricksterNameFinnish;
         [SerializeField] private string _tricksterNameEnglish;
@@ -21,6 +24,9 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Sprite _tricksterFrame;
         [SerializeField] private Sprite _tricksterCornerIcon;
         [SerializeField] private Sprite _tricksterResistanceIcon;
+        [SerializeField] private Sprite _tricksterNameIconFinnish;
+        [SerializeField] private Sprite _tricksterNameIconEnglish;
+        [SerializeField] private Sprite _tricksterCharacter;
 
         [Space, SerializeField] private string _obedientNameFinnish;
         [SerializeField] private string _obedientNameEnglish;
@@ -29,6 +35,9 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Sprite _obedientFrame;
         [SerializeField] private Sprite _obedientCornerIcon;
         [SerializeField] private Sprite _obedientResistanceIcon;
+        [SerializeField] private Sprite _obedientNameIconFinnish;
+        [SerializeField] private Sprite _obedientNameIconEnglish;
+        [SerializeField] private Sprite _obedientCharacter;
 
         [Space, SerializeField] private string _projectorNameFinnish;
         [SerializeField] private string _projectorNameEnglish;
@@ -37,6 +46,9 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Sprite _projectorFrame;
         [SerializeField] private Sprite _projectorCornerIcon;
         [SerializeField] private Sprite _projectorResistanceIcon;
+        [SerializeField] private Sprite _projectorNameIconFinnish;
+        [SerializeField] private Sprite _projectorNameIconEnglish;
+        [SerializeField] private Sprite _projectorCharacter;
 
         [Space, SerializeField] private string _retroflectorNameFinnish;
         [SerializeField] private string _retroflectorNameEnglish;
@@ -45,6 +57,9 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Sprite _retroflectorFrame;
         [SerializeField] private Sprite _retroflectorCornerIcon;
         [SerializeField] private Sprite _retroflectorResistanceIcon;
+        [SerializeField] private Sprite _retroflectorNameIconFinnish;
+        [SerializeField] private Sprite _retroflectorNameIconEnglish;
+        [SerializeField] private Sprite _retroflectorCharacter;
 
         [Space, SerializeField] private string _confluentNameFinnish;
         [SerializeField] private string _confluentNameEnglish;
@@ -53,6 +68,9 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Sprite _confluentFrame;
         [SerializeField] private Sprite _confluentCornerIcon;
         [SerializeField] private Sprite _confluentResistanceIcon;
+        [SerializeField] private Sprite _confluentNameIconFinnish;
+        [SerializeField] private Sprite _confluentNameIconEnglish;
+        [SerializeField] private Sprite _confluentCharacter;
 
         [Space, SerializeField] private string _intellectualizerNameFinnish;
         [SerializeField] private string _intellectualizerNameEnglish;
@@ -61,6 +79,9 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Sprite _intellectualizerFrame;
         [SerializeField] private Sprite _intellectualizerCornerIcon;
         [SerializeField] private Sprite _intellectualizerResistanceIcon;
+        [SerializeField] private Sprite _intellectualizerNameIconFinnish;
+        [SerializeField] private Sprite _intellectualizerNameIconEnglish;
+        [SerializeField] private Sprite _intellectualizerCharacter;
 
         private static ClassReference _instance;
         private static bool _hasInstance;
@@ -249,5 +270,68 @@ namespace Altzone.Scripts.ReferenceSheets
             }
             return null;
         }
+
+        /// <summary>
+        /// Get character name icon.
+        /// </summary>
+        /// <param name="classType">The class id which name to get.</param>
+        /// <returns>Class name icon.</returns>
+        public Sprite GetNameIcon(CharacterClassType classType)
+        {
+            return SettingsCarrier.Instance.Language switch
+            {
+                SettingsCarrier.LanguageType.Finnish => classType switch
+                {
+                    CharacterClassType.Desensitizer => _desensitizerNameIconFinnish,
+                    CharacterClassType.Trickster => _tricksterNameIconFinnish,
+                    CharacterClassType.Obedient => _obedientNameIconFinnish,
+                    CharacterClassType.Projector => _projectorNameIconFinnish,
+                    CharacterClassType.Retroflector => _retroflectorNameIconFinnish,
+                    CharacterClassType.Confluent => _confluentNameIconFinnish,
+                    CharacterClassType.Intellectualizer => _intellectualizerNameIconFinnish,
+                    _ => null,
+                },
+                SettingsCarrier.LanguageType.English => classType switch
+                {
+                    CharacterClassType.Desensitizer => _desensitizerNameIconEnglish,
+                    CharacterClassType.Trickster => _tricksterNameIconEnglish,
+                    CharacterClassType.Obedient => _obedientNameIconEnglish,
+                    CharacterClassType.Projector => _projectorNameIconEnglish,
+                    CharacterClassType.Retroflector => _retroflectorNameIconEnglish,
+                    CharacterClassType.Confluent => _confluentNameIconEnglish,
+                    CharacterClassType.Intellectualizer => _intellectualizerNameIconEnglish,
+                    _ => null,
+                },
+                _ => null,
+            };
+        }
+
+        /// <summary>
+        /// Get character icon.
+        /// </summary>
+        /// <param name="classType">The class id which character sprite to get.</param>
+        /// <returns>Class character sprite.</returns>
+        public Sprite GetCharacter(CharacterClassType classType)
+        {
+            switch (classType)
+            {
+                case CharacterClassType.Desensitizer:
+                    return _desensitizerCharacter;
+                case CharacterClassType.Trickster:
+                    return _tricksterCharacter;
+                case CharacterClassType.Obedient:
+                    return _obedientCharacter;
+                case CharacterClassType.Projector:
+                    return _projectorCharacter;
+                case CharacterClassType.Retroflector:
+                    return _retroflectorCharacter;
+                case CharacterClassType.Confluent:
+                    return _confluentCharacter;
+                case CharacterClassType.Intellectualizer:
+                    return _intellectualizerCharacter;
+            }
+            return null;
+        }
+
     }
 }
