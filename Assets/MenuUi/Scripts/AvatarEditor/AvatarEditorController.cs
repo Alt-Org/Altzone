@@ -136,7 +136,6 @@ namespace MenuUi.Scripts.AvatarEditor
                 _playerAvatar = new(_currentPlayerData.AvatarData);
             }
 
-            _featureSetter.SetCharacterClassID(_characterLoader.GetCharacterClass());
             _featureSetter.SetLoadedFeatures(_playerAvatar);
         }
 
@@ -145,7 +144,6 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             _playerAvatar = new(_avatarDefaultReference.GetByCharacterId(_currentPlayerData.SelectedCharacterId)[0]);
 
-            _featureSetter.SetCharacterClassID(_characterLoader.GetCharacterClass());
             _featureSetter.SetLoadedFeatures(_playerAvatar);
         }
 

@@ -17,10 +17,6 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private AvatarEditorCharacterHandle _avatarEditorCharacterHandle;
         [SerializeField] private AvatarPartsReference _avatarPartsReference;
         private List<string> _selectedFeatures = new List<string>(new string[7]);
-        private List<AvatarPartInfo> _currentCategoryFeatures = new();
-        private CharacterClassType _characterClassType;
-
-        public List<string> GetSelectedFeatures() => new List<string>(_selectedFeatures);
 
         public void SetFeature(AvatarPartInfo feature, int slot)
         {
@@ -28,7 +24,6 @@ namespace MenuUi.Scripts.AvatarEditor
             _avatarEditorController.PlayerAvatar.SortAndAssignByID(feature.Id);
             _avatarEditorCharacterHandle.SetMainCharacterImage((FeatureSlot)slot, feature.AvatarImage);
         }
-
 
 
         public string GetSelectedFeature(int index) =>
@@ -39,12 +34,6 @@ namespace MenuUi.Scripts.AvatarEditor
             if (index >= 0 && index < _selectedFeatures.Count)
                 _selectedFeatures[index] = value;
         }
-
-        public List<AvatarPartInfo> GetCurrentCategoryFeatures() => _currentCategoryFeatures;
-        public void SetCurrentCategoryFeatures(List<AvatarPartInfo> features) =>
-            _currentCategoryFeatures = features ?? new List<AvatarPartInfo>();
-
-        public void SetCharacterClassID(CharacterClassType id) => _characterClassType = id;
 
         public void SetLoadedFeatures(PlayerAvatar avatar)
         {
@@ -97,7 +86,6 @@ namespace MenuUi.Scripts.AvatarEditor
 
     public class CategoryController
     {
-        private FeatureSlot _currentCategory;
 
         private static readonly Dictionary<FeatureSlot, string> CategoryIds = new()
         {
@@ -108,26 +96,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public event Action<FeatureSlot> OnCategoryChanged;
 
-        public void Initialize() { }
 
-        public void LoadNextCategory() => ChangeCategory(1);
-        public void LoadPreviousCategory() => ChangeCategory(-1);
-
-        private void ChangeCategory(int delta)
-        {
-            var enumValues = Enum.GetValues(typeof(FeatureSlot));
-            int newIndex = ((int)_currentCategory + delta + enumValues.Length) % enumValues.Length;
-
-            SetCurrentCategory((FeatureSlot)newIndex);
-        }
-
-        public void SetCurrentCategory(FeatureSlot category)
-        {
-            _currentCategory = category;
-            OnCategoryChanged?.Invoke(_currentCategory);
-        }
-
-        public FeatureSlot GetCurrentCategory() => _currentCategory;
         public static string GetCategoryId(FeatureSlot slot) =>
             CategoryIds.TryGetValue(slot, out var id) ? id : null;
     }
