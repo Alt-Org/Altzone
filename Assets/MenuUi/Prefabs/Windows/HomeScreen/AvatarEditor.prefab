@@ -1533,6 +1533,7 @@ GameObject:
   - component: {fileID: 161865825665755407}
   - component: {fileID: 7023965250681938522}
   - component: {fileID: 8112127728846556094}
+  - component: {fileID: 1484250072073982031}
   m_Layer: 5
   m_Name: AvatarEditor
   m_TagString: Untagged
@@ -1627,6 +1628,18 @@ MonoBehaviour:
   _avatarEditorCharacterHandle: {fileID: 5197823364483463630}
   _avatarPartsReference: {fileID: 11400000, guid: 671ccbc5ba5e0df42acde4b71995e434,
     type: 2}
+--- !u!114 &1484250072073982031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2777738015282807615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7425b361bd0dc2f4e8417729b585b601, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3089668499891744208
 GameObject:
   m_ObjectHideFlags: 0

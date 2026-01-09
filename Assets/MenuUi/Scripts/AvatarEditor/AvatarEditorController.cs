@@ -31,11 +31,10 @@ namespace MenuUi.Scripts.AvatarEditor
         void Start()
         {
             _categoryLoader.SetCategoryCells((categoryId) => _featureLoader.RefreshFeatureListItems(categoryId));
-            _categoryLoader.UpdateCellSize();
             _colorLoader.SetColorCells();
-            _colorLoader.UpdateCellSize();
-            _featureLoader.UpdateCellSize();
             _colorLoader.gameObject.SetActive(false);
+
+            UpdateCellSizes();
 
             _saveButton.onClick.AddListener(() => _popUpHandler.ShowPopUp());
 
@@ -57,7 +56,6 @@ namespace MenuUi.Scripts.AvatarEditor
             });
 
             StartCoroutine(ClickMiddleCategoryCellOnNextFrame());
-
         }
 
         private void OnEnable()
@@ -65,6 +63,20 @@ namespace MenuUi.Scripts.AvatarEditor
             _characterLoader.RefreshPlayerCurrentCharacter();
             StartCoroutine(LoadAvatarData());
             _textHandler.SetRandomSpeechBubbleText();
+
+            AspectRatioChangeDetector.OnAspectRatioChange += UpdateCellSizes;
+        }
+
+        private void OnDisable()
+        {
+            AspectRatioChangeDetector.OnAspectRatioChange -= UpdateCellSizes;
+        }
+
+        private void UpdateCellSizes()
+        {
+            _categoryLoader.UpdateCellSize();
+            _colorLoader.UpdateCellSize();
+            _featureLoader.UpdateCellSize();
         }
 
         private IEnumerator LoadAvatarData()
