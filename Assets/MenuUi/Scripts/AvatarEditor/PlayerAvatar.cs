@@ -35,8 +35,14 @@ namespace MenuUi.Scripts.AvatarEditor
 
             set
             {
+                string correctedValue = value;
+                if (!correctedValue.StartsWith("#"))
+                {
+                    correctedValue = "#" + correctedValue; ;
+                }
+
                 Color convertedColor; 
-                if (ColorUtility.TryParseHtmlString(value, out convertedColor)) //If the colorcode provided is valid, assign it to the _color field
+                if (ColorUtility.TryParseHtmlString(correctedValue, out convertedColor)) //If the colorcode provided is valid, assign it to the _color field
                 {
                     _color = ColorUtility.ToHtmlStringRGBA(convertedColor);
                 }
