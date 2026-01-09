@@ -2783,6 +2783,7 @@ GameObject:
   - component: {fileID: 6835586366847989512}
   - component: {fileID: 5493028267093647988}
   - component: {fileID: 3504498156299274730}
+  - component: {fileID: 6211023290099682084}
   m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -2804,7 +2805,7 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 8689613841976305559}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.35, y: 0.3}
+  m_AnchorMin: {x: 0.35, y: 0.26}
   m_AnchorMax: {x: 0.83, y: 0.76}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
@@ -2837,7 +2838,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Onko t\xE4m\xE4 se versio sinusta, jolla haluat kohdata maailman?"
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
   m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
@@ -2868,12 +2869,12 @@ MonoBehaviour:
   m_fontSize: 58
   m_fontSizeBase: 58
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -2909,6 +2910,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6211023290099682084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5674862035729712670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Onko t\xE4m\xE4 se versio sinusta, jolla haluat kohdata maailman?"
+  _englishText: Is this the version of you to face the world with?
 --- !u!1 &5947810195597457103
 GameObject:
   m_ObjectHideFlags: 0
