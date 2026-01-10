@@ -337,7 +337,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 59.6
+  m_fontSize: 64.95
   m_fontSizeBase: 150
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2018,7 +2018,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6913566337459823388
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2041,10 +2041,10 @@ RectTransform:
   - {fileID: 6226536565272140850}
   m_Father: {fileID: 995119016793535187}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 12480, y: -2080.22}
+  m_SizeDelta: {x: 1920, y: 4160.44}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8234569505227545044
 MonoBehaviour:
@@ -5947,14 +5947,7 @@ MonoBehaviour:
   - {fileID: 6321321695621273571}
   - {fileID: 1485871068620943911}
   - {fileID: 3356972036573769561}
-  rotatingSlides:
-  - {fileID: 961124377524671534}
-  - {fileID: 6082874941262313830}
-  - {fileID: 2590368878538644554}
-  - {fileID: 6539237399395132277}
-  - {fileID: 5399774702980107112}
-  - {fileID: 955975455265038568}
-  - {fileID: 255483737535241952}
+  rotatingSlides: []
 --- !u!1 &3600913496851664269
 GameObject:
   m_ObjectHideFlags: 0
@@ -7807,7 +7800,7 @@ RectTransform:
   m_AnchorMin: {x: 0.05, y: 1}
   m_AnchorMax: {x: 0.7, y: 1}
   m_AnchoredPosition: {x: 0.00048828125, y: -100}
-  m_SizeDelta: {x: -0.0009765625, y: 0}
+  m_SizeDelta: {x: -0.0009765625, y: 249.59981}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &5352588749739658302
 CanvasRenderer:
@@ -7982,7 +7975,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 0}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.14285713
+  m_Size: 0.14285715
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
