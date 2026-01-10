@@ -6,7 +6,8 @@ using UnityEngine.UI;
 
 public class IntroCharacters : MonoBehaviour
 {
-    [SerializeField] private ClassReference _classReference;
+    [SerializeField]
+    private ClassReference _classReference;
 
     [SerializeField]
     private List<GameObject> characterCards;

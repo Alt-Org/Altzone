@@ -16,6 +16,8 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Sprite _desensitizerNameIconFinnish;
         [SerializeField] private Sprite _desensitizerNameIconEnglish;
         [SerializeField] private Sprite _desensitizerCharacter;
+        [SerializeField] private string _desensitizerDescFinnish;
+        [SerializeField] private string _desensitizerDescEnglish;
 
         [Space, SerializeField] private string _tricksterNameFinnish;
         [SerializeField] private string _tricksterNameEnglish;
@@ -27,6 +29,8 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Sprite _tricksterNameIconFinnish;
         [SerializeField] private Sprite _tricksterNameIconEnglish;
         [SerializeField] private Sprite _tricksterCharacter;
+        [SerializeField] private string _tricksterDescFinnish;
+        [SerializeField] private string _tricksterDescEnglish;
 
         [Space, SerializeField] private string _obedientNameFinnish;
         [SerializeField] private string _obedientNameEnglish;
@@ -38,6 +42,8 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Sprite _obedientNameIconFinnish;
         [SerializeField] private Sprite _obedientNameIconEnglish;
         [SerializeField] private Sprite _obedientCharacter;
+        [SerializeField] private string _obedientDescFinnish;
+        [SerializeField] private string _obedientDescEnglish;
 
         [Space, SerializeField] private string _projectorNameFinnish;
         [SerializeField] private string _projectorNameEnglish;
@@ -49,6 +55,8 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Sprite _projectorNameIconFinnish;
         [SerializeField] private Sprite _projectorNameIconEnglish;
         [SerializeField] private Sprite _projectorCharacter;
+        [SerializeField] private string _projectorDescFinnish;
+        [SerializeField] private string _projectorDescEnglish;
 
         [Space, SerializeField] private string _retroflectorNameFinnish;
         [SerializeField] private string _retroflectorNameEnglish;
@@ -60,6 +68,8 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Sprite _retroflectorNameIconFinnish;
         [SerializeField] private Sprite _retroflectorNameIconEnglish;
         [SerializeField] private Sprite _retroflectorCharacter;
+        [SerializeField] private string _retroflectorDescFinnish;
+        [SerializeField] private string _retroflectorDescEnglish;
 
         [Space, SerializeField] private string _confluentNameFinnish;
         [SerializeField] private string _confluentNameEnglish;
@@ -71,6 +81,8 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Sprite _confluentNameIconFinnish;
         [SerializeField] private Sprite _confluentNameIconEnglish;
         [SerializeField] private Sprite _confluentCharacter;
+        [SerializeField] private string _confluentDescFinnish;
+        [SerializeField] private string _confluentDescEnglish;
 
         [Space, SerializeField] private string _intellectualizerNameFinnish;
         [SerializeField] private string _intellectualizerNameEnglish;
@@ -82,6 +94,8 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Sprite _intellectualizerNameIconFinnish;
         [SerializeField] private Sprite _intellectualizerNameIconEnglish;
         [SerializeField] private Sprite _intellectualizerCharacter;
+        [SerializeField] private string _intellectualizerDescFinnish;
+        [SerializeField] private string _intellectualizerDescEnglish;
 
         private static ClassReference _instance;
         private static bool _hasInstance;
@@ -331,6 +345,41 @@ namespace Altzone.Scripts.ReferenceSheets
                     return _intellectualizerCharacter;
             }
             return null;
+        }
+
+        /// <summary>
+        /// Get character class name.
+        /// </summary>
+        /// <param name="classType">The class id which name to get.</param>
+        /// <returns>Class name as string.</returns>
+        public string GetDescription(CharacterClassType classType)
+        {
+            return SettingsCarrier.Instance.Language switch
+            {
+                SettingsCarrier.LanguageType.Finnish => classType switch
+                {
+                    CharacterClassType.Desensitizer => _desensitizerDescFinnish,
+                    CharacterClassType.Trickster => _tricksterDescFinnish,
+                    CharacterClassType.Obedient => _obedientDescFinnish,
+                    CharacterClassType.Projector => _projectorDescFinnish,
+                    CharacterClassType.Retroflector => _retroflectorDescFinnish,
+                    CharacterClassType.Confluent => _confluentDescFinnish,
+                    CharacterClassType.Intellectualizer => _intellectualizerDescFinnish,
+                    _ => "No class description",
+                },
+                SettingsCarrier.LanguageType.English => classType switch
+                {
+                    CharacterClassType.Desensitizer => _desensitizerDescEnglish,
+                    CharacterClassType.Trickster => _tricksterDescEnglish,
+                    CharacterClassType.Obedient => _obedientDescEnglish,
+                    CharacterClassType.Projector => _projectorDescEnglish,
+                    CharacterClassType.Retroflector => _retroflectorDescEnglish,
+                    CharacterClassType.Confluent => _confluentDescEnglish,
+                    CharacterClassType.Intellectualizer => _intellectualizerDescEnglish,
+                    _ => "No class description",
+                },
+                _ => "No class description",
+            };
         }
 
     }
