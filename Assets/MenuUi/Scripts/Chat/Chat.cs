@@ -518,20 +518,6 @@ public class Chat : AltMonoBehaviour
         Debug.Log("Kielivalinnan mukainen Chat aktivoitu");
     }
 
-    //Refreshes the reactions if there is any
-    public void ReactionChatCall(ChatReactionHandler EmojiId, GameObject message)
-    {
-       
-                    //Gets the set data we need to get
-                    Transform child = message.transform.Find("Controls/Reactions/AddChatMessageReactions");
-                    MessageReactionsHandler ChildsScript = child.GetComponent<MessageReactionsHandler>();
-
-                    ///Activates and Deactivates the "AddChatMessageReactions" as it has "Message Reactions Handler" that is needed to be on
-                    child.gameObject.SetActive(true);
-                    ChildsScript.AddReaction(EmojiId._messageID, EmojiId.Mood);
-                    child.gameObject.SetActive(false);
-    }
-
     public void OpenQuickMessages()
     {
         _quickMessages.SetActive(true);

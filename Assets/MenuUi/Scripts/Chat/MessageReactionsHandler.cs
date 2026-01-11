@@ -180,7 +180,7 @@ public class MessageReactionsHandler : MonoBehaviour
 
             _reactionHandlers.Add(chatReactionHandler);
 
-            _messageObjectHandler._reactionDataList = new List<ChatReactionHandler>(_reactionHandlers); 
+            _messageObjectHandler.ReactionDataList = new List<ChatReactionHandler>(_reactionHandlers); 
             chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler));
             chatReactionHandler.LongClickButton.onLongClick.AddListener(() => ShowUsers(chatReactionHandler));
             LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
@@ -238,7 +238,7 @@ public class MessageReactionsHandler : MonoBehaviour
 
         reaction.transform.SetParent(null);
         _reactionHandlers.Remove(reaction);
-        _messageObjectHandler._reactionDataList.Remove(reaction);
+        _messageObjectHandler.ReactionDataList.Remove(reaction);
         Destroy(reaction.gameObject);
         _selectedMessage.SizeCall();
 

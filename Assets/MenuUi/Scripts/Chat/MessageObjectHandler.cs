@@ -6,6 +6,7 @@ using MenuUi.Scripts.AvatarEditor;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static ServerChatMessage;
 
 public class MessageObjectHandler : MonoBehaviour
 {
@@ -27,16 +28,18 @@ public class MessageObjectHandler : MonoBehaviour
     public GameObject _reactionSize;
     public GameObject _expandedReactionSize;
     [SerializeField] private Vector2 _vectorReactionSize;
-    [SerializeField] private Vector2 _vectorExpandedReactionSize;
+    [SerializeField] private Vector2 _vectorExpandedReactionSize;   
 
     //Stores the reactions
-    public List<ChatReactionHandler> _reactionDataList = new();
+    public List<ChatReactionHandler> ReactionDataList = new();
 
     private string _id;
     private Image _image;
     private Action<MessageObjectHandler> _selectMessageAction;
 
     public GameObject ReactionsPanel { get => _reactionsPanel;}
+    [SerializeField] private GameObject ReactionObject;
+
     public string Id { get => _id;}
 
     // Start is called before the first frame update
@@ -45,11 +48,6 @@ public class MessageObjectHandler : MonoBehaviour
         _button.onClick.AddListener(SetMessageActive);
         _image = _button.GetComponent<Image>();
         Chat.OnSelectedMessageChanged += SetMessageInactive;
-
-        foreach (var reactionData in _reactionDataList)
-        {
-        Chat.instance.ReactionChatCall(reactionData, gameObject);
-        }
 
         _vectorReactionSize = new Vector2(_baseMessageSize.sizeDelta.x, _baseMessageSize.sizeDelta.y + _reactionSize.GetComponent<RectTransform>().sizeDelta.y);
         _vectorExpandedReactionSize = new Vector2(_baseMessageSize.sizeDelta.x, _baseMessageSize.sizeDelta.y + _expandedReactionSize.GetComponent<RectTransform>().sizeDelta.y);
@@ -98,6 +96,12 @@ public class MessageObjectHandler : MonoBehaviour
         _name.text = message.Username;
         _time.text = $"{message.Timestamp.Hour}:{message.Timestamp.Minute:D2}";
         _date.text = $"{message.Timestamp.Day}/{message.Timestamp.Month}/{message.Timestamp.Year}";
+
+
+        foreach (var reactionData in message.Reactions)
+        {
+            ReactionChatCall(reactionData);
+        }
     }
 
     public void SetPreviewMessageInfo(ChatMessage message)
@@ -136,6 +140,19 @@ public class MessageObjectHandler : MonoBehaviour
     public void SetMessageInactive()
     {
         _selectMessageAction.Invoke(null);
+    }
+
+    //Refreshes the reactions if there is any
+    public void ReactionChatCall(ServerReactions EmojiId)
+    {
+
+        //Gets the set data we need to get
+        MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
+
+        ///Activates and Deactivates the "AddChatMessageReactions" as it has "Message Reactions Handler" that is needed to be on
+        ReactionObject.gameObject.SetActive(true);
+        ChildsScript.AddReaction(_id, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji));
+        ReactionObject.gameObject.SetActive(false);
     }
 
 }
