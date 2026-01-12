@@ -499,7 +499,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5291960247044874626}
-  - component: {fileID: 1111034374712263733}
   - component: {fileID: 5197823364483463630}
   - component: {fileID: 2640985820339250273}
   - component: {fileID: 110030056398658954}
@@ -530,73 +529,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1111034374712263733
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 631322718943489897}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 912049b16784c814f8bf1f148e04c7d9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _avatarClassInfoList:
-  - Name: Confluent
-    Type: 600
-    list:
-    - Name: Besties
-      id: 601
-      DivanImage: {r: 1, g: 0, b: 0.5451832, a: 1}
-  - Name: Intellectualizer
-    Type: 700
-    list:
-    - Name: Researcher
-      id: 701
-      DivanImage: {r: 0.020222664, g: 0, b: 1, a: 1}
-  - Name: Desensitizer
-    Type: 100
-    list:
-    - Name: Bodybuilder
-      id: 102
-      DivanImage: {r: 0.5622641, g: 0.06259162, b: 0.06259162, a: 1}
-  - Name: Trickster
-    Type: 200
-    list:
-    - Name: Comedian
-      id: 201
-      DivanImage: {r: 0.06632208, g: 0.5999999, b: 0, a: 1}
-    - Name: Conman
-      id: 203
-      DivanImage: {r: 0.06666667, g: 0.6, b: 0, a: 1}
-  - Name: Projector
-    Type: 400
-    list:
-    - Name: Grafitiartist
-      id: 401
-      DivanImage: {r: 1, g: 0.55447966, b: 0, a: 1}
-  - Name: Retroflector
-    Type: 500
-    list:
-    - Name: Overeater
-      id: 501
-      DivanImage: {r: 0, g: 0.68091583, b: 1, a: 1}
-    - Name: Alcoholic
-      id: 502
-      DivanImage: {r: 0, g: 0.68235296, b: 1, a: 1}
-  - Name: Obedient
-    Type: 300
-    list:
-    - Name: Preacher
-      id: 301
-      DivanImage: {r: 1, g: 0.92721516, b: 0, a: 1}
-  _characterImageParent: {fileID: 5291960247044874626}
-  _divanImage: {fileID: 1164555920045592266}
-  _defaultAvatarImagePrefab: {fileID: 3671576818270862963, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
-    type: 3}
-  _confluenceAvatarImagePrefab: {fileID: 681715239813442100, guid: 0d35613f86138c94288eb6c63d4a68d8,
-    type: 3}
 --- !u!114 &5197823364483463630
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1614,7 +1546,6 @@ MonoBehaviour:
   _categoryLoader: {fileID: 5035703801643578294}
   _featureLoader: {fileID: 9613805567932932}
   _colorLoader: {fileID: 1919495896428952045}
-  _characterLoader: {fileID: 1111034374712263733}
   _timeoutSeconds: 10
   _avatarDefaultReference: {fileID: 11400000, guid: f0ae9649bfeccae44b56bd5283132b71,
     type: 2}
@@ -1626,6 +1557,7 @@ MonoBehaviour:
   _defaultButton: {fileID: 6265736950872179190}
   _textHandler: {fileID: 3300804670043043137}
   _popUpHandler: {fileID: 7473196896774068623}
+  _divanImageHandler: {fileID: 1063922284475048527}
 --- !u!114 &8112127728846556094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2154,6 +2086,7 @@ GameObject:
   - component: {fileID: 189091708179177446}
   - component: {fileID: 1381710759568812790}
   - component: {fileID: 1164555920045592266}
+  - component: {fileID: 1063922284475048527}
   m_Layer: 0
   m_Name: Divan
   m_TagString: Untagged
@@ -2218,6 +2151,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1063922284475048527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4158197038096730425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e821e51dcccb8474aa89b3d8550370f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _classReference: {fileID: 11400000, guid: 3b5ea09e8ee0a3c4fb7574a299b54fe0, type: 2}
+  _divanImage: {fileID: 1164555920045592266}
 --- !u!1 &4215346448041917964
 GameObject:
   m_ObjectHideFlags: 0

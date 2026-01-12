@@ -14,7 +14,6 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private ScrollBarCategoryLoader _categoryLoader;
         [SerializeField] private ScrollBarFeatureLoader _featureLoader;
         [SerializeField] private ColorGridLoader _colorLoader;
-        [SerializeField] private CharacterLoader _characterLoader;
         [SerializeField] private float _timeoutSeconds = 10f;
         [SerializeField] private AvatarDefaultReference _avatarDefaultReference;
         [SerializeField] private FeatureSetter _featureSetter;
@@ -24,6 +23,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Button _defaultButton;
         [SerializeField] private TextHandler _textHandler;
         [SerializeField] private PopUpHandler _popUpHandler;
+        [SerializeField] private DivanImageHandler _divanImageHandler;
 
         private PlayerData _currentPlayerData;
         private PlayerAvatar _playerAvatar;
@@ -60,7 +60,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void OnEnable()
         {
-            _characterLoader.RefreshPlayerCurrentCharacter();
+            _divanImageHandler.UpdateDivanImage(_currentPlayerData);
             StartCoroutine(LoadAvatarData());
             _textHandler.SetRandomSpeechBubbleText();
 
@@ -92,6 +92,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
             _currentPlayerData = playerData;
             SetAllAvatarFeatures();
+            _divanImageHandler.UpdateDivanImage(playerData);
         }
 
         private IEnumerator SaveAvatarData()
