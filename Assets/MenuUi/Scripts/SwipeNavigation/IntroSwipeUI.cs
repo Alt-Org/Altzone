@@ -21,7 +21,7 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         void Start()
         {
-            
+            _willRotate = false;
         }
 
         public override void PreviousSlide()
@@ -45,6 +45,10 @@ namespace MenuUi.Scripts.SwipeNavigation
         }
         public override void NextSlide()
         {
+            if (CurrentPage == startSlides.Length - 1)
+            {
+                return;
+            }
             if (CurrentPage >= maxPage)
             {
                 CurrentPage = startSlides.Length;
