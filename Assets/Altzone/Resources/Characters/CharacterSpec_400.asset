@@ -15,8 +15,8 @@ MonoBehaviour:
   Id: 400
   CharacterId: 400
   IsApproved: 1
-  FinnishName: 
-  EnglishName: 
+  FinnishName: TestiPeilaaja
+  EnglishName: TestProjector
   ClassType: 400
   CharacterDescriptionFinnish: 
   CharacterDescriptionEnglish: 
@@ -24,28 +24,25 @@ MonoBehaviour:
   CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 2facde8bf2483534c9d06e0bfc762134, type: 2}
   Hp:
-    Level: 3
-    Coefficient: 5
+    Level: 6
+    Coefficient: 0
   Speed:
-    Level: 3
+    Level: 5
     Coefficient: 0
   CharacterSize:
-    Level: 8
+    Level: 2
     Coefficient: 0
   Attack:
-    Level: 7
+    Level: 3
     Coefficient: 3
   Defence:
-    Level: 10
+    Level: 3
     Coefficient: 4
   GalleryImage: {fileID: 49914648, guid: 0b8c7df743389e04b9b2394020e2274c, type: 3}
   GalleryHeadImage: {fileID: 3323784572005849981, guid: 6b7f8f6787aebdc4da339e49694e1f45,
     type: 3}
   CharPhotoSeries: {fileID: 0}
-  BattleCharacterEntityPrototype:
+  BattleEntityPrototype:
     Id:
       Value: 1501490107316813305
-  BattleShieldEntityPrototype:
-    Id:
-      Value: 0
   BattleUiSprite: {fileID: 0}

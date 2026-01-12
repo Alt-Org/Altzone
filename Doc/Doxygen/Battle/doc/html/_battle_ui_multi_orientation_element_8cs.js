@@ -1,0 +1,4 @@
+var _battle_ui_multi_orientation_element_8cs =
+[
+    [ "Altzone.Scripts.BattleUiShared.BattleUiMultiOrientationElement", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_battle_ui_multi_orientation_element.html", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_battle_ui_multi_orientation_element" ]
+];

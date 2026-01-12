@@ -1,6 +1,7 @@
 var class_quantum_1_1_constants =
 [
-    [ "PLAYER_CHARACTER_COUNT", "class_quantum_1_1_constants.html#a71ac35304875654bb94f1a470d3b4bbd", null ],
-    [ "PLAYER_CHARACTER_TOTAL_COUNT", "class_quantum_1_1_constants.html#ac3f233ffe7d9157401c6a17a87ef54ad", null ],
-    [ "PLAYER_SLOT_COUNT", "class_quantum_1_1_constants.html#a31e234b17fd3befc327918cef3b670be", null ]
+    [ "BATTLE_EMOTION_STATE_COUNT", "class_quantum_1_1_constants.html#ab3befe4e7f8f29929b89933e2892c539", null ],
+    [ "BATTLE_PLAYER_CHARACTER_COUNT", "class_quantum_1_1_constants.html#ab6a231060b970e4d854bd535e45e672f", null ],
+    [ "BATTLE_PLAYER_CHARACTER_TOTAL_COUNT", "class_quantum_1_1_constants.html#a81d5a4900e9a7c68d69798f17106bb22", null ],
+    [ "BATTLE_PLAYER_SLOT_COUNT", "class_quantum_1_1_constants.html#ad9bbbefda80c2106f87772389db05f14", null ]
 ];

@@ -3,7 +3,7 @@
 /// Contains @cref{Battle.QSimulation,BattleDebugLogger} class which provides custom debug logging methods for use in %Battle.
 /// </summary>
 
-#define DEBUG_ASSERT_ENABLED_OVERRIDE
+//#define DEBUG_ASSERT_ENABLED_OVERRIDE
 
 // System usings
 using System;
