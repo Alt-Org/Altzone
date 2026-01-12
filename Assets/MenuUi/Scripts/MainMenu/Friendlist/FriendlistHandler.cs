@@ -1,12 +1,15 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+using System.Linq;
+using System.Threading;
+using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
-using System.Threading;
 using Assets.Altzone.Scripts.Model.Poco.Player;
+using UnityEngine;
+using UnityEngine.UI;
+using static ServerManager;
 
 
 public class FriendlistHandler : AltMonoBehaviour
@@ -31,19 +34,20 @@ public class FriendlistHandler : AltMonoBehaviour
         _openFriendlistButton.onClick.AddListener(OpenFriendlist);
         _closeFriendlistButton.onClick.AddListener(CloseFriendlist);
 
-        ServerManager.OnOnlinePlayersChanged += BuildOnlinePlayerList;
+        ServerManager.OnOnlinePlayersChanged += BuildFriendlist;
+
         CloseFriendlist();
 
     }
 
     private void OnEnable()
     {
-        BuildOnlinePlayerList(ServerManager.Instance.OnlinePlayers);
+        StartCoroutine(BuildFriendlistCoroutine(ServerManager.Instance.OnlinePlayers));
     }
 
     private void OnDestroy()
     {
-        ServerManager.OnOnlinePlayersChanged -= BuildOnlinePlayerList;
+        ServerManager.OnOnlinePlayersChanged -= BuildFriendlist;
     }
 
      public void OpenFriendlist()
@@ -56,14 +60,17 @@ public class FriendlistHandler : AltMonoBehaviour
         _friendlistPanel.SetActive(false);
     }
 
-    private void BuildOnlinePlayerList(List<ServerOnlinePlayer> onlinePlayers)
+    private void BuildFriendlist(List<ServerOnlinePlayer> onlinePlayers) // Event-Handler
     {
-        StartCoroutine(BuildOnlineList(onlinePlayers));
+        StartCoroutine(BuildFriendlistCoroutine(onlinePlayers)); 
     }
 
-    private IEnumerator BuildOnlineList(List<ServerOnlinePlayer> onlinePlayers)
+    private IEnumerator BuildFriendlistCoroutine(List<ServerOnlinePlayer> onlinePlayers)
     {
-        UpdateOnlineFriendsCount(onlinePlayers);
+        List<ServerFriendPlayer> friendList = null;
+        yield return StartCoroutine(ServerManager.Instance.GetFriendlist(list => friendList = list));
+
+        UpdateOnlineFriendsCount(onlinePlayers, friendList);
 
         foreach (var item in _friendlistItems)
         {
@@ -72,16 +79,19 @@ public class FriendlistHandler : AltMonoBehaviour
 
         _friendlistItems.Clear();
 
-        foreach (var player in onlinePlayers)
+
+        if (friendList == null || friendList.Count == 0)
+            yield break;
+        foreach (var friend in friendList)
         {
-            string playerName = player.name;
             ServerPlayer serverPlayer = null;
             bool timeout = false;
 
-            StartCoroutine(ServerManager.Instance.GetOtherPlayerFromServer(player._id, c => serverPlayer = c));
+            StartCoroutine(ServerManager.Instance.GetOtherPlayerFromServer(friend._id, c => serverPlayer = c));
             StartCoroutine(WaitUntilTimeout(3, c => timeout = c));
             yield return new WaitUntil(()=>serverPlayer != null || timeout);
 
+            bool isOnline = onlinePlayers.Any(o => o._id == friend._id); //Online-status
 
             ClanLogo clanLogo = null;
             AvatarVisualData avatarVisualData = null;
@@ -95,10 +105,10 @@ public class FriendlistHandler : AltMonoBehaviour
 
             FriendlistItem newItem = Instantiate(_friendlistItemPrefab, _friendlistContent);
             newItem.Initialize(
-                 playerName,
+                 serverPlayer?.name ?? friend._id,
                  avatarVisualData: avatarVisualData,
                  clanLogo: clanLogo,
-                 isOnline: true,
+                 isOnline: isOnline,
                  onRemoveClick: () => { }
 
                  
@@ -108,11 +118,17 @@ public class FriendlistHandler : AltMonoBehaviour
         }
     }
 
-    private void UpdateOnlineFriendsCount(List<ServerOnlinePlayer> onlinePlayers)
+    private void UpdateOnlineFriendsCount(List<ServerOnlinePlayer> onlinePlayers, List<ServerFriendPlayer> friendList)
     {
-        int onlinePlayerCount = onlinePlayers.Count;
+        if (friendList == null)
+        {
+            _friendlistOnlineTitle.text = $"Kavereita onlinessa 0";
+            return;
+        }
 
-        _friendlistOnlineTitle.text = $"Kavereita onlinessa {onlinePlayerCount}";
+        int onlineFriendCount = friendList.Count(friend => onlinePlayers.Any(p => p._id == friend._id));
+
+        _friendlistOnlineTitle.text = $"Kavereita onlinessa {onlineFriendCount}";
     }
 
 }
