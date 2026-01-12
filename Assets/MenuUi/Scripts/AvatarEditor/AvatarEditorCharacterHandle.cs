@@ -14,6 +14,8 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
     [SerializeField] private Image _mainHands;
     [SerializeField] private Image _mainFeet;
 
+    private MaskImageHandler _maskImageHandler;
+
     //[Header("Secondary")]
     //[SerializeField] private GameObject _secondaryBase;
     //[Space]
@@ -26,6 +28,11 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
     //[SerializeField] private Image _secondaryHands;
     //[SerializeField] private Image _secondaryFeet;
 
+    private void Start()
+    {
+        TryGetComponent(out _maskImageHandler);
+    }
+
     public void SetMainCharacterImage(FeatureSlot feature, Sprite image)
     {
         switch (feature)
@@ -34,7 +41,15 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
             case FeatureSlot.Eyes: SetImage(_mainEyes, image); break;
             case FeatureSlot.Nose: SetImage(_mainNose, image); break;
             case FeatureSlot.Mouth: SetImage(_mainMouth, image); break;
-            case FeatureSlot.Body: SetImage(_mainBody, image); break;
+            case FeatureSlot.Body:
+                {
+                    SetImage(_mainBody, image);
+                    if (_maskImageHandler != null)
+                    {
+                        _maskImageHandler.SetImage(image);
+                    }
+                    break;
+                }
             case FeatureSlot.Hands: SetImage(_mainHands, image); break;
             case FeatureSlot.Feet: SetImage(_mainFeet, image); break;
         }
