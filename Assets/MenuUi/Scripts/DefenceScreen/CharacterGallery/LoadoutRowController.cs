@@ -279,11 +279,12 @@ public class LoadoutRowController : AltMonoBehaviour
 
             player.ApplyLoadout(_loadoutIndex);
 
-                LoadoutPopupContext.SelectedPopupIndex = _loadoutIndex;
-                Storefront.Get().SavePlayerData(player, null);
+            LoadoutPopupContext.SelectedPopupIndex = _loadoutIndex;
+            LoadoutPopupContext.ActiveRowIndex = _loadoutIndex;
+            Storefront.Get().SavePlayerData(player, null);
 
-                SignalBus.OnReloadCharacterGalleryRequestedSignal();
-                return;
+            SignalBus.OnReloadCharacterGalleryRequestedSignal();
+            return;
             
         }));
     }
