@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.AvatarPartsInfo;
+using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,8 +31,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Color _backgroundColor = new(0.5f, 0.5f, 0.5f, 0.7f);
 
         private List<AvatarPartInfo> _avatarPartInfo;
-        private Dictionary<string, int> _featureCategoryIdToFeatureSlotInt;
-        private PlayerAvatar _playeravatar;
+        private Dictionary<string, int> _featureCategoryIdToAvatarPiece;
         private FeatureCellHandler _selectedCellHandler;
         private bool _isSelectedFeature = false;
         private float _cellHeight;
@@ -43,15 +43,15 @@ namespace MenuUi.Scripts.AvatarEditor
 
         void Start()
         {
-            _featureCategoryIdToFeatureSlotInt = new Dictionary<string, int>
+            _featureCategoryIdToAvatarPiece = new Dictionary<string, int>
             {
                 { "10", 0 }, // Hair
                 { "21", 1 }, // Eyes
                 { "22", 2 }, // Nose
                 { "23", 3 }, // Mouth
                 { "31", 4 }, // Body
-                { "32", 5 }, // Hands
-                { "33", 6 }  // Feet
+                { "32", 6 }, // Hands
+                { "33", 5 }  // Feet
             };
 
             _scrollrect.onValueChanged.AddListener(UpdateFade);
@@ -110,15 +110,15 @@ namespace MenuUi.Scripts.AvatarEditor
             GameObject gridCell = Instantiate(_gridCellPrefab, _featureGridContent);
             FeatureCellHandler handler = gridCell.GetComponent<FeatureCellHandler>();
 
-            _playeravatar = _avatarEditorController.PlayerAvatar;
             string featureCategoryid = GetFeatureCategoryFromFeatureId(avatarPart.Id);
-            int featurePickerPartSlot = _featureCategoryIdToFeatureSlotInt[featureCategoryid];
+            int avatarPieceId = _featureCategoryIdToAvatarPiece[featureCategoryid];
+            string selectedPieceId = _avatarEditorController.CurrentPlayerData.AvatarData.GetPieceID((AvatarPiece)avatarPieceId).ToString();
 
             handler.SetValues(cellImage, _highlightColor, _backgroundColor);
 
-            AddListeners(handler, avatarPart, featurePickerPartSlot);
+            AddListeners(handler, avatarPart, avatarPieceId);
 
-            if (avatarPart.Id == _playeravatar.GetPartId((FeatureSlot)featurePickerPartSlot))
+            if (avatarPart.Id == selectedPieceId)
             {
                 _isSelectedFeature = true;
             }
