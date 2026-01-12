@@ -21,6 +21,9 @@ public class CharacterPopupHandler : MonoBehaviour
     TextMeshProUGUI classIntroductionText;
 
     [SerializeField]
+    Image className;
+
+    [SerializeField]
     private ClassReference _classReference;
 
     //function that changes the name and image
@@ -50,6 +53,8 @@ public class CharacterPopupHandler : MonoBehaviour
             charaterImage.sprite = _classReference.GetCharacter(classType); //show correct character sprite
 
             classIntroductionText.text = _classReference.GetDescription(classType); //show correct description
+
+            className.sprite = _classReference.GetNameIcon(classType); // show correct name sprite
         }
         else //backup image and text just in case an error happens or something
         {
