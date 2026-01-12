@@ -18,12 +18,14 @@ public class FriendlistItem : MonoBehaviour
     [SerializeField] private TMPro.TextMeshProUGUI _nameText;
     [SerializeField] private ClanHeartColorSetter _clanHeart;
     [SerializeField] private Button _removefriendButton;
+    [SerializeField] private Button _acceptFriendButton;
+    [SerializeField] private Button _declineFriendButton;
 
     private bool _isOnline = true;
     private Action _onRemoveClick;
     
    
-    public void Initialize(string name, AvatarVisualData avatarVisualData = null, ClanLogo clanLogo = null, bool isOnline = true, Action onRemoveClick = null)
+    public void Initialize(string name, AvatarVisualData avatarVisualData = null, ClanLogo clanLogo = null, bool isOnline = true, Action onRemoveClick = null, Action onAcceptClick = null, Action onDeclineClick = null)
    {
         _nameText.text = name;
         _isOnline = isOnline;
@@ -42,12 +44,38 @@ public class FriendlistItem : MonoBehaviour
         
         UpdateOnlineStatusIndicator();
         
-
-        _removefriendButton.onClick.RemoveAllListeners();
-        _removefriendButton.onClick.AddListener(() =>
+        if (_removefriendButton != null) // move friend button (only for accepted friends)
         {
-            _onRemoveClick?.Invoke();
-        });
+            _removefriendButton.gameObject.SetActive(onRemoveClick != null);
+
+            _removefriendButton.onClick.RemoveAllListeners();
+            _removefriendButton.onClick.AddListener(() =>
+            {
+                onRemoveClick?.Invoke();
+            });
+        }
+        if (_acceptFriendButton != null) // Accept friend request button (only for requests)
+        {
+            _acceptFriendButton.gameObject.SetActive(onAcceptClick != null);
+
+            _acceptFriendButton.onClick.RemoveAllListeners();
+            _acceptFriendButton.onClick.AddListener(() =>
+            {
+                onAcceptClick?.Invoke();
+            });
+        }
+        if (_declineFriendButton != null) // Decline friend request button
+        {
+            _declineFriendButton.gameObject.SetActive(onDeclineClick != null);
+
+            _declineFriendButton.onClick.RemoveAllListeners();
+            _declineFriendButton.onClick.AddListener(() =>
+            {
+                onDeclineClick?.Invoke();
+            });
+        }
+
+
 
     }
     private void UpdateOnlineStatusIndicator()

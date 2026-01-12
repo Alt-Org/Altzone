@@ -26,6 +26,7 @@ public class FriendlistHandler : AltMonoBehaviour
     [SerializeField] private FriendlistItem _friendlistItemPrefab;
 
     private List<FriendlistItem> _friendlistItems = new List<FriendlistItem>();
+    private List<ServerFriendRequest> _friendRequests = new List<ServerFriendRequest>();
 
 
     void Start()
@@ -60,7 +61,7 @@ public class FriendlistHandler : AltMonoBehaviour
         _friendlistPanel.SetActive(false);
     }
 
-    private void BuildFriendlist(List<ServerOnlinePlayer> onlinePlayers) // Event-Handler
+    private void BuildFriendlist(List<ServerOnlinePlayer> onlinePlayers) // Rebuilds friendlist when online players update
     {
         StartCoroutine(BuildFriendlistCoroutine(onlinePlayers)); 
     }
@@ -68,7 +69,12 @@ public class FriendlistHandler : AltMonoBehaviour
     private IEnumerator BuildFriendlistCoroutine(List<ServerOnlinePlayer> onlinePlayers)
     {
         List<ServerFriendPlayer> friendList = null;
-        yield return StartCoroutine(ServerManager.Instance.GetFriendlist(list => friendList = list));
+        yield return StartCoroutine(ServerManager.Instance.GetFriendlist(list => friendList = list)); //Fetch friend list from server
+
+        List<ServerFriendRequest> friendRequests = null;
+        yield return StartCoroutine(
+            ServerManager.Instance.GetFriendlistRequests(list => friendRequests = list)
+        );
 
         UpdateOnlineFriendsCount(onlinePlayers, friendList);
 
@@ -79,6 +85,43 @@ public class FriendlistHandler : AltMonoBehaviour
 
         _friendlistItems.Clear();
 
+        if (friendRequests != null)
+        {
+            foreach (var request in friendRequests)
+            {
+                FriendlistItem requestItem = Instantiate(_friendlistItemPrefab, _friendlistContent);
+
+                requestItem.Initialize(
+                    request.friend.name ?? request.friend._id,
+                    isOnline: false,
+                    onAcceptClick: () =>
+                    {
+                        StartCoroutine(ServerManager.Instance.FriendRequestAccept(
+                            request.friend._id,
+                            success =>
+                            {
+                                if (success)
+                                    StartCoroutine(BuildFriendlistCoroutine(onlinePlayers));
+                            }
+                        ));
+                    },
+                    onDeclineClick: () =>
+                    {
+                        StartCoroutine(ServerManager.Instance.FriendDelete(
+                            request.friend._id,
+                            success =>
+                            {
+                                if (success)
+                                    StartCoroutine(BuildFriendlistCoroutine(onlinePlayers));
+                            }
+                        ));
+                    }
+                );
+
+                _friendlistItems.Add(requestItem);
+            }
+        }
+
 
         if (friendList == null || friendList.Count == 0)
             yield break;
@@ -87,11 +130,11 @@ public class FriendlistHandler : AltMonoBehaviour
             ServerPlayer serverPlayer = null;
             bool timeout = false;
 
-            StartCoroutine(ServerManager.Instance.GetOtherPlayerFromServer(friend._id, c => serverPlayer = c));
+            StartCoroutine(ServerManager.Instance.GetOtherPlayerFromServer(friend._id, c => serverPlayer = c)); // Get friend data
             StartCoroutine(WaitUntilTimeout(3, c => timeout = c));
             yield return new WaitUntil(()=>serverPlayer != null || timeout);
 
-            bool isOnline = onlinePlayers.Any(o => o._id == friend._id); //Online-status
+            bool isOnline = onlinePlayers.Any(o => o._id == friend._id); //Check online status
 
             ClanLogo clanLogo = null;
             AvatarVisualData avatarVisualData = null;
@@ -105,7 +148,7 @@ public class FriendlistHandler : AltMonoBehaviour
 
             FriendlistItem newItem = Instantiate(_friendlistItemPrefab, _friendlistContent);
             newItem.Initialize(
-                 serverPlayer?.name ?? friend._id,
+                 serverPlayer?.name ?? friend._id,// Use name if available, otherwise show ID
                  avatarVisualData: avatarVisualData,
                  clanLogo: clanLogo,
                  isOnline: isOnline,
