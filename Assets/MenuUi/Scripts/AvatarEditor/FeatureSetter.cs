@@ -15,12 +15,12 @@ namespace MenuUi.Scripts.AvatarEditor
         public void SetFeature(AvatarPartInfo feature, AvatarPiece slot)
         {
             _avatarEditorController.PlayerAvatar.SortAndAssignByID(feature.Id);
-            _avatarEditorCharacterHandle.SetMainCharacterImage((FeatureSlot)slot, feature.AvatarImage);
+            _avatarEditorCharacterHandle.SetMainCharacterImage(slot, feature.AvatarImage);
         }
 
         public void SetLoadedFeatures(PlayerAvatar avatar)
         {
-            foreach (FeatureSlot slot in Enum.GetValues(typeof(FeatureSlot)))
+            foreach (AvatarPiece slot in Enum.GetValues(typeof(AvatarPiece)))
             {
                 string partId = avatar.GetPartId(slot);
 
@@ -40,7 +40,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public Sprite GetCurrentlySelectedFeatureSprite(AvatarPiece pieceSlot)
         {
-            string partId = _avatarEditorController.PlayerAvatar.GetPartId((FeatureSlot)pieceSlot);
+            string partId = _avatarEditorController.PlayerAvatar.GetPartId(pieceSlot);
             Sprite partSprite = _avatarPartsReference.GetAvatarPartById(partId).AvatarImage;
             return partSprite;
         }

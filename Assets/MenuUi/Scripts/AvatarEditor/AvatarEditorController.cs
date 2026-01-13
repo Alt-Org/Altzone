@@ -108,8 +108,8 @@ namespace MenuUi.Scripts.AvatarEditor
                 "FFFFFF",
                 new Vector2(1, 1));
 
-            var features = Enum.GetValues(typeof(FeatureSlot));
-            foreach (FeatureSlot feature in features)
+            var features = Enum.GetValues(typeof(AvatarPiece));
+            foreach (AvatarPiece feature in features)
             {
                 AssignPartToPlayerData(savePlayerData.AvatarData, feature, _playerAvatar.GetPartId(feature));
             }
@@ -167,7 +167,7 @@ namespace MenuUi.Scripts.AvatarEditor
             SetAllAvatarFeatures();
         }
 
-        private void AssignPartToPlayerData(AvatarData playerAvatarData, FeatureSlot feature, string id)
+        private void AssignPartToPlayerData(AvatarData playerAvatarData, AvatarPiece feature, string id)
         {
             int convertedID;
             if (int.TryParse(id, out int intID))
@@ -178,25 +178,25 @@ namespace MenuUi.Scripts.AvatarEditor
 
             switch (feature)
             {
-                case FeatureSlot.Hair:
+                case AvatarPiece.Hair:
                     playerAvatarData.Hair = convertedID;
                     break;
-                case FeatureSlot.Eyes:
+                case AvatarPiece.Eyes:
                     playerAvatarData.Eyes = convertedID;
                     break;
-                case FeatureSlot.Nose:
+                case AvatarPiece.Nose:
                     playerAvatarData.Nose = convertedID;
                     break;
-                case FeatureSlot.Mouth:
+                case AvatarPiece.Mouth:
                     playerAvatarData.Mouth = convertedID;
                     break;
-                case FeatureSlot.Body:
+                case AvatarPiece.Clothes:
                     playerAvatarData.Clothes = convertedID;
                     break;
-                case FeatureSlot.Hands:
+                case AvatarPiece.Hands:
                     playerAvatarData.Hands = convertedID;
                     break;
-                case FeatureSlot.Feet:
+                case AvatarPiece.Feet:
                     playerAvatarData.Feet = convertedID;
                     break;
                 default:

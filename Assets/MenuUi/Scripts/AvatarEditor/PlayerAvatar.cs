@@ -154,23 +154,23 @@ namespace MenuUi.Scripts.AvatarEditor
             }
         }
 
-        public string GetPartId(FeatureSlot feature)
+        public string GetPartId(AvatarPiece feature)
         {
             switch (feature)
             {
-                case FeatureSlot.Hair:
+                case AvatarPiece.Hair:
                     return HairId;
-                case FeatureSlot.Eyes:
+                case AvatarPiece.Eyes:
                     return EyesId;
-                case FeatureSlot.Nose:
+                case AvatarPiece.Nose:
                     return NoseId;
-                case FeatureSlot.Mouth:
+                case AvatarPiece.Mouth:
                     return MouthId;
-                case FeatureSlot.Body:
+                case AvatarPiece.Clothes:
                     return BodyId;
-                case FeatureSlot.Hands:
+                case AvatarPiece.Hands:
                     return HandsId;
-                case FeatureSlot.Feet:
+                case AvatarPiece.Feet:
                     return FeetId;
                 default:
                     return "";

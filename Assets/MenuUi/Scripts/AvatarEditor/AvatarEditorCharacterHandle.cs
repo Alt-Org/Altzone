@@ -1,3 +1,4 @@
+using Assets.Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.AvatarEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,15 +22,15 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         TryGetComponent(out _maskImageHandler);
     }
 
-    public void SetMainCharacterImage(FeatureSlot feature, Sprite image)
+    public void SetMainCharacterImage(AvatarPiece feature, Sprite image)
     {
         switch (feature)
         {
-            case FeatureSlot.Hair: SetImage(_mainHair, image); break;
-            case FeatureSlot.Eyes: SetImage(_mainEyes, image); break;
-            case FeatureSlot.Nose: SetImage(_mainNose, image); break;
-            case FeatureSlot.Mouth: SetImage(_mainMouth, image); break;
-            case FeatureSlot.Body:
+            case AvatarPiece.Hair: SetImage(_mainHair, image); break;
+            case AvatarPiece.Eyes: SetImage(_mainEyes, image); break;
+            case AvatarPiece.Nose: SetImage(_mainNose, image); break;
+            case AvatarPiece.Mouth: SetImage(_mainMouth, image); break;
+            case AvatarPiece.Clothes:
                 {
                     SetImage(_mainBody, image);
                     if (_maskImageHandler != null)
@@ -38,8 +39,8 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
                     }
                     break;
                 }
-            case FeatureSlot.Hands: SetImage(_mainHands, image); break;
-            case FeatureSlot.Feet: SetImage(_mainFeet, image); break;
+            case AvatarPiece.Hands: SetImage(_mainHands, image); break;
+            case AvatarPiece.Feet: SetImage(_mainFeet, image); break;
         }
     }
 

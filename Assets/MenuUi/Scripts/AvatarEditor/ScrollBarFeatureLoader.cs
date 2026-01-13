@@ -112,7 +112,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
             string featureCategoryid = avatarPart.Id.Substring(0, 2);
             AvatarPiece avatarPieceId = _featureCategoryIdToAvatarPiece[featureCategoryid];
-            string selectedPieceId = _avatarEditorController.PlayerAvatar.GetPartId((FeatureSlot)avatarPieceId);
+            string selectedPieceId = _avatarEditorController.PlayerAvatar.GetPartId(avatarPieceId);
 
             handler.SetValues(cellImage, _highlightColor, _backgroundColor);
 

@@ -162,8 +162,8 @@ public class AvatarDesignLoader : AltMonoBehaviour
             playerAvatar.Scale
         );
 
-        var list = Enum.GetValues(typeof(FeatureSlot));
-        foreach (FeatureSlot feature in list) //This could possibly be replaced with turning the partlist into ServerAvatar and then giving that to the AvatarData.
+        var list = Enum.GetValues(typeof(AvatarPiece));
+        foreach (AvatarPiece feature in list) //This could possibly be replaced with turning the partlist into ServerAvatar and then giving that to the AvatarData.
         {
             playerData.AvatarData.SetPieceID((AvatarPiece)feature, int.Parse(playerAvatar.GetPartId(feature)));
             Debug.Log("The added featureId is " + playerAvatar.GetPartId(feature));
