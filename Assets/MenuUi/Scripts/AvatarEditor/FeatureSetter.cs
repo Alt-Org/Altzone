@@ -14,7 +14,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public void SetFeature(AvatarPartInfo feature, AvatarPiece slot)
         {
-            _avatarEditorController.PlayerAvatar.SortAndAssignByID(feature.Id);
+            _avatarEditorController.PlayerAvatar.SetPart(slot, feature.Id);
             _avatarEditorCharacterHandle.SetMainCharacterImage(slot, feature.AvatarImage);
         }
 
