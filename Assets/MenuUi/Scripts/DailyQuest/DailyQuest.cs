@@ -47,6 +47,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     [Header("Reserved Window")]
     [SerializeField] private Image _playerImage;
     [SerializeField] private Image _progressImage;
+    [SerializeField] private Image _progressImageDefault;
     [SerializeField] private TMP_Text _progressText;
 
     [HideInInspector] public DailyTaskManager dailyTaskManager;
@@ -203,6 +204,12 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     {
         _progressText.text = $"{TaskData.TaskProgress}/{TaskData.Amount}";
         _progressImage.fillAmount = (float)TaskData.TaskProgress / (float)TaskData.Amount;
+
+        // Update secondary progress (grey background) to always be full
+        if (_progressImageDefault != null)
+        {
+            _progressImageDefault.fillAmount = 1f;
+        }
     }
 
     public void TaskDeselected()
