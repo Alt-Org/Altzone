@@ -13,8 +13,6 @@ using UnityEngine.UI;
 /// </summary>
 public static class LoadoutPopupContext
 {
-    public static int ActiveRowIndex = -1;
-
     public static int SelectedPopupIndex = -1;
 }
 
@@ -90,16 +88,6 @@ public class LoadoutRowController : AltMonoBehaviour
     }
 
     /// <summary>
-    /// Called when any character slot in this row is clicked,
-    /// sets this row active and opens the edit panel
-    /// </summary>
-    //private void OnCharSlotClicked()
-    //{
-    //    LoadoutPopupContext.ActiveRowIndex = _loadoutIndex;
-    //    SignalBus.OnDefenceGalleryEditPanelRequestedSignal();
-    //}
-
-    /// <summary>
     /// Called from the row background Button OnClick.
     /// Selects this loadout as the active team.
     /// </summary>
@@ -118,7 +106,7 @@ public class LoadoutRowController : AltMonoBehaviour
         {
             if (player == null) return;
 
-            if (LoadoutPopupContext.ActiveRowIndex == _loadoutIndex)
+            if (LoadoutPopupContext.SelectedPopupIndex == _loadoutIndex)
             {
                 DrawFromCurrentTeam(player);
             }
@@ -224,14 +212,9 @@ public class LoadoutRowController : AltMonoBehaviour
 
             player.ApplyLoadout(_loadoutIndex);
 
-            LoadoutPopupContext.ActiveRowIndex = _loadoutIndex;
             LoadoutPopupContext.SelectedPopupIndex = _loadoutIndex;
 
             Storefront.Get().SavePlayerData(player, null);
-
-           
-            LoadoutPopupContext.ActiveRowIndex = _loadoutIndex;
-
             
             SignalBus.OnDefenceGalleryEditPanelRequestedSignal();
             SignalBus.OnReloadCharacterGalleryRequestedSignal();
@@ -255,11 +238,6 @@ public class LoadoutRowController : AltMonoBehaviour
 
             Storefront.Get().SavePlayerData(player, null);
 
-            if (LoadoutPopupContext.ActiveRowIndex == _loadoutIndex)
-            {
-                LoadoutPopupContext.ActiveRowIndex = -1;
-            }
-
             SignalBus.OnReloadCharacterGalleryRequestedSignal();
             Redraw();
         }
@@ -280,7 +258,7 @@ public class LoadoutRowController : AltMonoBehaviour
             player.ApplyLoadout(_loadoutIndex);
 
             LoadoutPopupContext.SelectedPopupIndex = _loadoutIndex;
-            LoadoutPopupContext.ActiveRowIndex = _loadoutIndex;
+           
             Storefront.Get().SavePlayerData(player, null);
 
             SignalBus.OnReloadCharacterGalleryRequestedSignal();
