@@ -28,8 +28,6 @@ namespace MenuUi.Scripts.AvatarEditor
         private PlayerData _currentPlayerData;
         private PlayerAvatar _playerAvatar;
 
-        public PlayerData CurrentPlayerData => _currentPlayerData;
-
         void Start()
         {
             _categoryLoader.SetCategoryCells((categoryId) => _featureLoader.RefreshFeatureListItems(categoryId));
