@@ -7,7 +7,7 @@ namespace MenuUi.Scripts.AvatarEditor
         Nose = 2,
         Mouth = 3,
         Body = 4,
-        Hands = 5,
-        Feet = 6,
+        Feet = 5,
+        Hands = 6,
     }
 }
