@@ -157,7 +157,19 @@ public class LoadOutController : MonoBehaviour
 
             if (isEmpty)
             {
-                SaveToEmptySlot(loadoutIndex, player);
+                if (IsInlineMode)
+                {
+                    
+                    player.ApplyLoadout(loadoutIndex);
+                    SignalBus.OnReloadCharacterGalleryRequestedSignal();
+                    RefreshButtons();
+                    Storefront.Get().SavePlayerData(player, null);
+                }
+                else
+                {
+                    
+                    SaveToEmptySlot(loadoutIndex, player);
+                }
 
                 return;
             }
