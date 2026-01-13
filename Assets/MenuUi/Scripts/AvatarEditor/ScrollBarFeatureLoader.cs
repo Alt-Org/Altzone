@@ -31,7 +31,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Color _backgroundColor = new(0.5f, 0.5f, 0.5f, 0.7f);
 
         private List<AvatarPartInfo> _avatarPartInfo;
-        private Dictionary<string, int> _featureCategoryIdToAvatarPiece;
+        private Dictionary<string, AvatarPiece> _featureCategoryIdToAvatarPiece;
         private FeatureCellHandler _selectedCellHandler;
         private bool _isSelectedFeature = false;
         private float _cellHeight;
@@ -43,15 +43,15 @@ namespace MenuUi.Scripts.AvatarEditor
 
         void Start()
         {
-            _featureCategoryIdToAvatarPiece = new Dictionary<string, int>
+            _featureCategoryIdToAvatarPiece = new Dictionary<string, AvatarPiece>
             {
-                { "10", 0 }, // Hair
-                { "21", 1 }, // Eyes
-                { "22", 2 }, // Nose
-                { "23", 3 }, // Mouth
-                { "31", 4 }, // Body
-                { "32", 6 }, // Hands
-                { "33", 5 }  // Feet
+                { "10", AvatarPiece.Hair }, // Hair
+                { "21", AvatarPiece.Eyes }, // Eyes
+                { "22", AvatarPiece.Nose }, // Nose
+                { "23", AvatarPiece.Mouth }, // Mouth
+                { "31", AvatarPiece.Clothes }, // Body
+                { "32", AvatarPiece.Hands }, // Hands
+                { "33", AvatarPiece.Feet }  // Feet
             };
 
             _scrollrect.onValueChanged.AddListener(UpdateFade);
@@ -110,9 +110,9 @@ namespace MenuUi.Scripts.AvatarEditor
             GameObject gridCell = Instantiate(_gridCellPrefab, _featureGridContent);
             FeatureCellHandler handler = gridCell.GetComponent<FeatureCellHandler>();
 
-            string featureCategoryid = GetFeatureCategoryFromFeatureId(avatarPart.Id);
-            int avatarPieceId = _featureCategoryIdToAvatarPiece[featureCategoryid];
-            string selectedPieceId = _avatarEditorController.CurrentPlayerData.AvatarData.GetPieceID((AvatarPiece)avatarPieceId).ToString();
+            string featureCategoryid = avatarPart.Id.Substring(0, 2);
+            AvatarPiece avatarPieceId = _featureCategoryIdToAvatarPiece[featureCategoryid];
+            string selectedPieceId = _avatarEditorController.PlayerAvatar.GetPartId((FeatureSlot)avatarPieceId);
 
             handler.SetValues(cellImage, _highlightColor, _backgroundColor);
 
@@ -146,11 +146,11 @@ namespace MenuUi.Scripts.AvatarEditor
             handler.Highlight(true);
         }
 
-        private void AddListeners(FeatureCellHandler handler, AvatarPartInfo avatarPart, int featurePickerPartSlot)
+        private void AddListeners(FeatureCellHandler handler, AvatarPartInfo avatarPart, AvatarPiece slot)
         {
             handler.SetOnClick(onClick: () =>
             {
-                _featureSetter.SetFeature(avatarPart, featurePickerPartSlot);
+                _featureSetter.SetFeature(avatarPart, slot);
                 UpdateHighlightedCell(handler);
             });
         }
@@ -180,19 +180,6 @@ namespace MenuUi.Scripts.AvatarEditor
             foreach (Transform child in _featureGridContent.transform)
             {
                 Destroy(child.gameObject);
-            }
-        }
-
-        private string GetFeatureCategoryFromFeatureId(string featureId)
-        {
-            if (featureId.Length != 7)
-            {
-                Debug.LogError("featureId is invalid");
-                return "";
-            }
-            else
-            {
-                return featureId.Substring(0, 2);
             }
         }
     }

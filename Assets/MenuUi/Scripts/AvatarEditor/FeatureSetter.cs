@@ -12,7 +12,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private AvatarEditorCharacterHandle _avatarEditorCharacterHandle;
         [SerializeField] private AvatarPartsReference _avatarPartsReference;
 
-        public void SetFeature(AvatarPartInfo feature, int slot)
+        public void SetFeature(AvatarPartInfo feature, AvatarPiece slot)
         {
             _avatarEditorController.PlayerAvatar.SortAndAssignByID(feature.Id);
             _avatarEditorCharacterHandle.SetMainCharacterImage((FeatureSlot)slot, feature.AvatarImage);
