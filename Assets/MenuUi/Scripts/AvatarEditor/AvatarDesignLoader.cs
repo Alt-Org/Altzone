@@ -177,6 +177,12 @@ public class AvatarDesignLoader : AltMonoBehaviour
         foreach (var pieceId in AllAvatarPieces)
         {
             var pieceIdValue = avatarData.GetPieceID(pieceId);
+
+            if (pieceIdValue == 0)
+            {
+                continue;
+            }
+
             var partInfo = _avatarPartsReference.GetAvatarPartById(pieceIdValue.ToString());
 
             var avatarImage = partInfo?.AvatarImage;
