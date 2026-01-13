@@ -16,7 +16,7 @@ public class AvatarLoader : MonoBehaviour
         }
     }
 
-    private void UpdateVisuals()
+    public void UpdateVisuals()
     {
        
         _characterHandle.SetHeadColor(_avatarVisuals.Color);

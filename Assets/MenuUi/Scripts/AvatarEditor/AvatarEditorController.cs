@@ -24,6 +24,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private TextHandler _textHandler;
         [SerializeField] private PopUpHandler _popUpHandler;
         [SerializeField] private DivanImageHandler _divanImageHandler;
+        [SerializeField] private AvatarLoader _profileMenuCharacterAvatarLoader;
 
         private PlayerData _currentPlayerData;
         private PlayerAvatar _playerAvatar;
@@ -70,6 +71,8 @@ namespace MenuUi.Scripts.AvatarEditor
         private void OnDisable()
         {
             AspectRatioChangeDetector.OnAspectRatioChange -= UpdateCellSizes;
+            // refreshes profile menu character to reflect changes in avatareditor
+            _profileMenuCharacterAvatarLoader.UpdateVisuals();
         }
 
         private void UpdateCellSizes()
