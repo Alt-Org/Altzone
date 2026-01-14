@@ -14,17 +14,24 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
     [SerializeField] private Image _mainHands;
     [SerializeField] private Image _mainFeet;
 
-    [Header("Secondary")]
-    [SerializeField] private GameObject _secondaryBase;
-    [Space]
-    [SerializeField] private Image _secondaryHead;
-    [SerializeField] private Image _secondaryHair;
-    [SerializeField] private Image _secondaryEyes;
-    [SerializeField] private Image _secondaryNose;
-    [SerializeField] private Image _secondaryMouth;
-    [SerializeField] private Image _secondaryBody;
-    [SerializeField] private Image _secondaryHands;
-    [SerializeField] private Image _secondaryFeet;
+    private MaskImageHandler _maskImageHandler;
+
+    //[Header("Secondary")]
+    //[SerializeField] private GameObject _secondaryBase;
+    //[Space]
+    //[SerializeField] private Image _secondaryHead;
+    //[SerializeField] private Image _secondaryHair;
+    //[SerializeField] private Image _secondaryEyes;
+    //[SerializeField] private Image _secondaryNose;
+    //[SerializeField] private Image _secondaryMouth;
+    //[SerializeField] private Image _secondaryBody;
+    //[SerializeField] private Image _secondaryHands;
+    //[SerializeField] private Image _secondaryFeet;
+
+    private void Start()
+    {
+        TryGetComponent(out _maskImageHandler);
+    }
 
     public void SetMainCharacterImage(FeatureSlot feature, Sprite image)
     {
@@ -34,28 +41,36 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
             case FeatureSlot.Eyes: SetImage(_mainEyes, image); break;
             case FeatureSlot.Nose: SetImage(_mainNose, image); break;
             case FeatureSlot.Mouth: SetImage(_mainMouth, image); break;
-            case FeatureSlot.Body: SetImage(_mainBody, image); break;
+            case FeatureSlot.Body:
+                {
+                    SetImage(_mainBody, image);
+                    if (_maskImageHandler != null)
+                    {
+                        _maskImageHandler.SetImage(image);
+                    }
+                    break;
+                }
             case FeatureSlot.Hands: SetImage(_mainHands, image); break;
             case FeatureSlot.Feet: SetImage(_mainFeet, image); break;
         }
     }
 
-    public void SetSecondaryCharacterImage(FeatureSlot feature, Sprite image)
-    {
-        if (!_secondaryBase.activeSelf)
-            _secondaryBase.SetActive(true);
+    //public void SetSecondaryCharacterImage(FeatureSlot feature, Sprite image)
+    //{
+    //    if (!_secondaryBase.activeSelf)
+    //        _secondaryBase.SetActive(true);
 
-        switch (feature)
-        {
-            case FeatureSlot.Hair: SetImage(_secondaryHair, image); break;
-            case FeatureSlot.Eyes: SetImage(_secondaryEyes, image); break;
-            case FeatureSlot.Nose: SetImage(_secondaryNose, image); break;
-            case FeatureSlot.Mouth: SetImage(_secondaryMouth, image); break;
-            case FeatureSlot.Body: SetImage(_secondaryBody, image); break;
-            case FeatureSlot.Hands: SetImage(_secondaryHands, image); break;
-            case FeatureSlot.Feet: SetImage(_secondaryFeet, image); break;
-        }
-    }
+    //    switch (feature)
+    //    {
+    //        case FeatureSlot.Hair: SetImage(_secondaryHair, image); break;
+    //        case FeatureSlot.Eyes: SetImage(_secondaryEyes, image); break;
+    //        case FeatureSlot.Nose: SetImage(_secondaryNose, image); break;
+    //        case FeatureSlot.Mouth: SetImage(_secondaryMouth, image); break;
+    //        case FeatureSlot.Body: SetImage(_secondaryBody, image); break;
+    //        case FeatureSlot.Hands: SetImage(_secondaryHands, image); break;
+    //        case FeatureSlot.Feet: SetImage(_secondaryFeet, image); break;
+    //    }
+    //}
 
     private void SetImage(Image imageComponent, Sprite image)
     {
@@ -74,12 +89,12 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         if (_mainHead != null)
             _mainHead.color = color;
 
-        if (_secondaryHead != null)
-            _secondaryHead.color = color;
+        //if (_secondaryHead != null)
+        //    _secondaryHead.color = color;
     }
 
-    public void SetSecondaryCharacterHidden()
-    {
-        _secondaryBase.SetActive(false);
-    }
+    //public void SetSecondaryCharacterHidden()
+    //{
+    //    _secondaryBase.SetActive(false);
+    //}
 }

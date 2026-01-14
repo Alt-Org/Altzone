@@ -5,6 +5,7 @@ using System.Linq;
 using Altzone.Scripts.Model.Poco.Player;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.AvatarEditor;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 public class AvatarDesignLoader : AltMonoBehaviour
@@ -187,13 +188,16 @@ public class AvatarDesignLoader : AltMonoBehaviour
     {
         var color = Color.white;
 
-        if (!string.IsNullOrEmpty(avatarData.Color))
+        string correctedColor = avatarData.Color;
+        if (!correctedColor.StartsWith("#"))
         {
-            if (!ColorUtility.TryParseHtmlString(avatarData.Color, out color))
-            {
-                Debug.LogWarning($"Failed to parse color: {avatarData.Color}. Using white as default.");
-                color = Color.white;
-            }
+            correctedColor = "#" + correctedColor;
+        }
+
+        if (!ColorUtility.TryParseHtmlString(correctedColor, out color))
+        {
+            Debug.LogWarning($"Failed to parse color: {avatarData.Color}. Using white as default.");
+            color = Color.white;
         }
 
         avatarVisualData.Color = color;
