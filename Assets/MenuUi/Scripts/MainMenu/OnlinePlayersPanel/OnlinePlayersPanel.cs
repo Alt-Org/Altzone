@@ -17,7 +17,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         Clan,
         All
     }
-    
+
 
     [SerializeField] private GameObject _onlinePlayersPanel;
     [SerializeField] private TMPro.TextMeshProUGUI _onlineTitle;
@@ -34,7 +34,8 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     private List<OnlinePlayersPanelItem> _onlinePlayersPanelItems = new List<OnlinePlayersPanelItem>();
     private List<ServerOnlinePlayer> _clanPlayers = new List<ServerOnlinePlayer>();
     private List<ServerOnlinePlayer> _allPlayers = new List<ServerOnlinePlayer>();
-
+    private List<ServerFriendPlayer> _friendlist = new List<ServerFriendPlayer>();
+    private List<ServerFriendRequest> _friendRequests = new List<ServerFriendRequest>();
 
     void Start()
 
@@ -48,7 +49,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
         ServerManager.OnOnlinePlayersChanged += BuildOnlinePlayerList;
         CloseOnlinePlayersPanel();
-        
+
     }
 
     private void OnEnable()
@@ -77,17 +78,23 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     private void SetView(OnlinePlayersView view)
     {
         _currentView = view;
-       UpdatePlayerList();
+        UpdatePlayerList();
     }
 
-    
+
     private void BuildOnlinePlayerList(List<ServerOnlinePlayer> onlinePlayers)
     {
         StartCoroutine(BuildOnlineList(onlinePlayers));
     }
 
+    private IEnumerator FetchFriendData() // Fetches friend list and sent requests before building the player list
+    {
+        yield return StartCoroutine(ServerManager.Instance.GetFriendlist(list => _friendlist = list ?? new List<ServerFriendPlayer>()));
+        yield return StartCoroutine(ServerManager.Instance.GetFriendlistRequests(list => _friendRequests = list ?? new List<ServerFriendRequest>()));
+    }
     private IEnumerator BuildOnlineList(List<ServerOnlinePlayer> onlinePlayers)
     {
+        yield return StartCoroutine(FetchFriendData());
         UpdateOnlineFriendsCount(onlinePlayers);
 
         _clanPlayers.Clear();
@@ -132,6 +139,9 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
             bool hideLogo = _currentView == OnlinePlayersView.Clan; //Hide logo if we are in ClanView
 
+            bool alreadyFriend = _friendlist.Exists(f => f._id == player._id);
+            bool alreadyRequested = _friendRequests.Exists(r => r.friend._id == player._id);
+
             OnlinePlayersPanelItem newItem = Instantiate(_onlinePlayersPanelItemPrefab, _onlinePlayersPanelContent);
             newItem.Initialize(
                  playerName,
@@ -139,10 +149,18 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                  clanLogo: hideLogo ? null : clanLogo, //Set logo to null in Clanview
                  isOnline: true,
                  onRemoveClick: () => { },
-                 hideClanLogo: hideLogo // Use hideLogo to control logo visibility
-
-
-
+                 hideClanLogo: hideLogo, // Use hideLogo to control logo visibility
+                 isFriend: alreadyFriend,
+                 alreadyRequested: alreadyRequested,
+                 onAddFriendClick: () =>
+                 { 
+                    StartCoroutine(ServerManager.Instance.SendFriendRequest(player._id, success =>
+                    {
+                        if (success)
+                            Debug.Log($"Friend request sent to {playerName}");
+                    }));
+                
+                }
                  );
             _onlinePlayersPanelItems.Add(newItem);
         }

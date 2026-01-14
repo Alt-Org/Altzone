@@ -18,12 +18,13 @@ public class OnlinePlayersPanelItem : MonoBehaviour
     [SerializeField] private TMPro.TextMeshProUGUI _nameText;
     [SerializeField] private ClanHeartColorSetter _clanHeart;
     [SerializeField] private Button _addfriendButton;
+    [SerializeField] private TextMeshProUGUI _addFriendButtonText; 
 
     private bool _isOnline = true;
     private Action _onRemoveClick;
 
 
-    public void Initialize(string name, AvatarVisualData avatarVisualData = null, ClanLogo clanLogo = null, bool isOnline = true, Action onRemoveClick = null, bool hideClanLogo = false)
+    public void Initialize(string name, AvatarVisualData avatarVisualData = null, ClanLogo clanLogo = null, bool isOnline = true, Action onRemoveClick = null, bool hideClanLogo = false, bool isFriend = false, bool alreadyRequested = false, Action onAddFriendClick = null)
     {
         _nameText.text = name;
         _isOnline = isOnline;
@@ -47,7 +48,32 @@ public class OnlinePlayersPanelItem : MonoBehaviour
 
         UpdateOnlineStatusIndicator();
 
+        if (_addfriendButton != null)
+        {
+            _addfriendButton.gameObject.SetActive(true);
+            _addfriendButton.onClick.RemoveAllListeners();
 
+            if (isFriend)
+            {
+                _addfriendButton.interactable = false;
+                _addFriendButtonText.text = "Kaveri";
+            }
+            else if (alreadyRequested)
+            {
+                _addfriendButton.interactable = false;
+                _addFriendButtonText.text = "Kaveriyyntö lähetetty";
+            }
+            else
+            {
+                _addfriendButton.interactable = true;
+                _addFriendButtonText.text = "Lisää kaveriksi";
+
+                _addfriendButton.onClick.AddListener(() =>
+                {
+                    onAddFriendClick?.Invoke();
+                });
+            }
+        }
     }
     private void UpdateOnlineStatusIndicator()
     {
