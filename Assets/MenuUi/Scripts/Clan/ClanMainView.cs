@@ -43,6 +43,10 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private Button _leaveClanButton;
     [SerializeField] private Button _linkButton;
     [SerializeField] private GameObject _editButton;
+    [SerializeField] private GameObject _viewClansButton;
+
+    private bool _isInClanCached;
+    private bool _canEditCached;
 
     [Header("pop ups")]
     [SerializeField] private ClanSearchPopup _clanPopup;
@@ -198,8 +202,18 @@ public class ClanMainView : MonoBehaviour
 
         // Show correct buttons
         bool isInClan = ServerManager.Instance.Clan != null && clan.Id == ServerManager.Instance.Clan._id;
+        _isInClanCached = isInClan;
+
+        _canEditCached = CanCurrentPlayerEditClan(clan);
+
+        if(_editButton != null)
+        {
+            _editButton.SetActive(_canEditCached);
+        }
+
         _inClanButtons.SetActive(isInClan);
         _notInClanButtons.SetActive(!isInClan);
+
         if (_joinClanButton != null)
         {
             // Show join button only if not in clan
@@ -243,6 +257,21 @@ public class ClanMainView : MonoBehaviour
         // Temp values for testing
         //_clanActivityRanking.text = _clanWinsRanking.text = "-1";
         _clanPassword.text = "";
+    }
+
+    public void SetProfileActionButtonsVisible(bool visible)
+    {
+        // ViewClans
+        if (_viewClansButton != null)
+            _viewClansButton.SetActive(visible && _isInClanCached);
+
+        // LeaveClan (Button -> gameObject)
+        if (_leaveClanButton != null)
+            _leaveClanButton.gameObject.SetActive(visible && _isInClanCached);
+
+        // Edit
+        if (_editButton != null)
+            _editButton.SetActive(visible && _canEditCached);
     }
 
     private void Reset()
