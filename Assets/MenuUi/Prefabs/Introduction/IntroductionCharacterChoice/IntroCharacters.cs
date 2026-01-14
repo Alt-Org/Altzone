@@ -30,7 +30,7 @@ public class IntroCharacters : MonoBehaviour
             Image emblemSprite = characterCard.transform.Find("CornerIcon").GetComponent<Image>(); //find emblem-child
             emblemSprite.sprite = _classReference.GetCornerIcon(classType); //set emblem sprite
 
-            Image nameSprite = characterCard.transform.Find("CharacterTypeName").GetComponent<Image>(); //find name-child
+            Image nameSprite = characterCard.transform.Find("ShadowBehindName/CharacterTypeName").GetComponent<Image>(); //find name-child
             nameSprite.sprite = _classReference.GetNameIcon(classType); //set name sprite
 
 
