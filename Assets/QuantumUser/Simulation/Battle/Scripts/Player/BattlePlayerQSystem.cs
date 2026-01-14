@@ -14,7 +14,6 @@ using Photon.Deterministic;
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Projectile;
-using Battle.QSimulation.SoulWall;
 
 namespace Battle.QSimulation.Player
 {
