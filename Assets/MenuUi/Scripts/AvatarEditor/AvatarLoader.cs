@@ -1,5 +1,4 @@
 using Assets.Altzone.Scripts.Model.Poco.Player;
-using MenuUi.Scripts.AvatarEditor;
 using UnityEngine;
 
 public class AvatarLoader : MonoBehaviour

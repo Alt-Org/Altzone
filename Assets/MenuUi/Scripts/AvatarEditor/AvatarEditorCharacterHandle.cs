@@ -1,5 +1,4 @@
 using Assets.Altzone.Scripts.Model.Poco.Player;
-using MenuUi.Scripts.AvatarEditor;
 using UnityEngine;
 using UnityEngine.UI;
 

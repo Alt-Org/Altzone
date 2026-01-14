@@ -1,11 +1,9 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Model.Poco.Player;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.AvatarEditor;
-using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 public class AvatarDesignLoader : AltMonoBehaviour
