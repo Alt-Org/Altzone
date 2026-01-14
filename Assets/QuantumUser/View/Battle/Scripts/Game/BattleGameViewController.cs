@@ -35,6 +35,7 @@ using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
 using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 using PlayerType = Battle.View.UI.BattleUiPlayerInfoHandler.PlayerType;
+using Altzone.Scripts.Settings;
 
 namespace Battle.View.Game
 {
@@ -525,6 +526,17 @@ namespace Battle.View.Game
             _endOfGameDataHasEnded = true;
             _endOfGameDataWinningTeam = e.WinningTeam;
             _endOfGameDataGameLengthSec = e.GameLengthSec;
+
+            StartCoroutine(ServerManager.Instance.BattleSendResult
+            (
+                // TODO: This line needs players,
+                e.WinningTeam,
+                e.GameLengthSec,
+                c =>
+                {
+                    if (!c) Debug.LogError(message: "Sending messsage failed.");
+                }
+            ));
         }
 
         /// <summary>
