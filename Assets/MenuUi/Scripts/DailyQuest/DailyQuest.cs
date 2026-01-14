@@ -208,7 +208,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         // Update secondary progress (grey background) to always be full
         if (_progressImageDefault != null)
         {
-            _progressImageDefault.fillAmount = 1f;
+            _progressImageDefault.enabled = true;
         }
     }
 
