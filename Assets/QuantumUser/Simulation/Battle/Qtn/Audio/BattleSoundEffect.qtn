@@ -11,8 +11,8 @@ enum BattleSoundFX
     SoulWallHitPlayful,
     SoulWallHitSadness,
 
-    #region Character specific Shield Hit
-
+    //{ Character specific Shield Hit
+    
     // Desensitizer class characters
     PlayerCharacterRacistShieldHit      = 101,
     PlayerCharacterBodybuilderShieldHit = 102,
@@ -63,5 +63,5 @@ enum BattleSoundFX
     PlayerCharacterOvercompilatorShieldHit      = 704,
     PlayerCharacterNitpickerShieldHit           = 705
 
-    #endregion Character specific Shield Hit
+    //} Character specific Shield Hit
 }
