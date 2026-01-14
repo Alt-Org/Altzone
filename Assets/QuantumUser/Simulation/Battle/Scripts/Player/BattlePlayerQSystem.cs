@@ -125,6 +125,8 @@ namespace Battle.QSimulation.Player
             BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
             FP damageTaken = projectileCollisionData->Projectile->Attack;
 
+            HandleShieldSFX(f, damagedPlayerData->CharacterId);
+
             BattleProjectileQSystem.SetAttack(f, projectileCollisionData->Projectile, damagedPlayerData->Stats.Attack);
 
             int characterNumber = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber;
@@ -304,6 +306,17 @@ namespace Battle.QSimulation.Player
 
             BattleGameControlQSystem.OnGameOver(f, winningTeam);
             return true;
+        }
+
+        /// <summary>
+        /// Private helper method for playing the appropriate Shield Hit sound effect based on character ID
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame</param>
+        /// <param name="charactedID">ID value of the current character in play</param>
+        private static void HandleShieldSFX(Frame f, int characterID)
+        {
+            f.Events.BattlePlaySoundFX((BattleSoundFX)characterID);
         }
 
         /// <summary>
