@@ -3,11 +3,65 @@ enum BattleSoundFX
     SoulWallHit,
     GoalHit,
     SideWallHit,
-    WallBroken,
+    SoulWallBroken,
     DiamondPickUp,
     SoulWallHitAggression,
     SoulWallHitJoy,
     SoulWallHitLove,
     SoulWallHitPlayful,
-    SoulWallHitSadness
+    SoulWallHitSadness,
+
+    #region Character specific Shield Hit
+
+    // Desensitizer class characters
+    PlayerCharacterRacistShieldHit      = 101,
+    PlayerCharacterBodybuilderShieldHit = 102,
+    PlayerCharacterWarVeteranShieldHit  = 103,
+    PlayerCharacterBullyShieldHit       = 104,
+    PlayerCharacterEgoistShieldHit      = 105,
+    PlayerCharacterDepressedShieldHit   = 106,
+
+    // Trickster class characters
+    PlayerCharacterComedianShieldHit = 201,
+    PlayerCharacterJokerShieldHit    = 202,
+    PlayerCharacterConmanShieldHit   = 203,
+    PlayerCharacterSeducerShieldHit  = 204,
+
+    // Obedient class characters
+    PlayerCharacterReligiousShieldHit     = 301,
+    PlayerCharacterYesmanShieldHit        = 302,
+    PlayerCharacterSlaveOfTheLawShieldHit = 303,
+    PlayerCharacterFashionSlaveShieldHit  = 304,
+    PlayerCharacterMammasBoyShieldHit     = 305,
+    PlayerCharacterSuperstitiousShieldHit = 306,
+
+    // Projector class characters
+    PlayerCharacterArtistShieldHit     = 401,
+    PlayerCharacterArguerShieldHit     = 402,
+    PlayerCharacterReflectorShieldHit  = 403,
+    PlayerCharacterDelusionalShieldHit = 404,
+
+    // Retroflector class characters
+    PlayerCharacterOvereaterShieldHit = 501,
+    PlayerCharacterAlcoholicShieldHit = 502,
+    PlayerCharacterAnorecticShieldHit = 503,
+    PlayerCharacterStonerShieldHit    = 504,
+    PlayerCharacterMartyrShieldHit    = 505,
+    PlayerCharacterSuicidalShieldHit  = 506,
+
+    // Confluent class characters
+    PlayerCharacterSoulsistersShieldHit = 601,
+    PlayerCharacterLoversShieldHit      = 602,
+    PlayerCharacterSleepyHeadShieldHit  = 603,
+    PlayerCharacterTribalistShieldHit   = 604,
+    PlayerCharacterGangBangerShieldHit  = 605,
+
+    // Intellectualizer class characters
+    PlayerCharacterBooksmartShieldHit           = 701,
+    PlayerCharacterCapitalistShieldHit          = 702,
+    PlayerCharacterObsessiveCompulsiveShieldHit = 703,
+    PlayerCharacterOvercompilatorShieldHit      = 704,
+    PlayerCharacterNitpickerShieldHit           = 705
+
+    #endregion Character specific Shield Hit
 }
