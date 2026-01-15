@@ -36,6 +36,13 @@ namespace Battle.View.Player
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
+        public enum PlayerSpriteMap
+        {
+            //Sprite name based on array index
+        }
+
+        [SerializeField] private BattleSpriteSheet _spriteSheet;
+
         [Header("References")]
 
         /// <summary>[SerializeField] Reference to an override class view controller.</summary>
