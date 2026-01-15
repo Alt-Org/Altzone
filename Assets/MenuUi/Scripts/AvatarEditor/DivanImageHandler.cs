@@ -16,10 +16,8 @@ namespace MenuUi.Scripts.AvatarEditor
             if (playerData != null)
             {
                 int classId = playerData.SelectedCharacterId;
-                // convert to base class id, 102 => 100 etc.
-                int baseClassId = (classId / 100) * 100;
 
-                Color color = _classReference.GetColor((CharacterClassType)baseClassId);
+                Color color = _classReference.GetColor(BaseCharacter.GetClass((CharacterID)classId));
                 _divanImage.color = color;
             }
         }
