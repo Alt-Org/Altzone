@@ -1,6 +1,5 @@
-using System.Collections.Generic;
+using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
@@ -90,24 +89,20 @@ namespace MenuUi.Scripts.AvatarEditor
             Scale = Vector2.one;
         }
 
-        public PlayerAvatar(string name, List<string> featuresIds, string color, Vector2 scale)
-        {
-            Name = name;
-            foreach(string partId in featuresIds)
-            {
-                SortAndAssignByID(partId);
-            }
-            Color = color ?? "#ffffff";
-            Scale = scale;
-        }
-
         public PlayerAvatar(AvatarData data)
         {
             Name = data.Name ?? string.Empty;
-            foreach(string partId in data.FeatureIds)
+
+            foreach (AvatarPiece piece in Enum.GetValues(typeof(AvatarPiece)))
             {
-                SortAndAssignByID(partId);
+                int id = data.GetPieceID(piece);
+
+                if (id > 0)
+                {
+                    SetPart(piece, id.ToString());
+                }
             }
+
             Color = data.Color ?? "#ffffff";
             Scale = new Vector2(data.ScaleX, data.ScaleY);
         }
@@ -120,57 +115,61 @@ namespace MenuUi.Scripts.AvatarEditor
             return input.Any(ch => !char.IsLetterOrDigit(ch));
         }
 
-        public void SortAndAssignByID(string avatarPartId)
+        public void SetPart(AvatarPiece slot, string partId)
         {
-            if(string.IsNullOrEmpty(avatarPartId)) {  return; }
-            if(avatarPartId.Length  < 7) { return; }
-            string identifier = avatarPartId.Substring(0, 2);
-            switch(avatarPartId.Substring(0, 2)) //Check the first 2 characters from the partId
+            switch (slot)
             {
-                case "10":
-                    HairId = avatarPartId;
+                case AvatarPiece.Hair:
+                    HairId = partId;
                     break;
-                case "21":
-                    EyesId = avatarPartId;
+
+                case AvatarPiece.Eyes:
+                    EyesId = partId;
                     break;
-                case "22":
-                    NoseId = avatarPartId;
+
+                case AvatarPiece.Nose:
+                    NoseId = partId;
                     break;
-                case "23":
-                    MouthId = avatarPartId;
+
+                case AvatarPiece.Mouth:
+                    MouthId = partId;
                     break;
-                case "31":
-                    BodyId = avatarPartId;
+
+                case AvatarPiece.Clothes:
+                    BodyId = partId;
                     break;
-                case "32":
-                    HandsId = avatarPartId;
+
+                case AvatarPiece.Hands:
+                    HandsId = partId;
                     break;
-                case "33":
-                    FeetId = avatarPartId;
+
+                case AvatarPiece.Feet:
+                    FeetId = partId;
                     break;
+
                 default:
-                    Debug.LogWarning($"Avatar part with id {avatarPartId} could not be sorted into any category!");
+                    Debug.LogWarning($"Invalid AvatarPiece slot {slot}");
                     break;
             }
         }
 
-        public string GetPartId(FeatureSlot feature)
+        public string GetPartId(AvatarPiece feature)
         {
             switch (feature)
             {
-                case FeatureSlot.Hair:
+                case AvatarPiece.Hair:
                     return HairId;
-                case FeatureSlot.Eyes:
+                case AvatarPiece.Eyes:
                     return EyesId;
-                case FeatureSlot.Nose:
+                case AvatarPiece.Nose:
                     return NoseId;
-                case FeatureSlot.Mouth:
+                case AvatarPiece.Mouth:
                     return MouthId;
-                case FeatureSlot.Body:
+                case AvatarPiece.Clothes:
                     return BodyId;
-                case FeatureSlot.Hands:
+                case AvatarPiece.Hands:
                     return HandsId;
-                case FeatureSlot.Feet:
+                case AvatarPiece.Feet:
                     return FeetId;
                 default:
                     return "";

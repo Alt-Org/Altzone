@@ -14,7 +14,6 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private ScrollBarCategoryLoader _categoryLoader;
         [SerializeField] private ScrollBarFeatureLoader _featureLoader;
         [SerializeField] private ColorGridLoader _colorLoader;
-        [SerializeField] private CharacterLoader _characterLoader;
         [SerializeField] private float _timeoutSeconds = 10f;
         [SerializeField] private AvatarDefaultReference _avatarDefaultReference;
         [SerializeField] private FeatureSetter _featureSetter;
@@ -24,6 +23,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Button _defaultButton;
         [SerializeField] private TextHandler _textHandler;
         [SerializeField] private PopUpHandler _popUpHandler;
+        [SerializeField] private DivanImageHandler _divanImageHandler;
 
         private PlayerData _currentPlayerData;
         private PlayerAvatar _playerAvatar;
@@ -60,7 +60,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void OnEnable()
         {
-            _characterLoader.RefreshPlayerCurrentCharacter();
+            _divanImageHandler.UpdateDivanImage(_currentPlayerData);
             StartCoroutine(LoadAvatarData());
             _textHandler.SetRandomSpeechBubbleText();
 
@@ -92,6 +92,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
             _currentPlayerData = playerData;
             SetAllAvatarFeatures();
+            _divanImageHandler.UpdateDivanImage(playerData);
         }
 
         private IEnumerator SaveAvatarData()
@@ -105,8 +106,8 @@ namespace MenuUi.Scripts.AvatarEditor
                 "FFFFFF",
                 new Vector2(1, 1));
 
-            var features = Enum.GetValues(typeof(FeatureSlot));
-            foreach (FeatureSlot feature in features)
+            var features = Enum.GetValues(typeof(AvatarPiece));
+            foreach (AvatarPiece feature in features)
             {
                 AssignPartToPlayerData(savePlayerData.AvatarData, feature, _playerAvatar.GetPartId(feature));
             }
@@ -164,7 +165,7 @@ namespace MenuUi.Scripts.AvatarEditor
             SetAllAvatarFeatures();
         }
 
-        private void AssignPartToPlayerData(AvatarData playerAvatarData, FeatureSlot feature, string id)
+        private void AssignPartToPlayerData(AvatarData playerAvatarData, AvatarPiece feature, string id)
         {
             int convertedID;
             if (int.TryParse(id, out int intID))
@@ -175,25 +176,25 @@ namespace MenuUi.Scripts.AvatarEditor
 
             switch (feature)
             {
-                case FeatureSlot.Hair:
+                case AvatarPiece.Hair:
                     playerAvatarData.Hair = convertedID;
                     break;
-                case FeatureSlot.Eyes:
+                case AvatarPiece.Eyes:
                     playerAvatarData.Eyes = convertedID;
                     break;
-                case FeatureSlot.Nose:
+                case AvatarPiece.Nose:
                     playerAvatarData.Nose = convertedID;
                     break;
-                case FeatureSlot.Mouth:
+                case AvatarPiece.Mouth:
                     playerAvatarData.Mouth = convertedID;
                     break;
-                case FeatureSlot.Body:
+                case AvatarPiece.Clothes:
                     playerAvatarData.Clothes = convertedID;
                     break;
-                case FeatureSlot.Hands:
+                case AvatarPiece.Hands:
                     playerAvatarData.Hands = convertedID;
                     break;
-                case FeatureSlot.Feet:
+                case AvatarPiece.Feet:
                     playerAvatarData.Feet = convertedID;
                     break;
                 default:

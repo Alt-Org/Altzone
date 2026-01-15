@@ -1,13 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEditor;
 using Altzone.Scripts.AvatarPartsInfo;
-using NUnit.Framework.Constraints;
-using System.Runtime.CompilerServices;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem.Composites;
 using System;
 
 namespace MenuUi.Scripts.AvatarEditor
