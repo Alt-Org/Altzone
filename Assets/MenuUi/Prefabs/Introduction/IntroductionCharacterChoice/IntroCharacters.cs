@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
+using UnityEditor.Graphs;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,15 +14,24 @@ public class IntroCharacters : MonoBehaviour
     [SerializeField]
     private List<GameObject> characterCards;
 
+    private List<int> characterIDs = new List<int>();
+
     void Start()
     {
-        CharacterClassType classType = (int) CharacterClassType.None;
+        foreach (int i in Enum.GetValues(typeof(CharacterClassType))) //add character class type IDs to list
+        {
+            characterIDs.Add(i);
+        }
 
+
+        CharacterClassType classType;
+        int j = 0;                     //for going through the classtype list
 
         foreach (GameObject characterCard in characterCards)
         {
-            classType += 100; //move to next class type
+            j++;
 
+            classType = (CharacterClassType)characterIDs[j]; //get classtype from list
 
             characterCard.GetComponent<Image>().color = _classReference.GetAlternativeColor(classType); //change card color
 
@@ -32,8 +43,6 @@ public class IntroCharacters : MonoBehaviour
 
             Image nameSprite = characterCard.transform.Find("ShadowBehindName/CharacterTypeName").GetComponent<Image>(); //find name-child
             nameSprite.sprite = _classReference.GetNameIcon(classType); //set name sprite
-
-
         }
     }
 

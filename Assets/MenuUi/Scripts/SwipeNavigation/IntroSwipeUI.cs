@@ -58,6 +58,19 @@ namespace MenuUi.Scripts.SwipeNavigation
                 base.NextSlide();
             }
         }
+
+        public override void UpdateInput() //disable swiping when on last slide
+        {
+            if (CurrentPage == startSlides.Length - 1)
+            {
+                return;
+            }
+            else 
+            {
+                base.UpdateInput();
+            }
+        }
+
     }
 
 }

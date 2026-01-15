@@ -227,7 +227,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             CurrentPage = index;
         }
 
-        private void UpdateInput()
+        public virtual void UpdateInput()
         {
             // Return if currently swiping
             if (isSwipeMode == true) return;
