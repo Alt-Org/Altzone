@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Model.Poco.Player;
 using Assets.Altzone.Scripts.Model.Poco.Player;
@@ -161,8 +160,8 @@ public class AvatarDesignLoader : AltMonoBehaviour
             playerAvatar.Scale
         );
 
-        var list = Enum.GetValues(typeof(FeatureSlot));
-        foreach (FeatureSlot feature in list) //This could possibly be replaced with turning the partlist into ServerAvatar and then giving that to the AvatarData.
+        var list = Enum.GetValues(typeof(AvatarPiece));
+        foreach (AvatarPiece feature in list) //This could possibly be replaced with turning the partlist into ServerAvatar and then giving that to the AvatarData.
         {
             playerData.AvatarData.SetPieceID((AvatarPiece)feature, int.Parse(playerAvatar.GetPartId(feature)));
             Debug.Log("The added featureId is " + playerAvatar.GetPartId(feature));
@@ -176,6 +175,12 @@ public class AvatarDesignLoader : AltMonoBehaviour
         foreach (var pieceId in AllAvatarPieces)
         {
             var pieceIdValue = avatarData.GetPieceID(pieceId);
+
+            if (pieceIdValue == 0)
+            {
+                continue;
+            }
+
             var partInfo = _avatarPartsReference.GetAvatarPartById(pieceIdValue.ToString());
 
             var avatarImage = partInfo?.AvatarImage;
@@ -187,13 +192,16 @@ public class AvatarDesignLoader : AltMonoBehaviour
     {
         var color = Color.white;
 
-        if (!string.IsNullOrEmpty(avatarData.Color))
+        string correctedColor = avatarData.Color;
+        if (!correctedColor.StartsWith("#"))
         {
-            if (!ColorUtility.TryParseHtmlString(avatarData.Color, out color))
-            {
-                Debug.LogWarning($"Failed to parse color: {avatarData.Color}. Using white as default.");
-                color = Color.white;
-            }
+            correctedColor = "#" + correctedColor;
+        }
+
+        if (!ColorUtility.TryParseHtmlString(correctedColor, out color))
+        {
+            Debug.LogWarning($"Failed to parse color: {avatarData.Color}. Using white as default.");
+            color = Color.white;
         }
 
         avatarVisualData.Color = color;

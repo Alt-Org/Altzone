@@ -132,10 +132,25 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: WallBroken
-      BattleName: 0
+    - Name: Soul Wall Broken
+      BattleName: 3
       Type: 0
-      Audio: {fileID: 0}
+      Audio: {fileID: 8300000, guid: 3c7bb8f93a5ef644a8b6e29cb1eba772, type: 3}
+      Volume: 1
+    - Name: Player Character Racist Shield Hit
+      BattleName: 101
+      Type: 0
+      Audio: {fileID: 8300000, guid: 470591296f2603a4580fd9c45f430901, type: 3}
+      Volume: 1
+    - Name: Player Character Bodybuilder Shield Hit
+      BattleName: 102
+      Type: 0
+      Audio: {fileID: 8300000, guid: 064fe6620480b11449a21db68498d4a2, type: 3}
+      Volume: 1
+    - Name: Player Character Conman Shield Hit
+      BattleName: 203
+      Type: 0
+      Audio: {fileID: 8300000, guid: 315c9a198db36c248a3fdb9ea20a7c60, type: 3}
       Volume: 1
   - Name: Battle_Raid
     Type: 5
