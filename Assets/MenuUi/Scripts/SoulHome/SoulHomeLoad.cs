@@ -70,7 +70,6 @@ namespace MenuUI.Scripts.SoulHome {
 
             body.Add(new MultipartFormFileSection("logFile","test", null,"test.log"));
 
-            ServerManager.Instance.BattleSendDebugLogFile(body, "my_secret", "UploadTestNiko", callback =>
              {
                  Debug.LogWarning(callback.error+ "  :"+callback.downloadHandler.text);
              });

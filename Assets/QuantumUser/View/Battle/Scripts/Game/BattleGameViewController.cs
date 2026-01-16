@@ -35,7 +35,6 @@ using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
 using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 using PlayerType = Battle.View.UI.BattleUiPlayerInfoHandler.PlayerType;
-using Altzone.Scripts.Settings;
 
 namespace Battle.View.Game
 {
