@@ -305,6 +305,7 @@ namespace Altzone.Scripts.Lobby
                     PlayerData playerData = null;
                     store.GetPlayerData(playerGuid, p => playerData = p);
                     yield return new WaitUntil(() => playerData != null);
+                    PhotonRealtimeClient.Client.UserId = playerGuid;
                     PhotonRealtimeClient.Connect(playerData.Name, photonRegion);
                 }
                 else if (PhotonRealtimeClient.CanJoinLobby)
