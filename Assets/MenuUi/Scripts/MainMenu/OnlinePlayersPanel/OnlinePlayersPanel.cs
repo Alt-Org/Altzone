@@ -19,7 +19,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     }
 
 
-    [SerializeField] private GameObject _onlinePlayersPanel;
+    [SerializeField] public GameObject _onlinePlayersPanel;
     [SerializeField] private TMPro.TextMeshProUGUI _onlineTitle;
     [SerializeField] private RectTransform _onlinePlayersPanelContent;
     [SerializeField] private ScrollRect _onlinePlayersPanelScrollView;
@@ -72,6 +72,11 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
     public void OpenOnlinePlayersPanel()
     {
+        FriendlistHandler friendlist = FindObjectOfType<FriendlistHandler>();
+        if (friendlist != null && friendlist._friendlistPanel.activeSelf)
+        {
+            friendlist.CloseFriendlist();
+        }
         _onlinePlayersPanel.SetActive(true);
     }
 
