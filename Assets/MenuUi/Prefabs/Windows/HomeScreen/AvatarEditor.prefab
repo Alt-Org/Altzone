@@ -1854,6 +1854,12 @@ MonoBehaviour:
   - {r: 0, g: 0.7529412, b: 0.7529412, a: 1}
   - {r: 0.2509804, g: 0, b: 0.59607846, a: 1}
   - {r: 0.5568628, g: 0, b: 0.5568628, a: 1}
+  _featureMaterial: {fileID: 2100000, guid: 4bcaa099073478344b3e439fc1760383, type: 2}
+  _maskSprite: {fileID: 21300000, guid: 896121265f9efa141964aae59a807482, type: 3}
+  _skinColor: {r: 1, g: 0.984, b: 0, a: 1}
+  _bodyColor: {r: 0, g: 0.784, b: 1, a: 1}
+  _classColor: {r: 1, g: 0, b: 0.937, a: 1}
+  _hairColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!1 &3413557512637032013
 GameObject:
   m_ObjectHideFlags: 0
@@ -3952,6 +3958,11 @@ PrefabInstance:
       propertyPath: _useOwnAvatarVisuals
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7581661894801124856, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 2100000, guid: 4bcaa099073478344b3e439fc1760383, type: 2}
     - target: {fileID: 7771424816721930819, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
         type: 3}
       propertyPath: m_AnchorMax.x
