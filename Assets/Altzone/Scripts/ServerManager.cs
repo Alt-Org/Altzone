@@ -25,8 +25,6 @@ using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Store;
 using Altzone.Scripts.Chat;
 using Altzone.Scripts.Audio;
-using System.Net;
-using UnityEditor.PackageManager.Requests;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
