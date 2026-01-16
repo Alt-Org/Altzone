@@ -525,6 +525,20 @@ namespace Battle.View.Game
             _endOfGameDataHasEnded = true;
             _endOfGameDataWinningTeam = e.WinningTeam;
             _endOfGameDataGameLengthSec = e.GameLengthSec;
+
+            // Calling server to add wins and losses
+            Utils.TryGetQuantumFrame(out Frame f);
+            string[] userIDs = BattleParameters.GetPlayerSlotUserIDs(f);
+            StartCoroutine(ServerManager.Instance.BattleSendResult
+            (
+                userIDs,
+                (int)e.WinningTeam,
+                (float)e.GameLengthSec,
+                c =>
+                {
+                    if (!c) Debug.LogError(message: "Sending messsage failed.");
+                }
+            ));
         }
 
         /// <summary>

@@ -1647,11 +1647,39 @@ public class ServerManager : MonoBehaviour
 
     #region Battle
 
-    public void SendDebugLogFile(List<IMultipartFormSection> formData, string secretKey, string id, Action<UnityWebRequest> callback)
+    public void BattleSendDebugLogFile(List<IMultipartFormSection> formData, string secretKey, string id, Action<UnityWebRequest> callback)
     {
         StartCoroutine(WebRequests.Post(SERVERADDRESS + "gameAnalytics/logfile/", formData, AccessToken, secretKey, id, callback));
     }
-
+        
+    public IEnumerator BattleSendResult(string[] player, int winningTeam, float duration, Action<bool> callback)
+    {
+        string body = JObject.FromObject(
+            new
+            {
+                type = "result",
+                team1 = new string[2] { player[0], player[1] },
+                team2 = new string[2] { player[2], player[3] },
+                duration = duration,
+                winnerTeam = winningTeam,
+            }
+        ).ToString();
+        yield return StartCoroutine(WebRequests.Post(address: $"{DEVADDRESS}gamedata/battle", body, AccessToken, Request =>
+        {
+            if (Request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(obj: true);
+            }
+            else
+            {
+                if (callback != null)
+                {
+                    callback(obj: false);
+                }
+            }
+        }));
+    }
     #endregion
 
     #region Voting
