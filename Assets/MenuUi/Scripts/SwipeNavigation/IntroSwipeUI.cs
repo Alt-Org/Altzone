@@ -21,7 +21,7 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         void Start()
         {
-            
+            _willRotate = false;
         }
 
         public override void PreviousSlide()
@@ -45,6 +45,10 @@ namespace MenuUi.Scripts.SwipeNavigation
         }
         public override void NextSlide()
         {
+            if (CurrentPage == startSlides.Length - 1)
+            {
+                return;
+            }
             if (CurrentPage >= maxPage)
             {
                 CurrentPage = startSlides.Length;
@@ -54,6 +58,21 @@ namespace MenuUi.Scripts.SwipeNavigation
                 base.NextSlide();
             }
         }
+
+        public override void UpdateInput() //disable swiping when on last slide
+        {
+            Debug.Log("currentpage: " + CurrentPage + " length: " + startSlides.Length);
+            if (CurrentPage >= startSlides.Length - 1)
+            {
+                return;
+            }
+            else
+            {
+                base.UpdateInput();
+            }
+            return;
+        }
+
     }
 
 }
