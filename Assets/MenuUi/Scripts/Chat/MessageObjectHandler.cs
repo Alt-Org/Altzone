@@ -30,8 +30,7 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private Vector2 _vectorReactionSize;
     [SerializeField] private Vector2 _vectorExpandedReactionSize;   
 
-    //Stores the reactions
-    public List<ChatReactionHandler> ReactionDataList = new();
+
 
     private string _id;
     private Image _image;
@@ -97,11 +96,12 @@ public class MessageObjectHandler : MonoBehaviour
         _time.text = $"{message.Timestamp.Hour}:{message.Timestamp.Minute:D2}";
         _date.text = $"{message.Timestamp.Day}/{message.Timestamp.Month}/{message.Timestamp.Year}";
 
-
+        ReactionObject.gameObject.SetActive(true);
         foreach (var reactionData in message.Reactions)
         {
             ReactionChatCall(reactionData);
         }
+        ReactionObject.gameObject.SetActive(false);
     }
 
     public void SetPreviewMessageInfo(ChatMessage message)
@@ -150,9 +150,9 @@ public class MessageObjectHandler : MonoBehaviour
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
 
         ///Activates and Deactivates the "AddChatMessageReactions" as it has "Message Reactions Handler" that is needed to be on
-        ReactionObject.gameObject.SetActive(true);
+        
         ChildsScript.AddReaction(_id, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji));
-        ReactionObject.gameObject.SetActive(false);
+        
     }
 
 }

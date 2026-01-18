@@ -166,7 +166,7 @@ public class MessageReactionsHandler : MonoBehaviour
             {
                 if (addedReaction._messageID == messageID && addedReaction.ReactionImage.sprite == reactionSprite)
                 {
-                    RemoveReaction(addedReaction);
+                    RemoveReaction(addedReaction, null);
                     _selectedMessage.SetMessageInactive();
 
                     return;
@@ -180,7 +180,6 @@ public class MessageReactionsHandler : MonoBehaviour
 
             _reactionHandlers.Add(chatReactionHandler);
 
-            _messageObjectHandler.ReactionDataList = new List<ChatReactionHandler>(_reactionHandlers); 
             chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler));
             chatReactionHandler.LongClickButton.onLongClick.AddListener(() => ShowUsers(chatReactionHandler));
             LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
@@ -205,11 +204,12 @@ public class MessageReactionsHandler : MonoBehaviour
 
             if (reactionHandler._selected)
             {
-                reactionHandler.Deselect();
+                reactionHandler.Deselect(); 
 
                 if (reactionHandler._count <= 0)
                 {
-                    RemoveReaction(reactionHandler);
+                     //Need to find away how i import data to the ServerChatMessage to make this work
+                    RemoveReaction(reactionHandler, null);
                 }
             }
             else
@@ -232,14 +232,20 @@ public class MessageReactionsHandler : MonoBehaviour
         _longClick = false;
     }
 
-    private void RemoveReaction(ChatReactionHandler reaction)
+    private void RemoveReaction(ChatReactionHandler reaction, ServerChatMessage selectedReaction)
     {
         HorizontalLayoutGroup reactionsField = reaction.GetComponentInParent<HorizontalLayoutGroup>();
-
         reaction.transform.SetParent(null);
         _reactionHandlers.Remove(reaction);
-        _messageObjectHandler.ReactionDataList.Remove(reaction);
+
+        
+        //removes the reaction from the list
+        selectedReaction.reactions.RemoveAll(r =>
+        r.emoji == reaction.Mood.ToString() &&
+        r.playerName == reaction._messageID
+        );
         Destroy(reaction.gameObject);
+
         _selectedMessage.SizeCall();
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
