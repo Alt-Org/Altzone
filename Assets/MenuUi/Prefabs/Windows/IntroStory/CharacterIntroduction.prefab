@@ -337,7 +337,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 64.25
+  m_fontSize: 61.65
   m_fontSizeBase: 150
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -7521,6 +7521,8 @@ MonoBehaviour:
   - {fileID: 377767261728825501}
   - {fileID: 1590315537825670700}
   - {fileID: 4594329146910155358}
+  characterThumbNailHandler: {fileID: 644349364046116479, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
+    type: 3}
 --- !u!1 &4426066129918188964
 GameObject:
   m_ObjectHideFlags: 0
@@ -8043,7 +8045,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 0}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.16666669
+  m_Size: 0.16666667
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -18074,6 +18076,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterThumbnail3
       objectReference: {fileID: 0}
+    - target: {fileID: 7775093215518772866, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 8f4961898c670d34a91cbef8ffc464ef,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -18126,6 +18134,11 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 644349364046116479, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
+        type: 3}
+      propertyPath: _characterSprite
+      value: 
+      objectReference: {fileID: 7445314120656377640}
     - target: {fileID: 1486682069875742128, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
         type: 3}
       propertyPath: m_Pivot.x
@@ -18281,6 +18294,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterThumbnail1
       objectReference: {fileID: 0}
+    - target: {fileID: 7775093215518772866, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 8f4961898c670d34a91cbef8ffc464ef,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -18310,6 +18329,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 915848841413499306}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7445314120656377640 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7775093215518772866, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
+    type: 3}
+  m_PrefabInstance: {fileID: 915848841413499306}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4237380002406838834
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18443,6 +18474,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterThumbnail4
       objectReference: {fileID: 0}
+    - target: {fileID: 7775093215518772866, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 8f4961898c670d34a91cbef8ffc464ef,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -18605,6 +18642,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterThumbnail6
       objectReference: {fileID: 0}
+    - target: {fileID: 7775093215518772866, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 8f4961898c670d34a91cbef8ffc464ef,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -18767,6 +18810,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterThumbnail5
       objectReference: {fileID: 0}
+    - target: {fileID: 7775093215518772866, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 8f4961898c670d34a91cbef8ffc464ef,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -19088,6 +19137,11 @@ PrefabInstance:
       propertyPath: m_FillAmount
       value: 0.224
       objectReference: {fileID: 0}
+    - target: {fileID: 3123411311929558287, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
+        type: 3}
+      propertyPath: m_Name
+      value: Character
+      objectReference: {fileID: 0}
     - target: {fileID: 4015590429841124356, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
         type: 3}
       propertyPath: m_Enabled
@@ -19138,6 +19192,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterThumbnail2
       objectReference: {fileID: 0}
+    - target: {fileID: 7775093215518772866, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 8f4961898c670d34a91cbef8ffc464ef,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -19320,6 +19380,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterThumbnail7
       objectReference: {fileID: 0}
+    - target: {fileID: 7775093215518772866, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 8f4961898c670d34a91cbef8ffc464ef,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

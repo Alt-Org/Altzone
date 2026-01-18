@@ -179,6 +179,7 @@ GameObject:
   - component: {fileID: 386786937530444305}
   - component: {fileID: 2646440974728056414}
   - component: {fileID: 1561703888508663506}
+  - component: {fileID: 644349364046116479}
   m_Layer: 5
   m_Name: CharacterThumbnail
   m_TagString: Untagged
@@ -317,6 +318,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &644349364046116479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6028066601171440038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 089d60d196a089a458915fdb3d1d74d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _characterSprite: {fileID: 7775093215518772866}
+  _emblemSprite: {fileID: 2622086196790768214}
+  _nameSprite: {fileID: 5420606738028189157}
 --- !u!1 &6028272122643760052
 GameObject:
   m_ObjectHideFlags: 0
