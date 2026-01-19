@@ -1652,15 +1652,15 @@ public class ServerManager : MonoBehaviour
         StartCoroutine(WebRequests.Post(SERVERADDRESS + "gameAnalytics/logfile/", formData, AccessToken, secretKey, id, callback));
     }
         
-    public IEnumerator BattleSendResult(string[] player, int winningTeam, float duration, Action<bool> callback)
+    public IEnumerator BattleSendResult(string[] playerUserIds, int winningTeam, float durationSec, Action<bool> callback)
     {
         string body = JObject.FromObject(
             new
             {
                 type = "result",
-                team1 = new string[2] { player[0], player[1] },
-                team2 = new string[2] { player[2], player[3] },
-                duration = duration,
+                team1 = new string[2] { playerUserIds[0], playerUserIds[1] },
+                team2 = new string[2] { playerUserIds[2], playerUserIds[3] },
+                duration = durationSec,
                 winnerTeam = winningTeam,
             }
         ).ToString();
