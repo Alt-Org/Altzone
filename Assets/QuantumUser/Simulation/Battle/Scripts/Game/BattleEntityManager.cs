@@ -20,14 +20,14 @@ namespace Quantum
         /// <summary>
         /// Implicit cast to <c>int</c> implementation.
         /// </summary>
-        /// 
+        ///
         /// <param name="id">The BattleEntityID to cast to <c>int</c>.</param>
         public static implicit operator int(BattleEntityID id) => id.Int;
 
         /// <summary>
         /// Explicit cast from <c>int</c> implementation.
         /// </summary>
-        /// 
+        ///
         /// <param name="value">The <c>int</c> value to cast to BattleEntityID.</param>
         public static explicit operator BattleEntityID(int value) => new BattleEntityID() { Int = value };
     }
@@ -55,7 +55,7 @@ namespace Battle.QSimulation.Game
         /// <see cref="Quantum.BattleEntityManagerDataQSingleton.EntityOffscreenPositionOffset">EntityOffscreenPositionOffset</see>
         /// and <see cref="Quantum.BattleEntityManagerDataQSingleton.EntitySpacing">EntitySpacing</see> fields.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="entityOffscreenPositionOffset">The offscreen BattleGridPosition of the first registered entity.</param>
         /// <param name="entitySpacing">Amount of grid spaces between entity offscreen positions.</param>
@@ -76,10 +76,10 @@ namespace Battle.QSimulation.Game
         /// Use @cref{Register(Frame\, EntityRef[])} to register a group of entities.
         ///
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="entity">Entity to register.</param>
-        /// 
+        ///
         /// <returns>Entity ID of the registered entity.</returns>
         public static BattleEntityID Register(Frame f, EntityRef entity)
         {
@@ -101,10 +101,10 @@ namespace Battle.QSimulation.Game
         ///
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
         /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="entities">Array of entities to register.</param>
-        /// 
+        ///
         /// <returns>Entity ID of the registered entity group.</returns>
         public static BattleEntityID Register(Frame f, EntityRef[] entities)
         {
@@ -129,10 +129,10 @@ namespace Battle.QSimulation.Game
         /// Use @cref{Get(Frame\, BattleEntityID\, int)} to retreive an entity in a group.
         ///
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="id">Entity ID of the entity to retrieve.</param>
-        /// 
+        ///
         /// <returns>EntityRef for retrieved entity.</returns>
         public static EntityRef Get(Frame f, BattleEntityID id)
         {
@@ -146,14 +146,14 @@ namespace Battle.QSimulation.Game
         /// </summary>
         ///
         /// Use @cref{Get(Frame\, BattleEntityID)} to retreive an entity not in any group.
-        /// 
+        ///
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
         /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="id">Entity ID of the entity to retrieve.</param>
         /// <param name="offset">Offset of the desired entity within the group.</param>
-        /// 
+        ///
         /// <returns>EntityRef for retrieved entity.</returns>
         public static EntityRef Get(Frame f, BattleEntityID id, int offset)
         {
@@ -171,7 +171,7 @@ namespace Battle.QSimulation.Game
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.
         ///
         /// Return logic handled by private @clink{Return:BattleEntityManager.Return(Frame, BattleEntityManagerDataQSingleton*, EntityRef, BattleEntityID)} method.
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="id">Entity ID of the entity to return.</param>
         public static void Return(Frame f, BattleEntityID id)
@@ -192,7 +192,7 @@ namespace Battle.QSimulation.Game
         /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.
         ///
         /// Return logic handled by private @clink{Return:BattleEntityManager.Return(Frame, BattleEntityManagerDataQSingleton*, EntityRef, BattleEntityID)} method.
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="id">Entity ID of the entity to return.</param>
         /// <param name="offset">Offset of the desired entity within the group.</param>
@@ -209,11 +209,11 @@ namespace Battle.QSimulation.Game
         /// <see cref="BattleEntityManager.Return(Frame, BattleEntityID)">Return(Frame, BattleEntityID)</see>
         /// and <see cref="BattleEntityManager.Return(Frame, BattleEntityID, int)">Return(Frame, BattleEntityID, int)</see> methods.
         /// </summary>
-        /// 
+        ///
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.
         ///
         /// Also used by the @cref{Register(Frame\, EntityRef)} and @cref{Register(Frame\, EntityRef[])} methods.
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="entityManagerData">Pointer reference to BattleEntityManagerData singleton.</param>
         /// <param name="entity">The entity to return.</param>
