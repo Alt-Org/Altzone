@@ -9,15 +9,15 @@ using UnityEngine.UI;
 [RequireComponent(typeof(HorizontalLayoutGroup))]
 public class InlineLoadoutButtonSizer : MonoBehaviour
 {
-    [SerializeField] private RectTransform _viewport;       
-    [SerializeField] private int _visibleButtons = 5;       
+    [SerializeField] private RectTransform _viewport;
+    [SerializeField] private int _visibleButtons = 5;
     private HorizontalLayoutGroup _layoutGroup;
 
     private void Awake()
     {
         _layoutGroup = GetComponent<HorizontalLayoutGroup>();
 
-        
+
         if (_viewport == null)
         {
             _viewport = transform.parent as RectTransform;
@@ -26,7 +26,7 @@ public class InlineLoadoutButtonSizer : MonoBehaviour
         UpdateButtonSizes();
     }
 
-    
+
     private void OnRectTransformDimensionsChange()
     {
         UpdateButtonSizes();
@@ -38,6 +38,12 @@ public class InlineLoadoutButtonSizer : MonoBehaviour
     /// </summary>
     private void UpdateButtonSizes()
     {
+        if (_layoutGroup == null)
+            _layoutGroup = GetComponent<HorizontalLayoutGroup>();
+
+        if (_layoutGroup == null)
+            return;
+
         if (_viewport == null || _visibleButtons <= 0) return;
 
         float viewportWidth = _viewport.rect.width;
@@ -46,7 +52,7 @@ public class InlineLoadoutButtonSizer : MonoBehaviour
         float paddingRight = _layoutGroup.padding.right;
         float spacing = _layoutGroup.spacing;
 
-        
+
         float availableWidth = viewportWidth
                                - paddingLeft
                                - paddingRight
@@ -54,10 +60,10 @@ public class InlineLoadoutButtonSizer : MonoBehaviour
 
         if (availableWidth <= 0f) return;
 
-        
+
         float buttonSize = availableWidth / _visibleButtons;
 
-       
+
         for (int i = 0; i < transform.childCount; i++)
         {
             Transform child = transform.GetChild(i);

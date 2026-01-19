@@ -33,6 +33,7 @@ public class LoadOutController : MonoBehaviour
     private readonly List<ButtonLoadoutEntry> _buttonMap = new List<ButtonLoadoutEntry>();
     private readonly List<Button> _dynamicButtons = new List<Button>();
 
+
     private class ButtonLoadoutEntry
     {
         public Button Button;
@@ -60,6 +61,19 @@ public class LoadOutController : MonoBehaviour
         if (_modelController != null)
             _modelController.OnPlayerDataReady += HandlePlayerDataReady;
     }
+
+    private void OnEnable()
+    {
+        if (!IsInlineMode) return;
+
+        HookAddButton();
+
+        if (_player != null)
+        {
+            BuildInlineButtons();
+            RefreshButtons();
+        }
+    }
     private void Start()
     {
 
@@ -81,23 +95,57 @@ public class LoadOutController : MonoBehaviour
             });
         }
     }
+    private void OnDisable()
+    {
+
+        if (!IsInlineMode) return;
+
+        CleanupInlineButtons();
+    }
+    private void HookAddButton()
+    {
+        if (_addLoadoutButton == null) return;
+
+        _addLoadoutButton.onClick.RemoveAllListeners();
+        _addLoadoutButton.onClick.AddListener(AddNewLoadoutSlot);
+    }
+
+    private void CleanupInlineButtons()
+    {
+        for (int i = 0; i < _dynamicButtons.Count; i++)
+        {
+            Button button = _dynamicButtons[i];
+            if (button != null)
+                Destroy(button.gameObject);
+        }
+
+        _dynamicButtons.Clear();
+        _buttonMap.Clear();
+
+    }
 
     private void HandlePlayerDataReady(PlayerData data)
     {
         _player = data;
 
+
         if (IsInlineMode)
         {
-            if (_addLoadoutButton != null)
-            {
-                _addLoadoutButton.onClick.RemoveAllListeners();
-                _addLoadoutButton.onClick.AddListener(AddNewLoadoutSlot);
-            }
+            HookAddButton();
 
-            BuildInlineButtons();
+            if (_buttonMap.Count == 0)
+            {
+                BuildInlineButtons(); 
+            }
+            else
+            {
+                RefreshInlineButtons();
+                UpdateAddButtonVisibility();
+            }
         }
 
         RefreshButtons();
+
     }
 
     //loadout 2
@@ -159,7 +207,7 @@ public class LoadOutController : MonoBehaviour
             {
                 if (IsInlineMode)
                 {
-                    
+
                     player.ApplyLoadout(loadoutIndex);
                     SignalBus.OnReloadCharacterGalleryRequestedSignal();
                     RefreshButtons();
@@ -167,7 +215,7 @@ public class LoadOutController : MonoBehaviour
                 }
                 else
                 {
-                    
+
                     SaveToEmptySlot(loadoutIndex, player);
                 }
 
@@ -227,7 +275,7 @@ public class LoadOutController : MonoBehaviour
     private void RefreshButtons()
     {
         if (_player == null) return;
- 
+
         if (IsInlineMode)
         {
             RefreshInlineButtons();
@@ -305,6 +353,21 @@ public class LoadOutController : MonoBehaviour
             Debug.LogWarning("AddNewLoadoutSlot called but _player is null");
             return;
         }
+        // Cache the current horizontal scroll position so that
+        // adding and reordering buttons does not cause the scroll view to jump
+        ScrollRect scroll = _inlineScrollRect;
+
+        if (scroll == null)
+        {
+            scroll = _buttonsParent.GetComponentInParent<ScrollRect>();
+        }
+
+        float saved = 0f;
+
+        if (scroll != null)
+        {
+            saved = scroll.horizontalNormalizedPosition;
+        }
 
         int next = FindNextHiddenEmptyLoadoutIndex();
         if (next == -1)
@@ -313,7 +376,23 @@ public class LoadOutController : MonoBehaviour
             return;
         }
 
-        CreateDynamicButton(next, true);
+        CreateDynamicButton(next, false);
+        ReorderInlineButtonsByLoadoutIndex();
+
+        // Force an immediate layout rebuild so that the content size
+        // is updated before restoring the scroll position
+        Canvas.ForceUpdateCanvases();
+        RectTransform contentRt = _buttonsParent as RectTransform;
+        if (contentRt != null) LayoutRebuilder.ForceRebuildLayoutImmediate(contentRt);
+        Canvas.ForceUpdateCanvases();
+
+        // Restore the scroll position so the row does not visually shift
+        if (scroll != null) scroll.horizontalNormalizedPosition = saved;
+
+        _player.ApplyLoadout(next);
+        SignalBus.OnReloadCharacterGalleryRequestedSignal();
+        Storefront.Get().SavePlayerData(_player, null);
+
         RefreshButtons();
 
     }
@@ -324,6 +403,8 @@ public class LoadOutController : MonoBehaviour
     private void BuildInlineButtons()
     {
         if (_player == null) return;
+
+        CleanupInlineButtons();
 
         // Try to find a ScrollRect that controls this button row
         ScrollRect scroll = null;
@@ -342,32 +423,14 @@ public class LoadOutController : MonoBehaviour
 
         // Save current positions so layout rebuild does not cause "jump"
         float savedHorizontalPosition = 0f;
-        Vector2 savedAnchoredPosition = Vector2.zero;
+     
 
         if (scroll != null)
         {
             savedHorizontalPosition = scroll.horizontalNormalizedPosition;
         }
 
-        if (contentRt != null)
-        {
-            savedAnchoredPosition = contentRt.anchoredPosition;
-        }
-
-        for (int i = 0; i < _dynamicButtons.Count; i++)
-        {
-            Button button = _dynamicButtons[i];
-            if (button != null)
-
-            {
-                Destroy(button.gameObject);
-            }
-        }
-
-        _dynamicButtons.Clear();
-        _buttonMap.Clear();
-
-
+ 
         for (int i = 0; i < _loadoutButtons.Count; i++)
         {
             Button btn = _loadoutButtons[i];
@@ -390,13 +453,15 @@ public class LoadOutController : MonoBehaviour
             {
                 CreateDynamicButton(loadoutIndex, false);
             }
+
+
         }
 
         ReorderInlineButtonsByLoadoutIndex();
         UpdateAddButtonVisibility();
 
 
-        
+
         Canvas.ForceUpdateCanvases();
 
         // If we have a content RectTransform, rebuild its layout immediately
@@ -407,12 +472,6 @@ public class LoadOutController : MonoBehaviour
 
         // Force UI update again after layout rebuild
         Canvas.ForceUpdateCanvases();
-
-        // Restore the content position so the row does not jump
-        if (contentRt != null)
-        {
-            contentRt.anchoredPosition = savedAnchoredPosition;
-        }
 
         // Restore the scroll position so there is no movement seen in the UI
         if (scroll != null)
@@ -539,7 +598,7 @@ public class LoadOutController : MonoBehaviour
     {
 
         if (IsInlineMode == false) return;
-       
+
         for (int i = _buttonMap.Count - 1; i >= 0; i--)
         {
             if (_buttonMap[i] == null || _buttonMap[i].Button == null)

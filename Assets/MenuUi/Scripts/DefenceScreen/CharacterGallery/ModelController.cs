@@ -157,7 +157,13 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 _playerData = playerData;
                 _playerData.EnsureLoadoutsInitialized();
-              
+
+                if (_playerData.AreAllLoadoutsEmpty() && _playerData.HasAnySelectedCharacters())
+                {
+                    _playerData.SaveCurrentTeamToLoadout(1);           // save into first slot
+                    _playerData.SelectedLoadOut = 1;                  
+                    Storefront.Get().SavePlayerData(_playerData, null);
+                }
 
                 // Getting selected character ids as CharacterID array
                 CustomCharacterListObject[] selectedCharacterIds = playerData.SelectedCharacterIds;

@@ -78,6 +78,9 @@ public class LoadoutRowController : AltMonoBehaviour
 
     private void OnEnable()
     {
+        if (LoadoutPopupContext.SelectedPopupIndex != -1)
+            LoadoutPopupContext.SelectedPopupIndex = -1;
+
         SignalBus.OnReloadCharacterGalleryRequested += Redraw;
         Redraw();
     }

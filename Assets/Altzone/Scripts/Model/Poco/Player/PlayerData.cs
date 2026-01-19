@@ -406,6 +406,32 @@ namespace Altzone.Scripts.Model.Poco.Player
             }
         }
 
+        public bool HasAnySelectedCharacters()
+        {
+            if (SelectedCharacterIds == null) return false;
+
+            for (int i = 0; i < SelectedCharacterIds.Length; i++)
+            {
+                var characters = SelectedCharacterIds[i];
+                if (characters != null && characters.CharacterID != CharacterID.None)
+                    return true;
+            }
+            return false;
+        }
+
+        public bool AreAllLoadoutsEmpty()
+        {
+            if (LoadOuts == null || LoadOuts.Length == 0) return true;
+
+            for (int i = 0; i < LoadOuts.Length; i++)
+            {
+                var loadouts = LoadOuts[i];
+                if (loadouts != null && loadouts.IsEmpty == false)
+                    return false;
+            }
+            return true;
+        }
+
 
     }
 }
