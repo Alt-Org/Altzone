@@ -1,3 +1,8 @@
+struct BattlePlayerEntityRef
+{
+    EntityRef ERef;
+}
+
 //{ PlayerData
 
 component BattlePlayerDataQComponent
@@ -25,7 +30,7 @@ component BattlePlayerDataQComponent
 
     int ShieldCount;
     int AttachedShieldNumber;
-    EntityRef AttachedShield;
+    BattlePlayerEntityRef AttachedShield;
 
     bool DisableRotation;
     FrameTimer DamageCooldown;
