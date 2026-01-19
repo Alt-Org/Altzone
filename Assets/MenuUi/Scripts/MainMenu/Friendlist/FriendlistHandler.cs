@@ -15,15 +15,14 @@ using static ServerManager;
 public class FriendlistHandler : AltMonoBehaviour
 
 {
-
-
     [SerializeField] public GameObject _friendlistPanel;
     [SerializeField] private TMPro.TextMeshProUGUI _friendlistOnlineTitle;
+    [SerializeField] private TMPro.TextMeshProUGUI _friendRequestsTitle;
     [SerializeField] private Button _closeFriendlistButton;
     [SerializeField] private Button _openFriendlistButton;
     [SerializeField] private FriendlistItem _friendlistItemPrefab;
-    [SerializeField] private RectTransform _friendRequestsContent; // upper list
-    [SerializeField] private RectTransform _friendsContent;// downer list
+    [SerializeField] private RectTransform _friendRequestsContent;
+    [SerializeField] private RectTransform _friendsContent;
 
     private List<FriendlistItem> _friendRequestItems = new List<FriendlistItem>();
     private List<FriendlistItem> _friendItems = new List<FriendlistItem>();
@@ -51,7 +50,7 @@ public class FriendlistHandler : AltMonoBehaviour
 
     public void OpenFriendlist()
     {
-        OnlinePlayersPanel online = FindObjectOfType<OnlinePlayersPanel>();
+        OnlinePlayersPanel online = FindObjectOfType<OnlinePlayersPanel>();// If the OnlinePlayers panel is open, close it before opening friend list
         if (online != null && online._onlinePlayersPanel.activeSelf)
         {
             online.CloseOnlinePlayersPanel();
@@ -71,31 +70,33 @@ public class FriendlistHandler : AltMonoBehaviour
 
     private IEnumerator BuildFriendlistCoroutine(List<ServerOnlinePlayer> onlinePlayers)
     {
+        //// Fetch friend list from the server
         List<ServerFriendPlayer> friendList = null;
-        yield return StartCoroutine(ServerManager.Instance.GetFriendlist(list => friendList = list)); //Fetch friend list from server
+        yield return StartCoroutine(ServerManager.Instance.GetFriendlist(list => friendList = list)); // Fetch friend list from server
 
+        // Fetch friend requests from the server
         List<ServerFriendRequest> friendRequests = null;
-        yield return StartCoroutine(
-            ServerManager.Instance.GetFriendlistRequests(list => friendRequests = list)
+        yield return StartCoroutine(ServerManager.Instance.GetFriendlistRequests(list => friendRequests = list)
         );
 
-        UpdateOnlineFriendsCount(onlinePlayers, friendList);
         ClearItems(_friendRequestItems);
         ClearItems(_friendItems);
 
-
-
+        UpdateFriendRequestsCount(friendRequests);
+        UpdateOnlineFriendsCount(onlinePlayers, friendList);
+   
         if (friendRequests != null)
         {
             foreach (var request in friendRequests)
             {
-                FriendlistItem requestItem = Instantiate(_friendlistItemPrefab, _friendRequestsContent);
+                FriendlistItem requestItem = Instantiate(_friendlistItemPrefab, _friendRequestsContent); // Instantiate a new UI item for each friend request
 
                 requestItem.Initialize(
                     request.friend.name ?? request.friend._id,
                     isOnline: false,
                     onAcceptClick: () =>
                     {
+                        // Accept the request
                         StartCoroutine(ServerManager.Instance.FriendRequestAccept(
                             request.friend._id,
                             success =>
@@ -107,6 +108,7 @@ public class FriendlistHandler : AltMonoBehaviour
                     },
                     onDeclineClick: () =>
                     {
+                        // Decline the request
                         StartCoroutine(ServerManager.Instance.FriendDelete(
                             request.friend._id,
                             success =>
@@ -115,29 +117,21 @@ public class FriendlistHandler : AltMonoBehaviour
                                     StartCoroutine(BuildFriendlistCoroutine(onlinePlayers));
                             }
                         ));
-                    },
-                    onRemoveClick: () =>
-                    {
-                        StartCoroutine(ServerManager.Instance.FriendDelete(request.friend._id, success =>
-                        {
-                            if (success)
-                                StartCoroutine(BuildFriendlistCoroutine(ServerManager.Instance.OnlinePlayers));
-                        }));
                     }
-
                 );
 
                 _friendRequestItems.Add(requestItem);
             }
         }
         if (friendList == null || friendList.Count == 0)
-            yield break;
+            yield break;// No friends, exit coroutine
 
         foreach (var friend in friendList)
         {
             ServerPlayer serverPlayer = null;
             bool timeout = false;
 
+            // Fetch friend profile from the server
             StartCoroutine(ServerManager.Instance.GetOtherPlayerFromServer(friend._id, c => serverPlayer = c)); // Get friend data
             StartCoroutine(WaitUntilTimeout(3, c => timeout = c));
             yield return new WaitUntil(()=>serverPlayer != null || timeout);
@@ -152,7 +146,7 @@ public class FriendlistHandler : AltMonoBehaviour
                 clanLogo = serverPlayer.clanLogo;
                 avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(new AvatarData(serverPlayer.name,serverPlayer.avatar));
             }
-
+            // Instantiate UI item for the friend
             FriendlistItem newItem = Instantiate(_friendlistItemPrefab, _friendsContent);
             newItem.Initialize(
                  serverPlayer?.name ?? friend._id,// Use name if available, otherwise show ID
@@ -161,6 +155,7 @@ public class FriendlistHandler : AltMonoBehaviour
                  isOnline: isOnline,
                  onRemoveClick: () =>
                  {
+                     // Remove friend 
                      StartCoroutine(ServerManager.Instance.FriendDelete(friend._id, success =>
                      {
                          if (success)
@@ -190,8 +185,15 @@ public class FriendlistHandler : AltMonoBehaviour
             return;
         }
 
-        int onlineFriendCount = friendList.Count(friend => onlinePlayers.Any(p => p._id == friend._id));
+        int onlineFriendCount = friendList.Count(friend => onlinePlayers.Any(p => p._id == friend._id)); // Counts friends online by ID match
 
         _friendlistOnlineTitle.text = $"Kavereita onlinessa {onlineFriendCount}";
+    }
+    private void UpdateFriendRequestsCount(List<ServerFriendRequest> friendRequests)
+    {
+        if (_friendRequestsTitle == null) return;
+
+        int count = friendRequests == null ? 0 : friendRequests.Count;
+        _friendRequestsTitle.text = $"Kaveripyyntöjä {count}";
     }
 }
