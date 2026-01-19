@@ -19,6 +19,23 @@ using Photon.Deterministic;
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
 
+namespace Quantum
+{
+    public unsafe partial struct BattlePlayerEntityRef
+    {
+        public static BattlePlayerEntityRef None => default;
+        public static BattlePlayerEntityRef Create(Frame f) => (BattlePlayerEntityRef)f.Create();
+        public static BattlePlayerEntityRef Create(Frame f, AssetRef<EntityPrototype> prototype) => (BattlePlayerEntityRef)f.Create(prototype);
+
+        public static implicit operator EntityRef(BattlePlayerEntityRef battlePlayerEntityRef) => battlePlayerEntityRef.ERef;
+
+        public static explicit operator BattlePlayerEntityRef(EntityRef entityRef) => new BattlePlayerEntityRef() { ERef = entityRef };
+
+        public Transform2D* GetTransform(Frame f) => f.Unsafe.GetPointer<Transform2D>(ERef);
+        public BattlePlayerDataQComponent* GetDataQComponent(Frame f) => f.Unsafe.GetPointer<BattlePlayerDataQComponent>(ERef);
+    }
+}
+
 namespace Battle.QSimulation.Player
 {
     /// <summary>
