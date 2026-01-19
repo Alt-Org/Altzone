@@ -75,8 +75,6 @@ public class FriendlistItem : MonoBehaviour
             });
         }
 
-
-
     }
     private void UpdateOnlineStatusIndicator()
     {

@@ -19,18 +19,17 @@ public class FriendlistHandler : AltMonoBehaviour
 
     [SerializeField] public GameObject _friendlistPanel;
     [SerializeField] private TMPro.TextMeshProUGUI _friendlistOnlineTitle;
-    [SerializeField] private RectTransform _friendlistContent;
-    [SerializeField] private ScrollRect _friendlistScrollView;
     [SerializeField] private Button _closeFriendlistButton;
     [SerializeField] private Button _openFriendlistButton;
     [SerializeField] private FriendlistItem _friendlistItemPrefab;
+    [SerializeField] private RectTransform _friendRequestsContent; // upper list
+    [SerializeField] private RectTransform _friendsContent;// downer list
 
-    private List<FriendlistItem> _friendlistItems = new List<FriendlistItem>();
-    private List<ServerFriendRequest> _friendRequests = new List<ServerFriendRequest>();
+    private List<FriendlistItem> _friendRequestItems = new List<FriendlistItem>();
+    private List<FriendlistItem> _friendItems = new List<FriendlistItem>();
 
 
     void Start()
-
     {
         _openFriendlistButton.onClick.AddListener(OpenFriendlist);
         _closeFriendlistButton.onClick.AddListener(CloseFriendlist);
@@ -38,7 +37,6 @@ public class FriendlistHandler : AltMonoBehaviour
         ServerManager.OnOnlinePlayersChanged += BuildFriendlist;
 
         CloseFriendlist();
-
     }
 
     private void OnEnable()
@@ -51,7 +49,7 @@ public class FriendlistHandler : AltMonoBehaviour
         ServerManager.OnOnlinePlayersChanged -= BuildFriendlist;
     }
 
-     public void OpenFriendlist()
+    public void OpenFriendlist()
     {
         OnlinePlayersPanel online = FindObjectOfType<OnlinePlayersPanel>();
         if (online != null && online._onlinePlayersPanel.activeSelf)
@@ -82,19 +80,16 @@ public class FriendlistHandler : AltMonoBehaviour
         );
 
         UpdateOnlineFriendsCount(onlinePlayers, friendList);
+        ClearItems(_friendRequestItems);
+        ClearItems(_friendItems);
 
-        foreach (var item in _friendlistItems)
-        {
-            Destroy(item.gameObject);
-        }
 
-        _friendlistItems.Clear();
 
         if (friendRequests != null)
         {
             foreach (var request in friendRequests)
             {
-                FriendlistItem requestItem = Instantiate(_friendlistItemPrefab, _friendlistContent);
+                FriendlistItem requestItem = Instantiate(_friendlistItemPrefab, _friendRequestsContent);
 
                 requestItem.Initialize(
                     request.friend.name ?? request.friend._id,
@@ -120,16 +115,24 @@ public class FriendlistHandler : AltMonoBehaviour
                                     StartCoroutine(BuildFriendlistCoroutine(onlinePlayers));
                             }
                         ));
+                    },
+                    onRemoveClick: () =>
+                    {
+                        StartCoroutine(ServerManager.Instance.FriendDelete(request.friend._id, success =>
+                        {
+                            if (success)
+                                StartCoroutine(BuildFriendlistCoroutine(ServerManager.Instance.OnlinePlayers));
+                        }));
                     }
+
                 );
 
-                _friendlistItems.Add(requestItem);
+                _friendRequestItems.Add(requestItem);
             }
         }
-
-
         if (friendList == null || friendList.Count == 0)
             yield break;
+
         foreach (var friend in friendList)
         {
             ServerPlayer serverPlayer = null;
@@ -149,21 +152,34 @@ public class FriendlistHandler : AltMonoBehaviour
                 clanLogo = serverPlayer.clanLogo;
                 avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(new AvatarData(serverPlayer.name,serverPlayer.avatar));
             }
-         
 
-            FriendlistItem newItem = Instantiate(_friendlistItemPrefab, _friendlistContent);
+            FriendlistItem newItem = Instantiate(_friendlistItemPrefab, _friendsContent);
             newItem.Initialize(
                  serverPlayer?.name ?? friend._id,// Use name if available, otherwise show ID
                  avatarVisualData: avatarVisualData,
                  clanLogo: clanLogo,
                  isOnline: isOnline,
-                 onRemoveClick: () => { }
-
-                 
-
-                 );
-            _friendlistItems.Add( newItem );
+                 onRemoveClick: () =>
+                 {
+                     StartCoroutine(ServerManager.Instance.FriendDelete(friend._id, success =>
+                     {
+                         if (success)
+                             StartCoroutine(BuildFriendlistCoroutine(ServerManager.Instance.OnlinePlayers));
+                     }));
+                 });
+            _friendItems.Add(newItem);
         }
+    }
+    private void ClearItems(List<FriendlistItem> items)
+    {
+        foreach (var item in items)
+        {
+            if (item != null)
+            {
+                Destroy(item.gameObject);
+            }    
+        }
+        items.Clear();
     }
 
     private void UpdateOnlineFriendsCount(List<ServerOnlinePlayer> onlinePlayers, List<ServerFriendPlayer> friendList)
@@ -178,5 +194,4 @@ public class FriendlistHandler : AltMonoBehaviour
 
         _friendlistOnlineTitle.text = $"Kavereita onlinessa {onlineFriendCount}";
     }
-
 }
