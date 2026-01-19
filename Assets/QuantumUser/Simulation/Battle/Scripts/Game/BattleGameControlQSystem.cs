@@ -56,6 +56,7 @@ namespace Battle.QSimulation.Game
             BattleCollisionQSystem.Init();
             BattleGoalQSystem.Init();
             BattlePlayerClassManager.Init();
+            BattlePlayerShieldManager.Init();
             BattlePlayerMovementController.Init();
             BattlePlayerQSystem.Init();
             BattleProjectileQSystem.Init();
