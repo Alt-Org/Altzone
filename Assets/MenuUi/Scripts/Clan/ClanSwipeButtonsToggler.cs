@@ -41,14 +41,15 @@ public class ClanSwipeButtonsToggler : MonoBehaviour
     {
         if (_scrollRect == null || _clanMainView == null) return;
 
-        // 0 = vasen sivu (ClanProfile), 1 = oikea sivu (ClanMembers)
         float x = _scrollRect.horizontalNormalizedPosition;
-
         bool onProfile = x < _membersThreshold;
 
         if (onProfile == _lastOnProfile) return;
         _lastOnProfile = onProfile;
 
-        _clanMainView.SetProfileActionButtonsVisible(onProfile);
+        if (onProfile)
+            _clanMainView.SetCurrentPageToProfile();
+        else
+            _clanMainView.SetCurrentPageToMembers();
     }
 }

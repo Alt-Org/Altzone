@@ -34,9 +34,11 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] LanguageFlagImage _flagImage;
     [SerializeField] GameObject _inClanButtons;
     [SerializeField] GameObject _notInClanButtons;
+    [SerializeField] GameObject _clanMemberPageButtons;
     [SerializeField] GameObject _editViewButtons;
     [SerializeField] ClanValuePanel _valuePanel;
     [SerializeField] ClanHeartColorSetter _clanHeart;
+    [SerializeField] private ScrollRect _swipeScrollRect;
 
     [Header("Buttons")]
     [SerializeField] private Button _joinClanButton;
@@ -47,6 +49,8 @@ public class ClanMainView : MonoBehaviour
 
     private bool _isInClanCached;
     private bool _canEditCached;
+
+    private bool _isProfilePageVisible = true;
 
     [Header("pop ups")]
     [SerializeField] private ClanSearchPopup _clanPopup;
@@ -72,6 +76,15 @@ public class ClanMainView : MonoBehaviour
         }
         return null;
     }
+
+    private enum ClanPage
+    {
+        Profile,
+        Members,
+        Settings
+    }
+
+    private ClanPage _currentPage = ClanPage.Profile;
 
     //prevents multiple join requests
     private bool _isJoining;
@@ -211,8 +224,7 @@ public class ClanMainView : MonoBehaviour
             _editButton.SetActive(_canEditCached);
         }
 
-        _inClanButtons.SetActive(isInClan);
-        _notInClanButtons.SetActive(!isInClan);
+        ApplyButtonsVisibility();
 
         if (_joinClanButton != null)
         {
@@ -259,19 +271,62 @@ public class ClanMainView : MonoBehaviour
         _clanPassword.text = "";
     }
 
-    public void SetProfileActionButtonsVisible(bool visible)
+    public void SetCurrentPageToProfile()
     {
-        // ViewClans
-        if (_viewClansButton != null)
-            _viewClansButton.SetActive(visible && _isInClanCached);
+        _currentPage = ClanPage.Profile;
+        SetSwipeEnabled(true);
+        ApplyButtonsVisibility();
+    }
 
-        // LeaveClan (Button -> gameObject)
-        if (_leaveClanButton != null)
-            _leaveClanButton.gameObject.SetActive(visible && _isInClanCached);
+    public void SetCurrentPageToMembers()
+    {
+        _currentPage = ClanPage.Members;
+        SetSwipeEnabled(true);
+        ApplyButtonsVisibility();
+    }
 
-        // Edit
+    public void SetCurrentPageToSettings()
+    {
+        _currentPage = ClanPage.Settings;
+        SetSwipeEnabled(false);
+        ApplyButtonsVisibility();
+    }
+
+
+    private void ApplyButtonsVisibility()
+    {
+        bool isInClan = _isInClanCached;
+
+        // Profile page buttons only visible when profile page is visible
+        if (_inClanButtons != null)
+            _inClanButtons.SetActive(isInClan && _currentPage == ClanPage.Profile);
+
+        if (_notInClanButtons != null)
+            _notInClanButtons.SetActive(!isInClan && _currentPage == ClanPage.Profile);
+
+        // Members page buttons
+        if (_clanMemberPageButtons != null)
+            _clanMemberPageButtons.SetActive(isInClan && _currentPage == ClanPage.Members);
+
+        // Settings buttons
+        if (_editViewButtons != null)
+            _editViewButtons.SetActive(_currentPage == ClanPage.Settings);
+
+        // Makes sure edit buttons behave the right way based on profile rights
         if (_editButton != null)
-            _editButton.SetActive(visible && _canEditCached);
+            _editButton.SetActive(_canEditCached);
+    }
+
+    public void SetSwipeEnabled(bool enabled)
+    {
+        if (_swipeScrollRect == null)
+        {
+            return;
+        }
+
+        _swipeScrollRect.enabled = enabled;
+
+        _swipeScrollRect.horizontal = enabled;
     }
 
     private void Reset()
@@ -374,16 +429,8 @@ public class ClanMainView : MonoBehaviour
     public void OnClickEditClanSettings()
     {
         ShowSettingsPage();
-
-        if(_inClanButtons != null)
-        {
-           _inClanButtons.SetActive(false);
-        }
-
-        if(_editViewButtons != null)
-        {
-            _editViewButtons.SetActive(true);
-        }
+        SetCurrentPageToSettings();
+        SetSwipeEnabled(false);
     }
 
     private void ShowOverlay (bool on)

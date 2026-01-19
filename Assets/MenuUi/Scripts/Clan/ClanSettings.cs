@@ -238,12 +238,6 @@ public class ClanSettings : AltMonoBehaviour
             clanData.Values = _valueSelection.SelectedValues;
             clanData.ClanHeartPieces = _heartPieces;
 
-            if (_clanMainView != null)
-            {                
-                _clanMainView.UpdateProfileFromSettings(clanData);
-                ShowProfileTablineButtons();
-            }
-
             // These are not saved at the moment
             bool isOpen = !_clanOpenToggle.isOn;
             string password = _clanPasswordField.text;
@@ -253,7 +247,13 @@ public class ClanSettings : AltMonoBehaviour
             {
                 _saveButton.interactable = true;
                 if (success)
-                {               
+                {
+                    if (_clanMainView != null)
+                    {
+                        _clanMainView.UpdateProfileFromSettings(clanData);
+                        ShowProfileTablineButtons();
+                    }
+
                     if (!string.IsNullOrEmpty(previousPhrase) && previousPhrase != clanData.Phrase)
                         gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
 
@@ -333,6 +333,8 @@ public class ClanSettings : AltMonoBehaviour
         if (_clanMainView != null)
         {
             _clanMainView.ShowProfilePage();
+            _clanMainView.SetCurrentPageToProfile(); 
+            _clanMainView.SetSwipeEnabled(true);
         }
 
         if (_editViewButtons != null)
