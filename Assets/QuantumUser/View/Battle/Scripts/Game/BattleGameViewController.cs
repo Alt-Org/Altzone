@@ -528,10 +528,9 @@ namespace Battle.View.Game
 
             // Calling server to add wins and losses
             Utils.TryGetQuantumFrame(out Frame f);
-            string[] userIDs = BattleParameters.GetPlayerSlotUserIDs(f);
             StartCoroutine(ServerManager.Instance.BattleSendResult
             (
-                userIDs,
+                BattleParameters.GetPlayerSlotUserIDs(f),
                 (int)e.WinningTeam,
                 (float)e.GameLengthSec,
                 success =>
