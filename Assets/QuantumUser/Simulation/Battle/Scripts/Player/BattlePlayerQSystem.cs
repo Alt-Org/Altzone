@@ -124,7 +124,7 @@ namespace Battle.QSimulation.Player
             if (!playerShieldData->IsActive) return;
             if (projectileCollisionData->Projectile->IsHeld) return;
 
-            BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntity);
+            BattlePlayerDataQComponent* damagedPlayerData = playerShieldData->PlayerEntity.GetDataQComponent(f);
             FP damageTaken = projectileCollisionData->Projectile->Attack;
 
             BattleProjectileQSystem.SetAttack(f, projectileCollisionData->Projectile, damagedPlayerData->Stats.Attack);
