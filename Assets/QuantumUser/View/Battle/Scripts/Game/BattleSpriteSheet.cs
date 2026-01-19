@@ -1,6 +1,10 @@
+
+// System usings
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+
+// Unity usings
 using UnityEditor;
 using UnityEngine;
 
@@ -10,7 +14,6 @@ namespace Battle.View
     public struct BattleSpriteSheet
     {
         public Sprite[] Array;
-        public Sprite ReferenceSprite;
     }
 
     [CustomPropertyDrawer(typeof(BattleSpriteSheet))]
@@ -20,7 +23,6 @@ namespace Battle.View
         {
             //Get BattleSpriteSheet struct values as properties
             SerializedProperty spritePropertyArray = property.FindPropertyRelative("Array");
-            SerializedProperty spriteReference = property.FindPropertyRelative("ReferenceSprite");
 
             if (_spriteIndexRegexPattern == null)
             {
@@ -29,48 +31,52 @@ namespace Battle.View
 
             // UI
 
-            EditorGUI.BeginProperty(rect, label, property);
-
-            EditorGUI.LabelField(rect, string.Format("{0}: {1}", label.text, _currentSpriteSheetPath));
-
             //Draw property field for reference sprite only when array is empty
             if (spritePropertyArray.arraySize == 0)
             {   
                 EditorGUI.BeginChangeCheck();
-
-                spriteReference.objectReferenceValue = null;
-
+                _referenceSprite = null;
+                _currentSpriteSheetPath = string.Empty;
+                EditorGUI.LabelField(rect, string.Format("{0}: {1}", label.text, _currentSpriteSheetPath));
+                EditorGUILayout.BeginHorizontal();
                 EditorGUI.indentLevel++;
-                EditorGUILayout.PropertyField(spriteReference, new GUIContent("Reference Sprite"));
+                EditorGUILayout.PrefixLabel("Reference Sprite");
                 EditorGUI.indentLevel--;
+                _referenceSprite = (Sprite)EditorGUILayout.ObjectField(_referenceSprite, typeof(Sprite), false);
+                
+                EditorGUILayout.EndHorizontal();
 
                 if (EditorGUI.EndChangeCheck())
                 {
-                    HandlePlayerSpriteSheetProperty(property, spritePropertyArray, spriteReference);
+                    HandlePlayerSpriteSheetProperty(property, spritePropertyArray, _referenceSprite);
                 }
             }
             else
             {
-                HandlePlayerSpriteSheetProperty(property, spritePropertyArray, spriteReference);
+                if (_currentSpriteSheetPath == string.Empty)
+                {
+                    _currentSpriteSheetPath = GetPath((Sprite)spritePropertyArray.GetArrayElementAtIndex(0).objectReferenceValue);
+                }
+                EditorGUI.LabelField(rect, string.Format("{0}: {1}", label.text, _currentSpriteSheetPath));
+                HandlePlayerSpriteSheetProperty(property, spritePropertyArray, _referenceSprite);
                 EditorGUI.indentLevel++;
                 EditorGUILayout.PropertyField(spritePropertyArray, new GUIContent("Sprites"), true);
                 EditorGUI.indentLevel--;
             }
-            EditorGUI.EndProperty();
         }
 
-        private string _currentSpriteSheetPath = null;
+        private string _currentSpriteSheetPath = string.Empty;
         private Regex _spriteIndexRegexPattern;
+        private Sprite _referenceSprite;
 
-        private void HandlePlayerSpriteSheetProperty(SerializedProperty property, SerializedProperty spritePropertyArray, SerializedProperty spriteReference)
+        private void HandlePlayerSpriteSheetProperty(SerializedProperty property, SerializedProperty spritePropertyArray, Sprite spriteReference)
         {
             string currentSpriteSheetPathCopy = _currentSpriteSheetPath;
-            _currentSpriteSheetPath = null;
+            _currentSpriteSheetPath = string.Empty;
 
             // get spritesheet path
-            Sprite firstSprite = (Sprite)spriteReference.objectReferenceValue;
-            if (firstSprite == null) return;
-            string spriteSheetPath = AssetDatabase.GetAssetPath(firstSprite);
+            if (spriteReference == null) return;
+            string spriteSheetPath = GetPath(spriteReference);
 
             _currentSpriteSheetPath = currentSpriteSheetPathCopy;
 
@@ -93,6 +99,10 @@ namespace Battle.View
                 spritePropertyArray.GetArrayElementAtIndex(i).objectReferenceValue = sprite;
                 i++;
             }
+        }
+        private string GetPath(Sprite sprite)
+        {
+            return AssetDatabase.GetAssetPath(sprite);
         }
     }
 }
