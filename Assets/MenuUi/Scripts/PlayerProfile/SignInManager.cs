@@ -87,13 +87,12 @@ namespace MenuUi.Scripts.Login
             if (ServerManager.Instance.Player == null)
             {
                 backButton.gameObject.SetActive(false);
-                backButton2.gameObject.SetActive(false);
             }
             else
             {
                 backButton.gameObject.SetActive(true);
-                backButton2.gameObject.SetActive(true);
             }
+            backButton2.gameObject.SetActive(true);
             if (SceneManager.GetActiveScene().buildIndex == 0)
             {
                 backButton.onClick.RemoveAllListeners();
