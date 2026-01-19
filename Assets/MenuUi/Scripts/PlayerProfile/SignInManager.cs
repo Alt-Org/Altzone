@@ -138,6 +138,7 @@ namespace MenuUi.Scripts.Login
             if (guest)
             {
                 body = "{\"username\":\"Angel42\",\"password\":\"PRIbXCI9d)Z0UoHP\"}";
+
             }
             else
             {
@@ -146,13 +147,16 @@ namespace MenuUi.Scripts.Login
                 if (_logInUsernameInputField.text == string.Empty || _logInPasswordInputField.text == string.Empty)
                 {
                     ShowMessage(ERROR_EMPTY_FIELD, Color.red);
-                    if(_logInUsernameInputField.text == string.Empty) _logInUsernameInputFieldError.gameObject.SetActive(true);
+                    if (_logInUsernameInputField.text == string.Empty) _logInUsernameInputFieldError.gameObject.SetActive(true);
                     else _logInPasswordInputFieldError.gameObject.SetActive(true);
                     return;
                 }
-
-                body = "{\"username\":\"" + _logInUsernameInputField.text + "\",\"password\":\"" + _logInPasswordInputField.text + "\"}";
+                ServerLogIn(_logInUsernameInputField.text, _logInPasswordInputField.text);
             }
+        }
+        private void ServerLogIn(string username, string password) {
+            string body = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}";
+
             StartCoroutine(WebRequests.Post(ServerManager.SERVERADDRESS + "auth/signIn", body, null, request =>
             {
                 if (request.result != UnityWebRequest.Result.Success)
@@ -185,7 +189,7 @@ namespace MenuUi.Scripts.Login
                 // Parses user info and sends it to ServerManager
                 Debug.Log("Log in successful!");
                     JObject result = JObject.Parse(request.downloadHandler.text);
-                    Debug.Log(request.downloadHandler.text);
+                    //Debug.Log(request.downloadHandler.text);
                     if(ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
                     ServerManager.Instance.SetProfileValues(result);
                     GameConfig.Get().GameVersionType = VersionType.Education;
@@ -263,7 +267,7 @@ namespace MenuUi.Scripts.Login
 
 
             string body = @$"{{""username"":""{_registerUsernameInputField.text}"",""password"":""{_registerPasswordInputField.text}"",
-                ""Player"":{{""name"":""{username}"",""uniqueIdentifier"":""{username}"",
+                ""Player"":{{""name"":""{username}"",""backpackCapacity"":{255},""uniqueIdentifier"":""{username}"",
                     ""above13"":{_registerAgeVerificationToggle.isOn.ToString().ToLower()},""parentalAuth"":{_registerParentalAuthToggle.isOn.ToString().ToLower()}}}}}";
             StartCoroutine(WebRequests.Post(ServerManager.SERVERADDRESS + "profile", body, null, request =>
             {
@@ -290,23 +294,14 @@ namespace MenuUi.Scripts.Login
                 else
                 {
                     Debug.Log("Registering successful!");
+                    string username = _registerUsernameInputField.text;
+                    string password = _registerPasswordInputField.text;
                     _returnToSignInScreenButton.onClick.Invoke();
                     ShowMessage(REGISTERING_SUCCESS, Color.green);
                     JObject result = JObject.Parse(request.downloadHandler.text);
-                    Debug.Log(request.downloadHandler.text);
+                    //Debug.Log(request.downloadHandler.text);
                     if (ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
-                    ServerManager.Instance.SetProfileValues(result);
-                    GameConfig.Get().GameVersionType = VersionType.Education;
-                    if (_autoLoginToggle.IsOn)
-                    {
-                        PlayerPrefs.SetInt("AutomaticLogin", 1);
-                    }
-                    else
-                    {
-                        PlayerPrefs.SetInt("AutomaticLogin", 0);
-                    }
-                    _returnToMainMenuButton.onClick.Invoke();
-
+                    ServerLogIn(username, password);
                 }
 
                 _registerButton.interactable = true;
