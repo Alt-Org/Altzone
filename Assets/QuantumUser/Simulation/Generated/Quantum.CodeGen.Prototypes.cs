@@ -277,7 +277,7 @@ namespace Quantum.Prototypes {
     public MapEntityId CharacterHitboxEntity;
     public Int32 ShieldCount;
     public Int32 AttachedShieldNumber;
-    public MapEntityId AttachedShield;
+    public Quantum.Prototypes.BattlePlayerEntityRefPrototype AttachedShield;
     public QBoolean DisableRotation;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
     public FP MovementCooldownSec;
@@ -306,7 +306,7 @@ namespace Quantum.Prototypes {
         PrototypeValidator.FindMapEntity(this.CharacterHitboxEntity, in context, out result.CharacterHitboxEntity);
         result.ShieldCount = this.ShieldCount;
         result.AttachedShieldNumber = this.AttachedShieldNumber;
-        PrototypeValidator.FindMapEntity(this.AttachedShield, in context, out result.AttachedShield);
+        this.AttachedShield.Materialize(frame, ref result.AttachedShield, in context);
         result.DisableRotation = this.DisableRotation;
         this.DamageCooldown.Materialize(frame, ref result.DamageCooldown, in context);
         result.MovementCooldownSec = this.MovementCooldownSec;
@@ -333,6 +333,14 @@ namespace Quantum.Prototypes {
         this.HitboxCharacter.Materialize(frame, ref result.HitboxCharacter, in context);
         result.DisableRotation = this.DisableRotation;
         MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerEntityRef))]
+  public unsafe class BattlePlayerEntityRefPrototype : StructPrototype {
+    public MapEntityId ERef;
+    public void Materialize(Frame frame, ref Quantum.BattlePlayerEntityRef result, in PrototypeMaterializationContext context = default) {
+        PrototypeValidator.FindMapEntity(this.ERef, in context, out result.ERef);
     }
   }
   [System.SerializableAttribute()]
@@ -463,7 +471,7 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerShieldDataQComponent))]
   public unsafe class BattlePlayerShieldDataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerShieldDataQComponent> {
-    public MapEntityId PlayerEntity;
+    public Quantum.Prototypes.BattlePlayerEntityRefPrototype PlayerEntity;
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
     public MapEntityId[] HitboxEntities = {};
@@ -474,7 +482,7 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattlePlayerShieldDataQComponent result, in PrototypeMaterializationContext context = default) {
-        PrototypeValidator.FindMapEntity(this.PlayerEntity, in context, out result.PlayerEntity);
+        this.PlayerEntity.Materialize(frame, ref result.PlayerEntity, in context);
         if (this.HitboxEntities.Length == 0) {
           result.HitboxEntities = default;
         } else {
@@ -512,6 +520,14 @@ namespace Quantum.Prototypes {
           }
         }
         MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerShieldEntityRef))]
+  public unsafe class BattlePlayerShieldEntityRefPrototype : StructPrototype {
+    public MapEntityId ERef;
+    public void Materialize(Frame frame, ref Quantum.BattlePlayerShieldEntityRef result, in PrototypeMaterializationContext context = default) {
+        PrototypeValidator.FindMapEntity(this.ERef, in context, out result.ERef);
     }
   }
   [System.SerializableAttribute()]

@@ -112,7 +112,7 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.QuantumEntityPrototype CharacterHitboxEntity;
     public Int32 ShieldCount;
     public Int32 AttachedShieldNumber;
-    public Quantum.QuantumEntityPrototype AttachedShield;
+    public Quantum.Prototypes.Unity.BattlePlayerEntityRefPrototype AttachedShield;
     public QBoolean DisableRotation;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
     public FP MovementCooldownSec;
@@ -149,6 +149,17 @@ namespace Quantum.Prototypes.Unity {
     }
   }
   [System.SerializableAttribute()]
+  public unsafe partial class BattlePlayerEntityRefPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerEntityRefPrototype> {
+    public Quantum.QuantumEntityPrototype ERef;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerEntityRefPrototype prototype);
+    public override Quantum.Prototypes.BattlePlayerEntityRefPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.BattlePlayerEntityRefPrototype();
+      converter.Convert(this.ERef, out result.ERef);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
   public unsafe partial class BattlePlayerHitboxQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerHitboxQComponentPrototype> {
     public Quantum.QuantumEntityPrototype ParentEntity;
     public Quantum.QEnum32<BattlePlayerHitboxType> HitboxType;
@@ -171,7 +182,7 @@ namespace Quantum.Prototypes.Unity {
   }
   [System.SerializableAttribute()]
   public unsafe partial class BattlePlayerShieldDataQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerShieldDataQComponentPrototype> {
-    public Quantum.QuantumEntityPrototype PlayerEntity;
+    public Quantum.Prototypes.Unity.BattlePlayerEntityRefPrototype PlayerEntity;
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
     public Quantum.QuantumEntityPrototype[] HitboxEntities = {};
@@ -182,6 +193,17 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.PlayerEntity, out result.PlayerEntity);
       converter.Convert(this.HitboxEntities, out result.HitboxEntities);
       converter.Convert(this.IsActive, out result.IsActive);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
+  public unsafe partial class BattlePlayerShieldEntityRefPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerShieldEntityRefPrototype> {
+    public Quantum.QuantumEntityPrototype ERef;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerShieldEntityRefPrototype prototype);
+    public override Quantum.Prototypes.BattlePlayerShieldEntityRefPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.BattlePlayerShieldEntityRefPrototype();
+      converter.Convert(this.ERef, out result.ERef);
       ConvertUser(converter, ref result);
       return result;
     }
