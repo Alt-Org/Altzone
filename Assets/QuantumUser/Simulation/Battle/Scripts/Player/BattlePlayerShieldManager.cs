@@ -60,13 +60,22 @@ namespace Battle.QSimulation.Player
         /// <param name="playerCharacterNumber">The character number of the specified character.</param>
         /// <param name="playerCharacterId">The ID of the specified character.</param>
         /// <param name="playerCharacterEntity">EntityRef to the speficied character's entity.</param>
-        public static int CreateShields(Frame f, BattlePlayerSlot playerSlot, int playerCharacterNumber, int playerCharacterId, EntityRef playerCharacterEntity)
+        public static int CreateShields(Frame f, BattlePlayerSlot playerSlot, int playerCharacterNumber, int playerCharacterId, BattlePlayerEntityRef playerCharacterEntity)
         {
+            s_debugLogger.LogFormat(f, "({0}) Creating shields for character ID {1}", playerSlot, playerCharacterId);
+
             // get entity prototypes
             AssetRef<EntityPrototype>[] playerShieldEntityPrototypes = BattleAltzoneLink.GetShieldPrototypes(playerCharacterId);
             if (playerShieldEntityPrototypes.Length < 1)
             {
-                playerShieldEntityPrototypes = BattleAltzoneLink.GetShieldPrototypes(0);
+                const int FallbackId = 0;
+
+                s_debugLogger.ErrorFormat(f, "({0}) Failed to fetch shield entity prototype array for character ID {1}\nUsing fallback ID {2}", playerSlot, playerCharacterId, FallbackId);
+
+                playerCharacterId = FallbackId;
+                playerShieldEntityPrototypes = BattleAltzoneLink.GetShieldPrototypes(playerCharacterId);
+
+                s_debugLogger.LogFormat(f, "({0}) Creating fallback shields for character ID {1}\n", playerSlot, playerCharacterId);
             }
 
             EntityRef[] shieldEntities = new EntityRef[playerShieldEntityPrototypes.Length];
@@ -141,7 +150,7 @@ namespace Battle.QSimulation.Player
                     // initialize hitbox component
                     BattlePlayerHitboxQComponent playerHitbox = new()
                     {
-                        ParentEntity       = playerCharacterEntity,
+                        ParentEntity       = playerShieldEntity,
                         HitboxType         = playerHitboxType,
                         CollisionType      = playerHitboxCollisionType,
                         Normal             = playerHitboxNormal,
@@ -194,12 +203,12 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Retrieves a shield entity based on given <paramref name="shieldNumber"/> for specified player's specified character.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerSlot">Slot of the specified player.</param>
         /// <param name="characterNumber">The character number of the specified character.</param>
         /// <param name="shieldNumber">The shield number of the shield to be retrieved.</param>
-        /// 
+        ///
         /// <returns>EntityRef of the retrieved shield entity.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static EntityRef GetShieldEntity(Frame f, BattlePlayerSlot playerSlot, int characterNumber, int shieldNumber)
@@ -212,7 +221,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Despawns the given shield entity based on given <paramref name="shieldNumber"/> for specified player's specified character.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerSlot">Slot of the specified player.</param>
         /// <param name="characterNumber">The character number of the specified character.</param>
@@ -228,12 +237,12 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Verifies that the given <paramref name="shieldNumber"/> is valid for specified player's specified character.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerSlot">Slot of the specified player.</param>
         /// <param name="characterNumber">The character number of the specified character.</param>
         /// <param name="shieldNumber">The shield number to be verified.</param>
-        /// 
+        ///
         /// <returns>True if the shield number is valid, false if it isn't.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsValidShieldNumber(Frame f, BattlePlayerSlot playerSlot, int characterNumber, int shieldNumber)
@@ -257,7 +266,7 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Sets the shield entity IDs for specified player's specified character in BattlePlayerShieldManagerDataQSingleton.
         /// </summary>
-        /// 
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerSlot">Slot of the specified player.</param>
         /// <param name="characterNumber">The character number of the specified character.</param>
@@ -272,10 +281,10 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Retrieves the index in BattlePlayerShieldManagerDataQSingleton of the shield entity group for a specified player character.
         /// </summary>
-        /// 
+        ///
         /// <param name="playerSlot">The BattlePlayerSlot of the specified player.</param>
         /// <param name="characterNumber">The character number of the specified character.</param>
-        /// 
+        ///
         /// <returns>The index in BattlePlayerShieldManagerDataQSingleton for the specified shield.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetShieldGroupIndex(BattlePlayerSlot playerSlot, int characterNumber)
