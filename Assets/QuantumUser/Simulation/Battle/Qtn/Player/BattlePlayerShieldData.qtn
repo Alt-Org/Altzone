@@ -1,6 +1,11 @@
+struct BattlePlayerShieldEntityRef
+{
+    EntityRef ERef;
+}
+
 component BattlePlayerShieldDataQComponent
 {
-    EntityRef PlayerEntity;
+    BattlePlayerEntityRef PlayerEntity;
     [FreeOnComponentRemoved] list<EntityRef> HitboxEntities;
     bool IsActive;
 }
