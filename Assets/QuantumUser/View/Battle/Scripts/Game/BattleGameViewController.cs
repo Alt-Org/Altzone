@@ -534,9 +534,9 @@ namespace Battle.View.Game
                 userIDs,
                 (int)e.WinningTeam,
                 (float)e.GameLengthSec,
-                c =>
+                success =>
                 {
-                    if (!c) Debug.LogError(message: "Sending messsage failed.");
+                    if (!success) _debugLogger.Error("Sending battle result failed.");
                 }
             ));
         }
