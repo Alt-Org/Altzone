@@ -2209,6 +2209,7 @@ GameObject:
   - component: {fileID: 2533684272134524848}
   - component: {fileID: 7392303919396471171}
   - component: {fileID: 2291731349468919962}
+  - component: {fileID: 9137881020858649391}
   m_Layer: 5
   m_Name: JukeboxButton
   m_TagString: Untagged
@@ -2347,6 +2348,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _openJukeboxPopupButton: {fileID: 2533684272134524848}
   _jukeboxSoulhomeHandler: {fileID: 1612773304301820197}
+--- !u!114 &9137881020858649391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908832541426885941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioCategory: 
+  _categoryType: 1
+  _audioName: Select
+  _playType: 0
 --- !u!1001 &17802412149514979
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6243,16 +6260,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2029361718019638718, guid: 2b466a82077db8746ac58e93b935af12,
         type: 3}
-      propertyPath: _audioName
-      value: ButtonClick
-      objectReference: {fileID: 0}
-    - target: {fileID: 2029361718019638718, guid: 2b466a82077db8746ac58e93b935af12,
-        type: 3}
-      propertyPath: _audioCategory
-      value: Soulhome
-      objectReference: {fileID: 0}
-    - target: {fileID: 2029361718019638718, guid: 2b466a82077db8746ac58e93b935af12,
-        type: 3}
       propertyPath: _audioPlayType
       value: 1
       objectReference: {fileID: 0}
@@ -6346,21 +6353,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4717476275841633432, guid: 2b466a82077db8746ac58e93b935af12,
-        type: 3}
-      propertyPath: _audioName
-      value: ButtonClick
-      objectReference: {fileID: 0}
-    - target: {fileID: 4717476275841633432, guid: 2b466a82077db8746ac58e93b935af12,
-        type: 3}
-      propertyPath: _audioCategory
-      value: Soulhome
-      objectReference: {fileID: 0}
-    - target: {fileID: 4717476275841633432, guid: 2b466a82077db8746ac58e93b935af12,
-        type: 3}
-      propertyPath: _audioPlayType
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4983552070814566051, guid: 2b466a82077db8746ac58e93b935af12,
         type: 3}
       propertyPath: m_IsActive
@@ -6375,21 +6367,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5261544752714665862, guid: 2b466a82077db8746ac58e93b935af12,
-        type: 3}
-      propertyPath: _audioName
-      value: ButtonClick
-      objectReference: {fileID: 0}
-    - target: {fileID: 5261544752714665862, guid: 2b466a82077db8746ac58e93b935af12,
-        type: 3}
-      propertyPath: _audioCategory
-      value: Soulhome
-      objectReference: {fileID: 0}
-    - target: {fileID: 5261544752714665862, guid: 2b466a82077db8746ac58e93b935af12,
-        type: 3}
-      propertyPath: _audioPlayType
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5372554829396458065, guid: 2b466a82077db8746ac58e93b935af12,
         type: 3}
@@ -6530,21 +6507,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7854154580216516761, guid: 2b466a82077db8746ac58e93b935af12,
-        type: 3}
-      propertyPath: _audioName
-      value: ButtonClick
-      objectReference: {fileID: 0}
-    - target: {fileID: 7854154580216516761, guid: 2b466a82077db8746ac58e93b935af12,
-        type: 3}
-      propertyPath: _audioCategory
-      value: Soulhome
-      objectReference: {fileID: 0}
-    - target: {fileID: 7854154580216516761, guid: 2b466a82077db8746ac58e93b935af12,
-        type: 3}
-      propertyPath: _audioPlayType
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7904743196435264038, guid: 2b466a82077db8746ac58e93b935af12,
         type: 3}
@@ -6873,6 +6835,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0.00000022874929
       objectReference: {fileID: 0}
+    - target: {fileID: 2756944372282398758, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2763540142445947752, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -6901,6 +6868,11 @@ PrefabInstance:
     - target: {fileID: 3119007117273634236, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
         type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3497087909407160541, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
+        type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3552932280517398448, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
@@ -6933,10 +6905,25 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: -0.000000061758286
       objectReference: {fileID: 0}
+    - target: {fileID: 4633130233667892654, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4693645207032551337, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
         type: 3}
       propertyPath: m_fontSize
       value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 4717476275841633432, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
+        type: 3}
+      propertyPath: _audioName
+      value: Select
+      objectReference: {fileID: 0}
+    - target: {fileID: 4717476275841633432, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
+        type: 3}
+      propertyPath: _categoryType
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5066002122027081596, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
         type: 3}
@@ -6947,6 +6934,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0.00000053316626
+      objectReference: {fileID: 0}
+    - target: {fileID: 5261544752714665862, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
+        type: 3}
+      propertyPath: _playType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5261544752714665862, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
+        type: 3}
+      propertyPath: _audioName
+      value: Select
+      objectReference: {fileID: 0}
+    - target: {fileID: 5261544752714665862, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
+        type: 3}
+      propertyPath: _categoryType
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5372554829396458065, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
         type: 3}
@@ -7072,6 +7074,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0.0000000954775
+      objectReference: {fileID: 0}
+    - target: {fileID: 7854154580216516761, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
+        type: 3}
+      propertyPath: _audioName
+      value: Select
+      objectReference: {fileID: 0}
+    - target: {fileID: 7854154580216516761, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
+        type: 3}
+      propertyPath: _categoryType
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7904743196435264038, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
         type: 3}
@@ -7206,7 +7218,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4983552070814566051, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5360465491456206681}
   m_SourcePrefab: {fileID: 100100000, guid: 9f8fd4e6b25edd844b82a9e4e439964b, type: 3}
 --- !u!224 &2050219588079800057 stripped
 RectTransform:
@@ -7214,6 +7230,28 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 7624829084342696878}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &3240893618168315149 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4983552070814566051, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
+    type: 3}
+  m_PrefabInstance: {fileID: 7624829084342696878}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5360465491456206681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3240893618168315149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioCategory: 
+  _categoryType: 1
+  _audioName: Select
+  _playType: 0
 --- !u!1 &4577580592792886996 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6221160951982613882, guid: 9f8fd4e6b25edd844b82a9e4e439964b,

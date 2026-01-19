@@ -185,7 +185,7 @@ List of current aliases
     Creates a link to the specified **Directory** with arbitrary text.  
     Formatted as such: \"<span class="fake-link">link text</span>\"
 
-**Code symbol reference commands**
+**Code symbol reference / link commands**
 - **cref**  
   - Basic reference  
     <span class="tt">@@cref{namespace.example.name}</span>  
@@ -204,6 +204,11 @@ List of current aliases
     <span class="tt">@@crefd{namespace.example,name}</span>  
     Creates a link to the specified **Code symbol**. **Shortens** the resulting text by only showing the part **after** the comma `,`. **Adds a dot** '.' to the **end** of the resulting text.  
     Formatted as such: \"<span class="fake-link">name.</span>\"
+- **clink**
+  -  **Code symbol** link  
+    <span class="tt">@@clink{link text:namespace.example}</span>  
+    Creates a link to the specified **Code symbol** with arbitrary text.  
+    Formatted as such: \"<span class="fake-link">link text</span>\"
 
 <br/>
 

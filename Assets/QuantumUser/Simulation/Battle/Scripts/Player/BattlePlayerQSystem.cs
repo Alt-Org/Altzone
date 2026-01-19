@@ -14,7 +14,6 @@ using Photon.Deterministic;
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Projectile;
-using Battle.QSimulation.SoulWall;
 
 namespace Battle.QSimulation.Player
 {
@@ -125,6 +124,8 @@ namespace Battle.QSimulation.Player
             BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
             FP damageTaken = projectileCollisionData->Projectile->Attack;
 
+            HandleShieldSFX(f, damagedPlayerData->CharacterId);
+
             BattleProjectileQSystem.SetAttack(f, projectileCollisionData->Projectile, damagedPlayerData->Stats.Attack);
 
             int characterNumber = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber;
@@ -218,6 +219,21 @@ namespace Battle.QSimulation.Player
             else if (!playerHandle.IsAbandoned)
             {
                 input = f.GetPlayerInput(playerHandle.PlayerRef);
+
+                BattleInputDebugUtils.InputDebugInfo inputDebugInfo = BattleInputDebugUtils.GenerateDebugInfo(input);
+
+                if (inputDebugInfo.NotEmpty)
+                {
+                    s_debugLogger.LogFormat(f,
+                                            "({0}) Received input ({1}) ({2})\n" +
+                                            "struct: {3}",
+                                            playerHandle.Slot,
+                                            input->DebugNumber,
+                                            inputDebugInfo.Summary,
+                                            inputDebugInfo.Struct
+                    );
+                }
+
                 isValid = input->IsValid;
             }
 
@@ -289,6 +305,17 @@ namespace Battle.QSimulation.Player
 
             BattleGameControlQSystem.OnGameOver(f, winningTeam);
             return true;
+        }
+
+        /// <summary>
+        /// Private helper method for playing the appropriate Shield Hit sound effect based on character ID
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame</param>
+        /// <param name="charactedID">ID value of the current character in play</param>
+        private static void HandleShieldSFX(Frame f, int characterID)
+        {
+            f.Events.BattlePlaySoundFX((BattleSoundFX)characterID);
         }
 
         /// <summary>

@@ -294,6 +294,8 @@ namespace Battle.QSimulation.Projectile
                     BattleCollisionQSystem.PlayerShieldCollisionData* dataPtr = (BattleCollisionQSystem.PlayerShieldCollisionData*)data;
                     BattlePlayerHitboxQComponent* playerShieldHitbox = dataPtr->PlayerShieldHitbox;
 
+                    if (FPVector2.Dot(playerShieldHitbox->Normal, projectile->Direction.Normalized) >= 0) break;
+
                     if (!ProjectileHitPlayerShield(f, projectile, dataPtr, out normal)) break;
                     
                     collisionType      = playerShieldHitbox->CollisionType;

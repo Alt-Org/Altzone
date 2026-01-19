@@ -1,14 +1,6 @@
 //{ Game Flow events - View Pre-Activate
 
-struct BattleWaitForPlayersData
-{
-    array<QString<64>>[BATTLE_PLAYER_SLOT_COUNT] PlayerNames;
-}
-
-synced event BattleViewWaitForPlayers
-{
-    BattleWaitForPlayersData Data;
-}
+synced event BattleViewWaitForPlayers {}
 
 synced event BattleViewPlayerConnected
 {
@@ -145,12 +137,6 @@ synced event BattleGiveUpStateChange
 //} Gameplay events
 
 //{ Debug events
-
-synced event BattleDebugUpdateStatsOverlay
-{
-    BattlePlayerSlot Slot;
-    BattlePlayerStats Stats;
-}
 
 synced event BattleDebugOnScreenMessage
 {

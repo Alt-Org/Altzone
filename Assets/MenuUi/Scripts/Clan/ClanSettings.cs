@@ -120,8 +120,6 @@ public class ClanSettings : AltMonoBehaviour
             _clanPassword.SetActive(!clan.IsOpen);
 
             // Rules init
-            //List<string> rules = clan.Rules ?? new List<string>();
-
             string rule1 = clan.Rules.Count > 0 ?
             _rule1Text.text = ClanDataTypeConverter.GetRulesText(clan.Rules[0]) : string.Empty;
             string rule2 = clan.Rules.Count > 1 ?
@@ -133,9 +131,6 @@ public class ClanSettings : AltMonoBehaviour
             _rule2Text.text = rule2;
             _rule3Text.text = rule3;
 
-            /*_rule1Input.text = rule1;
-            _rule2Input.text = rule2;
-            _rule3Input.text = rule3;*/
             _ruleSelection.SetSelected(clan.Rules);
             _rulesPopup.SetActive(false);
 
@@ -157,11 +152,6 @@ public class ClanSettings : AltMonoBehaviour
             _selectedValues = clan.Values;
 
             // Heart init
-            /*clan.ClanHeartPieces ??= new();
-            _heartPieces = clan.ClanHeartPieces;
-            _heartColorChanger.InitializeClanHeart(_heartPieces);
-            _heartColorSetter.SetHeartColors(_heartPieces);*/
-
             clan.ClanHeartPieces ??= new();
             _heartPieces = clan.ClanHeartPieces;
 

@@ -143,13 +143,49 @@ namespace Quantum {
     SoulWallHit,
     GoalHit,
     SideWallHit,
-    WallBroken,
+    SoulWallBroken,
     DiamondPickUp,
     SoulWallHitAggression,
     SoulWallHitJoy,
     SoulWallHitLove,
     SoulWallHitPlayful,
     SoulWallHitSadness,
+    PlayerCharacterRacistShieldHit = 101,
+    PlayerCharacterBodybuilderShieldHit = 102,
+    PlayerCharacterWarVeteranShieldHit = 103,
+    PlayerCharacterBullyShieldHit = 104,
+    PlayerCharacterEgoistShieldHit = 105,
+    PlayerCharacterDepressedShieldHit = 106,
+    PlayerCharacterComedianShieldHit = 201,
+    PlayerCharacterJokerShieldHit = 202,
+    PlayerCharacterConmanShieldHit = 203,
+    PlayerCharacterSeducerShieldHit = 204,
+    PlayerCharacterReligiousShieldHit = 301,
+    PlayerCharacterYesmanShieldHit = 302,
+    PlayerCharacterSlaveOfTheLawShieldHit = 303,
+    PlayerCharacterFashionSlaveShieldHit = 304,
+    PlayerCharacterMammasBoyShieldHit = 305,
+    PlayerCharacterSuperstitiousShieldHit = 306,
+    PlayerCharacterArtistShieldHit = 401,
+    PlayerCharacterArguerShieldHit = 402,
+    PlayerCharacterReflectorShieldHit = 403,
+    PlayerCharacterDelusionalShieldHit = 404,
+    PlayerCharacterOvereaterShieldHit = 501,
+    PlayerCharacterAlcoholicShieldHit = 502,
+    PlayerCharacterAnorecticShieldHit = 503,
+    PlayerCharacterStonerShieldHit = 504,
+    PlayerCharacterMartyrShieldHit = 505,
+    PlayerCharacterSuicidalShieldHit = 506,
+    PlayerCharacterSoulsistersShieldHit = 601,
+    PlayerCharacterLoversShieldHit = 602,
+    PlayerCharacterSleepyHeadShieldHit = 603,
+    PlayerCharacterTribalistShieldHit = 604,
+    PlayerCharacterGangBangerShieldHit = 605,
+    PlayerCharacterBooksmartShieldHit = 701,
+    PlayerCharacterCapitalistShieldHit = 702,
+    PlayerCharacterObsessiveCompulsiveShieldHit = 703,
+    PlayerCharacterOvercompilatorShieldHit = 704,
+    PlayerCharacterNitpickerShieldHit = 705,
   }
   public enum BattleTeamNumber : int {
     NoTeam = 0,
@@ -588,72 +624,6 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
-  [System.SerializableAttribute()]
-  public unsafe partial struct QString64 : IQString, System.IEquatable<QString64> {
-    public const Int32 SIZE = 64;
-    public const Int32 ALIGNMENT = 4;
-    [FieldOffset(0)]
-    public UInt16 ByteCount;
-    [FieldOffset(2)]
-    [FixedBufferDynamicLength("ByteCount")]
-    public fixed Byte Bytes[62];
-    public const int MaxByteCount = 62;
-    public QString64(String str) {
-      QString.ConstructFrom(str, MaxByteCount, out this);
-    }
-    public int Length {
-      get {
-        return QString.GetLength(ref this);
-      }
-    }
-    public override System.String ToString() {
-      return QString.GetString(ref this);
-    }
-    public static Boolean CanHold(String str) {
-      return QString.CanHold(str, MaxByteCount);
-    }
-    Int32 IQString.CompareOrdinal(byte* bytes, UInt16 byteCount) {
-      return QString.CompareOrdinal(ref this, bytes, byteCount);
-    }
-    public Int32 CompareOrdinal(String str) {
-      return QString.CompareOrdinal(ref this, str);
-    }
-    public static implicit operator QString64(String str) {
-      return new QString64(str);
-    }
-    public static implicit operator String(QString64 str) {
-      return str.ToString();
-    }
-    public override Boolean Equals(Object obj) {
-      return QString.AreEqual(ref this, obj);
-    }
-    public Boolean Equals(QString64 str) {
-      return QString.CompareOrdinal(ref this, str.Bytes, str.ByteCount) == 0;
-    }
-    public Boolean Equals<T>(ref T str)
-      where T : unmanaged, IQString {
-      return QString.CompareOrdinal(ref this, ref str) == 0;
-    }
-    public Int32 CompareOrdinal<T>(ref T str)
-      where T : unmanaged, IQString {
-      return QString.CompareOrdinal(ref this, ref str);
-    }
-    public override Int32 GetHashCode() {
-      unchecked { 
-        var hash = 13649;
-        hash = hash * 31 + ByteCount.GetHashCode();
-        fixed (Byte* p = Bytes) hash = hash * 31 + HashCodeUtils.GetArrayHashCode(p, this.ByteCount);
-        return hash;
-      }
-    }
-    public static void Serialize(void* ptr, FrameSerializer serializer) {
-        var p = (QString64*)ptr;
-        serializer.Stream.Serialize(&p->ByteCount);
-        Assert.Always(p->ByteCount <= 62, p->ByteCount);
-        serializer.Stream.SerializeBuffer(&p->Bytes[0], p->ByteCount);
-    }
-  }
-  [StructLayout(LayoutKind.Explicit)]
   [Serializable()]
   public unsafe partial struct BattleGridPosition {
     public const Int32 SIZE = 8;
@@ -793,59 +763,38 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
-  public unsafe partial struct BattleWaitForPlayersData {
-    public const Int32 SIZE = 256;
-    public const Int32 ALIGNMENT = 4;
-    [FieldOffset(0)]
-    [FramePrinter.FixedArrayAttribute(typeof(QString64), 4)]
-    private fixed Byte _PlayerNames_[256];
-    public FixedArray<QString64> PlayerNames {
-      get {
-        fixed (byte* p = _PlayerNames_) { return new FixedArray<QString64>(p, 64, 4); }
-      }
-    }
-    public override Int32 GetHashCode() {
-      unchecked { 
-        var hash = 18583;
-        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(PlayerNames);
-        return hash;
-      }
-    }
-    public static void Serialize(void* ptr, FrameSerializer serializer) {
-        var p = (BattleWaitForPlayersData*)ptr;
-        FixedArray.Serialize(p->PlayerNames, serializer, Statics.SerializeQString64);
-    }
-  }
-  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Input {
     public const Int32 SIZE = 80;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(16)]
+    [FieldOffset(20)]
     public QBoolean IsValid;
+    [FieldOffset(4)]
+    public Int32 DebugNumber;
     [FieldOffset(0)]
     public BattleMovementInputType MovementInput;
-    [FieldOffset(20)]
+    [FieldOffset(24)]
     public QBoolean MovementDirectionIsNormalized;
-    [FieldOffset(28)]
+    [FieldOffset(32)]
     public BattleGridPosition MovementPositionTarget;
     [FieldOffset(64)]
     public FPVector2 MovementPositionMove;
     [FieldOffset(48)]
     public FPVector2 MovementDirection;
-    [FieldOffset(24)]
+    [FieldOffset(28)]
     public QBoolean RotationInput;
     [FieldOffset(40)]
     public FP RotationValue;
-    [FieldOffset(4)]
-    public Int32 PlayerCharacterNumber;
     [FieldOffset(12)]
-    public QBoolean GiveUpInput;
-    [FieldOffset(8)]
     public QBoolean AbilityActivate;
+    [FieldOffset(8)]
+    public Int32 PlayerCharacterNumber;
+    [FieldOffset(16)]
+    public QBoolean GiveUpInput;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 19249;
         hash = hash * 31 + IsValid.GetHashCode();
+        hash = hash * 31 + DebugNumber.GetHashCode();
         hash = hash * 31 + (Int32)MovementInput;
         hash = hash * 31 + MovementDirectionIsNormalized.GetHashCode();
         hash = hash * 31 + MovementPositionTarget.GetHashCode();
@@ -853,9 +802,9 @@ namespace Quantum {
         hash = hash * 31 + MovementDirection.GetHashCode();
         hash = hash * 31 + RotationInput.GetHashCode();
         hash = hash * 31 + RotationValue.GetHashCode();
+        hash = hash * 31 + AbilityActivate.GetHashCode();
         hash = hash * 31 + PlayerCharacterNumber.GetHashCode();
         hash = hash * 31 + GiveUpInput.GetHashCode();
-        hash = hash * 31 + AbilityActivate.GetHashCode();
         return hash;
       }
     }
@@ -875,6 +824,7 @@ namespace Quantum {
     static partial void SerializeCodeGen(void* ptr, FrameSerializer serializer) {
         var p = (Input*)ptr;
         serializer.Stream.Serialize((Int32*)&p->MovementInput);
+        serializer.Stream.Serialize(&p->DebugNumber);
         serializer.Stream.Serialize(&p->PlayerCharacterNumber);
         QBoolean.Serialize(&p->AbilityActivate, serializer);
         QBoolean.Serialize(&p->GiveUpInput, serializer);
@@ -1718,6 +1668,7 @@ namespace Quantum {
       if ((int)player >= (int)_globals->input.Length) { throw new System.ArgumentOutOfRangeException("player"); }
       var i = _globals->input.GetPointer(player);
       i->IsValid = input.IsValid;
+      i->DebugNumber = input.DebugNumber;
       i->MovementInput = input.MovementInput;
       i->MovementDirectionIsNormalized = input.MovementDirectionIsNormalized;
       i->MovementPositionTarget = input.MovementPositionTarget;
@@ -1725,9 +1676,9 @@ namespace Quantum {
       i->MovementDirection = input.MovementDirection;
       i->RotationInput = input.RotationInput;
       i->RotationValue = input.RotationValue;
+      i->AbilityActivate = input.AbilityActivate;
       i->PlayerCharacterNumber = input.PlayerCharacterNumber;
       i->GiveUpInput = input.GiveUpInput;
-      i->AbilityActivate = input.AbilityActivate;
     }
     public Input* GetPlayerInput(PlayerRef player) {
       if ((int)player >= (int)_globals->input.Length) { throw new System.ArgumentOutOfRangeException("player"); }
@@ -1781,7 +1732,6 @@ namespace Quantum {
     public static FrameSerializer.Delegate SerializePlayerRef;
     public static FrameSerializer.Delegate SerializeFrameTimer;
     public static FrameSerializer.Delegate SerializeBattleProjectileCollisionFlags;
-    public static FrameSerializer.Delegate SerializeQString64;
     public static FrameSerializer.Delegate SerializeInput;
     static partial void InitStaticDelegatesGen() {
       SerializeBattlePlayerHitboxColliderTemplate = Quantum.BattlePlayerHitboxColliderTemplate.Serialize;
@@ -1792,7 +1742,6 @@ namespace Quantum {
       SerializePlayerRef = PlayerRef.Serialize;
       SerializeFrameTimer = FrameTimer.Serialize;
       SerializeBattleProjectileCollisionFlags = (v, s) => {{ s.Stream.Serialize((Byte*)v); }};
-      SerializeQString64 = Quantum.QString64.Serialize;
       SerializeInput = Quantum.Input.Serialize;
     }
     static partial void RegisterSimulationTypesGen(TypeRegistry typeRegistry) {
@@ -1835,7 +1784,6 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.BattleSoulWallTemplate), Quantum.BattleSoulWallTemplate.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleSoundFX), 4);
       typeRegistry.Register(typeof(Quantum.BattleTeamNumber), 4);
-      typeRegistry.Register(typeof(Quantum.BattleWaitForPlayersData), Quantum.BattleWaitForPlayersData.SIZE);
       typeRegistry.Register(typeof(Quantum.BitSet1024), Quantum.BitSet1024.SIZE);
       typeRegistry.Register(typeof(Quantum.BitSet128), Quantum.BitSet128.SIZE);
       typeRegistry.Register(typeof(Quantum.BitSet2048), Quantum.BitSet2048.SIZE);
@@ -1902,7 +1850,6 @@ namespace Quantum {
       typeRegistry.Register(typeof(Ptr), Ptr.SIZE);
       typeRegistry.Register(typeof(QBoolean), QBoolean.SIZE);
       typeRegistry.Register(typeof(Quantum.QString512), Quantum.QString512.SIZE);
-      typeRegistry.Register(typeof(Quantum.QString64), Quantum.QString64.SIZE);
       typeRegistry.Register(typeof(Quantum.Ptr), Quantum.Ptr.SIZE);
       typeRegistry.Register(typeof(QueryOptions), 2);
       typeRegistry.Register(typeof(RNGSession), RNGSession.SIZE);
@@ -1959,7 +1906,6 @@ namespace Quantum {
       FramePrinter.EnsurePrimitiveNotStripped<CallbackFlags>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.InputButtons>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.QString512>();
-      FramePrinter.EnsurePrimitiveNotStripped<Quantum.QString64>();
       FramePrinter.EnsurePrimitiveNotStripped<QueryOptions>();
     }
   }

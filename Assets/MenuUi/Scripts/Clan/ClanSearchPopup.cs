@@ -35,15 +35,15 @@ public class ClanSearchPopup : MonoBehaviour
 
     private Sprite GetAgeSprite(ClanAge age)
     {
-        foreach (var ai in _ageIcons)
+        foreach (var ageIcon in _ageIcons)
         {
-            if (ai.age == age) return ai.icon;
+            if (ageIcon.age == age) return ageIcon.icon;
         }
         return null;
     }
 
-    private const int _maxClanMembers = 30;
-    private const int _maxValues = 3;
+    private const int MaxClanMembers = 30;
+    private const int MaxValues = 3;
 
     public void Show(ServerClan clan, UnityAction onJoin)
     {
@@ -54,7 +54,7 @@ public class ClanSearchPopup : MonoBehaviour
 
         _clanName.text = clanData.Name;
         _clanDescription.text = clanData.Phrase;
-        _clanMembers.SetText(SettingsCarrier.Instance.Language, new string[1] { clan.playerCount + "/" + _maxClanMembers });
+        _clanMembers.SetText(SettingsCarrier.Instance.Language, new string[1] { clan.playerCount + "/" + MaxClanMembers });
         _clanHeart.SetOtherClanColors(clanData);
 
         if (_clanOpenObject != null) _clanOpenObject.SetActive(clanData.IsOpen);
@@ -80,7 +80,7 @@ public class ClanSearchPopup : MonoBehaviour
         int showValues = 0;
         foreach (ClanValues value in clanData.Values)
         {
-            if(showValues >= _maxValues)
+            if(showValues >= MaxValues)
             {
                 break;
             }
@@ -97,7 +97,7 @@ public class ClanSearchPopup : MonoBehaviour
             clan._id == ServerManager.Instance.Clan._id;
 
         // Check if clan is full
-        bool isFull = clan.playerCount >= _maxClanMembers;
+        bool isFull = clan.playerCount >= MaxClanMembers;
 
         if (_joinClanButton != null)
         {
@@ -115,7 +115,7 @@ public class ClanSearchPopup : MonoBehaviour
                 {
                     if (isFull)
                     {
-                        buttonText.text = "Klaani t‰ynn‰";
+                        buttonText.text = "Klaani t√§ynn√§";
                     }
                     else
                     {

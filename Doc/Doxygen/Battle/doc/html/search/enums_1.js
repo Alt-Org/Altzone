@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['emotionstate_0',['EmotionState',['../namespace_quantum.html#adac109901e32732bcc86a6ce3548d8a2',1,'Quantum']]]
+  ['inputbuttons_0',['InputButtons',['../namespace_quantum.html#aa520808502001060d4d013db491af53c',1,'Quantum']]]
 ];
