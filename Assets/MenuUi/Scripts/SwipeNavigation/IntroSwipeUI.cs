@@ -8,7 +8,7 @@ namespace MenuUi.Scripts.SwipeNavigation
 {
     public class IntroSwipeUI : SwipeUI
     {
-        [SerializeField] private GameObject[] startSlides;
+        [SerializeField] public GameObject[] startSlides;
         [SerializeField] private GameObject[] rotatingSlides;
 
         protected override void Awake()
@@ -31,7 +31,7 @@ namespace MenuUi.Scripts.SwipeNavigation
                 if (isSwipeMode) return;
                 StartCoroutine(OnSwipeOneStep(CurrentPage));
             }
-            else if (CurrentPage == startSlides.Length)
+            else if (CurrentPage >= startSlides.Length)
             {
                 if (_willRotate)
                 {
@@ -45,7 +45,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         }
         public override void NextSlide()
         {
-            if (CurrentPage == startSlides.Length - 1)
+            if (CurrentPage >= startSlides.Length - 1)
             {
                 return;
             }
@@ -61,7 +61,7 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         public override void UpdateInput() //disable swiping when on last slide
         {
-            Debug.Log("currentpage: " + CurrentPage + " length: " + startSlides.Length);
+            Debug.Log("Currentpage: " + CurrentPage +  "length: " + startSlides.Length);
             if (CurrentPage >= startSlides.Length - 1)
             {
                 return;
