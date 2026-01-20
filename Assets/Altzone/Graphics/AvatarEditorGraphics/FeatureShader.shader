@@ -3,7 +3,11 @@ Shader "Unlit/FeatureShader"
     Properties
     {
         _MainTex ("Main Sprite", 2D) = "white" {}
-        _SwapTex ("Palette Texture", 2D) = "white" {}
+        _MaskTex ("Mask Sprite", 2D) = "white" {}
+
+        _SkinColor ("Skin Color", Color) = (1,1,1,1)
+        _SelectedColor ("Selected Color", Color) = (1,1,1,1)
+        _ClassColor ("Class Color", Color) = (1,1,1,1)
     }
 
     SubShader
@@ -33,7 +37,10 @@ Shader "Unlit/FeatureShader"
             };
 
             sampler2D _MainTex;
-            sampler2D _SwapTex;
+            sampler2D _MaskTex;
+            fixed3 _SkinColor;
+            fixed3 _SelectedColor;
+            fixed3 _ClassColor;
 
             v2f vert (appdata v)
             {
@@ -46,18 +53,16 @@ Shader "Unlit/FeatureShader"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                fixed4 src = tex2D(_MainTex, i.uv);
-                
+                fixed4 main = tex2D(_MainTex, i.uv);
+                fixed4 mask = tex2D(_MaskTex, i.uv);
 
-                fixed4 swap = tex2D(_SwapTex, float2(src.r, 0.5));
-                src.r = src.g;
+                fixed3 result = main.rgb;
 
-                fixed3 tinted = src.rgb * swap.rgb;
+                result = lerp(result, result * _SkinColor.rgb, mask.r);
+                result = lerp(result, result * _SelectedColor.rgb, mask.g);
+                result = lerp(result, result * _ClassColor.rgb, mask.b);
 
-
-                fixed3 finalRGB = lerp(src.rgb, tinted, swap.a);
-
-                return fixed4(finalRGB, src.a);
+                return fixed4(result, main.a);
             }
             ENDHLSL
         }
