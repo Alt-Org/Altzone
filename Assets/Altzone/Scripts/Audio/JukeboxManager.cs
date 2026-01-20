@@ -97,7 +97,7 @@ namespace Altzone.Scripts.Audio
         }
 
         private bool _serverOperationAvailable = true;
-        
+
         #endregion
 
         #region Playback History
@@ -469,7 +469,7 @@ namespace Altzone.Scripts.Audio
             Coroutine timeoutCoroutine = StartCoroutine(WaitUntilTimeout(_timeoutSeconds, (timeoutData) => timeout = timeoutData));
 
             yield return new WaitUntil(() => (serverPlaylist != null || timeout != null));
-            
+
             if (timeout != null)
             {
                 Debug.LogError("Failed to fetch jukebox playlist from server!");
@@ -659,7 +659,7 @@ namespace Altzone.Scripts.Audio
 
                 DeleteFromQueue(data.ServerSongData.id);
             }
-            
+
             //Add server tracks.
             foreach (ServerCompareData addData in addDatas)
             {
@@ -692,7 +692,7 @@ namespace Altzone.Scripts.Audio
             //ServerPlaylist playlistData = null;
             bool? success = null;
             float timer = 0f;
- 
+
             while (timer < _playlistServerFetchFrequency)
             {
                 yield return null;
@@ -712,7 +712,7 @@ namespace Altzone.Scripts.Audio
             //UpdateLocalPlaylist(playlistData);
 
             if (!success.Value) yield break;
-            
+
             _playlistServerFetchCoroutine = StartCoroutine(ServerPlaylistFetchLoop());
         }
 
@@ -780,7 +780,7 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         public string TryPlayTrack()
@@ -959,7 +959,7 @@ namespace Altzone.Scripts.Audio
                 if (_currentTrackQueueData == null || !_currentTrackQueueData.InUse() || _musicElapsedTime >= _currentTrackQueueData.MusicTrack.Music.length) break;
 
                 if (!_trackPreviewActive && OnSetVisibleElapsedTime != null) OnSetVisibleElapsedTime.Invoke(_currentTrackQueueData.MusicTrack.Music.length, _musicElapsedTime, PreviewLocationType.Main);
-                
+
                 yield return null;
                 _musicElapsedTime += Time.deltaTime;
             }
@@ -1301,7 +1301,7 @@ namespace Altzone.Scripts.Audio
                 {
                     JukeboxTrackQueueHandler handler = OnGetTrackQueueHandler(_trackQueue[i].Pointer);
                     int linearIndex = freeIndexes.Dequeue();
-  
+
                     _trackQueue[linearIndex].SetData(_trackQueue[i], linearIndex);
                     handler.SetLinearIndex(linearIndex);
                     _trackQueue[i].Clear();
@@ -1540,7 +1540,7 @@ namespace Altzone.Scripts.Audio
     {
         public string Name;
         public JukeboxManager.PlaylistType Type;
-        public List<ServerSong> PackedTrackQueueDatas; //Fromat: UserId_MusicTrackId_LocalPlaylistTrackId
+        public List<ServerSong> PackedTrackQueueDatas; //Format: UserId_MusicTrackId_LocalPlaylistTrackId
 
         public Playlist(string name, JukeboxManager.PlaylistType type, List<ServerSong> serverMusicTracks)
         {
@@ -1675,5 +1675,20 @@ namespace Altzone.Scripts.Audio
         }
 
         public void Delete() { if (OnTrackQueueRemoved != null) OnTrackQueueRemoved.Invoke(this); }
+    }
+
+    public class PersonalizedMusicTrack
+    {
+        private MusicTrack _track;
+        private JukeboxManager.MusicTrackFavoriteType _favoriteType;
+
+        public MusicTrack Track { get { return _track; } }
+        public JukeboxManager.MusicTrackFavoriteType FavoriteType  { get { return _favoriteType; } }
+
+        public PersonalizedMusicTrack(MusicTrack track, JukeboxManager.MusicTrackFavoriteType favoriteType)
+        {
+            _track = track;
+            _favoriteType = favoriteType;
+        }
     }
 }

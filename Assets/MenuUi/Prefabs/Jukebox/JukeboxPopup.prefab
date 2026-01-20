@@ -9046,10 +9046,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _searchField: {fileID: 2465541611159322702}
-  _tracksListContent: {fileID: 782728895088789706}
-  _jukeboxButtonPrefab: {fileID: 7205037451692343932, guid: 3312d1c148605004ead11d34daedce26,
-    type: 3}
-  _trackChunkSize: 8
+  _smartList: {fileID: 0}
 --- !u!1 &2118951063448534092
 GameObject:
   m_ObjectHideFlags: 0
@@ -14618,10 +14615,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _searchField: {fileID: 2995950145195976180}
-  _tracksListContent: {fileID: 0}
-  _jukeboxButtonPrefab: {fileID: 7205037451692343932, guid: 3312d1c148605004ead11d34daedce26,
-    type: 3}
-  _trackChunkSize: 8
+  _smartList: {fileID: 3863678123601974322}
 --- !u!114 &3863678123601974322
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14641,7 +14635,8 @@ MonoBehaviour:
   _contentPrefab: {fileID: 7205037451692343932, guid: 3312d1c148605004ead11d34daedce26,
     type: 3}
   _uniqueGameObjectsAtBottom: []
-  _horizontalPadding: 10
+  _smartItemTopStrenghtMultiplier: 0
+  _smartItemBottomStrenghtMultiplier: 2
   _verticalPadding: 10
 --- !u!1 &3303713621607458431
 GameObject:
@@ -31942,10 +31937,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _searchField: {fileID: 5157775785390701417}
-  _tracksListContent: {fileID: 2950927039443164006}
-  _jukeboxButtonPrefab: {fileID: 7205037451692343932, guid: 3312d1c148605004ead11d34daedce26,
-    type: 3}
-  _trackChunkSize: 8
+  _smartList: {fileID: 0}
 --- !u!1 &7370126224382154283
 GameObject:
   m_ObjectHideFlags: 0

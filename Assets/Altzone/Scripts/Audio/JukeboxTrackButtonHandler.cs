@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Altzone.Scripts.Audio;
 using Altzone.Scripts.ReferenceSheets;
@@ -6,7 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class JukeboxTrackButtonHandler : MonoBehaviour, IBeginDragHandler, IEndDragHandler
+public class JukeboxTrackButtonHandler : SmartListItem, IBeginDragHandler, IEndDragHandler
 {
     [SerializeField] private TextAutoScroll _trackNameAutoScroll;
     [SerializeField] private TextAutoScroll _trackCreditsNamesAutoScroll;
@@ -40,6 +41,8 @@ public class JukeboxTrackButtonHandler : MonoBehaviour, IBeginDragHandler, IEndD
 
     private void Awake()
     {
+        _selfRectTransform = GetComponent<RectTransform>();
+
         _addButton.onClick.AddListener(() => AddButtonClicked());
         _previewButton.onClick.AddListener(() => PreviewButtonClicked());
 
@@ -100,20 +103,35 @@ public class JukeboxTrackButtonHandler : MonoBehaviour, IBeginDragHandler, IEndD
         _buttonInputCanceled = false;
     }
 
-    public void SetTrack(MusicTrack musicTrack, int trackLinearIndex, JukeboxManager.MusicTrackFavoriteType likeType)
+    public override void SetData<T1>(T1 data1)
     {
-        _musicTrack = musicTrack;
-        _trackNameAutoScroll.SetContent(musicTrack.Name);
-        _trackCreditsNamesAutoScroll.SetContent(musicTrack.JukeboxInfo.GetArtistNames());
-        _trackImage.sprite = musicTrack.JukeboxInfo.Disk;
+        if (!CheckClassType<T1, PersonalizedMusicTrack>(data1)) return;
+
+        PersonalizedMusicTrack personalizedMusicTrack = data1 as PersonalizedMusicTrack;
+
+        _musicTrack = personalizedMusicTrack.Track;
+        _trackNameAutoScroll.SetContent(personalizedMusicTrack.Track.Name);
+        _trackCreditsNamesAutoScroll.SetContent(personalizedMusicTrack.Track.JukeboxInfo.GetArtistNames());
+        _trackImage.sprite = personalizedMusicTrack.Track.JukeboxInfo.Disk;
         gameObject.SetActive(true);
 
-        if (_favoriteButtonHandler != null) _favoriteButtonHandler.Setup(likeType, musicTrack.Id);
+        _favoriteButtonHandler?.Setup(personalizedMusicTrack.FavoriteType, personalizedMusicTrack.Track.Id);
     }
 
-    public void Clear() { _musicTrack = null; gameObject.SetActive(false); }
+    // public void SetData(MusicTrack musicTrack, int trackLinearIndex, JukeboxManager.MusicTrackFavoriteType likeType)
+    // {
+    //     _musicTrack = musicTrack;
+    //     _trackNameAutoScroll.SetContent(musicTrack.Name);
+    //     _trackCreditsNamesAutoScroll.SetContent(musicTrack.JukeboxInfo.GetArtistNames());
+    //     _trackImage.sprite = musicTrack.JukeboxInfo.Disk;
+    //     gameObject.SetActive(true);
+    //
+    //     if (_favoriteButtonHandler != null) _favoriteButtonHandler.Setup(likeType, musicTrack.Id);
+    // }
 
-    public void SetVisibility(bool value) { gameObject.SetActive(value); }
+    public override void ClearData() { _musicTrack = null; gameObject.SetActive(false); }
+
+    //public override void SetVisibility(bool value) { gameObject.SetActive(value); }
 
     public void StartDiskSpin() { StopDiskSpin(); _diskSpinCoroutine = StartCoroutine(SpinDisk()); }
 
@@ -132,7 +150,7 @@ public class JukeboxTrackButtonHandler : MonoBehaviour, IBeginDragHandler, IEndD
     {
         while (true)
         {
-            _trackImage.transform.Rotate(Vector3.forward * -_diskRotationSpeed * Time.deltaTime);
+            _trackImage.transform.Rotate(Vector3.forward * (-_diskRotationSpeed * Time.deltaTime));
 
             yield return null;
         }

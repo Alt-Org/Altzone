@@ -88,7 +88,7 @@ namespace Altzone.Scripts.Audio
 
             _musicChannel1.loop = true;
             _musicChannel2.loop = true;
-            
+
             _musicChannel1.volume = 0f;
             _musicChannel2.volume = 0f;
         }
@@ -105,7 +105,7 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns>Track name if successfully started the track playback.</returns>
         public string PlayMusicById(string categoryName, string trackId, MusicSwitchType switchType, bool forcePlay = false)
@@ -128,7 +128,7 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns>Track name if successfully started the track playback.</returns>
         public string PlayMusicById(AudioCategoryType categoryType, string trackId, MusicSwitchType switchType, bool forcePlay = false)
@@ -151,7 +151,7 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns>Track name if successfully started the track playback.</returns>
         public string PlayMusic(string categoryName, string trackName, MusicSwitchType switchType, float startLocation, bool forcePlay = false)
@@ -161,7 +161,7 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns>Track name if successfully started the track playback.</returns>
         public string PlayMusic(AudioCategoryType categoryType, string trackName, MusicSwitchType switchType, float startLocation, bool forcePlay = false)
@@ -171,7 +171,7 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns>Track name if successfully started the track playback.</returns>
         public string PlayMusic(string categoryName, MusicTrack musicTrack, MusicSwitchType switchType, float startLocation, bool forcePlay = false)
@@ -181,7 +181,7 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns>Track name if successfully started the track playback.</returns>
         public string PlayMusic(AudioCategoryType categoryType, MusicTrack musicTrack, MusicSwitchType switchType, float startLocation, bool forcePlay = false)
@@ -191,7 +191,7 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns>Track name if successfully started the track playback.</returns>
         public string PlayMusic(string categoryName, string trackName, MusicSwitchType switchType, bool forcePlay = false)
@@ -213,12 +213,12 @@ namespace Altzone.Scripts.Audio
 
             _musicStartTime = 0f;
             SwitchMusic(currentCategory, musicTrack, switchType, forcePlay);
-            
+
             return musicTrack.Name;
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns>Track name if successfully started the track playback.</returns>
         public string PlayMusic(AudioCategoryType categoryType, string trackName, MusicSwitchType switchType, bool forcePlay = false)
@@ -245,7 +245,7 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns>Track name if successfully started the track playback.</returns>
         public string PlayMusic(string categoryName, MusicTrack musicTrack, MusicSwitchType switchType, bool forcePlay = false)
@@ -263,7 +263,7 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns>Track name if successfully started the track playback.</returns>
         public string PlayMusic(AudioCategoryType categoryType, MusicTrack musicTrack, MusicSwitchType switchType, bool forcePlay = false)
@@ -333,7 +333,7 @@ namespace Altzone.Scripts.Audio
             {
                 StopCoroutine(_switchCoroutine);
                 _switchCoroutine = null;
-                
+
                 if (_musicSwitchInProgress) _primaryChannel = ((_primaryChannel == 1) ? 2 : 1);
 
                 if (revertSwitch) _crossFadeTimer = (_acceleratedCrossFadeOneShot ? _acceleratedCrossFadeDuration - _crossFadeTimer : _crossFadeDuration - _crossFadeTimer);
@@ -368,7 +368,7 @@ namespace Altzone.Scripts.Audio
             if (newTrackName != null) newTrackName(musicTrack.Name);
 
             _musicSwitchInProgress = true;
-            
+
             if (!revertSwitch) StartMusicPlayback((_primaryChannel == 2 ? _musicChannel1 : _musicChannel2), musicTrack.Music);
 
             if (switchType == MusicSwitchType.CrossFade)

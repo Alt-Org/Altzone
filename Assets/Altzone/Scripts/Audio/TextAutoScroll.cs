@@ -88,13 +88,13 @@ namespace Altzone.Scripts.Audio
 
         public void SetContent(string text, bool forceStart = false)
         {
-            if (!forceStart && _text != null && _text.text == text || _textInQueue == text)
+            if (!forceStart && _text && _text.text == text || _textInQueue == text)
             {
                 TryStartScroll();
 
                 return;
             }
-            
+
             DisableCoroutines();
             _textInQueue = text;
 
