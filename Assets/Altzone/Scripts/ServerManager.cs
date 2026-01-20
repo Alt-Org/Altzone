@@ -1717,7 +1717,7 @@ public class ServerManager : MonoBehaviour
             duration = durationSec,
             winnerTeam = winningTeam
         }).ToString();
-        Debug.LogWarning(body);
+        //Debug.LogWarning(body);
 
         //} create json body
 
