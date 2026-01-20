@@ -1651,13 +1651,15 @@ public class ServerManager : MonoBehaviour
     {
         StartCoroutine(WebRequests.Post(SERVERADDRESS + "gameAnalytics/logfile/", formData, AccessToken, secretKey, id, callback));
     }
-        
+
     public IEnumerator BattleSendResult(string[] playerUserIds, int winningTeam, int durationSec, Action<bool> callback)
     {
+        // constants
         const int teamCount = 2;
         const int teamPlayerCountMax = 2;
         const int totalPlayerCount = teamCount * teamPlayerCountMax;
 
+        // error check
         if (playerUserIds.Length != totalPlayerCount)
         {
             Debug.LogErrorFormat(
@@ -1668,6 +1670,9 @@ public class ServerManager : MonoBehaviour
             callback(obj: false);
             yield break;
         }
+
+        //{ create json body
+
         int team1PlayerCount = 0;
         int team2PlayerCount = 0;
         for (int i = 0; i < totalPlayerCount; i++)
@@ -1676,9 +1681,9 @@ public class ServerManager : MonoBehaviour
             if (i < teamPlayerCountMax) { team1PlayerCount++; }
             else { team2PlayerCount++; }
         }
+
         string[] team1 = new string[team1PlayerCount];
         string[] team2 = new string[team2PlayerCount];
-
         int index = 0;
         string[] currentTeam = null;
         for (int teamnumber = 0; teamnumber < teamCount; teamnumber++)
@@ -1686,13 +1691,13 @@ public class ServerManager : MonoBehaviour
             switch (teamnumber)
             {
                 case 0:
-                    index = 0-1;
+                    index = 0 - 1;
                     currentTeam = team1;
                     break;
-                    
+
                 case 1:
-                    index = teamPlayerCountMax-1;
-                    currentTeam = team2; 
+                    index = teamPlayerCountMax - 1;
+                    currentTeam = team2;
                     break;
             }
             for (int i = 0; i < currentTeam.Length;)
@@ -1703,7 +1708,7 @@ public class ServerManager : MonoBehaviour
                 i++;
             }
         }
-        
+
         string body = JObject.FromObject(new
         {
             type = "result",
@@ -1713,6 +1718,10 @@ public class ServerManager : MonoBehaviour
             winnerTeam = winningTeam
         }).ToString();
         Debug.LogWarning(body);
+
+        //} create json body
+
+        // handle server call
         yield return StartCoroutine(WebRequests.Post(address: $"{DEVADDRESS}gamedata/battle", body, AccessToken, Request =>
         {
             if (Request.result == UnityWebRequest.Result.Success)
