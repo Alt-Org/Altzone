@@ -21,7 +21,9 @@ namespace Battle.View.Player
     /// Handles view logic for the Projector character class
     /// </summary>
     ///
-    /// @bigtext{See [{Player Character Class Projector}](#page-wip-concepts-playerclass-projector) for more info.}
+    /// @bigtext{See [{PlayerClassViewController}](#page-concepts-player-view-class-controller) for more info.}<br/>
+    /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
+    /// @bigtext{See [{Player Character Class 400 - Projector}](#page-concepts-player-class-400-projector) for more info.}
     public class BattlePlayerClassProjectorViewController : BattlePlayerClassBaseViewController
     {
         /// @anchor BattlePlayerClassProjectorViewController-SerializeFields

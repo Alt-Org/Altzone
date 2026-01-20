@@ -24,6 +24,7 @@ public class DailyTaskProgressListenerMakeMusic : DailyTaskProgressListener
 
     private void OnButtonClick(int index)
     {
+        if (DailyTaskProgressManager.Instance.CurrentPlayerTask == null || DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationActionType != _educationCategoryActionType) return;
         _currentSequence.Add(index);
 
         for (int i = 0; i < _currentSequence.Count; i++)
@@ -49,6 +50,14 @@ public class DailyTaskProgressListenerMakeMusic : DailyTaskProgressListener
 
     private void ResetTask()
     {
-        _currentSequence.Clear();
+        for (int i = 0; i < _currentSequence.Count; i++)
+        {
+            if (_currentSequence[i] != _targetSequence[i])
+            {
+                _currentSequence.RemoveAt(0);
+                if(_currentSequence.Count > 0) i = -1;
+                return;
+            }
+        }
     }
 }

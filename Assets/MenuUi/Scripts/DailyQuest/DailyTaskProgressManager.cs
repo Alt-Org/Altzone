@@ -181,6 +181,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
             case TaskEducationStoryType.CreateUnifiedInterior: HandleSimpleTask(value); break;
             case TaskEducationStoryType.RecognizeCharacterMechanic: HandleSimpleTask(value); break;
             case TaskEducationStoryType.WhereGameHappens: HandleSimpleTask(value); break;
+            case TaskEducationStoryType.ChooseMostTouchingIntro: HandleSimpleTask(value); break;
             default: break;
         }
     }

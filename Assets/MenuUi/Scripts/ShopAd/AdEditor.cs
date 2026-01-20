@@ -30,6 +30,7 @@ public class AdEditor : AltMonoBehaviour
     [Header("Frame Selectors")]
     [SerializeField] private Transform _borderSelectionContent;
     [SerializeField] private GameObject _borderFramePrefab;
+    [SerializeField] private DailyTaskSelectButtons _dtSelectButtons;
     [Header("Colour Selectors")]
     [SerializeField] private Transform _backgroundColourSelectorContent;
     [SerializeField] private GameObject _backgroundColourSelectorPrefab;
@@ -73,7 +74,9 @@ public class AdEditor : AltMonoBehaviour
             float objectHeight = _borderSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
             frameObject.GetComponent<RectTransform>().sizeDelta = new(objectHeight * 0.625f, objectHeight);
             frameObject.GetComponent<Button>().onClick.AddListener(() => ChangeBorder(frame));
+            if(_dtSelectButtons)_dtSelectButtons.AddButton(new(frameObject.GetComponent<Button>(), frameObject.GetComponent<Image>()));
         }
+        if (_dtSelectButtons) _dtSelectButtons.RefreshListeners();
 
         List<Color> colorList = _borderReference.ColourList;
 

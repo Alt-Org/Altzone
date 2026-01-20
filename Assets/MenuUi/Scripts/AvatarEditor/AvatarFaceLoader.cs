@@ -1,3 +1,4 @@
+using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
 namespace MenuUi.Scripts.AvatarEditor
@@ -81,10 +82,10 @@ namespace MenuUi.Scripts.AvatarEditor
 
             var featureUpdates = new[]
             {
-                (FeatureSlot.Hair, _avatarVisuals.Hair),
-                (FeatureSlot.Eyes, _avatarVisuals.Eyes),
-                (FeatureSlot.Nose, _avatarVisuals.Nose),
-                (FeatureSlot.Mouth, _avatarVisuals.Mouth)
+                (AvatarPiece.Hair, _avatarVisuals.Hair),
+                (AvatarPiece.Eyes, _avatarVisuals.Eyes),
+                (AvatarPiece.Nose, _avatarVisuals.Nose),
+                (AvatarPiece.Mouth, _avatarVisuals.Mouth)
             };
 
             ApplyFeatureUpdates(featureUpdates);
@@ -94,16 +95,16 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             var featureUpdates = new[]
             {
-                (FeatureSlot.Hair, data.Hair),
-                (FeatureSlot.Eyes, data.Eyes),
-                (FeatureSlot.Nose, data.Nose),
-                (FeatureSlot.Mouth, data.Mouth)
+                (AvatarPiece.Hair, data.Hair),
+                (AvatarPiece.Eyes, data.Eyes),
+                (AvatarPiece.Nose, data.Nose),
+                (AvatarPiece.Mouth, data.Mouth)
             };
 
             ApplyFeatureUpdates(featureUpdates);
         }
 
-        private void ApplyFeatureUpdates((FeatureSlot slot, Sprite sprite)[] featureUpdates)
+        private void ApplyFeatureUpdates((AvatarPiece slot, Sprite sprite)[] featureUpdates)
         {
             foreach (var (slot, sprite) in featureUpdates)
             {

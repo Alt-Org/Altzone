@@ -3974,18 +3974,6 @@ MonoBehaviour:
   Prototype:
     Type:
       Value: 4
---- !u!114 &1715260851 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1498203579526516830, guid: 1621131824e870d4b951f05b192c9ff7,
-    type: 3}
-  m_PrefabInstance: {fileID: 5589480802127671713}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfe6c0ccac828df4396f16b76c5a528c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1735170625
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4543,7 +4531,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _soundFXViewController
       value: 
-      objectReference: {fileID: 1715260851}
+      objectReference: {fileID: 0}
     - target: {fileID: 8816702143117302233, guid: 7e0904d2b2ca0f145ad03f5086282bbb,
         type: 3}
       propertyPath: _screenEffectViewController
@@ -4644,79 +4632,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5fe56e8e6f1853740841f9c1865d6549, type: 3}
---- !u!1001 &5589480802127671713
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1498203579526516830, guid: 1621131824e870d4b951f05b192c9ff7,
-        type: 3}
-      propertyPath: _audioSource
-      value: 
-      objectReference: {fileID: 88804846}
-    - target: {fileID: 3580548721989974009, guid: 1621131824e870d4b951f05b192c9ff7,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3580548721989974009, guid: 1621131824e870d4b951f05b192c9ff7,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3580548721989974009, guid: 1621131824e870d4b951f05b192c9ff7,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3580548721989974009, guid: 1621131824e870d4b951f05b192c9ff7,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3580548721989974009, guid: 1621131824e870d4b951f05b192c9ff7,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3580548721989974009, guid: 1621131824e870d4b951f05b192c9ff7,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3580548721989974009, guid: 1621131824e870d4b951f05b192c9ff7,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3580548721989974009, guid: 1621131824e870d4b951f05b192c9ff7,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3580548721989974009, guid: 1621131824e870d4b951f05b192c9ff7,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3580548721989974009, guid: 1621131824e870d4b951f05b192c9ff7,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7691488460640292807, guid: 1621131824e870d4b951f05b192c9ff7,
-        type: 3}
-      propertyPath: m_Name
-      value: BattleSoundFXViewController
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 1621131824e870d4b951f05b192c9ff7, type: 3}
 --- !u!4 &5756210810806569137
 Transform:
   m_ObjectHideFlags: 0
@@ -4864,7 +4779,6 @@ SceneRoots:
   - {fileID: 1735170625}
   - {fileID: 5500546981835308445}
   - {fileID: 2260888672088227952}
-  - {fileID: 5589480802127671713}
   - {fileID: 88804847}
   - {fileID: 2118663603}
   - {fileID: 1117656564}
