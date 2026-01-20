@@ -532,7 +532,7 @@ namespace Battle.View.Game
             (
                 BattleParameters.GetPlayerSlotUserIDs(f),
                 (int)e.WinningTeam,
-                (float)e.GameLengthSec,
+                (int)e.GameLengthSec,
                 success =>
                 {
                     if (!success) _debugLogger.Error("Sending battle result failed.");

@@ -1652,18 +1652,67 @@ public class ServerManager : MonoBehaviour
         StartCoroutine(WebRequests.Post(SERVERADDRESS + "gameAnalytics/logfile/", formData, AccessToken, secretKey, id, callback));
     }
         
-    public IEnumerator BattleSendResult(string[] playerUserIds, int winningTeam, float durationSec, Action<bool> callback)
+    public IEnumerator BattleSendResult(string[] playerUserIds, int winningTeam, int durationSec, Action<bool> callback)
     {
-        string body = JObject.FromObject(
-            new
+        const int teamCount = 2;
+        const int teamPlayerCountMax = 2;
+        const int totalPlayerCount = teamCount * teamPlayerCountMax;
+
+        if (playerUserIds.Length != totalPlayerCount)
+        {
+            Debug.LogErrorFormat(
+                "playerUserIds count does not match expected player count\nExpected: {0}\nGot: {1}",
+                totalPlayerCount,
+                playerUserIds.Length
+            );
+            callback(obj: false);
+            yield break;
+        }
+        int team1PlayerCount = 0;
+        int team2PlayerCount = 0;
+        for (int i = 0; i < totalPlayerCount; i++)
+        {
+            if (playerUserIds[i] == string.Empty) continue;
+            if (i < teamPlayerCountMax) { team1PlayerCount++; }
+            else { team2PlayerCount++; }
+        }
+        string[] team1 = new string[team1PlayerCount];
+        string[] team2 = new string[team2PlayerCount];
+
+        int index = 0;
+        string[] currentTeam = null;
+        for (int teamnumber = 0; teamnumber < teamCount; teamnumber++)
+        {
+            switch (teamnumber)
             {
-                type = "result",
-                team1 = new string[2] { playerUserIds[0], playerUserIds[1] },
-                team2 = new string[2] { playerUserIds[2], playerUserIds[3] },
-                duration = durationSec,
-                winnerTeam = winningTeam,
+                case 0:
+                    index = 0-1;
+                    currentTeam = team1;
+                    break;
+                    
+                case 1:
+                    index = teamPlayerCountMax-1;
+                    currentTeam = team2; 
+                    break;
             }
-        ).ToString();
+            for (int i = 0; i < currentTeam.Length;)
+            {
+                index++;
+                if (playerUserIds[index] == string.Empty) continue;
+                currentTeam[i] = playerUserIds[index];
+                i++;
+            }
+        }
+        
+        string body = JObject.FromObject(new
+        {
+            type = "result",
+            team1 = team1,
+            team2 = team2,
+            duration = durationSec,
+            winnerTeam = winningTeam
+        }).ToString();
+        Debug.LogWarning(body);
         yield return StartCoroutine(WebRequests.Post(address: $"{DEVADDRESS}gamedata/battle", body, AccessToken, Request =>
         {
             if (Request.result == UnityWebRequest.Result.Success)
