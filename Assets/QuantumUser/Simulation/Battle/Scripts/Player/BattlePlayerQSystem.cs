@@ -163,7 +163,7 @@ namespace Battle.QSimulation.Player
             Input* input;
             Input stackInputStorage;
 
-            EntityRef playerEntity = EntityRef.None;
+            BattlePlayerEntityRef playerEntity = default;
             BattlePlayerDataQComponent* playerData = null;
             Transform2D* playerTransform = null;
 
@@ -177,9 +177,9 @@ namespace Battle.QSimulation.Player
 
                 if (playerHandle.PlayState.IsInPlay())
                 {
-                    playerEntity = BattleEntityManager.Get(f, playerHandle.CharacterEntityGroupID, playerHandle.SelectedCharacterNumber);
-                    playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerEntity);
-                    playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
+                    playerEntity = (BattlePlayerEntityRef)BattleEntityManager.Get(f, playerHandle.CharacterEntityGroupID, playerHandle.SelectedCharacterNumber);
+                    playerData = playerEntity.GetDataQComponent(f);
+                    playerTransform = playerEntity.GetTransform(f);
                 }
 
                 input = GetInput(f, playerHandle, playerData, &stackInputStorage);
