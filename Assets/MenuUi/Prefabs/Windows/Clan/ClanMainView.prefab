@@ -4776,6 +4776,7 @@ GameObject:
   - component: {fileID: 2008306858882332677}
   - component: {fileID: 310341090757550571}
   - component: {fileID: 395896482475522106}
+  - component: {fileID: 8482789991536841951}
   m_Layer: 5
   m_Name: GoToPlayerProfileButton
   m_TagString: Untagged
@@ -4884,6 +4885,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8482789991536841951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4302182244712512624}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _naviTarget: {fileID: 11400000, guid: e159432f6bd8572419fea7a32165e31b, type: 2}
+  _useNonDefaultWindow: 0
+  _targetWindow: 0
+  _isCurrentPopOutWindow: 0
 --- !u!1 &4434173847327643397
 GameObject:
   m_ObjectHideFlags: 0
@@ -5063,6 +5080,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93ecf292128694e418f7508801a804fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerProfileWindowDef: {fileID: 11400000, guid: e159432f6bd8572419fea7a32165e31b,
+    type: 2}
   _root: {fileID: 4585005434753258620}
   _closeButton: {fileID: 5129502802761404519}
   _backgroundCloseButton: {fileID: 0}

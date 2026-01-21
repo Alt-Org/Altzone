@@ -4,9 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.Model.Poco.Clan;
 using TMPro;
+using MenuUi.Scripts.Window;
+using MenuUi.Scripts.Window.ScriptableObjects;
+using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts;
+using Altzone.Scripts.Window;
 
 public class ClanMemberPopupController : MonoBehaviour
 {
+    [SerializeField] private WindowDef _playerProfileWindowDef;
+
     [Header("Root / Close")]
     [SerializeField] private GameObject _root;              
     [SerializeField] private Button _closeButton;           
@@ -76,6 +83,10 @@ public class ClanMemberPopupController : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        Hide();
+    }
 
     public void Hide()
     {
@@ -92,9 +103,21 @@ public class ClanMemberPopupController : MonoBehaviour
 
     private void OnOpenProfileButtonPressed()
     {
-        //TODO: Navigate to member profile page.
-        if (_currrentMember == null) return;
+        if (_currrentMember == null || string.IsNullOrEmpty(_currrentMember.Id) || _playerProfileWindowDef == null)
+            return;
 
-        Debug.Log($"ClanMemberPopupController: OnOpenProfileButtonPressed - Open profile for {_currrentMember.Name} (ID: {_currrentMember.Id}) - Not implemented yet.");
+        StartCoroutine(ServerManager.Instance.GetOtherPlayerFromServer(_currrentMember.Id, otherPlayer =>
+        {
+            if (otherPlayer == null) return;
+
+            // Convert ServerPlayer -> PlayerData (limited view is perfect for "other player" profile)
+            var otherPlayerData = new PlayerData(otherPlayer, limited: true);
+
+            // This is what ProfileMenu already checks
+            DataCarrier.AddData(DataCarrier.PlayerProfile, otherPlayerData);
+
+            // Open the profile window
+            WindowManager.Get().ShowWindow(_playerProfileWindowDef);
+        }));
     }
 }

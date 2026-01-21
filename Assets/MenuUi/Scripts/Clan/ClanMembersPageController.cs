@@ -126,6 +126,7 @@ public class ClanMembersPageController : MonoBehaviour
         _rebuildRoutine = null;
     }
 
+    // Shows members of the specified clan.
     public void SetViewedClan(string clanId, IEnumerable<string> adminIds = null)
     {
         _viewedClanId = clanId;
