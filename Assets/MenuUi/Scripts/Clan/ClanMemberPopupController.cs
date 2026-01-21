@@ -63,12 +63,17 @@ public class ClanMemberPopupController : MonoBehaviour
         Hide();
     }
 
-    public void Show(ClanMember member, string roleLabel)
+    public void Show(ClanMember member, string roleLabel, bool allowVotes = true)
     {
         if (member == null) return;
         _currrentMember = member;
 
         _root.SetActive(true);
+
+        if (_votesButton != null)
+        {
+            _votesButton.interactable = allowVotes;
+        }
 
         _nameText.text = member.Name ?? "";
         _rolesText.text = string.IsNullOrEmpty(roleLabel) ? "Member" : roleLabel;
@@ -113,6 +118,7 @@ public class ClanMemberPopupController : MonoBehaviour
             // Convert ServerPlayer -> PlayerData (limited view is perfect for "other player" profile)
             var otherPlayerData = new PlayerData(otherPlayer, limited: true);
 
+            DataCarrier.GetData<PlayerData>(DataCarrier.PlayerProfile, clear: true, suppressWarning: true);
             // This is what ProfileMenu already checks
             DataCarrier.AddData(DataCarrier.PlayerProfile, otherPlayerData);
 

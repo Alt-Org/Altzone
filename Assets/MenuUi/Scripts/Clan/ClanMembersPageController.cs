@@ -115,10 +115,14 @@ public class ClanMembersPageController : MonoBehaviour
                 var capturedMember = member;
                 var capturedRoleLabel = row.RoleLabel;
 
+                bool isOwnClan = string.IsNullOrEmpty(_viewedClanId)
+                || (ServerManager.Instance.Clan != null && _viewedClanId == ServerManager.Instance.Clan._id);
+
+
                 button.onClick.RemoveAllListeners();
                 button.onClick.AddListener(() =>
                 {
-                    _memberPopup.Show(capturedMember, capturedRoleLabel);
+                    _memberPopup.Show(capturedMember, capturedRoleLabel, allowVotes: isOwnClan);
                 });
             }
         }
