@@ -54,6 +54,7 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         private bool settingScroll = false;
         public bool isEnabled;
+        private bool _isBlocked;
         private Rect swipeRect;
 
         [SerializeField] private bool _isInMainMenu;
@@ -63,7 +64,7 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         public bool IsEnabled
         {
-            get { return isEnabled; }
+            get { return isEnabled && !_isBlocked; }
             set
             {
                 isEnabled = value;
@@ -232,6 +233,26 @@ namespace MenuUi.Scripts.SwipeNavigation
             // Return if currently swiping
             if (isSwipeMode == true) return;
 
+            if(IsEnabled == false)
+            {
+                // Update swipe when mouse is released
+                if (_startTouch != Vector2.zero)
+                {
+                    if (Touch.activeTouches.Count == 1) _endTouch = Touch.activeFingers[0].screenPosition;
+                    else if (Mouse.current != null) _endTouch = Mouse.current.position.ReadValue();
+                    UpdateSwipe();
+                }
+                if (_isBlocked)
+                {
+                    if (ClickStateHandler.GetClickState() is ClickState.End)
+                    {
+                        //StartCoroutine(OnSwipeOneStep(CurrentPage));
+                        _isBlocked = false;
+                    }
+                }
+                return;
+            }
+
             //Checks mouse input first and then touch input
             //Since WebGL can be run on PC or mobile we need to check both
             if (ClickStateHandler.GetClickState() is ClickState.Start)
@@ -362,7 +383,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         /// </summary>
         /// <param name="index">Index of the page we are snapping to.</param>
         /// <returns></returns>
-        protected IEnumerator OnSwipeOneStep(int index)
+        protected virtual IEnumerator OnSwipeOneStep(int index)
         {
             float start = scrollBar.value;
             float current = 0;
@@ -430,12 +451,12 @@ namespace MenuUi.Scripts.SwipeNavigation
 
             if (Mathf.Abs(pointerData.delta.y) > Mathf.Abs(pointerData.delta.x))
             {
-                IsEnabled = false;
+                _isBlocked = true;
             }
             else
             {
-                if (_startTouch.x != 0)
-                    IsEnabled = true;
+                //if (_startTouch.x != 0)
+                    //_isBlocked = false;
             }
         }
 
@@ -445,12 +466,12 @@ namespace MenuUi.Scripts.SwipeNavigation
 
             if (Mathf.Abs(pointerData.delta.y) > Mathf.Abs(pointerData.delta.x))
             {
-                IsEnabled = false;
+                _isBlocked = true;
             }
             else
             {
-                if (_startTouch.x != 0)
-                    IsEnabled = true;
+                //if (_startTouch.x != 0)
+                    //_isBlocked = false;
             }
 
         }
@@ -460,16 +481,16 @@ namespace MenuUi.Scripts.SwipeNavigation
             PointerEventData pointerData = eventData as PointerEventData;
             if (blockType == SwipeBlockType.All)
             {
-                IsEnabled = false;
+                _isBlocked = true;
             }
             else if (blockType is SwipeBlockType.Vertical && Mathf.Abs(pointerData.delta.y) > Mathf.Abs(pointerData.delta.x))
             {
-                IsEnabled = false;
+                _isBlocked = true;
             }
             else
             {
-                if (_startTouch.x != 0)
-                    IsEnabled = true;
+                //if (_startTouch.x != 0)
+                    //_isBlocked = false;
             }
 
         }
