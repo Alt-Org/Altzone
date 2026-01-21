@@ -294,14 +294,18 @@ ALIASES                = dirref{1}="@ref \"%project-dir%/\1\" \"\1/\"" \
                          dirref{3}="@ref \"%project-dir%/\1/\2/\3\" \"\1/.../\3/\"" \
                          dirrefr{2}="@ref \"%project-dir%/\1/\2\" \"../\2/\"" \
                          dirlink{2:}="@ref \"%project-dir%/\2\" \"\1\"" \
+                         \
                          cref{1}="@ref \1 \"\1\"" \
                          cref{2}="@ref \1.\2 \"\2\"" \
                          crefd{1}="@ref \1 \"\1.\"" \
                          crefd{2}="@ref \1.\2 \"\2.\"" \
+                         clink{2:}="@ref \2 \"\1\"" \
+                         \
                          systemslink="[[Systems]](#page-simulation-systems)" \
                          uihandlerlink="[UI Handler](#page-view-uihandler)" \
                          uihandlerslink="[[UI Handlers]](#page-view-uihandler)" \
                          uicomponentlink="[UI Component](#page-view-uicomponent)" \
+                         \
                          bigtext{1}="<span class=\"big-text\">\1</span>" \
                          u-exlink="🡵"
 

@@ -57,10 +57,6 @@
 /// - <b>synced event</b> @ref BattleGiveUpStateChange {BattleTeamNumber Team; BattlePlayerSlot Slot; BattleGiveUpStateChange StateUpdate }  
 ///   @copybrief Quantum.EventBattleGiveUpStateChange
 ///
-/// ### Debug events
-/// - <b>synced event</b> @ref BattleDebugUpdateStatsOverlay { BattleCharacterBase Character}  
-///   @copybrief Quantum.EventBattleDebugUpdateStatsOverlay
-///
 /// ---
 ///
 /// <br/>
@@ -215,7 +211,7 @@
 /// ### BattleProjectileChangeSpeed
 /// @copybrief Quantum.EventBattleProjectileChangeSpeed
 ///
-/// Generated Class @cref{Quantum,EventBattleProjectileChangeSpeed  
+/// Generated Class @cref{Quantum,EventBattleProjectileChangeSpeed}  
 /// Generated Method @cref{Quantum,Frame.FrameEvents.BattleProjectileChangeSpeed}
 ///
 /// ---
@@ -282,20 +278,6 @@
 ///
 /// Generated Class @cref{Quantum,EventBattleGiveUpStateChange}  
 /// Generated Method @cref{Quantum,Frame.FrameEvents.BattleGiveUpStateChange}
-///
-/// ---
-/// ---
-///
-/// ### Debug events
-///
-/// ---
-///
-/// @anchor BattleDebugUpdateStatsOverlay
-/// ### BattleDebugUpdateStatsOverlay
-/// @copybrief Quantum.EventBattleDebugUpdateStatsOverlay
-///
-/// Generated Class @cref{Quantum,EventBattleDebugUpdateStatsOverlay}  
-/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleDebugUpdateStatsOverlay}
 ///
 /// ---
 
@@ -457,11 +439,4 @@
 /// </summary>
 ///
 /// Used to update the UI to reflect change in player's give up state.<br/>  
-/// @bigtext{Generated from @ref BattleEvents.qtn}
-
-/// @class Quantum::EventBattleDebugUpdateStatsOverlay
-/// <summary>
-/// Synced event. Used to update debug overlay displaying player's stats.
-/// </summary>
-///
 /// @bigtext{Generated from @ref BattleEvents.qtn}

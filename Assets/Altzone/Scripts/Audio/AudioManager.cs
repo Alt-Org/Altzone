@@ -16,6 +16,7 @@ namespace Altzone.Scripts.Audio
         Battle,
         Raid,
         IntroStory,
+        General,
         Other
     }
 

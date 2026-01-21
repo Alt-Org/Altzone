@@ -1,6 +1,6 @@
 /// @file BattlePlayerBotController.cs
 /// <summary>
-/// Contains @cref{Battle.QSimulation.Game,BattlePlayerBotController} class which handles the bot AI logic and implements helper methods for handling bots.
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerBotController} class which handles the bot AI logic and implements helper methods for handling bots.
 /// </summary>
 
 // Unity usings
@@ -19,6 +19,9 @@ namespace Battle.QSimulation.Player
     /// <summary>
     /// Handles the bot logic and implements helper methods for handling bots.
     /// </summary>
+    ///
+    /// [{Player Overview}](#page-concepts-player-overview)<br/>
+    /// [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview)
     ///
     /// Bot AI is handled by generating input in @cref{GetBotInput} that can be processed by the player like any other Input.
     /// Bot behavior and other spec settings are defined in @cref{BattlePlayerBotQSpec}.

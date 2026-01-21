@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class DailyTaskLongPress : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     [SerializeField] private float _longClickStartThresholdTime = 0.2f;
-    [SerializeField] private float _longClickThresholdTime = 5f;
+    [SerializeField] private float _longClickThresholdTime = 3f;
 
     [Header("For tracking multiple targets\n(Leave empty if only traking one target)")]
     [SerializeField] private string _uniqueName = "";

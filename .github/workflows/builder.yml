@@ -21,13 +21,30 @@ jobs:
           fetch-depth: 0
           lfs: true
 
+      - name: Check if repository changed
+        id: changes
+        run: |
+          STATE_FILE="/tmp/runner/last-built-${GITHUB_REF_NAME}.sha"
+          CURRENT_SHA=$(git rev-parse HEAD)
+
+          if [ -f "$STATE_FILE" ] && [ "$(cat $STATE_FILE)" = "$CURRENT_SHA" ]; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "Already built $CURRENT_SHA — skipping."
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "$CURRENT_SHA" > "$STATE_FILE"
+            echo "New commit detected — building."
+          fi
+
       - uses: actions/cache@v3
+        if: steps.changes.outputs.changed == 'true'
         with:
           path: Library
           key: Library-WebGL
           restore-keys: Library-
 
       - uses: game-ci/unity-builder@v4
+        if: steps.changes.outputs.changed == 'true'
         timeout-minutes: 70
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -42,11 +59,13 @@ jobs:
           dockerMemoryLimit: 10g
 
       - uses: actions/upload-artifact@v4
+        if: steps.changes.outputs.changed == 'true'
         with:
           name: Build-WebGL
           path: build/WebGL
           retention-days: 1
 
       - name: Mark build complete
+        if: steps.changes.outputs.changed == 'true'
         run: |
           touch "/tmp/runner/github/${GITHUB_REF_NAME}-${GITHUB_RUN_ID}"

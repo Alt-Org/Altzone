@@ -317,6 +317,7 @@ public class DailyTaskManager : AltMonoBehaviour
 
             DailyQuest task = taskObject.GetComponent<DailyQuest>();
             task.SetTaskData(validatedTasks.Tasks[i], i);
+            if (playerData.Task != null && playerData.Task.Id == validatedTasks.Tasks[i].Id) _currentTaskCardIndex = i;
             task.dailyTaskManager = this;
 
             if (validatedTasks.Tasks[i].PlayerId != "")
@@ -929,6 +930,7 @@ public class DailyTaskManager : AltMonoBehaviour
     private void SetHandleOwnTask(PlayerTask playerTask)
     {
         DailyTaskProgressManager.Instance.ChangeCurrentTask(playerTask);
+        _dailyTaskCardSlots[_currentTaskCardIndex].GetComponent<DailyQuest>().SetTaskData(playerTask);
         _ownTaskId = playerTask.Id;
         StartCoroutine(_ownTaskPageHandler.SetDailyTask(playerTask));
         _ownTaskPageHandler.SetTaskProgress((float)playerTask.TaskProgress / (float)playerTask.Amount);

@@ -13,9 +13,29 @@ public class ValueLabelHandler : MonoBehaviour
 
     public LabelInfoObject labelInfo { get; private set; }
 
+    [Header("Colors")]
+    [SerializeField] private string _selectedColorHex = "#0dd236";   // Vihreä
+    [SerializeField] private string _unselectedColorHex = "#a0a0a0"; // Harmaa
+
+    private Color _selectedColor;
+    private Color _unselectedColor; 
+
     void Start()
     {
         CheckLabelSize();
+    }
+
+    void Awake()
+    {
+        if(!ColorUtility.TryParseHtmlString(_selectedColorHex, out _selectedColor))
+        {            
+            _selectedColor = Color.green; // Default color
+        }
+
+        if(!ColorUtility.TryParseHtmlString(_unselectedColorHex, out _unselectedColor))
+        {
+            _unselectedColor = Color.gray; // Default color
+        }
     }
 
     public void SetLabelInfo(ClanValues value, bool showName)
@@ -31,7 +51,9 @@ public class ValueLabelHandler : MonoBehaviour
         else
         {
             _textLabel.enabled = false;
-        } 
+        }
+
+        SetUnselectedVisuals();
     }
 
     public void CheckLabelSize()
@@ -43,10 +65,28 @@ public class ValueLabelHandler : MonoBehaviour
 
     public void Select()
     {
-        _textLabel.text = labelInfo.Name + " (Valittu)";
+        _textLabel.text = labelInfo.Name;
+        SetSelectedVisuals();
     }
     public void Unselect()
     {
         _textLabel.text = labelInfo.Name;
+        SetUnselectedVisuals();
+    }
+
+    private void SetSelectedVisuals()
+    {
+        if (_selectButton != null && _selectButton.image != null)
+        {
+            _selectButton.image.color = _selectedColor;
+        }
+    }
+
+    private void SetUnselectedVisuals()
+    {
+        if (_selectButton != null && _selectButton.image != null)
+        {
+            _selectButton.image.color = _unselectedColor;
+        }
     }
 }
