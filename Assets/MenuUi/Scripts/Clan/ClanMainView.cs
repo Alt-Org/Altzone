@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using TMPro;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts;
@@ -7,6 +8,8 @@ using Altzone.Scripts.Window;
 using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using MenuUi.Scripts.TabLine;
+using MenuUi.Scripts.SwipeNavigation;
 
 public class ClanMainView : MonoBehaviour
 {
@@ -39,6 +42,7 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] ClanValuePanel _valuePanel;
     [SerializeField] ClanHeartColorSetter _clanHeart;
     [SerializeField] private ScrollRect _swipeScrollRect;
+    [SerializeField] private TabLine _tabLine;
 
     [Header("Buttons")]
     [SerializeField] private Button _joinClanButton;
@@ -56,6 +60,7 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private ClanSearchPopup _clanPopup;
     [SerializeField] private GameObject _overlay;
     [SerializeField] private ClanConfirmPopup _confirmPopup;
+    [SerializeField] private ClanMemberPopupController _memberDetailsPopup;
 
     [Header("Icons")]
     [SerializeField] private Image _clanAgeImage;
@@ -93,6 +98,9 @@ public class ClanMainView : MonoBehaviour
     {
         // Clear selection to prevent button highlight staying on screen
         EventSystem.current.SetSelectedGameObject(null);
+
+        if (_tabLine != null && _tabLine.Swipe != null)
+            _tabLine.Swipe.OnCurrentPageChanged += HandleSwipePageChanged;
 
         ResetViewState();
 
@@ -145,6 +153,12 @@ public class ClanMainView : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        if (_tabLine != null && _tabLine.Swipe != null)
+            _tabLine.Swipe.OnCurrentPageChanged -= HandleSwipePageChanged;
+    }
+
     private void ResetViewState()
     {
         if(_inClanPanel != null)
@@ -159,7 +173,7 @@ public class ClanMainView : MonoBehaviour
 
         if (_inClanButtons != null)
         {
-            _inClanButtons.SetActive(true);
+            ApplyButtonsVisibility();
         }
 
         if (_editViewButtons != null)
@@ -273,25 +287,49 @@ public class ClanMainView : MonoBehaviour
 
     public void SetCurrentPageToProfile()
     {
-        _currentPage = ClanPage.Profile;
-        SetSwipeEnabled(true);
-        ApplyButtonsVisibility();
+        StopAllCoroutines();
+        StartCoroutine(ForceSwipeUIPageAfterLayout(0, instant: true));
     }
 
     public void SetCurrentPageToMembers()
     {
-        _currentPage = ClanPage.Members;
-        SetSwipeEnabled(true);
-        ApplyButtonsVisibility();
+        StopAllCoroutines();
+        StartCoroutine(ForceSwipeUIPageAfterLayout(1, instant: true));
     }
 
     public void SetCurrentPageToSettings()
     {
+        if (_memberDetailsPopup != null)
+            _memberDetailsPopup.Hide();
+
         _currentPage = ClanPage.Settings;
-        SetSwipeEnabled(false);
+
+        if (_tabLine?.Swipe != null)
+        {
+            _tabLine.Swipe.hardBlocked = true;
+        }
+
+        //SetSwipeEnabled(false);
         ApplyButtonsVisibility();
     }
 
+    public void ExitSettingsToProfile()
+    {
+        if (_tabLine?.Swipe != null)
+            _tabLine.Swipe.hardBlocked = false;
+
+        //Unlocks tab line swiping when exiting settings page
+        SetTabLineSwipeLock(false);
+
+        ShowProfilePage();
+
+        //Maybe dont need this anymore
+        // Enables swiping again
+        //SetSwipeEnabled(true);
+
+        StopAllCoroutines();
+        StartCoroutine(ForceSwipeUIPageAfterLayout(0, instant: true));
+    }
 
     private void ApplyButtonsVisibility()
     {
@@ -317,17 +355,64 @@ public class ClanMainView : MonoBehaviour
             _editButton.SetActive(_canEditCached);
     }
 
-    public void SetSwipeEnabled(bool enabled)
+    // Prevents swiping when on settings page
+    /*public void SetSwipeEnabled(bool enabled)
     {
-        if (_swipeScrollRect == null)
+        if (_tabLine != null && _tabLine.Swipe != null)
         {
-            return;
+            _tabLine.Swipe.IsEnabled = enabled; 
         }
 
-        _swipeScrollRect.enabled = enabled;
+        if (_swipeScrollRect != null)
+        {
+            _swipeScrollRect.StopMovement();
+            _swipeScrollRect.velocity = Vector2.zero;
+        }
+    }*/
 
-        _swipeScrollRect.horizontal = enabled;
+    private void HandleSwipePageChanged()
+    {
+        if (_tabLine == null || _tabLine.Swipe == null) return;
+        if (_currentPage == ClanPage.Settings) return;
+
+        int page = _tabLine.Swipe.CurrentPage;
+        ApplyCurrentPage(page == 0 ? ClanPage.Profile : ClanPage.Members);
     }
+
+    private void ApplyCurrentPage(ClanPage page)
+    {
+        _currentPage = page;
+        ApplyButtonsVisibility();
+        RefreshSwipeEnabledState();
+    }
+
+    private IEnumerator ForceSwipeUIPageAfterLayout(int pageIndex, bool instant)
+    {     
+        // Waits for layout + rect.width to settle
+        yield return null;
+        yield return new WaitForEndOfFrame();
+        Canvas.ForceUpdateCanvases();
+
+        var swipe = _tabLine != null ? _tabLine.Swipe : null;
+        if (swipe == null) yield break;
+
+        swipe.UpdateSwipeAreaValues();
+        if (_currentPage != ClanPage.Settings)
+            swipe.IsEnabled = true;
+
+        yield return swipe.SetScrollBarValue(pageIndex, instant);
+
+        // Syncs internal state
+        ApplyCurrentPage(pageIndex == 0 ? ClanPage.Profile : ClanPage.Members);
+    }
+
+    private void RefreshSwipeEnabledState()
+    {
+        bool shouldEnable = _currentPage != ClanPage.Settings;
+        if (_tabLine?.Swipe != null)
+            _tabLine.Swipe.IsEnabled = shouldEnable;
+    }
+
 
     private void Reset()
     {
@@ -392,7 +477,6 @@ public class ClanMainView : MonoBehaviour
     {
         StartCoroutine(ServerManager.Instance.LeaveClan(success =>
         {
-            Debug.Log("[ClanMainView] LeaveClan callback, success=" + success);
             if (success)
             {
                 Reset();             
@@ -428,9 +512,27 @@ public class ClanMainView : MonoBehaviour
 
     public void OnClickEditClanSettings()
     {
+        if (_swipeScrollRect != null)
+        {
+            _swipeScrollRect.StopMovement();
+            _swipeScrollRect.velocity = Vector2.zero;
+        }
+
         ShowSettingsPage();
         SetCurrentPageToSettings();
-        SetSwipeEnabled(false);
+
+        if (_tabLine != null)
+        {
+            _tabLine.SetLockActiveFromSwipe(true);
+        }
+    }
+
+    public void SetTabLineSwipeLock(bool locked)
+    {
+        if (_tabLine != null)
+        {
+            _tabLine.SetLockActiveFromSwipe(locked);
+        }
     }
 
     private void ShowOverlay (bool on)

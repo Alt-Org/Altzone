@@ -4005,7 +4005,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5286713614269148891
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5007,6 +5007,7 @@ GameObject:
   - component: {fileID: 655742999910035942}
   - component: {fileID: 806197608811909786}
   - component: {fileID: 8145268737812066890}
+  - component: {fileID: 5759344585930258833}
   m_Layer: 5
   m_Name: MemberDetailsPopup
   m_TagString: Untagged
@@ -5072,6 +5073,20 @@ MonoBehaviour:
   _winsLossesText: {fileID: 328792196165412967}
   _votesButton: {fileID: 7810732603510133814}
   _avatarLoader: {fileID: 7380445609877259515}
+--- !u!114 &5759344585930258833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4585005434753258620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cabc7ab297e9ab44a96e83ec36e516df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blockType: 0
+  _swipe: {fileID: 7863349590796939053}
 --- !u!1 &4659229131745059228
 GameObject:
   m_ObjectHideFlags: 0
@@ -8938,6 +8953,7 @@ MonoBehaviour:
   _valuePanel: {fileID: 3494596592679900885}
   _clanHeart: {fileID: 2805234185364963996}
   _swipeScrollRect: {fileID: 4806463595524585587}
+  _tabLine: {fileID: 5009642048386207442}
   _joinClanButton: {fileID: 7990530695742121514}
   _leaveClanButton: {fileID: 7111003629890854146}
   _linkButton: {fileID: 6587999552332575866}
@@ -8946,6 +8962,7 @@ MonoBehaviour:
   _clanPopup: {fileID: 6465328737158034700}
   _overlay: {fileID: 880733857859938629}
   _confirmPopup: {fileID: 1747969689837145745}
+  _memberDetailsPopup: {fileID: 8145268737812066890}
   _clanAgeImage: {fileID: 8275513214972055479}
   _ageIcons:
   - age: 1
@@ -18061,6 +18078,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _finnishText: Klaanin profiili
   _englishText: Clan profile
+--- !u!114 &5009642048386207442 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 406035742189508960, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 4622757815620655026}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb907510ee6a3054589606cf24e7d2ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &5256988482659745761 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 636070301481445459, guid: 57890b7dbec8a984abb7d8148eefe9f6,
@@ -18485,12 +18514,12 @@ PrefabInstance:
     - target: {fileID: 8222643266353575065, guid: eb5986d35f8114c49af442a9df68a4d2,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8222643266353575065, guid: eb5986d35f8114c49af442a9df68a4d2,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8749901893772910200, guid: eb5986d35f8114c49af442a9df68a4d2,
         type: 3}

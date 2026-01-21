@@ -56,6 +56,8 @@ namespace MenuUi.Scripts.SwipeNavigation
         public bool isEnabled;
         private Rect swipeRect;
 
+        public bool hardBlocked { get; set; } = false;
+
         [SerializeField] private bool _isInMainMenu;
         [SerializeField] protected bool _willRotate;
 
@@ -229,6 +231,14 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         private void UpdateInput()
         {
+            //Helps to block swiping when in clan settings page
+            if (hardBlocked)
+            {
+                IsEnabled = false;
+                _swipeAllowed = false;
+                return;
+            }
+
             // Return if currently swiping
             if (isSwipeMode == true) return;
 

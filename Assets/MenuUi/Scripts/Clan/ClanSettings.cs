@@ -320,12 +320,7 @@ public class ClanSettings : AltMonoBehaviour
 
     private void ShowProfileTablineButtons()
     {
-        if (_clanMainView != null)
-        {
-            _clanMainView.ShowProfilePage();
-            _clanMainView.SetCurrentPageToProfile(); 
-            _clanMainView.SetSwipeEnabled(true);
-        }
+        _clanMainView.ExitSettingsToProfile();
 
         if (_editViewButtons != null)
             _editViewButtons.SetActive(false);

@@ -16,6 +16,8 @@ namespace MenuUi.Scripts.TabLine
         [SerializeField] private Image _tabLineImage;
         [SerializeField] private Color _tabColor;
 
+        private bool _lockActiveFromSwipe = false;
+
         private SwipeUI _swipe;
 
         public SwipeUI Swipe { get => _swipe;}
@@ -61,6 +63,7 @@ namespace MenuUi.Scripts.TabLine
 
         private void OnSwipeCurrentPageChanged()
         {
+            if (_lockActiveFromSwipe) return;
             ActivateTabButton(_swipe.CurrentPage);
         }
 
@@ -120,6 +123,12 @@ namespace MenuUi.Scripts.TabLine
             public Sprite SetActiveVisuals() => _tabObjectHandler.SetActiveVisuals(_tablineImage);
             public void SetInactiveVisuals() => _tabObjectHandler.SetInactiveVisuals();
             public void SetColour(Color colour) => _tabObjectHandler.SetColour(colour);
+        }
+
+
+        public void SetLockActiveFromSwipe(bool locked)
+        {
+            _lockActiveFromSwipe = locked;
         }
     }
 }
