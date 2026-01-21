@@ -56,6 +56,7 @@ public class ClanMainView : MonoBehaviour
 
     private bool _isInClanCached;
     private bool _canEditCached;
+    private bool _hasClanViewedCached;
 
     private bool _isProfilePageVisible = true;
 
@@ -154,6 +155,9 @@ public class ClanMainView : MonoBehaviour
                 _joinClanButton.gameObject.SetActive(false);
             }
         }
+
+        //Always reset swipe to profile page on open
+        ResetSwipeToProfileOnOpen();
     }
 
     private void OnDisable()
@@ -365,6 +369,25 @@ public class ClanMainView : MonoBehaviour
             _editButton.SetActive(_canEditCached);
     }
 
+    private void ResetSwipeToProfileOnOpen()
+    {
+        // Don't do anything if swipe root isn't shown (e.g. NoClan)
+        if (_clanSwipeRoot != null && !_clanSwipeRoot.activeInHierarchy) return;
+
+        // Settings should never be the first view when opening ClanMainView
+        _currentPage = ClanPage.Profile;
+
+        // Make sure settings isn't active (extra safety)
+        if (_clanSettings != null) _clanSettings.SetActive(false);
+
+        ApplyButtonsVisibility();
+
+        // Force scroll position + internal SwipeUI state to page 0
+        StopAllCoroutines();
+        StartCoroutine(ForceSwipeUIPageAfterLayout(0, instant: true));
+    }
+
+
     private void HandleSwipePageChanged()
     {
         if (_tabLine == null || _tabLine.Swipe == null) return;
@@ -404,9 +427,9 @@ public class ClanMainView : MonoBehaviour
     private void RefreshSwipeEnabledState()
     {
         bool isSettings = _currentPage == ClanPage.Settings;
-        bool inClan = _isInClanCached;
+        //bool inClan = _isInClanCached;
 
-        bool allowNav = !isSettings && inClan;
+        bool allowNav = !isSettings && _hasClanViewedCached;
 
         if (_tabLine?.Swipe != null)
         {
@@ -421,6 +444,7 @@ public class ClanMainView : MonoBehaviour
     {
         _isInClanCached = false;
         _canEditCached = false;
+        _hasClanViewedCached = false;
 
         ToggleClanPanel(false);
         _clanName.text = "Clan Name";
@@ -444,21 +468,21 @@ public class ClanMainView : MonoBehaviour
         }
     }
 
-    private void ToggleClanPanel(bool isInClan)
+    private void ToggleClanPanel(bool showClanPanel)
     {
-        _isInClanCached = isInClan;
+        _hasClanViewedCached = showClanPanel;
 
-        _inClanPanel.SetActive(isInClan);
-        _noClanPanel.SetActive(!isInClan);
+        _inClanPanel.SetActive(showClanPanel);
+        _noClanPanel.SetActive(!showClanPanel);
 
         if(_clanSwipeRoot != null)
         {
-            _clanSwipeRoot.SetActive(isInClan);
+            _clanSwipeRoot.SetActive(showClanPanel);
         }
 
         if(_tabLine?.Swipe != null)
         {
-            _tabLine.Swipe.hardBlocked = !isInClan;
+            _tabLine.Swipe.hardBlocked = !showClanPanel;
         }
 
         RefreshSwipeEnabledState();
