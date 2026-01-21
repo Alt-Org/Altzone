@@ -1,0 +1,12 @@
+var class_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system =
+[
+    [ "ProjectileCollisionData", "struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_projectile_collision_data.html", "struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_projectile_collision_data" ],
+    [ "ArenaBorderCollisionData", "struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_arena_border_collision_data.html", "struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_arena_border_collision_data" ],
+    [ "SoulWallCollisionData", "struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_soul_wall_collision_data.html", "struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_soul_wall_collision_data" ],
+    [ "PlayerCharacterCollisionData", "struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_player_character_collision_data.html", "struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_player_character_collision_data" ],
+    [ "PlayerShieldCollisionData", "struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_player_shield_collision_data.html", "struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_player_shield_collision_data" ],
+    [ "GoalCollisionData", "struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_goal_collision_data.html", "struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_goal_collision_data" ],
+    [ "Init", "class_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system.html#a0308deff9bfbafe619f9550768f79008", null ],
+    [ "OnTrigger2D", "class_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system.html#a616d5f87b21fcd7bcfdb76e5bd5f7aba", null ],
+    [ "s_debugLogger", "class_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system.html#aea20bfce42cbeb908d779340933ca05d", null ]
+];

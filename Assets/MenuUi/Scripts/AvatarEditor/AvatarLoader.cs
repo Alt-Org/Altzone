@@ -1,4 +1,4 @@
-using MenuUi.Scripts.AvatarEditor;
+using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
 public class AvatarLoader : MonoBehaviour
@@ -23,13 +23,13 @@ public class AvatarLoader : MonoBehaviour
         if (_avatarVisuals.Sprites == null || _avatarVisuals.Sprites.Count == 0)
             return;
 
-        _characterHandle.SetMainCharacterImage(FeatureSlot.Hair, _avatarVisuals.Hair);
-        _characterHandle.SetMainCharacterImage(FeatureSlot.Eyes, _avatarVisuals.Eyes);
-        _characterHandle.SetMainCharacterImage(FeatureSlot.Nose, _avatarVisuals.Nose);
-        _characterHandle.SetMainCharacterImage(FeatureSlot.Mouth, _avatarVisuals.Mouth);
-        _characterHandle.SetMainCharacterImage(FeatureSlot.Body, _avatarVisuals.Clothes);
-        _characterHandle.SetMainCharacterImage(FeatureSlot.Hands, _avatarVisuals.Hands);
-        _characterHandle.SetMainCharacterImage(FeatureSlot.Feet, _avatarVisuals.Feet);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Hair, _avatarVisuals.Hair);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Eyes, _avatarVisuals.Eyes);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Nose, _avatarVisuals.Nose);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Mouth, _avatarVisuals.Mouth);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Clothes, _avatarVisuals.Clothes);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Hands, _avatarVisuals.Hands);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Feet, _avatarVisuals.Feet);
     }
 
     public void UpdateVisuals(AvatarVisualData data)
@@ -37,13 +37,13 @@ public class AvatarLoader : MonoBehaviour
        
         _characterHandle.SetHeadColor(data.Color);
 
-        _characterHandle.SetMainCharacterImage(FeatureSlot.Hair, data.Hair);
-        _characterHandle.SetMainCharacterImage(FeatureSlot.Eyes, data.Eyes);
-        _characterHandle.SetMainCharacterImage(FeatureSlot.Nose, data.Nose);
-        _characterHandle.SetMainCharacterImage(FeatureSlot.Mouth, data.Mouth);
-        _characterHandle.SetMainCharacterImage(FeatureSlot.Body, data.Clothes);
-        _characterHandle.SetMainCharacterImage(FeatureSlot.Hands, data.Hands);
-        _characterHandle.SetMainCharacterImage(FeatureSlot.Feet, data.Feet);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Hair, data.Hair);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Eyes, data.Eyes);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Nose, data.Nose);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Mouth, data.Mouth);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Clothes, data.Clothes);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Hands, data.Hands);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Feet, data.Feet);
     }
 }
 

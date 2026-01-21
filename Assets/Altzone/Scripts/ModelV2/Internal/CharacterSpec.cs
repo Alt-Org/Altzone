@@ -124,6 +124,7 @@ namespace Altzone.Scripts.ModelV2.Internal
         {
             get
             {
+                if(SettingsCarrier.Instance == null) return FinnishName;
                 switch (SettingsCarrier.Instance.Language)
                 {
                     case SettingsCarrier.LanguageType.Finnish:
