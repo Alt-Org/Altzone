@@ -15,7 +15,7 @@ namespace MenuUi.Scripts.AvatarEditor
         public void SetFeature(AvatarPartInfo feature, AvatarPiece slot)
         {
             _avatarEditorController.PlayerAvatar.SetPart(slot, feature.Id);
-            _avatarEditorCharacterHandle.SetMainCharacterImage(slot, feature.AvatarImage);
+            _avatarEditorCharacterHandle.SetMainCharacterImage(slot, feature);
         }
 
         public void SetLoadedFeatures(PlayerAvatar avatar)
@@ -33,7 +33,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
                 if (avatarPart != null)
                 {
-                    _avatarEditorCharacterHandle.SetMainCharacterImage(slot, avatarPart.AvatarImage);
+                    _avatarEditorCharacterHandle.SetMainCharacterImage(slot, avatarPart);
                 }
             }
         }

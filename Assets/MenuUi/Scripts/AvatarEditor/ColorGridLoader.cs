@@ -18,8 +18,6 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Color _skinColor = new(1, 0.984f, 0);
         [SerializeField] private Color _selectedColor = new(0, 0.784f, 1);
         [SerializeField] private Color _classColor = new(1, 0, 0.937f);
-        [SerializeField] private Texture2D _testTexture;
-        [SerializeField] private Texture2D _testMainTexture;
 
         private float _viewPortHeight;
         private float _cellHeight;
@@ -30,9 +28,6 @@ namespace MenuUi.Scripts.AvatarEditor
             _featureMaterial.SetColor("_SkinColor", _skinColor);
             _featureMaterial.SetColor("_SelectedColor", _selectedColor);
             _featureMaterial.SetColor("_ClassColor", _classColor);
-
-            _featureMaterial.SetTexture("_MaskTex", _testTexture);
-            _featureMaterial.SetTexture("_MainTex", _testMainTexture);
         }
 
         private void AddColorCell(Color color)

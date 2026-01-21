@@ -110,7 +110,8 @@ namespace MenuUi.Scripts.AvatarEditor
             {
                 try
                 {
-                    _characterHandle.SetMainCharacterImage(slot, sprite);
+                    // FIX LATER
+                    //_characterHandle.SetMainCharacterImage(slot, sprite);
                 }
                 catch (System.Exception ex)
                 {
