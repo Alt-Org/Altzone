@@ -911,6 +911,80 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
+
+    /// <summary>
+    /// Fetches clan members for an arbitrary clan id (used when viewing another clan's profile).
+    /// 
+    /// NOTE:
+    /// - This overload is intentionally separate from GetClanMembersFromServer(Action<...>),
+    ///   which uses the local player's clan_id (own clan only).
+    /// - This method also maps each member's role using ServerPlayer.clanRole_id -> ServerClan.roles,
+    ///   so UI can display role names (e.g. Leader/Officer) via ClanMember.Role.
+    /// </summary>
+    /// <param name="clanId">The clan id to fetch members for.</param>
+    /// <param name="callback">Invoked with the list of ClanMember (or null on failure).</param>
+    public IEnumerator GetClanMembersFromServer(string clanId, Action<List<ClanMember>> callback)
+    {
+        if (string.IsNullOrEmpty(clanId))
+        {
+            Debug.LogWarning("GetClanMembersFromServer called with empty clanId.");
+            callback?.Invoke(null);
+            yield break;
+        }
+
+        yield return StartCoroutine(WebRequests.Get(
+            SERVERADDRESS + "clan/" + clanId + "?with=Player",
+            AccessToken,
+            request =>
+            {
+                if (request.result == UnityWebRequest.Result.Success)
+                {
+                    JObject result = JObject.Parse(request.downloadHandler.text);
+
+
+                    ServerClan clan = result["data"]["Clan"].ToObject<ServerClan>();
+
+
+                    List<ClanMember> members = new();
+                    JArray playerArray = result["data"]["Clan"]["Player"] as JArray;
+
+                    foreach (JToken value in playerArray)
+                        members.Add(new(value.ToObject<ServerPlayer>()));
+
+
+                    var roleById = new Dictionary<string, ClanRoles>();
+                    if (clan?.roles != null)
+                    {
+                        foreach (var r in clan.roles)
+                        {
+                            if (r != null && !string.IsNullOrEmpty(r._id))
+                                roleById[r._id] = r;
+                        }
+                    }
+
+
+                    foreach (var member in members)
+                    {
+                        if (member == null) continue;
+
+
+                        var roleId = member.ClanRoleId;
+
+                        if (!string.IsNullOrEmpty(roleId) && roleById.TryGetValue(roleId, out var role))
+                            member.Role = role;
+                    }
+
+                    callback?.Invoke(members);
+                }
+                else
+                {
+                    Debug.LogWarning($"Failed to get players from clan {clanId}.");
+                    callback?.Invoke(null);
+                }
+            }
+        ));
+    }
+
     public IEnumerator JoinClan(ServerClan clanToJoin, Action<ServerClan> callback)
     {
         string body = JObject.FromObject(new{clan_id=clanToJoin._id,player_id=Player._id}).ToString();

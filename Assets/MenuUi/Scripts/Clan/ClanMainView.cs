@@ -45,6 +45,7 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private TabLine _tabLine;
     [SerializeField] private GameObject _clanSwipeRoot;
     [SerializeField] private GameObject _tabButtonsRoot;
+    [SerializeField] private ClanMembersPageController _membersPageController;
 
     [Header("Buttons")]
     [SerializeField] private Button _joinClanButton;
@@ -228,6 +229,12 @@ public class ClanMainView : MonoBehaviour
     private void SetClanProfile(ClanData clan)
     {
         ToggleClanPanel(true);
+
+        if (_membersPageController != null)
+        {
+            _membersPageController.SetViewedClan(clan.Id);
+
+        }
 
         // Show correct buttons
         bool isInClan = ServerManager.Instance.Clan != null && clan.Id == ServerManager.Instance.Clan._id;

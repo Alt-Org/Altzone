@@ -13,15 +13,29 @@ public class ClanMembersPageController : MonoBehaviour
     [SerializeField] private ClanMemberPlaque _memberPlaquePrefab;
     [SerializeField] private ClanMemberPopupController _memberPopup;
 
+    private string _viewedClanId;
+    private HashSet<string> _viewAdminSet;
+
+    private Coroutine _rebuildRoutine;
+
     private void OnEnable()
     {
-        Rebuild();
+        if(!string.IsNullOrEmpty(_viewedClanId))
+        {
+            Rebuild();
+        }     
     }
 
     private void Rebuild()
     {
         if (!isActiveAndEnabled) return;
-        StartCoroutine(RebuildCoroutine());
+
+        if (_rebuildRoutine != null)
+        {
+            StopCoroutine(_rebuildRoutine);
+        }
+
+        _rebuildRoutine = StartCoroutine(RebuildCoroutine());
     }
 
     private IEnumerator RebuildCoroutine()
@@ -31,15 +45,22 @@ public class ClanMembersPageController : MonoBehaviour
 
         // Fetch members
         List<ClanMember> members = null;
-        yield return StartCoroutine(ServerManager.Instance.GetClanPlayers(m => members = m));
+        if (!string.IsNullOrEmpty(_viewedClanId))
+        {
+            yield return StartCoroutine(ServerManager.Instance.GetClanMembersFromServer(_viewedClanId, m => members = m));
+        }
+        else
+        {
+            yield return StartCoroutine(ServerManager.Instance.GetClanPlayers(m => members = m));
+        }
+
         if (members == null) yield break;
 
         var clan = ServerManager.Instance.Clan;
 
         // Admin set as a fallback label if member.Role is missing
-        var adminSet = (clan != null && clan.admin_ids != null)
-            ? new HashSet<string>(clan.admin_ids)
-            : new HashSet<string>();
+        var adminSet = _viewAdminSet
+            ?? new HashSet<string>(); 
 
         // Build sortable rows
         var rows = members
@@ -101,6 +122,16 @@ public class ClanMembersPageController : MonoBehaviour
                 });
             }
         }
+
+        _rebuildRoutine = null;
+    }
+
+    public void SetViewedClan(string clanId, IEnumerable<string> adminIds = null)
+    {
+        _viewedClanId = clanId;
+        _viewAdminSet = adminIds != null ? new HashSet<string>(adminIds) : null;
+
+        Rebuild();
     }
 
     private static int CountRights(ClanRoles role)
