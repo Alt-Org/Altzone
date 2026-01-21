@@ -163,7 +163,7 @@ namespace Battle.QSimulation.Player
             Input* input;
             Input stackInputStorage;
 
-            BattlePlayerEntityRef playerEntity = default;
+            BattlePlayerEntityRef playerEntity = BattlePlayerEntityRef.None;
             BattlePlayerDataQComponent* playerData = null;
             Transform2D* playerTransform = null;
 
