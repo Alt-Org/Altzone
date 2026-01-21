@@ -183,7 +183,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
             var partInfo = _avatarPartsReference.GetAvatarPartById(pieceIdValue.ToString());
 
-            var avatarImage = partInfo?.AvatarImage;
+            var avatarImage = partInfo;
             avatarVisualData.SetAvatarPiece(pieceId, avatarImage);
         }
     }

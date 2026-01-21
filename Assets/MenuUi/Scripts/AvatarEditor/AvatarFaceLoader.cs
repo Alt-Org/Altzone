@@ -1,3 +1,4 @@
+using Altzone.Scripts.AvatarPartsInfo;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
@@ -104,14 +105,13 @@ namespace MenuUi.Scripts.AvatarEditor
             ApplyFeatureUpdates(featureUpdates);
         }
 
-        private void ApplyFeatureUpdates((AvatarPiece slot, Sprite sprite)[] featureUpdates)
+        private void ApplyFeatureUpdates((AvatarPiece slot, AvatarPartInfo partInfo)[] featureUpdates)
         {
-            foreach (var (slot, sprite) in featureUpdates)
+            foreach (var (slot, partInfo) in featureUpdates)
             {
                 try
                 {
-                    // FIX LATER
-                    //_characterHandle.SetMainCharacterImage(slot, sprite);
+                    _characterHandle.SetMainCharacterImage(slot, partInfo);
                 }
                 catch (System.Exception ex)
                 {
@@ -143,7 +143,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private bool HasValidSprites()
         {
-            if (_avatarVisuals.Sprites == null || _avatarVisuals.Sprites.Count == 0)
+            if (_avatarVisuals.PartInfos == null || _avatarVisuals.PartInfos.Count == 0)
             {
                 Debug.LogWarning($"No sprites available in avatar visuals for {gameObject.name}");
                 return false;

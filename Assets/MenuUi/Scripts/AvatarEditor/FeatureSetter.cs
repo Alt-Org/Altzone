@@ -38,11 +38,11 @@ namespace MenuUi.Scripts.AvatarEditor
             }
         }
 
-        public Sprite GetCurrentlySelectedFeatureSprite(AvatarPiece pieceSlot)
+        public AvatarPartInfo GetCurrentlySelectedFeaturePartInfo(AvatarPiece pieceSlot)
         {
             string partId = _avatarEditorController.PlayerAvatar.GetPartId(pieceSlot);
-            Sprite partSprite = _avatarPartsReference.GetAvatarPartById(partId).AvatarImage;
-            return partSprite;
+            AvatarPartInfo partInfo = _avatarPartsReference.GetAvatarPartById(partId);
+            return partInfo;
         }
     }
 }

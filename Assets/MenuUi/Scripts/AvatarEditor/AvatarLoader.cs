@@ -50,7 +50,7 @@ public class AvatarLoader : MonoBehaviour
 
         _characterHandle.SetHeadColor(_avatarVisuals.Color);
 
-        if (_avatarVisuals.Sprites == null || _avatarVisuals.Sprites.Count == 0)
+        if (_avatarVisuals.PartInfos == null || _avatarVisuals.PartInfos.Count == 0)
             return;
 
         _characterHandle.SetMainCharacterImage(AvatarPiece.Hair, GetPartInfo(AvatarPiece.Hair));
@@ -62,18 +62,17 @@ public class AvatarLoader : MonoBehaviour
         _characterHandle.SetMainCharacterImage(AvatarPiece.Feet, GetPartInfo(AvatarPiece.Feet));
     }
 
-    // FIX LATER
     public void UpdateVisuals(AvatarVisualData data)
     {
-        //_characterHandle.SetHeadColor(data.Color);
+        _characterHandle.SetHeadColor(data.Color);
 
-        //_characterHandle.SetMainCharacterImage(AvatarPiece.Hair, data.Hair);
-        //_characterHandle.SetMainCharacterImage(AvatarPiece.Eyes, data.Eyes);
-        //_characterHandle.SetMainCharacterImage(AvatarPiece.Nose, data.Nose);
-        //_characterHandle.SetMainCharacterImage(AvatarPiece.Mouth, data.Mouth);
-        //_characterHandle.SetMainCharacterImage(AvatarPiece.Clothes, data.Clothes);
-        //_characterHandle.SetMainCharacterImage(AvatarPiece.Hands, data.Hands);
-        //_characterHandle.SetMainCharacterImage(AvatarPiece.Feet, data.Feet);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Hair, data.Hair);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Eyes, data.Eyes);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Nose, data.Nose);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Mouth, data.Mouth);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Clothes, data.Clothes);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Hands, data.Hands);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Feet, data.Feet);
     }
 }
 

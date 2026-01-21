@@ -122,7 +122,7 @@ namespace MenuUi.Scripts.AvatarEditor
             List<AvatarPiece> pieceIDs = Enum.GetValues(typeof(AvatarPiece)).Cast<AvatarPiece>().ToList();
             foreach (AvatarPiece piece in pieceIDs)
             {
-                _visualDataScriptableObject.SetAvatarPiece(piece, _featureSetter.GetCurrentlySelectedFeatureSprite(piece));
+                _visualDataScriptableObject.SetAvatarPiece(piece, _featureSetter.GetCurrentlySelectedFeaturePartInfo(piece));
             }
 
             AvatarDesignLoader.Instance.InvokeOnAvatarDesignUpdate();
