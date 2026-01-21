@@ -57,7 +57,7 @@ namespace MenuUi.Scripts.CharacterGallery
             _galleryView.OnGalleryCharactersSet -= SetCharacters;
             _galleryView.OnFilterChanged -= HandleFilterChanged;
             SignalBus.OnDefenceGalleryEditPanelRequested -= OpenPopupFromSelected;
-            SignalBus.OnDefenceGalleryEditPanelRequestedForLoadout += OpenPopupFromLoadout;
+            SignalBus.OnDefenceGalleryEditPanelRequestedForLoadout -= OpenPopupFromLoadout;
 
 
             foreach (SelectedCharacterEditingSlot slot in _selectedCharacterSlots)
