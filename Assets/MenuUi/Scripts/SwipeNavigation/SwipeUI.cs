@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Altzone.Scripts.Window;
+using Newtonsoft.Json.Linq;
 using Prg.Scripts.Common;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -67,13 +68,43 @@ namespace MenuUi.Scripts.SwipeNavigation
             get { return isEnabled && !_isBlocked; }
             set
             {
-                isEnabled = value;
-                if(scrollRect)ToggleScrollRect(value);
+                if (!isEnabled.Equals(value)) isEnabled = value;
+                else return;
+                if (scrollRect)
+                {
+                    if (isEnabled && !_isBlocked)
+                        ToggleScrollRect(true);
+                    else
+                    {
+                        ToggleScrollRect(false);
+                        StartCoroutine(OnSwipeOneStep(CurrentPage));
+                    }
+                }
 
                 if (!IsEnabled)
                 {
                     _startTouch = Vector2.zero;
                     _endTouch = Vector2.zero;
+                }
+            }
+        }
+
+        public bool IsBlocked
+        {
+            get { return _isBlocked; }
+            private set
+            {
+                if (!_isBlocked.Equals(value)) _isBlocked = value;
+                else return;
+                if (scrollRect)
+                {
+                    if (isEnabled && !_isBlocked)
+                        ToggleScrollRect(true);
+                    else
+                    {
+                        ToggleScrollRect(false);
+                        StartCoroutine(OnSwipeOneStep(CurrentPage));
+                    }
                 }
             }
         }
@@ -170,6 +201,8 @@ namespace MenuUi.Scripts.SwipeNavigation
         {
             UpdateInput();
             //UpdateButtonContent();
+            if (isEnabled && !_isBlocked)
+                ToggleScrollRect(true);
         }
         private void LateUpdate()
         {
@@ -240,14 +273,14 @@ namespace MenuUi.Scripts.SwipeNavigation
                 {
                     if (Touch.activeTouches.Count == 1) _endTouch = Touch.activeFingers[0].screenPosition;
                     else if (Mouse.current != null) _endTouch = Mouse.current.position.ReadValue();
-                    UpdateSwipe();
+                    StartCoroutine(OnSwipeOneStep(CurrentPage));
                 }
                 if (_isBlocked)
                 {
                     if (ClickStateHandler.GetClickState() is ClickState.End)
                     {
                         //StartCoroutine(OnSwipeOneStep(CurrentPage));
-                        _isBlocked = false;
+                        IsBlocked = false;
                     }
                 }
                 return;
@@ -295,7 +328,7 @@ namespace MenuUi.Scripts.SwipeNavigation
                     }
                     float currentSwipeDistance = _startTouch.x - currentTouch.x;
                     float currentScrollvalue = Mathf.Clamp(_startScrollvalue + currentSwipeDistance/totalSlideWidth,0,1);
-                    scrollBar.value = currentScrollvalue;
+                    //scrollBar.value = currentScrollvalue;
                 }
 
                 if (Mathf.Abs(_startTouch.y - currentTouch.y) > swipeDistance && !_swipeAllowed)
@@ -315,6 +348,7 @@ namespace MenuUi.Scripts.SwipeNavigation
                     UpdateSwipe();
                 }
 
+                IsBlocked = false;
                 IsEnabled = true;
                 _swipeAllowed = false;
             }
@@ -451,12 +485,12 @@ namespace MenuUi.Scripts.SwipeNavigation
 
             if (Mathf.Abs(pointerData.delta.y) > Mathf.Abs(pointerData.delta.x))
             {
-                _isBlocked = true;
+                IsBlocked = true;
             }
             else
             {
-                //if (_startTouch.x != 0)
-                    //_isBlocked = false;
+                if (_startTouch.x != 0)
+                    IsBlocked = false;
             }
         }
 
@@ -466,12 +500,12 @@ namespace MenuUi.Scripts.SwipeNavigation
 
             if (Mathf.Abs(pointerData.delta.y) > Mathf.Abs(pointerData.delta.x))
             {
-                _isBlocked = true;
+                IsBlocked = true;
             }
             else
             {
-                //if (_startTouch.x != 0)
-                    //_isBlocked = false;
+                if (_startTouch.x != 0)
+                    IsBlocked = false;
             }
 
         }
@@ -481,16 +515,16 @@ namespace MenuUi.Scripts.SwipeNavigation
             PointerEventData pointerData = eventData as PointerEventData;
             if (blockType == SwipeBlockType.All)
             {
-                _isBlocked = true;
+                IsBlocked = true;
             }
             else if (blockType is SwipeBlockType.Vertical && Mathf.Abs(pointerData.delta.y) > Mathf.Abs(pointerData.delta.x))
             {
-                _isBlocked = true;
+                IsBlocked = true;
             }
             else
             {
-                //if (_startTouch.x != 0)
-                    //_isBlocked = false;
+                if (_startTouch.x != 0)
+                    IsBlocked = false;
             }
 
         }

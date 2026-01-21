@@ -64,6 +64,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             Debug.Log("Currentpage: " + CurrentPage +  "length: " + startSlides.Length);
             if (CurrentPage >= startSlides.Length - 1)
             {
+                ToggleScrollRect(false);
                 return;
             }
             else
