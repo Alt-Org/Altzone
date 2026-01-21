@@ -43,6 +43,8 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] ClanHeartColorSetter _clanHeart;
     [SerializeField] private ScrollRect _swipeScrollRect;
     [SerializeField] private TabLine _tabLine;
+    [SerializeField] private GameObject _clanSwipeRoot;
+    [SerializeField] private GameObject _tabButtonsRoot;
 
     [Header("Buttons")]
     [SerializeField] private Button _joinClanButton;
@@ -287,12 +289,18 @@ public class ClanMainView : MonoBehaviour
 
     public void SetCurrentPageToProfile()
     {
+        if (!_isInClanCached || _currentPage == ClanPage.Settings) return;
+        StopAllCoroutines();
+
         StopAllCoroutines();
         StartCoroutine(ForceSwipeUIPageAfterLayout(0, instant: true));
     }
 
     public void SetCurrentPageToMembers()
     {
+        if (!_isInClanCached || _currentPage == ClanPage.Settings) return;
+        StopAllCoroutines();
+
         StopAllCoroutines();
         StartCoroutine(ForceSwipeUIPageAfterLayout(1, instant: true));
     }
@@ -302,14 +310,13 @@ public class ClanMainView : MonoBehaviour
         if (_memberDetailsPopup != null)
             _memberDetailsPopup.Hide();
 
-        _currentPage = ClanPage.Settings;
+        ApplyCurrentPage(ClanPage.Settings);
 
         if (_tabLine?.Swipe != null)
         {
             _tabLine.Swipe.hardBlocked = true;
         }
 
-        //SetSwipeEnabled(false);
         ApplyButtonsVisibility();
     }
 
@@ -322,10 +329,6 @@ public class ClanMainView : MonoBehaviour
         SetTabLineSwipeLock(false);
 
         ShowProfilePage();
-
-        //Maybe dont need this anymore
-        // Enables swiping again
-        //SetSwipeEnabled(true);
 
         StopAllCoroutines();
         StartCoroutine(ForceSwipeUIPageAfterLayout(0, instant: true));
@@ -354,21 +357,6 @@ public class ClanMainView : MonoBehaviour
         if (_editButton != null)
             _editButton.SetActive(_canEditCached);
     }
-
-    // Prevents swiping when on settings page
-    /*public void SetSwipeEnabled(bool enabled)
-    {
-        if (_tabLine != null && _tabLine.Swipe != null)
-        {
-            _tabLine.Swipe.IsEnabled = enabled; 
-        }
-
-        if (_swipeScrollRect != null)
-        {
-            _swipeScrollRect.StopMovement();
-            _swipeScrollRect.velocity = Vector2.zero;
-        }
-    }*/
 
     private void HandleSwipePageChanged()
     {
@@ -408,14 +396,25 @@ public class ClanMainView : MonoBehaviour
 
     private void RefreshSwipeEnabledState()
     {
-        bool shouldEnable = _currentPage != ClanPage.Settings;
+        bool isSettings = _currentPage == ClanPage.Settings;
+        bool inClan = _isInClanCached;
+
+        bool allowNav = !isSettings && inClan;
+
         if (_tabLine?.Swipe != null)
-            _tabLine.Swipe.IsEnabled = shouldEnable;
+        {
+            _tabLine.Swipe.IsEnabled = allowNav;
+        }
+
+        SetTabButtonsInteractable(allowNav);
     }
 
 
     private void Reset()
     {
+        _isInClanCached = false;
+        _canEditCached = false;
+
         ToggleClanPanel(false);
         _clanName.text = "Clan Name";
         _clanPhrase.text = "Clan Phrase";
@@ -440,8 +439,34 @@ public class ClanMainView : MonoBehaviour
 
     private void ToggleClanPanel(bool isInClan)
     {
+        _isInClanCached = isInClan;
+
         _inClanPanel.SetActive(isInClan);
         _noClanPanel.SetActive(!isInClan);
+
+        if(_clanSwipeRoot != null)
+        {
+            _clanSwipeRoot.SetActive(isInClan);
+        }
+
+        if(_tabLine?.Swipe != null)
+        {
+            _tabLine.Swipe.hardBlocked = !isInClan;
+        }
+
+        RefreshSwipeEnabledState();
+    }
+
+    //prevents tab line button interaction when not in clan and in settings page
+    private void SetTabButtonsInteractable(bool interactable)
+    {
+        if (_tabButtonsRoot == null) return;
+
+        var group = _tabButtonsRoot.GetComponent<CanvasGroup>();
+        if (group == null) group = _tabButtonsRoot.AddComponent<CanvasGroup>();
+
+        group.interactable = interactable;
+        group.blocksRaycasts = interactable;
     }
 
     public void JoinClan(ServerClan clan)
