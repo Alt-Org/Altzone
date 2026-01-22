@@ -19,16 +19,31 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
 
     private MaskImageHandler _maskImageHandler;
     private readonly Dictionary<Vector2Int, Texture2D> _transparentMaskCache = new();
+    private Color _selectedColor = new(1 ,0.5f ,1 ,1);
+    private Color _skinColor = new(1, 1, 0.5f, 1);
+    private Color _classColor = new(1, 1, 0.5f, 1);
 
     private void Start()
     {
         TryGetComponent(out _maskImageHandler);
     }
 
+    public void SetMainCharacterColors(Color selectedColor, Color skinColor, Color classColor)
+    {
+        _selectedColor = selectedColor;
+        _skinColor = skinColor;
+        _classColor = classColor;
+    }
+
+    public void SetSelectedColor(Color selectedColor)
+    {
+        _selectedColor = selectedColor;
+    }
+
     public void SetMainCharacterImage(AvatarPiece feature, AvatarPartInfo partInfo)
     {
-        Sprite image = partInfo.AvatarImage;
-        Sprite mask = partInfo.MaskImage;
+        Sprite image = partInfo ? partInfo.AvatarImage : null;
+        Sprite mask = partInfo ? partInfo.MaskImage : null;
 
         switch (feature)
         {
@@ -87,6 +102,11 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
 
     private void SetMaskImage(Sprite maskSprite, Image avatarImage)
     {
+        if (avatarImage.sprite == null)
+        {
+            return;
+        }
+
         EnsureMaterial(avatarImage);
 
         Texture2D maskTex;
@@ -101,6 +121,9 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         }
 
         avatarImage.material.SetTexture("_MaskTex", maskTex);
+        avatarImage.material.SetColor("_SkinColor", _skinColor);
+        avatarImage.material.SetColor("_SelectedColor", _selectedColor);
+        avatarImage.material.SetColor("_ClassColor", _classColor);
     }
 
     private void EnsureMaterial(Image image)

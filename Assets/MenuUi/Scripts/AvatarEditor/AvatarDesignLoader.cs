@@ -93,7 +93,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
             _avatarVisualDataScriptableObject.SetAvatarPiece(pieceId, avatarVisualData.GetAvatarPiece(pieceId));
         }
 
-        _avatarVisualDataScriptableObject.Color = avatarVisualData.Color;
+        _avatarVisualDataScriptableObject.SkinColor = avatarVisualData.SkinColor;
     }
 
     #endregion
@@ -204,7 +204,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
             color = Color.white;
         }
 
-        avatarVisualData.Color = color;
+        avatarVisualData.SkinColor = color;
     }
 
     #endregion

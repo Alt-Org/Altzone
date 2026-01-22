@@ -9,7 +9,15 @@ public class AvatarVisualDataScriptableObject : ScriptableObject
     [SerializeField] private AvatarVisualData data = new();
 
     public IReadOnlyDictionary<AvatarPiece, AvatarPartInfo> PartInfos => data.PartInfos;
-    public Color Color { get => data.Color; set => data.Color = value; }
+    public Color SkinColor { get => data.SkinColor; set => data.SkinColor = value; }
+    public Color ClassColor { get => data.ClassColor; set => data.ClassColor = value; }
+    public Color HairColor { get => data.HairColor; set => data.HairColor = value; }
+    public Color EyesColor { get => data.EyesColor; set => data.EyesColor = value; }
+    public Color NoseColor { get => data.NoseColor; set => data.NoseColor = value; }
+    public Color MouthColor { get => data.MouthColor; set => data.MouthColor = value; }
+    public Color ClothesColor { get => data.ClothesColor; set => data.ClothesColor = value; }
+    public Color FeetColor { get => data.FeetColor; set => data.FeetColor = value; }
+    public Color HandsColor { get => data.HandsColor; set => data.HandsColor = value; }
 
     public AvatarPartInfo Hair { get => data.Hair; set => data.Hair = value; }
     public AvatarPartInfo Eyes { get => data.Eyes; set => data.Eyes = value; }
@@ -19,8 +27,12 @@ public class AvatarVisualDataScriptableObject : ScriptableObject
     public AvatarPartInfo Feet { get => data.Feet; set => data.Feet = value; }
     public AvatarPartInfo Hands { get => data.Hands; set => data.Hands = value; }
 
+
+
     public void SetAvatarPiece(AvatarPiece piece, AvatarPartInfo partInfo) => data.SetAvatarPiece(piece, partInfo);
     public AvatarPartInfo GetAvatarPiece(AvatarPiece piece) => data.GetAvatarPiece(piece);
+    public void SetColor(AvatarPiece piece, Color color) => data.SetColor(piece, color);
+    public Color GetColor(AvatarPiece piece) => data.GetColor(piece);
 }
 
 [System.Serializable]
@@ -33,7 +45,16 @@ public class AvatarVisualData
     [SerializeField] private AvatarPartInfo clothes;
     [SerializeField] private AvatarPartInfo feet;
     [SerializeField] private AvatarPartInfo hands;
-    [SerializeField] private Color color = Color.white;
+
+    [SerializeField] private Color skinColor = Color.white;
+    [SerializeField] private Color classColor = Color.white;
+    [SerializeField] private Color hairColor = Color.white;
+    [SerializeField] private Color eyesColor = Color.white;
+    [SerializeField] private Color noseColor = Color.white;
+    [SerializeField] private Color mouthColor = Color.white;
+    [SerializeField] private Color clothesColor = Color.white;
+    [SerializeField] private Color feetColor = Color.white;
+    [SerializeField] private Color handsColor = Color.white;
 
     private Dictionary<AvatarPiece, AvatarPartInfo> _partInfos;
 
@@ -46,7 +67,15 @@ public class AvatarVisualData
     public AvatarPartInfo Feet { get => feet; set => feet = value; }
     public AvatarPartInfo Hands { get => hands; set => hands = value; }
 
-    public Color Color { get => color; set => color = value; }
+    public Color SkinColor { get => skinColor; set => skinColor = value; }
+    public Color ClassColor { get => classColor; set => classColor = value; }
+    public Color HairColor { get => hairColor; set => hairColor = value; }
+    public Color EyesColor { get => eyesColor; set => eyesColor = value; }
+    public Color NoseColor { get => noseColor; set => noseColor = value; }
+    public Color MouthColor { get => mouthColor; set => mouthColor = value; }
+    public Color ClothesColor { get => clothesColor; set => clothesColor = value; }
+    public Color FeetColor { get => feetColor; set => feetColor = value; }
+    public Color HandsColor { get => handsColor; set => handsColor = value; }
 
     public IReadOnlyDictionary<AvatarPiece, AvatarPartInfo> PartInfos
     {
@@ -87,5 +116,34 @@ public class AvatarVisualData
 
     public AvatarPartInfo GetAvatarPiece(AvatarPiece piece) =>
         PartInfos.TryGetValue(piece, out var sprite) ? sprite : null;
+
+    public void SetColor(AvatarPiece piece, Color color)
+    {
+        switch (piece)
+        {
+            case AvatarPiece.Hair: hairColor = color; break;
+            case AvatarPiece.Eyes: eyesColor = color; break;
+            case AvatarPiece.Nose: noseColor = color; break;
+            case AvatarPiece.Mouth: mouthColor = color; break;
+            case AvatarPiece.Clothes: clothesColor = color; break;
+            case AvatarPiece.Feet: feetColor = color; break;
+            case AvatarPiece.Hands: handsColor = color; break;
+        }
+    }
+
+    public Color GetColor(AvatarPiece piece)
+    {
+        return piece switch
+        {
+            AvatarPiece.Hair => hairColor,
+            AvatarPiece.Eyes => eyesColor,
+            AvatarPiece.Nose => noseColor,
+            AvatarPiece.Mouth => mouthColor,
+            AvatarPiece.Clothes => clothesColor,
+            AvatarPiece.Feet => feetColor,
+            AvatarPiece.Hands => handsColor,
+            _ => skinColor
+        };
+    }
 }
 

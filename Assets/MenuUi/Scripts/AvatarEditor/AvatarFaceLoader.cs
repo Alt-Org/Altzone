@@ -55,7 +55,7 @@ namespace MenuUi.Scripts.AvatarEditor
             if (!ValidateComponents())
                 return;
 
-            UpdateCharacterColor(_avatarVisuals.Color);
+            UpdateCharacterColor(_avatarVisuals.SkinColor);
             UpdateFacialFeatures();
         }
 
@@ -67,7 +67,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 return;
             }
 
-            UpdateCharacterColor(data.Color);
+            UpdateCharacterColor(data.SkinColor);
             UpdateFacialFeatures(data);
         }
 

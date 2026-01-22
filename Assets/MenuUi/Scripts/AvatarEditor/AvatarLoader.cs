@@ -27,7 +27,7 @@ public class AvatarLoader : MonoBehaviour
         };
     }
 
-    private void Start()
+    private void Awake()
     {
         _serverAvatar = ServerManager.Instance.Player.avatar;
     }
@@ -40,15 +40,10 @@ public class AvatarLoader : MonoBehaviour
         }
     }
 
-    private void GetAvatarPartInfoFromServerAvatar(ServerAvatar avatar)
-    {
-
-    }
-
     private void UpdateVisuals()
     {
 
-        _characterHandle.SetHeadColor(_avatarVisuals.Color);
+        _characterHandle.SetHeadColor(_avatarVisuals.SkinColor);
 
         if (_avatarVisuals.PartInfos == null || _avatarVisuals.PartInfos.Count == 0)
             return;
@@ -64,7 +59,7 @@ public class AvatarLoader : MonoBehaviour
 
     public void UpdateVisuals(AvatarVisualData data)
     {
-        _characterHandle.SetHeadColor(data.Color);
+        _characterHandle.SetHeadColor(data.SkinColor);
 
         _characterHandle.SetMainCharacterImage(AvatarPiece.Hair, data.Hair);
         _characterHandle.SetMainCharacterImage(AvatarPiece.Eyes, data.Eyes);
