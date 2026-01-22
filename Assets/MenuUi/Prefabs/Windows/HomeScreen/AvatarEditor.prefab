@@ -1389,6 +1389,7 @@ MonoBehaviour:
   _avatarEditorCharacterHandle: {fileID: 1464416334285509327}
   _avatarPartsReference: {fileID: 11400000, guid: 671ccbc5ba5e0df42acde4b71995e434,
     type: 2}
+  _avatarVisuals: {fileID: 11400000, guid: 5924f2967fcfeb0469785ea0b5f3d2b2, type: 2}
 --- !u!114 &1484250072073982031
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1858,8 +1859,6 @@ MonoBehaviour:
   _skinColor: {r: 1, g: 0.984, b: 0, a: 1}
   _selectedColor: {r: 0, g: 0.784, b: 1, a: 1}
   _classColor: {r: 1, g: 0, b: 0.937, a: 1}
-  _testTexture: {fileID: 2800000, guid: b208c89cff9e41f409eab521dfa6ed6c, type: 3}
-  _testMainTexture: {fileID: 2800000, guid: 34a58b5941b436c4c9d970e8313d38b5, type: 3}
 --- !u!1 &3413557512637032013
 GameObject:
   m_ObjectHideFlags: 0
@@ -3962,7 +3961,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 2100000, guid: 4bcaa099073478344b3e439fc1760383, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 7771424816721930819, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
         type: 3}
       propertyPath: m_AnchorMax.x

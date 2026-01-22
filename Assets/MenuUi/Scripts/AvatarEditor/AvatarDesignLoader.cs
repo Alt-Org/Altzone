@@ -94,6 +94,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
         }
 
         _avatarVisualDataScriptableObject.SkinColor = avatarVisualData.SkinColor;
+        _avatarVisualDataScriptableObject.ClassColor = avatarVisualData.ClassColor;
     }
 
     #endregion
@@ -185,6 +186,8 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
             var avatarImage = partInfo;
             avatarVisualData.SetAvatarPiece(pieceId, avatarImage);
+            // Add color from playerdata after color is added to playerdata
+            avatarVisualData.SetColor(pieceId, Color.red);
         }
     }
 
@@ -205,6 +208,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
         }
 
         avatarVisualData.SkinColor = color;
+        // add class color here
     }
 
     #endregion

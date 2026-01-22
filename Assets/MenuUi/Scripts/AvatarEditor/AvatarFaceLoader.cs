@@ -55,7 +55,7 @@ namespace MenuUi.Scripts.AvatarEditor
             if (!ValidateComponents())
                 return;
 
-            UpdateCharacterColor(_avatarVisuals.SkinColor);
+            UpdateCharacterColor(_avatarVisuals.SkinColor, _avatarVisuals.ClassColor);
             UpdateFacialFeatures();
         }
 
@@ -67,13 +67,14 @@ namespace MenuUi.Scripts.AvatarEditor
                 return;
             }
 
-            UpdateCharacterColor(data.SkinColor);
+            UpdateCharacterColor(data.SkinColor, data.ClassColor);
             UpdateFacialFeatures(data);
         }
 
-        private void UpdateCharacterColor(Color color)
+        private void UpdateCharacterColor(Color skinColor, Color classColor)
         {
-            _characterHandle.SetHeadColor(color);
+            _characterHandle.SetClassColor(classColor);
+            _characterHandle.SetSkinColor(skinColor);
         }
 
         private void UpdateFacialFeatures()
@@ -83,10 +84,11 @@ namespace MenuUi.Scripts.AvatarEditor
 
             var featureUpdates = new[]
             {
-                (AvatarPiece.Hair, _avatarVisuals.Hair),
-                (AvatarPiece.Eyes, _avatarVisuals.Eyes),
-                (AvatarPiece.Nose, _avatarVisuals.Nose),
-                (AvatarPiece.Mouth, _avatarVisuals.Mouth)
+                // Color.red for testing update later
+                (AvatarPiece.Hair, _avatarVisuals.Hair, Color.red),
+                (AvatarPiece.Eyes, _avatarVisuals.Eyes, _avatarVisuals.EyesColor),
+                (AvatarPiece.Nose, _avatarVisuals.Nose, _avatarVisuals.NoseColor),
+                (AvatarPiece.Mouth, _avatarVisuals.Mouth, _avatarVisuals.MouthColor)
             };
 
             ApplyFeatureUpdates(featureUpdates);
@@ -96,22 +98,22 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             var featureUpdates = new[]
             {
-                (AvatarPiece.Hair, data.Hair),
-                (AvatarPiece.Eyes, data.Eyes),
-                (AvatarPiece.Nose, data.Nose),
-                (AvatarPiece.Mouth, data.Mouth)
+                (AvatarPiece.Hair, data.Hair, data.HairColor),
+                (AvatarPiece.Eyes, data.Eyes, data.EyesColor),
+                (AvatarPiece.Nose, data.Nose, data.NoseColor),
+                (AvatarPiece.Mouth, data.Mouth, data.MouthColor)
             };
 
             ApplyFeatureUpdates(featureUpdates);
         }
 
-        private void ApplyFeatureUpdates((AvatarPiece slot, AvatarPartInfo partInfo)[] featureUpdates)
+        private void ApplyFeatureUpdates((AvatarPiece slot, AvatarPartInfo partInfo, Color color)[] featureUpdates)
         {
-            foreach (var (slot, partInfo) in featureUpdates)
+            foreach (var (slot, partInfo, color) in featureUpdates)
             {
                 try
                 {
-                    _characterHandle.SetMainCharacterImage(slot, partInfo);
+                    _characterHandle.SetMainCharacterImage(slot, partInfo, color);
                 }
                 catch (System.Exception ex)
                 {

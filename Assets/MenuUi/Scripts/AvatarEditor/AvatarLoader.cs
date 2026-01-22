@@ -10,27 +10,6 @@ public class AvatarLoader : MonoBehaviour
     [SerializeField] private AvatarEditorCharacterHandle _characterHandle;
     [SerializeField] private bool _useOwnAvatarVisuals = true;
     [SerializeField] private AvatarPartsReference _avatarPartsReference;
-    private ServerAvatar _serverAvatar;
-
-    private AvatarPartInfo GetPartInfo(AvatarPiece piece)
-    {
-        return piece switch
-        {
-            AvatarPiece.Hair => _avatarPartsReference.GetAvatarPartById(_serverAvatar.hair.ToString()),
-            AvatarPiece.Eyes => _avatarPartsReference.GetAvatarPartById(_serverAvatar.eyes.ToString()),
-            AvatarPiece.Nose => _avatarPartsReference.GetAvatarPartById(_serverAvatar.nose.ToString()),
-            AvatarPiece.Mouth => _avatarPartsReference.GetAvatarPartById(_serverAvatar.mouth.ToString()),
-            AvatarPiece.Clothes => _avatarPartsReference.GetAvatarPartById(_serverAvatar.clothes.ToString()),
-            AvatarPiece.Feet => _avatarPartsReference.GetAvatarPartById(_serverAvatar.feet.ToString()),
-            AvatarPiece.Hands => _avatarPartsReference.GetAvatarPartById(_serverAvatar.hands.ToString()),
-            _ => null
-        };
-    }
-
-    private void Awake()
-    {
-        _serverAvatar = ServerManager.Instance.Player.avatar;
-    }
 
     private void OnEnable()
     {
@@ -43,31 +22,33 @@ public class AvatarLoader : MonoBehaviour
     private void UpdateVisuals()
     {
 
-        _characterHandle.SetHeadColor(_avatarVisuals.SkinColor);
+        _characterHandle.SetSkinColor(_avatarVisuals.SkinColor);
+        _characterHandle.SetClassColor(_avatarVisuals.ClassColor);
 
         if (_avatarVisuals.PartInfos == null || _avatarVisuals.PartInfos.Count == 0)
             return;
-
-        _characterHandle.SetMainCharacterImage(AvatarPiece.Hair, GetPartInfo(AvatarPiece.Hair));
-        _characterHandle.SetMainCharacterImage(AvatarPiece.Eyes, GetPartInfo(AvatarPiece.Eyes));
-        _characterHandle.SetMainCharacterImage(AvatarPiece.Nose, GetPartInfo(AvatarPiece.Nose));
-        _characterHandle.SetMainCharacterImage(AvatarPiece.Mouth, GetPartInfo(AvatarPiece.Mouth));
-        _characterHandle.SetMainCharacterImage(AvatarPiece.Clothes, GetPartInfo(AvatarPiece.Clothes));
-        _characterHandle.SetMainCharacterImage(AvatarPiece.Hands, GetPartInfo(AvatarPiece.Hands));
-        _characterHandle.SetMainCharacterImage(AvatarPiece.Feet, GetPartInfo(AvatarPiece.Feet));
+        // Color.red for testing update later
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Hair, _avatarVisuals.Hair, Color.red);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Eyes, _avatarVisuals.Eyes, _avatarVisuals.EyesColor);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Nose, _avatarVisuals.Nose, _avatarVisuals.NoseColor);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Mouth, _avatarVisuals.Mouth, _avatarVisuals.MouthColor);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Clothes, _avatarVisuals.Clothes, _avatarVisuals.ClothesColor);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Hands, _avatarVisuals.Hands, _avatarVisuals.HandsColor);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Feet, _avatarVisuals.Feet, _avatarVisuals.FeetColor);
     }
 
     public void UpdateVisuals(AvatarVisualData data)
     {
-        _characterHandle.SetHeadColor(data.SkinColor);
+        _characterHandle.SetSkinColor(data.SkinColor);
+        _characterHandle.SetClassColor(data.ClassColor);
 
-        _characterHandle.SetMainCharacterImage(AvatarPiece.Hair, data.Hair);
-        _characterHandle.SetMainCharacterImage(AvatarPiece.Eyes, data.Eyes);
-        _characterHandle.SetMainCharacterImage(AvatarPiece.Nose, data.Nose);
-        _characterHandle.SetMainCharacterImage(AvatarPiece.Mouth, data.Mouth);
-        _characterHandle.SetMainCharacterImage(AvatarPiece.Clothes, data.Clothes);
-        _characterHandle.SetMainCharacterImage(AvatarPiece.Hands, data.Hands);
-        _characterHandle.SetMainCharacterImage(AvatarPiece.Feet, data.Feet);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Hair, data.Hair, data.HairColor);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Eyes, data.Eyes, data.EyesColor);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Nose, data.Nose, data.NoseColor);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Mouth, data.Mouth, data.MouthColor);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Clothes, data.Clothes, data.ClothesColor);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Hands, data.Hands, data.HandsColor);
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Feet, data.Feet, data.FeetColor);
     }
 }
 

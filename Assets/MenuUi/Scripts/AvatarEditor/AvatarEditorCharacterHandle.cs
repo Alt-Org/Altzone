@@ -19,28 +19,25 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
 
     private MaskImageHandler _maskImageHandler;
     private readonly Dictionary<Vector2Int, Texture2D> _transparentMaskCache = new();
-    private Color _selectedColor = new(1 ,0.5f ,1 ,1);
-    private Color _skinColor = new(1, 1, 0.5f, 1);
-    private Color _classColor = new(1, 1, 0.5f, 1);
+    private Color _skinColor = Color.white;
+    private Color _classColor = Color.white;
 
     private void Start()
     {
         TryGetComponent(out _maskImageHandler);
     }
 
-    public void SetMainCharacterColors(Color selectedColor, Color skinColor, Color classColor)
+    public void SetSkinColor(Color skinColor)
     {
-        _selectedColor = selectedColor;
         _skinColor = skinColor;
+    }
+
+    public void SetClassColor(Color classColor)
+    {
         _classColor = classColor;
     }
 
-    public void SetSelectedColor(Color selectedColor)
-    {
-        _selectedColor = selectedColor;
-    }
-
-    public void SetMainCharacterImage(AvatarPiece feature, AvatarPartInfo partInfo)
+    public void SetMainCharacterImage(AvatarPiece feature, AvatarPartInfo partInfo, Color partColor)
     {
         Sprite image = partInfo ? partInfo.AvatarImage : null;
         Sprite mask = partInfo ? partInfo.MaskImage : null;
@@ -49,27 +46,27 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         {
             case AvatarPiece.Hair:
                 SetImage(_mainHair, image);
-                SetMaskImage(mask, _mainHair);
+                SetMaskImage(_mainHair, mask, partColor);
                 break;
 
             case AvatarPiece.Eyes:
                 SetImage(_mainEyes, image);
-                SetMaskImage(mask, _mainEyes);
+                SetMaskImage(_mainEyes, mask, partColor);
                 break;
 
             case AvatarPiece.Nose:
                 SetImage(_mainNose, image);
-                SetMaskImage(mask, _mainNose);
+                SetMaskImage(_mainNose, mask, partColor);
                 break;
 
             case AvatarPiece.Mouth:
                 SetImage(_mainMouth, image);
-                SetMaskImage(mask, _mainMouth);
+                SetMaskImage(_mainMouth, mask, partColor);
                 break;
 
             case AvatarPiece.Clothes:
                 SetImage(_mainBody, image);
-                SetMaskImage(mask, _mainBody);
+                SetMaskImage(_mainBody, mask, partColor);
                 if (_maskImageHandler != null)
                 {
                     _maskImageHandler.SetImage(image);
@@ -78,12 +75,12 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
 
             case AvatarPiece.Hands:
                 SetImage(_mainHands, image);
-                SetMaskImage(mask, _mainHands);
+                SetMaskImage(_mainHands, mask, partColor);
                 break;
 
             case AvatarPiece.Feet:
                 SetImage(_mainFeet, image);
-                SetMaskImage(mask, _mainFeet);
+                SetMaskImage(_mainFeet, mask, partColor);
                 break;
         }
     }
@@ -100,7 +97,7 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         imageComponent.sprite = image;
     }
 
-    private void SetMaskImage(Sprite maskSprite, Image avatarImage)
+    private void SetMaskImage(Image avatarImage, Sprite maskSprite, Color selectedColor)
     {
         if (avatarImage.sprite == null)
         {
@@ -122,7 +119,7 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
 
         avatarImage.material.SetTexture("_MaskTex", maskTex);
         avatarImage.material.SetColor("_SkinColor", _skinColor);
-        avatarImage.material.SetColor("_SelectedColor", _selectedColor);
+        avatarImage.material.SetColor("_SelectedColor", selectedColor);
         avatarImage.material.SetColor("_ClassColor", _classColor);
     }
 

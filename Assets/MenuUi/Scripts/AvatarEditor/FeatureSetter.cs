@@ -11,11 +11,12 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private AvatarEditorController _avatarEditorController;
         [SerializeField] private AvatarEditorCharacterHandle _avatarEditorCharacterHandle;
         [SerializeField] private AvatarPartsReference _avatarPartsReference;
+        [SerializeField] private AvatarVisualDataScriptableObject _avatarVisuals;
 
         public void SetFeature(AvatarPartInfo feature, AvatarPiece slot)
         {
             _avatarEditorController.PlayerAvatar.SetPart(slot, feature.Id);
-            _avatarEditorCharacterHandle.SetMainCharacterImage(slot, feature);
+            _avatarEditorCharacterHandle.SetMainCharacterImage(slot, feature, /*_avatarVisuals.GetColor(slot)*/Color.red);
         }
 
         public void SetLoadedFeatures(PlayerAvatar avatar)
@@ -33,7 +34,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
                 if (avatarPart != null)
                 {
-                    _avatarEditorCharacterHandle.SetMainCharacterImage(slot, avatarPart);
+                    _avatarEditorCharacterHandle.SetMainCharacterImage(slot, avatarPart, /*_avatarVisuals.GetColor(slot)*/Color.red);
                 }
             }
         }
