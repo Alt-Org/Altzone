@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Assets.Altzone.Scripts.Model.Poco.Player;
+using UnityEditor.Graphs;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,22 +15,14 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private GameObject _gridCellPrefab;
         [SerializeField] private HorizontalLayoutGroup _colorGrid;
         [SerializeField] private List<Color> _colors;
-
-        [SerializeField] private Material _featureMaterial;
-        [SerializeField] private Color _skinColor = new(1, 0.984f, 0);
-        [SerializeField] private Color _selectedColor = new(0, 0.784f, 1);
-        [SerializeField] private Color _classColor = new(1, 0, 0.937f);
+        [SerializeField] private AvatarEditorController _avatarEditorController;
+        [SerializeField] private AvatarEditorCharacterHandle _characterHandle;
+        [SerializeField] private ScrollBarCategoryLoader _categoryLoader;
+        [SerializeField] private ScrollBarFeatureLoader _featureLoader;
 
         private float _viewPortHeight;
         private float _cellHeight;
         private float _colorGridPadding;
-
-        private void Start()
-        {
-            _featureMaterial.SetColor("_SkinColor", _skinColor);
-            _featureMaterial.SetColor("_SelectedColor", _selectedColor);
-            _featureMaterial.SetColor("_ClassColor", _classColor);
-        }
 
         private void AddColorCell(Color color)
         {
@@ -36,7 +30,7 @@ namespace MenuUi.Scripts.AvatarEditor
             ColorCellHandler handler = colorGridCell.GetComponent<ColorCellHandler>();
 
             handler.SetColor(color);
-            handler.SetOnClick(() => AddListener());
+            handler.SetOnClick(() => AddListener(color));
         }
 
         public void SetColorCells()
@@ -70,11 +64,14 @@ namespace MenuUi.Scripts.AvatarEditor
             }
         }
 
-
-        // Not implemented yet
-        private void AddListener()
+        private void AddListener(Color color)
         {
+            // don't know about this
+            AvatarPiece slot = _featureLoader._featureCategoryIdToAvatarPiece[_categoryLoader.CurrentlySelectedCategory];
 
+            _characterHandle.SetPartColor(slot, color);
+
+            _avatarEditorController.PlayerAvatar.SetPartColor(slot, ColorUtility.ToHtmlStringRGBA(color));
         }
     }
 }

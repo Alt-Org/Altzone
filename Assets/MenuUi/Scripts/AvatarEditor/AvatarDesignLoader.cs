@@ -157,7 +157,8 @@ public class AvatarDesignLoader : AltMonoBehaviour
         playerData.AvatarData = new(
             playerAvatar.Name,
             null,
-            playerAvatar.Color,
+            // Add colors from playeravatar here
+            "#ffffff",
             playerAvatar.Scale
         );
 

@@ -29,7 +29,16 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Color _backgroundColor = new(0.5f, 0.5f, 0.5f, 0.7f);
 
         private List<AvatarPartInfo> _avatarPartInfo;
-        private Dictionary<string, AvatarPiece> _featureCategoryIdToAvatarPiece;
+        public readonly Dictionary<string, AvatarPiece> _featureCategoryIdToAvatarPiece = new Dictionary<string, AvatarPiece>
+            {
+                { "10", AvatarPiece.Hair }, // Hair
+                { "21", AvatarPiece.Eyes }, // Eyes
+                { "22", AvatarPiece.Nose }, // Nose
+                { "23", AvatarPiece.Mouth }, // Mouth
+                { "31", AvatarPiece.Clothes }, // Body
+                { "32", AvatarPiece.Hands }, // Hands
+                { "33", AvatarPiece.Feet }  // Feet
+            };
         private FeatureCellHandler _selectedCellHandler;
         private bool _isSelectedFeature = false;
         private float _cellHeight;
@@ -41,17 +50,6 @@ namespace MenuUi.Scripts.AvatarEditor
 
         void Start()
         {
-            _featureCategoryIdToAvatarPiece = new Dictionary<string, AvatarPiece>
-            {
-                { "10", AvatarPiece.Hair }, // Hair
-                { "21", AvatarPiece.Eyes }, // Eyes
-                { "22", AvatarPiece.Nose }, // Nose
-                { "23", AvatarPiece.Mouth }, // Mouth
-                { "31", AvatarPiece.Clothes }, // Body
-                { "32", AvatarPiece.Hands }, // Hands
-                { "33", AvatarPiece.Feet }  // Feet
-            };
-
             _scrollrect.onValueChanged.AddListener(UpdateFade);
         }
 

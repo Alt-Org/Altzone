@@ -37,6 +37,44 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         _classColor = classColor;
     }
 
+    public void SetPartColor(AvatarPiece slot, Color partColor)
+    {
+        switch (slot)
+        {
+            case AvatarPiece.Hair:
+                _mainHair.material.SetColor("_SelectedColor", partColor);
+                break;
+
+            case AvatarPiece.Eyes:
+                _mainEyes.material.SetColor("_SelectedColor", partColor);
+                break;
+
+            case AvatarPiece.Nose:
+                _mainNose.material.SetColor("_SelectedColor", partColor);
+                break;
+
+            case AvatarPiece.Mouth:
+                _mainMouth.material.SetColor("_SelectedColor", partColor);
+                break;
+
+            case AvatarPiece.Clothes:
+                _mainBody.material.SetColor("_SelectedColor", partColor);
+                break;
+
+            case AvatarPiece.Feet:
+                _mainFeet.material.SetColor("_SelectedColor", partColor);
+                break;
+
+            case AvatarPiece.Hands:
+                _mainHands.material.SetColor("_SelectedColor", partColor);
+                break;
+
+            default:
+                Debug.LogWarning($"Unhandled AvatarPiece in SetPartColor: {slot}");
+                break;
+        }
+    }
+
     public void SetMainCharacterImage(AvatarPiece feature, AvatarPartInfo partInfo, Color partColor)
     {
         Sprite image = partInfo ? partInfo.AvatarImage : null;

@@ -123,6 +123,7 @@ namespace MenuUi.Scripts.AvatarEditor
             foreach (AvatarPiece piece in pieceIDs)
             {
                 _visualDataScriptableObject.SetAvatarPiece(piece, _featureSetter.GetCurrentlySelectedFeaturePartInfo(piece));
+                // Also add colors here
             }
 
             AvatarDesignLoader.Instance.InvokeOnAvatarDesignUpdate();
