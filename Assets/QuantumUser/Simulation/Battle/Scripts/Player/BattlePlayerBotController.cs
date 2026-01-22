@@ -13,6 +13,7 @@ using Photon.Deterministic;
 
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
+using System.Collections.Generic;
 
 namespace Battle.QSimulation.Player
 {
@@ -40,11 +41,20 @@ namespace Battle.QSimulation.Player
         {
             BattlePlayerBotQSpec playerBotSpec = BattleQConfig.GetPlayerBotSpec(f);
 
+            List<int> selectedBotCharacters = new List<int>();
+
             BattleCharacterBase[] botCharacters = new BattleCharacterBase[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
             for (int i = 0; i < botCharacters.Length; i++)
             {
-                botCharacters[i] = playerBotSpec.BotCharacter;
+                int selectedCharacter = Random.Range(0, playerBotSpec.BotCharacterSelection.Length);
+                while (selectedBotCharacters.Contains(selectedCharacter))
+                {
+                    selectedCharacter = Random.Range(0, playerBotSpec.BotCharacterSelection.Length);
+                }
+                selectedBotCharacters.Add(selectedCharacter);
+                botCharacters[i] = playerBotSpec.BotCharacterSelection[selectedCharacter];             
             }
+            selectedBotCharacters.Clear();
             return botCharacters;
         }
 
