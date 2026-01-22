@@ -87,5 +87,10 @@ namespace Battle.View
                     break;
             }
         }
+
+        public void PlayHitAnimation(BattleTeamNumber team, BattleEmotionState emotion)
+        {
+
+        }
     }
 }
