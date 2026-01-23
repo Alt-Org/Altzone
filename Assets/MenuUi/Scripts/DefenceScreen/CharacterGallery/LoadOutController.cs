@@ -4,9 +4,10 @@ using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.CharacterGallery;
 using MenuUi.Scripts.Signals;
+using Newtonsoft.Json.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class LoadOutController : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class LoadOutController : MonoBehaviour
 
 
     [SerializeField] private ScrollRect _inlineScrollRect;
+
+
 
     //Loadout 2
     [SerializeField] private bool _useZeroSlotButton = true;
@@ -60,10 +63,15 @@ public class LoadOutController : MonoBehaviour
 
         if (_modelController != null)
             _modelController.OnPlayerDataReady += HandlePlayerDataReady;
+
+        LoadoutModeSwitcher.OnInlineModeShown += HandleInlineModeShown;
     }
 
     private void OnEnable()
     {
+
+
+
         if (!IsInlineMode) return;
 
         HookAddButton();
@@ -91,12 +99,14 @@ public class LoadOutController : MonoBehaviour
             _loadoutButtons[i].onClick.AddListener(() =>
             {
                 int loadoutIndex = ButtonIndexToLoadoutIndex(buttonIndex);
-                OnPressLoadout(loadoutIndex, _player);
+                OnPressLoadout(loadoutIndex);
             });
         }
     }
+
     private void OnDisable()
     {
+
 
         if (!IsInlineMode) return;
 
@@ -135,7 +145,7 @@ public class LoadOutController : MonoBehaviour
 
             if (_buttonMap.Count == 0)
             {
-                BuildInlineButtons(); 
+                BuildInlineButtons();
             }
             else
             {
@@ -170,7 +180,7 @@ public class LoadOutController : MonoBehaviour
     /// <summary>
     /// Handles loadout button presses, applies or saves loadouts as needed
     /// </summary>
-    private void OnPressLoadout(int loadoutIndex, PlayerData player)
+    private void OnPressLoadout(int loadoutIndex)
     {
 
         Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, p =>
@@ -182,21 +192,19 @@ public class LoadOutController : MonoBehaviour
             }
 
             _player = p;
-            player = p;
-
 
             if (loadoutIndex == 0)
             {
                 _player.ApplyLoadout(0);
                 SignalBus.OnReloadCharacterGalleryRequestedSignal();
                 RefreshButtons();
-                Storefront.Get().SavePlayerData(player, null);
+                Storefront.Get().SavePlayerData(_player, null);
                 return;
             }
 
-            if (loadoutIndex < 0 || loadoutIndex > player.LoadOuts.Length)
+            if (loadoutIndex < 0 || loadoutIndex > _player.LoadOuts.Length)
             {
-                Debug.LogError($"Invalid loadout index {loadoutIndex}. Player has {player.LoadOuts.Length} loadouts.");
+                Debug.LogError($"Invalid loadout index {loadoutIndex}. Player has {_player.LoadOuts.Length} loadouts.");
                 return;
             }
 
@@ -208,24 +216,90 @@ public class LoadOutController : MonoBehaviour
                 if (IsInlineMode)
                 {
 
-                    player.ApplyLoadout(loadoutIndex);
+                    _player.ApplyLoadout(loadoutIndex);
+
+                    var _playerData = _player;
+
+                    string[] serverList = new string[_playerData.SelectedCharacterIds.Length];
+
+                    for (int i = 0; i < _playerData.SelectedCharacterIds.Length; i++)
+                    {
+                        serverList[i] = _playerData.SelectedCharacterIds[i].ServerID;
+                    }
+
+                    string body = JObject.FromObject(
+                    new
+                    {
+                        _id = _playerData.Id,
+                        battleCharacter_ids = serverList
+
+                    }).ToString();
+
+                    StartCoroutine(ServerManager.Instance.UpdatePlayerToServer(body, callback =>
+                    {
+                        if (callback != null)
+                        {
+                            Debug.Log("Profile info updated.");
+                        }
+                        else
+                        {
+                            Debug.Log("Profile info update failed.");
+                        }
+
+                        var store = Storefront.Get();
+                        store.SavePlayerData(_playerData, null);
+                    }));
+
                     SignalBus.OnReloadCharacterGalleryRequestedSignal();
                     RefreshButtons();
-                    Storefront.Get().SavePlayerData(player, null);
+                    Storefront.Get().SavePlayerData(_player, null);
                 }
                 else
                 {
 
-                    SaveToEmptySlot(loadoutIndex, player);
+                    SaveToEmptySlot(loadoutIndex, _player);
                 }
 
                 return;
             }
 
-            player.ApplyLoadout(loadoutIndex);
+            _player.ApplyLoadout(loadoutIndex);
+
+            var _playerData2 = _player;
+
+            string[] serverList2 = new string[_playerData2.SelectedCharacterIds.Length];
+
+            for (int i = 0; i < _playerData2.SelectedCharacterIds.Length; i++)
+            {
+                serverList2[i] = _playerData2.SelectedCharacterIds[i].ServerID;
+            }
+
+            string body2 = JObject.FromObject(
+            new
+            {
+                _id = _playerData2.Id,
+                battleCharacter_ids = serverList2
+
+            }).ToString();
+
+            StartCoroutine(ServerManager.Instance.UpdatePlayerToServer(body2, callback =>
+            {
+                if (callback != null)
+                {
+                    Debug.Log("Profile info updated.");
+                }
+                else
+                {
+                    Debug.Log("Profile info update failed.");
+                }
+
+                var store = Storefront.Get();
+                store.SavePlayerData(_playerData2, null);
+            }));
+
             SignalBus.OnReloadCharacterGalleryRequestedSignal();
             RefreshButtons();
-            Storefront.Get().SavePlayerData(player, null);
+            Storefront.Get().SavePlayerData(_player, null);
         });
     }
     /// <summary>
@@ -353,6 +427,34 @@ public class LoadOutController : MonoBehaviour
             Debug.LogWarning("AddNewLoadoutSlot called but _player is null");
             return;
         }
+
+        int max = _player.LoadOuts.Length;
+
+        for (int loadoutIndex = 4; loadoutIndex <= max; loadoutIndex++)
+        {
+            TeamLoadOut slot = _player.LoadOuts[loadoutIndex - 1];
+            bool isNonEmpty = (slot != null && !slot.IsEmpty);
+
+            if (!isNonEmpty) continue;
+
+            bool alreadyVisible = false;
+            for (int i = 0; i < _buttonMap.Count; i++)
+            {
+                if (_buttonMap[i] != null && _buttonMap[i].LoadoutIndex == loadoutIndex)
+                {
+                    alreadyVisible = true;
+                    break;
+                }
+            }
+
+            if (!alreadyVisible)
+            {
+                CreateDynamicButton(loadoutIndex, false);
+                ReorderInlineButtonsByLoadoutIndex();
+                RefreshButtons();
+                return;
+            }
+        }
         // Cache the current horizontal scroll position so that
         // adding and reordering buttons does not cause the scroll view to jump
         ScrollRect scroll = _inlineScrollRect;
@@ -423,14 +525,14 @@ public class LoadOutController : MonoBehaviour
 
         // Save current positions so layout rebuild does not cause "jump"
         float savedHorizontalPosition = 0f;
-     
+
 
         if (scroll != null)
         {
             savedHorizontalPosition = scroll.horizontalNormalizedPosition;
         }
 
- 
+
         for (int i = 0; i < _loadoutButtons.Count; i++)
         {
             Button btn = _loadoutButtons[i];
@@ -490,7 +592,7 @@ public class LoadOutController : MonoBehaviour
     private void RegisterButton(Button btn, int loadoutIndex)
     {
         btn.onClick.RemoveAllListeners();
-        btn.onClick.AddListener(() => OnPressLoadout(loadoutIndex, _player));
+        btn.onClick.AddListener(() => OnPressLoadout(loadoutIndex));
 
         ButtonLoadoutEntry entry = new ButtonLoadoutEntry();
         entry.Button = btn;
@@ -667,6 +769,28 @@ public class LoadOutController : MonoBehaviour
         {
             _addLoadoutButton.transform.SetSiblingIndex(baseIndex + _buttonMap.Count);
         }
+    }
+
+    private void HandleInlineModeShown()
+    {
+        if (!IsInlineMode) return;
+
+        HookAddButton();
+
+        //fetches fresh PlayerData so inline sees popup changes immediately
+        Storefront.Get().GetPlayerData(ServerManager.Instance.Player.uniqueIdentifier, p =>
+        {
+            if (p == null)
+            {
+                Debug.LogError("LoadOutController: Failed to retrieve PlayerData on inline mode switch");
+                return;
+            }
+
+            _player = p;
+
+            BuildInlineButtons();  // rebuild buttons from fresh data
+            RefreshButtons();
+        });
     }
 
 }

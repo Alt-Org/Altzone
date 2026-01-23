@@ -64,9 +64,9 @@ public class InlineLoadoutButtonSizer : MonoBehaviour
         float buttonSize = availableWidth / _visibleButtons;
 
 
-        for (int i = 0; i < transform.childCount; i++)
+        foreach (Transform child in transform)
         {
-            Transform child = transform.GetChild(i);
+            
             RectTransform childRect = child as RectTransform;
             if (childRect == null) continue;
 

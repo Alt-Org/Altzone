@@ -32,52 +32,23 @@ public class LoadoutRowController : AltMonoBehaviour
     [SerializeField]
     private BattlePopupSelectedCharacter[] _slotViews = new BattlePopupSelectedCharacter[3];
 
-    LoadoutSaveConfirmPopup _saveConfirmPopup;
+    [SerializeField] private Button _changeButton;
 
-
-    private void Awake()
-    {
-
-        _saveConfirmPopup = FindObjectOfType<LoadoutSaveConfirmPopup>(true);
-
-        if (_saveConfirmPopup == null)
-        {
-            Debug.LogError("LoadoutRowController: SaveConfirmPopup not found in scene!");
-        }
-
-        for (int i = 0; i < _slotViews.Length; i++)
-        {
-            BattlePopupSelectedCharacter view = _slotViews[i];
-            if (view == null) continue;
-
-            Button btn;
-            if (view.ButtonComponent != null)
-            {
-                btn = view.ButtonComponent;
-            }
-            else
-            {
-                btn = view.GetComponent<Button>();
-            }
-
-            if (btn == null)
-            {
-                Debug.LogWarning("LoadoutRowController: Button not found on slot view index " + i);
-                continue;
-            }
-
-
-            btn.onClick.RemoveAllListeners();
-            //btn.onClick.AddListener(OnCharSlotClicked);
-
-
-            btn.interactable = true;
-            btn.enabled = true;
-        }
-    }
+    //LoadoutSaveConfirmPopup _saveConfirmPopup;
 
     private void OnEnable()
     {
+ 
+        if (_changeButton != null)
+        {
+            _changeButton.onClick.RemoveListener(OnChangeButtonClicked);
+            _changeButton.onClick.AddListener(OnChangeButtonClicked);
+        }
+        else
+        {
+            Debug.LogWarning($"{nameof(LoadoutRowController)}: Change button not assigned for loadout {_loadoutIndex}", this);
+        }
+
         if (LoadoutPopupContext.SelectedPopupIndex != -1)
             LoadoutPopupContext.SelectedPopupIndex = -1;
 
@@ -87,6 +58,9 @@ public class LoadoutRowController : AltMonoBehaviour
 
     private void OnDisable()
     {
+        if (_changeButton != null)
+            _changeButton.onClick.RemoveListener(OnChangeButtonClicked);
+
         SignalBus.OnReloadCharacterGalleryRequested -= Redraw;
     }
 
@@ -203,7 +177,7 @@ public class LoadoutRowController : AltMonoBehaviour
     /// Called from the Save button. Shows confirmation popup
     /// if one is assigned
     /// </summary>
-    public void OnSaveButtonClicked()
+    public void OnChangeButtonClicked()
     {
 
         //SetLoadoutAsCurrentTeam();
@@ -227,25 +201,6 @@ public class LoadoutRowController : AltMonoBehaviour
        
     }
 
-    /// <summary>
-    /// Saves current team into this row's saved slot and exits "live" preview
-    /// </summary>
-    public void SaveCurrentTeamIntoThisLoadout()
-    {
-        StartCoroutine(GetPlayerData(delegate (PlayerData player)
-        {
-            if (player == null) return;
-
-
-            player.SaveCurrentTeamToLoadout(_loadoutIndex);
-
-            Storefront.Get().SavePlayerData(player, null);
-
-            SignalBus.OnReloadCharacterGalleryRequestedSignal();
-            Redraw();
-        }
-            ));
-    }
 
     /// <summary>
     /// Copies this row's saved loadout into SelectedCharacterIds (current team)

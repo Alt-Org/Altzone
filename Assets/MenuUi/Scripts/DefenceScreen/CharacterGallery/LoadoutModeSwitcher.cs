@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http.Headers;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class LoadoutModeSwitcher : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class LoadoutModeSwitcher : MonoBehaviour
     [Header("Mode selector buttons")]
     [SerializeField] private Button popupModeButton;  
     [SerializeField] private Button inlineModeButton;
+
+    public static event System.Action OnInlineModeShown;
 
     //true = popup mode active
     //false = inline mode active
@@ -45,6 +48,8 @@ public class LoadoutModeSwitcher : MonoBehaviour
             inlineButtonsRoot.SetActive(false);
 
         RefreshModeButtons();
+
+      
     }
 
     /// <summary>
@@ -60,6 +65,8 @@ public class LoadoutModeSwitcher : MonoBehaviour
             inlineButtonsRoot.SetActive(true);
 
         RefreshModeButtons();
+
+        OnInlineModeShown?.Invoke();
     }
 
     /// <summary>
