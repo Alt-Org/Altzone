@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Altzone.Scripts.Chat;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 
@@ -19,12 +20,45 @@ namespace Altzone.Scripts.ReferenceSheets
         public List<ChatResponse> ChatResponseInfo => _chatResponseInfo; // Public accessor for _chatResponseInfo
         public List<MottoOptions> MottoOptionsInfo => _mottoOptionsInfo; // Public accessor for _mottoOptionsInfo
 
-        public List<string> GetChatResponses(CharacterClassType classType)
+        public List<string> GetChatResponses(Mood mood)
         {
 
-            List<string> list = _chatResponseInfo.FirstOrDefault(x => x.ClassType == classType)?.List;
-            if (list == null) list = _defaultList.List;
+             List<string> list = null;
+            switch(mood)
+            {
+                case Mood.Neutral:
+                    list = _defaultList.List;
+                    break;
+
+                case Mood.Happy:
+                    list = _chatResponseInfo[0].List;
+                    break;
+
+                case Mood.Sad:
+                    list = _chatResponseInfo[1].List;
+                    break;
+
+                case Mood.Angry:
+                    list = _chatResponseInfo[2].List;
+                    break;
+
+                case Mood.Love:
+                    list = _chatResponseInfo[3].List;
+                    break;
+
+                case Mood.Wink:
+                    list = _chatResponseInfo[4].List;
+                    break;
+            }
+
+            if (list == null)
+                return _defaultList.List; //_defaultList.List;
+
             return list;
+
+
+
+
         }
 
         public List<string> GetMottoOptions(CharacterClassType classType)

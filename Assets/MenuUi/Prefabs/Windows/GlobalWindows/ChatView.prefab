@@ -4195,7 +4195,6 @@ MonoBehaviour:
   _globalChatContent: {fileID: 7703225872503541342}
   _clanChat: {fileID: 2303037466875175594}
   _clanChatContent: {fileID: 1206508976571793912}
-  _currentContent: {fileID: 0}
   _sendButtonUI: {fileID: 3239857786752039811}
   _sendButtonSadness: {fileID: 652102874510165360}
   _sendButtonAnger: {fileID: 4980087199686146618}
@@ -4241,6 +4240,10 @@ MonoBehaviour:
   - {fileID: 8678484190465885865}
   _tablineScript: {fileID: 7120743843305630683}
   _InputArea: {fileID: 1983480450410086116}
+  characterResponseList: {fileID: 11400000, guid: 0c97ef5ec4dd42d49854c48853a3e90c,
+    type: 2}
+  currentMood: 2
+  _responsesData: {fileID: 1228178274405547610}
 --- !u!114 &1176563068381732146
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5575,7 +5578,7 @@ PrefabInstance:
     - target: {fileID: 2641932565321544379, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.9643939
+      value: 0.96282893
       objectReference: {fileID: 0}
     - target: {fileID: 2665311521893521844, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -5630,12 +5633,12 @@ PrefabInstance:
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.8943939
+      value: 0.88682896
       objectReference: {fileID: 0}
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.18
+      value: 0.201
       objectReference: {fileID: 0}
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -7253,7 +7256,7 @@ PrefabInstance:
     - target: {fileID: 7827142668286818857, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.18
+      value: 0.201
       objectReference: {fileID: 0}
     - target: {fileID: 8020515439083824472, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -7393,12 +7396,12 @@ PrefabInstance:
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.9643939
+      value: 0.96282893
       objectReference: {fileID: 0}
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.8943939
+      value: 0.88682896
       objectReference: {fileID: 0}
     - target: {fileID: 9092001840253612742, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
