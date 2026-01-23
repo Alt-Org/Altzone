@@ -3,17 +3,18 @@ name: Battle Taski
 about: Määritä battlen tehtävä, jonka voi tehdä jo käytännössä
 title: 'Task: Taskin Nimi'
 labels: Battle
+type: Task
 assignees:
 ---
 
-## Taskin kuvaus
+## Taskin kuvaus (WIP)
 
 Kuvaile taskia esim: miksi se tehdään, mitä tehdään.
 
 
-## Toiminta
+## Toiminta (WIP)
 
-Bulletpoint lista, kerro tarkemmin ja yksityiskohtaisesti askel askeleelta miten asian pitää toimia. Listataan vaatimuksia. 
+Bulletpoint lista, kerro tarkemmin ja yksityiskohtaisesti askel askeleelta miten asian pitää toimia. Listataan vaatimuksia.
 
 Esim:
 
@@ -37,9 +38,9 @@ Esim:
     - [ ] Poikkeus Z
     - [ ] Poikkeus W
 
-## Toteutus
+## Toteutus (WIP)
 
-Miten halutut asiat tehdään käytännössä. Mitä pitää lisätä, muokata tai poistaa. Listataan vaatimuksia. 
+Miten halutut asiat tehdään käytännössä. Mitä pitää lisätä, muokata tai poistaa. Listataan vaatimuksia.
 
 Esim.
 

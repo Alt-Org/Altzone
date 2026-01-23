@@ -1,0 +1,26 @@
+var class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler =
+[
+    [ "Awake", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#a26f1103e0fd61d7725fb01fbf912cbfa", null ],
+    [ "CheckTextClipping", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#aeffab8cc3de665d85aaaa4760a401dcd", null ],
+    [ "RecalculateFontSize", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#abac9582e9fb472381eb6f1f11500c127", null ],
+    [ "ScaleTextBox", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#a60472a5bc45e660674df274fa4016c78", null ],
+    [ "Update", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#af3700a96f8893bd03f424deadfb4985c", null ],
+    [ "_fontSettingsChanged", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#ab9b250cfbad77b9e445ae076453ac6f0", null ],
+    [ "_fontSizeMax", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#a0858c3839de8020ad9c6487165652a8f", null ],
+    [ "_fontSizeMin", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#a2d0445146c8ce5a3134d4e2a5147a3c4", null ],
+    [ "_holderRectTransform", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#ade69cca24682e948452327d26eeffa9a", null ],
+    [ "_oldRectSizeArray", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#a21fdfaa50d69197977193c6cd73ae185", null ],
+    [ "_oldTextArray", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#a8246cfa92536706ccf7ac5900fb0203e", null ],
+    [ "_rectTransformArray", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#a81f19947e031ca23e08732498cbb34f0", null ],
+    [ "_relativePercentageMax", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#adb52a72cec8046cc0a63290a0efe6c0d", null ],
+    [ "_relativePercentageTarget", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#a22805db70c38b70aa09d3e7cfc02cc8d", null ],
+    [ "_startScalingHolderAspectRatio", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#a2e02d0b6fd1be786d97c92b15ac5c200", null ],
+    [ "_textArray", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#a73d2908d0c5a3030548a144a62938869", null ],
+    [ "_textBoxAspectRatio", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#af9039bbf4a750663c9b3e5a46038a13d", null ],
+    [ "_textBoxDefaultAnchorMaxArray", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#abefc2b3545855ac70d9a0dcb024741d7", null ],
+    [ "_textBoxDefaultAnchorMinArray", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#a768112336753a717202f0184b9a28645", null ],
+    [ "FontSizeMax", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#a49e7bd45586601e7e43e75e31931b920", null ],
+    [ "FontSizeMin", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#a89f70f6002e6a81260b59e85d55fcce4", null ],
+    [ "RelativePercentageMax", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#a197b7f05fa1c94a1d745e73b4a6822a3", null ],
+    [ "RelativePercentageTarget", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#ad5d47641fcd4fb90475d3c10230af860", null ]
+];

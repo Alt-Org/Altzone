@@ -463,32 +463,13 @@ public class ServerManager : MonoBehaviour
 
             }); 
         });
+        yield return new WaitUntil(() => clanData != null);
 
-        yield return StartCoroutine(GetClanVoteListFromServer(polls =>
+        yield return StartCoroutine(GetClanPlayers(members =>
         {
-            if (polls != null)
-            {
-                clanData.Polls.Clear();
-                foreach (ServerPoll poll in polls)
-                {
-
-                    PollData pollData = new FurniturePollData(poll);
-                    clanData.Polls.Add(pollData);
-                }
-                RaiseClanPollsChangedEvent();
-            }
+            if (members != null) clanData.Members = members;
         }));
 
-        yield return StartCoroutine(GetClanStall(clan._id, stall =>
-        {
-            if(stall == null) Debug.LogWarning("Failed to get stall data.");
-            else
-            {
-                clanData.AdData = stall;
-            }
-        }));
-
-        // Creates or fetches the most up to date clan Stock before saving.
         if (Stock == null)
         {
             yield return StartCoroutine(GetStockFromServer(clan, stock =>
@@ -505,22 +486,23 @@ public class ServerManager : MonoBehaviour
                 }
             }));
         }
-
+        bool furnitureFetchFinished = true;
         // Get Clan Items
         yield return StartCoroutine(GetStockItemsFromServer(Stock, new List<ServerItem>(), null, 0, items =>
         {
+            furnitureFetchFinished = false;
             if (items != null)
             {
                 ClanInventory inventory = new();
                 List<ClanFurniture> clanFurniture = new();
-                if (!_skipServerFurniture)
+            if (!_skipServerFurniture)
+            {
+                foreach (ServerItem item in items)
                 {
-                    foreach (ServerItem item in items)
-                    {
-                        //Debug.LogWarning($"Id: {item._id}, Name: {item.name}");
-                        if (item._id == null || item.name == null) continue;
-                        clanFurniture.Add(new ClanFurniture(item._id, item.name/*.Trim().ToLower(CultureInfo.GetCultureInfo("en-US")).Replace(" ", ".")*/));
-                    }
+                    //Debug.LogWarning($"Id: {item._id}, Name: {item.name}");
+                    if (item._id == null || item.name == null) continue;
+                    clanFurniture.Add(new ClanFurniture(item._id, item.name/*.Trim().ToLower(CultureInfo.GetCultureInfo("en-US")).Replace(" ", ".")*/));
+                }
                 }
                 else
                 {
@@ -537,11 +519,54 @@ public class ServerManager : MonoBehaviour
                     clanData.Inventory = inventory;
                 }
             }
+            furnitureFetchFinished = true;
         }));
 
-        yield return StartCoroutine(GetClanPlayers(members =>
+        yield return new WaitUntil(() => furnitureFetchFinished);
+
+        bool stallFurnitureFetchFinished = true;
+        if (!_skipServerFurniture)
         {
-            if(members!= null) clanData.Members = members;
+            stallFurnitureFetchFinished = false;
+            yield return StartCoroutine(GetOwnFleaMarketItemsFromServer(callback =>
+            {
+                foreach (var item in callback)
+                {
+                    item.VotedToSell = true;
+                    clanData.Inventory.Furniture.Add(item);
+                }
+                stallFurnitureFetchFinished = true;
+            }));
+        }
+
+        yield return new WaitUntil(() => stallFurnitureFetchFinished);
+        store.SaveClanData(clanData, null);
+        yield return StartCoroutine(GetClanStall(clan._id, stall =>
+        {
+            if (stall == null) Debug.LogWarning("Failed to get stall data.");
+            else
+            {
+                clanData.AdData = stall;
+            }
+        }));
+
+        yield return StartCoroutine(GetClanVoteListFromServer(polls =>
+        {
+            if (polls != null)
+            {
+                clanData.Polls.Clear();
+                foreach (ServerPoll poll in polls)
+                {
+
+                    if (poll.type == "flea_market_sell_item" || poll.type == "shop_buy_item")
+                    {
+                        FurniturePollData pollData = new FurniturePollData(poll, clanData);
+                        if (pollData.Furniture == null) continue;
+                        clanData.Polls.Add(pollData);
+                    }
+                }
+                RaiseClanPollsChangedEvent();
+            }
         }));
 
         // Saves clan data including its items.
@@ -1046,8 +1071,10 @@ public class ServerManager : MonoBehaviour
             JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
         ).ToString();
 
-        yield return UpdateClanToServer(body, callback);
-        Storefront.Get().SaveClanData(data, null);
+        yield return UpdateClanToServer(body, callback =>
+        {
+            if (callback) Storefront.Get().SaveClanData(data, null);
+        });
     }
 
     public IEnumerator UpdateClanToServer(string body, Action<bool> callback)
@@ -1057,12 +1084,6 @@ public class ServerManager : MonoBehaviour
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                JObject result = JObject.Parse(request.downloadHandler.text);
-                ServerClan clan = result["data"]["Clan"].ToObject<ServerClan>();
-                Clan = clan;
-
-                StartCoroutine(SaveClanFromServerToDataStorage(Clan));
-
                 if (callback != null)
                 {
                     callback(true);
@@ -1663,33 +1684,36 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
-    public IEnumerator SendClanVoteToServer(string voteid, bool answer, Action<ServerPoll> callback)
+    public void SendClanVoteToServer(string voteid, bool answer, Action<bool> callback) => StartCoroutine(SendClanVoteToServerCoroutine(voteid, answer, callback));
+
+    public IEnumerator SendClanVoteToServerCoroutine(string voteid, bool answer, Action<bool> callback)
     {
-        string body = JObject.FromObject(new { voting_id = voteid, choice = answer?"accept":"decline" }).ToString();
+        string body = JObject.FromObject(new { voting_id = voteid, choice = answer?"accept":"reject" }).ToString();
 
         yield return StartCoroutine(WebRequests.Put(DEVADDRESS + "voting/", body, AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                JObject result = JObject.Parse(request.downloadHandler.text);
+                //JObject result = JObject.Parse(request.downloadHandler.text);
                 //Debug.LogWarning(result);
 
-                ServerPoll poll = new();
-                poll = result["data"]["Voting"].ToObject<ServerPoll>();
+                //ServerPoll poll = new();
+                //poll = result["data"]["Voting"].ToObject<ServerPoll>();
 
                 if (callback != null)
-                    callback(poll);
+                    callback(true);
             }
             else
             {
                 if (callback != null)
-                    callback(null);
+                    callback(false);
             }
         }));
     }
 
     #endregion
 
+    #region Shop
     public IEnumerator GetClanShopListFromServer(Action<List<GameFurniture>> callback)
     {
         yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "clan-shop/items/", AccessToken, request =>
@@ -1720,7 +1744,115 @@ public class ServerManager : MonoBehaviour
             }
         }));
     }
+    public void BuyShopItem(string itemName, Action<bool> callback) => StartCoroutine(BuyShopItemToServer(itemName, callback));
+    public IEnumerator BuyShopItemToServer(string itemName, Action<bool> callback)
+    {
+        string body = JObject.FromObject(new { itemName = itemName }).ToString();
 
+        yield return StartCoroutine(WebRequests.Post(DEVADDRESS + "clan-shop/buy", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
+    public IEnumerator GetOwnFleaMarketItemsFromServer(Action<List<ClanFurniture>> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "fleamarket", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                //ServerPlayer player = result["data"]["Object"].ToObject<ServerPlayer>();
+                JArray middleresult = (JArray)result["data"]["FleaMarketItem"];
+
+                List<ClanFurniture> furniturelist = new();
+                foreach (var item in middleresult)
+                {
+                    if (item["clan_id"].ToString() == Clan._id)
+                    {
+                        Debug.LogWarning("FleaMarketFetch");
+                        string id = item["_id"].ToString();
+                        string name = item["name"].ToString();
+                        ClanFurniture furniture = new(id, name);
+                        if (furniture != null)
+                            furniturelist.Add(furniture);
+                    }
+                }
+
+                if (callback != null)
+                    callback(furniturelist);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator GetFleaMarketItemsFromServer(Action<List<GameFurniture>> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "fleamarket", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                //ServerPlayer player = result["data"]["Object"].ToObject<ServerPlayer>();
+                JArray middleresult = (JArray)result["data"]["FleaMarketItem"];
+
+                List<GameFurniture> furniturelist = new();
+                foreach (var item in middleresult)
+                {
+                    string name = item["name"].ToString();
+                    GameFurniture furniture = StorageFurnitureReference.Instance.GetGameFurniture(name);
+                    if (furniture != null)
+                        furniturelist.Add(furniture);
+                }
+
+                if (callback != null)
+                    callback(furniturelist);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator AddCoinsToClan(int amount, Action<bool> callback)
+    {
+        string body = JObject.FromObject(new { amount = amount }).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(DEVADDRESS + "shop/clanCoins", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
+    #endregion
+
+    #region Stall
     public IEnumerator GetClanStall(string clan_id, Action<AdStoreObject> callback)
     {
         yield return StartCoroutine(WebRequests.Get(DEVADDRESS + "stall/"+clan_id, AccessToken, request =>
@@ -1741,6 +1873,137 @@ public class ServerManager : MonoBehaviour
             {
                 if (callback != null)
                     callback(null);
+            }
+        }));
+    }
+
+    public void SellItemOnStall(string item_id, int price, Action<bool> callback) => StartCoroutine(SellItemOnStallToServer(item_id, price, callback));
+
+    public IEnumerator SellItemOnStallToServer(string item_id, int price, Action<bool> callback)
+    {
+        string body = JObject.FromObject(
+            new
+            {
+                item_id = item_id,
+                price = price
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+        ).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(DEVADDRESS + "fleaMarket/sell/", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
+    public IEnumerator BuyItemFromStall(string item_id, Action<bool> callback)
+    {
+        string body = JObject.FromObject(
+            new
+            {
+                item_id = item_id
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+        ).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(DEVADDRESS + "fleaMarket/buy/", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
+    public IEnumerator PutItemOnStall(string item_id, bool toStall, Action<bool> callback)
+    {
+        string status = toStall?"available":"shipping";
+        string body = JObject.FromObject(
+            new
+            {
+                item_id = item_id,
+                status = status
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+        ).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(DEVADDRESS + "fleaMarket/change-item-status/", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
+    public IEnumerator ChangeItemPrice(string item_id, int price, Action<bool> callback)
+    {
+        string body = JObject.FromObject(
+            new
+            {
+                item_id = item_id,
+                price = price
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+        ).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(DEVADDRESS + "fleaMarket/change-item-price/", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
+    public IEnumerator ReturnItemToStock(string item_id, Action<bool> callback)
+    {
+        string body = JObject.FromObject(
+            new
+            {
+                item_id = item_id
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+        ).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(DEVADDRESS + "fleaMarket/move-to-stock/"+item_id, body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
             }
         }));
     }
@@ -1771,6 +2034,7 @@ public class ServerManager : MonoBehaviour
             }
         }));
     }
+    #endregion
 
     #region Leaderboard
     public IEnumerator GetClanLeaderboardFromServer(Action<List<ClanLeaderboard>> callback)

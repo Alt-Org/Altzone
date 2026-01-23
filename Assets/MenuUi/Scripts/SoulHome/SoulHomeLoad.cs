@@ -315,27 +315,21 @@ namespace MenuUI.Scripts.SoulHome {
             yield return new WaitUntil(() => _roomsReady);
             if (_ignoreFurniture)
             {
+                var store = Storefront.Get();
+                ReadOnlyCollection<GameFurniture> allItems = null;
+                yield return store.GetAllGameFurnitureYield(result => allItems = result);
+
                 int i = 0;
+                int j;
                 while (i < 2)
                 {
-                    var test4 = new Furniture(i * 1000 + 3, "Sofa_Taakka", new Vector2Int(-1, -1), FurnitureSize.ThreeXEight, FurnitureSize.SevenXThree, FurniturePlacement.Floor, 10f, 15f, false);
-                    _soulHomeController.AddFurniture(test4);
-                    var test5 = new Furniture(i * 1000 + 4, "Mirror_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f, false);
-                    _soulHomeController.AddFurniture(test5);
-                    var test6 = new Furniture(i * 1000 + 5, "Floorlamp_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f, false);
-                    _soulHomeController.AddFurniture(test6);
-                    var test7 = new Furniture(i * 1000 + 6, "Toilet_Schrodinger", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, FurniturePlacement.Floor, 10f, 15f, false);
-                    _soulHomeController.AddFurniture(test7);
-                    var test8 = new Furniture(i * 1000 + 7, "Sink_Schrodinger", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, FurniturePlacement.FloorByWall, 10f, 15f, false);
-                    _soulHomeController.AddFurniture(test8);
-                    var test9 = new Furniture(i * 1000 + 8, "Closet_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXFour, FurnitureSize.TwoXThree, FurniturePlacement.Floor, 10f, 15f, false);
-                    _soulHomeController.AddFurniture(test9);
-                    var test10 = new Furniture(i * 1000 + 9, "CoffeeTable_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f, false);
-                    _soulHomeController.AddFurniture(test10);
-                    var test11 = new Furniture(i * 1000 + 10, "ArmChair_Taakka", new Vector2Int(-1, -1), FurnitureSize.ThreeXThree, FurnitureSize.ThreeXThree, FurniturePlacement.Floor, 10f, 15f, false);
-                    _soulHomeController.AddFurniture(test11);
-                    var test12 = new Furniture(i * 1000 + 11, "Sofa_Rakkaus", new Vector2Int(-1, -1), FurnitureSize.ThreeXSeven, FurnitureSize.SevenXThree, FurniturePlacement.Floor, 10f, 15f, false);
-                    _soulHomeController.AddFurniture(test12);
+                    j = 1;
+                    foreach(GameFurniture furniture in allItems)
+                    {
+                        Furniture storageFurniture = new(new(i*1000+j.ToString(), furniture.Name), furniture);
+                        _soulHomeController.AddFurniture(storageFurniture);
+                        j++;
+                    }
                     i++;
                 }
             }

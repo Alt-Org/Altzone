@@ -132,7 +132,7 @@ namespace Battle.QSimulation.SoulWall
             }
 
             // Destroy the SoulWall entity
-            f.Events.BattlePlaySoundFX(BattleSoundFX.WallBroken);
+            f.Events.BattlePlaySoundFX(BattleSoundFX.SoulWallBroken);
             f.Destroy(projectileCollisionData->OtherEntity);
 
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.SoulWall);

@@ -8,13 +8,15 @@ using UnityEngine.UI;
 
 public class DailyTaskSelectButtons : DailyTaskProgressListener
 {
+    [SerializeField] private bool _limitToThis = false;
+    [SerializeField] private List<SelectButtonObject> _limitedButtons;
     private float _requiredHoldTime = 3f;
     private float _coolDownTime = 0.2f;
 
-    private Dictionary<Button, List<EventTrigger.Entry>> _addedEntries = new();
+    private Dictionary<SelectButtonObject, List<EventTrigger.Entry>> _addedEntries = new();
     private HashSet<EventTrigger> _addedTriggers = new();
 
-    public static event Action<Button> OnButtonSelected;
+    public static event Action<SelectButtonObject> OnButtonSelected;
 
     // Adds listeners if the task is active at startup
     protected override void Start()
@@ -52,18 +54,57 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
         }
     }
 
+    public void AddButton(SelectButtonObject button)
+    {
+        if (_limitToThis)
+        {
+            _limitedButtons.Add(button);
+        }
+    }
+
+    public void ResetList()
+    {
+        if (_limitToThis)
+        {
+            _limitedButtons.Clear();
+        }
+    }
+
+    public void RefreshListeners()
+    {
+        if (On)
+        {
+            AddListeners();
+        }
+        else
+        {
+            RemoveListeners();
+        }
+    }
+
     // Adds EventTrigger listeners to every button in the scene
     private void AddListeners()
     {
-        Button[] allButtons = FindObjectsOfType<Button>(true);
-        foreach (Button button in allButtons)
+        SelectButtonObject[] allButtonObjects;
+        if (!_limitToThis)
         {
-            if (_addedEntries.ContainsKey(button)) continue;
+            Button[] allButtons = FindObjectsOfType<Button>(true);
+            List<SelectButtonObject> allButtonObjectsList = new();
+            foreach ( Button button in allButtons)
+            {
+                allButtonObjectsList.Add(new(button, button.GetComponent<Image>()));
+            }
+            allButtonObjects = allButtonObjectsList.ToArray();
+        }
+        else allButtonObjects = _limitedButtons.ToArray();
+        foreach (SelectButtonObject buttonObject in allButtonObjects)
+        {
+            if (_addedEntries.ContainsKey(buttonObject)) continue;
 
-            EventTrigger trigger = button.GetComponent<EventTrigger>();
+            EventTrigger trigger = buttonObject.Button.GetComponent<EventTrigger>();
             if (trigger == null)
             {
-                trigger = button.gameObject.AddComponent<EventTrigger>();
+                trigger = buttonObject.Button.gameObject.AddComponent<EventTrigger>();
                 _addedTriggers.Add(trigger);
             }
 
@@ -71,7 +112,7 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
 
             // Starts the hold coroutine when the button is pressed down
             var downEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
-            downEntry.callback.AddListener((eventData) => StartCoroutine(ButtonHold(button)));
+            downEntry.callback.AddListener((eventData) => StartCoroutine(ButtonHold(buttonObject)));
             trigger.triggers.Add(downEntry);
             entries.Add(downEntry);
 
@@ -80,15 +121,15 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
             upEntry.callback.AddListener((eventData) =>
             {
                 StopAllCoroutines();
-                if (button != null)
+                if (buttonObject?.Button != null)
                 {
-                    StartCoroutine(ReEnableAfterCooldown(button));
+                    StartCoroutine(ReEnableAfterCooldown(buttonObject));
                 }
             });
             trigger.triggers.Add(upEntry);
             entries.Add(upEntry);
 
-            _addedEntries[button] = entries;
+            _addedEntries[buttonObject] = entries;
         }
     }
 
@@ -97,12 +138,12 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
     {
         foreach (var addedEntry in _addedEntries)
         {
-            Button button = addedEntry.Key;
+            SelectButtonObject button = addedEntry.Key;
             List<EventTrigger.Entry> entries = addedEntry.Value;
 
             if (button != null)
             {
-                EventTrigger trigger = button.GetComponent<EventTrigger>();
+                EventTrigger trigger = button.Button.GetComponent<EventTrigger>();
                 if (trigger != null)
                 {
                     foreach (var entry in entries)
@@ -122,7 +163,7 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
         _addedEntries.Clear();
     }
 
-    private IEnumerator ButtonHold(Button button)
+    private IEnumerator ButtonHold(SelectButtonObject button)
     {
         float timer = 0f;
 
@@ -132,7 +173,7 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
 
             if (timer >= _requiredHoldTime)
             {
-                button.interactable = false;
+                button.Button.interactable = false;
                 OnButtonSelected?.Invoke(button);
                 yield break;
             }
@@ -141,14 +182,27 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
         }
     }
 
-    private IEnumerator ReEnableAfterCooldown(Button button)
+    private IEnumerator ReEnableAfterCooldown(SelectButtonObject button)
     {
         yield return new WaitForSeconds(_coolDownTime);
-        if (button != null) button.interactable = true;
+        if (button != null) button.Button.interactable = true;
     }
 
     private void ButtonsConfirmed()
     {
         UpdateProgress("1");
+    }
+
+    [Serializable]
+    public class SelectButtonObject
+    {
+        public Button Button;
+        public Image Image;
+
+        public SelectButtonObject(Button button, Image image)
+        {
+            Button = button;
+            Image = image;
+        }
     }
 }

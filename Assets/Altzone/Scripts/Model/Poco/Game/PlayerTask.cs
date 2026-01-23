@@ -76,6 +76,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         CreateUnifiedInterior,
         RecognizeCharacterMechanic,
         WhereGameHappens,
+        ChooseMostTouchingIntro,
     }
 
     public enum TaskEducationCultureType
@@ -486,6 +487,10 @@ namespace Altzone.Scripts.Model.Poco.Game
                 case "where_game_happens":
                     {
                         return TaskEducationStoryType.WhereGameHappens;
+                    }
+                case "choose_most_touching_intro":
+                    {
+                        return TaskEducationStoryType.ChooseMostTouchingIntro;
                     }
                 default:
                     {

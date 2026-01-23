@@ -44,7 +44,7 @@ public class SelectButtonsPopup : MonoBehaviour
         DailyTaskSelectButtons.OnButtonSelected -= HandlePopup;
     }
 
-    private void HandlePopup(Button button)
+    private void HandlePopup(DailyTaskSelectButtons.SelectButtonObject button)
     {
         int emptyIndex = -1;
         for (int i = 0; i < _selectedButtons.Length; i++)
@@ -58,10 +58,10 @@ public class SelectButtonsPopup : MonoBehaviour
 
         if (emptyIndex == -1) return;
 
-        _selectedButtons[emptyIndex] = button;
+        _selectedButtons[emptyIndex] = button.Button;
         Button popupButton = _popupButtons[emptyIndex];
 
-        Image sourceImage = button.GetComponent<Image>();
+        Image sourceImage = button.Image;
         Image expandedPopupImage = popupButton.GetComponent<Image>();
         Image popupImage = _buttonImages[emptyIndex];
 

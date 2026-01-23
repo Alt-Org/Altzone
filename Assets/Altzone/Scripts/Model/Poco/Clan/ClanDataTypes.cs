@@ -61,6 +61,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         Teenagers,
         Toddlers,
         Adults,
+        Elderly,
         All
     }
 
@@ -112,6 +113,42 @@ namespace Altzone.Scripts.Model.Poco.Clan
         Huge
     }
 
+    public enum Rules
+    {
+        FairGame,
+        ActivityWeekly,
+        ActivityDaily,
+        NoToxicity,
+        Teamwork,
+        KickUnderperformers,
+        AbsencesNoted,
+        NoSpam,
+        WorkRoles,
+        FairTrade,
+        JoinJointProjects,
+        DiplomacyWithOthers,
+        Positivity,
+    }
+
+    public enum Phrases
+    {
+        TogetherWeAreMore,
+        GrowStepByStep,
+        CreativityIsOurStrength,
+        BuildShareGetExcited,
+        GoodAtmosphere,
+        SmallActsBigClan,
+        AlwaysHelping,
+        FairGame,
+        EveryoneShines,
+        EnthusiasmIsContagious,
+        WorldBuiltTogether,
+        TrustMakesClan,
+        TodayBetter,
+        EveryMomentIsOpportunity,
+        ClanWalksTogether,
+    }
+
     public static class ClanDataTypeConverter
     {
         public static string GetAgeText(ClanAge age)
@@ -125,6 +162,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
                         ClanAge.Teenagers => "Teinit",
                         ClanAge.Toddlers => "Taaperot",
                         ClanAge.Adults => "Aikuiset",
+                        ClanAge.Elderly => "Iäkkäät",
                         ClanAge.All => "Kaikki",
                         _ => "",
                     };
@@ -135,6 +173,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
                         ClanAge.Teenagers => "Teenagers",
                         ClanAge.Toddlers => "Toddlers",
                         ClanAge.Adults => "Adults",
+                        ClanAge.Elderly => "Elderly",
                         ClanAge.All => "Everyone",
                         _ => "",
                     };
@@ -145,6 +184,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
                 ClanAge.Teenagers => "Teinit",
                 ClanAge.Toddlers => "Taaperot",
                 ClanAge.Adults => "Aikuiset",
+                ClanAge.Elderly => "Iäkkäät",
                 ClanAge.All => "Kaikki",
                 _ => "",
             };
@@ -381,6 +421,50 @@ namespace Altzone.Scripts.Model.Poco.Clan
                 ClanValues.Spammaajat => "spämmääjät",
                 ClanValues.Kasvissyojat => "kasvissyöjät",
                 ClanValues.Tasapainoiset => "tasapainoiset",
+                _ => "",
+            };
+        }
+
+        public static string GetRulesText(Rules rules)
+        {
+            return rules switch
+            {
+                Rules.FairGame => "Reilu peli",
+                Rules.ActivityWeekly => "Aktiivisuusvaatimus viikoittain",
+                Rules.ActivityDaily => "Aktiivisuusvaatimus päivittäin",
+                Rules.NoToxicity => "Ei toksista käytöstä",
+                Rules.Teamwork => "Yhteistyö ennen sooloilua",
+                Rules.KickUnderperformers => "Minimitasovaatimuksen alittavat pelaajat kickataan",
+                Rules.AbsencesNoted => "Poissaolot ilmoitettava",
+                Rules.NoSpam => "Klaanichattiin ei spämmäystä",
+                Rules.WorkRoles => "Roolikohtainen osallistuminen",
+                Rules.FairTrade => "Kaupankäynti klaanin sisällä reilua",
+                Rules.JoinJointProjects => "Osallistuminen yhteisiin projekteihin",
+                Rules.DiplomacyWithOthers => "Diplomatia muiden klaanien kanssa",
+                Rules.Positivity => "Positiivinen ilmapiiri",
+                _ => "",
+            };
+        }
+
+        public static string GetPhraseText(Phrases phrases)
+        {
+            return phrases switch
+            {
+                Phrases.TogetherWeAreMore => "Yhdessä olemme enemmän.",
+                Phrases.GrowStepByStep => "Kasvamme – askel kerrallaan.",
+                Phrases.CreativityIsOurStrength => "Luovuus on voimamme.",
+                Phrases.BuildShareGetExcited => "Rakenna. Jaa. Innostu.",
+                Phrases.GoodAtmosphere => "Hyvä ilmapiiri on paras buffi.",
+                Phrases.SmallActsBigClan => "Pienillä teoilla suuri klaani.",
+                Phrases.AlwaysHelping => "Aina avuksi – aina eteenpäin.",
+                Phrases.FairGame => "Reilusti pelaten, vahvasti yhdessä.",
+                Phrases.EveryoneShines => "Klaanissa jokainen loistaa.",
+                Phrases.EnthusiasmIsContagious => "Innostus tarttuu – ja saa kasvaa.",
+                Phrases.WorldBuiltTogether => "Yhdessä rakentuva maailma.",
+                Phrases.TrustMakesClan => "Luottamus tekee klaanin.",
+                Phrases.TodayBetter => "Tänään parempi kuin eilen.",
+                Phrases.EveryMomentIsOpportunity => "Jokainen hetki on mahdollisuus.",
+                Phrases.ClanWalksTogether => "Klaani kulkee rinnalla.",
                 _ => "",
             };
         }

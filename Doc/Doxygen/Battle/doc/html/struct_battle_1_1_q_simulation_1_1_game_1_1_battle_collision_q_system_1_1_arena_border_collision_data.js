@@ -1,0 +1,4 @@
+var struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_arena_border_collision_data =
+[
+    [ "ArenaBorder", "struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_arena_border_collision_data.html#ae7b7c19c98f5252c7c5f4339ee97782a", null ]
+];
