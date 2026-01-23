@@ -45,6 +45,11 @@ namespace Battle.View
         /// @ref BattleStoneCharacterViewController-SerializeFields
         [SerializeField] private Color[] _emotionColors;
 
+        /// <summary>[SerializeField] Animators for the stone characters.</summary>
+        /// @ref BattleStoneCharacterViewController-SerializeFields
+        [SerializeField] private Animator teamAlphaAnimator;
+        [SerializeField] private Animator teamBetaAnimator;
+
         /// @}
 
         /// <summary>
@@ -90,7 +95,14 @@ namespace Battle.View
 
         public void PlayHitAnimation(BattleTeamNumber team, BattleEmotionState emotion)
         {
+            Animator animator = team == BattleTeamNumber.TeamAlpha
+                ? teamAlphaAnimator.GetComponent<Animator>()
+                : teamBetaAnimator.GetComponent<Animator>();
 
+            animator.SetInteger("BattleTeamNumber", (int)team);
+            animator.SetInteger("AnimationIndex", (int)emotion);
+
+            Debug.Log($" PlayHitAnimation log: BattleTeamNumber {team} and AnimationIndex: {emotion}");
         }
     }
 }
