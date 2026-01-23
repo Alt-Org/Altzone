@@ -158,8 +158,8 @@ public class AvatarDesignLoader : AltMonoBehaviour
         playerData.AvatarData = new(
             playerAvatar.Name,
             null,
-            // Add colors from playeravatar here
             playerAvatar.SkinColor,
+            null,
             playerAvatar.Scale
         );
 
@@ -168,6 +168,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
         {
             playerData.AvatarData.SetPieceID((AvatarPiece)feature, int.Parse(playerAvatar.GetPartId(feature)));
             Debug.Log("The added featureId is " + playerAvatar.GetPartId(feature));
+            playerData.AvatarData.SetPieceColor(feature, playerAvatar.GetPartColor(feature));
         }
         //}
 
@@ -188,8 +189,8 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
             var avatarImage = partInfo;
             avatarVisualData.SetAvatarPiece(pieceId, avatarImage);
-            // Add color from playerdata after color is added to playerdata
-            //avatarVisualData.SetColor(pieceId, Color.red);
+            ColorUtility.TryParseHtmlString(avatarData.GetPieceColor(pieceId), out Color color);
+            avatarVisualData.SetColor(pieceId, color);
         }
     }
 
@@ -211,6 +212,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
         avatarVisualData.SkinColor = color;
         // add class color here
+        avatarVisualData.ClassColor = Color.white;
     }
 
     #endregion

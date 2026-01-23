@@ -1375,6 +1375,7 @@ MonoBehaviour:
   _textHandler: {fileID: 3300804670043043137}
   _popUpHandler: {fileID: 7473196896774068623}
   _divanImageHandler: {fileID: 1063922284475048527}
+  _avatarLoader: {fileID: 8418780513048486487}
 --- !u!114 &8112127728846556094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3960,7 +3961,7 @@ PrefabInstance:
     - target: {fileID: 6224537532541717207, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
         type: 3}
       propertyPath: _useOwnAvatarVisuals
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7581661894801124856, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
         type: 3}
@@ -4036,3 +4037,15 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2500759678271629440}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8418780513048486487 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6224537532541717207, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
+    type: 3}
+  m_PrefabInstance: {fileID: 2500759678271629440}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1171063465097811699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 536f36292a85464488de36d484319b4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

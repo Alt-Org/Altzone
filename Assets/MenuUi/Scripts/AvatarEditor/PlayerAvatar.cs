@@ -104,16 +104,16 @@ namespace MenuUi.Scripts.AvatarEditor
                 }
             }
 
-            // get these from avatardata when they are added there
-            SkinColor = "#ffffff";
+            // figure out how to get class color
+            SkinColor = data.Color;
             ClassColor = "#ffffff";
-            HairColor = "#ffffff";
-            EyesColor = "#ffffff";
-            NoseColor = "#ffffff";
-            MouthColor = "#ffffff";
-            ClothesColor = "#ffffff";
-            HandsColor = "#ffffff";
-            FeetColor = "#ffffff";
+            HairColor = data.HairColor;
+            EyesColor = data.EyesColor;
+            NoseColor = data.NoseColor;
+            MouthColor = data.MouthColor;
+            ClothesColor = data.ClothesColor;
+            HandsColor = data.HandsColor;
+            FeetColor = data.FeetColor;
             Scale = new Vector2(data.ScaleX, data.ScaleY);
         }
         
@@ -234,7 +234,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public static string CorrectColor(string value)
         {
-            string correctedValue = value;
+            string correctedValue = value ?? string.Empty;
             if (!correctedValue.StartsWith("#"))
             {
                 correctedValue = "#" + correctedValue; ;
