@@ -91,6 +91,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
         foreach (var pieceId in AllAvatarPieces)
         {
             _avatarVisualDataScriptableObject.SetAvatarPiece(pieceId, avatarVisualData.GetAvatarPiece(pieceId));
+            _avatarVisualDataScriptableObject.SetColor(pieceId, avatarVisualData.GetColor(pieceId));
         }
 
         _avatarVisualDataScriptableObject.SkinColor = avatarVisualData.SkinColor;

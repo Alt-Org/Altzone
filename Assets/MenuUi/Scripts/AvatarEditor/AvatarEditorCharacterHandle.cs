@@ -30,11 +30,26 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
     public void SetSkinColor(Color skinColor)
     {
         _skinColor = skinColor;
+        _skinColor = Color.green;
+        UpdateColors();
     }
 
     public void SetClassColor(Color classColor)
     {
         _classColor = classColor;
+        _classColor = Color.blue;
+        UpdateColors();
+    }
+
+    private void UpdateColors()
+    {
+        ApplyColors(_mainHair);
+        ApplyColors(_mainEyes);
+        ApplyColors(_mainNose);
+        ApplyColors(_mainMouth);
+        ApplyColors(_mainBody);
+        ApplyColors(_mainHands);
+        ApplyColors(_mainFeet);
     }
 
     public void SetPartColor(AvatarPiece slot, Color partColor)
@@ -204,9 +219,14 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         return mask;
     }
 
-    public void SetHeadColor(Color color)
+    private void ApplyColors(Image image)
     {
-        if (_mainHead != null)
-            _mainHead.color = color;
+        if (image == null || image.material == null)
+        {
+            return;
+        }
+
+        image.material.SetColor("_SkinColor", _skinColor);
+        image.material.SetColor("_ClassColor", _classColor);
     }
 }

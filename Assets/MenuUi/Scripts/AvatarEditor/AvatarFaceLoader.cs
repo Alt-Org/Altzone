@@ -73,7 +73,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void UpdateCharacterColor(Color skinColor, Color classColor)
         {
-            _characterHandle.SetClassColor(classColor);
+            _characterHandle.SetClassColor(/*classColor*/Color.blue);
             _characterHandle.SetSkinColor(skinColor);
         }
 
