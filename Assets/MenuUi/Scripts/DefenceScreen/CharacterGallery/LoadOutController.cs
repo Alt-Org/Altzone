@@ -218,37 +218,7 @@ public class LoadOutController : MonoBehaviour
 
                     _player.ApplyLoadout(loadoutIndex);
 
-                    var _playerData = _player;
-
-                    string[] serverList = new string[_playerData.SelectedCharacterIds.Length];
-
-                    for (int i = 0; i < _playerData.SelectedCharacterIds.Length; i++)
-                    {
-                        serverList[i] = _playerData.SelectedCharacterIds[i].ServerID;
-                    }
-
-                    string body = JObject.FromObject(
-                    new
-                    {
-                        _id = _playerData.Id,
-                        battleCharacter_ids = serverList
-
-                    }).ToString();
-
-                    StartCoroutine(ServerManager.Instance.UpdatePlayerToServer(body, callback =>
-                    {
-                        if (callback != null)
-                        {
-                            Debug.Log("Profile info updated.");
-                        }
-                        else
-                        {
-                            Debug.Log("Profile info update failed.");
-                        }
-
-                        var store = Storefront.Get();
-                        store.SavePlayerData(_playerData, null);
-                    }));
+                    SignalBus.OnLoadoutChangedSignal();
 
                     SignalBus.OnReloadCharacterGalleryRequestedSignal();
                     RefreshButtons();
@@ -265,37 +235,7 @@ public class LoadOutController : MonoBehaviour
 
             _player.ApplyLoadout(loadoutIndex);
 
-            var _playerData2 = _player;
-
-            string[] serverList2 = new string[_playerData2.SelectedCharacterIds.Length];
-
-            for (int i = 0; i < _playerData2.SelectedCharacterIds.Length; i++)
-            {
-                serverList2[i] = _playerData2.SelectedCharacterIds[i].ServerID;
-            }
-
-            string body2 = JObject.FromObject(
-            new
-            {
-                _id = _playerData2.Id,
-                battleCharacter_ids = serverList2
-
-            }).ToString();
-
-            StartCoroutine(ServerManager.Instance.UpdatePlayerToServer(body2, callback =>
-            {
-                if (callback != null)
-                {
-                    Debug.Log("Profile info updated.");
-                }
-                else
-                {
-                    Debug.Log("Profile info update failed.");
-                }
-
-                var store = Storefront.Get();
-                store.SavePlayerData(_playerData2, null);
-            }));
+            SignalBus.OnLoadoutChangedSignal();
 
             SignalBus.OnReloadCharacterGalleryRequestedSignal();
             RefreshButtons();

@@ -219,6 +219,7 @@ public class LoadoutRowController : AltMonoBehaviour
            
             Storefront.Get().SavePlayerData(player, null);
 
+            SignalBus.OnLoadoutChangedSignal();
             SignalBus.OnReloadCharacterGalleryRequestedSignal();
             return;
             

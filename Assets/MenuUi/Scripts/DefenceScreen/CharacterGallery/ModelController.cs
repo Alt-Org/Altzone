@@ -60,6 +60,13 @@ namespace MenuUi.Scripts.Signals
         {
             OnDefenceGalleryEditPanelRequestedForLoadout?.Invoke(loadoutIndex);
         }
+
+        public delegate void LoadoutChanged();
+        public static event LoadoutChanged OnLoadoutChanged;
+        public static void OnLoadoutChangedSignal()
+        {
+            OnLoadoutChanged?.Invoke();
+        }
     }
 }
 
@@ -91,6 +98,7 @@ namespace MenuUi.Scripts.CharacterGallery
             SignalBus.OnSelectedDefenceCharacterChanged += HandleCharacterSelected;
             SignalBus.OnDefenceGalleryStatPopupRequested += _statsWindowController.OpenPopup;
             SignalBus.OnLoadoutDefenceCharacterChanged += HandleLoadoutCharacterChanged;
+            SignalBus.OnLoadoutChanged += SaveBattleCharacters;
         }
 
 
@@ -125,6 +133,7 @@ namespace MenuUi.Scripts.CharacterGallery
             SignalBus.OnSelectedDefenceCharacterChanged -= HandleCharacterSelected;
             SignalBus.OnDefenceGalleryStatPopupRequested -= _statsWindowController.OpenPopup;
             SignalBus.OnLoadoutDefenceCharacterChanged -= HandleLoadoutCharacterChanged;
+            SignalBus.OnLoadoutChanged -= SaveBattleCharacters;
         }
 
 
@@ -223,35 +232,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 _playerData.SelectedCharacterIds[slot].SetData(newServerId, newCharacterId);
             }
 
-            string[] serverList = new string[_playerData.SelectedCharacterIds.Length];
-
-            for(int i = 0; i < _playerData.SelectedCharacterIds.Length; i++)
-            {
-                serverList[i] = _playerData.SelectedCharacterIds[i].ServerID;
-            }
-
-            string body = JObject.FromObject(
-            new
-            {
-                _id = _playerData.Id,
-                battleCharacter_ids = serverList
-
-            }).ToString();
-
-            StartCoroutine(ServerManager.Instance.UpdatePlayerToServer(body, callback =>
-            {
-                if (callback != null)
-                {
-                    Debug.Log("Profile info updated.");
-                }
-                else
-                {
-                    Debug.Log("Profile info update failed.");
-                }
-
-                var store = Storefront.Get();
-                store.SavePlayerData(_playerData, null);
-            }));
+            SaveBattleCharacters();
 
             _playerData.OnCurrentTeamChanged_AutoSave();
         }
@@ -335,6 +316,42 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 Storefront.Get().SavePlayerData(_playerData, null);
             }
+        }
+
+        private void SaveBattleCharacters()
+        {
+            StartCoroutine(GetPlayerData(playerData =>
+            {
+                string[] serverList = new string[playerData.SelectedCharacterIds.Length];
+
+                for (int i = 0; i < playerData.SelectedCharacterIds.Length; i++)
+                {
+                    serverList[i] = playerData.SelectedCharacterIds[i].ServerID;
+                }
+
+                string body = JObject.FromObject(
+                new
+                {
+                    _id = playerData.Id,
+                    battleCharacter_ids = serverList
+
+                }).ToString();
+
+                StartCoroutine(ServerManager.Instance.UpdatePlayerToServer(body, callback =>
+                {
+                    if (callback != null)
+                    {
+                        Debug.Log("Profile info updated.");
+                    }
+                    else
+                    {
+                        Debug.Log("Profile info update failed.");
+                    }
+
+                    var store = Storefront.Get();
+                    store.SavePlayerData(playerData, null);
+                }));
+            }));
         }
     }
 }
