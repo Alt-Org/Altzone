@@ -23,6 +23,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private float _viewPortHeight;
         private float _cellHeight;
         private float _colorGridPadding;
+        public List<Color> Colors { get { return _colors; } }
 
         private void AddColorCell(Color color)
         {

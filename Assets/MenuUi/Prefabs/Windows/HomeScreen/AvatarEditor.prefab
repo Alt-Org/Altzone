@@ -597,6 +597,8 @@ MonoBehaviour:
   _spacing: 0.05
   _verticalPadding: 0.03
   _backgroundColor: {r: 0.24586153, g: 0.39177072, b: 0.6132076, a: 1}
+  _skinColorSelectionCategoryImage: {fileID: 3323784572005849981, guid: 6b7f8f6787aebdc4da339e49694e1f45,
+    type: 3}
 --- !u!114 &3342798204221298985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1571,7 +1573,9 @@ MonoBehaviour:
   _avatarPartsReference: {fileID: 11400000, guid: 671ccbc5ba5e0df42acde4b71995e434,
     type: 2}
   _featureGridContent: {fileID: 6953732945845760404}
-  _gridCellPrefab: {fileID: 90728682598853689, guid: 69cf2c325ff7d4e4eb01540c8a82384c,
+  _featureCellPrefab: {fileID: 90728682598853689, guid: 69cf2c325ff7d4e4eb01540c8a82384c,
+    type: 3}
+  _colorCellPrefab: {fileID: 90728682598853689, guid: f2ad3cdbf95595a41b4382610a05694b,
     type: 3}
   _featureSetter: {fileID: 8112127728846556094}
   _avatarEditorController: {fileID: 7023965250681938522}
@@ -1589,6 +1593,7 @@ MonoBehaviour:
   _fadeRange: 0.1
   _highlightColor: {r: 0.14351194, g: 0.7075472, b: 0.26663968, a: 0.5}
   _backgroundColor: {r: 0.7490195, g: 0.7490195, b: 0.7490195, a: 0.59607846}
+  _characterHandle: {fileID: 1464416334285509327}
 --- !u!114 &2041666044855621765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3955,7 +3960,7 @@ PrefabInstance:
     - target: {fileID: 6224537532541717207, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
         type: 3}
       propertyPath: _useOwnAvatarVisuals
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7581661894801124856, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
         type: 3}

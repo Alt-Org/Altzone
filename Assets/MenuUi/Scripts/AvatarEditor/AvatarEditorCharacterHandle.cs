@@ -30,14 +30,12 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
     public void SetSkinColor(Color skinColor)
     {
         _skinColor = skinColor;
-        _skinColor = Color.green;
         UpdateColors();
     }
 
     public void SetClassColor(Color classColor)
     {
         _classColor = classColor;
-        _classColor = Color.blue;
         UpdateColors();
     }
 
@@ -228,5 +226,6 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
 
         image.material.SetColor("_SkinColor", _skinColor);
         image.material.SetColor("_ClassColor", _classColor);
+        _mainHead.color = _skinColor;
     }
 }
