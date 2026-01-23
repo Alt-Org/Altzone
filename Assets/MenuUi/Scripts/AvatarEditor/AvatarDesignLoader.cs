@@ -211,8 +211,8 @@ public class AvatarDesignLoader : AltMonoBehaviour
         }
 
         avatarVisualData.SkinColor = color;
-        // add class color here
-        avatarVisualData.ClassColor = Color.white;
+        // Need to get real class color here
+        avatarVisualData.ClassColor = Color.green;
     }
 
     #endregion

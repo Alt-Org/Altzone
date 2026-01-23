@@ -106,7 +106,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
             // figure out how to get class color
             SkinColor = data.Color;
-            ClassColor = "#ffffff";
+            ClassColor = "#00FF00";
             HairColor = data.HairColor;
             EyesColor = data.EyesColor;
             NoseColor = data.NoseColor;

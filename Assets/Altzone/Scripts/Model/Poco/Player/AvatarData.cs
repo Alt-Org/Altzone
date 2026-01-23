@@ -104,7 +104,6 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
             Feet = serverData.feet;
             Hands = serverData.hands;
             Color = serverData.skinColor;
-            Color = serverData.skinColor;
             HairColor = serverData.hairColor;
             EyesColor = serverData.eyesColor;
             NoseColor = serverData.noseColor;
