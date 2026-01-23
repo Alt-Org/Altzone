@@ -73,7 +73,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void UpdateCharacterColor(Color skinColor, Color classColor)
         {
-            _characterHandle.SetClassColor(/*classColor*/Color.blue);
+            _characterHandle.SetClassColor(classColor);
             _characterHandle.SetSkinColor(skinColor);
         }
 
@@ -84,8 +84,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
             var featureUpdates = new[]
             {
-                // Color.red for testing update later
-                (AvatarPiece.Hair, _avatarVisuals.Hair, Color.red),
+                (AvatarPiece.Hair, _avatarVisuals.Hair, _avatarVisuals.HairColor),
                 (AvatarPiece.Eyes, _avatarVisuals.Eyes, _avatarVisuals.EyesColor),
                 (AvatarPiece.Nose, _avatarVisuals.Nose, _avatarVisuals.NoseColor),
                 (AvatarPiece.Mouth, _avatarVisuals.Mouth, _avatarVisuals.MouthColor)

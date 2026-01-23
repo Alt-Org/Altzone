@@ -159,7 +159,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
             playerAvatar.Name,
             null,
             // Add colors from playeravatar here
-            "#ffffff",
+            playerAvatar.SkinColor,
             playerAvatar.Scale
         );
 
@@ -189,7 +189,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
             var avatarImage = partInfo;
             avatarVisualData.SetAvatarPiece(pieceId, avatarImage);
             // Add color from playerdata after color is added to playerdata
-            avatarVisualData.SetColor(pieceId, Color.red);
+            //avatarVisualData.SetColor(pieceId, Color.red);
         }
     }
 

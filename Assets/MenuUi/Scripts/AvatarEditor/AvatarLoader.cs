@@ -22,13 +22,13 @@ public class AvatarLoader : MonoBehaviour
     private void UpdateVisuals()
     {
 
-        _characterHandle.SetSkinColor(/*_avatarVisuals.SkinColor*/Color.red);
+        _characterHandle.SetSkinColor(_avatarVisuals.SkinColor);
         _characterHandle.SetClassColor(_avatarVisuals.ClassColor);
 
         if (_avatarVisuals.PartInfos == null || _avatarVisuals.PartInfos.Count == 0)
             return;
-        // Color.red for testing update later
-        _characterHandle.SetMainCharacterImage(AvatarPiece.Hair, _avatarVisuals.Hair, Color.red);
+
+        _characterHandle.SetMainCharacterImage(AvatarPiece.Hair, _avatarVisuals.Hair, _avatarVisuals.HairColor);
         _characterHandle.SetMainCharacterImage(AvatarPiece.Eyes, _avatarVisuals.Eyes, _avatarVisuals.EyesColor);
         _characterHandle.SetMainCharacterImage(AvatarPiece.Nose, _avatarVisuals.Nose, _avatarVisuals.NoseColor);
         _characterHandle.SetMainCharacterImage(AvatarPiece.Mouth, _avatarVisuals.Mouth, _avatarVisuals.MouthColor);
@@ -39,7 +39,7 @@ public class AvatarLoader : MonoBehaviour
 
     public void UpdateVisuals(AvatarVisualData data)
     {
-        _characterHandle.SetSkinColor(/*data.SkinColor*/Color.blue);
+        _characterHandle.SetSkinColor(data.SkinColor);
         _characterHandle.SetClassColor(data.ClassColor);
 
         _characterHandle.SetMainCharacterImage(AvatarPiece.Hair, data.Hair, data.HairColor);
