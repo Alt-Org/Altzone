@@ -43,15 +43,20 @@ Material:
     m_Ints: []
     m_Floats: []
     m_Colors:
-    - _GradientNoiseColor: {r: 0.42941907, g: 0.9433962, b: 0.048949808, a: 1}
+    - _GradientNoiseColor: {r: 0.49411768, g: 0.9333334, b: 1, a: 1}
     - _GradientNoiseSpeed: {r: 0.1, g: 0, b: 0, a: 0}
+    - _GradientNoiseSpeed2: {r: 0.2, g: 0, b: 0, a: 0}
+    - _ScreenColor: {r: 0.654902, g: 1, b: 0.6235294, a: 1}
+    - _ScreenColor2: {r: 1, g: 0.6235294, b: 0.764706, a: 1}
     - _Vector2: {r: 3, g: 0, b: 0, a: 0}
     - _Vector3: {r: 0, g: 0, b: 0, a: 0}
     - _Vector4: {r: 1, g: 0, b: 0, a: 0}
-    - _VoronoiColor: {r: 1, g: 0.30535066, b: 0, a: 1}
+    - _VoronoiColor: {r: 1, g: 0.47058827, b: 0.69803923, a: 1}
     - _VoronoiSpeed: {r: 2, g: 0, b: 0, a: 0}
+    - _VoronoiSpeed2: {r: 2.5, g: 0, b: 0, a: 0}
     - _speed: {r: 0.2, g: 0, b: 0, a: 0}
     - _speed2: {r: 2.5, g: 0, b: 0, a: 0}
+    - _white: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &9093944007620369105
 MonoBehaviour:
