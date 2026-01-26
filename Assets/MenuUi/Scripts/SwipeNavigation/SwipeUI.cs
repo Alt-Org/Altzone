@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Altzone.Scripts.Window;
+using Newtonsoft.Json.Linq;
 using Prg.Scripts.Common;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -54,6 +55,7 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         private bool settingScroll = false;
         public bool isEnabled;
+        private bool _isBlocked;
         private Rect swipeRect;
 
         public bool hardBlocked { get; set; } = false;
@@ -65,16 +67,46 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         public bool IsEnabled
         {
-            get { return isEnabled; }
+            get { return isEnabled && !_isBlocked; }
             set
             {
-                isEnabled = value;
-                if(scrollRect)ToggleScrollRect(value);
+                if (!isEnabled.Equals(value)) isEnabled = value;
+                else return;
+                if (scrollRect)
+                {
+                    if (isEnabled && !_isBlocked)
+                        ToggleScrollRect(true);
+                    else
+                    {
+                        ToggleScrollRect(false);
+                        StartCoroutine(OnSwipeOneStep(CurrentPage));
+                    }
+                }
 
                 if (!IsEnabled)
                 {
                     _startTouch = Vector2.zero;
                     _endTouch = Vector2.zero;
+                }
+            }
+        }
+
+        public bool IsBlocked
+        {
+            get { return _isBlocked; }
+            private set
+            {
+                if (!_isBlocked.Equals(value)) _isBlocked = value;
+                else return;
+                if (scrollRect)
+                {
+                    if (isEnabled && !_isBlocked)
+                        ToggleScrollRect(true);
+                    else
+                    {
+                        ToggleScrollRect(false);
+                        StartCoroutine(OnSwipeOneStep(CurrentPage));
+                    }
                 }
             }
         }
@@ -171,6 +203,8 @@ namespace MenuUi.Scripts.SwipeNavigation
         {
             UpdateInput();
             //UpdateButtonContent();
+            if (isEnabled && !_isBlocked)
+                ToggleScrollRect(true);
         }
         private void LateUpdate()
         {
@@ -229,7 +263,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             CurrentPage = index;
         }
 
-        private void UpdateInput()
+        public virtual void UpdateInput()
         {
             //Helps to block swiping when in clan settings page
             if (hardBlocked)
@@ -241,6 +275,26 @@ namespace MenuUi.Scripts.SwipeNavigation
 
             // Return if currently swiping
             if (isSwipeMode == true) return;
+
+            if(IsEnabled == false)
+            {
+                // Update swipe when mouse is released
+                if (_startTouch != Vector2.zero)
+                {
+                    if (Touch.activeTouches.Count == 1) _endTouch = Touch.activeFingers[0].screenPosition;
+                    else if (Mouse.current != null) _endTouch = Mouse.current.position.ReadValue();
+                    StartCoroutine(OnSwipeOneStep(CurrentPage));
+                }
+                if (_isBlocked)
+                {
+                    if (ClickStateHandler.GetClickState() is ClickState.End)
+                    {
+                        //StartCoroutine(OnSwipeOneStep(CurrentPage));
+                        IsBlocked = false;
+                    }
+                }
+                return;
+            }
 
             //Checks mouse input first and then touch input
             //Since WebGL can be run on PC or mobile we need to check both
@@ -284,7 +338,7 @@ namespace MenuUi.Scripts.SwipeNavigation
                     }
                     float currentSwipeDistance = _startTouch.x - currentTouch.x;
                     float currentScrollvalue = Mathf.Clamp(_startScrollvalue + currentSwipeDistance/totalSlideWidth,0,1);
-                    scrollBar.value = currentScrollvalue;
+                    //scrollBar.value = currentScrollvalue;
                 }
 
                 if (Mathf.Abs(_startTouch.y - currentTouch.y) > swipeDistance && !_swipeAllowed)
@@ -304,6 +358,7 @@ namespace MenuUi.Scripts.SwipeNavigation
                     UpdateSwipe();
                 }
 
+                IsBlocked = false;
                 IsEnabled = true;
                 _swipeAllowed = false;
             }
@@ -372,7 +427,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         /// </summary>
         /// <param name="index">Index of the page we are snapping to.</param>
         /// <returns></returns>
-        protected IEnumerator OnSwipeOneStep(int index)
+        protected virtual IEnumerator OnSwipeOneStep(int index)
         {
             float start = scrollBar.value;
             float current = 0;
@@ -440,12 +495,12 @@ namespace MenuUi.Scripts.SwipeNavigation
 
             if (Mathf.Abs(pointerData.delta.y) > Mathf.Abs(pointerData.delta.x))
             {
-                IsEnabled = false;
+                IsBlocked = true;
             }
             else
             {
                 if (_startTouch.x != 0)
-                    IsEnabled = true;
+                    IsBlocked = false;
             }
         }
 
@@ -455,12 +510,12 @@ namespace MenuUi.Scripts.SwipeNavigation
 
             if (Mathf.Abs(pointerData.delta.y) > Mathf.Abs(pointerData.delta.x))
             {
-                IsEnabled = false;
+                IsBlocked = true;
             }
             else
             {
                 if (_startTouch.x != 0)
-                    IsEnabled = true;
+                    IsBlocked = false;
             }
 
         }
@@ -470,16 +525,16 @@ namespace MenuUi.Scripts.SwipeNavigation
             PointerEventData pointerData = eventData as PointerEventData;
             if (blockType == SwipeBlockType.All)
             {
-                IsEnabled = false;
+                IsBlocked = true;
             }
             else if (blockType is SwipeBlockType.Vertical && Mathf.Abs(pointerData.delta.y) > Mathf.Abs(pointerData.delta.x))
             {
-                IsEnabled = false;
+                IsBlocked = true;
             }
             else
             {
                 if (_startTouch.x != 0)
-                    IsEnabled = true;
+                    IsBlocked = false;
             }
 
         }
