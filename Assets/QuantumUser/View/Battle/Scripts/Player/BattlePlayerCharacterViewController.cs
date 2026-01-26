@@ -5,6 +5,7 @@
 
 // System usings
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 // Unity usings
@@ -211,7 +212,7 @@ namespace Battle.View.Player
             _classViewController.OnViewInit(this, e.ERef, e.Slot, e.CharacterId);
 
             QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
-            QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, _playerShieldViewController.OnShieldTakeDamage);
+            QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, ForwardShieldEvent);
         });}
 
         /// <summary>
@@ -249,17 +250,14 @@ namespace Battle.View.Player
             _classViewController.OnUpdateView();
         }
 
-        public void BindShield(BattlePlayerShieldViewController s)
+        public void BindShield(BattlePlayerShieldViewController shieldViewController)
         {
-            if(_playerShieldViewController == s) return;
-            if(_playerShieldViewController != null) UnbindShield(_playerShieldViewController);
-            _playerShieldViewController = s;
+            _playerShieldViewControllers[shieldViewController.EntityRef] = shieldViewController;
         }
 
-        public void UnbindShield(BattlePlayerShieldViewController s)
+        public void UnbindShield(EntityRef shieldEntity)
         {
-            if (_playerShieldViewController != s) return;
-            _playerShieldViewController = null;
+            _playerShieldViewControllers.Remove(shieldEntity);
         }
 
         /// <summary>This classes BattleDebugLogger instance.</summary>
@@ -274,7 +272,7 @@ namespace Battle.View.Player
         /// <value>Reference to the active class view controller.</value>
         private BattlePlayerCharacterClassBaseViewController _classViewController;
 
-        private BattlePlayerShieldViewController _playerShieldViewController; //multiple shields
+        private readonly Dictionary<EntityRef, BattlePlayerShieldViewController> _playerShieldViewControllers = new();
 
         private bool _isRegistered = false;
 
@@ -287,6 +285,14 @@ namespace Battle.View.Player
             _debugLogger = BattleDebugLogger.Create<BattlePlayerCharacterViewController>();
 
             _classViewController = gameObject.AddComponent<BattlePlayerCharacterClassNoneViewController>();
+        }
+
+        private void ForwardShieldEvent(EventBattleShieldTakeDamage e)
+        {
+            foreach (var shield in _playerShieldViewControllers.Values)
+            {
+                shield.OnShieldTakeDamage(e);
+            }
         }
 
         /// <summary>

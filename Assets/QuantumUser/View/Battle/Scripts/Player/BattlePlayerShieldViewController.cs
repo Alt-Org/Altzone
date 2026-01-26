@@ -61,11 +61,7 @@ namespace Battle.View.Player
             {
                 BattleViewRegistry.Register(this.EntityRef, this);
                 _isRegistered = true;
-                BattleViewRegistry.WhenRegistered(_characterRef, v =>
-                {
-                    var cv = (BattlePlayerCharacterViewController)v;
-                    if (cv != null) LinkToCharacter(cv);
-                });
+                BattleViewRegistry.WhenRegistered(_characterRef, OnCharacterRegistered);
             }
 
             float scale = (float)e.ModelScale;
@@ -82,8 +78,6 @@ namespace Battle.View.Player
                 GameObject shieldGameObject = _shieldGameObjects[1];
                 shieldGameObject.SetActive(true);
             }
-
-            //QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
         });}
 
         /// <summary>
@@ -106,14 +100,13 @@ namespace Battle.View.Player
         private BattlePlayerCharacterViewController _characterViewController;
         private bool _isRegistered = false;
 
-        private void LinkToCharacter(BattlePlayerCharacterViewController characterViewController)
+        private void OnCharacterRegistered(object viewObject)
         {
-            if (_characterViewController == characterViewController) return;
-            if (_characterViewController != null) _characterViewController.UnbindShield(this);
+            var characterViewController = (BattlePlayerCharacterViewController)viewObject;
+            if (characterViewController == null) return;
+
             _characterViewController = characterViewController;
             _characterViewController.BindShield(this);
         }
-
-        
     }
 }
