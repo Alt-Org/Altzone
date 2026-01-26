@@ -1,5 +1,8 @@
 using System;
 using System.Linq;
+using Altzone.Scripts.Config.ScriptableObjects;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ReferenceSheets;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
@@ -104,9 +107,8 @@ namespace MenuUi.Scripts.AvatarEditor
                 }
             }
 
-            // figure out how to get class color
             SkinColor = data.Color;
-            ClassColor = "#00FF00";
+            ClassColor = GetClassColor();
             HairColor = data.HairColor;
             EyesColor = data.EyesColor;
             NoseColor = data.NoseColor;
@@ -116,7 +118,14 @@ namespace MenuUi.Scripts.AvatarEditor
             FeetColor = data.FeetColor;
             Scale = new Vector2(data.ScaleX, data.ScaleY);
         }
-        
+
+        private string GetClassColor()
+        {
+            CharacterClassType classId = BaseCharacter.GetClass((CharacterID)ServerManager.Instance.Player.currentAvatarId);
+            Color classColor = ClassReference.Instance.GetColor(classId);
+            return ColorUtility.ToHtmlStringRGBA(classColor);
+        }
+
         private static string GetOrDefault(string value) =>
             string.IsNullOrWhiteSpace(value) ? "0" : value;
 

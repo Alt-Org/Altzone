@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Linq;
+using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.ReferenceSheets;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.AvatarEditor;
 using UnityEngine;
@@ -114,7 +116,8 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
         var avatarVisualData = new AvatarVisualData();
         PopulateAvatarPieces(avatarVisualData, playerData.AvatarData);
-        SetAvatarColor(avatarVisualData, playerData.AvatarData);
+        int? classId = playerData.SelectedCharacterId;
+        SetAvatarColor(avatarVisualData, playerData.AvatarData, classId);
 
         return avatarVisualData;
     }
@@ -131,7 +134,8 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
         var avatarVisualData = new AvatarVisualData();
         PopulateAvatarPieces(avatarVisualData, avatarData);
-        SetAvatarColor(avatarVisualData, avatarData);
+        int? classId = ServerManager.Instance.Player.currentAvatarId;
+        SetAvatarColor(avatarVisualData, avatarData, classId);
 
         return avatarVisualData;
     }
@@ -194,7 +198,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
         }
     }
 
-    private static void SetAvatarColor(AvatarVisualData avatarVisualData, AvatarData avatarData)
+    private static void SetAvatarColor(AvatarVisualData avatarVisualData, AvatarData avatarData, int? classId)
     {
         var color = Color.white;
 
@@ -211,9 +215,15 @@ public class AvatarDesignLoader : AltMonoBehaviour
         }
 
         avatarVisualData.SkinColor = color;
-        // Need to get real class color here
-        avatarVisualData.ClassColor = Color.green;
-    }
+        if (classId != null)
+        {
+            avatarVisualData.ClassColor = ClassReference.Instance.GetColor(BaseCharacter.GetClass((CharacterID)classId));
+        }
+        else
+        {
+            avatarVisualData.ClassColor = Color.white;
+        }
+}
 
     #endregion
 
