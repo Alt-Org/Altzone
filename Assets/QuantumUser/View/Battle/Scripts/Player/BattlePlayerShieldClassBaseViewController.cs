@@ -24,7 +24,7 @@ namespace Battle.View.Player
     ///
     /// See [{PlayerClassViewControllers}](#page-concepts-player-view-class-controller) for more info.<br/>
     /// See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
-    public abstract class BattlePlayerClassBaseViewController : MonoBehaviour
+    public abstract class BattlePlayerShieldClassBaseViewController : MonoBehaviour
     {
         /// <summary>Must be implemented by derived class view controllers.</summary>
         /// <value>The <see cref="BattlePlayerCharacterClass"/> associated with this view controller.</value>
@@ -41,20 +41,12 @@ namespace Battle.View.Player
         /// <param name="entityRef">The entity reference for this player character.</param>
         /// <param name="slot">The player slot associated with this character.</param>
         /// <param name="characterId">The ID of the character being initialized.</param>
-        public void OnViewInit(BattlePlayerViewController parent, EntityRef entityRef, BattlePlayerSlot slot, int characterId)
+        public void OnViewInit(BattlePlayerShieldViewController parent, EntityRef entityRef, BattlePlayerSlot slot, int characterId)
         {
             _parent = parent;
             _entityRef = entityRef;
             OnViewInitOverride(slot, characterId);
         }
-
-        /// <summary>
-        /// Called when the character takes damage.
-        /// Provides a hook for derived classes to implement character class specific view logic.
-        /// </summary>
-        ///
-        /// <param name="e">The damage event data.</param>
-        public virtual void OnCharacterTakeDamage(EventBattleCharacterTakeDamage e) { }
 
         /// <summary>
         /// Called when the character's shield takes damage.
@@ -71,7 +63,7 @@ namespace Battle.View.Player
         public virtual void OnUpdateView() { }
 
         /// <summary>Reference to the parent <see cref="BattlePlayerViewController">view controller</see> that manages shared player view logic.</summary>
-        protected BattlePlayerViewController _parent;
+        protected BattlePlayerShieldViewController _parent;
         /// <summary>Reference to the entity associated with this view controller.</summary>
         protected EntityRef _entityRef;
 

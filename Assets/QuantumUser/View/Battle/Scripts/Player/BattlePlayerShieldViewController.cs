@@ -7,16 +7,14 @@
 /// Handles shield sprites and particles
 
 // Unity usings
-using UnityEngine;
-
-// Quantum usings
-using Quantum;
-
 // Battle QSimulation usings
+using Battle.QSimulation;
 using Battle.QSimulation.Player;
-
 // Battle View usings
 using Battle.View.Game;
+// Quantum usings
+using Quantum;
+using UnityEngine;
 
 namespace Battle.View.Player
 {
@@ -24,7 +22,7 @@ namespace Battle.View.Player
     /// <span class="brief-h">%Player's <a href="https://doc-api.photonengine.com/en/quantum/current/class_quantum_1_1_quantum_entity_view_component.html">QuantumEntityViewComponent@u-exlink</a>.</span><br/>
     /// Handles player sprites and animations.
     /// </summary>
-    public unsafe class BattleShieldViewController : QuantumEntityViewComponent
+    public unsafe class BattlePlayerShieldViewController : QuantumEntityViewComponent
     {
         /// @anchor BattlePlayerShieldViewController-SerializeFields
         /// @name SerializeField variables
@@ -50,10 +48,11 @@ namespace Battle.View.Player
         /// </summary>
         ///
         /// <param name="_">Current simulation frame.</param>
-        public override void OnActivate(Frame _) { QuantumEvent.Subscribe(this, (EventBattleShieldViewInit e) =>
+        public override void OnActivate(Frame _) { QuantumEvent.Subscribe(this, (EventBattlePlayerShieldViewInit e) =>
         {
-            if (EntityRef != e.Entity) return;
-            if (!PredictedFrame.Exists(e.Entity)) return;
+            if (EntityRef != e.ERef) return;
+            if (!PredictedFrame.Exists(e.ERef)) return;
+
 
             float scale = (float)e.ModelScale;
             transform.localScale = new Vector3(scale, scale, scale);
@@ -70,7 +69,7 @@ namespace Battle.View.Player
                 shieldGameObject.SetActive(true);
             }
 
-            QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
+            //QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
         });}
 
         /// <summary>
@@ -78,7 +77,7 @@ namespace Battle.View.Player
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
-        private void QEventOnShieldTakeDamage(EventBattleShieldTakeDamage e)
+        public void OnShieldTakeDamage(EventBattleShieldTakeDamage e)
         {
             if (EntityRef != e.Entity) return;
             if (!PredictedFrame.Exists(e.Entity)) return;
@@ -88,5 +87,8 @@ namespace Battle.View.Player
                 _shieldHitParticle.Play();
             }
         }
+
+
+        
     }
 }

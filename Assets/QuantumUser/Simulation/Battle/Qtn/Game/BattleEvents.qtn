@@ -39,18 +39,19 @@ synced event BattleViewGameOver
 
 //{ ViewInit events
 
-synced event BattlePlayerViewInit
+synced event BattlePlayerCharacterViewInit
 {
-    EntityRef Entity;
+    EntityRef ERef;
     BattlePlayerSlot Slot;
     int CharacterId;
     BattlePlayerCharacterClass Class;
     FP ModelScale;
 }
 
-synced event BattleShieldViewInit
+synced event BattlePlayerShieldViewInit
 {
-    EntityRef Entity;
+    EntityRef ERef;
+    EntityRef CharacterRef;
     BattlePlayerSlot Slot;
     FP ModelScale;
 }

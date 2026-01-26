@@ -16,7 +16,7 @@ namespace Battle.View.Player
     ///
     /// See [{PlayerClassViewControllers}](#page-concepts-player-view-class-controller) for more info.<br/>
     /// See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
-    public class BattlePlayerClassNoneViewController : BattlePlayerClassBaseViewController
+    public class BattlePlayerCharacterClassNoneViewController : BattlePlayerCharacterClassBaseViewController
     {
         /// <summary>
         /// Gets the character class associated with this controller.<br/>

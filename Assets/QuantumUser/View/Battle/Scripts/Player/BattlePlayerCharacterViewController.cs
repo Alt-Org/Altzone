@@ -5,13 +5,13 @@
 
 // System usings
 using System.Collections;
+using System.Runtime.CompilerServices;
 
 // Unity usings
 using UnityEngine;
 
 // Quantum usings
 using Quantum;
-using Photon.Deterministic;
 
 // Battle QSimulation usings
 using Battle.QSimulation;
@@ -29,17 +29,13 @@ namespace Battle.View.Player
     ///
     /// [{Player Overview}](#page-concepts-player-overview)<br/>
     /// [{Player View Code Overview}](#page-concepts-player-view-overview)
-    public unsafe class BattlePlayerViewController : QuantumEntityViewComponent
+    public unsafe class BattlePlayerCharacterViewController : QuantumEntityViewComponent
     {
         /// @anchor BattlePlayerViewController-SerializeFields
         /// @name SerializeField variables
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        public enum PlayerSpriteMap
-        {
-            //Sprite name based on array index
-        }
 
         [SerializeField] private BattleSpriteSheet _spriteSheet;
 
@@ -47,7 +43,7 @@ namespace Battle.View.Player
 
         /// <summary>[SerializeField] Reference to an override class view controller.</summary>
         /// @ref BattlePlayerViewController-SerializeFields
-        [SerializeField] private BattlePlayerClassBaseViewController _classViewControllerOverride;
+        [SerializeField] private BattlePlayerCharacterClassBaseViewController _classViewControllerOverride;
 
         /// <summary>[SerializeField] Animator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> that handles player animations.</summary>
         /// @ref BattlePlayerViewController-SerializeFields
@@ -65,13 +61,8 @@ namespace Battle.View.Player
         /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private GameObject _localPlayerIndicator;
 
-        /// <summary>[SerializeField] Reference to a character sprite without shield.</summary>
-        /// @ref BattlePlayerViewController-SerializeFields
-        [SerializeField] private Sprite _noShieldSprite;
-
         /// <summary>[SerializeField] Reference to the shield hit particle system.</summary>
         /// @ref BattlePlayerViewController-SerializeFields
-        [SerializeField] private ParticleSystem _shieldHitParticle;
 
         [Header("Settings")]
 
@@ -104,27 +95,26 @@ namespace Battle.View.Player
         /// </summary>
         ///
         /// <param name="_">Current simulation frame.</param>
-        public override void OnActivate(Frame _) { PreInitSetup(); QuantumEvent.Subscribe(this, (EventBattlePlayerViewInit e) =>
+        public override void OnActivate(Frame _) { PreInitSetup(); QuantumEvent.Subscribe(this, (EventBattlePlayerCharacterViewInit e) =>
         {
-            if (EntityRef != e.Entity) return;
-            if (!PredictedFrame.Exists(e.Entity)) return;
+            if (EntityRef != e.ERef) return;
+            if (!PredictedFrame.Exists(e.ERef)) return;
 
             float scale = (float)e.ModelScale;
             transform.localScale = new Vector3(scale, scale, scale);
-            _shieldHitParticle.transform.localScale = new Vector3(scale, scale, scale);
 
             if (BattlePlayerManager.PlayerHandle.GetTeamNumber(e.Slot) == BattleGameViewController.LocalPlayerTeam)
             {
-                GameObject characterGameObjects = _characterGameObjects[0];
-                characterGameObjects.SetActive(true);
-                _spriteRenderer = characterGameObjects.GetComponent<SpriteRenderer>();
+                GameObject characterGameObject = _characterGameObjects[0];
+                characterGameObject.SetActive(true);
+                _spriteRenderer = characterGameObject.GetComponent<SpriteRenderer>();
             }
             else
             {
-                GameObject characterGameObjects = _characterGameObjects[1];
-                characterGameObjects.SetActive(true);
+                GameObject characterGameObject = _characterGameObjects[1];
+                characterGameObject.SetActive(true);
                 //_heart.SetActive(false);
-                _spriteRenderer = characterGameObjects.GetComponent<SpriteRenderer>();
+                _spriteRenderer = characterGameObject.GetComponent<SpriteRenderer>();
             }
 
             if (e.Slot == BattleGameViewController.LocalPlayerSlot)
@@ -145,10 +135,13 @@ namespace Battle.View.Player
                     Destroy(_classViewControllerOverride);
                 }
             }
-            _classViewController.OnViewInit(this, e.Entity, e.Slot, e.CharacterId);
+
+            //_spriteSheet.GetSprite<PlayerSpriteSheetMap>(PlayerSpriteSheetMap.Enum.ShieldBroken);
+
+            _classViewController.OnViewInit(this, e.ERef, e.Slot, e.CharacterId);
 
             QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
-            QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
+            QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, _playerShieldViewController.OnShieldTakeDamage);
         });}
 
         /// <summary>
@@ -186,6 +179,7 @@ namespace Battle.View.Player
             _classViewController.OnUpdateView();
         }
 
+
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private BattleDebugLogger _debugLogger;
 
@@ -196,7 +190,8 @@ namespace Battle.View.Player
         private Coroutine _damageFlashCoroutine = null;
 
         /// <value>Reference to the active class view controller.</value>
-        private BattlePlayerClassBaseViewController _classViewController;
+        private BattlePlayerCharacterClassBaseViewController _classViewController;
+
 
         /// <summary>
         /// Handles setup that needs to happen before <see cref="Quantum.EventBattlePlayerViewInit">EventBattlePlayerViewInit</see> event is received.<br/>
@@ -204,9 +199,9 @@ namespace Battle.View.Player
         /// </summary>
         private void PreInitSetup()
         {
-            _debugLogger = BattleDebugLogger.Create<BattlePlayerViewController>();
+            _debugLogger = BattleDebugLogger.Create<BattlePlayerCharacterViewController>();
 
-            _classViewController = gameObject.AddComponent<BattlePlayerClassNoneViewController>();
+            _classViewController = gameObject.AddComponent<BattlePlayerCharacterClassNoneViewController>();
         }
 
         /// <summary>
@@ -274,29 +269,6 @@ namespace Battle.View.Player
             _damageFlashCoroutine = StartCoroutine(DamageFlashCoroutine());
 
             _classViewController.OnCharacterTakeDamage(e);
-        }
-
-        /// <summary>
-        /// Handler method for EventBattleShieldTakeDamage QuantumEvent.<br/>
-        /// </summary>
-        ///
-        /// <param name="e">The event data.</param>
-        private void QEventOnShieldTakeDamage(EventBattleShieldTakeDamage e)
-        {
-            if (EntityRef != e.Entity) return;
-            if (!PredictedFrame.Exists(e.Entity)) return;
-
-            if (e.DefenceValue <= FP._0 && _noShieldSprite != null)
-            {
-                _spriteRenderer.sprite = _noShieldSprite;
-            }
-
-            if (_shieldHitParticle != null)
-            {
-                _shieldHitParticle.Play();
-            }
-
-            _classViewController.OnShieldTakeDamage(e);
         }
 
         /// <summary>

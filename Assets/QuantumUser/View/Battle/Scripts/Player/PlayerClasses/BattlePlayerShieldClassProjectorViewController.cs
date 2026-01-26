@@ -24,7 +24,7 @@ namespace Battle.View.Player
     /// @bigtext{See [{PlayerClassViewController}](#page-concepts-player-view-class-controller) for more info.}<br/>
     /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
     /// @bigtext{See [{Player Character Class 400 - Projector}](#page-concepts-player-class-400-projector) for more info.}
-    public class BattlePlayerClassProjectorViewController : BattlePlayerClassBaseViewController
+    public class BattlePlayerShieldClassProjectorViewController : BattlePlayerShieldClassBaseViewController
     {
         /// @anchor BattlePlayerClassProjectorViewController-SerializeFields
         /// @name SerializeField variables

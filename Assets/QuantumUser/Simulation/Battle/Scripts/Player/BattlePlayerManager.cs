@@ -485,7 +485,7 @@ namespace Battle.QSimulation.Player
                         BattlePlayerClassManager.OnCreate(f, playerHandle.ConvertToPublic(), playerDataPtr, playerCharacterEntity);
 
                         // initialize view
-                        f.Events.BattlePlayerViewInit(playerCharacterEntity, playerSlot, playerCharacterId, playerClass, BattleGridManager.GridScaleFactor);
+                        f.Events.BattlePlayerCharacterViewInit(playerCharacterEntity, playerSlot, playerCharacterId, playerClass, BattleGridManager.GridScaleFactor);
 
                         // teleport hitboxes
                         Transform2D* characterTransform = playerCharacterEntity.GetTransform(f);

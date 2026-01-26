@@ -70,8 +70,8 @@ namespace Quantum {
           case EventBattleViewGetReadyToPlay.ID: result = typeof(EventBattleViewGetReadyToPlay); return;
           case EventBattleViewGameStart.ID: result = typeof(EventBattleViewGameStart); return;
           case EventBattleViewGameOver.ID: result = typeof(EventBattleViewGameOver); return;
-          case EventBattlePlayerViewInit.ID: result = typeof(EventBattlePlayerViewInit); return;
-          case EventBattleShieldViewInit.ID: result = typeof(EventBattleShieldViewInit); return;
+          case EventBattlePlayerCharacterViewInit.ID: result = typeof(EventBattlePlayerCharacterViewInit); return;
+          case EventBattlePlayerShieldViewInit.ID: result = typeof(EventBattlePlayerShieldViewInit); return;
           case EventBattleSoulWallViewInit.ID: result = typeof(EventBattleSoulWallViewInit); return;
           case EventBattleStoneCharacterPieceViewInit.ID: result = typeof(EventBattleStoneCharacterPieceViewInit); return;
           case EventBattleViewSetRotationJoystickVisibility.ID: result = typeof(EventBattleViewSetRotationJoystickVisibility); return;
@@ -141,10 +141,10 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventBattlePlayerViewInit BattlePlayerViewInit(EntityRef Entity, BattlePlayerSlot Slot, Int32 CharacterId, BattlePlayerCharacterClass Class, FP ModelScale) {
+      public EventBattlePlayerCharacterViewInit BattlePlayerCharacterViewInit(EntityRef ERef, BattlePlayerSlot Slot, Int32 CharacterId, BattlePlayerCharacterClass Class, FP ModelScale) {
         if (_f.IsPredicted) return null;
-        var ev = _f.Context.AcquireEvent<EventBattlePlayerViewInit>(EventBattlePlayerViewInit.ID);
-        ev.Entity = Entity;
+        var ev = _f.Context.AcquireEvent<EventBattlePlayerCharacterViewInit>(EventBattlePlayerCharacterViewInit.ID);
+        ev.ERef = ERef;
         ev.Slot = Slot;
         ev.CharacterId = CharacterId;
         ev.Class = Class;
@@ -152,10 +152,11 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventBattleShieldViewInit BattleShieldViewInit(EntityRef Entity, BattlePlayerSlot Slot, FP ModelScale) {
+      public EventBattlePlayerShieldViewInit BattlePlayerShieldViewInit(EntityRef ERef, EntityRef CharacterRef, BattlePlayerSlot Slot, FP ModelScale) {
         if (_f.IsPredicted) return null;
-        var ev = _f.Context.AcquireEvent<EventBattleShieldViewInit>(EventBattleShieldViewInit.ID);
-        ev.Entity = Entity;
+        var ev = _f.Context.AcquireEvent<EventBattlePlayerShieldViewInit>(EventBattlePlayerShieldViewInit.ID);
+        ev.ERef = ERef;
+        ev.CharacterRef = CharacterRef;
         ev.Slot = Slot;
         ev.ModelScale = ModelScale;
         _f.AddEvent(ev);
@@ -473,17 +474,17 @@ namespace Quantum {
       }
     }
   }
-  public unsafe partial class EventBattlePlayerViewInit : EventBase {
+  public unsafe partial class EventBattlePlayerCharacterViewInit : EventBase {
     public new const Int32 ID = 9;
-    public EntityRef Entity;
+    public EntityRef ERef;
     public BattlePlayerSlot Slot;
     public Int32 CharacterId;
     public BattlePlayerCharacterClass Class;
     public FP ModelScale;
-    protected EventBattlePlayerViewInit(Int32 id, EventFlags flags) : 
+    protected EventBattlePlayerCharacterViewInit(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventBattlePlayerViewInit() : 
+    public EventBattlePlayerCharacterViewInit() : 
         base(9, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {
@@ -497,7 +498,7 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 73;
-        hash = hash * 31 + Entity.GetHashCode();
+        hash = hash * 31 + ERef.GetHashCode();
         hash = hash * 31 + Slot.GetHashCode();
         hash = hash * 31 + CharacterId.GetHashCode();
         hash = hash * 31 + Class.GetHashCode();
@@ -506,15 +507,16 @@ namespace Quantum {
       }
     }
   }
-  public unsafe partial class EventBattleShieldViewInit : EventBase {
+  public unsafe partial class EventBattlePlayerShieldViewInit : EventBase {
     public new const Int32 ID = 10;
-    public EntityRef Entity;
+    public EntityRef ERef;
+    public EntityRef CharacterRef;
     public BattlePlayerSlot Slot;
     public FP ModelScale;
-    protected EventBattleShieldViewInit(Int32 id, EventFlags flags) : 
+    protected EventBattlePlayerShieldViewInit(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventBattleShieldViewInit() : 
+    public EventBattlePlayerShieldViewInit() : 
         base(10, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {
@@ -528,7 +530,8 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 79;
-        hash = hash * 31 + Entity.GetHashCode();
+        hash = hash * 31 + ERef.GetHashCode();
+        hash = hash * 31 + CharacterRef.GetHashCode();
         hash = hash * 31 + Slot.GetHashCode();
         hash = hash * 31 + ModelScale.GetHashCode();
         return hash;
