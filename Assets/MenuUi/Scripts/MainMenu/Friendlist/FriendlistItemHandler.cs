@@ -44,7 +44,7 @@ public class FriendlistItem : MonoBehaviour
         
         UpdateOnlineStatusIndicator();
         
-        if (_removefriendButton != null) // move friend button (only for accepted friends)
+        if (_removefriendButton != null) // Show button only for accepted friends
         {
             _removefriendButton.gameObject.SetActive(onRemoveClick != null);
 
@@ -54,7 +54,7 @@ public class FriendlistItem : MonoBehaviour
                 onRemoveClick?.Invoke();
             });
         }
-        if (_acceptFriendButton != null) // Accept friend request button (only for requests)
+        if (_acceptFriendButton != null) // Show button only for pending requests
         {
             _acceptFriendButton.gameObject.SetActive(onAcceptClick != null);
 
@@ -64,7 +64,7 @@ public class FriendlistItem : MonoBehaviour
                 onAcceptClick?.Invoke();
             });
         }
-        if (_declineFriendButton != null) // Decline friend request button
+        if (_declineFriendButton != null) // Show button only for pending requests
         {
             _declineFriendButton.gameObject.SetActive(onDeclineClick != null);
 
