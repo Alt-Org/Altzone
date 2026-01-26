@@ -164,6 +164,12 @@ namespace Battle.View.Player
             if (EntityRef != e.ERef) return;
             if (!PredictedFrame.Exists(e.ERef)) return;
 
+            if (!_isRegistered)
+            {
+                BattleViewRegistry.Register(this.EntityRef, this);
+                _isRegistered = true;
+            }
+
             float scale = (float)e.ModelScale;
             transform.localScale = new Vector3(scale, scale, scale);
 
@@ -243,6 +249,18 @@ namespace Battle.View.Player
             _classViewController.OnUpdateView();
         }
 
+        public void BindShield(BattlePlayerShieldViewController s)
+        {
+            if(_playerShieldViewController == s) return;
+            if(_playerShieldViewController != null) UnbindShield(_playerShieldViewController);
+            _playerShieldViewController = s;
+        }
+
+        public void UnbindShield(BattlePlayerShieldViewController s)
+        {
+            if (_playerShieldViewController != s) return;
+            _playerShieldViewController = null;
+        }
 
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private BattleDebugLogger _debugLogger;
@@ -256,6 +274,9 @@ namespace Battle.View.Player
         /// <value>Reference to the active class view controller.</value>
         private BattlePlayerCharacterClassBaseViewController _classViewController;
 
+        private BattlePlayerShieldViewController _playerShieldViewController; //multiple shields
+
+        private bool _isRegistered = false;
 
         /// <summary>
         /// Handles setup that needs to happen before <see cref="Quantum.EventBattlePlayerViewInit">EventBattlePlayerViewInit</see> event is received.<br/>

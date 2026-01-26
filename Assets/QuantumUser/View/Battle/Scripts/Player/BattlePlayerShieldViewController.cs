@@ -53,6 +53,20 @@ namespace Battle.View.Player
             if (EntityRef != e.ERef) return;
             if (!PredictedFrame.Exists(e.ERef)) return;
 
+            _characterRef = e.CharacterRef;
+
+            BattleDebugLogger.DevAssert(nameof(BattlePlayerShieldViewController), _characterRef != null, "Character ref is null");
+
+            if (!_isRegistered)
+            {
+                BattleViewRegistry.Register(this.EntityRef, this);
+                _isRegistered = true;
+                BattleViewRegistry.WhenRegistered(_characterRef, v =>
+                {
+                    var cv = (BattlePlayerCharacterViewController)v;
+                    if (cv != null) LinkToCharacter(cv);
+                });
+            }
 
             float scale = (float)e.ModelScale;
             transform.localScale = new Vector3(scale, scale, scale);
@@ -88,6 +102,17 @@ namespace Battle.View.Player
             }
         }
 
+        private EntityRef _characterRef;
+        private BattlePlayerCharacterViewController _characterViewController;
+        private bool _isRegistered = false;
+
+        private void LinkToCharacter(BattlePlayerCharacterViewController characterViewController)
+        {
+            if (_characterViewController == characterViewController) return;
+            if (_characterViewController != null) _characterViewController.UnbindShield(this);
+            _characterViewController = characterViewController;
+            _characterViewController.BindShield(this);
+        }
 
         
     }
