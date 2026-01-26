@@ -289,7 +289,7 @@ namespace Battle.View.Game
             // Setting view pre-activate waiting for players text
             Utils.TryGetQuantumFrame(out Frame f);
             BattleParameters.PlayerType[] playerSlotTypes = BattleParameters.GetPlayerSlotTypes(f);
-            _uiController.LoadScreenHandler.Show(playerSlotTypes, e.Data.PlayerNames);
+            _uiController.LoadScreenHandler.Show(playerSlotTypes, BattleParameters.GetPlayerNames(f));
 
             _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.WaitingForPlayers);
         }

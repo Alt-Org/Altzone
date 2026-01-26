@@ -4269,37 +4269,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _userNameMinLength: 3
   _passwordMinLength: 5
-  backpackCapacity: 225
-  signInWindow: {fileID: 759208594473481993}
-  registerWindow: {fileID: 6592461142644464333}
-  logInUsernameInputField: {fileID: 5080777096961974980}
-  logInPasswordInputField: {fileID: 645769519598644153}
-  registerUsernameInputField: {fileID: 8553048779644170890}
-  registerPasswordInputField: {fileID: 2264034796526804576}
-  registerPassword2InputField: {fileID: 2729338204159935182}
+  _signInWindow: {fileID: 759208594473481993}
+  _registerWindow: {fileID: 6592461142644464333}
+  _logInUsernameInputField: {fileID: 5080777096961974980}
+  _logInPasswordInputField: {fileID: 645769519598644153}
+  _registerUsernameInputField: {fileID: 8553048779644170890}
+  _registerPasswordInputField: {fileID: 2264034796526804576}
+  _registerPassword2InputField: {fileID: 2729338204159935182}
   _privacyPolicyAuthToggle: {fileID: 5460722394477683603}
   _registerAgeVerificationCheckToggle: {fileID: 7295884331625528631}
   _registerAgeVerificationToggle: {fileID: 8224312079597127262}
   _registerParentalAuthToggle: {fileID: 7469501117495902152}
   _informationPolicyAuthToggle: {fileID: 4371050724157340666}
   _ageAuthToggleGroup: {fileID: 528883939326687555}
-  logInUsernameInputFieldError: {fileID: 2868682462266116144}
-  logInPasswordInputFieldError: {fileID: 8007491558471515601}
-  registerUsernameInputFieldError: {fileID: 4809954750960686505}
-  registerPasswordInputFieldError: {fileID: 5191430994965670674}
-  registerPassword2InputFieldError: {fileID: 8097748827960397231}
+  _logInUsernameInputFieldError: {fileID: 2868682462266116144}
+  _logInPasswordInputFieldError: {fileID: 8007491558471515601}
+  _registerUsernameInputFieldError: {fileID: 4809954750960686505}
+  _registerPasswordInputFieldError: {fileID: 5191430994965670674}
+  _registerPassword2InputFieldError: {fileID: 8097748827960397231}
   _privacyPolicyToggleError: {fileID: 3237946127427645795}
   _registerAgeVerificationToggleError: {fileID: 6348713267414002551}
   _informationPolicyToggleError: {fileID: 9200161745857998488}
-  logInButton: {fileID: 6974471251484350247}
-  registerButton: {fileID: 7528792879596546276}
-  backButton: {fileID: 5538831566626650871}
-  backButton2: {fileID: 6190343032933273489}
-  ageAuthButton: {fileID: 7433436176364160628}
+  _logInButton: {fileID: 6974471251484350247}
+  _registerButton: {fileID: 7528792879596546276}
+  _backButton: {fileID: 5538831566626650871}
+  _backButton2: {fileID: 6190343032933273489}
+  _ageAuthButton: {fileID: 7433436176364160628}
   _autoLoginToggle: {fileID: 2429577796116049851}
-  returnToLogIn: {fileID: 0}
-  returnToMainMenuButton: {fileID: 1531005724451037986}
-  returnToSignInScreenButton: {fileID: 7603128479250866903}
+  _returnToLogIn: {fileID: 0}
+  _returnToMainMenuButton: {fileID: 1531005724451037986}
+  _returnToSignInScreenButton: {fileID: 7603128479250866903}
 --- !u!1 &2960686941736405480
 GameObject:
   m_ObjectHideFlags: 0
@@ -15544,6 +15543,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6699832907098985500, guid: 7afbe7fc11286b544aab47947e93f468,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 7140401699805581674, guid: 7afbe7fc11286b544aab47947e93f468,
         type: 3}

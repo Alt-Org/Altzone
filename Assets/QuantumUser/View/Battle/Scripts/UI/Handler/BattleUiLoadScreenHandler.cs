@@ -95,7 +95,7 @@ namespace Battle.View.UI
         ///
         /// <param name="playerSlotTypes"></param>
         /// <param name="playerNames"></param>
-        public void Show(BattleParameters.PlayerType[] playerSlotTypes, FixedArray<QString64> playerNames)
+        public void Show(BattleParameters.PlayerType[] playerSlotTypes, string[] playerNames)
         {
             for (int i = 0; i < playerSlotTypes.Length; i++)
             {
