@@ -171,8 +171,8 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public void RefreshFeatureListItems(string categoryId)
         {
-            // Don't Show Color Selection on hair or skin color selection
-            if (categoryId == "10" || categoryId == "")
+            // Don't Show Color Selection on hair, nose or skin color selection
+            if (categoryId == "10" || categoryId == "" || categoryId == "22")
             {
                 _colorSelection.gameObject.SetActive(false);
             }

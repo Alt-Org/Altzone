@@ -19,6 +19,7 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
 
     private MaskImageHandler _maskImageHandler;
     private readonly Dictionary<Vector2Int, Texture2D> _transparentMaskCache = new();
+    private readonly Dictionary<Vector2Int, Texture2D> _skinColorMaskCache = new();
     private Color _skinColor = Color.white;
     private Color _classColor = Color.white;
 
@@ -107,7 +108,13 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
 
             case AvatarPiece.Nose:
                 SetImage(_mainNose, image);
-                SetMaskImage(_mainNose, mask, partColor);
+                //SetMaskImage(_mainNose, mask, partColor);
+                Texture2D noseMask = GetSkinColorMask(image.texture);
+                EnsureMaterial(_mainNose);
+                _mainNose.material.SetTexture("_MaskTex", noseMask);
+                _mainNose.material.SetColor("_SkinColor", _skinColor);
+                _mainNose.material.SetColor("_SelectedColor", _skinColor);
+                _mainNose.material.SetColor("_ClassColor", _classColor);
                 break;
 
             case AvatarPiece.Mouth:
@@ -214,6 +221,37 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         mask.Apply();
 
         _transparentMaskCache[size] = mask;
+        return mask;
+    }
+
+    private Texture2D GetSkinColorMask(Texture2D reference)
+    {
+        // Same as above but for skincolor instead of transparent
+        Vector2Int size = new(reference.width, reference.height);
+
+        if (_skinColorMaskCache.TryGetValue(size, out var tex))
+            return tex;
+
+        Texture2D mask = new Texture2D(
+            reference.width,
+            reference.height,
+            TextureFormat.RGBA32,
+            false
+        );
+
+        mask.filterMode = reference.filterMode;
+        mask.wrapMode = TextureWrapMode.Clamp;
+
+        Color skinMask = new(1, 0, 0, 1);
+        Color[] pixels = new Color[reference.width * reference.height];
+
+        for (int i = 0; i < pixels.Length; i++)
+            pixels[i] = skinMask;
+
+        mask.SetPixels(pixels);
+        mask.Apply();
+
+        _skinColorMaskCache[size] = mask;
         return mask;
     }
 
