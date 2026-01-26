@@ -10,10 +10,20 @@ using UnityEngine;
 
 namespace Battle.View
 {
+    public interface IBattleSpriteSheetMap
+    {
+        public int GetIndex();
+    }
     [Serializable]
     public struct BattleSpriteSheet
     {
         public Sprite[] Array;
+
+        public Sprite GetSprite<T>(T SpriteMapValue) where T : IBattleSpriteSheetMap
+        {
+            int spriteIndex = SpriteMapValue.GetIndex();
+            return Array[spriteIndex];
+        }
     }
 
     [CustomPropertyDrawer(typeof(BattleSpriteSheet))]

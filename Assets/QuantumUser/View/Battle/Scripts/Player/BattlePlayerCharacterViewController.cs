@@ -36,6 +36,70 @@ namespace Battle.View.Player
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
+        public struct PlayerSpriteSheetMap : IBattleSpriteSheetMap
+        {
+            //Enum for the general character spritesheet, from left to right, top to bottom
+            public enum Enum
+            {
+                Base                = 0,
+                BaseHands           = 1,
+                ScaredHands         = 2,
+                Shadow              = 7,
+                Head1               = 8,
+                Head2               = 9,
+                Head3               = 10,
+                Head4               = 11,
+                Body1               = 12,
+                Body2               = 13,
+                Body3               = 14,
+                Body4               = 15,
+                HandsShieldUp1      = 16,
+                HandsShieldUp2      = 17,
+                HandsShieldUp3      = 18,
+                HandsShieldUp4      = 19,
+                BaseShoes           = 20,
+                RunningShoes1       = 21,
+                RunningShoes2       = 22,
+                HandsShieldDown1    = 24,
+                HandsShieldDown2    = 25,
+                HandsShieldDown3    = 26,
+                HandsShieldDown4    = 27,
+                ShieldUp1           = 32,
+                ShieldUp2           = 33,
+                ShieldUp3           = 34,
+                ShieldUp4           = 35,
+                ShieldUpHit1        = 36,
+                ShieldUpHit2        = 37,
+                ShieldUpHit3        = 38,
+                ShieldUpHit4        = 39,
+                ShieldDown1         = 40,
+                ShieldDown2         = 41,
+                ShieldDown3         = 42,
+                ShieldDown4         = 43,
+                ShieldDownHit1      = 44,
+                ShieldDownHit2      = 45,
+                ShieldDownHit3      = 46,
+                ShieldDownHit4      = 47,
+                Happy               = 48,
+                Sad                 = 49,
+                Playful             = 50,
+                Anger               = 51,
+                Love                = 52,
+                ShieldBroken        = 56,
+                Defenseless         = 57,
+                Death1              = 58,
+                Death2              = 59,
+                DeadOnTheGround     = 60
+            }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static implicit operator Enum(PlayerSpriteSheetMap playerSpriteSheetMap) => playerSpriteSheetMap.EnumValue;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static implicit operator PlayerSpriteSheetMap(Enum enumValue) => new PlayerSpriteSheetMap() {EnumValue = enumValue };
+            
+            public Enum EnumValue;
+
+            public int GetIndex() => (int)EnumValue;
+        }
 
         [SerializeField] private BattleSpriteSheet _spriteSheet;
 
