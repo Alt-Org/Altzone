@@ -28,7 +28,7 @@ namespace MenuUi.Scripts.CharacterGallery
         private void Awake()
         {
             _swipe = FindObjectOfType<SwipeUI>();
-            _swipe.OnCurrentPageChanged += ClosePopup;
+           if(_swipe) _swipe.OnCurrentPageChanged += ClosePopup;
 
             if (gameObject.activeSelf) gameObject.SetActive(false);
 
@@ -65,7 +65,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 slot.OnSlotPressed -= HandleSlotPressed;
             }
 
-            _swipe.OnCurrentPageChanged -= ClosePopup;
+            if (_swipe) _swipe.OnCurrentPageChanged -= ClosePopup;
         }
 
         private void OnDisable()
