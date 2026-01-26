@@ -20,6 +20,7 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
     private MaskImageHandler _maskImageHandler;
     private readonly Dictionary<Vector2Int, Texture2D> _transparentMaskCache = new();
     private readonly Dictionary<Vector2Int, Texture2D> _skinColorMaskCache = new();
+    private readonly Dictionary<Vector2Int, Texture2D> _selectedColorMaskCache = new();
     private Color _skinColor = Color.white;
     private Color _classColor = Color.white;
 
@@ -172,7 +173,9 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         }
         else
         {
-            maskTex = GetTransparentMask(avatarImage.sprite.texture);
+            //maskTex = GetTransparentMask(avatarImage.sprite.texture);
+            //for testing, if maskimage doesn't exist lets you color the whole piece instead of preserving the default color
+            maskTex = GetSelectedColorMask(avatarImage.sprite.texture);
         }
 
         avatarImage.material.SetTexture("_MaskTex", maskTex);
@@ -221,6 +224,37 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         mask.Apply();
 
         _transparentMaskCache[size] = mask;
+        return mask;
+    }
+
+    private Texture2D GetSelectedColorMask(Texture2D reference)
+    {
+        // For testing
+        Vector2Int size = new(reference.width, reference.height);
+
+        if (_selectedColorMaskCache.TryGetValue(size, out var tex))
+            return tex;
+
+        Texture2D mask = new Texture2D(
+            reference.width,
+            reference.height,
+            TextureFormat.RGBA32,
+            false
+        );
+
+        mask.filterMode = reference.filterMode;
+        mask.wrapMode = TextureWrapMode.Clamp;
+
+        Color skinMask = new(0, 1, 0, 1);
+        Color[] pixels = new Color[reference.width * reference.height];
+
+        for (int i = 0; i < pixels.Length; i++)
+            pixels[i] = skinMask;
+
+        mask.SetPixels(pixels);
+        mask.Apply();
+
+        _selectedColorMaskCache[size] = mask;
         return mask;
     }
 
