@@ -6,27 +6,27 @@ namespace Battle.View
 {
     public static class BattleViewRegistry
     {
-        public static void Register(EntityRef e, object view)
+        public static void Register(EntityRef entityRef, object @object)
         {
-            map[e] = view;
-            if (pending.TryGetValue(e, out var list))
+            map[entityRef] = @object;
+            if (pending.TryGetValue(entityRef, out var list))
             {
-                foreach (var cb in list) cb(view);
-                pending.Remove(e);
+                foreach (var callback in list) callback(@object);
+                pending.Remove(entityRef);
             }
         }
 
-        public static void Unregister(EntityRef e, object view)
+        public static void Unregister(EntityRef entityRef, object @object)
         {
-            if(map.TryGetValue(e, out var cur) && cur == view) map.Remove(e);
+            if(map.TryGetValue(entityRef, out var cur) && cur == @object) map.Remove(entityRef);
         }
 
-        public static bool TryGet(EntityRef e, out object view) => map.TryGetValue(e, out view);
+        public static bool TryGet(EntityRef entityRef, out object @object) => map.TryGetValue(entityRef, out @object);
 
-        public static void WhenRegistered(EntityRef e, Action<object> callback)
+        public static void WhenRegistered(EntityRef entityRef, Action<object> callback)
         {
-            if (TryGet(e, out var v)) { callback(v); return; }
-            if (!pending.TryGetValue(e, out var list)) { list = new List<Action<object>>(); pending[e] = list; }
+            if (TryGet(entityRef, out var @object)) { callback(@object); return; }
+            if (!pending.TryGetValue(entityRef, out var list)) { list = new List<Action<object>>(); pending[entityRef] = list; }
             list.Add(callback);
         }
 
