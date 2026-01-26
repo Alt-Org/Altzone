@@ -1684,8 +1684,8 @@ public class ServerManager : MonoBehaviour
 
         string[] team1 = new string[team1PlayerCount];
         string[] team2 = new string[team2PlayerCount];
-        int index = 0;
         string[] currentTeam = null;
+        /*int index = 0;
         for (int teamnumber = 0; teamnumber < teamCount; teamnumber++)
         {
             switch (teamnumber)
@@ -1700,6 +1700,7 @@ public class ServerManager : MonoBehaviour
                     currentTeam = team2;
                     break;
             }
+            
             for (int i = 0; i < currentTeam.Length;)
             {
                 index++;
@@ -1707,6 +1708,19 @@ public class ServerManager : MonoBehaviour
                 currentTeam[i] = playerUserIds[index];
                 i++;
             }
+        }*/
+
+        int slot = 0;   // item in team array
+        for (int index = 0; index < totalPlayerCount; index++)
+        {
+            if (index == teamPlayerCountMax) slot = 0;  // restart team slot count
+            if (playerUserIds[index] == string.Empty) continue;
+
+            if (index < teamPlayerCountMax) { currentTeam = team1; }
+            else { currentTeam = team2; }
+
+            currentTeam[slot] = playerUserIds[index];
+            slot++;
         }
 
         string body = JObject.FromObject(new
