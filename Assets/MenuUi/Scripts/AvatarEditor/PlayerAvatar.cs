@@ -251,13 +251,13 @@ namespace MenuUi.Scripts.AvatarEditor
 
             if (ColorUtility.TryParseHtmlString(correctedValue, out Color convertedColor)) //If the colorcode provided is valid, assign it to the _color field
             {
-                return ColorUtility.ToHtmlStringRGBA(convertedColor);
+                return "#" + ColorUtility.ToHtmlStringRGBA(convertedColor);
             }
             else
             {
                 Debug.LogWarning($"Submitted color {value}could not be parsed, using white");
                 convertedColor = new Color(1, 1, 1, 1); //values for solid white
-                return ColorUtility.ToHtmlStringRGBA(convertedColor);
+                return "#" + ColorUtility.ToHtmlStringRGBA(convertedColor);
             }
         }
     }

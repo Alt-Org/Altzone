@@ -1,5 +1,7 @@
 using System;
 using Altzone.Scripts.AvatarPartsInfo;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ReferenceSheets;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
@@ -21,6 +23,8 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public void SetLoadedFeatures(PlayerAvatar avatar)
         {
+            ColorUtility.TryParseHtmlString(avatar.SkinColor, out Color skinColor);
+
             foreach (AvatarPiece slot in Enum.GetValues(typeof(AvatarPiece)))
             {
                 string partId = avatar.GetPartId(slot);
@@ -34,9 +38,12 @@ namespace MenuUi.Scripts.AvatarEditor
 
                 if (avatarPart != null)
                 {
-                    _avatarEditorCharacterHandle.SetMainCharacterImage(slot, avatarPart, _avatarVisuals.GetColor(slot));
+                    ColorUtility.TryParseHtmlString(avatar.GetPartColor(slot), out Color color);
+                    _avatarEditorCharacterHandle.SetMainCharacterImage(slot, avatarPart, color);
                 }
             }
+
+            _avatarEditorCharacterHandle.SetSkinColor(skinColor);
         }
 
         public AvatarPartInfo GetCurrentlySelectedFeaturePartInfo(AvatarPiece pieceSlot)
