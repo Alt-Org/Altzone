@@ -67,6 +67,9 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
             if (featureIds != null && featureIds?.Count != 7)
                 throw new ArgumentException("FeatureIds must contain exactly 7 elements, provided list contains " + featureIds.Count.ToString());
 
+            if (featureColors != null && featureColors?.Count != 7)
+                throw new ArgumentException("FeatureColors must contain exactly 7 elements, provided list contains " + featureColors.Count.ToString());
+
             Name = name;
             if (featureIds != null)
             {
