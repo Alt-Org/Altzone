@@ -48,7 +48,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private void Awake()
         {
             _swipe = FindObjectOfType<SwipeUI>();
-            _swipe.OnCurrentPageChanged += ClosePopup;
+            if(_swipe)_swipe.OnCurrentPageChanged += ClosePopup;
 
             _statsPanel.SetActive(false);
         }
@@ -60,7 +60,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         private void OnDestroy()
         {
-            _swipe.OnCurrentPageChanged -= ClosePopup;
+            if (_swipe) _swipe.OnCurrentPageChanged -= ClosePopup;
         }
 
         public void OpenPopup(CharacterID characterId)
