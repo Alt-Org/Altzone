@@ -101,6 +101,7 @@ namespace Battle.View
 
             animator.SetInteger("BattleTeamNumber", (int)team);
             animator.SetInteger("AnimationIndex", (int)emotion);
+            animator.SetTrigger("Hit");
 
             Debug.Log($" PlayHitAnimation log: BattleTeamNumber {team} and AnimationIndex: {emotion}");
         }
