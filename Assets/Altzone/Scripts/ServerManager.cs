@@ -1685,40 +1685,13 @@ public class ServerManager : MonoBehaviour
         string[] team1 = new string[team1PlayerCount];
         string[] team2 = new string[team2PlayerCount];
         string[] currentTeam = null;
-        /*int index = 0;
-        for (int teamnumber = 0; teamnumber < teamCount; teamnumber++)
-        {
-            switch (teamnumber)
-            {
-                case 0:
-                    index = 0 - 1;
-                    currentTeam = team1;
-                    break;
-
-                case 1:
-                    index = teamPlayerCountMax - 1;
-                    currentTeam = team2;
-                    break;
-            }
-            
-            for (int i = 0; i < currentTeam.Length;)
-            {
-                index++;
-                if (playerUserIds[index] == string.Empty) continue;
-                currentTeam[i] = playerUserIds[index];
-                i++;
-            }
-        }*/
-
         int slot = 0;   // item in team array
-        for (int index = 0; index < totalPlayerCount; index++)
+        for (int index = 0; index < totalPlayerCount; index++)  // playerUserIds[index]
         {
-            if (index == teamPlayerCountMax) slot = 0;  // restart team slot count
+            if (index == teamPlayerCountMax) slot = 0;  // reset team slot count
             if (playerUserIds[index] == string.Empty) continue;
-
             if (index < teamPlayerCountMax) { currentTeam = team1; }
             else { currentTeam = team2; }
-
             currentTeam[slot] = playerUserIds[index];
             slot++;
         }
@@ -1731,7 +1704,7 @@ public class ServerManager : MonoBehaviour
             duration = durationSec,
             winnerTeam = winningTeam
         }).ToString();
-        //Debug.LogWarning(body);
+        Debug.LogWarning(body);
 
         //} create json body
 
