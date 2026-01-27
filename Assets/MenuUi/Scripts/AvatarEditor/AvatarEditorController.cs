@@ -131,7 +131,10 @@ namespace MenuUi.Scripts.AvatarEditor
                 _visualDataScriptableObject.SetColor(piece, pieceColor);
             }
 
-            AvatarDesignLoader.Instance.InvokeOnAvatarDesignUpdate();
+            ColorUtility.TryParseHtmlString(savePlayerData.AvatarData.Color, out Color skinColor);
+            _visualDataScriptableObject.SkinColor = skinColor;
+
+            AvatarDesignLoader.Instance.InvokeOnAvatarDesignUpdate();      
 
             GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
