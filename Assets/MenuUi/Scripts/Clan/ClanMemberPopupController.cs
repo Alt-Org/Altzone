@@ -37,7 +37,8 @@ public class ClanMemberPopupController : MonoBehaviour
     [Header("Vote menus")]
     [SerializeField] private ClanVoteActionMenu _voteActionMenu;
     [SerializeField] private RectTransform _votesButtonRect;
-    [SerializeField] private ClanRoleSelectMenu _roleSelectMenu;
+    //[SerializeField] private ClanRoleSelectMenu _roleSelectMenu;
+    [SerializeField] private ClanRoleSelectPopupController _roleSelectPopup;
 
     private ClanMember _currrentMember;
 
@@ -110,6 +111,7 @@ public class ClanMemberPopupController : MonoBehaviour
         _root.SetActive(false);
 
         _voteActionMenu?.Close();
+        _roleSelectPopup?.Hide();
     }
 
     private void OnVotesButtonPressed()
@@ -141,18 +143,12 @@ public class ClanMemberPopupController : MonoBehaviour
         return roles;
     }
 
-
-
     private void OnRoleVotePressed()
     {
         var roles = GetCurrentClanRoles();
-        if (roles == null || _roleSelectMenu == null) return;
+        if (roles == null || _roleSelectPopup == null || _currrentMember == null) return;
 
-        _roleSelectMenu.Open(_votesButtonRect, roles, pickedRole =>
-        {
-            Debug.Log($"Picked role: {pickedRole.name} ({pickedRole._id}) for member {_currrentMember?.Name}");
-            // TODO: Start role voting process
-        });
+        _roleSelectPopup.Show(_currrentMember, roles);
     }
 
     private void OnKickVotePressed()
