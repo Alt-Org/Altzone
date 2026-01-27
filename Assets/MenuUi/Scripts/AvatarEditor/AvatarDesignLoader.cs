@@ -24,7 +24,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
     public delegate void AvatarDesignUpdate();
     public static event AvatarDesignUpdate OnAvatarDesignUpdate;
 
-    
+    private bool _loginStatusChanged = false;
     private static readonly AvatarPiece[] AllAvatarPieces =
         Enum.GetValues(typeof(AvatarPiece)).Cast<AvatarPiece>().ToArray();
 
@@ -38,6 +38,21 @@ public class AvatarDesignLoader : AltMonoBehaviour
     private void Start()
     {
         StartCoroutine(LoadAvatarDesignCoroutine());
+        ServerManager.OnLogInStatusChanged += UpdateOnLoginStatusChanged;
+    }
+
+    private void OnEnable()
+    {
+        if (_loginStatusChanged)
+        {
+            _loginStatusChanged = false;
+            StartCoroutine(LoadAvatarDesignCoroutine());
+        }
+    }
+
+    private void UpdateOnLoginStatusChanged(bool isLoggedIn)
+    {
+        _loginStatusChanged = isLoggedIn;
     }
 
     #endregion
