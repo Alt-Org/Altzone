@@ -364,7 +364,7 @@ namespace MenuUI.Scripts.SoulHome
 
                     if (hit2.collider.gameObject.GetComponent<ISoulHomeObjectClick>() != null)
                     {
-                        hit2.collider.gameObject.GetComponent<ISoulHomeObjectClick>()?.HandleClick();
+                        if (click == ClickState.Start && editingMode) hit2.collider.gameObject.GetComponent<ISoulHomeObjectClick>()?.HandleClick();
                     }
 
                     if (hit2.collider.gameObject.CompareTag("Furniture"))
