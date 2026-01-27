@@ -22,13 +22,18 @@ namespace MenuUi.Scripts.CharacterGallery
         // Array of character slots in selected grid
         [SerializeField] private SelectedCharacterEditingSlot[] _selectedCharacterSlots;
 
+        [SerializeField] private BlinkingFrame[] _blinkingFrames;
+
+        // Which selected slot is currently active
+        private int _activeSlotIndex = 0;
+
         private bool _openedFromLoadout = false;
         private int _currentLoadoutIndex = -1;
 
         private void Awake()
         {
             _swipe = FindObjectOfType<SwipeUI>();
-           if(_swipe) _swipe.OnCurrentPageChanged += ClosePopup;
+            if (_swipe) _swipe.OnCurrentPageChanged += ClosePopup;
 
             if (gameObject.activeSelf) gameObject.SetActive(false);
 
@@ -46,7 +51,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void OnEnable()
         {
-            if (_rectTransform == null)_rectTransform = GetComponent<RectTransform>();
+            if (_rectTransform == null) _rectTransform = GetComponent<RectTransform>();
 
             _rectTransform.anchorMin = new Vector2(0, PanelScaler.CalculateBottomPanelHeight());
             _rectTransform.anchorMax = new Vector2(1, 1 - (PanelScaler.CalculateTopPanelHeight() + PanelScaler.CalculateUnsafeAreaHeight()));
@@ -80,6 +85,8 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             _charactersUpdated = false;
             gameObject.SetActive(true);
+
+            SetActiveSlot(0);
         }
 
 
@@ -88,6 +95,8 @@ namespace MenuUi.Scripts.CharacterGallery
         /// </summary>
         public void ClosePopup()
         {
+            StopAllBlinking();
+
             gameObject.SetActive(false);
             _openedFromLoadout = false;
             _currentLoadoutIndex = -1;
@@ -128,58 +137,58 @@ namespace MenuUi.Scripts.CharacterGallery
             SelectedCharacterEditingSlot selectedCharacterSlot = pressedSlot as SelectedCharacterEditingSlot;
             if (selectedCharacterSlot != null)
             {
-                // Checking if the slot is empty or has a selected character in it
-                if (selectedCharacterSlot.SelectedCharacter == null) return;
+                SetActiveSlot(selectedCharacterSlot.SlotIndex);
+                return;
+            }
 
-                // Returning selected character to original slot
-                selectedCharacterSlot.SelectedCharacter.ReturnToOriginalSlot();
-                selectedCharacterSlot.SelectedCharacter = null;
+
+            // Checking if the pressed slot is a CharacterSlot
+            CharacterSlot characterSlot = pressedSlot as CharacterSlot;
+            if (characterSlot == null) return;
+
+            SelectedCharacterEditingSlot targetSlot = _selectedCharacterSlots[_activeSlotIndex];
+            if (targetSlot == null) return;
+
+            if (targetSlot.SelectedCharacter != null)
+            {
+                targetSlot.SelectedCharacter.ReturnToOriginalSlot();
+
+                if (targetSlot.SelectedCharacter.OriginalSlot != null)
+                {
+                    targetSlot.SelectedCharacter.OriginalSlot.gameObject.SetActive(true);
+                }
+
+                targetSlot.SelectedCharacter = null;
 
                 if (_openedFromLoadout)
                 {
-                    SignalBus.OnLoadoutDefenceCharacterChangedSignal(CharacterID.None, selectedCharacterSlot.SlotIndex, _currentLoadoutIndex);
+                    SignalBus.OnLoadoutDefenceCharacterChangedSignal(CharacterID.None, targetSlot.SlotIndex, _currentLoadoutIndex);
                 }
                 else
                 {
-                    SignalBus.OnSelectedDefenceCharacterChangedSignal(CharacterID.None, selectedCharacterSlot.SlotIndex);
+                    SignalBus.OnSelectedDefenceCharacterChangedSignal(CharacterID.None, targetSlot.SlotIndex);
                 }
-                   
-                _charactersUpdated = true;
-                return;
+
             }
-            
-                // Checking if the pressed slot is a CharacterSlot
-                CharacterSlot characterSlot = pressedSlot as CharacterSlot;
-                if (characterSlot == null) return;
+            characterSlot.Character.transform.SetParent(targetSlot.transform, false);
+            characterSlot.Character.SetSelectedVisuals();
+            targetSlot.SelectedCharacter = characterSlot.Character;
+            characterSlot.gameObject.SetActive(false);
 
-                // Finding free selected character slot for the pressed character
-                foreach (SelectedCharacterEditingSlot slot in _selectedCharacterSlots)
-                {
-                    if (slot.SelectedCharacter != null) continue;
-                    selectedCharacterSlot = slot;
-                    break;
-                }
-
-                // If no free slots we don't need to do anything
-                if (selectedCharacterSlot == null) return;
-
-                // Setting the gallery character to the free slot
-                characterSlot.Character.transform.SetParent(selectedCharacterSlot.transform, false);
-                characterSlot.Character.SetSelectedVisuals();
-                selectedCharacterSlot.SelectedCharacter = characterSlot.Character;
-                characterSlot.gameObject.SetActive(false);
-             if (_openedFromLoadout)
+            if (_openedFromLoadout)
             {
-                SignalBus.OnLoadoutDefenceCharacterChangedSignal(characterSlot.Character.Id, selectedCharacterSlot.SlotIndex, _currentLoadoutIndex);
+                SignalBus.OnLoadoutDefenceCharacterChangedSignal(characterSlot.Character.Id, targetSlot.SlotIndex, _currentLoadoutIndex);
             }
             else
             {
-                SignalBus.OnSelectedDefenceCharacterChangedSignal(characterSlot.Character.Id, selectedCharacterSlot.SlotIndex);
+                SignalBus.OnSelectedDefenceCharacterChangedSignal(characterSlot.Character.Id, targetSlot.SlotIndex);
             }
 
-                _charactersUpdated = true;
-            
+            _charactersUpdated = true;
+
+            SetActiveSlot((_activeSlotIndex + 1) % _selectedCharacterSlots.Length);
         }
+
 
 
         private void HandleFilterChanged() // Ensuring the selected character's slots are still hidden even though filter changed
@@ -206,6 +215,35 @@ namespace MenuUi.Scripts.CharacterGallery
             _openedFromLoadout = true;
             _currentLoadoutIndex = loadoutIndex;
             OpenPopup();
+        }
+
+        private void SetActiveSlot(int index)
+        {
+            _activeSlotIndex = Mathf.Clamp(index, 0, _selectedCharacterSlots.Length - 1);
+
+            if (_blinkingFrames == null || _blinkingFrames.Length == 0) return;
+
+            // Assumption: one frame per slot, matching index
+            for (int i = 0; i < _blinkingFrames.Length; i++)
+            {
+                if (_blinkingFrames[i] == null) continue;
+
+                if (i == _activeSlotIndex)
+                    _blinkingFrames[i].StartBlinking();
+                else
+                    _blinkingFrames[i].StopBlinking();
+            }
+        }
+
+        private void StopAllBlinking()
+        {
+            if (_blinkingFrames == null) return;
+
+            for (int i = 0; i < _blinkingFrames.Length; i++)
+            {
+                if (_blinkingFrames[i] != null)
+                    _blinkingFrames[i].StopBlinking();
+            }
         }
     }
 }
