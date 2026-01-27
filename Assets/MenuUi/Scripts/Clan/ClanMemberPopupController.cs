@@ -34,6 +34,10 @@ public class ClanMemberPopupController : MonoBehaviour
     [Header("Avatar")]
     [SerializeField] private AvatarLoader _avatarLoader;
 
+    [Header("Vote menus")]
+    [SerializeField] private ClanVoteActionMenu _voteActionMenu;
+    [SerializeField] private RectTransform _votesButtonRect;
+    [SerializeField] private ClanRoleSelectMenu _roleSelectMenu;
 
     private ClanMember _currrentMember;
 
@@ -60,6 +64,12 @@ public class ClanMemberPopupController : MonoBehaviour
         {
             _openProfileButton.onClick.AddListener(OnOpenProfileButtonPressed);
         }
+
+        if (_voteActionMenu != null && _votesButtonRect == null)
+        {
+            _votesButtonRect = _votesButton.GetComponent<RectTransform>();
+        }
+
         Hide();
     }
 
@@ -98,12 +108,59 @@ public class ClanMemberPopupController : MonoBehaviour
         _currrentMember = null;
 
         _root.SetActive(false);
+
+        _voteActionMenu?.Close();
     }
 
     private void OnVotesButtonPressed()
     {
-        // TODO: Implement vote/actions functionality.
-        Debug.Log("ClanMemberPopupController: OnVotesButtonPressed - Not implemented yet.");
+        if (_voteActionMenu == null || _votesButtonRect == null)
+            return;
+
+        _voteActionMenu.Open(
+            _votesButtonRect,
+            onRoleVote: OnRoleVotePressed,
+            onKickVote: OnKickVotePressed
+            );
+    }
+
+    private List<ClanRoles> GetCurrentClanRoles()
+    {
+        var roles = ServerManager.Instance?.Clan?.roles;
+
+        if (roles != null)
+        {
+            foreach (var r in roles)
+                Debug.Log($"SERVER ROLE NAME: '{r.name}'");
+        }
+        else
+        {
+            Debug.Log("SERVER ROLE NAME: roles is null (no clan loaded yet?)");
+        }
+
+        return roles;
+    }
+
+
+
+    private void OnRoleVotePressed()
+    {
+        var roles = GetCurrentClanRoles();
+        if (roles == null || _roleSelectMenu == null) return;
+
+        _roleSelectMenu.Open(_votesButtonRect, roles, pickedRole =>
+        {
+            Debug.Log($"Picked role: {pickedRole.name} ({pickedRole._id}) for member {_currrentMember?.Name}");
+            // TODO: Start role voting process
+        });
+    }
+
+    private void OnKickVotePressed()
+    {
+        if (_currrentMember == null) return;
+        Debug.Log($"Kick vote pressed for member: {_currrentMember.Name} ({_currrentMember.Id})");
+
+        // TODO: Starts kick voting process
     }
 
     private void OnOpenProfileButtonPressed()
