@@ -16,18 +16,13 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
     [SerializeField] private Image _mainHands;
     [SerializeField] private Image _mainFeet;
     [SerializeField] private Material _featureMaterial;
+    [SerializeField] private Material _hairMaterial;
 
-    private MaskImageHandler _maskImageHandler;
     private readonly Dictionary<Vector2Int, Texture2D> _transparentMaskCache = new();
     private readonly Dictionary<Vector2Int, Texture2D> _skinColorMaskCache = new();
     private readonly Dictionary<Vector2Int, Texture2D> _selectedColorMaskCache = new();
     private Color _skinColor = Color.white;
     private Color _classColor = Color.white;
-
-    private void Start()
-    {
-        TryGetComponent(out _maskImageHandler);
-    }
 
     public void SetSkinColor(Color skinColor)
     {
@@ -99,7 +94,7 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         {
             case AvatarPiece.Hair:
                 SetImage(_mainHair, image);
-                SetMaskImage(_mainHair, mask, partColor);
+                SetHairImage(_mainHair, mask, partColor);
                 break;
 
             case AvatarPiece.Eyes:
@@ -126,10 +121,7 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
             case AvatarPiece.Clothes:
                 SetImage(_mainBody, image);
                 SetMaskImage(_mainBody, mask, partColor);
-                if (_maskImageHandler != null)
-                {
-                    _maskImageHandler.SetImage(image);
-                }
+                _mainHair.material.SetTexture("_BodyTex", _mainBody.sprite.texture);
                 break;
 
             case AvatarPiece.Hands:
@@ -154,6 +146,55 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
 
         imageComponent.enabled = true;
         imageComponent.sprite = image;
+    }
+
+    private void SetHairImage(Image avatarImage, Sprite maskSprite, Color selectedColor)
+    {
+        // Hair uses a different shader & material to replace parts overlapping the body with transparency
+        if (avatarImage.sprite == null)
+        {
+            return;
+        }
+
+        EnsureHairMaterial();
+
+        Texture2D maskTex;
+
+        if (maskSprite != null)
+        {
+            maskTex = maskSprite.texture;
+        }
+        else
+        {
+            //maskTex = GetTransparentMask(avatarImage.sprite.texture);
+            //for testing, if maskimage doesn't exist lets you color the whole piece instead of preserving the default color
+            maskTex = GetSelectedColorMask(avatarImage.sprite.texture);
+        }
+
+        _mainHair.material.SetTexture("_MaskTex", maskTex);
+        _mainHair.material.SetColor("_SkinColor", _skinColor);
+        _mainHair.material.SetColor("_SelectedColor", selectedColor);
+        _mainHair.material.SetColor("_ClassColor", _classColor);
+
+        if (_mainBody != null && _mainBody.material != null && _mainBody.gameObject.activeInHierarchy && _mainBody.sprite != null)
+        {
+            _mainHair.material.SetTexture("_BodyTex", _mainBody.sprite.texture);
+        }
+        else
+        {
+            // Without this hair disappears if only showing the head image
+            Texture2D tex = GetTransparentMask(_mainHair.sprite.texture);
+            _mainHair.material.SetTexture("_BodyTex", tex);
+        }
+    }
+
+    private void EnsureHairMaterial()
+    {
+        // Only 1 material made for hair
+        if (!_mainHair.material.name.EndsWith("(Instance)"))
+        {
+            _mainHair.material = Instantiate(_hairMaterial);
+        }
     }
 
     private void SetMaskImage(Image avatarImage, Sprite maskSprite, Color selectedColor)
