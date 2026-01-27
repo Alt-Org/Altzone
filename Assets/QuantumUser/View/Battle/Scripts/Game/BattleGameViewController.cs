@@ -525,6 +525,55 @@ namespace Battle.View.Game
             _endOfGameDataHasEnded = true;
             _endOfGameDataWinningTeam = e.WinningTeam;
             _endOfGameDataGameLengthSec = e.GameLengthSec;
+
+            //{ Calling server to add wins and losses
+            
+            Utils.TryGetQuantumFrame(out Frame f);
+            string[] playerUserIds = BattleParameters.GetPlayerSlotUserIDs(f);
+            
+            bool isValidWin = false;
+            // Temporary solution
+            if (e.WinningTeam == LocalPlayerTeam)
+            {
+                const int teamCount          = 2;
+                const int teamPlayerCountMax = 2;
+                const int totalPlayerCount   = teamCount * teamPlayerCountMax;
+
+                int teamAlphaPlayerCount = 0;
+                int teamBetaPlayerCount  = 0;
+                for (int i = 0; i < totalPlayerCount; i++)
+                {
+                    if (playerUserIds[i] == string.Empty) continue;
+                    if (i < teamPlayerCountMax) { teamAlphaPlayerCount++; }
+                    else { teamBetaPlayerCount++; }
+                }
+
+                switch (LocalPlayerTeam)
+                {
+                    case BattleTeamNumber.TeamAlpha:
+                        isValidWin = teamBetaPlayerCount > 0;
+                        break;
+                    case BattleTeamNumber.TeamBeta:
+                        isValidWin = teamAlphaPlayerCount > 0;
+                        break;
+                }
+            }
+
+            if (isValidWin)
+            {
+                StartCoroutine(ServerManager.Instance.BattleSendResult
+                (
+                    playerUserIds,
+                    (int)e.WinningTeam,
+                    (int)e.GameLengthSec,
+                    success =>
+                    {
+                        if (!success) _debugLogger.Error("Sending battle result failed.");
+                    }
+                )); 
+            }
+            
+            //} Calling server to add wins and losses
         }
 
         /// <summary>

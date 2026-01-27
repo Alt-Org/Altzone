@@ -1647,11 +1647,84 @@ public class ServerManager : MonoBehaviour
 
     #region Battle
 
-    public void SendDebugLogFile(List<IMultipartFormSection> formData, string secretKey, string id, Action<UnityWebRequest> callback)
+    public void BattleSendDebugLogFile(List<IMultipartFormSection> formData, string secretKey, string id, Action<UnityWebRequest> callback)
     {
         StartCoroutine(WebRequests.Post(SERVERADDRESS + "gameAnalytics/logfile/", formData, AccessToken, secretKey, id, callback));
     }
 
+    public IEnumerator BattleSendResult(string[] playerUserIds, int winningTeam, int durationSec, Action<bool> callback)
+    {
+        // constants
+        const int teamCount = 2;
+        const int teamPlayerCountMax = 2;
+        const int totalPlayerCount = teamCount * teamPlayerCountMax;
+
+        // error check
+        if (playerUserIds.Length != totalPlayerCount)
+        {
+            Debug.LogErrorFormat(
+                "playerUserIds count does not match expected player count\nExpected: {0}\nGot: {1}",
+                totalPlayerCount,
+                playerUserIds.Length
+            );
+            callback(obj: false);
+            yield break;
+        }
+
+        //{ create json body
+
+        int team1PlayerCount = 0;
+        int team2PlayerCount = 0;
+        for (int i = 0; i < totalPlayerCount; i++)
+        {
+            if (playerUserIds[i] == string.Empty) continue;
+            if (i < teamPlayerCountMax) { team1PlayerCount++; }
+            else { team2PlayerCount++; }
+        }
+
+        string[] team1 = new string[team1PlayerCount];
+        string[] team2 = new string[team2PlayerCount];
+        string[] currentTeam = null;
+        int slot = 0;   // item in team array
+        for (int index = 0; index < totalPlayerCount; index++)  // playerUserIds[index]
+        {
+            if (index == teamPlayerCountMax) slot = 0;  // reset team slot count
+            if (playerUserIds[index] == string.Empty) continue;
+            if (index < teamPlayerCountMax) { currentTeam = team1; }
+            else { currentTeam = team2; }
+            currentTeam[slot] = playerUserIds[index];
+            slot++;
+        }
+
+        string body = JObject.FromObject(new
+        {
+            type = "result",
+            team1 = team1,
+            team2 = team2,
+            duration = durationSec,
+            winnerTeam = winningTeam
+        }).ToString();
+        Debug.LogWarning(body);
+
+        //} create json body
+
+        // handle server call
+        yield return StartCoroutine(WebRequests.Post(address: $"{DEVADDRESS}gamedata/battle", body, AccessToken, Request =>
+        {
+            if (Request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(obj: true);
+            }
+            else
+            {
+                if (callback != null)
+                {
+                    callback(obj: false);
+                }
+            }
+        }));
+    }
     #endregion
 
     #region Voting

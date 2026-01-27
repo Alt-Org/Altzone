@@ -265,6 +265,11 @@ namespace Altzone.Scripts.Lobby
             this.Subscribe<StopMatchmakingEvent>(OnStopMatchmakingEvent);
             this.Subscribe<GetKickedEvent>(OnGetKickedEvent);
             StartCoroutine(Service());
+
+            GameConfig gameConfig = GameConfig.Get();
+            PlayerSettings playerSettings = gameConfig.PlayerSettings;
+            string photonRegion = string.IsNullOrEmpty(playerSettings.PhotonRegion) ? null : playerSettings.PhotonRegion;
+            StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
         }
 
         private IEnumerator Service()
@@ -300,6 +305,7 @@ namespace Altzone.Scripts.Lobby
                     PlayerData playerData = null;
                     store.GetPlayerData(playerGuid, p => playerData = p);
                     yield return new WaitUntil(() => playerData != null);
+                    PhotonRealtimeClient.Client.UserId = playerData.Id;
                     PhotonRealtimeClient.Connect(playerData.Name, photonRegion);
                 }
                 else if (PhotonRealtimeClient.CanJoinLobby)
