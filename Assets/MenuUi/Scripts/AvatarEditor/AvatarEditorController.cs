@@ -25,6 +25,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private PopUpHandler _popUpHandler;
         [SerializeField] private DivanImageHandler _divanImageHandler;
         [SerializeField] private AvatarLoader _avatarLoader;
+        [SerializeField] private AvatarLoader _profileMenuAvatarLoader;
 
         private PlayerData _currentPlayerData;
         private PlayerAvatar _playerAvatar;
@@ -134,7 +135,8 @@ namespace MenuUi.Scripts.AvatarEditor
             ColorUtility.TryParseHtmlString(savePlayerData.AvatarData.Color, out Color skinColor);
             _visualDataScriptableObject.SkinColor = skinColor;
 
-            AvatarDesignLoader.Instance.InvokeOnAvatarDesignUpdate();      
+            AvatarDesignLoader.Instance.InvokeOnAvatarDesignUpdate();
+            UpdateProfileMenuCharacterVisuals(savePlayerData.AvatarData);
 
             GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
@@ -241,6 +243,12 @@ namespace MenuUi.Scripts.AvatarEditor
                     Debug.LogWarning($"Couldn't find {feature} in FeatureSlots");
                     break;
             }
+        }
+
+        private void UpdateProfileMenuCharacterVisuals(AvatarData data)
+        {
+            AvatarVisualData visualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(data);
+            _profileMenuAvatarLoader.UpdateVisuals(visualData);
         }
 
         public PlayerAvatar PlayerAvatar
