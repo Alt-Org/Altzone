@@ -5,6 +5,7 @@
 
 // System usings
 using System.Collections.Generic;
+using System.Linq;
 
 // Unity usings
 using UnityEngine;
@@ -43,7 +44,7 @@ namespace Battle.QSimulation.Player
         {
             BattlePlayerBotQSpec playerBotSpec = BattleQConfig.GetPlayerBotSpec(f);
 
-            List<int> selectedBotCharacters = new List<int>();
+            int[] selectedBotCharacters = new int[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
 
             BattleCharacterBase[] botCharacters = new BattleCharacterBase[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
             for (int i = 0; i < botCharacters.Length; i++)
@@ -54,8 +55,8 @@ namespace Battle.QSimulation.Player
                     selectedCharacter = f.RNG->Next(0, playerBotSpec.BotCharacterSelection.Length);
                 } while (selectedBotCharacters.Contains(selectedCharacter));
 
-                selectedBotCharacters.Add(selectedCharacter);
-                botCharacters[i] = playerBotSpec.BotCharacterSelection[selectedCharacter];             
+                selectedBotCharacters[i] = selectedCharacter;
+                botCharacters[i]         = playerBotSpec.BotCharacterSelection[selectedCharacter];             
             }
             return botCharacters;
         }
