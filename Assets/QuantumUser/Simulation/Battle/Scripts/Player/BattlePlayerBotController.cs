@@ -57,7 +57,6 @@ namespace Battle.QSimulation.Player
                 selectedBotCharacters.Add(selectedCharacter);
                 botCharacters[i] = playerBotSpec.BotCharacterSelection[selectedCharacter];             
             }
-            selectedBotCharacters.Clear();
             return botCharacters;
         }
 
