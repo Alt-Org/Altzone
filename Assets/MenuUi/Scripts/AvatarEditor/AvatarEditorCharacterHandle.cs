@@ -23,6 +23,23 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
     private readonly Dictionary<Vector2Int, Texture2D> _selectedColorMaskCache = new();
     private Color _skinColor = Color.white;
     private Color _classColor = Color.white;
+    private Texture2D _transparentTex;
+
+    private void OnDestroy()
+    {
+        foreach (var item in _transparentMaskCache.Values)
+        {
+            Destroy(item);
+        }
+        foreach (var item in _skinColorMaskCache.Values)
+        {
+            Destroy(item);
+        }
+        foreach (var item in _selectedColorMaskCache.Values)
+        {
+            Destroy(item);
+        }
+    }
 
     public void SetSkinColor(Color skinColor)
     {
@@ -45,6 +62,11 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         ApplyColors(_mainBody);
         ApplyColors(_mainHands);
         ApplyColors(_mainFeet);
+
+        if (_mainHead != null)
+        {
+            _mainHead.color = _skinColor;
+        }
     }
 
     public void SetPartColor(AvatarPiece slot, Color partColor)
@@ -121,7 +143,11 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
             case AvatarPiece.Clothes:
                 SetImage(_mainBody, image);
                 SetMaskImage(_mainBody, mask, partColor);
-                _mainHair.material.SetTexture("_BodyTex", _mainBody.sprite.texture);
+
+                if (_mainHair != null && _mainHair.sprite != null)
+                {
+                    _mainHair.material.SetTexture("_BodyTex", _mainBody.sprite.texture);
+                }
                 break;
 
             case AvatarPiece.Hands:
@@ -183,9 +209,19 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         else
         {
             // Without this hair disappears if only showing the head image
-            Texture2D tex = GetTransparentMask(_mainHair.sprite.texture);
-            _mainHair.material.SetTexture("_BodyTex", tex);
+            _mainHair.material.SetTexture("_BodyTex", GetTransparentTex());
         }
+    }
+
+    private Texture2D GetTransparentTex()
+    {
+        if (_transparentTex == null)
+        {
+            _transparentTex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+            _transparentTex.SetPixel(0, 0, new Color(0, 0, 0, 0));
+            _transparentTex.Apply();
+        }
+        return _transparentTex;
     }
 
     private void EnsureHairMaterial()
@@ -270,7 +306,8 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
 
     private Texture2D GetSelectedColorMask(Texture2D reference)
     {
-        // For testing
+        // For testing, lets you color the pieces missing a mask image
+        // with color selected in avatareditor
         Vector2Int size = new(reference.width, reference.height);
 
         if (_selectedColorMaskCache.TryGetValue(size, out var tex))
@@ -339,6 +376,5 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
 
         image.material.SetColor("_SkinColor", _skinColor);
         image.material.SetColor("_ClassColor", _classColor);
-        _mainHead.color = _skinColor;
     }
 }
