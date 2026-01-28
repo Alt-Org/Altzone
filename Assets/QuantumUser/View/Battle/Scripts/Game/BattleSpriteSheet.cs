@@ -1,3 +1,8 @@
+///@file BattleSpriteSheet.cs
+///<summary>
+///Contains @cref {Battle.View,BattleSpriteSheetDrawer} class which handles drawing a custom
+///inspector for the BattleSpriteSheet struct.
+///</summary>
 
 // System usings
 using System;
@@ -27,8 +32,17 @@ namespace Battle.View
     }
 
     [CustomPropertyDrawer(typeof(BattleSpriteSheet))]
+    /// <summary>
+    /// Handles drawing a custom inspector property for the BattleSpriteSheet struct.
+    /// </summary>
     public class BattleSpriteSheetDrawer : PropertyDrawer
     {
+        /// <summary>
+        /// Override method that handles drawing the custom inspector property.
+        /// </summary>
+        /// <param name="rect">rect parameter</param>
+        /// <param name="property">SerializedProperty parameter</param>
+        /// <param name="label">GUIContent parameter</param>
         public override void OnGUI(Rect rect, SerializedProperty property, GUIContent label)
         {
             //Get BattleSpriteSheet struct values as properties
@@ -58,7 +72,7 @@ namespace Battle.View
 
                 if (EditorGUI.EndChangeCheck())
                 {
-                    HandlePlayerSpriteSheetProperty(property, spritePropertyArray, _referenceSprite);
+                    HandlePlayerSpriteSheetProperty(spritePropertyArray, _referenceSprite);
                 }
             }
             else
@@ -68,18 +82,35 @@ namespace Battle.View
                     _currentSpriteSheetPath = GetPath((Sprite)spritePropertyArray.GetArrayElementAtIndex(0).objectReferenceValue);
                 }
                 EditorGUI.LabelField(rect, string.Format("{0}: {1}", label.text, _currentSpriteSheetPath));
-                HandlePlayerSpriteSheetProperty(property, spritePropertyArray, _referenceSprite);
+                HandlePlayerSpriteSheetProperty(spritePropertyArray, _referenceSprite);
                 EditorGUI.indentLevel++;
                 EditorGUILayout.PropertyField(spritePropertyArray, new GUIContent("Sprites"), true);
                 EditorGUI.indentLevel--;
             }
         }
 
+        /// <summary>
+        /// A string that includes the path for the used spritesheet, empty by default.
+        /// </summary>
         private string _currentSpriteSheetPath = string.Empty;
+
+        /// <summary>
+        /// Regex for sorting the spritesheet.
+        /// </summary>
         private Regex _spriteIndexRegexPattern;
+
+        /// <summary>
+        /// Reference sprite to get the rest of the sprites included in the same spritesheet
+        /// </summary>
         private Sprite _referenceSprite;
 
-        private void HandlePlayerSpriteSheetProperty(SerializedProperty property, SerializedProperty spritePropertyArray, Sprite spriteReference)
+        /// <summary>
+        /// Method that handles loading the spritesheet from the reference sprite and sorting it
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="spritePropertyArray"></param>
+        /// <param name="spriteReference"></param>
+        private void HandlePlayerSpriteSheetProperty(SerializedProperty spritePropertyArray, Sprite spriteReference)
         {
             string currentSpriteSheetPathCopy = _currentSpriteSheetPath;
             _currentSpriteSheetPath = string.Empty;
@@ -110,6 +141,12 @@ namespace Battle.View
                 i++;
             }
         }
+
+        /// <summary>
+        /// Helper method for getting the path a sprite is at.
+        /// </summary>
+        /// <param name="sprite">Sprite to get the path from.</param>
+        /// <returns>Path</returns>
         private string GetPath(Sprite sprite)
         {
             return AssetDatabase.GetAssetPath(sprite);
