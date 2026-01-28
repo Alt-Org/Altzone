@@ -47,12 +47,13 @@ namespace Battle.QSimulation.Player
 
             BattleCharacterBase[] botCharacters = new BattleCharacterBase[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
             for (int i = 0; i < botCharacters.Length; i++)
-            {
-                int selectedCharacter = Random.Range(0, playerBotSpec.BotCharacterSelection.Length);
-                while (selectedBotCharacters.Contains(selectedCharacter))
+            {            
+                int selectedCharacter;
+                do
                 {
-                    selectedCharacter = Random.Range(0, playerBotSpec.BotCharacterSelection.Length);
-                }
+                    selectedCharacter = f.RNG->Next(0, playerBotSpec.BotCharacterSelection.Length);
+                } while (selectedBotCharacters.Contains(selectedCharacter));
+
                 selectedBotCharacters.Add(selectedCharacter);
                 botCharacters[i] = playerBotSpec.BotCharacterSelection[selectedCharacter];             
             }
