@@ -1914,6 +1914,7 @@ namespace Altzone.Scripts.Lobby
         public Emotion ProjectileInitialEmotion { get; set; }
         public string MapId { get; set; }
         public int PlayerCount { get; set; }
+        public int Seed { get; set; }
 
         public static byte[] Serialize(StartGameData data)
         {
@@ -1926,6 +1927,7 @@ namespace Altzone.Scripts.Lobby
             Serializer.Serialize((int)b.ProjectileInitialEmotion, ref bytes);
             Serializer.Serialize(b.MapId, ref bytes);
             Serializer.Serialize(b.PlayerCount, ref bytes);
+            Serializer.Serialize(b.Seed, ref bytes);
 
             return bytes;
         }
@@ -1941,6 +1943,7 @@ namespace Altzone.Scripts.Lobby
             result.ProjectileInitialEmotion = (Emotion)Serializer.DeserializeInt(data, ref offset);
             result.MapId = Serializer.DeserializeString(data, ref offset);
             result.PlayerCount = Serializer.DeserializeInt(data, ref offset);
+            result.Seed = Serializer.DeserializeInt(data, ref offset);
 
             return result;
         }
@@ -1953,7 +1956,8 @@ namespace Altzone.Scripts.Lobby
                  $"\nPlayerSlotTypes: {string.Join(", ",PlayerSlotTypes)}" +
                  $"\nProjectileInitialEmotion: {ProjectileInitialEmotion}" +
                  $"\nMapId: {MapId}" +
-                 $"\nPlayerCount: {PlayerCount}";
+                 $"\nPlayerCount: {PlayerCount}" +
+                 $"\nSeed: {Seed}";
         }
     }
 }
