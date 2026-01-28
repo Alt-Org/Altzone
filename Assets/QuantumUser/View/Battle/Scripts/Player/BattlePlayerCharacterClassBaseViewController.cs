@@ -1,6 +1,6 @@
-/// @file BattlePlayerClassBaseViewController.cs
+/// @file BattlePlayerCharacterClassBaseViewController.cs
 /// <summary>
-/// Contains @cref{Battle.View.Player,BattlePlayerClassBaseViewController} class,
+/// Contains @cref{Battle.View.Player,BattlePlayerCharacterClassBaseViewController} class,
 /// which is an abstract base class for the character class view controllers to extend.<br/>
 /// Works together with @cref{Battle.View.Player,BattlePlayerViewController}, which handles the shared player view logic.
 /// </summary>
@@ -20,7 +20,7 @@ namespace Battle.View.Player
     ///
     /// Defines class view controller structure, implements base non-specific view logic for all character classes.
     /// Provides hooks for derived classes to implement character class specific view logic.
-    /// Works together with @cref{Battle.View.Player,BattlePlayerViewController}, which handles the shared player view logic.
+    /// Works together with @cref{Battle.View.Player,BattlePlayerCharacterViewController}, which handles the shared player view logic.
     ///
     /// See [{PlayerClassViewControllers}](#page-concepts-player-view-class-controller) for more info.<br/>
     /// See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
@@ -37,7 +37,7 @@ namespace Battle.View.Player
         ///
         /// This is not an overridable method. Override the @cref{OnViewInitOverride} method in derived classes for implementing character class specific custom initialization.
         ///
-        /// <param name="parent">Reference to the parent (<see cref="BattlePlayerViewController"/>).</param>
+        /// <param name="parent">Reference to the parent (<see cref="BattlePlayerCharacterViewController"/>).</param>
         /// <param name="entityRef">The entity reference for this player character.</param>
         /// <param name="slot">The player slot associated with this character.</param>
         /// <param name="characterId">The ID of the character being initialized.</param>
@@ -62,7 +62,7 @@ namespace Battle.View.Player
         /// </summary>
         public virtual void OnUpdateView() { }
 
-        /// <summary>Reference to the parent <see cref="BattlePlayerViewController">view controller</see> that manages shared player view logic.</summary>
+        /// <summary>Reference to the parent <see cref="BattlePlayerCharacterViewController">view controller</see> that manages shared player view logic.</summary>
         protected BattlePlayerCharacterViewController _parent;
         /// <summary>Reference to the entity associated with this view controller.</summary>
         protected EntityRef _entityRef;

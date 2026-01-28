@@ -1,7 +1,7 @@
-/// @file BattlePlayerClassProjectorViewController.cs
+/// @file BattlePlayerCharacterClassProjectorViewController.cs
 /// <summary>
-/// Contains @cref{Battle.View.Player,BattlePlayerClassProjectorViewController} class,
-/// which is a <see cref="Battle.View.Player.BattlePlayerClassProjectorViewController">class %view controller</see> for the Projector character class.
+/// Contains @cref{Battle.View.Player,BattlePlayerCharacterClassProjectorViewController} class,
+/// which is a <see cref="Battle.View.Player.BattlePlayerCharacterClassProjectorViewController">class %view controller</see> for the Projector character class.
 /// </summary>
 
 // Unity usings
@@ -17,7 +17,7 @@ using Battle.View.Game;
 namespace Battle.View.Player
 {
     /// <summary>
-    /// <span class="brief-h">Projector <see cref="Battle.View.Player.BattlePlayerClassBaseViewController">class %view controller</see>.</span><br/>
+    /// <span class="brief-h">Projector <see cref="Battle.View.Player.BattlePlayerCharacterClassBaseViewController">class %view controller</see>.</span><br/>
     /// Handles view logic for the Projector character class
     /// </summary>
     ///

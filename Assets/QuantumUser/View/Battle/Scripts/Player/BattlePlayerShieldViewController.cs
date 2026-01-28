@@ -1,12 +1,13 @@
-/// @file BattleShieldViewController.cs
+/// @file BattlePlayerShieldViewController.cs
 /// <summary>
-/// Contains @cref{Battle.View.Player,BattleShieldViewController} class which handles shield sprites and particles.
+/// Contains @cref{Battle.View.Player,BattlePlayerShieldViewController} class which handles shield sprites and particles.
 /// </summary>
 ///
 /// This script:<br/>
 /// Handles shield sprites and particles
 
 // Unity usings
+using UnityEngine;
 // Battle QSimulation usings
 using Battle.QSimulation;
 using Battle.QSimulation.Player;
@@ -14,7 +15,6 @@ using Battle.QSimulation.Player;
 using Battle.View.Game;
 // Quantum usings
 using Quantum;
-using UnityEngine;
 
 namespace Battle.View.Player
 {

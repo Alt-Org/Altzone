@@ -1,6 +1,6 @@
-/// @file BattlePlayerViewController.cs
+/// @file BattlePlayerCharacterViewController.cs
 /// <summary>
-/// Contains @cref{Battle.View.Player,BattlePlayerViewController} class which handles player view logic.
+/// Contains @cref{Battle.View.Player,BattlePlayerCharacterViewController} class which handles player view logic.
 /// </summary>
 
 // System usings
@@ -32,14 +32,8 @@ namespace Battle.View.Player
     /// [{Player View Code Overview}](#page-concepts-player-view-overview)
     public unsafe class BattlePlayerCharacterViewController : QuantumEntityViewComponent
     {
-        /// @anchor BattlePlayerViewController-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
-
         public struct PlayerSpriteSheetMap : IBattleSpriteSheetMap
         {
-            //Enum for the general character spritesheet, from left to right, top to bottom
             public enum Enum
             {
                 Base                = 0,
@@ -101,54 +95,56 @@ namespace Battle.View.Player
 
             public int GetIndex() => (int)EnumValue;
         }
-
-        [SerializeField] private BattleSpriteSheet _spriteSheet;
+        /// @anchor BattlePlayerCharacterViewController-SerializeFields
+        /// @name SerializeField variables
+        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        /// @{
 
         [Header("References")]
 
         /// <summary>[SerializeField] Reference to an override class view controller.</summary>
-        /// @ref BattlePlayerViewController-SerializeFields
+        /// @ref BattlePlayerCharacterViewController-SerializeFields
         [SerializeField] private BattlePlayerCharacterClassBaseViewController _classViewControllerOverride;
 
         /// <summary>[SerializeField] Animator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> that handles player animations.</summary>
-        /// @ref BattlePlayerViewController-SerializeFields
+        /// @ref BattlePlayerCharacterViewController-SerializeFields
         [SerializeField] private Animator _animator;
 
         /// <summary>[SerializeField] %Player's child <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> where heart sprite is located.</summary>
-        /// @ref BattlePlayerViewController-SerializeFields
+        /// @ref BattlePlayerCharacterViewController-SerializeFields
         //[SerializeField] private GameObject _heart;
 
         /// <summary>[SerializeField] Array of character <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.</summary>
-        /// @ref BattlePlayerViewController-SerializeFields
+        /// @ref BattlePlayerCharacterViewController-SerializeFields
         [SerializeField] private GameObject[] _characterGameObjects;
 
         /// <summary>[SerializeField] %Player's local player indicator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</summary>
-        /// @ref BattlePlayerViewController-SerializeFields
+        /// @ref BattlePlayerCharacterViewController-SerializeFields
         [SerializeField] private GameObject _localPlayerIndicator;
 
         /// <summary>[SerializeField] Reference to the shield hit particle system.</summary>
-        /// @ref BattlePlayerViewController-SerializeFields
+        /// @ref BattlePlayerCharacterViewController-SerializeFields
 
         [Header("Settings")]
 
         /// <summary>[SerializeField] The transparency effect's range.</summary>
-        /// @ref BattlePlayerViewController-SerializeFields
+        /// @ref BattlePlayerCharacterViewController-SerializeFields
         [SerializeField] private float _transparencyEffectRange;
 
         /// <summary>[SerializeField] The transparency effect's transition rate.</summary>
-        /// @ref BattlePlayerViewController-SerializeFields
+        /// @ref BattlePlayerCharacterViewController-SerializeFields
         [SerializeField] private float _transparencyEffectTransitionRate;
 
         /// <summary>[SerializeField] The transparency effect's minimum alpha value..</summary>
-        /// @ref BattlePlayerViewController-SerializeFields
+        /// @ref BattlePlayerCharacterViewController-SerializeFields
         [SerializeField] private float _transparencyEffectMinimumAlpha;
 
         /// <summary>[SerializeField] The damage flash animation's duration.</summary>
-        /// @ref BattlePlayerViewController-SerializeFields
+        /// @ref BattlePlayerCharacterViewController-SerializeFields
         [SerializeField] private float _damageFlashDuration = 1f;
 
         /// <summary>[SerializeField] The amount of damage flashes.</summary>
-        /// @ref BattlePlayerViewController-SerializeFields
+        /// @ref BattlePlayerCharacterViewController-SerializeFields
         [SerializeField] private int _damageFlashAmount = 5;
 
         /// @}
@@ -217,7 +213,7 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Public method that is called when the view should update.<br/>
-        /// Calls <see cref="BattlePlayerViewController.UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to update the player model's position
+        /// Calls <see cref="BattlePlayerCharacterViewController.UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to update the player model's position
         /// </summary>
         public override void OnUpdateView()
         {
@@ -277,7 +273,7 @@ namespace Battle.View.Player
         private bool _isRegistered = false;
 
         /// <summary>
-        /// Handles setup that needs to happen before <see cref="Quantum.EventBattlePlayerViewInit">EventBattlePlayerViewInit</see> event is received.<br/>
+        /// Handles setup that needs to happen before <see cref="Quantum.EventBattleCharacterPlayerViewInit">EventBattlePlayerCharacterViewInit</see> event is received.<br/>
         /// Currently this is needed for initializing character's class as none.
         /// </summary>
         private void PreInitSetup()
@@ -345,7 +341,7 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Handler method for EventBattleCharacterTakeDamage QuantumEvent.<br/>
-        /// Starts <see cref="BattlePlayerViewController.DamageFlashCoroutine">DamageFlashCoroutine</see>.
+        /// Starts <see cref="BattlePlayerCharacterViewController.DamageFlashCoroutine">DamageFlashCoroutine</see>.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>

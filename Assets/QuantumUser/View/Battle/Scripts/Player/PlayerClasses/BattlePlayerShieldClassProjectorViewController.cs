@@ -1,7 +1,7 @@
-/// @file BattlePlayerClassProjectorViewController.cs
+/// @file BattlePlayerShieldClassProjectorViewController.cs
 /// <summary>
-/// Contains @cref{Battle.View.Player,BattlePlayerClassProjectorViewController} class,
-/// which is a <see cref="Battle.View.Player.BattlePlayerClassProjectorViewController">class %view controller</see> for the Projector character class.
+/// Contains @cref{Battle.View.Player,BattlePlayerShieldClassProjectorViewController} class,
+/// which is a <see cref="Battle.View.Player.BattlePlayerShieldClassProjectorViewController">class %view controller</see> for the Projector character class.
 /// </summary>
 
 // Unity usings
@@ -17,7 +17,7 @@ using Battle.View.Game;
 namespace Battle.View.Player
 {
     /// <summary>
-    /// <span class="brief-h">Projector <see cref="Battle.View.Player.BattlePlayerClassBaseViewController">class %view controller</see>.</span><br/>
+    /// <span class="brief-h">Projector <see cref="Battle.View.Player.BattlePlayerShieldClassBaseViewController">class %view controller</see>.</span><br/>
     /// Handles view logic for the Projector character class
     /// </summary>
     ///
@@ -26,18 +26,18 @@ namespace Battle.View.Player
     /// @bigtext{See [{Player Character Class 400 - Projector}](#page-concepts-player-class-400-projector) for more info.}
     public class BattlePlayerShieldClassProjectorViewController : BattlePlayerShieldClassBaseViewController
     {
-        /// @anchor BattlePlayerClassProjectorViewController-SerializeFields
+        /// @anchor BattlePlayerShieldClassProjectorViewController-SerializeFields
         /// @name SerializeField variables
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
         /// <summary>Reference to the moving shield object.</summary>
-        /// @ref BattlePlayerClassProjectorViewController-SerializeFields
+        /// @ref BattlePlayerShieldClassProjectorViewController-SerializeFields
         [Tooltip("Reference to the moving shield object.")]
         [SerializeField] private GameObject _movingShield;
 
         /// <summary>Indicates if the moving shield should be flipped.</summary>
-        /// @ref BattlePlayerClassProjectorViewController-SerializeFields
+        /// @ref BattlePlayerShieldClassProjectorViewController-SerializeFields
         [Tooltip("Indicates if the moving shield should be flipped.")]
         [SerializeField] private bool _movingShieldFlipped;
 
