@@ -3,6 +3,10 @@
 /// Contains @cref{Battle.QSimulation.Player,BattlePlayerBotController} class which handles the bot AI logic and implements helper methods for handling bots.
 /// </summary>
 
+// System usings
+using System.Collections.Generic;
+using System.Linq;
+
 // Unity usings
 using UnityEngine;
 
@@ -40,10 +44,19 @@ namespace Battle.QSimulation.Player
         {
             BattlePlayerBotQSpec playerBotSpec = BattleQConfig.GetPlayerBotSpec(f);
 
+            int[] selectedBotCharacters = new int[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
+
             BattleCharacterBase[] botCharacters = new BattleCharacterBase[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
             for (int i = 0; i < botCharacters.Length; i++)
-            {
-                botCharacters[i] = playerBotSpec.BotCharacter;
+            {            
+                int selectedCharacter;
+                do
+                {
+                    selectedCharacter = f.RNG->Next(0, playerBotSpec.BotCharacterSelection.Length);
+                } while (selectedBotCharacters.Contains(selectedCharacter));
+
+                selectedBotCharacters[i] = selectedCharacter;
+                botCharacters[i]         = playerBotSpec.BotCharacterSelection[selectedCharacter];             
             }
             return botCharacters;
         }
