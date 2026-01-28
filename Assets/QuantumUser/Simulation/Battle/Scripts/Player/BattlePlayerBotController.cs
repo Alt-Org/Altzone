@@ -3,6 +3,9 @@
 /// Contains @cref{Battle.QSimulation.Player,BattlePlayerBotController} class which handles the bot AI logic and implements helper methods for handling bots.
 /// </summary>
 
+// System usings
+using System.Collections.Generic;
+
 // Unity usings
 using UnityEngine;
 
@@ -13,7 +16,6 @@ using Photon.Deterministic;
 
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
-using System.Collections.Generic;
 
 namespace Battle.QSimulation.Player
 {
