@@ -150,6 +150,11 @@ synced event BattleGiveUpStateChange
     BattleGiveUpStateUpdate StateUpdate;
 }
 
+synced event BattleInPlayStateUpdate
+{
+    bool IsInPlay;
+}
+
 //} Gameplay events
 
 //{ Debug events
