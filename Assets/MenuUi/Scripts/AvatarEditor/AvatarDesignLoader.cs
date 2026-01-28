@@ -266,6 +266,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
         {
             Instance = null;
         }
+        ServerManager.OnLogInStatusChanged -= UpdateOnLoginStatusChanged;
     }
 
     #endregion
