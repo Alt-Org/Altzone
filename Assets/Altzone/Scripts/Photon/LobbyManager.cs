@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Assert = UnityEngine.Assertions.Assert;
+using Random = UnityEngine.Random;
 
 using Photon.Client;
 using Photon.Realtime;
@@ -1034,7 +1035,8 @@ namespace Altzone.Scripts.Lobby
                     PlayerSlotTypes = playerTypes,
                     ProjectileInitialEmotion = startingEmotion,
                     MapId = mapId,
-                    PlayerCount = playerCount
+                    PlayerCount = playerCount,
+                    Seed = Random.Range(int.MinValue, int.MaxValue),
                 };
 
             }
@@ -1086,6 +1088,7 @@ namespace Altzone.Scripts.Lobby
                 Map              = _quantumBattleMap,
                 SimulationConfig = _quantumBattleSimulationConfig,
                 SystemsConfig    = _quantumBattleSystemsConfig,
+                Seed             = data.Seed,
 
                 // battle
                 BattleConfig     = _battleQConfig,
