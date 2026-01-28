@@ -5,6 +5,7 @@ using MenuUi.Scripts.Signals;
 using Altzone.Scripts.Model.Poco.Game;
 using MenuUi.Scripts.UIScaling;
 using MenuUi.Scripts.SwipeNavigation;
+using UnityEngine.UI;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -23,6 +24,9 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private SelectedCharacterEditingSlot[] _selectedCharacterSlots;
 
         [SerializeField] private BlinkingFrame[] _blinkingFrames;
+
+        [SerializeField] private Button _removeCharacterButton;
+
 
         // Which selected slot is currently active
         private int _activeSlotIndex = 0;
@@ -47,6 +51,12 @@ namespace MenuUi.Scripts.CharacterGallery
                 _selectedCharacterSlots[i].SlotIndex = i;
                 _selectedCharacterSlots[i].OnSlotPressed += HandleSlotPressed;
             }
+
+            if (_removeCharacterButton != null)
+            {
+                _removeCharacterButton.onClick.AddListener(RemoveActiveSlotCharacter);
+            }
+
         }
 
         private void OnEnable()
@@ -71,6 +81,12 @@ namespace MenuUi.Scripts.CharacterGallery
             }
 
             if (_swipe) _swipe.OnCurrentPageChanged -= ClosePopup;
+
+            if (_removeCharacterButton != null)
+            {
+                _removeCharacterButton.onClick.RemoveListener(RemoveActiveSlotCharacter);
+            }
+
         }
 
         private void OnDisable()
@@ -244,6 +260,36 @@ namespace MenuUi.Scripts.CharacterGallery
                 if (_blinkingFrames[i] != null)
                     _blinkingFrames[i].StopBlinking();
             }
+        }
+
+        private void RemoveCharacterFromSlot(SelectedCharacterEditingSlot slot)
+        {
+            if (slot == null) return;
+            if (slot.SelectedCharacter == null) return;
+
+            slot.SelectedCharacter.ReturnToOriginalSlot();
+            slot.SelectedCharacter = null;
+
+            if (_openedFromLoadout)
+            {
+                SignalBus.OnLoadoutDefenceCharacterChangedSignal(
+                    CharacterID.None,
+                    slot.SlotIndex,
+                    _currentLoadoutIndex);
+            }
+            else
+            {
+                SignalBus.OnSelectedDefenceCharacterChangedSignal(
+                    CharacterID.None,
+                    slot.SlotIndex);
+            }
+
+            _charactersUpdated = true;
+        }
+        public void RemoveActiveSlotCharacter()
+        {
+            SelectedCharacterEditingSlot targetSlot = _selectedCharacterSlots[_activeSlotIndex];
+            RemoveCharacterFromSlot(targetSlot);
         }
     }
 }
