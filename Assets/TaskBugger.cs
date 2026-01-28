@@ -14,14 +14,19 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     [SerializeField] private Button _button;
     private bool _isHeldDown = false;
 
+    [SerializeField] private GameObject _wheelPrefab;
+    private GameObject _wheel;
+    private float progress;
+    private Vector2 _clickPosition;
+
     private void OnEnable()
     {
         StartCoroutine(ToggleBug());
     }
 
-    private void ClickBuggedText() => StartCoroutine(ClickBuggedTextCoroutine());
+    private void ClickBuggedText() => StartCoroutine(ClickBuggedTextCoroutine(_clickPosition));
 
-    private IEnumerator ClickBuggedTextCoroutine()
+    private IEnumerator ClickBuggedTextCoroutine(Vector2 clickPosition)
     {
         if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null
             && DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationActionType == Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.FindBug)
@@ -30,6 +35,20 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             while (true)
             {
                 timer += Time.deltaTime;
+
+                if(timer > _longClickStartThresholdTime){
+                    if(_wheel == null)
+                        if(ProgressWheelHandler.Instance != null && ProgressWheelHandler.Instance.Wheel)
+                        _wheel = Instantiate(_wheelPrefab, transform);
+                    if(!_wheel.activeSelf){
+                        _wheel.SetActive(true);
+                        _wheel.GetComponent<RectTransform>().position = _clickPosition;
+                        progress = 0f;
+                    }
+
+                    progress = Mathf.Lerp(0, 1, timer/_longClickThresholdTime);
+                    _wheel.GetComponent<Image>().fillAmount = progress;
+                }
 
                 if (_isHeldDown == false)
                     yield break;
@@ -72,6 +91,7 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public void OnPointerDown(PointerEventData eventData)
     {
         _isHeldDown = true;
+        _clickPosition = eventData.pressPosition;
         ClickBuggedText();
     }
 
