@@ -44,7 +44,8 @@ namespace Battle.View.Player
         /// <summary>
         /// Public method that is called when entity is activated upon its creation.<br/>
         /// Calls <see cref="PreInitSetup"/> and subscribes to <see cref="Quantum.EventBattlePlayerViewInit">EventBattlePlayerViewInit</see> event with a lambda, which
-        /// sets the shield model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>. Handles subscribing to QuantumEvents.
+        /// sets the shield model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.
+        /// Handles subscribing to QuantumEvents and registering to BattleViewRegistry.
         /// </summary>
         ///
         /// <param name="_">Current simulation frame.</param>
@@ -96,10 +97,24 @@ namespace Battle.View.Player
             }
         }
 
+        /// <summary>
+        /// EntityRef for the character this shield is assigned to.
+        /// </summary>
         private EntityRef _characterRef;
+
+        /// <summary>
+        /// Character view controller this shield view controller is bound to.
+        /// </summary>
         private BattlePlayerCharacterViewController _characterViewController;
+
+        ///<summary>Boolean that prevents this shield view controller from being registered multiple times to the BattleViewRegistry.</summary>
         private bool _isRegistered = false;
 
+        /// <summary>
+        /// Private method that is called when the character view controller associated with this shield view controller is registered. <br/>
+        /// Handles binding this shield view controller to the character view controller and vice versa.
+        /// </summary>
+        /// <param name="viewObject">character view controller this shield view controller needs to be bound to</param>
         private void OnCharacterRegistered(object viewObject)
         {
             var characterViewController = (BattlePlayerCharacterViewController)viewObject;

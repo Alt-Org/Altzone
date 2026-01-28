@@ -102,6 +102,10 @@ namespace Battle.View.Player
 
         [Header("References")]
 
+        /// <summary>[SerializeField] Reference to a struct that holds the character's spritesheet</summary>
+        /// @ref BattlePlayerCharacterViewController-SerializeFields
+        [SerializeField] private BattleSpriteSheet _spriteSheet;
+
         /// <summary>[SerializeField] Reference to an override class view controller.</summary>
         /// @ref BattlePlayerCharacterViewController-SerializeFields
         [SerializeField] private BattlePlayerCharacterClassBaseViewController _classViewControllerOverride;
@@ -151,8 +155,9 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Public method that is called when entity is activated upon its creation.<br/>
-        /// Calls <see cref="PreInitSetup"/> and subscribes to <see cref="Quantum.EventBattlePlayerViewInit">EventBattlePlayerViewInit</see> event with a lambda, which
-        /// sets the player model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>. Handles subscribing to QuantumEvents.
+        /// Calls <see cref="PreInitSetup"/> and subscribes to <see cref="Quantum.EventBattlePlayerCharacterViewInit">EventBattlePlayerCharacterViewInit</see> event with a lambda, which
+        /// sets the player model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.
+        /// Handles subscribing to QuantumEvents and registering to BattleViewRegistry.
         /// </summary>
         ///
         /// <param name="_">Current simulation frame.</param>
@@ -246,15 +251,22 @@ namespace Battle.View.Player
             _classViewController.OnUpdateView();
         }
 
+        /// <summary>
+        /// Public method that is called when both the character and the shields associated with it are registered
+        /// to the BattleViewRegistry.<br/>
+        /// Binds the shield view controller to the _playerShieldViewControllers dictionary to be able to call on it later.
+        /// </summary>
+        /// 
+        /// <param name="shieldViewController">pointer to a shield view controller associated with the character.</param>
         public void BindShield(BattlePlayerShieldViewController shieldViewController)
         {
             _playerShieldViewControllers[shieldViewController.EntityRef] = shieldViewController;
         }
 
-        public void UnbindShield(EntityRef shieldEntity)
+        /*public void UnbindShield(EntityRef shieldEntity)
         {
             _playerShieldViewControllers.Remove(shieldEntity);
-        }
+        }*/
 
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private BattleDebugLogger _debugLogger;
@@ -268,8 +280,10 @@ namespace Battle.View.Player
         /// <value>Reference to the active class view controller.</value>
         private BattlePlayerCharacterClassBaseViewController _classViewController;
 
+        /// <summary>Dictionary that holds the shield view controllers associated with this character view controller.</summary>
         private readonly Dictionary<EntityRef, BattlePlayerShieldViewController> _playerShieldViewControllers = new();
 
+        ///<summary>Boolean that prevents this character view controller from being registered multiple times to the BattleViewRegistry.</summary>
         private bool _isRegistered = false;
 
         /// <summary>
@@ -283,6 +297,11 @@ namespace Battle.View.Player
             _classViewController = gameObject.AddComponent<BattlePlayerCharacterClassNoneViewController>();
         }
 
+        /// <summary>
+        /// Private method that forwards the parameter event to every shield view controller bound to this character view controller.
+        /// </summary>
+        ///
+        /// <param name="e">Shield take damage event that needs to be forwarded.</param>
         private void ForwardShieldEvent(EventBattleShieldTakeDamage e)
         {
             foreach (var shield in _playerShieldViewControllers.Values)
