@@ -138,6 +138,11 @@ namespace Battle.QSimulation.Game
         {
             QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
 
+            if (_updatePlayState)
+            {
+                f.Events.BattleInPlayStateUpdate(true);
+            }
+
             return entityList[id];
         }
 
@@ -158,6 +163,11 @@ namespace Battle.QSimulation.Game
         public static EntityRef Get(Frame f, BattleEntityID id, int offset)
         {
             QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
+
+            if (_updatePlayState)
+            {
+                f.Events.BattleInPlayStateUpdate(true);
+            }
 
             return entityList[id + offset];
         }
@@ -204,6 +214,8 @@ namespace Battle.QSimulation.Game
             Return(f, entityManagerData, entity, (BattleEntityID)(id + offset));
         }
 
+        private static bool _updatePlayState;
+
         /// <summary>
         /// Private method that handles entity return logic. Used by the public
         /// <see cref="BattleEntityManager.Return(Frame, BattleEntityID)">Return(Frame, BattleEntityID)</see>
@@ -224,6 +236,7 @@ namespace Battle.QSimulation.Game
             BattleGridPosition entityGridPosition = entityManagerData->EntityOffscreenPositionOffset;
             entityGridPosition.Row -= id * entityManagerData->EntitySpacing;
             f.Unsafe.GetPointer<Transform2D>(entity)->Teleport(f, BattleGridManager.GridPositionToWorldPosition(entityGridPosition));
+            f.Events.BattleInPlayStateUpdate(false);
         }
 
         /// <summary>
