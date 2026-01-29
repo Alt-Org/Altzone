@@ -9,6 +9,9 @@ using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
 
+using Google.Play.Common;
+using Google.Play.AppUpdate;
+
 namespace MenuUi.Scripts.Loader
 {
     public static partial class SignalBus
@@ -42,13 +45,13 @@ namespace MenuUi.Scripts.Loader
         {
             Debug.Log("start");
             //_introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>().loopPointReached += CheckOver;
-            SignalBus.OnVideoEnd += LoadHandler;
+            SignalBus.OnVideoEnd += CheckVersion;
             EnhancedTouchSupport.Enable();
         }
 
         private void OnDisable()
         {
-            SignalBus.OnVideoEnd -= LoadHandler;
+            SignalBus.OnVideoEnd -= CheckVersion;
         }
 
         private void Update()
@@ -59,7 +62,7 @@ namespace MenuUi.Scripts.Loader
                 {
                     //_introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>().loopPointReached += CheckOver;
                     if (Application.platform is RuntimePlatform.WebGLPlayer)
-                        LoadHandler();
+                        CheckVersion();
                     else
                     {
                         _videoPlaying = true;
@@ -68,9 +71,18 @@ namespace MenuUi.Scripts.Loader
                 }
                 else
                 {
-                    LoadHandler();
+                    CheckVersion();
                 }
             }
+        }
+
+        private void CheckVersion()
+        {
+#if UNITY_ANDROID && !UNITY_EDITOR
+            StartCoroutine(AndroidVersionCheck());
+#else
+            LoadHandler();
+#endif
         }
 
         private void LoadHandler()
@@ -113,6 +125,42 @@ namespace MenuUi.Scripts.Loader
             windowManager.ShowWindow(_mainWindow);
             Debug.Log("exit");*/
         }
+#if UNITY_ANDROID
+        private IEnumerator AndroidVersionCheck()
+        {
+            AppUpdateManager appUpdateManager = new AppUpdateManager();
+
+            PlayAsyncOperation<AppUpdateInfo, AppUpdateErrorCode> appUpdateInfoOperation = appUpdateManager.GetAppUpdateInfo();
+
+            // Wait until the asynchronous operation completes.
+            yield return appUpdateInfoOperation;
+
+            if (appUpdateInfoOperation.IsSuccessful)
+            {
+                var appUpdateInfoResult = appUpdateInfoOperation.GetResult();
+                // Check AppUpdateInfo's UpdateAvailability, UpdatePriority,
+                // IsUpdateTypeAllowed(), ... and decide whether to ask the user
+                // to start an in-app update.
+                Debug.LogWarning("Test: " + appUpdateInfoResult.UpdateAvailability);
+                if (appUpdateInfoResult.UpdateAvailability == UpdateAvailability.UpdateAvailable)
+                {
+                    var appUpdateOptions = AppUpdateOptions.ImmediateAppUpdateOptions();
+                    var startUpdateRequest = appUpdateManager.StartUpdate(
+                  // The result returned by PlayAsyncOperation.GetResult().
+                  appUpdateInfoResult,
+                  // The AppUpdateOptions created defining the requested in-app update
+                  // and its parameters.
+                  appUpdateOptions);
+                    yield return startUpdateRequest;
+                }
+                    LoadHandler();
+            }
+            else
+            {
+                // Log appUpdateInfoOperation.Error.
+            }
+        }
+#endif
 
     }
 }
