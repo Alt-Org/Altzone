@@ -45,13 +45,13 @@ namespace MenuUi.Scripts.Loader
         {
             Debug.Log("start");
             //_introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>().loopPointReached += CheckOver;
-            SignalBus.OnVideoEnd += CheckVersion;
+            SignalBus.OnVideoEnd += LoadHandler;
             EnhancedTouchSupport.Enable();
         }
 
         private void OnDisable()
         {
-            SignalBus.OnVideoEnd -= CheckVersion;
+            SignalBus.OnVideoEnd -= LoadHandler;
         }
 
         private void Update()
@@ -62,7 +62,7 @@ namespace MenuUi.Scripts.Loader
                 {
                     //_introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>().loopPointReached += CheckOver;
                     if (Application.platform is RuntimePlatform.WebGLPlayer)
-                        CheckVersion();
+                        LoadHandler();
                     else
                     {
                         _videoPlaying = true;
@@ -71,12 +71,10 @@ namespace MenuUi.Scripts.Loader
                 }
                 else
                 {
-                    CheckVersion();
+                    LoadHandler();
                 }
             }
         }
-
-        private void CheckVersion() => StartCoroutine(CheckVersionCoroutine());
 
         private IEnumerator CheckVersionCoroutine()
         {
@@ -96,7 +94,7 @@ namespace MenuUi.Scripts.Loader
                 checkFinished = true;
             }));
             yield return new WaitUntil(() => checkFinished);
-            LoadHandler();
+            yield return InitializeDataStore();
 #endif
         }
 
@@ -104,7 +102,7 @@ namespace MenuUi.Scripts.Loader
         {
             _videoEnded = true;
             _videoPlaying = false;
-            StartCoroutine(InitializeDataStore());
+            StartCoroutine(CheckVersionCoroutine());
             //OpenLogIn();
         }
 
