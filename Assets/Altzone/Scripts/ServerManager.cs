@@ -2238,5 +2238,41 @@ public class ServerManager : MonoBehaviour
     }
     #endregion
 
+    public IEnumerator GetAllowedVersion(Action<bool, int> callback)
+    {
+        StartCoroutine(WebRequests.Get(SERVERADDRESS + "metadata/game/", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                string minVersion = result["data"]["Object"]["minBuildVersion"].ToString();
+                if(int.TryParse(minVersion, out int requiredVersion))
+                {
+                    if(requiredVersion > ApplicationController.VersionNumber)
+                    {
+                        if (callback != null)
+                            callback(false, requiredVersion);
+                    }
+                }
+                else
+                {
+                    if (callback != null)
+                        callback(false, 0);
+                }
+
+                if (callback != null)
+                    callback(true, requiredVersion);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false, 0);
+            }
+        }));
+
+        yield break;
+    }
+
     #endregion
 }
