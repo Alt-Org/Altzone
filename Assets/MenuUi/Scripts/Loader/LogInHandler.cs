@@ -45,7 +45,7 @@ namespace MenuUi.Scripts.Loader
             _loginSuccess.OnLogInPanelReturn += CloseLogInScreen;
             _changeAccountHandler.OnChangeAccountEvent += ChangeAccount;
             _loadInfoController.OnMoveToMain += MoveToMain;
-            CheckLanguage();
+            WaitVersionCheck();
         }
 
         private void OnDisable()
@@ -57,6 +57,12 @@ namespace MenuUi.Scripts.Loader
             _loginSuccess.OnLogInPanelReturn -= CloseLogInScreen;
             _changeAccountHandler.OnChangeAccountEvent -= ChangeAccount;
             _loadInfoController.OnMoveToMain -= MoveToMain;
+        }
+
+        private IEnumerator WaitVersionCheck()
+        {
+            yield return new WaitUntil(() => GameLoader.Instance.VersionCheckFinished);
+            CheckLanguage();
         }
 
         private void CheckLanguage()
