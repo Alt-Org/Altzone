@@ -83,6 +83,30 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleCompoundEntityComponent))]
+  public unsafe class BattleCompoundEntityComponentPrototype : ComponentPrototype<Quantum.BattleCompoundEntityComponent> {
+    [FreeOnComponentRemoved()]
+    [DynamicCollectionAttribute()]
+    public Quantum.Prototypes.BattleEntityLinkPrototype[] LinkedEntities = {};
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.BattleCompoundEntityComponent component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.BattleCompoundEntityComponent result, in PrototypeMaterializationContext context = default) {
+        if (this.LinkedEntities.Length == 0) {
+          result.LinkedEntities = default;
+        } else {
+          var list = frame.AllocateList(out result.LinkedEntities, this.LinkedEntities.Length);
+          for (int i = 0; i < this.LinkedEntities.Length; ++i) {
+            Quantum.BattleEntityLink tmp = default;
+            this.LinkedEntities[i].Materialize(frame, ref tmp, in context);
+            list.Add(tmp);
+          }
+        }
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattleDiamondCounterQSingleton))]
   public unsafe partial class BattleDiamondCounterQSingletonPrototype : ComponentPrototype<Quantum.BattleDiamondCounterQSingleton> {
     public Int32 AlphaDiamonds;
@@ -128,10 +152,22 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattleEntityID))]
   public unsafe partial class BattleEntityIDPrototype : StructPrototype {
     public Int32 Int;
+    public QBoolean IsCompound;
     partial void MaterializeUser(Frame frame, ref Quantum.BattleEntityID result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.BattleEntityID result, in PrototypeMaterializationContext context = default) {
         result.Int = this.Int;
+        result.IsCompound = this.IsCompound;
         MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleEntityLink))]
+  public unsafe class BattleEntityLinkPrototype : StructPrototype {
+    public MapEntityId ERef;
+    public FPVector2 Offset;
+    public void Materialize(Frame frame, ref Quantum.BattleEntityLink result, in PrototypeMaterializationContext context = default) {
+        PrototypeValidator.FindMapEntity(this.ERef, in context, out result.ERef);
+        result.Offset = this.Offset;
     }
   }
   [System.SerializableAttribute()]
@@ -277,7 +313,7 @@ namespace Quantum.Prototypes {
     public MapEntityId CharacterHitboxEntity;
     public Int32 ShieldCount;
     public Int32 AttachedShieldNumber;
-    public Quantum.Prototypes.BattlePlayerEntityRefPrototype AttachedShield;
+    public Quantum.Prototypes.BattlePlayerShieldEntityRefPrototype AttachedShield;
     public QBoolean DisableRotation;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
     public FP MovementCooldownSec;
