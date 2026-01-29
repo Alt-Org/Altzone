@@ -90,7 +90,7 @@ namespace MenuUi.Scripts.Loader
             {
                 if(!pass)
                 {
-                    if(version != 0) Debug.LogError($"Version Check Failed. Unable to fetch version data.");
+                    if(version == 0) Debug.LogError($"Version Check Failed. Unable to fetch version data.");
                     else Debug.LogError($"Version Check Failed. {version} required, but current version is {ApplicationController.VersionNumber}.");
                 }
                 checkFinished = true;
