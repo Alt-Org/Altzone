@@ -7,10 +7,11 @@
 /// Handles stone characters visual functionality.
 
 // Unity usings
-using UnityEngine;
-
+using Battle.QSimulation;
 // Quantum usings
 using Quantum;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Battle.View
 {
@@ -47,8 +48,8 @@ namespace Battle.View
 
         /// <summary>[SerializeField] Animators for the stone characters.</summary>
         /// @ref BattleStoneCharacterViewController-SerializeFields
-        [SerializeField] private Animator teamAlphaAnimator;
-        [SerializeField] private Animator teamBetaAnimator;
+        [SerializeField] private Animator _teamAlphaAnimator;
+        [SerializeField] private Animator _teamBetaAnimator;
 
         /// @}
 
@@ -96,14 +97,14 @@ namespace Battle.View
         public void PlayHitAnimation(BattleTeamNumber team, BattleEmotionState emotion)
         {
             Animator animator = team == BattleTeamNumber.TeamAlpha
-                ? teamAlphaAnimator.GetComponent<Animator>()
-                : teamBetaAnimator.GetComponent<Animator>();
+                ? _teamAlphaAnimator
+                : _teamBetaAnimator;
 
             animator.SetInteger("BattleTeamNumber", (int)team);
             animator.SetInteger("AnimationIndex", (int)emotion);
-            animator.SetTrigger("Hit");
+            animator.SetTrigger("Play");
 
-            Debug.Log($" PlayHitAnimation log: BattleTeamNumber {team} and AnimationIndex: {emotion}");
+            BattleDebugLogger.LogFormat(nameof(BattleStoneCharacterViewController), "Playing Hit Animation: {0}, Type: {1}", team, emotion);
         }
     }
 }
