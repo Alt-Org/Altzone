@@ -30,7 +30,7 @@ component BattlePlayerDataQComponent
 
     int ShieldCount;
     int AttachedShieldNumber;
-    BattlePlayerEntityRef AttachedShield;
+    BattlePlayerShieldEntityRef AttachedShield;
 
     bool DisableRotation;
     FrameTimer DamageCooldown;

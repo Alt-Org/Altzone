@@ -51,6 +51,32 @@ namespace Quantum.Prototypes.Unity {
   #endif //;
   
   [System.SerializableAttribute()]
+  public unsafe partial class BattleCompoundEntityComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattleCompoundEntityComponentPrototype> {
+    [FreeOnComponentRemoved()]
+    [DynamicCollectionAttribute()]
+    public Quantum.Prototypes.Unity.BattleEntityLinkPrototype[] LinkedEntities = {};
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattleCompoundEntityComponentPrototype prototype);
+    public override Quantum.Prototypes.BattleCompoundEntityComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.BattleCompoundEntityComponentPrototype();
+      converter.Convert(this.LinkedEntities, out result.LinkedEntities);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
+  public unsafe partial class BattleEntityLinkPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattleEntityLinkPrototype> {
+    public Quantum.QuantumEntityPrototype ERef;
+    public FPVector2 Offset;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattleEntityLinkPrototype prototype);
+    public override Quantum.Prototypes.BattleEntityLinkPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.BattleEntityLinkPrototype();
+      converter.Convert(this.ERef, out result.ERef);
+      converter.Convert(this.Offset, out result.Offset);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
   public unsafe partial class BattleEntityManagerDataQSingletonPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattleEntityManagerDataQSingletonPrototype> {
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
@@ -112,7 +138,7 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.QuantumEntityPrototype CharacterHitboxEntity;
     public Int32 ShieldCount;
     public Int32 AttachedShieldNumber;
-    public Quantum.Prototypes.Unity.BattlePlayerEntityRefPrototype AttachedShield;
+    public Quantum.Prototypes.Unity.BattlePlayerShieldEntityRefPrototype AttachedShield;
     public QBoolean DisableRotation;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
     public FP MovementCooldownSec;
