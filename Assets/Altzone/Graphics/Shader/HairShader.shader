@@ -59,6 +59,8 @@ Shader "Unlit/HairShader"
                 fixed4 mask = tex2D(_MaskTex, i.uv);
                 fixed4 body = tex2D(_BodyTex, i.uv);
 
+                mask.rgb *= mask.a;
+
                 fixed3 hairColored = hair.rgb;
                 hairColored = lerp(hairColored, hairColored * _SkinColor.rgb, mask.r);
                 hairColored = lerp(hairColored, hairColored * _SelectedColor.rgb, mask.g);

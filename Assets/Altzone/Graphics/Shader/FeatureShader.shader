@@ -56,6 +56,8 @@ Shader "Unlit/FeatureShader"
                 fixed4 main = tex2D(_MainTex, i.uv);
                 fixed4 mask = tex2D(_MaskTex, i.uv);
 
+                mask.rgb *= mask.a;
+
                 fixed3 result = main.rgb;
 
                 result = lerp(result, result * _SkinColor.rgb, mask.r);
