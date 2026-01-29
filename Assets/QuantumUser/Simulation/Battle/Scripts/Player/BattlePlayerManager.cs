@@ -221,7 +221,7 @@ namespace Battle.QSimulation.Player
                                                            ? f.GetPlayerData(playerHandle.PlayerRef).Characters
                                                            : BattlePlayerBotController.GetBotCharacters(f);
 
-                EntityRef[] playerCharacterEntityArray = new EntityRef[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
+                BattleEntityManager.CompoundEntityTemplate[] playerCharacterEntityArray = new BattleEntityManager.CompoundEntityTemplate[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
 
                 // create playerEntity for each character
                 {
@@ -264,15 +264,16 @@ namespace Battle.QSimulation.Player
                     //} set player common temp variables
 
                     //{ player variables
-                    BattlePlayerEntityRef      playerCharacterEntity;
-                    int                        playerCharacterShieldCount;
-                    BattlePlayerDataQComponent playerData;
+                    BattlePlayerEntityRef                      playerCharacterEntity;
+                    BattleEntityManager.CompoundEntityTemplate playerCharacterEntityTemplate;
+                    int                                        playerCharacterShieldCount;
+                    BattlePlayerDataQComponent                 playerData;
                     // player - hitBox variables
-                    EntityRef                    playerHitboxCharacterEntity = EntityRef.None;
-                    BattlePlayerHitboxQComponent playerHitbox;
-                    PhysicsCollider2D            playerHitboxCollider;
+                    EntityRef                                  playerHitboxCharacterEntity = EntityRef.None;
+                    BattlePlayerHitboxQComponent               playerHitbox;
+                    PhysicsCollider2D                          playerHitboxCollider;
                     // player - hitBox - collisionTrigger variables
-                    BattleCollisionTriggerQComponent collisionTrigger;
+                    BattleCollisionTriggerQComponent           collisionTrigger;
                     //} player variables
 
                     for (int playerCharacterNumber = 0; playerCharacterNumber < playerCharacterEntityArray.Length; playerCharacterNumber++)
@@ -314,6 +315,8 @@ namespace Battle.QSimulation.Player
 
                         // create entity
                         playerCharacterEntity = BattlePlayerEntityRef.Create(f, playerCharacterEntityPrototype);
+
+                        playerCharacterEntityTemplate = BattleEntityManager.CompoundEntityTemplate.Create(playerCharacterEntity, 1);
 
                         // get template data
                         playerCharacterDataTemplate                    = f.Unsafe.GetPointer<BattlePlayerDataTemplateQComponent>(playerCharacterEntity);
@@ -408,7 +411,8 @@ namespace Battle.QSimulation.Player
                         playerCharacterShieldCount = BattlePlayerShieldManager.CreateShields(f, playerSlot, playerCharacterNumber, playerCharacterId, playerCharacterEntity);
 
                         // save entity
-                        playerCharacterEntityArray[playerCharacterNumber] = playerCharacterEntity;
+                        playerCharacterEntityTemplate.Link(playerHitboxCharacterEntity, new FPVector2(0, 0));
+                        playerCharacterEntityArray[playerCharacterNumber] = playerCharacterEntityTemplate;
 
                         //{ initialize playerData
 
@@ -436,7 +440,7 @@ namespace Battle.QSimulation.Player
 
                             ShieldCount           = playerCharacterShieldCount,
                             AttachedShieldNumber  = 0,
-                            AttachedShield        = (BattlePlayerEntityRef)BattlePlayerShieldManager.GetShieldEntity(f, playerSlot, playerCharacterNumber, 0),
+                            AttachedShield        = (BattlePlayerShieldEntityRef)BattlePlayerShieldManager.GetShieldEntity(f, playerSlot, playerCharacterNumber, 0),
 
                             DisableRotation       = playerCharacterDataTemplate->DisableRotation,
 
@@ -487,17 +491,12 @@ namespace Battle.QSimulation.Player
                         // initialize view
                         f.Events.BattlePlayerCharacterViewInit(playerCharacterEntity, playerSlot, playerCharacterId, playerClass, BattleGridManager.GridScaleFactor);
 
-                        // teleport hitboxes
-                        Transform2D* characterTransform = playerCharacterEntity.GetTransform(f);
-                        Transform2D* shieldTransform = playerDataPtr->AttachedShield.GetTransform(f);
-                        BattlePlayerMovementController.Teleport(f, playerDataPtr, characterTransform, shieldTransform, characterTransform->Position, playerDataPtr->RotationBase);
-
                         // set playerManagerData for player character
                         playerHandle.SetCharacterState(playerCharacterNumber, playerData.CurrentHp > 0 ? BattlePlayerCharacterState.Alive : BattlePlayerCharacterState.Dead);
                     }
                 }
 
-                BattleEntityID characterEntityGroupID = BattleEntityManager.Register(f, playerCharacterEntityArray);
+                BattleEntityID characterEntityGroupID = BattleEntityManager.RegisterCompound(f, playerCharacterEntityArray);
 
                 // set playerManagerData for player
                 playerHandle.PlayState = BattlePlayerPlayState.OutOfPlay;
@@ -625,7 +624,7 @@ namespace Battle.QSimulation.Player
 
             if (playerHandle.PlayState.IsInPlay())
             {
-                worldPosition = f.Unsafe.GetPointer<Transform2D>(BattleEntityManager.Get(f, playerHandle.CharacterEntityGroupID, characterNumber))->Position;
+                worldPosition = f.Unsafe.GetPointer<Transform2D>(BattleEntityManager.Get(f, playerHandle.CharacterEntityGroupID, playerHandle.SelectedCharacterNumber))->Position;
                 DespawnPlayer(f, playerHandle);
             }
             else
@@ -637,10 +636,7 @@ namespace Battle.QSimulation.Player
 
             playerData->PlayerRef = playerHandle.PlayerRef;
 
-            BattlePlayerMovementController.Teleport(f, playerData, playerTransform, shieldTransform,
-                worldPosition,
-                playerData->RotationBase
-            );
+            BattlePlayerMovementController.Teleport(f, playerData, character, worldPosition);
 
             playerData->TargetPosition = worldPosition;
 
@@ -688,11 +684,6 @@ namespace Battle.QSimulation.Player
             BattleEntityManager.Return(f, playerHandle.CharacterEntityGroupID, playerHandle.SelectedCharacterNumber);
 
             BattlePlayerShieldManager.DespawnShield(f, playerData->Slot, playerHandle.SelectedCharacterNumber, playerData->AttachedShieldNumber);
-
-            // teleport hitboxes
-            Transform2D* characterTransform = f.Unsafe.GetPointer<Transform2D>(BattleEntityManager.Get(f, playerHandle.CharacterEntityGroupID, playerHandle.SelectedCharacterNumber));
-            Transform2D* shieldTransform = playerData->AttachedShield.GetTransform(f);
-            BattlePlayerMovementController.Teleport(f, playerData, characterTransform, shieldTransform, characterTransform->Position, playerData->RotationBase);
 
             playerData->TargetPosition = selectedCharacter.GetTransform(f)->Position;
 
