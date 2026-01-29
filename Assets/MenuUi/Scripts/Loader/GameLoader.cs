@@ -76,11 +76,16 @@ namespace MenuUi.Scripts.Loader
             }
         }
 
-        private void CheckVersion()
+        private void CheckVersion() => StartCoroutine(CheckVersionCoroutine());
+
+        private IEnumerator CheckVersionCoroutine()
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            StartCoroutine(AndroidVersionCheck());
+            bool checkFinished = false;
+            StartCoroutine(AndroidVersionCheck.VersionCheck(c=> checkFinished=c));
+            yield return new WaitUntil(()=> checkFinished);
 #else
+            yield return null;
             LoadHandler();
 #endif
         }
@@ -125,42 +130,5 @@ namespace MenuUi.Scripts.Loader
             windowManager.ShowWindow(_mainWindow);
             Debug.Log("exit");*/
         }
-#if UNITY_ANDROID
-        private IEnumerator AndroidVersionCheck()
-        {
-            AppUpdateManager appUpdateManager = new AppUpdateManager();
-
-            PlayAsyncOperation<AppUpdateInfo, AppUpdateErrorCode> appUpdateInfoOperation = appUpdateManager.GetAppUpdateInfo();
-
-            // Wait until the asynchronous operation completes.
-            yield return appUpdateInfoOperation;
-
-            if (appUpdateInfoOperation.IsSuccessful)
-            {
-                var appUpdateInfoResult = appUpdateInfoOperation.GetResult();
-                // Check AppUpdateInfo's UpdateAvailability, UpdatePriority,
-                // IsUpdateTypeAllowed(), ... and decide whether to ask the user
-                // to start an in-app update.
-                Debug.LogWarning("Test: " + appUpdateInfoResult.UpdateAvailability);
-                if (appUpdateInfoResult.UpdateAvailability == UpdateAvailability.UpdateAvailable)
-                {
-                    var appUpdateOptions = AppUpdateOptions.ImmediateAppUpdateOptions();
-                    var startUpdateRequest = appUpdateManager.StartUpdate(
-                  // The result returned by PlayAsyncOperation.GetResult().
-                  appUpdateInfoResult,
-                  // The AppUpdateOptions created defining the requested in-app update
-                  // and its parameters.
-                  appUpdateOptions);
-                    yield return startUpdateRequest;
-                }
-                    LoadHandler();
-            }
-            else
-            {
-                // Log appUpdateInfoOperation.Error.
-            }
-        }
-#endif
-
     }
 }
