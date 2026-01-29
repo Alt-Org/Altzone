@@ -80,12 +80,22 @@ namespace MenuUi.Scripts.Loader
 
         private IEnumerator CheckVersionCoroutine()
         {
-#if UNITY_ANDROID && !UNITY_EDITOR
             bool checkFinished = false;
+#if UNITY_ANDROID && !UNITY_EDITOR
             StartCoroutine(AndroidVersionCheck.VersionCheck(c=> checkFinished=c));
             yield return new WaitUntil(()=> checkFinished);
 #else
-            yield return null;
+            checkFinished = false;
+            StartCoroutine(ServerManager.Instance.GetAllowedVersion((pass, version) =>
+            {
+                if(!pass)
+                {
+                    if(version != 0) Debug.LogError($"Version Check Failed. Unable to fetch version data.");
+                    else Debug.LogError($"Version Check Failed. {version} required, but current version is {ApplicationController.VersionNumber}.");
+                }
+                checkFinished = true;
+            }));
+            yield return new WaitUntil(() => checkFinished);
             LoadHandler();
 #endif
         }
