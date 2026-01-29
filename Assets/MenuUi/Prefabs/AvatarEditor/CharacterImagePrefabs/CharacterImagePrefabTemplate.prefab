@@ -441,6 +441,8 @@ MonoBehaviour:
   _mainBody: {fileID: 7581661894801124856}
   _mainHands: {fileID: 4426871691343945250}
   _mainFeet: {fileID: 7138201761903138113}
+  _featureMaterial: {fileID: 2100000, guid: 4bcaa099073478344b3e439fc1760383, type: 2}
+  _hairMaterial: {fileID: 2100000, guid: daee816b533a7014da8ac16efe87b7d3, type: 2}
 --- !u!114 &6224537532541717207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -456,6 +458,8 @@ MonoBehaviour:
   _avatarVisuals: {fileID: 11400000, guid: 5924f2967fcfeb0469785ea0b5f3d2b2, type: 2}
   _characterHandle: {fileID: 3956092624877533775}
   _useOwnAvatarVisuals: 1
+  _avatarPartsReference: {fileID: 11400000, guid: 671ccbc5ba5e0df42acde4b71995e434,
+    type: 2}
 --- !u!1 &3915003743926064155
 GameObject:
   m_ObjectHideFlags: 0
@@ -588,7 +592,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 69fe542f9f29ed94092d425d35c035dd, type: 2}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -664,7 +668,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 43ef75c6d5a0b7b4f8443cd0647a01a0, type: 2}
+  m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
