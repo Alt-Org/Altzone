@@ -440,7 +440,7 @@ namespace Battle.QSimulation.Player
             }
 
             BattlePlayerClassManager.OnUpdate(f, playerHandle, playerData, playerEntity);
-            if (updateMovement) BattlePlayerMovementController.UpdateMovement(f, playerData, playerTransform, input);
+            if (updateMovement) BattlePlayerMovementController.UpdateMovement(f, playerData, playerEntity, playerTransform, input);
         }
 
         private void AbilityActivate(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* playerTransform)
