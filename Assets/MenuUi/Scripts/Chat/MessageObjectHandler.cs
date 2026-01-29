@@ -96,6 +96,8 @@ public class MessageObjectHandler : MonoBehaviour
         _time.text = $"{message.Timestamp.Hour}:{message.Timestamp.Minute:D2}";
         _date.text = $"{message.Timestamp.Day}/{message.Timestamp.Month}/{message.Timestamp.Year}";
 
+
+        ///Activates and Deactivates the "AddChatMessageReactions" as it has "Message Reactions Handler" that is needed to be on
         ReactionObject.gameObject.SetActive(true);
         foreach (var reactionData in message.Reactions)
         {
@@ -146,11 +148,9 @@ public class MessageObjectHandler : MonoBehaviour
     public void ReactionChatCall(ServerReactions EmojiId)
     {
 
-        //Gets the set data we need to get
+        //Gets the set data we need to get to import saved reactions
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
 
-        ///Activates and Deactivates the "AddChatMessageReactions" as it has "Message Reactions Handler" that is needed to be on
-        
         ChildsScript.AddReaction(_id, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji));
         
     }

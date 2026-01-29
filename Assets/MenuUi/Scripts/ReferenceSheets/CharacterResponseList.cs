@@ -13,6 +13,8 @@ namespace Altzone.Scripts.ReferenceSheets
     {
         [SerializeField] private List<ChatResponse> _chatResponseInfo;
 
+        [SerializeField] private List<ChatResponse> _chatResponseReactionInfo;
+
         [SerializeField] private ChatResponse _defaultList;
 
         [SerializeField] private List<MottoOptions> _mottoOptionsInfo;
@@ -20,36 +22,41 @@ namespace Altzone.Scripts.ReferenceSheets
         public List<ChatResponse> ChatResponseInfo => _chatResponseInfo; // Public accessor for _chatResponseInfo
         public List<MottoOptions> MottoOptionsInfo => _mottoOptionsInfo; // Public accessor for _mottoOptionsInfo
 
-        public List<string> GetChatResponses(Mood mood)
+        public List<string> GetChatResponses(CharacterClassType classType)
         {
 
-             List<string> list = null;
-            switch(mood)
+            List<string> list = _chatResponseInfo.FirstOrDefault(x => x.ClassType == classType)?.List;
+
+
+
+
+            /*switch(mood)
             {
+                //Checks which Mood been selected and imports it
                 case Mood.Neutral:
                     list = _defaultList.List;
                     break;
 
                 case Mood.Happy:
-                    list = _chatResponseInfo[0].List;
+                    list = _ChatResponseReactionInfo[0].List;
                     break;
 
                 case Mood.Sad:
-                    list = _chatResponseInfo[1].List;
+                    list = _ChatResponseReactionInfo[1].List;
                     break;
 
                 case Mood.Angry:
-                    list = _chatResponseInfo[2].List;
+                    list = _ChatResponseReactionInfo[2].List;
                     break;
 
                 case Mood.Love:
-                    list = _chatResponseInfo[3].List;
+                    list = _ChatResponseReactionInfo[3].List;
                     break;
 
                 case Mood.Wink:
-                    list = _chatResponseInfo[4].List;
+                    list = _ChatResponseReactionInfo[4].List;
                     break;
-            }
+            }*/
 
             if (list == null)
                 return _defaultList.List; //_defaultList.List;

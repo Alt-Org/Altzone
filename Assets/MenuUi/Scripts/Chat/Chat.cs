@@ -158,17 +158,19 @@ public class Chat : AltMonoBehaviour
     private void AddResponses()
     {
         //Clears the current Responses
-        if(_responsesData.transform.childCount > 0)
+        /*if(_responsesData.transform.childCount > 0)
          foreach (Transform child in _responsesData.transform)
          {
              
              Destroy(child.gameObject);
-         }
+         }*/
 
         Debug.LogWarning("FIND ME THE MOODS VERSIONS");
         StartCoroutine(GetPlayerData(data =>
         {
-            List<string> messageList = _chatResponseList.GetChatResponses(currentMood);
+            //List<string> messageList = _chatResponseList.GetChatResponses(currentMood);
+
+            List<string> messageList = _chatResponseList.GetChatResponses((CharacterClassType)((data.SelectedCharacterId / 100) * 100));
             foreach (string message in messageList)
             {
                 GameObject messageObject = Instantiate(_quickMessagePrefab, _chatResponseContent.transform);
