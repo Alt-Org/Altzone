@@ -100,7 +100,6 @@ namespace Battle.View
                 ? _teamAlphaAnimator
                 : _teamBetaAnimator;
 
-            animator.SetInteger("BattleTeamNumber", (int)team);
             animator.SetInteger("AnimationIndex", (int)emotion);
             animator.SetTrigger("Play");
 
