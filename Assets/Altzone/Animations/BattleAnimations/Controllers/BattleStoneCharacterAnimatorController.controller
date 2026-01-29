@@ -12,7 +12,7 @@ AnimatorStateTransition:
     m_ConditionEvent: BattleTeamNumber
     m_EventTreshold: 1
   - m_ConditionMode: 1
-    m_ConditionEvent: Hit
+    m_ConditionEvent: Play
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 7712374860154046647}
   m_DstState: {fileID: 0}
@@ -592,7 +592,7 @@ AnimatorStateTransition:
     m_ConditionEvent: BattleTeamNumber
     m_EventTreshold: 2
   - m_ConditionMode: 1
-    m_ConditionEvent: Hit
+    m_ConditionEvent: Play
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 2580632107626674907}
   m_DstState: {fileID: 0}
@@ -651,7 +651,7 @@ AnimatorController:
     m_DefaultInt: -1
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: Hit
+  - m_Name: Play
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
