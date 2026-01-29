@@ -14,12 +14,14 @@ namespace Altzone.Scripts.AvatarPartsInfo
 
         [Header("Visual Assets")]
         [SerializeField] private Sprite _avatarImage;
+        [SerializeField] private Sprite _maskImage;
         [SerializeField] private Sprite _iconImage;
 
         public string Name { get => _name; }
         public string Id { get => _id; }
         public string VisibleName { get => _visibleName; }
         public Sprite AvatarImage { get => _avatarImage; }
+        public Sprite MaskImage { get => _maskImage; }
         public Sprite IconImage { get => _iconImage; }
 
         public bool IsValid => !string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Id);

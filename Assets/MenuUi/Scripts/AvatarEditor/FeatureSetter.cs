@@ -1,5 +1,7 @@
 using System;
 using Altzone.Scripts.AvatarPartsInfo;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ReferenceSheets;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
@@ -11,15 +13,18 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private AvatarEditorController _avatarEditorController;
         [SerializeField] private AvatarEditorCharacterHandle _avatarEditorCharacterHandle;
         [SerializeField] private AvatarPartsReference _avatarPartsReference;
+        [SerializeField] private AvatarVisualDataScriptableObject _avatarVisuals;
 
         public void SetFeature(AvatarPartInfo feature, AvatarPiece slot)
         {
             _avatarEditorController.PlayerAvatar.SetPart(slot, feature.Id);
-            _avatarEditorCharacterHandle.SetMainCharacterImage(slot, feature.AvatarImage);
+            _avatarEditorCharacterHandle.SetMainCharacterImage(slot, feature, _avatarVisuals.GetColor(slot));
         }
 
         public void SetLoadedFeatures(PlayerAvatar avatar)
         {
+            ColorUtility.TryParseHtmlString(avatar.SkinColor, out Color skinColor);
+
             foreach (AvatarPiece slot in Enum.GetValues(typeof(AvatarPiece)))
             {
                 string partId = avatar.GetPartId(slot);
@@ -33,16 +38,19 @@ namespace MenuUi.Scripts.AvatarEditor
 
                 if (avatarPart != null)
                 {
-                    _avatarEditorCharacterHandle.SetMainCharacterImage(slot, avatarPart.AvatarImage);
+                    ColorUtility.TryParseHtmlString(avatar.GetPartColor(slot), out Color color);
+                    _avatarEditorCharacterHandle.SetMainCharacterImage(slot, avatarPart, color);
                 }
             }
+
+            _avatarEditorCharacterHandle.SetSkinColor(skinColor);
         }
 
-        public Sprite GetCurrentlySelectedFeatureSprite(AvatarPiece pieceSlot)
+        public AvatarPartInfo GetCurrentlySelectedFeaturePartInfo(AvatarPiece pieceSlot)
         {
             string partId = _avatarEditorController.PlayerAvatar.GetPartId(pieceSlot);
-            Sprite partSprite = _avatarPartsReference.GetAvatarPartById(partId).AvatarImage;
-            return partSprite;
+            AvatarPartInfo partInfo = _avatarPartsReference.GetAvatarPartById(partId);
+            return partInfo;
         }
     }
 }
