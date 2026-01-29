@@ -23,6 +23,9 @@ namespace Quantum
     {
         public static BattlePlayerShieldEntityRef None => default;
 
+        public static BattlePlayerShieldEntityRef Create(Frame f) => (BattlePlayerShieldEntityRef)f.Create();
+        public static BattlePlayerShieldEntityRef Create(Frame f, AssetRef<EntityPrototype> prototype) => (BattlePlayerShieldEntityRef)f.Create(prototype);
+
         public static implicit operator EntityRef(BattlePlayerShieldEntityRef battlePlayerShieldEntityRef) => battlePlayerShieldEntityRef.ERef;
 
         public static explicit operator BattlePlayerShieldEntityRef(EntityRef entityRef) => new BattlePlayerShieldEntityRef() { ERef = entityRef };
@@ -78,12 +81,13 @@ namespace Battle.QSimulation.Player
                 s_debugLogger.LogFormat(f, "({0}) Creating fallback shields for character ID {1}\n", playerSlot, playerCharacterId);
             }
 
-            EntityRef[] shieldEntities = new EntityRef[playerShieldEntityPrototypes.Length];
+            BattleEntityManager.CompoundEntityTemplate[] shieldEntities = new BattleEntityManager.CompoundEntityTemplate[playerShieldEntityPrototypes.Length];
 
             // create entities
             for (int shieldEntityIndex = 0; shieldEntityIndex < playerShieldEntityPrototypes.Length; shieldEntityIndex++)
             {
-                EntityRef playerShieldEntity = f.Create(playerShieldEntityPrototypes[shieldEntityIndex]);
+                BattlePlayerShieldEntityRef playerShieldEntity = BattlePlayerShieldEntityRef.Create(f, playerShieldEntityPrototypes[shieldEntityIndex]);
+                BattleEntityManager.CompoundEntityTemplate playerShieldEntityTemplate = BattleEntityManager.CompoundEntityTemplate.Create(playerShieldEntity, playerShieldEntityPrototypes.Length);
 
                 // get template data
                 BattlePlayerShieldDataTemplateQComponent* playerShieldDataTemplate = f.Unsafe.GetPointer<BattlePlayerShieldDataTemplateQComponent>(playerShieldEntity);
@@ -97,8 +101,6 @@ namespace Battle.QSimulation.Player
                     HitboxEntities = f.AllocateList<EntityRef>(),
                     IsActive       = true
                 };
-
-                QList<EntityRef> playerShieldHitboxEntities = f.ResolveList(playerShieldData.HitboxEntities);
 
                 //} initialize shield component
 
@@ -164,33 +166,20 @@ namespace Battle.QSimulation.Player
                     f.Add(playerShieldHitboxEntity, playerHitboxCollider);
                     f.Add(playerShieldHitboxEntity, collisionTrigger);
 
-                    playerShieldHitboxEntities.Add(playerShieldHitboxEntity);
+                    playerShieldEntityTemplate.Link(playerShieldHitboxEntity, new FPVector2(0, 0));
                 } // create shield hitbox entities
 
                 // initialize entity
                 f.Remove<BattlePlayerShieldDataTemplateQComponent>(playerShieldEntity);
                 f.Add(playerShieldEntity, playerShieldData);
 
-                // add entity to array
-                shieldEntities[shieldEntityIndex] = playerShieldEntity;
+                shieldEntities[shieldEntityIndex] = playerShieldEntityTemplate;
 
                 // initialize view
                 f.Events.BattlePlayerShieldViewInit(playerShieldEntity, playerCharacterEntity, playerSlot, BattleGridManager.GridScaleFactor);
             } // create entities
 
-            BattleEntityID shieldEntityGroupID = BattleEntityManager.Register(f, shieldEntities);
-
-            if (shieldEntities.Length > Constants.BATTLE_PLAYER_SHIELD_COUNT)
-            {
-                s_debugLogger.ErrorFormat(f, "({0}) Character number {1} has too many shield entities!\n" +
-                                          "Has: {2}\n" +
-                                          "Max allowed: {3}",
-                                          playerSlot,
-                                          playerCharacterNumber,
-                                          shieldEntities.Length,
-                                          Constants.BATTLE_PLAYER_SHIELD_COUNT
-                );
-            }
+            BattleEntityID shieldEntityGroupID = BattleEntityManager.RegisterCompound(f, shieldEntities);
 
             SetShieldEntityGroupID(f, playerSlot, playerCharacterNumber, shieldEntityGroupID);
 
