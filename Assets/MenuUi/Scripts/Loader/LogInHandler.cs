@@ -45,7 +45,7 @@ namespace MenuUi.Scripts.Loader
             _loginSuccess.OnLogInPanelReturn += CloseLogInScreen;
             _changeAccountHandler.OnChangeAccountEvent += ChangeAccount;
             _loadInfoController.OnMoveToMain += MoveToMain;
-            WaitVersionCheck();
+            StartCoroutine(WaitVersionCheck());
         }
 
         private void OnDisable()
@@ -61,7 +61,8 @@ namespace MenuUi.Scripts.Loader
 
         private IEnumerator WaitVersionCheck()
         {
-            yield return new WaitUntil(() => GameLoader.Instance.VersionCheckFinished);
+            _loadInfoController.Status = LogInStatus.VersionCheck;
+            yield return new WaitUntil(() => GameLoader.Instance.VersionCheckPassed.HasValue);
             CheckLanguage();
         }
 
