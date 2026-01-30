@@ -6,6 +6,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using MenuUi.Scripts.UIScaling;
 using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine.UI;
+using Altzone.Scripts.ModelV2;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -122,6 +123,15 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void SetCharacters(CustomCharacter[] selectedCharacters)
         {
+            for (int i = 0; i < _selectedCharacterSlots.Length; i++)
+            {
+                _selectedCharacterSlots[i].SelectedCharacter = null;
+
+                if (_selectedCharacterSlots[i].BattleView != null)
+                    _selectedCharacterSlots[i].BattleView.SetEmpty();
+
+            }
+
             // Going through every character slot in the gallery to see which ones are selected
             foreach (CharacterSlot slot in _galleryView.CharacterSlots)
             {
@@ -138,8 +148,18 @@ namespace MenuUi.Scripts.CharacterGallery
                     {
                         _selectedCharacterSlots[i].SelectedCharacter = slot.Character;
 
-                        slot.Character.transform.SetParent(_selectedCharacterSlots[i].transform, false);
-                        slot.Character.SetSelectedVisuals();
+                        if (_selectedCharacterSlots[i].BattleView != null)
+                        {
+                            var proto = PlayerCharacterPrototypes.GetCharacter(
+                                ((int)slot.Character.Id).ToString()
+                            );
+
+                            _selectedCharacterSlots[i].BattleView.SetInfo(
+                                proto.GalleryHeadImage,
+                                slot.Character.Id
+                            );
+                        }
+                        // Hide character from gallery
                         slot.gameObject.SetActive(false);
                     }
                 }
@@ -176,6 +196,10 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 targetSlot.SelectedCharacter = null;
 
+                // Clear battle-style visuals when removing old selection
+                if (targetSlot.BattleView != null)
+                    targetSlot.BattleView.SetEmpty();
+
                 if (_openedFromLoadout)
                 {
                     SignalBus.OnLoadoutDefenceCharacterChangedSignal(CharacterID.None, targetSlot.SlotIndex, _currentLoadoutIndex);
@@ -186,10 +210,17 @@ namespace MenuUi.Scripts.CharacterGallery
                 }
 
             }
-            characterSlot.Character.transform.SetParent(targetSlot.transform, false);
-            characterSlot.Character.SetSelectedVisuals();
+            //characterSlot.Character.transform.SetParent(targetSlot.transform, false);
+            //characterSlot.Character.SetSelectedVisuals();
             targetSlot.SelectedCharacter = characterSlot.Character;
             characterSlot.gameObject.SetActive(false);
+
+            // Update battle-style visuals for the new selection
+            if (targetSlot.BattleView != null)
+            {
+                var proto = PlayerCharacterPrototypes.GetCharacter(((int)characterSlot.Character.Id).ToString());
+                targetSlot.BattleView.SetInfo(proto.GalleryHeadImage, characterSlot.Character.Id);
+            }
 
             if (_openedFromLoadout)
             {
@@ -249,6 +280,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 else
                     _blinkingFrames[i].StopBlinking();
             }
+
         }
 
         private void StopAllBlinking()
@@ -262,10 +294,14 @@ namespace MenuUi.Scripts.CharacterGallery
             }
         }
 
-        private void RemoveCharacterFromSlot(SelectedCharacterEditingSlot slot)
+        public void RemoveActiveSlotCharacter()
         {
-            if (slot == null) return;
-            if (slot.SelectedCharacter == null) return;
+            if (_activeSlotIndex < 0 || _activeSlotIndex >= _selectedCharacterSlots.Length)
+                return;
+
+            SelectedCharacterEditingSlot slot = _selectedCharacterSlots[_activeSlotIndex];
+            if (slot == null || slot.SelectedCharacter == null)
+                return;
 
             slot.SelectedCharacter.ReturnToOriginalSlot();
             slot.SelectedCharacter = null;
@@ -284,12 +320,10 @@ namespace MenuUi.Scripts.CharacterGallery
                     slot.SlotIndex);
             }
 
+            if (slot.BattleView != null)
+                slot.BattleView.SetEmpty();
+
             _charactersUpdated = true;
-        }
-        public void RemoveActiveSlotCharacter()
-        {
-            SelectedCharacterEditingSlot targetSlot = _selectedCharacterSlots[_activeSlotIndex];
-            RemoveCharacterFromSlot(targetSlot);
         }
     }
 }

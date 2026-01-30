@@ -6,7 +6,7 @@ using System.Collections;
 public class BlinkingFrame : MonoBehaviour
 {
     [SerializeField] private float blinkSpeed = 1.7f;
-    [SerializeField] private float minAlpha = 0f;
+    [SerializeField] private float minAlpha = 0.15f;
     [SerializeField] private float maxAlpha = 1f;
 
     private Image _image;
@@ -45,7 +45,8 @@ public class BlinkingFrame : MonoBehaviour
         {
             t += Time.unscaledDeltaTime * blinkSpeed;
 
-            float alpha = Mathf.Lerp(minAlpha, maxAlpha, Mathf.PingPong(t, 1f));
+            float alpha = Mathf.Lerp(minAlpha, maxAlpha, Mathf.SmoothStep(0f, 1f, Mathf.PingPong(t, 1f)));
+            //float alpha = Mathf.Lerp(minAlpha, maxAlpha, Mathf.PingPong(t, 1f));
             SetAlpha(alpha);
 
             yield return null;
