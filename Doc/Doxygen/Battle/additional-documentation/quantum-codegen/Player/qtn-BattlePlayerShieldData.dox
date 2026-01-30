@@ -4,10 +4,36 @@
 /// </summary>
 ///
 /// ## Generated Structs
+/// - @cref{Quantum,BattlePlayerShieldEntityRef}  
+///   @copybrief Quantum.BattlePlayerShieldEntityRef
 /// - @cref{Quantum,BattlePlayerShieldDataQComponent}  
 ///   @copybrief Quantum.BattlePlayerShieldDataQComponent
 /// - @cref{Quantum,BattlePlayerShieldDataTemplateQComponent}  
 ///   @copybrief Quantum.BattlePlayerShieldDataTemplateQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattlePlayerShieldEntityRef
+/// <summary>
+/// Struct that holds shield entity references.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerShieldManagerData.qtn}
+
+/// @var EntityRef Quantum.BattlePlayerShieldEntityRef::EREf
+/// <summary>Player entity reference.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerShieldEntityRef::SIZE
+/// @var Int32 Quantum::BattlePlayerShieldEntityRef::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerShieldEntityRef::GetHashCode
+///
+/// @fn void Quantum::BattlePlayerShieldEntityRef::Serialize
+///
+/// @}
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -18,6 +44,31 @@
 ///
 /// @bigtext{Generated from @ref BattlePlayerShieldData.qtn}
 
+/// @var BattlePlayerShieldEntityRef Quantum::BattlePlayerShieldDataQComponent::PlayerEntity
+/// <summary>EntityRef of the player entity the shield belongs to.</summary>
+///
+/// @var QListPtr<EntityRef> Quantum::BattlePlayerShieldDataQComponent::HitboxEntities
+/// <summary>List containing all hitbox entities of the shield.</summary>
+///
+/// @var bool Quantum::BattlePlayerShieldDataQComponent::IsActive
+/// <summary>Bool value to indicate if the shield is currently active.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerShieldDataQComponent::SIZE
+/// @var Int32 Quantum::BattlePlayerShieldDataQComponent::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerShieldDataQComponent::GetHashCode
+/// @fn void Quantum::BattlePlayerShieldDataQComponent::ClearPointers
+///
+/// @fn void Quantum::BattlePlayerShieldDataQComponent::OnRemoved
+/// @fn void Quantum::BattlePlayerShieldDataQComponent::Serialize
+///
+/// @}
+
+// ---------------------------------------------------------------------------------------------------- //
+
 /// @struct Quantum::BattlePlayerShieldDataTemplateQComponent
 /// <summary>
 /// Template for creating player shield entity.
@@ -25,18 +76,19 @@
 ///
 /// @bigtext{Generated from @ref BattlePlayerShieldData.qtn}
 
-// ---------------------------------------------------------------------------------------------------- //
-
-/// @var EntityRef Quantum::BattlePlayerShieldDataQComponent::PlayerEntity
-/// <summary>EntityRef of the player entity the shield belongs to.</summary>
-
-/// @var QListPtr<EntityRef> Quantum::BattlePlayerShieldDataQComponent::HitboxEntities
-/// <summary>List containing all hitbox entities of the shield.</summary>
-
-/// @var bool Quantum::BattlePlayerShieldDataQComponent::IsActive
-/// <summary>Bool value to indicate if the shield is currently active.</summary>
-
-// ---------------------------------------------------------------------------------------------------- //
-
 /// @var QListPtr<BattlePlayerHitboxTemplate> Quantum::BattlePlayerShieldDataTemplateQComponent::HitboxList
 /// <summary>BattlePlayerHitboxTemplate list to allow creating multiple hitbox entities for one shield.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerShieldDataTemplateQComponent::SIZE
+/// @var Int32 Quantum::BattlePlayerShieldDataTemplateQComponent::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerShieldDataTemplateQComponent::GetHashCode
+/// @fn void Quantum::BattlePlayerShieldDataTemplateQComponent::ClearPointers
+///
+/// @fn void Quantum::BattlePlayerShieldDataTemplateQComponent::OnRemoved
+/// @fn void Quantum::BattlePlayerShieldDataTemplateQComponent::Serialize
+///
+/// @}
