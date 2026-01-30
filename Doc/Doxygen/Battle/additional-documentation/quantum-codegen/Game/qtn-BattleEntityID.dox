@@ -11,15 +11,27 @@
 
 /// @struct Quantum::BattleEntityID
 /// <summary>
-/// Struct used by @cref{Battle.QSimulation.Game,BattleEntityManager} to reference %Quantum entities.<br/>
-/// Wrapper for an `int` value.
+/// Struct used by @cref{Battle.QSimulation.Game,BattleEntityManager} to reference %Quantum entities.
 /// </summary>
 ///
 /// [{Entity ID}](#page-concepts-entity-management-entity-id)
 ///
-/// This struct exists to make code more readable by referencing entities with a named type instead of an `int` value.
-///
 /// @bigtext{Generated from @ref BattleEntityID.qtn}
 
 /// @var int Quantum::BattleEntityID::Int
-/// <summary>Underlying int value.</summary>
+/// <summary>Int representation of the ID.</summary>
+///
+/// @var bool Quantum::BattleEntityID::IsCompound
+/// <summary>Is the entity a compound.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattleEntityID::SIZE
+/// @var Int32 Quantum::BattleEntityID::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattleEntityID::GetHashCode
+///
+/// @fn void Quantum::BattleEntityID::Serialize
+///
+/// @}
