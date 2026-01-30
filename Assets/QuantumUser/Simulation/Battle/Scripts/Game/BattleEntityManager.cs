@@ -37,29 +37,34 @@ namespace Battle.QSimulation.Game
     ///
     /// [{Entity Manager}](#page-concepts-entity-management-entity-manager)
     ///
-    /// Stores entities offscreen when not in use. Entities are assigned a @cref{Quantum.BattleEntityID} for accessing them.<br/>
+    /// Stores entities offscreen when not in use. Entities are assigned a @cref{Quantum,BattleEntityID} for accessing them.<br/>
     /// Entities are retrieved using @cref{BattleEntityManager,Get} to be used in the game.<br/>
     /// Entities can be returned using @cref{BattleEntityManager,Return}, teleporting them back offscreen.
     public static unsafe class BattleEntityManager
     {
         /// <summary>
-        /// Public struct used as template when handling compounds.
+        /// Public struct used as template when making compounds with <see cref="BattleEntityManager"/>.
         /// </summary>
+        ///
+        /// See @cref{BattleEntityManager.MakeCompound}<br/>
+        /// See @cref{BattleEntityManager.RegisterCompound(Frame\, CompoundEntityTemplate)}<br/>
+        /// See @cref{BattleEntityManager.RegisterCompound(Frame\, CompoundEntityTemplate[])}
         public struct CompoundEntityTemplate
         {
             /// <summary>Parent entity reference of the compound.</summary>
             public EntityRef ParentEntityRef;
 
-            /// <summary></summary>
+            /// <summary>List containing entities that are linked to compound parent.</summary>
             public List<BattleEntityLink> LinkedEntities;
 
             /// <summary>
-            /// Public static create method to create compound.
+            /// Creates new compound template.<br/>
+            /// Use <see cref="Link"/> to link other entities.
             /// </summary>
             ///
             /// <param name="parent">Parent entity reference of the compound.</param>
             ///
-            /// <returns>Returns new CompoundEntityTemplate.</returns>
+            /// <returns>New CompoundEntityTemplate.</returns>
             public static CompoundEntityTemplate Create(EntityRef parent)
             {
                 return new CompoundEntityTemplate
@@ -70,13 +75,14 @@ namespace Battle.QSimulation.Game
             }
 
             /// <summary>
-            /// Public static create method to create compound.
+            /// Creates new compound template with specified <paramref name="capacity"/>.<br/>
+            /// Use <see cref="Link"/> to link other entities.
             /// </summary>
             ///
             /// <param name="parent">Parent entity reference of the compound.</param>
-            /// <param name="capacity">Capacity of the linked entities list</param>
+            /// <param name="capacity">Capacity used to create linked entities list.</param>
             ///
-            /// <returns>Returns new CompoundEntityTemplate.</returns>
+            /// <returns>New CompoundEntityTemplate.</returns>
             public static CompoundEntityTemplate Create(EntityRef parent, int capacity)
             {
                 return new CompoundEntityTemplate
@@ -87,11 +93,11 @@ namespace Battle.QSimulation.Game
             }
 
             /// <summary>
-            /// Public method for linking entities in compound.
+            /// Links entity to compound parent.
             /// </summary>
             ///
-            /// <param name="entityRef"></param>
-            /// <param name="offset"></param>
+            /// <param name="entityRef">The entity reference to be linked.</param>
+            /// <param name="offset">Linked entity's position relative to compound parent.</param>
             public void Link(EntityRef entityRef, FPVector2 offset)
             {
                 LinkedEntities.Add(new BattleEntityLink
@@ -116,7 +122,7 @@ namespace Battle.QSimulation.Game
         /// <param name="entitySpacing">Amount of grid spaces between entity offscreen positions.</param>
         public static void Init(Frame f, BattleGridPosition entityOffscreenPositionOffset, int entitySpacing)
         {
-            s_battleDebugLogger = BattleDebugLogger.Create(typeof(BattleEntityManager));
+            s_debugLogger = BattleDebugLogger.Create(typeof(BattleEntityManager));
 
             BattleEntityManagerDataQSingleton* entityManagerData = GetEntityManagerData(f);
 
@@ -127,7 +133,8 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
-        /// Registers given <paramref name="entityRef"/> to <see cref="Quantum.BattleEntityManagerDataQSingleton.RegisteredEntities">RegisteredEntities</see>
+        /// Registers given <paramref name="entityRef"/>
+        /// to <see cref="Quantum.BattleEntityManagerDataQSingleton.RegisteredEntities">RegisteredEntities</see>
         /// </summary>
         ///
         /// Use @cref{Register(Frame\, EntityRef[])} to register a group of entities.
@@ -151,7 +158,8 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
-        /// Registers given group of <paramref name="entityRefs"/> to <see cref="Quantum.BattleEntityManagerDataQSingleton.RegisteredEntities">RegisteredEntities</see>
+        /// Registers given group of <paramref name="entityRefs"/>
+        /// to <see cref="Quantum.BattleEntityManagerDataQSingleton.RegisteredEntities">RegisteredEntities</see>
         /// </summary>
         ///
         /// Use @cref{Register(Frame\, EntityRef)} to register a single entity.
@@ -182,10 +190,15 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
-        /// Public method for registering compound entities by using a template.
+        /// Makes and registers given compound entity based on <paramref name="template"/>
+        /// to <see cref="Quantum.BattleEntityManagerDataQSingleton.RegisteredEntities">RegisteredEntities</see>
         /// </summary>
         ///
-        /// Calling @clink{MakeCompound:BattleEntityManager.MakeCompound(Frame, CompoundEntityTemplate)} method to make compounds.
+        /// Use @cref{RegisterCompound(Frame\, CompoundEntityTemplate[])} to register and make a group of compound entities.<br/>
+        /// Use @cref{MakeCompound} method to make non-registered compound.<br/>
+        /// Use @cref{Register(Frame\, EntityRef)} to register a non-compound entity.
+        ///
+        /// Uses @cref{MakeCompound} method to make compounds.
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="template">Compound entity template used to make compounds</param>
@@ -210,10 +223,15 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
-        /// Public method for registering compound entities by using an array of templates.
+        /// Makes and registers given group of compound entities based on <paramref name="templates"/>
+        /// to <see cref="Quantum.BattleEntityManagerDataQSingleton.RegisteredEntities">RegisteredEntities</see>
         /// </summary>
         ///
-        /// Calling @clink{MakeCompound:BattleEntityManager.MakeCompound(Frame, CompoundEntityTemplate)} method to make compounds.
+        /// Use @cref{RegisterCompound(Frame\, CompoundEntityTemplate)} to register and make a single compound entity.<br/>
+        /// Use @cref{MakeCompound} method to make non-registered compound.<br/>
+        /// Use @cref{Register(Frame\, EntityRef[])} to register a group of non-compound entities.
+        ///
+        /// Uses @cref{MakeCompound} method to make compounds.
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="templates">Compound entity templates used to make compounds</param>
@@ -346,7 +364,11 @@ namespace Battle.QSimulation.Game
         ///
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.
         ///
-        /// Also used by the @cref{Register(Frame\, EntityRef)} and @cref{Register(Frame\, EntityRef[])} methods.
+        /// Also used by the **Register** methods.<br/>
+        /// @cref{Register(Frame\, EntityRef)}<br/>
+        /// @cref{Register(Frame\, EntityRef[])}<br/>
+        /// @cref{RegisterCompound(Frame\, CompoundEntityTemplate)}<br/>
+        /// @cref{RegisterCompound(Frame\, CompoundEntityTemplate[])}
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="entityManagerData">Pointer reference to BattleEntityManagerData singleton.</param>
@@ -371,15 +393,18 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
-        /// Public method for moving compound.
+        /// Moves a Compound Entity.
         /// </summary>
+        ///
+        /// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="parentEntity">Reference to the parent entity.</param>
-        /// <param name="position">Desired move position.</param>
+        /// <param name="position">New position.</param>
+        /// <param name="rotation">New rotation</param>
         public static void MoveCompound(Frame f, EntityRef parentEntity, FPVector2 position, FP rotation)
         {
-            s_battleDebugLogger.DevAssertFormat(
+            s_debugLogger.DevAssertFormat(
                 f,
                 f.Has<BattleCompoundEntityComponent>(parentEntity),
                 "Parent entity ({0}) is expected to have a BattleCompoundEntityComponent",
@@ -410,15 +435,18 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
-        /// Public method for teleporting compound.
+        /// Teleports a Compound Entity.
         /// </summary>
+        ///
+        /// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="parentEntity">Reference to the parent entity.</param>
-        /// <param name="position">Desired teleport position.</param>
+        /// <param name="position">New position.</param>
+        /// <param name="rotation">New rotation</param>
         public static void TeleportCompound(Frame f, EntityRef parentEntity, FPVector2 position, FP rotation)
         {
-            s_battleDebugLogger.DevAssertFormat(
+            s_debugLogger.DevAssertFormat(
                 f,
                 f.Has<BattleCompoundEntityComponent>(parentEntity),
                 "Parent entity ({0}) is expected to have a BattleCompoundEntityComponent",
@@ -454,9 +482,11 @@ namespace Battle.QSimulation.Game
         /// Public method for making compounds.
         /// </summary>
         ///
-        /// Used when registering compounds using RegisterCompound methods.<br/>
-        /// @clink{RegisterCompound:BattleEntityManager.RegisterCompound(Frame, CompoundEntityTemplate)}<br/>
-        /// @clink{RegisterCompound:BattleEntityManager.RegisterCompound(Frame, CompoundEntityTemplate[])}
+        /// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
+        ///
+        /// Used internally when registering compounds using RegisterCompound methods.<br/>
+        /// @cref{RegisterCompound(Frame\, CompoundEntityTemplate)}<br/>
+        /// @cref{RegisterCompound(Frame\, CompoundEntityTemplate[])}
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="template">Compound entity template used to make compounds.</param>
@@ -475,7 +505,8 @@ namespace Battle.QSimulation.Game
             f.Set(template.ParentEntityRef, compound);
         }
 
-        private static BattleDebugLogger s_battleDebugLogger;
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private static BattleDebugLogger s_debugLogger;
 
         /// <summary>
         /// Private helper method for getting the BattleEntityManagerDataQSingleton from the %Quantum %Frame.
@@ -489,12 +520,21 @@ namespace Battle.QSimulation.Game
         {
             if (!f.Unsafe.TryGetPointerSingleton(out BattleEntityManagerDataQSingleton* entityManagerData))
             {
-                s_battleDebugLogger.Error(f, "EntityManagerData singleton not found!");
+                s_debugLogger.Error(f, "EntityManagerData singleton not found!");
             }
 
             return entityManagerData;
         }
 
+        /// <summary>
+        /// Transforms relative <paramref name="offset"/> to world position based on <paramref name="parentPosition"/> and <paramref name="parentRotation"/>.
+        /// </summary>
+        ///
+        /// <param name="parentPosition">Position of the parent.</param>
+        /// <param name="parentRotation">Rotation of the parent.</param>
+        /// <param name="offset">Relative offset.</param>
+        ///
+        /// <returns>The calculated world position.</returns>
         private static FPVector2 CalculateWorldPosition(FPVector2 parentPosition, FP parentRotation, FPVector2 offset)
         {
             return FPVector2.Rotate(offset, parentRotation) + parentPosition;
