@@ -195,10 +195,8 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerData">Pointer to the player's data component.</param>
-        /// <param name="characterTransform">Pointer to the player's transform component.</param>
-        /// <param name="shieldTransform">Pointer to the shield's transform component.</param>
+        /// <param name="playerEntityRef">Reference to player entity.</param>
         /// <param name="position">New world position.</param>
-        /// <param name="rotation">New rotation in radians.</param>
         public static void Teleport(Frame f, BattlePlayerDataQComponent* playerData, EntityRef playerEntityRef, FPVector2 position)
         {
             BattleEntityManager.TeleportCompound(f, playerEntityRef, position, playerData->RotationBase);
