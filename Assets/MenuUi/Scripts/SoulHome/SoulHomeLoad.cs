@@ -15,6 +15,7 @@ using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Model.Poco.Game;
 using System.Collections.ObjectModel;
+using UnityEngine.U2D.Animation;
 
 namespace MenuUI.Scripts.SoulHome {
 
@@ -350,7 +351,22 @@ namespace MenuUI.Scripts.SoulHome {
             yield return new WaitUntil(() => _furnituresSet);
             for (int i = 0; i < _roomAmount; i++)
             {
-                Instantiate(_avatarPlaceholder, _roomPositions.transform.GetChild(i).GetChild(0));
+                GameObject avatarParent = Instantiate(_avatarPlaceholder, _roomPositions.transform.GetChild(i).GetChild(0));
+                GameObject avatar = avatarParent.transform.GetChild(0).gameObject;
+                SpriteResolver bodySpriteResolver = avatar.GetComponentInChildren<SpriteResolver>();
+                SpriteLibrary library = bodySpriteResolver.GetComponent<SpriteLibrary>();
+                SpriteLibraryAsset asset = library.spriteLibraryAsset;
+
+                string category = "Body";
+
+                List<string> labels = asset.GetCategoryLabelNames(category).ToList();
+
+                if (labels.Count > 0)
+                {
+                    string randomLabel = labels[Random.Range(0, labels.Count)];
+                    bodySpriteResolver.SetCategoryAndLabel(category, randomLabel);
+                    bodySpriteResolver.ResolveSpriteToSpriteRenderer();
+                }
             }
             _loadFinished = true;
         }
