@@ -53,8 +53,8 @@ namespace Battle.QSimulation.Player
 
         [Header("Character")]
 
-        [Tooltip("Character that all bots use")]
-        /// <summary>Character that all bots use.</summary>
-        public BattleCharacterBase BotCharacter;
+        [Tooltip("Characters that bots can use")]
+        /// <summary>Character selection that all bots use.</summary>
+        public BattleCharacterBase[] BotCharacterSelection;
     }
 }

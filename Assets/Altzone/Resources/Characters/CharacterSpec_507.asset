@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
+  m_Name: CharacterSpec_507
+  m_EditorClassIdentifier: 
+  Id: 507
+  CharacterId: 507
+  IsApproved: 1
+  FinnishName: Shoppailu
+  EnglishName: Shopping
+  ClassType: 500
+  CharacterDescriptionFinnish: "Kun Shoppailu asettuu ihmiseen asumaan, se saa t\xE4m\xE4n
+    pakenemaan ep\xE4mukavia tunteitaan jatkuvalla kuluttamisella. Ostamisen tuoma
+    hyv\xE4nolontunne ja uusien hankintojen j\xE4nnitys turruttaa ik\xE4v\xE4n olon,
+    sill\xE4 hetkeksi voi keskitty\xE4 vain uuden hankinnan tuomaan iloon. Sen sijaan,
+    ett\xE4 ihminen kohtaisi riitt\xE4m\xE4tt\xF6myyden sis\xE4ll\xE4\xE4n h\xE4n
+    uppoutuu nettikauppojen loputtomaan valikoimaan tai haaveilee hyllyjen lomassa,
+    p\xE4\xE4 t\xE4yttyen ajatuksilla siit\xE4, mit\xE4 voisi ostaa tai tarvita seuraavaksi.
+    Ostamisen tuoma helpotus ei kuitenkaan ole pysyv\xE4 ratkaisu. Kun uutuudenvieh\xE4tys
+    haihtuu, sis\xE4ll\xE4 kalvava tunne pilkist\xE4\xE4 taas esiin ja pyrkii n\xE4kyv\xE4ksi
+    \u2013 joskus jopa voimakkaamin kuin aiemmin.\r\n\r\nVuorovaikutuskent\xE4ll\xE4
+    (Ego Clash) Shoppailijan suojakilpen\xE4 toimii kauppakassit, joilla h\xE4n torjuu
+    kohti tulevia tunnetila-ammuksia. Jokaisella iskulla h\xE4n haalii itselleen
+    lis\xE4\xE4 kauppakasseja, ker\xE4\xE4 niit\xE4 muuriksi ymp\xE4rilleen \u2013
+    kunnes h\xE4n hiljalleen alkaa hautautua niiden alle. Lopulta h\xE4n katoaa t\xE4ysin
+    ostoskasan syvyyksiin, eik\xE4 l\xF6yd\xE4 sen seasta en\xE4\xE4 edes itse\xE4\xE4n.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Tavarakasojen taakse tunteensa piilottava, ep\xE4mukavuuden
+    v\xE4lttelij\xE4"
+  CharacterShortDescriptionEnglish: 
+  CharacterStats: {fileID: 11400000, guid: ec08fa0248cbb194fbd74b88a09d70ea, type: 2}
+  Hp:
+    Level: 1
+    Coefficient: 3
+  Speed:
+    Level: 3
+    Coefficient: 0
+  CharacterSize:
+    Level: 3
+    Coefficient: 1
+  Attack:
+    Level: 3
+    Coefficient: 5
+  Defence:
+    Level: 3
+    Coefficient: 2
+  GalleryImage: {fileID: 21300000, guid: e9fd76bd5dec3ea48b2a959a1bc58699, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: 48ce9876c445392448a8d5cfe1ee26fc, type: 3}
+  CharPhotoSeries: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 1327058558858202722
+  BattleUiSprite: {fileID: 0}

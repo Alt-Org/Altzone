@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Assert = UnityEngine.Assertions.Assert;
+using Random = UnityEngine.Random;
 
 using Photon.Client;
 using Photon.Realtime;
@@ -265,6 +266,11 @@ namespace Altzone.Scripts.Lobby
             this.Subscribe<StopMatchmakingEvent>(OnStopMatchmakingEvent);
             this.Subscribe<GetKickedEvent>(OnGetKickedEvent);
             StartCoroutine(Service());
+
+            GameConfig gameConfig = GameConfig.Get();
+            PlayerSettings playerSettings = gameConfig.PlayerSettings;
+            string photonRegion = string.IsNullOrEmpty(playerSettings.PhotonRegion) ? null : playerSettings.PhotonRegion;
+            StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
         }
 
         private IEnumerator Service()
@@ -300,6 +306,7 @@ namespace Altzone.Scripts.Lobby
                     PlayerData playerData = null;
                     store.GetPlayerData(playerGuid, p => playerData = p);
                     yield return new WaitUntil(() => playerData != null);
+                    PhotonRealtimeClient.Client.UserId = playerData.Id;
                     PhotonRealtimeClient.Connect(playerData.Name, photonRegion);
                 }
                 else if (PhotonRealtimeClient.CanJoinLobby)
@@ -1034,7 +1041,8 @@ namespace Altzone.Scripts.Lobby
                     PlayerSlotTypes = playerTypes,
                     ProjectileInitialEmotion = startingEmotion,
                     MapId = mapId,
-                    PlayerCount = playerCount
+                    PlayerCount = playerCount,
+                    Seed = Random.Range(int.MinValue, int.MaxValue),
                 };
 
             }
@@ -1086,6 +1094,7 @@ namespace Altzone.Scripts.Lobby
                 Map              = _quantumBattleMap,
                 SimulationConfig = _quantumBattleSimulationConfig,
                 SystemsConfig    = _quantumBattleSystemsConfig,
+                Seed             = data.Seed,
 
                 // battle
                 BattleConfig     = _battleQConfig,
@@ -1914,6 +1923,7 @@ namespace Altzone.Scripts.Lobby
         public Emotion ProjectileInitialEmotion { get; set; }
         public string MapId { get; set; }
         public int PlayerCount { get; set; }
+        public int Seed { get; set; }
 
         public static byte[] Serialize(StartGameData data)
         {
@@ -1926,6 +1936,7 @@ namespace Altzone.Scripts.Lobby
             Serializer.Serialize((int)b.ProjectileInitialEmotion, ref bytes);
             Serializer.Serialize(b.MapId, ref bytes);
             Serializer.Serialize(b.PlayerCount, ref bytes);
+            Serializer.Serialize(b.Seed, ref bytes);
 
             return bytes;
         }
@@ -1941,6 +1952,7 @@ namespace Altzone.Scripts.Lobby
             result.ProjectileInitialEmotion = (Emotion)Serializer.DeserializeInt(data, ref offset);
             result.MapId = Serializer.DeserializeString(data, ref offset);
             result.PlayerCount = Serializer.DeserializeInt(data, ref offset);
+            result.Seed = Serializer.DeserializeInt(data, ref offset);
 
             return result;
         }
@@ -1953,7 +1965,8 @@ namespace Altzone.Scripts.Lobby
                  $"\nPlayerSlotTypes: {string.Join(", ",PlayerSlotTypes)}" +
                  $"\nProjectileInitialEmotion: {ProjectileInitialEmotion}" +
                  $"\nMapId: {MapId}" +
-                 $"\nPlayerCount: {PlayerCount}";
+                 $"\nPlayerCount: {PlayerCount}" +
+                 $"\nSeed: {Seed}";
         }
     }
 }

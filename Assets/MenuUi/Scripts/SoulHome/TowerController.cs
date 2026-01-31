@@ -362,9 +362,9 @@ namespace MenuUI.Scripts.SoulHome
                         continue;
                     }
 
-                    if (hit2.collider.gameObject.CompareTag("SoulHomeAvatar"))
+                    if (hit2.collider.gameObject.GetComponent<ISoulHomeObjectClick>() != null)
                     {
-                        StartCoroutine(hit2.collider.gameObject.GetComponent<SoulHomeAvatarController>().WaveAnimation());
+                        if (click == ClickState.Start && editingMode) hit2.collider.gameObject.GetComponent<ISoulHomeObjectClick>()?.HandleClick();
                     }
 
                     if (hit2.collider.gameObject.CompareTag("Furniture"))

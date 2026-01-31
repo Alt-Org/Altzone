@@ -15,6 +15,8 @@ namespace Altzone.Scripts
 {
     public class ApplicationController : MonoBehaviour
     {
+        public static readonly int VersionNumber = 209;
+
         /// <summary>
         /// Starts the game when (before) first scene is loaded.
         /// </summary>
