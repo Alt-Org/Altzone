@@ -18,17 +18,21 @@ public class ClanVoteActionMenu : MonoBehaviour
     private void Awake()
     {
         rootCanvas = GetComponentInParent<Canvas>();
-        
-        if (blocker != null)
-        {
-            blocker.onClick.AddListener(Close);
-        }
 
-        HideInstant();
+        if (blocker != null)
+            blocker.onClick.AddListener(Close);
+
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 0;
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
+        }
     }
 
     public void Open(RectTransform anchorButton, System.Action onRoleVote, System.Action onKickVote)
     {
+
         if (anchorButton == null) return;
 
         roleVoteButton.onClick.RemoveAllListeners();

@@ -44,6 +44,11 @@ public class ClanRoleSelectPopupController : MonoBehaviour
         _blockerButton?.onClick.AddListener(Hide);
         _voteButton?.onClick.AddListener(OnVotePressed);
 
+        //Hide();
+    }
+
+    private void Start()
+    {
         Hide();
     }
 
