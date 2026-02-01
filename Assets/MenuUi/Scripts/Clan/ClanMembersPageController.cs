@@ -18,6 +18,13 @@ public class ClanMembersPageController : MonoBehaviour
 
     private Coroutine _rebuildRoutine;
 
+    private HashSet<string> _roleFilterSet;
+
+    private ClanMembersFiltersPopup.NameSort _nameSort = ClanMembersFiltersPopup.NameSort.None;
+
+    private List<ClanMember> _cachedMembers;
+    private string _cachedClanId;
+
     private void OnEnable()
     {
         if(!string.IsNullOrEmpty(_viewedClanId))
@@ -26,7 +33,7 @@ public class ClanMembersPageController : MonoBehaviour
         }     
     }
 
-    private void Rebuild()
+    private void Rebuild(bool forceFetch = false)
     {
         if (!isActiveAndEnabled) return;
 
@@ -35,50 +42,93 @@ public class ClanMembersPageController : MonoBehaviour
             StopCoroutine(_rebuildRoutine);
         }
 
-        _rebuildRoutine = StartCoroutine(RebuildCoroutine());
+        _rebuildRoutine = StartCoroutine(RebuildCoroutine(forceFetch));
     }
 
-    private IEnumerator RebuildCoroutine()
+    private IEnumerator RebuildCoroutine(bool forceFetch)
     {
         for (int i = _membersContent.childCount - 1; i >= 0; i--)
             Destroy(_membersContent.GetChild(i).gameObject);
 
-        // Fetch members
+        // Fetch members only if needed
         List<ClanMember> members = null;
-        if (!string.IsNullOrEmpty(_viewedClanId))
+
+        bool needFetch =
+            forceFetch ||
+            _cachedMembers == null ||
+            _cachedClanId != _viewedClanId;
+
+        if (needFetch)
         {
-            yield return StartCoroutine(ServerManager.Instance.GetClanMembersFromServer(_viewedClanId, m => members = m));
+            if (!string.IsNullOrEmpty(_viewedClanId))
+            {
+                yield return StartCoroutine(ServerManager.Instance.GetClanMembersFromServer(_viewedClanId, m => members = m));
+            }
+            else
+            {
+                yield return StartCoroutine(ServerManager.Instance.GetClanPlayers(m => members = m));
+            }
+
+            if (members == null) yield break;
+
+            _cachedMembers = members;
+            _cachedClanId = _viewedClanId;
         }
         else
         {
-            yield return StartCoroutine(ServerManager.Instance.GetClanPlayers(m => members = m));
+            members = _cachedMembers;
         }
-
-        if (members == null) yield break;
 
         var clan = ServerManager.Instance.Clan;
 
         // Admin set as a fallback label if member.Role is missing
         var adminSet = _viewAdminSet
-            ?? new HashSet<string>(); 
+            ?? new HashSet<string>();
 
         // Build sortable rows
-        var rows = members
+        var rowsQuery = members
             .Where(m => m != null)
             .Select(m =>
             {
                 int rightsCount = CountRights(m.Role);
-                string roleName = GetRoleLabel(m, adminSet); // used for display + tie-breaking
+                string roleName = GetRoleLabel(m, adminSet);
                 string playerName = m.Name ?? string.Empty;
-
                 return new MemberRow(m, rightsCount, roleName, playerName);
-            })
-            // Most rights on top
-            .OrderByDescending(r => r.RightsCount)
-            // Same rights -> alphabetical: first role, then player name
-            .ThenBy(r => r.RoleLabel, StringComparer.OrdinalIgnoreCase)
-            .ThenBy(r => r.PlayerName, StringComparer.OrdinalIgnoreCase)
-            .ToList();
+            });
+
+        // Role filter: if user chooses roles, show only those roles in the list ---
+        if (_roleFilterSet != null && _roleFilterSet.Count > 0)
+        {
+            rowsQuery = rowsQuery.Where(r => _roleFilterSet.Contains(r.RoleLabel));
+        }
+
+        List<MemberRow> rows;
+        switch (_nameSort)
+        {
+            case ClanMembersFiltersPopup.NameSort.Asc:
+                rows = rowsQuery
+                    .OrderBy(r => r.PlayerName, StringComparer.OrdinalIgnoreCase)
+                    .ThenByDescending(r => r.RightsCount)
+                    .ThenBy(r => r.RoleLabel, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+                break;
+
+            case ClanMembersFiltersPopup.NameSort.Desc:
+                rows = rowsQuery
+                    .OrderByDescending(r => r.PlayerName, StringComparer.OrdinalIgnoreCase)
+                    .ThenByDescending(r => r.RightsCount)
+                    .ThenBy(r => r.RoleLabel, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+                break;
+
+            default: // Default = member list sorted by role 
+                rows = rowsQuery
+                    .OrderByDescending(r => r.RightsCount)
+                    .ThenBy(r => r.RoleLabel, StringComparer.OrdinalIgnoreCase)
+                    .ThenBy(r => r.PlayerName, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+                break;
+        }
 
         for (int i = 0; i < rows.Count; i++)
         {
@@ -130,13 +180,31 @@ public class ClanMembersPageController : MonoBehaviour
         _rebuildRoutine = null;
     }
 
+    public void SetNameSort(ClanMembersFiltersPopup.NameSort sort)
+    {
+        _nameSort = sort;
+        Rebuild(forceFetch: false);
+    }
+
     // Shows members of the specified clan.
     public void SetViewedClan(string clanId, IEnumerable<string> adminIds = null)
     {
         _viewedClanId = clanId;
         _viewAdminSet = adminIds != null ? new HashSet<string>(adminIds) : null;
 
-        Rebuild();
+        Rebuild(forceFetch: true);
+    }
+
+    public void ApplyFilters(ClanMembersFiltersPopup.NameSort sort, List<string> selectedRoles)
+    {
+        _nameSort = sort;
+
+        if (selectedRoles != null && selectedRoles.Count > 0)
+            _roleFilterSet = new HashSet<string>(selectedRoles, StringComparer.OrdinalIgnoreCase);
+        else
+            _roleFilterSet = null;
+
+        Rebuild(forceFetch: false);
     }
 
     private static int CountRights(ClanRoles role)

@@ -37,10 +37,9 @@ public class ClanMemberPopupController : MonoBehaviour
     [Header("Vote menus")]
     [SerializeField] private ClanVoteActionMenu _voteActionMenu;
     [SerializeField] private RectTransform _votesButtonRect;
-    //[SerializeField] private ClanRoleSelectMenu _roleSelectMenu;
     [SerializeField] private ClanRoleSelectPopupController _roleSelectPopup;
 
-    private ClanMember _currrentMember;
+    private ClanMember _currentMember;
 
     private void Awake()
     {
@@ -77,7 +76,7 @@ public class ClanMemberPopupController : MonoBehaviour
     public void Show(ClanMember member, string roleLabel, bool allowVotes = true)
     {
         if (member == null) return;
-        _currrentMember = member;
+        _currentMember = member;
 
         _root.SetActive(true);
 
@@ -106,7 +105,7 @@ public class ClanMemberPopupController : MonoBehaviour
 
     public void Hide()
     {
-        _currrentMember = null;
+        _currentMember = null;
 
         _root.SetActive(false);
 
@@ -146,25 +145,25 @@ public class ClanMemberPopupController : MonoBehaviour
     private void OnRoleVotePressed()
     {
         var roles = GetCurrentClanRoles();
-        if (roles == null || _roleSelectPopup == null || _currrentMember == null) return;
+        if (roles == null || _roleSelectPopup == null || _currentMember == null) return;
 
-        _roleSelectPopup.Show(_currrentMember, roles);
+        _roleSelectPopup.Show(_currentMember, roles);
     }
 
     private void OnKickVotePressed()
     {
-        if (_currrentMember == null) return;
-        Debug.Log($"Kick vote pressed for member: {_currrentMember.Name} ({_currrentMember.Id})");
+        if (_currentMember == null) return;
+        Debug.Log($"Kick vote pressed for member: {_currentMember.Name} ({_currentMember.Id})");
 
         // TODO: Starts kick voting process
     }
 
     private void OnOpenProfileButtonPressed()
     {
-        if (_currrentMember == null || string.IsNullOrEmpty(_currrentMember.Id) || _playerProfileWindowDef == null)
+        if (_currentMember == null || string.IsNullOrEmpty(_currentMember.Id) || _playerProfileWindowDef == null)
             return;
 
-        StartCoroutine(ServerManager.Instance.GetOtherPlayerFromServer(_currrentMember.Id, otherPlayer =>
+        StartCoroutine(ServerManager.Instance.GetOtherPlayerFromServer(_currentMember.Id, otherPlayer =>
         {
             if (otherPlayer == null) return;
 

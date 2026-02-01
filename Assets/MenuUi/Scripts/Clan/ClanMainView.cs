@@ -53,6 +53,7 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private Button _linkButton;
     [SerializeField] private GameObject _editButton;
     [SerializeField] private GameObject _viewClansButton;
+    [SerializeField] private Button _membersFilterButton;
 
     private bool _isInClanCached;
     private bool _canEditCached;
@@ -65,6 +66,10 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private GameObject _overlay;
     [SerializeField] private ClanConfirmPopup _confirmPopup;
     [SerializeField] private ClanMemberPopupController _memberDetailsPopup;
+    [SerializeField] private ClanMembersFiltersPopup _membersFiltersPopup;
+
+    private string _currentViewedClanId;
+    private bool _filtersWired;
 
     [Header("Icons")]
     [SerializeField] private Image _clanAgeImage;
@@ -156,9 +161,52 @@ public class ClanMainView : MonoBehaviour
             }
         }
 
+        WireMembersFilterButton();
+
         //Always reset swipe to profile page on open
         ResetSwipeToProfileOnOpen();
     }
+
+    private void WireMembersFilterButton()
+    {
+        if (_filtersWired) return;
+        _filtersWired = true;
+
+        if (_membersFilterButton == null || _membersFiltersPopup == null) return;
+
+        _membersFilterButton.onClick.RemoveAllListeners();
+        _membersFilterButton.onClick.AddListener(OpenMembersFiltersPopup);
+
+        // Close overlay
+        _membersFiltersPopup.Closed -= HandleFiltersClosed;
+        _membersFiltersPopup.Closed += HandleFiltersClosed;
+
+        _membersFiltersPopup.OnFiltersChanged -= HandleMembersFiltersChanged;
+        _membersFiltersPopup.OnFiltersChanged += HandleMembersFiltersChanged;
+    }
+
+    private void HandleMembersFiltersChanged(ClanMembersFiltersPopup.MemberListFilters filters)
+    {
+        if (_membersPageController == null) return;
+
+        _membersPageController.ApplyFilters(filters.nameSort, filters.selectedRoles);
+    }
+
+    private void OpenMembersFiltersPopup()
+    {
+        if (_membersFiltersPopup == null) return;
+
+        if (_overlay != null) _overlay.SetActive(true);
+
+        // Opens filter popup and searches roles from the server
+        _membersFiltersPopup.OpenForClan(_currentViewedClanId);
+    }
+
+    private void HandleFiltersClosed()
+    {
+        if (_overlay != null) _overlay.SetActive(false);
+    }
+
 
     private void OnDisable()
     {
@@ -234,10 +282,12 @@ public class ClanMainView : MonoBehaviour
     {
         ToggleClanPanel(true);
 
+        _currentViewedClanId = clan.Id;
+
         if (_membersPageController != null)
         {
             _membersPageController.SetViewedClan(clan.Id);
-
+            _currentViewedClanId = clan.Id;
         }
 
         // Show correct buttons

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,22 +20,21 @@ public class ClanRoleSelectPopupController : MonoBehaviour
     [SerializeField] private AvatarFaceLoader _avatarFaceLoader;
 
     [Header("Role list (inside popup)")]
-    [SerializeField] private RectTransform _listContent;   
-    [SerializeField] private Button _itemTemplate;         
+    [SerializeField] private RectTransform _listContent;
+    [SerializeField] private ClanRoleItemTemplate _itemTemplate;
+    [SerializeField] private ToggleGroup _toggleGroup;
     [SerializeField] private ClanRoleCatalog _roleCatalog; 
     [SerializeField] private Sprite _fallbackIcon;         
 
     [Header("Actions")]
     [SerializeField] private Button _voteButton;
 
-    [Header("Selection Highlight")]
-    [SerializeField] private string _selectedHighlightName = "SelectedHighlight";
+    private readonly List<ClanRoleItemTemplate> _spawned = new();
 
-    private readonly Dictionary<Button, GameObject> _highlightByButton = new();
-
-    private readonly List<Button> _spawned = new();
     private ClanMember _member;
     private ClanRoles _selectedRole;
+
+    private string _currentRoleName;
 
     private void Awake()
     {
@@ -44,7 +44,8 @@ public class ClanRoleSelectPopupController : MonoBehaviour
         _blockerButton?.onClick.AddListener(Hide);
         _voteButton?.onClick.AddListener(OnVotePressed);
 
-        //Hide();
+        if (_toggleGroup == null && _listContent != null)
+            _toggleGroup = _listContent.GetComponent<ToggleGroup>();
     }
 
     private void Start()
@@ -65,7 +66,8 @@ public class ClanRoleSelectPopupController : MonoBehaviour
 
         if (_nameText != null) _nameText.text = member.Name ?? "";
 
-        var currentRoleName = member.Role != null ? member.Role.name : "";
+        _currentRoleName = member.Role != null ? member.Role.name : "";
+        var currentRoleName = _currentRoleName;
         if (_currentRoleText != null)
             _currentRoleText.text = string.IsNullOrEmpty(currentRoleName)
                 ? "Nykyinen rooli: —"
@@ -88,60 +90,71 @@ public class ClanRoleSelectPopupController : MonoBehaviour
     private void BuildRoleList(List<ClanRoles> roles)
     {
         ClearList();
-        _highlightByButton.Clear();
 
         if (roles == null || _listContent == null || _itemTemplate == null) return;
 
+        // Single-select
+        if (_toggleGroup != null) _toggleGroup.allowSwitchOff = true;
+
         foreach (var role in roles)
         {
-            var btn = Instantiate(_itemTemplate, _listContent);
-            btn.gameObject.SetActive(true);
+            if (role == null || string.IsNullOrEmpty(role.name)) continue;
 
-            // Text
-            var tmp = btn.GetComponentInChildren<TMP_Text>(true);
-            if (tmp != null) tmp.text = GetDisplayName(role.name);
+            var item = Instantiate(_itemTemplate, _listContent);
+            item.gameObject.SetActive(true);
 
-            // Icon
-            var iconImg = btn.transform.Find("Icon")?.GetComponent<Image>();
-            if (iconImg != null)
+            string displayName = GetDisplayName(role.name);
+
+            Sprite icon = null;
+            if (_roleCatalog != null) icon = _roleCatalog.GetIcon(role.name);
+            if (icon == null) icon = _fallbackIcon;
+
+            bool isCurrent = !string.IsNullOrEmpty(_currentRoleName) &&
+                 string.Equals(role.name, _currentRoleName, StringComparison.OrdinalIgnoreCase);
+
+            // Default: nothing selected when opened
+            item.Init(
+                roleName: role.name,
+                displayName: displayName,
+                icon: icon,
+                isOn: false,
+                onChanged: (roleName, isOn) =>
+                {
+                    if (!isOn) return;
+
+                    // Extra safety: ignore current role even if it somehow gets toggled
+                    if (!string.IsNullOrEmpty(_currentRoleName) &&
+                        string.Equals(roleName, _currentRoleName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return;
+                    }
+
+                    _selectedRole = role;
+                    if (_voteButton != null) _voteButton.interactable = true;
+                },
+                toggleGroup: _toggleGroup
+            );
+
+            // Disable current role so user must pick a different one
+            if (isCurrent)
             {
-                var icon = _roleCatalog != null ? _roleCatalog.GetIcon(role.name) : null;
-                iconImg.sprite = icon != null ? icon : _fallbackIcon;
+                displayName += " (Nykyinen)";   
+                var t = item.GetComponentInChildren<Toggle>(true);
+                if (t != null)
+                {
+                    t.interactable = false;
+                    t.isOn = false;
+                }
             }
 
-            // Highlight marker
-            var highlight = btn.transform.Find(_selectedHighlightName)?.gameObject;
-            if (highlight != null) highlight.SetActive(false);
-            _highlightByButton[btn] = highlight;
-
-            btn.onClick.RemoveAllListeners();
-            btn.onClick.AddListener(() =>
-            {
-                SetSelected(btn, role);
-            });
-
-            _spawned.Add(btn);
-        }
-    }
-
-    private void SetSelected(Button selectedButton, ClanRoles role)
-    {
-        _selectedRole = role;
-
-        // turn off all highlights
-        foreach (var b in _spawned)
-        {
-            if (b == null) continue;
-            if (_highlightByButton.TryGetValue(b, out var h) && h != null)
-                h.SetActive(false);
+            _spawned.Add(item);
         }
 
-        // turn on selected highlight
-        if (selectedButton != null && _highlightByButton.TryGetValue(selectedButton, out var selectedH) && selectedH != null)
-            selectedH.SetActive(true);
+        if (_toggleGroup != null)
+            _toggleGroup.SetAllTogglesOff(true); 
 
-        if (_voteButton != null)
-            _voteButton.interactable = true;
+        _selectedRole = null;
+        if (_voteButton != null) _voteButton.interactable = false;
     }
 
     private void ClearList()
@@ -151,7 +164,6 @@ public class ClanRoleSelectPopupController : MonoBehaviour
             if (_spawned[i] != null) Destroy(_spawned[i].gameObject);
         }
         _spawned.Clear();
-        _highlightByButton.Clear();
     }
 
     private void UpdateFace(ClanMember member)
