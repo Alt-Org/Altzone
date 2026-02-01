@@ -48,6 +48,7 @@ namespace Battle.View
         /// <summary>
         /// Helper method for getting an object mapped to a quantum entity.
         /// </summary>
+        /// <typeparam name="T">type of object trying to be Got.</typeparam>
         /// <param name="entityRef">Quantum Entity being Get from.</param>
         /// <returns>Object mapped to entity if it exists.</returns>
         public static T GetObject<T>(EntityRef entityRef) where T : class
@@ -66,7 +67,7 @@ namespace Battle.View
         /// <summary>
         /// Helper method for getting a list of objects mapped to a quantum entity.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">type of objects trying to be Got.</typeparam>
         /// <param name="entityRef">Quantum Entity being Get from.</param>
         /// <returns>a list of objects if it exists.</returns>
         public static List<T> GetObjects<T>(EntityRef entityRef) where T : class
