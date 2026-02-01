@@ -63,6 +63,12 @@ namespace Battle.View
             return default(T);
         }
 
+        /// <summary>
+        /// Helper method for getting a list of objects mapped to a quantum entity.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entityRef">Quantum Entity being Get from.</param>
+        /// <returns>a list of objects if it exists.</returns>
         public static List<T> GetObjects<T>(EntityRef entityRef) where T : class
         {
             if (!map.TryGetValue(entityRef, out List<object> list))
