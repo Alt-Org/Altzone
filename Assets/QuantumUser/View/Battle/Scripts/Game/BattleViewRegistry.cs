@@ -26,10 +26,16 @@ namespace Battle.View
         /// <param name="object">object that is being mapped to the quantum entity.</param>
         public static void Register(EntityRef entityRef, object @object)
         {
-            map[entityRef] = @object;
-            if (pending.TryGetValue(entityRef, out List<Action<object>> list))
+            if(!map.TryGetValue(entityRef, out List<object> _list)) {
+                _list = new List<object>();
+                map[entityRef] = _list;
+            }
+
+            map[entityRef].Add(@object);
+
+            if (pending.TryGetValue(entityRef, out List<Action> list))
             {
-                foreach (var callback in list) callback(@object);
+                foreach (var callback in list) callback();
                 pending.Remove(entityRef);
             }
         }
@@ -43,30 +49,60 @@ namespace Battle.View
         /// Helper method for getting an object mapped to a quantum entity.
         /// </summary>
         /// <param name="entityRef">Quantum Entity being Get from.</param>
-        /// <param name="object">Object trying to be Get.</param>
         /// <returns>Object mapped to entity if it exists.</returns>
-        public static bool TryGet(EntityRef entityRef, out object @object) => map.TryGetValue(entityRef, out @object);
+        public static T GetObject<T>(EntityRef entityRef) where T : class
+        {
+            if(!map.TryGetValue(entityRef, out List<object> list))
+            {
+                return default(T);
+            }
+
+            foreach (var obj in list)
+                if (obj is T match)
+                    return match;
+            return default(T);
+        }
+
+        public static List<T> GetObjects<T>(EntityRef entityRef) where T : class
+        {
+            if (!map.TryGetValue(entityRef, out List<object> list))
+            {
+                return default(List<T>);
+            }
+
+            List<T> results = new List<T>();
+
+            foreach(var obj in list)
+                if(obj is T match)
+                    results.Add(match);
+            return results;
+        }
 
         /// <summary>
         /// Public method that handles adding callbacks for a quantum entity to a list.
         /// </summary>
         /// <param name="entityRef">Quantum entity callback needs to be mapped to.</param>
         /// <param name="callback">Callback that needs to be mapped to the quantum entity.</param>
-        public static void WhenRegistered(EntityRef entityRef, Action<object> callback)
+        public static void WhenRegistered(EntityRef entityRef, Action callback)
         {
-            if (TryGet(entityRef, out var @object)) { callback(@object); return; }
-            if (!pending.TryGetValue(entityRef, out List<Action<object>> list)) { list = new List<Action<object>>(); pending[entityRef] = list; }
-            list.Add(callback);
+            if (map.TryGetValue(entityRef, out List<object> list)){ callback(); return;}
+
+            if(!pending.TryGetValue(entityRef, out List<Action> callbacks))
+            {
+                callbacks = new List<Action>();
+                pending[entityRef] = callbacks;
+            }
+            callbacks.Add(callback);
         }
 
         /// <summary>
         /// Dictionary that holds the object that is mapped to each quantum entity.
         /// </summary>
-        private static readonly Dictionary<EntityRef, object> map = new();
+        private static readonly Dictionary<EntityRef, List<object>> map = new();
 
         /// <summary>
         /// Dictionary that holds a list of callbacks being mapped to each quantum entity.
         /// </summary>
-        private static readonly Dictionary<EntityRef, List<Action<object>>> pending = new();
+        private static readonly Dictionary<EntityRef, List<Action>> pending = new();
     }
 }

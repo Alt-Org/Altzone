@@ -114,10 +114,10 @@ namespace Battle.View.Player
         /// Private method that is called when the character view controller associated with this shield view controller is registered. <br/>
         /// Handles binding this shield view controller to the character view controller and vice versa.
         /// </summary>
-        /// <param name="viewObject">character view controller this shield view controller needs to be bound to</param>
-        private void OnCharacterRegistered(object viewObject)
+        /// <param name="@object">object </param>
+        private void OnCharacterRegistered()
         {
-            var characterViewController = (BattlePlayerCharacterViewController)viewObject;
+            BattlePlayerCharacterViewController characterViewController = BattleViewRegistry.GetObject<BattlePlayerCharacterViewController>(_characterRef);
             if (characterViewController == null) return;
 
             _characterViewController = characterViewController;
