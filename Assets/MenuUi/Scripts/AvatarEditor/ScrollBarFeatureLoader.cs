@@ -31,7 +31,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private AvatarEditorCharacterHandle _characterHandle;
 
         private List<AvatarPartInfo> _avatarPartInfo;
-        public readonly Dictionary<string, AvatarPiece> _featureCategoryIdToAvatarPiece = new Dictionary<string, AvatarPiece>
+        private readonly Dictionary<string, AvatarPiece> _featureCategoryIdToAvatarPiece = new Dictionary<string, AvatarPiece>
             {
                 { "10", AvatarPiece.Hair }, // Hair
                 { "21", AvatarPiece.Eyes }, // Eyes
