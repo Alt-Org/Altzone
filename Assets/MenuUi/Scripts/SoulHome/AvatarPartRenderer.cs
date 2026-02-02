@@ -5,5 +5,5 @@ using UnityEngine;
 public class AvatarPartRenderer : MonoBehaviour
 {
     public AvatarPart Part;
-    public SpriteRenderer spriteRenderer;
+    public SpriteRenderer SpriteRenderer;
 }
