@@ -423,9 +423,15 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         #endregion
 
+        public static int GetClass(int id)
+        {
+            int ClassType = (id / 100) * 100;
+            return ClassType;
+        }
+
         public static CharacterClassType GetClass(CharacterID id)
         {
-            CharacterClassType ClassType = (CharacterClassType)((((int)id) / 100) * 100);
+            CharacterClassType ClassType = (CharacterClassType) GetClass((int)id);
             return ClassType;
         }
     }
