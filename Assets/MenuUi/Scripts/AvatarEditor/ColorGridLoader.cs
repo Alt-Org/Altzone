@@ -67,12 +67,14 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void AddListener(Color color)
         {
-            // don't know about this
-            AvatarPiece slot = _featureLoader._featureCategoryIdToAvatarPiece[_categoryLoader.CurrentlySelectedCategory];
+            AvatarPiece? slot = _featureLoader.CurrentCategory;
 
-            _characterHandle.SetPartColor(slot, color);
+            if (slot == null) return;
+            AvatarPiece actualSlot = (AvatarPiece)slot;
 
-            _avatarEditorController.PlayerAvatar.SetPartColor(slot, ColorUtility.ToHtmlStringRGBA(color));
+            _characterHandle.SetPartColor(actualSlot, color);
+
+            _avatarEditorController.PlayerAvatar.SetPartColor(actualSlot, ColorUtility.ToHtmlStringRGBA(color));
         }
     }
 }

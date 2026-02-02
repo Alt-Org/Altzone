@@ -49,6 +49,9 @@ namespace MenuUi.Scripts.AvatarEditor
         private float _actualVerticalPadding;
         private float _viewPortHeight;
         private readonly int _rowAmount = 2;
+        private string _currentCategory = "";
+
+        public AvatarPiece? CurrentCategory { get => _currentCategory!= ""? _featureCategoryIdToAvatarPiece[_currentCategory]: null; }
 
         void Start()
         {
@@ -195,6 +198,7 @@ namespace MenuUi.Scripts.AvatarEditor
             {
                 AddSkinColorSelectionCells();
             }
+            _currentCategory = categoryId;
         }
 
         private void DestroyFeatureListItems()
