@@ -35,6 +35,7 @@ namespace MenuUI.Scripts.SoulHome {
         [SerializeField] private TowerController _towerController;
         [SerializeField] private GameObject _avatarPlaceholder;
         [SerializeField] private Camera _towerCamera;
+        [SerializeField] private ClanPlayerFetcher _clanPlayerFetcher;
 
 
         private List<Furniture> _furnitureList = null;

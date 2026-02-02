@@ -5,24 +5,26 @@ using UnityEngine;
 
 public class ClanPlayerFetcher : MonoBehaviour
 {
-    public readonly List<PlayerData> _players;
+    private readonly List<PlayerData> _players = new();
+    public List<PlayerData> Players { get { return _players; } }
+
+    private void Start()
+    {
+        RefreshClanMembersPlayerData();
+    }
 
     public void RefreshClanMembersPlayerData()
     {
         StartCoroutine(ServerManager.Instance.GetClanMembersFromServer(members =>
         {
-            if (members != null)
+            if (members == null)
             {
                 Debug.LogError("Failed to load clan members");
             }
 
-            int i = 0;
-
             foreach (var member in members)
             {
                 _players.Add(member.GetPlayerData());
-                ++i;
-                Debug.LogError(i);
             }
         }));
     }
