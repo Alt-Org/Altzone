@@ -25,6 +25,12 @@ public class BlinkingFrame : MonoBehaviour
 
     public void StopBlinking()
     {
+
+        if (_image == null)
+            _image = GetComponent<Image>();
+
+        if (_image == null) return;
+
         if (_blinkRoutine != null)
         {
             StopCoroutine(_blinkRoutine);

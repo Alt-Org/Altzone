@@ -14,6 +14,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
     public class BattlePopupSelectedCharacterView : MonoBehaviour
     {
         [Header("Character slot references")]
+        [SerializeField] private GameObject _backgroundPanel;
         [SerializeField] private Image _spriteImage;
         [SerializeField] private Image _classColorBorderImage;
         [SerializeField] private Image _classColorImage;
@@ -25,6 +26,8 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
         public void SetInfo(Sprite galleryImage, CharacterID charID, int[] stats = null)
         {
+            if (_backgroundPanel != null) _backgroundPanel.SetActive(true);
+
             _spriteImage.sprite = galleryImage;
             _spriteImage.enabled = true;
 
@@ -63,6 +66,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
         public void SetEmpty()
         {
+            if (_backgroundPanel != null) _backgroundPanel.SetActive(false);
             _spriteImage.enabled = false;
             if (_classColorBorderImage != null) _classColorBorderImage.enabled = false;
             if (_classColorImage != null) _classColorImage.color = Color.gray;
