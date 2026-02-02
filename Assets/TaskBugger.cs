@@ -16,45 +16,71 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     [SerializeField] private GameObject _wheelPrefab;
     private GameObject _wheel;
+
+    private Canvas _canvas;
     private float progress;
-    private Vector2 _clickPosition;
+
+    private void Awake()
+    {
+        _canvas = GetComponentInParent<Canvas>();
+        InstantiateProgressWheel();
+    }
 
     private void OnEnable()
     {
         StartCoroutine(ToggleBug());
     }
 
-    private void ClickBuggedText() => StartCoroutine(ClickBuggedTextCoroutine(_clickPosition));
-
-    private IEnumerator ClickBuggedTextCoroutine(Vector2 clickPosition)
+    private void InstantiateProgressWheel()
     {
-        if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null
-            && DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationActionType == Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.FindBug)
+        _wheel = Instantiate(_wheelPrefab, _canvas.transform);
+        _wheel.SetActive(false);
+    }
+
+    private void StartProgressWheelAtPosition(Vector3 position)
+    {
+        if (_wheel.activeSelf)
+            return;
+        _wheel.SetActive(true);
+        _wheel.transform.position = position;
+        _wheel.GetComponent<Image>().fillAmount = 0f;
+        Debug.Log("ProgressWheel started at position: " + position);
+    }
+
+    private void DeactivateProgressWheel()
+    {
+        if (_wheel.activeSelf)
+            _wheel.SetActive(false);
+    }
+
+    private bool currentTaskIsFindBug() {
+        return (DailyTaskProgressManager.Instance.CurrentPlayerTask != null
+            && DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationActionType == Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.FindBug);
+    }
+
+    private void ClickBuggedText(Vector3 clickPosition) => StartCoroutine(ClickBuggedTextCoroutine(clickPosition));
+
+    private IEnumerator ClickBuggedTextCoroutine(Vector3 clickPosition)
+    {
+        if (currentTaskIsFindBug())
         {
             float timer = 0f;
-            while (true)
+            while (_isHeldDown)
             {
                 timer += Time.deltaTime;
+                bool findBugTaskStarted = (timer > _longClickStartThresholdTime);
+                bool findBugTaskCompleted = (timer >= _longClickThresholdTime);
 
-                if(timer > _longClickStartThresholdTime){
-                    if(_wheel == null)
-                        if(ProgressWheelHandler.Instance != null && ProgressWheelHandler.Instance.Wheel)
-                        _wheel = Instantiate(_wheelPrefab, transform);
-                    if(!_wheel.activeSelf){
-                        _wheel.SetActive(true);
-                        _wheel.GetComponent<RectTransform>().position = _clickPosition;
-                        progress = 0f;
-                    }
-
+                if(findBugTaskStarted)
+                {
+                    StartProgressWheelAtPosition(clickPosition);
                     progress = Mathf.Lerp(0, 1, timer/_longClickThresholdTime);
                     _wheel.GetComponent<Image>().fillAmount = progress;
                 }
 
-                if (_isHeldDown == false)
-                    yield break;
-
-                if (timer >= _longClickThresholdTime)
+                if (findBugTaskCompleted)
                 {
+                    DeactivateProgressWheel();
                     DailyTaskProgressManager.Instance.UpdateTaskProgress(Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.FindBug, "1");
                     yield return new WaitUntil(() => DailyTaskProgressManager.Instance.CurrentPlayerTask == null);
                     StartCoroutine(ToggleBug());
@@ -63,6 +89,7 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
                 yield return null;
             }
+            DeactivateProgressWheel();
         }
         else
         StartCoroutine(ToggleBug());
@@ -71,8 +98,7 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private IEnumerator ToggleBug()
     {
         yield return null;
-        if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null
-                    && DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationActionType == Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.FindBug)
+        if (currentTaskIsFindBug())
         {
             _buggedText.SetText("##Text_Parental_Internet_English");
             _toggle.enabled = false;
@@ -88,12 +114,23 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
     }
 
+    private Vector3 ScreenToWorldPoint(Vector2 screenPosition)
+    {
+        RectTransformUtility.ScreenPointToWorldPointInRectangle(
+            _canvas.transform as RectTransform,
+            screenPosition,
+            _canvas.worldCamera,
+            out Vector3 worldPoint
+        );
+        return worldPoint;
+    }
+
     public void OnPointerDown(PointerEventData eventData)
     {
         _isHeldDown = true;
-        _clickPosition = eventData.pressPosition;
-        ClickBuggedText();
+        ClickBuggedText(ScreenToWorldPoint(eventData.position));
     }
+
 
     public void OnPointerUp(PointerEventData eventData)
     {
