@@ -131,7 +131,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
         var avatarVisualData = new AvatarVisualData();
         PopulateAvatarPieces(avatarVisualData, playerData.AvatarData);
-        int? classId = playerData.SelectedCharacterId;
+        int classId = BaseCharacter.GetClass(playerData.SelectedCharacterId);
         SetAvatarColor(avatarVisualData, playerData.AvatarData, classId);
 
         return avatarVisualData;
@@ -149,7 +149,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
         var avatarVisualData = new AvatarVisualData();
         PopulateAvatarPieces(avatarVisualData, avatarData);
-        int? classId = ServerManager.Instance.Player.currentAvatarId;
+        int? classId = ServerManager.Instance.Player.currentAvatarId != null? BaseCharacter.GetClass((int)ServerManager.Instance.Player.currentAvatarId) : null;
         SetAvatarColor(avatarVisualData, avatarData, classId);
 
         return avatarVisualData;
