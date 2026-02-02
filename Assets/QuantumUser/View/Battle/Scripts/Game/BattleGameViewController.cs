@@ -30,6 +30,7 @@ using Battle.View.Audio;
 using Battle.View.Effect;
 using Battle.View.UI;
 using Battle.View.Player;
+using Battle.View.SoulWall;
 
 using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
 using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
