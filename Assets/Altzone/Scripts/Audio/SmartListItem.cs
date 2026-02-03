@@ -13,6 +13,8 @@ namespace Altzone.Scripts.Audio
         public float YStartPosition  { get { return _yStartPosition; } }
         public RectTransform SelfRectTransform  { get { return _selfRectTransform; } }
 
+        public bool Visible  { get { return gameObject.activeSelf; } }
+
         public SmartListItem() { }
 
         public SmartListItem(float yStartPosition, RectTransform selfRectTransform)
@@ -33,7 +35,7 @@ namespace Altzone.Scripts.Audio
 
         public void UpdateStartPosition(float yStartPosition) { _yStartPosition = yStartPosition; }
 
-        public virtual void SetVisibility(bool visible) { gameObject.SetActive(visible); Debug.LogError(visible ? "Visible" : "Invisible"); }
+        public virtual void SetVisibility(bool visible) { gameObject.SetActive(visible); /*Debug.LogError(visible ? "Visible" : "Invisible");*/ }
 
         public virtual void SetData<T1>(T1 data1) { }
 

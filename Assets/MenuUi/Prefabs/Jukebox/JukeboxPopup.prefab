@@ -14629,6 +14629,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _elastic: 1
+  _elasticityRange: 20
+  _slowdownTime: 1.5
   _content: {fileID: 3169175574032369052}
   _uniqueGameObjectsAtTop:
   - {fileID: 6535565871508835659}
@@ -14637,6 +14639,8 @@ MonoBehaviour:
   _uniqueGameObjectsAtBottom: []
   _smartItemTopStrenghtMultiplier: 0
   _smartItemBottomStrenghtMultiplier: 2
+  _extraSmartListItems: 1
+  _ignoreRemainingVelocityTriggerTime: 0.1
   _verticalPadding: 10
 --- !u!1 &3303713621607458431
 GameObject:
