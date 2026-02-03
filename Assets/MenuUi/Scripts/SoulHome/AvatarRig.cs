@@ -5,20 +5,22 @@ using UnityEngine.U2D.Animation;
 
 public class AvatarRig : MonoBehaviour
 {
-    private Dictionary<AvatarPart, SpriteRenderer> _renderers;
+    private Dictionary<AvatarPart, SpriteResolver> _resolvers;
+
+    public Dictionary<AvatarPart, SpriteResolver> Resolvers { get { return _resolvers; } }
 
     private void Awake()
     {
-        _renderers = new Dictionary<AvatarPart, SpriteRenderer>();
+        _resolvers = new Dictionary<AvatarPart, SpriteResolver>();
 
-        foreach (var part in GetComponentsInChildren<AvatarPartRenderer>(true))
+        foreach (var part in GetComponentsInChildren<AvatarPartResolver>(true))
         {
-            _renderers[part.Part] = part.SpriteRenderer;
+            _resolvers[part.Part] = part.Resolver;
         }
     }
 
-    public SpriteRenderer GetRenderer(AvatarPart part)
+    public SpriteResolver GetRenderer(AvatarPart part)
     {
-        return _renderers.TryGetValue(part, out SpriteRenderer renderer) ? renderer : null;
+        return _resolvers.TryGetValue(part, out SpriteResolver resolver) ? resolver : null;
     }
 }

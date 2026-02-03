@@ -36,6 +36,7 @@ namespace MenuUI.Scripts.SoulHome {
         [SerializeField] private GameObject _avatarPlaceholder;
         [SerializeField] private Camera _towerCamera;
         [SerializeField] private ClanPlayerFetcher _clanPlayerFetcher;
+        [SerializeField] private SpriteLibraryAsset _avatarSpriteLibrary;
 
 
         private List<Furniture> _furnitureList = null;
@@ -350,23 +351,32 @@ namespace MenuUI.Scripts.SoulHome {
         public IEnumerator SpawnAvatar()
         {
             yield return new WaitUntil(() => _furnituresSet);
+            yield return new WaitUntil(() => _clanPlayerFetcher.PlayersLoaded);
             for (int i = 0; i < _roomAmount; i++)
             {
                 GameObject avatarParent = Instantiate(_avatarPlaceholder, _roomPositions.transform.GetChild(i).GetChild(0));
                 GameObject avatar = avatarParent.transform.GetChild(0).gameObject;
-                SpriteResolver bodySpriteResolver = avatar.GetComponentInChildren<SpriteResolver>();
-                SpriteLibrary library = bodySpriteResolver.GetComponent<SpriteLibrary>();
-                SpriteLibraryAsset asset = library.spriteLibraryAsset;
+                AvatarRig rig = avatar.GetComponent<AvatarRig>();
 
-                string category = "Body";
+                Dictionary<AvatarPart, SpriteResolver> resolvers = rig.Resolvers;
+                PlayerData playerData = _clanPlayerFetcher.Players[i];
+                if (playerData == null)
+                    Debug.LogError($"Playerdata at index {i} is null");
+                if (playerData.AvatarData == null)
+                    Debug.LogError($"Avatardata at index {i} is null");
 
-                List<string> labels = asset.GetCategoryLabelNames(category).ToList();
-
-                if (labels.Count > 0)
+                SpriteResolver bodySpriteResolver = rig.GetRenderer(AvatarPart.Body);
+                string bodyPartIdString = "";
+                if (playerData != null && playerData.AvatarData != null)
                 {
-                    string randomLabel = labels[Random.Range(0, labels.Count)];
-                    bodySpriteResolver.SetCategoryAndLabel(category, randomLabel);
-                    bodySpriteResolver.ResolveSpriteToSpriteRenderer();
+                    int? bodyPartId = playerData.AvatarData.Clothes;
+                    bodyPartIdString = bodyPartId.ToString();
+                }
+                
+
+                if (bodyPartIdString.Length == 7)
+                {
+                    bodySpriteResolver.SetCategoryAndLabel("Body", bodyPartIdString);
                 }
             }
             _loadFinished = true;
