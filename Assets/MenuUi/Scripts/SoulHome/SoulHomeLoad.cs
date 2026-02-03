@@ -16,6 +16,7 @@ using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Model.Poco.Game;
 using System.Collections.ObjectModel;
 using UnityEngine.U2D.Animation;
+using Assets.Altzone.Scripts.Model.Poco.Player;
 
 namespace MenuUI.Scripts.SoulHome {
 
@@ -48,6 +49,116 @@ namespace MenuUI.Scripts.SoulHome {
         private bool _roomsReady = false;
         private bool _furnituresSet = false;
         private bool _loadFinished = false;
+
+        private struct AvatarResolverStruct
+        {
+            public Func<AvatarData, int?> _dataGetter;
+            public string _category;
+            public string _suffix;
+        }
+
+        private readonly Dictionary<AvatarPart, AvatarResolverStruct> _resolverDictionary = new()
+        {
+            {
+                AvatarPart.Body,
+                new AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Clothes,
+                    _category = "Body",
+                    _suffix = ""
+                }
+            },
+            {
+                AvatarPart.R_Hand,
+                new AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Hands,
+                    _category = "Hands",
+                    _suffix = "R"
+                }
+            },
+            {
+                AvatarPart.L_Hand,
+                new AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Hands,
+                    _category = "Hands",
+                    _suffix = "L"
+                }
+            },
+            {
+                AvatarPart.L_Eyebrow,
+                new AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Eyes,
+                    _category = "Eyebrows",
+                    _suffix = "L"
+                }
+            },
+            {
+                AvatarPart.L_Eye,
+                new AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Eyes,
+                    _category ="Eyes",
+                    _suffix = "L"
+                }
+            },
+            {
+                AvatarPart.R_Eyebrow,
+                new AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Eyes,
+                    _category = "Eyebrows",
+                    _suffix = "R"
+                }
+            },
+            {
+                AvatarPart.R_Eye,
+                new AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Eyes,
+                    _category = "Eyes",
+                    _suffix = "R"
+                }
+            },
+            {
+                AvatarPart.Nose,
+                new AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Nose,
+                    _category = "Nose",
+                    _suffix = ""
+                }
+            },
+            {
+                AvatarPart.Mouth,
+                new AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Mouth,
+                    _category = "Mouth",
+                    _suffix = ""
+                }
+            },
+            {
+                AvatarPart.R_Leg,
+                new AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Feet,
+                    _category = "Legs",
+                    _suffix= "R"
+                }
+            },
+            {
+                AvatarPart.L_Leg,
+                new AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Feet,
+                    _category = "Legs",
+                    _suffix = "L"
+                }
+            },
+        };
 
         public bool LoadFinished { get => _loadFinished;}
 
@@ -358,25 +469,33 @@ namespace MenuUI.Scripts.SoulHome {
                 GameObject avatar = avatarParent.transform.GetChild(0).gameObject;
                 AvatarRig rig = avatar.GetComponent<AvatarRig>();
 
+                // Sprite Resolver for each part of this avatar
                 Dictionary<AvatarPart, SpriteResolver> resolvers = rig.Resolvers;
+
                 PlayerData playerData = _clanPlayerFetcher.Players[i];
-                if (playerData == null)
-                    Debug.LogError($"Playerdata at index {i} is null");
-                if (playerData.AvatarData == null)
-                    Debug.LogError($"Avatardata at index {i} is null");
 
-                SpriteResolver bodySpriteResolver = rig.GetRenderer(AvatarPart.Body);
-                string bodyPartIdString = "";
-                if (playerData != null && playerData.AvatarData != null)
+                foreach ((AvatarPart part, SpriteResolver resolver) in resolvers)
                 {
-                    int? bodyPartId = playerData.AvatarData.Clothes;
-                    bodyPartIdString = bodyPartId.ToString();
-                }
-                
+                    if (!_resolverDictionary.TryGetValue(part, out AvatarResolverStruct resolverStruct))
+                    {
+                        continue;
+                    }
 
-                if (bodyPartIdString.Length == 7)
-                {
-                    bodySpriteResolver.SetCategoryAndLabel("Body", bodyPartIdString);
+                    if (playerData?.AvatarData == null)
+                    {
+                        continue;
+                    }
+
+                    int? baseId = resolverStruct._dataGetter(playerData.AvatarData);
+                    if (!baseId.HasValue || baseId.ToString().Length != 7)
+                    {
+                        continue;
+                    }
+
+                    string label = baseId.Value.ToString() + resolverStruct._suffix;
+
+                    resolver.SetCategoryAndLabel(resolverStruct._category, label);
+                    resolver.ResolveSpriteToSpriteRenderer();
                 }
             }
             _loadFinished = true;
