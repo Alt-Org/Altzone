@@ -17,6 +17,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using System.Collections.ObjectModel;
 using UnityEngine.U2D.Animation;
 using Assets.Altzone.Scripts.Model.Poco.Player;
+using System.Reflection.Emit;
 
 namespace MenuUI.Scripts.SoulHome {
 
@@ -49,6 +50,7 @@ namespace MenuUI.Scripts.SoulHome {
         private bool _roomsReady = false;
         private bool _furnituresSet = false;
         private bool _loadFinished = false;
+        private string _defaultLabel = "0000000";
 
         private struct AvatarResolverStruct
         {
@@ -65,7 +67,7 @@ namespace MenuUI.Scripts.SoulHome {
                 {
                     _dataGetter = data => data.Clothes,
                     _category = "Body",
-                    _suffix = ""
+                    _suffix = "",
                 }
             },
             {
@@ -481,18 +483,15 @@ namespace MenuUI.Scripts.SoulHome {
                         continue;
                     }
 
-                    if (playerData?.AvatarData == null)
-                    {
-                        continue;
-                    }
+                    string label = ResolveLabel(resolverStruct, playerData);
 
-                    int? baseId = resolverStruct._dataGetter(playerData.AvatarData);
-                    if (!baseId.HasValue || baseId.ToString().Length != 7)
-                    {
-                        continue;
-                    }
+                    SpriteLibraryAsset library = resolver.spriteLibrary.spriteLibraryAsset;
 
-                    string label = baseId.Value.ToString() + resolverStruct._suffix;
+                    // for if sprite id in playerdata is not in sprite library
+                    if (library == null || library.GetSprite(resolverStruct._category, label) == null)
+                    {
+                        label = _defaultLabel + resolverStruct._suffix;
+                    }
 
                     resolver.SetCategoryAndLabel(resolverStruct._category, label);
                     resolver.ResolveSpriteToSpriteRenderer();
@@ -501,6 +500,28 @@ namespace MenuUI.Scripts.SoulHome {
             _loadFinished = true;
         }
 
-        
+        private string ResolveLabel(AvatarResolverStruct resolverStruct, PlayerData playerData)
+        {
+            if (playerData?.AvatarData == null || resolverStruct._dataGetter == null)
+            {
+                return _defaultLabel + resolverStruct._suffix;
+            }
+
+            int? id = resolverStruct._dataGetter(playerData.AvatarData);
+
+            if (!id.HasValue)
+            {
+                return _defaultLabel + resolverStruct._suffix;
+            }
+
+            string idString = id.Value.ToString();
+
+            if (idString.Length != 7)
+            {
+                return _defaultLabel + resolverStruct._suffix;
+            }
+
+            return idString + resolverStruct._suffix;
+        }
     }
 }
