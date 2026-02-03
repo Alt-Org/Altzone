@@ -1,7 +1,7 @@
 using UnityEngine;
 
 using MenuUi.Scripts.Signals;
-
+using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using MenuUi.Scripts.UIScaling;
 using MenuUi.Scripts.SwipeNavigation;
@@ -159,11 +159,11 @@ namespace MenuUi.Scripts.CharacterGallery
                                 slot.Character.Id
                             );
                         }
-                        // Hide character from gallery
-                        slot.gameObject.SetActive(false);
+                        
                     }
                 }
             }
+            RefreshGalleryUsedVisuals();
         }
 
 
@@ -210,10 +210,8 @@ namespace MenuUi.Scripts.CharacterGallery
                 }
 
             }
-            //characterSlot.Character.transform.SetParent(targetSlot.transform, false);
-            //characterSlot.Character.SetSelectedVisuals();
+            
             targetSlot.SelectedCharacter = characterSlot.Character;
-            characterSlot.gameObject.SetActive(false);
 
             // Update battle-style visuals for the new selection
             if (targetSlot.BattleView != null)
@@ -234,6 +232,8 @@ namespace MenuUi.Scripts.CharacterGallery
             _charactersUpdated = true;
 
             SetActiveSlot((_activeSlotIndex + 1) % _selectedCharacterSlots.Length);
+
+            RefreshGalleryUsedVisuals();
         }
 
 
@@ -270,7 +270,6 @@ namespace MenuUi.Scripts.CharacterGallery
 
             if (_blinkingFrames == null || _blinkingFrames.Length == 0) return;
 
-            // Assumption: one frame per slot, matching index
             for (int i = 0; i < _blinkingFrames.Length; i++)
             {
                 if (_blinkingFrames[i] == null) continue;
@@ -324,6 +323,39 @@ namespace MenuUi.Scripts.CharacterGallery
                 slot.BattleView.SetEmpty();
 
             _charactersUpdated = true;
+            RefreshGalleryUsedVisuals();
+        }
+
+        /// <summary>
+        /// Determines which gallery characters are currently in use by the selected slots
+        /// and updates their state accordingly.
+        /// This method contains the selection logic only, it decides which characters are "used"
+        /// </summary>
+        private void RefreshGalleryUsedVisuals()
+        {
+            foreach (CharacterSlot slot in _galleryView.CharacterSlots)
+            {
+                if (slot == null || slot.Character == null) continue;
+
+                bool used = false;
+
+                
+                for (int i = 0; i < _selectedCharacterSlots.Length; i++)
+                {
+                    var selected = _selectedCharacterSlots[i].SelectedCharacter;
+                    if (selected == null) continue;
+
+                    if (selected.Id == slot.Character.Id)
+                    {
+                        used = true;
+                        break;
+                    }
+                }
+
+                slot.IsUsed = used;
+                slot.SetEditable(!used);
+                slot.Character.SetUsedVisuals(used);
+            }
         }
     }
 }
