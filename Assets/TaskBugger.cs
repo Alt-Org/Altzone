@@ -111,7 +111,7 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                     progress = Mathf.Lerp(0, 1, timer/_longClickThresholdTime);
                     _wheel.GetComponent<Image>().fillAmount = progress;
 
-                    _seconds.text = getSeconds(timer);
+                    _seconds.text = GetSeconds(timer);
                     Debug.Log("Seconds: "+_seconds.text);
 
                 }
@@ -136,22 +136,18 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     }
 
     //Function for seconds calculation syntax
-    private string getSeconds(float timer)
+    private string GetSeconds(float timer)
     {
-        int currentSecond = Mathf.FloorToInt(timer);
+        float seconds = _longClickThresholdTime - timer;
 
-        string textToShow = "";
+        if (seconds < 0)
+        {
+            seconds = 0f;
+        }
 
-        if(currentSecond < 1)
-            textToShow = "1s";
-        else if(currentSecond < 2 && currentSecond >= 1)
-            textToShow = "2s";
-        else if(currentSecond < 3 && currentSecond >= 2)
-            textToShow = "3s";
-        else
-            textToShow = "";
+        string secondsInText = seconds.ToString("0.0");
 
-        return textToShow;
+        return secondsInText;
     }
 
     private IEnumerator ToggleBug()
