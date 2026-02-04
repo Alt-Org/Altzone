@@ -15,7 +15,6 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private bool _isHeldDown = false;
 
     [SerializeField] private GameObject _wheelPrefab;
-    [SerializeField] private TextMeshProUGUI _secondsText;
 
     private GameObject _wheel;
     private Canvas _canvas;
