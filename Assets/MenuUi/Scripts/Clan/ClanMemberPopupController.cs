@@ -39,11 +39,22 @@ public class ClanMemberPopupController : MonoBehaviour
     [SerializeField] private RectTransform _votesButtonRect;
     [SerializeField] private ClanRoleSelectPopupController _roleSelectPopup;
 
+    [Header("Poll started popup")]
+    [SerializeField] private GameObject _pollStartedPopup;
+    [SerializeField] private CanvasGroup _pollStartedCanvasGroup;
+
+    [SerializeField] private float _pollStartedVisibleSeconds = 1.2f;
+    [SerializeField] private float _pollStartedFadeSeconds = 0.35f;
+
+    private Coroutine _pollStartedRoutine;
+
     private ClanMember _currentMember;
 
     private void Awake()
     {
         if (_root == null) _root = gameObject;
+
+        _pollStartedPopup.SetActive(false);
 
         if (_closeButton != null)
         {
@@ -111,6 +122,8 @@ public class ClanMemberPopupController : MonoBehaviour
 
         _voteActionMenu?.Close();
         _roleSelectPopup?.Hide();
+
+        HidePollStartedPopupImmediate();
     }
 
     private void OnVotesButtonPressed()
@@ -156,6 +169,8 @@ public class ClanMemberPopupController : MonoBehaviour
 
         PollManager.CreateKickPoll(_currentMember.Id);
 
+        ShowPollStartedPopup();
+
         Debug.Log($"Kick vote pressed for member: {_currentMember.Name} ({_currentMember.Id})");
     }
 
@@ -178,5 +193,58 @@ public class ClanMemberPopupController : MonoBehaviour
             // Open the profile window
             WindowManager.Get().ShowWindow(_playerProfileWindowDef);
         }));
+    }
+
+    private void ShowPollStartedPopup()
+    {
+        if (_pollStartedPopup == null || _pollStartedCanvasGroup == null) return;
+
+        _pollStartedPopup.SetActive(true);
+
+        // reset
+        _pollStartedCanvasGroup.alpha = 1f;
+        _pollStartedCanvasGroup.interactable = false;
+        _pollStartedCanvasGroup.blocksRaycasts = false;
+
+        if (_pollStartedRoutine != null)
+            StopCoroutine(_pollStartedRoutine);
+
+        _pollStartedRoutine = StartCoroutine(PollStartedRoutine());
+    }
+
+    private System.Collections.IEnumerator PollStartedRoutine()
+    {        
+        yield return new WaitForSecondsRealtime(_pollStartedVisibleSeconds);
+
+        // fade out
+        float t = 0f;
+        float start = _pollStartedCanvasGroup.alpha;
+
+        while (t < _pollStartedFadeSeconds)
+        {
+            t += Time.unscaledDeltaTime;
+            float k = Mathf.Clamp01(t / _pollStartedFadeSeconds);
+            _pollStartedCanvasGroup.alpha = Mathf.Lerp(start, 0f, k);
+            yield return null;
+        }
+
+        _pollStartedCanvasGroup.alpha = 0f;
+        _pollStartedPopup.SetActive(false);
+        _pollStartedRoutine = null;
+    }
+
+    private void HidePollStartedPopupImmediate()
+    {
+        if (_pollStartedRoutine != null)
+        {
+            StopCoroutine(_pollStartedRoutine);
+            _pollStartedRoutine = null;
+        }
+
+        if (_pollStartedCanvasGroup != null)
+            _pollStartedCanvasGroup.alpha = 0f;
+
+        if (_pollStartedPopup != null)
+            _pollStartedPopup.SetActive(false);
     }
 }
