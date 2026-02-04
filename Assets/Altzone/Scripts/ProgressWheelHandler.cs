@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static ProgressWheelHandler;
 
 public class ProgressWheelHandler : MonoBehaviour
 {
@@ -12,6 +13,9 @@ public class ProgressWheelHandler : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _seconds;
 
     private Coroutine _coroutine;
+
+    public delegate void SetWheelPosition(Transform transform);
+    public static event SetWheelPosition OnSetWheelPosition;
 
     private void Awake()
     {
@@ -28,9 +32,10 @@ public class ProgressWheelHandler : MonoBehaviour
     //Function for setting wheel on(if not aleady) and updating progress
     public void StartProgressWheelAtPosition(Vector3 position, float startTime, float finishThreshold)
     {
-        if (_wheel.activeSelf)
+        if (_wheel.activeInHierarchy)
             return;
         _wheel.SetActive(true);
+        OnSetWheelPosition?.Invoke(transform);
         _wheel.transform.position = position;
         _wheel.GetComponent<Image>().fillAmount = 0f;
         _coroutine = StartCoroutine(RunWheel(startTime, finishThreshold));
@@ -55,7 +60,7 @@ public class ProgressWheelHandler : MonoBehaviour
             timer += Time.deltaTime;
             progress = Mathf.Lerp(0, 1, timer / finishThreshold);
             _wheel.GetComponent<Image>().fillAmount = progress;
-            SetTime(timer);
+            SetTime(timer, finishThreshold);
             yield return null;
         }
     }
