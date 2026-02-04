@@ -229,8 +229,8 @@ namespace MenuUi.Scripts.CharacterGallery
                 else
                     _canvasGroup.alpha = 1f;
 
-                _canvasGroup.interactable = !used;
-                _canvasGroup.blocksRaycasts = !used;
+                _canvasGroup.interactable = true;
+                _canvasGroup.blocksRaycasts = true;
             }
         }
     }

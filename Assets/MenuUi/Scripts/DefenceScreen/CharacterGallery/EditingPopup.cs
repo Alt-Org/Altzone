@@ -26,7 +26,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
         [SerializeField] private BlinkingFrame[] _blinkingFrames;
 
-        [SerializeField] private Button _removeCharacterButton;
+        //[SerializeField] private Button _removeCharacterButton;
 
 
         // Which selected slot is currently active
@@ -53,10 +53,10 @@ namespace MenuUi.Scripts.CharacterGallery
                 _selectedCharacterSlots[i].OnSlotPressed += HandleSlotPressed;
             }
 
-            if (_removeCharacterButton != null)
-            {
-                _removeCharacterButton.onClick.AddListener(RemoveActiveSlotCharacter);
-            }
+            //if (_removeCharacterButton != null)
+            //{
+            //    _removeCharacterButton.onClick.AddListener(RemoveActiveSlotCharacter);
+            //}
 
         }
 
@@ -83,10 +83,10 @@ namespace MenuUi.Scripts.CharacterGallery
 
             if (_swipe) _swipe.OnCurrentPageChanged -= ClosePopup;
 
-            if (_removeCharacterButton != null)
-            {
-                _removeCharacterButton.onClick.RemoveListener(RemoveActiveSlotCharacter);
-            }
+            //if (_removeCharacterButton != null)
+            //{
+            //    _removeCharacterButton.onClick.RemoveListener(RemoveActiveSlotCharacter);
+            //}
 
         }
 
@@ -182,6 +182,19 @@ namespace MenuUi.Scripts.CharacterGallery
             CharacterSlot characterSlot = pressedSlot as CharacterSlot;
             if (characterSlot == null) return;
 
+            // If clicked character is already selected, remove it from its slot
+            for (int i = 0; i < _selectedCharacterSlots.Length; i++)
+            {
+                var selected = _selectedCharacterSlots[i].SelectedCharacter;
+                if (selected != null && selected.Id == characterSlot.Character.Id)
+                {
+               
+                    RemoveCharacterFromSpecificSlot(i);
+                    RefreshGalleryUsedVisuals();
+                    return;
+                }
+            }
+
             SelectedCharacterEditingSlot targetSlot = _selectedCharacterSlots[_activeSlotIndex];
             if (targetSlot == null) return;
 
@@ -189,10 +202,10 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 targetSlot.SelectedCharacter.ReturnToOriginalSlot();
 
-                if (targetSlot.SelectedCharacter.OriginalSlot != null)
-                {
-                    targetSlot.SelectedCharacter.OriginalSlot.gameObject.SetActive(true);
-                }
+                //if (targetSlot.SelectedCharacter.OriginalSlot != null)
+                //{
+                //    targetSlot.SelectedCharacter.OriginalSlot.gameObject.SetActive(true);
+                //}
 
                 targetSlot.SelectedCharacter = null;
 
@@ -240,15 +253,16 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void HandleFilterChanged() // Ensuring the selected character's slots are still hidden even though filter changed
         {
-            foreach (SelectedCharacterEditingSlot slot in _selectedCharacterSlots)
-            {
-                if (slot.SelectedCharacter == null) continue;
+            //foreach (SelectedCharacterEditingSlot slot in _selectedCharacterSlots)
+            //{
+            //    if (slot.SelectedCharacter == null) continue;
 
-                if (slot.SelectedCharacter.OriginalSlot.gameObject.activeSelf)
-                {
-                    slot.SelectedCharacter.OriginalSlot.gameObject.SetActive(false);
-                }
-            }
+            //    if (slot.SelectedCharacter.OriginalSlot.gameObject.activeSelf)
+            //    {
+            //        slot.SelectedCharacter.OriginalSlot.gameObject.SetActive(false);
+            //    }
+            //}
+            RefreshGalleryUsedVisuals();
         }
         private void OpenPopupFromSelected()
         {
@@ -293,38 +307,38 @@ namespace MenuUi.Scripts.CharacterGallery
             }
         }
 
-        public void RemoveActiveSlotCharacter()
-        {
-            if (_activeSlotIndex < 0 || _activeSlotIndex >= _selectedCharacterSlots.Length)
-                return;
+        //public void RemoveActiveSlotCharacter()
+        //{
+        //    if (_activeSlotIndex < 0 || _activeSlotIndex >= _selectedCharacterSlots.Length)
+        //        return;
 
-            SelectedCharacterEditingSlot slot = _selectedCharacterSlots[_activeSlotIndex];
-            if (slot == null || slot.SelectedCharacter == null)
-                return;
+        //    SelectedCharacterEditingSlot slot = _selectedCharacterSlots[_activeSlotIndex];
+        //    if (slot == null || slot.SelectedCharacter == null)
+        //        return;
 
-            slot.SelectedCharacter.ReturnToOriginalSlot();
-            slot.SelectedCharacter = null;
+        //    slot.SelectedCharacter.ReturnToOriginalSlot();
+        //    slot.SelectedCharacter = null;
 
-            if (_openedFromLoadout)
-            {
-                SignalBus.OnLoadoutDefenceCharacterChangedSignal(
-                    CharacterID.None,
-                    slot.SlotIndex,
-                    _currentLoadoutIndex);
-            }
-            else
-            {
-                SignalBus.OnSelectedDefenceCharacterChangedSignal(
-                    CharacterID.None,
-                    slot.SlotIndex);
-            }
+        //    if (_openedFromLoadout)
+        //    {
+        //        SignalBus.OnLoadoutDefenceCharacterChangedSignal(
+        //            CharacterID.None,
+        //            slot.SlotIndex,
+        //            _currentLoadoutIndex);
+        //    }
+        //    else
+        //    {
+        //        SignalBus.OnSelectedDefenceCharacterChangedSignal(
+        //            CharacterID.None,
+        //            slot.SlotIndex);
+        //    }
 
-            if (slot.BattleView != null)
-                slot.BattleView.SetEmpty();
+        //    if (slot.BattleView != null)
+        //        slot.BattleView.SetEmpty();
 
-            _charactersUpdated = true;
-            RefreshGalleryUsedVisuals();
-        }
+        //    _charactersUpdated = true;
+        //    RefreshGalleryUsedVisuals();
+        //}
 
         /// <summary>
         /// Determines which gallery characters are currently in use by the selected slots
@@ -353,9 +367,43 @@ namespace MenuUi.Scripts.CharacterGallery
                 }
 
                 slot.IsUsed = used;
-                slot.SetEditable(!used);
+                //slot.SetEditable(!used);
                 slot.Character.SetUsedVisuals(used);
             }
+        }
+        /// <summary>
+        /// Removes the character from the specified slot index.
+        /// Clears the slot, updates the battle view, and sends the appropriate signal
+        /// </summary>
+        private void RemoveCharacterFromSpecificSlot(int index)
+        {
+            if (index < 0 || index >= _selectedCharacterSlots.Length)
+                return;
+
+            var slot = _selectedCharacterSlots[index];
+            if (slot == null || slot.SelectedCharacter == null)
+                return;
+
+            slot.SelectedCharacter = null;
+
+            if (slot.BattleView != null)
+                slot.BattleView.SetEmpty();
+
+            if (_openedFromLoadout)
+            {
+                SignalBus.OnLoadoutDefenceCharacterChangedSignal(
+                    CharacterID.None,
+                    slot.SlotIndex,
+                    _currentLoadoutIndex);
+            }
+            else
+            {
+                SignalBus.OnSelectedDefenceCharacterChangedSignal(
+                    CharacterID.None,
+                    slot.SlotIndex);
+            }
+
+            _charactersUpdated = true;
         }
     }
 }
