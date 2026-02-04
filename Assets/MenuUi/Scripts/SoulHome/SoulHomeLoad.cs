@@ -486,13 +486,30 @@ namespace MenuUI.Scripts.SoulHome {
                     string label = ResolveLabel(resolverStruct, playerData);
 
                     SpriteLibraryAsset library = resolver.spriteLibrary.spriteLibraryAsset;
+                    SpriteRenderer spriteRenderer = resolver.GetComponent<SpriteRenderer>();
 
                     // for if sprite id in playerdata is not in sprite library
-                    if (library == null || library.GetSprite(resolverStruct._category, label) == null)
+                    bool labelExists = library.GetCategoryLabelNames(resolverStruct._category).Contains(label);
+
+                    if (!labelExists)
                     {
+                        // use default part if label does not exist
                         label = _defaultLabel + resolverStruct._suffix;
                     }
+                    else
+                    {
+                        Sprite sprite = library.GetSprite(resolverStruct._category, label);
 
+                        if (sprite == null)
+                        {
+                            // if label exists but sprite is null, disable the sprite
+                            // some eyes don't have eyebrows at all for example
+                            spriteRenderer.enabled = false;
+                            continue;
+                        }
+                    }
+
+                    spriteRenderer.enabled = true;
                     resolver.SetCategoryAndLabel(resolverStruct._category, label);
                     resolver.ResolveSpriteToSpriteRenderer();
                 }
