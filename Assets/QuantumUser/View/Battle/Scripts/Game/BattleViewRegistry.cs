@@ -26,18 +26,11 @@ namespace Battle.View
         /// <param name="object">object that is being mapped to the quantum entity.</param>
         public static void Register(EntityRef entityRef, object @object)
         {
-            if(!map.TryGetValue(entityRef, out List<object> _list)) {
-                _list = new List<object>();
-                map[entityRef] = _list;
-            }
+            RegistryEntry entry = GetEntryOrNew(entityRef);
 
-            map[entityRef].Add(@object);
-
-            if (pending.TryGetValue(entityRef, out List<Action> list))
-            {
-                foreach (var callback in list) callback();
-                pending.Remove(entityRef);
-            }
+            entry.Registered = true;
+            entry.Objects.Add(@object);
+            HandleCallbacks(entry.PendingCallbacks);
         }
 
         /*public static void Unregister(EntityRef entityRef, object @object)
@@ -53,15 +46,13 @@ namespace Battle.View
         /// <returns>Object mapped to entity if it exists.</returns>
         public static T GetObject<T>(EntityRef entityRef) where T : class
         {
-            if(!map.TryGetValue(entityRef, out List<object> list))
-            {
-                return default(T);
-            }
+            if(!TryGetEntry(entityRef, out RegistryEntry entry)) return null;
 
-            foreach (var obj in list)
-                if (obj is T match)
-                    return match;
-            return default(T);
+            foreach (object obj in entry.Objects)
+            {
+                if (obj is T match) return match;
+            }
+            return null;
         }
 
         /// <summary>
@@ -72,16 +63,15 @@ namespace Battle.View
         /// <returns>a list of objects if it exists.</returns>
         public static List<T> GetObjects<T>(EntityRef entityRef) where T : class
         {
-            if (!map.TryGetValue(entityRef, out List<object> list))
-            {
-                return default(List<T>);
-            }
+            if (!TryGetEntry(entityRef, out RegistryEntry entry)) return null;
 
             List<T> results = new List<T>();
 
-            foreach(var obj in list)
-                if(obj is T match)
-                    results.Add(match);
+            foreach(object obj in entry.Objects)
+            {
+                if (obj is T match) results.Add(match);
+            }
+
             return results;
         }
 
@@ -90,26 +80,74 @@ namespace Battle.View
         /// </summary>
         /// <param name="entityRef">Quantum entity callback needs to be mapped to.</param>
         /// <param name="callback">Callback that needs to be mapped to the quantum entity.</param>
-        public static void WhenRegistered(EntityRef entityRef, Action callback)
+        public static void WhenRegistered(EntityRef entityRef, Func<bool> callback)
         {
-            if (map.TryGetValue(entityRef, out List<object> list)){ callback(); return;}
-
-            if(!pending.TryGetValue(entityRef, out List<Action> callbacks))
+            RegistryEntry entry = GetEntryOrNew(entityRef);
+            if (entry.Registered)
             {
-                callbacks = new List<Action>();
-                pending[entityRef] = callbacks;
+                if (callback()) return;
             }
-            callbacks.Add(callback);
+            entry.PendingCallbacks.Add(new RegistryCallback(callback));
+        }
+
+        /// <summary>
+        /// Class that holds all information needed for a registry entry.
+        /// </summary>
+        private class RegistryEntry
+        {
+            public bool Registered;
+            public List<object> Objects;
+            public List<RegistryCallback> PendingCallbacks;
+
+            public RegistryEntry()
+            {
+                Registered = false;
+                Objects = new List<object>();
+                PendingCallbacks = new List<RegistryCallback>();
+            }
+        }
+
+        /// <summary>
+        /// Struct that holds all information needed for callbacks.
+        /// </summary>
+        private struct RegistryCallback
+        {
+            public bool Handled;
+            public Func<bool> Callback;
+
+            public RegistryCallback(Func<bool> callback)
+            {
+                Handled = false;
+                Callback = callback;
+            }
+        }
+
+        /// <summary>Dictionary that holds a list of RegistryEntries mapped to each quantum entity.</summary>
+        private static readonly Dictionary<EntityRef, RegistryEntry> _registryMap = new();
+
+        /// <summary>
+        /// Helper method that gets a registry entry mapped to a specific Quantum entity or adds one if it doesn't exist.
+        /// </summary>
+        ///
+        /// <param name="entityRef">Quantum entity the entry is mapped to.</param>
+        ///
+        /// <returns>The entry mapped to the Quantum entity.</returns>
+        private static RegistryEntry GetEntryOrNew(EntityRef entityRef)
+        {
+            if (!_registryMap.TryGetValue(entityRef, out RegistryEntry entry))
+            {
+                entry = new RegistryEntry();
+                _registryMap[entityRef] = entry;
+            }
+            return entry;
         }
 
         /// <summary>
         /// Dictionary that holds the object that is mapped to each quantum entity.
         /// </summary>
-        private static readonly Dictionary<EntityRef, List<object>> map = new();
 
         /// <summary>
         /// Dictionary that holds a list of callbacks being mapped to each quantum entity.
         /// </summary>
-        private static readonly Dictionary<EntityRef, List<Action>> pending = new();
     }
 }
