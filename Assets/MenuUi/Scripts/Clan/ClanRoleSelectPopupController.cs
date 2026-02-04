@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.AvatarEditor;
+using Altzone.Scripts.Voting;
 
 public class ClanRoleSelectPopupController : MonoBehaviour
 {
@@ -184,6 +185,12 @@ public class ClanRoleSelectPopupController : MonoBehaviour
     private void OnVotePressed()
     {
         if (_member == null || _selectedRole == null) return;
+
+        PollManager.CreateRolePoll(
+            targetPlayerId: _member.Id,
+            roleName: _selectedRole.name,
+            roleId: _selectedRole._id
+        );
 
         Debug.Log($"Start role vote: member={_member.Name} role={_selectedRole.name} ({_selectedRole._id})");
         Hide();

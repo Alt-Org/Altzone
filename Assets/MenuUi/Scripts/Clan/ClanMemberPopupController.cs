@@ -153,9 +153,10 @@ public class ClanMemberPopupController : MonoBehaviour
     private void OnKickVotePressed()
     {
         if (_currentMember == null) return;
-        Debug.Log($"Kick vote pressed for member: {_currentMember.Name} ({_currentMember.Id})");
 
-        // TODO: Starts kick voting process
+        PollManager.CreateKickPoll(_currentMember.Id);
+
+        Debug.Log($"Kick vote pressed for member: {_currentMember.Name} ({_currentMember.Id})");
     }
 
     private void OnOpenProfileButtonPressed()

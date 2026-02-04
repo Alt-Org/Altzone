@@ -13,18 +13,12 @@ MonoBehaviour:
   m_Name: ClanRoleCatalog_Default
   m_EditorClassIdentifier: 
   entries:
-  - roleName: decorator
-    icon: {fileID: 21300000, guid: 8ed818b5743d57041bc96bb24bee629e, type: 3}
-    displayNameOverride: Sisustaja
-  - roleName: competitive_player
-    icon: {fileID: 21300000, guid: a9fb33945d96d0741a3ec1c4e18a595d, type: 3}
-    displayNameOverride: Kilpapelaaja
-  - roleName: trader
-    icon: {fileID: 21300000, guid: cc5661d039334434ab823acad572e9bd, type: 3}
-    displayNameOverride: "Kaupank\xE4vij\xE4"
-  - roleName: community_builder
-    icon: {fileID: 21300000, guid: 4a09e9b0b80f5d345bd875d7b652def1, type: 3}
-    displayNameOverride: "Yhteis\xF6nluoja"
-  - roleName: board_member
-    icon: {fileID: 21300000, guid: 29b49bbe3c3fabd4381fe23de886b560, type: 3}
-    displayNameOverride: "Hallituksen j\xE4sen"
+  - roleName: leader
+    icon: {fileID: 21300000, guid: 9d97a6b4766bbf4459baef0415dfc95b, type: 3}
+    displayNameOverride: Johtaja
+  - roleName: elder
+    icon: {fileID: 21300000, guid: 66a90b5f970b12141b58e617fa8e34ab, type: 3}
+    displayNameOverride: Veteraani
+  - roleName: member
+    icon: {fileID: 21300000, guid: 3d04fc75ea8b6344dbd10587b009ac25, type: 3}
+    displayNameOverride: "J\xE4sen"

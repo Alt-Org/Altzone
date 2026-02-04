@@ -187,6 +187,22 @@ public static class PollManager // Handles the polls from creation to loading to
         PollMonitor.Instance?.StartMonitoring();
     }
 
+    // Temporary stub for creating role poll
+    public static void CreateRolePoll(string targetPlayerId, string roleName, string roleId = null)
+    {
+        Debug.Log($"TODO CreateRolePoll -> targetPlayerId={targetPlayerId}, roleName={roleName}, roleId={roleId}");
+    }
+
+    // Create poll for kicking a member from clan
+    public static void CreateKickPoll(string targetPlayerId)
+    {
+        Debug.Log($"TODO CreateKickPoll -> targetPlayerId={targetPlayerId}");
+
+        // Later: implement actual poll creation / server request
+        // OnPollCreated?.Invoke();
+        // VotingActions.ReloadPollList?.Invoke();
+    }
+
     public static void BuildPolls()
     {
         LoadClanData();

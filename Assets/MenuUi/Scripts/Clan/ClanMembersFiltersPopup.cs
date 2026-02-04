@@ -159,6 +159,7 @@ public class ClanMembersFiltersPopup : MonoBehaviour
         if (_confirmButton != null)
             _confirmButton.onClick.AddListener(() =>
             {
+                CommitDraftToApplied();
                 UpdateFilters();
                 if (_filtersPopup != null) _filtersPopup.SetActive(false);
                 Closed?.Invoke();
@@ -167,6 +168,7 @@ public class ClanMembersFiltersPopup : MonoBehaviour
         if (_cancelButton != null)
             _cancelButton.onClick.AddListener(() =>
             {
+                LoadDraftFromApplied();
                 if (_filtersPopup != null) _filtersPopup.SetActive(false);
                 Closed?.Invoke();
             });
