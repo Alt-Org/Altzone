@@ -1,7 +1,7 @@
 /// @file BattlePlayerClassNoneViewController.cs
 /// <summary>
 /// Contains @cref{Battle.View.Player,BattlePlayerCharacterClassNoneViewController} class,
-/// which is a default none/empty <see cref="Battle.View.Player.BattlePlayerCharacterClassNoneViewController">class %view controller</see> with no additional view logic.
+/// which is a default none/empty <see cref="Battle.View.Player.BattlePlayerCharacterClassNoneViewController">character class %view controller</see> with no additional view logic.
 /// </summary>
 
 // Quantum usings
@@ -10,11 +10,11 @@ using Quantum;
 namespace Battle.View.Player
 {
     /// <summary>
-    /// <span class="brief-h">None <see cref="Battle.View.Player.BattlePlayerCharacterClassBaseViewController">class %view controller</see>.</span><br/>
-    /// Default none/empty view controller with no additional view logic.
+    /// <span class="brief-h">None <see cref="Battle.View.Player.BattlePlayerCharacterClassBaseViewController">character class %view controller</see>.</span><br/>
+    /// Default none/empty character view controller with no additional view logic.
     /// </summary>
     ///
-    /// See [{PlayerClassViewControllers}](#page-concepts-player-view-class-controller) for more info.<br/>
+    /// See [{PlayerCharacterClassViewControllers}](#page-concepts-player-view-character-class-controller) for more info.<br/>
     /// See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
     public class BattlePlayerCharacterClassNoneViewController : BattlePlayerCharacterClassBaseViewController
     {

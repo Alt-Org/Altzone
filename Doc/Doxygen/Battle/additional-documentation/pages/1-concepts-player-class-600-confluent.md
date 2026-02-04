@@ -1,8 +1,8 @@
-# Player Character Class 600 - Confluent {#page-concepts-player-class-600-confluent}
+# Player Character Class 600 - Confluent {#page-concepts-player-class-600}
 
 - **Simulation**
     - Has simulation logic  
-      @cref{Battle.QSimulation.Player,BattlePlayerClassConfluent}
+      @cref{Battle.QSimulation.Player,BattlePlayerClass400}
     - Has no simulation data component
 
 - **View**

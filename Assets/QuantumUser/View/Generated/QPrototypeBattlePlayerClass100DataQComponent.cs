@@ -14,14 +14,14 @@ namespace Quantum {
   using UnityEngine;
   
   [UnityEngine.DisallowMultipleComponent()]
-  public unsafe partial class QPrototypeBattlePlayerClassDesensitizerDataQComponent : QuantumUnityComponentPrototype<Quantum.Prototypes.BattlePlayerClassDesensitizerDataQComponentPrototype>, IQuantumUnityPrototypeWrapperForComponent<Quantum.BattlePlayerClassDesensitizerDataQComponent> {
-    partial void CreatePrototypeUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerClassDesensitizerDataQComponentPrototype prototype);
+  public unsafe partial class QPrototypeBattlePlayerClass100DataQComponent : QuantumUnityComponentPrototype<Quantum.Prototypes.BattlePlayerClass100DataQComponentPrototype>, IQuantumUnityPrototypeWrapperForComponent<Quantum.BattlePlayerClass100DataQComponent> {
+    partial void CreatePrototypeUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerClass100DataQComponentPrototype prototype);
     [DrawInline()]
     [ReadOnly(InEditMode = false)]
-    public Quantum.Prototypes.BattlePlayerClassDesensitizerDataQComponentPrototype Prototype;
+    public Quantum.Prototypes.BattlePlayerClass100DataQComponentPrototype Prototype;
     public override System.Type ComponentType {
       get {
-        return typeof(Quantum.BattlePlayerClassDesensitizerDataQComponent);
+        return typeof(Quantum.BattlePlayerClass100DataQComponent);
       }
     }
     public override ComponentPrototype CreatePrototype(Quantum.QuantumEntityPrototypeConverter converter) {

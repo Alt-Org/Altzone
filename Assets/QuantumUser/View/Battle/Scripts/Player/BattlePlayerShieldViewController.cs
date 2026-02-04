@@ -19,8 +19,8 @@ using Quantum;
 namespace Battle.View.Player
 {
     /// <summary>
-    /// <span class="brief-h">%Player's <a href="https://doc-api.photonengine.com/en/quantum/current/class_quantum_1_1_quantum_entity_view_component.html">QuantumEntityViewComponent@u-exlink</a>.</span><br/>
-    /// Handles player sprites and animations.
+    /// <span class="brief-h">%Player shield's <a href="https://doc-api.photonengine.com/en/quantum/current/class_quantum_1_1_quantum_entity_view_component.html">QuantumEntityViewComponent@u-exlink</a>.</span><br/>
+    /// Handles player shield sprites and animations.
     /// </summary>
     public unsafe class BattlePlayerShieldViewController : QuantumEntityViewComponent
     {
@@ -31,7 +31,7 @@ namespace Battle.View.Player
 
         [Header("References")]
 
-        /// <summary>[SerializeField] Array of character <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.</summary>
+        /// <summary>[SerializeField] Array of shield <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.</summary>
         /// @ref BattlePlayerShieldViewController-SerializeFields
         [SerializeField] private GameObject[] _shieldGameObjects;
 
@@ -54,15 +54,15 @@ namespace Battle.View.Player
             if (EntityRef != e.ERef) return;
             if (!PredictedFrame.Exists(e.ERef)) return;
 
-            _characterRef = e.CharacterRef;
+            characterRef = e.CharacterRef;
 
-            BattleDebugLogger.DevAssert(nameof(BattlePlayerShieldViewController), _characterRef != null, "Character ref is null");
+            BattleDebugLogger.DevAssert(nameof(BattlePlayerShieldViewController), characterRef != null, "Character ref is null");
 
             if (!_isRegistered)
             {
                 BattleViewRegistry.Register(this.EntityRef, this);
                 _isRegistered = true;
-                BattleViewRegistry.WhenRegistered(_characterRef, OnCharacterRegistered);
+                BattleViewRegistry.WhenRegistered(characterRef, OnCharacterRegistered);
             }
 
             float scale = (float)e.ModelScale;
@@ -82,7 +82,7 @@ namespace Battle.View.Player
         });}
 
         /// <summary>
-        /// Handler method for EventBattleShieldTakeDamage QuantumEvent.<br/>
+        /// Handler method for EventBattleShieldTakeDamage QuantumEvent.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -97,30 +97,25 @@ namespace Battle.View.Player
             }
         }
 
-        /// <summary>
-        /// EntityRef for the character this shield is assigned to.
-        /// </summary>
-        private EntityRef _characterRef;
+        /// <summary>EntityRef for the character this shield is assigned to.</summary>
+        private EntityRef characterRef;
 
-        /// <summary>
-        /// Character view controller this shield view controller is bound to.
-        /// </summary>
+        /// <summary>Character view controller this shield view controller is bound to.</summary>
         private BattlePlayerCharacterViewController _characterViewController;
 
         ///<summary>Boolean that prevents this shield view controller from being registered multiple times to the BattleViewRegistry.</summary>
         private bool _isRegistered = false;
 
-        /// <summary>
-        /// Private method that is called when the character view controller associated with this shield view controller is registered. <br/>
-        /// Handles binding this shield view controller to the character view controller and vice versa.
-        /// </summary>
-        private void OnCharacterRegistered()
+
+        /// <summary>Handles binding this shield view controller to the character view controller and vice versa.</summary>
+        private bool OnCharacterRegistered()
         {
-            BattlePlayerCharacterViewController characterViewController = BattleViewRegistry.GetObject<BattlePlayerCharacterViewController>(_characterRef);
-            if (characterViewController == null) return;
+            BattlePlayerCharacterViewController characterViewController = BattleViewRegistry.GetObject<BattlePlayerCharacterViewController>(characterRef);
+            if (characterViewController == null) return false;
 
             _characterViewController = characterViewController;
             _characterViewController.BindShield(this);
+            return true;
         }
     }
 }

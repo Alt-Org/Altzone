@@ -1,6 +1,6 @@
-/// @file BattlePlayerClassConfluent.cs
+/// @file BattlePlayerClass600.cs
 /// <summary>
-/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassConfluent} class which handles player character class logic for the 600/Confluent class.
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClass600} class which handles player character class logic for the 600/Confluent class.
 /// </summary>
 
 // Quantum usings
@@ -19,11 +19,11 @@ namespace Battle.QSimulation.Player
     ///
     /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.}<br/>
     /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
-    /// @bigtext{See [{Player Character Class 600 - Confluent}](#page-concepts-player-class-600-confluent) for more info.}
-    public class BattlePlayerClassConfluent : BattlePlayerClassBase
+    /// @bigtext{See [{Player Character Class 600 - Confluent}](#page-concepts-player-class-600) for more info.}
+    public class BattlePlayerClass600 : BattlePlayerClassBase
     {
         /// <summary>The BattlePlayerCharacterClass this class is for.</summary>
-        public override BattlePlayerCharacterClass Class { get; } = BattlePlayerCharacterClass.Confluent;
+        public override BattlePlayerCharacterClass Class { get; } = BattlePlayerCharacterClass.Class600;
 
         /// <summary>
         /// Called by BattlePlayerClassManager. Reflects the projectile off of the characters hitbox based on a normal calculated from the characters center to the projectiles position.

@@ -1,7 +1,7 @@
-/// @file BattlePlayerShieldClassProjectorViewController.cs
+/// @file BattlePlayerShieldClass400ViewController.cs
 /// <summary>
-/// Contains @cref{Battle.View.Player,BattlePlayerShieldClassProjectorViewController} class,
-/// which is a <see cref="Battle.View.Player.BattlePlayerShieldClassProjectorViewController">class %view controller</see> for the Projector character class.
+/// Contains @cref{Battle.View.Player,BattlePlayerShieldClass400ViewController} class,
+/// which is a <see cref="Battle.View.Player.BattlePlayerShieldClass400ViewController">shield class %view controller</see> for the Projector character class.
 /// </summary>
 
 // Unity usings
@@ -17,27 +17,27 @@ using Battle.View.Game;
 namespace Battle.View.Player
 {
     /// <summary>
-    /// <span class="brief-h">Projector <see cref="Battle.View.Player.BattlePlayerShieldClassBaseViewController">class %view controller</see>.</span><br/>
-    /// Handles view logic for the Projector character class
+    /// <span class="brief-h">Projector <see cref="Battle.View.Player.BattlePlayerShieldClassBaseViewController">shield class %view controller</see>.</span><br/>
+    /// Handles view logic for the Projector shield class
     /// </summary>
     ///
-    /// @bigtext{See [{PlayerClassViewController}](#page-concepts-player-view-class-controller) for more info.}<br/>
+    /// @bigtext{See [{PlayerShieldClassViewController}](#page-concepts-player-view-shield-class-controller) for more info.}<br/>
     /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
-    /// @bigtext{See [{Player Character Class 400 - Projector}](#page-concepts-player-class-400-projector) for more info.}
-    public class BattlePlayerShieldClassProjectorViewController : BattlePlayerShieldClassBaseViewController
+    /// @bigtext{See [{Player Character Class 400 - Projector}](#page-concepts-player-class-400) for more info.}
+    public class BattlePlayerShieldClass400ViewController : BattlePlayerShieldClassBaseViewController
     {
-        /// @anchor BattlePlayerShieldClassProjectorViewController-SerializeFields
+        /// @anchor BattlePlayerShieldClass400ViewController-SerializeFields
         /// @name SerializeField variables
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
         /// <summary>Reference to the moving shield object.</summary>
-        /// @ref BattlePlayerShieldClassProjectorViewController-SerializeFields
+        /// @ref BattlePlayerShieldClass400ViewController-SerializeFields
         [Tooltip("Reference to the moving shield object.")]
         [SerializeField] private GameObject _movingShield;
 
         /// <summary>Indicates if the moving shield should be flipped.</summary>
-        /// @ref BattlePlayerShieldClassProjectorViewController-SerializeFields
+        /// @ref BattlePlayerShieldClass400ViewController-SerializeFields
         [Tooltip("Indicates if the moving shield should be flipped.")]
         [SerializeField] private bool _movingShieldFlipped;
 
@@ -45,9 +45,9 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Gets the character class associated with this Class.<br/>
-        /// Always returns <see cref="Quantum.BattlePlayerCharacterClass.Projector">BattlePlayerCharacterClass.Projector</see>.
+        /// Always returns <see cref="Quantum.BattlePlayerCharacterClass.Class400">BattlePlayerCharacterClass.Class400</see>.
         /// </summary>
-        public override BattlePlayerCharacterClass Class => BattlePlayerCharacterClass.Projector;
+        public override BattlePlayerCharacterClass Class => BattlePlayerCharacterClass.Class400;
 
         /// <summary>
         /// Called when the shield takes damage.<br/>

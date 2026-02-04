@@ -1,6 +1,6 @@
-/// @file BattlePlayerClassProjector.cs
+/// @file BattlePlayerClass400.cs
 /// <summary>
-/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassProjector} class which handles player character class logic for the 400/Projector class.
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClass400} class which handles player character class logic for the 400/Projector class.
 /// </summary>
 
 // Quantum usings
@@ -19,14 +19,14 @@ namespace Battle.QSimulation.Player
     ///
     /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.}<br/>
     /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
-    /// @bigtext{See [{Player Character Class 400 - Projector}](#page-concepts-player-class-400-projector) for more info.}
-    public class BattlePlayerClassProjector : BattlePlayerClassBase<BattlePlayerClassProjectorDataQComponent>
+    /// @bigtext{See [{Player Character Class 400 - Projector}](#page-concepts-player-class-400) for more info.}
+    public class BattlePlayerClass400 : BattlePlayerClassBase<BattlePlayerClass400DataQComponent>
     {
         /// <summary>
         /// Gets the character class associated with this Class.<br/>
         /// Always returns <see cref="Quantum.BattlePlayerCharacterClass.Projector">BattlePlayerCharacterClass.Projector</see>.
         /// </summary>
-        public override BattlePlayerCharacterClass Class => BattlePlayerCharacterClass.Projector;
+        public override BattlePlayerCharacterClass Class => BattlePlayerCharacterClass.Class400;
 
         /// <summary>
         /// Called when the player is created.
@@ -38,7 +38,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerEntity">Entity reference for the player.</param>
         public override unsafe void OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
-            BattlePlayerClassProjectorDataQComponent* data = GetClassData(f, playerEntity);
+            BattlePlayerClass400DataQComponent* data = GetClassData(f, playerEntity);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Battle.QSimulation.Player
             if (!playerShieldData->IsActive) return;
             if (projectileCollisionData->Projectile->IsHeld) return;
 
-            BattlePlayerClassProjectorDataQComponent* data = GetClassData(f, shieldCollisionData->PlayerShieldHitbox->ParentEntity);
+            BattlePlayerClass400DataQComponent* data = GetClassData(f, shieldCollisionData->PlayerShieldHitbox->ParentEntity);
             bool grab = !projectileCollisionData->Projectile->IsPassed;
 
             if (grab)
@@ -94,7 +94,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerEntity">Entity reference for the player.</param>
         public override unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
-            BattlePlayerClassProjectorDataQComponent* data = GetClassData(f, playerEntity);
+            BattlePlayerClass400DataQComponent* data = GetClassData(f, playerEntity);
             if (!data->IsHoldingProjectile)
             {
                 playerHandle.AllowCharacterSwapping = true;
@@ -106,7 +106,7 @@ namespace Battle.QSimulation.Player
             BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot);
             if (teammateHandle.PlayState.IsOutOfPlay()) return;
 
-            EntityRef teammateEntity = BattleEntityManager.Get(f, teammateHandle.CharacterEntityGroupID, teammateHandle.SelectedCharacterNumber);
+            EntityRef teammateEntity = BattleEntityManager.Get(f, teammateHandle.CharacterEntityGroupID, teammateHandle.SelectedCharacterNumber, false);
 
             if (teammateHandle.PlayState.IsInPlay())
             {

@@ -1,6 +1,6 @@
 /// @file BattlePlayerCharacterViewController.cs
 /// <summary>
-/// Contains @cref{Battle.View.Player,BattlePlayerCharacterViewController} class which handles player view logic.
+/// Contains @cref{Battle.View.Player,BattlePlayerCharacterViewController} class which handles player character view logic.
 /// </summary>
 
 // System usings
@@ -24,8 +24,8 @@ using Battle.View.Game;
 namespace Battle.View.Player
 {
     /// <summary>
-    /// <span class="brief-h">%Player's <a href="https://doc-api.photonengine.com/en/quantum/current/class_quantum_1_1_quantum_entity_view_component.html">QuantumEntityViewComponent@u-exlink</a>.</span><br/>
-    /// Handles player view logic.
+    /// <span class="brief-h">%Player character's <a href="https://doc-api.photonengine.com/en/quantum/current/class_quantum_1_1_quantum_entity_view_component.html">QuantumEntityViewComponent@u-exlink</a>.</span><br/>
+    /// Handles player character view logic.
     /// </summary>
     ///
     /// [{Player Overview}](#page-concepts-player-overview)<br/>
@@ -132,11 +132,11 @@ namespace Battle.View.Player
         /// @ref BattlePlayerCharacterViewController-SerializeFields
         [SerializeField] private BattleSpriteSheet _spriteSheet;
 
-        /// <summary>[SerializeField] Reference to an override class view controller.</summary>
+        /// <summary>[SerializeField] Reference to an override character class view controller.</summary>
         /// @ref BattlePlayerCharacterViewController-SerializeFields
         [SerializeField] private BattlePlayerCharacterClassBaseViewController _classViewControllerOverride;
 
-        /// <summary>[SerializeField] Animator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> that handles player animations.</summary>
+        /// <summary>[SerializeField] Animator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> that handles player character animations.</summary>
         /// @ref BattlePlayerCharacterViewController-SerializeFields
         [SerializeField] private Animator _animator;
 
@@ -182,7 +182,7 @@ namespace Battle.View.Player
         /// <summary>
         /// Public method that is called when entity is activated upon its creation.<br/>
         /// Calls <see cref="PreInitSetup"/> and subscribes to <see cref="Quantum.EventBattlePlayerCharacterViewInit">EventBattlePlayerCharacterViewInit</see> event with a lambda, which
-        /// sets the player model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.
+        /// sets the player character model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.
         /// Handles subscribing to QuantumEvents and registering to BattleViewRegistry.
         /// </summary>
         ///
@@ -244,7 +244,7 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Public method that is called when the view should update.<br/>
-        /// Calls <see cref="BattlePlayerCharacterViewController.UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to update the player model's position
+        /// Calls <see cref="BattlePlayerCharacterViewController.UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to update the player character model's position
         /// </summary>
         public override void OnUpdateView()
         {
@@ -278,11 +278,9 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Public method that is called when both the character and the shields associated with it are registered
-        /// to the BattleViewRegistry.<br/>
         /// Binds the shield view controller to the _playerShieldViewControllers dictionary to be able to call on it later.
         /// </summary>
-        /// 
+        ///
         /// <param name="shieldViewController">pointer to a shield view controller associated with the character.</param>
         public void BindShield(BattlePlayerShieldViewController shieldViewController)
         {
@@ -303,7 +301,7 @@ namespace Battle.View.Player
         /// <value>Holder variable for the damage flash coroutine.</value>
         private Coroutine _damageFlashCoroutine = null;
 
-        /// <value>Reference to the active class view controller.</value>
+        /// <value>Reference to the active character class view controller.</value>
         private BattlePlayerCharacterClassBaseViewController _classViewController;
 
         /// <summary>Dictionary that holds the shield view controllers associated with this character view controller.</summary>
@@ -324,7 +322,7 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Private method that forwards the parameter event to every shield view controller bound to this character view controller.
+        /// Forwards the parameter event to every shield view controller bound to this character view controller.
         /// </summary>
         ///
         /// <param name="e">Shield take damage event that needs to be forwarded.</param>
@@ -337,7 +335,7 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Updates the player model's position.
+        /// Updates the player character model's position.
         /// </summary>
         ///
         /// <param name="targetPosition">Target position Vector3.</param>
@@ -356,7 +354,7 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Updates the player model's animator.
+        /// Updates the player character model's animator.
         /// </summary>
         ///
         /// <param name="targetPosition">Target position Vector3.</param>
