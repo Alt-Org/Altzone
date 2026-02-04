@@ -32,8 +32,14 @@ namespace Battle.View.Player
     /// [{Player View Code Overview}](#page-concepts-player-view-overview)
     public unsafe class BattlePlayerCharacterViewController : QuantumEntityViewComponent
     {
+        /// <summary>
+        /// Struct that holds a map for the player's spritesheet and handles getting a sprite from the spritesheet.
+        /// </summary>
         public struct PlayerSpriteSheetMap : IBattleSpriteSheetMap
         {
+            /// <summary>
+            /// Enum that maps a Sprite name to its index on the player's spritesheet
+            /// </summary>
             public enum Enum
             {
                 Base                = 0,
@@ -86,13 +92,33 @@ namespace Battle.View.Player
                 Death2              = 59,
                 DeadOnTheGround     = 60
             }
+
+            /// <summary>
+            /// Implicit conversion from PlayerSpriteSheetMap to Enum.
+            /// </summary>
+            ///
+            /// <param name="playerSpriteSheetMap">PlayerSpriteSheetMap thats being converted.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static implicit operator Enum(PlayerSpriteSheetMap playerSpriteSheetMap) => playerSpriteSheetMap.EnumValue;
+
+            /// <summary>
+            /// Implicit convrsion from Enum to PlayerSpriteSheetMap.
+            /// </summary>
+            ///
+            /// <param name="enumValue">Enum thats being converted.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static implicit operator PlayerSpriteSheetMap(Enum enumValue) => new PlayerSpriteSheetMap() {EnumValue = enumValue };
-            
+
+            /// <summary>
+            /// Helper Enum for conversions.
+            /// </summary>
             public Enum EnumValue;
 
+            /// <summary>
+            /// Getter method that implements the interface
+            /// </summary>
+            ///
+            /// <returns>EnumValue as an int</returns>
             public int GetIndex() => (int)EnumValue;
         }
         /// @anchor BattlePlayerCharacterViewController-SerializeFields

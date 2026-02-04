@@ -1,8 +1,8 @@
-///@file BattleSpriteSheet.cs
-///<summary>
-///Contains @cref {Battle.View,BattleSpriteSheetDrawer} class which handles drawing a custom
-///inspector for the BattleSpriteSheet struct.
-///</summary>
+/// @file BattleSpriteSheet.cs
+/// <summary>
+/// Contains @cref {Battle.View,BattleSpriteSheetDrawer} class which handles drawing a custom
+/// inspector for the BattleSpriteSheet struct.
+/// </summary>
 
 // System usings
 using System;
@@ -15,15 +15,35 @@ using UnityEngine;
 
 namespace Battle.View
 {
+    /// <summary>
+    /// Interface that helps with getting a sprite from BattleSpriteSheet.
+    /// </summary>
     public interface IBattleSpriteSheetMap
     {
+        /// <summary>
+        /// Method for getting an index to get the correct sprite from the BattleSpriteSheet.
+        /// </summary>
+        /// <returns>An index for the BattleSpriteSheet.</returns>
         public int GetIndex();
     }
+
+    /// <summary>
+    /// Struct that holds the Spritesheet array and handles getting a sprite from it.
+    /// </summary>
     [Serializable]
     public struct BattleSpriteSheet
     {
+        /// <summary>Array that holds the spritesheet.</summary>
         public Sprite[] Array;
 
+        /// <summary>
+        /// Method for getting a sprite from the spritesheet based on an index.
+        /// </summary>
+        ///
+        /// <typeparam name="T">Class that implements the interface</typeparam>
+        /// <param name="SpriteMapValue">Class that implements the interface</param>
+        ///
+        /// <returns>A sprite from the spritesheet</returns>
         public Sprite GetSprite<T>(T SpriteMapValue) where T : IBattleSpriteSheetMap
         {
             int spriteIndex = SpriteMapValue.GetIndex();
@@ -31,21 +51,23 @@ namespace Battle.View
         }
     }
 
-    [CustomPropertyDrawer(typeof(BattleSpriteSheet))]
+
     /// <summary>
     /// Handles drawing a custom inspector property for the BattleSpriteSheet struct.
     /// </summary>
+    [CustomPropertyDrawer(typeof(BattleSpriteSheet))]
     public class BattleSpriteSheetDrawer : PropertyDrawer
     {
         /// <summary>
         /// Override method that handles drawing the custom inspector property.
         /// </summary>
+        ///
         /// <param name="rect">rect parameter</param>
         /// <param name="property">SerializedProperty parameter</param>
         /// <param name="label">GUIContent parameter</param>
         public override void OnGUI(Rect rect, SerializedProperty property, GUIContent label)
         {
-            //Get BattleSpriteSheet struct values as properties
+            // Get BattleSpriteSheet struct values as properties
             SerializedProperty spritePropertyArray = property.FindPropertyRelative("Array");
 
             if (_spriteIndexRegexPattern == null)
@@ -55,9 +77,9 @@ namespace Battle.View
 
             // UI
 
-            //Draw property field for reference sprite only when array is empty
+            // Draw property field for reference sprite only when array is empty
             if (spritePropertyArray.arraySize == 0)
-            {   
+            {
                 EditorGUI.BeginChangeCheck();
                 _referenceSprite = null;
                 _currentSpriteSheetPath = string.Empty;
@@ -67,7 +89,7 @@ namespace Battle.View
                 EditorGUILayout.PrefixLabel("Reference Sprite");
                 EditorGUI.indentLevel--;
                 _referenceSprite = (Sprite)EditorGUILayout.ObjectField(_referenceSprite, typeof(Sprite), false);
-                
+
                 EditorGUILayout.EndHorizontal();
 
                 if (EditorGUI.EndChangeCheck())
@@ -107,9 +129,9 @@ namespace Battle.View
         /// <summary>
         /// Method that handles loading the spritesheet from the reference sprite and sorting it
         /// </summary>
-        /// <param name="property"></param>
-        /// <param name="spritePropertyArray"></param>
-        /// <param name="spriteReference"></param>
+        ///
+        /// <param name="spritePropertyArray">Serialized property that holds sprite array.</param>
+        /// <param name="spriteReference">Reference sprite.</param>
         private void HandlePlayerSpriteSheetProperty(SerializedProperty spritePropertyArray, Sprite spriteReference)
         {
             string currentSpriteSheetPathCopy = _currentSpriteSheetPath;
@@ -145,7 +167,9 @@ namespace Battle.View
         /// <summary>
         /// Helper method for getting the path a sprite is at.
         /// </summary>
+        ///
         /// <param name="sprite">Sprite to get the path from.</param>
+        ///
         /// <returns>Path</returns>
         private string GetPath(Sprite sprite)
         {
