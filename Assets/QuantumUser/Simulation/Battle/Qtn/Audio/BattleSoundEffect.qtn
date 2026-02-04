@@ -1,3 +1,50 @@
+#define BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER 10
+
+#define BATTLE_SOUND_FX_CHARACTER_RACIST_START      1010 // 101 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_BODYBUILDER_START 1020 // 102 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_WARVETERAN_START  1030 // 103 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_BULLY_START       1040 // 104 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_EGOIST_START      1050 // 105 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_DEPRESSED_START   1060 // 106 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+
+#define BATTLE_SOUND_FX_CHARACTER_COMEDIAN_START 2010 // 201 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_JOKER_START    2020 // 202 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_CONMAN_START   2030 // 203 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_SEDUCER_START  2040 // 204 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+
+#define BATTLE_SOUND_FX_CHARACTER_RELIGIOUS_START     3010 // 301 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_YESMAN_START        3020 // 302 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_SLAVEOFTHELAW_START 3030 // 303 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_FASHIONSLAVE_START  3040 // 304 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_MAMMASBOY_START     3050 // 305 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_SUPERSTITIOUS_START 3060 // 306 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+
+#define BATTLE_SOUND_FX_CHARACTER_ARTIST_START     4010 // 401 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_ARGUER_START     4020 // 402 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_REFLECTOR_START  4030 // 403 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_DELUSIONAL_START 4040 // 404 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+
+#define BATTLE_SOUND_FX_CHARACTER_OVEREATER_START 5010 // 501 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_ALCOHOLIC_START 5020 // 502 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_ANORECTIC_START 5030 // 503 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_STONER_START    5040 // 504 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_MARTYR_START    5050 // 505 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_SUICIDAL_START  5060 // 506 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+
+#define BATTLE_SOUND_FX_CHARACTER_SOULSISTERS_START 6010 // 601 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_LOVERS_START      6020 // 602 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_SLEEPYHEAD_START  6030 // 603 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_TRIBALIST_START   6040 // 604 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_GANGBANGER_START  6050 // 605 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+
+#define BATTLE_SOUND_FX_CHARACTER_BOOKSMART_START           7010 // 701 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_CAPITALIST_START          7020 // 702 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_OBSESSIVECOMPULSIVE_START 7030 // 703 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_OVERCOMPILATOR_START      7040 // 704 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+#define BATTLE_SOUND_FX_CHARACTER_NITPICKER_START           7050 // 705 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
+
+// If you change BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER or Character ID:s are changed, then you have to recalculate and change BATTLE_SOUND_FX_CHARACTER_(CharacterName)_START. We would do it automatically, but Quantum won't let us. :|
+
 enum BattleSoundFX
 {
     SoulWallHit,
@@ -11,57 +58,224 @@ enum BattleSoundFX
     SoulWallHitPlayful,
     SoulWallHitSadness,
 
-    //{ Character specific Shield Hit
-    
-    // Desensitizer class characters
-    PlayerCharacterRacistShieldHit      = 101,
-    PlayerCharacterBodybuilderShieldHit = 102,
-    PlayerCharacterWarVeteranShieldHit  = 103,
-    PlayerCharacterBullyShieldHit       = 104,
-    PlayerCharacterEgoistShieldHit      = 105,
-    PlayerCharacterDepressedShieldHit   = 106,
+    //{ Character Sound Effects
 
-    // Trickster class characters
-    PlayerCharacterComedianShieldHit = 201,
-    PlayerCharacterJokerShieldHit    = 202,
-    PlayerCharacterConmanShieldHit   = 203,
-    PlayerCharacterSeducerShieldHit  = 204,
+    // Racist
+    PlayerCharacterRacistCatchphrase = BATTLE_SOUND_FX_CHARACTER_RACIST_START,
+    PlayerCharacterRacistHitCharacter,
+    PlayerCharacterRacistHitShield,
+    PlayerCharacterRacistDeath,
 
-    // Obedient class characters
-    PlayerCharacterReligiousShieldHit     = 301,
-    PlayerCharacterYesmanShieldHit        = 302,
-    PlayerCharacterSlaveOfTheLawShieldHit = 303,
-    PlayerCharacterFashionSlaveShieldHit  = 304,
-    PlayerCharacterMammasBoyShieldHit     = 305,
-    PlayerCharacterSuperstitiousShieldHit = 306,
+    // BodyBuilder
+    PlayerCharacterBodybuilderCatchphrase = BATTLE_SOUND_FX_CHARACTER_BODYBUILDER_START,
+    PlayerCharacterBodybuilderHitCharacter,
+    PlayerCharacterBodybuilderHitShield,
+    PlayerCharacterBodybuilderDeath,
 
-    // Projector class characters
-    PlayerCharacterArtistShieldHit     = 401,
-    PlayerCharacterArguerShieldHit     = 402,
-    PlayerCharacterReflectorShieldHit  = 403,
-    PlayerCharacterDelusionalShieldHit = 404,
+    // WarVeteran
+    PlayerCharacterWarVeteranCatchphrase = BATTLE_SOUND_FX_CHARACTER_WARVETERAN_START,
+    PlayerCharacterWarVeteranHitCharacter,
+    PlayerCharacterWarVeteranHitShield,
+    PlayerCharacterWarVeteranDeath,
 
-    // Retroflector class characters
-    PlayerCharacterOvereaterShieldHit = 501,
-    PlayerCharacterAlcoholicShieldHit = 502,
-    PlayerCharacterAnorecticShieldHit = 503,
-    PlayerCharacterStonerShieldHit    = 504,
-    PlayerCharacterMartyrShieldHit    = 505,
-    PlayerCharacterSuicidalShieldHit  = 506,
+    // Bully
+    PlayerCharacterBullyCatchphrase = BATTLE_SOUND_FX_CHARACTER_BULLY_START,
+    PlayerCharacterBullyHitCharacter,
+    PlayerCharacterBullyHitShield,
+    PlayerCharacterBullyDeath,
 
-    // Confluent class characters
-    PlayerCharacterSoulsistersShieldHit = 601,
-    PlayerCharacterLoversShieldHit      = 602,
-    PlayerCharacterSleepyHeadShieldHit  = 603,
-    PlayerCharacterTribalistShieldHit   = 604,
-    PlayerCharacterGangBangerShieldHit  = 605,
+    // Egoist
+    PlayerCharacterEgoistCatchphrase = BATTLE_SOUND_FX_CHARACTER_EGOIST_START,
+    PlayerCharacterEgoistHitCharacter,
+    PlayerCharacterEgoistHitShield,
+    PlayerCharacterEgoistDeath,
 
-    // Intellectualizer class characters
-    PlayerCharacterBooksmartShieldHit           = 701,
-    PlayerCharacterCapitalistShieldHit          = 702,
-    PlayerCharacterObsessiveCompulsiveShieldHit = 703,
-    PlayerCharacterOvercompilatorShieldHit      = 704,
-    PlayerCharacterNitpickerShieldHit           = 705
+    // Depressed
+    PlayerCharacterDepressedCatchphrase = BATTLE_SOUND_FX_CHARACTER_DEPRESSED_START,
+    PlayerCharacterDepressedHitCharacter,
+    PlayerCharacterDepressedHitShield,
+    PlayerCharacterDepressedDeath,
 
-    //} Character specific Shield Hit
+    // Comedian
+    PlayerCharacterComedianCatchphrase = BATTLE_SOUND_FX_CHARACTER_COMEDIAN_START,
+    PlayerCharacterComedianHitCharacter,
+    PlayerCharacterComedianHitShield,
+    PlayerCharacterComedianDeath,
+
+    // Joker
+    PlayerCharacterJokerCatchphrase = BATTLE_SOUND_FX_CHARACTER_JOKER_START,
+    PlayerCharacterJokerHitCharacter,
+    PlayerCharacterJokerHitShield,
+    PlayerCharacterJokerDeath,
+
+    // Conman
+    PlayerCharacterConmanCatchphrase = BATTLE_SOUND_FX_CHARACTER_CONMAN_START,
+    PlayerCharacterConmanHitCharacter,
+    PlayerCharacterConmanHitShield,
+    PlayerCharacterConmanDeath,
+
+    // Seducer
+    PlayerCharacterSeducerCatchphrase = BATTLE_SOUND_FX_CHARACTER_SEDUCER_START,
+    PlayerCharacterSeducerHitCharacter,
+    PlayerCharacterSeducerHitShield,
+    PlayerCharacterSeducerDeath,
+
+    // Religious
+    PlayerCharacterReligiousCatchphrase = BATTLE_SOUND_FX_CHARACTER_RELIGIOUS_START,
+    PlayerCharacterReligiousHitCharacter,
+    PlayerCharacterReligiousHitShield,
+    PlayerCharacterReligiousDeath,
+
+    // Yesman
+    PlayerCharacterYesmanCatchphrase = BATTLE_SOUND_FX_CHARACTER_YESMAN_START,
+    PlayerCharacterYesmanHitCharacter,
+    PlayerCharacterYesmanHitShield,
+    PlayerCharacterYesmanDeath,
+
+    // SlaveOfTheLaw
+    PlayerCharacterSlaveOfTheLawCatchphrase = BATTLE_SOUND_FX_CHARACTER_SLAVEOFTHELAW_START,
+    PlayerCharacterSlaveOfTheLawHitCharacter,
+    PlayerCharacterSlaveOfTheLawHitShield,
+    PlayerCharacterSlaveOfTheLawDeath,
+
+    // FashionSlave
+    PlayerCharacterFashionSlaveCatchphrase = BATTLE_SOUND_FX_CHARACTER_FASHIONSLAVE_START,
+    PlayerCharacterFashionSlaveHitCharacter,
+    PlayerCharacterFashionSlaveHitShield,
+    PlayerCharacterFashionSlaveDeath,
+
+    // MammasBoy
+    PlayerCharacterMammasBoyCatchphrase = BATTLE_SOUND_FX_CHARACTER_MAMMASBOY_START,
+    PlayerCharacterMammasBoyHitCharacter,
+    PlayerCharacterMammasBoyHitShield,
+    PlayerCharacterMammasBoyDeath,
+
+    // Superstitious
+    PlayerCharacterSuperstitiousCatchphrase = BATTLE_SOUND_FX_CHARACTER_SUPERSTITIOUS_START,
+    PlayerCharacterSuperstitiousHitCharacter,
+    PlayerCharacterSuperstitiousHitShield,
+    PlayerCharacterSuperstitiousDeath,
+
+    // Artist
+    PlayerCharacterArtistCatchphrase = BATTLE_SOUND_FX_CHARACTER_ARTIST_START,
+    PlayerCharacterArtistHitCharacter,
+    PlayerCharacterArtistHitShield,
+    PlayerCharacterArtistDeath,
+
+    // Arguer
+    PlayerCharacterArguerCatchphrase = BATTLE_SOUND_FX_CHARACTER_ARGUER_START,
+    PlayerCharacterArguerHitCharacter,
+    PlayerCharacterArguerHitShield,
+    PlayerCharacterArguerDeath,
+
+    // Reflector
+    PlayerCharacterReflectorCatchphrase = BATTLE_SOUND_FX_CHARACTER_REFLECTOR_START,
+    PlayerCharacterReflectorHitCharacter,
+    PlayerCharacterReflectorHitShield,
+    PlayerCharacterReflectorDeath,
+
+    // Delusional
+    PlayerCharacterDelusionalCatchphrase = BATTLE_SOUND_FX_CHARACTER_DELUSIONAL_START,
+    PlayerCharacterDelusionalHitCharacter,
+    PlayerCharacterDelusionalHitShield,
+    PlayerCharacterDelusionalDeath,
+
+    // Overeater
+    PlayerCharacterOvereaterCatchphrase = BATTLE_SOUND_FX_CHARACTER_OVEREATER_START,
+    PlayerCharacterOvereaterHitCharacter,
+    PlayerCharacterOvereaterHitShield,
+    PlayerCharacterOvereaterDeath,
+
+    // Alcoholic
+    PlayerCharacterAlcoholicCatchphrase = BATTLE_SOUND_FX_CHARACTER_ALCOHOLIC_START,
+    PlayerCharacterAlcoholicHitCharacter,
+    PlayerCharacterAlcoholicHitShield,
+    PlayerCharacterAlcoholicDeath,
+
+    // Anorectic
+    PlayerCharacterAnorecticCatchphrase = BATTLE_SOUND_FX_CHARACTER_ANORECTIC_START,
+    PlayerCharacterAnorecticHitCharacter,
+    PlayerCharacterAnorecticHitShield,
+    PlayerCharacterAnorecticDeath,
+
+    // Stoner
+    PlayerCharacterStonerCatchphrase = BATTLE_SOUND_FX_CHARACTER_STONER_START,
+    PlayerCharacterStonerHitCharacter,
+    PlayerCharacterStonerHitShield,
+    PlayerCharacterStonerDeath,
+
+    // Martyr
+    PlayerCharacterMartyrCatchphrase = BATTLE_SOUND_FX_CHARACTER_MARTYR_START,
+    PlayerCharacterMartyrHitCharacter,
+    PlayerCharacterMartyrHitShield,
+    PlayerCharacterMartyrDeath,
+
+    // Suicidal
+    PlayerCharacterSuicidalCatchphrase = BATTLE_SOUND_FX_CHARACTER_SUICIDAL_START,
+    PlayerCharacterSuicidalHitCharacter,
+    PlayerCharacterSuicidalHitShield,
+    PlayerCharacterSuicidalDeath,
+
+    // Soulsisters
+    PlayerCharacterSoulsistersCatchphrase = BATTLE_SOUND_FX_CHARACTER_SOULSISTERS_START,
+    PlayerCharacterSoulsistersHitCharacter,
+    PlayerCharacterSoulsistersHitShield,
+    PlayerCharacterSoulsistersDeath,
+
+    // Lovers
+    PlayerCharacterLoversCatchphrase = BATTLE_SOUND_FX_CHARACTER_LOVERS_START,
+    PlayerCharacterLoversHitCharacter,
+    PlayerCharacterLoversHitShield,
+    PlayerCharacterLoversDeath,
+
+    // SleepyHead
+    PlayerCharacterSleepyHeadCatchphrase = BATTLE_SOUND_FX_CHARACTER_SLEEPYHEAD_START,
+    PlayerCharacterSleepyHeadHitCharacter,
+    PlayerCharacterSleepyHeadHitShield,
+    PlayerCharacterSleepyHeadDeath,
+
+    // Tribalist
+    PlayerCharacterTribalistCatchphrase = BATTLE_SOUND_FX_CHARACTER_TRIBALIST_START,
+    PlayerCharacterTribalistHitCharacter,
+    PlayerCharacterTribalistHitShield,
+    PlayerCharacterTribalistDeath,
+
+    // GangBanger
+    PlayerCharacterGangBangerCatchphrase = BATTLE_SOUND_FX_CHARACTER_GANGBANGER_START,
+    PlayerCharacterGangBangerHitCharacter,
+    PlayerCharacterGangBangerHitShield,
+    PlayerCharacterGangBangerDeath,
+
+    // Booksmart
+    PlayerCharacterBooksmartCatchphrase = BATTLE_SOUND_FX_CHARACTER_BOOKSMART_START,
+    PlayerCharacterBooksmartHitCharacter,
+    PlayerCharacterBooksmartHitShield,
+    PlayerCharacterBooksmartDeath,
+
+    // Capitalist
+    PlayerCharacterCapitalistCatchphrase = BATTLE_SOUND_FX_CHARACTER_CAPITALIST_START,
+    PlayerCharacterCapitalistHitCharacter,
+    PlayerCharacterCapitalistHitShield,
+    PlayerCharacterCapitalistDeath,
+
+    // ObsessiveCompulsive
+    PlayerCharacterObsessiveCompulsiveCatchphrase = BATTLE_SOUND_FX_CHARACTER_OBSESSIVECOMPULSIVE_START,
+    PlayerCharacterObsessiveCompulsiveHitCharacter,
+    PlayerCharacterObsessiveCompulsiveHitShield,
+    PlayerCharacterObsessiveCompulsiveDeath,
+
+    // Overcompilator
+    PlayerCharacterOvercompilatorCatchphrase = BATTLE_SOUND_FX_CHARACTER_OVERCOMPILATOR_START,
+    PlayerCharacterOvercompilatorHitCharacter,
+    PlayerCharacterOvercompilatorHitShield,
+    PlayerCharacterOvercompilatorDeath,
+
+    // NitPicker
+    PlayerCharacterNitPickerCatchphrase = BATTLE_SOUND_FX_CHARACTER_NITPICKER_START,
+    PlayerCharacterNitPickerHitCharacter,
+    PlayerCharacterNitPickerHitShield,
+    PlayerCharacterNitPickerDeath
+
+    //} Character Sound Effects
 }
+
