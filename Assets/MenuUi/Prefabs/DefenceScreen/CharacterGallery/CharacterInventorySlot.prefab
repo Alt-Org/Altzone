@@ -609,6 +609,11 @@ PrefabInstance:
       objectReference: {fileID: 5230485633490999660}
     - target: {fileID: 5574122708305743662, guid: 00dd9bde2849f9c498dd00c084457690,
         type: 3}
+      propertyPath: _canvasGroup
+      value: 
+      objectReference: {fileID: 6994725550283123624}
+    - target: {fileID: 5574122708305743662, guid: 00dd9bde2849f9c498dd00c084457690,
+        type: 3}
       propertyPath: _classReference
       value: 
       objectReference: {fileID: 11400000, guid: 3b5ea09e8ee0a3c4fb7574a299b54fe0,
@@ -767,8 +772,30 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 4902536570643717194}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1775543799907187927, guid: 00dd9bde2849f9c498dd00c084457690,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6994725550283123624}
   m_SourcePrefab: {fileID: 100100000, guid: 00dd9bde2849f9c498dd00c084457690, type: 3}
+--- !u!1 &2637093011194353988 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1775543799907187927, guid: 00dd9bde2849f9c498dd00c084457690,
+    type: 3}
+  m_PrefabInstance: {fileID: 4340108514400331155}
+  m_PrefabAsset: {fileID: 0}
+--- !u!225 &6994725550283123624
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2637093011194353988}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!224 &5024676260890555381 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8755021714922067558, guid: 00dd9bde2849f9c498dd00c084457690,
@@ -781,7 +808,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 4340108514400331155}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2637093011194353988}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6fc96871f756aa44fbe4d43438a6c644, type: 3}
