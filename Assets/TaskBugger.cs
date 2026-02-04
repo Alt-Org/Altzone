@@ -15,15 +15,19 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private bool _isHeldDown = false;
 
     [SerializeField] private GameObject _wheelPrefab;
-    private GameObject _wheel;
+    [SerializeField] private TextMeshProUGUI _secondsText;
 
+    private GameObject _wheel;
+     private TextMeshProUGUI _seconds;
     private Canvas _canvas;
     private float progress;
+
 
     private void Awake()
     {
         _canvas = GetComponentInParent<Canvas>();
         InstantiateProgressWheel();
+        InstantiateProgressWheelSeconds();
     }
 
     private void OnEnable()
@@ -37,6 +41,12 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         _wheel.SetActive(false);
     }
 
+    private void InstantiateProgressWheelSeconds()
+    {
+        _seconds = Instantiate(_secondsText, _canvas.transform);
+        _seconds.gameObject.SetActive(false);
+    }
+
     private void StartProgressWheelAtPosition(Vector3 position)
     {
         if (_wheel.activeSelf)
@@ -46,11 +56,25 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         _wheel.GetComponent<Image>().fillAmount = 0f;
         Debug.Log("ProgressWheel started at position: " + position);
     }
-
+    private void StartProgressWheelSecondsAtPosition(Vector3 position)
+     {
+        if (_seconds.gameObject.activeSelf)
+            return;
+        _seconds.gameObject.SetActive(true);
+        Vector3 offset = new Vector3(88f, 75f, 0);
+        _seconds.transform.position = position + offset;
+         Debug.Log("ProgressWheelseconds started at position: " + position);
+     }
     private void DeactivateProgressWheel()
     {
         if (_wheel.activeSelf)
             _wheel.SetActive(false);
+    }
+
+    private void DeactivateProgressWheelSeconds()
+    {
+        if (_seconds != null)
+            _seconds.gameObject.SetActive(false);
     }
 
     private bool currentTaskIsFindBug() {
@@ -74,13 +98,19 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 if(findBugTaskStarted)
                 {
                     StartProgressWheelAtPosition(clickPosition);
+                    StartProgressWheelSecondsAtPosition(clickPosition);
                     progress = Mathf.Lerp(0, 1, timer/_longClickThresholdTime);
                     _wheel.GetComponent<Image>().fillAmount = progress;
+
+                    _seconds.text = getSeconds(timer);
+                    Debug.Log("Seconds: "+_seconds.text);
+
                 }
 
                 if (findBugTaskCompleted)
                 {
                     DeactivateProgressWheel();
+                    DeactivateProgressWheelSeconds();
                     DailyTaskProgressManager.Instance.UpdateTaskProgress(Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.FindBug, "1");
                     yield return new WaitUntil(() => DailyTaskProgressManager.Instance.CurrentPlayerTask == null);
                     StartCoroutine(ToggleBug());
@@ -90,10 +120,30 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 yield return null;
             }
             DeactivateProgressWheel();
+            DeactivateProgressWheelSeconds();
         }
         else
         StartCoroutine(ToggleBug());
     }
+
+
+private string getSeconds(float timer)
+{
+    int currentSecond = Mathf.FloorToInt(timer);
+
+    string textToShow = "";
+
+    if(currentSecond < 1)
+        textToShow = "1s";
+    else if(currentSecond < 2 && currentSecond >= 1)
+        textToShow = "2s";
+    else if(currentSecond < 3 && currentSecond >= 2)
+        textToShow = "3s";
+    else
+        textToShow = "";
+
+    return textToShow;
+}
 
     private IEnumerator ToggleBug()
     {
