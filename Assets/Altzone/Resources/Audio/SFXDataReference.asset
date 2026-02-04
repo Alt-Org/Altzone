@@ -132,25 +132,730 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: Soul Wall Broken
+    - Name: SoulWallBroken
       BattleName: 3
       Type: 0
       Audio: {fileID: 8300000, guid: 3c7bb8f93a5ef644a8b6e29cb1eba772, type: 3}
       Volume: 1
-    - Name: Player Character Racist Shield Hit
-      BattleName: 101
+    - Name: PlayerCharacter101RacistCatchphrase
+      BattleName: 1010
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter101RacistHitCharacter
+      BattleName: 1021
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter101RacistHitShield
+      BattleName: 1012
       Type: 0
       Audio: {fileID: 8300000, guid: 470591296f2603a4580fd9c45f430901, type: 3}
       Volume: 1
-    - Name: Player Character Bodybuilder Shield Hit
-      BattleName: 102
+    - Name: PlayerCharacter101RacistDeath
+      BattleName: 1023
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter102BodyBuilderCatchphrase
+      BattleName: 1020
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter102BodyBuilderHitCharacter
+      BattleName: 1021
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter102BodyBuilderDeath
+      BattleName: 1023
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter102BodyBuilderHitShield
+      BattleName: 1022
       Type: 0
       Audio: {fileID: 8300000, guid: 064fe6620480b11449a21db68498d4a2, type: 3}
       Volume: 1
-    - Name: Player Character Conman Shield Hit
-      BattleName: 203
+    - Name: PlayerCharacter103WarVeteranCatchphrase
+      BattleName: 1030
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter103WarVeteranHitCharacter
+      BattleName: 1031
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter103WarVeteranHitShield
+      BattleName: 1032
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter103WarVeteranDeath
+      BattleName: 1023
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter104BullyCatchphrase
+      BattleName: 1040
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter104BullyHitCharacter
+      BattleName: 1041
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter104BullyHitShield
+      BattleName: 1042
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter104BullyDeath
+      BattleName: 1043
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter105EgoistCatchphrase
+      BattleName: 1050
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter105EgoistHitCharacter
+      BattleName: 1051
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter105EgoistHitShield
+      BattleName: 1052
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter105EgoistDeath
+      BattleName: 1053
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter106DepressedCatchphrase
+      BattleName: 1060
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter106DepressedHitCharacter
+      BattleName: 1061
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter106DepressedHitShield
+      BattleName: 1062
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter106DepressedDeath
+      BattleName: 1063
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter201ComedianCatchphrase
+      BattleName: 2010
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter201ComedianHitCharacter
+      BattleName: 2011
+      Type: 0
+      Audio: {fileID: 8300000, guid: ebd621adc5b9edc48b8d1056795947ea, type: 3}
+      Volume: 1
+    - Name: PlayerCharacter201ComedianHitShield
+      BattleName: 2012
+      Type: 0
+      Audio: {fileID: 8300000, guid: c7b43541ffd8e2a43aad8d39a6a6a536, type: 3}
+      Volume: 1
+    - Name: PlayerCharacter201ComedianDeath
+      BattleName: 2013
+      Type: 0
+      Audio: {fileID: 8300000, guid: ff376466f265ca947949a322fa448f9e, type: 3}
+      Volume: 1
+    - Name: PlayerCharacter202JokerCatchphrase
+      BattleName: 2020
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter202JokerHitCharacter
+      BattleName: 2021
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter202JokerHitShield
+      BattleName: 2022
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter202JokerDeath
+      BattleName: 2023
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter203ConmanCatchphrase
+      BattleName: 2030
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter203HitCharacter
+      BattleName: 2031
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter203HitShield
+      BattleName: 2032
       Type: 0
       Audio: {fileID: 8300000, guid: 315c9a198db36c248a3fdb9ea20a7c60, type: 3}
+      Volume: 1
+    - Name: PlayerCharacter203Death
+      BattleName: 2033
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter204SeducerCatchphrase
+      BattleName: 2040
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter204SeducerHitCharacter
+      BattleName: 2041
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter204SeducerHitShield
+      BattleName: 2042
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter204SeducerDeath
+      BattleName: 2043
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter301ReligiousCatchphrase
+      BattleName: 3010
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter301ReligiousHitCharacter
+      BattleName: 3011
+      Type: 0
+      Audio: {fileID: 8300000, guid: 452240870eccbd440bd83288400c4e82, type: 3}
+      Volume: 1
+    - Name: PlayerCharacter301ReligiousHitShield
+      BattleName: 3012
+      Type: 0
+      Audio: {fileID: 8300000, guid: dc57fdb3ec6210a46b21d8722d32e3e1, type: 3}
+      Volume: 1
+    - Name: PlayerCharacter301ReligiousDeath
+      BattleName: 2043
+      Type: 0
+      Audio: {fileID: 8300000, guid: e138b43efe2209d46b4b55ed3c7fc537, type: 3}
+      Volume: 1
+    - Name: PlayerCharacter302YesmanCatchphrase
+      BattleName: 3020
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter302YesmanHitCharacter
+      BattleName: 3021
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter302YesmanHitShield
+      BattleName: 3022
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter302YesmanDeath
+      BattleName: 3023
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter303SlaveOfTheLawCatchphrase
+      BattleName: 3030
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter303SlaveOfTheLawHitCharacter
+      BattleName: 3031
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter303SlaveOfTheLawHitShield
+      BattleName: 3032
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter303SlaveOfTheLawDeath
+      BattleName: 3033
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter304FashionSlaveCatchphrase
+      BattleName: 3040
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter304FashionSlaveHitCharacter
+      BattleName: 3041
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter304FashionSlaveHitShield
+      BattleName: 3042
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter304FashionSlaveDeath
+      BattleName: 3043
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter305MammasBoyCatchphrase
+      BattleName: 3050
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter305MammasBoyHitCharacter
+      BattleName: 3051
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter305MammasBoyHitShield
+      BattleName: 3052
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter305MammasBoyDeath
+      BattleName: 3053
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter306SuperstitiousCatchphrase
+      BattleName: 3060
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter306SuperstitiousHitCharacter
+      BattleName: 3061
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter306SuperstitiousHitShield
+      BattleName: 3062
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter306SuperstitiousDeath
+      BattleName: 3063
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter401ArtistCatchphrase
+      BattleName: 4010
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter401ArtistHitCharacter
+      BattleName: 4011
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter401ArtistHitShield
+      BattleName: 4012
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter401ArtistDeath
+      BattleName: 4013
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter402ArguerCatchphrase
+      BattleName: 4020
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter402ArguerHitCharacter
+      BattleName: 4021
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter402ArguerHitShield
+      BattleName: 4023
+      Type: 0
+      Audio: {fileID: 8300000, guid: 6db31c51715075544981ff5951cc4685, type: 3}
+      Volume: 1
+    - Name: PlayerCharacter402ArguerDeath
+      BattleName: 4024
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter403ReflectorCatchphrase
+      BattleName: 4030
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter403ReflectorHitCharacter
+      BattleName: 4031
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter403ReflectorHitShield
+      BattleName: 4032
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter403ReflectorDeath
+      BattleName: 4033
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter404DelusionalCatchphrase
+      BattleName: 4040
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter404DelusionalHitCharacter
+      BattleName: 4041
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter404DelusionalHitShield
+      BattleName: 4042
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter404DelusionalDeath
+      BattleName: 4043
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter501OvereaterCatchphrase
+      BattleName: 5010
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter501OvereaterHitCharacter
+      BattleName: 5011
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter501OvereaterHitShield
+      BattleName: 5012
+      Type: 0
+      Audio: {fileID: 8300000, guid: bdc2200c70c756c45a9e1426d2dc01c6, type: 3}
+      Volume: 1
+    - Name: PlayerCharacter501OvereaterDeath
+      BattleName: 5013
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter502AlcoholicCatchphrase
+      BattleName: 5020
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter502AlcoholicHitCharacter
+      BattleName: 5021
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter502AlcoholicHitShield
+      BattleName: 5022
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter502AlcoholicDeath
+      BattleName: 5023
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter503AnorecticCatchphrase
+      BattleName: 5030
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter503AnorecticHitCharacter
+      BattleName: 5031
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter503AnorecticHitShield
+      BattleName: 5032
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter503AnorecticDeath
+      BattleName: 5033
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter504StonerCatchphrase
+      BattleName: 5040
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter504StonerHitCharacter
+      BattleName: 5041
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter504StonerHitShield
+      BattleName: 5042
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter504StonerDeath
+      BattleName: 5043
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter505MartyrCatchphrase
+      BattleName: 5050
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter505MartyrHitCharacter
+      BattleName: 5051
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter505MartyrHitShield
+      BattleName: 5052
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter505MartyrDeath
+      BattleName: 5053
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter506SuicidalCatchphrase
+      BattleName: 5060
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter506SuicidalHitCharacter
+      BattleName: 5061
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter506SuicidalHitShield
+      BattleName: 5062
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter506SuicidalDeath
+      BattleName: 5063
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter601SoulsistersCatchphrase
+      BattleName: 6010
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter601SoulsistersHitCharacter
+      BattleName: 6011
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter601SoulsistersHitShield
+      BattleName: 6012
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter601SoulsistersDeath
+      BattleName: 6013
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter602LoversCatchphrase
+      BattleName: 6020
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter602LoversHitCharacter
+      BattleName: 6021
+      Type: 0
+      Audio: {fileID: 8300000, guid: 87342f6badc8f714abb4de9b88e6290e, type: 3}
+      Volume: 1
+    - Name: PlayerCharacter602LoversHitShield
+      BattleName: 6022
+      Type: 0
+      Audio: {fileID: 8300000, guid: 0f9893b959b276c4dbd8a69835826c55, type: 3}
+      Volume: 1
+    - Name: PlayerCharacter602LoversDeath
+      BattleName: 6023
+      Type: 0
+      Audio: {fileID: 8300000, guid: 97b6e040153662e43a06be7df671c640, type: 3}
+      Volume: 1
+    - Name: PlayerCharacter603SleepyHeadCatchphrase
+      BattleName: 6030
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter603SleepyHeadHitCharacter
+      BattleName: 6031
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter603SleepyHeadHitShield
+      BattleName: 6032
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter603SleepyHeadDeath
+      BattleName: 6033
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter604TribalistCatchphrase
+      BattleName: 6040
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter604TribalistHitCharacter
+      BattleName: 6041
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter604TribalistHitShield
+      BattleName: 6042
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter604TribalistDeath
+      BattleName: 6043
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter605GangBangerCatchphrase
+      BattleName: 6050
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter605GangBangerHitCharacter
+      BattleName: 6051
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter605GangBangerHitShield
+      BattleName: 6052
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter605GangBangerDeath
+      BattleName: 6053
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter701BooksmartCatchphrase
+      BattleName: 7010
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter701BooksmartHitCharacter
+      BattleName: 7011
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter701BooksmartHitShield
+      BattleName: 7012
+      Type: 0
+      Audio: {fileID: 8300000, guid: 78f4b26388e5018459c67ccdbca8a7a3, type: 3}
+      Volume: 1
+    - Name: PlayerCharacter701BooksmartDeath
+      BattleName: 7013
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter702CapitalistCatchphrase
+      BattleName: 7020
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter702CapitalistHitCharacter
+      BattleName: 7021
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter702CapitalistHitShield
+      BattleName: 7022
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter702CapitalistDeath
+      BattleName: 7023
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter703ObsessiveCompulsiveCatchphrase
+      BattleName: 7030
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter703ObsessiveCompulsiveHitCharacter
+      BattleName: 7031
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter703ObsessiveCompulsiveHitShield
+      BattleName: 7032
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter703ObsessiveCompulsiveDeath
+      BattleName: 7033
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter704OvercompilatorCatchphrase
+      BattleName: 7040
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter704OvercompilatorHitCharacter
+      BattleName: 7041
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter704OvercompilatorHitShield
+      BattleName: 7042
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter704OvercompilatorDeath
+      BattleName: 7043
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter705NitpickerCatchphrase
+      BattleName: 7050
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter705NitpickerHitCharacter
+      BattleName: 7051
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter705NitpickerHitShield
+      BattleName: 7052
+      Type: 0
+      Audio: {fileID: 0}
+      Volume: 1
+    - Name: PlayerCharacter705NitpickerDeath
+      BattleName: 7053
+      Type: 0
+      Audio: {fileID: 0}
       Volume: 1
   - Name: Battle_Raid
     Type: 5
