@@ -4086,7 +4086,6 @@ GameObject:
   - component: {fileID: 7067580923181351363}
   - component: {fileID: 3518445817162496153}
   - component: {fileID: 3158633835028854601}
-  - component: {fileID: 8197556792711410965}
   - component: {fileID: 80827717784138613}
   m_Layer: 5
   m_Name: MegaphoneImage
@@ -4210,25 +4209,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &8197556792711410965
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8998206715555897080}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 0
-  _educationCategoryType: 3
-  _educationCategoryActionType: 3
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 3
-  _educationCategoryCultureType: 5
-  _educationCategoryEthicalType: 0
 --- !u!114 &80827717784138613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4241,6 +4221,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 835b61347be3afd42884914ff805f122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 3
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 5
+  _educationCategoryEthicalType: 0
   _longClickStartThresholdTime: 0.2
   _longClickThresholdTime: 2
   _uniqueName: 
@@ -5045,6 +5032,11 @@ PrefabInstance:
     - target: {fileID: 6882338095922836733, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6924264353861042730, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6971035789137507987, guid: 57890b7dbec8a984abb7d8148eefe9f6,

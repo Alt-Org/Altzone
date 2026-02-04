@@ -5291,10 +5291,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7195143674239219267, guid: aa8e51fd0fa1b9841bcdbae45e3284f5,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5856839814745279239}
-    - targetCorrespondingSourceObject: {fileID: 7195143674239219267, guid: aa8e51fd0fa1b9841bcdbae45e3284f5,
-        type: 3}
-      insertIndex: -1
       addedObject: {fileID: 3965981617086446242}
   m_SourcePrefab: {fileID: 100100000, guid: aa8e51fd0fa1b9841bcdbae45e3284f5, type: 3}
 --- !u!224 &1222378919143864489 stripped
@@ -5321,25 +5317,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4553947959010686883}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &5856839814745279239
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6694766351252128224}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 0
-  _educationCategoryType: 3
-  _educationCategoryActionType: 3
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 3
-  _educationCategoryCultureType: 5
-  _educationCategoryEthicalType: 0
 --- !u!114 &3965981617086446242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5352,6 +5329,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 835b61347be3afd42884914ff805f122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 3
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 5
+  _educationCategoryEthicalType: 0
   _longClickStartThresholdTime: 0.2
   _longClickThresholdTime: 3
   _uniqueName: 
