@@ -488,7 +488,6 @@ namespace MenuUI.Scripts.SoulHome {
                     SpriteLibraryAsset library = resolver.spriteLibrary.spriteLibraryAsset;
                     SpriteRenderer spriteRenderer = resolver.GetComponent<SpriteRenderer>();
 
-                    // for if sprite id in playerdata is not in sprite library
                     bool labelExists = library.GetCategoryLabelNames(resolverStruct._category).Contains(label);
 
                     if (!labelExists)
