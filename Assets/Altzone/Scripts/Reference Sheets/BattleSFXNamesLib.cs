@@ -16,7 +16,7 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         SoulWallHitPlayful = BattleSoundFX.SoulWallHitPlayful,
         SoulWallHitSadness = BattleSoundFX.SoulWallHitSadness,
 
-        #region Character Sound Effects
+        #region
 
         // Racist
         PlayerCharacterRacistCatchphrase = BattleSoundFX.PlayerCharacterRacistCatchphrase,
@@ -55,10 +55,14 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterDepressedDeath        = BattleSoundFX.PlayerCharacterDepressedDeath,
 
         // Comedian
-        PlayerCharacterComedianCatchphrase  = BattleSoundFX.PlayerCharacterComedianCatchphrase,
-        PlayerCharacterComedianHitCharacter = BattleSoundFX.PlayerCharacterComedianHitCharacter,
-        PlayerCharacterComedianHitShield    = BattleSoundFX.PlayerCharacterComedianHitShield,
-        PlayerCharacterComedianDeath        = BattleSoundFX.PlayerCharacterComedianDeath,
+        PlayerCharacterComedianCatchphrase           = BattleSoundFX.PlayerCharacterComedianCatchphrase,
+        PlayerCharacterComedianHitCharacterAggresion = BattleSoundFX.PlayerCharacterComedianHitCharacterAggression,
+        PlayerCharacterComedianHitCharacterJoy       = BattleSoundFX.PlayerCharacterComedianHitCharacterJoy,
+        PlayerCharacterComedianHitCharacterPlayful   = BattleSoundFX.PlayerCharacterComedianHitCharacterPlayful,
+        PlayerCharacterComedianHitCharacterLove      = BattleSoundFX.PlayerCharacterComedianHitCharacterLove,
+        PlayerCharacterComedianHitCharacterSadness   = BattleSoundFX.PlayerCharacterComedianHitCharacterSadness,
+        PlayerCharacterComedianHitShield             = BattleSoundFX.PlayerCharacterComedianHitShield,
+        PlayerCharacterComedianDeath                 = BattleSoundFX.PlayerCharacterComedianDeath,
 
         // Joker
         PlayerCharacterJokerCatchphrase  = BattleSoundFX.PlayerCharacterJokerCatchphrase,
@@ -80,7 +84,11 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
 
         // Religious
         PlayerCharacterReligiousCatchphrase  = BattleSoundFX.PlayerCharacterReligiousCatchphrase,
-        PlayerCharacterReligiousHitCharacter = BattleSoundFX.PlayerCharacterReligiousHitCharacter,
+        PlayerCharacterReligiousHitCharacterAggression = BattleSoundFX.PlayerCharacterReligiousHitCharacterAggression,
+        PlayerCharacterReligiousHitCharacterJoy = BattleSoundFX.PlayerCharacterReligiousHitCharacterJoy,
+        PlayerCharacterReligiousHitCharacterPlayful = BattleSoundFX.PlayerCharacterReligiousHitCharacterPlayful,
+        PlayerCharacterReligiousHitCharacterLove = BattleSoundFX.PlayerCharacterReligiousHitCharacterLove,
+        PlayerCharacterReligiousHitCharacterSadness = BattleSoundFX.PlayerCharacterReligiousHitCharacterSadness,
         PlayerCharacterReligiousHitShield    = BattleSoundFX.PlayerCharacterReligiousHitShield,
         PlayerCharacterReligiousDeath        = BattleSoundFX.PlayerCharacterSeducerDeath,
 
@@ -181,10 +189,14 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterSoulsistersDeath        = BattleSoundFX.PlayerCharacterSoulsistersDeath,
 
         // Lovers
-        PlayerCharacterLoversCatchphrase  = BattleSoundFX.PlayerCharacterLoversCatchphrase,
-        PlayerCharacterLoversHitCharacter = BattleSoundFX.PlayerCharacterLoversHitCharacter,
-        PlayerCharacterLoversHitShield    = BattleSoundFX.PlayerCharacterLoversHitShield,
-        PlayerCharacterLoversDeath        = BattleSoundFX.PlayerCharacterLoversDeath,
+        PlayerCharacterLoversCatchphrase            = BattleSoundFX.PlayerCharacterLoversCatchphrase,
+        PlayerCharacterLoversHitCharacterAggression = BattleSoundFX.PlayerCharacterLoversHitCharacterAggression,
+        PlayerCharacterLoversHitCharacterJoy        = BattleSoundFX.PlayerCharacterLoversHitCharacterJoy,
+        PlayerCharacterLoversHitCharacterPlayful    = BattleSoundFX.PlayerCharacterLoversHitCharacterPlayful,
+        PlayerCharacterLoversHitCharacterLove       = BattleSoundFX.PlayerCharacterLoversHitCharacterLove,
+        PlayerCharacterLoversHitCharacterSadness    = BattleSoundFX.PlayerCharacterLoversHitCharacterSadness,
+        PlayerCharacterLoversHitShield              = BattleSoundFX.PlayerCharacterLoversHitShield,
+        PlayerCharacterLoversDeath                  = BattleSoundFX.PlayerCharacterLoversDeath,
 
         // SleepyHead
         PlayerCharacterSleepyHeadCatchphrase  = BattleSoundFX.PlayerCharacterSleepyHeadCatchphrase,

@@ -98,7 +98,11 @@ enum BattleSoundFX
 
     // Comedian
     PlayerCharacterComedianCatchphrase = BATTLE_SOUND_FX_CHARACTER_COMEDIAN_START,
-    PlayerCharacterComedianHitCharacter,
+    PlayerCharacterComedianHitCharacterAggression,
+    PlayerCharacterComedianHitCharacterJoy,
+    PlayerCharacterComedianHitCharacterLove,
+    PlayerCharacterComedianHitCharacterPlayful,
+    PlayerCharacterComedianHitCharacterSadness,
     PlayerCharacterComedianHitShield,
     PlayerCharacterComedianDeath,
 
@@ -122,7 +126,11 @@ enum BattleSoundFX
 
     // Religious
     PlayerCharacterReligiousCatchphrase = BATTLE_SOUND_FX_CHARACTER_RELIGIOUS_START,
-    PlayerCharacterReligiousHitCharacter,
+    PlayerCharacterReligiousHitCharacterAggression,
+    PlayerCharacterReligiousHitCharacterJoy,
+    PlayerCharacterReligiousHitCharacterPlayful,
+    PlayerCharacterReligiousHitCharacterLove,
+    PlayerCharacterReligiousHitCharacterSadness,
     PlayerCharacterReligiousHitShield,
     PlayerCharacterReligiousDeath,
 
@@ -224,7 +232,11 @@ enum BattleSoundFX
 
     // Lovers
     PlayerCharacterLoversCatchphrase = BATTLE_SOUND_FX_CHARACTER_LOVERS_START,
-    PlayerCharacterLoversHitCharacter,
+    PlayerCharacterLoversHitCharacterAggression,
+    PlayerCharacterLoversHitCharacterJoy,
+    PlayerCharacterLoversHitCharacterPlayful,
+    PlayerCharacterLoversHitCharacterLove,
+    PlayerCharacterLoversHitCharacterSadness,
     PlayerCharacterLoversHitShield,
     PlayerCharacterLoversDeath,
 

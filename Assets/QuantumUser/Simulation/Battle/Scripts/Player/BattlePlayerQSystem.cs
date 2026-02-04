@@ -91,7 +91,7 @@ namespace Battle.QSimulation.Player
             //BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->PlayerEntity);
             FP damageTaken = projectileCollisionData->Projectile->Attack;
 
-            HandleSFX(f, damagedPlayerData->CharacterId, SoundEffectType.HitCharacter);
+            HandleSFX(f, damagedPlayerData->CharacterId, SoundEffectType.HitCharacterAggression);
 
             BattlePlayerManager.PlayerHandle damagePlayerHandle = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot);
             int characterNumber = damagePlayerHandle.SelectedCharacterNumber;
@@ -202,7 +202,7 @@ namespace Battle.QSimulation.Player
         private enum SoundEffectType
         {
             Catchphrase,
-            HitCharacter,
+            HitCharacterAggression,
             HitShield,
             Death
         }
