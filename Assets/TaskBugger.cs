@@ -22,7 +22,6 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private Canvas _canvas;
     private float progress;
 
-
     private void Awake()
     {
         _canvas = GetComponentInParent<Canvas>();
@@ -34,19 +33,19 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         StartCoroutine(ToggleBug());
     }
-
+    //Instantiate wheel
     private void InstantiateProgressWheel()
     {
         _wheel = Instantiate(_wheelPrefab, _canvas.transform);
         _wheel.SetActive(false);
     }
-
+    //Instantiate seconds above wheel
     private void InstantiateProgressWheelSeconds()
     {
         _seconds = Instantiate(_secondsText, _canvas.transform);
         _seconds.gameObject.SetActive(false);
     }
-
+    //Function for setting wheel on(if not aleady) and updating progress
     private void StartProgressWheelAtPosition(Vector3 position)
     {
         if (_wheel.activeSelf)
@@ -56,6 +55,8 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         _wheel.GetComponent<Image>().fillAmount = 0f;
         Debug.Log("ProgressWheel started at position: " + position);
     }
+    //Function for setting seconds on(if not already) wheel true and updating progress
+    //offset is for setting seconds right above wheel
     private void StartProgressWheelSecondsAtPosition(Vector3 position)
      {
         if (_seconds.gameObject.activeSelf)
@@ -65,12 +66,13 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         _seconds.transform.position = position + offset;
          Debug.Log("ProgressWheelseconds started at position: " + position);
      }
+    //Deactivation of wheel when task is done
     private void DeactivateProgressWheel()
     {
         if (_wheel.activeSelf)
             _wheel.SetActive(false);
     }
-
+    //Deactivation of seconds when task is done
     private void DeactivateProgressWheelSeconds()
     {
         if (_seconds != null)
@@ -81,7 +83,7 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         return (DailyTaskProgressManager.Instance.CurrentPlayerTask != null
             && DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationActionType == Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.FindBug);
     }
-
+    //Process of pressing bug in task
     private void ClickBuggedText(Vector3 clickPosition) => StartCoroutine(ClickBuggedTextCoroutine(clickPosition));
 
     private IEnumerator ClickBuggedTextCoroutine(Vector3 clickPosition)
@@ -126,7 +128,7 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         StartCoroutine(ToggleBug());
     }
 
-
+//Function for seconds calculation syntax
 private string getSeconds(float timer)
 {
     int currentSecond = Mathf.FloorToInt(timer);
@@ -163,7 +165,7 @@ private string getSeconds(float timer)
             //_button.onClick.RemoveListener(ClickBuggedText);
         }
     }
-
+    //Converts screenpoint(click) to worldpoint
     private Vector3 ScreenToWorldPoint(Vector2 screenPosition)
     {
         RectTransformUtility.ScreenPointToWorldPointInRectangle(
