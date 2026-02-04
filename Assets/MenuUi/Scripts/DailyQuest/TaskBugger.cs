@@ -5,10 +5,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class TaskBugger : DailyTaskLongPress, IPointerDownHandler, IPointerUpHandler
 {
-    [SerializeField] private float _longClickStartThresholdTime = 0.2f;
-    [SerializeField] private float _longClickThresholdTime = 3f;
     [SerializeField] private TextMeshProUGUI _buggedText;
     [SerializeField] private Toggle _toggle;
     [SerializeField] private Button _button;
@@ -16,26 +14,9 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     [SerializeField] private GameObject _wheelPrefab;
 
-    private GameObject _wheel;
-    private Canvas _canvas;
-
-    private void Awake()
-    {
-        _canvas = GetComponentInParent<Canvas>();
-        if (ProgressWheelHandler.Instance == null) InstantiateProgressWheel();
-        else _wheel = ProgressWheelHandler.Instance.gameObject;
-    }
-
     private void OnEnable()
     {
         StartCoroutine(ToggleBug());
-    }
-
-    //Instantiate wheel
-    private void InstantiateProgressWheel()
-    {
-        _wheel = Instantiate(_wheelPrefab, _canvas.transform);
-        _wheel.SetActive(false);
     }
 
     private bool CurrentTaskIsFindBug() {
@@ -44,9 +25,9 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     }
 
     //Process of pressing bug in task
-    private void ClickBuggedText(Vector3 clickPosition) => StartCoroutine(ClickBuggedTextCoroutine(clickPosition));
+    private void ClickBuggedText(Vector3 clickPosition) => StartCoroutine(HoldDownTimer(clickPosition));
 
-    private IEnumerator ClickBuggedTextCoroutine(Vector3 clickPosition)
+    protected override IEnumerator HoldDownTimer(Vector3 clickPosition)
     {
         if (CurrentTaskIsFindBug())
         {
@@ -98,26 +79,14 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
     }
 
-    //Converts screenpoint(click) to worldpoint
-    private Vector3 ScreenToWorldPoint(Vector2 screenPosition)
-    {
-        RectTransformUtility.ScreenPointToWorldPointInRectangle(
-            _canvas.transform as RectTransform,
-            screenPosition,
-            _canvas.worldCamera,
-            out Vector3 worldPoint
-        );
-        return worldPoint;
-    }
 
-    public void OnPointerDown(PointerEventData eventData)
+    public override void OnPointerDown(PointerEventData eventData)
     {
+        if (!On)
+            return;
+
+        _oneShot = true;
         _isHeldDown = true;
         ClickBuggedText(ScreenToWorldPoint(eventData.position));
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        _isHeldDown = false;
     }
 }
