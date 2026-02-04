@@ -1,3 +1,4 @@
+using Altzone.Scripts.Language;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
 using TMPro;
@@ -16,8 +17,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         [SerializeField] private Image _characterImageTop;
         [SerializeField] private Image _characterImageBottom;
-        [SerializeField] private TMP_Text _characterDescription;
-        [SerializeField] private TMP_Text _specialAbility;
+        [SerializeField] private TextLanguageSelectorCaller _characterDescription;
+        [SerializeField] private TextLanguageSelectorCaller _specialAbility;
         [SerializeField] private TMP_Text _wins;
         [SerializeField] private TMP_Text _losses;
         [SerializeField] private TMP_Text _className;
@@ -80,7 +81,9 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         }
         private void SetCharacterDescription()
         {
-            _characterDescription.text = _controller.GetCurrentCharacterDescription();
+            _characterDescription.SetText(_controller.GetCurrentCharacterDescription());
+            _specialAbility.SetText(_controller.GetCurrentCharacterSpecialAbilityDescription());
+
         }
         private void SetWinsAndLosses()
         {
