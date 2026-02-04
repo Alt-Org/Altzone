@@ -5,37 +5,47 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class TaskBugger : DailyTaskLongPress, IPointerDownHandler, IPointerUpHandler
 {
-    [SerializeField] private float _longClickStartThresholdTime = 0.2f;
-    [SerializeField] private float _longClickThresholdTime = 3f;
     [SerializeField] private TextMeshProUGUI _buggedText;
     [SerializeField] private Toggle _toggle;
     [SerializeField] private Button _button;
     private bool _isHeldDown = false;
+
+    [SerializeField] private GameObject _wheelPrefab;
 
     private void OnEnable()
     {
         StartCoroutine(ToggleBug());
     }
 
-    private void ClickBuggedText() => StartCoroutine(ClickBuggedTextCoroutine());
+    private bool CurrentTaskIsFindBug() {
+        return (DailyTaskProgressManager.Instance.CurrentPlayerTask != null
+            && DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationActionType == Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.FindBug);
+    }
 
-    private IEnumerator ClickBuggedTextCoroutine()
+    //Process of pressing bug in task
+    private void ClickBuggedText(Vector3 clickPosition) => StartCoroutine(HoldDownTimer(clickPosition));
+
+    protected override IEnumerator HoldDownTimer(Vector3 clickPosition)
     {
-        if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null
-            && DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationActionType == Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.FindBug)
+        if (CurrentTaskIsFindBug())
         {
             float timer = 0f;
-            while (true)
+            while (_isHeldDown)
             {
                 timer += Time.deltaTime;
+                bool findBugTaskStarted = (timer > _longClickStartThresholdTime);
+                bool findBugTaskCompleted = (timer >= _longClickThresholdTime);
 
-                if (_isHeldDown == false)
-                    yield break;
-
-                if (timer >= _longClickThresholdTime)
+                if(findBugTaskStarted)
                 {
+                    ProgressWheelHandler.Instance.StartProgressWheelAtPosition(clickPosition, _longClickStartThresholdTime, _longClickThresholdTime);
+                }
+
+                if (findBugTaskCompleted)
+                {
+                    ProgressWheelHandler.Instance.DeactivateProgressWheel();
                     DailyTaskProgressManager.Instance.UpdateTaskProgress(Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.FindBug, "1");
                     yield return new WaitUntil(() => DailyTaskProgressManager.Instance.CurrentPlayerTask == null);
                     StartCoroutine(ToggleBug());
@@ -44,6 +54,7 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
                 yield return null;
             }
+            ProgressWheelHandler.Instance.DeactivateProgressWheel();
         }
         else
         StartCoroutine(ToggleBug());
@@ -52,8 +63,7 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private IEnumerator ToggleBug()
     {
         yield return null;
-        if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null
-                    && DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationActionType == Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.FindBug)
+        if (CurrentTaskIsFindBug())
         {
             _buggedText.SetText("##Text_Parental_Internet_English");
             _toggle.enabled = false;
@@ -69,14 +79,14 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
     }
 
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        _isHeldDown = true;
-        ClickBuggedText();
-    }
 
-    public void OnPointerUp(PointerEventData eventData)
+    public override void OnPointerDown(PointerEventData eventData)
     {
-        _isHeldDown = false;
+        if (!On)
+            return;
+
+        _oneShot = true;
+        _isHeldDown = true;
+        ClickBuggedText(ScreenToWorldPoint(eventData.position));
     }
 }
