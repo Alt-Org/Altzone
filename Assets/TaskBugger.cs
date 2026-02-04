@@ -18,15 +18,13 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     [SerializeField] private TextMeshProUGUI _secondsText;
 
     private GameObject _wheel;
-     private TextMeshProUGUI _seconds;
     private Canvas _canvas;
-    private float progress;
 
     private void Awake()
     {
         _canvas = GetComponentInParent<Canvas>();
-        InstantiateProgressWheel();
-        InstantiateProgressWheelSeconds();
+        if (ProgressWheelHandler.Instance == null) InstantiateProgressWheel();
+        else _wheel = ProgressWheelHandler.Instance.gameObject;
     }
 
     private void OnEnable()
@@ -41,51 +39,7 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         _wheel.SetActive(false);
     }
 
-    //Instantiate seconds above wheel
-    private void InstantiateProgressWheelSeconds()
-    {
-        _seconds = Instantiate(_secondsText, _canvas.transform);
-        _seconds.gameObject.SetActive(false);
-    }
-
-    //Function for setting wheel on(if not aleady) and updating progress
-    private void StartProgressWheelAtPosition(Vector3 position)
-    {
-        if (_wheel.activeSelf)
-            return;
-        _wheel.SetActive(true);
-        _wheel.transform.position = position;
-        _wheel.GetComponent<Image>().fillAmount = 0f;
-        Debug.Log("ProgressWheel started at position: " + position);
-    }
-
-    //Function for setting seconds on(if not already) wheel true and updating progress
-    //offset is for setting seconds right above wheel
-    private void StartProgressWheelSecondsAtPosition(Vector3 position)
-     {
-        if (_seconds.gameObject.activeSelf)
-            return;
-        _seconds.gameObject.SetActive(true);
-        Vector3 offset = new Vector3(88f, 75f, 0);
-        _seconds.transform.position = position + offset;
-         Debug.Log("ProgressWheelseconds started at position: " + position);
-     }
-
-    //Deactivation of wheel when task is done
-    private void DeactivateProgressWheel()
-    {
-        if (_wheel.activeSelf)
-            _wheel.SetActive(false);
-    }
-
-    //Deactivation of seconds when task is done
-    private void DeactivateProgressWheelSeconds()
-    {
-        if (_seconds != null)
-            _seconds.gameObject.SetActive(false);
-    }
-
-    private bool currentTaskIsFindBug() {
+    private bool CurrentTaskIsFindBug() {
         return (DailyTaskProgressManager.Instance.CurrentPlayerTask != null
             && DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationActionType == Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.FindBug);
     }
@@ -95,7 +49,7 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     private IEnumerator ClickBuggedTextCoroutine(Vector3 clickPosition)
     {
-        if (currentTaskIsFindBug())
+        if (CurrentTaskIsFindBug())
         {
             float timer = 0f;
             while (_isHeldDown)
@@ -106,20 +60,12 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
                 if(findBugTaskStarted)
                 {
-                    StartProgressWheelAtPosition(clickPosition);
-                    StartProgressWheelSecondsAtPosition(clickPosition);
-                    progress = Mathf.Lerp(0, 1, timer/_longClickThresholdTime);
-                    _wheel.GetComponent<Image>().fillAmount = progress;
-
-                    _seconds.text = GetSeconds(timer);
-                    Debug.Log("Seconds: "+_seconds.text);
-
+                    ProgressWheelHandler.Instance.StartProgressWheelAtPosition(clickPosition, _longClickStartThresholdTime, _longClickThresholdTime);
                 }
 
                 if (findBugTaskCompleted)
                 {
-                    DeactivateProgressWheel();
-                    DeactivateProgressWheelSeconds();
+                    ProgressWheelHandler.Instance.DeactivateProgressWheel();
                     DailyTaskProgressManager.Instance.UpdateTaskProgress(Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.FindBug, "1");
                     yield return new WaitUntil(() => DailyTaskProgressManager.Instance.CurrentPlayerTask == null);
                     StartCoroutine(ToggleBug());
@@ -128,32 +74,16 @@ public class TaskBugger : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
                 yield return null;
             }
-            DeactivateProgressWheel();
-            DeactivateProgressWheelSeconds();
+            ProgressWheelHandler.Instance.DeactivateProgressWheel();
         }
         else
         StartCoroutine(ToggleBug());
     }
 
-    //Function for seconds calculation syntax
-    private string GetSeconds(float timer)
-    {
-        float seconds = _longClickThresholdTime - timer;
-
-        if (seconds < 0)
-        {
-            seconds = 0f;
-        }
-
-        string secondsInText = seconds.ToString("0.0");
-
-        return secondsInText;
-    }
-
     private IEnumerator ToggleBug()
     {
         yield return null;
-        if (currentTaskIsFindBug())
+        if (CurrentTaskIsFindBug())
         {
             _buggedText.SetText("##Text_Parental_Internet_English");
             _toggle.enabled = false;
