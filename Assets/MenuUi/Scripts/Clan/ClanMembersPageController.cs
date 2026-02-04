@@ -155,6 +155,11 @@ public class ClanMembersPageController : MonoBehaviour
                     var visualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(avatarData);
                     if (visualData != null)
                         faceLoader.UpdateVisuals(visualData);
+
+                    // IMPORTANT: member list uses RectMask2D clipping.
+                    // Avatar visuals may assign a custom material that ignores UI clipping,
+                    // so we force default UI material (null) for all avatar Images under this plaque.
+                    ClearUIMaterials(faceLoader.transform);
                 }
             }
 
@@ -179,6 +184,24 @@ public class ClanMembersPageController : MonoBehaviour
 
         _rebuildRoutine = null;
     }
+
+    private static void ClearUIMaterials(Transform root)
+    {
+        if (root == null) return;
+
+        var images = root.GetComponentsInChildren<Image>(true);
+        foreach (var img in images)
+        {
+            if (img == null) continue;
+
+            // Forces Unity UI default material/shader (supports RectMask2D clipping)
+            img.material = null;
+
+            // Optional safety: ensure it can be clipped by masks
+            img.maskable = true;
+        }
+    }
+
 
     public void SetNameSort(ClanMembersFiltersPopup.NameSort sort)
     {
