@@ -89,10 +89,9 @@ namespace Quantum {
           default: break;
         }
       }
-      public EventBattleViewWaitForPlayers BattleViewWaitForPlayers(BattleWaitForPlayersData Data) {
+      public EventBattleViewWaitForPlayers BattleViewWaitForPlayers() {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventBattleViewWaitForPlayers>(EventBattleViewWaitForPlayers.ID);
-        ev.Data = Data;
         _f.AddEvent(ev);
         return ev;
       }
@@ -282,7 +281,6 @@ namespace Quantum {
   }
   public unsafe partial class EventBattleViewWaitForPlayers : EventBase {
     public new const Int32 ID = 1;
-    public BattleWaitForPlayersData Data;
     protected EventBattleViewWaitForPlayers(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
@@ -300,7 +298,6 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 41;
-        hash = hash * 31 + Data.GetHashCode();
         return hash;
       }
     }

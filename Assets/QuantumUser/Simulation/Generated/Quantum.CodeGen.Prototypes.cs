@@ -544,20 +544,6 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleWaitForPlayersData))]
-  public unsafe partial class BattleWaitForPlayersDataPrototype : StructPrototype {
-    [MaxStringByteCount(62, "Unicode")]
-    [ArrayLengthAttribute(4)]
-    public string[] PlayerNames = new System.String[4];
-    partial void MaterializeUser(Frame frame, ref Quantum.BattleWaitForPlayersData result, in PrototypeMaterializationContext context);
-    public void Materialize(Frame frame, ref Quantum.BattleWaitForPlayersData result, in PrototypeMaterializationContext context = default) {
-        for (int i = 0, count = PrototypeValidator.CheckLength(PlayerNames, 4, in context); i < count; ++i) {
-          PrototypeValidator.AssignQString(this.PlayerNames[i], 64, in context, out *result.PlayerNames.GetPointer(i));
-        }
-        MaterializeUser(frame, ref result, in context);
-    }
-  }
-  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Input))]
   public unsafe partial class InputPrototype : StructPrototype {
     public QBoolean IsValid;

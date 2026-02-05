@@ -17,6 +17,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] public GalleryCharacter Character;
 
         [HideInInspector] public bool IsLocked = false;
+        [HideInInspector] public bool IsUsed = false;
         public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, string className, Sprite classIcon, CharacterID id)
         {
             _id = id;

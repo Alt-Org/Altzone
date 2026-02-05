@@ -480,7 +480,7 @@ GameObject:
   - component: {fileID: 5325884397633407581}
   - component: {fileID: 6302205619372810644}
   - component: {fileID: 5726568554554576530}
-  - component: {fileID: 7922650429823181279}
+  - component: {fileID: 1602953700638430682}
   m_Layer: 5
   m_Name: CharacterDescriptionText
   m_TagString: Untagged
@@ -609,7 +609,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &7922650429823181279
+--- !u!114 &1602953700638430682
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -618,11 +618,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 581416902398624800}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Script: {fileID: 11500000, guid: 99bef45c2704bb147a99ddcb380f3986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _finnishText: Hahmon kuvaus
-  _englishText: Character description
+  _finnishText: Hahmon kuvaus (Tulossa pian)
+  _englishText: Character description (Coming soon)
 --- !u!1 &784772028906336856
 GameObject:
   m_ObjectHideFlags: 0
@@ -1910,8 +1910,8 @@ MonoBehaviour:
   _lockImage: {fileID: 1302070668104669618}
   _characterImageTop: {fileID: 8793962222538279284}
   _characterImageBottom: {fileID: 4604137879576574366}
-  _characterDescription: {fileID: 5726568554554576530}
-  _specialAbility: {fileID: 5446866013185755133}
+  _characterDescription: {fileID: 1602953700638430682}
+  _specialAbility: {fileID: 3452585427253708016}
   _wins: {fileID: 2393183410678011152}
   _losses: {fileID: 3812411143612821626}
   _className: {fileID: 6706664269293269506}
@@ -2662,7 +2662,7 @@ GameObject:
   - component: {fileID: 8347567636318005207}
   - component: {fileID: 689628428921210905}
   - component: {fileID: 5446866013185755133}
-  - component: {fileID: 7678339929685446444}
+  - component: {fileID: 3452585427253708016}
   m_Layer: 5
   m_Name: SpecialAbilityText
   m_TagString: Untagged
@@ -2789,7 +2789,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &7678339929685446444
+--- !u!114 &3452585427253708016
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2798,11 +2798,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4229102986632118114}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Script: {fileID: 11500000, guid: 99bef45c2704bb147a99ddcb380f3986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _finnishText: Erikoistaidon kuvaus
-  _englishText: Special ability
+  _finnishText: Hahmon erikoiskyvyn kuvaus (Tulossa pian)
+  _englishText: Characters special ability description (Coming soon)
 --- !u!1 &4461414255118862611
 GameObject:
   m_ObjectHideFlags: 0
