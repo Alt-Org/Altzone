@@ -100,6 +100,7 @@ namespace MenuUi.Scripts.Loader
             bool checkFinished = false;
             StartCoroutine(AndroidVersionCheck.VersionCheck(c=> checkFinished=c));
             yield return new WaitUntil(()=> checkFinished);
+            VersionCheckFinished = true;
 #else
             StartCoroutine(ServerManager.Instance.GetAllowedVersion((pass, version) =>
             {
@@ -114,8 +115,8 @@ namespace MenuUi.Scripts.Loader
                 VersionCheckFinished = true;
             }));
             //yield return new WaitUntil(() => VersionCheckFinished);
-            yield return InitializeDataStore();
 #endif
+            yield return InitializeDataStore();
         }
 
         private void LoadHandler()

@@ -62,7 +62,7 @@ namespace MenuUi.Scripts.Loader
         private IEnumerator WaitVersionCheck()
         {
             _loadInfoController.Status = LogInStatus.VersionCheck;
-            yield return new WaitUntil(() => GameLoader.Instance.VersionCheckPassed.HasValue);
+            yield return new WaitUntil(() => GameLoader.Instance.VersionCheckFinished);
             CheckLanguage();
         }
 
