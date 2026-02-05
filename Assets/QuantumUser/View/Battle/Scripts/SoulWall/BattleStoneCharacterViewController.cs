@@ -103,6 +103,12 @@ namespace Battle.View.SoulWall
             }
         }
 
+        /// <summary>
+        /// Plays a StoneCharacter animation when the projectile hits the stone wall in front of it
+        /// </summary>
+        ///
+        /// <param name="team">The BattleTeamNumber which StoneCharacter plays the animation.</param>
+        /// <param name="emotion">The emotion for the playable animation.</param>
         public void PlayHitAnimation(BattleTeamNumber team, BattleEmotionState emotion)
         {
             Animator animator = team == BattleTeamNumber.TeamAlpha
