@@ -3,32 +3,43 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Store;
 using MenuUi.Scripts.Storage;
 using MenuUI.Scripts.SoulHome;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EsineDisplay : MonoBehaviour
+public class EsineDisplay : AdPosterHandler
 {
-    public KauppaItems items;
-    public TextMeshProUGUI price;
-    public Image contentImage;
+    
+    [SerializeField] private Button _button;
 
     private List<StorageFurniture> _furnitures;
     private Kirpputori _manager;
+    //public TextMeshProUGUI price;
+
 
     void Start()
     {
-        price.text = items.hinta;
         
-        contentImage.sprite = items.esine;
+        _button.onClick.AddListener(OnAdCLicked);
+        
     }
 
     public void AlignFurnitures(List<StorageFurniture> furnitures, Kirpputori manager)
     {
         _furnitures = furnitures;
         _manager = manager;
+
+        // Displays the first furniture item in the advertisement
+        if (furnitures != null && furnitures.Count > 0)
+        {
+            _adItemImage.sprite = furnitures[0].Sprite;
+
+        }
+        
+      
     }
 
     public void OnAdCLicked()

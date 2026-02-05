@@ -29,6 +29,8 @@ public class Kirpputori : MonoBehaviour
     [SerializeField] private RectTransform _Content;
     private DataStore _store;
 
+    
+
     private void Awake()
     {
         _adsInScene = new();
@@ -37,6 +39,7 @@ public class Kirpputori : MonoBehaviour
         {
             GameObject newAd = Instantiate(_AdPrefab, _AdsGroup);
             _adsInScene.Add(newAd);
+
         }
 
         //Force content to rebild to avoid UI issues
@@ -45,6 +48,7 @@ public class Kirpputori : MonoBehaviour
         _store = Storefront.Get();
 
         StartCoroutine(RandomFurniture());
+
     }
 
     public IEnumerator RandomFurniture()
@@ -56,7 +60,7 @@ public class Kirpputori : MonoBehaviour
         {
             var furnitureList = new List<StorageFurniture>();
 
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < 1; i++)
             {
                 int randomIndex = UnityEngine.Random.Range(0, allGameFurniture.Count);
 
@@ -73,6 +77,7 @@ public class Kirpputori : MonoBehaviour
             esineDisplay.AlignFurnitures(furnitureList, this);
         }
     }
+
 
     public void OpenPopup(List<StorageFurniture> furnitureList)
     {
