@@ -50,20 +50,12 @@ namespace MenuUI.Scripts.SoulHome {
         private bool _roomsReady = false;
         private bool _furnituresSet = false;
         private bool _loadFinished = false;
-        private string _defaultLabel = "0000000";
 
-        private struct AvatarResolverStruct
-        {
-            public Func<AvatarData, int?> _dataGetter;
-            public string _category;
-            public string _suffix;
-        }
-
-        private readonly Dictionary<AvatarPart, AvatarResolverStruct> _resolverDictionary = new()
+        private readonly Dictionary<AvatarPart, AvatarPartSetter.AvatarResolverStruct> _resolverDictionary = new()
         {
             {
                 AvatarPart.Body,
-                new AvatarResolverStruct
+                new AvatarPartSetter.AvatarResolverStruct
                 {
                     _dataGetter = data => data.Clothes,
                     _category = "Body",
@@ -72,7 +64,7 @@ namespace MenuUI.Scripts.SoulHome {
             },
             {
                 AvatarPart.R_Hand,
-                new AvatarResolverStruct
+                new AvatarPartSetter.AvatarResolverStruct
                 {
                     _dataGetter = data => data.Hands,
                     _category = "Hands",
@@ -81,7 +73,7 @@ namespace MenuUI.Scripts.SoulHome {
             },
             {
                 AvatarPart.L_Hand,
-                new AvatarResolverStruct
+                new AvatarPartSetter.AvatarResolverStruct
                 {
                     _dataGetter = data => data.Hands,
                     _category = "Hands",
@@ -90,7 +82,7 @@ namespace MenuUI.Scripts.SoulHome {
             },
             {
                 AvatarPart.L_Eyebrow,
-                new AvatarResolverStruct
+                new AvatarPartSetter.AvatarResolverStruct
                 {
                     _dataGetter = data => data.Eyes,
                     _category = "Eyebrows",
@@ -99,7 +91,7 @@ namespace MenuUI.Scripts.SoulHome {
             },
             {
                 AvatarPart.L_Eye,
-                new AvatarResolverStruct
+                new AvatarPartSetter.AvatarResolverStruct
                 {
                     _dataGetter = data => data.Eyes,
                     _category ="Eyes",
@@ -108,7 +100,7 @@ namespace MenuUI.Scripts.SoulHome {
             },
             {
                 AvatarPart.R_Eyebrow,
-                new AvatarResolverStruct
+                new AvatarPartSetter.AvatarResolverStruct
                 {
                     _dataGetter = data => data.Eyes,
                     _category = "Eyebrows",
@@ -117,7 +109,7 @@ namespace MenuUI.Scripts.SoulHome {
             },
             {
                 AvatarPart.R_Eye,
-                new AvatarResolverStruct
+                new AvatarPartSetter.AvatarResolverStruct
                 {
                     _dataGetter = data => data.Eyes,
                     _category = "Eyes",
@@ -126,7 +118,7 @@ namespace MenuUI.Scripts.SoulHome {
             },
             {
                 AvatarPart.Nose,
-                new AvatarResolverStruct
+                new AvatarPartSetter.AvatarResolverStruct
                 {
                     _dataGetter = data => data.Nose,
                     _category = "Nose",
@@ -135,7 +127,7 @@ namespace MenuUI.Scripts.SoulHome {
             },
             {
                 AvatarPart.Mouth,
-                new AvatarResolverStruct
+                new AvatarPartSetter.AvatarResolverStruct
                 {
                     _dataGetter = data => data.Mouth,
                     _category = "Mouth",
@@ -144,7 +136,7 @@ namespace MenuUI.Scripts.SoulHome {
             },
             {
                 AvatarPart.R_Leg,
-                new AvatarResolverStruct
+                new AvatarPartSetter.AvatarResolverStruct
                 {
                     _dataGetter = data => data.Feet,
                     _category = "Legs",
@@ -153,7 +145,7 @@ namespace MenuUI.Scripts.SoulHome {
             },
             {
                 AvatarPart.L_Leg,
-                new AvatarResolverStruct
+                new AvatarPartSetter.AvatarResolverStruct
                 {
                     _dataGetter = data => data.Feet,
                     _category = "Legs",
@@ -478,66 +470,17 @@ namespace MenuUI.Scripts.SoulHome {
 
                 foreach ((AvatarPart part, SpriteResolver resolver) in resolvers)
                 {
-                    if (!_resolverDictionary.TryGetValue(part, out AvatarResolverStruct resolverStruct))
+                    if (!_resolverDictionary.TryGetValue(part, out AvatarPartSetter.AvatarResolverStruct resolverStruct))
                     {
                         continue;
                     }
 
-                    string label = ResolveLabel(resolverStruct, playerData);
-
-                    SpriteLibraryAsset library = resolver.spriteLibrary.spriteLibraryAsset;
-                    SpriteRenderer spriteRenderer = resolver.GetComponent<SpriteRenderer>();
-
-                    bool labelExists = library.GetCategoryLabelNames(resolverStruct._category).Contains(label);
-
-                    if (!labelExists)
-                    {
-                        // use default part if label does not exist
-                        label = _defaultLabel + resolverStruct._suffix;
-                    }
-                    else
-                    {
-                        Sprite sprite = library.GetSprite(resolverStruct._category, label);
-
-                        if (sprite == null)
-                        {
-                            // if label exists but sprite is null, disable the sprite
-                            // some eyes don't have eyebrows at all for example
-                            spriteRenderer.enabled = false;
-                            continue;
-                        }
-                    }
-
-                    spriteRenderer.enabled = true;
-                    resolver.SetCategoryAndLabel(resolverStruct._category, label);
-                    resolver.ResolveSpriteToSpriteRenderer();
+                    AvatarPartSetter.AssignAvatarPart(resolver, resolverStruct, playerData);
                 }
             }
             _loadFinished = true;
         }
 
-        private string ResolveLabel(AvatarResolverStruct resolverStruct, PlayerData playerData)
-        {
-            if (playerData?.AvatarData == null || resolverStruct._dataGetter == null)
-            {
-                return _defaultLabel + resolverStruct._suffix;
-            }
 
-            int? id = resolverStruct._dataGetter(playerData.AvatarData);
-
-            if (!id.HasValue)
-            {
-                return _defaultLabel + resolverStruct._suffix;
-            }
-
-            string idString = id.Value.ToString();
-
-            if (idString.Length != 7)
-            {
-                return _defaultLabel + resolverStruct._suffix;
-            }
-
-            return idString + resolverStruct._suffix;
-        }
     }
 }
