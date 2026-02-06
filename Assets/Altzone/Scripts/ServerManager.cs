@@ -1854,7 +1854,7 @@ public class ServerManager : MonoBehaviour
                 {
                     if (item["clan_id"].ToString() == Clan._id)
                     {
-                        Debug.LogWarning("FleaMarketFetch");
+                        //Debug.LogWarning("FleaMarketFetch");
                         string id = item["_id"].ToString();
                         string name = item["name"].ToString();
                         ClanFurniture furniture = new(id, name);
