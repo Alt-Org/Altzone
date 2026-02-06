@@ -32,6 +32,8 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private Image _classIcon;
         [SerializeField] private ClassReference _classReference;
 
+        [SerializeField] private CanvasGroup _canvasGroup;
+
         private static Material _grayscaleMaterialInstance;
 
         private CharacterSlot _originalSlot;
@@ -45,9 +47,12 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             if (_grayscaleMaterialInstance == null) InstantiateGrayscaleMaterial();
 
-            if (_addCharacterButton != null )
+            if (_canvasGroup == null)
+                _canvasGroup = GetComponent<CanvasGroup>();
+
+            if (_addCharacterButton != null)
             {
-                _addCharacterButton.onClick.AddListener( OnAddCharacterButtonClicked );
+                _addCharacterButton.onClick.AddListener(OnAddCharacterButtonClicked);
             }
         }
 
@@ -208,6 +213,25 @@ namespace MenuUi.Scripts.CharacterGallery
             _originalSlot.gameObject.SetActive(true);
             transform.SetParent(_originalSlot.transform, false);
             SetDefaultVisuals();
+        }
+
+        /// <summary>
+        /// Updates gallery character visuals when the character is already selected,
+        /// dimms the card and disables interaction to prevent re-selection
+        /// </summary>
+        public void SetUsedVisuals(bool used)
+        {
+
+            if (_canvasGroup != null)
+            {
+                if (used)
+                    _canvasGroup.alpha = 0.45f;
+                else
+                    _canvasGroup.alpha = 1f;
+
+                _canvasGroup.interactable = true;
+                _canvasGroup.blocksRaycasts = true;
+            }
         }
     }
 }

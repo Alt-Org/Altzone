@@ -1,3 +1,4 @@
+using Altzone.Scripts.AvatarPartsInfo;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
@@ -54,7 +55,7 @@ namespace MenuUi.Scripts.AvatarEditor
             if (!ValidateComponents())
                 return;
 
-            UpdateCharacterColor(_avatarVisuals.Color);
+            UpdateCharacterColor(_avatarVisuals.SkinColor, _avatarVisuals.ClassColor);
             UpdateFacialFeatures();
         }
 
@@ -66,13 +67,14 @@ namespace MenuUi.Scripts.AvatarEditor
                 return;
             }
 
-            UpdateCharacterColor(data.Color);
+            UpdateCharacterColor(data.SkinColor, data.ClassColor);
             UpdateFacialFeatures(data);
         }
 
-        private void UpdateCharacterColor(Color color)
+        private void UpdateCharacterColor(Color skinColor, Color classColor)
         {
-            _characterHandle.SetHeadColor(color);
+            _characterHandle.SetClassColor(classColor);
+            _characterHandle.SetSkinColor(skinColor);
         }
 
         private void UpdateFacialFeatures()
@@ -82,10 +84,10 @@ namespace MenuUi.Scripts.AvatarEditor
 
             var featureUpdates = new[]
             {
-                (AvatarPiece.Hair, _avatarVisuals.Hair),
-                (AvatarPiece.Eyes, _avatarVisuals.Eyes),
-                (AvatarPiece.Nose, _avatarVisuals.Nose),
-                (AvatarPiece.Mouth, _avatarVisuals.Mouth)
+                (AvatarPiece.Hair, _avatarVisuals.Hair, _avatarVisuals.HairColor),
+                (AvatarPiece.Eyes, _avatarVisuals.Eyes, _avatarVisuals.EyesColor),
+                (AvatarPiece.Nose, _avatarVisuals.Nose, _avatarVisuals.NoseColor),
+                (AvatarPiece.Mouth, _avatarVisuals.Mouth, _avatarVisuals.MouthColor)
             };
 
             ApplyFeatureUpdates(featureUpdates);
@@ -95,22 +97,22 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             var featureUpdates = new[]
             {
-                (AvatarPiece.Hair, data.Hair),
-                (AvatarPiece.Eyes, data.Eyes),
-                (AvatarPiece.Nose, data.Nose),
-                (AvatarPiece.Mouth, data.Mouth)
+                (AvatarPiece.Hair, data.Hair, data.HairColor),
+                (AvatarPiece.Eyes, data.Eyes, data.EyesColor),
+                (AvatarPiece.Nose, data.Nose, data.NoseColor),
+                (AvatarPiece.Mouth, data.Mouth, data.MouthColor)
             };
 
             ApplyFeatureUpdates(featureUpdates);
         }
 
-        private void ApplyFeatureUpdates((AvatarPiece slot, Sprite sprite)[] featureUpdates)
+        private void ApplyFeatureUpdates((AvatarPiece slot, AvatarPartInfo partInfo, Color color)[] featureUpdates)
         {
-            foreach (var (slot, sprite) in featureUpdates)
+            foreach (var (slot, partInfo, color) in featureUpdates)
             {
                 try
                 {
-                    _characterHandle.SetMainCharacterImage(slot, sprite);
+                    _characterHandle.SetMainCharacterImage(slot, partInfo, color);
                 }
                 catch (System.Exception ex)
                 {
@@ -142,7 +144,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private bool HasValidSprites()
         {
-            if (_avatarVisuals.Sprites == null || _avatarVisuals.Sprites.Count == 0)
+            if (_avatarVisuals.PartInfos == null || _avatarVisuals.PartInfos.Count == 0)
             {
                 Debug.LogWarning($"No sprites available in avatar visuals for {gameObject.name}");
                 return false;

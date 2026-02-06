@@ -25,6 +25,9 @@ namespace MenuUi.Scripts.CharacterGallery
 
         protected void OnButtonClick()
         {
+            if (_characterSlot is CharacterSlot charSlot && charSlot.IsUsed)
+                return;
+
             SignalBus.OnDefenceGalleryStatPopupRequestedSignal(_characterSlot.Id);
         }
     }

@@ -124,12 +124,16 @@ namespace Altzone.Editor.CustomEditors
             style.wordWrap = true;
             script.CharacterDescriptionFinnish = EditorGUILayout.TextArea(script.CharacterDescriptionFinnish, style);
             script.CharacterShortDescriptionFinnish = EditorGUILayout.TextField("Character Short Description", script.CharacterShortDescriptionFinnish);
+            EditorGUILayout.LabelField("Character Ability Description");
+            script.CharacterAbilityDescriptionFinnish = EditorGUILayout.TextField(script.CharacterAbilityDescriptionFinnish, style);
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("English");
             script.EnglishName = EditorGUILayout.TextField("Name", script.EnglishName);
             EditorGUILayout.LabelField("Character Description");
             script.CharacterDescriptionEnglish = EditorGUILayout.TextArea(script.CharacterDescriptionEnglish, style);
             script.CharacterShortDescriptionEnglish = EditorGUILayout.TextField("Character Short Description", script.CharacterShortDescriptionEnglish);
+            EditorGUILayout.LabelField("Character Ability Description");
+            script.CharacterAbilityDescriptionEnglish = EditorGUILayout.TextArea(script.CharacterAbilityDescriptionEnglish, style);
             EditorGUILayout.Space();
             script.ClassType = (CharacterClassType)EditorGUILayout.EnumPopup("Character Type", script.ClassType);
 

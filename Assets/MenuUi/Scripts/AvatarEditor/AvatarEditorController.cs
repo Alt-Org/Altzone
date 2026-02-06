@@ -24,6 +24,8 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private TextHandler _textHandler;
         [SerializeField] private PopUpHandler _popUpHandler;
         [SerializeField] private DivanImageHandler _divanImageHandler;
+        [SerializeField] private AvatarLoader _avatarLoader;
+        [SerializeField] private AvatarLoader _profileMenuAvatarLoader;
 
         private PlayerData _currentPlayerData;
         private PlayerAvatar _playerAvatar;
@@ -93,6 +95,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _currentPlayerData = playerData;
             SetAllAvatarFeatures();
             _divanImageHandler.UpdateDivanImage(playerData);
+            _avatarLoader.UpdateVisuals(AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData.AvatarData));
         }
 
         private IEnumerator SaveAvatarData()
@@ -103,13 +106,15 @@ namespace MenuUi.Scripts.AvatarEditor
 
             savePlayerData.AvatarData = new(_playerAvatar.Name,
                 null,
-                "FFFFFF",
+                _playerAvatar.SkinColor,
+                null,
                 new Vector2(1, 1));
 
             var features = Enum.GetValues(typeof(AvatarPiece));
             foreach (AvatarPiece feature in features)
             {
                 AssignPartToPlayerData(savePlayerData.AvatarData, feature, _playerAvatar.GetPartId(feature));
+                AssignColorToPlayerData(savePlayerData.AvatarData, feature, _playerAvatar.GetPartColor(feature));
             }
             StartCoroutine(SavePlayerData(savePlayerData, p => playerData = p));
             yield return new WaitUntil(() => ((timeout != null) || (playerData != null)));
@@ -122,10 +127,16 @@ namespace MenuUi.Scripts.AvatarEditor
             List<AvatarPiece> pieceIDs = Enum.GetValues(typeof(AvatarPiece)).Cast<AvatarPiece>().ToList();
             foreach (AvatarPiece piece in pieceIDs)
             {
-                _visualDataScriptableObject.SetAvatarPiece(piece, _featureSetter.GetCurrentlySelectedFeatureSprite(piece));
+                _visualDataScriptableObject.SetAvatarPiece(piece, _featureSetter.GetCurrentlySelectedFeaturePartInfo(piece));
+                ColorUtility.TryParseHtmlString(_playerAvatar.GetPartColor(piece), out Color pieceColor);
+                _visualDataScriptableObject.SetColor(piece, pieceColor);
             }
 
+            ColorUtility.TryParseHtmlString(savePlayerData.AvatarData.Color, out Color skinColor);
+            _visualDataScriptableObject.SkinColor = skinColor;
+
             AvatarDesignLoader.Instance.InvokeOnAvatarDesignUpdate();
+            UpdateProfileMenuCharacterVisuals(savePlayerData.AvatarData);
 
             GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
@@ -165,6 +176,37 @@ namespace MenuUi.Scripts.AvatarEditor
             SetAllAvatarFeatures();
         }
 
+        private void AssignColorToPlayerData(AvatarData playerAvatarData, AvatarPiece feature, string color)
+        {
+            switch(feature)
+            {
+                case AvatarPiece.Hair:
+                    playerAvatarData.HairColor = color;
+                    break;
+                case AvatarPiece.Eyes:
+                    playerAvatarData.EyesColor = color;
+                    break;
+                case AvatarPiece.Nose:
+                    playerAvatarData.NoseColor = color;
+                    break;
+                case AvatarPiece.Mouth:
+                    playerAvatarData.MouthColor = color;
+                    break;
+                case AvatarPiece.Clothes:
+                    playerAvatarData.ClothesColor = color;
+                    break;
+                case AvatarPiece.Hands:
+                    playerAvatarData.HandsColor = color;
+                    break;
+                case AvatarPiece.Feet:
+                    playerAvatarData.FeetColor = color;
+                    break;
+                default:
+                    Debug.LogWarning($"Couldn't find {feature} in AvatarPiece");
+                    break;
+            }
+        }
+
         private void AssignPartToPlayerData(AvatarData playerAvatarData, AvatarPiece feature, string id)
         {
             int convertedID;
@@ -201,6 +243,12 @@ namespace MenuUi.Scripts.AvatarEditor
                     Debug.LogWarning($"Couldn't find {feature} in FeatureSlots");
                     break;
             }
+        }
+
+        private void UpdateProfileMenuCharacterVisuals(AvatarData data)
+        {
+            AvatarVisualData visualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(data);
+            _profileMenuAvatarLoader.UpdateVisuals(visualData);
         }
 
         public PlayerAvatar PlayerAvatar

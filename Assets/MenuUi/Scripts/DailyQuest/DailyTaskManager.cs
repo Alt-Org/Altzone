@@ -351,14 +351,14 @@ public class DailyTaskManager : AltMonoBehaviour
             LayoutRebuilder.ForceRebuildLayoutImmediate(_taskListEducationAction.GetComponent<RectTransform>());
 
             //Sets DT cards to left side.
-            _taskListEducationSocial.GetComponent<RectTransform>().anchoredPosition = new Vector2(int.MaxValue, 0f);
-            _taskListEducationStory.GetComponent<RectTransform>().anchoredPosition = new Vector2(int.MaxValue, 0f);
-            _taskListEducationCulture.GetComponent<RectTransform>().anchoredPosition = new Vector2(int.MaxValue, 0f);
-            _taskListEducationEthical.GetComponent<RectTransform>().anchoredPosition = new Vector2(int.MaxValue, 0f);
-            _taskListEducationAction.GetComponent<RectTransform>().anchoredPosition = new Vector2(int.MaxValue, 0f);
+            _taskListEducationSocial.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            _taskListEducationStory.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            _taskListEducationCulture.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            _taskListEducationEthical.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            _taskListEducationAction.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
             //Sets DT card category list to the top.
-            _tasksEducationVerticalLayout.anchoredPosition = new Vector2(0f, -int.MaxValue);
+            _tasksEducationVerticalLayout.anchoredPosition = Vector2.zero;
         }
         else
         {
@@ -368,12 +368,12 @@ public class DailyTaskManager : AltMonoBehaviour
             LayoutRebuilder.ForceRebuildLayoutImmediate(_taskListNormalRow3.GetComponent<RectTransform>());
 
             //Sets DT cards to left side.
-            _taskListNormalRow1.GetComponent<RectTransform>().anchoredPosition = new Vector2(int.MaxValue, 0f);
-            _taskListNormalRow2.GetComponent<RectTransform>().anchoredPosition = new Vector2(int.MaxValue, 0f);
-            _taskListNormalRow3.GetComponent<RectTransform>().anchoredPosition = new Vector2(int.MaxValue, 0f);
+            _taskListNormalRow1.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            _taskListNormalRow2.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            _taskListNormalRow3.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
             //Sets DT card category list to the top.
-            _tasksNormalVerticalLayout.anchoredPosition = new Vector2(0f, -int.MaxValue);
+            _tasksNormalVerticalLayout.anchoredPosition = Vector2.zero;
         }
 
         callback(true);

@@ -2,7 +2,10 @@
   "dependencies": {
     "com.endel.nativewebsocket": "https://github.com/endel/NativeWebSocket.git#upm",
     "com.gameanalytics.sdk": "7.10.3",
-    "com.google.external-dependency-manager": "file:../GooglePackages/com.google.external-dependency-manager-1.2.179.tgz",
+    "com.google.external-dependency-manager": "1.2.187",
+    "com.google.play.appupdate": "1.8.5",
+    "com.google.play.common": "1.9.2",
+    "com.google.play.core": "1.8.6",
     "com.unity.2d.pixel-perfect": "5.1.0",
     "com.unity.2d.psdimporter": "8.1.0",
     "com.unity.2d.sprite": "1.0.0",
@@ -57,7 +60,7 @@
   "scopedRegistries": [
     {
       "name": "Game Package Registry by Google",
-      "url": "https://unityregistry-pa.googleapis.com/",
+      "url": "https://unityregistry-pa.googleapis.com",
       "scopes": [
         "com.google"
       ]
@@ -66,7 +69,11 @@
       "name": "package.openupm.com",
       "url": "https://package.openupm.com",
       "scopes": [
-        "com.gameanalytics"
+        "com.gameanalytics",
+        "com.google.external-dependency-manager",
+        "com.google.play.core",
+        "com.google.play.common",
+        "com.google.play.appupdate"
       ]
     }
   ]
