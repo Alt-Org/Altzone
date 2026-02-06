@@ -171,14 +171,14 @@ namespace MenuUi.Scripts.CharacterGallery
             GameObject slot = Instantiate(_characterSlotPrefab, parent);
 
             CharacterClassType classType = CustomCharacter.GetClass(charID);
-            string className = _classReference.GetName(classType);
+            Sprite classNameIcon = _classReference.GetNameIcon(classType);
             Color bgColor = _classReference.GetColor(classType);
             Color bgAltColor = _classReference.GetAlternativeColor(classType);
             Sprite classIcon = _classReference.GetCornerIcon(classType);
 
 
             CharacterSlot charSlot = slot.GetComponent<CharacterSlot>();
-            charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, className, classIcon, charID);
+            charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, classNameIcon, classIcon, charID);
 
             _characterSlots.Add(charSlot);
 

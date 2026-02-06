@@ -47,7 +47,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 Color bgAltColor = _classReference.GetAlternativeColor(classType);
                 Sprite classIcon = _classReference.GetCornerIcon(classType);
 
-                _selectedCharSlots[i].SetInfo(selectedCharacters[i], info.GalleryHeadImage,bgColor, bgAltColor, info.Name, _classReference.GetName(classType), classIcon);
+                _selectedCharSlots[i].SetInfo(selectedCharacters[i], info.GalleryHeadImage,bgColor, bgAltColor, info.Name, _classReference.GetNameIcon(classType), classIcon);
             }
           
         }
