@@ -126,7 +126,13 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             _spriteImage.sprite = sprite;
             _characterNameText.text = name;
-            _classNameIcon.sprite = classNameIcon;
+            if (classNameIcon == null)
+                _classNameIcon.gameObject.SetActive(false);
+            else
+            {
+                _classNameIcon.gameObject.SetActive(true);
+                _classNameIcon.sprite = classNameIcon;
+            }
             _id = id;
             _backgroundLowerImage.color = bgColor;
             _backgroundUpperImage.color = bgAltColor;
