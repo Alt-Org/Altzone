@@ -19,6 +19,7 @@ namespace MenuUI.Scripts.SoulHome
         private const string DefaultLabel = "0000000";
         private static readonly MaterialPropertyBlock s_materialPropertyBlock = new();
         private static Texture2D s_transparentTex;
+        private static  readonly Dictionary<Vector2Int, Texture2D> s_selectedColorMaskCache = new();
         private static Texture2D TransparentTex
         {
             get
@@ -32,6 +33,44 @@ namespace MenuUI.Scripts.SoulHome
                 return s_transparentTex;
             }
         }
+        private static Texture2D GetSelectedColorMask(Texture2D reference)
+        {
+            if (reference == null)
+            {
+                return TransparentTex;
+            }
+            // For testing, lets you color the pieces missing a mask image
+            // with color selected in avatareditor
+
+            // The texture caches and functions already exist in AvatarEditorCharacterHandle,
+            // Should propably move them somewhere and use the same ones for both
+            Vector2Int size = new(reference.width, reference.height);
+
+            if (s_selectedColorMaskCache.TryGetValue(size, out var tex))
+                return tex;
+
+            Texture2D mask = new Texture2D(
+                reference.width,
+                reference.height,
+                TextureFormat.RGBA32,
+                false
+            );
+
+            mask.filterMode = reference.filterMode;
+            mask.wrapMode = TextureWrapMode.Clamp;
+
+            Color skinMask = new(0, 1, 0, 1);
+            Color[] pixels = new Color[reference.width * reference.height];
+
+            for (int i = 0; i < pixels.Length; i++)
+                pixels[i] = skinMask;
+
+            mask.SetPixels(pixels);
+            mask.Apply();
+
+            s_selectedColorMaskCache[size] = mask;
+            return mask;
+        }
 
         public struct AvatarResolverStruct
         {
@@ -40,7 +79,7 @@ namespace MenuUI.Scripts.SoulHome
             public string _suffix;
         }
 
-        public static void AssignAvatarPart(SpriteResolver resolver, AvatarResolverStruct resolverStruct, PlayerData playerData, AvatarPartsReference avatarPartsReference)
+        public static void AssignAvatarPart(SpriteResolver resolver, AvatarResolverStruct resolverStruct, PlayerData playerData, AvatarPartsReference avatarPartsReference, AvatarPart part)
         {
             SpriteLibraryAsset library = resolver.spriteLibrary.spriteLibraryAsset;
             SpriteRenderer spriteRenderer = resolver.GetComponent<SpriteRenderer>();
@@ -67,7 +106,7 @@ namespace MenuUI.Scripts.SoulHome
             resolver.SetCategoryAndLabel(resolverStruct._category, label);
             resolver.ResolveSpriteToSpriteRenderer();
             SpriteRenderer renderer = resolver.GetComponent<SpriteRenderer>();
-            SetMask(renderer, label, playerData, avatarPartsReference);
+            SetMask(renderer, label, playerData, avatarPartsReference, part);
         }
 
         private static string ResolveLabel(AvatarResolverStruct resolverStruct, PlayerData playerData)
@@ -94,7 +133,7 @@ namespace MenuUI.Scripts.SoulHome
             return idString + resolverStruct._suffix;
         }
 
-        private static void SetMask(SpriteRenderer renderer, string label, PlayerData playerData, AvatarPartsReference partsReference)
+        private static void SetMask(SpriteRenderer renderer, string label, PlayerData playerData, AvatarPartsReference partsReference, AvatarPart part)
         {
             if (renderer == null)
             {
@@ -126,25 +165,31 @@ namespace MenuUI.Scripts.SoulHome
             }
             s_materialPropertyBlock.SetColor("_ClassColor", classColor);
 
-            Color selectedColor = Color.white;
-            // add real selectedcolor here
+            Color selectedColor = GetSelectedColor(playerData, part);
+            s_materialPropertyBlock.SetColor("_SelectedColor", selectedColor);
 
-
-
-            AvatarPartInfo part = partsReference.GetAvatarPartById(label.Substring(0, 7));
+            AvatarPartInfo partInfo = partsReference.GetAvatarPartById(label.Substring(0, 7));
             Texture2D mask;
 
-            if (part != null && part.MaskImage != null)
+            if (partInfo != null && partInfo.MaskImage != null)
             {
-                mask = part.MaskImage.texture;
+                mask = partInfo.MaskImage.texture;
                 s_materialPropertyBlock.SetTexture("_MaskTex", mask);
             }
+            // If maskimage does not exist color whole part
+            else if (partInfo != null && partInfo.MaskImage == null)
+            {
+                Texture2D referenceTexture = partInfo.AvatarImage.texture;
+                Texture2D selecterdColorMask = GetSelectedColorMask(referenceTexture);
+                s_materialPropertyBlock.SetTexture("_MaskTex", selecterdColorMask);
+            }
+            // optionally don't color at all
             else
             {
                 s_materialPropertyBlock.SetTexture("_MaskTex", TransparentTex);
             }
 
-            renderer.SetPropertyBlock(s_materialPropertyBlock);
+                renderer.SetPropertyBlock(s_materialPropertyBlock);
         }
 
         public static void SetHeadColor(SpriteRenderer headSpriteRenderer, PlayerData playerData)
@@ -157,6 +202,56 @@ namespace MenuUI.Scripts.SoulHome
             {
                 headSpriteRenderer.color = Color.white;
             }
+        }
+
+        private static Color GetSelectedColor(PlayerData playerData, AvatarPart part)
+        {
+            // this should work when part colors are added to database
+            if (playerData?.AvatarData == null)
+                return Color.white;
+
+            string colorString = null;
+
+            switch(part)
+            {
+                case AvatarPart.R_Hand:
+                case AvatarPart.L_Hand:
+                    colorString = playerData.AvatarData.HandsColor;
+                    break;
+                case AvatarPart.L_Eyebrow:
+                case AvatarPart.L_Eye:
+                case AvatarPart.R_Eyebrow:
+                case AvatarPart.R_Eye:
+                    colorString = playerData.AvatarData.EyesColor;
+                    break;
+                case AvatarPart.Nose:
+                    //colorString = playerData.AvatarData.NoseColor;
+                    // Skin color
+                    colorString = playerData.AvatarData.Color;
+                    break;
+                case AvatarPart.Mouth:
+                    colorString = playerData.AvatarData.MouthColor;
+                    break;
+                case AvatarPart.Body:
+                    colorString = playerData.AvatarData.ClothesColor;
+                    break;
+                case AvatarPart.R_Leg:
+                case AvatarPart.L_Leg:
+                    colorString = playerData.AvatarData.FeetColor;
+                    break;
+            }
+
+            if (colorString != null && !colorString.StartsWith("#"))
+            {
+                colorString = "#" + colorString;
+            }
+
+            if (ColorUtility.TryParseHtmlString(colorString, out Color color))
+            {
+                return color;
+            }
+
+            return Color.white;
         }
     }
 }

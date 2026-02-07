@@ -475,7 +475,7 @@ namespace MenuUI.Scripts.SoulHome {
                         continue;
                     }
 
-                    AvatarPartSetter.AssignAvatarPart(resolver, resolverStruct, playerData, _avatarPartsReference);
+                    AvatarPartSetter.AssignAvatarPart(resolver, resolverStruct, playerData, _avatarPartsReference, part);
                 }
 
                 SpriteRenderer headSpriteRenderer = rig.GetRenderer(AvatarPart.Head).GetComponent<SpriteRenderer>();
