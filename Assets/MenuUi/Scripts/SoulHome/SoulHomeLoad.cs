@@ -39,7 +39,7 @@ namespace MenuUI.Scripts.SoulHome {
         [SerializeField] private Camera _towerCamera;
         [SerializeField] private ClanPlayerFetcher _clanPlayerFetcher;
         [SerializeField] private SpriteLibraryAsset _avatarSpriteLibrary;
-
+        [SerializeField] private AvatarPartsReference _avatarPartsReference;
 
         private List<Furniture> _furnitureList = null;
 
@@ -475,7 +475,7 @@ namespace MenuUI.Scripts.SoulHome {
                         continue;
                     }
 
-                    AvatarPartSetter.AssignAvatarPart(resolver, resolverStruct, playerData);
+                    AvatarPartSetter.AssignAvatarPart(resolver, resolverStruct, playerData, _avatarPartsReference);
                 }
             }
             _loadFinished = true;
