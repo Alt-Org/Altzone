@@ -146,5 +146,17 @@ namespace MenuUI.Scripts.SoulHome
 
             renderer.SetPropertyBlock(s_materialPropertyBlock);
         }
+
+        public static void SetHeadColor(SpriteRenderer headSpriteRenderer, PlayerData playerData)
+        {
+            if (playerData?.AvatarData?.Color != null && ColorUtility.TryParseHtmlString(playerData.AvatarData.Color, out Color color))
+            {
+                headSpriteRenderer.color = color;
+            }
+            else
+            {
+                headSpriteRenderer.color = Color.white;
+            }
+        }
     }
 }

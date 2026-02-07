@@ -477,6 +477,9 @@ namespace MenuUI.Scripts.SoulHome {
 
                     AvatarPartSetter.AssignAvatarPart(resolver, resolverStruct, playerData, _avatarPartsReference);
                 }
+
+                SpriteRenderer headSpriteRenderer = rig.GetRenderer(AvatarPart.Head).GetComponent<SpriteRenderer>();
+                AvatarPartSetter.SetHeadColor(headSpriteRenderer, playerData);
             }
             _loadFinished = true;
         }
