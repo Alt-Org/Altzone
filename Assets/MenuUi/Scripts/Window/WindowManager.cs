@@ -104,6 +104,7 @@ namespace MenuUi.Scripts.Window
 
         private List<Func<GoBackAction>> _goBackOnceHandler;
         private int _executionLevel;
+        private bool _waitingResponce = false;
 
         private void Awake()
         {
@@ -113,6 +114,7 @@ namespace MenuUi.Scripts.Window
 
             SceneManager.sceneLoaded += SceneLoaded;
             SceneManager.sceneUnloaded += SceneUnloaded;
+            CloseGamePopupHandler.OnCloseGameResponce += CloseGame;
             var handler = gameObject.AddComponent<EscapeKeyHandler>();
             handler.SetCallback(EscapeKeyPressed);
             ResetState();
@@ -220,10 +222,16 @@ namespace MenuUi.Scripts.Window
             }
             if (_currentWindows.Count <= 1)
             {
-                ExitApplication.ExitGracefully();
+                if (_waitingResponce) return;
+
+                if (CloseGamePopupHandler.RequestCloseGame())
+                {
+                    _waitingResponce = true;
+                }
+                //ExitApplication.ExitGracefully();
                 return;
             }
-            PopAndHide();
+            else PopAndHide();
             if (_currentWindows.Count == 0)
             {
                 Debug.Log($"NOTE! GoBack has no windows to show");
@@ -452,6 +460,12 @@ namespace MenuUi.Scripts.Window
             }
             Debug.Log($"InvokeCallbacks : {goBackResult}");
             return goBackResult;
+        }
+
+        private void CloseGame(bool accept)
+        {
+            _waitingResponce = false;
+            if(accept) ExitApplication.ExitGracefully();
         }
 
         /// <summary>
