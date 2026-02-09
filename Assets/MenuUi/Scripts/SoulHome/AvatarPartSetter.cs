@@ -47,7 +47,14 @@ namespace MenuUI.Scripts.SoulHome
             Vector2Int size = new(reference.width, reference.height);
 
             if (s_selectedColorMaskCache.TryGetValue(size, out var tex))
-                return tex;
+            {
+                if (tex != null)
+                {
+                    // I have no idea why tex may sometimes be null
+                    return tex;
+                }
+                s_selectedColorMaskCache.Remove(size);
+            }
 
             Texture2D mask = new Texture2D(
                 reference.width,
