@@ -11,12 +11,23 @@ namespace MenuUi.Scripts.CharacterGallery
     public class DefenceForceView : MonoBehaviour
     {
         [SerializeField] private GalleryView _galleryView;
+        [SerializeField] private LoadoutModeSwitcher _loadoutSwitcher;
         [SerializeField] private SelectedCharSlot[] _selectedCharSlots;
 
         [SerializeField] private ClassReference _classReference;
         private void Awake()
         {
             _galleryView.OnGalleryCharactersSet += SetCharacters;
+        }
+
+        private void OnEnable()
+        {
+            if(_loadoutSwitcher) _loadoutSwitcher.gameObject.SetActive(true);
+        }
+
+        private void OnDisable()
+        {
+            if (_loadoutSwitcher) _loadoutSwitcher.gameObject.SetActive(false);
         }
 
         private void OnDestroy()
