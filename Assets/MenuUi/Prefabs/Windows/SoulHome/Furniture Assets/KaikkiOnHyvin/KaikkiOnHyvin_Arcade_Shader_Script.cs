@@ -2,12 +2,148 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewBehaviourScript : MonoBehaviour
+namespace MenuUI.Scripts.SoulHome
 {
+public class NewBehaviourScript : MonoBehaviour, ISoulHomeObjectClick
+{
+    int round = 1;
+
+    public Material shaderMat; //Public so material can be assigned from inspector
+    //Material shaderMat = GetComponent<Renderer>().material; 
+    public SpriteRenderer screenRenderer;
+    public GameObject arcadeScreen;
+
+    private float voronoiSpeedA;
+    private float voronoiSpeedB;
+    private float gradientNoiseSpeedA;
+    private float gradientNoiseSpeedB;
+    private Color screenColorA;
+    private Color screenColorB;
+
+    private float transitionDuration = 1.0F;
+    bool transitionInProgress = false;
+
+    Color[] colors = {
+        new Color(0.996f, 0.624f, 0.765f, 1f),new Color(0.627f, 1f, 1f, 1f),
+        new Color(0.654f, 1f, 0.623f, 1f), new Color(1f, 0.921f, 0.616f, 1f),
+        new Color(0.874f, 0.65f, 1f, 1f), new Color(1f, 0.525f, 0.352f, 1f)
+        };
+    float[] voronoiSpeeds ={ 0.5F,1.0F,2.5F,5.5F,9.5F};
+    float[] gradientNoiseSpeeds ={ 0.1F,0.2F,0.3F,0.9F,1.5F};
+
+
+    public void HandleClick() //comes from ISoulHomeObjectClick
+    {
+        if (!transitionInProgress)
+        {   Debug.Log("SCREEN TRANSITION STARTING");
+            StartCoroutine(Screentransition());
+        }
+        else // To avoid spam clicking
+        {   Debug.Log("SCREEN TRANSITION CANNOT BE STARTED YET");
+            return;
+        }
+        
+    }
+
+    public void ScreenReset()
+    {
+            Debug.Log("4TH ROUND, else statement activated");
+            round = 1;
+            screenRenderer.enabled = false;
+
+
+            shaderMat.SetColor("_ScreenColorA", colors[2]);
+            shaderMat.SetColor("_ScreenColorB", colors[0]);
+            shaderMat.SetFloat("_VoronoiSpeedA", voronoiSpeeds[1]);
+            shaderMat.SetFloat("_VoronoiSpeedB", voronoiSpeeds[0]);
+            shaderMat.SetFloat("_GradientNoiseSpeedA", gradientNoiseSpeeds[1]);
+            shaderMat.SetFloat("_GradientNoiseSpeedB", gradientNoiseSpeeds[0]);
+            shaderMat.SetFloat("_WhiteNoiseEffect", 1);
+
+            //Debug.Log("ROUND" + round);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        shaderMat = GetComponentInChildren<Material>();
+        screenRenderer = arcadeScreen.GetComponent<SpriteRenderer>();
+        ScreenReset();
+    }
+
+
+    private IEnumerator Screentransition()
+    {
+        float elapsedTime = 0F;
+        screenRenderer.enabled = true;
+        transitionInProgress = true;
         
+        if (round < 5) 
+        {   
+            if (round > 1) // round > 1 so there is no transition in the first round
+            {
+                while (elapsedTime < transitionDuration) // For smooth transition
+                {
+                    
+                    elapsedTime += Time.deltaTime; // Keeps track how much time has passed
+
+                    voronoiSpeedA = Mathf.Lerp(voronoiSpeeds[round - 1], voronoiSpeeds[round], elapsedTime / transitionDuration);
+                    shaderMat.SetFloat("_VoronoiSpeedA", voronoiSpeedA);
+                    voronoiSpeedB = Mathf.Lerp(voronoiSpeeds[round - 2], voronoiSpeeds[round - 1], elapsedTime / transitionDuration);
+                    shaderMat.SetFloat("_VoronoiSpeedB", voronoiSpeedB);
+
+                    screenColorA = Color.Lerp(colors[round], colors[round + 1], elapsedTime / transitionDuration);
+                    shaderMat.SetColor("_ScreenColorA", screenColorA);
+                    screenColorB = Color.Lerp(colors[round - 2], colors[round - 1], elapsedTime / transitionDuration);
+                    shaderMat.SetColor("_ScreenColorB", screenColorB);
+
+                    gradientNoiseSpeedA = Mathf.Lerp(gradientNoiseSpeeds[round - 1], gradientNoiseSpeeds[round], elapsedTime / transitionDuration);
+                    shaderMat.SetFloat("_GradientNoiseSpeedA", gradientNoiseSpeedA);
+                    gradientNoiseSpeedB = Mathf.Lerp(gradientNoiseSpeeds[round - 2], gradientNoiseSpeeds[round - 1], elapsedTime / transitionDuration);
+                    shaderMat.SetFloat("_GradientNoiseSpeedB", gradientNoiseSpeedB);
+
+                    yield return null;
+
+                }
+            }
+
+            
+            //shaderMat.SetFloat("_VoronoiSpeedA", voronoiSpeeds[round]);
+            //shaderMat.SetFloat("_VoronoiSpeedB", voronoiSpeeds[round - 1]); // one step behind of VoronoiSpeedA in array
+            //shaderMat.SetFloat("_GradientNoiseSpeedA", gradientNoiseSpeeds[round]);
+            //shaderMat.SetFloat("_GradientNoiseSpeedB", gradientNoiseSpeeds[round - 1]);
+            //shaderMat.SetColor("_ScreenColorA", colors[round + 1]);
+            //shaderMat.SetColor("_ScreenColorB", colors[round - 1]); // two steps behind
+
+            round++;
+
+            //Debug.Log("ROUND" + round);
+ 
+            //Debug.Log("VORONOISPEED_A" + shaderMat.GetFloat("_VoronoiSpeedA"));
+            //Debug.Log("VORONOISPEED_B" + shaderMat.GetFloat("_VoronoiSpeedB"));
+            //Debug.Log("GRADIENTSPEED_A" + shaderMat.GetFloat("_GradientNoiseSpeedA"));
+            //Debug.Log("GRADIENTSPEED_B" + shaderMat.GetFloat("_GradientNoiseSpeedB"));
+            yield return new WaitForSeconds(1);
+        }
+
+        else if (round == 5) //White noise screen
+        {
+            Debug.Log("WHITE NOISE SCREEN, ROUND 5");
+            shaderMat.SetFloat("_WhiteNoiseEffect", 200);
+            shaderMat.SetColor("_ScreenColorA", new Color(1f, 1f, 1f, 1f) );
+            shaderMat.SetColor("_ScreenColorB", new Color(0.01f, 0.01f, 0.01f, 1f) );
+            round++;
+        }
+
+
+        else //restart values & disable arcade screen
+        {
+            ScreenReset();
+        }
+        
+
+        transitionInProgress = false;
+        Debug.Log("SCREEN TRANSITION has been set to FALSE");
     }
 
     // Update is called once per frame
@@ -15,4 +151,5 @@ public class NewBehaviourScript : MonoBehaviour
     {
         
     }
+}
 }

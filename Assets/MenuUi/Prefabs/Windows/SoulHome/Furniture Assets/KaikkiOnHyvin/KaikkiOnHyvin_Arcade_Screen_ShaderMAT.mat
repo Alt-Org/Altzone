@@ -41,22 +41,16 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
-    m_Floats: []
+    m_Floats:
+    - _GradientNoiseSpeedA: 0.9
+    - _GradientNoiseSpeedB: 0.3
+    - _TimeTest: 1
+    - _VoronoiSpeedA: 5.5
+    - _VoronoiSpeedB: 2.5
+    - _WhiteNoiseEffect: 1
     m_Colors:
-    - _GradientNoiseColor: {r: 0.49411768, g: 0.9333334, b: 1, a: 1}
-    - _GradientNoiseSpeed: {r: 0.1, g: 0, b: 0, a: 0}
-    - _GradientNoiseSpeed2: {r: 0.2, g: 0, b: 0, a: 0}
-    - _ScreenColor: {r: 0.654902, g: 1, b: 0.6235294, a: 1}
-    - _ScreenColor2: {r: 1, g: 0.6235294, b: 0.764706, a: 1}
-    - _Vector2: {r: 3, g: 0, b: 0, a: 0}
-    - _Vector3: {r: 0, g: 0, b: 0, a: 0}
-    - _Vector4: {r: 1, g: 0, b: 0, a: 0}
-    - _VoronoiColor: {r: 1, g: 0.47058827, b: 0.69803923, a: 1}
-    - _VoronoiSpeed: {r: 2, g: 0, b: 0, a: 0}
-    - _VoronoiSpeed2: {r: 2.5, g: 0, b: 0, a: 0}
-    - _speed: {r: 0.2, g: 0, b: 0, a: 0}
-    - _speed2: {r: 2.5, g: 0, b: 0, a: 0}
-    - _white: {r: 1, g: 1, b: 1, a: 0}
+    - _ScreenColorA: {r: 0.874, g: 0.65, b: 1, a: 1}
+    - _ScreenColorB: {r: 0.654, g: 1, b: 0.623, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &9093944007620369105
 MonoBehaviour:
