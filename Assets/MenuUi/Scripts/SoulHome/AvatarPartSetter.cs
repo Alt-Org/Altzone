@@ -181,8 +181,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 Texture2D referenceTexture = partInfo.AvatarImage.texture;
                 Texture2D selecterdColorMask = GetSelectedColorMask(referenceTexture);
-                if (selecterdColorMask != null)
-                    s_materialPropertyBlock.SetTexture("_MaskTex", selecterdColorMask);
+                s_materialPropertyBlock.SetTexture("_MaskTex", selecterdColorMask);
             }
             // optionally don't color at all
             else
