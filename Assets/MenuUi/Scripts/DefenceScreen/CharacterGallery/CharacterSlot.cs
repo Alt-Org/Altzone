@@ -18,10 +18,10 @@ namespace MenuUi.Scripts.CharacterGallery
 
         [HideInInspector] public bool IsLocked = false;
         [HideInInspector] public bool IsUsed = false;
-        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, string className, Sprite classIcon, CharacterID id)
+        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, Sprite classNameIcon, Sprite classIcon, CharacterID id)
         {
             _id = id;
-            Character.SetInfo(sprite, bgColor, bgAltColor, name, className, id, this);
+            Character.SetInfo(sprite, bgColor, bgAltColor, name, classNameIcon, id, this);
         }
     }
 }
