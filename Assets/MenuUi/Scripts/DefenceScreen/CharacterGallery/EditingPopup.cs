@@ -17,6 +17,7 @@ namespace MenuUi.Scripts.CharacterGallery
     public class EditingPopup : MonoBehaviour
     {
         [SerializeField] private GalleryView _galleryView;
+        [SerializeField] private GameObject _popup;
         private SwipeUI _swipe;
         private RectTransform _rectTransform;
         private bool _charactersUpdated = false;
@@ -40,7 +41,7 @@ namespace MenuUi.Scripts.CharacterGallery
             _swipe = FindObjectOfType<SwipeUI>();
             if (_swipe) _swipe.OnCurrentPageChanged += ClosePopup;
 
-            if (gameObject.activeSelf) gameObject.SetActive(false);
+            if (_popup.activeSelf) _popup.SetActive(false);
 
             _galleryView.OnGalleryCharactersSet += SetCharacters;
             _galleryView.OnFilterChanged += HandleFilterChanged;
@@ -101,7 +102,7 @@ namespace MenuUi.Scripts.CharacterGallery
         public void OpenPopup()
         {
             _charactersUpdated = false;
-            gameObject.SetActive(true);
+            _popup.SetActive(true);
 
             SetActiveSlot(0);
         }
@@ -114,7 +115,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             StopAllBlinking();
 
-            gameObject.SetActive(false);
+            _popup.SetActive(false);
             _openedFromLoadout = false;
             _currentLoadoutIndex = -1;
             if (_charactersUpdated) SignalBus.OnReloadCharacterGalleryRequestedSignal();
@@ -268,6 +269,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             _openedFromLoadout = false;
             _currentLoadoutIndex = -1;
+            Debug.LogWarning("Test");
             OpenPopup();
         }
 
@@ -280,6 +282,8 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void SetActiveSlot(int index)
         {
+            if (!_popup.activeInHierarchy) return;
+
             _activeSlotIndex = Mathf.Clamp(index, 0, _selectedCharacterSlots.Length - 1);
 
             if (_blinkingFrames == null || _blinkingFrames.Length == 0) return;
