@@ -228,7 +228,7 @@ namespace MenuUi.Scripts.Window
                 {
                     _waitingResponce = true;
                 }
-                //ExitApplication.ExitGracefully();
+                else ExitApplication.ExitGracefully();
                 return;
             }
             else PopAndHide();
