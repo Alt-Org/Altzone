@@ -43,6 +43,7 @@ namespace MenuUI.Scripts.SoulHome {
 
         private List<Furniture> _furnitureList = null;
 
+        private readonly Dictionary<string, AvatarRig> _spawnedAvatars = new();
 
         private const string SERVER_ADDRESS = "https://altzone.fi/api/soulhome";
 
@@ -170,6 +171,16 @@ namespace MenuUI.Scripts.SoulHome {
             StartCoroutine(LoadRooms());
             StartCoroutine(LoadFurniture());
             StartCoroutine(SpawnAvatar());
+        }
+
+        private void OnEnable()
+        {
+            _clanPlayerFetcher.OnLocalAvatarUpdated += OnLocalAvatarUpdated;
+        }
+
+        private void OnDisable()
+        {
+            _clanPlayerFetcher.OnLocalAvatarUpdated -= OnLocalAvatarUpdated;
         }
 
         private void TestCode() //This is test code block that may or may not be unrelated to SoulHome. I just use the opening of the SoulHome to trigger things I need to test and don't have dedicated way of doing so.
@@ -463,27 +474,39 @@ namespace MenuUI.Scripts.SoulHome {
                 GameObject avatar = avatarParent.transform.GetChild(0).gameObject;
                 AvatarRig rig = avatar.GetComponent<AvatarRig>();
 
-                // Sprite Resolver for each part of this avatar
-                Dictionary<AvatarPart, SpriteResolver> resolvers = rig.Resolvers;
-
                 PlayerData playerData = _clanPlayerFetcher.Players[i];
 
-                foreach ((AvatarPart part, SpriteResolver resolver) in resolvers)
-                {
-                    if (!_resolverDictionary.TryGetValue(part, out AvatarPartSetter.AvatarResolverStruct resolverStruct))
-                    {
-                        continue;
-                    }
+                ApplyAvatarToRig(rig, playerData);
 
-                    AvatarPartSetter.AssignAvatarPart(resolver, resolverStruct, playerData, _avatarPartsReference, part);
-                }
-
-                SpriteRenderer headSpriteRenderer = rig.GetRenderer(AvatarPart.Head).GetComponent<SpriteRenderer>();
-                AvatarPartSetter.SetHeadColor(headSpriteRenderer, playerData);
+                _spawnedAvatars[playerData.Id] = rig;
             }
             _loadFinished = true;
         }
 
+        private void ApplyAvatarToRig(AvatarRig rig, PlayerData playerData)
+        {
+            foreach ((AvatarPart part, SpriteResolver resolver) in rig.Resolvers)
+            {
+                if (!_resolverDictionary.TryGetValue(part, out AvatarPartSetter.AvatarResolverStruct resolverStruct))
+                {
+                    continue;
+                }
 
+                AvatarPartSetter.AssignAvatarPart(resolver, resolverStruct, playerData, _avatarPartsReference, part);
+
+                SpriteRenderer headSpriteRenderer = rig.GetRenderer(AvatarPart.Head).GetComponent<SpriteRenderer>();
+                AvatarPartSetter.SetHeadColor(headSpriteRenderer, playerData);
+            }
+        }
+
+        private void OnLocalAvatarUpdated(PlayerData playerData)
+        {
+            if (!_spawnedAvatars.TryGetValue(playerData.Id, out AvatarRig rig))
+            {
+                return;
+            }
+
+            ApplyAvatarToRig(rig, playerData);
+        }
     }
 }
