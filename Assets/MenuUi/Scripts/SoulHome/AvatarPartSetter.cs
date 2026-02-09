@@ -7,10 +7,8 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ReferenceSheets;
 using Assets.Altzone.Scripts.Model.Poco.Player;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.U2D.Animation;
-using static MenuUI.Scripts.SoulHome.SoulHomeLoad;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -18,66 +16,6 @@ namespace MenuUI.Scripts.SoulHome
     {
         private const string DefaultLabel = "0000000";
         private static readonly MaterialPropertyBlock s_materialPropertyBlock = new();
-        private static Texture2D s_transparentTex;
-        private static  readonly Dictionary<Vector2Int, Texture2D> s_selectedColorMaskCache = new();
-        private static Texture2D TransparentTex
-        {
-            get
-            {
-                if (s_transparentTex == null)
-                {
-                    s_transparentTex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
-                    s_transparentTex.SetPixel(0, 0, new Color(0, 0, 0, 0));
-                    s_transparentTex.Apply();
-                }
-                return s_transparentTex;
-            }
-        }
-        private static Texture2D GetSelectedColorMask(Texture2D reference)
-        {
-            if (reference == null)
-            {
-                return TransparentTex;
-            }
-            // For testing, lets you color the pieces missing a mask image
-            // with color selected in avatareditor
-
-            // The texture caches and functions already exist in AvatarEditorCharacterHandle,
-            // Should propably move them somewhere and use the same ones for both
-            Vector2Int size = new(reference.width, reference.height);
-
-            if (s_selectedColorMaskCache.TryGetValue(size, out var tex))
-            {
-                if (tex != null)
-                {
-                    // I have no idea why tex may sometimes be null
-                    return tex;
-                }
-                s_selectedColorMaskCache.Remove(size);
-            }
-
-            Texture2D mask = new Texture2D(
-                reference.width,
-                reference.height,
-                TextureFormat.RGBA32,
-                false
-            );
-
-            mask.filterMode = reference.filterMode;
-            mask.wrapMode = TextureWrapMode.Clamp;
-
-            Color skinMask = new(0, 1, 0, 1);
-            Color[] pixels = new Color[reference.width * reference.height];
-
-            for (int i = 0; i < pixels.Length; i++)
-                pixels[i] = skinMask;
-
-            mask.SetPixels(pixels);
-            mask.Apply();
-
-            s_selectedColorMaskCache[size] = mask;
-            return mask;
-        }
 
         public struct AvatarResolverStruct
         {
@@ -187,13 +125,13 @@ namespace MenuUI.Scripts.SoulHome
             else if (partInfo != null && partInfo.MaskImage == null)
             {
                 Texture2D referenceTexture = partInfo.AvatarImage.texture;
-                Texture2D selecterdColorMask = GetSelectedColorMask(referenceTexture);
+                Texture2D selecterdColorMask = AvatarMaskUtility.GetSelectedColorMask(referenceTexture);
                 s_materialPropertyBlock.SetTexture("_MaskTex", selecterdColorMask);
             }
             // optionally don't color at all
             else
             {
-                s_materialPropertyBlock.SetTexture("_MaskTex", TransparentTex);
+                s_materialPropertyBlock.SetTexture("_MaskTex", AvatarMaskUtility.GetTransparentTexPixel);
             }
 
                 renderer.SetPropertyBlock(s_materialPropertyBlock);
