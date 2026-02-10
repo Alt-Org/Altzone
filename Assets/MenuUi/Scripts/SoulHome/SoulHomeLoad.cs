@@ -51,6 +51,10 @@ namespace MenuUI.Scripts.SoulHome {
         private bool _roomsReady = false;
         private bool _furnituresSet = false;
         private bool _loadFinished = false;
+        private bool _loginStatusChanged = false;
+        private bool _refreshInProgress = false;
+
+        private int _runningCoroutines = 0;
 
         private readonly Dictionary<AvatarPart, AvatarPartSetter.AvatarResolverStruct> _resolverDictionary = new()
         {
@@ -160,27 +164,111 @@ namespace MenuUI.Scripts.SoulHome {
         // Start is called before the first frame update
         void Start()
         {
-            _roomAmount = ServerManager.Instance.Clan != null ? ServerManager.Instance.Clan.playerCount: 1;
-            if (_roomAmount > 30)
-            {
-                Debug.LogError($"Clan has more players ({_roomAmount}) than allowed, setting room count to 30.");
-                _roomAmount = 30;
-            }
-            StartCoroutine(HomeLoad());
-            //TestCode();
-            StartCoroutine(LoadRooms());
-            StartCoroutine(LoadFurniture());
-            StartCoroutine(SpawnAvatar());
+            RefreshSoulHome();
+
+            ServerManager.OnLogInStatusChanged += UpdateOnLoginStatusChanged;
+        }
+
+        private void OnDestroy()
+        {
+            ServerManager.OnLogInStatusChanged -= UpdateOnLoginStatusChanged;
         }
 
         private void OnEnable()
         {
             _clanPlayerFetcher.OnLocalAvatarUpdated += OnLocalAvatarUpdated;
+            if (_loginStatusChanged)
+            {
+                _loginStatusChanged = false;
+                RefreshSoulHome();
+            }
         }
 
         private void OnDisable()
         {
             _clanPlayerFetcher.OnLocalAvatarUpdated -= OnLocalAvatarUpdated;
+        }
+
+        private void UpdateOnLoginStatusChanged(bool isLoggedIn)
+        {
+            _loginStatusChanged = isLoggedIn;
+        }
+
+        private void RefreshSoulHome()
+        {
+            if (!_refreshInProgress)
+            {
+                StartCoroutine(RefreshCoroutine());
+            }
+        }
+
+        private IEnumerator RefreshCoroutine()
+        {
+            _refreshInProgress = true;
+
+            ClearSoulHome();
+
+            _clanPlayerFetcher.RefreshClanMembersPlayerData();
+
+            _roomAmount = ServerManager.Instance.Clan != null ? ServerManager.Instance.Clan.playerCount : 1;
+            if (_roomAmount > 30)
+            {
+                Debug.LogError($"Clan has more players ({_roomAmount}) than allowed, setting room count to 30.");
+                _roomAmount = 30;
+            }
+
+            RunTracked(HomeLoad());
+            //TestCode();
+            RunTracked(LoadRooms());
+            RunTracked(LoadFurniture());
+            RunTracked(SpawnAvatar());
+
+            // wait until the above Coroutines have finished
+            // to make sure this doesn't run again until it is finished
+            yield return WaitForLoadFinish();
+
+            _refreshInProgress = false;
+        }
+
+        private void ClearSoulHome()
+        {
+            foreach (Transform child in _roomPositions.transform)
+            {
+                foreach (Transform grandChild in child.transform)
+                {
+                    Destroy(grandChild.gameObject);
+                }
+            }
+            _spawnedAvatars.Clear();
+            _soulHomeRooms = null;
+            _furnitureFetchFinished = false;
+            _roomsReady = false;
+            _furnituresSet = false;
+            _loadFinished = false;
+            _furnitureList = null;
+        }
+
+        private IEnumerator TrackedCoroutine(IEnumerator coroutine)
+        {
+            _runningCoroutines++;
+            try
+            {
+                yield return coroutine;
+            }
+            finally
+            {
+                _runningCoroutines--;
+            }
+        }
+
+        private void RunTracked(IEnumerator coroutine)
+        {
+            StartCoroutine(TrackedCoroutine(coroutine));
+        }
+
+        private IEnumerator WaitForLoadFinish()
+        {
+            yield return new WaitUntil(() => _runningCoroutines == 0);
         }
 
         private void TestCode() //This is test code block that may or may not be unrelated to SoulHome. I just use the opening of the SoulHome to trigger things I need to test and don't have dedicated way of doing so.
