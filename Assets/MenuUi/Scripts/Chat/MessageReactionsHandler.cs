@@ -150,12 +150,12 @@ public class MessageReactionsHandler : MonoBehaviour
     /// <summary>
     /// Adds the chosen reaction to the selected message.
     /// </summary>
-    public void AddReaction(string _id, Mood mood)
+    public void AddReaction(string _id, Mood mood, string message_id, bool fromServer = false)
     {
         if (_selectedMessage != null)
         {
             string messageID = _selectedMessage.Id;
-            if (messageID != _id) return;
+            if (messageID != message_id) return;
 
             HorizontalLayoutGroup reactionsField = _selectedMessage.ReactionsPanel.GetComponentInChildren<HorizontalLayoutGroup>();
 

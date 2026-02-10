@@ -47,6 +47,7 @@ public class MessageObjectHandler : MonoBehaviour
         _button.onClick.AddListener(SetMessageActive);
         _image = _button.GetComponent<Image>();
         Chat.OnSelectedMessageChanged += SetMessageInactive;
+        ChatChannel.OnReactionReceived += UpdateReactions;
 
         _vectorReactionSize = new Vector2(_baseMessageSize.sizeDelta.x, _baseMessageSize.sizeDelta.y + _reactionSize.GetComponent<RectTransform>().sizeDelta.y);
         _vectorExpandedReactionSize = new Vector2(_baseMessageSize.sizeDelta.x, _baseMessageSize.sizeDelta.y + _expandedReactionSize.GetComponent<RectTransform>().sizeDelta.y);
@@ -151,8 +152,20 @@ public class MessageObjectHandler : MonoBehaviour
         //Gets the set data we need to get to import saved reactions
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
 
-        ChildsScript.AddReaction(_id, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji));
+        ChildsScript.AddReaction(EmojiId._id, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, true);
         
     }
 
+    private void UpdateReactions(ChatChannelType chatChannelType, ChatMessage message)
+    {
+        if (chatChannelType != ChatListener.Instance.ActiveChatChannel) return;
+
+        //Gets the set data we need to get to import saved reactions
+        MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
+
+        foreach (ServerReactions reactions in message.Reactions)
+        {
+            ChildsScript.AddReaction(reactions._id, (Mood)Enum.Parse(typeof(Mood), reactions.emoji), _id, true);
+        }
+    }
 }
