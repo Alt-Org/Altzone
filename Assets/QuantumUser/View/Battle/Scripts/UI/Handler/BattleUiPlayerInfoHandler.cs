@@ -196,22 +196,6 @@ namespace Battle.View.UI
         }
 
         /// <summary>
-        /// Updates character health visual through BattleUiPlayerInfoComponent.
-        /// </summary>
-        ///
-        /// <param name="slot">The player's BattlePlayerSlot who's character health visual to update.</param>
-        /// <param name="characterNumber">The character number which health visual to update.</param>
-        /// <param name="healthPercentage">The updated health percentage for the character.</param>
-        public void UpdateHealthVisual(BattlePlayerSlot slot, int characterNumber, float healthPercentage)
-        {
-            BattleUiPlayerInfoComponent playerInfoComponent = GetPlayerInfoComponent(slot);
-
-            if (playerInfoComponent == null) return;
-
-            playerInfoComponent.CharacterButtons[characterNumber].SetDamageFill(healthPercentage);
-        }
-
-        /// <summary>
         /// Calls SetDefenceNumber on the character button of the correct players correct character.
         /// </summary>
         ///
