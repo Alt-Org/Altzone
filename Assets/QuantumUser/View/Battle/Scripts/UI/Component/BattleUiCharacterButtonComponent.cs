@@ -48,10 +48,6 @@ namespace Battle.View.UI
         /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private Image _damageFill;
 
-        /// <summary>[SerializeField] Reference to the defence value text of the character button.</summary>
-        /// @ref BattleUiCharacterButtonComponent-SerializeFields
-        [SerializeField] private TextMeshProUGUI _defenceValue;
-
         /// <summary>[SerializeField] The duration for damage fill animation.</summary>
         /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private float _damageFillAnimationDuration = 0.5f;
@@ -113,11 +109,6 @@ namespace Battle.View.UI
         /// </summary>
         ///
         /// <param name="defenceValue">The defence value of the character.</param>
-        public void SetDefenceNumber(float defenceValue)
-        {
-            defenceValue = Mathf.Max(defenceValue, 0f);
-            _defenceValue.text = defenceValue.ToString();
-        }
 
         /// <value>The starting damage fill amount for the fill animation.</value>
         private float _startDamageFillAmount;
