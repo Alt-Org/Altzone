@@ -823,11 +823,9 @@ namespace Quantum {
   [StructLayout(LayoutKind.Explicit)]
   [Serializable()]
   public unsafe partial struct BattlePlayerStats {
-    public const Int32 SIZE = 40;
+    public const Int32 SIZE = 32;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(24)]
-    public FP Hp;
-    [FieldOffset(32)]
     public FP Speed;
     [FieldOffset(8)]
     public FP CharacterSize;
@@ -838,7 +836,6 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 5557;
-        hash = hash * 31 + Hp.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
         hash = hash * 31 + CharacterSize.GetHashCode();
         hash = hash * 31 + Attack.GetHashCode();
@@ -851,7 +848,6 @@ namespace Quantum {
         FP.Serialize(&p->Attack, serializer);
         FP.Serialize(&p->CharacterSize, serializer);
         FP.Serialize(&p->Defence, serializer);
-        FP.Serialize(&p->Hp, serializer);
         FP.Serialize(&p->Speed, serializer);
     }
   }
@@ -1242,7 +1238,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerDataQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 176;
+    public const Int32 SIZE = 168;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(24)]
     public PlayerRef PlayerRef;
@@ -1269,12 +1265,14 @@ namespace Quantum {
     [FieldOffset(88)]
     public FP RotationOffset;
     [FieldOffset(64)]
-    public FP CurrentHp;
-    [FieldOffset(56)]
     public FP CurrentDefence;
-    [FieldOffset(48)]
-    public EntityRef HitboxShieldEntity;
+    [FieldOffset(36)]
+    public QBoolean MovementEnabled;
     [FieldOffset(40)]
+    public QBoolean RotationEnabled;
+    [FieldOffset(56)]
+    public EntityRef HitboxShieldEntity;
+    [FieldOffset(48)]
     public EntityRef HitboxCharacterEntity;
     [FieldOffset(28)]
     public QBoolean DisableRotation;
@@ -1301,8 +1299,9 @@ namespace Quantum {
         hash = hash * 31 + TargetPosition.GetHashCode();
         hash = hash * 31 + RotationBase.GetHashCode();
         hash = hash * 31 + RotationOffset.GetHashCode();
-        hash = hash * 31 + CurrentHp.GetHashCode();
         hash = hash * 31 + CurrentDefence.GetHashCode();
+        hash = hash * 31 + MovementEnabled.GetHashCode();
+        hash = hash * 31 + RotationEnabled.GetHashCode();
         hash = hash * 31 + HitboxShieldEntity.GetHashCode();
         hash = hash * 31 + HitboxCharacterEntity.GetHashCode();
         hash = hash * 31 + DisableRotation.GetHashCode();
@@ -1324,10 +1323,11 @@ namespace Quantum {
         PlayerRef.Serialize(&p->PlayerRef, serializer);
         QBoolean.Serialize(&p->DisableRotation, serializer);
         QBoolean.Serialize(&p->HasTargetPosition, serializer);
+        QBoolean.Serialize(&p->MovementEnabled, serializer);
+        QBoolean.Serialize(&p->RotationEnabled, serializer);
         EntityRef.Serialize(&p->HitboxCharacterEntity, serializer);
         EntityRef.Serialize(&p->HitboxShieldEntity, serializer);
         FP.Serialize(&p->CurrentDefence, serializer);
-        FP.Serialize(&p->CurrentHp, serializer);
         FP.Serialize(&p->MovementCooldownSec, serializer);
         FP.Serialize(&p->RotationBase, serializer);
         FP.Serialize(&p->RotationOffset, serializer);

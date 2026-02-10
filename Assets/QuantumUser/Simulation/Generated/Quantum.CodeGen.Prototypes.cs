@@ -234,8 +234,9 @@ namespace Quantum.Prototypes {
     public FPVector2 TargetPosition;
     public FP RotationBase;
     public FP RotationOffset;
-    public FP CurrentHp;
     public FP CurrentDefence;
+    public QBoolean MovementEnabled;
+    public QBoolean RotationEnabled;
     public MapEntityId HitboxShieldEntity;
     public MapEntityId HitboxCharacterEntity;
     public QBoolean DisableRotation;
@@ -261,8 +262,9 @@ namespace Quantum.Prototypes {
         result.TargetPosition = this.TargetPosition;
         result.RotationBase = this.RotationBase;
         result.RotationOffset = this.RotationOffset;
-        result.CurrentHp = this.CurrentHp;
         result.CurrentDefence = this.CurrentDefence;
+        result.MovementEnabled = this.MovementEnabled;
+        result.RotationEnabled = this.RotationEnabled;
         PrototypeValidator.FindMapEntity(this.HitboxShieldEntity, in context, out result.HitboxShieldEntity);
         PrototypeValidator.FindMapEntity(this.HitboxCharacterEntity, in context, out result.HitboxCharacterEntity);
         result.DisableRotation = this.DisableRotation;
@@ -428,14 +430,12 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerStats))]
   public unsafe partial class BattlePlayerStatsPrototype : StructPrototype {
-    public FP Hp;
     public FP Speed;
     public FP CharacterSize;
     public FP Attack;
     public FP Defence;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerStats result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.BattlePlayerStats result, in PrototypeMaterializationContext context = default) {
-        result.Hp = this.Hp;
         result.Speed = this.Speed;
         result.CharacterSize = this.CharacterSize;
         result.Attack = this.Attack;

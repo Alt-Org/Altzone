@@ -90,8 +90,9 @@ namespace Quantum.Prototypes.Unity {
     public FPVector2 TargetPosition;
     public FP RotationBase;
     public FP RotationOffset;
-    public FP CurrentHp;
     public FP CurrentDefence;
+    public QBoolean MovementEnabled;
+    public QBoolean RotationEnabled;
     public Quantum.QuantumEntityPrototype HitboxShieldEntity;
     public Quantum.QuantumEntityPrototype HitboxCharacterEntity;
     public QBoolean DisableRotation;
@@ -114,8 +115,9 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.TargetPosition, out result.TargetPosition);
       converter.Convert(this.RotationBase, out result.RotationBase);
       converter.Convert(this.RotationOffset, out result.RotationOffset);
-      converter.Convert(this.CurrentHp, out result.CurrentHp);
       converter.Convert(this.CurrentDefence, out result.CurrentDefence);
+      converter.Convert(this.MovementEnabled, out result.MovementEnabled);
+      converter.Convert(this.RotationEnabled, out result.RotationEnabled);
       converter.Convert(this.HitboxShieldEntity, out result.HitboxShieldEntity);
       converter.Convert(this.HitboxCharacterEntity, out result.HitboxCharacterEntity);
       converter.Convert(this.DisableRotation, out result.DisableRotation);
