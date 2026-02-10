@@ -151,8 +151,8 @@ namespace Battle.View.UI
                 // Setting frame
                 characterFrameHandler.SetCharacterFrame((BattlePlayerCharacterClass)characterClasses[i]);
 
-                // Setting defence number
-                characterButton.SetDefenceNumber(characterDefenceNumbers[i]);
+                // Setting damage number
+                characterButton.SetDamageFill(characterDefenceNumbers[i]);
 
                 // Setting if button is enabled
                 characterButton.ButtonComponent.enabled = playerType == PlayerType.LocalPlayer;
