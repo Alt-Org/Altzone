@@ -4,9 +4,12 @@ apply plugin: 'com.android.library'
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 // Android Resolver Dependencies Start
-    implementation 'androidx.fragment:fragment:1.1.0' // Assets/Altzone/Editor/OverRideDependencies.xml:8
+    implementation 'androidx.activity:activity:1.6.0' // Assets/Editor/OverRideDependencies.xml:8
+    implementation 'androidx.fragment:fragment:1.1.0' // Assets/Editor/OverRideDependencies.xml:9
     implementation 'com.google.android.gms:play-services-appset:16.0.2' // Packages/com.gameanalytics.sdk/Editor/Android/Dependencies.xml:4
     implementation 'com.google.android.instantapps:instantapps:1.1.0' // Packages/com.gameanalytics.sdk/Editor/Android/Dependencies.xml:3
+    implementation 'com.google.android.play:app-update:2.1.0' // Packages/com.google.play.appupdate/Editor/Dependencies.xml:3
+    implementation 'com.google.android.play:core-common:2.0.4' // Packages/com.google.play.core/Editor/Dependencies.xml:3
 // Android Resolver Dependencies End
 **DEPS**}
 

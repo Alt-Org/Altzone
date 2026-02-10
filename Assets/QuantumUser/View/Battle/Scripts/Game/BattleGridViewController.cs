@@ -44,7 +44,7 @@ namespace Battle.View.Game
         /// @}
 
         /// <summary>
-        /// Initializes the grid based on the static variables defined in BattleGridManager by initializing new grid cells based on #_gridCellTemplate.
+        /// Initializes the grid based on the static variables defined in BattleGridManager by initializing new grid cells based on <see cref="BattleGridViewController._gridCellTemplate">_gridCellTemplate</see>.
         /// </summary>
         public void SetGrid()
         {

@@ -4217,6 +4217,50 @@ MonoBehaviour:
     I have parental consent
     for my information to be collected and used for the maintenance and management
     of the game.'
+--- !u!1 &2872107905289623703
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5532727137855983216}
+  - component: {fileID: 5946037218955136575}
+  m_Layer: 2
+  m_Name: Text (TMP)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5532727137855983216
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2872107905289623703}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4516726299876167718}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &5946037218955136575
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2872107905289623703}
+  m_CullTransparentMesh: 1
 --- !u!1 &2946997330590361080
 GameObject:
   m_ObjectHideFlags: 0
@@ -4269,37 +4313,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _userNameMinLength: 3
   _passwordMinLength: 5
-  backpackCapacity: 225
-  signInWindow: {fileID: 759208594473481993}
-  registerWindow: {fileID: 6592461142644464333}
-  logInUsernameInputField: {fileID: 5080777096961974980}
-  logInPasswordInputField: {fileID: 645769519598644153}
-  registerUsernameInputField: {fileID: 8553048779644170890}
-  registerPasswordInputField: {fileID: 2264034796526804576}
-  registerPassword2InputField: {fileID: 2729338204159935182}
+  _signInWindow: {fileID: 759208594473481993}
+  _registerWindow: {fileID: 6592461142644464333}
+  _logInUsernameInputField: {fileID: 5080777096961974980}
+  _logInPasswordInputField: {fileID: 645769519598644153}
+  _registerUsernameInputField: {fileID: 8553048779644170890}
+  _registerPasswordInputField: {fileID: 2264034796526804576}
+  _registerPassword2InputField: {fileID: 2729338204159935182}
   _privacyPolicyAuthToggle: {fileID: 5460722394477683603}
   _registerAgeVerificationCheckToggle: {fileID: 7295884331625528631}
   _registerAgeVerificationToggle: {fileID: 8224312079597127262}
   _registerParentalAuthToggle: {fileID: 7469501117495902152}
   _informationPolicyAuthToggle: {fileID: 4371050724157340666}
   _ageAuthToggleGroup: {fileID: 528883939326687555}
-  logInUsernameInputFieldError: {fileID: 2868682462266116144}
-  logInPasswordInputFieldError: {fileID: 8007491558471515601}
-  registerUsernameInputFieldError: {fileID: 4809954750960686505}
-  registerPasswordInputFieldError: {fileID: 5191430994965670674}
-  registerPassword2InputFieldError: {fileID: 8097748827960397231}
+  _logInUsernameInputFieldError: {fileID: 2868682462266116144}
+  _logInPasswordInputFieldError: {fileID: 8007491558471515601}
+  _registerUsernameInputFieldError: {fileID: 4809954750960686505}
+  _registerPasswordInputFieldError: {fileID: 5191430994965670674}
+  _registerPassword2InputFieldError: {fileID: 8097748827960397231}
   _privacyPolicyToggleError: {fileID: 3237946127427645795}
   _registerAgeVerificationToggleError: {fileID: 6348713267414002551}
   _informationPolicyToggleError: {fileID: 9200161745857998488}
-  logInButton: {fileID: 6974471251484350247}
-  registerButton: {fileID: 7528792879596546276}
-  backButton: {fileID: 5538831566626650871}
-  backButton2: {fileID: 6190343032933273489}
-  ageAuthButton: {fileID: 7433436176364160628}
+  _logInButton: {fileID: 6974471251484350247}
+  _registerButton: {fileID: 7528792879596546276}
+  _backButton: {fileID: 5538831566626650871}
+  _backButton2: {fileID: 6190343032933273489}
+  _ageAuthButton: {fileID: 7433436176364160628}
   _autoLoginToggle: {fileID: 2429577796116049851}
-  returnToLogIn: {fileID: 0}
-  returnToMainMenuButton: {fileID: 1531005724451037986}
-  returnToSignInScreenButton: {fileID: 7603128479250866903}
+  _returnToLogIn: {fileID: 1187949272791423512}
+  _returnToMainMenuButton: {fileID: 1531005724451037986}
+  _returnToSignInScreenButton: {fileID: 7603128479250866903}
 --- !u!1 &2960686941736405480
 GameObject:
   m_ObjectHideFlags: 0
@@ -5513,6 +5556,109 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33659b0b1c0242c3b28bc17acb0079e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &3838053822791627524
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4516726299876167718}
+  - component: {fileID: 3652038505377065961}
+  - component: {fileID: 1187949272791423512}
+  m_Layer: 2
+  m_Name: ReturnToLoader
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4516726299876167718
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3838053822791627524}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5532727137855983216}
+  m_Father: {fileID: 1599768963499253161}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &3652038505377065961
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3838053822791627524}
+  m_CullTransparentMesh: 1
+--- !u!114 &1187949272791423512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3838053822791627524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 0}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 798283468498972660}
+        m_TargetAssemblyTypeName: MenuUi.Scripts.Login.LogInPanelSuccessHandler,
+          MainMenu
+        m_MethodName: LogInReturn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3922406284664201090
 GameObject:
   m_ObjectHideFlags: 0
@@ -6634,6 +6780,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3206159665585003775}
+  - {fileID: 4516726299876167718}
   - {fileID: 8189186291807521898}
   - {fileID: 7403528471219102728}
   m_Father: {fileID: 2573831112531713432}
@@ -15297,6 +15444,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6699832907098985500, guid: 7afbe7fc11286b544aab47947e93f468,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 7140401699805581674, guid: 7afbe7fc11286b544aab47947e93f468,
         type: 3}
       propertyPath: m_Name
@@ -15544,6 +15696,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6699832907098985500, guid: 7afbe7fc11286b544aab47947e93f468,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 7140401699805581674, guid: 7afbe7fc11286b544aab47947e93f468,
         type: 3}
@@ -16306,6 +16463,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: -0.0000018775554
+      objectReference: {fileID: 0}
+    - target: {fileID: 4914715991043175446, guid: e41290d0959bdfe47b62024b1a7a3c44,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5182675393013953107, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}

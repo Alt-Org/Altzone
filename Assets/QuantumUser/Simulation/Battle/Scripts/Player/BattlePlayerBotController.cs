@@ -1,7 +1,11 @@
 /// @file BattlePlayerBotController.cs
 /// <summary>
-/// Contains @cref{Battle.QSimulation.Game,BattlePlayerBotController} class which handles the bot AI logic and implements helper methods for handling bots.
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerBotController} class which handles the bot AI logic and implements helper methods for handling bots.
 /// </summary>
+
+// System usings
+using System.Collections.Generic;
+using System.Linq;
 
 // Unity usings
 using UnityEngine;
@@ -20,6 +24,9 @@ namespace Battle.QSimulation.Player
     /// Handles the bot logic and implements helper methods for handling bots.
     /// </summary>
     ///
+    /// [{Player Overview}](#page-concepts-player-overview)<br/>
+    /// [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview)
+    ///
     /// Bot AI is handled by generating input in @cref{GetBotInput} that can be processed by the player like any other Input.
     /// Bot behavior and other spec settings are defined in @cref{BattlePlayerBotQSpec}.
     public static unsafe class BattlePlayerBotController
@@ -37,10 +44,19 @@ namespace Battle.QSimulation.Player
         {
             BattlePlayerBotQSpec playerBotSpec = BattleQConfig.GetPlayerBotSpec(f);
 
+            int[] selectedBotCharacters = new int[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
+
             BattleCharacterBase[] botCharacters = new BattleCharacterBase[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
             for (int i = 0; i < botCharacters.Length; i++)
-            {
-                botCharacters[i] = playerBotSpec.BotCharacter;
+            {            
+                int selectedCharacter;
+                do
+                {
+                    selectedCharacter = f.RNG->Next(0, playerBotSpec.BotCharacterSelection.Length);
+                } while (selectedBotCharacters.Contains(selectedCharacter));
+
+                selectedBotCharacters[i] = selectedCharacter;
+                botCharacters[i]         = playerBotSpec.BotCharacterSelection[selectedCharacter];             
             }
             return botCharacters;
         }

@@ -6,6 +6,9 @@
 /// This script:<br/>
 /// Initializes %Battle %UI elements, and controls their visibility and functionality.
 
+//#define DEBUG_OVERLAY_ENABLED_OVERRIDE
+//#define DEBUG_CONSOLE_ENABLED
+
 // Unity usings
 using UnityEngine;
 
@@ -14,7 +17,6 @@ using Quantum;
 using Photon.Deterministic;
 
 // Altzone usings
-using Altzone.Scripts.Audio;
 using Altzone.Scripts.BattleUiShared;
 using Altzone.Scripts.Lobby;
 
@@ -28,6 +30,7 @@ using Battle.View.Audio;
 using Battle.View.Effect;
 using Battle.View.UI;
 using Battle.View.Player;
+using Battle.View.SoulWall;
 
 using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
 using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
@@ -42,7 +45,7 @@ namespace Battle.View.Game
     /// </summary>
     ///
     /// Handles any functionality needed by the @uihandlerslink which need to access other parts of %Battle, for example triggering the selection of another character.
-    /// Accesses all of the @ref UIHandlerReferences through the BattleUiController reference variable #_uiController.<br/>
+    /// Accesses all of the @ref UIHandlerReferences through the BattleUiController reference variable <see cref="BattleGameViewController._uiController">_uiController</see>.<br/>
     public class BattleGameViewController : QuantumCallbacks
     {
         #region SerializeFields
@@ -72,10 +75,6 @@ namespace Battle.View.Game
         /// @ref BattleGameViewController-SerializeFields
         [SerializeField] private BattleLightrayEffectViewController _lightrayEffectViewController;
 
-        /// <summary>[SerializeField] Reference to BattleSoundFXViewController which plays sound effects.</summary>
-        /// @ref BattleGameViewController-SerializeFields
-        [SerializeField] private BattleSoundFXViewController _soundFXViewController;
-
         /// <summary>[SerializeField] Reference to BattlePlayerInput which polls player input for %Quantum.</summary>
         /// @ref BattleGameViewController-SerializeFields
         [SerializeField] private BattlePlayerInput _playerInput;
@@ -88,21 +87,24 @@ namespace Battle.View.Game
 
         #region Public - Static Properties
 
-        /// <value>The local player's BattlePlayerSlot.</value>
+        /// <summary>The local player's BattlePlayerSlot.</summary>
         public static BattlePlayerSlot LocalPlayerSlot { get; private set; }
 
-        /// <value>The local player's BattleTeamNumber.</value>
+        /// <summary>The local player's BattleTeamNumber.</summary>
         public static BattleTeamNumber LocalPlayerTeam { get; private set; }
 
-        /// <value>Reference to the projectile's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</value>
+        /// <summary>Reference to the projectile's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</summary>
         public static GameObject ProjectileReference { get; private set; }
+
+        /// <summary>Reference to the UiController.</summary>
+        public static BattleUiController UiController => s_instance._uiController;
 
         #endregion Public - Static Properties
 
         #region Public - Static Methods
 
         /// <summary>
-        /// Public static method for assigning #ProjectileReference.
+        /// Public static method for assigning <see cref="BattleGameViewController.ProjectileReference">ProjectileReference</see>.
         /// </summary>
         ///
         /// <param name="projectileReference">The projectile <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</param>
@@ -132,7 +134,8 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Public method that gets called when the local player selected another character.<br/>
-        /// Calls BattlePlayerInput::OnCharacterSelected method in #_playerInput.
+        /// Calls <see cref="BattlePlayerInput.OnCharacterSelected"/> method
+        /// in <see cref="BattleGameViewController._playerInput">_playerInput</see>.
         /// </summary>
         ///
         /// <param name="characterNumber">The character number which the local player selected.</param>
@@ -145,7 +148,8 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Public method that gets called when local player gives movement joystick input.
-        /// Calls BattlePlayerInput::OnJoystickMovement method in #_playerInput.
+        /// Calls <see cref="Battle.View.Player.BattlePlayerInput.OnJoystickMovement">OnJoystickMovement</see> method
+        /// in <see cref="BattleGameViewController._playerInput">_playerInput</see>.
         /// </summary>
         ///
         /// <param name="input">The movement direction Vector2.</param>
@@ -157,7 +161,8 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Public method that gets called when local player gives rotation joystick input.
-        /// Calls BattlePlayerInput::OnJoystickRotation method in #_playerInput.
+        /// Calls <see cref="Battle.View.Player.BattlePlayerInput.OnJoystickRotation">OnJoystickRotation</see> method
+        /// in <see cref="BattleGameViewController._playerInput">_playerInput</see>.
         /// </summary>
         ///
         /// <param name="input">The rotation input as float.</param>
@@ -184,6 +189,9 @@ namespace Battle.View.Game
 
         #endregion Public
 
+        /// <summary>Private static reference to an instance of BattleGameViewController.</summary>
+        private static BattleGameViewController s_instance;
+
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private BattleDebugLogger _debugLogger;
 
@@ -207,11 +215,33 @@ namespace Battle.View.Game
         /// </summary>
         private void Awake()
         {
+            s_instance = this;
+
+            BattleDebugOverlay.Init();
+
             _debugLogger = BattleDebugLogger.Create<BattleGameViewController>();
+
+            // ViewController Asserts
+            _debugLogger.DevAssert(_stoneCharacterViewController != null, nameof(_stoneCharacterViewController) + " is null!", BattleDebugLogger.LogTarget.UnityConsole);
+            _debugLogger.DevAssert(_lightrayEffectViewController != null, nameof(_lightrayEffectViewController) + " is null!", BattleDebugLogger.LogTarget.UnityConsole);
+            _debugLogger.DevAssert(_gridViewController           != null, nameof(_gridViewController)           + " is null!", BattleDebugLogger.LogTarget.UnityConsole);
+
+            // UI Asserts
+            _debugLogger.DevAssert(_uiController.DiamondsHandler     != null, nameof(_uiController.DiamondsHandler)     + " is null!", BattleDebugLogger.LogTarget.UnityConsole);
+            _debugLogger.DevAssert(_uiController.GiveUpButtonHandler != null, nameof(_uiController.GiveUpButtonHandler) + " is null!", BattleDebugLogger.LogTarget.UnityConsole);
+            _debugLogger.DevAssert(_uiController.PlayerInfoHandler   != null, nameof(_uiController.PlayerInfoHandler)   + " is null!", BattleDebugLogger.LogTarget.UnityConsole);
+            _debugLogger.DevAssert(_uiController.JoystickHandler     != null, nameof(_uiController.JoystickHandler)     + " is null!", BattleDebugLogger.LogTarget.UnityConsole);
+            _debugLogger.DevAssert(_uiController.TimerHandler        != null, nameof(_uiController.TimerHandler)        + " is null!", BattleDebugLogger.LogTarget.UnityConsole);
+            _debugLogger.DevAssert(_uiController.DebugOverlayHandler != null, nameof(_uiController.DebugOverlayHandler) + " is null!", BattleDebugLogger.LogTarget.UnityConsole);
+            _debugLogger.DevAssert(_uiController.DebugConsoleHandler != null, nameof(_uiController.DebugConsoleHandler) + " is null!", BattleDebugLogger.LogTarget.UnityConsole);
 
             // Showing announcement handler and setting view pre-activate loading text
             _uiController.AnnouncementHandler.SetShow(true);
             _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.Loading);
+
+#if DEBUG_CONSOLE_ENABLED
+            _uiController.DebugConsoleHandler.SetShow(true);
+#endif
 
             // Subscribing to Game Flow events
             QuantumEvent.Subscribe<EventBattleViewWaitForPlayers>(this, QEventOnViewWaitForPlayers);
@@ -237,9 +267,9 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
             QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
             QuantumEvent.Subscribe<EventBattleGiveUpStateChange>(this, QEventOnGiveUpStateChange);
+            QuantumEvent.Subscribe<EventBattleStoneCharacterPlayHitAnimation>(this, QEventOnStoneCharacterPlayHitAnimation);
 
             // Subscribing to Debug events
-            QuantumEvent.Subscribe<EventBattleDebugUpdateStatsOverlay>(this, QEventDebugOnUpdateStatsOverlay);
             QuantumEvent.Subscribe<EventBattleDebugOnScreenMessage>(this, QEventDebugOnScreenMessage);
         }
 
@@ -251,7 +281,8 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleViewWaitForPlayers QuantumEvent.<br/>
-        /// Handles initializing BattleUiController::AnnouncementHandler in #_uiController with waiting for players text.
+        /// Handles initializing <see cref="Battle.View.UI.BattleUiController.AnnouncementHandler">AnnouncementHandler</see>
+        /// in <see cref="BattleGameViewController._uiController">_uiController</see> with waiting for players text.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -260,14 +291,15 @@ namespace Battle.View.Game
             // Setting view pre-activate waiting for players text
             Utils.TryGetQuantumFrame(out Frame f);
             BattleParameters.PlayerType[] playerSlotTypes = BattleParameters.GetPlayerSlotTypes(f);
-            _uiController.LoadScreenHandler.Show(playerSlotTypes, e.Data.PlayerNames);
+            _uiController.LoadScreenHandler.Show(playerSlotTypes, BattleParameters.GetPlayerNames(f));
 
             _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.WaitingForPlayers);
         }
 
         /// <summary>
         /// Private handler method for EventBattleViewPlayerConnected QuantumEvent.<br/>
-        /// Handles calling BattleUiLoadScreenHandler::PlayerConnected through #_uiController with the slot and character IDs of the connected player.
+        /// Handles calling <see cref="Battle.View.UI.BattleUiLoadScreenHandler.PlayerConnected">PlayerConnected</see>
+        /// through <see cref="BattleGameViewController._uiController">_uiController</see> with the slot and character IDs of the connected player.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -287,7 +319,7 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleViewAllPlayersConnected QuantumEvent.<br/>
-        /// Handles calling BattleUiAnnouncementHandler::ClearAnnouncerTextField once all players have successfully joined the game.
+        /// Handles calling <see cref="Battle.View.UI.BattleUiAnnouncementHandler.ClearAnnouncerTextField">ClearAnnouncerTextField</see> once all players have successfully joined the game.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -298,8 +330,10 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventViewInit QuantumEvent.<br/>
-        /// Handles initializing the @ref UIHandlerReferences scripts and #_gridViewController.
+        /// Handles initializing the <b>UIHandlerReferences</b> scripts and <see cref="BattleGameViewController._gridViewController">_gridViewController</see>.
         /// </summary>
+        ///
+        /// See @ref UIHandlerReferences for more info.
         ///
         /// <param name="e">The event data.</param>
         private void QEventOnViewInit(EventBattleViewInit e)
@@ -314,86 +348,69 @@ namespace Battle.View.Game
                 LocalPlayerTeam = BattlePlayerManager.PlayerHandle.GetTeamNumber(LocalPlayerSlot);
             }
 
+            BattleDebugOverlayLink.SetLocalPlayerSlot(LocalPlayerSlot);
+
             // Initializing BattleGridViewController
-            if (_gridViewController != null)
-            {
-                _gridViewController.SetGrid();
-            }
+            _gridViewController.SetGrid();
 
             //{ Initializing UI Handlers
+            _uiController.DiamondsHandler.SetDiamondsText(0);
 
-            if (_uiController.DiamondsHandler != null)
+            BattleUiMovableElementData dataDiamonds = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.Diamonds);
+            if (dataDiamonds != null) _uiController.DiamondsHandler.MovableUiElement.SetData(dataDiamonds);
+
+            BattleUiMovableElementData dataTimer = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.Timer);
+            if (dataTimer != null) _uiController.TimerHandler.MovableUiElement.SetData(dataTimer);
+
+            if (SettingsCarrier.Instance.BattleMovementInput == BattleMovementInputType.Joystick)
             {
-                _uiController.DiamondsHandler.SetDiamondsText(0);
-
-                BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.Diamonds);
-                if (data != null) _uiController.DiamondsHandler.MovableUiElement.SetData(data);
+                BattleUiMovableElementData dataMoveJoystick = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.MoveJoystick);
+                _uiController.JoystickHandler.SetInfo(BattleUiElementType.MoveJoystick, dataMoveJoystick);
             }
 
-            if (_uiController.TimerHandler != null)
+            if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick)
             {
-                BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.Timer);
-                if (data != null) _uiController.TimerHandler.MovableUiElement.SetData(data);
+                BattleUiMovableElementData dataRotateJoystick = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.RotateJoystick);
+                _uiController.JoystickHandler.SetInfo(BattleUiElementType.RotateJoystick, dataRotateJoystick);
             }
 
-            if (_uiController.JoystickHandler != null)
+            _uiController.JoystickHandler.SetLocked(true);
+
+            BattleUiMovableElementData dataGiveUpButton = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.GiveUpButton);
+            if (dataGiveUpButton != null) _uiController.GiveUpButtonHandler.MovableUiElement.SetData(dataGiveUpButton);
+
+            RuntimePlayer localPlayerData = f.GetPlayerData(playerRef);
+            RuntimePlayer localTeammateData = f.GetPlayerData(BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, LocalPlayerSlot).PlayerRef);
+
+            // Setting local player info
+            _uiController.PlayerInfoHandler.SetInfo(
+                PlayerType.LocalPlayer,
+                "Minä",
+                new int[3] { localPlayerData.Characters[0].Id, localPlayerData.Characters[1].Id, localPlayerData.Characters[2].Id },
+                new int[3] { localPlayerData.Characters[0].Class, localPlayerData.Characters[1].Class, localPlayerData.Characters[2].Class },
+                new float[3] { (float)localPlayerData.Characters[0].Stats.Defence, (float)localPlayerData.Characters[1].Stats.Defence, (float)localPlayerData.Characters[2].Stats.Defence },
+                SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.PlayerInfo)
+            );
+            _uiController.PlayerInfoHandler.SetShowPlayer(true);
+
+            // Setting local teammate info
+            if (localTeammateData != null)
             {
-                if (SettingsCarrier.Instance.BattleMovementInput == BattleMovementInputType.Joystick)
-                {
-                    BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.MoveJoystick);
-                    _uiController.JoystickHandler.SetInfo(BattleUiElementType.MoveJoystick, data);
-                }
-
-                if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick)
-                {
-                    BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.RotateJoystick);
-                    _uiController.JoystickHandler.SetInfo(BattleUiElementType.RotateJoystick, data);
-                }
-
-                _uiController.JoystickHandler.SetLocked(true);
-            }
-
-            if (_uiController.GiveUpButtonHandler != null)
-            {
-                BattleUiMovableElementData data = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.GiveUpButton);
-                if (data != null) _uiController.GiveUpButtonHandler.MovableUiElement.SetData(data);
-            }
-
-            if (_uiController.PlayerInfoHandler != null)
-            {
-                RuntimePlayer localPlayerData = f.GetPlayerData(playerRef);
-                RuntimePlayer localTeammateData = f.GetPlayerData(BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, LocalPlayerSlot).PlayerRef);
-
-                // Setting local player info
                 _uiController.PlayerInfoHandler.SetInfo(
-                    PlayerType.LocalPlayer,
-                    "Minä",
-                    new int[3] { localPlayerData.Characters[0].Id, localPlayerData.Characters[1].Id, localPlayerData.Characters[2].Id },
-                    new int[3] { localPlayerData.Characters[0].Class, localPlayerData.Characters[1].Class, localPlayerData.Characters[2].Class },
-                    new float[3] { (float)localPlayerData.Characters[0].Stats.Defence, (float)localPlayerData.Characters[1].Stats.Defence, (float)localPlayerData.Characters[2].Stats.Defence },
-                    SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.PlayerInfo)
+                    PlayerType.LocalTeammate,
+                    "Tiimiläinen",
+                    new int[3] { localTeammateData.Characters[0].Id, localTeammateData.Characters[1].Id, localTeammateData.Characters[2].Id },
+                    new int[3] { localTeammateData.Characters[0].Class, localTeammateData.Characters[1].Class, localTeammateData.Characters[2].Class },
+                    new float[3] { (float)localTeammateData.Characters[0].Stats.Defence, (float)localTeammateData.Characters[1].Stats.Defence, (float)localTeammateData.Characters[2].Stats.Defence },
+                    SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo)
                 );
-                _uiController.PlayerInfoHandler.SetShowPlayer(true);
-
-                // Setting local teammate info
-                if (localTeammateData != null)
-                {
-                    _uiController.PlayerInfoHandler.SetInfo(
-                        PlayerType.LocalTeammate,
-                        "Tiimiläinen",
-                        new int[3] { localTeammateData.Characters[0].Id, localTeammateData.Characters[1].Id, localTeammateData.Characters[2].Id },
-                        new int[3] { localTeammateData.Characters[0].Class, localTeammateData.Characters[1].Class, localTeammateData.Characters[2].Class },
-                        new float[3] { (float)localTeammateData.Characters[0].Stats.Defence, (float)localTeammateData.Characters[1].Stats.Defence, (float)localTeammateData.Characters[2].Stats.Defence },
-                        SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo)
-                    );
-                    _uiController.PlayerInfoHandler.SetShowTeammate(true);
-                }
+                _uiController.PlayerInfoHandler.SetShowTeammate(true);
             }
         }
 
         /// <summary>
         /// Private handler method for EventBattleStoneCharacterPieceViewInit QuantumEvent.<br/>
-        /// Handles initializing #_stoneCharacterViewController.
+        /// Handles initializing <see cref="BattleGameViewController._stoneCharacterViewController"/>.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -434,15 +451,18 @@ namespace Battle.View.Game
             _uiController.LoadScreenHandler.Hide();
 
             // Show UI elements
-            if (_uiController.DiamondsHandler != null) _uiController.DiamondsHandler.SetShow(true);
-            if (_uiController.GiveUpButtonHandler != null) _uiController.GiveUpButtonHandler.SetShow(true);
+            _uiController.DiamondsHandler.SetShow(true);
+            _uiController.GiveUpButtonHandler.SetShow(true);
+            _uiController.PlayerInfoHandler.SetShow(true);
+
+            // Show optional UI elements
             if (SettingsCarrier.Instance.BattleMovementInput == BattleMovementInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.MoveJoystick);
             if (SettingsCarrier.Instance.BattleRotationInput == BattleRotationInputType.Joystick) _uiController.JoystickHandler.SetShow(true, BattleUiElementType.RotateJoystick);
-            if (SettingsCarrier.Instance.BattleShowDebugStatsOverlay) _uiController.DebugStatsOverlayHandler.SetShow(true);
-            /* These UI elements aren't ready and shouldn't be shown yet
-            if (_uiController.GiveUpButtonHandler != null) _uiController.GiveUpButtonHandler.SetShow(true);
-            */
-            if (_uiController.PlayerInfoHandler != null) _uiController.PlayerInfoHandler.SetShow(true);
+            if (SettingsCarrier.Instance.BattleShowDebugStatsOverlay) _uiController.DebugOverlayHandler.SetShow(true);
+
+#if DEBUG_OVERLAY_ENABLED_OVERRIDE
+            _uiController.DebugOverlayHandler.SetShow(true);
+#endif
 
             // Load settings and set BattleCamera to show game scene with previously loaded settings
             BattleCamera.SetView(
@@ -451,13 +471,13 @@ namespace Battle.View.Game
                 LocalPlayerTeam == BattleTeamNumber.TeamBeta
             );
 
-            AudioManager.Instance.PlayMusic("Battle", MusicHandler.MusicSwitchType.Immediate);
+            BattleAudioViewController.PlayMusic();
         }
 
         /// <summary>
         /// Private handler method for EventBattleViewGetReadyToPlay QuantumEvent.<br/>
         /// Handles showing end of countdown text in BattleUiController::AnnouncementHandler<br/>
-        /// and calling BattleUiJoystickHandler::SetLocked false to unlock joysticks to allow player movement and rotation.
+        /// and calling <see cref="Battle.View.UI.BattleUiJoystickHandler.SetLocked">SetLocked</see> false to unlock joysticks to allow player movement and rotation.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -472,7 +492,7 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleViewGameStart QuantumEvent.<br/>
-        /// Handles clearing BattleUiController::AnnouncementHandler text and showing the game timer.
+        /// Handles clearing <see cref="Battle.View.UI.BattleUiController.AnnouncementHandler">AnnouncementHandler</see> text and showing the game timer.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -487,7 +507,7 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleViewGameOver QuantumEvent.<br/>
-        /// Handles hiding %UI elements, showing BattleUiController::GameOverHandler and setting EndOfGameData variables.
+        /// Handles hiding %UI elements, showing <see cref="Battle.View.UI.BattleUiController.GameOverHandler">GameOverHandler</see> and setting EndOfGameData variables.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -507,11 +527,61 @@ namespace Battle.View.Game
             _endOfGameDataHasEnded = true;
             _endOfGameDataWinningTeam = e.WinningTeam;
             _endOfGameDataGameLengthSec = e.GameLengthSec;
+
+            //{ Calling server to add wins and losses
+            
+            Utils.TryGetQuantumFrame(out Frame f);
+            string[] playerUserIds = BattleParameters.GetPlayerSlotUserIDs(f);
+            
+            bool isValidWin = false;
+            // Temporary solution
+            if (e.WinningTeam == LocalPlayerTeam)
+            {
+                const int teamCount          = 2;
+                const int teamPlayerCountMax = 2;
+                const int totalPlayerCount   = teamCount * teamPlayerCountMax;
+
+                int teamAlphaPlayerCount = 0;
+                int teamBetaPlayerCount  = 0;
+                for (int i = 0; i < totalPlayerCount; i++)
+                {
+                    if (playerUserIds[i] == string.Empty) continue;
+                    if (i < teamPlayerCountMax) { teamAlphaPlayerCount++; }
+                    else { teamBetaPlayerCount++; }
+                }
+
+                switch (LocalPlayerTeam)
+                {
+                    case BattleTeamNumber.TeamAlpha:
+                        isValidWin = teamBetaPlayerCount > 0;
+                        break;
+                    case BattleTeamNumber.TeamBeta:
+                        isValidWin = teamAlphaPlayerCount > 0;
+                        break;
+                }
+            }
+
+            if (isValidWin)
+            {
+                StartCoroutine(ServerManager.Instance.BattleSendResult
+                (
+                    playerUserIds,
+                    (int)e.WinningTeam,
+                    (int)e.GameLengthSec,
+                    success =>
+                    {
+                        if (!success) _debugLogger.Error("Sending battle result failed.");
+                    }
+                )); 
+            }
+            
+            //} Calling server to add wins and losses
         }
 
         /// <summary>
         /// Private handler method for EventBattleChangeEmotionState QuantumEvent.<br/>
-        /// Handles calling BattleScreenEffectViewController::ChangeColor in #_screenEffectViewController.
+        /// Handles calling <see cref="Battle.View.Effect.BattleScreenEffectViewController.ChangeColor">ChangeColor</see>
+        /// in <see cref="BattleGameViewController._screenEffectViewController">_screenEffectViewController</see>.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -523,33 +593,28 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleLastRowWallDestroyed QuantumEvent.<br/>
-        /// Handles calling BattleStoneCharacterViewController::DestroyCharacterPart in #_stoneCharacterViewController<br/>
-        /// and BattleLightrayEffectViewController::SpawnLightray in #_lightrayEffectViewController.
+        /// Handles calling <see cref="BattleStoneCharacterViewController.DestroyCharacterPart">DestroyCharacterPart</see>
+        /// in <see cref="BattleGameViewController._stoneCharacterViewController">_stoneCharacterViewController</see><br/>
+        /// and <see cref="Battle.View.Effect.BattleLightrayEffectViewController.SpawnLightray">SpawnLightray</see>
+        /// in <see cref="BattleGameViewController._lightrayEffectViewController">_lightrayEffectViewController</see>.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
         private void QEventOnLastRowWallDestroyed(EventBattleLastRowWallDestroyed e)
         {
-            if (_stoneCharacterViewController != null)
-            {
-                _stoneCharacterViewController.DestroyCharacterPart(e.WallNumber, e.Team);
-            }
-
-            if (_lightrayEffectViewController != null)
-            {
-                _lightrayEffectViewController.SpawnLightray(e.WallNumber, e.LightrayColor);
-            }
+            _stoneCharacterViewController.DestroyCharacterPart(e.WallNumber, e.Team);
+            _lightrayEffectViewController.SpawnLightray(e.WallNumber, e.LightrayColor);
         }
 
         /// <summary>
         /// Private handler method for EventBattlePlaySoundFX QuantumEvent.<br/>
-        /// Handles calling BattleSoundFXViewController::PlaySound in #_soundFXViewController.
+        /// Handles calling <see cref="Battle.View.Audio.BattleAudioViewController.PlaySoundFX">PlaySound</see>
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
         private void QEventPlaySoundFX(EventBattlePlaySoundFX e)
         {
-            _soundFXViewController.PlaySound(e.Effect);
+            BattleAudioViewController.PlaySoundFX(e.Effect);
         }
 
         private void QEventCharacterSelected(EventBattleCharacterSelected e)
@@ -559,7 +624,9 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleCharacterTakeDamage QuantumEvent.<br/>
-        /// Handles calling BattleUiPlayerInfoHandler::UpdateHealthVisual in #_uiController's BattleUiController::PlayerInfoHandler.
+        /// Handles calling <see cref="Battle.View.UI.BattleUiPlayerInfoHandler.UpdateHealthVisual">UpdateHealthVisual</see>
+        /// in <see cref="BattleGameViewController._uiController">_uiController's</see>
+        /// <see cref="Battle.View.UI.BattleUiController.PlayerInfoHandler">PlayerInfoHandler</see>.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -573,7 +640,9 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleShieldTakeDamage QuantumEvent.<br/>
-        /// Handles calling BattleUiPlayerInfoHandler.UpdateDefenceVisual in <see cref="_uiController"/>'s <see cref="BattleUiController.PlayerInfoHandler">PlayerInfoHandler</see>.
+        /// Handles calling <see cref="Battle.View.UI.BattleUiPlayerInfoHandler.UpdateDefenceVisual">UpdateDefenceVisual</see> in
+        /// <see cref="BattleGameViewController._uiController">_uiController's</see>
+        /// <see cref="Battle.View.UI.BattleUiController.PlayerInfoHandler">PlayerInfoHandler</see>.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -587,7 +656,9 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleGiveUpStateChange QuantumEvent.<br/>
-        /// Handles calling BattleUiGiveUpButtonHandler.UpdateState in <see cref="_uiController"/>'s <see cref="BattleUiController.GiveUpButtonHandler">GiveUpButtonHandler</see>.
+        /// Handles calling <see cref="Battle.View.UI.BattleUiGiveUpButtonHandler.UpdateState">UpdateState</see>
+        /// in <see cref="BattleGameViewController._uiController">_uiController's</see>
+        /// <see cref="Battle.View.UI.BattleUiController.GiveUpButtonHandler">GiveUpButtonHandler</see>.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -599,23 +670,16 @@ namespace Battle.View.Game
             }
         }
 
-        /// <summary>
-        /// Private handler method for EventBattleDebugUpdateStatsOverlay QuantumEvent.<br/>
-        /// Handles setting stats to BattleUiController::DebugStatsOverlayHandler in #_uiController using BattleUiDebugStatsOverlayHandler::SetStats method.
-        /// </summary>
-        ///
-        /// <param name="e">The event data.</param>
-        private void QEventDebugOnUpdateStatsOverlay(EventBattleDebugUpdateStatsOverlay e)
+        private void QEventOnStoneCharacterPlayHitAnimation(EventBattleStoneCharacterPlayHitAnimation e)
         {
-            if (!SettingsCarrier.Instance.BattleShowDebugStatsOverlay) return;
-            if (e.Slot != LocalPlayerSlot) return;
-
-            _uiController.DebugStatsOverlayHandler.SetStats(e.Stats);
+            _stoneCharacterViewController.PlayHitAnimation(e.Team, e.Emotion);
         }
+
 
         /// <summary>
         /// Private handler method for EventBattleDebugOnScreenMessage QuantumEvent.<br/>
-        /// Handles calling BattleUiAnnouncementHandler::SetDebugtext in #_uiController's BattleUiController::AnnouncementHandler.
+        /// Handles calling <see cref="Battle.View.UI.BattleUiAnnouncementHandler.SetDebugtext">SetDebugtext</see>
+        /// in <see cref="BattleGameViewController._uiController">_uiController's</see> BattleUiController::AnnouncementHandler.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -626,7 +690,7 @@ namespace Battle.View.Game
 
         /// @}
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.Update.html">Update@u-exlink</a> method. Handles %UI updates based on the game's state and countdown.

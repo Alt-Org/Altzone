@@ -14,7 +14,6 @@ using Photon.Deterministic;
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Projectile;
-using Battle.QSimulation.SoulWall;
 
 namespace Battle.QSimulation.Player
 {
@@ -22,6 +21,9 @@ namespace Battle.QSimulation.Player
     /// <span class="brief-h">Player <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System@u-exlink</a> @systemslink</span><br/>
     /// Handles the quantum side of player logic.
     /// </summary>
+    ///
+    /// [{Player Overview}](#page-concepts-player-overview)<br/>
+    /// [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview)
     ///
     /// This system contains methods called by BattleCollisionQSystem that deal damage to players and shields, as well as sending input data forward for movement and character switching.
     [Preserve]
@@ -74,14 +76,22 @@ namespace Battle.QSimulation.Player
         /// <param name="playerCollisionData">Collision data related to the player character.</param>
         public static void OnProjectileHitPlayerCharacter(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerCharacterCollisionData* playerCollisionData)
         {
+            if (projectileCollisionData->Projectile->IsHeld) return;
+
+            BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->PlayerEntity);
+
+            if (damagedPlayerData->CurrentDefence <= 0) HandleSFX(f, damagedPlayerData->CharacterId, SoundEffectType.Death);
+
             // Temp disabled
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
             return;
 
             if (projectileCollisionData->Projectile->IsHeld) return;
 
-            BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->PlayerEntity);
+            //BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->PlayerEntity);
             FP damageTaken = projectileCollisionData->Projectile->Attack;
+
+            HandleSFX(f, damagedPlayerData->CharacterId, SoundEffectType.HitCharacterAggression);
 
             BattlePlayerManager.PlayerHandle damagePlayerHandle = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot);
             int characterNumber = damagePlayerHandle.SelectedCharacterNumber;
@@ -121,6 +131,8 @@ namespace Battle.QSimulation.Player
 
             BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
             FP damageTaken = projectileCollisionData->Projectile->Attack;
+
+            HandleSFX(f, damagedPlayerData->CharacterId, SoundEffectType.HitShield);
 
             BattleProjectileQSystem.SetAttack(f, projectileCollisionData->Projectile, damagedPlayerData->Stats.Attack);
 
@@ -187,6 +199,14 @@ namespace Battle.QSimulation.Player
             }
         }
 
+        private enum SoundEffectType
+        {
+            Catchphrase,
+            HitCharacterAggression,
+            HitShield,
+            Death
+        }
+
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private static BattleDebugLogger s_debugLogger;
 
@@ -215,6 +235,21 @@ namespace Battle.QSimulation.Player
             else if (!playerHandle.IsAbandoned)
             {
                 input = f.GetPlayerInput(playerHandle.PlayerRef);
+
+                BattleInputDebugUtils.InputDebugInfo inputDebugInfo = BattleInputDebugUtils.GenerateDebugInfo(input);
+
+                if (inputDebugInfo.NotEmpty)
+                {
+                    s_debugLogger.LogFormat(f,
+                                            "({0}) Received input ({1}) ({2})\n" +
+                                            "struct: {3}",
+                                            playerHandle.Slot,
+                                            input->DebugNumber,
+                                            inputDebugInfo.Summary,
+                                            inputDebugInfo.Struct
+                    );
+                }
+
                 isValid = input->IsValid;
             }
 
@@ -286,6 +321,18 @@ namespace Battle.QSimulation.Player
 
             BattleGameControlQSystem.OnGameOver(f, winningTeam);
             return true;
+        }
+
+        /// <summary>
+        /// Private helper method for playing the appropriate Shield Hit sound effect based on character ID
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame</param>
+        /// <param name="charactedID">ID value of the current character in play</param>
+        private static void HandleSFX(Frame f, int characterID, SoundEffectType type)
+        {
+            int finalSoundID = (characterID * Constants.BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER) + (int)type;
+            f.Events.BattlePlaySoundFX((BattleSoundFX)finalSoundID);
         }
 
         /// <summary>
@@ -423,6 +470,9 @@ namespace Battle.QSimulation.Player
 
         private void AbilityActivate(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* playerTransform)
         {
+            //{ Ability test
+            /*
+
             if (playerData->CharacterId == 601)
             {
                 for (int i = 0; i < 4; i++)
@@ -440,6 +490,9 @@ namespace Battle.QSimulation.Player
             {
                 BattleSoulWallQSystem.CreateAbilitySoulWallTest(f, playerData->TeamNumber, playerTransform->Position);
             }
+
+            /**/
+            //} Ability test
 
             playerData->AbilityCooldownSec = FrameTimer.FromSeconds(f, FP._3);
         }

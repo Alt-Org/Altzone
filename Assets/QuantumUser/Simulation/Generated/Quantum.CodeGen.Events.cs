@@ -84,15 +84,14 @@ namespace Quantum {
           case EventBattleCharacterTakeDamage.ID: result = typeof(EventBattleCharacterTakeDamage); return;
           case EventBattleShieldTakeDamage.ID: result = typeof(EventBattleShieldTakeDamage); return;
           case EventBattleGiveUpStateChange.ID: result = typeof(EventBattleGiveUpStateChange); return;
-          case EventBattleDebugUpdateStatsOverlay.ID: result = typeof(EventBattleDebugUpdateStatsOverlay); return;
+          case EventBattleStoneCharacterPlayHitAnimation.ID: result = typeof(EventBattleStoneCharacterPlayHitAnimation); return;
           case EventBattleDebugOnScreenMessage.ID: result = typeof(EventBattleDebugOnScreenMessage); return;
           default: break;
         }
       }
-      public EventBattleViewWaitForPlayers BattleViewWaitForPlayers(BattleWaitForPlayersData Data) {
+      public EventBattleViewWaitForPlayers BattleViewWaitForPlayers() {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventBattleViewWaitForPlayers>(EventBattleViewWaitForPlayers.ID);
-        ev.Data = Data;
         _f.AddEvent(ev);
         return ev;
       }
@@ -263,11 +262,11 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventBattleDebugUpdateStatsOverlay BattleDebugUpdateStatsOverlay(BattlePlayerSlot Slot, BattlePlayerStats Stats) {
+      public EventBattleStoneCharacterPlayHitAnimation BattleStoneCharacterPlayHitAnimation(BattleTeamNumber Team, BattleEmotionState Emotion) {
         if (_f.IsPredicted) return null;
-        var ev = _f.Context.AcquireEvent<EventBattleDebugUpdateStatsOverlay>(EventBattleDebugUpdateStatsOverlay.ID);
-        ev.Slot = Slot;
-        ev.Stats = Stats;
+        var ev = _f.Context.AcquireEvent<EventBattleStoneCharacterPlayHitAnimation>(EventBattleStoneCharacterPlayHitAnimation.ID);
+        ev.Team = Team;
+        ev.Emotion = Emotion;
         _f.AddEvent(ev);
         return ev;
       }
@@ -282,7 +281,6 @@ namespace Quantum {
   }
   public unsafe partial class EventBattleViewWaitForPlayers : EventBase {
     public new const Int32 ID = 1;
-    public BattleWaitForPlayersData Data;
     protected EventBattleViewWaitForPlayers(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
@@ -300,7 +298,6 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 41;
-        hash = hash * 31 + Data.GetHashCode();
         return hash;
       }
     }
@@ -872,14 +869,14 @@ namespace Quantum {
       }
     }
   }
-  public unsafe partial class EventBattleDebugUpdateStatsOverlay : EventBase {
+  public unsafe partial class EventBattleStoneCharacterPlayHitAnimation : EventBase {
     public new const Int32 ID = 23;
-    public BattlePlayerSlot Slot;
-    public BattlePlayerStats Stats;
-    protected EventBattleDebugUpdateStatsOverlay(Int32 id, EventFlags flags) : 
+    public BattleTeamNumber Team;
+    public BattleEmotionState Emotion;
+    protected EventBattleStoneCharacterPlayHitAnimation(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventBattleDebugUpdateStatsOverlay() : 
+    public EventBattleStoneCharacterPlayHitAnimation() : 
         base(23, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {
@@ -893,8 +890,8 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 149;
-        hash = hash * 31 + Slot.GetHashCode();
-        hash = hash * 31 + Stats.GetHashCode();
+        hash = hash * 31 + Team.GetHashCode();
+        hash = hash * 31 + Emotion.GetHashCode();
         return hash;
       }
     }

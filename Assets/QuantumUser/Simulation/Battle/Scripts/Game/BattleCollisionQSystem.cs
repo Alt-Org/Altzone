@@ -31,6 +31,8 @@ namespace Battle.QSimulation.Game
         {
             public BattleProjectileQComponent* Projectile;
             public EntityRef ProjectileEntity;
+            public BattleEmotionState ProjectileEmotionBase;
+            public BattleEmotionState ProjectileEmotionCurrent;
             public EntityRef OtherEntity;
         }
 
@@ -92,6 +94,8 @@ namespace Battle.QSimulation.Game
                 ProjectileCollisionData projectileCollisionData = new()
                 {
                     Projectile = projectile,
+                    ProjectileEmotionBase = projectile->EmotionBase,
+                    ProjectileEmotionCurrent = projectile->EmotionCurrent,
                     ProjectileEntity = info.Entity,
                     OtherEntity = info.Other
                 };

@@ -11,25 +11,30 @@
 
 /// @enum Quantum::BattlePlayerSlot
 /// <summary>
-/// Which PlayerSlot the player is on.
+/// Which PlayerSlot the [{Player}](#page-concepts-player) is on.
 /// </summary>
+///
+/// Each [{Player}](#page-concepts-player) is assigned to a slot.  
+/// See [{Player slots and teams}](#page-concepts-player-slots-teams) for more information.
 ///
 /// @bigtext{Generated from @ref BattlePlayerSlot.qtn}
 
 /// @var Quantum::BattlePlayerSlot Quantum::BattlePlayerSlot::Guest
-/// <summary>Player in Guest slot.</summary>
+/// Player in Guest slot.  
+/// Currently unused.
 ///
 /// @var Quantum::BattlePlayerSlot Quantum::BattlePlayerSlot::Slot1
-/// <summary>Player in Slot1.</summary>
+/// Player in Slot1.
 ///
 /// @var Quantum::BattlePlayerSlot Quantum::BattlePlayerSlot::Slot2
-/// <summary>Player in Slot2.</summary>
+/// Player in Slot2.
 ///
 /// @var Quantum::BattlePlayerSlot Quantum::BattlePlayerSlot::Slot3
-/// <summary>Player in Slot3.</summary>
+/// Player in Slot3.
 ///
 /// @var Quantum::BattlePlayerSlot Quantum::BattlePlayerSlot::Slot4
-/// <summary>Player in Slot4.</summary>
+/// Player in Slot4.
 ///
 /// @var Quantum::BattlePlayerSlot Quantum::BattlePlayerSlot::Spectator
-/// <summary>Player in spectator slot.</summary>
+/// Player in spectator slot.  
+/// Currently unused.
