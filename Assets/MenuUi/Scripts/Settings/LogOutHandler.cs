@@ -13,7 +13,6 @@ public class LogOutHandler : MonoBehaviour
 
     public void LogOut()
     {
-        Debug.Log("aaaaaaaaaaaaaa");
         ServerManager.Instance.LogOut();
     }
 }
