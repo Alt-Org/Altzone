@@ -10,7 +10,8 @@ namespace MenuUi.Scripts.CharacterGallery
     public class SelectedCharSlot : SlotBase
     {
         [SerializeField] private Image _characterImage;
-        [SerializeField] private TMP_Text _className;
+        //[SerializeField] private TMP_Text _className;
+        [SerializeField] private Image _classNameIcon;
         [SerializeField] private TMP_Text _characterNameText;
 
         [Space, SerializeField] private Image _backgroundLowerImage;
@@ -39,11 +40,11 @@ namespace MenuUi.Scripts.CharacterGallery
             _slotButton.onClick.RemoveAllListeners();
         }
 
-        public void SetInfo(CustomCharacter customCharacter, Sprite sprite, Color bgColor, Color bgAltColor, string name, string className, Sprite classIcon)
+        public void SetInfo(CustomCharacter customCharacter, Sprite sprite, Color bgColor, Color bgAltColor, string name, Sprite classNameIcon, Sprite classIcon)
         {
             _characterImage.sprite = sprite;
             _characterNameText.text = name;
-            _className.text = className;
+            _classNameIcon.sprite = classNameIcon;
             _backgroundLowerImage.color = bgColor;
             _backgroundUpperImage.color = bgAltColor;
             _classIcon.sprite = classIcon;
