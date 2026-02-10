@@ -196,19 +196,19 @@ namespace Battle.View.UI
         }
 
         /// <summary>
-        /// Calls SetDefenceNumber on the character button of the correct players correct character.
+        /// Calls SetDamageFill on the character button of the correct players correct character.
         /// </summary>
         ///
         /// <param name="slot">The slot of the player in question.</param>
         /// <param name="characterNumber">The character number of the character in question.</param>
-        /// <param name="defenceValue">The defence value of the character in question.</param>
-        public void UpdateDefenceVisual(BattlePlayerSlot slot, int characterNumber, float defenceValue)
+        /// <param name="defencePercentage">The defence percentage of the character in question.</param>
+        public void UpdateDefenceVisual(BattlePlayerSlot slot, int characterNumber, float defencePercentage)
         {
             BattleUiPlayerInfoComponent playerInfoComponent = GetPlayerInfoComponent(slot);
 
             if (playerInfoComponent == null) return;
 
-            playerInfoComponent.CharacterButtons[characterNumber].SetDefenceNumber(defenceValue);
+            playerInfoComponent.CharacterButtons[characterNumber].SetDamageFill(defencePercentage);
         }
 
         /// <summary>
