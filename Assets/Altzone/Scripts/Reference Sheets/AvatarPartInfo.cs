@@ -11,6 +11,8 @@ namespace Altzone.Scripts.AvatarPartsInfo
         [SerializeField] private string _name = "";
         [SerializeField] private string _id = "";
         [SerializeField] private string _visibleName = "";
+        [Tooltip("Does part have colorable areas")]
+        [SerializeField] private bool _isColorable = false;
 
         [Header("Visual Assets")]
         [SerializeField] private Sprite _avatarImage;
