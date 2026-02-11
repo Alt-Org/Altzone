@@ -22,41 +22,10 @@ namespace Altzone.Scripts.ReferenceSheets
         public List<ChatResponse> ChatResponseInfo => _chatResponseInfo; // Public accessor for _chatResponseInfo
         public List<MottoOptions> MottoOptionsInfo => _mottoOptionsInfo; // Public accessor for _mottoOptionsInfo
 
-        public List<string> GetChatResponses(CharacterClassType classType)
+        public List<ChatResponseObject> GetChatResponses(CharacterClassType classType)
         {
 
-            List<string> list = _chatResponseInfo.FirstOrDefault(x => x.ClassType == classType)?.List;
-
-
-
-
-            /*switch(mood)
-            {
-                //Checks which Mood been selected and imports it
-                case Mood.Neutral:
-                    list = _defaultList.List;
-                    break;
-
-                case Mood.Happy:
-                    list = _ChatResponseReactionInfo[0].List;
-                    break;
-
-                case Mood.Sad:
-                    list = _ChatResponseReactionInfo[1].List;
-                    break;
-
-                case Mood.Angry:
-                    list = _ChatResponseReactionInfo[2].List;
-                    break;
-
-                case Mood.Love:
-                    list = _ChatResponseReactionInfo[3].List;
-                    break;
-
-                case Mood.Wink:
-                    list = _ChatResponseReactionInfo[4].List;
-                    break;
-            }*/
+            List<ChatResponseObject> list = _chatResponseInfo.FirstOrDefault(x => x.ClassType == classType)?.List;
 
             if (list == null)
                 return _defaultList.List; //_defaultList.List;
@@ -73,13 +42,6 @@ namespace Altzone.Scripts.ReferenceSheets
             List<string> list = _mottoOptionsInfo.FirstOrDefault(x => x.ClassType == classType)?.List;
             return list;
         }
-    }
-
-    [Serializable]
-    public class ChatResponseObject
-    {
-        public string ResponseId;
-        public string Response;
     }
 
     [Serializable]

@@ -165,16 +165,14 @@ public class Chat : AltMonoBehaviour
              Destroy(child.gameObject);
          }*/
 
-        Debug.LogWarning("FIND ME THE MOODS VERSIONS");
         StartCoroutine(GetPlayerData(data =>
         {
-            //List<string> messageList = _chatResponseList.GetChatResponses(currentMood);
-            List<string> messageList = _chatResponseList.GetChatResponses(CharacterClassType.None);
+            List<ChatResponseObject> messageList = _chatResponseList.GetChatResponses(CharacterClassType.None);
             //List<string> messageList = _chatResponseList.GetChatResponses((CharacterClassType)((data.SelectedCharacterId / 100) * 100));
-            foreach (string message in messageList)
+            foreach (ChatResponseObject message in messageList)
             {
                 GameObject messageObject = Instantiate(_quickMessagePrefab, _chatResponseContent.transform);
-                Button button = messageObject.GetComponent<QuickResponceHandler>().SetData(message);
+                Button button = messageObject.GetComponent<QuickResponceHandler>().SetData(message.Response);
                 button.onClick.AddListener(() => SendQuickMessage(messageObject.GetComponent<Button>()));
             }
         }));
