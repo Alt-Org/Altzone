@@ -22,6 +22,7 @@ namespace Altzone.Scripts.AvatarPartsInfo
         public string Name { get => _name; }
         public string Id { get => _id; }
         public string VisibleName { get => _visibleName; }
+        public bool IsColorable { get => _isColorable; }
         public Sprite AvatarImage { get => _avatarImage; }
         public Sprite MaskImage { get => _maskImage; }
         public Sprite IconImage { get => _iconImage; }
