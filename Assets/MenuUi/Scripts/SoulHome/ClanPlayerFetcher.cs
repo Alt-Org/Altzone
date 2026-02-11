@@ -60,37 +60,9 @@ public class ClanPlayerFetcher : MonoBehaviour
                 continue;
             }
 
-            if (!AvatarEquals(_players[i].AvatarData, data.AvatarData))
-            {
-                _players[i] = data;
-                OnLocalAvatarUpdated(data);
-            }
+            _players[i] = data;
+            OnLocalAvatarUpdated(data);
             break;
         }
-    }
-
-    private bool AvatarEquals(AvatarData a,  AvatarData b)
-    {
-        if (a == null || b == null)
-        {
-            return false;
-        }
-
-        return
-            a.Hair == b.Hair &&
-            a.Eyes == b.Eyes &&
-            a.Nose == b.Nose &&
-            a.Mouth == b.Mouth &&
-            a.Clothes == b.Clothes &&
-            a.Feet == b.Feet &&
-            a.Hands == b.Hands &&
-            a.Color == b.Color &&
-            a.HairColor == b.HairColor &&
-            a.EyesColor == b.EyesColor &&
-            a.NoseColor == b.NoseColor &&
-            a.MouthColor == b.MouthColor &&
-            a.ClothesColor == b.ClothesColor &&
-            a.FeetColor == b.FeetColor &&
-            a.HandsColor == b.HandsColor;
     }
 }
