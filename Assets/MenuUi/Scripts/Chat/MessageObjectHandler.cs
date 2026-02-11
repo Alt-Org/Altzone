@@ -152,20 +152,21 @@ public class MessageObjectHandler : MonoBehaviour
         //Gets the set data we need to get to import saved reactions
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
 
-        ChildsScript.AddReaction(EmojiId._id, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, true);
+        ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, true);
         
     }
 
     private void UpdateReactions(ChatChannelType chatChannelType, ChatMessage message)
     {
         if (chatChannelType != ChatListener.Instance.ActiveChatChannel) return;
+        if (message.Id == null || _id != message.Id) return;
 
         //Gets the set data we need to get to import saved reactions
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
 
         foreach (ServerReactions reactions in message.Reactions)
         {
-            ChildsScript.AddReaction(reactions._id, (Mood)Enum.Parse(typeof(Mood), reactions.emoji), _id, true);
+            ChildsScript.AddReaction(reactions, (Mood)Enum.Parse(typeof(Mood), reactions.emoji), _id, true);
         }
     }
 }

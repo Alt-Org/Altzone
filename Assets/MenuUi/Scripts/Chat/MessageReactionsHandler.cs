@@ -46,7 +46,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
 
 
-        ReactionObjectHandler.OnReactionPressed += AddReaction;
+        //ReactionObjectHandler.OnReactionPressed += AddReaction;
 
         GenarateReactionObjects();
         CreateReactionInteractions();
@@ -57,7 +57,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
     private void OnDestroy()
     {
 
-        ReactionObjectHandler.OnReactionPressed -= AddReaction;
+        //ReactionObjectHandler.OnReactionPressed -= AddReaction;
     }
 
     private void GenarateReactionObjects()
@@ -151,7 +151,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
     /// <summary>
     /// Adds the chosen reaction to the selected message.
     /// </summary>
-    public void AddReaction(string _id, Mood mood, string message_id, bool fromServer = false)
+    public void AddReaction(ServerReactions _reaction, Mood mood, string message_id, bool fromServer = false)
     {
         if (_selectedMessage != null)
         {
@@ -165,10 +165,10 @@ public class MessageReactionsHandler : AltMonoBehaviour
             // Checks if chosen reaction is already added to the selected message. If so, deletes it.
             foreach (ChatReactionHandler addedReaction in _reactionHandlers)
             {
-                if (addedReaction._messageID == messageID && addedReaction.ReactionImage.sprite == reactionSprite)
-                {
-                    RemoveReaction(addedReaction, null);
-                    _selectedMessage.SetMessageInactive();
+
+                if (addedReaction.Mood == mood)
+            {
+                    addedReaction.AddReaction(_reaction);
 
                     return;
                 }
@@ -185,6 +185,11 @@ public class MessageReactionsHandler : AltMonoBehaviour
             chatReactionHandler.LongClickButton.onLongClick.AddListener(() => ShowUsers(chatReactionHandler));
             LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
 
+            StartCoroutine(GetPlayerData(player =>
+            {
+                if (player != null)
+                    if (player.Id == _reaction.sender_id) chatReactionHandler.Select();
+            }));
             _selectedMessage.SetMessageInactive();
 
             gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");

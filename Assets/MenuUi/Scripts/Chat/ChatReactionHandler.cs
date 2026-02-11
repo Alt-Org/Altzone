@@ -34,13 +34,14 @@ public class ChatReactionHandler : MonoBehaviour
         _reactionImage.sprite = image;
         _messageID = messageID;
         _mood = mood;
+        _reactioners = new();
     }
 
     public void AddReaction(ServerReactions reaction)
     {
-        if (_reactioners.Find(c => c.Id == reaction._id) != null) return;
+        if (_reactioners.Find(c => c.Id == reaction.sender_id) != null) return;
 
-        _reactioners.Add(new(reaction._id, reaction.playerName));
+        _reactioners.Add(new(reaction.sender_id, reaction.playerName));
         _count++;
         _counter.text = _count.ToString();
     }
@@ -58,8 +59,8 @@ public class ChatReactionHandler : MonoBehaviour
 
     public void RemoveReaction(ServerReactions reaction)
     {
-        ReactionSenders reactioner = _reactioners.Find(c => c.Id == reaction._id);
-        if (_reactioners.Find(c => c.Id == reaction._id) == null) return;
+        ReactionSenders reactioner = _reactioners.Find(c => c.Id == reaction.sender_id);
+        if (_reactioners.Find(c => c.Id == reaction.sender_id) == null) return;
         _reactioners.Remove(reactioner);
         _count--;
         _counter.text = _count.ToString();
