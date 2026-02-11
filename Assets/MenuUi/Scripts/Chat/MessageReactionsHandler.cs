@@ -143,10 +143,29 @@ public class MessageReactionsHandler : AltMonoBehaviour
             button.onClick.AddListener(() => AddReaction(commonReaction));*/
         }
     }
-
-
-
-
+    /// <summary>
+    /// Updates the all of the reactions of the selected message.
+    /// </summary>
+    public void UpdateReactions(List<ServerReactions> reactions, string messageid)
+    {
+        foreach (ChatReactionHandler addedReaction in _reactionHandlers)
+        {
+            addedReaction.ResetReactions();
+        }
+        foreach (ServerReactions reaction in reactions)
+        {
+            AddReaction(reaction, (Mood)Enum.Parse(typeof(Mood), reaction.emoji), messageid, true);
+        }
+        List<ChatReactionHandler> removableReactions = new();
+        foreach (ChatReactionHandler addedReaction in _reactionHandlers)
+        {
+            if(addedReaction.Count <= 0) removableReactions.Add(addedReaction);
+        }
+        for (int i = removableReactions.Count - 1; i >= 0; i--)
+        {
+            RemoveReaction(removableReactions[i]);
+        }
+    }
 
     /// <summary>
     /// Adds the chosen reaction to the selected message.
@@ -243,18 +262,12 @@ public class MessageReactionsHandler : AltMonoBehaviour
         _longClick = false;
     }
 
-    private void RemoveReaction(ChatReactionHandler reaction, ServerChatMessage selectedReaction)
+    private void RemoveReaction(ChatReactionHandler reaction)
     {
         HorizontalLayoutGroup reactionsField = reaction.GetComponentInParent<HorizontalLayoutGroup>();
         reaction.transform.SetParent(null);
         _reactionHandlers.Remove(reaction);
 
-        
-        //removes the reaction from the list
-        selectedReaction.reactions.RemoveAll(r =>
-        r.emoji == reaction.Mood.ToString() &&
-        r.playerName == reaction.MessageID
-        );
         Destroy(reaction.gameObject);
 
         _selectedMessage.SizeCall();

@@ -159,9 +159,6 @@ public class MessageObjectHandler : MonoBehaviour
         //Gets the set data we need to get to import saved reactions
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
 
-        foreach (ServerReactions reactions in message.Reactions)
-        {
-            ChildsScript.AddReaction(reactions, (Mood)Enum.Parse(typeof(Mood), reactions.emoji), _id, true);
-        }
+        ChildsScript.UpdateReactions(message.Reactions, _id);
     }
 }

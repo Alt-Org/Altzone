@@ -77,6 +77,14 @@ public class ChatReactionHandler : MonoBehaviour
         _selected = false;
     }
 
+    public void ResetReactions()
+    {
+        _reactioners.Clear();
+        _count = 0;
+        _counter.text = _count.ToString();
+        if(_selected)Deselect();
+    }
+
     public class ReactionSenders
     {
         private string _id;

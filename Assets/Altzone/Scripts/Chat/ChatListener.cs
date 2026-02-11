@@ -251,7 +251,6 @@ namespace Altzone.Scripts.Chat
         private void HandleMessage(byte[] data)
         {
             string json = Encoding.UTF8.GetString(data);
-            Debug.LogWarning(json);
             try
             {
                 if (json.StartsWith('{') && json.EndsWith('}'))
