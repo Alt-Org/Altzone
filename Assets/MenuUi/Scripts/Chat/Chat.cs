@@ -9,6 +9,8 @@ using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Common;
 using Altzone.Scripts.Chat;
+using Altzone.Scripts.Model.Poco.Player;
+using System.Linq;
 
 public class Chat : AltMonoBehaviour
 {
@@ -172,8 +174,8 @@ public class Chat : AltMonoBehaviour
             foreach (ChatResponseObject message in messageList)
             {
                 GameObject messageObject = Instantiate(_quickMessagePrefab, _chatResponseContent.transform);
-                Button button = messageObject.GetComponent<QuickResponceHandler>().SetData(message.Response);
-                button.onClick.AddListener(() => SendQuickMessage(messageObject.GetComponent<Button>()));
+                Button button = messageObject.GetComponent<QuickResponceHandler>().SetData(message);
+                button.onClick.AddListener(() => SendQuickMessage(data, message));
             }
         }));
 
@@ -311,12 +313,13 @@ public class Chat : AltMonoBehaviour
     }
 
     // Asettaa pikaviestin tekstikenttään quickMessage text => InputField text
-    public void SendQuickMessage(Button button)
+    public void SendQuickMessage(PlayerData data, ChatResponseObject message)
     {
-        TMP_Text buttonText = button.GetComponentInChildren<TMP_Text>();
-        if (buttonText != null)
+        if (message != null)
         {
-            string textFromButton = buttonText.text;
+            List<ChatResponseObject> messageList = _chatResponseList.GetChatResponses((CharacterClassType)((data.SelectedCharacterId / 100) * 100));
+            ChatResponseObject convertedResponse = messageList.FirstOrDefault(c => c.ResponseId == message.ResponseId);
+            string textFromButton = convertedResponse.Response;
             _reactionAvailable = true;
             MinimizeOptions();
             _inputField.text = textFromButton;
