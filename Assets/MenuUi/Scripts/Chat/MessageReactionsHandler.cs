@@ -5,8 +5,9 @@ using System.Linq;
 using Altzone.Scripts.Chat;
 using UnityEngine;
 using UnityEngine.UI;
+using static ServerChatMessage;
 
-public class MessageReactionsHandler : MonoBehaviour
+public class MessageReactionsHandler : AltMonoBehaviour
 {
     [Header("Containers")]
     [SerializeField] private GameObject _commonReactionsPanel;
@@ -196,17 +197,17 @@ public class MessageReactionsHandler : MonoBehaviour
     /// <param name="reactionHandler"></param>
     private void ToggleReaction(ChatReactionHandler reactionHandler)
     {
-        ChatListener.Instance.SendReaction(reactionHandler.Mood.ToString(), reactionHandler._messageID, ChatListener.Instance.ActiveChatChannel);
+        ChatListener.Instance.SendReaction(reactionHandler.Mood.ToString(), reactionHandler.MessageID, ChatListener.Instance.ActiveChatChannel);
 
         if (!_longClick)
         {
             _selectedMessage.SetMessageInactive();
 
-            if (reactionHandler._selected)
+            if (reactionHandler.Selected)
             {
                 reactionHandler.Deselect(); 
 
-                if (reactionHandler._count <= 0)
+                if (reactionHandler.Count <= 0)
                 {
                      //Need to find away how i import data to the ServerChatMessage to make this work
                     RemoveReaction(reactionHandler, null);
@@ -242,7 +243,7 @@ public class MessageReactionsHandler : MonoBehaviour
         //removes the reaction from the list
         selectedReaction.reactions.RemoveAll(r =>
         r.emoji == reaction.Mood.ToString() &&
-        r.playerName == reaction._messageID
+        r.playerName == reaction.MessageID
         );
         Destroy(reaction.gameObject);
 
