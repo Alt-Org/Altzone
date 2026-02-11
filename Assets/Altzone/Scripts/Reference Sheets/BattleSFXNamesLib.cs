@@ -4,17 +4,17 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
 {
     public enum BattleSFXNameTypes
     {
-        None = -1,
-        SoulWallHit = BattleSoundFX.SoulWallHit,
-        GoalHit = BattleSoundFX.GoalHit,
-        SideWallHit = BattleSoundFX.SideWallHit,
-        SoulWallBroken = BattleSoundFX.SoulWallBroken,
-        DiamondPickUp = BattleSoundFX.DiamondPickUp,
+        None                  = -1,
+        SoulWallHit           = BattleSoundFX.SoulWallHit,
+        GoalHit               = BattleSoundFX.GoalHit,
+        SideWallHit           = BattleSoundFX.SideWallHit,
+        SoulWallBroken        = BattleSoundFX.SoulWallBroken,
+        DiamondPickUp         = BattleSoundFX.DiamondPickUp,
         SoulWallHitAggression = BattleSoundFX.SoulWallHitAggression,
-        SoulWallHitJoy = BattleSoundFX.SoulWallHitJoy,
-        SoulWallHitLove = BattleSoundFX.SoulWallHitLove,
-        SoulWallHitPlayful = BattleSoundFX.SoulWallHitPlayful,
-        SoulWallHitSadness = BattleSoundFX.SoulWallHitSadness,
+        SoulWallHitJoy        = BattleSoundFX.SoulWallHitJoy,
+        SoulWallHitLove       = BattleSoundFX.SoulWallHitLove,
+        SoulWallHitPlayful    = BattleSoundFX.SoulWallHitPlayful,
+        SoulWallHitSadness    = BattleSoundFX.SoulWallHitSadness,
 
         #region
 
