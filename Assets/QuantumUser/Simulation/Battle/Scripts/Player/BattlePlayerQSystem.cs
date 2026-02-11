@@ -81,6 +81,18 @@ namespace Battle.QSimulation.Player
             BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->PlayerEntity);
 
             if (damagedPlayerData->CurrentDefence <= 0) HandleSFX(f, damagedPlayerData->CharacterId, SoundEffectType.Death);
+            else
+            {
+                SoundEffectType soundEffectType = projectileCollisionData->ProjectileEmotionCurrent switch
+                {
+                    BattleEmotionState.Aggression => SoundEffectType.HitCharacterAggression,
+                    BattleEmotionState.Joy        => SoundEffectType.HitCharacterJoy,
+                    BattleEmotionState.Love       => SoundEffectType.HitCharacterLove,
+                    BattleEmotionState.Playful    => SoundEffectType.HitCharacterPlayful,
+                    BattleEmotionState.Sadness    => SoundEffectType.HitCharacterSadness
+                };
+                HandleSFX(f, damagedPlayerData->CharacterId, soundEffectType);
+            }
 
             // Temp disabled
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
@@ -203,6 +215,10 @@ namespace Battle.QSimulation.Player
         {
             Catchphrase,
             HitCharacterAggression,
+            HitCharacterJoy,
+            HitCharacterLove,
+            HitCharacterPlayful,
+            HitCharacterSadness,
             HitShield,
             Death
         }
