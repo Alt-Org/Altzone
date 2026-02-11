@@ -169,8 +169,8 @@ public class Chat : AltMonoBehaviour
         StartCoroutine(GetPlayerData(data =>
         {
             //List<string> messageList = _chatResponseList.GetChatResponses(currentMood);
-
-            List<string> messageList = _chatResponseList.GetChatResponses((CharacterClassType)((data.SelectedCharacterId / 100) * 100));
+            List<string> messageList = _chatResponseList.GetChatResponses(CharacterClassType.None);
+            //List<string> messageList = _chatResponseList.GetChatResponses((CharacterClassType)((data.SelectedCharacterId / 100) * 100));
             foreach (string message in messageList)
             {
                 GameObject messageObject = Instantiate(_quickMessagePrefab, _chatResponseContent.transform);
