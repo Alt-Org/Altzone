@@ -283,6 +283,10 @@ namespace Battle.QSimulation.Projectile
                     {
                         SetEmotion(f, projectile, projectile->EmotionBase);
                     }
+                    else
+                    {
+                        SetEmotion(f, projectile, (BattleEmotionState)(((int)projectile->EmotionCurrent + f.RNG->NextInclusive(1, 3)) % 4));
+                    }
 
                     normal             = soulWall->Normal;
                     collisionMinOffset = soulWall->CollisionMinOffset;
@@ -297,12 +301,12 @@ namespace Battle.QSimulation.Projectile
                     if (FPVector2.Dot(playerShieldHitbox->Normal, projectile->Direction.Normalized) >= 0) break;
 
                     if (!ProjectileHitPlayerShield(f, projectile, dataPtr, out normal)) break;
-                    
+
                     collisionType      = playerShieldHitbox->CollisionType;
                     collisionMinOffset = playerShieldHitbox->CollisionMinOffset;
                     speedChange        = SpeedChange.Increment;
                     handleCollision    = true;
-                    
+
                     break;
 
                 case BattleCollisionTriggerType.Player:
@@ -317,7 +321,7 @@ namespace Battle.QSimulation.Projectile
                     collisionMinOffset = playerCharacterHitbox->CollisionMinOffset;
                     speedChange        = SpeedChange.Increment;
                     handleCollision    = true;
-                    
+
                     break;
 
                 default:
