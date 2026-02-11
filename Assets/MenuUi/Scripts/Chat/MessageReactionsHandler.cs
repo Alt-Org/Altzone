@@ -169,7 +169,12 @@ public class MessageReactionsHandler : AltMonoBehaviour
                 if (addedReaction.Mood == mood)
             {
                     addedReaction.AddReaction(_reaction);
-
+                    StartCoroutine(GetPlayerData(player =>
+                    {
+                        if (player != null)
+                            if (player.Id == _reaction.sender_id) addedReaction.Select();
+                    }));
+                    _selectedMessage.SetMessageInactive();
                     return;
                 }
             }
@@ -178,7 +183,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
             GameObject newReaction = Instantiate(_addedReactionPrefab, reactionsField.transform);
             ChatReactionHandler chatReactionHandler = newReaction.GetComponentInChildren<ChatReactionHandler>();
             chatReactionHandler.SetReactionInfo(reactionSprite, messageID, mood);
-
+            chatReactionHandler.AddReaction(_reaction);
             _reactionHandlers.Add(chatReactionHandler);
 
             chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler));
@@ -215,7 +220,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
                 if (reactionHandler.Count <= 0)
                 {
                      //Need to find away how i import data to the ServerChatMessage to make this work
-                    RemoveReaction(reactionHandler, null);
+                    //RemoveReaction(reactionHandler, null);
                 }
             }
             else
