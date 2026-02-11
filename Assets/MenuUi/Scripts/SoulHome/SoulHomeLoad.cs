@@ -15,6 +15,9 @@ using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Model.Poco.Game;
 using System.Collections.ObjectModel;
+using UnityEngine.U2D.Animation;
+using Assets.Altzone.Scripts.Model.Poco.Player;
+using System.Reflection.Emit;
 
 namespace MenuUI.Scripts.SoulHome {
 
@@ -34,10 +37,13 @@ namespace MenuUI.Scripts.SoulHome {
         [SerializeField] private TowerController _towerController;
         [SerializeField] private GameObject _avatarPlaceholder;
         [SerializeField] private Camera _towerCamera;
-
+        [SerializeField] private ClanPlayerFetcher _clanPlayerFetcher;
+        [SerializeField] private SpriteLibraryAsset _avatarSpriteLibrary;
+        [SerializeField] private AvatarPartsReference _avatarPartsReference;
 
         private List<Furniture> _furnitureList = null;
 
+        private readonly Dictionary<string, AvatarRig> _spawnedAvatars = new(); // string is playerId
 
         private const string SERVER_ADDRESS = "https://altzone.fi/api/soulhome";
 
@@ -45,23 +51,224 @@ namespace MenuUI.Scripts.SoulHome {
         private bool _roomsReady = false;
         private bool _furnituresSet = false;
         private bool _loadFinished = false;
+        private bool _loginStatusChanged = false;
+        private bool _refreshInProgress = false;
+
+        private int _runningCoroutines = 0;
+
+        private readonly Dictionary<AvatarPart, AvatarPartSetter.AvatarResolverStruct> _resolverDictionary = new()
+        {
+            {
+                AvatarPart.Body,
+                new AvatarPartSetter.AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Clothes,
+                    _category = "Body",
+                    _suffix = "",
+                }
+            },
+            {
+                AvatarPart.R_Hand,
+                new AvatarPartSetter.AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Hands,
+                    _category = "Hands",
+                    _suffix = "R"
+                }
+            },
+            {
+                AvatarPart.L_Hand,
+                new AvatarPartSetter.AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Hands,
+                    _category = "Hands",
+                    _suffix = "L"
+                }
+            },
+            {
+                AvatarPart.L_Eyebrow,
+                new AvatarPartSetter.AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Eyes,
+                    _category = "Eyebrows",
+                    _suffix = "L"
+                }
+            },
+            {
+                AvatarPart.L_Eye,
+                new AvatarPartSetter.AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Eyes,
+                    _category ="Eyes",
+                    _suffix = "L"
+                }
+            },
+            {
+                AvatarPart.R_Eyebrow,
+                new AvatarPartSetter.AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Eyes,
+                    _category = "Eyebrows",
+                    _suffix = "R"
+                }
+            },
+            {
+                AvatarPart.R_Eye,
+                new AvatarPartSetter.AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Eyes,
+                    _category = "Eyes",
+                    _suffix = "R"
+                }
+            },
+            {
+                AvatarPart.Nose,
+                new AvatarPartSetter.AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Nose,
+                    _category = "Nose",
+                    _suffix = ""
+                }
+            },
+            {
+                AvatarPart.Mouth,
+                new AvatarPartSetter.AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Mouth,
+                    _category = "Mouth",
+                    _suffix = ""
+                }
+            },
+            {
+                AvatarPart.R_Leg,
+                new AvatarPartSetter.AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Feet,
+                    _category = "Legs",
+                    _suffix= "R"
+                }
+            },
+            {
+                AvatarPart.L_Leg,
+                new AvatarPartSetter.AvatarResolverStruct
+                {
+                    _dataGetter = data => data.Feet,
+                    _category = "Legs",
+                    _suffix = "L"
+                }
+            },
+        };
 
         public bool LoadFinished { get => _loadFinished;}
 
         // Start is called before the first frame update
         void Start()
         {
-            _roomAmount = ServerManager.Instance.Clan != null ? ServerManager.Instance.Clan.playerCount: 1;
+            RefreshSoulHome();
+
+            ServerManager.OnLogInStatusChanged += UpdateOnLoginStatusChanged;
+        }
+
+        private void OnDestroy()
+        {
+            ServerManager.OnLogInStatusChanged -= UpdateOnLoginStatusChanged;
+        }
+
+        private void OnEnable()
+        {
+            _clanPlayerFetcher.OnLocalAvatarUpdated += OnLocalAvatarUpdated;
+            if (_loginStatusChanged)
+            {
+                _loginStatusChanged = false;
+                RefreshSoulHome();
+            }
+        }
+
+        private void OnDisable()
+        {
+            _clanPlayerFetcher.OnLocalAvatarUpdated -= OnLocalAvatarUpdated;
+        }
+
+        private void UpdateOnLoginStatusChanged(bool isLoggedIn)
+        {
+            _loginStatusChanged = isLoggedIn;
+        }
+
+        private void RefreshSoulHome()
+        {
+            if (!_refreshInProgress)
+            {
+                StartCoroutine(RefreshCoroutine());
+            }
+        }
+
+        private IEnumerator RefreshCoroutine()
+        {
+            _refreshInProgress = true;
+
+            ClearSoulHome();
+
+            _clanPlayerFetcher.RefreshClanMembersPlayerData();
+
+            _roomAmount = ServerManager.Instance.Clan != null ? ServerManager.Instance.Clan.playerCount : 1;
             if (_roomAmount > 30)
             {
                 Debug.LogError($"Clan has more players ({_roomAmount}) than allowed, setting room count to 30.");
                 _roomAmount = 30;
             }
-            StartCoroutine(HomeLoad());
+
+            RunTracked(HomeLoad());
             //TestCode();
-            StartCoroutine(LoadRooms());
-            StartCoroutine(LoadFurniture());
-            StartCoroutine(SpawnAvatar());
+            RunTracked(LoadRooms());
+            RunTracked(LoadFurniture());
+            RunTracked(SpawnAvatar());
+
+            // wait until the above Coroutines have finished
+            // to make sure this doesn't run again until it is finished
+            yield return WaitForLoadFinish();
+
+            _refreshInProgress = false;
+        }
+
+        private void ClearSoulHome()
+        {
+            foreach (Transform child in _roomPositions.transform)
+            {
+                foreach (Transform grandChild in child.transform)
+                {
+                    Destroy(grandChild.gameObject);
+                }
+            }
+            _spawnedAvatars.Clear();
+            _soulHomeRooms = null;
+            _furnitureFetchFinished = false;
+            _roomsReady = false;
+            _furnituresSet = false;
+            _loadFinished = false;
+            _furnitureList = null;
+        }
+
+        private IEnumerator TrackedCoroutine(IEnumerator coroutine)
+        {
+            _runningCoroutines++;
+            try
+            {
+                yield return coroutine;
+            }
+            finally
+            {
+                _runningCoroutines--;
+            }
+        }
+
+        private void RunTracked(IEnumerator coroutine)
+        {
+            StartCoroutine(TrackedCoroutine(coroutine));
+        }
+
+        private IEnumerator WaitForLoadFinish()
+        {
+            yield return new WaitUntil(() => _runningCoroutines == 0);
         }
 
         private void TestCode() //This is test code block that may or may not be unrelated to SoulHome. I just use the opening of the SoulHome to trigger things I need to test and don't have dedicated way of doing so.
@@ -348,13 +555,49 @@ namespace MenuUI.Scripts.SoulHome {
         public IEnumerator SpawnAvatar()
         {
             yield return new WaitUntil(() => _furnituresSet);
-            for (int i = 0; i < _roomAmount; i++)
+            yield return new WaitUntil(() => _clanPlayerFetcher.PlayersLoaded);
+
+            int spawnAmount = Mathf.Min(_roomAmount, _clanPlayerFetcher.Players.Count);
+
+            for (int i = 0; i < spawnAmount; i++)
             {
-                Instantiate(_avatarPlaceholder, _roomPositions.transform.GetChild(i).GetChild(0));
+                GameObject avatarParent = Instantiate(_avatarPlaceholder, _roomPositions.transform.GetChild(i).GetChild(0));
+                GameObject avatar = avatarParent.transform.GetChild(0).gameObject;
+                AvatarRig rig = avatar.GetComponent<AvatarRig>();
+
+                PlayerData playerData = _clanPlayerFetcher.Players[i];
+
+                ApplyAvatarToRig(rig, playerData);
+
+                _spawnedAvatars[playerData.Id] = rig;
             }
             _loadFinished = true;
         }
 
-        
+        private void ApplyAvatarToRig(AvatarRig rig, PlayerData playerData)
+        {
+            foreach ((AvatarPart part, SpriteResolver resolver) in rig.Resolvers)
+            {
+                if (!_resolverDictionary.TryGetValue(part, out AvatarPartSetter.AvatarResolverStruct resolverStruct))
+                {
+                    continue;
+                }
+
+                AvatarPartSetter.AssignAvatarPart(resolver, resolverStruct, playerData, _avatarPartsReference, part);
+
+                SpriteRenderer headSpriteRenderer = rig.GetRenderer(AvatarPart.Head).GetComponent<SpriteRenderer>();
+                AvatarPartSetter.SetHeadColor(headSpriteRenderer, playerData);
+            }
+        }
+
+        private void OnLocalAvatarUpdated(PlayerData playerData)
+        {
+            if (!_spawnedAvatars.TryGetValue(playerData.Id, out AvatarRig rig))
+            {
+                return;
+            }
+
+            ApplyAvatarToRig(rig, playerData);
+        }
     }
 }
