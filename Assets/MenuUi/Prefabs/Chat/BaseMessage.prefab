@@ -700,7 +700,7 @@ MonoBehaviour:
   _baseMessageSize: {fileID: 3363965265471710657}
   backgroundSize: {fileID: 2103742428301501262}
   reactionField: {fileID: 5136230035178387175}
-  _reactionSize: {fileID: 6600255325117062062}
+  _reactionSize: {fileID: 34770445001276461}
   _expandedReactionSize: {fileID: 9161950515590385300}
   _vectorReactionSize: {x: 0, y: 0}
   _vectorExpandedReactionSize: {x: 0, y: 0}
@@ -1724,6 +1724,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5723687039858523774}
     m_Modifications:
+    - target: {fileID: 329487015046269012, guid: 76aa8b7d736fa8e44955cce276908e74,
+        type: 3}
+      propertyPath: m_Pivot.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 329487015046269012, guid: 76aa8b7d736fa8e44955cce276908e74,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 329487015046269012, guid: 76aa8b7d736fa8e44955cce276908e74,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 329487015046269012, guid: 76aa8b7d736fa8e44955cce276908e74,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 747821113507983977, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1917,7 +1937,7 @@ PrefabInstance:
     - target: {fileID: 4897486333446758923, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4897486333446758923, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
@@ -1927,7 +1947,7 @@ PrefabInstance:
     - target: {fileID: 4897486333446758923, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4897486333446758923, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
@@ -1937,7 +1957,7 @@ PrefabInstance:
     - target: {fileID: 4897486333446758923, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 80
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4897486333446758923, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
