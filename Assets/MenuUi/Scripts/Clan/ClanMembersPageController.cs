@@ -13,6 +13,9 @@ public class ClanMembersPageController : MonoBehaviour
     [SerializeField] private ClanMemberPlaque _memberPlaquePrefab;
     [SerializeField] private ClanMemberPopupController _memberPopup;
 
+    [SerializeField] private ClanRoleSelectPopupController _roleSelectPopup;
+    [SerializeField] private Canvas _canvas;
+
     private string _viewedClanId;
     private HashSet<string> _viewAdminSet;
 
@@ -136,6 +139,25 @@ public class ClanMembersPageController : MonoBehaviour
             var member = row.Member;
 
             var plaque = Instantiate(_memberPlaquePrefab, _membersContent);
+
+            bool isOwnClan = string.IsNullOrEmpty(_viewedClanId)
+             || (ServerManager.Instance.Clan != null && _viewedClanId == ServerManager.Instance.Clan._id);
+
+            plaque.SetVoteInteractable(isOwnClan);
+
+            plaque.BindVote(() =>
+            {
+                if (!isOwnClan) return;
+
+                var roles = ServerManager.Instance?.Clan?.roles;
+                if (roles == null || _roleSelectPopup == null || _canvas == null) return;
+
+                // anchor near the vote button (preferred), fallback to plaque rect
+                var anchor = plaque.VoteButtonRect != null ? plaque.VoteButtonRect : plaque.GetComponent<RectTransform>();
+                _roleSelectPopup.ShowAnchored(member, roles, anchor, _canvas);
+            });
+
+
             plaque.gameObject.SetActive(true);
 
             plaque.SetPosition(i + 1);
@@ -169,10 +191,6 @@ public class ClanMembersPageController : MonoBehaviour
             {
                 var capturedMember = member;
                 var capturedRoleLabel = row.RoleLabel;
-
-                bool isOwnClan = string.IsNullOrEmpty(_viewedClanId)
-                || (ServerManager.Instance.Clan != null && _viewedClanId == ServerManager.Instance.Clan._id);
-
 
                 button.onClick.RemoveAllListeners();
                 button.onClick.AddListener(() =>

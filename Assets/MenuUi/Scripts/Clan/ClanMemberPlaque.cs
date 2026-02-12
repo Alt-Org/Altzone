@@ -8,6 +8,9 @@ public class ClanMemberPlaque : MonoBehaviour
     [SerializeField] private TMP_Text _nameText;
     [SerializeField] private TMP_Text _roleText;
     [SerializeField] private GameObject _rosetteObject;
+    [SerializeField] private Button _voteButton;
+
+    public RectTransform VoteButtonRect => _voteButton != null ? _voteButton.GetComponent<RectTransform>() : null;
 
     [Header("Role UI")]
     [SerializeField] private Image _roleIconImage;
@@ -65,6 +68,18 @@ public class ClanMemberPlaque : MonoBehaviour
     {
         if (_roleIconImage != null)
             _roleIconImage.gameObject.SetActive(visible);
+    }
+
+    public void SetVoteInteractable(bool value)
+    {
+        if (_voteButton != null) _voteButton.interactable = value;
+    }
+
+    public void BindVote(System.Action onVote)
+    {
+        if (_voteButton == null) return;
+        _voteButton.onClick.RemoveAllListeners();
+        if (onVote != null) _voteButton.onClick.AddListener(() => onVote());
     }
 }
 

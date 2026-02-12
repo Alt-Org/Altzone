@@ -88,6 +88,67 @@ public class ClanRoleSelectPopupController : MonoBehaviour
         BuildRoleList(roles);
     }
 
+    public void ShowAnchored(ClanMember member, List<ClanRoles> roles, RectTransform anchor, Canvas canvas, Vector2? offset = null)
+    {
+        PositionNearAnchor(anchor, canvas, offset ?? new Vector2(16f, 0f));
+        Show(member, roles);
+    }
+
+    private void PositionNearAnchor(RectTransform anchor, Canvas canvas, Vector2 offset)
+    {
+        if (anchor == null || canvas == null) return;
+
+        var popupRt = (_root != null ? _root : gameObject).GetComponent<RectTransform>();
+        if (popupRt == null) return;
+
+        var parentRt = popupRt.parent as RectTransform;
+        if (parentRt == null) return;
+
+        Camera cam = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
+
+        // Anchor world corners -> choose top-right corner as attach point
+        Vector3[] corners = new Vector3[4];
+        anchor.GetWorldCorners(corners);
+        Vector3 worldTopRight = corners[2]; // 2 = top-right
+
+        Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(cam, worldTopRight);
+
+        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRt, screenPoint, cam, out Vector2 localPoint))
+            return;
+
+        // Place popup to the right of the anchor
+        popupRt.anchoredPosition = localPoint + offset;
+
+        ClampToParent(popupRt, parentRt);
+    }
+
+    private void ClampToParent(RectTransform child, RectTransform parent)
+    {
+        // Keeps popup inside parent rect
+        var childSize = child.rect.size;
+        var parentSize = parent.rect.size;
+
+        // anchoredPosition is relative to parent pivot
+        Vector2 pos = child.anchoredPosition;
+
+        float left = -parentSize.x * parent.pivot.x;
+        float right = parentSize.x * (1f - parent.pivot.x);
+        float bottom = -parentSize.y * parent.pivot.y;
+        float top = parentSize.y * (1f - parent.pivot.y);
+
+        // account for child pivot
+        float minX = left + childSize.x * child.pivot.x;
+        float maxX = right - childSize.x * (1f - child.pivot.x);
+        float minY = bottom + childSize.y * child.pivot.y;
+        float maxY = top - childSize.y * (1f - child.pivot.y);
+
+        pos.x = Mathf.Clamp(pos.x, minX, maxX);
+        pos.y = Mathf.Clamp(pos.y, minY, maxY);
+
+        child.anchoredPosition = pos;
+    }
+
+
     public void Hide()
     {
         ClearList();
