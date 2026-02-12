@@ -9,6 +9,8 @@ using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Common;
 using Altzone.Scripts.Chat;
+using Altzone.Scripts.Model.Poco.Player;
+using System.Linq;
 
 public class Chat : AltMonoBehaviour
 {
@@ -22,6 +24,7 @@ public class Chat : AltMonoBehaviour
     private GameObject _currentContent; // Tällä hetkellä aktiivinen chatin content
 
     [Header("Send buttons")]
+    [SerializeField] private GameObject _sendButtonUI;
     [SerializeField] private GameObject _sendButtonSadness;
     [SerializeField] private GameObject _sendButtonAnger;
     [SerializeField] private GameObject _sendButtonJoy;
@@ -98,6 +101,11 @@ public class Chat : AltMonoBehaviour
 
     public delegate void SelectedMessageChanged(MessageObjectHandler handler);
     public static event SelectedMessageChanged OnSelectedMessageChanged;
+    private bool _reactionAvailable = false; //Katsoo jos textboxissa on tekstiä tai ei
+    public static Chat instance;
+    public CharacterResponseList characterResponseList;
+    public Mood currentMood = Mood.Neutral;
+    public GameObject _responsesData;
 
     private void Start()
     {
@@ -151,14 +159,23 @@ public class Chat : AltMonoBehaviour
 
     private void AddResponses()
     {
+        //Clears the current Responses
+        /*if(_responsesData.transform.childCount > 0)
+         foreach (Transform child in _responsesData.transform)
+         {
+             
+             Destroy(child.gameObject);
+         }*/
+
         StartCoroutine(GetPlayerData(data =>
         {
-            List<string> messageList = _chatResponseList.GetChatResponses((CharacterClassType)((data.SelectedCharacterId / 100) * 100));
-            foreach (string message in messageList)
+            List<ChatResponseObject> messageList = _chatResponseList.GetChatResponses(CharacterClassType.None);
+            //List<string> messageList = _chatResponseList.GetChatResponses((CharacterClassType)((data.SelectedCharacterId / 100) * 100));
+            foreach (ChatResponseObject message in messageList)
             {
                 GameObject messageObject = Instantiate(_quickMessagePrefab, _chatResponseContent.transform);
                 Button button = messageObject.GetComponent<QuickResponceHandler>().SetData(message);
-                button.onClick.AddListener(() => SendQuickMessage(messageObject.GetComponent<Button>()));
+                button.onClick.AddListener(() => SendQuickMessage(data, message));
             }
         }));
 
@@ -183,34 +200,44 @@ public class Chat : AltMonoBehaviour
         }
         else // send a message
         {
+            _reactionAvailable = false;
             _lastSendButtonUsed = buttonUsed;
+
+            //Prob should have better place for AddResponses when changing the message options but this will do for now
 
             // Check which message prefab should be used
             if(buttonUsed == _sendButtonSadness)
             {
+                currentMood = Mood.Sad;
+
                 SendChatMessage(Mood.Sad);
                 gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Sadness);
             }
             else if (buttonUsed == _sendButtonAnger)
             {
+                currentMood = Mood.Angry;
                 SendChatMessage(Mood.Angry);
                 gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Anger);
             }
             else if (buttonUsed == _sendButtonJoy)
             {
+                currentMood = Mood.Happy;
                 SendChatMessage(Mood.Happy);
                 gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Joy);
             }
             else if (buttonUsed == _sendButtonPlayful)
             {
+                currentMood = Mood.Wink;
                 SendChatMessage(Mood.Wink);
                 gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Playful);
             }
             else if (buttonUsed == _sendButtonLove)
             {
+                currentMood = Mood.Love;
                 SendChatMessage(Mood.Love);
                 gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Love);
             }
+            AddResponses();
         }
     }
 
@@ -253,7 +280,6 @@ public class Chat : AltMonoBehaviour
         if (_inputField != null && !string.IsNullOrEmpty(_inputField.text) && _inputField.text.Trim().Length >= 3)
         {
             string inputText = _inputField.text.Trim();
-
             // Tarkistaa, onko syöte komento
             if (inputText == _delete)
             {
@@ -273,11 +299,12 @@ public class Chat : AltMonoBehaviour
             //DisplayMessage(_inputField.text, GetMessagePrefab(mood, true));
             _inputField.text = "";
             GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
-            if (_currentContent == _clanChatContent)
-                _clanChatContent.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
-            if (_currentContent == _globalChatContent)
-                _globalChatContent.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+            if (_currentContent == _clanChat)
+                _clanChat.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+            if (_currentContent == _globalChat)
+                _globalChat.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             MinimizeOptions();
+            _lastSendButtonUsed.GetComponent<Button>().interactable = false;
         }
         else
         {
@@ -286,12 +313,14 @@ public class Chat : AltMonoBehaviour
     }
 
     // Asettaa pikaviestin tekstikenttään quickMessage text => InputField text
-    public void SendQuickMessage(Button button)
+    public void SendQuickMessage(PlayerData data, ChatResponseObject message)
     {
-        TMP_Text buttonText = button.GetComponentInChildren<TMP_Text>();
-        if (buttonText != null)
+        if (message != null)
         {
-            string textFromButton = buttonText.text;
+            List<ChatResponseObject> messageList = _chatResponseList.GetChatResponses((CharacterClassType)((data.SelectedCharacterId / 100) * 100));
+            ChatResponseObject convertedResponse = messageList.FirstOrDefault(c => c.ResponseId == message.ResponseId);
+            string textFromButton = convertedResponse.Response;
+            _reactionAvailable = true;
             MinimizeOptions();
             _inputField.text = textFromButton;
             GameObject sendButton = _sendButtons[0];
@@ -514,7 +543,26 @@ public class Chat : AltMonoBehaviour
     public void OpenQuickMessages()
     {
         _quickMessages.SetActive(true);
-        _InputArea.SetActive(false);
+        ///This is so that the reaction UI will stay visiable but not useable
+        foreach(Transform child in _InputArea.transform)
+        {
+            if(child.gameObject == _sendButtonUI)
+            {
+            _lastSendButtonUsed.GetComponent<Button>().interactable = false;
+
+                ///Incase if the user happens to have emotion selection on 
+                foreach (var button in _sendButtons)
+                {
+                    button.SetActive(_lastSendButtonUsed == button);
+                }
+                _sendButtonsAreClosed = true;
+
+                continue;
+            }
+
+
+            child.gameObject.SetActive(false);
+        }
         CloseOnButtonClick(true);
     }
 
@@ -524,7 +572,19 @@ public class Chat : AltMonoBehaviour
     public void MinimizeOptions()
     {
         _quickMessages.SetActive(false);
-        _InputArea.SetActive(true);
+        ///This is so that the reaction comes back being useable
+        ///To give user a visual interpretation that they cant put a reaction till there's been text inserted
+        foreach (Transform child in _InputArea.transform)
+        {
+            //Checks if there's text in textbox
+            if (child.gameObject == _sendButtonUI)
+            {
+            _lastSendButtonUsed.GetComponent<Button>().interactable = true;
+            continue;
+            }
+
+            child.gameObject.SetActive(true);
+        }
 
         // Deactivate all but last used button
         foreach (var button in _sendButtons)

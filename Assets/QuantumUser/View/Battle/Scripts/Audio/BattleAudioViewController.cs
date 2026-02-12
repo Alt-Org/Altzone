@@ -13,6 +13,9 @@ using Quantum;
 using Altzone.Scripts.Audio;
 using Assets.Altzone.Scripts.Reference_Sheets;
 
+// Battle QSimulation usings
+using Battle.QSimulation;
+
 namespace Battle.View.Audio
 {
     /// <summary>
@@ -37,6 +40,7 @@ namespace Battle.View.Audio
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void PlaySoundFX(BattleSoundFX effect)
         {
+            BattleDebugLogger.LogFormat(nameof(BattleAudioViewController), "Playing Sound Effect: {0}", effect);
             AudioManager.Instance.PlayBattleSfxAudio((BattleSFXNameTypes)effect);
         }
     }

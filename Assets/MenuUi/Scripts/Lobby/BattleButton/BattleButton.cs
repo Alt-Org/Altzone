@@ -38,7 +38,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         private void Awake()
         {
             _swipe = FindObjectOfType<SwipeUI>();
-            _swipe.OnCurrentPageChanged += CloseGameTypeSelection;
+            if(_swipe)_swipe.OnCurrentPageChanged += CloseGameTypeSelection;
             SettingsCarrier.OnLanguageChanged += ChangeLanguage;
 
             _gameTypeSelectionMenu.SetActive(false); // Close selection menu so that it's not open when game opens
@@ -86,7 +86,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             }
 
             _button.onClick.RemoveListener(RequestBattlePopup);
-            _swipe.OnCurrentPageChanged -= CloseGameTypeSelection;
+            if (_swipe) _swipe.OnCurrentPageChanged -= CloseGameTypeSelection;
             _openBattleUiEditorButton.onClick.RemoveListener(OnOpenBattleUiEditorButtonPressed);
             SettingsCarrier.OnLanguageChanged -= ChangeLanguage;
         }

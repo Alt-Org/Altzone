@@ -24,13 +24,15 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private Image _backgroundLowerImage;
         [SerializeField] private Image _backgroundUpperImage;
         [SerializeField] private TextMeshProUGUI _characterNameText;
-        [SerializeField] private TextMeshProUGUI _classNameText;
+        [SerializeField] private Image _classNameIcon;
         [SerializeField] private AspectRatioFitter _aspectRatioFitter;
         [SerializeField] private PieChartPreview _piechartPreview;
         [SerializeField] private Material _grayScaleMaterial;
         [SerializeField] private Button _addCharacterButton;
         [SerializeField] private Image _classIcon;
         [SerializeField] private ClassReference _classReference;
+
+        [SerializeField] private CanvasGroup _canvasGroup;
 
         private static Material _grayscaleMaterialInstance;
 
@@ -45,9 +47,12 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             if (_grayscaleMaterialInstance == null) InstantiateGrayscaleMaterial();
 
-            if (_addCharacterButton != null )
+            if (_canvasGroup == null)
+                _canvasGroup = GetComponent<CanvasGroup>();
+
+            if (_addCharacterButton != null)
             {
-                _addCharacterButton.onClick.AddListener( OnAddCharacterButtonClicked );
+                _addCharacterButton.onClick.AddListener(OnAddCharacterButtonClicked);
             }
         }
 
@@ -117,11 +122,17 @@ namespace MenuUi.Scripts.CharacterGallery
         /// <param name="name">Character's name which to display.</param>
         /// <param name="id">Character's ID.</param>
         /// <param name="originalSlot">The original inventory slot for the GalleryCharacter prefab.</param>
-        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, string className, CharacterID id, CharacterSlot originalSlot)
+        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, Sprite classNameIcon, CharacterID id, CharacterSlot originalSlot)
         {
             _spriteImage.sprite = sprite;
             _characterNameText.text = name;
-            _classNameText.text = className;
+            if (classNameIcon == null)
+                _classNameIcon.gameObject.SetActive(false);
+            else
+            {
+                _classNameIcon.gameObject.SetActive(true);
+                _classNameIcon.sprite = classNameIcon;
+            }
             _id = id;
             _backgroundLowerImage.color = bgColor;
             _backgroundUpperImage.color = bgAltColor;
@@ -208,6 +219,25 @@ namespace MenuUi.Scripts.CharacterGallery
             _originalSlot.gameObject.SetActive(true);
             transform.SetParent(_originalSlot.transform, false);
             SetDefaultVisuals();
+        }
+
+        /// <summary>
+        /// Updates gallery character visuals when the character is already selected,
+        /// dimms the card and disables interaction to prevent re-selection
+        /// </summary>
+        public void SetUsedVisuals(bool used)
+        {
+
+            if (_canvasGroup != null)
+            {
+                if (used)
+                    _canvasGroup.alpha = 0.45f;
+                else
+                    _canvasGroup.alpha = 1f;
+
+                _canvasGroup.interactable = true;
+                _canvasGroup.blocksRaycasts = true;
+            }
         }
     }
 }

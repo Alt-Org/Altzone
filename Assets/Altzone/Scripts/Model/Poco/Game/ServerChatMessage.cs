@@ -24,6 +24,7 @@ public class ServerChatMessage
 
     public class ServerReactions
     {
+        public string sender_id { get; set; }
         public string playerName { get; set; }
         public string emoji { get; set; }
     }
