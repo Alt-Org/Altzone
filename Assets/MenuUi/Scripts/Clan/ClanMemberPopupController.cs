@@ -26,7 +26,13 @@ public class ClanMemberPopupController : MonoBehaviour
     [Header("Right info")]
     [SerializeField] private TMP_Text _rolesText;           
     [SerializeField] private TMP_Text _mostPlayedText;      
-    [SerializeField] private TMP_Text _winsLossesText;    
+    [SerializeField] private TMP_Text _winsText;
+    [SerializeField] private TMP_Text _lossesText;
+
+    [Header("Role")]
+    [SerializeField] private Image _roleIconImage;
+    [SerializeField] private ClanRoleCatalog _roleCatalog;
+    [SerializeField] private Sprite _fallbackRoleIcon;
 
     [Header("Bottom")]
     [SerializeField] private Button _votesButton;
@@ -97,9 +103,10 @@ public class ClanMemberPopupController : MonoBehaviour
         }
 
         _nameText.text = member.Name ?? "";
-        _rolesText.text = string.IsNullOrEmpty(roleLabel) ? "Member" : roleLabel;
-        _mostPlayedText.text = "Eniten pelattu: tulossa pian";
-        _winsLossesText.text = "Voitot häviöt: tulossa pian";
+        SetRole(roleLabel);
+        _mostPlayedText.text = "Eniten pelattu hahmo:";
+        _winsText.text = "Voitot:";
+        _lossesText.text = "Häviöt:";
 
         if (_avatarLoader != null && member.AvatarData != null && AvatarDesignLoader.Instance != null)
         {
@@ -137,6 +144,42 @@ public class ClanMemberPopupController : MonoBehaviour
             onKickVote: OnKickVotePressed
             );
     }
+
+    private void SetRole(string roleName)
+    {
+        // default
+        if (string.IsNullOrWhiteSpace(roleName))
+        {
+            _rolesText.text = "Member";
+
+            if (_roleIconImage != null)
+                _roleIconImage.gameObject.SetActive(false);
+
+            return;
+        }
+
+        // Text: käytä catalogin display-nimeä jos löytyy
+        string displayName = _roleCatalog != null ? _roleCatalog.GetDisplayName(roleName) : roleName;
+        _rolesText.text = string.IsNullOrEmpty(displayName) ? roleName : displayName;
+
+        // Icon: käytä catalogin ikonia + fallback
+        if (_roleIconImage != null)
+        {
+            var icon = _roleCatalog != null ? _roleCatalog.GetIcon(roleName) : null;
+            if (icon == null) icon = _fallbackRoleIcon;
+
+            if (icon != null)
+            {
+                _roleIconImage.sprite = icon;
+                _roleIconImage.gameObject.SetActive(true);
+            }
+            else
+            {
+                _roleIconImage.gameObject.SetActive(false);
+            }
+        }
+    }
+
 
     private List<ClanRoles> GetCurrentClanRoles()
     {
