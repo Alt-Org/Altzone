@@ -222,21 +222,29 @@ public class ClanMemberPopupController : MonoBehaviour
         if (_currentMember == null || string.IsNullOrEmpty(_currentMember.Id) || _playerProfileWindowDef == null)
             return;
 
+        var myId = ServerManager.Instance?.Player?._id;
+
+        if (!string.IsNullOrEmpty(myId) && _currentMember.Id == myId)
+        {
+            DataCarrier.GetData<PlayerData>(DataCarrier.PlayerProfile, clear: true, suppressWarning: true);
+
+            WindowManager.Get().ShowWindow(_playerProfileWindowDef);
+            return;
+        }
+
         StartCoroutine(ServerManager.Instance.GetOtherPlayerFromServer(_currentMember.Id, otherPlayer =>
         {
             if (otherPlayer == null) return;
 
-            // Convert ServerPlayer -> PlayerData (limited view is perfect for "other player" profile)
             var otherPlayerData = new PlayerData(otherPlayer, limited: true);
 
             DataCarrier.GetData<PlayerData>(DataCarrier.PlayerProfile, clear: true, suppressWarning: true);
-            // This is what ProfileMenu already checks
             DataCarrier.AddData(DataCarrier.PlayerProfile, otherPlayerData);
 
-            // Open the profile window
             WindowManager.Get().ShowWindow(_playerProfileWindowDef);
         }));
     }
+
 
     private void ShowPollStartedPopup()
     {
