@@ -995,6 +995,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6827449395056888571}
+  - component: {fileID: 3251961234846961814}
   m_Layer: 0
   m_Name: ColorPicker
   m_TagString: Untagged
@@ -1023,6 +1024,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3251961234846961814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1892287054548862948}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb94ec0b18b43614cb277d7a9015d055, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _colorApplyButton: {fileID: 8960924170802304403}
+  _colorPickerButton: {fileID: 6617868172102748423}
+  _featureLoader: {fileID: 9613805567932932}
+  _characterHandle: {fileID: 1464416334285509327}
+  _controller: {fileID: 7023965250681938522}
 --- !u!1 &2468795755573586441
 GameObject:
   m_ObjectHideFlags: 0
