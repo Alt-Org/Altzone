@@ -13,9 +13,9 @@ using UnityEngine.UI;
 public class AdPosterHandler : AltMonoBehaviour
 {
     [SerializeField]
-    private Image _adBackground;
+    protected Image _adBackground;
     [SerializeField]
-    private Image _adFrameBorder;
+    protected Image _adFrameBorder;
     [SerializeField]
     protected Image _adItemImage;
     [SerializeField]

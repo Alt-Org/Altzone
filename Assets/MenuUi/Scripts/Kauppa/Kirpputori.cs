@@ -75,8 +75,19 @@ public class Kirpputori : MonoBehaviour
 
             var esineDisplay = ad.GetComponent<EsineDisplay>();
             esineDisplay.AlignFurnitures(furnitureList, this);
+
+
+            // Trigger randomization for advertisement's frames and background colours once for new items.
+            // Results are cached in EsineDisplay during the gaming session.
+            var displayAdBackground = ad.GetComponent<EsineDisplay>();
+            displayAdBackground.RandomizeAdBackgroundColor();
+
+            var displayAdFrame = ad.GetComponent<EsineDisplay>();
+            displayAdFrame.RandomizeAdFrames();
         }
     }
+
+
 
 
     public void OpenPopup(List<StorageFurniture> furnitureList)
