@@ -62,6 +62,14 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private GameObject _raycastBlocker;
     [SerializeField] private AgreementController _agreementController;
 
+    [Header("Default Icons")]
+    [SerializeField] private Sprite _defaultAgeSprite;
+    [SerializeField] private Sprite _defaultLanguageSprite;
+
+    [Header("Default Selections")]
+    [SerializeField] private ClanAge _defaultAgeSelection = ClanAge.None;
+    [SerializeField] private Language _defaultLanguageSelection = Language.None;
+
     //private Color _selectedHeartColor;
 
     private Color _defaultHeartColor;
@@ -134,15 +142,24 @@ public class ClanCreateNew : MonoBehaviour
             _valueSelection.ResetSelection();
         }
 
-        _ageSelection.Initialize(ClanAge.None);
+        // AGE default selection
+        var startAge = _defaultAgeSelection;
+        _ageSelection.Initialize(startAge);
         UpdateAgeDisplay();
 
-        _flagImage.SetFlag(Language.None);
-        _languageSelection.Initialize(Language.None);
-        _closeLanguageSelect.onClick.RemoveAllListeners();
-        _closeLanguageSelect.onClick.AddListener(() => _flagImage.SetFlag(_languageSelection.SelectedLanguage));
+        // LANGUAGE default selection
+        var startLang = _defaultLanguageSelection;
+        _languageSelection.Initialize(startLang);
+        UpdateLanguageDisplay(startLang);
 
-        if(_colorButtons != null && _colorButtons.Length > 0)
+        // Close button should apply current selection
+        _closeLanguageSelect.onClick.RemoveAllListeners();
+        _closeLanguageSelect.onClick.AddListener(() =>
+        {
+            UpdateLanguageDisplay(_languageSelection.SelectedLanguage);
+        });
+
+        if (_colorButtons != null && _colorButtons.Length > 0)
         {
             _defaultHeartColor = ColorConstants.GetColorConstant(_colorButtons[0].color);
         }
@@ -272,6 +289,25 @@ public class ClanCreateNew : MonoBehaviour
             _ageImage.sprite = sprite;
             _ageImage.preserveAspect = true;
             _ageImage.enabled = sprite != null;
+        }
+    }
+
+    private void UpdateLanguageDisplay(Language language)
+    {
+        // Normaali logiikka
+        if (_flagImage != null)
+            _flagImage.SetFlag(language);
+
+        // Fallback: jos LanguageFlagImage piilottaa/tyhjentää kuvan "None":llä
+        if (language == Language.None && _defaultLanguageSprite != null && _flagImage != null)
+        {
+            var img = _flagImage.GetComponent<Image>();
+            if (img != null)
+            {
+                img.sprite = _defaultLanguageSprite;
+                img.preserveAspect = true;
+                img.enabled = true;
+            }
         }
     }
 
