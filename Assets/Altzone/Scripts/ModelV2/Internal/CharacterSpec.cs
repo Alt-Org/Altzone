@@ -72,6 +72,11 @@ namespace Altzone.Scripts.ModelV2.Internal
         public string CharacterShortDescriptionFinnish;
         public string CharacterShortDescriptionEnglish;
 
+        [TextArea(5, 10)]
+        public string CharacterAbilityDescriptionFinnish;
+        [TextArea(5, 10)]
+        public string CharacterAbilityDescriptionEnglish;
+
         #endregion
 
         #region Special attributes
@@ -165,6 +170,22 @@ namespace Altzone.Scripts.ModelV2.Internal
                         return CharacterShortDescriptionEnglish;
                     default:
                         return CharacterShortDescriptionFinnish;
+                }
+            }
+        }
+
+        public string CharacterAbilityDescription
+        {
+            get
+            {
+                switch (SettingsCarrier.Instance.Language)
+                {
+                    case SettingsCarrier.LanguageType.Finnish:
+                        return CharacterAbilityDescriptionFinnish;
+                    case SettingsCarrier.LanguageType.English:
+                        return CharacterAbilityDescriptionEnglish;
+                    default:
+                        return CharacterAbilityDescriptionFinnish;
                 }
             }
         }

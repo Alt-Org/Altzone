@@ -17,10 +17,11 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] public GalleryCharacter Character;
 
         [HideInInspector] public bool IsLocked = false;
-        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, string className, Sprite classIcon, CharacterID id)
+        [HideInInspector] public bool IsUsed = false;
+        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, Sprite classNameIcon, Sprite classIcon, CharacterID id)
         {
             _id = id;
-            Character.SetInfo(sprite, bgColor, bgAltColor, name, className, id, this);
+            Character.SetInfo(sprite, bgColor, bgAltColor, name, classNameIcon, id, this);
         }
     }
 }

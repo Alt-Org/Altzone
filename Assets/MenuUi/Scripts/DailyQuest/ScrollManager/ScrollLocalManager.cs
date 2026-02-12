@@ -246,7 +246,8 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(this.transform as RectTransform, _baseScrollRectVariants[i].Content.position, eventData.pressEventCamera, out rectResult);
 
             Vector2 size = Vector2.Scale(_baseScrollRectVariants[i].Content.rect.size, _baseScrollRectVariants[i].Content.transform.lossyScale);
-            Rect rect = new Rect(rectResult - (size * 0.5f), size);
+            Vector2 rectPivot = _baseScrollRectVariants[i].Content.pivot;
+            Rect rect = new Rect(rectResult - new Vector2(size.x * rectPivot.x, size.y * rectPivot.y), size);
 
             if (rect.Contains(pointerResult))
                 indexes.Add(i);

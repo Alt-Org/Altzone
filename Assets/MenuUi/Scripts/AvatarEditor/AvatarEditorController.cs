@@ -1,118 +1,85 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Altzone.Scripts.Model.Poco.Player;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
+using System.Linq;
 using UnityEngine.UI;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
     public class AvatarEditorController : AltMonoBehaviour
     {
-        private PlayerData _currentPlayerData;
-
+        [SerializeField] private ScrollBarCategoryLoader _categoryLoader;
+        [SerializeField] private ScrollBarFeatureLoader _featureLoader;
+        [SerializeField] private ColorGridLoader _colorLoader;
         [SerializeField] private float _timeoutSeconds = 10f;
         [SerializeField] private AvatarDefaultReference _avatarDefaultReference;
-
-        private enum AvatarEditorMode
-        {
-            FeaturePicker,
-            ColorPicker,
-            AvatarScaler,
-        }
-        private AvatarEditorMode _currentMode = AvatarEditorMode.FeaturePicker;
-
-        [SerializeField] private CharacterLoader _characterLoader;
-        [Space]
-        [SerializeField] private Button _saveButton;
-        [SerializeField] private Button _defaultButton;
-        [SerializeField] private Button _revertButton;
-        [SerializeField] private Button _featureModeButton;
-        [SerializeField] private Button _colorModeButton;
-        [SerializeField] private Button _scaleModeButton;
-        [Space]
-        [SerializeField] private AvatarEditorMode _defaultMode = AvatarEditorMode.FeaturePicker;
+        [SerializeField] private FeatureSetter _featureSetter;
         [SerializeField] private AvatarVisualDataScriptableObject _visualDataScriptableObject;
-        [SerializeField] private GameObject _avatarVisualsParent;
-        [SerializeField] private GameObject _featureButtonsBase;
-        [SerializeField] private FeaturePicker _featurePicker;
-        [SerializeField] private ColorPicker _colorPicker;
-        [SerializeField] private AvatarScaler _avatarScaler;
+        [SerializeField] private Button _saveButton;
+        [SerializeField] private Button _revertButton;
+        [SerializeField] private Button _defaultButton;
+        [SerializeField] private TextHandler _textHandler;
+        [SerializeField] private PopUpHandler _popUpHandler;
+        [SerializeField] private DivanImageHandler _divanImageHandler;
+        [SerializeField] private AvatarLoader _avatarLoader;
+        [SerializeField] private AvatarLoader _profileMenuAvatarLoader;
 
-        private FeatureSlot _currentlySelectedCategory;
+        private PlayerData _currentPlayerData;
         private PlayerAvatar _playerAvatar;
 
         void Start()
         {
-            _saveButton.onClick.AddListener(() => StartCoroutine(SaveAvatarData()));
-            _defaultButton.onClick.AddListener(() => SetDefaultAvatar());
-            _revertButton.onClick.AddListener(() => RevertAvatarChanges());
+            _categoryLoader.SetCategoryCells((categoryId) => _featureLoader.RefreshFeatureListItems(categoryId));
+            _colorLoader.SetColorCells();
+            _colorLoader.gameObject.SetActive(false);
 
-            if (_featureModeButton != null && _featurePicker != null)
-                _featureModeButton.onClick.AddListener(delegate { GoIntoMode(AvatarEditorMode.FeaturePicker); });
-            if (_colorModeButton != null && _colorPicker != null)
-                _colorModeButton.onClick.AddListener(delegate { GoIntoMode(AvatarEditorMode.ColorPicker); });
-            if (_scaleModeButton != null && _avatarScaler != null)
-                _scaleModeButton.onClick.AddListener(delegate { GoIntoMode(AvatarEditorMode.AvatarScaler); });
+            UpdateCellSizes();
+
+            _saveButton.onClick.AddListener(() => _popUpHandler.ShowPopUp());
+
+            _popUpHandler.AddConfirmButtonListener(() =>
+            {
+                StartCoroutine(SaveAvatarData());
+            });
+
+            _defaultButton.onClick.AddListener(() =>
+            {
+                SetDefaultAvatar();
+                _featureLoader.RefreshFeatureListItems(_categoryLoader.CurrentlySelectedCategory);
+            });
+
+            _revertButton.onClick.AddListener(() =>
+            {
+                RevertAvatarChanges();
+                _featureLoader.RefreshFeatureListItems(_categoryLoader.CurrentlySelectedCategory);
+            });
+
+            StartCoroutine(ClickMiddleCategoryCellOnNextFrame());
         }
 
-        void OnEnable()
+        private void OnEnable()
         {
-            _characterLoader.RefreshPlayerCurrentCharacter();
-            if (_featurePicker != null)
-                _featurePicker.gameObject.SetActive(false);
-            if (_colorPicker != null)
-                _colorPicker.gameObject.SetActive(false);
-            if (_avatarScaler != null)
-                _avatarScaler.gameObject.SetActive(false);
-            _currentMode = _defaultMode;
-            CharacterLoaded();
-        }
-
-        private void CharacterLoaded()
-        {
+            _divanImageHandler.UpdateDivanImage(_currentPlayerData);
             StartCoroutine(LoadAvatarData());
-            GoIntoMode(_defaultMode);
+            _textHandler.SetRandomSpeechBubbleText();
+
+            AspectRatioChangeDetector.OnAspectRatioChange += UpdateCellSizes;
         }
 
-        #region Mode selection
-
-        private void GoIntoMode(AvatarEditorMode mode)
+        private void OnDisable()
         {
-            SetSaveableData();
-            _featurePicker.gameObject.SetActive(false);
-            _colorPicker.gameObject.SetActive(false);
-            _avatarScaler.gameObject.SetActive(false);
-            _currentMode = mode;
-
-            _featureButtonsBase.SetActive(mode != AvatarEditorMode.AvatarScaler);
-
-            if (_currentMode == AvatarEditorMode.FeaturePicker)
-            {
-                _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClass());
-                _featurePicker.gameObject.SetActive(true);
-                return;
-            }
-
-            if (_currentMode == AvatarEditorMode.ColorPicker)
-            {
-                _colorPicker.SelectFeature(_currentlySelectedCategory);
-                _colorPicker.gameObject.SetActive(true);
-                return;
-            }
-
-            if (_currentMode == AvatarEditorMode.AvatarScaler)
-            {
-                _avatarScaler.gameObject.SetActive(true);
-                return;
-            }
+            AspectRatioChangeDetector.OnAspectRatioChange -= UpdateCellSizes;
         }
 
-        #endregion
-
-        #region Loading Data
+        private void UpdateCellSizes()
+        {
+            _categoryLoader.UpdateCellSize();
+            _colorLoader.UpdateCellSize();
+            _featureLoader.UpdateCellSize();
+        }
 
         private IEnumerator LoadAvatarData()
         {
@@ -127,22 +94,58 @@ namespace MenuUi.Scripts.AvatarEditor
 
             _currentPlayerData = playerData;
             SetAllAvatarFeatures();
+            _divanImageHandler.UpdateDivanImage(playerData);
+            _avatarLoader.UpdateVisuals(AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData.AvatarData));
         }
 
-        private void SetDefaultAvatar()
+        private IEnumerator SaveAvatarData()
         {
-            _playerAvatar = new(_avatarDefaultReference.GetByCharacterId(_currentPlayerData.SelectedCharacterId)[0]);
+            bool? timeout = null;
+            PlayerData playerData = null;
+            PlayerData savePlayerData = _currentPlayerData;
 
-            _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClass());
-            _featurePicker.SetLoadedFeatures(_playerAvatar);
+            savePlayerData.AvatarData = new(_playerAvatar.Name,
+                null,
+                _playerAvatar.SkinColor,
+                null,
+                new Vector2(1, 1));
 
-            _colorPicker.SetLoadedColors(_playerAvatar);
-            _avatarScaler.SetLoadedScale(_playerAvatar.Scale);
+            var features = Enum.GetValues(typeof(AvatarPiece));
+            foreach (AvatarPiece feature in features)
+            {
+                AssignPartToPlayerData(savePlayerData.AvatarData, feature, _playerAvatar.GetPartId(feature));
+                AssignColorToPlayerData(savePlayerData.AvatarData, feature, _playerAvatar.GetPartColor(feature));
+            }
+            StartCoroutine(SavePlayerData(savePlayerData, p => playerData = p));
+            yield return new WaitUntil(() => ((timeout != null) || (playerData != null)));
+
+            if (playerData == null)
+                yield break;
+
+            _currentPlayerData = playerData;
+
+            List<AvatarPiece> pieceIDs = Enum.GetValues(typeof(AvatarPiece)).Cast<AvatarPiece>().ToList();
+            foreach (AvatarPiece piece in pieceIDs)
+            {
+                _visualDataScriptableObject.SetAvatarPiece(piece, _featureSetter.GetCurrentlySelectedFeaturePartInfo(piece));
+                ColorUtility.TryParseHtmlString(_playerAvatar.GetPartColor(piece), out Color pieceColor);
+                _visualDataScriptableObject.SetColor(piece, pieceColor);
+            }
+
+            ColorUtility.TryParseHtmlString(savePlayerData.AvatarData.Color, out Color skinColor);
+            _visualDataScriptableObject.SkinColor = skinColor;
+
+            AvatarDesignLoader.Instance.InvokeOnAvatarDesignUpdate();
+            UpdateProfileMenuCharacterVisuals(savePlayerData.AvatarData);
+
+            GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
 
-        private void RevertAvatarChanges()
+        // If this isn't done, function will be called too early and will not work
+        private IEnumerator ClickMiddleCategoryCellOnNextFrame()
         {
-            SetAllAvatarFeatures();
+            yield return null;
+            _categoryLoader.ClickMiddleCategoryCell();
         }
 
         private void SetAllAvatarFeatures()
@@ -157,103 +160,100 @@ namespace MenuUi.Scripts.AvatarEditor
                 _playerAvatar = new(_currentPlayerData.AvatarData);
             }
 
-            _featurePicker.SetCharacterClassID(_characterLoader.GetCharacterClass());
-            _featurePicker.SetLoadedFeatures(_playerAvatar);
-
-            _colorPicker.SetLoadedColors(_playerAvatar);
-            _avatarScaler.SetLoadedScale(_playerAvatar.Scale);
+            _featureSetter.SetLoadedFeatures(_playerAvatar);
         }
 
-        #endregion
 
-        #region Saving Data
-
-        private void SetSaveableData()
+        private void SetDefaultAvatar()
         {
-            _currentlySelectedCategory = _featurePicker.GetCurrentlySelectedCategory();
+            _playerAvatar = new(_avatarDefaultReference.GetByCharacterId(_currentPlayerData.SelectedCharacterId)[0]);
+
+            _featureSetter.SetLoadedFeatures(_playerAvatar);
         }
 
-        private IEnumerator SaveAvatarData()
+        private void RevertAvatarChanges()
         {
-            bool? timeout = null;
-            PlayerData playerData = null;
-            PlayerData savePlayerData = _currentPlayerData;
-
-            savePlayerData.AvatarData = new(_playerAvatar.Name,
-                null,
-                _colorPicker.GetCurrentColors(),
-                _avatarScaler.GetCurrentScale());
-
-            var features = Enum.GetValues(typeof(FeatureSlot));
-            foreach (FeatureSlot feature in features)
-            {
-                AssignPartToPlayerData(savePlayerData.AvatarData, feature, _playerAvatar.GetPartId(feature));
-            }
-            StartCoroutine(SavePlayerData(savePlayerData, p => playerData = p));
-            yield return new WaitUntil(() => ((timeout != null) || (playerData != null)));
-
-            if (playerData == null)
-                yield break;
-
-            _currentPlayerData = playerData;
-
-            List<AvatarPiece> pieceIDs = Enum.GetValues(typeof(AvatarPiece)).Cast<AvatarPiece>().ToList();
-            foreach (AvatarPiece piece in pieceIDs)
-            {
-                _visualDataScriptableObject.SetAvatarPiece(piece, _featurePicker.GetCurrentlySelectedFeatureSprite(piece));
-            }
-
-            // Käytetään julkista Color-propertya, ei private-kenttää
-            _visualDataScriptableObject.Color = _colorPicker.GetCurrentColorsAsColors();
-
-            AvatarDesignLoader.Instance.InvokeOnAvatarDesignUpdate();
-
-            GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+            SetAllAvatarFeatures();
         }
 
-        private void AssignPartToPlayerData(AvatarData playerAvatarData, FeatureSlot feature, string id)
+        private void AssignColorToPlayerData(AvatarData playerAvatarData, AvatarPiece feature, string color)
+        {
+            switch(feature)
+            {
+                case AvatarPiece.Hair:
+                    playerAvatarData.HairColor = color;
+                    break;
+                case AvatarPiece.Eyes:
+                    playerAvatarData.EyesColor = color;
+                    break;
+                case AvatarPiece.Nose:
+                    playerAvatarData.NoseColor = color;
+                    break;
+                case AvatarPiece.Mouth:
+                    playerAvatarData.MouthColor = color;
+                    break;
+                case AvatarPiece.Clothes:
+                    playerAvatarData.ClothesColor = color;
+                    break;
+                case AvatarPiece.Hands:
+                    playerAvatarData.HandsColor = color;
+                    break;
+                case AvatarPiece.Feet:
+                    playerAvatarData.FeetColor = color;
+                    break;
+                default:
+                    Debug.LogWarning($"Couldn't find {feature} in AvatarPiece");
+                    break;
+            }
+        }
+
+        private void AssignPartToPlayerData(AvatarData playerAvatarData, AvatarPiece feature, string id)
         {
             int convertedID;
-            if(int.TryParse(id, out int intID))
+            if (int.TryParse(id, out int intID))
             {
                 convertedID = intID;
             }
             else { convertedID = 0; }
 
             switch (feature)
-                {
-                    case FeatureSlot.Hair:
-                        playerAvatarData.Hair = convertedID;
-                        break;
-                    case FeatureSlot.Eyes:
-                        playerAvatarData.Eyes = convertedID;
-                        break;
-                    case FeatureSlot.Nose:
-                        playerAvatarData.Nose = convertedID;
-                        break;
-                    case FeatureSlot.Mouth:
-                        playerAvatarData.Mouth = convertedID;
-                        break;
-                    case FeatureSlot.Body:
-                        playerAvatarData.Clothes = convertedID;
-                        break;
-                    case FeatureSlot.Hands:
-                        playerAvatarData.Hands = convertedID;
-                        break;
-                    case FeatureSlot.Feet:
-                        playerAvatarData.Feet = convertedID;
-                        break;
-                    default:
-                        Debug.LogWarning($"Couldn't find {feature} in FeatureSlots");
-                        break;
-                }
+            {
+                case AvatarPiece.Hair:
+                    playerAvatarData.Hair = convertedID;
+                    break;
+                case AvatarPiece.Eyes:
+                    playerAvatarData.Eyes = convertedID;
+                    break;
+                case AvatarPiece.Nose:
+                    playerAvatarData.Nose = convertedID;
+                    break;
+                case AvatarPiece.Mouth:
+                    playerAvatarData.Mouth = convertedID;
+                    break;
+                case AvatarPiece.Clothes:
+                    playerAvatarData.Clothes = convertedID;
+                    break;
+                case AvatarPiece.Hands:
+                    playerAvatarData.Hands = convertedID;
+                    break;
+                case AvatarPiece.Feet:
+                    playerAvatarData.Feet = convertedID;
+                    break;
+                default:
+                    Debug.LogWarning($"Couldn't find {feature} in FeatureSlots");
+                    break;
+            }
+        }
+
+        private void UpdateProfileMenuCharacterVisuals(AvatarData data)
+        {
+            AvatarVisualData visualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(data);
+            _profileMenuAvatarLoader.UpdateVisuals(visualData);
         }
 
         public PlayerAvatar PlayerAvatar
         {
             get { return _playerAvatar; }
         }
-        #endregion
     }
 }
-

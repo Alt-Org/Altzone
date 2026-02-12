@@ -251,23 +251,23 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerClassDesensitizerDataQComponent))]
-  public unsafe partial class BattlePlayerClassDesensitizerDataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerClassDesensitizerDataQComponent> {
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerClass100DataQComponent))]
+  public unsafe partial class BattlePlayerClass100DataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerClass100DataQComponent> {
     [HideInInspector()]
     public Int32 _empty_prototype_dummy_field_;
-    partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerClassDesensitizerDataQComponent result, in PrototypeMaterializationContext context);
+    partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerClass100DataQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.BattlePlayerClassDesensitizerDataQComponent component = default;
+        Quantum.BattlePlayerClass100DataQComponent component = default;
         Materialize((Frame)f, ref component, in context);
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
-    public void Materialize(Frame frame, ref Quantum.BattlePlayerClassDesensitizerDataQComponent result, in PrototypeMaterializationContext context = default) {
+    public void Materialize(Frame frame, ref Quantum.BattlePlayerClass100DataQComponent result, in PrototypeMaterializationContext context = default) {
         MaterializeUser(frame, ref result, in context);
     }
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerClassProjectorDataQComponent))]
-  public unsafe class BattlePlayerClassProjectorDataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerClassProjectorDataQComponent> {
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerClass400DataQComponent))]
+  public unsafe class BattlePlayerClass400DataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerClass400DataQComponent> {
     [HideInInspector()]
     public QBoolean IsHoldingProjectile;
     [HideInInspector()]
@@ -280,11 +280,11 @@ namespace Quantum.Prototypes {
     public FP HeldProjectileDistance;
     public FP RotationDurationFrames;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.BattlePlayerClassProjectorDataQComponent component = default;
+        Quantum.BattlePlayerClass400DataQComponent component = default;
         Materialize((Frame)f, ref component, in context);
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
-    public void Materialize(Frame frame, ref Quantum.BattlePlayerClassProjectorDataQComponent result, in PrototypeMaterializationContext context = default) {
+    public void Materialize(Frame frame, ref Quantum.BattlePlayerClass400DataQComponent result, in PrototypeMaterializationContext context = default) {
         result.IsHoldingProjectile = this.IsHoldingProjectile;
         PrototypeValidator.FindMapEntity(this.HeldProjectileEntity, in context, out result.HeldProjectileEntity);
         result.HoldStartFrame = this.HoldStartFrame;
@@ -704,20 +704,6 @@ namespace Quantum.Prototypes {
         this.Position.Materialize(frame, ref result.Position, in context);
         result.WidthType = this.WidthType;
         result.ColorIndex = this.ColorIndex;
-        MaterializeUser(frame, ref result, in context);
-    }
-  }
-  [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleWaitForPlayersData))]
-  public unsafe partial class BattleWaitForPlayersDataPrototype : StructPrototype {
-    [MaxStringByteCount(62, "Unicode")]
-    [ArrayLengthAttribute(4)]
-    public string[] PlayerNames = new System.String[4];
-    partial void MaterializeUser(Frame frame, ref Quantum.BattleWaitForPlayersData result, in PrototypeMaterializationContext context);
-    public void Materialize(Frame frame, ref Quantum.BattleWaitForPlayersData result, in PrototypeMaterializationContext context = default) {
-        for (int i = 0, count = PrototypeValidator.CheckLength(PlayerNames, 4, in context); i < count; ++i) {
-          PrototypeValidator.AssignQString(this.PlayerNames[i], 64, in context, out *result.PlayerNames.GetPointer(i));
-        }
         MaterializeUser(frame, ref result, in context);
     }
   }

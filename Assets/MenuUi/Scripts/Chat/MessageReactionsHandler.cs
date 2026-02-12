@@ -1,11 +1,13 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Chat;
 using UnityEngine;
 using UnityEngine.UI;
+using static ServerChatMessage;
 
-public class MessageReactionsHandler : MonoBehaviour
+public class MessageReactionsHandler : AltMonoBehaviour
 {
     [Header("Containers")]
     [SerializeField] private GameObject _commonReactionsPanel;
@@ -23,29 +25,39 @@ public class MessageReactionsHandler : MonoBehaviour
     [SerializeField] private List<ReactionObject> _reactionList;
     [SerializeField] private GameObject _reactionObject;
 
+    /*[Header("Added Features")]
+    [SerializeField] private GameObject CanvasChat;
+    */
     [Header("Buttons")]
     [SerializeField] private Button _openMoreButton;
 
     private List<GameObject> _reactions = new();
     private List<ChatReactionHandler> _reactionHandlers = new();
     private List<int> _commonReactions = new();
-
     private bool _longClick = false;
+
+    public MessageObjectHandler _messageObjectHandler;
 
     void Start()
     {
-        _openMoreButton.onClick.AddListener((() => { _allReactionsPanel.SetActive(true); _commonReactionsPanel.SetActive(false);}));
+           
+        _openMoreButton.onClick.AddListener((() => { _allReactionsPanel.SetActive(true); _selectedMessage.SizeCall(); _commonReactionsPanel.SetActive(false); }));
 
-        ReactionObjectHandler.OnReactionPressed += AddReaction;
+
+
+
+        //ReactionObjectHandler.OnReactionPressed += AddReaction;
 
         GenarateReactionObjects();
-        //CreateReactionInteractions();
+        CreateReactionInteractions();
         PickCommonReactions();
     }
 
+
     private void OnDestroy()
     {
-        ReactionObjectHandler.OnReactionPressed -= AddReaction;
+
+        //ReactionObjectHandler.OnReactionPressed -= AddReaction;
     }
 
     private void GenarateReactionObjects()
@@ -120,8 +132,8 @@ public class MessageReactionsHandler : MonoBehaviour
             }
 
             ReactionObject reactionData = _reactionList.FirstOrDefault(x => x.Mood == mood);
-            if(reactionData != null)
-            handler.SetInfo(reactionData.Mood, reactionData.Sprite, _selectedMessage.Id);
+            if (reactionData != null)
+                handler.SetInfo(reactionData.Mood, reactionData.Sprite, _selectedMessage.Id);
 
             /*if (!commonReaction.TryGetComponent(out Button button))
             {
@@ -131,29 +143,57 @@ public class MessageReactionsHandler : MonoBehaviour
             button.onClick.AddListener(() => AddReaction(commonReaction));*/
         }
     }
+    /// <summary>
+    /// Updates the all of the reactions of the selected message.
+    /// </summary>
+    public void UpdateReactions(List<ServerReactions> reactions, string messageid)
+    {
+        foreach (ChatReactionHandler addedReaction in _reactionHandlers)
+        {
+            addedReaction.ResetReactions();
+        }
+        foreach (ServerReactions reaction in reactions)
+        {
+            AddReaction(reaction, (Mood)Enum.Parse(typeof(Mood), reaction.emoji), messageid, true);
+        }
+        List<ChatReactionHandler> removableReactions = new();
+        foreach (ChatReactionHandler addedReaction in _reactionHandlers)
+        {
+            if(addedReaction.Count <= 0) removableReactions.Add(addedReaction);
+        }
+        for (int i = removableReactions.Count - 1; i >= 0; i--)
+        {
+            RemoveReaction(removableReactions[i]);
+        }
+    }
 
     /// <summary>
     /// Adds the chosen reaction to the selected message.
     /// </summary>
-    private void AddReaction(string _id, Mood mood)
+    public void AddReaction(ServerReactions _reaction, Mood mood, string message_id, bool fromServer = false)
     {
         if (_selectedMessage != null)
         {
             string messageID = _selectedMessage.Id;
-            if (messageID != _id) return;
+            if (messageID != message_id) return;
 
             HorizontalLayoutGroup reactionsField = _selectedMessage.ReactionsPanel.GetComponentInChildren<HorizontalLayoutGroup>();
 
-            Sprite reactionSprite =_reactionList.FirstOrDefault(x => x.Mood == mood)?.Sprite;
+            Sprite reactionSprite = _reactionList.FirstOrDefault(x => x.Mood == mood)?.Sprite;
 
             // Checks if chosen reaction is already added to the selected message. If so, deletes it.
             foreach (ChatReactionHandler addedReaction in _reactionHandlers)
             {
-                if (addedReaction._messageID == messageID && addedReaction.ReactionImage.sprite == reactionSprite)
-                {
-                    RemoveReaction(addedReaction);
-                    _selectedMessage.SetMessageInactive();
 
+                if (addedReaction.Mood == mood)
+            {
+                    addedReaction.AddReaction(_reaction);
+                    StartCoroutine(GetPlayerData(player =>
+                    {
+                        if (player != null)
+                            if (player.Id == _reaction.sender_id) addedReaction.Select();
+                    }));
+                    _selectedMessage.SetMessageInactive();
                     return;
                 }
             }
@@ -162,16 +202,20 @@ public class MessageReactionsHandler : MonoBehaviour
             GameObject newReaction = Instantiate(_addedReactionPrefab, reactionsField.transform);
             ChatReactionHandler chatReactionHandler = newReaction.GetComponentInChildren<ChatReactionHandler>();
             chatReactionHandler.SetReactionInfo(reactionSprite, messageID, mood);
+            chatReactionHandler.AddReaction(_reaction);
             _reactionHandlers.Add(chatReactionHandler);
 
             chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler));
             chatReactionHandler.LongClickButton.onLongClick.AddListener(() => ShowUsers(chatReactionHandler));
-            //chatReactionHandler.Button.onClick.AddListener(() => _chatScript.MinimizeOptions());
-
             LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
 
+            StartCoroutine(GetPlayerData(player =>
+            {
+                if (player != null)
+                    if (player.Id == _reaction.sender_id) chatReactionHandler.Select();
+            }));
             _selectedMessage.SetMessageInactive();
-            
+
             gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
     }
@@ -182,19 +226,20 @@ public class MessageReactionsHandler : MonoBehaviour
     /// <param name="reactionHandler"></param>
     private void ToggleReaction(ChatReactionHandler reactionHandler)
     {
-        ChatListener.Instance.SendReaction(reactionHandler.Mood.ToString(), reactionHandler._messageID, ChatListener.Instance.ActiveChatChannel);
+        ChatListener.Instance.SendReaction(!reactionHandler.Selected?reactionHandler.Mood.ToString(): string.Empty, reactionHandler.MessageID, ChatListener.Instance.ActiveChatChannel);
 
         if (!_longClick)
         {
             _selectedMessage.SetMessageInactive();
 
-            if (reactionHandler._selected)
+            if (reactionHandler.Selected)
             {
-                reactionHandler.Deselect();
+                reactionHandler.Deselect(); 
 
-                if (reactionHandler._count <= 0)
+                if (reactionHandler.Count <= 0)
                 {
-                    RemoveReaction(reactionHandler);
+                     //Need to find away how i import data to the ServerChatMessage to make this work
+                    //RemoveReaction(reactionHandler, null);
                 }
             }
             else
@@ -220,13 +265,17 @@ public class MessageReactionsHandler : MonoBehaviour
     private void RemoveReaction(ChatReactionHandler reaction)
     {
         HorizontalLayoutGroup reactionsField = reaction.GetComponentInParent<HorizontalLayoutGroup>();
-
+        reaction.transform.SetParent(null);
         _reactionHandlers.Remove(reaction);
+
         Destroy(reaction.gameObject);
+
+        _selectedMessage.SizeCall();
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
         //_chatScript.UpdateContentLayout(reactionsField);
     }
+
 
     [Serializable]
     private class ReactionObject

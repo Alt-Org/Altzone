@@ -98,13 +98,13 @@ namespace Quantum {
   }
   public enum BattlePlayerCharacterClass : int {
     None = 0,
-    Desensitizer = 100,
-    Trickster = 200,
-    Obedient = 300,
-    Projector = 400,
-    Retroflector = 500,
-    Confluent = 600,
-    Intellectualizer = 700,
+    Class100 = 100,
+    Class200 = 200,
+    Class300 = 300,
+    Class400 = 400,
+    Class500 = 500,
+    Class600 = 600,
+    Class700 = 700,
   }
   public enum BattlePlayerCharacterState : int {
     Alive,
@@ -143,13 +143,169 @@ namespace Quantum {
     SoulWallHit,
     GoalHit,
     SideWallHit,
-    WallBroken,
+    SoulWallBroken,
     DiamondPickUp,
     SoulWallHitAggression,
     SoulWallHitJoy,
     SoulWallHitLove,
     SoulWallHitPlayful,
     SoulWallHitSadness,
+    PlayerCharacterRacistCatchphrase = 1010,
+    PlayerCharacterRacistHitCharacter,
+    PlayerCharacterRacistHitShield,
+    PlayerCharacterRacistDeath,
+    PlayerCharacterBodybuilderCatchphrase = 1020,
+    PlayerCharacterBodybuilderHitCharacter,
+    PlayerCharacterBodybuilderHitShield,
+    PlayerCharacterBodybuilderDeath,
+    PlayerCharacterWarVeteranCatchphrase = 1030,
+    PlayerCharacterWarVeteranHitCharacter,
+    PlayerCharacterWarVeteranHitShield,
+    PlayerCharacterWarVeteranDeath,
+    PlayerCharacterBullyCatchphrase = 1040,
+    PlayerCharacterBullyHitCharacter,
+    PlayerCharacterBullyHitShield,
+    PlayerCharacterBullyDeath,
+    PlayerCharacterEgoistCatchphrase = 1050,
+    PlayerCharacterEgoistHitCharacter,
+    PlayerCharacterEgoistHitShield,
+    PlayerCharacterEgoistDeath,
+    PlayerCharacterDepressedCatchphrase = 1060,
+    PlayerCharacterDepressedHitCharacter,
+    PlayerCharacterDepressedHitShield,
+    PlayerCharacterDepressedDeath,
+    PlayerCharacterComedianCatchphrase = 2010,
+    PlayerCharacterComedianHitCharacterAggression,
+    PlayerCharacterComedianHitCharacterJoy,
+    PlayerCharacterComedianHitCharacterLove,
+    PlayerCharacterComedianHitCharacterPlayful,
+    PlayerCharacterComedianHitCharacterSadness,
+    PlayerCharacterComedianHitShield,
+    PlayerCharacterComedianDeath,
+    PlayerCharacterJokerCatchphrase = 2020,
+    PlayerCharacterJokerHitCharacter,
+    PlayerCharacterJokerHitShield,
+    PlayerCharacterJokerDeath,
+    PlayerCharacterConmanCatchphrase = 2030,
+    PlayerCharacterConmanHitCharacter,
+    PlayerCharacterConmanHitShield,
+    PlayerCharacterConmanDeath,
+    PlayerCharacterSeducerCatchphrase = 2040,
+    PlayerCharacterSeducerHitCharacter,
+    PlayerCharacterSeducerHitShield,
+    PlayerCharacterSeducerDeath,
+    PlayerCharacterReligiousCatchphrase = 3010,
+    PlayerCharacterReligiousHitCharacterAggression,
+    PlayerCharacterReligiousHitCharacterJoy,
+    PlayerCharacterReligiousHitCharacterPlayful,
+    PlayerCharacterReligiousHitCharacterLove,
+    PlayerCharacterReligiousHitCharacterSadness,
+    PlayerCharacterReligiousHitShield,
+    PlayerCharacterReligiousDeath,
+    PlayerCharacterYesmanCatchphrase = 3020,
+    PlayerCharacterYesmanHitCharacter,
+    PlayerCharacterYesmanHitShield,
+    PlayerCharacterYesmanDeath,
+    PlayerCharacterSlaveOfTheLawCatchphrase = 3030,
+    PlayerCharacterSlaveOfTheLawHitCharacter,
+    PlayerCharacterSlaveOfTheLawHitShield,
+    PlayerCharacterSlaveOfTheLawDeath,
+    PlayerCharacterFashionSlaveCatchphrase = 3040,
+    PlayerCharacterFashionSlaveHitCharacter,
+    PlayerCharacterFashionSlaveHitShield,
+    PlayerCharacterFashionSlaveDeath,
+    PlayerCharacterMammasBoyCatchphrase = 3050,
+    PlayerCharacterMammasBoyHitCharacter,
+    PlayerCharacterMammasBoyHitShield,
+    PlayerCharacterMammasBoyDeath,
+    PlayerCharacterSuperstitiousCatchphrase = 3060,
+    PlayerCharacterSuperstitiousHitCharacter,
+    PlayerCharacterSuperstitiousHitShield,
+    PlayerCharacterSuperstitiousDeath,
+    PlayerCharacterArtistCatchphrase = 4010,
+    PlayerCharacterArtistHitCharacter,
+    PlayerCharacterArtistHitShield,
+    PlayerCharacterArtistDeath,
+    PlayerCharacterArguerCatchphrase = 4020,
+    PlayerCharacterArguerHitCharacter,
+    PlayerCharacterArguerHitShield,
+    PlayerCharacterArguerDeath,
+    PlayerCharacterReflectorCatchphrase = 4030,
+    PlayerCharacterReflectorHitCharacter,
+    PlayerCharacterReflectorHitShield,
+    PlayerCharacterReflectorDeath,
+    PlayerCharacterDelusionalCatchphrase = 4040,
+    PlayerCharacterDelusionalHitCharacter,
+    PlayerCharacterDelusionalHitShield,
+    PlayerCharacterDelusionalDeath,
+    PlayerCharacterOvereaterCatchphrase = 5010,
+    PlayerCharacterOvereaterHitCharacter,
+    PlayerCharacterOvereaterHitShield,
+    PlayerCharacterOvereaterDeath,
+    PlayerCharacterAlcoholicCatchphrase = 5020,
+    PlayerCharacterAlcoholicHitCharacter,
+    PlayerCharacterAlcoholicHitShield,
+    PlayerCharacterAlcoholicDeath,
+    PlayerCharacterAnorecticCatchphrase = 5030,
+    PlayerCharacterAnorecticHitCharacter,
+    PlayerCharacterAnorecticHitShield,
+    PlayerCharacterAnorecticDeath,
+    PlayerCharacterStonerCatchphrase = 5040,
+    PlayerCharacterStonerHitCharacter,
+    PlayerCharacterStonerHitShield,
+    PlayerCharacterStonerDeath,
+    PlayerCharacterMartyrCatchphrase = 5050,
+    PlayerCharacterMartyrHitCharacter,
+    PlayerCharacterMartyrHitShield,
+    PlayerCharacterMartyrDeath,
+    PlayerCharacterSuicidalCatchphrase = 5060,
+    PlayerCharacterSuicidalHitCharacter,
+    PlayerCharacterSuicidalHitShield,
+    PlayerCharacterSuicidalDeath,
+    PlayerCharacterSoulsistersCatchphrase = 6010,
+    PlayerCharacterSoulsistersHitCharacter,
+    PlayerCharacterSoulsistersHitShield,
+    PlayerCharacterSoulsistersDeath,
+    PlayerCharacterLoversCatchphrase = 6020,
+    PlayerCharacterLoversHitCharacterAggression,
+    PlayerCharacterLoversHitCharacterJoy,
+    PlayerCharacterLoversHitCharacterPlayful,
+    PlayerCharacterLoversHitCharacterLove,
+    PlayerCharacterLoversHitCharacterSadness,
+    PlayerCharacterLoversHitShield,
+    PlayerCharacterLoversDeath,
+    PlayerCharacterSleepyHeadCatchphrase = 6030,
+    PlayerCharacterSleepyHeadHitCharacter,
+    PlayerCharacterSleepyHeadHitShield,
+    PlayerCharacterSleepyHeadDeath,
+    PlayerCharacterTribalistCatchphrase = 6040,
+    PlayerCharacterTribalistHitCharacter,
+    PlayerCharacterTribalistHitShield,
+    PlayerCharacterTribalistDeath,
+    PlayerCharacterGangBangerCatchphrase = 6050,
+    PlayerCharacterGangBangerHitCharacter,
+    PlayerCharacterGangBangerHitShield,
+    PlayerCharacterGangBangerDeath,
+    PlayerCharacterBooksmartCatchphrase = 7010,
+    PlayerCharacterBooksmartHitCharacter,
+    PlayerCharacterBooksmartHitShield,
+    PlayerCharacterBooksmartDeath,
+    PlayerCharacterCapitalistCatchphrase = 7020,
+    PlayerCharacterCapitalistHitCharacter,
+    PlayerCharacterCapitalistHitShield,
+    PlayerCharacterCapitalistDeath,
+    PlayerCharacterObsessiveCompulsiveCatchphrase = 7030,
+    PlayerCharacterObsessiveCompulsiveHitCharacter,
+    PlayerCharacterObsessiveCompulsiveHitShield,
+    PlayerCharacterObsessiveCompulsiveDeath,
+    PlayerCharacterOvercompilatorCatchphrase = 7040,
+    PlayerCharacterOvercompilatorHitCharacter,
+    PlayerCharacterOvercompilatorHitShield,
+    PlayerCharacterOvercompilatorDeath,
+    PlayerCharacterNitPickerCatchphrase = 7050,
+    PlayerCharacterNitPickerHitCharacter,
+    PlayerCharacterNitPickerHitShield,
+    PlayerCharacterNitPickerDeath,
   }
   public enum BattleTeamNumber : int {
     NoTeam = 0,
@@ -588,72 +744,6 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
-  [System.SerializableAttribute()]
-  public unsafe partial struct QString64 : IQString, System.IEquatable<QString64> {
-    public const Int32 SIZE = 64;
-    public const Int32 ALIGNMENT = 4;
-    [FieldOffset(0)]
-    public UInt16 ByteCount;
-    [FieldOffset(2)]
-    [FixedBufferDynamicLength("ByteCount")]
-    public fixed Byte Bytes[62];
-    public const int MaxByteCount = 62;
-    public QString64(String str) {
-      QString.ConstructFrom(str, MaxByteCount, out this);
-    }
-    public int Length {
-      get {
-        return QString.GetLength(ref this);
-      }
-    }
-    public override System.String ToString() {
-      return QString.GetString(ref this);
-    }
-    public static Boolean CanHold(String str) {
-      return QString.CanHold(str, MaxByteCount);
-    }
-    Int32 IQString.CompareOrdinal(byte* bytes, UInt16 byteCount) {
-      return QString.CompareOrdinal(ref this, bytes, byteCount);
-    }
-    public Int32 CompareOrdinal(String str) {
-      return QString.CompareOrdinal(ref this, str);
-    }
-    public static implicit operator QString64(String str) {
-      return new QString64(str);
-    }
-    public static implicit operator String(QString64 str) {
-      return str.ToString();
-    }
-    public override Boolean Equals(Object obj) {
-      return QString.AreEqual(ref this, obj);
-    }
-    public Boolean Equals(QString64 str) {
-      return QString.CompareOrdinal(ref this, str.Bytes, str.ByteCount) == 0;
-    }
-    public Boolean Equals<T>(ref T str)
-      where T : unmanaged, IQString {
-      return QString.CompareOrdinal(ref this, ref str) == 0;
-    }
-    public Int32 CompareOrdinal<T>(ref T str)
-      where T : unmanaged, IQString {
-      return QString.CompareOrdinal(ref this, ref str);
-    }
-    public override Int32 GetHashCode() {
-      unchecked { 
-        var hash = 13649;
-        hash = hash * 31 + ByteCount.GetHashCode();
-        fixed (Byte* p = Bytes) hash = hash * 31 + HashCodeUtils.GetArrayHashCode(p, this.ByteCount);
-        return hash;
-      }
-    }
-    public static void Serialize(void* ptr, FrameSerializer serializer) {
-        var p = (QString64*)ptr;
-        serializer.Stream.Serialize(&p->ByteCount);
-        Assert.Always(p->ByteCount <= 62, p->ByteCount);
-        serializer.Stream.SerializeBuffer(&p->Bytes[0], p->ByteCount);
-    }
-  }
-  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattleEntityID {
     public const Int32 SIZE = 8;
     public const Int32 ALIGNMENT = 4;
@@ -870,30 +960,6 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->ColorIndex);
         serializer.Stream.Serialize(&p->WidthType);
         Quantum.BattleGridPosition.Serialize(&p->Position, serializer);
-    }
-  }
-  [StructLayout(LayoutKind.Explicit)]
-  public unsafe partial struct BattleWaitForPlayersData {
-    public const Int32 SIZE = 256;
-    public const Int32 ALIGNMENT = 4;
-    [FieldOffset(0)]
-    [FramePrinter.FixedArrayAttribute(typeof(QString64), 4)]
-    private fixed Byte _PlayerNames_[256];
-    public FixedArray<QString64> PlayerNames {
-      get {
-        fixed (byte* p = _PlayerNames_) { return new FixedArray<QString64>(p, 64, 4); }
-      }
-    }
-    public override Int32 GetHashCode() {
-      unchecked { 
-        var hash = 18583;
-        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(PlayerNames);
-        return hash;
-      }
-    }
-    public static void Serialize(void* ptr, FrameSerializer serializer) {
-        var p = (BattleWaitForPlayersData*)ptr;
-        FixedArray.Serialize(p->PlayerNames, serializer, Statics.SerializeQString64);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -1256,23 +1322,23 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
-  public unsafe partial struct BattlePlayerClassDesensitizerDataQComponent : Quantum.IComponent {
+  public unsafe partial struct BattlePlayerClass100DataQComponent : Quantum.IComponent {
     public const Int32 SIZE = 4;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(0)]
     private fixed Byte _alignment_padding_[4];
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 20693;
+        var hash = 12277;
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
-        var p = (BattlePlayerClassDesensitizerDataQComponent*)ptr;
+        var p = (BattlePlayerClass100DataQComponent*)ptr;
     }
   }
   [StructLayout(LayoutKind.Explicit)]
-  public unsafe partial struct BattlePlayerClassProjectorDataQComponent : Quantum.IComponent {
+  public unsafe partial struct BattlePlayerClass400DataQComponent : Quantum.IComponent {
     public const Int32 SIZE = 40;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(4)]
@@ -1294,7 +1360,7 @@ namespace Quantum {
     public FP RotationDurationFrames;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 4271;
+        var hash = 3517;
         hash = hash * 31 + IsHoldingProjectile.GetHashCode();
         hash = hash * 31 + HeldProjectileEntity.GetHashCode();
         hash = hash * 31 + HoldStartFrame.GetHashCode();
@@ -1305,7 +1371,7 @@ namespace Quantum {
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
-        var p = (BattlePlayerClassProjectorDataQComponent*)ptr;
+        var p = (BattlePlayerClass400DataQComponent*)ptr;
         serializer.Stream.Serialize(&p->HoldStartFrame);
         QBoolean.Serialize(&p->IsHoldingProjectile, serializer);
         EntityRef.Serialize(&p->HeldProjectileEntity, serializer);
@@ -1851,6 +1917,43 @@ namespace Quantum {
     public const Int32 BATTLE_PLAYER_CHARACTER_COUNT = 3;
     public const Int32 BATTLE_PLAYER_CHARACTER_TOTAL_COUNT = 12;
     public const Int32 BATTLE_EMOTION_STATE_COUNT = 5;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER = 10;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_RACIST_START = 1010;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_BODYBUILDER_START = 1020;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_WARVETERAN_START = 1030;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_BULLY_START = 1040;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_EGOIST_START = 1050;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_DEPRESSED_START = 1060;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_COMEDIAN_START = 2010;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_JOKER_START = 2020;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_CONMAN_START = 2030;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_SEDUCER_START = 2040;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_RELIGIOUS_START = 3010;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_YESMAN_START = 3020;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_SLAVEOFTHELAW_START = 3030;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_FASHIONSLAVE_START = 3040;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_MAMMASBOY_START = 3050;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_SUPERSTITIOUS_START = 3060;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_ARTIST_START = 4010;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_ARGUER_START = 4020;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_REFLECTOR_START = 4030;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_DELUSIONAL_START = 4040;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_OVEREATER_START = 5010;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_ALCOHOLIC_START = 5020;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_ANORECTIC_START = 5030;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_STONER_START = 5040;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_MARTYR_START = 5050;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_SUICIDAL_START = 5060;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_SOULSISTERS_START = 6010;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_LOVERS_START = 6020;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_SLEEPYHEAD_START = 6030;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_TRIBALIST_START = 6040;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_GANGBANGER_START = 6050;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_BOOKSMART_START = 7010;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_CAPITALIST_START = 7020;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_OBSESSIVECOMPULSIVE_START = 7030;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_OVERCOMPILATOR_START = 7040;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_NITPICKER_START = 7050;
   }
   public unsafe partial class Frame {
     private ISignalBattleOnDiamondHitPlayer[] _ISignalBattleOnDiamondHitPlayerSystems;
@@ -1888,10 +1991,10 @@ namespace Quantum {
       BuildSignalsArrayOnComponentRemoved<Quantum.BattleGameSessionQSingleton>();
       BuildSignalsArrayOnComponentAdded<Quantum.BattleGoalQComponent>();
       BuildSignalsArrayOnComponentRemoved<Quantum.BattleGoalQComponent>();
-      BuildSignalsArrayOnComponentAdded<Quantum.BattlePlayerClassDesensitizerDataQComponent>();
-      BuildSignalsArrayOnComponentRemoved<Quantum.BattlePlayerClassDesensitizerDataQComponent>();
-      BuildSignalsArrayOnComponentAdded<Quantum.BattlePlayerClassProjectorDataQComponent>();
-      BuildSignalsArrayOnComponentRemoved<Quantum.BattlePlayerClassProjectorDataQComponent>();
+      BuildSignalsArrayOnComponentAdded<Quantum.BattlePlayerClass100DataQComponent>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.BattlePlayerClass100DataQComponent>();
+      BuildSignalsArrayOnComponentAdded<Quantum.BattlePlayerClass400DataQComponent>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.BattlePlayerClass400DataQComponent>();
       BuildSignalsArrayOnComponentAdded<Quantum.BattlePlayerDataQComponent>();
       BuildSignalsArrayOnComponentRemoved<Quantum.BattlePlayerDataQComponent>();
       BuildSignalsArrayOnComponentAdded<Quantum.BattlePlayerDataTemplateQComponent>();
@@ -2022,7 +2125,6 @@ namespace Quantum {
     public static FrameSerializer.Delegate SerializeFrameTimer;
     public static FrameSerializer.Delegate SerializeBattlePlayerHitboxTemplate;
     public static FrameSerializer.Delegate SerializeBattleProjectileCollisionFlags;
-    public static FrameSerializer.Delegate SerializeQString64;
     public static FrameSerializer.Delegate SerializeInput;
     static partial void InitStaticDelegatesGen() {
       SerializeBattleEntityLink = Quantum.BattleEntityLink.Serialize;
@@ -2036,7 +2138,6 @@ namespace Quantum {
       SerializeFrameTimer = FrameTimer.Serialize;
       SerializeBattlePlayerHitboxTemplate = Quantum.BattlePlayerHitboxTemplate.Serialize;
       SerializeBattleProjectileCollisionFlags = (v, s) => {{ s.Stream.Serialize((Byte*)v); }};
-      SerializeQString64 = Quantum.QString64.Serialize;
       SerializeInput = Quantum.Input.Serialize;
     }
     static partial void RegisterSimulationTypesGen(TypeRegistry typeRegistry) {
@@ -2062,8 +2163,8 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.BattleMovementInputType), 4);
       typeRegistry.Register(typeof(Quantum.BattlePlayerCharacterClass), 4);
       typeRegistry.Register(typeof(Quantum.BattlePlayerCharacterState), 4);
-      typeRegistry.Register(typeof(Quantum.BattlePlayerClassDesensitizerDataQComponent), Quantum.BattlePlayerClassDesensitizerDataQComponent.SIZE);
-      typeRegistry.Register(typeof(Quantum.BattlePlayerClassProjectorDataQComponent), Quantum.BattlePlayerClassProjectorDataQComponent.SIZE);
+      typeRegistry.Register(typeof(Quantum.BattlePlayerClass100DataQComponent), Quantum.BattlePlayerClass100DataQComponent.SIZE);
+      typeRegistry.Register(typeof(Quantum.BattlePlayerClass400DataQComponent), Quantum.BattlePlayerClass400DataQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattlePlayerCollisionType), 4);
       typeRegistry.Register(typeof(Quantum.BattlePlayerDataQComponent), Quantum.BattlePlayerDataQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattlePlayerDataTemplateQComponent), Quantum.BattlePlayerDataTemplateQComponent.SIZE);
@@ -2088,7 +2189,6 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.BattleSoulWallTemplate), Quantum.BattleSoulWallTemplate.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleSoundFX), 4);
       typeRegistry.Register(typeof(Quantum.BattleTeamNumber), 4);
-      typeRegistry.Register(typeof(Quantum.BattleWaitForPlayersData), Quantum.BattleWaitForPlayersData.SIZE);
       typeRegistry.Register(typeof(Quantum.BitSet1024), Quantum.BitSet1024.SIZE);
       typeRegistry.Register(typeof(Quantum.BitSet128), Quantum.BitSet128.SIZE);
       typeRegistry.Register(typeof(Quantum.BitSet2048), Quantum.BitSet2048.SIZE);
@@ -2155,7 +2255,6 @@ namespace Quantum {
       typeRegistry.Register(typeof(Ptr), Ptr.SIZE);
       typeRegistry.Register(typeof(QBoolean), QBoolean.SIZE);
       typeRegistry.Register(typeof(Quantum.QString512), Quantum.QString512.SIZE);
-      typeRegistry.Register(typeof(Quantum.QString64), Quantum.QString64.SIZE);
       typeRegistry.Register(typeof(Quantum.Ptr), Quantum.Ptr.SIZE);
       typeRegistry.Register(typeof(QueryOptions), 2);
       typeRegistry.Register(typeof(RNGSession), RNGSession.SIZE);
@@ -2180,8 +2279,8 @@ namespace Quantum {
         .Add<Quantum.BattleEntityManagerDataQSingleton>(Quantum.BattleEntityManagerDataQSingleton.Serialize, null, Quantum.BattleEntityManagerDataQSingleton.OnRemoved, ComponentFlags.Singleton)
         .Add<Quantum.BattleGameSessionQSingleton>(Quantum.BattleGameSessionQSingleton.Serialize, null, null, ComponentFlags.Singleton)
         .Add<Quantum.BattleGoalQComponent>(Quantum.BattleGoalQComponent.Serialize, null, null, ComponentFlags.None)
-        .Add<Quantum.BattlePlayerClassDesensitizerDataQComponent>(Quantum.BattlePlayerClassDesensitizerDataQComponent.Serialize, null, null, ComponentFlags.None)
-        .Add<Quantum.BattlePlayerClassProjectorDataQComponent>(Quantum.BattlePlayerClassProjectorDataQComponent.Serialize, null, null, ComponentFlags.None)
+        .Add<Quantum.BattlePlayerClass100DataQComponent>(Quantum.BattlePlayerClass100DataQComponent.Serialize, null, null, ComponentFlags.None)
+        .Add<Quantum.BattlePlayerClass400DataQComponent>(Quantum.BattlePlayerClass400DataQComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.BattlePlayerDataQComponent>(Quantum.BattlePlayerDataQComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.BattlePlayerDataTemplateQComponent>(Quantum.BattlePlayerDataTemplateQComponent.Serialize, null, Quantum.BattlePlayerDataTemplateQComponent.OnRemoved, ComponentFlags.None)
         .Add<Quantum.BattlePlayerHitboxQComponent>(Quantum.BattlePlayerHitboxQComponent.Serialize, null, null, ComponentFlags.None)
@@ -2217,7 +2316,6 @@ namespace Quantum {
       FramePrinter.EnsurePrimitiveNotStripped<CallbackFlags>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.InputButtons>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.QString512>();
-      FramePrinter.EnsurePrimitiveNotStripped<Quantum.QString64>();
       FramePrinter.EnsurePrimitiveNotStripped<QueryOptions>();
     }
   }

@@ -6,6 +6,7 @@ using MenuUi.Scripts.AvatarEditor;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static ServerChatMessage;
 
 public class MessageObjectHandler : MonoBehaviour
 {
@@ -17,12 +18,27 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private Button _button;
     [SerializeField] private GameObject _addReactionsControls;
     [SerializeField] private GameObject _reactionsPanel;
-    [SerializeField] private GameObject _deleteButttons;
+
+
+    [Header("Base Message")]
+    public Vector2 _baseMessageBankerSize;
+    public RectTransform _baseMessageSize;
+    [SerializeField] private ChatMessageScript backgroundSize;
+    [SerializeField] private GameObject reactionField;
+    public GameObject _reactionSize;
+    public GameObject _expandedReactionSize;
+    [SerializeField] private Vector2 _vectorReactionSize;
+    [SerializeField] private Vector2 _vectorExpandedReactionSize;   
+
+
+
     private string _id;
     private Image _image;
     private Action<MessageObjectHandler> _selectMessageAction;
 
     public GameObject ReactionsPanel { get => _reactionsPanel;}
+    [SerializeField] private GameObject ReactionObject;
+
     public string Id { get => _id;}
 
     // Start is called before the first frame update
@@ -31,6 +47,33 @@ public class MessageObjectHandler : MonoBehaviour
         _button.onClick.AddListener(SetMessageActive);
         _image = _button.GetComponent<Image>();
         Chat.OnSelectedMessageChanged += SetMessageInactive;
+        ChatChannel.OnReactionReceived += UpdateReactions;
+
+        _vectorReactionSize = new Vector2(_baseMessageSize.sizeDelta.x, _baseMessageSize.sizeDelta.y + _reactionSize.GetComponent<RectTransform>().sizeDelta.y);
+        _vectorExpandedReactionSize = new Vector2(_baseMessageSize.sizeDelta.x, _baseMessageSize.sizeDelta.y + _expandedReactionSize.GetComponent<RectTransform>().sizeDelta.y);
+    }
+
+    ///Changes the Basemessages size
+    public void SizeCall()
+    {
+        //adds extra size if there reactions have been put or not
+        float extraPadding;
+        if (reactionField.transform.childCount > 0)
+            extraPadding = 100;
+        else
+            extraPadding = 0f;
+
+        //Checks if reaction panel is active and checks which reaction pannel is on
+        if (_reactionSize.activeSelf)
+            if(_expandedReactionSize.activeSelf)
+                _baseMessageSize.sizeDelta = new Vector2(_vectorExpandedReactionSize.x, Mathf.Max(150, _baseMessageBankerSize.y + _vectorExpandedReactionSize.y + extraPadding));
+            else
+                _baseMessageSize.sizeDelta = new Vector2(_vectorReactionSize.x, Mathf.Max(150, _baseMessageBankerSize.y + _vectorReactionSize.y + extraPadding));
+
+        //reverts back to orignal
+        else
+        _baseMessageSize.sizeDelta = new Vector2(_baseMessageBankerSize.x, Mathf.Max(150, _baseMessageBankerSize.y + extraPadding));
+
     }
 
     private void OnDestroy()
@@ -51,8 +94,13 @@ public class MessageObjectHandler : MonoBehaviour
         _text.text = message.Message;
         _selectMessageAction = selectMessageAction;
         _name.text = message.Username;
-        _time.text = $"{message.Timestamp.Hour}:{message.Timestamp.Minute}";
+        _time.text = $"{message.Timestamp.Hour}:{message.Timestamp.Minute:D2}";
         _date.text = $"{message.Timestamp.Day}/{message.Timestamp.Month}/{message.Timestamp.Year}";
+
+        foreach (var reactionData in message.Reactions)
+        {
+            ReactionChatCall(reactionData);
+        }
     }
 
     public void SetPreviewMessageInfo(ChatMessage message)
@@ -71,9 +119,9 @@ public class MessageObjectHandler : MonoBehaviour
             _image.color = Color.gray;
         }
         _addReactionsControls.SetActive(true);
-        _deleteButttons.SetActive(true);
 
         _selectMessageAction.Invoke(this);
+        SizeCall();
     }
 
     private void SetMessageInactive(MessageObjectHandler handler)
@@ -85,7 +133,7 @@ public class MessageObjectHandler : MonoBehaviour
             _image.color = Color.white;
         }
         _addReactionsControls.SetActive(false);
-        _deleteButttons.SetActive(false);
+        SizeCall();
     }
 
     public void SetMessageInactive()
@@ -93,4 +141,24 @@ public class MessageObjectHandler : MonoBehaviour
         _selectMessageAction.Invoke(null);
     }
 
+    //Refreshes the reactions if there is any
+    public void ReactionChatCall(ServerReactions EmojiId)
+    {
+        //Gets the set data we need to get to import saved reactions
+        MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
+
+        ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, true);
+        
+    }
+
+    private void UpdateReactions(ChatChannelType chatChannelType, ChatMessage message)
+    {
+        if (chatChannelType != ChatListener.Instance.ActiveChatChannel) return;
+        if (message.Id == null || _id != message.Id) return;
+
+        //Gets the set data we need to get to import saved reactions
+        MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
+
+        ChildsScript.UpdateReactions(message.Reactions, _id);
+    }
 }

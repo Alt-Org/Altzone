@@ -1,15 +1,12 @@
-﻿using System.Linq;
-
-using UnityEngine;
-
-using Newtonsoft.Json.Linq;
-
+﻿using System;
+using System.Linq;
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
-
-using MenuUi.Scripts.Signals;
 using MenuUi.Scripts.DefenceScreen.CharacterStatsWindow;
+using MenuUi.Scripts.Signals;
+using Newtonsoft.Json.Linq;
+using UnityEngine;
 
 namespace MenuUi.Scripts.Signals
 {
@@ -49,6 +46,27 @@ namespace MenuUi.Scripts.Signals
         {
             OnSelectedDefenceCharacterChanged?.Invoke(characterID, slot);
         }
+
+        public delegate void LoadoutDefenceCharacterChanged(CharacterID characterID, int slot, int loadoutIndex);
+        public static event LoadoutDefenceCharacterChanged OnLoadoutDefenceCharacterChanged;
+        public static void OnLoadoutDefenceCharacterChangedSignal(CharacterID characterID, int slot, int loadoutIndex)
+        {
+            OnLoadoutDefenceCharacterChanged?.Invoke(characterID, slot, loadoutIndex);
+        }
+
+        public delegate void DefenceGalleryEditPanelRequestedForLoadout(int loadoutIndex);
+        public static event DefenceGalleryEditPanelRequestedForLoadout OnDefenceGalleryEditPanelRequestedForLoadout;
+        public static void OnDefenceGalleryEditPanelRequestedForLoadoutSignal(int loadoutIndex)
+        {
+            OnDefenceGalleryEditPanelRequestedForLoadout?.Invoke(loadoutIndex);
+        }
+
+        public delegate void LoadoutChanged();
+        public static event LoadoutChanged OnLoadoutChanged;
+        public static void OnLoadoutChangedSignal()
+        {
+            OnLoadoutChanged?.Invoke();
+        }
     }
 }
 
@@ -67,6 +85,9 @@ namespace MenuUi.Scripts.CharacterGallery
         private PlayerData _playerData;
         private bool _reloadRequested = false;
 
+        public event Action<PlayerData> OnPlayerDataReady;
+
+        public PlayerData Player => _playerData;
 
         private void Awake()
         {
@@ -76,6 +97,8 @@ namespace MenuUi.Scripts.CharacterGallery
             SignalBus.OnReloadCharacterGalleryRequested += OnReloadRequested;
             SignalBus.OnSelectedDefenceCharacterChanged += HandleCharacterSelected;
             SignalBus.OnDefenceGalleryStatPopupRequested += _statsWindowController.OpenPopup;
+            SignalBus.OnLoadoutDefenceCharacterChanged += HandleLoadoutCharacterChanged;
+            SignalBus.OnLoadoutChanged += SaveBattleCharacters;
         }
 
 
@@ -109,6 +132,8 @@ namespace MenuUi.Scripts.CharacterGallery
             SignalBus.OnReloadCharacterGalleryRequested -= OnReloadRequested;
             SignalBus.OnSelectedDefenceCharacterChanged -= HandleCharacterSelected;
             SignalBus.OnDefenceGalleryStatPopupRequested -= _statsWindowController.OpenPopup;
+            SignalBus.OnLoadoutDefenceCharacterChanged -= HandleLoadoutCharacterChanged;
+            SignalBus.OnLoadoutChanged -= SaveBattleCharacters;
         }
 
 
@@ -140,6 +165,14 @@ namespace MenuUi.Scripts.CharacterGallery
             StartCoroutine(GetPlayerData(playerData =>
             {
                 _playerData = playerData;
+                _playerData.EnsureLoadoutsInitialized();
+
+                if (_playerData.AreAllLoadoutsEmpty() && _playerData.HasAnySelectedCharacters())
+                {
+                    _playerData.SaveCurrentTeamToLoadout(1);           // save into first slot
+                    _playerData.SelectedLoadOut = 1;                  
+                    Storefront.Get().SavePlayerData(_playerData, null);
+                }
 
                 // Getting selected character ids as CharacterID array
                 CustomCharacterListObject[] selectedCharacterIds = playerData.SelectedCharacterIds;
@@ -153,6 +186,8 @@ namespace MenuUi.Scripts.CharacterGallery
                 // Set characters in the ModelView
                 _view.SetCharacters(characters, selectedCharacterIds);
                 _editingPanelView.SetCharacters(characters, selectedCharacterIds);
+
+                OnPlayerDataReady?.Invoke(_playerData);
             }));
         }
 
@@ -197,35 +232,9 @@ namespace MenuUi.Scripts.CharacterGallery
                 _playerData.SelectedCharacterIds[slot].SetData(newServerId, newCharacterId);
             }
 
-            string[] serverList = new string[_playerData.SelectedCharacterIds.Length];
+            SaveBattleCharacters();
 
-            for(int i = 0; i < _playerData.SelectedCharacterIds.Length; i++)
-            {
-                serverList[i] = _playerData.SelectedCharacterIds[i].ServerID;
-            }
-
-            string body = JObject.FromObject(
-            new
-            {
-                _id = _playerData.Id,
-                battleCharacter_ids = serverList
-
-            }).ToString();
-
-            StartCoroutine(ServerManager.Instance.UpdatePlayerToServer(body, callback =>
-            {
-                if (callback != null)
-                {
-                    Debug.Log("Profile info updated.");
-                }
-                else
-                {
-                    Debug.Log("Profile info update failed.");
-                }
-
-                var store = Storefront.Get();
-                store.SavePlayerData(_playerData, null);
-            }));
+            _playerData.OnCurrentTeamChanged_AutoSave();
         }
 
 
@@ -261,6 +270,88 @@ namespace MenuUi.Scripts.CharacterGallery
             var store = Storefront.Get();
             store.SavePlayerData(_playerData, null);
             Load();
+        }
+        /// <summary>
+        /// Updates the given loadout slot with the selected character and saves the change.
+        /// If the loadout is currently selected, also updates SelectedCharacterIds and syncs with the server.
+        /// </summary>
+        private void HandleLoadoutCharacterChanged(CharacterID newCharacterId, int slot, int loadoutIndex)
+        {
+            if (_playerData == null) return;
+            if (loadoutIndex < 0 || loadoutIndex >= _playerData.LoadOuts.Length) return;
+
+            var loadout = _playerData.LoadOuts[loadoutIndex];
+            if (slot < 0 || slot >= loadout.Slots.Length) return;
+
+            string newServerId = _playerData.CustomCharacters
+                .FirstOrDefault(x => x.Id == newCharacterId)?.ServerID;
+
+            var loadoutSlot = loadout.Slots[slot];
+
+            if (newServerId == null || newServerId == ((int)CharacterID.None).ToString())
+            {
+                if (CustomCharacter.IsTestCharacter(newCharacterId))
+                {
+                    loadoutSlot.SetData(Id: newCharacterId);
+                }
+                else
+                {
+                    loadoutSlot.SetData();
+                }
+            }
+            else if (newServerId != loadoutSlot.ServerID)
+            {
+                loadoutSlot.SetData(newServerId, newCharacterId);
+            }
+
+            // If this loadout is currently selected, also update SelectedCharacterIds and sync to server
+            if (loadoutIndex == _playerData.SelectedLoadOut - 1)
+            {
+                
+                HandleCharacterSelected(newCharacterId, slot);
+            }
+            // Otherwise only persist the updated loadout locally
+            else
+            {
+
+                Storefront.Get().SavePlayerData(_playerData, null);
+            }
+        }
+
+        private void SaveBattleCharacters()
+        {
+            StartCoroutine(GetPlayerData(playerData =>
+            {
+                string[] serverList = new string[playerData.SelectedCharacterIds.Length];
+
+                for (int i = 0; i < playerData.SelectedCharacterIds.Length; i++)
+                {
+                    serverList[i] = playerData.SelectedCharacterIds[i].ServerID;
+                }
+
+                string body = JObject.FromObject(
+                new
+                {
+                    _id = playerData.Id,
+                    battleCharacter_ids = serverList
+
+                }).ToString();
+
+                StartCoroutine(ServerManager.Instance.UpdatePlayerToServer(body, callback =>
+                {
+                    if (callback != null)
+                    {
+                        Debug.Log("Profile info updated.");
+                    }
+                    else
+                    {
+                        Debug.Log("Profile info update failed.");
+                    }
+
+                    var store = Storefront.Get();
+                    store.SavePlayerData(playerData, null);
+                }));
+            }));
         }
     }
 }

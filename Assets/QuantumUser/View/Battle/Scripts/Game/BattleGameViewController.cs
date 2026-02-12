@@ -30,6 +30,7 @@ using Battle.View.Audio;
 using Battle.View.Effect;
 using Battle.View.UI;
 using Battle.View.Player;
+using Battle.View.SoulWall;
 
 using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
 using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
@@ -266,6 +267,7 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
             QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
             QuantumEvent.Subscribe<EventBattleGiveUpStateChange>(this, QEventOnGiveUpStateChange);
+            QuantumEvent.Subscribe<EventBattleStoneCharacterPlayHitAnimation>(this, QEventOnStoneCharacterPlayHitAnimation);
 
             // Subscribing to Debug events
             QuantumEvent.Subscribe<EventBattleDebugOnScreenMessage>(this, QEventDebugOnScreenMessage);
@@ -289,7 +291,7 @@ namespace Battle.View.Game
             // Setting view pre-activate waiting for players text
             Utils.TryGetQuantumFrame(out Frame f);
             BattleParameters.PlayerType[] playerSlotTypes = BattleParameters.GetPlayerSlotTypes(f);
-            _uiController.LoadScreenHandler.Show(playerSlotTypes, e.Data.PlayerNames);
+            _uiController.LoadScreenHandler.Show(playerSlotTypes, BattleParameters.GetPlayerNames(f));
 
             _uiController.AnnouncementHandler.SetText(BattleUiAnnouncementHandler.TextType.WaitingForPlayers);
         }
@@ -525,6 +527,55 @@ namespace Battle.View.Game
             _endOfGameDataHasEnded = true;
             _endOfGameDataWinningTeam = e.WinningTeam;
             _endOfGameDataGameLengthSec = e.GameLengthSec;
+
+            //{ Calling server to add wins and losses
+            
+            Utils.TryGetQuantumFrame(out Frame f);
+            string[] playerUserIds = BattleParameters.GetPlayerSlotUserIDs(f);
+            
+            bool isValidWin = false;
+            // Temporary solution
+            if (e.WinningTeam == LocalPlayerTeam)
+            {
+                const int teamCount          = 2;
+                const int teamPlayerCountMax = 2;
+                const int totalPlayerCount   = teamCount * teamPlayerCountMax;
+
+                int teamAlphaPlayerCount = 0;
+                int teamBetaPlayerCount  = 0;
+                for (int i = 0; i < totalPlayerCount; i++)
+                {
+                    if (playerUserIds[i] == string.Empty) continue;
+                    if (i < teamPlayerCountMax) { teamAlphaPlayerCount++; }
+                    else { teamBetaPlayerCount++; }
+                }
+
+                switch (LocalPlayerTeam)
+                {
+                    case BattleTeamNumber.TeamAlpha:
+                        isValidWin = teamBetaPlayerCount > 0;
+                        break;
+                    case BattleTeamNumber.TeamBeta:
+                        isValidWin = teamAlphaPlayerCount > 0;
+                        break;
+                }
+            }
+
+            if (isValidWin)
+            {
+                StartCoroutine(ServerManager.Instance.BattleSendResult
+                (
+                    playerUserIds,
+                    (int)e.WinningTeam,
+                    (int)e.GameLengthSec,
+                    success =>
+                    {
+                        if (!success) _debugLogger.Error("Sending battle result failed.");
+                    }
+                )); 
+            }
+            
+            //} Calling server to add wins and losses
         }
 
         /// <summary>
@@ -618,6 +669,12 @@ namespace Battle.View.Game
                 _uiController.GiveUpButtonHandler.UpdateState(e.Slot, e.StateUpdate);
             }
         }
+
+        private void QEventOnStoneCharacterPlayHitAnimation(EventBattleStoneCharacterPlayHitAnimation e)
+        {
+            _stoneCharacterViewController.PlayHitAnimation(e.Team, e.Emotion);
+        }
+
 
         /// <summary>
         /// Private handler method for EventBattleDebugOnScreenMessage QuantumEvent.<br/>

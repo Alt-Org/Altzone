@@ -60,9 +60,17 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public int points = 0;
 
+        public TeamLoadOut[] LoadOuts = new TeamLoadOut[8]
+        {
+            new TeamLoadOut(), new TeamLoadOut(), new TeamLoadOut(), new TeamLoadOut(),
+            new TeamLoadOut(), new TeamLoadOut(), new TeamLoadOut(), new TeamLoadOut()
+        };
+
+        public int SelectedLoadOut = 0;
+
         public PlayStyles playStyles;
 
-       public string emotionSelectorDate = null;
+        public string emotionSelectorDate = null;
 
         public string daysBetweenInput = "0";
 
@@ -115,7 +123,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             get
             {
                 List<Emotion> list = new();
-                foreach(string emotion in _playerDataEmotionList)
+                foreach (string emotion in _playerDataEmotionList)
                 {
                     list.Add((Emotion)Enum.Parse(typeof(Emotion), emotion));
                 }
@@ -149,11 +157,14 @@ namespace Altzone.Scripts.Model.Poco.Player
             Id = id;
             ClanId = clanId ?? string.Empty;
             SelectedCharacterId = currentCustomCharacterId;
-            if(characters != null)BuildCharacterLists(characters);
+            if (characters != null) BuildCharacterLists(characters);
             BuildSelectedCharacterList(currentBattleCharacterIds);
             Name = name;
             BackpackCapacity = backpackCapacity;
             UniqueIdentifier = uniqueIdentifier;
+
+            
+            EnsureLoadoutsInitialized();
         }
 
         public PlayerData(ServerPlayer player, bool limited = false)
@@ -176,7 +187,10 @@ namespace Altzone.Scripts.Model.Poco.Player
             stats = player.gameStatistics;
             Task = player.DailyTask != null ? new(player.DailyTask) : null;
             AvatarData = player.avatar != null ? new(player.name, player.avatar) : null;
-            if (!limited) Task = player.DailyTask != null ? new(player.DailyTask): null;
+            if (!limited) Task = player.DailyTask != null ? new(player.DailyTask) : null;
+
+           
+            EnsureLoadoutsInitialized();
         }
 
 
@@ -199,9 +213,12 @@ namespace Altzone.Scripts.Model.Poco.Player
             points = player.points;
             stats = player.gameStatistics;
             Task = player.DailyTask != null ? new(player.DailyTask) : null;
-            AvatarData = player.avatar !=null ? new(player.name ,player.avatar): null;
+            AvatarData = player.avatar != null ? new(player.name, player.avatar) : null;
             if (_playerDataEmotionList == null || _playerDataEmotionList.Count == 0) playerDataEmotionList = new List<Emotion> { Emotion.Blank, Emotion.Love, Emotion.Playful, Emotion.Joy, Emotion.Sorrow, Emotion.Anger, Emotion.Blank };
             if (daysBetweenInput == null) daysBetweenInput = "0";
+
+            
+            EnsureLoadoutsInitialized();
         }
 
         public void UpdateCustomCharacter(CustomCharacter character)
@@ -267,16 +284,16 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         private void BuildSelectedCharacterList(string[] server_ids)
         {
-            for(int i=0; i < 3; i++)
+            for (int i = 0; i < 3; i++)
             {
                 string serverid = null;
-                if(server_ids.Length > i) serverid = server_ids[i];
+                if (server_ids.Length > i) serverid = server_ids[i];
 
                 if (_characterList == null) _characterList = new();
                 CustomCharacter character = _characterList.FirstOrDefault(c => c.ServerID == serverid);
                 if (i < SelectedCharacterIds.Length)
                 {
-                    if (SelectedCharacterIds[i] != null) SelectedCharacterIds[i].SetData(serverid, character == null ? CharacterID.None :character.Id);
+                    if (SelectedCharacterIds[i] != null) SelectedCharacterIds[i].SetData(serverid, character == null ? CharacterID.None : character.Id);
                     else SelectedCharacterIds[i] = new(serverid, character == null ? CharacterID.None : character.Id);
                 }
                 else SelectedCharacterIds.Append(new(serverid, character == null ? CharacterID.None : character.Id));
@@ -287,7 +304,134 @@ namespace Altzone.Scripts.Model.Poco.Player
         {
             return
                 $"{nameof(Id)}: {Id}, {nameof(ClanId)}: {ClanId}, {nameof(SelectedCharacterId)}: {SelectedCharacterId}," +
-                $"{nameof(SelectedCharacterIds)}: {string.Join<CustomCharacterListObject>(",", SelectedCharacterIds)}, { nameof(Name)}: {Name}, {nameof(BackpackCapacity)}: {BackpackCapacity}, {nameof(UniqueIdentifier)}: {UniqueIdentifier}";
+                $"{nameof(SelectedCharacterIds)}: {string.Join<CustomCharacterListObject>(",", SelectedCharacterIds)}, {nameof(Name)}: {Name}, {nameof(BackpackCapacity)}: {BackpackCapacity}, {nameof(UniqueIdentifier)}: {UniqueIdentifier}";
         }
+
+        /// <summary>
+        /// Loads the chosen loadout into SelectedCharacterIds (makes it the active team).
+        /// </summary>
+        public void ApplyLoadout(int index)
+        {
+            if (index < 0 || index > LoadOuts.Length)
+
+            {
+                Debug.LogError($"Invalid index {index}. Allowed range is 0 - {LoadOuts.Length}");
+                return;
+            }
+            if (index == 0)
+            {
+
+                SelectedLoadOut = 0;
+                return;
+            }
+
+            TeamLoadOut selectedSlot = LoadOuts[index - 1];
+            if (selectedSlot == null || selectedSlot.Slots == null) return;
+
+            // Copies values from the saved slot to the active team (without sharing references)
+            for (int i = 0; i < 3; i++)
+            {
+                CustomCharacterListObject savedMember = selectedSlot.Slots[i];
+                if (savedMember == null) savedMember = new CustomCharacterListObject();
+
+                if (SelectedCharacterIds[i] == null)
+                    SelectedCharacterIds[i] = new CustomCharacterListObject();
+
+                SelectedCharacterIds[i].SetData(savedMember.ServerID, savedMember.CharacterID);
+            }
+
+            SelectedLoadOut = index;
+        }
+
+        /// <summary>
+        /// Saves the current active team (SelectedCharacterIds) into the chosen slot (1-3).
+        /// Creates new instances so references are not shared with SelectedCharacterIds
+        /// </summary>
+        public void SaveCurrentTeamToLoadout(int index)
+        {
+
+            if (index <= 0 || index > LoadOuts.Length)
+            {
+                Debug.LogError($"Invalid index {index}. Allowed range is 1 - {LoadOuts.Length}");
+                return;
+            }
+
+            if (LoadOuts[index - 1] == null)
+                LoadOuts[index - 1] = new TeamLoadOut();
+
+            if (LoadOuts[index - 1].Slots == null)
+                LoadOuts[index - 1].Slots = new CustomCharacterListObject[3];
+
+            for (int i = 0; i < 3; i++)
+            {
+                CustomCharacterListObject activeMember = SelectedCharacterIds[i];
+                if (activeMember == null) activeMember = new CustomCharacterListObject();
+
+
+                CustomCharacterListObject savedCopy = new CustomCharacterListObject();
+                savedCopy.SetData(activeMember.ServerID, activeMember.CharacterID);
+
+                LoadOuts[index - 1].Slots[i] = savedCopy;
+
+            }
+        }
+
+        /// <summary>
+        /// This is called whenever the user changes the team in the UI.
+        /// If a saved slot (1-3) is selected, changes are saved immediately to that slot.
+        /// </summary>
+        public void OnCurrentTeamChanged_AutoSave()
+        {
+
+            if (SelectedLoadOut > 0 && SelectedLoadOut <= LoadOuts.Length)
+            {
+                SaveCurrentTeamToLoadout(SelectedLoadOut);
+            }
+            Storefront.Get().SavePlayerData(this, null);
+
+
+        }
+
+        public void EnsureLoadoutsInitialized()
+        {
+            if (LoadOuts == null || LoadOuts.Length != 8)
+            {
+                LoadOuts = new TeamLoadOut[8];
+            }
+
+            for (int i = 0; i < LoadOuts.Length; i++)
+            {
+                if (LoadOuts[i] == null)
+                    LoadOuts[i] = new TeamLoadOut();
+            }
+        }
+
+        public bool HasAnySelectedCharacters()
+        {
+            if (SelectedCharacterIds == null) return false;
+
+            for (int i = 0; i < SelectedCharacterIds.Length; i++)
+            {
+                var characters = SelectedCharacterIds[i];
+                if (characters != null && characters.CharacterID != CharacterID.None)
+                    return true;
+            }
+            return false;
+        }
+
+        public bool AreAllLoadoutsEmpty()
+        {
+            if (LoadOuts == null || LoadOuts.Length == 0) return true;
+
+            for (int i = 0; i < LoadOuts.Length; i++)
+            {
+                var loadouts = LoadOuts[i];
+                if (loadouts != null && loadouts.IsEmpty == false)
+                    return false;
+            }
+            return true;
+        }
+
+
     }
 }
