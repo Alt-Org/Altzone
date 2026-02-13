@@ -47,7 +47,8 @@ public class ClanPlayerFetcher : MonoBehaviour
 
     private void UpdateLocalAvatar()
     {
-        PlayerData data = AvatarEvents.UpdatedPlayerData;
+        PlayerData data = new(ServerManager.Instance.Player, true);
+
         if (data == null)
         {
             return;
