@@ -5,6 +5,8 @@ using UnityEngine;
 public class AvatarMaskUtility : MonoBehaviour
 {
     private static Texture2D s_transparentTexPixel;
+    // I assume HideFlags.HideAndDontSave fixed the problem, but if the mask colors
+    // behave unexpectedly, it is almost certainly because the Texture2Ds in the dictionaries get destroyed
     private static readonly Dictionary<Vector2Int, Texture2D> s_selectedColorMaskCache = new();
     private static readonly Dictionary<Vector2Int, Texture2D> s_skinColorMaskCache = new();
     private static readonly Dictionary<Vector2Int, Texture2D> s_transparentMaskCache = new();
@@ -19,7 +21,7 @@ public class AvatarMaskUtility : MonoBehaviour
                 s_transparentTexPixel.SetPixel(0, 0, new Color(0, 0, 0, 0));
                 s_transparentTexPixel.Apply();
 
-                s_transparentTexPixel.hideFlags = HideFlags.DontUnloadUnusedAsset;
+                s_transparentTexPixel.hideFlags = HideFlags.HideAndDontSave;
             }
 
             return s_transparentTexPixel;
@@ -55,7 +57,7 @@ public class AvatarMaskUtility : MonoBehaviour
 
         mask.filterMode = reference.filterMode;
         mask.wrapMode = TextureWrapMode.Clamp;
-        mask.hideFlags = HideFlags.DontUnloadUnusedAsset;
+        mask.hideFlags = HideFlags.HideAndDontSave;
 
         Color fill = new(0, 1, 0, 1);
         Color[] pixels = new Color[reference.width * reference.height];
@@ -97,7 +99,7 @@ public class AvatarMaskUtility : MonoBehaviour
 
         mask.filterMode = reference.filterMode;
         mask.wrapMode = TextureWrapMode.Clamp;
-        mask.hideFlags = HideFlags.DontUnloadUnusedAsset;
+        mask.hideFlags = HideFlags.HideAndDontSave;
 
         Color clear = new(0, 0, 0, 0);
         Color[] pixels = new Color[reference.width * reference.height];
@@ -133,7 +135,7 @@ public class AvatarMaskUtility : MonoBehaviour
 
         mask.filterMode = reference.filterMode;
         mask.wrapMode = TextureWrapMode.Clamp;
-        mask.hideFlags = HideFlags.DontUnloadUnusedAsset;
+        mask.hideFlags = HideFlags.HideAndDontSave;
 
         Color skinMask = new(1, 0, 0, 1);
         Color[] pixels = new Color[reference.width * reference.height];
