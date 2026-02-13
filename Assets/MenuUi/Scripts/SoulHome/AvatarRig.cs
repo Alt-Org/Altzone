@@ -139,9 +139,9 @@ public class AvatarRig : MonoBehaviour
             }
 
             AvatarPartSetter.AssignAvatarPart(resolver, resolverStruct, playerData, part);
-
-            SpriteRenderer headSpriteRenderer = GetRenderer(AvatarPart.Head).GetComponent<SpriteRenderer>();
-            AvatarPartSetter.SetHeadColor(headSpriteRenderer, playerData);
         }
+
+        SpriteRenderer headSpriteRenderer = GetRenderer(AvatarPart.Head).GetComponent<SpriteRenderer>();
+        AvatarPartSetter.SetHeadColor(headSpriteRenderer, playerData);
     }
 }
