@@ -7,6 +7,18 @@ using Altzone.Scripts.AvatarPartsInfo;
 public class AvatarPartsReference : ScriptableObject
 {
     //[SerializeField] private List<AvatarPartCategoryInfo> _info = new List<AvatarPartCategoryInfo>();
+    private static AvatarPartsReference s_instance;
+    public static AvatarPartsReference Instance
+    {
+        get
+        {
+            if (s_instance == null)
+            {
+                s_instance = Resources.Load<AvatarPartsReference>("AvatarParts");
+            }
+            return s_instance;
+        }
+    }
 
     public List<AvatarPartCategoryInfo> AvatarPartData => _info;
 

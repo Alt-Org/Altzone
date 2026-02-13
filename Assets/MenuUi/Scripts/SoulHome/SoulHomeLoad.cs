@@ -15,6 +15,9 @@ using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Model.Poco.Game;
 using System.Collections.ObjectModel;
+using UnityEngine.U2D.Animation;
+using Assets.Altzone.Scripts.Model.Poco.Player;
+using System.Reflection.Emit;
 
 namespace MenuUI.Scripts.SoulHome {
 
@@ -34,10 +37,10 @@ namespace MenuUI.Scripts.SoulHome {
         [SerializeField] private TowerController _towerController;
         [SerializeField] private GameObject _avatarPlaceholder;
         [SerializeField] private Camera _towerCamera;
-
+        [SerializeField] private ClanPlayerFetcher _clanPlayerFetcher;
+        [SerializeField] private SpriteLibraryAsset _avatarSpriteLibrary;
 
         private List<Furniture> _furnitureList = null;
-
 
         private const string SERVER_ADDRESS = "https://altzone.fi/api/soulhome";
 
@@ -45,23 +48,127 @@ namespace MenuUI.Scripts.SoulHome {
         private bool _roomsReady = false;
         private bool _furnituresSet = false;
         private bool _loadFinished = false;
+        private bool _loginStatusChanged = false;
+        private bool _refreshInProgress = false;
+
+        private int _runningCoroutines = 0;
+
+        private string _localPlayerId;
+
+        private AvatarRig _localPlayerRig;
 
         public bool LoadFinished { get => _loadFinished;}
 
         // Start is called before the first frame update
         void Start()
         {
-            _roomAmount = ServerManager.Instance.Clan != null ? ServerManager.Instance.Clan.playerCount: 1;
+            RefreshSoulHome();
+            _localPlayerId = ServerManager.Instance.Player._id;
+            ServerManager.OnLogInStatusChanged += UpdateOnLoginStatusChanged;
+        }
+
+        private void OnDestroy()
+        {
+            ServerManager.OnLogInStatusChanged -= UpdateOnLoginStatusChanged;
+        }
+
+        private void OnEnable()
+        {
+            _clanPlayerFetcher.OnLocalAvatarUpdated += OnLocalAvatarUpdated;
+            if (_loginStatusChanged)
+            {
+                _loginStatusChanged = false;
+                _localPlayerId = ServerManager.Instance.Player._id;
+                RefreshSoulHome();
+            }
+        }
+
+        private void OnDisable()
+        {
+            _clanPlayerFetcher.OnLocalAvatarUpdated -= OnLocalAvatarUpdated;
+        }
+
+        private void UpdateOnLoginStatusChanged(bool isLoggedIn)
+        {
+            _loginStatusChanged = isLoggedIn;
+        }
+
+        private void RefreshSoulHome()
+        {
+            if (!_refreshInProgress)
+            {
+                StartCoroutine(RefreshCoroutine());
+            }
+        }
+
+        private IEnumerator RefreshCoroutine()
+        {
+            _refreshInProgress = true;
+
+            ClearSoulHome();
+
+            _clanPlayerFetcher.RefreshClanMembersPlayerData();
+
+            _roomAmount = ServerManager.Instance.Clan != null ? ServerManager.Instance.Clan.playerCount : 1;
             if (_roomAmount > 30)
             {
                 Debug.LogError($"Clan has more players ({_roomAmount}) than allowed, setting room count to 30.");
                 _roomAmount = 30;
             }
-            StartCoroutine(HomeLoad());
+
+            RunTracked(HomeLoad());
             //TestCode();
-            StartCoroutine(LoadRooms());
-            StartCoroutine(LoadFurniture());
-            StartCoroutine(SpawnAvatar());
+            RunTracked(LoadRooms());
+            RunTracked(LoadFurniture());
+            RunTracked(SpawnAvatar());
+
+            // wait until the above Coroutines have finished
+            // to make sure this doesn't run again until it is finished
+            yield return WaitForLoadFinish();
+
+            _refreshInProgress = false;
+        }
+
+        private void ClearSoulHome()
+        {
+            foreach (Transform child in _roomPositions.transform)
+            {
+                foreach (Transform grandChild in child.transform)
+                {
+                    Destroy(grandChild.gameObject);
+                }
+            }
+            _soulHomeRooms = null;
+            _furnitureFetchFinished = false;
+            _roomsReady = false;
+            _furnituresSet = false;
+            _loadFinished = false;
+            _furnitureList = null;
+            _localPlayerId = null;
+            _localPlayerRig = null;
+        }
+
+        private IEnumerator TrackedCoroutine(IEnumerator coroutine)
+        {
+            _runningCoroutines++;
+            try
+            {
+                yield return coroutine;
+            }
+            finally
+            {
+                _runningCoroutines--;
+            }
+        }
+
+        private void RunTracked(IEnumerator coroutine)
+        {
+            StartCoroutine(TrackedCoroutine(coroutine));
+        }
+
+        private IEnumerator WaitForLoadFinish()
+        {
+            yield return new WaitUntil(() => _runningCoroutines == 0);
         }
 
         private void TestCode() //This is test code block that may or may not be unrelated to SoulHome. I just use the opening of the SoulHome to trigger things I need to test and don't have dedicated way of doing so.
@@ -348,13 +455,35 @@ namespace MenuUI.Scripts.SoulHome {
         public IEnumerator SpawnAvatar()
         {
             yield return new WaitUntil(() => _furnituresSet);
+            yield return new WaitUntil(() => _clanPlayerFetcher.PlayersLoaded);
+
             for (int i = 0; i < _roomAmount; i++)
             {
-                Instantiate(_avatarPlaceholder, _roomPositions.transform.GetChild(i).GetChild(0));
+                GameObject avatarParent = Instantiate(_avatarPlaceholder, _roomPositions.transform.GetChild(i).GetChild(0));
+                GameObject avatar = avatarParent.transform.GetChild(0).gameObject;
+                AvatarRig rig = avatar.GetComponent<AvatarRig>();
+
+                PlayerData playerData = _clanPlayerFetcher.Players[i];
+
+                if (playerData?.Id == _localPlayerId)
+                {
+                    _localPlayerRig = rig;
+                }
+
+                rig.ApplyAvatarToRig(playerData);
             }
             _loadFinished = true;
         }
 
-        
+
+        private void OnLocalAvatarUpdated(PlayerData playerData)
+        {
+            if (_localPlayerRig == null)
+            {
+                return;
+            }
+
+            _localPlayerRig.ApplyAvatarToRig(playerData);
+        }
     }
 }
