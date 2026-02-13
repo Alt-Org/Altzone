@@ -421,6 +421,7 @@ GameObject:
   - component: {fileID: 198529287473938539}
   - component: {fileID: 6819785133246786492}
   - component: {fileID: 7448530043508577353}
+  - component: {fileID: 2788831895466123115}
   m_Layer: 5
   m_Name: "K\xE4ytt\xF6ehdot"
   m_TagString: Untagged
@@ -529,7 +530,32 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6819785133246786492}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2788831895466123115}
+        m_TargetAssemblyTypeName: OpenURL, MainMenu
+        m_MethodName: OpenLink
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2788831895466123115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 177697363796405896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02cb2d0cabab6eb4fad67cb55ef7b44f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _url: https://altzone.fi/en/privacy
 --- !u!1 &229516808582982380
 GameObject:
   m_ObjectHideFlags: 0
@@ -22189,8 +22215,6 @@ MonoBehaviour:
   _longClickStartThresholdTime: 0.2
   _longClickThresholdTime: 3
   _uniqueName: 
-  _wheelPrefab: {fileID: 8663310473271682075, guid: 9e98e501f5b2a43caa012d4ed3f60893,
-    type: 3}
   _buggedText: {fileID: 7898806915506201295}
   _toggle: {fileID: 6381842256211950198}
   _button: {fileID: 148240058672145912}
@@ -30870,7 +30894,7 @@ PrefabInstance:
     - target: {fileID: 2522924568871388016, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_Value
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2522924569201874204, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
@@ -30930,7 +30954,7 @@ PrefabInstance:
     - target: {fileID: 2522924569201874207, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -540
+      value: 540
       objectReference: {fileID: 0}
     - target: {fileID: 2522924569201874207, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
