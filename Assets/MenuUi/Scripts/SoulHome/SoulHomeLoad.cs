@@ -476,6 +476,11 @@ namespace MenuUI.Scripts.SoulHome {
 
         private void OnLocalAvatarUpdated(PlayerData playerData)
         {
+            if (_localPlayerRig == null)
+            {
+                return;
+            }
+
             _localPlayerRig.ApplyAvatarToRig(playerData);
         }
     }
