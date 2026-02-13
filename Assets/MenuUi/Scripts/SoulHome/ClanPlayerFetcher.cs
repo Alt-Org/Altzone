@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts;
+using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
@@ -25,24 +27,22 @@ public class ClanPlayerFetcher : MonoBehaviour
 
     public void RefreshClanMembersPlayerData()
     {
-        StartCoroutine(ServerManager.Instance.GetClanMembersFromServer(members =>
-        {
-            _players.Clear();
+        _players.Clear();
 
-            if (members == null)
+        string clanId = ServerManager.Instance.Player?.clan_id;
+        Storefront.Get().GetClanData(clanId, clanData =>
+        {
+            if (clanData != null)
             {
-                Debug.LogError("Failed to load clan members");
-            }
-            else
-            {
-                foreach (var member in members)
+                foreach (var member in clanData.Members)
                 {
-                    _players.Add(member.GetPlayerData());
+                    PlayerData playerData = member.GetPlayerData();
+                    _players.Add(playerData);
                 }
             }
 
             PlayersLoaded = true;
-        }));
+        });
     }
 
     private void UpdateLocalAvatar()

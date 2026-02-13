@@ -144,6 +144,8 @@ namespace MenuUI.Scripts.SoulHome {
             _furnituresSet = false;
             _loadFinished = false;
             _furnitureList = null;
+            _localPlayerId = null;
+            _localPlayerRig = null;
         }
 
         private IEnumerator TrackedCoroutine(IEnumerator coroutine)
