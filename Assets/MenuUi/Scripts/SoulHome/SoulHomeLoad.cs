@@ -39,7 +39,6 @@ namespace MenuUI.Scripts.SoulHome {
         [SerializeField] private Camera _towerCamera;
         [SerializeField] private ClanPlayerFetcher _clanPlayerFetcher;
         [SerializeField] private SpriteLibraryAsset _avatarSpriteLibrary;
-        [SerializeField] private AvatarPartsReference _avatarPartsReference;
 
         private List<Furniture> _furnitureList = null;
 
@@ -581,7 +580,7 @@ namespace MenuUI.Scripts.SoulHome {
                     continue;
                 }
 
-                AvatarPartSetter.AssignAvatarPart(resolver, resolverStruct, playerData, _avatarPartsReference, part);
+                AvatarPartSetter.AssignAvatarPart(resolver, resolverStruct, playerData, part);
 
                 SpriteRenderer headSpriteRenderer = rig.GetRenderer(AvatarPart.Head).GetComponent<SpriteRenderer>();
                 AvatarPartSetter.SetHeadColor(headSpriteRenderer, playerData);

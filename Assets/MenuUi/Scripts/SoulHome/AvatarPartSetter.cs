@@ -24,7 +24,7 @@ namespace MenuUI.Scripts.SoulHome
             public string _suffix;
         }
 
-        public static void AssignAvatarPart(SpriteResolver resolver, AvatarResolverStruct resolverStruct, PlayerData playerData, AvatarPartsReference avatarPartsReference, AvatarPart part)
+        public static void AssignAvatarPart(SpriteResolver resolver, AvatarResolverStruct resolverStruct, PlayerData playerData, AvatarPart part)
         {
             SpriteLibraryAsset library = resolver.spriteLibrary.spriteLibraryAsset;
             SpriteRenderer spriteRenderer = resolver.GetComponent<SpriteRenderer>();
@@ -51,7 +51,7 @@ namespace MenuUI.Scripts.SoulHome
             resolver.SetCategoryAndLabel(resolverStruct._category, label);
             resolver.ResolveSpriteToSpriteRenderer();
             SpriteRenderer renderer = resolver.GetComponent<SpriteRenderer>();
-            SetMask(renderer, label, playerData, avatarPartsReference, part);
+            SetMask(renderer, label, playerData, part);
         }
 
         private static string ResolveLabel(AvatarResolverStruct resolverStruct, PlayerData playerData)
@@ -78,7 +78,7 @@ namespace MenuUI.Scripts.SoulHome
             return idString + resolverStruct._suffix;
         }
 
-        private static void SetMask(SpriteRenderer renderer, string label, PlayerData playerData, AvatarPartsReference partsReference, AvatarPart part)
+        private static void SetMask(SpriteRenderer renderer, string label, PlayerData playerData, AvatarPart part)
         {
             if (renderer == null)
             {
@@ -110,7 +110,7 @@ namespace MenuUI.Scripts.SoulHome
             Color selectedColor = GetSelectedColor(playerData, part);
             s_materialPropertyBlock.SetColor("_SelectedColor", selectedColor);
 
-            AvatarPartInfo partInfo = partsReference.GetAvatarPartById(label.Substring(0, 7));
+            AvatarPartInfo partInfo = AvatarPartsReference.Instance.GetAvatarPartById(label.Substring(0, 7));
             Texture2D mask;
 
             // Nose is always skin color
