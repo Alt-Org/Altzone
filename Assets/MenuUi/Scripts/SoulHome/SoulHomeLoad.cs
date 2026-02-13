@@ -557,9 +557,7 @@ namespace MenuUI.Scripts.SoulHome {
             yield return new WaitUntil(() => _furnituresSet);
             yield return new WaitUntil(() => _clanPlayerFetcher.PlayersLoaded);
 
-            int spawnAmount = Mathf.Min(_roomAmount, _clanPlayerFetcher.Players.Count);
-
-            for (int i = 0; i < spawnAmount; i++)
+            for (int i = 0; i < _roomAmount; i++)
             {
                 GameObject avatarParent = Instantiate(_avatarPlaceholder, _roomPositions.transform.GetChild(i).GetChild(0));
                 GameObject avatar = avatarParent.transform.GetChild(0).gameObject;
