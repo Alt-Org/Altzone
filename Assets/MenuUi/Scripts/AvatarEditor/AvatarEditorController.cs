@@ -137,7 +137,6 @@ namespace MenuUi.Scripts.AvatarEditor
 
             AvatarDesignLoader.Instance.InvokeOnAvatarDesignUpdate();
             UpdateProfileMenuCharacterVisuals(savePlayerData.AvatarData);
-            AvatarEvents.RaiseAvatarSaved(savePlayerData);
 
             GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
