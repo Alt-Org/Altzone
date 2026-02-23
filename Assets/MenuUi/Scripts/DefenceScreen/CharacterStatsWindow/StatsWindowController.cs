@@ -48,7 +48,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private void Awake()
         {
             _swipe = FindObjectOfType<SwipeUI>();
-            _swipe.OnCurrentPageChanged += ClosePopup;
+            if(_swipe)_swipe.OnCurrentPageChanged += ClosePopup;
 
             _statsPanel.SetActive(false);
         }
@@ -60,7 +60,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         private void OnDestroy()
         {
-            _swipe.OnCurrentPageChanged -= ClosePopup;
+            if (_swipe) _swipe.OnCurrentPageChanged -= ClosePopup;
         }
 
         public void OpenPopup(CharacterID characterId)
@@ -275,7 +275,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>Current character's special ability as string.</returns>
         public string GetCurrentCharacterSpecialAbilityDescription()
         {
-            return "Hahmon erikoistaidon kuvaus";
+            var info = PlayerCharacterPrototypes.GetCharacter(((int)_characterId).ToString());
+            if (info == null)
+            {
+                return null;
+            }
+            else
+            {
+                return info.AbilityDescription;
+            }
         }
 
 

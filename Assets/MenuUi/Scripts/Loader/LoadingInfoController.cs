@@ -8,6 +8,7 @@ public enum LogInStatus
 {
     None,
     LogIn,
+    VersionCheck,
     CheckSettingsData,
     FetchPlayerData,
     FetchClanData,
@@ -51,12 +52,6 @@ namespace MenuUi.Scripts.Loader
         public delegate void MoveToMainEvent();
         public event MoveToMainEvent OnMoveToMain;
 
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
         private void OnEnable()
         {
             _moveToMainButton.onClick.AddListener(MoveToMain);
@@ -78,6 +73,9 @@ namespace MenuUi.Scripts.Loader
                     {
                         case LogInStatus.LogIn:
                             _infoText.text = "Logging in";
+                            break;
+                        case LogInStatus.VersionCheck:
+                            _infoText.text = "Checking version data";
                             break;
                         case LogInStatus.FetchPlayerData:
                             _infoText.text = "Fetching player info";
@@ -104,6 +102,9 @@ namespace MenuUi.Scripts.Loader
                     {
                         case LogInStatus.LogIn:
                             _infoText.text = "Kirjaudutaan sisään";
+                            break;
+                        case LogInStatus.VersionCheck:
+                            _infoText.text = "Tarkistetaan versio dataa";
                             break;
                         case LogInStatus.FetchPlayerData:
                             _infoText.text = "Haetaan pelaajan tietoja";

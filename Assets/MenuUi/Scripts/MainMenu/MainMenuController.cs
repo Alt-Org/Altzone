@@ -58,9 +58,12 @@ namespace MenuUi.Scripts.MainMenu
         private void Start()
         {
             var windowManager = WindowManager.Get();
-            _layoutElementsGameObjects = GameObject.FindGameObjectsWithTag("MainMenuWindow");
-            _scrollRectCanvas = GameObject.FindGameObjectWithTag("ScrollRectCanvas").GetComponent<RectTransform>();
-            SetMainMenuLayoutDimensions();
+            if (_swipe)
+            {
+                _layoutElementsGameObjects = GameObject.FindGameObjectsWithTag("MainMenuWindow");
+                _scrollRectCanvas = GameObject.FindGameObjectWithTag("ScrollRectCanvas").GetComponent<RectTransform>();
+                SetMainMenuLayoutDimensions();
+            }
             AudioManager.Instance.UpdateMaxVolume();
         }
 
@@ -103,7 +106,7 @@ namespace MenuUi.Scripts.MainMenu
         /// </remarks>
         private IEnumerator CheckWindowSize() //Tällä saa ikkunan koon.
         {
-            while (true)
+            while (_swipe)
             {
                 if (lastWidth != Screen.width || lastHeight != Screen.height)
                 {

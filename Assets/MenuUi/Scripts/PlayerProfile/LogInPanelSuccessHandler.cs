@@ -46,7 +46,14 @@ namespace MenuUi.Scripts.Login
 
         public void LogInReturn()
         {
-            OnLogInPanelReturn?.Invoke(true);
+            if (SceneManager.GetActiveScene().buildIndex == 0)
+            {
+                OnLogInPanelReturn?.Invoke(true);
+            }
+            else if (SceneManager.GetActiveScene().buildIndex == 2)
+            {
+                WindowManager.Get().GoBack();
+            }
         }
     }
 }

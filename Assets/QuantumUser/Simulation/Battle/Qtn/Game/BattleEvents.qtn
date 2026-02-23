@@ -134,6 +134,12 @@ synced event BattleGiveUpStateChange
     BattleGiveUpStateUpdate StateUpdate;
 }
 
+synced event BattleStoneCharacterPlayHitAnimation
+{
+    BattleTeamNumber Team;
+    BattleEmotionState Emotion;
+}
+
 //} Gameplay events
 
 //{ Debug events

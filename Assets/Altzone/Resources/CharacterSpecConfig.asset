@@ -47,6 +47,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: dca211d513746a945a35c4dac1a3c107, type: 2}
   - {fileID: 11400000, guid: 174a6548ed4e4b345bd9b57bb56eec2e, type: 2}
   - {fileID: 11400000, guid: b59b37809cb27494b952866805079aab, type: 2}
+  - {fileID: 11400000, guid: aa9ca9aac80a3864ba99fef659a99803, type: 2}
   - {fileID: 11400000, guid: c95cf26f2d12d1548af2f153194060c5, type: 2}
   - {fileID: 11400000, guid: ce4260c09a4dcf041a3d96666ea0d88d, type: 2}
   - {fileID: 11400000, guid: 9e4f2c82209792540a04df0d0682d453, type: 2}
@@ -59,26 +60,46 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 61aa1c199ea86004498f4aa144523849, type: 2}
   - {fileID: 11400000, guid: 0a7d05df1b1d96445bfc87e4932b1060, type: 2}
   - {fileID: 11400000, guid: 2d93b36857ea1d546bb46387a0648efc, type: 2}
-  _liveCharactersText: "approved characters 25 (configured 33)\r\n0:None:Test, BattlePlayerTest_0,
+  _liveCharactersText: "approved characters 44 (configured 44)\r\n0:None:Testi, BattlePlayerTest_0,
     Id: [14CFFF12A410658C], null\r\n100:Desensitizer:TestiTunnoton, BattlePlayerTest_0,
     null, null\r\n101:Desensitizer:Vihapuhe, Defencegallery101, Id: [153A8F04FEC763E9],
-    null\r\n103:Desensitizer:PTSD, Defencegallery103, Id: [12BEC24C5998AF86], null\r\n200:Trickster:TestiH\xE4m\xE4\xE4j\xE4,
-    BattlePlayerTest_0, null, null\r\n201:Trickster:Vitsinv\xE4\xE4ntely, Defencegallery201,
-    Id: [14013A7B9D4E2197], null\r\n202:Trickster:Jekkuilija, Defencegallery202,
+    null\r\n102:Desensitizer:Ylikunto, Defencegallery102, Id: [12F0DD4D04C69132],
+    null\r\n103:Desensitizer:Traumaattisuus, Defencegallery103, Id: [12BEC24C5998AF86],
+    null\r\n104:Desensitizer:Kiusaaminen, Defencegallery104, Id: [129B0D5C4C326B16],
+    null\r\n105:Desensitizer:Ylimielisyys, Defencegallery105, Id: [148772A38A7EE61B],
+    null\r\n106:Desensitizer:Masennus, Defencegallery106, Id: [12C371A254E58050],
+    null\r\n200:Trickster:TestiH\xE4m\xE4\xE4j\xE4, BattlePlayerTest_0, null, null\r\n201:Trickster:Huumori,
+    Defencegallery201, Id: [14013A7B9D4E2197], null\r\n202:Trickster:Ilveily, Defencegallery202,
     Id: [15494EFBAEEF714F], null\r\n203:Trickster:Huijaaminen, Defencegallery203,
     Id: [136D9B863C288D0D], null\r\n204:Trickster:Vietteleminen, Defencegallery204,
     Id: [11C110485B00C2E3], null\r\n300:Obedient:TestiTottelija, BattlePlayerTest_0,
-    null, null\r\n301:Obedient:Tapauskovaisuus, Defencegallery301, Id: [1289FFEC3232C0B3],
-    null\r\n400:Projector:TestiPeilaaja, BattlePlayerTest_0, null, null\r\n401:Projector:Provosointi,
-    Defencegallery401, Id: [11DA3543B934A441], null\r\n403:Projector:Projisointi,
-    Defencegallery403, Id: [14328BD955ED7A29], null\r\n500:Retroflector:TestiTorjuja,
+    null, null\r\n301:Obedient:Tapauskovaisuus, Defencegallery301, Id: [1435F3C1573C47A3],
+    null\r\n302:Obedient:Miellytt\xE4minen, Defencegallery302, Id: [11B2FAF71DA41736],
+    null\r\n303:Obedient:Lakihenkisyys, Defencegallery303, Id: [151C6798282F924B],
+    null\r\n304:Obedient:Muodinorja, Defencegallery304, Id: [13AB6030DB502B76], null\r\n305:Obedient:\xC4itisidonnaisuus,
+    Defencegallery305, Id: [12DB3C1EA6CCAE8D], null\r\n306:Obedient:Taikauskoinen,
+    Defencegallery306, Id: [12DB3C1EA6CCAE8D], null\r\n400:Projector:TestiPeilaaja,
+    BattlePlayerTest_0, Id: [14D65D4C2061BDF9], null\r\n401:Projector:Provosointi,
+    Defencegallery401, Id: [13B9D7DFAC460378], null\r\n402:Projector:Syyllist\xE4minen,
+    Defencegallery402, Id: [1214172F925D4097], null\r\n403:Projector:Projisointi,
+    Defencegallery403, Id: [130EFEFAB82316E6], null\r\n404:Projector:Harhaisuus,
+    Defencegallery404, Id: [13EA91E952CA1FBA], null\r\n500:Retroflector:TestiTorjuja,
     BattlePlayerTest_0, null, null\r\n501:Retroflector:Ahmiminen, Defencegallery501,
     Id: [12670A198E48CB57], null\r\n502:Retroflector:Alkoholismi, Defencegallery502,
-    Id: [1393C7850333178A], null\r\n600:Confluent:TestiSulautuja, BattlePlayerTest_0,
-    null, null\r\n601:Confluent:Sielunsisaruus, Defencegallery601, Id: [1444235E0B773522],
-    null\r\n602:Confluent:Pihkaantuminen, Defencegallery602, Id: [137763BCE47F63AA],
-    null\r\n603:Confluent:Valveenv\xE4lttely, Defencegallery603, Id: [13ED5EB3D752F39B],
-    null\r\n700:Intellectualizer:Testi\xC4lykk\xF6, BattlePlayerTest_0, null, null\r\n701:Intellectualizer:Viisastelu,
-    Defencegallery701, Id: [11CB0E0ABFB32614], null\r\n702:Intellectualizer:Kapitalismi,
-    Defencegallery702, Id: [139AA6A65917C9D1], null\r\n703:Intellectualizer:OCD,
-    Defencegallery703, Id: [14DA192267154453], null\r\n"
+    Id: [1393C7850333178A], null\r\n503:Retroflector:Anoreksia, Defencegallery503,
+    Id: [14FA4DBD70A85FD3], null\r\n504:Retroflector:P\xF6ssyttelij\xE4, Defencegallery504,
+    Id: [149787D9A74D5413], null\r\n505:Retroflector:Marttyyrius, Defencegallery505,
+    Id: [12FF45C1C74D7EC9], null\r\n506:Retroflector:Itsetuhoisuus, Defencegallery506,
+    Id: [126AA8BA6CE28E62], null\r\n600:Confluent:TestiConfluent, BattlePlayerTest_0,
+    null, null\r\n601:Confluent:Symbioosi, Defencegallery601, Id: [1444235E0B773522],
+    null\r\n602:Confluent:Ihastuminen, Defencegallery602, Id: [137763BCE47F63AA],
+    null\r\n603:Confluent:V\xE4syminen, Defencegallery603, Id: [13ED5EB3D752F39B],
+    null\r\n604:Confluent:Heimoidentiteetti, Defencegallery604, Id: [12F5CB5575FDB605],
+    null\r\n605:Confluent:Jengikulttuuri, Defencegallery605, Id: [131A5AF4835A5B49],
+    null\r\n700:Intellectualizer:Testi\xC4lyllist\xE4j\xE4, BattlePlayerTest_0, null,
+    null\r\n701:Intellectualizer:Viisastelu, Defencegallery701, Id: [11CB0E0ABFB32614],
+    null\r\n702:Intellectualizer:Kapitalismi, Defencegallery702, Id: [139AA6A65917C9D1],
+    null\r\n703:Intellectualizer:Pakko-oireisuus, Defencegallery703, Id: [14DA192267154453],
+    null\r\n704:Intellectualizer:Monimutkaisuus, Defencegallery704, Id: [12B0DA32B13F2403],
+    null\r\n705:Intellectualizer:Pilkunviilaus, Defencegallery705, Id: [136B5E6D4A26A15A],
+    null\r\n"

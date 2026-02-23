@@ -18,6 +18,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField, Range(0f, 0.3f)] private float _spacing = 0.05f;
         [SerializeField, Range(0f, 0.2f)] private float _verticalPadding = 0.05f;
         [SerializeField] private Color _backgroundColor = new(0.5f, 0.5f, 0.5f, 0.5f);
+        [SerializeField] private Sprite _skinColorSelectionCategoryImage;
 
         private List<AvatarPartInfo> _avatarPartInfo;
         private List<string> _allCategoryIds;
@@ -97,6 +98,9 @@ namespace MenuUi.Scripts.AvatarEditor
                     _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
                     AddCategoryCell(categoryId, _avatarPartInfo[0].IconImage, buttonFunction);
                 }
+
+                // For skin color selection
+                AddCategoryCell("", _skinColorSelectionCategoryImage, buttonFunction);
             }
         }
 
