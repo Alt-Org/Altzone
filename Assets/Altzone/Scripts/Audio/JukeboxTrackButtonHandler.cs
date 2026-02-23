@@ -91,7 +91,8 @@ public class JukeboxTrackButtonHandler : SmartListItem, IBeginDragHandler, IEndD
 
     public void PreviewButtonClicked()
     {
-        if (!_buttonInputCanceled && _musicTrack != null) OnPreviewPressed.Invoke(this, JukeboxManager.PreviewLocationType.Main);
+        if (!_buttonInputCanceled && _musicTrack != null && OnPreviewPressed != null)
+            OnPreviewPressed.Invoke(this, JukeboxManager.PreviewLocationType.Main);
 
         _buttonInputCanceled = false;
     }
