@@ -107,12 +107,16 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
             case AvatarPiece.Nose:
                 SetImage(_mainNose, image);
                 //SetMaskImage(_mainNose, mask, partColor);
-                Texture2D noseMask = AvatarMaskUtility.GetSkinColorMask(image.texture);
-                EnsureMaterial(_mainNose);
-                _mainNose.material.SetTexture("_MaskTex", noseMask);
-                _mainNose.material.SetColor("_SkinColor", _skinColor);
-                _mainNose.material.SetColor("_SelectedColor", _skinColor);
-                _mainNose.material.SetColor("_ClassColor", _classColor);
+                if (image != null)
+                {
+                    Texture2D noseMask = AvatarMaskUtility.GetSkinColorMask(image.texture);
+                    EnsureMaterial(_mainNose);
+                    _mainNose.material.SetTexture("_MaskTex", noseMask);
+                    _mainNose.material.SetColor("_SkinColor", _skinColor);
+                    _mainNose.material.SetColor("_SelectedColor", _skinColor);
+                    _mainNose.material.SetColor("_ClassColor", _classColor);
+                }
+                
                 break;
 
             case AvatarPiece.Mouth:
