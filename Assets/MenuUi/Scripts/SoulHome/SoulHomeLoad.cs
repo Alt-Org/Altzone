@@ -311,7 +311,8 @@ namespace MenuUI.Scripts.SoulHome {
                 roomObject.GetComponent<RoomData>().InitializeSoulHomeRoom(room,_soulHomeController, _towerCamera, (_soulHomeRooms.Room.Count <= i+1));
                 if (i == 0)
                 {
-                    _towerController.RoomBounds = roomObject.GetComponent<BoxCollider2D>();
+                    BoxCollider2D collider = roomObject.GetComponent<BoxCollider2D>();
+                    _towerController.RoomBounds = collider.bounds;
                 }
                 i++;
             }
