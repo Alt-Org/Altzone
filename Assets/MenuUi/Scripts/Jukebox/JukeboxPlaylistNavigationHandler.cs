@@ -1,10 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Audio;
 using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class JukeboxPlaylistNavigationHandler : MonoBehaviour
 {
@@ -46,14 +44,12 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
 
     private List<PersonalizedMusicTrack> _personalizedMusicTracks = new();
 
-    public delegate void InfoPressed(MusicTrack musicTrack, JukeboxManager.MusicTrackFavoriteType likeType);
-    public event InfoPressed OnInfoPressed;
+    // public delegate void InfoPressed(MusicTrack musicTrack, JukeboxManager.MusicTrackFavoriteType likeType);
+    // public event InfoPressed OnInfoPressed;
 
     private void Start()
     {
-        //CreateButtonHandlersChunk();
         FillSelectionButtonList();
-
         _smartList.OnNewDataRequested += UpdateButtonHandlerData;
 
         #region Filters
@@ -77,44 +73,6 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
 
     }
 
-    // #region Chunk
-    // private void CreateButtonHandlersChunk()
-    // {
-    //     Chunk<JukeboxTrackButtonHandler> tracksChunk = new Chunk<JukeboxTrackButtonHandler>();
-    //
-    //     for (int i = 0; i < _trackChunkSize; i++)
-    //     {
-    //         GameObject jukeboxTrackButton = Instantiate(_jukeboxButtonPrefab, _tracksListContent);
-    //         JukeboxTrackButtonHandler buttonHandler = jukeboxTrackButton.GetComponent<JukeboxTrackButtonHandler>();
-    //         //buttonHandler.OnTrackPressed += JukeboxManager.Instance.PlayPlaylist;
-    //         buttonHandler.OnTrackPressed += JukeboxManager.Instance.QueueTrack;
-    //         buttonHandler.OnPreviewPressed += JukeboxManager.Instance.PlayPreview;
-    //         buttonHandler.OnInfoPressed += OpenMusicTrackInfoPopup;
-    //         buttonHandler.Clear();
-    //         tracksChunk.Add(buttonHandler);
-    //     }
-    //
-    //     tracksChunk.AmountInUse = 0;
-    //     _buttonHandlerChunks.Add(tracksChunk);
-    // }
-    //
-    // private JukeboxTrackButtonHandler GetFreeJukeboxTrackButtonHandler()
-    // {
-    //     _buttonHandlerPoolPointer++;
-    //
-    //     if (_buttonHandlerPoolPointer >= _trackChunkSize)
-    //     {
-    //         CreateButtonHandlersChunk();
-    //         _buttonHandlerChunkPointer++;
-    //         _buttonHandlerPoolPointer = 0;
-    //     }
-    //
-    //     _buttonHandlerChunks[_buttonHandlerChunkPointer].AmountInUse++;
-    //
-    //     return _buttonHandlerChunks[_buttonHandlerChunkPointer].Pool[_buttonHandlerPoolPointer];
-    // }
-    // #endregion
-
     #region Playlist
 
     //private void SetPlaylist(Playlist playlist)
@@ -136,9 +94,7 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
 
     private void FillSelectionButtonList()
     {
-        ///*if (string.IsNullOrEmpty(_currentPlaylistName))*/ ClearButtonHandlers();
         List<MusicTrack> musicTracks = AudioManager.Instance.GetMusicList("Jukebox"); //TODO: Replace with what tracks the clan actually owns when possible.
-
 
         foreach (MusicTrack musicTrack in musicTracks)
         {
@@ -148,49 +104,11 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
         }
 
         _smartList.Setup<PersonalizedMusicTrack>(_personalizedMusicTracks);
-
-        //for (int i = 0; i < musicTracks.Count; i++) GetFreeJukeboxTrackButtonHandler().SetTrack(musicTracks[i], i, JukeboxManager.Instance.GetTrackFavoriteType(musicTracks[i]));
-
-        // for (int i = 0; i < _buttonHandlerChunks.Count; i++)
-        // {
-        //     Chunk<bool> chunk = new();
-        //
-        //     for (int j = 0; j < _trackChunkSize; j++) chunk.Pool.Add(false);
-        //
-        //     _hiddenTrackHandlers.Add(chunk);
-        // }
     }
-    //
-    // private void ClearButtonHandlers()
-    // {
-    //     foreach (var chunk in _buttonHandlerChunks)
-    //     {
-    //         chunk.AmountInUse = 0;
-    //
-    //         foreach (var handler in chunk.Pool)
-    //             handler.Clear();
-    //     }
-    //
-    //     foreach (var chunk in _hiddenTrackHandlers)
-    //     {
-    //         chunk.AmountInUse = 0;
-    //
-    //         for (int i = 0; i < chunk.Pool.Count; i++)
-    //             chunk.Pool[i] = false;
-    //     }
-    //
-    //     _buttonHandlerChunkPointer = 0;
-    //     _buttonHandlerPoolPointer = 0;
-    // }
 
     private void UpdateButtonHandlerData(int targetIndex)
     {
         _smartList.UpdateContent<PersonalizedMusicTrack>(targetIndex, _personalizedMusicTracks[targetIndex]);
-    }
-
-    private void OpenMusicTrackInfoPopup(MusicTrack musicTrack, JukeboxManager.MusicTrackFavoriteType likeType)
-    {
-        OnInfoPressed.Invoke(musicTrack, likeType);
     }
 
     #region Filtering

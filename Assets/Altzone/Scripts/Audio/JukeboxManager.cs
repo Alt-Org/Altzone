@@ -189,6 +189,9 @@ namespace Altzone.Scripts.Audio
 
         public delegate void ShowTextPopup(string text);
         public event ShowTextPopup OnShowTextPopup;
+
+        public delegate void MusicTrackInfoPressed(MusicTrack musicTrack, JukeboxManager.MusicTrackFavoriteType likeType);
+        public event MusicTrackInfoPressed OnMusicTrackInfoPressed;
         #endregion
 
         private void Awake()
@@ -1450,6 +1453,11 @@ namespace Altzone.Scripts.Audio
         //    // PlayerId is used to see witch track can be removed by the local user in clan playlist.
         //    return $"{_currentPlayerData.Id}_{musicTrackId}_{_localTrackId}"; // PlayerId _ MusicTrackName _ LocalMusicTrackId
         //}
+
+        public void InvokeOnMusicTrackInfoPressed(MusicTrack musicTrack, MusicTrackFavoriteType likeType)
+        {
+            OnMusicTrackInfoPressed?.Invoke(musicTrack, likeType);
+        }
 
         private class ServerCompareData
         {

@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Audio;
 using Altzone.Scripts.ReferenceSheets;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using MenuUI.Scripts;
@@ -103,7 +101,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         _soundMuteButton.onClick.AddListener(() => MuteJukeboxToggle());
         _addMusicInfoButton.onClick.AddListener(() => { _addMusicInfoPopup.SetActive(true); });
 
-        _playlistNavigationHandler.OnInfoPressed += OpenMusicTrackInfoPopup;
+        JukeboxManager.Instance.OnMusicTrackInfoPressed += OpenMusicTrackInfoPopup;
         _mainDiskHandler.OnMultiUseButtonPressed += UnmuteOnlyButton;
         JukeboxManager.Instance.OnPreviewStart += JukeboxPreviewPlaybackStart;
         JukeboxManager.Instance.OnPreviewEnd += JukeboxPreviewPlaybackEnd;

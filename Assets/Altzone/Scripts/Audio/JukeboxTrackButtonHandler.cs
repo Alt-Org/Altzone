@@ -1,8 +1,6 @@
-using System;
 using System.Collections;
 using Altzone.Scripts.Audio;
 using Altzone.Scripts.ReferenceSheets;
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -36,9 +34,6 @@ public class JukeboxTrackButtonHandler : SmartListItem, IBeginDragHandler, IEndD
     public delegate bool PreviewPressed(JukeboxTrackButtonHandler buttonHandler, JukeboxManager.PreviewLocationType type, float previewDuration = -1);
     public event PreviewPressed OnPreviewPressed;
 
-    public delegate void InfoPressed(MusicTrack musicTrack, JukeboxManager.MusicTrackFavoriteType likeType);
-    public event InfoPressed OnInfoPressed;
-
     private void Awake()
     {
         _selfRectTransform = GetComponent<RectTransform>();
@@ -47,6 +42,12 @@ public class JukeboxTrackButtonHandler : SmartListItem, IBeginDragHandler, IEndD
         _previewButton.onClick.AddListener(() => PreviewButtonClicked());
 
         if (_infoButton != null) _infoButton.onClick.AddListener(() => InfoButtonClicked());
+    }
+
+    private void Start()
+    {
+        OnTrackPressed += JukeboxManager.Instance.QueueTrack;
+        OnPreviewPressed += JukeboxManager.Instance.PlayPreview;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -99,7 +100,8 @@ public class JukeboxTrackButtonHandler : SmartListItem, IBeginDragHandler, IEndD
 
     public void InfoButtonClicked()
     {
-        if (!_buttonInputCanceled && _musicTrack != null) OnInfoPressed.Invoke(_musicTrack, _favoriteButtonHandler.MusicTrackLikeType);
+        if (!_buttonInputCanceled && _musicTrack != null)
+            JukeboxManager.Instance.InvokeOnMusicTrackInfoPressed(_musicTrack, _favoriteButtonHandler.MusicTrackLikeType);
 
         _buttonInputCanceled = false;
     }
@@ -119,20 +121,7 @@ public class JukeboxTrackButtonHandler : SmartListItem, IBeginDragHandler, IEndD
         _favoriteButtonHandler?.Setup(personalizedMusicTrack.FavoriteType, personalizedMusicTrack.Track.Id);
     }
 
-    // public void SetData(MusicTrack musicTrack, int trackLinearIndex, JukeboxManager.MusicTrackFavoriteType likeType)
-    // {
-    //     _musicTrack = musicTrack;
-    //     _trackNameAutoScroll.SetContent(musicTrack.Name);
-    //     _trackCreditsNamesAutoScroll.SetContent(musicTrack.JukeboxInfo.GetArtistNames());
-    //     _trackImage.sprite = musicTrack.JukeboxInfo.Disk;
-    //     gameObject.SetActive(true);
-    //
-    //     if (_favoriteButtonHandler != null) _favoriteButtonHandler.Setup(likeType, musicTrack.Id);
-    // }
-
     public override void ClearData() { _musicTrack = null; gameObject.SetActive(false); }
-
-    //public override void SetVisibility(bool value) { gameObject.SetActive(value); }
 
     public void StartDiskSpin() { StopDiskSpin(); _diskSpinCoroutine = StartCoroutine(SpinDisk()); }
 
