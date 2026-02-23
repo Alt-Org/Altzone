@@ -6630,6 +6630,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3821786268536363426, guid: 2b466a82077db8746ac58e93b935af12,
+        type: 3}
+      propertyPath: _jukeboxSoulhomeHandler
+      value: 
+      objectReference: {fileID: 1612773304301820197}
     - target: {fileID: 3886924246607160495, guid: 2b466a82077db8746ac58e93b935af12,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -6669,11 +6674,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4983552070814566051, guid: 2b466a82077db8746ac58e93b935af12,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5066002122027081596, guid: 2b466a82077db8746ac58e93b935af12,
         type: 3}
@@ -6799,11 +6799,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSize
       value: 32
-      objectReference: {fileID: 0}
-    - target: {fileID: 7216358446363405444, guid: 2b466a82077db8746ac58e93b935af12,
-        type: 3}
-      propertyPath: m_fontSize
-      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 7473087894793389817, guid: 2b466a82077db8746ac58e93b935af12,
         type: 3}
@@ -7372,11 +7367,6 @@ PrefabInstance:
       propertyPath: m_fontSize
       value: 16
       objectReference: {fileID: 0}
-    - target: {fileID: 7216358446363405444, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
-        type: 3}
-      propertyPath: m_fontSize
-      value: 28
-      objectReference: {fileID: 0}
     - target: {fileID: 7473087894793389817, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -7407,6 +7397,16 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0.08437205
       objectReference: {fileID: 0}
+    - target: {fileID: 7990477652683786473, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1108760430319033898}
+    - target: {fileID: 8119832606017098757, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
+        type: 3}
+      propertyPath: _jukeboxSoulhomeHandler
+      value: 
+      objectReference: {fileID: 1612773304301820197}
     - target: {fileID: 8152504311748063516, guid: 9f8fd4e6b25edd844b82a9e4e439964b,
         type: 3}
       propertyPath: m_SizeDelta.y
