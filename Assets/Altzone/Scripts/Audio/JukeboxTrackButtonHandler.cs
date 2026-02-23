@@ -18,7 +18,7 @@ public class JukeboxTrackButtonHandler : SmartListItem, IBeginDragHandler, IEndD
     [SerializeField] private Button _previewButton;
     [SerializeField] private Button _infoButton;
     [Space]
-    [SerializeField] private float _buttonPressCancelTime = 0.25f;
+    [SerializeField] private float _buttonPressCancelTime = 0.075f;
 
     private bool _buttonInputCanceled = false;
 
