@@ -35,7 +35,7 @@ synced event BattlePlayerCharacterViewInit
 {
     EntityRef ERef;
     BattlePlayerSlot Slot;
-    int CharacterId;
+    BattlePlayerCharacterID CharacterId;
     BattlePlayerCharacterClass Class;
     FP ModelScale;
 }

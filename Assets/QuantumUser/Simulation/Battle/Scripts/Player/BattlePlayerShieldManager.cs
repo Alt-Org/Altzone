@@ -63,7 +63,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerCharacterNumber">The character number of the specified character.</param>
         /// <param name="playerCharacterId">The ID of the specified character.</param>
         /// <param name="playerCharacterEntity">EntityRef to the speficied character's entity.</param>
-        public static int CreateShields(Frame f, BattlePlayerSlot playerSlot, int playerCharacterNumber, int playerCharacterId, BattlePlayerEntityRef playerCharacterEntity)
+        public static int CreateShields(Frame f, BattlePlayerSlot playerSlot, int playerCharacterNumber, BattlePlayerCharacterID playerCharacterId, BattlePlayerEntityRef playerCharacterEntity)
         {
             s_debugLogger.LogFormat(f, "({0}) Creating shields for character ID {1}", playerSlot, playerCharacterId);
 

@@ -1517,8 +1517,8 @@ namespace Altzone.Scripts.Lobby
 
                 _player.Characters[i] = new BattleCharacterBase()
                 {
-                    Id            = (int)character.Id,
-                    Class         = (int)character.CharacterClassType,
+                    Id            = (BattlePlayerCharacterID)character.Id,
+                    Class         = (BattlePlayerCharacterClass)character.CharacterClassType,
                     Stats         = stats,
                 };
             }

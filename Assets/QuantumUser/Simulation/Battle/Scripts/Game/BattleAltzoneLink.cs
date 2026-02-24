@@ -18,10 +18,10 @@ namespace Battle.QSimulation.Game
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static AssetRef<EntityPrototype> GetCharacterPrototype(int id) => s_getCharacterPrototypeFnRef(id);
+        public static AssetRef<EntityPrototype> GetCharacterPrototype(BattlePlayerCharacterID id) => s_getCharacterPrototypeFnRef((int)id);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static AssetRef<EntityPrototype>[] GetShieldPrototypes(int id) => s_getShieldPrototypesFnRef(id);
+        public static AssetRef<EntityPrototype>[] GetShieldPrototypes(BattlePlayerCharacterID id) => s_getShieldPrototypesFnRef((int)id);
 
         private static Func<int, AssetRef<EntityPrototype>> s_getCharacterPrototypeFnRef;
         private static Func<int, AssetRef<EntityPrototype>[]> s_getShieldPrototypesFnRef;

@@ -1,7 +1,9 @@
+//{ PlayerEntity
 struct BattlePlayerEntityRef
 {
     EntityRef ERef;
 }
+//} PlayerEntity
 
 //{ PlayerData
 
@@ -10,7 +12,7 @@ component BattlePlayerDataQComponent
     PlayerRef PlayerRef;
     BattlePlayerSlot Slot;
     BattleTeamNumber TeamNumber;
-    int CharacterId;
+    BattlePlayerCharacterID CharacterId;
     BattlePlayerCharacterClass CharacterClass;
 
     BattlePlayerStats Stats;
@@ -51,5 +53,4 @@ component BattlePlayerDataTemplateQComponent
 
     bool DisableRotation;
 }
-
 //} PlayerDataTemplate

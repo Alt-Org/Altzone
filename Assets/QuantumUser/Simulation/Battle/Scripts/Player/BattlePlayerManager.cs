@@ -226,7 +226,6 @@ namespace Battle.QSimulation.Player
                 // create playerEntity for each character
                 {
                     //{ player temp variables
-                    int                                       playerCharacterId;
                     FP   playerRotationBase;
                     int  playerGridExtendTop;
                     int  playerGridExtendBottom;
@@ -266,7 +265,7 @@ namespace Battle.QSimulation.Player
                     for (int playerCharacterNumber = 0; playerCharacterNumber < playerCharacterEntityArray.Length; playerCharacterNumber++)
                     {
                         // set id and class
-                        playerCharacterId =                             battleBaseCharacters[playerCharacterNumber].Id;
+                        BattlePlayerCharacterID playerCharacterId = battleBaseCharacters[playerCharacterNumber].Id;
                         BattlePlayerCharacterClass playerClass    = (BattlePlayerCharacterClass)battleBaseCharacters[playerCharacterNumber].Class;
 
                         s_debugLogger.LogFormat(f, "({0}) Creating character, number {1}\n" +
@@ -360,6 +359,7 @@ namespace Battle.QSimulation.Player
                         {
                             playerHitboxHeight = Mathf.Max(playerHitboxColliderTemplate.Position.Y, playerHitboxHeight);
 
+                            FPVector2 playerHitboxExtents = new FPVector2(
                                 (FP)playerHitboxColliderTemplate.Size.X * BattleGridManager.GridScaleFactor * FP._0_50,
                                 (FP)playerHitboxColliderTemplate.Size.Y * BattleGridManager.GridScaleFactor * FP._0_50
                             );

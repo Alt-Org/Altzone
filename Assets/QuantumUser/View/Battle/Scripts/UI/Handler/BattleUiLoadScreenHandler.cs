@@ -18,6 +18,7 @@ using MenuUi.Scripts.Lobby.SelectedCharacters;
 
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
+using System.Linq;
 
 namespace Battle.View.UI
 {
@@ -56,7 +57,7 @@ namespace Battle.View.UI
         /// <param name="slot">The slot of the player.</param>
         /// <param name="characterIds">An array of the character IDs of the players selected characters.</param>
         /// <param name="characterClasses">An array of the character classes of the players selected characters.</param>
-        public void PlayerConnected(BattlePlayerSlot slot, int[] characterIds, int[] characterClasses)
+        public void PlayerConnected(BattlePlayerSlot slot, BattlePlayerCharacterID[] characterIds, BattlePlayerCharacterClass[] characterClasses)
         {
             int slotIndex = slot switch
             {
@@ -79,7 +80,7 @@ namespace Battle.View.UI
             if (slotIndex == -1 || frameIndex == -1) return;
 
             _characterSlotControllers[slotIndex].gameObject.SetActive(true);
-            _characterSlotControllers[slotIndex].SetCharacters(characterIds);
+            _characterSlotControllers[slotIndex].SetCharacters(characterIds.Cast<int>().ToArray());
 
             for (int i = 0; i < characterClasses.Length; i++)
             {

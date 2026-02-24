@@ -41,7 +41,7 @@ namespace Battle.View.Player
         /// <param name="entityRef">The entity reference for this player character.</param>
         /// <param name="slot">The player slot associated with this character.</param>
         /// <param name="characterId">The ID of the character being initialized.</param>
-        public void OnViewInit(BattlePlayerCharacterViewController parent, EntityRef entityRef, BattlePlayerSlot slot, int characterId)
+        public void OnViewInit(BattlePlayerCharacterViewController parent, EntityRef entityRef, BattlePlayerSlot slot, BattlePlayerCharacterID characterId)
         {
             _parent = parent;
             _entityRef = entityRef;
@@ -76,6 +76,6 @@ namespace Battle.View.Player
         ///
         /// <param name="slot">The player slot associated with this character.</param>
         /// <param name="characterId">The ID of the character being initialized.</param>
-        protected virtual void OnViewInitOverride(BattlePlayerSlot slot, int characterId) { }
+        protected virtual void OnViewInitOverride(BattlePlayerSlot slot, BattlePlayerCharacterID characterId) { }
     }
 }
