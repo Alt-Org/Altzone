@@ -25,6 +25,8 @@ namespace MenuUi.Scripts.Loader
         [SerializeField]
         private TextMeshProUGUI _infoText;
         [SerializeField]
+        private Slider _loadingBar;
+        [SerializeField]
         private Button _moveToMainButton;
 
         private LogInStatus _status = LogInStatus.None;
@@ -37,11 +39,13 @@ namespace MenuUi.Scripts.Loader
                 {
                     _moveToMainButton.interactable = true;
                     _loadingText.gameObject.SetActive(false);
+                    _loadingBar.gameObject.SetActive(false);
                 }
                 else if (_status == LogInStatus.MovingToMain)
                 {
                     _moveToMainButton.interactable = false;
                     _loadingText.gameObject.SetActive(false);
+                    _loadingBar.gameObject.SetActive(false);
                 }
                 else _moveToMainButton.interactable = false;
 
@@ -102,24 +106,30 @@ namespace MenuUi.Scripts.Loader
                     {
                         case LogInStatus.LogIn:
                             _infoText.text = "Kirjaudutaan sisään";
+                            _loadingBar.value = 3f / 6f;
                             break;
                         case LogInStatus.VersionCheck:
                             _infoText.text = "Tarkistetaan versio dataa";
+                            _loadingBar.value = 2f / 6f;
                             break;
                         case LogInStatus.FetchPlayerData:
                             _infoText.text = "Haetaan pelaajan tietoja";
+                            _loadingBar.value = 4f / 6f;
                             break;
                         case LogInStatus.FetchClanData:
                             _infoText.text = "Haetaan klaanin tietoja";
+                            _loadingBar.value = 5f / 6f;
                             break;
                         case LogInStatus.Finished:
                             _infoText.text = "Paina tästä siirtyäksesi pääikkunaan.";
+                            _loadingBar.value = 6f / 6f;
                             break;
                         case LogInStatus.MovingToMain:
                             _infoText.text = "Siirrytään pääikkunaan";
                             break;
                         case LogInStatus.CheckSettingsData:
                             _infoText.text = "Tarkistetaan asetuksia";
+                            _loadingBar.value = 1f / 6f;
                             break;
                         default:
                             break;
