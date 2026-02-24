@@ -144,6 +144,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         {
             if (_muteAllSounds == value) return;
             _muteAllSounds = value;
+            PlayerPrefs.SetInt("MuteAllSounds", _muteAllSounds ? 1 : 0);
             OnMuteAllSoundsChange?.Invoke(_muteAllSounds);
         }
     }
@@ -383,7 +384,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1);
         soundVolume = PlayerPrefs.GetFloat("SoundVolume", 1);
 
-        _muteAllSounds = PlayerPrefs.GetFloat("MuteAllSounds", 0) == 1;
+        _muteAllSounds = PlayerPrefs.GetInt("MuteAllSounds", 0) == 1;
 
         jukeboxSoulhome = PlayerPrefs.GetInt("JukeboxSoulHome", 1) != 0;
         jukeboxUI = PlayerPrefs.GetInt("JukeboxUI",1) != 0;
