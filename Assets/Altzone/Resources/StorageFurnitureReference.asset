@@ -38,27 +38,6 @@ MonoBehaviour:
         Value: 40
         Material: MDF
         Recycling: "Sekaj\xE4te"
-    - Name: Toyvendingmachine
-      EnglishName: Toyvendingmachine
-      Image: {fileID: -1615382107, guid: ffc36ce8ec37e644499951a0d81887ff, type: 3}
-      PosterImage: {fileID: 21300000, guid: 4d72e0ea0f1792a4c9e91a3b4b165823, type: 3}
-      RibbonImage: {fileID: 21300000, guid: 0cd34c6c682195a41bf292640d83cb1a, type: 3}
-      VisibleName: Emilia K. K.
-      ArtisticDescription: "Saattaa kuulla \u201CKaikki on hyvin\u201D, vaikka piiloitettu
-        murhe olisikin suuri. Totuus voi kuitenkin ilmet\xE4 eri tavoin, jotkut selke\xE4mpi\xE4
-        kuin toiset."
-      EnglishArtisticDescription: 
-      DiagnoseNumber: R45.8
-      BaseFurniture:
-        Name: Toyvendingmachine_KaikkiOnHyvin
-        Rarity: 0
-        Size: 6
-        RotatedSize: 6
-        Placement: 0
-        Weight: 13
-        Value: 100
-        Material: lasi, alumiini-sinkki, metalli
-        Recycling: "Sekaj\xE4te"
     - Name: Ball_KaikkiOnHyvin_Furniture
       EnglishName: 
       Image: {fileID: 21300000, guid: b368b714a2372fd468f933e7bbbed06a, type: 3}
@@ -80,19 +59,19 @@ MonoBehaviour:
         Value: 60
         Material: PVC
         Recycling: "Sekaj\xE4te"
-    - Name: Sofa_KaikkiOnHyvin_Furniture
+    - Name: Sofa
       EnglishName: 
       Image: {fileID: 1014195689, guid: c5a6e51ffe519b441957cd4a64e1b151, type: 3}
       PosterImage: {fileID: 21300000, guid: bd356d909de61e145a20063e29dffbc7, type: 3}
       RibbonImage: {fileID: 21300000, guid: fcd8d30224870804193665aa31fc1705, type: 3}
-      VisibleName: Emilia K. K
+      VisibleName: Emilia K. K.
       ArtisticDescription: "Saattaa kuulla \u201CKaikki on hyvin\u201D, vaikka piiloitettu
         murhe olisikin suuri. Totuus voi kuitenkin ilmet\xE4 eri tavoin, jotkut selke\xE4mpi\xE4
         kuin toiset."
       EnglishArtisticDescription: 
       DiagnoseNumber: R45.8
       BaseFurniture:
-        Name: Sofa_KaikkiOnHyvin_Furniture_KaikkiOnHyvin
+        Name: Sofa_KaikkiOnHyvin
         Rarity: 0
         Size: 19
         RotatedSize: 31
@@ -100,6 +79,27 @@ MonoBehaviour:
         Weight: 119
         Value: 110
         Material: metalli, kangas, vaneri, vaahtomuovi
+        Recycling: "Sekaj\xE4te"
+    - Name: Toy Vending Machine
+      EnglishName: 
+      Image: {fileID: -1615382107, guid: ffc36ce8ec37e644499951a0d81887ff, type: 3}
+      PosterImage: {fileID: 21300000, guid: 4d72e0ea0f1792a4c9e91a3b4b165823, type: 3}
+      RibbonImage: {fileID: 0}
+      VisibleName: Emilia K. K.
+      ArtisticDescription: "Saattaa kuulla \u201CKaikki on hyvin\u201D, vaikka piiloitettu
+        murhe olisikin suuri. Totuus voi kuitenkin ilmet\xE4 eri tavoin, jotkut selke\xE4mpi\xE4
+        kuin toiset."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: R45.8
+      BaseFurniture:
+        Name: Toy Vending Machine_KaikkiOnHyvin
+        Rarity: 0
+        Size: 6
+        RotatedSize: 6
+        Placement: 0
+        Weight: 13
+        Value: 100
+        Material: lasi, alumiini-sinkki, metalli
         Recycling: "Sekaj\xE4te"
     - Name: Peili
       EnglishName: 

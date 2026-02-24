@@ -41,6 +41,8 @@ public class NewBehaviourScript : MonoBehaviour, ISoulHomeObjectClick
 
     public void HandleClick() //comes from ISoulHomeObjectClick
     {   
+
+
         spriteHandler();
         
         Debug.Log("CURRENT SPRITE" + currentSprite);
@@ -54,6 +56,7 @@ public class NewBehaviourScript : MonoBehaviour, ISoulHomeObjectClick
         }
         
     }
+
 
     public void spriteHandler()
     {   frontScreen = arcadeMachine.transform.GetChild(0).gameObject;
@@ -190,6 +193,7 @@ public class NewBehaviourScript : MonoBehaviour, ISoulHomeObjectClick
     // Update is called once per frame
     void Update()
     {
+
         
     }
 }
