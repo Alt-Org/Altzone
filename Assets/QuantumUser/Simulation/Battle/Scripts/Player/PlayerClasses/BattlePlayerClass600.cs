@@ -37,7 +37,6 @@ namespace Battle.QSimulation.Player
         {
             BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
 
-            if (!playerShieldData->IsActive) return;
             if (projectileCollisionData->Projectile->EmotionCurrent == BattleEmotionState.Love) return;
             if (shieldCollisionData->IsLoveProjectileCollision) return;
 

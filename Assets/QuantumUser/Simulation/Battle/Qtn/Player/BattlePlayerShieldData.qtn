@@ -8,11 +8,9 @@ struct BattlePlayerShieldEntityRef
 //{ ShieldData
 component BattlePlayerShieldDataQComponent
 {
-    BattlePlayerEntityRef PlayerEntity;
-    [FreeOnComponentRemoved] list<EntityRef> HitboxEntities;
-    bool IsActive;
     BattlePlayerEntityRef PlayerEntityRef;
     int ShieldNumber;
+    bool IsAttached;
 }
 //} PlayerData
 

@@ -4,16 +4,15 @@
 /// </summary>
 
 // Unity usings
-using UnityEngine.Scripting;
-
-// Quantum usings
-using Quantum;
-using Input = Quantum.Input;
-using Photon.Deterministic;
-
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Projectile;
+using Photon.Deterministic;
+// Quantum usings
+using Quantum;
+using UnityEngine.Scripting;
+using static Battle.QSimulation.Player.BattlePlayerManager;
+using Input = Quantum.Input;
 
 namespace Battle.QSimulation.Player
 {
@@ -126,31 +125,44 @@ namespace Battle.QSimulation.Player
         /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
         public static void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData)
         {
-            BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntity);
-
-            if (!playerShieldData->IsActive) return;
+            // checks
             if (projectileCollisionData->Projectile->IsHeld) return;
 
-            BattlePlayerDataQComponent* damagedPlayerData = playerShieldData->PlayerEntity.GetDataQComponent(f);
-            FP damageTaken = projectileCollisionData->Projectile->Attack;
+            //{ hit
+
+            BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
+            BattlePlayerDataQComponent* damagedPlayerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
 
             HandleSFX(f, damagedPlayerData->CharacterId, SoundEffectType.HitShield);
 
-            BattleProjectileQSystem.SetAttack(f, projectileCollisionData->Projectile, damagedPlayerData->Stats.Attack);
+            //} hit
+
+            //{ hit attach
+
+            if (!playerShieldData->IsAttached) goto Exit;
 
             int characterNumber = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber;
+            FP damageTaken = projectileCollisionData->Projectile->Attack;
 
-            FP newDefence = damagedPlayerData->CurrentDefence - damageTaken;
+            BattleProjectileQSystem.SetAttack(f, projectileCollisionData->Projectile, damagedPlayerData->Stats.Attack);
 
-            if (damageTaken > FP._0 && damagedPlayerData->CurrentDefence > FP._0 && !damagedPlayerData->DamageCooldown.IsRunning(f))
+            if (damageTaken <= FP._0 || damagedPlayerData->DamageCooldown.IsRunning(f)) goto Exit;
+
+            damagedPlayerData->CurrentDefence = damagedPlayerData->CurrentDefence - damageTaken;
+            damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
+
+            f.Events.BattleShieldTakeDamage(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, damagedPlayerData->CurrentDefence);
+
+            if (damagedPlayerData->CurrentDefence <= 0)
             {
-                damagedPlayerData->CurrentDefence = newDefence;
+                s_debugLogger.LogFormat(f, "({0}) Current characters shield destroyed!", damagedPlayerData->Slot);
 
-                damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
-
-                f.Events.BattleShieldTakeDamage(shieldCollisionData->PlayerShieldHitbox->ParentEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newDefence);
+                BattlePlayerShieldManager.RemoveShield(f, damagedPlayerData->Slot, characterNumber, playerShieldData->ShieldNumber);
             }
 
+            //} hit attach
+
+            Exit:
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
         }
 
@@ -459,14 +471,12 @@ namespace Battle.QSimulation.Player
                 updateMovement = false;
             }
 
-            if (playerData->CurrentDefence <= FP._0)
+            /*if (playerData->CurrentDefence <= FP._0)
             {
                 s_debugLogger.LogFormat(f, "({0}) Current characters shield destroyed!", playerHandle.Slot);
 
                 BattlePlayerShieldDataQComponent* shieldDataQComponent = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(playerData->AttachedShield);
-
-                shieldDataQComponent->IsActive = false;
-            }
+            }*/
 
             BattlePlayerClassManager.OnUpdate(f, playerHandle, playerData, playerEntity);
             if (updateMovement) BattlePlayerMovementController.UpdateMovement(f, playerData, playerEntity, playerTransform, input);

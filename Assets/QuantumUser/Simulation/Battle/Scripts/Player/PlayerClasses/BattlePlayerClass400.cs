@@ -36,9 +36,10 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Handle for the player.</param>
         /// <param name="playerData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference for the player.</param>
-        public override unsafe void OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
+        public override unsafe BattlePlayerClassManager.CreationParameters OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
             BattlePlayerClass400DataQComponent* data = GetClassData(f, playerEntity);
+            return BattlePlayerClassManager.CreationParameters.Default;
         }
 
         /// <summary>
@@ -52,7 +53,6 @@ namespace Battle.QSimulation.Player
         {
             BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
 
-            if (!playerShieldData->IsActive) return;
             if (projectileCollisionData->Projectile->IsHeld) return;
 
             BattlePlayerClass400DataQComponent* data = GetClassData(f, shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);

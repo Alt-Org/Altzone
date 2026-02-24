@@ -424,11 +424,7 @@ namespace Battle.QSimulation.Player
                             ShieldCount            = playerCharacterShieldCount,
                             AttachedShieldNumber   = 0,
 
-                            ShieldCount           = playerCharacterShieldCount,
-                            AttachedShieldNumber  = 0,
-                            AttachedShield        = (BattlePlayerShieldEntityRef)BattlePlayerShieldManager.GetShieldEntity(f, playerSlot, playerCharacterNumber, 0),
-
-                            DisableRotation       = playerCharacterDataTemplate->DisableRotation,
+                            DisableRotation        = playerCharacterDataTemplate->DisableRotation,
 
                             BotMovementCooldownSec = FP._0
                         };
@@ -472,7 +468,13 @@ namespace Battle.QSimulation.Player
                         f.Remove<BattlePlayerDataTemplateQComponent>(playerCharacterEntity);
                         f.Add(playerCharacterEntity, playerData, out BattlePlayerDataQComponent* playerDataPtr);
 
-                        BattlePlayerClassManager.OnCreate(f, playerHandle.ConvertToPublic(), playerDataPtr, playerCharacterEntity);
+                        BattlePlayerClassManager.CreationParameters creationParameters = BattlePlayerClassManager.OnCreate(f, playerHandle.ConvertToPublic(), playerDataPtr, playerCharacterEntity);
+
+                        // attach shield
+                        if (creationParameters.AttachedShieldNumber >= 0)
+                        {
+                            BattlePlayerShieldManager.AttachShield(f, playerSlot, playerCharacterNumber, creationParameters.AttachedShieldNumber, teleport: false);
+                        }
 
                         // initialize view
                         f.Events.BattlePlayerCharacterViewInit(playerCharacterEntity, playerSlot, playerCharacterId, playerClass, BattleGridManager.GridScaleFactor);
@@ -669,7 +671,10 @@ namespace Battle.QSimulation.Player
 
             BattleEntityManager.Return(f, playerHandle.CharacterEntityGroupID, playerHandle.SelectedCharacterNumber);
 
-            BattlePlayerShieldManager.DespawnShield(f, playerData->Slot, playerHandle.SelectedCharacterNumber, playerData->AttachedShieldNumber);
+            if(playerData->AttachedShield.ERef != EntityRef.None)
+            {
+                BattleEntityManager.Return(f, BattlePlayerShieldManager.Low_GetShieldEntityGroupID(f, playerData->Slot, playerHandle.SelectedCharacterNumber), playerData->AttachedShieldNumber);
+            }
 
             playerData->TargetPosition = selectedCharacter.GetTransform(f)->Position;
 

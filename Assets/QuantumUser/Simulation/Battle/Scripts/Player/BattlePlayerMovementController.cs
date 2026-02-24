@@ -185,8 +185,11 @@ namespace Battle.QSimulation.Player
         /// <param name="position">World position to move to.</param>
         public static void Move(Frame f, BattlePlayerDataQComponent* playerData, EntityRef playerEntityRef, FPVector2 position)
         {
-            BattleEntityManager.MoveCompound(f, playerEntityRef, position, playerData->RotationBase);
-            BattleEntityManager.MoveCompound(f, playerData->AttachedShield, position, playerData->RotationBase);
+            BattleEntityManager.MoveCompound(f, playerEntityRef, position, playerData->RotationBaseRad);
+
+            if (playerData->AttachedShield.ERef == EntityRef.None) return;
+
+            BattleEntityManager.MoveCompound(f, playerData->AttachedShield, position, playerData->RotationBaseRad + playerData->RotationOffsetRad);
         }
 
         /// <summary>
@@ -199,8 +202,11 @@ namespace Battle.QSimulation.Player
         /// <param name="position">New world position.</param>
         public static void Teleport(Frame f, BattlePlayerDataQComponent* playerData, EntityRef playerEntityRef, FPVector2 position)
         {
-            BattleEntityManager.TeleportCompound(f, playerEntityRef, position, playerData->RotationBase);
-            BattleEntityManager.TeleportCompound(f, playerData->AttachedShield, position, playerData->RotationBase);
+            BattleEntityManager.TeleportCompound(f, playerEntityRef, position, playerData->RotationBaseRad);
+
+            if (playerData->AttachedShield.ERef == EntityRef.None) return;
+
+            BattleEntityManager.TeleportCompound(f, playerData->AttachedShield, position, playerData->RotationBaseRad + playerData->RotationOffsetRad);
         }
 
         /// <summary>This classes BattleDebugLogger instance.</summary>

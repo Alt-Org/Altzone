@@ -68,7 +68,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer reference to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
-        public virtual unsafe void OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
+        public virtual unsafe BattlePlayerClassManager.CreationParameters OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) => BattlePlayerClassManager.CreationParameters.Default;
 
         /// <summary>
         /// Virtual OnSpawn method that can be implemented.<br/>
@@ -136,8 +136,20 @@ namespace Battle.QSimulation.Player
     /// <summary>
     /// Handles the initial loading of player classes and routes individual game events to the correct class scripts.
     /// </summary>
-    public unsafe static class BattlePlayerClassManager
+    public static unsafe class BattlePlayerClassManager
     {
+
+        public struct CreationParameters
+        {
+            public static CreationParameters Default => new()
+            {
+                AttachedShieldNumber = 0
+            };
+
+            public int AttachedShieldNumber;
+
+
+        }
         /// <summary>
         /// Initializes this classes BattleDebugLogger instance.<br/>
         /// This method is exclusively for debug logging purposes.
@@ -202,21 +214,21 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer reference to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
-        public static void OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
+        public static CreationParameters OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
             ReturnCode returnCode = GetClass(playerData->CharacterClass, out BattlePlayerClassBase playerClass);
 
             if (returnCode == ReturnCode.Error)
             {
                 s_debugLogger.WarningFormat("The {0} class could not be initialized!", playerData->CharacterClass);
-                return;
+                return CreationParameters.Default;
             }
             if (returnCode == ReturnCode.NoClass)
             {
-                return;
+                return CreationParameters.Default;
             }
 
-            playerClass.OnCreate(f, playerHandle, playerData, playerEntity);
+            return playerClass.OnCreate(f, playerHandle, playerData, playerEntity);
         }
 
         /// <summary>
