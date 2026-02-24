@@ -7,14 +7,16 @@
 /// Handles shield sprites and particles
 
 // Unity usings
-using UnityEngine;
 // Battle QSimulation usings
+using System.Runtime.CompilerServices;
 using Battle.QSimulation;
 using Battle.QSimulation.Player;
 // Battle View usings
 using Battle.View.Game;
 // Quantum usings
 using Quantum;
+using UnityEngine;
+using static Battle.View.Player.BattlePlayerCharacterViewController;
 
 namespace Battle.View.Player
 {
@@ -24,6 +26,9 @@ namespace Battle.View.Player
     /// </summary>
     public unsafe class BattlePlayerShieldViewController : QuantumEntityViewComponent
     {
+        #if UNITY_EDITOR
+        [SerializeField] private BattleSpriteSheet _spriteSheet;
+        #endif
         /// @anchor BattlePlayerShieldViewController-SerializeFields
         /// @name SerializeField variables
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
@@ -31,9 +36,9 @@ namespace Battle.View.Player
 
         [Header("References")]
 
-        /// <summary>[SerializeField] Array of shield <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.</summary>
+        /// <summary>[SerializeField] Shield <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</summary>
         /// @ref BattlePlayerShieldViewController-SerializeFields
-        [SerializeField] private GameObject[] _shieldGameObjects;
+        [SerializeField] private GameObject _shieldGameObject;
 
         /// <summary>[SerializeField] Reference to the shield hit particle system.</summary>
         /// @ref BattlePlayerShieldViewController-SerializeFields
@@ -54,32 +59,31 @@ namespace Battle.View.Player
             if (EntityRef != e.ERef) return;
             if (!PredictedFrame.Exists(e.ERef)) return;
 
-            characterRef = e.CharacterRef;
+            _characterRef = e.CharacterRef;
 
-            BattleDebugLogger.DevAssert(nameof(BattlePlayerShieldViewController), characterRef != null, "Character ref is null");
+            BattleDebugLogger.DevAssert(nameof(BattlePlayerShieldViewController), _characterRef != null, "Character ref is null");
 
             if (!_isRegistered)
             {
-                BattleViewRegistry.Register(this.EntityRef, this);
+                BattleViewRegistry.Register(EntityRef, this);
                 _isRegistered = true;
-                BattleViewRegistry.WhenRegistered(characterRef, OnCharacterRegistered);
+                BattleViewRegistry.WhenRegistered(_characterRef, OnCharacterRegistered);
             }
 
             float scale = (float)e.ModelScale;
             transform.localScale = new Vector3(scale, scale, scale);
             _shieldHitParticle.transform.localScale = new Vector3(scale, scale, scale);
 
-            if (BattlePlayerManager.PlayerHandle.GetTeamNumber(e.Slot) == BattleGameViewController.LocalPlayerTeam)
-            {
-                GameObject shieldGameObject = _shieldGameObjects[0];
-                shieldGameObject.SetActive(true);
-            }
-            else
-            {
-                GameObject shieldGameObject = _shieldGameObjects[1];
-                shieldGameObject.SetActive(true);
-            }
+            _shieldGameObject.SetActive(true);
+
+            QuantumEvent.Subscribe<EventBattleInPlayStateUpdate>(this, QEventOnPlayStateUpdate);
         });}
+
+        private void QEventOnPlayStateUpdate(EventBattleInPlayStateUpdate e)
+        {
+            if (e.ERef != EntityRef) return;
+            _isInPlay = e.IsInPlay;
+        }
 
         /// <summary>
         /// Handler method for EventBattleShieldTakeDamage QuantumEvent.
@@ -88,8 +92,8 @@ namespace Battle.View.Player
         /// <param name="e">The event data.</param>
         public void OnShieldTakeDamage(EventBattleShieldTakeDamage e)
         {
-            if (EntityRef != e.Entity) return;
-            if (!PredictedFrame.Exists(e.Entity)) return;
+            if (EntityRef != e.ERef) return;
+            if (!PredictedFrame.Exists(e.ERef)) return;
 
             if (_shieldHitParticle != null)
             {
@@ -97,20 +101,47 @@ namespace Battle.View.Player
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void ShieldSprite(SpriteSheetMap sprite)
+        {
+            BattleDebugLogger.DevAssertFormat(nameof(BattlePlayerShieldViewController),
+                sprite.EnumValue is
+                    SpriteSheetMap.Enum.ShieldUp1 or
+                    SpriteSheetMap.Enum.ShieldUp2 or
+                    SpriteSheetMap.Enum.ShieldUp3 or
+                    SpriteSheetMap.Enum.ShieldUp4 or
+                    SpriteSheetMap.Enum.ShieldUpHit1 or
+                    SpriteSheetMap.Enum.ShieldUpHit2 or
+                    SpriteSheetMap.Enum.ShieldUpHit3 or
+                    SpriteSheetMap.Enum.ShieldUpHit4 or
+                    SpriteSheetMap.Enum.ShieldDown1 or
+                    SpriteSheetMap.Enum.ShieldDown2 or
+                    SpriteSheetMap.Enum.ShieldDown3 or
+                    SpriteSheetMap.Enum.ShieldDown4 or
+                    SpriteSheetMap.Enum.ShieldDownHit1 or
+                    SpriteSheetMap.Enum.ShieldDownHit2 or
+                    SpriteSheetMap.Enum.ShieldDownHit3 or
+                    SpriteSheetMap.Enum.ShieldDownHit4,
+                "{0} Sprite is not a shield sprite", sprite
+            );
+            _shieldGameObject.GetComponent<SpriteRenderer>().sprite = _spriteSheet.GetSprite(sprite);
+        }
+
         /// <summary>EntityRef for the character this shield is assigned to.</summary>
-        private EntityRef characterRef;
+        private EntityRef _characterRef;
 
         /// <summary>Character view controller this shield view controller is bound to.</summary>
         private BattlePlayerCharacterViewController _characterViewController;
 
-        ///<summary>Boolean that prevents this shield view controller from being registered multiple times to the BattleViewRegistry.</summary>
+        /// <summary>Boolean that prevents this shield view controller from being registered multiple times to the BattleViewRegistry.</summary>
         private bool _isRegistered = false;
 
+        private bool _isInPlay;
 
         /// <summary>Handles binding this shield view controller to the character view controller and vice versa.</summary>
         private bool OnCharacterRegistered()
         {
-            BattlePlayerCharacterViewController characterViewController = BattleViewRegistry.GetObject<BattlePlayerCharacterViewController>(characterRef);
+            BattlePlayerCharacterViewController characterViewController = BattleViewRegistry.GetObject<BattlePlayerCharacterViewController>(_characterRef);
             if (characterViewController == null) return false;
 
             _characterViewController = characterViewController;

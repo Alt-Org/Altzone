@@ -132,10 +132,6 @@ namespace Battle.View.Player
         /// @ref BattlePlayerCharacterViewController-SerializeFields
         [SerializeField] private BattlePlayerCharacterClassBaseViewController _classViewControllerOverride;
 
-        /// <summary>[SerializeField] Animator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> that handles player character animations.</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
-        [SerializeField] private Animator _animator;
-
         /// <summary>[SerializeField] %Player's child <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> where heart sprite is located.</summary>
         /// @ref BattlePlayerCharacterViewController-SerializeFields
         //[SerializeField] private GameObject _heart;
@@ -202,6 +198,7 @@ namespace Battle.View.Player
                 GameObject characterGameObject = _characterGameObjects[0];
                 characterGameObject.SetActive(true);
                 _spriteRenderer = characterGameObject.GetComponent<SpriteRenderer>();
+                _bodypartSpriteRenderers = characterGameObject.GetComponentsInChildren<SpriteRenderer>();
             }
             else
             {
@@ -209,6 +206,7 @@ namespace Battle.View.Player
                 characterGameObject.SetActive(true);
                 //_heart.SetActive(false);
                 _spriteRenderer = characterGameObject.GetComponent<SpriteRenderer>();
+                _bodypartSpriteRenderers = characterGameObject.GetComponentsInChildren<SpriteRenderer>();
             }
 
             if (e.Slot == BattleGameViewController.LocalPlayerSlot)
@@ -231,6 +229,7 @@ namespace Battle.View.Player
             }
 
             //_spriteSheet.GetSprite<PlayerSpriteSheetMap>(PlayerSpriteSheetMap.Enum.ShieldBroken);
+            _spriteRenderer.sprite = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Base);
 
             _classViewController.OnViewInit(this, e.ERef, e.Slot, e.CharacterId);
 
@@ -238,6 +237,72 @@ namespace Battle.View.Player
             QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
             QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
         });}
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void HeadSprite(SpriteSheetMap sprite)
+        {
+            BattleDebugLogger.DevAssertFormat(nameof(BattlePlayerCharacterViewController),
+                sprite.EnumValue is
+                    SpriteSheetMap.Enum.Head1 or
+                    SpriteSheetMap.Enum.Head2 or
+                    SpriteSheetMap.Enum.Head3 or
+                    SpriteSheetMap.Enum.Head4 or
+                    SpriteSheetMap.Enum.Joy or
+                    SpriteSheetMap.Enum.Sadness or
+                    SpriteSheetMap.Enum.Playful or
+                    SpriteSheetMap.Enum.Agression or
+                    SpriteSheetMap.Enum.Love,
+                "{0} Sprite is not a head sprite", sprite
+            );
+            _bodypartSpriteRenderers[0].sprite = _spriteSheet.GetSprite(sprite);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void BodySprite(SpriteSheetMap sprite)
+        {
+            BattleDebugLogger.DevAssertFormat(nameof(BattlePlayerCharacterViewController),
+                sprite.EnumValue is
+                    SpriteSheetMap.Enum.Body1 or
+                    SpriteSheetMap.Enum.Body2 or
+                    SpriteSheetMap.Enum.Body3 or
+                    SpriteSheetMap.Enum.Body4,
+                "{0} Sprite is not a body sprite", sprite
+            );
+            _bodypartSpriteRenderers[1].sprite = _spriteSheet.GetSprite(sprite);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void HandSprite(SpriteSheetMap sprite)
+        {
+            BattleDebugLogger.DevAssertFormat(nameof(BattlePlayerCharacterViewController),
+                sprite.EnumValue is
+                    SpriteSheetMap.Enum.BaseHands or
+                    SpriteSheetMap.Enum.ScaredHands or
+                    SpriteSheetMap.Enum.HandsShieldDown1 or
+                    SpriteSheetMap.Enum.HandsShieldDown2 or
+                    SpriteSheetMap.Enum.HandsShieldDown3 or
+                    SpriteSheetMap.Enum.HandsShieldDown4 or
+                    SpriteSheetMap.Enum.HandsShieldUp1 or
+                    SpriteSheetMap.Enum.HandsShieldUp2 or
+                    SpriteSheetMap.Enum.HandsShieldUp3 or
+                    SpriteSheetMap.Enum.HandsShieldUp4,
+                "{0} Sprite is not a hand sprite", sprite
+            );
+            _bodypartSpriteRenderers[2].sprite = _spriteSheet.GetSprite(sprite);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void FeetSprite(SpriteSheetMap sprite)
+        {
+            BattleDebugLogger.DevAssertFormat(nameof(BattlePlayerCharacterViewController),
+                sprite.EnumValue is
+                    SpriteSheetMap.Enum.BaseShoes or
+                    SpriteSheetMap.Enum.RunningShoes1 or
+                    SpriteSheetMap.Enum.RunningShoes2,
+                "{0} Sprite is not a feet sprite", sprite
+            );
+            _bodypartSpriteRenderers[3].sprite = _spriteSheet.GetSprite(sprite);
+        }
 
         public void QEventOnPlayStateUpdate(EventBattleInPlayStateUpdate e)
         {
@@ -312,10 +377,12 @@ namespace Battle.View.Player
         /// <summary>Dictionary that holds the shield view controllers associated with this character view controller.</summary>
         private readonly Dictionary<EntityRef, BattlePlayerShieldViewController> _playerShieldViewControllers = new();
 
-        ///<summary>Boolean that prevents this character view controller from being registered multiple times to the BattleViewRegistry.</summary>
+        /// <summary>Boolean that prevents this character view controller from being registered multiple times to the BattleViewRegistry.</summary>
         private bool _isRegistered = false;
 
         private bool _isInPlay;
+
+        private SpriteRenderer[] _bodypartSpriteRenderers;
 
         /// <summary>
         /// Handles setup that needs to happen before <see cref="Quantum.EventBattleCharacterPlayerViewInit">EventBattlePlayerCharacterViewInit</see> event is received.<br/>
@@ -358,35 +425,6 @@ namespace Battle.View.Player
             {
                 transform.localPosition = Vector3.zero;
             }
-        }
-
-        /// <summary>
-        /// Updates the player character model's animator.
-        /// </summary>
-        ///
-        /// <param name="targetPosition">Target position Vector3.</param>
-        /// <param name="battleTeamNumber">The BattleTeamNumber for the player.</param>
-        private void UpdateAnimator(Vector3* targetPosition, BattleTeamNumber battleTeamNumber)
-        {
-            int animationState = 0;
-            bool flipX = false;
-
-            if (transform.position != *targetPosition)
-            {
-                Vector3 movement = *targetPosition - transform.position;
-                if (Mathf.Abs(movement.x) >= Mathf.Abs(movement.z))
-                {
-                    flipX = (battleTeamNumber == BattleTeamNumber.TeamBeta) ^ (movement.x < 0f);
-                    animationState = 1;
-                }
-                else
-                {
-                    animationState = 2;
-                }
-            }
-
-            _spriteRenderer.flipX = flipX;
-            _animator.SetInteger("state", animationState);
         }
 
         /// <summary>

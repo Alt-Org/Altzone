@@ -10,7 +10,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 // Unity usings
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace Battle.View
@@ -51,7 +53,7 @@ namespace Battle.View
         }
     }
 
-
+#if UNITY_EDITOR
     /// <summary>
     /// Handles drawing a custom inspector property for the BattleSpriteSheet struct.
     /// </summary>
@@ -176,4 +178,5 @@ namespace Battle.View
             return AssetDatabase.GetAssetPath(sprite);
         }
     }
+#endif
 }
