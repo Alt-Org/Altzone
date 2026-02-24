@@ -26,3 +26,17 @@
 ///
 /// @var int Quantum.BattleEntityManagerDataQSingleton::EntitySpacing
 /// <summary>Amount of grid spaces between entity offscreen positions.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattleEntityManagerDataQSingleton::SIZE
+/// @var Int32 Quantum::BattleEntityManagerDataQSingleton::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattleEntityManagerDataQSingleton::GetHashCode
+/// @fn void Quantum::BattleEntityManagerDataQSingleton::ClearPointers
+///
+/// @fn void Quantum::BattleEntityManagerDataQSingleton::OnRemoved
+/// @fn void Quantum::BattleEntityManagerDataQSingleton::Serialize
+///
+/// @}

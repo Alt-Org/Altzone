@@ -25,17 +25,7 @@ namespace Battle.View
     ///
     /// **Example:**<br/>
     /// ```cs
-    /// public unsafe class BattlePlayerCharacterViewController : QuantumEntityViewComponent
-    /// {
-    /// ...
-    ///     public override void OnActivate(Frame _)
-    ///     {
-    ///         ...
-    ///         BattleViewRegistry.Register(this.EntityRef, this);
-    ///         ...
-    ///     }
-    ///     ...
-    /// }
+    ///     BattleViewRegistry.Register(this.EntityRef, this);
     /// ```
     ///
     /// **WhenRegistered**<br/>
@@ -43,22 +33,17 @@ namespace Battle.View
     ///
     /// **Example:**<br/>
     /// ```cs
-    /// public unsafe class BattlePlayerShieldViewController : QuantumEntityViewComponent
-    /// {
-    /// ...
     ///     public override void OnActivate(Frame _)
     ///     {
     ///         ...
-    ///         BattleViewRegistry.WhenRegistered(characterRef, ExampleCallback);
+    ///         BattleViewRegistry.WhenRegistered(characterRef, ExampleMethod);
     ///         ...
     ///     }
     ///     ...
-    ///     private void ExampleCallback()
+    ///     private void ExampleMethod()
     ///     {
     ///         ...
     ///     }
-    ///     ...
-    /// }
     /// ```
     ///
     /// **Get methods**<br/>
@@ -66,16 +51,11 @@ namespace Battle.View
     ///
     /// **Example:**<br/>
     /// ```cs
-    /// public unsafe class BattlePlayerShieldViewController : QuantumEntityViewComponent
-    /// {
-    ///     private EntityRef entityRef;
     ///     private void ExampleMethod()
     ///     {
     ///         BattlePlayerCharacterViewController example = BattleViewRegistry.GetObject<BattlePlayerCharacterViewController>(entityRef);
     ///         List<BattlePlayerCharacterViewController> exampleList = BattleViewRegistry.GetObjects<BattlePlayerCharacterViewController(entityRef);
     ///     }
-    ///     ...
-    /// }
     /// ```
     public static class BattleViewRegistry
     {
