@@ -7,19 +7,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-
-// Unity usings
-using UnityEngine;
-
-// Quantum usings
-using Quantum;
-
 // Battle QSimulation usings
 using Battle.QSimulation;
 using Battle.QSimulation.Player;
-
 // Battle View usings
 using Battle.View.Game;
+// Quantum usings
+using Quantum;
+// Unity usings
+using UnityEngine;
 
 namespace Battle.View.Player
 {
@@ -238,9 +234,17 @@ namespace Battle.View.Player
 
             _classViewController.OnViewInit(this, e.ERef, e.Slot, e.CharacterId);
 
+            QuantumEvent.Subscribe<EventBattleInPlayStateUpdate>(this, QEventOnPlayStateUpdate);
             QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
             QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
         });}
+
+        public void QEventOnPlayStateUpdate(EventBattleInPlayStateUpdate e)
+        {
+            if (e.ERef != EntityRef) return;
+            Debug.Log(e.IsInPlay);
+            _isInPlay = e.IsInPlay;
+        }
 
         /// <summary>
         /// Public method that is called when the view should update.<br/>
@@ -248,6 +252,7 @@ namespace Battle.View.Player
         /// </summary>
         public override void OnUpdateView()
         {
+            if (!_isInPlay) return;
             if (!PredictedFrame.Exists(EntityRef)) return;
             BattlePlayerDataQComponent* playerData = PredictedFrame.Unsafe.GetPointer<BattlePlayerDataQComponent>(EntityRef);
             if (playerData->PlayerRef == PlayerRef.None) return;
@@ -309,6 +314,8 @@ namespace Battle.View.Player
 
         ///<summary>Boolean that prevents this character view controller from being registered multiple times to the BattleViewRegistry.</summary>
         private bool _isRegistered = false;
+
+        private bool _isInPlay;
 
         /// <summary>
         /// Handles setup that needs to happen before <see cref="Quantum.EventBattleCharacterPlayerViewInit">EventBattlePlayerCharacterViewInit</see> event is received.<br/>

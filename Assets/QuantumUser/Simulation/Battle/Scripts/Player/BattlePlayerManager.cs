@@ -601,7 +601,7 @@ namespace Battle.QSimulation.Player
         /// <param name="characterNumber">The character number of the character to be spawned.</param>
         private static void SpawnPlayer(Frame f, PlayerHandleInternal playerHandle, int characterNumber)
         {
-            BattlePlayerEntityRef character = (BattlePlayerEntityRef)BattleEntityManager.Get(f, playerHandle.CharacterEntityGroupID, characterNumber);
+            BattlePlayerEntityRef character = (BattlePlayerEntityRef)BattleEntityManager.Get(f, playerHandle.CharacterEntityGroupID, characterNumber, updateViewPlayState: true);
             BattlePlayerDataQComponent* playerData = character.GetDataQComponent(f);
             Transform2D* playerTransform = character.GetTransform(f);
             Transform2D* shieldTransform = playerData->AttachedShield.GetTransform(f);

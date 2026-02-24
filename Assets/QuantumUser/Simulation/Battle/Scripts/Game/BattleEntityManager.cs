@@ -272,14 +272,11 @@ namespace Battle.QSimulation.Game
         /// <param name="id">Entity ID of the entity to retrieve.</param>
         ///
         /// <returns>EntityRef for retrieved entity.</returns>
-        public static EntityRef Get(Frame f, BattleEntityID id)
+        public static EntityRef Get(Frame f, BattleEntityID id, bool updateViewPlayState = false)
         {
             QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
 
-            if (_updatePlayState)
-            {
-                f.Events.BattleInPlayStateUpdate(true);
-            }
+            if (updateViewPlayState) f.Events.BattleInPlayStateUpdate(true, entityList[id]);
 
             return entityList[id];
         }
@@ -298,14 +295,11 @@ namespace Battle.QSimulation.Game
         /// <param name="offset">Offset of the desired entity within the group.</param>
         ///
         /// <returns>EntityRef for retrieved entity.</returns>
-        public static EntityRef Get(Frame f, BattleEntityID id, int offset)
+        public static EntityRef Get(Frame f, BattleEntityID id, int offset, bool updateViewPlayState = false)
         {
             QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
 
-            if (_updatePlayState)
-            {
-                f.Events.BattleInPlayStateUpdate(true);
-            }
+            if (updateViewPlayState) f.Events.BattleInPlayStateUpdate(true, entityList[id]);
 
             return entityList[id + offset];
         }
@@ -354,7 +348,6 @@ namespace Battle.QSimulation.Game
             Return(f, entityManagerData, entityRef, id);
         }
 
-        private static bool _updatePlayState;
 
         /// <summary>
         /// Private method that handles entity return logic. Used by the public
