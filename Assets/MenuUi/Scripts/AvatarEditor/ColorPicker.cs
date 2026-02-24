@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using MenuUi.Scripts.AvatarEditor;
 using Assets.Altzone.Scripts.Model.Poco.Player;
+using TMPro;
 
 public class ColorPicker : MonoBehaviour
 {
@@ -16,8 +17,10 @@ public class ColorPicker : MonoBehaviour
     [SerializeField] private Button _popupConfirmButton;
     [SerializeField] private GameObject _colorPickerPopup;
     [SerializeField] private Image _previewColor;
-    [SerializeField] private Image _colorPickerColorButton;
+    [SerializeField] private Image _colorPickerColorButtonColorImage;
     [SerializeField] private Image _sliderBackground;
+    [SerializeField] private ColorGetter _colorCircle;
+    [SerializeField] private Slider _slider;
 
 
     private void Start()
@@ -26,6 +29,22 @@ public class ColorPicker : MonoBehaviour
         //_clickArea.SetActive(false);
         _popupConfirmButton.onClick.AddListener(() => ClosePopup());
         _clickAreaButton.onClick.AddListener(() => ClosePopup());
+        _colorPickerButton.onClick.AddListener(() => OpenPopup());
+    }
+
+    private void OnEnable()
+    {
+        _colorCircle.OnColorChanged += HandleColorChanged;
+    }
+
+    private void OnDisable()
+    {
+        _colorCircle.OnColorChanged -= HandleColorChanged;
+    }
+
+    private void HandleColorChanged(Color color)
+    {
+        UpdateColor(color);
     }
 
     private void ClosePopup()
@@ -34,11 +53,23 @@ public class ColorPicker : MonoBehaviour
         _colorPickerPopup.SetActive(false);
     }
 
+    private void OpenPopup()
+    {
+        _clickAreaButton.gameObject.SetActive(true);
+        _colorPickerPopup.SetActive(true);
+    }
+
     private void UpdateColor(Color color)
     {
-        _previewColor.color = color;
-        _colorPickerColorButton.color = color;
-        _sliderBackground.color = color;
+        Color previewColor = color;
+
+        Color colorPickerColorButtonColor = color;
+
+        Color sliderBackgroundColor = color;
+
+        _previewColor.color = previewColor;
+        _colorPickerColorButtonColorImage.color = colorPickerColorButtonColor;
+        _sliderBackground.color = sliderBackgroundColor;
     }
 
     private void AddListener(Color color)
