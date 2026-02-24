@@ -1,6 +1,7 @@
-using UnityEngine;
 using System;
+using Altzone.Scripts.Audio;
 using Altzone.Scripts.BattleUiShared;
+using UnityEngine;
 
 public class SettingsCarrier : MonoBehaviour // Script for carrying settings data between scenes
 {
@@ -146,6 +147,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
             _muteAllSounds = value;
             PlayerPrefs.SetInt("MuteAllSounds", _muteAllSounds ? 1 : 0);
             OnMuteAllSoundsChange?.Invoke(_muteAllSounds);
+            AudioManager.Instance.UpdateMaxVolume();
         }
     }
 
