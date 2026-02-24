@@ -169,12 +169,12 @@ namespace Battle.QSimulation.Player
             switch (characterClass)
             {
                 case BattlePlayerCharacterClass.Class100:
-                    if (s_classArray[ClassIndexDesensitizer] != null) break;
-                    s_classArray[ClassIndexDesensitizer] = new BattlePlayerClass100();
+                    if (s_classArray[ClassIndex100] != null) break;
+                    s_classArray[ClassIndex100] = new BattlePlayerClass100();
                     break;
 
                 case BattlePlayerCharacterClass.Class200:
-                    if (s_classArray[ClassIndexTrickster] != null) break;
+                    if (s_classArray[ClassIndex200] != null) break;
                     //s_classArray[ClassIndexTrickster] = new BattlePlayerClassTrickster();
                     break;
 
@@ -182,22 +182,22 @@ namespace Battle.QSimulation.Player
                     break;
 
                 case BattlePlayerCharacterClass.Class400:
-                    if (s_classArray[ClassIndexProjector] != null) break;
-                    s_classArray[ClassIndexProjector] = new BattlePlayerClass400();
+                    if (s_classArray[ClassIndex400] != null) break;
+                    s_classArray[ClassIndex400] = new BattlePlayerClass400();
                     break;
 
                 case BattlePlayerCharacterClass.Class500:
-                    if (s_classArray[ClassIndexRetroflector] != null) break;
+                    if (s_classArray[ClassIndex500] != null) break;
                     //s_classArray[ClassIndexRetroflector] = new BattlePlayerClassRetroflector();
                     break;
 
                 case BattlePlayerCharacterClass.Class600:
-                    if (s_classArray[ClassIndexConfluent] != null) break;
-                    s_classArray[ClassIndexConfluent] = new BattlePlayerClass600();
+                    if (s_classArray[ClassIndex600] != null) break;
+                    s_classArray[ClassIndex600] = new BattlePlayerClass600();
                     break;
 
                 case BattlePlayerCharacterClass.Class700:
-                    if (s_classArray[ClassIndexIntellectualizer] != null) break;
+                    if (s_classArray[ClassIndex700] != null) break;
                     //s_classArray[ClassIndexIntellectualizer] = new BattlePlayerClassIntellectualizer();
                     break;
 
@@ -321,17 +321,17 @@ namespace Battle.QSimulation.Player
         /// <value>Constant for a no code class index.</value>
         private const int ClassIndexNoCode = -1;
         /// <value>Constant for Desensitizer class index.</value>
-        private const int ClassIndexDesensitizer = 0;
+        private const int ClassIndex100 = 0;
         /// <value>Constant for Trickster class index.</value>
-        private const int ClassIndexTrickster = 1;
+        private const int ClassIndex200 = 1;
         /// <value>Constant for Projector class index.</value>
-        private const int ClassIndexProjector = 2;
+        private const int ClassIndex400 = 2;
         /// <value>Constant for Retroflector class index.</value>
-        private const int ClassIndexRetroflector = 3;
+        private const int ClassIndex500 = 3;
         /// <value>Constant for Confluent class index.</value>
-        private const int ClassIndexConfluent = 4;
+        private const int ClassIndex600 = 4;
         /// <value>Constant for Intellectualizer class index.</value>
-        private const int ClassIndexIntellectualizer = 5;
+        private const int ClassIndex700 = 5;
         /// <value>Constant for the amount of classes that exist.</value>
         private const int ClassCount = 6;
 
@@ -377,14 +377,11 @@ namespace Battle.QSimulation.Player
 
             int classIndex = characterClass switch
             {
-                BattlePlayerCharacterClass.None             => ClassIndexNoCode,
-                BattlePlayerCharacterClass.Class100     => ClassIndexDesensitizer,
-                //BattlePlayerCharacterClass.Trickster        => ClassIndexTrickster,
-                BattlePlayerCharacterClass.Class300        => ClassIndexNoCode,
-                BattlePlayerCharacterClass.Class400        => ClassIndexProjector,
-                //BattlePlayerCharacterClass.Retroflector     => ClassIndexRetroflector,
-                BattlePlayerCharacterClass.Class600        => ClassIndexConfluent,
-                //BattlePlayerCharacterClass.Intellectualizer => ClassIndexIntellectualizer,
+                BattlePlayerCharacterClass.None     => ClassIndexNoCode,
+                BattlePlayerCharacterClass.Class100 => ClassIndex100,
+                BattlePlayerCharacterClass.Class300 => ClassIndexNoCode,
+                BattlePlayerCharacterClass.Class400 => ClassIndex400,
+                BattlePlayerCharacterClass.Class600 => ClassIndex600,
 
                 _ => ClassIndexError,
             };
