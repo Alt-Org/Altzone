@@ -85,6 +85,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     // Events
     public event Action OnTextSizeChange;
     public event Action OnButtonLabelVisibilityChange;
+    public event Action OnMuteAllSoundsChange;
 
     public delegate void TopBarChanged(int index);
     public static event TopBarChanged OnTopBarChanged;
@@ -128,6 +129,21 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public float menuVolume;
     public float musicVolume;
     public float soundVolume;
+
+    private bool _muteAllSounds;
+    public bool MuteAllSounds
+    {
+        get
+        {
+            return _muteAllSounds;
+        }
+
+        set
+        {
+            _muteAllSounds = value;
+            OnMuteAllSoundsChange?.Invoke();
+        }
+    }
 
     public bool jukeboxSoulhome;
     public bool jukeboxUI;
@@ -364,6 +380,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1);
         soundVolume = PlayerPrefs.GetFloat("SoundVolume", 1);
 
+        _muteAllSounds = PlayerPrefs.GetFloat("MuteAllSounds", 0) == 1;
+
         jukeboxSoulhome = PlayerPrefs.GetInt("JukeboxSoulHome", 1) != 0;
         jukeboxUI = PlayerPrefs.GetInt("JukeboxUI",1) != 0;
         jukeboxBattle = PlayerPrefs.GetInt("JukeboxBattle", 0) != 0;
@@ -394,6 +412,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     // SentVolume combines masterVolume and another volume chosen by the sent type
     public float SentVolume(SoundType type)
     {
+        if (_muteAllSounds) return 0;
         float otherVolume = 1;
         switch (type)
         {
