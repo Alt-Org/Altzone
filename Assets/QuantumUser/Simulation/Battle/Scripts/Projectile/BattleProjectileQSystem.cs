@@ -294,7 +294,7 @@ namespace Battle.QSimulation.Projectile
                     BattleCollisionQSystem.PlayerShieldCollisionData* dataPtr = (BattleCollisionQSystem.PlayerShieldCollisionData*)data;
                     BattlePlayerHitboxQComponent* playerShieldHitbox = dataPtr->PlayerShieldHitbox;
 
-                    if (FPVector2.Dot(playerShieldHitbox->Normal, projectile->Direction.Normalized) >= 0) break;
+                    if (FPVector2.Dot(playerShieldHitbox->CalculateNormal(f), projectile->Direction.Normalized) >= 0) break;
 
                     if (!ProjectileHitPlayerShield(f, projectile, dataPtr, out normal)) break;
 
@@ -310,9 +310,9 @@ namespace Battle.QSimulation.Projectile
 
                     if (projectile->EmotionCurrent == BattleEmotionState.Love) break;
 
-                    if (FPVector2.Dot(playerCharacterHitbox->Normal, projectile->Direction.Normalized) >= 0) break;
+                    if (FPVector2.Dot(playerCharacterHitbox->CalculateNormal(f), projectile->Direction.Normalized) >= 0) break;
 
-                    normal             = playerCharacterHitbox->Normal;
+                    normal             = playerCharacterHitbox->CalculateNormal(f);
                     collisionType      = playerCharacterHitbox->CollisionType;
                     collisionMinOffset = playerCharacterHitbox->CollisionMinOffset;
                     speedChange        = SpeedChange.Increment;
@@ -449,7 +449,6 @@ namespace Battle.QSimulation.Projectile
 
             BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
 
-            if (!playerShieldData->IsActive) return false;
             if (projectile->EmotionCurrent == BattleEmotionState.Love) return false;
 
             BattlePlayerDataQComponent* playerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
@@ -485,7 +484,7 @@ namespace Battle.QSimulation.Projectile
 
             if (shieldCollisionData->PlayerShieldHitbox->CollisionType == BattlePlayerCollisionType.None) return false;
 
-            normal = shieldCollisionData->PlayerShieldHitbox->Normal;
+            normal = shieldCollisionData->PlayerShieldHitbox->CalculateNormal(f);
             return true;
         }
 

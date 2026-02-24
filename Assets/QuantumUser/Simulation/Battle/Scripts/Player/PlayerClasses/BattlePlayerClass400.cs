@@ -79,8 +79,8 @@ namespace Battle.QSimulation.Player
             }
             else
             {
-                BattleProjectileQSystem.HandleIntersection(f, projectileCollisionData->Projectile, projectileCollisionData->ProjectileEntity, projectileCollisionData->OtherEntity, shieldCollisionData->PlayerShieldHitbox->Normal, shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset);
-                BattleProjectileQSystem.UpdateVelocity(f, projectileCollisionData->Projectile, shieldCollisionData->PlayerShieldHitbox->Normal, BattleProjectileQSystem.SpeedChange.Increment);
+                BattleProjectileQSystem.HandleIntersection(f, projectileCollisionData->Projectile, projectileCollisionData->ProjectileEntity, projectileCollisionData->OtherEntity, shieldCollisionData->PlayerShieldHitbox->CalculateNormal(f), shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset);
+                BattleProjectileQSystem.UpdateVelocity(f, projectileCollisionData->Projectile, shieldCollisionData->PlayerShieldHitbox->CalculateNormal(f), BattleProjectileQSystem.SpeedChange.Increment);
             }
         }
 
