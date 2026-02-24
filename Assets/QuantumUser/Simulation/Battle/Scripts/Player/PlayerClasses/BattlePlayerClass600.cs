@@ -35,13 +35,13 @@ namespace Battle.QSimulation.Player
         /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
         public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData)
         {
-            BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntity);
+            BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
 
             if (!playerShieldData->IsActive) return;
             if (projectileCollisionData->Projectile->EmotionCurrent == BattleEmotionState.Love) return;
             if (shieldCollisionData->IsLoveProjectileCollision) return;
 
-            FPVector2 normal = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->ProjectileEntity)->Position - f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->ParentEntity)->Position;
+            FPVector2 normal = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->ProjectileEntity)->Position - f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef)->Position;
             FPVector2 direction = FPVector2.Reflect(projectileCollisionData->Projectile->Direction, normal).Normalized;
 
             BattleProjectileQSystem.HandleIntersection(f, projectileCollisionData->Projectile, projectileCollisionData->ProjectileEntity, projectileCollisionData->OtherEntity, normal, shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset);

@@ -28,10 +28,10 @@ namespace Quantum
 
         public static implicit operator EntityRef(BattlePlayerShieldEntityRef battlePlayerShieldEntityRef) => battlePlayerShieldEntityRef.ERef;
 
-        public static explicit operator BattlePlayerShieldEntityRef(EntityRef entityRef) => new BattlePlayerShieldEntityRef() { ERef = entityRef };
+        public static explicit operator BattlePlayerShieldEntityRef(EntityRef entityRef) => new() { ERef = entityRef };
 
-        public Transform2D* GetTransform(Frame f) => f.Unsafe.GetPointer<Transform2D>(ERef);
-        public BattlePlayerShieldDataQComponent* GetDataQComponent(Frame f) => f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(ERef);
+        public readonly Transform2D* GetTransform(Frame f) => f.Unsafe.GetPointer<Transform2D>(ERef);
+        public readonly BattlePlayerShieldDataQComponent* GetDataQComponent(Frame f) => f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(ERef);
     }
 }
 
@@ -97,9 +97,8 @@ namespace Battle.QSimulation.Player
 
                 BattlePlayerShieldDataQComponent playerShieldData = new()
                 {
-                    PlayerEntity   = playerCharacterEntity,
-                    HitboxEntities = f.AllocateList<EntityRef>(),
-                    IsActive       = true
+                    PlayerEntityRef = playerCharacterEntity,
+                    ShieldNumber = shieldEntityIndex
                 };
 
                 //} initialize shield component
@@ -152,11 +151,9 @@ namespace Battle.QSimulation.Player
                     // initialize hitbox component
                     BattlePlayerHitboxQComponent playerHitbox = new()
                     {
-                        ParentEntity       = playerShieldEntity,
+                        ParentEntityRef    = playerShieldEntity,
                         HitboxType         = playerHitboxType,
                         CollisionType      = playerHitboxCollisionType,
-                        Normal             = playerHitboxNormal,
-                        NormalBase         = playerHitboxNormal,
                         CollisionMinOffset = ((FP)playerHitboxHeight + FP._0_50) * BattleGridManager.GridScaleFactor
                     };
 

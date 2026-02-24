@@ -50,22 +50,22 @@ namespace Battle.QSimulation.Player
         /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
         public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData)
         {
-            BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntity);
+            BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
 
             if (!playerShieldData->IsActive) return;
             if (projectileCollisionData->Projectile->IsHeld) return;
 
-            BattlePlayerClass400DataQComponent* data = GetClassData(f, shieldCollisionData->PlayerShieldHitbox->ParentEntity);
+            BattlePlayerClass400DataQComponent* data = GetClassData(f, shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
             bool grab = !projectileCollisionData->Projectile->IsPassed;
 
             if (grab)
             {
-                BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntity)->Slot);
+                BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef)->Slot);
                 if (!teammateHandle.PlayState.IsInPlay()) grab = false;
             }
             if (grab)
             {
-                Transform2D* transformPlayer = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->ParentEntity);
+                Transform2D* transformPlayer = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
                 Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->ProjectileEntity);
 
                 FPVector2 toProjectile = transformProjectile->Position - transformPlayer->Position;

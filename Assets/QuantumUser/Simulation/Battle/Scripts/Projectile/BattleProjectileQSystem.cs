@@ -447,12 +447,12 @@ namespace Battle.QSimulation.Projectile
         {
             normal = FPVector2.Zero;
 
-            BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntity);
+            BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
 
             if (!playerShieldData->IsActive) return false;
             if (projectile->EmotionCurrent == BattleEmotionState.Love) return false;
 
-            BattlePlayerDataQComponent* playerData = playerShieldData->PlayerEntity.GetDataQComponent(f);
+            BattlePlayerDataQComponent* playerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
 
             bool isOnTopOfTeammate = false;
 
@@ -462,7 +462,7 @@ namespace Battle.QSimulation.Projectile
             {
                 EntityRef teammateEntity = BattleEntityManager.Get(f, teammateHandle.CharacterEntityGroupID, teammateHandle.SelectedCharacterNumber);
 
-                Transform2D* playerTransform   = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->ParentEntity);
+                Transform2D* playerTransform   = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
                 Transform2D* teammateTransform = f.Unsafe.GetPointer<Transform2D>(teammateEntity);
 
                 BattleGridPosition playerGridPosition   = BattleGridManager.WorldPositionToGridPosition(playerTransform->Position);

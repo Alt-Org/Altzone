@@ -126,45 +126,45 @@ namespace Battle.QSimulation.Player
                 maxAngle = FPMath.Clamp(maxAngle, -maxAllowedAngle, maxAllowedAngle);
 
                 // rotates to left
-                if (maxAngle > playerData->RotationOffset)
+                if (maxAngle > playerData->RotationOffsetRad)
                 {
-                    playerData->RotationOffset += rotationSpeed * f.DeltaTime;
-                    if (playerData->RotationOffset > maxAngle)
+                    playerData->RotationOffsetRad += rotationSpeed * f.DeltaTime;
+                    if (playerData->RotationOffsetRad > maxAngle)
                     {
-                        playerData->RotationOffset = maxAngle;
+                        playerData->RotationOffsetRad = maxAngle;
                     }
-                    s_debugLogger.LogFormat(f, "Leaning left(rotation: {0}", playerData->RotationOffset);
+                    s_debugLogger.LogFormat(f, "Leaning left(rotation: {0}", playerData->RotationOffsetRad);
                 }
 
                 // rotates to right
-                else if (maxAngle < playerData->RotationOffset)
+                else if (maxAngle < playerData->RotationOffsetRad)
                 {
-                    playerData->RotationOffset -= rotationSpeed * f.DeltaTime;
-                    if (playerData->RotationOffset < maxAngle)
+                    playerData->RotationOffsetRad -= rotationSpeed * f.DeltaTime;
+                    if (playerData->RotationOffsetRad < maxAngle)
                     {
-                        playerData->RotationOffset = maxAngle;
+                        playerData->RotationOffsetRad = maxAngle;
                     }
-                    s_debugLogger.LogFormat(f, "Leaning right(rotation: {0}", playerData->RotationOffset);
+                    s_debugLogger.LogFormat(f, "Leaning right(rotation: {0}", playerData->RotationOffsetRad);
                 }
             }
 
             // returns player to 0 rotation when RotateMotion-input ends
-            if (!input->RotationInput && playerData->RotationOffset != 0)
+            if (!input->RotationInput && playerData->RotationOffsetRad != 0)
             {
-                if (playerData->RotationOffset > 0)
+                if (playerData->RotationOffsetRad > 0)
                 {
-                    playerData->RotationOffset -= rotationSpeed * f.DeltaTime;
-                    if (playerData->RotationOffset < 0)
+                    playerData->RotationOffsetRad -= rotationSpeed * f.DeltaTime;
+                    if (playerData->RotationOffsetRad < 0)
                     {
-                        playerData->RotationOffset = 0;
+                        playerData->RotationOffsetRad = 0;
                     }
                 }
                 else
                 {
-                    playerData->RotationOffset += rotationSpeed * f.DeltaTime;
-                    if (playerData->RotationOffset > 0)
+                    playerData->RotationOffsetRad += rotationSpeed * f.DeltaTime;
+                    if (playerData->RotationOffsetRad > 0)
                     {
-                        playerData->RotationOffset = 0;
+                        playerData->RotationOffsetRad = 0;
                     }
                 }
             }

@@ -78,7 +78,7 @@ namespace Battle.QSimulation.Player
         {
             if (projectileCollisionData->Projectile->IsHeld) return;
 
-            BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->ParentEntity);
+            BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->ParentEntityRef);
 
             if (damagedPlayerData->CurrentDefence <= 0) HandleSFX(f, damagedPlayerData->CharacterId, SoundEffectType.Death);
 
@@ -104,7 +104,7 @@ namespace Battle.QSimulation.Player
 
                 damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
 
-                f.Events.BattleCharacterTakeDamage(playerCollisionData->PlayerCharacterHitbox->ParentEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newHp / damagedPlayerData->Stats.Hp);
+                f.Events.BattleCharacterTakeDamage(playerCollisionData->PlayerCharacterHitbox->ParentEntityRef, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newHp / damagedPlayerData->Stats.Hp);
             }
 
             if (damagedPlayerData->CurrentHp <= FP._0)

@@ -35,7 +35,7 @@ namespace Battle.View.Player
         /// <summary>
         /// Struct that holds a map for the player's spritesheet and handles getting a sprite from the spritesheet.
         /// </summary>
-        public struct PlayerSpriteSheetMap : IBattleSpriteSheetMap
+        public struct SpriteSheetMap : IBattleSpriteSheetMap
         {
             /// <summary>
             /// Enum that maps a Sprite name to its index on the player's spritesheet
@@ -81,10 +81,10 @@ namespace Battle.View.Player
                 ShieldDownHit2      = 45,
                 ShieldDownHit3      = 46,
                 ShieldDownHit4      = 47,
-                Happy               = 48,
-                Sad                 = 49,
+                Joy                 = 48,
+                Sadness             = 49,
                 Playful             = 50,
-                Anger               = 51,
+                Agression           = 51,
                 Love                = 52,
                 ShieldBroken        = 56,
                 Defenseless         = 57,
@@ -99,7 +99,7 @@ namespace Battle.View.Player
             ///
             /// <param name="playerSpriteSheetMap">PlayerSpriteSheetMap thats being converted.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static implicit operator Enum(PlayerSpriteSheetMap playerSpriteSheetMap) => playerSpriteSheetMap.EnumValue;
+            public static implicit operator Enum(SpriteSheetMap playerSpriteSheetMap) => playerSpriteSheetMap.EnumValue;
 
             /// <summary>
             /// Implicit convrsion from Enum to PlayerSpriteSheetMap.
@@ -107,7 +107,7 @@ namespace Battle.View.Player
             ///
             /// <param name="enumValue">Enum thats being converted.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static implicit operator PlayerSpriteSheetMap(Enum enumValue) => new PlayerSpriteSheetMap() {EnumValue = enumValue };
+            public static implicit operator SpriteSheetMap(Enum enumValue) => new() {EnumValue = enumValue };
 
             /// <summary>
             /// Helper Enum for conversions.
@@ -194,7 +194,7 @@ namespace Battle.View.Player
 
             if (!_isRegistered)
             {
-                BattleViewRegistry.Register(this.EntityRef, this);
+                BattleViewRegistry.Register(EntityRef, this);
                 _isRegistered = true;
             }
 
@@ -239,7 +239,7 @@ namespace Battle.View.Player
             _classViewController.OnViewInit(this, e.ERef, e.Slot, e.CharacterId);
 
             QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
-            QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, ForwardShieldEvent);
+            QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
         });}
 
         /// <summary>
@@ -326,9 +326,9 @@ namespace Battle.View.Player
         /// </summary>
         ///
         /// <param name="e">Shield take damage event that needs to be forwarded.</param>
-        private void ForwardShieldEvent(EventBattleShieldTakeDamage e)
+        private void QEventOnShieldTakeDamage(EventBattleShieldTakeDamage e)
         {
-            foreach (var shield in _playerShieldViewControllers.Values)
+            foreach (BattlePlayerShieldViewController shield in _playerShieldViewControllers.Values)
             {
                 shield.OnShieldTakeDamage(e);
             }
@@ -390,7 +390,7 @@ namespace Battle.View.Player
         /// <param name="e">The event data.</param>
         private void QEventOnCharacterTakeDamage(EventBattleCharacterTakeDamage e)
         {
-            if (EntityRef != e.Entity) return;
+            if (EntityRef != e.ERef) return;
 
             if (_damageFlashCoroutine != null)
             {

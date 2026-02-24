@@ -529,10 +529,10 @@ namespace Battle.View.Game
             _endOfGameDataGameLengthSec = e.GameLengthSec;
 
             //{ Calling server to add wins and losses
-            
+
             Utils.TryGetQuantumFrame(out Frame f);
             string[] playerUserIds = BattleParameters.GetPlayerSlotUserIDs(f);
-            
+
             bool isValidWin = false;
             // Temporary solution
             if (e.WinningTeam == LocalPlayerTeam)
@@ -572,9 +572,9 @@ namespace Battle.View.Game
                     {
                         if (!success) _debugLogger.Error("Sending battle result failed.");
                     }
-                )); 
+                ));
             }
-            
+
             //} Calling server to add wins and losses
         }
 

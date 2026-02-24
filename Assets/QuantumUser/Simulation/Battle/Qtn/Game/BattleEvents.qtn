@@ -50,7 +50,7 @@ synced event BattlePlayerShieldViewInit
 
 synced event BattleSoulWallViewInit
 {
-    EntityRef Entity;
+    EntityRef ERef;
     FP ModelScale;
     int EmotionIndicatorColorIndex;
     int DebugColorIndex;
@@ -108,7 +108,7 @@ synced event BattleLastRowWallDestroyed
 
 synced event BattleDiamondLanded
 {
-    EntityRef Entity;
+    EntityRef ERef;
 }
 
 synced event BattleCharacterSelected
@@ -119,7 +119,7 @@ synced event BattleCharacterSelected
 
 synced event BattleCharacterTakeDamage
 {
-    EntityRef Entity;
+    EntityRef ERef;
     BattleTeamNumber Team;
     BattlePlayerSlot Slot;
     int CharacterNumber;
@@ -128,7 +128,7 @@ synced event BattleCharacterTakeDamage
 
 synced event BattleShieldTakeDamage
 {
-    EntityRef Entity;
+    EntityRef ERef;
     BattleTeamNumber Team;
     BattlePlayerSlot Slot;
     int CharacterNumber;

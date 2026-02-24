@@ -150,7 +150,7 @@ namespace Battle.QSimulation.Game
             BattleEntityManagerDataQSingleton* entityManagerData = GetEntityManagerData(f);
             QList<EntityRef> entityList = f.ResolveList(entityManagerData->RegisteredEntities);
 
-            BattleEntityID id = new BattleEntityID() { Int = entityList.Count };
+            BattleEntityID id = new() { Int = entityList.Count };
             entityList.Add(entityRef);
             Return(f, entityManagerData, entityRef, id);
 
@@ -176,7 +176,7 @@ namespace Battle.QSimulation.Game
             BattleEntityManagerDataQSingleton* entityManagerData = GetEntityManagerData(f);
             QList<EntityRef> entityList = f.ResolveList(entityManagerData->RegisteredEntities);
 
-            BattleEntityID id = new BattleEntityID() { Int = entityList.Count };
+            BattleEntityID id = new() { Int = entityList.Count };
             BattleEntityID offsetId = id;
 
             for (int i = 0; i < entityRefs.Length; i++)
@@ -209,7 +209,7 @@ namespace Battle.QSimulation.Game
             BattleEntityManagerDataQSingleton* entityManagerData = GetEntityManagerData(f);
             QList<EntityRef> entityList = f.ResolveList(entityManagerData->RegisteredEntities);
 
-            BattleEntityID id = new BattleEntityID() { Int = entityList.Count, IsCompound = true };
+            BattleEntityID id = new() { Int = entityList.Count, IsCompound = true };
             BattleEntityID offsetId = id;
 
             MakeCompound(f, template);
@@ -242,7 +242,7 @@ namespace Battle.QSimulation.Game
             BattleEntityManagerDataQSingleton* entityManagerData = GetEntityManagerData(f);
             QList<EntityRef> entityList = f.ResolveList(entityManagerData->RegisteredEntities);
 
-            BattleEntityID id = new BattleEntityID() { Int = entityList.Count, IsCompound = true };
+            BattleEntityID id = new() { Int = entityList.Count, IsCompound = true };
             BattleEntityID offsetId = id;
 
             for (int i = 0; i < templates.Length; i++)
@@ -325,9 +325,9 @@ namespace Battle.QSimulation.Game
         public static void Return(Frame f, BattleEntityID id)
         {
             BattleEntityManagerDataQSingleton* entityManagerData = GetEntityManagerData(f);
-            EntityRef entity = f.ResolveList(entityManagerData->RegisteredEntities)[id];
+            EntityRef entityRef = f.ResolveList(entityManagerData->RegisteredEntities)[id];
 
-            Return(f, entityManagerData, entity, id);
+            Return(f, entityManagerData, entityRef, id);
         }
 
         /// <summary>
@@ -349,9 +349,9 @@ namespace Battle.QSimulation.Game
             id.Int += offset;
 
             BattleEntityManagerDataQSingleton* entityManagerData = GetEntityManagerData(f);
-            EntityRef entity = f.ResolveList(entityManagerData->RegisteredEntities)[id];
+            EntityRef entityRef = f.ResolveList(entityManagerData->RegisteredEntities)[id];
 
-            Return(f, entityManagerData, entity, id);
+            Return(f, entityManagerData, entityRef, id);
         }
 
         private static bool _updatePlayState;
@@ -399,38 +399,38 @@ namespace Battle.QSimulation.Game
         /// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="parentEntity">Reference to the parent entity.</param>
+        /// <param name="parentEntityRef">Reference to the parent entity.</param>
         /// <param name="position">New position.</param>
         /// <param name="rotation">New rotation</param>
-        public static void MoveCompound(Frame f, EntityRef parentEntity, FPVector2 position, FP rotation)
+        public static void MoveCompound(Frame f, EntityRef parentEntityRef, FPVector2 position, FP rotation)
         {
             s_debugLogger.DevAssertFormat(
                 f,
-                f.Has<BattleCompoundEntityComponent>(parentEntity),
+                f.Has<BattleCompoundEntityComponent>(parentEntityRef),
                 "Parent entity ({0}) is expected to have a BattleCompoundEntityComponent",
-                parentEntity
+                parentEntityRef
             );
-            if (!f.Has<BattleCompoundEntityComponent>(parentEntity)) return;
+            if (!f.Has<BattleCompoundEntityComponent>(parentEntityRef)) return;
 
-            Transform2D* parentTransform = f.Unsafe.GetPointer<Transform2D>(parentEntity);
+            Transform2D* parentTransform = f.Unsafe.GetPointer<Transform2D>(parentEntityRef);
             parentTransform->Position = position;
             parentTransform->Rotation = rotation;
 
-            BattleCompoundEntityComponent compound = f.Get<BattleCompoundEntityComponent>(parentEntity);
+            BattleCompoundEntityComponent compound = f.Get<BattleCompoundEntityComponent>(parentEntityRef);
             QList<BattleEntityLink> linkedEntities = f.ResolveList(compound.LinkedEntities);
 
             for(int i = 0; i < linkedEntities.Count; i++)
             {
-                EntityRef childEntity = linkedEntities[i].ERef;
-                if (!f.Exists(childEntity)) continue;
+                EntityRef linkedEntity = linkedEntities[i].ERef;
+                if (!f.Exists(linkedEntity)) continue;
 
-                Transform2D* childTransform = f.Unsafe.GetPointer<Transform2D>(childEntity);
-                childTransform->Position = CalculateWorldPosition(
+                Transform2D* linkedTransform = f.Unsafe.GetPointer<Transform2D>(linkedEntity);
+                linkedTransform->Position = CalculateWorldPosition(
                         parentTransform->Position,
                         parentTransform->Rotation,
                         linkedEntities[i].Offset
                     );
-                childTransform->Rotation = parentTransform->Rotation;
+                linkedTransform->Rotation = parentTransform->Rotation;
             }
         }
 
@@ -441,32 +441,32 @@ namespace Battle.QSimulation.Game
         /// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="parentEntity">Reference to the parent entity.</param>
+        /// <param name="parentEntityRef">Reference to the parent entity.</param>
         /// <param name="position">New position.</param>
         /// <param name="rotation">New rotation</param>
-        public static void TeleportCompound(Frame f, EntityRef parentEntity, FPVector2 position, FP rotation)
+        public static void TeleportCompound(Frame f, EntityRef parentEntityRef, FPVector2 position, FP rotation)
         {
             s_debugLogger.DevAssertFormat(
                 f,
-                f.Has<BattleCompoundEntityComponent>(parentEntity),
+                f.Has<BattleCompoundEntityComponent>(parentEntityRef),
                 "Parent entity ({0}) is expected to have a BattleCompoundEntityComponent",
-                parentEntity
+                parentEntityRef
             );
-            if (!f.Has<BattleCompoundEntityComponent>(parentEntity)) return;
+            if (!f.Has<BattleCompoundEntityComponent>(parentEntityRef)) return;
 
-            Transform2D* parentTransform = f.Unsafe.GetPointer<Transform2D>(parentEntity);
+            Transform2D* parentTransform = f.Unsafe.GetPointer<Transform2D>(parentEntityRef);
             parentTransform->Teleport(f, position, rotation);
 
-            BattleCompoundEntityComponent compound = f.Get<BattleCompoundEntityComponent>(parentEntity);
+            BattleCompoundEntityComponent compound = f.Get<BattleCompoundEntityComponent>(parentEntityRef);
             QList<BattleEntityLink> linkedEntities = f.ResolveList(compound.LinkedEntities);
 
             for (int i = 0; i < linkedEntities.Count; i++)
             {
-                EntityRef childEntity = linkedEntities[i].ERef;
-                if (!f.Exists(childEntity)) continue;
+                EntityRef linkedEntity = linkedEntities[i].ERef;
+                if (!f.Exists(linkedEntity)) continue;
 
-                Transform2D* childTransform = f.Unsafe.GetPointer<Transform2D>(childEntity);
-                childTransform->Teleport(
+                Transform2D* linkedTransform = f.Unsafe.GetPointer<Transform2D>(linkedEntity);
+                linkedTransform->Teleport(
                     f,
                     CalculateWorldPosition(
                         parentTransform->Position,

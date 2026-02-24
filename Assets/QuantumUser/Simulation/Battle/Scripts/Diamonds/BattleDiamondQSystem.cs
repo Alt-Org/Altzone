@@ -118,12 +118,12 @@ namespace Battle.QSimulation.Diamond
             switch (playerHitbox->HitboxType)
             {
                 case BattlePlayerHitboxType.Character:
-                    playerData = ((BattlePlayerEntityRef)playerHitbox->ParentEntity).GetDataQComponent(f);
+                    playerData = ((BattlePlayerEntityRef)playerHitbox->ParentEntityRef).GetDataQComponent(f);
                     break;
 
                 case BattlePlayerHitboxType.Shield:
-                    BattlePlayerShieldDataQComponent* shieldData = ((BattlePlayerShieldEntityRef)playerHitbox->ParentEntity).GetDataQComponent(f);
-                    playerData = shieldData->PlayerEntity.GetDataQComponent(f);
+                    BattlePlayerShieldDataQComponent* shieldData = ((BattlePlayerShieldEntityRef)playerHitbox->ParentEntityRef).GetDataQComponent(f);
+                    playerData = shieldData->PlayerEntityRef.GetDataQComponent(f);
                     break;
             }
 

@@ -1,3 +1,5 @@
+//{ PlayerEnums
+
 enum BattlePlayerHitboxType
 {
     Shield = 0,
@@ -11,12 +13,35 @@ enum BattlePlayerCollisionType
     Override = 2
 }
 
+//} PlayerEnums
+
+//{ PlayerHitbox
 component BattlePlayerHitboxQComponent
 {
-    EntityRef ParentEntity;
+    EntityRef ParentEntityRef;
     BattlePlayerHitboxType HitboxType;
     BattlePlayerCollisionType CollisionType;
-    FPVector2 Normal;
-    FPVector2 NormalBase;
+    FP NormalAngleRad;
     FP CollisionMinOffset;
 }
+//} PlayerHitbox
+
+//{ PlayerHitboxTemplate
+
+[Serializable]
+struct BattlePlayerHitboxColliderTemplate
+{
+    IntVector2 Position;
+    IntVector2 Size;
+}
+
+[Serializable]
+struct BattlePlayerHitboxTemplate
+{
+    [FreeOnComponentRemoved] list<BattlePlayerHitboxColliderTemplate> ColliderTemplateList;
+    BattlePlayerCollisionType CollisionType;
+
+    FP NormalAngleDeg;
+}
+
+//} PlayerHitboxTemplate
