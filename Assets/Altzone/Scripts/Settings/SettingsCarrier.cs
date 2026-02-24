@@ -85,7 +85,9 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     // Events
     public event Action OnTextSizeChange;
     public event Action OnButtonLabelVisibilityChange;
-    public event Action OnMuteAllSoundsChange;
+
+    public delegate void MuteAllSoundsChange(bool value);
+    public static event MuteAllSoundsChange OnMuteAllSoundsChange;
 
     public delegate void TopBarChanged(int index);
     public static event TopBarChanged OnTopBarChanged;
@@ -140,8 +142,9 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
         set
         {
+            if (_muteAllSounds == value) return;
             _muteAllSounds = value;
-            OnMuteAllSoundsChange?.Invoke();
+            OnMuteAllSoundsChange?.Invoke(_muteAllSounds);
         }
     }
 
