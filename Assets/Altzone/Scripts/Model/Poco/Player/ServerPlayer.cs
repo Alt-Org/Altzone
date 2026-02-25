@@ -38,23 +38,16 @@ namespace Altzone.Scripts.Model.Poco.Player
 
     public class ServerAvatar
     {
-        public int head { get; set; }
-        public int hair { get; set; }
-        public int eyes { get; set; }
-        public int nose { get; set; }
-        public int mouth { get; set; }
-        public int eyebrows { get; set; }
-        public int clothes { get; set; }
-        public int feet { get; set; }
-        public int hands { get; set; }
+        public ServerAvatarPiece head { get; set; }
+        public ServerAvatarPiece hair { get; set; }
+        public ServerAvatarPiece eyes { get; set; }
+        public ServerAvatarPiece nose { get; set; }
+        public ServerAvatarPiece mouth { get; set; }
+        public ServerAvatarPiece eyebrows { get; set; }
+        public ServerAvatarPiece clothes { get; set; }
+        public ServerAvatarPiece feet { get; set; }
+        public ServerAvatarPiece hands { get; set; }
         public string skinColor { get; set; }
-        public string hairColor { get; set; }
-        public string eyesColor { get; set; }
-        public string noseColor { get; set; }
-        public string mouthColor { get; set; }
-        public string clothesColor { get; set; }
-        public string feetColor { get; set; }
-        public string handsColor { get; set; }
 
 
         public ServerAvatar() //This is needed because json parser tries to use the other one otherwise
@@ -63,23 +56,28 @@ namespace Altzone.Scripts.Model.Poco.Player
         }
         public ServerAvatar(AvatarData data)
         {
-            head = 0;
-            hair = data.Hair;
-            eyes = data.Eyes;
-            nose = data.Nose;
-            mouth = data.Mouth;
-            eyebrows = 0;
-            clothes = data.Clothes;
-            feet = data.Feet;
-            hands = data.Hands;
+            head = new(0, "#FFFFFFFF");
+            hair = new(data.Hair, data.HairColor);
+            eyes = new(data.Eyes, data.EyesColor);
+            nose = new(data.Nose, data.NoseColor);
+            mouth = new(data.Mouth, data.MouthColor);
+            eyebrows = new(0, "#FFFFFFFF");
+            clothes = new(data.Clothes, data.ClothesColor);
+            feet = new(data.Feet, data.FeetColor);
+            hands = new(data.Hands, data.HandsColor);
             skinColor = data.Color;
-            hairColor = data.HairColor;
-            eyesColor = data.EyesColor;
-            noseColor = data.NoseColor;
-            mouthColor = data.MouthColor;
-            clothesColor = data.ClothesColor;
-            feetColor = data.FeetColor;
-            handsColor = data.HandsColor;
+        }
+    }
+
+    public class ServerAvatarPiece
+    {
+        public int id { get; set; }
+        public string color { get; set; }
+
+        public ServerAvatarPiece(int id, string color)
+        {
+            this.id = id;
+            this.color = color != null ? color : "#FFFFFF";
         }
     }
 
