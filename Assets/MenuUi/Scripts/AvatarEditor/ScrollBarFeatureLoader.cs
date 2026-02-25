@@ -29,6 +29,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Color _highlightColor = new(0f, 0f, 0f, 0.5f);
         [SerializeField] private Color _backgroundColor = new(0.5f, 0.5f, 0.5f, 0.7f);
         [SerializeField] private AvatarEditorCharacterHandle _characterHandle;
+        [SerializeField] private ColorPicker _colorPicker;
 
         private List<AvatarPartInfo> _avatarPartInfo;
         private readonly Dictionary<string, AvatarPiece> _featureCategoryIdToAvatarPiece = new Dictionary<string, AvatarPiece>
@@ -162,7 +163,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _selectedCellHandler = handler;
             handler.Highlight(true);
 
-            _colorSelection.gameObject.SetActive(handler.IsColorable);
+            ColorSelectActive(handler.IsColorable);
         }
 
         private void AddListeners(FeatureCellHandler handler, AvatarPartInfo avatarPart, AvatarPiece slot)
@@ -172,6 +173,12 @@ namespace MenuUi.Scripts.AvatarEditor
                 _featureSetter.SetFeature(avatarPart, slot);
                 UpdateHighlightedCell(handler);
             });
+        }
+
+        private void ColorSelectActive(bool isActive)
+        {
+            _colorPicker.SetActive(isActive);
+            _colorSelection.gameObject.SetActive(isActive);
         }
 
         public void RefreshFeatureListItems(string categoryId)
@@ -185,12 +192,12 @@ namespace MenuUi.Scripts.AvatarEditor
                 {
                     AddFeatureCell(part.IconImage, part);
                 }
-                _colorSelection.gameObject.SetActive(_selectedCellHandler.IsColorable);
+                ColorSelectActive(_selectedCellHandler.IsColorable);
             }
             else
             {
                 AddSkinColorSelectionCells();
-                _colorSelection.gameObject.SetActive(false);
+                ColorSelectActive(false);
             }
             _currentCategory = categoryId;
         }

@@ -37,6 +37,12 @@ public class ColorPicker : MonoBehaviour
         _colorCircle.OnColorChanged += HandleColorChanged;
     }
 
+    public void SetActive(bool setActive)
+    {
+        _colorApplyButton.gameObject.SetActive(setActive);
+        _colorPickerButton.gameObject.SetActive(setActive);
+    }
+
     private void OnDisable()
     {
         _colorCircle.OnColorChanged -= HandleColorChanged;
