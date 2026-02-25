@@ -39,7 +39,7 @@ public class ColorGetter : MonoBehaviour, IPointerDownHandler, IDragHandler
             return;
         }
 
-        float radius = rectTransform.rect.width * 0.5f;
+        float radius = (rectTransform.rect.width * 0.5f) * 0.99f;
 
         if (localPoint.magnitude > radius)
         {
