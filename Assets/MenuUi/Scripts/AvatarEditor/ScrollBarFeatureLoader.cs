@@ -115,7 +115,7 @@ namespace MenuUi.Scripts.AvatarEditor
             AvatarPiece avatarPieceId = _featureCategoryIdToAvatarPiece[featureCategoryid];
             string selectedPieceId = _avatarEditorController.PlayerAvatar.GetPartId(avatarPieceId);
 
-            handler.SetValues(cellImage, _highlightColor, _backgroundColor);
+            handler.SetValues(cellImage, _highlightColor, _backgroundColor, avatarPart.IsColorable);
 
             AddListeners(handler, avatarPart, avatarPieceId);
 
@@ -161,6 +161,8 @@ namespace MenuUi.Scripts.AvatarEditor
             
             _selectedCellHandler = handler;
             handler.Highlight(true);
+
+            _colorSelection.gameObject.SetActive(handler.IsColorable);
         }
 
         private void AddListeners(FeatureCellHandler handler, AvatarPartInfo avatarPart, AvatarPiece slot)
@@ -174,16 +176,6 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public void RefreshFeatureListItems(string categoryId)
         {
-            // Don't Show Color Selection on hair, nose or skin color selection
-            if (categoryId == "10" || categoryId == "" || categoryId == "22")
-            {
-                _colorSelection.gameObject.SetActive(false);
-            }
-            else
-            {
-                _colorSelection.gameObject.SetActive(true);
-            }
-
             DestroyFeatureListItems();
 
             if (categoryId != "")
@@ -193,10 +185,12 @@ namespace MenuUi.Scripts.AvatarEditor
                 {
                     AddFeatureCell(part.IconImage, part);
                 }
+                _colorSelection.gameObject.SetActive(_selectedCellHandler.IsColorable);
             }
             else
             {
                 AddSkinColorSelectionCells();
+                _colorSelection.gameObject.SetActive(false);
             }
             _currentCategory = categoryId;
         }
