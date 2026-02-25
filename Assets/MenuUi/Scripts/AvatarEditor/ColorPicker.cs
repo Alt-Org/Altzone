@@ -22,10 +22,11 @@ public class ColorPicker : MonoBehaviour
     [SerializeField] private ColorGetter _colorCircle;
     [SerializeField] private Slider _slider;
 
+    private Color _color = Color.white;
 
     private void Start()
     {
-        _colorApplyButton.onClick.AddListener(() => AddListener(Color.red));
+        _colorApplyButton.onClick.AddListener(() => AddListener(_color));
         //_clickArea.SetActive(false);
         _popupConfirmButton.onClick.AddListener(() => ClosePopup());
         _clickAreaButton.onClick.AddListener(() => ClosePopup());
@@ -37,12 +38,6 @@ public class ColorPicker : MonoBehaviour
         _colorCircle.OnColorChanged += HandleColorChanged;
     }
 
-    public void SetActive(bool setActive)
-    {
-        _colorApplyButton.gameObject.SetActive(setActive);
-        _colorPickerButton.gameObject.SetActive(setActive);
-    }
-
     private void OnDisable()
     {
         _colorCircle.OnColorChanged -= HandleColorChanged;
@@ -51,6 +46,12 @@ public class ColorPicker : MonoBehaviour
     private void HandleColorChanged(Color color)
     {
         UpdateColor(color);
+    }
+
+    public void SetActive(bool setActive)
+    {
+        _colorApplyButton.gameObject.SetActive(setActive);
+        _colorPickerButton.gameObject.SetActive(setActive);
     }
 
     private void ClosePopup()
@@ -67,15 +68,11 @@ public class ColorPicker : MonoBehaviour
 
     private void UpdateColor(Color color)
     {
-        Color previewColor = color;
+        _color = color;
 
-        Color colorPickerColorButtonColor = color;
-
-        Color sliderBackgroundColor = color;
-
-        _previewColor.color = previewColor;
-        _colorPickerColorButtonColorImage.color = colorPickerColorButtonColor;
-        _sliderBackground.color = sliderBackgroundColor;
+        _previewColor.color = _color;
+        _colorPickerColorButtonColorImage.color = _color;
+        _sliderBackground.color = _color;
     }
 
     private void AddListener(Color color)
