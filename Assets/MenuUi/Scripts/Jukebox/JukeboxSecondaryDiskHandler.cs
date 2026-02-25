@@ -1,18 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Audio;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class JukeboxMainDiskHandler : MonoBehaviour
+public class JukeboxSecondaryDiskHandler : MonoBehaviour
 {
     [SerializeField] private Image _mainDiskImage;
     [SerializeField] private Sprite _emptyDiskSprite;
     [SerializeField] private float _diskRotationSpeed = 100f;
-    [Space]
-    [SerializeField] private GameObject _offlineIndicatorContent;
-    [SerializeField] private Button _multiUseButton;
-    [SerializeField] private TMPro.TextMeshProUGUI _indicatorText;
-    [SerializeField] private GameObject _customIndicatorImageHolder;
     [Header("Switch Disk Animation")]
     [SerializeField] private bool _useAnimation = false;
     [SerializeField] private float _switchDiskAnimDuration = 1f;
@@ -22,29 +18,6 @@ public class JukeboxMainDiskHandler : MonoBehaviour
     [SerializeField] private Image _secondaryDiskImage;
 
     private Coroutine _diskSpinCoroutine;
-
-    public delegate void MultiUseButtonPressed();
-    public event MultiUseButtonPressed OnMultiUseButtonPressed;
-
-    private List<string> _indicatorTexts = new List<string>()
-    {
-        "",
-        "Esikuuntelu\r\nPäällä",
-        "Jukeboxi\r\nMykistetty",
-        "Pysäytetty",
-        "Soittolista\r\nTyhjä",
-        "Mykistetty\r\nAsetuksista"
-    };
-
-    public enum JukeboxDiskTextType
-    {
-        None = 0,
-        Preview = 1,
-        Muted = 2,
-        Stopped = 3,
-        Empty = 4,
-        VolumeZero = 5
-    }
 
     #region Animation
     private Vector2 _mainAnchorMinStart = new Vector2(1f, 0f);
@@ -58,15 +31,18 @@ public class JukeboxMainDiskHandler : MonoBehaviour
     private Vector2 _secondaryAnchorMaxEnd = new Vector2(0f, 1f);
     #endregion
 
-    private void Awake()
+    private void OnEnable()
     {
-        if (_multiUseButton != null) _multiUseButton.onClick.AddListener(() => OnMultiUseButtonPressed.Invoke());
+        JukeboxManager.Instance.OnPreviewStart += StartSpinDisk;
+        JukeboxManager.Instance.OnPreviewEnd += StopSpinDisk;
+    }
 
-        _mainDiskRectTransform.anchorMin = _mainAnchorMinEnd;
-        _mainDiskRectTransform.anchorMax = _mainAnchorMaxEnd;
+    private void OnDisable()
+    {
+        JukeboxManager.Instance.OnPreviewStart -= StartSpinDisk;
+        JukeboxManager.Instance.OnPreviewEnd -= StopSpinDisk;
 
-        _secondaryDiskRectTransform.anchorMin = _secondaryAnchorMinEnd;
-        _secondaryDiskRectTransform.anchorMax = _secondaryAnchorMaxEnd;
+        StopSpinDisk();
     }
 
     #region Base
@@ -80,15 +56,15 @@ public class JukeboxMainDiskHandler : MonoBehaviour
             _mainDiskImage.sprite = sprite;
     }
 
-    public bool StartSpinDisk()
+    public void StartSpinDisk()
     {
-        if (_diskSpinCoroutine != null) return false;
+        if (_diskSpinCoroutine != null) return;
 
         _diskSpinCoroutine = StartCoroutine(SpinDisk());
-        return true;
+        return;
     }
 
-    public void StopDiskSpin()
+    public void StopSpinDisk()
     {
         if (_diskSpinCoroutine != null)
         {
@@ -99,17 +75,7 @@ public class JukeboxMainDiskHandler : MonoBehaviour
         _mainDiskImage.transform.rotation = Quaternion.identity;
     }
 
-    public void ClearDisk()
-    {
-        StopDiskSpin();
-        _mainDiskImage.sprite = _emptyDiskSprite;
-
-        _mainDiskRectTransform.anchorMin = _mainAnchorMinEnd;
-        _mainDiskRectTransform.anchorMax = _mainAnchorMaxEnd;
-
-        _secondaryDiskRectTransform.anchorMin = _secondaryAnchorMinEnd;
-        _secondaryDiskRectTransform.anchorMax = _secondaryAnchorMaxEnd;
-    }
+    public void ClearDisk() { StopSpinDisk(); _mainDiskImage.sprite = _emptyDiskSprite; }
 
     private IEnumerator SpinDisk()
     {
@@ -120,18 +86,6 @@ public class JukeboxMainDiskHandler : MonoBehaviour
             yield return null;
         }
     }
-    #endregion
-
-    #region Indicators
-    public void ToggleIndicatorHolder(bool value) { _offlineIndicatorContent.SetActive(value); }
-
-    public void SetIndicatorText(JukeboxDiskTextType textType)
-    {
-        _indicatorText.text = _indicatorTexts[(int)textType];
-        ToggleIndicatorHolder(true);
-    }
-
-    public void ToggleCustomIndicatorImage(bool value) { _customIndicatorImageHolder.SetActive(value); }
     #endregion
 
     #region Animation
@@ -148,13 +102,11 @@ public class JukeboxMainDiskHandler : MonoBehaviour
         _secondaryDiskRectTransform.anchorMin = _secondaryAnchorMinStart;
         _secondaryDiskRectTransform.anchorMax = _secondaryAnchorMaxStart;
 
-        StopDiskSpin();
+        StopSpinDisk();
 
         StartCoroutine(SwitchDisk((data) => diskSwitchDone = data));
 
         yield return new WaitUntil(() => diskSwitchDone != null);
-
-        StartSpinDisk();
 
         if (done != null) done(true);
     }
@@ -182,5 +134,4 @@ public class JukeboxMainDiskHandler : MonoBehaviour
         done(true);
     }
     #endregion
-
 }
