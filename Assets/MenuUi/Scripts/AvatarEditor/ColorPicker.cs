@@ -18,9 +18,7 @@ public class ColorPicker : MonoBehaviour
     [SerializeField] private GameObject _colorPickerPopup;
     [SerializeField] private Image _previewColor;
     [SerializeField] private Image _colorPickerColorButtonColorImage;
-    [SerializeField] private Image _sliderBackground;
     [SerializeField] private ColorGetter _colorCircle;
-    [SerializeField] private Slider _slider;
 
     private Color _color = Color.white;
 
@@ -72,7 +70,6 @@ public class ColorPicker : MonoBehaviour
 
         _previewColor.color = _color;
         _colorPickerColorButtonColorImage.color = _color;
-        _sliderBackground.color = _color;
     }
 
     private void AddListener(Color color)
