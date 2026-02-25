@@ -36,7 +36,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _rooms;
 
-        private BoxCollider2D _roomBounds;
+        private Bounds _roomBounds;
 
         private List<GameObject> _changedFurnitureList = new();
 
@@ -87,7 +87,7 @@ namespace MenuUI.Scripts.SoulHome
         public List<GameObject> ChangedFurnitureList { get => _changedFurnitureList; set => _changedFurnitureList = value; }
         public bool EditingMode { get => editingMode;}
         public bool Rotated { get => _rotated;}
-        public BoxCollider2D RoomBounds { get => _roomBounds; set { if(_roomBounds == null) _roomBounds = value; } }
+        public Bounds RoomBounds { get => _roomBounds; set {  _roomBounds = value; } }
 
         // Start is called before the first frame update
         void Start()
@@ -936,10 +936,9 @@ namespace MenuUI.Scripts.SoulHome
         public void SetCameraBounds()
         {
             cameraBounds = _backgroundSprite.bounds;
-            Bounds roomBounds = _roomBounds.bounds;
-            cameraMinX = roomBounds.min.x;
+            cameraMinX = _roomBounds.min.x;
             cameraMinY = cameraBounds.min.y;
-            cameraMaxX = roomBounds.max.x;
+            cameraMaxX = _roomBounds.max.x;
             cameraMaxY = cameraBounds.max.y;
         }
 
