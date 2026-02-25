@@ -15,18 +15,21 @@ public class ColorPicker : MonoBehaviour
     [SerializeField] private AvatarEditorController _controller;
     [SerializeField] private Button _clickAreaButton;
     [SerializeField] private Button _popupConfirmButton;
+    [SerializeField] private Button _popupCancelButton;
     [SerializeField] private GameObject _colorPickerPopup;
     [SerializeField] private Image _previewColor;
     [SerializeField] private Image _colorPickerColorButtonColorImage;
     [SerializeField] private ColorGetter _colorCircle;
 
     private Color _color = Color.white;
+    private Color _previousColor = Color.white;
 
     private void Start()
     {
         _colorApplyButton.onClick.AddListener(() => AddListener(_color));
         //_clickArea.SetActive(false);
         _popupConfirmButton.onClick.AddListener(() => ClosePopup());
+        _popupCancelButton.onClick.AddListener(() => CancelChanges());
         _clickAreaButton.onClick.AddListener(() => ClosePopup());
         _colorPickerButton.onClick.AddListener(() => OpenPopup());
     }
@@ -62,6 +65,13 @@ public class ColorPicker : MonoBehaviour
     {
         _clickAreaButton.gameObject.SetActive(true);
         _colorPickerPopup.SetActive(true);
+        _previousColor = _color;
+    }
+
+    private void CancelChanges()
+    {
+        ClosePopup();
+        UpdateColor(_previousColor);
     }
 
     private void UpdateColor(Color color)
