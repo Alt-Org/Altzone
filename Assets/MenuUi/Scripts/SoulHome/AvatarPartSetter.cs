@@ -24,7 +24,7 @@ namespace MenuUI.Scripts.SoulHome
             public string _suffix;
         }
 
-        public static void AssignAvatarPart(SpriteResolver resolver, AvatarResolverStruct resolverStruct, PlayerData playerData, AvatarPartsReference avatarPartsReference, AvatarPart part)
+        public static void AssignAvatarPart(SpriteResolver resolver, AvatarResolverStruct resolverStruct, PlayerData playerData, AvatarPart part)
         {
             SpriteLibraryAsset library = resolver.spriteLibrary.spriteLibraryAsset;
             SpriteRenderer spriteRenderer = resolver.GetComponent<SpriteRenderer>();
@@ -51,7 +51,7 @@ namespace MenuUI.Scripts.SoulHome
             resolver.SetCategoryAndLabel(resolverStruct._category, label);
             resolver.ResolveSpriteToSpriteRenderer();
             SpriteRenderer renderer = resolver.GetComponent<SpriteRenderer>();
-            SetMask(renderer, label, playerData, avatarPartsReference, part);
+            SetMask(renderer, label, playerData, part);
         }
 
         private static string ResolveLabel(AvatarResolverStruct resolverStruct, PlayerData playerData)
@@ -78,7 +78,7 @@ namespace MenuUI.Scripts.SoulHome
             return idString + resolverStruct._suffix;
         }
 
-        private static void SetMask(SpriteRenderer renderer, string label, PlayerData playerData, AvatarPartsReference partsReference, AvatarPart part)
+        private static void SetMask(SpriteRenderer renderer, string label, PlayerData playerData, AvatarPart part)
         {
             if (renderer == null)
             {
@@ -88,17 +88,13 @@ namespace MenuUI.Scripts.SoulHome
             s_materialPropertyBlock.Clear();
             renderer.GetPropertyBlock(s_materialPropertyBlock);
 
-            if (playerData?.AvatarData?.Color != null)
+            Color skinColor = Color.white;
+            if (playerData?.AvatarData?.Color != null && ColorUtility.TryParseHtmlString(playerData.AvatarData.Color, out Color parsedSkinColor))
             {
-                if (ColorUtility.TryParseHtmlString(playerData.AvatarData.Color, out Color skinColor))
-                {
-                    s_materialPropertyBlock.SetColor("_SkinColor", skinColor);
-                }
+                skinColor = parsedSkinColor;
             }
-            else
-            {
-                s_materialPropertyBlock.SetColor("_SkinColor", Color.white);
-            }
+
+            s_materialPropertyBlock.SetColor("_SkinColor", skinColor);
 
             int? id = playerData?.SelectedCharacterId;
             Color classColor = Color.white;
@@ -108,6 +104,7 @@ namespace MenuUI.Scripts.SoulHome
                 CharacterClassType classType = BaseCharacter.GetClass((CharacterID)id.Value);
                 classColor = ClassReference.Instance.GetColor(classType);
             }
+
             s_materialPropertyBlock.SetColor("_ClassColor", classColor);
 
             Color selectedColor = GetSelectedColor(playerData, part);
@@ -121,25 +118,30 @@ namespace MenuUI.Scripts.SoulHome
 
             Texture2D mask;
 
-            if (partInfo != null && partInfo.MaskImage != null)
+            // Nose is always skin color
+            if (part == AvatarPart.Nose)
             {
-                mask = partInfo.MaskImage.texture;
-                s_materialPropertyBlock.SetTexture("_MaskTex", mask);
+                mask = AvatarMaskUtility.GetSkinColorMask(renderer.sprite.texture);
+            }
+            else if (partInfo != null && partInfo.MaskImage != null)
+            {
+                mask = partInfo.MaskImage.texture;;
             }
             // If maskimage does not exist color whole part, if part is colorable
             else if (partInfo != null && partInfo.MaskImage == null && isColorable)
             {
                 Texture2D referenceTexture = partInfo.AvatarImage.texture;
-                Texture2D selecterdColorMask = AvatarMaskUtility.GetSelectedColorMask(referenceTexture);
-                s_materialPropertyBlock.SetTexture("_MaskTex", selecterdColorMask);
+                mask = AvatarMaskUtility.GetSelectedColorMask(referenceTexture);
             }
             // optionally don't color at all
             else
             {
-                s_materialPropertyBlock.SetTexture("_MaskTex", AvatarMaskUtility.GetTransparentTexPixel);
+                mask = AvatarMaskUtility.GetTransparentTexPixel;
             }
 
-                renderer.SetPropertyBlock(s_materialPropertyBlock);
+            s_materialPropertyBlock.SetTexture("_MaskTex", mask);
+
+            renderer.SetPropertyBlock(s_materialPropertyBlock);
         }
 
         public static void SetHeadColor(SpriteRenderer headSpriteRenderer, PlayerData playerData)

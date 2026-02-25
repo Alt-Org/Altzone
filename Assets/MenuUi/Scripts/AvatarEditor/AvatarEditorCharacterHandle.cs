@@ -91,40 +91,42 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
     {
         Sprite image = partInfo ? partInfo.AvatarImage : null;
         Sprite mask = partInfo ? partInfo.MaskImage : null;
-        bool isColorable = partInfo ? partInfo.IsColorable : false;
-            
+
         switch (feature)
         {
             case AvatarPiece.Hair:
                 SetImage(_mainHair, image);
-                SetHairImage(_mainHair, mask, partColor, isColorable);
+                SetHairImage(_mainHair, mask, partColor);
                 break;
 
             case AvatarPiece.Eyes:
                 SetImage(_mainEyes, image);
-                SetMaskImage(_mainEyes, mask, partColor, isColorable);
+                SetMaskImage(_mainEyes, mask, partColor);
                 break;
 
             case AvatarPiece.Nose:
                 SetImage(_mainNose, image);
                 //SetMaskImage(_mainNose, mask, partColor);
-                Texture2D noseMask = AvatarMaskUtility.GetSkinColorMask(image.texture);
-                EnsureMaterial(_mainNose);
-                _mainNose.material.SetTexture("_MaskTex", noseMask);
-                _mainNose.material.SetColor("_SkinColor", _skinColor);
-                _mainNose.material.SetColor("_SelectedColor", _skinColor);
-                _mainNose.material.SetColor("_ClassColor", _classColor);
-                _mainNose.material.SetFloat("_Colorable", 1f);
+                if (image != null)
+                {
+                    Texture2D noseMask = AvatarMaskUtility.GetSkinColorMask(image.texture);
+                    EnsureMaterial(_mainNose);
+                    _mainNose.material.SetTexture("_MaskTex", noseMask);
+                    _mainNose.material.SetColor("_SkinColor", _skinColor);
+                    _mainNose.material.SetColor("_SelectedColor", _skinColor);
+                    _mainNose.material.SetColor("_ClassColor", _classColor);
+                }
+                
                 break;
 
             case AvatarPiece.Mouth:
                 SetImage(_mainMouth, image);
-                SetMaskImage(_mainMouth, mask, partColor, isColorable);
+                SetMaskImage(_mainMouth, mask, partColor);
                 break;
 
             case AvatarPiece.Clothes:
                 SetImage(_mainBody, image);
-                SetMaskImage(_mainBody, mask, partColor, isColorable);
+                SetMaskImage(_mainBody, mask, partColor);
 
                 if (_mainHair != null && _mainHair.sprite != null)
                 {
@@ -134,12 +136,12 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
 
             case AvatarPiece.Hands:
                 SetImage(_mainHands, image);
-                SetMaskImage(_mainHands, mask, partColor, isColorable);
+                SetMaskImage(_mainHands, mask, partColor);
                 break;
 
             case AvatarPiece.Feet:
                 SetImage(_mainFeet, image);
-                SetMaskImage(_mainFeet, mask, partColor, isColorable);
+                SetMaskImage(_mainFeet, mask, partColor);
                 break;
         }
     }
@@ -156,7 +158,7 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         imageComponent.sprite = image;
     }
 
-    private void SetHairImage(Image avatarImage, Sprite maskSprite, Color selectedColor, bool isColorable)
+    private void SetHairImage(Image avatarImage, Sprite maskSprite, Color selectedColor)
     {
         // Hair uses a different shader & material to replace parts overlapping the body with transparency
         if (avatarImage.sprite == null)
@@ -179,7 +181,6 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
             maskTex = AvatarMaskUtility.GetSelectedColorMask(avatarImage.sprite.texture);
         }
 
-        _mainHair.material.SetFloat("_Colorable", isColorable ? 1f : 0f);
         _mainHair.material.SetTexture("_MaskTex", maskTex);
         _mainHair.material.SetColor("_SkinColor", _skinColor);
         _mainHair.material.SetColor("_SelectedColor", selectedColor);
@@ -205,7 +206,7 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         }
     }
 
-    private void SetMaskImage(Image avatarImage, Sprite maskSprite, Color selectedColor, bool isColorable)
+    private void SetMaskImage(Image avatarImage, Sprite maskSprite, Color selectedColor)
     {
         if (avatarImage.sprite == null)
         {
@@ -227,7 +228,6 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
             maskTex = AvatarMaskUtility.GetSelectedColorMask(avatarImage.sprite.texture);
         }
 
-        avatarImage.material.SetFloat("_Colorable", isColorable ? 1f : 0f);
         avatarImage.material.SetTexture("_MaskTex", maskTex);
         avatarImage.material.SetColor("_SkinColor", _skinColor);
         avatarImage.material.SetColor("_SelectedColor", selectedColor);

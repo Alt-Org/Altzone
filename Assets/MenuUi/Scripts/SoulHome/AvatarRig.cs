@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Player;
+using MenuUI.Scripts.SoulHome;
 using UnityEngine;
 using UnityEngine.U2D.Animation;
 
@@ -19,8 +21,24 @@ public class AvatarRig : MonoBehaviour
         }
     }
 
-    public SpriteResolver GetRenderer(AvatarPart part)
+    private SpriteResolver GetRenderer(AvatarPart part)
     {
         return _resolvers.TryGetValue(part, out SpriteResolver resolver) ? resolver : null;
+    }
+
+    public void ApplyAvatarToRig(PlayerData playerData)
+    {
+        foreach ((AvatarPart part, SpriteResolver resolver) in _resolvers)
+        {
+            if (!AvatarResolverDictionary.Instance.TryGetValue(part, out AvatarPartSetter.AvatarResolverStruct resolverStruct))
+            {
+                continue;
+            }
+
+            AvatarPartSetter.AssignAvatarPart(resolver, resolverStruct, playerData, part);
+        }
+
+        SpriteRenderer headSpriteRenderer = GetRenderer(AvatarPart.Head).GetComponent<SpriteRenderer>();
+        AvatarPartSetter.SetHeadColor(headSpriteRenderer, playerData);
     }
 }

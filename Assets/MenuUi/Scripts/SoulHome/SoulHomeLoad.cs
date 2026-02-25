@@ -39,11 +39,8 @@ namespace MenuUI.Scripts.SoulHome {
         [SerializeField] private Camera _towerCamera;
         [SerializeField] private ClanPlayerFetcher _clanPlayerFetcher;
         [SerializeField] private SpriteLibraryAsset _avatarSpriteLibrary;
-        [SerializeField] private AvatarPartsReference _avatarPartsReference;
 
         private List<Furniture> _furnitureList = null;
-
-        private readonly Dictionary<string, AvatarRig> _spawnedAvatars = new(); // string is playerId
 
         private const string SERVER_ADDRESS = "https://altzone.fi/api/soulhome";
 
@@ -56,108 +53,9 @@ namespace MenuUI.Scripts.SoulHome {
 
         private int _runningCoroutines = 0;
 
-        private readonly Dictionary<AvatarPart, AvatarPartSetter.AvatarResolverStruct> _resolverDictionary = new()
-        {
-            {
-                AvatarPart.Body,
-                new AvatarPartSetter.AvatarResolverStruct
-                {
-                    _dataGetter = data => data.Clothes,
-                    _category = "Body",
-                    _suffix = "",
-                }
-            },
-            {
-                AvatarPart.R_Hand,
-                new AvatarPartSetter.AvatarResolverStruct
-                {
-                    _dataGetter = data => data.Hands,
-                    _category = "Hands",
-                    _suffix = "R"
-                }
-            },
-            {
-                AvatarPart.L_Hand,
-                new AvatarPartSetter.AvatarResolverStruct
-                {
-                    _dataGetter = data => data.Hands,
-                    _category = "Hands",
-                    _suffix = "L"
-                }
-            },
-            {
-                AvatarPart.L_Eyebrow,
-                new AvatarPartSetter.AvatarResolverStruct
-                {
-                    _dataGetter = data => data.Eyes,
-                    _category = "Eyebrows",
-                    _suffix = "L"
-                }
-            },
-            {
-                AvatarPart.L_Eye,
-                new AvatarPartSetter.AvatarResolverStruct
-                {
-                    _dataGetter = data => data.Eyes,
-                    _category ="Eyes",
-                    _suffix = "L"
-                }
-            },
-            {
-                AvatarPart.R_Eyebrow,
-                new AvatarPartSetter.AvatarResolverStruct
-                {
-                    _dataGetter = data => data.Eyes,
-                    _category = "Eyebrows",
-                    _suffix = "R"
-                }
-            },
-            {
-                AvatarPart.R_Eye,
-                new AvatarPartSetter.AvatarResolverStruct
-                {
-                    _dataGetter = data => data.Eyes,
-                    _category = "Eyes",
-                    _suffix = "R"
-                }
-            },
-            {
-                AvatarPart.Nose,
-                new AvatarPartSetter.AvatarResolverStruct
-                {
-                    _dataGetter = data => data.Nose,
-                    _category = "Nose",
-                    _suffix = ""
-                }
-            },
-            {
-                AvatarPart.Mouth,
-                new AvatarPartSetter.AvatarResolverStruct
-                {
-                    _dataGetter = data => data.Mouth,
-                    _category = "Mouth",
-                    _suffix = ""
-                }
-            },
-            {
-                AvatarPart.R_Leg,
-                new AvatarPartSetter.AvatarResolverStruct
-                {
-                    _dataGetter = data => data.Feet,
-                    _category = "Legs",
-                    _suffix= "R"
-                }
-            },
-            {
-                AvatarPart.L_Leg,
-                new AvatarPartSetter.AvatarResolverStruct
-                {
-                    _dataGetter = data => data.Feet,
-                    _category = "Legs",
-                    _suffix = "L"
-                }
-            },
-        };
+        private string _localPlayerId;
+
+        private AvatarRig _localPlayerRig;
 
         public bool LoadFinished { get => _loadFinished;}
 
@@ -165,7 +63,7 @@ namespace MenuUI.Scripts.SoulHome {
         void Start()
         {
             RefreshSoulHome();
-
+            _localPlayerId = ServerManager.Instance.Player._id;
             ServerManager.OnLogInStatusChanged += UpdateOnLoginStatusChanged;
         }
 
@@ -180,6 +78,7 @@ namespace MenuUI.Scripts.SoulHome {
             if (_loginStatusChanged)
             {
                 _loginStatusChanged = false;
+                _localPlayerId = ServerManager.Instance.Player._id;
                 RefreshSoulHome();
             }
         }
@@ -239,13 +138,14 @@ namespace MenuUI.Scripts.SoulHome {
                     Destroy(grandChild.gameObject);
                 }
             }
-            _spawnedAvatars.Clear();
             _soulHomeRooms = null;
             _furnitureFetchFinished = false;
             _roomsReady = false;
             _furnituresSet = false;
             _loadFinished = false;
             _furnitureList = null;
+            _localPlayerId = null;
+            _localPlayerRig = null;
         }
 
         private IEnumerator TrackedCoroutine(IEnumerator coroutine)
@@ -411,7 +311,8 @@ namespace MenuUI.Scripts.SoulHome {
                 roomObject.GetComponent<RoomData>().InitializeSoulHomeRoom(room,_soulHomeController, _towerCamera, (_soulHomeRooms.Room.Count <= i+1));
                 if (i == 0)
                 {
-                    _towerController.RoomBounds = roomObject.GetComponent<BoxCollider2D>();
+                    BoxCollider2D collider = roomObject.GetComponent<BoxCollider2D>();
+                    _towerController.RoomBounds = collider.bounds;
                 }
                 i++;
             }
@@ -557,9 +458,7 @@ namespace MenuUI.Scripts.SoulHome {
             yield return new WaitUntil(() => _furnituresSet);
             yield return new WaitUntil(() => _clanPlayerFetcher.PlayersLoaded);
 
-            int spawnAmount = Mathf.Min(_roomAmount, _clanPlayerFetcher.Players.Count);
-
-            for (int i = 0; i < spawnAmount; i++)
+            for (int i = 0; i < _roomAmount; i++)
             {
                 GameObject avatarParent = Instantiate(_avatarPlaceholder, _roomPositions.transform.GetChild(i).GetChild(0));
                 GameObject avatar = avatarParent.transform.GetChild(0).gameObject;
@@ -567,37 +466,25 @@ namespace MenuUI.Scripts.SoulHome {
 
                 PlayerData playerData = _clanPlayerFetcher.Players[i];
 
-                ApplyAvatarToRig(rig, playerData);
+                if (playerData?.Id == _localPlayerId)
+                {
+                    _localPlayerRig = rig;
+                }
 
-                _spawnedAvatars[playerData.Id] = rig;
+                rig.ApplyAvatarToRig(playerData);
             }
             _loadFinished = true;
         }
 
-        private void ApplyAvatarToRig(AvatarRig rig, PlayerData playerData)
-        {
-            foreach ((AvatarPart part, SpriteResolver resolver) in rig.Resolvers)
-            {
-                if (!_resolverDictionary.TryGetValue(part, out AvatarPartSetter.AvatarResolverStruct resolverStruct))
-                {
-                    continue;
-                }
-
-                AvatarPartSetter.AssignAvatarPart(resolver, resolverStruct, playerData, _avatarPartsReference, part);
-
-                SpriteRenderer headSpriteRenderer = rig.GetRenderer(AvatarPart.Head).GetComponent<SpriteRenderer>();
-                AvatarPartSetter.SetHeadColor(headSpriteRenderer, playerData);
-            }
-        }
 
         private void OnLocalAvatarUpdated(PlayerData playerData)
         {
-            if (!_spawnedAvatars.TryGetValue(playerData.Id, out AvatarRig rig))
+            if (_localPlayerRig == null)
             {
                 return;
             }
 
-            ApplyAvatarToRig(rig, playerData);
+            _localPlayerRig.ApplyAvatarToRig(playerData);
         }
     }
 }

@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts;
+using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
@@ -25,29 +27,28 @@ public class ClanPlayerFetcher : MonoBehaviour
 
     public void RefreshClanMembersPlayerData()
     {
-        StartCoroutine(ServerManager.Instance.GetClanMembersFromServer(members =>
-        {
-            _players.Clear();
+        _players.Clear();
 
-            if (members == null)
+        string clanId = ServerManager.Instance.Player?.clan_id;
+        Storefront.Get().GetClanData(clanId, clanData =>
+        {
+            if (clanData != null)
             {
-                Debug.LogError("Failed to load clan members");
-            }
-            else
-            {
-                foreach (var member in members)
+                foreach (var member in clanData.Members)
                 {
-                    _players.Add(member.GetPlayerData());
+                    PlayerData playerData = member.GetPlayerData();
+                    _players.Add(playerData);
                 }
             }
 
             PlayersLoaded = true;
-        }));
+        });
     }
 
     private void UpdateLocalAvatar()
     {
-        PlayerData data = AvatarEvents.UpdatedPlayerData;
+        PlayerData data = new(ServerManager.Instance.Player, true);
+
         if (data == null)
         {
             return;
@@ -60,37 +61,9 @@ public class ClanPlayerFetcher : MonoBehaviour
                 continue;
             }
 
-            if (!AvatarEquals(_players[i].AvatarData, data.AvatarData))
-            {
-                _players[i] = data;
-                OnLocalAvatarUpdated(data);
-            }
+            _players[i] = data;
+            OnLocalAvatarUpdated(data);
             break;
         }
-    }
-
-    private bool AvatarEquals(AvatarData a,  AvatarData b)
-    {
-        if (a == null || b == null)
-        {
-            return false;
-        }
-
-        return
-            a.Hair == b.Hair &&
-            a.Eyes == b.Eyes &&
-            a.Nose == b.Nose &&
-            a.Mouth == b.Mouth &&
-            a.Clothes == b.Clothes &&
-            a.Feet == b.Feet &&
-            a.Hands == b.Hands &&
-            a.Color == b.Color &&
-            a.HairColor == b.HairColor &&
-            a.EyesColor == b.EyesColor &&
-            a.NoseColor == b.NoseColor &&
-            a.MouthColor == b.MouthColor &&
-            a.ClothesColor == b.ClothesColor &&
-            a.FeetColor == b.FeetColor &&
-            a.HandsColor == b.HandsColor;
     }
 }
