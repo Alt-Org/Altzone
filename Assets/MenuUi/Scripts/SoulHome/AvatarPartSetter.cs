@@ -110,7 +110,7 @@ namespace MenuUI.Scripts.SoulHome
             Color selectedColor = GetSelectedColor(playerData, part);
             s_materialPropertyBlock.SetColor("_SelectedColor", selectedColor);
 
-            AvatarPartInfo partInfo = partsReference.GetAvatarPartById(label.Substring(0, 7));
+            AvatarPartInfo partInfo = AvatarPartsReference.Instance.GetAvatarPartById(label.Substring(0, 7));
             bool isColorable = partInfo != null && partInfo.IsColorable;
 
             // Set _Colorable to 1 if part is colorable, othervise 0
