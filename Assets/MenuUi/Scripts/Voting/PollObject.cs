@@ -193,19 +193,28 @@ public class PollObject : MonoBehaviour
 
         if (InfoBackground != null)
         {
-            if (pollData is ClanRolePollData)
-            {
-                // Clan Role Poll Color
-                InfoBackground.color = new Color(1f, 1f, 1f); // White
-                Background.color = new Color(0f, 1f, 1f); // Cyan
-            }
-            else if (pollData is FurniturePollData)
-            {
-                // Furniture Poll Background Color
-                InfoBackground.color = new Color(0.2f, 1f, 0.2f); // Green
-                Background.color = new Color(1f, 0.75f, 0f); // Yellow
-            }
+
+            // *** kommentoidaan värityksen testauksen ajaksi pois ***
+
+            //if (pollData is ClanRolePollData)
+            //{
+            //    // Clan Role Poll Color
+            //    InfoBackground.color = new Color(1f, 1f, 1f); // White
+            //    Background.color = new Color(0f, 1f, 1f); // Cyan
+            //}
+            //else if (pollData is FurniturePollData)
+            //{
+            //    // Furniture Poll Background Color
+            //    InfoBackground.color = new Color(0.2f, 1f, 0.2f); // Green
+            //    Background.color = new Color(1f, 0.75f, 0f); // Yellow
+            //}
         }
+
+
+       
+
+
+
 
         // Handles the Poll Header
         if (pollData is FurniturePollData)
@@ -334,6 +343,31 @@ public class PollObject : MonoBehaviour
 
         playerHeads.InstantiateHeads(pollId);
     }
+
+
+
+
+
+    //// Erjan lisäys, testi ***
+
+    public void SetTheme(Color themeColor)
+    {
+        if (Background == null)
+        {
+            Debug.LogError("Background is NULL in PollObject!");
+            return;
+        }
+
+        Debug.Log("Applying theme color: " + themeColor);
+        Background.color = themeColor;
+    }
+
+
+
+
+
+
+
 
 
     private IEnumerator LoadAndApplyAvatar(ClanMember targetMember)

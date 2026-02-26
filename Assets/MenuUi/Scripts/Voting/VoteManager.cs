@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
@@ -12,10 +12,22 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
 {
     [SerializeField] private GameObject VotedListContent;
     [SerializeField] private GameObject NotVotedListContent;
+
+    [SerializeField] private GameObject AdminNotVotedListContent;
+    [SerializeField] private GameObject AdminVotedListContent;
+    [SerializeField] private GameObject ShopNotVotedListContent;
+    [SerializeField] private GameObject ShopVotedListContent;
+
+    [SerializeField] private GameObject AdminSection;
+    [SerializeField] private GameObject ShopSection;
+
     [SerializeField] private GameObject PollObjectPrefab;
     [SerializeField] private GameObject PollPopup;
     [SerializeField] private GameObject Blocker;
     [SerializeField] private GameObject NoPollsText;
+
+    [SerializeField] private Color AdminThemeColor = new Color(0f, 1f, 1f);  // cyan
+    [SerializeField] private Color ShopThemeColor = new Color(1f, 0.75f, 0f);  // yellow
 
     private List<GameObject> Polls = new List<GameObject>();
     private PlayerData player;
@@ -24,13 +36,17 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
 
     private void Start()
     {
+        Debug.Log("VoteManager START");
         pollInfoPopupWindow?.InitializeIfNeeded();
     }
 
     private void OnEnable()
     {
+        Debug.Log("VoteManager OnEnable");
+
         Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data =>
         {
+            Debug.Log("Player data loaded");
             player = data;
             FetchPolls();
         });
@@ -45,56 +61,114 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
         VotingActions.PassPollId -= SetPollPopupPollId;
     }
 
-    // For checking if the player has already voted
     private bool HasPlayerVoted(PollData pollData, string playerId)
     {
         return !pollData.NotVoted.Contains(playerId);
     }
 
-    private void FetchPolls()=> StartCoroutine(FetchPollsCoroutine());
+    private void FetchPolls()
+    {
+        Debug.Log("FetchPolls CALLED");
+        StartCoroutine(FetchPollsCoroutine());
+    }
 
     private IEnumerator FetchPollsCoroutine()
     {
-        Debug.Log("Fetching Polls");
+        Debug.Log("Fetching Polls from server");
+
         bool ready = false;
+
         yield return StartCoroutine(ServerManager.Instance.GetClanVoteListFromServer(polls =>
         {
+            Debug.Log("Server returned polls");
+
             if (polls != null)
             {
+                Debug.Log("Server polls count: " + polls.Count);
+
                 ClanData clanData = null;
+
                 Storefront.Get().GetClanData(ServerManager.Instance.Player.clan_id, data =>
                 {
                     clanData = data;
                 });
-                clanData.Polls.Clear();
-                foreach (ServerPoll poll in polls)
-                {
 
-                    if (poll.type == "flea_market_sell_item" || poll.type == "shop_buy_item")
+                if (clanData != null)
+                {
+                    clanData.Polls.Clear();
+
+                    
+
+                    foreach (ServerPoll poll in polls)
                     {
-                        FurniturePollData pollData = new FurniturePollData(poll, clanData);
-                        if (pollData.Furniture == null) continue;
-                        clanData.Polls.Add(pollData);
+                        Debug.Log("Server poll type: " + poll.type);
+                        if (poll.type == "flea_market_sell_item" || poll.type == "shop_buy_item")
+                        {
+                            FurniturePollData pollData = new FurniturePollData(poll, clanData);
+                            if (pollData.Furniture == null) continue;
+
+                            clanData.Polls.Add(pollData);
+                        }
                     }
+
+                    Debug.Log("Server polls processed. ClanData.Polls count: " + clanData.Polls.Count);
+
+                    Storefront.Get().SaveClanData(clanData, null);
+                    ServerManager.Instance.RaiseClanPollsChangedEvent();
                 }
-                Storefront.Get().SaveClanData(clanData, null);
-                ServerManager.Instance.RaiseClanPollsChangedEvent();
+                else
+                {
+                    Debug.LogWarning("ClanData was null");
+                }
             }
+
             ready = true;
         }));
+
         yield return new WaitUntil(() => ready);
+
+
+        Debug.Log("Calling InstantiatePolls");
         InstantiatePolls();
+    }
+
+
+    private void ClearContainer(GameObject container)
+    {
+        if (container == null) return;
+
+        foreach (Transform child in container.transform)
+        {
+            Destroy(child.gameObject);
+        }
     }
 
     public void InstantiatePolls()
     {
-        //PollManager.LoadClanData();
+        Debug.Log("InstantiatePolls CALLED");
+        Debug.Log("Poll list count from manager: " + PollManager.GetPollList().Count);
 
-        // Clear existing polls
+
+
+        ClearContainer(AdminNotVotedListContent);
+        ClearContainer(AdminVotedListContent);
+        ClearContainer(ShopNotVotedListContent);
+        ClearContainer(ShopVotedListContent);
+
+
+
+
+        if (AdminNotVotedListContent == null ||
+            AdminVotedListContent == null ||
+            ShopNotVotedListContent == null ||
+            ShopVotedListContent == null)
+        {
+            Debug.LogError("One or more ListContent references are missing!");
+        }
+
         for (int i = 0; i < Polls.Count; i++)
         {
-            GameObject obj = Polls[i];
-            Destroy(obj);
+            Destroy(Polls[i]);
         }
         Polls.Clear();
 
@@ -104,22 +178,128 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
             return;
         }
 
-        // Instantiate new polls
-        foreach (var pollData in PollManager.GetPollList())
+        // ****************** var pollList = PollManager.GetPollList();
+        // ******************         Debug.Log("Poll count: " + pollList.Count);
+
+
+
+        var pollList = PollManager.GetPollList();
+
+        Debug.Log("AdminSection active: " + AdminSection.activeSelf);
+        Debug.Log("ShopSection active: " + ShopSection.activeSelf);
+
+
+
+#if UNITY_EDITOR
+        if (pollList.Count == 0)
         {
+            Debug.Log("TEST MODE: Creating fake UI entries");
+
+            for (int i = 0; i < 3; i++)   // ← 3 test pollia
+            {
+                // ADMIN
+                GameObject admin = Instantiate(PollObjectPrefab, AdminNotVotedListContent.transform);
+                PollObject adminObj = admin.GetComponent<PollObject>();
+                adminObj.SetPollId("ADMIN_TEST_" + i);
+                adminObj.SetTheme(AdminThemeColor);
+
+                // SHOP
+                GameObject shop = Instantiate(PollObjectPrefab, ShopNotVotedListContent.transform);
+                PollObject shopObj = shop.GetComponent<PollObject>();
+                shopObj.SetPollId("SHOP_TEST_" + i);
+                shopObj.SetTheme(ShopThemeColor);
+            }
+        }
+#endif
+
+        Debug.Log("Poll count: " + pollList.Count);
+
+
+
+
+
+
+
+        foreach (var pollData in pollList)
+        {
+            Debug.Log("FOREACH LOOP START");
+            Debug.Log("Poll type: " + pollData.GetType().Name);
+
             GameObject obj = null;
 
-            if (pollData.NotVoted.Contains(player.Id))
-                obj = Instantiate(PollObjectPrefab, NotVotedListContent.transform);
+            // ****TESTIN VUOKSI KOMMENTOITU!! bool isShopPoll = pollData is FurniturePollData;
+
+            bool isShopPoll = pollData is FurniturePollData;
+
+
+            //#if UNITY_EDITOR
+            //            // ===== TEST MODE: pakotetaan jako näkyviin =====
+            //            bool isShopPoll = pollData.Id.GetHashCode() % 2 == 0;
+            //#else
+            //bool isShopPoll = pollData is FurniturePollData;
+            //#endif
+
+            Debug.Log("isShopPoll = " + isShopPoll);
+
+
+
+
+
+
+            bool hasVoted = !pollData.NotVoted.Contains(player.Id);
+
+            Debug.Log("Instantiating poll " + pollData.Id +
+          " | IsShop: " + isShopPoll +
+          " | HasVoted: " + hasVoted);
+
+            if (isShopPoll)
+            {
+                obj = hasVoted
+                    ? Instantiate(PollObjectPrefab, ShopVotedListContent.transform)
+                    : Instantiate(PollObjectPrefab, ShopNotVotedListContent.transform);
+            }
             else
-                obj = Instantiate(PollObjectPrefab, VotedListContent.transform);
+            {
+                obj = hasVoted
+                    ? Instantiate(PollObjectPrefab, AdminVotedListContent.transform)
+                    : Instantiate(PollObjectPrefab, AdminNotVotedListContent.transform);
+            }
 
             if (obj != null)
             {
-                obj.GetComponent<PollObject>().SetPollId(pollData.Id);
+
+                // *** kommentoidaan hetkeksi piiloon *** tuossa oli siis kommentointi: (2 riviä)
+
+                //obj.GetComponent<PollObject>().SetPollId(pollData.Id);
+                //Polls.Add(obj);
+
+
+                //// *** TÄMÄ ON LISÄYS:
+
+                PollObject pollObject = obj.GetComponent<PollObject>();
+                pollObject.SetPollId(pollData.Id);
+
+                Debug.Log("About to set theme");
+
+                if (isShopPoll)
+                    pollObject.SetTheme(ShopThemeColor);
+                else
+                    pollObject.SetTheme(AdminThemeColor);
+
+
+
+
+
+                // =====================
+
                 Polls.Add(obj);
 
-                obj.gameObject.GetComponent<Button>().onClick.AddListener(() =>
+                // ----------------
+
+
+
+
+                obj.GetComponent<Button>().onClick.AddListener(() =>
                 {
                     if (!HasPlayerVoted(pollData, player.Id))
                     {
@@ -129,18 +309,36 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
                     else
                     {
                         Debug.Log("You have already voted on this poll.");
-                        // Maybe add visual indicator for the player in the future such as a popup
                     }
                 });
             }
-
-            Canvas.ForceUpdateCanvases();
-
         }
 
-        if (Polls.Count == 0) NoPollsText.SetActive(true);
-        else NoPollsText.SetActive(false);
+        bool hasAdminPolls =
+            AdminNotVotedListContent.transform.childCount > 0 ||
+            AdminVotedListContent.transform.childCount > 0;
+
+        bool hasShopPolls =
+            ShopNotVotedListContent.transform.childCount > 0 ||
+            ShopVotedListContent.transform.childCount > 0;
+
+
+        Debug.Log("Admin section visible: " + hasAdminPolls);
+        Debug.Log("Shop section visible: " + hasShopPolls);
+
+
+        AdminSection.SetActive(hasAdminPolls);
+        ShopSection.SetActive(hasShopPolls);
+
+
+        if (Polls.Count == 0)
+            NoPollsText.SetActive(true);
+        else
+            NoPollsText.SetActive(false);
+
+        Canvas.ForceUpdateCanvases();
     }
+
 
     public void SetPollPopupPollId(string pollId)
     {
