@@ -21,8 +21,8 @@ public class ColorPicker : MonoBehaviour
     [SerializeField] private Image _colorPickerColorButtonColorImage;
     [SerializeField] private ColorGetter _colorCircle;
 
-    private Color _color = Color.white;
-    private Color _previousColor = Color.white;
+    private Color _color = Color.red;
+    private Color _previousColor = Color.red;
 
     private void Start()
     {

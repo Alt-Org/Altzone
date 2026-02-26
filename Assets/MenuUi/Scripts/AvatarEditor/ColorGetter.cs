@@ -27,14 +27,16 @@ public class ColorGetter : MonoBehaviour, IPointerDownHandler, IDragHandler, IPo
     {
         float squareWidth = _gradientSquare.rect.width;
         float squareHeight = _gradientSquare.rect.height;
-        // Set the gradient pointer to top left (=white)
-        _gradientSquareHandle.localPosition = new Vector2(-squareWidth / 2f, squareHeight / 2f);
+        // Set the gradient pointer to top right (=full color)
+        _gradientSquareHandle.localPosition = new Vector2(squareWidth / 2f, squareHeight / 2f);
 
         float startAngle = 90f;
         float rads = startAngle * Mathf.Deg2Rad;
         float circleRadius = _colorCircle.rect.width * CirclePointerPosition;
 
-        // Set the start position of the circle pointer, doesn't matter where it is since gradient is set to white
+        _gradientSquareImage.color = Color.red;
+
+        // Set the start position of the circle pointer to top (=red)
         _colorCircleHandle.localPosition = new Vector2(Mathf.Cos(rads), Mathf.Sin(rads)) * circleRadius;
     }
 
