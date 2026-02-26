@@ -55,6 +55,12 @@ namespace MenuUI.Scripts.SoulHome
                 SetAvatar(_points, _roomData);
 
                 _rig = GetComponentInChildren<AvatarRig>();
+                if (_rig == null)
+                {
+                    Debug.LogError("Failed to get AvatarRig");
+                    return;
+                }
+
                 _lHandResolver = _rig.Resolvers[AvatarPart.L_Hand];
                 _rHandResolver = _rig.Resolvers[AvatarPart.R_Hand];
                 _lHandLabel = _lHandResolver.GetLabel();
@@ -652,6 +658,11 @@ namespace MenuUI.Scripts.SoulHome
 
         private void UseDefaultHands(bool useDefaultHands)
         {
+            if (_lHandResolver == null || _rHandResolver == null)
+            {
+                return;
+            }
+
             string category = _lHandResolver.GetCategory();
             if (useDefaultHands)
             {
