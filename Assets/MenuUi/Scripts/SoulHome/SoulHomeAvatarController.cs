@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.U2D.Animation;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -38,6 +39,12 @@ namespace MenuUI.Scripts.SoulHome
         private RoomData _roomData;
         private List<Vector2> _travelPoints = new();
 
+        private AvatarRig _rig;
+        private SpriteResolver _lHandResolver;
+        private SpriteResolver _rHandResolver;
+        private string _lHandLabel;
+        private string _rHandLabel;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -46,6 +53,21 @@ namespace MenuUI.Scripts.SoulHome
                 _points = transform.parent.Find("FurniturePoints").Find("FloorFurniturePoints");
                 _roomData = transform.parent.GetComponent<RoomData>();
                 SetAvatar(_points, _roomData);
+
+                _rig = GetComponentInChildren<AvatarRig>();
+                _lHandResolver = _rig.Resolvers[AvatarPart.L_Hand];
+                _rHandResolver = _rig.Resolvers[AvatarPart.R_Hand];
+                _lHandLabel = _lHandResolver.GetLabel();
+                _rHandLabel = _rHandResolver.GetLabel();
+            }
+        }
+
+        private void OnEnable()
+        {
+            if (_lHandResolver != null && _rHandResolver != null)
+            {
+                _lHandLabel = _lHandResolver.GetLabel();
+                _rHandLabel = _rHandResolver.GetLabel();
             }
         }
 
@@ -613,8 +635,33 @@ namespace MenuUI.Scripts.SoulHome
             {
                 _animator.Play(_waveAnimation.name);
                 _performingAnimation = true;
+
+                UseDefaultHands(true);
+                // _animator.Play doesn't start the animation instantly, so if yield return null isn't here,
+                // this hits the WaitUntil before the animation actually starts, so _performingAnimation is
+                // true for only some milliseconds instead of the full animation
+                yield return null;
+
                 yield return new WaitUntil(() => !_animator.GetCurrentAnimatorStateInfo(0).IsName(_waveAnimation.name) && !_animator.IsInTransition(0));
                 _performingAnimation = false;
+
+                UseDefaultHands(false);
+            }
+        }
+
+
+        private void UseDefaultHands(bool useDefaultHands)
+        {
+            string category = _lHandResolver.GetCategory();
+            if (useDefaultHands)
+            {
+                _lHandResolver.SetCategoryAndLabel(category, "0000000L");
+                _rHandResolver.SetCategoryAndLabel(category, "0000000R");
+            }
+            else
+            {
+                _lHandResolver.SetCategoryAndLabel(category, _lHandLabel);
+                _rHandResolver.SetCategoryAndLabel(category, _rHandLabel);
             }
         }
 
