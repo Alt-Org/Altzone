@@ -2249,6 +2249,7 @@ MonoBehaviour:
   _backgroundColor: {r: 0.7490195, g: 0.7490195, b: 0.7490195, a: 0.59607846}
   _characterHandle: {fileID: 1464416334285509327}
   _colorPicker: {fileID: 3251961234846961814}
+  _popAnimations: []
 --- !u!114 &2041666044855621765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3516,6 +3517,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _animType: 1
   _duration: 0.4
+  _closeDuration: 0.1
   _popCurve:
     serializedVersion: 2
     m_Curve:
@@ -5357,6 +5359,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _animType: 1
   _duration: 0.4
+  _closeDuration: 0.1
   _popCurve:
     serializedVersion: 2
     m_Curve:

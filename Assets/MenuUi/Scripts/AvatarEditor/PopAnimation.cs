@@ -10,6 +10,8 @@ public class PopAnimation : MonoBehaviour
     [SerializeField] private AnimationType _animType;
     [Tooltip("Animation Duration in seconds")]
     [SerializeField, Range(0.01f, 5f)] private float _duration = 0.3f;
+    [Tooltip("Closing animation duration in seconds")]
+    [SerializeField, Range(0.01f, 5f)] private float _closeDuration = 0.1f;
     [Tooltip("Set between 0-1 seconds")]
     [SerializeField] private AnimationCurve _popCurve;
     [Tooltip("Alpha follows curve instead of increasing linearly with duration")]
@@ -17,7 +19,9 @@ public class PopAnimation : MonoBehaviour
 
     private CanvasGroup _canvasGroup;
     private RectTransform _rectTransform;
+    private bool _isClosing = false;
     private enum AnimationType { SimplePop, CurvePop }
+    public float CloseDuration {  get { return _closeDuration; } }
 
     private void Awake()
     {
@@ -27,6 +31,7 @@ public class PopAnimation : MonoBehaviour
 
     private void OnEnable()
     {
+        _isClosing = false;
         StopAllCoroutines();
 
         switch(_animType)
@@ -43,6 +48,13 @@ public class PopAnimation : MonoBehaviour
     private void OnDisable()
     {
         StopAllCoroutines();
+    }
+
+    public IEnumerator Close()
+    {
+        if (_isClosing) yield break;
+        StopAllCoroutines();
+        yield return StartCoroutine(CloseAnimation());
     }
 
     private IEnumerator AnimatePop()
@@ -97,5 +109,27 @@ public class PopAnimation : MonoBehaviour
         }
         _rectTransform.localScale = Vector3.one;
         _canvasGroup.alpha = 1;
+    }
+
+    private IEnumerator CloseAnimation()
+    {
+        _isClosing = true;
+        float elapsed = 0f;
+        Vector3 startScale = _rectTransform.localScale;
+        float startAlpha = _canvasGroup.alpha;
+
+        while (elapsed < _closeDuration)
+        {
+            elapsed += Time.deltaTime;
+            float percent = elapsed / _closeDuration;
+
+            _rectTransform.localScale = Vector3.Lerp(startScale, Vector3.zero, percent);
+            _canvasGroup.alpha = Mathf.Lerp(startAlpha, 0f, percent);
+
+            yield return null;
+        }
+
+        _rectTransform.localScale = Vector3.zero;
+        _canvasGroup.alpha = 0;
     }
 }

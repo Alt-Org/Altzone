@@ -3,6 +3,7 @@ using Altzone.Scripts.AvatarPartsInfo;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
@@ -30,6 +31,8 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Color _backgroundColor = new(0.5f, 0.5f, 0.5f, 0.7f);
         [SerializeField] private AvatarEditorCharacterHandle _characterHandle;
         [SerializeField] private ColorPicker _colorPicker;
+        [SerializeField] private List<PopAnimation> _popAnimations;
+        [SerializeField] private Coroutine _colorPickerCloseCoroutine;
 
         private List<AvatarPartInfo> _avatarPartInfo;
         private readonly Dictionary<string, AvatarPiece> _featureCategoryIdToAvatarPiece = new Dictionary<string, AvatarPiece>
@@ -177,8 +180,42 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void ColorSelectActive(bool isActive)
         {
-            _colorPicker.SetActive(isActive);
+            if (_colorPickerCloseCoroutine != null)
+            {
+                StopCoroutine(_colorPickerCloseCoroutine);
+                _colorPickerCloseCoroutine = null;
+            }
+
+            if (isActive)
+            {
+                _colorPicker.gameObject.SetActive(true);
+            }
+            else
+            {
+                if (_colorPicker.gameObject.activeInHierarchy)
+                {
+                    _colorPickerCloseCoroutine = StartCoroutine(DisableColorPickerAfterAnimation());
+                }
+            }
+
             _colorSelection.SetMenuVisible(isActive);
+        }
+
+        private IEnumerator DisableColorPickerAfterAnimation()
+        {
+            PopAnimation[] children = _colorPicker.gameObject.GetComponentsInChildren<PopAnimation>();
+            float longestAnimationDuration = 0f;
+
+            foreach (PopAnimation anim in children)
+            {
+                anim.StartCoroutine(anim.Close());
+
+                if (anim.CloseDuration > longestAnimationDuration)
+                    longestAnimationDuration = anim.CloseDuration;
+            }
+
+            yield return new WaitForSeconds(longestAnimationDuration);
+            _colorPicker.gameObject.SetActive(false);
         }
 
         public void RefreshFeatureListItems(string categoryId)
