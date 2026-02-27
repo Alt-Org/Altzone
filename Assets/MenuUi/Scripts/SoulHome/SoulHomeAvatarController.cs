@@ -83,7 +83,7 @@ namespace MenuUI.Scripts.SoulHome
             if (_status == AvatarStatus.Idle && !_idleTimerStarted)
             {
                 //Debug.Log("Character Idle");
-                StartCoroutine("IdleTimer");
+                StartCoroutine(IdleTimer());
             }
             else if (_status == AvatarStatus.Wander)
             {
