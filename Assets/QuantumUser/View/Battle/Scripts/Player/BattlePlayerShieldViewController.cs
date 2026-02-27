@@ -48,7 +48,7 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Public method that is called when entity is activated upon its creation.<br/>
-        /// Calls <see cref="PreInitSetup"/> and subscribes to <see cref="Quantum.EventBattlePlayerViewInit">EventBattlePlayerViewInit</see> event with a lambda, which
+        /// Calls <see cref="PreInitSetup"/> and subscribes to <see cref="Quantum.EventBattlePlayerCharacterViewInit">EventBattlePlayerViewInit</see> event with a lambda, which
         /// sets the shield model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.
         /// Handles subscribing to QuantumEvents and registering to BattleViewRegistry.
         /// </summary>
@@ -79,6 +79,11 @@ namespace Battle.View.Player
             QuantumEvent.Subscribe<EventBattleInPlayStateUpdate>(this, QEventOnPlayStateUpdate);
         });}
 
+        /// <summary>
+        /// Handler method for EventBattleInPlayStateUpdate QuantumEvent.<br/>
+        /// Updates the _isInPlay bool.
+        /// </summary>
+        /// <param name="e">The event data.</param>
         private void QEventOnPlayStateUpdate(EventBattleInPlayStateUpdate e)
         {
             if (e.ERef != EntityRef) return;
@@ -101,6 +106,10 @@ namespace Battle.View.Player
             }
         }
 
+        /// <summary>
+        /// Handles changing the sprite for the shield gameobject.
+        /// </summary>
+        /// <param name="sprite">sprite that the shield sprite is being changed to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ShieldSprite(SpriteSheetMap sprite)
         {
@@ -136,6 +145,7 @@ namespace Battle.View.Player
         /// <summary>Boolean that prevents this shield view controller from being registered multiple times to the BattleViewRegistry.</summary>
         private bool _isRegistered = false;
 
+        /// <summary>Boolean that tells whether the Quantum Entity this ViewController is attached to is in play.</summary>
         private bool _isInPlay;
 
         /// <summary>Handles binding this shield view controller to the character view controller and vice versa.</summary>

@@ -21,7 +21,7 @@ namespace Battle.View.Player
     {
         /// <summary>
         /// Gets the character class associated with this Class.<br/>
-        /// Always returns <see cref="Quantum.BattlePlayerCharacterClass.Projector">BattlePlayerCharacterClass.Projector</see>.
+        /// Always returns <see cref="Quantum.BattlePlayerCharacterClass.Class400">BattlePlayerCharacterClass.Class400</see>.
         /// </summary>
         public override BattlePlayerCharacterClass Class => BattlePlayerCharacterClass.Class400;
     }

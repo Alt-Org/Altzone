@@ -20,9 +20,6 @@
 ///
 /// @bigtext{Generated from @ref BattlePlayerShieldManagerData.qtn}
 
-/// @var EntityRef Quantum.BattlePlayerShieldEntityRef::EREf
-/// <summary>Player entity reference.</summary>
-
 /// @name Quantum Built-in
 /// @{
 ///
@@ -44,14 +41,8 @@
 ///
 /// @bigtext{Generated from @ref BattlePlayerShieldData.qtn}
 
-/// @var BattlePlayerShieldEntityRef Quantum::BattlePlayerShieldDataQComponent::PlayerEntity
+/// @var BattlePlayerShieldEntityRef Quantum::BattlePlayerShieldDataQComponent::PlayerEntityRef
 /// <summary>EntityRef of the player entity the shield belongs to.</summary>
-///
-/// @var QListPtr<EntityRef> Quantum::BattlePlayerShieldDataQComponent::HitboxEntities
-/// <summary>List containing all hitbox entities of the shield.</summary>
-///
-/// @var bool Quantum::BattlePlayerShieldDataQComponent::IsActive
-/// <summary>Bool value to indicate if the shield is currently active.</summary>
 
 /// @name Quantum Built-in
 /// @{
@@ -60,9 +51,7 @@
 /// @var Int32 Quantum::BattlePlayerShieldDataQComponent::ALIGNMENT
 ///
 /// @fn Int32 Quantum::BattlePlayerShieldDataQComponent::GetHashCode
-/// @fn void Quantum::BattlePlayerShieldDataQComponent::ClearPointers
 ///
-/// @fn void Quantum::BattlePlayerShieldDataQComponent::OnRemoved
 /// @fn void Quantum::BattlePlayerShieldDataQComponent::Serialize
 ///
 /// @}
@@ -88,7 +77,6 @@
 /// @fn Int32 Quantum::BattlePlayerShieldDataTemplateQComponent::GetHashCode
 /// @fn void Quantum::BattlePlayerShieldDataTemplateQComponent::ClearPointers
 ///
-/// @fn void Quantum::BattlePlayerShieldDataTemplateQComponent::OnRemoved
 /// @fn void Quantum::BattlePlayerShieldDataTemplateQComponent::Serialize
 ///
 /// @}

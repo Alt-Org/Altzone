@@ -1,4 +1,4 @@
-/// @file BattlePlayerClassNoneViewController.cs
+/// @file BattlePlayerCharacterClassNoneViewController.cs
 /// <summary>
 /// Contains @cref{Battle.View.Player,BattlePlayerCharacterClassNoneViewController} class,
 /// which is a default none/empty <see cref="Battle.View.Player.BattlePlayerCharacterClassNoneViewController">character class %view controller</see> with no additional view logic.

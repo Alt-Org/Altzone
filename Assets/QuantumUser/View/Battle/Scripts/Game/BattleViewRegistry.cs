@@ -1,6 +1,6 @@
 /// @file BattleViewRegistry.cs
 /// <summary>
-/// Contains @cref {Battle.View,BattleViewRegistry} class which handles mapping quantum entities
+/// Contains @cref{Battle.View,BattleViewRegistry} class which handles mapping quantum entities
 /// to various objects they are related to.
 /// </summary>
 

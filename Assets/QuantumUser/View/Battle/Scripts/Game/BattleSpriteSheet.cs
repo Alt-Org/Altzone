@@ -1,6 +1,6 @@
 /// @file BattleSpriteSheet.cs
 /// <summary>
-/// Contains @cref {Battle.View,BattleSpriteSheetDrawer} class which handles drawing a custom
+/// Contains @cref{Battle.View,BattleSpriteSheetDrawer} class which handles drawing a custom
 /// inspector for the BattleSpriteSheet struct.
 /// </summary>
 

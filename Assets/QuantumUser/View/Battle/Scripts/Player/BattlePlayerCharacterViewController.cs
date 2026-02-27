@@ -34,7 +34,7 @@ namespace Battle.View.Player
         public struct SpriteSheetMap : IBattleSpriteSheetMap
         {
             /// <summary>
-            /// Enum that maps a Sprite name to its index on the player's spritesheet
+            /// Enum that maps a Sprite name to its index on the player's spritesheet.
             /// </summary>
             public enum Enum
             {
@@ -238,6 +238,10 @@ namespace Battle.View.Player
             QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
         });}
 
+        /// <summary>
+        /// Handles changing the sprite for the head gameobject.
+        /// </summary>
+        /// <param name="sprite">sprite that the head sprite is being changed to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void HeadSprite(SpriteSheetMap sprite)
         {
@@ -257,6 +261,10 @@ namespace Battle.View.Player
             _bodypartSpriteRenderers[0].sprite = _spriteSheet.GetSprite(sprite);
         }
 
+        /// <summary>
+        /// Handles changing the sprite for the body gameobject.
+        /// </summary>
+        /// <param name="sprite">sprite that the head sprite is being changed to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void BodySprite(SpriteSheetMap sprite)
         {
@@ -271,6 +279,10 @@ namespace Battle.View.Player
             _bodypartSpriteRenderers[1].sprite = _spriteSheet.GetSprite(sprite);
         }
 
+        /// <summary>
+        /// Handles changing the sprite for the hand gameobject.
+        /// </summary>
+        /// <param name="sprite">sprite that the hand sprite is being changed to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void HandSprite(SpriteSheetMap sprite)
         {
@@ -291,6 +303,10 @@ namespace Battle.View.Player
             _bodypartSpriteRenderers[2].sprite = _spriteSheet.GetSprite(sprite);
         }
 
+        /// <summary>
+        /// Handles changing the sprite for the feet gameobject.
+        /// </summary>
+        /// <param name="sprite">sprite that the hand sprite is being changed to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void FeetSprite(SpriteSheetMap sprite)
         {
@@ -304,6 +320,11 @@ namespace Battle.View.Player
             _bodypartSpriteRenderers[3].sprite = _spriteSheet.GetSprite(sprite);
         }
 
+        /// <summary>
+        /// Handler method for EventBattleInPlayStateUpdate QuantumEvent.<br/>
+        /// Updates the _isInPlay bool.
+        /// </summary>
+        /// <param name="e">The event data.</param>
         public void QEventOnPlayStateUpdate(EventBattleInPlayStateUpdate e)
         {
             if (e.ERef != EntityRef) return;
@@ -380,12 +401,14 @@ namespace Battle.View.Player
         /// <summary>Boolean that prevents this character view controller from being registered multiple times to the BattleViewRegistry.</summary>
         private bool _isRegistered = false;
 
+        /// <summary>Boolean that tells whether the Quantum Entity this ViewController is attached to is in play.</summary>
         private bool _isInPlay;
 
+        /// <summary>Array that holds the SpriteRenderer components of each body part gameobject.</summary>
         private SpriteRenderer[] _bodypartSpriteRenderers;
 
         /// <summary>
-        /// Handles setup that needs to happen before <see cref="Quantum.EventBattleCharacterPlayerViewInit">EventBattlePlayerCharacterViewInit</see> event is received.<br/>
+        /// Handles setup that needs to happen before <see cref="Quantum.EventBattlePlayerCharacterViewInit">EventBattlePlayerCharacterViewInit</see> event is received.<br/>
         /// Currently this is needed for initializing character's class as none.
         /// </summary>
         private void PreInitSetup()

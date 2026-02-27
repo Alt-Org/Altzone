@@ -213,6 +213,15 @@ namespace Battle.QSimulation.Player
             return true;
         }
 
+        /// <summary>
+        /// Attaches a shield to a character based on their <paramref name="characterNumber"/> and <paramref name="shieldNumber"/>
+        /// and updates necessary data. Additionally teleports the shield to the character if needed.
+        /// </summary>
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerSlot">Slot of the specified player.</param>
+        /// <param name="characterNumber">The character number of the specified character.</param>
+        /// <param name="shieldNumber">The number of the shield that's being attached.</param>
+        /// <param name="teleport">Boolean for whether to teleport the attached shield or not.</param>
         public static void AttachShield(Frame f, BattlePlayerSlot playerSlot, int characterNumber, int shieldNumber, bool teleport = true)
         {
             if (!IsValidShieldNumber(f, playerSlot, characterNumber, shieldNumber)) return;
@@ -241,6 +250,15 @@ namespace Battle.QSimulation.Player
             }
         }
 
+        /// <summary>
+        /// Retrieves a detached shield linked to a character based on their <paramref name="characterNumber"/> and <paramref name="shieldNumber"/>
+        /// and updates necessary data.
+        /// </summary>
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerSlot">Slot of the specified character.</param>
+        /// <param name="characterNumber">The character number of the specified character.</param>
+        /// <param name="shieldNumber">The number of the shield that's being retrieved.</param>
+        /// <returns>The BattlePlayerShieldEntityRef of the detached shield.</returns>
         public static BattlePlayerShieldEntityRef GetDetachedShieldEntityRef(Frame f, BattlePlayerSlot playerSlot, int characterNumber, int shieldNumber)
         {
             if (!IsValidShieldNumber(f, playerSlot, characterNumber, shieldNumber)) return BattlePlayerShieldEntityRef.None;
@@ -260,6 +278,14 @@ namespace Battle.QSimulation.Player
             return shieldEntityRef;
         }
 
+        /// <summary>
+        /// Removes and detaches a shield attached to a character based on their <paramref name="characterNumber"/> and <paramref name="shieldNumber"/>
+        /// and updates necessary data.
+        /// </summary>
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerSlot">Slot of the specified character.</param>
+        /// <param name="characterNumber">The character number of the specified character.</param>
+        /// <param name="shieldNumber">The number of the shield that's being removed.</param>
         public static void RemoveShield(Frame f, BattlePlayerSlot playerSlot, int characterNumber, int shieldNumber)
         {
             if (!IsValidShieldNumber(f, playerSlot, characterNumber, shieldNumber)) return;
@@ -282,6 +308,13 @@ namespace Battle.QSimulation.Player
             BattleEntityManager.Return(f, GetPlayerShieldManagerData(f)->PlayerShieldEntityGroupIDs[GetShieldGroupIndex(playerSlot, characterNumber)], shieldNumber);
         }
 
+        /// <summary>
+        /// Low level method for retrieving the BattleEntityID of the specified shield of the specified player character.
+        /// </summary>
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerSlot">Slot of the specified character.</param>
+        /// <param name="characterNumber">The character number of the specified character.</param>
+        /// <returns>The BattleEntityID of the specified shield.</returns>
         public static BattleEntityID Low_GetShieldEntityGroupID(Frame f, BattlePlayerSlot playerSlot, int characterNumber)
         {
             return GetPlayerShieldManagerData(f)->PlayerShieldEntityGroupIDs[GetShieldGroupIndex(playerSlot, characterNumber)];
@@ -290,10 +323,13 @@ namespace Battle.QSimulation.Player
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private static BattleDebugLogger s_debugLogger;
 
+        /// <summary>Formatted debug message for when a shield is attached.</summary>
         private const string DebugMessageShieldAttachFormat = "({0}) Attaching shield number {1} to character {2}";
 
+        /// <summary>Formatted debug message for when a shield is detached.</summary>
         private const string DebugMessageShieldDetachFormat = "({0}) Deattaching shield number {1} from character {2}";
 
+        /// <summary>Formatted debug message for when a shield is removed.</summary>
         private const string DebugMessageShieldRemovedFormat = "({0}) Removing shield number {1} of character {2}";
 
         /// <summary>

@@ -15,11 +15,11 @@ either individually or as an [{Entity Group}](#page-concepts-entity-management-e
 have their own @clink{RegisterCompound:Battle.QSimulation.Game.BattleEntityManager.RegisterCompound(Frame, Battle.QSimulation.Game.BattleEntityManager.CompoundEntityTemplate)} method.<br/>
 
 **Entities** can be **Retrieved** using
-@clink{Get:Battle.QSimulation.Game.BattleEntityManager.Get(Frame, BattleEntityID)} to be used in the game.<br/>
+@clink{Get:Battle.QSimulation.Game.BattleEntityManager.Get(Frame, BattleEntityID, bool)} to be used in the game.<br/>
 **Entities** can be **Returned** using
 @clink{Return:Battle.QSimulation.Game.BattleEntityManager.Return(Frame, BattleEntityID)}, **teleporting** them back offscreen.<br/>
 [{Entity Groups}](#page-concepts-entity-management-entity-group)
-have their own @clink{Get:Battle.QSimulation.Game.BattleEntityManager.Get(Frame, BattleEntityID)}
+have their own @clink{Get:Battle.QSimulation.Game.BattleEntityManager.Get(Frame, BattleEntityID, bool)}
 and @clink{Return:Battle.QSimulation.Game.BattleEntityManager.Return(Frame, BattleEntityID)} methods that take an additional **offset** argument.<br/>
 
 ### Compound Entity Handeling

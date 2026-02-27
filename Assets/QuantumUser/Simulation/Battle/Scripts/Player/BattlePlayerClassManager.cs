@@ -22,7 +22,7 @@ namespace Battle.QSimulation.Player
     /// Class scripts should extend this class if they make use of a class data component.
     /// </summary>
     ///
-    /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.}<br/>
+    /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-class-playerclass) for more info.}<br/>
     /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
     public abstract unsafe class BattlePlayerClassBase<T> : BattlePlayerClassBase where T : unmanaged, IComponent
     {
@@ -49,7 +49,7 @@ namespace Battle.QSimulation.Player
     /// Class scripts should extend this class if they do not make use of a class data component.
     /// </summary>
     ///
-    /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.}<br/>
+    /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-class-playerclass) for more info.}<br/>
     /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
     public abstract unsafe class BattlePlayerClassBase
     {
@@ -147,8 +147,6 @@ namespace Battle.QSimulation.Player
             };
 
             public int AttachedShieldNumber;
-
-
         }
         /// <summary>
         /// Initializes this classes BattleDebugLogger instance.<br/>

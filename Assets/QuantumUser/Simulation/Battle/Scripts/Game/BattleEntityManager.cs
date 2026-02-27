@@ -283,12 +283,13 @@ namespace Battle.QSimulation.Game
         /// Retrieves entity matching given <paramref name="id"/>.
         /// </summary>
         ///
-        /// Use @cref{Get(Frame\, BattleEntityID\, int)} to retreive an entity in a group.
+        /// Use @cref{Get(Frame\, BattleEntityID\, bool)} to retreive an entity in a group.
         ///
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="id">Entity ID of the entity to retrieve.</param>
+        /// <param name="updateViewPlayState"></param>
         ///
         /// <returns>EntityRef for retrieved entity.</returns>
         public static EntityRef Get(Frame f, BattleEntityID id, bool updateViewPlayState = false)
@@ -304,7 +305,7 @@ namespace Battle.QSimulation.Game
         /// Retrieves entity matching given <paramref name="id"/> from the group at <paramref name="offset"/>.
         /// </summary>
         ///
-        /// Use @cref{Get(Frame\, BattleEntityID)} to retreive an entity not in any group.
+        /// Use @cref{Get(Frame\, BattleEntityID\, int\, bool)} to retreive an entity not in any group.
         ///
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
         /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.
@@ -312,6 +313,7 @@ namespace Battle.QSimulation.Game
         /// <param name="f">Current simulation frame.</param>
         /// <param name="id">Entity ID of the entity to retrieve.</param>
         /// <param name="offset">Offset of the desired entity within the group.</param>
+        /// <param name="updateViewPlayState"></param>
         ///
         /// <returns>EntityRef for retrieved entity.</returns>
         public static EntityRef Get(Frame f, BattleEntityID id, int offset, bool updateViewPlayState = false)
@@ -327,7 +329,7 @@ namespace Battle.QSimulation.Game
         /// Returns entity matching given <paramref name="id"/> back offscreen.
         /// </summary>
         ///
-        /// Use @cref{Get(Frame\, BattleEntityID\, int)} to return an entity in a group.
+        /// Use @cref{Return(Frame\, BattleEntityID)} to return an entity in a group.
         ///
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.
         ///

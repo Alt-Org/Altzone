@@ -97,7 +97,7 @@ The **PlayStates** are linked to [{Player Slots}](#page-concepts-player-slots-te
 ## Player Manager Data {#page-concepts-player-manager-data}
 
 **Player data** not connected to individual [{Player Character Entities}](#page-concepts-player-character-entity) is handled
-by [{PlayerManager}](#page-concepts-player-simulation-manager-playermanager).  
+by [{PlayerManager}](#page-concepts-player-simulation-management-playermanager).  
 The [{PlayerManagerData}](#page-concepts-player-simulation-management-playermanagerdata) **%Quantum Singleton Component** is used to store **Player Data**.  
 The [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) struct allows the code to access **Player Manager Data** of specific individual **Players**.  
 **Player Manager Data** is defined and used in [{Simulation}](#page-concepts-player-simulation).
@@ -409,13 +409,13 @@ the default collision logic and/or **Unity/View** update logic, changing how dif
 
 @bigtext{**Implementation**}
 
-In **%Quantum Simulation**, every **Player Character Class** can optionally have a unique **C#** [{PlayerClass}](#page-concepts-player-simulation-playerclass).  
-**Character Classes** can also optionally have a [{PlayerClassData}](#page-concepts-player-simulation-classdata) **QComponent**
+In **%Quantum Simulation**, every **Player Character Class** can optionally have a unique **C#** [{PlayerClass}](#page-concepts-player-simulation-class-playerclass).  
+**Character Classes** can also optionally have a [{PlayerClassData}](#page-concepts-player-simulation-class-classdata) **QComponent**
 attached to the [{Player Character Entities}](#page-concepts-player-character-entity) for additional data the **Class** will use.  
-The **C#** [{PlayerClass}](#page-concepts-player-simulation-playerclass) are stateless and
-there is only one instance for each **Character Class**. These are loaded and managed by [{PlayerClassManager}](#page-concepts-player-simulation-classmanager).
+The **C#** [{PlayerClass}](#page-concepts-player-simulation-class-playerclass) are stateless and
+there is only one instance for each **Character Class**. These are loaded and managed by [{PlayerClassManager}](#page-concepts-player-simulation-class-classmanager).
 
-In **Unity View**, every **Player Character class** can optionally have a [{PlayerClassViewController}](#page-concepts-player-view-class-controller).
+In **Unity View**, every **Player Character class** can optionally have a [{PlayerClassViewController}](#page-concepts-player-view-character-class-controller).
 
 <br/>
 
@@ -554,11 +554,11 @@ This section contains **%Quantum** simulation side [{Player Character Class}](#p
 
 <br/>
 
-#### PlayerClassManager {#page-concepts-player-simulation-classmanager}
+#### PlayerClassManager {#page-concepts-player-simulation-class-classmanager}
 
-The @cref{Battle.QSimulation.Player,BattlePlayerClassManager} handles the initial loading of [{PlayerClasses}](#page-concepts-player-simulation-playerclass)
+The @cref{Battle.QSimulation.Player,BattlePlayerClassManager} handles the initial loading of [{PlayerClasses}](#page-concepts-player-simulation-class-playerclass)
 and routes individual game events to the correct **Class** scripts.  
-The [{PlayerClasses}](#page-concepts-player-simulation-playerclass) are stateless and there is only one instance loaded at a time.  
+The [{PlayerClasses}](#page-concepts-player-simulation-class-playerclass) are stateless and there is only one instance loaded at a time.  
 Scripts such as [{PlayerQSystem}](#page-concepts-player-simulation-gamelogic-playerqsystem) call methods in **PlayerClassManager**,
 which then in turn call the corresponding method for the **Character Class** of the specified [{Player Character Entity}](#page-concepts-player-character-entity).
 
@@ -566,11 +566,11 @@ See [{Player Character Classes}](#page-concepts-player-characters-classes) for m
 
 <br/>
 
-#### PlayerClass {#page-concepts-player-simulation-playerclass}
+#### PlayerClass {#page-concepts-player-simulation-class-playerclass}
 
 Every **Player Character Class** can optionally have a unique **C# class** that inherits one of the two base @cref{Battle.QSimulation.Player,BattlePlayerClassBase} classes
 defined in BattlePlayerClassManager.cs. These classes can choose to implement any of the available methods for functionality.
-**Character Classes** can also optionally have a [{PlayerClassData}](#page-concepts-player-simulation-classdata) **QComponent** for additional data.
+**Character Classes** can also optionally have a [{PlayerClassData}](#page-concepts-player-simulation-class-classdata) **QComponent** for additional data.
 When a **Character Class** has a **Data QComponent**, the **C# class** inherits the generic version of the base class using the **Data QComponent** as the generic type parameter.  
 As stated before the **C# class** is optional and can be omitted for **Player Character Classes** that need no additional **%Quantum Simulation** logic.
 
@@ -590,8 +590,8 @@ public class BattlePlayerClassExample2 : BattlePlayerClassBase<BattlePlayerClass
 ```
 
 The **C# classes** are stateless and there is only one instance for each **Character Class**
-which are loaded and managed by [{PlayerClassManager}](#page-concepts-player-simulation-classmanager).  
-Scripts such as [{PlayerQSystem}](#page-concepts-player-simulation-gamelogic-playerqsystem) call methods in [{PlayerClassManager}](#page-concepts-player-simulation-classmanager),
+which are loaded and managed by [{PlayerClassManager}](#page-concepts-player-simulation-class-classmanager).  
+Scripts such as [{PlayerQSystem}](#page-concepts-player-simulation-gamelogic-playerqsystem) call methods in [{PlayerClassManager}](#page-concepts-player-simulation-class-classmanager),
 which then in turn call the corresponding method for the **Character Class** of the specified [{Player Character Entity}](#page-concepts-player-character-entity).
 This way each **Player Characters** possible **Character Class** methods are always correctly called.
 
@@ -599,7 +599,7 @@ See [{Player Character Classes}](#page-concepts-player-characters-classes) for m
 
 <br/>
 
-#### PlayerClassData (%Quantum Component) {#page-concepts-player-simulation-classdata}
+#### PlayerClassData (%Quantum Component) {#page-concepts-player-simulation-class-classdata}
 
 Every **Player Character Class** can optionally have a **Data QComponent** for additional data.
 
@@ -613,7 +613,7 @@ component BattlePlayerClassExample2DataQComponent
 
 The **Data QComponents** are attached to the [{Player Character Entities}](#page-concepts-player-character-entity) and are used by the **C# class** of the corresponding **Character Class**.
 
-See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.  
+See [{PlayerClass}](#page-concepts-player-simulation-class-playerclass) for more info.  
 See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
 
 <br/>
@@ -782,7 +782,7 @@ handle [{Player Character Class}](#page-concepts-player-characters-classes) spec
 Every **Player Character Class** can optionally have a **View Controller** which extends the @cref{Battle.View.Player,BattlePlayerShieldClassBaseViewController}.  
 These **View Controllers** can be optionally implemented and attached to **Player shield viewmodel** in prefab.  
 The **PlayerShieldClassViewController** can choose to implement any of the available methods for functionality to handle **Character Class** **Unity/View** logic.  
-If no **PlayerShieldClassViewController** is attached then @cref{Battle.View.Player,BattlePlayershieldClassNoneViewController} is attached.  
+If no **PlayerShieldClassViewController** is attached then @cref{Battle.View.Player,BattlePlayerShieldClassNoneViewController} is attached.  
 As stated before the **PlayerShieldClassViewController** is optional and can be omitted for **Player Character Classes** that need no additional **Unity/View** logic.  
 **PlayerShieldViewControllers** are tied to [{PlayerShieldViewController}](#page-concepts-player-shield-view-controller).
 
