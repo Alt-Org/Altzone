@@ -1416,7 +1416,8 @@ public class ServerManager : MonoBehaviour
 
                 foreach (ServerCharacter character in serverCharacterList)
                 {
-                    characterList.Add(new(character));
+                    if (Enum.IsDefined(typeof(CharacterID), int.Parse(character.characterId)))
+                        characterList.Add(new(character));
                 }
 
                 if (callback != null)
