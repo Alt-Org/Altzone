@@ -6,22 +6,27 @@ using UnityEngine.UI;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
+    /// <summary>
+    /// Set visual info to info panel
+    /// </summary>
     public class InfoPanel : MonoBehaviour
     {
-        [SerializeField] private StatsWindowController _controller;
         [SerializeField] private Image _characterImage;
-        [SerializeField] private Image _specialAbilityImage;
         [SerializeField] private TMP_Text _characterDescription;
         [SerializeField] private TMP_Text _specialAbility;
         [SerializeField] private TMP_Text _wins;
         [SerializeField] private TMP_Text _losses;
 
+        [SerializeField] private GameObject currentPage;
+        [SerializeField] private GameObject targetPage;
+
+        private StatsWindowController _controller;
 
         private void OnEnable()
         {
+            if (_controller == null) _controller = FindObjectOfType<StatsWindowController>();
             SetCharacterImage();
             SetCharacterDescription();
-            SetSpecialAbility();
             SetWinsAndLosses();
         }
 
@@ -43,22 +48,20 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         }
 
 
-        private void SetSpecialAbility()
-        {
-            _specialAbility.text = _controller.GetCurrentCharacterSpecialAbilityDescription();
-
-            Sprite sprite = _controller.GetCurrentCharacterSpecialAbilitySprite();
-            if (sprite != null && _specialAbilityImage != null)
-            {
-                _specialAbilityImage.sprite = sprite;
-            }
-        }
-
-
         private void SetWinsAndLosses()
         {
             _wins.text = _controller.GetCurrentCharacterWins().ToString();
             _losses.text = _controller.GetCurrentCharacterLosses().ToString();
+        }
+
+        public void SwitchPage()
+        {
+            if (currentPage != null) currentPage.SetActive(false);
+            if (targetPage != null) targetPage.SetActive(true);
+        }
+        public void ClosePopup()
+        {
+            gameObject.SetActive(false);
         }
     }
 }

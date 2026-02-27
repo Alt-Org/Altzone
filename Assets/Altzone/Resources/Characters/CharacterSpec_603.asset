@@ -15,22 +15,44 @@ MonoBehaviour:
   Id: 603
   CharacterId: 603
   IsApproved: 1
-  Name: "Valveenv\xE4lttelij\xE4"
+  FinnishName: "V\xE4syminen"
+  EnglishName: Chronic fatigue
   ClassType: 600
+  CharacterDescriptionFinnish: "Kun V\xE4syminen asettuu ihmiseen asumaan, se saa
+    t\xE4m\xE4n vet\xE4ytym\xE4\xE4n hiljaisuuteen silloin, kun maailma k\xE4y liian
+    raskaaksi. Ihminen alkaa suojella itse\xE4\xE4n unella, turtumuksella ja poissaololla
+    \u2014 kuin jokainen suljettu silm\xE4luomi olisi lupaus rauhasta. V\xE4syminen
+    ei pyyd\xE4 mit\xE4\xE4n, se vain hiljent\xE4\xE4 kaiken. Hetkeksi se tuo lohdun,
+    jossa ei tarvitse jaksaa, mutta samalla se vie kauemmas el\xE4m\xE4st\xE4, jota
+    pit\xE4isi el\xE4\xE4. N\xE4in lep\xE4\xE4misest\xE4 tulee keino kadota, kun
+    ei en\xE4\xE4 tied\xE4, miten olla l\xE4sn\xE4.\r\n\nVuorovaikutuskent\xE4ll\xE4
+    (Ego Clash) V\xE4syminen suojautuu tunnetila-ammuksilta peitolla, johon h\xE4n
+    kietoutuu kuin lapsi nukkumaan. Kun tunnetila-ammus l\xE4hestyy, h\xE4n vet\xE4\xE4
+    peiton p\xE4\xE4ns\xE4 yli ja katoaa hetkeksi n\xE4kyvist\xE4."
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: 'Peiton alle todellisuutta pakeneva, uupunut
+    unikeko. '
+  CharacterShortDescriptionEnglish: 
+  CharacterStats: {fileID: 11400000, guid: 90969f0d5f4fd634094177939fc112a7, type: 2}
   Hp:
-    Level: 0
-    Coefficient: 0
+    Level: 2
+    Coefficient: 5
   Speed:
-    Level: 0
+    Level: 1
     Coefficient: 0
   CharacterSize:
-    Level: 0
+    Level: 3
     Coefficient: 0
   Attack:
-    Level: 0
-    Coefficient: 0
+    Level: 1
+    Coefficient: 7
   Defence:
-    Level: 0
-    Coefficient: 0
+    Level: 1
+    Coefficient: 2
   GalleryImage: {fileID: 21300000, guid: 9aa5e625812e131439a894722f0b1d66, type: 3}
-  BattleSprite: {fileID: 0}
+  GalleryHeadImage: {fileID: 21300000, guid: 1db187b168a56284dab8d4b21a59b65a, type: 3}
+  CharPhotoSeries: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 1435907982705750939
+  BattleUiSprite: {fileID: 0}

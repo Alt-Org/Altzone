@@ -5,75 +5,133 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using System.Collections;
 using MenuUi.Scripts.TabLine;
+using Altzone.Scripts.ReferenceSheets;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Common;
+using Altzone.Scripts.Chat;
+using Altzone.Scripts.Model.Poco.Player;
+using System.Linq;
 
-public class Chat : MonoBehaviour
+public class Chat : AltMonoBehaviour
 {
-    [Header("Chat")] 
-    public GameObject languageChat; 
-    public GameObject globalChat;
-    public GameObject clanChat;
-    public GameObject currentContent; // Tällä hetkellä aktiivinen chatin content
+    [Header("Chat")]
+    [SerializeField] private GameObject _languageChat;
+    [SerializeField] private GameObject _languageChatContent;
+    [SerializeField] private GameObject _globalChat;
+    [SerializeField] private GameObject _globalChatContent;
+    [SerializeField] private GameObject _clanChat;
+    [SerializeField] private GameObject _clanChatContent;
+    private GameObject _currentContent; // Tällä hetkellä aktiivinen chatin content
+
+    [Header("Send buttons")]
+    [SerializeField] private GameObject _sendButtonUI;
+    [SerializeField] private GameObject _sendButtonSadness;
+    [SerializeField] private GameObject _sendButtonAnger;
+    [SerializeField] private GameObject _sendButtonJoy;
+    [SerializeField] private GameObject _sendButtonPlayful;
+    [SerializeField] private GameObject _sendButtonLove;
 
     [Header("InputField")]
-    public TMP_InputField inputField;
+    [SerializeField] private TMP_InputField _inputField;
 
     [Header("Delete Ui")]
-    public GameObject deleteButtons;
+    [SerializeField] private GameObject _deleteButtons;
 
     [Header("Add reactions UI")]
-    public GameObject addReactionsPanel;
-    public GameObject commonReactions;
-    public GameObject allReactions;
-    public GameObject usersWhoAdded;
+    [SerializeField] private GameObject _addReactionsPanel;
+    [SerializeField] private GameObject _commonReactions;
+    [SerializeField] private GameObject _allReactions;
+    [SerializeField] private GameObject _usersWhoAdded;
+
+    [Header("Chat Reactions")]
+    [SerializeField] private CharacterResponseList _chatResponseList;
+    [SerializeField] private GameObject _chatResponseContent;
 
     [Header("Prefab")]
-    public GameObject messagePrefabBlue;
-    public GameObject messagePrefabRed;
-    public GameObject messagePrefabYellow;
-    public GameObject messagePrefabOrange;
-    public GameObject messagePrefabPink;
+    [SerializeField] private GameObject _messagePrefabBlue;
+    [SerializeField] private GameObject _messagePrefabRed;
+    [SerializeField] private GameObject _messagePrefabYellow;
+    [SerializeField] private GameObject _messagePrefabOrange;
+    [SerializeField] private GameObject _messagePrefabPink;
+    [SerializeField] private GameObject _quickMessagePrefab;
+
+    [Header("Other Prefab")]
+    [SerializeField] private GameObject[] _otherMessages;
+
 
     [Header("Scroll Rects")]
-    public ScrollRect languageChatScrollRect;
-    public ScrollRect globalChatScrollRect;
-    public ScrollRect clanChatScrollRect;
+    [SerializeField] private ScrollRect _languageChatScrollRect;
+    [SerializeField] private ScrollRect _globalChatScrollRect;
+    [SerializeField] private ScrollRect _clanChatScrollRect;
 
     [Header("Minimize")]
-    public GameObject quickMessages;
-    public GameObject[] sendButtons;
-    public GameObject buttonOpenSendButtons;
+    [SerializeField] private GameObject _quickMessages;
+    [SerializeField] private GameObject _quickMessagesScrollBar;
+    [SerializeField] private GameObject[] _sendButtons;
+    
+    // Public getters
+    public GameObject QuickMessages => _quickMessages;
+    public GameObject QuickMessagesScrollBar => _quickMessagesScrollBar;
+    public GameObject[] SendButtons => _sendButtons;
+
 
     [Header("TablineScript reference")]
-    public TabLine tablineScript;
+    [SerializeField] private TabLine _tablineScript;
 
-    private ScrollRect currentScrollRect; // Tällä hetkellä aktiivinen Scroll Rect
-
-    private GameObject currentPrefab; // Tällä hetkellä valittu message Prefab
+    private ScrollRect _currentScrollRect; // Tällä hetkellä aktiivinen Scroll Rect
 
     private bool shouldScroll = false;
 
-    [HideInInspector] public GameObject selectedMessage; // Viesti, joka on tällä hetkellä valittuna
+    private MessageObjectHandler _selectedMessage; // Viesti, joka on tällä hetkellä valittuna
 
-    [Header("Commands")]
-    public string delete = "/deleteMessage";
-    public string deleteAllMessages = "/clear";
+    // Public getter
+    public MessageObjectHandler SelectedMessage => _selectedMessage;  
+
+    // Commands
+    private string _delete = "/deleteMessage";
+    private string _deleteAllMessages = "/clear";
 
     // Sanakirja (List), jossa viestit järjestetään chat-tyypin mukaan
-    private Dictionary<GameObject, List<GameObject>> messagesByChat = new Dictionary<GameObject, List<GameObject>>();
+    private Dictionary<GameObject, List<MessageObjectHandler>> messagesByChat = new Dictionary<GameObject, List<MessageObjectHandler>>();
 
+    private GameObject _lastSendButtonUsed;
+    private bool _sendButtonsAreClosed = true;
+
+    [SerializeField] private GameObject _InputArea;
+
+    public delegate void SelectedMessageChanged(MessageObjectHandler handler);
+    public static event SelectedMessageChanged OnSelectedMessageChanged;
+    private bool _reactionAvailable = false; //Katsoo jos textboxissa on tekstiä tai ei
+    public static Chat instance;
+    public CharacterResponseList characterResponseList;
+    public Mood currentMood = Mood.Neutral;
+    public GameObject _responsesData;
 
     private void Start()
     {
+        ChatChannel.OnMessageHistoryReceived += RefreshChat;
+        ChatChannel.OnMessageReceived += DisplayMessage;
+
         // Alustaa chatit ja asettaa kielichatin oletukseksi
-        currentContent = languageChat;
-        Debug.Log("Language Chat is Active");
+        _currentContent = _clanChat;
+        Debug.Log("Clan Chat is Active");
 
-        messagesByChat[languageChat] = new List<GameObject>();
-        messagesByChat[globalChat] = new List<GameObject>();
-        messagesByChat[clanChat] = new List<GameObject>();
+        messagesByChat[_languageChatContent] = new List<MessageObjectHandler>();
+        messagesByChat[_globalChatContent] = new List<MessageObjectHandler>();
+        messagesByChat[_clanChatContent] = new List<MessageObjectHandler>();
 
-        LanguageChatActive();
-        tablineScript.ActivateTabButton(1);
+        ClanChatActive();
+        _tablineScript.ActivateTabButton(1);
+        AddResponses();
+
+        _lastSendButtonUsed = _sendButtonJoy;
+
+        // Add send button listeners
+        foreach (GameObject sendButton in _sendButtons)
+        {
+            Button button = sendButton.GetComponent<Button>();
+            button.onClick.AddListener(() => CheckSendButton(sendButton));
+        }
     }
 
     private void Update()
@@ -85,7 +143,7 @@ public class Chat : MonoBehaviour
             {
                 GameObject touchedObject = EventSystem.current.currentSelectedGameObject;
 
-                if (touchedObject != null && touchedObject.CompareTag("ChatMessage")) 
+                if (touchedObject != null && touchedObject.CompareTag("ChatMessage"))
                 {
                     Debug.Log("Touched UI object with the specified tag ChatMessage");
                 }
@@ -93,39 +151,160 @@ public class Chat : MonoBehaviour
         }
     }
 
-    public void SendChatMessage()
+    private void OnDestroy()
+    {
+        ChatChannel.OnMessageHistoryReceived -= RefreshChat;
+        ChatChannel.OnMessageReceived -= DisplayMessage;
+    }
+
+    private void AddResponses()
+    {
+        //Clears the current Responses
+        /*if(_responsesData.transform.childCount > 0)
+         foreach (Transform child in _responsesData.transform)
+         {
+             
+             Destroy(child.gameObject);
+         }*/
+
+        StartCoroutine(GetPlayerData(data =>
+        {
+            List<ChatResponseObject> messageList = _chatResponseList.GetChatResponses(CharacterClassType.None);
+            //List<string> messageList = _chatResponseList.GetChatResponses((CharacterClassType)((data.SelectedCharacterId / 100) * 100));
+            foreach (ChatResponseObject message in messageList)
+            {
+                GameObject messageObject = Instantiate(_quickMessagePrefab, _chatResponseContent.transform);
+                Button button = messageObject.GetComponent<QuickResponceHandler>().SetData(message);
+                button.onClick.AddListener(() => SendQuickMessage(data, message));
+            }
+        }));
+
+    }
+
+    /// <summary>
+    /// Checks if other send buttons should be opened or a message sent.
+    /// </summary>
+    /// <param name="buttonUsed"></param>
+    private void CheckSendButton(GameObject buttonUsed)
+    {
+        if (_sendButtonsAreClosed) // Open other send buttons
+        {
+            foreach (GameObject sendButton in _sendButtons)
+            {
+                sendButton.SetActive(true);
+            }
+
+            CloseOnButtonClick(true);
+
+            _sendButtonsAreClosed = false;
+        }
+        else // send a message
+        {
+            _reactionAvailable = false;
+            _lastSendButtonUsed = buttonUsed;
+
+            //Prob should have better place for AddResponses when changing the message options but this will do for now
+
+            // Check which message prefab should be used
+            if(buttonUsed == _sendButtonSadness)
+            {
+                currentMood = Mood.Sad;
+
+                SendChatMessage(Mood.Sad);
+                gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Sadness);
+            }
+            else if (buttonUsed == _sendButtonAnger)
+            {
+                currentMood = Mood.Angry;
+                SendChatMessage(Mood.Angry);
+                gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Anger);
+            }
+            else if (buttonUsed == _sendButtonJoy)
+            {
+                currentMood = Mood.Happy;
+                SendChatMessage(Mood.Happy);
+                gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Joy);
+            }
+            else if (buttonUsed == _sendButtonPlayful)
+            {
+                currentMood = Mood.Wink;
+                SendChatMessage(Mood.Wink);
+                gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Playful);
+            }
+            else if (buttonUsed == _sendButtonLove)
+            {
+                currentMood = Mood.Love;
+                SendChatMessage(Mood.Love);
+                gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Love);
+            }
+            AddResponses();
+        }
+    }
+
+    private GameObject GetMessagePrefab(Mood mood, bool ownMsg)
+    {
+        if (ownMsg)
+        {
+            return mood switch
+            {
+                Mood.Love => _messagePrefabPink,
+                Mood.Happy => _messagePrefabYellow,
+                Mood.Sad => _messagePrefabBlue,
+                Mood.Wink => _messagePrefabOrange,
+                Mood.Angry => _messagePrefabRed,
+                _ => null,
+            };
+        }
+        else
+        {
+            return mood switch
+            {
+                Mood.Love => _otherMessages[4],
+                Mood.Happy => _otherMessages[2],
+                Mood.Sad => _otherMessages[0],
+                Mood.Wink => _otherMessages[3],
+                Mood.Angry => _otherMessages[1],
+                _ => null,
+            };
+        }
+    }
+
+    public void SendChatMessage(Mood mood)
     {
         // Lähettää käyttäjän syöttämän viestin aktiiviseen chattiin
-        if (currentContent == null)
+        if (_currentContent == null)
         {
             Debug.LogWarning("Aktiivista Chat ei ole valittu");
         }
-        
-        if (inputField != null && !string.IsNullOrEmpty(inputField.text) && inputField.text.Trim().Length >= 3)
-        {
-            string inputText = inputField.text.Trim();
 
+        if (_inputField != null && !string.IsNullOrEmpty(_inputField.text) && _inputField.text.Trim().Length >= 3)
+        {
+            string inputText = _inputField.text.Trim();
             // Tarkistaa, onko syöte komento
-            if (inputText == delete)
+            if (inputText == _delete)
             {
                 Debug.Log("Deleting last message...");
                 DeleteLastMessage();
-                inputField.text = "";
+                _inputField.text = "";
                 return;
             }
-            else if(inputText == deleteAllMessages)
+            else if (inputText == _deleteAllMessages)
             {
                 Debug.Log("Deleting last message...");
                 DeleteAllMessages();
-                inputField.text = "";
+                _inputField.text = "";
                 return;
             }
-
-            Debug.Log("Current Prefab: " + currentPrefab.name);
-            DisplayMessage(inputField.text);
-            inputField.text = "";
-            this.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+            ChatListener.Instance.SendMessage(_inputField.text, mood, ChatListener.Instance.ActiveChatChannel);
+            //DisplayMessage(_inputField.text, GetMessagePrefab(mood, true));
+            _inputField.text = "";
+            GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+            if (_currentContent == _clanChat)
+                _clanChat.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+            if (_currentContent == _globalChat)
+                _globalChat.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             MinimizeOptions();
+            _lastSendButtonUsed.GetComponent<Button>().interactable = false;
         }
         else
         {
@@ -134,48 +313,75 @@ public class Chat : MonoBehaviour
     }
 
     // Asettaa pikaviestin tekstikenttään quickMessage text => InputField text
-    public void SendQuickMessage(Button button)
+    public void SendQuickMessage(PlayerData data, ChatResponseObject message)
     {
-        TMP_Text buttonText = button.GetComponentInChildren<TMP_Text>();
-        if (buttonText != null)
+        if (message != null)
         {
-            string textFromButton = buttonText.text;
-            inputField.text = textFromButton;
+            List<ChatResponseObject> messageList = _chatResponseList.GetChatResponses((CharacterClassType)((data.SelectedCharacterId / 100) * 100));
+            ChatResponseObject convertedResponse = messageList.FirstOrDefault(c => c.ResponseId == message.ResponseId);
+            string textFromButton = convertedResponse.Response;
+            _reactionAvailable = true;
+            MinimizeOptions();
+            _inputField.text = textFromButton;
+            GameObject sendButton = _sendButtons[0];
+            CheckSendButton(sendButton);
         }
         else
         {
             Debug.LogError("Virhe: TMP_Text ei löydy painikkeesta.");
         }
     }
+    private void RefreshChat(ChatChannelType chatChannelType) => StartCoroutine(RefreshChatCoroutine(chatChannelType));
+    private IEnumerator RefreshChatCoroutine(ChatChannelType chatChannelType)
+    {
+        if (chatChannelType is ChatChannelType.Global)
+            yield return new WaitUntil(() => ChatListener.Instance.GlobalChatFetched);
+        if (chatChannelType is ChatChannelType.Clan)
+            yield return new WaitUntil(()=> ChatListener.Instance.ClanChatFetched);
+        if (gameObject.activeSelf)
+        {
+            DeleteAllMessages();
+            List<ChatMessage> messageList = ChatListener.Instance.GetChatChannel(chatChannelType).ChatMessages;
+            if(messageList != null)
+            foreach(ChatMessage message in messageList)
+            {
+                bool ownMsg = message?.SenderId == ServerManager.Instance.Player._id;
+                DisplayMessage(message, GetMessagePrefab(message.Mood, ownMsg));
+            }
+        }
+    }
+
+    private void DisplayMessage(ChatChannelType channelType,ChatMessage message)
+    {
+        Debug.LogWarning($"Test1: {channelType} {ChatListener.Instance.ActiveChatChannel}");
+        if (channelType != ChatListener.Instance.ActiveChatChannel) return;
+        Debug.LogWarning("Test2");
+        bool ownMsg = message?.SenderId == ServerManager.Instance.Player._id;
+        GameObject messagePrefab = GetMessagePrefab(message.Mood, ownMsg);
+
+        DisplayMessage(message, messagePrefab);
+    }
 
     // Näyttää viestin aktiivisessa chatti-ikkunassa
-    public void DisplayMessage(string messageText)
+    public void DisplayMessage(ChatMessage message, GameObject messagePrefab)
     {
-        if (currentPrefab != null)
+        if (messagePrefab != null)
         {
-            GameObject newMessage = Instantiate(currentPrefab, currentContent.transform);
+            GameObject newMessage = Instantiate(messagePrefab, _currentContent.transform);
 
-            TMP_Text messageUI = newMessage.GetComponentInChildren<TMP_Text>();
-            if (messageUI != null)
-            {
-                messageUI.text = messageText;  
-            }
-            else
-            {
-                Debug.LogError("TMP_Text-komponenttia ei löytynyt prefabista!");
-            }
+            newMessage.GetComponent<MessageObjectHandler>().SetMessageInfo(message, SelectMessage);
 
-            AddMessageInteraction(newMessage);
+            //AddMessageInteraction(newMessage);
 
-            messagesByChat[currentContent].Add(newMessage);
+            messagesByChat[_currentContent].Add(newMessage.GetComponent<MessageObjectHandler>());
 
             // Vierittää viestinäkymän alas
             shouldScroll = true;
             if (shouldScroll)
             {
-                if (currentContent != null)
+                if (_currentContent != null)
                 {
-                    StartCoroutine(UpdateLayoutAndScroll());
+                    StartCoroutine(UpdateLayoutAndScroll(newMessage, _currentContent));
                     shouldScroll = false;
                 }
                 else
@@ -190,15 +396,20 @@ public class Chat : MonoBehaviour
         }
     }
 
-    private IEnumerator UpdateLayoutAndScroll()
+    private IEnumerator UpdateLayoutAndScroll(GameObject message, GameObject contentLayout)
     {
         yield return null;
+        message.GetComponentInChildren<ChatMessageScript>().MessageSetHeight();
 
+        yield return null;
         Canvas.ForceUpdateCanvases();
 
         yield return null;
+        RectTransform rectTransform = contentLayout.GetComponent<RectTransform>();
+        LayoutRebuilder.MarkLayoutForRebuild(rectTransform);
 
-        currentScrollRect.verticalNormalizedPosition = 0f;
+        yield return null;
+        _currentScrollRect.verticalNormalizedPosition = 0f;
     }
 
     // Lisää vuorovaikutuksen viestiin (klikkauksen)
@@ -210,99 +421,38 @@ public class Chat : MonoBehaviour
             button = message.AddComponent<Button>();
         }
 
-        button.onClick.AddListener(() => SelectMessage(message));
+        //button.onClick.AddListener(() => SelectMessage(message));
         button.onClick.AddListener(() => MinimizeOptions());
     }
 
     // Valitsee viestin
-    public void SelectMessage(GameObject message)
+    public void SelectMessage(MessageObjectHandler handler)
     {
-        if (selectedMessage != null)
-        {
-            DeselectMessage(selectedMessage);
-        }
-
-        selectedMessage = message;
-        HighlightMessage(selectedMessage);
-
-        Vector3 deletePosition = deleteButtons.transform.position;
-        deletePosition.y = selectedMessage.transform.position.y;
-        deleteButtons.transform.position = deletePosition;
-
-        SetReactionPanelPosition();
-
-        deleteButtons.SetActive(true);// Näytä poistopainikkeet, jos viesti on valittuna
-        addReactionsPanel.SetActive(true);
-    }
-
-    /// <summary>
-    /// Sets the reaction panel at the bottom of the selected message's reaction field
-    /// </summary>
-    private void SetReactionPanelPosition()
-    {
-        Vector3 reactionPosition = addReactionsPanel.transform.position;
-        RectTransform reactionPanelTransfrom = commonReactions.GetComponent<RectTransform>();
-
-        HorizontalLayoutGroup reactionField = selectedMessage.GetComponentInChildren<HorizontalLayoutGroup>();
-        RectTransform reactionFieldTransform = reactionField.GetComponent<RectTransform>();
-
-        float fieldBottomY = reactionField.transform.position.y - (reactionFieldTransform.rect.height * reactionFieldTransform.pivot.y);
-        float newPanelY = fieldBottomY - (reactionPanelTransfrom.rect.height * reactionPanelTransfrom.pivot.y);
-        reactionPosition.y = newPanelY;
-
-        float fieldEdgeX = reactionField.transform.position.x - (reactionFieldTransform.rect.width * reactionFieldTransform.pivot.x);
-        float newPanelX = fieldEdgeX + (reactionPanelTransfrom.rect.width * reactionPanelTransfrom.pivot.x);
-        reactionPosition.x = newPanelX;
-
-        addReactionsPanel.transform.position = reactionPosition;
-    }
-
-
-    // Korostaa valitun viestin
-    private void HighlightMessage(GameObject message)
-    {
-        if (message.GetComponentInChildren<Image>() != null)
-        {
-            message.GetComponentInChildren<Image>().color = Color.gray;
-        }
+        _selectedMessage = handler;
+        OnSelectedMessageChanged?.Invoke(_selectedMessage);
+        MinimizeOptions();
     }
 
     // Poistaa valinnan viestistä
-    public void DeselectMessage(GameObject message)
+    public void DeselectMessage()
     {
-        if (selectedMessage != null)
-        {
-            if (message.GetComponentInChildren<Image>() != null)
-            {
-                message.GetComponentInChildren<Image>().color = Color.white;
-            }
-
-            deleteButtons.SetActive(false);
-
-            commonReactions.SetActive(true);
-            allReactions.SetActive(false);
-            addReactionsPanel.SetActive(false);
-            usersWhoAdded.SetActive(false);
-        }
+        _selectedMessage = null;
+        OnSelectedMessageChanged?.Invoke(null);
     }
 
     // Poistaa valitun viestin
     public void DeleteChoseMessage()
     {
-        if (selectedMessage != null)
+        if (_selectedMessage != null)
         {
             Debug.Log("Удаляем выбранное сообщение");
-            messagesByChat[currentContent].Remove(selectedMessage);
-            Destroy(selectedMessage);
-            selectedMessage = null;
+            messagesByChat[_currentContent].Remove(_selectedMessage);
+            Destroy(_selectedMessage);
+            _selectedMessage = null;
 
-            //Poistopainikkeiden piilottaminen viestin poistamisen jälkeen
-            deleteButtons.SetActive(false);
-
-            commonReactions.SetActive(true);
-            allReactions.SetActive(false);
-            addReactionsPanel.SetActive(false);
-            usersWhoAdded.SetActive(false);
+            // Disable message interaction elements
+            _deleteButtons.SetActive(false);
+            DisableReactionPanel();
         }
         else
         {
@@ -313,12 +463,12 @@ public class Chat : MonoBehaviour
     // Poistaa viimeisen viestin
     public void DeleteLastMessage()
     {
-        if (messagesByChat[currentContent].Count > 0)
+        if (messagesByChat[_currentContent].Count > 0)
         {
             Debug.Log("viimeisimmän viestin poistaminen");
-            GameObject lastMessage = messagesByChat[currentContent][messagesByChat[currentContent].Count - 1];
+            MessageObjectHandler lastMessage = messagesByChat[_currentContent][messagesByChat[_currentContent].Count - 1];
             Destroy(lastMessage);
-            messagesByChat[currentContent].RemoveAt(messagesByChat[currentContent].Count - 1);
+            messagesByChat[_currentContent].RemoveAt(messagesByChat[_currentContent].Count - 1);
         }
         else
         {
@@ -330,101 +480,129 @@ public class Chat : MonoBehaviour
     public void DeleteAllMessages()
     {
         Debug.Log("poistaa kaikki viestit");
-        foreach (GameObject message in messagesByChat[currentContent])
+        foreach (MessageObjectHandler message in messagesByChat[_currentContent])
         {
-            Destroy(message);
+            Destroy(message.gameObject);
         }
 
-        messagesByChat[currentContent].Clear();
+        messagesByChat[_currentContent].Clear();
+
+        DisableReactionPanel();
     }
 
     // Aktivoi globaalin chatin
-    public void GlobalCahtActive()
-    { 
-        currentContent = globalChat;
-        currentScrollRect = globalChatScrollRect;
+    public void GlobalChatActive()
+    {
+        _currentContent = _globalChatContent;
+        ChatListener.Instance.ActiveChatChannel = ChatChannelType.Global;
+        _currentScrollRect = _globalChatScrollRect;
 
-        globalChat.SetActive(true);
-        languageChat.SetActive(false);
-        clanChat.SetActive(false);
+        _globalChat.SetActive(true);
+        _languageChat.SetActive(false);
+        _clanChat.SetActive(false);
+
+        gameObject.GetComponent<FindAllChatOptions>().ChatOptionFound(FindAllChatOptions.ChatType.Global);
+        RefreshChat(ChatChannelType.Global);
 
         Debug.Log("Global Chat aktivoitu");
     }
 
     // Aktivoi klaanichatin
-    public void ClanCahtActive()
+    public void ClanChatActive()
     {
-        currentContent = clanChat;
-        currentScrollRect = clanChatScrollRect;
+        _currentContent = _clanChatContent;
+        ChatListener.Instance.ActiveChatChannel = ChatChannelType.Clan;
+        _currentScrollRect = _clanChatScrollRect;
 
-        clanChat.SetActive(true);
-        languageChat.SetActive(false);
-        globalChat.SetActive(false);
-       
+        _clanChat.SetActive(true);
+        _languageChat.SetActive(false);
+        _globalChat.SetActive(false);
+
+        gameObject.GetComponent<FindAllChatOptions>().ChatOptionFound(FindAllChatOptions.ChatType.Clan);
+        RefreshChat(ChatChannelType.Clan);
+        
         Debug.Log("Klaani Chat aktivoitu");
     }
 
     // Aktivoi kielichatin
     public void LanguageChatActive()
     {
-        currentContent = languageChat; 
-        currentScrollRect = languageChatScrollRect;
+        _currentContent = _languageChatContent;
+        ChatListener.Instance.ActiveChatChannel = ChatChannelType.Country;
+        _currentScrollRect = _languageChatScrollRect;
 
-        languageChat.SetActive(true);
-        globalChat.SetActive(false);
-        clanChat.SetActive(false);
+        _languageChat.SetActive(true);
+        _globalChat.SetActive(false);
+        _clanChat.SetActive(false);
+
+        gameObject.GetComponent<FindAllChatOptions>().ChatOptionFound(FindAllChatOptions.ChatType.Language);
 
         Debug.Log("Kielivalinnan mukainen Chat aktivoitu");
     }
 
+    public void OpenQuickMessages()
+    {
+        _quickMessages.SetActive(true);
+        ///This is so that the reaction UI will stay visiable but not useable
+        foreach(Transform child in _InputArea.transform)
+        {
+            if(child.gameObject == _sendButtonUI)
+            {
+            _lastSendButtonUsed.GetComponent<Button>().interactable = false;
 
-    private int chosenButton = 2;
-    // Asettaa sinisen viestipohjan ja lähettää viestin
-    public void SetBluePrefab() { currentPrefab = messagePrefabBlue; chosenButton = 0; SendChatMessage(); }
-    // Asettaa punaisen viestipohjan ja lähettää viestin
-    public void SetRedPrefab() { currentPrefab = messagePrefabRed; chosenButton = 1; SendChatMessage(); }
-    // Asettaa keltaisen viestipohjan ja lähettää viestin
-    public void SetYellowPrefab() { currentPrefab = messagePrefabYellow; chosenButton = 2; SendChatMessage(); }
-    // Asettaa oranssin viestipohjan ja lähettää viestin
-    public void SetOrangePrefab() { currentPrefab = messagePrefabOrange; chosenButton = 3; SendChatMessage(); }
-    // Asettaa vaaleanpunaisen viestipohjan ja lähettää viestin
-    public void SetPinkPrefab() { currentPrefab = messagePrefabPink; chosenButton = 4; SendChatMessage(); }
+                ///Incase if the user happens to have emotion selection on 
+                foreach (var button in _sendButtons)
+                {
+                    button.SetActive(_lastSendButtonUsed == button);
+                }
+                _sendButtonsAreClosed = true;
+
+                continue;
+            }
+
+
+            child.gameObject.SetActive(false);
+        }
+        CloseOnButtonClick(true);
+    }
 
     /// <summary>
     /// Minimizes quick messages panel and send buttons. Last used send button is the one left visible.
     /// </summary>
     public void MinimizeOptions()
     {
-        quickMessages.SetActive(false);
-
-        for (int i = 0; i < sendButtons.Length; i++)
+        _quickMessages.SetActive(false);
+        ///This is so that the reaction comes back being useable
+        ///To give user a visual interpretation that they cant put a reaction till there's been text inserted
+        foreach (Transform child in _InputArea.transform)
         {
-            if(i != chosenButton)
+            //Checks if there's text in textbox
+            if (child.gameObject == _sendButtonUI)
             {
-                sendButtons[i].SetActive(false); 
+            _lastSendButtonUsed.GetComponent<Button>().interactable = true;
+            continue;
             }
-            else
-            {
-                sendButtons[chosenButton].SetActive(true);
-            }
+
+            child.gameObject.SetActive(true);
         }
 
-        buttonOpenSendButtons.SetActive(true);
+        // Deactivate all but last used button
+        foreach (var button in _sendButtons)
+        {
+            button.SetActive(_lastSendButtonUsed == button);
+        }
+        _sendButtonsAreClosed = true;
     }
 
     /// <summary>
     /// Added to buttons to deselect messages and close the sending options
     /// </summary>
     /// <param name="onlyMessages"></param>
-    public void CloseOnButtonClick(bool onlyMessages)
+    public void CloseOnButtonClick(bool onlyDeselectMessages)
     {
-        if (onlyMessages)
+        DeselectMessage();
+        if (!onlyDeselectMessages)
         {
-            DeselectMessage(selectedMessage);
-        }
-        else
-        {
-            DeselectMessage(selectedMessage);
             MinimizeOptions();
         }
     }
@@ -438,21 +616,36 @@ public class Chat : MonoBehaviour
     {
         yield return null;
 
-        if(reactionsField != null)
+        if (reactionsField != null)
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
         }
-        
-        VerticalLayoutGroup currentLayout = currentContent.GetComponentInChildren<VerticalLayoutGroup>();
+
+        VerticalLayoutGroup currentLayout = _currentContent.GetComponentInChildren<VerticalLayoutGroup>();
         LayoutRebuilder.ForceRebuildLayoutImmediate(currentLayout.GetComponent<RectTransform>());
     }
 
+
+    private void DisableReactionPanel()
+    {
+        _commonReactions.SetActive(true);
+        _allReactions.SetActive(false);
+        _addReactionsPanel.SetActive(false);
+        _usersWhoAdded.SetActive(false);
+    }    
+
     public void OpenUsersWhoAddedReactionPanel()
     {
-        addReactionsPanel.SetActive(true);
-        commonReactions.SetActive(false);
-        allReactions.SetActive(false);
-        usersWhoAdded.SetActive(true);
-        SetReactionPanelPosition();
+        _addReactionsPanel.SetActive(true);
+        _commonReactions.SetActive(false);
+        _allReactions.SetActive(false);
+        _usersWhoAdded.SetActive(true);
     }
+
+    //public GameObject giveJoyPref()
+    //{
+    //    return _messagePrefabYellow;
+    //}
+
+
 }

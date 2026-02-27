@@ -85,7 +85,7 @@ namespace MenuUI.Scripts.SoulHome
                 GetTrayHandler().SetTrayContentSize();
                 GetTrayHandler().GetComponent<ResizeCollider>().Resize();
             }
-            if (!CheckInteractableStatus()) return;
+            if (!_soulHomeController.CheckInteractableStatus()) return;
 
             if (transform.Find("Screen").GetComponent<RectTransform>().rect.width != transform.Find("Screen").GetComponent<BoxCollider2D>().size.x || transform.Find("Screen").GetComponent<RectTransform>().rect.height != transform.Find("Screen").GetComponent<BoxCollider2D>().size.y)
             //if ((Screen.orientation == ScreenOrientation.LandscapeLeft && !rotated) || (Screen.orientation == ScreenOrientation.Portrait && rotated))
@@ -349,14 +349,40 @@ namespace MenuUI.Scripts.SoulHome
         {
             _soulHomeTower.ResetChanges();
             GetTray().GetComponent<FurnitureTrayHandler>().ResetChanges();
-            _soulHomeController.ShowInfoPopup("Muutokset palautettu");
+            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _soulHomeController.ShowInfoPopup("Muutokset palautettu");
+            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _soulHomeController.ShowInfoPopup("Changes reverted.");
         }
 
         public void SaveChanges()
         {
             _soulHomeTower.SaveChanges();
             GetTray().GetComponent<FurnitureTrayHandler>().SaveChanges();
-            _soulHomeController.ShowInfoPopup("Muutokset tallennettu");
+            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _soulHomeController.ShowInfoPopup("Muutokset tallennettu");
+            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _soulHomeController.ShowInfoPopup("Changes saved.");
+
+            // Checks if the interior is matching
+            string furnitureStyle = null;
+            bool matchingStyle = false;
+            foreach (var furniture in _soulHomeController.FurnitureList.List)
+            {
+                if (furniture.GetInRoomCount() > 0)
+                {
+                    string[] parts = furniture.Name.Split('_');
+                    string style = parts[1];
+
+                    if (furnitureStyle == null)
+                    {
+                        furnitureStyle = style;
+                        matchingStyle = true;
+                    }
+                    else if (furnitureStyle != style)
+                    {
+                        matchingStyle = false;
+                        break;
+                    }
+                }
+            }
+            if (matchingStyle) gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
 
         public void ToggleTray(GameObject tray)
@@ -576,6 +602,8 @@ namespace MenuUI.Scripts.SoulHome
             furnitureObject.GetComponent<TrayFurniture>().Furniture = trayFurniture.GetComponent<FurnitureHandling>().Furniture;
             _selectedFurnitureTray = furnitureObject;
             //_tempSelectedFurnitureTray = _selectedFurnitureTray;
+            string name = furnitureObject.GetComponent<TrayFurniture>().Furniture.Name;
+            gameObject.GetComponent<FindSymbolicFurniture>().FurniturePressed(name);
         }
 
         public void DeselectTrayFurniture()
@@ -652,7 +680,7 @@ namespace MenuUI.Scripts.SoulHome
         }
         private void CheckTrayButtonStatus()
         {
-            if (_soulHomeTower.ChangedFurnitureList.Count > 0 && CheckInteractableStatus())
+            if (_soulHomeTower.ChangedFurnitureList.Count > 0 && _soulHomeController.CheckInteractableStatus())
             {
                 _changeHandleButtonTray.transform.Find("DiscardChangesButton").GetComponent<Button>().interactable = true;
                 _changeHandleButtonTray.transform.Find("SaveChangesButton").GetComponent<Button>().interactable = true;
@@ -662,14 +690,6 @@ namespace MenuUI.Scripts.SoulHome
                 _changeHandleButtonTray.transform.Find("DiscardChangesButton").GetComponent<Button>().interactable = false;
                 _changeHandleButtonTray.transform.Find("SaveChangesButton").GetComponent<Button>().interactable = false;
             }
-        }
-
-        private bool CheckInteractableStatus()
-        {
-            if(_soulHomeController.ExitPending) return false;
-            if (_soulHomeController.ConfirmPopupOpen) return false;
-
-            return true;
         }
 
         private void CheckHoverButtons()

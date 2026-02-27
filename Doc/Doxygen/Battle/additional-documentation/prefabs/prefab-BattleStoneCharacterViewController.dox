@@ -1,0 +1,30 @@
+/// @file BattleStoneCharacterViewController.prefab
+/// <summary>
+/// Prefab for StoneCharacters and last SoulWall row's sprites.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleStoneCharacterViewController**
+///     - *Components:*
+///         - Transform
+///         - @cref{Battle.View,BattleStoneCharacterViewController}
+///     - *Children:*
+///         - **CharacterTopBase**
+///         - **CharacterBottomBase**
+///         - *Shared components:*
+///             - Transform
+///             - SpriteRenderer
+///             - Sprites-Default (Material)
+///         - *Shared children:*
+///             - **Character**{ **Top** - **Bottom** } **Background**
+///             - **Character**{ **Top** - **Bottom** } **Piece**{ **01** - **10** }
+///             - *Shared components:*
+///                 - Transform
+///                 - SpriteRenderer
+///                 - Sprites-Default (Material)
+///             - *Shared children:*
+///                 - **Character**{ **Top** - **Bottom** } **PieceWhite**{ **01** - **10** }
+///                 - *Shared components:*
+///                     - Transform
+///                     - SpriteRenderer
+///                     - Sprites-Default (Material)

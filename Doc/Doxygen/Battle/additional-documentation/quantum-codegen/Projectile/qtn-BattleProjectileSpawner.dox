@@ -1,0 +1,22 @@
+/// @file BattleProjectileSpawner.qtn
+/// <summary>
+/// Contains component used to help spawn the projectile and mark it spawned.
+/// </summary>
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattleProjectileSpawnerQComponent}  
+///   @copybrief Quantum.BattleProjectileSpawnerQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleProjectileSpawnerQComponent
+/// <summary>
+/// Component for marking projectile as already spawned.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleProjectileSpawner.qtn}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @var bool Quantum.BattleProjectileSpawnerQComponent::HasSpawned
+/// <summary>Has projectile been spawned or not.</summary>

@@ -6,7 +6,7 @@ public class FpsLock30 : MonoBehaviour {
 
     public void ChangeFrameRateToNative()
     {
-        Application.targetFrameRate = Screen.currentResolution.refreshRate;
+        Application.targetFrameRate = (int)Screen.currentResolution.refreshRateRatio.value;
         PlayerPrefs.SetInt("TargetFrameRate", Application.targetFrameRate);
     }
 

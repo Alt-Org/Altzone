@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Game;
 using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,6 +13,8 @@ namespace MenuUi.Scripts.Login
     {
         [SerializeField]
         private WindowNavigation _navigation;
+        [SerializeField]
+        private WindowNavigation _introStoryNavigation;
 
         public delegate void LogInPanelSuccess(bool useSetToken);
         public event LogInPanelSuccess OnLogInPanelSuccess;
@@ -26,14 +30,30 @@ namespace MenuUi.Scripts.Login
             }
             else if (SceneManager.GetActiveScene().buildIndex == 2)
             {
+                ServerManager.OnClanFetchFinished += ReturnToMain;
                 StartCoroutine(ServerManager.Instance.LogIn());
-                StartCoroutine(_navigation.Navigate());
             }
+        }
+
+        public void ReturnToMain()
+        {
+            ServerManager.OnClanFetchFinished -= ReturnToMain;
+            if ((ServerManager.Instance.Player.currentAvatarId == null) || ((CharacterID)ServerManager.Instance.Player.currentAvatarId) == CharacterID.None || !Enum.IsDefined(typeof(CharacterID), ServerManager.Instance.Player.currentAvatarId))
+                StartCoroutine(_introStoryNavigation.Navigate());
+            else
+                StartCoroutine(_navigation.Navigate());
         }
 
         public void LogInReturn()
         {
-            OnLogInPanelReturn?.Invoke(true);
+            if (SceneManager.GetActiveScene().buildIndex == 0)
+            {
+                OnLogInPanelReturn?.Invoke(true);
+            }
+            else if (SceneManager.GetActiveScene().buildIndex == 2)
+            {
+                WindowManager.Get().GoBack();
+            }
         }
     }
 }

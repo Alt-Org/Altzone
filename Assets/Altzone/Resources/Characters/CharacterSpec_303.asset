@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
+  m_Name: CharacterSpec_303
+  m_EditorClassIdentifier: 
+  Id: 303
+  CharacterId: 303
+  IsApproved: 1
+  FinnishName: Lakihenkisyys
+  EnglishName: Legalism
+  ClassType: 300
+  CharacterDescriptionFinnish: "Kun Lakihenkisyys asettuu ihmiseen asumaan, se saa
+    t\xE4m\xE4n etsim\xE4\xE4n varmuutta j\xE4rjestyksest\xE4, jota ei itse ole luonut.
+    Ihminen alkaa nojata s\xE4\xE4nt\xF6ihin kuin suojamuuriin ja luottaa, ett\xE4
+    oikea l\xF6ytyy aina pyk\xE4l\xE4st\xE4 \u2013 ei omastatunnosta. H\xE4n tekee
+    sen, mit\xE4 pit\xE4\xE4, vaikka syd\xE4n vastustaisi, sill\xE4 ep\xE4varmuus
+    tuntuu vaarallisemmalta kuin ep\xE4oikeudenmukaisuus. Lakihenkisyys antaa rauhan,
+    jossa vastuu ei ole omissa k\xE4siss\xE4, mutta samalla se vie vapauden n\xE4hd\xE4,
+    milloin s\xE4\xE4nt\xF6 on jo menett\xE4nyt merkityksens\xE4.\r\n\nVuorovaikutuskent\xE4ll\xE4
+    (Ego Clash) Lakihenkisyyden suojakilpen\xE4 toimivat liikennevalot, jotka ohjaavat
+    h\xE4nen puolestaan. Kun valot palavat punaisella, tunnetila-ammus kimpoaa kilvest\xE4
+    eteenp\xE4in. Kun ne vaihtuvat vihre\xE4ksi, ammus kulkee l\xE4pi. Oranssi hetki
+    merkitsee siirtym\xE4\xE4 \u2013 hetke\xE4, jolloin s\xE4\xE4nt\xF6 ei viel\xE4
+    tied\xE4, onko lupa vai kielto voimassa. Lakihenkisyyden turva on h\xE4nen valonsa,
+    mutta sen mukana h\xE4n menett\xE4\xE4 kyvyn p\xE4\xE4tt\xE4\xE4 itse.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Punavaloin tilannetta ohjaava, s\xE4\xE4nt\xF6jen
+    vartija."
+  CharacterShortDescriptionEnglish: 
+  CharacterStats: {fileID: 11400000, guid: 93051fcb9239ab14eaefe163b3e090d1, type: 2}
+  Hp:
+    Level: 4
+    Coefficient: 0
+  Speed:
+    Level: 3
+    Coefficient: 0
+  CharacterSize:
+    Level: 3
+    Coefficient: 0
+  Attack:
+    Level: 4
+    Coefficient: 0
+  Defence:
+    Level: 4
+    Coefficient: 0
+  GalleryImage: {fileID: 21300000, guid: 110fd2bb2bc393f4ab351a34a5889066, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: e3f6ea3c5805b324bb400ff6990ca7ad, type: 3}
+  CharPhotoSeries: {fileID: 21300000, guid: ea11942a1e5aed44c9622bff21630def, type: 3}
+  BattleEntityPrototype:
+    Id:
+      Value: 1521204677351281227
+  BattleUiSprite: {fileID: 0}

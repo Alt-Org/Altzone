@@ -21,7 +21,7 @@ public class KylläButtonÄänestyst : MonoBehaviour
 
     public void YesButtonPressed()
     {
-        if (furniture != null) PollManager.CreateFurniturePoll(FurniturePollType.Buying, furniture);
+        if (furniture != null) PollManager.CreateBuyFurniturePoll(FurniturePollType.Buying, furniture, "0");
         VotingActions.ReloadPollList?.Invoke();
 
         FindObjectOfType<SwipeUI>(true).CurrentPage = 3;

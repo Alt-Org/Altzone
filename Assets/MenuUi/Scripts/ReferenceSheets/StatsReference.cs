@@ -26,7 +26,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     public class StatInfo
     {
         public StatType StatType;
-        public string Name;
         public Sprite Image;
+        public Color StatBoxColor;
+
+        [Header("Finnish")]
+        public string Name;              
+        [TextArea] public string Description;
+
+        [Header("English")]
+        public string EnglishName;   
+        [TextArea] public string EnglishDescription; 
+
     }
 }

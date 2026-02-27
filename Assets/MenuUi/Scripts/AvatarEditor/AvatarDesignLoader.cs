@@ -1,6 +1,10 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
+using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.ReferenceSheets;
+using Assets.Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.AvatarEditor;
 using UnityEngine;
 
@@ -15,74 +19,256 @@ public class AvatarDesignLoader : AltMonoBehaviour
     [Space]
     [SerializeField] private AvatarVisualDataScriptableObject _avatarVisualDataScriptableObject;
 
+    [SerializeField] private AvatarEditorController _avatarEditorController; //The reference for the avatar editor controller, used to get the reference to the _playerAvatar
+
     public delegate void AvatarDesignUpdate();
     public static event AvatarDesignUpdate OnAvatarDesignUpdate;
 
+    private bool _loginStatusChanged = false;
+    private static readonly AvatarPiece[] AllAvatarPieces =
+        Enum.GetValues(typeof(AvatarPiece)).Cast<AvatarPiece>().ToArray();
+
+    #region Unity Lifecycle
+
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-            DontDestroyOnLoad(this);
-        }
+        InitializeSingleton();
     }
 
     private void Start()
     {
-        StartCoroutine(LoadAvatarDesign());
+        StartCoroutine(LoadAvatarDesignCoroutine());
+        ServerManager.OnLogInStatusChanged += UpdateOnLoginStatusChanged;
     }
 
-    private IEnumerator LoadAvatarDesign()
+    private void OnEnable()
+    {
+        if (_loginStatusChanged)
+        {
+            _loginStatusChanged = false;
+            StartCoroutine(LoadAvatarDesignCoroutine());
+        }
+    }
+
+    private void UpdateOnLoginStatusChanged(bool isLoggedIn)
+    {
+        _loginStatusChanged = isLoggedIn;
+    }
+
+    #endregion
+
+    #region Singleton Management
+
+    private void InitializeSingleton()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject); 
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+    #endregion
+
+    #region Avatar Design Loading
+
+    private IEnumerator LoadAvatarDesignCoroutine()
     {
         bool? timeout = null;
         PlayerData playerData = null;
 
-        StartCoroutine(PlayerDataTransferer("get", null, _timeoutSeconds, data => timeout = data, data => playerData = data));
+        StartCoroutine(PlayerDataTransferer("get", null, _timeoutSeconds,
+            timeoutResult => timeout = timeoutResult,
+            dataResult => playerData = dataResult));
 
-        yield return new WaitUntil(() => ((timeout != null) || (playerData != null)));
+        yield return new WaitUntil(() => timeout.HasValue || playerData != null);
 
         if (playerData == null)
-            yield break;
-
-        List<Sprite> sprites = new List<Sprite>();
-        List<Color> colors = new List<Color>();
-        PlayerAvatar playerAvatar = null;
-
-        if (playerData.AvatarData == null)
         {
-            Debug.Log("AvatarData is null. Using default data.");
-            playerAvatar = new(_avatarDefaultReference.GetByCharacterId(playerData.SelectedCharacterId)[0]);
+            Debug.LogWarning("Failed to load player data within timeout period.");
+            yield break;
+        }
 
-            playerAvatar.Colors.Add("#ffffff");
+        var avatarVisualData = CreateAvatarVisualData(playerData);
+        if (avatarVisualData == null)
+        {
+            Debug.LogError("Failed to create avatar visual data.");
+            yield break;
+        }
+
+        ApplyAvatarVisualData(avatarVisualData);
+        InvokeOnAvatarDesignUpdate();
+    }
+
+    private void ApplyAvatarVisualData(AvatarVisualData avatarVisualData)
+    {
+        foreach (var pieceId in AllAvatarPieces)
+        {
+            _avatarVisualDataScriptableObject.SetAvatarPiece(pieceId, avatarVisualData.GetAvatarPiece(pieceId));
+            _avatarVisualDataScriptableObject.SetColor(pieceId, avatarVisualData.GetColor(pieceId));
+        }
+
+        _avatarVisualDataScriptableObject.SkinColor = avatarVisualData.SkinColor;
+        _avatarVisualDataScriptableObject.ClassColor = avatarVisualData.ClassColor;
+    }
+
+    #endregion
+
+    #region Avatar Visual Data Creation
+
+    public AvatarVisualData CreateAvatarVisualData(PlayerData playerData)
+    {
+        if (playerData == null)
+        {
+            Debug.LogError("PlayerData is null.");
+            return null;
+        }
+
+        EnsureValidAvatarData(playerData);
+
+        var avatarVisualData = new AvatarVisualData();
+        PopulateAvatarPieces(avatarVisualData, playerData.AvatarData);
+        int classId = BaseCharacter.GetClass(playerData.SelectedCharacterId);
+        SetAvatarColor(avatarVisualData, playerData.AvatarData, classId);
+
+        return avatarVisualData;
+    }
+
+    public AvatarVisualData CreateAvatarVisualData(AvatarData avatarData)
+    {
+        if (avatarData == null)
+        {
+            Debug.LogError("AvatarData is null.");
+            return null;
+        }
+
+        //EnsureValidAvatarData(playerData);
+
+        var avatarVisualData = new AvatarVisualData();
+        PopulateAvatarPieces(avatarVisualData, avatarData);
+        int? classId = ServerManager.Instance.Player.currentAvatarId != null? BaseCharacter.GetClass((int)ServerManager.Instance.Player.currentAvatarId) : null;
+        SetAvatarColor(avatarVisualData, avatarData, classId);
+
+        return avatarVisualData;
+    }
+
+    private void EnsureValidAvatarData(PlayerData playerData)
+    {
+        if (playerData.AvatarData?.Validate() == true)
+            return;
+
+        Debug.LogWarning("AvatarData is null or invalid. Using default data.");
+
+        var defaultAvatars = _avatarDefaultReference.GetByCharacterId(playerData.SelectedCharacterId);
+        if (defaultAvatars == null || defaultAvatars.Count == 0)
+        {
+            Debug.LogError($"No default avatar found for character ID: {playerData.SelectedCharacterId}");
+            return;
+        }
+
+        var playerAvatar = _avatarEditorController?.PlayerAvatar;
+        if (playerAvatar == null)
+        {
+            playerAvatar = new PlayerAvatar(defaultAvatars[0]);
+        }
+        playerData.AvatarData = new(
+            playerAvatar.Name,
+            null,
+            playerAvatar.SkinColor,
+            null,
+            playerAvatar.Scale
+        );
+
+        var list = Enum.GetValues(typeof(AvatarPiece));
+        foreach (AvatarPiece feature in list) //This could possibly be replaced with turning the partlist into ServerAvatar and then giving that to the AvatarData.
+        {
+            playerData.AvatarData.SetPieceID((AvatarPiece)feature, int.Parse(playerAvatar.GetPartId(feature)));
+            Debug.Log("The added featureId is " + playerAvatar.GetPartId(feature));
+            playerData.AvatarData.SetPieceColor(feature, playerAvatar.GetPartColor(feature));
+        }
+        //}
+
+    }
+
+    private void PopulateAvatarPieces(AvatarVisualData avatarVisualData, AvatarData avatarData)
+    {
+        foreach (var pieceId in AllAvatarPieces)
+        {
+            var pieceIdValue = avatarData.GetPieceID(pieceId);
+
+            if (pieceIdValue == 0)
+            {
+                continue;
+            }
+
+            var partInfo = _avatarPartsReference.GetAvatarPartById(pieceIdValue.ToString());
+
+            var avatarImage = partInfo;
+            avatarVisualData.SetAvatarPiece(pieceId, avatarImage);
+            ColorUtility.TryParseHtmlString(avatarData.GetPieceColor(pieceId), out Color color);
+            avatarVisualData.SetColor(pieceId, color);
+        }
+    }
+
+    private static void SetAvatarColor(AvatarVisualData avatarVisualData, AvatarData avatarData, int? classId)
+    {
+        var color = Color.white;
+
+        string correctedColor = avatarData.Color;
+        if (!correctedColor.StartsWith("#"))
+        {
+            correctedColor = "#" + correctedColor;
+        }
+
+        if (!ColorUtility.TryParseHtmlString(correctedColor, out color))
+        {
+            Debug.LogWarning($"Failed to parse color: {avatarData.Color}. Using white as default.");
+            color = Color.white;
+        }
+
+        avatarVisualData.SkinColor = color;
+        if (classId != null)
+        {
+            avatarVisualData.ClassColor = ClassReference.Instance.GetColor(BaseCharacter.GetClass((CharacterID)classId));
         }
         else
-            playerAvatar = new(playerData.AvatarData);
-
-        foreach (string id in playerAvatar.FeatureIds)
         {
-            var partInfo = _avatarPartsReference.GetAvatarPartById(id);
-            if (partInfo != null)
-                sprites.Add(partInfo.AvatarImage);
-            else
-                sprites.Add(null);
+            avatarVisualData.ClassColor = Color.white;
         }
+}
 
-        Color color = Color.white;
-        ColorUtility.TryParseHtmlString(playerAvatar.Colors[0],out color);
-        colors.Add(color);
+    #endregion
 
-        _avatarVisualDataScriptableObject.sprites = sprites;
-        _avatarVisualDataScriptableObject.colors = colors;
+    #region Public Methods
 
-        InvokeOnAvatarDesignUpdate();
+  
+    [Obsolete("Use CreateAvatarVisualData instead.")]
+    public AvatarVisualData LoadAvatarDesign(PlayerData playerData)
+    {
+        return CreateAvatarVisualData(playerData);
     }
 
     public void InvokeOnAvatarDesignUpdate()
     {
         OnAvatarDesignUpdate?.Invoke();
     }
+
+    #endregion
+
+    #region Cleanup
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+        ServerManager.OnLogInStatusChanged -= UpdateOnLoginStatusChanged;
+    }
+
+    #endregion
 }
+

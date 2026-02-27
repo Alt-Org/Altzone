@@ -12,6 +12,10 @@ public class InvSlotInfoHandler : MonoBehaviour
     [SerializeField] private Image _commonBoxAttachmentBase;
     [SerializeField] private GameObject _inSoulHomePanel;
     [SerializeField] private TMP_Text _inSoulHomeText;
+    [SerializeField] private GameObject _markedForSellingPanel;
+    [SerializeField] private TMP_Text _markedForSellingText;
+    [SerializeField] private GameObject _inVotingPanel;
+    [SerializeField] private TMP_Text _inVotingText;
     [SerializeField] private GameObject _coin;
 
     [Header("Rarity Color")]
@@ -20,16 +24,31 @@ public class InvSlotInfoHandler : MonoBehaviour
     [SerializeField] private Color _epicColor;
     [SerializeField] private Color _antiqueColor;
 
+    public Image Icon { get => _icon;}
+
     public void SetSlotInfo(StorageFurniture furn, int sortingBy)
     {
         // Set color based on rarity
         _commonBoxAttachmentBase.color = GetColorByRarity(furn.Rarity.ToString());
 
         // Icon
-        _icon.sprite = furn.Sprite;
+        _icon.sprite = furn.Info.RibbonImage;
+        if (_icon.sprite == null) _icon.sprite = furn.Sprite;
 
         // Name
-        _topText.text = furn.VisibleName;
+        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+        {
+            _topText.text = furn.VisibleName;
+        }
+        else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+        {
+            _topText.text = furn.Info != null ? furn.Info.EnglishName : furn.VisibleName;
+        }
+        else
+        {
+            _topText.text = furn.VisibleName; // Fallback if the language is null
+        }
+
 
         // Weight
         switch (sortingBy)
@@ -51,8 +70,21 @@ public class InvSlotInfoHandler : MonoBehaviour
                 break;
         }
 
-        // Name
-        _inSoulHomeText.text = "Sielunkodissa";
+        // In Soul Home panel text
+        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+        {
+            _inSoulHomeText.text = "Sielunkodissa";
+        }
+        else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+        {
+            _inSoulHomeText.text = "In Soul Home";
+        }
+        else
+        {
+            _inSoulHomeText.text = "In Soul Home"; // Default fallback if the language is null
+        }
+
+        // Show/hide In Soul Home panel (original if/else)
         if (furn.Position == new Vector2Int(-1, -1))
         {
             _inSoulHomePanel.SetActive(false);
@@ -62,10 +94,41 @@ public class InvSlotInfoHandler : MonoBehaviour
             _inSoulHomePanel.SetActive(true);
         }
 
+        // Marked for Selling panel text
+        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+        {
+            _markedForSellingText.text = "Myynnissä";
+        }
+        else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+        {
+            _markedForSellingText.text = "In Selling";
+        }
+        else
+        {
+            _markedForSellingText.text = "In Selling"; // Default fallback if the language is null
+        }
+        _markedForSellingPanel.SetActive(furn.ClanFurniture.VotedToSell);
+
+        // In Voting panel text
+        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+        {
+            _inVotingText.text = "Äänestyksessä";
+        }
+        else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+        {
+            _inVotingText.text = "In Voting";
+        }
+        else
+        {
+            _inVotingText.text = "In Voting"; // Default fallback if the language is null
+        }
+        _inVotingPanel.SetActive(furn.ClanFurniture.InVoting);
+
         // Coin
         if (sortingBy == 0 || sortingBy == 1) _coin.SetActive(true);
         else _coin.SetActive(false);
     }
+
 
     private Color GetColorByRarity(string rarity)
     {

@@ -10,7 +10,10 @@ using System.Text;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.ModelV2.Internal;
 using Altzone.Scripts.Settings;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Prg.Scripts.Common.Unity;
 using UnityEngine;
 #if UNITY_WEBGL
@@ -30,7 +33,7 @@ namespace Altzone.Scripts.Model
 
     internal class LocalModels
     {
-        const int STORAGEVERSION = 6;
+        const int STORAGEVERSION = 7;
 
         private const int WebGlFramesToWaitFlush = 10;
         private static readonly Encoding Encoding = new UTF8Encoding(false, false);
@@ -106,7 +109,7 @@ namespace Altzone.Scripts.Model
                 _storagePath = AppPlatform.ConvertToWindowsPath(_storagePath);
             }
             Debug.Log($"StorageFilename {_storagePath}");
-            _characters = new CharacterStorage().CharacterList;
+            _characters = CharacterStorage.Instance.CharacterList;
             _storageData = File.Exists(_storagePath)
                 ?  LoadStorage(_storagePath)
                 : CreateDefaultStorage(_storagePath);
@@ -152,11 +155,6 @@ namespace Altzone.Scripts.Model
         {
             new WaitUntil(() => _saving = false);
             var playerData = _storageData.PlayerData.FirstOrDefault(x => x.UniqueIdentifier == uniqueIdentifier);
-            if (playerData != null)
-            {
-                // This storage is by no means a complete object model we want to serve.
-                if(playerData.CustomCharacters == null)playerData.BuildCharacterLists(_storageData.CustomCharacters);
-            }
             Debug.Log($"playerData {playerData}");
             callback(playerData);
         }
@@ -165,9 +163,10 @@ namespace Altzone.Scripts.Model
         {
             _saving = true;
             var index = _storageData.PlayerData.FindIndex(x => x.Id == playerData.Id);
-            if (index >= 0)
+            if (index >= 0 && _storageData.PlayerData.Count > index)
             {
-                _storageData.PlayerData[0] = playerData;
+                _storageData.PlayerData[index] = playerData;
+                
             }
             else
             {
@@ -175,14 +174,14 @@ namespace Altzone.Scripts.Model
                 {
                     playerData.Id = CreateDefaultModels.FakeMongoDbId();
                 }
-                if(_storageData.PlayerData.Count == 0)_storageData.PlayerData.Add(playerData);
-                else _storageData.PlayerData[0] = playerData;
+                _storageData.PlayerData.Add(playerData);
             }
             Debug.Log($"playerData {playerData}");
             SaveStorage(_storageData, _storagePath);
             _saving = false;
             callback?.Invoke(playerData);
         }
+
         internal void DeletePlayerData(PlayerData playerData, Action<bool> callback)
         {
             var index = _storageData.PlayerData.FindIndex(x => x.Id == playerData.Id);
@@ -268,11 +267,11 @@ namespace Altzone.Scripts.Model
                 throw new UnityException($"CustomCharacter not found for {customCharacterId}");
             }
             var characterClass =
-                _storageData.CharacterClasses.FirstOrDefault(x => x.Id == customCharacter.CharacterClassID);
+                _storageData.CharacterClasses.FirstOrDefault(x => x.Type == customCharacter.CharacterClassType);
             if (characterClass == null)
             {
                 // Create fake CharacterClass so we can return 'valid' object even character class has been deleted.
-                characterClass = CharacterClass.CreateDummyFor(customCharacter.CharacterClassID);
+                characterClass = CharacterClass.CreateDummyFor(customCharacter.CharacterClassType);
             }
             return BattleCharacter.Create(customCharacter, characterClass);
         }
@@ -301,12 +300,12 @@ namespace Altzone.Scripts.Model
             callback(new ReadOnlyCollection<CustomCharacter>(_storageData.CustomCharacters));
         }
 
-        internal void GetPlayerTasks(Action<List<PlayerTask>> callback)
+        internal void GetPlayerTasks(Action<ClanTasks> callback)
         {
             callback(_storageData.PlayerTasks);
         }
 
-        internal void SavePlayerTasks(List<PlayerTask> tasks, Action<List<PlayerTask>> callback)
+        internal void SavePlayerTasks(ClanTasks tasks, Action<ClanTasks> callback)
         {
             _storageData.PlayerTasks = tasks;
             callback(_storageData.PlayerTasks);
@@ -344,7 +343,7 @@ namespace Altzone.Scripts.Model
             Debug.LogWarning("Creating new Default Storage.");
             var storageData = new StorageData();
 
-            storageData.Characters = new CharacterStorage().CharacterList;
+            storageData.SetCharacters(CharacterStorage.Instance.CharacterList);
             //storageData.CharacterClasses.AddRange(CreateDefaultModels.CreateCharacterClasses());
             storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(storageData.Characters));
 
@@ -363,14 +362,27 @@ namespace Altzone.Scripts.Model
         private static StorageData LoadStorage(string storagePath)
         {
             var jsonText = File.ReadAllText(storagePath, Encoding);
-            var storageData = JsonUtility.FromJson<StorageData>(jsonText);
-
-            if (storageData?.StorageVersion != STORAGEVERSION) storageData = CreateDefaultStorage(storagePath);
+            StorageData storageData;
+            StorageSaveData loadedData;
+            JObject parsedData = JObject.Parse(jsonText);
+            Debug.LogWarning(parsedData);
+            if (int.Parse(parsedData["StorageVersion"].ToString()) != STORAGEVERSION) storageData = CreateDefaultStorage(storagePath);
             else
             {
-                storageData.Characters = new CharacterStorage().CharacterList;
+                loadedData = parsedData.ToObject<StorageSaveData>(
+                    JsonSerializer.Create(new JsonSerializerSettings {
+                        TypeNameHandling = TypeNameHandling.Auto,
+                        NullValueHandling = NullValueHandling.Ignore,
+                        Converters = { new ColourConverter(), new Vector2Converter() },
+                    }));
+                storageData = new(loadedData);
+
+                storageData.SetCharacters(CharacterStorage.Instance.CharacterList);
+
+                // Loading custom characters
                 storageData.CustomCharacters = new();
                 storageData.CustomCharacters.AddRange(CreateDefaultModels.CreateCustomCharacters(storageData.Characters));
+
                 storageData.GameFurniture = new();
                 //storageData.GameFurniture.AddRange(CreateDefaultModels.CreateGameFurniture());
                 storageData.PlayerTasks = null;
@@ -381,7 +393,17 @@ namespace Altzone.Scripts.Model
 
         private static void SaveStorage(StorageData storageData, string storagePath)
         {
-            var jsonText = JsonUtility.ToJson(storageData);
+            string jsonText = JObject.FromObject(
+                    new StorageSaveData(storageData),
+                    JsonSerializer.CreateDefault(new JsonSerializerSettings {
+                        NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore,
+                        TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto,
+                        Formatting = Newtonsoft.Json.Formatting.Indented,
+                        Converters = { new ColourConverter(), new Vector2Converter() },
+                        //ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    })
+                ).ToString();
+            //Debug.LogWarning(jsonText);
             File.WriteAllText(storagePath, jsonText, Encoding);
             WebGlFsSyncFs();
         }
@@ -397,12 +419,58 @@ namespace Altzone.Scripts.Model
     internal class StorageData
     {
         public int StorageVersion = 0;
-        public List<BaseCharacter> Characters = new();
+        private List<BaseCharacter> _characters = new();
         public List<CharacterClass> CharacterClasses = new();
         public List<CustomCharacter> CustomCharacters = new();
         public List<GameFurniture> GameFurniture = new();
         public List<PlayerData> PlayerData = new();
         public List<ClanData> ClanData = new();
-        public List<PlayerTask> PlayerTasks= null;
+        public ClanTasks PlayerTasks= null;
+
+        public List<BaseCharacter> Characters { get => _characters; }
+
+        public void SetCharacters(List<BaseCharacter> characters)
+        {
+            _characters = characters;
+        }
+        
+        internal StorageData()
+        {
+            StorageVersion = 0;
+            CustomCharacters = new();
+            PlayerData = new();
+            ClanData =  new();
+            PlayerTasks = null;
+        }
+
+        internal StorageData(StorageSaveData data)
+        {
+            StorageVersion = data.StorageVersion;
+            CustomCharacters = data.CustomCharacters;
+            PlayerData = data.PlayerData;
+            ClanData = data.ClanData;
+            PlayerTasks = data.PlayerTasks;
+        }
+    }
+
+    internal class StorageSaveData
+    {
+        public int StorageVersion = 0;
+        public List<CustomCharacter> CustomCharacters = new();
+        public List<PlayerData> PlayerData = new();
+        public List<ClanData> ClanData = new();
+        public ClanTasks PlayerTasks = null;
+
+        [JsonConstructor]
+        private StorageSaveData(){ }
+
+        internal StorageSaveData(StorageData data)
+        {
+            StorageVersion = data.StorageVersion;
+            CustomCharacters = data.CustomCharacters;
+            PlayerData = data.PlayerData;
+            ClanData = data.ClanData;
+            PlayerTasks = data.PlayerTasks;
+        }
     }
 }

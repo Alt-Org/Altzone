@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['soundeffect_0',['SoundEffect',['../namespace_quantum.html#a63ff14b2240964d120fdb6c2ef843f4e',1,'Quantum']]]
+  ['returncode_0',['ReturnCode',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager.html#adb8dd94eac5b823ce4a850e1083928af',1,'Battle::QSimulation::Player::BattlePlayerClassManager']]]
 ];

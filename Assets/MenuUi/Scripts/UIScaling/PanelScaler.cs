@@ -7,6 +7,8 @@ namespace MenuUi.Scripts.UIScaling
         [SerializeField] protected RectTransform _bottomPanelRectTransfrom;
         [SerializeField] protected RectTransform _topPanelRectTransfrom;
         [SerializeField] protected RectTransform _unsafeAreaRectTransfrom;
+        [SerializeField] protected RectTransform _fullPanelPopupsTransform;
+        [SerializeField] protected RectTransform _infoPopupsTransform;
 
         // IPad aspect ratio and a tall and slim phone aspect ratio, used in math calculations.
         const double LowestAspectRatio = 4.0 / 3.0;
@@ -48,6 +50,9 @@ namespace MenuUi.Scripts.UIScaling
             _topPanelRectTransfrom.anchorMax = new Vector2(1, 1 - CalculateUnsafeAreaHeight());
 
             _unsafeAreaRectTransfrom.anchorMin = new Vector2(0, 1 - CalculateUnsafeAreaHeight());
+
+            _fullPanelPopupsTransform.anchorMax = new Vector2(1, 1 - CalculateUnsafeAreaHeight());
+            _infoPopupsTransform.anchorMax = new Vector2(1, 1 - CalculateUnsafeAreaHeight());
         }
 
         private static double CalculateAspectRatioPercentage()

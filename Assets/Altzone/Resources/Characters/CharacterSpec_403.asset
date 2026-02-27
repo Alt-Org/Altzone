@@ -13,24 +13,52 @@ MonoBehaviour:
   m_Name: CharacterSpec_403
   m_EditorClassIdentifier: 
   Id: 403
-  CharacterId: 0
-  IsApproved: 0
-  Name: "Peilinn\xE4ytt\xE4j\xE4"
+  CharacterId: 403
+  IsApproved: 1
+  FinnishName: Projisointi
+  EnglishName: Projection
   ClassType: 400
+  CharacterDescriptionFinnish: "Kun Projisointi asettuu ihmiseen asumaan, se saa
+    t\xE4m\xE4n n\xE4kem\xE4\xE4n omat tunteensa toisten kasvoilla. Ihminen alkaa
+    tulkita ymp\xE4rist\xF6\xE4\xE4n peilin\xE4, joka heijastaa h\xE4nen pelkonsa
+    ja kaipuunsa takaisin \u2013 mutta vieraan n\xE4k\xF6isen\xE4. H\xE4n syytt\xE4\xE4,
+    tulkitsee ja reagoi siihen, mit\xE4 ei tunnista itsess\xE4\xE4n, ja n\xE4in sis\xE4inen
+    ristiriita pysyy turvallisesti ulkopuolella. Projisointi opettaa uskomaan, ett\xE4
+    yhteys syntyy ymm\xE4rt\xE4m\xE4ll\xE4 toisia, vaikka todellisuudessa h\xE4n
+    puhuu koko ajan itselleen. Mit\xE4 enemm\xE4n h\xE4n yritt\xE4\xE4 korjata muita,
+    sit\xE4 sumeammaksi oma peilikuva muuttuu.\r\n\nVuorovaikutuskent\xE4ll\xE4 (Ego
+    Clash) Projisointi k\xE4ytt\xE4\xE4 suojanaan peili\xE4, jota h\xE4n pit\xE4\xE4
+    edess\xE4\xE4n kuin totuuden rajapintaa. Tunnetila-ammuksen osuessa peiliin,
+    se heijastetaan suoraan tiimikaverille, joka saa k\xE4sitell\xE4 sen puolestaan.
+    Peili ei koskaan murru, mutta jokainen osuma v\xE4\xE4rist\xE4\xE4 sen pintaa
+    \u2014 kasvot venyv\xE4t, v\xE4rit aaltoilevat, todellisuus horjuu. Kun peili
+    on v\xE4\xE4ristynyt liikaa ja uhkaa n\xE4ytt\xE4\xE4 h\xE4nen todelliset kasvonsa,
+    Projisointi laskee sen maahan ja vet\xE4ytyy vuorovaikutuskent\xE4lt\xE4, j\xE4tt\xE4en
+    j\xE4lkeens\xE4 heijastuksen, joka el\xE4\xE4 viel\xE4 hetken omana kuvajaisenaan.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: Tunteensa toisille heijastava, omaa peilikuvaansa
+    karttava peilaaja.
+  CharacterShortDescriptionEnglish: 
+  CharacterStats: {fileID: 11400000, guid: 6b7ac866905eded4aa7979294c2e13af, type: 2}
   Hp:
     Level: 0
-    Coefficient: 0
+    Coefficient: 5
   Speed:
-    Level: 0
+    Level: 5
     Coefficient: 0
   CharacterSize:
-    Level: 0
+    Level: 2
     Coefficient: 0
   Attack:
-    Level: 0
-    Coefficient: 0
+    Level: 3
+    Coefficient: 3
   Defence:
-    Level: 0
-    Coefficient: 0
+    Level: 3
+    Coefficient: 4
   GalleryImage: {fileID: 21300000, guid: 2ca1e227698614648a591da5ac1ec55c, type: 3}
-  BattleSprite: {fileID: 0}
+  GalleryHeadImage: {fileID: 21300000, guid: 30598a04f7d857f4b92aeb3d92854b0c, type: 3}
+  CharPhotoSeries: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 1373315289179166438
+  BattleUiSprite: {fileID: 0}

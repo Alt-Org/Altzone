@@ -1,13 +1,20 @@
 using System;
 using System.Collections;
 using System.Linq;
+
+using UnityEngine;
+using UnityEngine.UI;
+
+using Prg.Scripts.Common.PubSub;
+
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Common.Photon;
 using Altzone.Scripts.Lobby;
+using ReasonType = Altzone.Scripts.Lobby.LobbyManager.GetKickedEvent.ReasonType;
+
 using MenuUi.Scripts.Lobby.CreateRoom;
-using Prg.Scripts.Common.PubSub;
-using UnityEngine;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
+using MenuUi.Scripts.Signals;
 
 namespace MenuUi.Scripts.Lobby.InLobby
 {
@@ -21,6 +28,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
         [SerializeField] private RoomSearchPanelController _searchPanel;
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
         [SerializeField] private CreateRoomCustom _createRoomCustom;
+        [SerializeField] private Button _createRoomFromMainMenuButton;
         [SerializeField] private PasswordPopup _passwordPopup;
         [SerializeField] private GameObject _creatingRoomText;
 
@@ -29,9 +37,10 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void Awake()
         {
             _photonRoomList = gameObject.GetOrAddComponent<PhotonRoomList>();
-            _createRoomCustom.CreateRoomButton.onClick.RemoveAllListeners();
-            _createRoomCustom.CreateRoomButton.onClick.AddListener(CreateCustomRoomOnClick);
+            _createRoomCustom.CreateRoomButton.onClick.AddListener(CreateCustomRoom);
+            _createRoomFromMainMenuButton.onClick.AddListener(CreateCustomRoom);
             LobbyManager.OnClanMemberDisconnected += HandleClanMemberDisconnected;
+            LobbyManager.OnKickedOutOfTheRoom += HandleKickedOutOfRoom;
         }
 
         public void OnEnable()
@@ -44,6 +53,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             }
             _photonRoomList.OnRoomsUpdated += UpdateStatus;
             LobbyManager.LobbyOnJoinedRoom += OnJoinedRoom;
+            LobbyManager.LobbyOnJoinRoomFailed += OnJoinedRoomFailed;
             LobbyWindowNavigationHandler.OnLobbyWindowChangeRequest += SwitchToRoom;
         }
 
@@ -58,28 +68,18 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void OnDestroy()
         {
             LobbyManager.OnClanMemberDisconnected -= HandleClanMemberDisconnected;
-        }
-
-        private void CreateCustomRoomOnClick()
-        {
-            int randomNumber = UnityEngine.Random.Range(0, 100) + DateTime.Now.Millisecond;
-            var roomName = string.IsNullOrWhiteSpace(_createRoomCustom.RoomName) ? $"{DefaultRoomNameCustom} {randomNumber}" : $"{_createRoomCustom.RoomName} {randomNumber}";
-
-            if (_createRoomCustom.IsPrivate && _createRoomCustom.RoomPassword != null && _createRoomCustom.RoomPassword != "")
-            {
-                PhotonRealtimeClient.CreateCustomLobbyRoom(roomName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, _createRoomCustom.RoomPassword);
-            }
-            else
-            {
-                PhotonRealtimeClient.CreateCustomLobbyRoom(roomName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion);
-            }
+            LobbyManager.OnKickedOutOfTheRoom -= HandleKickedOutOfRoom;
+            _createRoomCustom.CreateRoomButton.onClick.RemoveAllListeners();
+            _createRoomFromMainMenuButton.onClick.RemoveAllListeners();
         }
 
         /// <summary>
-        /// Coroutine to create Clan2v2 room after client is connected to lobby.
+        /// Coroutine to create a room after client is connected to lobby.
         /// </summary>
+        /// <param name="gameType">Game type of which room to create.</param>
+        /// <param name="callback">Callback which is called after room is created.</param>
         /// <returns></returns>
-        public IEnumerator StartCreatingClan2v2Room(Action callback)
+        public IEnumerator StartCreatingRoom(GameType gameType, Action callback)
         {
             _creatingRoomText.SetActive(true);
             bool roomCreated = false;
@@ -88,12 +88,39 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 yield return null;
                 if (PhotonRealtimeClient.InLobby)
                 {
-                    CreateClan2v2Room();
+                    switch (gameType)
+                    {
+                        case GameType.Clan2v2:
+                            CreateClan2v2Room();
+                            break;
+                        case GameType.Random2v2:
+                            CreateRandom2v2Room();
+                            break;
+                        case GameType.Custom:
+                            if (!_createRoomCustom.IsCustomRoomOptionsReady) _createRoomCustom.InitializeCustomRoomOptions();
+                            CreateCustomRoom();
+                            break;
+                    }
                     roomCreated = true;
                 }
             } while (!roomCreated);
 
             callback();
+        }
+
+        private void CreateCustomRoom()
+        {
+            // int randomNumber = UnityEngine.Random.Range(0, 100) + DateTime.Now.Millisecond;
+            string roomName = string.IsNullOrWhiteSpace(_createRoomCustom.RoomName) ? $"{DefaultRoomNameCustom}" : $"{_createRoomCustom.RoomName}";
+
+            if (_createRoomCustom.IsPrivate && _createRoomCustom.RoomPassword != null && _createRoomCustom.RoomPassword != "")
+            {
+                PhotonRealtimeClient.CreateCustomLobbyRoom(roomName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, _createRoomCustom.RoomPassword);
+            }
+            else
+            {
+                PhotonRealtimeClient.JoinRandomOrCreateCustomRoom(roomName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion);
+            }
         }
 
         private void CreateClan2v2Room()  // soulhome value for matchmaking
@@ -102,30 +129,9 @@ namespace MenuUi.Scripts.Lobby.InLobby
             {
                 if (clanData != null)
                 {
-                    PhotonRealtimeClient.JoinRandomOrCreateLobbyRoom("", GameType.Clan2v2, clanData.Name, UnityEngine.Random.Range(0,5001));
+                    PhotonRealtimeClient.JoinRandomOrCreateClan2v2Room(clanData.Name, UnityEngine.Random.Range(0,5001));
                 }
             }));
-        }
-
-        /// <summary>
-        /// Coroutine to create Random2v2 room after client is connected to lobby.
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerator StartCreatingRandom2v2Room(Action callback)
-        {
-            _creatingRoomText.SetActive(true);
-            bool roomCreated = false;
-            do
-            {
-                yield return null;
-                if (PhotonRealtimeClient.InLobby)
-                {
-                    CreateRandom2v2Room();
-                    roomCreated = true;
-                }
-            } while (!roomCreated);
-
-            callback();
         }
 
         private void CreateRandom2v2Room()  // soulhome value for matchmaking
@@ -159,7 +165,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                             }
                             else
                             {
-                                PopupSignalBus.OnChangePopupInfoSignal("Salasana on v‰‰rin.");
+                                PopupSignalBus.OnChangePopupInfoSignal("Salasana on v√§√§rin.");
                             }
                             _passwordPopup.ClosePopup();
                         }));
@@ -180,6 +186,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
             //PhotonRealtimeClient.NickName = room.GetUniquePlayerNameForRoom(player, PhotonRealtimeClient.NickName, "");
             Debug.Log($"'{room.Name}' player name '{PhotonRealtimeClient.NickName}'");
             this.Publish(new LobbyManager.StartRoomEvent());
+        }
+
+        public void OnJoinedRoomFailed(short returnCode, string message)
+        {
+            CreateCustomRoom();
         }
 
         public void SwitchToRoom()
@@ -204,7 +215,23 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private void HandleClanMemberDisconnected()
         {
-            PopupSignalBus.OnChangePopupInfoSignal("Pelin etsiminen lopetetaan. Klaanin j‰sen sulki pelin.");
+            PopupSignalBus.OnChangePopupInfoSignal("Pelin etsiminen lopetetaan. Klaanin j√§sen sulki pelin.");
+        }
+
+        private void HandleKickedOutOfRoom(ReasonType reason)
+        {
+            switch (reason)
+            {
+                case ReasonType.FullRoom:
+                    PopupSignalBus.OnChangePopupInfoSignal("Virhe pelin etsimisess√§, huone on t√§ysi.");
+                    //CreateCustomRoom();
+                    break;
+                case ReasonType.RoomLeader:
+                    PopupSignalBus.OnChangePopupInfoSignal("Huoneen johtaja poisti sinut huoneesta.");
+                    //CreateCustomRoom();
+                    break;
+            }
+            SignalBus.OnCloseBattlePopupRequestedSignal();
         }
     }
 }

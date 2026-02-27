@@ -1,17 +1,16 @@
-using System;
 using System.Collections;
-using Altzone.Scripts;
-using Altzone.Scripts.Config;
-using Altzone.Scripts.Model.Poco.Player;
-using MenuUi.Scripts.Window;
-using MenuUi.Scripts.Window.ScriptableObjects;
+
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
-using UnityEngine.SceneManagement;
-using UnityEngine.Video;
-using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
-using Prg.Scripts.Common;
+
+using Altzone.Scripts;
 using Altzone.Scripts.ReferenceSheets;
+
+using MenuUi.Scripts.Window;
+using MenuUi.Scripts.Window.ScriptableObjects;
+
+using Google.Play.Common;
+using Google.Play.AppUpdate;
 
 namespace MenuUi.Scripts.Loader
 {
@@ -38,10 +37,15 @@ namespace MenuUi.Scripts.Loader
         [SerializeField] private WindowNavigation _introVideo;
         [SerializeField] private WindowDef _introSceneWindow;
         [SerializeField] private int _introScene;
-        [SerializeField] private StorageFurnitureReference _furnitureReference;
 
         private bool _videoPlaying = false;
         private bool _videoEnded = false;
+        private bool _versionCheckFinished = false;
+        private bool? _versionCheckPassed = null;
+
+        public static GameLoader Instance { get; private set; }
+        public bool VersionCheckFinished { get => _versionCheckFinished; private set => _versionCheckFinished = value; }
+        public bool? VersionCheckPassed { get => _versionCheckPassed; private set => _versionCheckPassed = value; }
 
         private void Start()
         {
@@ -51,7 +55,19 @@ namespace MenuUi.Scripts.Loader
             EnhancedTouchSupport.Enable();
         }
 
-        private void OnDisable()
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                Instance = this;
+            }
+        }
+
+        private void OnDestroy()
         {
             SignalBus.OnVideoEnd -= LoadHandler;
         }
@@ -60,7 +76,7 @@ namespace MenuUi.Scripts.Loader
         {
             if (!_videoPlaying && !_videoEnded)
             {
-                if (PlayerPrefs.GetInt("skipIntroVideo", 0) == 0)
+                if (PlayerPrefs.GetInt("SkipIntroVideo", 0) == 0)
                 {
                     //_introVideo.transform.Find("Video Player").GetComponent<VideoPlayer>().loopPointReached += CheckOver;
                     if (Application.platform is RuntimePlatform.WebGLPlayer)
@@ -78,11 +94,36 @@ namespace MenuUi.Scripts.Loader
             }
         }
 
+        private IEnumerator CheckVersionCoroutine()
+        {
+#if UNITY_ANDROID && !UNITY_EDITOR
+            bool checkFinished = false;
+            StartCoroutine(AndroidVersionCheck.VersionCheck(c=> checkFinished=c));
+            yield return new WaitUntil(()=> checkFinished);
+            VersionCheckFinished = true;
+#else
+            StartCoroutine(ServerManager.Instance.GetAllowedVersion((pass, version) =>
+            {
+                if (!pass)
+                {
+                    if (version == 0) Debug.LogError($"Version Check Failed. Unable to fetch version data.");
+                    else Debug.LogError($"Version Check Failed. {version} required, but current version is {ApplicationController.VersionNumber}.");
+                    VersionCheckPassed = false;
+                }
+                else VersionCheckPassed = true;
+
+                VersionCheckFinished = true;
+            }));
+            //yield return new WaitUntil(() => VersionCheckFinished);
+#endif
+            yield return InitializeDataStore();
+        }
+
         private void LoadHandler()
         {
             _videoEnded = true;
             _videoPlaying = false;
-            StartCoroutine(InitializeDataStore());
+            StartCoroutine(CheckVersionCoroutine());
             //OpenLogIn();
         }
 
@@ -90,7 +131,7 @@ namespace MenuUi.Scripts.Loader
         {
             yield return new WaitUntil(() => Storefront.Get() != null);
             Debug.Log("Datastore initialized");
-            yield return new WaitUntil(() => Storefront.Get().SetFurniture(_furnitureReference.GetGameFurniture()));
+            yield return new WaitUntil(() => Storefront.Get().SetFurniture(StorageFurnitureReference.Instance.GetAllGameFurniture()));
             OpenLogIn();
         }
 
@@ -118,6 +159,5 @@ namespace MenuUi.Scripts.Loader
             windowManager.ShowWindow(_mainWindow);
             Debug.Log("exit");*/
         }
-
     }
 }

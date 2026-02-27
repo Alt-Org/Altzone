@@ -4,16 +4,17 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
+    //[CreateAssetMenu(menuName = "ALT-Zone/Characters/PreacherCharacter", fileName = "PreacherCharacterStats")]
     public class PreacherCharacter : ObedientClassCharacter
     {
         public PreacherCharacter() : base()
         {
             _id = CharacterID.Religious;
-            _defaultAttack = 10;
-            _defaultDefence = 10;
-            _defaultHp = 10;
-            _defaultCharacterSize = 10;
-            _defaultSpeed = 10;
+            _defaultAttack = 4;
+            _defaultDefence = 4;
+            _defaultHp = 3;
+            _defaultCharacterSize = 4;
+            _defaultSpeed = 3;
             InitializeValues();
         }
     }

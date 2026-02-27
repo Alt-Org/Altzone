@@ -1,0 +1,24 @@
+[Serializable]
+struct BattleSoulWallTemplate
+{
+    BattleGridPosition Position;
+    int WidthType;
+    int ColorIndex;
+}
+
+component BattleSoulWallQComponent
+{
+    BattleTeamNumber Team;
+    BattleSoulWallRow Row;
+    int WallNumber;
+    BattleEmotionState Emotion;
+    FPVector2 Normal;
+    FP CollisionMinOffset;
+}
+
+enum BattleSoulWallRow
+{
+    First  = 0,
+    Middle = 1,
+    Last   = 2
+}

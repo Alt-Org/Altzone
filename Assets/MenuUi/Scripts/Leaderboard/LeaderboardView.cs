@@ -1,158 +1,252 @@
 
 using System;
-using TMPro;
+using Altzone.Scripts;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Player;
+using MenuUi.Scripts.TabLine;
+using Altzone.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LeaderboardView : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI _titleText;
-
-    [Header("Tab Buttons")]
-    [SerializeField] private Button _globalLeaderboardButton;
+    [Header("Tabline")]
+    [SerializeField] private Button _globalPlayersLeaderboardButton;
+    [SerializeField] private Image _globalPlayersLeaderboardImage;
     [SerializeField] private Button _clanLeaderboardButton;
+    [SerializeField] private Image _clanLeaderboardImage;
     [SerializeField] private Button _friendsLeaderboardButton;
-    [SerializeField] private GameObject _leaderboardTypeButtons;
-    [SerializeField] private Button _winsButton;
-    [SerializeField] private Button _activityButton;
+    [SerializeField] private Image _friendsLeaderboardImage; 
+    [SerializeField] private Image _tablineRibbon;
+    [SerializeField] private TabLine _tablineScript;
+    [SerializeField] private Button _globalClansLeaderboardButton; 
+    [SerializeField] private Image _globalClansLeaderboardImage;
+
+    [Header("Tab sprites")]
+    [SerializeField] private Sprite _globalWinsSprite;
+    [SerializeField] private Sprite _clanWinsSprite;
+    [SerializeField] private Sprite _friendsWinsSprite;
+   
 
     [Header("Leaderboard panels")]
+    [SerializeField] private LeaderboardPodium _podium;
     [SerializeField] private GameObject _winsPanel;
     [SerializeField] private Transform _winsContent;
-    [SerializeField] private GameObject _activityPanel;
-    [SerializeField] private Transform _activityContent;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject _playerWinsItemPrefab;
-    [SerializeField] private GameObject _playerActivityItemPrefab;
+    [SerializeField] private GameObject _clanPointsItemPrefab;
 
     private enum Leaderboard
     {
-        Global,
+        GlobalPlayers,
+        GlobalClans,
         Clan,
-        Friends
+        Friends 
     }
-    private enum LeaderboardType
-    {
-        Wins,
-        Activity
-    }
-    private Leaderboard _currentLeaderboard = Leaderboard.Global;
-    private LeaderboardType _currentLeaderboardType = LeaderboardType.Wins;
+
+
+    private Leaderboard _currentLeaderboard = Leaderboard.GlobalClans;
+
 
     private void Start()
     {
-        _globalLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Global));
+        _globalPlayersLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.GlobalPlayers));
         _clanLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Clan));
         _friendsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Friends));
-        _winsButton.onClick.AddListener(() =>
-        {
-            SetLeaderboardType(LeaderboardType.Wins);
-            UpdateTitle();
-            LoadLeaderboard();
-        });
-        _activityButton.onClick.AddListener(() =>
-        {
-            SetLeaderboardType(LeaderboardType.Activity);
-            UpdateTitle();
-            LoadLeaderboard();
-        });
+        _globalClansLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.GlobalClans)); 
 
-        SetLeaderboardType(LeaderboardType.Activity);
-        OpenLeaderboard(Leaderboard.Clan);
+    }
+
+    private void OnEnable()
+    {
+        OpenLeaderboard(Leaderboard.GlobalClans);
+        _tablineScript.ActivateTabButton(0);
+
     }
 
     private void OpenLeaderboard(Leaderboard leaderboard)
     {
         _currentLeaderboard = leaderboard;
 
-        _leaderboardTypeButtons.SetActive(leaderboard != Leaderboard.Friends);
-        if (leaderboard == Leaderboard.Friends) SetLeaderboardType(LeaderboardType.Wins);
-
-        UpdateTitle();
-        LoadLeaderboard();
-    }
-
-    private void SetLeaderboardType(LeaderboardType leaderboardType)
-    {
-        _currentLeaderboardType = leaderboardType;
-        _winsPanel.SetActive(_currentLeaderboardType == LeaderboardType.Wins);
-        _activityPanel.SetActive(_currentLeaderboardType == LeaderboardType.Activity);
-    }
-
-    private void UpdateTitle()
-    {
-        _titleText.text = _currentLeaderboard switch
-        {
-            Leaderboard.Global => "Globaali tulostaulukko",
-            Leaderboard.Clan => "Klaanin tulostaulukko",
-            Leaderboard.Friends => "Kavereitten tulostaulukko",
-            _ => ""
-        };
+      LoadLeaderboard();
     }
 
     private void LoadLeaderboard()
     {
         foreach (Transform child in _winsContent) Destroy(child.gameObject);
-        foreach (Transform child in _activityContent) Destroy(child.gameObject);
+        
 
+        _podium.SetPlayerView();
+      
         switch (_currentLeaderboard)
         {
-            case Leaderboard.Global:
-                StartCoroutine(ServerManager.Instance.GetPlayerLeaderboardFromServer((playerLeaderboard) =>
+            case Leaderboard.GlobalClans: 
                 {
-                    if (_currentLeaderboardType == LeaderboardType.Wins)
+                    StartCoroutine(ServerManager.Instance.GetClanLeaderboardFromServer((clanLeaderboard) =>
                     {
-                        playerLeaderboard.Sort((a, b) => a.WonBattles.CompareTo(b.WonBattles));
+
+                        _podium.SetClanView();
+
+                        clanLeaderboard.Sort((a, b) => b.Points.CompareTo(a.Points)); 
 
                         int rank = 1;
-                        foreach (PlayerLeaderboard ranking in playerLeaderboard)
+                        foreach (ClanLeaderboard ranking in clanLeaderboard)
                         {
-                            LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                            item.Initialize(rank, ranking.Clan.Name, ranking.WonBattles);
+                            ClanData clanData = ranking.Clan;
+                            ServerClan serverClan = ranking.ServerClan;
+
+
+                            if (rank < 4) //The top three are displayed on the podium
+                            {
+                                _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, clanData, serverClan);
+                            }
+                            else
+                            {
+                                LeaderboardClanPointsItem item = Instantiate(_clanPointsItemPrefab, parent: _winsContent).GetComponent<LeaderboardClanPointsItem>();
+                                item.Initialize(rank, ranking.Clan.Name, ranking.Points);
+
+                                // Clan heart colors
+                                ClanHeartColorSetter clanheart = item.GetComponentInChildren<ClanHeartColorSetter>();
+                                clanheart.SetOtherClanColors(clanData);
+
+                                // View clan button
+                                item.OpenProfileButton.onClick.RemoveAllListeners();
+                                item.OpenProfileButton.onClick.AddListener(() =>
+                                {
+                                    DataCarrier.AddData(DataCarrier.ClanListing, serverClan); // Transfer the data for use in the leaderboard
+                                });
+                            }
+
                             rank++;
                         }
-                    }
-                    else
+                    }));
+                }
+                break;
+            case Leaderboard.GlobalPlayers:
+                {
+
+                    StartCoroutine(ServerManager.Instance.GetPlayerLeaderboardFromServer((playerLeaderboard) =>
                     {
-                        playerLeaderboard.Sort((a, b) => a.Points.CompareTo(b.Points));
+
+                        playerLeaderboard.Sort((a, b) => b.WonBattles.CompareTo(a.WonBattles));
 
                         int rank = 1;
                         foreach (PlayerLeaderboard ranking in playerLeaderboard)
                         {
-                            LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
-                            item.Initialize(rank, ranking.Clan.Name, ranking.Points);
+                            AvatarVisualData avatarVisualData = null;
+
+                            if (ranking.Player.SelectedCharacterId != 0)
+                            {
+                                avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(ranking.Player);
+                            }
+
+
+                            if (rank < 4) //The top three are displayed on the podium
+                            {
+                                _podium.InitilializePodium(rank, ranking);
+                            }
+                            else
+                            {
+                                LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
+                                item.Initialize(rank, ranking);
+
+
+
+                                // View player profile button
+                                item.OpenProfileButton.onClick.AddListener(() =>
+                                {
+                                    DataCarrier.AddData(DataCarrier.PlayerProfile, ranking.Player); // Transfer the data for use in the leaderboard
+                                });
+                            }
+
                             rank++;
-                        };
-                    }
-                }));
+                        }
+
+                    }));
+                }
                 break;
             case Leaderboard.Clan:
-                // For Testing
-                if (_currentLeaderboardType == LeaderboardType.Wins)
+
+                Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
                 {
-                    for (int i = 1; i < 5; i++)
-                    {
-                        LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                        item.Initialize(i, ((char)(64 + i)).ToString(), 16);
-                    }
-                }
-                else
-                {
-                    for (int i = 1; i < 5; i++)
-                    {
-                        LeaderboardActivityItem item = Instantiate(_playerActivityItemPrefab, parent: _activityContent).GetComponent<LeaderboardActivityItem>();
-                        item.Initialize(i, ((char)(64 + i)).ToString(), 100);
-                    };
-                }
+
+                        clanData.Members.Sort((a, b) => b.LeaderBoardWins.CompareTo(a.LeaderBoardWins));
+
+                        int rank = 1;
+                        foreach (ClanMember player in clanData.Members)
+                        {
+                            PlayerData playerData = player.GetPlayerData();
+                            AvatarVisualData avatarVisualData = null;
+
+                            if (playerData.SelectedCharacterId != 0)
+                            {
+                                avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData);
+                            }
+
+
+                            if (rank < 4)
+                        {
+                                _podium.InitilializePodium(rank, player.Name, player.LeaderBoardWins, playerData);
+                            }
+                            else
+                            {
+                                LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
+                                item.Initialize(rank, player.Name, player.LeaderBoardWins, avatarVisualData, ""); 
+
+                                //View player profile button
+                                item.OpenProfileButton.onClick.AddListener(() =>
+                                {
+                                    DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
+                                });
+                            }
+
+                            rank++;
+                        }
+
+                        // Add empty placements to fill out the space if necessary 
+                        if (clanData.Members.Count < 15)
+                        {
+                            int placements = 15 - clanData.Members.Count;
+
+                            for (int i = 0; i < placements; i++)
+                            {
+                                if (rank < 4)
+                                {
+                                    _podium.InitilializePodium(rank, "", 0, null);
+                                }
+                                else
+                                {
+                                    LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
+                                    item.Initialize(rank, "", 0, null, "");
+                                }
+
+                                rank++;
+                            }
+                        }
+                });
                 break;
             case Leaderboard.Friends:
                 // For Testing
-                for (int i = 1; i < 5; i++)
-                {
-                    LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                    item.Initialize(i, ((char)(64 + i)).ToString(), 16);
-                }
+
+                    for (int i = 1; i < 20; i++)
+                    {
+                        if (i < 4)
+                        {
+                            _podium.InitilializePodium(i, "", 0, null);
+                    }
+                        else
+                        {
+                            LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
+                            item.Initialize(i, "", 0, null, "");
+
+                            // View player profile button
+                            //item.OpenProfileButton.onClick.AddListener(() =>
+                            //{
+                            //    DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
+                            //});
+                        }
+                    }
                 break;
         }
     }

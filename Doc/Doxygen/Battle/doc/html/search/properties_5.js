@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['playerref_0',['PlayerRef',['../struct_quantum_1_1_player_manager_1_1_player_handle.html#a993d87388399c3a640669c4172b1e31f',1,'Quantum::PlayerManager::PlayerHandle']]],
-  ['playerrefs_1',['PlayerRefs',['../struct_quantum_1_1_player_manager_data.html#aee03e018bb65b45ec6e6306335d4d3d6',1,'Quantum::PlayerManagerData']]],
-  ['playstate_2',['PlayState',['../struct_quantum_1_1_player_manager_1_1_player_handle.html#adb9531f7e03a20ed1208d4f9406bcab3',1,'Quantum::PlayerManager::PlayerHandle']]],
-  ['playstates_3',['PlayStates',['../struct_quantum_1_1_player_manager_data.html#a7d9318c2e7518898a9288fe883feb9a8',1,'Quantum::PlayerManagerData']]]
+  ['fontsizemax_0',['FontSizeMax',['../class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#a49e7bd45586601e7e43e75e31931b920',1,'Altzone::Scripts::BattleUiShared::TextScaler']]],
+  ['fontsizemin_1',['FontSizeMin',['../class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html#a89f70f6002e6a81260b59e85d55fcce4',1,'Altzone::Scripts::BattleUiShared::TextScaler']]]
 ];

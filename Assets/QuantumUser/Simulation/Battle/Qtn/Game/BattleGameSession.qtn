@@ -1,0 +1,8 @@
+singleton component BattleGameSessionQSingleton
+{
+    bool GameInitialized;
+    BattleGameState State;
+    FP LoadDelaySec;
+    FP TimeUntilStartSec;
+    FP GameTimeSec;
+}

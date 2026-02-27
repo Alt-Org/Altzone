@@ -21,10 +21,10 @@ public class ProfiilinMuokkausView : MonoBehaviour
 
     [SerializeField] private const string LOGGED_OUT_SUCCESS = "Kirjauduttu ulos!";
     [SerializeField] private const string LOGGED_OUT_NULL = "Olet jo kirjautunut ulos!";
-    [SerializeField] private const string DELETE_USER_SUCCESS = "Käyttäjä poistettu onnistuneesti!";
-    [SerializeField] private const string DELETE_USER_FAIL = "Käyttäjän poistamisessa tapahtui virhe!";
-    [SerializeField] private const string DELETE_USER_NULL = "Et ole kirjautunut sisään!";
-    [SerializeField] private const string LEAVE_CLAN_FAIL = "Klaanista poistuminen epäonnistui!";
+    [SerializeField] private const string DELETE_USER_SUCCESS = "Kï¿½yttï¿½jï¿½ poistettu onnistuneesti!";
+    [SerializeField] private const string DELETE_USER_FAIL = "Kï¿½yttï¿½jï¿½n poistamisessa tapahtui virhe!";
+    [SerializeField] private const string DELETE_USER_NULL = "Et ole kirjautunut sisï¿½ï¿½n!";
+    [SerializeField] private const string LEAVE_CLAN_FAIL = "Klaanista poistuminen epï¿½onnistui!";
 
 
     //[SerializeField] private TextMeshProUGUI _usernameText;
@@ -135,7 +135,7 @@ public class ProfiilinMuokkausView : MonoBehaviour
         //    }));
         //}
 
-        StartCoroutine(WebRequests.Delete(ServerManager.ADDRESS + "profile/" + PlayerPrefs.GetString("profileId", string.Empty), ServerManager.Instance.AccessToken, request =>
+        StartCoroutine(WebRequests.Delete(ServerManager.SERVERADDRESS + "profile/" + PlayerPrefs.GetString("profileId", string.Empty), ServerManager.Instance.AccessToken, request =>
         {
             if (request.result != UnityWebRequest.Result.Success)
             {

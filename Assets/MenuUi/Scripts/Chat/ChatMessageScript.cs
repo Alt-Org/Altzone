@@ -3,53 +3,68 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Photon.Deterministic;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class ChatMessageScript : MonoBehaviour
 {
     [Header("Objects")]
     public RectTransform textBackground;
     public TextMeshProUGUI messageText;
-    public RectTransform panel; 
+    public RectTransform panel;
+    [SerializeField] private VerticalLayoutGroup _messageVerticalLayoutGroup;
 
-    public float heightStep = 30f; // Korkeus, jonka verran tausta kasvaa jokaisen lisärivin myötä.
+    public float _BackgroundPadding = 30f; // Korkeus, jonka verran tausta kasvaa jokaisen lisÃ¤rivin myÃ¶tÃ¤.
 
-    private int lastLineCount = 0; // Tallentaa viimeksi lasketun rivimäärän.
-    private float initialHeight; // Alkuperäinen taustan korkeus, joka asetetaan alussa.
+    private float _lastLineCount = 0; // Tallentaa viimeksi lasketun rivimï¿½ï¿½rï¿½n.
+    private float _initialHeight; // Alkuperï¿½inen taustan korkeus, joka asetetaan alussa.
+    public MessageObjectHandler _messageHandler;
 
 
     private void Start()
     {
-        // Alustetaan alkuperäinen taustan korkeus ja paneelin koko.
+        // Alustetaan alkuperï¿½inen taustan korkeus ja paneelin koko.
         if (textBackground != null && panel != null)
         {
-            initialHeight = textBackground.sizeDelta.y;
+            _initialHeight = textBackground.sizeDelta.y;
 
-            panel.sizeDelta = new Vector2(panel.sizeDelta.x, initialHeight);
+            panel.sizeDelta = new Vector2(panel.sizeDelta.x, _initialHeight);
         }
-    }
-
-    void Update()
-    {
-        MessageSetHeight();
     }
 
     public void MessageSetHeight()
     {
-        // Dynaamisesti muuttaa taustan korkeutta ja paneelia tekstin rivimäärän mukaan.
+        // Dynaamisesti muuttaa taustan korkeutta ja paneelia tekstin rivimï¿½ï¿½rï¿½n mukaan.
         if (textBackground != null && messageText != null)
         {
-            int lineCount = messageText.textInfo.lineCount; // Haetaan nykyinen rivimäärä tekstistä.
+            float lineCount = messageText.textInfo.lineCount; // Haetaan nykyinen rivimï¿½ï¿½rï¿½ tekstistï¿½.
 
-            if (lineCount != lastLineCount)
+            if (lineCount != _lastLineCount)
             {
-                float newHeight = initialHeight + (lineCount - 1) * heightStep;
+                //Old version
+                //float newHeight = _initialHeight + (lineCount - 1) * heightStep;
+
+
+                /// This is more better as prefferedHeight will take the height it needs to fit in with the text and
+                /// _BackgroundPadding is for padding so that textBackground wouldn't be too short
+                float newHeight = messageText.preferredHeight + _BackgroundPadding;
 
                 textBackground.sizeDelta = new Vector2(textBackground.sizeDelta.x, newHeight);
 
-                lastLineCount = lineCount;
+                textBackground.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(textBackground.parent.GetComponent<RectTransform>().sizeDelta.x, newHeight);
+                _lastLineCount = lineCount;
+
+
+                _messageHandler._baseMessageBankerSize = new Vector2(_messageHandler._baseMessageSize.sizeDelta.x, newHeight);
+
+                _messageHandler.SizeCall();
+                ///Old Line Incase needed
+                //float originalSpacing = _messageVerticalLayoutGroup.spacing;
+                //float newSpacing = originalSpacing * 0.2f * (lineCount - 1);
+                //_messageVerticalLayoutGroup.spacing += newSpacing;
+
+                ///Uskoisin ettÃ¤ me voidaan vaan kÃ¤yttÃ¤Ã¤ verticallayouttia vaan
             }
-            
         }
     }
-
 }

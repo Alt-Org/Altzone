@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
+  m_Name: CharacterSpec_505
+  m_EditorClassIdentifier: 
+  Id: 505
+  CharacterId: 505
+  IsApproved: 1
+  FinnishName: Marttyyrius
+  EnglishName: Martyrdom
+  ClassType: 500
+  CharacterDescriptionFinnish: "Kun Marttyyriys asettuu ihmiseen asumaan, se saa
+    t\xE4m\xE4n kantamaan kipua kuin velvollisuutta. Ihminen alkaa uskoa, ett\xE4
+    k\xE4rsimys tekee h\xE4nest\xE4 arvokkaan \u2014 ett\xE4 tuska on todiste rakkaudesta
+    ja uskollisuudesta. H\xE4n ottaa harteilleen enemm\xE4n kuin jaksaa, koska ilman
+    taakkaa h\xE4n ei tiet\xE4isi, kuka on. Marttyyriys antaa tarkoituksen, mutta
+    samalla se sitoo h\xE4net rooliin, jossa helpotus tuntuu petokselta. Jokainen
+    uhraus vahvistaa h\xE4nen merkityst\xE4\xE4n, mutta vie h\xE4nt\xE4 kauemmas
+    siit\xE4, mit\xE4 h\xE4n itse tarvitsisi tullakseen kokonaiseksi.\r\n\nVuorovaikutuskent\xE4ll\xE4
+    (Ego Clash) Marttyyriyden suojana toimii valtava kivitaakka. H\xE4n pys\xE4ytt\xE4\xE4
+    tunnetila-ammukset, kunnes sortuu iskujen alla, ja h\xE4nen ruumiistaan nouseva
+    hohtava pyhyys j\xE4\xE4 kent\xE4lle. Martyyriyden Pyhyys voidaan poimia ja k\xE4ytt\xE4\xE4
+    Ry\xF6st\xF6ss\xE4 lis\xE4el\xE4m\xE4n\xE4, jolloin marttyyrin uhraus muuttuu
+    liittolaisten hyv\xE4ksi.\r\n"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Uhrautumisesta pyhyytt\xE4 synnytt\xE4v\xE4,
+    j\xE4ljess\xE4\xE4n voimaa j\xE4tt\xE4v\xE4."
+  CharacterShortDescriptionEnglish: 
+  CharacterStats: {fileID: 11400000, guid: 90853665bd935954eabb138cf07b0563, type: 2}
+  Hp:
+    Level: 1
+    Coefficient: 3
+  Speed:
+    Level: 3
+    Coefficient: 0
+  CharacterSize:
+    Level: 3
+    Coefficient: 0
+  Attack:
+    Level: 3
+    Coefficient: 5
+  Defence:
+    Level: 3
+    Coefficient: 2
+  GalleryImage: {fileID: 21300000, guid: 52f1a9a84148a7d4d80825b318f255de, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: d7563a354f58ed140ad75acb05fdb952, type: 3}
+  CharPhotoSeries: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 1368889510318669513
+  BattleUiSprite: {fileID: 0}

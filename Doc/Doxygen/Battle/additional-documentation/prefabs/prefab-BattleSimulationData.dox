@@ -1,0 +1,20 @@
+/// @file BattleSimulationData.prefab
+/// <summary>
+/// Contains GameSession singletons that keep track of the game's and players's states.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleSimulationData**
+///     - *Components:*
+///         - Transform
+///         - %Quantum Entity Prototype
+///             - @cref{Quantum,BattleGameSessionQSingleton}
+///             - @cref{Quantum,BattlePlayerManagerDataQSingleton}
+///             - @cref{Quantum,BattleDiamondCounterQSingleton}
+
+/// @file BattleSimulationDataEntityPrototype.qprototype
+/// <summary>
+/// EntityPrototype counterpart of @ref BattleSimulationData.prefab
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).

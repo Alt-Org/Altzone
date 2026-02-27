@@ -11,15 +11,16 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     [RequireComponent(typeof(Button), typeof(Image))]
     public class LoadoutButton : MonoBehaviour
     {
-        [SerializeField] private StatsWindowController _controller;
         [SerializeField] private PieChartPreview _piechartPreview;
         [SerializeField] private Image _loadoutImage;
         [SerializeField] private Sprite[] _loadoutSprites;
+        private StatsWindowController _controller;
         private Button _button;
         private int _currentLoadoutIndex = 0;
 
         private void Awake()
         {
+           
             _button = GetComponent<Button>();
             _button.onClick.AddListener(ChangeLoadout);
             _controller.OnStatUpdated += UpdateChart;
@@ -32,6 +33,8 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
         private void OnEnable()
         {
+            if (_controller == null) _controller = FindObjectOfType<StatsWindowController>();
+
             if (_controller != null)
             {
                 InitializeChart();

@@ -1,0 +1,27 @@
+/// @file BattleDiamond.prefab
+/// <summary>
+/// Prefab for pickable diamonds.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleDiamond**
+///     - *Components:*
+///         - Transform
+///         - %Quantum Entity Prototype
+///             - @cref{Quantum,BattleDiamondDataQComponent}
+///         - %Quantum Entity View
+///     - *Children:*
+///         - **DiamondViewModel**
+///             - *Components:*
+///                 - Transform
+///                 - SpriteRenderer
+///                 - @cref{Battle.View.Diamond,BattleDiamondViewController}
+///                 - Sprites-Default (Material)
+
+/// @file BattleDiamondEntityPrototype.qprototype
+/// <summary>
+/// EntityPrototype counterpart of @ref BattleDiamond.prefab -
+/// @copybrief BattleDiamond.prefab
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).

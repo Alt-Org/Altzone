@@ -2,7 +2,8 @@
 using System.Linq;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
-using MenuUi.Scripts.Audio;
+using Altzone.Scripts.Lobby;
+using Altzone.Scripts.Audio;
 using MenuUi.Scripts.SwipeNavigation;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
@@ -35,37 +36,35 @@ namespace MenuUi.Scripts.MainMenu
 
         private void OnEnable()
         {
+            bool jukeboxMainMenu = carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.MainMenu);
+
             _swipe = GetComponentInParent<SwipeUI>();
             StartCoroutine(CheckWindowSize());
-            AudioManager.Instance?.PlayMusic(MusicSection.MainMenu);
+
+            AudioManager.Instance?.SetCurrentAreaCategoryName("MainMenu");
+
+            if (jukeboxMainMenu)
+            {
+                if (JukeboxManager.Instance != null && string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
+                    AudioManager.Instance?.PlayMusic("MainMenu");
+            }
+            else
+                AudioManager.Instance?.PlayMusic("MainMenu");
+
+            if(!LobbyManager.IsActive) LobbyManager.Instance.Activate();
+            if (LobbyManager.Instance.RunnerActive) LobbyManager.CloseRunner();
         }
 
         private void Start()
         {
             var windowManager = WindowManager.Get();
-            _layoutElementsGameObjects = GameObject.FindGameObjectsWithTag("MainMenuWindow");
-            _scrollRectCanvas = GameObject.FindGameObjectWithTag("ScrollRectCanvas").GetComponent<RectTransform>();
-            SetMainMenuLayoutDimensions();
-            SetAudioVolumeLevels();
-            AudioManager.Instance?.PlayMusic(MusicSection.MainMenu);
-        }
-
-        /// <summary>
-        /// Sets the audio levels of main menu audio sources according to the values in PlayerPrefs
-        /// </summary>
-        public void SetAudioVolumeLevels()
-        {
-            audioSources = FindObjectsOfType<SetVolume>(true);
-
-            carrier.masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1);
-            carrier.menuVolume = PlayerPrefs.GetFloat("MenuVolume", 1);
-            carrier.musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1);
-            carrier.soundVolume = PlayerPrefs.GetFloat("SoundVolume", 1);
-
-            foreach (SetVolume audioSource in audioSources)
+            if (_swipe)
             {
-                audioSource.VolumeSet();
+                _layoutElementsGameObjects = GameObject.FindGameObjectsWithTag("MainMenuWindow");
+                _scrollRectCanvas = GameObject.FindGameObjectWithTag("ScrollRectCanvas").GetComponent<RectTransform>();
+                SetMainMenuLayoutDimensions();
             }
+            AudioManager.Instance.UpdateMaxVolume();
         }
 
         /// <summary>
@@ -107,7 +106,7 @@ namespace MenuUi.Scripts.MainMenu
         /// </remarks>
         private IEnumerator CheckWindowSize() //Tällä saa ikkunan koon.
         {
-            while (true)
+            while (_swipe)
             {
                 if (lastWidth != Screen.width || lastHeight != Screen.height)
                 {

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class NextSlideButton : MonoBehaviour
 {
     public SwipeUI swipeUI;
+    public IntroSwipeUI introSwipeUI;
 
     private void Start()
     {
@@ -16,7 +17,16 @@ public class NextSlideButton : MonoBehaviour
     private void OnButtonClick()
     {
         // Call the GoToNextSlide method in the SwipeUI script
+        Debug.Log("button currentpage: " + swipeUI.CurrentPage + " length: " + introSwipeUI.startSlides.Length);
 
-        swipeUI.NextSlide();
+        if (swipeUI.CurrentPage >= introSwipeUI.startSlides.Length - 1)
+        {
+            return;
+        }
+        else
+        {
+            swipeUI.NextSlide();
+        }
+        return;
     }
 }

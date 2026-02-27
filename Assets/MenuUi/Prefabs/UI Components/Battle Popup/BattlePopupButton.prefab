@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7162581104566638889}
   - component: {fileID: 3225578820013284245}
   - component: {fileID: 4028375515925020952}
+  - component: {fileID: 7663954824446020484}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -139,6 +140,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7663954824446020484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2769399696869351318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Painike
+  _englishText: Button
 --- !u!1 &8703098976634220119
 GameObject:
   m_ObjectHideFlags: 0

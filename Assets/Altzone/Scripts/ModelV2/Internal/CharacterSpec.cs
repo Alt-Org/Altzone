@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Quantum;
 
 namespace Altzone.Scripts.ModelV2.Internal
 {
@@ -51,18 +52,38 @@ namespace Altzone.Scripts.ModelV2.Internal
         /// <remarks>
         /// When game support localization this will be localization id for this player character.
         /// </remarks>
-        [Header("General Attributes")] public string Name;
+        [Header("General Attributes")] public string FinnishName;
+        [Header("General Attributes")] public string EnglishName;
 
         /// <summary>
         /// Player character class.
         /// </summary>
-        public CharacterClassID ClassType;
+        public CharacterClassType ClassType;
+        /// <summary>
+        /// A long description of the character. If you want a short description use <see cref="CharacterShortDescription"/>.
+        /// </summary>
+        [TextArea(10, 20)]
+        public string CharacterDescriptionFinnish;
+        [TextArea(10, 20)]
+        public string CharacterDescriptionEnglish;
+        /// <summary>
+        /// A short few word description of the character.
+        /// </summary>
+        public string CharacterShortDescriptionFinnish;
+        public string CharacterShortDescriptionEnglish;
+
+        [TextArea(5, 10)]
+        public string CharacterAbilityDescriptionFinnish;
+        [TextArea(5, 10)]
+        public string CharacterAbilityDescriptionEnglish;
 
         #endregion
 
         #region Special attributes
 
-        [Header("Special Attributes")] public NumAttribute Hp;
+        [Header("Special Attributes")]
+        public BaseCharacter CharacterStats;
+        public NumAttribute Hp;
         public NumAttribute Speed;
         public NumAttribute CharacterSize;
         public NumAttribute Attack;
@@ -78,6 +99,10 @@ namespace Altzone.Scripts.ModelV2.Internal
         /// </summary>
         [Header("General Asset References")] public Sprite GalleryImage;
 
+        public Sprite GalleryHeadImage;
+
+        public Sprite CharPhotoSeries;
+
         #endregion
 
         #region Battle Asset References
@@ -86,7 +111,9 @@ namespace Altzone.Scripts.ModelV2.Internal
         /// Battle sprite sheet for something.
         /// TODO: add relevant doc comment here!
         /// </summary>
-        [Header("Battle Asset References")] public Sprite BattleSprite;
+        [Header("Battle Asset References")]
+        public AssetRef<EntityPrototype> BattleEntityPrototype;
+        public Sprite BattleUiSprite;
 
         #endregion
 
@@ -97,17 +124,84 @@ namespace Altzone.Scripts.ModelV2.Internal
         /// Missing fields or values makes player character invalid because
         /// they can cause e.g. undefined behaviour or NRE at runtime.
         /// </remarks>
-        public bool IsValid => ClassType != CharacterClassID.None
+
+        public string Name
+        {
+            get
+            {
+                if(SettingsCarrier.Instance == null) return FinnishName;
+                switch (SettingsCarrier.Instance.Language)
+                {
+                    case SettingsCarrier.LanguageType.Finnish:
+                        return FinnishName;
+                    case SettingsCarrier.LanguageType.English:
+                        return EnglishName;
+                    default:
+                        return FinnishName;
+                }
+            }
+        }
+
+        public string CharacterDescription
+        {
+            get
+            {
+                switch (SettingsCarrier.Instance.Language)
+                {
+                    case SettingsCarrier.LanguageType.Finnish:
+                        return CharacterDescriptionFinnish;
+                    case SettingsCarrier.LanguageType.English:
+                        return CharacterDescriptionEnglish;
+                    default:
+                        return FinnishName;
+                }
+            }
+        }
+        public string CharacterShortDescription
+        {
+            get
+            {
+                switch (SettingsCarrier.Instance.Language)
+                {
+                    case SettingsCarrier.LanguageType.Finnish:
+                        return CharacterShortDescriptionFinnish;
+                    case SettingsCarrier.LanguageType.English:
+                        return CharacterShortDescriptionEnglish;
+                    default:
+                        return CharacterShortDescriptionFinnish;
+                }
+            }
+        }
+
+        public string CharacterAbilityDescription
+        {
+            get
+            {
+                switch (SettingsCarrier.Instance.Language)
+                {
+                    case SettingsCarrier.LanguageType.Finnish:
+                        return CharacterAbilityDescriptionFinnish;
+                    case SettingsCarrier.LanguageType.English:
+                        return CharacterAbilityDescriptionEnglish;
+                    default:
+                        return CharacterAbilityDescriptionFinnish;
+                }
+            }
+        }
+
+        public bool IsValid => (ClassType != CharacterClassType.None || CharacterId == CharacterID.Test) 
                                && !string.IsNullOrWhiteSpace(Id)
                                && !string.IsNullOrWhiteSpace(name);
 
         public override string ToString()
         {
             return $"{Id}:{ClassType}:{Name}" +
-                   $", {ResName(GalleryImage)}" +
-                   $", {ResName(BattleSprite)}";
+                   $", {UResName(GalleryImage)}" +
+                   $", {QResName(BattleEntityPrototype)}" +
+                   $", {UResName(BattleUiSprite)}";
 
-            string ResName(Object instance) => $"{(instance == null ? "null" : instance.name)}";
+            string UResName(Object instance) => $"{(instance == null ? "null" : instance.name)}";
+            string QResName<T>(AssetRef<T> instance) where T : AssetObject => $"{(instance == null ? "null" : instance.ToString())}";
         }
     }
 }

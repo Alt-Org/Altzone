@@ -1,7 +1,9 @@
+using Altzone.Scripts.Language;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
@@ -10,23 +12,41 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
     /// </summary>
     public class StatsPanel : MonoBehaviour
     {
-        [SerializeField] private StatsWindowController _controller;
-        [SerializeField] private Image _characterImage;
+        [SerializeField] private Image _characterHeadImage;
         [SerializeField] private Image _lockImage;
-        [SerializeField] private TMP_Text _attackText;
-        [SerializeField] private TMP_Text _hpText;
-        [SerializeField] private TMP_Text _defenceText;
-        [SerializeField] private TMP_Text _charSizeText;
-        [SerializeField] private TMP_Text _speedText;
+
+        [SerializeField] private Image _characterImageTop;
+        [SerializeField] private Image _characterImageBottom;
+        [SerializeField] private TextLanguageSelectorCaller _characterDescription;
+        [SerializeField] private TextLanguageSelectorCaller _specialAbility;
+        [SerializeField] private TMP_Text _wins;
+        [SerializeField] private TMP_Text _losses;
+        [SerializeField] private Image _classNameIcon;
+        [SerializeField] private Image _classIcon;
+        [SerializeField] private ClassReference _classReference;
+        [SerializeField] private Image _charPhotoSeries;
+
+        [SerializeField] private BaseScrollRect _scrollRect;
+
+        private StatsWindowController _controller;
+
+        private GameObject previousPage;
 
         private void OnEnable()
         {
+            if (_controller == null) _controller = FindObjectOfType<StatsWindowController>();
+            _scrollRect.VerticalNormalizedPosition = 1;
+
+            SetCharacterHeadImage();
             SetCharacterImage();
-            SetStatButtonTexts();
+            SetCharacterDescription();
+            SetWinsAndLosses();
+            SetClassNameIcon();
+            SetClassIcon();
+            SetCharPhotoSeries();
 
-            _controller.OnStatUpdated += SetStatButtonTexts;
 
-            if(_controller.IsCurrentCharacterLocked())
+            if (_controller.IsCurrentCharacterLocked())
             {
                 _lockImage.gameObject.SetActive(true);
             }
@@ -36,55 +56,64 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             }
         }
 
-
-        private void OnDisable()
+        private void SetClassNameIcon()
         {
-            _controller.OnStatUpdated -= SetStatButtonTexts;
+             CharacterClassType classType = _controller.GetCurrentCharacterClass();
+            _classNameIcon.sprite = _classReference.GetNameIcon(classType);
+            _classNameIcon.enabled = _classNameIcon.sprite != null;
         }
+        private void SetCharacterHeadImage()
+        {
+            Sprite sprite = _controller.GetCurrentCharacterSprite();
 
-
+            if (sprite != null)
+            {
+                _characterHeadImage.sprite = sprite;
+            }
+        }
         private void SetCharacterImage()
         {
             Sprite sprite = _controller.GetCurrentCharacterSprite();
 
             if (sprite != null)
             {
-                _characterImage.sprite = sprite;
+                _characterImageTop.sprite = sprite;
+                _characterImageBottom.sprite = sprite;
             }
         }
-
-
-        private void SetStatButtonTexts(StatType statType = StatType.None)
+        private void SetCharacterDescription()
         {
-            if(statType == StatType.None)
-            {
-                _attackText.text = _controller.GetStat(StatType.Attack).ToString();
-                _hpText.text = _controller.GetStat(StatType.Hp).ToString();
-                _defenceText.text = _controller.GetStat(StatType.Defence).ToString();
-                _charSizeText.text = _controller.GetStat(StatType.CharacterSize).ToString();
-                _speedText.text = _controller.GetStat(StatType.Speed).ToString();
-            }
-            else
-            {
-                switch (statType)
-                {
-                    case StatType.Attack:
-                        _attackText.text = _controller.GetStat(StatType.Attack).ToString();
-                        break;
-                    case StatType.Hp:
-                        _hpText.text = _controller.GetStat(StatType.Hp).ToString();
-                        break;
-                    case StatType.Defence:
-                        _defenceText.text = _controller.GetStat(StatType.Defence).ToString();
-                        break;
-                    case StatType.CharacterSize:
-                        _charSizeText.text = _controller.GetStat(StatType.CharacterSize).ToString();
-                        break;
-                    case StatType.Speed:
-                        _speedText.text = _controller.GetStat(StatType.Speed).ToString();
-                        break;
-                }
-            }
+            _characterDescription.SetText(_controller.GetCurrentCharacterDescription());
+            _specialAbility.SetText(_controller.GetCurrentCharacterSpecialAbilityDescription());
+
+        }
+        private void SetWinsAndLosses()
+        {
+            _wins.text = _controller.GetCurrentCharacterWins().ToString();
+            _losses.text = _controller.GetCurrentCharacterLosses().ToString();
+        }
+
+        private void SetClassIcon()
+        {
+            if (!_classIcon || !_classReference || _controller == null) return;
+
+            CharacterClassType classType = _controller.GetCurrentCharacterClass();
+            var icon = _classReference.GetCornerIcon(classType);
+
+            _classIcon.enabled = icon != null;
+            if (icon != null) _classIcon.sprite = icon;
+        }
+
+        private void SetCharPhotoSeries ()
+        {
+            _charPhotoSeries.sprite = _controller.GetCurrentCharacterPhotoSeries();
+            _charPhotoSeries.enabled = _charPhotoSeries.sprite != null;
+
+        }
+
+        public void ClosePopup()
+        {
+            gameObject.SetActive(false);
         }
     }
 }

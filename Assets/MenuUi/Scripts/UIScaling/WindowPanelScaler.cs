@@ -21,6 +21,7 @@ namespace MenuUi.Scripts.UIScaling
             _topPanelRectTransfrom.anchorMax = new (1, unsafeAreaLine);
             _contentPanelRectTransfrom.anchorMin = new (0, bottomLine);
             _contentPanelRectTransfrom.anchorMax = new(1, topLine);
+            if(_fullPanelPopupsTransform != null) _fullPanelPopupsTransform.anchorMax = new Vector2(1, unsafeAreaLine);
         }
     }
 }

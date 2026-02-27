@@ -61,6 +61,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         Teenagers,
         Toddlers,
         Adults,
+        Elderly,
         All
     }
 
@@ -93,23 +94,132 @@ namespace Altzone.Scripts.Model.Poco.Clan
         RarelyActive
     }
 
+    public enum ClanRanking
+    {
+        None,
+        Top10,
+        Top25,
+        Top50,
+        Top100
+    }
+
+    public enum ClanMembers
+    {
+        None,
+        Small,      
+        Medium,     
+        Large,      
+        VeryLarge,  
+        Huge
+    }
+
+    public enum Rules
+    {
+        FairGame,
+        ActivityWeekly,
+        ActivityDaily,
+        NoToxicity,
+        Teamwork,
+        KickUnderperformers,
+        AbsencesNoted,
+        NoSpam,
+        WorkRoles,
+        FairTrade,
+        JoinJointProjects,
+        DiplomacyWithOthers,
+        Positivity,
+    }
+
+    public enum Phrases
+    {
+        TogetherWeAreMore,
+        GrowStepByStep,
+        CreativityIsOurStrength,
+        BuildShareGetExcited,
+        GoodAtmosphere,
+        SmallActsBigClan,
+        AlwaysHelping,
+        FairGame,
+        EveryoneShines,
+        EnthusiasmIsContagious,
+        WorldBuiltTogether,
+        TrustMakesClan,
+        TodayBetter,
+        EveryMomentIsOpportunity,
+        ClanWalksTogether,
+    }
+
     public static class ClanDataTypeConverter
     {
         public static string GetAgeText(ClanAge age)
         {
+            switch (SettingsCarrier.Instance.Language)
+            {
+                case SettingsCarrier.LanguageType.Finnish:
+                    return age switch
+                    {
+                        ClanAge.None => "Ikäryhmä",
+                        ClanAge.Teenagers => "Teinit",
+                        ClanAge.Toddlers => "Taaperot",
+                        ClanAge.Adults => "Aikuiset",
+                        ClanAge.Elderly => "Iäkkäät",
+                        ClanAge.All => "Kaikki",
+                        _ => "",
+                    };
+                case SettingsCarrier.LanguageType.English:
+                    return age switch
+                    {
+                        ClanAge.None => "Age Group",
+                        ClanAge.Teenagers => "Teenagers",
+                        ClanAge.Toddlers => "Toddlers",
+                        ClanAge.Adults => "Adults",
+                        ClanAge.Elderly => "Elderly",
+                        ClanAge.All => "Everyone",
+                        _ => "",
+                    };
+            }
             return age switch
             {
                 ClanAge.None => "Ikäryhmä",
                 ClanAge.Teenagers => "Teinit",
                 ClanAge.Toddlers => "Taaperot",
                 ClanAge.Adults => "Aikuiset",
-                ClanAge.All => "Kaiken ikäiset",
+                ClanAge.Elderly => "Iäkkäät",
+                ClanAge.All => "Kaikki",
                 _ => "",
             };
         }
 
+
         public static string GetLanguageText(Language language)
         {
+            switch (SettingsCarrier.Instance.Language)
+            {
+                case SettingsCarrier.LanguageType.Finnish:
+                    return language switch
+                    {
+                        Language.None => "Kieli",
+                        Language.Finnish => "suomi",
+                        Language.Swedish => "svenska",
+                        Language.English => "English",
+                        Language.Spanish => "espanol",
+                        Language.Russian => "venäjä",
+                        Language.Ukrainian => "ukraina",
+                        _ => "",
+                    };
+                case SettingsCarrier.LanguageType.English:
+                    return language switch
+                    {
+                        Language.None => "Language",
+                        Language.Finnish => "suomi",
+                        Language.Swedish => "svenska",
+                        Language.English => "English",
+                        Language.Spanish => "espanol",
+                        Language.Russian => "russian",
+                        Language.Ukrainian => "ukrainian",
+                        _ => "",
+                    };
+            }
             return language switch
             {
                 Language.None => "Kieli / Språk / Language",
@@ -125,6 +235,29 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public static string GetGoalText(Goals goal)
         {
+            switch (SettingsCarrier.Instance.Language)
+            {
+                case SettingsCarrier.LanguageType.Finnish:
+                    return goal switch
+                    {
+                        Goals.None => "Tavoite",
+                        Goals.Fiilistely => "Fiilistely",
+                        Goals.Grindaus => "Grindaus",
+                        Goals.Intohimoisuus => "Intohimoisuus",
+                        Goals.Keraily => "Keraily",
+                        _ => "",
+                    };
+                case SettingsCarrier.LanguageType.English:
+                    return goal switch
+                    {
+                        Goals.None => "Goals",
+                        Goals.Fiilistely => "Vibing",
+                        Goals.Grindaus => "Grind",
+                        Goals.Intohimoisuus => "Passion",
+                        Goals.Keraily => "Collection",
+                        _ => "",
+                    };
+            }
             return goal switch
             {
                 Goals.None => "Tavoite",
@@ -138,13 +271,111 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public static string GetActivityText(ClanActivity activity)
         {
+            switch (SettingsCarrier.Instance.Language)
+            {
+                case SettingsCarrier.LanguageType.Finnish:
+                    return activity switch
+                    {
+                        ClanActivity.None => "Aktiivisuus",
+                        ClanActivity.VeryActive => "Erittäin aktiivinen",
+                        ClanActivity.Active => "Aktiivinen",
+                        ClanActivity.OccasionallyActive => "Satunnainen",
+                        ClanActivity.RarelyActive => "Harvoin paikalla",
+                        _ => "",
+                    };
+                case SettingsCarrier.LanguageType.English:
+                    return activity switch
+                    {
+                        ClanActivity.None => "Activity",
+                        ClanActivity.VeryActive => "Very Active",
+                        ClanActivity.Active => "Active",
+                        ClanActivity.OccasionallyActive => "Occasionally Active",
+                        ClanActivity.RarelyActive => "Rarely Active",
+                        _ => "",
+                    };
+            }
             return activity switch
             {
-                ClanActivity.None => "Aktiivisuusluokka",
+                ClanActivity.None => "Aktiivisuus",
                 ClanActivity.VeryActive => "Erittäin aktiivinen",
                 ClanActivity.Active => "Aktiivinen",
                 ClanActivity.OccasionallyActive => "Satunnainen",
                 ClanActivity.RarelyActive => "Harvoin paikalla",
+                _ => "",
+            };
+        }
+
+        public static string GetRankingText(ClanRanking ranking)
+        {
+            switch (SettingsCarrier.Instance.Language)
+            {
+                case SettingsCarrier.LanguageType.Finnish:
+                    return ranking switch
+                    {
+                        ClanRanking.None => "Sijoitus",
+                        ClanRanking.Top10 => "Top 10",
+                        ClanRanking.Top25 => "Top 25",
+                        ClanRanking.Top50 => "Top 50",
+                        ClanRanking.Top100 => "Top 100",
+                        _ => "",
+                    };
+                case SettingsCarrier.LanguageType.English:
+                    return ranking switch
+                    {
+                        ClanRanking.None => "Ranking",
+                        ClanRanking.Top10 => "Top 10",
+                        ClanRanking.Top25 => "Top 25",
+                        ClanRanking.Top50 => "Top 50",
+                        ClanRanking.Top100 => "Top 100",
+                        _ => "",
+                    };
+            }
+            return ranking switch
+            {
+                ClanRanking.None => "Sijoitus",
+                ClanRanking.Top10 => "Top 10",
+                ClanRanking.Top25 => "Top 25",
+                ClanRanking.Top50 => "Top 50",
+                ClanRanking.Top100 => "Top 100",
+                _ => "",
+            };
+        }
+
+        public static string GetMembersText(ClanMembers members)
+        {
+            switch (SettingsCarrier.Instance.Language)
+            {
+                case SettingsCarrier.LanguageType.Finnish:
+                    return members switch
+                    {
+                        ClanMembers.None => "Jäsenmäärä",
+                        ClanMembers.Small => "Pieni (1-5)",
+                        ClanMembers.Medium => "Keskikokoinen (6-10)",
+                        ClanMembers.Large => "Suuri (11-20)",
+                        ClanMembers.VeryLarge => "Hyvin suuri (21-28)",
+                        ClanMembers.Huge => "Valtava (29+)",
+                        _ => "",
+                    };
+                case SettingsCarrier.LanguageType.English:
+                    return members switch
+                    {
+                        ClanMembers.None => "Member count",
+                        ClanMembers.Small => "Small (1-5)",
+                        ClanMembers.Medium => "Medium (6-10)",
+                        ClanMembers.Large => "Large (11-20)",
+                        ClanMembers.VeryLarge => "Very Large (21-28)",
+                        ClanMembers.Huge => "Huge (29+)",
+                        _ => "",
+                    };
+            }
+            return members switch
+            {
+                ClanMembers.None => "Jäsenmäärä",
+                ClanMembers.Small => "Pieni (1-5)",
+                ClanMembers.Medium => "Keskikokoinen (6-10)",
+                ClanMembers.Large => "Suuri (11-20)",
+                ClanMembers.VeryLarge => "Hyvin suuri (21-28)",
+                ClanMembers.Huge => "Valtava (29+)",
                 _ => "",
             };
         }
@@ -190,6 +421,50 @@ namespace Altzone.Scripts.Model.Poco.Clan
                 ClanValues.Spammaajat => "spämmääjät",
                 ClanValues.Kasvissyojat => "kasvissyöjät",
                 ClanValues.Tasapainoiset => "tasapainoiset",
+                _ => "",
+            };
+        }
+
+        public static string GetRulesText(Rules rules)
+        {
+            return rules switch
+            {
+                Rules.FairGame => "Reilu peli",
+                Rules.ActivityWeekly => "Aktiivisuusvaatimus viikoittain",
+                Rules.ActivityDaily => "Aktiivisuusvaatimus päivittäin",
+                Rules.NoToxicity => "Ei toksista käytöstä",
+                Rules.Teamwork => "Yhteistyö ennen sooloilua",
+                Rules.KickUnderperformers => "Minimitasovaatimuksen alittavat pelaajat kickataan",
+                Rules.AbsencesNoted => "Poissaolot ilmoitettava",
+                Rules.NoSpam => "Klaanichattiin ei spämmäystä",
+                Rules.WorkRoles => "Roolikohtainen osallistuminen",
+                Rules.FairTrade => "Kaupankäynti klaanin sisällä reilua",
+                Rules.JoinJointProjects => "Osallistuminen yhteisiin projekteihin",
+                Rules.DiplomacyWithOthers => "Diplomatia muiden klaanien kanssa",
+                Rules.Positivity => "Positiivinen ilmapiiri",
+                _ => "",
+            };
+        }
+
+        public static string GetPhraseText(Phrases phrases)
+        {
+            return phrases switch
+            {
+                Phrases.TogetherWeAreMore => "Yhdessä olemme enemmän.",
+                Phrases.GrowStepByStep => "Kasvamme – askel kerrallaan.",
+                Phrases.CreativityIsOurStrength => "Luovuus on voimamme.",
+                Phrases.BuildShareGetExcited => "Rakenna. Jaa. Innostu.",
+                Phrases.GoodAtmosphere => "Hyvä ilmapiiri on paras buffi.",
+                Phrases.SmallActsBigClan => "Pienillä teoilla suuri klaani.",
+                Phrases.AlwaysHelping => "Aina avuksi – aina eteenpäin.",
+                Phrases.FairGame => "Reilusti pelaten, vahvasti yhdessä.",
+                Phrases.EveryoneShines => "Klaanissa jokainen loistaa.",
+                Phrases.EnthusiasmIsContagious => "Innostus tarttuu – ja saa kasvaa.",
+                Phrases.WorldBuiltTogether => "Yhdessä rakentuva maailma.",
+                Phrases.TrustMakesClan => "Luottamus tekee klaanin.",
+                Phrases.TodayBetter => "Tänään parempi kuin eilen.",
+                Phrases.EveryMomentIsOpportunity => "Jokainen hetki on mahdollisuus.",
+                Phrases.ClanWalksTogether => "Klaani kulkee rinnalla.",
                 _ => "",
             };
         }

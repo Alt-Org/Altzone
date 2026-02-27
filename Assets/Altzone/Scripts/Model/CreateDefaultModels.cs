@@ -23,9 +23,11 @@ namespace Altzone.Scripts.Model
 
         internal static PlayerData CreatePlayerData(string playerGuid, string clanId, int currentCustomCharacterId)
         {
-            string[] characters = new string[5];
-            characters[0] = currentCustomCharacterId.ToString();
-            return new PlayerData(FakeMongoDbId(), clanId, currentCustomCharacterId, characters, "Player", 0, playerGuid);
+            int none = (int)CharacterID.None;
+            string noneStr = none.ToString();
+            string[] characters = new string[3] { currentCustomCharacterId.ToString(), noneStr, noneStr }; 
+
+            return new PlayerData(FakeMongoDbId(), clanId, currentCustomCharacterId, characters, "Player", 0, playerGuid, null);
         }
 
         internal static ClanData CreateClanData(string clanId, List<GameFurniture> furniture)
@@ -157,13 +159,13 @@ namespace Altzone.Scripts.Model
         {
             return new List<CharacterClass>
             {
-                new(CharacterClassID.Desensitizer,     7, 3, 9, 7, 3),
-                new(CharacterClassID.Trickster,        3, 9, 3, 3, 4),
-                new(CharacterClassID.Obedient,         5, 5, 5, 4, 4),
-                new(CharacterClassID.Projector,        4, 4, 2, 9, 5),
-                new(CharacterClassID.Retroflector,     6, 3, 7, 2, 9),
-                new(CharacterClassID.Confluent,        5, 5, 6, 2, 6),
-                new(CharacterClassID.Intellectualizer, 4, 6, 2, 6, 5)
+                new(CharacterClassType.Desensitizer,     7, 3, 9, 7, 3),
+                new(CharacterClassType.Trickster,        3, 9, 3, 3, 4),
+                new(CharacterClassType.Obedient,         5, 5, 5, 4, 4),
+                new(CharacterClassType.Projector,        4, 4, 2, 9, 5),
+                new(CharacterClassType.Retroflector,     6, 3, 7, 2, 9),
+                new(CharacterClassType.Confluent,        5, 5, 6, 2, 6),
+                new(CharacterClassType.Intellectualizer, 4, 6, 2, 6, 5)
             };
         }
 

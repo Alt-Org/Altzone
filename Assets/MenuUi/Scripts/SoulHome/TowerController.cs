@@ -8,7 +8,7 @@ using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using Prg.Scripts.Common;
 using UnityEngine.InputSystem;
 using Altzone.Scripts.Model.Poco.Game;
-using MenuUi.Scripts.Audio;
+using Altzone.Scripts.Audio;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -36,7 +36,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _rooms;
 
-        private BoxCollider2D _roomBounds;
+        private Bounds _roomBounds;
 
         private List<GameObject> _changedFurnitureList = new();
 
@@ -87,7 +87,7 @@ namespace MenuUI.Scripts.SoulHome
         public List<GameObject> ChangedFurnitureList { get => _changedFurnitureList; set => _changedFurnitureList = value; }
         public bool EditingMode { get => editingMode;}
         public bool Rotated { get => _rotated;}
-        public BoxCollider2D RoomBounds { get => _roomBounds; set { if(_roomBounds == null) _roomBounds = value; } }
+        public Bounds RoomBounds { get => _roomBounds; set {  _roomBounds = value; } }
 
         // Start is called before the first frame update
         void Start()
@@ -99,7 +99,7 @@ namespace MenuUI.Scripts.SoulHome
         private IEnumerator StartActions()
         {
             yield return new WaitUntil(() => _loadScript.LoadFinished);
-            AudioManager.Instance?.PlayMusic(MusicSection.SoulHome);
+            //AudioManager.Instance?.PlayMusic("Soulhome", "");
             _camera = GetComponent<Camera>();
             SetCameraBounds();
 
@@ -137,7 +137,7 @@ namespace MenuUI.Scripts.SoulHome
             SetScrollSpeed();
             //Debug.Log(cameraWidth+" : "+ _mainScreen.transform.GetComponent<RectTransform>().rect.width);
             //Debug.Log(cameraMove);
-            if (!CheckInteractableStatus()) return;
+            if (!_soulHomeController.CheckInteractableStatus()) return;
 
             if (ClickStateHandler.GetClickType(ClickInputDevice.Touch) is ClickType.Click && (ClickStateHandler.GetClickState() is ClickState.Start || prevp == Vector2.zero)) prevp = ClickStateHandler.GetClickPosition(ClickInputDevice.Touch);
             if (ClickStateHandler.GetClickType() is ClickType.Click && cameraMove)
@@ -362,9 +362,9 @@ namespace MenuUI.Scripts.SoulHome
                         continue;
                     }
 
-                    if (hit2.collider.gameObject.CompareTag("SoulHomeAvatar"))
+                    if (hit2.collider.gameObject.GetComponent<ISoulHomeObjectClick>() != null)
                     {
-                        StartCoroutine(hit2.collider.gameObject.GetComponent<SoulHomeAvatarController>().WaveAnimation());
+                        if (click == ClickState.Start && !editingMode) hit2.collider.gameObject.GetComponent<ISoulHomeObjectClick>()?.HandleClick();
                     }
 
                     if (hit2.collider.gameObject.CompareTag("Furniture"))
@@ -678,6 +678,7 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     CheckFurnitureList(_selectedFurniture);
                     if (_mainScreen.SelectedFurnitureTray != null) _mainScreen.RemoveTrayItem(_mainScreen.SelectedFurnitureTray);
+                    if (_selectedFurniture.GetComponent<FurnitureHandling>().Slot != null) gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
                 }
                 else
                 {
@@ -932,21 +933,12 @@ namespace MenuUI.Scripts.SoulHome
 
         }
 
-        private bool CheckInteractableStatus()
-        {
-            if (_soulHomeController.ExitPending) return false;
-            if (_soulHomeController.ConfirmPopupOpen) return false;
-
-            return true;
-        }
-
         public void SetCameraBounds()
         {
             cameraBounds = _backgroundSprite.bounds;
-            Bounds roomBounds = _roomBounds.bounds;
-            cameraMinX = roomBounds.min.x;
+            cameraMinX = _roomBounds.min.x;
             cameraMinY = cameraBounds.min.y;
-            cameraMaxX = roomBounds.max.x;
+            cameraMaxX = _roomBounds.max.x;
             cameraMaxY = cameraBounds.max.y;
         }
 

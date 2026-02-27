@@ -1,0 +1,26 @@
+/// @file BattlePlayerCharacterState.qtn
+/// <summary>
+/// Contains enum used for managing player character states.
+/// </summary>
+///
+/// ## Generated Enums
+/// - @cref{Quantum,BattlePlayerCharacterState}  
+///   @copybrief Quantum.BattlePlayerCharacterState
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattlePlayerCharacterState
+/// <summary>
+/// Player character state enum used to track the state of each character of each player.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerCharacterState.qtn}
+
+/// @var Quantum::BattlePlayerCharacterState Quantum::BattlePlayerCharacterState::Dead
+/// <summary>Player character is dead.</summary>
+///
+/// @var Quantum::BattlePlayerCharacterState Quantum::BattlePlayerCharacterState::Alive
+/// <summary>Player character is alive.</summary>
+///
+
+// ---------------------------------------------------------------------------------------------------- //

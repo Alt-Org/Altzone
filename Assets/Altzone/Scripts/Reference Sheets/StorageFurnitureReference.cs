@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Altzone.Scripts.Model.Poco.Game;
-using UnityEngine;
 using System.Linq;
+using System.Xml.Linq;
+using Altzone.Scripts.Model.Poco.Game;
+using UnityEditor;
+using UnityEngine;
 
 namespace Altzone.Scripts.ReferenceSheets
 {
@@ -13,6 +15,23 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private List<FurnitureSetInfo> _info;
 
         public List<FurnitureSetInfo> Info => _info; // Public accessor for _info
+
+        private static StorageFurnitureReference _instance;
+        private static bool _hasInstance;
+
+        public static StorageFurnitureReference Instance
+        {
+            get
+            {
+                if (!_hasInstance)
+                {
+                    _instance = Resources.Load<StorageFurnitureReference>(nameof(StorageFurnitureReference));
+                    _hasInstance = _instance != null;
+                }
+                return _instance;
+            }
+        }
+
 
         public FurnitureInfo GetFurnitureInfo(string name)
         {
@@ -53,7 +72,7 @@ namespace Altzone.Scripts.ReferenceSheets
             return (null, null);
         }
 
-        public List<GameFurniture> GetGameFurniture()
+        public List<GameFurniture> GetAllGameFurniture()
         {
             List<GameFurniture> furnitures = new();
             int i = 1;
@@ -70,6 +89,22 @@ namespace Altzone.Scripts.ReferenceSheets
             }
             return furnitures;
         }
+
+        public GameFurniture GetGameFurniture(string name)
+        {
+            (FurnitureInfoObject data, FurnitureSetInfo setData) = GetFurnitureDataSet(name);
+            if (data == null || setData == null)
+            {
+                Debug.LogWarning($"No Furniture can be found with name: {name}");
+                return null;
+            }
+
+            FurnitureInfo furnitureInfo = new(data, setData);
+            GameFurniture furniture = new("0", data.BaseFurniture, furnitureInfo);
+
+            return furniture;
+        }
+
         public bool AddFurniture(FurnitureSetInfo setInfo)
         {
             if (Application.isPlaying)
@@ -94,6 +129,11 @@ namespace Altzone.Scripts.ReferenceSheets
                     {
                         localSet.list.Add(furnitureInfo);
                         added = true;
+#if UNITY_EDITOR
+                        AssetDatabase.Refresh();
+                        EditorUtility.SetDirty(this);
+                        AssetDatabase.SaveAssets();
+#endif
                     }
                     else
                     {
@@ -109,20 +149,28 @@ namespace Altzone.Scripts.ReferenceSheets
     {
         public Sprite Image;
         public Sprite PosterImage;
+        public Sprite RibbonImage;
         public string VisibleName;
+        public string EnglishName;
         public string SetName;
+        public string SetNameEnglish;
         public string ArtistName;
         public string ArtisticDescription;
+        public string EnglishArtisticDescription;
         public string DiagnoseNumber;
 
         public FurnitureInfo(FurnitureInfoObject data, FurnitureSetInfo setData)
         {
             Image = data.Image;
             PosterImage = data.PosterImage;
+            RibbonImage = data.RibbonImage;
             VisibleName = data.VisibleName;
+            EnglishName = data.EnglishName;
             SetName = setData.SetName;
+            SetNameEnglish = setData.SetNameEnglish;
             ArtistName = setData.ArtistName;
             ArtisticDescription = data.ArtisticDescription;
+            EnglishArtisticDescription = data.EnglishArtisticDescription;
             DiagnoseNumber = data.DiagnoseNumber;
         }
     }
@@ -131,10 +179,13 @@ namespace Altzone.Scripts.ReferenceSheets
     public class FurnitureInfoObject
     {        
         public string Name;
+        public string EnglishName;
         public Sprite Image;
         public Sprite PosterImage;
+        public Sprite RibbonImage;
         public string VisibleName;
         public string ArtisticDescription;
+        public string EnglishArtisticDescription;
         public string DiagnoseNumber;
         public BaseFurniture BaseFurniture;
     }
@@ -143,9 +194,9 @@ namespace Altzone.Scripts.ReferenceSheets
     public class FurnitureSetInfo
     {
         public string SetName;
+        public string SetNameEnglish;
         public string ArtistName;
         
         public List<FurnitureInfoObject> list;
     }
-
 }

@@ -18,6 +18,7 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
         [SerializeField] private MapAndRoomNameSelector _mapAndRoomNameSelector;
         [SerializeField] private CustomBattleGameModeSelector _customBattleGameModeSelector;
 
+        public bool IsCustomRoomOptionsReady => _isInitialized;
         public string RoomName { get { return _mapAndRoomNameSelector.SelectedEmotionalSituation.SituationName; } }
         public Emotion SelectedEmotion
         {
@@ -53,6 +54,14 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
         public bool ShowToClan { get {  return _showToClan.isOn; } }
         public Button CreateRoomButton { get { return _createRoom; } }
         public CustomGameMode SelectedCustomGameMode { get { return _customBattleGameModeSelector.SelectedGameMode; } }
+
+        public void InitializeCustomRoomOptions()
+        {
+            _mapAndRoomNameSelector.Initialize();
+            _isInitialized = true;
+        }
+
+        private bool _isInitialized = false;
 
         private void OnEnable()
         {

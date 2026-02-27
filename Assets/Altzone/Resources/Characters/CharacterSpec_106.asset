@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a383692e274251abaca3b38e6f7a0c, type: 3}
+  m_Name: CharacterSpec_106
+  m_EditorClassIdentifier: 
+  Id: 106
+  CharacterId: 106
+  IsApproved: 1
+  FinnishName: Masennus
+  EnglishName: Depression
+  ClassType: 100
+  CharacterDescriptionFinnish: "Kun Masennus asettuu ihmiseen asumaan, se saa t\xE4m\xE4n
+    sulkemaan tunteensa pois yksi kerrallaan, kunnes el\xE4m\xE4 muuttuu \xE4\xE4nett\xF6m\xE4ksi.
+    Ihminen ei tee sit\xE4 tahallaan \u2014 se on kehon ja mielen yhteinen sopimus
+    selviytymisest\xE4. Kun ilo, suru ja viha eiv\xE4t en\xE4\xE4 liiku, j\xE4ljelle
+    j\xE4\xE4 harmaa v\xE4litila, jossa mik\xE4\xE4n ei satu mutta mik\xE4\xE4n ei
+    my\xF6sk\xE4\xE4n kosketa. Masennus opettaa olemaan hiljaa, jotta mik\xE4\xE4n
+    ei rikkoisi haurasta tasapainoa. Se suojaa kipua vastaan, mutta samalla erist\xE4\xE4
+    kaikesta, mik\xE4 voisi parantaa.\r\n\nVuorovaikutuskent\xE4ll\xE4 (Ego Clash)
+    masennuksen suojakilpi on harmaa pilvi, joka ymp\xE4r\xF6i h\xE4net ja suodattaa
+    tunnetila-ammukset ennen kuin ne saavuttavat h\xE4net. Pilvi ottaa iskut vastaan
+    ja muuttuu tummemmaksi jokaisesta torjutusta tunteesta. Mit\xE4 enemm\xE4n se
+    imee, sit\xE4 raskaammaksi se k\xE4y, kunnes lopulta pilvi romahtaa h\xE4nen
+    ylleen ja peitt\xE4\xE4 h\xE4net kokonaan. Kun kilpi hajoaa, my\xF6s masennus
+    katoaa sen mukana \u2013 hiljaa, ilman \xE4\xE4nt\xE4.\r\n"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Tunteensa sumuun kadottanut, hiljaisuuteen sulkeutunut
+    selviytyj\xE4. "
+  CharacterShortDescriptionEnglish: 
+  CharacterStats: {fileID: 11400000, guid: 859a91df01c75df45aa149818858fa5b, type: 2}
+  Hp:
+    Level: 1
+    Coefficient: 7
+  Speed:
+    Level: 2
+    Coefficient: 0
+  CharacterSize:
+    Level: 3
+    Coefficient: 0
+  Attack:
+    Level: 2
+    Coefficient: 2
+  Defence:
+    Level: 3
+    Coefficient: 1
+  GalleryImage: {fileID: 21300000, guid: 7cbae5771ecf99743a18652dc6a90b24, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: 7ad101b094a1fd045a5b26b145f784bf, type: 3}
+  CharPhotoSeries: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 1352049255164248144
+  BattleUiSprite: {fileID: 0}

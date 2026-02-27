@@ -27,7 +27,7 @@ namespace MenuUI.Scripts.SoulHome
         public GameObject GetSoulHomeTrayFurnitureObject(string name)
         {
             SoulhomeFurnitureInfoObject data = GetFurnitureData(name);
-            return data.TrayFurniture.gameObject;
+            return data?.TrayFurniture?.gameObject;
         }
 
 
@@ -129,6 +129,11 @@ namespace MenuUI.Scripts.SoulHome
                         localFurniture.FurnitureHandling = furnitureInfo.FurnitureHandling;
                         localFurniture.TrayFurniture = furnitureInfo.TrayFurniture;
                         added = true;
+#if UNITY_EDITOR
+                        AssetDatabase.Refresh();
+                        EditorUtility.SetDirty(this);
+                        AssetDatabase.SaveAssets();
+#endif
                     }
                 }
                 return added;

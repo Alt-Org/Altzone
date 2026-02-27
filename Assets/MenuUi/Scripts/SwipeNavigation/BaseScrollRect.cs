@@ -37,16 +37,16 @@ public class BaseScrollRect : UIBehaviour, IInitializePotentialDragHandler, IBeg
     }
 
     [SerializeField]
-    private bool horizontallyScrollable = true;
-    public bool HorizontallyScrollable
+    protected bool horizontallyScrollable = true;
+    public virtual bool HorizontallyScrollable
     {
         get { return horizontallyScrollable; }
         set { horizontallyScrollable = value; }
     }
 
     [SerializeField]
-    private bool verticallyScrollable = true;
-    public bool VerticallyScrollable
+    protected bool verticallyScrollable = true;
+    public virtual bool VerticallyScrollable
     {
         get { return verticallyScrollable; }
         set { verticallyScrollable = value; }
@@ -102,7 +102,7 @@ public class BaseScrollRect : UIBehaviour, IInitializePotentialDragHandler, IBeg
 
     [SerializeField]
     private Scrollbar horizontalScrollbar;
-    public Scrollbar HorizontalScrollbar
+    public virtual Scrollbar HorizontalScrollbar
     {
         get
         {
@@ -121,7 +121,7 @@ public class BaseScrollRect : UIBehaviour, IInitializePotentialDragHandler, IBeg
 
     [SerializeField]
     private Scrollbar verticalScrollbar;
-    public Scrollbar VerticalScrollbar
+    public virtual Scrollbar VerticalScrollbar
     {
         get
         {
@@ -140,7 +140,7 @@ public class BaseScrollRect : UIBehaviour, IInitializePotentialDragHandler, IBeg
 
     [SerializeField]
     private ScrollbarVisibility horizontalScrollbarVisibility;
-    public ScrollbarVisibility HorizontalScrollbarVisibilityMode
+    public virtual ScrollbarVisibility HorizontalScrollbarVisibilityMode
     {
         get { return horizontalScrollbarVisibility; }
         set { horizontalScrollbarVisibility = value; SetDirtyCaching(); }
@@ -148,7 +148,7 @@ public class BaseScrollRect : UIBehaviour, IInitializePotentialDragHandler, IBeg
 
     [SerializeField]
     private ScrollbarVisibility verticalScrollbarVisibility;
-    public ScrollbarVisibility VerticalScrollbarVisibilityMode
+    public virtual ScrollbarVisibility VerticalScrollbarVisibilityMode
     {
         get { return verticalScrollbarVisibility; }
         set { verticalScrollbarVisibility = value; SetDirtyCaching(); }
@@ -156,7 +156,7 @@ public class BaseScrollRect : UIBehaviour, IInitializePotentialDragHandler, IBeg
 
     [SerializeField]
     private float horizontalScrollbarSpacing;
-    public float HorizontalScrollbarSpacing
+    public virtual float HorizontalScrollbarSpacing
     {
         get { return horizontalScrollbarSpacing; }
         set { horizontalScrollbarSpacing = value; SetDirty(); }
@@ -164,7 +164,7 @@ public class BaseScrollRect : UIBehaviour, IInitializePotentialDragHandler, IBeg
 
     [SerializeField]
     private float verticalScrollbarSpacing;
-    public float VerticalScrollbarSpacing
+    public virtual float VerticalScrollbarSpacing
     {
         get { return verticalScrollbarSpacing; }
         set { verticalScrollbarSpacing = value; SetDirty(); }

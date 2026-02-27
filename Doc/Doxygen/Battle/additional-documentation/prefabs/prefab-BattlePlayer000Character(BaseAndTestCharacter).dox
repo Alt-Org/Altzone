@@ -1,0 +1,39 @@
+/// @file "BattlePlayer000Character(BaseAndTestCharacter).prefab"
+/// <summary>
+/// Prefab for Base/Test character. This is used for testing purposes and as a base for creating other characters.
+/// </summary>
+///
+/// ### Structure
+/// - **BattlePlayer000Character(BaseAndTestCharacter)**
+///     - *Components:*
+///         - Transform
+///         - %Quantum Entity Prototype
+///             - @cref{Quantum,BattlePlayerDataTemplateQComponent}
+///         - %Quantum Entity View
+///     - *Children:*
+///         - **PlayerViewModel**
+///             - *Components:*
+///                 - Transform
+///                 - @cref{Battle.View.Player,BattlePlayerViewController}
+///             - *Children:*
+///                 - **CharacterA(Bottom)**
+///                     - Animator
+///                 - **CharacterB(Top)**
+///                     - Animator
+///                 - **Heart**
+///                 - **ParticleSource**
+///                 - **LocalPlayerIndicator**
+///                 - **BattlePlayerReference**
+///                 - **OriginReference**
+///                 - *Shared components:*
+///                     - Transform
+///                     - SpriteRenderer
+///                     - Sprites-Default (Material)
+///
+
+/// @file "BattlePlayer000Character(BaseAndTestCharacter)EntityPrototype.qprototype"
+/// <summary>
+/// EntityPrototype counterpart of @ref "BattlePlayer000Character(BaseAndTestCharacter).prefab"
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).

@@ -1,0 +1,497 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5bf52f5c108d4f47b27e5a9ab3f8c1b, type: 3}
+  m_Name: BattlePlayerBotQSpec
+  m_EditorClassIdentifier: 
+  Identifier:
+    Path: QuantumUser/Resources/Specs/BattlePlayerBotQSpec
+    Guid:
+      Value: 286874966838826623
+  MovementCooldownSecMin:
+    RawValue: 19661
+  MovementCooldownSecMax:
+    RawValue: 65536
+  LookAheadTimeSec:
+    RawValue: 13107
+  MissClickChance:
+    RawValue: 65536
+  Inaccuracy:
+    RawValue: 131072
+  BotCharacterSelection:
+  - Id: 101
+    Class: 100
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 102
+    Class: 100
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 103
+    Class: 100
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 104
+    Class: 100
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 105
+    Class: 100
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 106
+    Class: 100
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 201
+    Class: 200
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 202
+    Class: 200
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 203
+    Class: 200
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 204
+    Class: 200
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 301
+    Class: 300
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 302
+    Class: 300
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 303
+    Class: 300
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 304
+    Class: 300
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 305
+    Class: 300
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 306
+    Class: 300
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 401
+    Class: 400
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 402
+    Class: 400
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 403
+    Class: 400
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 404
+    Class: 400
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 501
+    Class: 500
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 502
+    Class: 500
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 503
+    Class: 500
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 504
+    Class: 500
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 505
+    Class: 500
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 506
+    Class: 500
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 601
+    Class: 600
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 602
+    Class: 600
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 603
+    Class: 600
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 604
+    Class: 600
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 605
+    Class: 600
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 701
+    Class: 700
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 702
+    Class: 700
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 703
+    Class: 700
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 704
+    Class: 700
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000
+  - Id: 705
+    Class: 700
+    Stats:
+      Hp:
+        RawValue: 13107200
+      Speed:
+        RawValue: 655360
+      CharacterSize:
+        RawValue: 65536
+      Attack:
+        RawValue: 1310720
+      Defence:
+        RawValue: 1310720000

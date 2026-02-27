@@ -14,9 +14,44 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 502
   CharacterId: 502
-  Name: Alkoholisti
   IsApproved: 1
+  FinnishName: Alkoholismi
+  EnglishName: Alcoholism
   ClassType: 500
+  CharacterDescriptionFinnish: "Kun Alkoholismi asettuu ihmiseen asumaan, se saa
+    t\xE4m\xE4n hakemaan l\xE4mp\xF6\xE4 nesteest\xE4, joka lupaa rohkeutta mutta
+    vie todellisuuden mukanaan. Ihminen alkaa uskoa, ett\xE4 yhteys syntyy helpommin,
+    kun reuna pehmenee ja sanat virtaavat vapaammin. Hetkeksi maailma tuntuu siedett\xE4v\xE4lt\xE4,
+    jopa kauniilta \u2013 kunnes juoma alkaa puhua h\xE4nen puolestaan. Alkoholismi
+    tarjoaa lohdun, joka kest\xE4\xE4 vain y\xF6n yli, ja j\xE4tt\xE4\xE4 aamulla
+    tyhjyyden, joka pyyt\xE4\xE4 lis\xE4\xE4. Se suojaa h\xE4pe\xE4lt\xE4, mutta
+    hinnaksi tulee kyky kohdata itse\xE4\xE4n selvin silmin.\r\n\nAlkoholistin juodessa
+    h\xE4nen suojakilpens\xE4 muoto muuttuu, mik\xE4 saa tunnetila-ammukset kimpoamaan
+    ennalta-arvaamattomaan suuntaan.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Nousuhumalan tunteensa hukuttava,  morkkiksen
+    v\xE4lill\xE4 liit\xE4v\xE4 y\xF6lintu."
+  CharacterShortDescriptionEnglish: 
+  CharacterStats: {fileID: 11400000, guid: e0dcda479cce71544906f70dd2112c96, type: 2}
+  Hp:
+    Level: 1
+    Coefficient: 3
+  Speed:
+    Level: 3
+    Coefficient: 0
+  CharacterSize:
+    Level: 3
+    Coefficient: 0
+  Attack:
+    Level: 3
+    Coefficient: 5
+  Defence:
+    Level: 3
+    Coefficient: 2
   GalleryImage: {fileID: 21300000, guid: 1ad7ef75f9ecfb945b0d71f9b329269c, type: 3}
-  BattleSprite: {fileID: 0}
-  Image: {fileID: 21300000, guid: 1ad7ef75f9ecfb945b0d71f9b329269c, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: 586b64090f07a7946bfa670f3ee1a33e, type: 3}
+  CharPhotoSeries: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 1410690482395355018
+  BattleUiSprite: {fileID: 0}

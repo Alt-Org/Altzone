@@ -8,7 +8,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
 
 
-        public override CharacterClassID ClassID => CharacterClassID.Desensitizer;
+        public override CharacterClassType ClassType => CharacterClassType.Desensitizer;
 
 
         protected DesentisitizerClassCharacter()
@@ -17,7 +17,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             _characterSizeStrength = ValueStrength.Medium;
             _hpStrength = ValueStrength.VeryWeak;
             _defenceStrength = ValueStrength.VeryStrong;
-            _speedStrength = ValueStrength.Weak;
+            _speedStrength = ValueStrength.None;
             InitializeValues();
         }
     }

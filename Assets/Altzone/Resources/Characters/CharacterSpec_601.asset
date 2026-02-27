@@ -14,9 +14,46 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 601
   CharacterId: 601
-  Name: Sielunsiskot
   IsApproved: 1
+  FinnishName: Symbioosi
+  EnglishName: Symbiosis
   ClassType: 600
+  CharacterDescriptionFinnish: "Kun Symbioosi asettuu ihmiseen asumaan, se saa t\xE4m\xE4n
+    kadottamaan rajansa rakkauden nimiss\xE4. Ihminen alkaa hengitt\xE4\xE4 toisen
+    tahtiin, tunnistaa omat tunteensa vain suhteessa siihen, mit\xE4 toinen tarvitsee.
+    L\xE4heisyys muuttuu selviytymisen ehdoksi \u2013 kuin yhteys olisi ainoa paikka,
+    jossa on lupa olla olemassa. Symbioosi luo l\xE4mm\xF6n, joka tuntuu turvalta,
+    mutta sen sis\xE4ll\xE4 erillisyys alkaa kuihtua. Jokainen jaettu tunne sitoo
+    lujemmin, kunnes ero ei tunnu mahdolliselta ilman, ett\xE4 jotain itsest\xE4
+    hajoaa.\n\r\nVuorovaikutuskent\xE4ll\xE4 (Ego Clash) Symbioosin suojakilpen\xE4
+    toimii yhteinen purkkakupla, joka laajenee heid\xE4n ymp\xE4rilleen suojaten
+    heid\xE4t yhdess\xE4. Kupla torjuu tunnetila-ammukset hitaalla, pehme\xE4ll\xE4
+    liikkeell\xE4 \u2013 kuin hidastettu hengenveto. Kun kupla lopulta puhkeaa, toinen
+    j\xE4\xE4 yleens\xE4 pid\xE4tt\xE4m\xE4\xE4n hengityst\xE4 liian kauan.\r"
+  CharacterDescriptionEnglish: 
+  CharacterShortDescriptionFinnish: "Toistensa ilmaa hengitt\xE4v\xE4t, purkkakuplaan
+    sulkeutuneet sielunsiskot. "
+  CharacterShortDescriptionEnglish: 
+  CharacterStats: {fileID: 11400000, guid: 60f6f3d30c455c348833976e49b74d00, type: 2}
+  Hp:
+    Level: 2
+    Coefficient: 5
+  Speed:
+    Level: 1
+    Coefficient: 0
+  CharacterSize:
+    Level: 3
+    Coefficient: 0
+  Attack:
+    Level: 1
+    Coefficient: 7
+  Defence:
+    Level: 1
+    Coefficient: 2
   GalleryImage: {fileID: 21300000, guid: 13a8471a6fe8dfd42ac7926700a46b7d, type: 3}
-  BattleSprite: {fileID: 21300000, guid: 126b77ce8ebbe6c42a088aa3538ba059, type: 3}
-  Image: {fileID: 21300000, guid: 13a8471a6fe8dfd42ac7926700a46b7d, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: d57bc6fecfb4edf48a0351eaeb132a06, type: 3}
+  CharPhotoSeries: {fileID: 0}
+  BattleEntityPrototype:
+    Id:
+      Value: 1460331066001143074
+  BattleUiSprite: {fileID: 0}

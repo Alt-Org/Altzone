@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿/*
+using System.Collections.Generic;
 using Altzone.Scripts;
 using System.Collections.ObjectModel;
 using Altzone.Scripts.Model.Poco.Game;
@@ -13,6 +14,7 @@ using System;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
+    
     public class ModelView : MonoBehaviour
     {
         enum FilterType
@@ -422,4 +424,4 @@ namespace MenuUi.Scripts.CharacterGallery
             }
         }
     }
-}
+}*/

@@ -1,0 +1,26 @@
+var class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller =
+[
+    [ "DamageFlashCoroutine", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#a3ffa2edccd5ab2a0f65d2b0263a48006", null ],
+    [ "OnActivate", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#aad0902d6fa897a1b5bf63f93d0d49fd4", null ],
+    [ "OnUpdateView", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#a1516b65cc5bf275a17d655a844e8df17", null ],
+    [ "PreInitSetup", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#a7e012d6e985c712c25057822c97fe341", null ],
+    [ "QEventOnCharacterTakeDamage", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#a086aa7035ba36db7b5ff8983da0f943f", null ],
+    [ "QEventOnShieldTakeDamage", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#a87654fa4368ee42406c2e5b50a68069b", null ],
+    [ "UpdateAnimator", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#ae5460b2646022df11959fed2cfbd1532", null ],
+    [ "UpdateModelPositionAdjustment", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#a52d747aac63d14367a049d758aff2e9e", null ],
+    [ "_animator", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#a8cf889ef860eb7c04feb58725d1fb47e", null ],
+    [ "_characterGameObjects", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#af06a7564665fe20a482661d3f7480cc7", null ],
+    [ "_classViewController", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#a4b226715d2c80175921821f700fe3574", null ],
+    [ "_classViewControllerOverride", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#aa5565714fe445314f90e76d39fbad937", null ],
+    [ "_damageFlashAmount", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#af383c47f8a44a45b3df7de14f28b8b39", null ],
+    [ "_damageFlashCoroutine", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#a796ecd2ce8ad4236b2ecca0b58d74266", null ],
+    [ "_damageFlashDuration", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#a37145ead0bedb9cb91f82049f6d29048", null ],
+    [ "_debugLogger", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#aa29fa3c35f6964feda64331ad9e01fb3", null ],
+    [ "_localPlayerIndicator", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#a40678ef0392a311cf568b24febc1708e", null ],
+    [ "_noShieldSprite", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#ad742272561b77b5c9ad9ab5d175ec162", null ],
+    [ "_shieldHitParticle", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#aa77837596bc32cf363e9c0ec96e013f4", null ],
+    [ "_spriteRenderer", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#af473ca1b0ec7d532f25db2bda4919b8b", null ],
+    [ "_transparencyEffectMinimumAlpha", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#aa1d23e3a50f1efdc95f332ecc5dc0a98", null ],
+    [ "_transparencyEffectRange", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#a0034a51f232c927cc328b97e36811fb0", null ],
+    [ "_transparencyEffectTransitionRate", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#a3d2d7402a6315cf6aac8b7e95dbbf06e", null ]
+];

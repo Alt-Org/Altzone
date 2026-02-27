@@ -1,3 +1,6 @@
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Game;
+using Assets.Altzone.Scripts.Model.Poco.Player;
 /// <summary>
 /// Player object received from the server
 /// </summary>
@@ -17,7 +20,11 @@ namespace Altzone.Scripts.Model.Poco.Player
         public bool? above13 { get; set; }
         public bool? parentalAuth { get; set; }
         public int points { get; set; }
+        public ServerAvatar avatar { get; set; }
         public ServerGameStatistics gameStatistics { get; set; }
+        public ServerPlayerTask DailyTask { get; set; }
+        public string clanRole_id { get; set; }
+        public ClanLogo clanLogo { get; set; }
     }
 
     public class ServerGameStatistics
@@ -27,6 +34,51 @@ namespace Altzone.Scripts.Model.Poco.Player
         public int wonBattles { get; set; }
         public int startedVotings { get; set; }
         public int participatedVotings { get; set; }
+    }
+
+    public class ServerAvatar
+    {
+        public ServerAvatarPiece head { get; set; }
+        public ServerAvatarPiece hair { get; set; }
+        public ServerAvatarPiece eyes { get; set; }
+        public ServerAvatarPiece nose { get; set; }
+        public ServerAvatarPiece mouth { get; set; }
+        public ServerAvatarPiece eyebrows { get; set; }
+        public ServerAvatarPiece clothes { get; set; }
+        public ServerAvatarPiece feet { get; set; }
+        public ServerAvatarPiece hands { get; set; }
+        public string skinColor { get; set; }
+
+
+        public ServerAvatar() //This is needed because json parser tries to use the other one otherwise
+        {
+
+        }
+        public ServerAvatar(AvatarData data)
+        {
+            head = new(0, "#FFFFFFFF");
+            hair = new(data.Hair, data.HairColor);
+            eyes = new(data.Eyes, data.EyesColor);
+            nose = new(data.Nose, data.NoseColor);
+            mouth = new(data.Mouth, data.MouthColor);
+            eyebrows = new(0, "#FFFFFFFF");
+            clothes = new(data.Clothes, data.ClothesColor);
+            feet = new(data.Feet, data.FeetColor);
+            hands = new(data.Hands, data.HandsColor);
+            skinColor = data.Color;
+        }
+    }
+
+    public class ServerAvatarPiece
+    {
+        public int id { get; set; }
+        public string color { get; set; }
+
+        public ServerAvatarPiece(int id, string color)
+        {
+            this.id = id;
+            this.color = color != null ? color : "#FFFFFF";
+        }
     }
 
     public class ServerChatMessages

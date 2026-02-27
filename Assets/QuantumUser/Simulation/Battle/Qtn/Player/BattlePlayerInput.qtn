@@ -1,0 +1,23 @@
+input
+{
+    bool                    IsValid;
+    int                     DebugNumber;
+    BattleMovementInputType MovementInput;
+    bool                    MovementDirectionIsNormalized;
+    BattleGridPosition      MovementPositionTarget;
+    FPVector2               MovementPositionMove;
+    FPVector2               MovementDirection;
+    bool                    RotationInput;
+    FP                      RotationValue;
+    bool                    AbilityActivate;
+    int                     PlayerCharacterNumber;
+    bool                    GiveUpInput;
+}
+
+enum BattleMovementInputType
+{
+    None,
+    PositionTarget,
+    PositionMove,
+    Direction
+}

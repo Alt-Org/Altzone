@@ -1,9 +1,10 @@
 var searchData=
 [
-  ['player_0',['Player',['../namespace_quantum.html#a87c2b6c5585020f56e607426768b1890a636da1d35e805b00eae0fcd8333f9234',1,'Quantum']]],
-  ['playful_1',['Playful',['../namespace_quantum.html#adac109901e32732bcc86a6ce3548d8a2a7eaa58547a5f7ca615c75491124e8929',1,'Quantum']]],
-  ['playing_2',['Playing',['../namespace_quantum.html#aac5eaf809e69afd5f3a6a8ef606b74eeac9dbb2b7c84159b632d71e512eba8428',1,'Quantum']]],
-  ['postgame_3',['PostGame',['../namespace_quantum.html#aac5eaf809e69afd5f3a6a8ef606b74eeae5b456c484a0ec6a32301d03121fd80b',1,'Quantum']]],
-  ['pregame_4',['PreGame',['../namespace_quantum.html#aac5eaf809e69afd5f3a6a8ef606b74eea554bc137278892a248cb9fd7d66a66d9',1,'Quantum']]],
-  ['projectile_5',['Projectile',['../namespace_quantum.html#a87c2b6c5585020f56e607426768b1890aae7968d26b598ce434958b0825b7a4ac',1,'Quantum']]]
+  ['last_0',['Last',['../namespace_quantum.html#ade57910b1c199b624e1a537348197457ad55b30607c2a9a2616347d6edb789f6b',1,'Quantum']]],
+  ['loading_1',['Loading',['../class_battle_1_1_view_1_1_u_i_1_1_battle_ui_announcement_handler.html#adbf62d5a0e880363e0ab1a8a198da439a16bfbf9c462762cf1cba4134ec53c504',1,'Battle::View::UI::BattleUiAnnouncementHandler']]],
+  ['localgiveup_2',['LocalGiveUp',['../class_battle_1_1_view_1_1_u_i_1_1_battle_ui_give_up_button_handler.html#a7309e7d8ea5d3a488cff2b3b93f64547a8e913c25d1602ebd23ee36c44dfb5fb9',1,'Battle::View::UI::BattleUiGiveUpButtonHandler']]],
+  ['localplayer_3',['LocalPlayer',['../class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a9ead6cc9e39c94c3238e9e882cf14e7cadf278968f92f0fc869776db31fa0eb60',1,'Battle::View::UI::BattleUiPlayerInfoHandler']]],
+  ['localteammate_4',['LocalTeammate',['../class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a9ead6cc9e39c94c3238e9e882cf14e7ca55b148244a4d91282d8bd003bbea5a6f',1,'Battle::View::UI::BattleUiPlayerInfoHandler']]],
+  ['log_5',['Log',['../class_battle_1_1_q_simulation_1_1_battle_debug_logger.html#a420b7aeddeffdb4587fcc9bbac68727face0be71e33226e4c1db2bcea5959f16b',1,'Battle::QSimulation::BattleDebugLogger']]],
+  ['love_6',['Love',['../namespace_quantum.html#ad5e1966c7acd39a3ff3da658fbd8803ba8bd7a1153a88761ad9d37e2f2394c947',1,'Quantum']]]
 ];
