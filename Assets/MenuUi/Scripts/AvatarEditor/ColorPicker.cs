@@ -20,6 +20,7 @@ public class ColorPicker : MonoBehaviour
     [SerializeField] private Image _previewColor;
     [SerializeField] private Image _colorPickerColorButtonColorImage;
     [SerializeField] private ColorGetter _colorCircle;
+    [SerializeField] private ColorPickerAnim _colorPickerPopupAnim;
 
     private Color _color = Color.red;
     private Color _previousColor = Color.red;
@@ -59,13 +60,13 @@ public class ColorPicker : MonoBehaviour
     private void ClosePopup()
     {
         _clickAreaButton.gameObject.SetActive(false);
-        _colorPickerPopup.SetActive(false);
+        _colorPickerPopupAnim.ClosePopup();
     }
 
     private void OpenPopup()
     {
         _clickAreaButton.gameObject.SetActive(true);
-        _colorPickerPopup.SetActive(true);
+        _colorPickerPopupAnim.OpenPopup();
         _previousColor = _color;
     }
 
