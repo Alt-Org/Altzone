@@ -178,7 +178,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private void ColorSelectActive(bool isActive)
         {
             _colorPicker.SetActive(isActive);
-            _colorSelection.gameObject.SetActive(isActive);
+            _colorSelection.SetMenuVisible(isActive);
         }
 
         public void RefreshFeatureListItems(string categoryId)

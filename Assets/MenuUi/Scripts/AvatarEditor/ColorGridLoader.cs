@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +18,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private ScrollBarCategoryLoader _categoryLoader;
         [SerializeField] private ScrollBarFeatureLoader _featureLoader;
         [SerializeField] private List<Color> _skinColors;
+        [SerializeField] private float _closeDuration;
 
         private float _viewPortHeight;
         private float _cellHeight;
@@ -39,6 +41,32 @@ namespace MenuUi.Scripts.AvatarEditor
             {
                 AddColorCell(color);
             }
+        }
+
+        public void SetMenuVisible(bool visible)
+        {
+            if (visible)
+            {
+                _colorSelection.gameObject.SetActive(true);
+            }
+            else
+            {
+                StartCoroutine(CloseSequence());
+            }
+        }
+
+        private IEnumerator CloseSequence()
+        {
+            foreach (Transform child in _colorGridContent)
+            {
+                if (child.TryGetComponent(out ColorCellHandler handler))
+                {
+                    handler.StartCloseAnimation(_closeDuration);
+                }
+            }
+
+            yield return new WaitForSeconds(_closeDuration);
+            _colorSelection.gameObject.SetActive(false);
         }
 
         public void UpdateCellSize()

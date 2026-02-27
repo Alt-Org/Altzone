@@ -22,6 +22,12 @@ namespace MenuUi.Scripts.AvatarEditor
             _animRoutine = StartCoroutine(AnimateIn());
         }
 
+        public void StartCloseAnimation(float duration)
+        {
+            if (_animRoutine != null) StopCoroutine(_animRoutine);
+            StartCoroutine(AnimateOut(duration));
+        }
+
         private IEnumerator AnimateIn()
         {
             int index = transform.GetSiblingIndex();
@@ -47,6 +53,29 @@ namespace MenuUi.Scripts.AvatarEditor
             _visualRoot.anchoredPosition = Vector2.zero;
             _visualRoot.localScale = Vector3.one;
             _canvasGroup.alpha = 1;
+        }
+
+        private IEnumerator AnimateOut(float duration)
+        {
+            float elapsed = 0f;
+            Vector3 startScale = _visualRoot.localScale;
+            Vector2 startPos = _visualRoot.anchoredPosition;
+            float startalpha = _canvasGroup.alpha;
+
+            Vector2 targetPos = new Vector2(100f, 0);
+
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                float percent = elapsed / duration;
+
+                float curve = percent * percent;
+
+                _visualRoot.anchoredPosition = Vector2.Lerp(startPos, targetPos, curve);
+                _visualRoot.localScale = Vector3.Lerp(startScale, new Vector3(0.5f, 0.5f, 1f), curve);
+                _canvasGroup.alpha = Mathf.Lerp(startalpha, 0, curve);
+                yield return null;
+            }
         }
 
         public void SetColor(Color color)
