@@ -32,6 +32,7 @@ public class ColorPicker : MonoBehaviour
         _popupCancelButton.onClick.AddListener(() => CancelChanges());
         _clickAreaButton.onClick.AddListener(() => ClosePopup());
         _colorPickerButton.onClick.AddListener(() => OpenPopup());
+        _previewColor.color = Color.red;
     }
 
     private void OnEnable()

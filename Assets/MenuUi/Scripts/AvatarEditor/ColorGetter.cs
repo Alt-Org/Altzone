@@ -12,12 +12,15 @@ public class ColorGetter : MonoBehaviour, IPointerDownHandler, IDragHandler, IPo
 
     public System.Action<Color> OnColorChanged;
 
-    private float _currentHue = 0;
-    private float _currentSat = 1;
-    private float _currentVal = 1;
+    private float _currentHue = 0f;
+    private float _currentSat = 1f;
+    private float _currentVal = 1f;
 
     // Modifies the position of the circle pointer, bigger = closer to outwards edge, smaller = closer to inwards edge
     private const float CirclePointerPosition = 0.43f;
+
+    // Handle is always 12% of the color circle's width
+    private const float HandleSizeRatio = 0.12f;
 
     // Enum is for pointers to move when expected and not at the same time
     private enum SelectionMode { None, Square, Circle }
@@ -25,19 +28,13 @@ public class ColorGetter : MonoBehaviour, IPointerDownHandler, IDragHandler, IPo
 
     private void Start()
     {
-        float squareWidth = _gradientSquare.rect.width;
-        float squareHeight = _gradientSquare.rect.height;
-        // Set the gradient pointer to top right (=full color)
-        _gradientSquareHandle.localPosition = new Vector2(squareWidth / 2f, squareHeight / 2f);
+        HandleAspectRatioChange();
+        AspectRatioChangeDetector.OnAspectRatioChange += HandleAspectRatioChange;
+    }
 
-        float startAngle = 90f;
-        float rads = startAngle * Mathf.Deg2Rad;
-        float circleRadius = _colorCircle.rect.width * CirclePointerPosition;
-
-        _gradientSquareImage.color = Color.red;
-
-        // Set the start position of the circle pointer to top (=red)
-        _colorCircleHandle.localPosition = new Vector2(Mathf.Cos(rads), Mathf.Sin(rads)) * circleRadius;
+    private void OnDestroy()
+    {
+        AspectRatioChangeDetector.OnAspectRatioChange -= HandleAspectRatioChange;
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -102,10 +99,7 @@ public class ColorGetter : MonoBehaviour, IPointerDownHandler, IDragHandler, IPo
         // normalize degrees to 0-1
         _currentHue = colorAngle / 360f;
 
-        // keep pointer on the ring when dragging outside of it
-        float radius = _colorCircle.rect.width * CirclePointerPosition;
-        float rads = visualAngle * Mathf.Deg2Rad;
-        _colorCircleHandle.localPosition = new Vector2(Mathf.Cos(rads), Mathf.Sin(rads)) * radius;
+        SynchronizeCircleHandle();
 
         // update the center square color based on the selected color on the wheel
         _gradientSquareImage.color = Color.HSVToRGB(_currentHue, 1, 1);
@@ -130,13 +124,51 @@ public class ColorGetter : MonoBehaviour, IPointerDownHandler, IDragHandler, IPo
         localPoint.x = Mathf.Clamp(localPoint.x, -width / 2, width / 2);
         localPoint.y = Mathf.Clamp(localPoint.y, -height / 2, height / 2);
 
-        _gradientSquareHandle.localPosition = localPoint;
-
         // normalize the saturation and black value to 0-1
         _currentSat = (localPoint.x + width / 2) / width;
         _currentVal = (localPoint.y + height / 2) / height;
 
+        SynchronizeSquareHandle();
+
         NotifyColorChange();
+    }
+
+    private void HandleAspectRatioChange()
+    {
+        Canvas.ForceUpdateCanvases();
+
+        SynchronizeCircleHandle();
+        SynchronizeSquareHandle();
+
+        _gradientSquareImage.color = Color.HSVToRGB(_currentHue, 1, 1);
+    }
+
+    private void SynchronizeCircleHandle()
+    {
+        float size = _colorCircle.rect.width * HandleSizeRatio;
+        _colorCircleHandle.sizeDelta = new Vector2(size, size);
+
+        float visualAngle = (_currentHue * 360f) + 90f;
+        float rads = visualAngle * Mathf.Deg2Rad;
+        float radius = _colorCircle.rect.width * CirclePointerPosition;
+        _colorCircleHandle.localPosition = new Vector2(Mathf.Cos(rads), Mathf.Sin(rads)) * radius;
+    }
+
+    private void SynchronizeSquareHandle()
+    {
+        float width = _gradientSquare.rect.width;
+        float height = _gradientSquare.rect.height;
+
+        float circleWidth = _colorCircle.rect.width;
+        // Looks better if it's slightly smaller than the circle handle
+        float size = (circleWidth * HandleSizeRatio) * 0.8f;
+
+        _gradientSquareHandle.sizeDelta = new Vector2(size, size);
+
+        float posX = (_currentSat * width) - width / 2;
+        float posY = (_currentVal * height) - height / 2;
+
+        _gradientSquareHandle.localPosition = new Vector2(posX, posY);
     }
 
     private void NotifyColorChange()
