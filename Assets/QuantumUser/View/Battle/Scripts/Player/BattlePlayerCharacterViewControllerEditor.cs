@@ -24,6 +24,7 @@ namespace Battle.View.Player
             const int SpriteRendererBodyIndex   = 1;
             const int SpriteRendererHandsIndex  = 2;
             const int SpriteRendererFeetIndex   = 3;
+            const int SpriteRendererShadowIndex = 4;
             DrawDefaultInspector();
 
             if (_battleSpriteSheetProp == null || _gameObjectProp == null) return;
@@ -41,6 +42,7 @@ namespace Battle.View.Player
                     spriteRenderers[SpriteRendererBodyIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.Body1);
                     spriteRenderers[SpriteRendererHandsIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.BaseHands);
                     spriteRenderers[SpriteRendererFeetIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.BaseShoes);
+                    spriteRenderers[SpriteRendererShadowIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.Shadow);
                 }
                 else
                 {
@@ -48,6 +50,7 @@ namespace Battle.View.Player
                     spriteRenderers[SpriteRendererBodyIndex].sprite = null;
                     spriteRenderers[SpriteRendererHandsIndex].sprite = null;
                     spriteRenderers[SpriteRendererFeetIndex].sprite = null;
+                    spriteRenderers[SpriteRendererShadowIndex].sprite = null;
                 }
             }
         }

@@ -115,7 +115,7 @@ namespace Battle.View.Player
             /// </summary>
             ///
             /// <returns>EnumValue as an int</returns>
-            public int GetIndex() => (int)EnumValue;
+            public readonly int GetIndex() => (int)EnumValue;
         }
         /// @anchor BattlePlayerCharacterViewController-SerializeFields
         /// @name SerializeField variables
@@ -228,7 +228,6 @@ namespace Battle.View.Player
                 }
             }
 
-            //_spriteSheet.GetSprite<PlayerSpriteSheetMap>(PlayerSpriteSheetMap.Enum.ShieldBroken);
             _spriteRenderer.sprite = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Base);
 
             _classViewController.OnViewInit(this, e.ERef, e.Slot, e.CharacterId);
@@ -328,7 +327,6 @@ namespace Battle.View.Player
         public void QEventOnPlayStateUpdate(EventBattleInPlayStateUpdate e)
         {
             if (e.ERef != EntityRef) return;
-            Debug.Log(e.IsInPlay);
             _isInPlay = e.IsInPlay;
         }
 

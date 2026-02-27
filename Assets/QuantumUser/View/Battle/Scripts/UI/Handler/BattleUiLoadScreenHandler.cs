@@ -6,6 +6,9 @@
 /// This script:<br/>
 /// Handles setting the visibility of the battle loading screen and updating it whenever a player connects to the game.
 
+// System usings
+using System.Linq;
+
 // Unity usings
 using UnityEngine;
 using TMPro;
@@ -18,7 +21,6 @@ using MenuUi.Scripts.Lobby.SelectedCharacters;
 
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
-using System.Linq;
 
 namespace Battle.View.UI
 {

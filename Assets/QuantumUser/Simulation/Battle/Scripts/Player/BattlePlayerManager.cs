@@ -249,19 +249,6 @@ namespace Battle.QSimulation.Player
 
                     //} set player common temp variables
 
-                    //{ player variables
-                    BattlePlayerEntityRef                      playerCharacterEntity;
-                    BattleEntityManager.CompoundEntityTemplate playerCharacterEntityTemplate;
-                    int                                        playerCharacterShieldCount;
-                    BattlePlayerDataQComponent                 playerData;
-                    // player - hitBox variables
-                    EntityRef                                  playerHitboxCharacterEntity = EntityRef.None;
-                    BattlePlayerHitboxQComponent               playerHitbox;
-                    PhysicsCollider2D                          playerHitboxCollider;
-                    // player - hitBox - collisionTrigger variables
-                    BattleCollisionTriggerQComponent           collisionTrigger;
-                    //} player variables
-
                     for (int playerCharacterNumber = 0; playerCharacterNumber < playerCharacterEntityArray.Length; playerCharacterNumber++)
                     {
                         // set id and class
@@ -300,9 +287,9 @@ namespace Battle.QSimulation.Player
                         }
 
                         // create entity
-                        playerCharacterEntity = BattlePlayerEntityRef.Create(f, playerCharacterEntityPrototype);
+                        BattlePlayerEntityRef playerCharacterEntity = BattlePlayerEntityRef.Create(f, playerCharacterEntityPrototype);
 
-                        playerCharacterEntityTemplate = BattleEntityManager.CompoundEntityTemplate.Create(playerCharacterEntity, 1);
+                        BattleEntityManager.CompoundEntityTemplate playerCharacterEntityTemplate = BattleEntityManager.CompoundEntityTemplate.Create(playerCharacterEntity, 1);
 
                         // get template data
                         BattlePlayerDataTemplateQComponent* playerCharacterDataTemplate = f.Unsafe.GetPointer<BattlePlayerDataTemplateQComponent>(playerCharacterEntity);
@@ -330,7 +317,7 @@ namespace Battle.QSimulation.Player
 
                         // create hitBox entity
 
-                        playerHitboxCharacterEntity = f.Create();
+                        EntityRef playerHitboxCharacterEntity = f.Create();
 
                         //{ initialize collisionTrigger component
 
@@ -344,10 +331,10 @@ namespace Battle.QSimulation.Player
                         BattlePlayerCollisionType playerHitboxCollisionType = playerCharacterDataTemplate->HitboxCharacter.CollisionType;
                         FP playerHitboxAngleRad                             = FP.Deg2Rad * playerCharacterDataTemplate->HitboxCharacter.NormalAngleDeg;
 
-                        collisionTrigger = BattleCollisionQSystem.CreateCollisionTriggerComponent(BattleCollisionTriggerType.Player);
+                        BattleCollisionTriggerQComponent collisionTrigger = BattleCollisionQSystem.CreateCollisionTriggerComponent(BattleCollisionTriggerType.Player);
 
                         // initialize hitBox collider
-                        playerHitboxCollider = PhysicsCollider2D.Create(f,
+                        PhysicsCollider2D playerHitboxCollider = PhysicsCollider2D.Create(f,
                             shape: Shape2D.CreatePersistentCompound(),
                             isTrigger: true
                         );
@@ -359,12 +346,12 @@ namespace Battle.QSimulation.Player
                         {
                             playerHitboxHeight = Mathf.Max(playerHitboxColliderTemplate.Position.Y, playerHitboxHeight);
 
-                            FPVector2 playerHitboxExtents = new FPVector2(
+                            FPVector2 playerHitboxExtents = new(
                                 (FP)playerHitboxColliderTemplate.Size.X * BattleGridManager.GridScaleFactor * FP._0_50,
                                 (FP)playerHitboxColliderTemplate.Size.Y * BattleGridManager.GridScaleFactor * FP._0_50
                             );
 
-                            FPVector2 playerHitboxPosition = new FPVector2(
+                            FPVector2 playerHitboxPosition = new(
                                 ((FP)playerHitboxColliderTemplate.Position.X - FP._0_50) * BattleGridManager.GridScaleFactor + playerHitboxExtents.X,
                                 ((FP)playerHitboxColliderTemplate.Position.Y + FP._0_50) * BattleGridManager.GridScaleFactor - playerHitboxExtents.Y
                             );
@@ -374,7 +361,7 @@ namespace Battle.QSimulation.Player
                         }
 
                         // initialize hitBox component
-                        playerHitbox = new BattlePlayerHitboxQComponent
+                        BattlePlayerHitboxQComponent playerHitbox = new()
                         {
                             ParentEntityRef    = playerCharacterEntity,
                             HitboxType         = playerHitboxType,
@@ -393,7 +380,7 @@ namespace Battle.QSimulation.Player
                         //} create player hitBox
 
                         // create player shields
-                        playerCharacterShieldCount = BattlePlayerShieldManager.CreateShields(f, playerSlot, playerCharacterNumber, playerCharacterId, playerCharacterEntity);
+                        int playerCharacterShieldCount = BattlePlayerShieldManager.CreateShields(f, playerSlot, playerCharacterNumber, playerCharacterId, playerCharacterEntity);
 
                         // save entity
                         playerCharacterEntityTemplate.Link(playerHitboxCharacterEntity, new FPVector2(0, 0));
@@ -401,7 +388,7 @@ namespace Battle.QSimulation.Player
 
                         //{ initialize playerData
 
-                        playerData = new BattlePlayerDataQComponent
+                        BattlePlayerDataQComponent playerData = new()
                         {
                             PlayerRef              = PlayerRef.None,
                             Slot                   = playerSlot,

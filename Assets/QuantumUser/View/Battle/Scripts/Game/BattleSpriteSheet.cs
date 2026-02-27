@@ -46,7 +46,7 @@ namespace Battle.View
         /// <param name="SpriteMapValue">Class that implements the interface</param>
         ///
         /// <returns>A sprite from the spritesheet</returns>
-        public Sprite GetSprite<T>(T SpriteMapValue) where T : IBattleSpriteSheetMap
+        public readonly Sprite GetSprite<T>(T SpriteMapValue) where T : IBattleSpriteSheetMap
         {
             int spriteIndex = SpriteMapValue.GetIndex();
             return Array[spriteIndex];

@@ -6,17 +6,16 @@
 /// This script:<br/>
 /// Handles shield sprites and particles
 
-// Unity usings
-// Battle QSimulation usings
+// System usings
 using System.Runtime.CompilerServices;
+// Unity usings
+using UnityEngine;
+// Battle QSimulation usings
 using Battle.QSimulation;
-using Battle.QSimulation.Player;
-// Battle View usings
-using Battle.View.Game;
+// Battle Player usings
+using static Battle.View.Player.BattlePlayerCharacterViewController;
 // Quantum usings
 using Quantum;
-using UnityEngine;
-using static Battle.View.Player.BattlePlayerCharacterViewController;
 
 namespace Battle.View.Player
 {

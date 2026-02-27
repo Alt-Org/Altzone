@@ -353,10 +353,10 @@ namespace Battle.QSimulation.Player
         }
 
         /// <value>An array containing all of the class scripts that have been implemented and can be used.</value>
-        private static BattlePlayerClassBase[] s_classArray = new BattlePlayerClassBase[ClassCount];
+        private static readonly BattlePlayerClassBase[] s_classArray = new BattlePlayerClassBase[ClassCount];
 
         /// <value>A dictionary used for tracking which classes have already had an error message sent regarding their missing implementation.</value>
-        private static Dictionary<BattlePlayerCharacterClass, bool> s_errorMessagesSent = new();
+        private static readonly Dictionary<BattlePlayerCharacterClass, bool> s_errorMessagesSent = new();
 
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private static BattleDebugLogger s_debugLogger;

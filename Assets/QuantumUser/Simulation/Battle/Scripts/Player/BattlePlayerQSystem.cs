@@ -4,14 +4,15 @@
 /// </summary>
 
 // Unity usings
+using UnityEngine.Scripting;
+
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Projectile;
-using Photon.Deterministic;
+
 // Quantum usings
 using Quantum;
-using UnityEngine.Scripting;
-using static Battle.QSimulation.Player.BattlePlayerManager;
+using Photon.Deterministic;
 using Input = Quantum.Input;
 
 namespace Battle.QSimulation.Player
@@ -505,7 +506,7 @@ namespace Battle.QSimulation.Player
                 BattleSoulWallQSystem.CreateAbilitySoulWallTest(f, playerData->TeamNumber, playerTransform->Position);
             }
 
-            /**/
+            */
             //} Ability test
 
             playerData->AbilityCooldownSec = FrameTimer.FromSeconds(f, FP._3);
