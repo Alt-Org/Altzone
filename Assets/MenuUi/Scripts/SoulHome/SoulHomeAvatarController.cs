@@ -80,16 +80,16 @@ namespace MenuUI.Scripts.SoulHome
         // Update is called once per frame
         void Update()
         {
-            if(_status == AvatarStatus.Idle && !_idleTimerStarted)
+            if (_status == AvatarStatus.Idle && !_idleTimerStarted)
             {
                 //Debug.Log("Character Idle");
                 StartCoroutine("IdleTimer");
             }
-            else if(_status == AvatarStatus.Wander)
+            else if (_status == AvatarStatus.Wander)
             {
                 if (_performingAnimation) return;
                 //Debug.Log("Character Wander");
-                if (!_animator.GetCurrentAnimatorStateInfo(0).IsName(_walkAnimation.name)) _animator.Play(_walkAnimation.name);
+                if (!_animator.GetCurrentAnimatorStateInfo(0).IsName(_walkAnimation.name)) { _animator.Play(_walkAnimation.name); UseDefaultHands(true); }
                 MoveAvatar();
                 //transform.SetParent(_points.GetChild(_newPosition.y).GetChild(_newPosition.x), false);
 
@@ -105,7 +105,7 @@ namespace MenuUI.Scripts.SoulHome
             float idleTimer = 0;
             bool firstFrame = true;
             float checkTimer = 0;
-            if (!_animator.GetCurrentAnimatorStateInfo(0).IsName(_idleAnimation.name)) _animator.Play(_idleAnimation.name);
+            if (!_animator.GetCurrentAnimatorStateInfo(0).IsName(_idleAnimation.name)) { _animator.Play(_idleAnimation.name); UseDefaultHands(false); }
             while (true)
             {
                 if (firstFrame) firstFrame = false;
