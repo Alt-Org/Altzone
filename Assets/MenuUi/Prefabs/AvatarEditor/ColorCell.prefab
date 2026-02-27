@@ -119,6 +119,7 @@ MonoBehaviour:
   _featureImage: {fileID: 7241390368121655751}
   _button: {fileID: 6133299770619557307}
   _visualRoot: {fileID: 8414742121078296728}
+  _canvasGroup: {fileID: 6723140243268138688}
 --- !u!1 &3801825205894296313
 GameObject:
   m_ObjectHideFlags: 0
@@ -203,6 +204,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8414742121078296728}
+  - component: {fileID: 6723140243268138688}
   m_Layer: 0
   m_Name: VisualRoot
   m_TagString: Untagged
@@ -231,6 +233,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &6723140243268138688
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3980429192481832209}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5074442540549083706
 GameObject:
   m_ObjectHideFlags: 0
