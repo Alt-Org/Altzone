@@ -299,24 +299,23 @@ namespace Quantum.Prototypes {
     public PlayerRef PlayerRef;
     public Quantum.QEnum32<BattlePlayerSlot> Slot;
     public Quantum.QEnum32<BattleTeamNumber> TeamNumber;
-    public Int32 CharacterId;
+    public Quantum.QEnum32<BattlePlayerCharacterID> CharacterId;
     public Quantum.QEnum32<BattlePlayerCharacterClass> CharacterClass;
     public Quantum.Prototypes.BattlePlayerStatsPrototype Stats;
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
     public QBoolean HasTargetPosition;
     public FPVector2 TargetPosition;
-    public FP RotationBase;
-    public FP RotationOffset;
+    public FP RotationBaseRad;
+    public FP RotationOffsetRad;
     public FP CurrentHp;
     public FP CurrentDefence;
-    public MapEntityId CharacterHitboxEntity;
     public Int32 ShieldCount;
     public Int32 AttachedShieldNumber;
     public Quantum.Prototypes.BattlePlayerShieldEntityRefPrototype AttachedShield;
     public QBoolean DisableRotation;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
-    public FP MovementCooldownSec;
+    public FP BotMovementCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityActivateBufferSec;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
@@ -335,17 +334,16 @@ namespace Quantum.Prototypes {
         result.GridExtendBottom = this.GridExtendBottom;
         result.HasTargetPosition = this.HasTargetPosition;
         result.TargetPosition = this.TargetPosition;
-        result.RotationBase = this.RotationBase;
-        result.RotationOffset = this.RotationOffset;
+        result.RotationBaseRad = this.RotationBaseRad;
+        result.RotationOffsetRad = this.RotationOffsetRad;
         result.CurrentHp = this.CurrentHp;
         result.CurrentDefence = this.CurrentDefence;
-        PrototypeValidator.FindMapEntity(this.CharacterHitboxEntity, in context, out result.CharacterHitboxEntity);
         result.ShieldCount = this.ShieldCount;
         result.AttachedShieldNumber = this.AttachedShieldNumber;
         this.AttachedShield.Materialize(frame, ref result.AttachedShield, in context);
         result.DisableRotation = this.DisableRotation;
         this.DamageCooldown.Materialize(frame, ref result.DamageCooldown, in context);
-        result.MovementCooldownSec = this.MovementCooldownSec;
+        result.BotMovementCooldownSec = this.BotMovementCooldownSec;
         this.AbilityCooldownSec.Materialize(frame, ref result.AbilityCooldownSec, in context);
         this.AbilityActivateBufferSec.Materialize(frame, ref result.AbilityActivateBufferSec, in context);
     }
@@ -394,11 +392,10 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerHitboxQComponent))]
   public unsafe class BattlePlayerHitboxQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerHitboxQComponent> {
-    public MapEntityId ParentEntity;
+    public MapEntityId ParentEntityRef;
     public Quantum.QEnum32<BattlePlayerHitboxType> HitboxType;
     public Quantum.QEnum32<BattlePlayerCollisionType> CollisionType;
-    public FPVector2 Normal;
-    public FPVector2 NormalBase;
+    public FP NormalAngleRad;
     public FP CollisionMinOffset;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerHitboxQComponent component = default;
@@ -406,11 +403,10 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattlePlayerHitboxQComponent result, in PrototypeMaterializationContext context = default) {
-        PrototypeValidator.FindMapEntity(this.ParentEntity, in context, out result.ParentEntity);
+        PrototypeValidator.FindMapEntity(this.ParentEntityRef, in context, out result.ParentEntityRef);
         result.HitboxType = this.HitboxType;
         result.CollisionType = this.CollisionType;
-        result.Normal = this.Normal;
-        result.NormalBase = this.NormalBase;
+        result.NormalAngleRad = this.NormalAngleRad;
         result.CollisionMinOffset = this.CollisionMinOffset;
     }
   }
@@ -507,29 +503,18 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerShieldDataQComponent))]
   public unsafe class BattlePlayerShieldDataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerShieldDataQComponent> {
-    public Quantum.Prototypes.BattlePlayerEntityRefPrototype PlayerEntity;
-    [FreeOnComponentRemoved()]
-    [DynamicCollectionAttribute()]
-    public MapEntityId[] HitboxEntities = {};
-    public QBoolean IsActive;
+    public Quantum.Prototypes.BattlePlayerEntityRefPrototype PlayerEntityRef;
+    public Int32 ShieldNumber;
+    public QBoolean IsAttached;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerShieldDataQComponent component = default;
         Materialize((Frame)f, ref component, in context);
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattlePlayerShieldDataQComponent result, in PrototypeMaterializationContext context = default) {
-        this.PlayerEntity.Materialize(frame, ref result.PlayerEntity, in context);
-        if (this.HitboxEntities.Length == 0) {
-          result.HitboxEntities = default;
-        } else {
-          var list = frame.AllocateList(out result.HitboxEntities, this.HitboxEntities.Length);
-          for (int i = 0; i < this.HitboxEntities.Length; ++i) {
-            EntityRef tmp = default;
-            PrototypeValidator.FindMapEntity(this.HitboxEntities[i], in context, out tmp);
-            list.Add(tmp);
-          }
-        }
-        result.IsActive = this.IsActive;
+        this.PlayerEntityRef.Materialize(frame, ref result.PlayerEntityRef, in context);
+        result.ShieldNumber = this.ShieldNumber;
+        result.IsAttached = this.IsAttached;
     }
   }
   [System.SerializableAttribute()]

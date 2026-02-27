@@ -124,24 +124,23 @@ namespace Quantum.Prototypes.Unity {
     public PlayerRef PlayerRef;
     public Quantum.QEnum32<BattlePlayerSlot> Slot;
     public Quantum.QEnum32<BattleTeamNumber> TeamNumber;
-    public Int32 CharacterId;
+    public Quantum.QEnum32<BattlePlayerCharacterID> CharacterId;
     public Quantum.QEnum32<BattlePlayerCharacterClass> CharacterClass;
     public Quantum.Prototypes.BattlePlayerStatsPrototype Stats;
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
     public QBoolean HasTargetPosition;
     public FPVector2 TargetPosition;
-    public FP RotationBase;
-    public FP RotationOffset;
+    public FP RotationBaseRad;
+    public FP RotationOffsetRad;
     public FP CurrentHp;
     public FP CurrentDefence;
-    public Quantum.QuantumEntityPrototype CharacterHitboxEntity;
     public Int32 ShieldCount;
     public Int32 AttachedShieldNumber;
     public Quantum.Prototypes.Unity.BattlePlayerShieldEntityRefPrototype AttachedShield;
     public QBoolean DisableRotation;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
-    public FP MovementCooldownSec;
+    public FP BotMovementCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityActivateBufferSec;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerDataQComponentPrototype prototype);
@@ -157,17 +156,16 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.GridExtendBottom, out result.GridExtendBottom);
       converter.Convert(this.HasTargetPosition, out result.HasTargetPosition);
       converter.Convert(this.TargetPosition, out result.TargetPosition);
-      converter.Convert(this.RotationBase, out result.RotationBase);
-      converter.Convert(this.RotationOffset, out result.RotationOffset);
+      converter.Convert(this.RotationBaseRad, out result.RotationBaseRad);
+      converter.Convert(this.RotationOffsetRad, out result.RotationOffsetRad);
       converter.Convert(this.CurrentHp, out result.CurrentHp);
       converter.Convert(this.CurrentDefence, out result.CurrentDefence);
-      converter.Convert(this.CharacterHitboxEntity, out result.CharacterHitboxEntity);
       converter.Convert(this.ShieldCount, out result.ShieldCount);
       converter.Convert(this.AttachedShieldNumber, out result.AttachedShieldNumber);
       converter.Convert(this.AttachedShield, out result.AttachedShield);
       converter.Convert(this.DisableRotation, out result.DisableRotation);
       converter.Convert(this.DamageCooldown, out result.DamageCooldown);
-      converter.Convert(this.MovementCooldownSec, out result.MovementCooldownSec);
+      converter.Convert(this.BotMovementCooldownSec, out result.BotMovementCooldownSec);
       converter.Convert(this.AbilityCooldownSec, out result.AbilityCooldownSec);
       converter.Convert(this.AbilityActivateBufferSec, out result.AbilityActivateBufferSec);
       ConvertUser(converter, ref result);
@@ -187,20 +185,18 @@ namespace Quantum.Prototypes.Unity {
   }
   [System.SerializableAttribute()]
   public unsafe partial class BattlePlayerHitboxQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerHitboxQComponentPrototype> {
-    public Quantum.QuantumEntityPrototype ParentEntity;
+    public Quantum.QuantumEntityPrototype ParentEntityRef;
     public Quantum.QEnum32<BattlePlayerHitboxType> HitboxType;
     public Quantum.QEnum32<BattlePlayerCollisionType> CollisionType;
-    public FPVector2 Normal;
-    public FPVector2 NormalBase;
+    public FP NormalAngleRad;
     public FP CollisionMinOffset;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerHitboxQComponentPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerHitboxQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerHitboxQComponentPrototype();
-      converter.Convert(this.ParentEntity, out result.ParentEntity);
+      converter.Convert(this.ParentEntityRef, out result.ParentEntityRef);
       converter.Convert(this.HitboxType, out result.HitboxType);
       converter.Convert(this.CollisionType, out result.CollisionType);
-      converter.Convert(this.Normal, out result.Normal);
-      converter.Convert(this.NormalBase, out result.NormalBase);
+      converter.Convert(this.NormalAngleRad, out result.NormalAngleRad);
       converter.Convert(this.CollisionMinOffset, out result.CollisionMinOffset);
       ConvertUser(converter, ref result);
       return result;
@@ -208,17 +204,15 @@ namespace Quantum.Prototypes.Unity {
   }
   [System.SerializableAttribute()]
   public unsafe partial class BattlePlayerShieldDataQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerShieldDataQComponentPrototype> {
-    public Quantum.Prototypes.Unity.BattlePlayerEntityRefPrototype PlayerEntity;
-    [FreeOnComponentRemoved()]
-    [DynamicCollectionAttribute()]
-    public Quantum.QuantumEntityPrototype[] HitboxEntities = {};
-    public QBoolean IsActive;
+    public Quantum.Prototypes.Unity.BattlePlayerEntityRefPrototype PlayerEntityRef;
+    public Int32 ShieldNumber;
+    public QBoolean IsAttached;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerShieldDataQComponentPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerShieldDataQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerShieldDataQComponentPrototype();
-      converter.Convert(this.PlayerEntity, out result.PlayerEntity);
-      converter.Convert(this.HitboxEntities, out result.HitboxEntities);
-      converter.Convert(this.IsActive, out result.IsActive);
+      converter.Convert(this.PlayerEntityRef, out result.PlayerEntityRef);
+      converter.Convert(this.ShieldNumber, out result.ShieldNumber);
+      converter.Convert(this.IsAttached, out result.IsAttached);
       ConvertUser(converter, ref result);
       return result;
     }
