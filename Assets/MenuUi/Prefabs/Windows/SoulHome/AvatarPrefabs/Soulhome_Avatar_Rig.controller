@@ -54,32 +54,32 @@ AnimatorStateMachine:
   m_Name: Base Layer
   m_ChildStates:
   - serializedVersion: 1
-    m_State: {fileID: -1201290337383956104}
-    m_Position: {x: 220, y: 0, z: 0}
-  - serializedVersion: 1
     m_State: {fileID: -39340714856097256}
-    m_Position: {x: 260, y: 70, z: 0}
+    m_Position: {x: 420, y: -10, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 3640373461428935063}
-    m_Position: {x: 290, y: 130, z: 0}
+    m_Position: {x: 100, y: -220, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1351158524296269228}
-    m_Position: {x: 325, y: 195, z: 0}
+    m_Position: {x: 170, y: 160, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -4139830864508559785}
-    m_Position: {x: 360, y: 260, z: 0}
+    m_Position: {x: 440, y: 120, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7530339518387403104}
-    m_Position: {x: 395, y: 325, z: 0}
+    m_Position: {x: -60, y: 120, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -3196147741981225128}
-    m_Position: {x: 430, y: 390, z: 0}
+    m_Position: {x: 580, y: -100, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5407370739115290601}
-    m_Position: {x: 470, y: 450, z: 0}
+    m_Position: {x: 290, y: -310, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -3216132175081134453}
     m_Position: {x: 180, y: -70, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -4854368626782305078}
+    m_Position: {x: 400, y: -190, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -90,6 +90,32 @@ AnimatorStateMachine:
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: -3216132175081134453}
+--- !u!1102 &-4854368626782305078
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Soulhome_Avatar_Alyllistajat_Default_Animation
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: abb546eaa15e65f4e8ee8a3cd2481501, type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1102 &-4139830864508559785
 AnimatorState:
   serializedVersion: 6
@@ -165,33 +191,6 @@ AnimatorState:
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 5eac619e538ab87439895b876b2a71c7, type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
---- !u!1102 &-1201290337383956104
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: "Soulhome_Avatar_\xE4lyllist\xE4j\xE4t_default_animation"
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: 6559701053410096891}
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: fd50daa0996c0a94bac8223da63c5df3, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -329,7 +328,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Soulhome_Avatar_Walk_Animation
+  m_Name: Soulhome_Avatar_walk_animation
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -365,28 +364,6 @@ AnimatorStateTransition:
   m_TransitionDuration: 0.25
   m_TransitionOffset: 0
   m_ExitTime: 0.85294116
-  m_HasExitTime: 1
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
---- !u!1101 &6559701053410096891
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions: []
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: -3216132175081134453}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0.25
-  m_TransitionOffset: 0
-  m_ExitTime: 0.75
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
