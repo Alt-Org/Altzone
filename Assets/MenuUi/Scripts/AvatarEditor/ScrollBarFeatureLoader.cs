@@ -142,7 +142,7 @@ namespace MenuUi.Scripts.AvatarEditor
             foreach (Color color in _colorSelection.SkinColors)
             {
                 GameObject colorGridCell = Instantiate(_colorCellPrefab, _featureGridContent);
-                ColorCellHandler handler = colorGridCell.GetComponent<ColorCellHandler>();
+                SkinColorCellHandler handler = colorGridCell.GetComponent<SkinColorCellHandler>();
 
                 handler.SetColor(color);
                 handler.SetOnClick(() =>

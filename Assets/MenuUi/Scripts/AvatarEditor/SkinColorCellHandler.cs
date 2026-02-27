@@ -2,14 +2,11 @@ using UnityEngine;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
-    public class ColorCellHandler : GridCellHandler
+    public class SkinColorCellHandler : GridCellHandler
     {
-        [SerializeField] private RectTransform _visualRoot;
-        public RectTransform VisualRoot => _visualRoot;
-
         public void SetColor(Color color)
         {
-           base._featureImage.color = color;
+            base._featureImage.color = color;
         }
 
         public void SetOnClick(UnityEngine.Events.UnityAction onClick)
