@@ -1,3 +1,4 @@
+using MenuUi.Scripts.Lobby.SelectedCharacters;
 using UnityEngine;
 
 namespace MenuUi.Scripts.CharacterGallery
@@ -9,5 +10,9 @@ namespace MenuUi.Scripts.CharacterGallery
     {
         [HideInInspector] public int SlotIndex = 0;
         [HideInInspector] public GalleryCharacter SelectedCharacter = null;
+
+        [SerializeField] private BattlePopupSelectedCharacterView _battleView;
+        public BattlePopupSelectedCharacterView BattleView => _battleView;
+
     }
 }

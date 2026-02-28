@@ -55,10 +55,22 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             _spriteImage.enabled = true;
 
             CharacterClassType charClassType = CustomCharacter.GetClass(charID);
-            if (_classColorBorderImage != null) _classColorBorderImage.sprite = ClassReference.Instance.GetFrame(charClassType);
+            if (_classColorBorderImage != null)
+            {
+                _classColorBorderImage.enabled = true;
+                _classColorBorderImage.sprite = ClassReference.Instance.GetFrame(charClassType);
+            }
             if (_classColorImage != null) _classColorImage.color = ClassReference.Instance.GetColor(charClassType);
-            if (_cornerIcon != null) _cornerIcon.sprite = ClassReference.Instance.GetCornerIcon(charClassType);
-            if (_resistanceIcon != null) _resistanceIcon.sprite = ClassReference.Instance.GetResistanceIcon(charClassType);
+            if (_cornerIcon != null)
+            {
+                _cornerIcon.enabled = true;
+                _cornerIcon.sprite = ClassReference.Instance.GetCornerIcon(charClassType);
+            }
+            if (_resistanceIcon != null)
+            {
+                _resistanceIcon.enabled = true;
+                _resistanceIcon.sprite = ClassReference.Instance.GetResistanceIcon(charClassType);
+            }
 
             _characterId = charID;
 

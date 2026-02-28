@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 792360077970609535}
   - component: {fileID: 5149127461766044727}
   - component: {fileID: 6962730808812804384}
-  - component: {fileID: 4627216112612170422}
   - component: {fileID: 4341077193328566202}
   - component: {fileID: 7714599990452564923}
   m_Layer: 5
@@ -108,25 +107,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &4627216112612170422
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3140534817053600678}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 0
-  _educationCategoryType: 4
-  _educationCategoryActionType: 3
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 3
-  _educationCategoryCultureType: 0
-  _educationCategoryEthicalType: 6
 --- !u!114 &4341077193328566202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,6 +119,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 835b61347be3afd42884914ff805f122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 4
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 6
   _longClickStartThresholdTime: 0.2
   _longClickThresholdTime: 1
   _uniqueName: 

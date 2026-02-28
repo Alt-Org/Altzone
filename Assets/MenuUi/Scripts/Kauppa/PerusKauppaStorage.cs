@@ -56,9 +56,29 @@ public class PerusKauppaStorage : ShopPanelStorage
         gameFurnituresOnScene = new();
     }
 
+    
     protected override void HandleGameFurnitureCreation(ReadOnlyCollection<GameFurniture> gameFurnitures)
     {
+
+        //Summary: Fixes furniture duplication problem; deletes previously created set of furniture objects before new set is generated.
+        //1. Loop through each object currently stored in the gameFurnituresOnScene list (objects stored at gameFurnituresOnScene.Add(newItem); )
+        foreach (GameFurnitureVisualizer furniture in gameFurnituresOnScene)
+        {
+            //1.1 Check if the object exists (is NOT null) and destroys its game object
+            if (furniture != null)
+            {
+                Destroy(furniture.gameObject);
+            }
+        }
+
+        //2. Clear the gameFurnitureOnScene list references now that the game objects have been destroyed
+        gameFurnituresOnScene.Clear();
+        
+
         StartCoroutine(ShopGameFurnitureCreation(gameFurnitures));
+
+         
+
     }
 
     protected IEnumerator ShopGameFurnitureCreation(ReadOnlyCollection<GameFurniture> gameFurnitures)

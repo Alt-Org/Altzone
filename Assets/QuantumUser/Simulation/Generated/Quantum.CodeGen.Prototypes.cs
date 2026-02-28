@@ -544,23 +544,10 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleWaitForPlayersData))]
-  public unsafe partial class BattleWaitForPlayersDataPrototype : StructPrototype {
-    [MaxStringByteCount(62, "Unicode")]
-    [ArrayLengthAttribute(4)]
-    public string[] PlayerNames = new System.String[4];
-    partial void MaterializeUser(Frame frame, ref Quantum.BattleWaitForPlayersData result, in PrototypeMaterializationContext context);
-    public void Materialize(Frame frame, ref Quantum.BattleWaitForPlayersData result, in PrototypeMaterializationContext context = default) {
-        for (int i = 0, count = PrototypeValidator.CheckLength(PlayerNames, 4, in context); i < count; ++i) {
-          PrototypeValidator.AssignQString(this.PlayerNames[i], 64, in context, out *result.PlayerNames.GetPointer(i));
-        }
-        MaterializeUser(frame, ref result, in context);
-    }
-  }
-  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Input))]
   public unsafe partial class InputPrototype : StructPrototype {
     public QBoolean IsValid;
+    public Int32 DebugNumber;
     public Quantum.QEnum32<BattleMovementInputType> MovementInput;
     public QBoolean MovementDirectionIsNormalized;
     public Quantum.Prototypes.BattleGridPositionPrototype MovementPositionTarget;
@@ -568,12 +555,13 @@ namespace Quantum.Prototypes {
     public FPVector2 MovementDirection;
     public QBoolean RotationInput;
     public FP RotationValue;
+    public QBoolean AbilityActivate;
     public Int32 PlayerCharacterNumber;
     public QBoolean GiveUpInput;
-    public QBoolean AbilityActivate;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
         result.IsValid = this.IsValid;
+        result.DebugNumber = this.DebugNumber;
         result.MovementInput = this.MovementInput;
         result.MovementDirectionIsNormalized = this.MovementDirectionIsNormalized;
         this.MovementPositionTarget.Materialize(frame, ref result.MovementPositionTarget, in context);
@@ -581,9 +569,9 @@ namespace Quantum.Prototypes {
         result.MovementDirection = this.MovementDirection;
         result.RotationInput = this.RotationInput;
         result.RotationValue = this.RotationValue;
+        result.AbilityActivate = this.AbilityActivate;
         result.PlayerCharacterNumber = this.PlayerCharacterNumber;
         result.GiveUpInput = this.GiveUpInput;
-        result.AbilityActivate = this.AbilityActivate;
         MaterializeUser(frame, ref result, in context);
     }
   }

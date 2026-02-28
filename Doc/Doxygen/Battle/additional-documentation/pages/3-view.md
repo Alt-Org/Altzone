@@ -58,7 +58,7 @@ In **%Battle** **View Controllers** have **"ViewController"** suffix. [[Naming]]
 | @crefd{Battle.View} | @crefd{Battle.View,Effect}     | @cref{Battle.View.Effect,BattleLightrayEffectViewController}       | @copybrief Battle.View.Effect.BattleLightrayEffectViewController       |
 | @crefd{Battle.View} | @crefd{Battle.View,Effect}     | @cref{Battle.View.Effect,BattleScreenEffectViewController}         | @copybrief Battle.View.Effect.BattleScreenEffectViewController         |
 |                                                                                                                                                                                                 ||||
-| @crefd{Battle.View} | @crefd{Battle.View,Audio}      | @cref{Battle.View.Audio,BattleSoundFXViewController}               | @copybrief Battle.View.Audio.BattleSoundFXViewController               |
+| @crefd{Battle.View} | @crefd{Battle.View,Audio}      | @cref{Battle.View.Audio,BattleAudioViewController}                 | @copybrief Battle.View.Audio.BattleAudioViewController                 |
 |                                                                                                                                                                                                 ||||
 | @crefd{Battle.View}                                 || @cref{Battle.View,BattleStoneCharacterViewController}              | @copybrief Battle.View.BattleStoneCharacterViewController              |
 
@@ -110,7 +110,7 @@ Every one of the **BattleUiShared** prefabs has either a @cref{Altzone.Scripts.B
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiJoystickHandler}                | @copybrief Battle.View.UI.BattleUiJoystickHandler                |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiPlayerInfoHandler}              | @copybrief Battle.View.UI.BattleUiPlayerInfoHandler              |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiTimerHandler}                   | @copybrief Battle.View.UI.BattleUiTimerHandler                   |
-| @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiDebugStatsOverlayHandler}       | @copybrief Battle.View.UI.BattleUiDebugStatsOverlayHandler       |
+| @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiDebugOverlayHandler}            | @copybrief Battle.View.UI.BattleUiDebugOverlayHandler            |
 
 <br/>
 

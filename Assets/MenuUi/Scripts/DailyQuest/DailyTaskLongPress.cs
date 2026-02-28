@@ -3,39 +3,48 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(DailyTaskProgressListener))]
-public class DailyTaskLongPress : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+//[RequireComponent(typeof(DailyTaskProgressListener))]
+public class DailyTaskLongPress : DailyTaskProgressListener, IPointerDownHandler, IPointerUpHandler
 {
-    [SerializeField] private float _longClickStartThresholdTime = 0.2f;
-    [SerializeField] private float _longClickThresholdTime = 3f;
+    [SerializeField] protected float _longClickStartThresholdTime = 0.2f;
+    [SerializeField] protected float _longClickThresholdTime = 3f;
 
     [Header("For tracking multiple targets\n(Leave empty if only traking one target)")]
     [SerializeField] private string _uniqueName = "";
 
-    private DailyTaskProgressListener _listener;
     private bool _isHeldDown = false;
     private Button _button;
-    private bool _oneShot = false;
+    protected bool _oneShot = false;
 
-    private void Start()
+    private GameObject _wheel;
+    private Canvas _canvas;
+
+    protected override void Start()
     {
-        _listener = GetComponent<DailyTaskProgressListener>();
+        base.Start();
         _button = GetComponent<Button>();
     }
-
-    public void OnPointerDown(PointerEventData eventData)
+    protected virtual void Awake()
     {
-        if (!_listener.On)
+        _canvas = GetComponentInParent<Canvas>();
+        if (ProgressWheelHandler.Instance == null) InstantiateProgressWheel();
+        else _wheel = ProgressWheelHandler.Instance.gameObject;
+    }
+
+    public virtual void OnPointerDown(PointerEventData eventData)
+    {
+        if (!On)
             return;
 
         _oneShot = true;
         _isHeldDown = true;
-        StartCoroutine(HoldDownTimer());
+
+        StartCoroutine(HoldDownTimer(ScreenToWorldPoint(eventData.position)));
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (!_listener.On)
+        if (!On)
         {
             if (_oneShot)
             {
@@ -55,7 +64,7 @@ public class DailyTaskLongPress : MonoBehaviour, IPointerDownHandler, IPointerUp
             _button.enabled = true;
     }
 
-    private IEnumerator HoldDownTimer()
+    protected virtual IEnumerator HoldDownTimer(Vector3 clickPosition)
     {
         float timer = 0f;
 
@@ -64,22 +73,46 @@ public class DailyTaskLongPress : MonoBehaviour, IPointerDownHandler, IPointerUp
             timer += Time.deltaTime;
 
             if (_isHeldDown == false)
+            {
+                ProgressWheelHandler.Instance.DeactivateProgressWheel();
                 yield break;
+            }
 
-            if (_button && timer >= _longClickStartThresholdTime)
-                _button.enabled = false;
+            if (timer >= _longClickStartThresholdTime)
+            {
+                if(_button)_button.enabled = false;
+                ProgressWheelHandler.Instance.StartProgressWheelAtPosition(clickPosition, _longClickStartThresholdTime, _longClickThresholdTime);
+            }
 
             if (timer >= _longClickThresholdTime)
             {
+                ProgressWheelHandler.Instance.DeactivateProgressWheel();
                 if (_uniqueName == "")
-                    _listener.UpdateProgress("1");
+                    UpdateProgress("1");
                 else
-                    _listener.UpdateProgress(_uniqueName);
+                    UpdateProgress(_uniqueName);
 
                 yield break;
             }
 
             yield return null;
         }
+    }
+
+    private void InstantiateProgressWheel()
+    {
+        _wheel = Instantiate((GameObject)Resources.Load("ProgressWheel"), _canvas.transform);
+        _wheel.SetActive(false);
+    }
+
+    protected Vector3 ScreenToWorldPoint(Vector2 screenPosition)
+    {
+        RectTransformUtility.ScreenPointToWorldPointInRectangle(
+            _canvas.transform as RectTransform,
+            screenPosition,
+            _canvas.worldCamera,
+            out Vector3 worldPoint
+        );
+        return worldPoint;
     }
 }

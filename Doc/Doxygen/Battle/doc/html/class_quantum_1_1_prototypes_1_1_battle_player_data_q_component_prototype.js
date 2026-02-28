@@ -1,0 +1,26 @@
+var class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype =
+[
+    [ "AddToEntity", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#ad02e1ba226418dc968174a1f0b91e877", null ],
+    [ "Materialize", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#ac242c6e0bd630d8be8d2b3c27e454dd6", null ],
+    [ "AbilityActivateBufferSec", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#ad5ac31a9564b0e0bd4b47f845c9aa658", null ],
+    [ "AbilityCooldownSec", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#a917dc092499ab38060b906e1dc857712", null ],
+    [ "CharacterClass", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#ac0870bd63f3128ec73d618950a919757", null ],
+    [ "CharacterId", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#a107582fc3a2d5de646bfec1af0cc67bd", null ],
+    [ "CurrentDefence", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#afd2506f7b430bee48c1c779c8cd4ff1f", null ],
+    [ "CurrentHp", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#adcc624c8a67b984502dde5073bdf23d4", null ],
+    [ "DamageCooldown", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#a1fb04c64305849866d5bf4db937c3223", null ],
+    [ "DisableRotation", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#a3a229c953fc41f8ddbd1b3f14f2c8c13", null ],
+    [ "GridExtendBottom", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#a4de54e65e49b8d47e3275b6c740cd06c", null ],
+    [ "GridExtendTop", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#ab464dee0f059b955b5314a4ce3180a58", null ],
+    [ "HasTargetPosition", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#a8f641d526b44c04e119c25cc2a523672", null ],
+    [ "HitboxCharacterEntity", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#af7bf7ccc31ab8caa27396eb17bbf392c", null ],
+    [ "HitboxShieldEntity", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#ac58bb99487604dcfb304da7e499d7e37", null ],
+    [ "MovementCooldownSec", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#ac42058928d4b1f5cdfa87f55b68181c5", null ],
+    [ "PlayerRef", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#a23c2df214db6843404c033350e3fbed0", null ],
+    [ "RotationBase", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#a857f16c0943d41133d953de0ddb43fc5", null ],
+    [ "RotationOffset", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#ad9b7d9b61b23e1635f91d6cb3157929b", null ],
+    [ "Slot", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#aa76f8fa1477423a7bb08a86550373bcd", null ],
+    [ "Stats", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#ae55817cb354dd751c3c94c79e8143a51", null ],
+    [ "TargetPosition", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#a1834ad4cd97312f2eefceefe7f51864e", null ],
+    [ "TeamNumber", "class_quantum_1_1_prototypes_1_1_battle_player_data_q_component_prototype.html#afecf1dbd9938c24ccc426e049410e099", null ]
+];
