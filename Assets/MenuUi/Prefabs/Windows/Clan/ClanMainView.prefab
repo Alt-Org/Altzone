@@ -4094,7 +4094,7 @@ MonoBehaviour:
   _joinClanButton: {fileID: 7990530695742121514}
   _leaveClanButton: {fileID: 7111003629890854146}
   _linkButton: {fileID: 6587999552332575866}
-  _editButton: {fileID: 7900250397790900766}
+  _editButton: {fileID: 1086563080993959894}
   _clanPopup: {fileID: 6465328737158034700}
   _overlay: {fileID: 880733857859938629}
   _confirmPopup: {fileID: 1747969689837145745}
@@ -8584,7 +8584,7 @@ PrefabInstance:
     - target: {fileID: 4463451107186381493, guid: c5bddb70cfcd71d4683c5c6819209308,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4463451107186381493, guid: c5bddb70cfcd71d4683c5c6819209308,
         type: 3}
@@ -8862,15 +8862,21 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c5bddb70cfcd71d4683c5c6819209308, type: 3}
---- !u!224 &4943641425180802642 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 8538321114036126513, guid: c5bddb70cfcd71d4683c5c6819209308,
+--- !u!114 &1086563080993959894 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4463451107186381493, guid: c5bddb70cfcd71d4683c5c6819209308,
     type: 3}
   m_PrefabInstance: {fileID: 3667445772126387555}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &7900250397790900766 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6865229239137791869, guid: c5bddb70cfcd71d4683c5c6819209308,
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!224 &4943641425180802642 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8538321114036126513, guid: c5bddb70cfcd71d4683c5c6819209308,
     type: 3}
   m_PrefabInstance: {fileID: 3667445772126387555}
   m_PrefabAsset: {fileID: 0}
