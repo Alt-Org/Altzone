@@ -3,7 +3,7 @@
 /// Contains @cref{Battle.View,BattleSpriteSheetDrawer} class which handles drawing a custom
 /// inspector for the BattleSpriteSheet struct.
 /// </summary>
-
+#define UNITY_EDITOR
 // System usings
 using System;
 using System.Linq;

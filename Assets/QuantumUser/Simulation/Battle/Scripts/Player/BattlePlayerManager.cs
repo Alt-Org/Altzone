@@ -478,7 +478,7 @@ namespace Battle.QSimulation.Player
                 playerHandle.IsBot = isBot;
                 playerHandle.AllowCharacterSwapping = true;
                 playerHandle.PlayerGiveUpState = false;
-                playerHandle.CharacterEntityGroupID = characterEntityGroupID;
+                playerHandle.SetCharacterEntityGroupID(characterEntityGroupID);
 
                 s_debugLogger.LogFormat(f, "({0}) Player created successfully", playerSlot);
             }

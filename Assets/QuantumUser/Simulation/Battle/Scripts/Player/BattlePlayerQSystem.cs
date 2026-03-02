@@ -199,7 +199,7 @@ namespace Battle.QSimulation.Player
 
                 if (playerHandle.PlayState.IsInPlay())
                 {
-                    playerEntity = (BattlePlayerEntityRef)BattleEntityManager.Get(f, playerHandle.CharacterEntityGroupID, playerHandle.SelectedCharacterNumber);
+                    playerEntity = playerHandle.GetSelectedCharacterEntityRef(f);
                     playerData = playerEntity.GetDataQComponent(f);
                     playerTransform = playerEntity.GetTransform(f);
                 }
