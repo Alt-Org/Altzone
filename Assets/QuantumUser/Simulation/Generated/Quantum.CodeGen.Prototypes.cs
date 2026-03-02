@@ -440,25 +440,25 @@ namespace Quantum.Prototypes {
   public unsafe partial class BattlePlayerManagerDataQSingletonPrototype : ComponentPrototype<Quantum.BattlePlayerManagerDataQSingleton> {
     public Int32 PlayerCount;
     [ArrayLengthAttribute(4)]
-    public Quantum.QEnum32<BattlePlayerPlayState>[] PlayStates = new Quantum.QEnum32<BattlePlayerPlayState>[4];
-    [ArrayLengthAttribute(4)]
     public PlayerRef[] PlayerRefs = new PlayerRef[4];
     [ArrayLengthAttribute(4)]
-    public QBoolean[] IsBot = new QBoolean[4];
+    public Quantum.QEnum32<BattlePlayerPlayState>[] PlayStates = new Quantum.QEnum32<BattlePlayerPlayState>[4];
     [ArrayLengthAttribute(4)]
-    public QBoolean[] IsAbandoned = new QBoolean[4];
+    public QBoolean[] IsBotStates = new QBoolean[4];
     [ArrayLengthAttribute(4)]
-    public Quantum.Prototypes.FrameTimerPrototype[] RespawnTimer = new Quantum.Prototypes.FrameTimerPrototype[4];
+    public QBoolean[] IsAbandonedStates = new QBoolean[4];
     [ArrayLengthAttribute(4)]
-    public QBoolean[] AllowCharacterSwapping = new QBoolean[4];
-    [ArrayLengthAttribute(4)]
-    public Int32[] SelectedCharacterNumbers = new Int32[4];
-    [ArrayLengthAttribute(4)]
-    public Quantum.Prototypes.BattleEntityIDPrototype[] AllCharacterEntityGroupIDs = new Quantum.Prototypes.BattleEntityIDPrototype[4];
-    [ArrayLengthAttribute(12)]
-    public Quantum.QEnum32<BattlePlayerCharacterState>[] AllCharactersStates = new Quantum.QEnum32<BattlePlayerCharacterState>[12];
+    public QBoolean[] AllowCharacterSwappingStates = new QBoolean[4];
     [ArrayLengthAttribute(4)]
     public QBoolean[] PlayerGiveUpStates = new QBoolean[4];
+    [ArrayLengthAttribute(4)]
+    public Quantum.Prototypes.FrameTimerPrototype[] RespawnTimers = new Quantum.Prototypes.FrameTimerPrototype[4];
+    [ArrayLengthAttribute(4)]
+    public Int32[] CharacterSelectedNumbers = new Int32[4];
+    [ArrayLengthAttribute(4)]
+    public Quantum.Prototypes.BattleEntityIDPrototype[] CharacterAllEntityGroupIDs = new Quantum.Prototypes.BattleEntityIDPrototype[4];
+    [ArrayLengthAttribute(12)]
+    public Quantum.QEnum32<BattlePlayerCharacterState>[] CharactersAllStates = new Quantum.QEnum32<BattlePlayerCharacterState>[12];
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerManagerDataQSingleton result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerManagerDataQSingleton component = default;
@@ -467,35 +467,35 @@ namespace Quantum.Prototypes {
     }
     public void Materialize(Frame frame, ref Quantum.BattlePlayerManagerDataQSingleton result, in PrototypeMaterializationContext context = default) {
         result.PlayerCount = this.PlayerCount;
-        for (int i = 0, count = PrototypeValidator.CheckLength(PlayStates, 4, in context); i < count; ++i) {
-          *result.PlayStates.GetPointer(i) = this.PlayStates[i];
-        }
         for (int i = 0, count = PrototypeValidator.CheckLength(PlayerRefs, 4, in context); i < count; ++i) {
           *result.PlayerRefs.GetPointer(i) = this.PlayerRefs[i];
         }
-        for (int i = 0, count = PrototypeValidator.CheckLength(IsBot, 4, in context); i < count; ++i) {
-          *result.IsBot.GetPointer(i) = this.IsBot[i];
+        for (int i = 0, count = PrototypeValidator.CheckLength(PlayStates, 4, in context); i < count; ++i) {
+          *result.PlayStates.GetPointer(i) = this.PlayStates[i];
         }
-        for (int i = 0, count = PrototypeValidator.CheckLength(IsAbandoned, 4, in context); i < count; ++i) {
-          *result.IsAbandoned.GetPointer(i) = this.IsAbandoned[i];
+        for (int i = 0, count = PrototypeValidator.CheckLength(IsBotStates, 4, in context); i < count; ++i) {
+          *result.IsBotStates.GetPointer(i) = this.IsBotStates[i];
         }
-        for (int i = 0, count = PrototypeValidator.CheckLength(RespawnTimer, 4, in context); i < count; ++i) {
-          this.RespawnTimer[i].Materialize(frame, ref *result.RespawnTimer.GetPointer(i), in context);
+        for (int i = 0, count = PrototypeValidator.CheckLength(IsAbandonedStates, 4, in context); i < count; ++i) {
+          *result.IsAbandonedStates.GetPointer(i) = this.IsAbandonedStates[i];
         }
-        for (int i = 0, count = PrototypeValidator.CheckLength(AllowCharacterSwapping, 4, in context); i < count; ++i) {
-          *result.AllowCharacterSwapping.GetPointer(i) = this.AllowCharacterSwapping[i];
-        }
-        for (int i = 0, count = PrototypeValidator.CheckLength(SelectedCharacterNumbers, 4, in context); i < count; ++i) {
-          result.SelectedCharacterNumbers[i] = this.SelectedCharacterNumbers[i];
-        }
-        for (int i = 0, count = PrototypeValidator.CheckLength(AllCharacterEntityGroupIDs, 4, in context); i < count; ++i) {
-          this.AllCharacterEntityGroupIDs[i].Materialize(frame, ref *result.AllCharacterEntityGroupIDs.GetPointer(i), in context);
-        }
-        for (int i = 0, count = PrototypeValidator.CheckLength(AllCharactersStates, 12, in context); i < count; ++i) {
-          *result.AllCharactersStates.GetPointer(i) = this.AllCharactersStates[i];
+        for (int i = 0, count = PrototypeValidator.CheckLength(AllowCharacterSwappingStates, 4, in context); i < count; ++i) {
+          *result.AllowCharacterSwappingStates.GetPointer(i) = this.AllowCharacterSwappingStates[i];
         }
         for (int i = 0, count = PrototypeValidator.CheckLength(PlayerGiveUpStates, 4, in context); i < count; ++i) {
           *result.PlayerGiveUpStates.GetPointer(i) = this.PlayerGiveUpStates[i];
+        }
+        for (int i = 0, count = PrototypeValidator.CheckLength(RespawnTimers, 4, in context); i < count; ++i) {
+          this.RespawnTimers[i].Materialize(frame, ref *result.RespawnTimers.GetPointer(i), in context);
+        }
+        for (int i = 0, count = PrototypeValidator.CheckLength(CharacterSelectedNumbers, 4, in context); i < count; ++i) {
+          result.CharacterSelectedNumbers[i] = this.CharacterSelectedNumbers[i];
+        }
+        for (int i = 0, count = PrototypeValidator.CheckLength(CharacterAllEntityGroupIDs, 4, in context); i < count; ++i) {
+          this.CharacterAllEntityGroupIDs[i].Materialize(frame, ref *result.CharacterAllEntityGroupIDs.GetPointer(i), in context);
+        }
+        for (int i = 0, count = PrototypeValidator.CheckLength(CharactersAllStates, 12, in context); i < count; ++i) {
+          *result.CharactersAllStates.GetPointer(i) = this.CharactersAllStates[i];
         }
         MaterializeUser(frame, ref result, in context);
     }

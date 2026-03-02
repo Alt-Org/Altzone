@@ -1595,75 +1595,60 @@ namespace Quantum {
   public unsafe partial struct BattlePlayerManagerDataQSingleton : Quantum.IComponentSingleton {
     public const Int32 SIZE = 232;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(64)]
+    [FieldOffset(80)]
     public Int32 PlayerCount;
-    [FieldOffset(48)]
-    [FramePrinter.FixedArrayAttribute(typeof(BattlePlayerPlayState), 4)]
-    private fixed Byte _PlayStates_[16];
     [FieldOffset(84)]
     [FramePrinter.FixedArrayAttribute(typeof(PlayerRef), 4)]
     private fixed Byte _PlayerRefs_[16];
+    [FieldOffset(48)]
+    [FramePrinter.FixedArrayAttribute(typeof(BattlePlayerPlayState), 4)]
+    private fixed Byte _PlayStates_[16];
     [FieldOffset(132)]
     [FramePrinter.FixedArrayAttribute(typeof(QBoolean), 4)]
-    private fixed Byte _IsBot_[16];
+    private fixed Byte _IsBotStates_[16];
     [FieldOffset(116)]
     [FramePrinter.FixedArrayAttribute(typeof(QBoolean), 4)]
-    private fixed Byte _IsAbandoned_[16];
-    [FieldOffset(200)]
-    [FramePrinter.FixedArrayAttribute(typeof(FrameTimer), 4)]
-    private fixed Byte _RespawnTimer_[32];
+    private fixed Byte _IsAbandonedStates_[16];
     [FieldOffset(100)]
     [FramePrinter.FixedArrayAttribute(typeof(QBoolean), 4)]
-    private fixed Byte _AllowCharacterSwapping_[16];
-    [FieldOffset(68)]
-    public fixed Int32 SelectedCharacterNumbers[4];
-    [FieldOffset(164)]
-    [FramePrinter.FixedArrayAttribute(typeof(BattleEntityID), 4)]
-    private fixed Byte _AllCharacterEntityGroupIDs_[32];
-    [FieldOffset(0)]
-    [FramePrinter.FixedArrayAttribute(typeof(BattlePlayerCharacterState), 12)]
-    private fixed Byte _AllCharactersStates_[48];
+    private fixed Byte _AllowCharacterSwappingStates_[16];
     [FieldOffset(148)]
     [FramePrinter.FixedArrayAttribute(typeof(QBoolean), 4)]
     private fixed Byte _PlayerGiveUpStates_[16];
-    public FixedArray<BattlePlayerPlayState> PlayStates {
-      get {
-        fixed (byte* p = _PlayStates_) { return new FixedArray<BattlePlayerPlayState>(p, 4, 4); }
-      }
-    }
+    [FieldOffset(200)]
+    [FramePrinter.FixedArrayAttribute(typeof(FrameTimer), 4)]
+    private fixed Byte _RespawnTimers_[32];
+    [FieldOffset(64)]
+    public fixed Int32 CharacterSelectedNumbers[4];
+    [FieldOffset(164)]
+    [FramePrinter.FixedArrayAttribute(typeof(BattleEntityID), 4)]
+    private fixed Byte _CharacterAllEntityGroupIDs_[32];
+    [FieldOffset(0)]
+    [FramePrinter.FixedArrayAttribute(typeof(BattlePlayerCharacterState), 12)]
+    private fixed Byte _CharactersAllStates_[48];
     public FixedArray<PlayerRef> PlayerRefs {
       get {
         fixed (byte* p = _PlayerRefs_) { return new FixedArray<PlayerRef>(p, 4, 4); }
       }
     }
-    public FixedArray<QBoolean> IsBot {
+    public FixedArray<BattlePlayerPlayState> PlayStates {
       get {
-        fixed (byte* p = _IsBot_) { return new FixedArray<QBoolean>(p, 4, 4); }
+        fixed (byte* p = _PlayStates_) { return new FixedArray<BattlePlayerPlayState>(p, 4, 4); }
       }
     }
-    public FixedArray<QBoolean> IsAbandoned {
+    public FixedArray<QBoolean> IsBotStates {
       get {
-        fixed (byte* p = _IsAbandoned_) { return new FixedArray<QBoolean>(p, 4, 4); }
+        fixed (byte* p = _IsBotStates_) { return new FixedArray<QBoolean>(p, 4, 4); }
       }
     }
-    public FixedArray<FrameTimer> RespawnTimer {
+    public FixedArray<QBoolean> IsAbandonedStates {
       get {
-        fixed (byte* p = _RespawnTimer_) { return new FixedArray<FrameTimer>(p, 8, 4); }
+        fixed (byte* p = _IsAbandonedStates_) { return new FixedArray<QBoolean>(p, 4, 4); }
       }
     }
-    public FixedArray<QBoolean> AllowCharacterSwapping {
+    public FixedArray<QBoolean> AllowCharacterSwappingStates {
       get {
-        fixed (byte* p = _AllowCharacterSwapping_) { return new FixedArray<QBoolean>(p, 4, 4); }
-      }
-    }
-    public FixedArray<BattleEntityID> AllCharacterEntityGroupIDs {
-      get {
-        fixed (byte* p = _AllCharacterEntityGroupIDs_) { return new FixedArray<BattleEntityID>(p, 8, 4); }
-      }
-    }
-    public FixedArray<BattlePlayerCharacterState> AllCharactersStates {
-      get {
-        fixed (byte* p = _AllCharactersStates_) { return new FixedArray<BattlePlayerCharacterState>(p, 4, 12); }
+        fixed (byte* p = _AllowCharacterSwappingStates_) { return new FixedArray<QBoolean>(p, 4, 4); }
       }
     }
     public FixedArray<QBoolean> PlayerGiveUpStates {
@@ -1671,36 +1656,51 @@ namespace Quantum {
         fixed (byte* p = _PlayerGiveUpStates_) { return new FixedArray<QBoolean>(p, 4, 4); }
       }
     }
+    public FixedArray<FrameTimer> RespawnTimers {
+      get {
+        fixed (byte* p = _RespawnTimers_) { return new FixedArray<FrameTimer>(p, 8, 4); }
+      }
+    }
+    public FixedArray<BattleEntityID> CharacterAllEntityGroupIDs {
+      get {
+        fixed (byte* p = _CharacterAllEntityGroupIDs_) { return new FixedArray<BattleEntityID>(p, 8, 4); }
+      }
+    }
+    public FixedArray<BattlePlayerCharacterState> CharactersAllStates {
+      get {
+        fixed (byte* p = _CharactersAllStates_) { return new FixedArray<BattlePlayerCharacterState>(p, 4, 12); }
+      }
+    }
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 17239;
         hash = hash * 31 + PlayerCount.GetHashCode();
-        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(PlayStates);
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(PlayerRefs);
-        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(IsBot);
-        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(IsAbandoned);
-        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(RespawnTimer);
-        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(AllowCharacterSwapping);
-        fixed (Int32* p = SelectedCharacterNumbers) hash = hash * 31 + HashCodeUtils.GetArrayHashCode(p, 4);
-        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(AllCharacterEntityGroupIDs);
-        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(AllCharactersStates);
+        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(PlayStates);
+        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(IsBotStates);
+        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(IsAbandonedStates);
+        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(AllowCharacterSwappingStates);
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(PlayerGiveUpStates);
+        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(RespawnTimers);
+        fixed (Int32* p = CharacterSelectedNumbers) hash = hash * 31 + HashCodeUtils.GetArrayHashCode(p, 4);
+        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(CharacterAllEntityGroupIDs);
+        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(CharactersAllStates);
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattlePlayerManagerDataQSingleton*)ptr;
-        FixedArray.Serialize(p->AllCharactersStates, serializer, Statics.SerializeBattlePlayerCharacterState);
+        FixedArray.Serialize(p->CharactersAllStates, serializer, Statics.SerializeBattlePlayerCharacterState);
         FixedArray.Serialize(p->PlayStates, serializer, Statics.SerializeBattlePlayerPlayState);
+        serializer.Stream.SerializeBuffer(&p->CharacterSelectedNumbers[0], 4);
         serializer.Stream.Serialize(&p->PlayerCount);
-        serializer.Stream.SerializeBuffer(&p->SelectedCharacterNumbers[0], 4);
         FixedArray.Serialize(p->PlayerRefs, serializer, Statics.SerializePlayerRef);
-        FixedArray.Serialize(p->AllowCharacterSwapping, serializer, Statics.SerializeQBoolean);
-        FixedArray.Serialize(p->IsAbandoned, serializer, Statics.SerializeQBoolean);
-        FixedArray.Serialize(p->IsBot, serializer, Statics.SerializeQBoolean);
+        FixedArray.Serialize(p->AllowCharacterSwappingStates, serializer, Statics.SerializeQBoolean);
+        FixedArray.Serialize(p->IsAbandonedStates, serializer, Statics.SerializeQBoolean);
+        FixedArray.Serialize(p->IsBotStates, serializer, Statics.SerializeQBoolean);
         FixedArray.Serialize(p->PlayerGiveUpStates, serializer, Statics.SerializeQBoolean);
-        FixedArray.Serialize(p->AllCharacterEntityGroupIDs, serializer, Statics.SerializeBattleEntityID);
-        FixedArray.Serialize(p->RespawnTimer, serializer, Statics.SerializeFrameTimer);
+        FixedArray.Serialize(p->CharacterAllEntityGroupIDs, serializer, Statics.SerializeBattleEntityID);
+        FixedArray.Serialize(p->RespawnTimers, serializer, Statics.SerializeFrameTimer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -2139,9 +2139,9 @@ namespace Quantum {
     public static FrameSerializer.Delegate SerializeBattleEntityLink;
     public static FrameSerializer.Delegate SerializeEntityRef;
     public static FrameSerializer.Delegate SerializeBattlePlayerHitboxColliderTemplate;
+    public static FrameSerializer.Delegate SerializeQBoolean;
     public static FrameSerializer.Delegate SerializeBattleEntityID;
     public static FrameSerializer.Delegate SerializeBattlePlayerCharacterState;
-    public static FrameSerializer.Delegate SerializeQBoolean;
     public static FrameSerializer.Delegate SerializeBattlePlayerPlayState;
     public static FrameSerializer.Delegate SerializePlayerRef;
     public static FrameSerializer.Delegate SerializeFrameTimer;
@@ -2152,9 +2152,9 @@ namespace Quantum {
       SerializeBattleEntityLink = Quantum.BattleEntityLink.Serialize;
       SerializeEntityRef = EntityRef.Serialize;
       SerializeBattlePlayerHitboxColliderTemplate = Quantum.BattlePlayerHitboxColliderTemplate.Serialize;
+      SerializeQBoolean = QBoolean.Serialize;
       SerializeBattleEntityID = Quantum.BattleEntityID.Serialize;
       SerializeBattlePlayerCharacterState = (v, s) => {{ s.Stream.Serialize((Int32*)v); }};
-      SerializeQBoolean = QBoolean.Serialize;
       SerializeBattlePlayerPlayState = (v, s) => {{ s.Stream.Serialize((Int32*)v); }};
       SerializePlayerRef = PlayerRef.Serialize;
       SerializeFrameTimer = FrameTimer.Serialize;
