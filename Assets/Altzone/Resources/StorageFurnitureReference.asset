@@ -17,27 +17,6 @@ MonoBehaviour:
     SetNameEnglish: EverythingIsFine
     ArtistName: Emilia K. K.
     list:
-    - Name: Shelf_KaikkiOnHyvin_Furniture
-      EnglishName: 
-      Image: {fileID: 1215068210, guid: 0c8f07d176704f84a963d310b88ca753, type: 3}
-      PosterImage: {fileID: 21300000, guid: 1ae14b4224572f54ba67dcfecd64c5d4, type: 3}
-      RibbonImage: {fileID: 21300000, guid: 79075c5bcadfcb942900963af4b0b44e, type: 3}
-      VisibleName: Emilia K. K
-      ArtisticDescription: "Saattaa kuulla \u201CKaikki on hyvin\u201D, vaikka piiloitettu
-        murhe olisikin suuri. Totuus voi kuitenkin ilmet\xE4 eri tavoin, jotkut selke\xE4mpi\xE4
-        kuin toiset."
-      EnglishArtisticDescription: 
-      DiagnoseNumber: R45.8
-      BaseFurniture:
-        Name: Shelf_KaikkiOnHyvin_Furniture_KaikkiOnHyvin
-        Rarity: 0
-        Size: 24
-        RotatedSize: 24
-        Placement: 4
-        Weight: 10
-        Value: 40
-        Material: MDF
-        Recycling: "Sekaj\xE4te"
     - Name: Ball_KaikkiOnHyvin_Furniture
       EnglishName: 
       Image: {fileID: 21300000, guid: b368b714a2372fd468f933e7bbbed06a, type: 3}
@@ -289,6 +268,27 @@ MonoBehaviour:
         Weight: 0.4
         Value: 20
         Material: PVC
+        Recycling: "Sekaj\xE4te"
+    - Name: Shelf
+      EnglishName: 
+      Image: {fileID: 1215068210, guid: 0c8f07d176704f84a963d310b88ca753, type: 3}
+      PosterImage: {fileID: 21300000, guid: 1ae14b4224572f54ba67dcfecd64c5d4, type: 3}
+      RibbonImage: {fileID: 0}
+      VisibleName: Emilia K. K.
+      ArtisticDescription: "Saattaa kuulla \u201CKaikki on hyvin\u201D, vaikka piiloitettu
+        murhe olisikin suuri. Totuus voi kuitenkin ilmet\xE4 eri tavoin, jotkut selke\xE4mpi\xE4
+        kuin toiset."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: R45.8
+      BaseFurniture:
+        Name: Shelf_KaikkiOnHyvin
+        Rarity: 0
+        Size: 24
+        RotatedSize: 24
+        Placement: 4
+        Weight: 10
+        Value: 40
+        Material: MDF
         Recycling: "Sekaj\xE4te"
   - SetName: Taakka
     SetNameEnglish: Burden

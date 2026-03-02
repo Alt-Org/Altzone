@@ -63,7 +63,6 @@ public class KaikkiOnHyvinMirrorScript : MonoBehaviour, ISoulHomeObjectClick
         }
         active = false;
         yield return null;
-        //yield return new WaitForSeconds(3);
     }
 
     void Start()
