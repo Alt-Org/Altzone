@@ -10,7 +10,8 @@ namespace MenuUi.Scripts.AvatarEditor
     {
         [SerializeField] private AvatarPartsReference _avatarPartsReference;
         [SerializeField] private RectTransform _featureGridContent;
-        [SerializeField] private GameObject _gridCellPrefab;
+        [SerializeField] private GameObject _featureCellPrefab;
+        [SerializeField] private GameObject _colorCellPrefab;
         [SerializeField] private FeatureSetter _featureSetter;
         [SerializeField] private AvatarEditorController _avatarEditorController;
         [SerializeField] private RectTransform _featureGrid;
@@ -27,21 +28,10 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField, Range(0f, 0.3f)] private float _fadeRange = 0.1f;
         [SerializeField] private Color _highlightColor = new(0f, 0f, 0f, 0.5f);
         [SerializeField] private Color _backgroundColor = new(0.5f, 0.5f, 0.5f, 0.7f);
+        [SerializeField] private AvatarEditorCharacterHandle _characterHandle;
 
         private List<AvatarPartInfo> _avatarPartInfo;
-        private Dictionary<string, AvatarPiece> _featureCategoryIdToAvatarPiece;
-        private FeatureCellHandler _selectedCellHandler;
-        private bool _isSelectedFeature = false;
-        private float _cellHeight;
-        private float _actualVerticalSpacing;
-        private float _actualHorizontalSpacing;
-        private float _actualVerticalPadding;
-        private float _viewPortHeight;
-        private readonly int _rowAmount = 2;
-
-        void Start()
-        {
-            _featureCategoryIdToAvatarPiece = new Dictionary<string, AvatarPiece>
+        private readonly Dictionary<string, AvatarPiece> _featureCategoryIdToAvatarPiece = new Dictionary<string, AvatarPiece>
             {
                 { "10", AvatarPiece.Hair }, // Hair
                 { "21", AvatarPiece.Eyes }, // Eyes
@@ -51,7 +41,20 @@ namespace MenuUi.Scripts.AvatarEditor
                 { "32", AvatarPiece.Hands }, // Hands
                 { "33", AvatarPiece.Feet }  // Feet
             };
+        private FeatureCellHandler _selectedCellHandler;
+        private bool _isSelectedFeature = false;
+        private float _cellHeight;
+        private float _actualVerticalSpacing;
+        private float _actualHorizontalSpacing;
+        private float _actualVerticalPadding;
+        private float _viewPortHeight;
+        private readonly int _rowAmount = 2;
+        private string _currentCategory = "";
 
+        public AvatarPiece? CurrentCategory { get => _currentCategory!= ""? _featureCategoryIdToAvatarPiece[_currentCategory]: null; }
+
+        void Start()
+        {
             _scrollrect.onValueChanged.AddListener(UpdateFade);
         }
 
@@ -105,7 +108,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void AddFeatureCell(Sprite cellImage, AvatarPartInfo avatarPart)
         {
-            GameObject gridCell = Instantiate(_gridCellPrefab, _featureGridContent);
+            GameObject gridCell = Instantiate(_featureCellPrefab, _featureGridContent);
             FeatureCellHandler handler = gridCell.GetComponent<FeatureCellHandler>();
 
             string featureCategoryid = avatarPart.Id.Substring(0, 2);
@@ -133,6 +136,22 @@ namespace MenuUi.Scripts.AvatarEditor
             }
         }
 
+        private void AddSkinColorSelectionCells()
+        {
+            foreach (Color color in _colorSelection.Colors)
+            {
+                GameObject colorGridCell = Instantiate(_colorCellPrefab, _featureGridContent);
+                ColorCellHandler handler = colorGridCell.GetComponent<ColorCellHandler>();
+
+                handler.SetColor(color);
+                handler.SetOnClick(() =>
+                {
+                    _characterHandle.SetSkinColor(color);
+                    _avatarEditorController.PlayerAvatar.SkinColor = ColorUtility.ToHtmlStringRGBA(color);
+                });
+            }
+        }
+
         private void UpdateHighlightedCell(FeatureCellHandler handler)
         {
             if (_selectedCellHandler != null)
@@ -155,8 +174,8 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public void RefreshFeatureListItems(string categoryId)
         {
-            // Don't Show Color Selection on hair
-            if (categoryId == "10")
+            // Don't Show Color Selection on hair, nose or skin color selection
+            if (categoryId == "10" || categoryId == "" || categoryId == "22")
             {
                 _colorSelection.gameObject.SetActive(false);
             }
@@ -166,11 +185,20 @@ namespace MenuUi.Scripts.AvatarEditor
             }
 
             DestroyFeatureListItems();
-            _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
-            foreach (AvatarPartInfo part in _avatarPartInfo)
+
+            if (categoryId != "")
             {
-                AddFeatureCell(part.IconImage, part);
+                _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
+                foreach (AvatarPartInfo part in _avatarPartInfo)
+                {
+                    AddFeatureCell(part.IconImage, part);
+                }
             }
+            else
+            {
+                AddSkinColorSelectionCells();
+            }
+            _currentCategory = categoryId;
         }
 
         private void DestroyFeatureListItems()

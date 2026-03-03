@@ -11,12 +11,23 @@ namespace MenuUi.Scripts.CharacterGallery
     public class DefenceForceView : MonoBehaviour
     {
         [SerializeField] private GalleryView _galleryView;
+        [SerializeField] private LoadoutModeSwitcher _loadoutSwitcher;
         [SerializeField] private SelectedCharSlot[] _selectedCharSlots;
 
         [SerializeField] private ClassReference _classReference;
         private void Awake()
         {
             _galleryView.OnGalleryCharactersSet += SetCharacters;
+        }
+
+        private void OnEnable()
+        {
+            if(_loadoutSwitcher) _loadoutSwitcher.gameObject.SetActive(true);
+        }
+
+        private void OnDisable()
+        {
+            if (_loadoutSwitcher) _loadoutSwitcher.gameObject.SetActive(false);
         }
 
         private void OnDestroy()
@@ -47,7 +58,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 Color bgAltColor = _classReference.GetAlternativeColor(classType);
                 Sprite classIcon = _classReference.GetCornerIcon(classType);
 
-                _selectedCharSlots[i].SetInfo(selectedCharacters[i], info.GalleryHeadImage,bgColor, bgAltColor, info.Name, _classReference.GetName(classType), classIcon);
+                _selectedCharSlots[i].SetInfo(selectedCharacters[i], info.GalleryHeadImage,bgColor, bgAltColor, info.Name, _classReference.GetNameIcon(classType), classIcon);
             }
           
         }

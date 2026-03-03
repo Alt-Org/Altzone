@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,10 +14,15 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private GameObject _gridCellPrefab;
         [SerializeField] private HorizontalLayoutGroup _colorGrid;
         [SerializeField] private List<Color> _colors;
+        [SerializeField] private AvatarEditorController _avatarEditorController;
+        [SerializeField] private AvatarEditorCharacterHandle _characterHandle;
+        [SerializeField] private ScrollBarCategoryLoader _categoryLoader;
+        [SerializeField] private ScrollBarFeatureLoader _featureLoader;
 
         private float _viewPortHeight;
         private float _cellHeight;
         private float _colorGridPadding;
+        public List<Color> Colors { get { return _colors; } }
 
         private void AddColorCell(Color color)
         {
@@ -24,7 +30,7 @@ namespace MenuUi.Scripts.AvatarEditor
             ColorCellHandler handler = colorGridCell.GetComponent<ColorCellHandler>();
 
             handler.SetColor(color);
-            handler.SetOnClick(() => AddListener());
+            handler.SetOnClick(() => AddListener(color));
         }
 
         public void SetColorCells()
@@ -58,11 +64,16 @@ namespace MenuUi.Scripts.AvatarEditor
             }
         }
 
-
-        // Not implemented yet
-        private void AddListener()
+        private void AddListener(Color color)
         {
+            AvatarPiece? slot = _featureLoader.CurrentCategory;
 
+            if (slot == null) return;
+            AvatarPiece actualSlot = (AvatarPiece)slot;
+
+            _characterHandle.SetPartColor(actualSlot, color);
+
+            _avatarEditorController.PlayerAvatar.SetPartColor(actualSlot, ColorUtility.ToHtmlStringRGBA(color));
         }
     }
 }

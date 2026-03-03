@@ -131,6 +131,9 @@ namespace Battle.QSimulation.SoulWall
                 f.Events.BattleLastRowWallDestroyed(soulWallCollisionData->SoulWall->WallNumber, soulWallCollisionData->SoulWall->Team, battleLightrayRotation, battleLightrayColor, battleLightraySize);
             }
 
+            f.Events.BattleStoneCharacterPlayHitAnimation(soulWallCollisionData->SoulWall->Team, projectileCollisionData->ProjectileEmotionCurrent);
+
+
             // Destroy the SoulWall entity
             f.Events.BattlePlaySoundFX(BattleSoundFX.SoulWallBroken);
             f.Destroy(projectileCollisionData->OtherEntity);

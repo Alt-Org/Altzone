@@ -82,7 +82,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             _topInfoPanel.Reset();
             UpdateTitle();
             _topInfoPanel.LobbyTextLiteral = string.Empty;
-            StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
+            //StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
         }
 
         public void OnDisable()
