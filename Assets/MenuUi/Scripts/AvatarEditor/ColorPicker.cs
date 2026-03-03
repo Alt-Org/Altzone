@@ -21,17 +21,19 @@ public class ColorPicker : MonoBehaviour
     [SerializeField] private Image _colorPickerColorButtonColorImage;
     [SerializeField] private ColorGetter _colorCircle;
     [SerializeField] private ColorPickerAnim _colorPickerPopupAnim;
+    [SerializeField] private GameObject _bottomMenu;
+    [SerializeField] private GameObject _Buttons;
 
     private Color _color = Color.red;
     private Color _previousColor = Color.red;
 
     private void Start()
     {
-        _colorApplyButton.onClick.AddListener(() => AddListener(_color));
+        _colorApplyButton.onClick.AddListener(() => SaveColor());
         //_clickArea.SetActive(false);
-        _popupConfirmButton.onClick.AddListener(() => ClosePopup());
+        _popupConfirmButton.onClick.AddListener(() => ConfirmChanges());
         _popupCancelButton.onClick.AddListener(() => CancelChanges());
-        _clickAreaButton.onClick.AddListener(() => ClosePopup());
+        _clickAreaButton.onClick.AddListener(() => CancelChanges());
         _colorPickerButton.onClick.AddListener(() => OpenPopup());
         _previewColor.color = Color.red;
     }
@@ -60,14 +62,26 @@ public class ColorPicker : MonoBehaviour
     private void ClosePopup()
     {
         _clickAreaButton.gameObject.SetActive(false);
+
         _colorPickerPopupAnim.ClosePopup();
+
+        _bottomMenu.SetActive(true);
+        _Buttons.SetActive(true);
     }
 
     private void OpenPopup()
     {
         _clickAreaButton.gameObject.SetActive(true);
         _colorPickerPopupAnim.OpenPopup();
-        _previousColor = _color;
+        _bottomMenu.SetActive(false);
+        _Buttons.SetActive(false);
+
+        AvatarPiece? activeSlot = _featureLoader.CurrentCategory;
+
+        if (activeSlot.HasValue)
+        {
+            ColorUtility.TryParseHtmlString(_controller.PlayerAvatar.GetPartColor(activeSlot.Value), out _previousColor);
+        }
     }
 
     private void CancelChanges()
@@ -76,27 +90,34 @@ public class ColorPicker : MonoBehaviour
         UpdateColor(_previousColor);
     }
 
+    private void ConfirmChanges()
+    {
+        SaveColor();
+        ClosePopup();
+    }
+
+    private void SaveColor()
+    {
+        AvatarPiece? activeSlot = _featureLoader.CurrentCategory;
+
+        if (activeSlot.HasValue)
+        {
+            _characterHandle.SetPartColor(activeSlot.Value, _color);
+            _controller.PlayerAvatar.SetPartColor(activeSlot.Value, ColorUtility.ToHtmlStringRGBA(_color));
+            _colorPickerColorButtonColorImage.color = _color;
+        }
+    }
+
     private void UpdateColor(Color color)
     {
+        AvatarPiece? activeSlot = _featureLoader.CurrentCategory;
         _color = color;
 
         _previewColor.color = _color;
-        _colorPickerColorButtonColorImage.color = _color;
-    }
 
-    private void AddListener(Color color)
-    {
-        AvatarPiece? slot = _featureLoader.CurrentCategory;
-
-        if (slot == null)
+        if (activeSlot.HasValue)
         {
-            return;
+            _characterHandle.SetPartColor(activeSlot.Value, color);
         }
-
-        AvatarPiece actualSlot = (AvatarPiece)slot;
-
-        _characterHandle.SetPartColor(actualSlot, color);
-
-        _controller.PlayerAvatar.SetPartColor(actualSlot, ColorUtility.ToHtmlStringRGBA(color));
     }
 }
