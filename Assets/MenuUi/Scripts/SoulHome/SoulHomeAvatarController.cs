@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.U2D.Animation;
@@ -26,7 +27,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private AnimationClip _walkAnimation;
         [SerializeField]
-        private AnimationClip _waveAnimation;
+        private List<AnimationClip> _interactAnimation;
 
         private bool _performingAnimation = false;
 
@@ -639,7 +640,16 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (!_performingAnimation)
             {
-                _animator.Play(_waveAnimation.name);
+                int index = 0;
+                do
+                {
+                    index = Random.Range(0, _interactAnimation.Count);
+                    List<AnimationClip> clips = _animator.runtimeAnimatorController.animationClips.ToList();
+                    if(clips.Contains(_interactAnimation[index])) break;
+                }
+                while (true);
+
+                _animator.Play(_interactAnimation[index].name);
                 _performingAnimation = true;
 
                 UseDefaultHands(true);
@@ -648,7 +658,7 @@ namespace MenuUI.Scripts.SoulHome
                 // true for only some milliseconds instead of the full animation
                 yield return null;
 
-                yield return new WaitUntil(() => !_animator.GetCurrentAnimatorStateInfo(0).IsName(_waveAnimation.name) && !_animator.IsInTransition(0));
+                yield return new WaitUntil(() => !_animator.GetCurrentAnimatorStateInfo(0).IsName(_interactAnimation[index].name) && !_animator.IsInTransition(0));
                 _performingAnimation = false;
 
                 UseDefaultHands(false);
