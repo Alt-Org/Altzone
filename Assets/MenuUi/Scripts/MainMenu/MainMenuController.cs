@@ -1,15 +1,11 @@
 ﻿using System.Collections;
-using System.Linq;
-using Altzone.Scripts;
-using Altzone.Scripts.Config;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Audio;
 using MenuUi.Scripts.SwipeNavigation;
 using MenuUi.Scripts.Window;
-using MenuUi.Scripts.Window.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.UI;
-using static SettingsCarrier;
+using System;
 
 namespace MenuUi.Scripts.MainMenu
 {
@@ -43,13 +39,17 @@ namespace MenuUi.Scripts.MainMenu
 
             AudioManager.Instance?.SetCurrentAreaCategoryName("MainMenu");
 
-            if (jukeboxMainMenu)
+            try
             {
-                if (JukeboxManager.Instance != null && string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
+                if (jukeboxMainMenu)
+                {
+                    if (JukeboxManager.Instance != null && string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
+                        AudioManager.Instance?.PlayMusic("MainMenu");
+                }
+                else
                     AudioManager.Instance?.PlayMusic("MainMenu");
             }
-            else
-                AudioManager.Instance?.PlayMusic("MainMenu");
+            catch (Exception e) { Debug.LogException(e); }
 
             if(!LobbyManager.IsActive) LobbyManager.Instance.Activate();
             if (LobbyManager.Instance.RunnerActive) LobbyManager.CloseRunner();
