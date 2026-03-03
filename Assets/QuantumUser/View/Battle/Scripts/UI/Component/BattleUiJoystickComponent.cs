@@ -11,6 +11,9 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+// Quantum usings
+using Quantum;
+
 namespace Battle.View.UI
 {
     /// <summary>
@@ -41,20 +44,20 @@ namespace Battle.View.UI
         /// </summary>
         ///
         /// <param name="input">Joystick input Vector2.</param>
-        public delegate void JoystickInputHandler(Vector2 input);
+        public delegate void JoystickTwoAxisInputHandler(BattleJoystickState state, Vector2 value);
 
         /// <summary>Event which gets invoked on joystick input with both x and y axis.</summary>
-        public event JoystickInputHandler OnJoystickInput;
+        public event JoystickTwoAxisInputHandler OnJoystickInput;
 
         /// <summary>
         /// Event delegate for joystick input on x axis.
         /// </summary>
         ///
         /// <param name="input">Joystick input value on x axis.</param>
-        public delegate void JoystickXAxisInputHandler(float input);
+        public delegate void JoystickOneAxisInputHandler(BattleJoystickState state, float input);
 
         /// <summary>Event which gets invoked on joystick input with only x axis.</summary>
-        public event JoystickXAxisInputHandler OnJoystickXAxisInput;
+        public event JoystickOneAxisInputHandler OnJoystickXAxisInput;
 
         /// <summary>
         /// Handler method required by IPointerDownHandler interface.<br/>
@@ -69,7 +72,7 @@ namespace Battle.View.UI
             float backgroundRadius = (LockYAxis ? _rectTransform.rect.width : Mathf.Min(_rectTransform.rect.width, _rectTransform.rect.height)) * 0.5f;
             _joystickRadius = backgroundRadius - handleOffset;
 
-            HandleDrag(eventData.position);
+            HandleDrag(eventData.position, down: true);
         }
 
         /// <summary>
@@ -93,8 +96,8 @@ namespace Battle.View.UI
         {
             _handleRectTransform.localPosition = Vector3.zero;
 
-            if (LockYAxis) OnJoystickXAxisInput(0);
-            else OnJoystickInput(Vector2.zero);
+            if (LockYAxis) OnJoystickXAxisInput(BattleJoystickState.Up, 0);
+            else OnJoystickInput(BattleJoystickState.Up, Vector2.zero);
         }
 
         /// <value>Joystick radius used in calculations.</value>
@@ -116,8 +119,9 @@ namespace Battle.View.UI
         /// </summary>
         ///
         /// <param name="dragPos">The player's PointerEventData position.</param>
-        private void HandleDrag(Vector2 dragPos)
+        private void HandleDrag(Vector2 dragPos, bool down = false)
         {
+            BattleJoystickState state = down ? BattleJoystickState.Down : BattleJoystickState.Drag;
             Vector2 joystickPos = _rectTransform.position;
             Vector2 dragVector = Vector2.ClampMagnitude(dragPos - joystickPos, _joystickRadius);
 
@@ -126,8 +130,8 @@ namespace Battle.View.UI
             _handleRectTransform.position = joystickPos + dragVector;
 
             Vector2 inputVector = dragVector / _joystickRadius;
-            if (LockYAxis) OnJoystickXAxisInput(inputVector.x);
-            else OnJoystickInput(inputVector);
+            if (LockYAxis) OnJoystickXAxisInput(state, inputVector.x);
+            else OnJoystickInput(state, inputVector);
         }
     }
 }

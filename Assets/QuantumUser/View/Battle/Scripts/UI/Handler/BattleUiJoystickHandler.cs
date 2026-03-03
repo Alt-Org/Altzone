@@ -13,6 +13,7 @@ using UnityEngine;
 using Altzone.Scripts.BattleUiShared;
 
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
+using Battle.View.Game;
 
 namespace Battle.View.UI
 {
@@ -46,6 +47,8 @@ namespace Battle.View.UI
         /// <summary>[SerializeField] Reference to rotation joystick's BattleUiJoystickComponent.</summary>
         /// @ref BattleUiJoystickHandler-SerializeFields
         [SerializeField] private BattleUiJoystickComponent _rotateJoystickComponent;
+
+        [SerializeField] private BattleUiJoystickComponent _specialJoystickComponent;
 
         /// @}
 
@@ -132,6 +135,11 @@ namespace Battle.View.UI
                 _rotateJoystickComponent.OnJoystickXAxisInput += _uiController.GameViewController.UiInputOnJoystickRotation;
                 _rotateJoystickComponent.LockYAxis = true;
             }
+            
+            if (_specialJoystickComponent != null)
+            {
+                _specialJoystickComponent.OnJoystickInput += _uiController.GameViewController.UiInputOnJoystickSpecial;
+            }
         }
 
         /// <summary>
@@ -144,5 +152,6 @@ namespace Battle.View.UI
             if (_moveJoystickComponent != null) _moveJoystickComponent.OnJoystickInput -= _uiController.GameViewController.UiInputOnJoystickMovement;
             if (_rotateJoystickComponent != null) _rotateJoystickComponent.OnJoystickXAxisInput -= _uiController.GameViewController.UiInputOnJoystickRotation;
         }
+        
     }
 }
