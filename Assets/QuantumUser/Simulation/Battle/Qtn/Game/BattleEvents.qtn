@@ -144,3 +144,9 @@ synced event BattleDebugOnScreenMessage
 }
 
 //} Debug events
+
+synced event BattlePlayerClassDesensitizerAimIndicatorUpdate
+{
+    FPVector2 Direction;
+    bool Show;
+}
