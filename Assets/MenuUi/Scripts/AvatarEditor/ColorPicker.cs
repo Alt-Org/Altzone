@@ -21,6 +21,7 @@ public class ColorPicker : MonoBehaviour
     [SerializeField] private Image _colorPickerColorButtonColorImage;
     [SerializeField] private ColorGetter _colorCircle;
     [SerializeField] private GameObject _bottomMenu;
+    [SerializeField] private GameObject _Buttons;
 
     private Color _color = Color.red;
     private Color _previousColor = Color.red;
@@ -62,6 +63,7 @@ public class ColorPicker : MonoBehaviour
         _clickAreaButton.gameObject.SetActive(false);
         _colorPickerPopup.SetActive(false);
         _bottomMenu.SetActive(true);
+        _Buttons.SetActive(true);
     }
 
     private void OpenPopup()
@@ -69,6 +71,7 @@ public class ColorPicker : MonoBehaviour
         _clickAreaButton.gameObject.SetActive(true);
         _colorPickerPopup.SetActive(true);
         _bottomMenu.SetActive(false);
+        _Buttons.SetActive(false);
 
         AvatarPiece? activeSlot = _featureLoader.CurrentCategory;
 
