@@ -2836,18 +2836,6 @@ AnimationClip:
     classID: 212
     script: {fileID: 0}
     flags: 2
-  - serializedVersion: 2
-    curve:
-    - time: 0
-      value: {fileID: -7884651129732358334, guid: b1d92abe9a48de04ba798a302ef95726,
-        type: 3}
-    - time: 5.4
-      value: {fileID: 21300000, guid: 2198cdafea9095c4d951d6db6b25acf3, type: 3}
-    attribute: m_Sprite
-    path: Soulhome_Avatar_Rig_PSD/R_Hand_Avatar
-    classID: 212
-    script: {fileID: 0}
-    flags: 2
   m_SampleRate: 60
   m_WrapMode: 0
   m_Bounds:
@@ -3233,15 +3221,6 @@ AnimationClip:
       isPPtrCurve: 1
       isIntCurve: 0
       isSerializeReferenceCurve: 0
-    - serializedVersion: 2
-      path: 2140996217
-      attribute: 0
-      script: {fileID: 0}
-      typeID: 212
-      customType: 23
-      isPPtrCurve: 1
-      isIntCurve: 0
-      isSerializeReferenceCurve: 0
     pptrCurveMapping:
     - {fileID: 0}
     - {fileID: 21300000, guid: c03589867b5504543b1b6326b97ae169, type: 3}
@@ -3250,14 +3229,12 @@ AnimationClip:
     - {fileID: 0}
     - {fileID: 21300000, guid: 2a351df832f60ee499c26972bbf00106, type: 3}
     - {fileID: 21300000, guid: 2a351df832f60ee499c26972bbf00106, type: 3}
-    - {fileID: -7884651129732358334, guid: b1d92abe9a48de04ba798a302ef95726, type: 3}
-    - {fileID: 21300000, guid: 2198cdafea9095c4d951d6db6b25acf3, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 6.85
+    m_StopTime: 6.866667
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -9237,4 +9214,25 @@ AnimationClip:
     flags: 0
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events: []
+  m_Events:
+  - time: 5.4
+    functionName: IntelectualizerAnimationSwap
+    data: PointerAnimation
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 6.866667
+    functionName: IntelectualizerAnimationSwap
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 6.866667
+    functionName: 
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
