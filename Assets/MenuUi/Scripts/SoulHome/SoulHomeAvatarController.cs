@@ -46,6 +46,7 @@ namespace MenuUI.Scripts.SoulHome
         private string _rHandLabel;
 
         private Coroutine _statusCoroutine;
+        private int[,] _grid;
         private List<AnimationClip> _verifiedInteractClips = new();
         public AvatarStatus Status
         {
@@ -121,7 +122,7 @@ namespace MenuUI.Scripts.SoulHome
                 StopCoroutine(_statusCoroutine);
             }
 
-            switch(_status)
+            switch (_status)
             {
                 case AvatarStatus.Idle:
                     _statusCoroutine = StartCoroutine(HandleIdle());
@@ -147,7 +148,7 @@ namespace MenuUI.Scripts.SoulHome
                     UseDefaultHands(false);
                 }
                 yield return null;
-                
+
             }
 
             SelectStatus();
@@ -158,6 +159,48 @@ namespace MenuUI.Scripts.SoulHome
             Debug.LogError("wander");
             SelectStatus();
         }
+
+        [ContextMenu("testi")]
+        public void UpdateGrid()
+        {
+
+
+            int columns = _roomData.SlotColumns;
+            int rows = _roomData.SlotRows;
+            _grid = new int[columns, rows];
+
+            for (int r = 0; r < rows; r++)
+            {
+                Transform rowTransform = _points.GetChild(r);
+
+                for (int c = 0; c < columns; c++)
+                {
+                    FurnitureSlot slot = rowTransform.GetChild(c).GetComponent<FurnitureSlot>();
+
+                    // if slot has furniture set to 1, otherwise 0
+                    if (slot.Furniture != null)
+                    {
+                        _grid[c, r] = 1;
+                    }
+                    else
+                    {
+                        _grid[c, r] = 0;
+                    }
+                }
+            }
+        }
+
+        public Vector2 GridToWorld(int x, int y)
+        {
+
+            Transform rowTransform = _points.GetChild(y);
+
+            Transform slotTransform = rowTransform.GetChild(x);
+
+            return new Vector2(slotTransform.position.x, slotTransform.position.y);
+        }
+
+
 
 
         public void SetAvatar(Transform points, RoomData data)
@@ -171,7 +214,7 @@ namespace MenuUI.Scripts.SoulHome
 
                 if (points.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>().Furniture != null) continue;
 
-                if(column + 1 < data.SlotColumns)
+                if (column + 1 < data.SlotColumns)
                 {
                     if (points.GetChild(row).GetChild(column + 1).GetComponent<FurnitureSlot>().Furniture == null) break;
                 }
@@ -190,7 +233,7 @@ namespace MenuUI.Scripts.SoulHome
 
             Vector2 position = slot.transform.position;
 
-            float width = slot.width*2;
+            float width = slot.width * 2;
             position.x += (width / 2) - slot.width / 2;
             position.y += -1 * (slot.height / 2);
 
