@@ -6,6 +6,7 @@ using Altzone.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using MenuUi.Scripts.Signals;
+using Prg.Scripts.Common.PubSub;
 
 namespace MenuUi.Scripts.Signals
 {
@@ -206,6 +207,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         public void CloseWindow()
         {
+            if (PhotonRealtimeClient.InMatchmakingRoom)
+            {
+                this.Publish(new LobbyManager.StopMatchmakingEvent(SelectedGameType));
+            }
+
             _roomSwitcher.ClosePanels();
             _popupContents.SetActive(false);
         }
