@@ -218,10 +218,6 @@ public class ClanMainView : MonoBehaviour
     {
         if (_tabLine != null && _tabLine.Swipe != null)
             _tabLine.Swipe.OnCurrentPageChanged -= HandleSwipePageChanged;
-    }
-
-    private void OnDisable()
-    {
         if (_editButton != null)
             _editButton.onClick.RemoveListener(OnClickEditClanSettings);
     }
@@ -310,7 +306,7 @@ public class ClanMainView : MonoBehaviour
 
         if(_editButton != null)
         {
-            _editButton.SetActive(_canEditCached);
+            _editButton.gameObject.SetActive(_canEditCached);
         }
 
         ApplyButtonsVisibility();
@@ -428,7 +424,7 @@ public class ClanMainView : MonoBehaviour
 
         // Makes sure edit buttons behave the right way based on profile rights
         if (_editButton != null)
-            _editButton.SetActive(_canEditCached);
+            _editButton.gameObject.SetActive(_canEditCached);
     }
 
     private void ResetSwipeToProfileOnOpen()
