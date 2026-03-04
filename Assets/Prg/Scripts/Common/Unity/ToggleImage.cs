@@ -12,7 +12,35 @@ public class ToggleImage : MonoBehaviour
     [SerializeField]
     private Sprite _toggleOffImage;
 
+    [SerializeField] private Toggle _toggle;
+    [SerializeField] private Image _iconToToggle;
+
     private Sprite originalImage;
+
+    private void Awake()
+    {
+        if (_toggle == null)
+            _toggle = GetComponent<Toggle>();
+    }
+
+    private void OnEnable()
+    {
+        if (_toggle == null) return;
+
+        _toggle.onValueChanged.AddListener(OnToggleChanged);
+        OnToggleChanged(_toggle.isOn);
+    }
+
+    private void OnDisable()
+    {
+        if (_toggle != null)
+            _toggle.onValueChanged.RemoveListener(OnToggleChanged);
+    }
+
+    private void OnToggleChanged(bool isOn)
+    {
+        ToggleImageOnAndOff(isOn);
+    }
 
     private void SetOriginalImage()
     {
@@ -30,12 +58,17 @@ public class ToggleImage : MonoBehaviour
     }
 
 
-    public void ToggleImageOnAndOff(bool on)
+    public void ToggleImageOnAndOff(bool isOn)
     {
-        if (on)
+        /*if (on)
             GetComponent<Image>().sprite = _toggleOnImage;
         else
-            GetComponent<Image>().sprite = _toggleOffImage;
+            GetComponent<Image>().sprite = _toggleOffImage;*/
+
+        if (_iconToToggle == null) return;
+
+        _iconToToggle.enabled = true;
+        _iconToToggle.sprite = isOn ? _toggleOnImage : _toggleOffImage;
     }
 
 }
