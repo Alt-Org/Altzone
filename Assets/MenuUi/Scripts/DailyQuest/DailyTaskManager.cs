@@ -938,6 +938,11 @@ public class DailyTaskManager : AltMonoBehaviour
         Debug.Log("Task id: " + _ownTaskId + ", has been accepted.");
     }
 
+
+    /// <summary>
+    /// Switch tabs on the quest page
+    /// </summary>
+    /// <param name="tab">Tab to switch to</param>
     public void SwitchTab(SelectedTab tab)
     {
         //Hide old tab
