@@ -13,6 +13,12 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
     //[SerializeField] private Button _trackOptionsButton;
     //[SerializeField] private TMP_Text _trackPlayTimeText;
     [SerializeField] private Slider _trackPlayTimeSlider;
+    [SerializeField] private SliderRubberband _sliderRubberband;
+    [SerializeField] private float _sliderRubberbandAnimationTreshold = 0.01f;
+
+    private bool _sliderRubberbandActive = false;
+    private float _currentTrackLength = 0f;
+    private Coroutine _sliderAnimationCoroutine;
 
     private List<Chunk<JukeboxTrackQueueHandler>> _queueHandlerChunks = new();
     public List<Chunk<JukeboxTrackQueueHandler>> QueueHandlerChunks {  get { return _queueHandlerChunks; } }
@@ -398,14 +404,32 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
     //}
     #endregion
 
-    private void UpdateMusicElapsedTime(float musicTrackLength, float elapsedTime)
+    private void UpdateMusicElapsedTime(float musicTrackLength, float elapsedTime, JukeboxManager.PreviewLocationType type)
     {
         JukeboxManager manager = JukeboxManager.Instance;
         //string minutes = (elapsedTime / 60f).ToString().Split('.')[0];
         //string seconds = (elapsedTime % 60).ToString().Split('.')[0];
 
         //_trackPlayTimeText.text = $"{minutes}:{((seconds.Length == 1) ? ("0" + seconds) : seconds)}";
-        _trackPlayTimeSlider.value = elapsedTime / musicTrackLength;
+
+        if (_sliderRubberbandActive && _currentTrackLength != musicTrackLength)
+        {
+            if (_sliderAnimationCoroutine != null)
+            {
+                StopCoroutine(_sliderAnimationCoroutine);
+                _sliderAnimationCoroutine = null;
+            }
+            _sliderRubberbandActive = false;
+        }
+
+        if (!_sliderRubberbandActive && Mathf.Abs(_trackPlayTimeSlider.value - (elapsedTime / musicTrackLength)) > _sliderRubberbandAnimationTreshold)
+        {
+            _currentTrackLength = musicTrackLength;
+            _sliderRubberbandActive = true;
+            _sliderAnimationCoroutine = StartCoroutine(_sliderRubberband.StartRubberband(elapsedTime, musicTrackLength, (data) => _sliderRubberbandActive = !data));
+        }
+
+        if (!_sliderRubberbandActive) _trackPlayTimeSlider.value = elapsedTime / musicTrackLength;
     }
 
     #region Optimizations

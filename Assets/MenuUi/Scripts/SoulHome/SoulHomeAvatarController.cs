@@ -1,7 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.U2D.Animation;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -25,9 +29,13 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private AnimationClip _walkAnimation;
         [SerializeField]
-        private AnimationClip _waveAnimation;
+        private List<AvatarAnimation> _interactAnimation;
+
+        private List<AvatarAnimation> _validatedInteractAnimation;
 
         private bool _performingAnimation = false;
+
+        private CharacterClassType _class = CharacterClassType.None;
 
         private AvatarStatus _status;
         private bool _idleTimerStarted = false;
@@ -38,6 +46,12 @@ namespace MenuUI.Scripts.SoulHome
         private RoomData _roomData;
         private List<Vector2> _travelPoints = new();
 
+        private AvatarRig _rig;
+        private SpriteResolver _lHandResolver;
+        private SpriteResolver _rHandResolver;
+        private string _lHandLabel;
+        private string _rHandLabel;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -46,22 +60,44 @@ namespace MenuUI.Scripts.SoulHome
                 _points = transform.parent.Find("FurniturePoints").Find("FloorFurniturePoints");
                 _roomData = transform.parent.GetComponent<RoomData>();
                 SetAvatar(_points, _roomData);
+
+                _rig = GetComponentInChildren<AvatarRig>();
+                if (_rig == null)
+                {
+                    Debug.LogError("Failed to get AvatarRig");
+                    return;
+                }
+
+                _lHandResolver = _rig.Resolvers[AvatarPart.L_Hand];
+                _rHandResolver = _rig.Resolvers[AvatarPart.R_Hand];
+                _lHandLabel = _lHandResolver.GetLabel();
+                _rHandLabel = _rHandResolver.GetLabel();
+                _validatedInteractAnimation = ValidateAnimations(_interactAnimation);
+            }
+        }
+
+        private void OnEnable()
+        {
+            if (_lHandResolver != null && _rHandResolver != null)
+            {
+                _lHandLabel = _lHandResolver.GetLabel();
+                _rHandLabel = _rHandResolver.GetLabel();
             }
         }
 
         // Update is called once per frame
         void Update()
         {
-            if(_status == AvatarStatus.Idle && !_idleTimerStarted)
+            if (_status == AvatarStatus.Idle && !_idleTimerStarted)
             {
                 //Debug.Log("Character Idle");
-                StartCoroutine("IdleTimer");
+                StartCoroutine(IdleTimer());
             }
-            else if(_status == AvatarStatus.Wander)
+            else if (_status == AvatarStatus.Wander)
             {
                 if (_performingAnimation) return;
                 //Debug.Log("Character Wander");
-                if (!_animator.GetCurrentAnimatorStateInfo(0).IsName(_walkAnimation.name)) _animator.Play(_walkAnimation.name);
+                if (!_animator.GetCurrentAnimatorStateInfo(0).IsName(_walkAnimation.name)) { _animator.Play(_walkAnimation.name); UseDefaultHands(true); }
                 MoveAvatar();
                 //transform.SetParent(_points.GetChild(_newPosition.y).GetChild(_newPosition.x), false);
 
@@ -71,13 +107,18 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
 
+        public void InitializeAvatar(PlayerData data)
+        {
+            _class = (CharacterClassType)BaseCharacter.GetClass(data.SelectedCharacterId);
+        }
+
         private IEnumerator IdleTimer()
         {
             _idleTimerStarted = true;
             float idleTimer = 0;
             bool firstFrame = true;
             float checkTimer = 0;
-            if (!_animator.GetCurrentAnimatorStateInfo(0).IsName(_idleAnimation.name)) _animator.Play(_idleAnimation.name);
+            if (!_animator.GetCurrentAnimatorStateInfo(0).IsName(_idleAnimation.name)) { _animator.Play(_idleAnimation.name); UseDefaultHands(false); }
             while (true)
             {
                 if (firstFrame) firstFrame = false;
@@ -611,10 +652,62 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (!_performingAnimation)
             {
-                _animator.Play(_waveAnimation.name);
+                int index = 0;
+                if (_validatedInteractAnimation.Count == 0) yield break;
+                do
+                {
+                    index = Random.Range(0, _validatedInteractAnimation.Count);
+                    List<AnimationClip> clips = _animator.runtimeAnimatorController.animationClips.ToList();
+                    if(clips.Contains(_validatedInteractAnimation[index].Clip)) break;
+                }
+                while (true);
+
+                _animator.Play(_validatedInteractAnimation[index].Clip.name);
                 _performingAnimation = true;
-                yield return new WaitUntil(() => !_animator.GetCurrentAnimatorStateInfo(0).IsName(_waveAnimation.name) && !_animator.IsInTransition(0));
+
+                UseDefaultHands(true);
+                // _animator.Play doesn't start the animation instantly, so if yield return null isn't here,
+                // this hits the WaitUntil before the animation actually starts, so _performingAnimation is
+                // true for only some milliseconds instead of the full animation
+                yield return null;
+
+                yield return new WaitUntil(() => !_animator.GetCurrentAnimatorStateInfo(0).IsName(_validatedInteractAnimation[index].Clip.name) && !_animator.IsInTransition(0));
                 _performingAnimation = false;
+
+                UseDefaultHands(false);
+            }
+        }
+
+        private List<AvatarAnimation> ValidateAnimations(List<AvatarAnimation> animationToValidate)
+        {
+            List<AvatarAnimation> validatedAnimation = new();
+            foreach (AvatarAnimation animation in animationToValidate)
+            {
+                if (animation != null && animation.Clip != null)
+                {
+                    if (animation.ValidClass == _class || animation.ValidClass is CharacterClassType.None) validatedAnimation.Add(animation);
+                }
+            }
+            return validatedAnimation;
+        }
+
+        private void UseDefaultHands(bool useDefaultHands)
+        {
+            if (_lHandResolver == null || _rHandResolver == null)
+            {
+                return;
+            }
+
+            string category = _lHandResolver.GetCategory();
+            if (useDefaultHands)
+            {
+                _lHandResolver.SetCategoryAndLabel(category, "0000000L");
+                _rHandResolver.SetCategoryAndLabel(category, "0000000R");
+            }
+            else
+            {
+                _lHandResolver.SetCategoryAndLabel(category, _lHandLabel);
+                _rHandResolver.SetCategoryAndLabel(category, _rHandLabel);
             }
         }
 
