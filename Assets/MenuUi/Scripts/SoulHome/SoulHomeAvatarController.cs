@@ -18,6 +18,8 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField] private float _minIdleTimer = 2f;
         [SerializeField] private float _maxIdleTimer = 4f;
         [SerializeField] private float _speed = 5;
+        // how far away the avatar stays from furniture
+        [SerializeField] private float _movePadding = 2f;
         [SerializeField]
         private SortingGroup _sortingGroup;
         [SerializeField]
@@ -505,17 +507,18 @@ namespace MenuUI.Scripts.SoulHome
 
         private Vector2 FindSlotCorner(int row, int column, Vector2 normal, Vector2 direction, RaycastHit2D hit, bool reverse)
         {
+
             FurnitureSlot newSlot = _points.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>();
             Vector2 destination = newSlot.transform.position;
             float width = newSlot.width;
             if (normal == Vector2.left || ((normal == Vector2.down|| normal == Vector2.up) && ((direction.x < 0 && !reverse)|| (direction.x >= 0 && reverse))))
-                destination.x -= width / 2;
+                destination.x -= width / 2 - _movePadding;
             else if (normal == Vector2.right || ((normal == Vector2.down || normal == Vector2.up) && ((direction.x < 0 && reverse) || (direction.x >= 0 && !reverse))))
-                destination.x += width / 2;
+                destination.x += width / 2 + _movePadding;
             if (normal == Vector2.down || ((normal == Vector2.right || normal == Vector2.left) && ((direction.y <= 0 && !reverse) || (direction.y > 0 && reverse))))
-                destination.y -= (newSlot.height / 2);
+                destination.y -= (newSlot.height / 2) - _movePadding;
             else if (normal == Vector2.up || ((normal == Vector2.right || normal == Vector2.left) && ((direction.y <= 0 && reverse) || (direction.y > 0 && !reverse))))
-                destination.y += (newSlot.height / 2);
+                destination.y += (newSlot.height / 2) + _movePadding;
 
             CheckNewPosition(destination, hit);
             return destination;
