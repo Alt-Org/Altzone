@@ -56,6 +56,8 @@
 ///   @copybrief Quantum.EventBattleShieldTakeDamage
 /// - <b>synced event</b> @ref BattleGiveUpStateChange {BattleTeamNumber Team; BattlePlayerSlot Slot; BattleGiveUpStateChange StateUpdate }  
 ///   @copybrief Quantum.EventBattleGiveUpStateChange
+/// - <b>synced event</b> @ref BattleStoneCharacterPlayHitAnimation { BattleTeamNumber Team; BattleEmotionState Emotion }  
+///   @copybrief Quantum.EventBattleStoneCharacterPlayHitAnimation
 ///
 /// ---
 ///
@@ -280,13 +282,22 @@
 /// Generated Method @cref{Quantum,Frame.FrameEvents.BattleGiveUpStateChange}
 ///
 /// ---
+///
+/// @anchor BattleStoneCharacterPlayHitAnimation
+/// ### BattleStoneCharacterPlayHitAnimation
+/// @copybrief Quantum.EventBattleStoneCharacterPlayHitAnimation
+///
+/// Generated Class @cref{Quantum,EventBattleStoneCharacterPlayHitAnimation }  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleStoneCharacterPlayHitAnimation}
+///
+/// ---
 
 /// @class Quantum::EventBattleViewWaitForPlayers
 /// <summary>
 /// Synced event. Used when waiting for for all players to get registered.
 /// </summary>
 ///
-/// Initializes the loading screen and sets "waiting for players" text in UI.<br/>  
+/// Initializes the loading screen and sets "waiting for players" text in UI.  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
 /// @class Quantum::EventBattleViewPlayerConnected
@@ -294,7 +305,7 @@
 /// Synced event. Used when a player connects to the game.
 /// </summary>
 ///
-/// Updates the loading screen to indicate the player has connected and show their characters.<br/>  
+/// Updates the loading screen to indicate the player has connected and show their characters.  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
 /// @class Quantum::EventBattleViewAllPlayersConnected
@@ -302,7 +313,7 @@
 /// Synced event. Used when all players have connected to the game.
 /// </summary>
 ///
-/// Disables the loading screen after a brief delay and allows the game to begin.<br/>  
+/// Disables the loading screen after a brief delay and allows the game to begin.  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
 /// @class Quantum::EventBattleViewInit
@@ -310,7 +321,7 @@
 /// Synced event. Used for initialization after players are ready.
 /// </summary>
 ///
-/// Gets LocalPlayer info and initializes BattleGridViewController & UI handlers.<br/>  
+/// Gets LocalPlayer info and initializes BattleGridViewController & UI handlers.  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
 /// @class Quantum::EventBattleViewActivate
@@ -318,12 +329,12 @@
 /// Synced event. Used to activate view after initialization is ready.
 /// </summary>
 ///
-/// Activates rest of the view elements, including camera and UI elements.<br/>  
+/// Activates rest of the view elements, including camera and UI elements.  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
 /// @class Quantum::EventBattleViewGetReadyToPlay
 /// <summary>
-/// Synced event. Used when the start countdown is finished.<br/>  
+/// Synced event. Used when the start countdown is finished.  
 /// </summary>
 ///
 /// Shows end of countdown text "GO!" when the start countdown is finished.
@@ -334,7 +345,7 @@
 /// Synced event. Used when the game starts.
 /// </summary>
 ///
-/// Clears countdown text and starts timer.<br/>  
+/// Clears countdown text and starts timer.  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
 /// @class Quantum::EventBattleViewGameOver
@@ -342,7 +353,7 @@
 /// Synced event. Used when the game ends.
 /// </summary>
 ///
-/// Stops timer, hides UI elements, shows game over UI and sets end of game data variables.<br/>  
+/// Stops timer, hides UI elements, shows game over UI and sets end of game data variables.  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
 /// @class Quantum::EventBattlePlayerViewInit
@@ -406,7 +417,7 @@
 /// Synced event. Used when a last row SoulWall segment is destroyed.
 /// </summary>
 ///
-/// Destroys StoneCharacterPiece behind the SoulWall segment and spawns a lightray from the crack.<br/>  
+/// Destroys StoneCharacterPiece behind the SoulWall segment and spawns a lightray from the crack.  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
 /// @class Quantum::EventBattleDiamondLanded
@@ -414,7 +425,7 @@
 /// Synced event. Used when a diamond stops traveling across the arena.
 /// </summary>
 ///
-/// Sets the alpha of the diamond sprite to 1.<br/>  
+/// Sets the alpha of the diamond sprite to 1.  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
 /// @class Quantum::EventBattleCharacterTakeDamage
@@ -422,7 +433,7 @@
 /// Synced event. Used when a character takes damage.
 /// </summary>
 ///
-/// Used to update the UI to reflect change in character HP and plays damage taking animation on character.<br/>  
+/// Used to update the UI to reflect change in character HP and plays damage taking animation on character.  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
 /// @class Quantum::EventBattleShieldTakeDamage
@@ -430,7 +441,7 @@
 /// Synced event. Used when character's shield takes damage.
 /// </summary>
 ///
-/// Used to update the UI to reflect change in character's defence.<br/>  
+/// Used to update the UI to reflect change in character's defence.  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
 /// @class Quantum::EventBattleGiveUpStateChange
@@ -438,5 +449,12 @@
 /// Synced event. Used when player changes give up state.
 /// </summary>
 ///
-/// Used to update the UI to reflect change in player's give up state.<br/>  
+/// Used to update the UI to reflect change in player's give up state.  
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattleStoneCharacterPlayHitAnimation
+/// <summary>
+/// Synced event. Used to play StoneCharacter animations.
+/// </summary>
+///
 /// @bigtext{Generated from @ref BattleEvents.qtn}

@@ -3202,7 +3202,6 @@ GameObject:
   - component: {fileID: 5355067266527491515}
   - component: {fileID: 125900704199803277}
   - component: {fileID: 4356124811967768311}
-  - component: {fileID: 4282131225725553021}
   - component: {fileID: 9209643169276566295}
   - component: {fileID: 8753522984027776339}
   m_Layer: 5
@@ -3289,25 +3288,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4282131225725553021
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1795704970830610965}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 0
-  _educationCategoryType: 2
-  _educationCategoryActionType: 3
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 8
-  _educationCategoryCultureType: 0
-  _educationCategoryEthicalType: 0
 --- !u!114 &9209643169276566295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3320,6 +3300,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 835b61347be3afd42884914ff805f122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 2
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 8
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
   _longClickStartThresholdTime: 0.2
   _longClickThresholdTime: 3
   _uniqueName: 
@@ -4689,7 +4676,6 @@ GameObject:
   - component: {fileID: 3434746022098209919}
   - component: {fileID: 8572606396089119557}
   - component: {fileID: 299505996009750931}
-  - component: {fileID: 8002560529731032727}
   - component: {fileID: 7185415688634443460}
   - component: {fileID: 2056182422426528428}
   m_Layer: 5
@@ -4756,25 +4742,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8002560529731032727
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2291945990787773305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 0
-  _educationCategoryType: 2
-  _educationCategoryActionType: 3
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 8
-  _educationCategoryCultureType: 0
-  _educationCategoryEthicalType: 0
 --- !u!114 &7185415688634443460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4787,6 +4754,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 835b61347be3afd42884914ff805f122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 2
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 8
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
   _longClickStartThresholdTime: 0.2
   _longClickThresholdTime: 3
   _uniqueName: 
@@ -7012,6 +6986,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3632986334376359757}
+  - {fileID: 5481612143115723422}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -7903,7 +7878,6 @@ GameObject:
   - component: {fileID: 1073775445979069674}
   - component: {fileID: 3995670000641981484}
   - component: {fileID: 3144956438696554885}
-  - component: {fileID: 726758472447122438}
   - component: {fileID: 73674118460213108}
   - component: {fileID: 6478214420934238952}
   m_Layer: 5
@@ -7990,25 +7964,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &726758472447122438
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4427783409863913538}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 0
-  _educationCategoryType: 2
-  _educationCategoryActionType: 3
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 8
-  _educationCategoryCultureType: 0
-  _educationCategoryEthicalType: 0
 --- !u!114 &73674118460213108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8021,6 +7976,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 835b61347be3afd42884914ff805f122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 2
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 8
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
   _longClickStartThresholdTime: 0.2
   _longClickThresholdTime: 3
   _uniqueName: 
@@ -10559,7 +10521,6 @@ GameObject:
   - component: {fileID: 4864492686403710659}
   - component: {fileID: 1485537331538608380}
   - component: {fileID: 4653006006193225896}
-  - component: {fileID: 8223279846823587048}
   - component: {fileID: 2190689269086791133}
   - component: {fileID: 971138908638362338}
   m_Layer: 5
@@ -10626,25 +10587,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8223279846823587048
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5660027582308024611}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 0
-  _educationCategoryType: 2
-  _educationCategoryActionType: 3
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 8
-  _educationCategoryCultureType: 0
-  _educationCategoryEthicalType: 0
 --- !u!114 &2190689269086791133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10657,6 +10599,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 835b61347be3afd42884914ff805f122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 2
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 8
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
   _longClickStartThresholdTime: 0.2
   _longClickThresholdTime: 3
   _uniqueName: 
@@ -11383,7 +11332,6 @@ GameObject:
   - component: {fileID: 2356970757498768986}
   - component: {fileID: 8684882032631783359}
   - component: {fileID: 4227731917907518102}
-  - component: {fileID: 763259013549480461}
   - component: {fileID: 825696664889570478}
   - component: {fileID: 4057549910869549048}
   m_Layer: 5
@@ -11470,25 +11418,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &763259013549480461
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5887986126088878901}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 0
-  _educationCategoryType: 2
-  _educationCategoryActionType: 3
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 8
-  _educationCategoryCultureType: 0
-  _educationCategoryEthicalType: 0
 --- !u!114 &825696664889570478
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11501,6 +11430,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 835b61347be3afd42884914ff805f122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 2
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 8
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
   _longClickStartThresholdTime: 0.2
   _longClickThresholdTime: 3
   _uniqueName: 
@@ -11872,7 +11808,6 @@ GameObject:
   - component: {fileID: 7875126965616601652}
   - component: {fileID: 6287346090391393136}
   - component: {fileID: 2656448772569610352}
-  - component: {fileID: 6972550880401743066}
   - component: {fileID: 2999172801657842196}
   - component: {fileID: 3909318791726130559}
   m_Layer: 5
@@ -11939,25 +11874,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6972550880401743066
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5996780589898452384}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 0
-  _educationCategoryType: 2
-  _educationCategoryActionType: 3
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 8
-  _educationCategoryCultureType: 0
-  _educationCategoryEthicalType: 0
 --- !u!114 &2999172801657842196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11970,6 +11886,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 835b61347be3afd42884914ff805f122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 2
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 8
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
   _longClickStartThresholdTime: 0.2
   _longClickThresholdTime: 3
   _uniqueName: 
@@ -12658,7 +12581,6 @@ GameObject:
   - component: {fileID: 5524726268489277436}
   - component: {fileID: 6350560278614311633}
   - component: {fileID: 2958980445375790760}
-  - component: {fileID: 1124504796911350807}
   - component: {fileID: 8957374384263062109}
   - component: {fileID: 1313599948646158917}
   m_Layer: 5
@@ -12745,25 +12667,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1124504796911350807
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6203722029465582608}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 0
-  _educationCategoryType: 2
-  _educationCategoryActionType: 3
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 8
-  _educationCategoryCultureType: 0
-  _educationCategoryEthicalType: 0
 --- !u!114 &8957374384263062109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12776,6 +12679,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 835b61347be3afd42884914ff805f122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 2
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 8
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
   _longClickStartThresholdTime: 0.2
   _longClickThresholdTime: 3
   _uniqueName: 
@@ -13387,7 +13297,6 @@ GameObject:
   - component: {fileID: 1496834769409609586}
   - component: {fileID: 2366743201749942454}
   - component: {fileID: 4361064038520939230}
-  - component: {fileID: 8434932022577219073}
   - component: {fileID: 1373158641662292076}
   - component: {fileID: 574585645454684968}
   m_Layer: 5
@@ -13454,25 +13363,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8434932022577219073
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6406046901680498380}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 0
-  _educationCategoryType: 2
-  _educationCategoryActionType: 3
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 8
-  _educationCategoryCultureType: 0
-  _educationCategoryEthicalType: 0
 --- !u!114 &1373158641662292076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13485,6 +13375,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 835b61347be3afd42884914ff805f122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 2
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 8
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
   _longClickStartThresholdTime: 0.2
   _longClickThresholdTime: 3
   _uniqueName: 
@@ -15425,7 +15322,6 @@ GameObject:
   - component: {fileID: 6964576253507991156}
   - component: {fileID: 8454626270006739675}
   - component: {fileID: 1524249515420596573}
-  - component: {fileID: 335118549789031978}
   - component: {fileID: 2807296204992686790}
   - component: {fileID: 1861391837000159844}
   m_Layer: 5
@@ -15492,25 +15388,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &335118549789031978
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7313345619253150833}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 0
-  _educationCategoryType: 2
-  _educationCategoryActionType: 3
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 8
-  _educationCategoryCultureType: 0
-  _educationCategoryEthicalType: 0
 --- !u!114 &2807296204992686790
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15523,6 +15400,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 835b61347be3afd42884914ff805f122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 2
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 8
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
   _longClickStartThresholdTime: 0.2
   _longClickThresholdTime: 3
   _uniqueName: 
@@ -15732,7 +15616,6 @@ GameObject:
   - component: {fileID: 5272804982723948332}
   - component: {fileID: 5422465230579843974}
   - component: {fileID: 8988085930267941628}
-  - component: {fileID: 2497494892479663227}
   - component: {fileID: 3299768830004829467}
   - component: {fileID: 4190949757141690315}
   m_Layer: 5
@@ -15819,25 +15702,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2497494892479663227
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7592786037831408105}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 0
-  _educationCategoryType: 2
-  _educationCategoryActionType: 3
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 8
-  _educationCategoryCultureType: 0
-  _educationCategoryEthicalType: 0
 --- !u!114 &3299768830004829467
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15850,6 +15714,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 835b61347be3afd42884914ff805f122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 2
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 8
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
   _longClickStartThresholdTime: 0.2
   _longClickThresholdTime: 3
   _uniqueName: 
@@ -15909,7 +15780,6 @@ GameObject:
   - component: {fileID: 1423033110568048077}
   - component: {fileID: 1891256440878583775}
   - component: {fileID: 1730233287503108277}
-  - component: {fileID: 4066868731696067443}
   - component: {fileID: 3080337958675747213}
   - component: {fileID: 6477010219483581130}
   m_Layer: 5
@@ -15996,25 +15866,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4066868731696067443
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7848044653784264618}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 0
-  _educationCategoryType: 2
-  _educationCategoryActionType: 3
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 8
-  _educationCategoryCultureType: 0
-  _educationCategoryEthicalType: 0
 --- !u!114 &3080337958675747213
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16027,6 +15878,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 835b61347be3afd42884914ff805f122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 2
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 8
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
   _longClickStartThresholdTime: 0.2
   _longClickThresholdTime: 3
   _uniqueName: 
@@ -16373,7 +16231,6 @@ GameObject:
   - component: {fileID: 3270863865111424693}
   - component: {fileID: 750740891010545068}
   - component: {fileID: 5866899209994612769}
-  - component: {fileID: 4665910070837039524}
   - component: {fileID: 3721863311941823118}
   - component: {fileID: 5738373144476903005}
   m_Layer: 5
@@ -16440,25 +16297,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4665910070837039524
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8019821579052321542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 0
-  _educationCategoryType: 2
-  _educationCategoryActionType: 3
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 8
-  _educationCategoryCultureType: 0
-  _educationCategoryEthicalType: 0
 --- !u!114 &3721863311941823118
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16471,6 +16309,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 835b61347be3afd42884914ff805f122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 2
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 8
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
   _longClickStartThresholdTime: 0.2
   _longClickThresholdTime: 3
   _uniqueName: 
@@ -18095,7 +17940,6 @@ GameObject:
   - component: {fileID: 2198989416614843417}
   - component: {fileID: 7186532485493992072}
   - component: {fileID: 80090132564876971}
-  - component: {fileID: 9072906384192611680}
   - component: {fileID: 4652030837029276255}
   - component: {fileID: 6211362573536771468}
   m_Layer: 5
@@ -18182,25 +18026,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &9072906384192611680
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9013687282462289333}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 0
-  _educationCategoryType: 2
-  _educationCategoryActionType: 3
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 8
-  _educationCategoryCultureType: 0
-  _educationCategoryEthicalType: 0
 --- !u!114 &4652030837029276255
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18213,6 +18038,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 835b61347be3afd42884914ff805f122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 2
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 8
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
   _longClickStartThresholdTime: 0.2
   _longClickThresholdTime: 3
   _uniqueName: 
@@ -19869,3 +19701,127 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &8814345418054726005
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2329526113424753262}
+    m_Modifications:
+    - target: {fileID: 2138903436155762796, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_Name
+      value: CloseGamePanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 11d0db195bfa29044bf092f1cc9af84a, type: 3}
+--- !u!224 &5481612143115723422 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3909196248017474539, guid: 11d0db195bfa29044bf092f1cc9af84a,
+    type: 3}
+  m_PrefabInstance: {fileID: 8814345418054726005}
+  m_PrefabAsset: {fileID: 0}

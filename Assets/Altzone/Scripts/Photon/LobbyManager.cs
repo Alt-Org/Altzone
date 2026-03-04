@@ -1564,7 +1564,7 @@ namespace Altzone.Scripts.Lobby
             StopHolderCoroutines();
 
             Debug.Log($"OnDisconnected {cause}");
-            if (cause != DisconnectCause.DisconnectByClientLogic && cause != DisconnectCause.DisconnectByServerLogic)
+            if (cause != DisconnectCause.ApplicationQuit)
             {
                 GameConfig gameConfig = GameConfig.Get();
                 PlayerSettings playerSettings = gameConfig.PlayerSettings;

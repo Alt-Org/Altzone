@@ -35,12 +35,13 @@ public class AndroidVersionCheck : MonoBehaviour
               appUpdateOptions);
                 yield return startUpdateRequest;
             }
+            else { callback(true); }
         }
         else
         {
             Debug.LogError("Update Data Fetch Failed. Attempting to use current version.");
+            callback(true);
         }
-        if (callback != null) callback(true);
     }
 }
 #endif

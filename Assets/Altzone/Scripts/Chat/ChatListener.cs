@@ -10,6 +10,8 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using NativeWebSocket;
+using Newtonsoft.Json;
+
 //using ExitGames.Client.Photon;
 using Newtonsoft.Json.Linq;
 //using Photon.Pun;
@@ -249,18 +251,28 @@ namespace Altzone.Scripts.Chat
         private void HandleMessage(byte[] data)
         {
             string json = Encoding.UTF8.GetString(data);
-            Debug.LogWarning(JObject.Parse(json));
-            JToken middleresult = JObject.Parse(json)["message"];
-            ServerChatMessage message = middleresult["message"].ToObject<ServerChatMessage>();
-            if (middleresult["event"].ToString().Equals("newMessage"))
+            try
             {
-                if (middleresult["chat"].ToString().Equals("clan")) _clanChatChannel.AddNewMessage(new(message));
-                else if (middleresult["chat"].ToString().Equals("global")) _globalChatChannel.AddNewMessage(new(message));
+                if (json.StartsWith('{') && json.EndsWith('}'))
+                {
+                    Debug.LogWarning(JObject.Parse(json));
+                    JToken middleresult = JObject.Parse(json)["message"];
+                    ServerChatMessage message = middleresult["message"].ToObject<ServerChatMessage>();
+                    if (middleresult["event"].ToString().Equals("newMessage"))
+                    {
+                        if (middleresult["chat"].ToString().Equals("clan")) _clanChatChannel.AddNewMessage(new(message));
+                        else if (middleresult["chat"].ToString().Equals("global")) _globalChatChannel.AddNewMessage(new(message));
+                    }
+                    else if (middleresult["event"].ToString().Equals("newReaction"))
+                    {
+                        if (middleresult["chat"].ToString().Equals("clan")) _clanChatChannel.UpdateReactions(message._id, message.reactions);
+                        else if (middleresult["chat"].ToString().Equals("global")) _globalChatChannel.UpdateReactions(message._id, message.reactions);
+                    }
+                }
             }
-            else if (middleresult["event"].ToString().Equals("newReaction"))
+            catch (JsonReaderException e)
             {
-                if (middleresult["chat"].ToString().Equals("clan")) _clanChatChannel.UpdateReactions(message._id, message.reactions);
-                else if (middleresult["chat"].ToString().Equals("global")) _globalChatChannel.UpdateReactions(message._id, message.reactions);
+                Debug.LogError(e.Message);
             }
         }
 
