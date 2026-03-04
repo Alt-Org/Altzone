@@ -147,13 +147,12 @@ public class ClanCreateNew : MonoBehaviour
 
         if (_languageSaveButton) _languageSaveButton.onClick.AddListener(() =>
         {
-            UpdateLanguageDisplay(_languageSelection.SelectedLanguage);
+            UpdateLanguageDisplay(_languageSelection.SaveLanguage());
             HidePopup(_languagePanel);
         });
 
         if (_languageCancelButton) _languageCancelButton.onClick.AddListener(() =>
         {
-            UpdateLanguageDisplay(_languageSelection.SelectedLanguage);
             HidePopup(_languagePanel);
         });
 
@@ -177,13 +176,12 @@ public class ClanCreateNew : MonoBehaviour
 
         if (_languageSaveButton) _languageSaveButton.onClick.RemoveListener(() =>
         {
-            UpdateLanguageDisplay(_languageSelection.SelectedLanguage);
+            UpdateLanguageDisplay(_languageSelection.SaveLanguage());
             HidePopup(_languagePanel);
         });
 
         if (_languageCancelButton) _languageCancelButton.onClick.RemoveListener(() =>
         {
-            UpdateLanguageDisplay(_languageSelection.SelectedLanguage);
             HidePopup(_languagePanel);
         });
 
@@ -261,11 +259,11 @@ public class ClanCreateNew : MonoBehaviour
         UpdateLanguageDisplay(startLang);
 
         // Close button should apply current selection
-        _closeLanguageSelect.onClick.RemoveAllListeners();
+        /*_closeLanguageSelect.onClick.RemoveAllListeners();
         _closeLanguageSelect.onClick.AddListener(() =>
         {
-            UpdateLanguageDisplay(_languageSelection.SelectedLanguage);
-        });
+            UpdateLanguageDisplay(_languageSelection.SaveLanguage());
+        });*/
 
         if (_colorButtons != null && _colorButtons.Length > 0)
         {
