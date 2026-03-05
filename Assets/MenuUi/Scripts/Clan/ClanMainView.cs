@@ -42,7 +42,7 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private Button _joinClanButton;
     [SerializeField] private Button _leaveClanButton;
     [SerializeField] private Button _linkButton;
-    [SerializeField] private GameObject _editButton;
+    [SerializeField] private Button _editButton;
 
     [Header("pop ups")]
     [SerializeField] private ClanSearchPopup _clanPopup;
@@ -78,6 +78,12 @@ public class ClanMainView : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(null);
 
         ResetViewState();
+
+        if (_editButton != null)
+        {
+            _editButton.onClick.RemoveListener(OnClickEditClanSettings);
+            _editButton.onClick.AddListener(OnClickEditClanSettings);
+        }
 
         ToggleClanPanel(false);
         OpenLink();
@@ -126,6 +132,12 @@ public class ClanMainView : MonoBehaviour
                 _joinClanButton.gameObject.SetActive(false);
             }
         }
+    }
+
+    private void OnDisable()
+    {
+        if (_editButton != null)
+            _editButton.onClick.RemoveListener(OnClickEditClanSettings);
     }
 
     private void ResetViewState()
@@ -209,7 +221,7 @@ public class ClanMainView : MonoBehaviour
 
         if(_editButton != null)
         {
-            _editButton.SetActive(CanCurrentPlayerEditClan(clan));
+            _editButton.gameObject.SetActive(CanCurrentPlayerEditClan(clan));
         }
 
         // Show clan profile data
