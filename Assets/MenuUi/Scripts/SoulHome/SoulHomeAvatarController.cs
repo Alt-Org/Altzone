@@ -189,7 +189,6 @@ namespace MenuUI.Scripts.SoulHome
         private IEnumerator MoveRoutine()
         {
             if (_performingAnimation) yield break;
-            Debug.LogError("1");
 
             while (_travelPoints.Count > 0)
             {
@@ -207,6 +206,7 @@ namespace MenuUI.Scripts.SoulHome
                 if (!_animator.GetCurrentAnimatorStateInfo(0).IsName(_walkAnimation.name))
                 {
                     _animator.Play(_walkAnimation.name);
+                    UseDefaultHands(true);
                 }
 
                 while (Vector2.Distance(transform.position, targetPos) > 0.05f)
@@ -224,7 +224,7 @@ namespace MenuUI.Scripts.SoulHome
                 transform.position = targetPos;
                 _travelPoints.RemoveAt(0);
             }
-
+            UseDefaultHands(false);
             SelectStatus();
         }
 
@@ -535,6 +535,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 yield break;
             }
+            StopCoroutine(_statusCoroutine);
 
             int index = Random.Range(0, _verifiedInteractClips.Count);
             AnimationClip selectedClip = _verifiedInteractClips[index];
