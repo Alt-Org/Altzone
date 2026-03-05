@@ -10,6 +10,8 @@ Shader "Unlit/HairShader"
         _SelectedColor ("Selected Color", Color) = (1,1,1,1)
         _ClassColor ("Class Color", Color) = (1,1,1,1)
 
+        _Colorable ("Colorable", Float) = 0
+        
         _StencilComp ("Stencil Comparison", Float) = 8
         _Stencil ("Stencil ID", Float) = 0
         _StencilOp ("Stencil Operation", Float) = 0
@@ -68,6 +70,8 @@ Shader "Unlit/HairShader"
             fixed4 _SelectedColor;
             fixed4 _ClassColor;
 
+            float _Colorable;
+
             v2f vert(appdata v)
             {
                 v2f o;
@@ -84,10 +88,14 @@ Shader "Unlit/HairShader"
 
                 mask.rgb *= mask.a;
 
+                // 1 if the part is colorable, 0 if not
+                float selectedColorEnabled = step(0.5, _Colorable);
+
                 fixed3 hairColored = hair.rgb;
                 hairColored = lerp(hairColored, hairColored * _SkinColor.rgb, mask.r);
-                hairColored = lerp(hairColored, hairColored * _SelectedColor.rgb, mask.g);
                 hairColored = lerp(hairColored, hairColored * _ClassColor.rgb, mask.b);
+
+                hairColored = lerp(hairColored, hairColored * _SelectedColor.rgb, mask.g * selectedColorEnabled);
 
                 float hairAlpha = hair.a * (1.0 - body.a);
 
