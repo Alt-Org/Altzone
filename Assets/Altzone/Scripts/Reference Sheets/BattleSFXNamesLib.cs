@@ -16,7 +16,10 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         SoulWallHitPlayful    = BattleSoundFX.SoulWallHitPlayful,
         SoulWallHitSadness    = BattleSoundFX.SoulWallHitSadness,
 
-        #region
+        #region Character Sound Effects
+
+        // Common
+        PlayerCharacterCommonHitShield = BattleSoundFX.PlayerCharacterCommonHitShield,
 
         // Racist
         PlayerCharacterRacistCatchphrase            = BattleSoundFX.PlayerCharacterRacistCatchphrase,
@@ -25,7 +28,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterRacistHitCharacterLove       = BattleSoundFX.PlayerCharacterRacistHitCharacterLove,
         PlayerCharacterRacistHitCharacterPlayful    = BattleSoundFX.PlayerCharacterRacistHitCharacterPlayful,
         PlayerCharacterRacistHitCharacterSadness    = BattleSoundFX.PlayerCharacterRacistHitCharacterSadness,
-        PlayerCharacterRacistHitShield              = BattleSoundFX.PlayerCharacterRacistHitShield,
         PlayerCharacterRacistDeath                  = BattleSoundFX.PlayerCharacterRacistDeath,
 
         // BodyBuilder
@@ -35,7 +37,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterBodybuilderHitCharacterLove       = BattleSoundFX.PlayerCharacterBodybuilderHitCharacterLove,
         PlayerCharacterBodybuilderHitCharacterPlayful    = BattleSoundFX.PlayerCharacterBodybuilderHitCharacterPlayful,
         PlayerCharacterBodybuilderHitCharacterSadness    = BattleSoundFX.PlayerCharacterBodybuilderHitCharacterSadness,
-        PlayerCharacterBodybuilderHitShield              = BattleSoundFX.PlayerCharacterBodybuilderHitShield,
         PlayerCharacterBodybuilderDeath                  = BattleSoundFX.PlayerCharacterBodybuilderDeath,
 
         // WarVeteran
@@ -45,8 +46,7 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterWarVeteranHitCharacterLove       = BattleSoundFX.PlayerCharacterWarVeteranHitCharacterLove,
         PlayerCharacterWarVeteranHitCharacterPlayful    = BattleSoundFX.PlayerCharacterWarVeteranHitCharacterPlayful,
         PlayerCharacterWarVeteranHitCharacterSadness    = BattleSoundFX.PlayerCharacterWarVeteranHitCharacterSadness,
-        PlayerCharacterWarVeteranHitShield              = BattleSoundFX.PlayerCharacterWarVeteranHitShield,
-        PlayerCharacterWarVeteranDeath                  = BattleSoundFX.PlayerCharacterWarVeteranDeath,
+        PlayerCharacterWarVeteranDeath                 = BattleSoundFX.PlayerCharacterWarVeteranDeath,
 
         // Bully
         PlayerCharacterBullyCatchphrase            = BattleSoundFX.PlayerCharacterBullyCatchphrase,
@@ -55,18 +55,16 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterBullyHitCharacterLove       = BattleSoundFX.PlayerCharacterBullyHitCharacterLove,
         PlayerCharacterBullyHitCharacterPlayful    = BattleSoundFX.PlayerCharacterBullyHitCharacterPlayful,
         PlayerCharacterBullyHitCharacterSadness    = BattleSoundFX.PlayerCharacterBullyHitCharacterSadness,
-        PlayerCharacterBullyHitShield              = BattleSoundFX.PlayerCharacterBullyHitShield,
         PlayerCharacterBullyDeath                  = BattleSoundFX.PlayerCharacterBullyDeath,
 
         // Egoist
-        PlayerCharacterEgoistCatchphrase  = BattleSoundFX.PlayerCharacterEgoistCatchphrase,
+        PlayerCharacterEgoistCatchphrase            = BattleSoundFX.PlayerCharacterEgoistCatchphrase,
         PlayerCharacterEgoistHitCharacterAggression = BattleSoundFX.PlayerCharacterEgoistHitCharacterAggression,
-        PlayerCharacterEgoistHitCharacterJoy = BattleSoundFX.PlayerCharacterEgoistHitCharacterJoy,
-        PlayerCharacterEgoistHitCharacterLove = BattleSoundFX.PlayerCharacterEgoistHitCharacterLove,
-        PlayerCharacterEgoistHitCharacterPlayful = BattleSoundFX.PlayerCharacterEgoistHitCharacterPlayful,
-        PlayerCharacterEgoistHitCharacterSadness = BattleSoundFX.PlayerCharacterEgoistHitCharacterSadness,
-        PlayerCharacterEgoistHitShield    = BattleSoundFX.PlayerCharacterEgoistHitShield,
-        PlayerCharacterEgoistDeath        = BattleSoundFX.PlayerCharacterEgoistDeath,
+        PlayerCharacterEgoistHitCharacterJoy        = BattleSoundFX.PlayerCharacterEgoistHitCharacterJoy,
+        PlayerCharacterEgoistHitCharacterLove       = BattleSoundFX.PlayerCharacterEgoistHitCharacterLove,
+        PlayerCharacterEgoistHitCharacterPlayful    = BattleSoundFX.PlayerCharacterEgoistHitCharacterPlayful,
+        PlayerCharacterEgoistHitCharacterSadness    = BattleSoundFX.PlayerCharacterEgoistHitCharacterSadness,
+        PlayerCharacterEgoistDeath                  = BattleSoundFX.PlayerCharacterEgoistDeath,
 
         // Depressed
         PlayerCharacterDepressedCatchphrase            = BattleSoundFX.PlayerCharacterDepressedCatchphrase,
@@ -75,7 +73,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterDepressedHitCharacterLove       = BattleSoundFX.PlayerCharacterDepressedHitCharacterLove,
         PlayerCharacterDepressedHitCharacterPlayful    = BattleSoundFX.PlayerCharacterDepressedHitCharacterPlayful,
         PlayerCharacterDepressedHitCharacterSadness    = BattleSoundFX.PlayerCharacterDepressedHitCharacterSadness,
-        PlayerCharacterDepressedHitShield              = BattleSoundFX.PlayerCharacterDepressedHitShield,
         PlayerCharacterDepressedDeath                  = BattleSoundFX.PlayerCharacterDepressedDeath,
 
         // Comedian
@@ -83,9 +80,8 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterComedianHitCharacterAggresion = BattleSoundFX.PlayerCharacterComedianHitCharacterAggression,
         PlayerCharacterComedianHitCharacterJoy       = BattleSoundFX.PlayerCharacterComedianHitCharacterJoy,
         PlayerCharacterComedianHitCharacterLove      = BattleSoundFX.PlayerCharacterComedianHitCharacterLove,
-        PlayerCharacterComedianHitCharacterPlayful = BattleSoundFX.PlayerCharacterComedianHitCharacterPlayful,
+        PlayerCharacterComedianHitCharacterPlayful   = BattleSoundFX.PlayerCharacterComedianHitCharacterPlayful,
         PlayerCharacterComedianHitCharacterSadness   = BattleSoundFX.PlayerCharacterComedianHitCharacterSadness,
-        PlayerCharacterComedianHitShield             = BattleSoundFX.PlayerCharacterComedianHitShield,
         PlayerCharacterComedianDeath                 = BattleSoundFX.PlayerCharacterComedianDeath,
 
         // Joker
@@ -95,7 +91,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterJokerHitCharacterLove       = BattleSoundFX.PlayerCharacterJokerHitCharacterLove,
         PlayerCharacterJokerHitCharacterPlayful    = BattleSoundFX.PlayerCharacterJokerHitCharacterPlayful,
         PlayerCharacterJokerHitCharacterSadness    = BattleSoundFX.PlayerCharacterJokerHitCharacterSadness,
-        PlayerCharacterJokerHitShield              = BattleSoundFX.PlayerCharacterJokerHitShield,
         PlayerCharacterJokerDeath                  = BattleSoundFX.PlayerCharacterJokerDeath,
 
         // Conman
@@ -105,7 +100,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterConmanHitCharacterLove       = BattleSoundFX.PlayerCharacterConmanHitCharacterLove,
         PlayerCharacterConmanHitCharacterPlayful    = BattleSoundFX.PlayerCharacterConmanHitCharacterPlayful,
         PlayerCharacterConmanHitCharacterSadness    = BattleSoundFX.PlayerCharacterConmanHitCharacterSadness,
-        PlayerCharacterConmanHitShield              = BattleSoundFX.PlayerCharacterConmanHitShield,
         PlayerCharacterConmanDeath                  = BattleSoundFX.PlayerCharacterConmanDeath,
 
         // Seducer
@@ -115,7 +109,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterSeducerHitCharacterLove       = BattleSoundFX.PlayerCharacterSeducerHitCharacterLove,
         PlayerCharacterSeducerHitCharacterPlayful    = BattleSoundFX.PlayerCharacterSeducerHitCharacterPlayful,
         PlayerCharacterSeducerHitCharacterSadness    = BattleSoundFX.PlayerCharacterSeducerHitCharacterSadness,
-        PlayerCharacterSeducerHitShield              = BattleSoundFX.PlayerCharacterSeducerHitShield,
         PlayerCharacterSeducerDeath                  = BattleSoundFX.PlayerCharacterSeducerDeath,
 
         // Religious
@@ -125,8 +118,7 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterReligiousHitCharacterPlayful    = BattleSoundFX.PlayerCharacterReligiousHitCharacterPlayful,
         PlayerCharacterReligiousHitCharacterLove       = BattleSoundFX.PlayerCharacterReligiousHitCharacterLove,
         PlayerCharacterReligiousHitCharacterSadness    = BattleSoundFX.PlayerCharacterReligiousHitCharacterSadness,
-        PlayerCharacterReligiousHitShield              = BattleSoundFX.PlayerCharacterReligiousHitShield,
-        PlayerCharacterReligiousDeath                  = BattleSoundFX.PlayerCharacterSeducerDeath,
+        PlayerCharacterReligiousDeath                  = BattleSoundFX.PlayerCharacterReligiousDeath,
 
         // Yesman
         PlayerCharacterYesmanCatchphrase            = BattleSoundFX.PlayerCharacterYesmanCatchphrase,
@@ -135,7 +127,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterYesmanHitCharacterLove       = BattleSoundFX.PlayerCharacterYesmanHitCharacterLove,
         PlayerCharacterYesmanHitCharacterPlayful    = BattleSoundFX.PlayerCharacterYesmanHitCharacterPlayful,
         PlayerCharacterYesmanHitCharacterSadness    = BattleSoundFX.PlayerCharacterYesmanHitCharacterSadness,
-        PlayerCharacterYesmanHitShield              = BattleSoundFX.PlayerCharacterYesmanHitShield,
         PlayerCharacterYesmanDeath                  = BattleSoundFX.PlayerCharacterYesmanDeath,
 
         // SlaveOfTheLaw
@@ -145,7 +136,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterSlaveOfTheLawHitCharacterLove       = BattleSoundFX.PlayerCharacterSlaveOfTheLawHitCharacterLove,
         PlayerCharacterSlaveOfTheLawHitCharacterPlayful    = BattleSoundFX.PlayerCharacterSlaveOfTheLawHitCharacterPlayful,
         PlayerCharacterSlaveOfTheLawHitCharacterSadness    = BattleSoundFX.PlayerCharacterSlaveOfTheLawHitCharacterSadness,
-        PlayerCharacterSlaveOfTheLawHitShield              = BattleSoundFX.PlayerCharacterSlaveOfTheLawHitShield,
         PlayerCharacterSlaveOfTheLawDeath                  = BattleSoundFX.PlayerCharacterSlaveOfTheLawDeath,
 
         // FashionSlave
@@ -155,7 +145,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterFashionSlaveHitCharacterLove       = BattleSoundFX.PlayerCharacterFashionSlaveHitCharacterLove,
         PlayerCharacterFashionSlaveHitCharacterPlayful    = BattleSoundFX.PlayerCharacterFashionSlaveHitCharacterPlayful,
         PlayerCharacterFashionSlaveHitCharacterSadness    = BattleSoundFX.PlayerCharacterFashionSlaveHitCharacterSadness,
-        PlayerCharacterFashionSlaveHitShield              = BattleSoundFX.PlayerCharacterFashionSlaveHitShield,
         PlayerCharacterFashionSlaveDeath                  = BattleSoundFX.PlayerCharacterFashionSlaveDeath,
 
         // MammasBoy
@@ -165,7 +154,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterMammasBoyHitCharacterLove       = BattleSoundFX.PlayerCharacterMammasBoyHitCharacterLove,
         PlayerCharacterMammasBoyHitCharacterPlayful    = BattleSoundFX.PlayerCharacterMammasBoyHitCharacterPlayful,
         PlayerCharacterMammasBoyHitCharacterSadness    = BattleSoundFX.PlayerCharacterMammasBoyHitCharacterSadness,
-        PlayerCharacterMammasBoyHitShield              = BattleSoundFX.PlayerCharacterMammasBoyHitShield,
         PlayerCharacterMammasBoyDeath                  = BattleSoundFX.PlayerCharacterMammasBoyDeath,
 
         // Superstitious
@@ -175,7 +163,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterSuperstitiousHitCharacterLove       = BattleSoundFX.PlayerCharacterSuperstitiousHitCharacterLove,
         PlayerCharacterSuperstitiousHitCharacterPlayful    = BattleSoundFX.PlayerCharacterSuperstitiousHitCharacterPlayful,
         PlayerCharacterSuperstitiousHitCharacterSadness    = BattleSoundFX.PlayerCharacterSuperstitiousHitCharacterSadness,
-        PlayerCharacterSuperstitiousHitShield              = BattleSoundFX.PlayerCharacterSuperstitiousHitShield,
         PlayerCharacterSuperstitiousDeath                  = BattleSoundFX.PlayerCharacterSuperstitiousDeath,
 
         // Artist
@@ -185,7 +172,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterArtistHitCharacterLove       = BattleSoundFX.PlayerCharacterArtistHitCharacterLove,
         PlayerCharacterArtistHitCharacterPlayful    = BattleSoundFX.PlayerCharacterArtistHitCharacterPlayful,
         PlayerCharacterArtistHitCharacterSadness    = BattleSoundFX.PlayerCharacterArtistHitCharacterSadness,
-        PlayerCharacterArtistHitShield              = BattleSoundFX.PlayerCharacterArtistHitShield,
         PlayerCharacterArtistDeath                  = BattleSoundFX.PlayerCharacterArtistDeath,
 
         // Arguer
@@ -195,7 +181,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterArguerHitCharacterLove       = BattleSoundFX.PlayerCharacterArguerHitCharacterLove,
         PlayerCharacterArguerHitCharacterPlayful    = BattleSoundFX.PlayerCharacterArguerHitCharacterPlayful,
         PlayerCharacterArguerHitCharacterSadness    = BattleSoundFX.PlayerCharacterArguerHitCharacterSadness,
-        PlayerCharacterArguerHitShield              = BattleSoundFX.PlayerCharacterArguerHitShield,
         PlayerCharacterArguerDeath                  = BattleSoundFX.PlayerCharacterArguerDeath,
 
         // Reflector
@@ -205,7 +190,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterReflectorHitCharacterLove       = BattleSoundFX.PlayerCharacterReflectorHitCharacterLove,
         PlayerCharacterReflectorHitCharacterPlayful    = BattleSoundFX.PlayerCharacterReflectorHitCharacterPlayful,
         PlayerCharacterReflectorHitCharacterSadness    = BattleSoundFX.PlayerCharacterReflectorHitCharacterSadness,
-        PlayerCharacterReflectorHitShield              = BattleSoundFX.PlayerCharacterReflectorHitShield,
         PlayerCharacterReflectorDeath                  = BattleSoundFX.PlayerCharacterReflectorDeath,
 
         // Delusional
@@ -215,7 +199,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterDelusionalHitCharacterLove       = BattleSoundFX.PlayerCharacterDelusionalHitCharacterLove,
         PlayerCharacterDelusionalHitCharacterPlayful    = BattleSoundFX.PlayerCharacterDelusionalHitCharacterPlayful,
         PlayerCharacterDelusionalHitCharacterSadness    = BattleSoundFX.PlayerCharacterDelusionalHitCharacterSadness,
-        PlayerCharacterDelusionalHitShield              = BattleSoundFX.PlayerCharacterDelusionalHitShield,
         PlayerCharacterDelusionalDeath                  = BattleSoundFX.PlayerCharacterDelusionalDeath,
 
         // Overeater
@@ -225,7 +208,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterOvereaterHitCharacterLove       = BattleSoundFX.PlayerCharacterOvereaterHitCharacterLove,
         PlayerCharacterOvereaterHitCharacterPlayful    = BattleSoundFX.PlayerCharacterOvereaterHitCharacterPlayful,
         PlayerCharacterOvereaterHitCharacterSadness    = BattleSoundFX.PlayerCharacterOvereaterHitCharacterSadness,
-        PlayerCharacterOvereaterHitShield              = BattleSoundFX.PlayerCharacterOvereaterHitShield,
         PlayerCharacterOvereaterDeath                  = BattleSoundFX.PlayerCharacterOvereaterDeath,
 
         // Alcoholic
@@ -235,7 +217,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterAlcoholicHitCharacterLove       = BattleSoundFX.PlayerCharacterAlcoholicHitCharacterLove,
         PlayerCharacterAlcoholicHitCharacterPlayful    = BattleSoundFX.PlayerCharacterAlcoholicHitCharacterPlayful,
         PlayerCharacterAlcoholicHitCharacterSadness    = BattleSoundFX.PlayerCharacterAlcoholicHitCharacterSadness,
-        PlayerCharacterAlcoholicHitShield              = BattleSoundFX.PlayerCharacterAlcoholicHitShield,
         PlayerCharacterAlcoholicDeath                  = BattleSoundFX.PlayerCharacterAlcoholicDeath,
 
         // Anorectic
@@ -245,7 +226,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterAnorecticHitCharacterLove       = BattleSoundFX.PlayerCharacterAnorecticHitCharacterLove,
         PlayerCharacterAnorecticHitCharacterPlayful    = BattleSoundFX.PlayerCharacterAnorecticHitCharacterPlayful,
         PlayerCharacterAnorecticHitCharacterSadness    = BattleSoundFX.PlayerCharacterAnorecticHitCharacterSadness,
-        PlayerCharacterAnorecticHitShield              = BattleSoundFX.PlayerCharacterAnorecticHitShield,
         PlayerCharacterAnorecticDeath                  = BattleSoundFX.PlayerCharacterAnorecticDeath,
 
         // Stoner
@@ -255,7 +235,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterStonerHitCharacterLove       = BattleSoundFX.PlayerCharacterStonerHitCharacterLove,
         PlayerCharacterStonerHitCharacterPlayful    = BattleSoundFX.PlayerCharacterStonerHitCharacterPlayful,
         PlayerCharacterStonerHitCharacterSadness    = BattleSoundFX.PlayerCharacterStonerHitCharacterSadness,
-        PlayerCharacterStonerHitShield              = BattleSoundFX.PlayerCharacterStonerHitShield,
         PlayerCharacterStonerDeath                  = BattleSoundFX.PlayerCharacterStonerDeath,
 
         // Martyr
@@ -265,7 +244,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterMartyrHitCharacterLove       = BattleSoundFX.PlayerCharacterMartyrHitCharacterLove,
         PlayerCharacterMartyrHitCharacterPlayful    = BattleSoundFX.PlayerCharacterMartyrHitCharacterPlayful,
         PlayerCharacterMartyrHitCharacterSadness    = BattleSoundFX.PlayerCharacterMartyrHitCharacterSadness,
-        PlayerCharacterMartyrHitShield              = BattleSoundFX.PlayerCharacterMartyrHitShield,
         PlayerCharacterMartyrDeath                  = BattleSoundFX.PlayerCharacterMartyrDeath,
 
         // Suicidal
@@ -275,7 +253,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterSuicidalHitCharacterLove       = BattleSoundFX.PlayerCharacterSuicidalHitCharacterLove,
         PlayerCharacterSuicidalHitCharacterPlayful    = BattleSoundFX.PlayerCharacterSuicidalHitCharacterPlayful,
         PlayerCharacterSuicidalHitCharacterSadness    = BattleSoundFX.PlayerCharacterSuicidalHitCharacterSadness,
-        PlayerCharacterSuicidalHitShield              = BattleSoundFX.PlayerCharacterSuicidalHitShield,
         PlayerCharacterSuicidalDeath                  = BattleSoundFX.PlayerCharacterSuicidalDeath,
 
         // Soulsisters
@@ -285,7 +262,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterSoulsistersHitCharacterLove       = BattleSoundFX.PlayerCharacterSoulsistersHitCharacterLove,
         PlayerCharacterSoulsistersHitCharacterPlayful    = BattleSoundFX.PlayerCharacterSoulsistersHitCharacterPlayful,
         PlayerCharacterSoulsistersHitCharacterSadness    = BattleSoundFX.PlayerCharacterSoulsistersHitCharacterSadness,
-        PlayerCharacterSoulsistersHitShield              = BattleSoundFX.PlayerCharacterSoulsistersHitShield,
         PlayerCharacterSoulsistersDeath                  = BattleSoundFX.PlayerCharacterSoulsistersDeath,
 
         // Lovers
@@ -295,7 +271,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterLoversHitCharacterPlayful    = BattleSoundFX.PlayerCharacterLoversHitCharacterPlayful,
         PlayerCharacterLoversHitCharacterLove       = BattleSoundFX.PlayerCharacterLoversHitCharacterLove,
         PlayerCharacterLoversHitCharacterSadness    = BattleSoundFX.PlayerCharacterLoversHitCharacterSadness,
-        PlayerCharacterLoversHitShield              = BattleSoundFX.PlayerCharacterLoversHitShield,
         PlayerCharacterLoversDeath                  = BattleSoundFX.PlayerCharacterLoversDeath,
 
         // SleepyHead
@@ -305,7 +280,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterSleepyHeadHitCharacterLove       = BattleSoundFX.PlayerCharacterSleepyHeadHitCharacterLove,
         PlayerCharacterSleepyHeadHitCharacterPlayful    = BattleSoundFX.PlayerCharacterSleepyHeadHitCharacterPlayful,
         PlayerCharacterSleepyHeadHitCharacterSadness    = BattleSoundFX.PlayerCharacterSleepyHeadHitCharacterSadness,
-        PlayerCharacterSleepyHeadHitShield              = BattleSoundFX.PlayerCharacterSleepyHeadHitShield,
         PlayerCharacterSleepyHeadDeath                  = BattleSoundFX.PlayerCharacterSleepyHeadDeath,
 
         // Tribalist
@@ -315,7 +289,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterTribalistHitCharacterLove       = BattleSoundFX.PlayerCharacterTribalistHitCharacterLove,
         PlayerCharacterTribalistHitCharacterPlayful    = BattleSoundFX.PlayerCharacterTribalistHitCharacterPlayful,
         PlayerCharacterTribalistHitCharacterSadness    = BattleSoundFX.PlayerCharacterTribalistHitCharacterSadness,
-        PlayerCharacterTribalistHitShield              = BattleSoundFX.PlayerCharacterTribalistHitShield,
         PlayerCharacterTribalistDeath                  = BattleSoundFX.PlayerCharacterTribalistDeath,
 
         // GangBanger
@@ -325,7 +298,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterGangBangerHitCharacterLove       = BattleSoundFX.PlayerCharacterGangBangerHitCharacterLove,
         PlayerCharacterGangBangerHitCharacterPlayful    = BattleSoundFX.PlayerCharacterGangBangerHitCharacterPlayful,
         PlayerCharacterGangBangerHitCharacterSadness    = BattleSoundFX.PlayerCharacterGangBangerHitCharacterSadness,
-        PlayerCharacterGangBangerHitShield              = BattleSoundFX.PlayerCharacterGangBangerHitShield,
         PlayerCharacterGangBangerDeath                  = BattleSoundFX.PlayerCharacterGangBangerDeath,
 
         // Booksmart
@@ -335,7 +307,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterBooksmartHitCharacterLove       = BattleSoundFX.PlayerCharacterBooksmartHitCharacterLove,
         PlayerCharacterBooksmartHitCharacterPlayful    = BattleSoundFX.PlayerCharacterBooksmartHitCharacterPlayful,
         PlayerCharacterBooksmartHitCharacterSadness    = BattleSoundFX.PlayerCharacterBooksmartHitCharacterSadness,
-        PlayerCharacterBooksmartHitShield              = BattleSoundFX.PlayerCharacterBooksmartHitShield,
         PlayerCharacterBooksmartDeath                  = BattleSoundFX.PlayerCharacterBooksmartDeath,
 
         // Capitalist
@@ -345,7 +316,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterCapitalistHitCharacterLove       = BattleSoundFX.PlayerCharacterCapitalistHitCharacterLove,
         PlayerCharacterCapitalistHitCharacterPlayful    = BattleSoundFX.PlayerCharacterCapitalistHitCharacterPlayful,
         PlayerCharacterCapitalistHitCharacterSadness    = BattleSoundFX.PlayerCharacterCapitalistHitCharacterSadness,
-        PlayerCharacterCapitalistHitShield              = BattleSoundFX.PlayerCharacterCapitalistHitShield,
         PlayerCharacterCapitalistDeath                  = BattleSoundFX.PlayerCharacterCapitalistDeath,
 
         // ObsessiveCompulsive
@@ -355,7 +325,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterObsessiveCompulsiveHitCharacterLove       = BattleSoundFX.PlayerCharacterObsessiveCompulsiveHitCharacterLove,
         PlayerCharacterObsessiveCompulsiveHitCharacterPlayful    = BattleSoundFX.PlayerCharacterObsessiveCompulsiveHitCharacterPlayful,
         PlayerCharacterObsessiveCompulsiveHitCharacterSadness    = BattleSoundFX.PlayerCharacterObsessiveCompulsiveHitCharacterSadness,
-        PlayerCharacterObsessiveCompulsiveHitShield              = BattleSoundFX.PlayerCharacterObsessiveCompulsiveHitShield,
         PlayerCharacterObsessiveCompulsiveDeath                  = BattleSoundFX.PlayerCharacterObsessiveCompulsiveDeath,
 
         // Overcompilator
@@ -365,7 +334,6 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterOvercompilatorHitCharacterLove       = BattleSoundFX.PlayerCharacterOvercompilatorHitCharacterLove,
         PlayerCharacterOvercompilatorHitCharacterPlayful    = BattleSoundFX.PlayerCharacterOvercompilatorHitCharacterPlayful,
         PlayerCharacterOvercompilatorHitCharacterSadness    = BattleSoundFX.PlayerCharacterOvercompilatorHitCharacterSadness,
-        PlayerCharacterOvercompilatorHitShield              = BattleSoundFX.PlayerCharacterOvercompilatorHitShield,
         PlayerCharacterOvercompilatorDeath                  = BattleSoundFX.PlayerCharacterOvercompilatorDeath,
 
         // NitPicker
@@ -375,8 +343,7 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         PlayerCharacterNitPickerHitCharacterLove       = BattleSoundFX.PlayerCharacterNitPickerHitCharacterLove,
         PlayerCharacterNitPickerHitCharacterPlayful    = BattleSoundFX.PlayerCharacterNitPickerHitCharacterPlayful,
         PlayerCharacterNitPickerHitCharacterSadness    = BattleSoundFX.PlayerCharacterNitPickerHitCharacterSadness,
-        PlayerCharacterNitPickerHitShield              = BattleSoundFX.PlayerCharacterNitPickerHitShield,
-        PlayerCharacterNitPickerDeath                  = BattleSoundFX.PlayerCharacterNitPickerDeath
+        PlayerCharacterNitPickerDeath                  = BattleSoundFX.PlayerCharacterNitPickerDeath,
 
         #endregion  Character Sound Effects
     }
