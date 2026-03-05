@@ -80,18 +80,18 @@ namespace Battle.QSimulation.Player
 
             BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->PlayerEntity);
 
-            if (damagedPlayerData->CurrentDefence <= 0) HandleSFX(f, damagedPlayerData->CharacterId, SoundEffectType.Death);
+            if (damagedPlayerData->CurrentDefence <= 0) HandleSFXCharacter(f, SoundEffectTypeCharacter.Death, damagedPlayerData->CharacterId);
             else
             {
-                SoundEffectType soundEffectType = projectileCollisionData->ProjectileEmotionCurrent switch
+                SoundEffectTypeCharacter soundEffectType = projectileCollisionData->ProjectileEmotionCurrent switch
                 {
-                    BattleEmotionState.Aggression => SoundEffectType.HitCharacterAggression,
-                    BattleEmotionState.Joy        => SoundEffectType.HitCharacterJoy,
-                    BattleEmotionState.Love       => SoundEffectType.HitCharacterLove,
-                    BattleEmotionState.Playful    => SoundEffectType.HitCharacterPlayful,
-                    BattleEmotionState.Sadness    => SoundEffectType.HitCharacterSadness
+                    BattleEmotionState.Aggression => SoundEffectTypeCharacter.HitCharacterAggression,
+                    BattleEmotionState.Joy        => SoundEffectTypeCharacter.HitCharacterJoy,
+                    BattleEmotionState.Love       => SoundEffectTypeCharacter.HitCharacterLove,
+                    BattleEmotionState.Playful    => SoundEffectTypeCharacter.HitCharacterPlayful,
+                    BattleEmotionState.Sadness    => SoundEffectTypeCharacter.HitCharacterSadness
                 };
-                HandleSFX(f, damagedPlayerData->CharacterId, soundEffectType);
+                HandleSFXCharacter(f, soundEffectType, damagedPlayerData->CharacterId);
             }
 
             // Temp disabled
@@ -103,7 +103,7 @@ namespace Battle.QSimulation.Player
             //BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->PlayerEntity);
             FP damageTaken = projectileCollisionData->Projectile->Attack;
 
-            HandleSFX(f, damagedPlayerData->CharacterId, SoundEffectType.HitCharacterAggression);
+            HandleSFXCharacter(f, SoundEffectTypeCharacter.HitCharacterAggression, damagedPlayerData->CharacterId );
 
             BattlePlayerManager.PlayerHandle damagePlayerHandle = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot);
             int characterNumber = damagePlayerHandle.SelectedCharacterNumber;
@@ -144,7 +144,7 @@ namespace Battle.QSimulation.Player
             BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
             FP damageTaken = projectileCollisionData->Projectile->Attack;
 
-            HandleSFX(f, damagedPlayerData->CharacterId, SoundEffectType.HitShield);
+            HandleSFXCommon(f, SoundEffectTypeCommon.HitShield);
 
             BattleProjectileQSystem.SetAttack(f, projectileCollisionData->Projectile, damagedPlayerData->Stats.Attack);
 
@@ -211,7 +211,13 @@ namespace Battle.QSimulation.Player
             }
         }
 
-        private enum SoundEffectType
+        private const int SoundEffectTypeCharacterCount = 7;
+
+        private enum SoundEffectTypeCommon
+        {
+            HitShield
+        }
+        private enum SoundEffectTypeCharacter
         {
             Catchphrase,
             HitCharacterAggression,
@@ -219,8 +225,7 @@ namespace Battle.QSimulation.Player
             HitCharacterLove,
             HitCharacterPlayful,
             HitCharacterSadness,
-            HitShield,
-            Death
+            Death,
         }
 
         /// <summary>This classes BattleDebugLogger instance.</summary>
@@ -340,15 +345,28 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Private helper method for playing the appropriate Shield Hit sound effect based on character ID
+        /// Private helper method for playing the appropriate common sound effect based on sound effect <paramref name="type"/>
         /// </summary>
         ///
         /// <param name="f">Current simulation frame</param>
-        /// <param name="charactedID">ID value of the current character in play</param>
-        private static void HandleSFX(Frame f, int characterID, SoundEffectType type)
+        /// <param name="type">Type of sound effect to be played</param>
+        private static void HandleSFXCommon(Frame f, SoundEffectTypeCommon type)
         {
-            int finalSoundID = (characterID * Constants.BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER) + (int)type;
-            f.Events.BattlePlaySoundFX((BattleSoundFX)finalSoundID);
+            BattleSoundFX soundEffect = (BattleSoundFX)(Constants.BATTLE_SOUND_FX_CHARACTER_COMMON_START + type);
+            f.Events.BattlePlaySoundFX(soundEffect);
+        }
+
+        /// <summary>
+        /// Private helper method for playing the appropriate character specific sound effect based on <paramref name="characterID"/> and sound effect <paramref name="type"/>
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame</param>
+        /// <param name="type">Type of sound effect to be played</param>
+        /// <param name="characterID">ID value of the current character in play</param>
+        private static void HandleSFXCharacter(Frame f, SoundEffectTypeCharacter type, int characterID)
+        {
+            BattleSoundFX soundEffect = (BattleSoundFX)(characterID * Constants.BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER) + (int)type;
+            f.Events.BattlePlaySoundFX(soundEffect);
         }
 
         /// <summary>
