@@ -192,6 +192,8 @@ namespace MenuUI.Scripts.SoulHome
             {
                 Vector2 targetPos = _travelPoints[0];
 
+                UpdateSortingOrder(WorldToGrid(targetPos).y);
+
                 if (targetPos.x < transform.position.x)
                 {
                     transform.rotation = Quaternion.Euler(0, 180, 0);
@@ -248,6 +250,11 @@ namespace MenuUI.Scripts.SoulHome
                     }
                 }
             }
+        }
+
+        private void UpdateSortingOrder(int gridRow)
+        {
+            _sortingGroup.sortingOrder = 6 + (gridRow * 100);
         }
 
         #region pathfinding
