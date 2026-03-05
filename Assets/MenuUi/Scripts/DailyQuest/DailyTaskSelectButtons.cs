@@ -18,6 +18,8 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
 
     public static event Action<SelectButtonObject> OnButtonSelected;
 
+    public static event Action<bool> OnStateChange;
+
     // Adds listeners if the task is active at startup
     protected override void Start()
     {
@@ -44,14 +46,15 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
     {
         base.SetState(task);
 
-        if (On)
+
+        RefreshListeners();
+
+        if (task == null)
         {
-            AddListeners();
+            OnStateChange?.Invoke(false);
+            return;
         }
-        else
-        {
-            RemoveListeners();
-        }
+        OnStateChange?.Invoke(task.EducationCultureType == _educationCategoryCultureType);
     }
 
     public void AddButton(SelectButtonObject button)
@@ -72,6 +75,7 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
 
     public void RefreshListeners()
     {
+        Debug.Log("REFRESH " + On);
         if (On)
         {
             AddListeners();
@@ -80,11 +84,14 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
         {
             RemoveListeners();
         }
+        
     }
 
     // Adds EventTrigger listeners to every button in the scene
     private void AddListeners()
     {
+
+        Debug.Log("ADD LISTENERS");
         SelectButtonObject[] allButtonObjects;
         if (!_limitToThis)
         {
@@ -136,6 +143,8 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
     // Removes all the added EventTrigger listeners from buttons
     private void RemoveListeners()
     {
+
+        Debug.Log("REMOVE LISTENERS");
         foreach (var addedEntry in _addedEntries)
         {
             SelectButtonObject button = addedEntry.Key;
