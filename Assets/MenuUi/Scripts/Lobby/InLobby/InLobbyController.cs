@@ -6,7 +6,6 @@ using Altzone.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using MenuUi.Scripts.Signals;
-using Prg.Scripts.Common.PubSub;
 
 namespace MenuUi.Scripts.Signals
 {
@@ -173,8 +172,9 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     break;
                 case GameType.Clan2v2:
                 case GameType.Random2v2:
-                    if (PhotonRealtimeClient.InMatchmakingRoom) // If we are in matchmaking we don't want to do anything
+                    if (PhotonRealtimeClient.InMatchmakingRoom) // If we are in matchmaking show the matchmaking panel
                     {
+                        _roomSwitcher.SwitchToMatchmakingPanel(PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient);
                         return;
                     }
                     else if (PhotonRealtimeClient.InRoom) // If we are in a normal room
@@ -208,11 +208,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         public void CloseWindow()
         {
-            if (PhotonRealtimeClient.InMatchmakingRoom)
-            {
-                this.Publish(new LobbyManager.StopMatchmakingEvent(SelectedGameType));
-            }
-
             _roomSwitcher.ClosePanels();
             _popupContents.SetActive(false);
         }
