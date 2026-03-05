@@ -17,124 +17,812 @@
 /// @bigtext{Generated from @ref BattleSoundEffect.qtn}
 
 /// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::SoulWallHit
-/// <summary>Play sound when projectile hit SoulWall.</summary>
+/// SoundFX Played when projectile hit SoulWall.
 ///
 /// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::GoalHit
-/// <summary>Play sound when projectile hit goal.</summary>
+/// SoundFX Played when projectile hit goal.
 ///
 /// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::SideWallHit
-/// <summary>Play sound when projectile hit SideWall.</summary>
+/// SoundFX Played when projectile hit SideWall.
 ///
 /// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::SoulWallBroken
-/// <summary>Play sound when SoulWall is broken.</summary>
+/// SoundFX Played when SoulWall is broken.
 ///
 /// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::DiamondPickUp
-/// <summary>Play sound when player picks up a diamond</summary>
+/// SoundFX Played when player picks up a diamond
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterRacistShieldHit
-/// <summary>Play sound when CharacterRacist's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::SoulWallHitAggression
+/// SoundFX Played when SoulWall is hit by a projectile which has @cref{BattleEmotionState.Aggression}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBodybuilderShieldHit
-/// <summary>Play sound when CharacterBodybuilder's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::SoulWallHitJoy
+/// SoundFX Played when SoulWall is hit by a projectile which has @cref{BattleEmotionState.Joy}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterWarVeteranShieldHit
-/// <summary>Play sound when CharacterWarVeteran's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::SoulWallHitLove
+/// SoundFX Played when SoulWall is hit by a projectile which has @cref{BattleEmotionState.Aggression}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBullyShieldHit
-/// <summary>Play sound when CharacterBully's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::SoulWallHitPlayful
+/// SoundFX Played when SoulWall is hit by a projectile which has @cref{BattleEmotionState.Playful}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterEgoistShieldHit
-/// <summary>Play sound when CharacterEgoist's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::SoulWallHitSadness
+/// SoundFX Played when SoulWall is hit by a projectile which has @cref{BattleEmotionState.Sadness}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterDepressedShieldHit
-/// <summary>Play sound when CharacterDepressed's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterCommonHitShield
+/// SoundFX Played when player's shield is hit by a projectile
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterComedianShieldHit
-/// <summary>Play sound when CharacterComedian's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterRacistCatchphrase
+/// SoundFX Played when PlayerCharacterRacist enters the Battle
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterJokerShieldHit
-/// <summary>Play sound when CharacterJoker's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterRacistHitCharacterAggression
+/// SoundFX Played when PlayerCharacterRacist is hit by a projectile which has @cref{BattleEmotionState.Aggression}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterConmanShieldHit
-/// <summary>Play sound when CharacterConman's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterRacistHitCharacterJoy
+/// SoundFX Played when PlayerCharacterRacist is hit by a projectile which has @cref{BattleEmotionState.Joy}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSeducerShieldHit
-/// <summary>Play sound when CharacterSeducer's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterRacistHitCharacterLove
+/// SoundFX Played when PlayerCharacterRacist is hit by a projectile which has @cref{BattleEmotionState.Love}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterReligiousShieldHit
-/// <summary>Play sound when CharacterReligious's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterRacistHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterRacist is hit by a projectile which has @cref{BattleEmotionState.Playful}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterYesmanShieldHit
-/// <summary>Play sound when CharacterYesman's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterRacistHitCharacterSadness
+/// SoundFX Played when PlayerCharacterRacist is hit by a projectile which has @cref{BattleEmotionState.Sadness}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSlaveOfTheLawShieldHit
-/// <summary>Play sound when CharacterSlaveOfTheLaw's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterRacistDeath
+/// SoundFX Played when PlayerCharacterRacist dies
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterFashionSlaveShieldHit
-/// <summary>Play sound when CharacterFashionSlave's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBodybuilderCatchphrase
+/// SoundFX Played when PlayerCharacterBodybuilder enters the Battle
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterMammasBoyShieldHit
-/// <summary>Play sound when CharacterMammasboy's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBodybuilderHitCharacterAggression
+/// SoundFX Played when PlayerCharacterBodybuilder is hit by a projectile which has @cref{BattleEmotionState.Aggression}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSuperstitiousShieldHit
-/// <summary>Play sound when CharacterSuperstitious's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBodybuilderHitCharacterJoy
+/// SoundFX Played when PlayerCharacterBodybuilder is hit by a projectile which has @cref{BattleEmotionState.Joy}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterArtistShieldHit
-/// <summary>Play sound when CharacterArtist's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBodybuilderHitCharacterLove
+/// SoundFX Played when PlayerCharacterBodybuilder is hit by a projectile which has @cref{BattleEmotionState.Love}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterArguerShieldHit
-/// <summary>Play sound when CharacterArguer's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBodybuilderHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterBodybuilder is hit by a projectile which has @cref{BattleEmotionState.Playful}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterReflectorShieldHit
-/// <summary>Play sound when CharacterReflector's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBodybuilderHitCharacterSadness
+/// SoundFX Played when PlayerCharacterBodybuilder is hit by a projectile which has @cref{BattleEmotionState.Sadness}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterDelusionalShieldHit
-/// <summary>Play sound when CharacterDelusional's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBodybuilderDeath
+/// SoundFX Played when PlayerCharacterBodybuilder dies
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterOvereaterShieldHit
-/// <summary>Play sound when CharacterOvereater's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterWarVeteranCatchphrase
+/// SoundFX Played when PlayerCharacterWarVeteran enters the Battle
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterAlcoholicShieldHit
-/// <summary>Play sound when CharacterAlcoholic's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterWarVeteranHitCharacterAggression
+/// SoundFX Played when PlayerCharacterWarVeteran is hit by a projectile which has @cref{BattleEmotionState.Aggression}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterAnorecticShieldHit
-/// <summary>Play sound when CharacterAnorectic's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterWarVeteranHitCharacterJoy
+/// SoundFX Played when PlayerCharacterWarVeteran is hit by a projectile which has @cref{BattleEmotionState.Joy}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterStonerShieldHit
-/// <summary>Play sound when CharacterStoner's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterWarVeteranHitCharacterLove
+/// SoundFX Played when PlayerCharacterWarVeteran is hit by a projectile which has @cref{BattleEmotionState.Love}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterMartyrShieldHit
-/// <summary>Play sound when CharacterMartyr's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterWarVeteranHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterWarVeteran is hit by a projectile which has @cref{BattleEmotionState.Playful}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSuicidalShieldHit
-/// <summary>Play sound when CharacterSuicidal's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterWarVeteranHitCharacterSadness
+/// SoundFX Played when PlayerCharacterWarVeteran is hit by a projectile which has @cref{BattleEmotionState.Sadness}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSoulsistersShieldHit
-/// <summary>Play sound when CharacterSoulsisters's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterWarVeteranDeath
+/// SoundFX Played when PlayerCharacterWarVeteran dies
+///BullyBully
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBullyCatchphrase
+/// SoundFX Played when PlayerCharacterBully enters the Battle
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterLoversShieldHit
-/// <summary>Play sound when CharacterLovers's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBullyHitCharacterAggression
+/// SoundFX Played when PlayerCharacterBully is hit by a projectile which has @cref{BattleEmotionState.Aggression}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSleepyHeadShieldHit
-/// <summary>Play sound when CharacterSleepyHead's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBullyHitCharacterJoy
+/// SoundFX Played when PlayerCharacterBully is hit by a projectile which has @cref{BattleEmotionState.Joy}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterTribalistShieldHit
-/// <summary>Play sound when CharacterTribalist's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBullyHitCharacterLove
+/// SoundFX Played when PlayerCharacterBully is hit by a projectile which has @cref{BattleEmotionState.Love}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterGangBangerShieldHit
-/// <summary>Play sound when CharacterGangBanger's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBullyHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterBully is hit by a projectile which has @cref{BattleEmotionState.Playful}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBooksmartShieldHit
-/// <summary>Play sound when CharacterBooksmart's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBullyHitCharacterSadness
+/// SoundFX Played when PlayerCharacterBully is hit by a projectile which has @cref{BattleEmotionState.Sadness}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterCapitalistShieldHit
-/// <summary>Play sound when CharacterCapitalist's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBullyDeath
+/// SoundFX Played when PlayerCharacterBully dies
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterObsessiveCompulsiveShieldHit
-/// <summary>Play sound when CharacterObsessiveCompulsive's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterEgoistCatchphrase
+/// SoundFX Played when PlayerCharacterEgoist enters the Battle
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterOvercompilatorShieldHit
-/// <summary>Play sound when CharacterOverCompilator's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterEgoistHitCharacterAggression
+/// SoundFX Played when PlayerCharacterEgoist is hit by a projectile which has @cref{BattleEmotionState.Aggression}
 ///
-/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNitpickerShieldHit
-/// <summary>Play sound when CharacterNitpicker's shield gets hit.</summary>
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterEgoistHitCharacterJoy
+/// SoundFX Played when PlayerCharacterEgoist is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterEgoistHitCharacterLove
+/// SoundFX Played when PlayerCharacterEgoist is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterEgoistHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterEgoist is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterEgoistHitCharacterSadness
+/// SoundFX Played when PlayerCharacterEgoist is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterEgoistDeath
+/// SoundFX Played when PlayerCharacterEgoist dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterDepressedCatchphrase
+/// SoundFX Played when PlayerCharacterDepressed enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterDepressedHitCharacterAggression
+/// SoundFX Played when PlayerCharacterDepressed is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterDepressedHitCharacterJoy
+/// SoundFX Played when PlayerCharacterDepressed is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterDepressedHitCharacterLove
+/// SoundFX Played when PlayerCharacterDepressed is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterDepressedHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterDepressed is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterDepressedHitCharacterSadness
+/// SoundFX Played when PlayerCharacterDepressed is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterDepressedDeath
+/// SoundFX Played when PlayerCharacterDepressed dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterComedianCatchphrase
+/// SoundFX Played when PlayerCharacterComedian enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterComedianHitCharacterAggression
+/// SoundFX Played when PlayerCharacterComedian is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterComedianHitCharacterJoy
+/// SoundFX Played when PlayerCharacterComedian is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterComedianHitCharacterLove
+/// SoundFX Played when PlayerCharacterComedian is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterComedianHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterComedian is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterComedianHitCharacterSadness
+/// SoundFX Played when PlayerCharacterComedian is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterComedianDeath
+/// SoundFX Played when PlayerCharacterComedian dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterJokerCatchphrase
+/// SoundFX Played when PlayerCharacterJoker enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterJokerHitCharacterAggression
+/// SoundFX Played when PlayerCharacterJoker is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterJokerHitCharacterJoy
+/// SoundFX Played when PlayerCharacterJoker is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterJokerHitCharacterLove
+/// SoundFX Played when PlayerCharacterJoker is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterJokerHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterJoker is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterJokerHitCharacterSadness
+/// SoundFX Played when PlayerCharacterJoker is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterJokerDeath
+/// SoundFX Played when PlayerCharacterJoker dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterConmanCatchphrase
+/// SoundFX Played when PlayerCharacterConman enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterConmanHitCharacterAggression
+/// SoundFX Played when PlayerCharacterConman is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterConmanHitCharacterJoy
+/// SoundFX Played when PlayerCharacterConman is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterConmanHitCharacterLove
+/// SoundFX Played when PlayerCharacterConman is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterConmanHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterConman is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterConmanHitCharacterSadness
+/// SoundFX Played when PlayerCharacterConman is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterConmanDeath
+/// SoundFX Played when PlayerCharacterConman dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSeducerCatchphrase
+/// SoundFX Played when PlayerCharacterSeducer enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSeducerHitCharacterAggression
+/// SoundFX Played when PlayerCharacterSeducer is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSeducerHitCharacterJoy
+/// SoundFX Played when PlayerCharacterSeducer is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSeducerHitCharacterLove
+/// SoundFX Played when PlayerCharacterSeducer is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSeducerHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterSeducer is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSeducerHitCharacterSadness
+/// SoundFX Played when PlayerCharacterSeducer is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSeducerDeath
+/// SoundFX Played when PlayerCharacterSeducer dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterReligiousCatchphrase
+/// SoundFX Played when PlayerCharacterReligious enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterReligiousHitCharacterAggression
+/// SoundFX Played when PlayerCharacterReligious is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterReligiousHitCharacterJoy
+/// SoundFX Played when PlayerCharacterReligious is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterReligiousHitCharacterLove
+/// SoundFX Played when PlayerCharacterReligious is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterReligiousHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterReligious is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterReligiousHitCharacterSadness
+/// SoundFX Played when PlayerCharacterReligious is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterReligiousDeath
+/// SoundFX Played when PlayerCharacterReligious dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterYesmanCatchphrase
+/// SoundFX Played when PlayerCharacterYesman enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterYesmanHitCharacterAggression
+/// SoundFX Played when PlayerCharacterYesman is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterYesmanHitCharacterJoy
+/// SoundFX Played when PlayerCharacterYesman is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterYesmanHitCharacterLove
+/// SoundFX Played when PlayerCharacterYesman is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterYesmanHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterYesman is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterYesmanHitCharacterSadness
+/// SoundFX Played when PlayerCharacterYesman is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterYesmanDeath
+/// SoundFX Played when PlayerCharacterYesman dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSlaveOfTheLawCatchphrase
+/// SoundFX Played when PlayerCharacterSlaveOfTheLaw enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSlaveOfTheLawHitCharacterAggression
+/// SoundFX Played when PlayerCharacterSlaveOfTheLaw is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSlaveOfTheLawHitCharacterJoy
+/// SoundFX Played when PlayerCharacterSlaveOfTheLaw is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSlaveOfTheLawHitCharacterLove
+/// SoundFX Played when PlayerCharacterSlaveOfTheLaw is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSlaveOfTheLawHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterSlaveOfTheLaw is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSlaveOfTheLawHitCharacterSadness
+/// SoundFX Played when PlayerCharacterSlaveOfTheLaw is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSlaveOfTheLawDeath
+/// SoundFX Played when PlayerCharacterSlaveOfTheLaw dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterFashionSlaveCatchphrase
+/// SoundFX Played when PlayerCharacterFashionSlave enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterFashionSlaveHitCharacterAggression
+/// SoundFX Played when PlayerCharacterFashionSlave is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterFashionSlaveHitCharacterJoy
+/// SoundFX Played when PlayerCharacterFashionSlave is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterFashionSlaveHitCharacterLove
+/// SoundFX Played when PlayerCharacterFashionSlave is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterFashionSlaveHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterFashionSlave is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterFashionSlaveHitCharacterSadness
+/// SoundFX Played when PlayerCharacterFashionSlave is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterFashionSlaveDeath
+/// SoundFX Played when PlayerCharacterFashionSlave dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterMammasBoyCatchphrase
+/// SoundFX Played when PlayerCharacterMammasBoy enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterMammasBoyHitCharacterAggression
+/// SoundFX Played when PlayerCharacterMammasBoy is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterMammasBoyHitCharacterJoy
+/// SoundFX Played when PlayerCharacterMammasBoy is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterMammasBoyHitCharacterLove
+/// SoundFX Played when PlayerCharacterMammasBoy is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterMammasBoyHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterMammasBoy is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterMammasBoyHitCharacterSadness
+/// SoundFX Played when PlayerCharacterMammasBoy is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterMammasBoyDeath
+/// SoundFX Played when PlayerCharacterMammasBoy dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSuperstitiousCatchphrase
+/// SoundFX Played when PlayerCharacterSuperstitious enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSuperstitiousHitCharacterAggression
+/// SoundFX Played when PlayerCharacterSuperstitious is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSuperstitiousHitCharacterJoy
+/// SoundFX Played when PlayerCharacterSuperstitious is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSuperstitiousHitCharacterLove
+/// SoundFX Played when PlayerCharacterSuperstitious is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSuperstitiousHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterSuperstitious is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSuperstitiousHitCharacterSadness
+/// SoundFX Played when PlayerCharacterSuperstitious is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSuperstitiousDeath
+/// SoundFX Played when PlayerCharacterSuperstitious dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterArtistCatchphrase
+/// SoundFX Played when PlayerCharacterArtist enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterArtistHitCharacterAggression
+/// SoundFX Played when PlayerCharacterArtist is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterArtistHitCharacterJoy
+/// SoundFX Played when PlayerCharacterArtist is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterArtistHitCharacterLove
+/// SoundFX Played when PlayerCharacterArtist is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterArtistHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterArtist is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterArtistHitCharacterSadness
+/// SoundFX Played when PlayerCharacterArtist is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterArtistDeath
+/// SoundFX Played when PlayerCharacterArtist dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterArguerCatchphrase
+/// SoundFX Played when PlayerCharacterArguer enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterArguerHitCharacterAggression
+/// SoundFX Played when PlayerCharacterArguer is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterArguerHitCharacterJoy
+/// SoundFX Played when PlayerCharacterArguer is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterArguerHitCharacterLove
+/// SoundFX Played when PlayerCharacterArguer is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterArguerHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterArguer is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterArguerHitCharacterSadness
+/// SoundFX Played when PlayerCharacterArguer is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterArguerDeath
+/// SoundFX Played when PlayerCharacterArguer dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterReflectorCatchphrase
+/// SoundFX Played when PlayerCharacterReflector enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterReflectorHitCharacterAggression
+/// SoundFX Played when PlayerCharacterReflector is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterReflectorHitCharacterJoy
+/// SoundFX Played when PlayerCharacterReflector is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterReflectorHitCharacterLove
+/// SoundFX Played when PlayerCharacterReflector is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterReflectorHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterReflector is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterReflectorHitCharacterSadness
+/// SoundFX Played when PlayerCharacterReflector is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterReflectorDeath
+/// SoundFX Played when PlayerCharacterReflector dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterDelusionalCatchphrase
+/// SoundFX Played when PlayerCharacterDelusional enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterDelusionalHitCharacterAggression
+/// SoundFX Played when PlayerCharacterDelusional is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterDelusionalHitCharacterJoy
+/// SoundFX Played when PlayerCharacterDelusional is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterDelusionalHitCharacterLove
+/// SoundFX Played when PlayerCharacterDelusional is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterDelusionalHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterDelusional is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterDelusionalHitCharacterSadness
+/// SoundFX Played when PlayerCharacterDelusional is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterDelusionalDeath
+/// SoundFX Played when PlayerCharacterDelusional dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterOvereaterCatchphrase
+/// SoundFX Played when PlayerCharacterOvereater enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterOvereaterHitCharacterAggression
+/// SoundFX Played when PlayerCharacterOvereater is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterOvereaterHitCharacterJoy
+/// SoundFX Played when PlayerCharacterOvereater is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterOvereaterHitCharacterLove
+/// SoundFX Played when PlayerCharacterOvereater is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterOvereaterHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterOvereater is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterOvereaterHitCharacterSadness
+/// SoundFX Played when PlayerCharacterOvereater is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterOvereaterDeath
+/// SoundFX Played when PlayerCharacterOvereater dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterAlcoholicCatchphrase
+/// SoundFX Played when PlayerCharacterAlcoholic enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterAlcoholicHitCharacterAggression
+/// SoundFX Played when PlayerCharacterAlcoholic is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterAlcoholicHitCharacterJoy
+/// SoundFX Played when PlayerCharacterAlcoholic is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterAlcoholicHitCharacterLove
+/// SoundFX Played when PlayerCharacterAlcoholic is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterAlcoholicHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterAlcoholic is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterAlcoholicHitCharacterSadness
+/// SoundFX Played when PlayerCharacterAlcoholic is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterAlcoholicDeath
+/// SoundFX Played when PlayerCharacterAlcoholic dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterAnorecticCatchphrase
+/// SoundFX Played when PlayerCharacterAnorectic enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterAnorecticHitCharacterAggression
+/// SoundFX Played when PlayerCharacterAnorectic is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterAnorecticHitCharacterJoy
+/// SoundFX Played when PlayerCharacterAnorectic is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterAnorecticHitCharacterLove
+/// SoundFX Played when PlayerCharacterAnorectic is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterAnorecticHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterAnorectic is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterAnorecticHitCharacterSadness
+/// SoundFX Played when PlayerCharacterAnorectic is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterAnorecticDeath
+/// SoundFX Played when PlayerCharacterAnorectic dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterStonerCatchphrase
+/// SoundFX Played when PlayerCharacterStoner enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterStonerHitCharacterAggression
+/// SoundFX Played when PlayerCharacterStoner is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterStonerHitCharacterJoy
+/// SoundFX Played when PlayerCharacterStoner is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterStonerHitCharacterLove
+/// SoundFX Played when PlayerCharacterStoner is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterStonerHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterStoner is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterStonerHitCharacterSadness
+/// SoundFX Played when PlayerCharacterStoner is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterStonerDeath
+/// SoundFX Played when PlayerCharacterStoner dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterMartyrCatchphrase
+/// SoundFX Played when PlayerCharacterMartyr enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterMartyrHitCharacterAggression
+/// SoundFX Played when PlayerCharacterMartyr is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterMartyrHitCharacterJoy
+/// SoundFX Played when PlayerCharacterMartyr is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterMartyrHitCharacterLove
+/// SoundFX Played when PlayerCharacterMartyr is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterMartyrHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterMartyr is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterMartyrHitCharacterSadness
+/// SoundFX Played when PlayerCharacterMartyr is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterMartyrDeath
+/// SoundFX Played when PlayerCharacterMartyr dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSuicidalCatchphrase
+/// SoundFX Played when PlayerCharacterSuicidal enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSuicidalHitCharacterAggression
+/// SoundFX Played when PlayerCharacterSuicidal is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSuicidalHitCharacterJoy
+/// SoundFX Played when PlayerCharacterSuicidal is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSuicidalHitCharacterLove
+/// SoundFX Played when PlayerCharacterSuicidal is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSuicidalHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterSuicidal is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSuicidalHitCharacterSadness
+/// SoundFX Played when PlayerCharacterSuicidal is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSuicidalDeath
+/// SoundFX Played when PlayerCharacterSuicidal dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSoulsistersCatchphrase
+/// SoundFX Played when PlayerCharacterSoulsisters enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSoulsistersHitCharacterAggression
+/// SoundFX Played when PlayerCharacterSoulsisters is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSoulsistersHitCharacterJoy
+/// SoundFX Played when PlayerCharacterSoulsisters is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSoulsistersHitCharacterLove
+/// SoundFX Played when PlayerCharacterSoulsisters is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSoulsistersHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterSoulsisters is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSoulsistersHitCharacterSadness
+/// SoundFX Played when PlayerCharacterSoulsisters is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSoulsistersDeath
+/// SoundFX Played when PlayerCharacterSoulsisters dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterLoversCatchphrase
+/// SoundFX Played when PlayerCharacterLovers enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterLoversHitCharacterAggression
+/// SoundFX Played when PlayerCharacterLovers is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterLoversHitCharacterJoy
+/// SoundFX Played when PlayerCharacterLovers is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterLoversHitCharacterLove
+/// SoundFX Played when PlayerCharacterLovers is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterLoversHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterLovers is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterLoversHitCharacterSadness
+/// SoundFX Played when PlayerCharacterLovers is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterLoversDeath
+/// SoundFX Played when PlayerCharacterLovers dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSleepyHeadCatchphrase
+/// SoundFX Played when PlayerCharacterSleepyHead enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSleepyHeadHitCharacterAggression
+/// SoundFX Played when PlayerCharacterSleepyHead is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSleepyHeadHitCharacterJoy
+/// SoundFX Played when PlayerCharacterSleepyHead is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSleepyHeadHitCharacterLove
+/// SoundFX Played when PlayerCharacterSleepyHead is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSleepyHeadHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterSleepyHead is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSleepyHeadHitCharacterSadness
+/// SoundFX Played when PlayerCharacterSleepyHead is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterSleepyHeadDeath
+/// SoundFX Played when PlayerCharacterSleepyHead dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterTribalistCatchphrase
+/// SoundFX Played when PlayerCharacterTribalist enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterTribalistHitCharacterAggression
+/// SoundFX Played when PlayerCharacterTribalist is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterTribalistHitCharacterJoy
+/// SoundFX Played when PlayerCharacterTribalist is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterTribalistHitCharacterLove
+/// SoundFX Played when PlayerCharacterTribalist is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterTribalistHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterTribalist is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterTribalistHitCharacterSadness
+/// SoundFX Played when PlayerCharacterTribalist is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterTribalistDeath
+/// SoundFX Played when PlayerCharacterTribalist dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterGangBangerCatchphrase
+/// SoundFX Played when PlayerCharacterGangBanger enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterGangBangerHitCharacterAggression
+/// SoundFX Played when PlayerCharacterGangBanger is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterGangBangerHitCharacterJoy
+/// SoundFX Played when PlayerCharacterGangBanger is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterGangBangerHitCharacterLove
+/// SoundFX Played when PlayerCharacterGangBanger is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterGangBangerHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterGangBanger is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterGangBangerHitCharacterSadness
+/// SoundFX Played when PlayerCharacterGangBanger is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterGangBangerDeath
+/// SoundFX Played when PlayerCharacterGangBanger dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBooksmartCatchphrase
+/// SoundFX Played when PlayerCharacterBooksmart enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBooksmartHitCharacterAggression
+/// SoundFX Played when PlayerCharacterBooksmart is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBooksmartHitCharacterJoy
+/// SoundFX Played when PlayerCharacterBooksmart is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBooksmartHitCharacterLove
+/// SoundFX Played when PlayerCharacterBooksmart is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBooksmartHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterBooksmart is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBooksmartHitCharacterSadness
+/// SoundFX Played when PlayerCharacterBooksmart is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterBooksmartDeath
+/// SoundFX Played when PlayerCharacterBooksmart dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterCapitalistCatchphrase
+/// SoundFX Played when PlayerCharacterCapitalist enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterCapitalistHitCharacterAggression
+/// SoundFX Played when PlayerCharacterCapitalist is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterCapitalistHitCharacterJoy
+/// SoundFX Played when PlayerCharacterCapitalist is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterCapitalistHitCharacterLove
+/// SoundFX Played when PlayerCharacterCapitalist is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterCapitalistHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterCapitalist is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterCapitalistHitCharacterSadness
+/// SoundFX Played when PlayerCharacterCapitalist is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterCapitalistDeath
+/// SoundFX Played when PlayerCharacterCapitalist dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterObsessiveCompulsiveCatchphrase
+/// SoundFX Played when PlayerCharacterObsessiveCompulsive enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterObsessiveCompulsiveHitCharacterAggression
+/// SoundFX Played when PlayerCharacterObsessiveCompulsive is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterObsessiveCompulsiveHitCharacterJoy
+/// SoundFX Played when PlayerCharacterObsessiveCompulsive is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterObsessiveCompulsiveHitCharacterLove
+/// SoundFX Played when PlayerCharacterObsessiveCompulsive is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterObsessiveCompulsiveHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterObsessiveCompulsive is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterObsessiveCompulsiveHitCharacterSadness
+/// SoundFX Played when PlayerCharacterObsessiveCompulsive is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterObsessiveCompulsiveDeath
+/// SoundFX Played when PlayerCharacterObsessiveCompulsive dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterOvercompilatorCatchphrase
+/// SoundFX Played when PlayerCharacterOvercompilator enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterOvercompilatorHitCharacterAggression
+/// SoundFX Played when PlayerCharacterOvercompilator is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterOvercompilatorHitCharacterJoy
+/// SoundFX Played when PlayerCharacterOvercompilator is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterOvercompilatorHitCharacterLove
+/// SoundFX Played when PlayerCharacterOvercompilator is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterOvercompilatorHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterOvercompilator is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterOvercompilatorHitCharacterSadness
+/// SoundFX Played when PlayerCharacterOvercompilator is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterOvercompilatorDeath
+/// SoundFX Played when PlayerCharacterOvercompilator dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNitPickerCatchphrase
+/// SoundFX Played when PlayerCharacterNitPicker enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNitPickerHitCharacterAggression
+/// SoundFX Played when PlayerCharacterNitPicker is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNitPickerHitCharacterJoy
+/// SoundFX Played when PlayerCharacterNitPicker is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNitPickerHitCharacterLove
+/// SoundFX Played when PlayerCharacterNitPicker is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNitPickerHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterNitPicker is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNitPickerHitCharacterSadness
+/// SoundFX Played when PlayerCharacterNitPicker is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNitPickerDeath
+/// SoundFX Played when PlayerCharacterNitPicker dies
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNitPickerCatchphrase
+/// SoundFX Played when PlayerCharacterNitPicker enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNitPickerHitCharacterAggression
+/// SoundFX Played when PlayerCharacterNitPicker is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNitPickerHitCharacterJoy
+/// SoundFX Played when PlayerCharacterNitPicker is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNitPickerHitCharacterLove
+/// SoundFX Played when PlayerCharacterNitPicker is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNitPickerHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterNitPicker is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNitPickerHitCharacterSadness
+/// SoundFX Played when PlayerCharacterNitPicker is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNitPickerDeath
+/// SoundFX Played when PlayerCharacterNitPicker dies
+///
