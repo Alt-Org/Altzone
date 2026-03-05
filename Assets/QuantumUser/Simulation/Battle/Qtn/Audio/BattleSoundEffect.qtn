@@ -1,5 +1,7 @@
 #define BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER 10
 
+#define BATTLE_SOUND_FX_CHARACTER_COMMON_START 100
+
 #define BATTLE_SOUND_FX_CHARACTER_RACIST_START      1010 // 101 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
 #define BATTLE_SOUND_FX_CHARACTER_BODYBUILDER_START 1020 // 102 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
 #define BATTLE_SOUND_FX_CHARACTER_WARVETERAN_START  1030 // 103 * BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER
@@ -60,6 +62,9 @@ enum BattleSoundFX
 
     //{ Character Sound Effects
 
+    //Common
+    PlayerCharacterCommonHitShield = BATTLE_SOUND_FX_CHARACTER_COMMON_START,
+
     // Racist
     PlayerCharacterRacistCatchphrase = BATTLE_SOUND_FX_CHARACTER_RACIST_START,
     PlayerCharacterRacistHitCharacterAggression,
@@ -67,7 +72,6 @@ enum BattleSoundFX
     PlayerCharacterRacistHitCharacterLove,
     PlayerCharacterRacistHitCharacterPlayful,
     PlayerCharacterRacistHitCharacterSadness,
-    PlayerCharacterRacistHitShield,
     PlayerCharacterRacistDeath,
 
     // BodyBuilder
@@ -77,7 +81,6 @@ enum BattleSoundFX
     PlayerCharacterBodybuilderHitCharacterLove,
     PlayerCharacterBodybuilderHitCharacterPlayful,
     PlayerCharacterBodybuilderHitCharacterSadness,
-    PlayerCharacterBodybuilderHitShield,
     PlayerCharacterBodybuilderDeath,
 
     // WarVeteran
@@ -87,7 +90,6 @@ enum BattleSoundFX
     PlayerCharacterWarVeteranHitCharacterLove,
     PlayerCharacterWarVeteranHitCharacterPlayful,
     PlayerCharacterWarVeteranHitCharacterSadness,
-    PlayerCharacterWarVeteranHitShield,
     PlayerCharacterWarVeteranDeath,
 
     // Bully
@@ -97,7 +99,6 @@ enum BattleSoundFX
     PlayerCharacterBullyHitCharacterLove,
     PlayerCharacterBullyHitCharacterPlayful,
     PlayerCharacterBullyHitCharacterSadness,
-    PlayerCharacterBullyHitShield,
     PlayerCharacterBullyDeath,
 
     // Egoist
@@ -107,7 +108,6 @@ enum BattleSoundFX
     PlayerCharacterEgoistHitCharacterLove,
     PlayerCharacterEgoistHitCharacterPlayful,
     PlayerCharacterEgoistHitCharacterSadness,
-    PlayerCharacterEgoistHitShield,
     PlayerCharacterEgoistDeath,
 
     // Depressed
@@ -117,7 +117,6 @@ enum BattleSoundFX
     PlayerCharacterDepressedHitCharacterLove,
     PlayerCharacterDepressedHitCharacterPlayful,
     PlayerCharacterDepressedHitCharacterSadness,
-    PlayerCharacterDepressedHitShield,
     PlayerCharacterDepressedDeath,
 
     // Comedian
@@ -127,7 +126,6 @@ enum BattleSoundFX
     PlayerCharacterComedianHitCharacterLove,
     PlayerCharacterComedianHitCharacterPlayful,
     PlayerCharacterComedianHitCharacterSadness,
-    PlayerCharacterComedianHitShield,
     PlayerCharacterComedianDeath,
 
     // Joker
@@ -137,7 +135,6 @@ enum BattleSoundFX
     PlayerCharacterJokerHitCharacterLove,
     PlayerCharacterJokerHitCharacterPlayful,
     PlayerCharacterJokerHitCharacterSadness,
-    PlayerCharacterJokerHitShield,
     PlayerCharacterJokerDeath,
 
     // Conman
@@ -147,7 +144,6 @@ enum BattleSoundFX
     PlayerCharacterConmanHitCharacterLove,
     PlayerCharacterConmanHitCharacterPlayful,
     PlayerCharacterConmanHitCharacterSadness,
-    PlayerCharacterConmanHitShield,
     PlayerCharacterConmanDeath,
 
     // Seducer
@@ -157,7 +153,6 @@ enum BattleSoundFX
     PlayerCharacterSeducerHitCharacterLove,
     PlayerCharacterSeducerHitCharacterPlayful,
     PlayerCharacterSeducerHitCharacterSadness,
-    PlayerCharacterSeducerHitShield,
     PlayerCharacterSeducerDeath,
 
     // Religious
@@ -167,7 +162,6 @@ enum BattleSoundFX
     PlayerCharacterReligiousHitCharacterLove,
     PlayerCharacterReligiousHitCharacterPlayful,
     PlayerCharacterReligiousHitCharacterSadness,
-    PlayerCharacterReligiousHitShield,
     PlayerCharacterReligiousDeath,
 
     // Yesman
@@ -177,7 +171,6 @@ enum BattleSoundFX
     PlayerCharacterYesmanHitCharacterLove,
     PlayerCharacterYesmanHitCharacterPlayful,
     PlayerCharacterYesmanHitCharacterSadness,
-    PlayerCharacterYesmanHitShield,
     PlayerCharacterYesmanDeath,
 
     // SlaveOfTheLaw
@@ -187,7 +180,6 @@ enum BattleSoundFX
     PlayerCharacterSlaveOfTheLawHitCharacterLove,
     PlayerCharacterSlaveOfTheLawHitCharacterPlayful,
     PlayerCharacterSlaveOfTheLawHitCharacterSadness,
-    PlayerCharacterSlaveOfTheLawHitShield,
     PlayerCharacterSlaveOfTheLawDeath,
 
     // FashionSlave
@@ -197,7 +189,6 @@ enum BattleSoundFX
     PlayerCharacterFashionSlaveHitCharacterLove,
     PlayerCharacterFashionSlaveHitCharacterPlayful,
     PlayerCharacterFashionSlaveHitCharacterSadness,
-    PlayerCharacterFashionSlaveHitShield,
     PlayerCharacterFashionSlaveDeath,
 
     // MammasBoy
@@ -207,7 +198,6 @@ enum BattleSoundFX
     PlayerCharacterMammasBoyHitCharacterLove,
     PlayerCharacterMammasBoyHitCharacterPlayful,
     PlayerCharacterMammasBoyHitCharacterSadness,
-    PlayerCharacterMammasBoyHitShield,
     PlayerCharacterMammasBoyDeath,
 
     // Superstitious
@@ -217,7 +207,6 @@ enum BattleSoundFX
     PlayerCharacterSuperstitiousHitCharacterLove,
     PlayerCharacterSuperstitiousHitCharacterPlayful,
     PlayerCharacterSuperstitiousHitCharacterSadness,
-    PlayerCharacterSuperstitiousHitShield,
     PlayerCharacterSuperstitiousDeath,
 
     // Artist
@@ -227,7 +216,6 @@ enum BattleSoundFX
     PlayerCharacterArtistHitCharacterLove,
     PlayerCharacterArtistHitCharacterPlayful,
     PlayerCharacterArtistHitCharacterSadness,
-    PlayerCharacterArtistHitShield,
     PlayerCharacterArtistDeath,
 
     // Arguer
@@ -237,7 +225,6 @@ enum BattleSoundFX
     PlayerCharacterArguerHitCharacterLove,
     PlayerCharacterArguerHitCharacterPlayful,
     PlayerCharacterArguerHitCharacterSadness,
-    PlayerCharacterArguerHitShield,
     PlayerCharacterArguerDeath,
 
     // Reflector
@@ -247,7 +234,6 @@ enum BattleSoundFX
     PlayerCharacterReflectorHitCharacterLove,
     PlayerCharacterReflectorHitCharacterPlayful,
     PlayerCharacterReflectorHitCharacterSadness,
-    PlayerCharacterReflectorHitShield,
     PlayerCharacterReflectorDeath,
 
     // Delusional
@@ -257,7 +243,6 @@ enum BattleSoundFX
     PlayerCharacterDelusionalHitCharacterLove,
     PlayerCharacterDelusionalHitCharacterPlayful,
     PlayerCharacterDelusionalHitCharacterSadness,
-    PlayerCharacterDelusionalHitShield,
     PlayerCharacterDelusionalDeath,
 
     // Overeater
@@ -267,7 +252,6 @@ enum BattleSoundFX
     PlayerCharacterOvereaterHitCharacterLove,
     PlayerCharacterOvereaterHitCharacterPlayful,
     PlayerCharacterOvereaterHitCharacterSadness,
-    PlayerCharacterOvereaterHitShield,
     PlayerCharacterOvereaterDeath,
 
     // Alcoholic
@@ -277,7 +261,6 @@ enum BattleSoundFX
     PlayerCharacterAlcoholicHitCharacterLove,
     PlayerCharacterAlcoholicHitCharacterPlayful,
     PlayerCharacterAlcoholicHitCharacterSadness,
-    PlayerCharacterAlcoholicHitShield,
     PlayerCharacterAlcoholicDeath,
 
     // Anorectic
@@ -287,7 +270,6 @@ enum BattleSoundFX
     PlayerCharacterAnorecticHitCharacterLove,
     PlayerCharacterAnorecticHitCharacterPlayful,
     PlayerCharacterAnorecticHitCharacterSadness,
-    PlayerCharacterAnorecticHitShield,
     PlayerCharacterAnorecticDeath,
 
     // Stoner
@@ -297,7 +279,6 @@ enum BattleSoundFX
     PlayerCharacterStonerHitCharacterLove,
     PlayerCharacterStonerHitCharacterPlayful,
     PlayerCharacterStonerHitCharacterSadness,
-    PlayerCharacterStonerHitShield,
     PlayerCharacterStonerDeath,
 
     // Martyr
@@ -307,7 +288,6 @@ enum BattleSoundFX
     PlayerCharacterMartyrHitCharacterLove,
     PlayerCharacterMartyrHitCharacterPlayful,
     PlayerCharacterMartyrHitCharacterSadness,
-    PlayerCharacterMartyrHitShield,
     PlayerCharacterMartyrDeath,
 
     // Suicidal
@@ -317,7 +297,6 @@ enum BattleSoundFX
     PlayerCharacterSuicidalHitCharacterLove,
     PlayerCharacterSuicidalHitCharacterPlayful,
     PlayerCharacterSuicidalHitCharacterSadness,
-    PlayerCharacterSuicidalHitShield,
     PlayerCharacterSuicidalDeath,
 
     // Soulsisters
@@ -327,7 +306,6 @@ enum BattleSoundFX
     PlayerCharacterSoulsistersHitCharacterLove,
     PlayerCharacterSoulsistersHitCharacterPlayful,
     PlayerCharacterSoulsistersHitCharacterSadness,
-    PlayerCharacterSoulsistersHitShield,
     PlayerCharacterSoulsistersDeath,
 
     // Lovers
@@ -337,7 +315,6 @@ enum BattleSoundFX
     PlayerCharacterLoversHitCharacterLove,
     PlayerCharacterLoversHitCharacterPlayful,
     PlayerCharacterLoversHitCharacterSadness,
-    PlayerCharacterLoversHitShield,
     PlayerCharacterLoversDeath,
 
     // SleepyHead
@@ -347,7 +324,6 @@ enum BattleSoundFX
     PlayerCharacterSleepyHeadHitCharacterLove,
     PlayerCharacterSleepyHeadHitCharacterPlayful,
     PlayerCharacterSleepyHeadHitCharacterSadness,
-    PlayerCharacterSleepyHeadHitShield,
     PlayerCharacterSleepyHeadDeath,
 
     // Tribalist
@@ -357,7 +333,6 @@ enum BattleSoundFX
     PlayerCharacterTribalistHitCharacterLove,
     PlayerCharacterTribalistHitCharacterPlayful,
     PlayerCharacterTribalistHitCharacterSadness,
-    PlayerCharacterTribalistHitShield,
     PlayerCharacterTribalistDeath,
 
     // GangBanger
@@ -367,7 +342,6 @@ enum BattleSoundFX
     PlayerCharacterGangBangerHitCharacterLove,
     PlayerCharacterGangBangerHitCharacterPlayful,
     PlayerCharacterGangBangerHitCharacterSadness,
-    PlayerCharacterGangBangerHitShield,
     PlayerCharacterGangBangerDeath,
 
     // Booksmart
@@ -377,7 +351,6 @@ enum BattleSoundFX
     PlayerCharacterBooksmartHitCharacterLove,
     PlayerCharacterBooksmartHitCharacterPlayful,
     PlayerCharacterBooksmartHitCharacterSadness,
-    PlayerCharacterBooksmartHitShield,
     PlayerCharacterBooksmartDeath,
 
     // Capitalist
@@ -387,7 +360,6 @@ enum BattleSoundFX
     PlayerCharacterCapitalistHitCharacterLove,
     PlayerCharacterCapitalistHitCharacterPlayful,
     PlayerCharacterCapitalistHitCharacterSadness,
-    PlayerCharacterCapitalistHitShield,
     PlayerCharacterCapitalistDeath,
 
     // ObsessiveCompulsive
@@ -397,7 +369,6 @@ enum BattleSoundFX
     PlayerCharacterObsessiveCompulsiveHitCharacterLove,
     PlayerCharacterObsessiveCompulsiveHitCharacterPlayful,
     PlayerCharacterObsessiveCompulsiveHitCharacterSadness,
-    PlayerCharacterObsessiveCompulsiveHitShield,
     PlayerCharacterObsessiveCompulsiveDeath,
 
     // Overcompilator
@@ -407,7 +378,6 @@ enum BattleSoundFX
     PlayerCharacterOvercompilatorHitCharacterLove,
     PlayerCharacterOvercompilatorHitCharacterPlayful,
     PlayerCharacterOvercompilatorHitCharacterSadness,
-    PlayerCharacterOvercompilatorHitShield,
     PlayerCharacterOvercompilatorDeath,
 
     // NitPicker
@@ -417,9 +387,7 @@ enum BattleSoundFX
     PlayerCharacterNitPickerHitCharacterLove,
     PlayerCharacterNitPickerHitCharacterPlayful,
     PlayerCharacterNitPickerHitCharacterSadness,
-    PlayerCharacterNitPickerHitShield,
-    PlayerCharacterNitPickerDeath
+    PlayerCharacterNitPickerDeath,
 
     //} Character Sound Effects
 }
-
