@@ -344,9 +344,11 @@ namespace MenuUI.Scripts.SoulHome
             int distanceY = Mathf.Abs(a.GridPosition.y - b.GridPosition.y);
 
             // Diagonal nodes are 1.41 times farther, otherwise diagonal movement is preferred
-            if (distanceX > distanceY)
-                return 1.41f * distanceY + 1.0f * (distanceX - distanceY);
-            return 1.41f * distanceX + 1.0f * (distanceY - distanceX);
+            //if (distanceX > distanceY)
+            //    return 1.41f * distanceY + 1.0f * (distanceX - distanceY);
+            //return 1.41f * distanceX + 1.0f * (distanceY - distanceX);
+
+            return Mathf.Max(distanceX, distanceY);
         }
 
         private GridNode GetLowestFCostNode(List<GridNode> nodes)
@@ -426,32 +428,62 @@ namespace MenuUI.Scripts.SoulHome
             return null;
         }
 
+        // if there is a clear los between points, removes points in between, so the avatar won't zig-zag
         private List<Vector2> SmoothPath(List<Vector2> fullPath)
         {
-            // only keeps start point, end point and points where direction changes
-
             if (fullPath.Count < 3) return fullPath;
 
             List<Vector2> smoothedPath = new();
-            smoothedPath.Add(fullPath[0]);
+            Vector2 currentPoint = fullPath[0]; // point where los is checked from
+            smoothedPath.Add(currentPoint);
 
-            for (int i = 1; i < fullPath.Count - 1; i++)
+            for (int i = 2; i < fullPath.Count - 1; i++)
             {
-                Vector2 previous = fullPath[i - 1];
-                Vector2 current = fullPath[i];
-                Vector2 next = fullPath[i + 1];
-
-                Vector2 directionToCurrent = (current - previous).normalized;
-                Vector2 directionToNext = (next - current).normalized;
-
-                if (Vector2.Distance(directionToCurrent, directionToNext) > 0.01f)
+                // If furniture blocks direct path to future point
+                if (IsPathBlocked(currentPoint, fullPath[i]))
                 {
-                    smoothedPath.Add(current);
+                    // stop at last point before hitting furniture
+                    currentPoint = fullPath[i - 1];
+                    smoothedPath.Add(currentPoint);
                 }
             }
 
-            smoothedPath.Add(fullPath[fullPath.Count - 1]);
+            smoothedPath.Add(fullPath[fullPath.Count - 1]); //destination point
             return smoothedPath;
+        }
+
+        private bool IsPathBlocked(Vector2 start, Vector2 end)
+        {
+            Vector2Int gridStart = WorldToGrid(start);
+            Vector2Int gridEnd = WorldToGrid(end);
+
+            // check if every cell in a line between start and en is walkable
+            foreach (Vector2Int cell in GetCellsOnLine(gridStart, gridEnd))
+            {
+                if (!_grid[cell.x, cell.y].IsWalkable) return true;
+            }
+            return false;
+        }
+
+        private IEnumerable<Vector2Int> GetCellsOnLine(Vector2Int start, Vector2Int end)
+        {
+            // Bresenham's line algorithm
+            int x = start.x;
+            int y = start.y;
+            int dx = Mathf.Abs(end.x - start.x); // total horizontal distance
+            int dy = Mathf.Abs(end.y - start.y); // total vertical disttance
+            int sx = start.x < end.x ? 1 : -1;   // 1 if moving right, otherwise -1
+            int sy = start.y < end.y ? 1 : -1;   // 1 if moving up, otherwise -1
+            int err = dx - dy;
+
+            while (true)
+            {
+                yield return new Vector2Int(x, y);
+                if (x == end.x && y == end.y) break;
+                int e2 = 2 * err;
+                if (e2 > -dy) { err -= dy; x += sx; } //horizontal step
+                if (e2 < dx) { err += dx; y += sy; } //vertical step
+            }
         }
 
         #endregion
