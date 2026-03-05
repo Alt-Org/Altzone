@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.U2D.Animation;
@@ -159,7 +160,7 @@ namespace MenuUI.Scripts.SoulHome
 
         private void HandleWander()
         {
-            // Need to make grid updating to happen when furniture is changed
+            // Need to make grid updating to happen when furniture is changed, no reason to do it this often
             UpdateGrid();
             if (_walkableSlots.Count > 0)
             {
@@ -167,7 +168,9 @@ namespace MenuUI.Scripts.SoulHome
                 List<GridNode> nodePath = FindPath(_currentGridPosition, target);
                 if (nodePath != null)
                 {
-                    _travelPoints = GetTravelPoints(nodePath);
+                    List<Vector2> rawPath = GetTravelPoints(nodePath);
+
+                    _travelPoints = SmoothPath(rawPath);
                     _currentGridPosition = target;
                     _statusCoroutine = StartCoroutine(MoveRoutine());
                 }
@@ -192,8 +195,6 @@ namespace MenuUI.Scripts.SoulHome
             {
                 Vector2 targetPos = _travelPoints[0];
 
-                UpdateSortingOrder(WorldToGrid(targetPos).y);
-
                 if (targetPos.x < transform.position.x)
                 {
                     transform.rotation = Quaternion.Euler(0, 180, 0);
@@ -214,6 +215,9 @@ namespace MenuUI.Scripts.SoulHome
                         transform.position,
                         targetPos,
                         _speed * Time.deltaTime);
+
+                    UpdateSortingOrder(WorldToGrid(targetPos).y);
+
                     yield return null;
                 }
 
@@ -267,7 +271,7 @@ namespace MenuUI.Scripts.SoulHome
             return new Vector2(slotTransform.position.x, slotTransform.position.y);
         }
 
-        // if needed, finds the closest grid position from the actual avatar position
+        //finds the closest grid position from the actual avatar position
         private Vector2Int WorldToGrid(Vector2 worldPos)
         {
             Vector2Int closest = Vector2Int.zero;
@@ -420,6 +424,34 @@ namespace MenuUI.Scripts.SoulHome
             }
             // no available path
             return null;
+        }
+
+        private List<Vector2> SmoothPath(List<Vector2> fullPath)
+        {
+            // only keeps start point, end point and points where direction changes
+
+            if (fullPath.Count < 3) return fullPath;
+
+            List<Vector2> smoothedPath = new();
+            smoothedPath.Add(fullPath[0]);
+
+            for (int i = 1; i < fullPath.Count - 1; i++)
+            {
+                Vector2 previous = fullPath[i - 1];
+                Vector2 current = fullPath[i];
+                Vector2 next = fullPath[i + 1];
+
+                Vector2 directionToCurrent = (current - previous).normalized;
+                Vector2 directionToNext = (next - current).normalized;
+
+                if (Vector2.Distance(directionToCurrent, directionToNext) > 0.01f)
+                {
+                    smoothedPath.Add(current);
+                }
+            }
+
+            smoothedPath.Add(fullPath[fullPath.Count - 1]);
+            return smoothedPath;
         }
 
         #endregion
