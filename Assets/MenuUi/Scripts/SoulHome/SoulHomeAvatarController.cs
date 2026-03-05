@@ -46,8 +46,10 @@ namespace MenuUI.Scripts.SoulHome
         private string _rHandLabel;
 
         private Coroutine _statusCoroutine;
-        private int[,] _grid;
+        private GridNode[,] _grid;
         private List<AnimationClip> _verifiedInteractClips = new();
+        private Vector2Int _currentGridPosition;
+        private List<Vector2Int> _walkableSlots = new();
         public AvatarStatus Status
         {
             get => _status;
@@ -128,6 +130,7 @@ namespace MenuUI.Scripts.SoulHome
                     _statusCoroutine = StartCoroutine(HandleIdle());
                     break;
                 case AvatarStatus.Wander:
+                    Debug.LogError("wander handle started");
                     HandleWander();
                     break;
             }
@@ -156,18 +159,76 @@ namespace MenuUI.Scripts.SoulHome
 
         private void HandleWander()
         {
-            Debug.LogError("wander");
+            // Need to make grid updating to happen when furniture is changed
+            UpdateGrid();
+            if (_walkableSlots.Count > 0)
+            {
+                Vector2Int target = _walkableSlots[Random.Range(0, _walkableSlots.Count)];
+                List<GridNode> nodePath = FindPath(_currentGridPosition, target);
+                if (nodePath != null)
+                {
+                    _travelPoints = GetTravelPoints(nodePath);
+                    _currentGridPosition = target;
+                    _statusCoroutine = StartCoroutine(MoveRoutine());
+                }
+                else
+                {
+                    Debug.LogError("Nodepath was null");
+                    SelectStatus();
+                }
+            }
+            else
+            {
+                SelectStatus();
+            }
+        }
+
+        private IEnumerator MoveRoutine()
+        {
+            if (_performingAnimation) yield break;
+            Debug.LogError("1");
+
+            while (_travelPoints.Count > 0)
+            {
+                Vector2 targetPos = _travelPoints[0];
+
+                if (targetPos.x < transform.position.x)
+                {
+                    transform.rotation = Quaternion.Euler(0, 180, 0);
+                }
+                else
+                {
+                    transform.rotation = Quaternion.Euler(Vector3.zero);
+                }
+
+                if (!_animator.GetCurrentAnimatorStateInfo(0).IsName(_walkAnimation.name))
+                {
+                    _animator.Play(_walkAnimation.name);
+                }
+
+                while (Vector2.Distance(transform.position, targetPos) > 0.05f)
+                {
+                    transform.position = Vector2.MoveTowards(
+                        transform.position,
+                        targetPos,
+                        _speed * Time.deltaTime);
+                    yield return null;
+                }
+
+                transform.position = targetPos;
+                _travelPoints.RemoveAt(0);
+            }
+
             SelectStatus();
         }
 
         [ContextMenu("testi")]
         public void UpdateGrid()
         {
-
-
             int columns = _roomData.SlotColumns;
             int rows = _roomData.SlotRows;
-            _grid = new int[columns, rows];
+            _grid = new GridNode[columns, rows];
+            _walkableSlots.Clear();
 
             for (int r = 0; r < rows; r++)
             {
@@ -177,31 +238,184 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     FurnitureSlot slot = rowTransform.GetChild(c).GetComponent<FurnitureSlot>();
 
-                    // if slot has furniture set to 1, otherwise 0
-                    if (slot.Furniture != null)
+                    bool walkable = (slot.Furniture == null);
+
+                    _grid[c, r] = new GridNode(new Vector2Int(c, r), walkable);
+
+                    if (walkable)
                     {
-                        _grid[c, r] = 1;
-                    }
-                    else
-                    {
-                        _grid[c, r] = 0;
+                        _walkableSlots.Add(new Vector2Int(c, r));
                     }
                 }
             }
         }
 
-        public Vector2 GridToWorld(int x, int y)
+        #region pathfinding
+
+        private Vector2 GridToWorld(Vector2Int gridPosition)
         {
-
-            Transform rowTransform = _points.GetChild(y);
-
-            Transform slotTransform = rowTransform.GetChild(x);
+            Transform rowTransform = _points.GetChild(gridPosition.y);
+            Transform slotTransform = rowTransform.GetChild(gridPosition.x);
 
             return new Vector2(slotTransform.position.x, slotTransform.position.y);
         }
 
+        // if needed, finds the closest grid position from the actual avatar position
+        private Vector2Int WorldToGrid(Vector2 worldPos)
+        {
+            Vector2Int closest = Vector2Int.zero;
+            float minDistance = float.MaxValue;
 
+            for (int y = 0; y < _roomData.SlotRows; y++)
+            {
+                for (int x = 0;  x < _roomData.SlotColumns; x++)
+                {
+                    Vector2 slotPos = GridToWorld(new Vector2Int(x, y));
+                    float distance = Vector2.Distance(worldPos, slotPos);
+                    if (distance < minDistance)
+                    {
+                        minDistance = distance;
+                        closest = new Vector2Int(x, y);
+                    }
+                }
+            }
+            return closest;
+        }
 
+        private List<Vector2> GetTravelPoints(List<GridNode> path)
+        {
+            List<Vector2> worldPath = new();
+
+            foreach (GridNode node in path)
+            {
+                Vector2 worldPosition = GridToWorld(node.GridPosition);
+                worldPath.Add(worldPosition);
+            }
+            return worldPath;
+        }
+
+        private List<GridNode> GetNeighbors(GridNode currentNode)
+        {
+            List<GridNode> neighbors = new();
+
+            Vector2Int[] directions =
+            {
+                new Vector2Int(0, 1),  // Up
+                new Vector2Int(0, -1), // Down
+                new Vector2Int(1, 0),  // Right
+                new Vector2Int(-1, 0), // Left
+
+                new Vector2Int(1, 1),  // Top Right
+                new Vector2Int(-1, 1), // Top Left
+                new Vector2Int(1, -1), // Bottom Right
+                new Vector2Int(-1, -1),// Bottom Left
+            };
+
+            foreach (Vector2Int direction in directions)
+            {
+                int checkX = currentNode.GridPosition.x + direction.x;
+                int checkY = currentNode.GridPosition.y + direction.y;
+
+                // check if neighbor is inside grid
+                if (checkX >= 0 && checkX < _roomData.SlotColumns &&
+                    checkY >= 0 && checkY < _roomData.SlotRows)
+                {
+                    neighbors.Add(_grid[checkX, checkY]);
+                }
+            }
+
+            return neighbors;
+        }
+
+        private float GetDistance(GridNode a, GridNode b)
+        {
+            int distanceX = Mathf.Abs(a.GridPosition.x - b.GridPosition.x);
+            int distanceY = Mathf.Abs(a.GridPosition.y - b.GridPosition.y);
+
+            // Diagonal nodes are 1.41 times farther, otherwise diagonal movement is preferred
+            if (distanceX > distanceY)
+                return 1.41f * distanceY + 1.0f * (distanceX - distanceY);
+            return 1.41f * distanceX + 1.0f * (distanceY - distanceX);
+        }
+
+        private GridNode GetLowestFCostNode(List<GridNode> nodes)
+        {
+            GridNode best = nodes[0];
+
+            foreach (GridNode node in nodes)
+            {
+                if (node.FCost < best.FCost ||
+                    node.FCost == best.FCost && node.HCost < best.HCost)
+                {
+                    best = node;
+                }
+            }
+            return best;
+        }
+
+        private List<GridNode> RetracePath(GridNode startNode, GridNode endNode)
+        {
+            List<GridNode> path = new();
+            GridNode currentNode = endNode;
+
+            while (currentNode != startNode)
+            {
+                path.Add(currentNode);
+                currentNode = currentNode.Parent;
+            }
+
+            path.Reverse();
+
+            return path;
+        }
+
+        public List<GridNode> FindPath(Vector2Int startPos, Vector2Int targetPos)
+        {
+            foreach (GridNode node in _grid)
+            {
+                node.Reset();
+            }
+
+            GridNode startNode = _grid[startPos.x, startPos.y];
+            startNode.GCost = 0;
+            startNode.HCost = GetDistance(startNode, _grid[targetPos.x, targetPos.y]);
+
+            List<GridNode> openList = new List<GridNode>() { startNode };
+            HashSet<GridNode> closedList = new();
+
+            while (openList.Count > 0)
+            {
+                GridNode currentNode = GetLowestFCostNode(openList);
+
+                openList.Remove(currentNode);
+                closedList.Add(currentNode);
+
+                if (currentNode.GridPosition == targetPos)
+                {
+                    return RetracePath(_grid[startPos.x, startPos.y], _grid[targetPos.x, targetPos.y]);
+                }
+
+                foreach(GridNode neighbor in GetNeighbors(currentNode))
+                {
+                    if (!neighbor.IsWalkable || closedList.Contains(neighbor)) continue;
+
+                    float newCostToNeightbor = currentNode.GCost + GetDistance(currentNode, neighbor);
+
+                    if (newCostToNeightbor < neighbor.GCost)
+                    {
+                        neighbor.GCost = newCostToNeightbor;
+                        neighbor.HCost = GetDistance(neighbor, _grid[targetPos.x, targetPos.y]);
+                        neighbor.Parent = currentNode;
+
+                        if (!openList.Contains(neighbor)) openList.Add(neighbor);
+                    }
+                }
+            }
+            // no available path
+            return null;
+        }
+
+        #endregion
 
         public void SetAvatar(Transform points, RoomData data)
         {
@@ -238,7 +452,7 @@ namespace MenuUI.Scripts.SoulHome
             position.y += -1 * (slot.height / 2);
 
             transform.position = position;
-
+            _currentGridPosition = new Vector2Int(column, row);
             Status = AvatarStatus.Idle;
             _travelPoints.Clear();
         }
