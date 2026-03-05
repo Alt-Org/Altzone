@@ -143,6 +143,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             var playerCount = PhotonRealtimeClient.CountOfPlayers;
             _topInfoPanel.LobbyText = new string[2] { _currentRegion, PhotonRealtimeClient.GetPing().ToString()};
             _topInfoPanel.PlayerCountText = playerCount.ToString();
+            _topInfoPanel.MatchmakingCountText = PhotonRealtimeClient.CurrentRoomPlayerCount.ToString();
         }
 
         /*public void OnDisconnected(DisconnectCause cause)

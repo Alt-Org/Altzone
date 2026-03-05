@@ -12,6 +12,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
         [SerializeField] private TextLanguageSelectorCaller _titleText;
         [SerializeField] private TextLanguageSelectorCaller _lobbyText;
         [SerializeField] private TextLanguageSelectorCaller _playerCountText;
+        [SerializeField] private TextLanguageSelectorCaller _matchmakingCountText;
         
         public string TitleText
         {
@@ -29,6 +30,10 @@ namespace MenuUi.Scripts.Lobby.InLobby
         public string PlayerCountText
         {
             set => _playerCountText.SetText(SettingsCarrier.Instance.Language, new string[1] { value });
+        }
+        public string MatchmakingCountText
+        {
+            set => _matchmakingCountText.SetText(SettingsCarrier.Instance.Language, new string[1] { value });
         }
 
         public void Reset()

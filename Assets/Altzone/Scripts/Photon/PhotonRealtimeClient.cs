@@ -71,6 +71,22 @@ public static class PhotonRealtimeClient
         }
     }
 
+    public static int CountOfPlayersInRooms
+    {
+        get
+        {
+            return Client.PlayersInRoomsCount;
+        }
+    }
+
+    public static int CurrentRoomPlayerCount
+    {
+        get
+        {
+            return Client.InRoom && Client.CurrentRoom != null ? Client.CurrentRoom.PlayerCount : 0;
+        }
+    }
+
     public static bool InLobby
     {
         get
