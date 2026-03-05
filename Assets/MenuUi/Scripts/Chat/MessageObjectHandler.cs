@@ -18,6 +18,7 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private Button _button;
     [SerializeField] private GameObject _addReactionsControls;
     [SerializeField] private GameObject _reactionsPanel;
+    [SerializeField] private GameObject _fixSize;
 
 
     [Header("Base Message")]
@@ -28,7 +29,7 @@ public class MessageObjectHandler : MonoBehaviour
     public GameObject _reactionSize;
     public GameObject _expandedReactionSize;
     [SerializeField] private Vector2 _vectorReactionSize;
-    [SerializeField] private Vector2 _vectorExpandedReactionSize;   
+    [SerializeField] private Vector2 _vectorExpandedReactionSize;
 
 
 
@@ -59,10 +60,13 @@ public class MessageObjectHandler : MonoBehaviour
         //adds extra size if there reactions have been put or not
         float extraPadding;
         if (reactionField.transform.childCount > 0)
-            extraPadding = 100;
+            extraPadding = 50;
         else
+        {
             extraPadding = 0f;
-
+            _fixSize.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 0); //Fixes the issue from the object not updating the size when its supposed to
+        }
+            
         //Checks if reaction panel is active and checks which reaction pannel is on
         if (_reactionSize.activeSelf)
             if(_expandedReactionSize.activeSelf)
