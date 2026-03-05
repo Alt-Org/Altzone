@@ -198,7 +198,11 @@ namespace Battle.View.Player
                 GameObject characterGameObject = _characterGameObjects[0];
                 characterGameObject.SetActive(true);
                 _spriteRenderer = characterGameObject.GetComponent<SpriteRenderer>();
-                _bodypartSpriteRenderers = characterGameObject.GetComponentsInChildren<SpriteRenderer>();
+                _bodypartSpriteRenderers[0] = characterGameObject.transform.Find("Head").GetComponent<SpriteRenderer>();
+                _bodypartSpriteRenderers[1] = characterGameObject.transform.Find("Body").GetComponent<SpriteRenderer>();
+                _bodypartSpriteRenderers[2] = characterGameObject.transform.Find("Hands").GetComponent<SpriteRenderer>();
+                _bodypartSpriteRenderers[3] = characterGameObject.transform.Find("Feet").GetComponent<SpriteRenderer>();
+                _bodypartSpriteRenderers[4] = characterGameObject.transform.Find("Shadow").GetComponent<SpriteRenderer>();
             }
             else
             {
@@ -206,7 +210,11 @@ namespace Battle.View.Player
                 characterGameObject.SetActive(true);
                 //_heart.SetActive(false);
                 _spriteRenderer = characterGameObject.GetComponent<SpriteRenderer>();
-                _bodypartSpriteRenderers = characterGameObject.GetComponentsInChildren<SpriteRenderer>();
+                _bodypartSpriteRenderers[0] = characterGameObject.transform.Find("Head").GetComponent<SpriteRenderer>();
+                _bodypartSpriteRenderers[1] = characterGameObject.transform.Find("Body").GetComponent<SpriteRenderer>();
+                _bodypartSpriteRenderers[2] = characterGameObject.transform.Find("Hands").GetComponent<SpriteRenderer>();
+                _bodypartSpriteRenderers[3] = characterGameObject.transform.Find("Feet").GetComponent<SpriteRenderer>();
+                _bodypartSpriteRenderers[4] = characterGameObject.transform.Find("Shadow").GetComponent<SpriteRenderer>();
             }
 
             if (e.Slot == BattleGameViewController.LocalPlayerSlot)

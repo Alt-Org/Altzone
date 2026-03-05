@@ -35,22 +35,27 @@ namespace Battle.View.Player
             {
                 SerializedProperty property = _gameObjectProp.GetArrayElementAtIndex(i);
                 GameObject gameObject = (GameObject)property.objectReferenceValue;
-                SpriteRenderer[] spriteRenderers = gameObject.GetComponentsInChildren<SpriteRenderer>();
+
+                _spriteRenderers[SpriteRendererHeadIndex] = gameObject.transform.Find("Head").GetComponent<SpriteRenderer>();
+                _spriteRenderers[SpriteRendererBodyIndex] = gameObject.transform.Find("Body").GetComponent<SpriteRenderer>();
+                _spriteRenderers[SpriteRendererHandsIndex] = gameObject.transform.Find("Hands").GetComponent<SpriteRenderer>();
+                _spriteRenderers[SpriteRendererFeetIndex] = gameObject.transform.Find("Feet").GetComponent<SpriteRenderer>();
+                _spriteRenderers[SpriteRendererShadowIndex] = gameObject.transform.Find("Shadow").GetComponent<SpriteRenderer>();
                 if (spriteSheet.Array.Length == 64)
                 {
-                    spriteRenderers[SpriteRendererHeadIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.Head1);
-                    spriteRenderers[SpriteRendererBodyIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.Body1);
-                    spriteRenderers[SpriteRendererHandsIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.BaseHands);
-                    spriteRenderers[SpriteRendererFeetIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.BaseShoes);
-                    spriteRenderers[SpriteRendererShadowIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.Shadow);
+                    _spriteRenderers[SpriteRendererHeadIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.Head1);
+                    _spriteRenderers[SpriteRendererBodyIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.Body1);
+                    _spriteRenderers[SpriteRendererHandsIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.BaseHands);
+                    _spriteRenderers[SpriteRendererFeetIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.BaseShoes);
+                    _spriteRenderers[SpriteRendererShadowIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.Shadow);
                 }
                 else
                 {
-                    spriteRenderers[SpriteRendererHeadIndex].sprite = null;
-                    spriteRenderers[SpriteRendererBodyIndex].sprite = null;
-                    spriteRenderers[SpriteRendererHandsIndex].sprite = null;
-                    spriteRenderers[SpriteRendererFeetIndex].sprite = null;
-                    spriteRenderers[SpriteRendererShadowIndex].sprite = null;
+                    _spriteRenderers[SpriteRendererHeadIndex].sprite = null;
+                    _spriteRenderers[SpriteRendererBodyIndex].sprite = null;
+                    _spriteRenderers[SpriteRendererHandsIndex].sprite = null;
+                    _spriteRenderers[SpriteRendererFeetIndex].sprite = null;
+                    _spriteRenderers[SpriteRendererShadowIndex].sprite = null;
                 }
             }
         }
@@ -63,6 +68,8 @@ namespace Battle.View.Player
         /// Serialized property holding parent objects to get the body part SpriteRenderers from.
         /// </summary>
         private SerializedProperty _gameObjectProp;
+
+        private SpriteRenderer[] _spriteRenderers = new SpriteRenderer[5];
 
         /// <summary>
         /// Handles getting the spritesheet and character gameobjects to add default sprites to.
