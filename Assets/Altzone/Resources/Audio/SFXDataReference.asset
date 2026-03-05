@@ -137,6 +137,11 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 8300000, guid: 3c7bb8f93a5ef644a8b6e29cb1eba772, type: 3}
       Volume: 1
+    - Name: PlayerCharacterCommonHitShield
+      BattleName: 100
+      Type: 0
+      Audio: {fileID: 8300000, guid: be3b992bc683d9c4888d14fe4d9a3963, type: 3}
+      Volume: 1
     - Name: PlayerCharacter101RacistCatchphrase
       BattleName: 1010
       Type: 0
@@ -167,15 +172,10 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter101RacistHitShield
+    - Name: PlayerCharacter101RacistDeath
       BattleName: 1016
       Type: 0
       Audio: {fileID: 8300000, guid: 470591296f2603a4580fd9c45f430901, type: 3}
-      Volume: 1
-    - Name: PlayerCharacter101RacistDeath
-      BattleName: 1017
-      Type: 0
-      Audio: {fileID: 0}
       Volume: 1
     - Name: PlayerCharacter102BodyBuilderCatchphrase
       BattleName: 1020
@@ -207,13 +207,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter102BodyBuilderHitShield
-      BattleName: 1026
-      Type: 0
-      Audio: {fileID: 8300000, guid: 064fe6620480b11449a21db68498d4a2, type: 3}
-      Volume: 1
     - Name: PlayerCharacter102BodyBuilderDeath
-      BattleName: 1027
+      BattleName: 1026
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -247,13 +242,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter103WarVeteranHitShield
-      BattleName: 1036
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter103WarVeteranDeath
-      BattleName: 1037
+      BattleName: 1036
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -287,13 +277,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter104BullyHitShield
-      BattleName: 1046
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter104BullyDeath
-      BattleName: 1047
+      BattleName: 1046
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -327,13 +312,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter105EgoistHitShield
-      BattleName: 1056
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter105EgoistDeath
-      BattleName: 1057
+      BattleName: 1056
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -372,13 +352,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter106DepressedHitShield
-      BattleName: 1066
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter106DepressedDeath
-      BattleName: 1067
+      BattleName: 1066
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -412,13 +387,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 8300000, guid: 0a25287dfa610e748aaf5db6eb37e5df, type: 3}
       Volume: 1
-    - Name: PlayerCharacter201ComedianHitShield
-      BattleName: 2016
-      Type: 0
-      Audio: {fileID: 8300000, guid: c7b43541ffd8e2a43aad8d39a6a6a536, type: 3}
-      Volume: 1
     - Name: PlayerCharacter201ComedianDeath
-      BattleName: 2017
+      BattleName: 2016
       Type: 0
       Audio: {fileID: 8300000, guid: ff376466f265ca947949a322fa448f9e, type: 3}
       Volume: 1
@@ -452,13 +422,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter202JokerHitShield
-      BattleName: 2026
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter202JokerDeath
-      BattleName: 2027
+      BattleName: 2026
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -492,13 +457,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter203ConmanHitShield
-      BattleName: 2036
-      Type: 0
-      Audio: {fileID: 8300000, guid: 315c9a198db36c248a3fdb9ea20a7c60, type: 3}
-      Volume: 1
     - Name: PlayerCharacter203ConmanDeath
-      BattleName: 2037
+      BattleName: 2036
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -532,13 +492,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter204SeducerHitShield
-      BattleName: 2046
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter204SeducerDeath
-      BattleName: 2047
+      BattleName: 2046
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -572,13 +527,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 8300000, guid: fc298ba45eed70246b56277060264bfc, type: 3}
       Volume: 1
-    - Name: PlayerCharacter301ReligiousHitShield
-      BattleName: 3016
-      Type: 0
-      Audio: {fileID: 8300000, guid: dc57fdb3ec6210a46b21d8722d32e3e1, type: 3}
-      Volume: 1
     - Name: PlayerCharacter301ReligiousDeath
-      BattleName: 2047
+      BattleName: 2046
       Type: 0
       Audio: {fileID: 8300000, guid: e138b43efe2209d46b4b55ed3c7fc537, type: 3}
       Volume: 1
@@ -612,13 +562,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter302YesmanHitShield
-      BattleName: 3026
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter302YesmanDeath
-      BattleName: 3027
+      BattleName: 3026
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -652,13 +597,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter303SlaveOfTheLawHitShield
-      BattleName: 3036
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter303SlaveOfTheLawDeath
-      BattleName: 3037
+      BattleName: 3036
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -692,13 +632,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter304FashionSlaveHitShield
-      BattleName: 3046
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter304FashionSlaveDeath
-      BattleName: 3047
+      BattleName: 3046
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -732,13 +667,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter305MammasBoyHitShield
-      BattleName: 3056
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter305MammasBoyDeath
-      BattleName: 3057
+      BattleName: 3056
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -772,13 +702,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter306SuperstitiousHitShield
-      BattleName: 3066
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter306SuperstitiousDeath
-      BattleName: 3067
+      BattleName: 3066
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -812,13 +737,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter401ArtistHitShield
-      BattleName: 4016
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter401ArtistDeath
-      BattleName: 4017
+      BattleName: 4016
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -852,13 +772,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter402ArguerHitShield
-      BattleName: 4026
-      Type: 0
-      Audio: {fileID: 8300000, guid: 6db31c51715075544981ff5951cc4685, type: 3}
-      Volume: 1
     - Name: PlayerCharacter402ArguerDeath
-      BattleName: 4027
+      BattleName: 4026
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -892,13 +807,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter403ReflectorHitShield
-      BattleName: 4036
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter403ReflectorDeath
-      BattleName: 4037
+      BattleName: 4036
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -932,13 +842,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter404DelusionalHitShield
-      BattleName: 4046
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter404DelusionalDeath
-      BattleName: 4047
+      BattleName: 4046
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -972,13 +877,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter501OvereaterHitShield
-      BattleName: 5016
-      Type: 0
-      Audio: {fileID: 8300000, guid: bdc2200c70c756c45a9e1426d2dc01c6, type: 3}
-      Volume: 1
     - Name: PlayerCharacter501OvereaterDeath
-      BattleName: 5017
+      BattleName: 5016
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -1012,13 +912,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter502AlcoholicHitShield
-      BattleName: 5026
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter502AlcoholicDeath
-      BattleName: 5027
+      BattleName: 5026
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -1052,13 +947,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter503AnorecticHitShield
-      BattleName: 5036
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter503AnorecticDeath
-      BattleName: 5037
+      BattleName: 5036
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -1092,13 +982,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter504StonerHitShield
-      BattleName: 5046
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter504StonerDeath
-      BattleName: 5047
+      BattleName: 5046
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -1132,13 +1017,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter505MartyrHitShield
-      BattleName: 5056
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter505MartyrDeath
-      BattleName: 5057
+      BattleName: 5056
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -1172,13 +1052,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter506SuicidalHitShield
-      BattleName: 5066
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter506SuicidalDeath
-      BattleName: 5067
+      BattleName: 5066
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -1212,13 +1087,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter601SoulsistersHitShield
-      BattleName: 6016
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter601SoulsistersDeath
-      BattleName: 6017
+      BattleName: 6016
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -1252,13 +1122,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 8300000, guid: a249c549e4e0913409c3f1fcefab2419, type: 3}
       Volume: 1
-    - Name: PlayerCharacter602LoversHitShield
-      BattleName: 6026
-      Type: 0
-      Audio: {fileID: 8300000, guid: 0f9893b959b276c4dbd8a69835826c55, type: 3}
-      Volume: 1
     - Name: PlayerCharacter602LoversDeath
-      BattleName: 6027
+      BattleName: 6026
       Type: 0
       Audio: {fileID: 8300000, guid: 97b6e040153662e43a06be7df671c640, type: 3}
       Volume: 1
@@ -1292,13 +1157,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter603SleepyHeadHitShield
-      BattleName: 6036
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter603SleepyHeadDeath
-      BattleName: 6037
+      BattleName: 6036
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -1332,13 +1192,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter604TribalistHitShield
-      BattleName: 6046
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter604TribalistDeath
-      BattleName: 6047
+      BattleName: 6046
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -1372,13 +1227,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter605GangBangerHitShield
-      BattleName: 6056
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter605GangBangerDeath
-      BattleName: 6057
+      BattleName: 6056
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -1412,13 +1262,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter701BooksmartHitShield
-      BattleName: 7016
-      Type: 0
-      Audio: {fileID: 8300000, guid: 78f4b26388e5018459c67ccdbca8a7a3, type: 3}
-      Volume: 1
     - Name: PlayerCharacter701BooksmartDeath
-      BattleName: 7017
+      BattleName: 7016
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -1452,13 +1297,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter702CapitalistHitShield
-      BattleName: 7026
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter702CapitalistDeath
-      BattleName: 7027
+      BattleName: 7026
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -1492,13 +1332,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter703ObsessiveCompulsiveHitShield
-      BattleName: 7036
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter703ObsessiveCompulsiveDeath
-      BattleName: 7037
+      BattleName: 7036
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -1532,13 +1367,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter704OvercompilatorHitShield
-      BattleName: 7046
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter704OvercompilatorDeath
-      BattleName: 7047
+      BattleName: 7046
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
@@ -1572,13 +1402,8 @@ MonoBehaviour:
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
-    - Name: PlayerCharacter705NitpickerHitShield
-      BattleName: 7056
-      Type: 0
-      Audio: {fileID: 0}
-      Volume: 1
     - Name: PlayerCharacter705NitpickerDeath
-      BattleName: 7057
+      BattleName: 7056
       Type: 0
       Audio: {fileID: 0}
       Volume: 1
