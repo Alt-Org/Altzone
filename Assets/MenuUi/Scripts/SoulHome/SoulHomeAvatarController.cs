@@ -1,6 +1,6 @@
+
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -54,6 +54,8 @@ namespace MenuUI.Scripts.SoulHome
         private const int DefaultPenalty = 10;
         private int _gridWidth;
         private int _gridHeight;
+
+        private List<Vector2> _smoothPath = new();
         public AvatarStatus Status
         {
             get => _status;
@@ -172,7 +174,7 @@ namespace MenuUI.Scripts.SoulHome
                 if (nodePath != null)
                 {
                     List<Vector2> rawPath = GetTravelPoints(nodePath);
-
+                    _smoothPath = SmoothPath(rawPath);
                     //_travelPoints = SmoothPath(rawPath);
                     _travelPoints = GetTravelPoints(nodePath);
                     _currentGridPosition = target;
@@ -651,5 +653,87 @@ namespace MenuUI.Scripts.SoulHome
 
             StartCoroutine(InteractAnimation());
         }
+
+        #if UNITY_EDITOR
+
+        private void OnDrawGizmos()
+        {
+            if (_grid == null) return;
+
+            //  Draw the Grid & Penalties
+            for (int x = 0; x < _gridWidth; x++)
+            {
+                for (int y = 0; y < _gridHeight; y++)
+                {
+                    Vector2 worldPos = GridToWorld(new Vector2Int(x, y));
+                    GridNode node = _grid[x, y];
+
+                    // Color nodes based on Walkability/Penalty
+                    if (!node.IsWalkable)
+                    {
+                        Gizmos.color = new Color(1, 0, 0, 0.2f); // Red for furniture
+                        Gizmos.DrawCube(worldPos, new Vector3(0.5f, 0.5f, 0.1f));
+                    }
+                    else if (node.penalty > 0)
+                    {
+                        // Yellow tint for penalties - gets darker as penalty increases
+                        float alpha = Mathf.Clamp01(node.penalty / 30f);
+                        Gizmos.color = new Color(1, 0.9f, 0, alpha * 0.4f);
+                        Gizmos.DrawCube(worldPos, new Vector3(0.8f, 0.8f, 0.1f));
+
+                        // Draw the penalty number
+                        Handles.Label(worldPos, node.penalty.ToString());
+                    }
+                }
+            }
+
+            // Draw the Current Travel Path
+            if (_travelPoints != null && _travelPoints.Count > 0)
+            {
+                Gizmos.color = Color.cyan;
+                Vector2 lastPoint = transform.position; // Start the line from avatar's current position
+
+                foreach (Vector2 point in _travelPoints)
+                {
+                    // Draw line to the next node
+                    Gizmos.DrawLine(lastPoint, point);
+                    // Draw a small sphere at the node center
+                    Gizmos.DrawSphere(point, 0.1f);
+                    lastPoint = point;
+                }
+            }
+
+            // Draw what smoothpath would be
+            if (_smoothPath != null && _smoothPath.Count > 0)
+            {
+                Gizmos.color = Color.magenta;
+                for (int i = 0; i < _smoothPath.Count - 1; i++)
+                {
+                    Gizmos.DrawLine(_smoothPath[i], _smoothPath[i + 1]);
+                    Gizmos.DrawSphere(_smoothPath[i], 0.1f);
+                }
+            }
+
+            // draws the grid visually
+            //GUIStyle style = new GUIStyle { normal = { textColor = Color.white }, fontSize = 10 };
+
+            //for (int x = 0; x < _gridWidth; x++)
+            //{
+            //    for (int y = 0; y < _gridHeight; y++)
+            //    {
+            //        // Use the same function your pathfinder uses
+            //        Vector2 worldPos = GridToWorld(new Vector2Int(x, y));
+
+            //        // Draw the coordinate string: "0,0", "0,1", etc.
+            //        Handles.Label(worldPos, $"[{x},{y}]", style);
+
+            //        // Draw a small dot to mark the center
+            //        Gizmos.color = Color.white;
+            //        Gizmos.DrawSphere(worldPos, 0.05f);
+            //    }
+            //}
+
+        }
+        #endif
     }
 }
