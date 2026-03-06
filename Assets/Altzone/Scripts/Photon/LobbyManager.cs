@@ -805,7 +805,7 @@ namespace Altzone.Scripts.Lobby
 
                         // Setting position to room and waiting until it's synced
                         PhotonRealtimeClient.CurrentRoom.SetCustomProperty(positionKey, player.Value.UserId);
-                        yield return new WaitUntil(() => PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(positionKey) == position);
+                        yield return new WaitUntil(() => PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(positionKey) == player.Value.UserId);
                     }
 
                     // Setting position to player properties and waiting until it's synced
@@ -845,6 +845,24 @@ namespace Altzone.Scripts.Lobby
 
                     _blueTeamName = primaryClan;
                     _redTeamName = opponentClan;
+                }
+
+                // For Random2v2 ensure team names are set (they aren't set by the Clan2v2 block above)
+                if (roomGameType == GameType.Random2v2)
+                {
+                    if (string.IsNullOrWhiteSpace(_blueTeamName)) _blueTeamName = "Team Alpha";
+                    if (string.IsNullOrWhiteSpace(_redTeamName)) _redTeamName = "Team Beta";
+                }
+
+                // Set BattleID for matchmaking rooms (StartRoomEvent is not published for matchmaking rooms)
+                if (!PhotonRealtimeClient.CurrentRoom.CustomProperties.ContainsKey(PhotonBattleRoom.BattleID)
+                    || string.IsNullOrEmpty(PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.BattleID)))
+                {
+                    PhotonRealtimeClient.CurrentRoom.SetCustomProperties(new PhotonHashtable
+                    {
+                        { PhotonBattleRoom.BattleID, PhotonRealtimeClient.CurrentRoom.Name.Replace(' ', '_') + "_" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString() }
+                    });
+                    yield return null;
                 }
 
                 // Starting gameplay coroutine if all 4 room members are still present, else we loop again
@@ -1026,8 +1044,9 @@ namespace Altzone.Scripts.Lobby
 
             if (player.IsMasterClient)
             {
-                Assert.IsTrue(!string.IsNullOrWhiteSpace(blueTeamName), "!string.IsNullOrWhiteSpace(blueTeamName)");
-                Assert.IsTrue(!string.IsNullOrWhiteSpace(redTeamName), "!string.IsNullOrWhiteSpace(redTeamName)");
+                // Ensure team names are not empty — use defaults for matchmaking/random games
+                if (string.IsNullOrWhiteSpace(blueTeamName)) blueTeamName = "Team Alpha";
+                if (string.IsNullOrWhiteSpace(redTeamName)) redTeamName = "Team Beta";
                 //room.CustomProperties.Add(TeamAlphaNameKey, blueTeamName);
                 //room.CustomProperties.Add(TeamBetaNameKey, redTeamName);
                 //room.CustomProperties.Add(PlayerCountKey, realPlayerCount);
@@ -1095,10 +1114,23 @@ namespace Altzone.Scripts.Lobby
             // Getting the index of own user id from the player slot user id array to determine which player slot is for local player.
             string userId = PhotonRealtimeClient.LocalPlayer.UserId;
             int slotIndex = Array.IndexOf(data.PlayerSlotUserIds, userId);
+            if (slotIndex < 0 || slotIndex >= RuntimePlayer.PlayerSlots.Length)
+            {
+                Debug.LogError($"Player userId '{userId}' not found in StartGameData.PlayerSlotUserIds: [{string.Join(", ", data.PlayerSlotUserIds)}]. Cannot start Quantum.");
+                OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
+                yield break;
+            }
             BattlePlayerSlot playerSlot = RuntimePlayer.PlayerSlots[slotIndex];
 
             // Setting map to variable
-            Map map = _battleMapReference.GetBattleMap(data.MapId).Map;
+            BattleMap battleMap = _battleMapReference.GetBattleMap(data.MapId);
+            if (battleMap == null)
+            {
+                Debug.LogError($"BattleMap with id '{data.MapId}' not found. Cannot start Quantum.");
+                OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
+                yield break;
+            }
+            Map map = battleMap.Map;
             if (map != null) _quantumBattleMap = map;
 
             if (QuantumRunner.Default != null)
@@ -1170,6 +1202,26 @@ namespace Altzone.Scripts.Lobby
 
             DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.Battle);
             DebugLogFileHandler.FileOpen(battleID, (int)playerSlot);
+
+            // Always load current player characters before AddPlayer.
+            // In the Custom room flow, SetPlayerQuantumCharacters is called by RoomSetupManager,
+            // but in the Matchmaking flow it was never called — leaving _player.Characters stale.
+            // Loading here ensures all game types have correct, up-to-date character data
+            // with pre-resolved entity prototypes (critical for Quantum determinism).
+            {
+                string playerGuid = GameConfig.Get().PlayerSettings.PlayerGuid;
+                PlayerData playerData = null;
+                Storefront.Get().GetPlayerData(playerGuid, p => playerData = p);
+                yield return new WaitUntil(() => playerData != null);
+
+                List<CustomCharacter> selectedCharacters = new();
+                var battleCharacters = playerData.CurrentBattleCharacters;
+                for (int i = 0; i < battleCharacters.Count; i++)
+                {
+                    selectedCharacters.Add(battleCharacters[i]);
+                }
+                SetPlayerQuantumCharacters(selectedCharacters);
+            }
 
             int retryCount=0;
             do
@@ -1534,11 +1586,18 @@ namespace Altzone.Scripts.Lobby
                     Speed         = BaseCharacter.GetStatValueFP(StatType.Speed, character.Speed)
                 };
 
+                // Pre-resolve the entity prototype in View code so Simulation never calls into the View layer.
+                // This is critical for Quantum determinism — calling BattleAltzoneLink from Simulation causes checksum errors.
+                int characterId = (int)character.Id;
+                PlayerCharacterPrototype protoInfo = PlayerCharacterPrototypes.GetCharacter(characterId.ToString());
+                AssetRef<EntityPrototype> prototype = protoInfo != null ? protoInfo.BattleEntityPrototype : default;
+
                 _player.Characters[i] = new BattleCharacterBase()
                 {
-                    Id            = (int)character.Id,
+                    Id            = characterId,
                     Class         = (int)character.CharacterClassType,
                     Stats         = stats,
+                    Prototype     = prototype,
                 };
             }
         }
@@ -1739,8 +1798,23 @@ namespace Altzone.Scripts.Lobby
             switch (photonEvent.Code)
             {
                 case PhotonRealtimeClient.PhotonEvent.StartGame:
-                    // For some reason sometimes in Android build the CustomData is a ByteArraySlice and causes errors, so doing a null check to the cast
-                    byte[] byteArray = photonEvent.CustomData as byte[] ?? ((ByteArraySlice)photonEvent.CustomData).Buffer;
+                    // ByteArraySlice.Buffer may contain extra unused bytes beyond the actual data,
+                    // so we must copy only the valid portion (Offset to Offset+Count) to avoid corrupt deserialization.
+                    byte[] byteArray;
+                    if (photonEvent.CustomData is byte[] directBytes)
+                    {
+                        byteArray = directBytes;
+                    }
+                    else if (photonEvent.CustomData is ByteArraySlice slice)
+                    {
+                        byteArray = new byte[slice.Count];
+                        System.Buffer.BlockCopy(slice.Buffer, slice.Offset, byteArray, 0, slice.Count);
+                    }
+                    else
+                    {
+                        Debug.LogError($"StartGame event received with unexpected data type: {photonEvent.CustomData?.GetType()}");
+                        break;
+                    }
                     StartCoroutine(StartQuantum(StartGameData.Deserialize(byteArray)));
                     break;
                 case PhotonRealtimeClient.PhotonEvent.PlayerPositionChangeRequested:
