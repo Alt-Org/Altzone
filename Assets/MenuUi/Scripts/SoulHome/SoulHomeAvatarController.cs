@@ -1,6 +1,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -167,6 +168,7 @@ namespace MenuUI.Scripts.SoulHome
             _travelPoints.Clear();
             // Need to make grid updating to happen when furniture is changed, no reason to do it this often
             UpdateGrid();
+            Stopwatch stopwatch = Stopwatch.StartNew();
             if (_walkableSlots.Count > 0)
             {
                 Vector2Int target = _walkableSlots[Random.Range(0, _walkableSlots.Count)];
@@ -178,6 +180,8 @@ namespace MenuUI.Scripts.SoulHome
                     //_travelPoints = SmoothPath(rawPath);
                     _travelPoints = GetTravelPoints(nodePath);
                     _currentGridPosition = target;
+                    stopwatch.Stop();
+                    UnityEngine.Debug.Log($"calculating path took {stopwatch.Elapsed.TotalMilliseconds} milliseconds");
                     _statusCoroutine = StartCoroutine(MoveRoutine());
                 }
                 else
