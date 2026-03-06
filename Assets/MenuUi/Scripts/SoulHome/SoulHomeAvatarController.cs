@@ -51,6 +51,9 @@ namespace MenuUI.Scripts.SoulHome
         private List<AnimationClip> _verifiedInteractClips = new();
         private Vector2Int _currentGridPosition;
         private List<Vector2Int> _walkableSlots = new();
+        private const int DefaultPenalty = 10;
+        private int _gridWidth;
+        private int _gridHeight;
         public AvatarStatus Status
         {
             get => _status;
@@ -76,7 +79,7 @@ namespace MenuUI.Scripts.SoulHome
                 _rig = GetComponentInChildren<AvatarRig>();
                 if (_rig == null)
                 {
-                    Debug.LogError("Failed to get AvatarRig");
+                    UnityEngine.Debug.LogError("Failed to get AvatarRig");
                     return;
                 }
 
@@ -131,7 +134,6 @@ namespace MenuUI.Scripts.SoulHome
                     _statusCoroutine = StartCoroutine(HandleIdle());
                     break;
                 case AvatarStatus.Wander:
-                    Debug.LogError("wander handle started");
                     HandleWander();
                     break;
             }
@@ -160,6 +162,7 @@ namespace MenuUI.Scripts.SoulHome
 
         private void HandleWander()
         {
+            _travelPoints.Clear();
             // Need to make grid updating to happen when furniture is changed, no reason to do it this often
             UpdateGrid();
             if (_walkableSlots.Count > 0)
@@ -176,7 +179,7 @@ namespace MenuUI.Scripts.SoulHome
                 }
                 else
                 {
-                    Debug.LogError("Nodepath was null");
+                    UnityEngine.Debug.LogError("Nodepath was null");
                     SelectStatus();
                 }
             }
@@ -252,6 +255,65 @@ namespace MenuUI.Scripts.SoulHome
                     {
                         _walkableSlots.Add(new Vector2Int(c, r));
                     }
+                }
+            }
+            _gridWidth = _grid.GetLength(0);
+            _gridHeight = _grid.GetLength(1);
+            CalculatePenalties();
+        }
+
+        // Add a penalty to tiles to the right or left of furniture, and double penalty if there is furniture to the left and the right,
+        // and also add a penalty to the bottom-right corner + 1 node to the left, and bottom-left corner and 1 node from that to the right, 
+        // so the avatar only goes there if there is no other way (makes clipping with furniture less likely, and avatar only chooses to "slip"
+        // through the corner of the furniture if there is absolutely no other way to the end position)
+        // Smoothpath still cares only about IsWalkable, but the path will be better because the original path (from findpath) points are further from the clipping zones
+        private void CalculatePenalties()
+        {
+            foreach (GridNode node in _grid) node.penalty = 0;
+
+            for (int x = 0; x < _gridWidth; x++)
+            {
+                for (int y = 0; y < _gridHeight; y++)
+                {
+                    // skip cells that are not furniture
+                    if (_grid[x, y].IsWalkable) continue;
+
+                    // apply penalty to the left and right to the furniture
+                    ApplyPenalty(x - 1, y, DefaultPenalty);
+                    ApplyPenalty(x + 1, y, DefaultPenalty);
+
+                    // if there is no furniture below
+                    if (y > 0 && _grid[x, y - 1].IsWalkable)
+                    {
+                        // if there is no furniture to the left (meaning this is the bottom-left corner)
+                        if (x > 0 && _grid[x - 1, y].IsWalkable)
+                        {
+                            // The bottom-left corner
+                            ApplyPenalty(x - 1, y - 1, DefaultPenalty);
+                            // The corner to the right of the bottom-left corner
+                            ApplyPenalty(x , y - 1, DefaultPenalty * 2);
+                        }
+                        // if there is no furniture to the right (meaning this is the bottom-right corner)
+                        if (x < _gridWidth - 1 && _grid[x + 1, y].IsWalkable)
+                        {
+                            // The bottom-right corner
+                            ApplyPenalty(x + 1, y - 1, DefaultPenalty);
+                            // The corner to the left of the bottom-right corner
+                            ApplyPenalty(x, y - 1, DefaultPenalty * 2);
+                        }
+                    }
+                }
+            }
+        }
+
+        // applies penalty if inside grid bounds
+        public void ApplyPenalty(int x, int y, int amount)
+        {
+            if (x >= 0 && x < _gridWidth && y >= 0 && y < _gridHeight)
+            {
+                if (_grid[x, y].IsWalkable)
+                {
+                    _grid[x, y].penalty += amount;
                 }
             }
         }
@@ -412,7 +474,7 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     if (!neighbor.IsWalkable || closedList.Contains(neighbor)) continue;
 
-                    float newCostToNeightbor = currentNode.GCost + GetDistance(currentNode, neighbor);
+                    float newCostToNeightbor = currentNode.GCost + GetDistance(currentNode, neighbor) + neighbor.penalty;
 
                     if (newCostToNeightbor < neighbor.GCost)
                     {

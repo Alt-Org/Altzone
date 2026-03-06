@@ -6,6 +6,7 @@ public class GridNode
 {
     public Vector2Int GridPosition;
     public bool IsWalkable;
+    public int penalty;
 
     public float GCost = float.MaxValue;
     public float HCost;
