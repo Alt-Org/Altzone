@@ -286,23 +286,23 @@ namespace MenuUI.Scripts.SoulHome
                     ApplyPenalty(x + 1, y, DefaultPenalty);
 
                     // if there is no furniture below
-                    if (y > 0 && _grid[x, y - 1].IsWalkable)
+                    if (y > 0 && _grid[x, y + 1].IsWalkable)
                     {
                         // if there is no furniture to the left (meaning this is the bottom-left corner)
                         if (x > 0 && _grid[x - 1, y].IsWalkable)
                         {
                             // The bottom-left corner
-                            ApplyPenalty(x - 1, y - 1, DefaultPenalty);
+                            ApplyPenalty(x - 1, y + 1, DefaultPenalty);
                             // The corner to the right of the bottom-left corner
-                            ApplyPenalty(x , y - 1, DefaultPenalty * 2);
+                            ApplyPenalty(x , y + 1, DefaultPenalty * 2);
                         }
                         // if there is no furniture to the right (meaning this is the bottom-right corner)
                         if (x < _gridWidth - 1 && _grid[x + 1, y].IsWalkable)
                         {
                             // The bottom-right corner
-                            ApplyPenalty(x + 1, y - 1, DefaultPenalty);
+                            ApplyPenalty(x + 1, y + 1, DefaultPenalty);
                             // The corner to the left of the bottom-right corner
-                            ApplyPenalty(x, y - 1, DefaultPenalty * 2);
+                            ApplyPenalty(x, y + 1, DefaultPenalty * 2);
                         }
                     }
                 }
