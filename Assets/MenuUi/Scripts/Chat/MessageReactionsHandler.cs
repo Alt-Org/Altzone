@@ -22,7 +22,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
     [SerializeField] private MessageObjectHandler _selectedMessage;
 
     [Header("Reactions")]
-    [SerializeField] private List<ReactionObject> _reactionList;
+    [SerializeField] public List<ReactionObject> _reactionList;
     [SerializeField] private GameObject _reactionObject;
 
     /*[Header("Added Features")]
@@ -180,6 +180,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
             HorizontalLayoutGroup reactionsField = _selectedMessage.ReactionsPanel.GetComponentInChildren<HorizontalLayoutGroup>();
 
             Sprite reactionSprite = _reactionList.FirstOrDefault(x => x.Mood == mood)?.Sprite;
+            int i = _reactionList.FindIndex(m => m.Sprite == reactionSprite);
 
             // Checks if chosen reaction is already added to the selected message. If so, deletes it.
             foreach (ChatReactionHandler addedReaction in _reactionHandlers)
@@ -191,7 +192,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
                     StartCoroutine(GetPlayerData(player =>
                     {
                         if (player != null)
-                            if (player.Id == _reaction.sender_id) addedReaction.Select();
+                            if (player.Id == _reaction.sender_id) addedReaction.Select();       
                     }));
                     _selectedMessage.SetMessageInactive();
                     return;
@@ -212,7 +213,14 @@ public class MessageReactionsHandler : AltMonoBehaviour
             StartCoroutine(GetPlayerData(player =>
             {
                 if (player != null)
-                    if (player.Id == _reaction.sender_id) chatReactionHandler.Select();
+                    if (player.Id == _reaction.sender_id)
+                    {
+                        chatReactionHandler.Select();
+
+                        //Removes the selected Mood from the list  by checking what sprite is being used
+                        _reactionList[i].Selected = true;
+                    }
+                        
             }));
             _selectedMessage.SetMessageInactive();
 
@@ -265,6 +273,15 @@ public class MessageReactionsHandler : AltMonoBehaviour
     private void RemoveReaction(ChatReactionHandler reaction)
     {
         HorizontalLayoutGroup reactionsField = reaction.GetComponentInParent<HorizontalLayoutGroup>();
+        
+            foreach(var i in _reactionList)
+            {
+                if(i.Mood == reaction.Mood)
+                    {
+                           i.Selected = false;
+                    }
+            }
+
         reaction.transform.SetParent(null);
         _reactionHandlers.Remove(reaction);
 
@@ -278,9 +295,10 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
 
     [Serializable]
-    private class ReactionObject
+    public class ReactionObject
     {
         public Sprite Sprite;
         public Mood Mood;
+        public bool Selected;
     }
 }
