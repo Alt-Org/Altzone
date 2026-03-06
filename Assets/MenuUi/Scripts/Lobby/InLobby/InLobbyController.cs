@@ -166,18 +166,27 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 case GameType.Custom:
                     if (PhotonRealtimeClient.InRoom)
                     {
-                        _roomSwitcher.SwitchRoom(GameType.Custom);
-                        return;
+                        if (gameType == SelectedGameType)
+                        {
+                            _roomSwitcher.SwitchRoom(GameType.Custom);
+                            return;
+                        }
+                        else
+                        {
+                            // Stop matchmaking coroutines before leaving to switch game type
+                            LobbyManager.Instance.StopMatchmakingCoroutines();
+                            PhotonRealtimeClient.LeaveRoom();
+                        }
                     }
                     break;
                 case GameType.Clan2v2:
                 case GameType.Random2v2:
-                    if (PhotonRealtimeClient.InMatchmakingRoom) // If we are in matchmaking show the matchmaking panel
+                    if (PhotonRealtimeClient.InMatchmakingRoom && gameType == SelectedGameType) // If we are in matchmaking for the same game type show the matchmaking panel
                     {
                         _roomSwitcher.SwitchToMatchmakingPanel(PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient);
                         return;
                     }
-                    else if (PhotonRealtimeClient.InRoom) // If we are in a normal room
+                    else if (PhotonRealtimeClient.InRoom) // If we are in a room
                     {
                         // Checking if the game type changed, if it didn't we don't want to do anything but if it did we leave the room
                         if (gameType == SelectedGameType)
@@ -186,6 +195,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
                         }
                         else
                         {
+                            // Stop matchmaking coroutines before leaving to switch game type
+                            LobbyManager.Instance.StopMatchmakingCoroutines();
                             PhotonRealtimeClient.LeaveRoom();
                         }
                     }

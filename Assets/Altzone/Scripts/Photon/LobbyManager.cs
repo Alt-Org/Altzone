@@ -563,6 +563,25 @@ namespace Altzone.Scripts.Lobby
             StartCoroutine(LeaveMatchmaking());
         }
         #region Matchmaking
+        /// <summary>
+        /// Stops any active matchmaking or follow leader coroutines.
+        /// Call this before leaving a room when switching game types.
+        /// </summary>
+        public void StopMatchmakingCoroutines()
+        {
+            if (_matchmakingHolder != null)
+            {
+                StopCoroutine(_matchmakingHolder);
+                _matchmakingHolder = null;
+            }
+
+            if (_followLeaderHolder != null)
+            {
+                StopCoroutine(_followLeaderHolder);
+                _followLeaderHolder = null;
+            }
+        }
+
         private IEnumerator StartMatchmaking(GameType gameType)
         {
             // Closing the room so that no others can join
