@@ -306,8 +306,8 @@ namespace Battle.View.Game
         private void QEventOnViewPlayerConnected(EventBattleViewPlayerConnected e)
         {
             BattlePlayerSlot playerSlot = e.Data.PlayerSlot;
-            int[] characterIds = new int[3];
-            int[] characterClasses = new int[3];
+            BattlePlayerCharacterID[] characterIds = new BattlePlayerCharacterID[3];
+            BattlePlayerCharacterClass[] characterClasses = new BattlePlayerCharacterClass[3];
             for (int i = 0; i < 3; i++)
             {
                 characterIds[i] = e.Data.Characters[i].Id;
@@ -386,8 +386,8 @@ namespace Battle.View.Game
             _uiController.PlayerInfoHandler.SetInfo(
                 PlayerType.LocalPlayer,
                 "Minä",
-                new int[3] { localPlayerData.Characters[0].Id, localPlayerData.Characters[1].Id, localPlayerData.Characters[2].Id },
-                new int[3] { localPlayerData.Characters[0].Class, localPlayerData.Characters[1].Class, localPlayerData.Characters[2].Class },
+                new BattlePlayerCharacterID[3] { localPlayerData.Characters[0].Id, localPlayerData.Characters[1].Id, localPlayerData.Characters[2].Id },
+                new BattlePlayerCharacterClass[3] { localPlayerData.Characters[0].Class, localPlayerData.Characters[1].Class, localPlayerData.Characters[2].Class },
                 new float[3] { (float)localPlayerData.Characters[0].Stats.Defence, (float)localPlayerData.Characters[1].Stats.Defence, (float)localPlayerData.Characters[2].Stats.Defence },
                 SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.PlayerInfo)
             );
@@ -399,8 +399,8 @@ namespace Battle.View.Game
                 _uiController.PlayerInfoHandler.SetInfo(
                     PlayerType.LocalTeammate,
                     "Tiimiläinen",
-                    new int[3] { localTeammateData.Characters[0].Id, localTeammateData.Characters[1].Id, localTeammateData.Characters[2].Id },
-                    new int[3] { localTeammateData.Characters[0].Class, localTeammateData.Characters[1].Class, localTeammateData.Characters[2].Class },
+                    new BattlePlayerCharacterID[3] { localTeammateData.Characters[0].Id, localTeammateData.Characters[1].Id, localTeammateData.Characters[2].Id },
+                    new BattlePlayerCharacterClass[3] { localTeammateData.Characters[0].Class, localTeammateData.Characters[1].Class, localTeammateData.Characters[2].Class },
                     new float[3] { (float)localTeammateData.Characters[0].Stats.Defence, (float)localTeammateData.Characters[1].Stats.Defence, (float)localTeammateData.Characters[2].Stats.Defence },
                     SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.TeammateInfo)
                 );
@@ -529,10 +529,10 @@ namespace Battle.View.Game
             _endOfGameDataGameLengthSec = e.GameLengthSec;
 
             //{ Calling server to add wins and losses
-            
+
             Utils.TryGetQuantumFrame(out Frame f);
             string[] playerUserIds = BattleParameters.GetPlayerSlotUserIDs(f);
-            
+
             bool isValidWin = false;
             // Temporary solution
             if (e.WinningTeam == LocalPlayerTeam)
@@ -572,9 +572,9 @@ namespace Battle.View.Game
                     {
                         if (!success) _debugLogger.Error("Sending battle result failed.");
                     }
-                )); 
+                ));
             }
-            
+
             //} Calling server to add wins and losses
         }
 

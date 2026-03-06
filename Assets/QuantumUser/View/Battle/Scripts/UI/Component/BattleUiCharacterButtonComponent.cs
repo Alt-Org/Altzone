@@ -9,7 +9,11 @@
 // Unity usings
 using UnityEngine;
 using UnityEngine.UI;
+using Button = UnityEngine.UI.Button;
 using TMPro;
+
+// Quantum usings
+using Quantum;
 
 // Altzone usings
 using Altzone.Scripts.ModelV2;
@@ -69,7 +73,7 @@ namespace Battle.View.UI
         /// </summary>
         ///
         /// <param name="characterId">The CharacterId of the character as a int.</param>
-        public void SetCharacterIcon(int characterId)
+        public void SetCharacterIcon(BattlePlayerCharacterID characterId)
         {
             PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(characterId.ToString());
 

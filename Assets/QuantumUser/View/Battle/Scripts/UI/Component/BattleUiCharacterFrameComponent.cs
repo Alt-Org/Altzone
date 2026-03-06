@@ -48,13 +48,13 @@ namespace Battle.View.UI
         {
             int index = characterClass switch
             {
-                BattlePlayerCharacterClass.Desensitizer     => 0,
-                BattlePlayerCharacterClass.Trickster        => 1,
-                BattlePlayerCharacterClass.Obedient         => 2,
-                BattlePlayerCharacterClass.Projector        => 3,
-                BattlePlayerCharacterClass.Retroflector     => 4,
-                BattlePlayerCharacterClass.Confluent        => 5,
-                BattlePlayerCharacterClass.Intellectualizer => 6,
+                BattlePlayerCharacterClass.Class100     => 0,
+                BattlePlayerCharacterClass.Class200     => 1,
+                BattlePlayerCharacterClass.Class300     => 2,
+                BattlePlayerCharacterClass.Class400     => 3,
+                BattlePlayerCharacterClass.Class500     => 4,
+                BattlePlayerCharacterClass.Class600     => 5,
+                BattlePlayerCharacterClass.Class700     => 6,
 
                 _ => -1,
             };

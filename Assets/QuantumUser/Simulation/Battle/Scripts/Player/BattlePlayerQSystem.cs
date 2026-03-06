@@ -6,14 +6,14 @@
 // Unity usings
 using UnityEngine.Scripting;
 
-// Quantum usings
-using Quantum;
-using Input = Quantum.Input;
-using Photon.Deterministic;
-
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Projectile;
+
+// Quantum usings
+using Quantum;
+using Photon.Deterministic;
+using Input = Quantum.Input;
 
 namespace Battle.QSimulation.Player
 {
@@ -78,7 +78,7 @@ namespace Battle.QSimulation.Player
         {
             if (projectileCollisionData->Projectile->IsHeld) return;
 
-            BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->PlayerEntity);
+            BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->ParentEntityRef);
 
             if (damagedPlayerData->CurrentDefence <= 0) HandleSFX(f, damagedPlayerData->CharacterId, SoundEffectType.Death);
 
@@ -88,7 +88,7 @@ namespace Battle.QSimulation.Player
 
             if (projectileCollisionData->Projectile->IsHeld) return;
 
-            //BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->PlayerEntity);
+            //BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->ParentEntity);
             FP damageTaken = projectileCollisionData->Projectile->Attack;
 
             HandleSFX(f, damagedPlayerData->CharacterId, SoundEffectType.HitCharacterAggression);
@@ -104,7 +104,7 @@ namespace Battle.QSimulation.Player
 
                 damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
 
-                f.Events.BattleCharacterTakeDamage(playerCollisionData->PlayerCharacterHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newHp / damagedPlayerData->Stats.Hp);
+                f.Events.BattleCharacterTakeDamage(playerCollisionData->PlayerCharacterHitbox->ParentEntityRef, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newHp / damagedPlayerData->Stats.Hp);
             }
 
             if (damagedPlayerData->CurrentHp <= FP._0)
@@ -126,29 +126,44 @@ namespace Battle.QSimulation.Player
         /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
         public static void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData)
         {
-            if (!shieldCollisionData->PlayerShieldHitbox->IsActive) return;
+            // checks
             if (projectileCollisionData->Projectile->IsHeld) return;
 
-            BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
-            FP damageTaken = projectileCollisionData->Projectile->Attack;
+            //{ hit
+
+            BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
+            BattlePlayerDataQComponent* damagedPlayerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
 
             HandleSFX(f, damagedPlayerData->CharacterId, SoundEffectType.HitShield);
 
-            BattleProjectileQSystem.SetAttack(f, projectileCollisionData->Projectile, damagedPlayerData->Stats.Attack);
+            //} hit
+
+            //{ hit attach
+
+            if (!playerShieldData->IsAttached) goto Exit;
 
             int characterNumber = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber;
+            FP damageTaken = projectileCollisionData->Projectile->Attack;
 
-            FP newDefence = damagedPlayerData->CurrentDefence - damageTaken;
+            BattleProjectileQSystem.SetAttack(f, projectileCollisionData->Projectile, damagedPlayerData->Stats.Attack);
 
-            if (damageTaken > FP._0 && damagedPlayerData->CurrentDefence > FP._0 && !damagedPlayerData->DamageCooldown.IsRunning(f))
+            if (damageTaken <= FP._0 || damagedPlayerData->DamageCooldown.IsRunning(f)) goto Exit;
+
+            damagedPlayerData->CurrentDefence = damagedPlayerData->CurrentDefence - damageTaken;
+            damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
+
+            f.Events.BattleShieldTakeDamage(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, damagedPlayerData->CurrentDefence);
+
+            if (damagedPlayerData->CurrentDefence <= 0)
             {
-                damagedPlayerData->CurrentDefence = newDefence;
+                s_debugLogger.LogFormat(f, "({0}) Current characters shield destroyed!", damagedPlayerData->Slot);
 
-                damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
-
-                f.Events.BattleShieldTakeDamage(shieldCollisionData->PlayerShieldHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newDefence);
+                BattlePlayerShieldManager.RemoveShield(f, damagedPlayerData->Slot, characterNumber, playerShieldData->ShieldNumber);
             }
 
+            //} hit attach
+
+            Exit:
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
         }
 
@@ -170,7 +185,7 @@ namespace Battle.QSimulation.Player
             Input* input;
             Input stackInputStorage;
 
-            EntityRef playerEntity = EntityRef.None;
+            BattlePlayerEntityRef playerEntity = BattlePlayerEntityRef.None;
             BattlePlayerDataQComponent* playerData = null;
             Transform2D* playerTransform = null;
 
@@ -184,9 +199,9 @@ namespace Battle.QSimulation.Player
 
                 if (playerHandle.PlayState.IsInPlay())
                 {
-                    playerEntity = playerHandle.SelectedCharacterEntity;
-                    playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerEntity);
-                    playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
+                    playerEntity = playerHandle.GetSelectedCharacterEntityRef(f);
+                    playerData = playerEntity.GetDataQComponent(f);
+                    playerTransform = playerEntity.GetTransform(f);
                 }
 
                 input = GetInput(f, playerHandle, playerData, &stackInputStorage);
@@ -328,10 +343,10 @@ namespace Battle.QSimulation.Player
         /// </summary>
         ///
         /// <param name="f">Current simulation frame</param>
-        /// <param name="charactedID">ID value of the current character in play</param>
-        private static void HandleSFX(Frame f, int characterID, SoundEffectType type)
+        /// <param name="characterID">ID value of the current character in play</param>
+        private static void HandleSFX(Frame f, BattlePlayerCharacterID characterID, SoundEffectType type)
         {
-            int finalSoundID = (characterID * Constants.BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER) + (int)type;
+            int finalSoundID = ((int)characterID * Constants.BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER) + (int)type;
             f.Events.BattlePlaySoundFX((BattleSoundFX)finalSoundID);
         }
 
@@ -457,15 +472,15 @@ namespace Battle.QSimulation.Player
                 updateMovement = false;
             }
 
-            if (playerData->CurrentDefence <= FP._0)
+            /*if (playerData->CurrentDefence <= FP._0)
             {
                 s_debugLogger.LogFormat(f, "({0}) Current characters shield destroyed!", playerHandle.Slot);
 
-                f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity)->IsActive = false;
-            }
+                BattlePlayerShieldDataQComponent* shieldDataQComponent = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(playerData->AttachedShield);
+            }*/
 
             BattlePlayerClassManager.OnUpdate(f, playerHandle, playerData, playerEntity);
-            if (updateMovement) BattlePlayerMovementController.UpdateMovement(f, playerData, playerTransform, input);
+            if (updateMovement) BattlePlayerMovementController.UpdateMovement(f, playerData, playerEntity, playerTransform, input);
         }
 
         private void AbilityActivate(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* playerTransform)
@@ -491,7 +506,7 @@ namespace Battle.QSimulation.Player
                 BattleSoulWallQSystem.CreateAbilitySoulWallTest(f, playerData->TeamNumber, playerTransform->Position);
             }
 
-            /**/
+            */
             //} Ability test
 
             playerData->AbilityCooldownSec = FrameTimer.FromSeconds(f, FP._3);

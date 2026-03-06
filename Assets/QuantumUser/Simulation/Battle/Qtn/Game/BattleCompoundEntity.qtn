@@ -1,0 +1,10 @@
+struct BattleEntityLink
+{
+    EntityRef ERef;
+    FPVector2 Offset;
+}
+
+component BattleCompoundEntityComponent
+{
+    [FreeOnComponentRemoved] list<BattleEntityLink> LinkedEntities;
+}

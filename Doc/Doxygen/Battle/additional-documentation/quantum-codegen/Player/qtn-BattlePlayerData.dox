@@ -6,10 +6,6 @@
 /// ## Generated Structs
 /// - @cref{Quantum,BattlePlayerDataQComponent}  
 ///   @copybrief Quantum.BattlePlayerDataQComponent
-/// - @cref{Quantum,BattlePlayerHitboxColliderTemplate}  
-///   @copybrief Quantum.BattlePlayerHitboxColliderTemplate
-/// - @cref{Quantum,BattlePlayerHitboxTemplate}  
-///   @copybrief Quantum.BattlePlayerHitboxTemplate
 /// - @cref{Quantum,BattlePlayerDataTemplateQComponent}  
 ///   @copybrief Quantum.BattlePlayerDataTemplateQComponent
 
@@ -25,23 +21,9 @@
 ///
 /// @bigtext{Generated from @ref BattlePlayerData.qtn}
 
-/// @struct Quantum::BattlePlayerHitboxColliderTemplate
-/// <summary>
-/// Template for hitbox's position and size.
-/// </summary>
-///
-/// @bigtext{Generated from @ref BattlePlayerData.qtn}
-
-/// @struct Quantum::BattlePlayerHitboxTemplate
-/// <summary>
-/// Template for creating hitboxes for player entities.
-/// </summary>
-///
-/// @bigtext{Generated from @ref BattlePlayerData.qtn}
-
 /// @struct Quantum::BattlePlayerDataTemplateQComponent
 /// <summary>
-///
+/// Template for creating player character entity.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattlePlayerData.qtn}
@@ -63,11 +45,11 @@
 /// <summary>Which team the player is on.</summary>
 /// Part of @ref PlayerID "[Player's refs and IDs]"
 ///
-/// @var int Quantum::BattlePlayerDataQComponent::CharacterId
+/// @var BattlePlayerCharacterID Quantum::BattlePlayerDataQComponent::CharacterId
 /// <summary>Character's 3-digit ID number.</summary>
 /// Part of @ref PlayerID "[Player's refs and IDs]"
 ///
-/// @var int Quantum::BattlePlayerDataQComponent::CharacterClass
+/// @var BattlePlayerCharacterClass Quantum::BattlePlayerDataQComponent::CharacterClass
 /// <summary>Which defence class the character belongs to.</summary>
 /// Part of @ref PlayerID "[Player's refs and IDs]"
 /// @}
@@ -99,11 +81,11 @@
 /// <summary>The position the player is moving towards.</summary>
 /// Part of @ref PlayerMovement "[Player's movement related attributes]"
 ///
-/// @var FP Quantum::BattlePlayerDataQComponent::RotationBase
+/// @var FP Quantum::BattlePlayerDataQComponent::RotationBaseRad
 /// <summary>Base rotation value of the character. Depends on which side of the play arena the player is on.</summary>
 /// Part of @ref PlayerMovement "[Player's movement related attributes]"
 ///
-/// @var FP Quantum::BattlePlayerDataQComponent::RotationOffset
+/// @var FP Quantum::BattlePlayerDataQComponent::RotationOffsetRad
 /// <summary>How much the player has rotated the character.</summary>
 /// Part of @ref PlayerMovement "[Player's movement related attributes]"
 /// @}
@@ -128,22 +110,26 @@
 /// Part of @ref PlayerState "[Player's current state related data]"
 /// @}
 
-/// @anchor PlayerHitboxEntities
-/// @name Player's hitboxEntities
+/// @anchor PlayerShieldData
+/// @name Player's shield related data
 /// @{
-/// @var EntityRef Quantum::BattlePlayerDataQComponent::HitboxShieldEntity
-/// <summary>An entity that contains all the shield hitboxes.</summary>
-/// Part of @ref PlayerHitboxEntities "[Player's hitboxEntities]"
+/// @var int Quantum::BattlePlayerDataQComponent::ShieldCount
+/// <summary>The amount of shield's this character has.</summary>
+/// Part of @ref PlayerShieldData "[Player's shield related data]"
 ///
-/// @var EntityRef Quantum::BattlePlayerDataQComponent::HitboxCharacterEntity
-/// <summary>An entity that contains all the character hitboxes.</summary>
-/// Part of @ref PlayerHitboxEntities "[Player's hitboxEntities]"
+/// @var int Quantum::BattlePlayerDataQComponent::AttachedShieldNumber
+/// <summary>The shieldnumber of the currently attached shield.</summary>
+/// Part of @ref PlayerShieldData "[Player's shield related data]"
+///
+/// @var BattlePlayerShieldEntityRef Quantum::BattlePlayerDataQComponent::AttachedShield
+/// <summary>The BattlePlayerShieldEntityRef of the currently attached shield.</summary>
+/// Part of @ref PlayerShieldData "[Player's shield related data]"
 /// @}
 
 /// @anchor Bot
 /// @name Bot related data
 /// @{
-/// @var FP Quantum::BattlePlayerDataQComponent::MovementCooldownSec
+/// @var FP Quantum::BattlePlayerDataQComponent::BotMovementCooldownSec
 /// <summary>Cooldown between bot movements in seconds.</summary>
 /// Part of @ref Bot "[Bot related data]"
 /// @}
@@ -162,30 +148,14 @@
 
 // ---------------------------------------------------------------------------------------------------- //
 
-/// @var IntVector2 Quantum::BattlePlayerHitboxColliderTemplate::Position
-/// <summary>Position of the hitbox.</summary>
-///
-/// @var IntVector2 Quantum::BattlePlayerHitboxColliderTemplate::Size
-/// <summary>Size of the hitbox.</summary>
-
-// ---------------------------------------------------------------------------------------------------- //
-
-/// @var list<BattlePlayerHitboxColliderTemplate> Quantum::BattlePlayerHitboxTemplate::ColliderTemplateList
-/// <summary>List of colliders made using BattlePlayerHitboxColliderTemplate.</summary>
-///
-/// @var BattlePlayerCollisionType Quantum::BattlePlayerHitboxTemplate::CollisionType
-/// <summary>Type of the hitbox, affects how the projectile bounces off of it.</summary>
-
-// ---------------------------------------------------------------------------------------------------- //
-
 /// @var int Quantum::BattlePlayerDataTemplateQComponent::GridExtendTop
 /// <summary>How many GridCells the character extends above the center heart position.</summary>
 ///
 /// @var int Quantum::BattlePlayerDataTemplateQComponent::GridExtendBottom
 /// <summary>How many GridCells the character extends below the center heart position.</summary>
 ///
-/// @var BattlePlayerHitboxTemplate Quantum::BattlePlayerDataTemplateQComponent::HitboxShield
-/// <summary>BattlePlayerHitboxTemplate that contains all shield colliders.</summary>
-///
 /// @var BattlePlayerHitboxTemplate Quantum::BattlePlayerDataTemplateQComponent::HitboxCharacter
 /// <summary>BattlePlayerHitboxTemplate that contains all character colliders.</summary>
+///
+/// @var bool Quantum::BattlePlayerDataTemplateQComponent::DisableRotation
+/// <summary>Bool for disabling rotation for character.</summary>
