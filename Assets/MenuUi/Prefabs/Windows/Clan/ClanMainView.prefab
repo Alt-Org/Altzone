@@ -2256,7 +2256,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _blockType: 0
-  _swipe: {fileID: 7863349590796939053}
+  _swipe: {fileID: 0}
 --- !u!1 &695630187373181956
 GameObject:
   m_ObjectHideFlags: 0
@@ -4877,6 +4877,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _toggleOnImage: {fileID: 21300000, guid: 5fefa1145a7743b4998c56f6626d87be, type: 3}
   _toggleOffImage: {fileID: 21300000, guid: daab1c2df6045d24c9d60297b2625ba8, type: 3}
+  _toggle: {fileID: 0}
+  _iconToToggle: {fileID: 0}
 --- !u!1 &2042569685943520404
 GameObject:
   m_ObjectHideFlags: 0
@@ -6424,7 +6426,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _blockType: 0
-  _swipe: {fileID: 7863349590796939053}
+  _swipe: {fileID: 0}
 --- !u!1 &2910254706562631506
 GameObject:
   m_ObjectHideFlags: 0
@@ -6835,7 +6837,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _blockType: 0
-  _swipe: {fileID: 7863349590796939053}
+  _swipe: {fileID: 0}
 --- !u!1 &3104060688858005955
 GameObject:
   m_ObjectHideFlags: 0
@@ -8358,8 +8360,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2753381743629139268}
   m_HandleRect: {fileID: 7945028995404064526}
   m_Direction: 0
-  m_Value: -0.000000058404616
-  m_Size: 0.48520198
+  m_Value: 0
+  m_Size: 0.48520195
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -10667,7 +10669,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _blockType: 0
-  _swipe: {fileID: 7863349590796939053}
+  _swipe: {fileID: 0}
 --- !u!1 &4647561138955195479
 GameObject:
   m_ObjectHideFlags: 0
@@ -13256,8 +13258,8 @@ GameObject:
   - component: {fileID: 9105268213119437349}
   - component: {fileID: 4847769923260018646}
   - component: {fileID: 1816238773678866539}
-  - component: {fileID: 4806463595524585587}
-  - component: {fileID: 7863349590796939053}
+  - component: {fileID: 3567927804147327824}
+  - component: {fileID: 5461582360619622223}
   - component: {fileID: 4610092002289087248}
   m_Layer: 5
   m_Name: Scroll View
@@ -13302,13 +13304,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5851341582921848662}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -13325,7 +13327,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4806463595524585587
+--- !u!114 &3567927804147327824
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -13334,28 +13336,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 5851341582921848662}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
+  m_Script: {fileID: 11500000, guid: 86a6ac2cbdfc56347bcf51ef5592b643, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Content: {fileID: 8078146309516821185}
-  m_Horizontal: 1
-  m_Vertical: 0
-  m_MovementType: 2
-  m_Elasticity: 0.1
-  m_Inertia: 1
-  m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 10
-  m_Viewport: {fileID: 3280007608802692393}
-  m_HorizontalScrollbar: {fileID: 4063781107019144539}
-  m_VerticalScrollbar: {fileID: 0}
-  m_HorizontalScrollbarVisibility: 0
-  m_VerticalScrollbarVisibility: 2
-  m_HorizontalScrollbarSpacing: -3
-  m_VerticalScrollbarSpacing: -3
-  m_OnValueChanged:
+  content: {fileID: 8078146309516821185}
+  horizontallyScrollable: 1
+  verticallyScrollable: 1
+  scrollingMovementType: 2
+  elasticity: 0.1
+  inertia: 1
+  decelerationRate: 0.135
+  scrollSensitivity: 1
+  viewportRectTransform: {fileID: 3280007608802692393}
+  horizontalScrollbar: {fileID: 4063781107019144539}
+  verticalScrollbar: {fileID: 0}
+  horizontalScrollbarVisibility: 0
+  verticalScrollbarVisibility: 0
+  horizontalScrollbarSpacing: 0
+  verticalScrollbarSpacing: 0
+  forwardUnusedEventsToContainer: 0
+  onValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &7863349590796939053
+--- !u!114 &5461582360619622223
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -13394,7 +13397,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abfb76c4ca39f4140bee21d20ab4d96f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _scrollRect: {fileID: 4806463595524585587}
+  _scrollRect: {fileID: 0}
+  _baseScrollRect: {fileID: 3567927804147327824}
   _clanMainView: {fileID: 2435848013500093190}
   _membersThreshold: 0.5
 --- !u!1 &5963552718780817897
@@ -13547,7 +13551,7 @@ GameObject:
   - component: {fileID: 4600339636276598888}
   - component: {fileID: 8102714306927057159}
   - component: {fileID: 7930002877688998891}
-  - component: {fileID: 6093833297032338028}
+  - component: {fileID: 6746719845405893684}
   m_Layer: 5
   m_Name: Scroll View
   m_TagString: Untagged
@@ -13591,13 +13595,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6000242669092383448}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -13614,7 +13618,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6093833297032338028
+--- !u!114 &6746719845405893684
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -13623,25 +13627,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 6000242669092383448}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
+  m_Script: {fileID: 11500000, guid: 1a34f8de8a2e9c847b41b9260030edd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Content: {fileID: 3023886942538942625}
-  m_Horizontal: 0
-  m_Vertical: 1
-  m_MovementType: 1
-  m_Elasticity: 0.1
-  m_Inertia: 1
-  m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
-  m_Viewport: {fileID: 7070212975153814312}
-  m_HorizontalScrollbar: {fileID: 0}
-  m_VerticalScrollbar: {fileID: 3243142808613349405}
-  m_HorizontalScrollbarVisibility: 2
-  m_VerticalScrollbarVisibility: 2
-  m_HorizontalScrollbarSpacing: -3
-  m_VerticalScrollbarSpacing: -3
-  m_OnValueChanged:
+  content: {fileID: 3023886942538942625}
+  horizontallyScrollable: 1
+  verticallyScrollable: 1
+  scrollingMovementType: 1
+  elasticity: 0.1
+  inertia: 1
+  decelerationRate: 0.135
+  scrollSensitivity: 1
+  viewportRectTransform: {fileID: 7070212975153814312}
+  horizontalScrollbar: {fileID: 0}
+  verticalScrollbar: {fileID: 3243142808613349405}
+  horizontalScrollbarVisibility: 0
+  verticalScrollbarVisibility: 2
+  horizontalScrollbarSpacing: 0
+  verticalScrollbarSpacing: -3
+  forwardUnusedEventsToContainer: 1
+  onValueChanged:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &6074846911042589866
@@ -18988,7 +18993,7 @@ MonoBehaviour:
   _editViewButtons: {fileID: 8036241075635607931}
   _valuePanel: {fileID: 3494596592679900885}
   _clanHeart: {fileID: 2805234185364963996}
-  _swipeScrollRect: {fileID: 4806463595524585587}
+  _swipeScrollRect: {fileID: 0}
   _tabLine: {fileID: 5009642048386207442}
   _clanSwipeRoot: {fileID: 3507389722048683969}
   _tabButtonsRoot: {fileID: 7153313707218281471}
@@ -18996,9 +19001,9 @@ MonoBehaviour:
   _joinClanButton: {fileID: 7990530695742121514}
   _leaveClanButton: {fileID: 7111003629890854146}
   _linkButton: {fileID: 6587999552332575866}
+  _editButton: {fileID: 1086563080993959894}
   _viewClansButton: {fileID: 4360165864398261534}
   _membersFilterButton: {fileID: 2990283079790940869}
-  _editButton: {fileID: 1086563080993959894}
   _clanPopup: {fileID: 6465328737158034700}
   _overlay: {fileID: 880733857859938629}
   _confirmPopup: {fileID: 1747969689837145745}
@@ -28402,7 +28407,7 @@ PrefabInstance:
     - target: {fileID: 2641932565321544379, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.96328294
+      value: 0.94188035
       objectReference: {fileID: 0}
     - target: {fileID: 2665311521893521844, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -28462,12 +28467,12 @@ PrefabInstance:
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.88822687
+      value: 0.86688036
       objectReference: {fileID: 0}
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.19769627
+      value: 0.1975
       objectReference: {fileID: 0}
     - target: {fileID: 3601527347738313772, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -29032,7 +29037,7 @@ PrefabInstance:
     - target: {fileID: 7827142668286818857, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.19769627
+      value: 0.1975
       objectReference: {fileID: 0}
     - target: {fileID: 7954206292666012700, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -29189,6 +29194,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -10
       objectReference: {fileID: 0}
+    - target: {fileID: 8852663827235476793, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8884211518635950346, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -29197,12 +29207,12 @@ PrefabInstance:
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.96328294
+      value: 0.94188035
       objectReference: {fileID: 0}
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.88822687
+      value: 0.86688036
       objectReference: {fileID: 0}
     - target: {fileID: 9092838377446531208, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}

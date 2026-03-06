@@ -6,9 +6,10 @@ using UnityEngine.UI;
 public class ClanSwipeButtonsToggler : MonoBehaviour
 {
     [SerializeField] private ScrollRect _scrollRect;
+    [SerializeField] private BaseScrollRect _baseScrollRect;
     [SerializeField] private ClanMainView _clanMainView;
 
-    [Tooltip("Kun horizontalNormalizedPosition ylittää tämän, tulkitaan että ollaan Members-sivulla.")]
+    [Tooltip("Kun horizontalNormalizedPosition ylittï¿½ï¿½ tï¿½mï¿½n, tulkitaan ettï¿½ ollaan Members-sivulla.")]
     [Range(0f, 1f)]
     [SerializeField] private float _membersThreshold = 0.5f;
 
@@ -22,6 +23,12 @@ public class ClanSwipeButtonsToggler : MonoBehaviour
 
             UpdateFromScroll();
         }
+        else if (_baseScrollRect != null)
+        {
+            _baseScrollRect.OnValueChanged.AddListener(OnScrollChanged);
+
+            UpdateFromScroll();
+        }
     }
 
     private void OnDisable()
@@ -29,6 +36,10 @@ public class ClanSwipeButtonsToggler : MonoBehaviour
         if (_scrollRect != null)
         {
             _scrollRect.onValueChanged.RemoveListener(OnScrollChanged);
+        }
+        else if (_baseScrollRect != null)
+        {
+            _baseScrollRect.OnValueChanged.RemoveListener(OnScrollChanged);
         }
     }
 
@@ -39,9 +50,11 @@ public class ClanSwipeButtonsToggler : MonoBehaviour
 
     private void UpdateFromScroll()
     {
-        if (_scrollRect == null || _clanMainView == null) return;
+        if (_scrollRect == null && _baseScrollRect == null || _clanMainView == null) return;
 
-        float x = _scrollRect.horizontalNormalizedPosition;
+        float x;
+        if (_scrollRect) x = _scrollRect.horizontalNormalizedPosition;
+        else x = _baseScrollRect.HorizontalNormalizedPosition;
         bool onProfile = x < _membersThreshold;
 
         if (onProfile == _lastOnProfile) return;

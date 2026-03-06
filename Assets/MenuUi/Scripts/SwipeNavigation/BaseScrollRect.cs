@@ -335,6 +335,7 @@ public class BaseScrollRect : UIBehaviour, IInitializePotentialDragHandler, IBeg
         CanvasUpdateRegistry.RegisterCanvasElementForLayoutRebuild(this);
         UpdateCachedData();
         CacheParentContainerComponents();
+        EnsureLayoutHasRebuilt();
     }
 
     protected override void OnDisable()
@@ -424,7 +425,9 @@ public class BaseScrollRect : UIBehaviour, IInitializePotentialDragHandler, IBeg
         EvaluateRouteToParent(eventData.delta, true, true);
 
         if (routeToParent && parentBeginDragHandler != null)
+        {
             parentBeginDragHandler.OnBeginDrag(eventData);
+        }
         else
         {
             if (eventData.button != PointerEventData.InputButton.Left)
