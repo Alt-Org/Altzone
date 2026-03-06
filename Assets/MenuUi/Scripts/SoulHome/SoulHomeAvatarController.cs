@@ -173,13 +173,14 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     List<Vector2> rawPath = GetTravelPoints(nodePath);
 
-                    _travelPoints = SmoothPath(rawPath);
+                    //_travelPoints = SmoothPath(rawPath);
+                    _travelPoints = GetTravelPoints(nodePath);
                     _currentGridPosition = target;
                     _statusCoroutine = StartCoroutine(MoveRoutine());
                 }
                 else
                 {
-                    UnityEngine.Debug.LogError("Nodepath was null");
+                    UnityEngine.Debug.LogError("Nodepath was null, Most likely meaning there was no way to the destination without clipping through furniture");
                     SelectStatus();
                 }
             }
@@ -219,7 +220,7 @@ namespace MenuUI.Scripts.SoulHome
                         targetPos,
                         _speed * Time.deltaTime);
 
-                    UpdateSortingOrder(WorldToGrid(targetPos).y);
+                    UpdateSortingOrder(WorldToGrid(transform.position).y);
 
                     yield return null;
                 }
@@ -266,7 +267,7 @@ namespace MenuUI.Scripts.SoulHome
         // and also add a penalty to the bottom-right corner + 1 node to the left, and bottom-left corner and 1 node from that to the right, 
         // so the avatar only goes there if there is no other way (makes clipping with furniture less likely, and avatar only chooses to "slip"
         // through the corner of the furniture if there is absolutely no other way to the end position)
-        // Smoothpath still cares only about IsWalkable, but the path will be better because the original path (from findpath) points are further from the clipping zones
+        // Smoothpath still cares only about IsWalkable, need to fix
         private void CalculatePenalties()
         {
             foreach (GridNode node in _grid) node.penalty = 0;
@@ -491,6 +492,7 @@ namespace MenuUI.Scripts.SoulHome
         }
 
         // if there is a clear los between points, removes points in between, so the avatar won't zig-zag
+        // currently walks through furniture weirdly if used
         private List<Vector2> SmoothPath(List<Vector2> fullPath)
         {
             if (fullPath.Count < 3) return fullPath;
