@@ -253,16 +253,24 @@ namespace MenuUI.Scripts.SoulHome
                     bool walkable = (slot.Furniture == null);
 
                     _grid[c, r] = new GridNode(new Vector2Int(c, r), walkable);
-
-                    if (walkable)
-                    {
-                        _walkableSlots.Add(new Vector2Int(c, r));
-                    }
                 }
             }
             _gridWidth = _grid.GetLength(0);
             _gridHeight = _grid.GetLength(1);
             CalculatePenalties();
+
+            // only add slots with no penalty to walkableslots
+            // need to make exception if there are none
+            for (int x = 0; x < _gridWidth; x++)
+            {
+                for (int y = 0; y < _gridHeight; y++)
+                {
+                    if (_grid[x, y].IsWalkable && _grid[x, y].penalty == 0)
+                    {
+                        _walkableSlots.Add(new Vector2Int(x, y));
+                    }
+                }
+            }
         }
 
         // Add a penalty to tiles to the right or left of furniture, and double penalty if there is furniture to the left and the right,
