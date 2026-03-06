@@ -613,7 +613,7 @@ namespace MenuUI.Scripts.SoulHome
             _performingAnimation = false;
             UseDefaultHands(false);
 
-            Status = AvatarStatus.Idle;
+            SelectStatus();
         }
 
 
