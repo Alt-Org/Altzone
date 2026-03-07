@@ -149,13 +149,10 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
         Debug.Log("Poll list count from manager: " + PollManager.GetPollList().Count);
 
 
-
         ClearContainer(AdminNotVotedListContent);
         ClearContainer(AdminVotedListContent);
         ClearContainer(ShopNotVotedListContent);
         ClearContainer(ShopVotedListContent);
-
-
 
 
         if (AdminNotVotedListContent == null ||
@@ -195,7 +192,7 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
         {
             Debug.Log("TEST MODE: Creating fake UI entries");
 
-            for (int i = 0; i < 3; i++)   // ← 3 test pollia
+            for (int i = 0; i < 7; i++)   // ← 7 test pollia
             {
                 // ADMIN
                 GameObject admin = Instantiate(PollObjectPrefab, AdminNotVotedListContent.transform);
@@ -213,10 +210,6 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
 #endif
 
         Debug.Log("Poll count: " + pollList.Count);
-
-
-
-
 
 
 
@@ -240,9 +233,6 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
             //#endif
 
             Debug.Log("isShopPoll = " + isShopPoll);
-
-
-
 
 
 
@@ -287,16 +277,11 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
                     pollObject.SetTheme(AdminThemeColor);
 
 
-
-
-
                 // =====================
 
                 Polls.Add(obj);
 
                 // ----------------
-
-
 
 
                 obj.GetComponent<Button>().onClick.AddListener(() =>
@@ -338,7 +323,6 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
 
         Canvas.ForceUpdateCanvases();
     }
-
 
     public void SetPollPopupPollId(string pollId)
     {
