@@ -116,7 +116,14 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
 
             // Starts the hold coroutine when the button is pressed down
             var downEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
-            downEntry.callback.AddListener((eventData) => StartCoroutine(ButtonHold(buttonObject)));
+            downEntry.callback.AddListener((eventData) =>
+            {
+                // This is the indicator that shows if the player is holding down the button
+                ProgressWheelHandler.Instance.StartProgressWheelAtPosition(buttonObject.Button.transform.position, 0.2f, _requiredHoldTime);
+
+                StartCoroutine(ButtonHold(buttonObject));
+            });
+
             trigger.triggers.Add(downEntry);
             entries.Add(downEntry);
 
@@ -124,6 +131,9 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
             var upEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerUp };
             upEntry.callback.AddListener((eventData) =>
             {
+                // This is the indicator that shows if the player is holding down the button
+                ProgressWheelHandler.Instance.DeactivateProgressWheel();
+
                 StopAllCoroutines();
                 if (buttonObject?.Button != null)
                 {
@@ -146,7 +156,7 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
             SelectButtonObject button = addedEntry.Key;
             List<EventTrigger.Entry> entries = addedEntry.Value;
 
-            if (button != null)
+            if (button != null && button.Button != null)
             {
                 EventTrigger trigger = button.Button.GetComponent<EventTrigger>();
                 if (trigger != null)
@@ -175,11 +185,13 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
         while (true)
         {
             timer += Time.deltaTime;
-
+          
             if (timer >= _requiredHoldTime)
             {
+                ProgressWheelHandler.Instance.DeactivateProgressWheel();
                 button.Button.interactable = false;
                 OnButtonSelected?.Invoke(button);
+                
                 yield break;
             }
 
