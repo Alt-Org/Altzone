@@ -94,11 +94,21 @@ namespace MenuUI.Scripts.SoulHome
         }
         private void OnEnable()
         {
+
             if (_lHandResolver != null && _rHandResolver != null)
             {
                 _lHandLabel = _lHandResolver.GetLabel();
                 _rHandLabel = _rHandResolver.GetLabel();
             }
+
+            if (_grid == null)
+            {
+                return;
+            }
+
+            _performingAnimation = false;
+
+            OnStatusChanged();
         }
 
         private void SetAnimationClips()
