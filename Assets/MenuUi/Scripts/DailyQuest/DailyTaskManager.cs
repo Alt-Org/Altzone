@@ -807,7 +807,7 @@ public class DailyTaskManager : AltMonoBehaviour
     public IEnumerator ShowPopupAndHandleResponse(string Message, PopupData? data)
     {
         Popup.PopupWindowType windowType;
-        bool? result = null;
+        Popup.ResultType result = Popup.ResultType.Null;
 
         switch (data.Value.Type)
         {
@@ -820,9 +820,9 @@ public class DailyTaskManager : AltMonoBehaviour
 
         StartCoroutine(Popup.RequestPopup(Message, data.Value, OwnTaskId, windowType, data => result = data));
 
-        yield return new WaitUntil(() => result != null);
+        yield return new WaitUntil(() => result != Popup.ResultType.Null);
 
-        if (result == true && data != null)
+        if (result == Popup.ResultType.Accept && data != null)
         {
             bool? done = null;
 

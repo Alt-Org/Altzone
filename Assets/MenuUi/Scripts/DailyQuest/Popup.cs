@@ -6,6 +6,7 @@ using TMPro;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
 using MenuUI.Scripts;
+using System.ComponentModel;
 
 public class Popup : MonoBehaviour
 {
@@ -17,6 +18,26 @@ public class Popup : MonoBehaviour
         Cancel,         //Cancel task window
         ClanMilestone,  //Clan milestone reward info window
         MultipleChoice, //Multiple choice task window
+    }
+
+    /// <summary>
+    /// Enum used for popup results
+    /// </summary>
+    public enum ResultType
+    {
+        Null = 0,
+        /// <summary>
+        /// (e.g. confirm or a correct answer)
+        /// </summary>
+        Accept,
+        /// <summary>
+        /// If the popup got a result, but shouldn't close the window
+        /// </summary>
+        Normal,
+        /// <summary>
+        /// (e.g. close)
+        /// </summary>
+        Cancel
     }
 
     [SerializeField] private DailyTaskCardImageReference _cardImageReference;
@@ -78,7 +99,7 @@ public class Popup : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _cooldownText;
     private bool _isOnCooldown = false;
 
-    private bool? _result;
+    private ResultType _result;
 
     private void Awake()
     {
@@ -100,13 +121,13 @@ public class Popup : MonoBehaviour
     {
         //Set buttons
         foreach (var acceptButton in _acceptButtons)
-            acceptButton.onClick.AddListener(() => _result = true);
+            acceptButton.onClick.AddListener(() => _result = ResultType.Accept);
 
         foreach (var cancelButton in _cancelButtons)
-            cancelButton.onClick.AddListener(() => _result = false);
+            cancelButton.onClick.AddListener(() => _result = ResultType.Cancel);
     }
 
-    public static IEnumerator RequestPopup(string message, PopupData? data, string currentTaskId, PopupWindowType type, System.Action<bool> callback)
+    public static IEnumerator RequestPopup(string message, PopupData? data, string currentTaskId, PopupWindowType type, System.Action<ResultType> callback)
     {
         if (Instance == null)
         {
@@ -114,17 +135,26 @@ public class Popup : MonoBehaviour
             yield break;
         }
 
-        Instance._result = null;
+        Instance._result = ResultType.Null;
         Instance.SwitchWindow(type);
 
         if (data != null)
         {
+
             if (data.Value.Type == PopupData.PopupDataType.OwnTask)
             {
+                // If this is a new task
                 if (currentTaskId == null)
+                {
                     Instance._acceptConfirmButtonText.text = "Valitse";
+                    Instance.ResetOptionButtons();
+                }
+                // If there is already a task running
                 else
+                {
                     Instance._acceptConfirmButtonText.text = "Vaihda Tehtävä";
+                }
+                    
             }
 
             if (data.Value.Location != null)
@@ -143,6 +173,7 @@ public class Popup : MonoBehaviour
 
             if (data.Value.Type == PopupData.PopupDataType.MultipleChoice)
             {
+                // SetOptionButtons no matter if the task is a  new one or already on
                 Instance.SetOptionButtons(data.Value.OwnPage);
             }
 
@@ -154,10 +185,15 @@ public class Popup : MonoBehaviour
 
         // Show the popup and get the result
         yield return Instance.StartCoroutine(Instance.ShowPopup(data.Value.OwnPage));
-        callback(Instance._result.Value);
+        callback(Instance._result);
 
     }
 
+    /// <summary>
+    /// Show the popup and close it after getting ResultType.Cancel or ResultType.Accept
+    /// </summary>
+    /// <param name="task">The player task</param>
+    /// <returns></returns>
     private IEnumerator ShowPopup(PlayerTask task)
     {
         // Start fade in
@@ -169,8 +205,9 @@ public class Popup : MonoBehaviour
         // Set the message text
         SetMessage(task);
 
-        // Wait until one of the buttons is pressed
-        yield return new WaitUntil(() => _result.HasValue);
+        // Wait until a the _result is ResultType.Cancel or ResultType.Accept
+        // (so wait until the player has either selected the correct answer or want's to close the window)
+        yield return new WaitUntil(() => _result == ResultType.Cancel || _result == ResultType.Accept);
 
         // Start fade out
         if (_fadeInCoroutine != null)
@@ -307,15 +344,40 @@ public class Popup : MonoBehaviour
         _clanMilestoneRewardAmountText.text = $"{rewardAmount}x";
     }
 
-    private void SetOptionButtons(PlayerTask data)
+
+    /// <summary>
+    /// Set's the option buttons back to interactable and disables the gameobject
+    /// </summary>
+    private void ResetOptionButtons()
     {
         foreach (var button in _optionButtons)
+        {
+            button.interactable = true;
+            button.gameObject.SetActive(false);
+        }
+    }
+    /// <summary>
+    /// Initializes the multiple choice option buttons
+    /// </summary>
+    /// <param name="data">The player task</param>
+    private void SetOptionButtons(PlayerTask data)
+    {
+
+        // Remove the listeners from the buttons, to avoid bugs
+        foreach (var button in _optionButtons)
+        {
             button.onClick.RemoveAllListeners();
-        
+        }
+            
+
+        // Get the multiple choice options
         List<string> options = MultipleChoiceOptions.Instance.GetTaskOptions(data);
 
+        // Commented this out, because it seems unnecessary and was causing bugs
+        // (e.g. when the window was reopened after player selected a wrong answer,
+        // the order of the buttons was shuffled and the wrong button was grayed out)
         //Shuffle the list
-        int n = options.Count;
+        /*int n = options.Count;
         while (n > 1)
         {
             n--;
@@ -323,26 +385,38 @@ public class Popup : MonoBehaviour
             string option = options[k];
             options[k] = options[n];
             options[n] = option;
-        }
+        }*/
 
+        // Loop through the option buttons
         for (int i = 0; i < _optionButtons.Count; i++)
         {
+            // Make sure the loop does not go over the amount of options (if there are more buttons than options)
             if (i < options.Count)
             {
                 string option = options[i];
-                _optionButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = option;
-                _optionButtons[i].onClick.AddListener(() =>
+                Button button = _optionButtons[i];
+                button.GetComponentInChildren<TextMeshProUGUI>().text = option;
+
+                // Add a listener for the OnClick event on the button
+                button.onClick.AddListener(() =>
                 {
+                    // If on cooldown, don't allow the use
                     if (_isOnCooldown) return;
 
+
+                    // Get the result for the option specified in the MultipleChoiceOptions asset
                     _result = MultipleChoiceOptions.Instance.GetResult(data, option);
 
-                    if (_result.HasValue && _result.Value == false)
+                    // If the option was wrong 
+                    if (_result == ResultType.Normal)
                     {
-                        StartCoroutine(Cooldown(10f));
-                        SignalBus.OnChangePopupInfoSignal("Väärä vastaus, yritä uudestaan.");
+                        // Disable the button and inform player that it was the wrong answer
+                        button.interactable = false;
+                        StartCoroutine(Cooldown(5f));
+                        //SignalBus.OnChangePopupInfoSignal("Väärä vastaus, yritä uudestaan.");
                     }
-                    else if(_result.HasValue && _result.Value == true)
+                    // If the option was correct
+                    else if(_result == ResultType.Accept)
                     {
                         if (TaskEducationStoryType.WhereGameHappens == DailyTaskProgressManager.Instance.CurrentPlayerTask?.EducationStoryType
                         && data.EducationStoryType == TaskEducationStoryType.WhereGameHappens)
@@ -356,6 +430,7 @@ public class Popup : MonoBehaviour
             }
             else
             {
+                // Disable unnecessary buttons if there are any (buttons with no option)
                 _optionButtons[i].gameObject.SetActive(false);
             }
         }
@@ -366,18 +441,40 @@ public class Popup : MonoBehaviour
         _isOnCooldown = true;
         _cooldownText.gameObject.SetActive(true);
 
-        foreach (var button in _optionButtons)
-            button.interactable = false;
+        List<Button> interactableButtons = new List<Button>();
 
+        // Loop through every button
+        foreach (var button in _optionButtons)
+        {
+            // If an option button is interactable, add it to the list
+            if (button.IsInteractable())
+            {
+                interactableButtons.Add(button);
+                // Disable option selection for every button
+                button.interactable = false;
+            }
+        }
+            
+        // Cooldown
         float timeLeft = seconds;
         while (timeLeft > 0)
         {
-            _cooldownText.text = $"{Mathf.CeilToInt(timeLeft)}s";
+            //_cooldownText.text = $"{Mathf.CeilToInt(timeLeft)}s";
+            if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+            {
+                _cooldownText.text = "Wrong answer, try again.";
+            }
+            else
+            {
+                _cooldownText.text = "Väärä vastaus, yritä uudestaan.";
+            }
+                
             yield return new WaitForSeconds(1f);
             timeLeft--;
         }
 
-        foreach (var button in _optionButtons)
+        // Enable option selection back for the interactaple option buttons
+        foreach (var button in interactableButtons)
             button.interactable = true;
 
         _cooldownText.gameObject.SetActive(false);

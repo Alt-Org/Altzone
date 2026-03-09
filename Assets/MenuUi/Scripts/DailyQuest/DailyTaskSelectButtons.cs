@@ -75,7 +75,6 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
 
     public void RefreshListeners()
     {
-        Debug.Log("REFRESH " + On);
         if (On)
         {
             AddListeners();
@@ -90,8 +89,6 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
     // Adds EventTrigger listeners to every button in the scene
     private void AddListeners()
     {
-
-        Debug.Log("ADD LISTENERS");
         SelectButtonObject[] allButtonObjects;
         if (!_limitToThis)
         {
@@ -144,7 +141,6 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
     private void RemoveListeners()
     {
 
-        Debug.Log("REMOVE LISTENERS");
         foreach (var addedEntry in _addedEntries)
         {
             SelectButtonObject button = addedEntry.Key;
