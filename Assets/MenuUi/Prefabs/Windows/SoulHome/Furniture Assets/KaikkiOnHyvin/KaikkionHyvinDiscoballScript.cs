@@ -28,7 +28,7 @@ public class KaikkionHyvinDiscoballScript : MonoBehaviour, ISoulHomeObjectClick
         {
             lights.SetActive(true);
             StartCoroutine(lightHueChange());
-            int randomChance = Random.Range(1,4);
+            int randomChance = Random.Range(1,4); // 1 in 4 chance the lights flicker when lights are turned on
             if(randomChance == 3)
             {
                 StartCoroutine(lightFlicker());
@@ -44,7 +44,7 @@ public class KaikkionHyvinDiscoballScript : MonoBehaviour, ISoulHomeObjectClick
 
             currentHue = Mathf.Lerp(0f, 1f, elapsedTime / transitionDuration); // only hue changes
             
-            renderer.color = Color.HSVToRGB(currentHue, 0.35f, 1f); // Unity uses RGB
+            renderer.color = Color.HSVToRGB(currentHue, 0.35f, 1f); // Unity uses RGB so HSV values must be changed to RGB values
             
             if( transitionDuration <= elapsedTime ) // to ensure continuty
             {

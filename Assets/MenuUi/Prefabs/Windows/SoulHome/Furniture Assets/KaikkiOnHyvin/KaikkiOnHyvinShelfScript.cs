@@ -4,24 +4,28 @@ using UnityEngine;
 
 public class KaikkiOnHyvinShelfScript : MonoBehaviour
 {
-    private float transitionDuration = 999.0F;
+    private float transitionDuration = 9.0F;
+    private float newPositionY;
+    private float newPositionX;
     // Start is called before the first frame update
     void Start()
     {
-        
+        StartCoroutine(shakeAnimation());
     }
 
-    public void shakeAnimation()
+    private IEnumerator shakeAnimation()
     {
-            //while (elapsedTime < transitionDuration)
+        // Since furniture can be anywhere in soulhome, get its position values
+        Vector3 startPosition = transform.position;
+
+        float elapsedTime = 0f;
+
+            while (elapsedTime < transitionDuration)
         {
-            //elapsedTime += Time.deltaTime;
-            //x += Time.deltaTime;
+            elapsedTime += Time.deltaTime;
+            transform.position = startPosition + ((Random.insideUnitSphere / 20) * 3); // Gives a random vector
 
-            //currentAngle = A * Mathf.Exp(-b * x) * Mathf.Cos(w * x + p); 
-            //transform.local.Position = new Vector3(0, 0, currentAngle);   
-
-            //yield return null;
+            yield return null;
         }
 
     }
