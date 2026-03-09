@@ -99,21 +99,42 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
         public AvatarData(string name, ServerAvatar serverData)
         {
             Name = name;
-            Hair = serverData.hair;
-            Eyes = serverData.eyes;
-            Nose = serverData.nose;
-            Mouth = serverData.mouth;
-            Clothes = serverData.clothes;
-            Feet = serverData.feet;
-            Hands = serverData.hands;
+            if (serverData.hair != null)
+            {
+                Hair = serverData.hair.id;
+                HairColor = serverData.hair.color;
+            }
+            if (serverData.eyes != null)
+            {
+                Eyes = serverData.eyes.id;
+                EyesColor = serverData.eyes.color;
+            }
+            if (serverData.nose != null)
+            {
+                Nose = serverData.nose.id;
+                NoseColor = serverData.nose.color;
+            }
+            if (serverData.mouth != null)
+            {
+                Mouth = serverData.mouth.id;
+                MouthColor = serverData.mouth.color;
+            }
+            if (serverData.clothes != null)
+            {
+                Clothes = serverData.clothes.id;
+                ClothesColor = serverData.clothes.color;
+            }
+            if (serverData.feet != null)
+            {
+                Feet = serverData.feet.id;
+                FeetColor = serverData.feet.color;
+            }
+            if (serverData.hands != null)
+            {
+                Hands = serverData.hands.id;
+                HandsColor = serverData.hands.color;
+            }
             Color = serverData.skinColor;
-            HairColor = serverData.hairColor;
-            EyesColor = serverData.eyesColor;
-            NoseColor = serverData.noseColor;
-            MouthColor = serverData.mouthColor;
-            ClothesColor = serverData.clothesColor;
-            FeetColor = serverData.feetColor;
-            HandsColor = serverData.handsColor;
             Scale = Vector2.one;
         }
 

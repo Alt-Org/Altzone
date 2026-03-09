@@ -74,8 +74,36 @@ public class ClanSettings : AltMonoBehaviour
     [SerializeField] private GameObject _swipeBlockOverlay;
     [SerializeField] private GameObject _chatboxBlockOverlay;
 
-    [Header("Other Buttons")]
+    [Header("Buttons")]
     [SerializeField] private Button _saveButton;
+    [SerializeField] private Button _cancelEditsButton;
+    
+    [SerializeField] private Button _openMottoButton;
+    [SerializeField] private Button _mottoConfirmButton;
+    [SerializeField] private Button _mottoCancelButton;
+
+    [SerializeField] private Button _openRulesButton;
+    [SerializeField] private Button _rulesConfirmButton;
+    [SerializeField] private Button _rulesCancelButton;
+
+    [SerializeField] private Button _openAgeButton;
+    [SerializeField] private Button _ageConfirmButton;
+    [SerializeField] private Button _ageCancelButton;
+
+    [SerializeField] private Button _openLanguageButton;
+    [SerializeField] private Button _languageConfirmButton;
+    [SerializeField] private Button _languageCancelButton;
+
+    [SerializeField] private Button _openValuesButton;
+    [SerializeField] private Button _valuesConfirmButton;
+    [SerializeField] private Button _valuesCancelButton;
+
+    [SerializeField] private Button _openHeartEditButton;
+    [SerializeField] private Button _heartConfirmButton;
+    [SerializeField] private Button _heartCancelButton;
+
+    [SerializeField] private Button _cancelConfirmContinueButton; 
+    [SerializeField] private Button _cancelConfirmDiscardButton;
 
     [Header("Tabline buttons")]
     [SerializeField] private GameObject _editViewButtons;
@@ -95,6 +123,7 @@ public class ClanSettings : AltMonoBehaviour
 
     private void OnEnable()
     {
+        RegisterUiListeners();
 
         Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clan) =>
         {
@@ -163,6 +192,16 @@ public class ClanSettings : AltMonoBehaviour
 
             if (_fillWholeHeartToggle != null)
             {
+                _fillWholeHeartToggle.isOn = false;
+                OnFillWholeHeartToggleChanged(_fillWholeHeartToggle.isOn);
+            }
+            else if (_heartColorChanger != null)
+            {
+                _heartColorChanger.SetFillWholeHeart(true);
+            }
+
+            /*if (_fillWholeHeartToggle != null)
+            {
                 _fillWholeHeartToggle.onValueChanged.RemoveAllListeners();
                 _fillWholeHeartToggle.onValueChanged.AddListener(OnFillWholeHeartToggleChanged);
 
@@ -172,11 +211,16 @@ public class ClanSettings : AltMonoBehaviour
             else if (_heartColorChanger != null)
             {
                 _heartColorChanger.SetFillWholeHeart(true);
-            }
+            }*/
 
-            _saveButton.onClick.RemoveAllListeners();
-            _saveButton.onClick.AddListener(SaveClanSettings);
+            //_saveButton.onClick.RemoveAllListeners();
+            //_saveButton.onClick.AddListener(SaveClanSettings);
         });
+    }
+
+    private void OnDisable()
+    {
+        UnregisterUiListeners();
     }
 
     private bool CanCurrentPlayerEditClan(ClanData clanData)
@@ -228,12 +272,6 @@ public class ClanSettings : AltMonoBehaviour
             clanData.Values = _valueSelection.SelectedValues;
             clanData.ClanHeartPieces = _heartPieces;
 
-            if (_clanMainView != null)
-            {                
-                _clanMainView.UpdateProfileFromSettings(clanData);
-                ShowProfileTablineButtons();
-            }
-
             // These are not saved at the moment
             bool isOpen = !_clanOpenToggle.isOn;
             string password = _clanPasswordField.text;
@@ -243,7 +281,13 @@ public class ClanSettings : AltMonoBehaviour
             {
                 _saveButton.interactable = true;
                 if (success)
-                {               
+                {
+                    if (_clanMainView != null)
+                    {
+                        _clanMainView.UpdateProfileFromSettings(clanData);
+                        ShowProfileTablineButtons();
+                    }
+
                     if (!string.IsNullOrEmpty(previousPhrase) && previousPhrase != clanData.Phrase)
                         gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
 
@@ -278,6 +322,85 @@ public class ClanSettings : AltMonoBehaviour
                 ShowProfileTablineButtons();
             }
         });
+    }
+
+    private void RegisterUiListeners()
+    {
+        if (_saveButton) _saveButton.onClick.AddListener(SaveClanSettings);
+
+        if (_fillWholeHeartToggle) _fillWholeHeartToggle.onValueChanged.AddListener(OnFillWholeHeartToggleChanged);
+
+        if (_cancelEditsButton) _cancelEditsButton.onClick.AddListener(OnClickCancelClanSettingEdits);
+
+        // Motto popup
+        if (_openMottoButton) _openMottoButton.onClick.AddListener(OpenClanPhrasePopup);
+        if (_mottoConfirmButton) _mottoConfirmButton.onClick.AddListener(ConfirmClanPhraseEdit);
+        if (_mottoCancelButton) _mottoCancelButton.onClick.AddListener(CancelClanPhraseEdit);
+
+        // Rules popup
+        if (_openRulesButton) _openRulesButton.onClick.AddListener(OpenClanRulesPopup);
+        if (_rulesConfirmButton) _rulesConfirmButton.onClick.AddListener(ConfirmClanRulesEdit);
+        if (_rulesCancelButton) _rulesCancelButton.onClick.AddListener(CancelClanRulesEdit);
+
+        // Age popup
+        if (_openAgeButton) _openAgeButton.onClick.AddListener(OpenClanAgePopup);
+        if (_ageConfirmButton) _ageConfirmButton.onClick.AddListener(OnAgeSelectionConfirmed);
+        if (_ageCancelButton) _ageCancelButton.onClick.AddListener(CancelClanAgeEdit);
+
+        // Language popup
+        if (_openLanguageButton) _openLanguageButton.onClick.AddListener(OpenLanguagePopup);
+        if (_languageConfirmButton) _languageConfirmButton.onClick.AddListener(ConfirmLanguageEdit);
+        if (_languageCancelButton) _languageCancelButton.onClick.AddListener(CancelLanguagePopup);
+
+        // Values popup
+        if (_openValuesButton) _openValuesButton.onClick.AddListener(OpenValuesPopup);
+        if (_valuesConfirmButton) _valuesConfirmButton.onClick.AddListener(ConfirmValuesEdit);
+        if (_valuesCancelButton) _valuesCancelButton.onClick.AddListener(CancelValuesEdit);
+
+        // Heart popup
+        if (_openHeartEditButton) _openHeartEditButton.onClick.AddListener(OpenHeartEditPopup);
+        if (_heartConfirmButton) _heartConfirmButton.onClick.AddListener(ConfirmHeartEdit);
+        if (_heartCancelButton) _heartCancelButton.onClick.AddListener(CancelHeartEdit);
+
+        // Cancel confirmation popup
+        if (_cancelConfirmContinueButton) _cancelConfirmContinueButton.onClick.AddListener(OnClickContinueEditingClanSettings);
+        if (_cancelConfirmDiscardButton) _cancelConfirmDiscardButton.onClick.AddListener(OnClickDiscardClanSettingEdits);
+    }
+
+    private void UnregisterUiListeners()
+    {
+        if (_saveButton) _saveButton.onClick.RemoveListener(SaveClanSettings);
+
+        if (_fillWholeHeartToggle) _fillWholeHeartToggle.onValueChanged.RemoveListener(OnFillWholeHeartToggleChanged);
+
+        if (_cancelEditsButton) _cancelEditsButton.onClick.RemoveListener(OnClickCancelClanSettingEdits);
+
+        if (_openMottoButton) _openMottoButton.onClick.RemoveListener(OpenClanPhrasePopup);
+        if (_mottoConfirmButton) _mottoConfirmButton.onClick.RemoveListener(ConfirmClanPhraseEdit);
+        if (_mottoCancelButton) _mottoCancelButton.onClick.RemoveListener(CancelClanPhraseEdit);
+
+        if (_openRulesButton) _openRulesButton.onClick.RemoveListener(OpenClanRulesPopup);
+        if (_rulesConfirmButton) _rulesConfirmButton.onClick.RemoveListener(ConfirmClanRulesEdit);
+        if (_rulesCancelButton) _rulesCancelButton.onClick.RemoveListener(CancelClanRulesEdit);
+
+        if (_openAgeButton) _openAgeButton.onClick.RemoveListener(OpenClanAgePopup);
+        if (_ageConfirmButton) _ageConfirmButton.onClick.RemoveListener(OnAgeSelectionConfirmed);
+        if (_ageCancelButton) _ageCancelButton.onClick.RemoveListener(CancelClanAgeEdit);
+
+        if (_openLanguageButton) _openLanguageButton.onClick.RemoveListener(OpenLanguagePopup);
+        if (_languageConfirmButton) _languageConfirmButton.onClick.RemoveListener(ConfirmLanguageEdit);
+        if (_languageCancelButton) _languageCancelButton.onClick.RemoveListener(CancelLanguagePopup);
+
+        if (_openValuesButton) _openValuesButton.onClick.RemoveListener(OpenValuesPopup);
+        if (_valuesConfirmButton) _valuesConfirmButton.onClick.RemoveListener(ConfirmValuesEdit);
+        if (_valuesCancelButton) _valuesCancelButton.onClick.RemoveListener(CancelValuesEdit);
+
+        if (_openHeartEditButton) _openHeartEditButton.onClick.RemoveListener(OpenHeartEditPopup);
+        if (_heartConfirmButton) _heartConfirmButton.onClick.RemoveListener(ConfirmHeartEdit);
+        if (_heartCancelButton) _heartCancelButton.onClick.RemoveListener(CancelHeartEdit);
+
+        if (_cancelConfirmContinueButton) _cancelConfirmContinueButton.onClick.RemoveListener(OnClickContinueEditingClanSettings);
+        if (_cancelConfirmDiscardButton) _cancelConfirmDiscardButton.onClick.RemoveListener(OnClickDiscardClanSettingEdits);
     }
 
     public void OnClickContinueEditingClanSettings()
@@ -320,10 +443,7 @@ public class ClanSettings : AltMonoBehaviour
 
     private void ShowProfileTablineButtons()
     {
-        if (_clanMainView != null)
-        {
-            _clanMainView.ShowProfilePage();
-        }
+        _clanMainView.ExitSettingsToProfile();
 
         if (_editViewButtons != null)
             _editViewButtons.SetActive(false);
