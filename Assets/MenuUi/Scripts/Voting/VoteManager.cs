@@ -215,21 +215,17 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
 
         foreach (var pollData in pollList)
         {
-            Debug.Log("FOREACH LOOP START");
-            Debug.Log("Poll type: " + pollData.GetType().Name);
-
             GameObject obj = null;
 
-            // ****TESTIN VUOKSI KOMMENTOITU!! bool isShopPoll = pollData is FurniturePollData;
 
             bool isShopPoll = pollData is FurniturePollData;
 
-
-            //#if UNITY_EDITOR
-            //            // ===== TEST MODE: pakotetaan jako näkyviin =====
-            //            bool isShopPoll = pollData.Id.GetHashCode() % 2 == 0;
+            // Test bit from earlier
+            //#if unity_editor
+            //                        // ===== test mode: pakotetaan jako näkyviin =====
+            //                        bool isshoppoll = polldata.id.gethashcode() % 2 == 0;
             //#else
-            //bool isShopPoll = pollData is FurniturePollData;
+            //            bool isshoppoll = polldata is furniturepolldata;
             //#endif
 
             Debug.Log("isShopPoll = " + isShopPoll);
@@ -258,13 +254,6 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
             if (obj != null)
             {
 
-                // *** kommentoidaan hetkeksi piiloon *** tuossa oli siis kommentointi: (2 riviä)
-
-                //obj.GetComponent<PollObject>().SetPollId(pollData.Id);
-                //Polls.Add(obj);
-
-
-                //// *** TÄMÄ ON LISÄYS:
 
                 PollObject pollObject = obj.GetComponent<PollObject>();
                 pollObject.SetPollId(pollData.Id);

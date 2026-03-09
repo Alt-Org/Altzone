@@ -57,7 +57,7 @@ public class PastPollManager : MonoBehaviour
         {
             Debug.Log("PAST TEST MODE: Creating fake UI entries");
 
-            for (int i = 0; i < 3; i++)   // ← 3 test pollia
+            for (int i = 0; i < 5; i++)   // ← 5 test pollia
             {
                 GameObject fakeAdmin = Instantiate(PollObjectPrefab, PastAdminVotedListContent.transform);
                 PollObject adminObj = fakeAdmin.GetComponent<PollObject>();
