@@ -9,7 +9,7 @@
 
 // ---------------------------------------------------------------------------------------------------- //
 
-/// @struct Quantum::BattlePlayerManagerDataQSingleton
+/// @struct Quantum::BattlePlayerShieldManagerDataQSingleton
 /// <summary>
 /// Singleton component that manages shields.
 /// </summary>
@@ -21,3 +21,17 @@
 ///
 /// @var array Quantum.BattlePlayerShieldManagerDataQSingleton::PlayerShieldEntityGroupIDs
 /// <summary>Array of all characters' entity group IDs for their shields.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerShieldManagerDataQSingleton::SIZE
+/// @var Int32 Quantum::BattlePlayerShieldManagerDataQSingleton::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerShieldManagerDataQSingleton::GetHashCode
+/// @fn void Quantum::BattlePlayerShieldManagerDataQSingleton::ClearPointers
+///
+/// @fn void Quantum::BattlePlayerShieldManagerDataQSingleton::OnRemoved
+/// @fn void Quantum::BattlePlayerShieldManagerDataQSingleton::Serialize
+///
+/// @}

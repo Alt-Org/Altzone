@@ -76,6 +76,18 @@
 ///
 /// Used as a precaution to minimize cases where projectile gets stuck inside other entities.
 
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerHitboxQComponent::SIZE
+/// @var Int32 Quantum::BattlePlayerHitboxQComponent::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerHitboxQComponent::GetHashCode
+///
+/// @fn void Quantum::BattlePlayerHitboxQComponent::Serialize
+///
+/// @}
+
 // ---------------------------------------------------------------------------------------------------- //
 
 /// @struct Quantum::BattlePlayerHitboxColliderTemplate
@@ -91,6 +103,18 @@
 /// @var IntVector2 Quantum::BattlePlayerHitboxColliderTemplate::Size
 /// <summary>Size of the hitbox.</summary>
 
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerHitboxColliderTemplate::SIZE
+/// @var Int32 Quantum::BattlePlayerHitboxColliderTemplate::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerHitboxColliderTemplate::GetHashCode
+///
+/// @fn void Quantum::BattlePlayerHitboxColliderTemplate::Serialize
+///
+/// @}
+
 // ---------------------------------------------------------------------------------------------------- //
 
 /// @struct Quantum::BattlePlayerHitboxTemplate
@@ -104,7 +128,21 @@
 /// <summary>List of colliders made using BattlePlayerHitboxColliderTemplate.</summary>
 ///
 /// @var BattlePlayerCollisionType Quantum::BattlePlayerHitboxTemplate::CollisionType
-/// <summary>Type of the hitbox, affects how the projectile bounces off of it.</summary>
+/// <summary>Type of the hitbox, affects how the projectile collides with it.</summary>
 ///
 /// @var FP Quantum::BattlePlayerHitboxTemplate::NormalAngleDeg
 /// <summary>The normal angle of the hitbox in degrees.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerHitboxTemplate::SIZE
+/// @var Int32 Quantum::BattlePlayerHitboxTemplate::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerHitboxTemplate::GetHashCode
+/// @fn void Quantum::BattlePlayerHitboxTemplate::ClearPointers
+///
+/// @fn void Quantum::BattlePlayerHitboxTemplate::OnRemoved
+/// @fn void Quantum::BattlePlayerHitboxTemplate::Serialize
+///
+/// @}

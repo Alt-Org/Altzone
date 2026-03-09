@@ -238,9 +238,9 @@ digraph PlayerCharacterEntities {
   edge [color=gray];
 
   Player              [label="Player", shape=ellipse];
-  Character1          [label="Character1"];
-  Character2          [label="Character2"];
-  Character3          [label="Character3"];
+  Character1          [label="Character1", shape=ellipse];
+  Character2          [label="Character2", shape=ellipse];
+  Character3          [label="Character3", shape=ellipse];
   CharacterEntity1    [label="Character entity"];
   CharacterEntity2    [label="Character entity"];
   CharacterEntity3    [label="Character entity"];
@@ -252,13 +252,13 @@ digraph PlayerCharacterEntities {
   }
 
   subgraph cluster_shield_group_2{
-    G2_Shield1 [label="Shield", style=solid];
+    G2_Shield1 [label="Shield 1", style=solid];
     G2_Shield2 [label="Shield 2\n(optional)", style=dashed];
     G2_Shield3 [label="...", style=dashed];
   }
 
   subgraph cluster_shield_group_3{
-    G3_Shield1 [label="Shield", style=solid];
+    G3_Shield1 [label="Shield 1", style=solid];
     G3_Shield2 [label="Shield 2\n(optional)", style=dashed];
     G3_Shield3 [label="...", style=dashed];
   }
@@ -287,7 +287,7 @@ See [{Player Character Classes}](#page-concepts-player-characters-classes) for m
 The **Unity root GameObject** has the child object **PlayerViewModel** ,or **ShieldViewModel** for **Shields**, containing all things related to the visible elements of **Player Characters and Shields**.  
 The attached [{PlayerCharacterViewController}](#page-concepts-player-character-view-controller) or [{PlayerShieldViewController}](#page-concepts-player-shield-view-controller) component implements **Unity View / Visual** logic for **Player Characters and Shields**.
 
-### Player Character Entity Graph
+### Player Character Entity/GameObject Graph
 
 ```dot
 digraph PlayerCharacterEntity {
@@ -334,7 +334,7 @@ digraph PlayerCharacterEntity {
 }
 ```
 
-### Player Shield Entity Graph
+### Player Shield Entity/GameObject Graph
 
 ```dot
 digraph PlayerShieldEntity{
@@ -421,7 +421,7 @@ In **Unity View**, every **Player Character class** can optionally have a [{Play
 
 ### Player Character Class List {#page-concepts-player-characters-class-list}
 
-@subpage page-concepts-player-class-400
+@subpage page-concepts-player-class-400  
 @subpage page-concepts-player-class-600
 
 <br/>
@@ -445,20 +445,41 @@ digraph PlayerSimulation {
   node [shape=box, style=filled, color="#F159E4", fontcolor="#F159E4", fillcolor=black];
   edge [color=gray];
 
-  PlayerManager            [label="PlayerManager\n\nHandles management,\nallowing other parts of the code to focus on gameplay logic."];
-  PlayerManagerData        [label="PlayerManagerData\n(Quantum singleton)\n\nPlayerManager related data\naccessed by other classes through PlayerHandle."];
-  PlayerHandle             [label="PlayerHandle\n\nA struct defined in PlayerManager,\nwhich allows other classes to access PlayerManagerData for each individual player."];
-  PlayerQSystem            [label="PlayerQSystem\n\nHandles primary gameplay logic for players.\nUses other classes for specific player logic."];
-  PlayerMovementController [label="PlayerMovementController\n\nHandles the logic for moving and rotating player characters."];
-  PlayerClassManager       [label="PlayerClassManager\n\nHandles the initial loading of player classes\nand routes individual game events\nto the correct class scripts."];
-  PlayerClass              [label="PlayerClass\n\n.Handles class gameplay for players\nin a character class."];
-  PlayerClassData          [label="PlayerClassData\n(Quantum component)\n\nAn individual player character's data\nwhich is specific to a player character class."];
-  PlayerBotController      [label="PlayerBotController\n\nHandles AI and other logic for bots."];
-  PlayerData               [label="PlayerData\n(Quantum component)\n\nAn individual player character's data."];
+  subgraph cluster_management{
+    color="#F159E4";
+    fontcolor="#F159E4";
+    label = "Management";
+
+    PlayerManager            [label="PlayerManager\n\nHandles character management,\nallowing other parts of the code to focus on gameplay logic."];
+    PlayerShieldManager      [label="ShieldManager\n\nHandles shield management, \nallowing other parts of the code to focus on gameplay logic."];
+    PlayerManagerData        [label="PlayerManagerData\n(Quantum singleton)\n\nPlayerManager related data\naccessed by other classes through PlayerHandle."];
+    PlayerShieldManagerData  [label="ShieldManagerData\n(Quantum singleton)\n\nShieldManager related data."];
+    PlayerClassManager       [label="PlayerClassManager\n\nHandles the initial loading of player classes\nand routes individual game events\nto the correct class scripts."];
+    PlayerHandle             [label="PlayerHandle\n\nA struct defined in PlayerManager,\nwhich allows other classes to access PlayerManagerData for each individual player."];
+  }
+  subgraph cluster_class{
+    color="#F159E4";
+    fontcolor="#F159E4";
+    label = "Class";
+
+    PlayerClass              [label="PlayerClass\n\nHandles class gameplay for players\nin a character class."];
+    PlayerClassData          [label="PlayerClassData\n(Quantum component)\n\nAn individual player character's data\nwhich is specific to a player character class."];
+  }
+  subgraph cluster_gameplay{
+    color="#F159E4";
+    fontcolor="#F159E4";
+    label = "Gameplay";
+
+    PlayerQSystem            [label="PlayerQSystem\n\nHandles primary gameplay logic for players.\nUses other classes for specific player logic."];
+    PlayerMovementController [label="PlayerMovementController\n\nHandles the logic for moving and rotating player characters."];
+    PlayerBotController      [label="PlayerBotController\n\nHandles AI and other logic for bots."];
+    PlayerData               [label="PlayerData\n(Quantum component)\n\nAn individual player character's data."];
+  }
 
   edge [dir=none];
 
-  PlayerManager -> PlayerManagerData, PlayerHandle;
+  PlayerManager -> PlayerManagerData, PlayerHandle, PlayerShieldManager [constraint = false];
+  PlayerShieldManager -> PlayerShieldManagerData;
   PlayerManagerData -> PlayerHandle;
 
   PlayerManager, PlayerQSystem -> PlayerData -> PlayerMovementController, PlayerBotController;
@@ -478,7 +499,7 @@ digraph PlayerSimulation {
 
 ### Management {#page-concepts-player-simulation-management}
 
-This section contains **%Quantum** simulation side **Player** management related code, while the game logic is handled by the [{Game Logic}]() code.
+This section contains **%Quantum** simulation side **Player** management related code, while the game logic is handled by the [{Game Logic}](#page-concepts-player-gamelogic) code.
 
 <br/>
 
@@ -511,9 +532,16 @@ exposing some parts to the **rest of the game**.
 
 <br/>
 
-#### ShieldManagerData {#page-concepts-player-simulation-management-shieldmanagerdata}
+#### ShieldManagerData (%Quantum Singleton) {#page-concepts-player-simulation-management-shieldmanagerdata}
+
+The @cref{Quantum, BattlePlayerShieldManagerDataQSingleton} struct is a **%Quantum Singleton Component** defined in and generated from BattlePlayerShieldManagerData.qtn
+containing all our defined data for **Shields**.
 
 #### ShieldManager {#page-concepts-player-simulation-management-shieldmanager}
+
+The @cref{Battle.QSimulation.Player, BattlePlayerShieldManager} handles shield management, allowing other classes to focus on gameplay logic.  
+Provides static methods to **Initialize**, attach, remove and query shield-related data.  
+Handles **Initializing Shields** that are present in the game, as well as attaching and detaching **Shield Entities** from a **Character Entity**.
 
 ### Game Logic {#page-concepts-player-gamelogic}
 
@@ -524,7 +552,10 @@ This section contains **%Quantum** simulation side **Player** gameplay logic rel
 The @cref{Quantum,BattlePlayerDataQComponent} struct is defined in and generated from BattlePlayerData.qtn.
 This contains data specific to each [{Player Character Entity}](#page-concepts-player-character-entity) used by the **%Quantum Simulation** during gameplay.
 
-#### ShieldData {#page-concepts-player-simulation-gamelogic-shielddata}
+#### ShieldData (%Quantum Component) {#page-concepts-player-simulation-gamelogic-shielddata}
+
+The @cref{Quantum, BattlePlayerShieldDataQComponent} struct is defined in and generated from BattlePlayerShieldData.qtn.
+This contains data specific to each **Player Shield Entity** used by the **%Quantum Simulation** during gameplay.
 
 <br/>
 
@@ -727,6 +758,7 @@ digraph PlayerView {
 
   Quantum -> UpdateCharacterLink, UpdateShieldLink;
   Quantum -> ClassCharacterQuantumLink, ClassShieldQuantumLink;
+  PlayerShieldViewController -> PlayerCharacterViewController [constraint = false];
 }
 ```
 <br/>

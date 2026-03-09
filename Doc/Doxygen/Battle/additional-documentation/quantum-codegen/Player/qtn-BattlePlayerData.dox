@@ -8,6 +8,8 @@
 ///   @copybrief Quantum.BattlePlayerDataQComponent
 /// - @cref{Quantum,BattlePlayerDataTemplateQComponent}  
 ///   @copybrief Quantum.BattlePlayerDataTemplateQComponent
+/// - @cref{Quantum,BattlePlayerEntityRef}
+///   @copybrief Quantum.BattlePlayerEntityRef
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -21,12 +23,36 @@
 ///
 /// @bigtext{Generated from @ref BattlePlayerData.qtn}
 
+/// @struct Quantum::BattlePlayerEntityRef
+/// <summary>
+/// Struct that holds player entity references.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerData.qtn}
+
 /// @struct Quantum::BattlePlayerDataTemplateQComponent
 /// <summary>
 /// Template for creating player character entity.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattlePlayerData.qtn}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @var BattlePlayerEntityRef Quantum::BattlePlayerEntityRef::ERef
+/// <summary>EntityRef of the player entity.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerEntityRef::SIZE
+/// @var Int32 Quantum::BattlePlayerEntityRef::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerEntityRef::GetHashCode
+///
+/// @fn void Quantum::BattlePlayerEntityRef::Serialize
+///
+/// @}
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -144,6 +170,18 @@
 /// @var FrameTimer Quantum::BattlePlayerDataQComponent::AbilityActivateBufferSec
 /// <summary>Buffer after an ability is used in which it will be activated if cooldown ends.</summary>
 /// Part of @ref PlayerAbilities "[Ability related data]"
+/// @}
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerDataQComponent::SIZE
+/// @var Int32 Quantum::BattlePlayerDataQComponent::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerDataQComponent::GetHashCode
+///
+/// @fn void Quantum::BattlePlayerDataQComponent::Serialize
+///
 /// @}
 
 // ---------------------------------------------------------------------------------------------------- //

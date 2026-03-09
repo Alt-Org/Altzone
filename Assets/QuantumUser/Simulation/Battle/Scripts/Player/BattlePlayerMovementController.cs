@@ -176,7 +176,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Moves and rotates the player to the specified position and angle while updating the hitbox.
+        /// Moves and rotates the player to the specified position and angle.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -193,7 +193,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Instantly moves and rotates the player to the specified position and rotation, and teleports the hitbox.
+        /// Instantly moves and rotates the player to the specified position and rotation.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>

@@ -98,7 +98,7 @@ namespace Battle.View.Player
             public static implicit operator Enum(SpriteSheetMap playerSpriteSheetMap) => playerSpriteSheetMap.EnumValue;
 
             /// <summary>
-            /// Implicit convrsion from Enum to PlayerSpriteSheetMap.
+            /// Implicit conversion from Enum to PlayerSpriteSheetMap.
             /// </summary>
             ///
             /// <param name="enumValue">Enum thats being converted.</param>

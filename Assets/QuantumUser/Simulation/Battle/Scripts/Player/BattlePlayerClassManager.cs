@@ -68,6 +68,8 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer reference to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
+        ///
+        /// <returns>Default CreationParameters.</returns>
         public virtual unsafe BattlePlayerClassManager.CreationParameters OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) => BattlePlayerClassManager.CreationParameters.Default;
 
         /// <summary>
@@ -138,14 +140,22 @@ namespace Battle.QSimulation.Player
     /// </summary>
     public static unsafe class BattlePlayerClassManager
     {
-
+        /// <summary>
+        /// Gives class code access to creation parameters.
+        /// </summary>
         public struct CreationParameters
         {
+            /// <summary>
+            /// Default parameters.
+            /// </summary>
             public static CreationParameters Default => new()
             {
                 AttachedShieldNumber = 0
             };
 
+            /// <summary>
+            /// The ShieldNumber of the attached shield. -1 is none.
+            /// </summary>
             public int AttachedShieldNumber;
         }
         /// <summary>
@@ -212,6 +222,8 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer reference to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
+        ///
+        /// <returns>CreationParameters.</returns>
         public static CreationParameters OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
             ReturnCode returnCode = GetClass(playerData->CharacterClass, out BattlePlayerClassBase playerClass);

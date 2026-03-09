@@ -76,10 +76,15 @@ namespace Battle.QSimulation.Game
             s_debugLogger = BattleDebugLogger.Create<BattleCollisionQSystem>();
         }
 
+        /// <summary>
+        /// Creates a BattleCollisionTriggerQComponent with the given trigger type.
+        /// </summary>
+        /// <param name="triggerType">BattleCollisionTriggerType the component needs to be.</param>
+        /// <returns>The newly created component.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BattleCollisionTriggerQComponent CreateCollisionTriggerComponent(BattleCollisionTriggerType triggerType)
         {
-            BattleCollisionTriggerQComponent component = new BattleCollisionTriggerQComponent();
+            BattleCollisionTriggerQComponent component = new();
             component.Type = triggerType;
 
             return component;

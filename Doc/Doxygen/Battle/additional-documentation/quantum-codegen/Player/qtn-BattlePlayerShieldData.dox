@@ -43,6 +43,12 @@
 
 /// @var BattlePlayerShieldEntityRef Quantum::BattlePlayerShieldDataQComponent::PlayerEntityRef
 /// <summary>EntityRef of the player entity the shield belongs to.</summary>
+///
+/// @var int Quantum::BattlePlayerShieldDataQComponent::ShieldNumber
+/// <summary>Shield number of this shield.</summary>
+///
+/// @var bool Quantum::BattlePlayerShieldDataQComponent::IsAttached
+/// <summary>Whether this shield is attached or not.</summary>
 
 /// @name Quantum Built-in
 /// @{
@@ -77,6 +83,7 @@
 /// @fn Int32 Quantum::BattlePlayerShieldDataTemplateQComponent::GetHashCode
 /// @fn void Quantum::BattlePlayerShieldDataTemplateQComponent::ClearPointers
 ///
+/// @fn void Quantum::BattlePlayerShieldDataTemplateQComponent::OnRemoved
 /// @fn void Quantum::BattlePlayerShieldDataTemplateQComponent::Serialize
 ///
 /// @}
