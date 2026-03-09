@@ -35,10 +35,10 @@ RectTransform:
   - {fileID: 8921107227534254329}
   m_Father: {fileID: 8004748456575682087}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 820.8}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 738.72, y: -2947.7998}
+  m_SizeDelta: {x: 1477.44, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3786939923640341911
 CanvasRenderer:
@@ -3343,10 +3343,10 @@ RectTransform:
   - {fileID: 8148120922695789065}
   m_Father: {fileID: 8004748456575682087}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 820.8}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 738.72, y: -410.4}
+  m_SizeDelta: {x: 1477.44, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5759531293272687398
 CanvasRenderer:
@@ -4188,6 +4188,11 @@ MonoBehaviour:
   _educationCategoryStoryType: 3
   _educationCategoryCultureType: 0
   _educationCategoryEthicalType: 0
+  _shouldHighlight: 0
+  _highlightedObjects: []
+  _scaleMultiplier: 1.2
+  _highlightPulseDuration: 3
+  _highlightPulseWaitTime: 2
 --- !u!114 &7194768997489407432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4207,6 +4212,12 @@ MonoBehaviour:
   _educationCategoryStoryType: 3
   _educationCategoryCultureType: 0
   _educationCategoryEthicalType: 0
+  _shouldHighlight: 1
+  _highlightedObjects:
+  - {fileID: 6210551997178034840}
+  _scaleMultiplier: 3
+  _highlightPulseDuration: 3
+  _highlightPulseWaitTime: 2
 --- !u!114 &8292801005675704149
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4226,6 +4237,12 @@ MonoBehaviour:
   _educationCategoryStoryType: 3
   _educationCategoryCultureType: 0
   _educationCategoryEthicalType: 0
+  _shouldHighlight: 1
+  _highlightedObjects:
+  - {fileID: 657235441635482168}
+  _scaleMultiplier: 1.2
+  _highlightPulseDuration: 3
+  _highlightPulseWaitTime: 2
   _limitToThis: 0
   _limitedButtons: []
 --- !u!1 &2263038988286619469
@@ -6795,6 +6812,11 @@ MonoBehaviour:
   _educationCategoryStoryType: 3
   _educationCategoryCultureType: 0
   _educationCategoryEthicalType: 9
+  _shouldHighlight: 0
+  _highlightedObjects: []
+  _scaleMultiplier: 1.2
+  _highlightPulseDuration: 3
+  _highlightPulseWaitTime: 2
   _popup: {fileID: 2337018038747452942}
   _characterImage1: {fileID: 1171709569636485782}
   _characterImage2: {fileID: 1021477695950514782}
@@ -11067,10 +11089,10 @@ RectTransform:
   - {fileID: 1307469097364308895}
   m_Father: {fileID: 8004748456575682087}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 820.8}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 738.72, y: -3793.5999}
+  m_SizeDelta: {x: 1477.44, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6538413746843898596
 CanvasRenderer:
@@ -11842,6 +11864,11 @@ MonoBehaviour:
   _educationCategoryStoryType: 3
   _educationCategoryCultureType: 0
   _educationCategoryEthicalType: 8
+  _shouldHighlight: 0
+  _highlightedObjects: []
+  _scaleMultiplier: 1.2
+  _highlightPulseDuration: 3
+  _highlightPulseWaitTime: 2
 --- !u!1 &6022867117302811058
 GameObject:
   m_ObjectHideFlags: 0
@@ -16816,10 +16843,10 @@ RectTransform:
   - {fileID: 3901975450635306145}
   m_Father: {fileID: 8004748456575682087}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 820.8}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 738.72, y: -1256.2}
+  m_SizeDelta: {x: 1477.44, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &181536878673804127
 CanvasRenderer:
@@ -17392,10 +17419,10 @@ RectTransform:
   - {fileID: 5238063626541648400}
   m_Father: {fileID: 8004748456575682087}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 820.8}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 738.72, y: -2102}
+  m_SizeDelta: {x: 1477.44, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5481912990426043081
 CanvasRenderer:
@@ -20098,6 +20125,12 @@ PrefabInstance:
       addedObject: {fileID: 1906781585701653939}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 57890b7dbec8a984abb7d8148eefe9f6, type: 3}
+--- !u!1 &657235441635482168 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5953658331959163684, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 6593653117722730780}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &889712644897554977 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6330293596801491773, guid: 57890b7dbec8a984abb7d8148eefe9f6,
@@ -20149,6 +20182,12 @@ MonoBehaviour:
 --- !u!224 &6108398877622942934 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1100066851907345866, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 6593653117722730780}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6210551997178034840 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 986583750351592324, guid: 57890b7dbec8a984abb7d8148eefe9f6,
     type: 3}
   m_PrefabInstance: {fileID: 6593653117722730780}
   m_PrefabAsset: {fileID: 0}
