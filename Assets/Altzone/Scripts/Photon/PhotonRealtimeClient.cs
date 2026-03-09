@@ -178,6 +178,7 @@ public static class PhotonRealtimeClient
     public class PhotonEvent
     {
         public const byte StartGame = 110;
+        public const byte GameCountdown = 111;
         public const byte RPC = 200;
         public const byte SendSerialize = 201;
         public const byte Instantiation = 202;

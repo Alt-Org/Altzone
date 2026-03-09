@@ -19,6 +19,7 @@ namespace MenuUi.Scripts.Lobby
         private void Awake()
         {
             LobbyManager.OnFailedToStartMatchmakingGame += OnFailedToStartMatchmakingGame;
+            LobbyManager.OnGameCountdownUpdate += OnGameCountdownUpdate;
         }
 
         private void OnEnable()
@@ -35,6 +36,7 @@ namespace MenuUi.Scripts.Lobby
         {
             _cancelButton.onClick.RemoveAllListeners();
             LobbyManager.OnFailedToStartMatchmakingGame -= OnFailedToStartMatchmakingGame;
+            LobbyManager.OnGameCountdownUpdate -= OnGameCountdownUpdate;
         }
 
         /// <summary>
@@ -57,6 +59,20 @@ namespace MenuUi.Scripts.Lobby
             else
             {
                 _cancelButton.gameObject.SetActive(false);
+            }
+        }
+
+        private void OnGameCountdownUpdate(int secondsRemaining)
+        {
+            if (_matchmakingText != null)
+            {
+                _matchmakingText.text = secondsRemaining > 0
+                    ? $"Peli alkaa {secondsRemaining}..."
+                    : "Peli alkaa!";
+            }
+            if (_cancelButton != null)
+            {
+                _cancelButton.interactable = false;
             }
         }
 

@@ -207,6 +207,9 @@ namespace Altzone.Scripts.Lobby
         public delegate void FailedToStartMatchmakingGame();
         public static event FailedToStartMatchmakingGame OnFailedToStartMatchmakingGame;
 
+        public delegate void GameCountdownUpdate(int secondsRemaining);
+        public static event GameCountdownUpdate OnGameCountdownUpdate;
+
         public delegate void KickedOutOfTheRoom(GetKickedEvent.ReasonType reason);
         public static event KickedOutOfTheRoom OnKickedOutOfTheRoom;
 
@@ -1114,6 +1117,17 @@ namespace Altzone.Scripts.Lobby
                 };
 
             }
+            // Countdown from 5 to 0 before starting the game
+            for (int i = 5; i >= 0; i--)
+            {
+                PhotonRealtimeClient.Client.OpRaiseEvent(
+                    PhotonRealtimeClient.PhotonEvent.GameCountdown,
+                    i,
+                    new RaiseEventArgs { Receivers = ReceiverGroup.All },
+                    SendOptions.SendReliable);
+                if (i > 0) yield return new WaitForSeconds(1f);
+            }
+
             if (!PhotonRealtimeClient.Client.OpRaiseEvent(PhotonRealtimeClient.PhotonEvent.StartGame, StartGameData.Serialize(data), new RaiseEventArgs{Receivers = ReceiverGroup.All}, SendOptions.SendReliable))
             {
                 Debug.LogError("Unable to start game.");
@@ -1827,6 +1841,10 @@ namespace Altzone.Scripts.Lobby
 
             switch (photonEvent.Code)
             {
+                case PhotonRealtimeClient.PhotonEvent.GameCountdown:
+                    int countdown = (int)photonEvent.CustomData;
+                    OnGameCountdownUpdate?.Invoke(countdown);
+                    break;
                 case PhotonRealtimeClient.PhotonEvent.StartGame:
                     // ByteArraySlice.Buffer may contain extra unused bytes beyond the actual data,
                     // so we must copy only the valid portion (Offset to Offset+Count) to avoid corrupt deserialization.
