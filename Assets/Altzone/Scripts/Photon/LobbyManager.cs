@@ -90,6 +90,7 @@ namespace Altzone.Scripts.Lobby
         [SerializeField] private BattleMapReference _battleMapReference;
 
         private const long STARTDELAY = 2000;
+        private const float MatchmakingTimeoutSeconds = 45f;
 
         private QuantumRunner _runner = null;
 
@@ -760,14 +761,42 @@ namespace Altzone.Scripts.Lobby
             {
                 // Checking every 0,5s if we can start gameplay
                 bool canStartGameplay = false;
+                float waitStartTime = Time.time;
+                bool botBackfillApplied = false;
                 do
                 {
                     yield return new WaitForSeconds(0.5f);
 
-                    // Checking if room is full
-                    if (PhotonRealtimeClient.CurrentRoom.PlayerCount != PhotonRealtimeClient.CurrentRoom.MaxPlayers) continue;
+                    // Check if matchmaking timeout expired and fill remaining slots with bots (Random2v2 only)
+                    GameType currentGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                    if (!botBackfillApplied && currentGameType == GameType.Random2v2 && Time.time - waitStartTime >= MatchmakingTimeoutSeconds)
+                    {
+                        Debug.Log($"Matchmaking timeout ({MatchmakingTimeoutSeconds}s) reached for Random2v2. Filling remaining slots with bots.");
 
-                    // Checking that all of the positions in the room are set
+                        int[] positions = {
+                            PhotonBattleRoom.PlayerPosition1, PhotonBattleRoom.PlayerPosition2,
+                            PhotonBattleRoom.PlayerPosition3, PhotonBattleRoom.PlayerPosition4
+                        };
+                        foreach (int pos in positions)
+                        {
+                            if (PhotonBattleRoom.CheckIfPositionIsFree(pos))
+                            {
+                                string posKey = PhotonBattleRoom.GetPositionKey(pos);
+                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(posKey, "Bot");
+                            }
+                        }
+
+                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.BotFillKey, true);
+                        botBackfillApplied = true;
+                    }
+
+                    if (!botBackfillApplied)
+                    {
+                        // Normal path: wait for real players to fill the room
+                        if (PhotonRealtimeClient.CurrentRoom.PlayerCount != PhotonRealtimeClient.CurrentRoom.MaxPlayers) continue;
+                    }
+
+                    // Checking that all of the positions in the room are set (by real players or bots)
                     bool isSetPosition1 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition1);
                     bool isSetPosition2 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition2);
                     bool isSetPosition3 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition3);
@@ -865,8 +894,9 @@ namespace Altzone.Scripts.Lobby
                     yield return null;
                 }
 
-                // Starting gameplay coroutine if all 4 room members are still present, else we loop again
-                if (PhotonRealtimeClient.CurrentRoom.PlayerCount == PhotonRealtimeClient.CurrentRoom.MaxPlayers)
+                // Starting gameplay coroutine if all positions are filled (real players + bots), else we loop again
+                int botCount = PhotonBattleRoom.GetBotCount();
+                if (PhotonRealtimeClient.CurrentRoom.PlayerCount + botCount >= PhotonRealtimeClient.CurrentRoom.MaxPlayers)
                 {
                     StartCoroutine(StartTheGameplay(_isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
                     gameStarting = true;
