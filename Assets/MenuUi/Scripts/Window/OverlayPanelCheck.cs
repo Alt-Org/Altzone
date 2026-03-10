@@ -14,6 +14,9 @@ namespace MenuUi.Scripts.Window
 
         [SerializeField] private Button[] buttons;
 
+        [SerializeField] private GameObject _bottomBar;
+        [SerializeField] private GameObject _chatBox;
+
         public static OverlayPanelCheck Instance { get; private set; }
 
         private void Awake()
@@ -65,6 +68,16 @@ namespace MenuUi.Scripts.Window
                     button.interactable = true;
                 }
             }
+        }
+
+        public void ToggleBottomBar(bool value)
+        {
+            _bottomBar.SetActive(value);
+        }
+
+        public void ToggleChat(bool value)
+        {
+            _chatBox.SetActive(value);
         }
 
     }

@@ -419,7 +419,7 @@ namespace MenuUI.Scripts.SoulHome
             GameObject tray = GetTray();
             if (enable)
             {
-                OverlayPanelCheck.Instance.gameObject.SetActive(false);
+                OverlayPanelCheck.Instance.ToggleBottomBar(false);
                 tray.SetActive(true);
                 _changeHandleButtonTray.SetActive(true);
                 _furnitureButtonTray.SetActive(true);
@@ -428,7 +428,7 @@ namespace MenuUI.Scripts.SoulHome
             else
             {
                 if(!_rotated)
-                OverlayPanelCheck.Instance.gameObject.SetActive(true);
+                OverlayPanelCheck.Instance.ToggleBottomBar(true);
                 tray.SetActive(false);
                 _changeHandleButtonTray.SetActive(false);
                 _furnitureButtonTray.SetActive(false);
