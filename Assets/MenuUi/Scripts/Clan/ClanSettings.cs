@@ -125,6 +125,12 @@ public class ClanSettings : AltMonoBehaviour
     {
         RegisterUiListeners();
 
+        if (_swipeBlockOverlay != null)
+            _swipeBlockOverlay.SetActive(false);
+
+        if (_chatboxBlockOverlay != null)
+            _chatboxBlockOverlay.SetActive(false);
+
         Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clan) =>
         {
             // Show correct panel
@@ -133,6 +139,9 @@ public class ClanSettings : AltMonoBehaviour
             _languagePopup.SetActive(false);
             _valuesPopup.SetActive(false);
             _cancelConfirmationPopup.SetActive(false);
+            _clanPhrasePopup.SetActive(false);
+            _rulesPopup.SetActive(false);
+            _agePopup.SetActive(false);
 
             // Initialize settings
             _clanName.text = clan.Name;
@@ -220,6 +229,12 @@ public class ClanSettings : AltMonoBehaviour
 
     private void OnDisable()
     {
+        if (_swipeBlockOverlay != null)
+            _swipeBlockOverlay.SetActive(false);
+
+        if (_chatboxBlockOverlay != null)
+            _chatboxBlockOverlay.SetActive(false);
+
         UnregisterUiListeners();
     }
 
@@ -556,7 +571,7 @@ public class ClanSettings : AltMonoBehaviour
     }
 
     public void OpenClanRulesPopup()
-    {       
+    {
         _rule1Input.text = _rule1Text.text;
         _rule2Input.text = _rule2Text.text;
         _rule3Input.text = _rule3Text.text;
