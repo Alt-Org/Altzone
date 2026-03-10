@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using MenuUi.Scripts.SwipeNavigation;
+using MenuUi.Scripts.Window;
 using UnityEngine;
 
 /// <summary>
@@ -22,5 +23,7 @@ public class SetMainMenuWindowIndex : MonoBehaviour
             if (foundSwipes[i].IsInMainMenu)
             foundSwipes[i].CurrentPage = index;
         }
+
+        OverlayPanelCheck.Instance.CurrentPage = index;
     }
 }
