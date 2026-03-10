@@ -120,10 +120,14 @@ public class ClanSettings : AltMonoBehaviour
 
     private List<HeartPieceData> _heartPieces;
     private List<ClanValues> _selectedValues = new();
+    private Language _selectedLanguage;
 
     private void OnEnable()
     {
         RegisterUiListeners();
+
+        if (_saveButton != null)
+            _saveButton.interactable = true;
 
         if (_swipeBlockOverlay != null)
             _swipeBlockOverlay.SetActive(false);
@@ -150,6 +154,8 @@ public class ClanSettings : AltMonoBehaviour
 
     private void ResetSettingsUiFromClanData(ClanData clan)
     {
+        Debug.Log("ResetSettingsUiFromClanData language: " + clan.Language);
+
         if (clan == null) return;
 
         _editHeartPanel.SetActive(false);
@@ -171,8 +177,8 @@ public class ClanSettings : AltMonoBehaviour
         _clanMembers.text = "Jäsenmäärä: " + clan.Members.Count.ToString();
 
         // Motto
-        _clanPhraseText.text = clan.Phrase;
-        _clanPhraseField.text = clan.Phrase;
+        UpdateClanPhraseDisplay(clan.Phrase);
+        _clanPhraseField.text = string.IsNullOrWhiteSpace(clan.Phrase) ? string.Empty : clan.Phrase;
 
         // Open / closed
         _clanOpenToggle.isOn = !clan.IsOpen;
@@ -194,8 +200,10 @@ public class ClanSettings : AltMonoBehaviour
         UpdateAgeDisplay();
 
         // Language
+        // Language
+        _selectedLanguage = clan.Language;
         _languageList.Initialize(clan.Language);
-        _flagImageSetter.SetFlag(clan.Language);
+        _flagImageSetter.SetFlag(_selectedLanguage);
 
         // Values
         _values.SetValues(clan.Values);
@@ -223,6 +231,13 @@ public class ClanSettings : AltMonoBehaviour
         }
     }
 
+    private void UpdateClanPhraseDisplay(string phrase)
+    {
+        bool hasPhrase = !string.IsNullOrWhiteSpace(phrase);
+
+        _clanPhraseText.text = hasPhrase ? phrase : "Lisää motto";
+    }
+
     private bool CanCurrentPlayerEditClan(ClanData clanData)
     {
         var serverManager = ServerManager.Instance;
@@ -245,19 +260,28 @@ public class ClanSettings : AltMonoBehaviour
 
     public void SaveClanSettings()
     {
+        Debug.Log("SaveClanSettings called");
+
         _saveButton.interactable = false;
 
-        if (_valueSelection.SelectedValues.Count == 0)
+        if (_selectedValues == null || _selectedValues.Count == 0)
         {
+            Debug.Log("Blocked: no selected values");
             SignalBus.OnChangePopupInfoSignal("Valitse vähintään yksi arvo klaanille.");
             _saveButton.interactable = true;
             return;
         }
 
+        Debug.Log("Before GetClanData");
+        Debug.Log("Clan id: " + ServerManager.Instance.Clan?._id);
+
         Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
         {
+            Debug.Log("GetClanData callback reached");
+
             if (!CanCurrentPlayerEditClan(clanData))
             {
+                Debug.Log("Blocked: no permission");
                 SignalBus.OnChangePopupInfoSignal("Mites pääsit tähän ikkunaan? Sinulla ei ole oikeuksia muokata klaanin asetuksia.");
                 _saveButton.interactable = true;
                 return;
@@ -265,33 +289,28 @@ public class ClanSettings : AltMonoBehaviour
 
             string previousPhrase = clanData.Phrase;
             clanData.Phrase = _clanPhraseField.text;
-            clanData.Language = _languageList.SelectedLanguage;
-            //clanData.Goals = _goalSelection.GoalsRange;
+            clanData.Language = _selectedLanguage;
             clanData.ClanAge = _ageSelection.ClanAgeRange;
             clanData.Rules = _ruleSelection.SelectedRules;
-            clanData.Values = _valueSelection.SelectedValues;
+            clanData.Values = new List<ClanValues>(_selectedValues);
             clanData.ClanHeartPieces = _heartPieces;
 
-            // These are not saved at the moment
-            bool isOpen = !_clanOpenToggle.isOn;
-            string password = _clanPasswordField.text;
-            //clanData.ClanRights = _clanRightsPanel.ClanRights;
+            Debug.Log("Before UpdateClanToServer");
 
             StartCoroutine(ServerManager.Instance.UpdateClanToServer(clanData, success =>
             {
+                Debug.Log("UpdateClanToServer success: " + success);
+
                 _saveButton.interactable = true;
+
                 if (success)
                 {
+                    Debug.Log("Save success, closing settings view");
+
                     if (_clanMainView != null)
-                    {
                         _clanMainView.UpdateProfileFromSettings(clanData);
-                        ShowProfileTablineButtons();
-                    }
 
-                    if (!string.IsNullOrEmpty(previousPhrase) && previousPhrase != clanData.Phrase)
-                        gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
-
-                    gameObject.GetComponent<ClanCulturalPractices>().SettingsChanged(clanData);
+                    ShowProfileTablineButtons();
                 }
                 else
                 {
@@ -305,13 +324,13 @@ public class ClanSettings : AltMonoBehaviour
     {
         Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
         {
+            string currentPhrase = _clanPhraseText.text == "Lisää motto" ? string.Empty : _clanPhraseText.text;
+
             bool hasMadeEdits = _heartColorChanger.IsAnyPieceChanged()
-                || clanData.Phrase != _clanPhraseField.text
-                || clanData.Language != _languageList.SelectedLanguage
-                /*|| clanData.Goals != _goalSelection.GoalsRange*/
+                || clanData.Phrase != currentPhrase
+                || clanData.Language != _selectedLanguage
                 || clanData.ClanAge != _ageSelection.ClanAgeRange
-                /*|| !clanData.ClanRights.SequenceEqual(_clanRightsPanel.ClanRights)*/
-                || !clanData.Values.SequenceEqual(_selectedValues) /*clanData.Values != _selectedValues*/;
+                || !clanData.Values.SequenceEqual(_selectedValues);
 
             if (hasMadeEdits)
             {
@@ -536,13 +555,13 @@ public class ClanSettings : AltMonoBehaviour
                 }
             }));
         }
-        _clanPhraseText.text = _clanPhraseField.text;
+        UpdateClanPhraseDisplay(_clanPhraseField.text);
         HidePopup(_clanPhrasePopup);
     }
 
     public void CancelClanPhraseEdit()
     {
-        _clanPhraseField.text = _clanPhraseText.text;
+        _clanPhraseField.text = _clanPhraseText.text == "Lisää motto" ? string.Empty : _clanPhraseText.text;
         HidePopup(_clanPhrasePopup);
     }
 
@@ -630,23 +649,23 @@ public class ClanSettings : AltMonoBehaviour
 
     public void OpenLanguagePopup()
     {
+        _languageList.Initialize(_selectedLanguage);
         ShowPopup(_languagePopup);
     }
 
     public void ConfirmLanguageEdit()
     {
-        _flagImageSetter.SetFlag(_languageList.SelectedLanguage);
+        _selectedLanguage = _languageList.SaveLanguage();
+        Debug.Log("Confirmed language: " + _selectedLanguage);
+        _flagImageSetter.SetFlag(_selectedLanguage);
         HidePopup(_languagePopup);
     }
 
     public void CancelLanguagePopup()
     {
-        Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clan) =>
-        {
-            _languageList.Initialize(clan.Language);
-            _flagImageSetter.SetFlag(clan.Language);
-            HidePopup(_languagePopup);
-        });
+        _languageList.Initialize(_selectedLanguage);
+        _flagImageSetter.SetFlag(_selectedLanguage);
+        HidePopup(_languagePopup);
     }
 
     public void OpenValuesPopup()

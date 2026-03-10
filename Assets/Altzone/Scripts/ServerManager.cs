@@ -1100,7 +1100,7 @@ public class ServerManager : MonoBehaviour
         }
     }
 
-    public IEnumerator UpdateClanToServer(ClanData data, Action<bool> callback)
+    /*public IEnumerator UpdateClanToServer(ClanData data, Action<bool> callback)
     {
         ClanLogo logo = new ClanLogo();
         logo.logoType = ClanLogoType.Heart;
@@ -1139,6 +1139,50 @@ public class ServerManager : MonoBehaviour
         {
             if (callback) Storefront.Get().SaveClanData(data, null);
         });
+    }*/
+
+    public IEnumerator UpdateClanToServer(ClanData data, Action<bool> callback)
+    {
+        ClanLogo logo = new ClanLogo();
+        logo.logoType = ClanLogoType.Heart;
+        logo.pieceColors = new();
+        List<string> serverValues = new();
+
+        foreach (var piece in data.ClanHeartPieces)
+        {
+            logo.pieceColors.Add(ColorUtility.ToHtmlStringRGB(piece.pieceColor));
+        }
+
+        foreach (var value in data.Values)
+        {
+            string valueString = ClanDataTypeConverter.ClanValuesToString(value);
+            serverValues.Add(valueString);
+        }
+
+        string body = JObject.FromObject(
+            new
+            {
+                _id = data.Id,
+                name = data.Name,
+                tag = data.Tag,
+                isOpen = Clan.isOpen,
+                labels = serverValues,
+                ageRange = data.ClanAge,
+                goal = data.Goals,
+                phrase = data.Phrase,
+                language = data.Language,
+                clanLogo = logo
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+        ).ToString();
+
+        yield return StartCoroutine(UpdateClanToServer(body, success =>
+        {
+            if (success)
+                Storefront.Get().SaveClanData(data, null);
+
+            callback?.Invoke(success);
+        }));
     }
 
     public IEnumerator UpdateClanToServer(string body, Action<bool> callback)
