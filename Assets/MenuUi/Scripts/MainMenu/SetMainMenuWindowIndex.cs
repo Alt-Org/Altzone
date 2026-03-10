@@ -23,7 +23,5 @@ public class SetMainMenuWindowIndex : MonoBehaviour
             if (foundSwipes[i].IsInMainMenu)
             foundSwipes[i].CurrentPage = index;
         }
-
-        OverlayPanelCheck.Instance.CurrentPage = index;
     }
 }
