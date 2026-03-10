@@ -315,7 +315,9 @@ namespace MenuUI.Scripts.SoulHome
                         {
                             // The bottom-left corner
                             ApplyPenalty(x - 1, y + 1, DefaultPenalty);
-                            // The corner to the right of the bottom-left corner
+                            // The cell above it
+                            ApplyPenalty(x - 1, y, DefaultPenalty);
+                            // The cell to the right of the bottom-left corner
                             ApplyPenalty(x , y + 1, DefaultPenalty * 2);
                         }
                         // if there is no furniture to the right (meaning this is the bottom-right corner)
@@ -323,7 +325,9 @@ namespace MenuUI.Scripts.SoulHome
                         {
                             // The bottom-right corner
                             ApplyPenalty(x + 1, y + 1, DefaultPenalty);
-                            // The corner to the left of the bottom-right corner
+                            // The cell above it
+                            ApplyPenalty(x + 1, y, DefaultPenalty);
+                            // The cell to the left of the bottom-right corner
                             ApplyPenalty(x, y + 1, DefaultPenalty * 2);
                         }
                     }
