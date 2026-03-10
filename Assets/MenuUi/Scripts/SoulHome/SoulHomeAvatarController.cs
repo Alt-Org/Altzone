@@ -187,7 +187,7 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     List<Vector2> rawPath = GetTravelPoints(nodePath);
                     _smoothPath = SmoothPath(rawPath);
-                    //_travelPoints = SmoothPath(rawPath);
+                    //_travelPoints = _smoothPath;
                     _travelPoints = GetTravelPoints(nodePath);
                     _currentGridPosition = target;
                     stopwatch.Stop();
@@ -308,7 +308,7 @@ namespace MenuUI.Scripts.SoulHome
                     ApplyPenalty(x + 1, y, DefaultPenalty);
 
                     // if there is no furniture below
-                    if (y > _gridHeight - 1 && _grid[x, y + 1].IsWalkable)
+                    if (y < _gridHeight - 1 && _grid[x, y + 1].IsWalkable)
                     {
                         // if there is no furniture to the left (meaning this is the bottom-left corner)
                         if (x > 0 && _grid[x - 1, y].IsWalkable)
