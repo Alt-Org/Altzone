@@ -55,6 +55,7 @@ namespace MenuUI.Scripts.SoulHome
         private const int DefaultPenalty = 10;
         private int _gridWidth;
         private int _gridHeight;
+        private List<Vector2> _rawPath;
 
         private List<Vector2> _smoothPath = new();
         public AvatarStatus Status
@@ -185,10 +186,10 @@ namespace MenuUI.Scripts.SoulHome
                 List<GridNode> nodePath = FindPath(_currentGridPosition, target);
                 if (nodePath != null)
                 {
-                    List<Vector2> rawPath = GetTravelPoints(nodePath);
-                    _smoothPath = SmoothPath(rawPath);
-                    //_travelPoints = _smoothPath;
-                    _travelPoints = GetTravelPoints(nodePath);
+                    _rawPath = GetTravelPoints(nodePath);
+                    _smoothPath = SmoothPath(_rawPath);
+                    _travelPoints = _smoothPath;
+                    //_travelPoints = GetTravelPoints(nodePath);
                     _currentGridPosition = target;
                     stopwatch.Stop();
                     UnityEngine.Debug.Log($"calculating path took {stopwatch.Elapsed.TotalMilliseconds} milliseconds");
@@ -529,13 +530,15 @@ namespace MenuUI.Scripts.SoulHome
             Vector2 currentPoint = fullPath[0]; // point where los is checked from
             smoothedPath.Add(currentPoint);
 
-            for (int i = 2; i < fullPath.Count - 1; i++)
+            for (int i = 1; i < fullPath.Count - 1; i++)
             {
+                Vector2Int gridPos = WorldToGrid(fullPath[i]);
+
                 // If furniture blocks direct path to future point
-                if (IsPathBlocked(currentPoint, fullPath[i]))
+                if (IsSmoothPathTooExpensive(currentPoint, fullPath[i + 1]))
                 {
                     // stop at last point before hitting furniture
-                    currentPoint = fullPath[i - 1];
+                    currentPoint = fullPath[i];
                     smoothedPath.Add(currentPoint);
                 }
             }
@@ -544,7 +547,7 @@ namespace MenuUI.Scripts.SoulHome
             return smoothedPath;
         }
 
-        private bool IsPathBlocked(Vector2 start, Vector2 end)
+        private bool IsSmoothPathTooExpensive(Vector2 start, Vector2 end)
         {
             Vector2Int gridStart = WorldToGrid(start);
             Vector2Int gridEnd = WorldToGrid(end);
@@ -553,7 +556,10 @@ namespace MenuUI.Scripts.SoulHome
             foreach (Vector2Int cell in GetCellsOnLine(gridStart, gridEnd))
             {
                 if (!_grid[cell.x, cell.y].IsWalkable) return true;
+
+                if (_grid[cell.x, cell.y].penalty > 0) return true;
             }
+
             return false;
         }
 
@@ -730,13 +736,24 @@ namespace MenuUI.Scripts.SoulHome
             }
 
             // Draw what smoothpath would be
-            if (_smoothPath != null && _smoothPath.Count > 0)
+            //if (_smoothPath != null && _smoothPath.Count > 0)
+            //{
+            //    Gizmos.color = Color.magenta;
+            //    for (int i = 0; i < _smoothPath.Count - 1; i++)
+            //    {
+            //        Gizmos.DrawLine(_smoothPath[i], _smoothPath[i + 1]);
+            //        Gizmos.DrawSphere(_smoothPath[i], 0.1f);
+            //    }
+            //}
+
+            // Draw rawpath
+            if (_rawPath != null && _rawPath.Count > 0)
             {
-                Gizmos.color = Color.magenta;
-                for (int i = 0; i < _smoothPath.Count - 1; i++)
+                Gizmos.color = Color.yellow;
+                for (int i = 0; i < _rawPath.Count - 1; i++)
                 {
-                    Gizmos.DrawLine(_smoothPath[i], _smoothPath[i + 1]);
-                    Gizmos.DrawSphere(_smoothPath[i], 0.1f);
+                    Gizmos.DrawLine(_rawPath[i], _rawPath[i + 1]);
+                    Gizmos.DrawSphere(_rawPath[i], 0.1f);
                 }
             }
 
