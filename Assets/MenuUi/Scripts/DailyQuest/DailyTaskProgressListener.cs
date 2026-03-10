@@ -1,7 +1,5 @@
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 
 
 #if UNITY_EDITOR

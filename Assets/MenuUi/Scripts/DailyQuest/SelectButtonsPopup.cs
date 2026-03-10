@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.GraphicsBuffer;
 
 public class SelectButtonsPopup : MonoBehaviour
 {
@@ -86,12 +84,19 @@ public class SelectButtonsPopup : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Shows or hides the popup (fully)
+    /// </summary>
+    /// <param name="showHide">Show = true/false</param>
     private void ShowPopup(bool showHide)
     {
         _popupWindow.SetActive(showHide);
         _shown = showHide;
     }
 
+    /// <summary>
+    /// Moves the popup in or out from the side of the screen
+    /// </summary>
     private void ExpandPopup()
     {
         _expanded = !_expanded;
@@ -102,6 +107,10 @@ public class SelectButtonsPopup : MonoBehaviour
         StartCoroutine(ExpandInOut(_expanded, _expandTime));
     }
 
+    /// <summary>
+    /// Flips the arrow button that call's ExpandPopup() to look good on UI
+    /// </summary>
+    /// <param name="facingRight">If the arrow should be facing right(true) or left(false)</param>
     private void FlipExpandArrow(bool facingRight)
     {
 
@@ -117,6 +126,12 @@ public class SelectButtonsPopup : MonoBehaviour
                 _expandButton.transform.localScale.z);
     }
 
+    /// <summary>
+    /// Moves the popup in or out from the side of the screen
+    /// </summary>
+    /// <param name="expandIn">If the popup should move in(true) or out(false)</param>
+    /// <param name="duration">The duration of the "animation"</param>
+    /// <returns></returns>
     IEnumerator ExpandInOut(bool expandIn, float duration)
     {
         float targetX;

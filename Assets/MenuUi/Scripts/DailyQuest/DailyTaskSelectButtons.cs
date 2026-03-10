@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class DailyTaskSelectButtons : DailyTaskProgressListener
+public class DailyTaskSelectButtons : DailyTaskProgressListenerHighlighter
 {
     [SerializeField] private bool _limitToThis = false;
     [SerializeField] private List<SelectButtonObject> _limitedButtons;
@@ -54,6 +54,7 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
             OnStateChange?.Invoke(false);
             return;
         }
+        // Send OnStateChange with true only if the task matches (player doing the correct task)
         OnStateChange?.Invoke(task.EducationCultureType == _educationCategoryCultureType);
     }
 
@@ -86,7 +87,9 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
         
     }
 
-    // Adds EventTrigger listeners to every button in the scene
+    /// <summary>
+    /// Adds EventTrigger listeners to every button in the scene
+    /// </summary>
     private void AddListeners()
     {
         SelectButtonObject[] allButtonObjects;
@@ -147,7 +150,9 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
         }
     }
 
-    // Removes all the added EventTrigger listeners from buttons
+    /// <summary>
+    /// Removes all the added EventTrigger listeners from buttons
+    /// </summary>
     private void RemoveListeners()
     {
 
