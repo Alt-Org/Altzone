@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
@@ -45,7 +46,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
         [SerializeField] private GameObject _popupContents;
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
         [SerializeField] private LobbyRoomListingController _roomListingController;
+        // Expose the runtime instance of the popup contents so other scene components can reference it at runtime.
+        public static GameObject PopupContentsInstance { get; private set; }
 
+        // Fired when `PopupContentsInstance` is assigned or cleared at runtime.
+        public static event Action<GameObject> OnPopupContentsInstanceAssigned;
         private string _currentRegion;
         private Coroutine _creatingRoomCoroutineHolder = null;
 
@@ -55,6 +60,9 @@ namespace MenuUi.Scripts.Lobby.InLobby
         {
             SignalBus.OnBattlePopupRequested += OpenWindow;
             SignalBus.OnCloseBattlePopupRequested += CloseWindow;
+            // Register runtime popup reference for other components to find (safe to set here because serialized field is available in Awake)
+            PopupContentsInstance = _popupContents;
+            OnPopupContentsInstanceAssigned?.Invoke(PopupContentsInstance);
         }
 
 
@@ -62,6 +70,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
         {
             SignalBus.OnBattlePopupRequested -= OpenWindow;
             SignalBus.OnCloseBattlePopupRequested -= CloseWindow;
+            if (PopupContentsInstance == _popupContents)
+            {
+                PopupContentsInstance = null;
+                OnPopupContentsInstanceAssigned?.Invoke(null);
+            }
         }
 
 

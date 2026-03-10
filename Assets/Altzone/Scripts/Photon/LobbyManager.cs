@@ -210,6 +210,9 @@ namespace Altzone.Scripts.Lobby
         public delegate void GameCountdownUpdate(int secondsRemaining);
         public static event GameCountdownUpdate OnGameCountdownUpdate;
 
+        public delegate void MatchmakingStopped();
+        public static event MatchmakingStopped OnMatchmakingStopped;
+
         public delegate void KickedOutOfTheRoom(GetKickedEvent.ReasonType reason);
         public static event KickedOutOfTheRoom OnKickedOutOfTheRoom;
 
@@ -946,6 +949,8 @@ namespace Altzone.Scripts.Lobby
                 StopCoroutine(_matchmakingHolder);
                 _matchmakingHolder = null;
             }
+
+            OnMatchmakingStopped?.Invoke();
 
             yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
 
