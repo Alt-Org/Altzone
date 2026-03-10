@@ -29,15 +29,16 @@ public class Popup : MonoBehaviour
         /// <summary>
         /// (e.g. confirm or a correct answer)
         /// </summary>
-        Accept,
+        Accept = 1,
+        /// <summary>
+        /// (e.g. close)
+        /// </summary>
+        Cancel = 2,
         /// <summary>
         /// If the popup got a result, but shouldn't close the window
         /// </summary>
         Normal,
-        /// <summary>
-        /// (e.g. close)
-        /// </summary>
-        Cancel
+        
     }
 
     [SerializeField] private DailyTaskCardImageReference _cardImageReference;
