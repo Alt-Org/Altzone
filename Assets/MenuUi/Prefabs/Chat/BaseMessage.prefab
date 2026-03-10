@@ -2456,6 +2456,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 7901244003309030932}
+    - targetCorrespondingSourceObject: {fileID: 2300524914144210914, guid: 76aa8b7d736fa8e44955cce276908e74,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7373482367278972658}
     - targetCorrespondingSourceObject: {fileID: 4649766517194321997, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
       insertIndex: -1
@@ -2586,6 +2590,26 @@ MonoBehaviour:
   _rectTranformParent: {fileID: 2266257768158973920}
   _parentImage: {fileID: 8862760522874493136}
   _gridLayout: {fileID: 646322718792559871}
+--- !u!114 &7373482367278972658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6600255325117062062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 1
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &8862760522874493136 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4506717542633565340, guid: 76aa8b7d736fa8e44955cce276908e74,

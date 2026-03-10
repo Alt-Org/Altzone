@@ -192,7 +192,12 @@ public class MessageReactionsHandler : AltMonoBehaviour
                     StartCoroutine(GetPlayerData(player =>
                     {
                         if (player != null)
-                            if (player.Id == _reaction.sender_id) addedReaction.Select();       
+                            if (player.Id == _reaction.sender_id)
+                            {
+                                addedReaction.Select();
+                                //Removes the selected reaction
+                                _reactionList[i].Selected = true;
+                            }
                     }));
                     _selectedMessage.SetMessageInactive();
                     return;
@@ -240,9 +245,19 @@ public class MessageReactionsHandler : AltMonoBehaviour
         {
             _selectedMessage.SetMessageInactive();
 
+
             if (reactionHandler.Selected)
             {
-                reactionHandler.Deselect(); 
+                reactionHandler.Deselect();
+
+            foreach(var i in _reactionList)
+            {
+                if(i.Mood == reactionHandler.Mood)
+                {
+                    //Adds the set sprite back in to reaction selection
+                    i.Selected = false;
+                }
+            }
 
                 if (reactionHandler.Count <= 0)
                 {

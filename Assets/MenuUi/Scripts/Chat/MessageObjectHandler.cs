@@ -70,9 +70,9 @@ public class MessageObjectHandler : MonoBehaviour
         //Checks if reaction panel is active and checks which reaction pannel is on
         if (_reactionSize.activeSelf)
             if(_expandedReactionSize.activeSelf)
-                _baseMessageSize.sizeDelta = new Vector2(_vectorExpandedReactionSize.x, Mathf.Max(150, _baseMessageBankerSize.y + _vectorExpandedReactionSize.y + extraPadding));
+                _baseMessageSize.sizeDelta = new Vector2(_vectorExpandedReactionSize.x, Mathf.Max(150, _baseMessageBankerSize.y + _vectorExpandedReactionSize.y));
             else
-                _baseMessageSize.sizeDelta = new Vector2(_vectorReactionSize.x, Mathf.Max(150, _baseMessageBankerSize.y + _vectorReactionSize.y + extraPadding));
+                _baseMessageSize.sizeDelta = new Vector2(_vectorReactionSize.x, Mathf.Max(150, _baseMessageBankerSize.y + _vectorReactionSize.y));
 
         //reverts back to orignal
         else
