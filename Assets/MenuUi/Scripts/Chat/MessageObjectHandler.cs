@@ -51,12 +51,13 @@ public class MessageObjectHandler : MonoBehaviour
         ChatChannel.OnReactionReceived += UpdateReactions;
 
         _vectorReactionSize = new Vector2(_baseMessageSize.sizeDelta.x, _baseMessageSize.sizeDelta.y + _reactionSize.GetComponent<RectTransform>().sizeDelta.y);
-        _vectorExpandedReactionSize = new Vector2(_baseMessageSize.sizeDelta.x, _baseMessageSize.sizeDelta.y + _expandedReactionSize.GetComponent<RectTransform>().sizeDelta.y);
+        
     }
 
     ///Changes the Basemessages size
     public void SizeCall()
     {
+        _vectorExpandedReactionSize = new Vector2(_baseMessageSize.sizeDelta.x, _expandedReactionSize.GetComponent<RectTransform>().sizeDelta.y);
         //adds extra size if there reactions have been put or not
         float extraPadding;
         if (reactionField.transform.childCount > 0)
