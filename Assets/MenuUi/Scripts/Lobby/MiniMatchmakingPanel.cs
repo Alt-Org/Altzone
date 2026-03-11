@@ -45,6 +45,7 @@ namespace MenuUi.Scripts.Lobby
             LobbyManager.OnMatchmakingRoomEntered += OnMatchmakingRoomEntered;
             LobbyManager.OnMatchmakingStopped += OnMatchmakingStopped;
             LobbyManager.OnGameCountdownUpdate += OnGameCountdownUpdate;
+            LobbyManager.OnGameStartCancelled += OnGameStartCancelled;
             LobbyManager.OnRoomLeaderChanged += SetCancelButton;
             LobbyManager.OnFailedToStartMatchmakingGame += OnFailedToStartMatchmakingGame;
 
@@ -110,6 +111,7 @@ namespace MenuUi.Scripts.Lobby
             LobbyManager.OnMatchmakingRoomEntered -= OnMatchmakingRoomEntered;
             LobbyManager.OnMatchmakingStopped -= OnMatchmakingStopped;
             LobbyManager.OnGameCountdownUpdate -= OnGameCountdownUpdate;
+            LobbyManager.OnGameStartCancelled -= OnGameStartCancelled;
             LobbyManager.OnRoomLeaderChanged -= SetCancelButton;
             LobbyManager.OnFailedToStartMatchmakingGame -= OnFailedToStartMatchmakingGame;
 
@@ -189,15 +191,28 @@ namespace MenuUi.Scripts.Lobby
         private void SetCancelButton(bool isLeader)
         {
             if (_cancelButton == null) return;
+            _cancelButton.onClick.RemoveAllListeners();
 
             if (isLeader)
             {
                 _cancelButton.interactable = true;
                 _cancelButton.gameObject.SetActive(true);
+                var txt = _cancelButton.GetComponentInChildren<TMP_Text>();
+                if (txt != null) txt.text = "Peruuta";
+                _cancelButton.onClick.AddListener(OnCancelClicked);
             }
             else
             {
-                _cancelButton.gameObject.SetActive(false);
+                // Show Leave button for non-leaders so they can exit without opening the popup
+                _cancelButton.gameObject.SetActive(true);
+                _cancelButton.interactable = true;
+                var txt = _cancelButton.GetComponentInChildren<TMP_Text>();
+                if (txt != null) txt.text = "Poistu";
+                _cancelButton.onClick.AddListener(() =>
+                {
+                    PhotonRealtimeClient.LeaveRoom();
+                    if (InLobbyController.SelectedGameType != GameType.Clan2v2) Signals.SignalBus.OnCloseBattlePopupRequestedSignal();
+                });
             }
         }
 
@@ -218,14 +233,33 @@ namespace MenuUi.Scripts.Lobby
         {
             if (_matchmakingText != null)
             {
-                _matchmakingText.text = secondsRemaining > 0
-                    ? $"Peli alkaa {secondsRemaining}..."
-                    : "Peli alkaa!";
+                if (secondsRemaining > 0)
+                {
+                    _matchmakingText.text = $"Peli alkaa {secondsRemaining}...";
+                }
+                else if (secondsRemaining == 0)
+                {
+                    _matchmakingText.text = "Peli alkaa!";
+                }
+                else
+                {
+                    // negative sentinel -> ignore (handled by OnGameStartCancelled)
+                }
             }
             if (_cancelButton != null)
             {
                 _cancelButton.interactable = false;
             }
+        }
+
+        private void OnGameStartCancelled()
+        {
+            _isMatchmaking = true;
+            _matchmakingStartTime = Time.time;
+            if (_matchmakingText != null) _matchmakingText.text = "Etsitään peliä...";
+            bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
+            SetCancelButton(isLeader);
+            UpdateVisibility();
         }
 
         private void OnFailedToStartMatchmakingGame()

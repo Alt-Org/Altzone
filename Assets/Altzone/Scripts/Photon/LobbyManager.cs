@@ -99,6 +99,7 @@ namespace Altzone.Scripts.Lobby
         private Coroutine _matchmakingHolder = null;
         private Coroutine _followLeaderHolder = null;
         private Coroutine _canBattleStartCheckHolder = null;
+        private Coroutine _startGameHolder = null;
 
         private string[] _teammates = null;
 
@@ -209,6 +210,9 @@ namespace Altzone.Scripts.Lobby
 
         public delegate void GameCountdownUpdate(int secondsRemaining);
         public static event GameCountdownUpdate OnGameCountdownUpdate;
+
+        public delegate void GameStartCancelled();
+        public static event GameStartCancelled OnGameStartCancelled;
 
         public delegate void MatchmakingStopped();
         public static event MatchmakingStopped OnMatchmakingStopped;
@@ -533,7 +537,12 @@ namespace Altzone.Scripts.Lobby
         private void OnStartPlayingEvent(StartPlayingEvent data)
         {
             Debug.Log($"onEvent {data}");
-            StartCoroutine(StartTheGameplay(_isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
+            if (_startGameHolder != null)
+            {
+                StopCoroutine(_startGameHolder);
+                _startGameHolder = null;
+            }
+            _startGameHolder = StartCoroutine(StartTheGameplay(_isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
         }
 
         private void OnStartRaidTestEvent(StartRaidTestEvent data)
@@ -586,6 +595,12 @@ namespace Altzone.Scripts.Lobby
             {
                 StopCoroutine(_followLeaderHolder);
                 _followLeaderHolder = null;
+            }
+
+            if (_startGameHolder != null)
+            {
+                StopCoroutine(_startGameHolder);
+                _startGameHolder = null;
             }
         }
 
@@ -904,7 +919,12 @@ namespace Altzone.Scripts.Lobby
                 int botCount = PhotonBattleRoom.GetBotCount();
                 if (PhotonRealtimeClient.CurrentRoom.PlayerCount + botCount >= PhotonRealtimeClient.CurrentRoom.MaxPlayers)
                 {
-                    StartCoroutine(StartTheGameplay(_isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
+                    if (_startGameHolder != null)
+                    {
+                        StopCoroutine(_startGameHolder);
+                        _startGameHolder = null;
+                    }
+                    _startGameHolder = StartCoroutine(StartTheGameplay(_isCloseRoomOnGameStart, _blueTeamName, _redTeamName));
                     gameStarting = true;
                 }
 
@@ -1140,6 +1160,8 @@ namespace Altzone.Scripts.Lobby
                 yield break;
             }
             Debug.Log("Starting Game");
+            // Clear the holder to indicate the start coroutine has finished
+            _startGameHolder = null;
             //WindowManager.Get().ShowWindow(gameWindow);
         }
 
@@ -1707,6 +1729,47 @@ namespace Altzone.Scripts.Lobby
 
             if (PhotonRealtimeClient.Client.State == ClientState.Leaving) return;
 
+            // If a game start countdown is in progress, cancel it.
+            if (_startGameHolder != null)
+            {
+                if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+                {
+                    try
+                    {
+                        PhotonRealtimeClient.Client.OpRaiseEvent(
+                            PhotonRealtimeClient.PhotonEvent.CancelGameStart,
+                            null,
+                            new RaiseEventArgs { Receivers = ReceiverGroup.All },
+                            SendOptions.SendReliable
+                        );
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogWarning($"Failed to broadcast CancelGameStart: {ex.Message}");
+                    }
+
+                    StopCoroutine(_startGameHolder);
+                    _startGameHolder = null;
+                    if (PhotonRealtimeClient.InMatchmakingRoom)
+                    {
+                        if (_matchmakingHolder != null)
+                        {
+                            StopCoroutine(_matchmakingHolder);
+                            _matchmakingHolder = null;
+                        }
+                        _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
+                    }
+                    else
+                    {
+                        StartingGameFailed();
+                    }
+                }
+                else
+                {
+                    OnGameStartCancelled?.Invoke();
+                }
+            }
+
             // Clearing the player position in the room if player is master client
             if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
             {
@@ -1846,6 +1909,12 @@ namespace Altzone.Scripts.Lobby
 
             switch (photonEvent.Code)
             {
+                case PhotonRealtimeClient.PhotonEvent.CancelGameStart:
+                    Debug.Log("Received CancelGameStart");
+                    OnGameStartCancelled?.Invoke();
+                    // Also signal countdown listeners with a sentinel value so older UI code can cancel
+                    OnGameCountdownUpdate?.Invoke(-1);
+                    break;
                 case PhotonRealtimeClient.PhotonEvent.GameCountdown:
                     int countdown = (int)photonEvent.CustomData;
                     OnGameCountdownUpdate?.Invoke(countdown);
@@ -1938,9 +2007,26 @@ namespace Altzone.Scripts.Lobby
         public void OnMasterClientSwitched(Player newMasterClient) {
             LobbyOnMasterClientSwitched?.Invoke(new(newMasterClient));
 
-            if (PhotonRealtimeClient.InMatchmakingRoom && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient)
+            // Cancel any in-progress countdown locally when master changes (previous master might have started it)
+            if (_startGameHolder != null)
             {
-                _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
+                StopCoroutine(_startGameHolder);
+                _startGameHolder = null;
+            }
+            OnGameStartCancelled?.Invoke();
+
+            // If we are in a matchmaking room, new master should continue matchmaking; others stay and wait
+            if (PhotonRealtimeClient.InMatchmakingRoom)
+            {
+                if (PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient)
+                {
+                    if (_matchmakingHolder != null)
+                    {
+                        StopCoroutine(_matchmakingHolder);
+                        _matchmakingHolder = null;
+                    }
+                    _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
+                }
             }
         }
 

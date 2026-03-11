@@ -179,6 +179,8 @@ public static class PhotonRealtimeClient
     {
         public const byte StartGame = 110;
         public const byte GameCountdown = 111;
+        // Sent by master to cancel an in-progress countdown/start (e.g. player left or master disconnected)
+        public const byte CancelGameStart = 112;
         public const byte RPC = 200;
         public const byte SendSerialize = 201;
         public const byte Instantiation = 202;
