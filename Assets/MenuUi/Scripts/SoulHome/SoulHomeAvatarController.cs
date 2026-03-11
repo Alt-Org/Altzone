@@ -52,7 +52,7 @@ namespace MenuUI.Scripts.SoulHome
         private List<AnimationClip> _verifiedInteractClips = new();
         private Vector2Int _currentGridPosition;
         private List<Vector2Int> _walkableSlots = new();
-        private const int DefaultPenalty = 10;
+        private const int DefaultPenalty = 5;
         private int _gridWidth;
         private int _gridHeight;
         private List<Vector2> _rawPath;
@@ -265,9 +265,15 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     FurnitureSlot slot = rowTransform.GetChild(c).GetComponent<FurnitureSlot>();
 
-                    bool walkable = (slot.Furniture == null);
-
-                    _grid[c, r] = new GridNode(new Vector2Int(c, r), walkable);
+                    //bool walkable = (slot.Furniture == null);
+                    //_grid[c, r] = new GridNode(new Vector2Int(c, r), walkable);
+                    GridNode node = new(new Vector2Int(c, r), false);
+                    if (slot.Furniture != null)
+                    {
+                        node.IsFurniture = true;
+                        node.Furniture = slot.Furniture;
+                    }
+                    _grid[c, r] = node;
                 }
             }
             _gridWidth = _grid.GetLength(0);
@@ -280,7 +286,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 for (int y = 0; y < _gridHeight; y++)
                 {
-                    if (_grid[x, y].IsWalkable && _grid[x, y].penalty == 0)
+                    if (!_grid[x, y].IsFurniture && _grid[x, y].penalty == 0)
                     {
                         _walkableSlots.Add(new Vector2Int(x, y));
                     }
@@ -292,27 +298,48 @@ namespace MenuUI.Scripts.SoulHome
         // and also add a penalty to the bottom-right corner + 1 node to the left, and bottom-left corner and 1 node from that to the right, 
         // so the avatar only goes there if there is no other way (makes clipping with furniture less likely, and avatar only chooses to "slip"
         // through the corner of the furniture if there is absolutely no other way to the end position)
-        // Smoothpath still cares only about IsWalkable, need to fix
         private void CalculatePenalties()
         {
-            foreach (GridNode node in _grid) node.penalty = 0;
+            foreach (GridNode node in _grid)
+            {
+                node.penalty = 0;
+            }
 
             for (int x = 0; x < _gridWidth; x++)
             {
                 for (int y = 0; y < _gridHeight; y++)
                 {
+                    GridNode currentNode = _grid[x, y];
                     // skip cells that are not furniture
-                    if (_grid[x, y].IsWalkable) continue;
+                    if (!currentNode.IsFurniture) continue;
+                    // Will be true for 2 pieces of the same furniture, which is not ideal
+                    bool isSameFurnitureAbove = (y > 0 &&
+                                                 _grid[x, y - 1].IsFurniture &&
+                                                 _grid[x, y - 1].Furniture == currentNode.Furniture);
 
-                    // apply penalty to the left and right to the furniture
-                    ApplyPenalty(x - 1, y, DefaultPenalty);
+                    if (y == 0)
+                    {
+                        currentNode.penalty = 100;
+                    }
+                    else if (!_grid[x, y - 1].IsFurniture || !isSameFurnitureAbove)
+                    {
+                        currentNode.penalty = 150;
+                    }
+                    else
+                    {
+                        currentNode.penalty = 800;
+                    }
+
+                        // apply penalty to the left and right to the furniture
+                        ApplyPenalty(x - 1, y, DefaultPenalty);
                     ApplyPenalty(x + 1, y, DefaultPenalty);
 
+
                     // if there is no furniture below
-                    if (y < _gridHeight - 1 && _grid[x, y + 1].IsWalkable)
+                    if (y < _gridHeight - 1 && !_grid[x, y + 1].IsFurniture)
                     {
                         // if there is no furniture to the left (meaning this is the bottom-left corner)
-                        if (x > 0 && _grid[x - 1, y].IsWalkable)
+                        if (x > 0 && !_grid[x - 1, y].IsFurniture)
                         {
                             // The bottom-left corner
                             ApplyPenalty(x - 1, y + 1, DefaultPenalty);
@@ -322,7 +349,7 @@ namespace MenuUI.Scripts.SoulHome
                             ApplyPenalty(x , y + 1, DefaultPenalty * 2);
                         }
                         // if there is no furniture to the right (meaning this is the bottom-right corner)
-                        if (x < _gridWidth - 1 && _grid[x + 1, y].IsWalkable)
+                        if (x < _gridWidth - 1 && !_grid[x + 1, y].IsFurniture)
                         {
                             // The bottom-right corner
                             ApplyPenalty(x + 1, y + 1, DefaultPenalty);
@@ -341,7 +368,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (x >= 0 && x < _gridWidth && y >= 0 && y < _gridHeight)
             {
-                if (_grid[x, y].IsWalkable)
+                if (!_grid[x, y].IsFurniture)
                 {
                     _grid[x, y].penalty += amount;
                 }
@@ -502,7 +529,7 @@ namespace MenuUI.Scripts.SoulHome
 
                 foreach(GridNode neighbor in GetNeighbors(currentNode))
                 {
-                    if (!neighbor.IsWalkable || closedList.Contains(neighbor)) continue;
+                    if (closedList.Contains(neighbor)) continue;
 
                     float newCostToNeightbor = currentNode.GCost + GetDistance(currentNode, neighbor) + neighbor.penalty;
 
@@ -555,7 +582,7 @@ namespace MenuUI.Scripts.SoulHome
             // check if every cell in a line between start and en is walkable
             foreach (Vector2Int cell in GetCellsOnLine(gridStart, gridEnd))
             {
-                if (!_grid[cell.x, cell.y].IsWalkable) return true;
+                if (_grid[cell.x, cell.y].IsFurniture) return true;
 
                 if (_grid[cell.x, cell.y].penalty > 0) return true;
             }
@@ -701,7 +728,7 @@ namespace MenuUI.Scripts.SoulHome
                     GridNode node = _grid[x, y];
 
                     // Color nodes based on Walkability/Penalty
-                    if (!node.IsWalkable)
+                    if (false)
                     {
                         Gizmos.color = new Color(1, 0, 0, 0.2f); // Red for furniture
                         Gizmos.DrawCube(worldPos, new Vector3(0.5f, 0.5f, 0.1f));

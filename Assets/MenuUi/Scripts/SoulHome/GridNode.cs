@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using MenuUI.Scripts.SoulHome;
 using UnityEngine;
 
 public class GridNode
 {
     public Vector2Int GridPosition;
-    public bool IsWalkable;
+    public bool IsFurniture;
     public int penalty;
+    public Furniture Furniture;
 
     public float GCost = float.MaxValue;
     public float HCost;
@@ -14,10 +16,10 @@ public class GridNode
 
     public GridNode Parent;
 
-    public GridNode(Vector2Int gridPos, bool isWalkable)
+    public GridNode(Vector2Int gridPos, bool isFurniture)
     {
         GridPosition = gridPos;
-        IsWalkable = isWalkable;
+        IsFurniture = isFurniture;
     }
 
     public void Reset()
