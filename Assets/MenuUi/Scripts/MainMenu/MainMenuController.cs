@@ -37,6 +37,7 @@ namespace MenuUi.Scripts.MainMenu
             _swipe = GetComponentInParent<SwipeUI>();
             StartCoroutine(CheckWindowSize());
 
+            OverlayPanelCheck.Instance.gameObject.SetActive(true);
             AudioManager.Instance?.SetCurrentAreaCategoryName("MainMenu");
 
             try

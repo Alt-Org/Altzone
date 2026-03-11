@@ -18,11 +18,13 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private AvatarEditorCharacterHandle _characterHandle;
         [SerializeField] private ScrollBarCategoryLoader _categoryLoader;
         [SerializeField] private ScrollBarFeatureLoader _featureLoader;
+        [SerializeField] private List<Color> _skinColors;
 
         private float _viewPortHeight;
         private float _cellHeight;
         private float _colorGridPadding;
         public List<Color> Colors { get { return _colors; } }
+        public List<Color> SkinColors { get { return _skinColors; } }
 
         private void AddColorCell(Color color)
         {

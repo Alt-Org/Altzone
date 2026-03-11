@@ -1385,6 +1385,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _mainCreatePanel: {fileID: 4051183648429038021}
   _languagePanel: {fileID: 6498708685832003365}
+  _clanHeartEditPanel: {fileID: 0}
   _clanNameField: {fileID: 3303386856119513503}
   _openClanToggle: {fileID: 3367385082243646857}
   _clanPasswordField: {fileID: 6872654389844999095}
@@ -1397,7 +1398,7 @@ MonoBehaviour:
   _ageSelectionList: {fileID: 8259099125135225342}
   _ageImage: {fileID: 2061722095103934409}
   _heartColorSetter: {fileID: 8231047155662683013}
-  _heartColorSetterPopup: {fileID: 8602538250167345443}
+  _heartColorChanger: {fileID: 0}
   _colorButtons:
   - button: {fileID: 5534395676381309228}
     color: 0
@@ -1414,6 +1415,13 @@ MonoBehaviour:
   - button: {fileID: 5215913019397625229}
     color: 6
   _heartEditPopup: {fileID: 5149013668448179289}
+  _fillWholeHeartToggle: {fileID: 0}
+  _heartModeLabel: {fileID: 0}
+  _wholeHeartText: "Tila: v\xE4rit\xE4 koko syd\xE4n"
+  _pieceModeText: 'Tila: muokkaa palaa kerrallaan'
+  _toggleIcon: {fileID: 0}
+  _iconWholeHeart: {fileID: 0}
+  _iconPieceMode: {fileID: 0}
   _nameWarningOutline: {fileID: 8590765718692567064}
   _passwordWarningOutline: {fileID: 1723167108289795577}
   _ageWarningOutline: {fileID: 7187921776308422337}
@@ -1421,10 +1429,26 @@ MonoBehaviour:
   _valuesWarningOutline: {fileID: 5869179251084096835}
   _warningPopup: {fileID: 788613460611345365}
   _closeLanguageSelect: {fileID: 6464437372985245432}
-  _createClanOK: {fileID: 5059946661500183822}
+  _createClanButton: {fileID: 0}
+  _clanLogoButton: {fileID: 0}
+  _heartEditSaveButton: {fileID: 0}
+  _heartEditCancelButton: {fileID: 0}
+  _ageButton: {fileID: 0}
+  _ageSaveButton: {fileID: 0}
+  _ageCancelButton: {fileID: 0}
+  _languageButton: {fileID: 0}
+  _languageSaveButton: {fileID: 0}
+  _languageCancelButton: {fileID: 0}
+  _cancelButton: {fileID: 0}
+  _confirmButton: {fileID: 0}
   _naviTarget: {fileID: 11400000, guid: af7bed882640abb4c883d988f7d81a34, type: 2}
   _raycastBlocker: {fileID: 4653073615952624794}
   _agreementController: {fileID: 52267561177831572}
+  _agreementPopup: {fileID: 0}
+  _defaultAgeSprite: {fileID: 0}
+  _defaultLanguageSprite: {fileID: 0}
+  _defaultAgeSelection: 0
+  _defaultLanguageSelection: 0
 --- !u!114 &6773317479118313887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2190,6 +2214,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _languageFlagMap: {fileID: 11400000, guid: 4bab82ab918d6de4ebd28a711ad7ce3f, type: 2}
   _flagImage: {fileID: 1314590405167329012}
+  _languageText: {fileID: 4494384744523169989}
 --- !u!1 &2313743186644108800
 GameObject:
   m_ObjectHideFlags: 0
@@ -5322,6 +5347,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _toggleOnImage: {fileID: 21300000, guid: 5fefa1145a7743b4998c56f6626d87be, type: 3}
   _toggleOffImage: {fileID: 21300000, guid: daab1c2df6045d24c9d60297b2625ba8, type: 3}
+  _toggle: {fileID: 0}
+  _iconToToggle: {fileID: 0}
 --- !u!222 &5376588048998593279
 CanvasRenderer:
   m_ObjectHideFlags: 0
