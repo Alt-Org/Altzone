@@ -174,15 +174,15 @@ namespace MenuUI.Scripts.SoulHome
             SelectStatus();
         }
 
-        private void HandleWander()
+        private void HandleWander(Vector2Int? targetGridPosition = null)
         {
             _travelPoints.Clear();
             // Need to make grid updating to happen when furniture is changed, no reason to do it this often
             UpdateGrid();
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            //Stopwatch stopwatch = Stopwatch.StartNew();
             if (_walkableSlots.Count > 0)
             {
-                Vector2Int target = _walkableSlots[Random.Range(0, _walkableSlots.Count)];
+                Vector2Int target = targetGridPosition ?? _walkableSlots[Random.Range(0, _walkableSlots.Count)];
                 List<GridNode> nodePath = FindPath(_currentGridPosition, target);
                 if (nodePath != null)
                 {
@@ -191,8 +191,8 @@ namespace MenuUI.Scripts.SoulHome
                     _travelPoints = _smoothPath;
                     //_travelPoints = GetTravelPoints(nodePath);
                     _currentGridPosition = target;
-                    stopwatch.Stop();
-                    UnityEngine.Debug.Log($"calculating path took {stopwatch.Elapsed.TotalMilliseconds} milliseconds");
+                    //stopwatch.Stop();
+                    //UnityEngine.Debug.Log($"calculating path took {stopwatch.Elapsed.TotalMilliseconds} milliseconds");
                     _statusCoroutine = StartCoroutine(MoveRoutine());
                 }
                 else
