@@ -466,6 +466,8 @@ namespace MenuUI.Scripts.SoulHome {
 
                 PlayerData playerData = _clanPlayerFetcher.Players[i];
 
+                avatarParent.GetComponent<SoulHomeAvatarController>().InitializeAvatar(playerData);
+
                 if (playerData?.Id == _localPlayerId)
                 {
                     _localPlayerRig = rig;

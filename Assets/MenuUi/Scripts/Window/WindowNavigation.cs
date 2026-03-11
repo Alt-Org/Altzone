@@ -40,18 +40,21 @@ namespace MenuUi.Scripts.Window
                 if (targetIndex == 1)
                 {
                     windowManager.GoBack();
+                    OverlayPanelCheck.Instance?.UpdateButtonContent();
                     yield break;
                 }
                 if (targetIndex > 1)
                 {
                     windowManager.Unwind(naviTarget);
                     windowManager.GoBack();
+                    OverlayPanelCheck.Instance?.UpdateButtonContent();
                     yield break;
                 }
             }
             if (_useNonDefaultWindow == true)
                 DataCarrier.AddData(DataCarrier.RequestedWindow, _targetWindow);
             windowManager.ShowWindow(naviTarget);
+            OverlayPanelCheck.Instance?.UpdateButtonContent();
         }
 #if UNITY_EDITOR
         [CustomEditor(typeof(WindowNavigation))]

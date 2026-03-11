@@ -79,6 +79,7 @@ public class MessageObjectHandler : MonoBehaviour
     private void OnDestroy()
     {
         Chat.OnSelectedMessageChanged -= SetMessageInactive;
+        ChatChannel.OnReactionReceived -= UpdateReactions;
     }
 
     public void SetMessageInfo(string messageText, AvatarVisualData avatarData, Action<MessageObjectHandler> selectMessageAction)

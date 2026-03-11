@@ -1,5 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.U2D.Animation;
@@ -26,9 +29,13 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private AnimationClip _walkAnimation;
         [SerializeField]
-        private AnimationClip _waveAnimation;
+        private List<AvatarAnimation> _interactAnimation;
+
+        private List<AvatarAnimation> _validatedInteractAnimation;
 
         private bool _performingAnimation = false;
+
+        private CharacterClassType _class = CharacterClassType.None;
 
         private AvatarStatus _status;
         private bool _idleTimerStarted = false;
@@ -65,6 +72,7 @@ namespace MenuUI.Scripts.SoulHome
                 _rHandResolver = _rig.Resolvers[AvatarPart.R_Hand];
                 _lHandLabel = _lHandResolver.GetLabel();
                 _rHandLabel = _rHandResolver.GetLabel();
+                _validatedInteractAnimation = ValidateAnimations(_interactAnimation);
             }
         }
 
@@ -83,7 +91,7 @@ namespace MenuUI.Scripts.SoulHome
             if (_status == AvatarStatus.Idle && !_idleTimerStarted)
             {
                 //Debug.Log("Character Idle");
-                StartCoroutine("IdleTimer");
+                StartCoroutine(IdleTimer());
             }
             else if (_status == AvatarStatus.Wander)
             {
@@ -97,6 +105,11 @@ namespace MenuUI.Scripts.SoulHome
 
                 if(GetDirection() == Vector2.zero) _status = AvatarStatus.Idle;
             }
+        }
+
+        public void InitializeAvatar(PlayerData data)
+        {
+            _class = (CharacterClassType)BaseCharacter.GetClass(data.SelectedCharacterId);
         }
 
         private IEnumerator IdleTimer()
@@ -639,7 +652,17 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (!_performingAnimation)
             {
-                _animator.Play(_waveAnimation.name);
+                int index = 0;
+                if (_validatedInteractAnimation.Count == 0) yield break;
+                do
+                {
+                    index = Random.Range(0, _validatedInteractAnimation.Count);
+                    List<AnimationClip> clips = _animator.runtimeAnimatorController.animationClips.ToList();
+                    if(clips.Contains(_validatedInteractAnimation[index].Clip)) break;
+                }
+                while (true);
+
+                _animator.Play(_validatedInteractAnimation[index].Clip.name);
                 _performingAnimation = true;
 
                 UseDefaultHands(true);
@@ -648,13 +671,25 @@ namespace MenuUI.Scripts.SoulHome
                 // true for only some milliseconds instead of the full animation
                 yield return null;
 
-                yield return new WaitUntil(() => !_animator.GetCurrentAnimatorStateInfo(0).IsName(_waveAnimation.name) && !_animator.IsInTransition(0));
+                yield return new WaitUntil(() => !_animator.GetCurrentAnimatorStateInfo(0).IsName(_validatedInteractAnimation[index].Clip.name) && !_animator.IsInTransition(0));
                 _performingAnimation = false;
 
                 UseDefaultHands(false);
             }
         }
 
+        private List<AvatarAnimation> ValidateAnimations(List<AvatarAnimation> animationToValidate)
+        {
+            List<AvatarAnimation> validatedAnimation = new();
+            foreach (AvatarAnimation animation in animationToValidate)
+            {
+                if (animation != null && animation.Clip != null)
+                {
+                    if (animation.ValidClass == _class || animation.ValidClass is CharacterClassType.None) validatedAnimation.Add(animation);
+                }
+            }
+            return validatedAnimation;
+        }
 
         private void UseDefaultHands(bool useDefaultHands)
         {
