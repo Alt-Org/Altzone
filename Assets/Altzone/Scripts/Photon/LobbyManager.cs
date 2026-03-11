@@ -1153,6 +1153,54 @@ namespace Altzone.Scripts.Lobby
                 if (i > 0) yield return new WaitForSeconds(1f);
             }
 
+            // Validate that all expected real players are still present before raising StartGame.
+            if (PhotonRealtimeClient.InMatchmakingRoom)
+            {
+                bool missingPlayer = false;
+                foreach (string uid in data.PlayerSlotUserIds)
+                {
+                    if (string.IsNullOrEmpty(uid) || uid == "Bot") continue;
+                    bool present = PhotonRealtimeClient.CurrentRoom?.Players?.Values?.Any(p => p.UserId == uid) ?? false;
+                    if (!present)
+                    {
+                        missingPlayer = true;
+                        Debug.LogWarning($"Aborting StartGame: player {uid} missing from room.");
+                        break;
+                    }
+                }
+
+                if (missingPlayer)
+                {
+                    try
+                    {
+                        PhotonRealtimeClient.Client.OpRaiseEvent(
+                            PhotonRealtimeClient.PhotonEvent.CancelGameStart,
+                            null,
+                            new RaiseEventArgs { Receivers = ReceiverGroup.All },
+                            SendOptions.SendReliable
+                        );
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogWarning($"Failed to broadcast CancelGameStart: {ex.Message}");
+                    }
+
+                    if (_startGameHolder != null)
+                    {
+                        StopCoroutine(_startGameHolder);
+                        _startGameHolder = null;
+                    }
+
+                    if (_matchmakingHolder != null)
+                    {
+                        StopCoroutine(_matchmakingHolder);
+                        _matchmakingHolder = null;
+                    }
+                    _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
+                    yield break;
+                }
+            }
+
             if (!PhotonRealtimeClient.Client.OpRaiseEvent(PhotonRealtimeClient.PhotonEvent.StartGame, StartGameData.Serialize(data), new RaiseEventArgs{Receivers = ReceiverGroup.All}, SendOptions.SendReliable))
             {
                 Debug.LogError("Unable to start game.");
@@ -1203,6 +1251,27 @@ namespace Altzone.Scripts.Lobby
             }
             Map map = battleMap.Map;
             if (map != null) _quantumBattleMap = map;
+
+            bool AreAllExpectedPlayersPresent()
+            {
+                if (data == null || data.PlayerSlotUserIds == null) return true;
+                foreach (string uid in data.PlayerSlotUserIds)
+                {
+                    if (string.IsNullOrEmpty(uid) || uid == "Bot") continue;
+                    bool present = PhotonRealtimeClient.CurrentRoom?.Players?.Values?.Any(p => p.UserId == uid) ?? false;
+                    if (!present) return false;
+                }
+                return true;
+            }
+
+            // If any expected player already left, abort starting Quantum
+            if (!AreAllExpectedPlayersPresent())
+            {
+                Debug.LogWarning("Aborting StartQuantum: one or more expected players missing from the room.");
+                StartingGameFailed();
+                OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
+                yield break;
+            }
 
             if (QuantumRunner.Default != null)
             {
@@ -1262,7 +1331,25 @@ namespace Altzone.Scripts.Lobby
                 yield return null;
             } while (startTime > DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
 
+            // If a player left during the start timer, abort
+            if (!AreAllExpectedPlayersPresent())
+            {
+                Debug.LogWarning("Aborting StartQuantum after timer: expected player missing.");
+                StartingGameFailed();
+                OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
+                yield break;
+            }
+
             yield return new WaitUntil(()=>_isStartFinished);
+
+            // Final check before loading Battle scene / starting runner
+            if (!AreAllExpectedPlayersPresent())
+            {
+                Debug.LogWarning("Aborting StartQuantum before runner start: expected player missing.");
+                StartingGameFailed();
+                OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
+                yield break;
+            }
 
             AudioManager.Instance.StopMusic();
 
@@ -1937,7 +2024,43 @@ namespace Altzone.Scripts.Lobby
                         Debug.LogError($"StartGame event received with unexpected data type: {photonEvent.CustomData?.GetType()}");
                         break;
                     }
-                    StartCoroutine(StartQuantum(StartGameData.Deserialize(byteArray)));
+                    var startData = StartGameData.Deserialize(byteArray);
+
+                    // Defensive check: if in matchmaking and any expected real player is missing, abort start.
+                    if (PhotonRealtimeClient.InMatchmakingRoom)
+                    {
+                        bool missing = false;
+                        foreach (string uid in startData.PlayerSlotUserIds)
+                        {
+                            if (string.IsNullOrEmpty(uid) || uid == "Bot") continue;
+                            bool present = PhotonRealtimeClient.CurrentRoom?.Players?.Values?.Any(p => p.UserId == uid) ?? false;
+                            if (!present)
+                            {
+                                missing = true;
+                                Debug.LogWarning($"Received StartGame but player {uid} missing; aborting start.");
+                                break;
+                            }
+                        }
+
+                        if (missing)
+                        {
+                            OnGameStartCancelled?.Invoke();
+
+                            if (PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient)
+                            {
+                                if (_matchmakingHolder != null)
+                                {
+                                    StopCoroutine(_matchmakingHolder);
+                                    _matchmakingHolder = null;
+                                }
+                                _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
+                            }
+
+                            break;
+                        }
+                    }
+
+                    StartCoroutine(StartQuantum(startData));
                     break;
                 case PhotonRealtimeClient.PhotonEvent.PlayerPositionChangeRequested:
                     int position = (int)photonEvent.CustomData;

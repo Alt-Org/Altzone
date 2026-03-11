@@ -248,7 +248,11 @@ namespace MenuUi.Scripts.Lobby
             }
             if (_cancelButton != null)
             {
-                _cancelButton.interactable = false;
+                // Only disable the cancel button when an active countdown (non-negative)
+                if (secondsRemaining >= 0)
+                {
+                    _cancelButton.interactable = false;
+                }
             }
         }
 
