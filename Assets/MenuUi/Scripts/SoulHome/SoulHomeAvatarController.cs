@@ -20,8 +20,9 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField] private float _minIdleTimer = 2f;
         [SerializeField] private float _maxIdleTimer = 4f;
         [SerializeField] private float _speed = 5;
-        // how far away the avatar stays from furniture
-        [SerializeField] private float _movePadding = 2f;
+        [SerializeField] private float _roomChangeCooldown = 20f;
+        // Percentage chance of avatar changing rooms when moving
+        [SerializeField] private float _roomChangeChance = 50f;
         [SerializeField]
         private SortingGroup _sortingGroup;
         [SerializeField]
@@ -56,6 +57,7 @@ namespace MenuUI.Scripts.SoulHome
         private int _gridHeight => _roomData.Grid.GetLength(1);
         private List<Vector2> _rawPath;
         private bool hasInitialized = false;
+        private float _timeSinceRoomChange = 0f;
 
         private List<Vector2> _smoothPath = new();
         public AvatarStatus Status
@@ -116,6 +118,11 @@ namespace MenuUI.Scripts.SoulHome
 
             _performingAnimation = false;
             OnStatusChanged();
+        }
+
+        private void Update()
+        {
+            _timeSinceRoomChange += Time.deltaTime;
         }
 
         private void OnDisable()
@@ -187,12 +194,18 @@ namespace MenuUI.Scripts.SoulHome
 
         private void HandleWander(Vector2Int? targetGridPosition = null)
         {
+            bool changeRoom = ShouldChangeRoom() && targetGridPosition == null;
             // Updategrid should not be called here, it should be called in the script that places the furniture
             _roomData.UpdateGrid();
             _travelPoints.Clear();
             //Stopwatch stopwatch = Stopwatch.StartNew();
             if (_walkableSlots.Count > 0)
             {
+                if (changeRoom)
+                {
+                    targetGridPosition = new(1,1);
+                }
+
                 Vector2Int target = targetGridPosition ?? _walkableSlots[Random.Range(0, _walkableSlots.Count)];
                 List<GridNode> nodePath = FindPath(_currentGridPosition, target);
                 if (nodePath != null)
@@ -204,11 +217,10 @@ namespace MenuUI.Scripts.SoulHome
                     _currentGridPosition = target;
                     //stopwatch.Stop();
                     //UnityEngine.Debug.Log($"calculating path took {stopwatch.Elapsed.TotalMilliseconds} milliseconds");
-                    _statusCoroutine = StartCoroutine(MoveRoutine());
+                    _statusCoroutine = StartCoroutine(MoveRoutine(changeRoom));
                 }
                 else
                 {
-                    UnityEngine.Debug.LogError("Nodepath was null, Most likely meaning there was no way to the destination without clipping through furniture");
                     SelectStatus();
                 }
             }
@@ -218,7 +230,7 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
 
-        private IEnumerator MoveRoutine()
+        private IEnumerator MoveRoutine(bool changeRoom)
         {
             if (_performingAnimation) yield break;
 
@@ -257,7 +269,27 @@ namespace MenuUI.Scripts.SoulHome
                 _travelPoints.RemoveAt(0);
             }
             UseDefaultHands(false);
-            SelectStatus();
+            if (changeRoom)
+            {
+                //ChangeRoom();
+            }
+            else
+            {
+                SelectStatus();
+            }
+        }
+
+        private bool ShouldChangeRoom()
+        {
+            if (_timeSinceRoomChange > _roomChangeCooldown)
+            {
+                if (_roomChangeChance > Random.Range(0, 100))
+                {
+                    _timeSinceRoomChange = 0f;
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void UpdateSortingOrder(int gridRow)
