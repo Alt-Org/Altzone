@@ -48,13 +48,12 @@ namespace MenuUI.Scripts.SoulHome
         private string _rHandLabel;
 
         private Coroutine _statusCoroutine;
-        private GridNode[,] _grid;
+        private GridNode[,] _grid => _roomData.Grid;
         private List<AnimationClip> _verifiedInteractClips = new();
         private Vector2Int _currentGridPosition;
-        private List<Vector2Int> _walkableSlots = new();
-        private const int DefaultPenalty = 5;
-        private int _gridWidth;
-        private int _gridHeight;
+        private List<Vector2Int> _walkableSlots => _roomData.WalkableSlots;
+        private int _gridWidth => _roomData.Grid.GetLength(0);
+        private int _gridHeight => _roomData.Grid.GetLength(1);
         private List<Vector2> _rawPath;
         private bool hasInitialized = false;
 
@@ -74,6 +73,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             //_animator.keepAnimatorStateOnDisable = true;
             _animator.writeDefaultValuesOnDisable = true;
+            
 
             if (transform.parent.CompareTag("Room"))
             {
@@ -111,7 +111,7 @@ namespace MenuUI.Scripts.SoulHome
 
             if (_grid == null)
             {
-                UpdateGrid();
+                _roomData.UpdateGrid();
             }
 
             _performingAnimation = false;
@@ -187,9 +187,9 @@ namespace MenuUI.Scripts.SoulHome
 
         private void HandleWander(Vector2Int? targetGridPosition = null)
         {
+            // Updategrid should not be called here, it should be called in the script that places the furniture
+            _roomData.UpdateGrid();
             _travelPoints.Clear();
-            // Need to make grid updating to happen when furniture is changed, no reason to do it this often
-            UpdateGrid();
             //Stopwatch stopwatch = Stopwatch.StartNew();
             if (_walkableSlots.Count > 0)
             {
@@ -258,132 +258,6 @@ namespace MenuUI.Scripts.SoulHome
             }
             UseDefaultHands(false);
             SelectStatus();
-        }
-
-        [ContextMenu("testi")]
-        public void UpdateGrid()
-        {
-            int columns = _roomData.SlotColumns;
-            int rows = _roomData.SlotRows;
-            _grid = new GridNode[columns, rows];
-            _walkableSlots.Clear();
-
-            for (int r = 0; r < rows; r++)
-            {
-                Transform rowTransform = _points.GetChild(r);
-
-                for (int c = 0; c < columns; c++)
-                {
-                    FurnitureSlot slot = rowTransform.GetChild(c).GetComponent<FurnitureSlot>();
-
-                    //bool walkable = (slot.Furniture == null);
-                    //_grid[c, r] = new GridNode(new Vector2Int(c, r), walkable);
-                    GridNode node = new(new Vector2Int(c, r), false);
-                    if (slot.Furniture != null)
-                    {
-                        node.IsFurniture = true;
-                        node.Furniture = slot.Furniture;
-                    }
-                    _grid[c, r] = node;
-                }
-            }
-            _gridWidth = _grid.GetLength(0);
-            _gridHeight = _grid.GetLength(1);
-            CalculatePenalties();
-
-            // only add slots with no penalty to walkableslots
-            // need to make exception if there are none
-            for (int x = 0; x < _gridWidth; x++)
-            {
-                for (int y = 0; y < _gridHeight; y++)
-                {
-                    if (!_grid[x, y].IsFurniture && _grid[x, y].penalty == 0)
-                    {
-                        _walkableSlots.Add(new Vector2Int(x, y));
-                    }
-                }
-            }
-        }
-
-        // Add a penalty to tiles to the right or left of furniture, and double penalty if there is furniture to the left and the right,
-        // and also add a penalty to the bottom-right corner + 1 node to the left, and bottom-left corner and 1 node from that to the right, 
-        // so the avatar only goes there if there is no other way (makes clipping with furniture less likely, and avatar only chooses to "slip"
-        // through the corner of the furniture if there is absolutely no other way to the end position)
-        private void CalculatePenalties()
-        {
-            foreach (GridNode node in _grid)
-            {
-                node.penalty = 0;
-            }
-
-            for (int x = 0; x < _gridWidth; x++)
-            {
-                for (int y = 0; y < _gridHeight; y++)
-                {
-                    GridNode currentNode = _grid[x, y];
-                    // skip cells that are not furniture
-                    if (!currentNode.IsFurniture) continue;
-                    // Will be true for 2 pieces of the same furniture, which is not ideal
-                    bool isSameFurnitureAbove = (y > 0 &&
-                                                 _grid[x, y - 1].IsFurniture &&
-                                                 _grid[x, y - 1].Furniture == currentNode.Furniture);
-
-                    if (y == 0)
-                    {
-                        currentNode.penalty = 100;
-                    }
-                    else if (!_grid[x, y - 1].IsFurniture || !isSameFurnitureAbove)
-                    {
-                        currentNode.penalty = 150;
-                    }
-                    else
-                    {
-                        currentNode.penalty = 800;
-                    }
-
-                        // apply penalty to the left and right to the furniture
-                        ApplyPenalty(x - 1, y, DefaultPenalty);
-                    ApplyPenalty(x + 1, y, DefaultPenalty);
-
-
-                    // if there is no furniture below
-                    if (y < _gridHeight - 1 && !_grid[x, y + 1].IsFurniture)
-                    {
-                        // if there is no furniture to the left (meaning this is the bottom-left corner)
-                        if (x > 0 && !_grid[x - 1, y].IsFurniture)
-                        {
-                            // The bottom-left corner
-                            ApplyPenalty(x - 1, y + 1, DefaultPenalty);
-                            // The cell above it
-                            ApplyPenalty(x - 1, y, DefaultPenalty);
-                            // The cell to the right of the bottom-left corner
-                            ApplyPenalty(x , y + 1, DefaultPenalty * 2);
-                        }
-                        // if there is no furniture to the right (meaning this is the bottom-right corner)
-                        if (x < _gridWidth - 1 && !_grid[x + 1, y].IsFurniture)
-                        {
-                            // The bottom-right corner
-                            ApplyPenalty(x + 1, y + 1, DefaultPenalty);
-                            // The cell above it
-                            ApplyPenalty(x + 1, y, DefaultPenalty);
-                            // The cell to the left of the bottom-right corner
-                            ApplyPenalty(x, y + 1, DefaultPenalty * 2);
-                        }
-                    }
-                }
-            }
-        }
-
-        // applies penalty if inside grid bounds
-        public void ApplyPenalty(int x, int y, int amount)
-        {
-            if (x >= 0 && x < _gridWidth && y >= 0 && y < _gridHeight)
-            {
-                if (!_grid[x, y].IsFurniture)
-                {
-                    _grid[x, y].penalty += amount;
-                }
-            }
         }
 
         private void UpdateSortingOrder(int gridRow)
