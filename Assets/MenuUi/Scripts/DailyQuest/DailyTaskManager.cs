@@ -201,7 +201,7 @@ public class DailyTaskManager : AltMonoBehaviour
     {
         var gameVersion = GameConfig.Get().GameVersionType;
 
-        if (gameVersion == VersionType.Education)
+        if (gameVersion is VersionType.Education or VersionType.TurboEducation)
         {
             _dailyTasksEducationView.gameObject.SetActive(true);
             _dailyTasksNormalView.gameObject.SetActive(false);
@@ -218,7 +218,7 @@ public class DailyTaskManager : AltMonoBehaviour
         StartCoroutine(GetPlayerData(content => playerData = content)); //MQTT message tells if we need to fetch the data again.
         if (playerData == null || !playerData.HasClanId)
         {
-            if (gameVersion == VersionType.Education)
+            if (gameVersion is VersionType.Education or VersionType.TurboEducation)
                 clanTasks = GenerateEducationTasks();
             else
                 clanTasks = TESTGenerateNormalTasks();
@@ -234,7 +234,7 @@ public class DailyTaskManager : AltMonoBehaviour
             {
                 Debug.LogError("Could not connect to server and receive quests.");
                 //Offline testing
-                if (gameVersion == VersionType.Education)
+                if (gameVersion is VersionType.Education or VersionType.TurboEducation)
                     clanTasks = GenerateEducationTasks();
                 else
                     clanTasks = TESTGenerateNormalTasks();
@@ -244,8 +244,8 @@ public class DailyTaskManager : AltMonoBehaviour
 
         yield return new WaitUntil(() => clanTasks != null);
 
-        ClanTasks referenceTasks = gameVersion == VersionType.Education ? GenerateEducationTasks() : GenerateNormalTasks();
-        ClanTasks validatedTasks = gameVersion == VersionType.Education ? new(TaskVersionType.Education, new()) : new(TaskVersionType.Normal, new());
+        ClanTasks referenceTasks = gameVersion is VersionType.Education or VersionType.TurboEducation ? GenerateEducationTasks() : GenerateNormalTasks();
+        ClanTasks validatedTasks = gameVersion is VersionType.Education or VersionType.TurboEducation ? new(TaskVersionType.Education, new()) : new(TaskVersionType.Normal, new());
         if (referenceTasks.TaskVersionType == clanTasks.TaskVersionType)
             for (int i = 0; i < clanTasks.Tasks.Count; i++)
             {
@@ -299,7 +299,7 @@ public class DailyTaskManager : AltMonoBehaviour
         {
             switch (gameVersion)
             {
-                case VersionType.Education: validatedTasks = GenerateEducationTasks(); break;
+                case VersionType.Education: case VersionType.TurboEducation: validatedTasks = GenerateEducationTasks(); break;
                 case VersionType.Standard: validatedTasks = GenerateNormalTasks(); break;
             }
         }
@@ -307,7 +307,7 @@ public class DailyTaskManager : AltMonoBehaviour
         for (int i = 0; i < validatedTasks.Tasks.Count; i++)
         {
             GameObject prefabToInstantiate = (
-                gameVersion == VersionType.Education ?
+                gameVersion is VersionType.Education or VersionType.TurboEducation ?
                 GetEducationPrefabCategory(validatedTasks.Tasks[i].EducationCategory) :
                 GetNormalPrefabCategory(validatedTasks.Tasks[i].Points)
                 );
@@ -330,7 +330,7 @@ public class DailyTaskManager : AltMonoBehaviour
             }
 
             Transform parentCategory = (
-                gameVersion == VersionType.Education ?
+                gameVersion is VersionType.Education or VersionType.TurboEducation ?
                 GetEducationParentCategory(validatedTasks.Tasks[i].EducationCategory) :
                 GetNormalParentCategory(validatedTasks.Tasks[i].Points)
                 );
@@ -341,7 +341,7 @@ public class DailyTaskManager : AltMonoBehaviour
             Debug.Log("Created Task: " + validatedTasks.Tasks[i].Id);
         }
 
-        if (gameVersion == VersionType.Education)
+        if (gameVersion is VersionType.Education or VersionType.TurboEducation)
         {
             //Needed to update the instantiated DT cards spacing in HorizontalLayoutGroups.
             LayoutRebuilder.ForceRebuildLayoutImmediate(_taskListEducationSocial.GetComponent<RectTransform>());
