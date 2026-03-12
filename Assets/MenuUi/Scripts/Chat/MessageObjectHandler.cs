@@ -35,6 +35,7 @@ public class MessageObjectHandler : MonoBehaviour
 
     private string _id;
     private Image _image;
+    [SerializeField] private Image _extraimage;
     private Action<MessageObjectHandler> _selectMessageAction;
 
     public GameObject ReactionsPanel { get => _reactionsPanel;}
@@ -122,12 +123,17 @@ public class MessageObjectHandler : MonoBehaviour
         if (_image != null)
         {
             _image.color = Color.gray;
+
+            //Only going to be used if using extra sprite on message
+            if (_extraimage != null)
+                _extraimage.color = Color.gray;
         }
         _addReactionsControls.SetActive(true);
 
         _selectMessageAction.Invoke(this);
         SizeCall();
     }
+
 
     private void SetMessageInactive(MessageObjectHandler handler)
     {
@@ -136,6 +142,10 @@ public class MessageObjectHandler : MonoBehaviour
         if (_image != null)
         {
             _image.color = Color.white;
+
+            //Only going to be used if using extra sprite on message
+            if (_extraimage != null)
+                _extraimage.color = Color.white;
         }
         _addReactionsControls.SetActive(false);
         SizeCall();
