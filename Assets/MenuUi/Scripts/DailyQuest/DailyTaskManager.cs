@@ -30,7 +30,8 @@ public class DailyTaskManager : AltMonoBehaviour
     [SerializeField] private Button _clanTaskTabButton;
 
     private List<GameObject> _dailyTaskCardSlots = new List<GameObject>();
-    private int _currentTaskCardIndex = -1;
+    [HideInInspector] public List<GameObject> DailyTaskCardSlots { get { return _dailyTaskCardSlots; } }
+    private DailyQuest _currentQuest;
 
     [Header("DailyTaskCard Education Prefabs")]
     [SerializeField] private GameObject _dailyTaskCardEducationSocialPrefab;
@@ -104,6 +105,11 @@ public class DailyTaskManager : AltMonoBehaviour
     private int _clanProgressBarGoal = 10000;
     private int _clanProgressBarCurrentPoints = 0;
 
+
+    private ClanTasks _validTasks;
+
+    public ClanTasks ValidTasks { get { return _validTasks; } }
+
     public enum SelectedTab
     {
         Tasks,
@@ -141,6 +147,10 @@ public class DailyTaskManager : AltMonoBehaviour
         }
     }
 
+    /// <summary>
+    /// DailyTask page setup
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator DataSetup()
     {
         bool? timeout = null;
@@ -316,17 +326,17 @@ public class DailyTaskManager : AltMonoBehaviour
             _dailyTaskCardSlots.Add(taskObject);
 
             DailyQuest task = taskObject.GetComponent<DailyQuest>();
-            task.SetTaskData(validatedTasks.Tasks[i], i);
-            if (playerData.Task != null && playerData.Task.Id == validatedTasks.Tasks[i].Id) _currentTaskCardIndex = i;
-            task.dailyTaskManager = this;
+            task.SetTaskDataAndPopulate(validatedTasks.Tasks[i], i);
+            if (playerData.Task != null && playerData.Task.Id == validatedTasks.Tasks[i].Id) _currentQuest = task;
 
+            // If player has an id, reserve task for player (so other's won't be able to take the task)
             if (validatedTasks.Tasks[i].PlayerId != "")
-                _dailyTaskCardSlots[i].GetComponent<DailyQuest>().TaskSelected();
+                _dailyTaskCardSlots[i].GetComponent<DailyQuest>().SetTaskAvailability(false);
 
             if (_currentPlayerData.Id == validatedTasks.Tasks[i].PlayerId)
             {
                 _currentPlayerData.Task = validatedTasks.Tasks[i]; //TODO: Remove when fetching task data works.
-                _currentTaskCardIndex = i;
+                _currentQuest = task;
             }
 
             Transform parentCategory = (
@@ -337,6 +347,9 @@ public class DailyTaskManager : AltMonoBehaviour
 
             taskObject.transform.SetParent(parentCategory, false);
             taskObject.SetActive(true);
+
+            // Store validated tasks
+            _validTasks = validatedTasks;
 
             Debug.Log("Created Task: " + validatedTasks.Tasks[i].Id);
         }
@@ -466,7 +479,7 @@ public class DailyTaskManager : AltMonoBehaviour
         return new(TaskVersionType.Education, tasklist);
     }
 
-    private Transform GetNormalParentCategory(int points)
+    public Transform GetNormalParentCategory(int points)
     {
         if (points < _dailyCategoryNormalRow1PointsLimit)
             return (_taskListNormalRow1);
@@ -477,7 +490,7 @@ public class DailyTaskManager : AltMonoBehaviour
         return (_taskListNormalRow3);
     }
 
-    private GameObject GetNormalPrefabCategory(int points)
+    public GameObject GetNormalPrefabCategory(int points)
     {
         if (points < _dailyCategoryNormalRow1PointsLimit)
             return (_dailyTaskCardNormalRow1Prefab);
@@ -488,7 +501,7 @@ public class DailyTaskManager : AltMonoBehaviour
         return (_dailyTaskCardNormalRow3Prefab);
     }
 
-    private Transform GetEducationParentCategory(EducationCategoryType type)
+    public Transform GetEducationParentCategory(EducationCategoryType type)
     {
         return type switch
         {
@@ -501,7 +514,7 @@ public class DailyTaskManager : AltMonoBehaviour
         };
     }
 
-    private GameObject GetEducationPrefabCategory(EducationCategoryType type)
+    public GameObject GetEducationPrefabCategory(EducationCategoryType type)
     {
         return type switch
         {
@@ -567,7 +580,7 @@ public class DailyTaskManager : AltMonoBehaviour
         _ownTaskPageHandler.SetTaskProgress(progress);
         _ownTaskPageHandler.TESTSetTaskValue(taskData.TaskProgress);
         //taskData.InvokeOnTaskUpdated();
-        _dailyTaskCardSlots[_currentTaskCardIndex].GetComponent<DailyQuest>().UpdateProgressBar();
+        _currentQuest.UpdateProgressBar();
         Debug.Log("Task id: " + _ownTaskId + ", current progress: " + progress);
         if (progress >= 1f)
         {
@@ -614,8 +627,8 @@ public class DailyTaskManager : AltMonoBehaviour
         playerData.Task.ClearProgress();
         playerData.Task.ClearPlayerId();
         //playerData.Task.InvokeOnTaskDeselected();
-        _dailyTaskCardSlots[_currentTaskCardIndex].GetComponent<DailyQuest>().TaskDeselected();
-        _currentTaskCardIndex = -1;
+        _currentQuest.SetTaskAvailability(true); // Set task back to available
+        _currentQuest = null;
         playerData.Task = null;
         timeout = null;
 
@@ -662,7 +675,7 @@ public class DailyTaskManager : AltMonoBehaviour
         }
     }
 
-    public IEnumerator AcceptTask(PlayerTask playerTask, System.Action<bool> callback, int index)
+    public IEnumerator AcceptTask(PlayerTask playerTask, System.Action<bool> callback, DailyQuest quest)
     {
         bool? done = null;
 
@@ -673,7 +686,7 @@ public class DailyTaskManager : AltMonoBehaviour
             done = null;
         }
 
-        StartCoroutine(GetSaveSetHandleOwnTask(playerTask, data => done = data, index));
+        StartCoroutine(GetSaveSetHandleOwnTask(playerTask, data => done = data, quest));
         yield return new WaitUntil(() => done != null);
 
         if (done.Value)
@@ -806,6 +819,7 @@ public class DailyTaskManager : AltMonoBehaviour
     /// <param name="Message">Message to be shown in <c>Popup</c> window.</param>
     public IEnumerator ShowPopupAndHandleResponse(string Message, PopupData? data)
     {
+        Debug.LogWarning("HANDLE RESPONSE");
         Popup.PopupWindowType windowType;
         Popup.ResultType result = Popup.ResultType.Null;
 
@@ -817,7 +831,7 @@ public class DailyTaskManager : AltMonoBehaviour
             case PopupData.PopupDataType.MultipleChoice: windowType = Popup.PopupWindowType.MultipleChoice; break;
             default: windowType = Popup.PopupWindowType.Accept; break;
         }
-
+        Debug.LogWarning("DataValueType: " + data.Value.Type);
         StartCoroutine(Popup.RequestPopup(Message, data.Value, OwnTaskId, windowType, data => result = data));
 
         yield return new WaitUntil(() => result != Popup.ResultType.Null);
@@ -838,7 +852,7 @@ public class DailyTaskManager : AltMonoBehaviour
                             done = null;
                         }
 
-                        StartCoroutine(GetSaveSetHandleOwnTask(data.Value.OwnPage, data => done = data, data.Value.DailyTaskCardIndex.Value));
+                        StartCoroutine(GetSaveSetHandleOwnTask(data.Value.OwnPage, data => done = data, data.Value.DailyQuest));
                         yield return new WaitUntil(() => (_currentPlayerData.Task != null || done != null));
 
                         if (_currentPlayerData.Task == null)
@@ -882,7 +896,7 @@ public class DailyTaskManager : AltMonoBehaviour
     /// Save given <c>PlayerTask</c> to <c>PlayerData</c> and update owntask page.
     /// </summary>
     /// <param name="playerTask"><c>PlayerData</c> to be set and saved to server as current task.</param>
-    private IEnumerator GetSaveSetHandleOwnTask(PlayerTask playerTask, System.Action<bool> callback, int index)
+    private IEnumerator GetSaveSetHandleOwnTask(PlayerTask playerTask, System.Action<bool> callback, DailyQuest quest)
     {
         PlayerData playerData = null;
         //PlayerData savePlayerData = null;
@@ -918,8 +932,8 @@ public class DailyTaskManager : AltMonoBehaviour
 
         playerData.Task = reserveResult;
         _currentPlayerData = playerData;
-        _dailyTaskCardSlots[index].GetComponent<DailyQuest>().SetTaskData(reserveResult);
-        _currentTaskCardIndex = index;
+        quest.ReserveTask(reserveResult);
+        _currentQuest = quest;
         SetHandleOwnTask(reserveResult);
         callback(true);
     }
@@ -930,7 +944,7 @@ public class DailyTaskManager : AltMonoBehaviour
     private void SetHandleOwnTask(PlayerTask playerTask)
     {
         DailyTaskProgressManager.Instance.ChangeCurrentTask(playerTask);
-        _dailyTaskCardSlots[_currentTaskCardIndex].GetComponent<DailyQuest>().SetTaskData(playerTask);
+        _currentQuest.GetComponent<DailyQuest>().ReserveTask(playerTask);
         _ownTaskId = playerTask.Id;
         StartCoroutine(_ownTaskPageHandler.SetDailyTask(playerTask));
         _ownTaskPageHandler.SetTaskProgress((float)playerTask.TaskProgress / (float)playerTask.Amount);

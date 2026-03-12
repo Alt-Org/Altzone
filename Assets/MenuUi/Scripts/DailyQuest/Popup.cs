@@ -130,6 +130,7 @@ public class Popup : MonoBehaviour
 
     public static IEnumerator RequestPopup(string message, PopupData? data, string currentTaskId, PopupWindowType type, System.Action<ResultType> callback)
     {
+        Debug.LogWarning("REQUEST POPUP");
         if (Instance == null)
         {
             Debug.LogError("Popup instance is not set.");
@@ -142,8 +143,10 @@ public class Popup : MonoBehaviour
         if (data != null)
         {
 
+            Debug.LogWarning("DATA NOT NULL");
             if (data.Value.Type == PopupData.PopupDataType.OwnTask)
             {
+                Debug.LogWarning("OWN TASK");
                 // If this is a new task
                 if (currentTaskId == null)
                 {
@@ -157,7 +160,7 @@ public class Popup : MonoBehaviour
                 }
                     
             }
-
+            Debug.LogWarning("PopupREQUIEST");
             if (data.Value.Location != null)
                 Instance.MoveMovableWindow(data.Value.Location.Value, type);
 
@@ -166,6 +169,7 @@ public class Popup : MonoBehaviour
 
             if (data.Value.OwnPage != null)
             {
+                Debug.LogWarning("OWNPAGEAS");
                 Instance.SetTaskImage(data.Value.OwnPage, type);
                 Instance.SetTaskDescription(data.Value.OwnPage);
                 Instance.SetTaskRewardTexts(data.Value.OwnPage);
