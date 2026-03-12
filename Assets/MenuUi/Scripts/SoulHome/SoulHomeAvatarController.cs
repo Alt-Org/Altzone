@@ -56,6 +56,7 @@ namespace MenuUI.Scripts.SoulHome
         private int _gridWidth;
         private int _gridHeight;
         private List<Vector2> _rawPath;
+        private bool hasInitialized = false;
 
         private List<Vector2> _smoothPath = new();
         public AvatarStatus Status
@@ -68,8 +69,12 @@ namespace MenuUI.Scripts.SoulHome
                 OnStatusChanged();
             }
         }
+
         void Start()
         {
+            //_animator.keepAnimatorStateOnDisable = true;
+            _animator.writeDefaultValuesOnDisable = true;
+
             if (transform.parent.CompareTag("Room"))
             {
                 _points = transform.parent.Find("FurniturePoints").Find("FloorFurniturePoints");
@@ -81,6 +86,7 @@ namespace MenuUI.Scripts.SoulHome
                 OnStatusChanged();
 
                 _rig = GetComponentInChildren<AvatarRig>();
+                hasInitialized = true;
                 if (_rig == null)
                 {
                     UnityEngine.Debug.LogError("Failed to get AvatarRig");
@@ -95,6 +101,7 @@ namespace MenuUI.Scripts.SoulHome
         }
         private void OnEnable()
         {
+            if (!hasInitialized) return;
 
             if (_lHandResolver != null && _rHandResolver != null)
             {
@@ -104,12 +111,16 @@ namespace MenuUI.Scripts.SoulHome
 
             if (_grid == null)
             {
-                return;
+                UpdateGrid();
             }
 
             _performingAnimation = false;
-
             OnStatusChanged();
+        }
+
+        private void OnDisable()
+        {
+            StopAllCoroutines();
         }
 
         private void SetAnimationClips()
@@ -150,6 +161,9 @@ namespace MenuUI.Scripts.SoulHome
                 case AvatarStatus.Wander:
                     HandleWander();
                     break;
+                default:
+                    SelectStatus();
+                    break;
             }
         }
 
@@ -157,18 +171,15 @@ namespace MenuUI.Scripts.SoulHome
         {
             float idleTime = Random.Range(_minIdleTimer, _maxIdleTimer);
             float elapsed = 0f;
+            _animator.Play(_idleAnimation.name);
+            UseDefaultHands(false);
+            _performingAnimation = false;
 
             while (elapsed < idleTime)
             {
                 elapsed += Time.deltaTime;
 
-                if (!_animator.GetCurrentAnimatorStateInfo(0).IsName(_idleAnimation.name))
-                {
-                    _animator.Play(_idleAnimation.name);
-                    UseDefaultHands(false);
-                }
                 yield return null;
-
             }
 
             SelectStatus();
@@ -670,7 +681,15 @@ namespace MenuUI.Scripts.SoulHome
             UseDefaultHands(true);
             yield return null;
 
-            yield return new WaitUntil(() => !_animator.GetCurrentAnimatorStateInfo(0).IsName(selectedClip.name) && !_animator.IsInTransition(0));
+            float duration = selectedClip.length;
+            float elapsed = 0f;
+
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
             _performingAnimation = false;
             UseDefaultHands(false);
 
@@ -727,13 +746,8 @@ namespace MenuUI.Scripts.SoulHome
                     Vector2 worldPos = GridToWorld(new Vector2Int(x, y));
                     GridNode node = _grid[x, y];
 
-                    // Color nodes based on Walkability/Penalty
-                    if (false)
-                    {
-                        Gizmos.color = new Color(1, 0, 0, 0.2f); // Red for furniture
-                        Gizmos.DrawCube(worldPos, new Vector3(0.5f, 0.5f, 0.1f));
-                    }
-                    else if (node.penalty > 0)
+
+                    if (node.penalty > 0)
                     {
                         // Yellow tint for penalties - gets darker as penalty increases
                         float alpha = Mathf.Clamp01(node.penalty / 30f);
@@ -783,26 +797,6 @@ namespace MenuUI.Scripts.SoulHome
                     Gizmos.DrawSphere(_rawPath[i], 0.1f);
                 }
             }
-
-            // draws the grid visually
-            //GUIStyle style = new GUIStyle { normal = { textColor = Color.white }, fontSize = 10 };
-
-            //for (int x = 0; x < _gridWidth; x++)
-            //{
-            //    for (int y = 0; y < _gridHeight; y++)
-            //    {
-            //        // Use the same function your pathfinder uses
-            //        Vector2 worldPos = GridToWorld(new Vector2Int(x, y));
-
-            //        // Draw the coordinate string: "0,0", "0,1", etc.
-            //        Handles.Label(worldPos, $"[{x},{y}]", style);
-
-            //        // Draw a small dot to mark the center
-            //        Gizmos.color = Color.white;
-            //        Gizmos.DrawSphere(worldPos, 0.05f);
-            //    }
-            //}
-
         }
         #endif
     }
