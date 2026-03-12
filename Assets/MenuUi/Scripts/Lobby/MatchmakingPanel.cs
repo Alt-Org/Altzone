@@ -60,19 +60,25 @@ namespace MenuUi.Scripts.Lobby
                 {
                     _cancelButton.interactable = false;
                     this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedGameType));
+                    // If non-leader, close popup to reset UI state (except Clan2v2)
+                    bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
+                    if (!isLeader && InLobbyController.SelectedGameType != GameType.Clan2v2)
+                    {
+                        Signals.SignalBus.OnCloseBattlePopupRequestedSignal();
+                    }
                 });
             }
             else
             {
-                // Non-leader: show a Leave button so user can leave the room without opening the popup
+                // Use same stop-matchmaking behaviour for non-leaders to avoid invalid LeaveRoom calls
                 _cancelButton.gameObject.SetActive(true);
                 _cancelButton.interactable = true;
                 var txt = _cancelButton.GetComponentInChildren<TMP_Text>();
-                if (txt != null) txt.text = "Poistu";
+                if (txt != null) txt.text = "Peruuta";
                 _cancelButton.onClick.AddListener(() =>
                 {
-                    PhotonRealtimeClient.LeaveRoom();
-                    if (InLobbyController.SelectedGameType != GameType.Clan2v2) Signals.SignalBus.OnCloseBattlePopupRequestedSignal();
+                    _cancelButton.interactable = false;
+                    this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedGameType));
                 });
             }
         }

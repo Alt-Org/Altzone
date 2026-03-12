@@ -18,11 +18,13 @@ namespace MenuUi.Scripts.Lobby
         [SerializeField] private GameObject _content;
         [SerializeField] private GameObject _battlePopup;
         [SerializeField] private TMP_Text _matchmakingText;
+        [SerializeField] private TMP_Text _matchmakingCountText;
         [SerializeField] private TMP_Text _elapsedTimeText;
         [SerializeField] private Button _cancelButton;
         [SerializeField] private Button _panelButton;
 
         private bool _isMatchmaking;
+        private bool _isBattleStarting;
         private float _matchmakingStartTime;
         private RectTransform _rectTransform;
         private Vector2 _savedAnchorMin;
@@ -45,6 +47,7 @@ namespace MenuUi.Scripts.Lobby
             LobbyManager.OnMatchmakingRoomEntered += OnMatchmakingRoomEntered;
             LobbyManager.OnMatchmakingStopped += OnMatchmakingStopped;
             LobbyManager.OnGameCountdownUpdate += OnGameCountdownUpdate;
+            LobbyManager.OnStartTimeSet += OnStartTimeSet;
             LobbyManager.OnGameStartCancelled += OnGameStartCancelled;
             LobbyManager.OnRoomLeaderChanged += SetCancelButton;
             LobbyManager.OnFailedToStartMatchmakingGame += OnFailedToStartMatchmakingGame;
@@ -67,6 +70,9 @@ namespace MenuUi.Scripts.Lobby
             {
                 _battlePopup = InLobbyController.PopupContentsInstance; 
             }
+
+            // Try to auto-assign matchmaking count text if inspector field is empty
+            TryFindMatchmakingCountText();
 
             SetVisible(false);
 
@@ -111,6 +117,7 @@ namespace MenuUi.Scripts.Lobby
             LobbyManager.OnMatchmakingRoomEntered -= OnMatchmakingRoomEntered;
             LobbyManager.OnMatchmakingStopped -= OnMatchmakingStopped;
             LobbyManager.OnGameCountdownUpdate -= OnGameCountdownUpdate;
+            LobbyManager.OnStartTimeSet -= OnStartTimeSet;
             LobbyManager.OnGameStartCancelled -= OnGameStartCancelled;
             LobbyManager.OnRoomLeaderChanged -= SetCancelButton;
             LobbyManager.OnFailedToStartMatchmakingGame -= OnFailedToStartMatchmakingGame;
@@ -130,6 +137,12 @@ namespace MenuUi.Scripts.Lobby
                 int seconds = (int)(elapsed % 60f);
                 _elapsedTimeText.text = $"{minutes:00}:{seconds:00}";
             }
+
+            if (_isMatchmaking && _matchmakingCountText != null)
+            {
+                int count = PhotonRealtimeClient.CurrentRoomPlayerCount;
+                _matchmakingCountText.text = count.ToString();
+            }
         }
 
         private void OnPopupContentsRegistered(GameObject popup)
@@ -137,7 +150,43 @@ namespace MenuUi.Scripts.Lobby
             if (popup != null && _battlePopup == null)
             {
                 _battlePopup = popup;
+                UpdateCancelButtonFromState();
+                TryFindMatchmakingCountText();
                 UpdateVisibility();
+            }
+        }
+
+        private void TryFindMatchmakingCountText()
+        {
+            if (_matchmakingCountText != null) return;
+            Transform root = _content != null ? _content.transform : transform;
+            var texts = root.GetComponentsInChildren<TMP_Text>(true);
+            TMP_Text candidate = null;
+            foreach (var t in texts)
+            {
+                if (t == _matchmakingText || t == _elapsedTimeText) continue;
+                string n = t.gameObject.name.ToLowerInvariant();
+                if (n.Contains("count") || n.Contains("matchmaking") || n.Contains("players") || n.Contains("match"))
+                {
+                    candidate = t;
+                    break;
+                }
+            }
+            if (candidate == null && texts.Length > 0)
+            {
+                foreach (var t in texts)
+                {
+                    if (t != _matchmakingText && t != _elapsedTimeText)
+                    {
+                        candidate = t;
+                        break;
+                    }
+                }
+            }
+            if (candidate != null)
+            {
+                _matchmakingCountText = candidate;
+                candidate.gameObject.SetActive(true);
             }
         }
 
@@ -146,7 +195,15 @@ namespace MenuUi.Scripts.Lobby
         /// </summary>
         public void Show()
         {
+            UpdateCancelButtonFromState();
             UpdateVisibility();
+        }
+
+        private void UpdateCancelButtonFromState()
+        {
+            if (_cancelButton == null) return;
+            bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
+            SetCancelButton(isLeader);
         }
 
         /// <summary>
@@ -165,7 +222,7 @@ namespace MenuUi.Scripts.Lobby
         private void UpdateVisibility()
         {
             bool battlePopupActive = _battlePopup != null && _battlePopup.activeInHierarchy;
-            SetVisible(_isMatchmaking && !battlePopupActive);
+            SetVisible(_isMatchmaking && !_isBattleStarting && !battlePopupActive);
         }
 
         private void OnMatchmakingRoomEntered(bool isLeader)
@@ -185,6 +242,7 @@ namespace MenuUi.Scripts.Lobby
         private void OnMatchmakingStopped()
         {
             _isMatchmaking = false;
+            _isBattleStarting = false;
             UpdateVisibility();
         }
 
@@ -193,33 +251,28 @@ namespace MenuUi.Scripts.Lobby
             if (_cancelButton == null) return;
             _cancelButton.onClick.RemoveAllListeners();
 
-            if (isLeader)
-            {
-                _cancelButton.interactable = true;
-                _cancelButton.gameObject.SetActive(true);
-                var txt = _cancelButton.GetComponentInChildren<TMP_Text>();
-                if (txt != null) txt.text = "Peruuta";
-                _cancelButton.onClick.AddListener(OnCancelClicked);
-            }
-            else
-            {
-                // Show Leave button for non-leaders so they can exit without opening the popup
-                _cancelButton.gameObject.SetActive(true);
-                _cancelButton.interactable = true;
-                var txt = _cancelButton.GetComponentInChildren<TMP_Text>();
-                if (txt != null) txt.text = "Poistu";
-                _cancelButton.onClick.AddListener(() =>
-                {
-                    PhotonRealtimeClient.LeaveRoom();
-                    if (InLobbyController.SelectedGameType != GameType.Clan2v2) Signals.SignalBus.OnCloseBattlePopupRequestedSignal();
-                });
-            }
+            // Use the same behaviour for all clients: stop matchmaking (Peruuta)
+            _cancelButton.gameObject.SetActive(true);
+            _cancelButton.interactable = true;
+            var txt = _cancelButton.GetComponentInChildren<TMP_Text>();
+            if (txt != null) txt.text = "Peruuta";
+            _cancelButton.onClick.AddListener(OnCancelClicked);
         }
 
         private void OnCancelClicked()
         {
             if (_cancelButton != null) _cancelButton.interactable = false;
+            // Hide locally immediately so UI feedback is instant for the clicking user
+            _isMatchmaking = false;
+            _isBattleStarting = false;
+            SetVisible(false);
             this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedGameType));
+            // If caller is non-leader, close the battle popup to reset UI state (except Clan2v2)
+            bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
+            if (!isLeader && InLobbyController.SelectedGameType != GameType.Clan2v2)
+            {
+                Signals.SignalBus.OnCloseBattlePopupRequestedSignal();
+            }
         }
 
         private void OnPanelClicked()
@@ -259,6 +312,7 @@ namespace MenuUi.Scripts.Lobby
         private void OnGameStartCancelled()
         {
             _isMatchmaking = true;
+            _isBattleStarting = false;
             _matchmakingStartTime = Time.time;
             if (_matchmakingText != null) _matchmakingText.text = "Etsitään peliä...";
             bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
@@ -269,6 +323,13 @@ namespace MenuUi.Scripts.Lobby
         private void OnFailedToStartMatchmakingGame()
         {
             _isMatchmaking = false;
+            _isBattleStarting = false;
+            UpdateVisibility();
+        }
+
+        private void OnStartTimeSet(long startTime)
+        {
+            _isBattleStarting = true;
             UpdateVisibility();
         }
     }
