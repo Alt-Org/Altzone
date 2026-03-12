@@ -119,6 +119,9 @@ namespace MenuUI.Scripts.SoulHome
             }
 
             _performingAnimation = false;
+
+            // if in middle of climbing ladder, looks funny without this
+            transform.position = GridToWorld(_currentGridPosition);
             OnStatusChanged();
         }
 
