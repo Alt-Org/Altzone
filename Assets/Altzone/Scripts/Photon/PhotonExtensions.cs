@@ -144,6 +144,8 @@ public static class PhotonExtensions
 
     public static T GetCustomProperty<T>(this RoomInfo room, string key, T defaultValue = default)
     {
+        if (room == null) return defaultValue;
+        if (room.CustomProperties == null) return defaultValue;
         if (room.CustomProperties.TryGetValue(key, out var propValue) && propValue != null)
         {
             if (propValue is T valueOfCorrectType)

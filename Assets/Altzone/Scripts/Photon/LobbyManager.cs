@@ -110,6 +110,7 @@ namespace Altzone.Scripts.Lobby
         private List<string> _posChangeQueue = new();
 
         private bool _isStartFinished = false;
+        private bool _returnToMainMenuOnMatchmakingRejoin = false;
 
         public static LobbyManager Instance { get; private set; }
         public bool IsStartFinished {set => _isStartFinished = value; }
@@ -221,6 +222,12 @@ namespace Altzone.Scripts.Lobby
         public static event KickedOutOfTheRoom OnKickedOutOfTheRoom;
 
         #endregion
+
+        // Public helper to request a lobby window change from outside LobbyManager.
+        public static void RequestLobbyWindowChange(LobbyWindowTarget target, LobbyWindowTarget lobbyWindow = LobbyWindowTarget.None)
+        {
+            OnLobbyWindowChangeRequest?.Invoke(target, lobbyWindow);
+        }
 
 
         private void Awake()
@@ -962,7 +969,19 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator LeaveMatchmaking()
         {
-            GameType matchmakingRoomGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+            // Safely read the matchmaking room game type; PhotonExtensions handles null room now.
+            GameType matchmakingRoomGameType = GameType.Random2v2;
+            if (PhotonRealtimeClient.CurrentRoom != null)
+            {
+                try
+                {
+                    matchmakingRoomGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"Failed to read matchmaking room game type: {ex.Message}");
+                }
+            }
 
             if (_matchmakingHolder != null)
             {
@@ -972,23 +991,30 @@ namespace Altzone.Scripts.Lobby
 
             OnMatchmakingStopped?.Invoke();
 
-            yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
+            // If we're currently in a room, leave it and wait for lobby. Otherwise wait until we are in lobby.
+            if (PhotonRealtimeClient.InRoom)
+            {
+                PhotonRealtimeClient.LeaveRoom();
+                yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
+            }
+            else
+            {
+                if (!PhotonRealtimeClient.InLobby)
+                {
+                    yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
+                }
+            }
 
-            PhotonRealtimeClient.LeaveRoom();
-
-            yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
-
-            // Creating back the non-matchmaking room which the teammates can join
+            // Creating back the non-matchmaking room which the teammates can join (only for Clan2v2)
             switch (matchmakingRoomGameType)
             {
-                //case GameType.Random2v2:
-                //    PhotonRealtimeClient.CreateRandom2v2LobbyRoom(_teammates);
-                //    break;
                 case GameType.Clan2v2:
-                    string clanName = PhotonRealtimeClient.LocalLobbyPlayer.GetCustomProperty(PhotonBattleRoom.ClanNameKey, "");
-                    int soulhomeRank = PhotonRealtimeClient.LocalLobbyPlayer.GetCustomProperty(PhotonBattleRoom.SoulhomeRank, 0);
+                {
+                    string clanName = PhotonRealtimeClient.LocalLobbyPlayer?.GetCustomProperty(PhotonBattleRoom.ClanNameKey, "");
+                    int soulhomeRank = PhotonRealtimeClient.LocalLobbyPlayer?.GetCustomProperty(PhotonBattleRoom.SoulhomeRank, 0) ?? 0;
                     PhotonRealtimeClient.CreateClan2v2LobbyRoom(clanName, soulhomeRank, _teammates);
                     break;
+                }
             }
         }
         #endregion
@@ -1268,8 +1294,29 @@ namespace Altzone.Scripts.Lobby
             if (!AreAllExpectedPlayersPresent())
             {
                 Debug.LogWarning("Aborting StartQuantum: one or more expected players missing from the room.");
-                StartingGameFailed();
-                OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
+                try
+                {
+                    PhotonRealtimeClient.Client.OpRaiseEvent(
+                        PhotonRealtimeClient.PhotonEvent.CancelGameStart,
+                        null,
+                        new RaiseEventArgs { Receivers = ReceiverGroup.All },
+                        SendOptions.SendReliable
+                    );
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"Failed to broadcast CancelGameStart: {ex.Message}");
+                }
+
+                if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+                {
+                    if (_matchmakingHolder != null)
+                    {
+                        StopCoroutine(_matchmakingHolder);
+                        _matchmakingHolder = null;
+                    }
+                    _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
+                }
                 yield break;
             }
 
@@ -1335,8 +1382,29 @@ namespace Altzone.Scripts.Lobby
             if (!AreAllExpectedPlayersPresent())
             {
                 Debug.LogWarning("Aborting StartQuantum after timer: expected player missing.");
-                StartingGameFailed();
-                OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
+                try
+                {
+                    PhotonRealtimeClient.Client.OpRaiseEvent(
+                        PhotonRealtimeClient.PhotonEvent.CancelGameStart,
+                        null,
+                        new RaiseEventArgs { Receivers = ReceiverGroup.All },
+                        SendOptions.SendReliable
+                    );
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"Failed to broadcast CancelGameStart: {ex.Message}");
+                }
+
+                if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+                {
+                    if (_matchmakingHolder != null)
+                    {
+                        StopCoroutine(_matchmakingHolder);
+                        _matchmakingHolder = null;
+                    }
+                    _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
+                }
                 yield break;
             }
 
@@ -1346,8 +1414,29 @@ namespace Altzone.Scripts.Lobby
             if (!AreAllExpectedPlayersPresent())
             {
                 Debug.LogWarning("Aborting StartQuantum before runner start: expected player missing.");
-                StartingGameFailed();
-                OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
+                try
+                {
+                    PhotonRealtimeClient.Client.OpRaiseEvent(
+                        PhotonRealtimeClient.PhotonEvent.CancelGameStart,
+                        null,
+                        new RaiseEventArgs { Receivers = ReceiverGroup.All },
+                        SendOptions.SendReliable
+                    );
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"Failed to broadcast CancelGameStart: {ex.Message}");
+                }
+
+                if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+                {
+                    if (_matchmakingHolder != null)
+                    {
+                        StopCoroutine(_matchmakingHolder);
+                        _matchmakingHolder = null;
+                    }
+                    _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
+                }
                 yield break;
             }
 
@@ -1916,6 +2005,16 @@ namespace Altzone.Scripts.Lobby
             // Getting info if room is matchmaking room or not
             if (PhotonRealtimeClient.InMatchmakingRoom)
             {
+                // If we previously got a CancelGameStart and now rejoined matchmaking, leave and return to main menu
+                if (_returnToMainMenuOnMatchmakingRejoin)
+                {
+                    _returnToMainMenuOnMatchmakingRejoin = false;
+                    StopMatchmakingCoroutines();
+                    PhotonRealtimeClient.LeaveRoom();
+                    OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
+                    return;
+                }
+
                 bool isLeader = PhotonRealtimeClient.LocalPlayer.UserId == PhotonRealtimeClient.LocalPlayer.GetCustomProperty<string>(PhotonBattleRoom.LeaderIdKey);
                 OnMatchmakingRoomEntered?.Invoke(isLeader);
             }
@@ -1998,6 +2097,7 @@ namespace Altzone.Scripts.Lobby
             {
                 case PhotonRealtimeClient.PhotonEvent.CancelGameStart:
                     Debug.Log("Received CancelGameStart");
+                    _returnToMainMenuOnMatchmakingRejoin = true;
                     OnGameStartCancelled?.Invoke();
                     // Also signal countdown listeners with a sentinel value so older UI code can cancel
                     OnGameCountdownUpdate?.Invoke(-1);
