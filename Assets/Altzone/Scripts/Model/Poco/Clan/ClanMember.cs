@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using Assets.Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Model.Poco.Player;
 using Newtonsoft.Json;
 
@@ -14,6 +15,8 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public string RaidRoomId;
         public ClanRoles Role;
         private ServerPlayer _player;
+
+        public string ClanRoleId;
 
         private int _leaderBoardWins = 0;
         private int _leaderBoardCoins = 0;
@@ -31,7 +34,12 @@ namespace Altzone.Scripts.Model.Poco.Clan
             _id = player._id;
             _name = player.name;
             _player = player;
+
+            ClanRoleId = player.clanRole_id;
         }
+
+        public AvatarData AvatarData =>
+            _player.avatar != null ? new AvatarData(Name, _player.avatar) : null;
 
         public PlayerData GetPlayerData()
         {

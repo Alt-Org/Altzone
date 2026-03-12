@@ -10,10 +10,12 @@ public class ClanLanguageList : MonoBehaviour
     [SerializeField] private ToggleGroup _toggleGroup;
     [SerializeField] private Transform _listParent;
     public Language SelectedLanguage { get; private set; }
+    private Language _tempLanguage;
 
     public void Initialize(Language firstSelected)
     {
         SelectedLanguage = firstSelected;
+        _tempLanguage = SelectedLanguage;
         foreach (Transform child in _listParent) Destroy(child.gameObject);
 
         foreach (Language language in Enum.GetValues(typeof(Language)))
@@ -24,8 +26,14 @@ public class ClanLanguageList : MonoBehaviour
             listItem.GetComponent<Toggle>().group = _toggleGroup;
             listItem.GetComponent<ClanLanguageListItem>().Initialize(language, flag, language == SelectedLanguage, (bool isOn) =>
             {
-                SelectedLanguage = language;
+                _tempLanguage = language;
             });
         }
+    }
+
+    public Language SaveLanguage()
+    {
+        SelectedLanguage = _tempLanguage;
+        return SelectedLanguage;
     }
 }
