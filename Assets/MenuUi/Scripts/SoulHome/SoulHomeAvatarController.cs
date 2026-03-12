@@ -271,12 +271,26 @@ namespace MenuUI.Scripts.SoulHome
             UseDefaultHands(false);
             if (changeRoom)
             {
-                //ChangeRoom();
+                ChangeRoom();
             }
             else
             {
                 SelectStatus();
             }
+        }
+
+        private void ChangeRoom()
+        {
+            Transform targetRoomTransform = GetRoomToMoveTo();
+
+            transform.SetParent(targetRoomTransform, true);
+
+            _roomData = targetRoomTransform.GetComponent<RoomData>();
+            _points = targetRoomTransform.Find("FurniturePoints").Find("FloorFurniturePoints");
+
+            transform.position = GridToWorld(_currentGridPosition);
+
+            SelectStatus();
         }
 
         private bool ShouldChangeRoom()
@@ -290,6 +304,35 @@ namespace MenuUI.Scripts.SoulHome
                 }
             }
             return false;
+        }
+
+        private Transform GetRoomToMoveTo()
+        {
+            Transform roomPositions = transform.parent.parent.parent;
+            int lowerRoomIndex = transform.parent.parent.GetSiblingIndex() + 1;
+            int upperRoomIndex = transform.parent.parent.GetSiblingIndex() - 1;
+            bool upIsValid = upperRoomIndex >= 0;
+            bool downIsValid = lowerRoomIndex < roomPositions.childCount;
+
+            int targetIndex = -1;
+
+            if (upIsValid && downIsValid)
+            {
+                if (Random.value > 0.5f)
+                    targetIndex = upperRoomIndex;
+                else
+                    targetIndex = lowerRoomIndex;
+            }
+            else if (upIsValid)
+            {
+                targetIndex = upperRoomIndex;
+            }
+            else if (downIsValid)
+            {
+                targetIndex = lowerRoomIndex;
+            }
+
+            return roomPositions.GetChild(targetIndex).GetChild(0).transform;
         }
 
         private void UpdateSortingOrder(int gridRow)
@@ -601,7 +644,6 @@ namespace MenuUI.Scripts.SoulHome
 
             SelectStatus();
         }
-
 
         private void UseDefaultHands(bool useDefaultHands)
         {
