@@ -32,6 +32,8 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private AnimationClip _walkAnimation;
         [SerializeField]
+        private AnimationClip _climbAnimation;
+        [SerializeField]
         private List<AnimationClip> _interactAnimation;
 
         private bool _performingAnimation = false;
@@ -203,7 +205,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (changeRoom)
                 {
-                    targetGridPosition = new(1,1);
+                    targetGridPosition = new(2, 1);
                 }
 
                 Vector2Int target = targetGridPosition ?? _walkableSlots[Random.Range(0, _walkableSlots.Count)];
@@ -283,13 +285,42 @@ namespace MenuUI.Scripts.SoulHome
         {
             Transform targetRoomTransform = GetRoomToMoveTo();
 
+            StartCoroutine(ClimbLadder(targetRoomTransform));
+        }
+
+        private IEnumerator ClimbLadder(Transform targetRoomTransform)
+        {
+            _performingAnimation = true;
+
+            RoomData targetRoomData = targetRoomTransform.GetComponent<RoomData>();
+            Transform targetRoomPoints = targetRoomTransform.Find("FurniturePoints").Find("FloorFurniturePoints");
+
+            Vector3 targetWorldPosition = targetRoomPoints.GetChild(1).GetChild(2).position;
+
+            bool movingDown = targetWorldPosition.y < transform.position.y;
+
+            if (movingDown) _sortingGroup.sortingOrder = -1;
+
+            _animator.Play(_climbAnimation.name);
+            UseDefaultHands(true);
+            yield return null;
+
+            while (Vector2.Distance(transform.position, targetWorldPosition) > 0.05f)
+            {
+                transform.position = Vector2.MoveTowards(transform.position, targetWorldPosition, (_speed * 0.5f) * Time.deltaTime);
+
+                yield return null;
+            }
+
             transform.SetParent(targetRoomTransform, true);
+            _roomData = targetRoomData;
+            _points = targetRoomPoints;
 
-            _roomData = targetRoomTransform.GetComponent<RoomData>();
-            _points = targetRoomTransform.Find("FurniturePoints").Find("FloorFurniturePoints");
-
-            transform.position = GridToWorld(_currentGridPosition);
-
+            transform.position = targetWorldPosition;
+            _currentGridPosition = new(2, 1);
+            UpdateSortingOrder(_currentGridPosition.y);
+            _performingAnimation = false;
+            UseDefaultHands(false);
             SelectStatus();
         }
 

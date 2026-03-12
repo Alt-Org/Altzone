@@ -50,10 +50,13 @@ MonoBehaviour:
   _minIdleTimer: 2
   _maxIdleTimer: 4
   _speed: 5
+  _roomChangeCooldown: 20
+  _roomChangeChance: 50
   _sortingGroup: {fileID: 3103256626528081065}
   _animator: {fileID: 6872828645095198244}
   _idleAnimation: {fileID: 7400000, guid: 60e3c4d29cf149449b020e522f539c6f, type: 2}
   _walkAnimation: {fileID: 7400000, guid: 0b098eedd1a6a354fb9fc91052057eaf, type: 2}
+  _climbAnimation: {fileID: 7400000, guid: 3ef41ad1bbe9fd246b4efbf04dc4b4b8, type: 2}
   _interactAnimation:
   - {fileID: 7400000, guid: 686f78fdd9f5a2b42992395db0211009, type: 2}
   - {fileID: 7400000, guid: 5eac619e538ab87439895b876b2a71c7, type: 2}
@@ -334,7 +337,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -8416989864420104815, guid: b1d92abe9a48de04ba798a302ef95726,
+      objectReference: {fileID: 8357579461968792581, guid: b1d92abe9a48de04ba798a302ef95726,
         type: 3}
     - target: {fileID: 6544616579171577555, guid: b57fcea57c45d7b468b30d6c3c446f52,
         type: 3}
@@ -345,7 +348,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 8357579461968792581, guid: b1d92abe9a48de04ba798a302ef95726,
+      objectReference: {fileID: -8416989864420104815, guid: b1d92abe9a48de04ba798a302ef95726,
         type: 3}
     - target: {fileID: 7790441467289580547, guid: b57fcea57c45d7b468b30d6c3c446f52,
         type: 3}
