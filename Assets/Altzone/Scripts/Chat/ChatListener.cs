@@ -3,30 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Altzone.Scripts;
-using Altzone.Scripts.Common;
-using Altzone.Scripts.Config;
-using Altzone.Scripts.Model.Poco.Clan;
-using Altzone.Scripts.Model.Poco.Player;
 using NativeWebSocket;
 using Newtonsoft.Json;
 
-//using ExitGames.Client.Photon;
 using Newtonsoft.Json.Linq;
-//using Photon.Pun;
 using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
 namespace Altzone.Scripts.Chat
 {
     public enum ChatChannelType
     {
-        Global,
-        Clan,
-        Country,
-        None
+        Global = 0,
+        Clan = 1,
+        Country = 2,
+        None = -1
     }
 
     public enum Mood
@@ -41,10 +31,10 @@ namespace Altzone.Scripts.Chat
         None
     }
     /// <summary>
-    /// ChatListener is the main class handling interaction bewtween Photon chat service, our own server for chat history and the game.
+    /// ChatListener is the main class handling interaction between server WebSocket, our own server for chat history and the game.
     /// </summary>
     /// <remarks>
-    /// AltZone's chat feature is built using Photon Chat. Photon Chat handles subscribing to chat rooms, sending and receiving messages over internet. Chat history is saved and retrieved
+    /// AltZone's chat feature is built using WebSocket, handling subscribing to chat rooms, sending and receiving messages over internet. Chat history is saved and retrieved
     /// from AltZone's own server.
     /// </remarks>
     public class ChatListener : MonoBehaviour
@@ -95,8 +85,8 @@ namespace Altzone.Scripts.Chat
             {
                 return _activeChatChannel switch
                 {
-                    ChatChannelType.Global => _globalChatChannel.ChatMessages,
-                    ChatChannelType.Clan => _clanChatChannel.ChatMessages,
+                    ChatChannelType.Global => _globalChatChannel?.ChatMessages,
+                    ChatChannelType.Clan => _clanChatChannel?.ChatMessages,
                     _ => null,
                 };
             }
@@ -145,6 +135,7 @@ namespace Altzone.Scripts.Chat
 
         private void Start()
         {
+            ActiveChatChannel = SettingsCarrier.Instance.FetchChatChannel();
             ServerManager.OnLogInStatusChanged += HandleAccountChange;
             HandleAccountChange(ServerManager.Instance.isLoggedIn);
         }

@@ -131,7 +131,10 @@ public class Chat : AltMonoBehaviour
         messagesByChat[_globalChatContent] = new List<MessageObjectHandler>();
         messagesByChat[_clanChatContent] = new List<MessageObjectHandler>();
 
-        ClanChatActive();
+        if (ChatListener.Instance.ActiveChatChannel is ChatChannelType.Clan) ClanChatActive();
+        else if (ChatListener.Instance.ActiveChatChannel is ChatChannelType.Global) GlobalChatActive();
+        else if (ChatListener.Instance.ActiveChatChannel is ChatChannelType.Country) LanguageChatActive();
+        else GlobalChatActive();
         _tablineScript.ActivateTabButton(1);
         AddResponses();
 
