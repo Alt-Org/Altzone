@@ -9,11 +9,19 @@ public class ReactionObjectUpdater : MonoBehaviour
     [SerializeField] private MessageReactionsHandler _messageList;
     [SerializeField] private RectTransform _commonReaction;
     [SerializeField] private RectTransform _AllReactions;
+    [SerializeField] private RectTransform _AllReactionsContent;
 
     private void Awake()
     {
         //Fetches the script what we need not certain if this is the best way to do it 100% but it works
         _messageList = GetComponentInParent<MessageReactionsHandler>();
+    }
+
+    //Goes on effect when user goes off from
+    private void OnDisable()
+    {
+        _commonReaction.gameObject.SetActive(true);
+        _AllReactions.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -38,9 +46,9 @@ public class ReactionObjectUpdater : MonoBehaviour
         ///     /\             
         ///    /  \  Same as the above but for all the reactions instead
         ///     ||
-        if (_AllReactions.gameObject.activeSelf)
+        if (_AllReactionsContent.gameObject.activeSelf)
 
-            foreach (Transform child in _AllReactions)
+            foreach (Transform child in _AllReactionsContent)
             {
                 Mood mood = child.GetComponent<ReactionObjectHandler>().Mood;
                     foreach (var r in _messageList._reactionList)
