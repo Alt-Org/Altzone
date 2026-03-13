@@ -143,7 +143,7 @@ namespace Altzone.Scripts.Chat
         private void OnDestroy()
         {
             ServerManager.OnLogInStatusChanged -= HandleAccountChange;
-            CloseSocket();
+            CloseSocket(true);
         }
 
         private IEnumerator InitializeChats()
@@ -207,12 +207,12 @@ namespace Altzone.Scripts.Chat
             await _socket.Connect();
         }
 
-        private async void CloseSocket()
+        private async void CloseSocket(bool onDestroy = false)
         {
             _id = null;
             if (_socket != null)
                 await _socket.Close();
-            if(_socketPolling != null)StopCoroutine(_socketPolling);
+            if(_socketPolling != null && !onDestroy) StopCoroutine(_socketPolling);
             _socket = null;
         }
 
