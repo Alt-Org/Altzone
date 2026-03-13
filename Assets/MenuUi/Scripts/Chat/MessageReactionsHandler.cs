@@ -54,7 +54,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
         //ReactionObjectHandler.OnReactionPressed += AddReaction;
 
         GenarateReactionObjects();
-        CreateReactionInteractions();
+        UpdateReactionStatus();
         PickCommonReactions();
     }
 
@@ -88,14 +88,17 @@ public class MessageReactionsHandler : AltMonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Adds interaction to all the reactions
-    /// </summary>
-    private void CreateReactionInteractions()
+    private void UpdateReactionStatus()
     {
-        foreach (ReactionObjectHandler handler in _reactions)
+        foreach (Transform child in _reactionsContent)
         {
-            //handler.SetInfo();
+            if (child.GetComponent<ReactionObjectHandler>() == null) continue;
+            Mood mood = child.GetComponent<ReactionObjectHandler>().Mood;
+            foreach (var r in _reactionList)
+            {
+                if (mood == r.Mood)
+                    child.gameObject.SetActive(!r.Selected);
+            }
         }
     }
 
@@ -219,6 +222,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
             chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler));
             chatReactionHandler.LongClickButton.onLongClick.AddListener(() => ShowUsers(chatReactionHandler));
+            UpdateReactionStatus();
             PickCommonReactions();
             LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
 
@@ -308,6 +312,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
         _reactionHandlers.Remove(reaction);
 
         Destroy(reaction.gameObject);
+        UpdateReactionStatus();
         PickCommonReactions();
         _selectedMessage.SizeCall();
 
