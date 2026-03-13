@@ -384,6 +384,8 @@ public class ClanMainView : MonoBehaviour
         if (_tabLine?.Swipe != null)
         {
             _tabLine.Swipe.hardBlocked = true;
+            _tabLine.Swipe.IsEnabled = false;
+            _tabLine.Swipe.ToggleScrollRect(false);
         }
 
         ApplyButtonsVisibility();
@@ -392,11 +394,12 @@ public class ClanMainView : MonoBehaviour
     public void ExitSettingsToProfile()
     {
         if (_tabLine?.Swipe != null)
+        {
             _tabLine.Swipe.hardBlocked = false;
+            _tabLine.Swipe.IsEnabled = true;
+        }
 
-        //Unlocks tab line swiping when exiting settings page
         SetTabLineSwipeLock(false);
-
         ShowProfilePage();
 
         StopAllCoroutines();
