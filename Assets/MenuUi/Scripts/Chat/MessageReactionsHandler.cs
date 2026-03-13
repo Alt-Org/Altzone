@@ -132,11 +132,11 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
             _commonReactions.Add(randomReaction);
         }
-
+        int index=0;
         foreach (int reactionIndex in _commonReactions)
         {
             ReactionObjectHandler commonReaction = Instantiate(availableReactions[reactionIndex].gameObject, _commonReactionsPanel.transform).GetComponent<ReactionObjectHandler>();
-            commonReaction.transform.SetAsFirstSibling();
+            commonReaction.transform.SetSiblingIndex(index);
 
             Mood mood = availableReactions[reactionIndex].GetComponent<ReactionObjectHandler>().Mood;
 
@@ -150,6 +150,8 @@ public class MessageReactionsHandler : AltMonoBehaviour
             }
 
             button.onClick.AddListener(() => AddReaction(commonReaction));*/
+
+            index++;
         }
     }
     /// <summary>
