@@ -115,10 +115,8 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     /// </summary>
     public void DailyTaskInfo()
     {
-        Debug.LogWarning("DAILYTASKINFO");
-        if (!_clickEnabled || _taskData.PlayerId != "")
-            return;
-        Debug.LogWarning("DAILYTASKINFO EEES");
+        if (!_clickEnabled || _taskData.PlayerId != "") return;
+
         Vector3 popupLocation = GetScreenCenter(); //GetCornerLocation();
         PopupData data = new(_taskData, popupLocation, this);
         StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse(_taskData.Title, data));

@@ -819,7 +819,6 @@ public class DailyTaskManager : AltMonoBehaviour
     /// <param name="Message">Message to be shown in <c>Popup</c> window.</param>
     public IEnumerator ShowPopupAndHandleResponse(string Message, PopupData? data)
     {
-        Debug.LogWarning("HANDLE RESPONSE");
         Popup.PopupWindowType windowType;
         Popup.ResultType result = Popup.ResultType.Null;
 
@@ -831,7 +830,7 @@ public class DailyTaskManager : AltMonoBehaviour
             case PopupData.PopupDataType.MultipleChoice: windowType = Popup.PopupWindowType.MultipleChoice; break;
             default: windowType = Popup.PopupWindowType.Accept; break;
         }
-        Debug.LogWarning("DataValueType: " + data.Value.Type);
+        
         StartCoroutine(Popup.RequestPopup(Message, data.Value, OwnTaskId, windowType, data => result = data));
 
         yield return new WaitUntil(() => result != Popup.ResultType.Null);
@@ -840,7 +839,6 @@ public class DailyTaskManager : AltMonoBehaviour
         {
             bool? done = null;
 
-            Debug.Log("Confirmed!");
             switch (data.Value.Type)
             {
                 case PopupData.PopupDataType.OwnTask:
