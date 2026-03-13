@@ -21,14 +21,14 @@ public class ColorPicker : MonoBehaviour
     [SerializeField] private Image _colorPickerColorButtonColorImage;
     [SerializeField] private ColorGetter _colorCircle;
     [SerializeField] private GameObject _bottomMenu;
-    [SerializeField] private GameObject _Buttons;
+    [SerializeField] private GameObject _buttons;
 
     private Color _color = Color.red;
     private Color _previousColor = Color.red;
 
     private void Start()
     {
-        _colorApplyButton.onClick.AddListener(() => SaveColor());
+        _colorApplyButton.onClick.AddListener(() => ApplyColor());
         //_clickArea.SetActive(false);
         _popupConfirmButton.onClick.AddListener(() => ConfirmChanges());
         _popupCancelButton.onClick.AddListener(() => CancelChanges());
@@ -63,7 +63,7 @@ public class ColorPicker : MonoBehaviour
         _clickAreaButton.gameObject.SetActive(false);
         _colorPickerPopup.SetActive(false);
         _bottomMenu.SetActive(true);
-        _Buttons.SetActive(true);
+        _buttons.SetActive(true);
     }
 
     private void OpenPopup()
@@ -71,13 +71,15 @@ public class ColorPicker : MonoBehaviour
         _clickAreaButton.gameObject.SetActive(true);
         _colorPickerPopup.SetActive(true);
         _bottomMenu.SetActive(false);
-        _Buttons.SetActive(false);
+        _buttons.SetActive(false);
 
         AvatarPiece? activeSlot = _featureLoader.CurrentCategory;
 
         if (activeSlot.HasValue)
         {
             ColorUtility.TryParseHtmlString(_controller.PlayerAvatar.GetPartColor(activeSlot.Value), out _previousColor);
+            _previewColor.color = _previousColor;
+            _colorCircle.SetColor(_previousColor);
         }
     }
 
@@ -102,6 +104,18 @@ public class ColorPicker : MonoBehaviour
             _characterHandle.SetPartColor(activeSlot.Value, _color);
             _controller.PlayerAvatar.SetPartColor(activeSlot.Value, ColorUtility.ToHtmlStringRGBA(_color));
             _colorPickerColorButtonColorImage.color = _color;
+        }
+    }
+
+    private void ApplyColor()
+    {
+        Color applyColor = _colorPickerColorButtonColorImage.color;
+        AvatarPiece? activeSlot = _featureLoader.CurrentCategory;
+
+        if (activeSlot.HasValue)
+        {
+            _characterHandle.SetPartColor(activeSlot.Value, applyColor);
+            _controller.PlayerAvatar.SetPartColor(activeSlot.Value, ColorUtility.ToHtmlStringRGBA(applyColor));
         }
     }
 
