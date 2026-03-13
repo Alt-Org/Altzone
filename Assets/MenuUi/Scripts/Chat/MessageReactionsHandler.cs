@@ -31,7 +31,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button _openMoreButton;
 
-    private List<GameObject> _reactions = new();
+    private List<ReactionObjectHandler> _reactions = new();
     private List<ChatReactionHandler> _reactionHandlers = new();
     private List<int> _commonReactions = new();
     private bool _longClick = false;
@@ -82,8 +82,8 @@ public class MessageReactionsHandler : AltMonoBehaviour
                 {
                     handler = reactionObject.AddComponent<ReactionObjectHandler>();
                 }
-                handler.SetInfo(reaction.Mood, reaction.Sprite, _selectedMessage.Id);
-                _reactions.Add(reactionObject);
+                handler.SetInfo(reaction, _selectedMessage.Id);
+                _reactions.Add(handler);
             }
         }
     }
@@ -93,14 +93,8 @@ public class MessageReactionsHandler : AltMonoBehaviour
     /// </summary>
     private void CreateReactionInteractions()
     {
-        foreach (GameObject reaction in _reactions)
+        foreach (ReactionObjectHandler handler in _reactions)
         {
-            // Adds a button to the reaction if it doesn't already have one
-            if (!reaction.TryGetComponent(out ReactionObjectHandler handler))
-            {
-                handler = reaction.AddComponent<ReactionObjectHandler>();
-            }
-
             //handler.SetInfo();
         }
     }
@@ -111,34 +105,41 @@ public class MessageReactionsHandler : AltMonoBehaviour
     /// </summary>
     private void PickCommonReactions()
     {
+        foreach (Transform reaction in _commonReactionsPanel.transform)
+        {
+            if(reaction.GetComponent<ReactionObjectHandler>()) Destroy(reaction.gameObject);
+        }
+
+        List<ReactionObjectHandler> availableReactions = new();
+
+        foreach (ReactionObjectHandler handler in _reactions) { if(!handler.Selected) availableReactions.Add(handler); }
+
+        _commonReactions.Clear();
         int randomReaction;
 
         for (int i = 0; i < 3; i++)
         {
-            do
+            /*do
             {
-                randomReaction = UnityEngine.Random.Range(0, _reactions.Count);
+                randomReaction = UnityEngine.Random.Range(0, availableReactions.Count);
             }
-            while (_commonReactions.Contains(randomReaction));
+            while (_commonReactions.Contains(randomReaction));*/
+            if (availableReactions.Count <= i) break;
+            randomReaction = i;
 
             _commonReactions.Add(randomReaction);
         }
 
         foreach (int reactionIndex in _commonReactions)
         {
-            GameObject commonReaction = Instantiate(_reactions[reactionIndex], _commonReactionsPanel.transform);
+            ReactionObjectHandler commonReaction = Instantiate(availableReactions[reactionIndex].gameObject, _commonReactionsPanel.transform).GetComponent<ReactionObjectHandler>();
             commonReaction.transform.SetAsFirstSibling();
 
-            Mood mood = _reactions[reactionIndex].GetComponent<ReactionObjectHandler>().Mood;
-
-            if (!commonReaction.TryGetComponent(out ReactionObjectHandler handler))
-            {
-                handler = commonReaction.AddComponent<ReactionObjectHandler>();
-            }
+            Mood mood = availableReactions[reactionIndex].GetComponent<ReactionObjectHandler>().Mood;
 
             ReactionObject reactionData = _reactionList.FirstOrDefault(x => x.Mood == mood);
             if (reactionData != null)
-                handler.SetInfo(reactionData.Mood, reactionData.Sprite, _selectedMessage.Id);
+                commonReaction.SetInfo(reactionData, _selectedMessage.Id);
 
             /*if (!commonReaction.TryGetComponent(out Button button))
             {
@@ -218,6 +219,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
             chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler));
             chatReactionHandler.LongClickButton.onLongClick.AddListener(() => ShowUsers(chatReactionHandler));
+            PickCommonReactions();
             LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
 
             StartCoroutine(GetPlayerData(player =>
@@ -306,7 +308,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
         _reactionHandlers.Remove(reaction);
 
         Destroy(reaction.gameObject);
-
+        PickCommonReactions();
         _selectedMessage.SizeCall();
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
@@ -317,8 +319,18 @@ public class MessageReactionsHandler : AltMonoBehaviour
     [Serializable]
     public class ReactionObject
     {
+        public delegate void SelectedStatusChanged(Mood mood, bool selected);
+        public event SelectedStatusChanged OnSelectedStatusChanged;
+
         public Sprite Sprite;
         public Mood Mood;
-        public bool Selected;
+        private bool _selected;
+        public bool Selected { get => _selected;
+            set
+            {
+                _selected = value;
+                OnSelectedStatusChanged?.Invoke(Mood, value);
+            }
+        }
     }
 }

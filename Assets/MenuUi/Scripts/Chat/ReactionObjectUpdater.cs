@@ -14,7 +14,7 @@ public class ReactionObjectUpdater : MonoBehaviour
     private void Awake()
     {
         //Fetches the script what we need not certain if this is the best way to do it 100% but it works
-        _messageList = GetComponentInParent<MessageReactionsHandler>();
+        if(!_messageList) _messageList = GetComponentInParent<MessageReactionsHandler>();
     }
 
     //Goes on effect when user goes off from
@@ -32,6 +32,7 @@ public class ReactionObjectUpdater : MonoBehaviour
             //Fetch the objects childs and gets their needed data
         foreach (Transform child in _commonReaction)
         {
+                if (!child.GetComponent<ReactionObjectHandler>()) continue;
                 Mood mood = child.GetComponent<ReactionObjectHandler>().Mood;
                 //goes over the list
             foreach (var r in _messageList._reactionList)
