@@ -1,0 +1,108 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &5440422723013778891
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4088881670957370472, guid: 47c20ddc67b85564f8eaa61612f76ff3,
+        type: 3}
+      propertyPath: _localPlayerIndicator
+      value: 
+      objectReference: {fileID: 6916908515179024576}
+    - target: {fileID: 4088881670957370472, guid: 47c20ddc67b85564f8eaa61612f76ff3,
+        type: 3}
+      propertyPath: _spriteSheet.Array.Array.size
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 4088881670957370472, guid: 47c20ddc67b85564f8eaa61612f76ff3,
+        type: 3}
+      propertyPath: _characterGameObjects.Array.data[0]
+      value: 
+      objectReference: {fileID: 4099984617757698540}
+    - target: {fileID: 4088881670957370472, guid: 47c20ddc67b85564f8eaa61612f76ff3,
+        type: 3}
+      propertyPath: _characterGameObjects.Array.data[1]
+      value: 
+      objectReference: {fileID: 1737148391693875751}
+    - target: {fileID: 5163319496203164251, guid: 47c20ddc67b85564f8eaa61612f76ff3,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5163319496203164251, guid: 47c20ddc67b85564f8eaa61612f76ff3,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5163319496203164251, guid: 47c20ddc67b85564f8eaa61612f76ff3,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5163319496203164251, guid: 47c20ddc67b85564f8eaa61612f76ff3,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5163319496203164251, guid: 47c20ddc67b85564f8eaa61612f76ff3,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5163319496203164251, guid: 47c20ddc67b85564f8eaa61612f76ff3,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5163319496203164251, guid: 47c20ddc67b85564f8eaa61612f76ff3,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5163319496203164251, guid: 47c20ddc67b85564f8eaa61612f76ff3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5163319496203164251, guid: 47c20ddc67b85564f8eaa61612f76ff3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5163319496203164251, guid: 47c20ddc67b85564f8eaa61612f76ff3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8277215311884762807, guid: 47c20ddc67b85564f8eaa61612f76ff3,
+        type: 3}
+      propertyPath: m_Name
+      value: BattlePlayer101Character
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 47c20ddc67b85564f8eaa61612f76ff3, type: 3}
+--- !u!1 &1737148391693875751 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6024643012728907756, guid: 47c20ddc67b85564f8eaa61612f76ff3,
+    type: 3}
+  m_PrefabInstance: {fileID: 5440422723013778891}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4099984617757698540 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8315423844079793191, guid: 47c20ddc67b85564f8eaa61612f76ff3,
+    type: 3}
+  m_PrefabInstance: {fileID: 5440422723013778891}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6916908515179024576 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1476485794853932299, guid: 47c20ddc67b85564f8eaa61612f76ff3,
+    type: 3}
+  m_PrefabInstance: {fileID: 5440422723013778891}
+  m_PrefabAsset: {fileID: 0}

@@ -4,21 +4,21 @@
 /// </summary>
 ///
 /// This prefab is a variant of @ref "BattlePlayer000Character(BaseAndTestCharacter).prefab" and has a similar structure as the base prefab.  
-/// This prefab has **MovingShield** and @cref{Quantum,BattlePlayerClassProjectorDataQComponent}, which are not part of @ref "BattlePlayer000Character(BaseAndTestCharacter).prefab".
+/// This prefab has **MovingShield** and @cref{Quantum,BattlePlayerClass400DataQComponent}, which are not part of @ref "BattlePlayer000Character(BaseAndTestCharacter).prefab".
 ///
 /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}  
-/// @bigtext{See [{Player Character Class 400 - Projector}](#page-concepts-player-class-400-projector) for more info.}
+/// @bigtext{See [{Player Character Class 400 - Projector}](#page-concepts-player-class-400) for more info.}
 ///
 /// ### Structure Overrides
 /// - **BattlePlayer400Character(BaseAndTestCharacter)**
 ///     - *Components:*
 ///         - %Quantum Entity Prototype
-///             - + @cref{Quantum,BattlePlayerClassProjectorDataQComponent}
+///             - + @cref{Quantum,BattlePlayerClass400DataQComponent}
 ///     - *Children:*
 ///         - **PlayerViewModel**
 ///             - *Components:*
-///                 - @cref{Battle.View.Player,BattlePlayerViewController}
-///                     - + @cref{Battle.View.Player,BattlePlayerClassProjectorViewController}
+///                 - @cref{Battle.View.Player,BattlePlayerCharacterViewController}
+///                     - + @cref{Battle.View.Player,BattlePlayerCharacterClass400ViewController}
 ///             - *Children:*
 ///                 - + **MovingShield**
 ///

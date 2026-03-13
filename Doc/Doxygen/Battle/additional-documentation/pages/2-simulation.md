@@ -159,7 +159,8 @@ In **%Battle** all [Quantum Events🡵] are located in BattleEvents.qtn file.
 | @crefd{Quantum}   | @cref{Quantum,EventBattleViewGameStart}                     | @copybrief Quantum.EventBattleViewGameStart                     |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleViewGameOver}                      | @copybrief Quantum.EventBattleViewGameOver                      |
 |                                                                                                                                                 |||
-| @crefd{Quantum}   | @cref{Quantum,EventBattlePlayerViewInit}                    | @copybrief Quantum.EventBattlePlayerViewInit                    |
+| @crefd{Quantum}   | @cref{Quantum,EventBattlePlayerCharacterViewInit}           | @copybrief Quantum.EventBattlePlayerCharacterViewInit           |
+| @crefd{Quantum}   | @cref{Quantum,EventBattlePlayerShieldViewInit}              | @copybrief Quantum.EventBattlePlayerShieldViewInit              |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleSoulWallViewInit}                  | @copybrief Quantum.EventBattleSoulWallViewInit                  |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleStoneCharacterPieceViewInit}       | @copybrief Quantum.EventBattleStoneCharacterPieceViewInit       |
 |                                                                                                                                                 |||

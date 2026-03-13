@@ -5,10 +5,12 @@
 **%Quantum** handles recognizing **Players** through a [PlayerRef🡵](https://doc-api.photonengine.com/en/quantum/current/struct_quantum_1_1_player_ref.html),
 but we prefer to use **PlayerSlot** as defined by us whenever possible.  
 Each **Player** has an assigned **PlayerSlot** and a **TeamNumber**.  
+Each Each **Player** has a **PlayState**.  
 Each **Player** has **data** with them that **isn't connected to any specific character** under the **Player**'s control.  
 Each **Player** controls multiple **Character Entities** which also have some data associated with them.  
 Each **Character Entity** has a player character class that it belongs to.  
 See [{Player Slots and Teams}](#page-concepts-player-slots-teams)  
+See [{Player PlayState}](#page-concepts-player-playstate)  
 See [{Player Manager Data}](#page-concepts-player-manager-data)  
 See [{Player Character Entity}](#page-concepts-player-character-entity)  
 See [{Player Character Classes}](#page-concepts-player-characters-classes)
@@ -85,12 +87,19 @@ graph PlayerSlotsAndTeams {
 
 <br/>
 
+## Player PlayState {#page-concepts-player-playstate}
+
+Each **Player** has a @cref{Quantum,BattlePlayerPlayState} used to track their state in the game, which is detached from [{Player Character Entities}](#page-concepts-player-character-entity) that the **Player** controls.  
+The **PlayStates** are linked to [{Player Slots}](#page-concepts-player-slots-teams) including slots that have no player.
+
+<br/>
+
 ## Player Manager Data {#page-concepts-player-manager-data}
 
 **Player data** not connected to individual [{Player Character Entities}](#page-concepts-player-character-entity) is handled
-by [{PlayerManager}](#page-concepts-player-simulation-playermanager).  
-The [{PlayerManagerData}](#page-concepts-player-simulation-playermanagerdata) **%Quantum Singleton Component** is used to store **Player Data**.
-The [{PlayerHandle}](#page-concepts-player-simulation-playerhandle) struct allows the code to access **Player Manager Data** of specific individual **Players**.  
+by [{PlayerManager}](#page-concepts-player-simulation-management-playermanager).  
+The [{PlayerManagerData}](#page-concepts-player-simulation-management-playermanagerdata) **%Quantum Singleton Component** is used to store **Player Data**.  
+The [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) struct allows the code to access **Player Manager Data** of specific individual **Players**.  
 **Player Manager Data** is defined and used in [{Simulation}](#page-concepts-player-simulation).
 
 <br/>
@@ -99,9 +108,9 @@ The [{PlayerHandle}](#page-concepts-player-simulation-playerhandle) struct allow
 
 **%Quantum** handles **Players** connecting to the game. The data from **%Quantum** is used to initialize everything related to **Players** in the game.
 @cref{Battle.QSimulation.Game,BattleGameControlQSystem} receives **Player** information from **%Quantum** when a **Player** joins and passes it
-to [{PlayerManager}](#page-concepts-player-simulation-playermanager), which processes the **Player**'s data and registers them as having joined.
+to [{PlayerManager}](#page-concepts-player-simulation-management-playermanager), which processes the **Player**'s data and registers them as having joined.
 
-Once all **Players** have joined, @cref{Battle.QSimulation.Game,BattleGameControlQSystem} tells [{PlayerManager}](#page-concepts-player-simulation-playermanager)
+Once all **Players** have joined, @cref{Battle.QSimulation.Game,BattleGameControlQSystem} tells [{PlayerManager}](#page-concepts-player-simulation-management-playermanager)
 to create [{Player Character Entities}](#page-concepts-player-character-entity) for all **Players**.
 
 ```dot
@@ -159,7 +168,7 @@ digraph PlayerJoining {
 ## Player Input {#page-concepts-player-input}
 
 **Players** can interact with the game through moving and rotating their [{Player Character Entity}](#page-concepts-player-character-entity),
-as well as switching between their available [{Player Character Entities}](#page-concepts-player-character-entity)
+as well as switching between their available [{Player Character Entities}](#page-concepts-player-character-entity).  
 **Player Inputs** are processed and compiled into a @ref Quantum.Input "Quantum Input Struct" on the **Unity/View** side in [{PlayerInput}](#page-concepts-player-view-input).
 The created **struct** is passed over to **%Quantum Simulation**.  
 **%Quantum** synchronises the **struct** for all connected **clients**, and classes on the [{Quantum Simulation}](#page-concepts-player-simulation) side use the contained data.
@@ -211,50 +220,74 @@ digraph PlayerInputGraph {
 ## Player Character Entity {#page-concepts-player-character-entity}
 
 Each **Player** controls **3** **Character %Quantum Entities** in the game.  
-For each **Player** one **Character** is present on the stage at a time and [{PlayerManager}](#page-concepts-player-simulation-playermanager) handles spawning and
-despawning **Character Entities** when switching between them.
-Each **Character Entity** has a [{Player Character Class}](#page-concepts-player-characters-classes) that it belongs to.
+For each **Player** one **Character** is present in the arena at a time
+and [{PlayerManager}](#page-concepts-player-simulation-management-playermanager) handles spawning and despawning **Character Entities** when switching between them.  
+Each **Character** has one or more **Shields**. One of the **Shields** may or may not be attached to the **Character**. One or more **Shields** can also be present in the arena independently of the **Character**.  
+The [{ShieldManager}](#page-concepts-player-simulation-management-shieldmanager) handles retrieving(Get) and despawning **Shield Entities**.  
+Retrieving only returns an entity reference to the **Shield Entity**. Attaching or placing the shield in the arena is not handled by the [{ShieldManager}](#page-concepts-player-simulation-management-shieldmanager).  
+Each **Character and Shield Entity** has a [{Player Character Class}](#page-concepts-player-characters-classes) that it belongs to.
 
 ```dot
 digraph PlayerCharacterEntities {
   color=white;
   fontcolor=white;
   bgcolor=black;
+  compound=true;
 
   node [shape=box, style=filled, color=white, fontcolor=white, fillcolor=black];
   edge [color=gray];
 
   Player              [label="Player", shape=ellipse];
-  CharacterEntities   [label="Character entities", color="transparent"];
-  CharacterEntityList [label="<0> Character entity 1\n(In play) | <1> Character entity 2\n(Out of play) | <2> Character entity 3\n(Out of play)", shape=record];
+  Character1          [label="Character1", shape=ellipse];
+  Character2          [label="Character2", shape=ellipse];
+  Character3          [label="Character3", shape=ellipse];
+  CharacterEntity1    [label="Character entity"];
+  CharacterEntity2    [label="Character entity"];
+  CharacterEntity3    [label="Character entity"];
 
-  node [color="transparent"];
+  subgraph cluster_shield_group_1{
+    G1_Shield1 [label="Shield 1", style=solid];
+    G1_Shield2 [label="Shield 2\n(optional)", style=dashed];
+    G1_Shield3 [label="...", style=dashed];
+  }
 
-  CharacterData1      [label="Data\nRelated to a specific character"];
-  CharacterData2      [label="Data\nRelated to a specific character"];
-  CharacterData3      [label="Data\nRelated to a specific character"];
+  subgraph cluster_shield_group_2{
+    G2_Shield1 [label="Shield 1", style=solid];
+    G2_Shield2 [label="Shield 2\n(optional)", style=dashed];
+    G2_Shield3 [label="...", style=dashed];
+  }
 
-  Player -> CharacterEntities [dir=none];
-  CharacterEntities -> CharacterEntityList;
-  CharacterEntityList:0 -> CharacterData1;
-  CharacterEntityList:1 -> CharacterData2;
-  CharacterEntityList:2 -> CharacterData3;
+  subgraph cluster_shield_group_3{
+    G3_Shield1 [label="Shield 1", style=solid];
+    G3_Shield2 [label="Shield 2\n(optional)", style=dashed];
+    G3_Shield3 [label="...", style=dashed];
+  }
+
+  Player -> Character1, Character2, Character3;
+  Character1 -> CharacterEntity1;
+  Character2 -> CharacterEntity2;
+  Character3 -> CharacterEntity3;
+  Character1 -> G1_Shield2 [lhead=cluster_shield_group_1];
+  Character2 -> G2_Shield2 [lhead=cluster_shield_group_2];
+  Character3 -> G3_Shield2 [lhead=cluster_shield_group_3];
 }
 ```
 
-These **Entities** are created based on **Unity Prefabs**. **Entities** are controlled by **%Quantum Simulation**.  
+These **Entities** are created based on **Unity Prefabs**. **Entities** are controlled by **%Quantum Simulation**.
 The **Unity Prefab root GameObject** contains a **%Quantum Entity Prototype** component, where the **Entity** is defined.
 
-During gameplay the **Player Character** exists both as a **%Quantum Entity** inside [{Quantum Simulation}](#page-concepts-player-simulation) and a **Unity GameObject** inside **Unity View**,
+During gameplay the **Player Character** and it's **Shield(s)** exists both as a **%Quantum Entity** inside [{Quantum Simulation}](#page-concepts-player-simulation) and a **Unity GameObject** inside **Unity View**,
 which **%Quantum** links together.
 
-The **Entity** contains **%Quantum Components** used by the **%Quantum Simulation**. The most significant of these is the [{PlayerData}](#page-concepts-player-simulation-playerdata),
-which is our own defined data relating to **Player Character Entities** and optionally **Class Data Component**.
+The **Entity** contains **%Quantum Components** used by the **%Quantum Simulation**. The most significant of these are the [{PlayerData}](#page-concepts-player-simulation-gamelogic-playerdata),
+which is our own defined data relating to **Player Character and Shield Entities** and optionally **Class Data Component**.
 
 See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
 
-The **Unity root GameObject** has the child object **PlayerViewModel**, containing all things related to the visible elements of **Player Characters**.
-The attached [{PlayerViewController}](#page-concepts-player-view-controller) component implements **Unity View / Visual** logic for **Player Characters**.
+The **Unity root GameObject** has the child object **PlayerViewModel** ,or **ShieldViewModel** for **Shields**, containing all things related to the visible elements of **Player Characters and Shields**.  
+The attached [{PlayerCharacterViewController}](#page-concepts-player-character-view-controller) or [{PlayerShieldViewController}](#page-concepts-player-shield-view-controller) component implements **Unity View / Visual** logic for **Player Characters and Shields**.
+
+### Player Character Entity/GameObject Graph
 
 ```dot
 digraph PlayerCharacterEntity {
@@ -262,43 +295,102 @@ digraph PlayerCharacterEntity {
   fontcolor=white;
   bgcolor=black;
 
-
   edge [color=gray];
 
-  subgraph cluster_quantum {
+  subgraph cluster_quantum_character{
     color="#F159E4";
     fontcolor="#F159E4";
-    label = "Quantum Simulation";
+    label = "Character Quantum Simulation";
 
     node [shape=box, style=filled, color="#F159E4", fontcolor="#F159E4", fillcolor=black];
 
-    Entity          [label="Quantum Entity"];
-    Transform2D     [label="Transform2D\n(Quantum component)"];
-    PlayerData      [label="PlayerDataQComponent\n(Quantum component)"];
-    PlayerClassData [label="PlayerClassDataQComponent\n(Quantum component)\n(Optional)", style=dashed];
-    View            [label="Quantum view\n(Quantum component)"];
+    CharacterEntity          [label="Quantum Character Entity"];
 
-    Entity -> Transform2D, PlayerData, PlayerClassData, View;
+    PlayerTransform2D     [label="Transform2D\n(Quantum component)"];
+    PlayerData            [label="PlayerDataQComponent\n(Quantum component)"];
+    PlayerClassData       [label="PlayerClassDataQComponent\n(Quantum component)\n(Optional)", style=dashed];
+    PlayerView            [label="Quantum view\n(Quantum component)"];
+
+    CharacterEntity -> PlayerTransform2D, PlayerData, PlayerClassData, PlayerView
   }
 
-  subgraph cluster_unity {
+  subgraph cluster_unity_character{
     color="#41C7F1";
     fontcolor="#41C7F1";
-    label = "Unity View";
+    label = "Character Unity View";
 
     node [shape=box, style=filled, color="#41C7F1", fontcolor="#41C7F1", fillcolor=black];
 
-    RootGameObject            [label="Root\n(GameObject)"];
-    ViewModel                 [label="View model\n(GameObject)"];
-    PlayerViewController      [label="PlayerViewController\n(QuantumEntityViewComponent)\n(Unity Monobehavior)"];
-    PlayerClassViewController [label="PlayerClassViewController\n(Subclass of BattlePlayerClassBaseViewController)"];
+    CharacterRootGameObject               [label="Character Root\n(GameObject)"];
 
-    RootGameObject -> ViewModel -> PlayerViewController, PlayerClassViewController;
+    CharacterViewModel                          [label="Character View model\n(GameObject)"];
+    PlayerCharacterViewController               [label="PlayerCharacterViewController\n(QuantumEntityViewComponent)\n(Unity Monobehavior)"];
+    PlayerCharacterClassViewController          [label="PlayerCharacterClassViewController\n(Subclass of BattlePlayerCharacterClassBaseViewController)"];
+
+    CharacterRootGameObject -> CharacterViewModel;
+    CharacterViewModel -> PlayerCharacterViewController, PlayerCharacterClassViewController
   }
-
-  Entity -> RootGameObject;
+  CharacterEntity -> CharacterRootGameObject [constraint = false];
 }
 ```
+
+### Player Shield Entity/GameObject Graph
+
+```dot
+digraph PlayerShieldEntity{
+  color=white;
+  fontcolor=white;
+  bgcolor=black;
+
+  edge [color=gray];
+
+  subgraph cluster_quantum_shield{
+    color="#F159E4";
+    fontcolor="#F159E4";
+    label = "Shield Quantum Simulation";
+
+    node [shape=box, style=filled, color="#F159E4", fontcolor="#F159E4", fillcolor=black];
+
+    ShieldEntity             [label="Quantum Shield Entity"];
+
+    ShieldTransform2D     [label="Transform2D\n(Quantum component)"];
+    ShieldData            [label="PlayerShieldQComponent\n(Quantum component)"];
+    ShieldView            [label="Quantum view\n(Quantum component)"];
+
+    ShieldEntity -> ShieldTransform2D, ShieldData, ShieldView
+  }
+
+  subgraph cluster_unity_shield{
+    color="#41C7F1";
+    fontcolor="#41C7F1";
+    label = "Shield Unity View";
+
+    node [shape=box, style=filled, color="#41C7F1", fontcolor="#41C7F1", fillcolor=black];
+
+    ShieldRootGameObject                  [label="Shield Root\n(GameObject)"];
+
+    ShieldViewModel                          [label="Shield View model\n(GameObject)"];
+    PlayerShieldViewController               [label="PlayerShieldViewController\n(QuantumEntityViewComponent)\n(Unity Monobehavior)"];
+    PlayerShieldClassViewController          [label="PlayerShieldClassViewController\n(Subclass of BattlePlayerShieldClassBaseViewController)"];
+
+    ShieldRootGameObject -> ShieldViewModel;
+    ShieldViewModel -> PlayerShieldViewController, PlayerShieldClassViewController
+  }
+  ShieldEntity -> ShieldRootGameObject [constraint = false];
+}
+```
+
+<br/>
+
+### Player Character Number {#page-concepts-player-character-entity-character-number}
+
+Each **Character %Quantum Entity** is internally assigned a **character number** between 0 and 2, each corresponding to one of the **3 Characters** a **Player** controls. It is used to reference a specific **Character** for a given **Player**.
+
+<br/>
+
+### Player Character State {#page-concepts-player-character-entity-character-state}
+
+Each **Character %Quantum Entity** always has a @cref{Quantum,BattlePlayerCharacterState} indicating if the **Character** is **Alive** or **Dead**.
 
 <br/>
 
@@ -317,20 +409,20 @@ the default collision logic and/or **Unity/View** update logic, changing how dif
 
 @bigtext{**Implementation**}
 
-In **%Quantum Simulation**, every **Player Character Class** can optionally have a unique **C#** [{PlayerClass}](#page-concepts-player-simulation-playerclass).  
-**Character Classes** can also optionally have a [{PlayerClassData}](#page-concepts-player-simulation-classdata) **QComponent**
+In **%Quantum Simulation**, every **Player Character Class** can optionally have a unique **C#** [{PlayerClass}](#page-concepts-player-simulation-class-playerclass).  
+**Character Classes** can also optionally have a [{PlayerClassData}](#page-concepts-player-simulation-class-classdata) **QComponent**
 attached to the [{Player Character Entities}](#page-concepts-player-character-entity) for additional data the **Class** will use.  
-The **C#** [{PlayerClass}](#page-concepts-player-simulation-playerclass) are stateless and
-there is only one instance for each **Character Class**. These are loaded and managed by [{PlayerClassManager}](#page-concepts-player-simulation-classmanager).
+The **C#** [{PlayerClass}](#page-concepts-player-simulation-class-playerclass) are stateless and
+there is only one instance for each **Character Class**. These are loaded and managed by [{PlayerClassManager}](#page-concepts-player-simulation-class-classmanager).
 
-In **Unity View**, every **Player Character class** can optionally have a [{PlayerClassViewController}](#page-concepts-player-view-class-controller).
+In **Unity View**, every **Player Character class** can optionally have a [{PlayerClassViewController}](#page-concepts-player-view-character-class-controller).
 
 <br/>
 
 ### Player Character Class List {#page-concepts-player-characters-class-list}
 
-@subpage page-concepts-player-class-400-projector  
-@subpage page-concepts-player-class-600-confluent
+@subpage page-concepts-player-class-400  
+@subpage page-concepts-player-class-600
 
 <br/>
 
@@ -353,20 +445,41 @@ digraph PlayerSimulation {
   node [shape=box, style=filled, color="#F159E4", fontcolor="#F159E4", fillcolor=black];
   edge [color=gray];
 
-  PlayerManager            [label="PlayerManager\n\nHandles player management,\nallowing other classes to focus on gameplay logic."];
-  PlayerManagerData        [label="PlayerManagerData\n(Quantum singleton)\n\nPlayerManager related data\naccessed by other classes through PlayerHandle."];
-  PlayerHandle             [label="PlayerHandle\n\nA struct defined in PlayerManager,\nwhich allows other classes to access PlayerManagerData for each individual player."];
-  PlayerQSystem            [label="PlayerQSystem\n\nHandles primary gameplay logic for players.\nUses other classes for specific player logic."];
-  PlayerMovementController [label="PlayerMovementController\n\nHandles the logic for moving and rotating player characters."];
-  PlayerClassManager       [label="PlayerClassManager\n\nHandles the initial loading of player classes\nand routes individual game events\nto the correct class scripts."];
-  PlayerClass              [label="PlayerClass\n\n.Handles class gameplay for players\nin a character class."];
-  PlayerClassData          [label="PlayerClassData\n(Quantum component)\n\nAn individual player character's data\nwhich is specific to a player character class."];
-  PlayerBotController      [label="PlayerBotController\n\nHandles AI and other logic for bots."];
-  PlayerData               [label="PlayerData\n(Quantum component)\n\nAn individual player character's data."];
+  subgraph cluster_management{
+    color="#F159E4";
+    fontcolor="#F159E4";
+    label = "Management";
+
+    PlayerManager            [label="PlayerManager\n\nHandles character management,\nallowing other parts of the code to focus on gameplay logic."];
+    PlayerShieldManager      [label="ShieldManager\n\nHandles shield management, \nallowing other parts of the code to focus on gameplay logic."];
+    PlayerManagerData        [label="PlayerManagerData\n(Quantum singleton)\n\nPlayerManager related data\naccessed by other classes through PlayerHandle."];
+    PlayerShieldManagerData  [label="ShieldManagerData\n(Quantum singleton)\n\nShieldManager related data."];
+    PlayerClassManager       [label="PlayerClassManager\n\nHandles the initial loading of player classes\nand routes individual game events\nto the correct class scripts."];
+    PlayerHandle             [label="PlayerHandle\n\nA struct defined in PlayerManager,\nwhich allows other classes to access PlayerManagerData for each individual player."];
+  }
+  subgraph cluster_class{
+    color="#F159E4";
+    fontcolor="#F159E4";
+    label = "Class";
+
+    PlayerClass              [label="PlayerClass\n\nHandles class gameplay for players\nin a character class."];
+    PlayerClassData          [label="PlayerClassData\n(Quantum component)\n\nAn individual player character's data\nwhich is specific to a player character class."];
+  }
+  subgraph cluster_gameplay{
+    color="#F159E4";
+    fontcolor="#F159E4";
+    label = "Gameplay";
+
+    PlayerQSystem            [label="PlayerQSystem\n\nHandles primary gameplay logic for players.\nUses other classes for specific player logic."];
+    PlayerMovementController [label="PlayerMovementController\n\nHandles the logic for moving and rotating player characters."];
+    PlayerBotController      [label="PlayerBotController\n\nHandles AI and other logic for bots."];
+    PlayerData               [label="PlayerData\n(Quantum component)\n\nAn individual player character's data."];
+  }
 
   edge [dir=none];
 
-  PlayerManager -> PlayerManagerData, PlayerHandle;
+  PlayerManager -> PlayerManagerData, PlayerHandle, PlayerShieldManager [constraint = false];
+  PlayerShieldManager -> PlayerShieldManagerData;
   PlayerManagerData -> PlayerHandle;
 
   PlayerManager, PlayerQSystem -> PlayerData -> PlayerMovementController, PlayerBotController;
@@ -384,78 +497,111 @@ digraph PlayerSimulation {
 ```
 <br/>
 
-### PlayerManagerData (%Quantum Singleton) {#page-concepts-player-simulation-playermanagerdata}
+### Management {#page-concepts-player-simulation-management}
 
-The @cref{Quantum,BattlePlayerManagerDataQSingleton} struct is a **%Quantum Singleton Component** defined in and generated from BattlePlayerManagerData.qtn
-containing all our defined data for **Players**. [{PlayerHandle}](#page-concepts-player-simulation-playerhandle) is used to access this data for each individual **Player**.
+This section contains **%Quantum** simulation side **Player** management related code, while the game logic is handled by the [{Game Logic}](#page-concepts-player-gamelogic) code.
 
 <br/>
 
-### PlayerManager {#page-concepts-player-simulation-playermanager}
+#### PlayerManagerData (%Quantum Singleton) {#page-concepts-player-simulation-management-playermanagerdata}
+
+The @cref{Quantum,BattlePlayerManagerDataQSingleton} struct is a **%Quantum Singleton Component** defined in and generated from BattlePlayerManagerData.qtn
+containing all our defined data for **Players**. [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) is used to access this data for each individual **Player**.
+
+<br/>
+
+#### PlayerManager {#page-concepts-player-simulation-management-playermanager}
 
 The @cref{Battle.QSimulation.Player,BattlePlayerManager} handles player management, allowing other classes to focus on gameplay logic.  
 Provides static methods to **Initialize**, spawn, despawn, and query player-related data.  
 Handles **Initializing Players** that are present in the game, as well as spawning and despawning [{Player Character Entities}](#page-concepts-player-character-entity) and
-also contains [{Playerhandle}](#page-concepts-player-simulation-playerhandle) struct.
+also contains [{Playerhandle}](#page-concepts-player-simulation-management-playerhandle) struct.
 
 See [{Joining and Initializing}](#page-concepts-player-initializing) for more info.
 
 <br/>
 
-### PlayerHandle {#page-concepts-player-simulation-playerhandle}
+#### PlayerHandle {#page-concepts-player-simulation-management-playerhandle}
 
-The @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandle} struct defined in [{PlayerManager}](#page-concepts-player-simulation-playermanager) allows
+The @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandle} struct defined in [{PlayerManager}](#page-concepts-player-simulation-management-playermanager) allows
 the code to access [{Player Manager Data}](#page-concepts-player-manager-data) of each individual **Player**.
 
 There is both a **private** @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandleInternal} struct containing all the data for **use internally**
-within [{PlayerManager}](#page-concepts-player-simulation-playermanager), and the **public** @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandle}
+within [{PlayerManager}](#page-concepts-player-simulation-management-playermanager), and the **public** @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandle}
 exposing some parts to the **rest of the game**.
 
 <br/>
 
-### PlayerData (%Quantum Component) {#page-concepts-player-simulation-playerdata}
+#### ShieldManagerData (%Quantum Singleton) {#page-concepts-player-simulation-management-shieldmanagerdata}
+
+The @cref{Quantum, BattlePlayerShieldManagerDataQSingleton} struct is a **%Quantum Singleton Component** defined in and generated from BattlePlayerShieldManagerData.qtn
+containing all our defined data for **Shields**.
+
+#### ShieldManager {#page-concepts-player-simulation-management-shieldmanager}
+
+The @cref{Battle.QSimulation.Player, BattlePlayerShieldManager} handles shield management, allowing other classes to focus on gameplay logic.  
+Provides static methods to **Initialize**, attach, remove and query shield-related data.  
+Handles **Initializing Shields** that are present in the game, as well as attaching and detaching **Shield Entities** from a **Character Entity**.
+
+### Game Logic {#page-concepts-player-gamelogic}
+
+This section contains **%Quantum** simulation side **Player** gameplay logic related code, while the management is handled by the [{Management}](#page-concepts-player-simulation-management) code.
+
+#### PlayerData (%Quantum Component) {#page-concepts-player-simulation-gamelogic-playerdata}
 
 The @cref{Quantum,BattlePlayerDataQComponent} struct is defined in and generated from BattlePlayerData.qtn.
 This contains data specific to each [{Player Character Entity}](#page-concepts-player-character-entity) used by the **%Quantum Simulation** during gameplay.
 
+#### ShieldData (%Quantum Component) {#page-concepts-player-simulation-gamelogic-shielddata}
+
+The @cref{Quantum, BattlePlayerShieldDataQComponent} struct is defined in and generated from BattlePlayerShieldData.qtn.
+This contains data specific to each **Player Shield Entity** used by the **%Quantum Simulation** during gameplay.
+
 <br/>
 
-### PlayerQSystem {#page-concepts-player-simulation-playerqsystem}
+#### PlayerQSystem {#page-concepts-player-simulation-gamelogic-playerqsystem}
 
 The @cref{Battle.QSimulation.Player,BattlePlayerQSystem} contains the primary **%Quantum** **Player** logic.
 This **%Quantum System** contains code for handling collisions and the update method for [{Player Character Entities}](#page-concepts-player-character-entity).
 Other classes are utilized for specific aspects of **Player** logic.
 
-See [{PlayerMovementController}](#page-concepts-player-simulation-playerqsystem-movement-controller) for more info.  
+See [{PlayerMovementController}](#page-concepts-player-simulation-gamelogic-playerqsystem-movement-controller) for more info.  
 See [{PlayerBotController}](#page-concepts-player-simulation-botcontroller) for more info.
 
 <br/>
 
-### PlayerMovementController {#page-concepts-player-simulation-playerqsystem-movement-controller}
+#### PlayerMovementController {#page-concepts-player-simulation-gamelogic-playerqsystem-movement-controller}
 
 The @cref{Battle.QSimulation.Player,BattlePlayerMovementController} contains the primary @cref{Battle.QSimulation.Player.BattlePlayerMovementController,UpdateMovement} method
-which handles **Player** movement, and is called by [{BattlePlayerQSystem}](#page-concepts-player-simulation-playerqsystem).
+which handles **Player** movement, and is called by [{BattlePlayerQSystem}](#page-concepts-player-simulation-gamelogic-playerqsystem).
 Also contains individual helper methods for moving and rotating [{Player Character Entities}](#page-concepts-player-character-entity), which can be used by other scripts.
 
 <br/>
 
-### PlayerClassManager {#page-concepts-player-simulation-classmanager}
+### Character Class Management and Game Logic {#page-concepts-player-simulation-class}
 
-The @cref{Battle.QSimulation.Player,BattlePlayerClassManager} handles the initial loading of [{PlayerClasses}](#page-concepts-player-simulation-playerclass)
+Each **Player Character** belongs to a [{Player Character Class}](#page-concepts-player-characters-classes).  
+This section contains **%Quantum** simulation side [{Player Character Class}](#page-concepts-player-characters-classes) management and game logic related code.
+
+<br/>
+
+#### PlayerClassManager {#page-concepts-player-simulation-class-classmanager}
+
+The @cref{Battle.QSimulation.Player,BattlePlayerClassManager} handles the initial loading of [{PlayerClasses}](#page-concepts-player-simulation-class-playerclass)
 and routes individual game events to the correct **Class** scripts.  
-The [{PlayerClasses}](#page-concepts-player-simulation-playerclass) are stateless and there is only one instance loaded at a time.  
-Scripts such as [{PlayerQSystem}](#page-concepts-player-simulation-playerqsystem) call methods in **PlayerClassManager**,
+The [{PlayerClasses}](#page-concepts-player-simulation-class-playerclass) are stateless and there is only one instance loaded at a time.  
+Scripts such as [{PlayerQSystem}](#page-concepts-player-simulation-gamelogic-playerqsystem) call methods in **PlayerClassManager**,
 which then in turn call the corresponding method for the **Character Class** of the specified [{Player Character Entity}](#page-concepts-player-character-entity).
 
 See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
 
 <br/>
 
-### PlayerClass {#page-concepts-player-simulation-playerclass}
+#### PlayerClass {#page-concepts-player-simulation-class-playerclass}
 
 Every **Player Character Class** can optionally have a unique **C# class** that inherits one of the two base @cref{Battle.QSimulation.Player,BattlePlayerClassBase} classes
 defined in BattlePlayerClassManager.cs. These classes can choose to implement any of the available methods for functionality.
-**Character Classes** can also optionally have a [{PlayerClassData}](#page-concepts-player-simulation-classdata) **QComponent** for additional data.
+**Character Classes** can also optionally have a [{PlayerClassData}](#page-concepts-player-simulation-class-classdata) **QComponent** for additional data.
 When a **Character Class** has a **Data QComponent**, the **C# class** inherits the generic version of the base class using the **Data QComponent** as the generic type parameter.  
 As stated before the **C# class** is optional and can be omitted for **Player Character Classes** that need no additional **%Quantum Simulation** logic.
 
@@ -475,8 +621,8 @@ public class BattlePlayerClassExample2 : BattlePlayerClassBase<BattlePlayerClass
 ```
 
 The **C# classes** are stateless and there is only one instance for each **Character Class**
-which are loaded and managed by [{PlayerClassManager}](#page-concepts-player-simulation-classmanager).  
-Scripts such as [{PlayerQSystem}](#page-concepts-player-simulation-playerqsystem) call methods in [{PlayerClassManager}](#page-concepts-player-simulation-classmanager),
+which are loaded and managed by [{PlayerClassManager}](#page-concepts-player-simulation-class-classmanager).  
+Scripts such as [{PlayerQSystem}](#page-concepts-player-simulation-gamelogic-playerqsystem) call methods in [{PlayerClassManager}](#page-concepts-player-simulation-class-classmanager),
 which then in turn call the corresponding method for the **Character Class** of the specified [{Player Character Entity}](#page-concepts-player-character-entity).
 This way each **Player Characters** possible **Character Class** methods are always correctly called.
 
@@ -484,7 +630,7 @@ See [{Player Character Classes}](#page-concepts-player-characters-classes) for m
 
 <br/>
 
-### PlayerClassData (%Quantum Component) {#page-concepts-player-simulation-classdata}
+#### PlayerClassData (%Quantum Component) {#page-concepts-player-simulation-class-classdata}
 
 Every **Player Character Class** can optionally have a **Data QComponent** for additional data.
 
@@ -498,7 +644,7 @@ component BattlePlayerClassExample2DataQComponent
 
 The **Data QComponents** are attached to the [{Player Character Entities}](#page-concepts-player-character-entity) and are used by the **C# class** of the corresponding **Character Class**.
 
-See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.  
+See [{PlayerClass}](#page-concepts-player-simulation-class-playerclass) for more info.  
 See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
 
 <br/>
@@ -506,7 +652,7 @@ See [{Player Character Classes}](#page-concepts-player-characters-classes) for m
 ### PlayerBotController {#page-concepts-player-simulation-botcontroller}
 
 The @cref{Battle.QSimulation.Player,BattlePlayerBotController} contains the @cref{Battle.QSimulation.Player.BattlePlayerBotController,GetBotInput} method
-which handles **Bot** movement logic, and is called by [{BattlePlayerQSystem}](#page-concepts-player-simulation-playerqsystem).  
+which handles **Bot** movement logic, and is called by [{BattlePlayerQSystem}](#page-concepts-player-simulation-gamelogic-playerqsystem).  
 **Bots** have a **base character** which is retrieved from @cref{Battle.QSimulation.Player,BattlePlayerBotQSpec}
 using @cref{Battle.QSimulation.Player.BattlePlayerBotController,GetBotCharacters} method.  
 In a match each **Bot** uses **3** instances of the **base character**.
@@ -517,6 +663,11 @@ In a match each **Bot** uses **3** instances of the **base character**.
 
 ### View Code Overview {#page-concepts-player-view-overview}
 
+The **Unity/View** code is separated into **Character** and **Shield** logic.  
+Any **Character** related logic will start with **BattlePlayerCharacter**, while any **Shield** related logic will start with **BattlePlayerShield**.  
+Both **Character** and **Shield** logic use the [{Player Character Class}](#page-concepts-player-characters-classes) term, which is separate from both and should not be confused with either.
+**Player Inputs** are also processed in the **Unity/View** code and is then sent over to **%Quantum**.
+
 ```dot
 digraph PlayerView {
   color=white;
@@ -526,39 +677,90 @@ digraph PlayerView {
   node [shape=box, style=filled, color=white, fontcolor=white, fillcolor=black];
   edge [color=gray];
 
-  Quantum                   [label="Quantum"];
-  PlayerInputGameobject     [label="PlayerInput\n(Gameobject in scene)"];
-  PlayerGameobject          [label="Player\n(Gameobject instance)"];
+  Quantum                            [label="Quantum"];
 
-  node [color="#41C7F1", fontcolor="#41C7F1"];
+  subgraph cluster_character {
+    color="#41C7F1";
+    fontcolor="#41C7F1";
+    label = "Character View";
 
-  PlayerViewController      [label="PlayerViewController\n(QuantumEntityViewComponent)\n(Unity Monobehavior)\n\nAttached to each player gameobject\nHandles player view logic."];
-  PlayerClassViewController [label="PlayerClassViewController\n(Subclass of BattlePlayerClassBaseViewController)\n\nAttached to each player gameobject\nHandles player class view logic."];
-  PlayerInput               [label="PlayerInput\n\(Unity Monobehavior)\n\nAttached to gameobject in scene\nHandles subscribing to QuantumCallBack and polling player inputs for Quantum."];
+    node [shape=box, style=filled, color=white, fontcolor=white, fillcolor=black];
 
-  node [color=transparent, fontcolor=white];
+    PlayerCharacterGameobject          [label="PlayerCharacter\n(Gameobject instance)"];
 
-  InputLink                 [label="Sends Input to Quantum"];
-  UpdateLink                [label="Gets updates from Quantum\nOnActivate\nOnUpdateView\nQuantum Events"];
-  ClassPlayerLink           [label="Forwards OnUpdateView\nand common Quantum Events"];
-  ClassQuantumLink          [label="Gets updates from Quantum\nClass specific Quantum Events"];
+    node [color=transparent, fontcolor=white];
+
+    UpdateCharacterLink                [label="Gets updates from Quantum\nOnActivate\nOnUpdateView\nQuantum Events"];
+    ClassPlayerCharacterLink           [label="Forwards OnUpdateView\nand common Quantum Events"];
+    ClassCharacterQuantumLink          [label="Gets updates from Quantum\nClass specific Quantum Events"];
+
+    node [color="#41C7F1", fontcolor="#41C7F1"];
+
+    PlayerCharacterViewController               [label="PlayerCharacterViewController\n(QuantumEntityViewComponent)\n(Unity Monobehavior)\n\nAttached to each player character gameobject\nHandles player character view logic."];
+    PlayerCharacterClassViewController          [label="PlayerCharacterClassViewController\n(Subclass of BattlePlayerCharacterClassBaseViewController)\n\nAttached to each player character gameobject\nHandles player character class view logic."];
+
+    UpdateCharacterLink -> PlayerCharacterViewController [dir=forward];
+    PlayerCharacterViewController -> ClassPlayerCharacterLink [dir=none];
+    ClassPlayerCharacterLink, ClassCharacterQuantumLink -> PlayerCharacterClassViewController [dir=forward];
+    PlayerCharacterViewController, PlayerCharacterClassViewController -> PlayerCharacterGameobject [dir=none];
+  }
+
+  subgraph cluster_shield {
+    color="#41C7F1";
+    fontcolor="#41C7F1";
+    label = "Shield View";
+
+    node [shape=box, style=filled, color=white, fontcolor=white, fillcolor=black];
+
+    PlayerShieldGameobject             [label="PlayerShield\n(Gameobject instance)"];
+
+    node [color=transparent, fontcolor=white];
+
+    UpdateShieldLink                [label="Gets updates from Quantum\nOnActivate\nOnUpdateView\nQuantum Events"];
+    ClassPlayerShieldLink           [label="Forwards OnUpdateView\nand common Quantum Events"];
+    ClassShieldQuantumLink          [label="Gets updates from Quantum\nClass specific Quantum Events"];
+
+    node [color="#41C7F1", fontcolor="#41C7F1"];
+
+    PlayerShieldViewController                  [label="PlayerShieldViewController\n(QuantumEntityViewComponent)\n(Unity Monobehavior)\n\nAttached to each player shield gameobject\nHandles player shield view logic."];
+    PlayerShieldClassViewController             [label="PlayerShieldClassViewController\n(Subclass of BattlePlayerShieldClassBaseViewController)\n\nAttached to each player shield gameobject\nHandles player shield class view logic."];
+
+    UpdateShieldLink -> PlayerShieldViewController [dir=forward];
+    PlayerShieldViewController -> ClassPlayerShieldLink [dir=none];
+    ClassPlayerShieldLink, ClassShieldQuantumLink -> PlayerShieldClassViewController [dir=forward];
+    PlayerShieldViewController, PlayerShieldClassViewController -> PlayerShieldGameobject [dir=none];
+  }
+
+  subgraph cluster_input {
+    color="#41C7F1";
+    fontcolor="#41C7F1";
+    label = "Input Polling";
+
+    node [shape=box, style=filled, color=white, fontcolor=white, fillcolor=black];
+
+    PlayerInputGameobject              [label="PlayerInput\n(Gameobject in scene)"];
+
+    node [color="#41C7F1", fontcolor="#41C7F1"];
+
+    PlayerInput     [label="PlayerInput\n\(Unity Monobehavior)\n\nAttached to gameobject in scene\nHandles subscribing to QuantumCallBack and polling player inputs for Quantum."];
+
+    node [color=transparent, fontcolor=white];
+
+    InputLink       [label="Sends Input to Quantum"];
+
+    InputLink -> PlayerInput [dir=none];
+    PlayerInput -> PlayerInputGameobject [dir=none];
+  }
 
   Quantum -> InputLink [dir=back];
-  InputLink -> PlayerInput [dir=none];
-  Quantum -> UpdateLink [dir=none];
-  UpdateLink -> PlayerViewController [dir=forwards];
-  PlayerViewController -> ClassPlayerLink [dir=none];
-  Quantum -> ClassQuantumLink [dir=none];
-  ClassPlayerLink, ClassQuantumLink -> PlayerClassViewController [dir=forwards];
 
   edge [dir=none];
 
-  PlayerInput -> PlayerInputGameobject;
-  PlayerViewController, PlayerClassViewController -> PlayerGameobject;
+  Quantum -> UpdateCharacterLink, UpdateShieldLink;
+  Quantum -> ClassCharacterQuantumLink, ClassShieldQuantumLink;
+  PlayerShieldViewController -> PlayerCharacterViewController [constraint = false];
 }
 ```
-
-
 <br/>
 
 ### PlayerInput {#page-concepts-player-view-input}
@@ -570,26 +772,55 @@ See [{Player Input}](#page-concepts-player-input) for more info.
 
 <br/>
 
-### PlayerViewController {#page-concepts-player-view-controller}
+### PlayerCharacterViewController {#page-concepts-player-character-view-controller}
 
-The @cref{Battle.View.Player,BattlePlayerViewController} handles **Player** **Unity/View** logic.  
-[{PlayerClassViewControllers}](#page-concepts-player-view-class-controller), which are tied to this **C# class**,
-handle [{Player Character Class}](#page-concepts-player-characters-classes) specific **Unity/View** logic.
+The @cref{Battle.View.Player,BattlePlayerCharacterViewController} handles **Player Character** **Unity/View** logic.  
+[{PlayerCharacterClassViewControllers}](#page-concepts-player-view-character-class-controller), which are tied to this **C# class**,
+handle [{Player Character Class}](#page-concepts-player-characters-classes) specific **Unity/View** logic.  
 
 <br/>
 
-### PlayerClassViewControllers {#page-concepts-player-view-class-controller}
+### PlayerCharacterClassViewControllers {#page-concepts-player-view-character-class-controller}
 
-Every **Player Character Class** can optionally have a **View Controller** which extends the @cref{Battle.View.Player,BattlePlayerClassBaseViewController}.
-These **View Controllers** can be optionally implemented and attached to **Player viewmodel** in prefab.
-The **View Controllers** can choose to implement any of the available methods for functionality to handle **Character Class** **Unity/View** logic.  
-If no **PlayerClassViewController** is attached then @cref{Battle.View.Player,BattlePlayerClassNoneViewController} is attached.  
-As stated before the **PlayerClassViewController** is optional and can be omitted for **Player Character Classes** that need no additional **Unity/View** logic.  
-**PlayerClassViewControllers** are tied to [{PlayerViewController}](#page-concepts-player-view-controller).
+Every **Player Character Class** can optionally have a **View Controller** which extends the @cref{Battle.View.Player,BattlePlayerCharacterClassBaseViewController}.  
+These **View Controllers** can be optionally implemented and attached to **Player character viewmodel** in prefab.  
+The **PlayerCharacterClassViewController** can choose to implement any of the available methods for functionality to handle **Character Class** **Unity/View** logic.  
+If no **PlayerCharacterClassViewController** is attached then @cref{Battle.View.Player,BattlePlayerCharacterClassNoneViewController} is attached.  
+As stated before the **PlayerCharacterClassViewController** is optional and can be omitted for **Player Character Classes** that need no additional **Unity/View** logic.  
+**PlayerCharacterClassViewControllers** are tied to [{PlayerCharacterViewController}](#page-concepts-player-character-view-controller).
 
 **C# code example**
 ```cs
-public class BattlePlayerClassExampleViewController : BattlePlayerClassBaseViewController
+public class BattlePlayerCharacterClassExampleViewController : BattlePlayerCharacterClassBaseViewController
+{
+  // ...
+}
+```
+
+See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
+
+<br/>
+
+### PlayerShieldViewController {#page-concepts-player-shield-view-controller}
+
+The @cref{Battle.View.Player,BattlePlayerShieldViewController} handles **Player Shield** **Unity/View** logic.  
+[{PlayerShieldClassViewControllers}](#page-concepts-player-view-shield-class-controller), which are tied to this **C# class**,
+handle [{Player Character Class}](#page-concepts-player-characters-classes) specific **Shield Unity/View** logic.  
+
+<br/>
+
+### PlayerShieldClassViewControllers {#page-concepts-player-view-shield-class-controller}
+
+Every **Player Character Class** can optionally have a **View Controller** which extends the @cref{Battle.View.Player,BattlePlayerShieldClassBaseViewController}.  
+These **View Controllers** can be optionally implemented and attached to **Player shield viewmodel** in prefab.  
+The **PlayerShieldClassViewController** can choose to implement any of the available methods for functionality to handle **Character Class** **Unity/View** logic.  
+If no **PlayerShieldClassViewController** is attached then @cref{Battle.View.Player,BattlePlayerShieldClassNoneViewController} is attached.  
+As stated before the **PlayerShieldClassViewController** is optional and can be omitted for **Player Character Classes** that need no additional **Unity/View** logic.  
+**PlayerShieldViewControllers** are tied to [{PlayerShieldViewController}](#page-concepts-player-shield-view-controller).
+
+**C# code example**
+```cs
+public class BattlePlayerShieldClassExampleViewController : BattlePlayerShieldClassBaseViewController
 {
   // ...
 }

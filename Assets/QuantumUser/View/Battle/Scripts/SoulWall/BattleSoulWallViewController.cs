@@ -58,7 +58,7 @@ namespace Battle.View.SoulWall
         /// <param name="_">Current simulation frame.</param>
         public override void OnActivate(Frame _) => QuantumEvent.Subscribe(this, (EventBattleSoulWallViewInit e) =>
         {
-            if (EntityRef != e.Entity) return;
+            if (EntityRef != e.ERef) return;
 
             BattleDebugLogger debugLogger = BattleDebugLogger.Create<BattleSoulWallViewController>();
 

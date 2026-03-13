@@ -1,0 +1,37 @@
+/// @file BattlePlayerShieldManagerData.qtn
+/// <summary>
+/// Contains enum and component used for managing all players's characters' shields and their states.
+/// </summary>
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattlePlayerShieldManagerDataQSingleton}  
+///   @copybrief Quantum.BattlePlayerShieldManagerDataQSingleton
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattlePlayerShieldManagerDataQSingleton
+/// <summary>
+/// Singleton component that manages shields.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerShieldManagerData.qtn}
+
+/// @var array Quantum.BattlePlayerShieldManagerDataQSingleton::PlayerShieldCounts
+/// <summary>Array of all characters' shield counts.</summary>
+///
+/// @var array Quantum.BattlePlayerShieldManagerDataQSingleton::PlayerShieldEntityGroupIDs
+/// <summary>Array of all characters' entity group IDs for their shields.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerShieldManagerDataQSingleton::SIZE
+/// @var Int32 Quantum::BattlePlayerShieldManagerDataQSingleton::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerShieldManagerDataQSingleton::GetHashCode
+/// @fn void Quantum::BattlePlayerShieldManagerDataQSingleton::ClearPointers
+///
+/// @fn void Quantum::BattlePlayerShieldManagerDataQSingleton::OnRemoved
+/// @fn void Quantum::BattlePlayerShieldManagerDataQSingleton::Serialize
+///
+/// @}

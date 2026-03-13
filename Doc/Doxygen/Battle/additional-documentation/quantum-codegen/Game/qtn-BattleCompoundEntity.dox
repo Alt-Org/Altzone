@@ -1,0 +1,54 @@
+/// @file BattleCompoundEntity.qtn
+/// <summary>
+/// Contains BattleEntityLink struct and BattleCompoundEntityComponent component.
+/// </summary>
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattleEntityLink}  
+///   @copybrief Quantum.BattleEntityLink
+/// - @cref{Quantum,BattleCompoundEntityComponent}  
+///   @copybrief Quantum.BattleCompoundEntityComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleEntityLink
+/// <summary>
+/// Link structure used to reference %Quantum entity and its relative position.  
+/// Used by @cref{Quantum,BattleCompoundEntityComponent} for entity associations.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleCompoundEntity.qtn}
+
+/// @var EntityRef Quantum::BattleEntityLink::ERef
+/// <summary>Linked %Quantum Entity reference.</summary>
+///
+/// @var FPVector2 Quantum::BattleEntityLink::Offset
+/// <summary>Linked entity's position relative to compound parent.</summary>
+
+/// @struct Quantum::BattleCompoundEntityComponent
+/// <summary>
+/// Component that stores one or more **%Quantum entity** links for **Compound Entities**.  
+/// Used by @cref{Battle.QSimulation.Game,BattleEntityManager} to manage **Compound Entities**.
+/// </summary>
+///
+/// See [{Entity Manager}](#page-concepts-entity-management-entity-manager) for more info.  
+/// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
+///
+/// @bigtext{Generated from @ref BattleCompoundEntity.qtn}
+
+/// @var list<BattleEntityLink> Quantum::BattleCompoundEntityComponent::LinkedEntities
+/// <summary>List of linked %Quantum Entities.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattleCompoundEntityComponent::SIZE
+/// @var Int32 Quantum::BattleCompoundEntityComponent::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattleCompoundEntityComponent::GetHashCode
+/// @fn void Quantum::BattleCompoundEntityComponent::ClearPointers
+///
+/// @fn void Quantum::BattleCompoundEntityComponent::OnRemoved
+/// @fn void Quantum::BattleCompoundEntityComponent::Serialize
+///
+/// @}
