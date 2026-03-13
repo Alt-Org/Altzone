@@ -272,41 +272,36 @@ public class ClanSettings : AltMonoBehaviour
             return;
         }
 
-        Debug.Log("Before GetClanData");
-        Debug.Log("Clan id: " + ServerManager.Instance.Clan?._id);
-
         Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
         {
-            Debug.Log("GetClanData callback reached");
+            if (clanData == null)
+            {
+                _saveButton.interactable = true;
+                SignalBus.OnChangePopupInfoSignal("Klaanin tietojen hakeminen epäonnistui.");
+                return;
+            }
 
             if (!CanCurrentPlayerEditClan(clanData))
             {
-                Debug.Log("Blocked: no permission");
                 SignalBus.OnChangePopupInfoSignal("Mites pääsit tähän ikkunaan? Sinulla ei ole oikeuksia muokata klaanin asetuksia.");
                 _saveButton.interactable = true;
                 return;
             }
 
-            string previousPhrase = clanData.Phrase;
             clanData.Phrase = _clanPhraseField.text;
             clanData.Language = _selectedLanguage;
             clanData.ClanAge = _ageSelection.ClanAgeRange;
-            clanData.Rules = _ruleSelection.SelectedRules;
+            clanData.IsOpen = !_clanOpenToggle.isOn; 
+            clanData.Rules = new List<Rules>(_ruleSelection.SelectedRules);
             clanData.Values = new List<ClanValues>(_selectedValues);
-            clanData.ClanHeartPieces = _heartPieces;
-
-            Debug.Log("Before UpdateClanToServer");
+            clanData.ClanHeartPieces = new List<HeartPieceData>(_heartPieces);
 
             StartCoroutine(ServerManager.Instance.UpdateClanToServer(clanData, success =>
             {
-                Debug.Log("UpdateClanToServer success: " + success);
-
                 _saveButton.interactable = true;
 
                 if (success)
                 {
-                    Debug.Log("Save success, closing settings view");
-
                     if (_clanMainView != null)
                         _clanMainView.UpdateProfileFromSettings(clanData);
 

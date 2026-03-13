@@ -1100,47 +1100,6 @@ public class ServerManager : MonoBehaviour
         }
     }
 
-    /*public IEnumerator UpdateClanToServer(ClanData data, Action<bool> callback)
-    {
-        ClanLogo logo = new ClanLogo();
-        logo.logoType = ClanLogoType.Heart;
-        logo.pieceColors = new();
-        List<string> serverValues = new();
-
-        foreach (var piece in data.ClanHeartPieces)
-        {
-            logo.pieceColors.Add(ColorUtility.ToHtmlStringRGB(piece.pieceColor));
-        }
-
-        foreach (var value in data.Values)
-        {
-            string valueString = ClanDataTypeConverter.ClanValuesToString(value);
-            serverValues.Add(valueString);
-        }
-
-        string body = JObject.FromObject(
-            new
-            {
-                _id = data.Id,
-                name = data.Name,
-                tag = data.Tag,
-                isOpen = Clan.isOpen,
-                labels = serverValues,
-                ageRange = data.ClanAge,
-                goal = data.Goals,
-                phrase = data.Phrase,
-                language = data.Language,
-                clanLogo = logo
-            },
-            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
-        ).ToString();
-
-        yield return UpdateClanToServer(body, callback =>
-        {
-            if (callback) Storefront.Get().SaveClanData(data, null);
-        });
-    }*/
-
     public IEnumerator UpdateClanToServer(ClanData data, Action<bool> callback)
     {
         ClanLogo logo = new ClanLogo();
@@ -1179,7 +1138,22 @@ public class ServerManager : MonoBehaviour
         yield return StartCoroutine(UpdateClanToServer(body, success =>
         {
             if (success)
+            {
                 Storefront.Get().SaveClanData(data, null);
+
+                if (Clan != null && Clan._id == data.Id)
+                {
+                    Clan.name = data.Name;
+                    Clan.tag = data.Tag;
+                    Clan.isOpen = Clan.isOpen;
+                    Clan.ageRange = data.ClanAge;
+                    Clan.goal = data.Goals;
+                    Clan.phrase = data.Phrase;
+                    Clan.language = data.Language;
+                }
+
+                RaiseClanChangedEvent();
+            }
 
             callback?.Invoke(success);
         }));
