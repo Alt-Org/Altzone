@@ -50,6 +50,9 @@ namespace Altzone.Scripts.Audio
         private Coroutine _switchCoroutine;
         private Coroutine _crossfadeCoroutine;
 
+        public delegate void VolumeChangeEvent();
+        public event VolumeChangeEvent OnVolumeChange;
+
         public enum MusicListDirection
         {
             Next,
@@ -71,6 +74,8 @@ namespace Altzone.Scripts.Audio
                 _musicChannel1.volume = volume;
             else
                 _musicChannel2.volume = volume;
+
+            OnVolumeChange?.Invoke();
         }
 
         private void Awake()

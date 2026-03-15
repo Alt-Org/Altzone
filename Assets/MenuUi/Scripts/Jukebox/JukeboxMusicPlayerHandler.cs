@@ -404,7 +404,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
     //}
     #endregion
 
-    private void UpdateMusicElapsedTime(float musicTrackLength, float elapsedTime, JukeboxManager.PreviewLocationType type)
+    private void UpdateMusicElapsedTime(float musicTrackLength, float elapsedTime, JukeboxManager.PreviewLocationType type, bool playAnimations = true)
     {
         JukeboxManager manager = JukeboxManager.Instance;
         //string minutes = (elapsedTime / 60f).ToString().Split('.')[0];
@@ -422,11 +422,13 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
             _sliderRubberbandActive = false;
         }
 
-        if (!_sliderRubberbandActive && Mathf.Abs(_trackPlayTimeSlider.value - (elapsedTime / musicTrackLength)) > _sliderRubberbandAnimationTreshold)
+        if (!_sliderRubberbandActive && Mathf.Abs(_trackPlayTimeSlider.value - (elapsedTime / musicTrackLength)) > _sliderRubberbandAnimationTreshold && playAnimations)
         {
             _currentTrackLength = musicTrackLength;
             _sliderRubberbandActive = true;
-            _sliderAnimationCoroutine = StartCoroutine(_sliderRubberband.StartRubberband(elapsedTime, musicTrackLength, (data) => _sliderRubberbandActive = !data));
+
+            _sliderAnimationCoroutine = StartCoroutine(_sliderRubberband.StartRubberband(elapsedTime,
+                musicTrackLength, (data) => _sliderRubberbandActive = !data));
         }
 
         if (!_sliderRubberbandActive) _trackPlayTimeSlider.value = elapsedTime / musicTrackLength;
@@ -552,7 +554,7 @@ public class JukeboxMusicPlayerHandler : MonoBehaviour
         destination.SetTrack(tempId, tempMusicTrack, tempLinearIndex, tempUserOwned, JukeboxManager.Instance.GetTrackFavoriteType(tempMusicTrack));
 
         JukeboxManager.Instance.TrackQueue[destination.LinearIndex].Pointer.Set(destination.ChunkIndex, destination.PoolIndex);
-        
+
         _queueHandlerChunks[target.ChunkIndex].AmountInUse--;
         _queueHandlerChunks[destination.ChunkIndex].AmountInUse++;
 

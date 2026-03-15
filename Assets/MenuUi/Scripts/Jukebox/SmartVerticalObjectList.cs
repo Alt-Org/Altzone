@@ -365,8 +365,6 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
             float bottomItemTopEdge = GetBottomItemEdgeLocalPositionY() + anchoredDistance - _content.rect.height / 2f;
 
             if (_viewportBottomAnchoredBorder > bottomItemTopEdge) return VerticalDirectionType.Neutral;
-            Debug.LogError("_viewportBottomAnchoredBorder: " + _viewportBottomAnchoredBorder);
-            Debug.LogError($"GetBottomItemEdgeLocalPositionY(): {GetBottomItemEdgeLocalPositionY()}, anchoredDistance: {anchoredDistance}, _content.rect.height / 2f: {_content.rect.height / 2f}");
 
             float correction = (Mathf.Abs(GetBottomItemWorldPositionY()) - Mathf.Abs(_viewportBottomWorldBorder) -
                                 (_viewportTopWorldBorder - _viewportBottomWorldBorder) / 2f) + _bottomUniqueItemWorldHeightWithPadding;
@@ -419,10 +417,7 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
         if (_uniqueGameObjectsAtBottom.Count != 0)
             return _uniqueGameObjectsAtBottom[^1].localPosition.y + _uniqueGameObjectsAtBottom[^1].rect.height;
         if (_smartListItems.Count != 0)
-        {
-            Debug.LogError("this");
             return _smartListItems[^1].SelfRectTransform.localPosition.y + _smartListItems[^1].SelfRectTransform.rect.height;
-        }
         if (_uniqueGameObjectsAtTop.Count != 0)
             return _uniqueGameObjectsAtTop[^1].localPosition.y + _uniqueGameObjectsAtTop[^1].rect.height;
 

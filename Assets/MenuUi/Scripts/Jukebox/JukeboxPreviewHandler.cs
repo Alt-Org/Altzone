@@ -42,7 +42,7 @@ public class JukeboxPreviewHandler : MonoBehaviour
     {
         JukeboxManager.Instance.OnSetVisibleElapsedTime += UpdateSlider;
         JukeboxManager.Instance.OnPreviewEnd += StartStoppingMusicPreview;
-        
+
         _sliderCanvasGroup.blocksRaycasts = false;
         _buttonCanvasGroup.blocksRaycasts = true;
         _sliderCanvasGroup.alpha = 0f;
@@ -120,7 +120,8 @@ public class JukeboxPreviewHandler : MonoBehaviour
         }
     }
 
-    private void UpdateSlider(float musicTrackLength, float elapsedTime, JukeboxManager.PreviewLocationType type)
+    private void UpdateSlider(float musicTrackLength, float elapsedTime, JukeboxManager.PreviewLocationType type,
+        bool playAnimations = true)
     {
         if (type != JukeboxManager.PreviewLocationType.Secondary) return;
 

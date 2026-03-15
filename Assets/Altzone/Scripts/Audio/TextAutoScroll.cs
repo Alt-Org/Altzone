@@ -62,7 +62,7 @@ namespace Altzone.Scripts.Audio
                 return;
             }
 
-            _contentSetCoroutine = StartCoroutine(ContentSet());
+            _contentSetCoroutine = StartCoroutine(ContentSet(false));
 
             //SetContent(_textInQueue);
         }
@@ -86,7 +86,7 @@ namespace Altzone.Scripts.Audio
             }
         }
 
-        public void SetContent(string text, bool forceStart = false)
+        public void SetContent(string text, bool forceStart = false, bool useAnimations = true)
         {
             if (!forceStart && _text && _text.text == text || _textInQueue == text)
             {
@@ -98,50 +98,55 @@ namespace Altzone.Scripts.Audio
             DisableCoroutines();
             _textInQueue = text;
 
-            if (isActiveAndEnabled && !_textFadeActive) _contentSetCoroutine = StartCoroutine(ContentSet());
+            if (isActiveAndEnabled && !_textFadeActive) _contentSetCoroutine = StartCoroutine(ContentSet(useAnimations));
         }
 
-        private IEnumerator ContentSet()
+        private IEnumerator ContentSet(bool useAnimations = true)
         {
             bool? fadeOperationDone = null;
 
             _textFadeActive = true;
 
-            if (_fade != null && !string.IsNullOrEmpty(_text.text))
+            if (useAnimations)
             {
-                _fade.Reset();
-
-                if (_fadeOutCoroutine != null)
+                if (_fade && !string.IsNullOrEmpty(_text.text))
                 {
-                    StopCoroutine(_fadeOutCoroutine);
-                    _fadeOutCoroutine = null;
+                    _fade.Reset();
+
+                    if (_fadeOutCoroutine != null)
+                    {
+                        StopCoroutine(_fadeOutCoroutine);
+                        _fadeOutCoroutine = null;
+                    }
+
+                    _fadeOutCoroutine = StartCoroutine(_fade.FadeOperation(Fade.FadeType.Out,
+                        (data) => fadeOperationDone = data, true));
+                }
+                else if (_fade)
+                {
+                    _fade.SetAlphaVisibility(false);
+                    fadeOperationDone = true;
                 }
 
-                _fadeOutCoroutine = StartCoroutine(_fade.FadeOperation(Fade.FadeType.Out, (data) => fadeOperationDone = data, true));
-            }
-            else if (_fade != null)
-            {
-                _fade.SetAlphaVisibility(false);
-                fadeOperationDone = true;
+                yield return new WaitUntil(() => (!_fade || fadeOperationDone != null));
+
+                _fadeOutCoroutine = null;
             }
 
-            yield return new WaitUntil(() => (_fade == null || fadeOperationDone != null));
-
-            _fadeOutCoroutine = null;
             _text.text = _textInQueue;
             _scrollDirection = -1f;
 
-            yield return new WaitForEndOfFrame();
-
-            if (!_textStyleUpdated && _textStyleCloner != null)
+            if (!_textStyleUpdated && _textStyleCloner)
             {
                 _textStyleUpdated = true;
-                _textStyleCloner.StartCorrection(true);
+                _textStyleCloner.SetTextSettings(true);
             }
+
+            yield return new WaitForEndOfFrame();
 
             _selfRect.pivot = new Vector2((_selfRect.sizeDelta.x > 0f ? _horizontalStartPosition : _defaultHorizontalPosition), _verticalPosition);
 
-            if (_fade != null)
+            if (useAnimations && _fade)
             {
                 fadeOperationDone = null;
 
@@ -157,18 +162,21 @@ namespace Altzone.Scripts.Audio
 
                 _fadeInCoroutine = null;
             }
+            else if (_fade)
+            {
+                _fade.SetAlphaVisibility(true);
+            }
 
             _textFadeActive = false;
-
             TryStartScroll();
         }
 
         private void TryStartScroll()
         {
-            if (_scrollCoroutine != null || _selfRect == null || !isActiveAndEnabled || _textFadeActive) return;
+            if (_scrollCoroutine != null || !_selfRect || !isActiveAndEnabled || _textFadeActive) return;
 
             DisableCoroutine(ref _waitCoroutine);
-
+            Debug.LogError("sizeDeltaX: " + _selfRect.sizeDelta.x);
             if (_selfRect.sizeDelta.x <= 0f)
             {
                 DisableCoroutine(ref _scrollCoroutine);
@@ -183,8 +191,8 @@ namespace Altzone.Scripts.Audio
 
         private IEnumerator Scroll()
         {
-            float targetValue = _scrollDirection == 1 ? 1 : 0;
-            float progress = _scrollDirection == 1 ? 0 : 1;
+            float targetValue = _scrollDirection == 1f ? 1f : 0f;
+            float progress = _scrollDirection == 1f ? 0f : 1f;
 
             while (Valid(progress, targetValue))
             {
@@ -202,10 +210,7 @@ namespace Altzone.Scripts.Audio
 
         private bool Valid(float progress, float target)
         {
-            if (target == 1)
-                return progress < target;
-            else
-                return progress > target;
+            return (target == 1f ? progress < target : progress > target);
         }
 
         private IEnumerator Wait()
