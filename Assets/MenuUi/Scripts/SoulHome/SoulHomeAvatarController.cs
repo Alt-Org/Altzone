@@ -542,16 +542,16 @@ namespace MenuUI.Scripts.SoulHome
         }
 
         // if there is a clear los between points, removes points in between, so the avatar won't zig-zag
-        // currently walks through furniture weirdly if used
+
         private List<Vector2> SmoothPath(List<Vector2> fullPath)
         {
-            if (fullPath.Count < 3) return fullPath;
+            if (fullPath.Count < 1) return fullPath;
 
             List<Vector2> smoothedPath = new();
-            Vector2 currentPoint = fullPath[0]; // point where los is checked from
+            Vector2 currentPoint = transform.position; // point where los is checked from
             smoothedPath.Add(currentPoint);
 
-            for (int i = 1; i < fullPath.Count - 1; i++)
+            for (int i = 0; i < fullPath.Count - 1; i++)
             {
                 Vector2Int gridPos = WorldToGrid(fullPath[i]);
 

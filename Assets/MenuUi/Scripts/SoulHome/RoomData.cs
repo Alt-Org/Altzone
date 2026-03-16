@@ -348,14 +348,7 @@ namespace MenuUI.Scripts.SoulHome
 
             foreach (GridNode node in _grid)
             {
-                if (node.FurnitureSlot.Furniture == null)
-                {
-                    node.IsFurniture = false;
-                }
-                else
-                {
-                    node.IsFurniture = true;
-                }
+                node.IsFurniture = (node.FurnitureSlot.Furniture != null);
             }
 
             int gridWidth = _grid.GetLength(0);
