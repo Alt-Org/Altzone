@@ -82,39 +82,9 @@ namespace Battle.QSimulation.Player
 
             if (damagedPlayerData->CurrentDefence <= 0) HandleSFX(f, damagedPlayerData->CharacterId, SoundEffectType.Death);
 
-            // Temp disabled
-            BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
-            return;
-
-            if (projectileCollisionData->Projectile->IsHeld) return;
-
-            //BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->PlayerEntity);
-            FP damageTaken = projectileCollisionData->Projectile->Attack;
             damagedPlayerData->MovementEnabled = false;
             damagedPlayerData->RotationEnabled = false;
 
-            HandleSFX(f, damagedPlayerData->CharacterId, SoundEffectType.HitCharacterAggression);
-
-            BattlePlayerManager.PlayerHandle damagePlayerHandle = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot);
-            int characterNumber = damagePlayerHandle.SelectedCharacterNumber;
-
-            FP newHp = damagedPlayerData->CurrentHp - damageTaken;
-
-            if (damageTaken > FP._0 && damagedPlayerData->CurrentHp > FP._0 && !damagedPlayerData->DamageCooldown.IsRunning(f))
-            {
-                damagedPlayerData->CurrentHp = newHp;
-
-                damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
-
-                f.Events.BattleCharacterTakeDamage(playerCollisionData->PlayerCharacterHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newHp / damagedPlayerData->Stats.Hp);
-            }
-
-            if (damagedPlayerData->CurrentHp <= FP._0)
-            {
-                BattlePlayerManager.DespawnPlayer(f, damagedPlayerData->Slot, kill: true);
-                damagePlayerHandle.SetOutOfPlayRespawning();
-                damagePlayerHandle.RespawnTimer = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).AutoRespawnTimeSec);
-            }
             damagedPlayerData->StunCooldown = FrameTimer.FromSeconds(f, (int)BattleQConfig.GetPlayerSpec(f).StunCooldownSec);
 
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
