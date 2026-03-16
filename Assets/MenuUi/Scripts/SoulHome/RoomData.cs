@@ -34,6 +34,8 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private int _defaultPenalty = 5;
         [SerializeField]
+        private int _backSlotPenalty = 10;
+        [SerializeField]
         private float _slotMaxGrowthPercentage = 20;
         [SerializeField]
         private RectPosition _floorAnchorPosition = RectPosition.Top;
@@ -334,7 +336,7 @@ namespace MenuUI.Scripts.SoulHome
 
                         if (_grid[c, r] == null)
                         {
-                            _grid[c, r] = new GridNode(new Vector2Int(c, r), false);
+                            _grid[c, r] = new GridNode(new Vector2Int(c, r), false, false);
                         }
                         GridNode node = _grid[c, r];
                         node.FurnitureSlot = slot;
@@ -395,18 +397,23 @@ namespace MenuUI.Scripts.SoulHome
                                                  _grid[x, y - 1].IsFurniture &&
                                                  _grid[x, y - 1].FurnitureSlot.Furniture == currentNode.FurnitureSlot.Furniture);
 
+
                     if (y == 0)
                     {
-                        currentNode.penalty = 100;
+                        currentNode.penalty = _backSlotPenalty;
+                        currentNode.IsBackSlot = true;
                     }
                     else if (!_grid[x, y - 1].IsFurniture || !isSameFurnitureAbove)
                     {
-                        currentNode.penalty = 150;
+                        currentNode.penalty = _backSlotPenalty;
+                        currentNode.IsBackSlot = true;
                     }
                     else
                     {
                         currentNode.penalty = 800;
+                        currentNode.IsBackSlot = false;
                     }
+
 
                     // apply penalty to the left and right to the furniture
                     ApplyPenalty(x - 1, y, _defaultPenalty);

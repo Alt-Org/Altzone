@@ -7,6 +7,7 @@ public class GridNode
 {
     public Vector2Int GridPosition;
     public bool IsFurniture;
+    public bool IsBackSlot; // last row of slots on a specific furniture
     public int penalty;
     public FurnitureSlot FurnitureSlot;
 
@@ -16,10 +17,11 @@ public class GridNode
 
     public GridNode Parent;
 
-    public GridNode(Vector2Int gridPos, bool isFurniture)
+    public GridNode(Vector2Int gridPos, bool isFurniture, bool isBackSlot)
     {
         GridPosition = gridPos;
         IsFurniture = isFurniture;
+        IsBackSlot = isBackSlot;
     }
 
     public void Reset()

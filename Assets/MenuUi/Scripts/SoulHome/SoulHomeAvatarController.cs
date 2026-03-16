@@ -265,7 +265,8 @@ namespace MenuUI.Scripts.SoulHome
                         targetPos,
                         _speed * Time.deltaTime);
 
-                    UpdateSortingOrder(WorldToGrid(transform.position).y);
+                    // 0.25f offset is needed because when walking close to gridnode edge the closest grid node changes every step
+                    UpdateSortingOrder(WorldToGrid(new(transform.position.x, transform.position.y - 0.25f)).y);
 
                     yield return null;
                 }
@@ -554,12 +555,18 @@ namespace MenuUI.Scripts.SoulHome
             for (int i = 0; i < fullPath.Count - 1; i++)
             {
                 Vector2Int gridPos = WorldToGrid(fullPath[i]);
+                GridNode node = _grid[gridPos.x, gridPos.y];
 
                 // If furniture blocks direct path to future point
                 if (IsSmoothPathTooExpensive(currentPoint, fullPath[i + 1]))
                 {
                     // stop at last point before hitting furniture
                     currentPoint = fullPath[i];
+
+                    if (node.IsBackSlot)
+                    {
+                        currentPoint.y += node.FurnitureSlot.height * 0.5f;
+                    }
                     smoothedPath.Add(currentPoint);
                 }
             }
@@ -734,6 +741,7 @@ namespace MenuUI.Scripts.SoulHome
                         // Yellow tint for penalties - gets darker as penalty increases
                         float alpha = Mathf.Clamp01(node.penalty / 30f);
                         Gizmos.color = new Color(1, 0.9f, 0, alpha * 0.4f);
+                        if (node.IsBackSlot) Gizmos.color = new Color(1, 0, 0, alpha * 0.4f);
                         Gizmos.DrawCube(worldPos, new Vector3(0.8f, 0.8f, 0.1f));
 
                         // Draw the penalty number
