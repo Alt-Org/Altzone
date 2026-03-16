@@ -29,8 +29,6 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _changeHandleButtonTray;
         [SerializeField]
-        private GameObject _overlayBar;
-        [SerializeField]
         private GameObject _verticalItemTray;
         [SerializeField]
         private GameObject _horizontalItemTray;
@@ -747,12 +745,12 @@ namespace MenuUI.Scripts.SoulHome
             GameObject horizontalContent = GetHorizontalTrayHandler().GetTrayContent();
             if (_rotated)
             {
-                _overlayBar.gameObject.SetActive(false);
+                OverlayPanelCheck.Instance.ToggleBottomBar(false);
                 SwitchTray(horizontalContent, verticalContent);
             }
             else
             {
-                if(!_trayOpen)_overlayBar.gameObject.SetActive(true);
+                if(!_trayOpen) OverlayPanelCheck.Instance.ToggleBottomBar(true);
                 SwitchTray(verticalContent, horizontalContent);
             }
             GetTrayHandler().GetComponent<ResizeCollider>().Resize();
