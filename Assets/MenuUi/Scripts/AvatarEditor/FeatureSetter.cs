@@ -18,7 +18,8 @@ namespace MenuUi.Scripts.AvatarEditor
         public void SetFeature(AvatarPartInfo feature, AvatarPiece slot)
         {
             _avatarEditorController.PlayerAvatar.SetPart(slot, feature.Id);
-            _avatarEditorCharacterHandle.SetMainCharacterImage(slot, feature, _avatarVisuals.GetColor(slot));
+            ColorUtility.TryParseHtmlString(_avatarEditorController.PlayerAvatar.GetPartColor(slot), out Color color);
+            _avatarEditorCharacterHandle.SetMainCharacterImage(slot, feature, color);
         }
 
         public void SetLoadedFeatures(PlayerAvatar avatar)

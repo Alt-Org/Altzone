@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace MenuUi.Scripts.Window
 {
@@ -11,8 +12,25 @@ namespace MenuUi.Scripts.Window
         [SerializeField] private GameObject _overlayObject;
         [SerializeField] private SceneDef _allowedScene;
 
+        [SerializeField] private Button[] buttons;
+
+        [SerializeField] private GameObject _bottomBar;
+        [SerializeField] private GameObject _chatBox;
+
+        public static OverlayPanelCheck Instance { get; private set; }
+
         private void Awake()
         {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                Instance = this;
+                UpdateButtonContent();
+            }
+
             if (_overlayObject == null) _overlayObject = transform.Find("UIOverlayPanel").GetComponent<GameObject>();
         }
 
@@ -24,6 +42,49 @@ namespace MenuUi.Scripts.Window
             }
             else _overlayObject.SetActive(true);
 
+            if (Instance == this)
+                UpdateButtonContent();
         }
+
+        private void OnDestroy()
+        {
+            if(Instance == this) Instance = null;
+        }
+
+        public void UpdateButtonContent()
+        {
+            if (buttons == null || buttons.Length == 0) return;
+
+            for (int i = 0; i < buttons.Length; i++)
+            {
+                Button button = buttons[i];
+                WindowDef target = button.GetComponent<NaviButton>().NaviTarget;
+                var windowManager = WindowManager.Get();
+                var isCurrentWindow = windowManager.FindIndex(target) == 0;
+
+
+                if (isCurrentWindow)
+                {
+                    button.transform.localScale = Vector3.one * 1.2f;
+                    button.interactable = false;
+                }
+                else
+                {
+                    button.transform.localScale = Vector3.one;
+                    button.interactable = true;
+                }
+            }
+        }
+
+        public void ToggleBottomBar(bool value)
+        {
+            _bottomBar.SetActive(value);
+        }
+
+        public void ToggleChat(bool value)
+        {
+            _chatBox.SetActive(value);
+        }
+
     }
 }

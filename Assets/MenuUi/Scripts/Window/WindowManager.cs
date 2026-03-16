@@ -432,8 +432,13 @@ namespace MenuUi.Scripts.Window
             {
                 return false;
             }
+            var isVisible = false;
+            foreach (var window in _currentWindows)
+            {
+                if(windowDef.Equals(window._windowDef) && window.IsValid && window._windowInst.activeInHierarchy) isVisible = true;
+            }
             var firstWindow = _currentWindows[0];
-            var isVisible = windowDef.Equals(firstWindow._windowDef) && firstWindow.IsValid;
+            //isVisible = windowDef.Equals(firstWindow._windowDef) && firstWindow.IsValid;
             Debug.Log($"IsVisible new {windowDef} first {firstWindow} : {isVisible}");
             return isVisible;
         }
