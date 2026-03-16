@@ -1238,7 +1238,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerDataQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 168;
+    public const Int32 SIZE = 176;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(24)]
     public PlayerRef PlayerRef;
@@ -1250,7 +1250,7 @@ namespace Quantum {
     public Int32 CharacterId;
     [FieldOffset(0)]
     public BattlePlayerCharacterClass CharacterClass;
-    [FieldOffset(136)]
+    [FieldOffset(144)]
     public BattlePlayerStats Stats;
     [FieldOffset(20)]
     public Int32 GridExtendTop;
@@ -1258,7 +1258,7 @@ namespace Quantum {
     public Int32 GridExtendBottom;
     [FieldOffset(32)]
     public QBoolean HasTargetPosition;
-    [FieldOffset(120)]
+    [FieldOffset(128)]
     public FPVector2 TargetPosition;
     [FieldOffset(80)]
     public FP RotationBase;
@@ -1278,6 +1278,8 @@ namespace Quantum {
     public QBoolean DisableRotation;
     [FieldOffset(112)]
     public FrameTimer DamageCooldown;
+    [FieldOffset(120)]
+    public FrameTimer StunCooldown;
     [FieldOffset(72)]
     public FP MovementCooldownSec;
     [FieldOffset(104)]
@@ -1306,6 +1308,7 @@ namespace Quantum {
         hash = hash * 31 + HitboxCharacterEntity.GetHashCode();
         hash = hash * 31 + DisableRotation.GetHashCode();
         hash = hash * 31 + DamageCooldown.GetHashCode();
+        hash = hash * 31 + StunCooldown.GetHashCode();
         hash = hash * 31 + MovementCooldownSec.GetHashCode();
         hash = hash * 31 + AbilityCooldownSec.GetHashCode();
         hash = hash * 31 + AbilityActivateBufferSec.GetHashCode();
@@ -1334,6 +1337,7 @@ namespace Quantum {
         FrameTimer.Serialize(&p->AbilityActivateBufferSec, serializer);
         FrameTimer.Serialize(&p->AbilityCooldownSec, serializer);
         FrameTimer.Serialize(&p->DamageCooldown, serializer);
+        FrameTimer.Serialize(&p->StunCooldown, serializer);
         FPVector2.Serialize(&p->TargetPosition, serializer);
         Quantum.BattlePlayerStats.Serialize(&p->Stats, serializer);
     }

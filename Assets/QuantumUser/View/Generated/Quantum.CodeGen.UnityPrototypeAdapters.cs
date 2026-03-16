@@ -97,6 +97,7 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.QuantumEntityPrototype HitboxCharacterEntity;
     public QBoolean DisableRotation;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
+    public Quantum.Prototypes.FrameTimerPrototype StunCooldown;
     public FP MovementCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityActivateBufferSec;
@@ -122,6 +123,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.HitboxCharacterEntity, out result.HitboxCharacterEntity);
       converter.Convert(this.DisableRotation, out result.DisableRotation);
       converter.Convert(this.DamageCooldown, out result.DamageCooldown);
+      converter.Convert(this.StunCooldown, out result.StunCooldown);
       converter.Convert(this.MovementCooldownSec, out result.MovementCooldownSec);
       converter.Convert(this.AbilityCooldownSec, out result.AbilityCooldownSec);
       converter.Convert(this.AbilityActivateBufferSec, out result.AbilityActivateBufferSec);

@@ -241,6 +241,7 @@ namespace Quantum.Prototypes {
     public MapEntityId HitboxCharacterEntity;
     public QBoolean DisableRotation;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
+    public Quantum.Prototypes.FrameTimerPrototype StunCooldown;
     public FP MovementCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityActivateBufferSec;
@@ -269,6 +270,7 @@ namespace Quantum.Prototypes {
         PrototypeValidator.FindMapEntity(this.HitboxCharacterEntity, in context, out result.HitboxCharacterEntity);
         result.DisableRotation = this.DisableRotation;
         this.DamageCooldown.Materialize(frame, ref result.DamageCooldown, in context);
+        this.StunCooldown.Materialize(frame, ref result.StunCooldown, in context);
         result.MovementCooldownSec = this.MovementCooldownSec;
         this.AbilityCooldownSec.Materialize(frame, ref result.AbilityCooldownSec, in context);
         this.AbilityActivateBufferSec.Materialize(frame, ref result.AbilityActivateBufferSec, in context);
