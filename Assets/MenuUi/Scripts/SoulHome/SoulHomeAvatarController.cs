@@ -314,6 +314,7 @@ namespace MenuUI.Scripts.SoulHome
 
                 yield return null;
             }
+            _timeSinceRoomChange = 0f;
 
             transform.SetParent(targetRoomTransform, true);
             _roomData = targetRoomData;
@@ -333,7 +334,6 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (_roomChangeChance > Random.Range(0, 100))
                 {
-                    _timeSinceRoomChange = 0f;
                     return true;
                 }
             }
