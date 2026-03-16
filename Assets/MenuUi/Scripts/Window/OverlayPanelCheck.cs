@@ -28,6 +28,7 @@ namespace MenuUi.Scripts.Window
             else
             {
                 Instance = this;
+                UpdateButtonContent();
             }
 
             if (_overlayObject == null) _overlayObject = transform.Find("UIOverlayPanel").GetComponent<GameObject>();
@@ -45,14 +46,19 @@ namespace MenuUi.Scripts.Window
             }
             else _overlayObject.SetActive(true);
 
+            if (Instance == this)
+                UpdateButtonContent();
+        }
 
-            UpdateButtonContent();
+        private void OnDestroy()
+        {
+            if(Instance == this) Instance = null;
         }
 
         public void UpdateButtonContent()
         {
             if (buttons == null || buttons.Length == 0) return;
-            Debug.LogWarning(WindowManager.Get().FindIndex(WindowManager.Get().CurrentWindow));
+
             for (int i = 0; i < buttons.Length; i++)
             {
                 Button button = buttons[i];
