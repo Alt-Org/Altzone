@@ -71,6 +71,9 @@ namespace MenuUi.Scripts.Lobby
                 _battlePopup = InLobbyController.PopupContentsInstance; 
             }
 
+            // Fallback: try to find the battle popup at runtime if it's in a separate prefab
+            TryFindBattlePopup();
+
             // Try to auto-assign matchmaking count text if inspector field is empty
             TryFindMatchmakingCountText();
 
@@ -154,6 +157,27 @@ namespace MenuUi.Scripts.Lobby
                 TryFindMatchmakingCountText();
                 UpdateVisibility();
             }
+        }
+
+        private void TryFindBattlePopup()
+        {
+            if (_battlePopup != null) return;
+            // First prefer InLobbyController runtime instance if available
+            if (InLobbyController.PopupContentsInstance != null)
+            {
+                _battlePopup = InLobbyController.PopupContentsInstance;
+                return;
+            }
+            // Try to find the popup manager component in the scene (includes inactive objects where supported)
+            var mgr = FindObjectOfType<BattlePopupPanelManager>(true);
+            if (mgr != null)
+            {
+                _battlePopup = mgr.gameObject;
+                return;
+            }
+            // Last resort: try a few common names (non-exhaustive)
+            var go = GameObject.Find("PopupContents") ?? GameObject.Find("BattlePopup") ?? GameObject.Find("PopupContents(Clone)");
+            if (go != null) _battlePopup = go;
         }
 
         private void TryFindMatchmakingCountText()
