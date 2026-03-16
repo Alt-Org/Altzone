@@ -6,13 +6,13 @@ using UnityEngine.UI;
 namespace MenuUI.Scripts.SoulHome
 {
 public class KaikkiOnHyvinGumballmachineScript : MonoBehaviour, ISoulHomeObjectClick
-{
-    public ParticleSystem partSys;
+{   
+    [SerializeField]
+    private ParticleSystem partSys;
     
     private float transitionDuration = 4.0F;
     private float newScaleY;
     private float newScaleX;
-
     private float addition;
     private bool active = false;
 
@@ -21,10 +21,10 @@ public class KaikkiOnHyvinGumballmachineScript : MonoBehaviour, ISoulHomeObjectC
         if (active)
         {return;}
 
-        StartCoroutine(animation());
+        StartCoroutine(machineAnimation());
     }
 
-        private IEnumerator animation()
+    private IEnumerator machineAnimation()
     {
         active = true;
         float elapsedTime = 0f;
@@ -33,8 +33,6 @@ public class KaikkiOnHyvinGumballmachineScript : MonoBehaviour, ISoulHomeObjectC
         float scaleX = this.transform.localScale.x;
         float scaleY = this.transform.localScale.y;
         float scaleZ = this.transform.localScale.z;
-        float MinVOL = 1.0f;
-        float MaxVOL = 4.0f;
 
         float A = 3.0f;
         float x = 0f;
@@ -47,7 +45,7 @@ public class KaikkiOnHyvinGumballmachineScript : MonoBehaviour, ISoulHomeObjectC
         {
             elapsedTime += Time.deltaTime;
             x += Time.deltaTime;
-            
+
             newScaleY = scaleY + (A * Mathf.Exp(-b * x) * Mathf.Cos(w * x + p));
             newScaleX = scaleX - (A * Mathf.Exp(-b * x) * Mathf.Cos(w * x + p));
             transform.localScale = new Vector3(newScaleX, newScaleY, scaleZ);
@@ -58,7 +56,6 @@ public class KaikkiOnHyvinGumballmachineScript : MonoBehaviour, ISoulHomeObjectC
             {   
                 popupActive = true;
                 KaikkiOnHyvinPopupScript.Instance.popupController(); //Uses the script's instance to call popupController funktion
-
             }
             // Affects how fast and which direction particles move
             partSysVOL.orbitalZ = new ParticleSystem.MinMaxCurve(1.0f + addition, 4.0f + addition);

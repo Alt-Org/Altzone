@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: KaikkiOnHyvinFigure5ShaderMAT 1
+  m_Name: KaikkiOnHyvinFigure5ShaderMATERIAL
   m_Shader: {fileID: -6465566751694194690, guid: 280e30aee3273da4ab4c8faf206a4569,
     type: 3}
   m_Parent: {fileID: 0}
@@ -25,7 +25,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 1583b96414bd7fc4c920ecd11226d094, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -42,15 +42,13 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _QueueControl: 0
-    - _QueueOffset: 0
-    - _RippleCount: 0.4
+    - _RippleCount: 1
     - _RippleSpeed: 1
     - _RippleStrenght: 1
     m_Colors:
     - _RippleCenter: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
---- !u!114 &2727794777336657234
+--- !u!114 &8602551998255069479
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

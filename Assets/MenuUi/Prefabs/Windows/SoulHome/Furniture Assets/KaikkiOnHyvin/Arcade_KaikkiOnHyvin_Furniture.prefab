@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 4093683900555227435}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.3844, y: 0.234, z: 0}
+  m_LocalPosition: {x: -0.3844, y: 2.221, z: 0}
   m_LocalScale: {x: 0.6540223, y: 0.9937318, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -110,7 +110,7 @@ Transform:
   m_GameObject: {fileID: 7171238467942976070}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.005, y: 0.277, z: 0}
+  m_LocalPosition: {x: 0.005, y: 2.229, z: 0}
   m_LocalScale: {x: 1.355579, y: 0.91864, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -210,7 +210,7 @@ PrefabInstance:
     - target: {fileID: -4477838665465569415, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
       propertyPath: m_SpriteTilingProperty.pivot.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4477838665465569415, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
@@ -236,6 +236,11 @@ PrefabInstance:
         type: 3}
       propertyPath: _name
       value: Arcade_KaikkiOnHyvin
+      objectReference: {fileID: 0}
+    - target: {fileID: -724820267442525664, guid: 38ff1b40ed32bfe498bf97cd319e2494,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -724820267442525664, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
@@ -331,7 +336,8 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -724820267442525664, guid: 38ff1b40ed32bfe498bf97cd319e2494, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 7323986473366213217, guid: 38ff1b40ed32bfe498bf97cd319e2494,
@@ -347,6 +353,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: -4079284335504538394}
+    - targetCorrespondingSourceObject: {fileID: 7560384329901659850, guid: 38ff1b40ed32bfe498bf97cd319e2494,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 446760448504611236}
   m_SourcePrefab: {fileID: 100100000, guid: 38ff1b40ed32bfe498bf97cd319e2494, type: 3}
 --- !u!4 &270168355029201353 stripped
 Transform:
@@ -378,3 +388,36 @@ MonoBehaviour:
   frontScreen: {fileID: 7171238467942976070}
   sideScreen: {fileID: 4093683900555227435}
   currentSpriteRenderer: {fileID: 0}
+--- !u!114 &446760448504611236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1076416620225934690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fb0ae05b4028634cb06b566912f4351, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _name: Arcade_KaikkiOnHyvin
+  _furnitureSpriteFront: {fileID: 1314932879, guid: 0f139dba637950947963a879d1c41c23,
+    type: 3}
+  _furnitureSpriteRight: {fileID: -2134204773, guid: 0f139dba637950947963a879d1c41c23,
+    type: 3}
+  _furnitureSpriteLeft: {fileID: 0}
+  _furnitureSpriteBack: {fileID: 0}
+  _defaultSpriteDirection: 0
+  _spriteCanBeFlipped: 1
+  _sortingGroup: {fileID: 4882958989152755173}
+  _trayFurnitureObject: {fileID: 8283609639366970782, guid: b65547dd42c988945874e33651ec0411,
+    type: 3}
+  cullCheckAmount: 0.1
+  _screenFront: {fileID: 7171238467942976070}
+  _screenSide: {fileID: 4093683900555227435}
+--- !u!210 &4882958989152755173 stripped
+SortingGroup:
+  m_CorrespondingSourceObject: {fileID: -6496421437902717363, guid: 38ff1b40ed32bfe498bf97cd319e2494,
+    type: 3}
+  m_PrefabInstance: {fileID: 7357705637076362152}
+  m_PrefabAsset: {fileID: 0}

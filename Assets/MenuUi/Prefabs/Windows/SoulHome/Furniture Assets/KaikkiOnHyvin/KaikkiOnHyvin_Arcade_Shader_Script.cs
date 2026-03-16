@@ -7,8 +7,6 @@ namespace MenuUI.Scripts.SoulHome
 public class NewBehaviourScript : MonoBehaviour, ISoulHomeObjectClick
 {
     int round = 1;
-
-    //public Material shaderMat; //Public so material can be assigned from inspector
     //Material shaderMat = GetComponent<Renderer>().material; 
     public SpriteRenderer screenRenderer;
     //private SpriteRenderer frontScreenRenderer;
@@ -38,13 +36,9 @@ public class NewBehaviourScript : MonoBehaviour, ISoulHomeObjectClick
     float[] voronoiSpeeds ={ 0.5F,1.0F,2.5F,5.5F,9.5F};
     float[] gradientNoiseSpeeds ={ 0.1F,0.2F,0.3F,0.9F,1.5F};
 
-
     public void HandleClick() //comes from ISoulHomeObjectClick
     {   
-
-
-        spriteHandler();
-        
+        //spriteHandler();  
         Debug.Log("CURRENT SPRITE" + currentSprite);
         if (!transitionInProgress)
         {   Debug.Log("SCREEN TRANSITION STARTING");
@@ -54,12 +48,11 @@ public class NewBehaviourScript : MonoBehaviour, ISoulHomeObjectClick
         {   Debug.Log("SCREEN TRANSITION CANNOT BE STARTED YET");
             return;
         }
-        
     }
 
-
     public void spriteHandler()
-    {   frontScreen = arcadeMachine.transform.GetChild(0).gameObject;
+    {   
+        frontScreen = arcadeMachine.transform.GetChild(0).gameObject;
         sideScreen = arcadeMachine.transform.GetChild(1).gameObject;
 
         currentSpriteRenderer = arcadeMachine.GetComponent<SpriteRenderer>();
@@ -88,7 +81,6 @@ public class NewBehaviourScript : MonoBehaviour, ISoulHomeObjectClick
             round = 1;
             screenRenderer.enabled = false;
 
-
             screenRenderer.material.SetColor("_ScreenColorA", colors[2]);
             screenRenderer.material.SetColor("_ScreenColorB", colors[0]);
             screenRenderer.material.SetFloat("_VoronoiSpeedA", voronoiSpeeds[1]);
@@ -96,14 +88,10 @@ public class NewBehaviourScript : MonoBehaviour, ISoulHomeObjectClick
             screenRenderer.material.SetFloat("_GradientNoiseSpeedA", gradientNoiseSpeeds[1]);
             screenRenderer.material.SetFloat("_GradientNoiseSpeedB", gradientNoiseSpeeds[0]);
             screenRenderer.material.SetFloat("_WhiteNoiseEffect", 1);
-
-            //Debug.Log("ROUND" + round);
     }
 
-    // Start is called before the first frame update
     void Start()
     {
-
         //shaderMat = arcadeScreen.GetComponent<Material>();
         arcadeScreen = sideScreen;
         screenRenderer = arcadeScreen.GetComponent<SpriteRenderer>();
@@ -111,13 +99,10 @@ public class NewBehaviourScript : MonoBehaviour, ISoulHomeObjectClick
         arcadeScreen = frontScreen;
         screenRenderer = arcadeScreen.GetComponent<SpriteRenderer>();
         ScreenReset();
-
     }
-
 
     private IEnumerator Screentransition()
     {
-        
         float elapsedTime = 0F;
         screenRenderer.enabled = true;
         transitionInProgress = true;
@@ -128,7 +113,6 @@ public class NewBehaviourScript : MonoBehaviour, ISoulHomeObjectClick
             {
                 while (elapsedTime < transitionDuration) // For smooth transition
                 {
-                    
                     elapsedTime += Time.deltaTime; // Keeps track how much time has passed
 
                     voronoiSpeedA = Mathf.Lerp(voronoiSpeeds[round - 1], voronoiSpeeds[round], elapsedTime / transitionDuration);
@@ -147,26 +131,10 @@ public class NewBehaviourScript : MonoBehaviour, ISoulHomeObjectClick
                     screenRenderer.material.SetFloat("_GradientNoiseSpeedB", gradientNoiseSpeedB);
 
                     yield return null;
-
                 }
             }
-
-            
-            //shaderMat.SetFloat("_VoronoiSpeedA", voronoiSpeeds[round]);
-            //shaderMat.SetFloat("_VoronoiSpeedB", voronoiSpeeds[round - 1]); // one step behind of VoronoiSpeedA in array
-            //shaderMat.SetFloat("_GradientNoiseSpeedA", gradientNoiseSpeeds[round]);
-            //shaderMat.SetFloat("_GradientNoiseSpeedB", gradientNoiseSpeeds[round - 1]);
-            //shaderMat.SetColor("_ScreenColorA", colors[round + 1]);
-            //shaderMat.SetColor("_ScreenColorB", colors[round - 1]); // two steps behind
-
             round++;
 
-            //Debug.Log("ROUND" + round);
- 
-            //Debug.Log("VORONOISPEED_A" + shaderMat.GetFloat("_VoronoiSpeedA"));
-            //Debug.Log("VORONOISPEED_B" + shaderMat.GetFloat("_VoronoiSpeedB"));
-            //Debug.Log("GRADIENTSPEED_A" + shaderMat.GetFloat("_GradientNoiseSpeedA"));
-            //Debug.Log("GRADIENTSPEED_B" + shaderMat.GetFloat("_GradientNoiseSpeedB"));
             yield return new WaitForSeconds(1);
         }
 
@@ -178,23 +146,13 @@ public class NewBehaviourScript : MonoBehaviour, ISoulHomeObjectClick
             screenRenderer.material.SetColor("_ScreenColorB", new Color(0.01f, 0.01f, 0.01f, 1f) );
             round++;
         }
-
-
+        
         else //restart values & disable arcade screen
         {
             ScreenReset();
         }
-        
-
         transitionInProgress = false;
         Debug.Log("SCREEN TRANSITION has been set to FALSE");
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-        
     }
 }
 }

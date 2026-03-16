@@ -7,23 +7,27 @@ namespace MenuUI.Scripts.SoulHome
 public class KaikkiOnHyvinBalloonShaderScript : MonoBehaviour, ISoulHomeObjectClick
 {
     public ParticleSystem confettiParticles;
-    private SpriteRenderer renderer;
+    private SpriteRenderer balloonRenderer;
     private float strenght;
     private float noiseThickness;
     private float transitionDuration;
     private float currentAlpha;
 
+    private bool animationPlaying = false;
+
     public GameObject balloon;
 
     void Start()
     {
-        renderer = balloon.GetComponent<SpriteRenderer>();
+        balloonRenderer = balloon.GetComponent<SpriteRenderer>();
         confettiParticles.Stop();
         resetValues();
     }
 
     public void HandleClick()
     {
+        if (animationPlaying) {return;}
+        animationPlaying = true;
         confettiParticles.Play();
         StartCoroutine(balloonPop());
     }
@@ -37,10 +41,10 @@ public class KaikkiOnHyvinBalloonShaderScript : MonoBehaviour, ISoulHomeObjectCl
             elapsedTime += Time.deltaTime;
 
             strenght = Mathf.Lerp(0f, 1.5f, elapsedTime / transitionDuration);
-            renderer.material.SetFloat("_Strenght", strenght);
+            balloonRenderer.material.SetFloat("_Strenght", strenght);
 
             noiseThickness = Mathf.Lerp(2f, 0f, elapsedTime / transitionDuration);
-            renderer.material.SetFloat("_NoiseThickness", noiseThickness);
+            balloonRenderer.material.SetFloat("_NoiseThickness", noiseThickness);
 
             yield return null;
         }
@@ -59,17 +63,17 @@ public class KaikkiOnHyvinBalloonShaderScript : MonoBehaviour, ISoulHomeObjectCl
             elapsedTime += Time.deltaTime;
 
             currentAlpha = Mathf.Lerp(0f, 1.0f, elapsedTime / transitionDuration);
-            renderer.color = new Color (1f, 1f, 1f, currentAlpha);
+            balloonRenderer.color = new Color (1f, 1f, 1f, currentAlpha);
 
             yield return null;
         }
-
+        animationPlaying = false;
     }
 
     public void resetValues()
     {
-        renderer.material.SetFloat("_Strenght", 0f);
-        renderer.material.SetFloat("_NoiseThickness", 1.5f);
+        balloonRenderer.material.SetFloat("_Strenght", 0f);
+        balloonRenderer.material.SetFloat("_NoiseThickness", 1.5f);
         balloon.SetActive(true);
     }
 }

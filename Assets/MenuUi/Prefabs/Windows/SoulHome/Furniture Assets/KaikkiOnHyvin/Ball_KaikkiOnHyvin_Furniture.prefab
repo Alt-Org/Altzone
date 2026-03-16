@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &3362707230784299109
+--- !u!1001 &4090162438474549172
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -12,6 +12,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Offset.y
       value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4477838665465569415, guid: 38ff1b40ed32bfe498bf97cd319e2494,
+        type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4477838665465569415, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
@@ -41,13 +46,13 @@ PrefabInstance:
     - target: {fileID: -724820267442525664, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
       propertyPath: _name
-      value: Ball_KaikkiOnHyvin_Furniture_KaikkiOnHyvin
+      value: Ball_KaikkiOnHyvin
       objectReference: {fileID: 0}
     - target: {fileID: -724820267442525664, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
       propertyPath: _trayFurnitureObject
       value: 
-      objectReference: {fileID: 1831391668174501119, guid: 5f290619033ef1c40ac7016062e981be,
+      objectReference: {fileID: 8034366517635300597, guid: 568edde75a7ba6e4b9d7910d6d662ab0,
         type: 3}
     - target: {fileID: -724820267442525664, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
@@ -108,7 +113,7 @@ PrefabInstance:
     - target: {fileID: 7560384329901659850, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
       propertyPath: m_Name
-      value: Ball_KaikkiOnHyvin_Furniture_KaikkiOnHyvin_Furniture
+      value: Ball_KaikkiOnHyvin_Furniture
       objectReference: {fileID: 0}
     - target: {fileID: 8424176910884188875, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
@@ -128,11 +133,58 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 8424176910884188875, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8424176910884188875, guid: 38ff1b40ed32bfe498bf97cd319e2494,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8424176910884188875, guid: 38ff1b40ed32bfe498bf97cd319e2494,
+        type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7560384329901659850, guid: 38ff1b40ed32bfe498bf97cd319e2494,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -3496904283489892174}
   m_SourcePrefab: {fileID: 100100000, guid: 38ff1b40ed32bfe498bf97cd319e2494, type: 3}
+--- !u!1 &5776091290623807870 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7560384329901659850, guid: 38ff1b40ed32bfe498bf97cd319e2494,
+    type: 3}
+  m_PrefabInstance: {fileID: 4090162438474549172}
+  m_PrefabAsset: {fileID: 0}
+--- !u!50 &-3496904283489892174
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5776091290623807870}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 6200000, guid: 59b6e8d4525b65e42924e09b19bf55bc, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

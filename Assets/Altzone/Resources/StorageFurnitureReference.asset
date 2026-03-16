@@ -17,27 +17,6 @@ MonoBehaviour:
     SetNameEnglish: EverythingIsFine
     ArtistName: Emilia K. K.
     list:
-    - Name: Ball_KaikkiOnHyvin_Furniture
-      EnglishName: 
-      Image: {fileID: 21300000, guid: b368b714a2372fd468f933e7bbbed06a, type: 3}
-      PosterImage: {fileID: 21300000, guid: 2a64aa2092e92b54f8e2d70085289bfe, type: 3}
-      RibbonImage: {fileID: 21300000, guid: 1c27dbeb29006cf48bd10efaa8ead296, type: 3}
-      VisibleName: Emilia K. K
-      ArtisticDescription: "Saattaa kuulla \u201CKaikki on hyvin\u201D, vaikka piiloitettu
-        murhe olisikin suuri. Totuus voi kuitenkin ilmet\xE4 eri tavoin, jotkut selke\xE4mpi\xE4
-        kuin toiset."
-      EnglishArtisticDescription: 
-      DiagnoseNumber: R45.8
-      BaseFurniture:
-        Name: Ball_KaikkiOnHyvin_Furniture_KaikkiOnHyvin
-        Rarity: 0
-        Size: 0
-        RotatedSize: 0
-        Placement: 0
-        Weight: 0.3
-        Value: 60
-        Material: PVC
-        Recycling: "Sekaj\xE4te"
     - Name: Sofa
       EnglishName: 
       Image: {fileID: 1014195689, guid: c5a6e51ffe519b441957cd4a64e1b151, type: 3}
@@ -289,6 +268,27 @@ MonoBehaviour:
         Weight: 10
         Value: 40
         Material: MDF
+        Recycling: "Sekaj\xE4te"
+    - Name: Ball
+      EnglishName: 
+      Image: {fileID: 21300000, guid: b368b714a2372fd468f933e7bbbed06a, type: 3}
+      PosterImage: {fileID: 21300000, guid: 2a64aa2092e92b54f8e2d70085289bfe, type: 3}
+      RibbonImage: {fileID: 0}
+      VisibleName: Emilia K. K.
+      ArtisticDescription: "Saattaa kuulla \u201CKaikki on hyvin\u201D, vaikka piiloitettu
+        murhe olisikin suuri. Totuus voi kuitenkin ilmet\xE4 eri tavoin, jotkut selke\xE4mpi\xE4
+        kuin toiset."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: R45.8
+      BaseFurniture:
+        Name: Ball_KaikkiOnHyvin
+        Rarity: 0
+        Size: 0
+        RotatedSize: 0
+        Placement: 0
+        Weight: 0.3
+        Value: 60
+        Material: PVC
         Recycling: "Sekaj\xE4te"
   - SetName: Taakka
     SetNameEnglish: Burden

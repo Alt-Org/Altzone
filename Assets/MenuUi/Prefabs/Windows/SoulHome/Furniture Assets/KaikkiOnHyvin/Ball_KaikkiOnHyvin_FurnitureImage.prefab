@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &4962654201896774486
+--- !u!1001 &3660097699870352220
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -8,6 +8,12 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4418724647606007923, guid: ebe216453bed92b4e8c477f4ff0cc3c3,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 1c27dbeb29006cf48bd10efaa8ead296,
+        type: 3}
     - target: {fileID: 5786908130519818191, guid: ebe216453bed92b4e8c477f4ff0cc3c3,
         type: 3}
       propertyPath: m_Pivot.x
@@ -111,8 +117,14 @@ PrefabInstance:
     - target: {fileID: 6752174233831251881, guid: ebe216453bed92b4e8c477f4ff0cc3c3,
         type: 3}
       propertyPath: m_Name
-      value: Ball_KaikkiOnHyvin_Furniture_KaikkiOnHyvin_FurnitureImage
+      value: Ball_KaikkiOnHyvin_FurnitureImage
       objectReference: {fileID: 0}
+    - target: {fileID: 9152013033603904840, guid: ebe216453bed92b4e8c477f4ff0cc3c3,
+        type: 3}
+      propertyPath: _furnitureObject
+      value: 
+      objectReference: {fileID: 5776091290623807870, guid: d5f8cb62e89070543bd923793b685145,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

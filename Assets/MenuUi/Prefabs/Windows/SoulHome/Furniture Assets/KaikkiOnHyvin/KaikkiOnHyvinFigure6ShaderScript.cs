@@ -1,20 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class KaikkiOnHyvinFihure6ShaderScript : MonoBehaviour
+namespace MenuUI.Scripts.SoulHome
+{
+public class KaikkiOnHyvinFigure6ShaderScript : MonoBehaviour, ISoulHomeObjectClick
 {
     private float distortionSpeed;
     private float cellDensity;
-    public SpriteRenderer renderer;
+    [SerializeField]  
+    private SpriteRenderer figureRenderer;
     private float transitionDuration = 5.0f;
+
+    [SerializeField] 
+    private GameObject figure;
+    private GameObject box;
+
+    private bool boxOpened = false;
+    [SerializeField] 
+    private KaikkiOnHyvinBoxScript kaikkiOnHyvinBoxScript;
+    
+    public void HandleClick()
+    {
+        if (boxOpened)
+        {return;}
+        box = figure.transform.GetChild(0).gameObject;
+        kaikkiOnHyvinBoxScript.boxHandler(box);
+        boxOpened = true;
+    }
 
     void Start()
     {
-        renderer = GetComponent<SpriteRenderer>();
+        figureRenderer = GetComponent<SpriteRenderer>();
         StartCoroutine(DistortionAnimation());
-        
     }
+
     private IEnumerator DistortionAnimation()
     {
         float elapsedTime = 0f;
@@ -26,11 +45,11 @@ public class KaikkiOnHyvinFihure6ShaderScript : MonoBehaviour
 
             distortionSpeed = 50.0f * Mathf.Exp(-1.0f * x) * Mathf.Cos(3.0f * x + 1.3f);    
 
-            renderer.material.SetFloat("_DistortionSpeed", distortionSpeed);
+            figureRenderer.material.SetFloat("_DistortionSpeed", distortionSpeed);
 
             cellDensity = 90.0f * Mathf.Exp(-1.0f * x) * Mathf.Cos(3.0f * x + 1.3f);
 
-            renderer.material.SetFloat("_CellDensity", cellDensity);
+            figureRenderer.material.SetFloat("_CellDensity", cellDensity);
 
             if( transitionDuration <= elapsedTime )
             {
@@ -40,4 +59,5 @@ public class KaikkiOnHyvinFihure6ShaderScript : MonoBehaviour
             yield return null;
         }
     }    
+}
 }

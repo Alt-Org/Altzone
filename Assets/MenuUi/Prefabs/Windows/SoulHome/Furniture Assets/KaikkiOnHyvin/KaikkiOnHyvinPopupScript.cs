@@ -6,17 +6,36 @@ using TMPro;
 
 public class KaikkiOnHyvinPopupScript : MonoBehaviour
 {
-    public GameObject popup;
-    public TextMeshProUGUI popupText;
-    public Button button;
+    [SerializeField] 
+    private GameObject popup;
+    [SerializeField] 
+    private TextMeshProUGUI popupText;
+    [SerializeField] private 
+    Button button;
     private float transitionDuration = 0.4F;
     public static KaikkiOnHyvinPopupScript Instance; // static variable
 
     private string[] messages = 
     {
-        "1a","2a",
-        "3a","4a",
-        "5a","6a"
+    "En yliajatellut tarpeeksi.",
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "Ei mennyt niin kuin Strömsössä. Ehkä Suomen Surkein Kuski ois meikäläisen juttu.",
+    "Siis ei vaa millää jaksais.",
+    "Aikainen lintu madon nappaa. Minä olen mato.",
+    "Pitäs vaan luovuttaa.",
+    "Alamäki jatkuu.",
+    "Turhaan tässä yrittää.",
+    "Ei mistään tuu mitään.",
+    "Ei oo maailman loppu? NO KYLLÄ ON!",
+    "Lasi on puoliksi tyhjä.",
+    "Pettymys pettymyksen jälkee.",
+    "Kolmas kerta todensanoo, mut tää onkin jo kolmaskymmenes kerta.",
+    "Kurkotin kuusentaimeen, ja silti katajaan kapsahdin.",
+    "Itken markkinoilla.",
+    "Minkä taakseen jättää, sen edestään löytää ja nyt tieni on tukossa.",
+    "Jään tuleen makaamaan.",
+    "Ruoho on haaleaa aidan molemmilla puolilla.",
+    "Nuolaisin ennen kuin tipahtaa ja tipahdin itse."
     };
     string message = "";
 
@@ -61,5 +80,4 @@ public class KaikkiOnHyvinPopupScript : MonoBehaviour
     {
         Instance = this; // sets Instance to this script: can be found without a reference set in inspector
     }
-
 }
