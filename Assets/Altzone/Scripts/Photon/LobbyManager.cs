@@ -1539,6 +1539,19 @@ namespace Altzone.Scripts.Lobby
 
         private void StartingGameFailed()
         {
+            // Clear BattleID so room is not left in 'starting' state after a failed start
+            try
+            {
+                if (PhotonRealtimeClient.CurrentRoom != null && PhotonRealtimeClient.CurrentRoom.CustomProperties.ContainsKey(PhotonBattleRoom.BattleID))
+                {
+                    PhotonRealtimeClient.CurrentRoom.SetCustomProperties(new PhotonHashtable { { PhotonBattleRoom.BattleID, "" } });
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"Failed to clear BattleID in StartingGameFailed: {ex.Message}");
+            }
+
             if (!PhotonRealtimeClient.CurrentRoom.IsOpen) PhotonRealtimeClient.OpenRoom();
 
             if (PhotonRealtimeClient.InMatchmakingRoom)
@@ -1653,48 +1666,51 @@ namespace Altzone.Scripts.Lobby
                 };
                 long sendTime = data.StartTime;
 
-                //Start Battle Countdown
+                // Start Battle Countdown (request UI to show countdown)
                 OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleLoad);
                 _isStartFinished = false;
 
-                yield return new WaitUntil(() => OnStartTimeSet != null);
+                // Wait for UI to subscribe to OnStartTimeSet (timeout to avoid hanging)
+                const float onStartSubscribeTimeout = 5f;
+                float subscribeStart = Time.time;
+                while (OnStartTimeSet == null && Time.time - subscribeStart < onStartSubscribeTimeout)
+                {
+                    yield return null;
+                }
+                if (OnStartTimeSet == null)
+                {
+                    Debug.LogWarning("StartQuantum: OnStartTimeSet has no subscribers after timeout; proceeding without countdown UI.");
+                }
+
                 if (sendTime == 0) sendTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                 long timeToStart = (sendTime + STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                 long startTime = sendTime + timeToStart;
-                do
-                {
-                    if (OnStartTimeSet != null)
-                    {
-                        OnStartTimeSet?.Invoke(0);
-                        break;
-                    }
-                    yield return null;
-                } while (startTime > DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
 
-                // If a player left during the start timer, abort
-                if (!AreAllExpectedPlayersPresent())
+                // Notify listeners about start time (if any)
+                if (OnStartTimeSet != null)
                 {
-                    Debug.LogWarning("Aborting StartQuantum after timer: expected player missing.");
-                    SafeRaiseEvent(
-                        PhotonRealtimeClient.PhotonEvent.CancelGameStart,
-                        null,
-                        new RaiseEventArgs { Receivers = ReceiverGroup.All },
-                        SendOptions.SendReliable
-                    );
-
-                    if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+                    try
                     {
-                        if (_matchmakingHolder != null)
-                        {
-                            StopCoroutine(_matchmakingHolder);
-                            _matchmakingHolder = null;
-                        }
-                        _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
+                        OnStartTimeSet?.Invoke(sendTime);
                     }
-                    yield break;
+                    catch (Exception ex)
+                    {
+                        Debug.LogWarning($"StartQuantum: OnStartTimeSet invocation threw: {ex.Message}");
+                    }
                 }
 
-                yield return new WaitUntil(()=>_isStartFinished);
+                // Wait for UI to finish the start animation / loading sequence. Use a timeout to avoid permanent blocking.
+                const float startFinishTimeout = 15f;
+                float startWaitStart = Time.time;
+                while (!_isStartFinished && Time.time - startWaitStart < startFinishTimeout)
+                {
+                    yield return null;
+                }
+                if (!_isStartFinished)
+                {
+                    Debug.LogWarning("StartQuantum: timed out waiting for start animation to finish; proceeding.");
+                    _isStartFinished = true;
+                }
 
                 // Final check before loading Battle scene / starting runner
                 if (!AreAllExpectedPlayersPresent())
@@ -1721,10 +1737,22 @@ namespace Altzone.Scripts.Lobby
 
                 AudioManager.Instance.StopMusic();
 
-                //Move to Battle and start Runner
+                // Move to Battle and start Runner
                 OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.Battle);
 
-                yield return new WaitUntil(()=>SceneManager.GetActiveScene().name == _quantumBattleMap.Scene);
+                // Wait for scene to load, but timeout to avoid blocking forever
+                const float sceneLoadTimeout = 30f;
+                float sceneLoadStart = Time.time;
+                while (SceneManager.GetActiveScene().name != _quantumBattleMap.Scene && Time.time - sceneLoadStart < sceneLoadTimeout)
+                {
+                    yield return null;
+                }
+                if (SceneManager.GetActiveScene().name != _quantumBattleMap.Scene)
+                {
+                    Debug.LogError($"StartQuantum: Scene '{_quantumBattleMap.Scene}' failed to load within timeout.");
+                    StartingGameFailed();
+                    yield break;
+                }
 
                 DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.Battle);
                 DebugLogFileHandler.FileOpen(battleID, (int)playerSlot);
@@ -2484,42 +2512,35 @@ namespace Altzone.Scripts.Lobby
                     // Also signal countdown listeners with a sentinel value so older UI code can cancel
                     OnGameCountdownUpdate?.Invoke(-1);
 
-                    // For master client, ensure matchmaking wait loop is running so countdowns can be restarted.
-                    if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+                    try
                     {
+                        StopMatchmakingCoroutines();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogWarning($"Failed to stop matchmaking coroutines: {ex.Message}");
+                    }
+
+                    // Non-master clients should stay in the room and return to the LobbyRoom state.
+                    if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+                    {
+                        OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.LobbyRoom);
+                    }
+
+                        // Clear BattleID so cancelled start does not leave stale room state
                         try
                         {
-                            if (PhotonRealtimeClient.InMatchmakingRoom)
+                            if (PhotonRealtimeClient.CurrentRoom != null && PhotonRealtimeClient.CurrentRoom.CustomProperties.ContainsKey(PhotonBattleRoom.BattleID))
                             {
-                                if (_matchmakingHolder != null)
-                                {
-                                    StopCoroutine(_matchmakingHolder);
-                                    _matchmakingHolder = null;
-                                }
-                                _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
+                                PhotonRealtimeClient.CurrentRoom.SetCustomProperties(new PhotonHashtable { { PhotonBattleRoom.BattleID, "" } });
                             }
                         }
                         catch (Exception ex)
                         {
-                            Debug.LogWarning($"Failed to restart matchmaking on master after CancelGameStart: {ex.Message}");
-                        }
-                    }
-                    else
-                    {
-                        try
-                        {
-                            StopMatchmakingCoroutines();
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.LogWarning($"Failed to stop matchmaking coroutines: {ex.Message}");
+                            Debug.LogWarning($"Failed to clear BattleID on CancelGameStart: {ex.Message}");
                         }
 
-                        // Non-master clients should stay in the room and return to the LobbyRoom state.
-                        OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.LobbyRoom);
-                    }
-
-                    break;
+                        break;
                 case PhotonRealtimeClient.PhotonEvent.GameCountdown:
                     int countdown = (int)photonEvent.CustomData;
                     OnGameCountdownUpdate?.Invoke(countdown);
@@ -2667,6 +2688,19 @@ namespace Altzone.Scripts.Lobby
                 _startGameHolder = null;
             }
             OnGameStartCancelled?.Invoke();
+
+            // Ensure any stale BattleID is cleared when master changes so new master does not see a hanging start
+            try
+            {
+                if (PhotonRealtimeClient.CurrentRoom != null && PhotonRealtimeClient.CurrentRoom.CustomProperties.ContainsKey(PhotonBattleRoom.BattleID))
+                {
+                    PhotonRealtimeClient.CurrentRoom.SetCustomProperties(new PhotonHashtable { { PhotonBattleRoom.BattleID, "" } });
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"Failed to clear BattleID on master switch: {ex.Message}");
+            }
 
             // If we are in a matchmaking room, new master should continue matchmaking; others stay and wait
             if (PhotonRealtimeClient.InMatchmakingRoom)
