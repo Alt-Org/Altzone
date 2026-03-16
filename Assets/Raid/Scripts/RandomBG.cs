@@ -15,7 +15,7 @@ public class RandomBG : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-         Rnd = Random.Range(0, 5);
+        Rnd = Random.Range(0, 5);
         //this.GetComponent<Image>().sprite = colors[rnd];
         Bubble.sprite = Bubbles[Rnd];
         Aura.sprite = Auras[Rnd];

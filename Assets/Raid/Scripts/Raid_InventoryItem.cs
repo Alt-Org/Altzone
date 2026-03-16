@@ -73,7 +73,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         empty = true;
 
         //if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
-            spectator = true;
+            spectator = false;
     }
     public void Update()
     {

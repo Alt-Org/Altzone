@@ -62,7 +62,7 @@ public class Raid_InventoryPage : MonoBehaviour
         //_photonView.ViewID = 2;
         //if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
         {
-            spectator = true;
+            spectator = false;
         }
 
     }
@@ -78,12 +78,19 @@ public class Raid_InventoryPage : MonoBehaviour
             UIItem.OnItemClicked += HandleItemLooting;
         }
 
-        //if (PhotonNetwork.IsMasterClient)
+        /*
+        if (PhotonNetwork.IsMasterClient)
         {
-            //RandomizeBombs();
-            //string jsonBombs = JsonUtility.ToJson(Bombs);
-            //_photonView.RPC("SendBombLocationsRPC", RpcTarget.Others, jsonBombs);
+            RandomizeBombs();
+            string jsonBombs = JsonUtility.ToJson(Bombs);
+            _photonView.RPC("SendBombLocationsRPC", RpcTarget.Others, jsonBombs);
         }
+        */
+
+        //RandomizeBombs();
+        //string jsonBombs = JsonUtility.ToJson(Bombs);
+        //SendBombLocationsRPC(jsonBombs);
+
         for (int j = 0; j < Bombs.Length; j++)
         {
             Debug.Log("bombIndex: " + Bombs[j].bombIndex + " Bombs.Length: " + Bombs.Length);
@@ -95,6 +102,7 @@ public class Raid_InventoryPage : MonoBehaviour
     {
         int index = ListOfUIItems.IndexOf(inventoryItem);
         //_photonView.RPC(nameof(HandleItemLootingRPC), RpcTarget.All, index, inventoryItem.ItemWeight);
+        HandleItemLootingRPC(index,inventoryItem.ItemWeight);
     }
 
     /*[PunRPC]*/
@@ -197,11 +205,14 @@ public class Raid_InventoryPage : MonoBehaviour
 
     public void SetInventorySlotData(int InventorySize)
     {
+        //why are we setting aleady passed variables?
         InventorySize = raid_InventoryHandler.InventorySize;
+
         for (int i = 0; i < InventorySize; i++)
         {
             int RandomFurniture = Random.Range(0, 12);
             //_photonView.RPC(nameof(SetInventorySlotDataRPC), RpcTarget.All, i, RandomFurniture);
+            SetInventorySlotDataRPC(i,RandomFurniture); // (Err) Index is out of bounds?
         }
 
     }

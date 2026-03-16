@@ -33,10 +33,12 @@ public class GraphicsChanger : MonoBehaviour
     }
     private void Update()
     {
+        /*
         if (Input.GetKeyDown("space"))
         {
             TestGraphicsChanger();
         }
+        */
     }
     private void SwitchToLoserGraphics()
     {
