@@ -310,7 +310,7 @@ namespace MenuUI.Scripts.SoulHome
 
             while (Vector2.Distance(transform.position, targetWorldPosition) > 0.05f)
             {
-                transform.position = Vector2.MoveTowards(transform.position, targetWorldPosition, (_speed * 0.5f) * Time.deltaTime);
+                transform.position = Vector2.MoveTowards(transform.position, targetWorldPosition, _speed * Time.deltaTime);
 
                 yield return null;
             }
