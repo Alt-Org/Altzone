@@ -311,12 +311,22 @@ namespace MenuUi.Scripts.Lobby
 
         private void OnGameStartCancelled()
         {
-            _isMatchmaking = true;
-            _isBattleStarting = false;
-            _matchmakingStartTime = Time.time;
-            if (_matchmakingText != null) _matchmakingText.text = "Etsitään peliä...";
-            bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
-            SetCancelButton(isLeader);
+            // If we are still in a matchmaking room, resume matchmaking UI state.
+            if (PhotonRealtimeClient.InMatchmakingRoom)
+            {
+                _isMatchmaking = true;
+                _isBattleStarting = false;
+                _matchmakingStartTime = Time.time;
+                if (_matchmakingText != null) _matchmakingText.text = "Etsitään peliä...";
+                bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
+                SetCancelButton(isLeader);
+            }
+            else
+            {
+                // We left matchmaking (CancelGameStart forced return to main menu) - hide panel.
+                _isMatchmaking = false;
+                _isBattleStarting = false;
+            }
             UpdateVisibility();
         }
 

@@ -75,6 +75,17 @@ public static class PhotonExtensions
     public static void SetCustomProperty(this Player player, string key, object value)
     {
         Assert.IsNotNull(value);
+        // Guard: ensure Photon client is connected, ready and in a room before sending property ops.
+        try
+        {
+            if (PhotonRealtimeClient.Client == null || !PhotonRealtimeClient.Client.IsConnectedAndReady || !PhotonRealtimeClient.InRoom)
+            {
+                Debug.LogWarning($"Skipping SetCustomProperty '{key}' - client not ready (State: {PhotonRealtimeClient.NetworkClientState})");
+                return;
+            }
+        }
+        catch { }
+
         var props = new PhotonHashtable { { key, value } };
         player.SetCustomProperties(props);
     }
@@ -97,6 +108,17 @@ public static class PhotonExtensions
     {
         if (player.CustomProperties.ContainsKey(key))
         {
+            // Guard: only attempt property ops when client is connected and ready
+            try
+            {
+                if (PhotonRealtimeClient.Client == null || !PhotonRealtimeClient.Client.IsConnectedAndReady || !PhotonRealtimeClient.InRoom)
+                {
+                    Debug.LogWarning($"Skipping RemoveCustomProperty '{key}' - client not ready (State: {PhotonRealtimeClient.NetworkClientState})");
+                    return;
+                }
+            }
+            catch { }
+
             var props = new PhotonHashtable { { key, null } };
             player.SetCustomProperties(props);
         }
@@ -124,6 +146,16 @@ public static class PhotonExtensions
     public static void SetCustomProperty(this Room room, string key, object value)
     {
         Assert.IsNotNull(value);
+        try
+        {
+            if (PhotonRealtimeClient.Client == null || !PhotonRealtimeClient.Client.IsConnectedAndReady || !PhotonRealtimeClient.InRoom)
+            {
+                Debug.LogWarning($"Skipping Room.SetCustomProperty '{key}' - client not ready (State: {PhotonRealtimeClient.NetworkClientState})");
+                return;
+            }
+        }
+        catch { }
+
         var props = new PhotonHashtable { { key, value } };
         room.SetCustomProperties(props);
     }
@@ -162,6 +194,16 @@ public static class PhotonExtensions
     {
         if (room.CustomProperties.ContainsKey(key))
         {
+            try
+            {
+                if (PhotonRealtimeClient.Client == null || !PhotonRealtimeClient.Client.IsConnectedAndReady || !PhotonRealtimeClient.InRoom)
+                {
+                    Debug.LogWarning($"Skipping Room.RemoveCustomProperty '{key}' - client not ready (State: {PhotonRealtimeClient.NetworkClientState})");
+                    return;
+                }
+            }
+            catch { }
+
             var props = new PhotonHashtable { { key, null } };
             room.SetCustomProperties(props);
         }
@@ -184,6 +226,16 @@ public static class PhotonExtensions
 
     private static void DoSetCustomProperty(this Room room, string key, object newValue, object currentValue)
     {
+        try
+        {
+            if (PhotonRealtimeClient.Client == null || !PhotonRealtimeClient.Client.IsConnectedAndReady || !PhotonRealtimeClient.InRoom)
+            {
+                Debug.LogWarning($"Skipping DoSetCustomProperty(Room) '{key}' - client not ready (State: {PhotonRealtimeClient.NetworkClientState})");
+                return;
+            }
+        }
+        catch { }
+
         var props = new PhotonHashtable { { key, newValue } };
         if (!room.CustomProperties.TryGetValue(key, out var propValue))
         {
