@@ -27,6 +27,7 @@ component BattlePlayerDataQComponent
 
     bool DisableRotation;
     FrameTimer DamageCooldown;
+    FrameTimer StunCooldown;
 
     FP MovementCooldownSec;
 

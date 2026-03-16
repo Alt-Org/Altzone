@@ -68,7 +68,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Called by BattleCollisionQSystem. Applies damage to the player after checking if it is appropriate to do so.
+        /// Called by BattleCollisionQSystem. Stuns the player after checking if it is appropriate to do so.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame</param>
@@ -90,6 +90,8 @@ namespace Battle.QSimulation.Player
 
             //BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->PlayerEntity);
             FP damageTaken = projectileCollisionData->Projectile->Attack;
+            damagedPlayerData->MovementEnabled = false;
+            damagedPlayerData->RotationEnabled = false;
 
             HandleSFX(f, damagedPlayerData->CharacterId, SoundEffectType.HitCharacterAggression);
 
@@ -113,6 +115,7 @@ namespace Battle.QSimulation.Player
                 damagePlayerHandle.SetOutOfPlayRespawning();
                 damagePlayerHandle.RespawnTimer = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).AutoRespawnTimeSec);
             }
+            damagedPlayerData->StunCooldown = FrameTimer.FromSeconds(f, (int)BattleQConfig.GetPlayerSpec(f).StunCooldownSec);
 
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
         }
@@ -146,7 +149,7 @@ namespace Battle.QSimulation.Player
 
                 damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
 
-                f.Events.BattleShieldTakeDamage(shieldCollisionData->PlayerShieldHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newDefence);
+                f.Events.BattleShieldTakeDamage(shieldCollisionData->PlayerShieldHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newDefence / damagedPlayerData->Stats.Defence);
             }
 
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
@@ -455,6 +458,12 @@ namespace Battle.QSimulation.Player
             {
                 AbilityActivate(f, playerData, playerTransform);
                 updateMovement = false;
+            }
+
+            if (!playerData->StunCooldown.IsRunning(f))
+            {
+                playerData->MovementEnabled = true;
+                playerData->RotationEnabled = !playerData->DisableRotation;
             }
 
             if (playerData->CurrentDefence <= FP._0)

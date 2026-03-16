@@ -519,6 +519,8 @@ namespace Battle.QSimulation.Player
 
                             CurrentHp             = FP._0,
                             CurrentDefence        = FP._0,
+                            MovementEnabled       = true,
+                            RotationEnabled       = !playerDataTemplate->DisableRotation,
 
                             HitboxShieldEntity    = playerHitboxShieldEntity,
                             HitboxCharacterEntity = playerHitboxCharacterEntity,
