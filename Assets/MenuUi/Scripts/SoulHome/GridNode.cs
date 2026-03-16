@@ -8,7 +8,7 @@ public class GridNode
     public Vector2Int GridPosition;
     public bool IsFurniture;
     public int penalty;
-    public Furniture Furniture;
+    public FurnitureSlot FurnitureSlot;
 
     public float GCost = float.MaxValue;
     public float HCost;

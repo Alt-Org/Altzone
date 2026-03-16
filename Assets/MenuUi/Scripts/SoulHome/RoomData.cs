@@ -320,35 +320,44 @@ namespace MenuUI.Scripts.SoulHome
             if (_grid == null)
             {
                 _grid = new GridNode[columns, rows];
+
+                for (int r = 0; r < rows; r++)
+                {
+                    Transform rowTransform = transform.Find("FurniturePoints").Find("FloorFurniturePoints").GetChild(r);
+
+                    for (int c = 0; c < columns; c++)
+                    {
+                        FurnitureSlot slot = rowTransform.GetChild(c).GetComponent<FurnitureSlot>();
+
+                        //bool walkable = (slot.Furniture == null);
+                        //_grid[c, r] = new GridNode(new Vector2Int(c, r), walkable);
+
+                        if (_grid[c, r] == null)
+                        {
+                            _grid[c, r] = new GridNode(new Vector2Int(c, r), false);
+                        }
+                        GridNode node = _grid[c, r];
+                        node.FurnitureSlot = slot;
+
+                        _grid[c, r] = node;
+                    }
+                }
             }
             
             _walkableSlots.Clear();
 
-            for (int r = 0; r < rows; r++)
+            foreach (GridNode node in _grid)
             {
-                Transform rowTransform = transform.Find("FurniturePoints").Find("FloorFurniturePoints").GetChild(r);
-
-                for (int c = 0; c < columns; c++)
+                if (node.FurnitureSlot.Furniture == null)
                 {
-                    FurnitureSlot slot = rowTransform.GetChild(c).GetComponent<FurnitureSlot>();
-
-                    //bool walkable = (slot.Furniture == null);
-                    //_grid[c, r] = new GridNode(new Vector2Int(c, r), walkable);
-
-                    if (_grid[c, r] == null)
-                    {
-                        _grid[c, r] = new GridNode(new Vector2Int(c, r), false);
-                    }
-                    GridNode node = _grid[c, r];
-                    
-                    if (slot.Furniture != null)
-                    {
-                        node.IsFurniture = true;
-                        node.Furniture = slot.Furniture;
-                    }
-                    _grid[c, r] = node;
+                    node.IsFurniture = false;
+                }
+                else
+                {
+                    node.IsFurniture = true;
                 }
             }
+
             int gridWidth = _grid.GetLength(0);
             int gridHeight = _grid.GetLength(1);
             CalculatePenalties();
@@ -388,10 +397,10 @@ namespace MenuUI.Scripts.SoulHome
                     GridNode currentNode = _grid[x, y];
                     // skip cells that are not furniture
                     if (!currentNode.IsFurniture) continue;
-                    // Will be true for 2 pieces of the same furniture, which is not ideal
+
                     bool isSameFurnitureAbove = (y > 0 &&
                                                  _grid[x, y - 1].IsFurniture &&
-                                                 _grid[x, y - 1].Furniture == currentNode.Furniture);
+                                                 _grid[x, y - 1].FurnitureSlot.Furniture == currentNode.FurnitureSlot.Furniture);
 
                     if (y == 0)
                     {
