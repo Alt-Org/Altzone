@@ -420,6 +420,11 @@ namespace MenuUi.Scripts.Window
             window._windowInst.AddComponent<WindowPolicyChecker>();
         }
 
+        /// <summary>
+        /// Checks the defaultwindow parent for window components that aren't bound to a MyWindow component yet. If matching GameObject is found then bind it.
+        /// </summary>
+        /// <param name="windowDef"></param>
+        /// <returns>If GameObject is found then returns MyWindow with the bound GameObject. Otherwise null.</returns>
         private MyWindow CheckUnbinded(WindowDef windowDef)
         {
             MyWindow currentWindow = null;
