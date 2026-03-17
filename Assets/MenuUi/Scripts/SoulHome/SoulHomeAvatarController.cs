@@ -200,8 +200,7 @@ namespace MenuUI.Scripts.SoulHome
         private void HandleWander(Vector2Int? targetGridPosition = null)
         {
             bool changeRoom = ShouldChangeRoom() && targetGridPosition == null;
-            // Updategrid should not be called here, it should be called in the script that places the furniture
-            _roomData.UpdateGrid();
+
             _travelPoints.Clear();
             //Stopwatch stopwatch = Stopwatch.StartNew();
             if (_walkableSlots.Count > 0)
