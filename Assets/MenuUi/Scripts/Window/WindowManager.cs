@@ -330,29 +330,10 @@ namespace MenuUi.Scripts.Window
                     return;
                 }
                 var currentWindow =
-                    _knownWindows.FirstOrDefault(x => windowDef.Equals(x._windowDef));
+                    _knownWindows.FirstOrDefault(x => windowDef.Equals(x._windowDef))
+                    ?? CheckUnbinded(windowDef)
+                    ?? CreateWindow(windowDef);
 
-                if(currentWindow == null)
-                {
-                    if (_unbindedWindows.Count > 0)
-                    {
-                        Debug.LogWarning(windowDef.WindowPrefab.name + ", : " + _unbindedWindows[0].name);
-                    }
-                    var foundUnbinded = _unbindedWindows.FirstOrDefault(x => windowDef.WindowPrefab.name.Equals(x.name));
-                    if(foundUnbinded != null)
-                    {
-                        currentWindow = new MyWindow(windowDef, foundUnbinded);
-                        _knownWindows.Add(currentWindow);
-                        _unbindedWindows.Remove(foundUnbinded);
-#if UNITY_EDITOR
-                        StartCoroutine(CheckWindowPolicy(currentWindow));
-#endif
-                    }
-                    else
-                    {
-                        currentWindow = CreateWindow(windowDef);
-                    }
-                }
                 if (_currentWindows.Count > 0)
                 {
                     var previousWindow = _currentWindows[0];
@@ -437,6 +418,22 @@ namespace MenuUi.Scripts.Window
                 yield break;
             }
             window._windowInst.AddComponent<WindowPolicyChecker>();
+        }
+
+        private MyWindow CheckUnbinded(WindowDef windowDef)
+        {
+            MyWindow currentWindow = null;
+            var foundUnbinded = _unbindedWindows.FirstOrDefault(x => windowDef.WindowPrefab.name.Equals(x.name));
+            if (foundUnbinded != null)
+            {
+                currentWindow = new MyWindow(windowDef, foundUnbinded);
+                _knownWindows.Add(currentWindow);
+                _unbindedWindows.Remove(foundUnbinded);
+#if UNITY_EDITOR
+                StartCoroutine(CheckWindowPolicy(currentWindow));
+#endif
+            }
+            return currentWindow;
         }
 
         private GameObject CreateWindowPrefab(WindowDef windowDef)
