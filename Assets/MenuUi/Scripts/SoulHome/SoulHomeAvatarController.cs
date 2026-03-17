@@ -258,8 +258,9 @@ namespace MenuUI.Scripts.SoulHome
                         targetPos,
                         _speed * Time.deltaTime);
 
-                    // 0.25f offset is needed because when walking close to gridnode edge the closest grid node changes every step
-                    UpdateSortingOrder(WorldToGrid(new(transform.position.x, transform.position.y - 0.25f)).y);
+                    // offset is needed because when walking close to gridnode edge the closest grid node changes every step
+                    float offset = _grid[0, 0].FurnitureSlot.height * 0.4f;
+                    UpdateSortingOrder(WorldToGrid(new(transform.position.x, transform.position.y - offset)).y);
 
                     yield return null;
                 }
