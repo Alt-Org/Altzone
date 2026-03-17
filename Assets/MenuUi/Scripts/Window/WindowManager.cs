@@ -158,6 +158,7 @@ namespace MenuUi.Scripts.Window
         {
             Debug.Log($"sceneUnloaded {scene.name} ({scene.buildIndex}) prefabCount {_knownWindows.Count} pending {_pendingWindow}");
             _knownWindows.Clear();
+            _unbindedWindows.Clear();
             _windowsParent = null;
             _goBackOnceHandler = null;
         }
