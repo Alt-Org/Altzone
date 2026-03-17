@@ -832,10 +832,13 @@ namespace MenuUI.Scripts.SoulHome
                 FurnitureSlot oldSlot = furniture.GetComponent<FurnitureHandling>().Slot;
                 furniture.GetComponent<FurnitureHandling>().SaveSlot();
                 int roomId;
+                if (oldSlot != null)
+                {
+                    int oldRoomId = oldSlot.roomId;
+                    _rooms.transform.GetChild(oldRoomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(furniture.GetComponent<FurnitureHandling>(),oldSlot);
+                }
                 if (furniture.GetComponent<FurnitureHandling>().Slot == null)
                 {
-                    roomId = oldSlot.roomId;
-                    _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(furniture.GetComponent<FurnitureHandling>(), oldSlot);
                     Destroy(furniture);
                     continue;
                 }
