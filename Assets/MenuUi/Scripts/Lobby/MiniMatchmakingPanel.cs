@@ -31,6 +31,8 @@ namespace MenuUi.Scripts.Lobby
         private Vector2 _savedAnchorMax;
         private Vector2 _savedOffsetMin;
         private Vector2 _savedOffsetMax;
+        private int _popupSearchAttempts;
+        private const int MaxPopupSearchAttempts = 120;
 
         private void Awake()
         {
@@ -81,6 +83,8 @@ namespace MenuUi.Scripts.Lobby
 
             // Initialize state from current Photon/room state in case matchmaking started before this component was enabled
             TryInitFromCurrentState();
+            _popupSearchAttempts = 0; // Initialize popup search attempts
+            TryFindBattlePopup(); // Attempt to find the battle popup
         }
 
         private void TryInitFromCurrentState()
@@ -146,6 +150,18 @@ namespace MenuUi.Scripts.Lobby
                 int count = PhotonRealtimeClient.CurrentRoomPlayerCount;
                 _matchmakingCountText.text = count.ToString();
             }
+            // Retry locating the battle popup (prefer scene instance) for a short time if not found yet
+            if ((_battlePopup == null || !_battlePopup.scene.IsValid()) && _popupSearchAttempts < MaxPopupSearchAttempts)
+            {
+                _popupSearchAttempts++;
+                if (TryFindBattlePopupSceneOnly())
+                {
+                    UpdateCancelButtonFromState();
+                    TryFindMatchmakingCountText();
+                    UpdateVisibility();
+                }
+            }
+
         }
 
         private void OnPopupContentsRegistered(GameObject popup)
@@ -162,22 +178,117 @@ namespace MenuUi.Scripts.Lobby
         private void TryFindBattlePopup()
         {
             if (_battlePopup != null) return;
-            // First prefer InLobbyController runtime instance if available
-            if (InLobbyController.PopupContentsInstance != null)
+            // Try scene-only search first
+            if (TryFindBattlePopupSceneOnly()) return;
+
+            // If immediate scene search failed, fallback to asset/inactive search (less desirable)
+            var mgrs = Resources.FindObjectsOfTypeAll<BattlePopupPanelManager>();
+            foreach (var m in mgrs)
             {
-                _battlePopup = InLobbyController.PopupContentsInstance;
-                return;
+                if (m == null) continue;
+                var go = m.gameObject;
+                if (go != null)
+                {
+                    _battlePopup = go;
+                    Debug.Log($"MiniMatchmakingPanel: Found battle popup (asset/inactive) via BattlePopupPanelManager: {_battlePopup.name}");
+                    return;
+                }
             }
-            // Try to find the popup manager component in the scene (includes inactive objects where supported)
-            var mgr = FindObjectOfType<BattlePopupPanelManager>(true);
-            if (mgr != null)
+
+            var gos = Resources.FindObjectsOfTypeAll<GameObject>();
+            foreach (var g in gos)
             {
-                _battlePopup = mgr.gameObject;
-                return;
+                if (g == null) continue;
+                string n = g.name.ToLowerInvariant();
+                if (n.Contains("popup") || n.Contains("battle") || n.Contains("popupcontents"))
+                {
+                    _battlePopup = g;
+                    Debug.Log($"MiniMatchmakingPanel: Found battle popup (asset/inactive) via name match: {_battlePopup.name}");
+                    return;
+                }
             }
-            // Last resort: try a few common names (non-exhaustive)
-            var go = GameObject.Find("PopupContents") ?? GameObject.Find("BattlePopup") ?? GameObject.Find("PopupContents(Clone)");
-            if (go != null) _battlePopup = go;
+
+            Debug.Log("MiniMatchmakingPanel: Battle popup not found by any fallback.");
+        }
+
+        private bool TryFindBattlePopupSceneOnly()
+        {
+            // Prefer explicit runtime registration from InLobbyController
+            var popupInst = InLobbyController.PopupContentsInstance;
+            if (popupInst != null && popupInst.scene.IsValid() && popupInst.scene.isLoaded)
+            {
+                _battlePopup = popupInst;
+                Debug.Log($"MiniMatchmakingPanel: Found battle popup via InLobbyController: {_battlePopup.name}");
+                return true;
+            }
+
+            // Prefer a BattlePopupPanelManager scene instance
+            var mgrs = Resources.FindObjectsOfTypeAll<BattlePopupPanelManager>();
+            foreach (var m in mgrs)
+            {
+                if (m == null) continue;
+                var go = m.gameObject;
+                if (go == null) continue;
+                var scene = go.scene;
+                if (scene.IsValid() && scene.isLoaded)
+                {
+                    _battlePopup = go;
+                    Debug.Log($"MiniMatchmakingPanel: Found battle popup (scene instance) via BattlePopupPanelManager: {_battlePopup.name}");
+                    return true;
+                }
+            }
+
+            // Prefer a MatchmakingPanel scene instance and climb to a reasonable popup root
+            var mps = Resources.FindObjectsOfTypeAll<MatchmakingPanel>();
+            foreach (var mp in mps)
+            {
+                if (mp == null) continue;
+                var go = mp.gameObject;
+                if (go == null) continue;
+                var scene = go.scene;
+                if (!(scene.IsValid() && scene.isLoaded)) continue;
+                var candidate = FindPopupRootFrom(go);
+                _battlePopup = candidate ?? go;
+                Debug.Log($"MiniMatchmakingPanel: Found battle popup (scene instance) via MatchmakingPanel: {_battlePopup.name}");
+                return true;
+            }
+
+            // As a last resort, search scene GameObjects that contain MatchmakingPanel or BattlePopupPanelManager in their descendants
+            var gos = Resources.FindObjectsOfTypeAll<GameObject>();
+            foreach (var g in gos)
+            {
+                if (g == null) continue;
+                var scene = g.scene;
+                if (!(scene.IsValid() && scene.isLoaded)) continue;
+                if (g.GetComponentsInChildren<MatchmakingPanel>(true).Length > 0 || g.GetComponentsInChildren<BattlePopupPanelManager>(true).Length > 0)
+                {
+                    _battlePopup = g;
+                    Debug.Log($"MiniMatchmakingPanel: Found battle popup (scene instance) via descendant component: {_battlePopup.name}");
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private GameObject FindPopupRootFrom(GameObject g)
+        {
+            if (g == null) return null;
+            var t = g.transform;
+            GameObject last = g;
+            while (t.parent != null)
+            {
+                var p = t.parent.gameObject;
+                if (p == null) break;
+                var pn = p.name.ToLowerInvariant();
+                // Prefer parent that explicitly looks like a popup/root
+                if (pn.Contains("popup") || pn.Contains("battle") || pn.Contains("popupcontents") || pn.Contains("window") || pn.Contains("uicanvas"))
+                {
+                    last = p;
+                }
+                t = t.parent;
+            }
+            return last;
         }
 
         private void TryFindMatchmakingCountText()
