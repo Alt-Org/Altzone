@@ -1135,10 +1135,28 @@ public class ServerManager : MonoBehaviour
             JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
         ).ToString();
 
-        yield return UpdateClanToServer(body, callback =>
+        yield return StartCoroutine(UpdateClanToServer(body, success =>
         {
-            if (callback) Storefront.Get().SaveClanData(data, null);
-        });
+            if (success)
+            {
+                Storefront.Get().SaveClanData(data, null);
+
+                if (Clan != null && Clan._id == data.Id)
+                {
+                    Clan.name = data.Name;
+                    Clan.tag = data.Tag;
+                    Clan.isOpen = Clan.isOpen;
+                    Clan.ageRange = data.ClanAge;
+                    Clan.goal = data.Goals;
+                    Clan.phrase = data.Phrase;
+                    Clan.language = data.Language;
+                }
+
+                RaiseClanChangedEvent();
+            }
+
+            callback?.Invoke(success);
+        }));
     }
 
     public IEnumerator UpdateClanToServer(string body, Action<bool> callback)
