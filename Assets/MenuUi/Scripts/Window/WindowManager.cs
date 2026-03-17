@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using Prg.Scripts.Common.Unity;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
@@ -96,6 +97,7 @@ namespace MenuUi.Scripts.Window
 
         [SerializeField] private List<MyWindow> _currentWindows;
         [SerializeField] private List<MyWindow> _knownWindows;
+        [SerializeField] private List<GameObject> _unbindedWindows;
 
         private readonly WindowActivator _windowActivator = new();
 
@@ -111,6 +113,7 @@ namespace MenuUi.Scripts.Window
             Debug.Log("Awake");
             _currentWindows = new List<MyWindow>();
             _knownWindows = new List<MyWindow>();
+            _unbindedWindows = new List<GameObject>();
 
             SceneManager.sceneLoaded += SceneLoaded;
             SceneManager.sceneUnloaded += SceneUnloaded;
@@ -118,6 +121,11 @@ namespace MenuUi.Scripts.Window
             var handler = gameObject.AddComponent<EscapeKeyHandler>();
             handler.SetCallback(EscapeKeyPressed);
             ResetState();
+            if(_windowsParent != null)
+                foreach (Transform child in _windowsParent.transform)
+                {
+                    _unbindedWindows.Add(child.gameObject);
+                }
         }
 
         private void ResetState()
@@ -150,6 +158,7 @@ namespace MenuUi.Scripts.Window
         {
             Debug.Log($"sceneUnloaded {scene.name} ({scene.buildIndex}) prefabCount {_knownWindows.Count} pending {_pendingWindow}");
             _knownWindows.Clear();
+            _unbindedWindows.Clear();
             _windowsParent = null;
             _goBackOnceHandler = null;
         }
@@ -157,6 +166,10 @@ namespace MenuUi.Scripts.Window
         void IWindowManager.SetWindowsParent(GameObject windowsParent)
         {
             _windowsParent = windowsParent;
+            foreach(Transform child in _windowsParent.transform)
+            {
+                _unbindedWindows.Add(child.gameObject);
+            }
         }
 
         private void EscapeKeyPressed()
@@ -317,7 +330,9 @@ namespace MenuUi.Scripts.Window
                 }
                 var currentWindow =
                     _knownWindows.FirstOrDefault(x => windowDef.Equals(x._windowDef))
+                    ?? CheckUnbinded(windowDef)
                     ?? CreateWindow(windowDef);
+
                 if (_currentWindows.Count > 0)
                 {
                     var previousWindow = _currentWindows[0];
@@ -402,6 +417,27 @@ namespace MenuUi.Scripts.Window
                 yield break;
             }
             window._windowInst.AddComponent<WindowPolicyChecker>();
+        }
+
+        /// <summary>
+        /// Checks the defaultwindow parent for window components that aren't bound to a MyWindow component yet. If matching GameObject is found then bind it.
+        /// </summary>
+        /// <param name="windowDef"></param>
+        /// <returns>If GameObject is found then returns MyWindow with the bound GameObject. Otherwise null.</returns>
+        private MyWindow CheckUnbinded(WindowDef windowDef)
+        {
+            MyWindow currentWindow = null;
+            var foundUnbinded = _unbindedWindows.FirstOrDefault(x => windowDef.WindowPrefab.name.Equals(x.name));
+            if (foundUnbinded != null)
+            {
+                currentWindow = new MyWindow(windowDef, foundUnbinded);
+                _knownWindows.Add(currentWindow);
+                _unbindedWindows.Remove(foundUnbinded);
+#if UNITY_EDITOR
+                StartCoroutine(CheckWindowPolicy(currentWindow));
+#endif
+            }
+            return currentWindow;
         }
 
         private GameObject CreateWindowPrefab(WindowDef windowDef)
