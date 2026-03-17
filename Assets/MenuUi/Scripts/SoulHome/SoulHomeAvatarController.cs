@@ -547,20 +547,32 @@ namespace MenuUI.Scripts.SoulHome
 
             for (int i = 0; i < fullPath.Count - 1; i++)
             {
-                Vector2Int gridPos = WorldToGrid(fullPath[i]);
-                GridNode node = _grid[gridPos.x, gridPos.y];
+
 
                 // If furniture blocks direct path to future point
                 if (IsSmoothPathTooExpensive(currentPoint, fullPath[i + 1]))
                 {
-                    // stop at last point before hitting furniture
-                    currentPoint = fullPath[i];
+                    Vector2 blockedPoint = fullPath[i + 1];
+                    // Check backwards from the blocked point
+                    for (int j = i; j >= 0; j--)
+                    {
+                        if (IsSmoothPathTooExpensive(blockedPoint, fullPath[j]))
+                        {
+                            currentPoint = fullPath[j + 1];
+                            break;
+                        }
+                        currentPoint = fullPath[j];
+                    }
+
+                    Vector2Int gridPos = WorldToGrid(currentPoint);
+                    GridNode node = _grid[gridPos.x, gridPos.y];
 
                     if (node.IsBackSlot)
                     {
                         currentPoint.y += node.FurnitureSlot.height * 0.5f;
                     }
                     smoothedPath.Add(currentPoint);
+
                 }
             }
 
