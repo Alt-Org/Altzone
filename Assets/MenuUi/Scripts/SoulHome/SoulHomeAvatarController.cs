@@ -107,12 +107,6 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (!hasInitialized) return;
 
-            if (_lHandResolver != null && _rHandResolver != null)
-            {
-                _lHandLabel = _lHandResolver.GetLabel();
-                _rHandLabel = _rHandResolver.GetLabel();
-            }
-
             if (_grid == null)
             {
                 _roomData.UpdateGrid();
