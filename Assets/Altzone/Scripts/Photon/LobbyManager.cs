@@ -90,7 +90,7 @@ namespace Altzone.Scripts.Lobby
         [SerializeField] private BattleMapReference _battleMapReference;
 
         private const long STARTDELAY = 2000;
-        private const float MatchmakingTimeoutSeconds = 45f;
+        private const float MatchmakingTimeoutSeconds = 30f;
 
         private QuantumRunner _runner = null;
 
@@ -445,13 +445,13 @@ namespace Altzone.Scripts.Lobby
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
                 _isActive = false;
-                if (!_isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
+                if (!_isActive) Activate();
             }
         }
 
         public void OnEnable()
         {
-            if(!_isActive && SceneManager.GetActiveScene().buildIndex != 0) Activate();
+            if (!_isActive) Activate();
         }
 
         public void OnDisable()

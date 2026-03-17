@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using TMPro;
 using Altzone.Scripts.Language;
 
@@ -13,6 +14,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
         [SerializeField] private TextLanguageSelectorCaller _lobbyText;
         [SerializeField] private TextLanguageSelectorCaller _playerCountText;
         [SerializeField] private TextLanguageSelectorCaller _matchmakingCountText;
+        private float _updateInterval = 0.5f;
+        private float _lastUpdate = 0f;
         
         public string TitleText
         {
@@ -40,6 +43,25 @@ namespace MenuUi.Scripts.Lobby.InLobby
         {
             _titleText.SetText(string.Empty);
             _lobbyText.SetText(string.Empty);
+        }
+
+        private void Update()
+        {
+            if (Time.time - _lastUpdate < _updateInterval) return;
+            _lastUpdate = Time.time;
+            try
+            {
+                // Keep title/version and counts refreshed
+                _titleText.SetText($"{Application.productName} {PhotonRealtimeClient.GameVersion}");
+                var region = PhotonRealtimeClient.CloudRegion ?? string.Empty;
+                _lobbyText.SetText(SettingsCarrier.Instance.Language, new string[2] { region, PhotonRealtimeClient.GetPing().ToString() });
+                _playerCountText.SetText(SettingsCarrier.Instance.Language, new string[1] { PhotonRealtimeClient.CountOfPlayers.ToString() });
+                _matchmakingCountText.SetText(SettingsCarrier.Instance.Language, new string[1] { PhotonRealtimeClient.CurrentRoomPlayerCount.ToString() });
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"TopInfoPanelController.Update failed: {ex.Message}");
+            }
         }
     }
 }

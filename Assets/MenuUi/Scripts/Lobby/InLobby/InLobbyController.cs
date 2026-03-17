@@ -172,6 +172,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void OpenWindow(GameType gameType)
         {
             _popupContents.SetActive(true);
+            // Ensure top info shows current values when popup opens
+            RefreshTopInfo();
 
             // Checking if we are in room or matchmaking room depending on the game mode which would prevent changing the selected game type
             switch (gameType)
@@ -234,6 +236,24 @@ namespace MenuUi.Scripts.Lobby.InLobby
         {
             _roomSwitcher.ClosePanels();
             _popupContents.SetActive(false);
+        }
+
+        private void RefreshTopInfo()
+        {
+            try
+            {
+                UpdateTitle();
+                if (_topInfoPanel != null)
+                {
+                    _topInfoPanel.LobbyText = new string[2] { _currentRegion, PhotonRealtimeClient.GetPing().ToString() };
+                    _topInfoPanel.PlayerCountText = PhotonRealtimeClient.CountOfPlayers.ToString();
+                    _topInfoPanel.MatchmakingCountText = PhotonRealtimeClient.CurrentRoomPlayerCount.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"RefreshTopInfo failed: {ex.Message}");
+            }
         }
 
         private void CharacterButtonOnClick()
