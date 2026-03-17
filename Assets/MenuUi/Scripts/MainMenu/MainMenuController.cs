@@ -24,6 +24,8 @@ namespace MenuUi.Scripts.MainMenu
         private SetVolume[] audioSources;
         private SettingsCarrier carrier = SettingsCarrier.Instance;
 
+        [SerializeField] private ChooseTask _taskSelectionPopup;
+
         private void Awake()
         {
             lastWidth = Screen.width;
@@ -54,6 +56,8 @@ namespace MenuUi.Scripts.MainMenu
 
             if(!LobbyManager.IsActive) LobbyManager.Instance.Activate();
             if (LobbyManager.Instance.RunnerActive) LobbyManager.CloseRunner();
+
+            if (_taskSelectionPopup != null) _taskSelectionPopup.ShowSelectionWindow();
         }
 
         private void Start()

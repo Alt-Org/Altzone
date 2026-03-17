@@ -22,9 +22,10 @@ public class ChooseTask : MonoBehaviour
 
     private void Start()
     {
-        _dtManager = GetComponentInParent<DailyTaskManager>();
+        _dtManager = GameObject.Find("DailyTaskManager").GetComponent<DailyTaskManager>();
         _gameVersion = GameConfig.Get().GameVersionType;
 
+        DailyTaskProgressManager.OnTaskChange += HideSelectionWindow;
         if (_gameVersion == VersionType.TurboEducation)
         {
             //ShowSelectionWindow();
@@ -40,6 +41,15 @@ public class ChooseTask : MonoBehaviour
     {
         GenerateTaskOptions();
         _selectionWindow.gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// Delete the task options and hide the selection window
+    /// </summary>
+    public void HideSelectionWindow(PlayerTask task)
+    {
+        _selectionWindow.gameObject.SetActive(false);
+        DeleteTaskCards();
     }
 
 
@@ -128,7 +138,7 @@ public class ChooseTask : MonoBehaviour
         // Create three task cards for the categories
         foreach (EducationCategoryType category in ed)
         {
-            CreateTaskCard(GetRandomTaskFromCategory(category));
+            _dtManager.CreateTaskCard(GetRandomTaskFromCategory(category), _taskCardHolder);
         }
     }
 
@@ -142,35 +152,5 @@ public class ChooseTask : MonoBehaviour
             
             Destroy(_taskCardHolder.GetChild(i).gameObject);
         }
-    }
-
-    /// <summary>
-    /// Creates a task card for the given task and adds it to the _taskCardHolder
-    /// </summary>
-    /// <param name="task">The task to create a card for</param>
-    /// <returns>The DailyQuest for the given PlayerTask</returns>
-    public DailyQuest CreateTaskCard(PlayerTask task)
-    {
-        // If given task is null, don't create task card
-        if (task == null) return null;
-
-        var gameVersion = GameConfig.Get().GameVersionType;
-
-        GameObject prefabToInstantiate = (
-                _gameVersion == VersionType.Education || _gameVersion == VersionType.TurboEducation ?
-                _dtManager.GetEducationPrefabCategory(task.EducationCategory) :
-                _dtManager.GetNormalPrefabCategory(task.Points)
-                );
-
-        GameObject taskCard = Instantiate(prefabToInstantiate, _taskCardHolder);
-
-        DailyQuest quest = taskCard.GetComponent<DailyQuest>();
-        quest.SetTaskData(task);
-        quest.PopulateData();
-        quest.ShowWindowWithType(TaskWindowType.Available);
-
-        taskCard.SetActive(true);
-
-        return quest;
     }
 }

@@ -8,7 +8,6 @@ using Altzone.Scripts.ReferenceSheets;
 public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
     //Variables
-    private int _selfIndex = -1;
     private PlayerTask _taskData;
     private bool _clickEnabled = true;
     public PlayerTask TaskData { get { return _taskData; } }
@@ -58,7 +57,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     {
         SettingsCarrier.OnLanguageChanged += UpdateLanguage;
 
-        dailyTaskManager = GameObject.Find("DailyTaskView").GetComponent<DailyTaskManager>();
+        dailyTaskManager = GameObject.Find("DailyTaskManager").GetComponent<DailyTaskManager>();
 
 
         /*Bind this class to PlayerTask for later interactions
@@ -100,10 +99,9 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         _taskData = taskData;
     }
 
-    public void SetTaskDataAndPopulate(PlayerTask taskData, int index)
+    public void SetTaskDataAndPopulate(PlayerTask taskData)
     {
         SetTaskData(taskData);
-        _selfIndex = index;
         PopulateData();
     }
 
@@ -203,8 +201,10 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     /// <param name="type"></param>
     public void ShowWindowWithType(TaskWindowType type)
     {
-        _availableWindow.SetActive(type == TaskWindowType.Available);
-        _reservedWindow.SetActive(type == TaskWindowType.Reserved);
+        if (_availableWindow != null)
+            _availableWindow.SetActive(type == TaskWindowType.Available);
+        if (_reservedWindow != null)
+            _reservedWindow.SetActive(type == TaskWindowType.Reserved);
     }
 
     

@@ -1,13 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
-using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.UI;
-using Altzone.Scripts.Model.Poco.Clan;
-using Altzone.Scripts.Model.Poco.Player;
-using Altzone.Scripts.Config;
-using MenuUi.Scripts.TabLine;
+using static DailyQuest;
 
 public class DailyTaskManager : AltMonoBehaviour
 {
@@ -15,22 +15,10 @@ public class DailyTaskManager : AltMonoBehaviour
 
     [Tooltip("Maximum time until a get or save data operation is forced to quit.")]
     [SerializeField] private float _timeoutSeconds = 10;
-    [SerializeField] private TabLine _tabline;
+    [HideInInspector] public float TimeoutSeconds { get { return _timeoutSeconds;  } }
 
     private PlayerData _currentPlayerData;
-
-    [Header("Views")]
-    [SerializeField] private GameObject _dailyTasksView;
-    [SerializeField] private GameObject _ownTaskView;
-    [SerializeField] private GameObject _clanTaskView;
-
-    [Header("TabButtons")]
-    [SerializeField] private Button _dailyTasksTabButton;
-    [SerializeField] private Button _ownTaskTabButton;
-    [SerializeField] private Button _clanTaskTabButton;
-
-    private List<GameObject> _dailyTaskCardSlots = new List<GameObject>();
-    [HideInInspector] public List<GameObject> DailyTaskCardSlots { get { return _dailyTaskCardSlots; } }
+    
     private DailyQuest _currentQuest;
 
     [Header("DailyTaskCard Education Prefabs")]
@@ -45,28 +33,9 @@ public class DailyTaskManager : AltMonoBehaviour
     [SerializeField] private GameObject _dailyTaskCardNormalRow2Prefab;
     [SerializeField] private GameObject _dailyTaskCardNormalRow3Prefab;
 
-    [Header("DailyTasksEducationPage")]
-    [SerializeField] private GameObject _dailyTasksEducationView;
-    [SerializeField] private RectTransform _tasksEducationVerticalLayout;
-    [Space]
-    [SerializeField] private Transform _taskListEducationSocial;
-    [SerializeField] private Transform _taskListEducationStory;
-    [SerializeField] private Transform _taskListEducationCulture;
-    [SerializeField] private Transform _taskListEducationEthical;
-    [SerializeField] private Transform _taskListEducationAction;
-
     [Header("DailyTasksNormalPage")]
-    [Space]
-    [SerializeField] private GameObject _dailyTasksNormalView;
-    [SerializeField] private RectTransform _tasksNormalVerticalLayout;
-    [Space]
-    [SerializeField] private Transform _taskListNormalRow1;
     [SerializeField] private int _dailyCategoryNormalRow1PointsLimit = 100;
-    [Space]
-    [SerializeField] private Transform _taskListNormalRow2;
     [SerializeField] private int _dailyCategoryNormalRow2PointsLimit = 500;
-    [Space]
-    [SerializeField] private Transform _taskListNormalRow3;
 
     [Header("OwnTaskPage")]
     [SerializeField] private Button _cancelTaskButton;
@@ -110,25 +79,15 @@ public class DailyTaskManager : AltMonoBehaviour
 
     public ClanTasks ValidTasks { get { return _validTasks; } }
 
-    public enum SelectedTab
-    {
-        Tasks,
-        OwnTask,
-        ClanTask
-    }
-    private SelectedTab _selectedTab = SelectedTab.Tasks;
+    private DailyTaskView _dailyTaskView;
 
     #endregion
 
     void Start()
     {
-        //DailyTask page setup
-        StartCoroutine(DataSetup());
+        _dailyTaskView = GameObject.Find("DailyTaskView").GetComponent<DailyTaskView>();
 
-        //Buttons
-        _dailyTasksTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.Tasks));
-        _ownTaskTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.OwnTask));
-        _clanTaskTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.ClanTask));
+        StartCoroutine(DataSetup());
 
         _cancelTaskButton.onClick.AddListener(() => StartCancelTask());
         _showMultipleChoiceTaskButton.onClick.AddListener(() => ShowMultipleChoiceTask());
@@ -147,8 +106,23 @@ public class DailyTaskManager : AltMonoBehaviour
         }
     }
 
+    
+
+    private void OnDestroy()
+    {
+        try
+        {
+            DailyTaskProgressManager.OnTaskDone -= ClearCurrentTask;
+            DailyTaskProgressManager.OnTaskProgressed -= UpdateOwnTaskProgress;
+        }
+        catch
+        {
+            Debug.LogError("DailyTaskProgressManager instance missing!");
+        }
+    }
+
     /// <summary>
-    /// DailyTask page setup
+    /// DailyTask data setup
     /// </summary>
     /// <returns></returns>
     private IEnumerator DataSetup()
@@ -158,12 +132,6 @@ public class DailyTaskManager : AltMonoBehaviour
 
         StartCoroutine(PlayerDataTransferer("get", null, _timeoutSeconds, data => timeout = data, data => _currentPlayerData = data));
         yield return new WaitUntil(() => (_currentPlayerData != null || timeout != null));
-
-        if (_currentPlayerData == null)
-        {
-            Debug.LogError("Failed to fetch player data.");
-            yield break;
-        }
 
         StartCoroutine(PopulateTasks(data => dtCardsReady = data));
         yield return new WaitUntil(() => dtCardsReady != null);
@@ -190,18 +158,11 @@ public class DailyTaskManager : AltMonoBehaviour
         }
 
         CreateClanProgressBar(); //TODO: Move to inside the brackets when server is ready.
-    }
 
-    private void OnDestroy()
-    {
-        try
+        if (_currentPlayerData == null)
         {
-            DailyTaskProgressManager.OnTaskDone -= ClearCurrentTask;
-            DailyTaskProgressManager.OnTaskProgressed -= UpdateOwnTaskProgress;
-        }
-        catch
-        {
-            Debug.LogError("DailyTaskProgressManager instance missing!");
+            Debug.LogError("Failed to fetch player data.");
+            yield break;
         }
     }
 
@@ -210,17 +171,6 @@ public class DailyTaskManager : AltMonoBehaviour
     private IEnumerator PopulateTasks(System.Action<bool> callback)
     {
         var gameVersion = GameConfig.Get().GameVersionType;
-
-        if (gameVersion is VersionType.Education or VersionType.TurboEducation)
-        {
-            _dailyTasksEducationView.gameObject.SetActive(true);
-            _dailyTasksNormalView.gameObject.SetActive(false);
-        }
-        else
-        {
-            _dailyTasksEducationView.gameObject.SetActive(false);
-            _dailyTasksNormalView.gameObject.SetActive(true);
-        }
 
         ClanTasks clanTasks = null;
         PlayerData playerData = null;
@@ -309,44 +259,31 @@ public class DailyTaskManager : AltMonoBehaviour
         {
             switch (gameVersion)
             {
-                case VersionType.Education: case VersionType.TurboEducation: validatedTasks = GenerateEducationTasks(); break;
-                case VersionType.Standard: validatedTasks = GenerateNormalTasks(); break;
+                case VersionType.Education:
+                case VersionType.TurboEducation:
+                    validatedTasks = GenerateEducationTasks(); break;
+                case VersionType.Standard:
+                    validatedTasks = GenerateNormalTasks(); break;
             }
         }
 
         for (int i = 0; i < validatedTasks.Tasks.Count; i++)
         {
-            GameObject prefabToInstantiate = (
-                gameVersion is VersionType.Education or VersionType.TurboEducation ?
-                GetEducationPrefabCategory(validatedTasks.Tasks[i].EducationCategory) :
-                GetNormalPrefabCategory(validatedTasks.Tasks[i].Points)
-                );
 
-            GameObject taskObject = Instantiate(prefabToInstantiate, gameObject.transform);
-            _dailyTaskCardSlots.Add(taskObject);
+            PlayerTask task = validatedTasks.Tasks[i];
+            DailyQuest quest = _dailyTaskView.AddTaskCardToView(task);
 
-            DailyQuest task = taskObject.GetComponent<DailyQuest>();
-            task.SetTaskDataAndPopulate(validatedTasks.Tasks[i], i);
-            if (playerData.Task != null && playerData.Task.Id == validatedTasks.Tasks[i].Id) _currentQuest = task;
+            if (playerData.Task != null && playerData.Task.Id == task.Id) _currentQuest = quest;
 
             // If player has an id, reserve task for player (so other's won't be able to take the task)
-            if (validatedTasks.Tasks[i].PlayerId != "")
-                _dailyTaskCardSlots[i].GetComponent<DailyQuest>().SetTaskAvailability(false);
+            if (task.PlayerId != "")
+                //_dailyTaskView.DailyTaskCardSlots[i].GetComponent<DailyQuest>().SetTaskAvailability(false);
 
-            if (_currentPlayerData.Id == validatedTasks.Tasks[i].PlayerId)
-            {
-                _currentPlayerData.Task = validatedTasks.Tasks[i]; //TODO: Remove when fetching task data works.
-                _currentQuest = task;
-            }
-
-            Transform parentCategory = (
-                gameVersion is VersionType.Education or VersionType.TurboEducation ?
-                GetEducationParentCategory(validatedTasks.Tasks[i].EducationCategory) :
-                GetNormalParentCategory(validatedTasks.Tasks[i].Points)
-                );
-
-            taskObject.transform.SetParent(parentCategory, false);
-            taskObject.SetActive(true);
+                if (_currentPlayerData.Id == task.PlayerId)
+                {
+                    _currentPlayerData.Task = task; //TODO: Remove when fetching task data works.
+                    _currentQuest = quest;
+                }
 
             // Store validated tasks
             _validTasks = validatedTasks;
@@ -354,40 +291,7 @@ public class DailyTaskManager : AltMonoBehaviour
             Debug.Log("Created Task: " + validatedTasks.Tasks[i].Id);
         }
 
-        if (gameVersion is VersionType.Education or VersionType.TurboEducation)
-        {
-            //Needed to update the instantiated DT cards spacing in HorizontalLayoutGroups.
-            LayoutRebuilder.ForceRebuildLayoutImmediate(_taskListEducationSocial.GetComponent<RectTransform>());
-            LayoutRebuilder.ForceRebuildLayoutImmediate(_taskListEducationStory.GetComponent<RectTransform>());
-            LayoutRebuilder.ForceRebuildLayoutImmediate(_taskListEducationCulture.GetComponent<RectTransform>());
-            LayoutRebuilder.ForceRebuildLayoutImmediate(_taskListEducationEthical.GetComponent<RectTransform>());
-            LayoutRebuilder.ForceRebuildLayoutImmediate(_taskListEducationAction.GetComponent<RectTransform>());
-
-            //Sets DT cards to left side.
-            _taskListEducationSocial.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-            _taskListEducationStory.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-            _taskListEducationCulture.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-            _taskListEducationEthical.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-            _taskListEducationAction.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-
-            //Sets DT card category list to the top.
-            _tasksEducationVerticalLayout.anchoredPosition = Vector2.zero;
-        }
-        else
-        {
-            //Needed to update the instantiated DT cards spacing in HorizontalLayoutGroups.
-            LayoutRebuilder.ForceRebuildLayoutImmediate(_taskListNormalRow1.GetComponent<RectTransform>());
-            LayoutRebuilder.ForceRebuildLayoutImmediate(_taskListNormalRow2.GetComponent<RectTransform>());
-            LayoutRebuilder.ForceRebuildLayoutImmediate(_taskListNormalRow3.GetComponent<RectTransform>());
-
-            //Sets DT cards to left side.
-            _taskListNormalRow1.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-            _taskListNormalRow2.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-            _taskListNormalRow3.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-
-            //Sets DT card category list to the top.
-            _tasksNormalVerticalLayout.anchoredPosition = Vector2.zero;
-        }
+        _dailyTaskView.UpdateDailyTaskCards();
 
         callback(true);
     }
@@ -479,16 +383,7 @@ public class DailyTaskManager : AltMonoBehaviour
         return new(TaskVersionType.Education, tasklist);
     }
 
-    public Transform GetNormalParentCategory(int points)
-    {
-        if (points < _dailyCategoryNormalRow1PointsLimit)
-            return (_taskListNormalRow1);
-
-        if (points < _dailyCategoryNormalRow2PointsLimit)
-            return (_taskListNormalRow2);
-
-        return (_taskListNormalRow3);
-    }
+    
 
     public GameObject GetNormalPrefabCategory(int points)
     {
@@ -499,19 +394,6 @@ public class DailyTaskManager : AltMonoBehaviour
             return (_dailyTaskCardNormalRow2Prefab);
 
         return (_dailyTaskCardNormalRow3Prefab);
-    }
-
-    public Transform GetEducationParentCategory(EducationCategoryType type)
-    {
-        return type switch
-        {
-            <= EducationCategoryType.Social => _taskListEducationSocial,
-            <= EducationCategoryType.Story => _taskListEducationStory,
-            <= EducationCategoryType.Culture => _taskListEducationCulture,
-            <= EducationCategoryType.Ethical => _taskListEducationEthical,
-            <= EducationCategoryType.Action => _taskListEducationAction,
-            _ => _taskListEducationSocial,
-        };
     }
 
     public GameObject GetEducationPrefabCategory(EducationCategoryType type)
@@ -540,28 +422,7 @@ public class DailyTaskManager : AltMonoBehaviour
         }
 
         SetHandleOwnTask(_currentPlayerData.Task);
-        SwitchTab(SelectedTab.OwnTask);
-    }
-
-    /// <summary>
-    /// Get existing task from task card object.
-    /// </summary>
-    private IEnumerator GetTask(string id, System.Action<PlayerTask> callback)
-    {
-        foreach (GameObject taskObj in _dailyTaskCardSlots)
-        {
-            if (taskObj == null)
-                continue;
-
-            DailyQuest dailyQuest = taskObj.GetComponent<DailyQuest>();
-            if (dailyQuest.TaskData.Id == id)
-            {
-                callback(dailyQuest.TaskData);
-                yield return true;
-            }
-        }
-
-        yield return true;
+        _dailyTaskView.SwitchTab(DailyTaskView.SelectedTab.OwnTask);
     }
 
     public void TESTAddTaskProgress()
@@ -627,7 +488,11 @@ public class DailyTaskManager : AltMonoBehaviour
         playerData.Task.ClearProgress();
         playerData.Task.ClearPlayerId();
         //playerData.Task.InvokeOnTaskDeselected();
-        _currentQuest.SetTaskAvailability(true); // Set task back to available
+        if (_currentQuest != null)
+        {
+            _currentQuest.SetTaskAvailability(true); // Set task back to available
+        }
+            
         _currentQuest = null;
         playerData.Task = null;
         timeout = null;
@@ -655,7 +520,7 @@ public class DailyTaskManager : AltMonoBehaviour
         _currentPlayerData.Task.ClearProgress();
         _ownTaskPageHandler.ClearCurrentTask();
         //_ownTaskTabButton.interactable = false;
-        SwitchTab(SelectedTab.Tasks);
+        _dailyTaskView.SwitchTab(DailyTaskView.SelectedTab.Tasks);
         Debug.Log("Task id: " + _ownTaskId + ", has been cleard.");
         _ownTaskId = null;
     }
@@ -690,7 +555,7 @@ public class DailyTaskManager : AltMonoBehaviour
         yield return new WaitUntil(() => done != null);
 
         if (done.Value)
-            SwitchTab(SelectedTab.OwnTask);
+            _dailyTaskView.SwitchTab(DailyTaskView.SelectedTab.OwnTask);
 
         if (callback != null)
             callback(done.Value);
@@ -856,7 +721,7 @@ public class DailyTaskManager : AltMonoBehaviour
                         if (_currentPlayerData.Task == null)
                             break;
 
-                        SwitchTab(SelectedTab.OwnTask);
+                        _dailyTaskView.SwitchTab(DailyTaskView.SelectedTab.OwnTask);
                         ShowMultipleChoiceTask();
                         break;
                     }
@@ -871,14 +736,14 @@ public class DailyTaskManager : AltMonoBehaviour
                             break;
                         }
 
-                        SwitchTab(SelectedTab.Tasks);
-                        //_ownTaskTabButton.interactable = false;
+                        _dailyTaskView.SwitchTab(DailyTaskView.SelectedTab.Tasks);
                         break;
                     }
                 case PopupData.PopupDataType.ClanMilestone: break;
                 case PopupData.PopupDataType.MultipleChoice:
                     {
-                        gameObject.GetComponent<MultipleChoiceProgressListener>().UpdateProgressMultipleChoice(_currentPlayerData.Task);
+                        // This has to be changed to a better getter
+                        gameObject.GetComponentInParent<MultipleChoiceProgressListener>().UpdateProgressMultipleChoice(_currentPlayerData.Task);
                         break;
                     }
             }
@@ -950,33 +815,34 @@ public class DailyTaskManager : AltMonoBehaviour
         Debug.Log("Task id: " + _ownTaskId + ", has been accepted.");
     }
 
-
     /// <summary>
-    /// Switch tabs on the quest page
+    /// Creates a task card for the given task and adds it under the given parent
     /// </summary>
-    /// <param name="tab">Tab to switch to</param>
-    public void SwitchTab(SelectedTab tab)
+    /// <param name="task">The task to create a card for</param>
+    /// <param name="parent">The parent for the task card to spawn in</param>
+    /// <returns>The DailyQuest on the task card</returns>
+    public DailyQuest CreateTaskCard(PlayerTask task, Transform parent)
     {
-        //Hide old tab
-        switch (_selectedTab)
-        {
-            case SelectedTab.Tasks: _dailyTasksView.SetActive(false); break;
-            case SelectedTab.OwnTask: _ownTaskView.SetActive(false); break;
-            default: _clanTaskView.SetActive(false); break;
-        }
+        // If given task is null, don't create task card
+        if (task == null) return null;
 
-        // Set new selected tab
-        _selectedTab = tab;
+        var gameVersion = GameConfig.Get().GameVersionType;
 
-        //Show new tab
-        switch (tab)
-        {
-            case SelectedTab.Tasks: _dailyTasksView.SetActive(true); break;
-            case SelectedTab.OwnTask: _ownTaskView.SetActive(true); break;
-            default: _clanTaskView.SetActive(true); break;
-        }
-        _tabline.ActivateTabButton((int)_selectedTab);
+        GameObject prefabToInstantiate = (
+                gameVersion == VersionType.Education || gameVersion == VersionType.TurboEducation ?
+                GetEducationPrefabCategory(task.EducationCategory) :
+                GetNormalPrefabCategory(task.Points)
+                );
 
-        Debug.Log($"Switched to {_selectedTab}.");
+        GameObject taskCard = Instantiate(prefabToInstantiate, parent);
+
+        DailyQuest quest = taskCard.GetComponent<DailyQuest>();
+        quest.SetTaskData(task);
+        quest.PopulateData();
+        quest.ShowWindowWithType(TaskWindowType.Available);
+
+        taskCard.SetActive(true);
+
+        return quest;
     }
 }
