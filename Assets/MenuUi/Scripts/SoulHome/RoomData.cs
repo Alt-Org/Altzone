@@ -358,7 +358,6 @@ namespace MenuUI.Scripts.SoulHome
             CalculatePenalties();
 
             // only add slots with no penalty to walkableslots
-            // need to make exception if there are none
             for (int x = 0; x < gridWidth; x++)
             {
                 for (int y = 0; y < gridHeight; y++)
@@ -366,6 +365,20 @@ namespace MenuUI.Scripts.SoulHome
                     if (!_grid[x, y].IsFurniture && _grid[x, y].penalty == 0)
                     {
                         _walkableSlots.Add(new Vector2Int(x, y));
+                    }
+                }
+            }
+            // if there are none include the slots with penalties
+            if (_walkableSlots.Count < 1)
+            {
+                for (int x = 0; x < gridWidth; x++)
+                {
+                    for (int y = 0; y < gridHeight; y++)
+                    {
+                        if (!_grid[x, y].IsFurniture)
+                        {
+                            _walkableSlots.Add(new Vector2Int(x, y));
+                        }
                     }
                 }
             }
