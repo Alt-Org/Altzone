@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using Prg.Scripts.Common.Unity;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
@@ -96,6 +97,7 @@ namespace MenuUi.Scripts.Window
 
         [SerializeField] private List<MyWindow> _currentWindows;
         [SerializeField] private List<MyWindow> _knownWindows;
+        [SerializeField] private List<GameObject> _unbindedWindows;
 
         private readonly WindowActivator _windowActivator = new();
 
@@ -111,6 +113,7 @@ namespace MenuUi.Scripts.Window
             Debug.Log("Awake");
             _currentWindows = new List<MyWindow>();
             _knownWindows = new List<MyWindow>();
+            _unbindedWindows = new List<GameObject>();
 
             SceneManager.sceneLoaded += SceneLoaded;
             SceneManager.sceneUnloaded += SceneUnloaded;
@@ -118,6 +121,11 @@ namespace MenuUi.Scripts.Window
             var handler = gameObject.AddComponent<EscapeKeyHandler>();
             handler.SetCallback(EscapeKeyPressed);
             ResetState();
+            if(_windowsParent != null)
+                foreach (Transform child in _windowsParent.transform)
+                {
+                    _unbindedWindows.Add(child.gameObject);
+                }
         }
 
         private void ResetState()
@@ -157,6 +165,11 @@ namespace MenuUi.Scripts.Window
         void IWindowManager.SetWindowsParent(GameObject windowsParent)
         {
             _windowsParent = windowsParent;
+            foreach(Transform child in _windowsParent.transform)
+            {
+                _unbindedWindows.Add(child.gameObject);
+            }
+            Debug.LogWarning(_unbindedWindows.Count);
         }
 
         private void EscapeKeyPressed()
@@ -316,8 +329,29 @@ namespace MenuUi.Scripts.Window
                     return;
                 }
                 var currentWindow =
-                    _knownWindows.FirstOrDefault(x => windowDef.Equals(x._windowDef))
-                    ?? CreateWindow(windowDef);
+                    _knownWindows.FirstOrDefault(x => windowDef.Equals(x._windowDef));
+
+                if(currentWindow == null)
+                {
+                    if (_unbindedWindows.Count > 0)
+                    {
+                        Debug.LogWarning(windowDef.WindowPrefab.name + ", : " + _unbindedWindows[0].name);
+                    }
+                    var foundUnbinded = _unbindedWindows.FirstOrDefault(x => windowDef.WindowPrefab.name.Equals(x.name));
+                    if(foundUnbinded != null)
+                    {
+                        currentWindow = new MyWindow(windowDef, foundUnbinded);
+                        _knownWindows.Add(currentWindow);
+                        _unbindedWindows.Remove(foundUnbinded);
+#if UNITY_EDITOR
+                        StartCoroutine(CheckWindowPolicy(currentWindow));
+#endif
+                    }
+                    else
+                    {
+                        currentWindow = CreateWindow(windowDef);
+                    }
+                }
                 if (_currentWindows.Count > 0)
                 {
                     var previousWindow = _currentWindows[0];
