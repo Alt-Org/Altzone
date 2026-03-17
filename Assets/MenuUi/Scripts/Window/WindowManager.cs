@@ -170,7 +170,6 @@ namespace MenuUi.Scripts.Window
             {
                 _unbindedWindows.Add(child.gameObject);
             }
-            Debug.LogWarning(_unbindedWindows.Count);
         }
 
         private void EscapeKeyPressed()
