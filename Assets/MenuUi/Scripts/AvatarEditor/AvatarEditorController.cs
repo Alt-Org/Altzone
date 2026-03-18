@@ -34,7 +34,6 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             _categoryLoader.SetCategoryCells((categoryId) => _featureLoader.RefreshFeatureListItems(categoryId));
             _colorLoader.SetColorCells();
-            _colorLoader.gameObject.SetActive(false);
 
             UpdateCellSizes();
 

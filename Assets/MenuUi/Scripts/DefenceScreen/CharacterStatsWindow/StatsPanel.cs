@@ -21,7 +21,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         [SerializeField] private TextLanguageSelectorCaller _specialAbility;
         [SerializeField] private TMP_Text _wins;
         [SerializeField] private TMP_Text _losses;
-        [SerializeField] private TMP_Text _className;
+        [SerializeField] private Image _classNameIcon;
         [SerializeField] private Image _classIcon;
         [SerializeField] private ClassReference _classReference;
         [SerializeField] private Image _charPhotoSeries;
@@ -41,7 +41,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             SetCharacterImage();
             SetCharacterDescription();
             SetWinsAndLosses();
-            SetClassName();
+            SetClassNameIcon();
             SetClassIcon();
             SetCharPhotoSeries();
 
@@ -56,9 +56,11 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             }
         }
 
-        private void SetClassName()
+        private void SetClassNameIcon()
         {
-            _className.text = _controller.GetCurrentCharacterClassName();
+             CharacterClassType classType = _controller.GetCurrentCharacterClass();
+            _classNameIcon.sprite = _classReference.GetNameIcon(classType);
+            _classNameIcon.enabled = _classNameIcon.sprite != null;
         }
         private void SetCharacterHeadImage()
         {

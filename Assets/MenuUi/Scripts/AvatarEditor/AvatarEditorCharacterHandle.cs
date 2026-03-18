@@ -18,28 +18,8 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
     [SerializeField] private Material _featureMaterial;
     [SerializeField] private Material _hairMaterial;
 
-    private readonly Dictionary<Vector2Int, Texture2D> _transparentMaskCache = new();
-    private readonly Dictionary<Vector2Int, Texture2D> _skinColorMaskCache = new();
-    private readonly Dictionary<Vector2Int, Texture2D> _selectedColorMaskCache = new();
     private Color _skinColor = Color.white;
     private Color _classColor = Color.white;
-    private Texture2D _transparentTex;
-
-    private void OnDestroy()
-    {
-        foreach (var item in _transparentMaskCache.Values)
-        {
-            Destroy(item);
-        }
-        foreach (var item in _skinColorMaskCache.Values)
-        {
-            Destroy(item);
-        }
-        foreach (var item in _selectedColorMaskCache.Values)
-        {
-            Destroy(item);
-        }
-    }
 
     public void SetSkinColor(Color skinColor)
     {
@@ -111,38 +91,43 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
     {
         Sprite image = partInfo ? partInfo.AvatarImage : null;
         Sprite mask = partInfo ? partInfo.MaskImage : null;
+        bool isColorable = partInfo ? partInfo.IsColorable : false;
 
         switch (feature)
         {
             case AvatarPiece.Hair:
                 SetImage(_mainHair, image);
-                SetHairImage(_mainHair, mask, partColor);
+                SetHairImage(_mainHair, mask, partColor, isColorable);
                 break;
 
             case AvatarPiece.Eyes:
                 SetImage(_mainEyes, image);
-                SetMaskImage(_mainEyes, mask, partColor);
+                SetMaskImage(_mainEyes, mask, partColor, isColorable);
                 break;
 
             case AvatarPiece.Nose:
                 SetImage(_mainNose, image);
                 //SetMaskImage(_mainNose, mask, partColor);
-                Texture2D noseMask = GetSkinColorMask(image.texture);
-                EnsureMaterial(_mainNose);
-                _mainNose.material.SetTexture("_MaskTex", noseMask);
-                _mainNose.material.SetColor("_SkinColor", _skinColor);
-                _mainNose.material.SetColor("_SelectedColor", _skinColor);
-                _mainNose.material.SetColor("_ClassColor", _classColor);
+                if (image != null)
+                {
+                    Texture2D noseMask = AvatarMaskUtility.GetSkinColorMask(image.texture);
+                    EnsureMaterial(_mainNose);
+                    _mainNose.material.SetTexture("_MaskTex", noseMask);
+                    _mainNose.material.SetColor("_SkinColor", _skinColor);
+                    _mainNose.material.SetColor("_SelectedColor", _skinColor);
+                    _mainNose.material.SetColor("_ClassColor", _classColor);
+                    _mainNose.material.SetFloat("_Colorable", 1f);
+                }
                 break;
 
             case AvatarPiece.Mouth:
                 SetImage(_mainMouth, image);
-                SetMaskImage(_mainMouth, mask, partColor);
+                SetMaskImage(_mainMouth, mask, partColor, isColorable);
                 break;
 
             case AvatarPiece.Clothes:
                 SetImage(_mainBody, image);
-                SetMaskImage(_mainBody, mask, partColor);
+                SetMaskImage(_mainBody, mask, partColor, isColorable);
 
                 if (_mainHair != null && _mainHair.sprite != null)
                 {
@@ -152,12 +137,12 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
 
             case AvatarPiece.Hands:
                 SetImage(_mainHands, image);
-                SetMaskImage(_mainHands, mask, partColor);
+                SetMaskImage(_mainHands, mask, partColor, isColorable);
                 break;
 
             case AvatarPiece.Feet:
                 SetImage(_mainFeet, image);
-                SetMaskImage(_mainFeet, mask, partColor);
+                SetMaskImage(_mainFeet, mask, partColor, isColorable);
                 break;
         }
     }
@@ -174,7 +159,7 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         imageComponent.sprite = image;
     }
 
-    private void SetHairImage(Image avatarImage, Sprite maskSprite, Color selectedColor)
+    private void SetHairImage(Image avatarImage, Sprite maskSprite, Color selectedColor, bool isColorable)
     {
         // Hair uses a different shader & material to replace parts overlapping the body with transparency
         if (avatarImage.sprite == null)
@@ -192,11 +177,12 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         }
         else
         {
-            //maskTex = GetTransparentMask(avatarImage.sprite.texture);
+            //maskTex = AvatarMaskUtility.GetTransparentTexPixel(avatarImage.sprite.texture);
             //for testing, if maskimage doesn't exist lets you color the whole piece instead of preserving the default color
-            maskTex = GetSelectedColorMask(avatarImage.sprite.texture);
+            maskTex = AvatarMaskUtility.GetSelectedColorMask(avatarImage.sprite.texture);
         }
 
+        _mainHair.material.SetFloat("_Colorable", isColorable ? 1f : 0f);
         _mainHair.material.SetTexture("_MaskTex", maskTex);
         _mainHair.material.SetColor("_SkinColor", _skinColor);
         _mainHair.material.SetColor("_SelectedColor", selectedColor);
@@ -209,19 +195,8 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         else
         {
             // Without this hair disappears if only showing the head image
-            _mainHair.material.SetTexture("_BodyTex", GetTransparentTex());
+            _mainHair.material.SetTexture("_BodyTex", AvatarMaskUtility.GetTransparentTexPixel);
         }
-    }
-
-    private Texture2D GetTransparentTex()
-    {
-        if (_transparentTex == null)
-        {
-            _transparentTex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
-            _transparentTex.SetPixel(0, 0, new Color(0, 0, 0, 0));
-            _transparentTex.Apply();
-        }
-        return _transparentTex;
     }
 
     private void EnsureHairMaterial()
@@ -233,7 +208,7 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         }
     }
 
-    private void SetMaskImage(Image avatarImage, Sprite maskSprite, Color selectedColor)
+    private void SetMaskImage(Image avatarImage, Sprite maskSprite, Color selectedColor, bool isColorable)
     {
         if (avatarImage.sprite == null)
         {
@@ -252,9 +227,10 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         {
             //maskTex = GetTransparentMask(avatarImage.sprite.texture);
             //for testing, if maskimage doesn't exist lets you color the whole piece instead of preserving the default color
-            maskTex = GetSelectedColorMask(avatarImage.sprite.texture);
+            maskTex = AvatarMaskUtility.GetSelectedColorMask(avatarImage.sprite.texture);
         }
 
+        avatarImage.material.SetFloat("_Colorable", isColorable ? 1f : 0f);
         avatarImage.material.SetTexture("_MaskTex", maskTex);
         avatarImage.material.SetColor("_SkinColor", _skinColor);
         avatarImage.material.SetColor("_SelectedColor", selectedColor);
@@ -268,103 +244,6 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         {
             image.material = Instantiate(_featureMaterial);
         }
-    }
-
-    private Texture2D GetTransparentMask(Texture2D reference)
-    {
-        // Creates a transparent mask if maskimage doesn't exist,
-        // and uses already made one if mask for that size of image has
-        // already been made. Shader needs the maskimage and avatarimage
-        // to be the same size, and if maskimage is null the sprite
-        // will be black
-        Vector2Int size = new(reference.width, reference.height);
-
-        if (_transparentMaskCache.TryGetValue(size, out var tex))
-            return tex;
-
-        Texture2D mask = new Texture2D(
-            reference.width,
-            reference.height,
-            TextureFormat.RGBA32,
-            false
-        );
-
-        mask.filterMode = reference.filterMode;
-        mask.wrapMode = TextureWrapMode.Clamp;
-
-        Color clear = new(0, 0, 0, 0);
-        Color[] pixels = new Color[reference.width * reference.height];
-        for (int i = 0; i < pixels.Length; i++)
-            pixels[i] = clear;
-
-        mask.SetPixels(pixels);
-        mask.Apply();
-
-        _transparentMaskCache[size] = mask;
-        return mask;
-    }
-
-    private Texture2D GetSelectedColorMask(Texture2D reference)
-    {
-        // For testing, lets you color the pieces missing a mask image
-        // with color selected in avatareditor
-        Vector2Int size = new(reference.width, reference.height);
-
-        if (_selectedColorMaskCache.TryGetValue(size, out var tex))
-            return tex;
-
-        Texture2D mask = new Texture2D(
-            reference.width,
-            reference.height,
-            TextureFormat.RGBA32,
-            false
-        );
-
-        mask.filterMode = reference.filterMode;
-        mask.wrapMode = TextureWrapMode.Clamp;
-
-        Color skinMask = new(0, 1, 0, 1);
-        Color[] pixels = new Color[reference.width * reference.height];
-
-        for (int i = 0; i < pixels.Length; i++)
-            pixels[i] = skinMask;
-
-        mask.SetPixels(pixels);
-        mask.Apply();
-
-        _selectedColorMaskCache[size] = mask;
-        return mask;
-    }
-
-    private Texture2D GetSkinColorMask(Texture2D reference)
-    {
-        // Same as above but for skincolor instead of transparent
-        Vector2Int size = new(reference.width, reference.height);
-
-        if (_skinColorMaskCache.TryGetValue(size, out var tex))
-            return tex;
-
-        Texture2D mask = new Texture2D(
-            reference.width,
-            reference.height,
-            TextureFormat.RGBA32,
-            false
-        );
-
-        mask.filterMode = reference.filterMode;
-        mask.wrapMode = TextureWrapMode.Clamp;
-
-        Color skinMask = new(1, 0, 0, 1);
-        Color[] pixels = new Color[reference.width * reference.height];
-
-        for (int i = 0; i < pixels.Length; i++)
-            pixels[i] = skinMask;
-
-        mask.SetPixels(pixels);
-        mask.Apply();
-
-        _skinColorMaskCache[size] = mask;
-        return mask;
     }
 
     private void ApplyColors(Image image)
