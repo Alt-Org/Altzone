@@ -1,8 +1,10 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using UnityEditor;
+using System.Linq;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.U2D.Animation;
@@ -34,9 +36,13 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private AnimationClip _climbAnimation;
         [SerializeField]
-        private List<AnimationClip> _interactAnimation;
+        private List<AvatarAnimation> _interactAnimation;
+
+        private List<AvatarAnimation> _validatedInteractAnimation;
 
         private bool _performingAnimation = false;
+
+        private CharacterClassType _class = CharacterClassType.None;
 
         private AvatarStatus _status;
 
@@ -101,6 +107,7 @@ namespace MenuUI.Scripts.SoulHome
                 _rHandResolver = _rig.Resolvers[AvatarPart.R_Hand];
                 _lHandLabel = _lHandResolver.GetLabel();
                 _rHandLabel = _rHandResolver.GetLabel();
+                _validatedInteractAnimation = ValidateAnimations(_interactAnimation);
             }
         }
         private void OnEnable()
@@ -122,6 +129,11 @@ namespace MenuUI.Scripts.SoulHome
         private void Update()
         {
             _timeSinceRoomChange += Time.deltaTime;
+        }
+
+        public void InitializeAvatar(PlayerData data)
+        {
+            _class = (CharacterClassType)BaseCharacter.GetClass(data.SelectedCharacterId);
         }
 
         private void OnDisable()
@@ -690,6 +702,18 @@ namespace MenuUI.Scripts.SoulHome
             UseDefaultHands(false);
 
             SelectStatus();
+        }
+        private List<AvatarAnimation> ValidateAnimations(List<AvatarAnimation> animationToValidate)
+        {
+            List<AvatarAnimation> validatedAnimation = new();
+            foreach (AvatarAnimation animation in animationToValidate)
+            {
+                if (animation != null && animation.Clip != null)
+                {
+                    if (animation.ValidClass == _class || animation.ValidClass is CharacterClassType.None) validatedAnimation.Add(animation);
+                }
+            }
+            return validatedAnimation;
         }
 
         private void UseDefaultHands(bool useDefaultHands)

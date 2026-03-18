@@ -29,6 +29,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Color _highlightColor = new(0f, 0f, 0f, 0.5f);
         [SerializeField] private Color _backgroundColor = new(0.5f, 0.5f, 0.5f, 0.7f);
         [SerializeField] private AvatarEditorCharacterHandle _characterHandle;
+        [SerializeField] private ColorPicker _colorPicker;
 
         private List<AvatarPartInfo> _avatarPartInfo;
         private readonly Dictionary<string, AvatarPiece> _featureCategoryIdToAvatarPiece = new Dictionary<string, AvatarPiece>
@@ -115,7 +116,7 @@ namespace MenuUi.Scripts.AvatarEditor
             AvatarPiece avatarPieceId = _featureCategoryIdToAvatarPiece[featureCategoryid];
             string selectedPieceId = _avatarEditorController.PlayerAvatar.GetPartId(avatarPieceId);
 
-            handler.SetValues(cellImage, _highlightColor, _backgroundColor);
+            handler.SetValues(cellImage, _highlightColor, _backgroundColor, avatarPart.IsColorable);
 
             AddListeners(handler, avatarPart, avatarPieceId);
 
@@ -138,7 +139,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void AddSkinColorSelectionCells()
         {
-            foreach (Color color in _colorSelection.Colors)
+            foreach (Color color in _colorSelection.SkinColors)
             {
                 GameObject colorGridCell = Instantiate(_colorCellPrefab, _featureGridContent);
                 ColorCellHandler handler = colorGridCell.GetComponent<ColorCellHandler>();
@@ -161,6 +162,8 @@ namespace MenuUi.Scripts.AvatarEditor
             
             _selectedCellHandler = handler;
             handler.Highlight(true);
+
+            ColorSelectActive(handler.IsColorable);
         }
 
         private void AddListeners(FeatureCellHandler handler, AvatarPartInfo avatarPart, AvatarPiece slot)
@@ -172,18 +175,14 @@ namespace MenuUi.Scripts.AvatarEditor
             });
         }
 
+        private void ColorSelectActive(bool isActive)
+        {
+            _colorPicker.SetActive(isActive);
+            _colorSelection.gameObject.SetActive(isActive);
+        }
+
         public void RefreshFeatureListItems(string categoryId)
         {
-            // Don't Show Color Selection on hair, nose or skin color selection
-            if (categoryId == "10" || categoryId == "" || categoryId == "22")
-            {
-                _colorSelection.gameObject.SetActive(false);
-            }
-            else
-            {
-                _colorSelection.gameObject.SetActive(true);
-            }
-
             DestroyFeatureListItems();
 
             if (categoryId != "")
@@ -193,10 +192,12 @@ namespace MenuUi.Scripts.AvatarEditor
                 {
                     AddFeatureCell(part.IconImage, part);
                 }
+                ColorSelectActive(_selectedCellHandler.IsColorable);
             }
             else
             {
                 AddSkinColorSelectionCells();
+                ColorSelectActive(false);
             }
             _currentCategory = categoryId;
         }

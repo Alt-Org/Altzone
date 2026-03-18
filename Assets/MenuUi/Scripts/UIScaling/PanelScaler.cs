@@ -1,3 +1,4 @@
+using MenuUi.Scripts.Window;
 using UnityEngine;
 
 namespace MenuUi.Scripts.UIScaling
@@ -30,6 +31,16 @@ namespace MenuUi.Scripts.UIScaling
             SetPanelAnchors();
         }
 
+        private void OnEnable()
+        {
+            OverlayPanelCheck.OnChatBarToggled += UpdateBottomLine;
+            UpdateBottomLine(OverlayPanelCheck.Instance.ChatActive);
+        }
+        private void OnDisable()
+        {
+            OverlayPanelCheck.OnChatBarToggled -= UpdateBottomLine;
+        }
+
 #if (UNITY_EDITOR)
         void Update()
         {
@@ -44,7 +55,9 @@ namespace MenuUi.Scripts.UIScaling
 
         protected virtual void SetPanelAnchors()
         {
-            _bottomPanelRectTransfrom.anchorMax = new Vector2(1, CalculateBottomPanelHeight());
+            float bottomLine = CalculateBottomPanelHeight();
+            if (!OverlayPanelCheck.Instance.ChatActive) bottomLine /= 2f;
+            _bottomPanelRectTransfrom.anchorMax = new Vector2(1, bottomLine);
 
             _topPanelRectTransfrom.anchorMin = new Vector2(0, 1 - (CalculateTopPanelHeight() + CalculateUnsafeAreaHeight()));
             _topPanelRectTransfrom.anchorMax = new Vector2(1, 1 - CalculateUnsafeAreaHeight());
@@ -112,6 +125,13 @@ namespace MenuUi.Scripts.UIScaling
             {
                 return (float)((Screen.currentResolution.height - Screen.safeArea.height) / Screen.currentResolution.height);
             }
+        }
+
+        protected virtual void UpdateBottomLine(bool value)
+        {
+            float bottomLine = CalculateBottomPanelHeight();
+            if (!value) bottomLine /= 2f;
+            _bottomPanelRectTransfrom.anchorMax = new(1, bottomLine);
         }
     }
 }

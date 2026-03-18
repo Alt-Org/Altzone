@@ -11,6 +11,7 @@ using Altzone.Scripts.Common;
 using Altzone.Scripts.Chat;
 using Altzone.Scripts.Model.Poco.Player;
 using System.Linq;
+using MenuUi.Scripts.Window;
 
 public class Chat : AltMonoBehaviour
 {
@@ -107,6 +108,16 @@ public class Chat : AltMonoBehaviour
     public Mood currentMood = Mood.Neutral;
     public GameObject _responsesData;
 
+    public enum ChatType //What Channel we are in
+    {
+        None,
+        GlobalChat,
+        ClanChat,
+        LanguageChat
+    }
+    [SerializeField]  private ChatType _chatType = ChatType.None;
+
+
     private void Start()
     {
         ChatChannel.OnMessageHistoryReceived += RefreshChat;
@@ -114,13 +125,17 @@ public class Chat : AltMonoBehaviour
 
         // Alustaa chatit ja asettaa kielichatin oletukseksi
         _currentContent = _clanChat;
+
         Debug.Log("Clan Chat is Active");
 
         messagesByChat[_languageChatContent] = new List<MessageObjectHandler>();
         messagesByChat[_globalChatContent] = new List<MessageObjectHandler>();
         messagesByChat[_clanChatContent] = new List<MessageObjectHandler>();
 
-        ClanChatActive();
+        if (ChatListener.Instance.ActiveChatChannel is ChatChannelType.Clan) ClanChatActive();
+        else if (ChatListener.Instance.ActiveChatChannel is ChatChannelType.Global) GlobalChatActive();
+        else if (ChatListener.Instance.ActiveChatChannel is ChatChannelType.Country) LanguageChatActive();
+        else GlobalChatActive();
         _tablineScript.ActivateTabButton(1);
         AddResponses();
 
@@ -132,6 +147,16 @@ public class Chat : AltMonoBehaviour
             Button button = sendButton.GetComponent<Button>();
             button.onClick.AddListener(() => CheckSendButton(sendButton));
         }
+    }
+
+    private void OnEnable()
+    {
+        OverlayPanelCheck.Instance.ToggleChat(false);
+    }
+
+    private void OnDisable()
+    {
+        OverlayPanelCheck.Instance.ToggleChat(true);
     }
 
     private void Update()
@@ -353,9 +378,7 @@ public class Chat : AltMonoBehaviour
 
     private void DisplayMessage(ChatChannelType channelType,ChatMessage message)
     {
-        Debug.LogWarning($"Test1: {channelType} {ChatListener.Instance.ActiveChatChannel}");
         if (channelType != ChatListener.Instance.ActiveChatChannel) return;
-        Debug.LogWarning("Test2");
         bool ownMsg = message?.SenderId == ServerManager.Instance.Player._id;
         GameObject messagePrefab = GetMessagePrefab(message.Mood, ownMsg);
 
@@ -493,6 +516,11 @@ public class Chat : AltMonoBehaviour
     // Aktivoi globaalin chatin
     public void GlobalChatActive()
     {
+        //Simple check if user is already on that set chat or not to prevent unneccery reload of the chat
+        ChatType currentChat = ChatType.GlobalChat;
+        if (_chatType == currentChat)
+            return;
+
         _currentContent = _globalChatContent;
         ChatListener.Instance.ActiveChatChannel = ChatChannelType.Global;
         _currentScrollRect = _globalChatScrollRect;
@@ -505,11 +533,18 @@ public class Chat : AltMonoBehaviour
         RefreshChat(ChatChannelType.Global);
 
         Debug.Log("Global Chat aktivoitu");
+
+        _chatType = ChatType.GlobalChat;
     }
 
     // Aktivoi klaanichatin
     public void ClanChatActive()
     {
+        //Simple check if user is already on that set chat or not to prevent unneccery reload of the chat
+        ChatType currentChat = ChatType.ClanChat;
+        if (_chatType == currentChat)
+            return;
+
         _currentContent = _clanChatContent;
         ChatListener.Instance.ActiveChatChannel = ChatChannelType.Clan;
         _currentScrollRect = _clanChatScrollRect;
@@ -522,11 +557,18 @@ public class Chat : AltMonoBehaviour
         RefreshChat(ChatChannelType.Clan);
         
         Debug.Log("Klaani Chat aktivoitu");
+
+        _chatType = ChatType.ClanChat;
     }
 
     // Aktivoi kielichatin
     public void LanguageChatActive()
     {
+        //Simple check if user is already on that set chat or not to prevent unneccery reload of the chat
+        ChatType currentChat = ChatType.LanguageChat;
+        if (_chatType == currentChat)
+            return;
+
         _currentContent = _languageChatContent;
         ChatListener.Instance.ActiveChatChannel = ChatChannelType.Country;
         _currentScrollRect = _languageChatScrollRect;
@@ -538,6 +580,8 @@ public class Chat : AltMonoBehaviour
         gameObject.GetComponent<FindAllChatOptions>().ChatOptionFound(FindAllChatOptions.ChatType.Language);
 
         Debug.Log("Kielivalinnan mukainen Chat aktivoitu");
+
+        _chatType = ChatType.LanguageChat;
     }
 
     public void OpenQuickMessages()

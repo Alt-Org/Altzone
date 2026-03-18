@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using MenuUi.Scripts.Window;
 using UnityEngine;
 
 namespace MenuUi.Scripts.UIScaling
@@ -7,12 +8,12 @@ namespace MenuUi.Scripts.UIScaling
     [ExecuteAlways]
     public class WindowPanelScaler : PanelScaler
     {
-        [SerializeField] private RectTransform _contentPanelRectTransfrom;
-
+        [SerializeField] private RectTransform _contentPanelRectTransfrom;      
 
         protected override void SetPanelAnchors()
         {
             float bottomLine = CalculateBottomPanelHeight();
+            if (!OverlayPanelCheck.Instance.ChatActive) bottomLine /= 2f;
             float unsafeAreaLine = 1 - CalculateUnsafeAreaHeight();
             float topLine = unsafeAreaLine - CalculateTopPanelHeight();
             _bottomPanelRectTransfrom.anchorMax = new(1,bottomLine);
@@ -22,6 +23,14 @@ namespace MenuUi.Scripts.UIScaling
             _contentPanelRectTransfrom.anchorMin = new (0, bottomLine);
             _contentPanelRectTransfrom.anchorMax = new(1, topLine);
             if(_fullPanelPopupsTransform != null) _fullPanelPopupsTransform.anchorMax = new Vector2(1, unsafeAreaLine);
+        }
+
+        protected override void UpdateBottomLine(bool value)
+        {
+            float bottomLine = CalculateBottomPanelHeight();
+            if (!value) bottomLine /= 2f;
+            _bottomPanelRectTransfrom.anchorMax = new(1, bottomLine);
+            _contentPanelRectTransfrom.anchorMin = new(0, bottomLine);
         }
     }
 }
