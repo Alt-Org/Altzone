@@ -11,6 +11,7 @@ using Altzone.Scripts.Common;
 using Altzone.Scripts.Chat;
 using Altzone.Scripts.Model.Poco.Player;
 using System.Linq;
+using MenuUi.Scripts.Window;
 
 public class Chat : AltMonoBehaviour
 {
@@ -146,6 +147,16 @@ public class Chat : AltMonoBehaviour
             Button button = sendButton.GetComponent<Button>();
             button.onClick.AddListener(() => CheckSendButton(sendButton));
         }
+    }
+
+    private void OnEnable()
+    {
+        OverlayPanelCheck.Instance.ToggleChat(false);
+    }
+
+    private void OnDisable()
+    {
+        OverlayPanelCheck.Instance.ToggleChat(true);
     }
 
     private void Update()
