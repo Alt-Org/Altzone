@@ -274,66 +274,133 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator AutoJoinLargestMatchmakingRoom()
         {
-            string originalRoom = PhotonRealtimeClient.CurrentRoom?.Name ?? string.Empty;
-            int originalCount = PhotonRealtimeClient.CurrentRoom?.PlayerCount ?? 0;
-            int attempts = 0;
-
-            while (attempts < 8)
+            try
             {
-                attempts++;
+                string originalRoom = PhotonRealtimeClient.CurrentRoom?.Name ?? string.Empty;
+                int originalCount = PhotonRealtimeClient.CurrentRoom?.PlayerCount ?? 0;
+                int attempts = 0;
 
-                // If we have a cached room list, check if current room is already the best; if so, do nothing.
-                if (CurrentRooms != null && CurrentRooms.Count > 0)
+                while (attempts < 8)
                 {
-                    LobbyRoomInfo bestRoom = null;
-                    foreach (var room in CurrentRooms)
+                    attempts++;
+
+                    // If we have a cached room list, check if current room is already the best; if so, do nothing.
+                    if (CurrentRooms != null && CurrentRooms.Count > 0)
                     {
-                        try
+                        LobbyRoomInfo bestRoom = null;
+                        foreach (var room in CurrentRooms)
                         {
-                            if (!room.CustomProperties.ContainsKey(PhotonBattleRoom.IsMatchmakingKey)) continue;
-                            if (!(room.CustomProperties[PhotonBattleRoom.IsMatchmakingKey] is bool isMm) || !isMm) continue;
-                        }
-                        catch { continue; }
+                            try
+                            {
+                                if (!room.CustomProperties.ContainsKey(PhotonBattleRoom.IsMatchmakingKey)) continue;
+                                if (!(room.CustomProperties[PhotonBattleRoom.IsMatchmakingKey] is bool isMm) || !isMm) continue;
+                            }
+                            catch { continue; }
 
-                        if (room.PlayerCount >= room.MaxPlayers) continue;
+                            if (room.PlayerCount >= room.MaxPlayers) continue;
 
-                        if (bestRoom == null)
-                        {
-                            bestRoom = room;
-                        }
-                        else
-                        {
-                            if (room.PlayerCount > bestRoom.PlayerCount)
+                            if (bestRoom == null)
                             {
                                 bestRoom = room;
                             }
-                            else if (room.PlayerCount == bestRoom.PlayerCount)
+                            else
                             {
-                                long rTs = GetRoomCreationTimestamp(room);
-                                long bTs = GetRoomCreationTimestamp(bestRoom);
-                                if (rTs < bTs) bestRoom = room; // older wins
+                                if (room.PlayerCount > bestRoom.PlayerCount)
+                                {
+                                    bestRoom = room;
+                                }
+                                else if (room.PlayerCount == bestRoom.PlayerCount)
+                                {
+                                    long rTs = GetRoomCreationTimestamp(room);
+                                    long bTs = GetRoomCreationTimestamp(bestRoom);
+                                    if (rTs < bTs) bestRoom = room; // older wins
+                                }
+                            }
+                        }
+
+                        if (bestRoom != null)
+                        {
+                            // If original room is already the best (or as large as best), don't leave it.
+                            if (!string.IsNullOrEmpty(originalRoom) && (originalRoom == bestRoom.Name || originalCount >= bestRoom.PlayerCount))
+                            {
+                                yield break;
+                            }
+
+                            // We have a better room available; remember target and leave to lobby to join it.
+                            string targetRoom = bestRoom.Name;
+                            if (PhotonRealtimeClient.InRoom) PhotonRealtimeClient.LeaveRoom();
+                            yield return new WaitUntil(() => PhotonRealtimeClient.InLobby || !PhotonRealtimeClient.InRoom);
+
+                            // Attempt to join the target room directly (room list may be cleared on leave)
+                            if (!string.IsNullOrEmpty(targetRoom) && PhotonRealtimeClient.InLobby)
+                            {
+                                PhotonRealtimeClient.JoinRoom(targetRoom);
+                                float joinStart = Time.time;
+                                while (!PhotonRealtimeClient.InRoom && Time.time - joinStart < 5f)
+                                {
+                                    yield return null;
+                                }
+
+                                if (PhotonRealtimeClient.InRoom)
+                                {
+                                    yield break;
+                                }
                             }
                         }
                     }
 
-                    if (bestRoom != null)
+                    // If we don't have a cached room list, leave to lobby and wait for room list update, then decide.
+                    if (PhotonRealtimeClient.InRoom)
                     {
-                        // If original room is already the best (or as large as best), don't leave it.
-                        if (!string.IsNullOrEmpty(originalRoom) && (originalRoom == bestRoom.Name || originalCount >= bestRoom.PlayerCount))
+                        PhotonRealtimeClient.LeaveRoom();
+                        yield return new WaitUntil(() => PhotonRealtimeClient.InLobby || !PhotonRealtimeClient.InRoom);
+                    }
+
+                    // Wait until room list is populated
+                    float start = Time.time;
+                    while ((CurrentRooms == null || CurrentRooms.Count == 0) && Time.time - start < 5f)
+                    {
+                        yield return null;
+                    }
+
+                    // Try to find best room from the fresh list and join it
+                    if (CurrentRooms != null && CurrentRooms.Count > 0)
+                    {
+                        LobbyRoomInfo bestRoom = null;
+                        foreach (var room in CurrentRooms)
                         {
-                            _autoJoinHolder = null;
-                            yield break;
+                            try
+                            {
+                                if (!room.CustomProperties.ContainsKey(PhotonBattleRoom.IsMatchmakingKey)) continue;
+                                if (!(room.CustomProperties[PhotonBattleRoom.IsMatchmakingKey] is bool isMm) || !isMm) continue;
+                            }
+                            catch { continue; }
+
+                            if (room.PlayerCount >= room.MaxPlayers) continue;
+                            if (room.Name == originalRoom) continue;
+
+                            if (bestRoom == null)
+                            {
+                                bestRoom = room;
+                            }
+                            else
+                            {
+                                if (room.PlayerCount > bestRoom.PlayerCount)
+                                {
+                                    bestRoom = room;
+                                }
+                                else if (room.PlayerCount == bestRoom.PlayerCount)
+                                {
+                                    long rTs = GetRoomCreationTimestamp(room);
+                                    long bTs = GetRoomCreationTimestamp(bestRoom);
+                                    if (rTs < bTs) bestRoom = room; // older wins
+                                }
+                            }
                         }
 
-                        // We have a better room available; remember target and leave to lobby to join it.
-                        string targetRoom = bestRoom.Name;
-                        if (PhotonRealtimeClient.InRoom) PhotonRealtimeClient.LeaveRoom();
-                        yield return new WaitUntil(() => PhotonRealtimeClient.InLobby || !PhotonRealtimeClient.InRoom);
-
-                        // Attempt to join the target room directly (room list may be cleared on leave)
-                        if (!string.IsNullOrEmpty(targetRoom) && PhotonRealtimeClient.InLobby)
+                        if (bestRoom != null)
                         {
-                            PhotonRealtimeClient.JoinRoom(targetRoom);
+                            PhotonRealtimeClient.JoinRoom(bestRoom.Name);
                             float joinStart = Time.time;
                             while (!PhotonRealtimeClient.InRoom && Time.time - joinStart < 5f)
                             {
@@ -342,95 +409,30 @@ namespace Altzone.Scripts.Lobby
 
                             if (PhotonRealtimeClient.InRoom)
                             {
-                                _autoJoinHolder = null;
                                 yield break;
                             }
                         }
                     }
-                }
 
-                // If we don't have a cached room list, leave to lobby and wait for room list update, then decide.
-                if (PhotonRealtimeClient.InRoom)
-                {
-                    PhotonRealtimeClient.LeaveRoom();
-                    yield return new WaitUntil(() => PhotonRealtimeClient.InLobby || !PhotonRealtimeClient.InRoom);
-                }
-
-                // Wait until room list is populated
-                float start = Time.time;
-                while ((CurrentRooms == null || CurrentRooms.Count == 0) && Time.time - start < 5f)
-                {
-                    yield return null;
-                }
-
-                // Try to find best room from the fresh list and join it
-                if (CurrentRooms != null && CurrentRooms.Count > 0)
-                {
-                    LobbyRoomInfo bestRoom = null;
-                    foreach (var room in CurrentRooms)
+                    // If couldn't find/join a better room, rejoin original room if possible
+                    if (!string.IsNullOrEmpty(originalRoom) && PhotonRealtimeClient.InLobby)
                     {
-                        try
-                        {
-                            if (!room.CustomProperties.ContainsKey(PhotonBattleRoom.IsMatchmakingKey)) continue;
-                            if (!(room.CustomProperties[PhotonBattleRoom.IsMatchmakingKey] is bool isMm) || !isMm) continue;
-                        }
-                        catch { continue; }
-
-                        if (room.PlayerCount >= room.MaxPlayers) continue;
-                        if (room.Name == originalRoom) continue;
-
-                        if (bestRoom == null)
-                        {
-                            bestRoom = room;
-                        }
-                        else
-                        {
-                            if (room.PlayerCount > bestRoom.PlayerCount)
-                            {
-                                bestRoom = room;
-                            }
-                            else if (room.PlayerCount == bestRoom.PlayerCount)
-                            {
-                                long rTs = GetRoomCreationTimestamp(room);
-                                long bTs = GetRoomCreationTimestamp(bestRoom);
-                                if (rTs < bTs) bestRoom = room; // older wins
-                            }
-                        }
-                    }
-
-                    if (bestRoom != null)
-                    {
-                        PhotonRealtimeClient.JoinRoom(bestRoom.Name);
-                        float joinStart = Time.time;
-                        while (!PhotonRealtimeClient.InRoom && Time.time - joinStart < 5f)
+                        PhotonRealtimeClient.JoinRoom(originalRoom);
+                        float rejoinStart = Time.time;
+                        while (!PhotonRealtimeClient.InRoom && Time.time - rejoinStart < 3f)
                         {
                             yield return null;
                         }
-
-                        if (PhotonRealtimeClient.InRoom)
-                        {
-                            _autoJoinHolder = null;
-                            yield break;
-                        }
                     }
-                }
 
-                // If couldn't find/join a better room, rejoin original room if possible
-                if (!string.IsNullOrEmpty(originalRoom) && PhotonRealtimeClient.InLobby)
-                {
-                    PhotonRealtimeClient.JoinRoom(originalRoom);
-                    float rejoinStart = Time.time;
-                    while (!PhotonRealtimeClient.InRoom && Time.time - rejoinStart < 3f)
-                    {
-                        yield return null;
-                    }
+                    // Wait before next attempt
+                    yield return new WaitForSeconds(1f + attempts);
                 }
-
-                // Wait before next attempt
-                yield return new WaitForSeconds(1f + attempts);
             }
-
-            _autoJoinHolder = null;
+            finally
+            {
+                _autoJoinHolder = null;
+            }
         }
 
 
@@ -554,29 +556,41 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator ReserveFreePosition(bool setToPlayerProperties = false)
         {
-            // Loop until player correctly reserves slot
-            int freePosition;
-            bool success = false;
-            do
+            try
             {
-                // Getting first free position from the room and creating the photon hashtables for setting property
-                freePosition = PhotonLobbyRoom.GetFirstFreePlayerPos();
-                if (!PhotonLobbyRoom.IsValidPlayerPos(freePosition))
+                // Loop until player correctly reserves slot
+                int freePosition;
+                bool success = false;
+                do
                 {
-                    //PhotonRealtimeClient.LeaveRoom();
-                    this.Publish<GetKickedEvent>(new(GetKickedEvent.ReasonType.FullRoom));
-                    yield break;
-                }
-                StartCoroutine(RequestPositionChange(freePosition));
-                string positionKey = PhotonBattleRoom.GetPositionKey(freePosition);
+                    // Getting first free position from the room and creating the photon hashtables for setting property
+                    freePosition = PhotonLobbyRoom.GetFirstFreePlayerPos();
+                    if (!PhotonLobbyRoom.IsValidPlayerPos(freePosition))
+                    {
+                        //PhotonRealtimeClient.LeaveRoom();
+                        this.Publish<GetKickedEvent>(new(GetKickedEvent.ReasonType.FullRoom));
+                        yield break;
+                    }
+                    StartCoroutine(RequestPositionChange(freePosition));
+                    string positionKey = PhotonBattleRoom.GetPositionKey(freePosition);
 
-                /*PhotonHashtable propertyToSet = new() { { positionKey, PhotonRealtimeClient.LocalLobbyPlayer.UserId } };
-                PhotonHashtable expectedValue = new() { { positionKey, "" } };
+                    /*PhotonHashtable propertyToSet = new() { { positionKey, PhotonRealtimeClient.LocalLobbyPlayer.UserId } };
+                    PhotonHashtable expectedValue = new() { { positionKey, "" } };
 
-                // Setting custom property, checking if the request could be sent to the server
-                if (PhotonRealtimeClient.CurrentRoom.SetCustomProperties(propertyToSet, expectedValue))
-                {
-                    // Waiting until that position in the room is reserved
+                    // Setting custom property, checking if the request could be sent to the server
+                    if (PhotonRealtimeClient.CurrentRoom.SetCustomProperties(propertyToSet, expectedValue))
+                    {
+                        // Waiting until that position in the room is reserved
+                        string positionValue = "";
+                        yield return new WaitUntil(() =>
+                        {
+                            positionValue = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(positionKey, "");
+                            return positionValue != "";
+                        });
+
+                        // Checking if local player is the one in the slot or if there was a conflict
+                        success = positionValue == PhotonRealtimeClient.LocalLobbyPlayer.UserId;
+                    }*/
                     string positionValue = "";
                     yield return new WaitUntil(() =>
                     {
@@ -586,25 +600,18 @@ namespace Altzone.Scripts.Lobby
 
                     // Checking if local player is the one in the slot or if there was a conflict
                     success = positionValue == PhotonRealtimeClient.LocalLobbyPlayer.UserId;
-                }*/
-                string positionValue = "";
-                yield return new WaitUntil(() =>
-                {
-                    positionValue = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(positionKey, "");
-                    return positionValue != "";
-                });
 
-                // Checking if local player is the one in the slot or if there was a conflict
-                success = positionValue == PhotonRealtimeClient.LocalLobbyPlayer.UserId;
+                    if (success) break;
+                    yield return null;
+                } while (!success);
 
-                if (success) break;
-                yield return null;
-            } while (!success);
-
-            // Setting to player properties
-            //if (setToPlayerProperties) PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, freePosition);
-
-            _reserveFreePositionHolder = null;
+                // Setting to player properties
+                //if (setToPlayerProperties) PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey, freePosition);
+            }
+            finally
+            {
+                _reserveFreePositionHolder = null;
+            }
         }
 
         private bool CheckIfAllPlayersInPosition()
@@ -651,23 +658,29 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator CheckIfBattleCanStart()
         {
-            yield break;
-            yield return new WaitForSeconds(0.5f);
-            yield return new WaitUntil(() => _posChangeQueue.Count == 0 && !_playerPosChangeInProgress);
-            Room room = PhotonRealtimeClient.CurrentRoom;
-            if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+            try
             {
-                while (room.PlayerCount >= room.MaxPlayers)
+                yield break;
+                yield return new WaitForSeconds(0.5f);
+                yield return new WaitUntil(() => _posChangeQueue.Count == 0 && !_playerPosChangeInProgress);
+                Room room = PhotonRealtimeClient.CurrentRoom;
+                if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
                 {
-                    if (CheckIfAllPlayersInPosition())
+                    while (room.PlayerCount >= room.MaxPlayers)
                     {
-                        GameType gameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
-                        if (gameType == GameType.Custom) OnStartPlayingEvent(new());
+                        if (CheckIfAllPlayersInPosition())
+                        {
+                            GameType gameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                            if (gameType == GameType.Custom) OnStartPlayingEvent(new());
+                        }
+                        yield return null;
                     }
-                    yield return null;
                 }
             }
-            _canBattleStartCheckHolder = null;
+            finally
+            {
+                _canBattleStartCheckHolder = null;
+            }
         }
 
         private void OnPlayerPosEvent(PlayerPosEvent data)
@@ -690,38 +703,42 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator RequestPositionChange(int position)
         {
-            // Saving the previous position to a variable
-            int oldPosition = PhotonRealtimeClient.LocalPlayer.GetCustomProperty(PlayerPositionKey, -1);
-            int currentPosition = oldPosition;
-
-            do
+            try
             {
-                // Checking if the new position is free before raising event to master client
-                if (PhotonBattleRoom.CheckIfPositionIsFree(position) == false)
+                // Saving the previous position to a variable
+                int oldPosition = PhotonRealtimeClient.LocalPlayer.GetCustomProperty(PlayerPositionKey, -1);
+                int currentPosition = oldPosition;
+
+                do
                 {
-                    if(PhotonBattleRoom.CheckIfPositionHasBot(position)) Debug.LogWarning($"Failed to reserve the position {position} because there is a bot in the slot.");
-                    else Debug.LogWarning($"Failed to reserve the position {position}. This likely because somebody already is in this position.");
-                    _requestPositionChangeHolder = null;
-                    yield break;
-                }
+                    // Checking if the new position is free before raising event to master client
+                    if (PhotonBattleRoom.CheckIfPositionIsFree(position) == false)
+                    {
+                        if(PhotonBattleRoom.CheckIfPositionHasBot(position)) Debug.LogWarning($"Failed to reserve the position {position} because there is a bot in the slot.");
+                        else Debug.LogWarning($"Failed to reserve the position {position}. This likely because somebody already is in this position.");
+                        yield break;
+                    }
 
-                // Raising event to master client
-                SafeRaiseEvent(
-                    PhotonRealtimeClient.PhotonEvent.PlayerPositionChangeRequested,
-                    position,
-                    new RaiseEventArgs { Receivers = ReceiverGroup.MasterClient },
-                    SendOptions.SendReliable
-                );
+                    // Raising event to master client
+                    SafeRaiseEvent(
+                        PhotonRealtimeClient.PhotonEvent.PlayerPositionChangeRequested,
+                        position,
+                        new RaiseEventArgs { Receivers = ReceiverGroup.MasterClient },
+                        SendOptions.SendReliable
+                    );
 
-                // Giving position time to update, loop will send request again if position didn't update within this time.
-                yield return new WaitForSeconds(0.5f);
+                    // Giving position time to update, loop will send request again if position didn't update within this time.
+                    yield return new WaitForSeconds(0.5f);
 
-                // Getting the current position
-                currentPosition = PhotonRealtimeClient.LocalPlayer.GetCustomProperty(PlayerPositionKey, -1);
+                    // Getting the current position
+                    currentPosition = PhotonRealtimeClient.LocalPlayer.GetCustomProperty(PlayerPositionKey, -1);
 
-            } while (currentPosition == oldPosition); // Checking if the position has changed. If not sending event again.
-
-            _requestPositionChangeHolder = null;
+                } while (currentPosition == oldPosition); // Checking if the position has changed. If not sending event again.
+            }
+            finally
+            {
+                _requestPositionChangeHolder = null;
+            }
         }
 
         private void OnStartRoomEvent(StartRoomEvent data)
@@ -830,6 +847,9 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator StartMatchmaking(GameType gameType)
         {
+            bool keepHolder = false;
+            try
+            {
             // Closing the room so that no others can join
             PhotonRealtimeClient.CurrentRoom.IsOpen = false;
 
@@ -1025,15 +1045,24 @@ namespace Altzone.Scripts.Lobby
             if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient) yield break;
 
             _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
+            keepHolder = true;
+        }
+        finally
+        {
+            if (!keepHolder) _matchmakingHolder = null;
+        }
+
         }
 
         private IEnumerator WaitForMatchmakingPlayers()
         {
-            if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient) yield break;
-
-            bool gameStarting = false;
-            do
+            try
             {
+                if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient) yield break;
+
+                bool gameStarting = false;
+                do
+                {
                 // Checking every 0,5s if we can start gameplay
                 bool canStartGameplay = false;
                 float waitStartTime = Time.time;
@@ -1182,94 +1211,104 @@ namespace Altzone.Scripts.Lobby
                     gameStarting = true;
                 }
 
-            } while (!gameStarting);
+                } while (!gameStarting);
+            }
+            finally
+            {
+                _matchmakingHolder = null;
+            }
         }
 
         private IEnumerator FollowLeaderToNewRoom(string leaderUserId)
         {
-            string oldRoomName = PhotonRealtimeClient.CurrentRoom?.Name ?? string.Empty;
-
-            // Leave current room and wait until in lobby
-            if (PhotonRealtimeClient.InRoom) PhotonRealtimeClient.LeaveRoom();
-            yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
-
-            // Try to find leader via friends list; fallback to joining the matchmaking room with most players
-            bool newRoomJoined = false;
-            int attempts = 0;
-            do
+            try
             {
-                attempts++;
-                _friendList = null;
-                // Only call OpFindFriends when the client is connected and the leader is not this client.
-                if (PhotonRealtimeClient.Client != null && PhotonRealtimeClient.Client.IsConnectedAndReady &&
-                    !string.IsNullOrEmpty(leaderUserId) && PhotonRealtimeClient.LocalPlayer != null && leaderUserId != PhotonRealtimeClient.LocalPlayer.UserId)
-                {
-                    PhotonRealtimeClient.Client.OpFindFriends(new string[1] { leaderUserId });
-                    yield return new WaitUntil(() => _friendList != null );
-                }
-                else
-                {
-                    // Skip friends lookup and continue with fallback to room list.
-                    _friendList = new List<FriendInfo>();
-                }
+                string oldRoomName = PhotonRealtimeClient.CurrentRoom?.Name ?? string.Empty;
 
-                foreach (FriendInfo friend in _friendList)
+                // Leave current room and wait until in lobby
+                if (PhotonRealtimeClient.InRoom) PhotonRealtimeClient.LeaveRoom();
+                yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
+
+                // Try to find leader via friends list; fallback to joining the matchmaking room with most players
+                bool newRoomJoined = false;
+                int attempts = 0;
+                do
                 {
-                    if (friend.UserId == leaderUserId && friend.IsInRoom && friend.Room != oldRoomName)
+                    attempts++;
+                    _friendList = null;
+                    // Only call OpFindFriends when the client is connected and the leader is not this client.
+                    if (PhotonRealtimeClient.Client != null && PhotonRealtimeClient.Client.IsConnectedAndReady &&
+                        !string.IsNullOrEmpty(leaderUserId) && PhotonRealtimeClient.LocalPlayer != null && leaderUserId != PhotonRealtimeClient.LocalPlayer.UserId)
                     {
-                        PhotonRealtimeClient.JoinRoom(friend.Room);
-                        newRoomJoined = true;
-                        break;
+                        PhotonRealtimeClient.Client.OpFindFriends(new string[1] { leaderUserId });
+                        yield return new WaitUntil(() => _friendList != null );
                     }
-                }
-
-                if (!newRoomJoined)
-                {
-                    // Fallback: join the matchmaking room with the most players (excluding the old room)
-                    yield return new WaitUntil(() => CurrentRooms != null);
-                    LobbyRoomInfo bestRoom = null;
-                    foreach (var room in CurrentRooms)
+                    else
                     {
-                        try
-                        {
-                            if (!room.CustomProperties.ContainsKey(PhotonBattleRoom.IsMatchmakingKey)) continue;
-                            if (!(room.CustomProperties[PhotonBattleRoom.IsMatchmakingKey] is bool isMm) || !isMm) continue;
-                        }
-                        catch { continue; }
+                        // Skip friends lookup and continue with fallback to room list.
+                        _friendList = new List<FriendInfo>();
+                    }
 
-                        if (room.Name == oldRoomName) continue;
-                        if (bestRoom == null)
+                    foreach (FriendInfo friend in _friendList)
+                    {
+                        if (friend.UserId == leaderUserId && friend.IsInRoom && friend.Room != oldRoomName)
                         {
-                            bestRoom = room;
+                            PhotonRealtimeClient.JoinRoom(friend.Room);
+                            newRoomJoined = true;
+                            break;
                         }
-                        else
+                    }
+
+                    if (!newRoomJoined)
+                    {
+                        // Fallback: join the matchmaking room with the most players (excluding the old room)
+                        yield return new WaitUntil(() => CurrentRooms != null);
+                        LobbyRoomInfo bestRoom = null;
+                        foreach (var room in CurrentRooms)
                         {
-                            if (room.PlayerCount > bestRoom.PlayerCount)
+                            try
+                            {
+                                if (!room.CustomProperties.ContainsKey(PhotonBattleRoom.IsMatchmakingKey)) continue;
+                                if (!(room.CustomProperties[PhotonBattleRoom.IsMatchmakingKey] is bool isMm) || !isMm) continue;
+                            }
+                            catch { continue; }
+
+                            if (room.Name == oldRoomName) continue;
+                            if (bestRoom == null)
                             {
                                 bestRoom = room;
                             }
-                            else if (room.PlayerCount == bestRoom.PlayerCount)
+                            else
                             {
-                                long rTs = GetRoomCreationTimestamp(room);
-                                long bTs = GetRoomCreationTimestamp(bestRoom);
-                                if (rTs < bTs) bestRoom = room; // older wins
+                                if (room.PlayerCount > bestRoom.PlayerCount)
+                                {
+                                    bestRoom = room;
+                                }
+                                else if (room.PlayerCount == bestRoom.PlayerCount)
+                                {
+                                    long rTs = GetRoomCreationTimestamp(room);
+                                    long bTs = GetRoomCreationTimestamp(bestRoom);
+                                    if (rTs < bTs) bestRoom = room; // older wins
+                                }
                             }
+                        }
+
+                        if (bestRoom != null)
+                        {
+                            PhotonRealtimeClient.JoinRoom(bestRoom.Name);
+                            newRoomJoined = true;
+                            break;
                         }
                     }
 
-                    if (bestRoom != null)
-                    {
-                        PhotonRealtimeClient.JoinRoom(bestRoom.Name);
-                        newRoomJoined = true;
-                        break;
-                    }
-                }
-
-                // Small delay to avoid tight loop; give state time to update
-                yield return new WaitForSeconds(0.5f);
-            } while (!newRoomJoined && attempts < 10);
-
-            _followLeaderHolder = null;
+                    // Small delay to avoid tight loop; give state time to update
+                    yield return new WaitForSeconds(0.5f);
+                } while (!newRoomJoined && attempts < 10);
+            }
+            finally
+            {
+                _followLeaderHolder = null;
+            }
         }
 
         private IEnumerator LeaveMatchmaking()
@@ -1326,215 +1365,220 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator StartTheGameplay(bool isCloseRoom, string blueTeamName, string redTeamName)
         {
-            // TODO: Select random characters if some are not selected
-            //if (!PhotonBattleRoom.IsValidAllSelectedCharacters())
-            //{
-            //    StartingGameFailed();
-            //    throw new UnityException("can't start game, everyone needs to have 3 defence characters selected");
-            //}
-            //Debug.Log($"startTheGameplay {gameWindow}");
-            if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+            try
             {
-                StartingGameFailed();
-                throw new UnityException("only master client can start the game");
-            }
-            Player player = PhotonRealtimeClient.LocalPlayer;
-            int masterPosition = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
-            if (!PhotonLobbyRoom.IsValidPlayerPos(masterPosition))
-            {
-                StartingGameFailed();
-                throw new UnityException($"master client does not have valid player position: {masterPosition}");
-            }
-
-            // Checking that every player has a player position key and if not waiting until they have one (every one who joins room will reserve position for themselves)
-            Room room = PhotonRealtimeClient.CurrentRoom;
-            List<Player> players = room.Players.Values.ToList();
-            List<int> missingPlayers = new();
-
-            foreach (Player roomPlayer in players)
-            {
-                if (!roomPlayer.HasCustomProperty(PlayerPositionKey)) missingPlayers.Add(roomPlayer.ActorNumber);
-            }
-
-            foreach (int actorNumber in missingPlayers) // Wait until every player has a custom property PlayerPositionKey
-            {
-                yield return new WaitUntil(() =>
+                // TODO: Select random characters if some are not selected
+                //if (!PhotonBattleRoom.IsValidAllSelectedCharacters())
+                //{
+                //    StartingGameFailed();
+                //    throw new UnityException("can't start game, everyone needs to have 3 defence characters selected");
+                //}
+                //Debug.Log($"startTheGameplay {gameWindow}");
+                if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient)
                 {
-                    Player playerMissingPosition = room.GetPlayer(actorNumber);
-                    if (playerMissingPosition == null) return true;
-                    return playerMissingPosition.HasCustomProperty(PlayerPositionKey);
-                });
-            }
-
-            // Checking player positions before starting gameplay
-            players = room.Players.Values.ToList();
-            string[] playerUserIds = new string[4] { "", "", "", "" };
-            string[] playerUserNames = new string[4] { "", "", "", "" };
-            PlayerType[] playerTypes = new PlayerType[4] { PlayerType.None, PlayerType.None, PlayerType.None, PlayerType.None, };
-
-            int playerCount = 0;
-            StartGameData data = null;
-            foreach (Player roomPlayer in players)
-            {
-                int playerPos = roomPlayer.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
-                if (!PhotonLobbyRoom.IsValidPlayerPos(playerPos))
-                {
-                    // If player position is not valid we get new position for them, this method checks for duplicate and missing player positions
-                    int newPos = PhotonLobbyRoom.GetFirstFreePlayerPos(new(roomPlayer));
-                    if (!PhotonLobbyRoom.IsValidPlayerPos(newPos)) continue;
-
-                    // Setting the new position to player and room properties and waiting until it's synced
-                    roomPlayer.SetCustomProperty(PlayerPositionKey, newPos);
-                    yield return new WaitUntil(() => roomPlayer.GetCustomProperty<int>(PlayerPositionKey) == newPos);
-
-                    string positionKey = PhotonBattleRoom.GetPositionKey(newPos);
-                    room.SetCustomProperty(positionKey, roomPlayer.UserId);
-                    yield return new WaitUntil(() => room.GetCustomProperty<string>(positionKey) == roomPlayer.UserId);
-
-                    playerPos = newPos;
+                    StartingGameFailed();
+                    throw new UnityException("only master client can start the game");
                 }
-                playerTypes[playerPos-1] = PlayerType.Player;
-                playerUserIds[playerPos - 1] = roomPlayer.UserId;
-                playerUserNames[playerPos - 1] = roomPlayer.NickName;
-                playerCount += 1;
-            }
-
-            int j = 1;
-            foreach(PlayerType type in playerTypes)
-            {
-                if(type == PlayerType.None)
+                Player player = PhotonRealtimeClient.LocalPlayer;
+                int masterPosition = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+                if (!PhotonLobbyRoom.IsValidPlayerPos(masterPosition))
                 {
-                    string positionKey = PhotonBattleRoom.GetPositionKey(j);
-                    string positionValue = PhotonRealtimeClient.LobbyCurrentRoom?.GetCustomProperty<string>(positionKey);
-                    if (positionValue == "Bot") playerTypes[j-1] = PlayerType.Bot;
-                    playerUserNames[j - 1] = "Bot";
-                }
-                j++;
-            }
-
-            // Getting starting emotion from current room custom properties
-            Emotion startingEmotion = (Emotion)room.GetCustomProperty(PhotonBattleRoom.StartingEmotionKey, (int)Emotion.Blank);
-
-            // If starting emotion is blank getting a random starting emotion
-            if (startingEmotion == Emotion.Blank)
-            {
-                startingEmotion = (Emotion)UnityEngine.Random.Range(0, 4);
-            }
-
-            // Getting map id from room custom properties
-            string mapId = room.GetCustomProperty(PhotonBattleRoom.MapKey, string.Empty);
-
-            // If there is no map id getting a random map
-            if (mapId == string.Empty)
-            {
-                int mapIndex = UnityEngine.Random.Range(0, _battleMapReference.Maps.Count);
-                mapId = _battleMapReference.Maps[mapIndex].MapId;
-            }
-
-            if (player.IsMasterClient)
-            {
-                // Ensure team names are not empty — use defaults for matchmaking/random games
-                if (string.IsNullOrWhiteSpace(blueTeamName)) blueTeamName = "Team Alpha";
-                if (string.IsNullOrWhiteSpace(redTeamName)) redTeamName = "Team Beta";
-                //room.CustomProperties.Add(TeamAlphaNameKey, blueTeamName);
-                //room.CustomProperties.Add(TeamBetaNameKey, redTeamName);
-                //room.CustomProperties.Add(PlayerCountKey, realPlayerCount);
-                room.SetCustomProperties(new PhotonHashtable
-                {
-                    { BattleID, room.GetCustomProperty<string>(PhotonBattleRoom.BattleID)},
-                    { TeamAlphaNameKey, blueTeamName },
-                    { TeamBetaNameKey, redTeamName },
-                    { PlayerCountKey, playerCount }
-                });
-
-                yield return null;
-                if (isCloseRoom && PhotonRealtimeClient.CurrentRoom.IsOpen)
-                {
-                    PhotonRealtimeClient.CloseRoom(false);
-                    yield return null;
+                    StartingGameFailed();
+                    throw new UnityException($"master client does not have valid player position: {masterPosition}");
                 }
 
-                if(PhotonBattleRoom.IsBotFillActive())
-                for (int i=0; i < playerTypes.Length; i++)
+                // Checking that every player has a player position key and if not waiting until they have one (every one who joins room will reserve position for themselves)
+                Room room = PhotonRealtimeClient.CurrentRoom;
+                List<Player> players = room.Players.Values.ToList();
+                List<int> missingPlayers = new();
+
+                foreach (Player roomPlayer in players)
                 {
-                        if (playerTypes[i] == PlayerType.None) { playerTypes[i] = PlayerType.Bot;}
+                    if (!roomPlayer.HasCustomProperty(PlayerPositionKey)) missingPlayers.Add(roomPlayer.ActorNumber);
                 }
 
-                data = new()
+                foreach (int actorNumber in missingPlayers) // Wait until every player has a custom property PlayerPositionKey
                 {
-                    StartTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                    PlayerSlotUserIds = playerUserIds,
-                    PlayerSlotUserNames = playerUserNames,
-                    PlayerSlotTypes = playerTypes,
-                    ProjectileInitialEmotion = startingEmotion,
-                    MapId = mapId,
-                    PlayerCount = playerCount,
-                    Seed = Random.Range(int.MinValue, int.MaxValue),
-                };
-
-            }
-            // Countdown from 5 to 0 before starting the game
-            for (int i = 5; i >= 0; i--)
-            {
-                SafeRaiseEvent(
-                    PhotonRealtimeClient.PhotonEvent.GameCountdown,
-                    i,
-                    new RaiseEventArgs { Receivers = ReceiverGroup.All },
-                    SendOptions.SendReliable);
-                if (i > 0) yield return new WaitForSeconds(1f);
-            }
-
-            // Validate that all expected real players are still present before raising StartGame.
-            if (PhotonRealtimeClient.InMatchmakingRoom)
-            {
-                bool missingPlayer = false;
-                foreach (string uid in data.PlayerSlotUserIds)
-                {
-                    if (string.IsNullOrEmpty(uid) || uid == "Bot") continue;
-                    bool present = PhotonRealtimeClient.CurrentRoom?.Players?.Values?.Any(p => p.UserId == uid) ?? false;
-                    if (!present)
+                    yield return new WaitUntil(() =>
                     {
-                        missingPlayer = true;
-                        Debug.LogWarning($"Aborting StartGame: player {uid} missing from room.");
-                        break;
-                    }
+                        Player playerMissingPosition = room.GetPlayer(actorNumber);
+                        if (playerMissingPosition == null) return true;
+                        return playerMissingPosition.HasCustomProperty(PlayerPositionKey);
+                    });
                 }
 
-                if (missingPlayer)
+                // Checking player positions before starting gameplay
+                players = room.Players.Values.ToList();
+                string[] playerUserIds = new string[4] { "", "", "", "" };
+                string[] playerUserNames = new string[4] { "", "", "", "" };
+                PlayerType[] playerTypes = new PlayerType[4] { PlayerType.None, PlayerType.None, PlayerType.None, PlayerType.None, };
+
+                int playerCount = 0;
+                StartGameData data = null;
+                foreach (Player roomPlayer in players)
+                {
+                    int playerPos = roomPlayer.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+                    if (!PhotonLobbyRoom.IsValidPlayerPos(playerPos))
+                    {
+                        // If player position is not valid we get new position for them, this method checks for duplicate and missing player positions
+                        int newPos = PhotonLobbyRoom.GetFirstFreePlayerPos(new(roomPlayer));
+                        if (!PhotonLobbyRoom.IsValidPlayerPos(newPos)) continue;
+
+                        // Setting the new position to player and room properties and waiting until it's synced
+                        roomPlayer.SetCustomProperty(PlayerPositionKey, newPos);
+                        yield return new WaitUntil(() => roomPlayer.GetCustomProperty<int>(PlayerPositionKey) == newPos);
+
+                        string positionKey = PhotonBattleRoom.GetPositionKey(newPos);
+                        room.SetCustomProperty(positionKey, roomPlayer.UserId);
+                        yield return new WaitUntil(() => room.GetCustomProperty<string>(positionKey) == roomPlayer.UserId);
+
+                        playerPos = newPos;
+                    }
+                    playerTypes[playerPos-1] = PlayerType.Player;
+                    playerUserIds[playerPos - 1] = roomPlayer.UserId;
+                    playerUserNames[playerPos - 1] = roomPlayer.NickName;
+                    playerCount += 1;
+                }
+
+                int j = 1;
+                foreach(PlayerType type in playerTypes)
+                {
+                    if(type == PlayerType.None)
+                    {
+                        string positionKey = PhotonBattleRoom.GetPositionKey(j);
+                        string positionValue = PhotonRealtimeClient.LobbyCurrentRoom?.GetCustomProperty<string>(positionKey);
+                        if (positionValue == "Bot") playerTypes[j-1] = PlayerType.Bot;
+                        playerUserNames[j - 1] = "Bot";
+                    }
+                    j++;
+                }
+
+                // Getting starting emotion from current room custom properties
+                Emotion startingEmotion = (Emotion)room.GetCustomProperty(PhotonBattleRoom.StartingEmotionKey, (int)Emotion.Blank);
+
+                // If starting emotion is blank getting a random starting emotion
+                if (startingEmotion == Emotion.Blank)
+                {
+                    startingEmotion = (Emotion)UnityEngine.Random.Range(0, 4);
+                }
+
+                // Getting map id from room custom properties
+                string mapId = room.GetCustomProperty(PhotonBattleRoom.MapKey, string.Empty);
+
+                // If there is no map id getting a random map
+                if (mapId == string.Empty)
+                {
+                    int mapIndex = UnityEngine.Random.Range(0, _battleMapReference.Maps.Count);
+                    mapId = _battleMapReference.Maps[mapIndex].MapId;
+                }
+
+                if (player.IsMasterClient)
+                {
+                    // Ensure team names are not empty — use defaults for matchmaking/random games
+                    if (string.IsNullOrWhiteSpace(blueTeamName)) blueTeamName = "Team Alpha";
+                    if (string.IsNullOrWhiteSpace(redTeamName)) redTeamName = "Team Beta";
+                    //room.CustomProperties.Add(TeamAlphaNameKey, blueTeamName);
+                    //room.CustomProperties.Add(TeamBetaNameKey, redTeamName);
+                    //room.CustomProperties.Add(PlayerCountKey, realPlayerCount);
+                    room.SetCustomProperties(new PhotonHashtable
+                    {
+                        { BattleID, room.GetCustomProperty<string>(PhotonBattleRoom.BattleID)},
+                        { TeamAlphaNameKey, blueTeamName },
+                        { TeamBetaNameKey, redTeamName },
+                        { PlayerCountKey, playerCount }
+                    });
+
+                    yield return null;
+                    if (isCloseRoom && PhotonRealtimeClient.CurrentRoom.IsOpen)
+                    {
+                        PhotonRealtimeClient.CloseRoom(false);
+                        yield return null;
+                    }
+
+                    if(PhotonBattleRoom.IsBotFillActive())
+                    for (int i=0; i < playerTypes.Length; i++)
+                    {
+                            if (playerTypes[i] == PlayerType.None) { playerTypes[i] = PlayerType.Bot;}
+                    }
+
+                    data = new()
+                    {
+                        StartTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                        PlayerSlotUserIds = playerUserIds,
+                        PlayerSlotUserNames = playerUserNames,
+                        PlayerSlotTypes = playerTypes,
+                        ProjectileInitialEmotion = startingEmotion,
+                        MapId = mapId,
+                        PlayerCount = playerCount,
+                        Seed = Random.Range(int.MinValue, int.MaxValue),
+                    };
+
+                }
+                // Countdown from 5 to 0 before starting the game
+                for (int i = 5; i >= 0; i--)
                 {
                     SafeRaiseEvent(
-                        PhotonRealtimeClient.PhotonEvent.CancelGameStart,
-                        null,
+                        PhotonRealtimeClient.PhotonEvent.GameCountdown,
+                        i,
                         new RaiseEventArgs { Receivers = ReceiverGroup.All },
-                        SendOptions.SendReliable
-                    );
+                        SendOptions.SendReliable);
+                    if (i > 0) yield return new WaitForSeconds(1f);
+                }
 
-                    if (_startGameHolder != null)
+                // Validate that all expected real players are still present before raising StartGame.
+                if (PhotonRealtimeClient.InMatchmakingRoom)
+                {
+                    bool missingPlayer = false;
+                    foreach (string uid in data.PlayerSlotUserIds)
                     {
-                        StopCoroutine(_startGameHolder);
-                        _startGameHolder = null;
+                        if (string.IsNullOrEmpty(uid) || uid == "Bot") continue;
+                        bool present = PhotonRealtimeClient.CurrentRoom?.Players?.Values?.Any(p => p.UserId == uid) ?? false;
+                        if (!present)
+                        {
+                            missingPlayer = true;
+                            Debug.LogWarning($"Aborting StartGame: player {uid} missing from room.");
+                            break;
+                        }
                     }
 
-                    if (_matchmakingHolder != null)
+                    if (missingPlayer)
                     {
-                        StopCoroutine(_matchmakingHolder);
-                        _matchmakingHolder = null;
+                        SafeRaiseEvent(
+                            PhotonRealtimeClient.PhotonEvent.CancelGameStart,
+                            null,
+                            new RaiseEventArgs { Receivers = ReceiverGroup.All },
+                            SendOptions.SendReliable
+                        );
+
+                        if (_startGameHolder != null)
+                        {
+                            StopCoroutine(_startGameHolder);
+                            _startGameHolder = null;
+                        }
+
+                        if (_matchmakingHolder != null)
+                        {
+                            StopCoroutine(_matchmakingHolder);
+                            _matchmakingHolder = null;
+                        }
+                        _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
+                        yield break;
                     }
-                    _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
+                }
+
+                if (!SafeRaiseEvent(PhotonRealtimeClient.PhotonEvent.StartGame, StartGameData.Serialize(data), new RaiseEventArgs{Receivers = ReceiverGroup.All}, SendOptions.SendReliable))
+                {
+                    Debug.LogError("Unable to start game.");
+                    StartingGameFailed();
                     yield break;
                 }
+                Debug.Log("Starting Game");
+                //WindowManager.Get().ShowWindow(gameWindow);
             }
-
-            if (!SafeRaiseEvent(PhotonRealtimeClient.PhotonEvent.StartGame, StartGameData.Serialize(data), new RaiseEventArgs{Receivers = ReceiverGroup.All}, SendOptions.SendReliable))
+            finally
             {
-                Debug.LogError("Unable to start game.");
-                StartingGameFailed();
-                yield break;
+                _startGameHolder = null;
             }
-            Debug.Log("Starting Game");
-            // Clear the holder to indicate the start coroutine has finished
-            _startGameHolder = null;
-            //WindowManager.Get().ShowWindow(gameWindow);
         }
 
         private void StartingGameFailed()
