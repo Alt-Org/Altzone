@@ -211,12 +211,17 @@ namespace Battle.QSimulation.Player
             }
         }
 
-        private const int SoundEffectTypeCharacterCount = 7;
-
+        /// <summary>Enum used to define common sound effect types</summary>
+        ///
+        /// Used by @cref{HandleSFXCommon} method.
         private enum SoundEffectTypeCommon
         {
             HitShield
         }
+
+        /// <summary>Enum used to define character specific sound effect types</summary>
+        ///
+        /// Used by @cref{HandleSFXCharacter} method.
         private enum SoundEffectTypeCharacter
         {
             Catchphrase,
@@ -225,7 +230,7 @@ namespace Battle.QSimulation.Player
             HitCharacterLove,
             HitCharacterPlayful,
             HitCharacterSadness,
-            Death,
+            Death
         }
 
         /// <summary>This classes BattleDebugLogger instance.</summary>
@@ -348,6 +353,8 @@ namespace Battle.QSimulation.Player
         /// Private helper method for playing the appropriate common sound effect based on sound effect <paramref name="type"/>
         /// </summary>
         ///
+        /// Use @cref{HandleSFXCharacter} to play character specific sound effects.
+        ///
         /// <param name="f">Current simulation frame</param>
         /// <param name="type">Type of sound effect to be played</param>
         private static void HandleSFXCommon(Frame f, SoundEffectTypeCommon type)
@@ -359,6 +366,8 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Private helper method for playing the appropriate character specific sound effect based on <paramref name="characterID"/> and sound effect <paramref name="type"/>
         /// </summary>
+        ///
+        /// Use @cref{HandleSFXCommon} to play common sound effects.
         ///
         /// <param name="f">Current simulation frame</param>
         /// <param name="type">Type of sound effect to be played</param>
