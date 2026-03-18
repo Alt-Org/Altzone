@@ -61,7 +61,8 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
                 if (gameTypeInfo.gameType == _selectedGameType)
                 {
-                    UpdateGameType(gameTypeInfo);
+                    // Initialize visuals without opening the battle popup automatically
+                    UpdateGameType(gameTypeInfo, false);
                 }
             }
 
@@ -133,23 +134,31 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
         private void UpdateGameType(GameTypeInfo gameTypeInfo)
         {
+            UpdateGameType(gameTypeInfo, true);
+        }
+
+        private void UpdateGameType(GameTypeInfo gameTypeInfo, bool firePopup)
+        {
             _gameTypeIcon.sprite = gameTypeInfo.Icon;
             _gameTypeName.SetText(gameTypeInfo.Name);
             _gameTypeDescription.SetText(gameTypeInfo.Description);
             _selectedGameType = gameTypeInfo.gameType;
 
             // Saving battle button selected game type to playerprefs
-            PlayerPrefs.SetInt(SelectedGameTypeKey, (int)_selectedGameType); 
+            PlayerPrefs.SetInt(SelectedGameTypeKey, (int)_selectedGameType);
 
             // Setting selected visuals for option buttons
-            foreach (GameTypeOption gameTypeOption in _gameTypeOptionList) 
+            foreach (GameTypeOption gameTypeOption in _gameTypeOptionList)
             {
                 bool selected = gameTypeOption.Info.gameType == _selectedGameType;
                 gameTypeOption.SetSelected(selected);
             }
 
-            // Opening battle popup after selecting a game type
-            SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
+            // Opening battle popup after selecting a game type (only when requested)
+            if (firePopup)
+            {
+                SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
+            }
         }
 
         private void ChangeLanguage(SettingsCarrier.LanguageType language)
