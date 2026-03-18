@@ -1,10 +1,13 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
+using MenuUi.Scripts.Window;
+using TMPro;
 using UnityEngine;
-using static DailyQuest;
+using UnityEngine.UI;
 
 public class ChooseTask : MonoBehaviour
 {
@@ -20,27 +23,55 @@ public class ChooseTask : MonoBehaviour
     private DailyTaskManager _dtManager;
     private VersionType _gameVersion;
 
+    [SerializeField]private NaviButton _dailyTaskNaviButton; // This will be removed later, now just a quick fix
+
     private void Start()
     {
-        _dtManager = GameObject.Find("DailyTaskManager").GetComponent<DailyTaskManager>();
+
+        _dtManager = GameObject.FindObjectOfType<DailyTaskManager>(true).GetComponent<DailyTaskManager>();
+
         _gameVersion = GameConfig.Get().GameVersionType;
 
-        DailyTaskProgressManager.OnTaskChange += HideSelectionWindow;
-        if (_gameVersion == VersionType.TurboEducation)
+        //DailyTaskProgressManager.OnTaskChange += HideSelectionWindow;
+
+        if (_gameVersion == VersionType.TurboEducation && !DailyTaskProgressManager.Instance.HasOnGoingTask())
         {
-            //ShowSelectionWindow();
+            Debug.LogWarning("SHOW");
+            _dailyTaskNaviButton.StartCoroutine(_dailyTaskNaviButton.Navigate()); // Switch to dailytask view
+            StartCoroutine(ShowWindowWithDelay());
         }
     }
 
+    IEnumerator ShowWindowWithDelay()
+    {
+        yield return new WaitForSeconds(0.5f);
 
-
+        ShowSelectionWindow();
+    }
     /// <summary>
     /// Generate the task options and show them to the user
     /// </summary>
     public void ShowSelectionWindow()
     {
         GenerateTaskOptions();
+        AddListenersToTaskOptions();
         _selectionWindow.gameObject.SetActive(true);
+        foreach (Image img in _selectionWindow.gameObject.GetComponentsInChildren<Image>())
+        {
+            img.enabled = true;
+        }
+        foreach (TextMeshProUGUI txt in _selectionWindow.gameObject.GetComponentsInChildren<TextMeshProUGUI>())
+        {
+            txt.enabled = true;
+        }
+    }
+
+    public void AddListenersToTaskOptions()
+    {
+        for (int i = 0; i < _taskCardHolder.childCount; i++)
+        {
+            _taskCardHolder.GetChild(i).gameObject.GetComponent<Button>().onClick.AddListener(HideSelectionWindow);
+        }
     }
 
     /// <summary>
@@ -48,8 +79,21 @@ public class ChooseTask : MonoBehaviour
     /// </summary>
     public void HideSelectionWindow(PlayerTask task)
     {
-        _selectionWindow.gameObject.SetActive(false);
-        DeleteTaskCards();
+        HideSelectionWindow();
+    }
+
+    public void HideSelectionWindow()
+    {
+        //_selectionWindow.gameObject.SetActive(false);
+        foreach (Image img in _selectionWindow.gameObject.GetComponentsInChildren<Image>())
+        {
+            img.enabled = false;
+        }
+        foreach (TextMeshProUGUI txt in _selectionWindow.gameObject.GetComponentsInChildren<TextMeshProUGUI>())
+        {
+            txt.enabled = false;
+        }
+        //DeleteTaskCards();
     }
 
 

@@ -61,7 +61,7 @@ public class DailyTaskView : AltMonoBehaviour
 
     private void Start()
     {
-        _dtManager = GameObject.Find("DailyTaskManager").GetComponent<DailyTaskManager>();
+        _dtManager = GameObject.FindObjectOfType<DailyTaskManager>(true);
 
         ViewSetup();
 

@@ -430,4 +430,9 @@ public class DailyTaskProgressManager : AltMonoBehaviour
     {
         StartCoroutine(OnClanMilestoneProgressed.Invoke());
     }
+
+    public bool HasOnGoingTask()
+    {
+        return CurrentPlayerTask != null;
+    }
 }

@@ -11,6 +11,9 @@ using static DailyQuest;
 
 public class DailyTaskManager : AltMonoBehaviour
 {
+
+    public static DailyTaskManager Instance { get; private set; }
+
     #region Variables
 
     [Tooltip("Maximum time until a get or save data operation is forced to quit.")]
@@ -83,9 +86,24 @@ public class DailyTaskManager : AltMonoBehaviour
 
     #endregion
 
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+            //DontDestroyOnLoad(this);
+        }
+    }
+
+
     void Start()
     {
-        _dailyTaskView = GameObject.Find("DailyTaskView").GetComponent<DailyTaskView>();
+        _dailyTaskView = GameObject.FindObjectOfType<DailyTaskView>(true);
 
         StartCoroutine(DataSetup());
 
