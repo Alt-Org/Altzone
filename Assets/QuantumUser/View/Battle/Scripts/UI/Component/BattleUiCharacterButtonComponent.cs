@@ -103,13 +103,6 @@ namespace Battle.View.UI
             _targetDamageFillAmount = 1 - percentage;
         }
 
-        /// <summary>
-        /// Sets the number on the UI to match the defence value.<br/>
-        /// The number does not go below 0.
-        /// </summary>
-        ///
-        /// <param name="defenceValue">The defence value of the character.</param>
-
         /// <value>The starting damage fill amount for the fill animation.</value>
         private float _startDamageFillAmount;
 
