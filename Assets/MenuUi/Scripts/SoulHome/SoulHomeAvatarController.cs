@@ -1,7 +1,7 @@
 
+
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using System.Linq;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
@@ -58,7 +58,6 @@ namespace MenuUI.Scripts.SoulHome
 
         private Coroutine _statusCoroutine;
         private GridNode[,] _grid => _roomData.Grid;
-        private List<AnimationClip> _verifiedInteractClips = new();
         private Vector2Int _currentGridPosition;
         private List<Vector2Int> _walkableSlots => _roomData.WalkableSlots;
         private int _gridWidth => _roomData.Grid.GetLength(0);
@@ -89,8 +88,6 @@ namespace MenuUI.Scripts.SoulHome
             {
                 _points = transform.parent.Find("FurniturePoints").Find("FloorFurniturePoints");
                 _roomData = transform.parent.GetComponent<RoomData>();
-
-                SetAnimationClips();
 
                 SetAvatar(_points, _roomData);
                 OnStatusChanged();
@@ -139,23 +136,6 @@ namespace MenuUI.Scripts.SoulHome
         private void OnDisable()
         {
             StopAllCoroutines();
-        }
-
-        private void SetAnimationClips()
-        {
-            AnimationClip[] animatorClips = _animator.runtimeAnimatorController.animationClips;
-
-            foreach (AnimationClip clip in _interactAnimation)
-            {
-                foreach (AnimationClip controllerClip in animatorClips)
-                {
-                    if (controllerClip == clip)
-                    {
-                        _verifiedInteractClips.Add(clip);
-                        break;
-                    }
-                }
-            }
         }
 
         private void SelectStatus()
@@ -675,14 +655,14 @@ namespace MenuUI.Scripts.SoulHome
 
         private IEnumerator InteractAnimation()
         {
-            if (_performingAnimation || _verifiedInteractClips.Count == 0)
+            if (_performingAnimation || _validatedInteractAnimation.Count == 0)
             {
                 yield break;
             }
             StopCoroutine(_statusCoroutine);
 
-            int index = Random.Range(0, _verifiedInteractClips.Count);
-            AnimationClip selectedClip = _verifiedInteractClips[index];
+            int index = Random.Range(0, _validatedInteractAnimation.Count);
+            AnimationClip selectedClip = _validatedInteractAnimation[index].Clip;
 
             _animator.Play(selectedClip.name);
             _performingAnimation = true;
@@ -710,6 +690,8 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (animation != null && animation.Clip != null)
                 {
+                    List<AnimationClip> clips = _animator.runtimeAnimatorController.animationClips.ToList();
+                    if (!clips.Contains(animation.Clip)) continue;
                     if (animation.ValidClass == _class || animation.ValidClass is CharacterClassType.None) validatedAnimation.Add(animation);
                 }
             }
@@ -775,7 +757,7 @@ namespace MenuUI.Scripts.SoulHome
                         Gizmos.DrawCube(worldPos, new Vector3(0.8f, 0.8f, 0.1f));
 
                         // Draw the penalty number
-                        Handles.Label(worldPos, node.penalty.ToString());
+                        UnityEditor.Handles.Label(worldPos, node.penalty.ToString());
                     }
                 }
             }
