@@ -32,6 +32,10 @@ namespace MenuUi.Scripts.Window
             }
 
             if (_overlayObject == null) _overlayObject = transform.Find("UIOverlayPanel").GetComponent<GameObject>();
+
+            buttons[2].transform.localScale = Vector3.one * 1.2f;
+            buttons[2].interactable = false;
+
         }
 
         private void OnEnable()
