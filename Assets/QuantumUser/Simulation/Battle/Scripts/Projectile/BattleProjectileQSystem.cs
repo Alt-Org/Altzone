@@ -283,10 +283,6 @@ namespace Battle.QSimulation.Projectile
                     {
                         SetEmotion(f, projectile, projectile->EmotionBase);
                     }
-                    else
-                    {
-                        SetEmotion(f, projectile, (BattleEmotionState)(((int)projectile->EmotionCurrent + f.RNG->NextInclusive(1, 3)) % 4));
-                    }
 
                     normal             = soulWall->Normal;
                     collisionMinOffset = soulWall->CollisionMinOffset;
