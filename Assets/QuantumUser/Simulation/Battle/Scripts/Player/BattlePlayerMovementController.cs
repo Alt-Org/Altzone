@@ -59,7 +59,7 @@ namespace Battle.QSimulation.Player
             BattlePlayerQSpec spec = BattleQConfig.GetPlayerSpec(f);
 
             BattleMovementInputType movementInput = input->MovementInput;
-            bool rotationInput = input->RotationInput;
+            bool rotationInput                    = input->RotationInput;
 
             bool cancelMovement = false;
 
