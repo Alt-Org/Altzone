@@ -367,9 +367,7 @@ public class Chat : AltMonoBehaviour
 
     private void DisplayMessage(ChatChannelType channelType,ChatMessage message)
     {
-        Debug.LogWarning($"Test1: {channelType} {ChatListener.Instance.ActiveChatChannel}");
         if (channelType != ChatListener.Instance.ActiveChatChannel) return;
-        Debug.LogWarning("Test2");
         bool ownMsg = message?.SenderId == ServerManager.Instance.Player._id;
         GameObject messagePrefab = GetMessagePrefab(message.Mood, ownMsg);
 
