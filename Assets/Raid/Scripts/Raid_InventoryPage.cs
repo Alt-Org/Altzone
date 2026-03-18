@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 //using Photon.Pun;
 using Random = UnityEngine.Random;
+using Altzone.Scripts.Model.Poco.Game;
 //using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
 
 public class Raid_InventoryPage : MonoBehaviour
@@ -28,6 +29,7 @@ public class Raid_InventoryPage : MonoBehaviour
 
     List<Raid_InventoryItem> ListOfUIItems = new List<Raid_InventoryItem>();
     
+    List<GameFurniture> ListOfFurniture = new List<GameFurniture>();
 
     [SerializeField, Header("Furniture and weight")] private Sprite Image1;
     [SerializeField] private float ItemWeight1;
@@ -67,8 +69,17 @@ public class Raid_InventoryPage : MonoBehaviour
 
     }
 
+    public List<GameFurniture> GetGameFurniture()
+    {   
+        List<GameFurniture> furnitures = null;
+        // (Todo)GetGameFurniture StoreFront.get()? LocalModels?
+        return furnitures;
+    }
+
     public void InitializeInventoryUI(int InventorySize)
     {
+        // ListOfFurniture = GetGameFurniture();
+
         for (int i = 0; i < InventorySize; i++)
         {
             Raid_InventoryItem UIItem = Instantiate(ItemPrefab, Vector3.zero, Quaternion.identity);
@@ -205,8 +216,7 @@ public class Raid_InventoryPage : MonoBehaviour
 
     public void SetInventorySlotData(int InventorySize)
     {
-        //why are we setting aleady passed variables?
-        InventorySize = raid_InventoryHandler.InventorySize;
+        // InventorySize = raid_InventoryHandler.InventorySize;
 
         for (int i = 0; i < InventorySize; i++)
         {
