@@ -68,7 +68,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Called by BattleCollisionQSystem. Applies damage to the player after checking if it is appropriate to do so.
+        /// Called by BattleCollisionQSystem. Stuns the player after checking if it is appropriate to do so.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame</param>
@@ -94,37 +94,10 @@ namespace Battle.QSimulation.Player
                 HandleSFXCharacter(f, soundEffectType, damagedPlayerData->CharacterId);
             }
 
-            // Temp disabled
-            BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
-            return;
+            damagedPlayerData->MovementEnabled = false;
+            damagedPlayerData->RotationEnabled = false;
 
-            if (projectileCollisionData->Projectile->IsHeld) return;
-
-            //BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->PlayerEntity);
-            FP damageTaken = projectileCollisionData->Projectile->Attack;
-
-            HandleSFXCharacter(f, SoundEffectTypeCharacter.HitCharacterAggression, damagedPlayerData->CharacterId );
-
-            BattlePlayerManager.PlayerHandle damagePlayerHandle = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot);
-            int characterNumber = damagePlayerHandle.SelectedCharacterNumber;
-
-            FP newHp = damagedPlayerData->CurrentHp - damageTaken;
-
-            if (damageTaken > FP._0 && damagedPlayerData->CurrentHp > FP._0 && !damagedPlayerData->DamageCooldown.IsRunning(f))
-            {
-                damagedPlayerData->CurrentHp = newHp;
-
-                damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
-
-                f.Events.BattleCharacterTakeDamage(playerCollisionData->PlayerCharacterHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newHp / damagedPlayerData->Stats.Hp);
-            }
-
-            if (damagedPlayerData->CurrentHp <= FP._0)
-            {
-                BattlePlayerManager.DespawnPlayer(f, damagedPlayerData->Slot, kill: true);
-                damagePlayerHandle.SetOutOfPlayRespawning();
-                damagePlayerHandle.RespawnTimer = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).AutoRespawnTimeSec);
-            }
+            damagedPlayerData->StunCooldown = FrameTimer.FromSeconds(f, (int)BattleQConfig.GetPlayerSpec(f).StunCooldownSec);
 
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
         }
@@ -158,7 +131,7 @@ namespace Battle.QSimulation.Player
 
                 damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
 
-                f.Events.BattleShieldTakeDamage(shieldCollisionData->PlayerShieldHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newDefence);
+                f.Events.BattleShieldTakeDamage(shieldCollisionData->PlayerShieldHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newDefence / damagedPlayerData->Stats.Defence);
             }
 
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
@@ -498,6 +471,12 @@ namespace Battle.QSimulation.Player
             {
                 AbilityActivate(f, playerData, playerTransform);
                 updateMovement = false;
+            }
+
+            if (!playerData->StunCooldown.IsRunning(f))
+            {
+                playerData->MovementEnabled = true;
+                playerData->RotationEnabled = !playerData->DisableRotation;
             }
 
             if (playerData->CurrentDefence <= FP._0)

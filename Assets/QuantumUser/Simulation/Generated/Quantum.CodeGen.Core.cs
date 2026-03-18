@@ -920,11 +920,9 @@ namespace Quantum {
   [StructLayout(LayoutKind.Explicit)]
   [Serializable()]
   public unsafe partial struct BattlePlayerStats {
-    public const Int32 SIZE = 40;
+    public const Int32 SIZE = 32;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(24)]
-    public FP Hp;
-    [FieldOffset(32)]
     public FP Speed;
     [FieldOffset(8)]
     public FP CharacterSize;
@@ -935,7 +933,6 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 5557;
-        hash = hash * 31 + Hp.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
         hash = hash * 31 + CharacterSize.GetHashCode();
         hash = hash * 31 + Attack.GetHashCode();
@@ -948,7 +945,6 @@ namespace Quantum {
         FP.Serialize(&p->Attack, serializer);
         FP.Serialize(&p->CharacterSize, serializer);
         FP.Serialize(&p->Defence, serializer);
-        FP.Serialize(&p->Hp, serializer);
         FP.Serialize(&p->Speed, serializer);
     }
   }
@@ -1351,7 +1347,7 @@ namespace Quantum {
     public Int32 CharacterId;
     [FieldOffset(0)]
     public BattlePlayerCharacterClass CharacterClass;
-    [FieldOffset(136)]
+    [FieldOffset(144)]
     public BattlePlayerStats Stats;
     [FieldOffset(20)]
     public Int32 GridExtendTop;
@@ -1359,24 +1355,28 @@ namespace Quantum {
     public Int32 GridExtendBottom;
     [FieldOffset(32)]
     public QBoolean HasTargetPosition;
-    [FieldOffset(120)]
+    [FieldOffset(128)]
     public FPVector2 TargetPosition;
     [FieldOffset(80)]
     public FP RotationBase;
     [FieldOffset(88)]
     public FP RotationOffset;
     [FieldOffset(64)]
-    public FP CurrentHp;
-    [FieldOffset(56)]
     public FP CurrentDefence;
-    [FieldOffset(48)]
-    public EntityRef HitboxShieldEntity;
+    [FieldOffset(36)]
+    public QBoolean MovementEnabled;
     [FieldOffset(40)]
+    public QBoolean RotationEnabled;
+    [FieldOffset(56)]
+    public EntityRef HitboxShieldEntity;
+    [FieldOffset(48)]
     public EntityRef HitboxCharacterEntity;
     [FieldOffset(28)]
     public QBoolean DisableRotation;
     [FieldOffset(112)]
     public FrameTimer DamageCooldown;
+    [FieldOffset(120)]
+    public FrameTimer StunCooldown;
     [FieldOffset(72)]
     public FP MovementCooldownSec;
     [FieldOffset(104)]
@@ -1398,12 +1398,14 @@ namespace Quantum {
         hash = hash * 31 + TargetPosition.GetHashCode();
         hash = hash * 31 + RotationBase.GetHashCode();
         hash = hash * 31 + RotationOffset.GetHashCode();
-        hash = hash * 31 + CurrentHp.GetHashCode();
         hash = hash * 31 + CurrentDefence.GetHashCode();
+        hash = hash * 31 + MovementEnabled.GetHashCode();
+        hash = hash * 31 + RotationEnabled.GetHashCode();
         hash = hash * 31 + HitboxShieldEntity.GetHashCode();
         hash = hash * 31 + HitboxCharacterEntity.GetHashCode();
         hash = hash * 31 + DisableRotation.GetHashCode();
         hash = hash * 31 + DamageCooldown.GetHashCode();
+        hash = hash * 31 + StunCooldown.GetHashCode();
         hash = hash * 31 + MovementCooldownSec.GetHashCode();
         hash = hash * 31 + AbilityCooldownSec.GetHashCode();
         hash = hash * 31 + AbilityActivateBufferSec.GetHashCode();
@@ -1421,16 +1423,18 @@ namespace Quantum {
         PlayerRef.Serialize(&p->PlayerRef, serializer);
         QBoolean.Serialize(&p->DisableRotation, serializer);
         QBoolean.Serialize(&p->HasTargetPosition, serializer);
+        QBoolean.Serialize(&p->MovementEnabled, serializer);
+        QBoolean.Serialize(&p->RotationEnabled, serializer);
         EntityRef.Serialize(&p->HitboxCharacterEntity, serializer);
         EntityRef.Serialize(&p->HitboxShieldEntity, serializer);
         FP.Serialize(&p->CurrentDefence, serializer);
-        FP.Serialize(&p->CurrentHp, serializer);
         FP.Serialize(&p->MovementCooldownSec, serializer);
         FP.Serialize(&p->RotationBase, serializer);
         FP.Serialize(&p->RotationOffset, serializer);
         FrameTimer.Serialize(&p->AbilityActivateBufferSec, serializer);
         FrameTimer.Serialize(&p->AbilityCooldownSec, serializer);
         FrameTimer.Serialize(&p->DamageCooldown, serializer);
+        FrameTimer.Serialize(&p->StunCooldown, serializer);
         FPVector2.Serialize(&p->TargetPosition, serializer);
         Quantum.BattlePlayerStats.Serialize(&p->Stats, serializer);
     }
