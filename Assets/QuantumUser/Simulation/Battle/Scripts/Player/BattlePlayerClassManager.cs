@@ -69,7 +69,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerData">Pointer reference to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
         ///
-        /// <returns>Default CreationParameters.</returns>
+        /// <returns>Default @cref{Battle.QSimulation.Player.BattlePlayerClassManager,CreationParameters} if not overwritten.</returns>
         public virtual unsafe BattlePlayerClassManager.CreationParameters OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) => BattlePlayerClassManager.CreationParameters.Default;
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerData">Pointer reference to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
         ///
-        /// <returns>CreationParameters.</returns>
+        /// <returns>@cref{Battle.QSimulation.Player.BattlePlayerClassManager,CreationParameters}.</returns>
         public static CreationParameters OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
             ReturnCode returnCode = GetClass(playerData->CharacterClass, out BattlePlayerClassBase playerClass);

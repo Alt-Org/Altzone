@@ -57,7 +57,8 @@
 /// Contains hitbox's data, inluding which player the hitbox belongs to, which type it is, etc.
 /// </summary>
 ///
-/// @bigtext{Generated from @ref BattlePlayerHitbox.qtn}
+/// @bigtext{Generated from @ref BattlePlayerHitbox.qtn}  
+/// @bigtext{Extended in @ref BattlePlayerHitboxQComponent.cs}
 
 /// @var EntityRef Quantum.BattlePlayerHitboxQComponent::ParentEntityRef
 /// <summary>EntityRef to the entity the hitbox belongs to.</summary>
@@ -142,7 +143,6 @@
 /// @fn Int32 Quantum::BattlePlayerHitboxTemplate::GetHashCode
 /// @fn void Quantum::BattlePlayerHitboxTemplate::ClearPointers
 ///
-/// @fn void Quantum::BattlePlayerHitboxTemplate::OnRemoved
 /// @fn void Quantum::BattlePlayerHitboxTemplate::Serialize
 ///
 /// @}

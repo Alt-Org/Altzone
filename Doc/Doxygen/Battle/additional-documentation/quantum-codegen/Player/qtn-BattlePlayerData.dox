@@ -151,6 +151,13 @@
 
 // ---------------------------------------------------------------------------------------------------- //
 
+/// @struct Quantum::BattlePlayerDataTemplateQComponent
+/// <summary>
+/// Template for creating player character entity.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerData.qtn}
+
 /// @var int Quantum::BattlePlayerDataTemplateQComponent::GridExtendTop
 /// <summary>How many GridCells the character extends above the center heart position.</summary>
 ///
@@ -162,3 +169,19 @@
 ///
 /// @var bool Quantum::BattlePlayerDataTemplateQComponent::DisableRotation
 /// <summary>Bool for disabling rotation for character.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerDataTemplateQComponent::SIZE
+/// @var Int32 Quantum::BattlePlayerDataTemplateQComponent::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerDataTemplateQComponent::GetHashCode
+/// @fn void Quantum::BattlePlayerDataTemplateQComponent::ClearPointers
+///
+/// @fn void Quantum::BattlePlayerDataTemplateQComponent::OnRemoved
+/// @fn void Quantum::BattlePlayerDataTemplateQComponent::Serialize
+///
+/// @}
+
+// ---------------------------------------------------------------------------------------------------- //

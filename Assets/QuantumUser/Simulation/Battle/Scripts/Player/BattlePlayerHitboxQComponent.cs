@@ -9,6 +9,7 @@ using Photon.Deterministic;
 namespace Quantum
 {
     // Adds functionality to calculate normals.
+    // Main struct definition in BattlePlayerHitbox.qtn.
     // Main struct documentation in qtn-BattlePlayerHitboxQComponent.dox.
     public unsafe partial struct BattlePlayerHitboxQComponent
     {

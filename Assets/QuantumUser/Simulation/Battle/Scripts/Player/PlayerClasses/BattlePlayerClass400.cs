@@ -29,22 +29,6 @@ namespace Battle.QSimulation.Player
         public override BattlePlayerCharacterClass Class => BattlePlayerCharacterClass.Class400;
 
         /// <summary>
-        /// Called when the player is created.
-        /// </summary>
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerHandle">Handle for the player.</param>
-        /// <param name="playerData">Pointer to player data.</param>
-        /// <param name="playerEntity">Entity reference for the player.</param>
-        ///
-        /// <returns>Default CreationParameters.</returns>
-        public override unsafe BattlePlayerClassManager.CreationParameters OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
-        {
-            BattlePlayerClass400DataQComponent* data = GetClassData(f, playerEntity);
-            return BattlePlayerClassManager.CreationParameters.Default;
-        }
-
-        /// <summary>
         /// Called when a projectile hits a player shield.
         /// </summary>
         ///

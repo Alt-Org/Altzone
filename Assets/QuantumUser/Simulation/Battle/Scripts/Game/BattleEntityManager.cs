@@ -16,6 +16,7 @@ using Photon.Deterministic;
 namespace Quantum
 {
     // Adds functionality to convert between BattleEntityID and int
+    // Main struct definition in BattleEntityID.qtn
     // Main struct documentation in qtn-BattleEntityID.dox
     public partial struct BattleEntityID
     {
