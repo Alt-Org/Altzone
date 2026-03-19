@@ -89,6 +89,7 @@ public class DailyTaskOwnTask : MonoBehaviour
 
     public IEnumerator SetDailyTask(PlayerTask data)
     {
+        Debug.LogWarning("SETDAILYTASKOWNPAGE");
         _currentTask = data;
         SetTaskTitle(data, SettingsCarrier.Instance.Language);
         SetTaskCategory(data, SettingsCarrier.Instance.Language);

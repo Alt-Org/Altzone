@@ -20,26 +20,38 @@ public class ChooseTask : MonoBehaviour
     [Tooltip("The parent for the task cards")]
     private RectTransform _taskCardHolder;
 
-    private DailyTaskManager _dtManager;
+    private DailyTaskView _dailyTaskView;
     private VersionType _gameVersion;
 
     [SerializeField]private NaviButton _dailyTaskNaviButton; // This will be removed later, now just a quick fix
 
-    private void Start()
+
+    IEnumerator Initialize()
     {
 
-        _dtManager = GameObject.FindObjectOfType<DailyTaskManager>(true).GetComponent<DailyTaskManager>();
+        yield return new WaitUntil(() => DailyTaskManager.Instance.DataReady);
+
+        _dailyTaskView = GameObject.FindObjectOfType<DailyTaskView>(true);
 
         _gameVersion = GameConfig.Get().GameVersionType;
 
-        //DailyTaskProgressManager.OnTaskChange += HideSelectionWindow;
-
         if (_gameVersion == VersionType.TurboEducation && !DailyTaskProgressManager.Instance.HasOnGoingTask())
         {
-            Debug.LogWarning("SHOW");
             _dailyTaskNaviButton.StartCoroutine(_dailyTaskNaviButton.Navigate()); // Switch to dailytask view
             StartCoroutine(ShowWindowWithDelay());
         }
+    }
+
+    private void Start()
+    {
+        StartCoroutine(Initialize());
+        DailyTaskProgressManager.OnTaskChange += HideSelectionWindow;
+        
+    }
+
+    private void OnDestroy()
+    {
+        DailyTaskProgressManager.OnTaskChange -= HideSelectionWindow;
     }
 
     IEnumerator ShowWindowWithDelay()
@@ -54,16 +66,8 @@ public class ChooseTask : MonoBehaviour
     public void ShowSelectionWindow()
     {
         GenerateTaskOptions();
-        AddListenersToTaskOptions();
+        //AddListenersToTaskOptions();
         _selectionWindow.gameObject.SetActive(true);
-        foreach (Image img in _selectionWindow.gameObject.GetComponentsInChildren<Image>())
-        {
-            img.enabled = true;
-        }
-        foreach (TextMeshProUGUI txt in _selectionWindow.gameObject.GetComponentsInChildren<TextMeshProUGUI>())
-        {
-            txt.enabled = true;
-        }
     }
 
     public void AddListenersToTaskOptions()
@@ -84,16 +88,8 @@ public class ChooseTask : MonoBehaviour
 
     public void HideSelectionWindow()
     {
-        //_selectionWindow.gameObject.SetActive(false);
-        foreach (Image img in _selectionWindow.gameObject.GetComponentsInChildren<Image>())
-        {
-            img.enabled = false;
-        }
-        foreach (TextMeshProUGUI txt in _selectionWindow.gameObject.GetComponentsInChildren<TextMeshProUGUI>())
-        {
-            txt.enabled = false;
-        }
-        //DeleteTaskCards();
+        _selectionWindow.gameObject.SetActive(false);
+        DeleteTaskCards();
     }
 
 
@@ -147,7 +143,7 @@ public class ChooseTask : MonoBehaviour
     private PlayerTask GetRandomTaskFromCategory(EducationCategoryType category)
     {
         // Get all tasks from DailyTaskManager
-        List<PlayerTask> tasks = _dtManager.ValidTasks.Tasks;
+        List<PlayerTask> tasks = DailyTaskManager.Instance.ValidTasks.Tasks;
 
         List<PlayerTask> categoryTasks = new List<PlayerTask>();
 
@@ -182,7 +178,7 @@ public class ChooseTask : MonoBehaviour
         // Create three task cards for the categories
         foreach (EducationCategoryType category in ed)
         {
-            _dtManager.CreateTaskCard(GetRandomTaskFromCategory(category), _taskCardHolder);
+            _dailyTaskView.CreateTaskCard(GetRandomTaskFromCategory(category), _taskCardHolder);
         }
     }
 

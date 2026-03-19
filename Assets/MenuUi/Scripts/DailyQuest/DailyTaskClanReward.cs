@@ -18,7 +18,7 @@ public class DailyTaskClanReward : MonoBehaviour
     [Header("Values")]
     [SerializeField] private TextMeshProUGUI _rewardThreshold;
 
-    private DailyTaskManager _dailyTaskManager;
+    private DailyTaskView _dailyTaskView;
 
     public enum ClanRewardType
     {
@@ -54,7 +54,7 @@ public class DailyTaskClanReward : MonoBehaviour
     private ClanRewardData _data;
     public ClanRewardData Data { get { return _data; } }
 
-    public void Set(ClanRewardData data, DailyTaskManager dailyTaskManager)
+    public void Set(ClanRewardData data, DailyTaskView dailyTaskView)
     {
         _data = data;
 
@@ -69,7 +69,7 @@ public class DailyTaskClanReward : MonoBehaviour
 
         _rewardThreshold.text = "" + data.Threshold;
 
-        _dailyTaskManager = dailyTaskManager;
+        _dailyTaskView = dailyTaskView;
     }
 
     public void UpdateState(bool open)
@@ -84,6 +84,6 @@ public class DailyTaskClanReward : MonoBehaviour
     public void OpenClanRewardPopup()
     {
         PopupData popupData = new(_data, transform.position);
-        StartCoroutine(_dailyTaskManager.ShowPopupAndHandleResponse("", popupData));
+        StartCoroutine(_dailyTaskView.ShowPopupAndHandleResponse("", popupData));
     }
 }

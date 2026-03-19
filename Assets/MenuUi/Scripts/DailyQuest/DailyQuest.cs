@@ -49,7 +49,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     [SerializeField] private Image _progressImageDefault;
     [SerializeField] private TMP_Text _progressText;
 
-    private DailyTaskManager dailyTaskManager;
+    private DailyTaskView _dailyTaskView;
 
     
 
@@ -57,7 +57,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     {
         SettingsCarrier.OnLanguageChanged += UpdateLanguage;
 
-        dailyTaskManager = GameObject.Find("DailyTaskManager").GetComponent<DailyTaskManager>();
+        _dailyTaskView = GameObject.FindObjectOfType<DailyTaskView>(true);
 
 
         /*Bind this class to PlayerTask for later interactions
@@ -117,7 +117,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
         Vector3 popupLocation = GetScreenCenter(); //GetCornerLocation();
         PopupData data = new(_taskData, popupLocation, this);
-        StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse(_taskData.Title, data));
+        StartCoroutine(_dailyTaskView.ShowPopupAndHandleResponse(_taskData.Title, data));
     }
 
     /// <summary>
@@ -128,7 +128,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         if (!_clickEnabled || _taskData.PlayerId != "")
             return;
 
-        StartCoroutine(dailyTaskManager.AcceptTask(_taskData, null, this));
+        StartCoroutine(_dailyTaskView.AcceptTask(_taskData, null, this));
     }
 
     /// <summary>
