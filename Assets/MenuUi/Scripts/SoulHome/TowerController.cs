@@ -89,11 +89,20 @@ namespace MenuUI.Scripts.SoulHome
         public bool Rotated { get => _rotated;}
         public Bounds RoomBounds { get => _roomBounds; set {  _roomBounds = value; } }
 
-        // Start is called before the first frame update
-        void Start()
+        void OnEnable()
         {
-            StartCoroutine(StartActions());
-
+            if (_camera != null)
+            {
+                _camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
+                HandleScreenRotation();
+            }
+            else StartCoroutine(StartActions());
+            _rotated = false;
+        }
+        void OnDisable()
+        {
+            if (selectedRoom != null) ZoomOut();
+            if (editingMode) ToggleEdit();
         }
 
         private IEnumerator StartActions()
@@ -315,22 +324,6 @@ namespace MenuUI.Scripts.SoulHome
             if(!_pinched && _prevPinchDistance != 0) _prevPinchDistance = 0;
             _pinched = false;
             if(ClickStateHandler.GetClickState() is ClickState.End && _selectedFurniture == null && _tempSelectedFurniture != null) _tempSelectedFurniture = null;
-        }
-
-        void OnEnable()
-        {
-            if (_camera != null)
-            {
-                _camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
-                HandleScreenRotation();
-            }
-            _rotated = false;
-        }
-
-        void OnDisable()
-        {
-            if (selectedRoom != null) ZoomOut();
-            if (editingMode) ToggleEdit();
         }
 
         public bool FindRayPoint(Vector2 relPoint, ClickState click)
