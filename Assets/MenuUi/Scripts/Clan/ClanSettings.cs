@@ -130,6 +130,7 @@ public class ClanSettings : AltMonoBehaviour
     private Language _originalLanguage;
     private List<ClanValues> _originalValues = new();
     private List<HeartPieceData> _originalHeartPieces = new();
+    private List<Rules> _selectedRules = new();
     private bool _originalIsOpen;
 
     private void OnEnable()
@@ -183,7 +184,9 @@ public class ClanSettings : AltMonoBehaviour
             _rule2Text.text = rule2;
             _rule3Text.text = rule3;
 
-            _ruleSelection.SetSelected(clan.Rules);
+            _selectedRules = new List<Rules>(clan.Rules);
+            _ruleSelection.SetSelected(new List<Rules>(_selectedRules));
+            //_ruleSelection.SetSelected(clan.Rules);
             _rulesPopup.SetActive(false);
 
             //Age init     
@@ -251,6 +254,7 @@ public class ClanSettings : AltMonoBehaviour
         _clanPhraseText.text = _originalPhrase;
         _clanPhraseField.text = _originalPhrase;
 
+        _selectedRules = new List<Rules>(_originalRules);
         _ruleSelection.SetSelected(new List<Rules>(_originalRules));
 
         string rule1 = _originalRules.Count > 0
@@ -336,8 +340,8 @@ public class ClanSettings : AltMonoBehaviour
         _currentClanData.Language = _selectedLanguage;
         //_currentClanData.Goals = _goalSelection.GoalsRange;
         _currentClanData.ClanAge = _ageSelection.ClanAgeRange;
-        _currentClanData.Rules = _ruleSelection.SelectedRules;
-        _currentClanData.Values = _valueSelection.SelectedValues;
+        _currentClanData.Rules = new List<Rules>(_selectedRules);
+        _currentClanData.Values = new List<ClanValues>(_selectedValues);
         _currentClanData.ClanHeartPieces = _heartPieces;
 
         // These are not saved at the moment
@@ -460,7 +464,7 @@ public class ClanSettings : AltMonoBehaviour
             || _originalPhrase != _clanPhraseField.text
             || _originalLanguage != _selectedLanguage
             || _originalAge != _ageSelection.ClanAgeRange
-            || !_originalRules.SequenceEqual(_ruleSelection.SelectedRules)
+            || !_originalRules.SequenceEqual(_selectedRules)
             || !_originalValues.SequenceEqual(_selectedValues);
 
         if (hasMadeEdits)
@@ -625,32 +629,55 @@ public class ClanSettings : AltMonoBehaviour
         _rule1Input.text = _rule1Text.text;
         _rule2Input.text = _rule2Text.text;
         _rule3Input.text = _rule3Text.text;
+
         ShowPopup(_rulesPopup);
+
+        Canvas.ForceUpdateCanvases();
+
+        _ruleSelection.SetSelected(new List<Rules>(_selectedRules));
+
+        var popupRect = _rulesPopup.GetComponent<RectTransform>();
+        if (popupRect != null)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(popupRect);
+
+        Canvas.ForceUpdateCanvases();
     }
 
     public void ConfirmClanRulesEdit()
     {
-        string rule1 = _ruleSelection.SelectedRules.Count > 0 ?
-        ClanDataTypeConverter.GetRulesText(_ruleSelection.SelectedRules[0]) : string.Empty;
-        string rule2 = _ruleSelection.SelectedRules.Count > 1 ?
-        ClanDataTypeConverter.GetRulesText(_ruleSelection.SelectedRules[1]) : string.Empty;
-        string rule3 = _ruleSelection.SelectedRules.Count > 2 ?
-        ClanDataTypeConverter.GetRulesText(_ruleSelection.SelectedRules[2]) : string.Empty;
+        _selectedRules = new List<Rules>(_ruleSelection.SelectedRules);
+
+        string rule1 = _selectedRules.Count > 0
+            ? ClanDataTypeConverter.GetRulesText(_selectedRules[0])
+            : string.Empty;
+        string rule2 = _selectedRules.Count > 1
+            ? ClanDataTypeConverter.GetRulesText(_selectedRules[1])
+            : string.Empty;
+        string rule3 = _selectedRules.Count > 2
+            ? ClanDataTypeConverter.GetRulesText(_selectedRules[2])
+            : string.Empty;
 
         if (rule1 != _rule1Text.text || rule2 != _rule2Text.text || rule3 != _rule3Text.text)
         {
-            if (DailyTaskProgressManager.Instance.CurrentPlayerTask?.EducationCultureType == Altzone.Scripts.Model.Poco.Game.TaskEducationCultureType.ClanCulturalGuideline)
-                DailyTaskProgressManager.Instance.UpdateTaskProgress(Altzone.Scripts.Model.Poco.Game.TaskEducationCultureType.ClanCulturalGuideline, "1");
+            if (DailyTaskProgressManager.Instance.CurrentPlayerTask?.EducationCultureType ==
+                Altzone.Scripts.Model.Poco.Game.TaskEducationCultureType.ClanCulturalGuideline)
+            {
+                DailyTaskProgressManager.Instance.UpdateTaskProgress(
+                    Altzone.Scripts.Model.Poco.Game.TaskEducationCultureType.ClanCulturalGuideline, "1");
+            }
         }
 
         _rule1Text.text = rule1;
         _rule2Text.text = rule2;
         _rule3Text.text = rule3;
+
         HidePopup(_rulesPopup);
     }
 
     public void CancelClanRulesEdit()
     {
+        _ruleSelection.SetSelected(new List<Rules>(_selectedRules));
+
         string rule1 = _ruleSelection.SelectedRules.Count > 0 ?
         ClanDataTypeConverter.GetRulesText(_ruleSelection.SelectedRules[0]) : string.Empty;
         string rule2 = _ruleSelection.SelectedRules.Count > 1 ?
@@ -667,6 +694,13 @@ public class ClanSettings : AltMonoBehaviour
         _rule1Text.text = rule1;
         _rule2Text.text = rule2;
         _rule3Text.text = rule3;
+
+        Canvas.ForceUpdateCanvases();
+
+        var popupRect = _rulesPopup.GetComponent<RectTransform>();
+        if (popupRect != null)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(popupRect);
+
         HidePopup(_rulesPopup);
     }
 
