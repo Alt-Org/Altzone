@@ -33,7 +33,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         void Start()
         {
-            _categoryLoader.SetCategoryCells((categoryId) => _featureLoader.RefreshFeatureListItems(categoryId));
+            _categoryLoader.SetCategoryButtons((categoryId) => _featureLoader.RefreshFeatureListItems(categoryId));
             _colorLoader.SetColorCells();
 
             UpdateCellSizes();
@@ -57,7 +57,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 _featureLoader.RefreshFeatureListItems(_categoryLoader.CurrentlySelectedCategory);
             });
 
-            StartCoroutine(ClickMiddleCategoryCellOnNextFrame());
+            StartCoroutine(ClickHairCategoryButtonOnNextFrame());
         }
 
         private void OnEnable()
@@ -78,7 +78,6 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void UpdateCellSizes()
         {
-            _categoryLoader.UpdateCellSize();
             _colorLoader.UpdateCellSize();
             _featureLoader.UpdateCellSize();
         }
@@ -144,10 +143,10 @@ namespace MenuUi.Scripts.AvatarEditor
         }
 
         // If this isn't done, function will be called too early and will not work
-        private IEnumerator ClickMiddleCategoryCellOnNextFrame()
+        private IEnumerator ClickHairCategoryButtonOnNextFrame()
         {
             yield return null;
-            _categoryLoader.ClickMiddleCategoryCell();
+            _categoryLoader.ClickHairButton();
         }
 
         private void SetAllAvatarFeatures()

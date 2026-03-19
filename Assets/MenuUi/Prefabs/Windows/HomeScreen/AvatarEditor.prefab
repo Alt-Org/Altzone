@@ -1058,9 +1058,6 @@ GameObject:
   - component: {fileID: 4887224062399659594}
   - component: {fileID: 2325826714729197622}
   - component: {fileID: 5821299491006676406}
-  - component: {fileID: 5035703801643578294}
-  - component: {fileID: 3342798204221298985}
-  - component: {fileID: 723594174419062081}
   m_Layer: 5
   m_Name: CategoryGrid
   m_TagString: Untagged
@@ -1159,65 +1156,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &5035703801643578294
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963549779580140712}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6613b2bc63ff3a0459ee4cc5d9d450a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _avatarPartsReference: {fileID: 11400000, guid: 671ccbc5ba5e0df42acde4b71995e434,
-    type: 2}
-  _categoryGridContent: {fileID: 4207114766707577365}
-  _avatarPartCategoryGridCellPrefab: {fileID: 90728682598853689, guid: b536994ca9282dc46b2e5166d5753800,
-    type: 3}
-  _categoryGrid: {fileID: 1698640924197942680}
-  _verticalLayoutGroup: {fileID: 5399473208936656064}
-  _categoryGridScrollRect: {fileID: 5821299491006676406}
-  _horizontalPadding: 0.1
-  _spacing: 0.05
-  _verticalPadding: 0.03
-  _backgroundColor: {r: 0.24586153, g: 0.39177072, b: 0.6132076, a: 1}
-  _skinColorSelectionCategoryImage: {fileID: 3323784572005849981, guid: 6b7f8f6787aebdc4da339e49694e1f45,
-    type: 3}
---- !u!114 &3342798204221298985
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963549779580140712}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb7601e884a229d478cfc03b0e3e3e09, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _categoryGridScrollRect: {fileID: 5821299491006676406}
-  _categoryLoader: {fileID: 5035703801643578294}
-  _topButton: {fileID: 1742255188691112962}
-  _bottomButton: {fileID: 1541134643841036590}
-  _infiniteScroll: {fileID: 723594174419062081}
---- !u!114 &723594174419062081
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963549779580140712}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 470fed7d35b6cf04a8873af271ba8d45, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _scrollRect: {fileID: 5821299491006676406}
-  _categoryGridContent: {fileID: 4207114766707577365}
-  _categoryLoader: {fileID: 5035703801643578294}
-  _categoryGridViewport: {fileID: 992649476381943219}
 --- !u!1 &1072643861627135929
 GameObject:
   m_ObjectHideFlags: 0
@@ -2639,7 +2577,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 066df5b26c80c3940857283fe111b239, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _categoryLoader: {fileID: 5035703801643578294}
+  _categoryLoader: {fileID: 5601714518086098461}
   _featureLoader: {fileID: 9613805567932932}
   _colorLoader: {fileID: 1919495896428952045}
   _timeoutSeconds: 10
@@ -3601,7 +3539,7 @@ MonoBehaviour:
   - {r: 1, g: 1, b: 1, a: 1}
   _avatarEditorController: {fileID: 7023965250681938522}
   _characterHandle: {fileID: 1464416334285509327}
-  _categoryLoader: {fileID: 5035703801643578294}
+  _categoryLoader: {fileID: 0}
   _featureLoader: {fileID: 9613805567932932}
   _skinColors:
   - {r: 1, g: 0.92156863, b: 0.87058824, a: 1}
@@ -6704,6 +6642,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5174491456953545173}
+  - component: {fileID: 5601714518086098461}
   m_Layer: 0
   m_Name: CategorySelection
   m_TagString: Untagged
@@ -6732,6 +6671,26 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5601714518086098461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6852958739359121676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6613b2bc63ff3a0459ee4cc5d9d450a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _noseButton: {fileID: 1223827920619960202}
+  _mouthButton: {fileID: 6987422638321324615}
+  _handsButton: {fileID: 1393322203249822574}
+  _bodyButton: {fileID: 4934536462898869350}
+  _hairButton: {fileID: 7575117649021340332}
+  _eyesButton: {fileID: 7650146270776570151}
+  _clothesButton: {fileID: 3308036890604441085}
+  _shoesButton: {fileID: 4969532737057988993}
 --- !u!1 &6968627894832584136
 GameObject:
   m_ObjectHideFlags: 0
