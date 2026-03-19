@@ -24,7 +24,6 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Button _defaultButton;
         [SerializeField] private TextHandler _textHandler;
         [SerializeField] private PopUpHandler _popUpHandler;
-        [SerializeField] private DivanImageHandler _divanImageHandler;
         [SerializeField] private AvatarLoader _avatarLoader;
         [SerializeField] private AvatarLoader _profileMenuAvatarLoader;
 
@@ -62,7 +61,6 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void OnEnable()
         {
-            _divanImageHandler.UpdateDivanImage(_currentPlayerData);
             StartCoroutine(LoadAvatarData());
             _textHandler.SetRandomSpeechBubbleText();
 
@@ -95,7 +93,6 @@ namespace MenuUi.Scripts.AvatarEditor
 
             _currentPlayerData = playerData;
             SetAllAvatarFeatures();
-            _divanImageHandler.UpdateDivanImage(playerData);
             _avatarLoader.UpdateVisuals(AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData.AvatarData));
         }
 
