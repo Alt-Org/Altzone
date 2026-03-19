@@ -80,7 +80,7 @@ All **enums** and **structs** defined in a `.qtn` file should be documented.
 
 **Enums** should be documented with a `@enum` command with the name of the **enum** formatted with `::` as below followed by a [{brief/summary}]. 
 Below that a link to the `.qtn` file itself should be listed as below.  
-Each **variable** defined in an **enum** should be documented with a `@var` command with the name of the **enum** and the name of the **variable** followed by a [{brief/summary}].   
+Each **variable** defined in an **enum** should be documented with a `@var` command with the name of the **enum** and the name of the **variable** followed by a [{brief/summary}] text without the `<summary>` command.
 
 ```
 /// @enum Quantum::EnumName
@@ -91,7 +91,7 @@ Each **variable** defined in an **enum** should be documented with a `@var` comm
 /// @bigtext{Generated from @ref Filename.qtn}
 
 /// @var Quantum::EnumName Quantum::EnumName::VariableName
-/// <summary>Description</summary>
+/// Description
 ```
 
 **Structs** should be documented with a `@struct` command with the name of the **struct** formatted with `::` as below followed by a [{brief/summary}]. 

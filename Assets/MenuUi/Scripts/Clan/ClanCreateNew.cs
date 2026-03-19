@@ -13,6 +13,7 @@ public class ClanCreateNew : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private GameObject _mainCreatePanel;
     [SerializeField] private GameObject _languagePanel;
+    [SerializeField] private GameObject _clanHeartEditPanel;
 
     [Header("Setting fields")]
     [SerializeField] private TMP_InputField _clanNameField;
@@ -53,7 +54,19 @@ public class ClanCreateNew : MonoBehaviour
 
     [Header("Buttons")]
     [SerializeField] private Button _closeLanguageSelect;
-    [SerializeField] private Button _createClanOK;
+    [SerializeField] private Button _createClanButton;
+
+    [SerializeField] private Button _clanLogoButton;
+    [SerializeField] private Button _heartEditSaveButton;
+    [SerializeField] private Button _heartEditCancelButton;
+    [SerializeField] private Button _ageButton;
+    [SerializeField] private Button _ageSaveButton;
+    [SerializeField] private Button _ageCancelButton;
+    [SerializeField] private Button _languageButton;
+    [SerializeField] private Button _languageSaveButton;
+    [SerializeField] private Button _languageCancelButton;
+    [SerializeField] private Button _cancelButton;
+    [SerializeField] private Button _confirmButton;
 
     [Header("Navigation")]
     [SerializeField] protected WindowDef _naviTarget;
@@ -61,8 +74,15 @@ public class ClanCreateNew : MonoBehaviour
     [Header("Popups")]
     [SerializeField] private GameObject _raycastBlocker;
     [SerializeField] private AgreementController _agreementController;
+    [SerializeField] private GameObject _agreementPopup;
 
-    //private Color _selectedHeartColor;
+    [Header("Default Icons")]
+    [SerializeField] private Sprite _defaultAgeSprite;
+    [SerializeField] private Sprite _defaultLanguageSprite;
+
+    [Header("Default Selections")]
+    [SerializeField] private ClanAge _defaultAgeSelection = ClanAge.None;
+    [SerializeField] private Language _defaultLanguageSelection = Language.None;
 
     private Color _defaultHeartColor;
     private List<HeartPieceData> _heartPieces;
@@ -110,7 +130,101 @@ public class ClanCreateNew : MonoBehaviour
         }
     }
 
-    private void OnEnable() => Reset();
+    private void OnEnable()
+    {
+        if (_clanLogoButton) _clanLogoButton.onClick.AddListener(OnClanLogoPressed);
+        if (_ageButton) _ageButton.onClick.AddListener(OnAgePressed);
+        if (_languageButton) _languageButton.onClick.AddListener(OnLanguagePressed);
+
+        if (_cancelButton) _cancelButton.onClick.AddListener(OnCancelPressed);
+        if (_confirmButton) _confirmButton.onClick.AddListener(OnConfirmPressed);
+
+        if (_heartEditSaveButton) _heartEditSaveButton.onClick.AddListener(ConfirmHeartEdit);
+        if (_heartEditCancelButton) _heartEditCancelButton.onClick.AddListener(CancelHeartEdit);
+
+        if (_ageSaveButton) _ageSaveButton.onClick.AddListener(SaveAgeSelection);
+        if (_ageCancelButton) _ageCancelButton.onClick.AddListener(CancelAgeSelection);
+
+        if (_languageSaveButton) _languageSaveButton.onClick.AddListener(() =>
+        {
+            UpdateLanguageDisplay(_languageSelection.SaveLanguage());
+            HidePopup(_languagePanel);
+        });
+
+        if (_languageCancelButton) _languageCancelButton.onClick.AddListener(() =>
+        {
+            HidePopup(_languagePanel);
+        });
+
+        if (_createClanButton != null)
+            _createClanButton.onClick.AddListener(OnAgreementCreatePressed);
+
+        Reset();
+    }
+
+    private void OnDisable()
+    {
+        if (_clanLogoButton) _clanLogoButton.onClick.RemoveListener(OnClanLogoPressed);
+        if (_ageButton) _ageButton.onClick.RemoveListener(OnAgePressed);
+        if (_languageButton) _languageButton.onClick.RemoveListener(OnLanguagePressed);
+
+        if (_heartEditSaveButton) _heartEditSaveButton.onClick.RemoveListener(ConfirmHeartEdit);
+        if (_heartEditCancelButton) _heartEditCancelButton.onClick.RemoveListener(CancelHeartEdit);
+
+        if (_ageSaveButton) _ageSaveButton.onClick.RemoveListener(SaveAgeSelection);
+        if (_ageCancelButton) _ageCancelButton.onClick.RemoveListener(CancelAgeSelection);
+
+        if (_languageSaveButton) _languageSaveButton.onClick.RemoveListener(() =>
+        {
+            UpdateLanguageDisplay(_languageSelection.SaveLanguage());
+            HidePopup(_languagePanel);
+        });
+
+        if (_languageCancelButton) _languageCancelButton.onClick.RemoveListener(() =>
+        {
+            HidePopup(_languagePanel);
+        });
+
+        if (_cancelButton) _cancelButton.onClick.RemoveListener(OnCancelPressed);
+        if (_confirmButton) _confirmButton.onClick.RemoveListener(OnConfirmPressed);
+
+        if (_createClanButton != null) _createClanButton.onClick.RemoveListener(OnAgreementCreatePressed);
+    }
+
+    private void OnAgreementCreatePressed()
+    {
+        PostClanToServer();
+
+        if (_agreementPopup != null)
+            HidePopup(_agreementPopup);
+    }
+
+
+    private void OnClanLogoPressed()
+    {
+        ShowPopup(_clanHeartEditPanel);
+    }
+
+    private void OnAgePressed()
+    {
+        ShowPopup(_clanAgeEditPopup);
+    }
+
+    private void OnLanguagePressed()
+    {
+        ShowPopup(_languagePanel);
+    }
+
+    private void OnCancelPressed()
+    {
+        HidePopup(_agreementPopup);
+    }
+
+    private void OnConfirmPressed()
+    {
+        ShowPopup(_agreementPopup); 
+    }
+
 
     private void Reset()
     {
@@ -134,15 +248,24 @@ public class ClanCreateNew : MonoBehaviour
             _valueSelection.ResetSelection();
         }
 
-        _ageSelection.Initialize(ClanAge.None);
+        // AGE default selection
+        var startAge = _defaultAgeSelection;
+        _ageSelection.Initialize(startAge);
         UpdateAgeDisplay();
 
-        _flagImage.SetFlag(Language.None);
-        _languageSelection.Initialize(Language.None);
-        _closeLanguageSelect.onClick.RemoveAllListeners();
-        _closeLanguageSelect.onClick.AddListener(() => _flagImage.SetFlag(_languageSelection.SelectedLanguage));
+        // LANGUAGE default selection
+        var startLang = _defaultLanguageSelection;
+        _languageSelection.Initialize(startLang);
+        UpdateLanguageDisplay(startLang);
 
-        if(_colorButtons != null && _colorButtons.Length > 0)
+        // Close button should apply current selection
+        /*_closeLanguageSelect.onClick.RemoveAllListeners();
+        _closeLanguageSelect.onClick.AddListener(() =>
+        {
+            UpdateLanguageDisplay(_languageSelection.SaveLanguage());
+        });*/
+
+        if (_colorButtons != null && _colorButtons.Length > 0)
         {
             _defaultHeartColor = ColorConstants.GetColorConstant(_colorButtons[0].color);
         }
@@ -204,18 +327,6 @@ public class ClanCreateNew : MonoBehaviour
             _raycastBlocker.SetActive(false);
     }
 
-    /*private void SetHeartColor(Color color)
-    {
-        _selectedHeartColor = color;
-        _heartColorSetter.SetHeartColor(_selectedHeartColor);
-        _heartColorSetterPopup.SetHeartColor(_selectedHeartColor);
-    }
-
-    public void CancelHeartEdit()
-    {
-        SetHeartColor(_defaultHeartColor);
-    }*/
-
    public void OpenHeartEditPopup()
     {
         if (_heartColorChanger != null && _heartPieces != null)
@@ -272,6 +383,23 @@ public class ClanCreateNew : MonoBehaviour
             _ageImage.sprite = sprite;
             _ageImage.preserveAspect = true;
             _ageImage.enabled = sprite != null;
+        }
+    }
+
+    private void UpdateLanguageDisplay(Language language)
+    {
+        if (_flagImage != null)
+            _flagImage.SetFlag(language);
+
+        if (language == Language.None && _defaultLanguageSprite != null && _flagImage != null)
+        {
+            var img = _flagImage.GetComponent<Image>();
+            if (img != null)
+            {
+                img.sprite = _defaultLanguageSprite;
+                img.preserveAspect = true;
+                img.enabled = true;
+            }
         }
     }
 

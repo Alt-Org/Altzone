@@ -1,16 +1,13 @@
 using System;
 using System.Collections.Generic;
-
+using Altzone.Scripts.BattleUiShared;
+using MenuUi.Scripts.UIScaling;
+using MenuUi.Scripts.Window;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
-using TMPro;
-
-using Altzone.Scripts.BattleUiShared;
-using OrientationType = Altzone.Scripts.BattleUiShared.BattleUiMultiOrientationElement.OrientationType;
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
-
-using MenuUi.Scripts.UIScaling;
+using OrientationType = Altzone.Scripts.BattleUiShared.BattleUiMultiOrientationElement.OrientationType;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.Settings.BattleUiEditor
@@ -105,6 +102,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             if (_instantiatedMoveJoystick != null) SetDataToUiElement(_instantiatedMoveJoystick);
             if (_instantiatedRotateJoystick != null) SetDataToUiElement(_instantiatedRotateJoystick);
+            OverlayPanelCheck.Instance.gameObject.SetActive(false);
         }
 
         /// <summary>
@@ -128,6 +126,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             {
                 gameObject.SetActive(false);
             }
+            OverlayPanelCheck.Instance.gameObject.SetActive(true);
         }
 
         /// <summary>
@@ -140,7 +139,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             OnUiElementSelected(null);
         }
 
-        private const string PlayerText = "Minä";
+        private const string PlayerText = "Minï¿½";
         private const string TeammateText = "Tiimikaveri";
 
         private const string SaveChangesText = "Tallenna muutokset?";
@@ -228,6 +227,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Removing options button listeners
             _optionsButton.onClick.RemoveAllListeners();
+        }
+        private void OnDisable()
+        {
+            OverlayPanelCheck.Instance.gameObject.SetActive(true);
         }
 
         private void ScaleEditor()

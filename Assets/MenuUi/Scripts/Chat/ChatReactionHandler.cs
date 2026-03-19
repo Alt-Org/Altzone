@@ -71,7 +71,7 @@ public class ChatReactionHandler : MonoBehaviour
         Image reactionBackground = _messageReaction.GetComponentInChildren<Image>();
         Color deselectedColor;
         deselectedColor = Color.gray;
-        deselectedColor.a = 0.5f;
+        deselectedColor.a = 0f;
         reactionBackground.color = deselectedColor;
 
         _selected = false;

@@ -1,7 +1,13 @@
+
+
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.U2D.Animation;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -16,6 +22,9 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField] private float _minIdleTimer = 2f;
         [SerializeField] private float _maxIdleTimer = 4f;
         [SerializeField] private float _speed = 5;
+        [SerializeField] private float _roomChangeCooldown = 20f;
+        // Percentage chance of avatar changing rooms when moving
+        [SerializeField] private float _roomChangeChance = 50f;
         [SerializeField]
         private SortingGroup _sortingGroup;
         [SerializeField]
@@ -25,91 +34,583 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private AnimationClip _walkAnimation;
         [SerializeField]
-        private AnimationClip _waveAnimation;
+        private AnimationClip _climbAnimation;
+        [SerializeField]
+        private List<AvatarAnimation> _interactAnimation;
+
+        private List<AvatarAnimation> _validatedInteractAnimation;
 
         private bool _performingAnimation = false;
 
+        private CharacterClassType _class = CharacterClassType.None;
+
         private AvatarStatus _status;
-        private bool _idleTimerStarted = false;
-        private Vector2Int _newPosition;
-        private Vector2 _currentCalculatedPosition;
 
         private Transform _points;
         private RoomData _roomData;
         private List<Vector2> _travelPoints = new();
 
-        // Start is called before the first frame update
+        private AvatarRig _rig;
+        private SpriteResolver _lHandResolver;
+        private SpriteResolver _rHandResolver;
+        private string _lHandLabel;
+        private string _rHandLabel;
+
+        private Coroutine _statusCoroutine;
+        private GridNode[,] _grid => _roomData.Grid;
+        private Vector2Int _currentGridPosition;
+        private List<Vector2Int> _walkableSlots => _roomData.WalkableSlots;
+        private int _gridWidth => _roomData.Grid.GetLength(0);
+        private int _gridHeight => _roomData.Grid.GetLength(1);
+        private List<Vector2> _rawPath;
+        private bool hasInitialized = false;
+        private float _timeSinceRoomChange = 0f;
+
+        private List<Vector2> _smoothPath = new();
+        public AvatarStatus Status
+        {
+            get => _status;
+            set
+            {
+                if (_status == value) return;
+                _status = value;
+                OnStatusChanged();
+            }
+        }
+
         void Start()
         {
+            //_animator.keepAnimatorStateOnDisable = true;
+            _animator.writeDefaultValuesOnDisable = true;
+            
+
             if (transform.parent.CompareTag("Room"))
             {
                 _points = transform.parent.Find("FurniturePoints").Find("FloorFurniturePoints");
                 _roomData = transform.parent.GetComponent<RoomData>();
+
                 SetAvatar(_points, _roomData);
-            }
-        }
+                OnStatusChanged();
 
-        // Update is called once per frame
-        void Update()
-        {
-            if(_status == AvatarStatus.Idle && !_idleTimerStarted)
-            {
-                //Debug.Log("Character Idle");
-                StartCoroutine("IdleTimer");
-            }
-            else if(_status == AvatarStatus.Wander)
-            {
-                if (_performingAnimation) return;
-                //Debug.Log("Character Wander");
-                if (!_animator.GetCurrentAnimatorStateInfo(0).IsName(_walkAnimation.name)) _animator.Play(_walkAnimation.name);
-                MoveAvatar();
-                //transform.SetParent(_points.GetChild(_newPosition.y).GetChild(_newPosition.x), false);
-
-                CheckPositionDepth();
-
-                if(GetDirection() == Vector2.zero) _status = AvatarStatus.Idle;
-            }
-        }
-
-        private IEnumerator IdleTimer()
-        {
-            _idleTimerStarted = true;
-            float idleTimer = 0;
-            bool firstFrame = true;
-            float checkTimer = 0;
-            if (!_animator.GetCurrentAnimatorStateInfo(0).IsName(_idleAnimation.name)) _animator.Play(_idleAnimation.name);
-            while (true)
-            {
-                if (firstFrame) firstFrame = false;
-                else
+                _rig = GetComponentInChildren<AvatarRig>();
+                hasInitialized = true;
+                if (_rig == null)
                 {
-                        yield return new WaitUntil(() => !_performingAnimation);
-                        idleTimer += Time.deltaTime;
-                        checkTimer += Time.deltaTime;
+                    UnityEngine.Debug.LogError("Failed to get AvatarRig");
+                    return;
                 }
 
+                _lHandResolver = _rig.Resolvers[AvatarPart.L_Hand];
+                _rHandResolver = _rig.Resolvers[AvatarPart.R_Hand];
+                _lHandLabel = _lHandResolver.GetLabel();
+                _rHandLabel = _rHandResolver.GetLabel();
+                _validatedInteractAnimation = ValidateAnimations(_interactAnimation);
+            }
+        }
+        private void OnEnable()
+        {
+            if (!hasInitialized) return;
 
-                if(idleTimer >= _minIdleTimer && checkTimer >= 0.5f)
-                {
-                    checkTimer = 0;
-                    int randomValue = Random.Range(0, 2);
-                    if (randomValue == 0)
-                    {
-                        SelectNewPosition();
-                        //CalculatePath();
-                        break;
-                    }
-                }
-                if(idleTimer >= _maxIdleTimer)
-                {
-                    SelectNewPosition();
+            if (_grid == null)
+            {
+                _roomData.UpdateGrid();
+            }
+
+            _performingAnimation = false;
+
+            // if in middle of climbing ladder, looks funny without this
+            transform.position = GridToWorld(_currentGridPosition);
+            OnStatusChanged();
+        }
+
+        private void Update()
+        {
+            _timeSinceRoomChange += Time.deltaTime;
+        }
+
+        public void InitializeAvatar(PlayerData data)
+        {
+            _class = (CharacterClassType)BaseCharacter.GetClass(data.SelectedCharacterId);
+        }
+
+        private void OnDisable()
+        {
+            StopAllCoroutines();
+        }
+
+        private void SelectStatus()
+        {
+            if (Status == AvatarStatus.Idle) Status = AvatarStatus.Wander;
+            else if (Status == AvatarStatus.Wander) Status = AvatarStatus.Idle;
+        }
+
+        private void OnStatusChanged()
+        {
+            if (_statusCoroutine != null)
+            {
+                StopCoroutine(_statusCoroutine);
+            }
+
+            switch (_status)
+            {
+                case AvatarStatus.Idle:
+                    _statusCoroutine = StartCoroutine(HandleIdle());
                     break;
-                }
+                case AvatarStatus.Wander:
+                    HandleWander();
+                    break;
+                default:
+                    SelectStatus();
+                    break;
+            }
+        }
+
+        private IEnumerator HandleIdle()
+        {
+            float idleTime = Random.Range(_minIdleTimer, _maxIdleTimer);
+            float elapsed = 0f;
+            _animator.Play(_idleAnimation.name);
+            UseDefaultHands(false);
+            _performingAnimation = false;
+
+            while (elapsed < idleTime)
+            {
+                elapsed += Time.deltaTime;
+
                 yield return null;
             }
-            _idleTimerStarted = false;
+
+            SelectStatus();
         }
 
+        private void HandleWander(Vector2Int? targetGridPosition = null)
+        {
+            bool changeRoom = ShouldChangeRoom() && targetGridPosition == null;
+
+            _travelPoints.Clear();
+            //Stopwatch stopwatch = Stopwatch.StartNew();
+            if (_walkableSlots.Count > 0)
+            {
+                if (changeRoom)
+                {
+                    targetGridPosition = new(2, 1);
+                }
+
+                Vector2Int target = targetGridPosition ?? _walkableSlots[Random.Range(0, _walkableSlots.Count)];
+                List<GridNode> nodePath = FindPath(_currentGridPosition, target);
+                if (nodePath != null)
+                {
+                    _rawPath = GetTravelPoints(nodePath);
+                    _smoothPath = SmoothPath(_rawPath);
+                    _travelPoints = _smoothPath;
+                    //_travelPoints = GetTravelPoints(nodePath);
+                    _currentGridPosition = target;
+                    //stopwatch.Stop();
+                    //UnityEngine.Debug.Log($"calculating path took {stopwatch.Elapsed.TotalMilliseconds} milliseconds");
+                    _statusCoroutine = StartCoroutine(MoveRoutine(changeRoom));
+                }
+                else
+                {
+                    SelectStatus();
+                }
+            }
+            else
+            {
+                SelectStatus();
+            }
+        }
+
+        private IEnumerator MoveRoutine(bool changeRoom)
+        {
+            if (_performingAnimation) yield break;
+
+            while (_travelPoints.Count > 0)
+            {
+                Vector2 targetPos = _travelPoints[0];
+
+                if (targetPos.x < transform.position.x)
+                {
+                    transform.rotation = Quaternion.Euler(0, 180, 0);
+                }
+                else
+                {
+                    transform.rotation = Quaternion.Euler(Vector3.zero);
+                }
+
+                if (!_animator.GetCurrentAnimatorStateInfo(0).IsName(_walkAnimation.name))
+                {
+                    _animator.Play(_walkAnimation.name);
+                    UseDefaultHands(true);
+                }
+
+                while (Vector2.Distance(transform.position, targetPos) > 0.05f)
+                {
+                    transform.position = Vector2.MoveTowards(
+                        transform.position,
+                        targetPos,
+                        _speed * Time.deltaTime);
+
+                    // offset is needed because when walking close to gridnode edge the closest grid node changes every step
+                    float offset = _grid[0, 0].FurnitureSlot.height * 0.4f;
+                    UpdateSortingOrder(WorldToGrid(new(transform.position.x, transform.position.y - offset)).y);
+
+                    yield return null;
+                }
+
+                transform.position = targetPos;
+                _travelPoints.RemoveAt(0);
+            }
+            UseDefaultHands(false);
+            if (changeRoom)
+            {
+                ChangeRoom();
+            }
+            else
+            {
+                SelectStatus();
+            }
+        }
+
+        private void ChangeRoom()
+        {
+            Transform targetRoomTransform = GetRoomToMoveTo();
+
+            StartCoroutine(ClimbLadder(targetRoomTransform));
+        }
+
+        private IEnumerator ClimbLadder(Transform targetRoomTransform)
+        {
+            _performingAnimation = true;
+
+            RoomData targetRoomData = targetRoomTransform.GetComponent<RoomData>();
+            Transform targetRoomPoints = targetRoomTransform.Find("FurniturePoints").Find("FloorFurniturePoints");
+
+            Vector3 targetWorldPosition = targetRoomPoints.GetChild(1).GetChild(2).position;
+
+            bool movingDown = targetWorldPosition.y < transform.position.y;
+
+            if (movingDown) _sortingGroup.sortingOrder = -1;
+
+            _animator.Play(_climbAnimation.name);
+            UseDefaultHands(true);
+            yield return null;
+
+            while (Vector2.Distance(transform.position, targetWorldPosition) > 0.05f)
+            {
+                transform.position = Vector2.MoveTowards(transform.position, targetWorldPosition, _speed * Time.deltaTime);
+
+                yield return null;
+            }
+            _timeSinceRoomChange = 0f;
+
+            transform.SetParent(targetRoomTransform, true);
+            _roomData = targetRoomData;
+            _points = targetRoomPoints;
+
+            transform.position = targetWorldPosition;
+            _currentGridPosition = new(2, 1);
+            UpdateSortingOrder(_currentGridPosition.y);
+            _performingAnimation = false;
+            UseDefaultHands(false);
+            SelectStatus();
+        }
+
+        private bool ShouldChangeRoom()
+        {
+            if (_timeSinceRoomChange > _roomChangeCooldown)
+            {
+                if (_roomChangeChance > Random.Range(0, 100))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private Transform GetRoomToMoveTo()
+        {
+            Transform roomPositions = transform.parent.parent.parent;
+            int lowerRoomIndex = transform.parent.parent.GetSiblingIndex() + 1;
+            int upperRoomIndex = transform.parent.parent.GetSiblingIndex() - 1;
+            bool upIsValid = upperRoomIndex >= 0;
+            bool downIsValid = lowerRoomIndex < roomPositions.childCount;
+
+            int targetIndex = -1;
+
+            if (upIsValid && downIsValid)
+            {
+                if (Random.value > 0.5f)
+                    targetIndex = upperRoomIndex;
+                else
+                    targetIndex = lowerRoomIndex;
+            }
+            else if (upIsValid)
+            {
+                targetIndex = upperRoomIndex;
+            }
+            else if (downIsValid)
+            {
+                targetIndex = lowerRoomIndex;
+            }
+
+            return roomPositions.GetChild(targetIndex).GetChild(0).transform;
+        }
+
+        private void UpdateSortingOrder(int gridRow)
+        {
+            _sortingGroup.sortingOrder = 6 + (gridRow * 100);
+        }
+
+        #region pathfinding
+
+        private Vector2 GridToWorld(Vector2Int gridPosition)
+        {
+            Transform rowTransform = _points.GetChild(gridPosition.y);
+            Transform slotTransform = rowTransform.GetChild(gridPosition.x);
+
+            return new Vector2(slotTransform.position.x, slotTransform.position.y);
+        }
+
+        //finds the closest grid position from the actual avatar position
+        private Vector2Int WorldToGrid(Vector2 worldPos)
+        {
+            Vector2Int closest = Vector2Int.zero;
+            float minDistance = float.MaxValue;
+
+            for (int y = 0; y < _roomData.SlotRows; y++)
+            {
+                for (int x = 0;  x < _roomData.SlotColumns; x++)
+                {
+                    Vector2 slotPos = GridToWorld(new Vector2Int(x, y));
+                    float distance = Vector2.Distance(worldPos, slotPos);
+                    if (distance < minDistance)
+                    {
+                        minDistance = distance;
+                        closest = new Vector2Int(x, y);
+                    }
+                }
+            }
+            return closest;
+        }
+
+        private List<Vector2> GetTravelPoints(List<GridNode> path)
+        {
+            List<Vector2> worldPath = new();
+
+            foreach (GridNode node in path)
+            {
+                Vector2 worldPosition = GridToWorld(node.GridPosition);
+                worldPath.Add(worldPosition);
+            }
+            return worldPath;
+        }
+
+        private List<GridNode> GetNeighbors(GridNode currentNode)
+        {
+            List<GridNode> neighbors = new();
+
+            Vector2Int[] directions =
+            {
+                new Vector2Int(0, 1),  // Up
+                new Vector2Int(0, -1), // Down
+                new Vector2Int(1, 0),  // Right
+                new Vector2Int(-1, 0), // Left
+
+                new Vector2Int(1, 1),  // Top Right
+                new Vector2Int(-1, 1), // Top Left
+                new Vector2Int(1, -1), // Bottom Right
+                new Vector2Int(-1, -1),// Bottom Left
+            };
+
+            foreach (Vector2Int direction in directions)
+            {
+                int checkX = currentNode.GridPosition.x + direction.x;
+                int checkY = currentNode.GridPosition.y + direction.y;
+
+                // check if neighbor is inside grid
+                if (checkX >= 0 && checkX < _roomData.SlotColumns &&
+                    checkY >= 0 && checkY < _roomData.SlotRows)
+                {
+                    neighbors.Add(_grid[checkX, checkY]);
+                }
+            }
+
+            return neighbors;
+        }
+
+        private float GetDistance(GridNode a, GridNode b)
+        {
+            int distanceX = Mathf.Abs(a.GridPosition.x - b.GridPosition.x);
+            int distanceY = Mathf.Abs(a.GridPosition.y - b.GridPosition.y);
+
+            // Diagonal nodes are 1.41 times farther, otherwise diagonal movement is preferred
+            //if (distanceX > distanceY)
+            //    return 1.41f * distanceY + 1.0f * (distanceX - distanceY);
+            //return 1.41f * distanceX + 1.0f * (distanceY - distanceX);
+
+            return Mathf.Max(distanceX, distanceY);
+        }
+
+        private GridNode GetLowestFCostNode(List<GridNode> nodes)
+        {
+            GridNode best = nodes[0];
+
+            foreach (GridNode node in nodes)
+            {
+                if (node.FCost < best.FCost ||
+                    node.FCost == best.FCost && node.HCost < best.HCost)
+                {
+                    best = node;
+                }
+            }
+            return best;
+        }
+
+        private List<GridNode> RetracePath(GridNode startNode, GridNode endNode)
+        {
+            List<GridNode> path = new();
+            GridNode currentNode = endNode;
+
+            while (currentNode != startNode)
+            {
+                path.Add(currentNode);
+                currentNode = currentNode.Parent;
+            }
+
+            path.Reverse();
+
+            return path;
+        }
+
+        public List<GridNode> FindPath(Vector2Int startPos, Vector2Int targetPos)
+        {
+            foreach (GridNode node in _grid)
+            {
+                node.Reset();
+            }
+
+            GridNode startNode = _grid[startPos.x, startPos.y];
+            startNode.GCost = 0;
+            startNode.HCost = GetDistance(startNode, _grid[targetPos.x, targetPos.y]);
+
+            List<GridNode> openList = new List<GridNode>() { startNode };
+            HashSet<GridNode> closedList = new();
+
+            while (openList.Count > 0)
+            {
+                GridNode currentNode = GetLowestFCostNode(openList);
+
+                openList.Remove(currentNode);
+                closedList.Add(currentNode);
+
+                if (currentNode.GridPosition == targetPos)
+                {
+                    return RetracePath(_grid[startPos.x, startPos.y], _grid[targetPos.x, targetPos.y]);
+                }
+
+                foreach(GridNode neighbor in GetNeighbors(currentNode))
+                {
+                    if (closedList.Contains(neighbor)) continue;
+
+                    float newCostToNeightbor = currentNode.GCost + GetDistance(currentNode, neighbor) + neighbor.penalty;
+
+                    if (newCostToNeightbor < neighbor.GCost)
+                    {
+                        neighbor.GCost = newCostToNeightbor;
+                        neighbor.HCost = GetDistance(neighbor, _grid[targetPos.x, targetPos.y]);
+                        neighbor.Parent = currentNode;
+
+                        if (!openList.Contains(neighbor)) openList.Add(neighbor);
+                    }
+                }
+            }
+            // no available path
+            return null;
+        }
+
+        // if there is a clear los between points, removes points in between, so the avatar won't zig-zag
+
+        private List<Vector2> SmoothPath(List<Vector2> fullPath)
+        {
+            if (fullPath.Count < 1) return fullPath;
+
+            List<Vector2> smoothedPath = new();
+            Vector2 currentPoint = transform.position; // point where los is checked from
+            smoothedPath.Add(currentPoint);
+
+            for (int i = 0; i < fullPath.Count - 1; i++)
+            {
+
+
+                // If furniture blocks direct path to future point
+                if (IsSmoothPathTooExpensive(currentPoint, fullPath[i + 1]))
+                {
+                    Vector2 blockedPoint = fullPath[i + 1];
+                    // Check backwards from the blocked point
+                    for (int j = i; j >= 0; j--)
+                    {
+                        if (IsSmoothPathTooExpensive(blockedPoint, fullPath[j]))
+                        {
+                            currentPoint = fullPath[j + 1];
+                            break;
+                        }
+                        currentPoint = fullPath[j];
+                    }
+
+                    Vector2Int gridPos = WorldToGrid(currentPoint);
+                    GridNode node = _grid[gridPos.x, gridPos.y];
+
+                    if (node.IsBackSlot)
+                    {
+                        currentPoint.y += node.FurnitureSlot.height * 0.5f;
+                    }
+                    smoothedPath.Add(currentPoint);
+
+                }
+            }
+
+            smoothedPath.Add(fullPath[fullPath.Count - 1]); //destination point
+            return smoothedPath;
+        }
+
+        private bool IsSmoothPathTooExpensive(Vector2 start, Vector2 end)
+        {
+            Vector2Int gridStart = WorldToGrid(start);
+            Vector2Int gridEnd = WorldToGrid(end);
+
+            // check if every cell in a line between start and en is walkable
+            foreach (Vector2Int cell in GetCellsOnLine(gridStart, gridEnd))
+            {
+                if (_grid[cell.x, cell.y].IsFurniture) return true;
+
+                if (_grid[cell.x, cell.y].penalty > 0) return true;
+            }
+
+            return false;
+        }
+
+        private IEnumerable<Vector2Int> GetCellsOnLine(Vector2Int start, Vector2Int end)
+        {
+            // Bresenham's line algorithm
+            int x = start.x;
+            int y = start.y;
+            int dx = Mathf.Abs(end.x - start.x); // total horizontal distance
+            int dy = Mathf.Abs(end.y - start.y); // total vertical disttance
+            int sx = start.x < end.x ? 1 : -1;   // 1 if moving right, otherwise -1
+            int sy = start.y < end.y ? 1 : -1;   // 1 if moving up, otherwise -1
+            int err = dx - dy;
+
+            while (true)
+            {
+                yield return new Vector2Int(x, y);
+                if (x == end.x && y == end.y) break;
+                int e2 = 2 * err;
+                if (e2 > -dy) { err -= dy; x += sx; } //horizontal step
+                if (e2 < dx) { err += dx; y += sy; } //vertical step
+            }
+        }
+
+        #endregion
 
         public void SetAvatar(Transform points, RoomData data)
         {
@@ -122,7 +623,7 @@ namespace MenuUI.Scripts.SoulHome
 
                 if (points.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>().Furniture != null) continue;
 
-                if(column + 1 < data.SlotColumns)
+                if (column + 1 < data.SlotColumns)
                 {
                     if (points.GetChild(row).GetChild(column + 1).GetComponent<FurnitureSlot>().Furniture == null) break;
                 }
@@ -141,486 +642,164 @@ namespace MenuUI.Scripts.SoulHome
 
             Vector2 position = slot.transform.position;
 
-            float width = slot.width*2;
+            float width = slot.width * 2;
             position.x += (width / 2) - slot.width / 2;
             position.y += -1 * (slot.height / 2);
 
             transform.position = position;
-
-            _status = AvatarStatus.Idle;
+            _currentGridPosition = new Vector2Int(column, row);
+            Status = AvatarStatus.Idle;
             _travelPoints.Clear();
         }
 
-        private void SelectNewPosition()
+
+        private IEnumerator InteractAnimation()
         {
-            _travelPoints.Clear();
-            int column;
-            int row;
-            while (true) {
-            while (true)
+            if (_performingAnimation || _validatedInteractAnimation.Count == 0)
             {
-                column = Random.Range(0, _roomData.SlotColumns - 1);
-                row = Random.Range(0, _roomData.SlotRows - 1);
+                yield break;
+            }
+            StopCoroutine(_statusCoroutine);
 
-                if (_points.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>().Furniture != null) continue;
+            int index = Random.Range(0, _validatedInteractAnimation.Count);
+            AnimationClip selectedClip = _validatedInteractAnimation[index].Clip;
 
-                if (column + 1 < _roomData.SlotColumns)
+            _animator.Play(selectedClip.name);
+            _performingAnimation = true;
+            UseDefaultHands(true);
+            yield return null;
+
+            float duration = selectedClip.length;
+            float elapsed = 0f;
+
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            _performingAnimation = false;
+            UseDefaultHands(false);
+
+            SelectStatus();
+        }
+        private List<AvatarAnimation> ValidateAnimations(List<AvatarAnimation> animationToValidate)
+        {
+            List<AvatarAnimation> validatedAnimation = new();
+            foreach (AvatarAnimation animation in animationToValidate)
+            {
+                if (animation != null && animation.Clip != null)
                 {
-                    if (_points.GetChild(row).GetChild(column + 1).GetComponent<FurnitureSlot>().Furniture == null) break;
-                }
-                if (column - 1 >= 0)
-                {
-                    if (_points.GetChild(row).GetChild(column - 1).GetComponent<FurnitureSlot>().Furniture == null)
-                    {
-                        column--;
-                        break;
-                    }
+                    List<AnimationClip> clips = _animator.runtimeAnimatorController.animationClips.ToList();
+                    if (!clips.Contains(animation.Clip)) continue;
+                    if (animation.ValidClass == _class || animation.ValidClass is CharacterClassType.None) validatedAnimation.Add(animation);
                 }
             }
-            _newPosition = new(column,row);
-            _currentCalculatedPosition = transform.position;
-            bool check = CalculatePath();
-            if (!check) continue;
-            else break;
-            }
-            _travelPoints.Add(GetEndPosition());
-            _status = AvatarStatus.Wander;
-            //Debug.Log(Time.time+" : "+_travelPoints.ToString());
+            return validatedAnimation;
         }
 
-        private bool CalculatePath(Furniture prevFurniture = null)
+        private void UseDefaultHands(bool useDefaultHands)
         {
-            Vector2 path = GetDirection(_currentCalculatedPosition);
-            //if (Mathf.Abs(path.normalized.y) == 0) return true;
-            Vector2 endPosition = GetEndPosition();
-            //Debug.Log("Calculate Path: Origin: "+ (_currentCalculatedPosition + path.normalized * 0.01f )+ ", Direction: "+ path.normalized + ", Magnitude: "+ (path.magnitude - (0.01f * path.normalized).magnitude)+ ", EndPoint: " + (endPosition));
-            RaycastHit2D[] hits;
-            if (path.y == 0) hits = Physics2D.RaycastAll(_currentCalculatedPosition + new Vector2(0, 0.01f) + path.normalized * 0.01f, path.normalized, path.magnitude - (0.01f * path.normalized).magnitude);
-            else hits = Physics2D.RaycastAll(_currentCalculatedPosition+ path.normalized * 0.01f, path.normalized, path.magnitude - (0.01f*path.normalized).magnitude);
-            foreach(RaycastHit2D hit in hits)
+            if (_lHandResolver == null || _rHandResolver == null)
             {
-                FurnitureSlot slot = hit.collider.GetComponent<FurnitureSlot>();
-                if (slot != null)
-                {
-                    if ((Mathf.Approximately(endPosition.x, hit.point.x) && !Mathf.Approximately(path.y, 0)) || (Mathf.Approximately(endPosition.y, hit.point.y) && !Mathf.Approximately(path.x, 0))) continue;
-                    //Debug.Log("Collider Hit:"+ Time.time+" Row: "+ slot.row+" Column: "+ slot.column+" Furniture: "+slot.Furniture?.Name);
-                    if(slot.Furniture != null && !slot.Furniture.Equals(prevFurniture))
-                    {
-                        prevFurniture = hit.collider.GetComponent<FurnitureSlot>().Furniture;
-                        //Debug.Log(Time.time + " Furniture: " +hit.collider.GetComponent<FurnitureSlot>().Furniture);
-
-                        if(Mathf.Approximately(path.y, 0))
-                        {
-                            FurnitureSlot underSlot = _points.GetChild(slot.row + 1).GetChild(slot.column).GetComponent<FurnitureSlot>();
-                            if (!slot.Furniture.Equals(underSlot.Furniture)) continue;
-                        }
-
-                        Vector2 position = CheckCollision(hit, path.normalized);
-                        if (position.Equals(Vector2.negativeInfinity)) return false;
-                        _currentCalculatedPosition = position;
-                        _currentCalculatedPosition = CheckDirection(path, hit);
-                        return CalculatePath(prevFurniture);
-                    }
-                }
+                return;
             }
-            return true;
-        }
 
-        private void MoveAvatar()
-        {
-            Vector2 position = transform.position;
-            Vector2 direction = GetDirection(position,_travelPoints[0]);
-            if(direction.x < 0) transform.rotation = Quaternion.Euler(new(0, 180, 0));
-            else transform.rotation = Quaternion.Euler(Vector3.zero);
-            if (Vector2.Distance(position, position + direction.normalized * _speed * Time.deltaTime) > Vector2.Distance(position, _travelPoints[0])) position = _travelPoints[0];
-            else position += direction.normalized * _speed * Time.deltaTime;
-            transform.position = position;
-            if(GetDirection(position, _travelPoints[0]).magnitude < 0.01f) _travelPoints.RemoveAt(0);
-            if(_travelPoints.Count == 0) _status = AvatarStatus.Idle;
-        }
-
-        private Vector2 GetDirection()
-        {
-            FurnitureSlot slot = _points.GetChild(_newPosition.y).GetChild(_newPosition.x).GetComponent<FurnitureSlot>();
-            Vector2 destination = slot.transform.position;
-            float width = slot.width * 2;
-            destination.x += (width / 2) - slot.width / 2;
-            destination.y += -1 * (slot.height / 2);
-            Vector2 direction = (destination - (Vector2)transform.position);
-            return direction;
-        }
-
-        private Vector2 GetDirection(Vector2 startPosition)
-        {
-            Vector2 endPosition = GetEndPosition();
-            //Debug.Log("StartPosition: " + startPosition + "EndPosition: " + endPosition);
-            Vector2 direction = (endPosition - startPosition);
-            return direction;
-        }
-
-        private Vector2 GetDirection(Vector2 startPosition, Vector2 endPosition)
-        {
-            if(endPosition.Equals(Vector2.negativeInfinity)) endPosition = GetEndPosition();
-            Vector2 direction = (endPosition - startPosition);
-            return direction;
-        }
-
-        private Vector2 GetEndPosition()
-        {
-            FurnitureSlot slot = _points.GetChild(_newPosition.y).GetChild(_newPosition.x).GetComponent<FurnitureSlot>();
-            Vector2 destination = slot.transform.position;
-            float width = slot.width * 2;
-            destination.x += (width / 2) - slot.width / 2;
-            destination.y += -1 * (slot.height / 2);
-            return destination;
-        }
-
-        private Vector2 GetPath()
-        {
-            Vector2 currentCalculatedPosition = transform.position;
-            Vector2 path = GetDirection();
-            path = GetDirection(currentCalculatedPosition+ path.normalized*0.01f);
-            return path;
-        }
-
-        private Vector2 CheckCollision(RaycastHit2D hit, Vector2 direction)
-        {
-            Vector2 normal = hit.normal;
-            FurnitureSlot slot = hit.collider.GetComponent<FurnitureSlot>();
-            int row = slot.row;
-            int column = slot.column;
-            if (normal == Vector2.down || normal == Vector2.up)
+            string category = _lHandResolver.GetCategory();
+            if (useDefaultHands)
             {
-                if (direction.x >= 0)
-                {
-                    int i = 0;
-                    while (true)
-                    {
-                        if (column + i < transform.parent.GetComponent<RoomData>().SlotColumns - 1)
-                        {
-                            if (_points.GetChild(row).GetChild(column + i + 1).GetComponent<FurnitureSlot>().Furniture == slot.Furniture)
-                            {
-                                i++;
-                                continue;
-                            }
-                            else
-                            {
-                                return FindSlotCorner(row, column + i, normal, direction, hit, false);
-                            }
-                        }
-                        else
-                        {
-                            i = 0;
-                            break;
-                        }
-                    }
-                    while (true)
-                    {
-                        if (column + i > 0)
-                        {
-                            if (_points.GetChild(row).GetChild(column + i -1).GetComponent<FurnitureSlot>().Furniture == slot.Furniture)
-                            {
-                                i--;
-                                continue;
-                            }
-                            else
-                            {
-                                return FindSlotCorner(row, column + i, normal, direction, hit, true);
-                            }
-                        }
-                        else
-                        {
-                            i = 0;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    int i = 0;
-                    while (true)
-                    {
-                        if (column + i > 0)
-                        {
-                            if (_points.GetChild(row).GetChild(column + i -1).GetComponent<FurnitureSlot>().Furniture == slot.Furniture)
-                            {
-                                i--;
-                                continue;
-                            }
-                            else
-                            {
-                                return FindSlotCorner(row, column + i, normal, direction, hit, false);
-                            }
-                        }
-                        else
-                        {
-                            i = 0;
-                            break;
-                        }
-                    }
-                    while (true)
-                    {
-                        if (column + i < transform.parent.GetComponent<RoomData>().SlotColumns - 1)
-                        {
-                            if (_points.GetChild(row).GetChild(column + i + 1).GetComponent<FurnitureSlot>().Furniture == slot.Furniture)
-                            {
-                                i++;
-                                continue;
-                            }
-                            else
-                            {
-                                return FindSlotCorner(row, column + i, normal, direction, hit, true);
-                            }
-                        }
-                        else
-                        {
-                            i = 0;
-                            break;
-                        }
-                    }
-                }
-            }
-            else if (normal == Vector2.left || normal == Vector2.right)
-            {
-                if (direction.y <= 0)
-                {
-                    int i = 0;
-                    while (true)
-                    {
-                        if (row + i < transform.parent.GetComponent<RoomData>().SlotRows - 1)
-                        {
-                            if (_points.GetChild(row + i + 1).GetChild(column).GetComponent<FurnitureSlot>().Furniture == slot.Furniture)
-                            {
-                                i++;
-                                continue;
-                            }
-                            else
-                            {
-                                return FindSlotCorner(row + i, column, normal, direction, hit, false);
-                            }
-                        }
-                        else
-                        {
-                            i = 0;
-                            break;
-                        }
-                    }
-                    while (true)
-                    {
-                        if (row + i > 0)
-                        {
-                            if (_points.GetChild(row + i -1).GetChild(column).GetComponent<FurnitureSlot>().Furniture == slot.Furniture)
-                            {
-                                i--;
-                                continue;
-                            }
-                            else
-                            {
-                                return FindSlotCorner(row + i, column, normal, direction, hit, true);
-                            }
-                        }
-                        else
-                        {
-                            i = 0;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    int i = 0;
-                    while (true)
-                    {
-                        if (row + i > 0)
-                        {
-                            if (_points.GetChild(row + i - 1).GetChild(column).GetComponent<FurnitureSlot>().Furniture == slot.Furniture)
-                            {
-                                i--;
-                                continue;
-                            }
-                            else
-                            {
-                                return FindSlotCorner(row + i, column, normal, direction, hit, false);
-                            }
-                        }
-                        else
-                        {
-                            i = 0;
-                            break;
-                        }
-                    }
-                    while (true)
-                    {
-                        if (row + i < transform.parent.GetComponent<RoomData>().SlotRows - 1)
-                        {
-                            if (_points.GetChild(row + i + 1).GetChild(column).GetComponent<FurnitureSlot>().Furniture == slot.Furniture)
-                            {
-                                i++;
-                                continue;
-                            }
-                            else
-                            {
-                                return FindSlotCorner(row+i, column, normal, direction, hit, true);
-                            }
-                        }
-                        else
-                        {
-                            i = 0;
-                            break;
-                        }
-                    }
-                }
-            }
-            return Vector2.negativeInfinity;
-        }
-
-        private Vector2 FindSlotCorner(int row, int column, Vector2 normal, Vector2 direction, RaycastHit2D hit, bool reverse)
-        {
-            FurnitureSlot newSlot = _points.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>();
-            Vector2 destination = newSlot.transform.position;
-            float width = newSlot.width;
-            if (normal == Vector2.left || ((normal == Vector2.down|| normal == Vector2.up) && ((direction.x < 0 && !reverse)|| (direction.x >= 0 && reverse))))
-                destination.x -= width / 2;
-            else if (normal == Vector2.right || ((normal == Vector2.down || normal == Vector2.up) && ((direction.x < 0 && reverse) || (direction.x >= 0 && !reverse))))
-                destination.x += width / 2;
-            if (normal == Vector2.down || ((normal == Vector2.right || normal == Vector2.left) && ((direction.y <= 0 && !reverse) || (direction.y > 0 && reverse))))
-                destination.y -= (newSlot.height / 2);
-            else if (normal == Vector2.up || ((normal == Vector2.right || normal == Vector2.left) && ((direction.y <= 0 && reverse) || (direction.y > 0 && !reverse))))
-                destination.y += (newSlot.height / 2);
-
-            CheckNewPosition(destination, hit);
-            return destination;
-        }
-
-        private void CheckNewPosition(Vector2 destination, RaycastHit2D hit)
-        {
-            bool hitFound = false;
-            Vector2 path = GetDirection(_currentCalculatedPosition, destination);
-            RaycastHit2D[] hits = Physics2D.RaycastAll(_currentCalculatedPosition + path.normalized * 0.01f, path.normalized, path.magnitude - (0.01f * path.normalized).magnitude);
-            foreach (RaycastHit2D hit2 in hits)
-            {
-                if (hit2.collider.GetComponent<FurnitureSlot>() != null)
-                {
-                    if ((Mathf.Approximately(hit2.point.x, hit.point.x) && !Mathf.Approximately(path.y, 0)) || (Mathf.Approximately(hit2.point.y, hit.point.y) && !Mathf.Approximately(path.x, 0))) continue;
-                    if (hit2.collider.GetComponent<FurnitureSlot>().Furniture != null
-                        && !hit2.collider.GetComponent<FurnitureSlot>().Furniture.Equals(hit.collider.GetComponent<FurnitureSlot>().Furniture))
-                    {
-
-                        hitFound = true;
-                        break;
-                    }
-                }
-            }
-            if (!hitFound)
-            {
-                _travelPoints.Add(destination);
+                _lHandResolver.SetCategoryAndLabel(category, "0000000L");
+                _rHandResolver.SetCategoryAndLabel(category, "0000000R");
             }
             else
             {
-                _travelPoints.Add(hit.point);
-                _travelPoints.Add(destination);
-            }
-        }
-
-        private Vector2 CheckDirection(Vector2 prevDirection, RaycastHit2D hit)
-        {
-            Vector2 newDirection = GetDirection(_currentCalculatedPosition);
-            if(hit.normal == Vector2.down || hit.normal == Vector2.up)
-            {
-                if (newDirection.x * prevDirection.x < 0)
-                {
-                    Vector2Int size = hit.collider.GetComponent<FurnitureSlot>().Furniture.GetFurnitureSize();
-                    FurnitureSlot newSlot;
-                    int slotOffset = (int)((_currentCalculatedPosition.x - hit.point.x) / hit.collider.GetComponent<FurnitureSlot>().width);
-                    if (hit.normal == Vector2.down)
-                    newSlot = _points.GetChild(hit.collider.GetComponent<FurnitureSlot>().row - (size.y-1)).GetChild(hit.collider.GetComponent<FurnitureSlot>().column + slotOffset).GetComponent<FurnitureSlot>();
-                    else newSlot = _points.GetChild(hit.collider.GetComponent<FurnitureSlot>().row + (size.y - 1)).GetChild(hit.collider.GetComponent<FurnitureSlot>().column + slotOffset).GetComponent<FurnitureSlot>();
-                    Vector2 destination = newSlot.transform.position;
-                    if (hit.point.x-_currentCalculatedPosition.x >= 0)
-                        destination.x -= newSlot.width / 2;
-                    else if (hit.point.x - _currentCalculatedPosition.x < 0)
-                        destination.x += newSlot.width / 2;
-                    if (hit.normal == Vector2.down )
-                        destination.y -= (newSlot.height / 2);
-                    else if (hit.normal == Vector2.up )
-                        destination.y += (newSlot.height / 2);
-
-                    _travelPoints.Add(destination);
-                    return destination;
-                }
-                else return _currentCalculatedPosition;
-            }
-            else if (hit.normal == Vector2.left || hit.normal == Vector2.right)
-            {
-                if (newDirection.y * prevDirection.y < 0)
-                {
-                    Vector2Int size = hit.collider.GetComponent<FurnitureSlot>().Furniture.GetFurnitureSize();
-                    FurnitureSlot newSlot;
-                    int slotOffset = (int)((hit.point.y - _currentCalculatedPosition.y) / hit.collider.GetComponent<FurnitureSlot>().height);
-                    if (hit.normal == Vector2.left)
-                        newSlot = _points.GetChild(hit.collider.GetComponent<FurnitureSlot>().row + slotOffset).GetChild(hit.collider.GetComponent<FurnitureSlot>().column + (size.x - 1)).GetComponent<FurnitureSlot>();
-                    else newSlot = _points.GetChild(hit.collider.GetComponent<FurnitureSlot>().row + slotOffset).GetChild(hit.collider.GetComponent<FurnitureSlot>().column - (size.x - 1)).GetComponent<FurnitureSlot>();
-                    Vector2 destination = newSlot.transform.position;
-                    if (hit.normal == Vector2.left)
-                        destination.x -= newSlot.width / 2;
-                    else if (hit.normal == Vector2.right)
-                        destination.x += newSlot.width / 2;
-                    if (hit.point.y - _currentCalculatedPosition.y >= 0)
-                        destination.y -= (newSlot.height / 2);
-                    else if (hit.point.y - _currentCalculatedPosition.y < 0)
-                        destination.y += (newSlot.height / 2);
-
-                    _travelPoints.Add(destination);
-                    return destination;
-                }
-                else return _currentCalculatedPosition;
-            }
-            else return _currentCalculatedPosition;
-        }
-
-        private void CheckPositionDepth()
-        {
-            Vector2 hitPoint = transform.position + new Vector3(0, -0.01f);
-
-            Vector3 origin = new(hitPoint.x, hitPoint.y, 1);
-            Ray ray = new(origin, (Vector3)hitPoint - origin);
-            RaycastHit2D[] hitArray;
-            hitArray = Physics2D.GetRayIntersectionAll(ray, 10);
-            foreach (RaycastHit2D hit2 in hitArray)
-            {
-                if (hit2.collider.gameObject.GetComponent<FurnitureSlot>() != null)
-                {
-                    _sortingGroup.sortingOrder = 6 + (hit2.collider.gameObject.GetComponent<FurnitureSlot>().row) * 100;
-                    return;
-                }
-            }
-            hitPoint = transform.position + new Vector3(0, 0.01f);
-            origin = new(hitPoint.x, hitPoint.y, 1);
-            ray = new(origin, (Vector3)hitPoint - origin);
-            hitArray = Physics2D.GetRayIntersectionAll(ray, 10);
-            foreach (RaycastHit2D hit in hitArray)
-            {
-                if (hit.collider.gameObject.GetComponent<FurnitureSlot>() != null)
-                {
-                    _sortingGroup.sortingOrder = 6 + (hit.collider.gameObject.GetComponent<FurnitureSlot>().row+1) * 100;
-                }
-            }
-        }
-
-        private IEnumerator WaveAnimation()
-        {
-            if (!_performingAnimation)
-            {
-                _animator.Play(_waveAnimation.name);
-                _performingAnimation = true;
-                yield return new WaitUntil(() => !_animator.GetCurrentAnimatorStateInfo(0).IsName(_waveAnimation.name) && !_animator.IsInTransition(0));
-                _performingAnimation = false;
+                _lHandResolver.SetCategoryAndLabel(category, _lHandLabel);
+                _rHandResolver.SetCategoryAndLabel(category, _rHandLabel);
             }
         }
 
         public void HandleClick()
         {
-            StartCoroutine(WaveAnimation());
+            if (_performingAnimation)
+            {
+                return;
+            }
+
+            if (_statusCoroutine != null)
+            {
+                StopCoroutine(_statusCoroutine);
+            }
+
+            StartCoroutine(InteractAnimation());
         }
+
+        #if UNITY_EDITOR
+
+        private void OnDrawGizmos()
+        {
+            if (_grid == null) return;
+
+            //  Draw the Grid & Penalties
+            for (int x = 0; x < _gridWidth; x++)
+            {
+                for (int y = 0; y < _gridHeight; y++)
+                {
+                    Vector2 worldPos = GridToWorld(new Vector2Int(x, y));
+                    GridNode node = _grid[x, y];
+
+
+                    if (node.penalty > 0)
+                    {
+                        // Yellow tint for penalties - gets darker as penalty increases
+                        float alpha = Mathf.Clamp01(node.penalty / 30f);
+                        Gizmos.color = new Color(1, 0.9f, 0, alpha * 0.4f);
+                        if (node.IsBackSlot) Gizmos.color = new Color(1, 0, 0, alpha * 0.4f);
+                        Gizmos.DrawCube(worldPos, new Vector3(0.8f, 0.8f, 0.1f));
+
+                        // Draw the penalty number
+                        UnityEditor.Handles.Label(worldPos, node.penalty.ToString());
+                    }
+                }
+            }
+
+            // Draw the Current Travel Path
+            if (_travelPoints != null && _travelPoints.Count > 0)
+            {
+                Gizmos.color = Color.cyan;
+                Vector2 lastPoint = transform.position; // Start the line from avatar's current position
+
+                foreach (Vector2 point in _travelPoints)
+                {
+                    // Draw line to the next node
+                    Gizmos.DrawLine(lastPoint, point);
+                    // Draw a small sphere at the node center
+                    Gizmos.DrawSphere(point, 0.1f);
+                    lastPoint = point;
+                }
+            }
+
+            // Draw what smoothpath would be
+            //if (_smoothPath != null && _smoothPath.Count > 0)
+            //{
+            //    Gizmos.color = Color.magenta;
+            //    for (int i = 0; i < _smoothPath.Count - 1; i++)
+            //    {
+            //        Gizmos.DrawLine(_smoothPath[i], _smoothPath[i + 1]);
+            //        Gizmos.DrawSphere(_smoothPath[i], 0.1f);
+            //    }
+            //}
+
+            // Draw rawpath
+            if (_rawPath != null && _rawPath.Count > 0)
+            {
+                Gizmos.color = Color.yellow;
+                for (int i = 0; i < _rawPath.Count - 1; i++)
+                {
+                    Gizmos.DrawLine(_rawPath[i], _rawPath[i + 1]);
+                    Gizmos.DrawSphere(_rawPath[i], 0.1f);
+                }
+            }
+        }
+        #endif
     }
 }
