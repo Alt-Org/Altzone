@@ -308,13 +308,15 @@ namespace Quantum.Prototypes {
     public FPVector2 TargetPosition;
     public FP RotationBaseRad;
     public FP RotationOffsetRad;
-    public FP CurrentHp;
     public FP CurrentDefence;
+    public QBoolean MovementEnabled;
+    public QBoolean RotationEnabled;
     public Int32 ShieldCount;
     public Int32 AttachedShieldNumber;
     public Quantum.Prototypes.BattlePlayerShieldEntityRefPrototype AttachedShield;
     public QBoolean DisableRotation;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
+    public Quantum.Prototypes.FrameTimerPrototype StunCooldown;
     public FP BotMovementCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityActivateBufferSec;
@@ -336,13 +338,15 @@ namespace Quantum.Prototypes {
         result.TargetPosition = this.TargetPosition;
         result.RotationBaseRad = this.RotationBaseRad;
         result.RotationOffsetRad = this.RotationOffsetRad;
-        result.CurrentHp = this.CurrentHp;
         result.CurrentDefence = this.CurrentDefence;
+        result.MovementEnabled = this.MovementEnabled;
+        result.RotationEnabled = this.RotationEnabled;
         result.ShieldCount = this.ShieldCount;
         result.AttachedShieldNumber = this.AttachedShieldNumber;
         this.AttachedShield.Materialize(frame, ref result.AttachedShield, in context);
         result.DisableRotation = this.DisableRotation;
         this.DamageCooldown.Materialize(frame, ref result.DamageCooldown, in context);
+        this.StunCooldown.Materialize(frame, ref result.StunCooldown, in context);
         result.BotMovementCooldownSec = this.BotMovementCooldownSec;
         this.AbilityCooldownSec.Materialize(frame, ref result.AbilityCooldownSec, in context);
         this.AbilityActivateBufferSec.Materialize(frame, ref result.AbilityActivateBufferSec, in context);
@@ -577,14 +581,12 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerStats))]
   public unsafe partial class BattlePlayerStatsPrototype : StructPrototype {
-    public FP Hp;
     public FP Speed;
     public FP CharacterSize;
     public FP Attack;
     public FP Defence;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerStats result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.BattlePlayerStats result, in PrototypeMaterializationContext context = default) {
-        result.Hp = this.Hp;
         result.Speed = this.Speed;
         result.CharacterSize = this.CharacterSize;
         result.Attack = this.Attack;

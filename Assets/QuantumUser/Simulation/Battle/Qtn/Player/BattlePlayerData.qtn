@@ -18,8 +18,9 @@ component BattlePlayerDataQComponent
     FP RotationBaseRad;
     FP RotationOffsetRad;
 
-    FP CurrentHp;
     FP CurrentDefence;
+    bool MovementEnabled;
+    bool RotationEnabled;
 
     int ShieldCount;
     int AttachedShieldNumber;
@@ -27,6 +28,7 @@ component BattlePlayerDataQComponent
 
     bool DisableRotation;
     FrameTimer DamageCooldown;
+    FrameTimer StunCooldown;
 
     FP BotMovementCooldownSec;
 

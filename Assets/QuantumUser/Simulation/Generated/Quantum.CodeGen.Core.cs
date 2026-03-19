@@ -188,29 +188,48 @@ namespace Quantum {
     SoulWallHitLove,
     SoulWallHitPlayful,
     SoulWallHitSadness,
+    PlayerCharacterCommonHitShield = 100,
     PlayerCharacterRacistCatchphrase = 1010,
-    PlayerCharacterRacistHitCharacter,
-    PlayerCharacterRacistHitShield,
+    PlayerCharacterRacistHitCharacterAggression,
+    PlayerCharacterRacistHitCharacterJoy,
+    PlayerCharacterRacistHitCharacterLove,
+    PlayerCharacterRacistHitCharacterPlayful,
+    PlayerCharacterRacistHitCharacterSadness,
     PlayerCharacterRacistDeath,
     PlayerCharacterBodybuilderCatchphrase = 1020,
-    PlayerCharacterBodybuilderHitCharacter,
-    PlayerCharacterBodybuilderHitShield,
+    PlayerCharacterBodybuilderHitCharacterAggression,
+    PlayerCharacterBodybuilderHitCharacterJoy,
+    PlayerCharacterBodybuilderHitCharacterLove,
+    PlayerCharacterBodybuilderHitCharacterPlayful,
+    PlayerCharacterBodybuilderHitCharacterSadness,
     PlayerCharacterBodybuilderDeath,
     PlayerCharacterWarVeteranCatchphrase = 1030,
-    PlayerCharacterWarVeteranHitCharacter,
-    PlayerCharacterWarVeteranHitShield,
+    PlayerCharacterWarVeteranHitCharacterAggression,
+    PlayerCharacterWarVeteranHitCharacterJoy,
+    PlayerCharacterWarVeteranHitCharacterLove,
+    PlayerCharacterWarVeteranHitCharacterPlayful,
+    PlayerCharacterWarVeteranHitCharacterSadness,
     PlayerCharacterWarVeteranDeath,
     PlayerCharacterBullyCatchphrase = 1040,
-    PlayerCharacterBullyHitCharacter,
-    PlayerCharacterBullyHitShield,
+    PlayerCharacterBullyHitCharacterAggression,
+    PlayerCharacterBullyHitCharacterJoy,
+    PlayerCharacterBullyHitCharacterLove,
+    PlayerCharacterBullyHitCharacterPlayful,
+    PlayerCharacterBullyHitCharacterSadness,
     PlayerCharacterBullyDeath,
     PlayerCharacterEgoistCatchphrase = 1050,
-    PlayerCharacterEgoistHitCharacter,
-    PlayerCharacterEgoistHitShield,
+    PlayerCharacterEgoistHitCharacterAggression,
+    PlayerCharacterEgoistHitCharacterJoy,
+    PlayerCharacterEgoistHitCharacterLove,
+    PlayerCharacterEgoistHitCharacterPlayful,
+    PlayerCharacterEgoistHitCharacterSadness,
     PlayerCharacterEgoistDeath,
     PlayerCharacterDepressedCatchphrase = 1060,
-    PlayerCharacterDepressedHitCharacter,
-    PlayerCharacterDepressedHitShield,
+    PlayerCharacterDepressedHitCharacterAggression,
+    PlayerCharacterDepressedHitCharacterJoy,
+    PlayerCharacterDepressedHitCharacterLove,
+    PlayerCharacterDepressedHitCharacterPlayful,
+    PlayerCharacterDepressedHitCharacterSadness,
     PlayerCharacterDepressedDeath,
     PlayerCharacterComedianCatchphrase = 2010,
     PlayerCharacterComedianHitCharacterAggression,
@@ -218,131 +237,209 @@ namespace Quantum {
     PlayerCharacterComedianHitCharacterLove,
     PlayerCharacterComedianHitCharacterPlayful,
     PlayerCharacterComedianHitCharacterSadness,
-    PlayerCharacterComedianHitShield,
     PlayerCharacterComedianDeath,
     PlayerCharacterJokerCatchphrase = 2020,
-    PlayerCharacterJokerHitCharacter,
-    PlayerCharacterJokerHitShield,
+    PlayerCharacterJokerHitCharacterAggression,
+    PlayerCharacterJokerHitCharacterJoy,
+    PlayerCharacterJokerHitCharacterLove,
+    PlayerCharacterJokerHitCharacterPlayful,
+    PlayerCharacterJokerHitCharacterSadness,
     PlayerCharacterJokerDeath,
     PlayerCharacterConmanCatchphrase = 2030,
-    PlayerCharacterConmanHitCharacter,
-    PlayerCharacterConmanHitShield,
+    PlayerCharacterConmanHitCharacterAggression,
+    PlayerCharacterConmanHitCharacterJoy,
+    PlayerCharacterConmanHitCharacterLove,
+    PlayerCharacterConmanHitCharacterPlayful,
+    PlayerCharacterConmanHitCharacterSadness,
     PlayerCharacterConmanDeath,
     PlayerCharacterSeducerCatchphrase = 2040,
-    PlayerCharacterSeducerHitCharacter,
-    PlayerCharacterSeducerHitShield,
+    PlayerCharacterSeducerHitCharacterAggression,
+    PlayerCharacterSeducerHitCharacterJoy,
+    PlayerCharacterSeducerHitCharacterLove,
+    PlayerCharacterSeducerHitCharacterPlayful,
+    PlayerCharacterSeducerHitCharacterSadness,
     PlayerCharacterSeducerDeath,
     PlayerCharacterReligiousCatchphrase = 3010,
     PlayerCharacterReligiousHitCharacterAggression,
     PlayerCharacterReligiousHitCharacterJoy,
-    PlayerCharacterReligiousHitCharacterPlayful,
     PlayerCharacterReligiousHitCharacterLove,
+    PlayerCharacterReligiousHitCharacterPlayful,
     PlayerCharacterReligiousHitCharacterSadness,
-    PlayerCharacterReligiousHitShield,
     PlayerCharacterReligiousDeath,
     PlayerCharacterYesmanCatchphrase = 3020,
-    PlayerCharacterYesmanHitCharacter,
-    PlayerCharacterYesmanHitShield,
+    PlayerCharacterYesmanHitCharacterAggression,
+    PlayerCharacterYesmanHitCharacterJoy,
+    PlayerCharacterYesmanHitCharacterLove,
+    PlayerCharacterYesmanHitCharacterPlayful,
+    PlayerCharacterYesmanHitCharacterSadness,
     PlayerCharacterYesmanDeath,
     PlayerCharacterSlaveOfTheLawCatchphrase = 3030,
-    PlayerCharacterSlaveOfTheLawHitCharacter,
-    PlayerCharacterSlaveOfTheLawHitShield,
+    PlayerCharacterSlaveOfTheLawHitCharacterAggression,
+    PlayerCharacterSlaveOfTheLawHitCharacterJoy,
+    PlayerCharacterSlaveOfTheLawHitCharacterLove,
+    PlayerCharacterSlaveOfTheLawHitCharacterPlayful,
+    PlayerCharacterSlaveOfTheLawHitCharacterSadness,
     PlayerCharacterSlaveOfTheLawDeath,
     PlayerCharacterFashionSlaveCatchphrase = 3040,
-    PlayerCharacterFashionSlaveHitCharacter,
-    PlayerCharacterFashionSlaveHitShield,
+    PlayerCharacterFashionSlaveHitCharacterAggression,
+    PlayerCharacterFashionSlaveHitCharacterJoy,
+    PlayerCharacterFashionSlaveHitCharacterLove,
+    PlayerCharacterFashionSlaveHitCharacterPlayful,
+    PlayerCharacterFashionSlaveHitCharacterSadness,
     PlayerCharacterFashionSlaveDeath,
     PlayerCharacterMammasBoyCatchphrase = 3050,
-    PlayerCharacterMammasBoyHitCharacter,
-    PlayerCharacterMammasBoyHitShield,
+    PlayerCharacterMammasBoyHitCharacterAggression,
+    PlayerCharacterMammasBoyHitCharacterJoy,
+    PlayerCharacterMammasBoyHitCharacterLove,
+    PlayerCharacterMammasBoyHitCharacterPlayful,
+    PlayerCharacterMammasBoyHitCharacterSadness,
     PlayerCharacterMammasBoyDeath,
     PlayerCharacterSuperstitiousCatchphrase = 3060,
-    PlayerCharacterSuperstitiousHitCharacter,
-    PlayerCharacterSuperstitiousHitShield,
+    PlayerCharacterSuperstitiousHitCharacterAggression,
+    PlayerCharacterSuperstitiousHitCharacterJoy,
+    PlayerCharacterSuperstitiousHitCharacterLove,
+    PlayerCharacterSuperstitiousHitCharacterPlayful,
+    PlayerCharacterSuperstitiousHitCharacterSadness,
     PlayerCharacterSuperstitiousDeath,
     PlayerCharacterArtistCatchphrase = 4010,
-    PlayerCharacterArtistHitCharacter,
-    PlayerCharacterArtistHitShield,
+    PlayerCharacterArtistHitCharacterAggression,
+    PlayerCharacterArtistHitCharacterJoy,
+    PlayerCharacterArtistHitCharacterLove,
+    PlayerCharacterArtistHitCharacterPlayful,
+    PlayerCharacterArtistHitCharacterSadness,
     PlayerCharacterArtistDeath,
     PlayerCharacterArguerCatchphrase = 4020,
-    PlayerCharacterArguerHitCharacter,
-    PlayerCharacterArguerHitShield,
+    PlayerCharacterArguerHitCharacterAggression,
+    PlayerCharacterArguerHitCharacterJoy,
+    PlayerCharacterArguerHitCharacterLove,
+    PlayerCharacterArguerHitCharacterPlayful,
+    PlayerCharacterArguerHitCharacterSadness,
     PlayerCharacterArguerDeath,
     PlayerCharacterReflectorCatchphrase = 4030,
-    PlayerCharacterReflectorHitCharacter,
-    PlayerCharacterReflectorHitShield,
+    PlayerCharacterReflectorHitCharacterAggression,
+    PlayerCharacterReflectorHitCharacterJoy,
+    PlayerCharacterReflectorHitCharacterLove,
+    PlayerCharacterReflectorHitCharacterPlayful,
+    PlayerCharacterReflectorHitCharacterSadness,
     PlayerCharacterReflectorDeath,
     PlayerCharacterDelusionalCatchphrase = 4040,
-    PlayerCharacterDelusionalHitCharacter,
-    PlayerCharacterDelusionalHitShield,
+    PlayerCharacterDelusionalHitCharacterAggression,
+    PlayerCharacterDelusionalHitCharacterJoy,
+    PlayerCharacterDelusionalHitCharacterLove,
+    PlayerCharacterDelusionalHitCharacterPlayful,
+    PlayerCharacterDelusionalHitCharacterSadness,
     PlayerCharacterDelusionalDeath,
     PlayerCharacterOvereaterCatchphrase = 5010,
-    PlayerCharacterOvereaterHitCharacter,
-    PlayerCharacterOvereaterHitShield,
+    PlayerCharacterOvereaterHitCharacterAggression,
+    PlayerCharacterOvereaterHitCharacterJoy,
+    PlayerCharacterOvereaterHitCharacterLove,
+    PlayerCharacterOvereaterHitCharacterPlayful,
+    PlayerCharacterOvereaterHitCharacterSadness,
     PlayerCharacterOvereaterDeath,
     PlayerCharacterAlcoholicCatchphrase = 5020,
-    PlayerCharacterAlcoholicHitCharacter,
-    PlayerCharacterAlcoholicHitShield,
+    PlayerCharacterAlcoholicHitCharacterAggression,
+    PlayerCharacterAlcoholicHitCharacterJoy,
+    PlayerCharacterAlcoholicHitCharacterLove,
+    PlayerCharacterAlcoholicHitCharacterPlayful,
+    PlayerCharacterAlcoholicHitCharacterSadness,
     PlayerCharacterAlcoholicDeath,
     PlayerCharacterAnorecticCatchphrase = 5030,
-    PlayerCharacterAnorecticHitCharacter,
-    PlayerCharacterAnorecticHitShield,
+    PlayerCharacterAnorecticHitCharacterAggression,
+    PlayerCharacterAnorecticHitCharacterJoy,
+    PlayerCharacterAnorecticHitCharacterLove,
+    PlayerCharacterAnorecticHitCharacterPlayful,
+    PlayerCharacterAnorecticHitCharacterSadness,
     PlayerCharacterAnorecticDeath,
     PlayerCharacterStonerCatchphrase = 5040,
-    PlayerCharacterStonerHitCharacter,
-    PlayerCharacterStonerHitShield,
+    PlayerCharacterStonerHitCharacterAggression,
+    PlayerCharacterStonerHitCharacterJoy,
+    PlayerCharacterStonerHitCharacterLove,
+    PlayerCharacterStonerHitCharacterPlayful,
+    PlayerCharacterStonerHitCharacterSadness,
     PlayerCharacterStonerDeath,
     PlayerCharacterMartyrCatchphrase = 5050,
-    PlayerCharacterMartyrHitCharacter,
-    PlayerCharacterMartyrHitShield,
+    PlayerCharacterMartyrHitCharacterAggression,
+    PlayerCharacterMartyrHitCharacterJoy,
+    PlayerCharacterMartyrHitCharacterLove,
+    PlayerCharacterMartyrHitCharacterPlayful,
+    PlayerCharacterMartyrHitCharacterSadness,
     PlayerCharacterMartyrDeath,
     PlayerCharacterSuicidalCatchphrase = 5060,
-    PlayerCharacterSuicidalHitCharacter,
-    PlayerCharacterSuicidalHitShield,
+    PlayerCharacterSuicidalHitCharacterAggression,
+    PlayerCharacterSuicidalHitCharacterJoy,
+    PlayerCharacterSuicidalHitCharacterLove,
+    PlayerCharacterSuicidalHitCharacterPlayful,
+    PlayerCharacterSuicidalHitCharacterSadness,
     PlayerCharacterSuicidalDeath,
     PlayerCharacterSoulsistersCatchphrase = 6010,
-    PlayerCharacterSoulsistersHitCharacter,
-    PlayerCharacterSoulsistersHitShield,
+    PlayerCharacterSoulsistersHitCharacterAggression,
+    PlayerCharacterSoulsistersHitCharacterJoy,
+    PlayerCharacterSoulsistersHitCharacterLove,
+    PlayerCharacterSoulsistersHitCharacterPlayful,
+    PlayerCharacterSoulsistersHitCharacterSadness,
     PlayerCharacterSoulsistersDeath,
     PlayerCharacterLoversCatchphrase = 6020,
     PlayerCharacterLoversHitCharacterAggression,
     PlayerCharacterLoversHitCharacterJoy,
-    PlayerCharacterLoversHitCharacterPlayful,
     PlayerCharacterLoversHitCharacterLove,
+    PlayerCharacterLoversHitCharacterPlayful,
     PlayerCharacterLoversHitCharacterSadness,
-    PlayerCharacterLoversHitShield,
     PlayerCharacterLoversDeath,
     PlayerCharacterSleepyHeadCatchphrase = 6030,
-    PlayerCharacterSleepyHeadHitCharacter,
-    PlayerCharacterSleepyHeadHitShield,
+    PlayerCharacterSleepyHeadHitCharacterAggression,
+    PlayerCharacterSleepyHeadHitCharacterJoy,
+    PlayerCharacterSleepyHeadHitCharacterLove,
+    PlayerCharacterSleepyHeadHitCharacterPlayful,
+    PlayerCharacterSleepyHeadHitCharacterSadness,
     PlayerCharacterSleepyHeadDeath,
     PlayerCharacterTribalistCatchphrase = 6040,
-    PlayerCharacterTribalistHitCharacter,
-    PlayerCharacterTribalistHitShield,
+    PlayerCharacterTribalistHitCharacterAggression,
+    PlayerCharacterTribalistHitCharacterJoy,
+    PlayerCharacterTribalistHitCharacterLove,
+    PlayerCharacterTribalistHitCharacterPlayful,
+    PlayerCharacterTribalistHitCharacterSadness,
     PlayerCharacterTribalistDeath,
     PlayerCharacterGangBangerCatchphrase = 6050,
-    PlayerCharacterGangBangerHitCharacter,
-    PlayerCharacterGangBangerHitShield,
+    PlayerCharacterGangBangerHitCharacterAggression,
+    PlayerCharacterGangBangerHitCharacterJoy,
+    PlayerCharacterGangBangerHitCharacterLove,
+    PlayerCharacterGangBangerHitCharacterPlayful,
+    PlayerCharacterGangBangerHitCharacterSadness,
     PlayerCharacterGangBangerDeath,
     PlayerCharacterBooksmartCatchphrase = 7010,
-    PlayerCharacterBooksmartHitCharacter,
-    PlayerCharacterBooksmartHitShield,
+    PlayerCharacterBooksmartHitCharacterAggression,
+    PlayerCharacterBooksmartHitCharacterJoy,
+    PlayerCharacterBooksmartHitCharacterLove,
+    PlayerCharacterBooksmartHitCharacterPlayful,
+    PlayerCharacterBooksmartHitCharacterSadness,
     PlayerCharacterBooksmartDeath,
     PlayerCharacterCapitalistCatchphrase = 7020,
-    PlayerCharacterCapitalistHitCharacter,
-    PlayerCharacterCapitalistHitShield,
+    PlayerCharacterCapitalistHitCharacterAggression,
+    PlayerCharacterCapitalistHitCharacterJoy,
+    PlayerCharacterCapitalistHitCharacterLove,
+    PlayerCharacterCapitalistHitCharacterPlayful,
+    PlayerCharacterCapitalistHitCharacterSadness,
     PlayerCharacterCapitalistDeath,
     PlayerCharacterObsessiveCompulsiveCatchphrase = 7030,
-    PlayerCharacterObsessiveCompulsiveHitCharacter,
-    PlayerCharacterObsessiveCompulsiveHitShield,
+    PlayerCharacterObsessiveCompulsiveHitCharacterAggression,
+    PlayerCharacterObsessiveCompulsiveHitCharacterJoy,
+    PlayerCharacterObsessiveCompulsiveHitCharacterLove,
+    PlayerCharacterObsessiveCompulsiveHitCharacterPlayful,
+    PlayerCharacterObsessiveCompulsiveHitCharacterSadness,
     PlayerCharacterObsessiveCompulsiveDeath,
     PlayerCharacterOvercompilatorCatchphrase = 7040,
-    PlayerCharacterOvercompilatorHitCharacter,
-    PlayerCharacterOvercompilatorHitShield,
+    PlayerCharacterOvercompilatorHitCharacterAggression,
+    PlayerCharacterOvercompilatorHitCharacterJoy,
+    PlayerCharacterOvercompilatorHitCharacterLove,
+    PlayerCharacterOvercompilatorHitCharacterPlayful,
+    PlayerCharacterOvercompilatorHitCharacterSadness,
     PlayerCharacterOvercompilatorDeath,
     PlayerCharacterNitPickerCatchphrase = 7050,
-    PlayerCharacterNitPickerHitCharacter,
-    PlayerCharacterNitPickerHitShield,
+    PlayerCharacterNitPickerHitCharacterAggression,
+    PlayerCharacterNitPickerHitCharacterJoy,
+    PlayerCharacterNitPickerHitCharacterLove,
+    PlayerCharacterNitPickerHitCharacterPlayful,
+    PlayerCharacterNitPickerHitCharacterSadness,
     PlayerCharacterNitPickerDeath,
   }
   public enum BattleTeamNumber : int {
@@ -941,11 +1038,9 @@ namespace Quantum {
   [StructLayout(LayoutKind.Explicit)]
   [Serializable()]
   public unsafe partial struct BattlePlayerStats {
-    public const Int32 SIZE = 40;
+    public const Int32 SIZE = 32;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(24)]
-    public FP Hp;
-    [FieldOffset(32)]
     public FP Speed;
     [FieldOffset(8)]
     public FP CharacterSize;
@@ -956,7 +1051,6 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 5557;
-        hash = hash * 31 + Hp.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
         hash = hash * 31 + CharacterSize.GetHashCode();
         hash = hash * 31 + Attack.GetHashCode();
@@ -969,7 +1063,6 @@ namespace Quantum {
         FP.Serialize(&p->Attack, serializer);
         FP.Serialize(&p->CharacterSize, serializer);
         FP.Serialize(&p->Defence, serializer);
-        FP.Serialize(&p->Hp, serializer);
         FP.Serialize(&p->Speed, serializer);
     }
   }
@@ -1432,7 +1525,7 @@ namespace Quantum {
     public BattlePlayerCharacterID CharacterId;
     [FieldOffset(0)]
     public BattlePlayerCharacterClass CharacterClass;
-    [FieldOffset(136)]
+    [FieldOffset(144)]
     public BattlePlayerStats Stats;
     [FieldOffset(24)]
     public Int32 GridExtendTop;
@@ -1440,27 +1533,31 @@ namespace Quantum {
     public Int32 GridExtendBottom;
     [FieldOffset(40)]
     public QBoolean HasTargetPosition;
-    [FieldOffset(120)]
+    [FieldOffset(128)]
     public FPVector2 TargetPosition;
     [FieldOffset(80)]
     public FP RotationBaseRad;
     [FieldOffset(88)]
     public FP RotationOffsetRad;
     [FieldOffset(72)]
-    public FP CurrentHp;
-    [FieldOffset(64)]
     public FP CurrentDefence;
+    [FieldOffset(44)]
+    public QBoolean MovementEnabled;
+    [FieldOffset(48)]
+    public QBoolean RotationEnabled;
     [FieldOffset(28)]
     public Int32 ShieldCount;
     [FieldOffset(16)]
     public Int32 AttachedShieldNumber;
-    [FieldOffset(48)]
+    [FieldOffset(56)]
     public BattlePlayerShieldEntityRef AttachedShield;
     [FieldOffset(36)]
     public QBoolean DisableRotation;
     [FieldOffset(112)]
     public FrameTimer DamageCooldown;
-    [FieldOffset(56)]
+    [FieldOffset(120)]
+    public FrameTimer StunCooldown;
+    [FieldOffset(64)]
     public FP BotMovementCooldownSec;
     [FieldOffset(104)]
     public FrameTimer AbilityCooldownSec;
@@ -1481,13 +1578,15 @@ namespace Quantum {
         hash = hash * 31 + TargetPosition.GetHashCode();
         hash = hash * 31 + RotationBaseRad.GetHashCode();
         hash = hash * 31 + RotationOffsetRad.GetHashCode();
-        hash = hash * 31 + CurrentHp.GetHashCode();
         hash = hash * 31 + CurrentDefence.GetHashCode();
+        hash = hash * 31 + MovementEnabled.GetHashCode();
+        hash = hash * 31 + RotationEnabled.GetHashCode();
         hash = hash * 31 + ShieldCount.GetHashCode();
         hash = hash * 31 + AttachedShieldNumber.GetHashCode();
         hash = hash * 31 + AttachedShield.GetHashCode();
         hash = hash * 31 + DisableRotation.GetHashCode();
         hash = hash * 31 + DamageCooldown.GetHashCode();
+        hash = hash * 31 + StunCooldown.GetHashCode();
         hash = hash * 31 + BotMovementCooldownSec.GetHashCode();
         hash = hash * 31 + AbilityCooldownSec.GetHashCode();
         hash = hash * 31 + AbilityActivateBufferSec.GetHashCode();
@@ -1507,15 +1606,17 @@ namespace Quantum {
         PlayerRef.Serialize(&p->PlayerRef, serializer);
         QBoolean.Serialize(&p->DisableRotation, serializer);
         QBoolean.Serialize(&p->HasTargetPosition, serializer);
+        QBoolean.Serialize(&p->MovementEnabled, serializer);
+        QBoolean.Serialize(&p->RotationEnabled, serializer);
         Quantum.BattlePlayerShieldEntityRef.Serialize(&p->AttachedShield, serializer);
         FP.Serialize(&p->BotMovementCooldownSec, serializer);
         FP.Serialize(&p->CurrentDefence, serializer);
-        FP.Serialize(&p->CurrentHp, serializer);
         FP.Serialize(&p->RotationBaseRad, serializer);
         FP.Serialize(&p->RotationOffsetRad, serializer);
         FrameTimer.Serialize(&p->AbilityActivateBufferSec, serializer);
         FrameTimer.Serialize(&p->AbilityCooldownSec, serializer);
         FrameTimer.Serialize(&p->DamageCooldown, serializer);
+        FrameTimer.Serialize(&p->StunCooldown, serializer);
         FPVector2.Serialize(&p->TargetPosition, serializer);
         Quantum.BattlePlayerStats.Serialize(&p->Stats, serializer);
     }
@@ -1940,6 +2041,7 @@ namespace Quantum {
     public const Int32 BATTLE_PLAYER_CHARACTER_TOTAL_COUNT = 12;
     public const Int32 BATTLE_EMOTION_STATE_COUNT = 5;
     public const Int32 BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER = 10;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_COMMON_START = 100;
     public const Int32 BATTLE_SOUND_FX_CHARACTER_RACIST_START = 1010;
     public const Int32 BATTLE_SOUND_FX_CHARACTER_BODYBUILDER_START = 1020;
     public const Int32 BATTLE_SOUND_FX_CHARACTER_WARVETERAN_START = 1030;

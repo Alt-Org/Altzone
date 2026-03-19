@@ -89,11 +89,20 @@ namespace MenuUI.Scripts.SoulHome
         public bool Rotated { get => _rotated;}
         public Bounds RoomBounds { get => _roomBounds; set {  _roomBounds = value; } }
 
-        // Start is called before the first frame update
-        void Start()
+        void OnEnable()
         {
-            StartCoroutine(StartActions());
-
+            if (_camera != null)
+            {
+                _camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
+                HandleScreenRotation();
+            }
+            else StartCoroutine(StartActions());
+            _rotated = false;
+        }
+        void OnDisable()
+        {
+            if (selectedRoom != null) ZoomOut();
+            if (editingMode) ToggleEdit();
         }
 
         private IEnumerator StartActions()
@@ -315,22 +324,6 @@ namespace MenuUI.Scripts.SoulHome
             if(!_pinched && _prevPinchDistance != 0) _prevPinchDistance = 0;
             _pinched = false;
             if(ClickStateHandler.GetClickState() is ClickState.End && _selectedFurniture == null && _tempSelectedFurniture != null) _tempSelectedFurniture = null;
-        }
-
-        void OnEnable()
-        {
-            if (_camera != null)
-            {
-                _camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
-                HandleScreenRotation();
-            }
-            _rotated = false;
-        }
-
-        void OnDisable()
-        {
-            if (selectedRoom != null) ZoomOut();
-            if (editingMode) ToggleEdit();
         }
 
         public bool FindRayPoint(Vector2 relPoint, ClickState click)
@@ -826,25 +819,37 @@ namespace MenuUI.Scripts.SoulHome
 
         public void SaveChanges()
         {
+            HashSet<int> roomsToUpdate = new();
             foreach (GameObject furniture in ChangedFurnitureList)
             {
                 furniture.GetComponent<FurnitureHandling>().SaveDirection();
                 FurnitureSlot oldSlot = furniture.GetComponent<FurnitureHandling>().Slot;
                 furniture.GetComponent<FurnitureHandling>().SaveSlot();
                 int roomId;
+                if (oldSlot != null)
+                {
+                    roomsToUpdate.Add(oldSlot.roomId);
+                    int oldRoomId = oldSlot.roomId;
+                    _rooms.transform.GetChild(oldRoomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(furniture.GetComponent<FurnitureHandling>(),oldSlot);
+                }
                 if (furniture.GetComponent<FurnitureHandling>().Slot == null)
                 {
-                    roomId = oldSlot.roomId;
-                    _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(furniture.GetComponent<FurnitureHandling>(), oldSlot);
                     Destroy(furniture);
                     continue;
                 }
                 roomId = furniture.GetComponent<FurnitureHandling>().Slot.roomId;
                 _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().SetFurnitureSlots(furniture.GetComponent<FurnitureHandling>());
+                roomsToUpdate.Add(roomId);
             }
             ChangedFurnitureList.Clear();
             int prevRoomId = (_selectedFurniture?.transform.parent.GetComponent<FurnitureSlot>() != null) ? _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>().roomId : -1;
             if (prevRoomId >= 0) _rooms.transform.GetChild(prevRoomId).GetChild(0).GetComponent<RoomData>().ClearValidity();
+
+            foreach (int roomId in roomsToUpdate)
+            {
+                RoomData room = _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>();
+                room.UpdateGrid();
+            }
         }
 
         public void ToggleEdit()

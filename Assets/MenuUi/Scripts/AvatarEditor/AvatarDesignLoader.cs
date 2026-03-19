@@ -68,7 +68,6 @@ public class AvatarDesignLoader : AltMonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
     #endregion

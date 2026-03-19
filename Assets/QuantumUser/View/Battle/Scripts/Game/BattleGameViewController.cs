@@ -634,7 +634,7 @@ namespace Battle.View.Game
         {
             if (e.Team == LocalPlayerTeam)
             {
-                _uiController.PlayerInfoHandler.UpdateHealthVisual(e.Slot, e.CharacterNumber, (float)e.HealthPercentage);
+                _uiController.PlayerInfoHandler.UpdateDefenceVisual(e.Slot, e.CharacterNumber, (float)e.HealthPercentage);
             }
         }
 
@@ -650,7 +650,7 @@ namespace Battle.View.Game
         {
             if (e.Team == LocalPlayerTeam)
             {
-                _uiController.PlayerInfoHandler.UpdateDefenceVisual(e.Slot, e.CharacterNumber, (float)e.DefenceValue);
+                _uiController.PlayerInfoHandler.UpdateDefenceVisual(e.Slot, e.CharacterNumber, (float)e.DefencePercentage);
             }
         }
 
