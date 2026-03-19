@@ -22,7 +22,8 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private float _viewPortHeight;
         private float _cellHeight;
-        private float _colorGridPadding;
+        private float _horizontalPadding;
+        private float _verticalPadding;
         public List<Color> Colors { get { return _colors; } }
         public List<Color> SkinColors { get { return _skinColors; } }
 
@@ -46,13 +47,14 @@ namespace MenuUi.Scripts.AvatarEditor
         public void UpdateCellSize()
         {
             _viewPortHeight = _colorSelection.rect.height;
-            _cellHeight = _viewPortHeight * 0.9f;
-            _colorGridPadding = _viewPortHeight * 0.05f;
+            _cellHeight = _viewPortHeight * 0.8f;
+            _horizontalPadding = _viewPortHeight * 0.05f;
+            _verticalPadding = (_viewPortHeight - _cellHeight) / 2f;
 
-            _colorGrid.padding.left = Mathf.CeilToInt(_colorGridPadding);
-            _colorGrid.padding.right = Mathf.CeilToInt(_colorGridPadding);
-            _colorGrid.padding.top = Mathf.CeilToInt(_colorGridPadding);
-            _colorGrid.padding.bottom = Mathf.CeilToInt(_colorGridPadding);
+            _colorGrid.padding.left = Mathf.CeilToInt(_horizontalPadding);
+            _colorGrid.padding.right = Mathf.CeilToInt(_horizontalPadding);
+            _colorGrid.padding.top = Mathf.CeilToInt(_verticalPadding);
+            _colorGrid.padding.bottom = Mathf.CeilToInt(_verticalPadding);
             _colorGrid.spacing = 0.05f * _cellHeight;
 
             foreach (RectTransform child in _colorGridContent)
