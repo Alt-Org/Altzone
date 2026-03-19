@@ -176,7 +176,7 @@ namespace Altzone.Scripts.Audio
             if (_scrollCoroutine != null || !_selfRect || !isActiveAndEnabled || _textFadeActive) return;
 
             DisableCoroutine(ref _waitCoroutine);
-            Debug.LogError("sizeDeltaX: " + _selfRect.sizeDelta.x);
+
             if (_selfRect.sizeDelta.x <= 0f)
             {
                 DisableCoroutine(ref _scrollCoroutine);

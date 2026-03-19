@@ -9,18 +9,11 @@ namespace Altzone.Scripts.Audio
         [SerializeField] private TMPro.TMP_Text _referenceText;
         [SerializeField] private TMPro.TMP_Text _targetText;
 
-        //private Color _refColor;
-
         private void Awake() { HideReferenceText(); }
 
         private void Start() { if (_executeOnStart) StartCoroutine(EndOfFrame()); }
 
-        private void HideReferenceText()
-        {
-            //_refColor = _referenceText.color;
-            //_referenceText.color = new Color(0f, 0f, 0f, 0f);
-            _referenceText.gameObject.SetActive(false);
-        }
+        private void HideReferenceText() { _referenceText.gameObject.SetActive(false); }
 
         private IEnumerator EndOfFrame()
         {
@@ -36,15 +29,7 @@ namespace Altzone.Scripts.Audio
             if (_targetText)
             {
                 _targetText.fontSize = _referenceText.fontSize;
-
-                //if (!keepAlpha)
-                    _targetText.color = _referenceText.color;
-                // else
-                // {
-                //     //_refColor.a = _targetText.color.a;
-                //     _targetText.color = _referenceText.color;
-                // }
-
+                _targetText.color = _referenceText.color;
                 _targetText.font = _referenceText.font;
             }
             else
