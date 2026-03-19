@@ -525,8 +525,9 @@ namespace Battle.QSimulation.Player
                             RotationBase          = playerRotationBase,
                             RotationOffset        = FP._0,
 
-                            CurrentHp             = FP._0,
                             CurrentDefence        = FP._0,
+                            MovementEnabled       = true,
+                            RotationEnabled       = !playerDataTemplate->DisableRotation,
 
                             HitboxShieldEntity    = playerHitboxShieldEntity,
                             HitboxCharacterEntity = playerHitboxCharacterEntity,
@@ -539,30 +540,25 @@ namespace Battle.QSimulation.Player
 #if DEBUG_PLAYER_STAT_OVERRIDE
                         s_debugLogger.Warning(f, "DEBUG_PLAYER_STAT_OVERRIDE enabled!");
 
-                        playerData.Stats.Hp            = FP.FromString("3.0");
                         playerData.Stats.Speed         = FP.FromString("20.0");
                         playerData.Stats.CharacterSize = FP.FromString("1.0");
                         playerData.Stats.Attack        = FP.FromString("1.0");
                         playerData.Stats.Defence       = FP.FromString("1.0");
 
-                        s_debugLogger.WarningFormat("Using Hp {0} override", playerData.Stats.Hp);
                         s_debugLogger.WarningFormat("Using Speed {0} override", playerData.Stats.Speed);
                         s_debugLogger.WarningFormat("Using CharacterSize {0} override", playerData.Stats.CharacterSize);
                         s_debugLogger.WarningFormat("Using Attack {0} override", playerData.Stats.Attack);
                         s_debugLogger.WarningFormat("Using Defence {0} override", playerData.Stats.Defence);
 #endif
-                        playerData.CurrentHp      = playerData.Stats.Hp;
                         playerData.CurrentDefence = playerData.Stats.Defence;
 
                         s_debugLogger.LogFormat(f, "({0}) Character number {1} stats:\n" +
-                                                "Hp:            {2}\n" +
-                                                "Speed:         {3}\n" +
-                                                "CharacterSize: {4}\n" +
-                                                "Attack:        {5}\n" +
-                                                "Defence:       {6}",
+                                                "Speed:         {2}\n" +
+                                                "CharacterSize: {3}\n" +
+                                                "Attack:        {4}\n" +
+                                                "Defence:       {5}",
                                                 playerSlot,
                                                 playerCharacterNumber,
-                                                playerData.Stats.Hp,
                                                 playerData.Stats.Speed,
                                                 playerData.Stats.CharacterSize,
                                                 playerData.Stats.Attack,
@@ -593,7 +589,7 @@ namespace Battle.QSimulation.Player
                         playerCharacterEntityArray[playerCharacterNumber] = playerEntity;
 
                         // set playerManagerData for player character
-                        playerHandle.SetCharacterState(playerCharacterNumber, playerData.CurrentHp > 0 ? BattlePlayerCharacterState.Alive : BattlePlayerCharacterState.Dead);
+                        playerHandle.SetCharacterState(playerCharacterNumber, BattlePlayerCharacterState.Alive);
                     }
                 }
 
@@ -1266,7 +1262,6 @@ namespace Battle.QSimulation.Player
 
             BattleDebugOverlayLink.SetEntries(playerData->Slot, s_debugOverlayStats, new object[]
             {
-                playerData->Stats.Hp,
                 playerData->Stats.Speed,
                 playerData->Stats.CharacterSize,
                 playerData->Stats.Attack,

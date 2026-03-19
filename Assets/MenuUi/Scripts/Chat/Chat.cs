@@ -11,6 +11,7 @@ using Altzone.Scripts.Common;
 using Altzone.Scripts.Chat;
 using Altzone.Scripts.Model.Poco.Player;
 using System.Linq;
+using MenuUi.Scripts.Window;
 
 public class Chat : AltMonoBehaviour
 {
@@ -146,6 +147,16 @@ public class Chat : AltMonoBehaviour
             Button button = sendButton.GetComponent<Button>();
             button.onClick.AddListener(() => CheckSendButton(sendButton));
         }
+    }
+
+    private void OnEnable()
+    {
+        OverlayPanelCheck.Instance.ToggleChat(false);
+    }
+
+    private void OnDisable()
+    {
+        OverlayPanelCheck.Instance.ToggleChat(true);
     }
 
     private void Update()
@@ -367,9 +378,7 @@ public class Chat : AltMonoBehaviour
 
     private void DisplayMessage(ChatChannelType channelType,ChatMessage message)
     {
-        Debug.LogWarning($"Test1: {channelType} {ChatListener.Instance.ActiveChatChannel}");
         if (channelType != ChatListener.Instance.ActiveChatChannel) return;
-        Debug.LogWarning("Test2");
         bool ownMsg = message?.SenderId == ServerManager.Instance.Player._id;
         GameObject messagePrefab = GetMessagePrefab(message.Mood, ownMsg);
 

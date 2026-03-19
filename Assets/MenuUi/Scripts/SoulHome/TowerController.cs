@@ -826,25 +826,37 @@ namespace MenuUI.Scripts.SoulHome
 
         public void SaveChanges()
         {
+            HashSet<int> roomsToUpdate = new();
             foreach (GameObject furniture in ChangedFurnitureList)
             {
                 furniture.GetComponent<FurnitureHandling>().SaveDirection();
                 FurnitureSlot oldSlot = furniture.GetComponent<FurnitureHandling>().Slot;
                 furniture.GetComponent<FurnitureHandling>().SaveSlot();
                 int roomId;
+                if (oldSlot != null)
+                {
+                    roomsToUpdate.Add(oldSlot.roomId);
+                    int oldRoomId = oldSlot.roomId;
+                    _rooms.transform.GetChild(oldRoomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(furniture.GetComponent<FurnitureHandling>(),oldSlot);
+                }
                 if (furniture.GetComponent<FurnitureHandling>().Slot == null)
                 {
-                    roomId = oldSlot.roomId;
-                    _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(furniture.GetComponent<FurnitureHandling>(), oldSlot);
                     Destroy(furniture);
                     continue;
                 }
                 roomId = furniture.GetComponent<FurnitureHandling>().Slot.roomId;
                 _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().SetFurnitureSlots(furniture.GetComponent<FurnitureHandling>());
+                roomsToUpdate.Add(roomId);
             }
             ChangedFurnitureList.Clear();
             int prevRoomId = (_selectedFurniture?.transform.parent.GetComponent<FurnitureSlot>() != null) ? _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>().roomId : -1;
             if (prevRoomId >= 0) _rooms.transform.GetChild(prevRoomId).GetChild(0).GetComponent<RoomData>().ClearValidity();
+
+            foreach (int roomId in roomsToUpdate)
+            {
+                RoomData room = _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>();
+                room.UpdateGrid();
+            }
         }
 
         public void ToggleEdit()
