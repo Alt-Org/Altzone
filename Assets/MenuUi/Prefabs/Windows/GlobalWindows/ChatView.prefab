@@ -4654,7 +4654,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4950838862836973002}
-  - component: {fileID: 1792346092353282450}
   - component: {fileID: 7302618133351137433}
   m_Layer: 0
   m_Name: ChatView
@@ -4679,34 +4678,6 @@ Transform:
   - {fileID: 989044770061503462}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1792346092353282450
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9178372497256249584}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e1b9f76277572e458d97db765d184ec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _fontSize: 40
-  _connectionStatusText: {fileID: 0}
-  _chatroomNameText: {fileID: 0}
-  _globalChatWindow: {fileID: 0}
-  _clanChatWindow: {fileID: 0}
-  _countryChatWindow: {fileID: 0}
-  _chatMessageInputField: {fileID: 0}
-  _moodDropdown: {fileID: 0}
-  _sendMessageButton: {fileID: 0}
-  _chatMessageLocalPrefab: {fileID: 4016927134900834357, guid: 4306ca19a719f464e83874a270b81756,
-    type: 3}
-  _chatMessageOthersPrefab: {fileID: 4016927134900834357, guid: d9140013bdbad3e4ab27777dfc0b0bad,
-    type: 3}
-  _errorPanel: {fileID: 0}
-  _errorPrefab: {fileID: 4490909262323596221, guid: 0ebeb2d721acda044ba2d46f6f4ddd92,
-    type: 3}
 --- !u!114 &7302618133351137433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5579,7 +5550,7 @@ PrefabInstance:
     - target: {fileID: 2641932565321544379, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.96282893
+      value: 0.94188035
       objectReference: {fileID: 0}
     - target: {fileID: 2665311521893521844, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -5634,12 +5605,12 @@ PrefabInstance:
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.88682896
+      value: 0.86688036
       objectReference: {fileID: 0}
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.201
+      value: 0.1975
       objectReference: {fileID: 0}
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -5702,6 +5673,11 @@ PrefabInstance:
       value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 4307611809053314757, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4522452604004502935, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
@@ -6436,6 +6412,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSize
       value: 27.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5941332736402343395, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6073106209191891444, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -7262,7 +7243,7 @@ PrefabInstance:
     - target: {fileID: 7827142668286818857, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.201
+      value: 0.1975
       objectReference: {fileID: 0}
     - target: {fileID: 8020515439083824472, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -7412,12 +7393,12 @@ PrefabInstance:
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.96282893
+      value: 0.94188035
       objectReference: {fileID: 0}
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.88682896
+      value: 0.86688036
       objectReference: {fileID: 0}
     - target: {fileID: 9092001840253612742, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
