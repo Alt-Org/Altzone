@@ -363,7 +363,7 @@ namespace Battle.QSimulation.Player
                         //} create player hitBox
 
                         // create player shields
-                        int playerCharacterShieldCount = BattlePlayerShieldManager.CreateShields(f, playerSlot, playerCharacterNumber, playerCharacterId, playerCharacterEntity);
+                        int playerCharacterShieldCount = BattlePlayerShieldManager.CreateShields(f, playerSlot, playerCharacterNumber, playerCharacterId, playerClass, playerCharacterEntity);
 
                         // save entity
                         playerCharacterEntityTemplate.Link(playerHitboxCharacterEntity, new FPVector2(0, 0));
@@ -390,7 +390,7 @@ namespace Battle.QSimulation.Player
 
                             CurrentDefence        = FP._0,
                             MovementEnabled       = true,
-                            RotationEnabled       = !playerDataTemplate->DisableRotation,
+                            RotationEnabled       = !playerCharacterDataTemplate->DisableRotation,
 
                             ShieldCount            = playerCharacterShieldCount,
                             AttachedShieldNumber   = 0,

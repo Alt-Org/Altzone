@@ -359,10 +359,10 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame</param>
         /// <param name="type">Type of sound effect to be played</param>
-        /// <param name="characterID">ID value of the current character in play</param>
-        private static void HandleSFXCharacter(Frame f, SoundEffectTypeCharacter type, int characterID)
+        /// <param name="characterID">ID of the current character in play</param>
+        private static void HandleSFXCharacter(Frame f, SoundEffectTypeCharacter type, BattlePlayerCharacterID characterID)
         {
-            BattleSoundFX soundEffect = (BattleSoundFX)(characterID * Constants.BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER) + (int)type;
+            BattleSoundFX soundEffect = (BattleSoundFX)((int)characterID * Constants.BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER) + (int)type;
             f.Events.BattlePlaySoundFX(soundEffect);
         }
 

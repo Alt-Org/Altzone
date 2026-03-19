@@ -43,6 +43,10 @@ namespace Battle.View.Player
         /// @ref BattlePlayerShieldViewController-SerializeFields
         [SerializeField] private ParticleSystem _shieldHitParticle;
 
+        /// <summary>[SerializeField] Reference to an override character class view controller.</summary>
+        /// @ref BattlePlayerShieldViewController-SerializeFields
+        [SerializeField] private BattlePlayerShieldClassBaseViewController _classViewControllerOverride;
+
         /// @}
 
         /// <summary>
@@ -53,7 +57,7 @@ namespace Battle.View.Player
         /// </summary>
         ///
         /// <param name="_">Current simulation frame.</param>
-        public override void OnActivate(Frame _) { QuantumEvent.Subscribe(this, (EventBattlePlayerShieldViewInit e) =>
+        public override void OnActivate(Frame _) { PreInitSetup(); QuantumEvent.Subscribe(this, (EventBattlePlayerShieldViewInit e) =>
         {
             if (EntityRef != e.ERef) return;
             if (!PredictedFrame.Exists(e.ERef)) return;
@@ -72,6 +76,20 @@ namespace Battle.View.Player
             float scale = (float)e.ModelScale;
             transform.localScale = new Vector3(scale, scale, scale);
             _shieldHitParticle.transform.localScale = new Vector3(scale, scale, scale);
+
+            if (_classViewControllerOverride != null)
+            {
+                if (_classViewControllerOverride.Class == e.Class)
+                {
+                    Destroy(_classViewController);
+                    _classViewController = _classViewControllerOverride;
+                }
+                else
+                {
+                    _debugLogger.ErrorFormat("Class view controller missmatch! Expected {0}, got {1}", e.Class, _classViewControllerOverride.Class);
+                    Destroy(_classViewControllerOverride);
+                }
+            }
 
             _shieldGameObject.SetActive(true);
 
@@ -103,6 +121,8 @@ namespace Battle.View.Player
             {
                 _shieldHitParticle.Play();
             }
+
+            _classViewController.OnShieldTakeDamage(e);
         }
 
         /// <summary>
@@ -135,6 +155,9 @@ namespace Battle.View.Player
             _shieldGameObject.GetComponent<SpriteRenderer>().sprite = _spriteSheet.GetSprite(sprite);
         }
 
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private BattleDebugLogger _debugLogger;
+
         /// <summary>EntityRef for the character this shield is assigned to.</summary>
         private EntityRef _characterRef;
 
@@ -147,6 +170,20 @@ namespace Battle.View.Player
         /// <summary>Boolean that tells whether the Quantum Entity this ViewController is attached to is in play.</summary>
         private bool _isInPlay;
 
+        /// <value>Reference to the active shield class view controller.</value>
+        private BattlePlayerShieldClassBaseViewController _classViewController;
+
+        /// <summary>
+        /// Handles setup that needs to happen before <see cref="Quantum.EventBattlePlayerShieldViewInit">EventBattlePlayerCharacterViewInit</see> event is received.<br/>
+        /// Currently this is needed for initializing character's class as none.
+        /// </summary>
+        private void PreInitSetup()
+        {
+            _debugLogger = BattleDebugLogger.Create<BattlePlayerShieldViewController>();
+
+            _classViewController = gameObject.AddComponent<BattlePlayerShieldClassNoneViewController>();
+        }
+
         /// <summary>Handles binding this shield view controller to the character view controller and vice versa.</summary>
         private bool OnCharacterRegistered()
         {
@@ -155,6 +192,7 @@ namespace Battle.View.Player
 
             _characterViewController = characterViewController;
             _characterViewController.BindShield(this);
+
             return true;
         }
     }

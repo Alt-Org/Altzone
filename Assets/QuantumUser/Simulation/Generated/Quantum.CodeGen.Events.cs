@@ -153,12 +153,14 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventBattlePlayerShieldViewInit BattlePlayerShieldViewInit(EntityRef ERef, EntityRef CharacterRef, BattlePlayerSlot Slot, FP ModelScale) {
+      public EventBattlePlayerShieldViewInit BattlePlayerShieldViewInit(EntityRef ERef, EntityRef CharacterRef, BattlePlayerSlot Slot, BattlePlayerCharacterID CharacterId, BattlePlayerCharacterClass Class, FP ModelScale) {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventBattlePlayerShieldViewInit>(EventBattlePlayerShieldViewInit.ID);
         ev.ERef = ERef;
         ev.CharacterRef = CharacterRef;
         ev.Slot = Slot;
+        ev.CharacterId = CharacterId;
+        ev.Class = Class;
         ev.ModelScale = ModelScale;
         _f.AddEvent(ev);
         return ev;
@@ -527,6 +529,8 @@ namespace Quantum {
     public EntityRef ERef;
     public EntityRef CharacterRef;
     public BattlePlayerSlot Slot;
+    public BattlePlayerCharacterID CharacterId;
+    public BattlePlayerCharacterClass Class;
     public FP ModelScale;
     protected EventBattlePlayerShieldViewInit(Int32 id, EventFlags flags) : 
         base(id, flags) {
@@ -548,6 +552,8 @@ namespace Quantum {
         hash = hash * 31 + ERef.GetHashCode();
         hash = hash * 31 + CharacterRef.GetHashCode();
         hash = hash * 31 + Slot.GetHashCode();
+        hash = hash * 31 + CharacterId.GetHashCode();
+        hash = hash * 31 + Class.GetHashCode();
         hash = hash * 31 + ModelScale.GetHashCode();
         return hash;
       }
