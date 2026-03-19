@@ -29,18 +29,27 @@ public class BattleStartHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        LobbyManager.OnStartTimeSet += StartTimer;
-        LobbyManager.OnGameStartCancelled += OnGameStartCancelled;
+        // Subscriptions moved to OnEnable to avoid receiving events while this GameObject is inactive.
     }
 
     private void OnEnable()
     {
         AudioManager.Instance.StopMusic(); //This should have a short sfx clip playing while the battle starts.
         OverlayPanelCheck.Instance.gameObject.SetActive(false);
+        LobbyManager.OnStartTimeSet += StartTimer;
+        LobbyManager.OnGameStartCancelled += OnGameStartCancelled;
     }
+
     private void OnDisable()
     {
         AudioManager.Instance.StopMusic();
+        if (_timerCoroutine != null)
+        {
+            StopCoroutine(_timerCoroutine);
+            _timerCoroutine = null;
+        }
+        LobbyManager.OnStartTimeSet -= StartTimer;
+        LobbyManager.OnGameStartCancelled -= OnGameStartCancelled;
     }
     private void StartTimer(long startTime)
     {

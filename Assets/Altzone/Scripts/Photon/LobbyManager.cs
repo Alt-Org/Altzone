@@ -116,6 +116,8 @@ namespace Altzone.Scripts.Lobby
 
         private bool _isStartFinished = false;
         private bool _returnToMainMenuOnMatchmakingRejoin = false;
+        // If a master leaves during start, defer returning to the LobbyRoom UI until master switch completes
+        private bool _deferReturnToLobbyRoomOnMasterSwitch = false;
 
         public static LobbyManager Instance { get; private set; }
         public bool IsStartFinished {set => _isStartFinished = value; }
@@ -911,7 +913,7 @@ namespace Altzone.Scripts.Lobby
             }
         }
 
-        private IEnumerator StartMatchmaking(GameType gameType)
+        private IEnumerator StartMatchmaking(GameType gameType, bool broadcastRoomChange = true)
         {
             bool keepHolder = false;
             try
@@ -949,7 +951,7 @@ namespace Altzone.Scripts.Lobby
             // Sending other players in the room the room change request, setting own leader id key as own userid to indicate being the leader
             PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, PhotonRealtimeClient.LocalPlayer.UserId);
 
-            if (PhotonRealtimeClient.Client != null && PhotonRealtimeClient.Client.Server == ServerConnection.GameServer && PhotonRealtimeClient.Client.IsConnectedAndReady && PhotonRealtimeClient.InRoom)
+            if (broadcastRoomChange && PhotonRealtimeClient.Client != null && PhotonRealtimeClient.Client.Server == ServerConnection.GameServer && PhotonRealtimeClient.Client.IsConnectedAndReady && PhotonRealtimeClient.InRoom)
             {
                 SafeRaiseEvent(
                     PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
@@ -958,7 +960,7 @@ namespace Altzone.Scripts.Lobby
                     SendOptions.SendReliable
                 );
             }
-            else
+            else if (broadcastRoomChange)
             {
                 Debug.Log($"Skipping RoomChangeRequested broadcast (StartMatchmaking): Server={PhotonRealtimeClient.Client?.Server}, IsConnectedAndReady={PhotonRealtimeClient.Client?.IsConnectedAndReady}, InRoom={PhotonRealtimeClient.InRoom}");
             }
@@ -2519,9 +2521,10 @@ namespace Altzone.Scripts.Lobby
                     // Broadcast CancelGameStart with requeue instruction and the game type (skip broadcasting for Custom games)
                     if (!isCustomRoom)
                     {
+                        // Cancel the start but do not force clients to leave; master will requeue silently.
                         SafeRaiseEvent(
                             PhotonRealtimeClient.PhotonEvent.CancelGameStart,
-                            new object[] { true, (int)currentRoomGameType },
+                            new object[] { false, (int)currentRoomGameType },
                             new RaiseEventArgs { Receivers = ReceiverGroup.All },
                             SendOptions.SendReliable
                         );
@@ -2533,7 +2536,7 @@ namespace Altzone.Scripts.Lobby
                         _startGameHolder = null;
                     }
 
-                    // Master should start matchmaking flow again (leave current pre-match room and search/create a new one)
+                    // Master should restart matchmaking in the current room (stay and wait/auto-fill) instead of leaving.
                     if (PhotonRealtimeClient.InMatchmakingRoom)
                     {
                         if (!isCustomRoom)
@@ -2543,22 +2546,8 @@ namespace Altzone.Scripts.Lobby
                                 StopCoroutine(_matchmakingHolder);
                                 _matchmakingHolder = null;
                             }
-                            _matchmakingHolder = StartCoroutine(StartMatchmaking(currentRoomGameType));
-
-                            // Inform clients in other rooms to follow leader
-                            if (PhotonRealtimeClient.Client != null && PhotonRealtimeClient.Client.Server == ServerConnection.GameServer && PhotonRealtimeClient.Client.IsConnectedAndReady)
-                            {
-                                SafeRaiseEvent(
-                                    PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
-                                    PhotonRealtimeClient.LocalPlayer.UserId,
-                                    new RaiseEventArgs { Receivers = ReceiverGroup.All },
-                                    SendOptions.SendReliable
-                                );
-                            }
-                            else
-                            {
-                                Debug.LogWarning($"Skipping RoomChangeRequested broadcast (StartMatchmaking after cancel): Server={PhotonRealtimeClient.Client?.Server}, IsConnectedAndReady={PhotonRealtimeClient.Client?.IsConnectedAndReady}");
-                            }
+                            // Restart waiting loop in the same room so teammates remain together.
+                            _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
                         }
                         else
                         {
@@ -2613,13 +2602,23 @@ namespace Altzone.Scripts.Lobby
                     // Non-master clients should leave the previous room, return to main menu and attempt to requeue
                     if (PhotonRealtimeClient.InRoom)
                     {
-                        if (!isCustomRoom)
+                        // If the player who left was the master, defer returning to the LobbyRoom
+                        // until the master switch completes to avoid race conditions.
+                        try
                         {
-                            StartCoroutine(LeaveAndAutoRequeue(currentRoomGameType));
+                            if (otherPlayer != null && otherPlayer.IsMasterClient)
+                            {
+                                _deferReturnToLobbyRoomOnMasterSwitch = true;
+                            }
+                            else
+                            {
+                                // Do not force non-master clients to leave; just return to the room UI and remain queued.
+                                OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.LobbyRoom);
+                            }
                         }
-                        else
+                        catch
                         {
-                            Debug.Log("OnPlayerLeftRoom: Custom mode - not leaving room when another player left.");
+                            OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.LobbyRoom);
                         }
                     }
                 }
@@ -3178,6 +3177,25 @@ namespace Altzone.Scripts.Lobby
                     }
                     _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
                 }
+
+                // If we deferred returning to the LobbyRoom because the master left,
+                // perform the UI return now that master switch has completed (for non-master clients).
+                try
+                {
+                    if (_deferReturnToLobbyRoomOnMasterSwitch)
+                    {
+                        if (!PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient && PhotonRealtimeClient.InRoom)
+                        {
+                            _deferReturnToLobbyRoomOnMasterSwitch = false;
+                            OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.LobbyRoom);
+                        }
+                        else
+                        {
+                            _deferReturnToLobbyRoomOnMasterSwitch = false;
+                        }
+                    }
+                }
+                catch { _deferReturnToLobbyRoomOnMasterSwitch = false; }
             }
         }
 
