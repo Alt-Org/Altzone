@@ -19,59 +19,6 @@ using Photon.Deterministic;
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
 
-namespace Quantum
-{
-    // Adds functionality to create entities from prototypes and retrieve transform and data components.
-    public unsafe partial struct BattlePlayerEntityRef
-    {
-        /// <summary>
-        /// default BattlePlayerEntityRef
-        /// </summary>
-        public static BattlePlayerEntityRef None => default;
-
-        /// <summary>
-        /// Creates a player entity.
-        /// </summary>
-        /// <param name="f">Current simulation frame.</param>
-        /// <returns>Reference to the created entity.</returns>
-        public static BattlePlayerEntityRef Create(Frame f) => (BattlePlayerEntityRef)f.Create();
-
-        /// <summary>
-        /// Creates a player entity from a prototype.
-        /// </summary>
-        /// <param name="f">Current simulation frame.</param>
-        /// <param name="prototype">Prototype player entity is created from.</param>
-        /// <returns>Reference to the created entity.</returns>
-        public static BattlePlayerEntityRef Create(Frame f, AssetRef<EntityPrototype> prototype) => (BattlePlayerEntityRef)f.Create(prototype);
-
-        /// <summary>
-        /// Implicit conversion from BattlePlayerEntityRef to EntityRef.
-        /// </summary>
-        /// <param name="battlePlayerEntityRef">BattlePlayerEntityRef that's being converted.</param>
-        public static implicit operator EntityRef(BattlePlayerEntityRef battlePlayerEntityRef) => battlePlayerEntityRef.ERef;
-
-        /// <summary>
-        /// Explicit conversion from EntityRef to BattlePlayerEntityRef.
-        /// </summary>
-        /// <param name="entityRef">EntityRef that's being converted.</param>
-        public static explicit operator BattlePlayerEntityRef(EntityRef entityRef) => new() { ERef = entityRef };
-
-        /// <summary>
-        /// Retrieves Transform2D of this entity.
-        /// </summary>
-        /// <param name="f">Current simulation frame.</param>
-        /// <returns>Transform2D of this entity.</returns>
-        public readonly Transform2D* GetTransform(Frame f) => f.Unsafe.GetPointer<Transform2D>(ERef);
-
-        /// <summary>
-        /// Retrieves this entity's player data component's pointer.
-        /// </summary>
-        /// <param name="f">Current simulation frame.</param>
-        /// <returns>This entity's player data component's pointer</returns>
-        public readonly BattlePlayerDataQComponent* GetDataQComponent(Frame f) => f.Unsafe.GetPointer<BattlePlayerDataQComponent>(ERef);
-    }
-}
-
 namespace Battle.QSimulation.Player
 {
     /// <summary>

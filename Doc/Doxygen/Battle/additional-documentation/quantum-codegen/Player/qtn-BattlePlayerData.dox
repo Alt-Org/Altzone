@@ -8,8 +8,6 @@
 ///   @copybrief Quantum.BattlePlayerDataQComponent
 /// - @cref{Quantum,BattlePlayerDataTemplateQComponent}  
 ///   @copybrief Quantum.BattlePlayerDataTemplateQComponent
-/// - @cref{Quantum,BattlePlayerEntityRef}
-///   @copybrief Quantum.BattlePlayerEntityRef
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -22,39 +20,6 @@
 /// [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview)
 ///
 /// @bigtext{Generated from @ref BattlePlayerData.qtn}
-
-/// @struct Quantum::BattlePlayerEntityRef
-/// <summary>
-/// Struct that holds player entity references.
-/// </summary>
-///
-/// @bigtext{Generated from @ref BattlePlayerData.qtn}
-
-/// @struct Quantum::BattlePlayerDataTemplateQComponent
-/// <summary>
-/// Template for creating player character entity.
-/// </summary>
-///
-/// @bigtext{Generated from @ref BattlePlayerData.qtn}
-
-// ---------------------------------------------------------------------------------------------------- //
-
-/// @var BattlePlayerEntityRef Quantum::BattlePlayerEntityRef::ERef
-/// <summary>EntityRef of the player entity.</summary>
-
-/// @name Quantum Built-in
-/// @{
-///
-/// @var Int32 Quantum::BattlePlayerEntityRef::SIZE
-/// @var Int32 Quantum::BattlePlayerEntityRef::ALIGNMENT
-///
-/// @fn Int32 Quantum::BattlePlayerEntityRef::GetHashCode
-///
-/// @fn void Quantum::BattlePlayerEntityRef::Serialize
-///
-/// @}
-
-// ---------------------------------------------------------------------------------------------------- //
 
 /// @anchor PlayerID
 /// @name Player's refs and IDs
