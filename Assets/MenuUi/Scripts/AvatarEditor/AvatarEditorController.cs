@@ -6,6 +6,7 @@ using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
+using MenuUi.Scripts.Window;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
@@ -66,11 +67,13 @@ namespace MenuUi.Scripts.AvatarEditor
             _textHandler.SetRandomSpeechBubbleText();
 
             AspectRatioChangeDetector.OnAspectRatioChange += UpdateCellSizes;
+            OverlayPanelCheck.Instance.ToggleChat(false);
         }
 
         private void OnDisable()
         {
             AspectRatioChangeDetector.OnAspectRatioChange -= UpdateCellSizes;
+            OverlayPanelCheck.Instance.ToggleChat(true);
         }
 
         private void UpdateCellSizes()
