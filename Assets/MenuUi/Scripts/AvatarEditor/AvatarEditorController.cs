@@ -22,7 +22,6 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Button _saveButton;
         [SerializeField] private Button _revertButton;
         [SerializeField] private Button _defaultButton;
-        [SerializeField] private TextHandler _textHandler;
         [SerializeField] private PopUpHandler _popUpHandler;
         [SerializeField] private AvatarLoader _avatarLoader;
         [SerializeField] private AvatarLoader _profileMenuAvatarLoader;
@@ -62,7 +61,6 @@ namespace MenuUi.Scripts.AvatarEditor
         private void OnEnable()
         {
             StartCoroutine(LoadAvatarData());
-            _textHandler.SetRandomSpeechBubbleText();
 
             AspectRatioChangeDetector.OnAspectRatioChange += UpdateCellSizes;
             OverlayPanelCheck.Instance.ToggleChat(false);

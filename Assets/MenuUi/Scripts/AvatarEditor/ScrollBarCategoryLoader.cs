@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Altzone.Scripts.AvatarPartsInfo;
 using Assets.Altzone.Scripts.Model.Poco.Player;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +18,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Button _eyesButton;
         [SerializeField] private Button _clothesButton;
         [SerializeField] private Button _shoesButton;
+        [SerializeField] private TextMeshProUGUI _categoryText;
 
         private Dictionary<Button, string> _buttonToCategoryId;
 
@@ -44,6 +46,7 @@ namespace MenuUi.Scripts.AvatarEditor
         }
         private string _currentlySelectedCategory = "10";
         public string CurrentlySelectedCategory => _currentlySelectedCategory;
+        private TextMeshProUGUI _currentCategoryTMP;
 
         public void ClickHairButton()
         {
@@ -57,11 +60,16 @@ namespace MenuUi.Scripts.AvatarEditor
                 Button button = entry.Key;
                 string id = entry.Value;
 
+                TextMeshProUGUI buttonText = button.GetComponentInChildren<TextMeshProUGUI>();
+
                 button.onClick.RemoveAllListeners();
 
                 button.onClick.AddListener(() =>
                 {
                     _currentlySelectedCategory = id;
+                    _currentCategoryTMP = buttonText;
+
+                    _categoryText.text = buttonText.text;
                     buttonFunction.Invoke(id);
                 });
             }
