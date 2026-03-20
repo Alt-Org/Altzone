@@ -16,8 +16,15 @@ namespace MenuUi.Scripts.Window
 
         [SerializeField] private GameObject _bottomBar;
         [SerializeField] private GameObject _chatBox;
+        [SerializeField] private GameObject _buttonsBar;
+
+        private bool _chatActive = true;
 
         public static OverlayPanelCheck Instance { get; private set; }
+        public bool ChatActive => _chatActive;
+
+        public delegate void ChatBarToggled(bool active);
+        public static event ChatBarToggled OnChatBarToggled;
 
         private void Awake()
         {
@@ -32,7 +39,7 @@ namespace MenuUi.Scripts.Window
             }
 
             if (_overlayObject == null) _overlayObject = transform.Find("UIOverlayPanel").GetComponent<GameObject>();
-
+            _chatActive = true;
             buttons[2].transform.localScale = Vector3.one * 1.2f;
             buttons[2].interactable = false;
 
@@ -88,6 +95,9 @@ namespace MenuUi.Scripts.Window
         public void ToggleChat(bool value)
         {
             _chatBox.SetActive(value);
+            _chatActive = value;
+            _buttonsBar.GetComponent<RectTransform>().anchorMax = value ? new Vector2(1, 0.5f) : new Vector2(1, 1f);
+            OnChatBarToggled?.Invoke(value);
         }
 
     }

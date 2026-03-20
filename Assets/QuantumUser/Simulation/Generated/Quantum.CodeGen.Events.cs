@@ -242,14 +242,14 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventBattleShieldTakeDamage BattleShieldTakeDamage(EntityRef Entity, BattleTeamNumber Team, BattlePlayerSlot Slot, Int32 CharacterNumber, FP DefenceValue) {
+      public EventBattleShieldTakeDamage BattleShieldTakeDamage(EntityRef Entity, BattleTeamNumber Team, BattlePlayerSlot Slot, Int32 CharacterNumber, FP DefencePercentage) {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventBattleShieldTakeDamage>(EventBattleShieldTakeDamage.ID);
         ev.Entity = Entity;
         ev.Team = Team;
         ev.Slot = Slot;
         ev.CharacterNumber = CharacterNumber;
-        ev.DefenceValue = DefenceValue;
+        ev.DefencePercentage = DefencePercentage;
         _f.AddEvent(ev);
         return ev;
       }
@@ -813,7 +813,7 @@ namespace Quantum {
     public BattleTeamNumber Team;
     public BattlePlayerSlot Slot;
     public Int32 CharacterNumber;
-    public FP DefenceValue;
+    public FP DefencePercentage;
     protected EventBattleShieldTakeDamage(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
@@ -835,7 +835,7 @@ namespace Quantum {
         hash = hash * 31 + Team.GetHashCode();
         hash = hash * 31 + Slot.GetHashCode();
         hash = hash * 31 + CharacterNumber.GetHashCode();
-        hash = hash * 31 + DefenceValue.GetHashCode();
+        hash = hash * 31 + DefencePercentage.GetHashCode();
         return hash;
       }
     }

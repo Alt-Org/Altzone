@@ -68,7 +68,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Called by BattleCollisionQSystem. Applies damage to the player after checking if it is appropriate to do so.
+        /// Called by BattleCollisionQSystem. Stuns the player after checking if it is appropriate to do so.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame</param>
@@ -80,39 +80,24 @@ namespace Battle.QSimulation.Player
 
             BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->PlayerEntity);
 
-            if (damagedPlayerData->CurrentDefence <= 0) HandleSFX(f, damagedPlayerData->CharacterId, SoundEffectType.Death);
-
-            // Temp disabled
-            BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
-            return;
-
-            if (projectileCollisionData->Projectile->IsHeld) return;
-
-            //BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->PlayerEntity);
-            FP damageTaken = projectileCollisionData->Projectile->Attack;
-
-            HandleSFX(f, damagedPlayerData->CharacterId, SoundEffectType.HitCharacterAggression);
-
-            BattlePlayerManager.PlayerHandle damagePlayerHandle = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot);
-            int characterNumber = damagePlayerHandle.SelectedCharacterNumber;
-
-            FP newHp = damagedPlayerData->CurrentHp - damageTaken;
-
-            if (damageTaken > FP._0 && damagedPlayerData->CurrentHp > FP._0 && !damagedPlayerData->DamageCooldown.IsRunning(f))
+            if (damagedPlayerData->CurrentDefence <= 0) HandleSFXCharacter(f, SoundEffectTypeCharacter.Death, damagedPlayerData->CharacterId);
+            else
             {
-                damagedPlayerData->CurrentHp = newHp;
-
-                damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
-
-                f.Events.BattleCharacterTakeDamage(playerCollisionData->PlayerCharacterHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newHp / damagedPlayerData->Stats.Hp);
+                SoundEffectTypeCharacter soundEffectType = projectileCollisionData->ProjectileEmotionCurrent switch
+                {
+                    BattleEmotionState.Aggression => SoundEffectTypeCharacter.HitCharacterAggression,
+                    BattleEmotionState.Joy        => SoundEffectTypeCharacter.HitCharacterJoy,
+                    BattleEmotionState.Love       => SoundEffectTypeCharacter.HitCharacterLove,
+                    BattleEmotionState.Playful    => SoundEffectTypeCharacter.HitCharacterPlayful,
+                    BattleEmotionState.Sadness    => SoundEffectTypeCharacter.HitCharacterSadness
+                };
+                HandleSFXCharacter(f, soundEffectType, damagedPlayerData->CharacterId);
             }
 
-            if (damagedPlayerData->CurrentHp <= FP._0)
-            {
-                BattlePlayerManager.DespawnPlayer(f, damagedPlayerData->Slot, kill: true);
-                damagePlayerHandle.SetOutOfPlayRespawning();
-                damagePlayerHandle.RespawnTimer = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).AutoRespawnTimeSec);
-            }
+            damagedPlayerData->MovementEnabled = false;
+            damagedPlayerData->RotationEnabled = false;
+
+            damagedPlayerData->StunCooldown = FrameTimer.FromSeconds(f, (int)BattleQConfig.GetPlayerSpec(f).StunCooldownSec);
 
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
         }
@@ -132,7 +117,7 @@ namespace Battle.QSimulation.Player
             BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
             FP damageTaken = projectileCollisionData->Projectile->Attack;
 
-            HandleSFX(f, damagedPlayerData->CharacterId, SoundEffectType.HitShield);
+            HandleSFXCommon(f, SoundEffectTypeCommon.HitShield);
 
             BattleProjectileQSystem.SetAttack(f, projectileCollisionData->Projectile, damagedPlayerData->Stats.Attack);
 
@@ -146,7 +131,7 @@ namespace Battle.QSimulation.Player
 
                 damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
 
-                f.Events.BattleShieldTakeDamage(shieldCollisionData->PlayerShieldHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newDefence);
+                f.Events.BattleShieldTakeDamage(shieldCollisionData->PlayerShieldHitbox->PlayerEntity, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, newDefence / damagedPlayerData->Stats.Defence);
             }
 
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
@@ -199,11 +184,25 @@ namespace Battle.QSimulation.Player
             }
         }
 
-        private enum SoundEffectType
+        /// <summary>Enum used to define common sound effect types</summary>
+        ///
+        /// Used by @cref{HandleSFXCommon} method.
+        private enum SoundEffectTypeCommon
+        {
+            HitShield
+        }
+
+        /// <summary>Enum used to define character specific sound effect types</summary>
+        ///
+        /// Used by @cref{HandleSFXCharacter} method.
+        private enum SoundEffectTypeCharacter
         {
             Catchphrase,
             HitCharacterAggression,
-            HitShield,
+            HitCharacterJoy,
+            HitCharacterLove,
+            HitCharacterPlayful,
+            HitCharacterSadness,
             Death
         }
 
@@ -324,15 +323,32 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Private helper method for playing the appropriate Shield Hit sound effect based on character ID
+        /// Private helper method for playing the appropriate common sound effect based on sound effect <paramref name="type"/>
         /// </summary>
         ///
+        /// Use @cref{HandleSFXCharacter} to play character specific sound effects.
+        ///
         /// <param name="f">Current simulation frame</param>
-        /// <param name="charactedID">ID value of the current character in play</param>
-        private static void HandleSFX(Frame f, int characterID, SoundEffectType type)
+        /// <param name="type">Type of sound effect to be played</param>
+        private static void HandleSFXCommon(Frame f, SoundEffectTypeCommon type)
         {
-            int finalSoundID = (characterID * Constants.BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER) + (int)type;
-            f.Events.BattlePlaySoundFX((BattleSoundFX)finalSoundID);
+            BattleSoundFX soundEffect = (BattleSoundFX)(Constants.BATTLE_SOUND_FX_CHARACTER_COMMON_START + type);
+            f.Events.BattlePlaySoundFX(soundEffect);
+        }
+
+        /// <summary>
+        /// Private helper method for playing the appropriate character specific sound effect based on <paramref name="characterID"/> and sound effect <paramref name="type"/>
+        /// </summary>
+        ///
+        /// Use @cref{HandleSFXCommon} to play common sound effects.
+        ///
+        /// <param name="f">Current simulation frame</param>
+        /// <param name="type">Type of sound effect to be played</param>
+        /// <param name="characterID">ID value of the current character in play</param>
+        private static void HandleSFXCharacter(Frame f, SoundEffectTypeCharacter type, int characterID)
+        {
+            BattleSoundFX soundEffect = (BattleSoundFX)(characterID * Constants.BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER) + (int)type;
+            f.Events.BattlePlaySoundFX(soundEffect);
         }
 
         /// <summary>
@@ -455,6 +471,12 @@ namespace Battle.QSimulation.Player
             {
                 AbilityActivate(f, playerData, playerTransform);
                 updateMovement = false;
+            }
+
+            if (!playerData->StunCooldown.IsRunning(f))
+            {
+                playerData->MovementEnabled = true;
+                playerData->RotationEnabled = !playerData->DisableRotation;
             }
 
             if (playerData->CurrentDefence <= FP._0)
