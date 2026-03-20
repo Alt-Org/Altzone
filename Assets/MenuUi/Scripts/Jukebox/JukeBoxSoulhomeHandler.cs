@@ -115,9 +115,10 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         JukeboxManager.Instance.OnClearJukeboxVisuals += ClearJukeboxVisuals;
         //JukeboxManager.Instance.OnSetPlayButtonImages += SetPlayButtonStates;
         JukeboxManager.Instance.OnJukeboxMute += SetMuteImage;
+        MusicHandler.Instance.OnVolumeChange += MainDiskIndicatorControl;
 
         if (JukeboxManager.Instance.CurrentTrackQueueData != null)
-            SetSongInfo(JukeboxManager.Instance.CurrentTrackQueueData.MusicTrack);
+            SetSongInfo(JukeboxManager.Instance.CurrentTrackQueueData.MusicTrack, false);
         else
         {
             foreach (TextAutoScroll text in _trackNames) text.SetContent(NoSongName);
@@ -132,6 +133,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         JukeboxManager.Instance.OnClearJukeboxVisuals -= ClearJukeboxVisuals;
         //JukeboxManager.Instance.OnSetPlayButtonImages -= SetPlayButtonStates;
         JukeboxManager.Instance.OnJukeboxMute -= SetMuteImage;
+        MusicHandler.Instance.OnVolumeChange -= MainDiskIndicatorControl;
 
         ToggleJukeboxScreen(false);
         StopJukeboxVisuals();
@@ -262,18 +264,22 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     public void ToggleJukeboxScreen(bool toggle)
     {
+        AudioManager audioManager = AudioManager.Instance;
+
         _jukeboxObject.SetActive(toggle);
 
-        if (toggle)
+        if (toggle) //Open
         {
             JukeboxManager manager = JukeboxManager.Instance;
 
+            if (!manager) return;
+
             SetMuteImage(manager.JukeboxMuted);
 
-            _previousAreaName = AudioManager.Instance.CurrentAreaName;
-            AudioManager.Instance.SetCurrentAreaCategoryName("Jukebox");
+            _previousAreaName = audioManager.CurrentAreaName;
+            audioManager.SetCurrentAreaCategoryName("Jukebox");
 
-            if (string.IsNullOrEmpty(manager.TryPlayTrack()))
+            if (string.IsNullOrEmpty(manager.TryPlayTrack(false)))
             {
                 MainDiskIndicatorControl();
             }
@@ -285,22 +291,29 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
             if (manager.CurrentTrackQueueData == null && !manager.TrackPreviewActive) _mainDiskHandler.ClearDisk();
         }
-        else
+        else if (audioManager) //Close
         {
-            AudioManager.Instance.SetCurrentAreaCategoryName(_previousAreaName);
-            AudioManager.Instance.PlayMusic(_previousAreaName, MusicHandler.MusicSwitchType.CrossFade);
+            JukeboxManager jukeboxManager = JukeboxManager.Instance;
+
+            audioManager.SetCurrentAreaCategoryName(_previousAreaName);
+
+            if (jukeboxManager && jukeboxManager.TrackPreviewActive && jukeboxManager.CurrentTrackQueueData != null)
+                jukeboxManager.StopMusicPreview();
+            else
+                audioManager.PlayMusic(_previousAreaName, MusicHandler.MusicSwitchType.CrossFade);
+
             _mainDiskHandler.StopDiskSpin();
         }
     }
 
-    private void SetSongInfo(MusicTrack track)
+    private void SetSongInfo(MusicTrack track, bool useAnimations = true)
     {
         if (track == null)
         {
             _mainDiskHandler.ClearDisk();
 
-            foreach (TextAutoScroll text in _trackNames) text.SetContent(NoSongName);
-            foreach (TextAutoScroll text in _trackCreditsNames) text.SetContent(NoCreditsNames);
+            foreach (TextAutoScroll text in _trackNames) text.SetContent(NoSongName, false, useAnimations);
+            foreach (TextAutoScroll text in _trackCreditsNames) text.SetContent(NoCreditsNames, false, useAnimations);
 
             if (!JukeboxManager.Instance.JukeboxMuted && _jukeboxObject.activeSelf) MainDiskIndicatorControl();
 
@@ -309,8 +322,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
         string credits = track.JukeboxInfo.GetArtistNames();
 
-        foreach (TextAutoScroll text in _trackNames) text.SetContent(track.Name);
-        foreach (TextAutoScroll text in _trackCreditsNames) text.SetContent(credits);
+        foreach (TextAutoScroll text in _trackNames) text.SetContent(track.Name, false, useAnimations);
+        foreach (TextAutoScroll text in _trackCreditsNames) text.SetContent(credits, false, useAnimations);
         //foreach (Image image in _diskImage) image.sprite = track.JukeboxInfo.Disk;
         _mainDiskHandler.SetDisk(track.JukeboxInfo.Disk);
 
