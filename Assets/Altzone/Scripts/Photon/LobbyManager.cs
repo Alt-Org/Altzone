@@ -976,10 +976,15 @@ namespace Altzone.Scripts.Lobby
             // If a JoinRoom attempt fails (room filled/closed) we continue searching other rooms.
             bool roomFound = false;
             bool joinedExistingRoom = false;
-            float joinAttemptTimeout = 5f; // seconds to wait for a join to succeed before trying next room
-            if (CurrentRooms != null)
+            // Use a shorter per-room timeout for Random2v2 to reduce delays when iterating many candidates.
+            float joinAttemptTimeout = gameType == GameType.Random2v2 ? 2f : 5f; // seconds to wait for a join to succeed before trying next room
+
+            if (CurrentRooms != null && CurrentRooms.Count > 0)
             {
-                foreach (LobbyRoomInfo room in CurrentRooms)
+                // Sort candidates by descending player count (prefer fuller rooms) and deterministic tie-breaker
+                var roomsList = CurrentRooms.OrderByDescending(r => r.PlayerCount).ThenBy(r => r.Name).ToList();
+
+                foreach (LobbyRoomInfo room in roomsList)
                 {
                     // Checking if the room has a game type and matchmaking key in the first place
                     if (!room.CustomProperties.ContainsKey(PhotonBattleRoom.GameTypeKey) || !room.CustomProperties.ContainsKey(PhotonBattleRoom.IsMatchmakingKey))
@@ -1274,16 +1279,9 @@ namespace Altzone.Scripts.Lobby
                         if (PhotonRealtimeClient.CurrentRoom.PlayerCount != PhotonRealtimeClient.CurrentRoom.MaxPlayers) continue;
                     }
 
-                    // Checking that all of the positions in the room are set (by real players or bots)
-                    bool isSetPosition1 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition1);
-                    bool isSetPosition2 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition2);
-                    bool isSetPosition3 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition3);
-                    bool isSetPosition4 = !PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition4);
-
-                    if (isSetPosition1 && isSetPosition2 && isSetPosition3 && isSetPosition4)
-                    {
-                        canStartGameplay = true;
-                    }
+                    // At this point either the room is full or we've applied bot backfill.
+                    // Proceed to mapping player -> room position keys even if some position slots are not yet set.
+                    canStartGameplay = true;
 
                 } while (!canStartGameplay);
 
@@ -3187,7 +3185,7 @@ namespace Altzone.Scripts.Lobby
                         if (!PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient && PhotonRealtimeClient.InRoom)
                         {
                             _deferReturnToLobbyRoomOnMasterSwitch = false;
-                            OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.LobbyRoom);
+                            OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
                         }
                         else
                         {
