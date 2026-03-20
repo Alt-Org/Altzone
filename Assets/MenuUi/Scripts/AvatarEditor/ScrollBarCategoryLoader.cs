@@ -10,6 +10,8 @@ namespace MenuUi.Scripts.AvatarEditor
 {
     public class ScrollBarCategoryLoader : MonoBehaviour
     {
+        [Header("Buttons")]
+        [SerializeField] private AvatarEditorController _controller;
         [SerializeField] private Button _noseButton;
         [SerializeField] private Button _mouthButton;
         [SerializeField] private Button _handsButton;
@@ -18,6 +20,17 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Button _eyesButton;
         [SerializeField] private Button _clothesButton;
         [SerializeField] private Button _shoesButton;
+
+        [Header("Slot Images")]
+        [SerializeField] private Image _hairImage;
+        [SerializeField] private Image _eyesImage;
+        [SerializeField] private Image _noseImage;
+        [SerializeField] private Image _mouthImage;
+        [SerializeField] private Image _bodyImage;
+        [SerializeField] private Image _clothesImage;
+        [SerializeField] private Image _handsImage;
+        [SerializeField] private Image _shoesImage;
+
         [SerializeField] private TextMeshProUGUI _categoryText;
 
         private Dictionary<Button, string> _buttonToCategoryId;
@@ -35,13 +48,34 @@ namespace MenuUi.Scripts.AvatarEditor
                         { _eyesButton, "21" },
                         { _noseButton, "22" },
                         { _mouthButton, "23" },
-                        { _bodyButton, "" }, // not sure what this should do
+                        { _bodyButton, "" }, // not sure what this should do, now it's the skin color selection
                         { _clothesButton, "31" },
                         { _handsButton, "32" },
                         { _shoesButton, "33" }
                     };
                 }
                 return _buttonToCategoryId;
+            }
+        }
+        private Dictionary<AvatarPiece, Image> _pieceToImage;
+        private Dictionary<AvatarPiece, Image> PieceToImage
+        {
+            get
+            {
+                if (_pieceToImage == null)
+                {
+                    _pieceToImage = new Dictionary<AvatarPiece, Image>
+                    {
+                        { AvatarPiece.Hair, _hairImage },
+                        { AvatarPiece.Eyes, _eyesImage },
+                        { AvatarPiece.Nose, _noseImage },
+                        { AvatarPiece.Mouth, _mouthImage },
+                        { AvatarPiece.Clothes, _clothesImage },
+                        { AvatarPiece.Hands, _handsImage },
+                        { AvatarPiece.Feet, _shoesImage }
+                    };
+                }
+                return _pieceToImage;
             }
         }
         private string _currentlySelectedCategory = "10";
@@ -51,6 +85,23 @@ namespace MenuUi.Scripts.AvatarEditor
         public void ClickHairButton()
         {
             _hairButton.onClick.Invoke();
+        }
+
+        public void UpdateSlotImage(AvatarPiece slot, AvatarPartInfo partInfo)
+        {
+            if (PieceToImage.TryGetValue(slot, out Image image))
+            {
+                image.sprite = partInfo.IconImage;
+            }
+        }
+
+        public void UpdateSlotImages()
+        {
+            foreach (AvatarPiece piece in Enum.GetValues(typeof (AvatarPiece)))
+            {
+                AvatarPartInfo partInfo = AvatarPartsReference.Instance.GetAvatarPartById(_controller.PlayerAvatar.GetPartId(piece));
+                UpdateSlotImage(piece, partInfo);
+            }
         }
 
         public void SetCategoryButtons(Action<string> buttonFunction)

@@ -157,6 +157,7 @@ namespace MenuUi.Scripts.AvatarEditor
             }
 
             _featureSetter.SetLoadedFeatures(_playerAvatar);
+            _categoryLoader.UpdateSlotImages();
         }
 
 

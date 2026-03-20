@@ -8,6 +8,7 @@ namespace MenuUi.Scripts.AvatarEditor
 {
     public class ScrollBarFeatureLoader : MonoBehaviour
     {
+        [SerializeField] private ScrollBarCategoryLoader _categoryLoader;
         [SerializeField] private AvatarPartsReference _avatarPartsReference;
         [SerializeField] private RectTransform _featureGridContent;
         [SerializeField] private GameObject _featureCellPrefab;
@@ -171,6 +172,7 @@ namespace MenuUi.Scripts.AvatarEditor
             handler.SetOnClick(onClick: () =>
             {
                 _featureSetter.SetFeature(avatarPart, slot);
+                _categoryLoader.UpdateSlotImage(slot, avatarPart);
                 UpdateHighlightedCell(handler);
             });
         }
