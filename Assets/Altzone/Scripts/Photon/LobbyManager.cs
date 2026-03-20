@@ -103,6 +103,7 @@ namespace Altzone.Scripts.Lobby
         // Holder for the client-side StartQuantum coroutine so it can be stopped if needed
         private Coroutine _startQuantumHolder = null;
         private Coroutine _autoJoinHolder = null;
+        private Coroutine _verifyPositionsHolder = null;
         // Flag set by OnJoinRoomFailed to signal a join attempt failure to waiting coroutines
         private bool _joinRoomFailed = false;
 
@@ -2376,6 +2377,60 @@ namespace Altzone.Scripts.Lobby
             yield break;
         }
 
+        private IEnumerator VerifyRoomPositionsLoop()
+        {
+            try
+            {
+                while (PhotonRealtimeClient.InRoom && PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+                {
+                    try
+                    {
+                        Room room = PhotonRealtimeClient.CurrentRoom;
+                        if (room != null)
+                        {
+                            var existingUserIds = new HashSet<string>(room.Players.Values.Select(p => p.UserId));
+                            string[] posKeys = {
+                                PhotonBattleRoom.PlayerPositionKey1,
+                                PhotonBattleRoom.PlayerPositionKey2,
+                                PhotonBattleRoom.PlayerPositionKey3,
+                                PhotonBattleRoom.PlayerPositionKey4
+                            };
+
+                            foreach (var key in posKeys)
+                            {
+                                string val = room.GetCustomProperty<string>(key, "");
+                                if (string.IsNullOrEmpty(val)) continue;
+                                if (val == "Bot") continue;
+                                if (!existingUserIds.Contains(val))
+                                {
+                                    var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { key, "" } });
+                                    var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { key, val } });
+                                    try
+                                    {
+                                        PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue);
+                                        Debug.Log($"VerifyRoomPositionsLoop: cleared stale position {key} (value {val}).");
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.LogWarning($"VerifyRoomPositionsLoop: failed to clear {key}: {ex.Message}");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogWarning($"VerifyRoomPositionsLoop: unexpected error: {ex.Message}");
+                    }
+                    yield return new WaitForSeconds(2f);
+                }
+            }
+            finally
+            {
+                _verifyPositionsHolder = null;
+            }
+        }
+
         public void SetPlayerQuantumCharacters(List<CustomCharacter> characters)
         {
             Assert.IsTrue(
@@ -2684,6 +2739,50 @@ namespace Altzone.Scripts.Lobby
             {
                 Debug.LogWarning($"OnPlayerLeftRoom: failed to open room: {ex.Message}");
             }
+
+            // Master: ensure any stale player position keys are cleared when any player leaves
+            if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+            {
+                try
+                {
+                    if (room != null)
+                    {
+                        var existingUserIds = new HashSet<string>(room.Players.Values.Select(p => p.UserId));
+                        string[] posKeys = {
+                            PhotonBattleRoom.PlayerPositionKey1,
+                            PhotonBattleRoom.PlayerPositionKey2,
+                            PhotonBattleRoom.PlayerPositionKey3,
+                            PhotonBattleRoom.PlayerPositionKey4
+                        };
+
+                        foreach (var key in posKeys)
+                        {
+                            string val = room.GetCustomProperty<string>(key, "");
+                            if (string.IsNullOrEmpty(val)) continue;
+                            if (val == "Bot") continue;
+                            if (!existingUserIds.Contains(val))
+                            {
+                                var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { key, "" } });
+                                var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { key, val } });
+                                try
+                                {
+                                    PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue);
+                                    Debug.Log($"Cleared stale position {key} (value {val}) on player leave.");
+                                }
+                                catch (Exception ex2)
+                                {
+                                    Debug.LogWarning($"Failed to clear stale position {key}: {ex2.Message}");
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"OnPlayerLeftRoom: failed to clean stale positions: {ex.Message}");
+                }
+            }
+
             LobbyOnPlayerLeftRoom?.Invoke(new(otherPlayer));
 
             // Ensure master continues matchmaking wait loop so countdowns can be restarted
@@ -2747,6 +2846,11 @@ namespace Altzone.Scripts.Lobby
                     {
                         _autoJoinHolder = StartCoroutine(AutoJoinLargestMatchmakingRoom());
                     }
+                }
+                // If we're master client, start periodic verification of room position keys to clear stale reservations
+                if (PhotonRealtimeClient.LocalPlayer.IsMasterClient && _verifyPositionsHolder == null)
+                {
+                    _verifyPositionsHolder = StartCoroutine(VerifyRoomPositionsLoop());
                 }
             }
             else
@@ -2821,6 +2925,12 @@ namespace Altzone.Scripts.Lobby
 
             Debug.Log($"OnLeftRoom {PhotonRealtimeClient.LocalPlayer.GetDebugLabel()}");
             StartCoroutine(Service());
+            // Stop verify loop when leaving room
+            if (_verifyPositionsHolder != null)
+            {
+                StopCoroutine(_verifyPositionsHolder);
+                _verifyPositionsHolder = null;
+            }
             LobbyOnLeftRoom?.Invoke();
             // Goto lobby if we left (in)voluntarily any room
             // - typically master client kicked us off before starting a new game as we did not qualify to participate.
@@ -3194,6 +3304,65 @@ namespace Altzone.Scripts.Lobby
                     }
                 }
                 catch { _deferReturnToLobbyRoomOnMasterSwitch = false; }
+            }
+
+            // Start or stop verify loop depending on whether we are the new master
+            try
+            {
+                if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+                {
+                    if (_verifyPositionsHolder == null) _verifyPositionsHolder = StartCoroutine(VerifyRoomPositionsLoop());
+                }
+                else
+                {
+                    if (_verifyPositionsHolder != null)
+                    {
+                        StopCoroutine(_verifyPositionsHolder);
+                        _verifyPositionsHolder = null;
+                    }
+                }
+            }
+            catch { }
+
+            // New master should also clean up any stale player position keys left in room properties
+            try
+            {
+                var room = PhotonRealtimeClient.CurrentRoom;
+                if (room != null)
+                {
+                    var existingUserIds = new HashSet<string>(room.Players.Values.Select(p => p.UserId));
+                    string[] posKeys = {
+                        PhotonBattleRoom.PlayerPositionKey1,
+                        PhotonBattleRoom.PlayerPositionKey2,
+                        PhotonBattleRoom.PlayerPositionKey3,
+                        PhotonBattleRoom.PlayerPositionKey4
+                    };
+
+                    foreach (var key in posKeys)
+                    {
+                        string val = room.GetCustomProperty<string>(key, "");
+                        if (string.IsNullOrEmpty(val)) continue;
+                        if (val == "Bot") continue;
+                        if (!existingUserIds.Contains(val))
+                        {
+                            var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { key, "" } });
+                            var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { key, val } });
+                            try
+                            {
+                                PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue);
+                                Debug.Log($"Cleared stale position {key} (value {val}) on master switch.");
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.LogWarning($"Failed to clear stale position {key}: {ex.Message}");
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"OnMasterClientSwitched: failed to clean stale positions: {ex.Message}");
             }
         }
 
