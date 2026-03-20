@@ -81,6 +81,12 @@ namespace MenuUI.Scripts.SoulHome {
                 _localPlayerId = ServerManager.Instance.Player._id;
                 RefreshSoulHome();
             }
+            else if (_refreshInProgress)
+            {
+                StopCoroutine(RefreshCoroutine());
+                _refreshInProgress = false;
+                RefreshSoulHome();
+            }
         }
 
         private void OnDisable()
@@ -169,18 +175,6 @@ namespace MenuUI.Scripts.SoulHome {
         private IEnumerator WaitForLoadFinish()
         {
             yield return new WaitUntil(() => _runningCoroutines == 0);
-        }
-
-        private void TestCode() //This is test code block that may or may not be unrelated to SoulHome. I just use the opening of the SoulHome to trigger things I need to test and don't have dedicated way of doing so.
-        {
-            List<IMultipartFormSection> body = new();
-
-            body.Add(new MultipartFormFileSection("logFile","test", null,"test.log"));
-
-            ServerManager.Instance.BattleSendDebugLogFile(body, "my_secret", "UploadTestNiko", callback =>
-             {
-                 Debug.LogWarning(callback.error+ "  :"+callback.downloadHandler.text);
-             });
         }
 
         public IEnumerator HomeLoad()
@@ -465,6 +459,8 @@ namespace MenuUI.Scripts.SoulHome {
                 AvatarRig rig = avatar.GetComponent<AvatarRig>();
 
                 PlayerData playerData = _clanPlayerFetcher.Players[i];
+
+                avatarParent.GetComponent<SoulHomeAvatarController>().InitializeAvatar(playerData);
 
                 if (playerData?.Id == _localPlayerId)
                 {

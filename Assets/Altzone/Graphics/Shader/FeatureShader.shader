@@ -8,11 +8,36 @@ Shader "Unlit/FeatureShader"
         _SkinColor ("Skin Color", Color) = (1,1,1,1)
         _SelectedColor ("Selected Color", Color) = (1,1,1,1)
         _ClassColor ("Class Color", Color) = (1,1,1,1)
+
+        _Colorable ("Colorable", Float) = 0
+        
+        _StencilComp ("Stencil Comparison", Float) = 8
+        _Stencil ("Stencil ID", Float) = 0
+        _StencilOp ("Stencil Operation", Float) = 0
+        _StencilWriteMask ("Stencil Write Mask", Float) = 255
+        _StencilReadMask ("Stencil Read Mask", Float) = 255
+        _ColorMask ("Color Mask", Float) = 15
     }
 
     SubShader
     {
-        Tags { "Queue"="Transparent" "RenderType"="Transparent" }
+        Tags
+        {
+            "Queue"="Transparent"
+            "RenderType"="Transparent"
+            "IgnoreProjector"="True" 
+        }
+
+        Stencil
+        {
+            Ref [_Stencil]
+            Comp [_StencilComp]
+            Pass [_StencilOp]
+            ReadMask [_StencilReadMask]
+            WriteMask [_StencilWriteMask]
+        }
+        ColorMask [_ColorMask]
+
         Blend SrcAlpha OneMinusSrcAlpha
         Cull Off
         ZWrite Off
@@ -38,9 +63,12 @@ Shader "Unlit/FeatureShader"
 
             sampler2D _MainTex;
             sampler2D _MaskTex;
+
             fixed3 _SkinColor;
             fixed3 _SelectedColor;
             fixed3 _ClassColor;
+
+            float _Colorable;
 
             v2f vert (appdata v)
             {
@@ -60,9 +88,13 @@ Shader "Unlit/FeatureShader"
 
                 fixed3 result = main.rgb;
 
+                // 1 if the part is colorable, 0 if not
+                float selectedColorEnabled = step(0.5, _Colorable);
+
                 result = lerp(result, result * _SkinColor.rgb, mask.r);
-                result = lerp(result, result * _SelectedColor.rgb, mask.g);
                 result = lerp(result, result * _ClassColor.rgb, mask.b);
+
+                result = lerp(result, result * _SelectedColor.rgb, mask.g * selectedColorEnabled);
 
                 return fixed4(result, main.a);
             }

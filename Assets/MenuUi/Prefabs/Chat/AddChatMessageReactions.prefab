@@ -1534,6 +1534,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7546763579939993179}
+  - component: {fileID: 4137903365374994203}
   m_Layer: 0
   m_Name: AddReactions
   m_TagString: Untagged
@@ -1562,6 +1563,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1080, y: 2256}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &4137903365374994203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4649766517194321997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6da5d30b6e44d9942a97f1418d0b5782, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _commonReaction: {fileID: 7590566020932995991}
+  _allReactions: {fileID: 6559096388707040172}
 --- !u!1 &4903942317439731809
 GameObject:
   m_ObjectHideFlags: 0
