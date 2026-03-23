@@ -373,30 +373,36 @@ namespace Battle.QSimulation.Player
 
                         BattlePlayerDataQComponent playerData = new()
                         {
+                            // player's ref's and IDs
                             PlayerRef              = PlayerRef.None,
                             Slot                   = playerSlot,
                             TeamNumber             = teamNumber,
                             CharacterId            = playerCharacterId,
                             CharacterClass         = playerClass,
 
+                            // player's stats
                             Stats                  = battleBaseCharacters[playerCharacterNumber].Stats,
 
+                            // player's attributes
                             GridExtendTop          = playerGridExtendTop,
                             GridExtendBottom       = playerGridExtendBottom,
+                            DisableRotation        = playerCharacterDataTemplate->DisableRotation,
 
+                            // player's current state related data
+                            MovementEnabled        = true,
+                            RotationEnabled        = !playerCharacterDataTemplate->DisableRotation,
+                            CurrentDefence         = FP._0,
+
+                            // player's movement related data
                             TargetPosition         = playerCharacterEntity.GetTransform(f)->Position,
                             RotationBaseRad        = playerRotationBase,
                             RotationOffsetRad      = FP._0,
 
-                            CurrentDefence        = FP._0,
-                            MovementEnabled       = true,
-                            RotationEnabled       = !playerCharacterDataTemplate->DisableRotation,
-
+                            // player's shield related data
                             ShieldCount            = playerCharacterShieldCount,
                             AttachedShieldNumber   = 0,
 
-                            DisableRotation        = playerCharacterDataTemplate->DisableRotation,
-
+                            // bot related data
                             BotMovementCooldownSec = FP._0
                         };
 

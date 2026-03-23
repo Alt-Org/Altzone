@@ -16,7 +16,9 @@ namespace Quantum
         /// <summary>
         /// Calculates the normal of this hitbox.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame.</param>
+        ///
         /// <returns>calculated normal.</returns>
         public readonly FPVector2 CalculateNormal(Frame f)
         {
