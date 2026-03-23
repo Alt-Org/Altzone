@@ -42,10 +42,10 @@ namespace Battle.View
         /// Method for getting a sprite from the spritesheet based on an index.
         /// </summary>
         ///
-        /// <typeparam name="T">Class that implements the interface</typeparam>
-        /// <param name="SpriteMapValue">Class that implements the interface</param>
+        /// <typeparam name="T">Class that implements the interface.</typeparam>
+        /// <param name="SpriteMapValue">Class that implements the interface.</param>
         ///
-        /// <returns>A sprite from the spritesheet</returns>
+        /// <returns>A sprite from the spritesheet.</returns>
         public readonly Sprite GetSprite<T>(T SpriteMapValue) where T : IBattleSpriteSheetMap
         {
             int spriteIndex = SpriteMapValue.GetIndex();

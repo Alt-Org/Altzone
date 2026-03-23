@@ -16,6 +16,7 @@ using Battle.QSimulation;
 using static Battle.View.Player.BattlePlayerCharacterViewController;
 // Quantum usings
 using Quantum;
+using System;
 
 namespace Battle.View.Player
 {
@@ -48,6 +49,12 @@ namespace Battle.View.Player
         [SerializeField] private BattlePlayerShieldClassBaseViewController _classViewControllerOverride;
 
         [SerializeField] private int _shieldNumber;
+
+        public enum ShieldSide
+        {
+            Top = 0,
+            Bottom = 1
+        }
 
         /// @}
 
@@ -132,8 +139,16 @@ namespace Battle.View.Player
         /// </summary>
         /// <param name="sprite">sprite that the shield sprite is being changed to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void ShieldSprite(SpriteSheetMap sprite)
+        public void ShieldSprite(int shieldNumber, ShieldSide side, bool hit)
         {
+            const int StateCount = 2;
+            const int ShieldCount = 4;
+            const int ShieldSpriteStart = 32;
+
+            int index = ShieldSpriteStart + (int)side * (StateCount * ShieldCount) + Convert.ToInt32(hit) * ShieldCount + shieldNumber;
+
+            BattlePlayerCharacterViewController.SpriteSheetMap sprite = BattlePlayerCharacterViewController.SpriteSheetMap.FromInt(index);
+
             BattleDebugLogger.DevAssertFormat(nameof(BattlePlayerShieldViewController),
                 sprite.EnumValue is
                     SpriteSheetMap.Enum.ShieldUp1 or
@@ -154,6 +169,7 @@ namespace Battle.View.Player
                     SpriteSheetMap.Enum.ShieldDownHit4,
                 "{0} Sprite is not a shield sprite", sprite
             );
+
             _shieldGameObject.GetComponent<SpriteRenderer>().sprite = _spriteSheet.GetSprite(sprite);
         }
 
@@ -176,8 +192,8 @@ namespace Battle.View.Player
         private BattlePlayerShieldClassBaseViewController _classViewController;
 
         /// <summary>
-        /// Handles setup that needs to happen before <see cref="Quantum.EventBattlePlayerShieldViewInit">EventBattlePlayerCharacterViewInit</see> event is received.<br/>
-        /// Currently this is needed for initializing character's class as none.
+        /// Handles setup that needs to happen before <see cref="Quantum.EventBattlePlayerShieldViewInit">EventBattlePlayerShieldViewInit</see> event is received.<br/>
+        /// Currently this is needed for initializing shield's class as none.
         /// </summary>
         private void PreInitSetup()
         {

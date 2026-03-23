@@ -94,6 +94,8 @@ namespace Battle.View.Player
                 DeadOnTheGround     = 60
             }
 
+            public static SpriteSheetMap FromInt(int index) => new() { EnumValue = (Enum)index };
+
             /// <summary>
             /// Implicit conversion from PlayerSpriteSheetMap to Enum.
             /// </summary>
