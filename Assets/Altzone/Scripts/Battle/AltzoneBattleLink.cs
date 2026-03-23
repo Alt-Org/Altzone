@@ -9,12 +9,19 @@ public static class AltzoneBattleLink
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Init() => BattleAltzoneLink.InitLink(
-        getCharacterPrototypeFnRef: GetCharacterPrototype
+        getCharacterPrototypeFnRef: GetCharacterPrototype,
+        getShieldPrototypesFnRef: GetShieldPrototypes
     );
 
     private static AssetRef<EntityPrototype> GetCharacterPrototype(int characterID)
     {
         PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(characterID.ToString());
-        return info != null ? info.BattleEntityPrototype : null;
+        return info != null ? info.BattleCharacterEntityPrototype : null;
+    }
+
+    private static AssetRef<EntityPrototype>[] GetShieldPrototypes(int characterID)
+    {
+        PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(characterID.ToString());
+        return info != null ? info.BattleShieldEntityPrototypes : null;
     }
 }

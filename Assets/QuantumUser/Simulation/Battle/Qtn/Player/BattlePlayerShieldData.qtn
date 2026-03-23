@@ -1,0 +1,15 @@
+//{ ShieldData
+component BattlePlayerShieldDataQComponent
+{
+    BattlePlayerEntityRef PlayerEntityRef;
+    int ShieldNumber;
+    bool IsAttached;
+}
+//} PlayerData
+
+//{ ShieldDataTemplate
+component BattlePlayerShieldDataTemplateQComponent
+{
+    [FreeOnComponentRemoved] list<BattlePlayerHitboxTemplate> HitboxList;
+}
+//} ShieldDataTemplate

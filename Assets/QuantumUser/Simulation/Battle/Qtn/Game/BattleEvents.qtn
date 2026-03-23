@@ -31,18 +31,28 @@ synced event BattleViewGameOver
 
 //{ ViewInit events
 
-synced event BattlePlayerViewInit
+synced event BattlePlayerCharacterViewInit
 {
-    EntityRef Entity;
+    EntityRef ERef;
     BattlePlayerSlot Slot;
-    int CharacterId;
+    BattlePlayerCharacterID CharacterId;
+    BattlePlayerCharacterClass Class;
+    FP ModelScale;
+}
+
+synced event BattlePlayerShieldViewInit
+{
+    EntityRef ERef;
+    EntityRef CharacterRef;
+    BattlePlayerSlot Slot;
+    BattlePlayerCharacterID CharacterId;
     BattlePlayerCharacterClass Class;
     FP ModelScale;
 }
 
 synced event BattleSoulWallViewInit
 {
-    EntityRef Entity;
+    EntityRef ERef;
     FP ModelScale;
     int EmotionIndicatorColorIndex;
     int DebugColorIndex;
@@ -100,7 +110,7 @@ synced event BattleLastRowWallDestroyed
 
 synced event BattleDiamondLanded
 {
-    EntityRef Entity;
+    EntityRef ERef;
 }
 
 synced event BattleCharacterSelected
@@ -111,7 +121,7 @@ synced event BattleCharacterSelected
 
 synced event BattleCharacterTakeDamage
 {
-    EntityRef Entity;
+    EntityRef ERef;
     BattleTeamNumber Team;
     BattlePlayerSlot Slot;
     int CharacterNumber;
@@ -120,7 +130,7 @@ synced event BattleCharacterTakeDamage
 
 synced event BattleShieldTakeDamage
 {
-    EntityRef Entity;
+    EntityRef ERef;
     BattleTeamNumber Team;
     BattlePlayerSlot Slot;
     int CharacterNumber;
@@ -132,6 +142,12 @@ synced event BattleGiveUpStateChange
     BattleTeamNumber Team;
     BattlePlayerSlot Slot;
     BattleGiveUpStateUpdate StateUpdate;
+}
+
+synced event BattleInPlayStateUpdate
+{
+    bool IsInPlay;
+    EntityRef ERef;
 }
 
 synced event BattleStoneCharacterPlayHitAnimation

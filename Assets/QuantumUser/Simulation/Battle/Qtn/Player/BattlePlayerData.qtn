@@ -2,35 +2,41 @@
 
 component BattlePlayerDataQComponent
 {
-    PlayerRef PlayerRef;
-    BattlePlayerSlot Slot;
-    BattleTeamNumber TeamNumber;
-    int CharacterId;
+    // Player's refs and IDs
+    PlayerRef                  PlayerRef;
+    BattlePlayerSlot           Slot;
+    BattleTeamNumber           TeamNumber;
+    BattlePlayerCharacterID    CharacterId;
     BattlePlayerCharacterClass CharacterClass;
 
+    // Player's Stats
     BattlePlayerStats Stats;
 
-    int GridExtendTop;
-    int GridExtendBottom;
-
-    bool HasTargetPosition;
-    FPVector2 TargetPosition;
-    FP RotationBase;
-    FP RotationOffset;
-
-    FP CurrentDefence;
-    bool MovementEnabled;
-    bool RotationEnabled;
-
-    EntityRef HitboxShieldEntity;
-    EntityRef HitboxCharacterEntity;
-
-    bool DisableRotation;
-    FrameTimer DamageCooldown;
+    // Player's movement related attributes
+    int        GridExtendTop;
+    int        GridExtendBottom;
+    bool       HasTargetPosition;
+    FPVector2  TargetPosition;
+    FP         RotationBaseRad;
+    FP         RotationOffsetRad;
     FrameTimer StunCooldown;
 
-    FP MovementCooldownSec;
+    // Player's current state related data
+    FP         CurrentDefence;
+    bool       DisableRotation;
+    FrameTimer DamageCooldown;
+    bool       MovementEnabled;
+    bool       RotationEnabled;
 
+    // Player's shield related data
+    int                         ShieldCount;
+    int                         AttachedShieldNumber;
+    BattlePlayerShieldEntityRef AttachedShield;
+
+    // Bot related data
+    FP BotMovementCooldownSec;
+
+    // Ability related data
     FrameTimer AbilityCooldownSec;
     FrameTimer AbilityActivateBufferSec;
 }
@@ -38,32 +44,13 @@ component BattlePlayerDataQComponent
 //} PlayerData
 
 //{ PlayerDataTemplate
-
-[Serializable]
-struct BattlePlayerHitboxColliderTemplate
-{
-    IntVector2 Position;
-    IntVector2 Size;
-}
-
-[Serializable]
-struct BattlePlayerHitboxTemplate
-{
-    [FreeOnComponentRemoved] list<BattlePlayerHitboxColliderTemplate> ColliderTemplateList;
-    BattlePlayerCollisionType CollisionType;
-
-    FP NormalAngleDeg;
-}
-
 component BattlePlayerDataTemplateQComponent
 {
     int GridExtendTop;
     int GridExtendBottom;
 
-    BattlePlayerHitboxTemplate HitboxShield;
     BattlePlayerHitboxTemplate HitboxCharacter;
 
     bool DisableRotation;
 }
-
 //} PlayerDataTemplate
