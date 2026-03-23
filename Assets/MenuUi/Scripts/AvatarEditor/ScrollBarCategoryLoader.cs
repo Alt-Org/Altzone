@@ -91,6 +91,7 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             if (PieceToImage.TryGetValue(slot, out Image image))
             {
+                image.preserveAspect = true;
                 image.sprite = partInfo.IconImage;
             }
         }
