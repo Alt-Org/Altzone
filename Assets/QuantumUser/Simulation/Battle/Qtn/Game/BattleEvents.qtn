@@ -146,8 +146,8 @@ synced event BattleGiveUpStateChange
 
 synced event BattleInPlayStateUpdate
 {
-    bool IsInPlay;
     EntityRef ERef;
+    bool IsInPlay;
 }
 
 synced event BattleStoneCharacterPlayHitAnimation

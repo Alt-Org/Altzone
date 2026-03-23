@@ -79,7 +79,9 @@ namespace Battle.QSimulation.Game
         /// <summary>
         /// Creates a BattleCollisionTriggerQComponent with the given @cref{Quantum,BattleCollisionTriggerType}.
         /// </summary>
+        ///
         /// <param name="triggerType">BattleCollisionTriggerType the component needs to be.</param>
+        ///
         /// <returns>The newly created component.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BattleCollisionTriggerQComponent CreateCollisionTriggerComponent(BattleCollisionTriggerType triggerType)

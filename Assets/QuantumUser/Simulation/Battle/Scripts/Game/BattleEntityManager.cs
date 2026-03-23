@@ -297,7 +297,7 @@ namespace Battle.QSimulation.Game
         {
             QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
 
-            if (updateViewPlayState) f.Events.BattleInPlayStateUpdate(true, entityList[id]);
+            if (updateViewPlayState) f.Events.BattleInPlayStateUpdate(entityList[id], IsInPlay: true);
 
             return entityList[id];
         }
@@ -321,7 +321,7 @@ namespace Battle.QSimulation.Game
         {
             QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
 
-            if (updateViewPlayState) f.Events.BattleInPlayStateUpdate(true, entityList[id]);
+            if (updateViewPlayState) f.Events.BattleInPlayStateUpdate(entityList[id], IsInPlay: true);
 
             return entityList[id + offset];
         }
@@ -550,7 +550,7 @@ namespace Battle.QSimulation.Game
             {
                 f.Unsafe.GetPointer<Transform2D>(entityRef)->Teleport(f, entityGridToWorldPosition);
             }
-            f.Events.BattleInPlayStateUpdate(false, entityRef);
+            f.Events.BattleInPlayStateUpdate(entityRef, IsInPlay: false);
         }
 
         /// <summary>
