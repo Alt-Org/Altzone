@@ -33,15 +33,11 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private ConfirmPopupController _confirmPopup;
         [SerializeField]
-        private PopupController _infoPopup;
-        [SerializeField]
         private Button _editButton;
         [SerializeField]
         private TextMeshProUGUI _editButtonText;
         [SerializeField]
         private GameObject _editTray;
-        [SerializeField]
-        private JukeBoxSoulhomeHandler _jukeBoxPopup;
         [SerializeField]
         private Button _openJukeBox;
         [SerializeField]
@@ -69,7 +65,6 @@ namespace MenuUI.Scripts.SoulHome
             EditModeTrayResize();
             _audioManager = AudioManager.Instance;
             _editButton.onClick.AddListener(()=>EditModeToggle());
-            _openJukeBox.onClick.AddListener(()=> _jukeBoxPopup.ToggleJukeboxScreen(true));
         }
 
         public void OnEnable()
@@ -81,7 +76,6 @@ namespace MenuUI.Scripts.SoulHome
 
         public void OnDisable()
         {
-            _jukeBoxPopup.ToggleJukeboxScreen(false);
             JukeBoxSoulhomeHandler.OnChangeJukeBoxSong -= SetSongName;
         }
 
@@ -256,7 +250,6 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (_exitPending) return false;
             if (_confirmPopupOpen) return false;
-            if (_jukeBoxPopup.JukeBoxOpen) return false;
 
             return true;
         }
