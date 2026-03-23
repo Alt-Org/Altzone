@@ -31,11 +31,47 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Image _handsImage;
         [SerializeField] private Image _shoesImage;
 
+        [Header("Background Images")]
+        [SerializeField] private Image _hairBackgroundImage;
+        [SerializeField] private Image _eyesBackgroundImage;
+        [SerializeField] private Image _noseBackgroundImage;
+        [SerializeField] private Image _mouthBackgroundImage;
+        [SerializeField] private Image _bodyBackgroundImage;
+        [SerializeField] private Image _clothesBackgroundImage;
+        [SerializeField] private Image _handsBackgroundImage;
+        [SerializeField] private Image _shoesBackgroundImage;
+
         [SerializeField] private TextMeshProUGUI _categoryText;
+        [SerializeField] private Sprite _selectedSlotSprite;
+        [SerializeField] private Sprite _slotsprite;
+
+        [SerializeField] private Image _lastSelectedSlotImage;
+
+        private Dictionary<Button, Image> _buttonToBackground;
+        private Dictionary<Button, Image> ButtonToBackground
+        {
+            get
+            {
+                if (_buttonToBackground == null || _buttonToBackground.Count == 0)
+                {
+                    _buttonToBackground = new Dictionary<Button, Image>
+                    {
+                        { _hairButton, _hairBackgroundImage },
+                        { _eyesButton, _eyesBackgroundImage },
+                        { _noseButton, _noseBackgroundImage },
+                        { _mouthButton, _mouthBackgroundImage },
+                        { _bodyButton, _bodyBackgroundImage },
+                        { _clothesButton, _clothesBackgroundImage },
+                        { _handsButton, _handsBackgroundImage },
+                        { _shoesButton, _shoesBackgroundImage }
+                    };
+                }
+                return _buttonToBackground;
+            }
+        }
 
         private Dictionary<Button, string> _buttonToCategoryId;
 
-        // This is needed before awake even runs so need to do this
         private Dictionary<Button, string> ButtonToCategoryId
         {
             get
@@ -82,6 +118,11 @@ namespace MenuUi.Scripts.AvatarEditor
         public string CurrentlySelectedCategory => _currentlySelectedCategory;
         private TextMeshProUGUI _currentCategoryTMP;
 
+        private void Awake()
+        {
+            _lastSelectedSlotImage = _hairBackgroundImage;
+        }
+
         public void ClickHairButton()
         {
             _hairButton.onClick.Invoke();
@@ -120,11 +161,16 @@ namespace MenuUi.Scripts.AvatarEditor
                 string id = entry.Value;
 
                 TextMeshProUGUI buttonText = button.GetComponentInChildren<TextMeshProUGUI>();
+                Image backgroundImage = ButtonToBackground[button];
 
                 button.onClick.RemoveAllListeners();
 
                 button.onClick.AddListener(() =>
                 {
+                    _lastSelectedSlotImage.sprite = _slotsprite;
+                    backgroundImage.sprite = _selectedSlotSprite;
+                    _lastSelectedSlotImage = backgroundImage;
+
                     _currentlySelectedCategory = id;
                     _currentCategoryTMP = buttonText;
 
