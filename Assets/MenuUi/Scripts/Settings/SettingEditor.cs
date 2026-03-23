@@ -21,13 +21,16 @@ public class SettingEditor : MonoBehaviour
     [SerializeField] private Button _battleSettingsButton;
     [SerializeField] private BattleUiEditor _battleEditor;
     [SerializeField] private GameObject[] _settingsPopups;
-    [SerializeField] private Button _topBarStyleButton;
+    [SerializeField] private Button _topBarStyleButtonRight;
+    [SerializeField] private Button _topBarStyleButtonLeft;
     [SerializeField] private TextLanguageSelectorCaller _topBarStyleText;
 
     [SerializeField] private Image _languageImage;
     [SerializeField] private Sprite _finnishSprite;
     [SerializeField] private Sprite _englishSprite;
     [SerializeField] private TextLanguageSelectorCaller _languageCaller;
+
+    [SerializeField] private int _buttonValue = 0;
 
     private void OnEnable()
     {
@@ -67,7 +70,8 @@ public class SettingEditor : MonoBehaviour
 
         PlayerPrefs.SetFloat("MasterVolume", 1f);
 
-        _topBarStyleButton.onClick.AddListener(() => ChangeTopbarStyle());
+        _topBarStyleButtonRight.onClick.AddListener(() => ChangeTopbarStyle());
+        _topBarStyleButtonLeft.onClick.AddListener(() => ChangeTopbarStyle());
         _topBarStyleText.SetText(SettingsCarrier.Instance.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
 
         _introSkipToggle.onValueChanged.AddListener(_ => SetIntroSkip());
@@ -145,13 +149,32 @@ public class SettingEditor : MonoBehaviour
         carrier.ShowButtonLabels = _showButtonLabelsToggle.isOn;
     }
 
+
+    public void ChangeValue(int amount)
+    {
+        _buttonValue = amount;
+    }
+
     public void ChangeTopbarStyle()
     {
-        if (carrier.TopBarStyleSetting == ((SettingsCarrier.TopBarStyle[])Enum.GetValues(typeof(SettingsCarrier.TopBarStyle))).ToList().Last())
+
+
+        /// Uses the <see cref="TopBarStyle"/>  to get data we need
+        int index = (int)carrier.TopBarStyleSetting;
+        int max = (int)(SettingsCarrier.TopBarStyle)Enum.GetValues(typeof(SettingsCarrier.TopBarStyle)).Length - 1;
+        ///Uses the <see cref = "ChangeValue" /> to get the value from set button
+        index += _buttonValue;
+
+        if (index > max)
         {
-            carrier.TopBarStyleSetting = 0;
+            index = 0;
+        } else if(index < 0)
+        {
+            index = max;
         }
-        else carrier.TopBarStyleSetting++;
+
+        carrier.TopBarStyleSetting = (SettingsCarrier.TopBarStyle)index;
+
 
         _topBarStyleText.SetText(SettingsCarrier.Instance.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
 
