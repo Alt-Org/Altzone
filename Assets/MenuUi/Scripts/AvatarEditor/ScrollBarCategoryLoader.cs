@@ -48,7 +48,7 @@ namespace MenuUi.Scripts.AvatarEditor
                         { _eyesButton, "21" },
                         { _noseButton, "22" },
                         { _mouthButton, "23" },
-                        { _bodyButton, "" }, // not sure what this should do, now it's the skin color selection
+                        { _bodyButton, "" },
                         { _clothesButton, "31" },
                         { _handsButton, "32" },
                         { _shoesButton, "33" }
@@ -101,6 +101,13 @@ namespace MenuUi.Scripts.AvatarEditor
             {
                 AvatarPartInfo partInfo = AvatarPartsReference.Instance.GetAvatarPartById(_controller.PlayerAvatar.GetPartId(piece));
                 UpdateSlotImage(piece, partInfo);
+            }
+
+            ColorUtility.TryParseHtmlString(_controller.PlayerAvatar.SkinColor, out Color skinColor);
+
+            if (skinColor != null)
+            {
+                _bodyImage.color = skinColor;
             }
         }
 

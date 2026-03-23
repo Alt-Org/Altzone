@@ -31,6 +31,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Color _backgroundColor = new(0.5f, 0.5f, 0.5f, 0.7f);
         [SerializeField] private AvatarEditorCharacterHandle _characterHandle;
         [SerializeField] private ColorPicker _colorPicker;
+        [SerializeField] private Image _bodySlotImage;
 
         private List<AvatarPartInfo> _avatarPartInfo;
         private readonly Dictionary<string, AvatarPiece> _featureCategoryIdToAvatarPiece = new Dictionary<string, AvatarPiece>
@@ -150,6 +151,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 {
                     _characterHandle.SetSkinColor(color);
                     _avatarEditorController.PlayerAvatar.SkinColor = ColorUtility.ToHtmlStringRGBA(color);
+                    _bodySlotImage.color = color;
                 });
             }
         }
