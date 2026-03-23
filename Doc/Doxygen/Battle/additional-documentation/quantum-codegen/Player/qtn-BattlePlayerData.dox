@@ -79,14 +79,15 @@
 /// @var FP Quantum::BattlePlayerDataQComponent::RotationOffsetRad
 /// <summary>How much the player has rotated the character.</summary>
 /// Part of @ref PlayerMovement "[Player's movement related attributes]"
+///
+/// @var FrameTimer Quantum::BattlePlayerDataQComponent::StunCooldown
+/// <summary> Timer used for the cooldown on the character being stunned.</summary>
+/// Part of @ref PlayerMovement "[Player's movement related attributes]"
 /// @}
 
 /// @anchor PlayerState
 /// @name Player's current state related data
 /// @{
-/// @var FP Quantum::BattlePlayerDataQComponent::CurrentHp
-/// <summary>Character's current health value.</summary>
-/// Part of @ref PlayerState "[Player's current state related data]"
 ///
 /// @var FP Quantum::BattlePlayerDataQComponent::CurrentDefence
 /// <summary>Character's current defence value.</summary>
@@ -98,6 +99,14 @@
 ///
 /// @var FrameTimer Quantum::BattlePlayerDataQComponent::DamageCooldown
 /// <summary>Timer used for the cooldown on the character taking damage.</summary>
+/// Part of @ref PlayerState "[Player's current state related data]"
+///
+/// @var bool Quantum::BattlePlayerDataQComponent::MovementEnabled
+/// <summary>Whether character's movement is enabled or not.</summary>
+/// Part of @ref PlayerState "[Player's current state related data]"
+///
+/// @var bool Quantum::BattlePlayerDataQComponent::RotationEnabled
+/// <summary>Whether character's rotation is enabled or not.</summary>
 /// Part of @ref PlayerState "[Player's current state related data]"
 /// @}
 

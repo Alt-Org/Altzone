@@ -2,36 +2,41 @@
 
 component BattlePlayerDataQComponent
 {
-    PlayerRef PlayerRef;
-    BattlePlayerSlot Slot;
-    BattleTeamNumber TeamNumber;
-    BattlePlayerCharacterID CharacterId;
+    // Player's refs and IDs
+    PlayerRef                  PlayerRef;
+    BattlePlayerSlot           Slot;
+    BattleTeamNumber           TeamNumber;
+    BattlePlayerCharacterID    CharacterId;
     BattlePlayerCharacterClass CharacterClass;
 
+    // Player's Stats
     BattlePlayerStats Stats;
 
-    int GridExtendTop;
-    int GridExtendBottom;
-
-    bool HasTargetPosition;
-    FPVector2 TargetPosition;
-    FP RotationBaseRad;
-    FP RotationOffsetRad;
-
-    FP CurrentDefence;
-    bool MovementEnabled;
-    bool RotationEnabled;
-
-    int ShieldCount;
-    int AttachedShieldNumber;
-    BattlePlayerShieldEntityRef AttachedShield;
-
-    bool DisableRotation;
-    FrameTimer DamageCooldown;
+    // Player's movement related attributes
+    int        GridExtendTop;
+    int        GridExtendBottom;
+    bool       HasTargetPosition;
+    FPVector2  TargetPosition;
+    FP         RotationBaseRad;
+    FP         RotationOffsetRad;
     FrameTimer StunCooldown;
 
+    // Player's current state related data
+    FP         CurrentDefence;
+    bool       DisableRotation;
+    FrameTimer DamageCooldown;
+    bool       MovementEnabled;
+    bool       RotationEnabled;
+
+    // Player's shield related data
+    int                         ShieldCount;
+    int                         AttachedShieldNumber;
+    BattlePlayerShieldEntityRef AttachedShield;
+
+    // Bot related data
     FP BotMovementCooldownSec;
 
+    // Ability related data
     FrameTimer AbilityCooldownSec;
     FrameTimer AbilityActivateBufferSec;
 }

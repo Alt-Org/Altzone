@@ -1539,8 +1539,14 @@ namespace Quantum {
     public FP RotationBaseRad;
     [FieldOffset(88)]
     public FP RotationOffsetRad;
+    [FieldOffset(120)]
+    public FrameTimer StunCooldown;
     [FieldOffset(72)]
     public FP CurrentDefence;
+    [FieldOffset(36)]
+    public QBoolean DisableRotation;
+    [FieldOffset(112)]
+    public FrameTimer DamageCooldown;
     [FieldOffset(44)]
     public QBoolean MovementEnabled;
     [FieldOffset(48)]
@@ -1551,12 +1557,6 @@ namespace Quantum {
     public Int32 AttachedShieldNumber;
     [FieldOffset(56)]
     public BattlePlayerShieldEntityRef AttachedShield;
-    [FieldOffset(36)]
-    public QBoolean DisableRotation;
-    [FieldOffset(112)]
-    public FrameTimer DamageCooldown;
-    [FieldOffset(120)]
-    public FrameTimer StunCooldown;
     [FieldOffset(64)]
     public FP BotMovementCooldownSec;
     [FieldOffset(104)]
@@ -1578,15 +1578,15 @@ namespace Quantum {
         hash = hash * 31 + TargetPosition.GetHashCode();
         hash = hash * 31 + RotationBaseRad.GetHashCode();
         hash = hash * 31 + RotationOffsetRad.GetHashCode();
+        hash = hash * 31 + StunCooldown.GetHashCode();
         hash = hash * 31 + CurrentDefence.GetHashCode();
+        hash = hash * 31 + DisableRotation.GetHashCode();
+        hash = hash * 31 + DamageCooldown.GetHashCode();
         hash = hash * 31 + MovementEnabled.GetHashCode();
         hash = hash * 31 + RotationEnabled.GetHashCode();
         hash = hash * 31 + ShieldCount.GetHashCode();
         hash = hash * 31 + AttachedShieldNumber.GetHashCode();
         hash = hash * 31 + AttachedShield.GetHashCode();
-        hash = hash * 31 + DisableRotation.GetHashCode();
-        hash = hash * 31 + DamageCooldown.GetHashCode();
-        hash = hash * 31 + StunCooldown.GetHashCode();
         hash = hash * 31 + BotMovementCooldownSec.GetHashCode();
         hash = hash * 31 + AbilityCooldownSec.GetHashCode();
         hash = hash * 31 + AbilityActivateBufferSec.GetHashCode();
