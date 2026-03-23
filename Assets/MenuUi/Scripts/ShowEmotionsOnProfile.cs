@@ -33,21 +33,31 @@ public class WeekEmotions : AltMonoBehaviour
     {
         _playerData = player;
 
-        if (!string.IsNullOrWhiteSpace(_playerData.emotionSelectorDate))
+        if (_playerData == null || _playerData.playerDataEmotionList == null)
         {
-            for (int i = 0; i < _weekEmotions.Length; i++)
-            {
-                _weekEmotions[i].GetComponent<Image>().sprite = _blankEmotionImage;
-            }
+            ShowOtherPlayerEmotions();
+            return;
         }
 
-        StartCoroutine(SavePlayerData(_playerData, null));
+        Debug.Log("Emotion count: " + _playerData.playerDataEmotionList.Count);
+
+        for (int i = 0; i < Mathf.Min(_playerData.playerDataEmotionList.Count, 10); i++)
+        {
+            Debug.Log($"Emotion[{i}] = {_playerData.playerDataEmotionList[i]}");
+        }
 
         for (int i = 0; i < _weekEmotions.Length; i++)
         {
-            if ((int)_playerData.playerDataEmotionList[i] == -1) _weekEmotions[i].GetComponent<Image>().sprite = _blankEmotionImage;
+            if (i >= _playerData.playerDataEmotionList.Count)
+            {
+                _weekEmotions[i].GetComponent<Image>().sprite = _blankEmotionImage;
+                continue;
+            }
+
+            if ((int)_playerData.playerDataEmotionList[i] == -1)
+                _weekEmotions[i].GetComponent<Image>().sprite = _blankEmotionImage;
             else
-             _weekEmotions[i].GetComponent<Image>().sprite = _emotionImages[(int)_playerData.playerDataEmotionList[i]];
+                _weekEmotions[i].GetComponent<Image>().sprite = _emotionImages[(int)_playerData.playerDataEmotionList[i]];
         }
     }
 

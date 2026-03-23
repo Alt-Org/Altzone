@@ -74,7 +74,16 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public string daysBetweenInput = "0";
 
-        public List<string> _playerDataEmotionList = new List<string> { Emotion.Blank.ToString(), Emotion.Love.ToString(), Emotion.Playful.ToString(), Emotion.Joy.ToString(), Emotion.Sorrow.ToString(), Emotion.Anger.ToString(), Emotion.Blank.ToString() };
+        public List<string> _playerDataEmotionList = new List<string>
+        {
+            Emotion.Blank.ToString(),
+            Emotion.Blank.ToString(),
+            Emotion.Blank.ToString(),
+            Emotion.Blank.ToString(),
+            Emotion.Blank.ToString(),
+            Emotion.Blank.ToString(),
+            Emotion.Blank.ToString()
+        };
 
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
 
@@ -123,19 +132,64 @@ namespace Altzone.Scripts.Model.Poco.Player
             get
             {
                 List<Emotion> list = new();
+
+                if (_playerDataEmotionList == null)
+                {
+                    return new List<Emotion>
+            {
+                Emotion.Blank, Emotion.Blank, Emotion.Blank,
+                Emotion.Blank, Emotion.Blank, Emotion.Blank, Emotion.Blank
+            };
+                }
+
                 foreach (string emotion in _playerDataEmotionList)
                 {
-                    list.Add((Emotion)Enum.Parse(typeof(Emotion), emotion));
+                    if (Enum.TryParse(emotion, out Emotion parsedEmotion))
+                    {
+                        list.Add(parsedEmotion);
+                    }
+                    else
+                    {
+                        list.Add(Emotion.Blank);
+                    }
                 }
+
+                if (list.Count > 7)
+                {
+                    list = list.GetRange(0, 7);
+                }
+
+                while (list.Count < 7)
+                {
+                    list.Add(Emotion.Blank);
+                }
+
                 return list;
             }
             set
             {
                 List<string> list = new();
+
+                if (value == null)
+                {
+                    value = new List<Emotion>();
+                }
+
+                if (value.Count > 7)
+                {
+                    value = value.GetRange(0, 7);
+                }
+
+                while (value.Count < 7)
+                {
+                    value.Add(Emotion.Blank);
+                }
+
                 foreach (Emotion emotion in value)
                 {
                     list.Add(emotion.ToString());
                 }
+
                 _playerDataEmotionList = list;
             }
         }
@@ -196,6 +250,9 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public void UpdatePlayerData(ServerPlayer player)
         {
+            Debug.Log("UpdatePlayerData raw emotion count: " + (_playerDataEmotionList == null ? -1 : _playerDataEmotionList.Count));
+            Debug.Log("UpdatePlayerData raw emotion date: " + emotionSelectorDate);
+
             Assert.IsTrue(player._id.IsSet());
             Assert.IsTrue(player.clan_id.IsNullOEmptyOrNonWhiteSpace());
             //Assert.IsTrue(player.currentCustomCharacterId >= 0);
@@ -214,7 +271,12 @@ namespace Altzone.Scripts.Model.Poco.Player
             stats = player.gameStatistics;
             Task = player.DailyTask != null ? new(player.DailyTask) : null;
             AvatarData = player.avatar != null ? new(player.name, player.avatar) : null;
-            if (_playerDataEmotionList == null || _playerDataEmotionList.Count == 0) playerDataEmotionList = new List<Emotion> { Emotion.Blank, Emotion.Love, Emotion.Playful, Emotion.Joy, Emotion.Sorrow, Emotion.Anger, Emotion.Blank };
+            if (_playerDataEmotionList == null || _playerDataEmotionList.Count != 7)
+                playerDataEmotionList = new List<Emotion>
+                {
+                    Emotion.Blank, Emotion.Blank, Emotion.Blank,
+                    Emotion.Blank, Emotion.Blank, Emotion.Blank, Emotion.Blank
+                };
             if (daysBetweenInput == null) daysBetweenInput = "0";
 
             

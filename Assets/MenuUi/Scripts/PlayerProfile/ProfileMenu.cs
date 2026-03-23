@@ -275,6 +275,7 @@ public class ProfileMenu : AltMonoBehaviour
                 _playerData = player;
                 _otherPlayerProfile = true;
                 _avatarPageTabButton.gameObject.SetActive(false);
+                ApplyPlayerDataToUI();
             }
             else
             {
@@ -290,54 +291,80 @@ public class ProfileMenu : AltMonoBehaviour
                     }
 
                     _playerData = p;
+                    ApplyPlayerDataToUI();
                 });
 
+                return;
             }
+        }
+        else
+        {
+            Reset();
+        }
+    }
 
-            ToggleProfileViewMode();
+    private void ApplyPlayerDataToUI()
+    {
+        if (_playerData == null)
+        {
+            Debug.LogError("PlayerData is null in ProfileMenu.");
+            return;
+        }
 
-            _playerNameInputField.text = _playerData.Name;
+        ToggleProfileViewMode();
 
-            _activityText.text = _playerData.points.ToString();
-            if (_playerData.stats != null)
+        _playerNameInputField.text = _playerData.Name;
+        _activityText.text = _playerData.points.ToString();
+
+        if (_playerData.stats != null)
+        {
+            _WinsText.text = _playerData.stats.wonBattles.ToString();
+        }
+
+        PlayerCharacterPrototype favoriteDefence = PlayerCharacterPrototypes.GetCharacter(_playerData.FavoriteDefenceID);
+        Image image = _favoriteCharacterImage;
+        var tempColor = image.color;
+
+        if (favoriteDefence != null)
+        {
+            tempColor.a = 1f;
+            image.color = tempColor;
+            _characterSelectionMessage.text = "";
+
+            if (!_otherPlayerProfile)
             {
-                _WinsText.text = _playerData.stats.wonBattles.ToString();
+                _tempFavoriteDefenceID = _playerData.FavoriteDefenceID;
             }
 
-            CharacterClassType defenceClass = (CharacterClassType)((_playerData.SelectedCharacterId / 100) * 100);
+            _favoriteCharacterImage.sprite = favoriteDefence.GalleryImage;
+        }
+        else
+        {
+            tempColor.a = 0f;
+            image.color = tempColor;
+            _characterSelectionMessage.text = _otherPlayerProfile ? SelectionMessageDefaultOther : SelectionMessageDefault;
+        }
 
-            PlayerCharacterPrototype favoriteDefence = PlayerCharacterPrototypes.GetCharacter(_playerData.FavoriteDefenceID);
-            Image image = _favoriteCharacterImage;
-            var tempColor = image.color;
-            if (favoriteDefence != null)
-            {
-                //Show image
-                tempColor.a = 1f;
-                image.color = tempColor;
-                _characterSelectionMessage.text = "";
+        if (_otherPlayerProfile)
+        {
+            _weekEmotions.ShowOtherPlayerEmotions();
+        }
+        else
+        {
+            _weekEmotions.ValuesToWeekEmotions(_playerData);
+        }
 
-                if (!_otherPlayerProfile)
-                {
-                    _tempFavoriteDefenceID = _playerData.FavoriteDefenceID;
-                }
-                _favoriteCharacterImage.sprite = favoriteDefence.GalleryImage;
-            }
-            else
-            {
-                // Hide image
-                tempColor.a = 0f;
-                image.color = tempColor;
+        if (_playerData.SelectedCharacterId != 0)
+        {
+            AvatarVisualData avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(_playerData);
+            _avatarLoaderInfoPage.UpdateVisuals(avatarVisualData);
+            _avatarFaceLoaderTabline.UpdateVisuals(avatarVisualData);
+        }
 
-                if (_otherPlayerProfile)
-                {
-                    _characterSelectionMessage.text = SelectionMessageDefaultOther;
-                }
-                else
-                {
-                    _characterSelectionMessage.text = SelectionMessageDefault;
-                }
-            }
+        var store = Storefront.Get();
 
+        if (!string.IsNullOrEmpty(_playerData.ClanId))
+        {
             store.GetClanData(_playerData.ClanId, clan =>
             {
                 if (clan == null)
@@ -352,48 +379,25 @@ public class ProfileMenu : AltMonoBehaviour
                         _rolesErrorMessage.text = "Clan not found.";
                         Debug.LogError("Failed to fetch clan data.");
                     }
+
+                    _playerClanNameText.text = "";
                     return;
                 }
 
                 _clanData = clan;
                 _playerClanNameText.text = _clanData.Name;
-
-                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
-                {
-                    _rolesErrorMessage.text = "Rooleja ei voitu hakea.";
-                }
-                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
-                {
-                    _rolesErrorMessage.text = "Could not fetch clan roles.";
-                }
                 _clanID = _playerData.ClanId;
                 _url = "https://altzone.fi/clans/" + _playerData.ClanId;
             });
-
-
-            if (_otherPlayerProfile)
-            {
-                _weekEmotions.ShowOtherPlayerEmotions();
-            }
-            else
-            {
-                _weekEmotions.ValuesToWeekEmotions(_playerData);
-            }
-
-            if (_playerData.SelectedCharacterId != 0 /*&& _playerData.SelectedCharacterId != 201*/)
-            {
-                AvatarVisualData avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(_playerData);
-                _avatarLoaderInfoPage.UpdateVisuals(avatarVisualData);
-                _avatarFaceLoaderTabline.UpdateVisuals(avatarVisualData);
-            }
-
-            updateTime();
-
         }
         else
         {
-            Reset();
+            _clanData = null;
+            _clanID = string.Empty;
+            _playerClanNameText.text = "";
         }
+
+        updateTime();
     }
 
     /// <summary>
