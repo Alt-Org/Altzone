@@ -179,7 +179,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void ColorSelectActive(bool isActive)
         {
-            _colorPicker.SetActive(isActive);
+            //_colorPicker.SetActive(isActive);
             _colorSelection.gameObject.SetActive(isActive);
         }
 
