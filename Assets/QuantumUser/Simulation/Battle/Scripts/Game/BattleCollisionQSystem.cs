@@ -13,10 +13,10 @@ using UnityEngine.Scripting;
 using Quantum;
 
 // Battle QSimulation usings
-using Battle.QSimulation.Diamond;
+using Battle.QSimulation.Projectile;
 using Battle.QSimulation.Goal;
 using Battle.QSimulation.Player;
-using Battle.QSimulation.Projectile;
+using Battle.QSimulation.Diamond;
 using Battle.QSimulation.SoulWall;
 
 namespace Battle.QSimulation.Game

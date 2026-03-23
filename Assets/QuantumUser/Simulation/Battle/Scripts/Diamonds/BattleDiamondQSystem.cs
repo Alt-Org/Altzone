@@ -4,7 +4,6 @@
 /// </summary>
 
 // Unity usings
-using UnityEngine;
 using UnityEngine.Scripting;
 
 // Quantum usings

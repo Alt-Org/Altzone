@@ -10,7 +10,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Button = UnityEngine.UI.Button;
-using TMPro;
 
 // Quantum usings
 using Quantum;

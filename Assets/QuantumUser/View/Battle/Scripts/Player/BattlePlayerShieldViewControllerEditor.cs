@@ -4,10 +4,13 @@
 /// Contains @cref {Battle.View.Player,BattlePlayerShieldViewControllerEditor} class which adds a default sprite
 /// to the shields SpriteRenderer in the editor.
 /// </summary>
-using Battle.QSimulation;
+
+// Unity usings
 using UnityEditor;
-using UnityEditor.PackageManager;
 using UnityEngine;
+
+// Quantum usings
+using Battle.QSimulation;
 
 namespace Battle.View.Player
 {
