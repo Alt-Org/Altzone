@@ -41,7 +41,7 @@ namespace Battle.View.Player
                 _spriteRenderers[SpriteRendererHandsIndex] = gameObject.transform.Find("Hands").GetComponent<SpriteRenderer>();
                 _spriteRenderers[SpriteRendererFeetIndex] = gameObject.transform.Find("Feet").GetComponent<SpriteRenderer>();
                 _spriteRenderers[SpriteRendererShadowIndex] = gameObject.transform.Find("Shadow").GetComponent<SpriteRenderer>();
-                if (spriteSheet.Array.Length == 64)
+                if (spriteSheet.Array.Length == BattlePlayerCharacterViewController.SpriteSheetMap.Count)
                 {
                     _spriteRenderers[SpriteRendererHeadIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.Head1);
                     _spriteRenderers[SpriteRendererBodyIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.Body1);

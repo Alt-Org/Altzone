@@ -47,6 +47,8 @@ namespace Battle.View.Player
         /// @ref BattlePlayerShieldViewController-SerializeFields
         [SerializeField] private BattlePlayerShieldClassBaseViewController _classViewControllerOverride;
 
+        [SerializeField] private int _shieldNumber;
+
         /// @}
 
         /// <summary>

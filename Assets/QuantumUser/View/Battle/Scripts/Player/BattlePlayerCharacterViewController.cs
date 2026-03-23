@@ -34,6 +34,11 @@ namespace Battle.View.Player
         public struct SpriteSheetMap : IBattleSpriteSheetMap
         {
             /// <summary>
+            /// Constant that defines the exact sprite count of the spritesheet.
+            /// </summary>
+            public const int Count = 64;
+
+            /// <summary>
             /// Enum that maps a Sprite name to its index on the player's spritesheet.
             /// </summary>
             public enum Enum
