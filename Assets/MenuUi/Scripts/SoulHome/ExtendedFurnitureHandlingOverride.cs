@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using MenuUI.Scripts.SoulHome;
 using UnityEngine;
 
-public class ExtendedFurnitureHandlingOverride : ExtendedFurnitureHandling
+public class ExtendedFurnitureHandlingOverride : FurnitureHandling
 {
     [SerializeField] private GameObject _screenFront;
     [SerializeField] private GameObject _screenSide;
 
-    public override void Start()
+    protected override void Start()
     {
         base.Start();
         Debug.Log("OVERRIDE VOID START");

@@ -32,7 +32,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private Direction _defaultSpriteDirection = Direction.Front;
         private Direction _spriteDirection;
-        private Direction _tempSpriteDirection;
+        protected Direction _tempSpriteDirection;
         [SerializeField]
         private bool _spriteCanBeFlipped = true;
         private bool _isRotated = false;
@@ -85,7 +85,7 @@ namespace MenuUI.Scripts.SoulHome
         public bool SpriteCanBeFlipped { get => _spriteCanBeFlipped;}
 
         // Start is called before the first frame update
-        void Start()
+        protected virtual void Start()
         {
             if (_furnitureSpriteFront ==  null)
             {
@@ -281,7 +281,7 @@ namespace MenuUI.Scripts.SoulHome
         /// <summary>
         /// Rotates the furniture 90 degrees in clockwise direction.
         /// </summary>
-        public void RotateFurniture()
+        public virtual void RotateFurniture()
         {
             if(_tempSpriteDirection == Direction.Front)
             {
@@ -319,7 +319,7 @@ namespace MenuUI.Scripts.SoulHome
         /// <summary>
         /// Rotates the furniture to the desired direction provided that the direction is valid.
         /// </summary>
-        public void RotateFurniture(Direction direction)
+        public virtual void RotateFurniture(Direction direction)
         {
             if (direction == Direction.Front)
             {
