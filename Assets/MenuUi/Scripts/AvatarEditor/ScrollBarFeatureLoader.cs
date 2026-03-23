@@ -27,8 +27,6 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField, Range(0f, 0.3f)] private float _verticalSpacing = 0.05f;
         [SerializeField, Range(0f, 0.3f)] private float _horizontalSpacing = 0.05f;
         [SerializeField, Range(0f, 0.3f)] private float _fadeRange = 0.1f;
-        [SerializeField] private Color _highlightColor = new(0f, 0f, 0f, 0.5f);
-        [SerializeField] private Color _backgroundColor = new(0.5f, 0.5f, 0.5f, 0.7f);
         [SerializeField] private AvatarEditorCharacterHandle _characterHandle;
         [SerializeField] private ColorPicker _colorPicker;
         [SerializeField] private Image _bodySlotImage;
@@ -118,7 +116,7 @@ namespace MenuUi.Scripts.AvatarEditor
             AvatarPiece avatarPieceId = _featureCategoryIdToAvatarPiece[featureCategoryid];
             string selectedPieceId = _avatarEditorController.PlayerAvatar.GetPartId(avatarPieceId);
 
-            handler.SetValues(cellImage, _highlightColor, _backgroundColor, avatarPart.IsColorable);
+            handler.SetValues(cellImage, avatarPart.IsColorable);
 
             AddListeners(handler, avatarPart, avatarPieceId);
 

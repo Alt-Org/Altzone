@@ -7,13 +7,9 @@ namespace MenuUi.Scripts.AvatarEditor
         private bool _isColorable = false;
         public bool IsColorable {  get { return _isColorable; } }
         public void SetValues(Sprite cellImage,
-            Color highlightColor,
-            Color backgroundColor,
             bool isColorable)
         {
-            base.SetValues(cellImage,
-                highlightColor,
-                backgroundColor);
+            base.SetValues(cellImage);
             _isColorable = isColorable;
         }
 

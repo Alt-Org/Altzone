@@ -8,6 +8,8 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Image _backgroundImage;
         [SerializeField] protected Image _featureImage;
         [SerializeField] private Button _button;
+        [SerializeField] private Sprite _highlightBackgroundSprite;
+        [SerializeField] private Sprite _baseBackgroundSprite;
         private Color _highlightColor;
         private Color _backgroundColor;
 
@@ -62,11 +64,11 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             if (isHighlighted)
             {
-                _backgroundImage.color = _highlightColor;
+                _backgroundImage.sprite = _highlightBackgroundSprite;
             }
             else
             {
-                _backgroundImage.color = _backgroundColor;
+                _backgroundImage.sprite = _baseBackgroundSprite;
             }
         }
     }
