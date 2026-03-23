@@ -1472,6 +1472,8 @@ namespace Quantum {
   public unsafe partial struct BattlePlayerClass400DataQComponent : Quantum.IComponent {
     public const Int32 SIZE = 40;
     public const Int32 ALIGNMENT = 8;
+    [FieldOffset(32)]
+    public FP RotationDurationFrames;
     [FieldOffset(4)]
     [HideInInspector()]
     public QBoolean IsHoldingProjectile;
@@ -1487,17 +1489,15 @@ namespace Quantum {
     [FieldOffset(24)]
     [HideInInspector()]
     public FP HeldProjectileDistance;
-    [FieldOffset(32)]
-    public FP RotationDurationFrames;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 3517;
+        hash = hash * 31 + RotationDurationFrames.GetHashCode();
         hash = hash * 31 + IsHoldingProjectile.GetHashCode();
         hash = hash * 31 + HeldProjectileEntity.GetHashCode();
         hash = hash * 31 + HoldStartFrame.GetHashCode();
         hash = hash * 31 + HeldProjectileAngleRadians.GetHashCode();
         hash = hash * 31 + HeldProjectileDistance.GetHashCode();
-        hash = hash * 31 + RotationDurationFrames.GetHashCode();
         return hash;
       }
     }
@@ -1531,6 +1531,18 @@ namespace Quantum {
     public Int32 GridExtendTop;
     [FieldOffset(20)]
     public Int32 GridExtendBottom;
+    [FieldOffset(36)]
+    public QBoolean DisableRotation;
+    [FieldOffset(44)]
+    public QBoolean MovementEnabled;
+    [FieldOffset(48)]
+    public QBoolean RotationEnabled;
+    [FieldOffset(72)]
+    public FP CurrentDefence;
+    [FieldOffset(112)]
+    public FrameTimer DamageCooldown;
+    [FieldOffset(120)]
+    public FrameTimer StunCooldown;
     [FieldOffset(40)]
     public QBoolean HasTargetPosition;
     [FieldOffset(128)]
@@ -1539,30 +1551,18 @@ namespace Quantum {
     public FP RotationBaseRad;
     [FieldOffset(88)]
     public FP RotationOffsetRad;
-    [FieldOffset(120)]
-    public FrameTimer StunCooldown;
-    [FieldOffset(72)]
-    public FP CurrentDefence;
-    [FieldOffset(36)]
-    public QBoolean DisableRotation;
-    [FieldOffset(112)]
-    public FrameTimer DamageCooldown;
-    [FieldOffset(44)]
-    public QBoolean MovementEnabled;
-    [FieldOffset(48)]
-    public QBoolean RotationEnabled;
     [FieldOffset(28)]
     public Int32 ShieldCount;
     [FieldOffset(16)]
     public Int32 AttachedShieldNumber;
     [FieldOffset(56)]
     public BattlePlayerShieldEntityRef AttachedShield;
-    [FieldOffset(64)]
-    public FP BotMovementCooldownSec;
     [FieldOffset(104)]
     public FrameTimer AbilityCooldownSec;
     [FieldOffset(96)]
     public FrameTimer AbilityActivateBufferSec;
+    [FieldOffset(64)]
+    public FP BotMovementCooldownSec;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 6911;
@@ -1574,22 +1574,22 @@ namespace Quantum {
         hash = hash * 31 + Stats.GetHashCode();
         hash = hash * 31 + GridExtendTop.GetHashCode();
         hash = hash * 31 + GridExtendBottom.GetHashCode();
+        hash = hash * 31 + DisableRotation.GetHashCode();
+        hash = hash * 31 + MovementEnabled.GetHashCode();
+        hash = hash * 31 + RotationEnabled.GetHashCode();
+        hash = hash * 31 + CurrentDefence.GetHashCode();
+        hash = hash * 31 + DamageCooldown.GetHashCode();
+        hash = hash * 31 + StunCooldown.GetHashCode();
         hash = hash * 31 + HasTargetPosition.GetHashCode();
         hash = hash * 31 + TargetPosition.GetHashCode();
         hash = hash * 31 + RotationBaseRad.GetHashCode();
         hash = hash * 31 + RotationOffsetRad.GetHashCode();
-        hash = hash * 31 + StunCooldown.GetHashCode();
-        hash = hash * 31 + CurrentDefence.GetHashCode();
-        hash = hash * 31 + DisableRotation.GetHashCode();
-        hash = hash * 31 + DamageCooldown.GetHashCode();
-        hash = hash * 31 + MovementEnabled.GetHashCode();
-        hash = hash * 31 + RotationEnabled.GetHashCode();
         hash = hash * 31 + ShieldCount.GetHashCode();
         hash = hash * 31 + AttachedShieldNumber.GetHashCode();
         hash = hash * 31 + AttachedShield.GetHashCode();
-        hash = hash * 31 + BotMovementCooldownSec.GetHashCode();
         hash = hash * 31 + AbilityCooldownSec.GetHashCode();
         hash = hash * 31 + AbilityActivateBufferSec.GetHashCode();
+        hash = hash * 31 + BotMovementCooldownSec.GetHashCode();
         return hash;
       }
     }

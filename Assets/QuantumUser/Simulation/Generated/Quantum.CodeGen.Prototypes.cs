@@ -268,6 +268,7 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerClass400DataQComponent))]
   public unsafe class BattlePlayerClass400DataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerClass400DataQComponent> {
+    public FP RotationDurationFrames;
     [HideInInspector()]
     public QBoolean IsHoldingProjectile;
     [HideInInspector()]
@@ -278,19 +279,18 @@ namespace Quantum.Prototypes {
     public FP HeldProjectileAngleRadians;
     [HideInInspector()]
     public FP HeldProjectileDistance;
-    public FP RotationDurationFrames;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerClass400DataQComponent component = default;
         Materialize((Frame)f, ref component, in context);
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattlePlayerClass400DataQComponent result, in PrototypeMaterializationContext context = default) {
+        result.RotationDurationFrames = this.RotationDurationFrames;
         result.IsHoldingProjectile = this.IsHoldingProjectile;
         PrototypeValidator.FindMapEntity(this.HeldProjectileEntity, in context, out result.HeldProjectileEntity);
         result.HoldStartFrame = this.HoldStartFrame;
         result.HeldProjectileAngleRadians = this.HeldProjectileAngleRadians;
         result.HeldProjectileDistance = this.HeldProjectileDistance;
-        result.RotationDurationFrames = this.RotationDurationFrames;
     }
   }
   [System.SerializableAttribute()]
@@ -304,22 +304,22 @@ namespace Quantum.Prototypes {
     public Quantum.Prototypes.BattlePlayerStatsPrototype Stats;
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
+    public QBoolean DisableRotation;
+    public QBoolean MovementEnabled;
+    public QBoolean RotationEnabled;
+    public FP CurrentDefence;
+    public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
+    public Quantum.Prototypes.FrameTimerPrototype StunCooldown;
     public QBoolean HasTargetPosition;
     public FPVector2 TargetPosition;
     public FP RotationBaseRad;
     public FP RotationOffsetRad;
-    public Quantum.Prototypes.FrameTimerPrototype StunCooldown;
-    public FP CurrentDefence;
-    public QBoolean DisableRotation;
-    public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
-    public QBoolean MovementEnabled;
-    public QBoolean RotationEnabled;
     public Int32 ShieldCount;
     public Int32 AttachedShieldNumber;
     public Quantum.Prototypes.BattlePlayerShieldEntityRefPrototype AttachedShield;
-    public FP BotMovementCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityActivateBufferSec;
+    public FP BotMovementCooldownSec;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerDataQComponent component = default;
         Materialize((Frame)f, ref component, in context);
@@ -334,22 +334,22 @@ namespace Quantum.Prototypes {
         this.Stats.Materialize(frame, ref result.Stats, in context);
         result.GridExtendTop = this.GridExtendTop;
         result.GridExtendBottom = this.GridExtendBottom;
+        result.DisableRotation = this.DisableRotation;
+        result.MovementEnabled = this.MovementEnabled;
+        result.RotationEnabled = this.RotationEnabled;
+        result.CurrentDefence = this.CurrentDefence;
+        this.DamageCooldown.Materialize(frame, ref result.DamageCooldown, in context);
+        this.StunCooldown.Materialize(frame, ref result.StunCooldown, in context);
         result.HasTargetPosition = this.HasTargetPosition;
         result.TargetPosition = this.TargetPosition;
         result.RotationBaseRad = this.RotationBaseRad;
         result.RotationOffsetRad = this.RotationOffsetRad;
-        this.StunCooldown.Materialize(frame, ref result.StunCooldown, in context);
-        result.CurrentDefence = this.CurrentDefence;
-        result.DisableRotation = this.DisableRotation;
-        this.DamageCooldown.Materialize(frame, ref result.DamageCooldown, in context);
-        result.MovementEnabled = this.MovementEnabled;
-        result.RotationEnabled = this.RotationEnabled;
         result.ShieldCount = this.ShieldCount;
         result.AttachedShieldNumber = this.AttachedShieldNumber;
         this.AttachedShield.Materialize(frame, ref result.AttachedShield, in context);
-        result.BotMovementCooldownSec = this.BotMovementCooldownSec;
         this.AbilityCooldownSec.Materialize(frame, ref result.AbilityCooldownSec, in context);
         this.AbilityActivateBufferSec.Materialize(frame, ref result.AbilityActivateBufferSec, in context);
+        result.BotMovementCooldownSec = this.BotMovementCooldownSec;
     }
   }
   [System.SerializableAttribute()]

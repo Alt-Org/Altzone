@@ -276,11 +276,11 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventBattleInPlayStateUpdate BattleInPlayStateUpdate(QBoolean IsInPlay, EntityRef ERef) {
+      public EventBattleInPlayStateUpdate BattleInPlayStateUpdate(EntityRef ERef, QBoolean IsInPlay) {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventBattleInPlayStateUpdate>(EventBattleInPlayStateUpdate.ID);
-        ev.IsInPlay = IsInPlay;
         ev.ERef = ERef;
+        ev.IsInPlay = IsInPlay;
         _f.AddEvent(ev);
         return ev;
       }
@@ -928,8 +928,8 @@ namespace Quantum {
   }
   public unsafe partial class EventBattleInPlayStateUpdate : EventBase {
     public new const Int32 ID = 24;
-    public QBoolean IsInPlay;
     public EntityRef ERef;
+    public QBoolean IsInPlay;
     protected EventBattleInPlayStateUpdate(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
@@ -947,8 +947,8 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 151;
-        hash = hash * 31 + IsInPlay.GetHashCode();
         hash = hash * 31 + ERef.GetHashCode();
+        hash = hash * 31 + IsInPlay.GetHashCode();
         return hash;
       }
     }
