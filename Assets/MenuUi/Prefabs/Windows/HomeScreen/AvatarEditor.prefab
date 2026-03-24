@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4398274009520457026}
   - component: {fileID: 7650146270776570151}
+  - component: {fileID: 8220203890649062285}
   m_Layer: 0
   m_Name: Eyes
   m_TagString: Untagged
@@ -83,6 +84,24 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8220203890649062285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 91505522401278789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66ce93f0ed0ebbb4da6c4127cb21eadc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 7650146270776570151}
+  backgroundImage: {fileID: 780161956690708840}
+  featureImage: {fileID: 3227001624356103489}
+  slot: 1
+  categoryId: 21
+  tmp: {fileID: 4383731119824494257}
 --- !u!1 &150676627547736805
 GameObject:
   m_ObjectHideFlags: 0
@@ -2074,6 +2093,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3396220559556692325}
   - component: {fileID: 3308036890604441085}
+  - component: {fileID: 2606606941658723584}
   m_Layer: 0
   m_Name: Clothes
   m_TagString: Untagged
@@ -2147,6 +2167,24 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2606606941658723584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2262401689570632615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66ce93f0ed0ebbb4da6c4127cb21eadc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 3308036890604441085}
+  backgroundImage: {fileID: 476660079397273571}
+  featureImage: {fileID: 1988551102413271139}
+  slot: 4
+  categoryId: 31
+  tmp: {fileID: 7627632217868864767}
 --- !u!1 &2687973959100212971
 GameObject:
   m_ObjectHideFlags: 0
@@ -3504,6 +3542,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7340451145142592237}
   - component: {fileID: 7575117649021340332}
+  - component: {fileID: 973329606061980398}
   m_Layer: 0
   m_Name: Hair
   m_TagString: Untagged
@@ -3577,6 +3616,24 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &973329606061980398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3603974104419170033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66ce93f0ed0ebbb4da6c4127cb21eadc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 7575117649021340332}
+  backgroundImage: {fileID: 8045641961771867629}
+  featureImage: {fileID: 4556324575109445887}
+  slot: 0
+  categoryId: 10
+  tmp: {fileID: 4075838764423459300}
 --- !u!1 &3882287770906312624
 GameObject:
   m_ObjectHideFlags: 0
@@ -3739,6 +3796,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1052565251320083335}
   - component: {fileID: 6987422638321324615}
+  - component: {fileID: 4229042384820228}
   m_Layer: 0
   m_Name: Mouth
   m_TagString: Untagged
@@ -3812,6 +3870,24 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4229042384820228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4072430873205720572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66ce93f0ed0ebbb4da6c4127cb21eadc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 6987422638321324615}
+  backgroundImage: {fileID: 2118110779018197868}
+  featureImage: {fileID: 6367669606350328061}
+  slot: 3
+  categoryId: 23
+  tmp: {fileID: 2558053246363293494}
 --- !u!1 &4215346448041917964
 GameObject:
   m_ObjectHideFlags: 0
@@ -4472,6 +4548,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2639811474704092109}
   - component: {fileID: 4969532737057988993}
+  - component: {fileID: 6995150572776575512}
   m_Layer: 0
   m_Name: Shoes
   m_TagString: Untagged
@@ -4545,6 +4622,24 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6995150572776575512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5244345629074148618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66ce93f0ed0ebbb4da6c4127cb21eadc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 4969532737057988993}
+  backgroundImage: {fileID: 8825062618599156090}
+  featureImage: {fileID: 4086894531956390140}
+  slot: 5
+  categoryId: 33
+  tmp: {fileID: 104908767109181874}
 --- !u!1 &5281418440549305013
 GameObject:
   m_ObjectHideFlags: 0
@@ -4773,6 +4868,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9112149765490141031}
   - component: {fileID: 1393322203249822574}
+  - component: {fileID: 7713005933376219378}
   m_Layer: 0
   m_Name: Hands
   m_TagString: Untagged
@@ -4846,6 +4942,24 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7713005933376219378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5379738600108555353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66ce93f0ed0ebbb4da6c4127cb21eadc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 1393322203249822574}
+  backgroundImage: {fileID: 2739002494807195318}
+  featureImage: {fileID: 5463409894604609573}
+  slot: 6
+  categoryId: 32
+  tmp: {fileID: 9074411280128567046}
 --- !u!1 &5380560179786528331
 GameObject:
   m_ObjectHideFlags: 0
@@ -6678,35 +6792,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _controller: {fileID: 7023965250681938522}
-  _noseButton: {fileID: 1223827920619960202}
-  _mouthButton: {fileID: 6987422638321324615}
-  _handsButton: {fileID: 1393322203249822574}
-  _bodyButton: {fileID: 4934536462898869350}
-  _hairButton: {fileID: 7575117649021340332}
-  _eyesButton: {fileID: 7650146270776570151}
-  _clothesButton: {fileID: 3308036890604441085}
-  _shoesButton: {fileID: 4969532737057988993}
-  _hairImage: {fileID: 4556324575109445887}
-  _eyesImage: {fileID: 3227001624356103489}
-  _noseImage: {fileID: 5802489079478012330}
-  _mouthImage: {fileID: 6367669606350328061}
-  _bodyImage: {fileID: 3009440187942374090}
-  _clothesImage: {fileID: 1988551102413271139}
-  _handsImage: {fileID: 5463409894604609573}
-  _shoesImage: {fileID: 4086894531956390140}
-  _hairBackgroundImage: {fileID: 8045641961771867629}
-  _eyesBackgroundImage: {fileID: 780161956690708840}
-  _noseBackgroundImage: {fileID: 4518757469648221774}
-  _mouthBackgroundImage: {fileID: 2118110779018197868}
-  _bodyBackgroundImage: {fileID: 7901983766938971859}
-  _clothesBackgroundImage: {fileID: 476660079397273571}
-  _handsBackgroundImage: {fileID: 2739002494807195318}
-  _shoesBackgroundImage: {fileID: 8825062618599156090}
+  _colorLoader: {fileID: 4294689932122231229}
   _categoryText: {fileID: 3896787947031792502}
   _selectedSlotSprite: {fileID: 21300000, guid: 218f5f2ddf7e55a4d83451e97ac1b994,
     type: 3}
   _slotsprite: {fileID: 21300000, guid: 7cb229e7a5ee40a4b9df9329202048a2, type: 3}
   _lastSelectedSlotImage: {fileID: 8045641961771867629}
+  _bodyImage: {fileID: 3009440187942374090}
+  _bodyBackgroundImage: {fileID: 7901983766938971859}
+  _bodyTMP: {fileID: 8293416504676994064}
+  _bodyButton: {fileID: 4934536462898869350}
+  _categoryButtons:
+  - {fileID: 6524023533256514772}
+  - {fileID: 4229042384820228}
+  - {fileID: 7713005933376219378}
+  - {fileID: 973329606061980398}
+  - {fileID: 8220203890649062285}
+  - {fileID: 2606606941658723584}
+  - {fileID: 6995150572776575512}
 --- !u!1 &6937355253473776414
 GameObject:
   m_ObjectHideFlags: 0
@@ -8083,6 +8186,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4380982544877818849}
   - component: {fileID: 1223827920619960202}
+  - component: {fileID: 6524023533256514772}
   m_Layer: 0
   m_Name: Nose
   m_TagString: Untagged
@@ -8156,6 +8260,24 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6524023533256514772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9055692380636141670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66ce93f0ed0ebbb4da6c4127cb21eadc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 1223827920619960202}
+  backgroundImage: {fileID: 4518757469648221774}
+  featureImage: {fileID: 5802489079478012330}
+  slot: 2
+  categoryId: 22
+  tmp: {fileID: 6863631044816959806}
 --- !u!1 &9085825704335882966
 GameObject:
   m_ObjectHideFlags: 0

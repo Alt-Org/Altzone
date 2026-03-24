@@ -7,8 +7,6 @@ namespace MenuUi.Scripts.AvatarEditor
 {
     public class ColorGridLoader : MonoBehaviour
     {
-        // Now just makes the color selection cells. Functionality not implemented yet
-
         [SerializeField] private RectTransform _colorGridContent;
         [SerializeField] private RectTransform _colorSelection;
         [SerializeField] private GameObject _gridCellPrefab;
@@ -24,8 +22,27 @@ namespace MenuUi.Scripts.AvatarEditor
         private float _cellHeight;
         private float _horizontalPadding;
         private float _verticalPadding;
+        private ColorCellHandler _lastSelectedHandler;
+
+        private Dictionary<Color, ColorCellHandler> _colorToHandler = new();
+
         public List<Color> Colors { get { return _colors; } }
         public List<Color> SkinColors { get { return _skinColors; } }
+
+        public void UpdateHighlight(string colorString)
+        {
+            if (_lastSelectedHandler != null) _lastSelectedHandler.Highlight(false);
+
+            if (ColorUtility.TryParseHtmlString(colorString, out Color color))
+            {
+                _lastSelectedHandler = _colorToHandler[color];
+                _lastSelectedHandler.Highlight(true);
+            }
+            else
+            {
+                Debug.LogWarning($"Invalid color string: {colorString}");
+            }
+        }
 
         private void AddColorCell(Color color)
         {
@@ -33,11 +50,22 @@ namespace MenuUi.Scripts.AvatarEditor
             ColorCellHandler handler = colorGridCell.GetComponent<ColorCellHandler>();
 
             handler.SetColor(color);
-            handler.SetOnClick(() => AddListener(color));
+            handler.SetOnClick(() => AddListener(color, handler));
+
+            _colorToHandler.Add(color, handler);
+        }
+
+        private void DestryoColorCells()
+        {
+            foreach (RectTransform child in _colorGridContent)
+            {
+                Destroy(child.gameObject);
+            }
         }
 
         public void SetColorCells()
         {
+            DestryoColorCells();
             foreach (Color color in _colors)
             {
                 AddColorCell(color);
@@ -68,7 +96,7 @@ namespace MenuUi.Scripts.AvatarEditor
             }
         }
 
-        private void AddListener(Color color)
+        private void AddListener(Color color, ColorCellHandler handler)
         {
             AvatarPiece? slot = _featureLoader.CurrentCategory;
 
@@ -78,6 +106,13 @@ namespace MenuUi.Scripts.AvatarEditor
             _characterHandle.SetPartColor(actualSlot, color);
 
             _avatarEditorController.PlayerAvatar.SetPartColor(actualSlot, ColorUtility.ToHtmlStringRGBA(color));
+
+            if (_lastSelectedHandler != null)
+            {
+                _lastSelectedHandler.Highlight(false);
+            }
+            _lastSelectedHandler = handler;
+            _lastSelectedHandler.Highlight(true);
         }
     }
 }

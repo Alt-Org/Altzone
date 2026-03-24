@@ -141,7 +141,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private IEnumerator ClickHairCategoryButtonOnNextFrame()
         {
             yield return null;
-            _categoryLoader.ClickHairButton();
+            _categoryLoader.ClickRandomCategory();
         }
 
         private void SetAllAvatarFeatures()

@@ -10,139 +10,50 @@ namespace MenuUi.Scripts.AvatarEditor
 {
     public class ScrollBarCategoryLoader : MonoBehaviour
     {
-        [Header("Buttons")]
         [SerializeField] private AvatarEditorController _controller;
-        [SerializeField] private Button _noseButton;
-        [SerializeField] private Button _mouthButton;
-        [SerializeField] private Button _handsButton;
-        [SerializeField] private Button _bodyButton;
-        [SerializeField] private Button _hairButton;
-        [SerializeField] private Button _eyesButton;
-        [SerializeField] private Button _clothesButton;
-        [SerializeField] private Button _shoesButton;
-
-        [Header("Slot Images")]
-        [SerializeField] private Image _hairImage;
-        [SerializeField] private Image _eyesImage;
-        [SerializeField] private Image _noseImage;
-        [SerializeField] private Image _mouthImage;
-        [SerializeField] private Image _bodyImage;
-        [SerializeField] private Image _clothesImage;
-        [SerializeField] private Image _handsImage;
-        [SerializeField] private Image _shoesImage;
-
-        [Header("Background Images")]
-        [SerializeField] private Image _hairBackgroundImage;
-        [SerializeField] private Image _eyesBackgroundImage;
-        [SerializeField] private Image _noseBackgroundImage;
-        [SerializeField] private Image _mouthBackgroundImage;
-        [SerializeField] private Image _bodyBackgroundImage;
-        [SerializeField] private Image _clothesBackgroundImage;
-        [SerializeField] private Image _handsBackgroundImage;
-        [SerializeField] private Image _shoesBackgroundImage;
+        [SerializeField] private ColorGridLoader _colorLoader;
 
         [SerializeField] private TextMeshProUGUI _categoryText;
         [SerializeField] private Sprite _selectedSlotSprite;
         [SerializeField] private Sprite _slotsprite;
-
         [SerializeField] private Image _lastSelectedSlotImage;
 
-        private Dictionary<Button, Image> _buttonToBackground;
-        private Dictionary<Button, Image> ButtonToBackground
-        {
-            get
-            {
-                if (_buttonToBackground == null || _buttonToBackground.Count == 0)
-                {
-                    _buttonToBackground = new Dictionary<Button, Image>
-                    {
-                        { _hairButton, _hairBackgroundImage },
-                        { _eyesButton, _eyesBackgroundImage },
-                        { _noseButton, _noseBackgroundImage },
-                        { _mouthButton, _mouthBackgroundImage },
-                        { _bodyButton, _bodyBackgroundImage },
-                        { _clothesButton, _clothesBackgroundImage },
-                        { _handsButton, _handsBackgroundImage },
-                        { _shoesButton, _shoesBackgroundImage }
-                    };
-                }
-                return _buttonToBackground;
-            }
-        }
+        [SerializeField] private Image _bodyImage;
+        [SerializeField] private Image _bodyBackgroundImage;
+        [SerializeField] private TextMeshProUGUI _bodyTMP;
+        [SerializeField] private Button _bodyButton;
 
-        private Dictionary<Button, string> _buttonToCategoryId;
+        [SerializeField] private List<CategoryButton> _categoryButtons;
+        [SerializeField] private Dictionary<AvatarPiece, CategoryButton> _slotToCategoryButton = new();
 
-        private Dictionary<Button, string> ButtonToCategoryId
-        {
-            get
-            {
-                if (_buttonToCategoryId == null || _buttonToCategoryId.Count == 0)
-                {
-                    _buttonToCategoryId = new Dictionary<Button, string>
-                    {
-                        { _hairButton, "10" },
-                        { _eyesButton, "21" },
-                        { _noseButton, "22" },
-                        { _mouthButton, "23" },
-                        { _bodyButton, "" },
-                        { _clothesButton, "31" },
-                        { _handsButton, "32" },
-                        { _shoesButton, "33" }
-                    };
-                }
-                return _buttonToCategoryId;
-            }
-        }
-        private Dictionary<AvatarPiece, Image> _pieceToImage;
-        private Dictionary<AvatarPiece, Image> PieceToImage
-        {
-            get
-            {
-                if (_pieceToImage == null)
-                {
-                    _pieceToImage = new Dictionary<AvatarPiece, Image>
-                    {
-                        { AvatarPiece.Hair, _hairImage },
-                        { AvatarPiece.Eyes, _eyesImage },
-                        { AvatarPiece.Nose, _noseImage },
-                        { AvatarPiece.Mouth, _mouthImage },
-                        { AvatarPiece.Clothes, _clothesImage },
-                        { AvatarPiece.Hands, _handsImage },
-                        { AvatarPiece.Feet, _shoesImage }
-                    };
-                }
-                return _pieceToImage;
-            }
-        }
         private string _currentlySelectedCategory = "10";
         public string CurrentlySelectedCategory => _currentlySelectedCategory;
-        private TextMeshProUGUI _currentCategoryTMP;
 
-        private void Awake()
+        public void ClickRandomCategory()
         {
-            _lastSelectedSlotImage = _hairBackgroundImage;
-        }
-
-        public void ClickHairButton()
-        {
-            _hairButton.onClick.Invoke();
+            CategoryButton button = _categoryButtons[UnityEngine.Random.Range(0, _categoryButtons.Count)];
+            button.button.onClick.Invoke();
         }
 
         public void UpdateSlotImage(AvatarPiece slot, AvatarPartInfo partInfo)
         {
-            if (PieceToImage.TryGetValue(slot, out Image image))
+            if (_slotToCategoryButton.TryGetValue(slot, out CategoryButton button))
             {
-                image.preserveAspect = true;
-                image.sprite = partInfo.IconImage;
+                button.featureImage.preserveAspect = true;
+                button.featureImage.sprite = partInfo.IconImage;
             }
         }
 
         public void UpdateSlotImages()
         {
-            foreach (AvatarPiece piece in Enum.GetValues(typeof (AvatarPiece)))
+            _slotToCategoryButton?.Clear();
+
+            foreach (CategoryButton button in _categoryButtons)
             {
-                AvatarPartInfo partInfo = AvatarPartsReference.Instance.GetAvatarPartById(_controller.PlayerAvatar.GetPartId(piece));
-                UpdateSlotImage(piece, partInfo);
+                _slotToCategoryButton.Add(button.slot, button);
+
+                AvatarPartInfo partInfo = AvatarPartsReference.Instance.GetAvatarPartById(_controller.PlayerAvatar.GetPartId(button.slot));
+                UpdateSlotImage(button.slot, partInfo);
             }
 
             ColorUtility.TryParseHtmlString(_controller.PlayerAvatar.SkinColor, out Color skinColor);
@@ -155,29 +66,32 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public void SetCategoryButtons(Action<string> buttonFunction)
         {
-            foreach (KeyValuePair<Button, string> entry in ButtonToCategoryId)
+            foreach (CategoryButton button in _categoryButtons)
             {
-                Button button = entry.Key;
-                string id = entry.Value;
-
-                TextMeshProUGUI buttonText = button.GetComponentInChildren<TextMeshProUGUI>();
-                Image backgroundImage = ButtonToBackground[button];
-
-                button.onClick.RemoveAllListeners();
-
-                button.onClick.AddListener(() =>
+                button.button.onClick.RemoveAllListeners();
+                button.button.onClick.AddListener(() =>
                 {
                     _lastSelectedSlotImage.sprite = _slotsprite;
-                    backgroundImage.sprite = _selectedSlotSprite;
-                    _lastSelectedSlotImage = backgroundImage;
+                    _currentlySelectedCategory = button.categoryId;
+                    _categoryText.text = button.tmp.text;
+                    button.backgroundImage.sprite = _selectedSlotSprite;
+                    _lastSelectedSlotImage = button.backgroundImage;
+                    buttonFunction.Invoke(button.categoryId);
 
-                    _currentlySelectedCategory = id;
-                    _currentCategoryTMP = buttonText;
-
-                    _categoryText.text = buttonText.text;
-                    buttonFunction.Invoke(id);
+                    _colorLoader.UpdateHighlight(_controller.PlayerAvatar.GetPartColor(button.slot));
                 });
             }
+
+            _bodyButton.onClick.RemoveAllListeners();
+            _bodyButton.onClick.AddListener(() =>
+            {
+                _lastSelectedSlotImage.sprite = _slotsprite;
+                _currentlySelectedCategory = "";
+                _categoryText.text = _bodyTMP.text;
+                _bodyBackgroundImage.sprite = _selectedSlotSprite;
+                _lastSelectedSlotImage = _bodyBackgroundImage;
+                buttonFunction.Invoke("");
+            });
         }
     }
 }
