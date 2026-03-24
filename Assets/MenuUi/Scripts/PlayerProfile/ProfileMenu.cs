@@ -29,7 +29,7 @@ public class ProfileMenu : AltMonoBehaviour
     [SerializeField] private string loggedOutCarbonText;
 
     [Header("Text Components")]
-    [SerializeField] private TMP_InputField _playerNameInputField;
+    [SerializeField] private TextMeshProUGUI _playerNameInputField;
     [SerializeField] private TextMeshProUGUI _playerClanNameText;
     [SerializeField] private TextMeshProUGUI _rolesErrorMessage;
     [SerializeField] private TextMeshProUGUI _TimePlayedText;
