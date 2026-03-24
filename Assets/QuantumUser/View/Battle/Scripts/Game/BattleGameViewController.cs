@@ -35,6 +35,7 @@ using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
 using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 using PlayerType = Battle.View.UI.BattleUiPlayerInfoHandler.PlayerType;
+using UnityEditorInternal;
 
 namespace Battle.View.Game
 {
@@ -152,9 +153,9 @@ namespace Battle.View.Game
         /// </summary>
         ///
         /// <param name="input">The movement direction Vector2.</param>
-        public void UiInputOnJoystickMovement(Vector2 input)
+        public void UiInputOnJoystickMovement(BattleJoystickState state, Vector2 value)
         {
-            _playerInput.OnJoystickMovement(input);
+            _playerInput.OnJoystickMovement(state, value);
             //Debug.Log($"Move joystick input {input}");
         }
 
@@ -165,9 +166,9 @@ namespace Battle.View.Game
         /// </summary>
         ///
         /// <param name="input">The rotation input as float.</param>
-        public void UiInputOnJoystickRotation(float input)
+        public void UiInputOnJoystickRotation(BattleJoystickState state, float value)
         {
-            _playerInput.OnJoystickRotation(input);
+            _playerInput.OnJoystickRotation(state, value);
             //Debug.Log($"Rotate joystick input {input}");
         }
 
@@ -178,6 +179,11 @@ namespace Battle.View.Game
         public void UiInputOnExitGamePressed()
         {
             if (_endOfGameDataHasEnded) LobbyManager.ExitQuantum(_endOfGameDataWinningTeam == LocalPlayerTeam, (float)_endOfGameDataGameLengthSec);
+        }
+
+        public void UiInputOnJoystickSpecial(BattleJoystickState state, Vector2 value)
+        {
+            _playerInput.OnJoystickSpecial(state, value);
         }
 
         /// @}

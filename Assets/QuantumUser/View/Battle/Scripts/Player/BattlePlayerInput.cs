@@ -5,7 +5,7 @@
 /// Input is processed and compiled into an input struct, which is passed over to the Quantum simulation when polled by Quantum.
 /// </summary>
 
-//#define DEBUG_INPUT_TYPE_OVERRIDE
+#define DEBUG_INPUT_TYPE_OVERRIDE
 
 // Unity usings
 using UnityEngine;
@@ -25,6 +25,7 @@ using Battle.QSimulation.Game;
 
 // Battle View usings
 using Battle.View.Game;
+using Battle.View.UI;
 
 using MovementInputType = SettingsCarrier.BattleMovementInputType;
 using RotationInputType = SettingsCarrier.BattleRotationInputType;
@@ -51,9 +52,9 @@ namespace Battle.View.Player
         /// </summary>
         ///
         /// <param name="input">The input value of the movement joystick</param>
-        public void OnJoystickMovement(Vector2 input)
+        public void OnJoystickMovement(BattleJoystickState state, Vector2 value)
         {
-            _joystickMovementVector = input;
+            _joystickMovementVector = value;
         }
 
         /// <summary>
@@ -61,9 +62,9 @@ namespace Battle.View.Player
         /// </summary>
         ///
         /// <param name="input">The input value of the rotation joystick</param>
-        public void OnJoystickRotation(float input)
+        public void OnJoystickRotation(BattleJoystickState state, float value)
         {
-            _joystickRotationValue = input;
+            _joystickRotationValue = value;
         }
 
         /// <summary>
@@ -202,6 +203,20 @@ namespace Battle.View.Player
         private BattleDebugLogger _debugLogger;
 
         /// @}
+        
+        /// 
+        /// 
+        /// @{
+        private BattleJoystickState _joystickSpecialState;
+        private Vector2 _joystickSpecialValue;
+        public void OnJoystickSpecial(BattleJoystickState state, Vector2 value)
+        {
+            _joystickSpecialState = state;
+            _joystickSpecialValue = value;
+        }
+        // Tap once -> Shoot straight up
+        // Hold -> Aim indicator
+        // Release Tap -> Shoot aimed direction
 
         /// <summary>
         /// Saves data from SettingsCarrier to private variables. <br/>
@@ -223,8 +238,8 @@ namespace Battle.View.Player
 #if DEBUG_INPUT_TYPE_OVERRIDE
             _debugLogger.Warning("DEBUG_INPUT_TYPE_OVERRIDE enabled!");
 
-            _movementInputType = MovementInputType.FollowPointer;
-            _rotationInputType = RotationInputType.TwoFinger;
+            _movementInputType = MovementInputType.Joystick;
+            _rotationInputType = RotationInputType.Joystick;
 
             _debugLogger.WarningFormat("Using MovementInputType {0} override", _movementInputType);
             _debugLogger.WarningFormat("Using RotationInputType {0} override", _rotationInputType);
@@ -286,7 +301,11 @@ namespace Battle.View.Player
             }
 
             //{ create and set input
-
+            BattleSpecialInput specialInput = new()
+            {
+                JoystickValue = new FPVector2(FP.FromFloat_UNSAFE(_joystickSpecialValue.x), FP.FromFloat_UNSAFE(_joystickSpecialValue.y)),
+                JoystickState = _joystickSpecialState
+            };
             Input input = new()
             {
                 IsValid                       = true,
@@ -300,7 +319,8 @@ namespace Battle.View.Player
                 RotationValue                 = rotationInputInfo.RotationValue,
                 AbilityActivate               = Time.time - _lastTapTime < DoubleTapInterval && mouseClick && Vector3.Distance(_lastTapPosition, unityPosition) < DoubleTapDistance,
                 PlayerCharacterNumber         = _characterNumber,
-                GiveUpInput                   = _onGiveUp
+                GiveUpInput                   = _onGiveUp,
+                Special                       = specialInput
             };
 
             DeterministicInputFlags inputFlags = DeterministicInputFlags.Repeatable;
