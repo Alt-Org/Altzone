@@ -4,5 +4,5 @@ component BattlePlayerClassDesensitizerDataQComponent
     FPVector2 JoystickValuePrevious;
     bool JoystickDownPrevious;
     FrameTimer JoystickTimer;
-    EntityPrototype ProjectileEntityPrototype;
+    AssetRef<EntityPrototype> ProjectileEntityPrototype;
 }
