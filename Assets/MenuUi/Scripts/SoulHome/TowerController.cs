@@ -108,12 +108,9 @@ namespace MenuUI.Scripts.SoulHome
         private IEnumerator StartActions()
         {
             yield return new WaitUntil(() => _loadScript.LoadFinished);
-            //AudioManager.Instance?.PlayMusic("Soulhome", "");
             _camera = GetComponent<Camera>();
             SetCameraBounds();
 
-            //Debug.Log(_displayScreen.GetComponent<RectTransform>().rect.x /*.sizeDelta.x*/ + " : " + _displayScreen.GetComponent<RectTransform>().rect.y /*.sizeDelta.y*/);
-            //Camera.aspect = _displayScreen.GetComponent<RectTransform>().sizeDelta.x / _displayScreen.GetComponent<RectTransform>().sizeDelta.y;
             _camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
             _camera.fieldOfView = 90f;
             transform.localPosition = new(0, 0, transform.position.z);
@@ -126,9 +123,6 @@ namespace MenuUI.Scripts.SoulHome
 
             SetScrollSpeed();
 
-            //Debug.Log(currentY + " : " + (cameraMinY + offsetY) + " : " + (cameraMaxY - offsetY));
-            //Debug.Log(currentX + " : " + (cameraMinX + offsetX) + " : " + (cameraMaxX - offsetX));
-
             float y = Mathf.Clamp(currentY, cameraMinY + offsetY, cameraMaxY - offsetY);
             float x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
             transform.position = new(x, y, transform.position.z);
@@ -136,6 +130,7 @@ namespace MenuUI.Scripts.SoulHome
             _maxCameraDistance = GetCameraMaxDistance();
             _minCameraDistance = GetCameraMinDistance();
             _startFinished = true;
+            _displayScreen.transform.GetChild(0).gameObject.SetActive(false);
         }
 
         // Update is called once per frame
