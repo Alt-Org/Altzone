@@ -147,6 +147,8 @@ synced event BattleDebugOnScreenMessage
 
 synced event BattlePlayerClassDesensitizerAimIndicatorUpdate
 {
-    FPVector2 Direction;
+    EntityRef ERef;
+    BattlePlayerSlot Slot;
     bool Show;
+    FPVector2 Direction;
 }
