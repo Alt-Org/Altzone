@@ -54,6 +54,10 @@ namespace MenuUi.Scripts.MainMenu
 
             if(!LobbyManager.IsActive) LobbyManager.Instance.Activate();
             if (LobbyManager.Instance.RunnerActive) LobbyManager.CloseRunner();
+
+            StartCoroutine(EnableChooseTask());
+
+            
         }
 
         private void Start()
@@ -119,6 +123,15 @@ namespace MenuUi.Scripts.MainMenu
 
                 yield return new WaitForSeconds(_interval);
             }
+        }
+
+
+        private IEnumerator EnableChooseTask()
+        {
+            yield return new WaitUntil(() => GameObject.FindObjectOfType<ChooseTask>() != null);
+
+            // Initialize ChooseTask.cs
+            GameObject.FindObjectOfType<ChooseTask>().InitializeChooseTask();
         }
     }
 }

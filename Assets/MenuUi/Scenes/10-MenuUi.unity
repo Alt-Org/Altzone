@@ -2851,7 +2851,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &273870959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2866,6 +2866,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _selectionWindow: {fileID: 3769202264309907407}
   _taskCardHolder: {fileID: 1938219644147862785}
+  _UIOverlay: {fileID: 1909520762}
   _dailyTaskNaviButton: {fileID: 1051589479}
 --- !u!4 &273870960
 Transform:
