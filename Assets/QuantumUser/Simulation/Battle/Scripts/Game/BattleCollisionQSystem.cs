@@ -191,6 +191,11 @@ namespace Battle.QSimulation.Game
                     f.Signals.BattleOnDiamondHitArenaBorder(diamond, info.Entity, arenaBorder, info.Other);
                 }
             }
+            // if playerClassDesensitizerProjectile
+            else if (f.Unsafe.TryGetPointer(info.Entity, out BattlePlayerClassDesensitizerProjectileQComponent* desensitizerProjectile))
+            {
+                
+            }
         }
 
         /// <summary>This classes BattleDebugLogger instance.</summary>
