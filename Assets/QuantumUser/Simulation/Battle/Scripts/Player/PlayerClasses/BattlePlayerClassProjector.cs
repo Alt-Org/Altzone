@@ -90,7 +90,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Handle for the player.</param>
         /// <param name="playerData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference for the player.</param>
-        public override unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
+        public override unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity, BattleSpecialInput* specialInput)
         {
             BattlePlayerClassProjectorDataQComponent* data = GetClassData(f, playerEntity);
             if (!data->IsHoldingProjectile)

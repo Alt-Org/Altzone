@@ -447,7 +447,7 @@ namespace Battle.QSimulation.Player
                 f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(playerData->HitboxShieldEntity)->IsActive = false;
             }
 
-            BattlePlayerClassManager.OnUpdate(f, playerHandle, playerData, playerEntity);
+            BattlePlayerClassManager.OnUpdate(f, playerHandle, playerData, playerEntity, &input->Special);
             if (updateMovement) BattlePlayerMovementController.UpdateMovement(f, playerData, playerTransform, input);
         }
 
