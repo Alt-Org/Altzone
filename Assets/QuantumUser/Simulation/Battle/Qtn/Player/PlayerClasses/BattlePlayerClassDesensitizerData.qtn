@@ -1,4 +1,8 @@
 component BattlePlayerClassDesensitizerDataQComponent
 {
-    
+    [HideInInspector]
+    FPVector2 JoystickValuePrevious;
+    bool JoystickDownPrevious;
+    FrameTimer JoystickTimer;
+    EntityPrototype ProjectileEntityPrototype;
 }
