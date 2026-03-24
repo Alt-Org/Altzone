@@ -1,0 +1,12 @@
+enum BattleCollisionColliderType
+{
+    Projectile,
+    Diamond,
+    DesensitizerProjectile
+}
+
+
+component BattleCollisionColliderQComponent
+{
+    BattleCollisionColliderType Type;
+}
