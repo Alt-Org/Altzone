@@ -61,7 +61,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 }
             });
 
-            StartCoroutine(ClickHairCategoryButtonOnNextFrame());
+            StartCoroutine(ClickRandomCategoryButtonOnNextFrame());
         }
 
         private void OnEnable()
@@ -144,7 +144,7 @@ namespace MenuUi.Scripts.AvatarEditor
         }
 
         // If this isn't done, function will be called too early and will not work
-        private IEnumerator ClickHairCategoryButtonOnNextFrame()
+        private IEnumerator ClickRandomCategoryButtonOnNextFrame()
         {
             yield return null;
             _categoryLoader.ClickRandomCategory();
