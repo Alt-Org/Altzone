@@ -194,7 +194,9 @@ namespace Battle.QSimulation.Game
             // if playerClassDesensitizerProjectile
             else if (f.Unsafe.TryGetPointer(info.Entity, out BattlePlayerClassDesensitizerProjectileQComponent* desensitizerProjectile))
             {
-                
+                //if (f.Unsafe.TryGetPointer(info.Other, out BattlePlayerClassDesensitizerProjectileQComponent* desensitizerProjectile))
+                //s_debugLogger.Log(f, "DesensitizerProjectile hit Projectile");
+                //f.BattleOnDesensitizerProjectileHitProjectile(projectile, info.Entity, desensitizerProjectile, info.Other);
             }
         }
 
