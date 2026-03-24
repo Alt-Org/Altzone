@@ -370,7 +370,7 @@ digraph PlayerSimulation {
   PlayerManagerData -> PlayerHandle;
 
   PlayerManager, PlayerQSystem -> PlayerData -> PlayerMovementController, PlayerBotController;
-  PlayerClass -> PlayerClassData;
+  PlayerClass -> Player;
 
   edge [dir=forwards];
 
