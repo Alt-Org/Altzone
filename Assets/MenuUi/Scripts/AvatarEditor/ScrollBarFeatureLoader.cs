@@ -43,6 +43,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 { "33", AvatarPiece.Feet }  // Feet
             };
         private FeatureCellHandler _selectedCellHandler;
+        private ColorCellHandler _lastSelectedColorCellHandler;
         private bool _isSelectedFeature = false;
         private float _cellHeight;
         private float _actualVerticalSpacing;
@@ -139,17 +140,29 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void AddSkinColorSelectionCells()
         {
+            ColorUtility.TryParseHtmlString(_avatarEditorController.PlayerAvatar.SkinColor, out Color skinColor);
+
             foreach (Color color in _colorSelection.SkinColors)
             {
                 GameObject colorGridCell = Instantiate(_colorCellPrefab, _featureGridContent);
                 ColorCellHandler handler = colorGridCell.GetComponent<ColorCellHandler>();
 
+                if (color == skinColor)
+                {
+                    handler.Highlight(true);
+                    _lastSelectedColorCellHandler = handler;
+                }
+
                 handler.SetColor(color);
                 handler.SetOnClick(() =>
                 {
+                    if (_lastSelectedColorCellHandler != null) _lastSelectedColorCellHandler.Highlight(false);
+
                     _characterHandle.SetSkinColor(color);
                     _avatarEditorController.PlayerAvatar.SkinColor = ColorUtility.ToHtmlStringRGBA(color);
                     _bodySlotImage.color = color;
+                    _lastSelectedColorCellHandler = handler;
+                    _lastSelectedColorCellHandler.Highlight(true);
                 });
             }
         }
