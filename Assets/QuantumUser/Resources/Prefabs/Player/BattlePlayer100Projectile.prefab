@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4266264802123069326}
   - component: {fileID: 2814014528029193309}
   - component: {fileID: 6407932964220675974}
+  - component: {fileID: 2940220944104275371}
   m_Layer: 0
   m_Name: BattlePlayer100Projectile
   m_TagString: Untagged
@@ -125,7 +126,7 @@ MonoBehaviour:
     LayerSource: 0
     Layer: 0
     CallbackFlags:
-      Value: 0
+      Value: 128
   PhysicsBody:
     IsEnabled: 0
     Config2D: 116
@@ -240,6 +241,21 @@ MonoBehaviour:
         RawValue: 0
     Speed:
       RawValue: 0
+--- !u!114 &2940220944104275371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2408069754211307727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e2c870b196309b47ade1f9b4b3e470d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    Type:
+      Value: 2
 --- !u!1 &5715505403672621898
 GameObject:
   m_ObjectHideFlags: 0
