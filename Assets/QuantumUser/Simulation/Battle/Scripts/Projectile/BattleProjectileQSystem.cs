@@ -233,6 +233,7 @@ namespace Battle.QSimulation.Projectile
             {
                 // move the projectile
                 transform->Position += projectile->Direction * (projectile->Speed * f.DeltaTime);
+                f.Unsafe.GetPointer<Transform2D>(projectile->TriggerEntityRef)->Position = transform->Position;
             }
 
             // reset CollisionFlags for next frame
