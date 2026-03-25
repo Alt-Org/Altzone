@@ -12,27 +12,18 @@ public class ToggleSliderColor : MonoBehaviour
     private Vector2 _offtoggle = new Vector2(0, 0);
     private Vector2 _ontoggle = new Vector2(45, 0);
 
-    private void Start()
-    {
-        _backgroundImage.color = _offcolor;
-        Handler.anchoredPosition = _offtoggle;
-    }
-        ///This is used to change the sliders outlook,
-        ///Mainly because there's no reason for this slider to have slider function when it just works same as toggle would normally
+    [SerializeField] private bool _onAndOff;
+
+    ///This is used to change the sliders outlook,
+    ///Mainly because there's no reason for this slider to have slider function when it just works same as toggle would normally
     public void ToggleSystem(bool IsOn)
     {
-
-
-        _backgroundImage.color = IsOn ? _oncolor  :_offcolor; 
-
         Handler.anchoredPosition = IsOn ? _ontoggle : _offtoggle;
 
-        if(_checkMark != null)
-        _checkMark.enabled = IsOn ? false : true;
+        if (_checkMark != null)
+            _checkMark.enabled = IsOn ? _onAndOff : !_onAndOff;
+
+        //Changes the buttons Colors
+        _backgroundImage.color = IsOn ? _oncolor : _offcolor;
     }
-
-
-
-
-
 }
