@@ -379,13 +379,12 @@ public class ProfileMenu : AltMonoBehaviour
             {
                 _weekEmotions.ValuesToWeekEmotions(_playerData);
             }
-
-            if (_playerData.SelectedCharacterId != 0 /*&& _playerData.SelectedCharacterId != 201*/)
-            {
-                AvatarVisualData avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(_playerData);
+            //if (_playerData.SelectedCharacterId != 0 /*&& _playerData.SelectedCharacterId != 201*/)
+            //{
+            AvatarVisualData avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(_playerData);
                 _avatarLoaderInfoPage.UpdateVisuals(avatarVisualData);
                 _avatarFaceLoaderTabline.UpdateVisuals(avatarVisualData);
-            }
+            //}
 
             updateTime();
 
