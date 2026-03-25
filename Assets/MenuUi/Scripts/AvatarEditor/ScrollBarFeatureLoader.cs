@@ -30,6 +30,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private AvatarEditorCharacterHandle _characterHandle;
         [SerializeField] private ColorPicker _colorPicker;
         [SerializeField] private Image _bodySlotImage;
+        [SerializeField] private GameObject _featureGridContainer;
 
         private List<AvatarPartInfo> _avatarPartInfo;
         private readonly Dictionary<string, AvatarPiece> _featureCategoryIdToAvatarPiece = new Dictionary<string, AvatarPiece>
@@ -198,10 +199,13 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public void RefreshFeatureListItems(string categoryId)
         {
+            _featureGridContainer.SetActive(true);
             DestroyFeatureListItems();
 
             if (categoryId != "")
             {
+                if (_colorSelection.SkinColorSelectActive) _colorSelection.SetColorCells();
+
                 _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
                 foreach (AvatarPartInfo part in _avatarPartInfo)
                 {
@@ -211,8 +215,9 @@ namespace MenuUi.Scripts.AvatarEditor
             }
             else
             {
-                AddSkinColorSelectionCells();
-                ColorSelectActive(false);
+                _colorSelection.SetSkinColorCells();
+                ColorSelectActive(true);
+                _featureGridContainer.SetActive(false);
             }
             _currentCategory = categoryId;
         }
