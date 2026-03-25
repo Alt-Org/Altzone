@@ -156,7 +156,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
     private void EnsureValidAvatarData(PlayerData playerData)
     {
-        if (playerData.AvatarData?.Validate() == true)
+        if (playerData.AvatarData?.Validate() == true) // Update this to check if each of the parts are valid and only replace the invalid ones.
             return;
 
         Debug.LogWarning("AvatarData is null or invalid. Using default data.");
