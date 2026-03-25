@@ -91,6 +91,8 @@ namespace MenuUi.Scripts.AvatarEditor
                 _bodyBackgroundImage.sprite = _selectedSlotSprite;
                 _lastSelectedSlotImage = _bodyBackgroundImage;
                 buttonFunction.Invoke("");
+
+                _colorLoader.UpdateHighlight(_controller.PlayerAvatar.SkinColor);
             });
         }
     }
