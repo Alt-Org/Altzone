@@ -1,3 +1,8 @@
+/// @file BattleCustomEntityReferences.cs
+/// <summary>
+/// Contains @cref{Quantum,BattlePlayerEntityRef} and @cref{Quantum,BattlePlayerShieldEntityRef} partial structs which have extension methods for their respective structs.
+/// </summary>
+
 namespace Quantum
 {
     // Adds functionality to create entities from prototypes and retrieve transform and data components.
