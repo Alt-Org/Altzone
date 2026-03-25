@@ -39,10 +39,6 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _editTray;
         [SerializeField]
-        private Button _openJukeBox;
-        [SerializeField]
-        private TextMeshProUGUI _musicName;
-        [SerializeField]
         private AudioManager _audioManager;
 
         private FurnitureList _furnitureList = new();
@@ -194,20 +190,6 @@ namespace MenuUI.Scripts.SoulHome
             _editTray.GetComponent<RectTransform>().sizeDelta = new Vector2(width,0);
         }
 
-        public void NextMusicTrack()
-        {
-            string name = _audioManager.NextMusicTrack();
-            if (name != null)
-                _musicName.text = name;
-        }
-
-        public void PrevMusicTrack()
-        {
-            string name = _audioManager.PrevMusicTrack();
-            if (name != null)
-                _musicName.text = name;
-        }
-
         public void ConfirmEditCloseFalse() { ConfirmEditClose(false); }
         public void ConfirmEditCloseTrueWithRevert() { ConfirmEditClose(true, false); }
         public void ConfirmEditCloseTrueWithSave() { ConfirmEditClose(true, true); }
@@ -243,7 +225,7 @@ namespace MenuUI.Scripts.SoulHome
 
         private void SetSongName(MusicTrack song)
         {
-            _musicName.text = song != null ? song.Name : "Oletus";
+            //_musicName.text = song != null ? song.Name : "Oletus";
         }
 
         public bool CheckInteractableStatus()

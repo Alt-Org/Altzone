@@ -561,7 +561,7 @@ namespace MenuUI.Scripts.SoulHome
             if (!_rotated)
             {
                 screen.GetComponent<RectTransform>().anchorMax = new(1f, 1f);
-                screen.GetComponent<RectTransform>().anchorMin = new(0f, 0.1f);
+                screen.GetComponent<RectTransform>().anchorMin = new(0f, 0f);
                 screen.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             }
             else
