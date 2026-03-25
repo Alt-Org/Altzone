@@ -47,6 +47,14 @@ namespace MenuUi.Scripts.AvatarEditor
             {
                 SetDefaultAvatar();
                 _featureLoader.RefreshFeatureListItems(_categoryLoader.CurrentlySelectedCategory);
+                AvatarPiece? currentSlot = _featureLoader.CurrentCategory;
+                if (currentSlot.HasValue)
+                {
+                    string color = _playerAvatar.GetPartColor((AvatarPiece)currentSlot);
+                    _colorLoader.UpdateHighlight(color);
+                }
+
+                _categoryLoader.UpdateSlotImages();
             });
 
             _revertButton.onClick.AddListener(() =>
