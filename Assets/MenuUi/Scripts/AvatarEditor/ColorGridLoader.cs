@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
@@ -25,7 +26,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private bool _skinColorSelectActive = false;
         private ColorCellHandler _lastSelectedHandler;
 
-        private Dictionary<Color, ColorCellHandler> _colorToHandler = new();
+        private Dictionary<string, ColorCellHandler> _colorToHandler = new();
 
         public List<Color> Colors { get { return _colors; } }
         public List<Color> SkinColors { get { return _skinColors; } }
@@ -35,40 +36,27 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             if (_lastSelectedHandler != null) _lastSelectedHandler.Highlight(false);
 
-            if (ColorUtility.TryParseHtmlString(colorString, out Color color))
+            // This seems kind of brittle, but it works.
+            // In a perfect world playeravatar colors should always be the same format
+            ColorUtility.TryParseHtmlString(colorString, out Color color);
+            string key = ColorUtility.ToHtmlStringRGBA(color).ToLower();
+
+            if (_colorToHandler.TryGetValue(key, out ColorCellHandler handler))
             {
-                if (_colorToHandler.TryGetValue(color, out ColorCellHandler handler))
-                {
-                    _lastSelectedHandler = handler;
-                    _lastSelectedHandler.Highlight(true);
-                }
-            }
-            else
-            {
-                Debug.LogWarning($"Invalid color string: {colorString}");
+                _lastSelectedHandler = handler;
+                _lastSelectedHandler.Highlight(true);
             }
         }
 
-        private void AddColorCell(Color color)
+        private void AddColorCell(Color color, Action<Color, ColorCellHandler> callback)
         {
             GameObject colorGridCell = Instantiate(_gridCellPrefab, _colorGridContent);
             ColorCellHandler handler = colorGridCell.GetComponent<ColorCellHandler>();
 
             handler.SetColor(color);
-            handler.SetOnClick(() => AddListener(color, handler));
+            handler.SetOnClick(() => callback(color, handler));
 
-            _colorToHandler[color] = handler;
-        }
-
-        private void AddSkinColorCell(Color color)
-        {
-            GameObject colorGridCell = Instantiate(_gridCellPrefab, _colorGridContent);
-            ColorCellHandler handler = colorGridCell.GetComponent<ColorCellHandler>();
-
-            handler.SetColor(color);
-            handler.SetOnClick(() => AddSkinColorListener(color, handler));
-
-            _colorToHandler[color] = handler;
+            _colorToHandler[ColorUtility.ToHtmlStringRGBA(color).ToLower()] = handler;
         }
 
         private void DestroyColorCells()
@@ -78,6 +66,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 Destroy(child.gameObject);
             }
             _colorToHandler.Clear();
+            _lastSelectedHandler = null;
         }
 
         public void SetColorCells()
@@ -85,7 +74,7 @@ namespace MenuUi.Scripts.AvatarEditor
             DestroyColorCells();
             foreach (Color color in _colors)
             {
-                AddColorCell(color);
+                AddColorCell(color, AddListener);
             }
             _skinColorSelectActive = false;
             UpdateCellSize();
@@ -96,7 +85,7 @@ namespace MenuUi.Scripts.AvatarEditor
             DestroyColorCells();
             foreach (Color color in _skinColors)
             {
-                AddSkinColorCell(color);
+                AddColorCell(color, AddSkinColorListener);
             }
             _skinColorSelectActive = true;
             UpdateCellSize();
