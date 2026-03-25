@@ -95,14 +95,14 @@ namespace Battle.View.Player
 
             if (_classViewControllerOverride != null)
             {
-                if (_classViewControllerOverride.Class == e.Class)
+                if (_classViewControllerOverride.Class == e.CharacterClass)
                 {
                     Destroy(_classViewController);
                     _classViewController = _classViewControllerOverride;
                 }
                 else
                 {
-                    _debugLogger.ErrorFormat("Class view controller missmatch! Expected {0}, got {1}", e.Class, _classViewControllerOverride.Class);
+                    _debugLogger.ErrorFormat("Class view controller missmatch! Expected {0}, got {1}", e.CharacterClass, _classViewControllerOverride.Class);
                     Destroy(_classViewControllerOverride);
                 }
             }
