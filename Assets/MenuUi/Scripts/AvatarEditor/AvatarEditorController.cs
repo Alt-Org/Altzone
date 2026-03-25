@@ -68,8 +68,6 @@ namespace MenuUi.Scripts.AvatarEditor
                     _colorLoader.UpdateHighlight(color);
                 }
             });
-
-            StartCoroutine(ClickRandomCategoryButtonOnNextFrame());
         }
 
         private void OnEnable()
@@ -149,13 +147,6 @@ namespace MenuUi.Scripts.AvatarEditor
             UpdateProfileMenuCharacterVisuals(savePlayerData.AvatarData);
 
             GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
-        }
-
-        // If this isn't done, function will be called too early and will not work
-        private IEnumerator ClickRandomCategoryButtonOnNextFrame()
-        {
-            yield return null;
-            _categoryLoader.ClickRandomCategory();
         }
 
         private void SetAllAvatarFeatures()

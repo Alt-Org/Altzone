@@ -17,6 +17,8 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Sprite _selectedSlotSprite;
         [SerializeField] private Sprite _slotsprite;
         [SerializeField] private Image _lastSelectedSlotImage;
+        [SerializeField] private GameObject _introText;
+        [SerializeField] private GameObject _bottomMenu;
 
         [SerializeField] private Image _bodyImage;
         [SerializeField] private Image _bodyBackgroundImage;
@@ -28,12 +30,6 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private string _currentlySelectedCategory = "10";
         public string CurrentlySelectedCategory => _currentlySelectedCategory;
-
-        public void ClickRandomCategory()
-        {
-            CategoryButton button = _categoryButtons[UnityEngine.Random.Range(0, _categoryButtons.Count)];
-            button.button.onClick.Invoke();
-        }
 
         public void UpdateSlotImage(AvatarPiece slot, AvatarPartInfo partInfo)
         {
@@ -71,6 +67,8 @@ namespace MenuUi.Scripts.AvatarEditor
                 button.button.onClick.RemoveAllListeners();
                 button.button.onClick.AddListener(() =>
                 {
+                    _introText.SetActive(false);
+                    _bottomMenu.SetActive(true);
                     _lastSelectedSlotImage.sprite = _slotsprite;
                     _currentlySelectedCategory = button.categoryId;
                     _categoryText.text = button.tmp.text;
@@ -85,6 +83,8 @@ namespace MenuUi.Scripts.AvatarEditor
             _bodyButton.onClick.RemoveAllListeners();
             _bodyButton.onClick.AddListener(() =>
             {
+                _introText.SetActive(false);
+                _bottomMenu.SetActive(true);
                 _lastSelectedSlotImage.sprite = _slotsprite;
                 _currentlySelectedCategory = "";
                 _categoryText.text = _bodyTMP.text;
