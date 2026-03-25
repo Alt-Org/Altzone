@@ -409,7 +409,7 @@ namespace MenuUI.Scripts.SoulHome
 
                         else if (click == ClickState.End /*&& _selectedFurniture == null*/)
                         {
-                            Vector2 _tempRoomHitEnd = ClickStateHandler.GetClickPosition(ClickInputDevice.Touch);
+                            /*Vector2 _tempRoomHitEnd = ClickStateHandler.GetClickPosition(ClickInputDevice.Touch);
 
                             if (selectedRoom == null && tempSelectedRoom != null
                                 && _tempRoomHitStart.y > _tempRoomHitEnd.y - 3f && _tempRoomHitStart.y < _tempRoomHitEnd.y + 3f
@@ -429,7 +429,7 @@ namespace MenuUI.Scripts.SoulHome
                                 ZoomOut();
                                 selectedRoom = tempSelectedRoom;
                                 ZoomIn(selectedRoom);
-                            }
+                            }*/
                         }
                         hitRoom = true;
                     }
@@ -542,12 +542,9 @@ namespace MenuUI.Scripts.SoulHome
 
         public void ZoomIn(GameObject room)
         {
-            _soulHomeController.SetRoomName(selectedRoom);
             _camera.transform.position = new(room.transform.position.x, room.transform.position.y + room.GetComponent<BoxCollider2D>().size.y / 2,_camera.transform.position.z);
             
             outDelay = Time.time;
-
-            _mainScreen.LeaveRoomButton.SetActive(true);
 
             Vector3 bl = _camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(_camera.transform.position.z)));
 
@@ -569,12 +566,10 @@ namespace MenuUI.Scripts.SoulHome
             {
                 //if (_mainScreen.TrayOpen) _mainScreen.ToggleTray();
                 selectedRoom = null;
-                _soulHomeController.SetRoomName(selectedRoom);
 
                 _camera.transform.position = new(_camera.transform.position.x- _camera.transform.localPosition.x, _camera.transform.position.y, _camera.transform.position.z);
                 inDelay = Time.time;
 
-                _mainScreen.LeaveRoomButton.SetActive(false);
                 Vector3 bl = _camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(_camera.transform.position.z)));
 
                 float offsetY = Mathf.Abs(transform.position.y - bl.y);

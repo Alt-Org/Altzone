@@ -23,8 +23,6 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _hoverButtons;
         [SerializeField]
-        private GameObject _leaveRoomButton;
-        [SerializeField]
         private GameObject _furnitureButtonTray;
         [SerializeField]
         private GameObject _changeHandleButtonTray;
@@ -47,7 +45,6 @@ namespace MenuUI.Scripts.SoulHome
 
         internal bool TrayOpen { get => _trayOpen; set => _trayOpen = value; }
         internal GameObject SelectedFurnitureTray { get => _selectedFurnitureTray;}
-        public GameObject LeaveRoomButton { get => _leaveRoomButton;}
         public GameObject TempSelectedFurnitureTray { get => _tempSelectedFurnitureTray;}
 
         // Start is called before the first frame update

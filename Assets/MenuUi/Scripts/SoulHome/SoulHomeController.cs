@@ -23,8 +23,6 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private TextLanguageSelectorCaller _clanName;
         [SerializeField]
-        private TextMeshProUGUI _roomName;
-        [SerializeField]
         private TextMeshProUGUI _furnitureName;
         [SerializeField]
         private TowerController _soulHomeTower;
@@ -73,17 +71,6 @@ namespace MenuUI.Scripts.SoulHome
         public void OnDisable()
         {
             JukeBoxSoulhomeHandler.OnChangeJukeBoxSong -= SetSongName;
-        }
-
-        public void SetRoomName(GameObject room)
-        {
-            if (room != null)
-            {
-                _roomName.gameObject.SetActive(true);
-                string roomName = room.GetComponent<RoomData>().RoomInfo.Id.ToString();
-                _roomName.GetComponent<TextMeshProUGUI>().text = "Huone " + roomName;
-            }
-            else _roomName.gameObject.SetActive(false);
         }
 
         public void AddFurniture(Furniture furniture)
