@@ -1630,7 +1630,7 @@ namespace Quantum {
     [FieldOffset(0)]
     public Int32 GridExtendBottom;
     [FieldOffset(16)]
-    public BattlePlayerHitboxTemplate HitboxCharacter;
+    public BattlePlayerHitboxTemplate Hitbox;
     [FieldOffset(8)]
     public QBoolean DisableRotation;
     public override Int32 GetHashCode() {
@@ -1638,13 +1638,13 @@ namespace Quantum {
         var hash = 8821;
         hash = hash * 31 + GridExtendTop.GetHashCode();
         hash = hash * 31 + GridExtendBottom.GetHashCode();
-        hash = hash * 31 + HitboxCharacter.GetHashCode();
+        hash = hash * 31 + Hitbox.GetHashCode();
         hash = hash * 31 + DisableRotation.GetHashCode();
         return hash;
       }
     }
     public void ClearPointers(FrameBase f, EntityRef entity) {
-      HitboxCharacter.ClearPointers(f, entity);
+      Hitbox.ClearPointers(f, entity);
     }
     public static void OnRemoved(FrameBase frame, EntityRef entity, void* ptr) {
       var p = (Quantum.BattlePlayerDataTemplateQComponent*)ptr;
@@ -1655,7 +1655,7 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->GridExtendBottom);
         serializer.Stream.Serialize(&p->GridExtendTop);
         QBoolean.Serialize(&p->DisableRotation, serializer);
-        Quantum.BattlePlayerHitboxTemplate.Serialize(&p->HitboxCharacter, serializer);
+        Quantum.BattlePlayerHitboxTemplate.Serialize(&p->Hitbox, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]

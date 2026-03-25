@@ -357,7 +357,7 @@ namespace Quantum.Prototypes {
   public unsafe partial class BattlePlayerDataTemplateQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerDataTemplateQComponent> {
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
-    public Quantum.Prototypes.BattlePlayerHitboxTemplatePrototype HitboxCharacter;
+    public Quantum.Prototypes.BattlePlayerHitboxTemplatePrototype Hitbox;
     public QBoolean DisableRotation;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerDataTemplateQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
@@ -368,7 +368,7 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.BattlePlayerDataTemplateQComponent result, in PrototypeMaterializationContext context = default) {
         result.GridExtendTop = this.GridExtendTop;
         result.GridExtendBottom = this.GridExtendBottom;
-        this.HitboxCharacter.Materialize(frame, ref result.HitboxCharacter, in context);
+        this.Hitbox.Materialize(frame, ref result.Hitbox, in context);
         result.DisableRotation = this.DisableRotation;
         MaterializeUser(frame, ref result, in context);
     }
