@@ -7,16 +7,20 @@
 /// Handles shield sprites and particles
 
 // System usings
+using System;
 using System.Runtime.CompilerServices;
+
 // Unity usings
 using UnityEngine;
-// Battle QSimulation usings
-using Battle.QSimulation;
-// Battle Player usings
-using static Battle.View.Player.BattlePlayerCharacterViewController;
+
 // Quantum usings
 using Quantum;
-using System;
+
+// Battle QSimulation usings
+using Battle.QSimulation;
+
+// Battle Player usings
+using SpriteSheetMap = Battle.View.Player.BattlePlayerCharacterViewController.SpriteSheetMap;
 
 namespace Battle.View.Player
 {
@@ -48,15 +52,18 @@ namespace Battle.View.Player
         /// @ref BattlePlayerShieldViewController-SerializeFields
         [SerializeField] private BattlePlayerShieldClassBaseViewController _classViewControllerOverride;
 
+        /// <summary>[SerializeField] Reference to the shield's shieldNumber.</summary>
+        /// @ref BattlePlayerShieldViewController-SerializeFields
         [SerializeField] private int _shieldNumber;
 
+        /// @}
+
+        /// <summary>Enum that tells which side of the map the shield is on.</summary>
         public enum ShieldSide
         {
             Top = 0,
             Bottom = 1
         }
-
-        /// @}
 
         /// <summary>
         /// Public method that is called when entity is activated upon its creation.<br/>
@@ -147,7 +154,7 @@ namespace Battle.View.Player
 
             int index = ShieldSpriteStart + (int)side * (StateCount * ShieldCount) + Convert.ToInt32(hit) * ShieldCount + shieldNumber;
 
-            BattlePlayerCharacterViewController.SpriteSheetMap sprite = BattlePlayerCharacterViewController.SpriteSheetMap.FromInt(index);
+            SpriteSheetMap sprite = SpriteSheetMap.FromInt(index);
 
             BattleDebugLogger.DevAssertFormat(nameof(BattlePlayerShieldViewController),
                 sprite.EnumValue is

@@ -9,6 +9,8 @@
 using UnityEditor;
 using UnityEngine;
 
+using SpriteSheetMap = Battle.View.Player.BattlePlayerCharacterViewController.SpriteSheetMap;
+
 namespace Battle.View.Player
 {
     /// <summary>
@@ -27,6 +29,7 @@ namespace Battle.View.Player
             const int SpriteRendererHandsIndex  = 2;
             const int SpriteRendererFeetIndex   = 3;
             const int SpriteRendererShadowIndex = 4;
+
             DrawDefaultInspector();
 
             if (_battleSpriteSheetProp == null || _gameObjectProp == null) return;
@@ -38,26 +41,26 @@ namespace Battle.View.Player
                 SerializedProperty property = _gameObjectProp.GetArrayElementAtIndex(i);
                 GameObject gameObject = (GameObject)property.objectReferenceValue;
 
-                _spriteRenderers[SpriteRendererHeadIndex] = gameObject.transform.Find("Head").GetComponent<SpriteRenderer>();
-                _spriteRenderers[SpriteRendererBodyIndex] = gameObject.transform.Find("Body").GetComponent<SpriteRenderer>();
-                _spriteRenderers[SpriteRendererHandsIndex] = gameObject.transform.Find("Hands").GetComponent<SpriteRenderer>();
-                _spriteRenderers[SpriteRendererFeetIndex] = gameObject.transform.Find("Feet").GetComponent<SpriteRenderer>();
-                _spriteRenderers[SpriteRendererShadowIndex] = gameObject.transform.Find("Shadow").GetComponent<SpriteRenderer>();
-                if (spriteSheet.Array.Length == BattlePlayerCharacterViewController.SpriteSheetMap.Count)
+                _spriteRenderers[SpriteRendererHeadIndex]   = gameObject.transform.Find("Head")   .GetComponent<SpriteRenderer>();
+                _spriteRenderers[SpriteRendererBodyIndex]   = gameObject.transform.Find("Body")   .GetComponent<SpriteRenderer>();
+                _spriteRenderers[SpriteRendererHandsIndex]  = gameObject.transform.Find("Hands")  .GetComponent<SpriteRenderer>();
+                _spriteRenderers[SpriteRendererFeetIndex]   = gameObject.transform.Find("Feet")   .GetComponent<SpriteRenderer>();
+                _spriteRenderers[SpriteRendererShadowIndex] = gameObject.transform.Find("Shadow") .GetComponent<SpriteRenderer>();
+                if (spriteSheet.Array.Length == SpriteSheetMap.Count)
                 {
-                    _spriteRenderers[SpriteRendererHeadIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.Head1);
-                    _spriteRenderers[SpriteRendererBodyIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.Body1);
-                    _spriteRenderers[SpriteRendererHandsIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.BaseHands);
-                    _spriteRenderers[SpriteRendererFeetIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.BaseShoes);
-                    _spriteRenderers[SpriteRendererShadowIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.Shadow);
+                    _spriteRenderers[SpriteRendererHeadIndex]   .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Head1);
+                    _spriteRenderers[SpriteRendererBodyIndex]   .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Body1);
+                    _spriteRenderers[SpriteRendererHandsIndex]  .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.BaseHands);
+                    _spriteRenderers[SpriteRendererFeetIndex]   .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.BaseShoes);
+                    _spriteRenderers[SpriteRendererShadowIndex] .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Shadow);
                 }
                 else
                 {
-                    _spriteRenderers[SpriteRendererHeadIndex].sprite = null;
-                    _spriteRenderers[SpriteRendererBodyIndex].sprite = null;
-                    _spriteRenderers[SpriteRendererHandsIndex].sprite = null;
-                    _spriteRenderers[SpriteRendererFeetIndex].sprite = null;
-                    _spriteRenderers[SpriteRendererShadowIndex].sprite = null;
+                    _spriteRenderers[SpriteRendererHeadIndex]   .sprite = null;
+                    _spriteRenderers[SpriteRendererBodyIndex]   .sprite = null;
+                    _spriteRenderers[SpriteRendererHandsIndex]  .sprite = null;
+                    _spriteRenderers[SpriteRendererFeetIndex]   .sprite = null;
+                    _spriteRenderers[SpriteRendererShadowIndex] .sprite = null;
                 }
             }
         }
