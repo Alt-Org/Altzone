@@ -136,7 +136,7 @@ namespace Battle.QSimulation.Player
             /// @note Low level method! Only meant for use by <see cref="PlayerHandleInternal"/>.
             /// </summary>
             ///
-            /// <param name="playerManagerData">Pointer reference to the player manager data.</param>
+            /// <param name="playerManagerData">Pointer to the player manager data.</param>
             /// <param name="playerIndex">The index of the player.</param>
             ///
             /// <returns>A PlayerHandle for the given player.</returns>
@@ -455,7 +455,7 @@ namespace Battle.QSimulation.Player
             /// Retrieves player index based on <paramref name="playerRef"/>.
             /// </summary>
             ///
-            /// <param name="playerManagerData">Pointer reference to the player manager data.</param>
+            /// <param name="playerManagerData">Pointer to the player manager data.</param>
             /// <param name="playerRef">PlayerRef of the player.</param>
             ///
             /// <returns>The index of the given player.</returns>
@@ -507,7 +507,7 @@ namespace Battle.QSimulation.Player
             ///
             /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams)
             ///
-            /// <param name="playerManagerData">Pointer reference to the player manager data.</param>
+            /// <param name="playerManagerData">Pointer to the player manager data.</param>
             /// <param name="slot">The slot of the player.</param>
             ///
             /// <returns>A PlayerHandle for the given player.</returns>
@@ -524,7 +524,7 @@ namespace Battle.QSimulation.Player
             ///
             /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams)
             ///
-            /// <param name="playerManagerData">Pointer reference to the player manager data.</param>
+            /// <param name="playerManagerData">Pointer to the player manager data.</param>
             /// <param name="slot">The slot of the player.</param>
             ///
             /// <returns>A PlayerHandle for the given player's teammate.</returns>
@@ -547,7 +547,7 @@ namespace Battle.QSimulation.Player
             /// Sets all players' play states to a given state.
             /// </summary>
             ///
-            /// <param name="playerManagerData">Pointer reference to the player manager data.</param>
+            /// <param name="playerManagerData">Pointer to the player manager data.</param>
             /// <param name="playerPlayState">The state that all players will be set to.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static void SetAllPlayStates(BattlePlayerManagerDataQSingleton* playerManagerData, BattlePlayerPlayState playerPlayState)

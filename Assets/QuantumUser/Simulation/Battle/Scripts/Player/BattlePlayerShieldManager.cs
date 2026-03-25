@@ -350,7 +350,7 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         ///
-        /// <returns>Pointer reference to the PlayerShieldManagerData singleton.</returns>
+        /// <returns>Pointer to the PlayerShieldManagerData singleton.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static BattlePlayerShieldManagerDataQSingleton* GetPlayerShieldManagerData(Frame f)
         {

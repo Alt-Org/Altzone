@@ -217,8 +217,6 @@ namespace Battle.QSimulation.Player
 
                 //{ set player common temp variables (used for all characters)
 
-                //playerHitboxExtents = BattleGridManager.GridScaleFactor * FP._0_50;
-
                 if (teamNumber == BattleTeamNumber.TeamAlpha)
                 {
                     playerRotationBase = FP._0;
@@ -410,10 +408,10 @@ namespace Battle.QSimulation.Player
                     playerData.Stats.Attack        = FP.FromString("1.0");
                     playerData.Stats.Defence       = FP.FromString("1.0");
 
-                    s_debugLogger.WarningFormat("Using Speed {0} override", playerData.Stats.Speed);
+                    s_debugLogger.WarningFormat("Using Speed {0} override",         playerData.Stats.Speed);
                     s_debugLogger.WarningFormat("Using CharacterSize {0} override", playerData.Stats.CharacterSize);
-                    s_debugLogger.WarningFormat("Using Attack {0} override", playerData.Stats.Attack);
-                    s_debugLogger.WarningFormat("Using Defence {0} override", playerData.Stats.Defence);
+                    s_debugLogger.WarningFormat("Using Attack {0} override",        playerData.Stats.Attack);
+                    s_debugLogger.WarningFormat("Using Defence {0} override",       playerData.Stats.Defence);
 #endif
                     playerData.CurrentDefence = playerData.Stats.Defence;
 
@@ -453,6 +451,8 @@ namespace Battle.QSimulation.Player
                     // set playerManagerData for player character
                     playerHandle.SetCharacterState(playerCharacterNumber, BattlePlayerCharacterState.Alive);
                 }
+
+                //} create playerEntity for each character
 
                 BattleEntityID characterEntityGroupID = BattleEntityManager.RegisterCompound(f, playerCharacterEntityArray);
 
@@ -552,7 +552,7 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         ///
-        /// <returns>Pointer reference to the PlayerManagerData singleton.</returns>
+        /// <returns>Pointer to the PlayerManagerData singleton.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static BattlePlayerManagerDataQSingleton* GetPlayerManagerData(Frame f)
         {

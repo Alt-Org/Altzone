@@ -27,12 +27,12 @@ namespace Battle.QSimulation.Player
     public abstract unsafe class BattlePlayerClassBase<T> : BattlePlayerClassBase where T : unmanaged, IComponent
     {
         /// <summary>
-        /// Returns a pointer reference to the class data of the specified player entity.
+        /// Returns a pointer to the class data of the specified player entity.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
-        /// <returns>A pointer reference to the player's class data.</returns>
+        /// <returns>A pointer to the player's class data.</returns>
         protected T* GetClassData(Frame f, EntityRef playerEntity)
         {
             if (!f.Unsafe.TryGetPointer(playerEntity, out T* component))
@@ -66,7 +66,7 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
-        /// <param name="playerData">Pointer reference to the player data.</param>
+        /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
         ///
         /// <returns>Default @cref{Battle.QSimulation.Player.BattlePlayerClassManager,CreationParameters} if not overwritten.</returns>
@@ -80,7 +80,7 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
-        /// <param name="playerData">Pointer reference to the player data.</param>
+        /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
         public virtual unsafe void OnSpawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
 
@@ -92,7 +92,7 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
-        /// <param name="playerData">Pointer reference to the player data.</param>
+        /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
         public virtual unsafe void OnDespawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
 
@@ -130,7 +130,7 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
-        /// <param name="playerData">Pointer reference to the player data.</param>
+        /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
         public virtual unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
     }
@@ -220,7 +220,7 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
-        /// <param name="playerData">Pointer reference to the player data.</param>
+        /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
         ///
         /// <returns>@cref{Battle.QSimulation.Player.BattlePlayerClassManager,CreationParameters}.</returns>
@@ -247,7 +247,7 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
-        /// <param name="playerData">Pointer reference to the player data.</param>
+        /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
         public static void OnSpawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
@@ -264,7 +264,7 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
-        /// <param name="playerData">Pointer reference to the player data.</param>
+        /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
         public static void OnDespawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
@@ -315,7 +315,7 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
-        /// <param name="playerData">Pointer reference to the player data.</param>
+        /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
         public static void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {

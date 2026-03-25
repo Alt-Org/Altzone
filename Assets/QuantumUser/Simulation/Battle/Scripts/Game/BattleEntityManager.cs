@@ -504,7 +504,7 @@ namespace Battle.QSimulation.Game
         ///
         /// <param name="f">Current simulation frame.</param>
         ///
-        /// <returns>Pointer reference to the BattleEntityManagerData singleton.</returns>
+        /// <returns>Pointer to the BattleEntityManagerData singleton.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static BattleEntityManagerDataQSingleton* GetEntityManagerData(Frame f)
         {
@@ -531,7 +531,7 @@ namespace Battle.QSimulation.Game
         /// @cref{RegisterCompound(Frame\, CompoundEntityTemplate[])}
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="entityManagerData">Pointer reference to BattleEntityManagerData singleton.</param>
+        /// <param name="entityManagerData">Pointer to BattleEntityManagerData singleton.</param>
         /// <param name="entityRef">The entity to return.</param>
         /// <param name="id">Entity ID of the entity to return.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
