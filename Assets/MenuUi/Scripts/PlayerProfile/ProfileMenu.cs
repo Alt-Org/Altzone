@@ -80,6 +80,11 @@ public class ProfileMenu : AltMonoBehaviour
     [SerializeField] private PlayStyle _playStyle;
     [SerializeField] private WeekEmotions _weekEmotions;
 
+    [Header("Own Profile Only UI")]
+    [SerializeField] private GameObject _editProfileButton;
+    [SerializeField] private GameObject _todayEmotionSection;
+    [SerializeField] private GameObject _weekEmotionsSection;
+
     public TextMeshProUGUI textMeshPro;
 
     private int tempLocalSaveTime;
@@ -321,6 +326,8 @@ public class ProfileMenu : AltMonoBehaviour
 
     private void ApplyPlayerDataToUI()
     {
+        UpdateOwnProfileOnlyUI();
+
         if (_playerData == null)
         {
             Debug.LogError("PlayerData is null in ProfileMenu.");
@@ -472,6 +479,20 @@ public class ProfileMenu : AltMonoBehaviour
         {
             Debug.Log("No saved minutes found.");
         }
+    }
+
+    private void UpdateOwnProfileOnlyUI()
+    {
+        bool isOwnProfile = !_otherPlayerProfile;
+
+        if (_editProfileButton != null)
+            _editProfileButton.SetActive(isOwnProfile);
+
+        if (_todayEmotionSection != null)
+            _todayEmotionSection.SetActive(isOwnProfile);
+
+        if (_weekEmotionsSection != null)
+            _weekEmotionsSection.SetActive(isOwnProfile);
     }
 
     private void RefreshClanHeartUI(ClanData clanData)

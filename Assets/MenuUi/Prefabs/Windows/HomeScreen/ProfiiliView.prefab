@@ -6439,6 +6439,9 @@ MonoBehaviour:
   _fallbackRoleIcon: {fileID: 21300000, guid: 4c71ff6e4c59147459fec711ba28bed5, type: 3}
   _playStyle: {fileID: 3935453016891834555}
   _weekEmotions: {fileID: 2214120935140693486}
+  _editProfileButton: {fileID: 829004568921190945}
+  _todayEmotionSection: {fileID: 3929478825188575356}
+  _weekEmotionsSection: {fileID: 65347668799019792}
   textMeshPro: {fileID: 0}
 --- !u!1 &4292939789634991153
 GameObject:
@@ -15956,6 +15959,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f49aea2bd9432234bbca6f3336a10e12, type: 3}
+--- !u!1 &65347668799019792 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9073806489120027414, guid: f49aea2bd9432234bbca6f3336a10e12,
+    type: 3}
+  m_PrefabInstance: {fileID: 9008478770747172870}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &174183032042874218 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9182374813075279212, guid: f49aea2bd9432234bbca6f3336a10e12,
@@ -15980,7 +15989,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 9008478770747172870}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 65347668799019792}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 490f525461a55c4469f161b98c30dd53, type: 3}
