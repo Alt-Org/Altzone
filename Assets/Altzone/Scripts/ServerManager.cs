@@ -848,6 +848,31 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
+    public IEnumerator GetClanFromServer(string clanId, Action<ServerClan> callback)
+    {
+        if (string.IsNullOrEmpty(clanId))
+        {
+            Debug.LogWarning("GetClanFromServer called with empty clanId.");
+            callback?.Invoke(null);
+            yield break;
+        }
+
+        yield return StartCoroutine(WebRequests.Get(SERVERADDRESS + "clan/" + clanId, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                ServerClan clan = result["data"]["Clan"].ToObject<ServerClan>();
+
+                callback?.Invoke(clan);
+            }
+            else
+            {
+                callback?.Invoke(null);
+            }
+        }));
+    }
+
     public IEnumerator GetAllClans(int page, Action<List<ServerClan>, PaginationData> callback)
     {
         string query = SERVERADDRESS + "clan";//?page=" + page + "&limit=5";

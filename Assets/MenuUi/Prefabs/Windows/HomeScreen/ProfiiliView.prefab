@@ -6428,7 +6428,9 @@ MonoBehaviour:
   - {fileID: 1789862274210685803}
   - {fileID: 4638413136516349032}
   _avatarPageTabButton: {fileID: 1630217206484856780}
-  _ClanURLButton: {fileID: 3938026306981077608}
+  _ClanURLButton: {fileID: 0}
+  _openViewedPlayerClanButton: {fileID: 3938026306981077608}
+  _clanWindowDef: {fileID: 11400000, guid: af7bed882640abb4c883d988f7d81a34, type: 2}
   _addFriendButton: {fileID: 8953335287255744339}
   _clanHeart: {fileID: 3545390779117971149}
   _defaultClanHeartColor: {r: 1, g: 0, b: 0, a: 1}
@@ -10401,6 +10403,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8483999072892441288}
   - {fileID: 6666725096397857936}
   - {fileID: 6967770307952290176}
   - {fileID: 5218245809612100453}
@@ -10409,7 +10412,6 @@ RectTransform:
   - {fileID: 7217831350488580886}
   - {fileID: 5738737893463402049}
   - {fileID: 6962164053188512824}
-  - {fileID: 8483999072892441288}
   - {fileID: 4646625246657361477}
   - {fileID: 1467976431828879935}
   m_Father: {fileID: 444537516499154867}

@@ -17,6 +17,8 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2;
 using System.Data;
 using MenuUi.Scripts.AvatarEditor;
+using MenuUi.Scripts.Window;
+using MenuUi.Scripts.Window.ScriptableObjects;
 
 public class ProfileMenu : AltMonoBehaviour
 {
@@ -59,6 +61,8 @@ public class ProfileMenu : AltMonoBehaviour
 
     [Header("Clan Button")]
     [SerializeField] private Button _ClanURLButton;
+    [SerializeField] private Button _openViewedPlayerClanButton;
+    [SerializeField] private WindowDef _clanWindowDef;
 
     [Header("Add Friend Button")]
     [SerializeField] private Button _addFriendButton;
@@ -248,8 +252,11 @@ public class ProfileMenu : AltMonoBehaviour
 
     private void Start()
     {
-        // Asetetaan URL-painikkeen teksti
-        _ClanURLButton.onClick.AddListener(OpenClanURL);
+        if (_ClanURLButton != null)
+            _ClanURLButton.onClick.AddListener(OpenClanURL);
+
+        if (_openViewedPlayerClanButton != null)
+            _openViewedPlayerClanButton.onClick.AddListener(OpenViewedPlayerClanProfile);
 
         LoadMinutes();
     }
@@ -410,6 +417,7 @@ public class ProfileMenu : AltMonoBehaviour
             _clanData = null;
             _clanID = string.Empty;
             _playerClanNameText.text = "";
+            ResetClanHeartUI();
             SetPlayerRoleUI(null);
         }
 
@@ -555,5 +563,34 @@ public class ProfileMenu : AltMonoBehaviour
         }
 
         SetPlayerRoleUI(roleName);
+    }
+
+    private void OpenViewedPlayerClanProfile()
+    {
+        if (_playerData == null || string.IsNullOrEmpty(_playerData.ClanId))
+        {
+            Debug.LogWarning("Viewed player has no clan.");
+            return;
+        }
+
+        if (_clanWindowDef == null)
+        {
+            Debug.LogError("Clan window def is missing from ProfileMenu.");
+            return;
+        }
+
+        StartCoroutine(ServerManager.Instance.GetClanFromServer(_playerData.ClanId, serverClan =>
+        {
+            if (serverClan == null)
+            {
+                Debug.LogError("Failed to fetch viewed player's clan from server.");
+                return;
+            }
+
+            DataCarrier.GetData<ServerClan>(DataCarrier.ClanListing, clear: true, suppressWarning: true);
+            DataCarrier.AddData(DataCarrier.ClanListing, serverClan);
+
+            WindowManager.Get().ShowWindow(_clanWindowDef);
+        }));
     }
 }
