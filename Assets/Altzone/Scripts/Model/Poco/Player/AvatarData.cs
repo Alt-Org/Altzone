@@ -209,10 +209,10 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
             return partsReference.GetAvatarPartById(pieceIdString) != null;
         }
 
-        public List<AvatarPiece> GetInvalidAvatarPieces()
+        public List<AvatarPiece> GetInvalidAvatarPieces(AvatarPartsReference partsReference)
         {
             List<AvatarPiece> invalidPieces = new();
-            AvatarPartsReference partsReference = AvatarPartsReference.Instance;
+            
             foreach (AvatarPiece piece in Enum.GetValues(typeof(AvatarPiece)))
             {
                 if (!ValidateAvatarPiece(piece, partsReference))

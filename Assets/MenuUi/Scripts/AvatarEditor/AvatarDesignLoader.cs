@@ -162,7 +162,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
         if (avatarData != null)
         {
-            invalidPieces = avatarData?.GetInvalidAvatarPieces();
+            invalidPieces = avatarData?.GetInvalidAvatarPieces(_avatarPartsReference);
         }
 
         if (invalidPieces?.Count == 0)
