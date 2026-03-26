@@ -359,6 +359,8 @@ public class DailyTaskView : AltMonoBehaviour
 
         PlayerTask taskData = DailyTaskProgressManager.Instance.CurrentPlayerTask;
 
+        if (taskData == null) return;
+
         float progress = (float)taskData.TaskProgress / (float)taskData.Amount;
         StartCoroutine(_ownTaskPageHandler.SetDailyTask(taskData));
         _ownTaskPageHandler.SetTaskProgress(progress);
