@@ -113,24 +113,8 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
 
         if (_outOfBoundDirection != VerticalDirectionType.Neutral)
         {
-            float edgeItemFullHeight = GetCurrentEdgeItemHeight(_outOfBoundDirection);
-            float smartItemHalfHeight = (edgeItemFullHeight / 2f + _verticalPadding) * (float)_outOfBoundDirection;
-            bool diffActive = false;
-
-            //TODO: WIP over drag jump fixing.
-
-            // if (_outOfBoundDirection != VerticalDirectionType.Down)
-            //     _scrollDiffCompensation = eventData.position.y - _viewportTopWorldBorder;
-//             if (_outOfBoundDirection == VerticalDirectionType.Up && eventData.position.y < _viewportBottomWorldBorder)
-//             {
-//                 float distanceOver = _viewportBottomWorldBorder - eventData.position.y;
-//                 _scrollDiffCompensation = distanceOver - smartItemHalfHeight + smartItemHalfHeight * (distanceOver / _viewport.rect.height);
-//                 Debug.LogError("correction: " + (distanceOver / _viewport.rect.height));
-//                 diffActive = true;
-// Debug.LogError($"_scrollDiffCompensation: {_scrollDiffCompensation}, distanceOver: {distanceOver}");
-//             }
-
-            if (!diffActive) _pointerStartPosition = eventData.position;
+            _pointerStartPosition = eventData.position;
+            _contentStartWorldPosition = _content.position;
         }
 
         _timeFromLastVelocityUpdate = Time.time;
@@ -388,8 +372,8 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
 
             if (_viewportBottomAnchoredBorder > bottomItemTopEdge) return VerticalDirectionType.Neutral;
 
-            float correction = /*(*/GetBottomItemWorldPositionY() - _viewportBottomWorldBorder/*-*/
-                                /*(_viewportTopWorldBorder - _viewportBottomWorldBorder) / 2f)*/ - _bottomItemWorldHeightWithPadding;
+            float correction = GetBottomItemWorldPositionY() - _viewportBottomWorldBorder -
+                               _bottomItemWorldHeightWithPadding - _verticalPadding;
 
             _content.position = new Vector2(_content.position.x, _contentStartWorldPosition.y + worldDistance - correction);
 
