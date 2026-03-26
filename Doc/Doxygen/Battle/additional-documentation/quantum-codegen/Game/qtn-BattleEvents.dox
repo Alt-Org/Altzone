@@ -58,8 +58,8 @@
 ///   @copybrief Quantum.EventBattleShieldTakeDamage
 /// - <b>synced event</b> @ref BattleGiveUpStateChange {BattleTeamNumber Team; BattlePlayerSlot Slot; BattleGiveUpStateChange StateUpdate }  
 ///   @copybrief Quantum.EventBattleGiveUpStateChange
-/// - <b>synced event</b> @ref BattleInPlayStateUpdate { bool IsInPlay; EntityRef ERef}
-///   @copybrief Quantum.EventInPlayStateUpdate
+/// - <b>synced event</b> @ref BattlePlayStateUpdate { bool IsInPlay; EntityRef ERef}  
+///   @copybrief Quantum.EventBattlePlayStateUpdate
 /// - <b>synced event</b> @ref BattleStoneCharacterPlayHitAnimation { BattleTeamNumber Team; BattleEmotionState Emotion }  
 ///   @copybrief Quantum.EventBattleStoneCharacterPlayHitAnimation
 ///
@@ -296,12 +296,12 @@
 ///
 /// ---
 ///
-/// @anchor BattleInPlayStateUpdate
-/// ### BattleInPlayStateUpdate
-/// @copybrief Quantum.EventInPlayStateUpdate
+/// @anchor BattlePlayStateUpdate
+/// ### BattlePlayStateUpdate
+/// @copybrief Quantum.EventBattlePlayStateUpdate
 ///
-/// Generated class @cref{Quantum, EventInPlayStateUpdate}
-/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleInPlayStateUpdate}
+/// Generated class @cref{Quantum, EventBattlePlayStateUpdate}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattlePlayStateUpdate}
 ///
 /// ---
 ///
@@ -481,7 +481,7 @@
 /// Used to update the UI to reflect change in player's give up state.  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
-/// @class Quantum::EventInPlayStateUpdate
+/// @class Quantum::EventBattlePlayStateUpdate
 /// <summary>
 /// Synced event. Used when PlayState is changed.
 /// </summary>

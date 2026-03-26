@@ -109,7 +109,7 @@ namespace Battle.View.Player
 
             _shieldGameObject.SetActive(true);
 
-            QuantumEvent.Subscribe<EventBattleInPlayStateUpdate>(this, QEventOnPlayStateUpdate);
+            QuantumEvent.Subscribe<EventBattlePlayStateUpdate>(this, QEventOnPlayStateUpdate);
         });}
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace Battle.View.Player
         /// Updates the _isInPlay bool.
         /// </summary>
         /// <param name="e">The event data.</param>
-        private void QEventOnPlayStateUpdate(EventBattleInPlayStateUpdate e)
+        private void QEventOnPlayStateUpdate(EventBattlePlayStateUpdate e)
         {
             if (e.ERef != EntityRef) return;
             _isInPlay = e.IsInPlay;

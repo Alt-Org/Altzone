@@ -144,7 +144,7 @@ synced event BattleGiveUpStateChange
     BattleGiveUpStateUpdate StateUpdate;
 }
 
-synced event BattleInPlayStateUpdate
+synced event BattlePlayStateUpdate
 {
     EntityRef ERef;
     bool IsInPlay;

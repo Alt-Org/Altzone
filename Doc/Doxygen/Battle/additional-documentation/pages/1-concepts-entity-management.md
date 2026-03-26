@@ -6,23 +6,30 @@
 
 The @cref{Battle.QSimulation.Game,BattleEntityManager} handles **%Quantum Entity** management in the game.
 
-### Registered Entities
+### Registered Entities {#page-concepts-entity-management-registered-entities}
 
 **%Quantum Entities** are **Registered** using @clink{Register:Battle.QSimulation.Game.BattleEntityManager.Register(Frame, EntityRef)},
 either individually or as an [{Entity Group}](#page-concepts-entity-management-entity-group), and can be **Retrieved** and **Returned**.<br/>
-**Registered Entities** are stored offscreen when not in use and are assigned an [{Entity ID}](#page-concepts-entity-management-entity-id) for accessing them.<br/>
+**Registered Entities** are stored offscreen when **OutOfPlay** and are assigned an [{Entity ID}](#page-concepts-entity-management-entity-id) for accessing them.<br/>
 [{Compound Entities}](#page-concepts-entity-management-compound-entities)
 have their own @clink{RegisterCompound:Battle.QSimulation.Game.BattleEntityManager.RegisterCompound(Frame, Battle.QSimulation.Game.BattleEntityManager.CompoundEntityTemplate)} method.<br/>
 
 **Entities** can be **Retrieved** using
-@clink{Get:Battle.QSimulation.Game.BattleEntityManager.Get(Frame, BattleEntityID, bool)} to be used in the game.<br/>
+@clink{Get:Battle.QSimulation.Game.BattleEntityManager.Get(Frame, BattleEntityID, bool)} to be used in the game. (**InPlay**)<br/>
 **Entities** can be **Returned** using
-@clink{Return:Battle.QSimulation.Game.BattleEntityManager.Return(Frame, BattleEntityID)}, **teleporting** them back offscreen.<br/>
+@clink{Return:Battle.QSimulation.Game.BattleEntityManager.Return(Frame, BattleEntityID)}, **teleporting** them back offscreen. (**OutOfPlay**)<br/>
 [{Entity Groups}](#page-concepts-entity-management-entity-group)
 have their own @clink{Get:Battle.QSimulation.Game.BattleEntityManager.Get(Frame, BattleEntityID, bool)}
 and @clink{Return:Battle.QSimulation.Game.BattleEntityManager.Return(Frame, BattleEntityID)} methods that take an additional **offset** argument.<br/>
 
-### Compound Entity Handeling
+#### PlayState {#page-concepts-entity-management-registered-entities-playstate}
+
+[{Registered Entities}](#page-concepts-entity-management-registered-entities) have 2 different states, **InPlay** and **OutOfPlay**.  
+When in the arena, a **Registered Entity** is considered **InPlay**. When not in the arena, it is considered **OutOfPlay**.  
+When **OutOfPlay**, **Registered Entities** will be stored offscreen.  
+The **Get** and **Return** methods send a @ref BattlePlayStateUpdate event to update the **Unity/View** code on the **ViewPlayState** so it can use and react to that information.
+
+### Compound Entity Handling {#page-concepts-entity-management-compound-entity-handling}
 
 [{Compound Entities}](#page-concepts-entity-management-compound-entities) can be made using
 @clink{MakeCompound:Battle.QSimulation.Game.BattleEntityManager.MakeCompound(Frame, Battle.QSimulation.Game.BattleEntityManager.CompoundEntityTemplate)}

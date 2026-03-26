@@ -287,17 +287,18 @@ namespace Battle.QSimulation.Game
         /// Use @cref{Get(Frame\, BattleEntityID\, bool)} to retreive an entity in a group.
         ///
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.
+        /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="id">Entity ID of the entity to retrieve.</param>
-        /// <param name="updateViewPlayState"></param>
+        /// <param name="updateViewPlayState">Whether to update the ViewPlayState.</param>
         ///
         /// <returns>EntityRef for retrieved entity.</returns>
         public static EntityRef Get(Frame f, BattleEntityID id, bool updateViewPlayState = false)
         {
             QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
 
-            if (updateViewPlayState) f.Events.BattleInPlayStateUpdate(entityList[id], IsInPlay: true);
+            if (updateViewPlayState) f.Events.BattlePlayStateUpdate(entityList[id], IsInPlay: true);
 
             return entityList[id];
         }
@@ -310,18 +311,19 @@ namespace Battle.QSimulation.Game
         ///
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
         /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.
+        /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="id">Entity ID of the entity to retrieve.</param>
         /// <param name="offset">Offset of the desired entity within the group.</param>
-        /// <param name="updateViewPlayState"></param>
+        /// <param name="updateViewPlayState">Whether to update the ViewPlayState.</param>
         ///
         /// <returns>EntityRef for retrieved entity.</returns>
         public static EntityRef Get(Frame f, BattleEntityID id, int offset, bool updateViewPlayState = false)
         {
             QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
 
-            if (updateViewPlayState) f.Events.BattleInPlayStateUpdate(entityList[id], IsInPlay: true);
+            if (updateViewPlayState) f.Events.BattlePlayStateUpdate(entityList[id], IsInPlay: true);
 
             return entityList[id + offset];
         }
@@ -550,7 +552,7 @@ namespace Battle.QSimulation.Game
             {
                 f.Unsafe.GetPointer<Transform2D>(entityRef)->Teleport(f, entityGridToWorldPosition);
             }
-            f.Events.BattleInPlayStateUpdate(entityRef, IsInPlay: false);
+            f.Events.BattlePlayStateUpdate(entityRef, IsInPlay: false);
         }
 
         /// <summary>

@@ -85,7 +85,7 @@ namespace Quantum {
           case EventBattleCharacterTakeDamage.ID: result = typeof(EventBattleCharacterTakeDamage); return;
           case EventBattleShieldTakeDamage.ID: result = typeof(EventBattleShieldTakeDamage); return;
           case EventBattleGiveUpStateChange.ID: result = typeof(EventBattleGiveUpStateChange); return;
-          case EventBattleInPlayStateUpdate.ID: result = typeof(EventBattleInPlayStateUpdate); return;
+          case EventBattlePlayStateUpdate.ID: result = typeof(EventBattlePlayStateUpdate); return;
           case EventBattleStoneCharacterPlayHitAnimation.ID: result = typeof(EventBattleStoneCharacterPlayHitAnimation); return;
           case EventBattleDebugOnScreenMessage.ID: result = typeof(EventBattleDebugOnScreenMessage); return;
           default: break;
@@ -276,9 +276,9 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventBattleInPlayStateUpdate BattleInPlayStateUpdate(EntityRef ERef, QBoolean IsInPlay) {
+      public EventBattlePlayStateUpdate BattlePlayStateUpdate(EntityRef ERef, QBoolean IsInPlay) {
         if (_f.IsPredicted) return null;
-        var ev = _f.Context.AcquireEvent<EventBattleInPlayStateUpdate>(EventBattleInPlayStateUpdate.ID);
+        var ev = _f.Context.AcquireEvent<EventBattlePlayStateUpdate>(EventBattlePlayStateUpdate.ID);
         ev.ERef = ERef;
         ev.IsInPlay = IsInPlay;
         _f.AddEvent(ev);
@@ -926,14 +926,14 @@ namespace Quantum {
       }
     }
   }
-  public unsafe partial class EventBattleInPlayStateUpdate : EventBase {
+  public unsafe partial class EventBattlePlayStateUpdate : EventBase {
     public new const Int32 ID = 24;
     public EntityRef ERef;
     public QBoolean IsInPlay;
-    protected EventBattleInPlayStateUpdate(Int32 id, EventFlags flags) : 
+    protected EventBattlePlayStateUpdate(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventBattleInPlayStateUpdate() : 
+    public EventBattlePlayStateUpdate() : 
         base(24, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {
