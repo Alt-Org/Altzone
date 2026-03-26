@@ -138,6 +138,11 @@ namespace Battle.QSimulation.Player
     /// <summary>
     /// Handles the initial loading of player classes and routes individual game events to the correct class scripts.
     /// </summary>
+    ///
+    /// @bigtext{See [{PlayerClassManager}](#page-concepts-player-simulation-class-classmanager) for more info.}<br/>
+    /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
+    /// @bigtext{See [{Player Overview}](#page-concepts-player-overview) for more info.}<br/>
+    /// @bigtext{See [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview) for more info.}<br/>
     public static unsafe class BattlePlayerClassManager
     {
         /// <summary>

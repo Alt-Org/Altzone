@@ -144,7 +144,10 @@ namespace Battle.View.Player
         /// <summary>
         /// Handles changing the sprite for the shield gameobject.
         /// </summary>
-        /// <param name="sprite">sprite that the shield sprite is being changed to.</param>
+        ///
+        /// <param name="shieldNumber">ShieldNumber of the shield.</param>
+        /// <param name="side">The side the shield is on.</param>
+        /// <param name="hit">Whether the shield was hit or not.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ShieldSprite(int shieldNumber, ShieldSide side, bool hit)
         {

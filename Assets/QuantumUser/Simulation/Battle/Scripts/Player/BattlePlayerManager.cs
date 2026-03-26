@@ -26,8 +26,9 @@ namespace Battle.QSimulation.Player
     /// Provides static methods to initialize, spawn, despawn, and query player-related data.
     /// </summary>
     ///
-    /// [{Player Overview}](#page-concepts-player-overview)<br/>
-    /// [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview)
+    /// @bigtext{See [{PlayerClassManager}](#page-concepts-player-simulation-management-playermanager) for more info.}<br/>
+    /// @bigtext{See [{Player Overview}](#page-concepts-player-overview) for more info.}<br/>
+    /// @bigtext{See [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview) for more info.}<br/>
     ///
     /// Handles initializing players that are present in the game, as well as spawning and despawning player characters.<br/>
     /// Also contains the public and private PlayerHandle structs.
@@ -460,7 +461,7 @@ namespace Battle.QSimulation.Player
                 playerHandle.PlayState              = BattlePlayerPlayState.OutOfPlay;
                 playerHandle.IsBot                  = isBot;
                 playerHandle.AllowCharacterSwapping = true;
-                playerHandle.PlayerGiveUpState      = false;
+                playerHandle.GiveUpState      = false;
                 playerHandle.SetCharacterEntityGroupID(characterEntityGroupID);
 
                 s_debugLogger.LogFormat(f, "({0}) Player created successfully", playerSlot);

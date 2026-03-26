@@ -44,6 +44,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerSlot">Slot of the specified player.</param>
         /// <param name="playerCharacterNumber">The character number of the specified character.</param>
         /// <param name="playerCharacterId">The ID of the specified character.</param>
+        /// <param name="playerCharacterClass">The character class of the specified character.</param>
         /// <param name="playerCharacterEntity">EntityRef to the speficied character's entity.</param>
         public static int CreateShields(Frame f, BattlePlayerSlot playerSlot, int playerCharacterNumber, BattlePlayerCharacterID playerCharacterId, BattlePlayerCharacterClass playerCharacterClass, BattlePlayerEntityRef playerCharacterEntity)
         {
