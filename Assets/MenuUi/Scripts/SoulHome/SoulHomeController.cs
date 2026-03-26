@@ -23,8 +23,6 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private TextLanguageSelectorCaller _clanName;
         [SerializeField]
-        private TextMeshProUGUI _roomName;
-        [SerializeField]
         private TextMeshProUGUI _furnitureName;
         [SerializeField]
         private TowerController _soulHomeTower;
@@ -38,10 +36,6 @@ namespace MenuUI.Scripts.SoulHome
         private TextMeshProUGUI _editButtonText;
         [SerializeField]
         private GameObject _editTray;
-        [SerializeField]
-        private Button _openJukeBox;
-        [SerializeField]
-        private TextMeshProUGUI _musicName;
         [SerializeField]
         private AudioManager _audioManager;
 
@@ -77,17 +71,6 @@ namespace MenuUI.Scripts.SoulHome
         public void OnDisable()
         {
             JukeBoxSoulhomeHandler.OnChangeJukeBoxSong -= SetSongName;
-        }
-
-        public void SetRoomName(GameObject room)
-        {
-            if (room != null)
-            {
-                _roomName.gameObject.SetActive(true);
-                string roomName = room.GetComponent<RoomData>().RoomInfo.Id.ToString();
-                _roomName.GetComponent<TextMeshProUGUI>().text = "Huone " + roomName;
-            }
-            else _roomName.gameObject.SetActive(false);
         }
 
         public void AddFurniture(Furniture furniture)
@@ -194,20 +177,6 @@ namespace MenuUI.Scripts.SoulHome
             _editTray.GetComponent<RectTransform>().sizeDelta = new Vector2(width,0);
         }
 
-        public void NextMusicTrack()
-        {
-            string name = _audioManager.NextMusicTrack();
-            if (name != null)
-                _musicName.text = name;
-        }
-
-        public void PrevMusicTrack()
-        {
-            string name = _audioManager.PrevMusicTrack();
-            if (name != null)
-                _musicName.text = name;
-        }
-
         public void ConfirmEditCloseFalse() { ConfirmEditClose(false); }
         public void ConfirmEditCloseTrueWithRevert() { ConfirmEditClose(true, false); }
         public void ConfirmEditCloseTrueWithSave() { ConfirmEditClose(true, true); }
@@ -243,7 +212,7 @@ namespace MenuUI.Scripts.SoulHome
 
         private void SetSongName(MusicTrack song)
         {
-            _musicName.text = song != null ? song.Name : "Oletus";
+            //_musicName.text = song != null ? song.Name : "Oletus";
         }
 
         public bool CheckInteractableStatus()
