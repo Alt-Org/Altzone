@@ -100,7 +100,7 @@ public class DailyTaskView : AltMonoBehaviour
 
     private VersionType _gameVersion;
 
-    private DailyQuest _currentQuest;
+    private bool _viewSetupDone = false;
 
     public enum SelectedTab
     {
@@ -118,7 +118,7 @@ public class DailyTaskView : AltMonoBehaviour
         StartCoroutine(ViewSetup());
 
         _cancelTaskButton.onClick.AddListener(() => StartCancelTask());
-        _showMultipleChoiceTaskButton.onClick.AddListener(() => ShowMultipleChoiceTask());
+        _showMultipleChoiceTaskButton.onClick.AddListener(() => DailyTaskManager.Instance.ShowMultipleChoiceTask());
 
         //Buttons
         _dailyTasksTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.Tasks));
@@ -130,11 +130,19 @@ public class DailyTaskView : AltMonoBehaviour
         {
             DailyTaskProgressManager.OnTaskDone += ClearCurrentTask;
             DailyTaskProgressManager.OnTaskProgressed += UpdateOwnTaskProgress;
+            DailyTaskManager.OnAcceptTask += OnTaskAccept;
+            DailyTaskManager.OnCancelTask += OnTaskCancel;
         }
         catch
         {
             Debug.LogError("DailyTaskProgressManager instance missing!");
         }
+    }
+
+
+    private void OnEnable()
+    {
+        UpdateOwnTaskProgress();
     }
 
 
@@ -149,11 +157,37 @@ public class DailyTaskView : AltMonoBehaviour
         {
             DailyTaskProgressManager.OnTaskDone -= ClearCurrentTask;
             DailyTaskProgressManager.OnTaskProgressed -= UpdateOwnTaskProgress;
+            DailyTaskManager.OnAcceptTask -= OnTaskAccept;
+            DailyTaskManager.OnCancelTask -= OnTaskCancel;
         }
         catch
         {
             Debug.LogError("DailyTaskProgressManager instance missing!");
         }
+    }
+
+    void OnTaskAccept()
+    {
+        Debug.LogWarning("ONTASKACCEPT");
+
+        SwitchTab(SelectedTab.OwnTask);
+    }
+
+    void OnTaskCancel()
+    {
+        Debug.LogWarning("ONTASKCANCEL");
+        PlayerTask currentTask = DailyTaskManager.Instance.GetCurrentTask();
+
+        if (currentTask != null)
+        {
+            if (FindDailyQuestForTask(currentTask) != null)
+                FindDailyQuestForTask(currentTask).SetTaskAvailability(true); // Set task back to available (visually)
+        }
+
+        _ownTaskPageHandler.ClearCurrentTask();
+
+        SwitchTab(SelectedTab.Tasks);
+
     }
 
     /// <summary>
@@ -177,7 +211,10 @@ public class DailyTaskView : AltMonoBehaviour
         switch (tab)
         {
             case SelectedTab.Tasks: _dailyTasksView.SetActive(true); break;
-            case SelectedTab.OwnTask: _ownTaskView.SetActive(true); break;
+            case SelectedTab.OwnTask:
+                _ownTaskView.SetActive(true);
+                UpdateOwnTaskProgress();
+                break;
             default: _clanTaskView.SetActive(true); break;
         }
         _tabline.ActivateTabButton((int)_selectedTab);
@@ -210,7 +247,8 @@ public class DailyTaskView : AltMonoBehaviour
         PopulateTasks(data => dtCardsReady = data);
         yield return new WaitUntil(() => dtCardsReady != null);
 
-        StartCoroutine(GetSetExistingTask());
+        // Wait until GetSetExistingTask is done
+        yield return StartCoroutine(GetSetExistingTask());
 
         //Get clan data.
         ClanData clanData = null;
@@ -236,8 +274,9 @@ public class DailyTaskView : AltMonoBehaviour
         }
 
         CreateClanProgressBar(); //TODO: Move to inside the brackets when server is ready.
+        _viewSetupDone = true;
 
-        
+
     }
 
     /// <summary>
@@ -269,136 +308,26 @@ public class DailyTaskView : AltMonoBehaviour
     {
 
 
-        for (int i = 0; i < DailyTaskManager.Instance.ValidTasks.Tasks.Count; i++)
+        foreach (PlayerTask task in DailyTaskManager.Instance.ValidTasks.Tasks)
         {
 
-            PlayerTask task = DailyTaskManager.Instance.ValidTasks.Tasks[i];
             DailyQuest quest = AddTaskCardToView(task);
-            PlayerData playerData = DailyTaskManager.Instance.GetCurrentPlayerData();
 
-            if (playerData.Task != null && playerData.Task.Id == task.Id) _currentQuest = quest;
+            // Update visually
+            quest.SetTaskAvailability(task != DailyTaskManager.Instance.GetCurrentTask());
 
-            // If player has an id, reserve task for player (so other's won't be able to take the task)
-            if (task.PlayerId != "")
-            {
-                //_dailyTaskView.DailyTaskCardSlots[i].GetComponent<DailyQuest>().SetTaskAvailability(false);
-            }
-
-            if (playerData.Id == task.PlayerId)
-            {
-                playerData.Task = task; //TODO: Remove when fetching task data works.
-                _currentQuest = quest;
-            }
-            Debug.Log("Created Task: " + task.Id);
         }
 
         UpdateDailyTaskCards();
 
         callback(true);
     }
-    /// <summary>
-    /// Shows <c>Popup</c> window and handles it's response.
-    /// </summary>
-    /// <param name="Message">Message to be shown in <c>Popup</c> window.</param>
-    public IEnumerator ShowPopupAndHandleResponse(string Message, PopupData? data)
-    {
-        Popup.PopupWindowType windowType;
-        Popup.ResultType result = Popup.ResultType.Null;
-
-        switch (data.Value.Type)
-        {
-            case PopupData.PopupDataType.OwnTask: windowType = Popup.PopupWindowType.Accept; break;
-            case PopupData.PopupDataType.CancelTask: windowType = Popup.PopupWindowType.Cancel; break;
-            case PopupData.PopupDataType.ClanMilestone: windowType = Popup.PopupWindowType.ClanMilestone; break;
-            case PopupData.PopupDataType.MultipleChoice: windowType = Popup.PopupWindowType.MultipleChoice; break;
-            default: windowType = Popup.PopupWindowType.Accept; break;
-        }
-
-        StartCoroutine(Popup.RequestPopup(Message, data.Value, DailyTaskManager.Instance.OwnTaskId, windowType, data => result = data));
-
-        yield return new WaitUntil(() => result != Popup.ResultType.Null);
-
-        if (result == Popup.ResultType.Accept && data != null)
-        {
-            bool? done = null;
-
-            PlayerData playerData = DailyTaskManager.Instance.GetCurrentPlayerData();
-
-            switch (data.Value.Type)
-            {
-                case PopupData.PopupDataType.OwnTask:
-                    {
-                        
-                        if (playerData != null && playerData.Task != null)
-                        {
-                            CancelTask(data => done = data);
-                            yield return new WaitUntil(() => done != null);
-                            done = null;
-                        }
-
-                        StartCoroutine(GetSaveSetHandleOwnTask(data.Value.OwnPage, data => done = data, data.Value.DailyQuest));
-                        yield return new WaitUntil(() => (playerData.Task != null || done != null));
-
-                        if (playerData.Task == null)
-                            break;
-
-                        SwitchTab(DailyTaskView.SelectedTab.OwnTask);
-                        ShowMultipleChoiceTask();
-                        break;
-                    }
-                case PopupData.PopupDataType.CancelTask:
-                    {
-                        CancelTask(data => done = data);
-                        yield return new WaitUntil(() => done != null);
-
-                        if (!done.Value)
-                        {
-                            Debug.LogError("No task to be cancelled.");
-                            break;
-                        }
-
-                        SwitchTab(DailyTaskView.SelectedTab.Tasks);
-                        break;
-                    }
-                case PopupData.PopupDataType.ClanMilestone: break;
-                case PopupData.PopupDataType.MultipleChoice:
-                    {
-                        // This has to be changed to a better getter
-                        gameObject.GetComponentInParent<MultipleChoiceProgressListener>().UpdateProgressMultipleChoice(playerData.Task);
-                        break;
-                    }
-            }
-        }
-        else
-        {
-            Debug.Log("Cancelled Popup.");
-            // Perform actions for cancellation
-        }
-    }
+    
 
     public void StartCancelTask()
     {
-        PopupData data = new(PopupData.GetType("cancel_task"));
-        StartCoroutine(ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", data));
-    }
-
-    private void CancelTask(System.Action<bool?> done)
-    {
-        
-        if (_currentQuest != null)
-        {
-            _currentQuest.SetTaskAvailability(true); // Set task back to available
-        }
-
-        bool? managerDone = null;
-
-        StartCoroutine(DailyTaskManager.Instance.CancelTask(data => managerDone = data));
-
-        _currentQuest = null;
-        
-        _ownTaskPageHandler.ClearCurrentTask();
-
-        done(managerDone);
+        PopupData data = new(PopupData.PopupDataType.CancelTask);
+        StartCoroutine(DailyTaskManager.Instance.ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", data));
     }
 
     public void ClearCurrentTask()
@@ -426,12 +355,19 @@ public class DailyTaskView : AltMonoBehaviour
 
     private void UpdateOwnTaskProgress()
     {
-        var taskData = DailyTaskProgressManager.Instance.CurrentPlayerTask;
+        if (!_viewSetupDone) return;
+
+        PlayerTask taskData = DailyTaskProgressManager.Instance.CurrentPlayerTask;
 
         float progress = (float)taskData.TaskProgress / (float)taskData.Amount;
+        StartCoroutine(_ownTaskPageHandler.SetDailyTask(taskData));
         _ownTaskPageHandler.SetTaskProgress(progress);
         _ownTaskPageHandler.TESTSetTaskValue(taskData.TaskProgress);
-        _currentQuest.UpdateProgressBar();
+
+        DailyQuest currentQuest = FindDailyQuestForTask(taskData);
+        if (currentQuest == null) return;
+        currentQuest.ReserveTask(taskData);
+        currentQuest.UpdateProgressBar();
     }
 
 
@@ -565,103 +501,11 @@ public class DailyTaskView : AltMonoBehaviour
             yield break;
         }
 
-        SetHandleOwnTask(playerData.Task);
-        SwitchTab(DailyTaskView.SelectedTab.OwnTask);
+        DailyTaskManager.Instance.SetHandleOwnTask(playerData.Task);
     }
+    
 
-    public IEnumerator AcceptTask(PlayerTask playerTask, System.Action<bool> callback, DailyQuest quest)
-    {
-        bool? done = null;
-
-        PlayerData playerData = DailyTaskManager.Instance.GetCurrentPlayerData();
-
-        if (playerData != null && playerData.Task != null)
-        {
-            CancelTask(data => done = data);
-            yield return new WaitUntil(() => done != null);
-            done = null;
-        }
-
-        StartCoroutine(GetSaveSetHandleOwnTask(playerTask, data => done = data, quest));
-        yield return new WaitUntil(() => done != null);
-
-        if (done.Value)
-            SwitchTab(DailyTaskView.SelectedTab.OwnTask);
-
-        if (callback != null)
-            callback(done.Value);
-    }
-
-    private void ShowMultipleChoiceTask()
-    {
-        PlayerData playerData = DailyTaskManager.Instance.GetCurrentPlayerData();
-
-        if (playerData.Task == null || !MultipleChoiceOptions.Instance.IsMultipleChoice(playerData.Task)) return;
-        PopupData data = new(playerData.Task);
-        StartCoroutine(ShowPopupAndHandleResponse(playerData.Task.Content, data));
-    }
-
-    /// <summary>
-    /// Set OwnTask page.
-    /// </summary>
-    private void SetHandleOwnTask(PlayerTask playerTask)
-    {
-        Debug.LogWarning("HANDLEOWNTASK");
-        DailyTaskProgressManager.Instance.ChangeCurrentTask(playerTask);
-        _currentQuest.GetComponent<DailyQuest>().ReserveTask(playerTask);
-        DailyTaskManager.Instance.OwnTaskId = playerTask.Id;
-        StartCoroutine(_ownTaskPageHandler.SetDailyTask(playerTask));
-        _ownTaskPageHandler.SetTaskProgress((float)playerTask.TaskProgress / (float)playerTask.Amount);
-        _ownTaskPageHandler.TESTSetTaskValue(playerTask.TaskProgress);
-        Debug.Log("Task id: " + DailyTaskManager.Instance.OwnTaskId + ", has been accepted.");
-    }
-
-    /// <summary>
-    /// Save given <c>PlayerTask</c> to <c>PlayerData</c> and update owntask page.
-    /// </summary>
-    /// <param name="playerTask"><c>PlayerData</c> to be set and saved to server as current task.</param>
-    private IEnumerator GetSaveSetHandleOwnTask(PlayerTask playerTask, System.Action<bool> callback, DailyQuest quest)
-    {
-        PlayerData playerData = null;
-        PlayerTask reserveResult = null;
-        bool failed = false;
-
-
-        StartCoroutine(DailyTaskManager.Instance.GetNewPlayerData(pdata => playerData = pdata, faildata => failed = faildata));
-        yield return new WaitUntil(() => (playerData != null || failed));
-
-        if (playerData == null)
-        {
-            callback(false);
-            yield break;
-        }
-
-        if (!playerTask.Offline)
-        {
-            bool? timeout = null;
-            Coroutine coroutineTimeout;
-            StartCoroutine(ServerManager.Instance.ReservePlayerTaskFromServer(playerTask.Id, data => reserveResult = data));
-            coroutineTimeout = StartCoroutine(WaitUntilTimeout(DailyTaskManager.Instance.TimeoutSeconds, data => timeout = data));
-            yield return new WaitUntil(() => (reserveResult != null || timeout != null));
-
-            if (reserveResult == null)
-            {
-                Debug.LogError($"Failed to reserve task id: {playerTask.Id}");
-                callback(false);
-                yield break;
-            }
-
-            StopCoroutine(coroutineTimeout);
-        }
-        else reserveResult = playerTask;
-
-        playerData.Task = reserveResult;
-        DailyTaskManager.Instance.SetCurrentPlayerData(playerData);
-        quest.ReserveTask(reserveResult);
-        _currentQuest = quest;
-        SetHandleOwnTask(reserveResult);
-        callback(true);
-    }
+    
 
     //TODO: Needs to be moved or overhauled when server is ready.
     private IEnumerator CalculateClanRewardBarProgress()
@@ -765,6 +609,21 @@ public class DailyTaskView : AltMonoBehaviour
         _clanProgressBarCurrentPoints += value;
 
         StartCoroutine(CalculateClanRewardBarProgress());
+    }
+
+    private DailyQuest FindDailyQuestForTask(PlayerTask task)
+    {
+        foreach(GameObject taskCard in DailyTaskCardSlots)
+        {
+            DailyQuest taskQuest = taskCard.GetComponent<DailyQuest>();
+
+            if (taskQuest.TaskData.Id == task.Id)
+            {
+                return taskQuest;
+            }
+        }
+
+        return null;
     }
 
 }

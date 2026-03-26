@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
@@ -31,6 +30,16 @@ public class DailyTaskManager : AltMonoBehaviour
     private ClanTasks _validTasks;
 
     public ClanTasks ValidTasks { get { return _validTasks; } }
+
+    private DailyTaskView _dailyTaskView;
+
+    public delegate void StopTask();
+    public static event StopTask OnCancelTask;
+
+    public delegate void StartTask();
+    public static event StartTask OnAcceptTask;
+
+    private PlayerTask _currentTask;
 
 
     #endregion
@@ -193,6 +202,21 @@ public class DailyTaskManager : AltMonoBehaviour
         // Store validated tasks
         _validTasks = validatedTasks;
 
+        for (int i = 0; i < validatedTasks.Tasks.Count; i++)
+        {
+
+            PlayerTask task = validatedTasks.Tasks[i];
+
+            if (playerData.Task != null && playerData.Task.Id == task.Id) _currentTask = task;
+
+            if (playerData.Id == task.PlayerId)
+            {
+                playerData.Task = task; //TODO: Remove when fetching task data works.
+                _currentTask = task;
+            }
+            Debug.Log("Created Task: " + task.Id);
+        }
+
         callback(true);
     }
 
@@ -326,12 +350,17 @@ public class DailyTaskManager : AltMonoBehaviour
         bool? timeout = null;
         Coroutine coroutineTimeout;
 
+        Debug.LogWarning("Cancel Task");
+
         //Get player data.
         StartCoroutine(PlayerDataTransferer("get", null, _timeoutSeconds, tdata => timeout = tdata, pdata => playerData = pdata));
         yield return new WaitUntil(() => (playerData != null || timeout != null));
 
+        Debug.LogWarning("CancelTask: got player data");
         if (playerData == null || playerData.Task == null)
         {
+            Debug.LogWarning("CancelTask: playerdata null");
+
             done(false);
             yield break;
         }
@@ -355,15 +384,23 @@ public class DailyTaskManager : AltMonoBehaviour
         playerData.Task = null;
         timeout = null;
 
+        Debug.LogWarning("CancelTask: save");
+
+
         StartCoroutine(PlayerDataTransferer("save", playerData, _timeoutSeconds, tdata => timeout = tdata, pdata => savePlayerData = pdata));
         yield return new WaitUntil(() => (savePlayerData != null || timeout != null));
 
         if (savePlayerData == null)
         {
+            Debug.LogWarning("CancelTask: null save");
+
             done(false);
             yield break;
         }
 
+        Debug.LogWarning("CancelTask: final");
+
+        _currentTask = null;
         _currentPlayerData = savePlayerData;
         DailyTaskProgressManager.Instance.ChangeCurrentTask(savePlayerData.Task);
         Debug.Log("Task id: " + _ownTaskId + ", has been canceled.");
@@ -376,5 +413,187 @@ public class DailyTaskManager : AltMonoBehaviour
         _currentPlayerData.Task.ClearProgress();
         Debug.Log("Task id: " + _ownTaskId + ", has been cleard.");
         _ownTaskId = null;
+        _currentTask = null;
+    }
+
+    /// <summary>
+    /// Shows <c>Popup</c> window and handles it's response.
+    /// </summary>
+    /// <param name="Message">Message to be shown in <c>Popup</c> window.</param>
+    public IEnumerator ShowPopupAndHandleResponse(string Message, PopupData? data)
+    {
+        Popup.PopupWindowType windowType;
+        Popup.ResultType result = Popup.ResultType.Null;
+
+        switch (data.Value.Type)
+        {
+            case PopupData.PopupDataType.OwnTask: windowType = Popup.PopupWindowType.Accept; break;
+            case PopupData.PopupDataType.CancelTask: windowType = Popup.PopupWindowType.Cancel; break;
+            case PopupData.PopupDataType.ClanMilestone: windowType = Popup.PopupWindowType.ClanMilestone; break;
+            case PopupData.PopupDataType.MultipleChoice: windowType = Popup.PopupWindowType.MultipleChoice; break;
+            default: windowType = Popup.PopupWindowType.Accept; break;
+        }
+
+        StartCoroutine(Popup.RequestPopup(Message, data.Value, DailyTaskManager.Instance.OwnTaskId, windowType, data => result = data));
+
+        yield return new WaitUntil(() => result != Popup.ResultType.Null);
+
+        if (result == Popup.ResultType.Accept && data != null)
+        {
+            bool? done = null;
+
+            PlayerData playerData = DailyTaskManager.Instance.GetCurrentPlayerData();
+
+            Debug.LogWarning("Popup type: " + data.Value.Type);
+            switch (data.Value.Type)
+            {
+                case PopupData.PopupDataType.OwnTask:
+                    {
+
+                        if (playerData != null && playerData.Task != null)
+                        {
+                            StartCoroutine(CancelTask(data => done = data));
+                            yield return new WaitUntil(() => done != null);
+                            done = null;
+                        }
+
+                        StartCoroutine(GetSaveSetHandleOwnTask(data.Value.OwnPage, data => done = data));
+                        yield return new WaitUntil(() => (playerData.Task != null || done != null));
+
+                        if (playerData.Task == null)
+                            break;
+
+                        //SwitchTab(DailyTaskView.SelectedTab.OwnTask);
+                        
+                        ShowMultipleChoiceTask();
+                        break;
+                    }
+                case PopupData.PopupDataType.CancelTask:
+                    {
+                        Debug.LogWarning("Case: CancelTask");
+                        StartCoroutine(CancelTask(data => done = data));
+                        yield return new WaitUntil(() => done != null);
+
+                        OnCancelTask?.Invoke();
+
+                        if (!done.Value)
+                        {
+                            Debug.LogError("No task to be cancelled.");
+                            break;
+                        }
+
+                        break;
+                    }
+                case PopupData.PopupDataType.ClanMilestone: break;
+                case PopupData.PopupDataType.MultipleChoice:
+                    {
+                        // This has to be changed to a better getter
+                        gameObject.GetComponentInParent<MultipleChoiceProgressListener>().UpdateProgressMultipleChoice(playerData.Task);
+                        break;
+                    }
+            }
+        }
+        else
+        {
+            Debug.Log("Cancelled Popup.");
+            // Perform actions for cancellation
+        }
+    }
+
+    public void ShowMultipleChoiceTask()
+    {
+        PlayerData playerData = DailyTaskManager.Instance.GetCurrentPlayerData();
+
+        if (playerData.Task == null || !MultipleChoiceOptions.Instance.IsMultipleChoice(playerData.Task)) return;
+        PopupData data = new(playerData.Task);
+        StartCoroutine(ShowPopupAndHandleResponse(playerData.Task.Content, data));
+    }
+
+    /// <summary>
+    /// Save given <c>PlayerTask</c> to <c>PlayerData</c> and update owntask page.
+    /// </summary>
+    /// <param name="playerTask"><c>PlayerData</c> to be set and saved to server as current task.</param>
+    public IEnumerator GetSaveSetHandleOwnTask(PlayerTask playerTask, System.Action<bool> callback)
+    {
+        PlayerData playerData = null;
+        PlayerTask reserveResult = null;
+        bool failed = false;
+
+
+        StartCoroutine(DailyTaskManager.Instance.GetNewPlayerData(pdata => playerData = pdata, faildata => failed = faildata));
+        yield return new WaitUntil(() => (playerData != null || failed));
+
+        if (playerData == null)
+        {
+            callback(false);
+            yield break;
+        }
+
+        if (!playerTask.Offline)
+        {
+            bool? timeout = null;
+            Coroutine coroutineTimeout;
+            StartCoroutine(ServerManager.Instance.ReservePlayerTaskFromServer(playerTask.Id, data => reserveResult = data));
+            coroutineTimeout = StartCoroutine(WaitUntilTimeout(DailyTaskManager.Instance.TimeoutSeconds, data => timeout = data));
+            yield return new WaitUntil(() => (reserveResult != null || timeout != null));
+
+            if (reserveResult == null)
+            {
+                Debug.LogError($"Failed to reserve task id: {playerTask.Id}");
+                callback(false);
+                yield break;
+            }
+
+            StopCoroutine(coroutineTimeout);
+        }
+        else reserveResult = playerTask;
+
+        playerData.Task = reserveResult;
+        DailyTaskManager.Instance.SetCurrentPlayerData(playerData);
+        _currentTask = playerTask;
+        SetHandleOwnTask(reserveResult);
+        callback(true);
+    }
+
+    /// <summary>
+    /// Update OwnTask
+    /// </summary>
+    public void SetHandleOwnTask(PlayerTask playerTask)
+    {
+        Debug.LogWarning("HANDLEOWNTASK");
+        DailyTaskProgressManager.Instance.ChangeCurrentTask(playerTask);
+        DailyTaskManager.Instance.OwnTaskId = playerTask.Id;
+        _currentTask = playerTask;
+        
+        Debug.Log("Task id: " + DailyTaskManager.Instance.OwnTaskId + ", has been accepted.");
+        
+    }
+
+    public PlayerTask GetCurrentTask()
+    {
+        return _currentTask;
+    }
+
+    public IEnumerator AcceptTask(PlayerTask playerTask, System.Action<bool> callback)
+    {
+        bool? done = null;
+
+        PlayerData playerData = DailyTaskManager.Instance.GetCurrentPlayerData();
+
+        if (playerData != null && playerData.Task != null)
+        {
+            StartCoroutine(CancelTask(data => done = data));
+            yield return new WaitUntil(() => done != null);
+            done = null;
+        }
+
+        StartCoroutine(DailyTaskManager.Instance.GetSaveSetHandleOwnTask(playerTask, data => done = data));
+        yield return new WaitUntil(() => done != null);
+
+        if (done.Value)
+            OnAcceptTask?.Invoke();
+
+        if (callback != null)
+            callback(done.Value);
     }
 }

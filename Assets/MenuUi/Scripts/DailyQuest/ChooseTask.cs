@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Altzone.Scripts.AzDebug;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using MenuUi.Scripts.Window;
@@ -29,9 +28,10 @@ public class ChooseTask : MonoBehaviour
     private DailyTaskView _dailyTaskView;
     private VersionType _gameVersion;
 
-    [SerializeField]private NaviButton _dailyTaskNaviButton; // This will be removed later, now just a quick fix
+    //[SerializeField]private NaviButton _dailyTaskNaviButton;
 
     private bool _initialized = false;
+
 
     IEnumerator Initialize()
     {
@@ -42,6 +42,9 @@ public class ChooseTask : MonoBehaviour
             Debug.LogWarning("Initializing ChooseTask.cs... Already Initialized?");
             yield break;
         }
+
+        // Wait until player has done their choice on emotion selector
+        yield return new WaitUntil(() => EmotionSelectorPopupScript.EmotionInsertedToday);
 
         // Wait until DailyTaskManager is ready
         yield return new WaitUntil(() => DailyTaskManager.Instance.DataReady);
@@ -70,7 +73,6 @@ public class ChooseTask : MonoBehaviour
     private void Start()
     {
         DailyTaskProgressManager.OnTaskChange += HideSelectionWindow;
-        
     }
 
     private void OnDestroy()
@@ -80,8 +82,9 @@ public class ChooseTask : MonoBehaviour
 
     IEnumerator SwitchViewAndShowWindow()
     {
+        yield return new WaitForSeconds(0.2f); //Placeholder
         // Wait for view to switch before showing the window
-        yield return _dailyTaskNaviButton.StartCoroutine(_dailyTaskNaviButton.Navigate()); // Switch to dailytask view
+        //yield return _dailyTaskNaviButton.StartCoroutine(_dailyTaskNaviButton.Navigate()); // Switch to dailytask view
         Debug.Log("Initializing ChooseTask.cs... DailyTaskView ready!");
 
         ShowSelectionWindow();
@@ -94,7 +97,7 @@ public class ChooseTask : MonoBehaviour
     {
         GenerateTaskOptions();
         _selectionWindow.gameObject.SetActive(true);
-        EnableUIOverlayButtons(false);
+        //EnableUIOverlayButtons(false);
     }
 
 
@@ -110,7 +113,7 @@ public class ChooseTask : MonoBehaviour
     {
         _selectionWindow.gameObject.SetActive(false);
         DeleteTaskCards();
-        EnableUIOverlayButtons(true);
+        //EnableUIOverlayButtons(true);
     }
 
     /// <summary>
