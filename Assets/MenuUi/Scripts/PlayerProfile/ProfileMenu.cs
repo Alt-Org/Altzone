@@ -29,7 +29,7 @@ public class ProfileMenu : AltMonoBehaviour
     [SerializeField] private string loggedOutCarbonText;
 
     [Header("Text Components")]
-    [SerializeField] private TextMeshProUGUI _playerNameInputField;
+    [SerializeField] private TextMeshProUGUI _playerName;
     [SerializeField] private TextMeshProUGUI _playerClanNameText;
     [SerializeField] private TextMeshProUGUI _rolesErrorMessage;
     [SerializeField] private TextMeshProUGUI _TimePlayedText;
@@ -62,6 +62,15 @@ public class ProfileMenu : AltMonoBehaviour
 
     [Header("Add Friend Button")]
     [SerializeField] private Button _addFriendButton;
+
+    [Header("Clan Heart")]
+    [SerializeField] private ClanHeartColorSetter _clanHeart;
+    [SerializeField] private Color _defaultClanHeartColor = Color.white;
+
+    [Header("Role UI")]
+    [SerializeField] private Image _playerRoleIconImage;
+    [SerializeField] private ClanRoleCatalog _roleCatalog;
+    [SerializeField] private Sprite _fallbackRoleIcon;
 
     [Header("Others")]
     [SerializeField] private PlayStyle _playStyle;
@@ -180,7 +189,7 @@ public class ProfileMenu : AltMonoBehaviour
 
     private void Reset()
     {
-        _playerNameInputField.text = loggedOutPlayerText;
+        _playerName.text = loggedOutPlayerText;
         _playerClanNameText.text = _loggedOutplayerClanNameText;
         _TimePlayedText.text = loggedOutTimeText;
         _LosesText.text = loggedOutLosesText;
@@ -313,7 +322,7 @@ public class ProfileMenu : AltMonoBehaviour
 
         ToggleProfileViewMode();
 
-        _playerNameInputField.text = _playerData.Name;
+        _playerName.text = _playerData.Name;
         _activityText.text = _playerData.points.ToString();
 
         if (_playerData.stats != null)
@@ -381,13 +390,19 @@ public class ProfileMenu : AltMonoBehaviour
                     }
 
                     _playerClanNameText.text = "";
+                    ResetClanHeartUI();
+                    SetPlayerRoleUI(null);
                     return;
                 }
 
                 _clanData = clan;
                 _playerClanNameText.text = _clanData.Name;
+                RefreshClanHeartUI(_clanData);
                 _clanID = _playerData.ClanId;
                 _url = "https://altzone.fi/clans/" + _playerData.ClanId;
+
+                RefreshPlayerRoleUI();
+                _rolesErrorMessage.text = "";
             });
         }
         else
@@ -395,6 +410,7 @@ public class ProfileMenu : AltMonoBehaviour
             _clanData = null;
             _clanID = string.Empty;
             _playerClanNameText.text = "";
+            SetPlayerRoleUI(null);
         }
 
         updateTime();
@@ -448,5 +464,96 @@ public class ProfileMenu : AltMonoBehaviour
         {
             Debug.Log("No saved minutes found.");
         }
+    }
+
+    private void RefreshClanHeartUI(ClanData clanData)
+    {
+        if (_clanHeart == null)
+            return;
+
+        _clanHeart.SetOwnClanHeart = false;
+
+        if (clanData == null)
+        {
+            _clanHeart.SetHeartColor(_defaultClanHeartColor);
+            return;
+        }
+
+        _clanHeart.SetOtherClanColors(clanData);
+    }
+
+    private void ResetClanHeartUI()
+    {
+        if (_clanHeart == null)
+            return;
+
+        _clanHeart.SetOwnClanHeart = false;
+        _clanHeart.SetHeartColor(_defaultClanHeartColor);
+    }
+
+    private void SetPlayerRoleUI(string role)
+    {
+        if (string.IsNullOrWhiteSpace(role))
+        {
+            SetPlayerRoleIconVisible(false);
+            return;
+        }
+
+        if (_playerRoleIconImage != null)
+        {
+            Sprite icon = _roleCatalog != null ? _roleCatalog.GetIcon(role) : null;
+            if (icon == null) icon = _fallbackRoleIcon;
+
+            if (icon != null)
+            {
+                _playerRoleIconImage.sprite = icon;
+                SetPlayerRoleIconVisible(true);
+            }
+            else
+            {
+                SetPlayerRoleIconVisible(false);
+            }
+        }
+    }
+
+    private void SetPlayerRoleIconVisible(bool visible)
+    {
+        if (_playerRoleIconImage != null)
+            _playerRoleIconImage.gameObject.SetActive(visible);
+    }
+
+    private void RefreshPlayerRoleUI()
+    {
+        if (string.IsNullOrEmpty(_playerData?.ClanId) || string.IsNullOrEmpty(_playerData?.Id))
+        {
+            SetPlayerRoleUI(null);
+            return;
+        }
+
+        StartCoroutine(LoadViewedPlayerRoleCoroutine(_playerData.ClanId, _playerData.Id));
+    }
+
+    private IEnumerator LoadViewedPlayerRoleCoroutine(string clanId, string playerId)
+    {
+        List<ClanMember> members = null;
+
+        yield return StartCoroutine(ServerManager.Instance.GetClanMembersFromServer(clanId, m => members = m));
+
+        if (members == null)
+        {
+            SetPlayerRoleUI(null);
+            yield break;
+        }
+
+        ClanMember member = members.FirstOrDefault(m => m != null && m.Id == playerId);
+
+        string roleName = "Member";
+
+        if (member?.Role != null && !string.IsNullOrEmpty(member.Role.name))
+        {
+            roleName = member.Role.name;
+        }
+
+        SetPlayerRoleUI(roleName);
     }
 }

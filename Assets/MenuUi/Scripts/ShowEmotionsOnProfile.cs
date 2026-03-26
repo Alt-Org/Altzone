@@ -39,12 +39,12 @@ public class WeekEmotions : AltMonoBehaviour
             return;
         }
 
-        // Tyhjennet‰‰n kaikki slotit ensin ?????????????????????????????????????????????????????
+        // First fill all slots with blank images to clear any old data. This also handles the case where there are fewer than 7 emotions in the list.
         for (int i = 0; i < _weekEmotions.Length; i++)
         {
             if (_weekEmotions[i] == null)
             {
-                Debug.LogError($"Week emotion slot {i} is null on {gameObject.name}");
+                //Debug.LogError($"Week emotion slot {i} is null on {gameObject.name}");
                 continue;
             }
 
@@ -60,7 +60,7 @@ public class WeekEmotions : AltMonoBehaviour
         DateTime anchorDate;
         if (!DateTime.TryParse(_playerData.emotionSelectorDate, out anchorDate))
         {
-            Debug.LogError("Could not parse emotionSelectorDate: " + _playerData.emotionSelectorDate);
+            //Debug.LogError("Could not parse emotionSelectorDate: " + _playerData.emotionSelectorDate);
             return;
         }
 
@@ -79,14 +79,14 @@ public class WeekEmotions : AltMonoBehaviour
 
             if (_weekEmotions[targetSlot] == null)
             {
-                Debug.LogError($"Week emotion target slot {targetSlot} is null on {gameObject.name}");
+                //Debug.LogError($"Week emotion target slot {targetSlot} is null on {gameObject.name}");
                 continue;
             }
 
             Image image = _weekEmotions[targetSlot].GetComponent<Image>();
             if (image == null)
             {
-                Debug.LogError($"No Image component found on week emotion slot {targetSlot}");
+                //Debug.LogError($"No Image component found on week emotion slot {targetSlot}");
                 continue;
             }
 
