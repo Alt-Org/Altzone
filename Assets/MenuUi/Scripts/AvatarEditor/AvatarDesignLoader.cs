@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ReferenceSheets;
@@ -159,13 +160,15 @@ public class AvatarDesignLoader : AltMonoBehaviour
     {
         AvatarData avatarData = playerData?.AvatarData;
         List<AvatarPiece> invalidPieces = null;
+        List<AvatarPiece> invalidColors = null;
 
         if (avatarData != null)
         {
             invalidPieces = avatarData?.GetInvalidAvatarPieces(_avatarPartsReference);
+            invalidColors = avatarData?.GetInvalidAvatarPieceColors();
         }
 
-        if (invalidPieces?.Count == 0)
+        if (invalidPieces?.Count == 0 && invalidColors?.Count == 0)
         {
             //Debug.LogError($"Player {playerData.Name} - all pieces valid. ");
             return;
@@ -181,15 +184,24 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
         if (avatarData != null)
         {
-            var replaced = new System.Text.StringBuilder();
+            var replacedPieces = new System.Text.StringBuilder();
             foreach (AvatarPiece piece in invalidPieces)
             {
                 var oldId = playerData.AvatarData?.GetPieceID(piece);
                 playerData.AvatarData?.SetPieceID(piece, defaultAvatarData.GetPieceID(piece));
                 var newId = playerData.AvatarData?.GetPieceID(piece);
-                replaced.Append($"{piece}:{oldId} to {newId}  ");
+                replacedPieces.Append($"{piece}:{oldId} to {newId}  ");
             }
-            Debug.LogWarning($"Player {playerData.Name} - replaced {invalidPieces.Count} piece(s): {replaced}");
+
+            var replacedColors = new System.Text.StringBuilder();
+            foreach (AvatarPiece piece in invalidColors)
+            {
+                var oldcolor = playerData.AvatarData?.GetPieceColor(piece);
+                playerData.AvatarData?.SetPieceColor(piece, defaultAvatarData.GetPieceColor(piece));
+                var newColor = playerData.AvatarData?.GetPieceColor(piece);
+                replacedColors.Append($"{piece}:{oldcolor} to {newColor}  ");
+            }
+            Debug.LogWarning($"Player {playerData.Name} - replaced {invalidPieces.Count} piece(s): {replacedPieces} and {invalidColors.Count} color(s): {replacedColors}");
         }
         else
         {

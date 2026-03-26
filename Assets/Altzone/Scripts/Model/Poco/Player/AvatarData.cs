@@ -224,6 +224,19 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
             return invalidPieces;
         }
 
+        public List<AvatarPiece> GetInvalidAvatarPieceColors()
+        {
+            List<AvatarPiece> invalidColors = new();
+            
+            foreach (AvatarPiece piece in Enum.GetValues(typeof(AvatarPiece)))
+            {
+                string color = GetPieceColor(piece);
+                if (!ColorUtility.TryParseHtmlString(color, out _))
+                    invalidColors.Add(piece);
+            }
+            return invalidColors;
+        }
+
         public int GetPieceID(AvatarPiece piece) => piece switch
         {
             AvatarPiece.Hair => Hair,
