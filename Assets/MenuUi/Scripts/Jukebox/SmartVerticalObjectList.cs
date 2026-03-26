@@ -56,7 +56,7 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
 
     private int _amountToFillContentList = 0;
     private float _smartListItemLocalHeightWithPadding = 0f;
-    private float _bottomUniqueItemWorldHeightWithPadding = 0f;
+    private float _bottomItemWorldHeightWithPadding = 0f;
 
     private VerticalDirectionType _outOfBoundDirection = VerticalDirectionType.Neutral;
 
@@ -113,25 +113,8 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
 
         if (_outOfBoundDirection != VerticalDirectionType.Neutral)
         {
-            float edgeItemFullHeight = GetCurrentEdgeItemHeight(_outOfBoundDirection);
-            float smartItemHalfHeight = (edgeItemFullHeight / 2f + _verticalPadding) * (float)_outOfBoundDirection;
-            bool diffActive = false;
-
-            //TODO: WIP over drag jump fixing.
-
-            // if (_outOfBoundDirection != VerticalDirectionType.Down)
-            //     _scrollDiffCompensation = eventData.position.y - _viewportTopWorldBorder;
-//             if (_outOfBoundDirection == VerticalDirectionType.Up && eventData.position.y < _viewportBottomWorldBorder)
-//             {
-//                 float distanceOver = _viewportBottomWorldBorder - eventData.position.y;
-//                 _scrollDiffCompensation = distanceOver - smartItemHalfHeight + smartItemHalfHeight * (distanceOver / _viewport.rect.height);
-//                 Debug.LogError("correction: " + (distanceOver / _viewport.rect.height));
-//                 diffActive = true;
-// Debug.LogError($"_scrollDiffCompensation: {_scrollDiffCompensation}, distanceOver: {distanceOver}");
-//             }
-
-            if (!diffActive) _pointerStartPosition = eventData.position;
-
+            _pointerStartPosition = eventData.position;
+            _contentStartWorldPosition = _content.position;
         }
 
         _timeFromLastVelocityUpdate = Time.time;
@@ -163,7 +146,7 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
         _viewportBottomWorldBorder = _locationHelper.position.y;
 
         _smartListTopIndex = -_uniqueGameObjectsAtTop.Count;
-        _smartListBottomIndex = _smartListItems.Count - _extraSmartListItems;
+        _smartListBottomIndex = _smartListItems.Count - _extraSmartListItems - _uniqueGameObjectsAtTop.Count;
 
         if (_smartListItems.Count != _contentListLenght) CreatePool();
 
@@ -179,7 +162,7 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
             _locationHelper.anchoredPosition = new Vector2(0f, rectTransform.anchoredPosition.y);
             float worldBorderBottomPosition = _locationHelper.position.y;
 
-            _bottomUniqueItemWorldHeightWithPadding = worldBorderTopPosition - worldBorderBottomPosition;
+            _bottomItemWorldHeightWithPadding = worldBorderTopPosition - worldBorderBottomPosition;
         }
     }
 
@@ -389,8 +372,8 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
 
             if (_viewportBottomAnchoredBorder > bottomItemTopEdge) return VerticalDirectionType.Neutral;
 
-            float correction = (Mathf.Abs(GetBottomItemWorldPositionY()) - Mathf.Abs(_viewportBottomWorldBorder) -
-                                (_viewportTopWorldBorder - _viewportBottomWorldBorder) / 2f) + _bottomUniqueItemWorldHeightWithPadding;
+            float correction = GetBottomItemWorldPositionY() - _viewportBottomWorldBorder -
+                               _bottomItemWorldHeightWithPadding - _verticalPadding;
 
             _content.position = new Vector2(_content.position.x, _contentStartWorldPosition.y + worldDistance - correction);
 
@@ -440,7 +423,11 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
         if (_uniqueGameObjectsAtBottom.Count != 0)
             return _uniqueGameObjectsAtBottom[^1].localPosition.y + _uniqueGameObjectsAtBottom[^1].rect.height;
         if (_smartListItems.Count != 0)
-            return _smartListItems[^1].SelfRectTransform.localPosition.y + _smartListItems[^1].SelfRectTransform.rect.height;
+        {
+            int smartIndex = (_smartListBottomIndex - _extraSmartListItems - 1) % _smartListItems.Count;
+
+            return _smartListItems[smartIndex].SelfRectTransform.localPosition.y + _smartListItems[smartIndex].SelfRectTransform.rect.height;
+        }
         if (_uniqueGameObjectsAtTop.Count != 0)
             return _uniqueGameObjectsAtTop[^1].localPosition.y + _uniqueGameObjectsAtTop[^1].rect.height;
 
@@ -452,7 +439,12 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
         if (_uniqueGameObjectsAtBottom.Count != 0)
             return _uniqueGameObjectsAtBottom[^1].position.y;
         if (_smartListItems.Count != 0)
-            return _smartListItems[^1].SelfRectTransform.position.y;
+        {
+            int smartIndex = (_smartListItems.Count > _smartListBottomIndex ? _smartListBottomIndex :
+                _smartListBottomIndex - _extraSmartListItems) % _smartListItems.Count;
+
+            return _smartListItems[smartIndex].SelfRectTransform.position.y;
+        }
         if (_uniqueGameObjectsAtTop.Count != 0)
             return _uniqueGameObjectsAtTop[^1].position.y;
 
