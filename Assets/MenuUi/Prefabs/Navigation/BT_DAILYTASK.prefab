@@ -285,7 +285,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _naviTarget: {fileID: 11400000, guid: 4fd2d13144793604a80032bc175f1eaf, type: 2}
+  _naviTarget: {fileID: 11400000, guid: 6c8bed6698e4f58479d24e1148d18200, type: 2}
+  _useNonDefaultWindow: 0
+  _targetWindow: 0
   _isCurrentPopOutWindow: 0
 --- !u!114 &3407173271901947668
 MonoBehaviour:
@@ -311,8 +313,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _audioSelection: 1
-  _audioType: 0
+  _audioCategory: 
+  _categoryType: 0
   _audioName: ButtonNote1
-  _audioId: 0
   _playType: 1

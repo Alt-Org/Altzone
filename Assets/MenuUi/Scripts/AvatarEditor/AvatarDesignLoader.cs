@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Linq;
+using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.ReferenceSheets;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.AvatarEditor;
 using UnityEngine;
@@ -22,7 +24,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
     public delegate void AvatarDesignUpdate();
     public static event AvatarDesignUpdate OnAvatarDesignUpdate;
 
-    
+    private bool _loginStatusChanged = false;
     private static readonly AvatarPiece[] AllAvatarPieces =
         Enum.GetValues(typeof(AvatarPiece)).Cast<AvatarPiece>().ToArray();
 
@@ -36,6 +38,21 @@ public class AvatarDesignLoader : AltMonoBehaviour
     private void Start()
     {
         StartCoroutine(LoadAvatarDesignCoroutine());
+        ServerManager.OnLogInStatusChanged += UpdateOnLoginStatusChanged;
+    }
+
+    private void OnEnable()
+    {
+        if (_loginStatusChanged)
+        {
+            _loginStatusChanged = false;
+            StartCoroutine(LoadAvatarDesignCoroutine());
+        }
+    }
+
+    private void UpdateOnLoginStatusChanged(bool isLoggedIn)
+    {
+        _loginStatusChanged = isLoggedIn;
     }
 
     #endregion
@@ -91,9 +108,11 @@ public class AvatarDesignLoader : AltMonoBehaviour
         foreach (var pieceId in AllAvatarPieces)
         {
             _avatarVisualDataScriptableObject.SetAvatarPiece(pieceId, avatarVisualData.GetAvatarPiece(pieceId));
+            _avatarVisualDataScriptableObject.SetColor(pieceId, avatarVisualData.GetColor(pieceId));
         }
 
-        _avatarVisualDataScriptableObject.Color = avatarVisualData.Color;
+        _avatarVisualDataScriptableObject.SkinColor = avatarVisualData.SkinColor;
+        _avatarVisualDataScriptableObject.ClassColor = avatarVisualData.ClassColor;
     }
 
     #endregion
@@ -112,7 +131,8 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
         var avatarVisualData = new AvatarVisualData();
         PopulateAvatarPieces(avatarVisualData, playerData.AvatarData);
-        SetAvatarColor(avatarVisualData, playerData.AvatarData);
+        int classId = BaseCharacter.GetClass(playerData.SelectedCharacterId);
+        SetAvatarColor(avatarVisualData, playerData.AvatarData, classId);
 
         return avatarVisualData;
     }
@@ -129,7 +149,8 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
         var avatarVisualData = new AvatarVisualData();
         PopulateAvatarPieces(avatarVisualData, avatarData);
-        SetAvatarColor(avatarVisualData, avatarData);
+        int? classId = ServerManager.Instance.Player.currentAvatarId != null? BaseCharacter.GetClass((int)ServerManager.Instance.Player.currentAvatarId) : null;
+        SetAvatarColor(avatarVisualData, avatarData, classId);
 
         return avatarVisualData;
     }
@@ -156,7 +177,8 @@ public class AvatarDesignLoader : AltMonoBehaviour
         playerData.AvatarData = new(
             playerAvatar.Name,
             null,
-            playerAvatar.Color,
+            playerAvatar.SkinColor,
+            null,
             playerAvatar.Scale
         );
 
@@ -165,6 +187,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
         {
             playerData.AvatarData.SetPieceID((AvatarPiece)feature, int.Parse(playerAvatar.GetPartId(feature)));
             Debug.Log("The added featureId is " + playerAvatar.GetPartId(feature));
+            playerData.AvatarData.SetPieceColor(feature, playerAvatar.GetPartColor(feature));
         }
         //}
 
@@ -183,12 +206,14 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
             var partInfo = _avatarPartsReference.GetAvatarPartById(pieceIdValue.ToString());
 
-            var avatarImage = partInfo?.AvatarImage;
+            var avatarImage = partInfo;
             avatarVisualData.SetAvatarPiece(pieceId, avatarImage);
+            ColorUtility.TryParseHtmlString(avatarData.GetPieceColor(pieceId), out Color color);
+            avatarVisualData.SetColor(pieceId, color);
         }
     }
 
-    private static void SetAvatarColor(AvatarVisualData avatarVisualData, AvatarData avatarData)
+    private static void SetAvatarColor(AvatarVisualData avatarVisualData, AvatarData avatarData, int? classId)
     {
         var color = Color.white;
 
@@ -204,8 +229,16 @@ public class AvatarDesignLoader : AltMonoBehaviour
             color = Color.white;
         }
 
-        avatarVisualData.Color = color;
-    }
+        avatarVisualData.SkinColor = color;
+        if (classId != null)
+        {
+            avatarVisualData.ClassColor = ClassReference.Instance.GetColor(BaseCharacter.GetClass((CharacterID)classId));
+        }
+        else
+        {
+            avatarVisualData.ClassColor = Color.white;
+        }
+}
 
     #endregion
 
@@ -233,6 +266,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
         {
             Instance = null;
         }
+        ServerManager.OnLogInStatusChanged -= UpdateOnLoginStatusChanged;
     }
 
     #endregion

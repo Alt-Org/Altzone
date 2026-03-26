@@ -1,6 +1,7 @@
-using UnityEngine;
 using System;
+using Altzone.Scripts.Audio;
 using Altzone.Scripts.BattleUiShared;
+using UnityEngine;
 
 public class SettingsCarrier : MonoBehaviour // Script for carrying settings data between scenes
 {
@@ -86,6 +87,9 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public event Action OnTextSizeChange;
     public event Action OnButtonLabelVisibilityChange;
 
+    public delegate void MuteAllSoundsChange(bool value);
+    public static event MuteAllSoundsChange OnMuteAllSoundsChange;
+
     public delegate void TopBarChanged(int index);
     public static event TopBarChanged OnTopBarChanged;
 
@@ -128,6 +132,24 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public float menuVolume;
     public float musicVolume;
     public float soundVolume;
+
+    private bool _muteAllSounds;
+    public bool MuteAllSounds
+    {
+        get
+        {
+            return _muteAllSounds;
+        }
+
+        set
+        {
+            if (_muteAllSounds == value) return;
+            _muteAllSounds = value;
+            PlayerPrefs.SetInt("MuteAllSounds", _muteAllSounds ? 1 : 0);
+            OnMuteAllSoundsChange?.Invoke(_muteAllSounds);
+            AudioManager.Instance.UpdateMaxVolume();
+        }
+    }
 
     public bool jukeboxSoulhome;
     public bool jukeboxUI;
@@ -364,6 +386,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1);
         soundVolume = PlayerPrefs.GetFloat("SoundVolume", 1);
 
+        _muteAllSounds = PlayerPrefs.GetInt("MuteAllSounds", 0) == 1;
+
         jukeboxSoulhome = PlayerPrefs.GetInt("JukeboxSoulHome", 1) != 0;
         jukeboxUI = PlayerPrefs.GetInt("JukeboxUI",1) != 0;
         jukeboxBattle = PlayerPrefs.GetInt("JukeboxBattle", 0) != 0;
@@ -391,9 +415,21 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _mainMenuMusicName = PlayerPrefs.GetString("MainMenuMusic");
     }
 
+    public void SetVolume(SoundType type, float value)
+    {
+        switch (type)
+        {
+            case SoundType.menu: menuVolume = value; PlayerPrefs.SetFloat("MenuVolume", value); break;
+            case SoundType.music: musicVolume = value; PlayerPrefs.SetFloat("MusicVolume", value); break;
+            case SoundType.sound:  soundVolume = value; PlayerPrefs.SetFloat("SoundVolume", value); break;
+            default: break;
+        }
+    }
+
     // SentVolume combines masterVolume and another volume chosen by the sent type
     public float SentVolume(SoundType type)
     {
+        if (_muteAllSounds) return 0;
         float otherVolume = 1;
         switch (type)
         {

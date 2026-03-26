@@ -11,7 +11,7 @@ namespace MenuUI.Scripts.SoulHome
         Wander
     }
 
-    public class SoulHomeAvatarController : MonoBehaviour
+    public class SoulHomeAvatarController : MonoBehaviour, ISoulHomeObjectClick
     {
         [SerializeField] private float _minIdleTimer = 2f;
         [SerializeField] private float _maxIdleTimer = 4f;
@@ -607,7 +607,7 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
 
-        public IEnumerator WaveAnimation()
+        private IEnumerator WaveAnimation()
         {
             if (!_performingAnimation)
             {
@@ -616,6 +616,11 @@ namespace MenuUI.Scripts.SoulHome
                 yield return new WaitUntil(() => !_animator.GetCurrentAnimatorStateInfo(0).IsName(_waveAnimation.name) && !_animator.IsInTransition(0));
                 _performingAnimation = false;
             }
+        }
+
+        public void HandleClick()
+        {
+            StartCoroutine(WaveAnimation());
         }
     }
 }
