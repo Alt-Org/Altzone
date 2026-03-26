@@ -39,25 +39,61 @@ public class WeekEmotions : AltMonoBehaviour
             return;
         }
 
-        Debug.Log("Emotion count: " + _playerData.playerDataEmotionList.Count);
-
-        for (int i = 0; i < Mathf.Min(_playerData.playerDataEmotionList.Count, 10); i++)
-        {
-            Debug.Log($"Emotion[{i}] = {_playerData.playerDataEmotionList[i]}");
-        }
-
+        // Tyhjennetään kaikki slotit ensin ?????????????????????????????????????????????????????
         for (int i = 0; i < _weekEmotions.Length; i++)
         {
-            if (i >= _playerData.playerDataEmotionList.Count)
+            if (_weekEmotions[i] == null)
             {
-                _weekEmotions[i].GetComponent<Image>().sprite = _blankEmotionImage;
+                Debug.LogError($"Week emotion slot {i} is null on {gameObject.name}");
                 continue;
             }
 
-            if ((int)_playerData.playerDataEmotionList[i] == -1)
-                _weekEmotions[i].GetComponent<Image>().sprite = _blankEmotionImage;
+            _weekEmotions[i].GetComponent<Image>().sprite = _blankEmotionImage;
+        }
+
+        // If no date is set, we can't determine the order of the emotions, so we just show them in the order they are in the list.
+        if (string.IsNullOrWhiteSpace(_playerData.emotionSelectorDate))
+        {
+            return;
+        }
+
+        DateTime anchorDate;
+        if (!DateTime.TryParse(_playerData.emotionSelectorDate, out anchorDate))
+        {
+            Debug.LogError("Could not parse emotionSelectorDate: " + _playerData.emotionSelectorDate);
+            return;
+        }
+
+        // Changed to DayOfWeek form:
+        // Ma=0, Ti=1, Ke=2, To=3, Pe=4, La=5, Su=6
+        int anchorSlot = ((int)anchorDate.DayOfWeek + 6) % 7;
+
+        for (int i = 0; i < _playerData.playerDataEmotionList.Count && i < 7; i++)
+        {
+            Emotion emotion = _playerData.playerDataEmotionList[i];
+
+            // list[0] = anchorDate
+            // list[1] = previous day
+            // list[2] = day before yesterday etc.
+            int targetSlot = (anchorSlot - i + 7) % 7;
+
+            if (_weekEmotions[targetSlot] == null)
+            {
+                Debug.LogError($"Week emotion target slot {targetSlot} is null on {gameObject.name}");
+                continue;
+            }
+
+            Image image = _weekEmotions[targetSlot].GetComponent<Image>();
+            if (image == null)
+            {
+                Debug.LogError($"No Image component found on week emotion slot {targetSlot}");
+                continue;
+            }
+
+            if (emotion == Emotion.Blank)
+                image.sprite = _blankEmotionImage;
             else
-                _weekEmotions[i].GetComponent<Image>().sprite = _emotionImages[(int)_playerData.playerDataEmotionList[i]];
+                image.sprite = _emotionImages[(int)emotion];
         }
     }
 
