@@ -151,7 +151,7 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
     {
         if (image == null)
         {
-            imageComponent.enabled = false;
+            //imageComponent.enabled = false;
             return;
         }
 

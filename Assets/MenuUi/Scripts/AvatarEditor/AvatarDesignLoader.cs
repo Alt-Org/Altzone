@@ -156,38 +156,32 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
     private void EnsureValidAvatarData(PlayerData playerData)
     {
-        if (playerData.AvatarData?.Validate() == true)
+        if (playerData.AvatarData?.Validate() == true) // Update this to check if each of the parts are valid and only replace the invalid ones.
             return;
 
         Debug.LogWarning("AvatarData is null or invalid. Using default data.");
 
-        var defaultAvatars = _avatarDefaultReference.GetByCharacterId(playerData.SelectedCharacterId);
-        if (defaultAvatars == null || defaultAvatars.Count == 0)
+        var defaultAvatars = _avatarDefaultReference.GetAvatar(playerData.SelectedCharacterId);
+        if (defaultAvatars == null)
         {
             Debug.LogError($"No default avatar found for character ID: {playerData.SelectedCharacterId}");
             return;
         }
-
+        AvatarData avatarData = new(defaultAvatars);
         var playerAvatar = _avatarEditorController?.PlayerAvatar;
         if (playerAvatar == null)
         {
-            playerAvatar = new PlayerAvatar(defaultAvatars[0]);
+            playerAvatar = new PlayerAvatar(avatarData);
         }
-        playerData.AvatarData = new(
-            playerAvatar.Name,
-            null,
-            playerAvatar.SkinColor,
-            null,
-            playerAvatar.Scale
-        );
+        playerData.AvatarData = avatarData;
 
         var list = Enum.GetValues(typeof(AvatarPiece));
-        foreach (AvatarPiece feature in list) //This could possibly be replaced with turning the partlist into ServerAvatar and then giving that to the AvatarData.
+        /*foreach (AvatarPiece feature in list) //This could possibly be replaced with turning the partlist into ServerAvatar and then giving that to the AvatarData.
         {
             playerData.AvatarData.SetPieceID((AvatarPiece)feature, int.Parse(playerAvatar.GetPartId(feature)));
             Debug.Log("The added featureId is " + playerAvatar.GetPartId(feature));
             playerData.AvatarData.SetPieceColor(feature, playerAvatar.GetPartColor(feature));
-        }
+        }*/
         //}
 
     }
