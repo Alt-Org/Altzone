@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
@@ -156,10 +157,19 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
     private void EnsureValidAvatarData(PlayerData playerData)
     {
-        if (playerData.AvatarData?.Validate() == true) // Update this to check if each of the parts are valid and only replace the invalid ones.
-            return;
+        AvatarData avatarData = playerData?.AvatarData;
+        List<AvatarPiece> invalidPieces = null;
 
-        Debug.LogWarning("AvatarData is null or invalid. Using default data.");
+        if (avatarData != null)
+        {
+            invalidPieces = avatarData?.GetInvalidAvatarPieces();
+        }
+
+        if (invalidPieces?.Count == 0)
+        {
+            //Debug.LogError($"Player {playerData.Name} - all pieces valid. ");
+            return;
+        }
 
         var defaultAvatars = _avatarDefaultReference.GetAvatar(playerData.SelectedCharacterId);
         if (defaultAvatars == null)
@@ -167,13 +177,32 @@ public class AvatarDesignLoader : AltMonoBehaviour
             Debug.LogError($"No default avatar found for character ID: {playerData.SelectedCharacterId}");
             return;
         }
-        AvatarData avatarData = new(defaultAvatars);
+        AvatarData defaultAvatarData = new(defaultAvatars);
+
+        if (avatarData != null)
+        {
+            var replaced = new System.Text.StringBuilder();
+            foreach (AvatarPiece piece in invalidPieces)
+            {
+                var oldId = playerData.AvatarData?.GetPieceID(piece);
+                playerData.AvatarData?.SetPieceID(piece, defaultAvatarData.GetPieceID(piece));
+                var newId = playerData.AvatarData?.GetPieceID(piece);
+                replaced.Append($"{piece}:{oldId} to {newId}  ");
+            }
+            Debug.LogWarning($"Player {playerData.Name} - replaced {invalidPieces.Count} piece(s): {replaced}");
+        }
+        else
+        {
+            playerData.AvatarData = defaultAvatarData;
+            avatarData = defaultAvatarData;
+            Debug.LogWarning($"Player {playerData.Name} - AvatarData was null, assigned full default.");
+        }
+
         var playerAvatar = _avatarEditorController?.PlayerAvatar;
         if (playerAvatar == null)
         {
             playerAvatar = new PlayerAvatar(avatarData);
         }
-        playerData.AvatarData = avatarData;
 
         var list = Enum.GetValues(typeof(AvatarPiece));
         /*foreach (AvatarPiece feature in list) //This could possibly be replaced with turning the partlist into ServerAvatar and then giving that to the AvatarData.

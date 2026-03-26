@@ -201,6 +201,28 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
         
         public bool Validate() => IsValid;
 
+        public bool ValidateAvatarPiece(AvatarPiece piece, AvatarPartsReference partsReference)
+        {
+            int pieceId = GetPieceID(piece);
+            string pieceIdString = pieceId.ToString();
+
+            return partsReference.GetAvatarPartById(pieceIdString) != null;
+        }
+
+        public List<AvatarPiece> GetInvalidAvatarPieces()
+        {
+            List<AvatarPiece> invalidPieces = new();
+            AvatarPartsReference partsReference = AvatarPartsReference.Instance;
+            foreach (AvatarPiece piece in Enum.GetValues(typeof(AvatarPiece)))
+            {
+                if (!ValidateAvatarPiece(piece, partsReference))
+                {
+                    invalidPieces.Add(piece);
+                }
+            }
+            return invalidPieces;
+        }
+
         public int GetPieceID(AvatarPiece piece) => piece switch
         {
             AvatarPiece.Hair => Hair,
