@@ -63,7 +63,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Handle of the player who abandoned.</param>
         public static void HandlePlayerAbandoned(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
-            playerHandle.PlayerGiveUpState = true;
+            playerHandle.GiveUpState = true;
             HandleGiveUpLogic(f, playerHandle);
         }
 
@@ -301,7 +301,7 @@ namespace Battle.QSimulation.Player
             BattlePlayerSlot slot = playerHandle.Slot;
             BattleTeamNumber team = BattlePlayerManager.PlayerHandle.GetTeamNumber(playerHandle.Slot);
 
-            if (!playerHandle.PlayerGiveUpState)
+            if (!playerHandle.GiveUpState)
             {
                 f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.GiveUpVoteCancel);
                 return false;
@@ -318,7 +318,7 @@ namespace Battle.QSimulation.Player
                 {
                     f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.Abandoned);
                 }
-                if (!teammateHandle.PlayerGiveUpState) return false;
+                if (!teammateHandle.GiveUpState) return false;
             }
             else
             {
@@ -382,9 +382,9 @@ namespace Battle.QSimulation.Player
         {
             if (!input->GiveUpInput) return false;
 
-            playerHandle.PlayerGiveUpState = !playerHandle.PlayerGiveUpState;
+            playerHandle.GiveUpState = !playerHandle.GiveUpState;
 
-            s_debugLogger.LogFormat(f, "({0}) Give up input received, new state: {1}", playerHandle.Slot, playerHandle.PlayerGiveUpState);
+            s_debugLogger.LogFormat(f, "({0}) Give up input received, new state: {1}", playerHandle.Slot, playerHandle.GiveUpState);
 
             return HandleGiveUpLogic(f, playerHandle);
         }

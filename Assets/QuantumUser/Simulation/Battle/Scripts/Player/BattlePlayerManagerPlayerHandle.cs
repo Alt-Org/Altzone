@@ -148,7 +148,6 @@ namespace Battle.QSimulation.Player
             /// <param name="characterNumber">The character number to verify.</param>
             ///
             /// <returns>True if the given character number is valid, false if it is not.</returns>
-            ///
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static bool IsValidCharacterNumber(int characterNumber) => PlayerHandleInternal.IsValidCharacterNumber(characterNumber);
 
@@ -196,12 +195,6 @@ namespace Battle.QSimulation.Player
             #region Public Properties
 
             /// <summary>
-            /// Public getter for PlayState.
-            /// </summary>
-            public readonly BattlePlayerPlayState PlayState
-            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayState; }
-
-            /// <summary>
             /// Public getter for Slot.
             /// </summary>
             ///
@@ -214,6 +207,18 @@ namespace Battle.QSimulation.Player
             /// </summary>
             public readonly PlayerRef PlayerRef
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayerRef; }
+
+            /// @anchor BattlePlayerManager-PlayerHandle-PublicProperties-PlayerState
+            /// @name Player State
+            /// Player state properties
+            /// @{
+            #region Public Properties - Player State
+
+            /// <summary>
+            /// Public getter for PlayState.
+            /// </summary>
+            public readonly BattlePlayerPlayState PlayState
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayState; }
 
             /// <summary>
             /// Public getter for IsBot.
@@ -228,17 +233,6 @@ namespace Battle.QSimulation.Player
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.IsAbandoned; }
 
             /// <summary>
-            /// Public getter and setter for RespawnTimer.
-            /// </summary>
-            public readonly FrameTimer RespawnTimer
-            {
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get => _internalHandle.RespawnTimer;
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                set => _internalHandle.RespawnTimer = value;
-            }
-
-            /// <summary>
             /// Public getter and setter for AllowCharacterSwapping.
             /// </summary>
             public readonly bool AllowCharacterSwapping
@@ -248,6 +242,26 @@ namespace Battle.QSimulation.Player
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
                 set => _internalHandle.AllowCharacterSwapping = value;
             }
+
+            /// <summary>
+            /// Public getter and setter for GiveUpState.
+            /// </summary>
+            public readonly bool GiveUpState
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => _internalHandle.GiveUpState;
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                set => _internalHandle.GiveUpState = value;
+            }
+
+            #endregion Public Properties - Player State
+            /// @}
+
+            /// @anchor BattlePlayerManager-PlayerHandle-PublicProperties-PlayerCharacter
+            /// @name Player Character
+            /// Player character properties
+            /// @{
+            #region Public Properties - Player Character
 
             /// <summary>
             /// Public getter for SelectedCharacterNumber.
@@ -263,16 +277,24 @@ namespace Battle.QSimulation.Player
             public readonly BattlePlayerCharacterState SelectedCharacterState
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterState; }
 
+            #endregion Public Properties - Player Character
+            /// @}
+
+            /// @name Other Public Properties
+            /// @{
+
             /// <summary>
-            /// Public getter and setter for PlayerGiveUpState.
+            /// Public getter and setter for RespawnTimer.
             /// </summary>
-            public readonly bool PlayerGiveUpState
+            public readonly FrameTimer RespawnTimer
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get => _internalHandle.GiveUpState;
+                get => _internalHandle.RespawnTimer;
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                set => _internalHandle.GiveUpState = value;
+                set => _internalHandle.RespawnTimer = value;
             }
+
+            /// @}
 
             #endregion Public Properties
 
@@ -355,7 +377,7 @@ namespace Battle.QSimulation.Player
             private PlayerHandleInternal _internalHandle;
 
             /// <summary>
-            /// Constructor method for PlayerHandle.
+            /// Constructor for PlayerHandle.
             /// </summary>
             ///
             /// <param name="internalHandle"><see cref="PlayerHandleInternal"/> based on which PlayerHandle will be created.</param>
@@ -743,7 +765,6 @@ namespace Battle.QSimulation.Player
 
             /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicProperties-OtherPublicProperties
             /// @name Other Public Properties
-            /// Other public properties
             /// @{
 
             /// <summary>
@@ -805,7 +826,7 @@ namespace Battle.QSimulation.Player
             #region Public Methods - Player Character - Character Number
 
             /// <summary>
-            /// Sets player's SelectedCharacterNumber based on <paramref name="characterNumber"/>.<br/>
+            /// Sets player's SelectedCharacterNumber based on <paramref name="characterNumber"/>. <br/>
             /// </summary>
             ///
             /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number)
@@ -838,9 +859,9 @@ namespace Battle.QSimulation.Player
             #region Public Methods - Player Character - Character Entity
 
             /// <summary>
-            ///
+            /// Sets the player's characters <paramref name="entityGroupID"/>. <br/>
             /// </summary>
-            /// <param name="entityGroupID"></param>
+            /// <param name="entityGroupID">Group ID of the player's characters.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public readonly void SetCharacterEntityGroupID(BattleEntityID entityGroupID) => _playerManagerData->CharacterAllEntityGroupIDs[Index] = entityGroupID;
 
