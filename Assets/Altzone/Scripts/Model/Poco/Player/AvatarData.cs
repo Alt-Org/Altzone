@@ -205,7 +205,8 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
         {
             int pieceId = GetPieceID(piece);
             string pieceIdString = pieceId.ToString();
-
+            // I assume the length should always be 7 but I'm not sure
+            if (pieceIdString.Length < 4) return false;
             return partsReference.GetAvatarPartById(pieceIdString) != null;
         }
 
