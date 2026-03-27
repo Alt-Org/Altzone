@@ -162,6 +162,8 @@ public class AvatarDesignLoader : AltMonoBehaviour
         List<AvatarPiece> invalidPieces = null;
         List<AvatarPiece> invalidColors = null;
 
+        string name = playerData?.Name ?? "Unknown";
+
         if (avatarData != null)
         {
             invalidPieces = GetInvalidAvatarPieces(_avatarPartsReference, avatarData);
@@ -170,7 +172,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
         if (invalidPieces?.Count == 0 && invalidColors?.Count == 0)
         {
-            //Debug.LogError($"Player {playerData.Name} - all pieces valid. ");
+            //Debug.LogError($"Player {name} - all pieces valid. ");
             return;
         }
 
@@ -201,13 +203,13 @@ public class AvatarDesignLoader : AltMonoBehaviour
                 var newColor = playerData.AvatarData?.GetPieceColor(piece);
                 replacedColors.Append($"{piece}:{oldcolor} to {newColor}  ");
             }
-            Debug.LogWarning($"Player {playerData.Name} - replaced {invalidPieces.Count} piece(s): {replacedPieces} and {invalidColors.Count} color(s): {replacedColors}");
+            Debug.LogWarning($"Player {name} - replaced {invalidPieces.Count} piece(s): {replacedPieces} and {invalidColors.Count} color(s): {replacedColors}");
         }
         else
         {
             playerData.AvatarData = defaultAvatarData;
             avatarData = defaultAvatarData;
-            Debug.LogWarning($"Player {playerData.Name} - AvatarData was null, assigned full default.");
+            Debug.LogWarning($"Player {name} - AvatarData was null, assigned full default.");
         }
 
         var playerAvatar = _avatarEditorController?.PlayerAvatar;
