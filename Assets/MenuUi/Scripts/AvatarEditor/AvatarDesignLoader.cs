@@ -164,7 +164,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
         if (avatarData != null)
         {
-            invalidPieces = GetInvalidAvatarPieces(AvatarPartsReference.Instance, avatarData);
+            invalidPieces = GetInvalidAvatarPieces(_avatarPartsReference, avatarData);
             invalidColors = GetInvalidAvatarPieceColors(avatarData);
         }
 
@@ -240,7 +240,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
     {
         List<AvatarPiece> invalidPieces = new();
 
-        foreach (AvatarPiece piece in Enum.GetValues(typeof(AvatarPiece)))
+        foreach (AvatarPiece piece in AllAvatarPieces)
         {
             if (!ValidateAvatarPiece(piece, partsReference, avatarData))
             {
@@ -254,7 +254,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
     {
         List<AvatarPiece> invalidColors = new();
 
-        foreach (AvatarPiece piece in Enum.GetValues(typeof(AvatarPiece)))
+        foreach (AvatarPiece piece in AllAvatarPieces)
         {
             string color = avatarData.GetPieceColor(piece);
             if (!ColorUtility.TryParseHtmlString(color, out _))
