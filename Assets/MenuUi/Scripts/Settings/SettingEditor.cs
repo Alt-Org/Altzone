@@ -80,6 +80,17 @@ public class SettingEditor : MonoBehaviour
     private void OnDisable()
     {
         SettingsCarrier.OnLanguageChanged -= ChangeLanguage;
+
+
+
+        foreach(GameObject popup in _settingsPopups)
+            {
+            if (popup.activeSelf)
+            {
+                SettingsPopup PopScript = popup.GetComponent<SettingsPopup>();
+                PopScript.ClosePopup();
+            }
+        }
     }
 
     public void SetFromSlider(Slider usedSlider)
