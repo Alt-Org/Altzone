@@ -82,6 +82,17 @@ namespace MenuUi.Scripts.Lobby.InLobby
         public IEnumerator StartCreatingRoom(GameType gameType, Action callback)
         {
             _creatingRoomText.SetActive(true);
+            // Ensure the creating-room text does not block UI clicks behind it
+            try
+            {
+                var cg = _creatingRoomText.GetComponent<UnityEngine.CanvasGroup>();
+                if (cg == null) cg = _creatingRoomText.AddComponent<UnityEngine.CanvasGroup>();
+                cg.blocksRaycasts = false;
+                cg.interactable = false;
+                var graphics = _creatingRoomText.GetComponentsInChildren<UnityEngine.UI.Graphic>(true);
+                foreach (var g in graphics) g.raycastTarget = false;
+            }
+            catch { }
             bool roomCreated = false;
             do
             {
@@ -129,7 +140,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             {
                 if (clanData != null)
                 {
-                    PhotonRealtimeClient.JoinRandomOrCreateClan2v2Room(clanData.Name, UnityEngine.Random.Range(0,5001));
+                    PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(GameType.Clan2v2, null, clanData.Name, UnityEngine.Random.Range(0,5001));
                 }
             }));
         }
@@ -140,7 +151,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
             {
                 if (clanData != null)
                 {
-                    PhotonRealtimeClient.CreateRandom2v2LobbyRoom();
+                    // Join the persistent queue room instead of creating a matchmaking room immediately
+                    PhotonRealtimeClient.JoinOrCreateQueueRoom(GameType.Random2v2);
                 }
             }));
         }
@@ -190,7 +202,16 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         public void OnJoinedRoomFailed(short returnCode, string message)
         {
-            CreateCustomRoom();
+            // Only attempt to create a custom room automatically when the user was creating a custom room.
+            if (_creatingRoomText != null && _creatingRoomText.activeSelf && InLobbyController.SelectedGameType == GameType.Custom)
+            {
+                CreateCustomRoom();
+            }
+            else
+            {
+                if (_creatingRoomText != null && _creatingRoomText.activeSelf) _creatingRoomText.SetActive(false);
+                PopupSignalBus.OnChangePopupInfoSignal("Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
+            }
         }
 
         public void SwitchToRoom()

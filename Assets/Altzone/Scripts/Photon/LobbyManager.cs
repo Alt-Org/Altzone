@@ -103,7 +103,9 @@ namespace Altzone.Scripts.Lobby
         private Coroutine _reserveFreePositionHolder = null;
         private Coroutine _requestPositionChangeHolder = null;
         private Coroutine _matchmakingHolder = null;
+        private GameType _currentMatchmakingGameType = GameType.Random2v2;
         private Coroutine _followLeaderHolder = null;
+        private Coroutine _formingMatchHolder = null;
         private Coroutine _canBattleStartCheckHolder = null;
         private Coroutine _startGameHolder = null;
         // Holder for the client-side StartQuantum coroutine so it can be stopped if needed
@@ -246,6 +248,98 @@ namespace Altzone.Scripts.Lobby
         public static void RequestLobbyWindowChange(LobbyWindowTarget target, LobbyWindowTarget lobbyWindow = LobbyWindowTarget.None)
         {
             OnLobbyWindowChangeRequest?.Invoke(target, lobbyWindow);
+        }
+
+        private IEnumerator FormMatchFromQueue(string[] selected, int roomGameTypeInt, string clanName, int soulhomeRank)
+        {
+            try
+            {
+                // Notify queue members that leader is forming a match so they can start follow flow
+                try
+                {
+                    if (PhotonRealtimeClient.InRoom)
+                    {
+                        // payload: { leaderUserId, expectedUsers[] }
+                        SafeRaiseEvent(
+                            PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
+                            new object[] { PhotonRealtimeClient.LocalPlayer.UserId, selected },
+                            new RaiseEventArgs { Receivers = ReceiverGroup.Others },
+                            SendOptions.SendReliable
+                        );
+                        Debug.Log("FormMatchFromQueue: pre-notify RoomChangeRequested sent to queue members before leaving.");
+                    }
+                }
+                catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: pre-notify failed: {ex.Message}"); }
+
+                float waitStart = Time.time;
+                // If we are not on MasterServer and in lobby, leave the current room and wait until we're back in lobby on MasterServer
+                if (PhotonRealtimeClient.Client == null || PhotonRealtimeClient.Client.Server != ServerConnection.MasterServer || !PhotonRealtimeClient.InLobby || !PhotonRealtimeClient.Client.IsConnectedAndReady)
+                {
+                    Debug.Log("FormMatchFromQueue: not on MasterServer/in lobby; leaving room and waiting for lobby...");
+                    if (PhotonRealtimeClient.InRoom) PhotonRealtimeClient.LeaveRoom();
+                    while ((PhotonRealtimeClient.Client == null || PhotonRealtimeClient.Client.Server != ServerConnection.MasterServer || !PhotonRealtimeClient.InLobby || !PhotonRealtimeClient.Client.IsConnectedAndReady) && Time.time - waitStart < 8f)
+                    {
+                        yield return null;
+                    }
+                }
+
+                if (!(PhotonRealtimeClient.Client != null && PhotonRealtimeClient.Client.Server == ServerConnection.MasterServer && PhotonRealtimeClient.InLobby && PhotonRealtimeClient.Client.IsConnectedAndReady))
+                {
+                    Debug.LogWarning("FormMatchFromQueue: still not on MasterServer/in lobby; aborting match creation.");
+                    yield break;
+                }
+
+                bool created = false;
+                if ((GameType)roomGameTypeInt == GameType.Clan2v2)
+                {
+                    created = PhotonRealtimeClient.CreateClan2v2LobbyRoom(clanName, soulhomeRank, selected, true);
+                    Debug.Log($"FormMatchFromQueue: CreateClan2v2LobbyRoom returned: {created}");
+                }
+                else
+                {
+                    created = PhotonRealtimeClient.CreateRandom2v2LobbyRoom(selected, true);
+                    Debug.Log($"FormMatchFromQueue: CreateRandom2v2LobbyRoom returned: {created}");
+                }
+
+                string createdRoomName = null;
+                if (created)
+                {
+                    float joinWaitStart = Time.time;
+                    while (!PhotonRealtimeClient.InRoom && Time.time - joinWaitStart < 6f)
+                    {
+                        yield return null;
+                    }
+
+                    if (PhotonRealtimeClient.InRoom && PhotonRealtimeClient.CurrentRoom != null)
+                    {
+                        createdRoomName = PhotonRealtimeClient.CurrentRoom.Name;
+                        Debug.Log($"FormMatchFromQueue: master joined new room '{createdRoomName}'");
+                    }
+                    else
+                    {
+                        Debug.LogWarning("FormMatchFromQueue: master did not join the created room in time.");
+                    }
+                }
+
+                // Notify others to follow the leader (this triggers FollowLeaderToNewRoom on clients)
+                try
+                {
+                    // payload: { leaderUserId, expectedUsers[], optionalRoomName }
+                    object[] payload = createdRoomName == null ? new object[] { PhotonRealtimeClient.LocalPlayer.UserId, selected } : new object[] { PhotonRealtimeClient.LocalPlayer.UserId, selected, createdRoomName };
+                    SafeRaiseEvent(
+                        PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
+                        payload,
+                        new RaiseEventArgs { Receivers = ReceiverGroup.Others },
+                        SendOptions.SendReliable
+                    );
+                    Debug.Log($"FormMatchFromQueue: RoomChangeRequested sent to others. roomName={createdRoomName}");
+                }
+                catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: failed to send RoomChangeRequested: {ex.Message}"); }
+            }
+            finally
+            {
+                _formingMatchHolder = null;
+            }
         }
 
         private static long GetRoomCreationTimestamp(LobbyRoomInfo r)
@@ -467,16 +561,16 @@ namespace Altzone.Scripts.Lobby
                 bool attemptedAutoJoinCreate = false;
                 try
                 {
-                    if (!PhotonRealtimeClient.InRoom && PhotonRealtimeClient.InLobby)
-                    {
-                        Debug.Log("AutoJoinLargestMatchmakingRoom: attempting server-side JoinRandomOrCreate to form new room for remaining players.");
+                        if (!PhotonRealtimeClient.InRoom && PhotonRealtimeClient.InLobby)
+                        {
+                        Debug.Log("AutoJoinLargestMatchmakingRoom: attempting server-side JoinOrCreate matchmaking room for remaining players.");
                         try
                         {
-                            PhotonRealtimeClient.JoinRandomOrCreateRandom2v2Room(_teammates, true);
+                            PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(GameType.Random2v2, _teammates);
                         }
                         catch (Exception ex)
                         {
-                            Debug.LogWarning($"AutoJoinLargestMatchmakingRoom: JoinRandomOrCreate failed: {ex.Message}");
+                            Debug.LogWarning($"AutoJoinLargestMatchmakingRoom: JoinOrCreateMatchmakingRoom failed: {ex.Message}");
                         }
                         attemptedAutoJoinCreate = true;
                     }
@@ -503,7 +597,7 @@ namespace Altzone.Scripts.Lobby
                         {
                             try
                             {
-                                PhotonRealtimeClient.JoinRandomOrCreateRandom2v2Room(_teammates, true);
+                                PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(GameType.Random2v2, _teammates);
                             }
                             catch (Exception ex)
                             {
@@ -772,6 +866,8 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator StartMatchmaking(GameType gameType, bool broadcastRoomChange = true)
         {
+            // remember which game type we're matchmaking for so failure handlers can requeue
+            _currentMatchmakingGameType = gameType;
             bool keepHolder = false;
             try
             {
@@ -807,6 +903,7 @@ namespace Altzone.Scripts.Lobby
 
             // Sending other players in the room the room change request, setting own leader id key as own userid to indicate being the leader
             PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, PhotonRealtimeClient.LocalPlayer.UserId);
+            try { OnRoomLeaderChanged?.Invoke(true); } catch { }
 
             if (broadcastRoomChange && PhotonRealtimeClient.Client != null && PhotonRealtimeClient.Client.Server == ServerConnection.GameServer && PhotonRealtimeClient.Client.IsConnectedAndReady && PhotonRealtimeClient.InRoom)
             {
@@ -901,10 +998,10 @@ namespace Altzone.Scripts.Lobby
                 switch (gameType)
                 {
                     case GameType.Clan2v2:
-                        PhotonRealtimeClient.JoinRandomOrCreateClan2v2Room(clanName, soulhomeRank, _teammates, true);
+                        PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(GameType.Clan2v2, _teammates, clanName, soulhomeRank);
                         break;
                     case GameType.Random2v2:
-                        PhotonRealtimeClient.JoinRandomOrCreateRandom2v2Room(_teammates, true);
+                        PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(GameType.Random2v2, _teammates);
                         break;
                 }
             }
@@ -1270,7 +1367,7 @@ namespace Altzone.Scripts.Lobby
             }
         }
 
-        private IEnumerator FollowLeaderToNewRoom(string leaderUserId)
+        private IEnumerator FollowLeaderToNewRoom(string leaderUserId, string leaderRoomName = null)
         {
             try
             {
@@ -1295,8 +1392,27 @@ namespace Altzone.Scripts.Lobby
                 if (PhotonRealtimeClient.InRoom) PhotonRealtimeClient.LeaveRoom();
                 yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
 
-                // Try to find leader via friends list; fallback to joining the matchmaking room with most players
+                // If leaderRoomName provided, try to join it directly
                 bool newRoomJoined = false;
+                if (!string.IsNullOrEmpty(leaderRoomName))
+                {
+                    if (PhotonRealtimeClient.InLobby)
+                    {
+                        Debug.Log($"FollowLeaderToNewRoom: direct room join requested: {leaderRoomName}");
+                        PhotonRealtimeClient.JoinRoom(leaderRoomName);
+                        float joinStartDirect = Time.time;
+                        while (!PhotonRealtimeClient.InRoom && Time.time - joinStartDirect < 6f)
+                        {
+                            yield return null;
+                        }
+                        if (PhotonRealtimeClient.InRoom)
+                        {
+                            newRoomJoined = true;
+                        }
+                    }
+                }
+
+                // Try to find leader via friends list; fallback to joining the matchmaking room with most players
                 int attempts = 0;
                 do
                 {
@@ -1379,14 +1495,16 @@ namespace Altzone.Scripts.Lobby
                 {
                     if (!newRoomJoined && PhotonRealtimeClient.InLobby)
                     {
-                        Debug.Log("FollowLeaderToNewRoom: failed to join leader room; attempting server-side JoinRandomOrCreate to form new room.");
+                        Debug.Log("FollowLeaderToNewRoom: failed to join leader room; attempting server-side JoinOrCreate matchmaking room.");
                         try
                         {
-                            PhotonRealtimeClient.JoinRandomOrCreateRandom2v2Room(_teammates, true);
+                            Debug.Log($"FollowLeaderToNewRoom: calling JoinOrCreateMatchmakingRoom, teammates count={_teammates?.Length ?? 0}");
+                            PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(GameType.Random2v2, _teammates);
+                            Debug.Log("FollowLeaderToNewRoom: JoinOrCreateMatchmakingRoom call returned; awaiting join result...");
                         }
                         catch (Exception ex)
                         {
-                            Debug.LogWarning($"FollowLeaderToNewRoom: JoinRandomOrCreate failed: {ex.Message}");
+                            Debug.LogWarning($"FollowLeaderToNewRoom: JoinOrCreateMatchmakingRoom failed: {ex.Message}");
                         }
                         attemptedFollowJoinCreate = true;
                     }
@@ -1400,6 +1518,7 @@ namespace Altzone.Scripts.Lobby
                     {
                         yield return null;
                     }
+                        Debug.Log($"FollowLeaderToNewRoom: join attempt finished. InRoom={PhotonRealtimeClient.InRoom}");
                     // If still not in a room, wait for MasterServer lobby and retry once
                     if (!PhotonRealtimeClient.InRoom)
                     {
@@ -1567,6 +1686,17 @@ namespace Altzone.Scripts.Lobby
         {
             try
             {
+                // Do not start gameplay from a queue room; queue rooms are for waiting only.
+                try
+                {
+                    var currentRoom = PhotonRealtimeClient.CurrentRoom;
+                    if (currentRoom != null && currentRoom.CustomProperties != null && currentRoom.CustomProperties.ContainsKey(PhotonBattleRoom.IsQueueKey) && (currentRoom.CustomProperties[PhotonBattleRoom.IsQueueKey] is bool qb && qb))
+                    {
+                        Debug.Log("StartTheGameplay: aborting start because current room is a queue room.");
+                        yield break;
+                    }
+                }
+                catch { }
                 // TODO: Select random characters if some are not selected
                 //if (!PhotonBattleRoom.IsValidAllSelectedCharacters())
                 //{
@@ -2992,6 +3122,45 @@ namespace Altzone.Scripts.Lobby
                 {
                     Debug.LogWarning($"OnPlayerLeftRoom: failed to clean stale positions: {ex.Message}");
                 }
+
+                // If this is a queue room, let master form matches of 4 players when someone leaves
+                try
+                {
+                    Room qroom = PhotonRealtimeClient.CurrentRoom;
+                    if (qroom != null && qroom.CustomProperties != null && qroom.CustomProperties.ContainsKey(PhotonBattleRoom.IsQueueKey) && (qroom.CustomProperties[PhotonBattleRoom.IsQueueKey] is bool qb && qb))
+                    {
+                        if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+                        {
+                            var realPlayers = qroom.Players.Values.Where(p => p.UserId != null).ToList();
+                            if (realPlayers.Count >= 4)
+                            {
+                                var selected = realPlayers.Take(4).Select(p => p.UserId).ToArray();
+                                Debug.Log($"Queue (player left): forming match for users: {string.Join(",", selected)}");
+                                try
+                                {
+                                    int roomGameTypeInt = (qroom.CustomProperties != null && qroom.CustomProperties.ContainsKey(PhotonBattleRoom.GameTypeKey)) ? (int)qroom.CustomProperties[PhotonBattleRoom.GameTypeKey] : (int)GameType.Random2v2;
+                                    string clanName = string.Empty;
+                                    if (qroom.CustomProperties != null && qroom.CustomProperties.ContainsKey(PhotonBattleRoom.ClanNameKey)) clanName = qroom.CustomProperties[PhotonBattleRoom.ClanNameKey]?.ToString() ?? string.Empty;
+                                    int soulhomeRank = -1;
+                                    if (qroom.CustomProperties != null && qroom.CustomProperties.ContainsKey(PhotonBattleRoom.SoulhomeRank)) soulhomeRank = (int)qroom.CustomProperties[PhotonBattleRoom.SoulhomeRank];
+                                    if (_formingMatchHolder == null)
+                                    {
+                                        _formingMatchHolder = StartCoroutine(FormMatchFromQueue(selected, roomGameTypeInt, clanName, soulhomeRank));
+                                    }
+                                    else
+                                    {
+                                        Debug.Log("Queue (player left): already forming a match, skipping duplicate request.");
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.LogWarning($"Queue (player left): failed to enqueue match formation: {ex.Message}");
+                                }
+                            }
+                        }
+                    }
+                }
+                catch { }
             }
 
             LobbyOnPlayerLeftRoom?.Invoke(new(otherPlayer));
@@ -3140,6 +3309,38 @@ namespace Altzone.Scripts.Lobby
             // Signal to any waiting matchmaking coroutine that a join attempt failed
             _joinRoomFailed = true;
             LobbyOnJoinRoomFailed?.Invoke(returnCode, message);
+
+            // If the failure is a full-game error, loop back to queue/requeue flow
+            try
+            {
+                bool isGameFull = false;
+                try { if (!string.IsNullOrEmpty(message) && message.ToLower().Contains("game full")) isGameFull = true; } catch { }
+                if (!isGameFull && returnCode == 32765) isGameFull = true;
+
+                if (isGameFull)
+                {
+                    GameType requeueGameType = _currentMatchmakingGameType;
+                    try
+                    {
+                        if (PhotonRealtimeClient.CurrentRoom != null && PhotonRealtimeClient.CurrentRoom.CustomProperties != null && PhotonRealtimeClient.CurrentRoom.CustomProperties.ContainsKey(PhotonBattleRoom.GameTypeKey))
+                        {
+                            requeueGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                        }
+                    }
+                    catch { }
+
+                    try
+                    {
+                        Debug.Log($"JoinRoomFailed: game full, requeueing for {requeueGameType}");
+                        StartCoroutine(LeaveAndAutoRequeue(requeueGameType));
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogWarning($"Failed to start LeaveAndAutoRequeue after JoinRoomFailed: {ex.Message}");
+                    }
+                }
+            }
+            catch { }
         }
         public void OnJoinRandomFailed(short returnCode, string message) { LobbyOnJoinRandomFailed?.Invoke(returnCode, message); }
 
@@ -3327,20 +3528,63 @@ namespace Altzone.Scripts.Lobby
 
                 case PhotonRealtimeClient.PhotonEvent.RoomChangeRequested:
                 {
-                    string leaderUserId = (string)photonEvent.CustomData;
+                    // Payload can be either a leaderUserId string, or an object[] { leaderUserId, expectedUsers[] }
+                    string leaderUserId = string.Empty;
+                    string[] expectedUsers = null;
+                    string leaderRoomName = null;
+                    try
+                    {
+                        if (photonEvent.CustomData is object[] arr && arr.Length > 0)
+                        {
+                            if (arr[0] is string s) leaderUserId = s;
+                            if (arr.Length > 1 && arr[1] is object[] uarr)
+                            {
+                                expectedUsers = uarr.Select(o => o?.ToString()).Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                            }
+                            else if (arr.Length > 1 && arr[1] is string[] sarr)
+                            {
+                                expectedUsers = sarr;
+                            }
+                            if (arr.Length > 2 && arr[2] is string rn)
+                            {
+                                // optional room name provided by leader
+                                leaderRoomName = rn;
+                            }
+                        }
+                        else if (photonEvent.CustomData is string s)
+                        {
+                            leaderUserId = s;
+                        }
+                        else if (photonEvent.CustomData is PhotonHashtable pht)
+                        {
+                            if (pht.ContainsKey("leader")) leaderUserId = pht["leader"].ToString();
+                            if (pht.ContainsKey("expectedUsers") && pht["expectedUsers"] is object[] uo)
+                            {
+                                expectedUsers = uo.Select(o => o?.ToString()).Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                            }
+                        }
+                    }
+                    catch { }
+
                     string matchmakingLeaderId = string.Empty;
 
                     // If room is not a matchmaking room the person sending the event is the leader.
                     if (!PhotonRealtimeClient.InMatchmakingRoom)
                     {
-                        PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, leaderUserId);
-                        matchmakingLeaderId = leaderUserId;
+                        if (!string.IsNullOrEmpty(leaderUserId))
+                        {
+                            PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, leaderUserId);
+                            try { OnRoomLeaderChanged?.Invoke(leaderUserId == PhotonRealtimeClient.LocalPlayer.UserId); } catch { }
+                            matchmakingLeaderId = leaderUserId;
+                        }
                     }
 
-                    if (matchmakingLeaderId == string.Empty)
+                    if (string.IsNullOrEmpty(matchmakingLeaderId))
                     {
                         matchmakingLeaderId = PhotonRealtimeClient.LocalPlayer.GetCustomProperty(PhotonBattleRoom.LeaderIdKey, string.Empty);
                     }
+
+                    Debug.Log($"RoomChangeRequested parsed: leaderUserId={leaderUserId}, matchmakingLeaderId={matchmakingLeaderId}, expectedUsersCount={(expectedUsers?.Length ?? 0)}, leaderRoomName={leaderRoomName}");
 
                     // Do not follow leader to another room in Custom game mode.
                     bool isCustomRoom = false;
@@ -3354,9 +3598,35 @@ namespace Altzone.Scripts.Lobby
                     }
                     catch { }
 
-                    if (!isCustomRoom && _followLeaderHolder == null && leaderUserId == matchmakingLeaderId)
+                    // If expectedUsers is provided, only follow if local user is in the list
+                    bool shouldFollow = true;
+                    try
                     {
-                        _followLeaderHolder = StartCoroutine(FollowLeaderToNewRoom(leaderUserId));
+                        if (expectedUsers != null && expectedUsers.Length > 0)
+                        {
+                            var localId = PhotonRealtimeClient.LocalPlayer?.UserId;
+                            shouldFollow = !string.IsNullOrEmpty(localId) && expectedUsers.Contains(localId);
+                        }
+                    }
+                    catch { }
+
+                    // If current room is a queue room and leaving is disabled for testing, do not follow leader
+                    bool isQueueRoom = false;
+                    try
+                    {
+                        var curr = PhotonRealtimeClient.CurrentRoom;
+                        if (curr != null && curr.CustomProperties != null && curr.CustomProperties.ContainsKey(PhotonBattleRoom.IsQueueKey) && (curr.CustomProperties[PhotonBattleRoom.IsQueueKey] is bool qb && qb))
+                        {
+                            isQueueRoom = true;
+                        }
+                    }
+                    catch { }
+
+                    Debug.Log($"RoomChangeRequested decision: isCustomRoom={isCustomRoom}, followHolderNull={_followLeaderHolder==null}, leaderMatch={leaderUserId==matchmakingLeaderId}, shouldFollow={shouldFollow}");
+                    if (!isCustomRoom && _followLeaderHolder == null && leaderUserId == matchmakingLeaderId && shouldFollow)
+                    {
+                        if (!string.IsNullOrEmpty(leaderRoomName)) _followLeaderHolder = StartCoroutine(FollowLeaderToNewRoom(leaderUserId, leaderRoomName));
+                        else _followLeaderHolder = StartCoroutine(FollowLeaderToNewRoom(leaderUserId));
                     }
                     else if (isCustomRoom)
                     {
@@ -3385,6 +3655,47 @@ namespace Altzone.Scripts.Lobby
             Room room = PhotonRealtimeClient.CurrentRoom;
             int playerCount = room.PlayerCount;
             int botCount = PhotonBattleRoom.GetBotCount();
+            // If this room is a queue room, let master form matches of 4 players
+            try
+            {
+                if (room != null && room.CustomProperties != null && room.CustomProperties.ContainsKey(PhotonBattleRoom.IsQueueKey) && (bool)room.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey))
+                {
+                    // Only the master client forms matches (can be disabled for testing)
+                    if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+                    {
+                        // Count only real players
+                        var realPlayers = room.Players.Values.Where(p => p.UserId != null).ToList();
+                        if (realPlayers.Count >= 4)
+                        {
+                            // Select first 4 players to form a match
+                            var selected = realPlayers.Take(4).Select(p => p.UserId).ToArray();
+                            Debug.Log($"Queue: forming match for users: {string.Join(",", selected)}");
+                            // Create a matchmaking room for these players (master will join it) — do this via coroutine
+                            try
+                            {
+                                int roomGameTypeInt = (room.CustomProperties != null && room.CustomProperties.ContainsKey(PhotonBattleRoom.GameTypeKey)) ? (int)room.CustomProperties[PhotonBattleRoom.GameTypeKey] : (int)GameType.Random2v2;
+                                string clanName = string.Empty;
+                                if (room.CustomProperties != null && room.CustomProperties.ContainsKey(PhotonBattleRoom.ClanNameKey)) clanName = room.CustomProperties[PhotonBattleRoom.ClanNameKey]?.ToString() ?? string.Empty;
+                                int soulhomeRank = -1;
+                                if (room.CustomProperties != null && room.CustomProperties.ContainsKey(PhotonBattleRoom.SoulhomeRank)) soulhomeRank = (int)room.CustomProperties[PhotonBattleRoom.SoulhomeRank];
+                                if (_formingMatchHolder == null)
+                                {
+                                    _formingMatchHolder = StartCoroutine(FormMatchFromQueue(selected, roomGameTypeInt, clanName, soulhomeRank));
+                                }
+                                else
+                                {
+                                    Debug.Log("Queue: already forming a match, skipping duplicate request.");
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.LogWarning($"Queue: failed to enqueue match formation: {ex.Message}");
+                            }
+                        }
+                    }
+                }
+            }
+            catch { }
             if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
             {
                 if (playerCount + botCount == room.MaxPlayers && room.IsOpen) PhotonRealtimeClient.CloseRoom();
@@ -3414,7 +3725,7 @@ namespace Altzone.Scripts.Lobby
 
                         if (!isCustomRoom)
                         {
-                            try { PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, PhotonRealtimeClient.LocalPlayer.UserId); } catch { }
+                            try { PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, PhotonRealtimeClient.LocalPlayer.UserId); OnRoomLeaderChanged?.Invoke(true); } catch { }
                             SafeRaiseEvent(
                                 PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
                                 PhotonRealtimeClient.LocalPlayer.UserId,
@@ -3429,6 +3740,16 @@ namespace Altzone.Scripts.Lobby
                 catch { }
             }
             if (playerCount + botCount <= room.MaxPlayers) LobbyOnPlayerEnteredRoom?.Invoke(new(newPlayer));
+
+            // If this is a queue room, stop further matchmaking/start processing here.
+            try
+            {
+                if (room != null && room.CustomProperties != null && room.CustomProperties.ContainsKey(PhotonBattleRoom.IsQueueKey) && (room.CustomProperties[PhotonBattleRoom.IsQueueKey] is bool b && b))
+                {
+                    return;
+                }
+            }
+            catch { }
         }
         public void OnRoomPropertiesUpdate(PhotonHashtable propertiesThatChanged) { LobbyOnRoomPropertiesUpdate?.Invoke(new(propertiesThatChanged)); }
         public void OnPlayerPropertiesUpdate(Player targetPlayer, PhotonHashtable changedProps) { LobbyOnPlayerPropertiesUpdate?.Invoke(new(targetPlayer),new(changedProps)); }
@@ -3463,6 +3784,7 @@ namespace Altzone.Scripts.Lobby
                 try
                 {
                     PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, newMasterClient.UserId);
+                    try { OnRoomLeaderChanged?.Invoke(newMasterClient.UserId == PhotonRealtimeClient.LocalPlayer.UserId); } catch { }
                 }
                 catch (Exception ex)
                 {
