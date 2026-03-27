@@ -7,6 +7,7 @@ using Altzone.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using MenuUi.Scripts.Signals;
+using Altzone.Scripts.Battle.Photon;
 
 namespace MenuUi.Scripts.Signals
 {
@@ -196,7 +197,16 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     break;
                 case GameType.Clan2v2:
                 case GameType.Random2v2:
-                    if (PhotonRealtimeClient.InMatchmakingRoom && gameType == SelectedGameType) // If we are in matchmaking for the same game type show the matchmaking panel
+                    // Treat persistent queue rooms as matchmaking state so reopening the popup shows matchmaking panel
+                    bool inQueueRoom = false;
+                    try
+                    {
+                        var curr = PhotonRealtimeClient.LobbyCurrentRoom;
+                        if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey)) inQueueRoom = true;
+                    }
+                    catch { }
+
+                    if ((PhotonRealtimeClient.InMatchmakingRoom || inQueueRoom) && gameType == SelectedGameType)
                     {
                         _roomSwitcher.SwitchToMatchmakingPanel(PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient);
                         return;

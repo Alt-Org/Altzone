@@ -380,251 +380,51 @@ namespace Altzone.Scripts.Lobby
             return false;
         }
 
-        private IEnumerator AutoJoinLargestMatchmakingRoom()
+        // AutoJoinLargestMatchmakingRoom removed: client-side opportunistic joining
+        // is now fully deprecated in favor of centralized queue-based matchmaking.
+
+        // Requeue the local player into the persistent queue room for the given game type.
+        private IEnumerator RequeueToPersistentQueue(GameType gameType)
         {
             try
             {
-                // Do not auto-join other rooms when current room is a Custom game.
-                try
+                Debug.Log($"RequeueToPersistentQueue: rejoining persistent queue for {gameType}");
+                try { StopMatchmakingCoroutines(); } catch { }
+                try { StopHolderCoroutines(); } catch { }
+
+                if (PhotonRealtimeClient.InRoom) PhotonRealtimeClient.LeaveRoom();
+                float waitStart = Time.time;
+                while (!PhotonRealtimeClient.InLobby && Time.time - waitStart < 6f)
                 {
-                    if (PhotonRealtimeClient.CurrentRoom != null && PhotonRealtimeClient.CurrentRoom.CustomProperties != null
-                        && PhotonRealtimeClient.CurrentRoom.CustomProperties.ContainsKey(PhotonBattleRoom.GameTypeKey))
+                    yield return null;
+                }
+
+                if (PhotonRealtimeClient.Client != null && PhotonRealtimeClient.Client.Server == ServerConnection.MasterServer && PhotonRealtimeClient.InLobby)
+                {
+                    bool joined = false;
+                    try
                     {
-                        if ((GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey) == GameType.Custom)
-                        {
-                            Debug.Log("AutoJoinLargestMatchmakingRoom: current room is Custom game mode, aborting auto-join.");
-                            yield break;
-                        }
+                        joined = PhotonRealtimeClient.JoinOrCreateQueueRoom(gameType);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogWarning($"RequeueToPersistentQueue: JoinOrCreateQueueRoom threw: {ex.Message}");
+                    }
+
+                    if (!joined)
+                    {
+                        Debug.LogWarning("RequeueToPersistentQueue: JoinOrCreateQueueRoom failed; attempting server-side fallback JoinOrCreateMatchmakingRoom.");
+                        try { PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(gameType, _teammates); } catch { }
                     }
                 }
-                catch { }
-                string originalRoom = PhotonRealtimeClient.CurrentRoom?.Name ?? string.Empty;
-                int originalCount = PhotonRealtimeClient.CurrentRoom?.PlayerCount ?? 0;
-                int attempts = 0;
-
-                while (attempts < 8)
+                else
                 {
-                    attempts++;
-
-                    // If we have a cached room list, check if current room is already the best; if so, do nothing.
-                    if (CurrentRooms != null && CurrentRooms.Count > 0)
-                    {
-                        LobbyRoomInfo bestRoom = null;
-                        foreach (var room in CurrentRooms)
-                        {
-                            try
-                            {
-                                if (!room.CustomProperties.ContainsKey(PhotonBattleRoom.IsMatchmakingKey)) continue;
-                                if (!(room.CustomProperties[PhotonBattleRoom.IsMatchmakingKey] is bool isMm) || !isMm) continue;
-                            }
-                            catch { continue; }
-
-                            if (room.PlayerCount >= room.MaxPlayers) continue;
-
-                            if (bestRoom == null)
-                            {
-                                bestRoom = room;
-                            }
-                            else
-                            {
-                                if (room.PlayerCount > bestRoom.PlayerCount)
-                                {
-                                    bestRoom = room;
-                                }
-                                else if (room.PlayerCount == bestRoom.PlayerCount)
-                                {
-                                    // Tie-breaker: choose randomly to distribute players across equal rooms.
-                                    if (UnityEngine.Random.value > 0.5f)
-                                    {
-                                        bestRoom = room;
-                                    }
-                                }
-                            }
-                        }
-
-                        if (bestRoom != null)
-                        {
-                            // If original room is already the best (or as large as best), don't leave it.
-                            if (!string.IsNullOrEmpty(originalRoom) && (originalRoom == bestRoom.Name || originalCount >= bestRoom.PlayerCount))
-                            {
-                                yield break;
-                            }
-
-                            // We have a better room available; remember target and leave to lobby to join it.
-                            string targetRoom = bestRoom.Name;
-                            Debug.Log($"AutoJoinLargestMatchmakingRoom: better room found {targetRoom}, leaving current room to join.");
-                            if (PhotonRealtimeClient.InRoom) PhotonRealtimeClient.LeaveRoom();
-                            yield return new WaitUntil(() => PhotonRealtimeClient.InLobby || !PhotonRealtimeClient.InRoom);
-
-                            // Attempt to join the target room directly (room list may be cleared on leave)
-                            if (!string.IsNullOrEmpty(targetRoom) && PhotonRealtimeClient.InLobby)
-                            {
-                                    Debug.Log($"AutoJoinLargestMatchmakingRoom: attempting join {targetRoom}");
-                                    PhotonRealtimeClient.JoinRoom(targetRoom);
-                                float joinStart = Time.time;
-                                while (!PhotonRealtimeClient.InRoom && Time.time - joinStart < 5f)
-                                {
-                                    yield return null;
-                                }
-
-                                if (PhotonRealtimeClient.InRoom)
-                                {
-                                    yield break;
-                                }
-                            }
-                        }
-                    }
-
-                    // If we don't have a cached room list, leave to lobby and wait for room list update, then decide.
-                    if (PhotonRealtimeClient.InRoom)
-                    {
-                        PhotonRealtimeClient.LeaveRoom();
-                        yield return new WaitUntil(() => PhotonRealtimeClient.InLobby || !PhotonRealtimeClient.InRoom);
-                    }
-
-                    // Wait until room list is populated
-                    float start = Time.time;
-                    while ((CurrentRooms == null || CurrentRooms.Count == 0) && Time.time - start < 5f)
-                    {
-                        yield return null;
-                    }
-
-                    // Try to find best room from the fresh list and join it
-                    if (CurrentRooms != null && CurrentRooms.Count > 0)
-                    {
-                        LobbyRoomInfo bestRoom = null;
-                        foreach (var room in CurrentRooms)
-                        {
-                            try
-                            {
-                                if (!room.CustomProperties.ContainsKey(PhotonBattleRoom.IsMatchmakingKey)) continue;
-                                if (!(room.CustomProperties[PhotonBattleRoom.IsMatchmakingKey] is bool isMm) || !isMm) continue;
-                            }
-                            catch { continue; }
-
-                            if (room.PlayerCount >= room.MaxPlayers) continue;
-                            if (room.Name == originalRoom) continue;
-
-                            if (bestRoom == null)
-                            {
-                                bestRoom = room;
-                            }
-                            else
-                            {
-                                if (room.PlayerCount > bestRoom.PlayerCount)
-                                {
-                                    bestRoom = room;
-                                }
-                                else if (room.PlayerCount == bestRoom.PlayerCount)
-                                {
-                                    // Tie-breaker: choose randomly to distribute players across equal rooms.
-                                    if (UnityEngine.Random.value > 0.5f)
-                                    {
-                                        bestRoom = room;
-                                    }
-                                }
-                            }
-                        }
-
-                        if (bestRoom != null)
-                        {
-                            PhotonRealtimeClient.JoinRoom(bestRoom.Name);
-                            float joinStart = Time.time;
-                            while (!PhotonRealtimeClient.InRoom && Time.time - joinStart < 5f)
-                            {
-                                yield return null;
-                            }
-
-                            if (PhotonRealtimeClient.InRoom)
-                            {
-                                yield break;
-                            }
-                        }
-                    }
-
-                    // If couldn't find/join a better room, rejoin original room if possible
-                    if (!string.IsNullOrEmpty(originalRoom) && PhotonRealtimeClient.InLobby)
-                    {
-                        Debug.Log($"AutoJoinLargestMatchmakingRoom: rejoining original room {originalRoom}");
-                        PhotonRealtimeClient.JoinRoom(originalRoom);
-                        float rejoinStart = Time.time;
-                        while (!PhotonRealtimeClient.InRoom && Time.time - rejoinStart < 3f)
-                        {
-                            yield return null;
-                        }
-                    }
-
-                    // Wait before next attempt
-                    yield return new WaitForSeconds(1f + attempts);
-                }
-                // If we exited loop without joining any room, try server-side join-or-create to form a new matchmaking room
-                bool attemptedAutoJoinCreate = false;
-                try
-                {
-                        if (!PhotonRealtimeClient.InRoom && PhotonRealtimeClient.InLobby)
-                        {
-                        Debug.Log("AutoJoinLargestMatchmakingRoom: attempting server-side JoinOrCreate matchmaking room for remaining players.");
-                        try
-                        {
-                            PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(GameType.Random2v2, _teammates);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.LogWarning($"AutoJoinLargestMatchmakingRoom: JoinOrCreateMatchmakingRoom failed: {ex.Message}");
-                        }
-                        attemptedAutoJoinCreate = true;
-                    }
-                }
-                catch { }
-
-                if (attemptedAutoJoinCreate)
-                {
-                    float joinStart = Time.time;
-                    while (!PhotonRealtimeClient.InRoom && Time.time - joinStart < 5f)
-                    {
-                        yield return null;
-                    }
-                    // If still not in a room, ensure we're on MasterServer lobby and try again once
-                    if (!PhotonRealtimeClient.InRoom)
-                    {
-                        float waitStart = Time.time;
-                        while ((PhotonRealtimeClient.Client == null || PhotonRealtimeClient.Client.Server != ServerConnection.MasterServer || !PhotonRealtimeClient.InLobby) && Time.time - waitStart < 5f)
-                        {
-                            yield return null;
-                        }
-
-                        if (PhotonRealtimeClient.Client != null && PhotonRealtimeClient.Client.Server == ServerConnection.MasterServer && PhotonRealtimeClient.InLobby)
-                        {
-                            try
-                            {
-                                PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(GameType.Random2v2, _teammates);
-                            }
-                            catch (Exception ex)
-                            {
-                                Debug.LogWarning($"AutoJoinLargestMatchmakingRoom: second JoinRandomOrCreate failed: {ex.Message}");
-                            }
-
-                            float joinStart2 = Time.time;
-                            while (!PhotonRealtimeClient.InRoom && Time.time - joinStart2 < 5f)
-                            {
-                                yield return null;
-                            }
-                        }
-                    }
+                    Debug.LogWarning("RequeueToPersistentQueue: not connected to MasterServer lobby; cannot join queue.");
                 }
             }
             finally
             {
                 _autoJoinHolder = null;
-                try
-                {
-                    if (!PhotonRealtimeClient.InRoom)
-                    {
-                        Debug.Log("AutoJoinLargestMatchmakingRoom: failed to join any matchmaking room; returning to MainMenu.");
-                        OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.MainMenu);
-                    }
-                }
-                catch { }
             }
         }
         
@@ -703,7 +503,7 @@ namespace Altzone.Scripts.Lobby
                             StopCoroutine(_autoJoinHolder);
                             _autoJoinHolder = null;
                         }
-                        _autoJoinHolder = StartCoroutine(AutoJoinLargestMatchmakingRoom());
+                        _autoJoinHolder = StartCoroutine(RequeueToPersistentQueue(gameType));
                     }
                     else
                     {
@@ -3177,7 +2977,25 @@ namespace Altzone.Scripts.Lobby
             // Enable: PhotonNetwork.CloseConnection needs to to work across all clients - to kick off invalid players!
             PhotonRealtimeClient.EnableCloseConnection = true;
 
-            // Getting info if room is matchmaking room or not
+            // Getting info if room is matchmaking room, queue room or a normal lobby room
+            // If this is a persistent queue room, show matchmaking UI so player can leave the queue.
+            try
+            {
+                var currentRoom = PhotonRealtimeClient.CurrentRoom;
+                if (currentRoom != null && currentRoom.CustomProperties != null && currentRoom.CustomProperties.ContainsKey(PhotonBattleRoom.IsQueueKey) && (currentRoom.CustomProperties[PhotonBattleRoom.IsQueueKey] is bool qb && qb))
+                {
+                    bool isLeader = PhotonRealtimeClient.LocalPlayer != null && PhotonRealtimeClient.LocalPlayer.IsMasterClient;
+                    OnMatchmakingRoomEntered?.Invoke(isLeader);
+                    // Start verify loop for master so stale reservations are cleared in queue as well
+                    if (PhotonRealtimeClient.LocalPlayer != null && PhotonRealtimeClient.LocalPlayer.IsMasterClient && _verifyPositionsHolder == null)
+                    {
+                        _verifyPositionsHolder = StartCoroutine(VerifyRoomPositionsLoop());
+                    }
+                    return;
+                }
+            }
+            catch { }
+
             if (PhotonRealtimeClient.InMatchmakingRoom)
             {
                 // If we previously got a CancelGameStart and now rejoined matchmaking, leave and return to main menu
@@ -3224,7 +3042,7 @@ namespace Altzone.Scripts.Lobby
                 {
                     if (_autoJoinHolder == null)
                     {
-                        _autoJoinHolder = StartCoroutine(AutoJoinLargestMatchmakingRoom());
+                        _autoJoinHolder = StartCoroutine(RequeueToPersistentQueue(_currentMatchmakingGameType));
                     }
                 }
                 // If we're master client, start periodic verification of room position keys to clear stale reservations

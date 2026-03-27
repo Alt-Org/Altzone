@@ -140,7 +140,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
             {
                 if (clanData != null)
                 {
-                    PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(GameType.Clan2v2, null, clanData.Name, UnityEngine.Random.Range(0,5001));
+                    // Join the persistent queue room instead of creating a matchmaking room immediately
+                    PhotonRealtimeClient.JoinOrCreateQueueRoom(GameType.Clan2v2);
                 }
             }));
         }
