@@ -116,13 +116,13 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     /// <summary>
     /// Start the task
     /// </summary>
-    public void DailyTaskAccept()
+    /*public void DailyTaskAccept()
     {
         if (!_clickEnabled || _taskData.PlayerId != "")
             return;
 
         StartCoroutine(DailyTaskManager.Instance.AcceptTask(_taskData, null));
-    }
+    }*/
 
     /// <summary>
     /// Returns the best location for the <c>Popup.cs</c> window depending <br/>

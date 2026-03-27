@@ -472,7 +472,7 @@ public class DailyTaskManager : AltMonoBehaviour
         {
             bool? done = null;
 
-            PlayerData playerData = _currentPlayerData;
+            //PlayerData playerData = _currentPlayerData;
 
             Debug.LogWarning("Popup type: " + data.Value.Type);
             switch (data.Value.Type)
@@ -480,35 +480,42 @@ public class DailyTaskManager : AltMonoBehaviour
                 case PopupData.PopupDataType.OwnTask:
                     {
                         Debug.LogWarning("Case: OwnTask");
-                        if (playerData != null && playerData.Task != null)
+                        if (_currentPlayerData != null && _currentPlayerData.Task != null)
                         {
                             Debug.LogWarning("Found task!");
-                            StartCoroutine(CancelTask(data => done = data));
+                            StartCoroutine(CancelTask(data2 => done = data2));
                             yield return new WaitUntil(() => done != null);
                             done = null;
                         }
 
                         Debug.LogWarning("Waiting");
-                        StartCoroutine(GetSaveSetHandleOwnTask(data.Value.OwnPage, data => done = data));
-                        yield return new WaitUntil(() => (playerData.Task != null || done != null));
+                        Debug.LogWarning("Done: " + done);
+
+                        //yield return StartCoroutine(GetSaveSetHandleOwnTask(data.Value.OwnPage, data2 => done = data2));
+                        //yield return new WaitForSeconds(2.5f);
+                        yield return new WaitUntil(() => (_currentPlayerData.Task != null || done != null));
+
+                        Debug.LogWarning("Done2: " + done);
+
+                        
                         Debug.LogWarning("Done waiting");
 
-                        if (playerData.Task == null)
+                        if (_currentPlayerData.Task == null)
                         {
                             Debug.LogWarning("PlayerDataTask is null");
                             break;
                         }
-                            
 
-                        //SwitchTab(DailyTaskView.SelectedTab.OwnTask);
-                        
+                        OnAcceptTask?.Invoke();
+
                         ShowMultipleChoiceTask();
+
                         break;
                     }
                 case PopupData.PopupDataType.CancelTask:
                     {
                         Debug.LogWarning("Case: CancelTask");
-                        StartCoroutine(CancelTask(data => done = data));
+                        StartCoroutine(CancelTask(data2 => done = data2));
                         yield return new WaitUntil(() => done != null);
 
                         OnCancelTask?.Invoke();
@@ -595,6 +602,7 @@ public class DailyTaskManager : AltMonoBehaviour
         playerData.Task = reserveResult;
         DailyTaskManager.Instance.SetCurrentPlayerData(playerData);
         SetHandleOwnTask(reserveResult);
+        Debug.LogWarning("Callback?");
         callback(true);
     }
 
@@ -617,7 +625,7 @@ public class DailyTaskManager : AltMonoBehaviour
         return _currentTask;
     }
 
-    public IEnumerator AcceptTask(PlayerTask playerTask, System.Action<bool> callback)
+    /*public IEnumerator AcceptTask(PlayerTask playerTask, System.Action<bool> callback)
     {
         bool? done = null;
 
@@ -633,10 +641,11 @@ public class DailyTaskManager : AltMonoBehaviour
         StartCoroutine(DailyTaskManager.Instance.GetSaveSetHandleOwnTask(playerTask, data => done = data));
         yield return new WaitUntil(() => done != null);
 
+        Debug.LogWarning("DONE VALUE: " + done.Value + " | " + done);
         if (done.Value)
             OnAcceptTask?.Invoke();
 
         if (callback != null)
             callback(done.Value);
-    }
+    }*/
 }
