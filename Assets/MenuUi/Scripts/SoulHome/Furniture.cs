@@ -33,21 +33,17 @@ namespace MenuUI.Scripts.SoulHome
         public FurnitureGrid FurnitureGrid = FurnitureGrid.None;
         public int Room = -1;
         public bool IsRotated;
-        public FurnitureSize Size;
-        public FurnitureSize RotatedSize;
-        public Vector3Int FSize;
+        public Vector3Int FurnitureSize;
         public FurniturePlacement Place;
         public double Weight;
         public float Value;
 
-        public Furniture(int Id, string Name, Vector2Int Position, FurnitureSize Size, FurnitureSize RotatedSize, FurniturePlacement Place, float Value, float Weight, bool IsRotated, int Room = -1)
+        public Furniture(int Id, string Name, Vector2Int Position, FurniturePlacement Place, float Value, float Weight, bool IsRotated, int Room = -1)
         {
             this.Id = Id.ToString();
             this.Name = Name;
             this.Position = Position;
             this.Room = Room;
-            this.Size = Size;
-            this.RotatedSize = RotatedSize;
             this.Place = Place;
             this.Value = Value;
             this.Weight = Weight;
@@ -62,9 +58,7 @@ namespace MenuUI.Scripts.SoulHome
             Position = clanFurniture.Position;
             FurnitureGrid = clanFurniture.FurnitureGrid;
             Room = clanFurniture.Room;
-            Size = gameFurniture.Size;
-            RotatedSize = gameFurniture.RotatedSize;
-            FSize = gameFurniture.FurnitureSize;
+            FurnitureSize = gameFurniture.FurnitureSize;
             Place = gameFurniture.Placement;
             Value = gameFurniture.Value;
             Weight = gameFurniture.Weight;
@@ -90,116 +84,28 @@ namespace MenuUI.Scripts.SoulHome
 
         public Vector3Int GetFurnitureNormalSize()
         {
-            //FurnitureSize furnitureSize;
-            //if (IsRotated) furnitureSize = RotatedSize;
-            //else furnitureSize = Size;
-
-            //return GetFurnitureSize(furnitureSize);
-
             return Place switch
             {
                 FurniturePlacement.Floor or
                 FurniturePlacement.FloorByWall or
                 FurniturePlacement.FloorNonblock or
-                FurniturePlacement.Ceiling => new(FSize.x, FSize.z, FSize.y),
-                FurniturePlacement.Wall => new(FSize.x, FSize.y, FSize.z),
-                _ => new(FSize.x, FSize.z, FSize.y),
+                FurniturePlacement.Ceiling => new(FurnitureSize.x, FurnitureSize.z, FurnitureSize.y),
+                FurniturePlacement.Wall => new(FurnitureSize.x, FurnitureSize.y, FurnitureSize.z),
+                _ => new(FurnitureSize.x, FurnitureSize.z, FurnitureSize.y),
             };
         }
 
         public Vector3Int GetFurnitureSizeRotated()
         {
-            //FurnitureSize furnitureSize;
-            //if (IsRotated) furnitureSize = Size;
-            //else furnitureSize = RotatedSize;
-
-            //return GetFurnitureSize(furnitureSize);
-
             return Place switch
             {
                 FurniturePlacement.Floor or
                 FurniturePlacement.FloorByWall or
                 FurniturePlacement.FloorNonblock or
-                FurniturePlacement.Ceiling => new(FSize.z, FSize.x, FSize.y),
-                FurniturePlacement.Wall => new(FSize.y, FSize.x, FSize.z),
-                _ => new(FSize.z, FSize.x, FSize.y),
+                FurniturePlacement.Ceiling => new(FurnitureSize.z, FurnitureSize.x, FurnitureSize.y),
+                FurniturePlacement.Wall => new(FurnitureSize.y, FurnitureSize.x, FurnitureSize.z),
+                _ => new(FurnitureSize.z, FurnitureSize.x, FurnitureSize.y),
             };
-        }
-
-        public static Vector2Int GetFurnitureSize(FurnitureSize furnitureSize)
-        {
-            //Debug.Log(furnitureSize);
-
-            switch (furnitureSize)
-            {
-                case FurnitureSize.OneXOne:
-                    return new Vector2Int(1, 1);
-                case FurnitureSize.OneXTwo:
-                    return new Vector2Int(2, 1);
-                case FurnitureSize.OneXThree:
-                    return new Vector2Int(3, 1);
-                case FurnitureSize.OneXFour:
-                    return new Vector2Int(4, 1);
-                case FurnitureSize.OneXSix:
-                    return new Vector2Int(6, 1);
-                case FurnitureSize.TwoXOne:
-                    return new Vector2Int(1, 2);
-                case FurnitureSize.TwoXTwo:
-                    return new Vector2Int(2, 2);
-                case FurnitureSize.TwoXThree:
-                    return new Vector2Int(3, 2);
-                case FurnitureSize.TwoXFour:
-                    return new Vector2Int(4, 2);
-                case FurnitureSize.TwoXFive:
-                    return new Vector2Int(5, 2);
-                case FurnitureSize.TwoXSix:
-                    return new Vector2Int(6, 2);
-                case FurnitureSize.TwoXSeven:
-                    return new Vector2Int(7, 2);
-                case FurnitureSize.TwoXEight:
-                    return new Vector2Int(8, 2);
-                case FurnitureSize.ThreeXOne:
-                    return new Vector2Int(1, 3);
-                case FurnitureSize.ThreeXTwo:
-                    return new Vector2Int(2, 3);
-                case FurnitureSize.ThreeXThree:
-                    return new Vector2Int(3, 3);
-                case FurnitureSize.ThreeXFour:
-                    return new Vector2Int(4, 3);
-                case FurnitureSize.ThreeXFive:
-                    return new Vector2Int(5, 3);
-                case FurnitureSize.ThreeXSix:
-                    return new Vector2Int(6, 3);
-                case FurnitureSize.ThreeXSeven:
-                    return new Vector2Int(7, 3);
-                case FurnitureSize.ThreeXEight:
-                    return new Vector2Int(8, 3);
-                case FurnitureSize.FourXOne:
-                    return new Vector2Int(1, 4);
-                case FurnitureSize.FourXTwo:
-                    return new Vector2Int(2, 4);
-                case FurnitureSize.FourXThree:
-                    return new Vector2Int(3, 4);
-                case FurnitureSize.FourXFour:
-                    return new Vector2Int(4, 4);
-                case FurnitureSize.FiveXTwo:
-                    return new Vector2Int(2, 5);
-                case FurnitureSize.FiveXThree:
-                    return new Vector2Int(3, 5);
-                case FurnitureSize.FiveXFive:
-                    return new Vector2Int(5, 5);
-                case FurnitureSize.FiveXSix:
-                    return new Vector2Int(6, 5);
-                case FurnitureSize.FiveXEight:
-                    return new Vector2Int(8, 5);
-                case FurnitureSize.SixXFive:
-                    return new Vector2Int(5, 6);
-                case FurnitureSize.SevenXThree:
-                    return new Vector2Int(3, 7);
-                default:
-                    Debug.LogError("Error: Invalid furniture size");
-                    return new Vector2Int(0, 0);
-            }
         }
 
         public void ResetPosition()

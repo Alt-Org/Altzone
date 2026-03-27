@@ -149,10 +149,6 @@ namespace MenuUI.Scripts.SoulHome
             Vector2 position = Vector2.zero;
             //transform.localPosition = Vector2.zero;
 
-            FurnitureSize furnitureSize;
-            if (Furniture.IsRotated) furnitureSize = Furniture.RotatedSize;
-            else furnitureSize = Furniture.Size;
-
             float width = transform.parent.GetComponent<FurnitureSlot>().width * Furniture.GetFurnitureSize().x;
 
             if (!reverse)
