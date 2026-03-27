@@ -164,8 +164,8 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
         if (avatarData != null)
         {
-            invalidPieces = avatarData?.GetInvalidAvatarPieces(_avatarPartsReference);
-            invalidColors = avatarData?.GetInvalidAvatarPieceColors();
+            invalidPieces = GetInvalidAvatarPieces(AvatarPartsReference.Instance, avatarData);
+            invalidColors = GetInvalidAvatarPieceColors(avatarData);
         }
 
         if (invalidPieces?.Count == 0 && invalidColors?.Count == 0)
@@ -225,6 +225,42 @@ public class AvatarDesignLoader : AltMonoBehaviour
         }*/
         //}
 
+    }
+
+    public bool ValidateAvatarPiece(AvatarPiece piece, AvatarPartsReference partsReference, AvatarData avatarData)
+    {
+        int pieceId = avatarData.GetPieceID(piece);
+        string pieceIdString = pieceId.ToString();
+        // I assume the length should always be 7 but I'm not sure
+        if (pieceIdString.Length < 4) return false;
+        return partsReference.GetAvatarPartById(pieceIdString) != null;
+    }
+
+    public List<AvatarPiece> GetInvalidAvatarPieces(AvatarPartsReference partsReference, AvatarData avatarData)
+    {
+        List<AvatarPiece> invalidPieces = new();
+
+        foreach (AvatarPiece piece in Enum.GetValues(typeof(AvatarPiece)))
+        {
+            if (!ValidateAvatarPiece(piece, partsReference, avatarData))
+            {
+                invalidPieces.Add(piece);
+            }
+        }
+        return invalidPieces;
+    }
+
+    public List<AvatarPiece> GetInvalidAvatarPieceColors(AvatarData avatarData)
+    {
+        List<AvatarPiece> invalidColors = new();
+
+        foreach (AvatarPiece piece in Enum.GetValues(typeof(AvatarPiece)))
+        {
+            string color = avatarData.GetPieceColor(piece);
+            if (!ColorUtility.TryParseHtmlString(color, out _))
+                invalidColors.Add(piece);
+        }
+        return invalidColors;
     }
 
     private void PopulateAvatarPieces(AvatarVisualData avatarVisualData, AvatarData avatarData)

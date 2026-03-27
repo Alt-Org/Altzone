@@ -201,42 +201,6 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
         
         public bool Validate() => IsValid;
 
-        public bool ValidateAvatarPiece(AvatarPiece piece, AvatarPartsReference partsReference)
-        {
-            int pieceId = GetPieceID(piece);
-            string pieceIdString = pieceId.ToString();
-            // I assume the length should always be 7 but I'm not sure
-            if (pieceIdString.Length < 4) return false;
-            return partsReference.GetAvatarPartById(pieceIdString) != null;
-        }
-
-        public List<AvatarPiece> GetInvalidAvatarPieces(AvatarPartsReference partsReference)
-        {
-            List<AvatarPiece> invalidPieces = new();
-            
-            foreach (AvatarPiece piece in Enum.GetValues(typeof(AvatarPiece)))
-            {
-                if (!ValidateAvatarPiece(piece, partsReference))
-                {
-                    invalidPieces.Add(piece);
-                }
-            }
-            return invalidPieces;
-        }
-
-        public List<AvatarPiece> GetInvalidAvatarPieceColors()
-        {
-            List<AvatarPiece> invalidColors = new();
-            
-            foreach (AvatarPiece piece in Enum.GetValues(typeof(AvatarPiece)))
-            {
-                string color = GetPieceColor(piece);
-                if (!ColorUtility.TryParseHtmlString(color, out _))
-                    invalidColors.Add(piece);
-            }
-            return invalidColors;
-        }
-
         public int GetPieceID(AvatarPiece piece) => piece switch
         {
             AvatarPiece.Hair => Hair,
