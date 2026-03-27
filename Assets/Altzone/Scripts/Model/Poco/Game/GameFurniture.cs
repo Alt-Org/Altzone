@@ -108,6 +108,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             Rarity = rarity;
             Size = size;
             RotatedSize = rotatedSize;
+            FurnitureSize = Vector3Int.one;
             Placement = placementType;
             Weight = weight;
             Value = value;
@@ -133,6 +134,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             Rarity = baseFurniture.Rarity;
             Size = baseFurniture.Size;
             RotatedSize = baseFurniture.RotatedSize;
+            FurnitureSize = baseFurniture.FurnitureSize;
             Placement = baseFurniture.Placement;
             Weight = baseFurniture.Weight;
             Value = baseFurniture.Value;
