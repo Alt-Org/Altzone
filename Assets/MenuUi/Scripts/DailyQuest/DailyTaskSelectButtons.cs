@@ -55,7 +55,8 @@ public class DailyTaskSelectButtons : DailyTaskProgressListenerHighlighter
             return;
         }
         // Send OnStateChange with true only if the task matches (player doing the correct task)
-        OnStateChange?.Invoke(task.EducationCultureType == _educationCategoryCultureType);
+        //OnStateChange?.Invoke(task.EducationCultureType == _educationCategoryCultureType);
+        OnStateChange?.Invoke(On);
     }
 
     public void AddButton(SelectButtonObject button)

@@ -132,6 +132,7 @@ public class DailyTaskView : AltMonoBehaviour
             DailyTaskProgressManager.OnTaskProgressed += UpdateOwnTaskProgress;
             DailyTaskManager.OnAcceptTask += OnTaskAccept;
             DailyTaskManager.OnCancelTask += OnTaskCancel;
+            DailyTaskManager.OnMultipleChoiceProgress += OnMultipleChoiceProgress;
         }
         catch
         {
@@ -159,11 +160,18 @@ public class DailyTaskView : AltMonoBehaviour
             DailyTaskProgressManager.OnTaskProgressed -= UpdateOwnTaskProgress;
             DailyTaskManager.OnAcceptTask -= OnTaskAccept;
             DailyTaskManager.OnCancelTask -= OnTaskCancel;
+            DailyTaskManager.OnMultipleChoiceProgress -= OnMultipleChoiceProgress;
+
         }
         catch
         {
             Debug.LogError("DailyTaskProgressManager instance missing!");
         }
+    }
+
+    void OnMultipleChoiceProgress()
+    {
+        gameObject.GetComponent<MultipleChoiceProgressListener>().UpdateProgressMultipleChoice(DailyTaskManager.Instance.GetCurrentTask());
     }
 
     void OnTaskAccept()

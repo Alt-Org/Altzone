@@ -162,24 +162,31 @@ public class SelectButtonsPopup : MonoBehaviour
     private void HandlePopup(DailyTaskSelectButtons.SelectButtonObject button)
     {
         // Get first empty slot from the popup
-        int emptyIndex = -1;
+        int emptySlot = -1;
         for (int i = 0; i < _selectedButtons.Length; i++)
         {
             if (_selectedButtons[i] == null)
             {
-                emptyIndex = i;
+                emptySlot = i;
                 break;
             }
         }
 
-        if (emptyIndex == -1) return;
+        if (emptySlot == -1) return;
 
-        _selectedButtons[emptyIndex] = button.Button;
-        Button popupButton = _popupButtons[emptyIndex];
+        // Add the selected button to a list to keep track of the selected buttons
+        _selectedButtons[emptySlot] = button.Button;
 
+        // Get the button on the popup
+        Button popupButton = _popupButtons[emptySlot];
+
+        // Get the image from the selected button
         Image sourceImage = button.Image;
+
+        // Get the slot's image component so we can replace it
         Image popupImage = popupButton.gameObject.GetComponent<Image>();
 
+        // Set the slot's image to the same as the selected button's image
         if (sourceImage != null && popupImage != null)
         {
 
@@ -190,10 +197,9 @@ public class SelectButtonsPopup : MonoBehaviour
         popupButton.gameObject.SetActive(true);
         popupImage.gameObject.SetActive(true);
 
-        popupButton.onClick.RemoveAllListeners();
         popupButton.onClick.AddListener(() =>
         {
-            RemoveSelectedButton(emptyIndex);
+            RemoveSelectedButton(emptySlot);
         });
 
         _popupWindow.SetActive(true);
@@ -206,7 +212,7 @@ public class SelectButtonsPopup : MonoBehaviour
         _selectedButtons[index] = null;
 
         Button popupButton = _popupButtons[index];
-        Image popupImage = popupButton.GetComponent<Image>();
+        Image popupImage = popupButton.gameObject.GetComponent<Image>();
 
         if (popupImage != null)
         {

@@ -32,6 +32,8 @@ public class ChooseTask : MonoBehaviour
 
     private bool _initialized = false;
 
+    public delegate void ChooseTaskShown();
+    public static event ChooseTaskShown OnChooseTaskShown;
 
     IEnumerator Initialize()
     {
@@ -59,7 +61,8 @@ public class ChooseTask : MonoBehaviour
         if (_gameVersion == VersionType.TurboEducation && !DailyTaskProgressManager.Instance.HasOnGoingTask())
         {
             // Wait until view switched and window shown
-            yield return StartCoroutine(SwitchViewAndShowWindow());
+            //yield return StartCoroutine(SwitchViewAndShowWindow());
+            ShowSelectionWindow();
         }
         _initialized = true;
         Debug.Log("Initializing ChooseTask.cs... Initialized!");
@@ -97,6 +100,7 @@ public class ChooseTask : MonoBehaviour
     {
         GenerateTaskOptions();
         _selectionWindow.gameObject.SetActive(true);
+        OnChooseTaskShown?.Invoke();
         //EnableUIOverlayButtons(false);
     }
 

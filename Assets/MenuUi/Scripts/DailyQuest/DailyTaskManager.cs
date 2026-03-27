@@ -39,6 +39,9 @@ public class DailyTaskManager : AltMonoBehaviour
     public delegate void StartTask();
     public static event StartTask OnAcceptTask;
 
+    public delegate void MultipleChoiceProgress();
+    public static event MultipleChoiceProgress OnMultipleChoiceProgress;
+
     private PlayerTask _currentTask;
 
 
@@ -63,7 +66,6 @@ public class DailyTaskManager : AltMonoBehaviour
     {
 
         StartCoroutine(DataSetup());
-        
     }
 
     /// <summary>
@@ -523,7 +525,9 @@ public class DailyTaskManager : AltMonoBehaviour
                 case PopupData.PopupDataType.MultipleChoice:
                     {
                         // This has to be changed to a better getter
-                        gameObject.GetComponentInParent<MultipleChoiceProgressListener>().UpdateProgressMultipleChoice(playerData.Task);
+                        //gameObject.GetComponentInParent<MultipleChoiceProgressListener>().UpdateProgressMultipleChoice(playerData.Task);
+
+                        OnMultipleChoiceProgress?.Invoke();
                         break;
                     }
             }
