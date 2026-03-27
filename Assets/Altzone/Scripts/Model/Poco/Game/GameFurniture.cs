@@ -7,42 +7,6 @@ using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    public enum FurnitureSize
-    {
-        OneXOne,
-        OneXTwo,
-        OneXThree,
-        OneXFour,
-        OneXSix,
-        TwoXOne,
-        TwoXTwo,
-        TwoXThree,
-        TwoXFour,
-        TwoXFive,
-        TwoXSix,
-        TwoXSeven,
-        TwoXEight,
-        ThreeXOne,
-        ThreeXTwo,
-        ThreeXThree,
-        ThreeXFour,
-        ThreeXFive,
-        ThreeXSix,
-        ThreeXSeven,
-        ThreeXEight,
-        FourXOne,
-        FourXTwo,
-        FourXThree,
-        FourXFour,
-        FiveXTwo,
-        FiveXThree,
-        FiveXFive,
-        FiveXSix,
-        FiveXEight,
-        SixXFive,
-        SevenXThree
-    }
-
     public enum FurniturePlacement
     {
         Floor,
