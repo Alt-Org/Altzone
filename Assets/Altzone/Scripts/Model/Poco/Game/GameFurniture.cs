@@ -77,7 +77,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public FurnitureRarity Rarity;
         public FurnitureSize Size;
         public FurnitureSize RotatedSize;
-        public Vector3 FurnitureSize;
+        public Vector3Int FurnitureSize;
         public FurniturePlacement Placement;
         public double Weight;
         public float Value;
@@ -158,7 +158,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public FurnitureRarity Rarity;
         public FurnitureSize Size;
         public FurnitureSize RotatedSize;
-        public Vector3 FurnitureSize;
+        public Vector3Int FurnitureSize;
         public FurniturePlacement Placement;
         public double Weight;
         public float Value;

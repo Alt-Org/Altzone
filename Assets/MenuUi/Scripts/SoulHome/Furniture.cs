@@ -35,7 +35,7 @@ namespace MenuUI.Scripts.SoulHome
         public bool IsRotated;
         public FurnitureSize Size;
         public FurnitureSize RotatedSize;
-        public Vector3 FSize;
+        public Vector3Int FSize;
         public FurniturePlacement Place;
         public double Weight;
         public float Value;
