@@ -604,7 +604,7 @@ namespace MenuUI.Scripts.SoulHome
         public void PlaceFurniture(Vector2 hitPoint, bool hover)
         {
             Vector2 checkPoint;
-            Vector2Int size = _selectedFurniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
+            Vector3Int size = _selectedFurniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
             if(hitPoint.Equals(Vector2.negativeInfinity)) hitPoint = _selectedFurniture.transform.position + new Vector3(0, 0.001f);
 
             Ray ray = new(transform.position, (Vector3)hitPoint - transform.position);

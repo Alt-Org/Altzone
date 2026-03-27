@@ -82,22 +82,48 @@ namespace MenuUI.Scripts.SoulHome
         public float Weight { get => _weight; set => _weight = value; }
         public float Value { get => _value; set => _value = value; }*/
 
-        public Vector2Int GetFurnitureSize()
+        public Vector3Int GetFurnitureSize()
         {
-            FurnitureSize furnitureSize;
-            if (IsRotated) furnitureSize = RotatedSize;
-            else furnitureSize = Size;
-
-            return GetFurnitureSize(furnitureSize);
+            if (IsRotated) return GetFurnitureSizeRotated();
+            else return GetFurnitureNormalSize();
         }
 
-        public Vector2Int GetFurnitureSizeRotated()
+        public Vector3Int GetFurnitureNormalSize()
         {
-            FurnitureSize furnitureSize;
-            if (IsRotated) furnitureSize = Size;
-            else furnitureSize = RotatedSize;
+            //FurnitureSize furnitureSize;
+            //if (IsRotated) furnitureSize = RotatedSize;
+            //else furnitureSize = Size;
 
-            return GetFurnitureSize(furnitureSize);
+            //return GetFurnitureSize(furnitureSize);
+
+            return Place switch
+            {
+                FurniturePlacement.Floor or
+                FurniturePlacement.FloorByWall or
+                FurniturePlacement.FloorNonblock or
+                FurniturePlacement.Ceiling => new(FSize.x, FSize.z, FSize.y),
+                FurniturePlacement.Wall => new(FSize.x, FSize.y, FSize.z),
+                _ => new(FSize.x, FSize.z, FSize.y),
+            };
+        }
+
+        public Vector3Int GetFurnitureSizeRotated()
+        {
+            //FurnitureSize furnitureSize;
+            //if (IsRotated) furnitureSize = Size;
+            //else furnitureSize = RotatedSize;
+
+            //return GetFurnitureSize(furnitureSize);
+
+            return Place switch
+            {
+                FurniturePlacement.Floor or
+                FurniturePlacement.FloorByWall or
+                FurniturePlacement.FloorNonblock or
+                FurniturePlacement.Ceiling => new(FSize.z, FSize.x, FSize.y),
+                FurniturePlacement.Wall => new(FSize.y, FSize.x, FSize.z),
+                _ => new(FSize.z, FSize.x, FSize.y),
+            };
         }
 
         public static Vector2Int GetFurnitureSize(FurnitureSize furnitureSize)

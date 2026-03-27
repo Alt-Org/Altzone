@@ -124,12 +124,14 @@ namespace MenuUI.Scripts.SoulHome
             _bounds = _collider.bounds;
         }
 
-        public Vector2Int GetFurnitureSize()
+        public Vector3Int GetFurnitureSize()
         {
-            return Furniture.GetFurnitureSize();
+            if (Furniture.IsRotated) return Furniture.GetFurnitureSizeRotated();
+            return Furniture.GetFurnitureNormalSize();
         }
-        public Vector2Int GetFurnitureSizeRotated()
+        public Vector3Int GetFurnitureSizeRotated()
         {
+            if (Furniture.IsRotated) return Furniture.GetFurnitureNormalSize();
             return Furniture.GetFurnitureSizeRotated();
         }
 
