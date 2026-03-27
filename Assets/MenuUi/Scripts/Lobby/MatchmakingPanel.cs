@@ -26,6 +26,8 @@ namespace MenuUi.Scripts.Lobby
             LobbyManager.OnFailedToStartMatchmakingGame += OnFailedToStartMatchmakingGame;
             LobbyManager.OnGameCountdownUpdate += OnGameCountdownUpdate;
             LobbyManager.OnGameStartCancelled += OnGameStartCancelled;
+            LobbyManager.OnMatchmakingRoomEntered += OnMatchmakingRoomEntered;
+            LobbyManager.OnMatchmakingStopped += OnMatchmakingStopped;
         }
 
         private void OnEnable()
@@ -36,6 +38,8 @@ namespace MenuUi.Scripts.Lobby
         private void OnDisable()
         {
             LobbyManager.OnRoomLeaderChanged -= SetCancelButton;
+            LobbyManager.OnMatchmakingRoomEntered -= OnMatchmakingRoomEntered;
+            LobbyManager.OnMatchmakingStopped -= OnMatchmakingStopped;
         }
 
         private void OnDestroy()
@@ -44,6 +48,8 @@ namespace MenuUi.Scripts.Lobby
             LobbyManager.OnFailedToStartMatchmakingGame -= OnFailedToStartMatchmakingGame;
             LobbyManager.OnGameCountdownUpdate -= OnGameCountdownUpdate;
             LobbyManager.OnGameStartCancelled -= OnGameStartCancelled;
+            LobbyManager.OnMatchmakingRoomEntered -= OnMatchmakingRoomEntered;
+            LobbyManager.OnMatchmakingStopped -= OnMatchmakingStopped;
         }
 
         /// <summary>
@@ -144,7 +150,18 @@ namespace MenuUi.Scripts.Lobby
         {
             Debug.Log("MatchmakingPanel: Cancel button pressed (OnCancelButtonPressed)");
             if (_cancelButton != null) _cancelButton.interactable = false;
-            this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedGameType));
+            try
+            {
+                var lobbyRoom = PhotonRealtimeClient.LobbyCurrentRoom;
+                if (lobbyRoom != null && lobbyRoom.GetCustomProperty<bool>(Altzone.Scripts.Battle.Photon.PhotonBattleRoom.IsQueueKey, false))
+                {
+                    Debug.Log("MatchmakingPanel: leaving queue room immediately due to user cancel.");
+                    PhotonRealtimeClient.LeaveRoom();
+                }
+            }
+            catch { }
+
+            this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedGameType, true));
             bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
             if (!isLeader && InLobbyController.SelectedGameType != GameType.Clan2v2)
             {
@@ -181,11 +198,43 @@ namespace MenuUi.Scripts.Lobby
 
         private void OnGameStartCancelled()
         {
-            if (_matchmakingText != null) _matchmakingText.text = "Etsitään peliä...";
+            SetMatchmakingTextForCurrentRoom();
             if (_cancelButton != null)
             {
                 bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
                 SetCancelButton(isLeader);
+            }
+        }
+
+        private void OnMatchmakingRoomEntered(bool isLeader)
+        {
+            SetMatchmakingTextForCurrentRoom();
+            SetCancelButton(isLeader);
+        }
+
+        private void OnMatchmakingStopped()
+        {
+            if (_matchmakingText != null) _matchmakingText.text = "";
+        }
+
+        private void SetMatchmakingTextForCurrentRoom()
+        {
+            if (_matchmakingText == null) return;
+
+            try
+            {
+                var room = PhotonRealtimeClient.LobbyCurrentRoom;
+                bool isQueue = false;
+                if (room != null)
+                {
+                    isQueue = room.GetCustomProperty<bool>(Altzone.Scripts.Battle.Photon.PhotonBattleRoom.IsQueueKey);
+                }
+
+                _matchmakingText.text = isQueue ? "Jonossa..." : "Etsitään peliä...";
+            }
+            catch
+            {
+                _matchmakingText.text = "Etsitään peliä...";
             }
         }
 

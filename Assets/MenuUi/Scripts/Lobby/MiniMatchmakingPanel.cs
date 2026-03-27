@@ -98,6 +98,7 @@ namespace MenuUi.Scripts.Lobby
                     _isMatchmaking = true;
                     _matchmakingStartTime = Time.time;
                     SetCancelButton(isLeader);
+                    SetMatchmakingTextForCurrentRoom();
                 }
             }
             catch
@@ -367,7 +368,7 @@ namespace MenuUi.Scripts.Lobby
 
             if (_matchmakingText != null)
             {
-                _matchmakingText.text = "Etsitään peliä...";
+                SetMatchmakingTextForCurrentRoom();
             }
 
             SetCancelButton(isLeader);
@@ -401,7 +402,18 @@ namespace MenuUi.Scripts.Lobby
             _isMatchmaking = false;
             _isBattleStarting = false;
             SetVisible(false);
-            this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedGameType));
+            try
+            {
+                var lobbyRoom = PhotonRealtimeClient.LobbyCurrentRoom;
+                if (lobbyRoom != null && lobbyRoom.GetCustomProperty<bool>(Altzone.Scripts.Battle.Photon.PhotonBattleRoom.IsQueueKey, false))
+                {
+                    Debug.Log("MiniMatchmakingPanel: leaving queue room immediately due to user cancel.");
+                    PhotonRealtimeClient.LeaveRoom();
+                }
+            }
+            catch { }
+
+            this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedGameType, true));
             // If caller is non-leader, close the battle popup to reset UI state (except Clan2v2)
             bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
             if (!isLeader && InLobbyController.SelectedGameType != GameType.Clan2v2)
@@ -452,7 +464,7 @@ namespace MenuUi.Scripts.Lobby
                 _isMatchmaking = true;
                 _isBattleStarting = false;
                 _matchmakingStartTime = Time.time;
-                if (_matchmakingText != null) _matchmakingText.text = "Etsitään peliä...";
+                SetMatchmakingTextForCurrentRoom();
                 bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
                 SetCancelButton(isLeader);
             }
@@ -463,6 +475,27 @@ namespace MenuUi.Scripts.Lobby
                 _isBattleStarting = false;
             }
             UpdateVisibility();
+        }
+
+        private void SetMatchmakingTextForCurrentRoom()
+        {
+            if (_matchmakingText == null) return;
+
+            try
+            {
+                var room = PhotonRealtimeClient.LobbyCurrentRoom;
+                bool isQueue = false;
+                if (room != null)
+                {
+                    isQueue = room.GetCustomProperty<bool>(Altzone.Scripts.Battle.Photon.PhotonBattleRoom.IsQueueKey);
+                }
+
+                _matchmakingText.text = isQueue ? "jonossa..." : "Etsitään peliä...";
+            }
+            catch
+            {
+                _matchmakingText.text = "Etsitään peliä...";
+            }
         }
 
         private void OnFailedToStartMatchmakingGame()
