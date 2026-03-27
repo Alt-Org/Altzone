@@ -51,8 +51,18 @@ namespace MenuUi.Scripts.Lobby.InLobby
             {
                 UpdateStatus();
             }
+            // If already in matchmaking or queue room, ensure creating-room text is hidden
+            try
+            {
+                bool isMatchmakingOrQueue = PhotonRealtimeClient.InMatchmakingRoom;
+                var curr = PhotonRealtimeClient.LobbyCurrentRoom;
+                if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey, false)) isMatchmakingOrQueue = true;
+                if (isMatchmakingOrQueue && _creatingRoomText != null && _creatingRoomText.activeSelf) _creatingRoomText.SetActive(false);
+            }
+            catch { }
             _photonRoomList.OnRoomsUpdated += UpdateStatus;
             LobbyManager.LobbyOnJoinedRoom += OnJoinedRoom;
+            LobbyManager.OnMatchmakingRoomEntered += HandleMatchmakingRoomEntered;
             LobbyManager.LobbyOnJoinRoomFailed += OnJoinedRoomFailed;
             LobbyWindowNavigationHandler.OnLobbyWindowChangeRequest += SwitchToRoom;
         }
@@ -62,6 +72,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             PhotonRealtimeClient.RemoveCallbackTarget(this);
             _photonRoomList.OnRoomsUpdated -= UpdateStatus;
             LobbyManager.LobbyOnJoinedRoom -= OnJoinedRoom;
+            LobbyManager.OnMatchmakingRoomEntered -= HandleMatchmakingRoomEntered;
             LobbyWindowNavigationHandler.OnLobbyWindowChangeRequest -= SwitchToRoom;
         }
 
@@ -81,18 +92,30 @@ namespace MenuUi.Scripts.Lobby.InLobby
         /// <returns></returns>
         public IEnumerator StartCreatingRoom(GameType gameType, Action callback)
         {
-            _creatingRoomText.SetActive(true);
-            // Ensure the creating-room text does not block UI clicks behind it
+            // Do not show the creating-room text if the client is in a matchmaking or queue room
+            bool isMatchmakingOrQueue = PhotonRealtimeClient.InMatchmakingRoom;
             try
             {
-                var cg = _creatingRoomText.GetComponent<UnityEngine.CanvasGroup>();
-                if (cg == null) cg = _creatingRoomText.AddComponent<UnityEngine.CanvasGroup>();
-                cg.blocksRaycasts = false;
-                cg.interactable = false;
-                var graphics = _creatingRoomText.GetComponentsInChildren<UnityEngine.UI.Graphic>(true);
-                foreach (var g in graphics) g.raycastTarget = false;
+                var curr = PhotonRealtimeClient.LobbyCurrentRoom;
+                if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey, false)) isMatchmakingOrQueue = true;
             }
             catch { }
+
+            if (!isMatchmakingOrQueue)
+            {
+                _creatingRoomText.SetActive(true);
+                // Ensure the creating-room text does not block UI clicks behind it
+                try
+                {
+                    var cg = _creatingRoomText.GetComponent<UnityEngine.CanvasGroup>();
+                    if (cg == null) cg = _creatingRoomText.AddComponent<UnityEngine.CanvasGroup>();
+                    cg.blocksRaycasts = false;
+                    cg.interactable = false;
+                    var graphics = _creatingRoomText.GetComponentsInChildren<UnityEngine.UI.Graphic>(true);
+                    foreach (var g in graphics) g.raycastTarget = false;
+                }
+                catch { }
+            }
             bool roomCreated = false;
             do
             {
@@ -199,6 +222,15 @@ namespace MenuUi.Scripts.Lobby.InLobby
             //PhotonRealtimeClient.NickName = room.GetUniquePlayerNameForRoom(player, PhotonRealtimeClient.NickName, "");
             Debug.Log($"'{room.Name}' player name '{PhotonRealtimeClient.NickName}'");
             this.Publish(new LobbyManager.StartRoomEvent());
+        }
+
+        private void HandleMatchmakingRoomEntered(bool isLeader)
+        {
+            try
+            {
+                if (_creatingRoomText != null && _creatingRoomText.activeSelf) _creatingRoomText.SetActive(false);
+            }
+            catch { }
         }
 
         public void OnJoinedRoomFailed(short returnCode, string message)
