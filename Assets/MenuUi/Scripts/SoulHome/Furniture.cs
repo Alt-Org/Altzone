@@ -35,6 +35,7 @@ namespace MenuUI.Scripts.SoulHome
         public bool IsRotated;
         public FurnitureSize Size;
         public FurnitureSize RotatedSize;
+        public Vector3 FSize;
         public FurniturePlacement Place;
         public double Weight;
         public float Value;
@@ -63,6 +64,7 @@ namespace MenuUI.Scripts.SoulHome
             Room = clanFurniture.Room;
             Size = gameFurniture.Size;
             RotatedSize = gameFurniture.RotatedSize;
+            FSize = gameFurniture.FurnitureSize;
             Place = gameFurniture.Placement;
             Value = gameFurniture.Value;
             Weight = gameFurniture.Weight;
