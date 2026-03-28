@@ -1,12 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
-using Altzone.Scripts.Language;
-using Altzone.Scripts.Lobby;
-using MenuUi.Scripts.Lobby.BattleButton;
-using MenuUi.Scripts.ReferenceSheets;
-using MenuUi.Scripts.SwipeNavigation;
+using MenuUi.Scripts.AvatarEditor;
 using UnityEngine;
-using UnityEngine.UI;
+using Prg.Scripts.Common;
 
 public class GameModeChoiceScript : MonoBehaviour
 {
@@ -20,50 +15,36 @@ public class GameModeChoiceScript : MonoBehaviour
 
 
 
-    
+    //For the game mode swipe functionality
+    private Vector2 _startTouchPosition;
+    private Vector2 _endTouchPosition;
 
-    [SerializeField] private Image _gameTypeIcon;
-    [SerializeField] private TextLanguageSelectorCaller _gameTypeName;
-    [SerializeField] private TextLanguageSelectorCaller _gameTypeDescription;
-    [SerializeField] private GameObject _gameTypeSelectionMenu;
-    [SerializeField] private GameObject _gameTypeOptionPrefab;
-    [SerializeField] private Button _openBattleUiEditorButton;
-    [SerializeField] private GameTypeReference _gameTypeReference;
-    [SerializeField] private GameObject _touchBlocker;
+    private float _minimunScrollDistance = 100; //so that movements too small wont swipe
 
-    private const string SelectedGameTypeKey = "BattleButtonGameType";
-
-    private GameType _selectedGameType = GameType.Custom;
-
-    private List<GameTypeOption> _gameTypeOptionList = new();
-    private Button _button;
-    private SwipeUI _swipe;
-
-    private void Awake()
+    public void GetSwipeStart()
     {
-        GameTypeOption gameTypeOption = Instantiate(_gameTypeOptionPrefab).GetComponent<GameTypeOption>();
-
-
-        // Instantiate game type option buttons to game type selection menu
-        foreach (GameTypeInfo gameTypeInfo in _gameTypeReference.GetGameTypeInfos())
-        {
-
-            int i = 0;
-
-            GameModeButtons[i] = _gameTypeOptionPrefab;
-
-
-            i++;
-        
-            
-        }
-
+        _startTouchPosition = ClickStateHandler.GetClickPosition();
     }
 
 
+    public void GetSwipeEnd()
+    {
+        _endTouchPosition = ClickStateHandler.GetClickPosition();
+        SwipeToMode();
+    }
 
-    
+    private void SwipeToMode()
+    {
 
+        if (_startTouchPosition.x < _endTouchPosition.x && Mathf.Abs(_endTouchPosition.x) - Mathf.Abs(_startTouchPosition.x) > _minimunScrollDistance)
+        {
+            PressArrowLeft();
+        }
+        else if (_startTouchPosition.x > _endTouchPosition.x && Mathf.Abs(_startTouchPosition.x) - Mathf.Abs(_endTouchPosition.x) > _minimunScrollDistance)
+        {
+            PressArrowRight();
+        }
+    }
 
 
 
