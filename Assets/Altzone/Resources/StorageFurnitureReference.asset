@@ -33,8 +33,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Sofa_Taakka
         Rarity: 0
-        Size: 18
-        RotatedSize: 24
         FurnitureSize: {x: 6, y: 2, z: 3}
         Placement: 0
         Weight: 30
@@ -57,8 +55,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: ArmChair_Taakka
         Rarity: 0
-        Size: 14
-        RotatedSize: 14
         FurnitureSize: {x: 3, y: 2, z: 2}
         Placement: 0
         Weight: 16
@@ -81,8 +77,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Mirror_Taakka
         Rarity: 0
-        Size: 6
-        RotatedSize: 6
         FurnitureSize: {x: 2, y: 2, z: 2}
         Placement: 0
         Weight: 8
@@ -105,8 +99,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Floorlamp_Taakka
         Rarity: 0
-        Size: 6
-        RotatedSize: 6
         FurnitureSize: {x: 2, y: 2, z: 2}
         Placement: 0
         Weight: 2.8
@@ -129,9 +121,7 @@ MonoBehaviour:
       BaseFurniture:
         Name: CoffeeTable_Taakka
         Rarity: 0
-        Size: 7
-        RotatedSize: 13
-        FurnitureSize: {x: 3, y: 1, z: 1}
+        FurnitureSize: {x: 3, y: 1, z: 2}
         Placement: 0
         Weight: 26
         Value: 80
@@ -153,8 +143,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: SideTable_Taakka
         Rarity: 0
-        Size: 6
-        RotatedSize: 6
         FurnitureSize: {x: 2, y: 1, z: 2}
         Placement: 0
         Weight: 16
@@ -177,9 +165,7 @@ MonoBehaviour:
       BaseFurniture:
         Name: Closet_Taakka
         Rarity: 0
-        Size: 8
-        RotatedSize: 7
-        FurnitureSize: {x: 2, y: 2, z: 2}
+        FurnitureSize: {x: 4, y: 8, z: 2}
         Placement: 0
         Weight: 48
         Value: 120
@@ -210,8 +196,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Sink_Schrodinger
         Rarity: 0
-        Size: 1
-        RotatedSize: 5
         FurnitureSize: {x: 2, y: 2, z: 1}
         Placement: 1
         Weight: 13
@@ -239,9 +223,7 @@ MonoBehaviour:
       BaseFurniture:
         Name: Toilet_Schrodinger
         Rarity: 0
-        Size: 1
-        RotatedSize: 5
-        FurnitureSize: {x: 2, y: 2, z: 1}
+        FurnitureSize: {x: 2, y: 2, z: 2}
         Placement: 0
         Weight: 31
         Value: 150
@@ -268,8 +250,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Mirror_Schrodinger
         Rarity: 1
-        Size: 13
-        RotatedSize: 13
         FurnitureSize: {x: 3, y: 3, z: 1}
         Placement: 4
         Weight: 7
@@ -297,9 +277,7 @@ MonoBehaviour:
       BaseFurniture:
         Name: Carpet_Schrodinger
         Rarity: 1
-        Size: 18
-        RotatedSize: 18
-        FurnitureSize: {x: 8, y: 0, z: 6}
+        FurnitureSize: {x: 9, y: 0, z: 6}
         Placement: 2
         Weight: 6
         Value: 150
@@ -326,8 +304,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Bathtub_Schrodinger
         Rarity: 2
-        Size: 8
-        RotatedSize: 19
         FurnitureSize: {x: 4, y: 2, z: 2}
         Placement: 0
         Weight: 50
@@ -350,8 +326,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Sofa_Rakkaus
         Rarity: 0
-        Size: 11
-        RotatedSize: 24
         FurnitureSize: {x: 7, y: 2, z: 2}
         Placement: 0
         Weight: 27
@@ -370,9 +344,7 @@ MonoBehaviour:
       BaseFurniture:
         Name: ArmChair_Rakkaus
         Rarity: 0
-        Size: 7
-        RotatedSize: 14
-        FurnitureSize: {x: 3, y: 2, z: 2}
+        FurnitureSize: {x: 4, y: 2, z: 2}
         Placement: 0
         Weight: 13
         Value: 100
@@ -390,8 +362,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Closet_Rakkaus
         Rarity: 0
-        Size: 6
-        RotatedSize: 6
         FurnitureSize: {x: 2, y: 2, z: 2}
         Placement: 0
         Weight: 45
@@ -410,9 +380,7 @@ MonoBehaviour:
       BaseFurniture:
         Name: Carpet_Rakkaus
         Rarity: 1
-        Size: 15
-        RotatedSize: 15
-        FurnitureSize: {x: 3, y: 0, z: 3}
+        FurnitureSize: {x: 5, y: 0, z: 5}
         Placement: 2
         Weight: 4
         Value: 40
@@ -430,8 +398,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Coffeetable_Rakkaus
         Rarity: 1
-        Size: 22
-        RotatedSize: 22
         FurnitureSize: {x: 6, y: 1, z: 2}
         Placement: 0
         Weight: 20
@@ -450,8 +416,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Diningtable_Rakkaus
         Rarity: 2
-        Size: 16
-        RotatedSize: 20
         FurnitureSize: {x: 6, y: 2, z: 3}
         Placement: 0
         Weight: 30
@@ -470,8 +434,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Bed_Rakkaus
         Rarity: 1
-        Size: 21
-        RotatedSize: 21
         FurnitureSize: {x: 4, y: 2, z: 4}
         Placement: 0
         Weight: 20
@@ -490,8 +452,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Mirror_Rakkaus
         Rarity: 2
-        Size: 20
-        RotatedSize: 20
         FurnitureSize: {x: 3, y: 4, z: 1}
         Placement: 4
         Weight: 10
@@ -510,8 +470,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: CeilingLamp_Rakkaus
         Rarity: 2
-        Size: 6
-        RotatedSize: 6
         FurnitureSize: {x: 2, y: 2, z: 2}
         Placement: 3
         Weight: 2
@@ -536,8 +494,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Chair_Neuro
         Rarity: 0
-        Size: 14
-        RotatedSize: 14
         FurnitureSize: {x: 3, y: 2, z: 2}
         Placement: 0
         Weight: 10
@@ -558,8 +514,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Dresser_Neuro
         Rarity: 0
-        Size: 8
-        RotatedSize: 19
         FurnitureSize: {x: 3, y: 2, z: 2}
         Placement: 0
         Weight: 24
@@ -581,8 +535,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Stool_Neuro
         Rarity: 1
-        Size: 6
-        RotatedSize: 6
         FurnitureSize: {x: 2, y: 1, z: 2}
         Placement: 0
         Weight: 4
@@ -603,8 +555,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Clock_Neuro
         Rarity: 1
-        Size: 19
-        RotatedSize: 19
         FurnitureSize: {x: 3, y: 4, z: 1}
         Placement: 4
         Weight: 1
@@ -627,8 +577,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Chair_Polarity
         Rarity: 2
-        Size: 14
-        RotatedSize: 14
         FurnitureSize: {x: 2, y: 2, z: 2}
         Placement: 0
         Weight: 5
@@ -647,8 +595,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Bookshelf_Polarity
         Rarity: 3
-        Size: 2
-        RotatedSize: 5
         FurnitureSize: {x: 4, y: 8, z: 1}
         Placement: 0
         Weight: 40
@@ -667,8 +613,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Table_Polarity
         Rarity: 0
-        Size: 21
-        RotatedSize: 21
         FurnitureSize: {x: 4, y: 2, z: 4}
         Placement: 0
         Weight: 10
@@ -695,8 +639,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Commode_Muistoja
         Rarity: 2
-        Size: 7
-        RotatedSize: 13
         FurnitureSize: {x: 3, y: 2, z: 2}
         Placement: 0
         Weight: 17
@@ -719,8 +661,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Pictures_Muistoja
         Rarity: 2
-        Size: 15
-        RotatedSize: 15
         FurnitureSize: {x: 4, y: 3, z: 1}
         Placement: 4
         Weight: 2
@@ -743,8 +683,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Sofa_Muistoja
         Rarity: 2
-        Size: 10
-        RotatedSize: 20
         FurnitureSize: {x: 6, y: 2, z: 2}
         Placement: 0
         Weight: 20
@@ -767,8 +705,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Armchair_Muistoja
         Rarity: 2
-        Size: 9
-        RotatedSize: 14
         FurnitureSize: {x: 5, y: 2, z: 2}
         Placement: 0
         Weight: 5
@@ -791,8 +727,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Coffeetable_Muistoja
         Rarity: 3
-        Size: 8
-        RotatedSize: 8
         FurnitureSize: {x: 4, y: 1, z: 2}
         Placement: 0
         Weight: 20
@@ -815,8 +749,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Drawings_Muistoja
         Rarity: 3
-        Size: 7
-        RotatedSize: 7
         FurnitureSize: {x: 3, y: 2, z: 1}
         Placement: 4
         Weight: 1
@@ -839,8 +771,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Ficus_Muistoja
         Rarity: 3
-        Size: 8
-        RotatedSize: 8
         FurnitureSize: {x: 4, y: 6, z: 2}
         Placement: 0
         Weight: 3
@@ -863,8 +793,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Flowers_Muistoja
         Rarity: 3
-        Size: 6
-        RotatedSize: 6
         FurnitureSize: {x: 2, y: 1, z: 2}
         Placement: 0
         Weight: 1
@@ -887,8 +815,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: NewCarpet_Muistoja
         Rarity: 3
-        Size: 23
-        RotatedSize: 23
         FurnitureSize: {x: 8, y: 0, z: 6}
         Placement: 2
         Weight: 7
@@ -911,8 +837,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: OldCarpet_Muistoja
         Rarity: 3
-        Size: 23
-        RotatedSize: 23
         FurnitureSize: {x: 8, y: 0, z: 6}
         Placement: 2
         Weight: 7
@@ -935,8 +859,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: NewWindow_Muistoja
         Rarity: 3
-        Size: 20
-        RotatedSize: 20
         FurnitureSize: {x: 3, y: 4, z: 1}
         Placement: 4
         Weight: 1
@@ -959,8 +881,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: OldWindow_Muistoja
         Rarity: 3
-        Size: 20
-        RotatedSize: 20
         FurnitureSize: {x: 3, y: 4, z: 1}
         Placement: 4
         Weight: 1
@@ -983,8 +903,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Painting_Muistoja
         Rarity: 3
-        Size: 20
-        RotatedSize: 20
         FurnitureSize: {x: 3, y: 3, z: 1}
         Placement: 4
         Weight: 2
@@ -1007,8 +925,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: ToyFox_Muistoja
         Rarity: 3
-        Size: 6
-        RotatedSize: 6
         FurnitureSize: {x: 2, y: 1, z: 2}
         Placement: 0
         Weight: 1
@@ -1031,8 +947,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Sofa_Uni
         Rarity: 0
-        Size: 10
-        RotatedSize: 23
         FurnitureSize: {x: 5, y: 2, z: 2}
         Placement: 0
         Weight: 15
@@ -1051,8 +965,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Bed_Uni
         Rarity: 1
-        Size: 27
-        RotatedSize: 17
         FurnitureSize: {x: 4, y: 2, z: 6}
         Placement: 0
         Weight: 30
@@ -1071,8 +983,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Closet_Uni
         Rarity: 2
-        Size: 15
-        RotatedSize: 15
         FurnitureSize: {x: 3, y: 2, z: 2}
         Placement: 0
         Weight: 40
@@ -1097,8 +1007,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Hologram_KylmaTulevaisuus
         Rarity: 2
-        Size: 1
-        RotatedSize: 5
         FurnitureSize: {x: 2, y: 1, z: 1}
         Placement: 0
         Weight: 0
@@ -1119,8 +1027,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Sofa_KylmaTulevaisuus
         Rarity: 0
-        Size: 17
-        RotatedSize: 25
         FurnitureSize: {x: 5, y: 2, z: 2}
         Placement: 0
         Weight: 35
@@ -1147,8 +1053,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Closet_Kipu
         Rarity: 0
-        Size: 16
-        RotatedSize: 23
         FurnitureSize: {x: 4, y: 8, z: 3}
         Placement: 0
         Weight: 50
@@ -1171,8 +1075,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Sofa_Kipu
         Rarity: 0
-        Size: 18
-        RotatedSize: 26
         FurnitureSize: {x: 6, y: 2, z: 3}
         Placement: 0
         Weight: 80
@@ -1195,8 +1097,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Chair_Kipu
         Rarity: 0
-        Size: 6
-        RotatedSize: 6
         FurnitureSize: {x: 2, y: 2, z: 2}
         Placement: 0
         Weight: 15
@@ -1219,8 +1119,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Table_Kipu
         Rarity: 0
-        Size: 7
-        RotatedSize: 14
         FurnitureSize: {x: 3, y: 2, z: 2}
         Placement: 0
         Weight: 28
@@ -1243,8 +1141,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Plant_Kipu
         Rarity: 0
-        Size: 6
-        RotatedSize: 6
         FurnitureSize: {x: 2, y: 2, z: 2}
         Placement: 0
         Weight: 1.5
@@ -1267,8 +1163,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Sofa_Kiusaaminen
         Rarity: 0
-        Size: 19
-        RotatedSize: 24
         FurnitureSize: {x: 7, y: 2, z: 3}
         Placement: 0
         Weight: 35
@@ -1287,8 +1181,6 @@ MonoBehaviour:
       BaseFurniture:
         Name: Window_Kiusaaminen
         Rarity: 0
-        Size: 14
-        RotatedSize: 14
         FurnitureSize: {x: 2, y: 3, z: 1}
         Placement: 4
         Weight: 50
