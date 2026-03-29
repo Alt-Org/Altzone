@@ -402,6 +402,7 @@ public class ServerManager : MonoBehaviour
                 playerData.BuildCharacterLists(characters);
             }
             playerData.UpdatePlayerData(player);
+            if(player.DailyTask == null) playerData.Task = null; //Reset Task if one cannot be gotten from server.
         }
         PlayerPrefs.SetString("profileId", player.profile_id);
 

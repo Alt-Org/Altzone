@@ -1,13 +1,14 @@
-using UnityEngine;
-using TMPro;
-using UnityEngine.Networking;
-using Newtonsoft.Json.Linq;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using Prg.Scripts.Common.Unity;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Language;
+using MenuUi.Scripts.Window;
 using MenuUI.Scripts;
+using Newtonsoft.Json.Linq;
+using Prg.Scripts.Common.Unity;
+using TMPro;
+using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace MenuUi.Scripts.Login
 {
@@ -84,6 +85,7 @@ namespace MenuUi.Scripts.Login
             Reset();
             _signInWindow.SetActive(true);
             _registerWindow.SetActive(false);
+            OverlayPanelCheck.Instance?.gameObject.SetActive(false);
             if (ServerManager.Instance.Player == null)
             {
                 _backButton.gameObject.SetActive(false);

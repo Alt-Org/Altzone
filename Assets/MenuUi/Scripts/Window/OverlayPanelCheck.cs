@@ -41,7 +41,7 @@ namespace MenuUi.Scripts.Window
             if (_overlayObject == null) _overlayObject = transform.Find("UIOverlayPanel").GetComponent<GameObject>();
             _chatActive = true;
             buttons[2].transform.localScale = Vector3.one * 1.2f;
-            buttons[2].interactable = false;
+            //buttons[2].interactable = false;
 
         }
 
@@ -77,7 +77,7 @@ namespace MenuUi.Scripts.Window
                 if (isCurrentWindow)
                 {
                     button.transform.localScale = Vector3.one * 1.2f;
-                    button.interactable = false;
+                    //button.interactable = false;
                 }
                 else
                 {

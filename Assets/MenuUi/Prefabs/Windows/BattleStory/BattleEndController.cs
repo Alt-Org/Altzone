@@ -43,12 +43,14 @@ public class BattleEndController : MonoBehaviour
         {
             if (winner.Value)
                 if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null
+                    && DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationCategory is Altzone.Scripts.Model.Poco.Game.EducationCategoryType.Action
                 && DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationActionType == Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.WinBattle)
                 {
                     DailyTaskProgressManager.Instance.UpdateTaskProgress(Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.WinBattle, "1");
                 }
 
             if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null
+                && DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationCategory is Altzone.Scripts.Model.Poco.Game.EducationCategoryType.Action
             && DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationActionType == Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.PlayBattle)
             {
                 DailyTaskProgressManager.Instance.UpdateTaskProgress(Altzone.Scripts.Model.Poco.Game.TaskEducationActionType.PlayBattle, "1");
