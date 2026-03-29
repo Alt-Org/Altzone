@@ -68,6 +68,7 @@ namespace MenuUi.Scripts.MainMenu
         {
 
             ChooseTask.OnChooseTaskShown += DisablePlayButton;
+            DailyTaskProgressManager.OnTaskDone += UpdatePlayButton;
 
             var windowManager = WindowManager.Get();
             if (_swipe)
@@ -82,6 +83,7 @@ namespace MenuUi.Scripts.MainMenu
         private void OnDestroy()
         {
             ChooseTask.OnChooseTaskShown -= DisablePlayButton;
+            DailyTaskProgressManager.OnTaskDone -= UpdatePlayButton;
 
         }
         /// <summary>
