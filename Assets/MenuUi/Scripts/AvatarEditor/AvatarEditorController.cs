@@ -81,7 +81,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private void OnDisable()
         {
             AspectRatioChangeDetector.OnAspectRatioChange -= UpdateCellSizes;
-            OverlayPanelCheck.Instance.ToggleChat(true);
+            OverlayPanelCheck.Instance?.ToggleChat(true);
         }
 
         private void UpdateCellSizes()
