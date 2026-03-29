@@ -35,8 +35,8 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             if (_slotToCategoryButton.TryGetValue(slot, out CategoryButton button))
             {
-                button.featureImage.preserveAspect = true;
-                button.featureImage.sprite = partInfo.IconImage;
+                button.FeatureImage.preserveAspect = true;
+                button.FeatureImage.sprite = partInfo.IconImage;
             }
         }
 
@@ -46,10 +46,10 @@ namespace MenuUi.Scripts.AvatarEditor
 
             foreach (CategoryButton button in _categoryButtons)
             {
-                _slotToCategoryButton.Add(button.slot, button);
+                _slotToCategoryButton.Add(button.Slot, button);
 
-                AvatarPartInfo partInfo = AvatarPartsReference.Instance.GetAvatarPartById(_controller.PlayerAvatar.GetPartId(button.slot));
-                UpdateSlotImage(button.slot, partInfo);
+                AvatarPartInfo partInfo = AvatarPartsReference.Instance.GetAvatarPartById(_controller.PlayerAvatar.GetPartId(button.Slot));
+                UpdateSlotImage(button.Slot, partInfo);
             }
 
             ColorUtility.TryParseHtmlString(_controller.PlayerAvatar.SkinColor, out Color skinColor);
@@ -62,21 +62,21 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public void SetCategoryButtons(Action<string> buttonFunction)
         {
-            foreach (CategoryButton button in _categoryButtons)
+            foreach (CategoryButton buttonRef in _categoryButtons)
             {
-                button.button.onClick.RemoveAllListeners();
-                button.button.onClick.AddListener(() =>
+                buttonRef.Button.onClick.RemoveAllListeners();
+                buttonRef.Button.onClick.AddListener(() =>
                 {
                     _introText.SetActive(false);
                     _bottomMenu.SetActive(true);
                     _lastSelectedSlotImage.sprite = _slotsprite;
-                    _currentlySelectedCategory = button.categoryId;
-                    _categoryText.text = button.tmp.text;
-                    button.backgroundImage.sprite = _selectedSlotSprite;
-                    _lastSelectedSlotImage = button.backgroundImage;
-                    buttonFunction.Invoke(button.categoryId);
+                    _currentlySelectedCategory = buttonRef.CategoryId;
+                    _categoryText.text = buttonRef.TMP.text;
+                    buttonRef.BackgroundImage.sprite = _selectedSlotSprite;
+                    _lastSelectedSlotImage = buttonRef.BackgroundImage;
+                    buttonFunction.Invoke(buttonRef.CategoryId);
 
-                    _colorLoader.UpdateHighlight(_controller.PlayerAvatar.GetPartColor(button.slot));
+                    _colorLoader.UpdateHighlight(_controller.PlayerAvatar.GetPartColor(buttonRef.Slot));
                 });
             }
 

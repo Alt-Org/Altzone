@@ -7,10 +7,10 @@ using UnityEngine.UI;
 
 public class CategoryButton : MonoBehaviour
 {
-    public Button button;
-    public Image backgroundImage;
-    public Image featureImage;
-    public AvatarPiece slot;
-    public string categoryId;
-    public TextMeshProUGUI tmp;
+    public Button Button;
+    public Image BackgroundImage;
+    public Image FeatureImage;
+    public AvatarPiece Slot;
+    public string CategoryId;
+    public TextMeshProUGUI TMP;
 }
