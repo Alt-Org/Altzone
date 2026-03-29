@@ -272,7 +272,7 @@ public class Popup : MonoBehaviour
 
     private void SwitchWindow(PopupWindowType type)
     {
-        Debug.LogWarning("WindowType: " + type.ToString());
+        Debug.Log("WindowType: " + type.ToString());
         _taskAcceptPopup.SetActive(type == PopupWindowType.Accept);
         _taskCancelPopup.SetActive(type == PopupWindowType.Cancel);
         _clanMilestonePopup.SetActive(type == PopupWindowType.ClanMilestone);

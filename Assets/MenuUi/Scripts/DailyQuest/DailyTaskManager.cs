@@ -83,7 +83,7 @@ public class DailyTaskManager : AltMonoBehaviour
         StartCoroutine(PopulateTasks(data => dailyTasksReady = data));
         yield return new WaitUntil(() => dailyTasksReady != null);
 
-        Debug.LogWarning("DATA SETUP");
+        //Debug.LogWarning("DATA SETUP");
         if (_currentPlayerData == null)
         {
             Debug.LogError("Failed to fetch player data.");
@@ -320,7 +320,7 @@ public class DailyTaskManager : AltMonoBehaviour
 
     public void SetCurrentPlayerData(PlayerData playerData)
     {
-        Debug.LogError("SETCURRENTPLAYERDATA");
+        //Debug.LogError("SETCURRENTPLAYERDATA");
         if (playerData.Task == null)
         {
             Debug.LogWarning("Given playerdatatask null");
@@ -475,12 +475,12 @@ public class DailyTaskManager : AltMonoBehaviour
 
             //PlayerData playerData = _currentPlayerData;
 
-            Debug.LogWarning("Popup type: " + data.Value.Type);
+            Debug.Log("Popup type: " + data.Value.Type);
             switch (data.Value.Type)
             {
                 case PopupData.PopupDataType.OwnTask:
                     {
-                        Debug.LogWarning("Case: OwnTask");
+                        Debug.Log("Case: OwnTask");
                         if (_currentPlayerData != null && _currentPlayerData.Task != null)
                         {
                             Debug.LogWarning("Found task!");
@@ -489,17 +489,9 @@ public class DailyTaskManager : AltMonoBehaviour
                             done = null;
                         }
 
-                        Debug.LogWarning("Waiting");
-                        Debug.LogWarning("Done: " + done);
-
                         yield return StartCoroutine(GetSaveSetHandleOwnTask(data.Value.OwnPage, data2 => done = data2));
                         //yield return new WaitForSeconds(2.5f);
                         yield return new WaitUntil(() => (_currentPlayerData.Task != null || done != null));
-
-                        Debug.LogWarning("Done2: " + done);
-
-                        
-                        Debug.LogWarning("Done waiting");
 
                         if (_currentPlayerData.Task == null)
                         {
@@ -566,12 +558,10 @@ public class DailyTaskManager : AltMonoBehaviour
         PlayerTask reserveResult = null;
         bool failed = false;
 
-        Debug.LogWarning("GETSAVESETHANDLE");
-
         StartCoroutine(DailyTaskManager.Instance.GetNewPlayerData(pdata => playerData = pdata, faildata => failed = faildata));
         yield return new WaitUntil(() => (playerData != null || failed));
 
-        Debug.LogWarning("GETSAVESEHANDLE : Got playerdata");
+        Debug.Log("GETSAVESEHANDLE : Got playerdata");
         if (playerData == null)
         {
             Debug.LogWarning("GETSAVESEHANDLE : PlayerData is null");
@@ -599,11 +589,9 @@ public class DailyTaskManager : AltMonoBehaviour
         else reserveResult = playerTask;
 
         if (reserveResult == null) Debug.LogError("ReserveResult null");
-        Debug.LogWarning("THROUGH");
         playerData.Task = reserveResult;
         DailyTaskManager.Instance.SetCurrentPlayerData(playerData);
         SetHandleOwnTask(reserveResult);
-        Debug.LogWarning("Callback?");
         callback(true);
     }
 

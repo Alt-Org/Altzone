@@ -503,7 +503,6 @@ public class DailyTaskView : AltMonoBehaviour
     /// </summary>
     private IEnumerator GetSetExistingTask()
     {
-        Debug.LogWarning("GETSETEXISTINGTASK");
         PlayerData playerData = DailyTaskManager.Instance.GetCurrentPlayerData();
         if (playerData.Task == null)
         {
