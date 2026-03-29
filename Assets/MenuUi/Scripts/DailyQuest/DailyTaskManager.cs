@@ -445,12 +445,13 @@ public class DailyTaskManager : AltMonoBehaviour
         _ownTaskId = null;
         _currentTask = null;
     }
+    public void ShowPopupAndHandleResponse(string Message, PopupData? data) => StartCoroutine(ShowPopupAndHandleResponseCoroutine(Message, data));
 
     /// <summary>
     /// Shows <c>Popup</c> window and handles it's response.
     /// </summary>
     /// <param name="Message">Message to be shown in <c>Popup</c> window.</param>
-    public IEnumerator ShowPopupAndHandleResponse(string Message, PopupData? data)
+    public IEnumerator ShowPopupAndHandleResponseCoroutine(string Message, PopupData? data)
     {
         Popup.PopupWindowType windowType;
         Popup.ResultType result = Popup.ResultType.Null;
@@ -491,7 +492,7 @@ public class DailyTaskManager : AltMonoBehaviour
                         Debug.LogWarning("Waiting");
                         Debug.LogWarning("Done: " + done);
 
-                        //yield return StartCoroutine(GetSaveSetHandleOwnTask(data.Value.OwnPage, data2 => done = data2));
+                        yield return StartCoroutine(GetSaveSetHandleOwnTask(data.Value.OwnPage, data2 => done = data2));
                         //yield return new WaitForSeconds(2.5f);
                         yield return new WaitUntil(() => (_currentPlayerData.Task != null || done != null));
 
@@ -552,7 +553,7 @@ public class DailyTaskManager : AltMonoBehaviour
 
         if (playerData.Task == null || !MultipleChoiceOptions.Instance.IsMultipleChoice(playerData.Task)) return;
         PopupData data = new(playerData.Task);
-        StartCoroutine(ShowPopupAndHandleResponse(playerData.Task.Content, data));
+        ShowPopupAndHandleResponse(playerData.Task.Content, data);
     }
 
     /// <summary>
@@ -625,7 +626,7 @@ public class DailyTaskManager : AltMonoBehaviour
         return _currentTask;
     }
 
-    /*public IEnumerator AcceptTask(PlayerTask playerTask, System.Action<bool> callback)
+    public IEnumerator AcceptTask(PlayerTask playerTask, System.Action<bool> callback)
     {
         bool? done = null;
 
@@ -647,5 +648,5 @@ public class DailyTaskManager : AltMonoBehaviour
 
         if (callback != null)
             callback(done.Value);
-    }*/
+    }
 }

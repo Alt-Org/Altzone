@@ -80,6 +80,6 @@ public class DailyTaskClanReward : MonoBehaviour
     public void OpenClanRewardPopup()
     {
         PopupData popupData = new(_data, transform.position);
-        StartCoroutine(DailyTaskManager.Instance.ShowPopupAndHandleResponse("", popupData));
+        DailyTaskManager.Instance.ShowPopupAndHandleResponse("", popupData);
     }
 }

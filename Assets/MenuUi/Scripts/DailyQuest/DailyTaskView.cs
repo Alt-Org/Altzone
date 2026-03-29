@@ -335,7 +335,7 @@ public class DailyTaskView : AltMonoBehaviour
     public void StartCancelTask()
     {
         PopupData data = new(PopupData.PopupDataType.CancelTask);
-        StartCoroutine(DailyTaskManager.Instance.ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtävän?", data));
+        DailyTaskManager.Instance.ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Tehtï¿½vï¿½n?", data);
     }
 
     public void ClearCurrentTask()
