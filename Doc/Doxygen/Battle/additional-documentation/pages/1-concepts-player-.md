@@ -89,9 +89,10 @@ graph PlayerSlotsAndTeams {
 
 ## Player PlayState {#page-concepts-player-playstate}
 
-This concept extends the more general [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) concept.  
+This concept extends the more general [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) concept. However, this is tracked explicitly.  
 Each **Player** has a @cref{Quantum,BattlePlayerPlayState} used to track their state in the game, which is detached from [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) that the **Player** controls.  
-Each [{PlayerSlot}](#page-concepts-player-slots-teams) has a **Player PlayState** associated with it including slots that have no player.
+Each [{PlayerSlot}](#page-concepts-player-slots-teams) has a **Player PlayState** associated with it including slots that have no player.  
+The general [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) applies to the individual [{Player Character Entities}](#page-concepts-player-character-and-shield-entity).
 
 <br/>
 

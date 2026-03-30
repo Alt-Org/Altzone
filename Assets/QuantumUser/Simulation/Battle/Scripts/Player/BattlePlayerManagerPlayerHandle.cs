@@ -687,7 +687,7 @@ namespace Battle.QSimulation.Player
             public int Index { get; set; }
 
             /// <summary>
-            /// Gets/Sets player's <em>PlayerRef<em>.
+            /// Gets/Sets player's <em>PlayerRef</em>.
             /// </summary>
             ///
             /// Getter @clink{exposed:PlayerHandle.PlayerRef} in public @cref{PlayerHandle}
@@ -706,7 +706,7 @@ namespace Battle.QSimulation.Player
             #region Public Properties - Player State
 
             /// <summary>
-            /// Gets/Sets player's <em>PlayState<em>.
+            /// Gets/Sets player's <em>PlayState</em>.
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerState "Player State Properties"
@@ -723,7 +723,7 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Gets/Sets <em>IsBot<em> state.
+            /// Gets/Sets <em>IsBot</em> state.
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerState "Player State Properties"
@@ -738,7 +738,7 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Gets/sets player's <em>IsAbandoned<em> state.
+            /// Gets/sets player's <em>IsAbandoned</em> state.
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerState "Player State Properties"
@@ -753,7 +753,7 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Gets/Sets player's <em>AllowCharacterSwapping<em> state.
+            /// Gets/Sets player's <em>AllowCharacterSwapping</em> state.
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerState "Player State Properties"
@@ -769,13 +769,13 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Gets/Sets player's <em>GiveUpState<em>.
+            /// Gets/Sets player's <em>GiveUpState</em>.
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerState "Player State Properties"
             ///
-            /// Getter @clink{exposed:PlayerHandle.PlayerGiveUpState} in public @cref{PlayerHandle}<br/>
-            /// Setter @clink{exposed:PlayerHandle.PlayerGiveUpState} in public @cref{PlayerHandle}
+            /// Getter @clink{exposed:PlayerHandle.GiveUpState} in public @cref{PlayerHandle}<br/>
+            /// Setter @clink{exposed:PlayerHandle.GiveUpState} in public @cref{PlayerHandle}
             public readonly bool GiveUpState
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -794,7 +794,7 @@ namespace Battle.QSimulation.Player
             #region Public Properties - Player Character
 
             /// <summary>
-            /// Gets player's <em>CharacterEntityGroupID<em>.
+            /// Gets player's <em>CharacterEntityGroupID</em>.
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerCharacter "Player Character Properties"
@@ -807,7 +807,7 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Gets player's <em>SelectedCharacterNumber<em>.
+            /// Gets player's <em>SelectedCharacterNumber</em>.
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerCharacter "Player Character Properties"
@@ -819,7 +819,7 @@ namespace Battle.QSimulation.Player
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->CharacterSelectedNumbers[Index]; }
 
             /// <summary>
-            /// Gets/Sets player's <em>SelectedCharacterState<em>.
+            /// Gets/Sets player's <em>SelectedCharacterState</em>.
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerCharacter "Player Character Properties"
@@ -841,7 +841,7 @@ namespace Battle.QSimulation.Player
             /// @{
 
             /// <summary>
-            /// Gets/Sets player's <em>RespawnTimer<em>.
+            /// Gets/Sets player's <em>RespawnTimer</em>.
             /// </summary>
             ///
             /// Getter @clink{exposed:PlayerHandle.RespawnTimer} in public @cref{PlayerHandle}<br/>
@@ -855,7 +855,7 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Gets player's <em>SpawnPosition<em>.
+            /// Gets player's <em>SpawnPosition</em>.
             /// </summary>
             public readonly FPVector2 SpawnPosition
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => s_spawnPoints[Index]; }

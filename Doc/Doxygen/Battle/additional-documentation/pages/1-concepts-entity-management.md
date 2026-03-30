@@ -10,20 +10,21 @@ The @cref{Battle.QSimulation.Game,BattleEntityManager} handles **%Quantum Entity
 
 **%Quantum Entities** are **Registered** using @clink{Register:Battle.QSimulation.Game.BattleEntityManager.Register(Frame, EntityRef)},
 either individually or as an [{Entity Group}](#page-concepts-entity-management-entity-group), and can be **Retrieved** and **Returned**.<br/>
-**Registered Entities** are stored offscreen when **OutOfPlay** and are assigned an [{Entity ID}](#page-concepts-entity-management-entity-id) for accessing them.<br/>
+**Registered Entities** are stored offscreen when [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate) and are assigned an [{Entity ID}](#page-concepts-entity-management-entity-id) for accessing them.<br/>
 [{Compound Entities}](#page-concepts-entity-management-compound-entities)
 have their own @clink{RegisterCompound:Battle.QSimulation.Game.BattleEntityManager.RegisterCompound(Frame, Battle.QSimulation.Game.BattleEntityManager.CompoundEntityTemplate)} method.<br/>
 
 **Entities** can be **Retrieved** using
-@clink{Get:Battle.QSimulation.Game.BattleEntityManager.Get(Frame, BattleEntityID, bool)} to be used in the game. (**InPlay**)<br/>
+@clink{Get:Battle.QSimulation.Game.BattleEntityManager.Get(Frame, BattleEntityID, bool)} to be used in the game. [{InPlay}](#page-concepts-entity-management-registered-entities-playstate)<br/>
 **Entities** can be **Returned** using
-@clink{Return:Battle.QSimulation.Game.BattleEntityManager.Return(Frame, BattleEntityID)}, **teleporting** them back offscreen. (**OutOfPlay**)<br/>
+@clink{Return:Battle.QSimulation.Game.BattleEntityManager.Return(Frame, BattleEntityID)}, **teleporting** them back offscreen. [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate)<br/>
 [{Entity Groups}](#page-concepts-entity-management-entity-group)
 have their own @clink{Get:Battle.QSimulation.Game.BattleEntityManager.Get(Frame, BattleEntityID, bool)}
 and @clink{Return:Battle.QSimulation.Game.BattleEntityManager.Return(Frame, BattleEntityID)} methods that take an additional **offset** argument.<br/>
 
 #### PlayState {#page-concepts-entity-management-registered-entities-playstate}
 
+The **PlayState** isn't explicitly tracked in the simulation. This is just the terminology we use and a useful way to think about the state of **Entities**.  
 [{Registered Entities}](#page-concepts-entity-management-registered-entities) have 2 different states, **InPlay** and **OutOfPlay**.  
 When in the arena, a **Registered Entity** is considered **InPlay**. When not in the arena, it is considered **OutOfPlay**.  
 When **OutOfPlay**, **Registered Entities** will be stored offscreen.  
