@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
-using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
 
