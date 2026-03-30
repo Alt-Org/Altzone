@@ -156,73 +156,11 @@ public class Raid_InventoryPage : MonoBehaviour
             }
             item.LaunchBall();
 
-            if (itemWeight != item.ItemWeight)
+            if (itemWeight == item.ItemWeight && itemWeight != 0)
             {
                 LootTracker.SetLootCount(item.ItemWeight,LootTracker.MaxLootWeight);
                 item.RemoveData();
-            }
-            // Bruh
-            // if (itemWeight == ItemWeight1)
-            // {
-                // LootTracker.SetLootCount(ItemWeight1, LootTracker.MaxLootWeight);
-                // ListOfUIItems[index].RemoveData();
-            // }
-            // else if (itemWeight == ItemWeight2)
-            // {
-                // LootTracker.SetLootCount(ItemWeight2, LootTracker.MaxLootWeight);
-                // ListOfUIItems[index].RemoveData();
-            // }
-            // else if (itemWeight == ItemWeight3)
-            // {
-                // LootTracker.SetLootCount(ItemWeight3, LootTracker.MaxLootWeight);
-                // ListOfUIItems[index].RemoveData();
-            // }
-            // else if (itemWeight == ItemWeight4)
-            // {
-                // LootTracker.SetLootCount(ItemWeight4, LootTracker.MaxLootWeight);
-                // ListOfUIItems[index].RemoveData();
-            // }
-            // else if (itemWeight == ItemWeight5)
-            // {
-                // LootTracker.SetLootCount(ItemWeight5, LootTracker.MaxLootWeight);
-                // ListOfUIItems[index].RemoveData();
-            // }
-            // else if (itemWeight == ItemWeight6)
-            // {
-                // LootTracker.SetLootCount(ItemWeight6, LootTracker.MaxLootWeight);
-                // ListOfUIItems[index].RemoveData();
-            // }
-            // else if (itemWeight == ItemWeight7)
-            // {
-                // LootTracker.SetLootCount(ItemWeight7, LootTracker.MaxLootWeight);
-                // ListOfUIItems[index].RemoveData();
-            // }
-            // else if (itemWeight == ItemWeight8)
-            // {
-                // LootTracker.SetLootCount(ItemWeight8, LootTracker.MaxLootWeight);
-                // ListOfUIItems[index].RemoveData();
-            // }
-            // else if (itemWeight == ItemWeight9)
-            // {
-                // LootTracker.SetLootCount(ItemWeight9, LootTracker.MaxLootWeight);
-                // ListOfUIItems[index].RemoveData();
-            // }
-            // else if (itemWeight == ItemWeight10)
-            // {
-                // LootTracker.SetLootCount(ItemWeight10, LootTracker.MaxLootWeight);
-                // ListOfUIItems[index].RemoveData();
-            // }
-            // else if (itemWeight == ItemWeight11)
-            // {
-                // LootTracker.SetLootCount(ItemWeight11, LootTracker.MaxLootWeight);
-                // ListOfUIItems[index].RemoveData();
-            // }
-            // else if (itemWeight == ItemWeight12)
-            // {
-                // LootTracker.SetLootCount(ItemWeight12, LootTracker.MaxLootWeight);
-                // ListOfUIItems[index].RemoveData();
-            // }
-            else
+            } else
             {
                 Debug.Log("This inventory slot has already been looted!");
             }
@@ -282,7 +220,7 @@ public class Raid_InventoryPage : MonoBehaviour
         GameFurniture furniture = ListOfFurniture[RandomFurniture];
         ListOfUIItems[Index].ItemWeight = (float)furniture.Weight;
         // (TODO) Get furnitures image somehow.. GameFurniture väitetysti sisältää sen mutta ei sisällä...
-        ListOfUIItems[Index].SetData(Image1,ListOfUIItems[Index].ItemWeight);
+        ListOfUIItems[Index].SetData( Image1 ,ListOfUIItems[Index].ItemWeight);
         return;
 
         // switch (RandomFurniture)
