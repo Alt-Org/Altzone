@@ -231,7 +231,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 40
   m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3924,7 +3924,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 40
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4632,7 +4632,19 @@ MonoBehaviour:
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4235185873375394469}
+        m_TargetAssemblyTypeName: ParentalControlManager, MainMenu
+        m_MethodName: SetPasswordInput
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnSubmit:
     m_PersistentCalls:
       m_Calls: []
@@ -5630,7 +5642,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -7003,7 +7015,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32.35
+  m_fontSize: 72
   m_fontSizeBase: 39
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -10407,7 +10419,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -10545,7 +10557,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 40
   m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -11851,8 +11863,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 33.491425, y: -22.327618}
-  m_SizeDelta: {x: 0, y: 44.655235}
+  m_AnchoredPosition: {x: 132.70532, y: -88.470215}
+  m_SizeDelta: {x: 0, y: 176.94043}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5346137426496441981
 CanvasRenderer:
@@ -12477,7 +12489,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -12560,8 +12572,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 16.360271, y: -154.75156}
-  m_SizeDelta: {x: 0, y: 43.62739}
+  m_AnchoredPosition: {x: 64.8254, y: -613.1825}
+  m_SizeDelta: {x: 0, y: 172.86774}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &743721110334598278
 CanvasRenderer:
@@ -13376,7 +13388,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2750891726292881933}
   m_Layer: 5
-  m_Name: PopUp
+  m_Name: ParentalControlPopUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14803,7 +14815,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26.65
+  m_fontSize: 72
   m_fontSizeBase: 39
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -15511,7 +15523,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 40
   m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -17650,7 +17662,19 @@ MonoBehaviour:
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4235185873375394469}
+        m_TargetAssemblyTypeName: ParentalControlManager, MainMenu
+        m_MethodName: SetConfirmPasswordInput
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnSubmit:
     m_PersistentCalls:
       m_Calls: []
@@ -18466,7 +18490,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 40
   m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -24337,7 +24361,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -24906,7 +24930,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -25181,7 +25205,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 40
   m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -25745,8 +25769,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 16.360271, y: -111.12417}
-  m_SizeDelta: {x: 0, y: 43.62739}
+  m_AnchoredPosition: {x: 64.8254, y: -440.31473}
+  m_SizeDelta: {x: 0, y: 172.86774}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7766482377142582589
 CanvasRenderer:
@@ -27353,7 +27377,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7910250592342732966}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4235185873375394469}
+        m_TargetAssemblyTypeName: ParentalControlManager, MainMenu
+        m_MethodName: SetPassword
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8221815591855244388
 GameObject:
   m_ObjectHideFlags: 0
@@ -27785,8 +27821,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 33.491425, y: -66.98285}
-  m_SizeDelta: {x: 0, y: 44.655235}
+  m_AnchoredPosition: {x: 132.70532, y: -265.41064}
+  m_SizeDelta: {x: 0, y: 176.94043}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7659843953905760263
 CanvasRenderer:
@@ -28019,7 +28055,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 40
   m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -28856,7 +28892,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -29450,7 +29486,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -30637,10 +30673,14 @@ MonoBehaviour:
   parentalControlPanel: {fileID: 452585707855141714}
   passwordPanel: {fileID: 229516808582982380}
   passwordInput: {fileID: 8585413266285674770}
-  confirmPasswordInput: {fileID: 7771211247532796414}
+  popupPasswordInput: {fileID: 8660987843109483617}
+  confirmPasswordInput: {fileID: 795573207046045005}
   messageText: {fileID: 0}
   controlToggle: {fileID: 8248150989251993551}
   timeLimitInput: {fileID: 806506189106899026}
+  parentalControlPopup: {fileID: 3892752234984768531}
+  setPasswordInput: 
+  setConfirmPasswordInput: 
 --- !u!1 &8884749935273971245
 GameObject:
   m_ObjectHideFlags: 0
@@ -32535,7 +32575,7 @@ PrefabInstance:
     - target: {fileID: 6891754130952581934, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_fontSize
-      value: 20
+      value: 32
       objectReference: {fileID: 0}
     - target: {fileID: 6924264353861042730, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -32920,7 +32960,7 @@ PrefabInstance:
     - target: {fileID: 9011883256918754321, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_fontSize
-      value: 28
+      value: 47.35
       objectReference: {fileID: 0}
     - target: {fileID: 9055697728720554350, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -33599,7 +33639,7 @@ PrefabInstance:
     - target: {fileID: 2522924568871388016, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_Value
-      value: 0.5
+      value: 0.37500006
       objectReference: {fileID: 0}
     - target: {fileID: 2522924569201874204, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
@@ -33659,7 +33699,7 @@ PrefabInstance:
     - target: {fileID: 2522924569201874207, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 540
+      value: 810
       objectReference: {fileID: 0}
     - target: {fileID: 2522924569201874207, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
@@ -33978,7 +34018,7 @@ PrefabInstance:
     - target: {fileID: 6699832907098985500, guid: 7afbe7fc11286b544aab47947e93f468,
         type: 3}
       propertyPath: m_fontSize
-      value: 18
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 7140401699805581674, guid: 7afbe7fc11286b544aab47947e93f468,
         type: 3}

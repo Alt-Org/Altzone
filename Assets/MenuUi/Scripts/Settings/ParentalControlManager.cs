@@ -1,6 +1,8 @@
+using System;
+using System.Runtime.CompilerServices;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class ParentalControlManager : MonoBehaviour
 {
@@ -8,16 +10,24 @@ public class ParentalControlManager : MonoBehaviour
     public GameObject passwordPanel;
     //public InputField passwordInput;
     public TMP_InputField passwordInput;
+    public TMP_InputField popupPasswordInput;
     public TMP_InputField confirmPasswordInput;
     //public Text messageText;
     public TMP_Text messageText;
     public Toggle controlToggle;
     public TMP_InputField timeLimitInput;
+    //the password will be set in the pop up
+    public GameObject parentalControlPopup;
 
     private string sessionPassword = "";
+    public string setPasswordInput;
+    public string setConfirmPasswordInput;
 
     void Start()
     {
+
+
+
         parentalControlPanel.SetActive(true);
         passwordPanel.SetActive(true);
 
@@ -62,6 +72,53 @@ public class ParentalControlManager : MonoBehaviour
             messageText.text = "Incorrect password!";
         }
     }
+
+
+    public void SetPasswordInput()
+    {
+        
+        setPasswordInput = popupPasswordInput.text;
+        Debug.Log("to password input " + setPasswordInput);
+
+
+    }
+
+
+    public void SetConfirmPasswordInput()
+    {
+        
+        setConfirmPasswordInput = confirmPasswordInput.text;
+        Debug.Log("to confirm password input " + confirmPasswordInput.text);
+
+
+    }
+
+
+
+    public void SetPassword() {
+        //this is done in the pop-up
+        //todo: password criteria-check
+        Debug.Log(setPasswordInput);
+
+
+        if (setPasswordInput.Equals(setConfirmPasswordInput)) {
+
+
+            Debug.Log("password is set to PlayerPrefs " + setPasswordInput);
+            PlayerPrefs.SetString("password", setPasswordInput);
+            Debug.Log(PlayerPrefs.GetString("password"));
+
+            //messageText.text = "Password set!";
+
+        } else
+        {
+           // messageText.text = "Passwords do not match";
+        }
+
+        
+    }
+
+
 
     private void ShowSettings()
     {
