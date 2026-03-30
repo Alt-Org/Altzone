@@ -56,6 +56,7 @@ public class ProfileMenu : AltMonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button _openFavoriteDefenceSelection;
     [SerializeField] private GameObject _closePopupAreaButton;
+    [SerializeField] private GameObject _popupOverlay;
     [SerializeField] private GameObject[] _playStyleButtons;
     [SerializeField] private Button _avatarPageTabButton;
 
@@ -82,10 +83,17 @@ public class ProfileMenu : AltMonoBehaviour
 
     [Header("Own Profile Only UI")]
     [SerializeField] private GameObject _editProfileButton;
+    [SerializeField] private GameObject _editProfilePopup;
+    [SerializeField] private TMP_InputField _editNameInputField;
+    [SerializeField] private TextMeshProUGUI _editNameErrorText;
+    [SerializeField] private Button _cancelEditProfileButton;
+    [SerializeField] private Button _confirmEditProfileButton;
     [SerializeField] private GameObject _todayEmotionSection;
     [SerializeField] private GameObject _weekEmotionsSection;
 
     public TextMeshProUGUI textMeshPro;
+
+    private string _tempPlayerName;
 
     private int tempLocalSaveTime;
     private float tempLocalSaveSecondsTime;
@@ -168,6 +176,8 @@ public class ProfileMenu : AltMonoBehaviour
 
     private void OnEnable()
     {
+        SetEditPopupState(false);
+
         Debug.Log($"_ClanURLButton is null: {_ClanURLButton == null}");
         LoadMinutes();
 
@@ -186,6 +196,8 @@ public class ProfileMenu : AltMonoBehaviour
     }
     private void OnDisable()
     {
+        SetEditPopupState(false);
+
         _characterOptionsPopup.SetActive(false);
         _closePopupAreaButton.SetActive(false);
         ServerManager.OnLogInStatusChanged -= SetPlayerProfileValues;
@@ -250,7 +262,19 @@ public class ProfileMenu : AltMonoBehaviour
 
     private void SaveChanges()
     {
+        if (_playerData == null)
+            return;
+
         _playerData.FavoriteDefenceID = _tempFavoriteDefenceID;
+
+        if (_editNameInputField != null && !_otherPlayerProfile)
+        {
+            string trimmedName = _editNameInputField.text?.Trim();
+            if (!string.IsNullOrEmpty(trimmedName))
+            {
+                _playerData.Name = trimmedName;
+            }
+        }
 
         StartCoroutine(SavePlayerData(_playerData, null));
     }
@@ -262,6 +286,26 @@ public class ProfileMenu : AltMonoBehaviour
 
         if (_openViewedPlayerClanButton != null)
             _openViewedPlayerClanButton.onClick.AddListener(OpenViewedPlayerClanProfile);
+
+        if (_editProfileButton != null)
+        {
+            Button editButton = _editProfileButton.GetComponent<Button>();
+            if (editButton != null)
+                editButton.onClick.AddListener(OpenEditProfilePopup);
+        }
+
+        if (_popupOverlay != null)
+        {
+            Button overlayButton = _popupOverlay.GetComponentInChildren<Button>();
+            if (overlayButton != null)
+                overlayButton.onClick.AddListener(CloseEditProfilePopup);
+        }
+
+        if (_cancelEditProfileButton != null)
+            _cancelEditProfileButton.onClick.AddListener(CloseEditProfilePopup);
+
+        if (_confirmEditProfileButton != null)
+            _confirmEditProfileButton.onClick.AddListener(ConfirmEditProfileChanges);
 
         LoadMinutes();
     }
@@ -279,6 +323,71 @@ public class ProfileMenu : AltMonoBehaviour
         {
             Debug.LogError("Klaanitiedot puuttuvat.");
         }
+    }
+
+    private void SetEditPopupState(bool isOpen)
+    {
+        if (_editProfilePopup != null)
+            _editProfilePopup.SetActive(isOpen);
+
+        if (_popupOverlay != null)
+            _popupOverlay.SetActive(isOpen);
+    }
+
+    private void OpenEditProfilePopup()
+    {
+        if (_otherPlayerProfile)
+            return;
+
+        if (_editProfilePopup == null || _editNameInputField == null)
+        {
+            Debug.LogWarning("Edit profile popup references are missing.");
+            return;
+        }
+
+        _tempPlayerName = _playerData != null ? _playerData.Name : string.Empty;
+        _editNameInputField.text = _tempPlayerName;
+
+        if (_editNameErrorText != null)
+            _editNameErrorText.text = "";
+
+        SetEditPopupState(true);
+    }
+
+    private void CloseEditProfilePopup()
+    {
+        SetEditPopupState(false);
+
+        if (_editNameInputField != null)
+            _editNameInputField.text = _tempPlayerName;
+
+        if (_editNameErrorText != null)
+            _editNameErrorText.text = "";
+    }
+
+    private void ConfirmEditProfileChanges()
+    {
+        if (_otherPlayerProfile || _playerData == null || _editNameInputField == null)
+            return;
+
+        string newName = _editNameInputField.text?.Trim();
+
+        if (string.IsNullOrEmpty(newName))
+        {
+            if (_editNameErrorText != null)
+                _editNameErrorText.text = "Nimi ei voi olla tyhjä.";
+            return;
+        }
+
+        _playerData.Name = newName;
+        _playerName.text = newName;
+
+        SaveChanges();
+
+        if (_editNameErrorText != null)
+            _editNameErrorText.text = "";
+
+        SetEditPopupState(false);
     }
 
     /// <summary>
