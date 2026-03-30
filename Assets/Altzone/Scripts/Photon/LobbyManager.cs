@@ -97,6 +97,17 @@ namespace Altzone.Scripts.Lobby
 
         private const long STARTDELAY = 2000;
         private const float MatchmakingTimeoutSeconds = 30f;
+        // Timeout for followers who join a matchmaking room: if not enough human players join within this interval, auto-leave and requeue.
+        private const float MatchmakingJoinTimeoutSeconds = 10f;
+        // Delay before requeueing after leaving a matchmaking room due to timeout.
+        private const float MatchmakingRequeueDelaySeconds = 2f;
+        // Maximum automatic requeue attempts (0 = unlimited)
+        private const int MaxAutoRequeueAttempts = 5;
+
+        // Tracks how many times we've auto-requeued to avoid tight infinite loops.
+        private int _autoRequeueAttempts = 0;
+        // Holder for a join-timeout watcher coroutine so it can be cancelled.
+        private Coroutine _joinTimeoutWatcherHolder = null;
 
         private QuantumRunner _runner = null;
 
@@ -128,6 +139,8 @@ namespace Altzone.Scripts.Lobby
         private bool _returnToMainMenuOnMatchmakingRejoin = false;
         // Tracks whether a game start countdown is active (GameCountdown > 0)
         private bool _countdownActive = false;
+        // Timestamp when a GameCountdown > 0 was last observed locally (Time.time)
+        private float _lastCountdownStartTime = -100f;
         // If a master leaves during start, defer returning to the LobbyRoom UI until master switch completes
         private bool _deferReturnToLobbyRoomOnMasterSwitch = false;
 
@@ -1002,6 +1015,44 @@ namespace Altzone.Scripts.Lobby
                         currentGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
                     }
                     catch { }
+
+                    // Short join timeout: if after MatchmakingJoinTimeoutSeconds the countdown hasn't started,
+                    // master should instruct all clients to leave and requeue so the group can reform.
+                    if (!botBackfillApplied && Time.time - waitStartTime >= MatchmakingJoinTimeoutSeconds)
+                    {
+                        if (!_countdownActive)
+                        {
+                            Debug.Log($"Matchmaking short timeout ({MatchmakingJoinTimeoutSeconds}s) reached and countdown not started; master will request requeue.");
+
+                            // Notify all clients to requeue
+                            try
+                            {
+                                SafeRaiseEvent(
+                                    PhotonRealtimeClient.PhotonEvent.CancelGameStart,
+                                    new object[] { true, (int)currentGameType },
+                                    new RaiseEventArgs { Receivers = ReceiverGroup.All },
+                                    SendOptions.SendReliable
+                                );
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.LogWarning($"Failed to broadcast CancelGameStart requeue: {ex.Message}");
+                            }
+
+                            // Master leaves and requeues (LeaveAndAutoRequeue will handle master vs non-master paths).
+                            try
+                            {
+                                StartCoroutine(LeaveAndAutoRequeue(currentGameType));
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.LogWarning($"Failed to start LeaveAndAutoRequeue after short timeout: {ex.Message}");
+                            }
+
+                            yield break;
+                        }
+                    }
+
                     if (!botBackfillApplied && currentGameType == GameType.Random2v2 && Time.time - waitStartTime >= MatchmakingTimeoutSeconds)
                     {
                         Debug.Log($"Matchmaking timeout ({MatchmakingTimeoutSeconds}s) reached for Random2v2. Filling remaining slots with bots.");
@@ -1148,6 +1199,55 @@ namespace Altzone.Scripts.Lobby
             finally
             {
                 _matchmakingHolder = null;
+            }
+        }
+
+        // Watcher coroutine for non-master clients that join a matchmaking room.
+        // If the game countdown hasn't started within `timeoutSeconds`, leave and requeue.
+        private IEnumerator MatchmakingJoinWatcher(GameType gameType, float timeoutSeconds)
+        {
+            try
+            {
+                float start = Time.time;
+                while (Time.time - start < timeoutSeconds)
+                {
+                    if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.CurrentRoom == null) yield break;
+
+                    // If countdown started after we began watching, cancel watcher
+                    if (_lastCountdownStartTime >= start)
+                    {
+                        _autoRequeueAttempts = 0;
+                        yield break;
+                    }
+
+                    yield return new WaitForSeconds(0.5f);
+                }
+
+                // Timeout reached: countdown did not start; leave and requeue
+                GameType requeueGameType = GameType.Random2v2;
+                try { requeueGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey); } catch { }
+                Debug.Log($"MatchmakingJoinWatcher: countdown did not start within {timeoutSeconds}s in room '{PhotonRealtimeClient.CurrentRoom?.Name}'; leaving and requeueing for {requeueGameType}.");
+
+                _autoRequeueAttempts++;
+                if (MaxAutoRequeueAttempts > 0 && _autoRequeueAttempts > MaxAutoRequeueAttempts)
+                {
+                    Debug.LogWarning($"MatchmakingJoinWatcher: exceeded max auto-requeue attempts ({MaxAutoRequeueAttempts}); not requeueing.");
+                    yield break;
+                }
+
+                yield return new WaitForSeconds(MatchmakingRequeueDelaySeconds);
+                try
+                {
+                    StartCoroutine(LeaveAndAutoRequeue(requeueGameType));
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"MatchmakingJoinWatcher: failed to start LeaveAndAutoRequeue: {ex.Message}");
+                }
+            }
+            finally
+            {
+                _joinTimeoutWatcherHolder = null;
             }
         }
 
@@ -2880,6 +2980,17 @@ namespace Altzone.Scripts.Lobby
             int playerCount = room.PlayerCount;
             int botCount = PhotonBattleRoom.GetBotCount();
 
+            // Reset auto-requeue attempts if enough human players are present
+            try
+            {
+                if (PhotonRealtimeClient.InMatchmakingRoom && PhotonRealtimeClient.CurrentRoom != null)
+                {
+                    int humanPlayers = PhotonRealtimeClient.CurrentRoom.Players.Values.Count(p => !string.IsNullOrEmpty(p.UserId) && p.UserId != "Bot");
+                    if (humanPlayers >= 4) _autoRequeueAttempts = 0;
+                }
+            }
+            catch { }
+
             try
             {
                 if (PhotonRealtimeClient.LocalPlayer.IsMasterClient && playerCount + botCount < room.MaxPlayers && !PhotonRealtimeClient.CurrentRoom.IsOpen)
@@ -3036,6 +3147,30 @@ namespace Altzone.Scripts.Lobby
                 bool isLeader = PhotonRealtimeClient.LocalPlayer.UserId == PhotonRealtimeClient.LocalPlayer.GetCustomProperty<string>(PhotonBattleRoom.LeaderIdKey);
                 OnMatchmakingRoomEntered?.Invoke(isLeader);
 
+                // Start join watcher for non-master clients: if not enough human players join within timeout, auto-leave and requeue.
+                try
+                {
+                    bool isQueueRoom = false;
+                    try
+                    {
+                        var curr = PhotonRealtimeClient.CurrentRoom;
+                        if (curr != null && curr.CustomProperties != null && curr.CustomProperties.ContainsKey(PhotonBattleRoom.IsQueueKey) && (curr.CustomProperties[PhotonBattleRoom.IsQueueKey] is bool qb && qb))
+                        {
+                            isQueueRoom = true;
+                        }
+                    }
+                    catch { }
+
+                    if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient && !isQueueRoom)
+                    {
+                        GameType roomGameType = GameType.Random2v2;
+                        try { roomGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey); } catch { }
+                        if (_joinTimeoutWatcherHolder != null) { StopCoroutine(_joinTimeoutWatcherHolder); _joinTimeoutWatcherHolder = null; }
+                        _joinTimeoutWatcherHolder = StartCoroutine(MatchmakingJoinWatcher(roomGameType, MatchmakingJoinTimeoutSeconds));
+                    }
+                }
+                catch { }
+
                 // Start auto-join only for non-master clients that are effectively alone in their matchmaking room.
                 // Do not auto-join if the current room is a Custom game.
                 bool inCustomRoom = false;
@@ -3087,6 +3222,12 @@ namespace Altzone.Scripts.Lobby
             {
                 StopCoroutine(_verifyPositionsHolder);
                 _verifyPositionsHolder = null;
+            }
+            // Stop any join-timeout watcher
+            if (_joinTimeoutWatcherHolder != null)
+            {
+                StopCoroutine(_joinTimeoutWatcherHolder);
+                _joinTimeoutWatcherHolder = null;
             }
             LobbyOnLeftRoom?.Invoke();
             // Goto lobby if we left (in)voluntarily any room
@@ -3282,6 +3423,12 @@ namespace Altzone.Scripts.Lobby
                     int countdown = (int)photonEvent.CustomData;
                     // Track countdown active state: >0 means active, <=0 or -1 means inactive/cancel
                     _countdownActive = countdown > 0;
+                    if (countdown > 0)
+                    {
+                        // Countdown started: reset auto-requeue attempts and stop any join watcher
+                        _autoRequeueAttempts = 0;
+                        try { if (_joinTimeoutWatcherHolder != null) { StopCoroutine(_joinTimeoutWatcherHolder); _joinTimeoutWatcherHolder = null; } } catch { }
+                    }
                     OnGameCountdownUpdate?.Invoke(countdown);
                     break;
                 case PhotonRealtimeClient.PhotonEvent.StartGame:
