@@ -4,7 +4,8 @@
 
 ## Entity Manager {#page-concepts-entity-management-entity-manager}
 
-The @cref{Battle.QSimulation.Game,BattleEntityManager} handles **%Quantum Entity** management in the game.
+The @cref{Battle.QSimulation.Game,BattleEntityManager} handles **%Quantum Entity** management in the game.  
+Uses [{Entity Manager Data}](#page-concepts-entity-management-entity-manager-data) singleton internally to manage [{Registered Entities}](#page-concepts-entity-management-registered-entities).
 
 ### Registered Entities {#page-concepts-entity-management-registered-entities}
 
@@ -15,7 +16,7 @@ either individually or as an [{Entity Group}](#page-concepts-entity-management-e
 have their own @clink{RegisterCompound:Battle.QSimulation.Game.BattleEntityManager.RegisterCompound(Frame, Battle.QSimulation.Game.BattleEntityManager.CompoundEntityTemplate)} method.<br/>
 
 **Entities** can be **Retrieved** using
-@clink{Get:Battle.QSimulation.Game.BattleEntityManager.Get(Frame, BattleEntityID, bool)} to be used in the game. [{InPlay}](#page-concepts-entity-management-registered-entities-playstate)<br/>
+@clink{Get:Battle.QSimulation.Game.BattleEntityManager.Get(Frame, BattleEntityID, bool)} to be used in the arena. [{InPlay}](#page-concepts-entity-management-registered-entities-playstate)<br/>
 **Entities** can be **Returned** using
 @clink{Return:Battle.QSimulation.Game.BattleEntityManager.Return(Frame, BattleEntityID)}, **teleporting** them back offscreen. [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate)<br/>
 [{Entity Groups}](#page-concepts-entity-management-entity-group)
@@ -68,3 +69,13 @@ The **Parent** has a @cref{Quantum,BattleCompoundEntityComponent} which contains
 **Compound Entities** are handled by [{Entity Manager}](#page-concepts-entity-management-entity-manager).<br/>
 **Compound Entities** can be registered to [{Entity Manager}](#page-concepts-entity-management-entity-manager) both individually and in groups.<br/>
 **Compound Entities** can also be used without registering.
+
+<br/>
+
+---
+
+<br/>
+
+## EntityManagerData (%Quantum Singleton) {#page-concepts-entity-management-entity-manager-data}
+
+The @cref{Quantum,BattleEntityManagerDataQSingleton} struct is a **%Quantum Singleton Component** defined in and generated from BattleEntityManagerData.qtn that is used internally by [{EntityManager}](#page-concepts-entity-management-entity-manager) to manage registered entities.

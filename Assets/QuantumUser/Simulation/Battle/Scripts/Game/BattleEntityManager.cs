@@ -213,6 +213,10 @@ namespace Battle.QSimulation.Game
         /// Use @cref{MakeCompound} method to make non-registered compound.<br/>
         /// Use @cref{Register(Frame\, EntityRef)} to register a non-compound entity.
         ///
+        /// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.<br/>
+        /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.<br/>
+        /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
+        ///
         /// Uses @cref{MakeCompound} method to make compounds.
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -246,6 +250,11 @@ namespace Battle.QSimulation.Game
         /// Use @cref{RegisterCompound(Frame\, CompoundEntityTemplate)} to register and make a single compound entity.<br/>
         /// Use @cref{MakeCompound} method to make non-registered compound.<br/>
         /// Use @cref{Register(Frame\, EntityRef[])} to register a group of non-compound entities.
+        ///
+        /// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.<br/>
+        /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.<br/>
+        /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
+        /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.
         ///
         /// Uses @cref{MakeCompound} method to make compounds.
         ///
@@ -397,7 +406,8 @@ namespace Battle.QSimulation.Game
         /// </summary>
         /// Part of @ref BattleEntityManager-CompoundMethods "Compound methods"
         ///
-        /// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
+        /// Use @cref{RegisterCompound(Frame\, CompoundEntityTemplate)} to make and register a single compound entity.<br/>
+        /// Use @cref{RegisterCompound(Frame\, CompoundEntityTemplate[])} to make and register a group of compound entities.<br/>
         ///
         /// Used internally when registering compounds using RegisterCompound methods.<br/>
         /// @cref{RegisterCompound(Frame\, CompoundEntityTemplate)}<br/>

@@ -196,14 +196,15 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Attaches a shield to a character based on their <paramref name="characterNumber"/> and <paramref name="shieldNumber"/>
+        /// Attaches a shield to a player's character based on their <paramref name="playerSlot"/>, <paramref name="characterNumber"/> and <paramref name="shieldNumber"/>
         /// and updates necessary data. Additionally teleports the shield to the character if needed.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerSlot">Slot of the specified player.</param>
-        /// <param name="characterNumber">The character number of the specified character.</param>
+        /// <param name="playerSlot">Slot of the desired player.</param>
+        /// <param name="characterNumber">The character number of the desired character.</param>
         /// <param name="shieldNumber">The number of the shield that's being attached.</param>
-        /// <param name="teleport">Boolean for whether to teleport the attached shield or not.</param>
+        /// <param name="teleport">Whether to teleport the attached shield or not.</param>
         public static void AttachShield(Frame f, BattlePlayerSlot playerSlot, int characterNumber, int shieldNumber, bool teleport = true)
         {
             if (!IsValidShieldNumber(f, playerSlot, characterNumber, shieldNumber)) return;
@@ -236,10 +237,12 @@ namespace Battle.QSimulation.Player
         /// Retrieves a detached shield linked to a character based on their <paramref name="characterNumber"/> and <paramref name="shieldNumber"/>
         /// and updates necessary data.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerSlot">Slot of the specified character.</param>
         /// <param name="characterNumber">The character number of the specified character.</param>
         /// <param name="shieldNumber">The number of the shield that's being retrieved.</param>
+        ///
         /// <returns>The BattlePlayerShieldEntityRef of the detached shield.</returns>
         public static BattlePlayerShieldEntityRef GetDetachedShieldEntityRef(Frame f, BattlePlayerSlot playerSlot, int characterNumber, int shieldNumber)
         {
@@ -264,6 +267,7 @@ namespace Battle.QSimulation.Player
         /// Removes and detaches a shield attached to a character based on their <paramref name="characterNumber"/> and <paramref name="shieldNumber"/>
         /// and updates necessary data.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerSlot">Slot of the specified character.</param>
         /// <param name="characterNumber">The character number of the specified character.</param>

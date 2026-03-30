@@ -9,16 +9,22 @@ Each Each **Player** has a **PlayState**.
 Each **Player** has **data** with them that **isn't connected to any specific character** under the **Player**'s control.  
 Each **Player** controls multiple **Character Entities** which also have some data associated with them.  
 Each **Character Entity** has a player character class that it belongs to.  
+Each **Character Entity** has one or more **Shield Entities**.  
 See [{Player Slots and Teams}](#page-concepts-player-slots-teams)  
 See [{Player PlayState}](#page-concepts-player-playstate)  
 See [{Player Manager Data}](#page-concepts-player-manager-data)  
-See [{Player Character Entity}](#page-concepts-player-character-and-shield-entity)  
+See [{Player Character and Shield Entities}](#page-concepts-player-character-and-shield-entity)  
 See [{Player Character Classes}](#page-concepts-player-characters-classes)
 
 **Other topics**  
 
 See [{Joining and Initializing}](#page-concepts-player-initializing)  
 See [{Player Input}](#page-concepts-player-input)  
+
+**Other sections**  
+
+See [{Quantum Simulation}](#page-concepts-player-simulation)  
+See [{View}](#page-concepts-player-view)
 
 ```dot
 digraph Player {
@@ -92,7 +98,7 @@ graph PlayerSlotsAndTeams {
 This concept extends the more general [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) concept. However, this is tracked explicitly.  
 Each **Player** has a @cref{Quantum,BattlePlayerPlayState} used to track their state in the game, which is detached from [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) that the **Player** controls.  
 Each [{PlayerSlot}](#page-concepts-player-slots-teams) has a **Player PlayState** associated with it including slots that have no player.  
-The general [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) applies to the individual [{Player Character Entities}](#page-concepts-player-character-and-shield-entity).
+The general [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) applies to the individual [{Player Character And Shield Entities}](#page-concepts-player-character-and-shield-entity).
 
 <br/>
 
@@ -228,9 +234,8 @@ digraph PlayerInputGraph {
 Each **Player** controls **3** **Character %Quantum Entities** in the game.  
 For each **Player** one **Character** is present in the arena at a time
 and [{PlayerManager}](#page-concepts-player-simulation-management-playermanager) handles spawning and despawning **Character Entities** when switching between them.  
-Each **Character** has one or more **Shields**. One of the **Shields** may or may not be attached to the **Character**. One or more **Shields** can also be present in the arena independently of the **Character**.  
-The [{ShieldManager}](#page-concepts-player-simulation-management-shieldmanager) handles retrieving(Get) and despawning **Shield Entities**.  
-Retrieving only returns an entity reference to the **Shield Entity**. Attaching or placing the shield in the arena is not handled by the [{ShieldManager}](#page-concepts-player-simulation-management-shieldmanager).  
+Each **Character** has one or more **Shields**. One of the **Shields** may be attached to the **Character**. One or more **Shields** can also be present in the arena detached from the **Character**.  
+The [{ShieldManager}](#page-concepts-player-simulation-management-shieldmanager) handles **Shield Entity** management.  
 Each **Character and Shield Entity** has a [{Player Character Class}](#page-concepts-player-characters-classes) that it belongs to.
 
 ```dot
@@ -286,8 +291,8 @@ The **Unity Prefab root GameObject** contains a **%Quantum Entity Prototype** co
 During gameplay the **Player Character** and it's **Shield(s)** exists both as a **%Quantum Entity** inside [{Quantum Simulation}](#page-concepts-player-simulation) and a **Unity GameObject** inside **Unity View**,
 which **%Quantum** links together.
 
-The **Entity** contains **%Quantum Components** used by the **%Quantum Simulation**. The most significant of these are the [{PlayerData}](#page-concepts-player-simulation-gamelogic-playerdata),
-which is our own defined data relating to **Player Character and Shield Entities** and optionally **Class Data Component**.
+The **Entity** contains **%Quantum Components** used by the **%Quantum Simulation**. The most significant of these are the [{PlayerData}](#page-concepts-player-simulation-gamelogic-playerdata) and the [{ShieldData}](#page-concepts-player-simulation-gamelogic-shielddata),
+which are our own defined data relating to **Player Character and Shield Entities**. Optionally, the **Character Entity** can have a **Class Data Component**.
 
 See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
 
@@ -595,9 +600,28 @@ containing all our defined data for **Shields**.
 
 #### ShieldManager {#page-concepts-player-simulation-management-shieldmanager}
 
-The @cref{Battle.QSimulation.Player, BattlePlayerShieldManager} handles shield management, allowing other classes to focus on gameplay logic.  
+The @cref{Battle.QSimulation.Player, BattlePlayerShieldManager} handles [{Shield Entity}](#page-concepts-player-character-and-shield-entity) management, allowing other classes to focus on gameplay logic.  
 Provides static methods to **Initialize**, attach, remove and query shield-related data.  
 Handles **Initializing Shields** that are present in the game, as well as attaching and detaching **Shield Entities** from a **Character Entity**.
+
+##### Shield Entity Management {#page-concepts-player-simulation-management-shieldmanager-shield-state-management}
+
+**Shields** can be **Attached** or **Detached**
+and [{InPlay}](#page-concepts-entity-management-registered-entities-playstate) or [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate). 
+
+A **Shield** can be **Attached** to a player's **Character** using @clink{AttachShield:Battle.QSimulation.Player.BattlePlayerShieldManager.AttachShield(Frame, BattlePlayerSlot, int, int, bool)}.
+This has no effect on the [{InPlay/OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate).  
+If a **Character** already has a shield **Attached**, the shield will be swapped.  
+When **Attached**, [{InPlay/OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate) logic is handled by the [{PlayerManager}](#page-concepts-player-simulation-management-playermanager).
+([{InPlay}](#page-concepts-entity-management-registered-entities-playstate) when **Character** is [{InPlay}](#page-concepts-entity-management-registered-entities-playstate),
+[{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate) when **Character** is [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate))
+
+**Shields** can be used **Detached** using @clink{GetDetachedShieldEntityRef:Battle.QSimulation.Player.BattlePlayerShieldManager.GetDetachedShieldEntityRef(Frame, BattlePlayerSlot, int, int)}.
+The method will retrieve the shield to be used in the arena (**Detached** and [{InPlay}](#page-concepts-entity-management-registered-entities-playstate))
+**Attached** or not, **Detaching** the **Shield** if needed.  
+A **Shield** can be **Removed** using @clink{RemoveShield:Battle.QSimulation.Player.BattlePlayerShieldManager.RemoveShield(Frame, BattlePlayerSlot, int, int)}, teleporting it out of the arena.
+(**Detached** and [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate))  
+**Attached** or not, **Detaching** the **Shield** if needed.
 
 <br/>
 
