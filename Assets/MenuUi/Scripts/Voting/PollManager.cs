@@ -193,6 +193,14 @@ public static class PollManager // Handles the polls from creation to loading to
         Debug.Log($"TODO CreateRolePoll -> targetPlayerId={targetPlayerId}, roleName={roleName}, roleId={roleId}");
     }
 
+    
+    //TO DO: kirpputori huonekalu äänestys, ostamassa vai myymässä
+    public static void CreateVotingPoll(FurniturePollType furniturePollType, StorageFurniture furniture, Action<bool> callback)
+    {
+        ShowVotingPopup?.Invoke(furniturePollType);
+        Debug.Log($"TODO CreateVotingPoll -> furniturePollType={furniturePollType}, furniture={furniture}, action={callback}");
+    }
+
     // Create poll for kicking a member from clan
     public static void CreateKickPoll(string targetPlayerId)
     {

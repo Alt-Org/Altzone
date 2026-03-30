@@ -79,6 +79,13 @@ public class ConfirmationPopupHandler : MonoBehaviour
 
     public void CreatePollPopup() => StartCoroutine(CreatePollPopupCoroutine());
 
+    public void SetPopupActiveClanStall()
+    {
+        Debug.Log("SuggestVoting painettu");
+        
+
+    }
+
     public IEnumerator CreatePollPopupCoroutine()
     {
         bool? result = null;

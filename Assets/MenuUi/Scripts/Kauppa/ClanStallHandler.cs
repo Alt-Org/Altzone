@@ -6,7 +6,11 @@ using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using MenuUi.Scripts.Storage;
+using MenuUI.Scripts.SoulHome;
+using TMPro;
+using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ClanStallPopupHandler : MonoBehaviour
 {
@@ -16,7 +20,24 @@ public class ClanStallPopupHandler : MonoBehaviour
     [SerializeField] private Transform _content;
     private DataStore _store;
 
+    [Header("Information GameObject")]
+    [SerializeField] private Image _icon;
+    [SerializeField] private TMP_Text _name;
+    [SerializeField] private TMP_Text _weight;
+    [SerializeField] private TMP_Text _diagnoseNumber;
+    [SerializeField] private TMP_Text _artist;
+    [SerializeField] private TMP_Text _artisticDescription;
+    private List<StorageFurniture> _items;
 
+    [SerializeField] private Button _suggestVotingButton;
+    [SerializeField ]private ConfirmationPopupHandler _confirmPopup;
+
+
+    //TO DO: kirpputori äänestys
+    void Start()
+    {
+        _suggestVotingButton.onClick.AddListener(() => { _confirmPopup.SetPopupActiveClanStall();  });
+    }
 
     private void OnEnable()
     {
@@ -39,12 +60,55 @@ public class ClanStallPopupHandler : MonoBehaviour
     
     public void CreateStalls(List<StorageFurniture> storageFurniture)
     {
-        foreach (StorageFurniture furniture in storageFurniture)
+       
+        _items = storageFurniture;
+
+        for (int i = 0; i < _items.Count; i++)
         {
+            
             GameObject slot = Instantiate(_kojuSlot, _content);
             GameObject card = Instantiate(_kojuCard, slot.transform);
 
-            card.GetComponent<FurnitureCardUI>().PopulateCard(furniture);
+         
+            card.GetComponent<FurnitureCardUI>().PopulateCard(_items[i]);
+
+            //1. Store the current index so each button remembers its own item
+            int itemIndex = i;
+
+            //2. Set up the button to display information of specific item
+            Button button = card.GetComponent<Button>();
+            if (button != null)
+            {
+                
+                button.onClick.AddListener(() => {
+                    showInfo(itemIndex);
+                });
+            }
         }
+
+    }
+
+    //Populates furniture info in clan stall popup
+    void showInfo(int slotVal)
+    {
+        StorageFurniture _furn = _items[slotVal];
+
+        //Furniture image
+        _icon.sprite = _furn.Sprite;
+
+        //Furniture name
+        _name.text = _furn.Info.SetName + " " + _furn.Info.VisibleName;
+
+        //Furniture weight
+        _weight.text = _furn.Weight + " KG";
+
+        //Furniture diagnostic number
+        _diagnoseNumber.text = _furn.Info.DiagnoseNumber;
+
+        //Furniture designer/artist
+        _artist.text = "Suunnittelu: " + _furn.Info.ArtistName;
+
+        //Furniture description
+        _artisticDescription.text = _furn.Info.ArtisticDescription;
     }
 }
