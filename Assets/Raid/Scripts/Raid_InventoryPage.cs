@@ -221,10 +221,7 @@ public class Raid_InventoryPage : MonoBehaviour
         GameFurniture furniture = ListOfFurniture[RandomFurniture];
         ListOfUIItems[Index].ItemWeight = (float)furniture.Weight;
         
-        Texture2D texture2D = Resources.Load<Texture2D>(ListOfFurniture[RandomFurniture].Filename);
-        Rect rect = new Rect(0,0,texture2D.width,texture2D.height);
-        Sprite sprite = Sprite.Create(texture2D,rect, new Vector2(0,0),1);
-        ListOfUIItems[Index].SetData( sprite ,ListOfUIItems[Index].ItemWeight);
+        ListOfUIItems[Index].SetData( ListOfFurniture[RandomFurniture].FurnitureInfo.Image ,ListOfUIItems[Index].ItemWeight);
         return;
 
         // switch (RandomFurniture)
