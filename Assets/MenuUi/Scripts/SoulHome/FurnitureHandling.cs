@@ -50,6 +50,33 @@ namespace MenuUI.Scripts.SoulHome
         private FurnitureSlot _slot;
         private FurnitureSlot _tempSlot;
 
+        //!!!!!!!!!!!!!!!!!!!
+        [SerializeField]
+        private bool _hasInteractionSlot = false;
+        private Vector2Int _interactionOffset = new Vector2Int(0, 1);
+        public bool HasInteractionSlot => _hasInteractionSlot;
+
+        public FurnitureSlot AssignedInteractionSlot { get; private set; }
+
+        public void SetInteractionSlot(FurnitureSlot slot)
+        {
+            AssignedInteractionSlot = slot;
+        }
+
+        public Vector2Int GetRotatedInteractionOffset()
+        {
+            // Rotates the offset based on the current temp direction
+            return _tempSpriteDirection switch
+            {
+                Direction.Front => _interactionOffset,
+                Direction.Right => new Vector2Int(_interactionOffset.y, -_interactionOffset.x),
+                Direction.Back => new Vector2Int(-_interactionOffset.x, -_interactionOffset.y),
+                Direction.Left => new Vector2Int(-_interactionOffset.y, _interactionOffset.x),
+                _ => _interactionOffset
+            };
+        }
+        //!!!!!!!!!!!!!!!
+
         public Furniture Furniture { get => _furniture; set => _furniture = value; }
         public Vector2 Position { get => _position; set => _position = value; }
         public FurnitureSlot Slot { get => _slot;

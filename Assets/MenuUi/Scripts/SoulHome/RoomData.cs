@@ -1193,5 +1193,15 @@ namespace MenuUI.Scripts.SoulHome
             }
             furniture.GetComponent<FurnitureHandling>().SetScale();
         }
+
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        public void AddToValidityList(FurnitureSlot slot)
+        {
+            if (slot != null && !_currentSlotValidity.Contains(slot))
+            {
+                _currentSlotValidity.Add(slot);
+            }
+        }
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 }

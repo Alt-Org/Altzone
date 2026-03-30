@@ -664,6 +664,43 @@ namespace MenuUI.Scripts.SoulHome
                 if (hit2.collider.gameObject.CompareTag("Room"))
                 {
                     check = hit2.collider.GetComponent<RoomData>().HandleFurniturePosition(hitArray, _selectedFurniture, hover, hitPoint, hitRoom);
+
+                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    if (hover && _selectedFurniture != null)
+                    {
+                        FurnitureSlot hoveredSlot = null;
+                        foreach (RaycastHit2D slotHit in hitArray)
+                        {
+                            if (slotHit.collider.CompareTag("FloorFurnitureSlot") || slotHit.collider.CompareTag("WallFurnitureSlot"))
+                            {
+                                hoveredSlot = slotHit.collider.GetComponent<FurnitureSlot>();
+                                break;
+                            }
+                        }
+
+                        if (hoveredSlot != null)
+                        {
+                            FurnitureHandling handling = _selectedFurniture.GetComponent<FurnitureHandling>();
+                            if (handling.HasInteractionSlot)
+                            {
+                                Vector2Int offset = handling.GetRotatedInteractionOffset();
+                                int targetCol = hoveredSlot.column + offset.x;
+                                int targetRow = hoveredSlot.row + offset.y;
+
+                                RoomData room = hit2.collider.GetComponent<RoomData>();
+                                // keeps it inside room bounds and sets validity
+                                if (targetCol >= 0 && targetCol < room.SlotColumns && targetRow >= 0 && targetRow < room.SlotRows)
+                                {
+                                    FurnitureSlot interactSlot = room.Grid[targetCol, targetRow].FurnitureSlot;
+                                    interactSlot.SetValidity(true, true);
+                                    room.AddToValidityList(interactSlot);
+                                }
+                            }
+                        }
+                        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    }
+
+
                 }
             }
             if (hover)
@@ -792,7 +829,7 @@ namespace MenuUI.Scripts.SoulHome
                     int roomId = furniture.GetComponent<FurnitureHandling>().TempSlot.roomId;
                     _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(furniture.GetComponent<FurnitureHandling>(), furniture.GetComponent<FurnitureHandling>().TempSlot);
                 }
-                
+
                 furniture.GetComponent<FurnitureHandling>().ResetSlot();
                 furniture.GetComponent<FurnitureHandling>().ResetDirection();
             }
