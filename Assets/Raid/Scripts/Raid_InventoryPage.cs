@@ -6,6 +6,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
+using UnityEngine.UI;
 //using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
 
 public class Raid_InventoryPage : MonoBehaviour
@@ -219,8 +220,11 @@ public class Raid_InventoryPage : MonoBehaviour
     {
         GameFurniture furniture = ListOfFurniture[RandomFurniture];
         ListOfUIItems[Index].ItemWeight = (float)furniture.Weight;
-        // (TODO) Get furnitures image somehow.. GameFurniture väitetysti sisältää sen mutta ei sisällä...
-        ListOfUIItems[Index].SetData( Image1 ,ListOfUIItems[Index].ItemWeight);
+        
+        Texture2D texture2D = Resources.Load<Texture2D>(ListOfFurniture[RandomFurniture].Filename);
+        Rect rect = new Rect(0,0,texture2D.width,texture2D.height);
+        Sprite sprite = Sprite.Create(texture2D,rect, new Vector2(0,0),1);
+        ListOfUIItems[Index].SetData( sprite ,ListOfUIItems[Index].ItemWeight);
         return;
 
         // switch (RandomFurniture)
