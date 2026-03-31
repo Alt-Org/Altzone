@@ -735,6 +735,7 @@ GameObject:
   - component: {fileID: 5703650466504808599}
   - component: {fileID: 2305157965174864740}
   - component: {fileID: 3838435567983209680}
+  - component: {fileID: 1271946935277589118}
   m_Layer: 5
   m_Name: RightArrow
   m_TagString: Untagged
@@ -759,7 +760,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2305157965174864740
 CanvasRenderer:
@@ -799,6 +800,50 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1271946935277589118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520836639247127516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 3838435567983209680}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &530347700682993255
 GameObject:
   m_ObjectHideFlags: 0
@@ -5877,7 +5922,7 @@ GameObject:
   - component: {fileID: 1265558611618942241}
   - component: {fileID: 3452508308506089641}
   m_Layer: 5
-  m_Name: Text
+  m_Name: PlayStyle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7341,6 +7386,7 @@ MonoBehaviour:
   loggedOutWinsText: winner
   loggedOutCarbonText: 7 or 7.2
   _playerName: {fileID: 952240367200605646}
+  _playerPlayStyleText: {fileID: 3452508308506089641}
   _playerClanNameText: {fileID: 1710663326011082443}
   _rolesErrorMessage: {fileID: 5829319517813943822}
   _TimePlayedText: {fileID: 549583219423888098}
@@ -7364,8 +7410,8 @@ MonoBehaviour:
   _closePopupAreaButton: {fileID: 3963435832654689240}
   _popupOverlay: {fileID: 6832367000111177851}
   _playStyleButtons:
-  - {fileID: 1789862274210685803}
-  - {fileID: 4638413136516349032}
+  - {fileID: 5940948197033584156}
+  - {fileID: 520836639247127516}
   _avatarPageTabButton: {fileID: 1630217206484856780}
   _ClanURLButton: {fileID: 0}
   _openViewedPlayerClanButton: {fileID: 3938026306981077608}
@@ -7376,7 +7422,7 @@ MonoBehaviour:
   _playerRoleIconImage: {fileID: 3620969593597823754}
   _roleCatalog: {fileID: 11400000, guid: b7c52a72002faf44bbe115dd39f619f0, type: 2}
   _fallbackRoleIcon: {fileID: 21300000, guid: 4c71ff6e4c59147459fec711ba28bed5, type: 3}
-  _playStyle: {fileID: 3935453016891834555}
+  _playStyle: {fileID: 4011131402074489778}
   _weekEmotions: {fileID: 2214120935140693486}
   _editProfileButton: {fileID: 829004568921190945}
   _editProfilePopup: {fileID: 1795986860182619966}
@@ -10743,6 +10789,7 @@ GameObject:
   - component: {fileID: 6165245717081126542}
   - component: {fileID: 6254037160673746602}
   - component: {fileID: 2449827223431127126}
+  - component: {fileID: 1314398613264532010}
   m_Layer: 5
   m_Name: LeftArrow
   m_TagString: Untagged
@@ -10767,7 +10814,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6254037160673746602
 CanvasRenderer:
@@ -10807,6 +10854,50 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1314398613264532010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5940948197033584156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 2449827223431127126}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &5962701437561956131
 GameObject:
   m_ObjectHideFlags: 0
@@ -13255,6 +13346,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6342452923554997570}
   - component: {fileID: 3982615867842203590}
+  - component: {fileID: 4011131402074489778}
   m_Layer: 5
   m_Name: Selector
   m_TagString: Untagged
@@ -13282,7 +13374,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 668.7765, y: 100}
+  m_SizeDelta: {x: 742.5876, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3982615867842203590
 MonoBehaviour:
@@ -13302,7 +13394,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 80
+  m_Spacing: 13.6
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
@@ -13310,6 +13402,23 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &4011131402074489778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7947531181102074094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4f4eecd3e485a94f82560d4210bdf98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  styleText: {fileID: 5601986074506828004}
+  leftButton: {fileID: 1314398613264532010}
+  rightButton: {fileID: 1271946935277589118}
+  finnishStyles: []
+  englishStyles: []
 --- !u!1 &8054650125902715951
 GameObject:
   m_ObjectHideFlags: 0
@@ -13435,7 +13544,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 314.6349, y: 64.7867}
+  m_SizeDelta: {x: 551.3668, y: 64.7867}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7035742890306231039
 CanvasRenderer:
@@ -13465,7 +13574,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Harjoittelija
+  m_text: Saavutusten_Metsastaja
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 575dbda903adc434caffae39c1b59109, type: 2}
   m_sharedMaterial: {fileID: -2998110953030337146, guid: 575dbda903adc434caffae39c1b59109,
@@ -13493,8 +13602,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
-  m_fontSizeBase: 50
+  m_fontSize: 45
+  m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

@@ -32,6 +32,7 @@ public class ProfileMenu : AltMonoBehaviour
 
     [Header("Text Components")]
     [SerializeField] private TextMeshProUGUI _playerName;
+    [SerializeField] private TextMeshProUGUI _playerPlayStyleText;
     [SerializeField] private TextMeshProUGUI _playerClanNameText;
     [SerializeField] private TextMeshProUGUI _rolesErrorMessage;
     [SerializeField] private TextMeshProUGUI _TimePlayedText;
@@ -94,6 +95,7 @@ public class ProfileMenu : AltMonoBehaviour
     public TextMeshProUGUI textMeshPro;
 
     private string _tempPlayerName;
+    private int _tempPlayStyleIndex;
 
     private int tempLocalSaveTime;
     private float tempLocalSaveSecondsTime;
@@ -348,6 +350,13 @@ public class ProfileMenu : AltMonoBehaviour
         _tempPlayerName = _playerData != null ? _playerData.Name : string.Empty;
         _editNameInputField.text = _tempPlayerName;
 
+        if (_playStyle != null && _playerData != null)
+        {
+            _tempPlayStyleIndex = (int)_playerData.playStyles;
+            _playStyle.CurrentIndex = _tempPlayStyleIndex;
+            _playStyle.RefreshUI();
+        }
+
         if (_editNameErrorText != null)
             _editNameErrorText.text = "";
 
@@ -360,6 +369,12 @@ public class ProfileMenu : AltMonoBehaviour
 
         if (_editNameInputField != null)
             _editNameInputField.text = _tempPlayerName;
+
+        if (_playStyle != null)
+        {
+            _playStyle.CurrentIndex = _tempPlayStyleIndex;
+            _playStyle.RefreshUI();
+        }
 
         if (_editNameErrorText != null)
             _editNameErrorText.text = "";
@@ -381,6 +396,12 @@ public class ProfileMenu : AltMonoBehaviour
 
         _playerData.Name = newName;
         _playerName.text = newName;
+
+        if (_playStyle != null)
+        {
+            _playerData.playStyles = (PlayStyles)_playStyle.CurrentIndex;
+            RefreshPlayerPlayStyleUI();
+        }
 
         SaveChanges();
 
@@ -446,6 +467,7 @@ public class ProfileMenu : AltMonoBehaviour
         ToggleProfileViewMode();
 
         _playerName.text = _playerData.Name;
+        RefreshPlayerPlayStyleUI();
         _activityText.text = _playerData.points.ToString();
 
         if (_playerData.stats != null)
@@ -602,6 +624,29 @@ public class ProfileMenu : AltMonoBehaviour
 
         if (_weekEmotionsSection != null)
             _weekEmotionsSection.SetActive(isOwnProfile);
+    }
+
+    private void RefreshPlayerPlayStyleUI()
+    {
+        if (_playerPlayStyleText == null || _playerData == null)
+            return;
+
+        if (_playStyle != null)
+        {
+            string[] styles = SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English
+                ? _playStyle.englishStyles
+                : _playStyle.finnishStyles;
+
+            int index = (int)_playerData.playStyles;
+
+            if (styles != null && index >= 0 && index < styles.Length)
+            {
+                _playerPlayStyleText.text = styles[index];
+                return;
+            }
+        }
+
+        _playerPlayStyleText.text = _playerData.playStyles.ToString().Replace("_", " ");
     }
 
     private void RefreshClanHeartUI(ClanData clanData)
