@@ -1,0 +1,5 @@
+var struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_player_shield_collision_data =
+[
+    [ "IsLoveProjectileCollision", "struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_player_shield_collision_data.html#adaa240dc037c7e4b0019276b2ff36c2a", null ],
+    [ "PlayerShieldHitbox", "struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_player_shield_collision_data.html#a4afc5bba89141ac1ae102273e61a38d7", null ]
+];

@@ -130,6 +130,25 @@ namespace Altzone.Scripts.Model.Poco.Clan
         Positivity,
     }
 
+    public enum Phrases
+    {
+        TogetherWeAreMore,
+        GrowStepByStep,
+        CreativityIsOurStrength,
+        BuildShareGetExcited,
+        GoodAtmosphere,
+        SmallActsBigClan,
+        AlwaysHelping,
+        FairGame,
+        EveryoneShines,
+        EnthusiasmIsContagious,
+        WorldBuiltTogether,
+        TrustMakesClan,
+        TodayBetter,
+        EveryMomentIsOpportunity,
+        ClanWalksTogether,
+    }
+
     public static class ClanDataTypeConverter
     {
         public static string GetAgeText(ClanAge age)
@@ -427,5 +446,27 @@ namespace Altzone.Scripts.Model.Poco.Clan
             };
         }
 
+        public static string GetPhraseText(Phrases phrases)
+        {
+            return phrases switch
+            {
+                Phrases.TogetherWeAreMore => "Yhdessä olemme enemmän.",
+                Phrases.GrowStepByStep => "Kasvamme – askel kerrallaan.",
+                Phrases.CreativityIsOurStrength => "Luovuus on voimamme.",
+                Phrases.BuildShareGetExcited => "Rakenna. Jaa. Innostu.",
+                Phrases.GoodAtmosphere => "Hyvä ilmapiiri on paras buffi.",
+                Phrases.SmallActsBigClan => "Pienillä teoilla suuri klaani.",
+                Phrases.AlwaysHelping => "Aina avuksi – aina eteenpäin.",
+                Phrases.FairGame => "Reilusti pelaten, vahvasti yhdessä.",
+                Phrases.EveryoneShines => "Klaanissa jokainen loistaa.",
+                Phrases.EnthusiasmIsContagious => "Innostus tarttuu – ja saa kasvaa.",
+                Phrases.WorldBuiltTogether => "Yhdessä rakentuva maailma.",
+                Phrases.TrustMakesClan => "Luottamus tekee klaanin.",
+                Phrases.TodayBetter => "Tänään parempi kuin eilen.",
+                Phrases.EveryMomentIsOpportunity => "Jokainen hetki on mahdollisuus.",
+                Phrases.ClanWalksTogether => "Klaani kulkee rinnalla.",
+                _ => "",
+            };
+        }
     }
 }

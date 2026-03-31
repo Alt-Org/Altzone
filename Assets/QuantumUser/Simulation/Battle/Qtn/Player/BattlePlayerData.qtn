@@ -18,14 +18,16 @@ component BattlePlayerDataQComponent
     FP RotationBase;
     FP RotationOffset;
 
-    FP CurrentHp;
     FP CurrentDefence;
+    bool MovementEnabled;
+    bool RotationEnabled;
 
     EntityRef HitboxShieldEntity;
     EntityRef HitboxCharacterEntity;
 
     bool DisableRotation;
     FrameTimer DamageCooldown;
+    FrameTimer StunCooldown;
 
     FP MovementCooldownSec;
 

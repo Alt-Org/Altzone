@@ -1,29 +1,4 @@
 var searchData=
 [
-  ['playerdata_0',['PlayerData',['../struct_quantum_1_1_player_data.html',1,'Quantum']]],
-  ['playerdataprototype_1',['PlayerDataPrototype',['../class_quantum_1_1_prototypes_1_1_player_data_prototype.html',1,'Quantum::Prototypes']]],
-  ['playerdatatemplate_2',['PlayerDataTemplate',['../struct_quantum_1_1_player_data_template.html',1,'Quantum']]],
-  ['playerdatatemplateprototype_3',['PlayerDataTemplatePrototype',['../class_quantum_1_1_prototypes_1_1_player_data_template_prototype.html',1,'Quantum::Prototypes']]],
-  ['playerhandle_4',['PlayerHandle',['../struct_quantum_1_1_player_manager_1_1_player_handle.html',1,'Quantum::PlayerManager']]],
-  ['playerhitbox_5',['PlayerHitbox',['../struct_quantum_1_1_player_hitbox.html',1,'Quantum']]],
-  ['playerhitboxlink_6',['PlayerHitboxLink',['../struct_quantum_1_1_player_hitbox_link.html',1,'Quantum']]],
-  ['playerhitboxlinkprototype_7',['PlayerHitboxLinkPrototype',['../class_quantum_1_1_prototypes_1_1_player_hitbox_link_prototype.html',1,'Quantum::Prototypes']]],
-  ['playerhitboxprototype_8',['PlayerHitboxPrototype',['../class_quantum_1_1_prototypes_1_1_player_hitbox_prototype.html',1,'Quantum::Prototypes']]],
-  ['playerhitboxtemplate_9',['PlayerHitboxTemplate',['../struct_quantum_1_1_player_hitbox_template.html',1,'Quantum']]],
-  ['playerhitboxtemplateprototype_10',['PlayerHitboxTemplatePrototype',['../class_quantum_1_1_prototypes_1_1_player_hitbox_template_prototype.html',1,'Quantum::Prototypes']]],
-  ['playerinput_11',['PlayerInput',['../class_quantum_1_1_player_input.html',1,'Quantum']]],
-  ['playerjoinsystem_12',['PlayerJoinSystem',['../class_quantum_1_1_player_join_system.html',1,'Quantum']]],
-  ['playermanager_13',['PlayerManager',['../class_quantum_1_1_player_manager.html',1,'Quantum']]],
-  ['playermanagerdata_14',['PlayerManagerData',['../struct_quantum_1_1_player_manager_data.html',1,'Quantum']]],
-  ['playermanagerdataprototype_15',['PlayerManagerDataPrototype',['../class_quantum_1_1_prototypes_1_1_player_manager_data_prototype.html',1,'Quantum::Prototypes']]],
-  ['playermovementsystem_16',['PlayerMovementSystem',['../class_quantum_1_1_player_movement_system.html',1,'Quantum']]],
-  ['playerviewcontroller_17',['PlayerViewController',['../class_quantum_1_1_player_view_controller.html',1,'Quantum']]],
-  ['projectile_18',['Projectile',['../struct_quantum_1_1_projectile.html',1,'Quantum']]],
-  ['projectileprototype_19',['ProjectilePrototype',['../class_quantum_1_1_prototypes_1_1_projectile_prototype.html',1,'Quantum::Prototypes']]],
-  ['projectilespawner_20',['ProjectileSpawner',['../struct_quantum_1_1_projectile_spawner.html',1,'Quantum']]],
-  ['projectilespawnerprototype_21',['ProjectileSpawnerPrototype',['../class_quantum_1_1_prototypes_1_1_projectile_spawner_prototype.html',1,'Quantum::Prototypes']]],
-  ['projectilespawnersystem_22',['ProjectileSpawnerSystem',['../class_quantum_1_1_projectile_spawner_system.html',1,'Quantum']]],
-  ['projectilespec_23',['ProjectileSpec',['../class_quantum_1_1_projectile_spec.html',1,'Quantum']]],
-  ['projectilesystem_24',['ProjectileSystem',['../class_quantum_1_1_quantum_user_1_1_simulation_1_1_projectile_1_1_projectile_system.html',1,'Quantum::QuantumUser::Simulation::Projectile']]],
-  ['projectileviewcontroller_25',['ProjectileViewController',['../class_quantum_1_1_projectile_view_controller.html',1,'Quantum']]]
+  ['movementinputinfo_0',['MovementInputInfo',['../struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_movement_input_info.html',1,'Battle::View::Player::BattlePlayerInput']]]
 ];

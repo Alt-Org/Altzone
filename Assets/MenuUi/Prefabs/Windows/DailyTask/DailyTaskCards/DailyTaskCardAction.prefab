@@ -133,6 +133,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DailyTaskCardAction
       objectReference: {fileID: 0}
+    - target: {fileID: 3255219180434912955, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
+        type: 3}
+      propertyPath: _progressImageDefault
+      value: 
+      objectReference: {fileID: 7305813752367301931}
     - target: {fileID: 4023116829860178329, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
         type: 3}
       propertyPath: m_Color.b
@@ -163,6 +168,11 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0.9803922
       objectReference: {fileID: 0}
+    - target: {fileID: 5537016131221824197, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8958316684741517866, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
         type: 3}
       propertyPath: m_Sprite
@@ -188,3 +198,15 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 82f0cb5b208d9a1408ca8d5b6c3352af, type: 3}
+--- !u!114 &7305813752367301931 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3351112013058212038, guid: 82f0cb5b208d9a1408ca8d5b6c3352af,
+    type: 3}
+  m_PrefabInstance: {fileID: 5468210492422309357}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -1,13 +1,9 @@
 var searchData=
 [
-  ['sadness_0',['Sadness',['../namespace_quantum.html#adac109901e32732bcc86a6ce3548d8a2ab9197eaf75666ffa7a5a4531dc239cf0',1,'Quantum']]],
-  ['shield_1',['Shield',['../namespace_quantum.html#a6d0108f6db94204fbfcfe40c53f2a455a970da5f1f2e32aeb9e488dd017160ab4',1,'Quantum']]],
-  ['sidewallhit_2',['SideWallHit',['../namespace_quantum.html#a63ff14b2240964d120fdb6c2ef843f4ea0f855c9a17ea7d50770ca76c664e5174',1,'Quantum']]],
-  ['slot1_3',['Slot1',['../namespace_quantum.html#a5d8482e2ed68dc153e9fee6463afb096ae88c874b75305f81e897b8e8fec372a3',1,'Quantum']]],
-  ['slot2_4',['Slot2',['../namespace_quantum.html#a5d8482e2ed68dc153e9fee6463afb096a0f93d2ac970ec933f0c16225d67747bd',1,'Quantum']]],
-  ['slot3_5',['Slot3',['../namespace_quantum.html#a5d8482e2ed68dc153e9fee6463afb096a2ea42a2b8c41268067f866446a671f3c',1,'Quantum']]],
-  ['slot4_6',['Slot4',['../namespace_quantum.html#a5d8482e2ed68dc153e9fee6463afb096a99f22e8284d0b005ed31e67773a56152',1,'Quantum']]],
-  ['soulwall_7',['SoulWall',['../namespace_quantum.html#a87c2b6c5585020f56e607426768b1890a4a697f717465fdfcc873a0dd88b73d92',1,'Quantum']]],
-  ['soulwallhit_8',['SoulWallHit',['../namespace_quantum.html#a63ff14b2240964d120fdb6c2ef843f4eab5a14696e21415f6db07021dafd4959b',1,'Quantum']]],
-  ['spectator_9',['Spectator',['../namespace_quantum.html#a5d8482e2ed68dc153e9fee6463afb096a38721bd8d7c0aa7e0e6999ae0c2cc98d',1,'Quantum']]]
+  ['narrow_0',['Narrow',['../namespace_quantum.html#af98806bb54cd1a2aa63291a1e96991aba4a7ab319be06025840ef3389301424b9',1,'Quantum']]],
+  ['noclass_1',['NoClass',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager.html#adb8dd94eac5b823ce4a850e1083928afaed544e165d08264f0f78543c596e1f6d',1,'Battle::QSimulation::Player::BattlePlayerClassManager']]],
+  ['none_2',['None',['../struct_battle_1_1_q_simulation_1_1_game_1_1_battle_parameters.html#af5ecb7fe25c4a9d1e51284507c8596eda6adf97f83acf6453d4a6a4b1070f3754',1,'Battle.QSimulation.Game.BattleParameters.None'],['../class_battle_1_1_q_simulation_1_1_projectile_1_1_battle_projectile_q_system.html#afe1739b9a907fd5a05e8e38c7eae7d80a6adf97f83acf6453d4a6a4b1070f3754',1,'Battle.QSimulation.Projectile.BattleProjectileQSystem.None'],['../class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_battle_ui_multi_orientation_element.html#a600678374981174562a9bd7e95cfc0faa6adf97f83acf6453d4a6a4b1070f3754',1,'Altzone.Scripts.BattleUiShared.BattleUiMultiOrientationElement.None'],['../namespace_quantum.html#a640ca4a7203626a46d94c4fa1d63db1da6adf97f83acf6453d4a6a4b1070f3754',1,'Quantum.None'],['../namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2ea6adf97f83acf6453d4a6a4b1070f3754',1,'Quantum.None'],['../namespace_quantum.html#a01eee21efedc3589e0093548b801bf09a6adf97f83acf6453d4a6a4b1070f3754',1,'Quantum.None']]],
+  ['normal_3',['Normal',['../class_battle_1_1_view_1_1_u_i_1_1_battle_ui_give_up_button_handler.html#a7309e7d8ea5d3a488cff2b3b93f64547a960b44c579bc2f6818d2daaf9e4c16f0',1,'Battle::View::UI::BattleUiGiveUpButtonHandler']]],
+  ['noteam_4',['NoTeam',['../namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cfa24e614ab75c5028e5f27caea73367e9b',1,'Quantum']]],
+  ['notingame_5',['NotInGame',['../namespace_quantum.html#ab183bf00e5df3656dc5f32a8a0995153acf9807636f2d979c290f815c64f0db4d',1,'Quantum']]]
 ];

@@ -1230,6 +1230,7 @@ GameObject:
   - component: {fileID: 830643834647067911}
   - component: {fileID: 2726644752669739172}
   - component: {fileID: 8391785169077071402}
+  - component: {fileID: 2561473860322945284}
   m_Layer: 5
   m_Name: VoteYes
   m_TagString: Untagged
@@ -1364,6 +1365,22 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+--- !u!114 &2561473860322945284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3071747750749482801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioCategory: 
+  _categoryType: 7
+  _audioName: Voting
+  _playType: 0
 --- !u!1 &3241581430026246423
 GameObject:
   m_ObjectHideFlags: 0
@@ -2710,6 +2727,7 @@ GameObject:
   - component: {fileID: 7723296582111865583}
   - component: {fileID: 744122491418494959}
   - component: {fileID: 4366959779583576294}
+  - component: {fileID: 5203784106773267614}
   m_Layer: 5
   m_Name: VoteNo
   m_TagString: Untagged
@@ -2844,6 +2862,22 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &5203784106773267614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8026737686425909014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioCategory: 
+  _categoryType: 7
+  _audioName: Voting
+  _playType: 0
 --- !u!1 &8081625856778222236
 GameObject:
   m_ObjectHideFlags: 0

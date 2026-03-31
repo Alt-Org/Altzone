@@ -1,15 +1,12 @@
-﻿using System.Collections;
-using System.Linq;
-using Altzone.Scripts;
+﻿using System;
+using System.Collections;
+using Altzone.Scripts.Audio;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Lobby;
-using Altzone.Scripts.Audio;
 using MenuUi.Scripts.SwipeNavigation;
 using MenuUi.Scripts.Window;
-using MenuUi.Scripts.Window.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.UI;
-using static SettingsCarrier;
 
 namespace MenuUi.Scripts.MainMenu
 {
@@ -28,6 +25,9 @@ namespace MenuUi.Scripts.MainMenu
         private SetVolume[] audioSources;
         private SettingsCarrier carrier = SettingsCarrier.Instance;
 
+        [Tooltip("The button that allows the player queue for a match")]
+        [SerializeField] Button _playButton;
+
         private void Awake()
         {
             lastWidth = Screen.width;
@@ -41,29 +41,51 @@ namespace MenuUi.Scripts.MainMenu
             _swipe = GetComponentInParent<SwipeUI>();
             StartCoroutine(CheckWindowSize());
 
+            OverlayPanelCheck.Instance.gameObject.SetActive(true);
             AudioManager.Instance?.SetCurrentAreaCategoryName("MainMenu");
 
-            if (jukeboxMainMenu)
+            try
             {
-                if (JukeboxManager.Instance != null && string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
+                if (jukeboxMainMenu)
+                {
+                    if (JukeboxManager.Instance != null && string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
+                        AudioManager.Instance?.PlayMusic("MainMenu");
+                }
+                else
                     AudioManager.Instance?.PlayMusic("MainMenu");
             }
-            else
-                AudioManager.Instance?.PlayMusic("MainMenu");
+            catch (Exception e) { Debug.LogException(e); }
 
             if(!LobbyManager.IsActive) LobbyManager.Instance.Activate();
             if (LobbyManager.Instance.RunnerActive) LobbyManager.CloseRunner();
+
+            StartCoroutine(EnableChooseTask());
+
+            UpdatePlayButton();
         }
 
         private void Start()
         {
+
+            ChooseTask.OnChooseTaskShown += DisablePlayButton;
+            DailyTaskProgressManager.OnTaskDone += UpdatePlayButton;
+
             var windowManager = WindowManager.Get();
-            _layoutElementsGameObjects = GameObject.FindGameObjectsWithTag("MainMenuWindow");
-            _scrollRectCanvas = GameObject.FindGameObjectWithTag("ScrollRectCanvas").GetComponent<RectTransform>();
-            SetMainMenuLayoutDimensions();
+            if (_swipe)
+            {
+                _layoutElementsGameObjects = GameObject.FindGameObjectsWithTag("MainMenuWindow");
+                _scrollRectCanvas = GameObject.FindGameObjectWithTag("ScrollRectCanvas").GetComponent<RectTransform>();
+                SetMainMenuLayoutDimensions();
+            }
             AudioManager.Instance.UpdateMaxVolume();
         }
 
+        private void OnDestroy()
+        {
+            ChooseTask.OnChooseTaskShown -= DisablePlayButton;
+            DailyTaskProgressManager.OnTaskDone -= UpdatePlayButton;
+
+        }
         /// <summary>
         /// Sets the correct windows size to swipeable main menu windows.
         /// </summary>
@@ -103,7 +125,7 @@ namespace MenuUi.Scripts.MainMenu
         /// </remarks>
         private IEnumerator CheckWindowSize() //Tällä saa ikkunan koon.
         {
-            while (true)
+            while (_swipe)
             {
                 if (lastWidth != Screen.width || lastHeight != Screen.height)
                 {
@@ -115,6 +137,33 @@ namespace MenuUi.Scripts.MainMenu
 
                 yield return new WaitForSeconds(_interval);
             }
+        }
+
+
+        private IEnumerator EnableChooseTask()
+        {
+            yield return new WaitUntil(() => GameObject.FindObjectOfType<ChooseTask>() != null);
+
+            // Initialize ChooseTask.cs
+            GameObject.FindObjectOfType<ChooseTask>().InitializeChooseTask();
+        }
+
+        private void UpdatePlayButton()
+        {
+            if (GameConfig.Get().GameVersionType == VersionType.TurboEducation)
+            {
+                SetPlayButtonState(!DailyTaskProgressManager.Instance.HasOnGoingTask());
+            }
+        }
+
+        public void SetPlayButtonState(bool active)
+        {
+            _playButton.interactable = active;
+        }
+
+        private void DisablePlayButton()
+        {
+            SetPlayButtonState(false);
         }
     }
 }

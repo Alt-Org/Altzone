@@ -234,12 +234,14 @@ namespace Quantum.Prototypes {
     public FPVector2 TargetPosition;
     public FP RotationBase;
     public FP RotationOffset;
-    public FP CurrentHp;
     public FP CurrentDefence;
+    public QBoolean MovementEnabled;
+    public QBoolean RotationEnabled;
     public MapEntityId HitboxShieldEntity;
     public MapEntityId HitboxCharacterEntity;
     public QBoolean DisableRotation;
     public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
+    public Quantum.Prototypes.FrameTimerPrototype StunCooldown;
     public FP MovementCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityActivateBufferSec;
@@ -261,12 +263,14 @@ namespace Quantum.Prototypes {
         result.TargetPosition = this.TargetPosition;
         result.RotationBase = this.RotationBase;
         result.RotationOffset = this.RotationOffset;
-        result.CurrentHp = this.CurrentHp;
         result.CurrentDefence = this.CurrentDefence;
+        result.MovementEnabled = this.MovementEnabled;
+        result.RotationEnabled = this.RotationEnabled;
         PrototypeValidator.FindMapEntity(this.HitboxShieldEntity, in context, out result.HitboxShieldEntity);
         PrototypeValidator.FindMapEntity(this.HitboxCharacterEntity, in context, out result.HitboxCharacterEntity);
         result.DisableRotation = this.DisableRotation;
         this.DamageCooldown.Materialize(frame, ref result.DamageCooldown, in context);
+        this.StunCooldown.Materialize(frame, ref result.StunCooldown, in context);
         result.MovementCooldownSec = this.MovementCooldownSec;
         this.AbilityCooldownSec.Materialize(frame, ref result.AbilityCooldownSec, in context);
         this.AbilityActivateBufferSec.Materialize(frame, ref result.AbilityActivateBufferSec, in context);
@@ -428,14 +432,12 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerStats))]
   public unsafe partial class BattlePlayerStatsPrototype : StructPrototype {
-    public FP Hp;
     public FP Speed;
     public FP CharacterSize;
     public FP Attack;
     public FP Defence;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerStats result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.BattlePlayerStats result, in PrototypeMaterializationContext context = default) {
-        result.Hp = this.Hp;
         result.Speed = this.Speed;
         result.CharacterSize = this.CharacterSize;
         result.Attack = this.Attack;
@@ -544,23 +546,10 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleWaitForPlayersData))]
-  public unsafe partial class BattleWaitForPlayersDataPrototype : StructPrototype {
-    [MaxStringByteCount(62, "Unicode")]
-    [ArrayLengthAttribute(4)]
-    public string[] PlayerNames = new System.String[4];
-    partial void MaterializeUser(Frame frame, ref Quantum.BattleWaitForPlayersData result, in PrototypeMaterializationContext context);
-    public void Materialize(Frame frame, ref Quantum.BattleWaitForPlayersData result, in PrototypeMaterializationContext context = default) {
-        for (int i = 0, count = PrototypeValidator.CheckLength(PlayerNames, 4, in context); i < count; ++i) {
-          PrototypeValidator.AssignQString(this.PlayerNames[i], 64, in context, out *result.PlayerNames.GetPointer(i));
-        }
-        MaterializeUser(frame, ref result, in context);
-    }
-  }
-  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Input))]
   public unsafe partial class InputPrototype : StructPrototype {
     public QBoolean IsValid;
+    public Int32 DebugNumber;
     public Quantum.QEnum32<BattleMovementInputType> MovementInput;
     public QBoolean MovementDirectionIsNormalized;
     public Quantum.Prototypes.BattleGridPositionPrototype MovementPositionTarget;
@@ -568,12 +557,13 @@ namespace Quantum.Prototypes {
     public FPVector2 MovementDirection;
     public QBoolean RotationInput;
     public FP RotationValue;
+    public QBoolean AbilityActivate;
     public Int32 PlayerCharacterNumber;
     public QBoolean GiveUpInput;
-    public QBoolean AbilityActivate;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
         result.IsValid = this.IsValid;
+        result.DebugNumber = this.DebugNumber;
         result.MovementInput = this.MovementInput;
         result.MovementDirectionIsNormalized = this.MovementDirectionIsNormalized;
         this.MovementPositionTarget.Materialize(frame, ref result.MovementPositionTarget, in context);
@@ -581,9 +571,9 @@ namespace Quantum.Prototypes {
         result.MovementDirection = this.MovementDirection;
         result.RotationInput = this.RotationInput;
         result.RotationValue = this.RotationValue;
+        result.AbilityActivate = this.AbilityActivate;
         result.PlayerCharacterNumber = this.PlayerCharacterNumber;
         result.GiveUpInput = this.GiveUpInput;
-        result.AbilityActivate = this.AbilityActivate;
         MaterializeUser(frame, ref result, in context);
     }
   }

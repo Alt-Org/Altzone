@@ -62,6 +62,20 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
         set { _verticallyScrollable = value; }
     }
 
+
+    private enum LockAxis
+    {
+        None,
+        Horizontal,
+        Vertical
+    }
+
+    private LockAxis _currentLock = LockAxis.None;
+    
+    [SerializeField]
+    [Tooltip("Threshold on how far the player has to drag to determine the direction before locking the axis")]
+    private float _axisLockThreshold = 5f;
+
     #endregion
 
     protected override void Awake()
@@ -246,7 +260,8 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(this.transform as RectTransform, _baseScrollRectVariants[i].Content.position, eventData.pressEventCamera, out rectResult);
 
             Vector2 size = Vector2.Scale(_baseScrollRectVariants[i].Content.rect.size, _baseScrollRectVariants[i].Content.transform.lossyScale);
-            Rect rect = new Rect(rectResult - (size * 0.5f), size);
+            Vector2 rectPivot = _baseScrollRectVariants[i].Content.pivot;
+            Rect rect = new Rect(rectResult - new Vector2(size.x * rectPivot.x, size.y * rectPivot.y), size);
 
             if (rect.Contains(pointerResult))
                 indexes.Add(i);
@@ -266,6 +281,7 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
 
     public virtual void OnBeginDrag(PointerEventData eventData)
     {
+        _currentLock = LockAxis.None; // Reset lock on new drag
         _activeScrollIndexes = GetSelectedBaseScrollVariants(eventData);
 
         foreach (int index in _activeScrollIndexes)
@@ -297,7 +313,7 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
         {
             if (_routeToParent[index] && parentEndDragHandler != null)
             {
-                parentBeginDragHandler.OnBeginDrag(eventData);
+                parentEndDragHandler.OnEndDrag(eventData);
                 return;
             }
             else
@@ -320,7 +336,7 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
         {
             if (_routeToParent[index] && parentDragHandler != null)
             {
-                parentBeginDragHandler.OnBeginDrag(eventData);
+                parentDragHandler.OnDrag(eventData);
                 continue;
             }
 
@@ -334,6 +350,36 @@ public class ScrollLocalManager : UIBehaviour, IInitializePotentialDragHandler, 
 
             _baseScrollRectVariants[index].UpdateBounds();
             Vector2 pointerDelta = localCursor - _pointerStartLocalCursor;
+
+            // Axis lock
+            if (_currentLock == LockAxis.None)
+            {
+                // Only lock after player has dragged far enough
+                if (pointerDelta.magnitude > _axisLockThreshold)
+                {
+                    // If player scrolls sideways
+                    if (Mathf.Abs(pointerDelta.x) > Mathf.Abs(pointerDelta.y))
+                    {
+                        _currentLock = LockAxis.Horizontal;
+                    }
+                    // If player scrolls up/down
+                    else
+                    {
+                        _currentLock = LockAxis.Vertical;
+
+                    }
+                }
+            }
+
+            if (_currentLock == LockAxis.Horizontal)
+            {
+                pointerDelta.y = 0; // Stop vertical movement
+            }
+            else
+            {
+                pointerDelta.x = 0; // Stop horizontal movement
+            }
+
             Vector2 position = _contentStartPosition[index] + pointerDelta;
 
             // Offset to get content into place in the view.

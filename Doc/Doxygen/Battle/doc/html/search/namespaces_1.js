@@ -1,14 +1,21 @@
 var searchData=
 [
-  ['quantum_0',['Quantum',['../namespace_quantum.html',1,'']]],
-  ['quantum_3a_3aprototypes_1',['Prototypes',['../namespace_quantum_1_1_prototypes.html',1,'Quantum']]],
-  ['quantum_3a_3aquantumuser_2',['QuantumUser',['../namespace_quantum_1_1_quantum_user.html',1,'Quantum']]],
-  ['quantum_3a_3aquantumuser_3a_3asimulation_3',['Simulation',['../namespace_quantum_1_1_quantum_user_1_1_simulation.html',1,'Quantum::QuantumUser']]],
-  ['quantum_3a_3aquantumuser_3a_3asimulation_3a_3agoal_4',['Goal',['../namespace_quantum_1_1_quantum_user_1_1_simulation_1_1_goal.html',1,'Quantum::QuantumUser::Simulation']]],
-  ['quantum_3a_3aquantumuser_3a_3asimulation_3a_3aprojectile_5',['Projectile',['../namespace_quantum_1_1_quantum_user_1_1_simulation_1_1_projectile.html',1,'Quantum::QuantumUser::Simulation']]],
-  ['quantum_3a_3aquantumuser_3a_3asimulation_3a_3asoulwall_6',['SoulWall',['../namespace_quantum_1_1_quantum_user_1_1_simulation_1_1_soul_wall.html',1,'Quantum::QuantumUser::Simulation']]],
-  ['quantumuser_7',['QuantumUser',['../namespace_quantum_user.html',1,'']]],
-  ['quantumuser_3a_3ascripts_8',['Scripts',['../namespace_quantum_user_1_1_scripts.html',1,'QuantumUser']]],
-  ['quantumuser_3a_3ascripts_3a_3aui_9',['UI',['../namespace_quantum_user_1_1_scripts_1_1_u_i.html',1,'QuantumUser::Scripts']]],
-  ['quantumuser_3a_3ascripts_3a_3aui_3a_3aviews_10',['Views',['../namespace_quantum_user_1_1_scripts_1_1_u_i_1_1_views.html',1,'QuantumUser::Scripts::UI']]]
+  ['battle_0',['Battle',['../namespace_battle.html',1,'']]],
+  ['battle_3a_3aqsimulation_1',['QSimulation',['../namespace_battle_1_1_q_simulation.html',1,'Battle']]],
+  ['battle_3a_3aqsimulation_3a_3adiamond_2',['Diamond',['../namespace_battle_1_1_q_simulation_1_1_diamond.html',1,'Battle::QSimulation']]],
+  ['battle_3a_3aqsimulation_3a_3agame_3',['Game',['../namespace_battle_1_1_q_simulation_1_1_game.html',1,'Battle::QSimulation']]],
+  ['battle_3a_3aqsimulation_3a_3agoal_4',['Goal',['../namespace_battle_1_1_q_simulation_1_1_goal.html',1,'Battle::QSimulation']]],
+  ['battle_3a_3aqsimulation_3a_3aplayer_5',['Player',['../namespace_battle_1_1_q_simulation_1_1_player.html',1,'Battle::QSimulation']]],
+  ['battle_3a_3aqsimulation_3a_3aprojectile_6',['Projectile',['../namespace_battle_1_1_q_simulation_1_1_projectile.html',1,'Battle::QSimulation']]],
+  ['battle_3a_3aqsimulation_3a_3asoulwall_7',['SoulWall',['../namespace_battle_1_1_q_simulation_1_1_soul_wall.html',1,'Battle::QSimulation']]],
+  ['battle_3a_3ascripts_8',['Scripts',['../namespace_battle_1_1_scripts.html',1,'Battle']]],
+  ['battle_3a_3aview_9',['View',['../namespace_battle_1_1_view.html',1,'Battle']]],
+  ['battle_3a_3aview_3a_3aaudio_10',['Audio',['../namespace_battle_1_1_view_1_1_audio.html',1,'Battle::View']]],
+  ['battle_3a_3aview_3a_3adiamond_11',['Diamond',['../namespace_battle_1_1_view_1_1_diamond.html',1,'Battle::View']]],
+  ['battle_3a_3aview_3a_3aeffect_12',['Effect',['../namespace_battle_1_1_view_1_1_effect.html',1,'Battle::View']]],
+  ['battle_3a_3aview_3a_3agame_13',['Game',['../namespace_battle_1_1_view_1_1_game.html',1,'Battle::View']]],
+  ['battle_3a_3aview_3a_3aplayer_14',['Player',['../namespace_battle_1_1_view_1_1_player.html',1,'Battle::View']]],
+  ['battle_3a_3aview_3a_3aprojectile_15',['Projectile',['../namespace_battle_1_1_view_1_1_projectile.html',1,'Battle::View']]],
+  ['battle_3a_3aview_3a_3asoulwall_16',['SoulWall',['../namespace_battle_1_1_view_1_1_soul_wall.html',1,'Battle::View']]],
+  ['battle_3a_3aview_3a_3aui_17',['UI',['../namespace_battle_1_1_view_1_1_u_i.html',1,'Battle::View']]]
 ];

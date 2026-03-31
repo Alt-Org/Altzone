@@ -1,0 +1,25 @@
+var namespace_quantum_1_1_prototypes_1_1_unity =
+[
+    [ "BattlePlayerClassProjectorDataQComponentPrototype", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_class_projector_data_q_component_prototype.html", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_class_projector_data_q_component_prototype" ],
+    [ "BattlePlayerDataQComponentPrototype", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_data_q_component_prototype.html", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_data_q_component_prototype" ],
+    [ "BattlePlayerHitboxQComponentPrototype", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_hitbox_q_component_prototype.html", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_hitbox_q_component_prototype" ],
+    [ "BattlePlayerManagerDataQSingletonPrototype", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_manager_data_q_singleton_prototype.html", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_manager_data_q_singleton_prototype" ],
+    [ "Boolean", "namespace_quantum_1_1_prototypes_1_1_unity.html#a6bc45bb74410d7b1a77f026dcf6c408c", null ],
+    [ "Byte", "namespace_quantum_1_1_prototypes_1_1_unity.html#ab6bb9ac35cd56fdc4d993eca66e5442d", null ],
+    [ "FieldOffsetAttribute", "namespace_quantum_1_1_prototypes_1_1_unity.html#ac71d063123c34749a709d54fcdfc9bc8", null ],
+    [ "FlagsAttribute", "namespace_quantum_1_1_prototypes_1_1_unity.html#abd05dd68d4f88803d9510db91fc99a29", null ],
+    [ "Int16", "namespace_quantum_1_1_prototypes_1_1_unity.html#a50b645acd38bd51dfced5b3002093659", null ],
+    [ "Int32", "namespace_quantum_1_1_prototypes_1_1_unity.html#a2694e4df4ac8dc6fc44175d3cbd32bbd", null ],
+    [ "Int64", "namespace_quantum_1_1_prototypes_1_1_unity.html#aa454bb9ede3b581e49d168b0f3042bfc", null ],
+    [ "LayoutKind", "namespace_quantum_1_1_prototypes_1_1_unity.html#a1189ca0e6d35b535e1bd1e0249a4c552", null ],
+    [ "MethodImplAttribute", "namespace_quantum_1_1_prototypes_1_1_unity.html#a2e6a7527e5270417fc00736bf8f0ff53", null ],
+    [ "MethodImplOptions", "namespace_quantum_1_1_prototypes_1_1_unity.html#aba7407bfb77dbeabc420779febf8d0ee", null ],
+    [ "Object", "namespace_quantum_1_1_prototypes_1_1_unity.html#a8dcbef8996a229e5ecd6e959dc112407", null ],
+    [ "SByte", "namespace_quantum_1_1_prototypes_1_1_unity.html#aa853ae34604a43e0a7b2fbd752a05dda", null ],
+    [ "SerializableAttribute", "namespace_quantum_1_1_prototypes_1_1_unity.html#a5ecf192c7823e79f3536ce33e5b57bd6", null ],
+    [ "String", "namespace_quantum_1_1_prototypes_1_1_unity.html#a219b79567ea4579efaaf5b909f4163b9", null ],
+    [ "StructLayoutAttribute", "namespace_quantum_1_1_prototypes_1_1_unity.html#a11617825b6e8ceda15ad8522acebafa0", null ],
+    [ "UInt16", "namespace_quantum_1_1_prototypes_1_1_unity.html#a97cd9c78ca1cb7d4341a41792f7ac03c", null ],
+    [ "UInt32", "namespace_quantum_1_1_prototypes_1_1_unity.html#a09489f979e53e6067aeef2435ad86433", null ],
+    [ "UInt64", "namespace_quantum_1_1_prototypes_1_1_unity.html#a9afb014a39153ba2feb2aeb800c8d2c7", null ]
+];

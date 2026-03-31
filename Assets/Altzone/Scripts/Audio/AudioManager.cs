@@ -16,6 +16,7 @@ namespace Altzone.Scripts.Audio
         Battle,
         Raid,
         IntroStory,
+        General,
         Other
     }
 
@@ -74,7 +75,7 @@ namespace Altzone.Scripts.Audio
 
         private IEnumerator WaitForSettingsCarrier()
         {
-            yield return new WaitUntil(() => SettingsCarrier.Instance != null);
+            yield return new WaitUntil(() => SettingsCarrier.Instance);
 
             UpdateMaxVolume();
         }
@@ -95,7 +96,7 @@ namespace Altzone.Scripts.Audio
         /// <param name="categoryName">Category name where the sfx sound resides in. (Note: Can be left empty but it is recommended to be given.)</param>
         /// <param name="sFXname">Name of the sfx audio that is wanted.</param>
         /// <param name="pitch">Optional.</param>
-        /// <returns>Returns the <c>AudioChannelPath</c> wich can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
+        /// <returns>Returns the <c>AudioChannelPath</c> which can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
         public ActiveChannelPath? PlaySfxAudio(string categoryName, string sFXname, float pitch = 1f)
         {
             return _sFXHandler.Play(categoryName, sFXname, _musicHandler.MainMenuMusicName, pitch);
@@ -107,7 +108,7 @@ namespace Altzone.Scripts.Audio
         /// <param name="categoryType">Category type where the sfx sound resides in. (Note: Can use None value but it is recommended to give a specific type.)</param>
         /// <param name="sFXname">Name of the sfx audio that is wanted.</param>
         /// <param name="pitch">Optional.</param>
-        /// <returns>Returns the <c>AudioChannelPath</c> wich can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
+        /// <returns>Returns the <c>AudioChannelPath</c> which can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
         public ActiveChannelPath? PlaySfxAudio(AudioCategoryType categoryType, string sFXname, float pitch = 1f)
         {
             return _sFXHandler.Play(categoryType, sFXname, _musicHandler.MainMenuMusicName, pitch);
@@ -118,7 +119,7 @@ namespace Altzone.Scripts.Audio
         /// </summary>
         /// <param name="battleSFXName">Battle type name of the sfx audio that is wanted.</param>
         /// <param name="pitch">Optional.</param>
-        /// <returns>Returns the <c>AudioChannelPath</c> wich can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
+        /// <returns>Returns the <c>AudioChannelPath</c> which can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
         public ActiveChannelPath? PlayBattleSfxAudio(BattleSFXNameTypes battleSFXName, float pitch = 1f)
         {
             return _sFXHandler.Play(AudioCategoryType.Battle, battleSFXName, pitch);
@@ -130,7 +131,7 @@ namespace Altzone.Scripts.Audio
         /// <param name="categoryName">Category name where the sfx sound resides in. (Note: Can be left empty but it is recommended to be given.)</param>
         /// <param name="sFXname">Name of the sfx audio that is wanted.</param>
         /// <param name="note">Optional.</param>
-        /// <returns>Returns the <c>AudioChannelPath</c> wich can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
+        /// <returns>Returns the <c>AudioChannelPath</c> which can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
         public ActiveChannelPath? PlaySfxAudio(string categoryName, string sFXname, int note)
         {
             float pitch = Mathf.Pow(1.05946f, note);
@@ -144,7 +145,7 @@ namespace Altzone.Scripts.Audio
         /// <param name="categoryType">Category type where the sfx sound resides in. (Note: Can be left empty but it is recommended to be given.)</param>
         /// <param name="sFXname">Name of the sfx audio that is wanted.</param>
         /// <param name="note">Optional.</param>
-        /// <returns>Returns the <c>AudioChannelPath</c> wich can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
+        /// <returns>Returns the <c>AudioChannelPath</c> which can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
         public ActiveChannelPath? PlaySfxAudio(AudioCategoryType categoryType, string sFXname, int note)
         {
             float pitch = Mathf.Pow(1.05946f, note);
@@ -157,7 +158,7 @@ namespace Altzone.Scripts.Audio
         /// </summary>
         /// <param name="battleSFXName">Name of the sfx audio that is wanted.</param>
         /// <param name="note">Optional.</param>
-        /// <returns>Returns the <c>AudioChannelPath</c> wich can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
+        /// <returns>Returns the <c>AudioChannelPath</c> which can be used to pause, continue or clear the audio playback if not OneShot type and is still playing.</returns>
         public ActiveChannelPath? PlayBattleSfxAudio(BattleSFXNameTypes battleSFXName, int note)
         {
             float pitch = Mathf.Pow(1.05946f, note);
@@ -236,7 +237,7 @@ namespace Altzone.Scripts.Audio
         #endregion
 
         #region Music
-        public void SetCurrentAreaCategoryName(string name) { _currentAreaName = name; }
+        public void SetCurrentAreaCategoryName(string categoryName) { _currentAreaName = categoryName; }
 
         public List<MusicTrack> GetMusicList(string categoryName) { return _musicHandler.GetMusicList(categoryName); }
 
@@ -310,7 +311,7 @@ namespace Altzone.Scripts.Audio
         /// Plays music track by given id.
         /// </summary>
         /// <returns>Played track name if successfully started playback.</returns>
-        public string PlayMusicById(string categoryName, string musicTrackId, MusicSwitchType switchType, bool forcePlay = false) //TODO: Modify "HandleFallBack" for empty track name input.
+        public string PlayMusicById(string categoryName, string musicTrackId, MusicSwitchType switchType, bool forcePlay = false)
         {
             if (!HandleFallBack(categoryName, "")) return "";
 
@@ -321,7 +322,7 @@ namespace Altzone.Scripts.Audio
         /// Plays music track by given id.
         /// </summary>
         /// <returns>Played track name if successfully started playback.</returns>
-        public string PlayMusicById(AudioCategoryType categoryType, string musicTrackId, MusicSwitchType switchType, bool forcePlay = false) //TODO: Modify "HandleFallBack" for empty track name input.
+        public string PlayMusicById(AudioCategoryType categoryType, string musicTrackId, MusicSwitchType switchType, bool forcePlay = false)
         {
             if (!HandleFallBack(categoryType, "")) return "";
 
@@ -332,21 +333,19 @@ namespace Altzone.Scripts.Audio
 
         private bool HandleFallBack(string categoryName, string trackName)
         {
-            if (categoryName.ToLower() != "Jukebox".ToLower())
+            if (categoryName.ToLower() != "Jukebox".ToLower() && !string.IsNullOrEmpty(categoryName))
             {
                 _fallbackMusicCategory = categoryName;
                 _fallbackMusicTrack = trackName;
             }
 
-            if (!CanPlay(categoryName))
-            {
-                if (categoryName.ToLower() == "MainMenu".ToLower())
-                    _musicHandler.SetMainMenuMusicName(SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic));
+            if (CanPlay(categoryName)) return true;
 
-                return false;
-            }
+            if (categoryName.ToLower() == "MainMenu".ToLower())
+                _musicHandler.SetMainMenuMusicName(
+                    SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic));
 
-            return true;
+            return false;
         }
 
         public string PlayFallBackTrack(MusicSwitchType switchType, bool forcePlay = false)
@@ -354,34 +353,36 @@ namespace Altzone.Scripts.Audio
             return _musicHandler.PlayMusic(_fallbackMusicCategory, _fallbackMusicTrack, switchType, forcePlay);
         }
 
-        private bool CanPlay(string categoryName)
+        private bool CanPlay(string categoryName) //TODO: Fix rare null reference possibilities.
         {
-            if (_musicHandler == null) _musicHandler = GetComponent<MusicHandler>();
+            if (string.IsNullOrEmpty(categoryName)) return false;
+
+            if (_musicHandler) _musicHandler = GetComponent<MusicHandler>();
 
             if (_musicHandler.CurrentCategory == null) return true; //Dont block if category is null.
 
-            bool currentCategoryJukebox = _musicHandler.CurrentCategory.Name.ToLower() == "Jukebox".ToLower();
-            bool hasCurrentTrack = (JukeboxManager.Instance != null && JukeboxManager.Instance.CurrentTrackQueueData != null);
-
-            if (!currentCategoryJukebox || !hasCurrentTrack) return true; //Dont block if category is jukebox but current track is null.
-
             SettingsCarrier carrier = SettingsCarrier.Instance;
-
             bool jukeboxSoulhome = carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Soulhome);
             bool jukeboxMainMenu = carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.MainMenu);
             bool jukeboxBattle = carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Battle);
-            bool blockPlayRequest = (
-                (categoryName.ToLower() == "Soulhome".ToLower() && jukeboxSoulhome)
-                || (categoryName.ToLower() == "MainMenu".ToLower() && jukeboxMainMenu)
-                || (categoryName.ToLower() == "Battle".ToLower() && jukeboxBattle)
-                || (categoryName.ToLower() == "Jukebox".ToLower()
-                && ( !jukeboxSoulhome && _currentAreaName.ToLower() == "Soulhome".ToLower()
-                || !jukeboxMainMenu && _currentAreaName.ToLower() == "MainMenu".ToLower()
-                || !jukeboxBattle && _currentAreaName.ToLower() == "Battle".ToLower()))
+
+            bool keepJukeboxPlayback = categoryName.ToLower() != "Jukebox".ToLower() && JukeboxManager.Instance.CurrentTrackQueueData != null &&
+                (
+                    jukeboxSoulhome && _currentAreaName.ToLower() == "Soulhome".ToLower()
+                    || jukeboxMainMenu && _currentAreaName.ToLower() == "MainMenu".ToLower()
+                    || jukeboxBattle && _currentAreaName.ToLower() == "Battle".ToLower()
                 );
 
-            if (blockPlayRequest) return false; //Block playback.
-            
+            if (keepJukeboxPlayback) return false; //Block if there is a jukebox track playing and it's playback is allowed in current area.
+
+            bool blockPlayRequest = (
+                (_currentAreaName.ToLower() == "Soulhome".ToLower() && !jukeboxSoulhome)
+                || (_currentAreaName.ToLower() == "MainMenu".ToLower() && !jukeboxMainMenu)
+                || (_currentAreaName.ToLower() == "Battle".ToLower() && !jukeboxBattle)
+                );
+
+            if (blockPlayRequest && categoryName.ToLower() == "Jukebox".ToLower()) return false; //Block jukebox playback.
+
             return true;
         }
 
