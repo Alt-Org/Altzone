@@ -398,7 +398,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 52.65
+  m_fontSize: 48.65
   m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -672,7 +672,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 39.5
+  m_fontSize: 36.5
   m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1015,6 +1015,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8320321838510629508}
   - component: {fileID: 5787533169938191542}
+  - component: {fileID: 2831391148784022890}
   m_Layer: 5
   m_Name: OnlinePlayersPanel
   m_TagString: Untagged
@@ -1050,6 +1051,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6423828713392945928}
   m_CullTransparentMesh: 1
+--- !u!114 &2831391148784022890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6423828713392945928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7813ecf63ec69941abea0458fabc063, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onlinePlayersPanel: {fileID: 6739355729878802529}
+  _onlineTitle: {fileID: 4504811184218267106}
+  _onlinePlayersPanelContent: {fileID: 7248898361419024394}
+  _onlinePlayersPanelScrollView: {fileID: 3921677785288647910}
+  _closeOnlinePlayersPanelButton: {fileID: 4717656065179089702}
+  _openOnlinePlayersPanelButton: {fileID: 0}
+  _onlinePlayersPanelItemPrefab: {fileID: 3731211414751999882, guid: 9a493b27b8acd32439563ee755ffad82,
+    type: 3}
+  _viewClanPlayersButton: {fileID: 8100628190002584462}
+  _viewAllPlayersButton: {fileID: 6370592406215537766}
 --- !u!1 &6733017146726874663
 GameObject:
   m_ObjectHideFlags: 0
@@ -1182,7 +1205,6 @@ GameObject:
   - component: {fileID: 1230543169614114851}
   - component: {fileID: 4776546000010594355}
   - component: {fileID: 1971585334665718634}
-  - component: {fileID: 1781711940005734247}
   m_Layer: 5
   m_Name: OnlinePlayersPanelManager
   m_TagString: Untagged
@@ -1252,28 +1274,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1781711940005734247
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6739355729878802529}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7813ecf63ec69941abea0458fabc063, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _onlinePlayersPanel: {fileID: 6423828713392945928}
-  _onlineTitle: {fileID: 4504811184218267106}
-  _onlinePlayersPanelContent: {fileID: 7248898361419024394}
-  _onlinePlayersPanelScrollView: {fileID: 3921677785288647910}
-  _closeOnlinePlayersPanelButton: {fileID: 4717656065179089702}
-  _openOnlinePlayersPanelButton: {fileID: 0}
-  _onlinePlayersPanelItemPrefab: {fileID: 3731211414751999882, guid: 9a493b27b8acd32439563ee755ffad82,
-    type: 3}
-  _viewClanPlayersButton: {fileID: 8100628190002584462}
-  _viewAllPlayersButton: {fileID: 6370592406215537766}
 --- !u!1 &7713513259232091147
 GameObject:
   m_ObjectHideFlags: 0
