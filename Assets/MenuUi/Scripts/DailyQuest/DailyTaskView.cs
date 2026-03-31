@@ -117,7 +117,16 @@ public class DailyTaskView : AltMonoBehaviour
 
         StartCoroutine(ViewSetup());
 
-        _cancelTaskButton.onClick.AddListener(() => StartCancelTask());
+        // Don't allow canceling task on turboeducation
+        if (_gameVersion == VersionType.TurboEducation)
+        {
+            _cancelTaskButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            _cancelTaskButton.onClick.AddListener(() => StartCancelTask());
+        }
+        
         _showMultipleChoiceTaskButton.onClick.AddListener(() => DailyTaskManager.Instance.ShowMultipleChoiceTask());
 
         //Buttons
@@ -176,14 +185,12 @@ public class DailyTaskView : AltMonoBehaviour
 
     void OnTaskAccept()
     {
-        Debug.LogWarning("ONTASKACCEPT");
-
         SwitchTab(SelectedTab.OwnTask);
     }
 
     void OnTaskCancel()
     {
-        Debug.LogWarning("ONTASKCANCEL");
+
         PlayerTask currentTask = DailyTaskManager.Instance.GetCurrentTask();
 
         if (currentTask != null)
@@ -315,7 +322,6 @@ public class DailyTaskView : AltMonoBehaviour
     private void PopulateTasks(System.Action<bool> callback)
     {
 
-
         foreach (PlayerTask task in DailyTaskManager.Instance.ValidTasks.Tasks)
         {
 
@@ -330,7 +336,7 @@ public class DailyTaskView : AltMonoBehaviour
 
         callback(true);
     }
-    
+
 
     public void StartCancelTask()
     {
@@ -380,7 +386,6 @@ public class DailyTaskView : AltMonoBehaviour
         currentQuest.UpdateProgressBar();
     }
 
-
     public Transform GetNormalParentCategory(int points)
     {
         if (points < _dailyCategoryNormalRow1PointsLimit)
@@ -391,6 +396,7 @@ public class DailyTaskView : AltMonoBehaviour
 
         return (_taskListNormalRow3);
     }
+
     public Transform GetEducationParentCategory(EducationCategoryType type)
     {
         return type switch

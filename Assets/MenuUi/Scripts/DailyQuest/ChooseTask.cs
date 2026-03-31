@@ -34,6 +34,9 @@ public class ChooseTask : MonoBehaviour
     public delegate void ChooseTaskShown();
     public static event ChooseTaskShown OnChooseTaskShown;
 
+    public delegate void ChooseTaskHidden();
+    public static event ChooseTaskHidden OnChooseTaskHidden;
+
     IEnumerator Initialize()
     {
 
@@ -116,6 +119,7 @@ public class ChooseTask : MonoBehaviour
     {
         _selectionWindow.gameObject.SetActive(false);
         DeleteTaskCards();
+        OnChooseTaskHidden?.Invoke();
         //EnableUIOverlayButtons(true);
     }
 

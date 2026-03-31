@@ -18,6 +18,7 @@ public class Popup : MonoBehaviour
         Cancel,         //Cancel task window
         ClanMilestone,  //Clan milestone reward info window
         MultipleChoice, //Multiple choice task window
+        Info,           //Accept task window without accept button
     }
 
     /// <summary>
@@ -143,6 +144,10 @@ public class Popup : MonoBehaviour
         {
             if (data.Value.Type == PopupData.PopupDataType.OwnTask)
             {
+
+                // If PopupWindowType.Info -> Hide acceptConfirmButton
+                Instance._acceptConfirmButtonText.transform.parent.gameObject.SetActive(type != PopupWindowType.Info);
+
                 // If this is a new task
                 if (currentTaskId == null)
                 {
@@ -153,8 +158,8 @@ public class Popup : MonoBehaviour
                 else
                 {
                     Instance._acceptConfirmButtonText.text = "Vaihda Tehtävä";
-                }
                     
+                }
             }
             if (data.Value.Location != null)
                 Instance.MoveMovableWindow(data.Value.Location.Value, type);
@@ -223,6 +228,7 @@ public class Popup : MonoBehaviour
         switch (type)
         {
             case PopupWindowType.Accept:
+            case PopupWindowType.Info:
                 {
                     _taskAcceptImage.sprite = _cardImageReference.GetTaskImage(data);
                     return;
@@ -273,7 +279,7 @@ public class Popup : MonoBehaviour
     private void SwitchWindow(PopupWindowType type)
     {
         Debug.Log("WindowType: " + type.ToString());
-        _taskAcceptPopup.SetActive(type == PopupWindowType.Accept);
+        _taskAcceptPopup.SetActive(type == PopupWindowType.Accept || type == PopupWindowType.Info);
         _taskCancelPopup.SetActive(type == PopupWindowType.Cancel);
         _clanMilestonePopup.SetActive(type == PopupWindowType.ClanMilestone);
         _multipleChoicePopup.SetActive(type == PopupWindowType.MultipleChoice);
@@ -282,7 +288,7 @@ public class Popup : MonoBehaviour
     private void MoveMovableWindow(Vector3 location, PopupWindowType type)
     {
         //Accept window.
-        if (type == PopupWindowType.Accept)
+        if (type == PopupWindowType.Accept || type == PopupWindowType.Info)
             _taskAcceptMovable.position = location;
 
         //Clan milestone info window.

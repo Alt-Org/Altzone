@@ -46,6 +46,7 @@ public class DailyTaskProgressManager : AltMonoBehaviour
     /// </summary>
     public static event ClanMilestoneProgressed OnClanMilestoneProgressed;
 
+    
     #endregion
 
     private void Awake()
