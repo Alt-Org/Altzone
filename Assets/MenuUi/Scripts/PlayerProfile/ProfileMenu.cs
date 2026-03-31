@@ -92,6 +92,11 @@ public class ProfileMenu : AltMonoBehaviour
     [SerializeField] private GameObject _todayEmotionSection;
     [SerializeField] private GameObject _weekEmotionsSection;
 
+    [Header("Carbon Popup")]
+    [SerializeField] private Button _openCarbonPopupButton;
+    [SerializeField] private GameObject _carbonEmissionPopup;
+    [SerializeField] private Button _closeCarbonPopupButton;
+
     public TextMeshProUGUI textMeshPro;
 
     private string _tempPlayerName;
@@ -179,6 +184,7 @@ public class ProfileMenu : AltMonoBehaviour
     private void OnEnable()
     {
         SetEditPopupState(false);
+        SetCarbonPopupState(false);
 
         Debug.Log($"_ClanURLButton is null: {_ClanURLButton == null}");
         LoadMinutes();
@@ -199,6 +205,7 @@ public class ProfileMenu : AltMonoBehaviour
     private void OnDisable()
     {
         SetEditPopupState(false);
+        SetCarbonPopupState(false);
 
         _characterOptionsPopup.SetActive(false);
         _closePopupAreaButton.SetActive(false);
@@ -300,7 +307,7 @@ public class ProfileMenu : AltMonoBehaviour
         {
             Button overlayButton = _popupOverlay.GetComponentInChildren<Button>();
             if (overlayButton != null)
-                overlayButton.onClick.AddListener(CloseEditProfilePopup);
+                overlayButton.onClick.AddListener(CloseAllProfilePopups);
         }
 
         if (_cancelEditProfileButton != null)
@@ -308,6 +315,12 @@ public class ProfileMenu : AltMonoBehaviour
 
         if (_confirmEditProfileButton != null)
             _confirmEditProfileButton.onClick.AddListener(ConfirmEditProfileChanges);
+
+        if (_openCarbonPopupButton != null)
+            _openCarbonPopupButton.onClick.AddListener(OpenCarbonPopup);
+
+        if (_closeCarbonPopupButton != null)
+            _closeCarbonPopupButton.onClick.AddListener(CloseCarbonPopup);
 
         LoadMinutes();
     }
@@ -325,6 +338,12 @@ public class ProfileMenu : AltMonoBehaviour
         {
             Debug.LogError("Klaanitiedot puuttuvat.");
         }
+    }
+
+    private void CloseAllProfilePopups()
+    {
+        CloseEditProfilePopup();
+        CloseCarbonPopup();
     }
 
     private void SetEditPopupState(bool isOpen)
@@ -409,6 +428,23 @@ public class ProfileMenu : AltMonoBehaviour
             _editNameErrorText.text = "";
 
         SetEditPopupState(false);
+    }
+    private void SetCarbonPopupState(bool isOpen)
+    {
+        if (_carbonEmissionPopup != null)
+            _carbonEmissionPopup.SetActive(isOpen);
+
+        if (_popupOverlay != null)
+            _popupOverlay.SetActive(isOpen);
+    }
+    private void OpenCarbonPopup()
+    {
+        SetCarbonPopupState(true);
+    }
+
+    private void CloseCarbonPopup()
+    {
+        SetCarbonPopupState(false);
     }
 
     /// <summary>
