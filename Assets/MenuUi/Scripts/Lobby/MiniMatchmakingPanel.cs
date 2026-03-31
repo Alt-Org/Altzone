@@ -483,18 +483,30 @@ namespace MenuUi.Scripts.Lobby
 
             try
             {
-                // Only show matchmaking text while actually in a matchmaking room.
-                if (!PhotonRealtimeClient.InMatchmakingRoom)
+                // Only show matchmaking text while actually in a matchmaking room or a persistent queue room.
+                bool inMatchmakingOrQueue = false;
+                try
                 {
-                    _matchmakingText.text = string.Empty;
-                    return;
+                    inMatchmakingOrQueue = PhotonRealtimeClient.InMatchmakingRoom;
                 }
+                catch { }
 
                 var room = PhotonRealtimeClient.LobbyCurrentRoom;
                 bool isQueue = false;
-                if (room != null)
+                try
                 {
-                    isQueue = room.GetCustomProperty<bool>(Altzone.Scripts.Battle.Photon.PhotonBattleRoom.IsQueueKey);
+                    if (room != null)
+                    {
+                        isQueue = room.GetCustomProperty<bool>(Altzone.Scripts.Battle.Photon.PhotonBattleRoom.IsQueueKey);
+                        if (isQueue) inMatchmakingOrQueue = true;
+                    }
+                }
+                catch { }
+
+                if (!inMatchmakingOrQueue)
+                {
+                    _matchmakingText.text = string.Empty;
+                    return;
                 }
 
                 _matchmakingText.text = isQueue ? "Jonossa..." : "Etsitään peliä...";
