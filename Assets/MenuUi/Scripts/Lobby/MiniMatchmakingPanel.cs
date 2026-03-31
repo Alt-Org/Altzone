@@ -483,6 +483,13 @@ namespace MenuUi.Scripts.Lobby
 
             try
             {
+                // Only show matchmaking text while actually in a matchmaking room.
+                if (!PhotonRealtimeClient.InMatchmakingRoom)
+                {
+                    _matchmakingText.text = string.Empty;
+                    return;
+                }
+
                 var room = PhotonRealtimeClient.LobbyCurrentRoom;
                 bool isQueue = false;
                 if (room != null)
@@ -490,7 +497,7 @@ namespace MenuUi.Scripts.Lobby
                     isQueue = room.GetCustomProperty<bool>(Altzone.Scripts.Battle.Photon.PhotonBattleRoom.IsQueueKey);
                 }
 
-                _matchmakingText.text = isQueue ? "jonossa..." : "Etsitään peliä...";
+                _matchmakingText.text = isQueue ? "Jonossa..." : "Etsitään peliä...";
             }
             catch
             {

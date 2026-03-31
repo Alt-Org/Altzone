@@ -223,6 +223,13 @@ namespace MenuUi.Scripts.Lobby
 
             try
             {
+                // Only show matchmaking text while actually in a matchmaking room.
+                if (!PhotonRealtimeClient.InMatchmakingRoom)
+                {
+                    _matchmakingText.text = string.Empty;
+                    return;
+                }
+
                 var room = PhotonRealtimeClient.LobbyCurrentRoom;
                 bool isQueue = false;
                 if (room != null)
