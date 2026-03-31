@@ -12,6 +12,5 @@ var class_quantum_1_1_statics =
     [ "SerializeFrameTimer", "class_quantum_1_1_statics.html#a5e458bde5ac28014131705ccd9b8ed02", null ],
     [ "SerializeInput", "class_quantum_1_1_statics.html#ac2aa29ba84abc8aa05035e16db743149", null ],
     [ "SerializePlayerRef", "class_quantum_1_1_statics.html#af2dedbbdeb05baf712399e51c3b8ad28", null ],
-    [ "SerializeQBoolean", "class_quantum_1_1_statics.html#a1ea662d676333b4ba6fc065e374f7e1b", null ],
-    [ "SerializeQString64", "class_quantum_1_1_statics.html#a998098b4e7f128345238099a204cccca", null ]
+    [ "SerializeQBoolean", "class_quantum_1_1_statics.html#a1ea662d676333b4ba6fc065e374f7e1b", null ]
 ];
