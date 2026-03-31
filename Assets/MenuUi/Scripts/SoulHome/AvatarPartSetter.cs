@@ -111,6 +111,11 @@ namespace MenuUI.Scripts.SoulHome
             s_materialPropertyBlock.SetColor("_SelectedColor", selectedColor);
 
             AvatarPartInfo partInfo = AvatarPartsReference.Instance.GetAvatarPartById(label.Substring(0, 7));
+            bool isColorable = partInfo != null && partInfo.IsColorable;
+
+            // Set _Colorable to 1 if part is colorable, othervise 0
+            s_materialPropertyBlock.SetFloat("_Colorable", isColorable ? 1f : 0f);
+
             Texture2D mask;
 
             // Nose is always skin color
@@ -122,8 +127,8 @@ namespace MenuUI.Scripts.SoulHome
             {
                 mask = partInfo.MaskImage.texture;;
             }
-            // If maskimage does not exist color whole part
-            else if (partInfo != null && partInfo.MaskImage == null)
+            // If maskimage does not exist color whole part, if part is colorable
+            else if (partInfo != null && partInfo.MaskImage == null && isColorable)
             {
                 Texture2D referenceTexture = partInfo.AvatarImage.texture;
                 mask = AvatarMaskUtility.GetSelectedColorMask(referenceTexture);

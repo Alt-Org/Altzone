@@ -34,6 +34,7 @@ namespace MenuUi.Scripts.SwipeNavigation
         [SerializeField, Tooltip("The area from the bottom of the screen from where swiping is disabled (between 0/1))")] private float verticalDeadzone;
 
         private ScrollRect scrollRect;
+        private BaseScrollRect baseScrollRect;
         [SerializeField] protected GameObject[] slides;
         [SerializeField] private Scrollbar scrollBar;
         [SerializeField] private Button[] buttons;
@@ -58,6 +59,8 @@ namespace MenuUi.Scripts.SwipeNavigation
         private bool _isBlocked;
         private Rect swipeRect;
 
+        public bool hardBlocked { get; set; } = false;
+
         [SerializeField] private bool _isInMainMenu;
         [SerializeField] protected bool _willRotate;
 
@@ -70,7 +73,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             {
                 if (!isEnabled.Equals(value)) isEnabled = value;
                 else return;
-                if (scrollRect)
+                if (scrollRect || baseScrollRect)
                 {
                     if (isEnabled && !_isBlocked)
                         ToggleScrollRect(true);
@@ -96,7 +99,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             {
                 if (!_isBlocked.Equals(value)) _isBlocked = value;
                 else return;
-                if (scrollRect)
+                if (scrollRect || baseScrollRect)
                 {
                     if (isEnabled && !_isBlocked)
                         ToggleScrollRect(true);
@@ -155,6 +158,7 @@ namespace MenuUi.Scripts.SwipeNavigation
             }
 
             scrollRect = GetComponent<ScrollRect>();
+            if(!scrollRect) baseScrollRect = GetComponent<BaseScrollRect>();
             UpdateSwipeAreaValues();
             StartCoroutine(SetScrollBarValue(currentPage, true));
         }
@@ -263,6 +267,14 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         public virtual void UpdateInput()
         {
+            //Helps to block swiping when in clan settings page
+            if (hardBlocked)
+            {
+                IsEnabled = false;
+                _swipeAllowed = false;
+                return;
+            }
+
             // Return if currently swiping
             if (isSwipeMode == true) return;
 
@@ -333,7 +345,8 @@ namespace MenuUi.Scripts.SwipeNavigation
 
                 if (Mathf.Abs(_startTouch.y - currentTouch.y) > swipeDistance && !_swipeAllowed)
                 {
-                    scrollRect.StopMovement();
+                    if(scrollRect)scrollRect.StopMovement();
+                    if (baseScrollRect) baseScrollRect.StopMovement();
                     IsEnabled = false;
                     StartCoroutine(OnSwipeOneStep(CurrentPage));
                 }
@@ -423,9 +436,9 @@ namespace MenuUi.Scripts.SwipeNavigation
             float current = 0;
             float percent = 0;
             isSwipeMode = true;
-            if (scrollRect)
+            if (scrollRect || baseScrollRect)
             {
-                if (scrollRect.enabled)
+                if ((scrollRect && scrollRect.enabled) || (baseScrollRect && baseScrollRect.enabled))
                     while (percent < 1)
                     {
                         current += Time.deltaTime;
@@ -440,9 +453,11 @@ namespace MenuUi.Scripts.SwipeNavigation
                     {
                         current += Time.deltaTime;
                         percent = current / swipeTime;
-                        scrollRect.enabled = true;
+                        if (scrollRect) scrollRect.enabled = true;
+                        if (baseScrollRect) baseScrollRect.enabled = true;
                         scrollBar.value = Mathf.Lerp(start, scrollPageValues[index], percent);
-                        scrollRect.enabled = false;
+                        if (scrollRect) scrollRect.enabled = false;
+                        if (baseScrollRect) baseScrollRect.enabled = false;
 
                         yield return null;
                     }
@@ -476,7 +491,8 @@ namespace MenuUi.Scripts.SwipeNavigation
 
         public void ToggleScrollRect(bool value)
         {
-            scrollRect.enabled = value;
+            if (scrollRect) scrollRect.enabled = value;
+            if (baseScrollRect) baseScrollRect.enabled = value;
         }
 
         public void OnBeginDrag(BaseEventData eventData)

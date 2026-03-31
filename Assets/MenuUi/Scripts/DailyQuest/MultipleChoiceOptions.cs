@@ -48,7 +48,7 @@ public class MultipleChoiceOptions : ScriptableObject
     public class OptionData
     {
         public string OptionText;
-        public bool Result;
+        public Popup.ResultType Result;
     }
 
     public bool IsMultipleChoice(PlayerTask data)
@@ -103,23 +103,23 @@ public class MultipleChoiceOptions : ScriptableObject
         return options;
     }
 
-    public bool? GetResult(PlayerTask data, string answer)
+    public Popup.ResultType GetResult(PlayerTask data, string answer)
     {
         if (data.Type != TaskNormalType.Undefined)
         {
             var task = GetNormalMultipleChoiceData(data.Type);
-            if (task == null) return null;
+            if (task == null) return Popup.ResultType.Null;
             return GetNormalTaskResult(task, answer);
         }
         else
         {
             var task = GetEducationMultipleChoiceData(data);
-            if (task == null) return null;
+            if (task == null) return Popup.ResultType.Null;
             return GetEducationTaskResult(task, answer);
         }
     }
 
-    private bool GetNormalTaskResult(NormalMultipleChoiceData task, string answer)
+    private Popup.ResultType GetNormalTaskResult(NormalMultipleChoiceData task, string answer)
     {
         OptionData optionData = null;
         foreach (var option in task.Options)
@@ -131,13 +131,13 @@ public class MultipleChoiceOptions : ScriptableObject
             }
         }
 
-        return optionData.Result;
+        return optionData.Result; // Defined in MultipleChoiceOptions asset
     }
 
-    private bool GetEducationTaskResult(EducationMultipleChoiceData task, string answer)
+    private Popup.ResultType GetEducationTaskResult(EducationMultipleChoiceData task, string answer)
     {
         OptionData optionData = null;
-        foreach (var option in task.Options)
+        foreach (OptionData option in task.Options)
         {
             if (option.OptionText == answer)
             {
@@ -146,7 +146,7 @@ public class MultipleChoiceOptions : ScriptableObject
             }
         }
 
-        return optionData.Result;
+        return optionData.Result; // Defined in MultipleChoiceOptions asset
     }
 
     private NormalMultipleChoiceData GetNormalMultipleChoiceData(TaskNormalType type)
