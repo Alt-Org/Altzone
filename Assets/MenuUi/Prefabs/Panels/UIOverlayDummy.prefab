@@ -964,7 +964,7 @@ GameObject:
   - component: {fileID: 27453095474569272}
   m_Layer: 5
   m_Name: UIOverlayDummy
-  m_TagString: OverlayPanel
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1021,6 +1021,7 @@ MonoBehaviour:
   - {fileID: 5548466528036429709}
   _bottomBar: {fileID: 2423292692514367186}
   _chatBox: {fileID: 3587014077219313802}
+  _buttonsBar: {fileID: 0}
 --- !u!1 &7132742679596476211
 GameObject:
   m_ObjectHideFlags: 0
@@ -1071,9 +1072,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _topBarList:
-  - {fileID: 0}
   - {fileID: 5057240772644334246}
-  - {fileID: 0}
 --- !u!1 &7396221821816822605
 GameObject:
   m_ObjectHideFlags: 0
