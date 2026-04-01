@@ -98,7 +98,7 @@ namespace Altzone.Scripts.Lobby
         private const long STARTDELAY = 2000;
         private const float MatchmakingTimeoutSeconds = 30f;
         // Timeout for followers who join a matchmaking room: if not enough human players join within this interval, auto-leave and requeue.
-        private const float MatchmakingJoinTimeoutSeconds = 10f;
+        private const float MatchmakingJoinTimeoutSeconds = 5f;
         // Marker for matchmaking rooms that were created from queue timeout flow.
         private const string QueueFormedMatchKey = "qfm";
         // Delay before requeueing after leaving a matchmaking room due to timeout.

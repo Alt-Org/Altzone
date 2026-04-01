@@ -26,13 +26,17 @@ namespace MenuUi.Scripts.Lobby
             LobbyManager.OnFailedToStartMatchmakingGame += OnFailedToStartMatchmakingGame;
             LobbyManager.OnGameCountdownUpdate += OnGameCountdownUpdate;
             LobbyManager.OnGameStartCancelled += OnGameStartCancelled;
-            LobbyManager.OnMatchmakingRoomEntered += OnMatchmakingRoomEntered;
-            LobbyManager.OnMatchmakingStopped += OnMatchmakingStopped;
         }
 
         private void OnEnable()
         {
             LobbyManager.OnRoomLeaderChanged += SetCancelButton;
+            LobbyManager.OnMatchmakingRoomEntered += OnMatchmakingRoomEntered;
+            LobbyManager.OnMatchmakingStopped += OnMatchmakingStopped;
+
+            SetMatchmakingTextForCurrentRoom();
+            bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
+            SetCancelButton(isLeader);
         }
 
         private void OnDisable()
@@ -223,18 +227,20 @@ namespace MenuUi.Scripts.Lobby
 
             try
             {
-                // Only show matchmaking text while actually in a matchmaking room.
-                if (!PhotonRealtimeClient.InMatchmakingRoom)
-                {
-                    _matchmakingText.text = string.Empty;
-                    return;
-                }
+                bool inMatchmakingOrQueue = PhotonRealtimeClient.InMatchmakingRoom;
 
                 var room = PhotonRealtimeClient.LobbyCurrentRoom;
                 bool isQueue = false;
                 if (room != null)
                 {
                     isQueue = room.GetCustomProperty<bool>(Altzone.Scripts.Battle.Photon.PhotonBattleRoom.IsQueueKey);
+                    if (isQueue) inMatchmakingOrQueue = true;
+                }
+
+                if (!inMatchmakingOrQueue)
+                {
+                    _matchmakingText.text = string.Empty;
+                    return;
                 }
 
                 _matchmakingText.text = isQueue ? "Jonossa..." : "Etsitään peliä...";

@@ -91,7 +91,18 @@ namespace MenuUi.Scripts.Lobby
         {
             try
             {
-                if (PhotonRealtimeClient.InMatchmakingRoom)
+                bool inMatchmakingOrQueue = PhotonRealtimeClient.InMatchmakingRoom;
+                try
+                {
+                    var room = PhotonRealtimeClient.LobbyCurrentRoom;
+                    if (room != null && room.GetCustomProperty<bool>(Altzone.Scripts.Battle.Photon.PhotonBattleRoom.IsQueueKey))
+                    {
+                        inMatchmakingOrQueue = true;
+                    }
+                }
+                catch { }
+
+                if (inMatchmakingOrQueue)
                 {
                     bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
 
@@ -458,8 +469,25 @@ namespace MenuUi.Scripts.Lobby
 
         private void OnGameStartCancelled()
         {
-            // If we are still in a matchmaking room, resume matchmaking UI state.
-            if (PhotonRealtimeClient.InMatchmakingRoom)
+            // If we are still in a matchmaking room or queue room, resume matchmaking UI state.
+            bool inMatchmakingOrQueue = false;
+            try
+            {
+                inMatchmakingOrQueue = PhotonRealtimeClient.InMatchmakingRoom;
+            }
+            catch { }
+
+            try
+            {
+                var room = PhotonRealtimeClient.LobbyCurrentRoom;
+                if (room != null && room.GetCustomProperty<bool>(Altzone.Scripts.Battle.Photon.PhotonBattleRoom.IsQueueKey))
+                {
+                    inMatchmakingOrQueue = true;
+                }
+            }
+            catch { }
+
+            if (inMatchmakingOrQueue)
             {
                 _isMatchmaking = true;
                 _isBattleStarting = false;
