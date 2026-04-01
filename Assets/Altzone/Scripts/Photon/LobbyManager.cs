@@ -120,6 +120,8 @@ namespace Altzone.Scripts.Lobby
         private Coroutine _startGameHolder = null;
         // Holder for the client-side StartQuantum coroutine so it can be stopped if needed
         private Coroutine _startQuantumHolder = null;
+        // Holder for the background Photon Service coroutine (single instance)
+        private Coroutine _serviceHolder = null;
         private Coroutine _autoJoinHolder = null;
         private Coroutine _verifyPositionsHolder = null;
         private Coroutine _queueTimerHolder = null;
@@ -333,11 +335,11 @@ namespace Altzone.Scripts.Lobby
                             // Mark self as leader for followers and start leader matchmaking wait loop so bot backfill and game start proceed
                             try
                             {
-                                try { PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, PhotonRealtimeClient.LocalPlayer.UserId); } catch { }
-                                try { OnRoomLeaderChanged?.Invoke(true); } catch { }
+                                try { PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, PhotonRealtimeClient.LocalPlayer.UserId); } catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: {ex.Message}"); }
+                                try { OnRoomLeaderChanged?.Invoke(true); } catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: {ex.Message}"); }
                                 // Record how many expected users leader requested so WaitForMatchmakingPlayers can decide join timeouts
-                                try { PhotonRealtimeClient.CurrentRoom.SetCustomProperty("qe", selected.Length); } catch { }
-                                try { if (selected != null && selected.Length > 0) PhotonRealtimeClient.CurrentRoom.SetCustomProperty("eu", selected); } catch { }
+                                try { PhotonRealtimeClient.CurrentRoom.SetCustomProperty("qe", selected.Length); } catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: {ex.Message}"); }
+                                try { if (selected != null && selected.Length > 0) PhotonRealtimeClient.CurrentRoom.SetCustomProperty("eu", selected); } catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: {ex.Message}"); }
                                 // If leader is alone in the created room, treat as no-expected-followers so master waits full matchmaking timeout and can botfill
                                 try
                                 {
@@ -347,7 +349,7 @@ namespace Altzone.Scripts.Lobby
                                         Debug.Log("FormMatchFromQueue: leader is alone in created room; setting expected-followers to 0 to allow botfill.");
                                     }
                                 }
-                                catch { }
+                                catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: {ex.Message}"); }
                                 if (PhotonRealtimeClient.LocalPlayer != null && PhotonRealtimeClient.LocalPlayer.IsMasterClient && _matchmakingHolder == null)
                                 {
                                     _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
@@ -412,8 +414,8 @@ namespace Altzone.Scripts.Lobby
             try
             {
                 Debug.Log($"RequeueToPersistentQueue: rejoining persistent queue for {gameType}");
-                try { StopMatchmakingCoroutines(); } catch { }
-                try { StopHolderCoroutines(); } catch { }
+                try { StopMatchmakingCoroutines(); } catch (Exception ex) { Debug.LogWarning($"RequeueToPersistentQueue: failed to stop matchmaking coroutines: {ex.Message}"); }
+                try { StopHolderCoroutines(); } catch (Exception ex) { Debug.LogWarning($"RequeueToPersistentQueue: failed to stop holder coroutines: {ex.Message}"); }
 
                 if (PhotonRealtimeClient.InRoom) PhotonRealtimeClient.LeaveRoom();
                 float waitStart = Time.time;
@@ -437,7 +439,7 @@ namespace Altzone.Scripts.Lobby
                     if (!joined)
                     {
                         Debug.LogWarning("RequeueToPersistentQueue: JoinOrCreateQueueRoom failed; attempting server-side fallback JoinOrCreateMatchmakingRoom.");
-                        try { PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(gameType, _teammates); } catch { }
+                        try { PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(gameType, _teammates); } catch (Exception ex) { Debug.LogWarning($"RequeueToPersistentQueue: JoinOrCreateMatchmakingRoom failed: {ex.Message}"); }
                     }
                 }
                 else
@@ -502,7 +504,7 @@ namespace Altzone.Scripts.Lobby
                             yield break;
                         }
                     }
-                    catch { _queueTimerHolder = null; yield break; }
+                    catch (Exception ex) { Debug.LogWarning($"StartQueueTimer: loop check failed: {ex.Message}"); _queueTimerHolder = null; yield break; }
 
                     yield return null;
                 }
@@ -523,9 +525,9 @@ namespace Altzone.Scripts.Lobby
                 int gameTypeInt = (int)GameType.Random2v2;
                 string clanName = string.Empty;
                 int soulhomeRank = 0;
-                try { gameTypeInt = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey); } catch { }
-                try { clanName = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey, ""); } catch { }
-                try { soulhomeRank = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.SoulhomeRank, 0); } catch { }
+                try { gameTypeInt = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey); } catch (Exception ex) { Debug.LogWarning($"QueueTimerCoroutine: failed to read game type: {ex.Message}"); }
+                try { clanName = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey, ""); } catch (Exception ex) { Debug.LogWarning($"QueueTimerCoroutine: failed to read clan name: {ex.Message}"); }
+                try { soulhomeRank = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.SoulhomeRank, 0); } catch (Exception ex) { Debug.LogWarning($"QueueTimerCoroutine: failed to read soulhome rank: {ex.Message}"); }
 
                 Debug.Log($"QueueTimerCoroutine: Queue wait expired after {QueueWaitSeconds}s, forming match for {selected.Count} players.");
                 try
@@ -584,8 +586,8 @@ namespace Altzone.Scripts.Lobby
                 Debug.Log($"LeaveAndAutoRequeue: preparing to leave and requeue for {gameType}");
 
                 // Stop any existing matchmaking/holder coroutines to avoid conflicts
-                try { StopMatchmakingCoroutines(); } catch { }
-                try { StopHolderCoroutines(); } catch { }
+                try { StopMatchmakingCoroutines(); } catch (Exception ex) { Debug.LogWarning($"LeaveAndAutoRequeue: failed to stop matchmaking coroutines: {ex.Message}"); }
+                try { StopHolderCoroutines(); } catch (Exception ex) { Debug.LogWarning($"LeaveAndAutoRequeue: failed to stop holder coroutines: {ex.Message}"); }
 
                 // Leave current room and wait until in lobby
                 if (PhotonRealtimeClient.InRoom) PhotonRealtimeClient.LeaveRoom();
@@ -655,27 +657,64 @@ namespace Altzone.Scripts.Lobby
 
         public void OnDisable()
         {
-            PhotonRealtimeClient.Client.RemoveCallbackTarget(this);
+            try
+            {
+                if (PhotonRealtimeClient.Client != null)
+                {
+                    PhotonRealtimeClient.RemoveCallbackTarget(this);
+                    try { PhotonRealtimeClient.Client.StateChanged -= OnStateChange; } catch (Exception ex) { Debug.LogWarning($"OnDisable: failed to unsubscribe StateChanged: {ex.Message}"); }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"OnDisable: unsubscribe failed: {ex.Message}");
+            }
             this.Unsubscribe();
+            _isActive = false;
+            if (_serviceHolder != null)
+            {
+                try
+                {
+                    StopCoroutine(_serviceHolder);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"OnDisable: failed to stop service coroutine: {ex.Message}");
+                }
+                _serviceHolder = null;
+            }
         }
 
         private void OnApplicationQuit()
         {
-            if (PhotonRealtimeClient.Client.InRoom)
+            if (PhotonRealtimeClient.Client != null)
             {
-                PhotonRealtimeClient.LeaveRoom();
-            }
-            else if (PhotonRealtimeClient.InLobby)
-            {
-                PhotonRealtimeClient.LeaveLobby();
+                try
+                {
+                    if (PhotonRealtimeClient.Client.InRoom)
+                    {
+                        PhotonRealtimeClient.LeaveRoom();
+                    }
+                    else if (PhotonRealtimeClient.InLobby)
+                    {
+                        PhotonRealtimeClient.LeaveLobby();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"OnApplicationQuit: leave failed: {ex.Message}");
+                }
             }
         }
         public void Activate()
         {
             if (_isActive) { Debug.LogWarning("LobbyManager is already active."); return; }
             _isActive = true;
-            PhotonRealtimeClient.Client.AddCallbackTarget(this);
-            PhotonRealtimeClient.Client.StateChanged += OnStateChange;
+            PhotonRealtimeClient.AddCallbackTarget(this);
+            if (PhotonRealtimeClient.Client != null)
+            {
+                try { PhotonRealtimeClient.Client.StateChanged += OnStateChange; } catch (Exception ex) { Debug.LogWarning($"Activate: failed to subscribe StateChanged: {ex.Message}"); }
+            }
             this.Subscribe<ReserveFreePositionEvent>(OnReserveFreePositionEvent);
             this.Subscribe<PlayerPosEvent>(OnPlayerPosEvent);
             this.Subscribe<BotToggleEvent>(OnBotToggleEvent);
@@ -686,7 +725,7 @@ namespace Altzone.Scripts.Lobby
             this.Subscribe<StartMatchmakingEvent>(OnStartMatchmakingEvent);
             this.Subscribe<StopMatchmakingEvent>(OnStopMatchmakingEvent);
             this.Subscribe<GetKickedEvent>(OnGetKickedEvent);
-            StartCoroutine(Service());
+            if (_serviceHolder == null) _serviceHolder = StartCoroutine(Service());
 
             GameConfig gameConfig = GameConfig.Get();
             PlayerSettings playerSettings = gameConfig.PlayerSettings;
@@ -818,7 +857,7 @@ namespace Altzone.Scripts.Lobby
 
             // Sending other players in the room the room change request, setting own leader id key as own userid to indicate being the leader
             PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, PhotonRealtimeClient.LocalPlayer.UserId);
-            try { OnRoomLeaderChanged?.Invoke(true); } catch { }
+            try { OnRoomLeaderChanged?.Invoke(true); } catch (Exception ex) { Debug.LogWarning($"StartMatchmaking: OnRoomLeaderChanged invocation failed: {ex.Message}"); }
 
             if (broadcastRoomChange && PhotonRealtimeClient.Client != null && PhotonRealtimeClient.Client.Server == ServerConnection.GameServer && PhotonRealtimeClient.Client.IsConnectedAndReady && PhotonRealtimeClient.InRoom)
             {
@@ -957,7 +996,7 @@ namespace Altzone.Scripts.Lobby
                                 if (!r.CustomProperties.ContainsKey(PhotonBattleRoom.IsMatchmakingKey)) continue;
                                 if (!(r.CustomProperties[PhotonBattleRoom.IsMatchmakingKey] is bool isMm) || !isMm) continue;
                             }
-                            catch { continue; }
+                            catch (Exception ex) { Debug.LogWarning($"ReconcileMatchmakingRooms: reading room properties failed: {ex.Message}"); continue; }
 
                             if (r.PlayerCount > 0) totalMatchmakingRoomsWithPlayers++;
                         }
@@ -974,7 +1013,7 @@ namespace Altzone.Scripts.Lobby
                                 if (!r.CustomProperties.ContainsKey(PhotonBattleRoom.IsMatchmakingKey)) continue;
                                 if (!(r.CustomProperties[PhotonBattleRoom.IsMatchmakingKey] is bool isMm) || !isMm) continue;
                             }
-                            catch { continue; }
+                            catch (Exception ex) { Debug.LogWarning($"ReconcileMatchmakingRooms: reading room properties failed: {ex.Message}"); continue; }
 
                             if (r.Name == myRoom) continue;
                             if (r.MaxPlayers - r.PlayerCount <= 0) continue;
@@ -1132,12 +1171,12 @@ namespace Altzone.Scripts.Lobby
                     {
                         currentGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
                     }
-                    catch { }
+                    catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: failed to read game type: {ex.Message}"); }
 
                     // Short join timeout: if after MatchmakingJoinTimeoutSeconds the countdown hasn't started,
                     // master should instruct all clients to leave and requeue so the group can reform.
                     int expectedFollowers = 0;
-                    try { expectedFollowers = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>("qe", 0); } catch { expectedFollowers = 0; }
+                    try { expectedFollowers = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>("qe", 0); } catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: failed to read expected followers: {ex.Message}"); expectedFollowers = 0; }
 
                     // Only apply the short join timeout if the leader expected other players to join
                     // AND those expected users are not already present in the room.
@@ -1170,7 +1209,7 @@ namespace Altzone.Scripts.Lobby
                         var currentUserIds = PhotonRealtimeClient.CurrentRoom.Players.Values.Select(p => p.UserId).ToArray();
                         Debug.Log($"WaitForMatchmakingPlayers: expectedFollowers={expectedFollowers}, expectedUsers=[{(expectedUsers == null ? "null" : string.Join(",", expectedUsers))}], currentPlayers=[{string.Join(",", currentUserIds)}], expectedUsersMissing={expectedUsersMissing}");
                     }
-                    catch { }
+                    catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: diagnostics failed: {ex.Message}"); }
 
                     // If expected users appear missing, allow a brief grace window to re-check (helps with join/property propagation races)
                     if (!botBackfillApplied && expectedFollowers > 0 && expectedUsersMissing && Time.time - waitStartTime >= MatchmakingJoinTimeoutSeconds)
@@ -1201,7 +1240,7 @@ namespace Altzone.Scripts.Lobby
                                     }
                                 }
                             }
-                            catch { }
+                            catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: recheck failed: {ex.Message}"); }
                         }
 
                         if (!recheckFound)
@@ -1267,10 +1306,10 @@ namespace Altzone.Scripts.Lobby
                                         appliedEarly = true;
                                     }
                                 }
-                                catch { }
+                                catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: failed to read qe/playercount: {ex.Message}"); }
                             }
                         }
-                        catch { }
+                        catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: failed to determine early bot backfill: {ex.Message}"); }
 
                         if (appliedEarly)
                         {
@@ -1287,7 +1326,7 @@ namespace Altzone.Scripts.Lobby
                                     PhotonRealtimeClient.CurrentRoom.SetCustomProperty(posKey, "Bot");
                                 }
                             }
-                            try { PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.BotFillKey, true); } catch { }
+                            try { PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.BotFillKey, true); } catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: failed to set BotFillKey: {ex.Message}"); }
                             botBackfillApplied = true;
                         }
                     }
@@ -1320,7 +1359,7 @@ namespace Altzone.Scripts.Lobby
                         {
                             if (PhotonRealtimeClient.CurrentRoom.PlayerCount != PhotonRealtimeClient.CurrentRoom.MaxPlayers) continue;
                         }
-                        catch { continue; }
+                        catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: failed to check player counts: {ex.Message}"); continue; }
                     }
 
                     // At this point either the room is full or we've applied bot backfill.
@@ -1465,7 +1504,7 @@ namespace Altzone.Scripts.Lobby
 
                 // Timeout reached: countdown did not start; leave and requeue
                 GameType requeueGameType = GameType.Random2v2;
-                try { requeueGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey); } catch { }
+                try { requeueGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey); } catch (Exception ex) { Debug.LogWarning($"MatchmakingJoinWatcher: failed to read game type: {ex.Message}"); }
                 Debug.Log($"MatchmakingJoinWatcher: countdown did not start within {timeoutSeconds}s in room '{PhotonRealtimeClient.CurrentRoom?.Name}'; leaving and requeueing for {requeueGameType}.");
 
                 _autoRequeueAttempts++;
@@ -1508,7 +1547,7 @@ namespace Altzone.Scripts.Lobby
                         }
                     }
                 }
-                catch { }
+                catch (Exception ex) { Debug.LogWarning($"FollowLeaderToNewRoom: failed to evaluate room type: {ex.Message}"); }
 
                 string oldRoomName = PhotonRealtimeClient.CurrentRoom?.Name ?? string.Empty;
 
@@ -1574,10 +1613,10 @@ namespace Altzone.Scripts.Lobby
                         {
                             try
                             {
-                                if (!room.CustomProperties.ContainsKey(PhotonBattleRoom.IsMatchmakingKey)) continue;
-                                if (!(room.CustomProperties[PhotonBattleRoom.IsMatchmakingKey] is bool isMm) || !isMm) continue;
-                            }
-                            catch { continue; }
+                                    if (!room.CustomProperties.ContainsKey(PhotonBattleRoom.IsMatchmakingKey)) continue;
+                                    if (!(room.CustomProperties[PhotonBattleRoom.IsMatchmakingKey] is bool isMm) || !isMm) continue;
+                                }
+                                catch (Exception ex) { Debug.LogWarning($"FollowLeaderToNewRoom: reading room properties failed: {ex.Message}"); continue; }
 
                             if (room.Name == oldRoomName) continue;
                             if (bestRoom == null)
@@ -1633,7 +1672,7 @@ namespace Altzone.Scripts.Lobby
                         attemptedFollowJoinCreate = true;
                     }
                 }
-                catch { }
+                catch (Exception ex) { Debug.LogWarning($"FollowLeaderToNewRoom: unexpected error: {ex.Message}"); }
 
                 if (attemptedFollowJoinCreate)
                 {
@@ -1872,7 +1911,7 @@ namespace Altzone.Scripts.Lobby
                         yield break;
                     }
                 }
-                catch { }
+                catch (Exception ex) { Debug.LogWarning($"StartTheGameplay: failed to evaluate current room: {ex.Message}"); }
                 // TODO: Select random characters if some are not selected
                 //if (!PhotonBattleRoom.IsValidAllSelectedCharacters())
                 //{
@@ -2368,9 +2407,12 @@ namespace Altzone.Scripts.Lobby
             }
             catch (Exception ex)
             {
-                pluginDisconnectListener.Dispose();
                 Debug.LogException(ex);
                 return false;
+            }
+            finally
+            {
+                try { pluginDisconnectListener?.Dispose(); } catch (Exception ex) { Debug.LogWarning($"StartRunner: failed to dispose pluginDisconnectListener: {ex.Message}"); }
             }
             return true;
         }
@@ -2453,7 +2495,7 @@ namespace Altzone.Scripts.Lobby
                         {
                             sent = PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(positionProps, expectedProps);
                         }
-                        catch { sent = false; }
+                        catch (Exception ex) { Debug.LogWarning($"ReserveFreePosition: SetCustomProperties failed: {ex.Message}"); sent = false; }
 
                         if (sent)
                         {
@@ -2472,7 +2514,7 @@ namespace Altzone.Scripts.Lobby
                                         {
                                             PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PlayerPositionKey, freePosition);
                                         }
-                                        catch { }
+                                        catch (Exception ex) { Debug.LogWarning($"ReserveFreePosition: failed to set local player property: {ex.Message}"); }
                                     }
                                     break;
                                 }
@@ -2504,7 +2546,7 @@ namespace Altzone.Scripts.Lobby
                                 {
                                     PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PlayerPositionKey, freePosition);
                                 }
-                                catch { }
+                                catch (Exception ex) { Debug.LogWarning($"ReserveFreePosition: failed to set local player property: {ex.Message}"); }
                             }
                         }
 
@@ -3039,7 +3081,7 @@ namespace Altzone.Scripts.Lobby
                 {
                     startCountdownInProgress = PhotonRealtimeClient.CurrentRoom.CustomProperties.ContainsKey(PhotonBattleRoom.BattleID);
                 }
-                catch { }
+                catch (Exception ex) { Debug.LogWarning($"OnPlayerLeftRoom: failed to evaluate BattleID presence: {ex.Message}"); }
             }
 
             if (startCountdownInProgress)
@@ -3053,7 +3095,7 @@ namespace Altzone.Scripts.Lobby
                         currentRoomGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
                     }
                 }
-                catch { }
+                catch (Exception ex) { Debug.LogWarning($"OnPlayerLeftRoom: failed to read current room game type: {ex.Message}"); }
 
                 // If this is a Custom game, keep existing behavior (do not force requeue)
                 bool isCustomRoom = false;
@@ -3065,7 +3107,7 @@ namespace Altzone.Scripts.Lobby
                         isCustomRoom = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey) == GameType.Custom;
                     }
                 }
-                catch { }
+                catch (Exception ex) { Debug.LogWarning($"OnPlayerLeftRoom: failed to determine if room is Custom: {ex.Message}"); }
 
                 if (!isCustomRoom)
                 {
@@ -3079,9 +3121,9 @@ namespace Altzone.Scripts.Lobby
                     );
 
                     // Stop any local start coroutines and matchmaking holders
-                    try { if (_startGameHolder != null) { StopCoroutine(_startGameHolder); _startGameHolder = null; } } catch { }
-                    try { if (_startQuantumHolder != null) { StopCoroutine(_startQuantumHolder); _startQuantumHolder = null; } } catch { }
-                    try { StopMatchmakingCoroutines(); } catch { }
+                    try { if (_startGameHolder != null) { StopCoroutine(_startGameHolder); _startGameHolder = null; } } catch (Exception ex) { Debug.LogWarning($"OnPlayerLeftRoom: failed to stop _startGameHolder: {ex.Message}"); }
+                    try { if (_startQuantumHolder != null) { StopCoroutine(_startQuantumHolder); _startQuantumHolder = null; } } catch (Exception ex) { Debug.LogWarning($"OnPlayerLeftRoom: failed to stop _startQuantumHolder: {ex.Message}"); }
+                    try { StopMatchmakingCoroutines(); } catch (Exception ex) { Debug.LogWarning($"OnPlayerLeftRoom: failed to stop matchmaking coroutines: {ex.Message}"); }
 
                     OnGameStartCancelled?.Invoke();
 
@@ -3135,7 +3177,7 @@ namespace Altzone.Scripts.Lobby
                             _startQuantumHolder = null;
                         }
                         OnGameStartCancelled?.Invoke();
-                        try { StopMatchmakingCoroutines(); } catch { }
+                        try { StopMatchmakingCoroutines(); } catch (Exception ex) { Debug.LogWarning($"CancelGameStart: StopMatchmakingCoroutines failed: {ex.Message}"); }
                         try
                         {
                             if (!PhotonRealtimeClient.LocalPlayer.HasCustomProperty(PlayerPositionKey))
@@ -3229,7 +3271,7 @@ namespace Altzone.Scripts.Lobby
                     if (humanPlayers >= 4) _autoRequeueAttempts = 0;
                 }
             }
-            catch { }
+            catch (Exception ex) { Debug.LogWarning($"LobbyManager: caught exception: {ex.Message}"); }
 
             try
             {
@@ -3322,7 +3364,7 @@ namespace Altzone.Scripts.Lobby
                         }
                     }
                 }
-                catch { }
+                catch (Exception ex) { Debug.LogWarning($"LobbyManager: caught exception: {ex.Message}"); }
             }
 
             LobbyOnPlayerLeftRoom?.Invoke(new(otherPlayer));
@@ -3387,7 +3429,7 @@ namespace Altzone.Scripts.Lobby
                         }
                     }
                 }
-                catch { }
+                catch (Exception ex) { Debug.LogWarning($"OnJoinedRoom: failed to clear LeaderIdKey: {ex.Message}"); }
 
                 bool isLeader = PhotonRealtimeClient.LocalPlayer.UserId == PhotonRealtimeClient.LocalPlayer.GetCustomProperty<string>(PhotonBattleRoom.LeaderIdKey);
                 OnMatchmakingRoomEntered?.Invoke(isLeader);
@@ -3404,12 +3446,12 @@ namespace Altzone.Scripts.Lobby
                             isQueueRoom = true;
                         }
                     }
-                    catch { }
+                    catch (Exception ex) { Debug.LogWarning($"OnJoinedRoom: failed to check isQueueRoom: {ex.Message}"); }
 
                     if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient && !isQueueRoom)
                     {
                         GameType roomGameType = GameType.Random2v2;
-                        try { roomGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey); } catch { }
+                        try { roomGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey); } catch (Exception ex) { Debug.LogWarning($"OnJoinedRoom: failed to read room game type: {ex.Message}"); }
                         if (_joinTimeoutWatcherHolder != null) { StopCoroutine(_joinTimeoutWatcherHolder); _joinTimeoutWatcherHolder = null; }
                         float effectiveTimeout = MatchmakingJoinTimeoutSeconds;
                         try
@@ -3431,10 +3473,10 @@ namespace Altzone.Scripts.Lobby
                                     _reserveFreePositionHolder = StartCoroutine(ReserveFreePosition(true));
                                 }
                             }
-                            catch { }
+                            catch (Exception ex) { Debug.LogWarning($"OnJoinedRoom: failed to start ReserveFreePosition: {ex.Message}"); }
                     }
                 }
-                catch { }
+                catch (Exception ex) { Debug.LogWarning($"OnJoinedRoom: start join watcher failed: {ex.Message}"); }
 
                 // Start auto-join only for non-master clients that are effectively alone in their matchmaking room.
                 // Do not auto-join if the current room is a Custom game.
@@ -3482,7 +3524,7 @@ namespace Altzone.Scripts.Lobby
             }
 
             Debug.Log($"OnLeftRoom {PhotonRealtimeClient.LocalPlayer.GetDebugLabel()}");
-            StartCoroutine(Service());
+            if (_serviceHolder == null) _serviceHolder = StartCoroutine(Service());
             // Stop verify loop when leaving room
             if (_verifyPositionsHolder != null)
             {
@@ -3494,7 +3536,7 @@ namespace Altzone.Scripts.Lobby
             {
                 StopQueueTimer();
             }
-            catch { }
+            catch (Exception ex) { Debug.LogWarning($"OnLeftRoom: StopQueueTimer failed: {ex.Message}"); }
             // Stop any join-timeout watcher
             if (_joinTimeoutWatcherHolder != null)
             {
@@ -3512,7 +3554,7 @@ namespace Altzone.Scripts.Lobby
         public void OnCreatedRoom()
         {
             Debug.Log($"Created room {PhotonRealtimeClient.Client.CurrentRoom.Name}");
-            StartCoroutine(Service());
+            if (_serviceHolder == null) _serviceHolder = StartCoroutine(Service());
 
             if (_matchmakingHolder == null)
             {
@@ -3523,7 +3565,7 @@ namespace Altzone.Scripts.Lobby
                 OnMatchmakingRoomEntered?.Invoke(true);
             }
         }
-        public void OnJoinedLobby() { StartCoroutine(Service()); LobbyOnJoinedLobby?.Invoke(); }
+        public void OnJoinedLobby() { if (_serviceHolder == null) _serviceHolder = StartCoroutine(Service()); LobbyOnJoinedLobby?.Invoke(); }
 
         public void OnRoomListUpdate(List<RoomInfo> roomList)
         {
@@ -3556,7 +3598,7 @@ namespace Altzone.Scripts.Lobby
             try
             {
                 bool isGameFull = false;
-                try { if (!string.IsNullOrEmpty(message) && message.ToLower().Contains("game full")) isGameFull = true; } catch { }
+                try { if (!string.IsNullOrEmpty(message) && message.ToLower().Contains("game full")) isGameFull = true; } catch (Exception ex) { Debug.LogWarning($"OnJoinRoomFailed: failed to inspect message: {ex.Message}"); }
                 if (!isGameFull && returnCode == 32765) isGameFull = true;
 
                 if (isGameFull)
@@ -3569,7 +3611,7 @@ namespace Altzone.Scripts.Lobby
                             requeueGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
                         }
                     }
-                    catch { }
+                    catch (Exception ex) { Debug.LogWarning($"OnJoinRoomFailed: failed to read current room game type: {ex.Message}"); }
 
                     try
                     {
@@ -3582,7 +3624,7 @@ namespace Altzone.Scripts.Lobby
                     }
                 }
             }
-            catch { }
+            catch (Exception ex) { Debug.LogWarning($"OnJoinRoomFailed: unexpected error: {ex.Message}"); }
         }
         public void OnJoinRandomFailed(short returnCode, string message) { LobbyOnJoinRandomFailed?.Invoke(returnCode, message); }
 

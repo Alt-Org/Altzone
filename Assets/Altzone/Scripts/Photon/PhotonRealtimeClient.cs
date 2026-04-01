@@ -621,7 +621,14 @@ public static class PhotonRealtimeClient
     /// <param name="target">The object that registers to get callbacks from this client.</param>
     public static void AddCallbackTarget(object target)
     {
-        Client.AddCallbackTarget(target);
+        if (Client != null)
+        {
+            try { Client.AddCallbackTarget(target); } catch (Exception ex) { Debug.LogWarning($"AddCallbackTarget failed: {ex.Message}"); }
+        }
+        else
+        {
+            Debug.LogWarning("AddCallbackTarget: Client is null, cannot add callback target.");
+        }
     }
 
     /// <summary>
@@ -640,7 +647,14 @@ public static class PhotonRealtimeClient
     /// <param name="target">The object that unregisters from getting callbacks.</param>
     public static void RemoveCallbackTarget(object target)
     {
-        Client.RemoveCallbackTarget(target);
+        if (Client != null)
+        {
+            try { Client.RemoveCallbackTarget(target); } catch (Exception ex) { Debug.LogWarning($"RemoveCallbackTarget failed: {ex.Message}"); }
+        }
+        else
+        {
+            Debug.LogWarning("RemoveCallbackTarget: Client is null, cannot remove callback target.");
+        }
     }
 
     private static RoomOptions GetRoomOptions(GameType gameType, bool isMatchmaking = false, string mapId = "", Emotion startingEmotion = Emotion.Blank, string roomName = "", string password = "", string clanName = "", int soulhomeRank = -1)
