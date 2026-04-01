@@ -1,24 +1,25 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using Altzone.Scripts.Window;
-using Altzone.Scripts.Model.Poco.Player;
-using Altzone.Scripts;
-using Altzone.Scripts.Config;
-using System;
-using System.Linq;
-using Altzone.Scripts.Model.Poco.Clan;
-using System.IO;
-using UnityEngine.EventSystems;
-using Altzone.Scripts.ReferenceSheets;
-using Altzone.Scripts.Model.Poco.Game;
-using Altzone.Scripts.ModelV2;
 using System.Data;
+using System.IO;
+using System.Linq;
+using Altzone.Scripts;
+using Altzone.Scripts.Common;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.ModelV2;
+using Altzone.Scripts.ReferenceSheets;
+using Altzone.Scripts.Window;
 using MenuUi.Scripts.AvatarEditor;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
+using TMPro;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class ProfileMenu : AltMonoBehaviour
 {
@@ -84,6 +85,15 @@ public class ProfileMenu : AltMonoBehaviour
     [Header("Others")]
     [SerializeField] private PlayStyle _playStyle;
     [SerializeField] private WeekEmotions _weekEmotions;
+
+    [Header("Emotions")]
+    [SerializeField] private Image _todaysEmotionImage;
+    [SerializeField] private Sprite _blankEmotionSprite;
+    [SerializeField] private Sprite _joyEmotionSprite;
+    [SerializeField] private Sprite _loveEmotionSprite;
+    [SerializeField] private Sprite _playfulEmotionSprite;
+    [SerializeField] private Sprite _sadEmotionSprite;
+    [SerializeField] private Sprite _angryEmotionSprite;
 
     [Header("Own Profile Only UI")]
     [SerializeField] private GameObject _editProfileButton;
@@ -351,6 +361,70 @@ public class ProfileMenu : AltMonoBehaviour
         }
     }
 
+    private void RefreshTodaysEmotionUI()
+    {
+        if (_todaysEmotionImage == null || _playerData == null)
+            return;
+
+        List<Emotion> emotions = _playerData.playerDataEmotionList;
+        if (emotions == null || emotions.Count == 0)
+        {
+            _todaysEmotionImage.sprite = _blankEmotionSprite;
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_playerData.emotionSelectorDate))
+        {
+            _todaysEmotionImage.sprite = _blankEmotionSprite;
+            return;
+        }
+
+        if (!DateTime.TryParse(_playerData.emotionSelectorDate, out DateTime anchorDate))
+        {
+            _todaysEmotionImage.sprite = _blankEmotionSprite;
+            return;
+        }
+        
+        int dayOffset = (DateTime.Now.Date - anchorDate.Date).Days;
+
+        if (dayOffset < 0 || dayOffset >= emotions.Count)
+        {
+            _todaysEmotionImage.sprite = _blankEmotionSprite;
+            return;
+        }
+
+        Emotion todayEmotion = emotions[dayOffset];
+        _todaysEmotionImage.sprite = GetEmotionSprite(todayEmotion);
+    }
+
+    private int GetCurrentWeekdayIndex()
+    {
+        return DateTime.Now.DayOfWeek switch
+        {
+            DayOfWeek.Monday => 0,
+            DayOfWeek.Tuesday => 1,
+            DayOfWeek.Wednesday => 2,
+            DayOfWeek.Thursday => 3,
+            DayOfWeek.Friday => 4,
+            DayOfWeek.Saturday => 5,
+            DayOfWeek.Sunday => 6,
+            _ => 0
+        };
+    }
+
+    private Sprite GetEmotionSprite(Emotion emotion)
+    {
+        return emotion switch
+        {
+            Emotion.Joy => _joyEmotionSprite,
+            Emotion.Love => _loveEmotionSprite,
+            Emotion.Playful => _playfulEmotionSprite,
+            Emotion.Sorrow => _sadEmotionSprite,
+            Emotion.Anger => _angryEmotionSprite,
+            _ => _blankEmotionSprite
+        };
+    }
+
     private void CloseAllProfilePopups()
     {
         CloseEditProfilePopup();
@@ -590,6 +664,17 @@ public class ProfileMenu : AltMonoBehaviour
         else
         {
             _weekEmotions.ValuesToWeekEmotions(_playerData);
+        }
+
+        RefreshTodaysEmotionUI();
+
+        if (_otherPlayerProfile)
+        {
+            _todaysEmotionImage.sprite = _blankEmotionSprite;
+        }
+        else
+        {
+            RefreshTodaysEmotionUI();
         }
 
         if (_playerData.SelectedCharacterId != 0)
