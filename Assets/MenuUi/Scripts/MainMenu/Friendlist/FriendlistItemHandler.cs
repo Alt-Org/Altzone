@@ -12,24 +12,21 @@ using MenuUi.Scripts.AvatarEditor;
 public class FriendlistItem : MonoBehaviour
 
 {
-    [SerializeField] private GameObject _friendPanel;
     [SerializeField] private AvatarFaceLoader _avatarFaceLoader;
     [SerializeField] private Image _onlineStatusIndicator;
-    [SerializeField] private TMPro.TextMeshProUGUI _nameText;
+    [SerializeField] private TextMeshProUGUI _nameText;
     [SerializeField] private ClanHeartColorSetter _clanHeart;
     [SerializeField] private Button _removefriendButton;
     [SerializeField] private Button _acceptFriendButton;
     [SerializeField] private Button _declineFriendButton;
 
     private bool _isOnline = true;
-    private Action _onRemoveClick;
     
    
     public void Initialize(string name, AvatarVisualData avatarVisualData = null, ClanLogo clanLogo = null, bool isOnline = true, Action onRemoveClick = null, Action onAcceptClick = null, Action onDeclineClick = null)
    {
         _nameText.text = name;
         _isOnline = isOnline;
-        _onRemoveClick = onRemoveClick;
 
 
         if (avatarVisualData != null)

@@ -1,14 +1,15 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+using System.Linq;
+using System.Threading;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
-using System.Threading;
+using Assets.Altzone.Scripts.Model.Poco.Game;
 using Assets.Altzone.Scripts.Model.Poco.Player;
-using System.Linq;
 using MenuUi.Scripts.Window;
+using UnityEngine;
+using UnityEngine.UI;
 
 
 public class OnlinePlayersPanel : AltMonoBehaviour
@@ -230,6 +231,43 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         }
 
         yield return new WaitForEndOfFrame();
+
+        if (_friendRequests != null)
+        {
+            foreach (var request in _friendRequests)
+            {
+                FriendlistItem requestItem = Instantiate(_friendlistItemPrefab, _friendsContent); // Instantiate a new UI item for each friend request
+
+                requestItem.Initialize(
+                    request.friend.name ?? request.friend._id,
+                    isOnline: false,
+                    onAcceptClick: () =>
+                    {
+                        // Accept the request
+                        StartCoroutine(ServerManager.Instance.FriendRequestAccept(
+                            request.friend._id,
+                            success =>
+                            {
+                                if (success)
+                                    StartCoroutine(UpdateFriendList());
+                            }
+                        ));
+                    },
+                    onDeclineClick: () =>
+                    {
+                        // Decline the request
+                        StartCoroutine(ServerManager.Instance.FriendDelete(
+                            request.friend._id,
+                            success =>
+                            {
+                                if (success)
+                                    StartCoroutine(UpdateFriendList());
+                            }
+                        ));
+                    }
+                );
+            }
+        }
 
         foreach (var friend in _friendlist)
         {
