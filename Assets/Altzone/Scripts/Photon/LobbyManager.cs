@@ -3078,6 +3078,31 @@ namespace Altzone.Scripts.Lobby
 
         private void OnGetKickedEvent(GetKickedEvent data)
         {
+            try
+            {
+                if (data.Reason == GetKickedEvent.ReasonType.FullRoom)
+                {
+                    GameType requeueGameType = _currentMatchmakingGameType;
+                    try
+                    {
+                        if (PhotonRealtimeClient.CurrentRoom != null && PhotonRealtimeClient.CurrentRoom.CustomProperties != null
+                            && PhotonRealtimeClient.CurrentRoom.CustomProperties.ContainsKey(PhotonBattleRoom.GameTypeKey))
+                        {
+                            requeueGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                        }
+                    }
+                    catch (Exception ex) { Debug.LogWarning($"OnGetKickedEvent: failed to read room game type: {ex.Message}"); }
+
+                    if (requeueGameType == GameType.Random2v2 || requeueGameType == GameType.Clan2v2)
+                    {
+                        Debug.Log($"OnGetKickedEvent: room full, auto-requeueing for {requeueGameType}.");
+                        StartCoroutine(LeaveAndAutoRequeue(requeueGameType));
+                        return;
+                    }
+                }
+            }
+            catch (Exception ex) { Debug.LogWarning($"OnGetKickedEvent: auto-requeue failed: {ex.Message}"); }
+
             PhotonRealtimeClient.LeaveRoom();
             OnKickedOutOfTheRoom?.Invoke(data.Reason);
         }
