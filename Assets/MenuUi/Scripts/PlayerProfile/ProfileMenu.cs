@@ -66,8 +66,11 @@ public class ProfileMenu : AltMonoBehaviour
     [SerializeField] private Button _openViewedPlayerClanButton;
     [SerializeField] private WindowDef _clanWindowDef;
 
-    [Header("Add Friend Button")]
+    [Header("Friend Request Popup")]
     [SerializeField] private Button _addFriendButton;
+    [SerializeField] private GameObject _friendRequestPopup;
+    [SerializeField] private Button _closeFriendRequestPopupButton;
+    [SerializeField] private TextMeshProUGUI _friendRequestPopupTitleText;
 
     [Header("Clan Heart")]
     [SerializeField] private ClanHeartColorSetter _clanHeart;
@@ -185,6 +188,7 @@ public class ProfileMenu : AltMonoBehaviour
     {
         SetEditPopupState(false);
         SetCarbonPopupState(false);
+        SetFriendRequestPopupState(false);
 
         Debug.Log($"_ClanURLButton is null: {_ClanURLButton == null}");
         LoadMinutes();
@@ -206,6 +210,7 @@ public class ProfileMenu : AltMonoBehaviour
     {
         SetEditPopupState(false);
         SetCarbonPopupState(false);
+        SetFriendRequestPopupState(false);
 
         _characterOptionsPopup.SetActive(false);
         _closePopupAreaButton.SetActive(false);
@@ -322,6 +327,12 @@ public class ProfileMenu : AltMonoBehaviour
         if (_closeCarbonPopupButton != null)
             _closeCarbonPopupButton.onClick.AddListener(CloseCarbonPopup);
 
+        if (_addFriendButton != null)
+            _addFriendButton.onClick.AddListener(OpenFriendRequestPopup);
+
+        if (_closeFriendRequestPopupButton != null)
+            _closeFriendRequestPopupButton.onClick.AddListener(CloseFriendRequestPopup);
+
         LoadMinutes();
     }
 
@@ -344,6 +355,7 @@ public class ProfileMenu : AltMonoBehaviour
     {
         CloseEditProfilePopup();
         CloseCarbonPopup();
+        CloseFriendRequestPopup();
     }
 
     private void SetEditPopupState(bool isOpen)
@@ -445,6 +457,42 @@ public class ProfileMenu : AltMonoBehaviour
     private void CloseCarbonPopup()
     {
         SetCarbonPopupState(false);
+    }
+
+    private void SetFriendRequestPopupState(bool isOpen)
+    {
+        if (_friendRequestPopup != null)
+            _friendRequestPopup.SetActive(isOpen);
+
+        if (_popupOverlay != null)
+            _popupOverlay.SetActive(isOpen);
+    }
+
+    private void RefreshFriendRequestPopupText()
+    {
+        if (_friendRequestPopupTitleText == null)
+            return;
+
+        string playerName = _playerData != null && !string.IsNullOrEmpty(_playerData.Name)
+            ? _playerData.Name
+            : "pelaajalle";
+
+        _friendRequestPopupTitleText.text =
+            $"Lähetä ystäväkutsu\npelaajalle <color=#FFFFFF>{playerName}</color>?";
+    }
+
+    private void OpenFriendRequestPopup()
+    {
+        if (!_otherPlayerProfile)
+            return;
+
+        RefreshFriendRequestPopupText();
+        SetFriendRequestPopupState(true);
+    }
+
+    private void CloseFriendRequestPopup()
+    {
+        SetFriendRequestPopupState(false);
     }
 
     /// <summary>
@@ -660,6 +708,9 @@ public class ProfileMenu : AltMonoBehaviour
 
         if (_weekEmotionsSection != null)
             _weekEmotionsSection.SetActive(isOwnProfile);
+
+        if (_addFriendButton != null)
+            _addFriendButton.gameObject.SetActive(_otherPlayerProfile);
     }
 
     private void RefreshPlayerPlayStyleUI()
