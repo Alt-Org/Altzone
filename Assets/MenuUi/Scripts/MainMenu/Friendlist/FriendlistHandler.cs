@@ -47,11 +47,6 @@ public class FriendlistHandler : AltMonoBehaviour
 
     public void OpenFriendlist()
     {
-        OnlinePlayersPanel online = FindObjectOfType<OnlinePlayersPanel>();// If the OnlinePlayers panel is open, close it before opening friend list
-        if (online != null && online._onlinePlayersPanel.activeSelf)
-        {
-            online.CloseOnlinePlayersPanel();
-        }
         _friendlistPanel.SetActive(true); 
     }
 

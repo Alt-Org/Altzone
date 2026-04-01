@@ -8,6 +8,7 @@ using Altzone.Scripts.Model.Poco.Player;
 using System.Threading;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using System.Linq;
+using MenuUi.Scripts.Window;
 
 
 public class OnlinePlayersPanel : AltMonoBehaviour
@@ -30,8 +31,6 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     [SerializeField] private GameObject _friendsPage;
     [SerializeField] private RectTransform _friendsContent;
     [SerializeField] private ScrollRect _onlinePlayersPanelScrollView;
-    [SerializeField] private Button _closeOnlinePlayersPanelButton;
-    [SerializeField] private Button _openOnlinePlayersPanelButton;
     [SerializeField] private OnlinePlayersPanelItem _onlinePlayersPanelItemPrefab;
     [SerializeField] private FriendlistItem _friendlistItemPrefab;
     [SerializeField] private Button _viewClanPlayersButton;
@@ -49,8 +48,6 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     void Start()
 
     {
-        _openOnlinePlayersPanelButton.onClick.AddListener(OpenOnlinePlayersPanel);
-        //_closeOnlinePlayersPanelButton.onClick.AddListener(CloseOnlinePlayersPanel);
         _viewClanPlayersButton.onClick.AddListener(() => SetView(OnlinePlayersView.Clan));
         _viewAllPlayersButton.onClick.AddListener(() => SetView(OnlinePlayersView.All));
         _viewFriendListButton.onClick.AddListener(() => SetView(OnlinePlayersView.Friends));
@@ -58,7 +55,8 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         SetView(_currentView);
 
         ServerManager.OnOnlinePlayersChanged += BuildOnlinePlayerList;
-        CloseOnlinePlayersPanel();
+        OverlayPanelCheck.OnToggleOnlinePlayerList += ToggleOnlinePlayersPanel;
+        ToggleOnlinePlayersPanel(false);
 
     }
 
@@ -73,21 +71,17 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     private void OnDestroy()
     {
         ServerManager.OnOnlinePlayersChanged -= BuildOnlinePlayerList;
+        OverlayPanelCheck.OnToggleOnlinePlayerList -= ToggleOnlinePlayersPanel;
     }
 
-    public void CloseOnlinePlayersPanel()
+    public void ToggleOnlinePlayersPanel(bool? value)
     {
-        _onlinePlayersPanel.SetActive(false);
-    }
-
-    public void OpenOnlinePlayersPanel()
-    {
-        FriendlistHandler friendlist = FindObjectOfType<FriendlistHandler>();
-        if (friendlist != null && friendlist._friendlistPanel.activeSelf)
-        {
-            friendlist.CloseFriendlist();
-        }
-        _onlinePlayersPanel.SetActive(true);
+        if(value == null)
+            _onlinePlayersPanel.SetActive(!_onlinePlayersPanel.activeSelf);
+        else if ((bool)value)
+            _onlinePlayersPanel.SetActive(true);
+        else
+            _onlinePlayersPanel.SetActive(false);
     }
 
     private void SetView(OnlinePlayersView view)
