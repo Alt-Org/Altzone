@@ -12,6 +12,8 @@ namespace Assets.Altzone.Scripts.Model.Poco.Game
         public string clan_id { get; set; }
         public AvatarData avatar { get; set; }
 
+        public FriendPlayer() { }
+
         public FriendPlayer(ServerFriendPlayer player)
         {
             _id = player._id;

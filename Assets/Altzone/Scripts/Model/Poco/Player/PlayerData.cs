@@ -79,9 +79,9 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
 
-        public List<FriendPlayer> friendPlayers = new List<FriendPlayer>();
+        public List<FriendPlayer> friendPlayers;
 
-        public List<FriendRequest> friendRequests = new List<FriendRequest>();
+        public List<FriendRequest> friendRequests;
 
         public ServerGameStatistics stats = null;
 
