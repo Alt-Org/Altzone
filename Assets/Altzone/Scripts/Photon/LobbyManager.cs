@@ -99,6 +99,8 @@ namespace Altzone.Scripts.Lobby
         private const float MatchmakingTimeoutSeconds = 30f;
         // Timeout for followers who join a matchmaking room: if not enough human players join within this interval, auto-leave and requeue.
         private const float MatchmakingJoinTimeoutSeconds = 10f;
+        // Marker for matchmaking rooms that were created from queue timeout flow.
+        private const string QueueFormedMatchKey = "qfm";
         // Delay before requeueing after leaving a matchmaking room due to timeout.
         private const float MatchmakingRequeueDelaySeconds = 2f;
         // Maximum automatic requeue attempts (0 = unlimited)
@@ -153,6 +155,7 @@ namespace Altzone.Scripts.Lobby
         public static bool IsActive { get => _isActive;}
 
         private static bool _isActive = false;
+        private static bool _gamePlayedOut = false;
 
         public bool RunnerActive => _runner != null;
         #endregion
@@ -268,6 +271,11 @@ namespace Altzone.Scripts.Lobby
             OnLobbyWindowChangeRequest?.Invoke(target, lobbyWindow);
         }
 
+        public static void NotifyGamePlayedOut()
+        {
+            _gamePlayedOut = true;
+        }
+
         private IEnumerator FormMatchFromQueue(string[] selected, int roomGameTypeInt, string clanName, int soulhomeRank)
         {
             try
@@ -340,16 +348,7 @@ namespace Altzone.Scripts.Lobby
                                 // Record how many expected users leader requested so WaitForMatchmakingPlayers can decide join timeouts
                                 try { PhotonRealtimeClient.CurrentRoom.SetCustomProperty("qe", selected.Length); } catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: {ex.Message}"); }
                                 try { if (selected != null && selected.Length > 0) PhotonRealtimeClient.CurrentRoom.SetCustomProperty("eu", selected); } catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: {ex.Message}"); }
-                                // If leader is alone in the created room, treat as no-expected-followers so master waits full matchmaking timeout and can botfill
-                                try
-                                {
-                                    if (PhotonRealtimeClient.CurrentRoom != null && PhotonRealtimeClient.CurrentRoom.PlayerCount <= 1)
-                                    {
-                                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty("qe", 0);
-                                        Debug.Log("FormMatchFromQueue: leader is alone in created room; setting expected-followers to 0 to allow botfill.");
-                                    }
-                                }
-                                catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: {ex.Message}"); }
+                                try { PhotonRealtimeClient.CurrentRoom.SetCustomProperty(QueueFormedMatchKey, true); } catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: {ex.Message}"); }
                                 if (PhotonRealtimeClient.LocalPlayer != null && PhotonRealtimeClient.LocalPlayer.IsMasterClient && _matchmakingHolder == null)
                                 {
                                     _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
@@ -1148,12 +1147,21 @@ namespace Altzone.Scripts.Lobby
                 if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient) yield break;
 
                 bool gameStarting = false;
+                float waitStartTime = Time.time;
+                bool botBackfillApplied = false;
+                try
+                {
+                    if (PhotonRealtimeClient.InRoom && PhotonRealtimeClient.CurrentRoom != null)
+                    {
+                        botBackfillApplied = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<bool>(PhotonBattleRoom.BotFillKey, false);
+                    }
+                }
+                catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: failed to read initial BotFillKey state: {ex.Message}"); }
+
                 do
                 {
                 // Checking every 0,5s if we can start gameplay
                 bool canStartGameplay = false;
-                float waitStartTime = Time.time;
-                bool botBackfillApplied = false;
                 do
                 {
                     yield return new WaitForSeconds(0.5f);
@@ -1178,13 +1186,18 @@ namespace Altzone.Scripts.Lobby
                     int expectedFollowers = 0;
                     try { expectedFollowers = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>("qe", 0); } catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: failed to read expected followers: {ex.Message}"); expectedFollowers = 0; }
 
-                    // Only apply the short join timeout if the leader expected other players to join
-                    // AND those expected users are not already present in the room.
+                    // Track whether expected users are missing. Use explicit custom property first
+                    // and fall back to Photon slot-reservation metadata.
                     bool expectedUsersMissing = true;
                     string[] expectedUsers = null;
                     try
                     {
                         expectedUsers = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string[]>("eu", null);
+                        if ((expectedUsers == null || expectedUsers.Length == 0) && PhotonRealtimeClient.CurrentRoom.ExpectedUsers != null && PhotonRealtimeClient.CurrentRoom.ExpectedUsers.Length > 0)
+                        {
+                            expectedUsers = PhotonRealtimeClient.CurrentRoom.ExpectedUsers;
+                        }
+
                         if (expectedUsers != null && expectedUsers.Length > 0)
                         {
                             bool allPresent = true;
@@ -1196,6 +1209,10 @@ namespace Altzone.Scripts.Lobby
                             }
                             expectedUsersMissing = !allPresent;
                         }
+                        else
+                        {
+                            expectedUsersMissing = expectedFollowers > 0;
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -1203,44 +1220,60 @@ namespace Altzone.Scripts.Lobby
                         Debug.LogWarning($"WaitForMatchmakingPlayers: failed to evaluate expected users presence: {ex.Message}");
                     }
 
+                    bool expectedUsersConfigured = expectedUsers != null && expectedUsers.Any(uid => !string.IsNullOrEmpty(uid));
+                    bool expectedPlayersRequired = expectedFollowers > 0 || expectedUsersConfigured;
+
                     // Detailed diagnostics to investigate premature requeue issues
                     try
                     {
                         var currentUserIds = PhotonRealtimeClient.CurrentRoom.Players.Values.Select(p => p.UserId).ToArray();
-                        Debug.Log($"WaitForMatchmakingPlayers: expectedFollowers={expectedFollowers}, expectedUsers=[{(expectedUsers == null ? "null" : string.Join(",", expectedUsers))}], currentPlayers=[{string.Join(",", currentUserIds)}], expectedUsersMissing={expectedUsersMissing}");
+                        Debug.Log($"WaitForMatchmakingPlayers: expectedFollowers={expectedFollowers}, expectedPlayersRequired={expectedPlayersRequired}, expectedUsers=[{(expectedUsers == null ? "null" : string.Join(",", expectedUsers))}], currentPlayers=[{string.Join(",", currentUserIds)}], expectedUsersMissing={expectedUsersMissing}");
                     }
                     catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: diagnostics failed: {ex.Message}"); }
 
-                    // If expected users appear missing, allow a brief grace window to re-check (helps with join/property propagation races)
-                    if (!botBackfillApplied && expectedFollowers > 0 && expectedUsersMissing && Time.time - waitStartTime >= MatchmakingJoinTimeoutSeconds)
+                    // Short timeout branch: expected players were configured, but at least one is still missing.
+                    if (!botBackfillApplied
+                        && Time.time - waitStartTime >= MatchmakingJoinTimeoutSeconds
+                        && expectedPlayersRequired
+                        && expectedUsersMissing)
                     {
                         bool recheckFound = false;
-                        float recheckStart = Time.time;
-                        while (Time.time - recheckStart < 1.0f) // up to 1s grace
+                        if (expectedUsersConfigured)
                         {
-                            yield return new WaitForSeconds(0.15f);
-                            try
+                            // If expected users appear missing, allow a brief grace window to re-check
+                            // (helps with join/property propagation races).
+                            float recheckStart = Time.time;
+                            while (Time.time - recheckStart < 1.0f) // up to 1s grace
                             {
-                                var nowExpected = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string[]>("eu", null);
-                                if (nowExpected != null && nowExpected.Length > 0)
+                                yield return new WaitForSeconds(0.15f);
+                                try
                                 {
-                                    bool allNowPresent = true;
-                                    foreach (var uid in nowExpected)
+                                    var nowExpected = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string[]>("eu", null);
+                                    if ((nowExpected == null || nowExpected.Length == 0) && PhotonRealtimeClient.CurrentRoom.ExpectedUsers != null && PhotonRealtimeClient.CurrentRoom.ExpectedUsers.Length > 0)
                                     {
-                                        if (string.IsNullOrEmpty(uid)) continue;
-                                        bool present = PhotonRealtimeClient.CurrentRoom.Players.Values.Any(p => p.UserId == uid);
-                                        if (!present) { allNowPresent = false; break; }
+                                        nowExpected = PhotonRealtimeClient.CurrentRoom.ExpectedUsers;
                                     }
-                                    if (allNowPresent)
+
+                                    if (nowExpected != null && nowExpected.Length > 0)
                                     {
-                                        recheckFound = true;
-                                        expectedUsersMissing = false;
-                                        Debug.Log("WaitForMatchmakingPlayers: grace re-check found expected users present; skipping short requeue.");
-                                        break;
+                                        bool allNowPresent = true;
+                                        foreach (var uid in nowExpected)
+                                        {
+                                            if (string.IsNullOrEmpty(uid)) continue;
+                                            bool present = PhotonRealtimeClient.CurrentRoom.Players.Values.Any(p => p.UserId == uid);
+                                            if (!present) { allNowPresent = false; break; }
+                                        }
+                                        if (allNowPresent)
+                                        {
+                                            recheckFound = true;
+                                            expectedUsersMissing = false;
+                                            Debug.Log("WaitForMatchmakingPlayers: grace re-check found expected users present; skipping short requeue.");
+                                            break;
+                                        }
                                     }
                                 }
+                                catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: recheck failed: {ex.Message}"); }
                             }
-                            catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: recheck failed: {ex.Message}"); }
                         }
 
                         if (!recheckFound)
@@ -1294,20 +1327,6 @@ namespace Altzone.Scripts.Lobby
                                 Debug.Log("WaitForMatchmakingPlayers: all expected users present; applying bot backfill immediately.");
                                 appliedEarly = true;
                             }
-                            else
-                            {
-                                // If leader explicitly set qe==0 (no followers expected) and we're master alone, apply botfill immediately
-                                try
-                                {
-                                    int qeVal = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>("qe", -1);
-                                    if (qeVal == 0 && PhotonRealtimeClient.CurrentRoom.PlayerCount <= 1)
-                                    {
-                                        Debug.Log("WaitForMatchmakingPlayers: leader expecting no followers (qe==0) and alone; applying bot backfill immediately.");
-                                        appliedEarly = true;
-                                    }
-                                }
-                                catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: failed to read qe/playercount: {ex.Message}"); }
-                            }
                         }
                         catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: failed to determine early bot backfill: {ex.Message}"); }
 
@@ -1331,9 +1350,21 @@ namespace Altzone.Scripts.Lobby
                         }
                     }
 
-                    if (!botBackfillApplied && currentGameType == GameType.Random2v2 && Time.time - waitStartTime >= MatchmakingTimeoutSeconds)
+                    float effectiveBotfillTimeoutSeconds = MatchmakingTimeoutSeconds;
+                    try
                     {
-                        Debug.Log($"Matchmaking timeout ({MatchmakingTimeoutSeconds}s) reached for Random2v2. Filling remaining slots with bots.");
+                        bool queueFormedMatch = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<bool>(QueueFormedMatchKey, false);
+                        if (queueFormedMatch && !expectedPlayersRequired)
+                        {
+                            // Queue already consumed the long wait; apply botfill immediately in queue-formed solo matchmaking rooms.
+                            effectiveBotfillTimeoutSeconds = 0f;
+                        }
+                    }
+                    catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: failed to evaluate queue-formed match timeout: {ex.Message}"); }
+
+                    if (!botBackfillApplied && currentGameType == GameType.Random2v2 && Time.time - waitStartTime >= effectiveBotfillTimeoutSeconds)
+                    {
+                        Debug.Log($"Matchmaking timeout ({effectiveBotfillTimeoutSeconds}s) reached for Random2v2. Filling remaining slots with bots.");
 
                         int[] positions = {
                             PhotonBattleRoom.PlayerPosition1, PhotonBattleRoom.PlayerPosition2,
@@ -3071,6 +3102,12 @@ namespace Altzone.Scripts.Lobby
         {
             Debug.Log($"OnPlayerLeftRoom {otherPlayer.GetDebugLabel()}");
 
+            if (_gamePlayedOut)
+            {
+                Debug.Log("OnPlayerLeftRoom ignored because game has already played out.");
+                return;
+            }
+
             if (PhotonRealtimeClient.Client.State == ClientState.Leaving) return;
 
             // If a game start countdown or start flow is in progress, cancel it.
@@ -3378,6 +3415,8 @@ namespace Altzone.Scripts.Lobby
 
         public void OnJoinedRoom()
         {
+            _gamePlayedOut = false;
+
             // Enable: PhotonNetwork.CloseConnection needs to to work across all clients - to kick off invalid players!
             PhotonRealtimeClient.EnableCloseConnection = true;
 
@@ -3454,15 +3493,6 @@ namespace Altzone.Scripts.Lobby
                         try { roomGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey); } catch (Exception ex) { Debug.LogWarning($"OnJoinedRoom: failed to read room game type: {ex.Message}"); }
                         if (_joinTimeoutWatcherHolder != null) { StopCoroutine(_joinTimeoutWatcherHolder); _joinTimeoutWatcherHolder = null; }
                         float effectiveTimeout = MatchmakingJoinTimeoutSeconds;
-                        try
-                        {
-                            int qe = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>("qe", -1);
-                            if (qe == 0)
-                            {
-                                effectiveTimeout = MatchmakingTimeoutSeconds; // leader expects no followers -> wait full botfill window
-                            }
-                        }
-                        catch { }
                         Debug.Log($"OnJoinedRoom: non-master joined matchmaking room '{PhotonRealtimeClient.CurrentRoom?.Name}' with PlayerCount={PhotonRealtimeClient.CurrentRoom?.PlayerCount}, starting MatchmakingJoinWatcher(timeout={effectiveTimeout}s) (qe={PhotonRealtimeClient.CurrentRoom?.GetCustomProperty<int>("qe", -999)})");
                         _joinTimeoutWatcherHolder = StartCoroutine(MatchmakingJoinWatcher(roomGameType, effectiveTimeout));
                             // Attempt to reserve a free position for non-master clients so start proceeds quicker
@@ -3513,6 +3543,8 @@ namespace Altzone.Scripts.Lobby
         
         public void OnLeftRoom() // IMatchmakingCallbacks
         {
+            _gamePlayedOut = false;
+
             // Clearing player position key from own custom properties
             if (PhotonRealtimeClient.LocalPlayer.HasCustomProperty(PlayerPositionKey)) PhotonRealtimeClient.LocalPlayer.RemoveCustomProperty(PlayerPositionKey);
 
@@ -3739,6 +3771,7 @@ namespace Altzone.Scripts.Lobby
                     _countdownActive = countdown > 0;
                     if (countdown > 0)
                     {
+                        _gamePlayedOut = false;
                         // Countdown started: reset auto-requeue attempts and stop any join watcher
                         _autoRequeueAttempts = 0;
                         try { if (_joinTimeoutWatcherHolder != null) { StopCoroutine(_joinTimeoutWatcherHolder); _joinTimeoutWatcherHolder = null; } } catch { }
@@ -3766,6 +3799,7 @@ namespace Altzone.Scripts.Lobby
                     var startData = StartGameData.Deserialize(byteArray);
                     // Starting game clears countdown active flag
                     _countdownActive = false;
+                    _gamePlayedOut = false;
 
                     // Defensive check: if in matchmaking and any expected real player is missing, abort start.
                     if (PhotonRealtimeClient.InMatchmakingRoom)
