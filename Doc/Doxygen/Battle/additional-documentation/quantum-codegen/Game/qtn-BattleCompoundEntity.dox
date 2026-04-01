@@ -17,6 +17,8 @@
 /// Used by @cref{Quantum,BattleCompoundEntityComponent} for entity associations.
 /// </summary>
 ///
+/// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
+///
 /// @bigtext{Generated from @ref BattleCompoundEntity.qtn}
 
 /// @var EntityRef Quantum::BattleEntityLink::ERef
@@ -24,6 +26,20 @@
 ///
 /// @var FPVector2 Quantum::BattleEntityLink::Offset
 /// <summary>Linked entity's position relative to compound parent.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattleEntityLink::SIZE
+/// @var Int32 Quantum::BattleEntityLink::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattleEntityLink::GetHashCode
+///
+/// @fn void Quantum::BattleEntityLink::Serialize
+///
+/// @}
+
+// ---------------------------------------------------------------------------------------------------- //
 
 /// @struct Quantum::BattleCompoundEntityComponent
 /// <summary>

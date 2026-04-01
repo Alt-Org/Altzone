@@ -36,14 +36,16 @@ namespace Battle.QSimulation.Game
     /// Entities are registered, and can be retrieved and returned.
     /// </summary>
     ///
-    /// [{Entity Manager}](#page-concepts-entity-management-entity-manager)
+    /// See [{Entity Manager}](#page-concepts-entity-management-entity-manager) for more info.
     ///
     /// [{Registered Entities}](#page-concepts-entity-management-registered-entities) are stored offscreen when [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate)
     /// and are assigned an [{Entity ID}](#page-concepts-entity-management-entity-id) for accessing them.<br/>
     /// Entities can be Retrieved using
-    /// @clink{Get:Battle.QSimulation.Game.BattleEntityManager.Get(Frame, BattleEntityID, bool)} to be used in the game. [{InPlay}](#page-concepts-entity-management-registered-entities-playstate)<br/>
+    /// @clink{Get:Battle.QSimulation.Game.BattleEntityManager.Get(Frame, BattleEntityID, bool)} to be used in the arena. [{InPlay}](#page-concepts-entity-management-registered-entities-playstate)<br/>
     /// Entities can be Returned using
     /// @clink{Return:Battle.QSimulation.Game.BattleEntityManager.Return(Frame, BattleEntityID)}, teleporting them back offscreen. [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate)
+    ///
+    /// The @cref{Quantum,BattleEntityManagerDataQSingleton} struct is used internally to manage [{Registered Entities}](#page-concepts-entity-management-registered-entities).
     public static unsafe class BattleEntityManager
     {
         /// <summary>
@@ -53,6 +55,8 @@ namespace Battle.QSimulation.Game
         /// See @cref{BattleEntityManager.MakeCompound}<br/>
         /// See @cref{BattleEntityManager.RegisterCompound(Frame\, CompoundEntityTemplate)}<br/>
         /// See @cref{BattleEntityManager.RegisterCompound(Frame\, CompoundEntityTemplate[])}
+        ///
+        /// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
         public struct CompoundEntityTemplate
         {
             /// <summary>Parent entity reference of the compound.</summary>
@@ -320,7 +324,7 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
-        /// Retrieves entity matching given <paramref name="id"/> from the group at <paramref name="offset"/>.
+        /// Retrieves  registered entity matching given <paramref name="id"/> from the group at <paramref name="offset"/>.
         /// </summary>
         /// Part of @ref BattleEntityManager-GetReturnMethods "Get/Return methods"
         ///
@@ -347,7 +351,7 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
-        /// Returns entity matching given <paramref name="id"/> back offscreen.
+        /// Returns registered entity matching given <paramref name="id"/> back offscreen.
         /// </summary>
         /// Part of @ref BattleEntityManager-GetReturnMethods "Get/Return methods"
         ///
@@ -368,7 +372,7 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
-        /// Returns entity matching given <paramref name="id"/> from the group at <paramref name="offset"/> back offscreen.
+        /// Returns registered entity matching given <paramref name="id"/> from the group at <paramref name="offset"/> back offscreen.
         /// </summary>
         /// Part of @ref BattleEntityManager-GetReturnMethods "Get/Return methods"
         ///
@@ -402,12 +406,14 @@ namespace Battle.QSimulation.Game
         #region Public Compound Methods
 
         /// <summary>
-        /// Public method for making compounds.
+        /// Makes a compound entity based on <paramref name="template"/>.
         /// </summary>
         /// Part of @ref BattleEntityManager-CompoundMethods "Compound methods"
         ///
         /// Use @cref{RegisterCompound(Frame\, CompoundEntityTemplate)} to make and register a single compound entity.<br/>
         /// Use @cref{RegisterCompound(Frame\, CompoundEntityTemplate[])} to make and register a group of compound entities.<br/>
+        ///
+        /// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
         ///
         /// Used internally when registering compounds using RegisterCompound methods.<br/>
         /// @cref{RegisterCompound(Frame\, CompoundEntityTemplate)}<br/>
@@ -533,6 +539,8 @@ namespace Battle.QSimulation.Game
         /// Private helper method for getting the BattleEntityManagerDataQSingleton from the %Quantum %Frame.
         /// </summary>
         ///
+        /// See [{Entity Manager Data}](#page-concepts-entity-management-entity-manager-data) for more info.
+        ///
         /// <param name="f">Current simulation frame.</param>
         ///
         /// <returns>Pointer to the BattleEntityManagerData singleton.</returns>
@@ -553,6 +561,7 @@ namespace Battle.QSimulation.Game
         /// and <see cref="BattleEntityManager.Return(Frame, BattleEntityID, int)">Return(Frame, BattleEntityID, int)</see> methods.
         /// </summary>
         ///
+        /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.<br/>
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.
         ///
         /// Also used by the **Register** methods.<br/>
