@@ -15,7 +15,7 @@ public class OnlinePlayersPanelItem : MonoBehaviour
     [SerializeField] private GameObject _onlinePlayersPanel;
     [SerializeField] private AvatarFaceLoader _avatarFaceLoader;
     [SerializeField] private Image _onlineStatusIndicator;
-    [SerializeField] private TMPro.TextMeshProUGUI _nameText;
+    [SerializeField] private TextMeshProUGUI _nameText;
     [SerializeField] private ClanHeartColorSetter _clanHeart;
     [SerializeField] private Button _addfriendButton;
     [SerializeField] private TextMeshProUGUI _addFriendButtonText; 
@@ -50,7 +50,7 @@ public class OnlinePlayersPanelItem : MonoBehaviour
 
         if (_addfriendButton != null)
         {
-            _addfriendButton.gameObject.SetActive(true);
+            //_addfriendButton.gameObject.SetActive(true);
             _addfriendButton.onClick.RemoveAllListeners();
 
             if (isFriend)
@@ -61,12 +61,12 @@ public class OnlinePlayersPanelItem : MonoBehaviour
             else if (alreadyRequested)
             {
                 _addfriendButton.interactable = false;
-                _addFriendButtonText.text = "Kaveriyyntö lähetetty";
+                _addFriendButtonText.text = "KaveripyyntÃ¶ lÃ¤hetetty";
             }
             else
             {
                 _addfriendButton.interactable = true;
-                _addFriendButtonText.text = "Lisää kaveriksi";
+                _addFriendButtonText.text = "LisÃ¤Ã¤ kaveriksi";
 
                 _addfriendButton.onClick.AddListener(() =>
                 {

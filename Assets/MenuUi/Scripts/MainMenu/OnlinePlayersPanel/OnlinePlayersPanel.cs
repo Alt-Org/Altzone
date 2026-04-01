@@ -7,6 +7,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using System.Threading;
 using Assets.Altzone.Scripts.Model.Poco.Player;
+using System.Linq;
 
 
 public class OnlinePlayersPanel : AltMonoBehaviour
@@ -15,19 +16,27 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     private enum OnlinePlayersView
     {
         Clan,
-        All
+        All,
+        Friends
     }
 
 
     [SerializeField] public GameObject _onlinePlayersPanel;
     [SerializeField] private TMPro.TextMeshProUGUI _onlineTitle;
+    [SerializeField] private GameObject _onlinePlayersPage;
     [SerializeField] private RectTransform _onlinePlayersPanelContent;
+    [SerializeField] private GameObject _clanPlayersPage;
+    [SerializeField] private RectTransform _clanPlayersPanelContent;
+    [SerializeField] private GameObject _friendsPage;
+    [SerializeField] private RectTransform _friendsContent;
     [SerializeField] private ScrollRect _onlinePlayersPanelScrollView;
     [SerializeField] private Button _closeOnlinePlayersPanelButton;
     [SerializeField] private Button _openOnlinePlayersPanelButton;
     [SerializeField] private OnlinePlayersPanelItem _onlinePlayersPanelItemPrefab;
+    [SerializeField] private FriendlistItem _friendlistItemPrefab;
     [SerializeField] private Button _viewClanPlayersButton;
     [SerializeField] private Button _viewAllPlayersButton;
+    [SerializeField] private Button _viewFriendListButton;
 
     private OnlinePlayersView _currentView = OnlinePlayersView.Clan;
 
@@ -41,9 +50,10 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
     {
         _openOnlinePlayersPanelButton.onClick.AddListener(OpenOnlinePlayersPanel);
-        _closeOnlinePlayersPanelButton.onClick.AddListener(CloseOnlinePlayersPanel);
+        //_closeOnlinePlayersPanelButton.onClick.AddListener(CloseOnlinePlayersPanel);
         _viewClanPlayersButton.onClick.AddListener(() => SetView(OnlinePlayersView.Clan));
         _viewAllPlayersButton.onClick.AddListener(() => SetView(OnlinePlayersView.All));
+        _viewFriendListButton.onClick.AddListener(() => SetView(OnlinePlayersView.Friends));
 
         SetView(_currentView);
 
@@ -83,7 +93,27 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     private void SetView(OnlinePlayersView view)
     {
         _currentView = view;
-        UpdatePlayerList();
+        switch (_currentView)
+        {
+            case OnlinePlayersView.Clan:
+                _clanPlayersPage.SetActive(true);
+                _onlinePlayersPage.SetActive(false);
+                _friendsPage.SetActive(false);
+                UpdatePlayerList();
+                break;
+            case OnlinePlayersView.All:
+                _clanPlayersPage.SetActive(false);
+                _onlinePlayersPage.SetActive(true);
+                _friendsPage.SetActive(false);
+                UpdatePlayerList();
+                break;
+            case OnlinePlayersView.Friends:
+                _clanPlayersPage.SetActive(false);
+                _onlinePlayersPage.SetActive(false);
+                _friendsPage.SetActive(true);
+                StartCoroutine(UpdateFriendList());
+                break;
+        }
     }
 
 
@@ -94,8 +124,8 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
     private IEnumerator FetchFriendData() // Fetches friend list and sent requests before building the player list
     {
-        yield return StartCoroutine(ServerManager.Instance.GetFriendlist(list => _friendlist = list ?? new List<ServerFriendPlayer>()));
-        yield return StartCoroutine(ServerManager.Instance.GetFriendlistRequests(list => _friendRequests = list ?? new List<ServerFriendRequest>()));
+        yield return ServerManager.Instance.GetFriendlist(list => _friendlist = list ?? new List<ServerFriendPlayer>());
+        yield return ServerManager.Instance.GetFriendlistRequests(list => _friendRequests = list ?? new List<ServerFriendRequest>());
     }
     private IEnumerator BuildOnlineList(List<ServerOnlinePlayer> onlinePlayers)
     {
@@ -195,6 +225,54 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             {
                 item.gameObject.SetActive(false);
             }
+        }
+    }
+
+    private IEnumerator UpdateFriendList()
+    {
+        foreach(RectTransform gobject in _friendsContent)
+        {
+            Destroy(gobject.gameObject);
+        }
+
+        yield return new WaitForEndOfFrame();
+
+        foreach (var friend in _friendlist)
+        {
+            ServerPlayer serverPlayer = null;
+            bool timeout = false;
+
+            // Fetch friend profile from the server
+            StartCoroutine(ServerManager.Instance.GetOtherPlayerFromServer(friend._id, c => serverPlayer = c)); // Get friend data
+            StartCoroutine(WaitUntilTimeout(3, c => timeout = c));
+            yield return new WaitUntil(() => serverPlayer != null || timeout);
+
+            bool isOnline = ServerManager.Instance.OnlinePlayers.Any(o => o._id == friend._id); //Check online status
+
+            ClanLogo clanLogo = null;
+            AvatarVisualData avatarVisualData = null;
+
+            if (serverPlayer != null)
+            {
+                clanLogo = serverPlayer.clanLogo;
+                avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(new AvatarData(serverPlayer.name, serverPlayer.avatar));
+            }
+            // Instantiate UI item for the friend
+            FriendlistItem newItem = Instantiate(_friendlistItemPrefab, _friendsContent);
+            newItem.Initialize(
+                 serverPlayer?.name ?? friend._id,// Use name if available, otherwise show ID
+                 avatarVisualData: avatarVisualData,
+                 clanLogo: clanLogo,
+                 isOnline: isOnline,
+                 onRemoveClick: () =>
+                 {
+                     // Remove friend 
+                     StartCoroutine(ServerManager.Instance.FriendDelete(friend._id, success =>
+                     {
+                         if (success)
+                             StartCoroutine(UpdateFriendList());
+                     }));
+                 });
         }
     }
 
