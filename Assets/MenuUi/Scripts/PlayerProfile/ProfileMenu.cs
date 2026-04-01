@@ -36,8 +36,8 @@ public class ProfileMenu : AltMonoBehaviour
     [SerializeField] private TextMeshProUGUI _playerPlayStyleText;
     [SerializeField] private TextMeshProUGUI _playerClanNameText;
     [SerializeField] private TextMeshProUGUI _rolesErrorMessage;
-    [SerializeField] private TextMeshProUGUI _TimePlayedText;
-    [SerializeField] private TextMeshProUGUI _activityText;
+    //[SerializeField] private TextMeshProUGUI _TimePlayedText;
+    //[SerializeField] private TextMeshProUGUI _activityText;
     [SerializeField] private TextMeshProUGUI _LosesText;
     [SerializeField] private TextMeshProUGUI _WinsText;
     [SerializeField] private TextMeshProUGUI _CarbonText;
@@ -50,6 +50,10 @@ public class ProfileMenu : AltMonoBehaviour
     [SerializeField] private Transform _characterOptionsContent;
     [SerializeField] private GameObject _characterOptionPrefab;
     [SerializeField] private TextMeshProUGUI _characterSelectionMessage;*/
+
+    [Header("Favorite Defence")]
+    [SerializeField] private TextMeshProUGUI _favoriteDefenceWins;
+    [SerializeField] private TextMeshProUGUI _favoriteDefenceBattles;
 
     [Header("Avatar")]
     [SerializeField] private AvatarLoader _avatarLoaderInfoPage;
@@ -156,14 +160,14 @@ public class ProfileMenu : AltMonoBehaviour
         countToCarbon += Time.deltaTime;
 
         // Peliaika
-        if (minuteCount < 1)
+        /*if (minuteCount < 1)
         {
             _TimePlayedText.text = $"Alle 1 min";
         }
         else
         {
             _TimePlayedText.text = $"{minuteCount} min";
-        }
+        }*/
 
         // Hiilijalanjäljen näyttäminen g tai kg
         float carbonDisplay = CarbonFootprint.CarbonCount;
@@ -236,7 +240,7 @@ public class ProfileMenu : AltMonoBehaviour
     {
         _playerName.text = loggedOutPlayerText;
         _playerClanNameText.text = _loggedOutplayerClanNameText;
-        _TimePlayedText.text = loggedOutTimeText;
+        //_TimePlayedText.text = loggedOutTimeText;
         _LosesText.text = loggedOutLosesText;
         _WinsText.text = loggedOutWinsText;
         _CarbonText.text = loggedOutCarbonText;
@@ -626,11 +630,21 @@ public class ProfileMenu : AltMonoBehaviour
 
         _playerName.text = _playerData.Name;
         RefreshPlayerPlayStyleUI();
-        _activityText.text = _playerData.points.ToString();
+        //_activityText.text = _playerData.points.ToString();
 
         if (_playerData.stats != null)
         {
-            _WinsText.text = _playerData.stats.wonBattles.ToString();
+            int wins = _playerData.stats.wonBattles;
+            int played = _playerData.stats.playedBattles;
+            int losses = Mathf.Max(0, played - wins);
+
+            _WinsText.text = wins.ToString();
+            _LosesText.text = losses.ToString();
+        }
+        else
+        {
+            _WinsText.text = "0";
+            _LosesText.text = "0";
         }
 
         /*PlayerCharacterPrototype favoriteDefence = PlayerCharacterPrototypes.GetCharacter(_playerData.FavoriteDefenceID);
