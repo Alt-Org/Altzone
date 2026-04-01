@@ -43,21 +43,21 @@ public class ProfileMenu : AltMonoBehaviour
     [SerializeField] private TextMeshProUGUI _CarbonText;
 
     [Header("Selectors")]
-    [SerializeField] private GameObject _answerOptionPrefab;
+    /*[SerializeField] private GameObject _answerOptionPrefab;
     [SerializeField] private CharacterResponseList _characterResponseList;
     [SerializeField] private Image _favoriteCharacterImage;
     [SerializeField] private GameObject _characterOptionsPopup;
     [SerializeField] private Transform _characterOptionsContent;
     [SerializeField] private GameObject _characterOptionPrefab;
-    [SerializeField] private TextMeshProUGUI _characterSelectionMessage;
+    [SerializeField] private TextMeshProUGUI _characterSelectionMessage;*/
 
     [Header("Avatar")]
     [SerializeField] private AvatarLoader _avatarLoaderInfoPage;
     [SerializeField] private AvatarFaceLoader _avatarFaceLoaderTabline;
 
     [Header("Buttons")]
-    [SerializeField] private Button _openFavoriteDefenceSelection;
-    [SerializeField] private GameObject _closePopupAreaButton;
+    //[SerializeField] private Button _openFavoriteDefenceSelection;
+    //[SerializeField] private GameObject _closePopupAreaButton;
     [SerializeField] private GameObject _popupOverlay;
     [SerializeField] private GameObject[] _playStyleButtons;
     [SerializeField] private Button _avatarPageTabButton;
@@ -133,15 +133,15 @@ public class ProfileMenu : AltMonoBehaviour
     private PlayerData _playerData = null;
     private ClanData _clanData = null;
 
-    private const string _DarkOrange = "#FF6A00";
-    private const string _Orange = "#FFA100";
+    //private const string _DarkOrange = "#FF6A00";
+    //private const string _Orange = "#FFA100";
 
     private ServerPlayer _player;
 
-    private const string SelectionMessageDefault = "Paina tästä valitaksesi...";
-    private const string SelectionMessageDefaultOther = "Ei valittu";
+    //private const string SelectionMessageDefault = "Paina tästä valitaksesi...";
+    //private const string SelectionMessageDefaultOther = "Ei valittu";
 
-    private string _tempFavoriteDefenceID;
+    //private string _tempFavoriteDefenceID;
 
     private bool _otherPlayerProfile = false;
 
@@ -211,10 +211,10 @@ public class ProfileMenu : AltMonoBehaviour
         else
             SetPlayerProfileValues(true);
 
-        if (!_otherPlayerProfile)
+        /*if (!_otherPlayerProfile)
         {
             AddAnswerOptions();
-        }
+        }*/
     }
     private void OnDisable()
     {
@@ -222,8 +222,8 @@ public class ProfileMenu : AltMonoBehaviour
         SetCarbonPopupState(false);
         SetFriendRequestPopupState(false);
 
-        _characterOptionsPopup.SetActive(false);
-        _closePopupAreaButton.SetActive(false);
+        //_characterOptionsPopup.SetActive(false);
+        //_closePopupAreaButton.SetActive(false);
         ServerManager.OnLogInStatusChanged -= SetPlayerProfileValues;
 
         if (_otherPlayerProfile)
@@ -245,7 +245,7 @@ public class ProfileMenu : AltMonoBehaviour
     /// <summary>
     /// Adds the answer options and opening/closing functionality to the selector popups
     /// </summary>
-    private void AddAnswerOptions()
+    /*private void AddAnswerOptions()
     {
 
         _closePopupAreaButton.GetComponentInChildren<Button>().onClick.AddListener(() =>
@@ -282,14 +282,14 @@ public class ProfileMenu : AltMonoBehaviour
                 _closePopupAreaButton.SetActive(false);
             });
         }
-    }
+    }*/
 
     private void SaveChanges()
     {
         if (_playerData == null)
             return;
 
-        _playerData.FavoriteDefenceID = _tempFavoriteDefenceID;
+        //_playerData.FavoriteDefenceID = _tempFavoriteDefenceID;
 
         if (_editNameInputField != null && !_otherPlayerProfile)
         {
@@ -633,7 +633,7 @@ public class ProfileMenu : AltMonoBehaviour
             _WinsText.text = _playerData.stats.wonBattles.ToString();
         }
 
-        PlayerCharacterPrototype favoriteDefence = PlayerCharacterPrototypes.GetCharacter(_playerData.FavoriteDefenceID);
+        /*PlayerCharacterPrototype favoriteDefence = PlayerCharacterPrototypes.GetCharacter(_playerData.FavoriteDefenceID);
         Image image = _favoriteCharacterImage;
         var tempColor = image.color;
 
@@ -655,7 +655,7 @@ public class ProfileMenu : AltMonoBehaviour
             tempColor.a = 0f;
             image.color = tempColor;
             _characterSelectionMessage.text = _otherPlayerProfile ? SelectionMessageDefaultOther : SelectionMessageDefault;
-        }
+        }*/
 
         if (_otherPlayerProfile)
         {
@@ -738,7 +738,7 @@ public class ProfileMenu : AltMonoBehaviour
     {
         if (_otherPlayerProfile)
         {
-            _openFavoriteDefenceSelection.interactable = false; 
+            //_openFavoriteDefenceSelection.interactable = false; 
             foreach (GameObject button in _playStyleButtons)
             {
                 button.SetActive(false);
@@ -746,10 +746,10 @@ public class ProfileMenu : AltMonoBehaviour
         }
         else
         {
-            if (_openFavoriteDefenceSelection != null)
+            /*if (_openFavoriteDefenceSelection != null)
             {
                 _openFavoriteDefenceSelection.interactable = true;
-            }
+            }*/
 
             foreach (GameObject button in _playStyleButtons)
             {
