@@ -57,6 +57,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
         ServerManager.OnOnlinePlayersChanged += BuildOnlinePlayerList;
         OverlayPanelCheck.OnToggleOnlinePlayerList += ToggleOnlinePlayersPanel;
+        FriendlistItem.OnContentRefreshRequested += RefreshListStatus;
         ToggleOnlinePlayersPanel(false);
 
     }
@@ -73,6 +74,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     {
         ServerManager.OnOnlinePlayersChanged -= BuildOnlinePlayerList;
         OverlayPanelCheck.OnToggleOnlinePlayerList -= ToggleOnlinePlayersPanel;
+        FriendlistItem.OnContentRefreshRequested -= RefreshListStatus;
     }
 
     public void ToggleOnlinePlayersPanel(bool? value)
@@ -238,7 +240,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             {
                 FriendlistItem requestItem = Instantiate(_friendlistItemPrefab, _friendsContent); // Instantiate a new UI item for each friend request
 
-                requestItem.Initialize(
+                StartCoroutine(requestItem.Initialize(
                     request.friend.name ?? request.friend._id,
                     isOnline: false,
                     onAcceptClick: () =>
@@ -265,7 +267,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                             }
                         ));
                     }
-                );
+                ));
             }
         }
 
@@ -291,7 +293,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             }
             // Instantiate UI item for the friend
             FriendlistItem newItem = Instantiate(_friendlistItemPrefab, _friendsContent);
-            newItem.Initialize(
+            StartCoroutine(newItem.Initialize(
                  serverPlayer?.name ?? friend._id,// Use name if available, otherwise show ID
                  avatarVisualData: avatarVisualData,
                  clanLogo: clanLogo,
@@ -304,8 +306,19 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                          if (success)
                              StartCoroutine(UpdateFriendList());
                      }));
-                 });
+                 }));
         }
+    }
+
+    private void RefreshListStatus()
+    {
+        //StartCoroutine(RefreshListStatusCoroutine());
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_friendsContent);
+    }
+    private IEnumerator RefreshListStatusCoroutine()
+    {
+        yield return new WaitForEndOfFrame();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_friendsContent);
     }
 
 }

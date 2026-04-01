@@ -1,17 +1,20 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
-using System;
 using MenuUi.Scripts.AvatarEditor;
+using Newtonsoft.Json.Linq;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class FriendlistItem : MonoBehaviour
 
 {
+    [SerializeField] private RectTransform _topPanel;
+    [SerializeField] private RectTransform _bottomPanel;
     [SerializeField] private AvatarFaceLoader _avatarFaceLoader;
     [SerializeField] private Image _onlineStatusIndicator;
     [SerializeField] private TextMeshProUGUI _nameText;
@@ -21,9 +24,24 @@ public class FriendlistItem : MonoBehaviour
     [SerializeField] private Button _declineFriendButton;
 
     private bool _isOnline = true;
-    
-   
-    public void Initialize(string name, AvatarVisualData avatarVisualData = null, ClanLogo clanLogo = null, bool isOnline = true, Action onRemoveClick = null, Action onAcceptClick = null, Action onDeclineClick = null)
+
+    public delegate void FriendPanelPressed(FriendlistItem handler);
+    public static event FriendPanelPressed OnPanelPressed;
+
+    public delegate void ContentRefreshRequested();
+    public static event ContentRefreshRequested OnContentRefreshRequested;
+
+    private void OnEnable()
+    {
+        OnPanelPressed += ButtonPressHandle;
+    }
+    private void OnDisable()
+    {
+        OnPanelPressed -= ButtonPressHandle;
+        UpdateSize(false);
+    }
+
+    public IEnumerator Initialize(string name, AvatarVisualData avatarVisualData = null, ClanLogo clanLogo = null, bool isOnline = true, Action onRemoveClick = null, Action onAcceptClick = null, Action onDeclineClick = null)
    {
         _nameText.text = name;
         _isOnline = isOnline;
@@ -72,7 +90,40 @@ public class FriendlistItem : MonoBehaviour
             });
         }
 
+        GetComponent<Button>().onClick.AddListener(() => UpdateSize());
+
+        yield return new WaitForEndOfFrame();
+        UpdateSize(false);
     }
+
+    private void ButtonPressHandle(FriendlistItem handler)
+    {
+        UpdateSize(handler == this);
+    }
+
+    private void UpdateSize()
+    {
+        //StartCoroutine(UpdateSizeCoroutine(value));
+        OnPanelPressed?.Invoke(this);
+    }
+
+    public void UpdateSize(bool value)
+    {
+        if (!value)
+        { 
+            GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().sizeDelta.x, Math.Min(GetComponent<RectTransform>().sizeDelta.x/5,100f));
+            _topPanel.anchorMin= new(0, 0f);
+            _bottomPanel.gameObject.SetActive(false);
+        }
+        else
+        {
+            GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().sizeDelta.x, Math.Min(GetComponent<RectTransform>().sizeDelta.x / 5, 100f) * 2);
+            _topPanel.anchorMin = new(0, 0.5f);
+            _bottomPanel.gameObject.SetActive(true);
+        }
+        OnContentRefreshRequested?.Invoke();
+    }
+
     private void UpdateOnlineStatusIndicator()
     {
         _onlineStatusIndicator.color = _isOnline ? Color.green : Color.red;
