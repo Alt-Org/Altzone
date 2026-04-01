@@ -309,10 +309,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _audioCategory: 
+  _audioCategory: MainMenu
   _categoryType: 0
-  _audioName: 
-  _playType: 0
+  _audioName: NavButton4
+  _playType: 1
 --- !u!1 &1870839713232346230
 GameObject:
   m_ObjectHideFlags: 0
@@ -4570,6 +4570,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0.0000026912458
+      objectReference: {fileID: 0}
+    - target: {fileID: 8400221520594793379, guid: 82e1fc75e8612cc4cad95776720d6c2a,
+        type: 3}
+      propertyPath: _educationCategoryType
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8400221520594793379, guid: 82e1fc75e8612cc4cad95776720d6c2a,
+        type: 3}
+      propertyPath: _educationCategoryCultureType
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8476621660179101015, guid: 82e1fc75e8612cc4cad95776720d6c2a,
         type: 3}

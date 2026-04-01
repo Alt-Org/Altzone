@@ -24,5 +24,6 @@ var _quantum_8_code_gen_8_events_8cs =
     [ "Quantum.EventBattleCharacterTakeDamage", "class_quantum_1_1_event_battle_character_take_damage.html", "class_quantum_1_1_event_battle_character_take_damage" ],
     [ "Quantum.EventBattleShieldTakeDamage", "class_quantum_1_1_event_battle_shield_take_damage.html", "class_quantum_1_1_event_battle_shield_take_damage" ],
     [ "Quantum.EventBattleGiveUpStateChange", "class_quantum_1_1_event_battle_give_up_state_change.html", "class_quantum_1_1_event_battle_give_up_state_change" ],
+    [ "Quantum.EventBattleStoneCharacterPlayHitAnimation", "class_quantum_1_1_event_battle_stone_character_play_hit_animation.html", "class_quantum_1_1_event_battle_stone_character_play_hit_animation" ],
     [ "Quantum.EventBattleDebugOnScreenMessage", "class_quantum_1_1_event_battle_debug_on_screen_message.html", "class_quantum_1_1_event_battle_debug_on_screen_message" ]
 ];

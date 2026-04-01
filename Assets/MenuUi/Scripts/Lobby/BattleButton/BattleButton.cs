@@ -154,11 +154,8 @@ namespace MenuUi.Scripts.Lobby.BattleButton
                 gameTypeOption.SetSelected(selected);
             }
 
-            // Opening battle popup after selecting a game type (only when requested)
-            if (firePopup)
-            {
-                SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
-            }
+            // Opening battle popup after selecting a game type
+            //SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
         }
 
         private void ChangeLanguage(SettingsCarrier.LanguageType language)

@@ -604,7 +604,7 @@ namespace MenuUI.Scripts.SoulHome
         public void PlaceFurniture(Vector2 hitPoint, bool hover)
         {
             Vector2 checkPoint;
-            Vector2Int size = _selectedFurniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
+            Vector3Int size = _selectedFurniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
             if(hitPoint.Equals(Vector2.negativeInfinity)) hitPoint = _selectedFurniture.transform.position + new Vector3(0, 0.001f);
 
             Ray ray = new(transform.position, (Vector3)hitPoint - transform.position);
@@ -709,7 +709,9 @@ namespace MenuUI.Scripts.SoulHome
             _selectedFurniture.GetComponent<FurnitureHandling>().TempSlot = null;
             if (_selectedFurniture.GetComponent<FurnitureHandling>().Slot != null) ChangedFurnitureList.Add(_selectedFurniture);
             else if(ChangedFurnitureList.Contains(_selectedFurniture)) ChangedFurnitureList.Remove(_selectedFurniture);
-            if(_selectedFurniture.GetComponent<FurnitureHandling>().Slot == null)
+            int prevRoomId = (_selectedFurniture?.transform.parent.GetComponent<FurnitureSlot>() != null) ? _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>().roomId : -1;
+            if (prevRoomId >= 0) _rooms.transform.GetChild(prevRoomId).GetChild(0).GetComponent<RoomData>().ClearValidity();
+            if (_selectedFurniture.GetComponent<FurnitureHandling>().Slot == null)
             {
                 Destroy(_selectedFurniture);
                 SelectedFurniture = null;
