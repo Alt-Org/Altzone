@@ -114,23 +114,21 @@ public class ProfileMenu : AltMonoBehaviour
     [SerializeField] private GameObject _carbonEmissionPopup;
     [SerializeField] private Button _closeCarbonPopupButton;
 
-    public TextMeshProUGUI textMeshPro;
-
     private string _tempPlayerName;
     private int _tempPlayStyleIndex;
 
-    private int tempLocalSaveTime;
-    private float tempLocalSaveSecondsTime;
-    private float tempLocalSaveToCarbon;
-    private float tempLocalSaveCarbon;
+    //private int tempLocalSaveTime;
+    //private float tempLocalSaveSecondsTime;
+    //private float tempLocalSaveToCarbon;
+    //private float tempLocalSaveCarbon;
 
     private int minuteCount;
     private float secondsCount;
-    private float countToCarbon;
-    private float carbonCount;
+    //private float countToCarbon;
+    //private float carbonCount;
 
     private static string _clanID = string.Empty;
-    private string _url = "https://altzone.fi/clans/" + _clanID;
+    //private string _url = "https://altzone.fi/clans/" + _clanID;
 
     private float kgCarbon => CarbonFootprint.CarbonCount / 1000f;
 
@@ -157,7 +155,7 @@ public class ProfileMenu : AltMonoBehaviour
     private void updateTime()
     {
         secondsCount += Time.deltaTime;
-        countToCarbon += Time.deltaTime;
+        //countToCarbon += Time.deltaTime;
 
         // Peliaika
         /*if (minuteCount < 1)
@@ -309,8 +307,8 @@ public class ProfileMenu : AltMonoBehaviour
 
     private void Start()
     {
-        if (_ClanURLButton != null)
-            _ClanURLButton.onClick.AddListener(OpenClanURL);
+        /*if (_ClanURLButton != null)
+            _ClanURLButton.onClick.AddListener(OpenClanURL);*/
 
         if (_openViewedPlayerClanButton != null)
             _openViewedPlayerClanButton.onClick.AddListener(OpenViewedPlayerClanProfile);
@@ -351,7 +349,7 @@ public class ProfileMenu : AltMonoBehaviour
     }
 
     // Avaa klaanin URL
-    private void OpenClanURL()
+    /*private void OpenClanURL()
     {
         if (_clanData != null && !string.IsNullOrEmpty(_clanID))
         {
@@ -363,7 +361,7 @@ public class ProfileMenu : AltMonoBehaviour
         {
             Debug.LogError("Klaanitiedot puuttuvat.");
         }
-    }
+    }*/
 
     private void RefreshTodaysEmotionUI()
     {
@@ -399,21 +397,6 @@ public class ProfileMenu : AltMonoBehaviour
 
         Emotion todayEmotion = emotions[dayOffset];
         _todaysEmotionImage.sprite = GetEmotionSprite(todayEmotion);
-    }
-
-    private int GetCurrentWeekdayIndex()
-    {
-        return DateTime.Now.DayOfWeek switch
-        {
-            DayOfWeek.Monday => 0,
-            DayOfWeek.Tuesday => 1,
-            DayOfWeek.Wednesday => 2,
-            DayOfWeek.Thursday => 3,
-            DayOfWeek.Friday => 4,
-            DayOfWeek.Saturday => 5,
-            DayOfWeek.Sunday => 6,
-            _ => 0
-        };
     }
 
     private Sprite GetEmotionSprite(Emotion emotion)
@@ -680,8 +663,6 @@ public class ProfileMenu : AltMonoBehaviour
             _weekEmotions.ValuesToWeekEmotions(_playerData);
         }
 
-        RefreshTodaysEmotionUI();
-
         if (_otherPlayerProfile)
         {
             _todaysEmotionImage.sprite = _blankEmotionSprite;
@@ -727,7 +708,7 @@ public class ProfileMenu : AltMonoBehaviour
                 _playerClanNameText.text = _clanData.Name;
                 RefreshClanHeartUI(_clanData);
                 _clanID = _playerData.ClanId;
-                _url = "https://altzone.fi/clans/" + _playerData.ClanId;
+                //_url = "https://altzone.fi/clans/" + _playerData.ClanId;
 
                 RefreshPlayerRoleUI();
                 _rolesErrorMessage.text = "";
