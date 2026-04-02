@@ -29,8 +29,8 @@ public class MessageReactionResize : MonoBehaviour
 
         ///Updates the width of the object depending how many reactions there still is and the gridlayout's contraintCount
         if (activeChildren <= _gridLayout.constraintCount)
-        _rectTranformParent.sizeDelta = new Vector2(Mathf.Clamp(activeChildren * 85, 85, _gridLayout.constraintCount * 85), 85);
-        else _rectTranformParent.sizeDelta = new Vector2(Mathf.Clamp(activeChildren * 85, 85, _gridLayout.constraintCount * 85), 170);
+        _rectTranformParent.sizeDelta = new Vector2(Mathf.Clamp(activeChildren * 100, 100, _gridLayout.constraintCount * 100), 100);
+        else _rectTranformParent.sizeDelta = new Vector2(Mathf.Clamp(activeChildren * 100, 100, _gridLayout.constraintCount * 100), 200);
 
         /*//Changes the visual colors if user somehow has put all the reactions in (not in use yet)
          if (i < 0)

@@ -224,22 +224,21 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
             chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler));
             chatReactionHandler.LongClickButton.onLongClick.AddListener(() => ShowUsers(chatReactionHandler));
-            UpdateReactionStatus();
-            PickCommonReactions();
-            LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
-
             StartCoroutine(GetPlayerData(player =>
             {
                 if (player != null)
                     if (player.Id == _reaction.sender_id)
                     {
                         chatReactionHandler.Select();
-
                         //Removes the selected Mood from the list  by checking what sprite is being used
                         _reactionList[i].Selected = true;
                     }
-                        
+
             }));
+            UpdateReactionStatus();
+            PickCommonReactions();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
+
             _selectedMessage.SetMessageInactive();
 
             gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
@@ -267,7 +266,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
             {
                 if(i.Mood == reactionHandler.Mood)
                 {
-                    //Adds the set sprite back in to reaction selection
+                        //Adds the set sprite back in to reaction selection
                     i.Selected = false;
                 }
             }
