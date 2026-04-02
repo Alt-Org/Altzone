@@ -12,6 +12,7 @@ using Altzone.Scripts.Chat;
 using Altzone.Scripts.Model.Poco.Player;
 using System.Linq;
 using MenuUi.Scripts.Window;
+using System;
 
 public class Chat : AltMonoBehaviour
 {
@@ -110,6 +111,8 @@ public class Chat : AltMonoBehaviour
     public CharacterResponseList characterResponseList;
     public Mood currentMood = Mood.Neutral;
     public GameObject _responsesData;
+
+    private bool _miniMizeReaction = true, _miniMizeQuickMessage = true;
 
     public enum ChatType //What Channel we are in
     {
@@ -259,8 +262,9 @@ public class Chat : AltMonoBehaviour
                 currentMood = Mood.Love;
                 gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Love);
             }
+            _miniMizeQuickMessage = false;
             MinimizeOptions();
-            AddResponses();
+            //AddResponses();
         }
     }
 
@@ -294,7 +298,6 @@ public class Chat : AltMonoBehaviour
 
     public void SendChatMessage()
     {
-        Debug.LogWarning("FIND ME " + currentMood);
         // Lähettää käyttäjän syöttämän viestin aktiiviseen chattiin
         if (_currentContent == null)
         {
@@ -344,6 +347,7 @@ public class Chat : AltMonoBehaviour
             ChatResponseObject convertedResponse = messageList.FirstOrDefault(c => c.ResponseId == message.ResponseId);
             string textFromButton = convertedResponse.Response;
             _reactionAvailable = true;
+            _miniMizeReaction = false;
             MinimizeOptions();
             _inputField.text = textFromButton;
         }
@@ -592,21 +596,25 @@ public class Chat : AltMonoBehaviour
     /// </summary>
     public void MinimizeOptions()
     {
-        _quickMessages.SetActive(false);
-        ///This is so that the reaction comes back being useable
-        ///To give user a visual interpretation that they cant put a reaction till there's been text inserted
-        foreach (Transform child in _InputArea.transform)
+
+        if (_miniMizeQuickMessage)
         {
-            child.gameObject.SetActive(true);
+        _quickMessages.SetActive(false);
+        _InputAreaArrow.transform.rotation = Quaternion.Euler(0f, 0f, 180f);
         }
 
         // Deactivate all but last used button
+
+        if(_miniMizeReaction)
         foreach (var button in _sendButtons)
         {
             button.SetActive(_lastSendButtonUsed == button);
         }
         _sendButtonsAreClosed = true;
-        _InputAreaArrow.transform.rotation = Quaternion.Euler(0f, 0f, 180f);
+
+
+        _miniMizeQuickMessage = true;
+        _miniMizeReaction = true;
     }
 
     /// <summary>
