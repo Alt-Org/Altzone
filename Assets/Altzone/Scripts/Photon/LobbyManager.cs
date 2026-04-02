@@ -96,6 +96,7 @@ namespace Altzone.Scripts.Lobby
         #region Private Fields
 
         private const long STARTDELAY = 2000;
+        // Max time the leader waits before filling remaining Random2v2 slots with bots.
         private const float MatchmakingTimeoutSeconds = 30f;
         // Timeout for followers who join a matchmaking room: if not enough human players join within this interval, auto-leave and requeue.
         private const float MatchmakingJoinTimeoutSeconds = 5f;
@@ -817,6 +818,10 @@ namespace Altzone.Scripts.Lobby
             }
         }
 
+        /// <summary>
+        /// Leader-side matchmaking entry point.
+        /// Flow: lock current room -> gather teammate/position context -> notify followers -> leave to lobby -> join or create a matchmaking room.
+        /// </summary>
         private IEnumerator StartMatchmaking(GameType gameType, bool broadcastRoomChange = true)
         {
             // remember which game type we're matchmaking for so failure handlers can requeue
@@ -876,7 +881,7 @@ namespace Altzone.Scripts.Lobby
             CurrentRooms = null;
             PhotonRealtimeClient.LeaveRoom();
 
-            // Waiting until in lobby and that current room list has rooms
+            // Wait for lobby and initial room listing; room search below depends on CurrentRooms.
             yield return new WaitUntil(() => PhotonRealtimeClient.InLobby && CurrentRooms != null);
 
             // Searching for suitable room and attempting to join each candidate.
@@ -945,7 +950,7 @@ namespace Altzone.Scripts.Lobby
                 }
             }
 
-            // If no existing room was successfully joined, request server-side join-or-create
+            // If no candidate worked, let backend pick or create a suitable room atomically.
             if (!joinedExistingRoom)
             {
                 switch (gameType)
@@ -959,11 +964,11 @@ namespace Altzone.Scripts.Lobby
                 }
             }
 
-            // Waiting until client is in room
+            // Block until our matchmaking-room join completes.
             yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
 
-            // Reconcile near-simultaneous matchmaking room creations:
-            // If there are other matchmaking rooms for the same game type, try to move into a single shared room.
+            // Reconcile split groups caused by near-simultaneous room creation.
+            // Strategy: deterministically converge toward one shared room to improve fill/start speed.
             try
             {
                 if (PhotonRealtimeClient.CurrentRoom != null && PhotonRealtimeClient.CurrentRoom.CustomProperties != null
@@ -1140,6 +1145,10 @@ namespace Altzone.Scripts.Lobby
 
         }
 
+        /// <summary>
+        /// Master-side wait loop that decides when a matchmaking room can start.
+        /// Handles: missing expected users -> short requeue, long Random2v2 wait -> bot backfill, then start countdown/gameplay.
+        /// </summary>
         private IEnumerator WaitForMatchmakingPlayers()
         {
             try
@@ -1231,7 +1240,8 @@ namespace Altzone.Scripts.Lobby
                     }
                     catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: diagnostics failed: {ex.Message}"); }
 
-                    // Short timeout branch: expected players were configured, but at least one is still missing.
+                    // Short-timeout branch for queue-formed groups: if expected users do not arrive quickly,
+                    // cancel this start attempt and requeue everyone together.
                     if (!botBackfillApplied
                         && Time.time - waitStartTime >= MatchmakingJoinTimeoutSeconds
                         && expectedPlayersRequired
@@ -1316,7 +1326,8 @@ namespace Altzone.Scripts.Lobby
                         }
                     }
 
-                    // If leader advertised expected users and they are present -> apply bot backfill immediately
+                    // Fast-path: expected followers arrived, so fill any remaining slots with bots immediately
+                    // instead of waiting the full matchmaking timeout.
                     if (!botBackfillApplied && currentGameType == GameType.Random2v2)
                     {
                         bool appliedEarly = false;
@@ -1350,6 +1361,7 @@ namespace Altzone.Scripts.Lobby
                         }
                     }
 
+                    // Queue-formed solo room already waited in queue; skip duplicated long botfill wait.
                     float effectiveBotfillTimeoutSeconds = MatchmakingTimeoutSeconds;
                     try
                     {
@@ -1511,8 +1523,8 @@ namespace Altzone.Scripts.Lobby
             }
         }
 
-        // Watcher coroutine for non-master clients that join a matchmaking room.
-        // If the game countdown hasn't started within `timeoutSeconds`, leave and requeue.
+        // Follower safety-net: if countdown does not begin soon after joining matchmaking,
+        // leave and requeue to avoid getting stuck in a stale room.
         private IEnumerator MatchmakingJoinWatcher(GameType gameType, float timeoutSeconds)
         {
             try
@@ -1561,6 +1573,10 @@ namespace Altzone.Scripts.Lobby
             }
         }
 
+        /// <summary>
+        /// Follower-side room handoff after RoomChangeRequested.
+        /// Join priority: explicit leader room name -> leader via friend lookup -> best matchmaking fallback -> join/create fallback.
+        /// </summary>
         private IEnumerator FollowLeaderToNewRoom(string leaderUserId, string leaderRoomName = null)
         {
             try
@@ -4305,7 +4321,7 @@ namespace Altzone.Scripts.Lobby
                 }
                 catch { }
 
-                // If we deferred returning to the LobbyRoom because the master left,
+                // If we deferred returning to the MainMenu because the master left,
                 // perform the UI return now that master switch has completed (for non-master clients).
                 try
                 {

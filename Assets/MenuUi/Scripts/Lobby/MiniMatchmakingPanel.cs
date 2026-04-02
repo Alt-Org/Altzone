@@ -140,6 +140,7 @@ namespace MenuUi.Scripts.Lobby
             LobbyManager.OnGameStartCancelled -= OnGameStartCancelled;
             LobbyManager.OnRoomLeaderChanged -= SetCancelButton;
             LobbyManager.OnFailedToStartMatchmakingGame -= OnFailedToStartMatchmakingGame;
+            InLobbyController.OnPopupContentsInstanceAssigned -= OnPopupContentsRegistered;
 
             if (_cancelButton != null) _cancelButton.onClick.RemoveAllListeners();
             if (_panelButton != null) _panelButton.onClick.RemoveAllListeners();
@@ -178,6 +179,7 @@ namespace MenuUi.Scripts.Lobby
 
         private void OnPopupContentsRegistered(GameObject popup)
         {
+            if (!this) return;
             if (popup != null && _battlePopup == null)
             {
                 _battlePopup = popup;
