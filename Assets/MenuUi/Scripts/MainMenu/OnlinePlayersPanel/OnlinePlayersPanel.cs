@@ -2,13 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using Assets.Altzone.Scripts.Model.Poco.Game;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Window;
+using Prg.Scripts.Common;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
@@ -59,7 +60,6 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         OverlayPanelCheck.OnToggleOnlinePlayerList += ToggleOnlinePlayersPanel;
         FriendlistItem.OnContentRefreshRequested += RefreshListStatus;
         ToggleOnlinePlayersPanel(false);
-
     }
 
     private void OnEnable()
@@ -76,15 +76,54 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         OverlayPanelCheck.OnToggleOnlinePlayerList -= ToggleOnlinePlayersPanel;
         FriendlistItem.OnContentRefreshRequested -= RefreshListStatus;
     }
+    private bool _closing = false;
+
+    private void LateUpdate()
+    {
+        if(ClickStateHandler.GetClickState() is ClickState.Start)
+        {
+            if (_onlinePlayersPanel.activeSelf)
+            {
+                if(!CheckIfPanel()) _closing = true;
+            }
+        }
+        if(ClickStateHandler.GetClickState() is ClickState.End && _closing)
+        {
+            if (!CheckIfPanel()) Hide();
+            _closing = false;
+        }
+    }
+
+    private bool CheckIfPanel()
+    {
+        List<RaycastResult> results = new List<RaycastResult>();
+        PointerEventData data = new(EventSystem.current);
+        data.position = ClickStateHandler.GetClickPosition();
+        if (data.position == Vector2.negativeInfinity) return false;
+        var modules = RaycasterManager.GetRaycasters();
+        foreach (var module in modules)
+        {
+            module.Raycast(data, results);
+        }
+        foreach (RaycastResult result in results)
+        {
+            if (result.gameObject == _onlinePlayersPanel) return true;
+        }
+        return false;
+    }
 
     public void ToggleOnlinePlayersPanel(bool? value)
     {
-        if(value == null)
-            _onlinePlayersPanel.SetActive(!_onlinePlayersPanel.activeSelf);
-        else if ((bool)value)
-            _onlinePlayersPanel.SetActive(true);
+        value ??= (!_onlinePlayersPanel.activeSelf);
+
+        if ((bool)value)
+        {
+            OpenPanel();
+        }
         else
-            _onlinePlayersPanel.SetActive(false);
+        {
+            Hide();
+        }
     }
 
     private void SetView(OnlinePlayersView view)
@@ -315,10 +354,14 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         //StartCoroutine(RefreshListStatusCoroutine());
         LayoutRebuilder.ForceRebuildLayoutImmediate(_friendsContent);
     }
-    private IEnumerator RefreshListStatusCoroutine()
+
+    public void OpenPanel()
     {
-        yield return new WaitForEndOfFrame();
-        LayoutRebuilder.ForceRebuildLayoutImmediate(_friendsContent);
+        _onlinePlayersPanel.SetActive(true);
     }
 
+    public void Hide()
+    {
+        _onlinePlayersPanel.SetActive(false);
+    }
 }
