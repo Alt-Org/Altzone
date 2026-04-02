@@ -176,8 +176,8 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         }
 
         _taskDebugID.text = _taskData.Id.ToString();
-        _taskPoints.text = _taskData.Points.ToString();
-        _taskCoins.text = _taskData.Coins.ToString();
+        _taskPoints.text = "+" + _taskData.Points.ToString();
+        _taskCoins.text = "+" + _taskData.Coins.ToString();
         _taskAmount.text = _taskData.Amount.ToString();
         _coinIndicator.SetActive(_taskData.Coins >= 0);
 
