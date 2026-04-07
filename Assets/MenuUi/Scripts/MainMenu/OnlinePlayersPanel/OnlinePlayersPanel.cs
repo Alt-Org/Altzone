@@ -8,6 +8,7 @@ using Assets.Altzone.Scripts.Model.Poco.Game;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Window;
 using Prg.Scripts.Common;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -23,18 +24,23 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         Friends
     }
 
-
+    [Header("Main panel page")]
     [SerializeField] public GameObject _onlinePlayersPanel;
-    [SerializeField] private TMPro.TextMeshProUGUI _onlineTitle;
+    [SerializeField] private TextMeshProUGUI _onlineTitle;
+    [Header("Global page")]
     [SerializeField] private GameObject _onlinePlayersPage;
     [SerializeField] private RectTransform _onlinePlayersPanelContent;
+    [Header("Clan page")]
     [SerializeField] private GameObject _clanPlayersPage;
     [SerializeField] private RectTransform _clanPlayersPanelContent;
+    [Header("Friend page")]
     [SerializeField] private GameObject _friendsPage;
     [SerializeField] private RectTransform _friendsContent;
-    [SerializeField] private ScrollRect _onlinePlayersPanelScrollView;
+    //[SerializeField] private ScrollRect _onlinePlayersPanelScrollView;
+    [Header("Panel prefabs")]
     [SerializeField] private OnlinePlayersPanelItem _onlinePlayersPanelItemPrefab;
     [SerializeField] private FriendlistItem _friendlistItemPrefab;
+    [Header("Tab Buttons")]
     [SerializeField] private Button _viewClanPlayersButton;
     [SerializeField] private Button _viewAllPlayersButton;
     [SerializeField] private Button _viewFriendListButton;
@@ -42,6 +48,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     private OnlinePlayersView _currentView = OnlinePlayersView.Clan;
 
     private List<OnlinePlayersPanelItem> _onlinePlayersPanelItems = new List<OnlinePlayersPanelItem>();
+    private List<OnlinePlayersPanelItem> _clanPlayersPanelItems = new List<OnlinePlayersPanelItem>();
     private List<ServerOnlinePlayer> _clanPlayers = new List<ServerOnlinePlayer>();
     private List<ServerOnlinePlayer> _allPlayers = new List<ServerOnlinePlayer>();
     private List<ServerFriendPlayer> _friendlist = new List<ServerFriendPlayer>();
@@ -177,9 +184,15 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             Destroy(item.gameObject);
         }
 
+        foreach (var item in _clanPlayersPanelItems)
+        {
+            Destroy(item.gameObject);
+        }
+
         _onlinePlayersPanelItems.Clear();
-        
-        
+        _clanPlayersPanelItems.Clear();
+
+
 
         foreach (var player in onlinePlayers)
         {
@@ -204,11 +217,10 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                     _clanPlayers.Add(player);
                 }
                 clanLogo = serverPlayer.clanLogo;
+                Debug.LogWarning(clanLogo);
                 avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(new AvatarData(serverPlayer.name, serverPlayer.avatar));
 
             }
-
-            bool hideLogo = _currentView == OnlinePlayersView.Clan; //Hide logo if we are in ClanView
 
             bool alreadyFriend = _friendlist.Exists(f => f._id == player._id);
             bool alreadyRequested = _friendRequests.Exists(r => r.friend._id == player._id);
@@ -217,10 +229,10 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             newItem.Initialize(
                  playerName,
                  avatarVisualData: avatarVisualData,
-                 clanLogo: hideLogo ? null : clanLogo, //Set logo to null in Clanview
+                 clanLogo: clanLogo,
                  isOnline: true,
                  onRemoveClick: () => { },
-                 hideClanLogo: hideLogo, // Use hideLogo to control logo visibility
+                 hideClanLogo: false, // Use hideLogo to control logo visibility
                  isFriend: alreadyFriend,
                  alreadyRequested: alreadyRequested,
                  onAddFriendClick: () =>
@@ -234,6 +246,35 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                 }
                  );
             _onlinePlayersPanelItems.Add(newItem);
+
+            if (serverPlayer.clan_id == ServerManager.Instance.Clan._id)
+            {
+                _clanPlayers.Add(player);
+
+                OnlinePlayersPanelItem clanItem = Instantiate(_onlinePlayersPanelItemPrefab, _clanPlayersPanelContent);
+
+                clanItem.Initialize(
+                 playerName,
+                 avatarVisualData: avatarVisualData,
+                 clanLogo: null, //Set logo to null in Clanview
+                 isOnline: true,
+                 onRemoveClick: () => { },
+                 hideClanLogo: true, // Use hideLogo to control logo visibility
+                 isFriend: alreadyFriend,
+                 alreadyRequested: alreadyRequested,
+                 onAddFriendClick: () =>
+                 {
+                     StartCoroutine(ServerManager.Instance.SendFriendRequest(player._id, success =>
+                     {
+                         if (success)
+                             Debug.Log($"Friend request sent to {playerName}");
+                     }));
+
+                 }
+                 );
+
+                _clanPlayersPanelItems.Add(clanItem);
+            }
         }
     }
 
