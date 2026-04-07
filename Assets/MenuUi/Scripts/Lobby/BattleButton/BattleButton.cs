@@ -61,8 +61,8 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
                 if (gameTypeInfo.gameType == _selectedGameType)
                 {
-                    // Initialize visuals without opening the battle popup automatically
-                    UpdateGameType(gameTypeInfo, false);
+                    // Initialize visuals for the selected game type
+                    UpdateGameType(gameTypeInfo);
                 }
             }
 
@@ -134,11 +134,6 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
         private void UpdateGameType(GameTypeInfo gameTypeInfo)
         {
-            UpdateGameType(gameTypeInfo, true);
-        }
-
-        private void UpdateGameType(GameTypeInfo gameTypeInfo, bool firePopup)
-        {
             _gameTypeIcon.sprite = gameTypeInfo.Icon;
             _gameTypeName.SetText(gameTypeInfo.Name);
             _gameTypeDescription.SetText(gameTypeInfo.Description);
@@ -153,7 +148,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
                 bool selected = gameTypeOption.Info.gameType == _selectedGameType;
                 gameTypeOption.SetSelected(selected);
             }
-
+            
             // Opening battle popup after selecting a game type
             //SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
         }
@@ -166,7 +161,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
                 {
                     _gameTypeName.SetText(gameTypeInfo.Name);
                     _gameTypeDescription.SetText(gameTypeInfo.Description);
-                }
+                }          
             }
 
             for (int i = 0; i < _gameTypeOptionList.Count; i++)
