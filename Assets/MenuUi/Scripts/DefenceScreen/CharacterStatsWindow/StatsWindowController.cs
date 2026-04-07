@@ -275,7 +275,15 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         /// <returns>Current character's special ability as string.</returns>
         public string GetCurrentCharacterSpecialAbilityDescription()
         {
-            return "Hahmon erikoistaidon kuvaus";
+            var info = PlayerCharacterPrototypes.GetCharacter(((int)_characterId).ToString());
+            if (info == null)
+            {
+                return null;
+            }
+            else
+            {
+                return info.AbilityDescription;
+            }
         }
 
 

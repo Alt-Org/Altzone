@@ -402,6 +402,7 @@ public class ServerManager : MonoBehaviour
                 playerData.BuildCharacterLists(characters);
             }
             playerData.UpdatePlayerData(player);
+            if(player.DailyTask == null) playerData.Task = null; //Reset Task if one cannot be gotten from server.
         }
         PlayerPrefs.SetString("profileId", player.profile_id);
 
@@ -911,6 +912,70 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
+
+    /// <summary>
+    /// Fetches clan members for an arbitrary clan id (used when viewing another clan's profile).
+    /// 
+    /// NOTE:
+    /// - This overload is intentionally separate from GetClanMembersFromServer(Action<...>),
+    ///   which uses the local player's clan_id (own clan only).
+    /// - This method also maps each member's role using ServerPlayer.clanRole_id -> ServerClan.roles,
+    ///   so UI can display role names (e.g. Leader/Officer) via ClanMember.Role.
+    /// </summary>
+    /// <param name="clanId">The clan id to fetch members for.</param>
+    /// <param name="callback">Invoked with the list of ClanMember (or null on failure).</param>
+    public IEnumerator GetClanMembersFromServer(string clanId, Action<List<ClanMember>> callback)
+    {
+        if (string.IsNullOrEmpty(clanId))
+        {
+            Debug.LogWarning("GetClanMembersFromServer called with empty clanId.");
+            callback?.Invoke(null);
+            yield break;
+        }
+
+        yield return StartCoroutine(WebRequests.Get(SERVERADDRESS + "clan/" + clanId + "?with=Player", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                ServerClan clan = result["data"]["Clan"].ToObject<ServerClan>();
+                JArray playerArray = result["data"]["Clan"]["Player"] as JArray;
+                List<ClanMember> members = new();
+
+                foreach (JToken value in playerArray)
+                    members.Add(new(value.ToObject<ServerPlayer>()));
+
+                var roleById = new Dictionary<string, ClanRoles>();
+                if (clan?.roles != null)
+                {
+                    foreach (var role in clan.roles)
+                    {
+                        if (role != null && !string.IsNullOrEmpty(role._id))
+                            roleById[role._id] = role;
+                    }
+                }
+
+                foreach (var member in members)
+                {
+                    if (member == null) continue;
+
+
+                    var roleId = member.ClanRoleId;
+
+                    if (!string.IsNullOrEmpty(roleId) && roleById.TryGetValue(roleId, out var role))
+                        member.Role = role;
+                }
+
+                callback?.Invoke(members);
+            }
+            else
+            {
+                Debug.LogWarning($"Failed to get players from clan {clanId}.");
+                callback?.Invoke(null);
+            }
+        }));
+    }
+
     public IEnumerator JoinClan(ServerClan clanToJoin, Action<ServerClan> callback)
     {
         string body = JObject.FromObject(new{clan_id=clanToJoin._id,player_id=Player._id}).ToString();
@@ -1071,10 +1136,28 @@ public class ServerManager : MonoBehaviour
             JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
         ).ToString();
 
-        yield return UpdateClanToServer(body, callback =>
+        yield return StartCoroutine(UpdateClanToServer(body, success =>
         {
-            if (callback) Storefront.Get().SaveClanData(data, null);
-        });
+            if (success)
+            {
+                Storefront.Get().SaveClanData(data, null);
+
+                if (Clan != null && Clan._id == data.Id)
+                {
+                    Clan.name = data.Name;
+                    Clan.tag = data.Tag;
+                    Clan.isOpen = Clan.isOpen;
+                    Clan.ageRange = data.ClanAge;
+                    Clan.goal = data.Goals;
+                    Clan.phrase = data.Phrase;
+                    Clan.language = data.Language;
+                }
+
+                RaiseClanChangedEvent();
+            }
+
+            callback?.Invoke(success);
+        }));
     }
 
     public IEnumerator UpdateClanToServer(string body, Action<bool> callback)
@@ -1416,7 +1499,8 @@ public class ServerManager : MonoBehaviour
 
                 foreach (ServerCharacter character in serverCharacterList)
                 {
-                    characterList.Add(new(character));
+                    if (Enum.IsDefined(typeof(CharacterID), int.Parse(character.characterId)))
+                        characterList.Add(new(character));
                 }
 
                 if (callback != null)
@@ -1853,7 +1937,7 @@ public class ServerManager : MonoBehaviour
                 {
                     if (item["clan_id"].ToString() == Clan._id)
                     {
-                        Debug.LogWarning("FleaMarketFetch");
+                        //Debug.LogWarning("FleaMarketFetch");
                         string id = item["_id"].ToString();
                         string name = item["name"].ToString();
                         ClanFurniture furniture = new(id, name);
@@ -2237,6 +2321,42 @@ public class ServerManager : MonoBehaviour
         yield break;
     }
     #endregion
+
+    public IEnumerator GetAllowedVersion(Action<bool, int> callback)
+    {
+        StartCoroutine(WebRequests.Get(SERVERADDRESS + "metadata/game/", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                string minVersion = result["data"]["Object"]["minBuildVersion"].ToString();
+                if(int.TryParse(minVersion, out int requiredVersion))
+                {
+                    if(requiredVersion > ApplicationController.VersionNumber)
+                    {
+                        if (callback != null)
+                            callback(false, requiredVersion);
+                    }
+                }
+                else
+                {
+                    if (callback != null)
+                        callback(false, 0);
+                }
+
+                if (callback != null)
+                    callback(true, requiredVersion);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false, 0);
+            }
+        }));
+
+        yield break;
+    }
 
     #endregion
 }

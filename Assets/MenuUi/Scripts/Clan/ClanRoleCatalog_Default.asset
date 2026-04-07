@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d717bcd39a91b4b44a880ba3d2787617, type: 3}
+  m_Name: ClanRoleCatalog_Default
+  m_EditorClassIdentifier: 
+  entries:
+  - roleName: leader
+    icon: {fileID: 21300000, guid: 9d97a6b4766bbf4459baef0415dfc95b, type: 3}
+    displayNameOverride: Johtaja
+  - roleName: elder
+    icon: {fileID: 21300000, guid: 66a90b5f970b12141b58e617fa8e34ab, type: 3}
+    displayNameOverride: Veteraani
+  - roleName: member
+    icon: {fileID: 21300000, guid: 3d04fc75ea8b6344dbd10587b009ac25, type: 3}
+    displayNameOverride: "J\xE4sen"

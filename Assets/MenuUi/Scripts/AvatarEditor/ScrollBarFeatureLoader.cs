@@ -8,9 +8,11 @@ namespace MenuUi.Scripts.AvatarEditor
 {
     public class ScrollBarFeatureLoader : MonoBehaviour
     {
+        [SerializeField] private ScrollBarCategoryLoader _categoryLoader;
         [SerializeField] private AvatarPartsReference _avatarPartsReference;
         [SerializeField] private RectTransform _featureGridContent;
-        [SerializeField] private GameObject _gridCellPrefab;
+        [SerializeField] private GameObject _featureCellPrefab;
+        [SerializeField] private GameObject _colorCellPrefab;
         [SerializeField] private FeatureSetter _featureSetter;
         [SerializeField] private AvatarEditorController _avatarEditorController;
         [SerializeField] private RectTransform _featureGrid;
@@ -25,23 +27,13 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField, Range(0f, 0.3f)] private float _verticalSpacing = 0.05f;
         [SerializeField, Range(0f, 0.3f)] private float _horizontalSpacing = 0.05f;
         [SerializeField, Range(0f, 0.3f)] private float _fadeRange = 0.1f;
-        [SerializeField] private Color _highlightColor = new(0f, 0f, 0f, 0.5f);
-        [SerializeField] private Color _backgroundColor = new(0.5f, 0.5f, 0.5f, 0.7f);
+        [SerializeField] private AvatarEditorCharacterHandle _characterHandle;
+        [SerializeField] private ColorPicker _colorPicker;
+        [SerializeField] private Image _bodySlotImage;
+        [SerializeField] private GameObject _featureGridContainer;
 
         private List<AvatarPartInfo> _avatarPartInfo;
-        private Dictionary<string, AvatarPiece> _featureCategoryIdToAvatarPiece;
-        private FeatureCellHandler _selectedCellHandler;
-        private bool _isSelectedFeature = false;
-        private float _cellHeight;
-        private float _actualVerticalSpacing;
-        private float _actualHorizontalSpacing;
-        private float _actualVerticalPadding;
-        private float _viewPortHeight;
-        private readonly int _rowAmount = 2;
-
-        void Start()
-        {
-            _featureCategoryIdToAvatarPiece = new Dictionary<string, AvatarPiece>
+        private readonly Dictionary<string, AvatarPiece> _featureCategoryIdToAvatarPiece = new Dictionary<string, AvatarPiece>
             {
                 { "10", AvatarPiece.Hair }, // Hair
                 { "21", AvatarPiece.Eyes }, // Eyes
@@ -51,7 +43,21 @@ namespace MenuUi.Scripts.AvatarEditor
                 { "32", AvatarPiece.Hands }, // Hands
                 { "33", AvatarPiece.Feet }  // Feet
             };
+        private FeatureCellHandler _selectedCellHandler;
+        private ColorCellHandler _lastSelectedColorCellHandler;
+        private bool _isSelectedFeature = false;
+        private float _cellHeight;
+        private float _actualVerticalSpacing;
+        private float _actualHorizontalSpacing;
+        private float _actualVerticalPadding;
+        private float _viewPortHeight;
+        private readonly int _rowAmount = 2;
+        private string _currentCategory = "";
 
+        public AvatarPiece? CurrentCategory { get => _currentCategory!= ""? _featureCategoryIdToAvatarPiece[_currentCategory]: null; }
+
+        void Start()
+        {
             _scrollrect.onValueChanged.AddListener(UpdateFade);
         }
 
@@ -105,14 +111,14 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void AddFeatureCell(Sprite cellImage, AvatarPartInfo avatarPart)
         {
-            GameObject gridCell = Instantiate(_gridCellPrefab, _featureGridContent);
+            GameObject gridCell = Instantiate(_featureCellPrefab, _featureGridContent);
             FeatureCellHandler handler = gridCell.GetComponent<FeatureCellHandler>();
 
             string featureCategoryid = avatarPart.Id.Substring(0, 2);
             AvatarPiece avatarPieceId = _featureCategoryIdToAvatarPiece[featureCategoryid];
             string selectedPieceId = _avatarEditorController.PlayerAvatar.GetPartId(avatarPieceId);
 
-            handler.SetValues(cellImage, _highlightColor, _backgroundColor);
+            handler.SetValues(cellImage, avatarPart.IsColorable);
 
             AddListeners(handler, avatarPart, avatarPieceId);
 
@@ -142,6 +148,8 @@ namespace MenuUi.Scripts.AvatarEditor
             
             _selectedCellHandler = handler;
             handler.Highlight(true);
+
+            ColorSelectActive(handler.IsColorable);
         }
 
         private void AddListeners(FeatureCellHandler handler, AvatarPartInfo avatarPart, AvatarPiece slot)
@@ -149,28 +157,40 @@ namespace MenuUi.Scripts.AvatarEditor
             handler.SetOnClick(onClick: () =>
             {
                 _featureSetter.SetFeature(avatarPart, slot);
+                _categoryLoader.UpdateSlotImage(slot, avatarPart);
                 UpdateHighlightedCell(handler);
             });
         }
 
+        private void ColorSelectActive(bool isActive)
+        {
+            //_colorPicker.SetActive(isActive);
+            _colorSelection.gameObject.SetActive(isActive);
+        }
+
         public void RefreshFeatureListItems(string categoryId)
         {
-            // Don't Show Color Selection on hair
-            if (categoryId == "10")
+            _featureGridContainer.SetActive(true);
+            DestroyFeatureListItems();
+
+            if (categoryId != "")
             {
-                _colorSelection.gameObject.SetActive(false);
+                if (_colorSelection.SkinColorSelectActive) _colorSelection.SetColorCells();
+
+                _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
+                foreach (AvatarPartInfo part in _avatarPartInfo)
+                {
+                    AddFeatureCell(part.IconImage, part);
+                }
+                ColorSelectActive(_selectedCellHandler.IsColorable);
             }
             else
             {
-                _colorSelection.gameObject.SetActive(true);
+                _colorSelection.SetSkinColorCells();
+                ColorSelectActive(true);
+                _featureGridContainer.SetActive(false);
             }
-
-            DestroyFeatureListItems();
-            _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
-            foreach (AvatarPartInfo part in _avatarPartInfo)
-            {
-                AddFeatureCell(part.IconImage, part);
-            }
+            _currentCategory = categoryId;
         }
 
         private void DestroyFeatureListItems()

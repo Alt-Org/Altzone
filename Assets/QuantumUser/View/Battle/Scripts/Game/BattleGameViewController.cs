@@ -30,6 +30,7 @@ using Battle.View.Audio;
 using Battle.View.Effect;
 using Battle.View.UI;
 using Battle.View.Player;
+using Battle.View.SoulWall;
 
 using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
 using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
@@ -272,6 +273,7 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
             QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
             QuantumEvent.Subscribe<EventBattleGiveUpStateChange>(this, QEventOnGiveUpStateChange);
+            QuantumEvent.Subscribe<EventBattleStoneCharacterPlayHitAnimation>(this, QEventOnStoneCharacterPlayHitAnimation);
 
             // Subscribing to Debug events
             QuantumEvent.Subscribe<EventBattleDebugOnScreenMessage>(this, QEventDebugOnScreenMessage);
@@ -533,10 +535,10 @@ namespace Battle.View.Game
             _endOfGameDataGameLengthSec = e.GameLengthSec;
 
             //{ Calling server to add wins and losses
-            
+
             Utils.TryGetQuantumFrame(out Frame f);
             string[] playerUserIds = BattleParameters.GetPlayerSlotUserIDs(f);
-            
+
             bool isValidWin = false;
             // Temporary solution
             if (e.WinningTeam == LocalPlayerTeam)
@@ -576,9 +578,9 @@ namespace Battle.View.Game
                     {
                         if (!success) _debugLogger.Error("Sending battle result failed.");
                     }
-                )); 
+                ));
             }
-            
+
             //} Calling server to add wins and losses
         }
 
@@ -638,7 +640,7 @@ namespace Battle.View.Game
         {
             if (e.Team == LocalPlayerTeam)
             {
-                _uiController.PlayerInfoHandler.UpdateHealthVisual(e.Slot, e.CharacterNumber, (float)e.HealthPercentage);
+                _uiController.PlayerInfoHandler.UpdateDefenceVisual(e.Slot, e.CharacterNumber, (float)e.HealthPercentage);
             }
         }
 
@@ -654,7 +656,7 @@ namespace Battle.View.Game
         {
             if (e.Team == LocalPlayerTeam)
             {
-                _uiController.PlayerInfoHandler.UpdateDefenceVisual(e.Slot, e.CharacterNumber, (float)e.DefenceValue);
+                _uiController.PlayerInfoHandler.UpdateDefenceVisual(e.Slot, e.CharacterNumber, (float)e.DefencePercentage);
             }
         }
 
@@ -673,6 +675,12 @@ namespace Battle.View.Game
                 _uiController.GiveUpButtonHandler.UpdateState(e.Slot, e.StateUpdate);
             }
         }
+
+        private void QEventOnStoneCharacterPlayHitAnimation(EventBattleStoneCharacterPlayHitAnimation e)
+        {
+            _stoneCharacterViewController.PlayHitAnimation(e.Team, e.Emotion);
+        }
+
 
         /// <summary>
         /// Private handler method for EventBattleDebugOnScreenMessage QuantumEvent.<br/>

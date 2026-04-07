@@ -1,5 +1,7 @@
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
+
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -21,6 +23,7 @@ public class DailyTaskProgressListener : MonoBehaviour
 
     private bool _on = false;
     [HideInInspector] public bool On { get => _on; }
+
 
     protected virtual void Start()
     {
@@ -131,6 +134,7 @@ public class DailyTaskProgressListener : MonoBehaviour
 
     public virtual void SetState(PlayerTask task)
     {
+
         //-----TEST CODE-----
         if (_normalTaskType == TaskNormalType.Test)
         {
@@ -154,6 +158,7 @@ public class DailyTaskProgressListener : MonoBehaviour
         if (_educationCategoryType != EducationCategoryType.None)
         {
             if (_educationCategoryType != task.EducationCategory) return;
+           
             switch (_educationCategoryType)
             {
                 case EducationCategoryType.Action: if (_educationCategoryActionType == task.EducationActionType) { _on = true;} break;

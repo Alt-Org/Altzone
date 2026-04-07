@@ -1508,7 +1508,6 @@ namespace Altzone.Scripts.Lobby
 
                 var stats = new BattlePlayerStats()
                 {
-                    Hp            = BaseCharacter.GetStatValueFP(StatType.Hp, character.Hp),
                     Attack        = BaseCharacter.GetStatValueFP(StatType.Attack, character.Attack),
                     Defence       = BaseCharacter.GetStatValueFP(StatType.Defence, character.Defence),
                     CharacterSize = BaseCharacter.GetStatValueFP(StatType.CharacterSize, character.CharacterSize),
@@ -1564,7 +1563,7 @@ namespace Altzone.Scripts.Lobby
             StopHolderCoroutines();
 
             Debug.Log($"OnDisconnected {cause}");
-            if (cause != DisconnectCause.DisconnectByClientLogic && cause != DisconnectCause.DisconnectByServerLogic)
+            if (cause != DisconnectCause.ApplicationQuit)
             {
                 GameConfig gameConfig = GameConfig.Get();
                 PlayerSettings playerSettings = gameConfig.PlayerSettings;

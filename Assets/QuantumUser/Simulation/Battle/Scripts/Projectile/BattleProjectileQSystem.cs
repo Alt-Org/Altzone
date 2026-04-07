@@ -298,12 +298,12 @@ namespace Battle.QSimulation.Projectile
                     if (FPVector2.Dot(playerShieldHitbox->Normal, projectile->Direction.Normalized) >= 0) break;
 
                     if (!ProjectileHitPlayerShield(f, projectile, dataPtr, out normal)) break;
-                    
+
                     collisionType      = playerShieldHitbox->CollisionType;
                     collisionMinOffset = playerShieldHitbox->CollisionMinOffset;
                     speedChange        = SpeedChange.Increment;
                     handleCollision    = true;
-                    
+
                     break;
 
                 case BattleCollisionTriggerType.Player:
@@ -318,7 +318,7 @@ namespace Battle.QSimulation.Projectile
                     collisionMinOffset = playerCharacterHitbox->CollisionMinOffset;
                     speedChange        = SpeedChange.Increment;
                     handleCollision    = true;
-                    
+
                     break;
 
                 default:

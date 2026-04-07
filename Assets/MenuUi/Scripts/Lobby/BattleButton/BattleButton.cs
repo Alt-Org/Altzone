@@ -86,7 +86,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             }
 
             _button.onClick.RemoveListener(RequestBattlePopup);
-            _swipe.OnCurrentPageChanged -= CloseGameTypeSelection;
+            if (_swipe) _swipe.OnCurrentPageChanged -= CloseGameTypeSelection;
             _openBattleUiEditorButton.onClick.RemoveListener(OnOpenBattleUiEditorButtonPressed);
             SettingsCarrier.OnLanguageChanged -= ChangeLanguage;
         }
@@ -149,7 +149,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             }
 
             // Opening battle popup after selecting a game type
-            SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
+            //SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
         }
 
         private void ChangeLanguage(SettingsCarrier.LanguageType language)

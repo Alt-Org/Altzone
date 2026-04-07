@@ -124,7 +124,7 @@ synced event BattleShieldTakeDamage
     BattleTeamNumber Team;
     BattlePlayerSlot Slot;
     int CharacterNumber;
-    FP DefenceValue;
+    FP DefencePercentage;
 }
 
 synced event BattleGiveUpStateChange
@@ -132,6 +132,12 @@ synced event BattleGiveUpStateChange
     BattleTeamNumber Team;
     BattlePlayerSlot Slot;
     BattleGiveUpStateUpdate StateUpdate;
+}
+
+synced event BattleStoneCharacterPlayHitAnimation
+{
+    BattleTeamNumber Team;
+    BattleEmotionState Emotion;
 }
 
 //} Gameplay events
