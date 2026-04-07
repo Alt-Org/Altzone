@@ -371,6 +371,7 @@ MonoBehaviour:
   _acceptFriendButton: {fileID: 573951088741280508}
   _declineFriendButton: {fileID: 221925500482121929}
   _addFriendButtonText: {fileID: 18945241310058985}
+  _profileButton: {fileID: 6810360331478090544}
 --- !u!114 &5997357890131286892
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1353,8 +1354,9 @@ GameObject:
   - component: {fileID: 1402003381635778771}
   - component: {fileID: 660975737554513030}
   - component: {fileID: 6810360331478090544}
+  - component: {fileID: 986945324364258732}
   m_Layer: 5
-  m_Name: FriendProfileButton
+  m_Name: PlayerProfileButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1462,6 +1464,22 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &986945324364258732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7278059677700821779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _naviTarget: {fileID: 11400000, guid: e159432f6bd8572419fea7a32165e31b, type: 2}
+  _useNonDefaultWindow: 0
+  _targetWindow: 0
+  _isCurrentPopOutWindow: 0
 --- !u!1 &7788641511057208300
 GameObject:
   m_ObjectHideFlags: 0

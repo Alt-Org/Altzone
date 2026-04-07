@@ -1,13 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
-using System;
+using Altzone.Scripts.Window;
+using Assets.Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.AvatarEditor;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 
 public enum FriendState
@@ -37,7 +39,8 @@ public class OnlinePlayersPanelItem : MonoBehaviour
     [SerializeField] private Button _removefriendButton;
     [SerializeField] private Button _acceptFriendButton;
     [SerializeField] private Button _declineFriendButton;
-    [SerializeField] private TextMeshProUGUI _addFriendButtonText; 
+    [SerializeField] private TextMeshProUGUI _addFriendButtonText;
+    [SerializeField] private Button _profileButton;
 
     private bool _isOnline = true;
 
@@ -57,9 +60,19 @@ public class OnlinePlayersPanelItem : MonoBehaviour
         UpdateSize(false);
     }
 
-    public IEnumerator Initialize(string name, AvatarVisualData avatarVisualData = null, ClanLogo clanLogo = null, OnlineState onlineState = OnlineState.Online, FriendState friendstate = FriendState.None, Action onRemoveClick = null, Action onAcceptClick = null, Action onDeclineClick = null, Action onAddFriendClick = null)
+    public IEnumerator Initialize(ServerPlayer player, OnlineState onlineState = OnlineState.Online, FriendState friendstate = FriendState.None, Action onRemoveClick = null, Action onAcceptClick = null, Action onDeclineClick = null, Action onAddFriendClick = null)
     {
-        _nameText.text = name;
+        ClanLogo clanLogo = null;
+        AvatarVisualData avatarVisualData = null;
+
+        if (player != null)
+        {
+            clanLogo = player.clanLogo;
+            avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(new AvatarData(player.name, player.avatar));
+            SetProfileListener(player);
+        }
+
+        _nameText.text = player.name;
         _isOnline = onlineState == OnlineState.Online;
 
 
@@ -188,6 +201,15 @@ public class OnlinePlayersPanelItem : MonoBehaviour
     {
         _isOnline = isOnline;
         UpdateOnlineStatusIndicator();
+    }
+
+    private void SetProfileListener(ServerPlayer player)
+    {
+        if(player != null)
+        _profileButton.onClick.AddListener(() =>
+        {
+            DataCarrier.AddData(DataCarrier.PlayerProfile, new PlayerData(player));
+        });
     }
 }
 
