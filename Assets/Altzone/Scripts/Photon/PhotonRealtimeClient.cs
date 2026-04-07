@@ -671,7 +671,7 @@ public static class PhotonRealtimeClient
 
         List<string> propertiesShowingToLobby = new() { PhotonBattleRoom.GameTypeKey, PhotonBattleRoom.IsMatchmakingKey };
 
-        if (gameType == GameType.InRoom_)
+        if (gameType == GameType.FriendLobby)
         {
             customRoomProperties.Add(PhotonBattleRoom.PremadeModeKey, true);
             customRoomProperties.Add(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)GameType.Random2v2);
@@ -709,7 +709,7 @@ public static class PhotonRealtimeClient
                     maxPlayers = 2;
                 }
                 break;
-            case GameType.InRoom_:
+            case GameType.FriendLobby:
                 maxPlayers = 2;
                 break;
         }
@@ -816,9 +816,9 @@ public static class PhotonRealtimeClient
 
     public static bool CreateInRoomPremadeLobbyRoom(string[] expectedUsers = null)
     {
-        string roomName = $"InRoom_{LocalPlayer.UserId}_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+        string roomName = $"FriendLobby_{LocalPlayer.UserId}_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
         RoomOptions roomOptions = GetRoomOptions(
-            gameType: GameType.InRoom_,
+            gameType: GameType.FriendLobby,
             roomName: roomName
         );
 

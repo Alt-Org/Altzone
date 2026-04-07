@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace MenuUi.Scripts.Lobby.InRoom
 {
     /// <summary>
-    /// Dedicated panel for selecting which online player to invite into an InRoom_ premade room.
+    /// Dedicated panel for selecting which online player to invite into a Friend Lobby premade room.
     /// Can be assigned from prefab or created at runtime by code.
     /// </summary>
     public class InRoomInviteSelectorPanel : MonoBehaviour

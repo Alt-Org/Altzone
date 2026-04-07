@@ -39,7 +39,7 @@ public class BattlePopupPanelManager : MonoBehaviour
             case GameType.Custom:
                 SwitchCustomRoom(CustomGameMode.TwoVersusTwo);
                 break;
-            case GameType.InRoom_:
+            case GameType.FriendLobby:
                 _clanAndRandom2v2WaitingRoom.SetActive(true);
                 break;
             case GameType.Clan2v2:

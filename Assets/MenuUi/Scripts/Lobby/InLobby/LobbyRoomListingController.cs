@@ -124,7 +124,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 {
                     switch (gameType)
                     {
-                        case GameType.InRoom_:
+                        case GameType.FriendLobby:
                             CreateInRoomPremadeRoom();
                             break;
                         case GameType.Clan2v2:

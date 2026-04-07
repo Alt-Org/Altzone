@@ -4410,7 +4410,7 @@ namespace Altzone.Scripts.Lobby
             {
                 if (PhotonRealtimeClient.CurrentRoom != null && PhotonRealtimeClient.CurrentRoom.CustomProperties != null
                     && PhotonRealtimeClient.CurrentRoom.CustomProperties.ContainsKey(PhotonBattleRoom.GameTypeKey)
-                    && (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey) == GameType.InRoom_)
+                    && (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey) == GameType.FriendLobby)
                 {
                     string invitedUserId = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PremadeInvitedUserIdKey, string.Empty);
                     if (!string.IsNullOrEmpty(invitedUserId) && invitedUserId == PhotonRealtimeClient.LocalPlayer.UserId)
@@ -4420,7 +4420,7 @@ namespace Altzone.Scripts.Lobby
                     }
                 }
             }
-            catch (Exception ex) { Debug.LogWarning($"OnJoinedRoom: failed to update InRoom_ invite state: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogWarning($"OnJoinedRoom: failed to update FriendLobby invite state: {ex.Message}"); }
 
             if (PhotonRealtimeClient.InMatchmakingRoom)
             {
@@ -4634,7 +4634,7 @@ namespace Altzone.Scripts.Lobby
                 try { gameType = (GameType)room.CustomProperties[PhotonBattleRoom.GameTypeKey]; }
                 catch { continue; }
 
-                if (gameType != GameType.InRoom_) continue;
+                if (gameType != GameType.FriendLobby) continue;
 
                 string invitedUserId = room.CustomProperties.ContainsKey(PhotonBattleRoom.PremadeInvitedUserIdKey)
                     ? room.CustomProperties[PhotonBattleRoom.PremadeInvitedUserIdKey]?.ToString()
@@ -4687,7 +4687,7 @@ namespace Altzone.Scripts.Lobby
                 _lastAutoInviteRoomName = room.Name;
                 _lastAutoInviteJoinTime = Time.time;
                 _pendingInRoomInviteRoomName = room.Name;
-                Debug.Log($"Detected pending InRoom_ invite to room '{room.Name}', requesting decision from UI.");
+                Debug.Log($"Detected pending FriendLobby invite to room '{room.Name}', requesting decision from UI.");
                 OnInRoomInviteReceived?.Invoke(new InRoomInviteInfo(room.Name, leaderUserId, invitedUserId, targetGameType));
                 break;
             }
@@ -5087,7 +5087,7 @@ namespace Altzone.Scripts.Lobby
             try
             {
                 if (room != null && room.CustomProperties != null && room.CustomProperties.ContainsKey(PhotonBattleRoom.GameTypeKey)
-                    && (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey) == GameType.InRoom_)
+                    && (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey) == GameType.FriendLobby)
                 {
                     string invitedUserId = room.GetCustomProperty<string>(PhotonBattleRoom.PremadeInvitedUserIdKey, string.Empty);
                     if (!string.IsNullOrEmpty(invitedUserId) && newPlayer != null && newPlayer.UserId == invitedUserId)
@@ -5102,7 +5102,7 @@ namespace Altzone.Scripts.Lobby
                     }
                 }
             }
-            catch (Exception ex) { Debug.LogWarning($"OnPlayerEnteredRoom: failed to update InRoom_ premade state: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogWarning($"OnPlayerEnteredRoom: failed to update FriendLobby premade state: {ex.Message}"); }
 
             // If this room is a queue room, let master form matches of 4 players
             try

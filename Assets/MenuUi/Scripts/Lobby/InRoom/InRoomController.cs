@@ -53,7 +53,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private void OnEnable()
         {
             if (_startGameButton != null) _startGameButton.interactable = true;
-            if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.interactable = InLobbyController.SelectedGameType == GameType.InRoom_;
+            if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.interactable = InLobbyController.SelectedGameType == GameType.FriendLobby;
 
             switch (InLobbyController.SelectedGameType)
             {
@@ -61,8 +61,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     if (_title != null) StartCoroutine(SetRoomTitle());
                     if (_conflictText != null) StartCoroutine(CycleConflicts());
                     break;
-                case GameType.InRoom_:
-                    if (_title != null) _title.text = "InRoom_";
+                case GameType.FriendLobby:
+                    if (_title != null) _title.text = "Friend Lobby";
                     if (_noticeText != null) _noticeText.text = "Kutsu yksi online-pelaaja ja valitse haettava 2v2 pelimuoto.";
                     if (_sendInviteToFriendText != null) _sendInviteToFriendText.text = "Kutsu online-pelaaja";
                     ConfigurePremadeTargetSelector();
@@ -81,7 +81,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     break;
             }
 
-            if (InLobbyController.SelectedGameType == GameType.InRoom_)
+            if (InLobbyController.SelectedGameType == GameType.FriendLobby)
             {
                 StartInviteLifecycleMonitoring();
             }
@@ -139,7 +139,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     this.Publish(new LobbyManager.StartPlayingEvent());
                     break;
 
-                case GameType.InRoom_:
+                case GameType.FriendLobby:
                     if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.CurrentRoom == null)
                     {
                         RestoreStartButton();
@@ -246,7 +246,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private void OnInviteOnlinePlayerButtonPressed()
         {
-            if (InLobbyController.SelectedGameType != GameType.InRoom_) return;
+            if (InLobbyController.SelectedGameType != GameType.FriendLobby) return;
             StartCoroutine(InviteOnlinePlayerRoutine());
         }
 
@@ -471,7 +471,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     continue;
                 }
 
-                GameType roomGameType = GameType.InRoom_;
+                GameType roomGameType = GameType.FriendLobby;
                 bool failedToReadRoomGameType = false;
                 try
                 {
@@ -488,7 +488,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     continue;
                 }
 
-                if (roomGameType != GameType.InRoom_)
+                if (roomGameType != GameType.FriendLobby)
                 {
                     yield return delay;
                     continue;

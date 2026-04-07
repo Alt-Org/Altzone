@@ -242,7 +242,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                         }
                     }
                     break;
-                case GameType.InRoom_:
+                case GameType.FriendLobby:
                     if (PhotonRealtimeClient.InMatchmakingRoom && gameType == SelectedGameType)
                     {
                         _roomSwitcher.SwitchToMatchmakingPanel(PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient);
@@ -253,7 +253,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     {
                         if (gameType == SelectedGameType)
                         {
-                            _roomSwitcher.SwitchRoom(GameType.InRoom_);
+                            _roomSwitcher.SwitchRoom(GameType.FriendLobby);
                             return;
                         }
 
@@ -327,7 +327,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
             string inviterName = ResolveOnlinePlayerName(inviteInfo.LeaderUserId);
             string targetMode = inviteInfo.TargetGameType == GameType.Clan2v2 ? "Clan 2v2" : "Random 2v2";
-            string message = $"{inviterName} kutsui sinut InRoom_ huoneeseen. Haettava pelimuoto: {targetMode}. Liitytäänkö huoneeseen?";
+            string message = $"{inviterName} kutsui sinut Friend Lobby -huoneeseen. Haettava pelimuoto: {targetMode}. Liitytaanko huoneeseen?";
 
             bool popupShown = InviteDecisionPopupHandler.RequestInviteDecisionPrompt(
                 message,
@@ -349,13 +349,13 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 Debug.LogWarning("OnInRoomInviteReceived: decision popup unavailable, auto-joining invite.");
                 OpenBattlePopupForInviteAccept();
                 LobbyManager.Instance?.AcceptInRoomInvite(inviteInfo.RoomName);
-                PopupSignalBus.OnChangePopupInfoSignal("InRoom_ kutsu saatu, liityttiin automaattisesti.");
+                PopupSignalBus.OnChangePopupInfoSignal("Friend Lobby -kutsu saatu, liityttiin automaattisesti.");
             }
         }
 
         private void OpenBattlePopupForInviteAccept()
         {
-            SelectedGameType = GameType.InRoom_;
+            SelectedGameType = GameType.FriendLobby;
 
             if (_popupContents != null && !_popupContents.activeSelf)
             {
@@ -363,7 +363,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             }
 
             RefreshTopInfo();
-            _roomSwitcher?.SwitchRoom(GameType.InRoom_);
+            _roomSwitcher?.SwitchRoom(GameType.FriendLobby);
         }
 
         private string ResolveOnlinePlayerName(string userId)
@@ -397,8 +397,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 || (!string.IsNullOrEmpty(message) && message.ToLowerInvariant().Contains("game full"));
 
             string popupMessage = isRoomFull
-                ? "InRoom_ kutsuun liittyminen epaonnistui: huone on taynna tai kutsu ei ole enaa voimassa."
-                : "InRoom_ kutsuun liittyminen epaonnistui. Yrita uudelleen, jos kutsu on yha voimassa.";
+                ? "Friend Lobby -kutsuun liittyminen epaonnistui: huone on taynna tai kutsu ei ole enaa voimassa."
+                : "Friend Lobby -kutsuun liittyminen epaonnistui. Yrita uudelleen, jos kutsu on yha voimassa.";
 
             PopupSignalBus.OnChangePopupInfoSignal(popupMessage);
         }
