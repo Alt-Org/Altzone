@@ -27,6 +27,8 @@ namespace MenuUI.Scripts.SoulHome
 
         [SerializeField] private SpriteRenderer _slotValidityIndicator;
 
+        public bool IsReserved { get; set; }
+
         public Furniture Furniture { get => furniture;
             set
             {

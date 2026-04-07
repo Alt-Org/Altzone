@@ -16,6 +16,11 @@ namespace MenuUI.Scripts.SoulHome
             Right,
             Back
         }
+        public enum InteractionPattern
+        {
+            Surround,     // All surrounding slots
+            FrontRow,     // All slots along the "front" width
+        }
 
         [SerializeField]
         private string _name;
@@ -56,13 +61,35 @@ namespace MenuUI.Scripts.SoulHome
         private Vector2Int _interactionOffset = new Vector2Int(0, 1);
         public bool HasInteractionSlot => _hasInteractionSlot;
 
-        public FurnitureSlot AssignedInteractionSlot { get; private set; }
+        //public FurnitureSlot AssignedInteractionSlot { get; private set; }
 
-        public void SetInteractionSlot(FurnitureSlot slot)
+
+        //------------------------------------------------------------------------------------------------------------------------------------------------
+        [SerializeField] public InteractionPattern Pattern = InteractionPattern.FrontRow;
+        public List<FurnitureSlot> AssignedInteractionSlots { get; private set; } = new List<FurnitureSlot>();
+
+        public void ClearInteractionSlots()
         {
-            AssignedInteractionSlot = slot;
+            foreach (var slot in AssignedInteractionSlots) slot.IsReserved = false;
+            AssignedInteractionSlots.Clear();
         }
 
+        public void AddInteractionSlot(FurnitureSlot slot)
+        {
+            if (!AssignedInteractionSlots.Contains(slot))
+            {
+                slot.IsReserved = true;
+                AssignedInteractionSlots.Add(slot);
+            }
+        }
+        //------------------------------------------------------------------------------------------------------------------------------------------------
+
+        //public void SetInteractionSlot(FurnitureSlot slot)
+        //{
+        //    AssignedInteractionSlot = slot;
+        //}
+
+        // WORK IN PROGRESS: DOESNT FUNCTION PROPERLY
         public Vector2Int GetRotatedInteractionOffset()
         {
             // Rotates the offset based on the current temp direction
