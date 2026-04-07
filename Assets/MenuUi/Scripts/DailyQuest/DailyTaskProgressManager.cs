@@ -331,7 +331,9 @@ public class DailyTaskProgressManager : AltMonoBehaviour
                 yield break;
             }
 
-            playerData.points += playerData.Task.Points;
+            //playerData.points += playerData.Task.Points;
+            // Commented "playerData.Task" out because seems like both do the same thing, except "CurrentPlayerTask" is faster cuz its local
+            playerData.points += CurrentPlayerTask.Points;
 
             //Clean up.
             _previousTaskStrings.Clear();
@@ -429,5 +431,10 @@ public class DailyTaskProgressManager : AltMonoBehaviour
     public void InvokeOnClanMilestoneReached()
     {
         StartCoroutine(OnClanMilestoneProgressed.Invoke());
+    }
+
+    public bool HasOnGoingTask()
+    {
+        return CurrentPlayerTask != null;
     }
 }

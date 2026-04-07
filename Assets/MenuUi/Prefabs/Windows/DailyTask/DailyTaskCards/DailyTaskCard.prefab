@@ -815,7 +815,6 @@ GameObject:
   - component: {fileID: 3454905361917033380}
   - component: {fileID: 3255219180434912955}
   - component: {fileID: 4075004834335231843}
-  - component: {fileID: 1013947294129989242}
   - component: {fileID: 6847285786863274365}
   m_Layer: 0
   m_Name: DailyTaskCard
@@ -953,20 +952,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &1013947294129989242
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2735320841348897930}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cabc7ab297e9ab44a96e83ec36e516df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _blockType: 0
-  _swipe: {fileID: 0}
 --- !u!114 &6847285786863274365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1741,7 +1726,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8078061662667265918
 RectTransform:
   m_ObjectHideFlags: 0

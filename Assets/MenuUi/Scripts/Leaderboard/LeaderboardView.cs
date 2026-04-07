@@ -136,10 +136,10 @@ public class LeaderboardView : MonoBehaviour
                         {
                             AvatarVisualData avatarVisualData = null;
 
-                            if (ranking.Player.SelectedCharacterId != 0)
-                            {
+                            //if (ranking.Player.SelectedCharacterId != 0)
+                            //{
                                 avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(ranking.Player);
-                            }
+                            //}
 
 
                             if (rank < 4) //The top three are displayed on the podium
@@ -179,10 +179,10 @@ public class LeaderboardView : MonoBehaviour
                             PlayerData playerData = player.GetPlayerData();
                             AvatarVisualData avatarVisualData = null;
 
-                            if (playerData.SelectedCharacterId != 0)
-                            {
+                            //if (playerData.SelectedCharacterId != 0)
+                            //{
                                 avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData);
-                            }
+                            //}
 
 
                             if (rank < 4)
