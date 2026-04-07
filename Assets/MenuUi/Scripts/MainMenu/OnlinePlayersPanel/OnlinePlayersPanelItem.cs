@@ -9,26 +9,58 @@ using Altzone.Scripts.Model.Poco.Player;
 using System;
 using MenuUi.Scripts.AvatarEditor;
 
-public class OnlinePlayersPanelItem : MonoBehaviour
 
+public enum FriendState
 {
-    [SerializeField] private GameObject _onlinePlayersPanel;
+    Friend,
+    Receiving,
+    Sending,
+    None
+}
+
+public enum OnlineState
+{
+    Online,
+    Offline,
+    Global
+}
+
+public class OnlinePlayersPanelItem : MonoBehaviour
+{
+    [SerializeField] private RectTransform _topPanel;
+    [SerializeField] private RectTransform _bottomPanel;
     [SerializeField] private AvatarFaceLoader _avatarFaceLoader;
     [SerializeField] private Image _onlineStatusIndicator;
     [SerializeField] private TextMeshProUGUI _nameText;
     [SerializeField] private ClanHeartColorSetter _clanHeart;
     [SerializeField] private Button _addfriendButton;
+    [SerializeField] private Button _removefriendButton;
+    [SerializeField] private Button _acceptFriendButton;
+    [SerializeField] private Button _declineFriendButton;
     [SerializeField] private TextMeshProUGUI _addFriendButtonText; 
 
     private bool _isOnline = true;
-    private Action _onRemoveClick;
 
+    public delegate void OnlinePlayerPanelPressed(OnlinePlayersPanelItem handler);
+    public static event OnlinePlayerPanelPressed OnPanelPressed;
 
-    public void Initialize(string name, AvatarVisualData avatarVisualData = null, ClanLogo clanLogo = null, bool isOnline = true, Action onRemoveClick = null, bool hideClanLogo = false, bool isFriend = false, bool alreadyRequested = false, Action onAddFriendClick = null)
+    public delegate void ContentRefreshRequested();
+    public static event ContentRefreshRequested OnContentRefreshRequested;
+
+    private void OnEnable()
+    {
+        OnPanelPressed += ButtonPressHandle;
+    }
+    private void OnDisable()
+    {
+        OnPanelPressed -= ButtonPressHandle;
+        UpdateSize(false);
+    }
+
+    public IEnumerator Initialize(string name, AvatarVisualData avatarVisualData = null, ClanLogo clanLogo = null, OnlineState onlineState = OnlineState.Online, FriendState friendstate = FriendState.None, Action onRemoveClick = null, Action onAcceptClick = null, Action onDeclineClick = null, Action onAddFriendClick = null)
     {
         _nameText.text = name;
-        _isOnline = isOnline;
-        _onRemoveClick = onRemoveClick;
+        _isOnline = onlineState == OnlineState.Online;
 
 
         if (avatarVisualData != null)
@@ -36,7 +68,7 @@ public class OnlinePlayersPanelItem : MonoBehaviour
             _avatarFaceLoader.UpdateVisuals(avatarVisualData);
         }
 
-        if (clanLogo != null && !hideClanLogo)
+        if (clanLogo != null && onlineState != OnlineState.Global)
         {
             _clanHeart.SetHeartColors(clanLogo);
             _clanHeart.gameObject.SetActive(true);
@@ -53,12 +85,12 @@ public class OnlinePlayersPanelItem : MonoBehaviour
             //_addfriendButton.gameObject.SetActive(true);
             _addfriendButton.onClick.RemoveAllListeners();
 
-            if (isFriend)
+            if (friendstate is FriendState.Friend)
             {
                 _addfriendButton.interactable = false;
                 _addFriendButtonText.text = "Kaveri";
             }
-            else if (alreadyRequested)
+            else if (friendstate is FriendState.Sending)
             {
                 _addfriendButton.interactable = false;
                 _addFriendButtonText.text = "Kaveripyyntö lähetetty";
@@ -74,7 +106,71 @@ public class OnlinePlayersPanelItem : MonoBehaviour
                 });
             }
         }
+
+        if (_removefriendButton != null) // Show button only for accepted friends
+        {
+            _removefriendButton.gameObject.SetActive(onRemoveClick != null && friendstate is FriendState.Friend);
+
+            _removefriendButton.onClick.RemoveAllListeners();
+            _removefriendButton.onClick.AddListener(() =>
+            {
+                onRemoveClick?.Invoke();
+            });
+        }
+        if (_acceptFriendButton != null) // Show button only for pending requests
+        {
+            _acceptFriendButton.gameObject.SetActive(onAcceptClick != null && friendstate is FriendState.Receiving);
+
+            _acceptFriendButton.onClick.RemoveAllListeners();
+            _acceptFriendButton.onClick.AddListener(() =>
+            {
+                onAcceptClick?.Invoke();
+            });
+        }
+        if (_declineFriendButton != null) // Show button only for pending requests
+        {
+            _declineFriendButton.gameObject.SetActive(onDeclineClick != null && friendstate is FriendState.Receiving);
+
+            _declineFriendButton.onClick.RemoveAllListeners();
+            _declineFriendButton.onClick.AddListener(() =>
+            {
+                onDeclineClick?.Invoke();
+            });
+        }
+
+        GetComponent<Button>().onClick.AddListener(() => UpdateSize());
+
+        yield return new WaitForEndOfFrame();
+        UpdateSize(false);
     }
+
+    private void ButtonPressHandle(OnlinePlayersPanelItem handler)
+    {
+        UpdateSize(handler == this);
+    }
+
+    private void UpdateSize()
+    {
+        OnPanelPressed?.Invoke(this);
+    }
+
+    public void UpdateSize(bool value)
+    {
+        if (!value)
+        {
+            GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().sizeDelta.x, Math.Min(GetComponent<RectTransform>().sizeDelta.x / 5, 100f));
+            _topPanel.anchorMin = new(0, 0f);
+            _bottomPanel.gameObject.SetActive(false);
+        }
+        else
+        {
+            GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().sizeDelta.x, Math.Min(GetComponent<RectTransform>().sizeDelta.x / 5, 100f) * 2);
+            _topPanel.anchorMin = new(0, 0.5f);
+            _bottomPanel.gameObject.SetActive(true);
+        }
+        OnContentRefreshRequested?.Invoke();
+    }
+
     private void UpdateOnlineStatusIndicator()
     {
         _onlineStatusIndicator.color = _isOnline ? Color.green : Color.red;

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using Assets.Altzone.Scripts.Model.Poco.Game;
@@ -178,7 +179,6 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         _clanPlayers.Clear();
         _allPlayers.Clear();
 
-
         foreach (var item in _onlinePlayersPanelItems)
         {
             Destroy(item.gameObject);
@@ -191,7 +191,6 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
         _onlinePlayersPanelItems.Clear();
         _clanPlayersPanelItems.Clear();
-
 
 
         foreach (var player in onlinePlayers)
@@ -226,15 +225,13 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             bool alreadyRequested = _friendRequests.Exists(r => r.friend._id == player._id);
 
             OnlinePlayersPanelItem newItem = Instantiate(_onlinePlayersPanelItemPrefab, _onlinePlayersPanelContent);
-            newItem.Initialize(
-                 playerName,
+            StartCoroutine(newItem.Initialize(
+                 name: playerName,
                  avatarVisualData: avatarVisualData,
                  clanLogo: clanLogo,
-                 isOnline: true,
+                 onlineState: OnlineState.Global,
                  onRemoveClick: () => { },
-                 hideClanLogo: false, // Use hideLogo to control logo visibility
-                 isFriend: alreadyFriend,
-                 alreadyRequested: alreadyRequested,
+                 friendstate: alreadyFriend? FriendState.Friend: alreadyRequested ? FriendState.Sending: FriendState.None,
                  onAddFriendClick: () =>
                  { 
                     StartCoroutine(ServerManager.Instance.SendFriendRequest(player._id, success =>
@@ -244,24 +241,25 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                     }));
                 
                 }
-                 );
+            ));
             _onlinePlayersPanelItems.Add(newItem);
+
+            ClanData data = null;
+            Storefront.Get().GetClanData(ServerManager.Instance.Player.clan_id, c => data = c);
+            bool isOnline = data.Members.Any(o => o._id == serverPlayer._id);
 
             if (serverPlayer.clan_id == ServerManager.Instance.Clan._id)
             {
                 _clanPlayers.Add(player);
 
                 OnlinePlayersPanelItem clanItem = Instantiate(_onlinePlayersPanelItemPrefab, _clanPlayersPanelContent);
-
-                clanItem.Initialize(
-                 playerName,
+                StartCoroutine(clanItem.Initialize(
+                 name: playerName,
                  avatarVisualData: avatarVisualData,
                  clanLogo: null, //Set logo to null in Clanview
-                 isOnline: true,
+                 onlineState: isOnline ? OnlineState.Online: OnlineState.Offline,
                  onRemoveClick: () => { },
-                 hideClanLogo: true, // Use hideLogo to control logo visibility
-                 isFriend: alreadyFriend,
-                 alreadyRequested: alreadyRequested,
+                 friendstate: alreadyFriend ? FriendState.Friend : alreadyRequested ? FriendState.Sending : FriendState.None,
                  onAddFriendClick: () =>
                  {
                      StartCoroutine(ServerManager.Instance.SendFriendRequest(player._id, success =>
@@ -271,8 +269,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                      }));
 
                  }
-                 );
-
+                 ));
                 _clanPlayersPanelItems.Add(clanItem);
             }
         }
@@ -318,11 +315,14 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         {
             foreach (var request in _friendRequests)
             {
-                FriendlistItem requestItem = Instantiate(_friendlistItemPrefab, _friendsContent); // Instantiate a new UI item for each friend request
+                OnlinePlayersPanelItem requestItem = Instantiate(_onlinePlayersPanelItemPrefab, _friendsContent); // Instantiate a new UI item for each friend request
+
+                bool isOnline = ServerManager.Instance.OnlinePlayers.Any(o => o._id == request.friendship_id); //Check online status
 
                 StartCoroutine(requestItem.Initialize(
-                    request.friend.name ?? request.friend._id,
-                    isOnline: false,
+                    name: request.friend.name ?? request.friend._id,
+                    onlineState: isOnline ? OnlineState.Online : OnlineState.Offline,
+                    friendstate: FriendState.Receiving,
                     onAcceptClick: () =>
                     {
                         // Accept the request
@@ -372,12 +372,13 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                 avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(new AvatarData(serverPlayer.name, serverPlayer.avatar));
             }
             // Instantiate UI item for the friend
-            FriendlistItem newItem = Instantiate(_friendlistItemPrefab, _friendsContent);
+            OnlinePlayersPanelItem newItem = Instantiate(_onlinePlayersPanelItemPrefab, _friendsContent);
             StartCoroutine(newItem.Initialize(
-                 serverPlayer?.name ?? friend._id,// Use name if available, otherwise show ID
+                 name: serverPlayer?.name ?? friend._id,// Use name if available, otherwise show ID
                  avatarVisualData: avatarVisualData,
                  clanLogo: clanLogo,
-                 isOnline: isOnline,
+                 onlineState: isOnline ? OnlineState.Online : OnlineState.Offline,
+                 friendstate: FriendState.Friend,
                  onRemoveClick: () =>
                  {
                      // Remove friend 
