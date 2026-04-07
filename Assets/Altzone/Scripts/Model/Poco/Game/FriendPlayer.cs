@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using Assets.Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
-namespace Assets.Altzone.Scripts.Model.Poco.Game
+namespace Altzone.Scripts.Model.Poco.Game
 {
     public class FriendPlayer
     {

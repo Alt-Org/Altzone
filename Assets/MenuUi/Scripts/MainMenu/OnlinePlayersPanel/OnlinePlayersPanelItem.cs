@@ -5,7 +5,6 @@ using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Window;
-using Assets.Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.AvatarEditor;
 using TMPro;
 using UnityEngine;

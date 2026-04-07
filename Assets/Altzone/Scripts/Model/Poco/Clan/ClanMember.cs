@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Assets.Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Model.Poco.Player;
 using Newtonsoft.Json;
 

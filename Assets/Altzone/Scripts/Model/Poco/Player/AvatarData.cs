@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
-namespace Assets.Altzone.Scripts.Model.Poco.Player
+namespace Altzone.Scripts.Model.Poco.Player
 {
     public enum AvatarPiece
     {

@@ -9,11 +9,9 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2.Internal;
 using Altzone.Scripts.Voting;
-using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Newtonsoft.Json;
-using Assets.Altzone.Scripts.Model.Poco.Game;
 
 namespace Altzone.Scripts.Model.Poco.Player
 {

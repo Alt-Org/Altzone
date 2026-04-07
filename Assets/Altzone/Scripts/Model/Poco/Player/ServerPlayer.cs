@@ -1,6 +1,5 @@
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
-using Assets.Altzone.Scripts.Model.Poco.Player;
 /// <summary>
 /// Player object received from the server
 /// </summary>
