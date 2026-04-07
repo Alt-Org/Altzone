@@ -295,6 +295,12 @@ namespace Altzone.Scripts.Lobby
             _gamePlayedOut = true;
         }
 
+        private bool IsGameStartTransitionActive()
+        {
+            // BattleID can remain set after match end, so rely on transient runtime flags instead.
+            return !_gamePlayedOut && (_countdownActive || _startGameHolder != null || _startQuantumHolder != null);
+        }
+
         public void AcceptInRoomInvite(string roomName)
         {
             if (string.IsNullOrEmpty(roomName)) return;
@@ -4069,15 +4075,7 @@ namespace Altzone.Scripts.Lobby
             if (PhotonRealtimeClient.Client.State == ClientState.Leaving) return;
 
             // If a game start countdown or start flow is in progress, cancel it.
-            bool startCountdownInProgress = _startGameHolder != null || _startQuantumHolder != null;
-            if (!startCountdownInProgress && PhotonRealtimeClient.CurrentRoom != null)
-            {
-                try
-                {
-                    startCountdownInProgress = PhotonRealtimeClient.CurrentRoom.CustomProperties.ContainsKey(PhotonBattleRoom.BattleID);
-                }
-                catch (Exception ex) { Debug.LogWarning($"OnPlayerLeftRoom: failed to evaluate BattleID presence: {ex.Message}"); }
-            }
+            bool startCountdownInProgress = IsGameStartTransitionActive();
 
             if (startCountdownInProgress)
             {
@@ -5215,15 +5213,14 @@ namespace Altzone.Scripts.Lobby
             }
             OnGameStartCancelled?.Invoke();
 
-            // If the master left while a countdown was in progress (indicated by BattleID present),
+            // If the master left while a local countdown/start transition is in progress,
             // non-master clients may not have executed the OnPlayerLeftRoom requeue path because
-            // master switch can clear BattleID. Ensure clients still perform cancel+requeue here.
+            // the switch can race with room/property updates. Ensure clients still perform cancel+requeue here.
             try
             {
                 var room = PhotonRealtimeClient.CurrentRoom;
-                bool wasStarting = false;
-                try { wasStarting = room != null && room.CustomProperties != null && room.CustomProperties.ContainsKey(PhotonBattleRoom.BattleID) && !string.IsNullOrEmpty(room.GetCustomProperty<string>(PhotonBattleRoom.BattleID)); } catch { }
-                if ((wasStarting || _countdownActive) && PhotonRealtimeClient.InMatchmakingRoom && !PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+                bool wasStarting = IsGameStartTransitionActive();
+                if (wasStarting && PhotonRealtimeClient.InMatchmakingRoom && !PhotonRealtimeClient.LocalPlayer.IsMasterClient)
                 {
                     // Mirror CancelGameStart handling with requeue=true for non-master clients
                     _lastStartCancelTime = Time.time;
@@ -5255,7 +5252,7 @@ namespace Altzone.Scripts.Lobby
                 }
                 // If this client became the new master while a countdown was active,
                 // take over leader-led requeue (create new matchmaking room) so players follow.
-                if ((wasStarting || _countdownActive) && PhotonRealtimeClient.InMatchmakingRoom && PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+                if (wasStarting && PhotonRealtimeClient.InMatchmakingRoom && PhotonRealtimeClient.LocalPlayer.IsMasterClient)
                 {
                     _lastStartCancelTime = Time.time;
                     try { if (_matchmakingHolder != null) { StopCoroutine(_matchmakingHolder); _matchmakingHolder = null; } } catch { }
