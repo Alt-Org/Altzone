@@ -233,7 +233,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
             ClanData data = null;
             Storefront.Get().GetClanData(ServerManager.Instance.Player.clan_id, c => data = c);
-            bool isOnline = data.Members.Any(o => o._id == serverPlayer._id);
+            bool isOnline = onlinePlayers.Any(o => o._id == serverPlayer._id);
 
             if (serverPlayer.clan_id == ServerManager.Instance.Clan._id)
             {
@@ -258,6 +258,34 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                 _clanPlayersPanelItems.Add(clanItem);
             }
         }
+        ClanData data2 = null;
+        Storefront.Get().GetClanData(ServerManager.Instance.Player.clan_id, c => data2 = c);
+
+        foreach (var member in data2.Members)
+        {
+            if (_clanPlayers.Exists(f => f._id == member._id)) continue;
+            bool isOnline = onlinePlayers.Any(o => o._id == member._id);
+            bool alreadyFriend = _friendlist.Exists(f => f._id == member._id);
+            bool alreadyRequested = _friendRequests.Exists(r => r.friend._id == member._id);
+
+            OnlinePlayersPanelItem clanItem = Instantiate(_onlinePlayersPanelItemPrefab, _clanPlayersPanelContent);
+            StartCoroutine(clanItem.Initialize(
+                player: member.Player,
+                onlineState: isOnline ? OnlineState.Online : OnlineState.Offline,
+                onRemoveClick: () => { },
+                friendstate: alreadyFriend ? FriendState.Friend : alreadyRequested ? FriendState.Sending : FriendState.None,
+                onAddFriendClick: () =>
+                {
+                    StartCoroutine(ServerManager.Instance.SendFriendRequest(member._id, success =>
+                    {
+                        if (success)
+                            Debug.Log($"Friend request sent to {member.Name}");
+                    }));
+
+                }
+                ));
+            _clanPlayersPanelItems.Add(clanItem);
+        }
     }
 
     private void UpdateOnlineFriendsCount(List<ServerOnlinePlayer> onlinePlayers)
@@ -269,22 +297,6 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
     private void UpdatePlayerList()
     {
-        List<ServerOnlinePlayer> playersToShow = _currentView == OnlinePlayersView.Clan  // Determine which players to show based on the current view (Clan or All)
-            ? _clanPlayers
-            : _allPlayers;
-
-        for (int i = 0; i < _onlinePlayersPanelItems.Count; i++)    // Loop through the panel items
-        {
-            var item = _onlinePlayersPanelItems[i];
-            if (i < playersToShow.Count) // If we are in Clan view, hide players that don't belong to the clan
-            {
-                item.gameObject.SetActive(true);
-            }
-            else
-            {
-                item.gameObject.SetActive(false);
-            }
-        }
     }
 
     private IEnumerator UpdateFriendList()
