@@ -64,7 +64,9 @@ public class ProfileMenu : AltMonoBehaviour
     //[SerializeField] private GameObject _closePopupAreaButton;
     [SerializeField] private GameObject _popupOverlay;
     [SerializeField] private GameObject[] _playStyleButtons;
-    [SerializeField] private Button _avatarPageTabButton;
+    [SerializeField] private Button _avatarTabButton;
+    [SerializeField] private GameObject _avatarTabLock;
+    [SerializeField] private GameObject _avatarTabText;
 
     [Header("Clan Button")]
     [SerializeField] private Button _ClanURLButton;
@@ -363,6 +365,20 @@ public class ProfileMenu : AltMonoBehaviour
         }
     }*/
 
+    private void UpdateAvatarTabLockUI()
+    {
+        bool isOtherProfile = _otherPlayerProfile;
+
+        if (_avatarTabLock != null)
+            _avatarTabLock.SetActive(isOtherProfile);
+
+        if (_avatarTabText != null)
+            _avatarTabText.SetActive(!isOtherProfile);
+
+        if (_avatarTabButton != null)
+            _avatarTabButton.interactable = !isOtherProfile;
+    }
+
     private void RefreshTodaysEmotionUI()
     {
         if (_todaysEmotionImage == null || _playerData == null)
@@ -570,13 +586,11 @@ public class ProfileMenu : AltMonoBehaviour
             {
                 _playerData = player;
                 _otherPlayerProfile = true;
-                _avatarPageTabButton.gameObject.SetActive(false);
                 ApplyPlayerDataToUI();
             }
             else
             {
                 _otherPlayerProfile = false;
-                _avatarPageTabButton.gameObject.SetActive(true);
 
                 store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p =>
                 {
@@ -602,6 +616,7 @@ public class ProfileMenu : AltMonoBehaviour
     private void ApplyPlayerDataToUI()
     {
         UpdateOwnProfileOnlyUI();
+        UpdateAvatarTabLockUI();
 
         if (_playerData == null)
         {
