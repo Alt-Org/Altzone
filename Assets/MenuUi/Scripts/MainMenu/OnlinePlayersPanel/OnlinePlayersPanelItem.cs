@@ -180,13 +180,13 @@ public class OnlinePlayersPanelItem : MonoBehaviour
     {
         if (!value)
         {
-            GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().sizeDelta.x, Math.Min(GetComponent<RectTransform>().sizeDelta.x / 5, 100f));
+            GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().sizeDelta.x, 100f);
             _topPanel.anchorMin = new(0, 0f);
             _bottomPanel.gameObject.SetActive(false);
         }
         else
         {
-            GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().sizeDelta.x, Math.Min(GetComponent<RectTransform>().sizeDelta.x / 5, 100f) * 2);
+            GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().sizeDelta.x, 200f);
             _topPanel.anchorMin = new(0, 0.5f);
             _bottomPanel.gameObject.SetActive(true);
         }
