@@ -1879,7 +1879,7 @@ MonoBehaviour:
   _toggleBotPlayerP2: {fileID: 0}
   _toggleBotPlayerP3: {fileID: 0}
   _toggleBotPlayerP4: {fileID: 0}
-  _buttonStartPlay: {fileID: 0}
+  _buttonStartPlay: {fileID: 116578133472790575}
   _buttonRaidTest: {fileID: 0}
   _nameP1: {fileID: 0}
   _nameP2: {fileID: 0}
@@ -1926,6 +1926,9 @@ MonoBehaviour:
   _roomSwitcher: {fileID: 4116104174498300769}
   _noticeText: {fileID: 8001834333424065541}
   _sendInviteToFriendText: {fileID: 6755532399491747094}
+  _premadeTargetModeDropdown: {fileID: 0}
+  _inviteOnlinePlayerButton: {fileID: 6233693051039505318}
+  _inviteSelectorPanel: {fileID: 0}
 --- !u!1 &927223887747304151
 GameObject:
   m_ObjectHideFlags: 0
@@ -5369,6 +5372,9 @@ MonoBehaviour:
   _roomSwitcher: {fileID: 4116104174498300769}
   _noticeText: {fileID: 0}
   _sendInviteToFriendText: {fileID: 0}
+  _premadeTargetModeDropdown: {fileID: 0}
+  _inviteOnlinePlayerButton: {fileID: 0}
+  _inviteSelectorPanel: {fileID: 0}
 --- !u!1 &2927705854601579417
 GameObject:
   m_ObjectHideFlags: 0
@@ -17977,6 +17983,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SelectedCharactersPlayer2
       objectReference: {fileID: 0}
+    - target: {fileID: 6082567443366930256, guid: 8e246b0a47c7e6b489fcb7b2eeb10763,
+        type: 3}
+      propertyPath: _isInRoom
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4197650550993359056, guid: 8e246b0a47c7e6b489fcb7b2eeb10763,
         type: 3}
       propertyPath: m_Pivot.x
@@ -21490,6 +21501,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SelectedCharactersPlayer1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6082567443366930256, guid: 8e246b0a47c7e6b489fcb7b2eeb10763,
+        type: 3}
+      propertyPath: _isInRoom
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4197650550993359056, guid: 8e246b0a47c7e6b489fcb7b2eeb10763,
         type: 3}

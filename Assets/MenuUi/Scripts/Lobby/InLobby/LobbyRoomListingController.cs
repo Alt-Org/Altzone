@@ -124,6 +124,9 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 {
                     switch (gameType)
                     {
+                        case GameType.InRoom_:
+                            CreateInRoomPremadeRoom();
+                            break;
                         case GameType.Clan2v2:
                             CreateClan2v2Room();
                             break;
@@ -179,6 +182,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     PhotonRealtimeClient.JoinOrCreateQueueRoom(GameType.Random2v2);
                 }
             }));
+        }
+
+        private void CreateInRoomPremadeRoom()
+        {
+            PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom();
         }
 
         private void JoinRoom(string roomName)

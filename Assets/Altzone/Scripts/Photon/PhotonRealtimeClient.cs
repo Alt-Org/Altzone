@@ -671,6 +671,25 @@ public static class PhotonRealtimeClient
 
         List<string> propertiesShowingToLobby = new() { PhotonBattleRoom.GameTypeKey, PhotonBattleRoom.IsMatchmakingKey };
 
+        if (gameType == GameType.InRoom_)
+        {
+            customRoomProperties.Add(PhotonBattleRoom.PremadeModeKey, true);
+            customRoomProperties.Add(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)GameType.Random2v2);
+            customRoomProperties.Add(PhotonBattleRoom.PremadeLeaderUserIdKey, LocalPlayer.UserId);
+            customRoomProperties.Add(PhotonBattleRoom.PremadeInvitedUserIdKey, "");
+            customRoomProperties.Add(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateNone);
+            customRoomProperties.Add(PhotonBattleRoom.PremadeInviteTimestampKey, 0L);
+            customRoomProperties.Add(PhotonBattleRoom.PremadeUserId1Key, LocalPlayer.UserId);
+            customRoomProperties.Add(PhotonBattleRoom.PremadeUserId2Key, "");
+
+            propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeModeKey);
+            propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeTargetGameTypeKey);
+            propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeInvitedUserIdKey);
+            propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeInviteStateKey);
+            propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeInviteTimestampKey);
+            propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeLeaderUserIdKey);
+        }
+
         int maxPlayers;
 
         switch (gameType)
@@ -689,6 +708,9 @@ public static class PhotonRealtimeClient
                 {
                     maxPlayers = 2;
                 }
+                break;
+            case GameType.InRoom_:
+                maxPlayers = 2;
                 break;
         }
         if (maxPlayers == 4)
@@ -783,6 +805,21 @@ public static class PhotonRealtimeClient
             mapId: mapId,
             startingEmotion: startingEmotion,
             password: password
+        );
+
+        return CreateRoom(
+            roomName: roomName,
+            roomOptions: roomOptions,
+            expectedUsers: expectedUsers
+        );
+    }
+
+    public static bool CreateInRoomPremadeLobbyRoom(string[] expectedUsers = null)
+    {
+        string roomName = $"InRoom_{LocalPlayer.UserId}_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+        RoomOptions roomOptions = GetRoomOptions(
+            gameType: GameType.InRoom_,
+            roomName: roomName
         );
 
         return CreateRoom(
