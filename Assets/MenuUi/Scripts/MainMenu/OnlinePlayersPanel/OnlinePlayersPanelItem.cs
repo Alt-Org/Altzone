@@ -68,9 +68,9 @@ public class OnlinePlayersPanelItem : MonoBehaviour
             _avatarFaceLoader.UpdateVisuals(avatarVisualData);
         }
 
-        if (clanLogo != null && onlineState != OnlineState.Global)
+        if (onlineState == OnlineState.Global)
         {
-            _clanHeart.SetHeartColors(clanLogo);
+            if(clanLogo != null) _clanHeart.SetHeartColors(clanLogo);
             _clanHeart.gameObject.SetActive(true);
         }
         else
@@ -78,7 +78,15 @@ public class OnlinePlayersPanelItem : MonoBehaviour
             _clanHeart.gameObject.SetActive(false);
         }
 
-        UpdateOnlineStatusIndicator();
+        if(onlineState is OnlineState.Global || friendstate is FriendState.Receiving)
+        {
+            _onlineStatusIndicator.gameObject.SetActive(false);
+        }
+        else
+        {
+            _onlineStatusIndicator.gameObject.SetActive(true);
+            UpdateOnlineStatusIndicator();
+        }
 
         if (_addfriendButton != null)
         {

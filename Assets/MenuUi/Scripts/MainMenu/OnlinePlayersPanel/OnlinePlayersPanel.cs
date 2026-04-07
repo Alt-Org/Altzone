@@ -66,7 +66,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
         ServerManager.OnOnlinePlayersChanged += BuildOnlinePlayerList;
         OverlayPanelCheck.OnToggleOnlinePlayerList += ToggleOnlinePlayersPanel;
-        FriendlistItem.OnContentRefreshRequested += RefreshListStatus;
+        OnlinePlayersPanelItem.OnContentRefreshRequested += RefreshListStatus;
         ToggleOnlinePlayersPanel(false);
     }
 
@@ -82,7 +82,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     {
         ServerManager.OnOnlinePlayersChanged -= BuildOnlinePlayerList;
         OverlayPanelCheck.OnToggleOnlinePlayerList -= ToggleOnlinePlayersPanel;
-        FriendlistItem.OnContentRefreshRequested -= RefreshListStatus;
+        OnlinePlayersPanelItem.OnContentRefreshRequested -= RefreshListStatus;
     }
     private bool _closing = false;
 
@@ -394,6 +394,8 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     private void RefreshListStatus()
     {
         //StartCoroutine(RefreshListStatusCoroutine());
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_clanPlayersPanelContent);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_onlinePlayersPanelContent);
         LayoutRebuilder.ForceRebuildLayoutImmediate(_friendsContent);
     }
 
