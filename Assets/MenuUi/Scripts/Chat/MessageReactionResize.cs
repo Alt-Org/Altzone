@@ -18,6 +18,14 @@ public class MessageReactionResize : MonoBehaviour
     /// <summary>
     /// This script updates the "AllReactionsScrollView" selections size
     /// </summary>
+    ///
+
+    private void OnEnable()
+    {
+        UpdateSize();
+    }
+
+
     public void UpdateSize()
     { 
         int activeChildren = 0;
@@ -28,9 +36,9 @@ public class MessageReactionResize : MonoBehaviour
         }
 
         ///Updates the width of the object depending how many reactions there still is and the gridlayout's contraintCount
-        if (activeChildren <= _gridLayout.constraintCount)
-        _rectTranformParent.sizeDelta = new Vector2(Mathf.Clamp(activeChildren * 100, 100, _gridLayout.constraintCount * 100), 100);
-        else _rectTranformParent.sizeDelta = new Vector2(Mathf.Clamp(activeChildren * 100, 100, _gridLayout.constraintCount * 100), 200);
+        ///
+        _rectTranformParent.sizeDelta = new Vector2(Mathf.Clamp(activeChildren * 130, 130, _gridLayout.constraintCount * 130), 90);
+
 
         /*//Changes the visual colors if user somehow has put all the reactions in (not in use yet)
          if (i < 0)
