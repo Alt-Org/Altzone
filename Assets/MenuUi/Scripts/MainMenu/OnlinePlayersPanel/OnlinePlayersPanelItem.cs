@@ -166,7 +166,9 @@ public class OnlinePlayersPanelItem : MonoBehaviour
 
     private void ButtonPressHandle(OnlinePlayersPanelItem handler)
     {
-        UpdateSize(handler == this);
+        bool value = handler == this;
+        if (value && _bottomPanel.gameObject.activeSelf) value = false;
+        UpdateSize(value);
     }
 
     private void UpdateSize()
