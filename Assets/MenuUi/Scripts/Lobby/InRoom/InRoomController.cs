@@ -269,16 +269,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 yield break;
             }
 
-            if (candidates.Count == 1)
-            {
-                SendInviteToOnlinePlayer(candidates[0]);
-                yield break;
-            }
-
             EnsureInviteSelectorPanel();
             if (_inviteSelectorPanel == null)
             {
-                SendInviteToOnlinePlayer(candidates[0]);
+                PopupSignalBus.OnChangePopupInfoSignal("Kutsulistaa ei voitu avata. Yrita uudelleen.");
                 yield break;
             }
 
@@ -299,12 +293,14 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private IEnumerator GetInviteCandidatesRoutine(Action<List<ServerOnlinePlayer>> callback)
         {
-            List<ServerOnlinePlayer> onlinePlayers = ServerManager.Instance?.OnlinePlayers;
-            if ((onlinePlayers == null || onlinePlayers.Count == 0) && ServerManager.Instance != null)
+            List<ServerOnlinePlayer> onlinePlayers = null;
+            if (ServerManager.Instance != null)
             {
                 List<ServerOnlinePlayer> fetchedPlayers = null;
                 yield return StartCoroutine(ServerManager.Instance.GetOnlinePlayersFromServer(players => fetchedPlayers = players));
-                onlinePlayers = fetchedPlayers;
+
+                // Always prefer a fresh server snapshot when opening the invite list.
+                onlinePlayers = fetchedPlayers ?? ServerManager.Instance.OnlinePlayers;
             }
 
             callback?.Invoke(FilterInviteCandidates(onlinePlayers));
@@ -564,23 +560,20 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             if (_inviteSelectorPanel != null)
             {
-                if (_inviteOnlinePlayerButton != null)
-                {
-                    _inviteSelectorPanel.ConfigureVisualStyle(_inviteOnlinePlayerButton);
-                }
                 return;
             }
 
             _inviteSelectorPanel = GetComponentInChildren<InRoomInviteSelectorPanel>(true);
             if (_inviteSelectorPanel == null)
             {
-                _inviteSelectorPanel = InRoomInviteSelectorPanel.CreateRuntime(transform);
+                Debug.LogError("InRoomController: InRoomInviteSelectorPanel prefab instance is missing from Battle Popup hierarchy.");
+                if (_inviteOnlinePlayerButton != null)
+                {
+                    _inviteOnlinePlayerButton.interactable = false;
+                }
+                return;
             }
 
-            if (_inviteSelectorPanel != null && _inviteOnlinePlayerButton != null)
-            {
-                _inviteSelectorPanel.ConfigureVisualStyle(_inviteOnlinePlayerButton);
-            }
         }
 
         private void GoBack()

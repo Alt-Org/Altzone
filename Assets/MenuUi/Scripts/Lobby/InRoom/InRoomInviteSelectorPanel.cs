@@ -8,7 +8,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 {
     /// <summary>
     /// Dedicated panel for selecting which online player to invite into a Friend Lobby premade room.
-    /// Can be assigned from prefab or created at runtime by code.
+    /// Assigned from prefab.
     /// </summary>
     public class InRoomInviteSelectorPanel : MonoBehaviour
     {
@@ -54,12 +54,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 _root = gameObject;
             }
 
-            EnsureFallbackStyleInitialized();
             WireUi();
-            if (_root != null)
-            {
-                _root.SetActive(false);
-            }
+            EnsureFallbackStyleInitialized();
         }
 
         private void OnDestroy()
@@ -72,6 +68,15 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         public void Show(List<ServerOnlinePlayer> players, Action<ServerOnlinePlayer> onSelected, Action onCancelled = null)
         {
+            if (_root == null)
+            {
+                _root = gameObject;
+            }
+
+            // Show can be called before Awake when panel starts inactive in prefab.
+            WireUi();
+            EnsureFallbackStyleInitialized();
+
             if (_root == null || _contentRoot == null)
             {
                 Debug.LogWarning("InRoomInviteSelectorPanel: missing UI references.");
@@ -92,82 +97,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         public void ConfigureVisualStyle(Button styleSourceButton)
         {
-            if (styleSourceButton == null)
-            {
-                return;
-            }
-
-            EnsureFallbackStyleInitialized();
-
-            Image primaryImage = styleSourceButton.targetGraphic as Image;
-            if (primaryImage != null)
-            {
-                _rowSprite = primaryImage.sprite;
-                _rowMaterial = primaryImage.material;
-                _rowImageType = primaryImage.type;
-                _rowColor = primaryImage.color;
-            }
-
-            _rowColorBlock = styleSourceButton.colors;
-
-            TMP_Text sourceText = styleSourceButton.GetComponentInChildren<TMP_Text>(true);
-            if (sourceText != null)
-            {
-                _rowFontAsset = sourceText.font;
-                _rowTextColor = sourceText.color;
-                _rowFontSize = Mathf.Max(18f, sourceText.fontSize);
-            }
-
-            Image decorativeFrameImage = FindDecorativeFrameImage(styleSourceButton, primaryImage);
-            if (decorativeFrameImage != null)
-            {
-                ApplyImageStyle(_cardImage, decorativeFrameImage.sprite, decorativeFrameImage.material, decorativeFrameImage.type, new Color(1f, 1f, 1f, 0.97f));
-                ApplyImageStyle(_scrollBackgroundImage, decorativeFrameImage.sprite, decorativeFrameImage.material, decorativeFrameImage.type, new Color(1f, 1f, 1f, 0.9f));
-            }
-
-            if (_overlayImage != null)
-            {
-                _overlayImage.color = _fallbackOverlayColor;
-            }
-
-            if (_closeButtonImage == null && _closeButton != null)
-            {
-                _closeButtonImage = _closeButton.targetGraphic as Image;
-            }
-
-            if (_closeButtonImage != null)
-            {
-                ApplyImageStyle(_closeButtonImage, _rowSprite, _rowMaterial, _rowImageType, _rowColor);
-            }
-
-            if (_closeButton != null)
-            {
-                _closeButton.colors = _rowColorBlock;
-            }
-
-            if (_closeButtonText == null && _closeButton != null)
-            {
-                _closeButtonText = _closeButton.GetComponentInChildren<TMP_Text>(true);
-            }
-
-            if (_closeButtonText != null)
-            {
-                _closeButtonText.color = _rowTextColor;
-                if (_rowFontAsset != null) _closeButtonText.font = _rowFontAsset;
-                _closeButtonText.fontSize = _rowFontSize;
-            }
-
-            if (_titleText != null)
-            {
-                _titleText.color = _rowTextColor;
-                if (_rowFontAsset != null) _titleText.font = _rowFontAsset;
-            }
-
-            if (_emptyText != null)
-            {
-                _emptyText.color = _rowTextColor;
-                if (_rowFontAsset != null) _emptyText.font = _rowFontAsset;
-            }
+            _ = styleSourceButton;
         }
 
         public void Hide(bool invokeCancel)
@@ -331,172 +261,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
             return row;
         }
 
-        public static InRoomInviteSelectorPanel CreateRuntime(Transform parent)
-        {
-            if (parent == null)
-            {
-                return null;
-            }
-
-            GameObject root = new("InviteSelectorPanel", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-            root.transform.SetParent(parent, false);
-
-            RectTransform rootRect = root.GetComponent<RectTransform>();
-            rootRect.anchorMin = Vector2.zero;
-            rootRect.anchorMax = Vector2.one;
-            rootRect.offsetMin = Vector2.zero;
-            rootRect.offsetMax = Vector2.zero;
-
-            Image rootImage = root.GetComponent<Image>();
-            rootImage.color = new Color(0f, 0f, 0f, 0.62f);
-
-            GameObject card = new("Card", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(VerticalLayoutGroup));
-            card.transform.SetParent(root.transform, false);
-            RectTransform cardRect = card.GetComponent<RectTransform>();
-            cardRect.anchorMin = new Vector2(0.08f, 0.08f);
-            cardRect.anchorMax = new Vector2(0.92f, 0.92f);
-            cardRect.offsetMin = Vector2.zero;
-            cardRect.offsetMax = Vector2.zero;
-
-            Image cardImage = card.GetComponent<Image>();
-            cardImage.color = new Color(1f, 1f, 1f, 0.98f);
-
-            VerticalLayoutGroup cardLayout = card.GetComponent<VerticalLayoutGroup>();
-            cardLayout.padding = new RectOffset(24, 24, 22, 22);
-            cardLayout.spacing = 14f;
-            cardLayout.childAlignment = TextAnchor.UpperCenter;
-            cardLayout.childControlHeight = true;
-            cardLayout.childControlWidth = true;
-            cardLayout.childForceExpandHeight = false;
-            cardLayout.childForceExpandWidth = true;
-
-            TMP_Text title = CreateHeaderText(card.transform, "Valitse kutsuttava online-pelaaja", 32f, TextAlignmentOptions.Center);
-            AddLayoutElement(title.gameObject, 72f, 0f, false);
-
-            GameObject scrollRoot = new("ScrollView", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(ScrollRect), typeof(LayoutElement));
-            scrollRoot.transform.SetParent(card.transform, false);
-            Image scrollImage = scrollRoot.GetComponent<Image>();
-            scrollImage.color = new Color(0.95f, 0.95f, 0.95f, 0.95f);
-
-            LayoutElement scrollLayout = scrollRoot.GetComponent<LayoutElement>();
-            scrollLayout.minHeight = 260f;
-            scrollLayout.flexibleHeight = 1f;
-
-            GameObject viewport = new("Viewport", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Mask));
-            viewport.transform.SetParent(scrollRoot.transform, false);
-            RectTransform viewportRect = viewport.GetComponent<RectTransform>();
-            viewportRect.anchorMin = Vector2.zero;
-            viewportRect.anchorMax = Vector2.one;
-            viewportRect.offsetMin = Vector2.zero;
-            viewportRect.offsetMax = Vector2.zero;
-
-            Image viewportImage = viewport.GetComponent<Image>();
-            viewportImage.color = new Color(1f, 1f, 1f, 0.03f);
-            Mask viewportMask = viewport.GetComponent<Mask>();
-            viewportMask.showMaskGraphic = false;
-
-            GameObject content = new("Content", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(ContentSizeFitter));
-            content.transform.SetParent(viewport.transform, false);
-            RectTransform contentRect = content.GetComponent<RectTransform>();
-            contentRect.anchorMin = new Vector2(0f, 1f);
-            contentRect.anchorMax = new Vector2(1f, 1f);
-            contentRect.pivot = new Vector2(0.5f, 1f);
-            contentRect.anchoredPosition = Vector2.zero;
-            contentRect.sizeDelta = Vector2.zero;
-
-            VerticalLayoutGroup contentLayout = content.GetComponent<VerticalLayoutGroup>();
-            contentLayout.spacing = 10f;
-            contentLayout.childControlWidth = true;
-            contentLayout.childControlHeight = true;
-            contentLayout.childForceExpandWidth = true;
-            contentLayout.childForceExpandHeight = false;
-            contentLayout.padding = new RectOffset(8, 8, 8, 8);
-
-            ContentSizeFitter contentSizeFitter = content.GetComponent<ContentSizeFitter>();
-            contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
-            contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-
-            ScrollRect scrollRect = scrollRoot.GetComponent<ScrollRect>();
-            scrollRect.viewport = viewportRect;
-            scrollRect.content = contentRect;
-            scrollRect.horizontal = false;
-            scrollRect.vertical = true;
-            scrollRect.scrollSensitivity = 28f;
-
-            TMP_Text emptyText = CreateHeaderText(card.transform, "Ei kutsuttavia online-pelaajia.", 24f, TextAlignmentOptions.Center);
-            AddLayoutElement(emptyText.gameObject, 58f, 0f, false);
-
-            GameObject closeButtonObject = new("CloseButton", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button), typeof(LayoutElement));
-            closeButtonObject.transform.SetParent(card.transform, false);
-            Image closeImage = closeButtonObject.GetComponent<Image>();
-            closeImage.color = new Color(0.841f, 0.635f, 0.973f, 1f);
-
-            LayoutElement closeLayout = closeButtonObject.GetComponent<LayoutElement>();
-            closeLayout.preferredHeight = 70f;
-
-            TMP_Text closeText = CreateHeaderText(closeButtonObject.transform, "Peruuta", 28f, TextAlignmentOptions.Center);
-            RectTransform closeTextRect = closeText.GetComponent<RectTransform>();
-            closeTextRect.anchorMin = Vector2.zero;
-            closeTextRect.anchorMax = Vector2.one;
-            closeTextRect.offsetMin = Vector2.zero;
-            closeTextRect.offsetMax = Vector2.zero;
-
-            InRoomInviteSelectorPanel panel = root.AddComponent<InRoomInviteSelectorPanel>();
-            panel._root = root;
-            panel._contentRoot = contentRect;
-            panel._closeButton = closeButtonObject.GetComponent<Button>();
-            panel._titleText = title;
-            panel._emptyText = emptyText;
-            panel._overlayImage = rootImage;
-            panel._cardImage = cardImage;
-            panel._scrollBackgroundImage = scrollImage;
-            panel._closeButtonImage = closeImage;
-            panel._closeButtonText = closeText;
-            panel.EnsureFallbackStyleInitialized();
-            panel.WireUi();
-            panel.HideSilently();
-
-            return panel;
-        }
-
-        private static TMP_Text CreateHeaderText(Transform parent, string textValue, float fontSize, TextAlignmentOptions alignment)
-        {
-            GameObject textObj = new("Text", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
-            textObj.transform.SetParent(parent, false);
-
-            RectTransform textRect = textObj.GetComponent<RectTransform>();
-            textRect.anchorMin = Vector2.zero;
-            textRect.anchorMax = Vector2.one;
-            textRect.offsetMin = new Vector2(6f, 0f);
-            textRect.offsetMax = new Vector2(-6f, 0f);
-
-            TextMeshProUGUI text = textObj.GetComponent<TextMeshProUGUI>();
-            text.text = textValue;
-            text.fontSize = fontSize;
-            text.alignment = alignment;
-            text.color = new Color(0.196f, 0.196f, 0.196f, 1f);
-            text.enableWordWrapping = true;
-            if (TMP_Settings.defaultFontAsset != null)
-            {
-                text.font = TMP_Settings.defaultFontAsset;
-            }
-
-            return text;
-        }
-
-        private static void AddLayoutElement(GameObject gameObject, float preferredHeight, float flexibleHeight, bool flexibleWidth)
-        {
-            LayoutElement layoutElement = gameObject.GetComponent<LayoutElement>();
-            if (layoutElement == null)
-            {
-                layoutElement = gameObject.AddComponent<LayoutElement>();
-            }
-
-            layoutElement.preferredHeight = preferredHeight;
-            layoutElement.flexibleHeight = flexibleHeight;
-            layoutElement.flexibleWidth = flexibleWidth ? 1f : 0f;
-        }
-
         private void EnsureFallbackStyleInitialized()
         {
             if (_rowStyleInitialized)
@@ -504,77 +268,28 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 return;
             }
 
-            _rowSprite = null;
-            _rowMaterial = null;
-            _rowImageType = Image.Type.Simple;
-            _rowColor = _fallbackButtonColor;
-            _rowTextColor = _fallbackTextColor;
-            _rowFontSize = _fallbackRowFontSize;
-            _rowFontAsset = TMP_Settings.defaultFontAsset;
-
-            _rowColorBlock = ColorBlock.defaultColorBlock;
-            _rowColorBlock.normalColor = Color.white;
-            _rowColorBlock.highlightedColor = new Color(0.96f, 0.96f, 0.96f, 1f);
-            _rowColorBlock.pressedColor = new Color(0.784f, 0.784f, 0.784f, 1f);
-            _rowColorBlock.selectedColor = new Color(0.96f, 0.96f, 0.96f, 1f);
-            _rowColorBlock.disabledColor = new Color(0.784f, 0.784f, 0.784f, 0.5f);
-            _rowColorBlock.colorMultiplier = 1f;
-            _rowColorBlock.fadeDuration = 0.1f;
-
-            if (_overlayImage != null)
+            if (_closeButtonImage == null && _closeButton != null)
             {
-                _overlayImage.color = _fallbackOverlayColor;
+                _closeButtonImage = _closeButton.targetGraphic as Image;
             }
 
-            if (_cardImage != null)
+            if (_closeButtonText == null && _closeButton != null)
             {
-                _cardImage.color = _fallbackCardColor;
+                _closeButtonText = _closeButton.GetComponentInChildren<TMP_Text>(true);
             }
 
-            if (_scrollBackgroundImage != null)
-            {
-                _scrollBackgroundImage.color = _fallbackScrollColor;
-            }
+            _rowSprite = _closeButtonImage != null ? _closeButtonImage.sprite : null;
+            _rowMaterial = _closeButtonImage != null ? _closeButtonImage.material : null;
+            _rowImageType = _closeButtonImage != null && _closeButtonImage.sprite != null ? _closeButtonImage.type : Image.Type.Simple;
+            _rowColor = _closeButtonImage != null ? _closeButtonImage.color : _fallbackButtonColor;
 
-            if (_closeButtonImage != null)
-            {
-                _closeButtonImage.color = _fallbackButtonColor;
-            }
+            _rowColorBlock = _closeButton != null ? _closeButton.colors : ColorBlock.defaultColorBlock;
 
-            if (_closeButtonText != null)
-            {
-                _closeButtonText.color = _fallbackTextColor;
-            }
-
-            if (_titleText != null)
-            {
-                _titleText.color = _fallbackTextColor;
-            }
-
-            if (_emptyText != null)
-            {
-                _emptyText.color = _fallbackTextColor;
-            }
+            _rowTextColor = _closeButtonText != null ? _closeButtonText.color : _fallbackTextColor;
+            _rowFontSize = _closeButtonText != null ? Mathf.Max(18f, _closeButtonText.fontSize) : _fallbackRowFontSize;
+            _rowFontAsset = _closeButtonText != null && _closeButtonText.font != null ? _closeButtonText.font : TMP_Settings.defaultFontAsset;
 
             _rowStyleInitialized = true;
-        }
-
-        private static Image FindDecorativeFrameImage(Button sourceButton, Image primaryImage)
-        {
-            if (sourceButton == null)
-            {
-                return null;
-            }
-
-            Image[] images = sourceButton.GetComponentsInChildren<Image>(true);
-            foreach (Image image in images)
-            {
-                if (image == null || image == primaryImage) continue;
-                if (image.sprite == null) continue;
-                return image;
-            }
-
-            return primaryImage != null && primaryImage.sprite != null ? primaryImage : null;
         }
 
         private static void ApplyImageStyle(Image image, Sprite sprite, Material material, Image.Type type, Color color)
@@ -589,5 +304,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
             image.type = sprite != null ? type : Image.Type.Simple;
             image.color = color;
         }
+
     }
 }

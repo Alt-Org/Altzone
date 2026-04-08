@@ -163,6 +163,7 @@ GameObject:
   - component: {fileID: 3909196248017474539}
   - component: {fileID: 4139031153675824652}
   - component: {fileID: 3915831388473070548}
+  - component: {fileID: 3077071892250095474}
   m_Layer: 5
   m_Name: InviteDecisionPanel
   m_TagString: Untagged
@@ -211,14 +212,42 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _popup: {fileID: 7706476986623892885}
-  _returnButton: {fileID: 2589222831719803575}
-  _closeButton: {fileID: 1005031969331987872}
+  _rejectButton: {fileID: 2589222831719803575}
+  _acceptButton: {fileID: 1005031969331987872}
   _messageText: {fileID: 2864667504755610613}
-  _returnButtonText: {fileID: 661011559652948227}
-  _closeButtonText: {fileID: 2139956585484295374}
+  _rejectButtonText: {fileID: 661011559652948227}
+  _acceptButtonText: {fileID: 2139956585484295374}
   _defaultMessage: "Sinut kutsuttiin huoneeseen. Liityt\xE4\xE4nk\xF6?"
   _defaultDeclineText: "Hylk\xE4\xE4"
   _defaultAcceptText: Liity
+--- !u!114 &3077071892250095474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2138903436155762796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ed3e5740e17a5e499d4d546a3a1ed6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _root: {fileID: 0}
+  _contentRoot: {fileID: 0}
+  _closeButton: {fileID: 0}
+  _titleText: {fileID: 0}
+  _emptyText: {fileID: 0}
+  _overlayImage: {fileID: 0}
+  _cardImage: {fileID: 0}
+  _scrollBackgroundImage: {fileID: 0}
+  _closeButtonImage: {fileID: 0}
+  _closeButtonText: {fileID: 0}
+  _fallbackOverlayColor: {r: 0, g: 0, b: 0, a: 0.62}
+  _fallbackCardColor: {r: 1, g: 1, b: 1, a: 0.98}
+  _fallbackScrollColor: {r: 0.95, g: 0.95, b: 0.95, a: 0.95}
+  _fallbackButtonColor: {r: 0.841, g: 0.635, b: 0.973, a: 1}
+  _fallbackTextColor: {r: 0.196, g: 0.196, b: 0.196, a: 1}
+  _fallbackRowFontSize: 24
 --- !u!1 &2956264022003729281
 GameObject:
   m_ObjectHideFlags: 0
