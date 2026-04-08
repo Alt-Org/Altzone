@@ -67,7 +67,7 @@ public class OnlinePlayersPanelItem : MonoBehaviour
         if (player != null)
         {
             clanLogo = player.clanLogo;
-            avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(new AvatarData(player.name, player.avatar));
+            avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(new PlayerData(player));
             SetProfileListener(player);
         }
 
