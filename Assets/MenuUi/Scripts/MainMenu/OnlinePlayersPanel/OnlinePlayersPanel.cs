@@ -160,7 +160,8 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
     private void BuildOnlinePlayerList(List<ServerOnlinePlayer> onlinePlayers)
     {
-        StartCoroutine(BuildOnlineList(onlinePlayers));
+        if (gameObject.activeInHierarchy)
+            StartCoroutine(BuildOnlineList(onlinePlayers));
     }
 
     private IEnumerator FetchFriendData() // Fetches friend list and sent requests before building the player list
