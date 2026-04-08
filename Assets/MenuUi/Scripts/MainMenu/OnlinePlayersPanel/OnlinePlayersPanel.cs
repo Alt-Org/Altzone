@@ -141,19 +141,16 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                 _clanPlayersPage.SetActive(true);
                 _onlinePlayersPage.SetActive(false);
                 _friendsPage.SetActive(false);
-                UpdatePlayerList();
                 break;
             case OnlinePlayersView.All:
                 _clanPlayersPage.SetActive(false);
                 _onlinePlayersPage.SetActive(true);
                 _friendsPage.SetActive(false);
-                UpdatePlayerList();
                 break;
             case OnlinePlayersView.Friends:
                 _clanPlayersPage.SetActive(false);
                 _onlinePlayersPage.SetActive(false);
                 _friendsPage.SetActive(true);
-                StartCoroutine(UpdateFriendList());
                 break;
         }
     }
@@ -276,6 +273,8 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         {
             _clanPlayersPanelItems[i].transform.SetSiblingIndex(i);
         }
+
+        yield return UpdateFriendList();
     }
 
     private void UpdateOnlineFriendsCount(List<ServerOnlinePlayer> onlinePlayers)
@@ -283,10 +282,6 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         int onlinePlayerCount = onlinePlayers.Count;
 
         _onlineTitle.text = $"Online-pelaajia {onlinePlayerCount}";
-    }
-
-    private void UpdatePlayerList()
-    {
     }
 
     private IEnumerator UpdateFriendList()
