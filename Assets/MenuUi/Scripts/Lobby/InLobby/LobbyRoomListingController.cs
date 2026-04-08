@@ -104,17 +104,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             if (!isMatchmakingOrQueue)
             {
                 _creatingRoomText.SetActive(true);
-                // Ensure the creating-room text does not block UI clicks behind it
-                try
-                {
-                    var cg = _creatingRoomText.GetComponent<UnityEngine.CanvasGroup>();
-                    if (cg == null) cg = _creatingRoomText.AddComponent<UnityEngine.CanvasGroup>();
-                    cg.blocksRaycasts = false;
-                    cg.interactable = false;
-                    var graphics = _creatingRoomText.GetComponentsInChildren<UnityEngine.UI.Graphic>(true);
-                    foreach (var g in graphics) g.raycastTarget = false;
-                }
-                catch { }
+       
             }
             bool roomCreated = false;
             do
