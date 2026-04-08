@@ -266,6 +266,14 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                 ));
             _clanPlayersPanelItems.Add(clanItem);
         }
+
+        _clanPlayersPanelItems = _clanPlayersPanelItems.OrderBy(a => a.Player.name).ToList();
+        _clanPlayersPanelItems = _clanPlayersPanelItems.OrderByDescending(a => a.IsOnline).ToList();
+
+        for(int i =0; i<_clanPlayersPanelItems.Count ;i++)
+        {
+            _clanPlayersPanelItems[i].transform.SetSiblingIndex(i);
+        }
     }
 
     private void UpdateOnlineFriendsCount(List<ServerOnlinePlayer> onlinePlayers)
