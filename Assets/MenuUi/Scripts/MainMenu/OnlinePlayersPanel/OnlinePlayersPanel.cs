@@ -222,7 +222,10 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                      StartCoroutine(ServerManager.Instance.SendFriendRequest(player._id, success =>
                      {
                          if (success)
+                         {
+                             newItem.SetFriendStatus(FriendState.Sending);
                              Debug.Log($"Friend request sent to {playerName}");
+                         }
                      }));
 
                  }
@@ -263,7 +266,10 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                     StartCoroutine(ServerManager.Instance.SendFriendRequest(member._id, success =>
                     {
                         if (success)
+                        {
+                            clanItem.SetFriendStatus(FriendState.Sending);
                             Debug.Log($"Friend request sent to {member.Name}");
+                        }
                     }));
 
                 }
@@ -279,7 +285,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             _clanPlayersPanelItems[i].transform.SetSiblingIndex(i);
         }
 
-        yield return UpdateFriendList();
+        yield return UpdateFriendListCoroutine();
     }
 
     private void UpdateOnlineFriendsCount(List<ServerOnlinePlayer> onlinePlayers)
@@ -289,7 +295,18 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         _onlineTitle.text = $"Online-pelaajia {onlinePlayerCount}";
     }
 
+    private void CallUpdateFriendList()
+    {
+        StartCoroutine(UpdateFriendList());
+    }
+
     private IEnumerator UpdateFriendList()
+    {
+        yield return FetchFriendData();
+        yield return UpdateFriendListCoroutine();
+    }
+
+    private IEnumerator UpdateFriendListCoroutine()
     {
 
         List<OnlinePlayersPanelItem> _onlinePlayersPanelsToCheck = new(_friendPanelItems);
@@ -359,11 +376,11 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                     {
                         // Accept the request
                         StartCoroutine(ServerManager.Instance.FriendRequestAccept(
-                            request.friend._id,
+                            request.friendship_id,
                             success =>
                             {
                                 if (success)
-                                    StartCoroutine(UpdateFriendList());
+                                    CallUpdateFriendList();
                             }
                         ));
                     },
@@ -371,13 +388,22 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                     {
                         // Decline the request
                         StartCoroutine(ServerManager.Instance.FriendDelete(
-                            request.friend._id,
+                            request.friendship_id,
                             success =>
                             {
                                 if (success)
-                                    StartCoroutine(UpdateFriendList());
+                                    CallUpdateFriendList();
                             }
                         ));
+                    },
+                    onRemoveClick: () =>
+                    {
+                        // Remove friend 
+                        StartCoroutine(ServerManager.Instance.FriendDelete(request.friend._id, success =>
+                        {
+                            if (success)
+                                CallUpdateFriendList();
+                        }));
                     }
                 ));
                 _friendPanelItems.Add(requestItem);
@@ -408,7 +434,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                      StartCoroutine(ServerManager.Instance.FriendDelete(friend._id, success =>
                      {
                          if (success)
-                             StartCoroutine(UpdateFriendList());
+                             CallUpdateFriendList();
                      }));
                  }
             ));

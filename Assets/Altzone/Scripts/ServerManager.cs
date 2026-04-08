@@ -1876,12 +1876,6 @@ public class ServerManager : MonoBehaviour
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
-                JObject result = JObject.Parse(request.downloadHandler.text);
-                //Debug.LogWarning(result);
-                //List<bool> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<bool>>();
-
-
-
                 if (callback != null)
                     callback(true);
             }
