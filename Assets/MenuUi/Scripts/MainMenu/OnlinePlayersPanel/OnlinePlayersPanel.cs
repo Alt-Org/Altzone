@@ -182,7 +182,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             {
                 _onlinePlayersPanelsChecked.Add(panel);
                 _onlinePlayersPanelsToCheck.Remove(panel);
-                panel.SetFriendStatus(_friendlist.Exists(f => f._id == player._id) ? FriendState.Friend : _friendRequests.Exists(r => r.friend._id == player._id) ? FriendState.Sending : FriendState.None);
+                panel.SetFriendStatus(_friendlist.Exists(f => f._id == player._id) ? FriendState.Friend : _friendRequests.Exists(r => r.friend._id == player._id) ? (_friendRequests.Find(r => r.friend._id == player._id).direction == "incoming" ? FriendState.Receiving : FriendState.Sending) : FriendState.None);
             }
             else
             {
@@ -216,7 +216,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                  player: serverPlayer,
                  onlineState: OnlineState.Global,
                  onRemoveClick: () => { },
-                 friendstate: alreadyFriend ? FriendState.Friend : alreadyRequested ? FriendState.Sending : FriendState.None,
+                 friendstate: alreadyFriend ? FriendState.Friend : alreadyRequested ?(_friendRequests.Find(r => r.friend._id == player._id).direction == "incoming" ? FriendState.Receiving : FriendState.Sending) : FriendState.None,
                  onAddFriendClick: () =>
                  {
                      StartCoroutine(ServerManager.Instance.SendFriendRequest(player._id, success =>
@@ -238,7 +238,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         {
             if (data2.Members.Exists(f => f._id == member.Player._id))
             {
-                member.SetFriendStatus(_friendlist.Exists(f => f._id == member.Player._id) ? FriendState.Friend : _friendRequests.Exists(r => r.friend._id == member.Player._id) ? FriendState.Sending : FriendState.None);
+                member.SetFriendStatus(_friendlist.Exists(f => f._id == member.Player._id) ? FriendState.Friend : _friendRequests.Exists(r => r.friend._id == member.Player._id) ? (_friendRequests.Find(r => r.friend._id == member.Player._id).direction == "incoming" ? FriendState.Receiving : FriendState.Sending) : FriendState.None);
                 member.SetOnlineStatus(onlinePlayers.Any(o => o._id == member.Player._id) ? OnlineState.Online : OnlineState.Offline);
                 continue;
             }
@@ -257,7 +257,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                 player: member.Player,
                 onlineState: isOnline ? OnlineState.Online : OnlineState.Offline,
                 onRemoveClick: () => { },
-                friendstate: alreadyFriend ? FriendState.Friend : alreadyRequested ? FriendState.Sending : FriendState.None,
+                friendstate: alreadyFriend ? FriendState.Friend : alreadyRequested ? (_friendRequests.Find(r => r.friend._id == member._id).direction == "incoming" ? FriendState.Receiving : FriendState.Sending) : FriendState.None,
                 onAddFriendClick: () =>
                 {
                     StartCoroutine(ServerManager.Instance.SendFriendRequest(member._id, success =>
@@ -297,6 +297,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         List<ServerFriendRequest> newFriendRequests = new List<ServerFriendRequest>();
         foreach (ServerFriendRequest player in _friendRequests)
         {
+            if (player.direction == "outgoing") continue;
             OnlinePlayersPanelItem panel = _onlinePlayersPanelsToCheck.Find(f => f.Player._id == player.friend._id);
             if (panel)
             {
