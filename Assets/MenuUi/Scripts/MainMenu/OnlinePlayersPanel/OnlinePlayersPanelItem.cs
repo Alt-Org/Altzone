@@ -105,25 +105,35 @@ public class OnlinePlayersPanelItem : MonoBehaviour
             //_addfriendButton.gameObject.SetActive(true);
             _addfriendButton.onClick.RemoveAllListeners();
 
-            if (friendstate is FriendState.Friend)
+            if (player._id == ServerManager.Instance.Player._id)
             {
-                _addfriendButton.interactable = false;
-                _addFriendButtonText.text = "Kaveri";
-            }
-            else if (friendstate is FriendState.Sending)
-            {
-                _addfriendButton.interactable = false;
-                _addFriendButtonText.text = "Kaveripyyntö lähetetty";
+                _addfriendButton.gameObject.SetActive(false);
             }
             else
             {
-                _addfriendButton.interactable = true;
-                _addFriendButtonText.text = "Lisää kaveriksi";
-
-                _addfriendButton.onClick.AddListener(() =>
+                if (friendstate is FriendState.Friend)
                 {
-                    onAddFriendClick?.Invoke();
-                });
+                    _addfriendButton.gameObject.SetActive(false);
+                    _addfriendButton.interactable = false;
+                    _addFriendButtonText.text = "Kaveri";
+                }
+                else if (friendstate is FriendState.Sending)
+                {
+                    _addfriendButton.gameObject.SetActive(true);
+                    _addfriendButton.interactable = false;
+                    _addFriendButtonText.text = "Kaveripyyntö lähetetty";
+                }
+                else
+                {
+                    _addfriendButton.gameObject.SetActive(true);
+                    _addfriendButton.interactable = true;
+                    _addFriendButtonText.text = "Lisää kaveriksi";
+
+                    _addfriendButton.onClick.AddListener(() =>
+                    {
+                        onAddFriendClick?.Invoke();
+                    });
+                }
             }
         }
 
@@ -161,6 +171,7 @@ public class OnlinePlayersPanelItem : MonoBehaviour
         GetComponent<Button>().onClick.AddListener(() => UpdateSize());
 
         yield return new WaitForEndOfFrame();
+
         UpdateSize(false);
     }
 
