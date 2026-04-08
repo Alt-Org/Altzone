@@ -47,6 +47,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
     private List<OnlinePlayersPanelItem> _onlinePlayersPanelItems = new List<OnlinePlayersPanelItem>();
     private List<OnlinePlayersPanelItem> _clanPlayersPanelItems = new List<OnlinePlayersPanelItem>();
+    private List<OnlinePlayersPanelItem> _friendPanelItems = new List<OnlinePlayersPanelItem>();
     private List<ServerOnlinePlayer> _clanPlayers = new List<ServerOnlinePlayer>();
     private List<ServerOnlinePlayer> _allPlayers = new List<ServerOnlinePlayer>();
     private List<ServerFriendPlayer> _friendlist = new List<ServerFriendPlayer>();
@@ -290,16 +291,49 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
     private IEnumerator UpdateFriendList()
     {
-        foreach(RectTransform gobject in _friendsContent)
+
+        List<OnlinePlayersPanelItem> _onlinePlayersPanelsToCheck = new(_friendPanelItems);
+        List<OnlinePlayersPanelItem> _onlinePlayersPanelsChecked = new();
+        List<ServerFriendRequest> newFriendRequests = new List<ServerFriendRequest>();
+        foreach (ServerFriendRequest player in _friendRequests)
         {
-            Destroy(gobject.gameObject);
+            OnlinePlayersPanelItem panel = _onlinePlayersPanelsToCheck.Find(f => f.Player._id == player.friend._id);
+            if (panel)
+            {
+                _onlinePlayersPanelsChecked.Add(panel);
+                _onlinePlayersPanelsToCheck.Remove(panel);
+            }
+            else
+            {
+                newFriendRequests.Add(player);
+            }
         }
+        List<ServerFriendPlayer> newFriends = new List<ServerFriendPlayer>();
+        foreach (ServerFriendPlayer player in _friendlist)
+        {
+            OnlinePlayersPanelItem panel = _onlinePlayersPanelsToCheck.Find(f => f.Player._id == player._id);
+            if (panel)
+            {
+                _onlinePlayersPanelsChecked.Add(panel);
+                _onlinePlayersPanelsToCheck.Remove(panel);
+            }
+            else
+            {
+                newFriends.Add(player);
+            }
+        }
+
+        foreach (OnlinePlayersPanelItem player in _onlinePlayersPanelsToCheck)
+        {
+            Destroy(player.gameObject);
+        }
+
 
         yield return new WaitForEndOfFrame();
 
         if (_friendRequests != null)
         {
-            foreach (var request in _friendRequests)
+            foreach (var request in newFriendRequests)
             {
                 ServerPlayer serverPlayer = null;
                 bool timeout = false;
@@ -341,10 +375,11 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                         ));
                     }
                 ));
+                _friendPanelItems.Add(requestItem);
             }
         }
 
-        foreach (var friend in _friendlist)
+        foreach (var friend in newFriends)
         {
             ServerPlayer serverPlayer = null;
             bool timeout = false;
@@ -370,7 +405,9 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                          if (success)
                              StartCoroutine(UpdateFriendList());
                      }));
-                 }));
+                 }
+            ));
+            _friendPanelItems.Add(newItem);
         }
     }
 
