@@ -41,12 +41,13 @@ public class OnlinePlayersPanelItem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _addFriendButtonText;
     [SerializeField] private Button _profileButton;
 
-    private bool _isOnline = true;
     private ServerPlayer _player = null;
+    private OnlineState _onlineState = OnlineState.Offline;
+    private FriendState _friendstate = FriendState.None;
 
     public ServerPlayer Player => _player;
-
-    public bool IsOnline => _isOnline;
+    public bool IsOnline => _onlineState is OnlineState.Online;
+    public FriendState Friendstate => _friendstate;
 
     public delegate void OnlinePlayerPanelPressed(OnlinePlayersPanelItem handler);
     public static event OnlinePlayerPanelPressed OnPanelPressed;
@@ -78,7 +79,8 @@ public class OnlinePlayersPanelItem : MonoBehaviour
         }
 
         _nameText.text = player.name;
-        _isOnline = onlineState == OnlineState.Online;
+        _onlineState = onlineState;
+        _friendstate = friendstate;
 
 
         if (avatarVisualData != null)
@@ -218,12 +220,12 @@ public class OnlinePlayersPanelItem : MonoBehaviour
 
     private void UpdateOnlineStatusIndicator()
     {
-        _onlineStatusIndicator.color = _isOnline ? Color.green : Color.red;
+        _onlineStatusIndicator.color = IsOnline ? Color.green : Color.red;
     }
 
-    public void SetOnlineStatus(bool isOnline)
+    public void SetOnlineStatus(OnlineState onlineState)
     {
-        _isOnline = isOnline;
+        _onlineState = onlineState;
         UpdateOnlineStatusIndicator();
     }
 
