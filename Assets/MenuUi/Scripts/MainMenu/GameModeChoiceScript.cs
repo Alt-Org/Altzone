@@ -6,19 +6,16 @@ using UnityEngine.UI;
 
 public class GameModeChoiceScript : MonoBehaviour
 {
+
+    [SerializeField] private List<GameObject> _gameModeButtons = new();
+    [SerializeField] private List<GameObject> _gameModeHeaders = new();
+    [SerializeField] private List<Button> _gameModeButtonsAsButtons = new();
+
     private int currentModeInt = 0;
-    private int amountOfModes = 3;
-
-
-    [SerializeField] private List<GameObject> _gameModeButtons = new List<GameObject>();
-
-    [SerializeField] private List<GameObject> _gameModeHeaders = new List<GameObject>();
-
+    private int amountOfModes;
 
 
     //For the game mode swipe functionality
-
-
     private Vector2 _startTouchPosition;
     private Vector2 _endTouchPosition;
 
@@ -26,17 +23,11 @@ public class GameModeChoiceScript : MonoBehaviour
 
     private bool _isSwiping = false;
 
-    [SerializeField] private List<Button> _gameModeButtonsAsButtons = new List<Button>();
 
     public void GetSwipeStart()
     {
         _startTouchPosition = ClickStateHandler.GetClickPosition();
         _isSwiping = true;
-        
-        foreach (var button in _gameModeButtonsAsButtons)
-        {
-            button.interactable = false;
-        }
     }
 
 
@@ -60,10 +51,6 @@ public class GameModeChoiceScript : MonoBehaviour
         }
     }
 
-    public void IsDraggingOn()
-    {
-        _isSwiping = true;
-    }
 
     public void PointerUp() //triggers button if swipe didn't happen
     {
@@ -82,6 +69,7 @@ public class GameModeChoiceScript : MonoBehaviour
     private void Start()
     {
         currentModeInt = 0;
+        amountOfModes = _gameModeButtons.Count;
 
         foreach (GameObject gameModeButton in _gameModeButtons)
         {
