@@ -39,7 +39,8 @@ namespace MenuUi.Scripts.Window
             }
             else
             {
-                Instance = this;
+                if(gameObject.tag is "OverlayPanel") Instance = this;
+                else Destroy(gameObject);
                 UpdateButtonContent();
             }
 
