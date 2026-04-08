@@ -5,8 +5,6 @@ using UnityEngine.UI;
 using TMPro;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
-using MenuUI.Scripts;
-using System.ComponentModel;
 
 public class Popup : MonoBehaviour
 {
