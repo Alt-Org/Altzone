@@ -2106,15 +2106,29 @@ namespace Altzone.Scripts.Lobby
                     };
 
                 }
-                // Countdown from 5 to 0 before starting the game
-                for (int i = 5; i >= 0; i--)
+                bool useCountdown = true;
+                try
                 {
-                    SafeRaiseEvent(
-                        PhotonRealtimeClient.PhotonEvent.GameCountdown,
-                        i,
-                        new RaiseEventArgs { Receivers = ReceiverGroup.All },
-                        SendOptions.SendReliable);
-                    if (i > 0) yield return new WaitForSeconds(1f);
+                    GameType roomGameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                    useCountdown = roomGameType != GameType.Custom;
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"StartTheGameplay: failed to read room game type for countdown selection: {ex.Message}");
+                }
+
+                if (useCountdown)
+                {
+                    // Countdown from 5 to 0 before starting the game
+                    for (int i = 5; i >= 0; i--)
+                    {
+                        SafeRaiseEvent(
+                            PhotonRealtimeClient.PhotonEvent.GameCountdown,
+                            i,
+                            new RaiseEventArgs { Receivers = ReceiverGroup.All },
+                            SendOptions.SendReliable);
+                        if (i > 0) yield return new WaitForSeconds(1f);
+                    }
                 }
 
                 // Validate that all expected real players are still present before raising StartGame.
