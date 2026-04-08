@@ -173,24 +173,33 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         yield return StartCoroutine(FetchFriendData());
         UpdateOnlineFriendsCount(onlinePlayers);
 
-        _clanPlayers.Clear();
-        _allPlayers.Clear();
-
-        foreach (var item in _onlinePlayersPanelItems)
-        {
-            Destroy(item.gameObject);
-        }
-
-        foreach (var item in _clanPlayersPanelItems)
-        {
-            Destroy(item.gameObject);
-        }
-
-        _onlinePlayersPanelItems.Clear();
-        _clanPlayersPanelItems.Clear();
-
+        List<OnlinePlayersPanelItem> _onlinePlayersPanelsToCheck = new(_onlinePlayersPanelItems);
+        List<OnlinePlayersPanelItem> _onlinePlayersPanelsChecked = new();
+        List<ServerOnlinePlayer> newOnlinePlayers = new List<ServerOnlinePlayer>();
 
         foreach (var player in onlinePlayers)
+        {
+            OnlinePlayersPanelItem panel = _onlinePlayersPanelsToCheck.Find(f => f.Player._id == player._id);
+            if (panel)
+            {
+                _onlinePlayersPanelsChecked.Add(panel);
+                _onlinePlayersPanelsToCheck.Remove(panel);
+            }
+            else
+            {
+                newOnlinePlayers.Add(player);
+            }
+        }
+
+        foreach (var item in _onlinePlayersPanelsToCheck)
+        {
+            Destroy(item.gameObject);
+        }
+
+        _onlinePlayersPanelItems = _onlinePlayersPanelsChecked;
+
+
+        foreach (var player in newOnlinePlayers)
         {
             string playerName = player.name;
             ServerPlayer serverPlayer = null;
@@ -200,16 +209,6 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             StartCoroutine(WaitUntilTimeout(3, c => timeout = c));
             yield return new WaitUntil(() => serverPlayer != null || timeout);
 
-            if (serverPlayer != null)
-            {
-                _allPlayers.Add(player);
-
-                if(serverPlayer.clan_id == ServerManager.Instance.Clan._id/*|| player._id == ServerManager.Instance.Player._id*/)
-                {
-                    _clanPlayers.Add(player);
-                }
-            }
-
             bool alreadyFriend = _friendlist.Exists(f => f._id == player._id);
             bool alreadyRequested = _friendRequests.Exists(r => r.friend._id == player._id);
 
@@ -217,32 +216,6 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             StartCoroutine(newItem.Initialize(
                  player: serverPlayer,
                  onlineState: OnlineState.Global,
-                 onRemoveClick: () => { },
-                 friendstate: alreadyFriend? FriendState.Friend: alreadyRequested ? FriendState.Sending: FriendState.None,
-                 onAddFriendClick: () =>
-                 { 
-                    StartCoroutine(ServerManager.Instance.SendFriendRequest(player._id, success =>
-                    {
-                        if (success)
-                            Debug.Log($"Friend request sent to {playerName}");
-                    }));
-                
-                }
-            ));
-            _onlinePlayersPanelItems.Add(newItem);
-
-            ClanData data = null;
-            Storefront.Get().GetClanData(ServerManager.Instance.Player.clan_id, c => data = c);
-            bool isOnline = onlinePlayers.Any(o => o._id == serverPlayer._id);
-
-            if (serverPlayer.clan_id == ServerManager.Instance.Clan._id)
-            {
-                _clanPlayers.Add(player);
-
-                OnlinePlayersPanelItem clanItem = Instantiate(_onlinePlayersPanelItemPrefab, _clanPlayersPanelContent);
-                StartCoroutine(clanItem.Initialize(
-                 player: serverPlayer,
-                 onlineState: isOnline ? OnlineState.Online: OnlineState.Offline,
                  onRemoveClick: () => { },
                  friendstate: alreadyFriend ? FriendState.Friend : alreadyRequested ? FriendState.Sending : FriendState.None,
                  onAddFriendClick: () =>
@@ -254,16 +227,23 @@ public class OnlinePlayersPanel : AltMonoBehaviour
                      }));
 
                  }
-                 ));
-                _clanPlayersPanelItems.Add(clanItem);
-            }
+            ));
+            _onlinePlayersPanelItems.Add(newItem);
+
         }
+
         ClanData data2 = null;
         Storefront.Get().GetClanData(ServerManager.Instance.Player.clan_id, c => data2 = c);
 
+        foreach (var member in _clanPlayersPanelItems)
+        {
+            if (data2.Members.Exists(f => f._id == member.Player._id)) continue;
+            Destroy(member.gameObject);
+        }
+
         foreach (var member in data2.Members)
         {
-            if (_clanPlayers.Exists(f => f._id == member._id)) continue;
+            if (_clanPlayersPanelItems.Exists(f => f.Player._id == member._id)) continue;
             bool isOnline = onlinePlayers.Any(o => o._id == member._id);
             bool alreadyFriend = _friendlist.Exists(f => f._id == member._id);
             bool alreadyRequested = _friendRequests.Exists(r => r.friend._id == member._id);

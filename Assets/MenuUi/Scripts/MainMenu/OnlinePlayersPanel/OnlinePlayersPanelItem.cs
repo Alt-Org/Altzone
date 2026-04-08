@@ -42,6 +42,11 @@ public class OnlinePlayersPanelItem : MonoBehaviour
     [SerializeField] private Button _profileButton;
 
     private bool _isOnline = true;
+    private ServerPlayer _player = null;
+
+    public ServerPlayer Player => _player;
+
+    public bool IsOnline => _isOnline;
 
     public delegate void OnlinePlayerPanelPressed(OnlinePlayersPanelItem handler);
     public static event OnlinePlayerPanelPressed OnPanelPressed;
@@ -66,6 +71,7 @@ public class OnlinePlayersPanelItem : MonoBehaviour
 
         if (player != null)
         {
+            _player = player;
             clanLogo = player.clanLogo;
             avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(new PlayerData(player));
             SetProfileListener(player);
