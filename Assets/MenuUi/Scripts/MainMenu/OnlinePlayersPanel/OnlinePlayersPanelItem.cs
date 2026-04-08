@@ -223,10 +223,71 @@ public class OnlinePlayersPanelItem : MonoBehaviour
         _onlineStatusIndicator.color = IsOnline ? Color.green : Color.red;
     }
 
+    private void UpdateFriendIndicator()
+    {
+        if (_friendstate is FriendState.Friend)
+        {
+            _addfriendButton.gameObject.SetActive(false);
+            _addfriendButton.interactable = false;
+            _addFriendButtonText.text = "Kaveri";
+            if (_onlineState is not OnlineState.Global)
+            {
+                _onlineStatusIndicator.gameObject.SetActive(true);
+                UpdateOnlineStatusIndicator();
+            }
+            _acceptFriendButton.gameObject.SetActive(false);
+            _declineFriendButton.gameObject.SetActive(false);
+            _removefriendButton.gameObject.SetActive(true);
+        }
+        else if (_friendstate is FriendState.Sending)
+        {
+            _addfriendButton.gameObject.SetActive(true);
+            _addfriendButton.interactable = false;
+            _addFriendButtonText.text = "Kaveripyyntö lähetetty";
+            if (_onlineState is not OnlineState.Global)
+            {
+                _onlineStatusIndicator.gameObject.SetActive(true);
+                UpdateOnlineStatusIndicator();
+            }
+            _acceptFriendButton.gameObject.SetActive(false);
+            _declineFriendButton.gameObject.SetActive(false);
+            _removefriendButton.gameObject.SetActive(false);
+        }
+        else if (_friendstate is FriendState.Receiving)
+        {
+            _addfriendButton.gameObject.SetActive(false);
+            _addfriendButton.interactable = false;
+            _addFriendButtonText.text = "Kaveripyyntö tulossa.";
+            _onlineStatusIndicator.gameObject.SetActive(false);
+            _acceptFriendButton.gameObject.SetActive(true);
+            _declineFriendButton.gameObject.SetActive(true);
+            _removefriendButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            _addfriendButton.gameObject.SetActive(true);
+            _addfriendButton.interactable = true;
+            _addFriendButtonText.text = "Lisää kaveriksi";
+            if (_onlineState is not OnlineState.Global)
+            {
+                _onlineStatusIndicator.gameObject.SetActive(true);
+                UpdateOnlineStatusIndicator();
+            }
+            _acceptFriendButton.gameObject.SetActive(false);
+            _declineFriendButton.gameObject.SetActive(false);
+            _removefriendButton.gameObject.SetActive(false);
+        }
+    }
+
     public void SetOnlineStatus(OnlineState onlineState)
     {
         _onlineState = onlineState;
         UpdateOnlineStatusIndicator();
+    }
+    public void SetFriendStatus(FriendState friendstate)
+    {
+        _friendstate = friendstate;
+        UpdateFriendIndicator();
     }
 
     private void SetProfileListener(ServerPlayer player)

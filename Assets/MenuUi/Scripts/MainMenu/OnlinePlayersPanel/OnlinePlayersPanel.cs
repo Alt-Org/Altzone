@@ -183,6 +183,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             {
                 _onlinePlayersPanelsChecked.Add(panel);
                 _onlinePlayersPanelsToCheck.Remove(panel);
+                panel.SetFriendStatus(_friendlist.Exists(f => f._id == player._id) ? FriendState.Friend : _friendRequests.Exists(r => r.friend._id == player._id) ? FriendState.Sending : FriendState.None);
             }
             else
             {
@@ -236,7 +237,12 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
         foreach (var member in _clanPlayersPanelItems)
         {
-            if (data2.Members.Exists(f => f._id == member.Player._id)) continue;
+            if (data2.Members.Exists(f => f._id == member.Player._id))
+            {
+                member.SetFriendStatus(_friendlist.Exists(f => f._id == member.Player._id) ? FriendState.Friend : _friendRequests.Exists(r => r.friend._id == member.Player._id) ? FriendState.Sending : FriendState.None);
+                member.SetOnlineStatus(onlinePlayers.Any(o => o._id == member.Player._id) ? OnlineState.Online : OnlineState.Offline);
+                continue;
+            }
             Destroy(member.gameObject);
         }
 
@@ -297,6 +303,8 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             {
                 _onlinePlayersPanelsChecked.Add(panel);
                 _onlinePlayersPanelsToCheck.Remove(panel);
+                panel.SetFriendStatus(FriendState.Receiving);
+                panel.SetOnlineStatus(ServerManager.Instance.OnlinePlayers.Any(o => o._id == player.friend._id) ? OnlineState.Online : OnlineState.Offline);
             }
             else
             {
@@ -311,6 +319,8 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             {
                 _onlinePlayersPanelsChecked.Add(panel);
                 _onlinePlayersPanelsToCheck.Remove(panel);
+                panel.SetFriendStatus(FriendState.Friend);
+                panel.SetOnlineStatus(ServerManager.Instance.OnlinePlayers.Any(o => o._id == player._id) ? OnlineState.Online : OnlineState.Offline);
             }
             else
             {
