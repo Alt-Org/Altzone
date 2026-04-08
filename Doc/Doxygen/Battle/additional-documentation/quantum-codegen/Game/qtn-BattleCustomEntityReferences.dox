@@ -1,7 +1,9 @@
 /// @file BattleCustomEntityReferences.qtn
 /// <summary>
-/// Contains wrapper structs for EntityRefs that are references to specific types of entities
+/// Contains wrapper structs for EntityRefs that are references to specific types of entities.
 /// </summary>
+///
+/// See [{Custom Entity References}](#page-concepts-custom-quantum-entity-references) for more info.
 ///
 /// ## Generated Structs
 /// - @cref{Quantum,BattlePlayerEntityRef}
@@ -17,7 +19,9 @@
 /// Marks this entityref as a player entityref, and adds functionality to retrieve transform and data components.
 /// </summary>
 ///
-/// @bigtext{Generated from @ref BattlePlayerData.qtn}  
+/// See [{Custom Entity References}](#page-concepts-custom-quantum-entity-references) for more info.
+///
+/// @bigtext{Generated from @ref BattleCustomEntityReferences.qtn}  
 /// @bigtext{Extended in @ref BattleCustomEntityReferences.cs}
 
 /// @var BattlePlayerEntityRef Quantum::BattlePlayerEntityRef::ERef
@@ -43,7 +47,9 @@
 /// Marks this entityref as a shield entityref, and adds functionality to retrieve transform and data components.
 /// </summary>
 ///
-/// @bigtext{Generated from @ref BattlePlayerShieldManagerData.qtn}  
+/// See [{Custom Entity References}](#page-concepts-custom-quantum-entity-references) for more info.
+///
+/// @bigtext{Generated from @ref BattleCustomEntityReferences.qtn}  
 /// @bigtext{Extended in @ref BattleCustomEntityReferences.cs}
 
 /// @var BattlePlayerEntityRef Quantum::BattlePlayerShieldEntityRef::ERef
