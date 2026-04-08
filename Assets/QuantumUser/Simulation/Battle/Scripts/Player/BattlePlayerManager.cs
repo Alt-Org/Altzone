@@ -26,12 +26,19 @@ namespace Battle.QSimulation.Player
     /// Provides static methods to initialize, spawn, despawn, and query player-related data.
     /// </summary>
     ///
-    /// @bigtext{See [{PlayerClassManager}](#page-concepts-player-simulation-management-playermanager) for more info.}<br/>
+    /// @bigtext{See [{PlayerManager}](#page-concepts-player-simulation-management-playermanager) for more info.}<br/>
     /// @bigtext{See [{Player Overview}](#page-concepts-player-overview) for more info.}<br/>
     /// @bigtext{See [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview) for more info.}<br/>
     ///
     /// Handles initializing players that are present in the game, as well as spawning and despawning player characters.<br/>
-    /// Also contains the public and private PlayerHandle structs.
+    /// The @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandle} and @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandleInternal} structs are used internally.
+    ///
+    /// @anchor BattlePlayerManager-PlayerIndex
+    /// @bigtext{**%Player Index**}
+    ///
+    /// %Player Index is used internally to index player data arrays in @cref{Quantum,BattlePlayerManagerDataQSingleton}.
+    /// %Player [{Slots}](#page-concepts-player-slots-teams) are mapped to the internal Player Indexes using the @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandleInternal}
+    /// @ref BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerIndexGetters "Player Index Getter" methods.
     public static unsafe partial class BattlePlayerManager
     {
         #region Public

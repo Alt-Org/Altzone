@@ -34,7 +34,7 @@ The **Get** and **Return** methods send a @ref BattlePlayStateUpdate event to up
 ### Compound Entity Handling {#page-concepts-entity-management-compound-entity-handling}
 
 [{Compound Entities}](#page-concepts-entity-management-compound-entities) can be made using
-@clink{MakeCompound:Battle.QSimulation.Game.BattleEntityManager.MakeCompound(Quantum.Frame, Battle.QSimulation.Game.BattleEntityManager.CompoundEntityTemplate)}
+@clink{MakeCompound:Battle.QSimulation.Game.BattleEntityManager.MakeCompound(Frame, Battle.QSimulation.Game.BattleEntityManager.CompoundEntityTemplate)}
 or @clink{RegisterCompound:Battle.QSimulation.Game.BattleEntityManager.RegisterCompound(Frame, Battle.QSimulation.Game.BattleEntityManager.CompoundEntityTemplate)} methods.<br/>
 [{Compound Entities}](#page-concepts-entity-management-compound-entities) can be **moved** and **teleported** using the
 @clink{MoveCompound:Battle.QSimulation.Game.BattleEntityManager.MoveCompound(Frame, EntityRef, FPVector2, FP)}

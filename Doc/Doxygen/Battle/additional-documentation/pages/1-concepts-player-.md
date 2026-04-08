@@ -232,7 +232,7 @@ digraph PlayerInputGraph {
 ## Player Character and Shield Entities {#page-concepts-player-character-and-shield-entity}
 
 Each **Player** controls **3** **Character %Quantum Entities** in the game.  
-For each **Player** one **Character** is present in the arena at a time
+For each **Player** one [{Selected Character}](#page-concepts-player-character-entity-selected-character) can be present in the arena at a time
 and [{PlayerManager}](#page-concepts-player-simulation-management-playermanager) handles spawning and despawning **Character Entities** when switching between them.  
 Each **Character** has one or more **Shields**. One of the **Shields** may be attached to the **Character**. One or more **Shields** can also be present in the arena detached from the **Character**.  
 The [{ShieldManager}](#page-concepts-player-simulation-management-shieldmanager) handles **Shield Entity** management.  
@@ -409,6 +409,13 @@ Each **Character %Quantum Entity** is internally assigned a **character number**
 ### Player Character State {#page-concepts-player-character-entity-character-state}
 
 Each **Character %Quantum Entity** always has a @cref{Quantum,BattlePlayerCharacterState} indicating if the **Character** is **Alive** or **Dead**.
+
+<br/>
+
+### Selected Character {#page-concepts-player-character-entity-selected-character}
+
+The **Selected Character** is the **Character Entity** that is currently [{InPlay}](#page-concepts-entity-management-registered-entities-playstate).  
+The **Selected Character** is tracked using [{Player Character Number}](#page-concepts-player-character-entity-character-number).
 
 <br/>
 

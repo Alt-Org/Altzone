@@ -42,7 +42,7 @@ namespace Battle.QSimulation.Player
 
             /// @anchor BattlePlayerManager-PlayerHandle-PublicStaticMethods-PlayerSlotAndTeamNumberGetters
             /// @name Player Slot and Team Number Getters
-            /// Methods for retrieving the player's slot and team number
+            /// Methods for retrieving the [{Player's Slot and Team}](#page-concepts-player-slots-teams)
             /// @{
             #region Public Static Methods - Player Slot and TeamNumber getters
 
@@ -55,7 +55,7 @@ namespace Battle.QSimulation.Player
             /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
             ///
             /// <param name="f">Current simulation frame.</param>
-            /// <param name="playerRef">PlayerRef of the player for which slot will be retrieved.</param>
+            /// <param name="playerRef">PlayerRef of the desired player.</param>
             ///
             /// <returns>The slot of the given player.</returns>
             public static BattlePlayerSlot GetSlot(Frame f, PlayerRef playerRef)
@@ -73,9 +73,9 @@ namespace Battle.QSimulation.Player
             ///
             /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
             ///
-            /// <param name="slot">The slot of the player.</param>
+            /// <param name="slot">Slot of the player whose team number you want to retrieve.</param>
             ///
-            /// <returns>The BattleTeamNumber of the given player.</returns>
+            /// <returns>The @cref{Quantum,BattleTeamNumber} of the given player.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static BattleTeamNumber GetTeamNumber(BattlePlayerSlot slot) => PlayerHandleInternal.GetTeamNumber(slot);
 
@@ -97,7 +97,7 @@ namespace Battle.QSimulation.Player
             /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
             ///
             /// <param name="f">Current simulation frame.</param>
-            /// <param name="slot">The slot of the player.</param>
+            /// <param name="slot">Slot of the desired player.</param>
             ///
             /// <returns>A PlayerHandle for the given player.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -113,10 +113,11 @@ namespace Battle.QSimulation.Player
             ///
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandle-PublicStaticMethods-PlayerHandleGetters "Player Handle Getters"
+            ///
             /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
             ///
             /// <param name="f">Current simulation frame.</param>
-            /// <param name="slot">The slot of the player.</param>
+            /// <param name="slot">Slot of the player whose teammate's handle you want to get.</param>
             ///
             /// <returns>A PlayerHandle for the given player's teammate.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -153,7 +154,7 @@ namespace Battle.QSimulation.Player
             /// @{
 
             /// <summary>
-            /// Checks if a given character number is valid.
+            /// Checks if a given <paramref name="characterNumber"/> is valid.
             /// </summary>
             ///
             /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
@@ -179,7 +180,7 @@ namespace Battle.QSimulation.Player
             /// Part of @ref BattlePlayerManager-PlayerHandle-PublicStaticMethods-LowLevel "Low Level Methods"
             ///
             /// <param name="playerManagerData">Pointer to the player manager data.</param>
-            /// <param name="playerIndex">The index of the player.</param>
+            /// <param name="playerIndex">The index of the desired player.</param>
             ///
             /// <returns>A PlayerHandle for the given player.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -197,10 +198,11 @@ namespace Battle.QSimulation.Player
             /// Part of @ref BattlePlayerManager-PlayerHandle-PublicStaticMethods-LowLevel "Low Level Methods"
             ///
             /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
+            /// See @ref BattlePlayerManager-PlayerIndex "Player Index" for more info.
             ///
-            /// <param name="slot">The slot of the player.</param>
+            /// <param name="slot">Slot of the desired player.</param>
             ///
-            /// <returns>The player index of the given player.</returns>
+            /// <returns>The index of the given player.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static int Low_GetPlayerIndex(BattlePlayerSlot slot) => PlayerHandleInternal.GetPlayerIndex(slot);
 
@@ -212,7 +214,7 @@ namespace Battle.QSimulation.Player
             #region Public Properties
 
             /// <summary>
-            /// Public getter for Slot.
+            /// Public getter for <em>Slot</em>.
             /// </summary>
             ///
             /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams)
@@ -220,7 +222,7 @@ namespace Battle.QSimulation.Player
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => PlayerHandleInternal.GetSlot(_internalHandle.Index); }
 
             /// <summary>
-            /// Public getter for PlayerRef.
+            /// Public getter for <em>PlayerRef</em>.
             /// </summary>
             public readonly PlayerRef PlayerRef
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayerRef; }
@@ -232,15 +234,17 @@ namespace Battle.QSimulation.Player
             #region Public Properties - Player State
 
             /// <summary>
-            /// Public getter for PlayState.
+            /// Public getter for <em>PlayState</em>.
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandle-PublicProperties-PlayerState "Player State Properties"
+            ///
+            /// See [{Player PlayState}](#page-concepts-player-playstate) for more info.
             public readonly BattlePlayerPlayState PlayState
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayState; }
 
             /// <summary>
-            /// Public getter for IsBot.
+            /// Public getter for <em>IsBot</em>.
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandle-PublicProperties-PlayerState "Player State Properties"
@@ -248,7 +252,7 @@ namespace Battle.QSimulation.Player
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.IsBot; }
 
             /// <summary>
-            /// Public getter for IsAbandoned.
+            /// Public getter for <em>IsAbandoned</em>.
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandle-PublicProperties-PlayerState "Player State Properties"
@@ -256,7 +260,7 @@ namespace Battle.QSimulation.Player
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.IsAbandoned; }
 
             /// <summary>
-            /// Public getter and setter for AllowCharacterSwapping.
+            /// Public getter and setter for <em>AllowCharacterSwapping</em>.
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandle-PublicProperties-PlayerState "Player State Properties"
@@ -269,7 +273,7 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Public getter and setter for GiveUpState.
+            /// Public getter and setter for <em>GiveUpState</em>.
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandle-PublicProperties-PlayerState "Player State Properties"
@@ -291,20 +295,24 @@ namespace Battle.QSimulation.Player
             #region Public Properties - Player Character
 
             /// <summary>
-            /// Public getter for SelectedCharacterNumber.
+            /// Public getter for <em>SelectedCharacterNumber</em>.
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandle-PublicProperties-PlayerCharacter "Player Character Properties"
             ///
+            /// See [{Selected Character}](#page-concepts-player-character-entity-selected-character) for more info.<br/>
             /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
             public readonly int SelectedCharacterNumber
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterNumber; }
 
             /// <summary>
-            /// Public getter for SelectedCharacterState.
+            /// Public getter for <em>SelectedCharacterState</em>.
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandle-PublicProperties-PlayerCharacter "Player Character Properties"
+            ///
+            /// See [{Selected Character}](#page-concepts-player-character-entity-selected-character) for more info.<br/>
+            /// See [{Player PlayState}](#page-concepts-player-playstate) for more info.
             public readonly BattlePlayerCharacterState SelectedCharacterState
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterState; }
 
@@ -315,7 +323,7 @@ namespace Battle.QSimulation.Player
             /// @{
 
             /// <summary>
-            /// Public getter and setter for RespawnTimer.
+            /// Public getter and setter for <em>RespawnTimer</em>.
             /// </summary>
             public readonly FrameTimer RespawnTimer
             {
@@ -386,9 +394,10 @@ namespace Battle.QSimulation.Player
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandle-PublicMethods-PlayerCharacterMethods "Player Character Methods"
             ///
+            /// See [{Player Character State}](#page-concepts-player-character-entity-character-state) for more info.<br/>
             /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
             ///
-            /// <param name="characterNumber">CharacterNumber of the player's character you want to set.</param>
+            /// <param name="characterNumber">CharacterNumber of the desired player's character.</param>
             ///
             /// <returns>The CharacterState of the given player.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -399,6 +408,9 @@ namespace Battle.QSimulation.Player
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandle-PublicMethods-PlayerCharacterMethods "Player Character Methods"
+            ///
+            /// See [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) for more info.<br/>
+            /// See [{Selected Character}](#page-concepts-player-character-entity-selected-character) for more info.
             ///
             /// <param name="f">Current simulation frame.</param>
             ///
@@ -432,7 +444,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Internal helper struct for player information, operations and state management in @cref{Battle.QSimulation.Player,BattlePlayerManager}.<br/>
+        /// Internal helper struct for player information, operations and state management in @cref{Battle.QSimulation.Player,BattlePlayerManager}.
         /// </summary>
         ///
         /// Has static helper methods for player operations.<br/>
@@ -450,7 +462,7 @@ namespace Battle.QSimulation.Player
 
             /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerSlotAndTeamNumberGetters
             /// @name Player Slot and Team Number Getters
-            /// Methods for retrieving the player's slot and team number.
+            /// Methods for retrieving the [{Player's Slot and Team}](#page-concepts-player-slots-teams).
             /// @{
             #region Public Static Methods - Player Slot and TeamNumber getters
 
@@ -460,11 +472,12 @@ namespace Battle.QSimulation.Player
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerSlotAndTeamNumberGetters "Player Slot and Team Number Getters"
             ///
+            /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.<br/>
+            /// See @ref BattlePlayerManager-PlayerIndex "Player Index" for more info.
+            ///
             /// @clink{Exposed:PlayerHandle.GetSlot} in public @cref{PlayerHandle}
             ///
-            /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
-            ///
-            /// <param name="playerIndex">Index of the player whose slot you want to retrieve.</param>
+            /// <param name="playerIndex">Index of the desired player.</param>
             ///
             /// <returns>The slot of the given player.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -487,9 +500,9 @@ namespace Battle.QSimulation.Player
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerSlotAndTeamNumberGetters "Player Slot and Team Number Getters"
             ///
-            /// @clink{Exposed:PlayerHandle.GetTeamNumber} in public @cref{PlayerHandle}
-            ///
             /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
+            ///
+            /// @clink{Exposed:PlayerHandle.GetTeamNumber} in public @cref{PlayerHandle}
             ///
             /// <param name="slot">Slot of the player whose team number you want to retrieve.</param>
             ///
@@ -513,20 +526,21 @@ namespace Battle.QSimulation.Player
 
             /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerIndexGetters
             /// @name Player Index Getters
-            /// Methods for retrieving the player's index.
+            /// Methods for retrieving the @ref BattlePlayerManager-PlayerIndex "Player's Index".
             /// @{
             #region Public Static Methods - Player Index Getters
             /// <summary>
-            /// Retrieves player index based on <paramref name="slot"/>.
+            /// Maps <paramref name="slot"/> to player index.
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerIndexGetters "Player Index Getters"
             ///
-            /// @clink{Exposed:PlayerHandle.Low_GetPlayerIndex} in public @cref{PlayerHandle} as low level.
-            ///
+            /// See @ref BattlePlayerManager-PlayerIndex "Player Index" for more info.<br/>
             /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
             ///
-            /// <param name="slot">Slot of the player whose index you want to retrieve.</param>
+            /// @clink{Exposed:PlayerHandle.Low_GetPlayerIndex} in public @cref{PlayerHandle} as low level.
+            ///
+            /// <param name="slot">Slot of the desired player.</param>
             ///
             /// <returns>The index of the given player.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -544,13 +558,17 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Retrieves player index based on <paramref name="playerRef"/>.
+            /// Fetches the player index from <paramref name="playerManagerData"/> based on <paramref name="playerRef"/>.
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerIndexGetters "Player Index Getters"
             ///
+            /// See @ref BattlePlayerManager-PlayerIndex "Player Index" for more info.
+            ///
+            /// Internal only
+            ///
             /// <param name="playerManagerData">Pointer to the player manager data.</param>
-            /// <param name="playerRef">PlayerRef of the player whose index you want to retrieve.</param>
+            /// <param name="playerRef">PlayerRef of the desired player.</param>
             ///
             /// <returns>The index of the given player.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -564,14 +582,17 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Retrieves the index of the teammate of a player based on <paramref name="slot"/>.
+            /// Maps <paramref name="slot"/> to player's teammate's index.
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerIndexGetters "Player Index Getters"
             ///
+            /// See @ref BattlePlayerManager-PlayerIndex "Player Index" for more info.<br/>
             /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
             ///
-            /// <param name="slot">Slot of the player whose teammate's index you want to retrieve.</param>
+            /// Internal only
+            ///
+            /// <param name="slot">Slot of the player whose teammate's index you want to get.</param>
             ///
             /// <returns>The index of the given player's teammate.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -605,8 +626,10 @@ namespace Battle.QSimulation.Player
             ///
             /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
             ///
+            /// Internal only
+            ///
             /// <param name="playerManagerData">Pointer to the player manager data.</param>
-            /// <param name="slot">Slot of the player who you want a handle for.</param>
+            /// <param name="slot">Slot of the desired player.</param>
             ///
             /// <returns>A PlayerHandle for the given player.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -624,8 +647,10 @@ namespace Battle.QSimulation.Player
             ///
             /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
             ///
+            /// Internal only
+            ///
             /// <param name="playerManagerData">Pointer to the player manager data.</param>
-            /// <param name="slot">Slot of the player whose teammate you want a handle for.</param>
+            /// <param name="slot">Slot of the player whose teammate's handle you want to get.</param>
             ///
             /// <returns>A PlayerHandle for the given player's teammate.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -645,6 +670,10 @@ namespace Battle.QSimulation.Player
             /// Sets all players' play states to a given <paramref name="playerPlayState"/>.
             /// </summary>
             ///
+            /// See [{Player PlayState}](#page-concepts-player-playstate) for more info.
+            ///
+            /// Internal only
+            ///
             /// <param name="playerManagerData">Pointer to the player manager data.</param>
             /// <param name="playerPlayState">The state that all players will be set to.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -660,9 +689,9 @@ namespace Battle.QSimulation.Player
             /// Checks if a given <paramref name="characterNumber"/> is valid.
             /// </summary>
             ///
-            /// @clink{Exposed:PlayerHandle.IsValidCharacterNumber} in public @cref{PlayerHandle}
-            ///
             /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
+            ///
+            /// @clink{Exposed:PlayerHandle.IsValidCharacterNumber} in public @cref{PlayerHandle}
             ///
             /// <param name="characterNumber">The character number to verify.</param>
             /// <returns>True if the given character number is valid, false if it is not.</returns>
@@ -683,7 +712,11 @@ namespace Battle.QSimulation.Player
 
             #region Public Properties
 
-            /// <summary>Gets/Sets player's <em>Index</em>.</summary>
+            /// <summary><em>Index</em> of the player that is associated with this handle.</summary>
+            ///
+            /// See @ref BattlePlayerManager-PlayerIndex "Player Index" for more info.
+            ///
+            /// Internal only
             public int Index { get; set; }
 
             /// <summary>
@@ -701,7 +734,7 @@ namespace Battle.QSimulation.Player
 
             /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerState
             /// @name Player State
-            /// Player state properties
+            /// %Player state properties
             /// @{
             #region Public Properties - Player State
 
@@ -789,7 +822,7 @@ namespace Battle.QSimulation.Player
 
             /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerCharacter
             /// @name Player Character
-            /// Player character properties
+            /// %Player character properties
             /// @{
             #region Public Properties - Player Character
 
@@ -799,7 +832,10 @@ namespace Battle.QSimulation.Player
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerCharacter "Player Character Properties"
             ///
-            // Getter @clink{exposed:PlayerHandle.CharacterEntityGroupID} in public @cref{PlayerHandle}
+            /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
+            /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.
+            ///
+            /// Internal only
             public readonly BattleEntityID CharacterEntityGroupID
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -812,9 +848,10 @@ namespace Battle.QSimulation.Player
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerCharacter "Player Character Properties"
             ///
-            /// @clink{Exposed:PlayerHandle.SelectedCharacterNumber} in public @cref{PlayerHandle}
-            ///
+            /// See [{Selected Character}](#page-concepts-player-character-entity-selected-character) for more info.<br/>
             /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
+            ///
+            /// @clink{Exposed:PlayerHandle.SelectedCharacterNumber} in public @cref{PlayerHandle}
             public readonly int SelectedCharacterNumber
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->CharacterSelectedNumbers[Index]; }
 
@@ -823,6 +860,9 @@ namespace Battle.QSimulation.Player
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerCharacter "Player Character Properties"
+            ///
+            /// See [{Selected Character}](#page-concepts-player-character-entity-selected-character) for more info.<br/>
+            /// See [{Player PlayState}](#page-concepts-player-playstate) for more info.
             ///
             /// Getter @clink{exposed:PlayerHandle.SelectedCharacterState} in public @cref{PlayerHandle}
             public readonly BattlePlayerCharacterState SelectedCharacterState
@@ -857,6 +897,8 @@ namespace Battle.QSimulation.Player
             /// <summary>
             /// Gets player's <em>SpawnPosition</em>.
             /// </summary>
+            ///
+            /// Internal only
             public readonly FPVector2 SpawnPosition
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => s_spawnPoints[Index]; }
 
@@ -868,8 +910,10 @@ namespace Battle.QSimulation.Player
             /// Constructor for PlayerHandleInternal.
             /// </summary>
             ///
+            /// See @ref BattlePlayerManager-PlayerIndex "Player Index" for more info.
+            ///
             /// <param name="playerManagerData">Pointer to BattlePlayerManagerDataQSingleton.</param>
-            /// <param name="playerIndex">Index of the player that you want the handle for.</param>
+            /// <param name="playerIndex">Index of the desired player.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public PlayerHandleInternal(BattlePlayerManagerDataQSingleton* playerManagerData, int playerIndex)
             {
@@ -883,6 +927,8 @@ namespace Battle.QSimulation.Player
             /// Converts PlayerHandleInternal to PlayerHandle.
             /// </summary>
             ///
+            /// Internal only
+            ///
             /// <returns>This PlayerHandleInternal converted to a PlayerHandle.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public readonly PlayerHandle ConvertToPublic()
@@ -894,7 +940,7 @@ namespace Battle.QSimulation.Player
 
             /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterNumber
             /// @name Player Character Number Methods
-            /// Methods for handling character numbers
+            /// Methods for handling [{Character Numbers}](#page-concepts-player-character-entity-character-number).
             /// @{
             #region Public Methods - Player Character - Character Number
 
@@ -904,7 +950,11 @@ namespace Battle.QSimulation.Player
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterNumber "Player Character Number Methods"
             ///
-            /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
+            /// See [{Selected Character}](#page-concepts-player-character-entity-selected-character) for more info.<br/>
+            /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.<br/>
+            /// See [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) for more info.
+            ///
+            /// Internal only
             ///
             /// <param name="characterNumber">CharacterNumber of the player's selected character.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -919,7 +969,11 @@ namespace Battle.QSimulation.Player
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterNumber "Player Character Number Methods"
             ///
-            /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
+            /// See [{Selected Character}](#page-concepts-player-character-entity-selected-character) for more info.<br/>
+            /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.<br/>
+            /// See [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) for more info.
+            ///
+            /// Internal only
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public readonly void UnsetSelectedCharacterNumber()
             {
@@ -941,8 +995,11 @@ namespace Battle.QSimulation.Player
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterEntity "Player Character Entity Methods"
             ///
-            /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.
+            /// See [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) for more info.<br/>
+            /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
             /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.
+            ///
+            /// Internal only
             ///
             /// <param name="entityGroupID">Group ID of the player's characters.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -953,6 +1010,10 @@ namespace Battle.QSimulation.Player
             /// </summary>
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterEntity "Player Character Entity Methods"
+            ///
+            /// See [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) for more info.<br/>
+            /// See [{Selected Character}](#page-concepts-player-character-entity-selected-character) for more info.<br/>
+            /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
             ///
             /// @clink{Exposed:PlayerHandle.GetSelectedCharacterEntityRef} in public @cref{PlayerHandle}
             ///
@@ -969,8 +1030,14 @@ namespace Battle.QSimulation.Player
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterEntity "Player Character Entity Methods"
             ///
+            /// See [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) for more info.<br/>
+            /// See [{Character Numbers}](#page-concepts-player-character-entity-character-number) for more info.<br/>
+            /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
+            ///
+            /// Internal only
+            ///
             /// <param name="f">Current simulation frame.</param>
-            /// <param name="characterNumber">CharacterNumber of the player's character you want to retrieve.</param>
+            /// <param name="characterNumber">CharacterNumber of the desired player's character.</param>
             /// <param name="updateViewPlayState">Whether to update view play state or not.</param>
             ///
             /// <returns>Character's EntityRef.</returns>
@@ -985,7 +1052,7 @@ namespace Battle.QSimulation.Player
 
             /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterState
             /// @name Player Character State Methods
-            /// Methods for handling character states
+            /// Methods for handling [{Character States}](#page-concepts-player-character-entity-character-state).
             /// @{
             #region Public Methods - Player Character - Character State
 
@@ -995,9 +1062,12 @@ namespace Battle.QSimulation.Player
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterState "Player Character State Methods"
             ///
+            /// See [{Player Character State}](#page-concepts-player-character-entity-character-state) for more info.<br/>
             /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
             ///
-            /// <param name="characterNumber">CharacterNumber of the player's character you want to set.</param>
+            /// Internal only
+            ///
+            /// <param name="characterNumber">CharacterNumber of the desired player's character.</param>
             ///
             /// <returns>The CharacterState of the given player.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1009,10 +1079,13 @@ namespace Battle.QSimulation.Player
             ///
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterState "Player Character State Methods"
             ///
+            /// See [{Player Character State}](#page-concepts-player-character-entity-character-state) for more info.<br/>
             /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
             ///
-            /// <param name="characterNumber">CharacterNumber of the player's character you want to set.</param>
-            /// <param name="state"></param>
+            /// Internal only
+            ///
+            /// <param name="characterNumber">CharacterNumber of desired player's character.</param>
+            /// <param name="state">New state of the character.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public readonly void SetCharacterState(int characterNumber, BattlePlayerCharacterState state) => _playerManagerData->CharactersAllStates[GetCharacterIndex(characterNumber)] = state;
 

@@ -26,11 +26,12 @@
 
 /// @struct Quantum::BattlePlayerManagerDataQSingleton
 /// <summary>
-/// Singleton component that manages players's states, playerRefs, characters, etc.
+/// Singleton component that is used internally by @cref{Battle.QSimulation.Player,BattlePlayerManager} to manage players.
 /// </summary>
 ///
-/// [{Player Overview}](#page-concepts-player-overview)  
-/// [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview)
+/// See [{BattlePlayerManager}](#page-concepts-player-simulation-management-playermanager) for more info.  
+/// See [{Player Overview}](#page-concepts-player-overview) for more info.  
+/// See [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview) for more info.
 ///
 /// @bigtext{Generated from @ref BattlePlayerManagerData.qtn}
 
