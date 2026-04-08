@@ -37,7 +37,6 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     [SerializeField] private RectTransform _friendsContent;
     [Header("Panel prefabs")]
     [SerializeField] private OnlinePlayersPanelItem _onlinePlayersPanelItemPrefab;
-    [SerializeField] private FriendlistItem _friendlistItemPrefab;
     [Header("Tab Buttons")]
     [SerializeField] private Button _viewClanPlayersButton;
     [SerializeField] private Button _viewAllPlayersButton;
