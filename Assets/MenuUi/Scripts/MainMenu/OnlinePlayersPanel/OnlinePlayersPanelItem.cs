@@ -123,6 +123,12 @@ public class OnlinePlayersPanelItem : MonoBehaviour
                     _addfriendButton.interactable = false;
                     _addFriendButtonText.text = "Kaveripyyntö lähetetty";
                 }
+                else if (friendstate is FriendState.Receiving)
+                {
+                    _addfriendButton.gameObject.SetActive(false);
+                    _addfriendButton.interactable = false;
+                    _addFriendButtonText.text = "Kaveripyyntö tulossa.";
+                }
                 else
                 {
                     _addfriendButton.gameObject.SetActive(true);
