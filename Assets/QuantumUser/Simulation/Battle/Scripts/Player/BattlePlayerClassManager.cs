@@ -125,14 +125,14 @@ namespace Battle.QSimulation.Player
         /// <summary>
         /// Virtual OnUpdate method that can be implemented.<br/>
         /// Called by the public BattlePlayerClassManager
-        /// <see cref="BattlePlayerClassManager.OnUpdate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnUpdate</see> method.
+        /// <see cref="BattlePlayerClassManager.OnUpdate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, BattlePlayerEntityRef)">OnUpdate</see> method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
-        public virtual unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
+        public virtual unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity) { }
     }
 
     /// <summary>
@@ -322,7 +322,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
-        public static void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
+        public static void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity)
         {
             ReturnCode returnCode = GetClass(playerData->CharacterClass, out BattlePlayerClassBase playerClass);
 

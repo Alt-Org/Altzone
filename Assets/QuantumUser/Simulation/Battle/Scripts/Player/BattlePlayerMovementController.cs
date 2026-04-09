@@ -54,7 +54,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerEntityRef">Reference to player entity.</param>
         /// <param name="transform">Pointer to player's transform component.</param>
         /// <param name="input">Pointer to player's Quantum Input.</param>
-        public static void UpdateMovement(Frame f, BattlePlayerDataQComponent* playerData, EntityRef playerEntityRef, Transform2D* transform, Input* input)
+        public static void UpdateMovement(Frame f, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntityRef, Transform2D* transform, Input* input)
         {
             // get spec
             BattlePlayerQSpec spec = BattleQConfig.GetPlayerSpec(f);
@@ -205,12 +205,10 @@ namespace Battle.QSimulation.Player
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="playerEntityRef">Reference to player entity.</param>
         /// <param name="position">World position to move to.</param>
-        public static void Move(Frame f, BattlePlayerDataQComponent* playerData, EntityRef playerEntityRef, FPVector2 position)
+        public static void Move(Frame f, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntityRef, FPVector2 position)
         {
             BattleEntityManager.MoveCompound(f, playerEntityRef, position, playerData->RotationBaseRad);
-
             if (playerData->AttachedShield.ERef == EntityRef.None) return;
-
             BattleEntityManager.MoveCompound(f, playerData->AttachedShield, position, playerData->RotationBaseRad + playerData->RotationOffsetRad);
         }
 
@@ -222,12 +220,10 @@ namespace Battle.QSimulation.Player
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="playerEntityRef">Reference to player entity.</param>
         /// <param name="position">New world position.</param>
-        public static void Teleport(Frame f, BattlePlayerDataQComponent* playerData, EntityRef playerEntityRef, FPVector2 position)
+        public static void Teleport(Frame f, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntityRef, FPVector2 position)
         {
             BattleEntityManager.TeleportCompound(f, playerEntityRef, position, playerData->RotationBaseRad);
-
             if (playerData->AttachedShield.ERef == EntityRef.None) return;
-
             BattleEntityManager.TeleportCompound(f, playerData->AttachedShield, position, playerData->RotationBaseRad + playerData->RotationOffsetRad);
         }
 

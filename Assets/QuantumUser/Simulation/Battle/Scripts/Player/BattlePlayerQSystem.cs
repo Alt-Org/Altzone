@@ -6,14 +6,14 @@
 // Unity usings
 using UnityEngine.Scripting;
 
-// Battle QSimulation usings
-using Battle.QSimulation.Game;
-using Battle.QSimulation.Projectile;
-
 // Quantum usings
 using Quantum;
 using Photon.Deterministic;
 using Input = Quantum.Input;
+
+// Battle QSimulation usings
+using Battle.QSimulation.Game;
+using Battle.QSimulation.Projectile;
 
 namespace Battle.QSimulation.Player
 {
@@ -78,7 +78,7 @@ namespace Battle.QSimulation.Player
         {
             if (projectileCollisionData->Projectile->IsHeld) return;
 
-            BattlePlayerDataQComponent* damagedPlayerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->ParentEntityRef);
+            BattlePlayerDataQComponent* damagedPlayerData = ((BattlePlayerEntityRef)playerCollisionData->PlayerCharacterHitbox->ParentEntityRef).GetDataQComponent(f);
 
             if (damagedPlayerData->CurrentDefence <= 0) HandleSFXCharacter(f, SoundEffectTypeCharacter.Death, damagedPlayerData->CharacterId);
             else
@@ -116,8 +116,8 @@ namespace Battle.QSimulation.Player
 
             //{ hit
 
-            BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
-            BattlePlayerDataQComponent* damagedPlayerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
+            BattlePlayerShieldDataQComponent* playerShieldData  = ((BattlePlayerShieldEntityRef)shieldCollisionData->PlayerShieldHitbox->ParentEntityRef).GetDataQComponent(f);
+            BattlePlayerDataQComponent*       damagedPlayerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
 
             HandleSFXCommon(f, SoundEffectTypeCommon.HitShield);
 
@@ -184,8 +184,8 @@ namespace Battle.QSimulation.Player
 
                 if (playerHandle.PlayState.IsInPlay())
                 {
-                    playerEntity = playerHandle.GetSelectedCharacterEntityRef(f);
-                    playerData = playerEntity.GetDataQComponent(f);
+                    playerEntity    = playerHandle.GetSelectedCharacterEntityRef(f);
+                    playerData      = playerEntity.GetDataQComponent(f);
                     playerTransform = playerEntity.GetTransform(f);
                 }
 
@@ -473,7 +473,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerData">Pointer to the player's data component</param>
         /// <param name="playerEntity">Reference to the player's entity</param>
         /// <param name="playerTransform">Pointer to the player's transform component.</param>
-        private void HandleInPlay(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity, Transform2D* playerTransform)
+        private void HandleInPlay(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity, Transform2D* playerTransform)
         {
             bool updateMovement = true;
 

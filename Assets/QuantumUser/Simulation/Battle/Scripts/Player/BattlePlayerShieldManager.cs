@@ -9,13 +9,13 @@ using System.Runtime.CompilerServices;
 // Unity usings
 using UnityEngine;
 
-// Battle QSimulation usings
-using Battle.QSimulation.Game;
-using Photon.Deterministic;
-
 // Quantum usings
 using Quantum;
 using Quantum.Collections;
+using Photon.Deterministic;
+
+// Battle QSimulation usings
+using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player
 {
@@ -27,6 +27,8 @@ namespace Battle.QSimulation.Player
     /// Handles creating shield entities for player characters, as well as retrieving and despawning them.<br/>
     public static unsafe class BattlePlayerShieldManager
     {
+        #region Public Static Methods
+
         /// <summary>
         /// Initializes this classes BattleDebugLogger instance.<br/>
         /// This method is exclusively for debug logging purposes.
@@ -45,8 +47,8 @@ namespace Battle.QSimulation.Player
         /// <param name="playerCharacterNumber">The character number of the specified character.</param>
         /// <param name="playerCharacterId">The ID of the specified character.</param>
         /// <param name="playerCharacterClass">The character class of the specified character.</param>
-        /// <param name="playerCharacterEntity">EntityRef to the speficied character's entity.</param>
-        public static int CreateShields(Frame f, BattlePlayerSlot playerSlot, int playerCharacterNumber, BattlePlayerCharacterID playerCharacterId, BattlePlayerCharacterClass playerCharacterClass, BattlePlayerEntityRef playerCharacterEntity)
+        /// <param name="playerCharacterEntityRef">EntityRef to the speficied character's entity.</param>
+        public static int CreateShields(Frame f, BattlePlayerSlot playerSlot, int playerCharacterNumber, BattlePlayerCharacterID playerCharacterId, BattlePlayerCharacterClass playerCharacterClass, BattlePlayerEntityRef playerCharacterEntityRef)
         {
             s_debugLogger.LogFormat(f, "({0}) Creating shields for character ID {1}", playerSlot, playerCharacterId);
 
@@ -66,21 +68,21 @@ namespace Battle.QSimulation.Player
 
             BattleEntityManager.CompoundEntityTemplate[] shieldEntities = new BattleEntityManager.CompoundEntityTemplate[playerShieldEntityPrototypes.Length];
 
-            // create entities
+            // create shieldEntity for each shield of a character
             for (int shieldEntityIndex = 0; shieldEntityIndex < playerShieldEntityPrototypes.Length; shieldEntityIndex++)
             {
-                BattlePlayerShieldEntityRef playerShieldEntity = BattlePlayerShieldEntityRef.Create(f, playerShieldEntityPrototypes[shieldEntityIndex]);
-                BattleEntityManager.CompoundEntityTemplate playerShieldEntityTemplate = BattleEntityManager.CompoundEntityTemplate.Create(playerShieldEntity, playerShieldEntityPrototypes.Length);
+                BattlePlayerShieldEntityRef playerShieldEntityRef = BattlePlayerShieldEntityRef.Create(f, playerShieldEntityPrototypes[shieldEntityIndex]);
+                BattleEntityManager.CompoundEntityTemplate playerShieldEntityTemplate = BattleEntityManager.CompoundEntityTemplate.Create(playerShieldEntityRef, playerShieldEntityPrototypes.Length);
 
                 // get template data
-                BattlePlayerShieldDataTemplateQComponent* playerShieldDataTemplate = f.Unsafe.GetPointer<BattlePlayerShieldDataTemplateQComponent>(playerShieldEntity);
+                BattlePlayerShieldDataTemplateQComponent* playerShieldDataTemplate = f.Unsafe.GetPointer<BattlePlayerShieldDataTemplateQComponent>(playerShieldEntityRef);
                 QList<BattlePlayerHitboxTemplate>         shieldHitboxTemplateList = f.ResolveList(playerShieldDataTemplate->HitboxList);
 
                 //{ initialize shield component
 
                 BattlePlayerShieldDataQComponent playerShieldData = new()
                 {
-                    PlayerEntityRef = playerCharacterEntity,
+                    PlayerEntityRef = playerCharacterEntityRef,
                     ShieldNumber = shieldEntityIndex
                 };
 
@@ -134,7 +136,7 @@ namespace Battle.QSimulation.Player
                     // initialize hitbox component
                     BattlePlayerHitboxQComponent playerHitbox = new()
                     {
-                        ParentEntityRef    = playerShieldEntity,
+                        ParentEntityRef    = playerShieldEntityRef,
                         HitboxType         = playerHitboxType,
                         CollisionType      = playerHitboxCollisionType,
                         CollisionMinOffset = ((FP)playerHitboxHeight + FP._0_50) * BattleGridManager.GridScaleFactor
@@ -146,17 +148,18 @@ namespace Battle.QSimulation.Player
                     f.Add(playerShieldHitboxEntity, playerHitboxCollider);
                     f.Add(playerShieldHitboxEntity, collisionTrigger);
 
+                    // link hitbox
                     playerShieldEntityTemplate.Link(playerShieldHitboxEntity, new FPVector2(0, 0));
                 } // create shield hitbox entities
 
                 // initialize entity
-                f.Remove<BattlePlayerShieldDataTemplateQComponent>(playerShieldEntity);
-                f.Add(playerShieldEntity, playerShieldData);
+                f.Remove<BattlePlayerShieldDataTemplateQComponent>(playerShieldEntityRef);
+                f.Add(playerShieldEntityRef, playerShieldData);
 
                 shieldEntities[shieldEntityIndex] = playerShieldEntityTemplate;
 
                 // initialize view
-                f.Events.BattlePlayerShieldViewInit(playerShieldEntity, playerCharacterEntity, playerSlot, playerCharacterId, playerCharacterClass, BattleGridManager.GridScaleFactor);
+                f.Events.BattlePlayerShieldViewInit(playerShieldEntityRef, playerCharacterEntityRef, playerSlot, playerCharacterId, playerCharacterClass, BattleGridManager.GridScaleFactor);
             } // create entities
 
             BattleEntityID shieldEntityGroupID = BattleEntityManager.RegisterCompound(f, shieldEntities);
@@ -209,22 +212,24 @@ namespace Battle.QSimulation.Player
         {
             if (!IsValidShieldNumber(f, playerSlot, characterNumber, shieldNumber)) return;
 
-            BattlePlayerShieldEntityRef shieldNewEntityRef = GetShieldEntityRef(f, playerSlot, characterNumber, shieldNumber);
-            BattlePlayerShieldDataQComponent* shieldNewData = shieldNewEntityRef.GetDataQComponent(f);
-            BattlePlayerEntityRef playerEntityRef = shieldNewData->PlayerEntityRef;
-            BattlePlayerDataQComponent* playerData = playerEntityRef.GetDataQComponent(f);
+            BattlePlayerShieldManagerDataQSingleton* shieldManagerData = GetPlayerShieldManagerData(f);
+
+            BattlePlayerShieldEntityRef       shieldNewEntityRef = GetShieldEntityRef(f, shieldManagerData, playerSlot, characterNumber, shieldNumber);
+            BattlePlayerShieldDataQComponent* shieldNewData      = shieldNewEntityRef.GetDataQComponent(f);
+            BattlePlayerEntityRef             playerEntityRef    = shieldNewData->PlayerEntityRef;
+            BattlePlayerDataQComponent*       playerData         = playerEntityRef.GetDataQComponent(f);
 
             if (playerData->AttachedShield.ERef != EntityRef.None)
             {
                 playerData->AttachedShield.GetDataQComponent(f)->IsAttached = false;
 
-                BattleEntityManager.Return(f, GetPlayerShieldManagerData(f)->PlayerShieldEntityGroupIDs[GetShieldGroupIndex(playerSlot, characterNumber)], playerData->AttachedShieldNumber);
+                ReturnShieldEntityRef(f, shieldManagerData, playerSlot, characterNumber, playerData->AttachedShieldNumber);
             }
 
             s_debugLogger.LogFormat(f, DebugMessageShieldAttachFormat, playerSlot, shieldNumber, characterNumber);
-            shieldNewData->IsAttached = true;
+            shieldNewData->IsAttached        = true;
             playerData->AttachedShieldNumber = shieldNumber;
-            playerData->AttachedShield = shieldNewEntityRef;
+            playerData->AttachedShield       = shieldNewEntityRef;
 
             if (teleport)
             {
@@ -248,8 +253,10 @@ namespace Battle.QSimulation.Player
         {
             if (!IsValidShieldNumber(f, playerSlot, characterNumber, shieldNumber)) return BattlePlayerShieldEntityRef.None;
 
-            BattlePlayerShieldEntityRef shieldEntityRef = GetShieldEntityRef(f, playerSlot, characterNumber, shieldNumber);
-            BattlePlayerShieldDataQComponent* shieldData = shieldEntityRef.GetDataQComponent(f);
+            BattlePlayerShieldManagerDataQSingleton* shieldManagerData = GetPlayerShieldManagerData(f);
+
+            BattlePlayerShieldEntityRef       shieldEntityRef = GetShieldEntityRef(f, shieldManagerData, playerSlot, characterNumber, shieldNumber);
+            BattlePlayerShieldDataQComponent* shieldData      = shieldEntityRef.GetDataQComponent(f);
 
             if (!shieldData->IsAttached) return shieldEntityRef;
 
@@ -258,7 +265,7 @@ namespace Battle.QSimulation.Player
             BattlePlayerDataQComponent* playerData = shieldData->PlayerEntityRef.GetDataQComponent(f);
 
             playerData->AttachedShield = BattlePlayerShieldEntityRef.None;
-            shieldData->IsAttached = false;
+            shieldData->IsAttached     = false;
 
             return shieldEntityRef;
         }
@@ -276,38 +283,44 @@ namespace Battle.QSimulation.Player
         {
             if (!IsValidShieldNumber(f, playerSlot, characterNumber, shieldNumber)) return;
 
-            BattlePlayerShieldEntityRef shieldEntityRef = GetShieldEntityRef(f, playerSlot, characterNumber, shieldNumber);
-            BattlePlayerShieldDataQComponent* shieldData = shieldEntityRef.GetDataQComponent(f);
-            BattlePlayerDataQComponent* playerData = shieldData->PlayerEntityRef.GetDataQComponent(f);
+            BattlePlayerShieldManagerDataQSingleton* shieldManagerData = GetPlayerShieldManagerData(f);
+
+            BattlePlayerShieldEntityRef       shieldEntityRef = GetShieldEntityRef(f, shieldManagerData, playerSlot, characterNumber, shieldNumber);
+            BattlePlayerShieldDataQComponent* shieldData      = shieldEntityRef.GetDataQComponent(f);
+            BattlePlayerDataQComponent*       playerData      = shieldData->PlayerEntityRef.GetDataQComponent(f);
 
             if (playerData->AttachedShield.ERef == shieldEntityRef)
             {
                 s_debugLogger.LogFormat(f, DebugMessageShieldDetachFormat, playerSlot, shieldNumber, characterNumber);
                 playerData->AttachedShieldNumber = -1;
-                playerData->AttachedShield = BattlePlayerShieldEntityRef.None;
+                playerData->AttachedShield       = BattlePlayerShieldEntityRef.None;
             }
 
             s_debugLogger.LogFormat(f, DebugMessageShieldRemovedFormat, playerSlot, shieldNumber, characterNumber);
 
             shieldData->IsAttached = false;
 
-            BattleEntityManager.Return(f, GetPlayerShieldManagerData(f)->PlayerShieldEntityGroupIDs[GetShieldGroupIndex(playerSlot, characterNumber)], shieldNumber);
+            ReturnShieldEntityRef(f, shieldManagerData, playerSlot, characterNumber, playerData->AttachedShieldNumber);
         }
 
         /// <summary>
         /// Low level method for retrieving the BattleEntityID of the specified shield of the specified player character.
+        /// @note Low level method! Only meant for use by <see cref="BattlePlayerManager"/>.
         /// </summary>
+        ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerSlot">Slot of the specified character.</param>
         /// <param name="characterNumber">The character number of the specified character.</param>
+        ///
         /// <returns>The BattleEntityID of the specified shield.</returns>
         public static BattleEntityID Low_GetShieldEntityGroupID(Frame f, BattlePlayerSlot playerSlot, int characterNumber)
         {
             return GetPlayerShieldManagerData(f)->PlayerShieldEntityGroupIDs[GetShieldGroupIndex(playerSlot, characterNumber)];
         }
 
-        /// <summary>This classes BattleDebugLogger instance.</summary>
-        private static BattleDebugLogger s_debugLogger;
+        #endregion Public Static Methods
+
+        #region Private DebugMessage Constants
 
         /// <summary>Formatted debug message for when a shield is attached.</summary>
         private const string DebugMessageShieldAttachFormat = "({0}) Attaching shield number {1} to character {2}";
@@ -317,6 +330,13 @@ namespace Battle.QSimulation.Player
 
         /// <summary>Formatted debug message for when a shield is removed.</summary>
         private const string DebugMessageShieldRemovedFormat = "({0}) Removing shield number {1} of character {2}";
+
+        #endregion Private DebugMessage Constants
+
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private static BattleDebugLogger s_debugLogger;
+
+        #region Private Static Methods
 
         /// <summary>
         /// Sets the shield entity IDs for specified player's specified character in BattlePlayerShieldManagerDataQSingleton.
@@ -329,12 +349,11 @@ namespace Battle.QSimulation.Player
         private static void SetShieldEntityGroupID(Frame f, BattlePlayerSlot playerSlot, int characterNumber, BattleEntityID shieldEntityGroupID)
         {
             BattlePlayerShieldManagerDataQSingleton* playerShieldManagerSingleton = GetPlayerShieldManagerData(f);
-
             playerShieldManagerSingleton->PlayerShieldEntityGroupIDs[GetShieldGroupIndex(playerSlot, characterNumber)] = shieldEntityGroupID;
         }
 
         /// <summary>
-        /// Retrieves the index in BattlePlayerShieldManagerDataQSingleton of the shield entity group for a specified player character.
+        /// Private helper method for retrieving the index in BattlePlayerShieldManagerDataQSingleton of the shield entity group for a specified player character.
         /// </summary>
         ///
         /// <param name="playerSlot">The BattlePlayerSlot of the specified player.</param>
@@ -345,7 +364,6 @@ namespace Battle.QSimulation.Player
         private static int GetShieldGroupIndex(BattlePlayerSlot playerSlot, int characterNumber)
         {
             int playerIndex = BattlePlayerManager.PlayerHandle.Low_GetPlayerIndex(playerSlot);
-
             return playerIndex * Constants.BATTLE_PLAYER_CHARACTER_COUNT + characterNumber;
         }
 
@@ -368,19 +386,41 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Retrieves a shield entity based on given <paramref name="shieldNumber"/> for specified player's specified character.
+        /// Private helper method for retrieving a shield entity based on given <paramref name="shieldNumber"/>
+        /// for specified <paramref name="playerSlot"/>'s specified <paramref name="characterNumber"/>.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
+        /// <param name="shieldManagerData">Pointer to shield manager data.</param>
         /// <param name="playerSlot">Slot of the specified player.</param>
         /// <param name="characterNumber">The character number of the specified character.</param>
         /// <param name="shieldNumber">The shield number of the shield to be retrieved.</param>
         ///
         /// <returns>EntityRef of the retrieved shield entity.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static BattlePlayerShieldEntityRef GetShieldEntityRef(Frame f, BattlePlayerSlot playerSlot, int characterNumber, int shieldNumber)
+        private static BattlePlayerShieldEntityRef GetShieldEntityRef(Frame f, BattlePlayerShieldManagerDataQSingleton* shieldManagerData, BattlePlayerSlot playerSlot, int characterNumber, int shieldNumber)
         {
-            return (BattlePlayerShieldEntityRef)BattleEntityManager.Get(f, GetPlayerShieldManagerData(f)->PlayerShieldEntityGroupIDs[GetShieldGroupIndex(playerSlot, characterNumber)], shieldNumber);
+            BattleEntityID shieldGroupID = shieldManagerData->PlayerShieldEntityGroupIDs[GetShieldGroupIndex(playerSlot, characterNumber)];
+            return (BattlePlayerShieldEntityRef)BattleEntityManager.Get(f, shieldGroupID, shieldNumber);
         }
+
+        /// <summary>
+        /// Private helper method for returning a shield entity based on given <paramref name="shieldNumber"/>
+        /// for specified <paramref name="playerSlot"/>'s specified <paramref name="characterNumber"/>.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="shieldManagerData">Pointer to shield manager data.</param>
+        /// <param name="playerSlot">Slot of the specified player.</param>
+        /// <param name="characterNumber">The character number of the specified character.</param>
+        /// <param name="shieldNumber">The shield number of the shield to be returned.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void ReturnShieldEntityRef(Frame f, BattlePlayerShieldManagerDataQSingleton* shieldManagerData, BattlePlayerSlot playerSlot, int characterNumber, int shieldNumber)
+        {
+            BattleEntityID shieldGroupID = shieldManagerData->PlayerShieldEntityGroupIDs[GetShieldGroupIndex(playerSlot, characterNumber)];
+            BattleEntityManager.Return(f, shieldGroupID, shieldNumber);
+        }
+
+        #endregion Private Static Methods
     }
 }

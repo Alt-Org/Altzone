@@ -253,7 +253,7 @@ namespace Battle.QSimulation.Player
                                             playerCharacterClass
                     );
 
-                    // get entity prototypes
+                    // get entity prototype
                     AssetRef<EntityPrototype> playerCharacterEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(playerCharacterId);
                     if (playerCharacterEntityPrototype == null)
                     {
