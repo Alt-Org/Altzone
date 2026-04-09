@@ -55,6 +55,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
         _openMoreButtonShowUser.onClick.AddListener((() => {
             _allReactionsPanelPopUp.SetActive(true);
             _selectedReaction.SetActive(false);
+            GetComponent<MessageReactionResize>().UpdateSize();
         }));
 
 
