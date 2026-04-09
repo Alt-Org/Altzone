@@ -16,8 +16,6 @@ using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Model.Poco.Game;
 using System.Collections.ObjectModel;
 using UnityEngine.U2D.Animation;
-using Assets.Altzone.Scripts.Model.Poco.Player;
-using System.Reflection.Emit;
 
 namespace MenuUI.Scripts.SoulHome {
 
