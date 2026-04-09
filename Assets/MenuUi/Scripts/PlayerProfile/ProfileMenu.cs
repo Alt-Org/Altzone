@@ -14,12 +14,14 @@ using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Window;
 using MenuUi.Scripts.AvatarEditor;
+using MenuUi.Scripts;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using MenuUI.Scripts;
 
 public class ProfileMenu : AltMonoBehaviour
 {
@@ -77,6 +79,7 @@ public class ProfileMenu : AltMonoBehaviour
     [SerializeField] private Button _addFriendButton;
     [SerializeField] private GameObject _friendRequestPopup;
     [SerializeField] private Button _closeFriendRequestPopupButton;
+    [SerializeField] private Button _sendFriendRequestPopupButton;
     [SerializeField] private TextMeshProUGUI _friendRequestPopupTitleText;
 
     [Header("Clan Heart")]
@@ -219,7 +222,6 @@ public class ProfileMenu : AltMonoBehaviour
         {
             AddAnswerOptions();
         }*/
-        _addFriendButton.onClick.AddListener(SendFriendRequest);
     }
     private void OnDisable()
     {
@@ -230,7 +232,6 @@ public class ProfileMenu : AltMonoBehaviour
         //_characterOptionsPopup.SetActive(false);
         //_closePopupAreaButton.SetActive(false);
         ServerManager.OnLogInStatusChanged -= SetPlayerProfileValues;
-        _addFriendButton.onClick.RemoveListener(SendFriendRequest);
 
         if (_otherPlayerProfile)
         {
@@ -348,6 +349,9 @@ public class ProfileMenu : AltMonoBehaviour
 
         if (_closeFriendRequestPopupButton != null)
             _closeFriendRequestPopupButton.onClick.AddListener(CloseFriendRequestPopup);
+
+        if (_sendFriendRequestPopupButton != null)
+            _sendFriendRequestPopupButton.onClick.AddListener(SendFriendRequest);
 
         LoadMinutes();
     }
@@ -775,7 +779,11 @@ public class ProfileMenu : AltMonoBehaviour
 
     private void SendFriendRequest()
     {
-        StartCoroutine(ServerManager.Instance.SendFriendRequest(_playerData.Id, null));
+        StartCoroutine(ServerManager.Instance.SendFriendRequest(_playerData.Id, c =>
+        {
+            if(c) CloseFriendRequestPopup();
+            else SignalBus.OnChangePopupInfoSignal("Kaveripyynnön lähettäminen epäonnistui.");
+        }));
     }
 
     private void SaveMinutes()
