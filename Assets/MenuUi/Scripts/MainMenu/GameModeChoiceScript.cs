@@ -1,87 +1,87 @@
-using System.Collections;
 using System.Collections.Generic;
-using Altzone.Scripts.Language;
-using Altzone.Scripts.Lobby;
-using MenuUi.Scripts.Lobby.BattleButton;
-using MenuUi.Scripts.ReferenceSheets;
-using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine;
+using Prg.Scripts.Common;
 using UnityEngine.UI;
+
 
 public class GameModeChoiceScript : MonoBehaviour
 {
+
+    [SerializeField] private List<GameObject> _gameModeButtons = new();
+    [SerializeField] private List<GameObject> _gameModeHeaders = new();
+    [SerializeField] private List<Button> _gameModeButtonsAsButtons = new();
+
     private int currentModeInt = 0;
-    private int amountOfModes = 3;
+    private int amountOfModes;
 
 
-    [SerializeField] private List<GameObject> GameModeButtons = new List<GameObject>();
+    //For the game mode swipe functionality
+    private Vector2 _startTouchPosition;
+    private Vector2 _endTouchPosition;
 
-    [SerializeField] private List<GameObject> GameModeHeaders = new List<GameObject>();
+    private float _minimunScrollDistance = 100; //so that movements too small wont swipe
+
+    private bool _isSwiping = false;
 
 
-
-    
-
-    [SerializeField] private Image _gameTypeIcon;
-    [SerializeField] private TextLanguageSelectorCaller _gameTypeName;
-    [SerializeField] private TextLanguageSelectorCaller _gameTypeDescription;
-    [SerializeField] private GameObject _gameTypeSelectionMenu;
-    [SerializeField] private GameObject _gameTypeOptionPrefab;
-    [SerializeField] private Button _openBattleUiEditorButton;
-    [SerializeField] private GameTypeReference _gameTypeReference;
-    [SerializeField] private GameObject _touchBlocker;
-
-    private const string SelectedGameTypeKey = "BattleButtonGameType";
-
-    private GameType _selectedGameType = GameType.Custom;
-
-    private List<GameTypeOption> _gameTypeOptionList = new();
-    private Button _button;
-    private SwipeUI _swipe;
-
-    private void Awake()
+    public void GetSwipeStart()
     {
-        GameTypeOption gameTypeOption = Instantiate(_gameTypeOptionPrefab).GetComponent<GameTypeOption>();
+        _startTouchPosition = ClickStateHandler.GetClickPosition();
+        _isSwiping = true;
+    }
 
 
-        // Instantiate game type option buttons to game type selection menu
-        foreach (GameTypeInfo gameTypeInfo in _gameTypeReference.GetGameTypeInfos())
+    public void GetSwipeEnd()
+    {
+        _endTouchPosition = ClickStateHandler.GetClickPosition();
+
+        SwipeToMode();
+    }
+
+    private void SwipeToMode()
+    {
+        //Debug.Log("start: " + _startTouchPosition + " end: " + _endTouchPosition);
+        if (_startTouchPosition.x < _endTouchPosition.x && Mathf.Abs(_endTouchPosition.x) - Mathf.Abs(_startTouchPosition.x) > _minimunScrollDistance)
         {
-
-            int i = 0;
-
-            GameModeButtons[i] = _gameTypeOptionPrefab;
-
-
-            i++;
-        
-            
+            PressArrowLeft();
         }
+        else if (_startTouchPosition.x > _endTouchPosition.x && Mathf.Abs(_startTouchPosition.x) - Mathf.Abs(_endTouchPosition.x) > _minimunScrollDistance)
+        {
+            PressArrowRight();
+        }
+    }
 
+
+    public void PointerUp() //triggers button if swipe didn't happen
+    {
+        if (!_isSwiping)
+        {
+            _gameModeButtonsAsButtons[currentModeInt].onClick.Invoke();
+        }
+        _isSwiping = false;
     }
 
 
 
-    
-
-
+    //for switching game modes
 
 
     private void Start()
     {
         currentModeInt = 0;
+        amountOfModes = _gameModeButtons.Count;
 
-        foreach (GameObject gameModeButton in GameModeButtons)
+        foreach (GameObject gameModeButton in _gameModeButtons)
         {
             gameModeButton.SetActive(false);
         }
-        GameModeButtons[0].SetActive(true);
+        _gameModeButtons[0].SetActive(true);
 
-        foreach (GameObject gameModeHeader in GameModeHeaders)
+        foreach (GameObject gameModeHeader in _gameModeHeaders)
         {
             gameModeHeader.SetActive(false);
         }
-        GameModeHeaders[0].SetActive(true);
+        _gameModeHeaders[0].SetActive(true);
 
     }
 
@@ -96,18 +96,18 @@ public class GameModeChoiceScript : MonoBehaviour
             currentModeInt = amountOfModes - 1;
         }
 
-        foreach (GameObject gameModeButton in GameModeButtons)  //make correct game mode button active
+        foreach (GameObject gameModeButton in _gameModeButtons)  //make correct game mode button active
         {
             gameModeButton.SetActive(false);
         }
-        GameModeButtons[currentModeInt].SetActive(true);
+        _gameModeButtons[currentModeInt].SetActive(true);
 
 
-        foreach (GameObject gameModeHeader in GameModeHeaders) //make correct header active
+        foreach (GameObject gameModeHeader in _gameModeHeaders) //make correct header active
         {
             gameModeHeader.SetActive(false);
         }
-        GameModeHeaders[currentModeInt].SetActive(true);
+        _gameModeHeaders[currentModeInt].SetActive(true);
     }
 
     public void PressArrowRight() 
@@ -121,16 +121,16 @@ public class GameModeChoiceScript : MonoBehaviour
             currentModeInt = 0;
         }
 
-        foreach (GameObject gameModeButton in GameModeButtons) //make correct game mode button active
+        foreach (GameObject gameModeButton in _gameModeButtons) //make correct game mode button active
         {
             gameModeButton.SetActive(false);
         }
-        GameModeButtons[currentModeInt].SetActive(true);
+        _gameModeButtons[currentModeInt].SetActive(true);
 
-        foreach (GameObject gameModeHeader in GameModeHeaders)//make correct header active
+        foreach (GameObject gameModeHeader in _gameModeHeaders)//make correct header active
         {
             gameModeHeader.SetActive(false);
         }
-        GameModeHeaders[currentModeInt].SetActive(true);
+        _gameModeHeaders[currentModeInt].SetActive(true);
     }
 }
