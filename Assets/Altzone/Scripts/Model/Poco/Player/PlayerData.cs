@@ -9,7 +9,6 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2.Internal;
 using Altzone.Scripts.Voting;
-using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Newtonsoft.Json;
@@ -77,6 +76,10 @@ namespace Altzone.Scripts.Model.Poco.Player
         public List<string> _playerDataEmotionList = new List<string> { Emotion.Blank.ToString(), Emotion.Love.ToString(), Emotion.Playful.ToString(), Emotion.Joy.ToString(), Emotion.Sorrow.ToString(), Emotion.Anger.ToString(), Emotion.Blank.ToString() };
 
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
+
+        public List<FriendPlayer> friendPlayers;
+
+        public List<FriendRequest> friendRequests;
 
         public ServerGameStatistics stats = null;
 
