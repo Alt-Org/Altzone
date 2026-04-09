@@ -14,6 +14,9 @@ public class MessageReactionsHandler : AltMonoBehaviour
     [SerializeField] private GameObject _allReactionsPanel;
     [SerializeField] private GameObject _usersWhoAdded;
     [SerializeField] private Transform _reactionsContent;
+    [SerializeField] private Transform _reactionsContentPopUp;
+    [SerializeField] private GameObject _allReactionsPanelPopUp;
+    [SerializeField] private GameObject _selectedReaction;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject _addedReactionPrefab;
@@ -30,6 +33,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
     */
     [Header("Buttons")]
     [SerializeField] private Button _openMoreButton;
+    [SerializeField] private Button _openMoreButtonShowUser;
 
     private List<ReactionObjectHandler> _reactions = new();
     private List<ChatReactionHandler> _reactionHandlers = new();
@@ -40,21 +44,27 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
     void Start()
     {
-           
+         //For "AddReactions"
         _openMoreButton.onClick.AddListener((() => {
             _allReactionsPanel.SetActive(true);
             _selectedMessage.SizeCall();
             _commonReactionsPanel.SetActive(false);
             GetComponent<MessageReactionResize>().UpdateSize();
         }));
-
+        //For "ShowUsersPopUp"
+        _openMoreButtonShowUser.onClick.AddListener((() => {
+            _allReactionsPanelPopUp.SetActive(true);
+            _selectedReaction.SetActive(false);
+        }));
 
 
 
         //ReactionObjectHandler.OnReactionPressed += AddReaction;
 
-        GenarateReactionObjects();
-        UpdateReactionStatus();
+        GenarateReactionObjects(_reactionsContent);
+        GenarateReactionObjects(_reactionsContentPopUp);
+        UpdateReactionStatus(_reactionsContent);
+        UpdateReactionStatus(_reactionsContentPopUp);
         PickCommonReactions();
     }
 
@@ -65,10 +75,10 @@ public class MessageReactionsHandler : AltMonoBehaviour
         //ReactionObjectHandler.OnReactionPressed -= AddReaction;
     }
 
-    private void GenarateReactionObjects()
+    private void GenarateReactionObjects(Transform reactionPanel)
     {
         _reactions.Clear();
-        foreach (Transform reaction in _reactionsContent)
+        foreach (Transform reaction in reactionPanel)
         {
             Destroy(reaction.gameObject);
         }
@@ -77,7 +87,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
             if (reaction.Sprite != null && reaction.Mood != Mood.None)
             {
                 //_reactions.FirstOrDefault(x => x.);
-                GameObject reactionObject = Instantiate(_reactionObject, _reactionsContent);
+                GameObject reactionObject = Instantiate(_reactionObject, reactionPanel);
                 if (!reactionObject.TryGetComponent(out ReactionObjectHandler handler))
                 {
                     handler = reactionObject.AddComponent<ReactionObjectHandler>();
@@ -88,9 +98,9 @@ public class MessageReactionsHandler : AltMonoBehaviour
         }
     }
 
-    private void UpdateReactionStatus()
+    private void UpdateReactionStatus(Transform reactionPanel)
     {
-        foreach (Transform child in _reactionsContent)
+        foreach (Transform child in reactionPanel)
         {
             if (child.GetComponent<ReactionObjectHandler>() == null) continue;
             Mood mood = child.GetComponent<ReactionObjectHandler>().Mood;
@@ -235,7 +245,8 @@ public class MessageReactionsHandler : AltMonoBehaviour
                     }
 
             }));
-            UpdateReactionStatus();
+            UpdateReactionStatus(_reactionsContent);
+            UpdateReactionStatus(_reactionsContentPopUp);
             PickCommonReactions();
             LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
 
@@ -313,7 +324,8 @@ public class MessageReactionsHandler : AltMonoBehaviour
         _reactionHandlers.Remove(reaction);
 
         Destroy(reaction.gameObject);
-        UpdateReactionStatus();
+        UpdateReactionStatus(_reactionsContent);
+        UpdateReactionStatus(_reactionsContentPopUp);
         PickCommonReactions();
         _selectedMessage.SizeCall();
 

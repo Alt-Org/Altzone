@@ -29,7 +29,6 @@ public class MessageObjectHandler : MonoBehaviour
     public GameObject _reactionSize;
     public GameObject _expandedReactionSize;
     [SerializeField] private Vector2 _vectorReactionSize;
-    [SerializeField] private Vector2 _vectorExpandedReactionSize;
 
 
 
@@ -58,7 +57,6 @@ public class MessageObjectHandler : MonoBehaviour
     ///Changes the Basemessages size
     public void SizeCall()
     {
-        _vectorExpandedReactionSize = new Vector2(_baseMessageSize.sizeDelta.x, _expandedReactionSize.GetComponent<RectTransform>().sizeDelta.y);
         //adds extra size if there reactions have been put or not
         float extraPadding;
         if (reactionField.transform.childCount > 0)
@@ -71,10 +69,7 @@ public class MessageObjectHandler : MonoBehaviour
             
         //Checks if reaction panel is active and checks which reaction pannel is on
         if (_reactionSize.activeSelf)
-            if(_expandedReactionSize.activeSelf)
-                _baseMessageSize.sizeDelta = new Vector2(_vectorExpandedReactionSize.x, Mathf.Max(150, _baseMessageBankerSize.y + _vectorExpandedReactionSize.y));
-            else
-                _baseMessageSize.sizeDelta = new Vector2(_vectorReactionSize.x, Mathf.Max(150, _baseMessageBankerSize.y + _vectorReactionSize.y));
+                _baseMessageSize.sizeDelta = new Vector2(_vectorReactionSize.x, Mathf.Max(150, _baseMessageBankerSize.y + (_vectorReactionSize.y / 1.2f)));
 
         //reverts back to orignal
         else
