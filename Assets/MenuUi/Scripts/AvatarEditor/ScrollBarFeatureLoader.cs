@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Altzone.Scripts.AvatarPartsInfo;
-using Assets.Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +8,7 @@ namespace MenuUi.Scripts.AvatarEditor
 {
     public class ScrollBarFeatureLoader : MonoBehaviour
     {
+        [SerializeField] private ScrollBarCategoryLoader _categoryLoader;
         [SerializeField] private AvatarPartsReference _avatarPartsReference;
         [SerializeField] private RectTransform _featureGridContent;
         [SerializeField] private GameObject _featureCellPrefab;
@@ -26,10 +27,10 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField, Range(0f, 0.3f)] private float _verticalSpacing = 0.05f;
         [SerializeField, Range(0f, 0.3f)] private float _horizontalSpacing = 0.05f;
         [SerializeField, Range(0f, 0.3f)] private float _fadeRange = 0.1f;
-        [SerializeField] private Color _highlightColor = new(0f, 0f, 0f, 0.5f);
-        [SerializeField] private Color _backgroundColor = new(0.5f, 0.5f, 0.5f, 0.7f);
         [SerializeField] private AvatarEditorCharacterHandle _characterHandle;
         [SerializeField] private ColorPicker _colorPicker;
+        [SerializeField] private Image _bodySlotImage;
+        [SerializeField] private GameObject _featureGridContainer;
 
         private List<AvatarPartInfo> _avatarPartInfo;
         private readonly Dictionary<string, AvatarPiece> _featureCategoryIdToAvatarPiece = new Dictionary<string, AvatarPiece>
@@ -43,6 +44,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 { "33", AvatarPiece.Feet }  // Feet
             };
         private FeatureCellHandler _selectedCellHandler;
+        private ColorCellHandler _lastSelectedColorCellHandler;
         private bool _isSelectedFeature = false;
         private float _cellHeight;
         private float _actualVerticalSpacing;
@@ -116,7 +118,7 @@ namespace MenuUi.Scripts.AvatarEditor
             AvatarPiece avatarPieceId = _featureCategoryIdToAvatarPiece[featureCategoryid];
             string selectedPieceId = _avatarEditorController.PlayerAvatar.GetPartId(avatarPieceId);
 
-            handler.SetValues(cellImage, _highlightColor, _backgroundColor, avatarPart.IsColorable);
+            handler.SetValues(cellImage, avatarPart.IsColorable);
 
             AddListeners(handler, avatarPart, avatarPieceId);
 
@@ -134,22 +136,6 @@ namespace MenuUi.Scripts.AvatarEditor
             else
             {
                 handler.Highlight(false);
-            }
-        }
-
-        private void AddSkinColorSelectionCells()
-        {
-            foreach (Color color in _colorSelection.SkinColors)
-            {
-                GameObject colorGridCell = Instantiate(_colorCellPrefab, _featureGridContent);
-                ColorCellHandler handler = colorGridCell.GetComponent<ColorCellHandler>();
-
-                handler.SetColor(color);
-                handler.SetOnClick(() =>
-                {
-                    _characterHandle.SetSkinColor(color);
-                    _avatarEditorController.PlayerAvatar.SkinColor = ColorUtility.ToHtmlStringRGBA(color);
-                });
             }
         }
 
@@ -171,22 +157,26 @@ namespace MenuUi.Scripts.AvatarEditor
             handler.SetOnClick(onClick: () =>
             {
                 _featureSetter.SetFeature(avatarPart, slot);
+                _categoryLoader.UpdateSlotImage(slot, avatarPart);
                 UpdateHighlightedCell(handler);
             });
         }
 
         private void ColorSelectActive(bool isActive)
         {
-            _colorPicker.SetActive(isActive);
+            //_colorPicker.SetActive(isActive);
             _colorSelection.gameObject.SetActive(isActive);
         }
 
         public void RefreshFeatureListItems(string categoryId)
         {
+            _featureGridContainer.SetActive(true);
             DestroyFeatureListItems();
 
             if (categoryId != "")
             {
+                if (_colorSelection.SkinColorSelectActive) _colorSelection.SetColorCells();
+
                 _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
                 foreach (AvatarPartInfo part in _avatarPartInfo)
                 {
@@ -196,8 +186,9 @@ namespace MenuUi.Scripts.AvatarEditor
             }
             else
             {
-                AddSkinColorSelectionCells();
-                ColorSelectActive(false);
+                _colorSelection.SetSkinColorCells();
+                ColorSelectActive(true);
+                _featureGridContainer.SetActive(false);
             }
             _currentCategory = categoryId;
         }
