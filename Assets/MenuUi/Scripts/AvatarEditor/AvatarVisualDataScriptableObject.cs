@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Assets.Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.AvatarPartsInfo;
 
 [CreateAssetMenu(menuName = "ALT-Zone/AvatarVisualData")]
