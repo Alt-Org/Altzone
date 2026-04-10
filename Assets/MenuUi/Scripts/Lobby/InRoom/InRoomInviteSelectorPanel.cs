@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Prg.Scripts.Common;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace MenuUi.Scripts.Lobby.InRoom
@@ -44,6 +47,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private Color _rowTextColor;
         private float _rowFontSize;
         private bool _rowStyleInitialized;
+        private bool _closing;
 
         public bool IsVisible => _root != null && _root.activeSelf;
 
@@ -63,6 +67,32 @@ namespace MenuUi.Scripts.Lobby.InRoom
             if (_closeButton != null)
             {
                 _closeButton.onClick.RemoveListener(OnClosePressed);
+            }
+        }
+
+        private void LateUpdate()
+        {
+            if (!IsVisible)
+            {
+                _closing = false;
+                return;
+            }
+
+            if (ClickStateHandler.GetClickState() is ClickState.Start)
+            {
+                if (!IsPointerOnSelectorCard())
+                {
+                    _closing = true;
+                }
+            }
+
+            if (ClickStateHandler.GetClickState() is ClickState.End && _closing)
+            {
+                if (!IsPointerOnSelectorCard())
+                {
+                    Hide(true);
+                }
+                _closing = false;
             }
         }
 
@@ -97,7 +127,35 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         public void ConfigureVisualStyle(Button styleSourceButton)
         {
-            _ = styleSourceButton;
+            if (styleSourceButton == null)
+            {
+                return;
+            }
+
+            Image sourceImage = styleSourceButton.targetGraphic as Image;
+            TMP_Text sourceText = styleSourceButton.GetComponentInChildren<TMP_Text>(true);
+
+            if (sourceImage != null)
+            {
+                _rowSprite = sourceImage.sprite;
+                _rowMaterial = sourceImage.material;
+                _rowImageType = sourceImage.sprite != null ? sourceImage.type : Image.Type.Simple;
+                _rowColor = sourceImage.color;
+            }
+
+            _rowColorBlock = styleSourceButton.colors;
+
+            if (sourceText != null)
+            {
+                _rowTextColor = sourceText.color;
+                _rowFontSize = Mathf.Max(18f, sourceText.fontSize);
+                if (sourceText.font != null)
+                {
+                    _rowFontAsset = sourceText.font;
+                }
+            }
+
+            _rowStyleInitialized = true;
         }
 
         public void Hide(bool invokeCancel)
@@ -175,13 +233,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 return;
             }
 
-            foreach (ServerOnlinePlayer player in players)
+            foreach (ServerOnlinePlayer player in players
+                         .Where(player => player != null)
+                         .OrderBy(GetDisplayName, StringComparer.OrdinalIgnoreCase))
             {
-                if (player == null)
-                {
-                    continue;
-                }
-
                 GameObject row = CreateRowObject(_contentRoot, player);
                 Button button = row.GetComponent<Button>();
                 if (button != null)
@@ -220,6 +275,47 @@ namespace MenuUi.Scripts.Lobby.InRoom
             return string.IsNullOrEmpty(player._id) ? "Tuntematon" : player._id;
         }
 
+        private bool IsPointerOnSelectorCard()
+        {
+            if (EventSystem.current == null)
+            {
+                return false;
+            }
+
+            List<RaycastResult> results = new();
+            PointerEventData data = new(EventSystem.current)
+            {
+                position = ClickStateHandler.GetClickPosition()
+            };
+
+            if (data.position == Vector2.negativeInfinity)
+            {
+                return false;
+            }
+
+            var modules = RaycasterManager.GetRaycasters();
+            foreach (var module in modules)
+            {
+                module.Raycast(data, results);
+            }
+
+            Transform cardRoot = _cardImage != null ? _cardImage.transform : _root != null ? _root.transform : null;
+            if (cardRoot == null)
+            {
+                return false;
+            }
+
+            foreach (RaycastResult result in results)
+            {
+                if (result.gameObject != null && result.gameObject.transform.IsChildOf(cardRoot))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private GameObject CreateRowObject(Transform parent, ServerOnlinePlayer player)
         {
             GameObject row = new("InviteCandidateRow", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button), typeof(LayoutElement));
@@ -229,7 +325,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             ApplyImageStyle(image, _rowSprite, _rowMaterial, _rowImageType, _rowColor);
 
             LayoutElement layoutElement = row.GetComponent<LayoutElement>();
-            layoutElement.preferredHeight = 82f;
+            layoutElement.preferredHeight = 100f;
 
             Button button = row.GetComponent<Button>();
             button.targetGraphic = image;

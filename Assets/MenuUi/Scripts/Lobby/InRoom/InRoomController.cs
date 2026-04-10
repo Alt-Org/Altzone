@@ -46,7 +46,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
             _backButton.onClick.AddListener(GoBack);
             if (_premadeTargetModeDropdown != null) _premadeTargetModeDropdown.onValueChanged.AddListener(OnPremadeTargetModeChanged);
             if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.onClick.AddListener(OnInviteOnlinePlayerButtonPressed);
-            EnsureInviteSelectorPanel();
             //buttons[3].onClick.AddListener(StartRaidTest);
         }
 
@@ -66,6 +65,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     if (_noticeText != null) _noticeText.text = "Kutsu yksi online-pelaaja ja valitse haettava 2v2 pelimuoto.";
                     if (_sendInviteToFriendText != null) _sendInviteToFriendText.text = "Kutsu online-pelaaja";
                     ConfigurePremadeTargetSelector();
+                    EnsureInviteSelectorPanel();
                     break;
                 case GameType.Random2v2:
                     //if (_title != null) _title.text = "Keräily 2v2";
@@ -566,7 +566,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             _inviteSelectorPanel = GetComponentInChildren<InRoomInviteSelectorPanel>(true);
             if (_inviteSelectorPanel == null)
             {
-                Debug.LogError("InRoomController: InRoomInviteSelectorPanel prefab instance is missing from Battle Popup hierarchy.");
+                Debug.LogWarning("InRoomController: InRoomInviteSelectorPanel prefab instance is missing from Battle Popup hierarchy.");
                 if (_inviteOnlinePlayerButton != null)
                 {
                     _inviteOnlinePlayerButton.interactable = false;
