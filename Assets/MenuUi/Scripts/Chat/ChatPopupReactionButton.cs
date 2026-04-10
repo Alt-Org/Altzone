@@ -8,7 +8,8 @@ public class ChatPopupReactionButton : MonoBehaviour
 {
     [SerializeField] private GameObject AllReaction;
     [SerializeField] private GameObject SelectedReaction;
-    // Start is called before the first frame update
+
+    //turns off the All reaction and shows back again the selected reactions for the "ShowUsersPopUp"
     void OnEnable()
     {
         Button[] _buttons = GetComponentsInChildren<Button>();

@@ -17,7 +17,7 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _date;
     [SerializeField] private Button _button;
     [SerializeField] private GameObject _addReactionsControls;
-    [SerializeField] private GameObject _reactionsPanel;
+    [SerializeField] private GameObject[] _reactionsPanel;
     [SerializeField] private GameObject _fixSize;
 
 
@@ -37,7 +37,8 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private Image _extraimage;
     private Action<MessageObjectHandler> _selectMessageAction;
 
-    public GameObject ReactionsPanel { get => _reactionsPanel;}
+    public GameObject[] ReactionsPanel { get => _reactionsPanel;}
+
     [SerializeField] private GameObject ReactionObject;
 
     public string Id { get => _id;}
@@ -158,7 +159,10 @@ public class MessageObjectHandler : MonoBehaviour
         //Gets the set data we need to get to import saved reactions
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
 
-        ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, true);
+        foreach (GameObject ReactionPanel in ReactionsPanel)
+        {
+            ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, true, ReactionPanel);
+        }
         
     }
 

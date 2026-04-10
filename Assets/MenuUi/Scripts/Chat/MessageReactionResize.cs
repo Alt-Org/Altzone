@@ -30,9 +30,6 @@ public class MessageReactionResize : MonoBehaviour
 
     public void UpdateSize()
     {
-        ///side note u can just make the _limitX, Y to 0 if  anchors works normally
-
-
         int activeChildren = 0;
         //basicly first it count how many childs the object has and then after that counts which one are active or not
         for (int i = 0; i < _rectTranformChild.childCount; i++)

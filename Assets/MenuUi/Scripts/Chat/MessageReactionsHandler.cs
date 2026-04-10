@@ -42,6 +42,8 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
     public MessageObjectHandler _messageObjectHandler;
 
+    public int strikes = 0;
+
     void Start()
     {
          //For "AddReactions"
@@ -176,7 +178,10 @@ public class MessageReactionsHandler : AltMonoBehaviour
         }
         foreach (ServerReactions reaction in reactions)
         {
-            AddReaction(reaction, (Mood)Enum.Parse(typeof(Mood), reaction.emoji), messageid, true);
+            foreach (GameObject ReactionPanel in _selectedMessage.ReactionsPanel)
+            {
+                AddReaction(reaction, (Mood)Enum.Parse(typeof(Mood), reaction.emoji), messageid, true, ReactionPanel);
+            }
         }
         List<ChatReactionHandler> removableReactions = new();
         foreach (ChatReactionHandler addedReaction in _reactionHandlers)
@@ -192,25 +197,40 @@ public class MessageReactionsHandler : AltMonoBehaviour
     /// <summary>
     /// Adds the chosen reaction to the selected message.
     /// </summary>
-    public void AddReaction(ServerReactions _reaction, Mood mood, string message_id, bool fromServer = false)
+    public void AddReaction(ServerReactions _reaction, Mood mood, string message_id, bool fromServer = false, GameObject ReactionPanel = null)
     {
+
+        int activeamount = 0;
+        foreach(GameObject reactions in _selectedMessage.ReactionsPanel)
+        {
+            if (reactions.activeInHierarchy)
+                activeamount++;
+        }
+
         if (_selectedMessage != null)
         {
             string messageID = _selectedMessage.Id;
-            if (messageID != message_id) return;
+            if (messageID != message_id)
+                return; 
 
-            HorizontalLayoutGroup reactionsField = _selectedMessage.ReactionsPanel.GetComponentInChildren<HorizontalLayoutGroup>();
 
-            Sprite reactionSprite = _reactionList.FirstOrDefault(x => x.Mood == mood)?.Sprite;
-            int i = _reactionList.FindIndex(m => m.Sprite == reactionSprite);
+                HorizontalLayoutGroup reactionsField = ReactionPanel.GetComponentInChildren<HorizontalLayoutGroup>();
+                Sprite reactionSprite = _reactionList.FirstOrDefault(x => x.Mood == mood)?.Sprite;
+                int i = _reactionList.FindIndex(m => m.Sprite == reactionSprite);
 
-            // Checks if chosen reaction is already added to the selected message. If so, deletes it.
-            foreach (ChatReactionHandler addedReaction in _reactionHandlers)
-            {
+                // Checks if chosen reaction is already added to the selected message. If so, deletes it.
+                foreach (ChatReactionHandler addedReaction in _reactionHandlers)
+                {
 
                 if (addedReaction.Mood == mood)
-            {
-                    addedReaction.AddReaction(_reaction);
+                {
+                    if (strikes < 1)
+                    {
+                        strikes++;
+                    }
+                    else if (strikes >= 1)
+                    { 
+                        addedReaction.AddReaction(_reaction);
                     StartCoroutine(GetPlayerData(player =>
                     {
                         if (player != null)
@@ -222,38 +242,44 @@ public class MessageReactionsHandler : AltMonoBehaviour
                             }
                     }));
                     _selectedMessage.SetMessageInactive();
-                    return;
-                }
-            }
-
-            // Creates a reaction with the needed info and adds it to the selected message.
-            GameObject newReaction = Instantiate(_addedReactionPrefab, reactionsField.transform);
-            ChatReactionHandler chatReactionHandler = newReaction.GetComponentInChildren<ChatReactionHandler>();
-            chatReactionHandler.SetReactionInfo(reactionSprite, messageID, mood);
-            chatReactionHandler.AddReaction(_reaction);
-            _reactionHandlers.Add(chatReactionHandler);
-
-            chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler));
-            chatReactionHandler.LongClickButton.onLongClick.AddListener(() => ShowUsers(chatReactionHandler));
-            StartCoroutine(GetPlayerData(player =>
-            {
-                if (player != null)
-                    if (player.Id == _reaction.sender_id)
-                    {
-                        chatReactionHandler.Select();
-                        //Removes the selected Mood from the list  by checking what sprite is being used
-                        _reactionList[i].Selected = true;
+                    strikes = 0;
+                        return;
                     }
+                }
+                }
 
-            }));
-            UpdateReactionStatus(_reactionsContent);
-            UpdateReactionStatus(_reactionsContentPopUp);
-            PickCommonReactions();
-            LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
+                // Creates a reaction with the needed info and adds it to the selected message.
+                GameObject newReaction = Instantiate(_addedReactionPrefab, reactionsField.transform);
+                ChatReactionHandler chatReactionHandler = newReaction.GetComponentInChildren<ChatReactionHandler>();
+                chatReactionHandler.SetReactionInfo(reactionSprite, messageID, mood);
+                chatReactionHandler.AddReaction(_reaction);
+                _reactionHandlers.Add(chatReactionHandler);
 
-            _selectedMessage.SetMessageInactive();
+                chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler));
+                chatReactionHandler.LongClickButton.onLongClick.AddListener(() => ShowUsers(chatReactionHandler));
+                StartCoroutine(GetPlayerData(player =>
+                {
+                    if (player != null)
+                        if (player.Id == _reaction.sender_id)
+                        {
+                            chatReactionHandler.Select();
+                            //Removes the selected Mood from the list  by checking what sprite is being used
+                            _reactionList[i].Selected = true;
+                        }
 
-            gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+                }));
+                UpdateReactionStatus(_reactionsContent);
+                UpdateReactionStatus(_reactionsContentPopUp);
+                PickCommonReactions();
+                LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
+
+            
+                _selectedMessage.SetMessageInactive();
+
+                gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+
+            strikes = 0;
+            
         }
     }
 
