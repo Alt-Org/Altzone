@@ -20,7 +20,7 @@ public class KaikkiOnHyvinShelfScript : MonoBehaviour
 
         float elapsedTime = 0f;
 
-            while (elapsedTime < transitionDuration)
+        while (elapsedTime < transitionDuration)
         {
             elapsedTime += Time.deltaTime;
             transform.position = startPosition + ((Random.insideUnitSphere / 20) * 3); // Gives a random vector

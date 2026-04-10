@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -12,9 +13,16 @@ public class KaikkiOnHyvinFigure2ShaderScript : MonoBehaviour, ISoulHomeObjectCl
 
     [SerializeField]  
     private SpriteRenderer figureRenderer;
+    [SerializeField]  
+    private GameObject imagePrefab;
+    //[SerializeField]  
+    //private Sprite imageBox;
     [SerializeField] 
     private GameObject figure;
     private GameObject box;
+    private Image imageComp;
+    [SerializeField] 
+    private Sprite imageFigure;
 
     private bool boxOpened = false;
     [SerializeField] 
@@ -22,15 +30,21 @@ public class KaikkiOnHyvinFigure2ShaderScript : MonoBehaviour, ISoulHomeObjectCl
 
     public void HandleClick()
     {
+        Debug.Log("FIRST LINE IN HANDLE CLICK, BOX OPENED:" + boxOpened);
         if (boxOpened)
         {return;}
+        imageComp.sprite = imageFigure;
         box = figure.transform.GetChild(0).gameObject;
         kaikkiOnHyvinBoxScript.boxHandler(box);
+        Debug.Log("AFTER BOXHANDLER, BOX OPENED:" + boxOpened);
         boxOpened = true;
     }
 
     void Start()
     {
+        imageComp = imagePrefab.GetComponent<Image>();
+        //imageComp.sprite = imageBox;
+        
         figureRenderer = GetComponent<SpriteRenderer>();
         StartCoroutine(DistortionAnimation());
     }

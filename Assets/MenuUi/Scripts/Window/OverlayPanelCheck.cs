@@ -73,16 +73,19 @@ namespace MenuUi.Scripts.Window
                 WindowDef target = button.GetComponent<NaviButton>().NaviTarget;
                 var windowManager = WindowManager.Get();
                 var isCurrentWindow = windowManager.FindIndex(target) == 0;
+                var buttonEffect = button.GetComponent<LowerPanelEffect>();
 
 
                 if (isCurrentWindow)
                 {
                     button.transform.localScale = Vector3.one * 1.2f;
+                    buttonEffect.activateEffect(true, button);
                     //button.interactable = false;
                 }
                 else
                 {
                     button.transform.localScale = Vector3.one;
+                    buttonEffect.activateEffect(false, button);
                     button.interactable = true;
                 }
             }

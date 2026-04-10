@@ -7,10 +7,7 @@ namespace MenuUI.Scripts.SoulHome
 public class NewBehaviourScript : MonoBehaviour, ISoulHomeObjectClick
 {
     int round = 1;
-    //Material shaderMat = GetComponent<Renderer>().material; 
     public SpriteRenderer screenRenderer;
-    //private SpriteRenderer frontScreenRenderer;
-    //private SpriteRenderer sideScreenRenderer;
     public GameObject arcadeMachine;
     public GameObject arcadeScreen;
     public GameObject frontScreen;
@@ -22,8 +19,6 @@ public class NewBehaviourScript : MonoBehaviour, ISoulHomeObjectClick
     private float gradientNoiseSpeedB;
     private Color screenColorA;
     private Color screenColorB;
-    public SpriteRenderer currentSpriteRenderer;
-    private Sprite currentSprite;
 
     private float transitionDuration = 1.0F;
     bool transitionInProgress = false;
@@ -38,42 +33,14 @@ public class NewBehaviourScript : MonoBehaviour, ISoulHomeObjectClick
 
     public void HandleClick() //comes from ISoulHomeObjectClick
     {   
-        //spriteHandler();  
-        Debug.Log("CURRENT SPRITE" + currentSprite);
         if (!transitionInProgress)
-        {   Debug.Log("SCREEN TRANSITION STARTING");
+        {   
             StartCoroutine(Screentransition());
         }
         else // To avoid spam clicking
-        {   Debug.Log("SCREEN TRANSITION CANNOT BE STARTED YET");
+        {   
             return;
         }
-    }
-
-    public void spriteHandler()
-    {   
-        frontScreen = arcadeMachine.transform.GetChild(0).gameObject;
-        sideScreen = arcadeMachine.transform.GetChild(1).gameObject;
-
-        currentSpriteRenderer = arcadeMachine.GetComponent<SpriteRenderer>();
-        currentSprite = currentSpriteRenderer.sprite;
-        
-        //sideScreenRenderer = sideScreen.GetComponent<SpriteRenderer>();
-        //frontScreenRenderer = frontScreen.GetComponent<SpriteRenderer>();
-
-        if (currentSprite.name.Contains("1")) // 1 = side
-        {   
-            sideScreen.SetActive(true);
-            frontScreen.SetActive(false);
-            arcadeScreen = sideScreen;
-        }
-        else 
-        {
-            sideScreen.SetActive(false);
-            frontScreen.SetActive(true);
-            arcadeScreen = frontScreen;            
-        }
-        screenRenderer = arcadeScreen.GetComponent<SpriteRenderer>();
     }
 
     public void ScreenReset()
@@ -93,16 +60,18 @@ public class NewBehaviourScript : MonoBehaviour, ISoulHomeObjectClick
     void Start()
     {
         //shaderMat = arcadeScreen.GetComponent<Material>();
-        arcadeScreen = sideScreen;
+        arcadeScreen = frontScreen;
+        
         screenRenderer = arcadeScreen.GetComponent<SpriteRenderer>();
         ScreenReset();
-        arcadeScreen = frontScreen;
+        arcadeScreen = sideScreen;
         screenRenderer = arcadeScreen.GetComponent<SpriteRenderer>();
         ScreenReset();
     }
 
     private IEnumerator Screentransition()
     {
+        Debug.Log("SCREENTRANSITION");
         float elapsedTime = 0F;
         screenRenderer.enabled = true;
         transitionInProgress = true;
@@ -140,7 +109,6 @@ public class NewBehaviourScript : MonoBehaviour, ISoulHomeObjectClick
 
         else if (round == 5) //White noise screen
         {
-            Debug.Log("WHITE NOISE SCREEN, ROUND 5");
             screenRenderer.material.SetFloat("_WhiteNoiseEffect", 200);
             screenRenderer.material.SetColor("_ScreenColorA", new Color(1f, 1f, 1f, 1f) );
             screenRenderer.material.SetColor("_ScreenColorB", new Color(0.01f, 0.01f, 0.01f, 1f) );
@@ -152,7 +120,6 @@ public class NewBehaviourScript : MonoBehaviour, ISoulHomeObjectClick
             ScreenReset();
         }
         transitionInProgress = false;
-        Debug.Log("SCREEN TRANSITION has been set to FALSE");
     }
 }
 }

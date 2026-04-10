@@ -5190,8 +5190,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff237b2b14da28043a092653aae54ca8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderer: {fileID: 0}
+  figureRenderer: {fileID: 0}
+  imagePrefab: {fileID: 4093137194348882755, guid: fa98688b286d8fe45b8a60522842d608,
+    type: 3}
+  imageBox: {fileID: 21300000, guid: b01ef3d9c8543d248bcf780d994fedf9, type: 3}
   figure: {fileID: 1763402499057074033}
+  imageFigure: {fileID: 21300000, guid: 2a627f0d37effdd43ae5f0ef86285f50, type: 3}
   kaikkiOnHyvinBoxScript: {fileID: 6057745184196590035}
 --- !u!114 &6057745184196590035
 MonoBehaviour:

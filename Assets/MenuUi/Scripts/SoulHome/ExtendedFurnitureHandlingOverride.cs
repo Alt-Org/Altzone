@@ -27,9 +27,10 @@ public class ExtendedFurnitureHandlingOverride : FurnitureHandling
             _screenSide.SetActive(false);
             _screenFront.SetActive(true);
         }
-        else if (_tempSpriteDirection is Direction.Right)
+        else if (_tempSpriteDirection is Direction.Right || _tempSpriteDirection is Direction.Left )
         {
             Debug.Log("DIRECTION SIDE SCREEN");
+            Debug.Log("TEMPSPRITEDIRECTION: " + _tempSpriteDirection);
             _screenSide.SetActive(true);
             _screenFront.SetActive(false);
         }
@@ -44,8 +45,9 @@ public class ExtendedFurnitureHandlingOverride : FurnitureHandling
             _screenSide.SetActive(false);
             _screenFront.SetActive(true);
         }
-        else if (_tempSpriteDirection is Direction.Right)
+        else if (_tempSpriteDirection is Direction.Right || _tempSpriteDirection is Direction.Left )
         {
+            Debug.Log("TEMPSPRITEDIRECTION 2: " + _tempSpriteDirection);
             _screenSide.SetActive(true);
             _screenFront.SetActive(false);
         }

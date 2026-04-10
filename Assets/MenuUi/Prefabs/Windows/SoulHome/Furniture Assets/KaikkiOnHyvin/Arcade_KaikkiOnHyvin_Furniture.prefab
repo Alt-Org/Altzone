@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4325774729740677272
 Transform:
   m_ObjectHideFlags: 0
@@ -177,6 +177,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -6496421437902717363, guid: 38ff1b40ed32bfe498bf97cd319e2494,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: -4477838665465569415, guid: 38ff1b40ed32bfe498bf97cd319e2494,
         type: 3}
       propertyPath: m_Size.x
@@ -387,7 +392,6 @@ MonoBehaviour:
   arcadeScreen: {fileID: 0}
   frontScreen: {fileID: 7171238467942976070}
   sideScreen: {fileID: 4093683900555227435}
-  currentSpriteRenderer: {fileID: 0}
 --- !u!114 &446760448504611236
 MonoBehaviour:
   m_ObjectHideFlags: 0
