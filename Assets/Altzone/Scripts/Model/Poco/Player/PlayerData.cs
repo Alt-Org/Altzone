@@ -9,7 +9,6 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2.Internal;
 using Altzone.Scripts.Voting;
-using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Newtonsoft.Json;
@@ -77,6 +76,10 @@ namespace Altzone.Scripts.Model.Poco.Player
         public List<string> _playerDataEmotionList = new List<string> { Emotion.Blank.ToString(), Emotion.Love.ToString(), Emotion.Playful.ToString(), Emotion.Joy.ToString(), Emotion.Sorrow.ToString(), Emotion.Anger.ToString(), Emotion.Blank.ToString() };
 
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
+
+        public List<FriendPlayer> friendPlayers;
+
+        public List<FriendRequest> friendRequests;
 
         public ServerGameStatistics stats = null;
 
@@ -212,7 +215,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             UniqueIdentifier = player.uniqueIdentifier;
             points = player.points;
             stats = player.gameStatistics;
-            Task = player.DailyTask != null ? new(player.DailyTask) : null;
+            Task = player.DailyTask != null ? new(player.DailyTask) : Task;
             AvatarData = player.avatar != null ? new(player.name, player.avatar) : null;
             if (_playerDataEmotionList == null || _playerDataEmotionList.Count == 0) playerDataEmotionList = new List<Emotion> { Emotion.Blank, Emotion.Love, Emotion.Playful, Emotion.Joy, Emotion.Sorrow, Emotion.Anger, Emotion.Blank };
             if (daysBetweenInput == null) daysBetweenInput = "0";
@@ -304,7 +307,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         {
             return
                 $"{nameof(Id)}: {Id}, {nameof(ClanId)}: {ClanId}, {nameof(SelectedCharacterId)}: {SelectedCharacterId}," +
-                $"{nameof(SelectedCharacterIds)}: {string.Join<CustomCharacterListObject>(",", SelectedCharacterIds)}, {nameof(Name)}: {Name}, {nameof(BackpackCapacity)}: {BackpackCapacity}, {nameof(UniqueIdentifier)}: {UniqueIdentifier}";
+                $"{nameof(SelectedCharacterIds)}: {string.Join<CustomCharacterListObject>(",", SelectedCharacterIds)}, {nameof(Name)}: {Name}, {nameof(BackpackCapacity)}: {BackpackCapacity}, {nameof(Task)}: {Task?.Id}, {nameof(UniqueIdentifier)}: {UniqueIdentifier}";
         }
 
         /// <summary>

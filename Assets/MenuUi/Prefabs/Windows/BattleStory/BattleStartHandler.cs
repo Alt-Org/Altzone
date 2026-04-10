@@ -1,13 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Audio;
+using Altzone.Scripts.Lobby;
+using Altzone.Scripts.Lobby.Wrappers;
+using MenuUi.Scripts.Lobby.SelectedCharacters;
+using MenuUi.Scripts.Window;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using MenuUi.Scripts.Lobby.SelectedCharacters;
-using Altzone.Scripts.Lobby.Wrappers;
 
 public class BattleStartHandler : MonoBehaviour
 {
@@ -33,6 +34,7 @@ public class BattleStartHandler : MonoBehaviour
     private void OnEnable()
     {
         AudioManager.Instance.StopMusic(); //This should have a short sfx clip playing while the battle starts.
+        OverlayPanelCheck.Instance.gameObject.SetActive(false);
     }
     private void OnDisable()
     {

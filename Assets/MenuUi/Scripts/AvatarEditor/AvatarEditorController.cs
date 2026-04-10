@@ -2,10 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Player;
-using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
+using MenuUi.Scripts.Window;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
@@ -21,9 +21,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private Button _saveButton;
         [SerializeField] private Button _revertButton;
         [SerializeField] private Button _defaultButton;
-        [SerializeField] private TextHandler _textHandler;
         [SerializeField] private PopUpHandler _popUpHandler;
-        [SerializeField] private DivanImageHandler _divanImageHandler;
         [SerializeField] private AvatarLoader _avatarLoader;
         [SerializeField] private AvatarLoader _profileMenuAvatarLoader;
 
@@ -32,9 +30,8 @@ namespace MenuUi.Scripts.AvatarEditor
 
         void Start()
         {
-            _categoryLoader.SetCategoryCells((categoryId) => _featureLoader.RefreshFeatureListItems(categoryId));
+            _categoryLoader.SetCategoryButtons((categoryId) => _featureLoader.RefreshFeatureListItems(categoryId));
             _colorLoader.SetColorCells();
-            _colorLoader.gameObject.SetActive(false);
 
             UpdateCellSizes();
 
@@ -49,34 +46,45 @@ namespace MenuUi.Scripts.AvatarEditor
             {
                 SetDefaultAvatar();
                 _featureLoader.RefreshFeatureListItems(_categoryLoader.CurrentlySelectedCategory);
+                AvatarPiece? currentSlot = _featureLoader.CurrentCategory;
+                if (currentSlot.HasValue)
+                {
+                    string color = _playerAvatar.GetPartColor((AvatarPiece)currentSlot);
+                    _colorLoader.UpdateHighlight(color);
+                }
+
+                _categoryLoader.UpdateSlotImages();
             });
 
             _revertButton.onClick.AddListener(() =>
             {
                 RevertAvatarChanges();
                 _featureLoader.RefreshFeatureListItems(_categoryLoader.CurrentlySelectedCategory);
+                AvatarPiece? currentSlot = _featureLoader.CurrentCategory;
+                if (currentSlot.HasValue)
+                {
+                    string color = _playerAvatar.GetPartColor((AvatarPiece)currentSlot);
+                    _colorLoader.UpdateHighlight(color);
+                }
             });
-
-            StartCoroutine(ClickMiddleCategoryCellOnNextFrame());
         }
 
         private void OnEnable()
         {
-            _divanImageHandler.UpdateDivanImage(_currentPlayerData);
             StartCoroutine(LoadAvatarData());
-            _textHandler.SetRandomSpeechBubbleText();
 
             AspectRatioChangeDetector.OnAspectRatioChange += UpdateCellSizes;
+            OverlayPanelCheck.Instance.ToggleChat(false);
         }
 
         private void OnDisable()
         {
             AspectRatioChangeDetector.OnAspectRatioChange -= UpdateCellSizes;
+            OverlayPanelCheck.Instance?.ToggleChat(true);
         }
 
         private void UpdateCellSizes()
         {
-            _categoryLoader.UpdateCellSize();
             _colorLoader.UpdateCellSize();
             _featureLoader.UpdateCellSize();
         }
@@ -94,7 +102,6 @@ namespace MenuUi.Scripts.AvatarEditor
 
             _currentPlayerData = playerData;
             SetAllAvatarFeatures();
-            _divanImageHandler.UpdateDivanImage(playerData);
             _avatarLoader.UpdateVisuals(AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData.AvatarData));
         }
 
@@ -141,13 +148,6 @@ namespace MenuUi.Scripts.AvatarEditor
             GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
 
-        // If this isn't done, function will be called too early and will not work
-        private IEnumerator ClickMiddleCategoryCellOnNextFrame()
-        {
-            yield return null;
-            _categoryLoader.ClickMiddleCategoryCell();
-        }
-
         private void SetAllAvatarFeatures()
         {
             if (_currentPlayerData.AvatarData == null || !_currentPlayerData.AvatarData.Validate())
@@ -161,6 +161,7 @@ namespace MenuUi.Scripts.AvatarEditor
             }
 
             _featureSetter.SetLoadedFeatures(_playerAvatar);
+            _categoryLoader.UpdateSlotImages();
         }
 
 

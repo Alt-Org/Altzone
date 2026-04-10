@@ -186,7 +186,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4330883580656892252}
   - component: {fileID: 7127075469247283487}
-  - component: {fileID: 3461762279086560247}
   - component: {fileID: 4336744734795932344}
   m_Layer: 5
   m_Name: TaskListSocial
@@ -240,20 +239,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &3461762279086560247
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 88356717842675709}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cabc7ab297e9ab44a96e83ec36e516df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _blockType: 0
-  _swipe: {fileID: 0}
 --- !u!114 &4336744734795932344
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2286,6 +2271,7 @@ MonoBehaviour:
   _forwardUnusedEventsToContainer: 0
   _horizontallyScrollable: 1
   _verticallyScrollable: 1
+  _axisLockThreshold: 5
 --- !u!114 &2283698827844972325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3509,7 +3495,6 @@ GameObject:
   m_Component:
   - component: {fileID: 585234633225609698}
   - component: {fileID: 6148600641658906207}
-  - component: {fileID: 495802926628599597}
   - component: {fileID: 8995544463703669340}
   m_Layer: 5
   m_Name: TaskListCulture
@@ -3563,20 +3548,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &495802926628599597
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1869963349241005229}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cabc7ab297e9ab44a96e83ec36e516df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _blockType: 0
-  _swipe: {fileID: 0}
 --- !u!114 &8995544463703669340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4042,10 +4013,10 @@ GameObject:
   m_Component:
   - component: {fileID: 6048438708361435988}
   - component: {fileID: 5566732889490912220}
-  - component: {fileID: 351654732571348405}
   - component: {fileID: 9219590178620301729}
   - component: {fileID: 7194768997489407432}
   - component: {fileID: 8292801005675704149}
+  - component: {fileID: 7894778775404798268}
   m_Layer: 0
   m_Name: DailyTaskView
   m_TagString: Untagged
@@ -4093,7 +4064,7 @@ MonoBehaviour:
   m_FlexibleWidth: 1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!114 &351654732571348405
+--- !u!114 &9219590178620301729
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4102,10 +4073,73 @@ MonoBehaviour:
   m_GameObject: {fileID: 2233725341713237059}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8aadec6fbdc2c045907d2ede62da3bb, type: 3}
+  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _timeoutSeconds: 10
+  _normalTaskType: 1
+  _educationCategoryType: 1
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
+--- !u!114 &7194768997489407432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2233725341713237059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 350695e6a493a87468be8841cc3fd291, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 0
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
+--- !u!114 &8292801005675704149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2233725341713237059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8490714f975da03478ab7a23b04d10ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 5
+  _educationCategoryActionType: 14
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
+  _shouldHighlight: 0
+  _highlightedObjects: []
+  _scaleMultiplier: 1.2
+  _highlightPulseDuration: 3
+  _highlightPulseWaitTime: 2
+  _limitToThis: 0
+  _limitedButtons: []
+--- !u!114 &7894778775404798268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2233725341713237059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa42f5f749b77e24aa9218bb98a89e46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   _tabline: {fileID: 6783507117355825276}
   _dailyTasksView: {fileID: 5955800767702194303}
   _ownTaskView: {fileID: 5799945842721123172}
@@ -4169,65 +4203,6 @@ MonoBehaviour:
   _clanProgressBarMarkersBase: {fileID: 306557317478488128}
   _clanProgressBarMarkerPrefab: {fileID: 5677350395177907778, guid: 4760c1c8034b72b4bb7d91549d94180f,
     type: 3}
---- !u!114 &9219590178620301729
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2233725341713237059}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef67c5c79ced75e48b938d2e8a690fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 1
-  _educationCategoryType: 1
-  _educationCategoryActionType: 3
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 3
-  _educationCategoryCultureType: 0
-  _educationCategoryEthicalType: 0
---- !u!114 &7194768997489407432
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2233725341713237059}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 350695e6a493a87468be8841cc3fd291, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 0
-  _educationCategoryType: 0
-  _educationCategoryActionType: 3
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 3
-  _educationCategoryCultureType: 0
-  _educationCategoryEthicalType: 0
---- !u!114 &8292801005675704149
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2233725341713237059}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8490714f975da03478ab7a23b04d10ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalTaskType: 0
-  _educationCategoryType: 5
-  _educationCategoryActionType: 14
-  _educationCategorySocialType: 1
-  _educationCategoryStoryType: 3
-  _educationCategoryCultureType: 0
-  _educationCategoryEthicalType: 0
-  _limitToThis: 0
-  _limitedButtons: []
 --- !u!1 &2263038988286619469
 GameObject:
   m_ObjectHideFlags: 0
@@ -4345,6 +4320,7 @@ MonoBehaviour:
   _forwardUnusedEventsToContainer: 0
   _horizontallyScrollable: 1
   _verticallyScrollable: 1
+  _axisLockThreshold: 5
 --- !u!114 &2498562992784799055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5225,7 +5201,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 351654732571348405}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: DailyTaskManager, MainMenu
         m_MethodName: TESTAddTaskProgress
         m_Mode: 1
@@ -5958,7 +5934,6 @@ GameObject:
   m_Component:
   - component: {fileID: 54677489327594252}
   - component: {fileID: 719367571683706551}
-  - component: {fileID: 1807773688081985454}
   - component: {fileID: 6443451399472433109}
   m_Layer: 5
   m_Name: TaskListRow1
@@ -6012,20 +5987,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &1807773688081985454
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3348156900404345272}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cabc7ab297e9ab44a96e83ec36e516df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _blockType: 0
-  _swipe: {fileID: 0}
 --- !u!114 &6443451399472433109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6900,7 +6861,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000030517578, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &3689941422837685448
@@ -7325,7 +7286,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 351654732571348405}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: DailyTaskManager, MainMenu
         m_MethodName: TESTAddClanRewardBarPoints
         m_Mode: 3
@@ -7484,7 +7445,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6988747616983499914}
   - component: {fileID: 6237068803463451741}
-  - component: {fileID: 1066968418839378904}
   - component: {fileID: 1549043636566953716}
   m_Layer: 5
   m_Name: TaskListAction
@@ -7538,20 +7498,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &1066968418839378904
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4216039637988712781}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cabc7ab297e9ab44a96e83ec36e516df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _blockType: 0
-  _swipe: {fileID: 0}
 --- !u!114 &1549043636566953716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8587,7 +8533,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7447090575030613325}
   - component: {fileID: 7803407819765730615}
-  - component: {fileID: 4562981031527401170}
   - component: {fileID: 5913762974418249358}
   m_Layer: 5
   m_Name: TaskListRow3
@@ -8641,20 +8586,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &4562981031527401170
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4447274651562961892}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cabc7ab297e9ab44a96e83ec36e516df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _blockType: 0
-  _swipe: {fileID: 0}
 --- !u!114 &5913762974418249358
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8679,7 +8610,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8398324584552189941}
   - component: {fileID: 4519607975828892336}
-  - component: {fileID: 103299155771019191}
   - component: {fileID: 1542721813938633063}
   m_Layer: 5
   m_Name: TaskListEthical
@@ -8733,20 +8663,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &103299155771019191
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4504814776082154207}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cabc7ab297e9ab44a96e83ec36e516df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _blockType: 0
-  _swipe: {fileID: 0}
 --- !u!114 &1542721813938633063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9923,7 +9839,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000030517578, y: 193.84753}
+  m_AnchoredPosition: {x: 0, y: 193.84753}
   m_SizeDelta: {x: 0, y: 387.69507}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &7905792639567170996
@@ -10341,7 +10257,6 @@ GameObject:
   m_Component:
   - component: {fileID: 819541209380880308}
   - component: {fileID: 6107612098871378770}
-  - component: {fileID: 3364776117943096922}
   - component: {fileID: 3576514513003213791}
   m_Layer: 5
   m_Name: PlayersVerticalLayout
@@ -10395,20 +10310,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &3364776117943096922
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5138073238048015458}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cabc7ab297e9ab44a96e83ec36e516df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _blockType: 0
-  _swipe: {fileID: 0}
 --- !u!114 &3576514513003213791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10478,7 +10379,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4324313042401822961}
   - component: {fileID: 2551780096389644382}
-  - component: {fileID: 7696290257790541342}
   - component: {fileID: 1806898887186981626}
   m_Layer: 5
   m_Name: TaskListStory
@@ -10532,20 +10432,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &7696290257790541342
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5273137093893753152}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cabc7ab297e9ab44a96e83ec36e516df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _blockType: 0
-  _swipe: {fileID: 0}
 --- !u!114 &1806898887186981626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10729,7 +10615,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5461433101294923742
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13270,7 +13156,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5733757184925806204}
   - component: {fileID: 6949549885869598080}
-  - component: {fileID: 7205334592717237632}
   - component: {fileID: 7169732126202071231}
   m_Layer: 5
   m_Name: TaskListRow2
@@ -13324,20 +13209,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &7205334592717237632
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6591610798873616188}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cabc7ab297e9ab44a96e83ec36e516df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _blockType: 0
-  _swipe: {fileID: 0}
 --- !u!114 &7169732126202071231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14551,7 +14422,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6263373199715600180}
   - component: {fileID: 1803100435589518805}
-  - component: {fileID: 9133116828584661301}
   - component: {fileID: 4472254853846577732}
   - component: {fileID: 7458608226863692294}
   - component: {fileID: 8151709600098178967}
@@ -14593,20 +14463,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7194029995279470869}
   m_CullTransparentMesh: 1
---- !u!114 &9133116828584661301
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7194029995279470869}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cabc7ab297e9ab44a96e83ec36e516df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _blockType: 0
-  _swipe: {fileID: 0}
 --- !u!114 &4472254853846577732
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19098,6 +18954,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1684891280876503329, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: _blocker
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1731878601048451229, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -19182,7 +19043,7 @@ PrefabInstance:
     - target: {fileID: 2641932565321544379, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.94188035
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2665311521893521844, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -19288,12 +19149,12 @@ PrefabInstance:
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.86688036
+      value: 0.918
       objectReference: {fileID: 0}
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.1975
+      value: 0.222
       objectReference: {fileID: 0}
     - target: {fileID: 3482542752552871026, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -19314,7 +19175,7 @@ PrefabInstance:
     - target: {fileID: 3779671836818032032, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: -146.92499
       objectReference: {fileID: 0}
     - target: {fileID: 3788321012695667079, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -19329,7 +19190,7 @@ PrefabInstance:
     - target: {fileID: 3939214856247535567, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: -68.526
       objectReference: {fileID: 0}
     - target: {fileID: 4245220383303851464, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -19337,6 +19198,11 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4307611809053314757, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4522452604004502935, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
@@ -19416,6 +19282,11 @@ PrefabInstance:
       propertyPath: _headerHeight
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 4993849225687934722, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: _blockerHandler
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5012804115501321522, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -19457,6 +19328,11 @@ PrefabInstance:
       propertyPath: m_Color.g
       value: 0.56078434
       objectReference: {fileID: 0}
+    - target: {fileID: 5320717305252713275, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: _blockerHandler
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5476154463019398644, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -19497,6 +19373,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSize
       value: 28.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5941332736402343395, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6073106209191891444, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -19569,6 +19450,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6743234442420691740, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: _blocker
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6762519245494933491, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -19613,6 +19499,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6891754130952581934, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 30.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6924264353861042730, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 6936325995167446264, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -19873,7 +19769,7 @@ PrefabInstance:
     - target: {fileID: 7827142668286818857, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.1975
+      value: 0.222
       objectReference: {fileID: 0}
     - target: {fileID: 8020515439083824472, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -19923,7 +19819,7 @@ PrefabInstance:
     - target: {fileID: 8247631838125921094, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8442437799583814047, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -20020,6 +19916,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8852663827235476793, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -5.420386
+      objectReference: {fileID: 0}
     - target: {fileID: 8884211518635950346, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -20028,12 +19929,17 @@ PrefabInstance:
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.94188035
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.86688036
+      value: 0.918
+      objectReference: {fileID: 0}
+    - target: {fileID: 9011883256918754321, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 40.95
       objectReference: {fileID: 0}
     - target: {fileID: 9055697728720554350, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -20068,6 +19974,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5868749976689406173, guid: 57890b7dbec8a984abb7d8148eefe9f6, type: 3}
+    - {fileID: 5000943110579467872, guid: 57890b7dbec8a984abb7d8148eefe9f6, type: 3}
+    - {fileID: 7323101274710025655, guid: 57890b7dbec8a984abb7d8148eefe9f6, type: 3}
+    - {fileID: 4688699091497649268, guid: 57890b7dbec8a984abb7d8148eefe9f6, type: 3}
+    - {fileID: 2382692962455648365, guid: 57890b7dbec8a984abb7d8148eefe9f6, type: 3}
+    - {fileID: 7203060099738245814, guid: 57890b7dbec8a984abb7d8148eefe9f6, type: 3}
+    - {fileID: 6743234442420691740, guid: 57890b7dbec8a984abb7d8148eefe9f6, type: 3}
+    - {fileID: 1684891280876503329, guid: 57890b7dbec8a984abb7d8148eefe9f6, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 7695168990374541661, guid: 57890b7dbec8a984abb7d8148eefe9f6,
