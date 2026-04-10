@@ -30,8 +30,6 @@ public class SettingEditor : MonoBehaviour
     [SerializeField] private Sprite _englishSprite;
     [SerializeField] private TextLanguageSelectorCaller _languageCaller;
 
-    [SerializeField] private int _buttonValue = 0;
-
     private void OnEnable()
     {
         if(mainMenuController == null)
@@ -70,8 +68,8 @@ public class SettingEditor : MonoBehaviour
 
         PlayerPrefs.SetFloat("MasterVolume", 1f);
 
-        _topBarStyleButtonRight.onClick.AddListener(() => ChangeTopbarStyle());
-        _topBarStyleButtonLeft.onClick.AddListener(() => ChangeTopbarStyle());
+        _topBarStyleButtonRight.onClick.AddListener(() => ChangeTopbarStyle(1));
+        _topBarStyleButtonLeft.onClick.AddListener(() => ChangeTopbarStyle(-1));
         _topBarStyleText.SetText(SettingsCarrier.Instance.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
 
         _introSkipToggle.onValueChanged.AddListener(_ => SetIntroSkip());
@@ -160,21 +158,15 @@ public class SettingEditor : MonoBehaviour
         carrier.ShowButtonLabels = _showButtonLabelsToggle.isOn;
     }
 
-
-    public void ChangeValue(int amount)
-    {
-        _buttonValue = amount;
-    }
-
-    public void ChangeTopbarStyle()
+    public void ChangeTopbarStyle(int value)
     {
 
 
         /// Uses the <see cref="TopBarStyle"/>  to get data we need
         int index = (int)carrier.TopBarStyleSetting;
         int max = (int)(SettingsCarrier.TopBarStyle)Enum.GetValues(typeof(SettingsCarrier.TopBarStyle)).Length - 1;
-        ///Uses the <see cref = "ChangeValue" /> to get the value from set button
-        index += _buttonValue;
+
+        index += value;
 
         if (index > max)
         {
@@ -204,7 +196,7 @@ public class SettingEditor : MonoBehaviour
                 _languageImage.sprite = _englishSprite;
                 break;
         }
-        _languageCaller.SetText(language, new string[0]);
+        if(_languageCaller != null) _languageCaller.SetText(language, new string[0]);
         _topBarStyleText.SetText(SettingsCarrier.Instance.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
     }
 }
