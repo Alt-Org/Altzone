@@ -428,7 +428,7 @@ namespace Battle.QSimulation.Game
         /// <param name="template">Compound entity template used to make compounds.</param>
         public static void MakeCompound(Frame f, CompoundEntityTemplate template)
         {
-            BattleCompoundEntityComponent compound = new();
+            BattleCompoundEntityQComponent compound = new();
             compound.LinkedEntities = f.AllocateList<BattleEntityLink>(template.LinkedEntities.Count);
             QList<BattleEntityLink> entityList = f.ResolveList(compound.LinkedEntities);
 
@@ -455,17 +455,17 @@ namespace Battle.QSimulation.Game
         {
             s_debugLogger.DevAssertFormat(
                 f,
-                f.Has<BattleCompoundEntityComponent>(parentEntityRef),
+                f.Has<BattleCompoundEntityQComponent>(parentEntityRef),
                 "Parent entity ({0}) is expected to have a BattleCompoundEntityComponent",
                 parentEntityRef
             );
-            if (!f.Has<BattleCompoundEntityComponent>(parentEntityRef)) return;
+            if (!f.Has<BattleCompoundEntityQComponent>(parentEntityRef)) return;
 
             Transform2D* parentTransform = f.Unsafe.GetPointer<Transform2D>(parentEntityRef);
             parentTransform->Position = position;
             parentTransform->Rotation = rotation;
 
-            BattleCompoundEntityComponent compound = f.Get<BattleCompoundEntityComponent>(parentEntityRef);
+            BattleCompoundEntityQComponent compound = f.Get<BattleCompoundEntityQComponent>(parentEntityRef);
             QList<BattleEntityLink> linkedEntities = f.ResolveList(compound.LinkedEntities);
 
             for(int i = 0; i < linkedEntities.Count; i++)
@@ -498,16 +498,16 @@ namespace Battle.QSimulation.Game
         {
             s_debugLogger.DevAssertFormat(
                 f,
-                f.Has<BattleCompoundEntityComponent>(parentEntityRef),
+                f.Has<BattleCompoundEntityQComponent>(parentEntityRef),
                 "Parent entity ({0}) is expected to have a BattleCompoundEntityComponent",
                 parentEntityRef
             );
-            if (!f.Has<BattleCompoundEntityComponent>(parentEntityRef)) return;
+            if (!f.Has<BattleCompoundEntityQComponent>(parentEntityRef)) return;
 
             Transform2D* parentTransform = f.Unsafe.GetPointer<Transform2D>(parentEntityRef);
             parentTransform->Teleport(f, position, rotation);
 
-            BattleCompoundEntityComponent compound = f.Get<BattleCompoundEntityComponent>(parentEntityRef);
+            BattleCompoundEntityQComponent compound = f.Get<BattleCompoundEntityQComponent>(parentEntityRef);
             QList<BattleEntityLink> linkedEntities = f.ResolveList(compound.LinkedEntities);
 
             for (int i = 0; i < linkedEntities.Count; i++)

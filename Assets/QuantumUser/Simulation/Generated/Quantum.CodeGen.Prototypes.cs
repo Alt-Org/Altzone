@@ -83,17 +83,17 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleCompoundEntityComponent))]
-  public unsafe class BattleCompoundEntityComponentPrototype : ComponentPrototype<Quantum.BattleCompoundEntityComponent> {
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleCompoundEntityQComponent))]
+  public unsafe class BattleCompoundEntityQComponentPrototype : ComponentPrototype<Quantum.BattleCompoundEntityQComponent> {
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.BattleEntityLinkPrototype[] LinkedEntities = {};
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.BattleCompoundEntityComponent component = default;
+        Quantum.BattleCompoundEntityQComponent component = default;
         Materialize((Frame)f, ref component, in context);
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
-    public void Materialize(Frame frame, ref Quantum.BattleCompoundEntityComponent result, in PrototypeMaterializationContext context = default) {
+    public void Materialize(Frame frame, ref Quantum.BattleCompoundEntityQComponent result, in PrototypeMaterializationContext context = default) {
         if (this.LinkedEntities.Length == 0) {
           result.LinkedEntities = default;
         } else {

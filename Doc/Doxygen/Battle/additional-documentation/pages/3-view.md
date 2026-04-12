@@ -39,28 +39,33 @@
 **View Controllers** are used to change **entities**'s sprites, animations, effects, etc.  
 In **%Battle** **View Controllers** have **"ViewController"** suffix. [[Naming]](#index-naming)
 
-|  Namespace                                          || Class                                                              | Description                                                            |
-| :------------------ | :----------------------------- | :----------------------------------------------------------------- | :--------------------------------------------------------------------- |
-| @crefd{Battle.View} | @crefd{Battle.View,Game}       | @cref{Battle.View.Game,BattleGameViewController}                   | @copybrief Battle.View.Game.BattleGameViewController                   |
-| @crefd{Battle.View} | @crefd{Battle.View,Game}       | @cref{Battle.View.Game,BattleGridViewController}                   | @copybrief Battle.View.Game.BattleGridViewController                   |
-|                                                                                                                                                                                                 ||||
-| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerCharacterViewController}      | @copybrief Battle.View.Player.BattlePlayerCharacterViewController      |
+|  Namespace                                          || Class                                                                  | Description                                                                |
+| :------------------ | :----------------------------- | :--------------------------------------------------------------------- | :------------------------------------------------------------------------- |
+| @crefd{Battle.View} | @crefd{Battle.View,Game}       | @cref{Battle.View.Game,BattleGameViewController}                       | @copybrief Battle.View.Game.BattleGameViewController                       |
+| @crefd{Battle.View} | @crefd{Battle.View,Game}       | @cref{Battle.View.Game,BattleGridViewController}                       | @copybrief Battle.View.Game.BattleGridViewController                       |
+|                                                                                                                                                                                                         ||||
+| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerCharacterViewController}          | @copybrief Battle.View.Player.BattlePlayerCharacterViewController          |
 | @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerCharacterClassBaseViewController} | @copybrief Battle.View.Player.BattlePlayerCharacterClassBaseViewController |
 | @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerCharacterClassNoneViewController} | @copybrief Battle.View.Player.BattlePlayerCharacterClassNoneViewController |
-| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerCharacterClass400ViewController} | @copybrief Battle.View.Player.BattlePlayerCharacterClass400ViewController |
-|                                                                                                                                                                                                 ||||
-| @crefd{Battle.View} | @crefd{Battle.View,SoulWall}   | @cref{Battle.View.SoulWall,BattleSoulWallViewController}           | @copybrief Battle.View.SoulWall.BattleSoulWallViewController           |
-|                                                                                                                                                                                                 ||||
-| @crefd{Battle.View} | @crefd{Battle.View,Projectile} | @cref{Battle.View.Projectile,BattleProjectileViewController}       | @copybrief Battle.View.Projectile.BattleProjectileViewController       |
-|                                                                                                                                                                                                 ||||
-| @crefd{Battle.View} | @crefd{Battle.View,Diamond}    | @cref{Battle.View.Diamond,BattleDiamondViewController}             | @copybrief Battle.View.Diamond.BattleDiamondViewController             |
-|                                                                                                                                                                                                 ||||
-| @crefd{Battle.View} | @crefd{Battle.View,Effect}     | @cref{Battle.View.Effect,BattleLightrayEffectViewController}       | @copybrief Battle.View.Effect.BattleLightrayEffectViewController       |
-| @crefd{Battle.View} | @crefd{Battle.View,Effect}     | @cref{Battle.View.Effect,BattleScreenEffectViewController}         | @copybrief Battle.View.Effect.BattleScreenEffectViewController         |
-|                                                                                                                                                                                                 ||||
-| @crefd{Battle.View} | @crefd{Battle.View,Audio}      | @cref{Battle.View.Audio,BattleAudioViewController}                 | @copybrief Battle.View.Audio.BattleAudioViewController                 |
-|                                                                                                                                                                                                 ||||
-| @crefd{Battle.View}                                 || @cref{Battle.View,BattleStoneCharacterViewController}              | @copybrief Battle.View.BattleStoneCharacterViewController              |
+| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerCharacterClass400ViewController}  | @copybrief Battle.View.Player.BattlePlayerCharacterClass400ViewController  |
+|                                                                                                                                                                                                         ||||
+| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerShieldViewController}             | @copybrief Battle.View.Player.BattlePlayerShieldViewController             |
+| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerShieldClassBaseViewController}    | @copybrief Battle.View.Player.BattlePlayerShieldClassBaseViewController    |
+| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerShieldClassNoneViewController}    | @copybrief Battle.View.Player.BattlePlayerShieldClassNoneViewController    |
+| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerShieldClass400ViewController}     | @copybrief Battle.View.Player.BattlePlayerShieldClass400ViewController     |
+|                                                                                                                                                                                                         ||||
+| @crefd{Battle.View} | @crefd{Battle.View,SoulWall}   | @cref{Battle.View.SoulWall,BattleSoulWallViewController}               | @copybrief Battle.View.SoulWall.BattleSoulWallViewController               |
+| @crefd{Battle.View} | @crefd{Battle.View,SoulWall}   | @cref{Battle.View.SoulWall,BattleStoneCharacterViewController}         | @copybrief Battle.View.SoulWall.BattleStoneCharacterViewController          |
+|                                                                                                                                                                                                         ||||
+| @crefd{Battle.View} | @crefd{Battle.View,Projectile} | @cref{Battle.View.Projectile,BattleProjectileViewController}           | @copybrief Battle.View.Projectile.BattleProjectileViewController           |
+|                                                                                                                                                                                                         ||||
+| @crefd{Battle.View} | @crefd{Battle.View,Diamond}    | @cref{Battle.View.Diamond,BattleDiamondViewController}                 | @copybrief Battle.View.Diamond.BattleDiamondViewController                 |
+|                                                                                                                                                                                                         ||||
+| @crefd{Battle.View} | @crefd{Battle.View,Effect}     | @cref{Battle.View.Effect,BattleLightrayEffectViewController}           | @copybrief Battle.View.Effect.BattleLightrayEffectViewController           |
+| @crefd{Battle.View} | @crefd{Battle.View,Effect}     | @cref{Battle.View.Effect,BattleScreenEffectViewController}             | @copybrief Battle.View.Effect.BattleScreenEffectViewController             |
+|                                                                                                                                                                                                         ||||
+| @crefd{Battle.View} | @crefd{Battle.View,Audio}      | @cref{Battle.View.Audio,BattleAudioViewController}                     | @copybrief Battle.View.Audio.BattleAudioViewController                     |
+
 
 <br/>
 
@@ -76,6 +81,8 @@ Miscellaneous classes that don't belong in other categories.
 | None                                                || @cref{OnPointerDownButton}                                   | @copybrief OnPointerDownButton                                   |
 |                                                                                                                                                                                     ||||
 | @crefd{Battle.View}                                 || @cref{Battle.View,Utils}                                     | @copybrief Battle.View.Utils                                     |
+| @crefd{Battle.View}                                 || @cref{Battle.View,BattleSpriteSheet}                         | @copybrief Battle.View.BattleSpriteSheet                         |
+| @crefd{Battle.View}                                 || @cref{Battle.View,BattleViewRegistry}                        | @copybrief Battle.View.BattleViewRegistry                        |
 
 <br/>
 
@@ -110,7 +117,9 @@ Every one of the **BattleUiShared** prefabs has either a @cref{Altzone.Scripts.B
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiJoystickHandler}                | @copybrief Battle.View.UI.BattleUiJoystickHandler                |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiPlayerInfoHandler}              | @copybrief Battle.View.UI.BattleUiPlayerInfoHandler              |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiTimerHandler}                   | @copybrief Battle.View.UI.BattleUiTimerHandler                   |
+| @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiLoadScreenHandler}              | @copybrief Battle.View.UI.BattleUiLoadScreenHandler              |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiDebugOverlayHandler}            | @copybrief Battle.View.UI.BattleUiDebugOverlayHandler            |
+| @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiDebugConsoleHandler}            | @copybrief Battle.View.UI.BattleUiDebugConsoleHandler            |
 
 <br/>
 
@@ -125,6 +134,7 @@ The different instances of the duplicated prefab each have their own **GameObjec
 |  Namespace                                          || Class                                                        | Description                                                      |
 | :------------------ | :----------------------------- | :----------------------------------------------------------- | :--------------------------------------------------------------- |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiCharacterButtonComponent}       | @copybrief Battle.View.UI.BattleUiCharacterButtonComponent       |
+| @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiCharacterFrameComponent}        | @copybrief Battle.View.UI.BattleUiCharacterFrameComponent        |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiJoystickComponent}              | @copybrief Battle.View.UI.BattleUiJoystickComponent              |
 | @crefd{Battle.View} | @crefd{Battle.View,UI}         | @cref{Battle.View.UI,BattleUiPlayerInfoComponent}            | @copybrief Battle.View.UI.BattleUiPlayerInfoComponent            |
 

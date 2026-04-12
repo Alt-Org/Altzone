@@ -1277,7 +1277,7 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
-  public unsafe partial struct BattleCompoundEntityComponent : Quantum.IComponent {
+  public unsafe partial struct BattleCompoundEntityQComponent : Quantum.IComponent {
     public const Int32 SIZE = 4;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(0)]
@@ -1285,7 +1285,7 @@ namespace Quantum {
     public QListPtr<BattleEntityLink> LinkedEntities;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 10909;
+        var hash = 18859;
         hash = hash * 31 + LinkedEntities.GetHashCode();
         return hash;
       }
@@ -1294,11 +1294,11 @@ namespace Quantum {
       if (LinkedEntities != default) f.FreeList(ref LinkedEntities);
     }
     public static void OnRemoved(FrameBase frame, EntityRef entity, void* ptr) {
-      var p = (Quantum.BattleCompoundEntityComponent*)ptr;
+      var p = (Quantum.BattleCompoundEntityQComponent*)ptr;
       p->ClearPointers((Frame)frame, entity);
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
-        var p = (BattleCompoundEntityComponent*)ptr;
+        var p = (BattleCompoundEntityQComponent*)ptr;
         QList.Serialize(&p->LinkedEntities, serializer, Statics.SerializeBattleEntityLink);
     }
   }
@@ -2103,8 +2103,8 @@ namespace Quantum {
       BuildSignalsArrayOnComponentRemoved<Quantum.BattleArenaBorderQComponent>();
       BuildSignalsArrayOnComponentAdded<Quantum.BattleCollisionTriggerQComponent>();
       BuildSignalsArrayOnComponentRemoved<Quantum.BattleCollisionTriggerQComponent>();
-      BuildSignalsArrayOnComponentAdded<Quantum.BattleCompoundEntityComponent>();
-      BuildSignalsArrayOnComponentRemoved<Quantum.BattleCompoundEntityComponent>();
+      BuildSignalsArrayOnComponentAdded<Quantum.BattleCompoundEntityQComponent>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.BattleCompoundEntityQComponent>();
       BuildSignalsArrayOnComponentAdded<Quantum.BattleDiamondCounterQSingleton>();
       BuildSignalsArrayOnComponentRemoved<Quantum.BattleDiamondCounterQSingleton>();
       BuildSignalsArrayOnComponentAdded<Quantum.BattleDiamondDataQComponent>();
@@ -2270,7 +2270,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.BattleArenaBorderQComponent), Quantum.BattleArenaBorderQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleCollisionTriggerQComponent), Quantum.BattleCollisionTriggerQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleCollisionTriggerType), 4);
-      typeRegistry.Register(typeof(Quantum.BattleCompoundEntityComponent), Quantum.BattleCompoundEntityComponent.SIZE);
+      typeRegistry.Register(typeof(Quantum.BattleCompoundEntityQComponent), Quantum.BattleCompoundEntityQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleDiamondCounterQSingleton), Quantum.BattleDiamondCounterQSingleton.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleDiamondDataQComponent), Quantum.BattleDiamondDataQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleEmotionState), 4);
@@ -2398,7 +2398,7 @@ namespace Quantum {
         .AddBuiltInComponents()
         .Add<Quantum.BattleArenaBorderQComponent>(Quantum.BattleArenaBorderQComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.BattleCollisionTriggerQComponent>(Quantum.BattleCollisionTriggerQComponent.Serialize, null, null, ComponentFlags.None)
-        .Add<Quantum.BattleCompoundEntityComponent>(Quantum.BattleCompoundEntityComponent.Serialize, null, Quantum.BattleCompoundEntityComponent.OnRemoved, ComponentFlags.None)
+        .Add<Quantum.BattleCompoundEntityQComponent>(Quantum.BattleCompoundEntityQComponent.Serialize, null, Quantum.BattleCompoundEntityQComponent.OnRemoved, ComponentFlags.None)
         .Add<Quantum.BattleDiamondCounterQSingleton>(Quantum.BattleDiamondCounterQSingleton.Serialize, null, null, ComponentFlags.Singleton)
         .Add<Quantum.BattleDiamondDataQComponent>(Quantum.BattleDiamondDataQComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.BattleEntityManagerDataQSingleton>(Quantum.BattleEntityManagerDataQSingleton.Serialize, null, Quantum.BattleEntityManagerDataQSingleton.OnRemoved, ComponentFlags.Singleton)

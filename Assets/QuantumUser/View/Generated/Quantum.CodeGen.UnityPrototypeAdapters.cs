@@ -51,13 +51,13 @@ namespace Quantum.Prototypes.Unity {
   #endif //;
   
   [System.SerializableAttribute()]
-  public unsafe partial class BattleCompoundEntityComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattleCompoundEntityComponentPrototype> {
+  public unsafe partial class BattleCompoundEntityQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattleCompoundEntityQComponentPrototype> {
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.Unity.BattleEntityLinkPrototype[] LinkedEntities = {};
-    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattleCompoundEntityComponentPrototype prototype);
-    public override Quantum.Prototypes.BattleCompoundEntityComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
-      var result = new Quantum.Prototypes.BattleCompoundEntityComponentPrototype();
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattleCompoundEntityQComponentPrototype prototype);
+    public override Quantum.Prototypes.BattleCompoundEntityQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.BattleCompoundEntityQComponentPrototype();
       converter.Convert(this.LinkedEntities, out result.LinkedEntities);
       ConvertUser(converter, ref result);
       return result;

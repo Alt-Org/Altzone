@@ -65,7 +65,7 @@ An **Entity Group** has one [{Entity ID}](#page-concepts-entity-management-entit
 ## Compound Entities {#page-concepts-entity-management-compound-entities}
 
 **%Quantum Entities** can be linked to a **Parent** **Entity** to form a **Compound** which can then be positioned and rotated together as a one unit.<br/>
-The **Parent** has a @cref{Quantum,BattleCompoundEntityComponent} which contains a list of **Entities** that are linked to the **Compound** **Parent**.<br/>
+The **Parent** has a @cref{Quantum,BattleCompoundEntityQComponent} which contains a list of **Entities** that are linked to the **Compound** **Parent**.<br/>
 **Compound Entities** are made from a @cref{Battle.QSimulation.Game.BattleEntityManager,CompoundEntityTemplate}.
 
 **Compound Entities** are handled by [{Entity Manager}](#page-concepts-entity-management-entity-manager).<br/>

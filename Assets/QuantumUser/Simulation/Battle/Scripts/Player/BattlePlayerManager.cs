@@ -37,7 +37,7 @@ namespace Battle.QSimulation.Player
     /// @bigtext{**%Player Index**}
     ///
     /// %Player Index is used internally to index player data arrays in @cref{Quantum,BattlePlayerManagerDataQSingleton}.
-    /// %Player [{Slots}](#page-concepts-player-slots-teams) are mapped to the internal Player Indexes using the @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandleInternal}
+    /// %Player [{Slots}](#page-concepts-player-slots-teams) are mapped to the internal %Player Indices using the @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandleInternal}
     /// @ref BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerIndexGetters "Player Index Getter" methods.
     public static unsafe partial class BattlePlayerManager
     {

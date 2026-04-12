@@ -14,18 +14,18 @@ namespace Quantum {
   using UnityEngine;
   
   [UnityEngine.DisallowMultipleComponent()]
-  public unsafe partial class QPrototypeBattleCompoundEntityComponent : QuantumUnityComponentPrototype<Quantum.Prototypes.BattleCompoundEntityComponentPrototype>, IQuantumUnityPrototypeWrapperForComponent<Quantum.BattleCompoundEntityComponent> {
-    partial void CreatePrototypeUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattleCompoundEntityComponentPrototype prototype);
+  public unsafe partial class QPrototypeBattleCompoundEntityQComponent : QuantumUnityComponentPrototype<Quantum.Prototypes.BattleCompoundEntityQComponentPrototype>, IQuantumUnityPrototypeWrapperForComponent<Quantum.BattleCompoundEntityQComponent> {
+    partial void CreatePrototypeUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattleCompoundEntityQComponentPrototype prototype);
     [DrawInline()]
     [ReadOnly(InEditMode = false)]
-    public Quantum.Prototypes.Unity.BattleCompoundEntityComponentPrototype Prototype;
+    public Quantum.Prototypes.Unity.BattleCompoundEntityQComponentPrototype Prototype;
     public override System.Type ComponentType {
       get {
-        return typeof(Quantum.BattleCompoundEntityComponent);
+        return typeof(Quantum.BattleCompoundEntityQComponent);
       }
     }
     public override ComponentPrototype CreatePrototype(Quantum.QuantumEntityPrototypeConverter converter) {
-      Quantum.Prototypes.BattleCompoundEntityComponentPrototype result;
+      Quantum.Prototypes.BattleCompoundEntityQComponentPrototype result;
       converter.Convert(Prototype, out result);
       CreatePrototypeUser(converter, ref result);
       return result;

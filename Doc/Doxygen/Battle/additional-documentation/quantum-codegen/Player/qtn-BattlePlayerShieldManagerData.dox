@@ -1,6 +1,6 @@
 /// @file BattlePlayerShieldManagerData.qtn
 /// <summary>
-/// Contains enum and component used for managing all players's characters' shields and their states.
+/// Contains shield manager data singleton component that is used internally by @cref{Battle.QSimulation.Player,BattlePlayerShieldManager} to manage shields.
 /// </summary>
 ///
 /// ## Generated Structs
@@ -11,8 +11,12 @@
 
 /// @struct Quantum::BattlePlayerShieldManagerDataQSingleton
 /// <summary>
-/// Singleton component that manages shields.
+/// Singleton component that is used internally by @cref{Battle.QSimulation.Player,BattlePlayerShieldManager} to manage shields.
 /// </summary>
+///
+/// See [{BattlePlayerShieldManager}](#page-concepts-player-simulation-management-shieldmanager) for more info.  
+/// See [{Player Overview}](#page-concepts-player-overview) for more info.  
+/// See [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview) for more info.
 ///
 /// @bigtext{Generated from @ref BattlePlayerShieldManagerData.qtn}
 
@@ -20,7 +24,13 @@
 /// <summary>Array of all characters' shield counts.</summary>
 ///
 /// @var array Quantum.BattlePlayerShieldManagerDataQSingleton::PlayerShieldEntityGroupIDs
-/// <summary>Array of all characters' entity group IDs for their shields.</summary>
+/// <summary>
+/// Array of all characters' entity group IDs for their shields.
+/// Public getter for internal @cref{Quantum.BattlePlayerShieldManagerDataQSingleton,_PlayerShieldEntityGroupIDs_} array.
+/// </summary>
+
+/// @var Byte Quantum.BattlePlayerShieldManagerDataQSingleton::_PlayerShieldEntityGroupIDs_
+/// <summary>Private internal array, access through @cref{Quantum.BattlePlayerShieldManagerDataQSingleton,PlayerShieldEntityGroupIDs}</summary>
 
 /// @name Quantum Built-in
 /// @{
