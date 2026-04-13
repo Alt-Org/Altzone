@@ -102,6 +102,10 @@ namespace Altzone.Scripts.Lobby
         private const float MatchmakingJoinTimeoutSeconds = 5f;
         // Marker for matchmaking rooms that were created from queue timeout flow.
         private const string QueueFormedMatchKey = "qfm";
+        // Flattened queue duo list [duo1UserA, duo1UserB, duo2UserA, duo2UserB, ...].
+        private const string QueueDuoPairsKey = "qdp";
+        // Flattened queue solo-pair list [pair1UserA, pair1UserB, pair2UserA, pair2UserB, ...].
+        private const string QueueSoloPairsKey = "qsp";
         // Delay before requeueing after leaving a matchmaking room due to timeout.
         private const float MatchmakingRequeueDelaySeconds = 2f;
         // Maximum automatic requeue attempts (0 = unlimited)
@@ -129,6 +133,7 @@ namespace Altzone.Scripts.Lobby
         private Coroutine _verifyPositionsHolder = null;
         private Coroutine _queueTimerHolder = null;
         private const float QueueWaitSeconds = 30f;
+        private const float QueueReadyStartDelaySeconds = 2f;
         // Flag set by OnJoinRoomFailed to signal a join attempt failure to waiting coroutines
         private bool _joinRoomFailed = false;
 
@@ -162,6 +167,10 @@ namespace Altzone.Scripts.Lobby
         private float _lastCountdownStartTime = -100f;
         // If a master leaves during start, defer returning to the LobbyRoom UI until master switch completes
         private bool _deferReturnToLobbyRoomOnMasterSwitch = false;
+        // True after StartGame has been received for the current room; used to avoid pre-match leave/requeue logic after match start.
+        private bool _matchHasStartedInCurrentRoom = false;
+        // Debounce UI/event spam so StartMatchmaking cannot re-enter in the same transition window.
+        private float _lastStartMatchmakingAcceptedTime = -100f;
 
         public static LobbyManager Instance { get; private set; }
         public bool IsStartFinished {set => _isStartFinished = value; }
@@ -356,6 +365,9 @@ namespace Altzone.Scripts.Lobby
                 string queuePremadeUserId1 = string.Empty;
                 string queuePremadeUserId2 = string.Empty;
                 int queuePremadeTargetGameType = roomGameTypeInt;
+                string queueLocalTeammateUserId = string.Empty;
+                List<(string userId1, string userId2)> queueCompleteDuoPairs = new();
+                List<(string userId1, string userId2)> queueSoloPairBlocks = new();
                 try
                 {
                     if (PhotonRealtimeClient.CurrentRoom != null)
@@ -365,6 +377,25 @@ namespace Altzone.Scripts.Lobby
                         queuePremadeUserId2 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
                         queuePremadeTargetGameType = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.PremadeTargetGameTypeKey, roomGameTypeInt);
                     }
+
+                    string localUserIdForQueuePair = PhotonRealtimeClient.LocalPlayer?.UserId ?? string.Empty;
+                    if (!string.IsNullOrEmpty(localUserIdForQueuePair))
+                    {
+                        TryGetQueueLocalTeammateUserId(localUserIdForQueuePair, out queueLocalTeammateUserId);
+                    }
+
+                    HashSet<string> participantUserIds = new(StringComparer.Ordinal);
+                    if (!string.IsNullOrEmpty(localUserIdForQueuePair)) participantUserIds.Add(localUserIdForQueuePair);
+                    if (selected != null)
+                    {
+                        foreach (string uid in selected)
+                        {
+                            if (!string.IsNullOrEmpty(uid)) participantUserIds.Add(uid);
+                        }
+                    }
+
+                    queueCompleteDuoPairs = GetQueueCompleteDuoPairsForParticipants(participantUserIds);
+                    queueSoloPairBlocks = GetQueueSoloPairBlocksForParticipants(participantUserIds, queueCompleteDuoPairs);
                 }
                 catch (Exception ex)
                 {
@@ -440,6 +471,30 @@ namespace Altzone.Scripts.Lobby
                                 try { PhotonRealtimeClient.CurrentRoom.SetCustomProperty("qe", selected.Length); } catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: {ex.Message}"); }
                                 try { if (selected != null && selected.Length > 0) PhotonRealtimeClient.CurrentRoom.SetCustomProperty("eu", selected); } catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: {ex.Message}"); }
                                 try { PhotonRealtimeClient.CurrentRoom.SetCustomProperty(QueueFormedMatchKey, true); } catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: {ex.Message}"); }
+                                try
+                                {
+                                    if (queueCompleteDuoPairs.Count > 0)
+                                    {
+                                        string[] flatPairs = queueCompleteDuoPairs.SelectMany(pair => new[] { pair.userId1, pair.userId2 }).ToArray();
+                                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(QueueDuoPairsKey, flatPairs);
+
+                                        foreach (var pair in queueCompleteDuoPairs)
+                                        {
+                                            if (string.IsNullOrEmpty(pair.userId1) || string.IsNullOrEmpty(pair.userId2) || pair.userId1 == pair.userId2) continue;
+                                            if (!TryReservePremadePairToSameSide(pair.userId1, pair.userId2, out _))
+                                            {
+                                                Debug.LogWarning($"FormMatchFromQueue: failed queue duo side reservation for ({pair.userId1},{pair.userId2}).");
+                                            }
+                                        }
+                                    }
+
+                                    if (queueSoloPairBlocks.Count > 0)
+                                    {
+                                        string[] flatSoloPairs = queueSoloPairBlocks.SelectMany(pair => new[] { pair.userId1, pair.userId2 }).ToArray();
+                                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(QueueSoloPairsKey, flatSoloPairs);
+                                    }
+                                }
+                                catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: failed to apply queue pair reservations: {ex.Message}"); }
 
                                 // Preserve premade metadata when a premade duo came from queue to keep same-side reservation logic active.
                                 try
@@ -463,17 +518,41 @@ namespace Altzone.Scripts.Lobby
                                         && matchUserIds.Contains(queuePremadeUserId1)
                                         && matchUserIds.Contains(queuePremadeUserId2);
 
+                                    bool queueLocalPairInThisMatch = !string.IsNullOrEmpty(queueLocalTeammateUserId)
+                                        && !string.IsNullOrEmpty(PhotonRealtimeClient.LocalPlayer?.UserId)
+                                        && matchUserIds.Contains(PhotonRealtimeClient.LocalPlayer.UserId)
+                                        && matchUserIds.Contains(queueLocalTeammateUserId);
+
                                     bool localPremadePairInThisMatch = _isPremadeMatchmakingFlow
                                         && !string.IsNullOrEmpty(_premadeTeammateUserId)
                                         && !string.IsNullOrEmpty(PhotonRealtimeClient.LocalPlayer?.UserId)
                                         && matchUserIds.Contains(PhotonRealtimeClient.LocalPlayer.UserId)
                                         && matchUserIds.Contains(_premadeTeammateUserId);
 
-                                    if (queuePremadePairInThisMatch || localPremadePairInThisMatch)
+                                    if (queueLocalPairInThisMatch || localPremadePairInThisMatch || queuePremadePairInThisMatch)
                                     {
-                                        string premadeUserId1 = queuePremadePairInThisMatch ? queuePremadeUserId1 : PhotonRealtimeClient.LocalPlayer.UserId;
-                                        string premadeUserId2 = queuePremadePairInThisMatch ? queuePremadeUserId2 : _premadeTeammateUserId;
-                                        int premadeTargetGameType = queuePremadePairInThisMatch ? queuePremadeTargetGameType : roomGameTypeInt;
+                                        string premadeUserId1;
+                                        string premadeUserId2;
+                                        int premadeTargetGameType;
+
+                                        if (queueLocalPairInThisMatch)
+                                        {
+                                            premadeUserId1 = PhotonRealtimeClient.LocalPlayer.UserId;
+                                            premadeUserId2 = queueLocalTeammateUserId;
+                                            premadeTargetGameType = roomGameTypeInt;
+                                        }
+                                        else if (localPremadePairInThisMatch)
+                                        {
+                                            premadeUserId1 = PhotonRealtimeClient.LocalPlayer.UserId;
+                                            premadeUserId2 = _premadeTeammateUserId;
+                                            premadeTargetGameType = roomGameTypeInt;
+                                        }
+                                        else
+                                        {
+                                            premadeUserId1 = queuePremadeUserId1;
+                                            premadeUserId2 = queuePremadeUserId2;
+                                            premadeTargetGameType = queuePremadeTargetGameType;
+                                        }
 
                                         PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, true);
                                         PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetGameTypeKey, premadeTargetGameType);
@@ -772,67 +851,876 @@ namespace Altzone.Scripts.Lobby
             catch (Exception ex) { Debug.LogWarning($"StopQueueTimer: failed to stop: {ex.Message}"); }
         }
 
+        private int GetQueueRequiredFollowerCount(int roomGameTypeInt)
+        {
+            switch ((GameType)roomGameTypeInt)
+            {
+                case GameType.Random2v2:
+                case GameType.Clan2v2:
+                default:
+                    return 3;
+            }
+        }
+
+        private string GetQueuePlayerLeaderId(Player player)
+        {
+            if (player == null) return string.Empty;
+            try
+            {
+                return player.GetCustomProperty<string>(PhotonBattleRoom.LeaderIdKey, string.Empty) ?? string.Empty;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        private bool TryTransferQueueMaster(string newMasterUserId, string reason)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(newMasterUserId)) return false;
+                if (PhotonRealtimeClient.LocalPlayer == null || !PhotonRealtimeClient.LocalPlayer.IsMasterClient) return false;
+
+                Room room = PhotonRealtimeClient.CurrentRoom;
+                if (room == null || room.Players == null) return false;
+
+                Player candidate = room.Players.Values.FirstOrDefault(p => p != null && p.UserId == newMasterUserId);
+                if (candidate == null) return false;
+
+                var lobbyPlayer = PhotonRealtimeClient.LobbyCurrentRoom?.GetPlayer(candidate.ActorNumber);
+                if (lobbyPlayer == null) return false;
+
+                if (PhotonRealtimeClient.LobbyCurrentRoom.SetMasterClient(lobbyPlayer))
+                {
+                    Debug.Log($"QueueTimerCoroutine: transferred master to {newMasterUserId} (actor {candidate.ActorNumber}) because {reason}.");
+                    return true;
+                }
+
+                Debug.LogWarning($"QueueTimerCoroutine: SetMasterClient returned false when transferring to {newMasterUserId}.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"QueueTimerCoroutine: failed to transfer master to {newMasterUserId}: {ex.Message}");
+            }
+
+            return false;
+        }
+
+        private bool TryGetQueueLocalTeammateUserId(string localUserId, out string teammateUserId)
+        {
+            teammateUserId = string.Empty;
+            if (string.IsNullOrEmpty(localUserId)) return false;
+
+            Room room = PhotonRealtimeClient.CurrentRoom;
+            if (room == null || room.Players == null) return false;
+
+            Dictionary<string, Player> playersById = room.Players.Values
+                .Where(p => p != null && !string.IsNullOrEmpty(p.UserId) && p.UserId != "Bot")
+                .GroupBy(p => p.UserId)
+                .Select(g => g.First())
+                .ToDictionary(p => p.UserId, p => p);
+
+            if (!playersById.TryGetValue(localUserId, out Player localPlayer) || localPlayer == null)
+            {
+                return false;
+            }
+
+            string localLeaderId = GetQueuePlayerLeaderId(localPlayer);
+            if (!string.IsNullOrEmpty(localLeaderId) && localLeaderId != localUserId)
+            {
+                if (playersById.ContainsKey(localLeaderId))
+                {
+                    teammateUserId = localLeaderId;
+                    return true;
+                }
+
+                return false;
+            }
+
+            List<string> followers = playersById.Values
+                .Where(p => p.UserId != localUserId)
+                .Where(p => GetQueuePlayerLeaderId(p) == localUserId)
+                .OrderBy(p => p.ActorNumber)
+                .Select(p => p.UserId)
+                .ToList();
+
+            if (followers.Count == 1)
+            {
+                teammateUserId = followers[0];
+                return true;
+            }
+
+            return false;
+        }
+
+        private List<(string userId1, string userId2)> GetQueueCompleteDuoPairsForParticipants(ICollection<string> participantUserIds)
+        {
+            List<(string userId1, string userId2)> result = new();
+            if (participantUserIds == null || participantUserIds.Count < 2) return result;
+
+            Room room = PhotonRealtimeClient.CurrentRoom;
+            if (room == null || room.Players == null) return result;
+
+            HashSet<string> participantSet = new(participantUserIds.Where(id => !string.IsNullOrEmpty(id)), StringComparer.Ordinal);
+            if (participantSet.Count < 2) return result;
+
+            Dictionary<string, Player> playersById = room.Players.Values
+                .Where(p => p != null && !string.IsNullOrEmpty(p.UserId) && p.UserId != "Bot")
+                .GroupBy(p => p.UserId)
+                .Select(g => g.First())
+                .ToDictionary(p => p.UserId, p => p);
+
+            HashSet<string> addedUsers = new(StringComparer.Ordinal);
+            foreach (Player leader in playersById.Values.OrderBy(p => p.ActorNumber))
+            {
+                if (leader == null || !participantSet.Contains(leader.UserId)) continue;
+
+                List<Player> followers = playersById.Values
+                    .Where(p => p != null && p.UserId != leader.UserId)
+                    .Where(p => participantSet.Contains(p.UserId))
+                    .Where(p => GetQueuePlayerLeaderId(p) == leader.UserId)
+                    .OrderBy(p => p.ActorNumber)
+                    .ToList();
+
+                if (followers.Count != 1) continue;
+
+                string followerId = followers[0].UserId;
+                if (string.IsNullOrEmpty(followerId)) continue;
+
+                if (!addedUsers.Add(leader.UserId)) continue;
+                if (!addedUsers.Add(followerId))
+                {
+                    addedUsers.Remove(leader.UserId);
+                    continue;
+                }
+
+                result.Add((leader.UserId, followerId));
+            }
+
+            return result;
+        }
+
+        private List<(string userId1, string userId2)> GetQueueSoloPairBlocksForParticipants(
+            ICollection<string> participantUserIds,
+            ICollection<(string userId1, string userId2)> completeDuoPairs)
+        {
+            List<(string userId1, string userId2)> result = new();
+            if (participantUserIds == null || participantUserIds.Count < 2) return result;
+
+            Room room = PhotonRealtimeClient.CurrentRoom;
+            if (room == null || room.Players == null) return result;
+
+            HashSet<string> participantSet = new(participantUserIds.Where(id => !string.IsNullOrEmpty(id)), StringComparer.Ordinal);
+            if (participantSet.Count < 2) return result;
+
+            HashSet<string> duoMemberIds = new(StringComparer.Ordinal);
+            if (completeDuoPairs != null)
+            {
+                foreach (var pair in completeDuoPairs)
+                {
+                    if (!string.IsNullOrEmpty(pair.userId1)) duoMemberIds.Add(pair.userId1);
+                    if (!string.IsNullOrEmpty(pair.userId2)) duoMemberIds.Add(pair.userId2);
+                }
+            }
+
+            List<Player> soloParticipants = room.Players.Values
+                .Where(p => p != null && !string.IsNullOrEmpty(p.UserId) && p.UserId != "Bot")
+                .Where(p => participantSet.Contains(p.UserId))
+                .Where(p => !duoMemberIds.Contains(p.UserId))
+                .GroupBy(p => p.UserId)
+                .Select(g => g.First())
+                .OrderBy(p => p.ActorNumber)
+                .ToList();
+
+            for (int i = 0; i + 1 < soloParticipants.Count; i += 2)
+            {
+                string userId1 = soloParticipants[i].UserId;
+                string userId2 = soloParticipants[i + 1].UserId;
+                if (string.IsNullOrEmpty(userId1) || string.IsNullOrEmpty(userId2) || userId1 == userId2) continue;
+                result.Add((userId1, userId2));
+            }
+
+            return result;
+        }
+
+        private bool IsTwoPlayerBlockQueueMode(int roomGameTypeInt)
+        {
+            GameType gameType = (GameType)roomGameTypeInt;
+            return gameType == GameType.Random2v2 || gameType == GameType.Clan2v2;
+        }
+
+        private List<string> SelectQueueFollowersFromTwoPlayerBlocks(
+            int requiredFollowers,
+            string localUserId,
+            List<Player> realPlayers,
+            Dictionary<string, Player> playersById,
+            List<(Player leader, Player follower)> completeDuos,
+            HashSet<string> incompleteMemberIds,
+            HashSet<string> orphanFollowerIds,
+            out string preferredMasterUserId,
+            out int eligibleSoloCount)
+        {
+            preferredMasterUserId = string.Empty;
+            eligibleSoloCount = 0;
+            List<string> selected = new();
+
+            HashSet<string> completeDuoMemberIds = new();
+            foreach (var duo in completeDuos)
+            {
+                completeDuoMemberIds.Add(duo.leader.UserId);
+                completeDuoMemberIds.Add(duo.follower.UserId);
+            }
+
+            bool localInCompleteDuo = completeDuoMemberIds.Contains(localUserId);
+            string localLeaderId = GetQueuePlayerLeaderId(playersById[localUserId]);
+            bool localIsFollower = !string.IsNullOrEmpty(localLeaderId) && localLeaderId != localUserId;
+
+            if (localIsFollower)
+            {
+                bool localLeaderMissing = !playersById.ContainsKey(localLeaderId);
+                bool localShouldNotFollowAsMaster = PhotonRealtimeClient.LocalPlayer != null && PhotonRealtimeClient.LocalPlayer.IsMasterClient;
+                if (localLeaderMissing || localShouldNotFollowAsMaster)
+                {
+                    Debug.Log($"SelectQueueFollowersFromTwoPlayerBlocks: clearing stale local leader reference '{localLeaderId}' (leaderMissing={localLeaderMissing}, localIsMaster={localShouldNotFollowAsMaster}).");
+                    localLeaderId = string.Empty;
+                    localIsFollower = false;
+                    try
+                    {
+                        if (PhotonRealtimeClient.LocalPlayer != null)
+                        {
+                            if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+                            {
+                                PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, localUserId);
+                            }
+                            else
+                            {
+                                PhotonRealtimeClient.LocalPlayer.RemoveCustomProperty(PhotonBattleRoom.LeaderIdKey);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogWarning($"SelectQueueFollowersFromTwoPlayerBlocks: failed to clear stale local leader reference: {ex.Message}");
+                    }
+                }
+            }
+
+            if (localIsFollower)
+            {
+                if (!string.IsNullOrEmpty(localLeaderId) && playersById.ContainsKey(localLeaderId))
+                {
+                    preferredMasterUserId = localLeaderId;
+                }
+                else
+                {
+                    preferredMasterUserId = completeDuos
+                        .Select(d => d.leader.UserId)
+                        .FirstOrDefault(id => !string.IsNullOrEmpty(id) && id != localUserId) ?? string.Empty;
+                }
+
+                return selected;
+            }
+
+            List<Player> eligibleSoloPlayers = realPlayers
+                .Where(p => !completeDuoMemberIds.Contains(p.UserId))
+                .Where(p => !incompleteMemberIds.Contains(p.UserId))
+                .Where(p =>
+                {
+                    if (orphanFollowerIds != null && orphanFollowerIds.Contains(p.UserId)) return true;
+                    string leaderId = GetQueuePlayerLeaderId(p);
+                    return string.IsNullOrEmpty(leaderId) || leaderId == p.UserId;
+                })
+                .ToList();
+
+            eligibleSoloCount = eligibleSoloPlayers.Count(p => p.UserId != localUserId);
+
+            if (!localInCompleteDuo && completeDuos.Count >= 2)
+            {
+                preferredMasterUserId = completeDuos
+                    .Where(d => d.leader.UserId != localUserId && d.follower.UserId != localUserId)
+                    .Select(d => d.leader.UserId)
+                    .FirstOrDefault() ?? string.Empty;
+
+                if (!string.IsNullOrEmpty(preferredMasterUserId))
+                {
+                    return selected;
+                }
+            }
+
+            HashSet<string> localBlockMembers = new(StringComparer.Ordinal) { localUserId };
+            HashSet<string> selectedSet = new(StringComparer.Ordinal);
+
+            if (localInCompleteDuo)
+            {
+                var localDuo = completeDuos.FirstOrDefault(d => d.leader.UserId == localUserId || d.follower.UserId == localUserId);
+                if (localDuo.leader == null || localDuo.follower == null)
+                {
+                    return new List<string>();
+                }
+
+                string teammateId = localDuo.leader.UserId == localUserId ? localDuo.follower.UserId : localDuo.leader.UserId;
+                if (string.IsNullOrEmpty(teammateId) || teammateId == localUserId)
+                {
+                    return new List<string>();
+                }
+
+                localBlockMembers.Add(teammateId);
+                selectedSet.Add(teammateId);
+                selected.Add(teammateId);
+            }
+            else
+            {
+                bool localEligibleSolo = eligibleSoloPlayers.Any(p => p.UserId == localUserId);
+                if (!localEligibleSolo)
+                {
+                    return new List<string>();
+                }
+
+                Player localSoloPartner = eligibleSoloPlayers.FirstOrDefault(p => p.UserId != localUserId);
+                if (localSoloPartner == null || string.IsNullOrEmpty(localSoloPartner.UserId))
+                {
+                    return new List<string>();
+                }
+
+                localBlockMembers.Add(localSoloPartner.UserId);
+                if (selectedSet.Add(localSoloPartner.UserId)) selected.Add(localSoloPartner.UserId);
+            }
+
+            var secondDuo = completeDuos.FirstOrDefault(d =>
+                !localBlockMembers.Contains(d.leader.UserId)
+                && !localBlockMembers.Contains(d.follower.UserId));
+
+            if (secondDuo.leader != null && secondDuo.follower != null)
+            {
+                if (selectedSet.Add(secondDuo.leader.UserId)) selected.Add(secondDuo.leader.UserId);
+                if (selectedSet.Add(secondDuo.follower.UserId)) selected.Add(secondDuo.follower.UserId);
+            }
+            else
+            {
+                List<Player> remainingSolos = eligibleSoloPlayers
+                    .Where(p => p.UserId != localUserId)
+                    .Where(p => !localBlockMembers.Contains(p.UserId))
+                    .ToList();
+
+                if (remainingSolos.Count < 2)
+                {
+                    return new List<string>();
+                }
+
+                if (selectedSet.Add(remainingSolos[0].UserId)) selected.Add(remainingSolos[0].UserId);
+                if (selectedSet.Add(remainingSolos[1].UserId)) selected.Add(remainingSolos[1].UserId);
+            }
+
+            if (selected.Count != requiredFollowers)
+            {
+                return new List<string>();
+            }
+
+            return selected;
+        }
+
+        private List<string> SelectQueueFollowersForMatch(int roomGameTypeInt, int requiredFollowers, out string preferredMasterUserId, out int completeDuoCount, out int eligibleSoloCount)
+        {
+            preferredMasterUserId = string.Empty;
+            completeDuoCount = 0;
+            eligibleSoloCount = 0;
+            List<string> selected = new();
+
+            Room room = PhotonRealtimeClient.CurrentRoom;
+            string localUserId = PhotonRealtimeClient.LocalPlayer?.UserId ?? string.Empty;
+            if (room == null || string.IsNullOrEmpty(localUserId) || requiredFollowers <= 0 || room.Players == null)
+            {
+                return selected;
+            }
+
+            List<Player> realPlayers = room.Players.Values
+                .Where(p => p != null && !string.IsNullOrEmpty(p.UserId) && p.UserId != "Bot")
+                .OrderBy(p => p.ActorNumber)
+                .ToList();
+
+            Dictionary<string, Player> playersById = new();
+            foreach (Player p in realPlayers)
+            {
+                if (!playersById.ContainsKey(p.UserId)) playersById[p.UserId] = p;
+            }
+
+            if (!playersById.ContainsKey(localUserId))
+            {
+                return selected;
+            }
+
+            void ClearStaleQueuePremadeMetadata(string reason)
+            {
+                try
+                {
+                    if (PhotonRealtimeClient.LocalPlayer == null || !PhotonRealtimeClient.LocalPlayer.IsMasterClient) return;
+                    if (room == null) return;
+                    if (!room.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey, false)) return;
+
+                    room.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, false);
+                    room.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, string.Empty);
+                    room.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
+                    room.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, string.Empty);
+                    room.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateNone);
+                    Debug.Log($"SelectQueueFollowersForMatch: cleared stale queue premade metadata ({reason}).");
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"SelectQueueFollowersForMatch: failed to clear stale queue premade metadata: {ex.Message}");
+                }
+            }
+
+            Dictionary<string, List<Player>> followersByLeader = new();
+            HashSet<string> incompleteMemberIds = new();
+            HashSet<string> orphanFollowerIds = new(StringComparer.Ordinal);
+
+            foreach (Player p in realPlayers)
+            {
+                string leaderId = GetQueuePlayerLeaderId(p);
+                if (string.IsNullOrEmpty(leaderId) || leaderId == p.UserId) continue;
+
+                if (!followersByLeader.TryGetValue(leaderId, out List<Player> followers))
+                {
+                    followers = new List<Player>();
+                    followersByLeader[leaderId] = followers;
+                }
+
+                followers.Add(p);
+            }
+
+            List<(Player leader, Player follower)> completeDuos = new();
+            foreach (var kv in followersByLeader.OrderBy(kv => playersById.ContainsKey(kv.Key) ? playersById[kv.Key].ActorNumber : int.MaxValue))
+            {
+                if (!playersById.TryGetValue(kv.Key, out Player leader) || leader == null)
+                {
+                    foreach (Player orphanFollower in kv.Value)
+                    {
+                        if (orphanFollower != null && !string.IsNullOrEmpty(orphanFollower.UserId)) orphanFollowerIds.Add(orphanFollower.UserId);
+                    }
+                    continue;
+                }
+
+                if (kv.Value.Count == 1 && kv.Value[0] != null && kv.Value[0].UserId != leader.UserId)
+                {
+                    completeDuos.Add((leader, kv.Value[0]));
+                }
+                else
+                {
+                    incompleteMemberIds.Add(leader.UserId);
+                    foreach (Player follower in kv.Value)
+                    {
+                        if (follower != null && !string.IsNullOrEmpty(follower.UserId)) incompleteMemberIds.Add(follower.UserId);
+                    }
+                }
+            }
+
+            completeDuoCount = completeDuos.Count;
+
+            bool roomPremadeMode = false;
+            string roomPremadeUserId1 = string.Empty;
+            string roomPremadeUserId2 = string.Empty;
+
+            try
+            {
+                roomPremadeMode = room.GetCustomProperty<bool>(PhotonBattleRoom.PremadeModeKey, false);
+                roomPremadeUserId1 = room.GetCustomProperty<string>(PhotonBattleRoom.PremadeUserId1Key, string.Empty);
+                roomPremadeUserId2 = room.GetCustomProperty<string>(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
+            }
+            catch { }
+
+            if (orphanFollowerIds.Count > 0)
+            {
+                // A follower with missing leader is stale queue metadata; treat as solo candidate.
+                Debug.Log($"SelectQueueFollowersForMatch: ignoring {orphanFollowerIds.Count} orphan leader references, treating as solos.");
+            }
+
+            try
+            {
+                if (roomPremadeMode)
+                {
+                    bool user1Present = !string.IsNullOrEmpty(roomPremadeUserId1) && playersById.ContainsKey(roomPremadeUserId1);
+                    bool user2Present = !string.IsNullOrEmpty(roomPremadeUserId2) && playersById.ContainsKey(roomPremadeUserId2);
+
+                    bool invalidPair = string.IsNullOrEmpty(roomPremadeUserId1)
+                        || string.IsNullOrEmpty(roomPremadeUserId2)
+                        || roomPremadeUserId1 == roomPremadeUserId2;
+
+                    if (invalidPair || (!user1Present && !user2Present))
+                    {
+                        ClearStaleQueuePremadeMetadata(invalidPair ? "invalid ids" : "no premade users present");
+                    }
+                    else if (user1Present ^ user2Present)
+                    {
+                        // One-sided premade metadata in queue is stale for block selection;
+                        // clear it so mixed compositions (e.g. duo+solo+solo) are not blocked.
+                        Debug.Log("SelectQueueFollowersForMatch: stale one-sided premade metadata detected, clearing and continuing.");
+                        ClearStaleQueuePremadeMetadata("one premade user missing");
+                    }
+                }
+            }
+            catch { }
+
+            if (IsTwoPlayerBlockQueueMode(roomGameTypeInt))
+            {
+                return SelectQueueFollowersFromTwoPlayerBlocks(
+                    requiredFollowers,
+                    localUserId,
+                    realPlayers,
+                    playersById,
+                    completeDuos,
+                    incompleteMemberIds,
+                    orphanFollowerIds,
+                    out preferredMasterUserId,
+                    out eligibleSoloCount);
+            }
+
+            HashSet<string> completeDuoMemberIds = new();
+            foreach (var duo in completeDuos)
+            {
+                completeDuoMemberIds.Add(duo.leader.UserId);
+                completeDuoMemberIds.Add(duo.follower.UserId);
+            }
+
+            bool localInCompleteDuo = completeDuoMemberIds.Contains(localUserId);
+            string localLeaderId = GetQueuePlayerLeaderId(playersById[localUserId]);
+            bool localIsFollower = !string.IsNullOrEmpty(localLeaderId) && localLeaderId != localUserId;
+
+            if (localIsFollower)
+            {
+                bool localLeaderMissing = !playersById.ContainsKey(localLeaderId);
+                bool localShouldNotFollowAsMaster = PhotonRealtimeClient.LocalPlayer != null && PhotonRealtimeClient.LocalPlayer.IsMasterClient;
+                if (localLeaderMissing || localShouldNotFollowAsMaster)
+                {
+                    Debug.Log($"SelectQueueFollowersForMatch: clearing stale local leader reference '{localLeaderId}' (leaderMissing={localLeaderMissing}, localIsMaster={localShouldNotFollowAsMaster}).");
+                    localLeaderId = string.Empty;
+                    localIsFollower = false;
+                    try
+                    {
+                        if (PhotonRealtimeClient.LocalPlayer != null)
+                        {
+                            if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+                            {
+                                PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, localUserId);
+                            }
+                            else
+                            {
+                                PhotonRealtimeClient.LocalPlayer.RemoveCustomProperty(PhotonBattleRoom.LeaderIdKey);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogWarning($"SelectQueueFollowersForMatch: failed to clear stale local leader reference: {ex.Message}");
+                    }
+                }
+            }
+
+            if (localIsFollower)
+            {
+                if (!string.IsNullOrEmpty(localLeaderId) && playersById.ContainsKey(localLeaderId))
+                {
+                    preferredMasterUserId = localLeaderId;
+                }
+                else
+                {
+                    preferredMasterUserId = completeDuos
+                        .Select(d => d.leader.UserId)
+                        .FirstOrDefault(id => !string.IsNullOrEmpty(id) && id != localUserId) ?? string.Empty;
+                }
+
+                return selected;
+            }
+
+            if (!localInCompleteDuo && completeDuos.Count >= 2)
+            {
+                preferredMasterUserId = completeDuos
+                    .Where(d => d.leader.UserId != localUserId && d.follower.UserId != localUserId)
+                    .Select(d => d.leader.UserId)
+                    .FirstOrDefault() ?? string.Empty;
+
+                return selected;
+            }
+
+            HashSet<string> selectedSet = new();
+
+            if (localInCompleteDuo)
+            {
+                foreach (var duo in completeDuos)
+                {
+                    if (duo.leader.UserId != localUserId && duo.follower.UserId != localUserId) continue;
+
+                    string teammateId = duo.leader.UserId == localUserId ? duo.follower.UserId : duo.leader.UserId;
+                    if (!string.IsNullOrEmpty(teammateId) && teammateId != localUserId && selectedSet.Add(teammateId))
+                    {
+                        selected.Add(teammateId);
+                    }
+                    break;
+                }
+            }
+
+            foreach (var duo in completeDuos.OrderBy(d => d.leader.ActorNumber))
+            {
+                string leaderId = duo.leader.UserId;
+                string followerId = duo.follower.UserId;
+
+                if (leaderId == localUserId || followerId == localUserId) continue;
+
+                int blockCount = 0;
+                if (!selectedSet.Contains(leaderId)) blockCount++;
+                if (!selectedSet.Contains(followerId)) blockCount++;
+                if (blockCount == 0) continue;
+                if (selected.Count + blockCount > requiredFollowers) continue;
+
+                if (selectedSet.Add(leaderId)) selected.Add(leaderId);
+                if (selectedSet.Add(followerId)) selected.Add(followerId);
+
+                if (selected.Count >= requiredFollowers)
+                {
+                    return selected;
+                }
+            }
+
+            List<string> eligibleSolos = realPlayers
+                .Where(p => p.UserId != localUserId)
+                .Where(p => !completeDuoMemberIds.Contains(p.UserId))
+                .Where(p => !incompleteMemberIds.Contains(p.UserId))
+                .Where(p =>
+                {
+                    if (orphanFollowerIds.Contains(p.UserId)) return true;
+                    string leaderId = GetQueuePlayerLeaderId(p);
+                    return string.IsNullOrEmpty(leaderId) || leaderId == p.UserId;
+                })
+                .Select(p => p.UserId)
+                .ToList();
+
+            eligibleSoloCount = eligibleSolos.Count;
+
+            foreach (string soloUserId in eligibleSolos)
+            {
+                if (!selectedSet.Add(soloUserId)) continue;
+
+                selected.Add(soloUserId);
+                if (selected.Count >= requiredFollowers)
+                {
+                    break;
+                }
+            }
+
+            return selected;
+        }
+
+        private bool ValidateQueueTwoPlayerBlockComposition(Room room, out string reason)
+        {
+            reason = string.Empty;
+            if (room == null || room.Players == null)
+            {
+                reason = "room missing";
+                return false;
+            }
+
+            HashSet<string> humanUserIds = new(
+                room.Players.Values
+                    .Where(p => p != null && !string.IsNullOrEmpty(p.UserId) && p.UserId != "Bot")
+                    .Select(p => p.UserId),
+                StringComparer.Ordinal);
+
+            if (humanUserIds.Count == 0)
+            {
+                reason = "no human players";
+                return false;
+            }
+
+            // Only enforce strict two-block coverage for full-human 2v2 rooms.
+            if (humanUserIds.Count < 4) return true;
+            if (humanUserIds.Count > 4)
+            {
+                reason = $"unexpected human count {humanUserIds.Count}";
+                return false;
+            }
+
+            List<(string userId1, string userId2)> blocks = new();
+            HashSet<string> seenPairKeys = new(StringComparer.Ordinal);
+
+            void AddFlatPairs(string[] flatPairs)
+            {
+                if (flatPairs == null || flatPairs.Length < 2) return;
+
+                for (int i = 0; i + 1 < flatPairs.Length; i += 2)
+                {
+                    string userId1 = flatPairs[i];
+                    string userId2 = flatPairs[i + 1];
+                    if (string.IsNullOrEmpty(userId1) || string.IsNullOrEmpty(userId2) || userId1 == userId2) continue;
+
+                    string key = string.CompareOrdinal(userId1, userId2) <= 0
+                        ? $"{userId1}|{userId2}"
+                        : $"{userId2}|{userId1}";
+                    if (!seenPairKeys.Add(key)) continue;
+
+                    blocks.Add((userId1, userId2));
+                }
+            }
+
+            try
+            {
+                AddFlatPairs(room.GetCustomProperty<string[]>(QueueDuoPairsKey, null));
+                AddFlatPairs(room.GetCustomProperty<string[]>(QueueSoloPairsKey, null));
+            }
+            catch (Exception ex)
+            {
+                reason = $"failed to read block metadata: {ex.Message}";
+                return false;
+            }
+
+            if (blocks.Count < 2)
+            {
+                reason = $"insufficient blocks ({blocks.Count})";
+                return false;
+            }
+
+            HashSet<string> coveredHumans = new(StringComparer.Ordinal);
+            int presentBlockCount = 0;
+            foreach (var block in blocks)
+            {
+                bool blockPresent = humanUserIds.Contains(block.userId1) && humanUserIds.Contains(block.userId2);
+                if (!blockPresent) continue;
+
+                presentBlockCount++;
+                coveredHumans.Add(block.userId1);
+                coveredHumans.Add(block.userId2);
+            }
+
+            if (presentBlockCount < 2)
+            {
+                reason = $"present blocks {presentBlockCount}";
+                return false;
+            }
+
+            if (coveredHumans.Count != humanUserIds.Count)
+            {
+                reason = $"covered humans {coveredHumans.Count}/{humanUserIds.Count}";
+                return false;
+            }
+
+            return true;
+        }
+
         private IEnumerator QueueTimerCoroutine()
         {
             try
             {
-                float start = Time.time;
-                while (Time.time - start < QueueWaitSeconds)
+                while (true)
                 {
-                    if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.CurrentRoom == null)
+                    float start = Time.time;
+                    while (Time.time - start < QueueWaitSeconds)
                     {
-                        _queueTimerHolder = null;
-                        yield break;
+                        if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.CurrentRoom == null)
+                        {
+                            _queueTimerHolder = null;
+                            yield break;
+                        }
+
+                        try
+                        {
+                            if (PhotonRealtimeClient.LocalPlayer == null || !PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+                            {
+                                _queueTimerHolder = null;
+                                yield break;
+                            }
+
+                            var room = PhotonRealtimeClient.CurrentRoom;
+                            if (room == null || room.CustomProperties == null || !room.CustomProperties.ContainsKey(PhotonBattleRoom.IsQueueKey) || !room.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey))
+                            {
+                                _queueTimerHolder = null;
+                                yield break;
+                            }
+                        }
+                        catch (Exception ex) { Debug.LogWarning($"StartQueueTimer: loop check failed: {ex.Message}"); _queueTimerHolder = null; yield break; }
+
+                        try
+                        {
+                            if (_formingMatchHolder == null && Time.time - start >= QueueReadyStartDelaySeconds)
+                            {
+                                int loopGameTypeInt = (int)GameType.Random2v2;
+                                string loopClanName = string.Empty;
+                                int loopSoulhomeRank = 0;
+                                try { loopGameTypeInt = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey); } catch { }
+                                try { loopClanName = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey, ""); } catch { }
+                                try { loopSoulhomeRank = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.SoulhomeRank, 0); } catch { }
+
+                                int loopRequiredFollowers = GetQueueRequiredFollowerCount(loopGameTypeInt);
+                                string loopPreferredMasterUserId;
+                                int loopCompleteDuoCount;
+                                int loopEligibleSoloCount;
+                                List<string> loopSelected = SelectQueueFollowersForMatch(loopGameTypeInt, loopRequiredFollowers, out loopPreferredMasterUserId, out loopCompleteDuoCount, out loopEligibleSoloCount);
+
+                                if (!string.IsNullOrEmpty(loopPreferredMasterUserId))
+                                {
+                                    if (TryTransferQueueMaster(loopPreferredMasterUserId, $"early duo-priority selection (completeDuos={loopCompleteDuoCount})"))
+                                    {
+                                        yield break;
+                                    }
+                                }
+
+                                if (loopSelected.Count >= loopRequiredFollowers)
+                                {
+                                    Debug.Log($"QueueTimerCoroutine: queue became ready before timeout, forming match with followers [{string.Join(",", loopSelected)}].");
+                                    _formingMatchHolder = StartCoroutine(FormMatchFromQueue(loopSelected.ToArray(), loopGameTypeInt, loopClanName, loopSoulhomeRank));
+                                    yield break;
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogWarning($"QueueTimerCoroutine: early readiness check failed: {ex.Message}");
+                        }
+
+                        yield return null;
                     }
 
+                    int gameTypeInt = (int)GameType.Random2v2;
+                    string clanName = string.Empty;
+                    int soulhomeRank = 0;
+                    try { gameTypeInt = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey); } catch (Exception ex) { Debug.LogWarning($"QueueTimerCoroutine: failed to read game type: {ex.Message}"); }
+                    try { clanName = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey, ""); } catch (Exception ex) { Debug.LogWarning($"QueueTimerCoroutine: failed to read clan name: {ex.Message}"); }
+                    try { soulhomeRank = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.SoulhomeRank, 0); } catch (Exception ex) { Debug.LogWarning($"QueueTimerCoroutine: failed to read soulhome rank: {ex.Message}"); }
+
+                    int requiredFollowers = GetQueueRequiredFollowerCount(gameTypeInt);
+                    string preferredMasterUserId;
+                    int completeDuoCount;
+                    int eligibleSoloCount;
+                    List<string> selected = SelectQueueFollowersForMatch(gameTypeInt, requiredFollowers, out preferredMasterUserId, out completeDuoCount, out eligibleSoloCount);
+
+                    if (!string.IsNullOrEmpty(preferredMasterUserId))
+                    {
+                        if (TryTransferQueueMaster(preferredMasterUserId, $"duo-priority selection (completeDuos={completeDuoCount})"))
+                        {
+                            yield break;
+                        }
+                    }
+
+                    if (selected.Count < requiredFollowers)
+                    {
+                        Debug.Log($"QueueTimerCoroutine: Queue wait expired but not enough eligible players (requiredFollowers={requiredFollowers}, selectedFollowers={selected.Count}, completeDuos={completeDuoCount}, eligibleSolos={eligibleSoloCount}). Retrying.");
+                        continue;
+                    }
+
+                    if (_formingMatchHolder != null)
+                    {
+                        Debug.Log("QueueTimerCoroutine: match formation already in progress; retrying in next queue cycle.");
+                        continue;
+                    }
+
+                    Debug.Log($"QueueTimerCoroutine: Queue wait expired after {QueueWaitSeconds}s, forming match with followers [{string.Join(",", selected)}].");
                     try
                     {
-                        if (PhotonRealtimeClient.LocalPlayer == null || !PhotonRealtimeClient.LocalPlayer.IsMasterClient)
-                        {
-                            _queueTimerHolder = null;
-                            yield break;
-                        }
-
-                        var room = PhotonRealtimeClient.CurrentRoom;
-                        if (room == null || room.CustomProperties == null || !room.CustomProperties.ContainsKey(PhotonBattleRoom.IsQueueKey) || !room.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey))
-                        {
-                            _queueTimerHolder = null;
-                            yield break;
-                        }
+                        _formingMatchHolder = StartCoroutine(FormMatchFromQueue(selected.ToArray(), gameTypeInt, clanName, soulhomeRank));
+                        yield break;
                     }
-                    catch (Exception ex) { Debug.LogWarning($"StartQueueTimer: loop check failed: {ex.Message}"); _queueTimerHolder = null; yield break; }
-
-                    yield return null;
-                }
-
-                // Time expired: form match from queue
-                List<string> selected = new();
-                try
-                {
-                    foreach (var p in PhotonRealtimeClient.CurrentRoom.Players)
+                    catch (Exception ex)
                     {
-                        if (p.Value == null) continue;
-                        if (p.Value.UserId == PhotonRealtimeClient.LocalPlayer.UserId) continue;
-                        selected.Add(p.Value.UserId);
+                        Debug.LogWarning($"QueueTimerCoroutine: FormMatchFromQueue failed to start: {ex.Message}");
                     }
-                }
-                catch (Exception ex) { Debug.LogWarning($"QueueTimerCoroutine: failed to enumerate players: {ex.Message}"); }
-
-                int gameTypeInt = (int)GameType.Random2v2;
-                string clanName = string.Empty;
-                int soulhomeRank = 0;
-                try { gameTypeInt = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey); } catch (Exception ex) { Debug.LogWarning($"QueueTimerCoroutine: failed to read game type: {ex.Message}"); }
-                try { clanName = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey, ""); } catch (Exception ex) { Debug.LogWarning($"QueueTimerCoroutine: failed to read clan name: {ex.Message}"); }
-                try { soulhomeRank = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.SoulhomeRank, 0); } catch (Exception ex) { Debug.LogWarning($"QueueTimerCoroutine: failed to read soulhome rank: {ex.Message}"); }
-
-                Debug.Log($"QueueTimerCoroutine: Queue wait expired after {QueueWaitSeconds}s, forming match for {selected.Count} players.");
-                try
-                {
-                    _formingMatchHolder = StartCoroutine(FormMatchFromQueue(selected.ToArray(), gameTypeInt, clanName, soulhomeRank));
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogWarning($"QueueTimerCoroutine: FormMatchFromQueue failed to start: {ex.Message}");
                 }
             }
             finally
@@ -1204,7 +2092,26 @@ namespace Altzone.Scripts.Lobby
                 }
             }
             _teammates = expectedUsers.ToArray();
-            _premadeTeammateUserId = _isPremadeMatchmakingFlow && _teammates.Length > 0 ? _teammates[0] : string.Empty;
+            if (_isPremadeMatchmakingFlow)
+            {
+                string resolvedPremadeTeammateUserId = string.Empty;
+                bool teammateFound = TryGetQueueLocalTeammateUserId(localUserId, out resolvedPremadeTeammateUserId);
+                if (!teammateFound || string.IsNullOrEmpty(resolvedPremadeTeammateUserId))
+                {
+                    resolvedPremadeTeammateUserId = !string.IsNullOrEmpty(_premadeTeammateUserId)
+                        ? _premadeTeammateUserId
+                        : expectedUsers.FirstOrDefault(id => !string.IsNullOrEmpty(id));
+                }
+
+                _premadeTeammateUserId = resolvedPremadeTeammateUserId ?? string.Empty;
+                _teammates = string.IsNullOrEmpty(_premadeTeammateUserId)
+                    ? Array.Empty<string>()
+                    : new[] { _premadeTeammateUserId };
+            }
+            else
+            {
+                _premadeTeammateUserId = string.Empty;
+            }
 
             // Sending other players in the room the room change request, setting own leader id key as own userid to indicate being the leader
             PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, PhotonRealtimeClient.LocalPlayer.UserId);
@@ -1276,11 +2183,14 @@ namespace Altzone.Scripts.Lobby
                     {
                         try
                         {
-                            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, true);
-                            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)gameType);
-                            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, localUserId);
-                            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, localUserId);
-                            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, _premadeTeammateUserId);
+                            if (!string.IsNullOrEmpty(_premadeTeammateUserId))
+                            {
+                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, true);
+                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)gameType);
+                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, localUserId);
+                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, localUserId);
+                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, _premadeTeammateUserId);
+                            }
                             PhotonRealtimeClient.CurrentRoom.SetCustomProperty("qe", _teammates?.Length ?? 0);
                             if (_teammates != null && _teammates.Length > 0)
                             {
@@ -1702,28 +2612,64 @@ namespace Altzone.Scripts.Lobby
                     ? new[] { PhotonBattleRoom.PlayerPosition3, PhotonBattleRoom.PlayerPosition4 }
                     : new[] { PhotonBattleRoom.PlayerPosition1, PhotonBattleRoom.PlayerPosition2 };
 
-                // Never displace non-premade humans.
-                if (teamSlots.Any(slot => IsRealPlayerValue(sourceMap[slot]))) return false;
-
                 Dictionary<int, string> workingMap = new(sourceMap);
-                displacedBots = teamSlots.Count(slot => IsBotValue(workingMap[slot]));
+
+                // Capture everyone currently on the target side (including humans) so we can rebalance
+                // to the opposite side if a full room has two duos split across teams.
+                List<string> displacedValues = new();
+                foreach (int slot in teamSlots)
+                {
+                    string slotValue = workingMap[slot];
+                    if (!string.IsNullOrEmpty(slotValue)) displacedValues.Add(slotValue);
+                }
 
                 workingMap[teamSlots[0]] = userId1;
                 workingMap[teamSlots[1]] = userId2;
 
+                List<string> otherSideCombined = new();
+                HashSet<string> seen = new(StringComparer.Ordinal);
+
+                foreach (int slot in otherSlots)
+                {
+                    string slotValue = workingMap[slot];
+                    if (string.IsNullOrEmpty(slotValue)) continue;
+                    if (seen.Add(slotValue)) otherSideCombined.Add(slotValue);
+                }
+
+                foreach (string displacedValue in displacedValues)
+                {
+                    if (string.IsNullOrEmpty(displacedValue)) continue;
+                    if (seen.Add(displacedValue)) otherSideCombined.Add(displacedValue);
+                }
+
+                if (otherSideCombined.Count > otherSlots.Length) return false;
+
+                foreach (int slot in otherSlots)
+                {
+                    workingMap[slot] = string.Empty;
+                }
+
+                for (int i = 0; i < otherSideCombined.Count; i++)
+                {
+                    workingMap[otherSlots[i]] = otherSideCombined[i];
+                }
+
+                displacedBots = 0;
+                foreach (string value in displacedValues)
+                {
+                    if (IsBotValue(value)) displacedBots++;
+                }
+
                 if (displacedBots > 0)
                 {
-                    List<int> freeOtherSlots = new();
+                    int botCountOnOtherSide = 0;
                     foreach (int slot in otherSlots)
                     {
-                        if (string.IsNullOrEmpty(workingMap[slot])) freeOtherSlots.Add(slot);
+                        if (IsBotValue(workingMap[slot])) botCountOnOtherSide++;
                     }
-
-                    if (freeOtherSlots.Count < displacedBots) return false;
-
-                    for (int i = 0; i < displacedBots; i++)
+                    if (botCountOnOtherSide < displacedBots)
                     {
-                        workingMap[freeOtherSlots[i]] = "Bot";
+                        return false;
                     }
                 }
 
@@ -2125,6 +3071,52 @@ namespace Altzone.Scripts.Lobby
                 string positionValue2 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey2);
                 string positionValue3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey3);
                 string positionValue4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey4);
+                bool refreshAfterQueueDuoReservation = false;
+
+                try
+                {
+                    string[] queueDuoPairs = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string[]>(QueueDuoPairsKey, null);
+                    if (queueDuoPairs != null && queueDuoPairs.Length >= 2)
+                    {
+                        bool changedByQueueDuoReservation = false;
+                        for (int i = 0; i + 1 < queueDuoPairs.Length; i += 2)
+                        {
+                            string pairUserId1 = queueDuoPairs[i];
+                            string pairUserId2 = queueDuoPairs[i + 1];
+                            if (string.IsNullOrEmpty(pairUserId1) || string.IsNullOrEmpty(pairUserId2) || pairUserId1 == pairUserId2) continue;
+
+                            bool pairPresent = PhotonRealtimeClient.CurrentRoom.Players.Values.Any(p => p.UserId == pairUserId1)
+                                && PhotonRealtimeClient.CurrentRoom.Players.Values.Any(p => p.UserId == pairUserId2);
+                            if (!pairPresent) continue;
+
+                            if (!TryReservePremadePairToSameSide(pairUserId1, pairUserId2, out _))
+                            {
+                                GameType requeueGameType = GameType.Random2v2;
+                                try { requeueGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey); } catch { }
+                                Debug.LogWarning($"WaitForMatchmakingPlayers: could not keep queue duo ({pairUserId1},{pairUserId2}) on same side, requeueing.");
+                                StartCoroutine(LeaveAndAutoRequeue(requeueGameType));
+                                yield break;
+                            }
+
+                            changedByQueueDuoReservation = true;
+                        }
+
+                        if (changedByQueueDuoReservation)
+                        {
+                            refreshAfterQueueDuoReservation = true;
+                        }
+                    }
+                }
+                catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: queue duo same-side enforcement failed: {ex.Message}"); }
+
+                if (refreshAfterQueueDuoReservation)
+                {
+                    yield return null;
+                    positionValue1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey1);
+                    positionValue2 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey2);
+                    positionValue3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey3);
+                    positionValue4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey4);
+                }
 
                 bool isPremadeMatch = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<bool>(PhotonBattleRoom.PremadeModeKey, false);
                 string premadeUserId1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PremadeUserId1Key, string.Empty);
@@ -2147,6 +3139,23 @@ namespace Altzone.Scripts.Lobby
                     positionValue3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey3);
                     positionValue4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey4);
                 }
+
+                try
+                {
+                    bool queueFormedMatch = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<bool>(QueueFormedMatchKey, false);
+                    int queueGameType = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey, (int)GameType.Random2v2);
+                    if (queueFormedMatch && IsTwoPlayerBlockQueueMode(queueGameType))
+                    {
+                        if (!ValidateQueueTwoPlayerBlockComposition(PhotonRealtimeClient.CurrentRoom, out string blockValidationReason))
+                        {
+                            GameType requeueGameType = (GameType)queueGameType;
+                            Debug.LogWarning($"WaitForMatchmakingPlayers: invalid two-player block composition ({blockValidationReason}), requeueing.");
+                            StartCoroutine(LeaveAndAutoRequeue(requeueGameType));
+                            yield break;
+                        }
+                    }
+                }
+                catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: block composition validation failed: {ex.Message}"); }
 
                 foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
                 {
@@ -2303,6 +3312,22 @@ namespace Altzone.Scripts.Lobby
                 {
                     if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.CurrentRoom == null) yield break;
 
+                    // Queue-formed rooms use master-side expected-user timeout handling; follower watcher must not force requeue.
+                    try
+                    {
+                        bool queueFormedMatch = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<bool>(QueueFormedMatchKey, false);
+                        int expectedFollowers = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>("qe", 0);
+                        string[] expectedUsers = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string[]>("eu", null);
+                        bool hasExpectedUsers = expectedUsers != null && expectedUsers.Any(uid => !string.IsNullOrEmpty(uid));
+                        if (queueFormedMatch || expectedFollowers > 0 || hasExpectedUsers)
+                        {
+                            Debug.Log("MatchmakingJoinWatcher: queue-formed expected-user flow detected, stopping follower watcher.");
+                            _autoRequeueAttempts = 0;
+                            yield break;
+                        }
+                    }
+                    catch { }
+
                     // If countdown started after we began watching, cancel watcher
                     if (_lastCountdownStartTime >= start)
                     {
@@ -2350,6 +3375,17 @@ namespace Altzone.Scripts.Lobby
             try
             {
                 bool queueRoomRequested = !string.IsNullOrEmpty(leaderRoomName) && leaderRoomName.StartsWith("Queue_", StringComparison.Ordinal);
+
+                // Duplicate handoff events are common during queue->match transitions.
+                // If we are already in the explicitly requested room, ignore the handoff.
+                if (!string.IsNullOrEmpty(leaderRoomName)
+                    && PhotonRealtimeClient.InRoom
+                    && PhotonRealtimeClient.CurrentRoom != null
+                    && PhotonRealtimeClient.CurrentRoom.Name == leaderRoomName)
+                {
+                    Debug.Log($"FollowLeaderToNewRoom: already in target room '{leaderRoomName}', ignoring duplicate handoff.");
+                    yield break;
+                }
 
                 // Don't follow leader away from this room if we're in a Custom game.
                 try
@@ -2748,6 +3784,48 @@ namespace Altzone.Scripts.Lobby
 
             if (!PhotonRealtimeClient.InRoom) return;
 
+            try
+            {
+                ClientState clientState = PhotonRealtimeClient.Client != null ? PhotonRealtimeClient.Client.State : ClientState.Disconnected;
+                if (clientState != ClientState.Joined)
+                {
+                    Debug.Log($"OnStartMatchmakingEvent: ignoring start while client state is {clientState}.");
+                    return;
+                }
+            }
+            catch { }
+
+            if (Time.time - _lastStartMatchmakingAcceptedTime < 1.0f)
+            {
+                Debug.Log("OnStartMatchmakingEvent: ignored duplicate start (debounce).");
+                return;
+            }
+
+            try
+            {
+                if (PhotonRealtimeClient.CurrentRoom != null
+                    && PhotonRealtimeClient.CurrentRoom.CustomProperties != null
+                    && PhotonRealtimeClient.CurrentRoom.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey, false))
+                {
+                    Debug.Log("OnStartMatchmakingEvent: already in queue room, ignoring duplicate start request.");
+                    return;
+                }
+            }
+            catch { }
+
+            if (_matchmakingHolder != null)
+            {
+                Debug.Log("OnStartMatchmakingEvent: matchmaking already in progress, ignoring duplicate start request.");
+                return;
+            }
+
+            // In premade in-room flow only the room master should start matchmaking.
+            if (data.IsPremadeInRoom && PhotonRealtimeClient.LocalPlayer != null && !PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+            {
+                Debug.Log("OnStartMatchmakingEvent: ignoring premade start from non-master client.");
+                return;
+            }
+
             _isPremadeMatchmakingFlow = data.IsPremadeInRoom;
             if (!_isPremadeMatchmakingFlow)
             {
@@ -2771,6 +3849,7 @@ namespace Altzone.Scripts.Lobby
             // Starting matchmaking coroutine
             if (_matchmakingHolder == null)
             {
+                _lastStartMatchmakingAcceptedTime = Time.time;
                 _matchmakingHolder = StartCoroutine(StartMatchmaking(data.SelectedGameType));
             }
         }
@@ -3099,6 +4178,7 @@ namespace Altzone.Scripts.Lobby
 
         private void StartingGameFailed()
         {
+            _matchHasStartedInCurrentRoom = false;
             // Clear BattleID so room is not left in 'starting' state after a failed start
             try
             {
@@ -4089,7 +5169,7 @@ namespace Altzone.Scripts.Lobby
             if (PhotonRealtimeClient.Client.State == ClientState.Leaving) return;
 
             // If a game start countdown or start flow is in progress, cancel it.
-            bool startCountdownInProgress = IsGameStartTransitionActive();
+            bool startCountdownInProgress = !_matchHasStartedInCurrentRoom && IsGameStartTransitionActive();
 
             if (startCountdownInProgress)
             {
@@ -4235,7 +5315,7 @@ namespace Altzone.Scripts.Lobby
                 if(_posChangeQueue.Contains(otherPlayer.UserId)) _posChangeQueue.Remove(otherPlayer.UserId);
             }
 
-            if (PhotonRealtimeClient.InMatchmakingRoom && _followLeaderHolder == null)
+            if (!_matchHasStartedInCurrentRoom && PhotonRealtimeClient.InMatchmakingRoom && _followLeaderHolder == null)
             {
                 // If the game type is clan 2v2 and the player who left was a teammate we leave the room,
                 // since you can't play the game mode without 2 person team from the same clan
@@ -4337,7 +5417,7 @@ namespace Altzone.Scripts.Lobby
                     Debug.LogWarning($"OnPlayerLeftRoom: failed to clean stale positions: {ex.Message}");
                 }
 
-                // If this is a queue room, let master form matches of 4 players when someone leaves
+                // Queue match formation is centralized in QueueTimerCoroutine.
                 try
                 {
                     Room qroom = PhotonRealtimeClient.CurrentRoom;
@@ -4345,32 +5425,7 @@ namespace Altzone.Scripts.Lobby
                     {
                         if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
                         {
-                            var realPlayers = qroom.Players.Values.Where(p => p.UserId != null).ToList();
-                            if (realPlayers.Count >= 4)
-                            {
-                                var selected = realPlayers.Take(4).Select(p => p.UserId).ToArray();
-                                Debug.Log($"Queue (player left): forming match for users: {string.Join(",", selected)}");
-                                try
-                                {
-                                    int roomGameTypeInt = (qroom.CustomProperties != null && qroom.CustomProperties.ContainsKey(PhotonBattleRoom.GameTypeKey)) ? (int)qroom.CustomProperties[PhotonBattleRoom.GameTypeKey] : (int)GameType.Random2v2;
-                                    string clanName = string.Empty;
-                                    if (qroom.CustomProperties != null && qroom.CustomProperties.ContainsKey(PhotonBattleRoom.ClanNameKey)) clanName = qroom.CustomProperties[PhotonBattleRoom.ClanNameKey]?.ToString() ?? string.Empty;
-                                    int soulhomeRank = -1;
-                                    if (qroom.CustomProperties != null && qroom.CustomProperties.ContainsKey(PhotonBattleRoom.SoulhomeRank)) soulhomeRank = (int)qroom.CustomProperties[PhotonBattleRoom.SoulhomeRank];
-                                    if (_formingMatchHolder == null)
-                                    {
-                                        _formingMatchHolder = StartCoroutine(FormMatchFromQueue(selected, roomGameTypeInt, clanName, soulhomeRank));
-                                    }
-                                    else
-                                    {
-                                        Debug.Log("Queue (player left): already forming a match, skipping duplicate request.");
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    Debug.LogWarning($"Queue (player left): failed to enqueue match formation: {ex.Message}");
-                                }
-                            }
+                            StartQueueTimer();
                         }
                     }
                 }
@@ -4389,6 +5444,7 @@ namespace Altzone.Scripts.Lobby
         public void OnJoinedRoom()
         {
             _gamePlayedOut = false;
+            _matchHasStartedInCurrentRoom = false;
             _pendingInRoomInviteRoomName = string.Empty;
             _pendingAcceptedInRoomInviteRoomName = string.Empty;
             _pendingAcceptedInRoomInviteStartTime = -100f;
@@ -4483,10 +5539,27 @@ namespace Altzone.Scripts.Lobby
                     {
                         GameType roomGameType = GameType.Random2v2;
                         try { roomGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey); } catch (Exception ex) { Debug.LogWarning($"OnJoinedRoom: failed to read room game type: {ex.Message}"); }
+                        bool queueFormedMatch = false;
+                        int expectedFollowers = 0;
+                        string[] expectedUsers = null;
+                        try { queueFormedMatch = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<bool>(QueueFormedMatchKey, false); } catch { }
+                        try { expectedFollowers = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>("qe", 0); } catch { }
+                        try { expectedUsers = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string[]>("eu", null); } catch { }
+
+                        bool hasExpectedUsers = expectedUsers != null && expectedUsers.Any(uid => !string.IsNullOrEmpty(uid));
+                        bool queueExpectedJoinFlow = queueFormedMatch || expectedFollowers > 0 || hasExpectedUsers;
+
                         if (_joinTimeoutWatcherHolder != null) { StopCoroutine(_joinTimeoutWatcherHolder); _joinTimeoutWatcherHolder = null; }
-                        float effectiveTimeout = MatchmakingJoinTimeoutSeconds;
-                        Debug.Log($"OnJoinedRoom: non-master joined matchmaking room '{PhotonRealtimeClient.CurrentRoom?.Name}' with PlayerCount={PhotonRealtimeClient.CurrentRoom?.PlayerCount}, starting MatchmakingJoinWatcher(timeout={effectiveTimeout}s) (qe={PhotonRealtimeClient.CurrentRoom?.GetCustomProperty<int>("qe", -999)})");
-                        _joinTimeoutWatcherHolder = StartCoroutine(MatchmakingJoinWatcher(roomGameType, effectiveTimeout));
+                        if (!queueExpectedJoinFlow)
+                        {
+                            float effectiveTimeout = MatchmakingJoinTimeoutSeconds;
+                            Debug.Log($"OnJoinedRoom: non-master joined matchmaking room '{PhotonRealtimeClient.CurrentRoom?.Name}' with PlayerCount={PhotonRealtimeClient.CurrentRoom?.PlayerCount}, starting MatchmakingJoinWatcher(timeout={effectiveTimeout}s) (qe={PhotonRealtimeClient.CurrentRoom?.GetCustomProperty<int>("qe", -999)})");
+                            _joinTimeoutWatcherHolder = StartCoroutine(MatchmakingJoinWatcher(roomGameType, effectiveTimeout));
+                        }
+                        else
+                        {
+                            Debug.Log($"OnJoinedRoom: non-master joined queue-formed matchmaking room '{PhotonRealtimeClient.CurrentRoom?.Name}' (qe={expectedFollowers}, euCount={(expectedUsers?.Length ?? 0)}); skipping MatchmakingJoinWatcher.");
+                        }
                             // Attempt to reserve a free position for non-master clients so start proceeds quicker
                             try
                             {
@@ -4536,6 +5609,7 @@ namespace Altzone.Scripts.Lobby
         public void OnLeftRoom() // IMatchmakingCallbacks
         {
             _gamePlayedOut = false;
+            _matchHasStartedInCurrentRoom = false;
             _pendingInRoomInviteRoomName = string.Empty;
             _pendingAcceptedInRoomInviteRoomName = string.Empty;
             _pendingAcceptedInRoomInviteStartTime = -100f;
@@ -4698,11 +5772,27 @@ namespace Altzone.Scripts.Lobby
                     catch { targetGameType = GameType.Random2v2; }
                 }
 
+                InRoomInviteReceived inviteReceivedHandler = OnInRoomInviteReceived;
                 _lastAutoInviteRoomName = room.Name;
                 _lastAutoInviteJoinTime = Time.time;
+
+                if (inviteReceivedHandler == null)
+                {
+                    Debug.LogWarning($"Detected pending FriendLobby invite to room '{room.Name}', but no UI listener is active yet. Will retry shortly.");
+                    break;
+                }
+
                 _pendingInRoomInviteRoomName = room.Name;
                 Debug.Log($"Detected pending FriendLobby invite to room '{room.Name}', requesting decision from UI.");
-                OnInRoomInviteReceived?.Invoke(new InRoomInviteInfo(room.Name, leaderUserId, invitedUserId, targetGameType));
+                try
+                {
+                    inviteReceivedHandler.Invoke(new InRoomInviteInfo(room.Name, leaderUserId, invitedUserId, targetGameType));
+                }
+                catch (Exception ex)
+                {
+                    _pendingInRoomInviteRoomName = string.Empty;
+                    Debug.LogError($"TryAutoJoinInRoomInvite: invite UI callback failed for room '{room.Name}': {ex.Message}");
+                }
                 break;
             }
         }
@@ -4817,6 +5907,7 @@ namespace Altzone.Scripts.Lobby
                     // Also signal countdown listeners with a sentinel value so older UI code can cancel
                     // clear countdown active flag and notify listeners
                     _countdownActive = false;
+                    _matchHasStartedInCurrentRoom = false;
                     OnGameCountdownUpdate?.Invoke(-1);
 
                     try
@@ -4912,6 +6003,7 @@ namespace Altzone.Scripts.Lobby
                     // Starting game clears countdown active flag
                     _countdownActive = false;
                     _gamePlayedOut = false;
+                    _matchHasStartedInCurrentRoom = true;
 
                     // Defensive check: if in matchmaking and any expected real player is missing, abort start.
                     if (PhotonRealtimeClient.InMatchmakingRoom)
@@ -4931,6 +6023,7 @@ namespace Altzone.Scripts.Lobby
 
                         if (missing)
                         {
+                            _matchHasStartedInCurrentRoom = false;
                             OnGameStartCancelled?.Invoke();
 
                             if (PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient)
@@ -5009,15 +6102,32 @@ namespace Altzone.Scripts.Lobby
                     catch { }
 
                     string matchmakingLeaderId = string.Empty;
+                    bool targetedByExpectedUsers = false;
+                    try
+                    {
+                        if (expectedUsers != null && expectedUsers.Length > 0)
+                        {
+                            string localId = PhotonRealtimeClient.LocalPlayer?.UserId;
+                            targetedByExpectedUsers = !string.IsNullOrEmpty(localId) && expectedUsers.Contains(localId);
+                        }
+                    }
+                    catch { }
 
                     // If room is not a matchmaking room the person sending the event is the leader.
                     if (!PhotonRealtimeClient.InMatchmakingRoom)
                     {
                         if (!string.IsNullOrEmpty(leaderUserId))
                         {
-                            PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, leaderUserId);
-                            try { OnRoomLeaderChanged?.Invoke(leaderUserId == PhotonRealtimeClient.LocalPlayer.UserId); } catch { }
-                            matchmakingLeaderId = leaderUserId;
+                            _matchHasStartedInCurrentRoom = false;
+                            string localUserId = PhotonRealtimeClient.LocalPlayer?.UserId;
+                            bool localIsLeader = !string.IsNullOrEmpty(localUserId) && localUserId == leaderUserId;
+                            bool shouldUpdateLeaderId = targetedByExpectedUsers || localIsLeader;
+                            if (shouldUpdateLeaderId)
+                            {
+                                PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, leaderUserId);
+                                try { OnRoomLeaderChanged?.Invoke(leaderUserId == PhotonRealtimeClient.LocalPlayer.UserId); } catch { }
+                                matchmakingLeaderId = leaderUserId;
+                            }
                         }
                     }
 
@@ -5046,8 +6156,7 @@ namespace Altzone.Scripts.Lobby
                     {
                         if (expectedUsers != null && expectedUsers.Length > 0)
                         {
-                            var localId = PhotonRealtimeClient.LocalPlayer?.UserId;
-                            shouldFollow = !string.IsNullOrEmpty(localId) && expectedUsers.Contains(localId);
+                            shouldFollow = targetedByExpectedUsers;
                         }
                     }
                     catch { }
@@ -5064,11 +6173,69 @@ namespace Altzone.Scripts.Lobby
                     }
                     catch { }
 
-                    Debug.Log($"RoomChangeRequested decision: isCustomRoom={isCustomRoom}, followHolderNull={_followLeaderHolder==null}, leaderMatch={leaderUserId==matchmakingLeaderId}, shouldFollow={shouldFollow}");
-                    if (!isCustomRoom && _followLeaderHolder == null && leaderUserId == matchmakingLeaderId && shouldFollow)
+                    bool leaderMatch = leaderUserId == matchmakingLeaderId;
+                    bool hasExplicitLeaderRoom = !string.IsNullOrEmpty(leaderRoomName);
+                    bool hasExpectedUsers = expectedUsers != null && expectedUsers.Length > 0;
+                    bool leaderOnlyNoRoomFallback = !hasExplicitLeaderRoom && !hasExpectedUsers;
+
+                    bool alreadyInExplicitLeaderRoom = false;
+                    if (hasExplicitLeaderRoom)
                     {
-                        if (!string.IsNullOrEmpty(leaderRoomName)) _followLeaderHolder = StartCoroutine(FollowLeaderToNewRoom(leaderUserId, leaderRoomName));
-                        else _followLeaderHolder = StartCoroutine(FollowLeaderToNewRoom(leaderUserId));
+                        try
+                        {
+                            alreadyInExplicitLeaderRoom = PhotonRealtimeClient.InRoom
+                                && PhotonRealtimeClient.CurrentRoom != null
+                                && PhotonRealtimeClient.CurrentRoom.Name == leaderRoomName;
+                        }
+                        catch { }
+                    }
+
+                    Debug.Log($"RoomChangeRequested decision: isCustomRoom={isCustomRoom}, followHolderNull={_followLeaderHolder==null}, leaderMatch={leaderMatch}, shouldFollow={shouldFollow}, hasExplicitLeaderRoom={hasExplicitLeaderRoom}, hasExpectedUsers={hasExpectedUsers}");
+
+                    if (!isCustomRoom && leaderOnlyNoRoomFallback && PhotonRealtimeClient.InMatchmakingRoom)
+                    {
+                        Debug.Log("RoomChangeRequested: ignoring leader-only no-room handoff while already in matchmaking room.");
+                        break;
+                    }
+
+                    // Targeted handoff without explicit room is queue pre-notify.
+                    // Start follow flow only from queue rooms; if already in matchmaking room,
+                    // treat it as stale duplicate and ignore to avoid leave cascades.
+                    if (!isCustomRoom && shouldFollow && hasExpectedUsers && !hasExplicitLeaderRoom)
+                    {
+                        if (isQueueRoom)
+                        {
+                            if (_followLeaderHolder == null)
+                            {
+                                Debug.Log("RoomChangeRequested: targeted queue pre-notify without explicit room name, starting immediate follow flow.");
+                                _followLeaderHolder = StartCoroutine(FollowLeaderToNewRoom(leaderUserId));
+                            }
+                        }
+                        else
+                        {
+                            Debug.Log("RoomChangeRequested: ignored targeted no-room handoff outside queue room (stale duplicate).");
+                        }
+                    }
+                    else if (!isCustomRoom && shouldFollow && (hasExplicitLeaderRoom || leaderMatch))
+                    {
+                        if (alreadyInExplicitLeaderRoom)
+                        {
+                            Debug.Log($"RoomChangeRequested: already in explicit leader room '{leaderRoomName}', ignoring duplicate handoff.");
+                            break;
+                        }
+
+                        // Explicit room handoff has highest priority; replace any stale follow coroutine.
+                        if (hasExplicitLeaderRoom && _followLeaderHolder != null)
+                        {
+                            try { StopCoroutine(_followLeaderHolder); } catch { }
+                            _followLeaderHolder = null;
+                        }
+
+                        if (_followLeaderHolder == null)
+                        {
+                            if (hasExplicitLeaderRoom) _followLeaderHolder = StartCoroutine(FollowLeaderToNewRoom(leaderUserId, leaderRoomName));
+                            else _followLeaderHolder = StartCoroutine(FollowLeaderToNewRoom(leaderUserId));
+                        }
                     }
                     else if (isCustomRoom)
                     {
@@ -5118,43 +6285,14 @@ namespace Altzone.Scripts.Lobby
             }
             catch (Exception ex) { Debug.LogWarning($"OnPlayerEnteredRoom: failed to update FriendLobby premade state: {ex.Message}"); }
 
-            // If this room is a queue room, let master form matches of 4 players
+            // Queue match formation is centralized in QueueTimerCoroutine.
             try
             {
                 if (room != null && room.CustomProperties != null && room.CustomProperties.ContainsKey(PhotonBattleRoom.IsQueueKey) && (bool)room.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey))
                 {
-                    // Only the master client forms matches (can be disabled for testing)
                     if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
                     {
-                        // Count only real players
-                        var realPlayers = room.Players.Values.Where(p => p.UserId != null).ToList();
-                        if (realPlayers.Count >= 4)
-                        {
-                            // Select first 4 players to form a match
-                            var selected = realPlayers.Take(4).Select(p => p.UserId).ToArray();
-                            Debug.Log($"Queue: forming match for users: {string.Join(",", selected)}");
-                            // Create a matchmaking room for these players (master will join it) — do this via coroutine
-                            try
-                            {
-                                int roomGameTypeInt = (room.CustomProperties != null && room.CustomProperties.ContainsKey(PhotonBattleRoom.GameTypeKey)) ? (int)room.CustomProperties[PhotonBattleRoom.GameTypeKey] : (int)GameType.Random2v2;
-                                string clanName = string.Empty;
-                                if (room.CustomProperties != null && room.CustomProperties.ContainsKey(PhotonBattleRoom.ClanNameKey)) clanName = room.CustomProperties[PhotonBattleRoom.ClanNameKey]?.ToString() ?? string.Empty;
-                                int soulhomeRank = -1;
-                                if (room.CustomProperties != null && room.CustomProperties.ContainsKey(PhotonBattleRoom.SoulhomeRank)) soulhomeRank = (int)room.CustomProperties[PhotonBattleRoom.SoulhomeRank];
-                                if (_formingMatchHolder == null)
-                                {
-                                    _formingMatchHolder = StartCoroutine(FormMatchFromQueue(selected, roomGameTypeInt, clanName, soulhomeRank));
-                                }
-                                else
-                                {
-                                    Debug.Log("Queue: already forming a match, skipping duplicate request.");
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Debug.LogWarning($"Queue: failed to enqueue match formation: {ex.Message}");
-                            }
-                        }
+                        StartQueueTimer();
                     }
                 }
             }
@@ -5233,7 +6371,7 @@ namespace Altzone.Scripts.Lobby
             try
             {
                 var room = PhotonRealtimeClient.CurrentRoom;
-                bool wasStarting = IsGameStartTransitionActive();
+                bool wasStarting = !_matchHasStartedInCurrentRoom && IsGameStartTransitionActive();
                 if (wasStarting && PhotonRealtimeClient.InMatchmakingRoom && !PhotonRealtimeClient.LocalPlayer.IsMasterClient)
                 {
                     // Mirror CancelGameStart handling with requeue=true for non-master clients
