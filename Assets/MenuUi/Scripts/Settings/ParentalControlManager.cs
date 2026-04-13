@@ -20,6 +20,8 @@ public class ParentalControlManager : MonoBehaviour
     public GameObject parentalControlPopup;
 
     private string sessionPassword = "";
+    //the password already set in PlayerPrefs
+    public string presetPassword;
     public string setPasswordInput;
     public string setConfirmPasswordInput;
 
@@ -27,6 +29,8 @@ public class ParentalControlManager : MonoBehaviour
     {
 
 
+        GetPassword(); //gets the password that is already set in PlayerPrefs
+        Debug.Log("got the password " + presetPassword);
 
         parentalControlPanel.SetActive(true);
         passwordPanel.SetActive(true);
@@ -73,6 +77,12 @@ public class ParentalControlManager : MonoBehaviour
         }
     }
 
+    public void GetPassword() {
+
+        presetPassword = PlayerPrefs.GetString("password");
+
+
+             }
 
     public void SetPasswordInput()
     {
