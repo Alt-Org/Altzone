@@ -7,6 +7,8 @@ using Debug = Prg.Debug;
 
 namespace MenuUI.Scripts.SoulHome
 {
+
+
     public class FurnitureHandling : MonoBehaviour
     {
         public enum Direction
@@ -81,6 +83,26 @@ namespace MenuUI.Scripts.SoulHome
                 slot.IsReserved = true;
                 AssignedInteractionSlots.Add(slot);
             }
+        }
+
+        public FurnitureSlot GetClosestInteractionSlot(Vector3 npcPosition)
+        {
+            if (AssignedInteractionSlots == null || AssignedInteractionSlots.Count == 0)
+                return null;
+
+            FurnitureSlot closest = null;
+            float minDistance = float.MaxValue;
+
+            foreach (var slot in AssignedInteractionSlots)
+            {
+                float dist = Vector3.Distance(npcPosition, slot.transform.position);
+                if (dist < minDistance)
+                {
+                    minDistance = dist;
+                    closest = slot;
+                }
+            }
+            return closest;
         }
         //------------------------------------------------------------------------------------------------------------------------------------------------
 
