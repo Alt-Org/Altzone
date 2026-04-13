@@ -1,50 +1,49 @@
+using Altzone.Scripts.Model.Poco.Player;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Omistukset : MonoBehaviour
+namespace Altzone.Scripts
 {
-    // TODO:
-    // Create a list of all items
-    // Create a dictionary of items and their ownership status
-    // Load a previous dictionary if it exists
-    // Save the new dictionary
-
-    public List<KauppaItems> allItems;
-    public Dictionary<KauppaItems, bool> omistukset;
-
-    // Get all the items
-    // Load previous dictionary
-    // Add new items
-    private void Start()
+    public class Omistukset
     {
-        
-    }
+        // TODO: PlayerPrefs -> LocalModels.PlayerData
 
-    public void AddItem(KauppaItems item, bool value)
-    {
-        omistukset.Add(item, value)
-    }
+        public List<string> ownedAvatarPiece_Ids;   // I'll focus on this now
+        // public List<string> ownedAnimation_Ids;
 
-    public void SaveItems()
-    {
-        foreach (var KauppaItems in omistukset)
-            SetInt(KauppaItems, omistukset(KauppaItems))
-    }
+        PlayerData _playerData;
 
-    // Save item's ownership status
-    // 0: Doesn't own it
-    // 1: Owns it
-    public void SetInt(string itemName, bool value)
-    {
-        iValue = 0;
-        if (value) iValue = 1; 
-        PlayerPrefs.SetInt(itemName, iValue);
-    }
+        DataStore storefront = Storefront.Get();
 
-    public bool Getint(string itemName)
-    {
-        if (PlayerPrefs.GetInt(itemName) == 1) return true;
-        else return false;
+        private void Start()
+        {            
+            GetItems();
+        }
+
+        public void AddItem(string id)
+        {
+            ownedAvatarPiece_Ids.Add(id);
+            SaveItems();
+        }
+
+        public void RemoveItem(string id)
+        {
+            if (ownedAvatarPiece_Ids.Contains(id)) ownedAvatarPiece_Ids.Remove(id);
+            SaveItems();
+        }
+
+        public void GetItems()
+        {
+            //storefront.GetPlayerData(null, null);   // I don't know
+            ownedAvatarPiece_Ids = _playerData.OwnedAvatarPiece_Ids;
+        }
+
+        public void SaveItems()
+        {
+            //storefront.SavePlayerData(_playerData, null);
+            _playerData.UpdateOwnedAvatarPieceIDs(ownedAvatarPiece_Ids);    // Propably doesn't work like this
+        }     
     }
 }
+

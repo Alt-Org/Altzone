@@ -92,6 +92,8 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public List<CustomCharacter> CustomCharacters { get; private set; }
 
+        public List<string> OwnedAvatarPiece_Ids { get; private set; }
+
         public ReadOnlyCollection<CustomCharacter> CurrentBattleCharacters
         {
             get
@@ -229,6 +231,11 @@ namespace Altzone.Scripts.Model.Poco.Player
 
             if (_characterList.Contains(character) && !SettingsCarrier.Instance.StatDebuggingMode) ServerManager.Instance.StartUpdatingCustomCharacterToServer(character);
             else Storefront.Get().SavePlayerData(this, null);
+        }
+
+        public void UpdateOwnedAvatarPieceIDs(List<string> ids)
+        {
+            OwnedAvatarPiece_Ids = ids;
         }
 
 
