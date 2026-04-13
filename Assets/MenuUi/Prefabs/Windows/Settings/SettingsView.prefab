@@ -6458,7 +6458,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Sulje pop up
+  m_text: Peruuta
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 35c39ce28c397b848b84f7de2f26c5ac, type: 2}
   m_sharedMaterial: {fileID: 2109022488393823743, guid: 35c39ce28c397b848b84f7de2f26c5ac,
@@ -11552,7 +11552,7 @@ GameObject:
   - component: {fileID: 662640630779842767}
   - component: {fileID: 3130067096610554302}
   m_Layer: 5
-  m_Name: PopUpTestButton
+  m_Name: ActivatePopUpButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19600,7 +19600,7 @@ GameObject:
   - component: {fileID: 6329891109923862594}
   - component: {fileID: 8485444924974018270}
   m_Layer: 5
-  m_Name: TestButtonText
+  m_Name: ActivateButtonText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19653,7 +19653,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "T\xE4st\xE4 pop up\n"
+  m_text: "Laita p\xE4\xE4lle\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 35c39ce28c397b848b84f7de2f26c5ac, type: 2}
   m_sharedMaterial: {fileID: 2109022488393823743, guid: 35c39ce28c397b848b84f7de2f26c5ac,
@@ -27390,6 +27390,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 3892752234984768531}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8221815591855244388
 GameObject:
   m_ObjectHideFlags: 0
@@ -30268,7 +30280,7 @@ GameObject:
   - component: {fileID: 7150319001054486218}
   - component: {fileID: 2770730793878890117}
   m_Layer: 5
-  m_Name: ClosePopUpTestButton
+  m_Name: ClosePopUpButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30291,7 +30303,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -144}
+  m_AnchoredPosition: {x: 273, y: -6}
   m_SizeDelta: {x: 240, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2169609886539413896
@@ -30679,6 +30691,7 @@ MonoBehaviour:
   controlToggle: {fileID: 8248150989251993551}
   timeLimitInput: {fileID: 806506189106899026}
   parentalControlPopup: {fileID: 3892752234984768531}
+  presetPassword: 
   setPasswordInput: 
   setConfirmPasswordInput: 
 --- !u!1 &8884749935273971245
@@ -33639,7 +33652,7 @@ PrefabInstance:
     - target: {fileID: 2522924568871388016, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_Value
-      value: 0.37500006
+      value: 0.50000006
       objectReference: {fileID: 0}
     - target: {fileID: 2522924569201874204, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
@@ -33699,7 +33712,7 @@ PrefabInstance:
     - target: {fileID: 2522924569201874207, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 810
+      value: 540
       objectReference: {fileID: 0}
     - target: {fileID: 2522924569201874207, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
