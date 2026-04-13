@@ -45,17 +45,10 @@ In **%Battle** **View Controllers** have **"ViewController"** suffix. [[Naming]]
 | @crefd{Battle.View} | @crefd{Battle.View,Game}       | @cref{Battle.View.Game,BattleGridViewController}                       | @copybrief Battle.View.Game.BattleGridViewController                       |
 |                                                                                                                                                                                                         ||||
 | @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerCharacterViewController}          | @copybrief Battle.View.Player.BattlePlayerCharacterViewController          |
-| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerCharacterClassBaseViewController} | @copybrief Battle.View.Player.BattlePlayerCharacterClassBaseViewController |
-| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerCharacterClassNoneViewController} | @copybrief Battle.View.Player.BattlePlayerCharacterClassNoneViewController |
-| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerCharacterClass400ViewController}  | @copybrief Battle.View.Player.BattlePlayerCharacterClass400ViewController  |
-|                                                                                                                                                                                                         ||||
 | @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerShieldViewController}             | @copybrief Battle.View.Player.BattlePlayerShieldViewController             |
-| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerShieldClassBaseViewController}    | @copybrief Battle.View.Player.BattlePlayerShieldClassBaseViewController    |
-| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerShieldClassNoneViewController}    | @copybrief Battle.View.Player.BattlePlayerShieldClassNoneViewController    |
-| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerShieldClass400ViewController}     | @copybrief Battle.View.Player.BattlePlayerShieldClass400ViewController     |
 |                                                                                                                                                                                                         ||||
 | @crefd{Battle.View} | @crefd{Battle.View,SoulWall}   | @cref{Battle.View.SoulWall,BattleSoulWallViewController}               | @copybrief Battle.View.SoulWall.BattleSoulWallViewController               |
-| @crefd{Battle.View} | @crefd{Battle.View,SoulWall}   | @cref{Battle.View.SoulWall,BattleStoneCharacterViewController}         | @copybrief Battle.View.SoulWall.BattleStoneCharacterViewController          |
+| @crefd{Battle.View} | @crefd{Battle.View,SoulWall}   | @cref{Battle.View.SoulWall,BattleStoneCharacterViewController}         | @copybrief Battle.View.SoulWall.BattleStoneCharacterViewController         |
 |                                                                                                                                                                                                         ||||
 | @crefd{Battle.View} | @crefd{Battle.View,Projectile} | @cref{Battle.View.Projectile,BattleProjectileViewController}           | @copybrief Battle.View.Projectile.BattleProjectileViewController           |
 |                                                                                                                                                                                                         ||||
@@ -66,6 +59,39 @@ In **%Battle** **View Controllers** have **"ViewController"** suffix. [[Naming]]
 |                                                                                                                                                                                                         ||||
 | @crefd{Battle.View} | @crefd{Battle.View,Audio}      | @cref{Battle.View.Audio,BattleAudioViewController}                     | @copybrief Battle.View.Audio.BattleAudioViewController                     |
 
+<br/>
+
+### Player Class Base View Controllers {#page-view-controllers-player-class-base-view-controllers}
+
+Subset of **View Controllers** that are attached to **%Quantum Entities**.  
+This section contains the **Character** and **Shield** **Class Base View Controllers**.  
+All [{Character Class View Controllers}](#page-concepts-player-view-character-class-controller)
+and [{Shield Class View Controllers}](#page-concepts-player-view-shield-class-controller) inherit from these base classes.
+
+|  Namespace                                         || Class                                                                  | Description                                                                |
+| :------------------ | :---------------------------- | :--------------------------------------------------------------------- | :------------------------------------------------------------------------- |
+| @crefd{Battle.View} | @crefd{Battle.View,Player}    | @cref{Battle.View.Player,BattlePlayerCharacterClassBaseViewController} | @copybrief Battle.View.Player.BattlePlayerCharacterClassBaseViewController |
+| @crefd{Battle.View} | @crefd{Battle.View,Player}    | @cref{Battle.View.Player,BattlePlayerShieldClassBaseViewController}    | @copybrief Battle.View.Player.BattlePlayerShieldClassBaseViewController    |
+
+<br/>
+
+### Player Class View Controllers {#page-view-controller-player-class-view-controllers}
+
+Subset of **View Controllers** that are attached to **%Quantum Entities**.  
+This section contains the **Character** and **Shield** **Class View Controllers**.  
+[{Character Class View Controllers}](#page-concepts-player-view-character-class-controller) and [{Shield Class View Controllers}](#page-concepts-player-view-shield-class-controller)
+can be optionally implemented and attached to a **Player Character Viewmodel**.  
+These are supposed to work with the [{PlayerCharacterViewController}](#page-concepts-player-character-view-controller)
+and [{PlayerShieldViewController}](#page-concepts-player-shield-view-controller), meaning certain logic and **%Quantum Events**
+are passed through those **View Controllers**, however some class specific **%Quantum Events** are passed straight from **%Quantum**.
+
+|  Namespace                                          || Class                                                                  | Description                                                                |
+| :------------------ | :----------------------------- | :--------------------------------------------------------------------- | :------------------------------------------------------------------------- |
+| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerCharacterClassNoneViewController} | @copybrief Battle.View.Player.BattlePlayerCharacterClassNoneViewController |
+| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerCharacterClass400ViewController}  | @copybrief Battle.View.Player.BattlePlayerCharacterClass400ViewController  |
+|                                                                                                                                                                                                         ||||
+| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerShieldClassNoneViewController}    | @copybrief Battle.View.Player.BattlePlayerShieldClassNoneViewController    |
+| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerShieldClass400ViewController}     | @copybrief Battle.View.Player.BattlePlayerShieldClass400ViewController     |
 
 <br/>
 

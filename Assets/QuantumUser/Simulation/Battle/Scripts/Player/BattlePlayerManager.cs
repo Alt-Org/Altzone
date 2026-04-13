@@ -558,6 +558,8 @@ namespace Battle.QSimulation.Player
         /// Private helper method for getting the BattlePlayerManagerDataQSingleton from the %Quantum %Frame.
         /// </summary>
         ///
+        /// See [{PlayerManagerData}](#page-concepts-player-simulation-management-playermanagerdata) for more info.
+        ///
         /// <param name="f">Current simulation frame.</param>
         ///
         /// <returns>Pointer to the PlayerManagerData singleton.</returns>

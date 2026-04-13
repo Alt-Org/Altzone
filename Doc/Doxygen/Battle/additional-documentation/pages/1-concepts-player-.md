@@ -416,7 +416,8 @@ Each **Character %Quantum Entity** always has a @cref{Quantum,BattlePlayerCharac
 ### Selected Character {#page-concepts-player-character-entity-selected-character}
 
 The **Selected Character** is the **Character Entity** that is currently [{InPlay}](#page-concepts-entity-management-registered-entities-playstate).  
-The **Selected Character** is tracked using [{Player Character Number}](#page-concepts-player-character-entity-character-number).
+The **Selected Character** is tracked using [{Player Character Number}](#page-concepts-player-character-entity-character-number).  
+This is managed by the [{PlayerManager}](#page-concepts-player-simulation-management-playermanager).
 
 <br/>
 
@@ -426,11 +427,13 @@ Each **Shield %Quantum Entity** is internally assigned a **Shield Number**, each
 
 <br/>
 
-### Shield Attach {#page-concepts-player-character-entity-shield-attach}
+### Attached/Detached Shield {#page-concepts-player-character-entity-shield-attach}
 
 Each **Shield Entity** can be **Attached** or **Detached** from the **Character Entity** they are bound to.  
 When **Attached**, the **Shield Entity** will move with the **Character Entity**.  
-When **Detached**, the **Shield Entity** will move independently from the **Character Entity** it is bound to.
+When **Detached**, the **Shield Entity** will move independently from the **Character Entity** it is bound to.  
+Regardless of if the **Shield Entity** is **Attached** or **Detached**, it is tracked using the [{Shield Number}](#page-concepts-player-character-entity-shield-number).  
+This is managed by the [{ShieldManager}](#page-concepts-player-simulation-management-shieldmanager).
 
 <br/>
 
@@ -606,12 +609,16 @@ See [{Joining and Initializing}](#page-concepts-player-initializing) for more in
 **Characters** can be [{Alive}](#page-concepts-player-character-entity-character-state) or [{Dead}](#page-concepts-player-character-entity-character-state)
 and [{InPlay}](#page-concepts-entity-management-registered-entities-playstate) or [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate).
 
-A **Character** can be **Spawned** using @clink{SpawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayer(Frame, BattlePlayerSlot, int)},
-also setting it as [{InPlay}](#page-concepts-entity-management-registered-entities-playstate).  
+A **Character** can be **Spawned** using @clink{SpawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayer(Frame, BattlePlayerSlot, int)}.
+([{InPlay}](#page-concepts-entity-management-registered-entities-playstate))  
 If a **Character** is [{Dead}](#page-concepts-player-character-entity-character-state), it cannot be **Spawned**.
 
-A **Character** can be **Despawned** using @clink{DespawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.DespawnPlayer(Frame, BattlePlayerSlot, bool)},
-also setting it as [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate).
+A **Character** can be **Despawned** using @clink{DespawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.DespawnPlayer(Frame, BattlePlayerSlot, bool)}.
+([{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate))  
+
+The @clink{SpawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayer(Frame, BattlePlayerSlot, int)}
+and @clink{DespawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.DespawnPlayer(Frame, BattlePlayerSlot, bool)}
+methods also affect the [{Player PlayState}](#page-concepts-player-playstate) of the **Player** the **Character** belongs to.
 
 <br/>
 
@@ -630,7 +637,7 @@ exposing some parts to the **rest of the game**.
 
 The @cref{Quantum, BattlePlayerShieldManagerDataQSingleton} struct is a **%Quantum Singleton Component** defined in and generated from BattlePlayerShieldManagerData.qtn
 containing all our defined data for managing **Shields**.  
-The data contained in this **%Quantum Singleton Component** is used by the [{ShieldManager}](#page-concepts-player-simulation-management-shieldmanager)
+The data contained in this **%Quantum Singleton Component** is used by the [{ShieldManager}](#page-concepts-player-simulation-management-shieldmanager).
 
 <br/>
 

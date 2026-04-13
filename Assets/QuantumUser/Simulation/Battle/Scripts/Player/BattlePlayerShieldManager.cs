@@ -215,7 +215,7 @@ namespace Battle.QSimulation.Player
         /// and updates necessary data. Additionally teleports the shield to the character if needed.
         /// </summary>
         ///
-        /// See [{Shield Attach}](#page-concepts-player-character-entity-shield-attach) for more info.<br/>
+        /// See [{Attached Shield}](#page-concepts-player-character-entity-shield-attach) for more info.<br/>
         /// See [{Player Slots}](#page-concepts-player-slots-teams) for more info.<br/>
         /// See [{Character Number}](#page-concepts-player-character-entity-character-number) for more info.<br/>
         /// See [{Shield Number}](#page-concepts-player-character-entity-shield-number) for more info.
@@ -260,6 +260,7 @@ namespace Battle.QSimulation.Player
         /// and updates necessary data.
         /// </summary>
         ///
+        /// See [{Detached Shield}](#page-concepts-player-character-entity-shield-attach) for more info.<br/>
         /// See [{Player Slots}](#page-concepts-player-slots-teams) for more info.<br/>
         /// See [{Character Number}](#page-concepts-player-character-entity-character-number) for more info.<br/>
         /// See [{Shield Number}](#page-concepts-player-character-entity-shield-number) for more info.
@@ -296,6 +297,7 @@ namespace Battle.QSimulation.Player
         /// and updates necessary data.
         /// </summary>
         ///
+        /// See [{Detached Shield}](#page-concepts-player-character-entity-shield-attach) for more info.<br/>
         /// See [{Player Slots}](#page-concepts-player-slots-teams) for more info.<br/>
         /// See [{Character Number}](#page-concepts-player-character-entity-character-number) for more info.<br/>
         /// See [{Shield Number}](#page-concepts-player-character-entity-shield-number) for more info.
@@ -333,6 +335,8 @@ namespace Battle.QSimulation.Player
         /// @note Low level method! Only meant for use by <see cref="BattlePlayerManager"/>.
         /// </summary>
         ///
+        /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
+        /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.<br/>
         /// See [{Player Slots}](#page-concepts-player-slots-teams) for more info.<br/>
         /// See [{Character Number}](#page-concepts-player-character-entity-character-number) for more info.
         ///
@@ -420,6 +424,8 @@ namespace Battle.QSimulation.Player
         /// Sets the shield entity IDs for specified player's specified character in BattlePlayerShieldManagerDataQSingleton.
         /// </summary>
         ///
+        /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
+        /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.<br/>
         /// See [{Player Slots}](#page-concepts-player-slots-teams) for more info.<br/>
         /// See [{Character Number}](#page-concepts-player-character-entity-character-number) for more info.
         ///

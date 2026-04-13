@@ -52,6 +52,8 @@
 ///   @copybrief Quantum.EventBattleLastRowWallDestroyed
 /// - <b>synced event</b> @ref BattleDiamondLanded { EntityRef ERef }  
 ///   @copybrief Quantum.EventBattleDiamondLanded
+/// - <b>synced event</b> @ref BattleCharacterSelected { BattlePlayerSlot Slot; int CharacterNumber }  
+///   @copybrief Quantum.EventBattleCharacterSelected
 /// - <b>synced event</b> @ref BattleCharacterTakeDamage { EntityRef ERef; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; FP HealthPercentage }  
 ///   @copybrief Quantum.EventBattleCharacterTakeDamage
 /// - <b>synced event</b> @ref BattleShieldTakeDamage { EntityRef ERef; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; FP DefenceValue }  
@@ -63,6 +65,9 @@
 /// - <b>synced event</b> @ref BattleStoneCharacterPlayHitAnimation { BattleTeamNumber Team; BattleEmotionState Emotion }  
 ///   @copybrief Quantum.EventBattleStoneCharacterPlayHitAnimation
 ///
+/// ### Debug events
+/// - <b>synced event</b> @ref BattleDebugOnScreenMessage { QString<512> Message }  
+///   @copybrief Quantum.EventBattleDebugOnScreenMessage
 /// ---
 ///
 /// <br/>
@@ -269,6 +274,15 @@
 ///
 /// ---
 ///
+/// @anchor BattleCharacterSelected
+/// ### BattleCharacterSelected
+/// @copybrief Quantum.BattleCharacterSelected
+///
+/// Generated Class @cref{Quantum,EventBattleCharacterSelected}  
+/// Generated Method @Cref{Quantum,Frame.FrameEvents.BattleCharacterSelected}
+///
+/// ---
+///
 /// @anchor BattleCharacterTakeDamage
 /// ### BattleCharacterTakeDamage
 /// @copybrief Quantum.EventBattleCharacterTakeDamage
@@ -311,6 +325,20 @@
 ///
 /// Generated Class @cref{Quantum,EventBattleStoneCharacterPlayHitAnimation }  
 /// Generated Method @cref{Quantum,Frame.FrameEvents.BattleStoneCharacterPlayHitAnimation}
+///
+/// ---
+/// ---
+///
+/// ### Debug events
+///
+/// ---
+///
+/// @anchor BattleDebugOnScreenMessage
+/// ### BattleDebugOnScreenMessage
+/// @copybrief Quantum.EventBattleDebugOnScreenMessage
+///
+/// Generated class @cref{Quantum, EventBattleDebugOnScreenMessage}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleDebugOnScreenMessage}
 ///
 /// ---
 
@@ -457,6 +485,14 @@
 /// Sets the alpha of the diamond sprite to 1.  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
+/// @class Quantum::EventBattleCharacterSelected
+/// <summary>
+/// Synced event. Used when a player character is spawned or despawned.
+/// </summary>
+///
+/// Updates character UI elements.  
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
 /// @class Quantum::EventBattleCharacterTakeDamage
 /// <summary>
 /// Synced event. Used when a character takes damage.
@@ -492,6 +528,13 @@
 /// @class Quantum::EventBattleStoneCharacterPlayHitAnimation
 /// <summary>
 /// Synced event. Used to play StoneCharacter animations.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattleDebugOnScreenMessage
+/// <summary>
+/// Synced event. Used to display debug messages on screen.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleEvents.qtn}
