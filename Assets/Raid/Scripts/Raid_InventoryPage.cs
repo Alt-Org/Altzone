@@ -7,6 +7,7 @@ using Random = UnityEngine.Random;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
 using UnityEngine.UI;
+using System.Linq;
 //using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
 
 public class Raid_InventoryPage : MonoBehaviour
@@ -132,7 +133,7 @@ public class Raid_InventoryPage : MonoBehaviour
         if (firstItem)
         {
             raid_Timer.StartTimer();
-            firstItem = false;
+            firstItem = false;  
         }
         if (index == -1)
         {
@@ -169,6 +170,11 @@ public class Raid_InventoryPage : MonoBehaviour
         }
     }
 
+    public List<GameFurniture> WeightQuery(float LowestWeight, float HighestWeight)
+    {
+        return ListOfFurniture.Where(f => f.Weight >= LowestWeight && f.Weight <= HighestWeight).ToList();
+    } 
+
     public void SetInventorySlotData(int InventorySize)
     {
         // InventorySize = raid_InventoryHandler.InventorySize;
@@ -176,9 +182,39 @@ public class Raid_InventoryPage : MonoBehaviour
         for (int i = 0; i < InventorySize; i++)
         {
             // int RandomFurniture = Random.Range(0, 12);
-            int RandomFurniture = Random.Range(0,ListOfFurniture.Count);
+            int RandomFurniture = 0;
             //_photonView.RPC(nameof(SetInventorySlotDataRPC), RpcTarget.All, i, RandomFurniture);
-            SetInventorySlotDataRPC(i,RandomFurniture);
+            List<GameFurniture> SmallItemList = WeightQuery(0f,50f);
+            List<GameFurniture> MediumItemList = WeightQuery(50f,80f);
+            List<GameFurniture> LargeItemList = WeightQuery(80.1f,999f); 
+            // Ainuttakaan yli 80 painavaa huonekkalua ei ole niin en oikeen tiedä mitä largella sitten ajetaan takaa
+
+            if (LargeItemList.Count == 0)
+            {
+                Debug.Log("HUOM LargeItemList on tyhjä!"); 
+            } if (MediumItemList.Count == 0)
+            {
+                Debug.Log("HUOM MediumItemList on tyhjä!");
+            }if (SmallItemList.Count == 0)
+            {
+                Debug.Log("HUOM SmallItemList on tyhjä!");
+            }
+
+            if (raid_InventoryHandler.LargeItemMaxAmount != 0 && LargeItemList.Count != 0)
+            {
+                RandomFurniture = Random.Range(0,LargeItemList.Count);
+                SetInventorySlotDataRPC(LargeItemList,i,RandomFurniture);
+                raid_InventoryHandler.LargeItemMaxAmount--;
+            } else if (raid_InventoryHandler.MediumItemMaxAmount != 0 && MediumItemList.Count != 0)
+            {
+                RandomFurniture = Random.Range(0,MediumItemList.Count);
+                SetInventorySlotDataRPC(MediumItemList,i,RandomFurniture);
+                raid_InventoryHandler.MediumItemMaxAmount--;
+            } else
+            {
+                RandomFurniture = Random.Range(0,SmallItemList.Count);
+                SetInventorySlotDataRPC(SmallItemList,i,RandomFurniture);
+            }
         }
 
     }
@@ -216,12 +252,11 @@ public class Raid_InventoryPage : MonoBehaviour
             ListOfUIItems[index + 4].GetComponent<Raid_InventoryItem>().SetLocked();
     }
     /*[PunRPC]*/
-    public void SetInventorySlotDataRPC(int Index, int RandomFurniture)
+    public void SetInventorySlotDataRPC(List<GameFurniture> furnitureSet,int Index, int RandomFurniture)
     {
-        GameFurniture furniture = ListOfFurniture[RandomFurniture];
+        GameFurniture furniture = furnitureSet[RandomFurniture];
         ListOfUIItems[Index].ItemWeight = (float)furniture.Weight;
-        
-        ListOfUIItems[Index].SetData( ListOfFurniture[RandomFurniture].FurnitureInfo.Image ,ListOfUIItems[Index].ItemWeight);
+        ListOfUIItems[Index].SetData(furnitureSet[RandomFurniture].FurnitureInfo.Image ,ListOfUIItems[Index].ItemWeight);
         return;
 
         // switch (RandomFurniture)
