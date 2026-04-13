@@ -25,6 +25,7 @@ namespace MenuUi.Scripts.Window
         [SerializeField] private string _defaultAcceptText = "Liity";
 
         private const string InvitePopupResourcePath = "InviteDecisionPanel";
+        private const int RuntimeFallbackSortingOrder = 5000;
 
         private static InviteDecisionPopupHandler _instance;
         private static bool _isInstantiating;
@@ -52,9 +53,11 @@ namespace MenuUi.Scripts.Window
             }
 
             InviteDecisionPopupHandler existingInstance = Resources.FindObjectsOfTypeAll<InviteDecisionPopupHandler>()
-                .FirstOrDefault(handler => handler != null
+                .Where(handler => handler != null
                     && handler.gameObject != null
-                    && handler.gameObject.scene.IsValid());
+                    && handler.gameObject.scene.IsValid())
+                .OrderByDescending(handler => handler.gameObject.activeInHierarchy)
+                .FirstOrDefault();
             if (existingInstance != null)
             {
                 _instance = existingInstance;
@@ -77,14 +80,20 @@ namespace MenuUi.Scripts.Window
                 }
 
                 Transform parent = ResolvePreferredParent();
-                GameObject popupInstance = parent != null
+                bool useResolvedParent = IsUsableParent(parent);
+                GameObject popupInstance = useResolvedParent
                     ? Instantiate(prefab, parent, false)
                     : Instantiate(prefab);
 
                 popupInstance.name = "InviteDecisionPanel";
-                if (parent == null)
+                if (!useResolvedParent)
                 {
+                    EnsureStandaloneCanvas(popupInstance);
                     DontDestroyOnLoad(popupInstance);
+                }
+                else
+                {
+                    popupInstance.transform.SetAsLastSibling();
                 }
 
                 InviteDecisionPopupHandler handler = popupInstance.GetComponent<InviteDecisionPopupHandler>();
@@ -106,26 +115,94 @@ namespace MenuUi.Scripts.Window
 
         private static Transform ResolvePreferredParent()
         {
-            GameObject overlayPanel = GameObject.FindWithTag("OverlayPanel");
-            if (overlayPanel != null)
+            GameObject directUiOverlayPanel = GameObject.Find("UIOverlayPanel");
+            if (directUiOverlayPanel != null
+                && directUiOverlayPanel.scene.IsValid()
+                && directUiOverlayPanel.activeInHierarchy)
             {
+                return directUiOverlayPanel.transform;
+            }
+
+            GameObject overlayPanel = GameObject.FindWithTag("OverlayPanel");
+            if (overlayPanel != null && overlayPanel.scene.IsValid() && overlayPanel.activeInHierarchy)
+            {
+                Transform overlayContent = overlayPanel.transform.Find("UIOverlayPanel");
+                if (overlayContent != null
+                    && overlayContent.gameObject.scene.IsValid()
+                    && overlayContent.gameObject.activeInHierarchy)
+                {
+                    return overlayContent;
+                }
+
                 return overlayPanel.transform;
             }
 
             OverlayPanelCheck overlayPanelCheck = Resources.FindObjectsOfTypeAll<OverlayPanelCheck>()
-                .FirstOrDefault(check => check != null && check.gameObject != null);
+                .FirstOrDefault(check => check != null
+                    && check.gameObject != null
+                    && check.gameObject.scene.IsValid()
+                    && check.gameObject.activeInHierarchy);
             if (overlayPanelCheck != null)
             {
+                Transform overlayContent = overlayPanelCheck.transform.Find("UIOverlayPanel");
+                if (overlayContent != null
+                    && overlayContent.gameObject.scene.IsValid()
+                    && overlayContent.gameObject.activeInHierarchy)
+                {
+                    return overlayContent;
+                }
+
                 return overlayPanelCheck.transform;
             }
 
-            if (InLobbyController.PopupContentsInstance != null)
+            if (InLobbyController.PopupContentsInstance != null
+                && InLobbyController.PopupContentsInstance.scene.IsValid()
+                && InLobbyController.PopupContentsInstance.activeInHierarchy)
             {
                 return InLobbyController.PopupContentsInstance.transform;
             }
 
-            Canvas fallbackCanvas = FindObjectOfType<Canvas>();
+            Canvas fallbackCanvas = Resources.FindObjectsOfTypeAll<Canvas>()
+                .Where(canvas => canvas != null
+                    && canvas.gameObject != null
+                    && canvas.gameObject.scene.IsValid()
+                    && canvas.gameObject.activeInHierarchy)
+                .OrderByDescending(canvas => canvas.sortingOrder)
+                .FirstOrDefault();
             return fallbackCanvas != null ? fallbackCanvas.transform : null;
+        }
+
+        private static bool IsUsableParent(Transform parent)
+        {
+            return parent != null
+                && parent.gameObject != null
+                && parent.gameObject.scene.IsValid()
+                && parent.gameObject.activeInHierarchy;
+        }
+
+        private static void EnsureStandaloneCanvas(GameObject popupRoot)
+        {
+            if (popupRoot == null) return;
+
+            Canvas canvas = popupRoot.GetComponent<Canvas>();
+            if (canvas == null)
+            {
+                canvas = popupRoot.AddComponent<Canvas>();
+            }
+
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.overrideSorting = true;
+            canvas.sortingOrder = RuntimeFallbackSortingOrder;
+
+            if (popupRoot.GetComponent<GraphicRaycaster>() == null)
+            {
+                popupRoot.AddComponent<GraphicRaycaster>();
+            }
+
+            if (popupRoot.GetComponent<CanvasScaler>() == null)
+            {
+                popupRoot.AddComponent<CanvasScaler>();
+            }
         }
 
         private void Awake()
@@ -185,6 +262,7 @@ namespace MenuUi.Scripts.Window
 
         private void OpenPopup(string message, string acceptText, string declineText, Action<bool> responseCallback)
         {
+            EnsureHostIsVisible();
             CacheTextReferences();
 
             if (_messageText != null)
@@ -204,7 +282,50 @@ namespace MenuUi.Scripts.Window
 
             _decisionResponse = responseCallback;
             _waitingResponse = true;
-            GetPopupTarget().SetActive(true);
+            GameObject popupTarget = GetPopupTarget();
+            popupTarget.SetActive(true);
+
+            Transform targetTransform = popupTarget.transform;
+            targetTransform.SetAsLastSibling();
+
+            Canvas rootCanvas = targetTransform.root != null ? targetTransform.root.GetComponent<Canvas>() : null;
+            if (rootCanvas != null && rootCanvas.overrideSorting)
+            {
+                rootCanvas.sortingOrder = Mathf.Max(rootCanvas.sortingOrder, RuntimeFallbackSortingOrder);
+            }
+        }
+
+        private void EnsureHostIsVisible()
+        {
+            if (!gameObject.activeSelf)
+            {
+                gameObject.SetActive(true);
+            }
+
+            if (gameObject.activeInHierarchy)
+            {
+                return;
+            }
+
+            Transform preferredParent = ResolvePreferredParent();
+            if (IsUsableParent(preferredParent))
+            {
+                transform.SetParent(preferredParent, false);
+                transform.SetAsLastSibling();
+                if (!gameObject.activeSelf)
+                {
+                    gameObject.SetActive(true);
+                }
+                return;
+            }
+
+            transform.SetParent(null, false);
+            EnsureStandaloneCanvas(gameObject);
+            DontDestroyOnLoad(gameObject);
+            if (!gameObject.activeSelf)
+            {
+                gameObject.SetActive(true);
+            }
         }
 
         private void OnAccept()
