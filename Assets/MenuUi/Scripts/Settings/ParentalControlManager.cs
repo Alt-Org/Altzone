@@ -84,6 +84,19 @@ public class ParentalControlManager : MonoBehaviour
 
              }
 
+    public void LogIn() {
+
+        if (passwordInput.text == presetPassword)
+        {
+            Debug.Log("correct password, login allowed");
+            //messageText.text = "Access granted!";
+            Invoke("ShowSettings", 0.5f);
+            
+
+        }
+
+    }
+
     public void SetPasswordInput()
     {
         
