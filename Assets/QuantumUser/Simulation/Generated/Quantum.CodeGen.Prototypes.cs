@@ -218,6 +218,7 @@ namespace Quantum.Prototypes {
   public unsafe partial class BattlePlayerClassDesensitizerProjectileQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerClassDesensitizerProjectileQComponent> {
     [HideInInspector()]
     public FPVector2 Direction;
+    [HideInInspector()]
     public FP Speed;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerClassDesensitizerProjectileQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {

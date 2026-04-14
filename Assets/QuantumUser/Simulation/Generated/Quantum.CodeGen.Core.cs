@@ -1366,6 +1366,7 @@ namespace Quantum {
     [HideInInspector()]
     public FPVector2 Direction;
     [FieldOffset(0)]
+    [HideInInspector()]
     public FP Speed;
     public override Int32 GetHashCode() {
       unchecked { 

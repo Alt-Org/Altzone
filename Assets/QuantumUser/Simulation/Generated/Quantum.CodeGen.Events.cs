@@ -86,8 +86,8 @@ namespace Quantum {
           case EventBattleGiveUpStateChange.ID: result = typeof(EventBattleGiveUpStateChange); return;
           case EventBattleStoneCharacterPlayHitAnimation.ID: result = typeof(EventBattleStoneCharacterPlayHitAnimation); return;
           case EventBattleSpecialJoystickVisibilityChange.ID: result = typeof(EventBattleSpecialJoystickVisibilityChange); return;
-          case EventBattleDebugOnScreenMessage.ID: result = typeof(EventBattleDebugOnScreenMessage); return;
           case EventBattlePlayerClassDesensitizerAimIndicatorUpdate.ID: result = typeof(EventBattlePlayerClassDesensitizerAimIndicatorUpdate); return;
+          case EventBattleDebugOnScreenMessage.ID: result = typeof(EventBattleDebugOnScreenMessage); return;
           default: break;
         }
       }
@@ -280,20 +280,20 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
+      public EventBattlePlayerClassDesensitizerAimIndicatorUpdate BattlePlayerClassDesensitizerAimIndicatorUpdate(EntityRef ERef, QBoolean Show, BattlePlayerSlot Slot, FPVector2 Direction) {
+        if (_f.IsPredicted) return null;
+        var ev = _f.Context.AcquireEvent<EventBattlePlayerClassDesensitizerAimIndicatorUpdate>(EventBattlePlayerClassDesensitizerAimIndicatorUpdate.ID);
+        ev.ERef = ERef;
+        ev.Show = Show;
+        ev.Slot = Slot;
+        ev.Direction = Direction;
+        _f.AddEvent(ev);
+        return ev;
+      }
       public EventBattleDebugOnScreenMessage BattleDebugOnScreenMessage(QString512 Message) {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventBattleDebugOnScreenMessage>(EventBattleDebugOnScreenMessage.ID);
         ev.Message = Message;
-        _f.AddEvent(ev);
-        return ev;
-      }
-      public EventBattlePlayerClassDesensitizerAimIndicatorUpdate BattlePlayerClassDesensitizerAimIndicatorUpdate(EntityRef ERef, BattlePlayerSlot Slot, QBoolean Show, FPVector2 Direction) {
-        if (_f.IsPredicted) return null;
-        var ev = _f.Context.AcquireEvent<EventBattlePlayerClassDesensitizerAimIndicatorUpdate>(EventBattlePlayerClassDesensitizerAimIndicatorUpdate.ID);
-        ev.ERef = ERef;
-        ev.Slot = Slot;
-        ev.Show = Show;
-        ev.Direction = Direction;
         _f.AddEvent(ev);
         return ev;
       }
@@ -943,13 +943,16 @@ namespace Quantum {
       }
     }
   }
-  public unsafe partial class EventBattleDebugOnScreenMessage : EventBase {
+  public unsafe partial class EventBattlePlayerClassDesensitizerAimIndicatorUpdate : EventBase {
     public new const Int32 ID = 25;
-    public QString512 Message;
-    protected EventBattleDebugOnScreenMessage(Int32 id, EventFlags flags) : 
+    public EntityRef ERef;
+    public QBoolean Show;
+    public BattlePlayerSlot Slot;
+    public FPVector2 Direction;
+    protected EventBattlePlayerClassDesensitizerAimIndicatorUpdate(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventBattleDebugOnScreenMessage() : 
+    public EventBattlePlayerClassDesensitizerAimIndicatorUpdate() : 
         base(25, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {
@@ -963,21 +966,21 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 157;
-        hash = hash * 31 + Message.GetHashCode();
+        hash = hash * 31 + ERef.GetHashCode();
+        hash = hash * 31 + Show.GetHashCode();
+        hash = hash * 31 + Slot.GetHashCode();
+        hash = hash * 31 + Direction.GetHashCode();
         return hash;
       }
     }
   }
-  public unsafe partial class EventBattlePlayerClassDesensitizerAimIndicatorUpdate : EventBase {
+  public unsafe partial class EventBattleDebugOnScreenMessage : EventBase {
     public new const Int32 ID = 26;
-    public EntityRef ERef;
-    public BattlePlayerSlot Slot;
-    public QBoolean Show;
-    public FPVector2 Direction;
-    protected EventBattlePlayerClassDesensitizerAimIndicatorUpdate(Int32 id, EventFlags flags) : 
+    public QString512 Message;
+    protected EventBattleDebugOnScreenMessage(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventBattlePlayerClassDesensitizerAimIndicatorUpdate() : 
+    public EventBattleDebugOnScreenMessage() : 
         base(26, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {
@@ -991,10 +994,7 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 163;
-        hash = hash * 31 + ERef.GetHashCode();
-        hash = hash * 31 + Slot.GetHashCode();
-        hash = hash * 31 + Show.GetHashCode();
-        hash = hash * 31 + Direction.GetHashCode();
+        hash = hash * 31 + Message.GetHashCode();
         return hash;
       }
     }
