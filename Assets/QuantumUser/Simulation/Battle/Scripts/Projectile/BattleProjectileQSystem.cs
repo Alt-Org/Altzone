@@ -232,12 +232,40 @@ namespace Battle.QSimulation.Projectile
             if (!projectile->IsHeld)
             {
                 // move the projectile
-                transform->Position += projectile->Direction * (projectile->Speed * f.DeltaTime);
-                f.Unsafe.GetPointer<Transform2D>(projectile->TriggerEntityRef)->Position = transform->Position;
+                Transform2D* triggerTransform = f.Unsafe.GetPointer<Transform2D>(projectile->TriggerEntityRef);
+                FPVector2 newPosition = transform->Position + projectile->Direction * (projectile->Speed * f.DeltaTime);
+                MoveProjectile(transform, triggerTransform, newPosition);
             }
 
             // reset CollisionFlags for next frame
             projectile->CollisionFlags[(f.Number + 1) % 2 ] = 0;
+        }
+
+        /// <summary>
+        /// Moves the projectile's and it's trigger's transform to a new position.
+        /// </summary>
+        ///
+        /// <param name="projectileTransform">Pointer to the projectile's Transform2D component.</param>
+        /// <param name="triggerTransform">Pointer to the projectile's trigger's Transform2D component.</param>
+        /// <param name="position">The new position the projectile and it's transform is moved to.</param>
+        public static void MoveProjectile(Transform2D* projectileTransform, Transform2D* triggerTransform, FPVector2 position)
+        {
+            projectileTransform->Position = position;
+            triggerTransform->Position = position;
+        }
+
+        /// <summary>
+        /// Teleports the projectile's and it's trigger's transform to a new position
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectileTransform">Pointer to the projectile's Transform2D component.</param>
+        /// <param name="triggerTransform">Pointer to the projectile's trigger's Transform2D component.</param>
+        /// <param name="position">The new position the projectile and it's transform is teleported to.</param>
+        public static void TeleportProjectile(Frame f, Transform2D* projectileTransform, Transform2D* triggerTransform, FPVector2 position)
+        {
+            projectileTransform->Teleport(f, position);
+            triggerTransform->Teleport(f, position);
         }
 
         /// <summary>
@@ -350,23 +378,23 @@ namespace Battle.QSimulation.Projectile
         /// <param name="winningTeam">The BattleTeamNumber of the team that won.</param>
         public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam)
         {
-            EntityRef projectileEntity = GetProjectileEntity(f);
+            EntityRef projectileEntityRef = GetProjectileEntity(f);
 
-            BattleProjectileQComponent* projectile          = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntity);
-            Transform2D*                projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
+            BattleProjectileQComponent* projectile                 = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
+            Transform2D*                projectileTransform        = f.Unsafe.GetPointer<Transform2D>(projectileEntityRef);
+            Transform2D*                projectileTriggerTransform = f.Unsafe.GetPointer<Transform2D>(projectile->TriggerEntityRef);
 
             SetHeld(f, projectile, true);
 
-            // move the projectile out of bounds after a goal is scored
-            switch (winningTeam)
+            FPVector2 newPosition = winningTeam switch
             {
-                case BattleTeamNumber.TeamAlpha:
-                    projectileTransform->Position = new FPVector2(0, 25);
-                    break;
-                case BattleTeamNumber.TeamBeta:
-                    projectileTransform->Position = new FPVector2(0, -25);
-                    break;
-            }
+                BattleTeamNumber.TeamAlpha => new FPVector2(0, 25),
+                BattleTeamNumber.TeamBeta  => new FPVector2(0, -25),
+
+                _ => FPVector2.Zero,
+            };
+
+            MoveProjectile(projectileTransform, projectileTriggerTransform, newPosition);
         }
 
         #endregion Public - Gameflow Methods

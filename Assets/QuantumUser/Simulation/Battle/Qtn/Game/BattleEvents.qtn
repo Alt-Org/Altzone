@@ -140,6 +140,12 @@ synced event BattleStoneCharacterPlayHitAnimation
     BattleEmotionState Emotion;
 }
 
+synced event BattleSpecialJoystickVisibilityChange
+{
+    BattlePlayerSlot Slot;
+    bool Show;
+}
+
 //} Gameplay events
 
 //{ Debug events

@@ -90,6 +90,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Handle for the player.</param>
         /// <param name="playerData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference for the player.</param>
+        /// <param name="specialInput">Pointer to special input (unused)</param>
         public override unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity, BattleSpecialInput* specialInput)
         {
             BattlePlayerClassProjectorDataQComponent* data = GetClassData(f, playerEntity);
@@ -108,10 +109,11 @@ namespace Battle.QSimulation.Player
 
             if (teammateHandle.PlayState.IsInPlay())
             {
+                BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(data->HeldProjectileEntity);
+                Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(data->HeldProjectileEntity);
+                Transform2D* transformProjectileTrigger = f.Unsafe.GetPointer<Transform2D>(projectile->TriggerEntityRef);
                 Transform2D* transformPlayer = f.Unsafe.GetPointer<Transform2D>(playerEntity);
                 Transform2D* transformTeammate = f.Unsafe.GetPointer<Transform2D>(teammateEntity);
-                Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(data->HeldProjectileEntity);
-                BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(data->HeldProjectileEntity);
 
                 FPVector2 targetPosition = transformTeammate->Position;
                 targetPosition.Y += (playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? FP._4 : -FP._4) * BattleGridManager.GridScaleFactor;
@@ -124,7 +126,7 @@ namespace Battle.QSimulation.Player
 
                 FPVector2 newDirection = FPVector2.Rotate(FPVector2.Up, newAngle);
 
-                transformProjectile->Position = transformPlayer->Position + newDirection * data->HeldProjectileDistance;
+                BattleProjectileQSystem.MoveProjectile(transformProjectile, transformProjectileTrigger, transformPlayer->Position + newDirection * data->HeldProjectileDistance);
 
                 if (newAngle == angleTeammate)
                 {

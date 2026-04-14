@@ -102,13 +102,13 @@ namespace Battle.QSimulation.Projectile
         {
             // create a new entity based on the provided prototype.
             EntityRef projectileEntityRef = f.Create(childPrototype);
-            
+
             // get a pointer to the Transform2D component of the created projectile entity.
             BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
             Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntityRef);
             PhysicsCollider2D* projectileCollider = f.Unsafe.GetPointer<PhysicsCollider2D>(projectileEntityRef);
 
-            PhysicsCollider2D projectileTriggerCollider = PhysicsCollider2D.Create(f, 
+            PhysicsCollider2D projectileTriggerCollider = PhysicsCollider2D.Create(f,
                 shape:     Shape2D.CreateCircle(projectileCollider->Shape.Circle.Radius),
                 isTrigger: true
             );
@@ -123,6 +123,7 @@ namespace Battle.QSimulation.Projectile
             f.Add<Transform2D>(projectileTriggerEntityRef);
             f.Add(projectileTriggerEntityRef, projectileTriggerCollider);
             f.Add(projectileTriggerEntityRef, projectileCollisionTrigger);
+            f.Add(projectileTriggerEntityRef, projectileTrigger);
 
             projectile->TriggerEntityRef = projectileTriggerEntityRef;
 

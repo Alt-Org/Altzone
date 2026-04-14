@@ -2643,8 +2643,6 @@ MonoBehaviour:
     - Id: 101
       Class: 100
       Stats:
-        Hp:
-          RawValue: 19660800
         Speed:
           RawValue: 1310720
         CharacterSize:
@@ -2656,8 +2654,6 @@ MonoBehaviour:
     - Id: 0
       Class: 0
       Stats:
-        Hp:
-          RawValue: 19660800
         Speed:
           RawValue: 1310720
         CharacterSize:
@@ -2669,8 +2665,6 @@ MonoBehaviour:
     - Id: 0
       Class: 0
       Stats:
-        Hp:
-          RawValue: 19660800
         Speed:
           RawValue: 1310720
         CharacterSize:
@@ -2806,7 +2800,7 @@ PrefabInstance:
     - target: {fileID: 1616917245377245213, guid: 591cfa412db14444a95de31d9e80b8dd,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5309515179472595726, guid: 591cfa412db14444a95de31d9e80b8dd,
         type: 3}
@@ -4279,6 +4273,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 372506453}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2022643847 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6308469223875416975, guid: 591cfa412db14444a95de31d9e80b8dd,
+    type: 3}
+  m_PrefabInstance: {fileID: 372506453}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2022643843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e16f983dca8ddf346ab612d4b1bce417, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2118663603
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4307,6 +4313,11 @@ PrefabInstance:
       propertyPath: _specialJoystickComponent
       value: 
       objectReference: {fileID: 2022643844}
+    - target: {fileID: 1982871711592827336, guid: 97e8f0ca20408d042a38f07b90b44946,
+        type: 3}
+      propertyPath: _specialJoystickMovableElement
+      value: 
+      objectReference: {fileID: 2022643847}
     - target: {fileID: 2295848905349943916, guid: 97e8f0ca20408d042a38f07b90b44946,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -4435,7 +4446,7 @@ PrefabInstance:
     - target: {fileID: 5612438051806621703, guid: 97e8f0ca20408d042a38f07b90b44946,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -12.500183
+      value: -12.500244
       objectReference: {fileID: 0}
     - target: {fileID: 5733162098178526203, guid: 97e8f0ca20408d042a38f07b90b44946,
         type: 3}

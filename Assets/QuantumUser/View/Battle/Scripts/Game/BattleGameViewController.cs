@@ -36,7 +36,6 @@ using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
 using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 using PlayerType = Battle.View.UI.BattleUiPlayerInfoHandler.PlayerType;
-using UnityEditorInternal;
 
 namespace Battle.View.Game
 {
@@ -274,6 +273,7 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
             QuantumEvent.Subscribe<EventBattleGiveUpStateChange>(this, QEventOnGiveUpStateChange);
             QuantumEvent.Subscribe<EventBattleStoneCharacterPlayHitAnimation>(this, QEventOnStoneCharacterPlayHitAnimation);
+            QuantumEvent.Subscribe<EventBattleSpecialJoystickVisibilityChange>(this, QEventOnBattleSpecialJoystickVisibilityChange);
 
             // Subscribing to Debug events
             QuantumEvent.Subscribe<EventBattleDebugOnScreenMessage>(this, QEventDebugOnScreenMessage);
@@ -681,6 +681,19 @@ namespace Battle.View.Game
             _stoneCharacterViewController.PlayHitAnimation(e.Team, e.Emotion);
         }
 
+        /// <summary>
+        /// Private handler method for EventBattleSpecialJoystickVisibilityChange QuantumEvent.<br/>
+        /// Handles calling <see cref="Battle.View.UI.BattleUiJoystickHandler.SetShow">SetShow</see>
+        /// in <see cref="BattleGameViewController._uiController">_uiController's</see>
+        /// <see cref="Battle.View.UI.BattleUiController.JoystickHandler">JoystickHandler</see>
+        /// </summary>
+        ///
+        /// <param name="e">The event data.</param>
+        private void QEventOnBattleSpecialJoystickVisibilityChange(EventBattleSpecialJoystickVisibilityChange e)
+        {
+            if (e.Slot != LocalPlayerSlot) return;
+            _uiController.JoystickHandler.SetShow(e.Show, BattleUiElementType.SpecialJoystick);
+        }
 
         /// <summary>
         /// Private handler method for EventBattleDebugOnScreenMessage QuantumEvent.<br/>

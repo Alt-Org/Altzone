@@ -196,9 +196,10 @@ namespace Quantum.Prototypes {
   public unsafe partial class BattlePlayerClassDesensitizerDataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerClassDesensitizerDataQComponent> {
     [HideInInspector()]
     public FPVector2 JoystickValuePrevious;
+    [HideInInspector()]
     public QBoolean JoystickDownPrevious;
+    [HideInInspector()]
     public Quantum.Prototypes.FrameTimerPrototype JoystickTimer;
-    public AssetRef<EntityPrototype> ProjectileEntityPrototype;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerClassDesensitizerDataQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerClassDesensitizerDataQComponent component = default;
@@ -209,7 +210,6 @@ namespace Quantum.Prototypes {
         result.JoystickValuePrevious = this.JoystickValuePrevious;
         result.JoystickDownPrevious = this.JoystickDownPrevious;
         this.JoystickTimer.Materialize(frame, ref result.JoystickTimer, in context);
-        result.ProjectileEntityPrototype = this.ProjectileEntityPrototype;
         MaterializeUser(frame, ref result, in context);
     }
   }

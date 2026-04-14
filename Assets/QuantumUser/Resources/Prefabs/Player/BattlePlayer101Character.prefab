@@ -283,7 +283,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5521468026819928245, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2324205015363774772}
+      addedObject: {fileID: 6377948192189442149}
     - targetCorrespondingSourceObject: {fileID: 4860246983343933190, guid: 3dabbd57053cc831eb011c465c487e14,
         type: 3}
       insertIndex: -1
@@ -295,7 +295,7 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 5440422723013778891}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2324205015363774772
+--- !u!114 &6377948192189442149
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -304,18 +304,33 @@ MonoBehaviour:
   m_GameObject: {fileID: 513536040082111870}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de188855993ac144d98a89ed5014c459, type: 3}
+  m_Script: {fileID: 11500000, guid: c1645265916948241a27182aaf933121, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    PreviousDirection:
+    JoystickValuePrevious:
       X:
         RawValue: 0
       Y:
         RawValue: 0
+    JoystickDownPrevious:
+      Value: 0
+    JoystickTimer:
+      Mode: 0
+      Frames: 0
+      Seconds:
+        RawValue: 0
     ProjectileEntityPrototype:
       Id:
         Value: 1387710306654430788
+    Speed:
+      RawValue: 6554
+    JoystickTapDurationMax:
+      RawValue: 32768
+    joystickFlickDistanceMax:
+      RawValue: 32768
+    spawnDistance:
+      RawValue: 32768
 --- !u!1 &644950728197151437 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4860246983343933190, guid: 3dabbd57053cc831eb011c465c487e14,

@@ -1,53 +1,99 @@
-// Unity usings
-using UnityEngine;
+/// @file BattlePlayerClassDesensitizer.cs
+/// <summary>
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassDesensitizer} class which handles player character class logic for the 100/Desensitizer class.
+/// </summary>
 
 // Quantum usings
 using Quantum;
 using Photon.Deterministic;
-using System.Threading;
+
+// Battle QSimulation usings
+using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player
 {
+    /// <summary>
+    /// %Player character class logic for the 100/Desensitizer class.
+    /// </summary>
+    ///
+    /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.}<br/>
+    /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
+    /// @bigtext{concept sivu tähän}
     public class BattlePlayerClassDesensitizer : BattlePlayerClassBase<BattlePlayerClassDesensitizerDataQComponent>
     {
+        /// <summary>
+        /// Gets the character class associated with this Class.<br/>
+        /// Always returns <see cref="Quantum.BattlePlayerCharacterClass.Desensitizer">BattlePlayerCharacterClass.Desensitizer</see>.
+        /// </summary>
         public override BattlePlayerCharacterClass Class { get; } = BattlePlayerCharacterClass.Desensitizer;
 
+        /// <summary>
+        /// Called when the player is spawned.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Handle for the player.</param>
+        /// <param name="playerData">Pointer to player data.</param>
+        /// <param name="playerEntity">Entity reference for the player.</param>
         public override unsafe void OnSpawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
-            Debug.Log("Desensitizer spawned");
-
-            
+            f.Events.BattleSpecialJoystickVisibilityChange(playerData->Slot, true);
         }
 
+        /// <summary>
+        /// Called when the player is despawned.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Handle for the player.</param>
+        /// <param name="playerData">Pointer to player data.</param>
+        /// <param name="playerEntity">Entity reference for the player.</param>
+        public override unsafe void OnDespawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
+        {
+            f.Events.BattleSpecialJoystickVisibilityChange(playerData->Slot, false);
+        }
+
+        /// <summary>
+        /// Called every frame to update the player.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Handle for the player.</param>
+        /// <param name="playerData">Pointer to player data.</param>
+        /// <param name="playerEntity">Entity reference for the player.</param>
+        /// <param name="specialInput">Pointer to special input (unused)</param>
         public override unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity, BattleSpecialInput* specialInput)
         {
-            FP spawnDistance = FP._0_50;
-            FP speed = FP._0_10;
-            BattleDebugLogger.WarningFormat(f, nameof(BattlePlayerClassDesensitizer), "Joystick ( state: {0}, Direction: {1} )", specialInput->JoystickState, specialInput->JoystickValue);
-            
-            Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
-            BattlePlayerClassDesensitizerDataQComponent* classData = GetClassData(f, playerEntity);
+            BattlePlayerClassDesensitizerQSpec spec = BattleQConfig.GetBattlePlayerClassDesensitizerSpec(f);
+            //BattleDebugLogger.WarningFormat(f, nameof(BattlePlayerClassDesensitizer), "Joystick ( state: {0}, Direction: {1} )", specialInput->JoystickState, specialInput->JoystickValue);
+
+            Transform2D*                                 playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
+            BattlePlayerClassDesensitizerDataQComponent* classData       = GetClassData(f, playerEntity);
+
             bool joystickDown = specialInput->JoystickState != BattleJoystickState.Up;
-            
+
             // Update view
             if (joystickDown) f.Events.BattlePlayerClassDesensitizerAimIndicatorUpdate(playerEntity, playerData->Slot, Show: true, specialInput->JoystickValue);
-            
+
             // Exit if no changes in joystick state
             if (joystickDown == classData->JoystickDownPrevious) goto Exit;
-            
-            if (joystickDown) 
+
+            if (joystickDown)
             {
                 // Handle joystick down
-                classData->JoystickTimer = FrameTimer.FromSeconds(f, FP._0_50);
+                classData->JoystickTimer = FrameTimer.FromSeconds(f, spec.JoystickTapDurationMax);
             }
             else
             {
                 // Handle joystick up
-                FPVector2 direction = classData->JoystickTimer.IsRunning(f) ? FPVector2.Up : classData->JoystickValuePrevious.Normalized;
+                bool isJoystickTap = classData->JoystickTimer.IsRunning(f) && classData->JoystickValuePrevious.Magnitude < spec.joystickFlickDistanceMax;
+
+                FPVector2 direction = isJoystickTap ? FPVector2.Up : classData->JoystickValuePrevious.Normalized;
+
                 if (playerData->TeamNumber == BattleTeamNumber.TeamBeta) direction = FPVector2.Rotate(direction, FP.Rad_180);
-                FPVector2 position = playerTransform->Position + direction * spawnDistance;
-                BattlePlayerClassDesensitizerProjectileQSystem.Create(f, f.FindAsset(classData->ProjectileEntityPrototype), position, direction, speed);
-                
+                FPVector2 position = playerTransform->Position + direction * spec.spawnDistance;
+                BattlePlayerClassDesensitizerProjectileQSystem.Create(f, f.FindAsset(spec.ProjectileEntityPrototype), position, direction, spec.Speed);
+
                 // Update view
                 f.Events.BattlePlayerClassDesensitizerAimIndicatorUpdate(playerEntity, playerData->Slot, Show: false, FPVector2.Zero);
             }

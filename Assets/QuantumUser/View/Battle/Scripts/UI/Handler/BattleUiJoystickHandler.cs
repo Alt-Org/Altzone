@@ -13,7 +13,6 @@ using UnityEngine;
 using Altzone.Scripts.BattleUiShared;
 
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
-using Battle.View.Game;
 
 namespace Battle.View.UI
 {
@@ -32,41 +31,53 @@ namespace Battle.View.UI
         /// @ref BattleUiJoystickHandler-SerializeFields
         [SerializeField] private BattleUiController _uiController;
 
-        /// <summary>[SerializeField] Reference to movement joystick's BattleUiMovableJoystickElement.</summary>
+        /// <summary>[SerializeField] Reference to the movement joystick's <see cref="BattleUiMovableJoystickElement"/> component.</summary>
         /// @ref BattleUiJoystickHandler-SerializeFields
         [SerializeField] private BattleUiMovableJoystickElement _moveJoystickMovableElement;
 
-        /// <summary>[SerializeField] Reference to rotation joystick's BattleUiMovableJoystickElement.</summary>
+        /// <summary>[SerializeField] Reference to the rotation joystick's <see cref="BattleUiMovableJoystickElement"/> component.</summary>
         /// @ref BattleUiJoystickHandler-SerializeFields
         [SerializeField] private BattleUiMovableJoystickElement _rotateJoystickMovableElement;
 
-        /// <summary>[SerializeField] Reference to movement joystick's BattleUiJoystickComponent.</summary>
+        /// <summary>[SerializeField] Reference to the special joystick's <see cref="BattleUiMovableJoystickElement"/> component.</summary>
+        /// @ref BattleUiJoystickHandler-SerializeFields
+        [SerializeField] private BattleUiMovableJoystickElement _specialJoystickMovableElement;
+
+        /// <summary>[SerializeField] Reference to the movement joystick's <see cref="BattleUiJoystickComponent"/> component.</summary>
         /// @ref BattleUiJoystickHandler-SerializeFields
         [SerializeField] private BattleUiJoystickComponent _moveJoystickComponent;
 
-        /// <summary>[SerializeField] Reference to rotation joystick's BattleUiJoystickComponent.</summary>
+        /// <summary>[SerializeField] Reference to the rotation joystick's <see cref="BattleUiJoystickComponent"/> component.</summary>
         /// @ref BattleUiJoystickHandler-SerializeFields
         [SerializeField] private BattleUiJoystickComponent _rotateJoystickComponent;
 
+        /// <summary>[SerializeField] Reference to the special joystick's <see cref="BattleUiJoystickComponent"/> component.</summary>
+        /// @ref BattleUiJoystickHandler-SerializeFields
         [SerializeField] private BattleUiJoystickComponent _specialJoystickComponent;
 
         /// @}
 
-        /// <value>Is the %UI element visible or not.</value>
+        /// <summary>Public getter indicating whether the %UI element is currently visible</summary>
         public bool IsVisible => _moveJoystickMovableElement.gameObject.activeSelf;
 
-        /// <value>Public getter for #_moveJoystickMovableElement.</value>
+        /// <summary>Public getter for #_moveJoystickMovableElement.</summary>
+        /// <value>Reference to the %UI element's <see cref="BattleUiMovableElement"/> component.</value>
         public BattleUiMovableElement MoveJoystickMovableElement => _moveJoystickMovableElement;
 
-        /// <value>Public getter for #_rotateJoystickMovableElement.</value>
+        /// <summary>Public getter for #_rotateJoystickMovableElement.</summary>
+        /// <value>Reference to the %UI element's <see cref="BattleUiMovableElement"/> component.</value>
         public BattleUiMovableElement RotateJoystickMovableElement => _rotateJoystickMovableElement;
+
+        /// <summary>Public getter for #_specialJoystickMovableElement.</summary>
+        /// <value>Reference to the %UI element's <see cref="BattleUiMovableElement"/> component.</value>
+        public BattleUiMovableElement SpecialJoystickMovableElement => _specialJoystickMovableElement;
 
         /// <summary>
         /// Sets the %UI element visibility.
         /// </summary>
         ///
         /// <param name="show">If the %UI element should be visible or not.</param>
-        /// <param name="uiElementType">The UI element's BattleUiElementType to differentiate between movement and rotation joysticks. If None set visibility for both.</param>
+        /// <param name="uiElementType">The UI element's BattleUiElementType to differentiate between movement, rotation and special joysticks. If None set visibility for movement and rotation joysticks.</param>
         public void SetShow(bool show, BattleUiElementType uiElementType = BattleUiElementType.None)
         {
             switch (uiElementType)
@@ -81,6 +92,9 @@ namespace Battle.View.UI
                 case BattleUiElementType.RotateJoystick:
                     _rotateJoystickMovableElement.gameObject.SetActive(show);
                     break;
+                case BattleUiElementType.SpecialJoystick:
+                    _specialJoystickMovableElement.gameObject.SetActive(show);
+                    break;
             }
         }
 
@@ -93,14 +107,15 @@ namespace Battle.View.UI
         {
             _moveJoystickMovableElement.SetLocked(locked);
             _rotateJoystickMovableElement.SetLocked(locked);
+            _specialJoystickMovableElement.SetLocked(locked);
         }
 
         /// <summary>
         /// Sets BattleUiMovableElementData to the joystick which matches the BattleUiElementType.
         /// </summary>
         ///
-        /// <param name="uiElementType">The UI element's BattleUiElementType to differentiate between movement and rotation joysticks.</param>
-        /// <param name="data">The BattleUiMovableElementData which to set to the joystick.</param>
+        /// <param name="uiElementType">The UI element's BattleUiElementType to differentiate between movement, rotation and special joysticks.</param>
+        /// <param name="data">The BattleUiMovableElementData to apply to the joystick.</param>
         public void SetInfo(BattleUiElementType uiElementType, BattleUiMovableElementData data = null)
         {
             // Selecting correct movable element
@@ -112,6 +127,9 @@ namespace Battle.View.UI
                     break;
                 case BattleUiElementType.RotateJoystick:
                     movableElement = _rotateJoystickMovableElement;
+                    break;
+                case BattleUiElementType.SpecialJoystick:
+                    movableElement = _specialJoystickMovableElement;
                     break;
                 default:
                     return;
@@ -135,7 +153,7 @@ namespace Battle.View.UI
                 _rotateJoystickComponent.OnJoystickXAxisInput += _uiController.GameViewController.UiInputOnJoystickRotation;
                 _rotateJoystickComponent.LockYAxis = true;
             }
-            
+
             if (_specialJoystickComponent != null)
             {
                 _specialJoystickComponent.OnJoystickInput += _uiController.GameViewController.UiInputOnJoystickSpecial;
@@ -151,7 +169,7 @@ namespace Battle.View.UI
             // Removing listeners for the joystick input
             if (_moveJoystickComponent != null) _moveJoystickComponent.OnJoystickInput -= _uiController.GameViewController.UiInputOnJoystickMovement;
             if (_rotateJoystickComponent != null) _rotateJoystickComponent.OnJoystickXAxisInput -= _uiController.GameViewController.UiInputOnJoystickRotation;
+            if (_specialJoystickComponent != null) _specialJoystickComponent.OnJoystickInput -= _uiController.GameViewController.UiInputOnJoystickSpecial;
         }
-        
     }
 }
