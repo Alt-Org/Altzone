@@ -33,9 +33,9 @@ namespace Battle.QSimulation.Player
         public FP JoystickTapDurationMax;
         [Tooltip("Maximum distance from joystick center for a press to register as pressing the middle")]
         /// <summary>Maximum distance from joystick center for a press to register as pressing the middle</summary>
-        public FP joystickFlickDistanceMax;
+        public FP JoystickFlickDistanceMax;
         [Tooltip("Distance of how far the projectile is spawned from the player")]
         /// <summary>Distance of how far the projectile is spawned from the player</summary>
-        public FP spawnDistance;
+        public FP JpawnDistance;
     }
 }
