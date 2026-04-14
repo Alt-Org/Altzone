@@ -69,6 +69,18 @@ namespace Battle.View.Player
         }
 
         /// <summary>
+        /// Called when player interacts with the special joystick
+        /// </summary>
+        ///
+        /// <param name="state"><param name="state"><see cref="BattleJoystickState"></see> of the joystick.</param></param>
+        /// <param name="value">Value of the joystick input as Vector2.</param>
+        public void OnJoystickSpecial(BattleJoystickState state, Vector2 value)
+        {
+            _joystickSpecialState = state;
+            _joystickSpecialValue = value;
+        }
+
+        /// <summary>
         /// Called when the player presses one of the character selection buttons.
         /// </summary>
         ///
@@ -146,11 +158,17 @@ namespace Battle.View.Player
         /// <summary>The vector received from the movement joystick.</summary>
         private Vector2 _joystickMovementVector;
 
+        /// <summary>The vector received from the special joystick.</summary>
+        private Vector2 _joystickSpecialValue;
+
         /// <summary>The float value received from the rotation joystick.</summary>
         private float _joystickRotationValue;
 
         /// <summary>Saved world position of the previous tap position used for double tap input validating.</summary>
         private Vector3 _lastTapPosition;
+
+        /// <summary>The <see cref="BattleJoystickState"></see> of the special joystick</summary>
+        private BattleJoystickState _joystickSpecialState;
 
         /// <summary>Saved time stamp of the previous tap.</summary>
         private float _lastTapTime;
@@ -205,26 +223,8 @@ namespace Battle.View.Player
 
         /// @}
 
-        ///
-        ///
         /// @{
 
-        /// <summary>The <see cref="BattleJoystickState"></see> of the special joystick</summary>
-        private BattleJoystickState _joystickSpecialState;
-        /// <summary>The vector received from the special joystick.</summary>
-        private Vector2 _joystickSpecialValue;
-
-        /// <summary>
-        /// Called when player interacts with the special joystick
-        /// </summary>
-        ///
-        /// <param name="state"><param name="state"><see cref="BattleJoystickState"></see> of the joystick.</param></param>
-        /// <param name="value">Value of the joystick input as Vector2.</param>
-        public void OnJoystickSpecial(BattleJoystickState state, Vector2 value)
-        {
-            _joystickSpecialState = state;
-            _joystickSpecialValue = value;
-        }
         // Tap once -> Shoot straight up
         // Hold -> Aim indicator
         // Release Tap -> Shoot aimed direction
