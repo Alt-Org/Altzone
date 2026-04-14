@@ -4,13 +4,14 @@
 /// </summary>
 
 // Unity usings
-using System.Collections;
 using Battle.QSimulation.Diamond;
 using Battle.QSimulation.Goal;
 using Battle.QSimulation.Player;
+
 // Battle QSimulation usings
 using Battle.QSimulation.Projectile;
 using Battle.QSimulation.SoulWall;
+
 // Quantum usings
 using Quantum;
 using UnityEngine.Scripting;
