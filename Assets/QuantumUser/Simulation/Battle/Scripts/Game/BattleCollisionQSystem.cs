@@ -87,7 +87,7 @@ namespace Battle.QSimulation.Game
         public void OnTrigger2D(Frame f, TriggerInfo2D info)
         {
             if (!f.Unsafe.TryGetPointer(info.Entity, out BattleCollisionColliderQComponent* collisionCollider)) return;
-            if (!f.Unsafe.TryGetPointer(info.Other,  out BattleCollisionTriggerQComponent*  collisionTrigger))  return;
+            if (!f.Unsafe.TryGetPointer(info.Other, out BattleCollisionTriggerQComponent* collisionTrigger)) return;
 
             switch (collisionCollider->Type)
             {
@@ -125,16 +125,16 @@ namespace Battle.QSimulation.Game
                         {
                             s_debugLogger.Log(f, "Projectile hit SoulWall");
                             if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Projectile)) break;
-                            if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.SoulWall))   break;
+                            if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.SoulWall)) break;
 
                             SoulWallCollisionData soulWallCollisionData = new()
                             {
                                 SoulWall = f.Unsafe.GetPointer<BattleSoulWallQComponent>(info.Other)
                             };
 
-                            BattleProjectileQSystem.OnProjectileCollision  (f, &projectileCollisionData, &soulWallCollisionData, BattleCollisionTriggerType.SoulWall);
-                            BattleDiamondQSystem.   OnProjectileHitSoulWall(f, &projectileCollisionData, &soulWallCollisionData);
-                            BattleSoulWallQSystem.  OnProjectileHitSoulWall(f, &projectileCollisionData, &soulWallCollisionData);
+                            BattleProjectileQSystem.OnProjectileCollision(f, &projectileCollisionData, &soulWallCollisionData, BattleCollisionTriggerType.SoulWall);
+                            BattleDiamondQSystem.OnProjectileHitSoulWall(f, &projectileCollisionData, &soulWallCollisionData);
+                            BattleSoulWallQSystem.OnProjectileHitSoulWall(f, &projectileCollisionData, &soulWallCollisionData);
                             break;
                         }
 
@@ -149,8 +149,8 @@ namespace Battle.QSimulation.Game
                             };
 
                             //f.Events.PlaySoundEvent(SoundEffect.SideWallHit);
-                            BattleProjectileQSystem. OnProjectileCollision         (f, &projectileCollisionData, &playerCollisionData, BattleCollisionTriggerType.Player);
-                            BattlePlayerQSystem.     OnProjectileHitPlayerCharacter(f, &projectileCollisionData, &playerCollisionData);
+                            BattleProjectileQSystem.OnProjectileCollision(f, &projectileCollisionData, &playerCollisionData, BattleCollisionTriggerType.Player);
+                            BattlePlayerQSystem.OnProjectileHitPlayerCharacter(f, &projectileCollisionData, &playerCollisionData);
                             BattlePlayerClassManager.OnProjectileHitPlayerCharacter(f, &projectileCollisionData, &playerCollisionData);
                             break;
                         }
@@ -159,7 +159,7 @@ namespace Battle.QSimulation.Game
                         {
                             s_debugLogger.Log(f, "Projectile hit Player Shield");
                             if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Projectile)) break;
-                            if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Player))     break;
+                            if (BattleProjectileQSystem.IsCollisionFlagSet(f, projectile, BattleProjectileCollisionFlags.Player)) break;
 
                             PlayerShieldCollisionData shieldCollisionData = new()
                             {
@@ -167,8 +167,8 @@ namespace Battle.QSimulation.Game
                                 IsLoveProjectileCollision = false
                             };
 
-                            BattleProjectileQSystem. OnProjectileCollision      (f, &projectileCollisionData, &shieldCollisionData, BattleCollisionTriggerType.Shield);
-                            BattlePlayerQSystem.     OnProjectileHitPlayerShield(f, &projectileCollisionData, &shieldCollisionData);
+                            BattleProjectileQSystem.OnProjectileCollision(f, &projectileCollisionData, &shieldCollisionData, BattleCollisionTriggerType.Shield);
+                            BattlePlayerQSystem.OnProjectileHitPlayerShield(f, &projectileCollisionData, &shieldCollisionData);
                             BattlePlayerClassManager.OnProjectileHitPlayerShield(f, &projectileCollisionData, &shieldCollisionData);
                             break;
                         }
@@ -231,7 +231,7 @@ namespace Battle.QSimulation.Game
                             s_debugLogger.Log("Desensitizer projectile hit the Emotion Projectile");
 
                             BattleProjectileTriggerQComponent* trigger           = f.Unsafe.GetPointer<BattleProjectileTriggerQComponent>(info.Other);
-                            BattleProjectileQComponent*        emotionProjectile = f.Unsafe.GetPointer<BattleProjectileQComponent>       (trigger->ProjectileEntityRef);
+                            BattleProjectileQComponent*        emotionProjectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(trigger->ProjectileEntityRef);
 
                             BattlePlayerClassDesensitizerProjectileQSystem.OnProjectileHitEmotionProjectile(f, desensitizerProjectile, info.Entity, emotionProjectile);
                             break;
@@ -262,7 +262,6 @@ namespace Battle.QSimulation.Game
                 }
             }
         }
-
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private static BattleDebugLogger s_debugLogger;
     }
