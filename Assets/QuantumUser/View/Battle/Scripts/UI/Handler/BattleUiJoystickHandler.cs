@@ -57,8 +57,14 @@ namespace Battle.View.UI
 
         /// @}
 
-        /// <summary>Public getter indicating whether the %UI element is currently visible</summary>
-        public bool IsVisible => _moveJoystickMovableElement.gameObject.activeSelf;
+        /// <summary>Whether the Move Joystick is currently visible</summary>
+        public bool IsMoveJoystickVisible => _moveJoystickMovableElement.gameObject.activeSelf;
+
+        /// <summary>Whether the Rotate Joystick is currently visible</summary>
+        public bool IsRotateJoystickVisible => _rotateJoystickMovableElement.gameObject.activeSelf;
+
+        /// <summary>Whether the Special Joystick is currently visible</summary>
+        public bool IsSpecialJoystickVisible => _specialJoystickMovableElement.gameObject.activeSelf;
 
         /// <summary>Public getter for #_moveJoystickMovableElement.</summary>
         /// <value>Reference to the %UI element's <see cref="BattleUiMovableElement"/> component.</value>
