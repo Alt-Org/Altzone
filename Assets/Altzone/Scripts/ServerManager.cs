@@ -450,7 +450,7 @@ public class ServerManager : MonoBehaviour
                 }
             playerData.friendPlayers = new(friendList);
             playerData.friendRequests = new(friendRequestList);
-            
+
             if(player.DailyTask == null) playerData.Task = null; //Reset Task if one cannot be gotten from server.
         }
         PlayerPrefs.SetString("profileId", player.profile_id);
@@ -511,7 +511,7 @@ public class ServerManager : MonoBehaviour
                     clanData.UpdateClanData(clan);
                 }
 
-            }); 
+            });
         });
         yield return new WaitUntil(() => clanData != null);
 
@@ -676,7 +676,7 @@ public class ServerManager : MonoBehaviour
         storefront.GetPlayerData(Player.uniqueIdentifier, p => playerData = p);
 
         playerData.BuildCharacterLists(characters);
-        if (setCharacters) { 
+        if (setCharacters) {
             playerData.SelectedCharacterIds = new CustomCharacterListObject[3] {
             new(serverId : characters.FirstOrDefault(x=> x.Id == CharacterID.Booksmart).ServerID, Id: CharacterID.Booksmart),
             new(serverId : characters.FirstOrDefault(x=> x.Id == CharacterID.Artist).ServerID,Id: CharacterID.Artist),
@@ -964,7 +964,7 @@ public class ServerManager : MonoBehaviour
 
     /// <summary>
     /// Fetches clan members for an arbitrary clan id (used when viewing another clan's profile).
-    /// 
+    ///
     /// NOTE:
     /// - This overload is intentionally separate from GetClanMembersFromServer(Action<...>),
     ///   which uses the local player's clan_id (own clan only).
@@ -1506,6 +1506,8 @@ public class ServerManager : MonoBehaviour
 
     #endregion
 
+    #region Messages
+
     public IEnumerator GetMessageHistory(ChatChannelType channel, Action<List<ServerChatMessage>> callback)
     {
         yield return StartCoroutine(WebRequests.Get($"{DEVADDRESS}chat/history?type={channel.ToString().ToLower()}", AccessToken, request =>
@@ -1528,6 +1530,8 @@ public class ServerManager : MonoBehaviour
             }
         }));
     }
+
+    #endregion
 
     #region BattleCharacter
 
@@ -1778,6 +1782,8 @@ public class ServerManager : MonoBehaviour
 
     #endregion
 
+    #region Friends
+
     public IEnumerator GetFriendlist(Action<List<ServerFriendPlayer>> callback)
     {
         yield return StartCoroutine(WebRequests.Get($"{SERVERADDRESS}friendship", AccessToken, request =>
@@ -1886,6 +1892,8 @@ public class ServerManager : MonoBehaviour
             }
         }));
     }
+
+    #endregion
 
     #region Battle
 
@@ -2480,6 +2488,8 @@ public class ServerManager : MonoBehaviour
     }
     #endregion
 
+    #region Version
+
     public IEnumerator GetAllowedVersion(Action<bool, int> callback)
     {
         StartCoroutine(WebRequests.Get(SERVERADDRESS + "metadata/game/", AccessToken, request =>
@@ -2517,4 +2527,6 @@ public class ServerManager : MonoBehaviour
     }
 
     #endregion
+
+    #endregion Server
 }
