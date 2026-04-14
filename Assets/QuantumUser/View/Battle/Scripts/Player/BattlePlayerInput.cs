@@ -50,7 +50,8 @@ namespace Battle.View.Player
         /// Called when the player interacts with the movement joystick.
         /// </summary>
         ///
-        /// <param name="input">The input value of the movement joystick</param>
+        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick. (unused)</param>
+        /// <param name="value">The input value of the movement joystick as Vector2.</param>
         public void OnJoystickMovement(BattleJoystickState state, Vector2 value)
         {
             _joystickMovementVector = value;
@@ -60,7 +61,8 @@ namespace Battle.View.Player
         /// Called when the player interacts with the rotation joystick.
         /// </summary>
         ///
-        /// <param name="input">The input value of the rotation joystick</param>
+        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick. (unused)</param>
+        /// <param name="value">The input value of the rotation joystick as float.</param>
         public void OnJoystickRotation(BattleJoystickState state, float value)
         {
             _joystickRotationValue = value;
@@ -206,8 +208,18 @@ namespace Battle.View.Player
         ///
         ///
         /// @{
+
+        /// <summary>The <see cref="BattleJoystickState"></see> of the special joystick</summary>
         private BattleJoystickState _joystickSpecialState;
+        /// <summary>The vector received from the special joystick.</summary>
         private Vector2 _joystickSpecialValue;
+
+        /// <summary>
+        /// Called when player interacts with the special joystick
+        /// </summary>
+        ///
+        /// <param name="state"><param name="state"><see cref="BattleJoystickState"></see> of the joystick.</param></param>
+        /// <param name="value">Value of the joystick input as Vector2.</param>
         public void OnJoystickSpecial(BattleJoystickState state, Vector2 value)
         {
             _joystickSpecialState = state;
