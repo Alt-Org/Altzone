@@ -25,7 +25,6 @@ using Battle.QSimulation.Game;
 
 // Battle View usings
 using Battle.View.Game;
-using Battle.View.UI;
 
 using MovementInputType = SettingsCarrier.BattleMovementInputType;
 using RotationInputType = SettingsCarrier.BattleRotationInputType;
@@ -203,9 +202,9 @@ namespace Battle.View.Player
         private BattleDebugLogger _debugLogger;
 
         /// @}
-        
-        /// 
-        /// 
+
+        ///
+        ///
         /// @{
         private BattleJoystickState _joystickSpecialState;
         private Vector2 _joystickSpecialValue;
