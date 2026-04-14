@@ -146,6 +146,14 @@ synced event BattleSpecialJoystickVisibilityChange
     bool Show;
 }
 
+synced event BattlePlayerClassDesensitizerAimIndicatorUpdate
+{
+    EntityRef ERef;
+    bool Show;
+    BattlePlayerSlot Slot;
+    FPVector2 Direction;
+}
+
 //} Gameplay events
 
 //{ Debug events
@@ -156,11 +164,3 @@ synced event BattleDebugOnScreenMessage
 }
 
 //} Debug events
-
-synced event BattlePlayerClassDesensitizerAimIndicatorUpdate
-{
-    EntityRef ERef;
-    BattlePlayerSlot Slot;
-    bool Show;
-    FPVector2 Direction;
-}
