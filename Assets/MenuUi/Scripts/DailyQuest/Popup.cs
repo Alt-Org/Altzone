@@ -305,8 +305,11 @@ public class Popup : MonoBehaviour
         {
             _popupCanvasGroup.alpha = Mathf.Lerp(0f, 1f, (_fadeTimer / _fadeTime));
             _fadeTimer += Time.deltaTime;
-            yield return null;
+            yield return null; // Wait for one frame
         }
+        // Just a backup to make sure the popup is not transparent
+        _popupCanvasGroup.alpha = 1f;
+        _fadeTimer = _fadeTime;
     }
 
     private IEnumerator FadeOut()
@@ -315,10 +318,13 @@ public class Popup : MonoBehaviour
         {
             _popupCanvasGroup.alpha = Mathf.Lerp(0f, 1f, (_fadeTimer / _fadeTime));
             _fadeTimer -= Time.deltaTime;
-            yield return null;
+            yield return null; // Wait for one frame
         }
-
+        // Just a backup to make sure the popup is fully transparent
+        _popupCanvasGroup.alpha = 0f;
+        _fadeTimer = 0f;
         popupGameObject.SetActive(false);
+        
     }
 
     private void SetMessage(PlayerTask task)

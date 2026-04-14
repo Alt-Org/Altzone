@@ -30,13 +30,13 @@ public class DailyTaskProgressManager : AltMonoBehaviour
 
     public delegate void TaskProgressed();
     /// <summary>
-    /// Used to notify <c>DailyTaskManager</c> when task has progressed.
+    /// Used to notify <c>DailyTaskView</c> when task has progressed.
     /// </summary>
     public static event TaskProgressed OnTaskProgressed;
 
     public delegate void TaskDone();
     /// <summary>
-    /// Used to clear <c>DailyTaskManager</c> from a completed daily task.
+    /// Used to clear <c>DailyTaskView</c> from a completed daily task.
     /// </summary>
     public static event TaskDone OnTaskDone;
 
