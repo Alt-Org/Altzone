@@ -152,7 +152,8 @@ namespace Battle.View.Game
         /// in <see cref="BattleGameViewController._playerInput">_playerInput</see>.
         /// </summary>
         ///
-        /// <param name="input">The movement direction Vector2.</param>
+        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick.</param>
+        /// <param name="value">The movement direction Vector2.</param>
         public void UiInputOnJoystickMovement(BattleJoystickState state, Vector2 value)
         {
             _playerInput.OnJoystickMovement(state, value);
@@ -165,7 +166,8 @@ namespace Battle.View.Game
         /// in <see cref="BattleGameViewController._playerInput">_playerInput</see>.
         /// </summary>
         ///
-        /// <param name="input">The rotation input as float.</param>
+        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick.</param>
+        /// <param name="value">The rotation input as float.</param>
         public void UiInputOnJoystickRotation(BattleJoystickState state, float value)
         {
             _playerInput.OnJoystickRotation(state, value);
@@ -181,6 +183,14 @@ namespace Battle.View.Game
             if (_endOfGameDataHasEnded) LobbyManager.ExitQuantum(_endOfGameDataWinningTeam == LocalPlayerTeam, (float)_endOfGameDataGameLengthSec);
         }
 
+        /// <summary>
+        /// Public method that gets called when local player gives special joystick input.
+        /// calls <see cref="Battle.View.Player.BattlePlayerInput.OnJoystickSpecial">OnJoystickSpecial</see> method
+        /// in <see cref="BattleGameViewController._playerInput">_playerInput</see>
+        /// </summary>
+        ///
+        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick.</param>
+        /// <param name="value">The special input as Vector2</param>
         public void UiInputOnJoystickSpecial(BattleJoystickState state, Vector2 value)
         {
             _playerInput.OnJoystickSpecial(state, value);
