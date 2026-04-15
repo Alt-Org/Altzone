@@ -6,4 +6,6 @@ component BattlePlayerClassDesensitizerDataQComponent
     bool JoystickDownPrevious;
     [HideInInspector]
     FrameTimer JoystickTimer;
+    [HideInInspector]
+    FrameTimer CooldownTimer;
 }

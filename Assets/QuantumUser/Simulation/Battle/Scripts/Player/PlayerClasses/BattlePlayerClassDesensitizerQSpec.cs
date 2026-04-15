@@ -37,5 +37,8 @@ namespace Battle.QSimulation.Player
         [Tooltip("Distance of how far the projectile is spawned from the player")]
         /// <summary>Distance of how far the projectile is spawned from the player</summary>
         public FP SpawnDistance;
+        [Tooltip("Time the projectile cannot be launched again for after launching one")]
+        /// <summary>Time the projectile cannot be launched again for after launching one</summary>
+        public FP Cooldown;
     }
 }

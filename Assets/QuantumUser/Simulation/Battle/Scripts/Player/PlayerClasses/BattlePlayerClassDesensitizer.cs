@@ -86,6 +86,13 @@ namespace Battle.QSimulation.Player
             else
             {
                 // Handle joystick up
+
+                // Update view
+                f.Events.BattlePlayerClassDesensitizerAimIndicatorUpdate(playerEntity, Show: false, playerData->Slot, FPVector2.Zero);
+
+                // exit if projectile ability is on cooldown
+                if (classData->CooldownTimer.IsRunning(f)) goto Exit;
+
                 bool isJoystickTap = classData->JoystickTimer.IsRunning(f) && classData->JoystickValuePrevious.Magnitude < spec.JoystickFlickDistanceMax;
 
                 FPVector2 direction = isJoystickTap ? FPVector2.Up : classData->JoystickValuePrevious.Normalized;
@@ -94,8 +101,8 @@ namespace Battle.QSimulation.Player
                 FPVector2 position = playerTransform->Position + direction * spec.SpawnDistance;
                 BattlePlayerClassDesensitizerProjectileQSystem.Create(f, f.FindAsset(spec.ProjectileEntityPrototype), position, direction, spec.Speed);
 
-                // Update view
-                f.Events.BattlePlayerClassDesensitizerAimIndicatorUpdate(playerEntity, Show: false, playerData->Slot, FPVector2.Zero);
+                // start projectile cooldown
+                classData->CooldownTimer = FrameTimer.FromSeconds(f, spec.Cooldown);
             }
 
             Exit:
