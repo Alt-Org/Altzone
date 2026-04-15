@@ -58,6 +58,8 @@
 ///   @copybrief Quantum.EventBattleGiveUpStateChange
 /// - <b>synced event</b> @ref BattleStoneCharacterPlayHitAnimation { BattleTeamNumber Team; BattleEmotionState Emotion }  
 ///   @copybrief Quantum.EventBattleStoneCharacterPlayHitAnimation
+/// - <b>synced event</b> @ref BattleSpecialJoystickVisibilityChange { bool Show; BattlePlayerSlot Slot }  
+///   @copybrief Quantum.EventBattleSpecialJoystickVisibilityChange
 ///
 /// ---
 ///
@@ -291,6 +293,15 @@
 /// Generated Method @cref{Quantum,Frame.FrameEvents.BattleStoneCharacterPlayHitAnimation}
 ///
 /// ---
+///
+/// @anchor BattleSpecialJoystickVisibilityChange
+/// ### BattleSpecialJoystickVisibilityChange
+/// @copybrief Quantum.EventBattleSpecialJoystickVisibilityChange
+///
+/// Generated Class @cref{Quantum,EventBattleSpecialJoystickVisibilityChange}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleSpecialJoystickVisibilityChange}
+///
+/// ---
 
 /// @class Quantum::EventBattleViewWaitForPlayers
 /// <summary>
@@ -455,6 +466,13 @@
 /// @class Quantum::EventBattleStoneCharacterPlayHitAnimation
 /// <summary>
 /// Synced event. Used to play StoneCharacter animations.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattleSpecialJoystickVisibilityChange
+/// <summary>
+/// Synced event. Used to change special joystick visibility.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleEvents.qtn}
