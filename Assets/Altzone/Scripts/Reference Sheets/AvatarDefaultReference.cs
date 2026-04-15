@@ -154,7 +154,7 @@ public class AvatarDefaultReference : ScriptableObject
         if (!Enum.IsDefined(typeof(CharacterID), characterId)) 
             characterId = 701;
             
-        return _avatarDefaults.FirstOrDefault(a => a.CharacterId == characterId) 
+        return _avatarDefaults.FirstOrDefault(a => a.CharacterId/100 == characterId/100) 
                ?? _avatarDefaults.FirstOrDefault();
     }
     

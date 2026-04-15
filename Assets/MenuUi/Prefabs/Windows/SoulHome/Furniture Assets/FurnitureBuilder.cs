@@ -50,9 +50,7 @@ public class FurnitureBuilder : ScriptableObject
     [SerializeField, Header("Furniture base data")]
     private FurnitureRarity _rarity;
     [SerializeField]
-    private FurnitureSize _size;
-    [SerializeField]
-    private FurnitureSize _rotatedSize;
+    private Vector3Int _fSize;
     [SerializeField]
     private FurniturePlacement _placement;
     [SerializeField]
@@ -75,8 +73,7 @@ public class FurnitureBuilder : ScriptableObject
         {
             Name = _furnitureName+"_"+_setName,
             Rarity = _rarity,
-            Size = _size,
-            RotatedSize = _rotatedSize,
+            FurnitureSize = _fSize,
             Placement = _placement,
             Weight = _weight,
             Value = _value,
@@ -151,9 +148,8 @@ public class FurnitureBuilder : ScriptableObject
         obj.GetComponent<FurnitureHandling>().FurnitureSpriteLeft = _furnitureLeftSprite;
         obj.GetComponent<FurnitureHandling>().FurnitureSpriteBack = _furnitureBackSprite;
 
-        var size = Furniture.GetFurnitureSize(_size);
-        obj.GetComponent<BoxCollider2D>().size = new(size.x,size.y);
-        obj.GetComponent<BoxCollider2D>().offset = new(0, (size.y/2) * (-2 *( (_furnitureFrontSprite.pivot.y/ _furnitureFrontSprite.rect.size.y) -0.5f)));
+        obj.GetComponent<BoxCollider2D>().size = new(_fSize.x, _fSize.y);
+        obj.GetComponent<BoxCollider2D>().offset = new(0, (_fSize.y/2) * (-2 *( (_furnitureFrontSprite.pivot.y/ _furnitureFrontSprite.rect.size.y) -0.5f)));
 
         bool furnitureAdded = _furnitureReference.AddFurniture(furnitureSetInfo);
         if (!furnitureAdded) return;

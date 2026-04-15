@@ -74,7 +74,8 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                     }
 
                     PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
-                    _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charID, true);
+                    //_selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charID, true);
+                    _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charID, true);
                 }
             }));
         }
@@ -97,7 +98,8 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
                 PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(selectedCharacterIds[i].ToString());
                 int[] statsForCharacter = stats != null ? stats[(i * 5)..(i * 5 + 5)] : null;
-                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false, statsForCharacter);
+                //_selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false, statsForCharacter);
+                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charInfo.CharacterId, false, statsForCharacter);
             }
         }
 
@@ -116,7 +118,8 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                 }
 
                 PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(selectedCharacterIds[i].ToString());
-                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false);
+                //_selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false);
+                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charInfo.CharacterId, false);
             }
         }
     }

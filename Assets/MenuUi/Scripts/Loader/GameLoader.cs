@@ -9,9 +9,6 @@ using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
 
-using Google.Play.Common;
-using Google.Play.AppUpdate;
-
 namespace MenuUi.Scripts.Loader
 {
     public static partial class SignalBus

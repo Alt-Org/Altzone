@@ -74,7 +74,7 @@ public class JukeboxMainDiskHandler : MonoBehaviour
     {
         if (sprite == _mainDiskImage.sprite) return;
 
-        if (_useAnimation)
+        if (_useAnimation && isActiveAndEnabled)
             StartCoroutine(SwitchDiskViaAnimation(sprite, null));
         else
             _mainDiskImage.sprite = sprite;
@@ -115,7 +115,7 @@ public class JukeboxMainDiskHandler : MonoBehaviour
     {
         while (true)
         {
-            _mainDiskImage.transform.Rotate(Vector3.forward * -_diskRotationSpeed * Time.deltaTime);
+            _mainDiskImage.transform.Rotate(Vector3.forward * (-_diskRotationSpeed * Time.deltaTime));
 
             yield return null;
         }
@@ -123,6 +123,7 @@ public class JukeboxMainDiskHandler : MonoBehaviour
     #endregion
 
     #region Indicators
+
     public void ToggleIndicatorHolder(bool value) { _offlineIndicatorContent.SetActive(value); }
 
     public void SetIndicatorText(JukeboxDiskTextType textType)

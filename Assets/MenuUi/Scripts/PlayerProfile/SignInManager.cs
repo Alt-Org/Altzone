@@ -1,13 +1,14 @@
-using UnityEngine;
-using TMPro;
-using UnityEngine.Networking;
-using Newtonsoft.Json.Linq;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using Prg.Scripts.Common.Unity;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Language;
+using MenuUi.Scripts.Window;
 using MenuUI.Scripts;
+using Newtonsoft.Json.Linq;
+using Prg.Scripts.Common.Unity;
+using TMPro;
+using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace MenuUi.Scripts.Login
 {
@@ -55,6 +56,7 @@ namespace MenuUi.Scripts.Login
         [SerializeField] private Button _ageAuthButton;
 
         [Header("Version Toggle")]
+        [SerializeField] private ToggleSwitchHandler _turboEducationToggle;
         [SerializeField] private ToggleSwitchHandler _autoLoginToggle;
 
         [Header("Navigation Buttons")]
@@ -83,6 +85,7 @@ namespace MenuUi.Scripts.Login
             Reset();
             _signInWindow.SetActive(true);
             _registerWindow.SetActive(false);
+            OverlayPanelCheck.Instance?.gameObject.SetActive(false);
             if (ServerManager.Instance.Player == null)
             {
                 _backButton.gameObject.SetActive(false);
@@ -98,7 +101,7 @@ namespace MenuUi.Scripts.Login
                 _backButton.onClick.AddListener(ReturnToLogIn);
             }
             _autoLoginToggle.SetState(PlayerPrefs.GetInt("AutomaticLogin", 0) != 0);
-
+            _turboEducationToggle.SetState(GameConfig.Get().GameVersionType is VersionType.TurboEducation);
 
             /*if (GameConfig.Get().GameVersionType is VersionType.Standard or VersionType.None)
             {
@@ -109,6 +112,8 @@ namespace MenuUi.Scripts.Login
                 SetVersionState(true);
             }*/
             _autoLoginToggle.OnToggleStateChanged += SetVersionState;
+            _turboEducationToggle.OnToggleStateChanged += SetTurboState;
+
         }
 
         public void Reset()
@@ -127,6 +132,7 @@ namespace MenuUi.Scripts.Login
         private void OnDisable()
         {
             _autoLoginToggle.OnToggleStateChanged -= SetVersionState;
+            _turboEducationToggle.OnToggleStateChanged -= SetTurboState;
         }
 
         /// <summary>
@@ -192,7 +198,7 @@ namespace MenuUi.Scripts.Login
                     //Debug.Log(request.downloadHandler.text);
                     if(ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
                     ServerManager.Instance.SetProfileValues(result);
-                    GameConfig.Get().GameVersionType = VersionType.Education;
+                    if(GameConfig.Get().GameVersionType is VersionType.Standard or VersionType.None) GameConfig.Get().GameVersionType = VersionType.Education;
                     if (_autoLoginToggle.IsOn)
                     {
                         PlayerPrefs.SetInt("AutomaticLogin", 1);
@@ -219,7 +225,9 @@ namespace MenuUi.Scripts.Login
             if (_registerUsernameInputField.text == string.Empty || _registerPasswordInputField.text == string.Empty || _registerPassword2InputField.text == string.Empty)
             {
                 ShowMessage(ERROR_EMPTY_FIELD, Color.red);
-                _registerUsernameInputFieldError.gameObject.SetActive(true);
+                if (_registerUsernameInputField.text == string.Empty) _registerUsernameInputFieldError.gameObject.SetActive(true);
+                else if(_registerPasswordInputField.text == string.Empty) _registerPasswordInputFieldError.gameObject.SetActive(true);
+                else if(_registerPassword2InputField.text == string.Empty) _registerPassword2InputFieldError.gameObject.SetActive(true);
                 return;
             }
 
@@ -391,6 +399,23 @@ namespace MenuUi.Scripts.Login
             {
                 //PlayerPrefs.SetInt("AutomaticLogin", 0);
                 _autoLoginToggle.SetState(value);
+            }
+        }
+
+        private void SetTurboState(bool value)
+        {
+            if (value)
+            {
+                //PlayerPrefs.SetInt("AutomaticLogin", 1);
+                _turboEducationToggle.SetState(value);
+                GameConfig.Get().GameVersionType = VersionType.TurboEducation;
+            }
+            else
+            {
+                //PlayerPrefs.SetInt("AutomaticLogin", 0);
+                _turboEducationToggle.SetState(value);
+                GameConfig.Get().GameVersionType = VersionType.Education;
+
             }
         }
     }

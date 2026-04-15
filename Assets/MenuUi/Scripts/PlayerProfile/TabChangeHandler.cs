@@ -19,7 +19,7 @@ public class TabChangeHandler : MonoBehaviour
 
     [SerializeField] protected List<ButtonWindowBind> _buttons = new List<ButtonWindowBind>();
     [SerializeField] protected int _defaultTab = 1;
-
+    [SerializeField] private bool _ignoreChange;
     // Start is called before the first frame update
     protected virtual void Start()
     {
@@ -38,7 +38,9 @@ public class TabChangeHandler : MonoBehaviour
         else
             value = DataCarrier.GetData<int?>(DataCarrier.RequestedWindow, false, suppressWarning: true);
         if (value != null) SetVisible((int)value);
-        else SetVisible(_defaultTab);
+        else
+        //Added "if(!_ignoreChange)" so that "chat channel" tabs wouldn't change
+        if(!_ignoreChange) SetVisible(_defaultTab);
     }
 
     protected virtual void SetVisible(int activeIndex)
