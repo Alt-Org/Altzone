@@ -1567,6 +1567,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6051345049714194513}
   - component: {fileID: 1297108217463052854}
+  - component: {fileID: 2471567399234579101}
+  - component: {fileID: 2471567399234579102}
   - component: {fileID: 3001555532357770366}
   - component: {fileID: 821737462262444307}
   - component: {fileID: 6192111530651833301}
@@ -1606,6 +1608,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 820259465500924750}
   m_CullTransparentMesh: 1
+--- !u!223 &2471567399234579101
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820259465500924750}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 0
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 25
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 220
+  m_TargetDisplay: 0
+--- !u!114 &2471567399234579102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820259465500924750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!114 &3001555532357770366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8373,6 +8415,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _matchmakingText: {fileID: 5023263658563891825}
   _cancelButton: {fileID: 4646929315743121399}
+  _cancelButtonText: {fileID: 4843607860049965577}
 --- !u!1 &5506999528909299634
 GameObject:
   m_ObjectHideFlags: 0
