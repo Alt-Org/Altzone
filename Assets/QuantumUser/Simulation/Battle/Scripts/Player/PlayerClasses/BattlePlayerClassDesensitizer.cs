@@ -71,9 +71,10 @@ namespace Battle.QSimulation.Player
             BattlePlayerClassDesensitizerDataQComponent* classData       = GetClassData(f, playerEntity);
 
             bool joystickDown = specialInput->JoystickState != BattleJoystickState.Up;
+            bool projectileOnCooldown = classData->CooldownTimer.IsRunning(f);
 
             // Update view
-            if (joystickDown) f.Events.BattlePlayerClassDesensitizerAimIndicatorUpdate(playerEntity, Show: true, playerData->Slot, specialInput->JoystickValue);
+            if (joystickDown && !projectileOnCooldown) f.Events.BattlePlayerClassDesensitizerAimIndicatorUpdate(playerEntity, Show: true, playerData->Slot, specialInput->JoystickValue);
 
             // Exit if no changes in joystick state
             if (joystickDown == classData->JoystickDownPrevious) goto Exit;
@@ -91,7 +92,7 @@ namespace Battle.QSimulation.Player
                 f.Events.BattlePlayerClassDesensitizerAimIndicatorUpdate(playerEntity, Show: false, playerData->Slot, FPVector2.Zero);
 
                 // exit if projectile ability is on cooldown
-                if (classData->CooldownTimer.IsRunning(f)) goto Exit;
+                if (projectileOnCooldown) goto Exit;
 
                 bool isJoystickTap = classData->JoystickTimer.IsRunning(f) && classData->JoystickValuePrevious.Magnitude < spec.JoystickFlickDistanceMax;
 
