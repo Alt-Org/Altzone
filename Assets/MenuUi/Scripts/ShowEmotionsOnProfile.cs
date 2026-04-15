@@ -12,6 +12,7 @@ public class WeekEmotions : AltMonoBehaviour
 
     // Components that hold the sprite and shows the moods in profile.
     [SerializeField] private GameObject[] _weekEmotions;
+    [SerializeField] private GameObject[] _todayHighlights;
 
     // Creates the variable that is used to get the list of the moods.
     private PlayerData _playerData;
@@ -95,6 +96,22 @@ public class WeekEmotions : AltMonoBehaviour
             else
                 image.sprite = _emotionImages[(int)emotion];
         }
+
+        UpdateTodayHighlight();
+    }
+
+    private void UpdateTodayHighlight()
+    {
+        if (_todayHighlights == null || _todayHighlights.Length == 0)
+            return;
+
+        int todaySlot = ((int)DateTime.Now.DayOfWeek + 6) % 7;
+
+        for (int i = 0; i < _todayHighlights.Length; i++)
+        {
+            if (_todayHighlights[i] != null)
+                _todayHighlights[i].SetActive(i == todaySlot);
+        }
     }
 
     /// <summary>
@@ -107,5 +124,7 @@ public class WeekEmotions : AltMonoBehaviour
         {
             _weekEmotions[i].GetComponent<Image>().sprite = _blankEmotionImage;
         }
+
+        UpdateTodayHighlight();
     }
 }
