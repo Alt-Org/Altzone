@@ -47,6 +47,7 @@ public class TutorialPanelHandler : MonoBehaviour
         {
             _cutOut.GetComponent<RectTransform>().anchorMin = new(0.5f, 0.5f);
             _cutOut.GetComponent<RectTransform>().anchorMax = new(0.5f, 0.5f);
+            _cutOut.GetComponent<RectTransform>().pivot = _imageToCutOut.GetComponent<RectTransform>().pivot;
             _cutOut.transform.position = _imageToCutOut.transform.position;
             _cutOut.GetComponent<RectTransform>().sizeDelta = new(_imageToCutOut.GetComponent<RectTransform>().rect.width, _imageToCutOut.GetComponent<RectTransform>().rect.height);
 
