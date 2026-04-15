@@ -200,6 +200,8 @@ namespace Quantum.Prototypes {
     public QBoolean JoystickDownPrevious;
     [HideInInspector()]
     public Quantum.Prototypes.FrameTimerPrototype JoystickTimer;
+    [HideInInspector()]
+    public Quantum.Prototypes.FrameTimerPrototype CooldownTimer;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerClassDesensitizerDataQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerClassDesensitizerDataQComponent component = default;
@@ -210,6 +212,7 @@ namespace Quantum.Prototypes {
         result.JoystickValuePrevious = this.JoystickValuePrevious;
         result.JoystickDownPrevious = this.JoystickDownPrevious;
         this.JoystickTimer.Materialize(frame, ref result.JoystickTimer, in context);
+        this.CooldownTimer.Materialize(frame, ref result.CooldownTimer, in context);
         MaterializeUser(frame, ref result, in context);
     }
   }

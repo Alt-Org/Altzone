@@ -1331,29 +1331,34 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerClassDesensitizerDataQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 32;
+    public const Int32 SIZE = 40;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(16)]
+    [FieldOffset(24)]
     [HideInInspector()]
     public FPVector2 JoystickValuePrevious;
     [FieldOffset(0)]
     [HideInInspector()]
     public QBoolean JoystickDownPrevious;
-    [FieldOffset(8)]
+    [FieldOffset(16)]
     [HideInInspector()]
     public FrameTimer JoystickTimer;
+    [FieldOffset(8)]
+    [HideInInspector()]
+    public FrameTimer CooldownTimer;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 20693;
         hash = hash * 31 + JoystickValuePrevious.GetHashCode();
         hash = hash * 31 + JoystickDownPrevious.GetHashCode();
         hash = hash * 31 + JoystickTimer.GetHashCode();
+        hash = hash * 31 + CooldownTimer.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattlePlayerClassDesensitizerDataQComponent*)ptr;
         QBoolean.Serialize(&p->JoystickDownPrevious, serializer);
+        FrameTimer.Serialize(&p->CooldownTimer, serializer);
         FrameTimer.Serialize(&p->JoystickTimer, serializer);
         FPVector2.Serialize(&p->JoystickValuePrevious, serializer);
     }
