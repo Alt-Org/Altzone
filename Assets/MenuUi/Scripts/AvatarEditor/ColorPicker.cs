@@ -1,134 +1,134 @@
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.UI;
-using Altzone.Scripts.Model.Poco.Game;
-using System.Linq;
+using UnityEngine;
+using MenuUi.Scripts.AvatarEditor;
+using Altzone.Scripts.Model.Poco.Player;
+using TMPro;
 
-namespace MenuUi.Scripts.AvatarEditor
+public class ColorPicker : MonoBehaviour
 {
-    public class ColorPicker : MonoBehaviour
+    [SerializeField] private Button _colorApplyButton;
+    [SerializeField] private Button _colorPickerButton;
+    [SerializeField] private ScrollBarFeatureLoader _featureLoader;
+    [SerializeField] private AvatarEditorCharacterHandle _characterHandle;
+    [SerializeField] private AvatarEditorController _controller;
+    [SerializeField] private Button _clickAreaButton;
+    [SerializeField] private Button _popupConfirmButton;
+    [SerializeField] private Button _popupCancelButton;
+    [SerializeField] private GameObject _colorPickerPopup;
+    [SerializeField] private Image _previewColor;
+    [SerializeField] private Image _colorPickerColorButtonColorImage;
+    [SerializeField] private ColorGetter _colorCircle;
+    [SerializeField] private GameObject _bottomMenu;
+    [SerializeField] private GameObject _buttons;
+
+    private Color _color = Color.red;
+    private Color _previousColor = Color.red;
+
+    private void Start()
     {
-        [SerializeField] private AvatarEditorCharacterHandle _avatarEditorCharacterHandle;
-        [SerializeField] private AvatarEditorFeatureButtonsHandler _featureButtonsHandler;
-        [Space]
-        [SerializeField] private GameObject _colorButtonPrefab;
-        [SerializeField] private GameObject _defaultColorButtonPrefab;
-        [SerializeField] private List<Color> _colors;
-        [SerializeField] private List<Transform> _colorButtonPositions;
-        [SerializeField] private Transform _characterImageParent;
-        [SerializeField] private Sprite _colorImage;
+        _colorApplyButton.onClick.AddListener(() => ApplyColor());
+        //_clickArea.SetActive(false);
+        _popupConfirmButton.onClick.AddListener(() => ConfirmChanges());
+        _popupCancelButton.onClick.AddListener(() => CancelChanges());
+        _clickAreaButton.onClick.AddListener(() => CancelChanges());
+        _colorPickerButton.onClick.AddListener(() => OpenPopup());
+        _previewColor.color = Color.red;
+    }
 
-        private List<string> _currentColors = new()
-        {
-            "#ffffff",
-        };
-        private FeatureSlot _currentlySelectedCategory;
+    private void OnEnable()
+    {
+        _colorCircle.OnColorChanged += HandleColorChanged;
+    }
 
-        public void OnEnable()
+    private void OnDisable()
+    {
+        _colorCircle.OnColorChanged -= HandleColorChanged;
+    }
+
+    private void HandleColorChanged(Color color)
+    {
+        UpdateColor(color);
+    }
+
+    public void SetActive(bool setActive)
+    {
+        _colorApplyButton.gameObject.SetActive(setActive);
+        _colorPickerButton.gameObject.SetActive(setActive);
+    }
+
+    private void ClosePopup()
+    {
+        _clickAreaButton.gameObject.SetActive(false);
+        _colorPickerPopup.SetActive(false);
+        _bottomMenu.SetActive(true);
+        _buttons.SetActive(true);
+    }
+
+    private void OpenPopup()
+    {
+        _clickAreaButton.gameObject.SetActive(true);
+        _colorPickerPopup.SetActive(true);
+        _bottomMenu.SetActive(false);
+        _buttons.SetActive(false);
+
+        AvatarPiece? activeSlot = _featureLoader.CurrentCategory;
+
+        if (activeSlot.HasValue)
         {
-            SetColorButtons();
+            ColorUtility.TryParseHtmlString(_controller.PlayerAvatar.GetPartColor(activeSlot.Value), out _previousColor);
+            _previewColor.color = _previousColor;
+            _colorCircle.SetColor(_previousColor);
         }
+    }
 
-        public void OnDisable()
+    private void CancelChanges()
+    {
+        ClosePopup();
+        UpdateColor(_previousColor);
+    }
+
+    private void ConfirmChanges()
+    {
+        SaveColor();
+        ClosePopup();
+    }
+
+    private void SaveColor()
+    {
+        AvatarPiece? activeSlot = _featureLoader.CurrentCategory;
+
+        if (activeSlot.HasValue)
         {
-            for (int i = 0; i < 8; i++)
-                if (i < _colors.Count)
-                    _featureButtonsHandler.SetOnClick(SetColor, null, Color.white, i);
+            _characterHandle.SetPartColor(activeSlot.Value, _color);
+            _controller.PlayerAvatar.SetPartColor(activeSlot.Value, ColorUtility.ToHtmlStringRGBA(_color));
+            _colorPickerColorButtonColorImage.color = _color;
         }
+    }
 
-        public void SelectFeature(FeatureSlot feature)
+    private void ApplyColor()
+    {
+        Color applyColor = _colorPickerColorButtonColorImage.color;
+        AvatarPiece? activeSlot = _featureLoader.CurrentCategory;
+
+        if (activeSlot.HasValue)
         {
-            _currentlySelectedCategory = feature;
-            //_colorChangeTarget = _characterImageParent.GetChild(0).GetChild((int)feature).GetComponent<Image>();
+            _characterHandle.SetPartColor(activeSlot.Value, applyColor);
+            _controller.PlayerAvatar.SetPartColor(activeSlot.Value, ColorUtility.ToHtmlStringRGBA(applyColor));
         }
+    }
 
-        private void SetColorButtons()
+    private void UpdateColor(Color color)
+    {
+        AvatarPiece? activeSlot = _featureLoader.CurrentCategory;
+        _color = color;
+
+        _previewColor.color = _color;
+
+        if (activeSlot.HasValue)
         {
-            for (int i = 0; i < 8; i++)
-            {
-                if (i < _colors.Count)
-                {
-                    _featureButtonsHandler.SetOnClick(SetColor, _colorImage, _colors[i], i);
-                    continue;
-                }
-
-                _featureButtonsHandler.SetOff(i);
-            }
+            _characterHandle.SetPartColor(activeSlot.Value, color);
         }
-
-        private void SetColor(Color color)
-        {
-            _currentColors[0] = "#" + ColorUtility.ToHtmlStringRGB(color);
-            _avatarEditorCharacterHandle.SetHeadColor(color);
-        }
-
-        public string GetCurrentColors()
-        {
-            string[] colors = new string[_currentColors.Count];
-            _currentColors.CopyTo(colors);
-            return colors[0];
-        }
-
-        public Color GetCurrentColorsAsColors()
-        {
-            List<Color> colors = new List<Color>();
-
-            foreach (string stringColor in _currentColors)
-            {
-                if (stringColor != null && ColorUtility.TryParseHtmlString(stringColor, out Color color))
-                {
-                    colors.Add(color);
-                    return color;
-                }
-
-                colors.Add(Color.white);
-            }
-
-            return Color.white;
-        }
-
-        public void SetLoadedColors(PlayerAvatar avatar)
-        {
-            string colorCode = avatar.Color;
-            List<string> avatarFeatures = new List<string>{ avatar.HairId, 
-                                                            avatar.EyesId,
-                                                            avatar.NoseId,
-                                                            avatar.MouthId,
-                                                            avatar.BodyId,
-                                                            avatar.HandsId,
-                                                            avatar.FeetId
-                                                            };
-            if (string.IsNullOrWhiteSpace(colorCode) && ColorUtility.TryParseHtmlString(colorCode, out Color color))
-                SetColor(color);
-            //for (int i = 0; i < _currentColor.Count; i++)
-            //{
-            //    SelectFeature((FeatureSlot)i);
-
-            //    if (features[i] == "")
-            //    {
-            //        Debug.LogError($"{i} sdasd");
-            //        SetTransparentColor();
-            //    }
-            //    //else if (features[i] == FeatureID.Default)
-            //    //{
-            //    //    Debug.Log("feature was default when coloring!");
-            //    //}
-            //    else if (i < _currentColor.Count)
-            //    {
-            //        if (ColorUtility.TryParseHtmlString(colors[i], out Color color))
-            //            SetColor(color);
-            //    }
-            //}
-        }
-
-        public void RestoreDefaultColor(FeatureSlot slot)
-        {
-            _currentColors[0] = "#ffffff";
-        }
-
-        // internal void SetCurrentCategoryAndColors(FeatureSlot category, List<FeatureColor> colors) {
-        //     _currentlySelectedCategory = category;
-        //     _currentColors = colors;
-        // }
     }
 }

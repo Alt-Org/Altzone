@@ -14,13 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 306
   CharacterId: 306
-  IsApproved: 0
+  IsApproved: 1
   FinnishName: Taikauskoinen
   EnglishName: Superstitious
   ClassType: 300
-  CharacterDescriptionFinnish: 
+  CharacterDescriptionFinnish: "Kun Taikausko pystytti majansa ihmiseen, se opetti
+    merkit joista ennustaa, ja n\xE4ytti miten vaaroja voi v\xE4ltt\xE4\xE4. Se kertoi
+    milt\xE4 puolelta kanto t\xE4ytyi kiert\xE4\xE4, mink\xE4 oksan alta ei pit\xE4nyt
+    astua, mill\xE4 sanoilla pimeyden saattoi peitota. Vaivihkaa se alkoi asettaa
+    s\xE4\xE4nn\xF6n jokaiselle askeleelle, rankaisi kun katse harhaili, ja lopulta
+    julisti oman \xE4\xE4nens\xE4 ainoaksi totuudeksi. Se houkutteli ihmisen turvaan,
+    jossa t\xE4m\xE4 lopulta kadotti oman voimansa.\r"
   CharacterDescriptionEnglish: 
-  CharacterShortDescriptionFinnish: 
+  CharacterShortDescriptionFinnish: Rituaaleihin turvautuva, maagisen ajattelun taakse
+    piiloutuja
   CharacterShortDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 43584ca03cb58054c87c7cd76e068b8c, type: 2}
   Hp:
@@ -38,8 +45,8 @@ MonoBehaviour:
   Defence:
     Level: 3
     Coefficient: 0
-  GalleryImage: {fileID: 0}
-  GalleryHeadImage: {fileID: 0}
+  GalleryImage: {fileID: 21300000, guid: 0309a57ee5c40964c93e0c994367fb83, type: 3}
+  GalleryHeadImage: {fileID: 21300000, guid: 2420857776de5c34fad57cceff5de5ce, type: 3}
   CharPhotoSeries: {fileID: 0}
   BattleEntityPrototype:
     Id:

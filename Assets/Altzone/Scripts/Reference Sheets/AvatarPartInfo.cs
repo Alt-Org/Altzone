@@ -11,15 +11,20 @@ namespace Altzone.Scripts.AvatarPartsInfo
         [SerializeField] private string _name = "";
         [SerializeField] private string _id = "";
         [SerializeField] private string _visibleName = "";
+        [Tooltip("Does part have colorable areas")]
+        [SerializeField] private bool _isColorable = false;
 
         [Header("Visual Assets")]
         [SerializeField] private Sprite _avatarImage;
+        [SerializeField] private Sprite _maskImage;
         [SerializeField] private Sprite _iconImage;
 
         public string Name { get => _name; }
         public string Id { get => _id; }
         public string VisibleName { get => _visibleName; }
+        public bool IsColorable { get => _isColorable; }
         public Sprite AvatarImage { get => _avatarImage; }
+        public Sprite MaskImage { get => _maskImage; }
         public Sprite IconImage { get => _iconImage; }
 
         public bool IsValid => !string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Id);

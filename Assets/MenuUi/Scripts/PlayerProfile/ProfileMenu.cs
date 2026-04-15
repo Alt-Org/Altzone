@@ -165,12 +165,19 @@ public class ProfileMenu : AltMonoBehaviour
         {
             AddAnswerOptions();
         }
+        _addFriendButton.onClick.AddListener(SendFriendRequest);
     }
     private void OnDisable()
     {
         _characterOptionsPopup.SetActive(false);
         _closePopupAreaButton.SetActive(false);
         ServerManager.OnLogInStatusChanged -= SetPlayerProfileValues;
+        _addFriendButton.onClick.RemoveListener(SendFriendRequest);
+
+        if (_otherPlayerProfile)
+        {
+            DataCarrier.GetData<PlayerData>(DataCarrier.PlayerProfile, clear: true, suppressWarning: true);
+        }
     }
 
     private void Reset()
@@ -374,13 +381,12 @@ public class ProfileMenu : AltMonoBehaviour
             {
                 _weekEmotions.ValuesToWeekEmotions(_playerData);
             }
-
-            if (_playerData.SelectedCharacterId != 0 /*&& _playerData.SelectedCharacterId != 201*/)
-            {
-                AvatarVisualData avatarVisualData = AvatarDesignLoader.Instance.LoadAvatarDesign(_playerData);
+            //if (_playerData.SelectedCharacterId != 0 /*&& _playerData.SelectedCharacterId != 201*/)
+            //{
+            AvatarVisualData avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(_playerData);
                 _avatarLoaderInfoPage.UpdateVisuals(avatarVisualData);
                 _avatarFaceLoaderTabline.UpdateVisuals(avatarVisualData);
-            }
+            //}
 
             updateTime();
 
@@ -419,6 +425,11 @@ public class ProfileMenu : AltMonoBehaviour
                 } 
             }
         }
+    }
+
+    private void SendFriendRequest()
+    {
+        StartCoroutine(ServerManager.Instance.SendFriendRequest(_playerData.Id, null));
     }
 
     private void SaveMinutes()

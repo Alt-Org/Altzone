@@ -135,6 +135,7 @@ public class AltMonoBehaviour : MonoBehaviour
 
             if (callback2 != null)
             {
+                playerData.UpdatePlayerData(callback2);
                 Debug.Log("Profile info updated.");
                 var store = Storefront.Get();
                 store.SavePlayerData(playerData, null);

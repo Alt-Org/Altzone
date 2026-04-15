@@ -25,7 +25,7 @@ public class TopBarSelector : MonoBehaviour
 
     private int CheckIndexRange(int index)
     {
-        if (index + 1 > _topBarList.Count)
+        if (index >= _topBarList.Count)
         {
             return 0;
         }

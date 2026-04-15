@@ -7,7 +7,7 @@ var searchData=
   ['and_20initializing_4',['Joining and Initializing',['../page-concepts-player.html#page-concepts-player-initializing',1,'']]],
   ['and_20non_20doxygen_20specific_5',['Doxygen specific and non-Doxygen specific',['../page-documentation-documenting-source-code.html#page-documentation-source-code-base-guidelines-doxygen-specific',1,'']]],
   ['and_20teams_6',['Player Slots and Teams',['../page-concepts-player.html#page-concepts-player-slots-teams',1,'']]],
-  ['as_20needed_3a_7',['GameObjects created as needed:',['../31-_quantum_battle_8unity.html#autotoc_md155',1,'']]],
+  ['as_20needed_3a_7',['GameObjects created as needed:',['../31-_quantum_battle_8unity.html#autotoc_md157',1,'']]],
   ['assets_8',['Spec Data Assets',['../page-resources.html#page-resources-specs',1,'']]],
-  ['at_20the_20beginning_20of_20battle_3a_9',['GameObjects created at the beginning of Battle:',['../31-_quantum_battle_8unity.html#autotoc_md154',1,'']]]
+  ['at_20the_20beginning_20of_20battle_3a_9',['GameObjects created at the beginning of Battle:',['../31-_quantum_battle_8unity.html#autotoc_md156',1,'']]]
 ];

@@ -128,14 +128,7 @@ namespace Battle.QSimulation.Game
                 case BattleGameState.InitializeGame:
                     if (gameSession->GameInitialized)
                     {
-                        BattleWaitForPlayersData data = new();
-                        string[] playerNames = BattleParameters.GetPlayerNames(f);
-                        for (int i = 0; i < playerNames.Length; i++)
-                        {
-                            data.PlayerNames[i] = playerNames[i];
-                        }
-
-                        f.Events.BattleViewWaitForPlayers(data);
+                        f.Events.BattleViewWaitForPlayers();
                         gameSession->State = BattleGameState.WaitForPlayers;
                     }
                     break;

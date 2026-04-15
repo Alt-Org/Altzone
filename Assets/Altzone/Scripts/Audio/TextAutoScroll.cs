@@ -3,126 +3,228 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(ContentSizeFitter))]
-public class TextAutoScroll : MonoBehaviour
+namespace Altzone.Scripts.Audio
 {
-    [Range(0f, 1f)]
-    [SerializeField] private float _defaultHorizontalPosition = 0.5f;
-    [Range(0f, 1f)]
-    [SerializeField] private float _horizontalStartPosition = 0f;
-    [Range(0f, 1f)]
-    [SerializeField] private float _verticalPosition = 0.5f;
-    [Range(0f, 1f)]
-    [SerializeField] private float _scrollSpeed = 0.3f;
-    [SerializeField] private float _edgeWaitTime = 1f;
-
-    private Coroutine _contentSetCoroutine;
-    private Coroutine _scrollCoroutine;
-    private Coroutine _waitCoroutine;
-
-    private TMP_Text _text;
-    private RectTransform _selfRect;
-    private RectTransform _parentRect;
-    private ContentSizeFitter _contentSizeFitter;
-    private float _scrollProgress = 0f;
-    private float _scrollDirection = -1f;
-    private string _textInQueue = null;
-
-    void Awake()
+    [RequireComponent(typeof(ContentSizeFitter))]
+    public class TextAutoScroll : MonoBehaviour
     {
-        _text = GetComponent<TMP_Text>();
-        _selfRect = GetComponent<RectTransform>();
-        _parentRect = transform.parent.GetComponent<RectTransform>();
-        _contentSizeFitter = GetComponent<ContentSizeFitter>();
-        _contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
-        _contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-        //_text.text = "";
-    }
+        [Range(0f, 1f)]
+        [SerializeField] private float _defaultHorizontalPosition = 0.5f;
+        [Range(0f, 1f)]
+        [SerializeField] private float _horizontalStartPosition = 0f;
+        [Range(0f, 1f)]
+        [SerializeField] private float _verticalPosition = 0.5f;
+        [Range(0f, 1f)]
+        [SerializeField] private float _scrollSpeed = 0.3f;
+        [SerializeField] private float _edgeWaitTime = 1f;
+        [Header("Optional")]
+        [SerializeField] private Fade _fade = null;
+        [SerializeField] private TextStyleCloner _textStyleCloner = null;
 
-    private void OnEnable()
-    {
-        _contentSetCoroutine = StartCoroutine(ContentSet());
-    }
+        private Coroutine _contentSetCoroutine;
+        private Coroutine _scrollCoroutine;
+        private Coroutine _waitCoroutine;
 
-    private void OnDisable()
-    {
-        DisableCoroutines();
-    }
+        private Coroutine _fadeOutCoroutine;
+        private Coroutine _fadeInCoroutine;
 
-    public void DisableCoroutines()
-    {
-        if (_scrollCoroutine != null) StopCoroutine(_scrollCoroutine);
+        private TMP_Text _text;
+        private RectTransform _selfRect;
+        private RectTransform _parentRect;
+        private ContentSizeFitter _contentSizeFitter;
+        private float _scrollProgress = 0f;
+        private float _scrollDirection = -1f;
+        private string _textInQueue = null;
 
-        if (_waitCoroutine != null) StopCoroutine(_waitCoroutine);
+        private bool _textStyleUpdated = false;
+        private bool _textFadeActive = false;
 
-        if (_contentSetCoroutine != null) StopCoroutine(_contentSetCoroutine);
-    }
-
-    public void SetContent(string text)
-    {
-        _textInQueue = text;
-        DisableCoroutines();
-
-        if (isActiveAndEnabled) _contentSetCoroutine = StartCoroutine(ContentSet());
-    }
-
-    private IEnumerator ContentSet()
-    {
-        yield return new WaitUntil(() => !string.IsNullOrEmpty(_textInQueue));
-
-        _text.text = _textInQueue;
-        _textInQueue = null;
-        _scrollDirection = -1f;
-
-        yield return new WaitForEndOfFrame();
-
-        if (_selfRect.sizeDelta.x > 0f)
+        void Awake()
         {
+            _text = GetComponent<TMP_Text>();
+            _selfRect = GetComponent<RectTransform>();
+            _parentRect = transform.parent.GetComponent<RectTransform>();
+            _contentSizeFitter = GetComponent<ContentSizeFitter>();
+            _contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+            _contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+        }
+
+        private void OnEnable()
+        {
+            if (_text == null || string.IsNullOrEmpty(_textInQueue) || _textFadeActive) return;
+
+            DisableCoroutines();
+
+            if (_text.text == _textInQueue && _text.color.a == 1f)
+            {
+                TryStartScroll();
+
+                return;
+            }
+
+            _contentSetCoroutine = StartCoroutine(ContentSet(false));
+
+            //SetContent(_textInQueue);
+        }
+
+        private void OnDisable() { DisableCoroutines(); }
+
+        public void DisableCoroutines()
+        {
+            DisableCoroutine(ref _scrollCoroutine);
+            DisableCoroutine(ref _waitCoroutine);
+            DisableCoroutine(ref _contentSetCoroutine);
+            _textFadeActive = false;
+        }
+
+        private void DisableCoroutine(ref Coroutine coroutine)
+        {
+            if (coroutine != null)
+            {
+                StopCoroutine(coroutine);
+                coroutine = null;
+            }
+        }
+
+        public void SetContent(string text, bool forceStart = false, bool useAnimations = true)
+        {
+            if (!forceStart && _text && _text.text == text || _textInQueue == text)
+            {
+                TryStartScroll();
+
+                return;
+            }
+
+            DisableCoroutines();
+            _textInQueue = text;
+
+            if (isActiveAndEnabled && !_textFadeActive) _contentSetCoroutine = StartCoroutine(ContentSet(useAnimations));
+        }
+
+        private IEnumerator ContentSet(bool useAnimations = true)
+        {
+            bool? fadeOperationDone = null;
+
+            _textFadeActive = true;
+
+            if (useAnimations)
+            {
+                if (_fade && !string.IsNullOrEmpty(_text.text))
+                {
+                    _fade.Reset();
+
+                    if (_fadeOutCoroutine != null)
+                    {
+                        StopCoroutine(_fadeOutCoroutine);
+                        _fadeOutCoroutine = null;
+                    }
+
+                    _fadeOutCoroutine = StartCoroutine(_fade.FadeOperation(Fade.FadeType.Out,
+                        (data) => fadeOperationDone = data, true));
+                }
+                else if (_fade)
+                {
+                    _fade.SetAlphaVisibility(false);
+                    fadeOperationDone = true;
+                }
+
+                yield return new WaitUntil(() => (!_fade || fadeOperationDone != null));
+
+                _fadeOutCoroutine = null;
+            }
+
+            _text.text = _textInQueue;
+            _scrollDirection = -1f;
+
+            if (!_textStyleUpdated && _textStyleCloner)
+            {
+                _textStyleUpdated = true;
+                _textStyleCloner.SetTextSettings(true);
+            }
+
+            yield return new WaitForEndOfFrame();
+
+            _selfRect.pivot = new Vector2((_selfRect.sizeDelta.x > 0f ? _horizontalStartPosition : _defaultHorizontalPosition), _verticalPosition);
+
+            if (useAnimations && _fade)
+            {
+                fadeOperationDone = null;
+
+                if (_fadeInCoroutine != null)
+                {
+                    StopCoroutine(_fadeInCoroutine);
+                    _fadeInCoroutine = null;
+                }
+
+                _fadeInCoroutine = StartCoroutine(_fade.FadeOperation(Fade.FadeType.In, (data) => fadeOperationDone = data, true));
+
+                yield return new WaitUntil(() => fadeOperationDone != null);
+
+                _fadeInCoroutine = null;
+            }
+            else if (_fade)
+            {
+                _fade.SetAlphaVisibility(true);
+            }
+
+            _textFadeActive = false;
+            TryStartScroll();
+        }
+
+        private void TryStartScroll()
+        {
+            if (_scrollCoroutine != null || !_selfRect || !isActiveAndEnabled || _textFadeActive) return;
+
+            DisableCoroutine(ref _waitCoroutine);
+
+            if (_selfRect.sizeDelta.x <= 0f)
+            {
+                DisableCoroutine(ref _scrollCoroutine);
+
+                return;
+            }
+
             _selfRect.pivot = new Vector2(_horizontalStartPosition, _verticalPosition);
-            _scrollCoroutine = StartCoroutine(Wait());
+            _scrollDirection = -1f;
+            _waitCoroutine = StartCoroutine(Wait());
         }
-        else
-            _selfRect.pivot = new Vector2(_defaultHorizontalPosition, _verticalPosition);
-    }
 
-    private IEnumerator Scroll()
-    {
-        float targetValue = _scrollDirection == 1 ? 1 : 0;
-        float progress = _scrollDirection == 1 ? 0 : 1;
-
-        while (Valid(progress, targetValue))
+        private IEnumerator Scroll()
         {
-            yield return null;
+            float targetValue = _scrollDirection == 1f ? 1f : 0f;
+            float progress = _scrollDirection == 1f ? 0f : 1f;
 
-            progress += (_scrollSpeed * _scrollDirection) * Time.deltaTime;
+            while (Valid(progress, targetValue))
+            {
+                yield return null;
 
-            if (!Valid(progress, targetValue)) progress = targetValue;
+                progress += (_scrollSpeed * _scrollDirection) * Time.deltaTime;
 
-            _selfRect.pivot = new Vector2(Mathf.Lerp(0f, 1f, progress), _verticalPosition);
+                if (!Valid(progress, targetValue)) progress = targetValue;
+
+                _selfRect.pivot = new Vector2(Mathf.Lerp(0f, 1f, progress), _verticalPosition);
+            }
+
+            _waitCoroutine = StartCoroutine(Wait());
         }
 
-        _waitCoroutine = StartCoroutine(Wait());
-    }
-
-    private bool Valid(float progress, float target)
-    {
-        if (target == 1)
-            return progress < target;
-        else
-            return progress > target;
-    }
-
-    private IEnumerator Wait()
-    {
-        float timer = 0f;
-
-        while (timer < _edgeWaitTime)
+        private bool Valid(float progress, float target)
         {
-            yield return null;
-            timer += Time.deltaTime;
+            return (target == 1f ? progress < target : progress > target);
         }
 
-        _scrollDirection *= -1;
-        _scrollCoroutine = StartCoroutine(Scroll());
+        private IEnumerator Wait()
+        {
+            float timer = 0f;
+
+            while (timer < _edgeWaitTime)
+            {
+                yield return null;
+                timer += Time.deltaTime;
+            }
+
+            _scrollDirection *= -1;
+            _scrollCoroutine = StartCoroutine(Scroll());
+        }
     }
 }

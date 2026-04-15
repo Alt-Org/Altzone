@@ -3,28 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Altzone.Scripts;
-using Altzone.Scripts.Common;
-using Altzone.Scripts.Config;
-using Altzone.Scripts.Model.Poco.Clan;
-using Altzone.Scripts.Model.Poco.Player;
 using NativeWebSocket;
-//using ExitGames.Client.Photon;
+using Newtonsoft.Json;
+
 using Newtonsoft.Json.Linq;
-//using Photon.Pun;
 using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
 namespace Altzone.Scripts.Chat
 {
     public enum ChatChannelType
     {
-        Global,
-        Clan,
-        Country,
-        None
+        Global = 0,
+        Clan = 1,
+        Country = 2,
+        None = -1
     }
 
     public enum Mood
@@ -39,10 +31,10 @@ namespace Altzone.Scripts.Chat
         None
     }
     /// <summary>
-    /// ChatListener is the main class handling interaction bewtween Photon chat service, our own server for chat history and the game.
+    /// ChatListener is the main class handling interaction between server WebSocket, our own server for chat history and the game.
     /// </summary>
     /// <remarks>
-    /// AltZone's chat feature is built using Photon Chat. Photon Chat handles subscribing to chat rooms, sending and receiving messages over internet. Chat history is saved and retrieved
+    /// AltZone's chat feature is built using WebSocket, handling subscribing to chat rooms, sending and receiving messages over internet. Chat history is saved and retrieved
     /// from AltZone's own server.
     /// </remarks>
     public class ChatListener : MonoBehaviour
@@ -93,8 +85,8 @@ namespace Altzone.Scripts.Chat
             {
                 return _activeChatChannel switch
                 {
-                    ChatChannelType.Global => _globalChatChannel.ChatMessages,
-                    ChatChannelType.Clan => _clanChatChannel.ChatMessages,
+                    ChatChannelType.Global => _globalChatChannel?.ChatMessages,
+                    ChatChannelType.Clan => _clanChatChannel?.ChatMessages,
                     _ => null,
                 };
             }
@@ -143,6 +135,7 @@ namespace Altzone.Scripts.Chat
 
         private void Start()
         {
+            ActiveChatChannel = SettingsCarrier.Instance.FetchChatChannel();
             ServerManager.OnLogInStatusChanged += HandleAccountChange;
             HandleAccountChange(ServerManager.Instance.isLoggedIn);
         }
@@ -150,7 +143,7 @@ namespace Altzone.Scripts.Chat
         private void OnDestroy()
         {
             ServerManager.OnLogInStatusChanged -= HandleAccountChange;
-            CloseSocket();
+            CloseSocket(true);
         }
 
         private IEnumerator InitializeChats()
@@ -214,12 +207,12 @@ namespace Altzone.Scripts.Chat
             await _socket.Connect();
         }
 
-        private async void CloseSocket()
+        private async void CloseSocket(bool onDestroy = false)
         {
             _id = null;
             if (_socket != null)
                 await _socket.Close();
-            if(_socketPolling != null)StopCoroutine(_socketPolling);
+            if(_socketPolling != null && !onDestroy) StopCoroutine(_socketPolling);
             _socket = null;
         }
 
@@ -249,18 +242,28 @@ namespace Altzone.Scripts.Chat
         private void HandleMessage(byte[] data)
         {
             string json = Encoding.UTF8.GetString(data);
-            Debug.LogWarning(JObject.Parse(json));
-            JToken middleresult = JObject.Parse(json)["message"];
-            ServerChatMessage message = middleresult["message"].ToObject<ServerChatMessage>();
-            if (middleresult["event"].ToString().Equals("newMessage"))
+            try
             {
-                if (middleresult["chat"].ToString().Equals("clan")) _clanChatChannel.AddNewMessage(new(message));
-                else if (middleresult["chat"].ToString().Equals("global")) _globalChatChannel.AddNewMessage(new(message));
+                if (json.StartsWith('{') && json.EndsWith('}'))
+                {
+                    Debug.LogWarning(JObject.Parse(json));
+                    JToken middleresult = JObject.Parse(json)["message"];
+                    ServerChatMessage message = middleresult["message"].ToObject<ServerChatMessage>();
+                    if (middleresult["event"].ToString().Equals("newMessage"))
+                    {
+                        if (middleresult["chat"].ToString().Equals("clan")) _clanChatChannel.AddNewMessage(new(message));
+                        else if (middleresult["chat"].ToString().Equals("global")) _globalChatChannel.AddNewMessage(new(message));
+                    }
+                    else if (middleresult["event"].ToString().Equals("newReaction"))
+                    {
+                        if (middleresult["chat"].ToString().Equals("clan")) _clanChatChannel.UpdateReactions(message._id, message.reactions);
+                        else if (middleresult["chat"].ToString().Equals("global")) _globalChatChannel.UpdateReactions(message._id, message.reactions);
+                    }
+                }
             }
-            else if (middleresult["event"].ToString().Equals("newReaction"))
+            catch (JsonReaderException e)
             {
-                if (middleresult["chat"].ToString().Equals("clan")) _clanChatChannel.UpdateReactions(message._id, message.reactions);
-                else if (middleresult["chat"].ToString().Equals("global")) _globalChatChannel.UpdateReactions(message._id, message.reactions);
+                Debug.LogError(e.Message);
             }
         }
 

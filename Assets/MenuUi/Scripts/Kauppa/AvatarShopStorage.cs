@@ -15,6 +15,7 @@ public class AvatarShopStorage : ShopPanelStorage
     [Space(5f)]
 
     [Header("Parents")]
+    [SerializeField] private List<RectTransform> _group;
     [SerializeField] private RectTransform _commonGroup;
     [SerializeField] private RectTransform _rareGroup;
     [SerializeField] private RectTransform _epicGroup;
@@ -34,7 +35,8 @@ public class AvatarShopStorage : ShopPanelStorage
     [Header("Avatar Parts Reference")]
     [SerializeField] private AvatarPartsReference _avatarPartsReference;
 
-    private Dictionary<FurnitureRarity, Transform> _rarityToParent;
+    private Dictionary<string, Transform> _rarityToParent;
+    //private Dictionary<FurnitureRarity, Transform> _rarityToParent;
     private Dictionary<FurnitureRarity, GameFurnitureVisualizer> _rarityToPrefab;
 
     private List<GameFurniture> gameFurnitures;
@@ -42,12 +44,35 @@ public class AvatarShopStorage : ShopPanelStorage
 
     private void Awake()
     {
-        _rarityToParent = new Dictionary<FurnitureRarity, Transform>{
-            {FurnitureRarity.Common, _commonGroup},
-            {FurnitureRarity.Rare, _rareGroup},
-            {FurnitureRarity.Epic, _epicGroup},
-            {FurnitureRarity.Antique, _antiqueGroup}
-        };
+
+        // Summary: Assigns avatar parts (hair, eyes...) to the specific slots in the Unity Inspector, e.g. Element 0 is tied to hair.
+        //1. Get a list of all avatar parts (hair, eyes etc.) and store them in avatarPartsData
+        var avatarPartsData = _avatarPartsReference.AvatarPartData;
+        
+        //2. Create a new dictionary, store the category name as text (string) and location in the Unity hierarchy (transform), so we can start storing information
+        _rarityToParent = new Dictionary<string, Transform>();
+
+        //3. Go through each category found in the avatarPartsData list
+        int i = 0;
+            foreach ( var part in avatarPartsData)
+        {
+
+            //3.1. Create a new pair to the dictionary: category name (e.g. part.setName > "Hair")
+            // and its location (_group[i] > _group[0], _group[1], etc.)
+            _rarityToParent.Add(part.SetName, _group[i]);
+
+            //3.2. Move to the next group by incrementing the i-counter so the next category gets its own location
+            // If there are more categories than there are groups, rest of the categories will be listed under the last group
+            // i+1 is used to account for zero-based indexing. (e.g. if _group.Count is 7, 'i' will never exceed 6)
+            if (i+1 < _group.Count)
+            {
+                i++;
+            } 
+
+        }
+
+
+
 
         _rarityToPrefab = new Dictionary<FurnitureRarity, GameFurnitureVisualizer>
         {
@@ -83,8 +108,8 @@ public class AvatarShopStorage : ShopPanelStorage
                 {
                     continue;
                 }
-
-                if (_rarityToParent.TryGetValue(FurnitureRarity.Rare, out Transform _parent))
+                
+                if (_rarityToParent.TryGetValue(avatarSectiondata.SetName, out Transform _parent))
                 {
                     if (_rarityToPrefab.TryGetValue(FurnitureRarity.Rare, out GameFurnitureVisualizer _prefab))
                     {
