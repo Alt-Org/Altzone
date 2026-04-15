@@ -49,6 +49,53 @@
 ///
 /// @bigtext{Generated from @ref BattlePlayerInput.qtn}
 
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @var bool Quantum::Input::IsValid
+/// <summary>Is input valid</summary>
+///
+/// @var int Quantum::Input::DebugNumber
+/// <summary>Debug number of the input</summary>
+///
+/// @var BattleMovementInputType Quantum::Input::MovementInput
+/// <summary>What movement input type is being used</summary>
+///
+/// @var bool Quantum::Input::MovementDirectionIsNormalized
+/// <summary>Is movement direction normalized</summary>
+///
+/// @var BattleGridPosition Quantum::Input::MovementPositionTarget
+/// <summary>Target position of the movement</summary>
+///
+/// @var FPVector2 Quantum::Input::MovementPositionMove
+/// <summary>Description</summary>
+///
+/// @var FPVector2 Quantum::Input::MovementDirection
+/// <summary>Direction of the movement</summary>
+///
+/// @var bool Quantum::Input::RotationInput
+/// <summary>Is input rotation input</summary>
+///
+/// @var FP Quantum::Input::RotationValue
+/// <summary>Rotation input value</summary>
+///
+/// @var bool Quantum::Input::AbilityActivate
+/// <summary>Is ability activated</summary>
+///
+/// @var int Quantum::Input::PlayerCharacterNumber
+/// <summary>Character number of the player</summary>
+///
+/// @var bool Quantum::Input::GiveUpInput
+/// <summary>Is giveup give up input given</summary>
+///
+/// @var BattleSpecialInput Quantum::Input::Special
+/// <summary>Is special input given</summary>
+
+/// @var BattleJoystickState Quantum::BattleSpecialInput::JoystickState
+/// <summary>State of the special joystick</summary>
+///
+/// @var FPVector2 Quantum::BattleSpecialInput::JoystickValue
+/// <summary>Value of the special joystick</summary>
+
 /// @var Quantum::BattleMovementInputType Quantum::BattleMovementInputType::None
 /// <summary>Player does not want to move.</summary>
 ///
