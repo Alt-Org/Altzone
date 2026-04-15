@@ -36,6 +36,6 @@ namespace Battle.QSimulation.Player
         public FP JoystickFlickDistanceMax;
         [Tooltip("Distance of how far the projectile is spawned from the player")]
         /// <summary>Distance of how far the projectile is spawned from the player</summary>
-        public FP JpawnDistance;
+        public FP SpawnDistance;
     }
 }
