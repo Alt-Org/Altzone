@@ -1104,7 +1104,8 @@ namespace Altzone.Scripts.Lobby
                     PlayerSlotTypes = data.PlayerSlotTypes,
                     PlayerSlotUserIDs = data.PlayerSlotUserIds,
                     PlayerCount = data.PlayerCount,
-                    ProjectileInitialEmotion = (BattleEmotionState)data.ProjectileInitialEmotion
+                    ProjectileInitialEmotion = (BattleEmotionState)data.ProjectileInitialEmotion,
+                    IsTestMode = false
                 }
             };
 
