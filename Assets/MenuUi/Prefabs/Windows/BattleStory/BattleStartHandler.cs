@@ -38,6 +38,7 @@ public class BattleStartHandler : MonoBehaviour
         OverlayPanelCheck.Instance.gameObject.SetActive(false);
         LobbyManager.OnStartTimeSet += StartTimer;
         LobbyManager.OnGameStartCancelled += OnGameStartCancelled;
+        LobbyManager.NotifyBattleStartUiReady();
     }
 
     private void OnDisable()
