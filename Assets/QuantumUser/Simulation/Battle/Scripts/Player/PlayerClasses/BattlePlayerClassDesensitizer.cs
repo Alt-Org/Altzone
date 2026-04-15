@@ -73,7 +73,7 @@ namespace Battle.QSimulation.Player
             bool joystickDown = specialInput->JoystickState != BattleJoystickState.Up;
 
             // Update view
-            if (joystickDown) f.Events.BattlePlayerClassDesensitizerAimIndicatorUpdate(playerEntity, playerData->Slot, Show: true, specialInput->JoystickValue);
+            if (joystickDown) f.Events.BattlePlayerClassDesensitizerAimIndicatorUpdate(playerEntity, Show: true, playerData->Slot, specialInput->JoystickValue);
 
             // Exit if no changes in joystick state
             if (joystickDown == classData->JoystickDownPrevious) goto Exit;
@@ -86,16 +86,16 @@ namespace Battle.QSimulation.Player
             else
             {
                 // Handle joystick up
-                bool isJoystickTap = classData->JoystickTimer.IsRunning(f) && classData->JoystickValuePrevious.Magnitude < spec.joystickFlickDistanceMax;
+                bool isJoystickTap = classData->JoystickTimer.IsRunning(f) && classData->JoystickValuePrevious.Magnitude < spec.JoystickFlickDistanceMax;
 
                 FPVector2 direction = isJoystickTap ? FPVector2.Up : classData->JoystickValuePrevious.Normalized;
 
                 if (playerData->TeamNumber == BattleTeamNumber.TeamBeta) direction = FPVector2.Rotate(direction, FP.Rad_180);
-                FPVector2 position = playerTransform->Position + direction * spec.spawnDistance;
+                FPVector2 position = playerTransform->Position + direction * spec.SpawnDistance;
                 BattlePlayerClassDesensitizerProjectileQSystem.Create(f, f.FindAsset(spec.ProjectileEntityPrototype), position, direction, spec.Speed);
 
                 // Update view
-                f.Events.BattlePlayerClassDesensitizerAimIndicatorUpdate(playerEntity, playerData->Slot, Show: false, FPVector2.Zero);
+                f.Events.BattlePlayerClassDesensitizerAimIndicatorUpdate(playerEntity, Show: false, playerData->Slot, FPVector2.Zero);
             }
 
             Exit:
