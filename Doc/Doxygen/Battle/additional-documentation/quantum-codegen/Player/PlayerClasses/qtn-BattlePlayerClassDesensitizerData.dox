@@ -1,0 +1,33 @@
+/// @file BattlePlayerClassDesensitizerData.qtn
+/// <summary>
+/// Contains component used by Desensitizer character class.
+/// </summary>
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattlePlayerClassDesensitizerDataQComponent}  
+///   @copybrief Quantum.BattlePlayerClassDesensitizerDataQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattlePlayerClassDesensitizerDataQComponent
+/// <summary>
+/// %Player character class data for the Desensitizer class.
+/// </summary>
+///
+/// @bigtext{See [{PlayerClassData}](#page-concepts-player-simulation-classdata) for more info.}  
+/// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}  
+// concept page not added yet @bigtext{See [{Player Character Class 400 - Projector}](#page-concepts-player-class-400-projector) for more info.}
+///
+/// @bigtext{Generated from @ref BattlePlayerClassDesensitizerData.qtn}
+
+/// @var FPVector2 Quantum.BattlePlayerClassDesensitizerDataQComponent::JoystickValuePrevious
+/// <summary>Previous value of the special joystick.</summary>
+///
+/// @var bool Quantum.BattlePlayerClassDesensitizerDataQComponent::JoystickDownPrevious
+/// <summary>Was the joystick down.</summary>
+///
+/// @var int Quantum.BattlePlayerClassProjectorDataQComponent::HoldStartFrame
+/// <summary>%Quantum Simulation frame on which the player started holding the projectile.</summary>
+///
+/// @var FrameTimer Quantum.BattlePlayerClassDesensitizerDataQComponent::JoystickTimer
+/// <summary>Timer for how long the joystick has been pressed.</summary>
