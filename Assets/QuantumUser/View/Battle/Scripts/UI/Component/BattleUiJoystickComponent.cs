@@ -43,7 +43,8 @@ namespace Battle.View.UI
         /// Event delegate for joystick input with both axis.
         /// </summary>
         ///
-        /// <param name="input">Joystick input Vector2.</param>
+        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick.</param>
+        /// <param name="value">Joystick input value as Vector2.</param>
         public delegate void JoystickTwoAxisInputHandler(BattleJoystickState state, Vector2 value);
 
         /// <summary>Event which gets invoked on joystick input with both x and y axis.</summary>
@@ -53,7 +54,8 @@ namespace Battle.View.UI
         /// Event delegate for joystick input on x axis.
         /// </summary>
         ///
-        /// <param name="input">Joystick input value on x axis.</param>
+        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick.</param>
+        /// <param name="input">Joystick input value on x axis as float.</param>
         public delegate void JoystickOneAxisInputHandler(BattleJoystickState state, float input);
 
         /// <summary>Event which gets invoked on joystick input with only x axis.</summary>
@@ -119,6 +121,7 @@ namespace Battle.View.UI
         /// </summary>
         ///
         /// <param name="dragPos">The player's PointerEventData position.</param>
+        /// <param name="down">Is the joystick being pressed</param>
         private void HandleDrag(Vector2 dragPos, bool down = false)
         {
             BattleJoystickState state = down ? BattleJoystickState.Down : BattleJoystickState.Drag;
