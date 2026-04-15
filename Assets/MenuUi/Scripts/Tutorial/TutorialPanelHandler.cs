@@ -8,25 +8,42 @@ using UnityEngine.UI;
 public class TutorialPanelHandler : MonoBehaviour
 {
     [SerializeField] private Button _tutorialAdvanceButton;
-    [SerializeField] private Image _imageToCutOut;
+    [SerializeField] private List<Image> _imageToCutOut;
     [SerializeField] private GameObject _cutOut;
     [SerializeField] private GameObject _arrow;
     [SerializeField] private GameObject _infoBox;
     [SerializeField] private TextMeshProUGUI _infoText;
     [SerializeField] private GameObject _fadeLayer;
 
+    private List<GameObject> _cutOuts = new();
+
     public void SetData(Action advanceAction)
     {
         if(_tutorialAdvanceButton != null)
             _tutorialAdvanceButton.onClick.AddListener(advanceAction.Invoke);
 
-        if(_cutOut != null && _imageToCutOut != null)
-        {
-            _cutOut.GetComponent<Image>().sprite = _imageToCutOut.sprite;
-            _cutOut.GetComponent<Image>().preserveAspect = _imageToCutOut.preserveAspect;
+        _cutOuts.Clear();
 
+        _cutOuts.Add(_cutOut);
+
+        for (int i =1; i < _imageToCutOut.Count ;i++)
+        {
+            GameObject newCutOut = Instantiate(_cutOut, transform);
+            _cutOuts.Add(newCutOut);
         }
 
+        _fadeLayer.transform.SetAsLastSibling();
+        int j = 0;
+        foreach (Image imageToCutOut in _imageToCutOut)
+        {
+            if (_cutOuts[j] != null && imageToCutOut != null)
+            {
+                Image cutout = _cutOuts[j].GetComponent<Image>();
+                cutout.sprite = imageToCutOut.sprite;
+                cutout.preserveAspect = imageToCutOut.preserveAspect;
+            }
+            j++;
+        }
         if (gameObject.activeSelf) StartCoroutine(SetPosition());
     }
 
@@ -43,50 +60,65 @@ public class TutorialPanelHandler : MonoBehaviour
     private IEnumerator SetPosition()
     {
         yield return new WaitForEndOfFrame();
-        if (_cutOut != null && _imageToCutOut != null)
+        for (int i = 0; i < _cutOuts.Count; i++)
         {
-            _cutOut.GetComponent<RectTransform>().anchorMin = new(0.5f, 0.5f);
-            _cutOut.GetComponent<RectTransform>().anchorMax = new(0.5f, 0.5f);
-            _cutOut.GetComponent<RectTransform>().pivot = _imageToCutOut.GetComponent<RectTransform>().pivot;
-            _cutOut.transform.position = _imageToCutOut.transform.position;
-            _cutOut.GetComponent<RectTransform>().sizeDelta = new(_imageToCutOut.GetComponent<RectTransform>().rect.width, _imageToCutOut.GetComponent<RectTransform>().rect.height);
-
-            float screenWidth = _fadeLayer.GetComponent<RectTransform>().rect.width;
-            float screenHeight = _fadeLayer.GetComponent<RectTransform>().rect.height;
-
-            float widththreshold = screenWidth * 0.25f;
-
-            float cutoutRightEdge = screenWidth / 2 + _cutOut.transform.localPosition.x + _cutOut.GetComponent<RectTransform>().sizeDelta.x / 2;
-
-            if ((screenWidth - cutoutRightEdge) < widththreshold)
+            GameObject cutOut = _cutOuts[i];
+            Image imageToCutOut = _imageToCutOut[i];
+            if (!imageToCutOut.gameObject.activeInHierarchy) { cutOut.SetActive(false); continue; }
+            else cutOut.SetActive(true);
+            if (cutOut != null && imageToCutOut != null)
             {
-                float cutoutLeftEdge = screenWidth / 2 + _cutOut.transform.localPosition.x - _cutOut.GetComponent<RectTransform>().sizeDelta.x / 2;
+                cutOut.GetComponent<RectTransform>().anchorMin = new(0.5f, 0.5f);
+                cutOut.GetComponent<RectTransform>().anchorMax = new(0.5f, 0.5f);
+                cutOut.GetComponent<RectTransform>().pivot = imageToCutOut.GetComponent<RectTransform>().pivot;
+                cutOut.transform.position = imageToCutOut.transform.position;
+                cutOut.GetComponent<RectTransform>().sizeDelta = new(imageToCutOut.GetComponent<RectTransform>().rect.width, imageToCutOut.GetComponent<RectTransform>().rect.height);
 
-                if ((cutoutLeftEdge) < widththreshold)
+                float screenWidth = _fadeLayer.GetComponent<RectTransform>().rect.width;
+                float screenHeight = _fadeLayer.GetComponent<RectTransform>().rect.height;
+
+                float widththreshold = screenWidth * 0.25f;
+
+                float cutoutRightEdge = screenWidth / 2 + cutOut.transform.localPosition.x + _cutOut.GetComponent<RectTransform>().sizeDelta.x / 2;
+
+                if ((screenWidth - cutoutRightEdge) < widththreshold)
                 {
-                    FlipInfo();
-                    if(cutoutLeftEdge < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(300 - cutoutLeftEdge, 0);
-                }
-                else
-                {
-                    if (screenWidth - cutoutRightEdge < cutoutLeftEdge)
+                    float cutoutLeftEdge = screenWidth / 2 + cutOut.transform.localPosition.x - _cutOut.GetComponent<RectTransform>().sizeDelta.x / 2;
+
+                    if ((cutoutLeftEdge) < widththreshold)
                     {
                         FlipInfo();
                         if (cutoutLeftEdge < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(300 - cutoutLeftEdge, 0);
                     }
                     else
                     {
-                        if (screenWidth - cutoutRightEdge < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(-300 + (screenWidth - cutoutRightEdge), 0);
+                        if (screenWidth - cutoutRightEdge < cutoutLeftEdge)
+                        {
+                            FlipInfo();
+                            if (cutoutLeftEdge < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(300 - cutoutLeftEdge, 0);
+                        }
+                        else
+                        {
+                            if (screenWidth - cutoutRightEdge < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(-300 + (screenWidth - cutoutRightEdge), 0);
+                        }
                     }
-                }
 
+                }
+                else
+                {
+                    if (screenWidth - cutoutRightEdge < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(-300 + (screenWidth - cutoutRightEdge), 0);
+                }
             }
-            else
-            {
-                if (screenWidth - cutoutRightEdge < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(-300 + (screenWidth - cutoutRightEdge), 0);
-            }
+            yield return null;
         }
-        yield return null;
+
+        GameObject previousArrow = null;
+        for (int i = 0; i < _cutOuts.Count; i++)
+        {
+            if (!_cutOuts[i].activeInHierarchy) continue;
+            if(previousArrow) previousArrow.SetActive(false);
+            previousArrow =_cutOuts[i].transform.Find("Arrow").gameObject;
+        }
     }
 
     private void FlipInfo(bool flip = true)
