@@ -20,10 +20,10 @@ public class TutorialController : AltMonoBehaviour
     {
         Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => _playerName = p.Name);
         if (PlayerPrefs.GetInt(_tutorialPanelName+"_"+ _playerName, 0) == 1) return;
-        Initialize();
+        //Initialize();
     }
 
-    private void Initialize()
+    public void Initialize()
     {
         if(_tutorialPanelList.Count <= 0) return;
         foreach (var tutorialPanel in _tutorialPanelList)

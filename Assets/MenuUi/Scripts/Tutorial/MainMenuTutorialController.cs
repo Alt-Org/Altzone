@@ -11,31 +11,48 @@ public class MainMenuTutorialController : MonoBehaviour
     private int _currentWindow = 0;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        _currentWindow = _swipe.CurrentPage;
-        _swipe.OnCurrentPageChanged += ChangeWindow;
-        EmotionSelectorPopupScript.OnEmotionInsertFinished += ChangeWindow;
-        ChangeWindow();
+        if(_swipe != null)
+        {
+            _currentWindow = _swipe.CurrentPage;
+            _swipe.OnCurrentPageChanged += ChangeWindow;
+            ChangeWindow();
+        }
+        EmotionSelectorPopupScript.OnEmotionInsertFinished += ActivateTutorial;
     }
 
     private void OnDestroy()
     {
-        EmotionSelectorPopupScript.OnEmotionInsertFinished -= ChangeWindow;
+        if (_swipe != null)
+        {
+            _swipe.OnCurrentPageChanged -= ChangeWindow;
+        }
+        EmotionSelectorPopupScript.OnEmotionInsertFinished -= ActivateTutorial;
     }
 
     private void ChangeWindow()
     {
         if (!EmotionSelectorPopupScript.EmotionInsertedToday) return;
-        var tutorial = GetTutorial(_currentWindow);
+        var tutorial = GetTutorial(2);
         if (tutorial != null)
             tutorial.gameObject.SetActive(false);
         _currentWindow = _swipe.CurrentPage;
-        tutorial = GetTutorial(_currentWindow);
+        tutorial = GetTutorial(2);
         if (tutorial != null)
         {
             tutorial.gameObject.SetActive(true);
             tutorial.RefreshPositions();
+        }
+    }
+
+    public void ActivateTutorial()
+    {
+        _hometutorial.Initialize();
+        if (_hometutorial != null)
+        {
+            _hometutorial.gameObject.SetActive(true);
+            _hometutorial.RefreshPositions();
         }
     }
 
