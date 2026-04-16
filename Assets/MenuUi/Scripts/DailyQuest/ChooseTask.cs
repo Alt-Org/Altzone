@@ -37,6 +37,8 @@ public class ChooseTask : MonoBehaviour
     public delegate void ChooseTaskHidden();
     public static event ChooseTaskHidden OnChooseTaskHidden;
 
+    private static bool _shouldShowPopup = false;
+
     IEnumerator Initialize()
     {
 
@@ -59,13 +61,23 @@ public class ChooseTask : MonoBehaviour
 
         _gameVersion = GameConfig.Get().GameVersionType;
 
-        // If using "TurboEducation" and no task going on currently
-        if (_gameVersion == VersionType.TurboEducation && !DailyTaskProgressManager.Instance.HasOnGoingTask())
+        if (_gameVersion == VersionType.TurboEducation)
         {
-            // Wait until view switched and window shown
-            //yield return StartCoroutine(SwitchViewAndShowWindow());
-            ShowSelectionWindow();
+            if (DailyTaskProgressManager.Instance.HasOnGoingTask())
+            {
+                _shouldShowPopup = false;
+            }
+            else
+            {
+                if (_shouldShowPopup)
+                {
+                    ShowSelectionWindow();
+                }
+
+                _shouldShowPopup = !_shouldShowPopup;
+            }
         }
+
         _initialized = true;
         Debug.Log("Initializing ChooseTask.cs... Initialized!");
     }
@@ -83,6 +95,11 @@ public class ChooseTask : MonoBehaviour
     private void OnDestroy()
     {
         DailyTaskProgressManager.OnTaskChange -= HideSelectionWindow;
+    }
+
+    private void OnApplicationQuit()
+    {
+        _shouldShowPopup = false;
     }
 
     IEnumerator SwitchViewAndShowWindow()
