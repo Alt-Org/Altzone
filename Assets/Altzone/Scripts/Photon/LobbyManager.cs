@@ -131,6 +131,7 @@ namespace Altzone.Scripts.Lobby
         private Coroutine _serviceHolder = null;
         private Coroutine _autoJoinHolder = null;
         private Coroutine _verifyPositionsHolder = null;
+        private Coroutine _canBattleStartCheckHolder = null;
         private Coroutine _queueTimerHolder = null;
         private const float QueueWaitSeconds = 30f;
         private const float QueueReadyStartDelaySeconds = 2f;
@@ -181,6 +182,7 @@ namespace Altzone.Scripts.Lobby
 
         private static bool _isActive = false;
         private static bool _gamePlayedOut = false;
+        private static bool _battleStartUiReady = false;
 
         public bool RunnerActive => _runner != null;
         #endregion
@@ -307,10 +309,63 @@ namespace Altzone.Scripts.Lobby
             _gamePlayedOut = true;
         }
 
+        public static void NotifyBattleStartUiReady()
+        {
+            _battleStartUiReady = true;
+        }
+
         private bool IsGameStartTransitionActive()
         {
             // BattleID can remain set after match end, so rely on transient runtime flags instead.
             return !_gamePlayedOut && (_countdownActive || _startGameHolder != null || _startQuantumHolder != null);
+        }
+
+        private void QueueCustomBattleStartCheck()
+        {
+            if (_canBattleStartCheckHolder != null) return;
+            if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.CurrentRoom == null) return;
+            if (PhotonRealtimeClient.LocalPlayer == null || !PhotonRealtimeClient.LocalPlayer.IsMasterClient) return;
+
+            GameType gameType;
+            try
+            {
+                gameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+            }
+            catch
+            {
+                return;
+            }
+
+            if (gameType != GameType.Custom) return;
+            _canBattleStartCheckHolder = StartCoroutine(CheckIfBattleCanStart());
+        }
+
+        private IEnumerator CheckIfBattleCanStart()
+        {
+            try
+            {
+                yield return new WaitUntil(() => _posChangeQueue.Count == 0 && !_playerPosChangeInProgress);
+
+                if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.CurrentRoom == null) yield break;
+                if (PhotonRealtimeClient.LocalPlayer == null || !PhotonRealtimeClient.LocalPlayer.IsMasterClient) yield break;
+                if (_startGameHolder != null || _startQuantumHolder != null) yield break;
+
+                Room room = PhotonRealtimeClient.CurrentRoom;
+                if (room.PlayerCount != room.MaxPlayers) yield break;
+
+                if (CheckIfAllPlayersInPosition())
+                {
+                    GameType gameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                    if (gameType == GameType.Custom)
+                    {
+                        OnStartPlayingEvent(new StartPlayingEvent());
+                    }
+                }
+            }
+            finally
+            {
+                _canBattleStartCheckHolder = null;
+            }
         }
 
         public void AcceptInRoomInvite(string roomName)
@@ -2238,6 +2293,12 @@ namespace Altzone.Scripts.Lobby
                 StopCoroutine(_followLeaderHolder);
                 _followLeaderHolder = null;
             }
+
+            if (_canBattleStartCheckHolder != null)
+            {
+                StopCoroutine(_canBattleStartCheckHolder);
+                _canBattleStartCheckHolder = null;
+            }
         }
 
         private IEnumerator LeaveAndAutoRequeue(GameType gameType)
@@ -2524,6 +2585,12 @@ namespace Altzone.Scripts.Lobby
             {
                 StopCoroutine(_autoJoinHolder);
                 _autoJoinHolder = null;
+            }
+
+            if (_canBattleStartCheckHolder != null)
+            {
+                StopCoroutine(_canBattleStartCheckHolder);
+                _canBattleStartCheckHolder = null;
             }
         }
 
@@ -4888,8 +4955,21 @@ namespace Altzone.Scripts.Lobby
                 long sendTime = data.StartTime;
 
                 // Start Battle Countdown (request UI to show countdown)
+                _battleStartUiReady = false;
                 OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleLoad);
                 _isStartFinished = false;
+
+                // Wait for BattleLoad UI to initialize and signal readiness.
+                const float onStartUiReadyTimeout = 5f;
+                float uiReadyStart = Time.time;
+                while (!_battleStartUiReady && Time.time - uiReadyStart < onStartUiReadyTimeout)
+                {
+                    yield return null;
+                }
+                if (!_battleStartUiReady)
+                {
+                    Debug.LogWarning("StartQuantum: Battle start UI was not ready after timeout; proceeding.");
+                }
 
                 // Wait for UI to subscribe to OnStartTimeSet (timeout to avoid hanging)
                 const float onStartSubscribeTimeout = 5f;
@@ -6711,7 +6791,7 @@ namespace Altzone.Scripts.Lobby
                     }
                     else Debug.LogError($"Player {photonEvent.Sender} not found in room");
 
-                    // previously started a no-op battle-start check coroutine; removed as unused
+                    QueueCustomBattleStartCheck();
                     break;
 
                 case PhotonRealtimeClient.PhotonEvent.RoomChangeRequested:
@@ -7006,7 +7086,7 @@ namespace Altzone.Scripts.Lobby
                 {
                     if (playerCount + botCount == room.MaxPlayers && room.IsOpen) PhotonRealtimeClient.CloseRoom();
 
-                    // Previously would start a CheckIfBattleCanStart coroutine here; removed as it's unused.
+                    QueueCustomBattleStartCheck();
 
                     // Ensure master continues matchmaking loop so countdowns can be restarted when new players join
                     if (PhotonRealtimeClient.InMatchmakingRoom && _matchmakingHolder == null)

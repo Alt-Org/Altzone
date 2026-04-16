@@ -535,12 +535,15 @@ MonoBehaviour:
   _gameModeButtons:
   - {fileID: 4091377289515798502}
   - {fileID: 2829572788807415862}
+  - {fileID: 7233449278219608806}
   _gameModeHeaders:
   - {fileID: 2489717828359045447}
+  - {fileID: 4144495222954848854}
   - {fileID: 4144495222954848854}
   _gameModeButtonsAsButtons:
   - {fileID: 5177981418448575191}
   - {fileID: 4032366852551734761}
+  - {fileID: 5200448605748152348}
 --- !u!1 &2489717828359045447
 GameObject:
   m_ObjectHideFlags: 0
@@ -733,7 +736,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 6769611933994000033}
   m_OnClick:
     m_PersistentCalls:
@@ -1710,7 +1713,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 7682855185394912867}
   m_OnClick:
     m_PersistentCalls:

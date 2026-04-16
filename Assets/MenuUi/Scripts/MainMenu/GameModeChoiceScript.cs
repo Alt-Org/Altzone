@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Prg.Scripts.Common;
 using UnityEngine.UI;
+using Altzone.Scripts.Lobby;
+using MenuUi.Scripts.Signals;
 
 
 public class GameModeChoiceScript : MonoBehaviour
@@ -10,6 +12,7 @@ public class GameModeChoiceScript : MonoBehaviour
     [SerializeField] private List<GameObject> _gameModeButtons = new();
     [SerializeField] private List<GameObject> _gameModeHeaders = new();
     [SerializeField] private List<Button> _gameModeButtonsAsButtons = new();
+    [SerializeField] private List<GameType> _gameModeTypes = new() { GameType.Custom, GameType.Random2v2, GameType.FriendLobby };
 
     private int currentModeInt = 0;
     private int amountOfModes;
@@ -56,7 +59,7 @@ public class GameModeChoiceScript : MonoBehaviour
     {
         if (!_isSwiping)
         {
-            _gameModeButtonsAsButtons[currentModeInt].onClick.Invoke();
+            OpenCurrentMode();
         }
         _isSwiping = false;
     }
@@ -69,19 +72,8 @@ public class GameModeChoiceScript : MonoBehaviour
     private void Start()
     {
         currentModeInt = 0;
-        amountOfModes = _gameModeButtons.Count;
-
-        foreach (GameObject gameModeButton in _gameModeButtons)
-        {
-            gameModeButton.SetActive(false);
-        }
-        _gameModeButtons[0].SetActive(true);
-
-        foreach (GameObject gameModeHeader in _gameModeHeaders)
-        {
-            gameModeHeader.SetActive(false);
-        }
-        _gameModeHeaders[0].SetActive(true);
+        amountOfModes = Mathf.Min(_gameModeButtons.Count, _gameModeTypes.Count);
+        SetCurrentModeActive();
 
     }
 
@@ -96,18 +88,7 @@ public class GameModeChoiceScript : MonoBehaviour
             currentModeInt = amountOfModes - 1;
         }
 
-        foreach (GameObject gameModeButton in _gameModeButtons)  //make correct game mode button active
-        {
-            gameModeButton.SetActive(false);
-        }
-        _gameModeButtons[currentModeInt].SetActive(true);
-
-
-        foreach (GameObject gameModeHeader in _gameModeHeaders) //make correct header active
-        {
-            gameModeHeader.SetActive(false);
-        }
-        _gameModeHeaders[currentModeInt].SetActive(true);
+        SetCurrentModeActive();
     }
 
     public void PressArrowRight() 
@@ -121,16 +102,47 @@ public class GameModeChoiceScript : MonoBehaviour
             currentModeInt = 0;
         }
 
-        foreach (GameObject gameModeButton in _gameModeButtons) //make correct game mode button active
+        SetCurrentModeActive();
+    }
+
+    private void SetCurrentModeActive()
+    {
+        foreach (GameObject gameModeButton in _gameModeButtons)
         {
             gameModeButton.SetActive(false);
         }
-        _gameModeButtons[currentModeInt].SetActive(true);
 
-        foreach (GameObject gameModeHeader in _gameModeHeaders)//make correct header active
+        foreach (GameObject gameModeHeader in _gameModeHeaders)
         {
             gameModeHeader.SetActive(false);
         }
-        _gameModeHeaders[currentModeInt].SetActive(true);
+
+        if (amountOfModes <= 0)
+        {
+            return;
+        }
+
+        int buttonIndex = Mathf.Clamp(currentModeInt, 0, amountOfModes - 1);
+        _gameModeButtons[buttonIndex].SetActive(true);
+
+        if (_gameModeHeaders.Count > 0)
+        {
+            int headerIndex = Mathf.Clamp(buttonIndex, 0, _gameModeHeaders.Count - 1);
+            _gameModeHeaders[headerIndex].SetActive(true);
+        }
+    }
+
+    private void OpenCurrentMode()
+    {
+        if (currentModeInt >= 0 && currentModeInt < _gameModeTypes.Count)
+        {
+            SignalBus.OnBattlePopupRequestedSignal(_gameModeTypes[currentModeInt]);
+            return;
+        }
+
+        if (currentModeInt >= 0 && currentModeInt < _gameModeButtonsAsButtons.Count)
+        {
+            _gameModeButtonsAsButtons[currentModeInt].onClick.Invoke();
+        }
     }
 }
