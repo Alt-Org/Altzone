@@ -99,8 +99,8 @@ namespace Battle.View.UI
         /// <param name="text">The text string which to display.</param>
         public void SetDebugtext(string text)
         {
-            _announcerText.text = text;
-            _announcerText.color = Color.red;
+            _announcerText.text = string.Format("<mark=#FF000050>{0}", text);
+            _announcerText.color = Color.white;
             _announcerText.textWrappingMode = TextWrappingModes.Normal;
             _announcerText.fontSize *= 0.5f;
             _debugmode = true;
