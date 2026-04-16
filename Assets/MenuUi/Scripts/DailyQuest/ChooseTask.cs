@@ -23,6 +23,10 @@ public class ChooseTask : MonoBehaviour
     [Tooltip("The UI overlay to disable the buttons in when the ChooseTask window is active")]
     private RectTransform _UIOverlay;
 
+    [SerializeField]
+    [Tooltip("Temporary Holder for tutorial controller nutil a more parmanent solution is figured out.")]
+    private MainMenuTutorialController _tutorial;
+
     private List<Button> _UIOverlayButtons;
 
     private DailyTaskView _dailyTaskView;
@@ -61,7 +65,7 @@ public class ChooseTask : MonoBehaviour
         if (_gameVersion == VersionType.TurboEducation && !DailyTaskProgressManager.Instance.HasOnGoingTask())
         {
             // Wait until view switched and window shown
-            //yield return StartCoroutine(SwitchViewAndShowWindow());
+            yield return new WaitUntil(()=> !_tutorial.IsTutorialInProgress);
             ShowSelectionWindow();
         }
         _initialized = true;

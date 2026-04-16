@@ -15,6 +15,9 @@ public class TutorialController : AltMonoBehaviour
     private int _currentPage=0;
     private string _playerName = string.Empty;
 
+    private bool _inProgress = false;
+    public bool IsTutorialInProgress => _inProgress;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,6 +35,7 @@ public class TutorialController : AltMonoBehaviour
         }
         _currentPage = 0;
         _tutorialPanelList[_currentPage].gameObject.SetActive(true);
+        _inProgress = true;
     }
 
     private void AdvanceTutorial()
@@ -45,6 +49,7 @@ public class TutorialController : AltMonoBehaviour
         else
         {
             PlayerPrefs.SetInt(_tutorialPanelName + "_" + _playerName, 1);
+            _inProgress = false;
         }
     }
 

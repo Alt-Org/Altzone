@@ -9,6 +9,7 @@ public class MainMenuTutorialController : MonoBehaviour
     [SerializeField] private TutorialController _hometutorial;
 
     private int _currentWindow = 0;
+    public bool IsTutorialInProgress => _hometutorial.IsTutorialInProgress;
 
     // Start is called before the first frame update
     void Awake()

@@ -3644,6 +3644,7 @@ MonoBehaviour:
   _selectionWindow: {fileID: 3769202264309907407}
   _taskCardHolder: {fileID: 1938219644147862785}
   _UIOverlay: {fileID: 1909520762}
+  _tutorial: {fileID: 977609554}
 --- !u!4 &273870960
 Transform:
   m_ObjectHideFlags: 0
@@ -11217,6 +11218,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 977609552}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &977609554 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8146795977445758114, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+    type: 3}
+  m_PrefabInstance: {fileID: 977609552}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1614394212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6de7d5dec5f3f0d4588dd93e5e73325e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &993990993
 GameObject:
   m_ObjectHideFlags: 0
