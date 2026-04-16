@@ -38,6 +38,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "Varmuuden taakse k\xE4tkeytyv\xE4,  pelkonsa
     kovettanut taistelija. "
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 43a885835704aa94a8649d5c7a6d471d, type: 2}
   Hp:
     Level: 1
@@ -60,5 +62,7 @@ MonoBehaviour:
   BattleCharacterEntityPrototype:
     Id:
       Value: 1529692275062825961
-  BattleShieldEntityPrototypes: []
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1469242666684009418
   BattleUiSprite: {fileID: 0}

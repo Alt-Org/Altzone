@@ -38,6 +38,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "Tietokirjansa varjoon k\xE4tkeytyv\xE4, nippelitiedolla
     loistava p\xE4tij\xE4. "
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: d45a4a5ca80cf764488149170ac09bf3, type: 2}
   Hp:
     Level: 2
@@ -60,7 +62,7 @@ MonoBehaviour:
   BattleCharacterEntityPrototype:
     Id:
       Value: 1282133958245688852
-  BattleShieldEntityPrototype:
-    Id:
-      Value: 0
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1405197681715225055
   BattleUiSprite: {fileID: 0}

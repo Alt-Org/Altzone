@@ -36,6 +36,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "Punavaloin tilannetta ohjaava, s\xE4\xE4nt\xF6jen
     vartija."
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 93051fcb9239ab14eaefe163b3e090d1, type: 2}
   Hp:
     Level: 4
@@ -55,7 +57,16 @@ MonoBehaviour:
   GalleryImage: {fileID: 21300000, guid: 110fd2bb2bc393f4ab351a34a5889066, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: e3f6ea3c5805b324bb400ff6990ca7ad, type: 3}
   CharPhotoSeries: {fileID: 21300000, guid: ea11942a1e5aed44c9622bff21630def, type: 3}
-  BattleEntityPrototype:
+  BattleCharacterEntityPrototype:
     Id:
       Value: 1521204677351281227
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1288947694196741302
+  - Id:
+      Value: 1356971806745972577
+  - Id:
+      Value: 1284992663357180319
+  - Id:
+      Value: 1294099485820400818
   BattleUiSprite: {fileID: 0}

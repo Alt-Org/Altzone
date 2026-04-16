@@ -33,6 +33,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: 'Peiton alle todellisuutta pakeneva, uupunut
     unikeko. '
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 90969f0d5f4fd634094177939fc112a7, type: 2}
   Hp:
     Level: 2
@@ -55,7 +57,7 @@ MonoBehaviour:
   BattleCharacterEntityPrototype:
     Id:
       Value: 1435907982705750939
-  BattleShieldEntityPrototype:
-    Id:
-      Value: 0
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1465370991873904589
   BattleUiSprite: {fileID: 0}

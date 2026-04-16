@@ -36,6 +36,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: Vaurauteen verhoutunut, laskelmoiva menestyksen
     tavoittelija.
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: baa4c98962452dd49a5bd0c198f914ce, type: 2}
   Hp:
     Level: 2
@@ -58,7 +60,7 @@ MonoBehaviour:
   BattleCharacterEntityPrototype:
     Id:
       Value: 1412624666523584977
-  BattleShieldEntityPrototype:
-    Id:
-      Value: 0
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1491477322312932275
   BattleUiSprite: {fileID: 0}

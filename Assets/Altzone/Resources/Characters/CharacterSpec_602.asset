@@ -35,6 +35,8 @@ MonoBehaviour:
   CharacterDescriptionEnglish: 
   CharacterShortDescriptionFinnish: Lemmenkuplansa lumoissa kuhertelevat kyyhkyset
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 5ec05f18528981f45b8551c2e4f70e6e, type: 2}
   Hp:
     Level: 2
@@ -57,7 +59,7 @@ MonoBehaviour:
   BattleCharacterEntityPrototype:
     Id:
       Value: 1402699471887754154
-  BattleShieldEntityPrototype:
-    Id:
-      Value: 0
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1443634630296244305
   BattleUiSprite: {fileID: 0}

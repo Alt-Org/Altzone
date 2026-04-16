@@ -36,6 +36,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: Aatteelleen uskollinen, dogmaattinen oikean tien
     kulkija.
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 8f704e732259143479e4c3daa6812945, type: 2}
   Hp:
     Level: 3
@@ -58,7 +60,7 @@ MonoBehaviour:
   BattleCharacterEntityPrototype:
     Id:
       Value: 1456338066242029475
-  BattleShieldEntityPrototype:
-    Id:
-      Value: 0
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1345729642852627830
   BattleUiSprite: {fileID: 0}

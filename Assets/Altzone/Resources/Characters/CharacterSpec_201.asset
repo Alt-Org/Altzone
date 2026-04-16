@@ -33,6 +33,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "Pierutyynyll\xE4 hauskuuttava, kekseli\xE4isyydell\xE4
     leikinlaskija. "
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 74984fd1c07e51a4b961d5900f79212d, type: 2}
   Hp:
     Level: 1
@@ -55,7 +57,7 @@ MonoBehaviour:
   BattleCharacterEntityPrototype:
     Id:
       Value: 1441497658329801111
-  BattleShieldEntityPrototype:
-    Id:
-      Value: 0
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1503229651590574804
   BattleUiSprite: {fileID: 0}

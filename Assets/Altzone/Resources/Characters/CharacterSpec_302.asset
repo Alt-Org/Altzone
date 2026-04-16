@@ -34,6 +34,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "Auttamalla uupuva, hyv\xE4ksynt\xE4\xE4 velvollisuudesta
     etsiv\xE4 supernainen. "
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 35e1452ed2a9f8942a0e1d4154fba839, type: 2}
   Hp:
     Level: 4
@@ -56,7 +58,7 @@ MonoBehaviour:
   BattleCharacterEntityPrototype:
     Id:
       Value: 1275357583760430902
-  BattleShieldEntityPrototype:
-    Id:
-      Value: 0
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1340836060505826774
   BattleUiSprite: {fileID: 0}

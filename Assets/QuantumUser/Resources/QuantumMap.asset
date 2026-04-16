@@ -378,76 +378,76 @@ MonoBehaviour:
         asm: Quantum.Simulation}
       data:
         PlayerCount: 0
-        PlayStates:
-        - Value: 0
-        - Value: 0
-        - Value: 0
-        - Value: 0
         PlayerRefs:
         - _index: 0
         - _index: 0
         - _index: 0
         - _index: 0
-        IsBot:
+        PlayStates:
         - Value: 0
         - Value: 0
         - Value: 0
         - Value: 0
-        IsAbandoned:
+        IsBotStates:
         - Value: 0
         - Value: 0
         - Value: 0
         - Value: 0
-        RespawnTimer:
-        - Mode: 0
-          Frames: 0
-          Seconds:
-            RawValue: 0
-        - Mode: 0
-          Frames: 0
-          Seconds:
-            RawValue: 0
-        - Mode: 0
-          Frames: 0
-          Seconds:
-            RawValue: 0
-        - Mode: 0
-          Frames: 0
-          Seconds:
-            RawValue: 0
-        AllowCharacterSwapping:
+        IsAbandonedStates:
         - Value: 0
         - Value: 0
         - Value: 0
         - Value: 0
-        SelectedCharacterNumbers: 00000000000000000000000000000000
-        AllCharacterEntityGroupIDs:
-        - Int: 0
-          IsCompound:
-            Value: 0
-        - Int: 0
-          IsCompound:
-            Value: 0
-        - Int: 0
-          IsCompound:
-            Value: 0
-        - Int: 0
-          IsCompound:
-            Value: 0
-        AllCharactersStates:
-        - Value: 0
-        - Value: 0
-        - Value: 0
-        - Value: 0
-        - Value: 0
-        - Value: 0
-        - Value: 0
-        - Value: 0
+        AllowCharacterSwappingStates:
         - Value: 0
         - Value: 0
         - Value: 0
         - Value: 0
         PlayerGiveUpStates:
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        RespawnTimers:
+        - Mode: 0
+          Frames: 0
+          Seconds:
+            RawValue: 0
+        - Mode: 0
+          Frames: 0
+          Seconds:
+            RawValue: 0
+        - Mode: 0
+          Frames: 0
+          Seconds:
+            RawValue: 0
+        - Mode: 0
+          Frames: 0
+          Seconds:
+            RawValue: 0
+        CharacterSelectedNumbers: 00000000000000000000000000000000
+        CharacterAllEntityGroupIDs:
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        CharactersAllStates:
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
         - Value: 0
         - Value: 0
         - Value: 0

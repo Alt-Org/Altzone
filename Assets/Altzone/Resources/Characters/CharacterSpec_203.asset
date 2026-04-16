@@ -36,6 +36,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: Arvaamattomasti tunteet kimmottava, illuusioon
     verhoutuja.
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 11e8f352fa68f5640a735c87c46dd673, type: 2}
   Hp:
     Level: 1
@@ -58,7 +60,7 @@ MonoBehaviour:
   BattleCharacterEntityPrototype:
     Id:
       Value: 1399946060019305741
-  BattleShieldEntityPrototype:
-    Id:
-      Value: 0
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1370200197464805867
   BattleUiSprite: {fileID: 0}

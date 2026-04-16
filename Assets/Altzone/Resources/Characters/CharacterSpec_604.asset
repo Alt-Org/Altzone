@@ -35,6 +35,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "Yhteiseen rooliin pakkautuva, verhon taakse
     vet\xE4ytyv\xE4 esiintyj\xE4joukko. "
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 376f4b04fae13e6458e22560dea074cd, type: 2}
   Hp:
     Level: 1
@@ -57,7 +59,7 @@ MonoBehaviour:
   BattleCharacterEntityPrototype:
     Id:
       Value: 1366221629889033733
-  BattleShieldEntityPrototype:
-    Id:
-      Value: 1366221629889033733
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1273812327742182531
   BattleUiSprite: {fileID: 0}

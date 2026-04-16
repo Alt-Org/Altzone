@@ -33,9 +33,11 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "Taiteellaan reaktioita hakeva ja n\xE4kemyksi\xE4
     haastava tarinankertoja"
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 112eae0352546614eb6f0e604f298fbe, type: 2}
   Hp:
-    Level: 0
+    Level: 6
     Coefficient: 5
   Speed:
     Level: 5
@@ -55,7 +57,7 @@ MonoBehaviour:
   BattleCharacterEntityPrototype:
     Id:
       Value: 1421404513080050552
-  BattleShieldEntityPrototype:
-    Id:
-      Value: 0
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1481552748210035015
   BattleUiSprite: {fileID: 0}

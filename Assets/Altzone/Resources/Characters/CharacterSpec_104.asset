@@ -37,6 +37,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "Heikompiaan kilpen\xE4 k\xE4ytt\xE4v\xE4, armottoman
     kylm\xE4 tyranni."
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: d5417892b75656244ad4e42fd4cdeb9a, type: 2}
   Hp:
     Level: 1
@@ -59,7 +61,7 @@ MonoBehaviour:
   BattleCharacterEntityPrototype:
     Id:
       Value: 1340680004139379478
-  BattleShieldEntityPrototype:
-    Id:
-      Value: 0
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1454941275347285400
   BattleUiSprite: {fileID: 0}

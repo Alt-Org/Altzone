@@ -36,6 +36,8 @@ MonoBehaviour:
   CharacterDescriptionEnglish: 
   CharacterShortDescriptionFinnish: "Tunteensa pois pesev\xE4, rituaaliensa orja. "
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 1692823243e71c0488237f3e67ef980a, type: 2}
   Hp:
     Level: 3
@@ -58,7 +60,7 @@ MonoBehaviour:
   BattleCharacterEntityPrototype:
     Id:
       Value: 1502541061230511187
-  BattleShieldEntityPrototype:
-    Id:
-      Value: 0
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1411087121854460265
   BattleUiSprite: {fileID: 0}
