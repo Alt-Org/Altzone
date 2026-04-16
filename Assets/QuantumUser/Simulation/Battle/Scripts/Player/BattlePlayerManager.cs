@@ -610,6 +610,12 @@ namespace Battle.QSimulation.Player
             playerData->AbilityCooldownSec       = FrameTimer.FromSeconds(f, FP._3);
             playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0);
 
+            // update shield if attached
+            if (playerData->AttachedShield.ERef != EntityRef.None)
+            {
+                f.Events.BattlePlayStateUpdate(playerData->AttachedShield.ERef, true);
+            }
+
             BattlePlayerMovementController.Teleport(f, playerData, characterEntityRef, worldPosition);
 
             // update player handle
@@ -651,6 +657,7 @@ namespace Battle.QSimulation.Player
 
             BattleEntityManager.Return(f, playerHandle.CharacterEntityGroupID, playerHandle.SelectedCharacterNumber);
 
+            // return shield if attached
             if (playerData->AttachedShield.ERef != EntityRef.None)
             {
                 BattleEntityManager.Return(f, BattlePlayerShieldManager.Low_GetShieldEntityGroupID(f, playerData->Slot, playerHandle.SelectedCharacterNumber), playerData->AttachedShieldNumber);

@@ -41,12 +41,13 @@ namespace Battle.QSimulation.Player
 
             if (projectileCollisionData->Projectile->IsHeld) return;
 
-            BattlePlayerClass400DataQComponent* data = GetClassData(f, shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
-            bool grab = !projectileCollisionData->Projectile->IsPassed;
+            bool grab = playerShieldData->IsAttached && !projectileCollisionData->Projectile->IsPassed;
+            BattlePlayerClass400DataQComponent* data = null;
 
             if (grab)
             {
-                BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef)->Slot);
+                data = GetClassData(f, ((BattlePlayerShieldEntityRef)shieldCollisionData->PlayerShieldHitbox->ParentEntityRef).GetDataQComponent(f)->PlayerEntityRef);
+                BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerShieldData->PlayerEntityRef.GetDataQComponent(f)->Slot);
                 if (!teammateHandle.PlayState.IsInPlay()) grab = false;
             }
             if (grab)
@@ -60,13 +61,23 @@ namespace Battle.QSimulation.Player
                 data->IsHoldingProjectile = true;
                 data->HeldProjectileEntity = projectileCollisionData->ProjectileEntity;
                 data->HeldProjectileAngleRadians = FPVector2.RadiansSigned(FPVector2.Up, toProjectile);
-                data->HeldProjectileDistance = toProjectile.Magnitude;
+                data->HeldProjectileDistance = shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset + projectileCollisionData->Projectile->Radius;
                 data->HoldStartFrame = f.Number;
             }
             else
             {
-                BattleProjectileQSystem.HandleIntersection(f, projectileCollisionData->Projectile, projectileCollisionData->ProjectileEntity, projectileCollisionData->OtherEntity, shieldCollisionData->PlayerShieldHitbox->CalculateNormal(f), shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset);
-                BattleProjectileQSystem.UpdateVelocity(f, projectileCollisionData->Projectile, shieldCollisionData->PlayerShieldHitbox->CalculateNormal(f), BattleProjectileQSystem.SpeedChange.Increment);
+                BattleProjectileQSystem.HandleIntersection(f,
+                    projectileCollisionData->Projectile,
+                    projectileCollisionData->ProjectileEntity,
+                    projectileCollisionData->OtherEntity,
+                    shieldCollisionData->PlayerShieldHitbox->CalculateNormal(f),
+                    shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset
+                );
+                BattleProjectileQSystem.UpdateVelocity(f,
+                    projectileCollisionData->Projectile,
+                    shieldCollisionData->PlayerShieldHitbox->CalculateNormal(f),
+                    BattleProjectileQSystem.SpeedChange.Increment
+                );
             }
         }
 
@@ -81,11 +92,7 @@ namespace Battle.QSimulation.Player
         public override unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity)
         {
             BattlePlayerClass400DataQComponent* data = GetClassData(f, playerEntity);
-            if (!data->IsHoldingProjectile)
-            {
-                playerHandle.AllowCharacterSwapping = true;
-                return;
-            }
+            if (!data->IsHoldingProjectile) return;
 
             playerHandle.AllowCharacterSwapping = false;
 
@@ -119,6 +126,7 @@ namespace Battle.QSimulation.Player
                     BattleProjectileQSystem.UpdateVelocity(f, projectile, newDirection, BattleProjectileQSystem.SpeedChange.Increment, passed: true);
                     BattleProjectileQSystem.SetHeld(f, projectile, false);
                     data->IsHoldingProjectile = false;
+                    playerHandle.AllowCharacterSwapping = true;
                 }
             }
         }

@@ -34,7 +34,7 @@ namespace Battle.View.Player
         /// <summary>Reference to the moving shield object.</summary>
         /// @ref BattlePlayerShieldClass400ViewController-SerializeFields
         [Tooltip("Reference to the moving shield object.")]
-        [SerializeField] private GameObject _movingShield;
+        [SerializeField] private GameObject _shieldSprite;
 
         /// <summary>Indicates if the moving shield should be flipped.</summary>
         /// @ref BattlePlayerShieldClass400ViewController-SerializeFields
@@ -59,7 +59,7 @@ namespace Battle.View.Player
         {
             if (e.DefencePercentage <= FP._0)
             {
-                _movingShield.SetActive(false);
+                _shieldSprite.SetActive(false);
             }
         }
 
@@ -69,33 +69,27 @@ namespace Battle.View.Player
         /// </summary>
         public override void OnUpdateView()
         {
-            if (_movingShield == null) return;
-
             GameObject projectileRef = BattleGameViewController.ProjectileReference;
+
             if (projectileRef == null) return;
 
-            Vector3 origin = transform.position;
-            Vector3 toProjectile = projectileRef.transform.position - origin;
+            Vector3 toProjectileVec3 = projectileRef.transform.position - transform.position;
+            Vector2 toProjectileVec2 = new(toProjectileVec3.x, toProjectileVec3.z);
 
-            if (toProjectile.sqrMagnitude < 0.0001f) return;
+            //if (toProjectileVec2.sqrMagnitude < 0.0001f) return;
 
-            toProjectile.y = 0f;
+            float angle = -Vector2.SignedAngle(Vector2.up, toProjectileVec2);
 
-            if (toProjectile.sqrMagnitude > 0.0001f)
+            if (_movingShieldFlipped)
             {
-                Quaternion yawRot = Quaternion.LookRotation(toProjectile, Vector3.up);
-
-                if (_movingShieldFlipped)
-                {
-                    yawRot *= Quaternion.Euler(0f, 180f, 0f);
-                }
-
-                Vector3 currentAngle = _movingShield.transform.rotation.eulerAngles;
-                _movingShield.transform.rotation = Quaternion.Euler(currentAngle.x, yawRot.eulerAngles.y, currentAngle.z);
+                angle += 180;
             }
 
-            float radius = Vector3.Distance(_movingShield.transform.position, origin);
-            _movingShield.transform.position = origin + toProjectile.normalized * radius;
+            Vector3 currentAngle = _shieldSprite.transform.rotation.eulerAngles;
+            _shieldSprite.transform.rotation = Quaternion.Euler(currentAngle.x, angle, currentAngle.z);
+
+            float radius = Vector3.Distance(_shieldSprite.transform.position, transform.position);
+            _shieldSprite.transform.position = transform.position + toProjectileVec3.normalized * radius;
         }
     }
 }

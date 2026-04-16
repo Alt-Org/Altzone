@@ -116,6 +116,7 @@ namespace Battle.View.Player
         /// Handler method for EventBattleInPlayStateUpdate QuantumEvent.<br/>
         /// Updates the _isInPlay bool.
         /// </summary>
+        ///
         /// <param name="e">The event data.</param>
         private void QEventOnPlayStateUpdate(EventBattlePlayStateUpdate e)
         {
@@ -141,14 +142,21 @@ namespace Battle.View.Player
             _classViewController.OnShieldTakeDamage(e);
         }
 
-        /// <summary>
-        /// Handles changing the sprite for the shield gameobject.
-        /// </summary>
-        ///
-        /// <param name="shieldNumber">ShieldNumber of the shield.</param>
-        /// <param name="side">The side the shield is on.</param>
-        /// <param name="hit">Whether the shield was hit or not.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override void OnUpdateView()
+        {
+            if (!_isInPlay) return;
+
+            _classViewController.OnUpdateView();
+        }
+
+            /// <summary>
+            /// Handles changing the sprite for the shield gameobject.
+            /// </summary>
+            ///
+            /// <param name="shieldNumber">ShieldNumber of the shield.</param>
+            /// <param name="side">The side the shield is on.</param>
+            /// <param name="hit">Whether the shield was hit or not.</param>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ShieldSprite(int shieldNumber, ShieldSide side, bool hit)
         {
             const int StateCount = 2;

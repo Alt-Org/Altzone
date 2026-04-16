@@ -37,10 +37,14 @@ namespace Battle.QSimulation.Player
         {
             BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
 
+            if (projectileCollisionData->Projectile->IsHeld) return;
             if (projectileCollisionData->Projectile->EmotionCurrent == BattleEmotionState.Love) return;
             if (shieldCollisionData->IsLoveProjectileCollision) return;
 
-            FPVector2 normal = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->ProjectileEntity)->Position - f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef)->Position;
+            Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->ProjectileEntity);
+            Transform2D* transformShield = ((BattlePlayerShieldEntityRef)shieldCollisionData->PlayerShieldHitbox->ParentEntityRef).GetTransform(f);
+
+            FPVector2 normal = transformProjectile->Position - transformShield->Position;
             FPVector2 direction = FPVector2.Reflect(projectileCollisionData->Projectile->Direction, normal).Normalized;
 
             BattleProjectileQSystem.HandleIntersection(f, projectileCollisionData->Projectile, projectileCollisionData->ProjectileEntity, projectileCollisionData->OtherEntity, normal, shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset);

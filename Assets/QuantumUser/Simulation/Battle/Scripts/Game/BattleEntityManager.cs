@@ -345,9 +345,11 @@ namespace Battle.QSimulation.Game
         {
             QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
 
+            id.Int += offset;
+
             if (updateViewPlayState) f.Events.BattlePlayStateUpdate(entityList[id], IsInPlay: true);
 
-            return entityList[id + offset];
+            return entityList[id];
         }
 
         /// <summary>
@@ -391,7 +393,17 @@ namespace Battle.QSimulation.Game
             id.Int += offset;
 
             BattleEntityManagerDataQSingleton* entityManagerData = GetEntityManagerData(f);
-            EntityRef entityRef = f.ResolveList(entityManagerData->RegisteredEntities)[id];
+
+            EntityRef entityRef = EntityRef.None;
+            try
+            {
+                entityRef = f.ResolveList(entityManagerData->RegisteredEntities)[id];
+            }
+            catch (System.Exception)
+            {
+                int test = 0;
+            }
+            //EntityRef entityRef = f.ResolveList(entityManagerData->RegisteredEntities)[id];
 
             Return(f, entityManagerData, entityRef, id);
         }
