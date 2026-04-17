@@ -2673,8 +2673,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1906781585701653939}
   - component: {fileID: 4932018912753665742}
+  - component: {fileID: 1533397629162440319}
   m_Layer: 0
-  m_Name: ClanReward
+  m_Name: ClanRewardBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2722,7 +2723,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -2750,10 +2751,26 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.75
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1533397629162440319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1155044806348590588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4667cb18715d82469c3798e21b125fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rewardBarSlider: {fileID: 4932018912753665742}
+  _rewardBarMarkersBase: {fileID: 306557317478488128}
+  _rewardBarMarkerPrefab: {fileID: 5677350395177907778, guid: 4760c1c8034b72b4bb7d91549d94180f,
+    type: 3}
 --- !u!1 &1187353516336605920
 GameObject:
   m_ObjectHideFlags: 0
@@ -4473,10 +4490,7 @@ MonoBehaviour:
   _clanPlayerPrefab: {fileID: 2087235962053905287, guid: ed1d9f0efcd900e42a185007d600c9b0,
     type: 3}
   _clanPlayersList: {fileID: 819541209380880308}
-  _clanProgressBarSlider: {fileID: 4932018912753665742}
-  _clanProgressBarMarkersBase: {fileID: 306557317478488128}
-  _clanProgressBarMarkerPrefab: {fileID: 5677350395177907778, guid: 4760c1c8034b72b4bb7d91549d94180f,
-    type: 3}
+  _clanRewardBar: {fileID: 1533397629162440319}
 --- !u!1 &2263038988286619469
 GameObject:
   m_ObjectHideFlags: 0
@@ -7530,12 +7544,12 @@ GameObject:
   - component: {fileID: 4804220908423091814}
   - component: {fileID: 6192483358126200674}
   m_Layer: 5
-  m_Name: TESTAddClanRewardProgress
+  m_Name: TESTAddPointsToRewardBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3209346095996227837
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7638,9 +7652,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: DailyTaskManager, MainMenu
-        m_MethodName: TESTAddClanRewardBarPoints
+      - m_Target: {fileID: 1533397629162440319}
+        m_TargetAssemblyTypeName: RewardBar, MainMenu
+        m_MethodName: AddPoints
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

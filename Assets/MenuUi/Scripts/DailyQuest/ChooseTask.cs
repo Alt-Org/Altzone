@@ -61,6 +61,7 @@ public class ChooseTask : MonoBehaviour
 
         _gameVersion = GameConfig.Get().GameVersionType;
 
+        // Show popup every other battle on turboeducation
         if (_gameVersion == VersionType.TurboEducation)
         {
             if (DailyTaskProgressManager.Instance.HasOnGoingTask())
