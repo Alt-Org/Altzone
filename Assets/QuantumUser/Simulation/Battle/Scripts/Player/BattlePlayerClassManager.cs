@@ -139,7 +139,7 @@ namespace Battle.QSimulation.Player
     public static unsafe class BattlePlayerClassManager
     {
         /// <summary>
-        /// TBD
+        /// Initializes this classes BattleDebugLogger instance and fills <see cref="s_classArray"/> states with <see cref="ClassState.Notloaded"/>
         /// </summary>
         public static void Init()
         {
@@ -155,6 +155,7 @@ namespace Battle.QSimulation.Player
         /// Loads the specified class to be ready for use, if it is implemented.
         /// </summary>
         ///
+        /// <param name="f">Current simulation frame.</param>
         /// <param name="characterClass">The class that is to be loaded.</param>
         public static void LoadClass(Frame f, BattlePlayerCharacterClass characterClass)
         {
@@ -346,23 +347,31 @@ namespace Battle.QSimulation.Player
             Error = 2
         }
 
+        /// <summary>
+        /// Enum defines the state of a <see cref="BattlePlayerClassBase">BattlePlayerClass</see> in <see cref="ClassEntry"/>.
+        /// </summary>
         private enum ClassState
         {
-            // class is not loaded yet
+            /// <summary>Class is not loaded yet.</summary>
             Notloaded,
-            // class has been attempted to be loaded but has no code
+            /// <summary>Class has been attempted to be loaded but has no code.</summary>
             NoCode,
-            // class has been loaded
+            /// <summary>Class has been loaded.</summary>
             Loaded
         }
 
+        /// <summary>
+        /// Struct that holds the <see cref="BattlePlayerClassBase">BattlePlayerClass</see> script and <see cref="ClassState"/> of an entry in <see cref="s_classArray"/>
+        /// </summary>
         private struct ClassEntry
         {
+            /// <summary><see cref="BattlePlayerClassBase">BattlePlayerClass</see> script of a class</summary>
             public BattlePlayerClassBase Class;
+            /// <summary><see cref="ClassState"/> of a class</summary>
             public ClassState State;
         }
 
-        /// <value>An array containing all of the class scripts that have been implemented and can be used.</value>
+        /// <Summary>An array containing a <see cref="ClassEntry"/> for all of the <see cref="Quantum.BattlePlayerCharacterClass">BattlePlayerCharacterClasses</see></Summary>
         private static readonly ClassEntry[] s_classArray = new ClassEntry[ClassCount];
 
         /// <value>A dictionary used for tracking which classes have already had an error message sent regarding their missing implementation.</value>
@@ -371,6 +380,18 @@ namespace Battle.QSimulation.Player
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private static BattleDebugLogger s_debugLogger;
 
+        /// <summary>
+        /// Decides which <see cref="BattlePlayerClassBase">BattlePlayerClass</see> script and <see cref="ClassState"/> to write to a <see cref="ClassEntry"/> in <see cref="s_classArray"/> for a given <see cref="BattlePlayerCharacterClass"/> based on the table below
+        /// |                    | has None | has Code  | has TestCode  | has Both     |
+        /// |--------------------|----------|-----------|---------------|--------------|
+        /// | **TestMode false** | use None | use Code  | use None      | use Code     |
+        /// | **TestMode true**  | use None | use Code  | use TestCode  | use TestCode |
+        /// </summary>
+        /// <param name="characterClass">Character class</param>
+        /// <param name="classIndex">Index of the character class</param>
+        /// <param name="class">Default class script for the given character</param>
+        /// <param name="testClass">Test class script for the given character</param>
+        /// <param name="testMode">Is test mode enabled</param>
         private static void LoadClass(BattlePlayerCharacterClass characterClass, int classIndex, BattlePlayerClassBase @class, BattlePlayerClassBase testClass, bool testMode)
         {
             BattlePlayerClassBase loadedClass;
