@@ -136,7 +136,7 @@ namespace Battle.QSimulation.Player
     /// <summary>
     /// Handles the initial loading of player classes and routes individual game events to the correct class scripts.
     /// </summary>
-    public unsafe static class BattlePlayerClassManager
+    public static unsafe class BattlePlayerClassManager
     {
         /// <summary>
         /// TBD
