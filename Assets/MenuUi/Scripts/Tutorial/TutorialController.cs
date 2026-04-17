@@ -21,14 +21,16 @@ public class TutorialController : AltMonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => _playerName = p.Name);
-        if (PlayerPrefs.GetInt(_tutorialPanelName+"_"+ _playerName, 0) == 1) return;
+        //Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => _playerName = p.Name);
+        //if (PlayerPrefs.GetInt(_tutorialPanelName+"_"+ _playerName, 0) == 1) return;
         //Initialize();
     }
 
     public void Initialize()
     {
-        if(_tutorialPanelList.Count <= 0) return;
+        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => _playerName = p.Name);
+        if (PlayerPrefs.GetInt(_tutorialPanelName + "_" + _playerName, 0) == 1) return;
+        if (_tutorialPanelList.Count <= 0) return;
         foreach (var tutorialPanel in _tutorialPanelList)
         {
             tutorialPanel.SetData(AdvanceTutorial);
