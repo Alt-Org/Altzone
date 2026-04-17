@@ -54,10 +54,11 @@ public class ChooseTask : MonoBehaviour
         // Wait until DailyTaskManager is ready
         yield return new WaitUntil(() => DailyTaskManager.Instance.DataReady);
 
+        Debug.Log("Initializing ChooseTask.cs... DailyTaskManager ready!");
+
         // Wait until tutorial has finished
         yield return new WaitUntil(() => !_tutorial.IsTutorialInProgress);
-
-        Debug.Log("Initializing ChooseTask.cs... DailyTaskManager ready!");
+        
 
         _dailyTaskView = GameObject.FindObjectOfType<DailyTaskView>(true);
 
