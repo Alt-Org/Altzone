@@ -9,13 +9,13 @@ public class TutorialPanelHandler : MonoBehaviour
 {
     [SerializeField] private Button _tutorialAdvanceButton;
     [SerializeField] private List<Image> _imageToCutOut;
-    [SerializeField] private GameObject _cutOut;
+    [SerializeField] private CutOutHandler _cutOut;
     [SerializeField] private GameObject _arrow;
     [SerializeField] private GameObject _infoBox;
     [SerializeField] private TextMeshProUGUI _infoText;
     [SerializeField] private GameObject _fadeLayer;
 
-    private List<GameObject> _cutOuts = new();
+    private List<CutOutHandler> _cutOuts = new();
 
     public void SetData(Action advanceAction)
     {
@@ -28,7 +28,7 @@ public class TutorialPanelHandler : MonoBehaviour
 
         for (int i =1; i < _imageToCutOut.Count ;i++)
         {
-            GameObject newCutOut = Instantiate(_cutOut, transform);
+            CutOutHandler newCutOut = Instantiate(_cutOut, transform);
             _cutOuts.Add(newCutOut);
         }
 
@@ -59,65 +59,17 @@ public class TutorialPanelHandler : MonoBehaviour
 
     private IEnumerator SetPosition()
     {
-        yield return new WaitForEndOfFrame();
         for (int i = 0; i < _cutOuts.Count; i++)
         {
-            GameObject cutOut = _cutOuts[i];
-            Image imageToCutOut = _imageToCutOut[i];
-            if (!imageToCutOut.gameObject.activeInHierarchy) { cutOut.SetActive(false); continue; }
-            else cutOut.SetActive(true);
-            if (cutOut != null && imageToCutOut != null)
-            {
-                cutOut.GetComponent<RectTransform>().anchorMin = new(0.5f, 0.5f);
-                cutOut.GetComponent<RectTransform>().anchorMax = new(0.5f, 0.5f);
-                cutOut.GetComponent<RectTransform>().pivot = imageToCutOut.GetComponent<RectTransform>().pivot;
-                cutOut.transform.position = imageToCutOut.transform.position;
-                cutOut.GetComponent<RectTransform>().sizeDelta = new(imageToCutOut.GetComponent<RectTransform>().rect.width, imageToCutOut.GetComponent<RectTransform>().rect.height);
-
-                float screenWidth = _fadeLayer.GetComponent<RectTransform>().rect.width;
-                float screenHeight = _fadeLayer.GetComponent<RectTransform>().rect.height;
-
-                float widththreshold = screenWidth * 0.25f;
-
-                float cutoutRightEdge = screenWidth / 2 + cutOut.transform.localPosition.x + _cutOut.GetComponent<RectTransform>().sizeDelta.x / 2;
-
-                if ((screenWidth - cutoutRightEdge) < widththreshold)
-                {
-                    float cutoutLeftEdge = screenWidth / 2 + cutOut.transform.localPosition.x - _cutOut.GetComponent<RectTransform>().sizeDelta.x / 2;
-
-                    if ((cutoutLeftEdge) < widththreshold)
-                    {
-                        FlipInfo();
-                        if (cutoutLeftEdge < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(300 - cutoutLeftEdge, 0);
-                    }
-                    else
-                    {
-                        if (screenWidth - cutoutRightEdge < cutoutLeftEdge)
-                        {
-                            FlipInfo();
-                            if (cutoutLeftEdge < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(300 - cutoutLeftEdge, 0);
-                        }
-                        else
-                        {
-                            if (screenWidth - cutoutRightEdge < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(-300 + (screenWidth - cutoutRightEdge), 0);
-                        }
-                    }
-
-                }
-                else
-                {
-                    if (screenWidth - cutoutRightEdge < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(-300 + (screenWidth - cutoutRightEdge), 0);
-                }
-            }
-            yield return null;
+            _cutOuts[i].SetPosition(_imageToCutOut[i], _fadeLayer);
         }
-
+        yield return null;
         GameObject previousArrow = null;
         for (int i = 0; i < _cutOuts.Count; i++)
         {
-            if (!_cutOuts[i].activeInHierarchy) continue;
+            if (!_cutOuts[i].gameObject.activeInHierarchy || _cutOuts[i].KeepArrowActive) continue;
             if(previousArrow) previousArrow.SetActive(false);
-            previousArrow =_cutOuts[i].transform.Find("Arrow").gameObject;
+            previousArrow =_cutOuts[i].Arrow;
         }
     }
 

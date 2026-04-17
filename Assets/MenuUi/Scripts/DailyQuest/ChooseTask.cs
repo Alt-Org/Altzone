@@ -22,6 +22,10 @@ public class ChooseTask : MonoBehaviour
     [Tooltip("The UI overlay to disable the buttons in when the ChooseTask window is active")]
     private RectTransform _UIOverlay;
 
+    [SerializeField]
+    [Tooltip("Temporary Holder for tutorial controller until a more parmanent solution is figured out.")]
+    private MainMenuTutorialController _tutorial;
+
     private List<Button> _UIOverlayButtons;
 
     private DailyTaskView _dailyTaskView;
@@ -55,11 +59,15 @@ public class ChooseTask : MonoBehaviour
         // Wait until DailyTaskManager is ready
         yield return new WaitUntil(() => DailyTaskManager.Instance.DataReady);
 
+        // Wait until tutorial has finished
+        yield return new WaitUntil(() => !_tutorial.IsTutorialInProgress);
+
         Debug.Log("Initializing ChooseTask.cs... DailyTaskManager ready!");
 
         _dailyTaskView = GameObject.FindObjectOfType<DailyTaskView>(true);
 
         _gameVersion = GameConfig.Get().GameVersionType;
+
 
         // Show popup every other battle on turboeducation
         if (_gameVersion == VersionType.TurboEducation)

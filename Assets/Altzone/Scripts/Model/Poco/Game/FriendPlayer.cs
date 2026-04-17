@@ -7,6 +7,7 @@ namespace Altzone.Scripts.Model.Poco.Game
 {
     public class FriendPlayer
     {
+        public string friendshipId { get; set; }
         public string _id { get; set; }
         public string name { get; set; }
         public string clan_id { get; set; }
@@ -16,10 +17,11 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public FriendPlayer(ServerFriendPlayer player)
         {
+            friendshipId = player._friendship_id;
             _id = player._id;
             name = player.name;
             clan_id = player.clan_id;
-            //avatar = new(player.name, player.avatar);
+            avatar = new(player.name, player.avatar);
         }
     }
 }
