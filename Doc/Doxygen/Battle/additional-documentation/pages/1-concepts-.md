@@ -7,3 +7,5 @@
 @bigtext{@subpage page-concepts-player}
 
 @bigtext{@subpage page-concepts-view-registry}
+
+@bigtext{@subpage page-concepts-battle-sprite-sheet}

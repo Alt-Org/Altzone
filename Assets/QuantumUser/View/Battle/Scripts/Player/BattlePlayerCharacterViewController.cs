@@ -43,57 +43,161 @@ namespace Battle.View.Player
             /// </summary>
             public enum Enum
             {
-                Base                = 0,
-                BaseHands           = 1,
-                ScaredHands         = 2,
-                Shadow              = 7,
-                Head1               = 8,
-                Head2               = 9,
-                Head3               = 10,
-                Head4               = 11,
-                Body1               = 12,
-                Body2               = 13,
-                Body3               = 14,
-                Body4               = 15,
-                HandsShieldUp1      = 16,
-                HandsShieldUp2      = 17,
-                HandsShieldUp3      = 18,
-                HandsShieldUp4      = 19,
-                BaseShoes           = 20,
-                RunningShoes1       = 21,
-                RunningShoes2       = 22,
-                HandsShieldDown1    = 24,
-                HandsShieldDown2    = 25,
-                HandsShieldDown3    = 26,
-                HandsShieldDown4    = 27,
-                ShieldUp1           = 32,
-                ShieldUp2           = 33,
-                ShieldUp3           = 34,
-                ShieldUp4           = 35,
-                ShieldUpHit1        = 36,
-                ShieldUpHit2        = 37,
-                ShieldUpHit3        = 38,
-                ShieldUpHit4        = 39,
-                ShieldDown1         = 40,
-                ShieldDown2         = 41,
-                ShieldDown3         = 42,
-                ShieldDown4         = 43,
-                ShieldDownHit1      = 44,
-                ShieldDownHit2      = 45,
-                ShieldDownHit3      = 46,
-                ShieldDownHit4      = 47,
-                Joy                 = 48,
-                Sadness             = 49,
-                Playful             = 50,
-                Agression           = 51,
-                Love                = 52,
-                ShieldBroken        = 56,
-                Defenseless         = 57,
-                Death1              = 58,
-                Death2              = 59,
-                DeadOnTheGround     = 60
+                /// <summary>Index: 0</summary>
+                Base = 0,
+
+                /// <summary>Index: 1</summary>
+                BaseHands = 1,
+
+                /// <summary>Index: 2</summary>
+                ScaredHands = 2,
+
+                /// <summary>Index: 7</summary>
+                Shadow = 7,
+
+                /// <summary>Index: 8</summary>
+                Head1 = 8,
+
+                /// <summary>Index: 9</summary>
+                Head2 = 9,
+
+                /// <summary>Index: 10</summary>
+                Head3 = 10,
+
+                /// <summary>Index: 11</summary>
+                Head4 = 11,
+
+                /// <summary>Index: 12</summary>
+                Body1 = 12,
+
+                /// <summary>Index: 13</summary>
+                Body2 = 13,
+
+                /// <summary>Index: 14</summary>
+                Body3 = 14,
+
+                /// <summary>Index: 15</summary>
+                Body4 = 15,
+
+                /// <summary>Index: 16</summary>
+                HandsShieldUp1 = 16,
+
+                /// <summary>Index: 17</summary>
+                HandsShieldUp2 = 17,
+
+                /// <summary>Index: 18</summary>
+                HandsShieldUp3 = 18,
+
+                /// <summary>Index: 19</summary>
+                HandsShieldUp4 = 19,
+
+                /// <summary>Index: 20</summary>
+                BaseShoes = 20,
+
+                /// <summary>Index: 21</summary>
+                RunningShoes1 = 21,
+
+                /// <summary>Index: 22</summary>
+                RunningShoes2 = 22,
+
+                /// <summary>Index: 24</summary>
+                HandsShieldDown1 = 24,
+
+                /// <summary>Index: 25</summary>
+                HandsShieldDown2 = 25,
+
+                /// <summary>Index: 26</summary>
+                HandsShieldDown3 = 26,
+
+                /// <summary>Index: 27</summary>
+                HandsShieldDown4 = 27,
+
+                /// <summary>Index: 32</summary>
+                ShieldUp1 = 32,
+
+                /// <summary>Index: 33</summary>
+                ShieldUp2 = 33,
+
+                /// <summary>Index: 34</summary>
+                ShieldUp3 = 34,
+
+                /// <summary>Index: 35</summary>
+                ShieldUp4 = 35,
+
+                /// <summary>Index: 36</summary>
+                ShieldUpHit1 = 36,
+
+                /// <summary>Index: 37</summary>
+                ShieldUpHit2 = 37,
+
+                /// <summary>Index: 38</summary>
+                ShieldUpHit3 = 38,
+
+                /// <summary>Index: 39</summary>
+                ShieldUpHit4 = 39,
+
+                /// <summary>Index: 40</summary>
+                ShieldDown1 = 40,
+
+                /// <summary>Index: 41</summary>
+                ShieldDown2 = 41,
+
+                /// <summary>Index: 42</summary>
+                ShieldDown3 = 42,
+
+                /// <summary>Index: 43</summary>
+                ShieldDown4 = 43,
+
+                /// <summary>Index: 44</summary>
+                ShieldDownHit1 = 44,
+
+                /// <summary>Index: 45</summary>
+                ShieldDownHit2 = 45,
+
+                /// <summary>Index: 46</summary>
+                ShieldDownHit3 = 46,
+
+                /// <summary>Index: 47</summary>
+                ShieldDownHit4 = 47,
+
+                /// <summary>Index: 48</summary>
+                Joy = 48,
+
+                /// <summary>Index: 49</summary>
+                Sadness = 49,
+
+                /// <summary>Index: 50</summary>
+                Playful = 50,
+
+                /// <summary>Index: 51</summary>
+                Agression = 51,
+
+                /// <summary>Index: 52</summary>
+                Love = 52,
+
+                /// <summary>Index: 56</summary>
+                ShieldBroken = 56,
+
+                /// <summary>Index: 57</summary>
+                Defenseless = 57,
+
+                /// <summary>Index: 58</summary>
+                Death1 = 58,
+
+                /// <summary>Index: 59</summary>
+                Death2 = 59,
+
+                /// <summary>Index: 60</summary>
+                DeadOnTheGround = 60
             }
 
+            /// <summary>
+            /// Converts int to SpriteSheetMap
+            /// </summary>
+            ///
+            /// <param name="index">Int to be converted</param>
+            ///
+            /// <returns>EnumValue of the given index.</returns>
             public static SpriteSheetMap FromInt(int index) => new() { EnumValue = (Enum)index };
 
             /// <summary>
@@ -113,17 +217,30 @@ namespace Battle.View.Player
             public static implicit operator SpriteSheetMap(Enum enumValue) => new() {EnumValue = enumValue };
 
             /// <summary>
+            /// Validates that the given <paramref name="spriteSheet"/> has the expected Sprite <see cref="Count"/>.
+            /// </summary>
+            ///
+            /// Wrapper for @cref{Battle.View,IBattleSpriteSheetMap.ValidateCount}.
+            ///
+            /// <param name="spriteSheet">Spritesheet that is being validated.</param>
+            ///
+            /// <returns>True if the spritesheet has the correct number of sprites.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static bool Validate(BattleSpriteSheet spriteSheet) => IBattleSpriteSheetMap.ValidateCount(Count, spriteSheet.Count);
+
+            /// <summary>
             /// Helper Enum for conversions.
             /// </summary>
             public Enum EnumValue;
 
             /// <summary>
-            /// Getter method that implements the interface
+            /// Getter method for the index value of the mapped sprite.
             /// </summary>
             ///
             /// <returns>EnumValue as an int</returns>
             public readonly int GetIndex() => (int)EnumValue;
         }
+
         /// @anchor BattlePlayerCharacterViewController-SerializeFields
         /// @name SerializeField variables
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
@@ -418,7 +535,7 @@ namespace Battle.View.Player
         private bool _isInPlay;
 
         /// <summary>Array that holds the SpriteRenderer components of each body part gameobject.</summary>
-        private SpriteRenderer[] _bodypartSpriteRenderers;
+        private readonly SpriteRenderer[] _bodypartSpriteRenderers = new SpriteRenderer[5];
 
         /// <summary>
         /// Handles setup that needs to happen before <see cref="Quantum.EventBattlePlayerCharacterViewInit">EventBattlePlayerCharacterViewInit</see> event is received.<br/>

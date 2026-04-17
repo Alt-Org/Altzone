@@ -11,6 +11,7 @@ using UnityEngine;
 
 // Quantum usings
 using Battle.QSimulation;
+using static Battle.View.Player.BattlePlayerCharacterViewController;
 
 namespace Battle.View.Player
 {
@@ -36,13 +37,7 @@ namespace Battle.View.Player
 
             int shieldNumber = (int)_shieldNumber.boxedValue;
 
-            if (spriteSheet.Array.Length != BattlePlayerCharacterViewController.SpriteSheetMap.Count)
-            {
-                BattleDebugLogger.ErrorFormat(nameof(BattlePlayerShieldViewControllerEditor), "Invalid number of sprites in spriteSheet\nCount: {0}\nExpected count: {1}", BattleDebugLogger.LogTarget.UnityConsole,
-                    spriteSheet.Array.Length, BattlePlayerCharacterViewController.SpriteSheetMap.Count
-                );
-                goto Error;
-            }
+            if (!SpriteSheetMap.Validate(spriteSheet)) goto Error;
 
             BattlePlayerCharacterViewController.SpriteSheetMap sprite = shieldNumber switch
             {
