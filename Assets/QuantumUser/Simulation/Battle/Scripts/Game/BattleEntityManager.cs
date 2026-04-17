@@ -393,17 +393,7 @@ namespace Battle.QSimulation.Game
             id.Int += offset;
 
             BattleEntityManagerDataQSingleton* entityManagerData = GetEntityManagerData(f);
-
-            EntityRef entityRef = EntityRef.None;
-            try
-            {
-                entityRef = f.ResolveList(entityManagerData->RegisteredEntities)[id];
-            }
-            catch (System.Exception)
-            {
-                int test = 0;
-            }
-            //EntityRef entityRef = f.ResolveList(entityManagerData->RegisteredEntities)[id];
+            EntityRef entityRef = f.ResolveList(entityManagerData->RegisteredEntities)[id];
 
             Return(f, entityManagerData, entityRef, id);
         }
