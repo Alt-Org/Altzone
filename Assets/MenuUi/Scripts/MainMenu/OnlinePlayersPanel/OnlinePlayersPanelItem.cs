@@ -285,7 +285,7 @@ public class OnlinePlayersPanelItem : AltMonoBehaviour
             _declineFriendButton.gameObject.SetActive(false);
             _removefriendButton.gameObject.SetActive(false);
         }
-        else if (_friendstate is FriendState.Receiving)
+        else if (_friendstate is FriendState.Receiving && _friend != null)
         {
             _addfriendButton.gameObject.SetActive(false);
             _addfriendButton.interactable = false;
