@@ -18,10 +18,6 @@ public class RewardBar : MonoBehaviour
     ClanData _clanData;
 
 
-    //private int _clanMilestoneLatestRewardIndex = -1;
-    //private int _currentPoints = 0;
-
-
     public void Initialize(ClanData clanData)
     {
         _clanData = clanData;
@@ -37,27 +33,42 @@ public class RewardBar : MonoBehaviour
     }
 
     
-
+    /// <summary>
+    /// Creates the markers and rewards for the reward bar
+    /// </summary>
     private void CreateBar()
     {
 
         _rewardBarMarkers = new List<GameObject>();
 
-        // TODO: Calculate correct position for markers on bar
+
         foreach (DailyTaskClanReward.ClanRewardData data in GetBarRewards())
         {
+            // Spawn the reward marker and set it's data
             GameObject rewardMarker = Instantiate(_rewardBarMarkerPrefab, _rewardBarMarkersBase);
             rewardMarker.GetComponent<DailyTaskClanReward>().Set(data);
+
+            // Calculate the position for the marker on the bar
+            float normalized = (float)data.Threshold / (float)_rewardBarGoal;
+
+            RectTransform markerTransform = rewardMarker.GetComponent<RectTransform>();
+            markerTransform.anchorMin = new Vector2(normalized, markerTransform.anchorMin.y);
+            markerTransform.anchorMax = new Vector2(normalized, markerTransform.anchorMax.y);
+            markerTransform.anchoredPosition = new Vector2(0f, markerTransform.anchoredPosition.y);
+
+            
             _rewardBarMarkers.Add(rewardMarker);
         }
 
         UpdateBar();
     }
 
+    /// <summary>
+    /// Updates the reward bar progress visually
+    /// </summary>
     private void UpdateBar()
     {
         _rewardBarSlider.value = (float)_clanData.Points / (float)_rewardBarGoal;
-        Debug.Log("Slider: " + _rewardBarSlider.value + " Value: " + ((float)_clanData.Points / (float)_rewardBarGoal));
     }
 
 
@@ -81,6 +92,10 @@ public class RewardBar : MonoBehaviour
         return clanRewardDatas;
     }
 
+    /// <summary>
+    /// Progresses the reward bar by the added points
+    /// </summary>
+    /// <param name="value">The amount of points to add</param>
     public void AddPoints(int value)
     {
         _clanData.Points += value; // TODO: This should be done on server
@@ -122,7 +137,11 @@ public class RewardBar : MonoBehaviour
     }
 
 
-    /*private IEnumerator CalculateClanRewardBarProgress()
+    /*
+    private int _clanMilestoneLatestRewardIndex = -1;
+    private int _currentPoints = 0;
+
+    private IEnumerator CalculateClanRewardBarProgress()
     {
         float sectionLengths = (1f / (float)_rewardBarMarkers.Count);
 
