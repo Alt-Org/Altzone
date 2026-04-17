@@ -147,7 +147,7 @@ namespace Battle.QSimulation.Player
 
             for (int i = 0; i < s_classArray.Length; i++)
             {
-                s_classArray[i].State = ClassState.Notloaded;
+                s_classArray[i].State = ClassState.NotLoaded;
             }
         }
 
@@ -164,12 +164,12 @@ namespace Battle.QSimulation.Player
             switch (characterClass)
             {
                 case BattlePlayerCharacterClass.Desensitizer:
-                    if (s_classArray[ClassIndexDesensitizer].State != ClassState.Notloaded) break;
+                    if (s_classArray[ClassIndexDesensitizer].State != ClassState.NotLoaded) break;
                     LoadClass(characterClass, ClassIndexDesensitizer, new BattlePlayerClassDesensitizer(), null, isTestMode);
                     break;
 
                 case BattlePlayerCharacterClass.Trickster:
-                    if (s_classArray[ClassIndexTrickster].State != ClassState.Notloaded) break;
+                    if (s_classArray[ClassIndexTrickster].State != ClassState.NotLoaded) break;
                     LoadClass(characterClass, ClassIndexTrickster, null, null, isTestMode);
                     break;
 
@@ -177,22 +177,22 @@ namespace Battle.QSimulation.Player
                     break;
 
                 case BattlePlayerCharacterClass.Projector:
-                    if (s_classArray[ClassIndexProjector].State != ClassState.Notloaded) break;
+                    if (s_classArray[ClassIndexProjector].State != ClassState.NotLoaded) break;
                     LoadClass(characterClass, ClassIndexProjector, new BattlePlayerClassProjector(), null, isTestMode);
                     break;
 
                 case BattlePlayerCharacterClass.Retroflector:
-                    if (s_classArray[ClassIndexRetroflector].State != ClassState.Notloaded) break;
+                    if (s_classArray[ClassIndexRetroflector].State != ClassState.NotLoaded) break;
                     //s_classArray[ClassIndexRetroflector] = new BattlePlayerClassRetroflector();
                     break;
 
                 case BattlePlayerCharacterClass.Confluent:
-                    if (s_classArray[ClassIndexConfluent].State != ClassState.Notloaded) break;
+                    if (s_classArray[ClassIndexConfluent].State != ClassState.NotLoaded) break;
                     LoadClass(characterClass, ClassIndexConfluent, new BattlePlayerClassConfluent(), null, isTestMode);
                     break;
 
                 case BattlePlayerCharacterClass.Intellectualizer:
-                    if (s_classArray[ClassIndexIntellectualizer].State != ClassState.Notloaded) break;
+                    if (s_classArray[ClassIndexIntellectualizer].State != ClassState.NotLoaded) break;
                     LoadClass(characterClass, ClassIndexIntellectualizer, null, null, isTestMode);
                     break;
 
@@ -353,7 +353,7 @@ namespace Battle.QSimulation.Player
         private enum ClassState
         {
             /// <summary>Class is not loaded yet.</summary>
-            Notloaded,
+            NotLoaded,
             /// <summary>Class has been attempted to be loaded but has no code.</summary>
             NoCode,
             /// <summary>Class has been loaded.</summary>
