@@ -1084,8 +1084,9 @@ public class ServerManager : MonoBehaviour
 
                 if (playerData != null)
                 {
-                    playerData.ClanId = "12345";                    //Demo-clan for not logged in players
+                    playerData.ClanId = string.Empty;
                     storefront.SavePlayerData(playerData, null);
+                    OnClanChanged?.Invoke(null);
                 }
                 else
                 {
