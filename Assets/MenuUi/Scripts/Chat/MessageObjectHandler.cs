@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Altzone.Scripts.Chat;
 using MenuUi.Scripts.AvatarEditor;
 using TMPro;
@@ -90,6 +91,7 @@ public class MessageObjectHandler : MonoBehaviour
         _text.text = messageText;
         _selectMessageAction = selectMessageAction;
     }
+
     public void SetMessageInfo(ChatMessage message, Action<MessageObjectHandler> selectMessageAction)
     {
         if (message.Avatar != null) _avatar.UpdateVisuals(AvatarDesignLoader.Instance.CreateAvatarVisualData(message.Avatar));
@@ -159,9 +161,12 @@ public class MessageObjectHandler : MonoBehaviour
         //Gets the set data we need to get to import saved reactions
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
 
+
+        int objectAmount = 0;
         foreach (GameObject ReactionPanel in ReactionsPanel)
         {
-            ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, true, ReactionPanel);
+                objectAmount++;
+                ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, true, ReactionPanel, objectAmount);
         }
         
     }

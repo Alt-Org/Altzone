@@ -13,8 +13,11 @@ public class MessageReactionsHandler : AltMonoBehaviour
     [SerializeField] private GameObject _commonReactionsPanel;
     [SerializeField] private GameObject _allReactionsPanel;
     [SerializeField] private GameObject _usersWhoAdded;
-    [SerializeField] private Transform _reactionsContent;
-    [SerializeField] private Transform _reactionsContentPopUp;
+
+    [SerializeField] public List<reactionPanelGroup> _reactionPaneldata;
+
+
+
     [SerializeField] private GameObject _allReactionsPanelPopUp;
     [SerializeField] private GameObject _selectedReaction;
 
@@ -41,8 +44,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
     private bool _longClick = false;
 
     public MessageObjectHandler _messageObjectHandler;
-
-    public int strikes = 0;
+    [SerializeField] private ChatShowUsersPopUpData _chatShowUsersPopUpData;
 
     void Start()
     {
@@ -64,10 +66,14 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
         //ReactionObjectHandler.OnReactionPressed += AddReaction;
 
-        GenarateReactionObjects(_reactionsContent);
-        GenarateReactionObjects(_reactionsContentPopUp);
-        UpdateReactionStatus(_reactionsContent);
-        UpdateReactionStatus(_reactionsContentPopUp);
+
+        foreach (var reactionContent in _reactionPaneldata)
+        {
+
+            GenarateReactionObjects(reactionContent._reactionsContent);
+            UpdateReactionStatus(reactionContent._reactionsContent);
+        }
+
         PickCommonReactions();
     }
 
@@ -172,43 +178,60 @@ public class MessageReactionsHandler : AltMonoBehaviour
     /// </summary>
     public void UpdateReactions(List<ServerReactions> reactions, string messageid)
     {
-        foreach (ChatReactionHandler addedReaction in _reactionHandlers)
+        int objectAmount = 0;
+
+
+        foreach (var reactionContent in _reactionPaneldata)
         {
-            addedReaction.ResetReactions();
-        }
-        foreach (ServerReactions reaction in reactions)
-        {
-            foreach (GameObject ReactionPanel in _selectedMessage.ReactionsPanel)
+
+            objectAmount++;
+
+            foreach (ChatReactionHandler addedReaction in _reactionHandlers)
             {
-                AddReaction(reaction, (Mood)Enum.Parse(typeof(Mood), reaction.emoji), messageid, true, ReactionPanel);
+                addedReaction.ResetReactions();
             }
-        }
-        List<ChatReactionHandler> removableReactions = new();
-        foreach (ChatReactionHandler addedReaction in _reactionHandlers)
-        {
-            if(addedReaction.Count <= 0) removableReactions.Add(addedReaction);
-        }
-        for (int i = removableReactions.Count - 1; i >= 0; i--)
-        {
-            RemoveReaction(removableReactions[i]);
+            foreach (ServerReactions reaction in reactions)
+            {
+                        AddReaction(reaction, (Mood)Enum.Parse(typeof(Mood), reaction.emoji), messageid, true, reactionContent._reactionField, objectAmount);
+            }
+            List<ChatReactionHandler> removableReactions = new();
+            foreach (ChatReactionHandler addedReaction in _reactionHandlers)
+            {
+                if (addedReaction.Count <= 0) removableReactions.Add(addedReaction);
+            }
+            for (int i = removableReactions.Count - 1; i >= 0; i--)
+            {
+
+                RemoveReaction(removableReactions[i]);
+            }
         }
     }
 
     /// <summary>
     /// Adds the chosen reaction to the selected message.
     /// </summary>
-    public void AddReaction(ServerReactions _reaction, Mood mood, string message_id, bool fromServer = false, GameObject ReactionPanel = null)
+    public void AddReaction(ServerReactions _reaction, Mood mood, string message_id, bool fromServer = false, GameObject ReactionPanel = null, int ActiveObjects = 0)
     {
+        bool skip = true;
+        int  ObjectActive = 0;
 
-        int activeamount = 0;
-        foreach(GameObject reactions in _selectedMessage.ReactionsPanel)
+
+        ///"foreach" first checks how many the reactionfields are there
+        ///"if" is used so that the other Reactionfield receives the same reaction too
+
+        foreach(var i in _reactionPaneldata)
         {
-            if (reactions.activeInHierarchy)
-                activeamount++;
+                ObjectActive++;
         }
+        if(ActiveObjects < ObjectActive + 1)
+        {
+            skip = false;
+        }
+        
 
         if (_selectedMessage != null)
         {
+            
             string messageID = _selectedMessage.Id;
             if (messageID != message_id)
                 return; 
@@ -218,38 +241,35 @@ public class MessageReactionsHandler : AltMonoBehaviour
                 Sprite reactionSprite = _reactionList.FirstOrDefault(x => x.Mood == mood)?.Sprite;
                 int i = _reactionList.FindIndex(m => m.Sprite == reactionSprite);
 
-                // Checks if chosen reaction is already added to the selected message. If so, deletes it.
-                foreach (ChatReactionHandler addedReaction in _reactionHandlers)
+            // Checks if chosen reaction is already added to the selected message. If so, deletes it.
+            foreach (ChatReactionHandler addedReaction in _reactionHandlers)
                 {
-
-                if (addedReaction.Mood == mood)
-                {
-                    if (strikes < 1)
+                    if (addedReaction.Mood == mood)
                     {
-                        strikes++;
-                    }
-                    else if (strikes >= 1)
-                    { 
                         addedReaction.AddReaction(_reaction);
-                    StartCoroutine(GetPlayerData(player =>
-                    {
+                        StartCoroutine(GetPlayerData(player =>
+                        {
                         if (player != null)
                             if (player.Id == _reaction.sender_id)
                             {
-                                addedReaction.Select();
+                                    if (skip)
+                                    {
                                 //Removes the selected reaction
                                 _reactionList[i].Selected = true;
+                                    }
+                                addedReaction.Select();
                             }
-                    }));
-                    _selectedMessage.SetMessageInactive();
-                    strikes = 0;
+                        }));
+                    if (skip)
+                    {
+                        _selectedMessage.SetMessageInactive();
                         return;
                     }
-                }
+                    }
                 }
 
-                // Creates a reaction with the needed info and adds it to the selected message.
-                GameObject newReaction = Instantiate(_addedReactionPrefab, reactionsField.transform);
+            // Creates a reaction with the needed info and adds it to the selected message.
+            GameObject newReaction = Instantiate(_addedReactionPrefab, reactionsField.transform);
                 ChatReactionHandler chatReactionHandler = newReaction.GetComponentInChildren<ChatReactionHandler>();
                 chatReactionHandler.SetReactionInfo(reactionSprite, messageID, mood);
                 chatReactionHandler.AddReaction(_reaction);
@@ -268,8 +288,12 @@ public class MessageReactionsHandler : AltMonoBehaviour
                         }
 
                 }));
-                UpdateReactionStatus(_reactionsContent);
-                UpdateReactionStatus(_reactionsContentPopUp);
+            foreach (var reactionContent in _reactionPaneldata)
+            {
+                GenarateReactionObjects(reactionContent._reactionsContent);
+                UpdateReactionStatus(reactionContent._reactionsContent);
+            }
+            _chatShowUsersPopUpData.reactiontext();
                 PickCommonReactions();
                 LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
 
@@ -277,8 +301,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
                 _selectedMessage.SetMessageInactive();
 
                 gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
-
-            strikes = 0;
             
         }
     }
@@ -337,26 +359,36 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
     private void RemoveReaction(ChatReactionHandler reaction)
     {
-        HorizontalLayoutGroup reactionsField = reaction.GetComponentInParent<HorizontalLayoutGroup>();
-        
-            foreach(var i in _reactionList)
+        //Checks if the set gameObject is on or not
+        foreach (var reactioncontent in _reactionPaneldata)
+        {
+            HorizontalLayoutGroup reactionsField = reactioncontent._reactionField.GetComponent<HorizontalLayoutGroup>();
+
+            
+
+            foreach (var i in _reactionList)
             {
-                if(i.Mood == reaction.Mood)
-                    {
-                           i.Selected = false;
-                    }
+                if (i.Mood == reaction.Mood)
+                {
+                    i.Selected = false;
+                }
             }
 
-        reaction.transform.SetParent(null);
-        _reactionHandlers.Remove(reaction);
+            reaction.transform.SetParent(null);
+            _reactionHandlers.Remove(reaction);
 
-        Destroy(reaction.gameObject);
-        UpdateReactionStatus(_reactionsContent);
-        UpdateReactionStatus(_reactionsContentPopUp);
-        PickCommonReactions();
-        _selectedMessage.SizeCall();
+            Destroy(reaction.gameObject);
 
-        LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
+
+            GenarateReactionObjects(reactioncontent._reactionsContent);
+            UpdateReactionStatus(reactioncontent._reactionsContent);
+
+            _chatShowUsersPopUpData.reactiontext();
+            PickCommonReactions();
+            _selectedMessage.SizeCall();
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
+        }
         //_chatScript.UpdateContentLayout(reactionsField);
     }
 
@@ -377,5 +409,12 @@ public class MessageReactionsHandler : AltMonoBehaviour
                 OnSelectedStatusChanged?.Invoke(Mood, value);
             }
         }
+    }
+
+    [Serializable]
+    public class reactionPanelGroup
+    {
+        public Transform _reactionsContent; //Imports the reaction
+        public GameObject _reactionField; //holds  the received reactions
     }
 }
