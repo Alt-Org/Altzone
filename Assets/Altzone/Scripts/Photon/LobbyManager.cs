@@ -133,6 +133,8 @@ namespace Altzone.Scripts.Lobby
         private Coroutine _verifyPositionsHolder = null;
         private Coroutine _canBattleStartCheckHolder = null;
         private Coroutine _queueTimerHolder = null;
+        // Tracks last computed number of eligible solo players in queue (for diagnostics / selection caps)
+        private int _queuedSoloCount = 0;
         private const float QueueWaitSeconds = 30f;
         private const float QueueReadyStartDelaySeconds = 2f;
         private const float QueuePendingLeaderGraceSeconds = 12f;
@@ -417,15 +419,17 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator FormMatchFromQueue(string[] selected, int roomGameTypeInt, string clanName, int soulhomeRank)
         {
+            bool queuePremadeMode = false;
+            string queuePremadeUserId1 = string.Empty;
+            string queuePremadeUserId2 = string.Empty;
+            int queuePremadeTargetGameType = roomGameTypeInt;
+            string queueLocalTeammateUserId = string.Empty;
+            List<(string userId1, string userId2)> queueCompleteDuoPairs = new();
+            List<(string userId1, string userId2)> queueSoloPairBlocks = new();
+            bool reservationFailed = false;
+
             try
             {
-                bool queuePremadeMode = false;
-                string queuePremadeUserId1 = string.Empty;
-                string queuePremadeUserId2 = string.Empty;
-                int queuePremadeTargetGameType = roomGameTypeInt;
-                string queueLocalTeammateUserId = string.Empty;
-                List<(string userId1, string userId2)> queueCompleteDuoPairs = new();
-                List<(string userId1, string userId2)> queueSoloPairBlocks = new();
                 try
                 {
                     if (PhotonRealtimeClient.CurrentRoom != null)
@@ -465,6 +469,14 @@ namespace Altzone.Scripts.Lobby
                 {
                     if (PhotonRealtimeClient.InRoom)
                     {
+                        // diagnostic snapshot before pre-notify
+                        try
+                        {
+                            string sel = selected == null ? "null" : string.Join(",", selected);
+                            string pairs = queueCompleteDuoPairs == null ? "null" : string.Join(";", queueCompleteDuoPairs.Select(p => p.userId1 + "/" + p.userId2));
+                            Debug.Log($"FormMatchFromQueue: pre-notify: selected=[{sel}], queuePremadeMode={queuePremadeMode}, queueLocalTeammate={queueLocalTeammateUserId}, queuePairs=[{pairs}], queueSoloBlocks={queueSoloPairBlocks.Count}");
+                        }
+                        catch { }
                         // payload: { leaderUserId, expectedUsers[] }
                         SafeRaiseEvent(
                             PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
@@ -547,17 +559,33 @@ namespace Altzone.Scripts.Lobby
                                 {
                                     if (queueCompleteDuoPairs.Count > 0)
                                     {
-                                        string[] flatPairs = queueCompleteDuoPairs.SelectMany(pair => new[] { pair.userId1, pair.userId2 }).ToArray();
-                                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(QueueDuoPairsKey, flatPairs);
+                                            string[] flatPairs = queueCompleteDuoPairs.SelectMany(pair => new[] { pair.userId1, pair.userId2 }).ToArray();
+                                            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(QueueDuoPairsKey, flatPairs);
 
-                                        foreach (var pair in queueCompleteDuoPairs)
-                                        {
-                                            if (string.IsNullOrEmpty(pair.userId1) || string.IsNullOrEmpty(pair.userId2) || pair.userId1 == pair.userId2) continue;
-                                            if (!TryReservePremadePairToSameSide(pair.userId1, pair.userId2, out _))
+                                            reservationFailed = false;
+                                            foreach (var pair in queueCompleteDuoPairs)
                                             {
-                                                Debug.LogWarning($"FormMatchFromQueue: failed queue duo side reservation for ({pair.userId1},{pair.userId2}).");
+                                                if (string.IsNullOrEmpty(pair.userId1) || string.IsNullOrEmpty(pair.userId2) || pair.userId1 == pair.userId2) continue;
+                                                if (!TryReservePremadePairToSameSide(pair.userId1, pair.userId2, out _))
+                                                {
+                                                    Debug.LogWarning($"FormMatchFromQueue: failed queue duo side reservation for ({pair.userId1},{pair.userId2}). Aborting match creation and requeueing leader.");
+                                                    reservationFailed = true;
+                                                    break;
+                                                }
                                             }
-                                        }
+
+                                            if (reservationFailed)
+                                            {
+                                                try
+                                                {
+                                                    // Leave the created room; actual requeue will happen after the outer try/finally.
+                                                    if (PhotonRealtimeClient.InRoom) PhotonRealtimeClient.LeaveRoom();
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    Debug.LogWarning($"FormMatchFromQueue: failed to leave room after reservation failure: {ex.Message}");
+                                                }
+                                            }
                                     }
 
                                     if (queueSoloPairBlocks.Count > 0)
@@ -645,6 +673,21 @@ namespace Altzone.Scripts.Lobby
                                 {
                                     _matchmakingHolder = StartCoroutine(WaitForMatchmakingPlayers());
                                 }
+
+                                // Diagnostic snapshot after applying reservations and before notifying followers
+                                try
+                                {
+                                    string p1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey1, string.Empty);
+                                    string p2 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey2, string.Empty);
+                                    string p3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey3, string.Empty);
+                                    string p4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey4, string.Empty);
+                                    string[] duoPairs = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string[]>(QueueDuoPairsKey, null);
+                                    bool prem = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<bool>(PhotonBattleRoom.PremadeModeKey, false);
+                                    string prem1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PremadeUserId1Key, string.Empty);
+                                    string prem2 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
+                                    Debug.Log($"FormMatchFromQueue: post-reservation snapshot: pos1={p1},pos2={p2},pos3={p3},pos4={p4}, queueDuoPairs=[{(duoPairs==null?"null":string.Join(",",duoPairs))}], premadeMode={prem}, prem1={prem1}, prem2={prem2}");
+                                }
+                                catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: failed to log post-reservation snapshot: {ex.Message}"); }
                             }
                             catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: failed to prepare leader matchmaking: {ex.Message}"); }
                     }
@@ -672,6 +715,13 @@ namespace Altzone.Scripts.Lobby
             finally
             {
                 _formingMatchHolder = null;
+            }
+
+            if (reservationFailed)
+            {
+                // Perform requeue outside of try/catch/finally to allow yielding safely.
+                yield return StartCoroutine(RequeueToPersistentQueue((GameType)roomGameTypeInt, queuePremadeMode, queuePremadeUserId1, queuePremadeUserId2, queuePremadeTargetGameType));
+                yield break;
             }
         }
 
@@ -962,6 +1012,62 @@ namespace Altzone.Scripts.Lobby
             catch
             {
                 return string.Empty;
+            }
+        }
+
+        private bool IsQueueRoom(Room room)
+        {
+            if (room == null || room.CustomProperties == null) return false;
+            try
+            {
+                return room.CustomProperties.ContainsKey(PhotonBattleRoom.IsQueueKey)
+                    && room.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool IsQueueFormedExpectedUserFlowRoom(Room room)
+        {
+            if (room == null) return false;
+
+            try
+            {
+                bool queueFormedMatch = room.GetCustomProperty<bool>(QueueFormedMatchKey, false);
+                int expectedFollowers = room.GetCustomProperty<int>("qe", 0);
+                string[] expectedUsers = room.GetCustomProperty<string[]>("eu", null);
+                string[] photonExpectedUsers = room.ExpectedUsers;
+
+                bool hasExpectedUsers = expectedUsers != null && expectedUsers.Any(uid => !string.IsNullOrEmpty(uid));
+                bool hasPhotonExpectedUsers = photonExpectedUsers != null && photonExpectedUsers.Any(uid => !string.IsNullOrEmpty(uid));
+
+                return queueFormedMatch || expectedFollowers > 0 || hasExpectedUsers || hasPhotonExpectedUsers;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool IsInQueueFormedExpectedUserMatchmakingFlow()
+        {
+            if (!PhotonRealtimeClient.InMatchmakingRoom) return false;
+            return IsQueueFormedExpectedUserFlowRoom(PhotonRealtimeClient.CurrentRoom);
+        }
+
+        private bool HasPendingQueueDuoSignals()
+        {
+            try
+            {
+                int pendingExpectedUserCount = GetQueuePendingExpectedUserCount();
+                int pendingLeaderCount = GetQueuePendingLeaderCount();
+                return pendingExpectedUserCount > 0 || pendingLeaderCount > 0;
+            }
+            catch
+            {
+                return false;
             }
         }
 
@@ -1288,7 +1394,10 @@ namespace Altzone.Scripts.Lobby
             preferredMasterUserId = string.Empty;
             eligibleSoloCount = 0;
             List<string> selected = new();
-            bool allowOrphanAsStaleSolo = realPlayers != null && realPlayers.Count <= requiredFollowers + 1;
+            bool hasPendingQueueDuoSignals = HasPendingQueueDuoSignals();
+            bool allowOrphanAsStaleSolo = realPlayers != null
+                && realPlayers.Count <= requiredFollowers + 1
+                && !hasPendingQueueDuoSignals;
 
             HashSet<string> completeDuoMemberIds = new();
             foreach (var duo in completeDuos)
@@ -1345,6 +1454,12 @@ namespace Altzone.Scripts.Lobby
                 }
 
                 return selected;
+            }
+
+            if (orphanFollowerIds != null && orphanFollowerIds.Count > 0 && hasPendingQueueDuoSignals)
+            {
+                Debug.Log("SelectQueueFollowersFromTwoPlayerBlocks: deferring selection because orphan followers exist while pending queue duo handoff signals are active.");
+                return new List<string>();
             }
 
             List<Player> eligibleSoloPlayers = realPlayers
@@ -1510,12 +1625,20 @@ namespace Altzone.Scripts.Lobby
                     if (room == null) return;
                     if (!room.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey, false)) return;
 
+                    // Log premade ids before clearing so we can diagnose one-sided/stale metadata
+                    try
+                    {
+                        string premade1 = room.GetCustomProperty<string>(PhotonBattleRoom.PremadeUserId1Key, string.Empty);
+                        string premade2 = room.GetCustomProperty<string>(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
+                        Debug.Log($"SelectQueueFollowersForMatch: clearing stale queue premade metadata for room '{room?.Name}' (premade1={premade1}, premade2={premade2}) reason={reason}.");
+                    }
+                    catch { }
+
                     room.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, false);
                     room.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, string.Empty);
                     room.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
                     room.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, string.Empty);
                     room.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateNone);
-                    Debug.Log($"SelectQueueFollowersForMatch: cleared stale queue premade metadata ({reason}).");
                 }
                 catch (Exception ex)
                 {
@@ -1569,6 +1692,15 @@ namespace Altzone.Scripts.Lobby
 
             completeDuoCount = completeDuos.Count;
 
+            // Diagnostic: log selection state to help debug missing/partial duo selection
+            try
+            {
+                var duoPairs = completeDuos.Select(d => (d.leader?.UserId ?? string.Empty) + "/" + (d.follower?.UserId ?? string.Empty)).ToArray();
+                var followerMap = followersByLeader.Select(kv => kv.Key + ":[" + string.Join(",", kv.Value.Where(p => p != null).Select(p => p.UserId)) + "]").ToArray();
+                Debug.Log($"SelectQueueFollowersForMatch: players=[{string.Join(",", playersById.Keys)}], completeDuos=[{string.Join(";", duoPairs)}], incomplete=[{string.Join(",", incompleteMemberIds)}], orphans=[{string.Join(",", orphanFollowerIds)}], followersByLeader=[{string.Join(",", followerMap)}], pendingSignals={HasPendingQueueDuoSignals()}");
+            }
+            catch { }
+
             bool roomPremadeMode = false;
             string roomPremadeUserId1 = string.Empty;
             string roomPremadeUserId2 = string.Empty;
@@ -1586,7 +1718,11 @@ namespace Altzone.Scripts.Lobby
                 // A follower with missing leader is stale queue metadata; treat as solo candidate.
                 Debug.Log($"SelectQueueFollowersForMatch: ignoring {orphanFollowerIds.Count} orphan leader references, treating as solos.");
             }
-            orphanFollowerCount = realPlayers.Count > requiredFollowers + 1 ? orphanFollowerIds.Count : 0;
+
+            bool hasPendingQueueDuoSignals = HasPendingQueueDuoSignals();
+            orphanFollowerCount = (realPlayers.Count > requiredFollowers + 1 || hasPendingQueueDuoSignals)
+                ? orphanFollowerIds.Count
+                : 0;
 
             try
             {
@@ -1620,8 +1756,37 @@ namespace Altzone.Scripts.Lobby
                             }
                             else
                             {
-                                Debug.Log("SelectQueueFollowersForMatch: one-sided premade metadata detected in exact-size queue; clearing stale metadata and continuing.");
-                                ClearStaleQueuePremadeMetadata("one premade user missing in exact-size queue");
+                                // In exact-size queues, avoid immediately clearing premade metadata for a single missing teammate.
+                                // Defer clearing and treat the present premade user as "incomplete" for a short grace period
+                                // so the duo is not split while the missing user arrives.
+                                string presentPremadeUserId = user1Present ? roomPremadeUserId1 : roomPremadeUserId2;
+                                string missingPremadeUserId = user1Present ? roomPremadeUserId2 : roomPremadeUserId1;
+
+                                // If a pending expected-user signal already exists for the missing user or global pending duo signals
+                                // are active, mark the present user as incomplete and defer clearing.
+                                bool pendingForMissing = false;
+                                try { pendingForMissing = !string.IsNullOrEmpty(missingPremadeUserId) && _queuePendingExpectedUserUntil.ContainsKey(missingPremadeUserId); } catch { pendingForMissing = false; }
+
+                                if (pendingForMissing || HasPendingQueueDuoSignals())
+                                {
+                                    if (!string.IsNullOrEmpty(presentPremadeUserId)) incompleteMemberIds.Add(presentPremadeUserId);
+                                    Debug.Log($"SelectQueueFollowersForMatch: one-sided premade metadata detected in exact-size queue; deferring clear due to pending expected signal (missing={missingPremadeUserId}).");
+                                }
+                                else
+                                {
+                                    // Install a short pending expected-user window to avoid immediate clearing by other clients
+                                    try
+                                    {
+                                        if (!string.IsNullOrEmpty(missingPremadeUserId))
+                                        {
+                                            _queuePendingExpectedUserUntil[missingPremadeUserId] = Time.time + QueuePendingLeaderGraceSeconds;
+                                        }
+                                    }
+                                    catch { }
+
+                                    if (!string.IsNullOrEmpty(presentPremadeUserId)) incompleteMemberIds.Add(presentPremadeUserId);
+                                    Debug.Log($"SelectQueueFollowersForMatch: one-sided premade metadata detected in exact-size queue; deferring clear and marking present user incomplete (missing={missingPremadeUserId}).");
+                                }
                             }
                         }
                         else
@@ -1630,6 +1795,34 @@ namespace Altzone.Scripts.Lobby
                             Debug.Log("SelectQueueFollowersForMatch: stale one-sided premade metadata detected, clearing and continuing.");
                             ClearStaleQueuePremadeMetadata("one premade user missing");
                         }
+                    }
+                    else
+                    {
+                        // Both premade users are present in the queue room: treat them as a complete duo
+                        try
+                        {
+                            if (!string.IsNullOrEmpty(roomPremadeUserId1) && !string.IsNullOrEmpty(roomPremadeUserId2)
+                                && playersById.ContainsKey(roomPremadeUserId1) && playersById.ContainsKey(roomPremadeUserId2))
+                            {
+                                bool exists = completeDuos.Any(d =>
+                                    (d.leader != null && d.follower != null && ((d.leader.UserId == roomPremadeUserId1 && d.follower.UserId == roomPremadeUserId2)
+                                        || (d.leader.UserId == roomPremadeUserId2 && d.follower.UserId == roomPremadeUserId1))));
+
+                                if (!exists)
+                                {
+                                    Player p1 = playersById[roomPremadeUserId1];
+                                    Player p2 = playersById[roomPremadeUserId2];
+                                    if (p1 != null && p2 != null)
+                                    {
+                                        completeDuos.Add((p1, p2));
+                                        incompleteMemberIds.Remove(roomPremadeUserId1);
+                                        incompleteMemberIds.Remove(roomPremadeUserId2);
+                                        Debug.Log($"SelectQueueFollowersForMatch: preserving premade pair ({roomPremadeUserId1},{roomPremadeUserId2}) as complete duo for selection.");
+                                    }
+                                }
+                            }
+                        }
+                        catch { }
                     }
                 }
             }
@@ -1769,12 +1962,26 @@ namespace Altzone.Scripts.Lobby
                 .ToList();
 
             eligibleSoloCount = eligibleSolos.Count;
+            // keep a record of how many solos are currently eligible in the queue
+            _queuedSoloCount = eligibleSoloCount;
+
+            // If exactly 3 solos are present in the queue, limit selection to 2 of them
+            int soloCap = (eligibleSoloCount == 3) ? 2 : int.MaxValue;
+            int solosSelected = 0;
 
             foreach (string soloUserId in eligibleSolos)
             {
+                // enforce cap for solos
+                if (soloCap != int.MaxValue && solosSelected >= soloCap)
+                {
+                    break;
+                }
+
                 if (!selectedSet.Add(soloUserId)) continue;
 
                 selected.Add(soloUserId);
+                solosSelected++;
+
                 if (selected.Count >= requiredFollowers)
                 {
                     break;
@@ -2141,13 +2348,100 @@ namespace Altzone.Scripts.Lobby
                                             {
                                                 Debug.Log($"QueueTimerCoroutine: early readiness deferred for transient orphan state (orphanRawCount={loopOrphanRawCount}, humanCount={loopHumanCount}, requiredTotal={loopRequiredFollowers + 1}, localHasQueueTeammate={localHasQueueTeammate}).");
                                             }
-                                            else if (loopOrphanFollowerCount > 0 || loopHumanCount > loopRequiredFollowers + 1)
+                                            else if (loopOrphanFollowerCount > 0)
                                             {
                                                 Debug.Log($"QueueTimerCoroutine: early readiness deferred for one-duo block composition (orphans={loopOrphanFollowerCount}, humanCount={loopHumanCount}, requiredTotal={loopRequiredFollowers + 1}); waiting for queue timeout to avoid splitting pending duo joins.");
                                             }
                                             else
                                             {
-                                                Debug.Log($"QueueTimerCoroutine: early readiness deferred for exact-size one-duo composition (orphans={loopOrphanFollowerCount}, humanCount={loopHumanCount}, requiredTotal={loopRequiredFollowers + 1}); waiting for queue timeout to preserve duo integrity.");
+                                                // If we have enough selected followers and there are no orphan followers
+                                                // or pending duo signals, it's safe to form the match immediately even
+                                                // if the room currently contains extra humans beyond the exact-size case.
+                                                if (loopSelected.Count >= loopRequiredFollowers && !HasPendingQueueDuoSignals())
+                                                {
+                                                    bool allowForm = true;
+                                                    try
+                                                    {
+                                                        Room curr = PhotonRealtimeClient.CurrentRoom;
+                                                        if (curr != null)
+                                                        {
+                                                            // Build quick playersById map
+                                                            Dictionary<string, Player> playersById = curr.Players.Values
+                                                                .Where(p => p != null && !string.IsNullOrEmpty(p.UserId) && p.UserId != "Bot")
+                                                                .GroupBy(p => p.UserId)
+                                                                .Select(g => g.First())
+                                                                .ToDictionary(p => p.UserId, p => p);
+
+                                                            // Check room premade metadata: if a premade pair is present in the room
+                                                            // but not both included in the selected set, defer formation to avoid splitting.
+                                                            try
+                                                            {
+                                                                bool roomPremadeMode = curr.GetCustomProperty<bool>(PhotonBattleRoom.PremadeModeKey, false);
+                                                                if (roomPremadeMode)
+                                                                {
+                                                                    string prem1 = curr.GetCustomProperty<string>(PhotonBattleRoom.PremadeUserId1Key, string.Empty);
+                                                                    string prem2 = curr.GetCustomProperty<string>(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
+                                                                    if (!string.IsNullOrEmpty(prem1) && !string.IsNullOrEmpty(prem2)
+                                                                        && playersById.ContainsKey(prem1) && playersById.ContainsKey(prem2))
+                                                                    {
+                                                                        bool p1Sel = loopSelected.Contains(prem1);
+                                                                        bool p2Sel = loopSelected.Contains(prem2);
+                                                                        if (!(p1Sel && p2Sel))
+                                                                        {
+                                                                            allowForm = false;
+                                                                            Debug.Log($"QueueTimerCoroutine: deferring formation because premade pair ({prem1},{prem2}) present but not both selected; selected=[{string.Join(",", loopSelected)}].");
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            catch { }
+
+                                                            // Also check leader/follower mappings: if any selected user has a queued teammate
+                                                            // (via LeaderIdKey mapping) present in the room but that teammate is not selected,
+                                                            // defer formation to avoid splitting.
+                                                            if (allowForm)
+                                                            {
+                                                                foreach (string uid in loopSelected)
+                                                                {
+                                                                    try
+                                                                    {
+                                                                        if (TryGetQueueLocalTeammateUserId(uid, out string buddy) && !string.IsNullOrEmpty(buddy) && playersById.ContainsKey(buddy))
+                                                                        {
+                                                                            if (!loopSelected.Contains(buddy))
+                                                                            {
+                                                                                allowForm = false;
+                                                                                Debug.Log($"QueueTimerCoroutine: deferring formation because teammate {buddy} of selected user {uid} is present but not selected.");
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    catch { }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    catch { }
+
+                                                    if (allowForm)
+                                                    {
+                                                        Debug.Log($"QueueTimerCoroutine: one-duo composition safe to form; forming match with followers [{string.Join(",", loopSelected)}].");
+                                                        try
+                                                        {
+                                                            _formingMatchHolder = StartCoroutine(FormMatchFromQueue(loopSelected.ToArray(), loopGameTypeInt, loopClanName, loopSoulhomeRank));
+                                                        }
+                                                        catch (Exception ex)
+                                                        {
+                                                            Debug.LogWarning($"QueueTimerCoroutine: failed to start FormMatchFromQueue: {ex.Message}");
+                                                        }
+                                                        yield break;
+                                                    }
+                                                    else
+                                                    {
+                                                        Debug.Log($"QueueTimerCoroutine: early formation deferred due to premade/teammate integrity; selected=[{string.Join(",", loopSelected)}].");
+                                                    }
+                                                }
+
+                                                Debug.Log($"QueueTimerCoroutine: early readiness deferred for one-duo composition (orphans={loopOrphanFollowerCount}, humanCount={loopHumanCount}, requiredTotal={loopRequiredFollowers + 1}); waiting for queue timeout to preserve duo integrity.");
                                             }
                                         }
                                         else
@@ -2241,16 +2535,82 @@ namespace Altzone.Scripts.Lobby
                         continue;
                     }
 
-                    Debug.Log($"QueueTimerCoroutine: Queue wait expired after {QueueWaitSeconds}s, forming match with followers [{string.Join(",", selected)}].");
-                    try
-                    {
-                        _formingMatchHolder = StartCoroutine(FormMatchFromQueue(selected.ToArray(), gameTypeInt, clanName, soulhomeRank));
-                        yield break;
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.LogWarning($"QueueTimerCoroutine: FormMatchFromQueue failed to start: {ex.Message}");
-                    }
+                        // Before forming match, verify duo integrity: do not form if a premade pair
+                        // is present in the room but not both included in the selected followers,
+                        // or if any selected user has a queued teammate present but not selected.
+                        bool allowFinalForm = true;
+                        try
+                        {
+                            Room curr = PhotonRealtimeClient.CurrentRoom;
+                            if (curr != null)
+                            {
+                                Dictionary<string, Player> playersById = curr.Players.Values
+                                    .Where(p => p != null && !string.IsNullOrEmpty(p.UserId) && p.UserId != "Bot")
+                                    .GroupBy(p => p.UserId)
+                                    .Select(g => g.First())
+                                    .ToDictionary(p => p.UserId, p => p);
+
+                                try
+                                {
+                                    bool roomPremadeMode = curr.GetCustomProperty<bool>(PhotonBattleRoom.PremadeModeKey, false);
+                                    if (roomPremadeMode)
+                                    {
+                                        string prem1 = curr.GetCustomProperty<string>(PhotonBattleRoom.PremadeUserId1Key, string.Empty);
+                                        string prem2 = curr.GetCustomProperty<string>(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
+                                        if (!string.IsNullOrEmpty(prem1) && !string.IsNullOrEmpty(prem2)
+                                            && playersById.ContainsKey(prem1) && playersById.ContainsKey(prem2))
+                                        {
+                                            bool p1Sel = selected.Contains(prem1);
+                                            bool p2Sel = selected.Contains(prem2);
+                                            if (!(p1Sel && p2Sel))
+                                            {
+                                                allowFinalForm = false;
+                                                Debug.Log($"QueueTimerCoroutine: deferring final formation because premade pair ({prem1},{prem2}) present but not both selected; selected=[{string.Join(",", selected)}].");
+                                            }
+                                        }
+                                    }
+                                }
+                                catch { }
+
+                                if (allowFinalForm)
+                                {
+                                    foreach (string uid in selected)
+                                    {
+                                        try
+                                        {
+                                            if (TryGetQueueLocalTeammateUserId(uid, out string buddy) && !string.IsNullOrEmpty(buddy) && playersById.ContainsKey(buddy))
+                                            {
+                                                if (!selected.Contains(buddy))
+                                                {
+                                                    allowFinalForm = false;
+                                                    Debug.Log($"QueueTimerCoroutine: deferring final formation because teammate {buddy} of selected user {uid} is present but not selected.");
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        catch { }
+                                    }
+                                }
+                            }
+                        }
+                        catch { }
+
+                        if (!allowFinalForm)
+                        {
+                            Debug.Log($"QueueTimerCoroutine: final formation deferred due to premade/teammate integrity; selected=[{string.Join(",", selected)}].");
+                            continue;
+                        }
+
+                        Debug.Log($"QueueTimerCoroutine: Queue wait expired after {QueueWaitSeconds}s, forming match with followers [{string.Join(",", selected)}].");
+                        try
+                        {
+                            _formingMatchHolder = StartCoroutine(FormMatchFromQueue(selected.ToArray(), gameTypeInt, clanName, soulhomeRank));
+                            yield break;
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogWarning($"QueueTimerCoroutine: FormMatchFromQueue failed to start: {ex.Message}");
+                        }
                 }
             }
             finally
@@ -3101,9 +3461,21 @@ namespace Altzone.Scripts.Lobby
         private bool TryReservePremadePairToSameSide(string userId1, string userId2, out int teamNumber)
         {
             teamNumber = PhotonBattleRoom.NoTeamValue;
-            if (string.IsNullOrEmpty(userId1) || string.IsNullOrEmpty(userId2) || userId1 == userId2) return false;
-            if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.CurrentRoom == null) return false;
-            if (!CanMutateRoomPropertiesNow()) return false;
+            if (string.IsNullOrEmpty(userId1) || string.IsNullOrEmpty(userId2) || userId1 == userId2)
+            {
+                Debug.LogWarning($"TryReservePremadePairToSameSide: invalid user ids ({userId1},{userId2}).");
+                return false;
+            }
+            if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.CurrentRoom == null)
+            {
+                Debug.LogWarning($"TryReservePremadePairToSameSide: not in room or CurrentRoom null while attempting ({userId1},{userId2}).");
+                return false;
+            }
+            if (!CanMutateRoomPropertiesNow())
+            {
+                Debug.LogWarning($"TryReservePremadePairToSameSide: cannot mutate room properties now for ({userId1},{userId2}).");
+                return false;
+            }
 
             Dictionary<int, string> currentMap = new()
             {
@@ -3112,6 +3484,13 @@ namespace Altzone.Scripts.Lobby
                 { PhotonBattleRoom.PlayerPosition3, PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey3, string.Empty) },
                 { PhotonBattleRoom.PlayerPosition4, PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey4, string.Empty) },
             };
+
+            try
+            {
+                string snapshot = $"pos1={currentMap[PhotonBattleRoom.PlayerPosition1]},pos2={currentMap[PhotonBattleRoom.PlayerPosition2]},pos3={currentMap[PhotonBattleRoom.PlayerPosition3]},pos4={currentMap[PhotonBattleRoom.PlayerPosition4]}";
+                Debug.Log($"TryReservePremadePairToSameSide: currentMap for room '{PhotonRealtimeClient.CurrentRoom?.Name}': {snapshot} - attempting to reserve ({userId1},{userId2}).");
+            }
+            catch { }
 
             bool IsBotValue(string value) => string.Equals(value, "Bot", StringComparison.Ordinal);
             bool IsRealPlayerValue(string value) => !string.IsNullOrEmpty(value) && !IsBotValue(value);
@@ -3230,6 +3609,7 @@ namespace Altzone.Scripts.Lobby
             if (userId1Team != PhotonBattleRoom.NoTeamValue && userId1Team == userId2Team)
             {
                 teamNumber = userId1Team;
+                Debug.Log($"TryReservePremadePairToSameSide: users already on same team {teamNumber} ({userId1},{userId2}).");
                 return true;
             }
 
@@ -3245,7 +3625,11 @@ namespace Altzone.Scripts.Lobby
             bool alphaValid = TryBuildTeamMap(baseMap, PhotonBattleRoom.TeamAlphaValue, out Dictionary<int, string> alphaMap, out int alphaDisplacedBots);
             bool betaValid = TryBuildTeamMap(baseMap, PhotonBattleRoom.TeamBetaValue, out Dictionary<int, string> betaMap, out int betaDisplacedBots);
 
-            if (!alphaValid && !betaValid) return false;
+            if (!alphaValid && !betaValid)
+            {
+                Debug.LogWarning($"TryReservePremadePairToSameSide: no valid target team for ({userId1},{userId2}) (alphaValid={alphaValid}, betaValid={betaValid}).");
+                return false;
+            }
 
             int alphaAffinity = (userId1Team == PhotonBattleRoom.TeamAlphaValue ? 1 : 0) + (userId2Team == PhotonBattleRoom.TeamAlphaValue ? 1 : 0);
             int betaAffinity = (userId1Team == PhotonBattleRoom.TeamBetaValue ? 1 : 0) + (userId2Team == PhotonBattleRoom.TeamBetaValue ? 1 : 0);
@@ -3292,13 +3676,32 @@ namespace Altzone.Scripts.Lobby
 
             if (MapsEqual(currentMap, targetMap)) return true;
 
+            try
+            {
+                string targetSnapshot = $"t1={targetMap[PhotonBattleRoom.PlayerPosition1]},t2={targetMap[PhotonBattleRoom.PlayerPosition2]},t3={targetMap[PhotonBattleRoom.PlayerPosition3]},t4={targetMap[PhotonBattleRoom.PlayerPosition4]}";
+                Debug.Log($"TryReservePremadePairToSameSide: applying targetMap for team {teamNumber}: {targetSnapshot}");
+            }
+            catch { }
+
             foreach (int key in targetMap.Keys)
             {
                 string currentValue = currentMap[key] ?? string.Empty;
                 string targetValue = targetMap[key] ?? string.Empty;
                 if (string.Equals(currentValue, targetValue, StringComparison.Ordinal)) continue;
 
+                try
+                {
+                    Debug.Log($"TryReservePremadePairToSameSide: setting position {key} -> '{targetValue}' (was '{currentValue}')");
+                }
+                catch { }
+
                 PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.GetPositionKey(key), targetValue);
+                try
+                {
+                    string rb = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.GetPositionKey(key), string.Empty);
+                    Debug.Log($"TryReservePremadePairToSameSide: readback position {key} -> '{rb}'");
+                }
+                catch { }
             }
 
             return true;
@@ -3971,6 +4374,12 @@ namespace Altzone.Scripts.Lobby
                     && PhotonRealtimeClient.CurrentRoom.Name == leaderRoomName)
                 {
                     Debug.Log($"FollowLeaderToNewRoom: already in target room '{leaderRoomName}', ignoring duplicate handoff.");
+                    yield break;
+                }
+
+                if (string.IsNullOrEmpty(leaderRoomName) && IsInQueueFormedExpectedUserMatchmakingFlow())
+                {
+                    Debug.Log("FollowLeaderToNewRoom: ignoring stale targeted no-room handoff while already in queue-formed expected-user matchmaking flow.");
                     yield break;
                 }
 
@@ -6128,8 +6537,20 @@ namespace Altzone.Scripts.Lobby
             _pendingInRoomInviteRoomName = string.Empty;
             _pendingAcceptedInRoomInviteRoomName = string.Empty;
             _pendingAcceptedInRoomInviteStartTime = -100f;
-            _queuePendingLeaderUntil.Clear();
-            _queuePendingExpectedUserUntil.Clear();
+
+            bool preserveQueuePendingSignals = false;
+            try
+            {
+                Room joinedRoom = PhotonRealtimeClient.CurrentRoom;
+                preserveQueuePendingSignals = IsQueueRoom(joinedRoom) || IsQueueFormedExpectedUserFlowRoom(joinedRoom);
+            }
+            catch { }
+
+            if (!preserveQueuePendingSignals)
+            {
+                _queuePendingLeaderUntil.Clear();
+                _queuePendingExpectedUserUntil.Clear();
+            }
 
             // Enable: PhotonNetwork.CloseConnection needs to to work across all clients - to kick off invalid players!
             PhotonRealtimeClient.EnableCloseConnection = true;
@@ -6276,6 +6697,18 @@ namespace Altzone.Scripts.Lobby
                             }
                         }
                         catch (Exception ex) { Debug.LogWarning($"OnJoinedRoom: failed to ensure local position reservation: {ex.Message}"); }
+
+                        // Diagnostic: snapshot room position keys and local player position after join
+                        try
+                        {
+                            string sp1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey1, string.Empty);
+                            string sp2 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey2, string.Empty);
+                            string sp3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey3, string.Empty);
+                            string sp4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey4, string.Empty);
+                            int localPos = PhotonRealtimeClient.LocalPlayer.GetCustomProperty<int>(PlayerPositionKey, PlayerPositionGuest);
+                            Debug.Log($"OnJoinedRoom: join snapshot pos1={sp1},pos2={sp2},pos3={sp3},pos4={sp4}, localPlayerPos={localPos}");
+                        }
+                        catch (Exception ex) { Debug.LogWarning($"OnJoinedRoom: failed to log join snapshot: {ex.Message}"); }
 
                         if (queueExpectedJoinFlowActive)
                         {
@@ -6802,17 +7235,58 @@ namespace Altzone.Scripts.Lobby
                     string leaderRoomName = null;
                     try
                     {
+                        // Local helper flattened here so all branches in this try can use it.
+                        string[] FlattenExpected(object obj)
+                        {
+                            var list = new List<string>();
+                            if (obj == null) return null;
+                            try
+                            {
+                                if (obj is string ss)
+                                {
+                                    if (!string.IsNullOrEmpty(ss)) list.Add(ss);
+                                    return list.ToArray();
+                                }
+                                if (obj is string[] ssarr)
+                                {
+                                    return ssarr.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                                }
+                                if (obj is object[] oarr)
+                                {
+                                    foreach (var o in oarr)
+                                    {
+                                        var sub = FlattenExpected(o);
+                                        if (sub != null && sub.Length > 0) list.AddRange(sub);
+                                    }
+                                    return list.Distinct().Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                                }
+                                if (obj is System.Collections.IEnumerable ie)
+                                {
+                                    foreach (var o in ie)
+                                    {
+                                        var sub = FlattenExpected(o);
+                                        if (sub != null && sub.Length > 0) list.AddRange(sub);
+                                    }
+                                    return list.Distinct().Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                                }
+                                // Fallback: use ToString
+                                string s = obj.ToString();
+                                if (!string.IsNullOrEmpty(s)) list.Add(s);
+                                return list.Distinct().Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                            }
+                            catch { return null; }
+                        }
+
                         if (photonEvent.CustomData is object[] arr && arr.Length > 0)
                         {
                             leaderUserId = arr[0]?.ToString() ?? string.Empty;
-                            if (arr.Length > 1 && arr[1] is object[] uarr)
-                            {
-                                expectedUsers = uarr.Select(o => o?.ToString()).Where(x => !string.IsNullOrEmpty(x)).ToArray();
-                            }
-                            else if (arr.Length > 1 && arr[1] is string[] sarr)
-                            {
-                                expectedUsers = sarr;
-                            }
+
+                            // Robustly handle multiple payload shapes for expected users.
+                            // arr[1] may be a string[], an object[] of strings, a nested array, or even a single string when only one expected user.
+                            object maybeExpected = arr.Length > 1 ? arr[1] : null;
+
+                            expectedUsers = FlattenExpected(maybeExpected);
+
                             if (arr.Length > 2 && arr[2] is string rn)
                             {
                                 // optional room name provided by leader
@@ -6826,9 +7300,9 @@ namespace Altzone.Scripts.Lobby
                         else if (photonEvent.CustomData is PhotonHashtable pht)
                         {
                             if (pht.ContainsKey("leader")) leaderUserId = pht["leader"].ToString();
-                            if (pht.ContainsKey("expectedUsers") && pht["expectedUsers"] is object[] uo)
+                            if (pht.ContainsKey("expectedUsers"))
                             {
-                                expectedUsers = uo.Select(o => o?.ToString()).Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                                expectedUsers = FlattenExpected(pht["expectedUsers"]);
                             }
                         }
                     }
@@ -6909,6 +7383,7 @@ namespace Altzone.Scripts.Lobby
                     bool leaderMatch = leaderUserId == matchmakingLeaderId;
                     bool hasExplicitLeaderRoom = !string.IsNullOrEmpty(leaderRoomName);
                     bool hasExpectedUsers = expectedUsers != null && expectedUsers.Length > 0;
+                    bool alreadyInQueueFormedExpectedUserFlow = IsInQueueFormedExpectedUserMatchmakingFlow();
                     bool isQueueLeaderHandoff = isQueueRoom
                         && hasExplicitLeaderRoom
                         && hasExpectedUsers
@@ -6976,6 +7451,12 @@ namespace Altzone.Scripts.Lobby
                     if (!isCustomRoom && leaderOnlyNoRoomFallback && PhotonRealtimeClient.InMatchmakingRoom)
                     {
                         Debug.Log("RoomChangeRequested: ignoring leader-only no-room handoff while already in matchmaking room.");
+                        break;
+                    }
+
+                    if (!isCustomRoom && shouldFollow && hasExpectedUsers && !hasExplicitLeaderRoom && alreadyInQueueFormedExpectedUserFlow)
+                    {
+                        Debug.Log("RoomChangeRequested: ignoring targeted no-room handoff while already in queue-formed expected-user matchmaking flow.");
                         break;
                     }
 
