@@ -100,7 +100,12 @@ public class LeaderboardView : MonoBehaviour
                             if (rank < 4) //The top three are displayed on the podium
                             {
                                 _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, clanData, serverClan);
+                                if (rank == 1)
+                                    {
+                                        LeaderboardPodium item = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>();                                
+                                    }
                             }
+
                             else
                             {
                                 LeaderboardClanPointsItem item = Instantiate(_clanPointsItemPrefab, parent: _winsContent).GetComponent<LeaderboardClanPointsItem>();
