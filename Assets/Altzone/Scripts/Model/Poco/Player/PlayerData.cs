@@ -13,6 +13,7 @@ using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Newtonsoft.Json;
+using System.ComponentModel;
 
 namespace Altzone.Scripts.Model.Poco.Player
 {
@@ -93,6 +94,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         public List<CustomCharacter> CustomCharacters { get; private set; }
 
         public List<string> OwnedAvatarPiece_Ids { get; private set; }
+        public List<string> OwnedAnimation_Ids { get; private set; }
 
         public ReadOnlyCollection<CustomCharacter> CurrentBattleCharacters
         {
@@ -233,9 +235,23 @@ namespace Altzone.Scripts.Model.Poco.Player
             else Storefront.Get().SavePlayerData(this, null);
         }
 
-        public void UpdateOwnedAvatarPieceIDs(List<string> ids)
+        public void UpdateOwnedAvatarPieceIDs(int type, List<string> ids)
         {
-            OwnedAvatarPiece_Ids = ids;
+            switch (type)
+            {
+                case 1:
+                    OwnedAvatarPiece_Ids = ids;
+                    break;
+                
+                case 2:
+                    OwnedAnimation_Ids = ids;
+                    break;
+            }
+        }
+
+        public void UpdateOwnedAvatarAnimationIDs(List<string> ids)
+        {
+            OwnedAnimation_Ids = ids;
         }
 
 
