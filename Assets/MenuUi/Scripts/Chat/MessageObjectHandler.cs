@@ -52,7 +52,7 @@ public class MessageObjectHandler : MonoBehaviour
         Chat.OnSelectedMessageChanged += SetMessageInactive;
         ChatChannel.OnReactionReceived += UpdateReactions;
 
-        _vectorReactionSize = new Vector2(_baseMessageSize.sizeDelta.x, _baseMessageSize.sizeDelta.y + _reactionSize.GetComponent<RectTransform>().sizeDelta.y);
+        _vectorReactionSize = new Vector2(_baseMessageSize.sizeDelta.x, _baseMessageSize.sizeDelta.y + _expandedReactionSize.GetComponent<RectTransform>().sizeDelta.y);
         
     }
 
@@ -62,7 +62,7 @@ public class MessageObjectHandler : MonoBehaviour
         //adds extra size if there reactions have been put or not
         float extraPadding;
         if (reactionField.transform.childCount > 0)
-            extraPadding = 50;
+            extraPadding = 65;
         else
         {
             extraPadding = 0f;
@@ -71,7 +71,7 @@ public class MessageObjectHandler : MonoBehaviour
             
         //Checks if reaction panel is active and checks which reaction pannel is on
         if (_reactionSize.activeSelf)
-                _baseMessageSize.sizeDelta = new Vector2(_vectorReactionSize.x, Mathf.Max(150, _baseMessageBankerSize.y + (_vectorReactionSize.y / 1.2f)));
+                _baseMessageSize.sizeDelta = new Vector2(_vectorReactionSize.x, Mathf.Max(150, _baseMessageBankerSize.y + _vectorReactionSize.y));
 
         //reverts back to orignal
         else

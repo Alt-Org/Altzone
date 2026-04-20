@@ -225,7 +225,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
         }
         if(ActiveObjects < ObjectActive + 1)
         {
-            skip = false;
+           // skip = false; right now this does not work as when there's other users reactions it duplicates them when it should not 
         }
         
 
@@ -252,11 +252,10 @@ public class MessageReactionsHandler : AltMonoBehaviour
                         if (player != null)
                             if (player.Id == _reaction.sender_id)
                             {
-                                    if (skip)
-                                    {
+
                                 //Removes the selected reaction
                                 _reactionList[i].Selected = true;
-                                    }
+                                    
                                 addedReaction.Select();
                             }
                         }));
