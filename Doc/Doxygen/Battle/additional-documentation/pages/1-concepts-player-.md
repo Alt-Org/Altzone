@@ -329,6 +329,7 @@ In **Unity View**, every **Player Character class** can optionally have a [{Play
 
 ### Player Character Class List {#page-concepts-player-characters-class-list}
 
+@subpage page-concepts-player-class-100-desensitizer  
 @subpage page-concepts-player-class-400-projector  
 @subpage page-concepts-player-class-600-confluent
 
