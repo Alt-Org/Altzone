@@ -1,7 +1,7 @@
 #if UNITY_EDITOR
-/// @file BattlePlayerShieldViewControllerEditor
+/// @file BattlePlayerShieldViewControllerEditor.cs
 /// <summary>
-/// Contains @cref {Battle.View.Player,BattlePlayerShieldViewControllerEditor} class which adds a default sprite
+/// Contains @cref{Battle.View.Player,BattlePlayerShieldViewControllerEditor} class which adds a default sprite
 /// to the shields SpriteRenderer in the editor.
 /// </summary>
 

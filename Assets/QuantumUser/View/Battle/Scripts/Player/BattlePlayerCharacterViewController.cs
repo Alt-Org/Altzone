@@ -402,6 +402,8 @@ namespace Battle.View.Player
             if (EntityRef != e.ERef) return;
             if (!PredictedFrame.Exists(e.ERef)) return;
 
+            _playerShieldViewControllers = new BattlePlayerShieldViewController[e.ShieldCount];
+
             if (!_isRegistered)
             {
                 BattleViewRegistry.Register(EntityRef, this);
@@ -505,10 +507,11 @@ namespace Battle.View.Player
         /// Binds the shield view controller to the _playerShieldViewControllers dictionary to be able to call on it later.
         /// </summary>
         ///
-        /// <param name="shieldViewController">pointer to a shield view controller associated with the character.</param>
-        public void BindShield(BattlePlayerShieldViewController shieldViewController)
+        /// <param name="shieldViewController">Pointer to a shield view controller associated with the character.</param>
+        /// <param name="shieldNumber">ShieldNumber of the shield being bound.</param>
+        public void BindShield(BattlePlayerShieldViewController shieldViewController, int shieldNumber)
         {
-            _playerShieldViewControllers[shieldViewController.EntityRef] = shieldViewController;
+            _playerShieldViewControllers[shieldNumber] = shieldViewController;
         }
 
         #endregion Public
@@ -538,8 +541,8 @@ namespace Battle.View.Player
         /// <value>Reference to the active character class view controller.</value>
         private BattlePlayerCharacterClassBaseViewController _classViewController;
 
-        /// <summary>Dictionary that holds the shield view controllers associated with this character view controller.</summary>
-        private readonly Dictionary<EntityRef, BattlePlayerShieldViewController> _playerShieldViewControllers = new();
+        /// <summary>Array that holds the shield view controllers associated with this character view controller.</summary>
+        private BattlePlayerShieldViewController[] _playerShieldViewControllers;
 
         /// <summary>Boolean that prevents this character view controller from being registered multiple times to the BattleViewRegistry.</summary>
         private bool _isRegistered = false;
@@ -604,7 +607,7 @@ namespace Battle.View.Player
         /// <param name="e">Shield take damage event that needs to be forwarded.</param>
         private void QEventOnShieldTakeDamage(EventBattleShieldTakeDamage e)
         {
-            foreach (BattlePlayerShieldViewController shield in _playerShieldViewControllers.Values)
+            foreach (BattlePlayerShieldViewController shield in _playerShieldViewControllers)
             {
                 shield.OnShieldTakeDamage(e);
             }

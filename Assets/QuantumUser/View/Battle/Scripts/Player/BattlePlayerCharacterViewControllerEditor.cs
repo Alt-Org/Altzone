@@ -1,7 +1,7 @@
 #if UNITY_EDITOR
-/// @file BattlePlayerCharacterViewControllerEditor
+/// @file BattlePlayerCharacterViewControllerEditor.cs
 /// <summary>
-/// Contains @cref {Battle.View.Player,BattlePlayerCharacterViewControllerEditor} class which adds a default sprite
+/// Contains @cref{Battle.View.Player,BattlePlayerCharacterViewControllerEditor} class which adds a default sprite
 /// to every character body part's SpriteRenderer in the editor.
 /// </summary>
 

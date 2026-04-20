@@ -37,6 +37,7 @@ synced event BattlePlayerCharacterViewInit
     BattlePlayerSlot Slot;
     BattlePlayerCharacterID CharacterId;
     BattlePlayerCharacterClass CharacterClass;
+    int ShieldCount;
     FP ModelScale;
 }
 
@@ -47,6 +48,7 @@ synced event BattlePlayerShieldViewInit
     BattlePlayerSlot Slot;
     BattlePlayerCharacterID CharacterId;
     BattlePlayerCharacterClass CharacterClass;
+    int ShieldNumber;
     FP ModelScale;
 }
 

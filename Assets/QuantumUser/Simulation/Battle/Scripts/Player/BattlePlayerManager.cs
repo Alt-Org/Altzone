@@ -454,7 +454,7 @@ namespace Battle.QSimulation.Player
                     }
 
                     // initialize view
-                    f.Events.BattlePlayerCharacterViewInit(playerCharacterEntity, playerSlot, playerCharacterId, playerCharacterClass, BattleGridManager.GridScaleFactor);
+                    f.Events.BattlePlayerCharacterViewInit(playerCharacterEntity, playerSlot, playerCharacterId, playerCharacterClass, playerCharacterShieldCount, BattleGridManager.GridScaleFactor);
 
                     // set playerManagerData for player character
                     playerHandle.SetCharacterState(playerCharacterNumber, BattlePlayerCharacterState.Alive);

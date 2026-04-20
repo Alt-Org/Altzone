@@ -167,7 +167,7 @@ namespace Battle.QSimulation.Player
                 shieldEntities[shieldEntityIndex] = playerShieldEntityTemplate;
 
                 // initialize view
-                f.Events.BattlePlayerShieldViewInit(playerShieldEntityRef, playerCharacterEntityRef, playerSlot, playerCharacterId, playerCharacterClass, BattleGridManager.GridScaleFactor);
+                f.Events.BattlePlayerShieldViewInit(playerShieldEntityRef, playerCharacterEntityRef, playerSlot, playerCharacterId, playerCharacterClass, shieldEntityIndex, BattleGridManager.GridScaleFactor);
             } // create entities
 
             BattleEntityID shieldEntityGroupID = BattleEntityManager.RegisterCompound(f, shieldEntities);

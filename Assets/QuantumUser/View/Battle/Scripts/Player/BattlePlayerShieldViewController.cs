@@ -80,7 +80,17 @@ namespace Battle.View.Player
 
             _characterRef = e.CharacterRef;
 
-            BattleDebugLogger.DevAssert(nameof(BattlePlayerShieldViewController), _characterRef != null, "Character ref is null");
+            if(e.ShieldNumber != _shieldNumber)
+            {
+                _debugLogger.ErrorFormat(
+                    nameof(BattlePlayerShieldViewController),
+                    "Expected shield number: {0}. Given shield number: {1}. Changing shield number to the correct one",
+                    e.ShieldNumber , _shieldNumber
+                );
+                _shieldNumber = e.ShieldNumber;
+            }
+
+            _debugLogger.DevAssert(_characterRef != null, "Character ref is null");
 
             if (!_isRegistered)
             {
@@ -167,7 +177,7 @@ namespace Battle.View.Player
 
             SpriteSheetMap sprite = SpriteSheetMap.FromInt(index);
 
-            BattleDebugLogger.DevAssertFormat(nameof(BattlePlayerShieldViewController),
+            _debugLogger.DevAssertFormat(
                 sprite.EnumValue is
                     SpriteSheetMap.Enum.ShieldUp1 or
                     SpriteSheetMap.Enum.ShieldUp2 or
@@ -227,7 +237,7 @@ namespace Battle.View.Player
             if (characterViewController == null) return false;
 
             _characterViewController = characterViewController;
-            _characterViewController.BindShield(this);
+            _characterViewController.BindShield(this, _shieldNumber);
 
             return true;
         }
