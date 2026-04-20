@@ -57,16 +57,11 @@ namespace MenuUI.Scripts.SoulHome
         private FurnitureSlot _slot;
         private FurnitureSlot _tempSlot;
 
-        //!!!!!!!!!!!!!!!!!!!
         [SerializeField]
         private bool _hasInteractionSlot = false;
         private Vector2Int _interactionOffset = new Vector2Int(0, 1);
         public bool HasInteractionSlot => _hasInteractionSlot;
 
-        //public FurnitureSlot AssignedInteractionSlot { get; private set; }
-
-
-        //------------------------------------------------------------------------------------------------------------------------------------------------
         [SerializeField] public InteractionPattern Pattern = InteractionPattern.FrontRow;
         public List<FurnitureSlot> AssignedInteractionSlots { get; private set; } = new List<FurnitureSlot>();
 
@@ -85,6 +80,7 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
 
+        //Gets closest interaction slot for npc to path to
         public FurnitureSlot GetClosestInteractionSlot(Vector3 npcPosition)
         {
             if (AssignedInteractionSlots == null || AssignedInteractionSlots.Count == 0)
@@ -104,27 +100,21 @@ namespace MenuUI.Scripts.SoulHome
             }
             return closest;
         }
-        //------------------------------------------------------------------------------------------------------------------------------------------------
 
-        //public void SetInteractionSlot(FurnitureSlot slot)
-        //{
-        //    AssignedInteractionSlot = slot;
-        //}
 
-        // WORK IN PROGRESS: DOESNT FUNCTION PROPERLY
         public Vector2Int GetRotatedInteractionOffset()
         {
             // Rotates the offset based on the current temp direction
             return _tempSpriteDirection switch
             {
                 Direction.Front => _interactionOffset,
-                Direction.Right => new Vector2Int(_interactionOffset.y, -_interactionOffset.x),
+                Direction.Right => new Vector2Int(-_interactionOffset.y, _interactionOffset.x),
                 Direction.Back => new Vector2Int(-_interactionOffset.x, -_interactionOffset.y),
-                Direction.Left => new Vector2Int(-_interactionOffset.y, _interactionOffset.x),
+                Direction.Left => new Vector2Int(_interactionOffset.y + GetFurnitureSize().x - 1, -_interactionOffset.x),
                 _ => _interactionOffset
             };
         }
-        //!!!!!!!!!!!!!!!
+
 
         public Furniture Furniture { get => _furniture; set => _furniture = value; }
         public Vector2 Position { get => _position; set => _position = value; }

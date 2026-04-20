@@ -666,8 +666,7 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     check = hit2.collider.GetComponent<RoomData>().HandleFurniturePosition(hitArray, _selectedFurniture, hover, hitPoint, hitRoom);
 
-                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+                    //Displayment of interact slots during placement
                     if (hover && _selectedFurniture != null)
                     {
                         FurnitureHandling handling = _selectedFurniture.GetComponent<FurnitureHandling>();
@@ -675,7 +674,6 @@ namespace MenuUI.Scripts.SoulHome
 
                         if (hoveredSlot != null)
                         {
-                            //FurnitureHandling handling = _selectedFurniture.GetComponent<FurnitureHandling>();
                             if (handling.HasInteractionSlot)
                             {
                                 Vector2Int offset = handling.GetRotatedInteractionOffset();
@@ -683,30 +681,68 @@ namespace MenuUI.Scripts.SoulHome
 
                                 if (handling.Pattern == InteractionPattern.FrontRow)
                                 {
-                                    for (int i = 0; i < size.x; i++)
+                                    bool isVertical = handling.TempSpriteDirection == Direction.Left || handling.TempSpriteDirection == Direction.Right;
+
+                                    int length;
+                                    if (isVertical)
                                     {
-                                        HighlightSlot(room, hoveredSlot.column + offset.x + i, hoveredSlot.row + offset.y);
+                                        length = (int)size.y;
                                     }
+                                    else
+                                    {
+                                        length = (int)size.x;
+                                    }
+
+                                    for (int i = 0; i < length; i++)
+                                    {
+                                        int targetCol;
+                                        int targetRow;
+
+                                        if (isVertical)
+                                        {
+                                            targetCol = hoveredSlot.column + offset.x;
+                                            targetRow = hoveredSlot.row + offset.y - i;
+                                        }
+                                        else
+                                        {
+                                            targetCol = hoveredSlot.column + offset.x + i;
+                                            targetRow = hoveredSlot.row + offset.y;
+                                        }
+                                        HighlightSlot(room, targetCol, targetRow);
+                                    }
+
                                 }
                                 else if (handling.Pattern == InteractionPattern.Surround)
                                 {
-                                    for (int x = -1; x <= size.x; x++)
-                                    {
-                                        for (int y = -1; y <= size.y; y++)
-                                        {
-                                            bool isBorder = (x == -1 || x == size.x || y == -1 || y == size.y);
+                                    bool isVertical = handling.TempSpriteDirection == Direction.Left || handling.TempSpriteDirection == Direction.Right;
 
-                                            if (isBorder)
-                                            {
-                                                HighlightSlot(room, hoveredSlot.column + x, hoveredSlot.row + y);
-                                            }
-                                        }
+                                    //get dimensions on based on rotation
+                                    int w = isVertical ? (int)size.y : (int)size.x;
+                                    int h = isVertical ? (int)size.x : (int)size.y;
+
+                                    //Horizontal lines
+                                    for (int i = 0; i < w; i++)
+                                    {
+                                        // One tile above the furniture
+                                        HighlightSlot(room, hoveredSlot.column + i, hoveredSlot.row + 1);
+                                        // One tile below the furniture
+                                        HighlightSlot(room, hoveredSlot.column + i, hoveredSlot.row - 2);
+                                    }
+
+                                    //Vertical lines
+                                    for (int i = 0; i < h; i++)
+                                    {
+                                        // One tile to the left
+                                        HighlightSlot(room, hoveredSlot.column - 1, hoveredSlot.row + i - 1);
+                                        // One tile to the right
+                                        HighlightSlot(room, hoveredSlot.column + w, hoveredSlot.row + i - 1);
                                     }
                                 }
                             }
                         }
                     }
 
+                    //Saving of interact slots after placement
                     if (!hover && check && _selectedFurniture != null)
                     {
                         FurnitureHandling handling = _selectedFurniture.GetComponent<FurnitureHandling>();
@@ -724,33 +760,66 @@ namespace MenuUI.Scripts.SoulHome
 
                                 if (handling.Pattern == InteractionPattern.FrontRow)
                                 {
-                                    for (int i = 0; i < size.x; i++)
+                                    bool isVertical = handling.TempSpriteDirection == Direction.Left || handling.TempSpriteDirection == Direction.Right;
+
+                                    int length;
+                                    if (isVertical)
                                     {
-                                        SaveSlot(room, hoveredSlot.column + offset.x + i, hoveredSlot.row + offset.y, handling);
+                                        length = (int)size.y;
+                                    }
+                                    else
+                                    {
+                                        length = (int)size.x;
+                                    }
+
+                                    for (int i = 0; i < length; i++)
+                                    {
+                                        int targetCol;
+                                        int targetRow;
+
+                                        if (isVertical)
+                                        {
+                                            targetCol = hoveredSlot.column + offset.x;
+                                            targetRow = hoveredSlot.row + offset.y - i;
+                                        }
+                                        else
+                                        {
+                                            targetCol = hoveredSlot.column + offset.x + i;
+                                            targetRow = hoveredSlot.row + offset.y;
+                                        }
+                                        SaveSlot(room, targetCol, targetRow, handling);
                                     }
                                 }
                                 else if (handling.Pattern == InteractionPattern.Surround)
                                 {
-                                    for (int x = -1; x <= size.x; x++)
-                                    {
-                                        for (int y = -1; y <= size.y; y++)
-                                        {
-                                            bool isHorizontalBorder = (x == -1 || x == size.x);
-                                            bool isVerticalBorder = (y == -1 || y == size.y);
+                                    bool isVertical = handling.TempSpriteDirection == Direction.Left || handling.TempSpriteDirection == Direction.Right;
 
-                                            if (isHorizontalBorder || isVerticalBorder)
-                                            {
-                                                SaveSlot(room, hoveredSlot.column + x, hoveredSlot.row + y, handling);
-                                            }
-                                        }
+                                    //get dimensions on based on rotation
+                                    int w = isVertical ? (int)size.y : (int)size.x;
+                                    int h = isVertical ? (int)size.x : (int)size.y;
+
+                                    //Horizontal lines
+                                    for (int i = 0; i < w; i++)
+                                    {
+                                        // One tile above the furniture
+                                        SaveSlot(room, hoveredSlot.column + i, hoveredSlot.row + 1, handling);
+                                        // One tile below the furniture
+                                        SaveSlot(room, hoveredSlot.column + i, hoveredSlot.row - 2, handling);
+                                    }
+
+                                    //Vertical lines
+                                    for (int i = 0; i < h; i++)
+                                    {
+                                        // One tile to the left
+                                        SaveSlot(room, hoveredSlot.column - 1, hoveredSlot.row + i - 1, handling);
+                                        // One tile to the right
+                                        SaveSlot(room, hoveredSlot.column + w, hoveredSlot.row + i - 1, handling);
                                     }
                                 }
 
                             }
                         }
                     }
-                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
                 }
             }
             if (hover)
@@ -1079,7 +1148,6 @@ namespace MenuUI.Scripts.SoulHome
             return distanceMaxX;
         }
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         private FurnitureSlot GetHoveredSlot(RaycastHit2D[] hits)
         {
             foreach (RaycastHit2D hit in hits)
@@ -1092,6 +1160,7 @@ namespace MenuUI.Scripts.SoulHome
             return null;
         }
 
+        //Helper method for saving interctable slots
         private void SaveSlot(RoomData room, int col, int row, FurnitureHandling handling)
         {
             if (col >= 0 && col < room.SlotColumns && row >= 0 && row < room.SlotRows)
@@ -1101,15 +1170,15 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
 
+        //Helper method for highlighting interctable slots
         private void HighlightSlot(RoomData room, int col, int row)
         {
             if (col >= 0 && col < room.SlotColumns && row >= 0 && row < room.SlotRows)
             {
                 FurnitureSlot interactSlot = room.Grid[col, row].FurnitureSlot;
                 interactSlot.SetValidity(true, true);
-                room.AddToValidityList(interactSlot); // prevents lingering yellows
+                room.AddToValidityList(interactSlot);
             }
         }
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 }
