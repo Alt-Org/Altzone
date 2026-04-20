@@ -8,6 +8,7 @@ public class ParentalControlManager : MonoBehaviour
 {
     public GameObject parentalControlPanel;
     public GameObject passwordPanel;
+    public GameObject parentalControlSettings;
     //public InputField passwordInput;
     public TMP_InputField passwordInput;
     public TMP_InputField popupPasswordInput;
@@ -33,7 +34,7 @@ public class ParentalControlManager : MonoBehaviour
 
     void Start()
     {
-
+        parentalControlSettings.SetActive(false);
         CheckControl();
         GetPassword(); //gets the password that is already set in PlayerPrefs
         Debug.Log("got the password " + presetPassword);
@@ -97,8 +98,9 @@ public class ParentalControlManager : MonoBehaviour
         {
             Debug.Log("correct password, login allowed");
             //messageText.text = "Access granted!";
-            Invoke("ShowSettings", 0.5f);
-            
+            parentalControlSettings.SetActive(true);
+
+
 
         }
 
