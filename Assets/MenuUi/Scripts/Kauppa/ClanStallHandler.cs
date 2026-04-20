@@ -32,11 +32,18 @@ public class ClanStallPopupHandler : MonoBehaviour
     [SerializeField] private Button _suggestVotingButton;
     [SerializeField ]private ConfirmationPopupHandler _confirmPopup;
 
+    [SerializeField] private TMP_Text _clanName;
+
 
     //TO DO: kirpputori äänestys
     void Start()
     {
-        _suggestVotingButton.onClick.AddListener(() => { _confirmPopup.SetPopupActiveClanStall();  });
+        //_suggestVotingButton.onClick.AddListener(() => { _confirmPopup.SetPopupActiveClanStall();  });
+        if (ServerManager.Instance.Clan != null)
+        {
+            string name = ServerManager.Instance.Clan.name;
+            showClanName(name);
+        }
     }
 
     private void OnEnable()
@@ -86,12 +93,20 @@ public class ClanStallPopupHandler : MonoBehaviour
             }
         }
 
+        if (_items.Count > 0 && _items != null)
+        {
+            showInfo(0);
+        }
+
     }
 
     //Populates furniture info in clan stall popup
     void showInfo(int slotVal)
     {
         StorageFurniture _furn = _items[slotVal];
+
+        _suggestVotingButton.onClick.RemoveAllListeners();
+        _suggestVotingButton.onClick.AddListener( () => { _confirmPopup.SetPopupActiveClanStall(_furn); });
 
         //Furniture image
         _icon.sprite = _furn.Sprite;
@@ -110,5 +125,10 @@ public class ClanStallPopupHandler : MonoBehaviour
 
         //Furniture description
         _artisticDescription.text = _furn.Info.ArtisticDescription;
+    }
+
+    void showClanName (string clan)
+    {
+        _clanName.text = clan;
     }
 }

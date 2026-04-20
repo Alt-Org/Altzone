@@ -1,12 +1,14 @@
-using Altzone.Scripts.Model.Poco.Game;
-using UnityEngine;
-using Altzone.Scripts.Voting;
-using MenuUi.Scripts.SwipeNavigation;
-using UnityEngine.UI;
-using TMPro;
-using Altzone.Scripts.Language;
-using Altzone.Scripts.AvatarPartsInfo;
 using System.Collections;
+using System.Collections.Generic;
+using Altzone.Scripts.AvatarPartsInfo;
+using Altzone.Scripts.Language;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Voting;
+using MenuUi.Scripts.Storage;
+using MenuUi.Scripts.SwipeNavigation;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class ConfirmationPopupHandler : MonoBehaviour
 {
@@ -18,6 +20,8 @@ public class ConfirmationPopupHandler : MonoBehaviour
 
     private GameFurniture furniture;
     private AvatarPartInfo avatarpart;
+
+    private StorageFurniture storageFurnitures;
 
     private void OnEnable()
     {
@@ -79,12 +83,41 @@ public class ConfirmationPopupHandler : MonoBehaviour
 
     public void CreatePollPopup() => StartCoroutine(CreatePollPopupCoroutine());
 
-    public void SetPopupActiveClanStall()
+    //kirpputori äänestys
+    public void SetPopupActiveClanStall(StorageFurniture storageFurniture = null)
     {
-        Debug.Log("SuggestVoting painettu");
+
+        if (Background != null) Background.SetActive(true);
+
+        storageFurnitures = storageFurniture;
+
+        transform.SetAsLastSibling();
+
+       
+        _acceptButton.onClick.RemoveAllListeners();
+        _acceptButton.onClick.AddListener(() => CreateClanStallPollPopup());
+        _declineButton.onClick.RemoveAllListeners();
+        _declineButton.onClick.AddListener(() => ClosePopup());
+
         
 
+        switch (SettingsCarrier.Instance.Language)
+        {
+            case SettingsCarrier.LanguageType.Finnish:
+                _confirmText.SetText("Haluatko varmasti aloittaa äänestyksen tästä huonekalusta?");
+                break;
+            case SettingsCarrier.LanguageType.English:
+                _confirmText.SetText("Are you sure you want to start a vote for this item?");
+                break;
+            default:
+                _confirmText.SetText("Haluatko varmasti aloittaa äänestyksen tästä huonekalusta?");
+                break;
+        }
+
+
     }
+
+    public void CreateClanStallPollPopup() => StartCoroutine(CreateClanStallPollPopupCoroutine());
 
     public IEnumerator CreatePollPopupCoroutine()
     {
@@ -100,6 +133,20 @@ public class ConfirmationPopupHandler : MonoBehaviour
         //Implement this later.
 
         ClosePopup();
+    }
+
+    public IEnumerator CreateClanStallPollPopupCoroutine()
+    {
+        
+        bool? result = null;
+               
+        if (storageFurnitures != null) PollManager.CreateVotingPoll(FurniturePollType.Buying, storageFurnitures, c => result = c);
+        yield return new WaitUntil(() => result.HasValue);
+        
+        VotingActions.ReloadPollList?.Invoke();
+        ClosePopup();
+        
+
     }
 
     private void ClosePopup()

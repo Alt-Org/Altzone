@@ -197,8 +197,14 @@ public static class PollManager // Handles the polls from creation to loading to
     //TO DO: kirpputori huonekalu äänestys, ostamassa vai myymässä
     public static void CreateVotingPoll(FurniturePollType furniturePollType, StorageFurniture furniture, Action<bool> callback)
     {
+        Debug.Log("CreateVotingPoll");
         ShowVotingPopup?.Invoke(furniturePollType);
         Debug.Log($"TODO CreateVotingPoll -> furniturePollType={furniturePollType}, furniture={furniture}, action={callback}");
+
+
+        //for testing purposes, delete later
+        if (callback != null)
+              callback(false);
     }
 
     // Create poll for kicking a member from clan
