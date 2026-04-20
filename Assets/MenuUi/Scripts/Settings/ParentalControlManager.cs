@@ -19,7 +19,10 @@ public class ParentalControlManager : MonoBehaviour
     //the password will be set in the pop up
     public GameObject parentalControlPopup;
 
+    public bool parentalControl;
+
     private string sessionPassword = "";
+
     //the password already set in PlayerPrefs
     public string presetPassword;
     public string setPasswordInput;
@@ -28,9 +31,10 @@ public class ParentalControlManager : MonoBehaviour
     void Start()
     {
 
-
+        CheckControl();
         GetPassword(); //gets the password that is already set in PlayerPrefs
         Debug.Log("got the password " + presetPassword);
+        Debug.Log("control status " + parentalControl);
 
         parentalControlPanel.SetActive(true);
         passwordPanel.SetActive(true);
@@ -129,7 +133,12 @@ public class ParentalControlManager : MonoBehaviour
 
             Debug.Log("password is set to PlayerPrefs " + setPasswordInput);
             PlayerPrefs.SetString("password", setPasswordInput);
+
+            //the int will indicate if Parental Control is on, 1 means that it is set
+            //boolean is not allowed in PlayerPrefs, otherwise it would be that
+            PlayerPrefs.SetInt("parentalcontrol", 1);
             Debug.Log(PlayerPrefs.GetString("password"));
+            Debug.Log(PlayerPrefs.GetInt("parentalcontrol"));
 
             //messageText.text = "Password set!";
 
@@ -141,6 +150,20 @@ public class ParentalControlManager : MonoBehaviour
         
     }
 
+    public void CheckControl()
+    {
+        //at start is used to check if Parental Control is on
+        int checkControl = PlayerPrefs.GetInt("parentalcontrol");
+
+        if (checkControl == 1) {
+            parentalControl = true;
+        } else
+        {
+            parentalControl = false;
+
+        }
+
+    }
 
 
     private void ShowSettings()
