@@ -532,7 +532,7 @@ namespace Battle.View.Player
         /// <summary>Array that holds the SpriteRenderer components of each body part gameobject.</summary>
         private readonly SpriteRenderer[] _bodypartSpriteRenderers = new SpriteRenderer[5];
 
-        /// <summary>Array that holds the shield view controllers associated with this character view controller.</summary>
+        /// <summary>Array that holds references to the shield view controllers associated with this character view controller.</summary>
         private BattlePlayerShieldViewController[] _playerShieldViewControllers;
 
         /// <value>Holder variable for the damage flash coroutine.</value>
@@ -620,7 +620,7 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Coroutine which plays the damage flash animation.
+        /// Coroutine which plays the stun flash animation.
         /// </summary>
         ///
         /// <returns>Coroutine IEnumerator.</returns>
