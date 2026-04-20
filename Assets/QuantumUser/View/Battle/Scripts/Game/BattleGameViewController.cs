@@ -264,7 +264,6 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleLastRowWallDestroyed>(this, QEventOnLastRowWallDestroyed);
             QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
             QuantumEvent.Subscribe<EventBattleCharacterSelected>(this, QEventCharacterSelected);
-            QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
             QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
             QuantumEvent.Subscribe<EventBattleGiveUpStateChange>(this, QEventOnGiveUpStateChange);
             QuantumEvent.Subscribe<EventBattleStoneCharacterPlayHitAnimation>(this, QEventOnStoneCharacterPlayHitAnimation);
@@ -620,22 +619,6 @@ namespace Battle.View.Game
         private void QEventCharacterSelected(EventBattleCharacterSelected e)
         {
             _uiController.PlayerInfoHandler.SetSelected(e.Slot, e.CharacterNumber);
-        }
-
-        /// <summary>
-        /// Private handler method for EventBattleCharacterTakeDamage QuantumEvent.<br/>
-        /// Handles calling <see cref="Battle.View.UI.BattleUiPlayerInfoHandler.UpdateDefenceVisual">UpdateDefenceVisual</see>
-        /// in <see cref="BattleGameViewController._uiController">_uiController's</see>
-        /// <see cref="Battle.View.UI.BattleUiController.PlayerInfoHandler">PlayerInfoHandler</see>.
-        /// </summary>
-        ///
-        /// <param name="e">The event data.</param>
-        private void QEventOnCharacterTakeDamage(EventBattleCharacterTakeDamage e)
-        {
-            if (e.Team == LocalPlayerTeam)
-            {
-                _uiController.PlayerInfoHandler.UpdateDefenceVisual(e.Slot, e.CharacterNumber, (float)e.HealthPercentage);
-            }
         }
 
         /// <summary>

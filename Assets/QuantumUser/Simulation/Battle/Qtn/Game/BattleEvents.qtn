@@ -127,7 +127,6 @@ synced event BattleCharacterTakeDamage
     BattleTeamNumber Team;
     BattlePlayerSlot Slot;
     int CharacterNumber;
-    FP HealthPercentage;
 }
 
 synced event BattleShieldTakeDamage
