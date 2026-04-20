@@ -16,9 +16,12 @@ public class ParentalControlManager : MonoBehaviour
     public TMP_Text messageText;
     public Toggle controlToggle;
     public TMP_InputField timeLimitInput;
+
     //the password will be set in the pop up
     public GameObject parentalControlPopup;
+    public GameObject parentalControlPopupButton;
 
+    //boolean to check if the ParentalControl is on
     public bool parentalControl;
 
     private string sessionPassword = "";
@@ -137,6 +140,8 @@ public class ParentalControlManager : MonoBehaviour
             //the int will indicate if Parental Control is on, 1 means that it is set
             //boolean is not allowed in PlayerPrefs, otherwise it would be that
             PlayerPrefs.SetInt("parentalcontrol", 1);
+            parentalControlPopupButton.SetActive(false);
+
             Debug.Log(PlayerPrefs.GetString("password"));
             Debug.Log(PlayerPrefs.GetInt("parentalcontrol"));
 
