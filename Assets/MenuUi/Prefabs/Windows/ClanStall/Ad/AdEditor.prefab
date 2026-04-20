@@ -721,6 +721,7 @@ MonoBehaviour:
   _borderSelectionContent: {fileID: 3264556469795064128}
   _borderFramePrefab: {fileID: 7082800346161996096, guid: 37373c23272a4244696039fd58bc1190,
     type: 3}
+  _dtSelectButtons: {fileID: 0}
   _backgroundColourSelectorContent: {fileID: 6706930507759647334}
   _backgroundColourSelectorPrefab: {fileID: 6648892728491822263, guid: f9c7216b8c66c3245a54eac5cfc3e854,
     type: 3}
@@ -1421,7 +1422,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00092970824, y: 0}
+  m_AnchoredPosition: {x: -0.0006551053, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2338810188930946883
@@ -1748,8 +1749,8 @@ RectTransform:
   m_GameObject: {fileID: 5104031272745160163}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8105572593891634702}
   - {fileID: 2457134173098979987}
@@ -2128,8 +2129,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6938232152149473186}
   m_HandleRect: {fileID: 7496278917892479371}
   m_Direction: 0
-  m_Value: -0.0000005059607
-  m_Size: 0.9396839
+  m_Value: 1.000003
+  m_Size: 0.86763126
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2867,7 +2868,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.010000001, y: 0.064346395}
   m_AnchorMax: {x: 0.98881984, y: 1}
-  m_AnchoredPosition: {x: -9.396824, y: 0}
+  m_AnchoredPosition: {x: -141.0455, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &5665192289463060865
@@ -3366,7 +3367,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 369092238316079920}
   m_HandleRect: {fileID: 3887270834363984879}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4095,6 +4096,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6699832907098985500, guid: 7afbe7fc11286b544aab47947e93f468,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 7140401699805581674, guid: 7afbe7fc11286b544aab47947e93f468,
         type: 3}

@@ -149,7 +149,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             }
 
             // Opening battle popup after selecting a game type
-            SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
+            //SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
         }
 
         private void ChangeLanguage(SettingsCarrier.LanguageType language)

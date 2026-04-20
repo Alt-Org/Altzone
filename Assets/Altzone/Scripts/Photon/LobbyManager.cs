@@ -1104,7 +1104,8 @@ namespace Altzone.Scripts.Lobby
                     PlayerSlotTypes = data.PlayerSlotTypes,
                     PlayerSlotUserIDs = data.PlayerSlotUserIds,
                     PlayerCount = data.PlayerCount,
-                    ProjectileInitialEmotion = (BattleEmotionState)data.ProjectileInitialEmotion
+                    ProjectileInitialEmotion = (BattleEmotionState)data.ProjectileInitialEmotion,
+                    IsTestMode = false
                 }
             };
 
@@ -1508,7 +1509,6 @@ namespace Altzone.Scripts.Lobby
 
                 var stats = new BattlePlayerStats()
                 {
-                    Hp            = BaseCharacter.GetStatValueFP(StatType.Hp, character.Hp),
                     Attack        = BaseCharacter.GetStatValueFP(StatType.Attack, character.Attack),
                     Defence       = BaseCharacter.GetStatValueFP(StatType.Defence, character.Defence),
                     CharacterSize = BaseCharacter.GetStatValueFP(StatType.CharacterSize, character.CharacterSize),

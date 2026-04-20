@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
@@ -67,7 +68,10 @@ namespace Altzone.Scripts.Voting
         {
             Id = poll._id;
             StartTime = poll.startedAt !=null ?((DateTimeOffset)DateTime.Parse(poll.startedAt).ToLocalTime()).ToUnixTimeSeconds(): 0;
-            EndTime = ((DateTimeOffset)DateTime.Parse(poll.endsOn).ToLocalTime()).ToUnixTimeSeconds();
+            if(DateTime.TryParse(poll.endsOn, out DateTime time))
+                EndTime = ((DateTimeOffset)time.ToLocalTime()).ToUnixTimeSeconds();
+            else
+                EndTime = ((DateTimeOffset)DateTime.ParseExact(poll.endsOn, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture).ToLocalTime()).ToUnixTimeSeconds();
 
             List<string> clanMembers = new List<string>();
             ClanData clan = null;
