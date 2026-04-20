@@ -5,17 +5,20 @@
 
 // System usings
 using System.Collections;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+
+// Unity usings
+using UnityEngine;
+
+// Quantum usings
+using Quantum;
+
 // Battle QSimulation usings
 using Battle.QSimulation;
 using Battle.QSimulation.Player;
+
 // Battle View usings
 using Battle.View.Game;
-// Quantum usings
-using Quantum;
-// Unity usings
-using UnityEngine;
 
 namespace Battle.View.Player
 {
@@ -251,13 +254,13 @@ namespace Battle.View.Player
 
         [Header("References")]
 
-        /// <summary>[SerializeField] Reference to a struct that holds the character's spritesheet.</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
-        [SerializeField] private BattleSpriteSheet _spriteSheet;
-
         /// <summary>[SerializeField] Reference to an override character class view controller.</summary>
         /// @ref BattlePlayerCharacterViewController-SerializeFields
         [SerializeField] private BattlePlayerCharacterClassBaseViewController _classViewControllerOverride;
+
+        /// <summary>[SerializeField] Reference to a struct that holds the character's spritesheet.</summary>
+        /// @ref BattlePlayerCharacterViewController-SerializeFields
+        [SerializeField] private BattleSpriteSheet _spriteSheet;
 
         /// <summary>[SerializeField] %Player's child <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> where heart sprite is located.</summary>
         /// @ref BattlePlayerCharacterViewController-SerializeFields
@@ -276,17 +279,6 @@ namespace Battle.View.Player
 
         [Header("Settings")]
 
-        /// <summary>[SerializeField] The transparency effect's range.</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
-        [SerializeField] private float _transparencyEffectRange;
-
-        /// <summary>[SerializeField] The transparency effect's transition rate.</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
-        [SerializeField] private float _transparencyEffectTransitionRate;
-
-        /// <summary>[SerializeField] The transparency effect's minimum alpha value..</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
-        [SerializeField] private float _transparencyEffectMinimumAlpha;
 
         /// <summary>[SerializeField] The damage flash animation's duration.</summary>
         /// @ref BattlePlayerCharacterViewController-SerializeFields
@@ -306,7 +298,8 @@ namespace Battle.View.Player
         /// <summary>
         /// Handles changing the sprite for the head gameobject.
         /// </summary>
-        /// <param name="sprite">sprite that the head sprite is being changed to.</param>
+        ///
+        /// <param name="sprite">Sprite that the head sprite is being changed to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetHeadSprite(SpriteSheetMap sprite)
         {
@@ -329,7 +322,8 @@ namespace Battle.View.Player
         /// <summary>
         /// Handles changing the sprite for the body gameobject.
         /// </summary>
-        /// <param name="sprite">sprite that the head sprite is being changed to.</param>
+        ///
+        /// <param name="sprite">Sprite that the head sprite is being changed to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetBodySprite(SpriteSheetMap sprite)
         {
@@ -347,7 +341,8 @@ namespace Battle.View.Player
         /// <summary>
         /// Handles changing the sprite for the hand gameobject.
         /// </summary>
-        /// <param name="sprite">sprite that the hand sprite is being changed to.</param>
+        ///
+        /// <param name="sprite">Sprite that the hand sprite is being changed to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetHandSprite(SpriteSheetMap sprite)
         {
@@ -371,7 +366,8 @@ namespace Battle.View.Player
         /// <summary>
         /// Handles changing the sprite for the feet gameobject.
         /// </summary>
-        /// <param name="sprite">sprite that the hand sprite is being changed to.</param>
+        ///
+        /// <param name="sprite">Sprite that the hand sprite is being changed to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetFeetSprite(SpriteSheetMap sprite)
         {
@@ -402,13 +398,7 @@ namespace Battle.View.Player
             if (EntityRef != e.ERef) return;
             if (!PredictedFrame.Exists(e.ERef)) return;
 
-            _playerShieldViewControllers = new BattlePlayerShieldViewController[e.ShieldCount];
-
-            if (!_isRegistered)
-            {
-                BattleViewRegistry.Register(EntityRef, this);
-                _isRegistered = true;
-            }
+            //{ initialize visuals
 
             float scale = (float)e.ModelScale;
             transform.localScale = new Vector3(scale, scale, scale);
@@ -442,6 +432,10 @@ namespace Battle.View.Player
                 _localPlayerIndicator.SetActive(true);
             }
 
+            //} initialize visuals
+
+            //{ initialize class view controller
+
             if (_classViewControllerOverride != null)
             {
                 if(_classViewControllerOverride.Class == e.CharacterClass)
@@ -460,6 +454,15 @@ namespace Battle.View.Player
 
             _classViewController.OnViewInit(this, e.ERef, e.Slot, e.CharacterId);
 
+            //} initialize class view controller
+
+            // initialize shield view controller reference array
+            _playerShieldViewControllers = new BattlePlayerShieldViewController[e.ShieldCount];
+
+            // register character view controller
+            BattleViewRegistry.Register(EntityRef, this);
+
+            // subscribe to quantum events
             QuantumEvent.Subscribe<EventBattlePlayStateUpdate>(this, QEventOnPlayStateUpdate);
             QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
             QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
@@ -480,23 +483,6 @@ namespace Battle.View.Player
             BattleTeamNumber battleTeamNumber = playerData->TeamNumber;
 
             UpdateModelPositionAdjustment(&targetPosition);
-            //UpdateAnimator(&targetPosition, battleTeamNumber);
-
-            //if (BattleGameViewController.ProjectileReference != null)
-            //{
-            //    if (Vector3.Distance(gameObject.transform.position, BattleGameViewController.ProjectileReference.transform.position) <= _transparencyEffectRange && _spriteRenderer.color.a > _transparencyEffectMinimumAlpha)
-            //    {
-            //        Color tempColor = _spriteRenderer.color;
-            //        tempColor.a = Mathf.Clamp(tempColor.a - _transparencyEffectTransitionRate * Time.deltaTime, _transparencyEffectMinimumAlpha, 1);
-            //        _spriteRenderer.color = tempColor;
-            //    }
-            //    else if (_spriteRenderer.color.a < 1)
-            //    {
-            //        Color tempColor = _spriteRenderer.color;
-            //        tempColor.a = Mathf.Clamp(tempColor.a + _transparencyEffectTransitionRate * Time.deltaTime, _transparencyEffectMinimumAlpha, 1);
-            //        _spriteRenderer.color = tempColor;
-            //    }
-            //}
 
             _classViewController.OnUpdateView();
         }
@@ -543,9 +529,6 @@ namespace Battle.View.Player
 
         /// <summary>Array that holds the shield view controllers associated with this character view controller.</summary>
         private BattlePlayerShieldViewController[] _playerShieldViewControllers;
-
-        /// <summary>Boolean that prevents this character view controller from being registered multiple times to the BattleViewRegistry.</summary>
-        private bool _isRegistered = false;
 
         /// <summary>Boolean that tells whether the Quantum Entity this ViewController is attached to is in play.</summary>
         private bool _isInPlay;
