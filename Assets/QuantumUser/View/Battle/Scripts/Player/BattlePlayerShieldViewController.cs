@@ -92,12 +92,8 @@ namespace Battle.View.Player
 
             _debugLogger.DevAssert(_characterRef != null, "Character ref is null");
 
-            if (!_isRegistered)
-            {
-                BattleViewRegistry.Register(EntityRef, this);
-                _isRegistered = true;
-                BattleViewRegistry.WhenRegistered(_characterRef, OnCharacterRegistered);
-            }
+            BattleViewRegistry.Register(EntityRef, this);
+            BattleViewRegistry.WhenRegistered(_characterRef, OnCharacterRegistered);
 
             float scale = (float)e.ModelScale;
             transform.localScale = new Vector3(scale, scale, scale);
@@ -209,9 +205,6 @@ namespace Battle.View.Player
 
         /// <summary>Character view controller this shield view controller is bound to.</summary>
         private BattlePlayerCharacterViewController _characterViewController;
-
-        /// <summary>Boolean that prevents this shield view controller from being registered multiple times to the BattleViewRegistry.</summary>
-        private bool _isRegistered = false;
 
         /// <summary>Boolean that tells whether the Quantum Entity this ViewController is attached to is in play.</summary>
         private bool _isInPlay;
