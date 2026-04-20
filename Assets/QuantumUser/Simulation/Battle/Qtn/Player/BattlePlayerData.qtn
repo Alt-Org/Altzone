@@ -21,7 +21,6 @@ component BattlePlayerDataQComponent
     bool       MovementEnabled;
     bool       RotationEnabled;
     FP         CurrentDefence;
-    FrameTimer DamageCooldown;
     FrameTimer StunCooldown;
 
     // Player's movement related data

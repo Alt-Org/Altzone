@@ -133,7 +133,6 @@ namespace Quantum.Prototypes.Unity {
     public QBoolean MovementEnabled;
     public QBoolean RotationEnabled;
     public FP CurrentDefence;
-    public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
     public Quantum.Prototypes.FrameTimerPrototype StunCooldown;
     public QBoolean HasTargetPosition;
     public FPVector2 TargetPosition;
@@ -160,7 +159,6 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.MovementEnabled, out result.MovementEnabled);
       converter.Convert(this.RotationEnabled, out result.RotationEnabled);
       converter.Convert(this.CurrentDefence, out result.CurrentDefence);
-      converter.Convert(this.DamageCooldown, out result.DamageCooldown);
       converter.Convert(this.StunCooldown, out result.StunCooldown);
       converter.Convert(this.HasTargetPosition, out result.HasTargetPosition);
       converter.Convert(this.TargetPosition, out result.TargetPosition);
@@ -211,12 +209,14 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.Prototypes.Unity.BattlePlayerEntityRefPrototype PlayerEntityRef;
     public Int32 ShieldNumber;
     public QBoolean IsAttached;
+    public Quantum.Prototypes.FrameTimerPrototype ShieldHitCooldown;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerShieldDataQComponentPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerShieldDataQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerShieldDataQComponentPrototype();
       converter.Convert(this.PlayerEntityRef, out result.PlayerEntityRef);
       converter.Convert(this.ShieldNumber, out result.ShieldNumber);
       converter.Convert(this.IsAttached, out result.IsAttached);
+      converter.Convert(this.ShieldHitCooldown, out result.ShieldHitCooldown);
       ConvertUser(converter, ref result);
       return result;
     }

@@ -54,7 +54,7 @@ namespace Battle.View.Player
         /// </summary>
         ///
         /// <param name="e">The damage event data.</param>
-        public virtual void OnCharacterTakeDamage(EventBattleCharacterTakeDamage e) { }
+        public virtual void OnCharacterHit(EventBattleCharacterHit e) { }
 
         /// <summary>
         /// Called once per frame to update the character class view.

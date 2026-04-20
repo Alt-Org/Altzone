@@ -121,20 +121,22 @@ synced event BattleCharacterSelected
     int CharacterNumber;
 }
 
-synced event BattleCharacterTakeDamage
+synced event BattleCharacterHit
 {
     EntityRef ERef;
     BattleTeamNumber Team;
     BattlePlayerSlot Slot;
     int CharacterNumber;
+    FP StunFlashDurationSec;
 }
 
-synced event BattleShieldTakeDamage
+synced event BattleShieldHit
 {
     EntityRef ERef;
     BattleTeamNumber Team;
     BattlePlayerSlot Slot;
     int CharacterNumber;
+    bool ShieldAttached;
     FP DefencePercentage;
 }
 

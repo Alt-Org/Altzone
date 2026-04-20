@@ -279,14 +279,9 @@ namespace Battle.View.Player
 
         [Header("Settings")]
 
-
-        /// <summary>[SerializeField] The damage flash animation's duration.</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
-        [SerializeField] private float _damageFlashDuration = 1f;
-
         /// <summary>[SerializeField] The amount of damage flashes.</summary>
         /// @ref BattlePlayerCharacterViewController-SerializeFields
-        [SerializeField] private int _damageFlashAmount = 5;
+        [SerializeField] private int _stunFlashAmount;
 
         #endregion SerializeFields
         /// @}
@@ -294,6 +289,18 @@ namespace Battle.View.Player
         #region Public
 
         #region Public - Sprite Control Methods
+
+        /// <summary>
+        /// Handles changing the sprite to the base sprite.
+        /// </summary>
+        public void SetBaseSprite()
+        {
+            _bodypartSpriteRenderers[SpriteRendererHeadIndex]   .sprite = null;
+            _bodypartSpriteRenderers[SpriteRendererBodyIndex]   .sprite = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Base);
+            _bodypartSpriteRenderers[SpriteRendererHandsIndex]  .sprite = null;
+            _bodypartSpriteRenderers[SpriteRendererFeetIndex]   .sprite = null;
+            _bodypartSpriteRenderers[SpriteRendererShadowIndex] .sprite = null;
+        }
 
         /// <summary>
         /// Handles changing the sprite for the head gameobject.
@@ -407,7 +414,6 @@ namespace Battle.View.Player
             {
                 GameObject characterGameObject = _characterGameObjects[0];
                 characterGameObject.SetActive(true);
-                _spriteRenderer = characterGameObject.GetComponent<SpriteRenderer>();
                 _bodypartSpriteRenderers[SpriteRendererHeadIndex]   = characterGameObject.transform.Find("Head").GetComponent<SpriteRenderer>();
                 _bodypartSpriteRenderers[SpriteRendererBodyIndex]   = characterGameObject.transform.Find("Body").GetComponent<SpriteRenderer>();
                 _bodypartSpriteRenderers[SpriteRendererHandsIndex]  = characterGameObject.transform.Find("Hands").GetComponent<SpriteRenderer>();
@@ -419,13 +425,14 @@ namespace Battle.View.Player
                 GameObject characterGameObject = _characterGameObjects[1];
                 characterGameObject.SetActive(true);
                 //_heart.SetActive(false);
-                _spriteRenderer = characterGameObject.GetComponent<SpriteRenderer>();
                 _bodypartSpriteRenderers[SpriteRendererHeadIndex]   = characterGameObject.transform.Find("Head").GetComponent<SpriteRenderer>();
                 _bodypartSpriteRenderers[SpriteRendererBodyIndex]   = characterGameObject.transform.Find("Body").GetComponent<SpriteRenderer>();
                 _bodypartSpriteRenderers[SpriteRendererHandsIndex]  = characterGameObject.transform.Find("Hands").GetComponent<SpriteRenderer>();
                 _bodypartSpriteRenderers[SpriteRendererFeetIndex]   = characterGameObject.transform.Find("Feet").GetComponent<SpriteRenderer>();
                 _bodypartSpriteRenderers[SpriteRendererShadowIndex] = characterGameObject.transform.Find("Shadow").GetComponent<SpriteRenderer>();
             }
+
+            SetBaseSprite();
 
             if (e.Slot == BattleGameViewController.LocalPlayerSlot)
             {
@@ -450,8 +457,6 @@ namespace Battle.View.Player
                 }
             }
 
-            _spriteRenderer.sprite = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Base);
-
             _classViewController.OnViewInit(this, e.ERef, e.Slot, e.CharacterId);
 
             //} initialize class view controller
@@ -464,8 +469,8 @@ namespace Battle.View.Player
 
             // subscribe to quantum events
             QuantumEvent.Subscribe<EventBattlePlayStateUpdate>(this, QEventOnPlayStateUpdate);
-            QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
-            QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
+            QuantumEvent.Subscribe<EventBattleCharacterHit>(this, QEventOnCharacterHit);
+            QuantumEvent.Subscribe<EventBattleShieldHit>(this, QEventOnShieldHit);
         });}
 
         /// <summary>
@@ -518,9 +523,6 @@ namespace Battle.View.Player
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private BattleDebugLogger _debugLogger;
 
-        /// <value>Reference to the active character's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SpriteRenderer.html">SpriteRenderer@u-exlink</a>.</value>
-        private SpriteRenderer _spriteRenderer;
-
         /// <value>Holder variable for the damage flash coroutine.</value>
         private Coroutine _damageFlashCoroutine = null;
 
@@ -565,12 +567,12 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handler method for EventBattleCharacterTakeDamage QuantumEvent.<br/>
-        /// Starts <see cref="BattlePlayerCharacterViewController.DamageFlashCoroutine">DamageFlashCoroutine</see>.
+        /// Handler method for EventBattleCharacterHit QuantumEvent.<br/>
+        /// Starts <see cref="BattlePlayerCharacterViewController.StunFlashCoroutine">DamageFlashCoroutine</see>.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
-        private void QEventOnCharacterTakeDamage(EventBattleCharacterTakeDamage e)
+        private void QEventOnCharacterHit(EventBattleCharacterHit e)
         {
             if (EntityRef != e.ERef) return;
 
@@ -578,9 +580,9 @@ namespace Battle.View.Player
             {
                 StopCoroutine(_damageFlashCoroutine);
             }
-            _damageFlashCoroutine = StartCoroutine(DamageFlashCoroutine());
+            _damageFlashCoroutine = StartCoroutine(StunFlashCoroutine((float)e.StunFlashDurationSec));
 
-            _classViewController.OnCharacterTakeDamage(e);
+            _classViewController.OnCharacterHit(e);
         }
 
         /// <summary>
@@ -588,11 +590,11 @@ namespace Battle.View.Player
         /// </summary>
         ///
         /// <param name="e">Shield take damage event that needs to be forwarded.</param>
-        private void QEventOnShieldTakeDamage(EventBattleShieldTakeDamage e)
+        private void QEventOnShieldHit(EventBattleShieldHit e)
         {
             foreach (BattlePlayerShieldViewController shield in _playerShieldViewControllers)
             {
-                shield.OnShieldTakeDamage(e);
+                shield.OnShieldHit(e);
             }
         }
 
@@ -622,22 +624,29 @@ namespace Battle.View.Player
         /// </summary>
         ///
         /// <returns>Coroutine IEnumerator.</returns>
-        private IEnumerator DamageFlashCoroutine()
+        private IEnumerator StunFlashCoroutine(float stunFlashDurationSec)
         {
             Color tempColor;
-            for (int i = 0; i < _damageFlashAmount; i++)
+            float singleFlashDuration = stunFlashDurationSec / (_stunFlashAmount * 2 - 1);
+            for (int i = 0; i < _stunFlashAmount; i++)
             {
-                tempColor = _spriteRenderer.color;
-                tempColor.a = 0;
-                _spriteRenderer.color = tempColor;
+                foreach (SpriteRenderer sprite in _bodypartSpriteRenderers)
+                {
+                    tempColor = sprite.color;
+                    tempColor.a = 0;
+                    sprite.color = tempColor;
+                }
 
-                yield return new WaitForSeconds(_damageFlashDuration / (2 * _damageFlashAmount));
+                yield return new WaitForSeconds(singleFlashDuration);
 
-                tempColor = _spriteRenderer.color;
-                tempColor.a = 1;
-                _spriteRenderer.color = tempColor;
+                foreach (SpriteRenderer sprite in _bodypartSpriteRenderers)
+                {
+                    tempColor = sprite.color;
+                    tempColor.a = 1;
+                    sprite.color = tempColor;
+                }
 
-                yield return new WaitForSeconds(_damageFlashDuration / (2 * _damageFlashAmount));
+                yield return new WaitForSeconds(singleFlashDuration);
             }
         }
 

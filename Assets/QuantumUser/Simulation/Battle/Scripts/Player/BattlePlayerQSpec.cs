@@ -43,6 +43,6 @@ namespace Battle.QSimulation.Player
 
         [Tooltip("Time in seconds before player can move again after being hit by a projectile")]
         /// <value>Time in seconds before player can move again after being hit by a projectile.</value>
-        public FP StunCooldownSec;
+        public FP StunDurationSec;
     }
 }

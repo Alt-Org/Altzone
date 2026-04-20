@@ -78,7 +78,8 @@ namespace Battle.QSimulation.Player
         {
             if (projectileCollisionData->Projectile->IsHeld) return;
 
-            BattlePlayerDataQComponent* damagedPlayerData = ((BattlePlayerEntityRef)playerCollisionData->PlayerCharacterHitbox->ParentEntityRef).GetDataQComponent(f);
+            BattlePlayerEntityRef damagedPlayerEntityRef = (BattlePlayerEntityRef)playerCollisionData->PlayerCharacterHitbox->ParentEntityRef;
+            BattlePlayerDataQComponent* damagedPlayerData = damagedPlayerEntityRef.GetDataQComponent(f);
 
             if (damagedPlayerData->CurrentDefence <= 0) HandleSFXCharacter(f, SoundEffectTypeCharacter.Death, damagedPlayerData->CharacterId);
             else
@@ -96,8 +97,17 @@ namespace Battle.QSimulation.Player
 
             damagedPlayerData->MovementEnabled = false;
             damagedPlayerData->RotationEnabled = false;
+            FP stunCooldown = (int)BattleQConfig.GetPlayerSpec(f).StunDurationSec;
 
-            damagedPlayerData->StunCooldown = FrameTimer.FromSeconds(f, (int)BattleQConfig.GetPlayerSpec(f).StunCooldownSec);
+            damagedPlayerData->StunCooldown = FrameTimer.FromSeconds(f, stunCooldown);
+
+            f.Events.BattleCharacterHit(
+                damagedPlayerEntityRef,
+                damagedPlayerData->TeamNumber,
+                damagedPlayerData->Slot,
+                BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber,
+                stunCooldown
+                );
 
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
         }
@@ -119,25 +129,28 @@ namespace Battle.QSimulation.Player
             BattlePlayerShieldDataQComponent* playerShieldData  = ((BattlePlayerShieldEntityRef)shieldCollisionData->PlayerShieldHitbox->ParentEntityRef).GetDataQComponent(f);
             BattlePlayerDataQComponent*       damagedPlayerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
 
+            int characterNumber = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber;
+            FP defencePercentage = -1;
+
+            if (playerShieldData->ShieldHitCooldown.IsRunning(f)) goto ExitNoHit;
+
             HandleSFXCommon(f, SoundEffectTypeCommon.HitShield);
 
             //} hit
 
             //{ hit attach
 
-            if (!playerShieldData->IsAttached) goto Exit;
+            if (!playerShieldData->IsAttached) goto ExitHit;
 
-            int characterNumber = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber;
             FP damageTaken = projectileCollisionData->Projectile->Attack;
 
             BattleProjectileQSystem.SetAttack(f, projectileCollisionData->Projectile, damagedPlayerData->Stats.Attack);
 
-            if (damageTaken <= FP._0 || damagedPlayerData->DamageCooldown.IsRunning(f)) goto Exit;
+            if (damageTaken <= FP._0) goto ExitNoHit;
 
             damagedPlayerData->CurrentDefence = damagedPlayerData->CurrentDefence - damageTaken;
-            damagedPlayerData->DamageCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
 
-            f.Events.BattleShieldTakeDamage(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef, damagedPlayerData->TeamNumber, damagedPlayerData->Slot, characterNumber, damagedPlayerData->CurrentDefence / damagedPlayerData->Stats.Defence);
+            defencePercentage = damagedPlayerData->CurrentDefence / damagedPlayerData->Stats.Defence;
 
             if (damagedPlayerData->CurrentDefence <= 0)
             {
@@ -148,7 +161,16 @@ namespace Battle.QSimulation.Player
 
             //} hit attach
 
-            Exit:
+        ExitHit:
+            playerShieldData->ShieldHitCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
+            f.Events.BattleShieldHit(
+                shieldCollisionData->PlayerShieldHitbox->ParentEntityRef,
+                damagedPlayerData->TeamNumber, damagedPlayerData->Slot,
+                characterNumber,
+                playerShieldData->IsAttached,
+                defencePercentage
+            );
+        ExitNoHit:
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
         }
 

@@ -131,11 +131,11 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handler method for EventBattleShieldTakeDamage QuantumEvent.
+        /// Handler method for EventBattleShieldHit QuantumEvent.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
-        public void OnShieldTakeDamage(EventBattleShieldTakeDamage e)
+        public void OnShieldHit(EventBattleShieldHit e)
         {
             if (EntityRef != e.ERef) return;
             if (!PredictedFrame.Exists(e.ERef)) return;
@@ -145,7 +145,7 @@ namespace Battle.View.Player
                 _shieldHitParticle.Play();
             }
 
-            _classViewController.OnShieldTakeDamage(e);
+            _classViewController.OnShieldHit(e);
         }
 
         public override void OnUpdateView()

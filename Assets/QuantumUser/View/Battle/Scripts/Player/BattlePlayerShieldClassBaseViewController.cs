@@ -54,7 +54,7 @@ namespace Battle.View.Player
         /// </summary>
         ///
         /// <param name="e">The shield damage event data.</param>
-        public virtual void OnShieldTakeDamage(EventBattleShieldTakeDamage e) { }
+        public virtual void OnShieldHit(EventBattleShieldHit e) { }
 
         /// <summary>
         /// Called once per frame to update the shield class view.

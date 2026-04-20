@@ -308,7 +308,6 @@ namespace Quantum.Prototypes {
     public QBoolean MovementEnabled;
     public QBoolean RotationEnabled;
     public FP CurrentDefence;
-    public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
     public Quantum.Prototypes.FrameTimerPrototype StunCooldown;
     public QBoolean HasTargetPosition;
     public FPVector2 TargetPosition;
@@ -338,7 +337,6 @@ namespace Quantum.Prototypes {
         result.MovementEnabled = this.MovementEnabled;
         result.RotationEnabled = this.RotationEnabled;
         result.CurrentDefence = this.CurrentDefence;
-        this.DamageCooldown.Materialize(frame, ref result.DamageCooldown, in context);
         this.StunCooldown.Materialize(frame, ref result.StunCooldown, in context);
         result.HasTargetPosition = this.HasTargetPosition;
         result.TargetPosition = this.TargetPosition;
@@ -510,6 +508,7 @@ namespace Quantum.Prototypes {
     public Quantum.Prototypes.BattlePlayerEntityRefPrototype PlayerEntityRef;
     public Int32 ShieldNumber;
     public QBoolean IsAttached;
+    public Quantum.Prototypes.FrameTimerPrototype ShieldHitCooldown;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerShieldDataQComponent component = default;
         Materialize((Frame)f, ref component, in context);
@@ -519,6 +518,7 @@ namespace Quantum.Prototypes {
         this.PlayerEntityRef.Materialize(frame, ref result.PlayerEntityRef, in context);
         result.ShieldNumber = this.ShieldNumber;
         result.IsAttached = this.IsAttached;
+        this.ShieldHitCooldown.Materialize(frame, ref result.ShieldHitCooldown, in context);
     }
   }
   [System.SerializableAttribute()]
