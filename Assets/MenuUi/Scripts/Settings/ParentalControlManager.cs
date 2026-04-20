@@ -94,15 +94,25 @@ public class ParentalControlManager : MonoBehaviour
 
     public void LogIn() {
 
-        if (passwordInput.text == presetPassword)
+        if (parentalControl == true)
         {
-            Debug.Log("correct password, login allowed");
-            //messageText.text = "Access granted!";
-            parentalControlSettings.SetActive(true);
+            if (passwordInput.text == presetPassword)
+            {
+                Debug.Log("correct password, login allowed");
+                //messageText.text = "Access granted!";
+                parentalControlSettings.SetActive(true);
 
 
+
+            }
+
+        } else
+        {
+            //TODO message: can't log in if ParentalControl not activated
 
         }
+
+        
 
     }
 
