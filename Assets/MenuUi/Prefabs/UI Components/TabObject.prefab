@@ -36,8 +36,8 @@ RectTransform:
   m_Children:
   - {fileID: 3283557111832823606}
   - {fileID: 6004938058567665769}
-  - {fileID: 2728131016858716055}
   - {fileID: 4883020343792418141}
+  - {fileID: 2728131016858716055}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -159,10 +159,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _audioSelection: 0
-  _audioType: 2
+  _audioCategory: 
+  _categoryType: 0
   _audioName: 
-  _audioId: 0
   _playType: 0
 --- !u!114 &6072730864442710605
 MonoBehaviour:

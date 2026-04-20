@@ -128,7 +128,7 @@ RectTransform:
   m_AnchorMin: {x: 0.05, y: 0.1}
   m_AnchorMax: {x: 0.05, y: 0.9}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 70, y: 0}
+  m_SizeDelta: {x: 120, y: 0}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &8512414564321375819
 CanvasRenderer:
@@ -214,7 +214,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8819547509416649792
 RectTransform:
   m_ObjectHideFlags: 0
@@ -397,3 +397,5 @@ MonoBehaviour:
   _textLabel: {fileID: 3797213420464402721}
   _labelImage: {fileID: 5702229936024869723}
   <_selectButton>k__BackingField: {fileID: 0}
+  _selectedColorHex: '#0dd236'
+  _unselectedColorHex: '#a0a0a0'
