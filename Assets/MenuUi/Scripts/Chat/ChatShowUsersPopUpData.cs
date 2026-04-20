@@ -5,6 +5,9 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using static MessageReactionsHandler;
+using MenuUi.Scripts.AvatarEditor;
+using System;
+using Altzone.Scripts.Chat;
 
 public class ChatShowUsersPopUpData : MonoBehaviour
 {
@@ -16,7 +19,11 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     [SerializeField] private Button[] _closeButtons; 
     [SerializeField] private GameObject ShowUsersPopUp;
     [SerializeField] private MessageObjectHandler _messageObjectHandler;
-    public string _id;
+
+
+    [SerializeField] public List<UserReactionData> _UserReaction;
+
+
 
     [SerializeField] private GameObject ReactionObject;
 
@@ -67,4 +74,16 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
         //_reactionAmount.SetText(SettingsCarrier.Instance.Language, new string[1] { activeChildren.ToString() });
     }
+}
+
+[Serializable]
+public class UserReactionData
+{
+    public AvatarFaceLoader _avatar;
+    public TextMeshProUGUI _name;
+    public string _id;
+
+    //public Sprite Sprite;
+    //public Mood Mood;
+
 }
