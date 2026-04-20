@@ -162,6 +162,8 @@ public class ParentalControlManager : MonoBehaviour
 
         if (checkControl == 1) {
             parentalControl = true;
+            parentalControlPopupButton.SetActive(false);
+
         } else
         {
             parentalControl = false;
