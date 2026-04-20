@@ -217,6 +217,7 @@ namespace Battle.View.Game
         {
             s_instance = this;
 
+            BattleViewRegistry.Init();
             BattleDebugOverlay.Init();
 
             _debugLogger = BattleDebugLogger.Create<BattleGameViewController>();

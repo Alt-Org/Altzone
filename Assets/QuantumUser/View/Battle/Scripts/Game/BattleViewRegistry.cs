@@ -71,6 +71,11 @@ namespace Battle.View
     /// ```
     public static class BattleViewRegistry
     {
+        public static void Init()
+        {
+            s_registryMap = new();
+        }
+
         /// <summary>
         /// Registers an <paramref name="object"/> to a %Quantum <paramref name="entityRef"/>.<br/>
         /// If the %Quantum <paramref name="entityRef"/> has other objects registered to it, does callbacks to them.
@@ -168,7 +173,7 @@ namespace Battle.View
         }
 
         /// <summary>Dictionary that holds a list of RegistryEntries mapped to each %Quantum entity.</summary>
-        private static readonly Dictionary<EntityRef, RegistryEntry> s_registryMap = new();
+        private static Dictionary<EntityRef, RegistryEntry> s_registryMap;
 
         /// <summary>
         /// Private helper method that fetches a registry entry mapped to a specific %Quantum <paramref name="entityRef"/> or adds one if it doesn't exist.
