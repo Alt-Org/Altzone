@@ -390,6 +390,17 @@ namespace Battle.View.Player
 
         #endregion Public - Sprite Control Methods
 
+        /// <summary>
+        /// Binds the shield view controller to the _playerShieldViewControllers dictionary to be able to call on it later.
+        /// </summary>
+        ///
+        /// <param name="shieldViewController">Pointer to a shield view controller associated with the character.</param>
+        /// <param name="shieldNumber">ShieldNumber of the shield being bound.</param>
+        public void BindShield(BattlePlayerShieldViewController shieldViewController, int shieldNumber)
+        {
+            _playerShieldViewControllers[shieldNumber] = shieldViewController;
+        }
+
         #region Public - Gameflow Methods
 
         /// <summary>
@@ -494,17 +505,6 @@ namespace Battle.View.Player
 
         #endregion Public - Gameflow Methods
 
-        /// <summary>
-        /// Binds the shield view controller to the _playerShieldViewControllers dictionary to be able to call on it later.
-        /// </summary>
-        ///
-        /// <param name="shieldViewController">Pointer to a shield view controller associated with the character.</param>
-        /// <param name="shieldNumber">ShieldNumber of the shield being bound.</param>
-        public void BindShield(BattlePlayerShieldViewController shieldViewController, int shieldNumber)
-        {
-            _playerShieldViewControllers[shieldNumber] = shieldViewController;
-        }
-
         #endregion Public
 
         #region Private
@@ -523,20 +523,20 @@ namespace Battle.View.Player
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private BattleDebugLogger _debugLogger;
 
-        /// <value>Holder variable for the damage flash coroutine.</value>
-        private Coroutine _damageFlashCoroutine = null;
+        /// <summary>Boolean that tells whether the Quantum Entity this ViewController is attached to is in play.</summary>
+        private bool _isInPlay;
 
         /// <value>Reference to the active character class view controller.</value>
         private BattlePlayerCharacterClassBaseViewController _classViewController;
 
+        /// <summary>Array that holds the SpriteRenderer components of each body part gameobject.</summary>
+        private readonly SpriteRenderer[] _bodypartSpriteRenderers = new SpriteRenderer[5];
+
         /// <summary>Array that holds the shield view controllers associated with this character view controller.</summary>
         private BattlePlayerShieldViewController[] _playerShieldViewControllers;
 
-        /// <summary>Boolean that tells whether the Quantum Entity this ViewController is attached to is in play.</summary>
-        private bool _isInPlay;
-
-        /// <summary>Array that holds the SpriteRenderer components of each body part gameobject.</summary>
-        private readonly SpriteRenderer[] _bodypartSpriteRenderers = new SpriteRenderer[5];
+        /// <value>Holder variable for the damage flash coroutine.</value>
+        private Coroutine _damageFlashCoroutine = null;
 
         #region Private Gameflow Methods
 
