@@ -32,57 +32,60 @@ namespace Battle.View.Player
 
             DrawDefaultInspector();
 
-            if (_battleSpriteSheetProp == null || _gameObjectProp == null) return;
+            if (_battleSpriteSheetProperty == null || _characterGameObjectsProperty == null) return;
 
-            BattleSpriteSheet spriteSheet = (BattleSpriteSheet)_battleSpriteSheetProp.boxedValue;
+            BattleSpriteSheet spriteSheet = (BattleSpriteSheet)_battleSpriteSheetProperty.boxedValue;
 
-            for (int i = 0; i < _gameObjectProp.arraySize; i++)
+            for (int i = 0; i < _characterGameObjectsProperty.arraySize; i++)
             {
-                SerializedProperty property = _gameObjectProp.GetArrayElementAtIndex(i);
+                SerializedProperty property = _characterGameObjectsProperty.GetArrayElementAtIndex(i);
                 GameObject gameObject = (GameObject)property.objectReferenceValue;
 
-                _spriteRenderers[SpriteRendererHeadIndex]   = gameObject.transform.Find("Head")   .GetComponent<SpriteRenderer>();
-                _spriteRenderers[SpriteRendererBodyIndex]   = gameObject.transform.Find("Body")   .GetComponent<SpriteRenderer>();
-                _spriteRenderers[SpriteRendererHandsIndex]  = gameObject.transform.Find("Hands")  .GetComponent<SpriteRenderer>();
-                _spriteRenderers[SpriteRendererFeetIndex]   = gameObject.transform.Find("Feet")   .GetComponent<SpriteRenderer>();
-                _spriteRenderers[SpriteRendererShadowIndex] = gameObject.transform.Find("Shadow") .GetComponent<SpriteRenderer>();
+                _bodyPartSpriteRenderers[SpriteRendererHeadIndex]   = gameObject.transform.Find("Head")   .GetComponent<SpriteRenderer>();
+                _bodyPartSpriteRenderers[SpriteRendererBodyIndex]   = gameObject.transform.Find("Body")   .GetComponent<SpriteRenderer>();
+                _bodyPartSpriteRenderers[SpriteRendererHandsIndex]  = gameObject.transform.Find("Hands")  .GetComponent<SpriteRenderer>();
+                _bodyPartSpriteRenderers[SpriteRendererFeetIndex]   = gameObject.transform.Find("Feet")   .GetComponent<SpriteRenderer>();
+                _bodyPartSpriteRenderers[SpriteRendererShadowIndex] = gameObject.transform.Find("Shadow") .GetComponent<SpriteRenderer>();
                 if (SpriteSheetMap.Validate(spriteSheet))
                 {
-                    _spriteRenderers[SpriteRendererHeadIndex]   .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Head1);
-                    _spriteRenderers[SpriteRendererBodyIndex]   .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Body1);
-                    _spriteRenderers[SpriteRendererHandsIndex]  .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.BaseHands);
-                    _spriteRenderers[SpriteRendererFeetIndex]   .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.BaseShoes);
-                    _spriteRenderers[SpriteRendererShadowIndex] .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Shadow);
+                    _bodyPartSpriteRenderers[SpriteRendererHeadIndex]   .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Head1);
+                    _bodyPartSpriteRenderers[SpriteRendererBodyIndex]   .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Body1);
+                    _bodyPartSpriteRenderers[SpriteRendererHandsIndex]  .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.BaseHands);
+                    _bodyPartSpriteRenderers[SpriteRendererFeetIndex]   .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.BaseShoes);
+                    _bodyPartSpriteRenderers[SpriteRendererShadowIndex] .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Shadow);
                 }
                 else
                 {
-                    _spriteRenderers[SpriteRendererHeadIndex]   .sprite = null;
-                    _spriteRenderers[SpriteRendererBodyIndex]   .sprite = null;
-                    _spriteRenderers[SpriteRendererHandsIndex]  .sprite = null;
-                    _spriteRenderers[SpriteRendererFeetIndex]   .sprite = null;
-                    _spriteRenderers[SpriteRendererShadowIndex] .sprite = null;
+                    _bodyPartSpriteRenderers[SpriteRendererHeadIndex]   .sprite = null;
+                    _bodyPartSpriteRenderers[SpriteRendererBodyIndex]   .sprite = null;
+                    _bodyPartSpriteRenderers[SpriteRendererHandsIndex]  .sprite = null;
+                    _bodyPartSpriteRenderers[SpriteRendererFeetIndex]   .sprite = null;
+                    _bodyPartSpriteRenderers[SpriteRendererShadowIndex] .sprite = null;
                 }
             }
         }
         /// <summary>
         /// Serialized property holding the spritesheet to get default sprites from.
         /// </summary>
-        private SerializedProperty _battleSpriteSheetProp;
+        private SerializedProperty _battleSpriteSheetProperty;
 
         /// <summary>
         /// Serialized property holding parent objects to get the body part SpriteRenderers from.
         /// </summary>
-        private SerializedProperty _gameObjectProp;
+        private SerializedProperty _characterGameObjectsProperty;
 
-        private SpriteRenderer[] _spriteRenderers = new SpriteRenderer[5];
+        /// <summary>
+        /// Array that holds the SpriteRenderer components of each body part gameobject.
+        /// </summary>
+        private readonly SpriteRenderer[] _bodyPartSpriteRenderers = new SpriteRenderer[5];
 
         /// <summary>
         /// Handles getting the spritesheet and character gameobjects to add default sprites to.
         /// </summary>
         private void OnEnable()
         {
-            _battleSpriteSheetProp = serializedObject.FindProperty("_spriteSheet");
-            _gameObjectProp = serializedObject.FindProperty("_characterGameObjects");
+            _battleSpriteSheetProperty = serializedObject.FindProperty("_spriteSheet");
+            _characterGameObjectsProperty = serializedObject.FindProperty("_characterGameObjects");
         }
     }
 }
