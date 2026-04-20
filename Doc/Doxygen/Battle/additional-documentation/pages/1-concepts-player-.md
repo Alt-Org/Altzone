@@ -660,7 +660,7 @@ logic is handled by the [{PlayerManager}](#page-concepts-player-simulation-manag
 ([{InPlay}](#page-concepts-entity-management-registered-entities-playstate) when **Character** is [{InPlay}](#page-concepts-entity-management-registered-entities-playstate),
 [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate) when **Character** is [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate))
 
-**Shields** can be used **Detached** using @clink{GetDetachedShieldEntityRef:Battle.QSimulation.Player.BattlePlayerShieldManager.GetDetachedShieldEntityRef(Frame, BattlePlayerSlot, int, int)}.
+**Shields** can be used **Detached** using @clink{GetDetachedShieldEntityRef:Battle.QSimulation.Player.BattlePlayerShieldManager.GetDetachedShieldEntityRef(Frame, BattlePlayerSlot, int, int, bool)}.
 The method will retrieve the shield to be used in the arena (**Detached** and [{InPlay}](#page-concepts-entity-management-registered-entities-playstate))
 [{Attached}](#page-concepts-player-character-entity-shield-attach) or not, **Detaching** the **Shield** if needed.  
 A **Shield** can be **Removed** using @clink{RemoveShield:Battle.QSimulation.Player.BattlePlayerShieldManager.RemoveShield(Frame, BattlePlayerSlot, int, int)}, teleporting it out of the arena.

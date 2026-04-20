@@ -2,7 +2,7 @@
 
 The **%Battle Sprite Sheets** allow for the handling of full **Spritesheets** as just one unit. They also allow defining a **Spritesheet's** structure
 using a [{BattleSpriteSheetMap}](#page-concepts-battle-sprite-sheet-sprite-sheet-map).  
-The serializable [{BattleSpriteSheet}](#page-concepts-battle-sprite-sheet-sprite-sheet) struct handles storing a **Spritesheet** simply as an array. It also has a custom property drawer.
+The serializable [{BattleSpriteSheet}](#page-concepts-battle-sprite-sheet-sprite-sheet) struct handles storing a **Spritesheet** simply as an array. It also has a **CustomPropertyDrawer**.
 
 <br/>
 
@@ -33,3 +33,33 @@ A **%SpriteSheetMap** is a struct that defines the structure of a [{BattleSprite
 A **%SpriteSheetMap** can be used statically for checking if a [{BattleSpriteSheet}](#page-concepts-battle-sprite-sheet-sprite-sheet) is valid,
 meaning that it has the correct number of sprites according to the **%SpriteSheetMap**.  
 An instance of a **%SpriteSheetMap** works as an **Enum/MapValue** for referencing individual sprites in a [{BattleSpriteSheet}](#page-concepts-battle-sprite-sheet-sprite-sheet).
+
+**SpriteSheetMap Template**
+
+```cs
+public struct SpriteSheetMap : IBattleSpriteSheetMap
+{
+    public const int Count = 0; // insert correct number of sprites
+
+    public enum Enum
+    {
+        // insert a spritesheet structure
+        // name = index
+    }
+
+    public static SpriteSheetMap FromInt(int index) => new() { EnumValue = (Enum)index };
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator Enum(SpriteSheetMap playerSpriteSheetMap) => playerSpriteSheetMap.EnumValue;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator SpriteSheetMap(Enum enumValue) => new() {EnumValue = enumValue };
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool Validate(BattleSpriteSheet spriteSheet) => IBattleSpriteSheetMap.ValidateCount(Count, spriteSheet.Count);
+
+    public Enum EnumValue;
+
+    public readonly int GetIndex() => (int)EnumValue;
+}
+```

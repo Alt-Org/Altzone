@@ -7,8 +7,7 @@
       @cref{Quantum,BattlePlayerClass400DataQComponent}
 
 - **View**
-    - Has view controllers for the character and shield  
-      @cref{Battle.View.Player,BattlePlayerCharacterClass400ViewController}
+    - Has a view controller for the shield  
       @cref{Battle.View.Player,BattlePlayerShieldClass400ViewController}
 
 - **Prefabs**

@@ -11,9 +11,9 @@ using System.Text.RegularExpressions;
 
 // Unity usings
 using UnityEngine;
-using Battle.QSimulation;
-using UnityEngine.Serialization;
 
+// Battle QSimulation usings
+using Battle.QSimulation;
 
 // Unity editor using
 #if UNITY_EDITOR
@@ -25,13 +25,15 @@ namespace Battle.View
     /// <summary>
     /// Interface that a BattleSpriteSheetMap should implement.
     /// </summary>
+    ///
+    /// See [{BattleSpriteSheetMap}](page-concepts-battle-sprite-sheet-sprite-sheet-map) for more info.
     public interface IBattleSpriteSheetMap
     {
         /// <summary>
-        /// Method for getting an index to get the correct sprite from the BattleSpriteSheet.
+        /// Method for getting the index of the correct sprite in a %BattleSpriteSheet.
         /// </summary>
         ///
-        /// <returns>An index for the BattleSpriteSheet.</returns>
+        /// <returns>The index of the sprite.</returns>
         public int GetIndex();
 
         /// <summary>
@@ -59,6 +61,8 @@ namespace Battle.View
     /// <summary>
     /// Struct that holds the Spritesheet array and handles getting a sprite from it based on a %SpriteSheetMap.
     /// </summary>
+    ///
+    /// See [{BattleSpriteSheet}](#page-concepts-battle-sprite-sheet-sprite-sheet) for more info.
     [Serializable]
     public struct BattleSpriteSheet
     {

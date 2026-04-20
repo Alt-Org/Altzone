@@ -269,6 +269,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerSlot">Slot of the specified character.</param>
         /// <param name="characterNumber">The character number of the specified character.</param>
         /// <param name="shieldNumber">The number of the shield that's being retrieved.</param>
+        /// <param name="updateViewPlayState">Whether to update the view play state or not.</param>
         ///
         /// <returns>The BattlePlayerShieldEntityRef of the detached shield.</returns>
         public static BattlePlayerShieldEntityRef GetDetachedShieldEntityRef(Frame f, BattlePlayerSlot playerSlot, int characterNumber, int shieldNumber, bool updateViewPlayState = false)
@@ -455,6 +456,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerSlot">Slot of the specified player.</param>
         /// <param name="characterNumber">The character number of the specified character.</param>
         /// <param name="shieldNumber">The shield number of the shield to be retrieved.</param>
+        /// <param name="updateViewPlayState">Whether to update the view play state or not.</param>
         ///
         /// <returns>EntityRef of the retrieved shield entity.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
