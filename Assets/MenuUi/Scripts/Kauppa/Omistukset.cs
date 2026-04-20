@@ -68,8 +68,16 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
         {
             //storefront.SavePlayerData(_playerData, null);
             _playerData.UpdateOwnedAvatarPieceIDs((int)type, ownedAvatarPiece_Ids);    // Propably doesn't work like this
-            _playerData.UpdateOwnedAvatarAnimationIDs(ownedAnimation_Ids);
-        }     
+            //_playerData.UpdateOwnedAvatarAnimationIDs(ownedAnimation_Ids);
+        }
+
+        public bool CheckItemOwnership(string id)
+        {
+            if (ownedAvatarPiece_Ids.Contains(id)) return true;
+            if (ownedAnimation_Ids.Contains(id)) return true;
+            
+            return false;
+        }  
     }
 }
 

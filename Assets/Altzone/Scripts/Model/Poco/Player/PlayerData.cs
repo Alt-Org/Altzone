@@ -249,10 +249,10 @@ namespace Altzone.Scripts.Model.Poco.Player
             }
         }
 
-        public void UpdateOwnedAvatarAnimationIDs(List<string> ids)
+        /*public void UpdateOwnedAvatarAnimationIDs(List<string> ids)
         {
             OwnedAnimation_Ids = ids;
-        }
+        }*/
 
 
         public void BuildCharacterLists(List<CustomCharacter> customCharacters)
