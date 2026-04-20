@@ -50,20 +50,6 @@ namespace Battle.View.Player
         public override BattlePlayerCharacterClass Class => BattlePlayerCharacterClass.Class400;
 
         /// <summary>
-        /// Called when the shield takes damage.<br/>
-        /// Deactivating moving shield when defence value reaches 0.
-        /// </summary>
-        ///
-        /// <param name="e">The shield damage event data.</param>
-        public override void OnShieldTakeDamage(EventBattleShieldTakeDamage e)
-        {
-            if (e.DefencePercentage <= FP._0)
-            {
-                _shieldSprite.SetActive(false);
-            }
-        }
-
-        /// <summary>
         /// Updates the shield view.<br/>
         /// Customized view logic where the shield tracks projectile in an arc.
         /// </summary>
