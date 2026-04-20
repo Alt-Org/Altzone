@@ -1,7 +1,7 @@
 ### ALT Zone mobiilipeli
 
 
-[ALT Zone -esitys.pdf]([https://github.com/user-attachments/files/17323217/ALT.Zone.-esitys.pdf](https://docs.google.com/presentation/d/1f0umsU9gPH5m5UMS7yr1H1TwPlP-bo7HPCJoyfPP3Eg/edit?usp=drivesdk))
+[ALT Zone -esitys.pdf](https://docs.google.com/presentation/d/1f0umsU9gPH5m5UMS7yr1H1TwPlP-bo7HPCJoyfPP3Eg/edit?usp=drivesdk)
 
 jos haluat liittyä mukaan, ota yhteys: psykkis@hotmail.com
 
