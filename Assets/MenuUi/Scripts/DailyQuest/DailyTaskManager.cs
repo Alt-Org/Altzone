@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts;
@@ -31,8 +30,6 @@ public class DailyTaskManager : AltMonoBehaviour
 
     public ClanTasks ValidTasks { get { return _validTasks; } }
 
-    private DailyTaskView _dailyTaskView;
-
     public delegate void StopTask();
     public static event StopTask OnCancelTask;
 
@@ -44,12 +41,15 @@ public class DailyTaskManager : AltMonoBehaviour
 
     private PlayerTask _currentTask;
 
+    // Track's the state of choose task popup, for proper Popup state on task selection
+    private bool _chooseTaskActive = false;
 
     #endregion
 
 
     private void Awake()
     {
+        // Only one DailyTaskManager Instance can exist at a time
         if (Instance != null && Instance != this)
         {
             Destroy(this);
@@ -57,15 +57,30 @@ public class DailyTaskManager : AltMonoBehaviour
         else
         {
             Instance = this;
-            //DontDestroyOnLoad(this);
         }
     }
 
 
     void Start()
     {
-
+        ChooseTask.OnChooseTaskShown += ChooseTaskShown;
+        ChooseTask.OnChooseTaskHidden += ChooseTaskHidden;
         StartCoroutine(DataSetup());
+    }
+
+    private void OnDestroy()
+    {
+        ChooseTask.OnChooseTaskShown -= ChooseTaskShown;
+        ChooseTask.OnChooseTaskHidden -= ChooseTaskHidden;
+    }
+
+    void ChooseTaskShown()
+    {
+        _chooseTaskActive = true;
+    }
+    void ChooseTaskHidden()
+    {
+        _chooseTaskActive = false;
     }
 
     /// <summary>
@@ -74,21 +89,19 @@ public class DailyTaskManager : AltMonoBehaviour
     /// <returns></returns>
     private IEnumerator DataSetup()
     {
-        bool? timeout = null;
+        bool failed = false;
         bool? dailyTasksReady = null;
 
-        StartCoroutine(PlayerDataTransferer("get", null, _timeoutSeconds, data => timeout = data, data => _currentPlayerData = data));
-        yield return new WaitUntil(() => (_currentPlayerData != null || timeout != null));
+        yield return StartCoroutine(GetNewPlayerData(pdata => _currentPlayerData = pdata, faildata => failed = faildata));
 
-        StartCoroutine(PopulateTasks(data => dailyTasksReady = data));
-        yield return new WaitUntil(() => dailyTasksReady != null);
-
-        //Debug.LogWarning("DATA SETUP");
-        if (_currentPlayerData == null)
+        if (failed || _currentPlayerData == null)
         {
             Debug.LogError("Failed to fetch player data.");
             yield break;
         }
+
+        StartCoroutine(PopulateTasks(data => dailyTasksReady = data));
+        yield return new WaitUntil(() => dailyTasksReady != null);
 
         _dataReady = true;
 
@@ -101,7 +114,6 @@ public class DailyTaskManager : AltMonoBehaviour
         var gameVersion = GameConfig.Get().GameVersionType;
 
         ClanTasks clanTasks = null;
-
         
         StartCoroutine(GetPlayerData(content => _currentPlayerData = content)); //MQTT message tells if we need to fetch the data again.
 
@@ -126,6 +138,7 @@ public class DailyTaskManager : AltMonoBehaviour
                 else
                 {
                     Debug.LogError("Could not connect to server and receive quests.");
+
                     //Offline testing
                     if (gameVersion is VersionType.Education or VersionType.TurboEducation)
                         clanTasks = GenerateEducationTasks();
@@ -203,6 +216,7 @@ public class DailyTaskManager : AltMonoBehaviour
         // Store validated tasks
         _validTasks = validatedTasks;
 
+        // Find a matching task from playerdata with a validated task, if it exists
         for (int i = 0; i < validatedTasks.Tasks.Count; i++)
         {
 
@@ -320,27 +334,8 @@ public class DailyTaskManager : AltMonoBehaviour
 
     public void SetCurrentPlayerData(PlayerData playerData)
     {
-        //Debug.LogError("SETCURRENTPLAYERDATA");
-        if (playerData.Task == null)
-        {
-            Debug.LogWarning("Given playerdatatask null");
-        }
-        if (_currentPlayerData.Task == null)
-        {
-            Debug.LogWarning("Currenttask null");
-        }
-
         bool? timeout = null;
         StartCoroutine(PlayerDataTransferer("save", playerData, _timeoutSeconds, data => timeout = data, data => _currentPlayerData = data));
-
-        if (_currentPlayerData == null)
-        {
-            Debug.LogWarning("PLAYERDATA NULL");
-        }
-        if (_currentPlayerData.Task == null)
-        {
-            Debug.LogWarning("PLAYERDATATASK NULL");
-        }
     }
     
     public PlayerData GetCurrentPlayerData()
@@ -370,27 +365,13 @@ public class DailyTaskManager : AltMonoBehaviour
         bool? timeout = null;
         Coroutine coroutineTimeout;
 
-        Debug.LogWarning("Cancel Task");
-
+        // This is commented out for now, because I don't see why get the playerdata again if we already have _currentPlayerData
         //Get player data.
         //StartCoroutine(PlayerDataTransferer("get", null, _timeoutSeconds, tdata => timeout = tdata, pdata => playerData = pdata));
         //yield return new WaitUntil(() => (playerData != null || timeout != null));
 
-        Debug.LogWarning("CancelTask: got player data");
         if (playerData == null || playerData.Task == null)
         {
-            if (playerData == null)
-            {
-                Debug.LogWarning("CancelTask: playerdata null");
-            }
-                
-
-            if (playerData.Task == null)
-            {
-                Debug.LogWarning("CancelTask: playerdatatask null");
-
-            }
-
             done(false);
             yield break;
         }
@@ -414,21 +395,15 @@ public class DailyTaskManager : AltMonoBehaviour
         playerData.Task = null;
         timeout = null;
 
-        Debug.LogWarning("CancelTask: save");
-
 
         StartCoroutine(PlayerDataTransferer("save", playerData, _timeoutSeconds, tdata => timeout = tdata, pdata => savePlayerData = pdata));
         yield return new WaitUntil(() => (savePlayerData != null || timeout != null));
 
         if (savePlayerData == null)
         {
-            Debug.LogWarning("CancelTask: null save");
-
             done(false);
             yield break;
         }
-
-        Debug.LogWarning("CancelTask: final");
 
         _currentTask = null;
         _currentPlayerData = savePlayerData;
@@ -445,6 +420,12 @@ public class DailyTaskManager : AltMonoBehaviour
         _ownTaskId = null;
         _currentTask = null;
     }
+
+    /// <summary>
+    /// Calls ShowPopupAndHandleResponseCoroutine which
+    /// shows <c>Popup</c> window and handles it's response.
+    /// </summary>
+    /// <param name="Message">Message to be shown in <c>Popup</c> window.</param>
     public void ShowPopupAndHandleResponse(string Message, PopupData? data) => StartCoroutine(ShowPopupAndHandleResponseCoroutine(Message, data));
 
     /// <summary>
@@ -458,7 +439,16 @@ public class DailyTaskManager : AltMonoBehaviour
 
         switch (data.Value.Type)
         {
-            case PopupData.PopupDataType.OwnTask: windowType = Popup.PopupWindowType.Accept; break;
+            case PopupData.PopupDataType.OwnTask:
+                // On TurboEducation mode, if the chooseTaskWindow is not active, show PopupWindowType.Info so the player can't choose a new task
+                // (Accept window is still needed on TurboEducation to make sure the player can choose a task from the given options)
+                if (GameConfig.Get().GameVersionType == VersionType.TurboEducation && !_chooseTaskActive)
+                {
+                    windowType = Popup.PopupWindowType.Info;
+                }
+                else windowType = Popup.PopupWindowType.Accept;
+
+                break;
             case PopupData.PopupDataType.CancelTask: windowType = Popup.PopupWindowType.Cancel; break;
             case PopupData.PopupDataType.ClanMilestone: windowType = Popup.PopupWindowType.ClanMilestone; break;
             case PopupData.PopupDataType.MultipleChoice: windowType = Popup.PopupWindowType.MultipleChoice; break;
@@ -473,29 +463,23 @@ public class DailyTaskManager : AltMonoBehaviour
         {
             bool? done = null;
 
-            //PlayerData playerData = _currentPlayerData;
-
-            Debug.Log("Popup type: " + data.Value.Type);
             switch (data.Value.Type)
             {
                 case PopupData.PopupDataType.OwnTask:
                     {
-                        Debug.Log("Case: OwnTask");
                         if (_currentPlayerData != null && _currentPlayerData.Task != null)
                         {
-                            Debug.LogWarning("Found task!");
                             StartCoroutine(CancelTask(data2 => done = data2));
                             yield return new WaitUntil(() => done != null);
                             done = null;
                         }
 
-                        yield return StartCoroutine(GetSaveSetHandleOwnTask(data.Value.OwnPage, data2 => done = data2));
-                        //yield return new WaitForSeconds(2.5f);
+                        StartCoroutine(GetSaveSetHandleOwnTask(data.Value.OwnPage, data2 => done = data2));
                         yield return new WaitUntil(() => (_currentPlayerData.Task != null || done != null));
 
                         if (_currentPlayerData.Task == null)
                         {
-                            Debug.LogWarning("PlayerDataTask is null");
+                            Debug.LogError("Task in current player data is null.");
                             break;
                         }
 
@@ -507,11 +491,8 @@ public class DailyTaskManager : AltMonoBehaviour
                     }
                 case PopupData.PopupDataType.CancelTask:
                     {
-                        Debug.LogWarning("Case: CancelTask");
                         StartCoroutine(CancelTask(data2 => done = data2));
-                        yield return new WaitUntil(() => done != null);
-
-                        OnCancelTask?.Invoke();
+                        yield return new WaitUntil(() => done != null);   
 
                         if (!done.Value)
                         {
@@ -519,14 +500,13 @@ public class DailyTaskManager : AltMonoBehaviour
                             break;
                         }
 
+                        OnCancelTask?.Invoke();
+
                         break;
                     }
                 case PopupData.PopupDataType.ClanMilestone: break;
                 case PopupData.PopupDataType.MultipleChoice:
                     {
-                        // This has to be changed to a better getter
-                        //gameObject.GetComponentInParent<MultipleChoiceProgressListener>().UpdateProgressMultipleChoice(playerData.Task);
-
                         OnMultipleChoiceProgress?.Invoke();
                         break;
                     }
@@ -561,10 +541,8 @@ public class DailyTaskManager : AltMonoBehaviour
         StartCoroutine(DailyTaskManager.Instance.GetNewPlayerData(pdata => playerData = pdata, faildata => failed = faildata));
         yield return new WaitUntil(() => (playerData != null || failed));
 
-        Debug.Log("GETSAVESEHANDLE : Got playerdata");
         if (playerData == null)
         {
-            Debug.LogWarning("GETSAVESEHANDLE : PlayerData is null");
             callback(false);
             yield break;
         }
@@ -574,7 +552,7 @@ public class DailyTaskManager : AltMonoBehaviour
             bool? timeout = null;
             Coroutine coroutineTimeout;
             StartCoroutine(ServerManager.Instance.ReservePlayerTaskFromServer(playerTask.Id, data => reserveResult = data));
-            coroutineTimeout = StartCoroutine(WaitUntilTimeout(DailyTaskManager.Instance.TimeoutSeconds, data => timeout = data));
+            coroutineTimeout = StartCoroutine(WaitUntilTimeout(TimeoutSeconds, data => timeout = data));
             yield return new WaitUntil(() => (reserveResult != null || timeout != null));
 
             if (reserveResult == null)
@@ -588,7 +566,6 @@ public class DailyTaskManager : AltMonoBehaviour
         }
         else reserveResult = playerTask;
 
-        if (reserveResult == null) Debug.LogError("ReserveResult null");
         playerData.Task = reserveResult;
         DailyTaskManager.Instance.SetCurrentPlayerData(playerData);
         SetHandleOwnTask(reserveResult);
@@ -600,7 +577,6 @@ public class DailyTaskManager : AltMonoBehaviour
     /// </summary>
     public void SetHandleOwnTask(PlayerTask playerTask)
     {
-        Debug.LogWarning("HANDLEOWNTASK");
         DailyTaskProgressManager.Instance.ChangeCurrentTask(playerTask);
         _ownTaskId = playerTask.Id;
         _currentTask = playerTask;
@@ -612,29 +588,5 @@ public class DailyTaskManager : AltMonoBehaviour
     public PlayerTask GetCurrentTask()
     {
         return _currentTask;
-    }
-
-    public IEnumerator AcceptTask(PlayerTask playerTask, System.Action<bool> callback)
-    {
-        bool? done = null;
-
-        PlayerData playerData = DailyTaskManager.Instance.GetCurrentPlayerData();
-
-        if (playerData != null && playerData.Task != null)
-        {
-            StartCoroutine(CancelTask(data => done = data));
-            yield return new WaitUntil(() => done != null);
-            done = null;
-        }
-
-        StartCoroutine(DailyTaskManager.Instance.GetSaveSetHandleOwnTask(playerTask, data => done = data));
-        yield return new WaitUntil(() => done != null);
-
-        Debug.LogWarning("DONE VALUE: " + done.Value + " | " + done);
-        if (done.Value)
-            OnAcceptTask?.Invoke();
-
-        if (callback != null)
-            callback(done.Value);
     }
 }

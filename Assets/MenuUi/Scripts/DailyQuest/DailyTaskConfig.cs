@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Altzone.Scripts.Config;
+
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditorInternal;
@@ -9,6 +11,7 @@ using UnityEditorInternal;
 public class DailyTaskData
 {
     public bool active;
+    public bool deactivateOnTurboEducation;
     public string title;
     public string englishTitle;
     public string description;
@@ -53,7 +56,14 @@ public class DailyTaskConfig : ScriptableObject
     [SerializeField] private List<EducationDailyTaskData> _educationDailyTasks;
 
     public List<NormalDailyTaskData> GetNormalTasks() => _normalDailyTasks;
-    public List<EducationDailyTaskData> GetEducationTasks() => _educationDailyTasks.Where(c => c.active).Select(c => c).ToList();
+    // public List<EducationDailyTaskData> GetEducationTasks() => _educationDailyTasks.Where(c => c.active).Select(c => c).ToList();
+    public List<EducationDailyTaskData> GetEducationTasks()
+    {
+        if (GameConfig.Get().GameVersionType == VersionType.TurboEducation)
+            return _educationDailyTasks.Where(c => c.active && !c.deactivateOnTurboEducation).Select(c => c).ToList();
+        else
+            return _educationDailyTasks.Where(c => c.active).Select(c => c).ToList();
+    } 
 }
 
 #region Editor script

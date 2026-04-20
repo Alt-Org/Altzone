@@ -52,7 +52,7 @@ public class DailyTaskClanReward : MonoBehaviour
     private ClanRewardData _data;
     public ClanRewardData Data { get { return _data; } }
 
-    public void Set(ClanRewardData data, DailyTaskView dailyTaskView)
+    public void Set(ClanRewardData data)
     {
         _data = data;
 
