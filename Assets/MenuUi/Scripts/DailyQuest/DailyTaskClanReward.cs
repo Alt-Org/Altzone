@@ -33,7 +33,7 @@ public class DailyTaskClanReward : MonoBehaviour
         private Sprite _rewardImage;
         private int _rewardAmount;
 
-        public bool Open { get { return _open; } }
+        public bool Open { get { return _open; } set { _open = value; } }
         public ClanRewardType Type { get { return _type; } }
         public int Threshold { get { return _threshold; } }
         public Sprite RewardImage { get { return _rewardImage; } }
@@ -72,6 +72,7 @@ public class DailyTaskClanReward : MonoBehaviour
     {
         _unopenedBaseReward.SetActive(!open);
         _openedBaseReward.SetActive(open);
+        _data.Open = open;
     }
 
     /// <summary>
