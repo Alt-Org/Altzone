@@ -174,6 +174,8 @@ namespace Battle.QSimulation.Player
                     break;
 
                 case BattlePlayerCharacterClass.Obedient:
+                    if (s_classArray[ClassIndexObedient].State != ClassState.NotLoaded) break;
+                    LoadClass(characterClass, ClassIndexObedient, null, null, isTestMode);
                     break;
 
                 case BattlePlayerCharacterClass.Projector:
@@ -183,7 +185,7 @@ namespace Battle.QSimulation.Player
 
                 case BattlePlayerCharacterClass.Retroflector:
                     if (s_classArray[ClassIndexRetroflector].State != ClassState.NotLoaded) break;
-                    //s_classArray[ClassIndexRetroflector] = new BattlePlayerClassRetroflector();
+                    LoadClass(characterClass, ClassIndexRetroflector, null, null, isTestMode);
                     break;
 
                 case BattlePlayerCharacterClass.Confluent:
@@ -381,16 +383,26 @@ namespace Battle.QSimulation.Player
         private static BattleDebugLogger s_debugLogger;
 
         /// <summary>
-        /// Decides which <see cref="BattlePlayerClassBase">BattlePlayerClass</see> script and <see cref="ClassState"/> to write to a <see cref="ClassEntry"/> in <see cref="s_classArray"/> for a given <see cref="BattlePlayerCharacterClass"/> based on the table below
-        /// |                    | has None | has Code  | has TestCode  | has Both     |
-        /// |--------------------|----------|-----------|---------------|--------------|
-        /// | **TestMode false** | use None | use Code  | use None      | use Code     |
-        /// | **TestMode true**  | use None | use Code  | use TestCode  | use TestCode |
+        /// Picks and loads a <b>PlayerClass</b> or a test <b>PlayerClass</b> depending on whether <paramref name="testMode"/> is enabled.
+        ///
+        // /// Decides which Player Class script
+        // /// and <see cref="ClassState"/> to write to a <see cref="ClassEntry"/> in <see cref="s_classArray"/> for a given <see cref="BattlePlayerCharacterClass"/> based on the table below
         /// </summary>
+        ///
+        /// See [PlayerClass](#page-concepts-player-simulation-playerclass) for more info<br/>
+        /// See [Player Character Classes](#page-concepts-player-characters-classes) for more info
+        ///
+        /// |                                       | Has none | Has <paramref name="class"/> | Has <paramref name="testClass"/>  | Has both                         |
+        /// |:--------------------------------------|:---------|:-----------------------------|:----------------------------------|:---------------------------------|
+        /// | <paramref name="testMode"/> **false** | use none | use <paramref name="class"/> | use none                          | use <paramref name="class"/>     |
+        /// | <paramref name="testMode"/> **true**  | use none | use <paramref name="class"/> | use <paramref name="testClass"/>  | use <paramref name="testClass"/> |
+        ///
+        /// The loaded class is saved to to @cref{s_classArray} at <paramref name="classIndex"/>
+        ///
         /// <param name="characterClass">Character class</param>
         /// <param name="classIndex">Index of the character class</param>
-        /// <param name="class">Default class script for the given character</param>
-        /// <param name="testClass">Test class script for the given character</param>
+        /// <param name="class">Normal class script for the given character class</param>
+        /// <param name="testClass">Test class script for the given character class</param>
         /// <param name="testMode">Is test mode enabled</param>
         private static void LoadClass(BattlePlayerCharacterClass characterClass, int classIndex, BattlePlayerClassBase @class, BattlePlayerClassBase testClass, bool testMode)
         {
@@ -405,6 +417,13 @@ namespace Battle.QSimulation.Player
                 loadedClass = testClass ?? @class;
             }
 
+            if (loadedClass == null)
+            {
+                s_classArray[classIndex].Class = null;
+                s_classArray[classIndex].State = ClassState.NoCode;
+                return;
+            }
+
             if (loadedClass.Class != characterClass)
             {
                 s_debugLogger.ErrorFormat("Mapping of character classes is incorrect! Expected {0}, got {1}", characterClass, loadedClass.Class);
@@ -412,7 +431,7 @@ namespace Battle.QSimulation.Player
             }
 
             s_classArray[classIndex].Class = loadedClass;
-            s_classArray[classIndex].State = loadedClass != null ? ClassState.Loaded : ClassState.NoCode;
+            s_classArray[classIndex].State = ClassState.Loaded;
         }
 
         /// <summary>
@@ -427,7 +446,7 @@ namespace Battle.QSimulation.Player
         {
             playerClass = null;
 
-            if (characterClass != BattlePlayerCharacterClass.None)
+            if (characterClass == BattlePlayerCharacterClass.None)
             {
                 return ReturnCode.NoClass;
             }
@@ -462,6 +481,11 @@ namespace Battle.QSimulation.Player
             }
 
             ClassEntry classEntry = s_classArray[classIndex];
+
+            if (classEntry.State == ClassState.NoCode)
+            {
+                return ReturnCode.NoClass;
+            }
 
             if (classEntry.Class.Class != characterClass)
             {
