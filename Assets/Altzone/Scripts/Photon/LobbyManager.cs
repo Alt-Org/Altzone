@@ -1475,6 +1475,20 @@ namespace Altzone.Scripts.Lobby
 
             eligibleSoloCount = eligibleSoloPlayers.Count(p => p.UserId != localUserId);
 
+            // If there's exactly one eligible solo (excluding the local user), avoid pairing
+            // that lone solo into a match — but only defer when the available complete duos
+            // cannot satisfy the required followers by themselves. If duos alone suffice,
+            // allow selection to proceed.
+            if (eligibleSoloCount == 1)
+            {
+                int duoPlayers = completeDuos.Count * 2;
+                if (duoPlayers < requiredFollowers)
+                {
+                    Debug.Log("SelectQueueFollowersFromTwoPlayerBlocks: exactly one eligible solo present and duos insufficient; deferring selection to avoid pairing lone solo.");
+                    return new List<string>();
+                }
+            }
+
             if (!localInCompleteDuo && completeDuos.Count >= 2)
             {
                 preferredMasterUserId = completeDuos
@@ -1965,8 +1979,13 @@ namespace Altzone.Scripts.Lobby
             // keep a record of how many solos are currently eligible in the queue
             _queuedSoloCount = eligibleSoloCount;
 
-            // If exactly 3 solos are present in the queue, limit selection to 2 of them
-            int soloCap = (eligibleSoloCount == 3) ? 2 : int.MaxValue;
+            // Solo selection caps:
+            // - If exactly 3 solos are eligible, limit selection to 2 (legacy behavior)
+            // - If exactly 1 solo is eligible, select 0 solos to avoid pairing a lone solo into a match
+            int soloCap;
+            if (eligibleSoloCount == 3) soloCap = 2;
+            else if (eligibleSoloCount == 1) soloCap = 0;
+            else soloCap = int.MaxValue;
             int solosSelected = 0;
 
             foreach (string soloUserId in eligibleSolos)
