@@ -304,6 +304,13 @@ public class Chat : AltMonoBehaviour
             Debug.LogWarning("Aktiivista Chat ei ole valittu");
         }
 
+        //Incase user does not picks any Moods it will default to Happy instead
+        if (currentMood == Mood.Neutral)
+        {
+            currentMood = Mood.Happy;
+        }
+
+
         if (_inputField != null && !string.IsNullOrEmpty(_inputField.text) && _inputField.text.Trim().Length >= 3)
         {
             string inputText = _inputField.text.Trim();
