@@ -1711,7 +1711,13 @@ namespace Altzone.Scripts.Lobby
             {
                 var duoPairs = completeDuos.Select(d => (d.leader?.UserId ?? string.Empty) + "/" + (d.follower?.UserId ?? string.Empty)).ToArray();
                 var followerMap = followersByLeader.Select(kv => kv.Key + ":[" + string.Join(",", kv.Value.Where(p => p != null).Select(p => p.UserId)) + "]").ToArray();
-                Debug.Log($"SelectQueueFollowersForMatch: players=[{string.Join(",", playersById.Keys)}], completeDuos=[{string.Join(";", duoPairs)}], incomplete=[{string.Join(",", incompleteMemberIds)}], orphans=[{string.Join(",", orphanFollowerIds)}], followersByLeader=[{string.Join(",", followerMap)}], pendingSignals={HasPendingQueueDuoSignals()}");
+                bool pending = HasPendingQueueDuoSignals();
+
+                // Avoid spamming the logs when only a single human player is in the queue
+                if (playersById.Count > 1 || pending)
+                {
+                    Debug.Log($"SelectQueueFollowersForMatch: players=[{string.Join(",", playersById.Keys)}], completeDuos=[{string.Join(";", duoPairs)}], incomplete=[{string.Join(",", incompleteMemberIds)}], orphans=[{string.Join(",", orphanFollowerIds)}], followersByLeader=[{string.Join(",", followerMap)}], pendingSignals={pending}");
+                }
             }
             catch { }
 
@@ -2505,8 +2511,17 @@ namespace Altzone.Scripts.Lobby
 
                     if (selected.Count < requiredFollowers)
                     {
-                        Debug.Log($"QueueTimerCoroutine: Queue wait expired but not enough eligible players (requiredFollowers={requiredFollowers}, selectedFollowers={selected.Count}, completeDuos={completeDuoCount}, eligibleSolos={eligibleSoloCount}). Retrying.");
-                        continue;
+                        // If there are no eligible followers at all (no complete duos and no eligible solos),
+                        // proceed to form a queue-formed match so WaitForMatchmakingPlayers can immediately bot-fill.
+                        if (selected.Count == 0 && completeDuoCount == 0 && eligibleSoloCount == 0)
+                        {
+                            Debug.Log($"QueueTimerCoroutine: Queue wait expired with no eligible players; forming queue match to trigger botfill (requiredFollowers={requiredFollowers}).");
+                        }
+                        else
+                        {
+                            Debug.Log($"QueueTimerCoroutine: Queue wait expired but not enough eligible players (requiredFollowers={requiredFollowers}, selectedFollowers={selected.Count}, completeDuos={completeDuoCount}, eligibleSolos={eligibleSoloCount}). Retrying.");
+                            continue;
+                        }
                     }
 
                     if (IsTwoPlayerBlockQueueMode(gameTypeInt) && ShouldDeferTwoPlayerBlockStartForMultiDuo(requiredFollowers, selected, out string timeoutMultiDuoReason))
