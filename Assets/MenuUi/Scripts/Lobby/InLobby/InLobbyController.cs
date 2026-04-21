@@ -222,7 +222,19 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     }
                     catch { }
 
-                    if ((PhotonRealtimeClient.InMatchmakingRoom || inQueueRoom) && gameType == SelectedGameType)
+                    bool currentRoomGameTypeMatches = false;
+                    try
+                    {
+                        var currRoom = PhotonRealtimeClient.LobbyCurrentRoom;
+                        if (currRoom != null)
+                        {
+                            var gt = currRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                            currentRoomGameTypeMatches = gt == (int)gameType;
+                        }
+                    }
+                    catch { }
+
+                    if ((PhotonRealtimeClient.InMatchmakingRoom || inQueueRoom) && currentRoomGameTypeMatches)
                     {
                         _roomSwitcher.SwitchToMatchmakingPanel(PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient);
                         return;
@@ -230,7 +242,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     else if (PhotonRealtimeClient.InRoom) // If we are in a room
                     {
                         // Checking if the game type changed, if it didn't we don't want to do anything but if it did we leave the room
-                        if (gameType == SelectedGameType)
+                        if (currentRoomGameTypeMatches)
                         {
                             return;
                         }
@@ -243,7 +255,19 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     }
                     break;
                 case GameType.FriendLobby:
-                    if (PhotonRealtimeClient.InMatchmakingRoom && gameType == SelectedGameType)
+                    bool currentFriendRoomMatches = false;
+                    try
+                    {
+                        var currRoom = PhotonRealtimeClient.LobbyCurrentRoom;
+                        if (currRoom != null)
+                        {
+                            var gt = currRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                            currentFriendRoomMatches = gt == (int)gameType;
+                        }
+                    }
+                    catch { }
+
+                    if (PhotonRealtimeClient.InMatchmakingRoom && currentFriendRoomMatches)
                     {
                         _roomSwitcher.SwitchToMatchmakingPanel(PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient);
                         return;
@@ -251,7 +275,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
                     if (PhotonRealtimeClient.InRoom)
                     {
-                        if (gameType == SelectedGameType)
+                        if (currentFriendRoomMatches)
                         {
                             _roomSwitcher.SwitchRoom(GameType.FriendLobby);
                             return;
