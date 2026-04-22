@@ -11,7 +11,7 @@ using UnityEngine;
 
 // Quantum usings
 using Battle.QSimulation;
-using static Battle.View.Player.BattlePlayerCharacterViewController;
+using SpriteSheetMap = Battle.View.Player.BattlePlayerCharacterViewController.SpriteSheetMap;
 
 namespace Battle.View.Player
 {
@@ -26,62 +26,65 @@ namespace Battle.View.Player
         /// </summary>
         public override void OnInspectorGUI()
         {
-            const BattlePlayerCharacterViewController.SpriteSheetMap.Enum errorSpriteValue = BattlePlayerCharacterViewController.SpriteSheetMap.Enum.Base;
+            const SpriteSheetMap.Enum ErrorSpriteValue = SpriteSheetMap.Enum.Base;
             DrawDefaultInspector();
 
-            if (_battleSpriteSheetProp == null || _gameObjectProp == null) return;
+            if (_battleSpriteSheetProperty == null || _shieldSpriteRendererProperty == null) return;
 
-            BattleSpriteSheet spriteSheet = (BattleSpriteSheet)_battleSpriteSheetProp.boxedValue;
+            BattleSpriteSheet spriteSheet = (BattleSpriteSheet)_battleSpriteSheetProperty.boxedValue;
 
-            GameObject gameObject = (GameObject)_gameObjectProp.boxedValue;
+            SpriteRenderer spriteRenderer = (SpriteRenderer)_shieldSpriteRendererProperty.boxedValue;
 
-            int shieldNumber = (int)_shieldNumber.boxedValue;
+            int shieldNumber = (int)_shieldNumberProperty.boxedValue;
 
             if (!SpriteSheetMap.Validate(spriteSheet)) goto Error;
 
-            BattlePlayerCharacterViewController.SpriteSheetMap sprite = shieldNumber switch
+            SpriteSheetMap sprite = shieldNumber switch
             {
-                0 => BattlePlayerCharacterViewController.SpriteSheetMap.Enum.ShieldUp1,
-                1 => BattlePlayerCharacterViewController.SpriteSheetMap.Enum.ShieldUp2,
-                2 => BattlePlayerCharacterViewController.SpriteSheetMap.Enum.ShieldUp3,
-                3 => BattlePlayerCharacterViewController.SpriteSheetMap.Enum.ShieldUp4,
+                0 => SpriteSheetMap.Enum.ShieldUp1,
+                1 => SpriteSheetMap.Enum.ShieldUp2,
+                2 => SpriteSheetMap.Enum.ShieldUp3,
+                3 => SpriteSheetMap.Enum.ShieldUp4,
 
-                _ => errorSpriteValue,
+                _ => ErrorSpriteValue,
             };
 
-            if (sprite == errorSpriteValue)
+            if (sprite == ErrorSpriteValue)
             {
                 BattleDebugLogger.ErrorFormat(nameof(BattlePlayerShieldViewControllerEditor), "No valid shield sprite for shield number {0}.", BattleDebugLogger.LogTarget.UnityConsole, shieldNumber);
                 goto Error;
             }
 
-            gameObject.GetComponent<SpriteRenderer>().sprite = spriteSheet.GetSprite(sprite);
+            spriteRenderer.sprite = spriteSheet.GetSprite(sprite);
             return;
 
         Error:
-            gameObject.GetComponent<SpriteRenderer>().sprite = null;
+            spriteRenderer.sprite = null;
         }
 
         /// <summary>
         /// Serialized property holding the spritesheet to get a default sprite from.
         /// </summary>
-        private SerializedProperty _battleSpriteSheetProp;
+        private SerializedProperty _battleSpriteSheetProperty;
 
         /// <summary>
         /// Serialized property holding the gameobject to add the default sprite to.
         /// </summary>
-        private SerializedProperty _gameObjectProp;
+        private SerializedProperty _shieldSpriteRendererProperty;
 
-        private SerializedProperty _shieldNumber;
+        /// <summary>
+        /// Serialized property holding the shield number of the shield to add a default sprite to.
+        /// </summary>
+        private SerializedProperty _shieldNumberProperty;
 
         /// <summary>
         /// Handles getting the spritesheet and shield gameobject to add a default sprite to.
         /// </summary>
         private void OnEnable()
         {
-            _battleSpriteSheetProp = serializedObject.FindProperty("_spriteSheet");
-            _gameObjectProp = serializedObject.FindProperty("_shieldGameObject");
-            _shieldNumber = serializedObject.FindProperty("_shieldNumber");
+            _battleSpriteSheetProperty = serializedObject.FindProperty("_spriteSheet");
+            _shieldSpriteRendererProperty = serializedObject.FindProperty("_shieldSpriteRenderer");
+            _shieldNumberProperty = serializedObject.FindProperty("_shieldNumber");
         }
     }
 }
