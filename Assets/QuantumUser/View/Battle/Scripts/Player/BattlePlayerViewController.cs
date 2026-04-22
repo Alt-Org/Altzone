@@ -15,6 +15,7 @@ using Photon.Deterministic;
 
 // Battle QSimulation usings
 using Battle.QSimulation;
+using Battle.QSimulation.Game;
 using Battle.QSimulation.Player;
 
 // Battle View usings
@@ -41,6 +42,8 @@ namespace Battle.View.Player
         /// <summary>[SerializeField] Reference to an override class view controller.</summary>
         /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private BattlePlayerClassBaseViewController _classViewControllerOverride;
+
+        [SerializeField] private BattlePlayerClassBaseViewController _testClassViewControllerOverride;
 
         /// <summary>[SerializeField] Animator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> that handles player animations.</summary>
         /// @ref BattlePlayerViewController-SerializeFields
@@ -97,11 +100,12 @@ namespace Battle.View.Player
         /// </summary>
         ///
         /// <param name="_">Current simulation frame.</param>
-        public override void OnActivate(Frame _) { PreInitSetup(); QuantumEvent.Subscribe(this, (EventBattlePlayerViewInit e) =>
+        public override void OnActivate(Frame f) { PreInitSetup(); QuantumEvent.Subscribe(this, (EventBattlePlayerViewInit e) =>
         {
             if (EntityRef != e.Entity) return;
             if (!PredictedFrame.Exists(e.Entity)) return;
 
+            bool isTestMode = BattleParameters.GetIsTestMode(f);
             float scale = (float)e.ModelScale;
             transform.localScale = new Vector3(scale, scale, scale);
             _shieldHitParticle.transform.localScale = new Vector3(scale, scale, scale);
@@ -125,19 +129,28 @@ namespace Battle.View.Player
                 _localPlayerIndicator.SetActive(true);
             }
 
-            if (_classViewControllerOverride != null)
+            if (_classViewControllerOverride != null || _testClassViewControllerOverride != null)
             {
-                if(_classViewControllerOverride.Class == e.Class)
+                BattlePlayerClassBaseViewController pickedOverride = BattlePlayerClassManager.PickClass(_classViewControllerOverride, _testClassViewControllerOverride, isTestMode) switch
+                {
+                    BattlePlayerClassManager.ClassType.Class     => _classViewControllerOverride,
+                    BattlePlayerClassManager.ClassType.TestClass => _testClassViewControllerOverride,
+
+                    _                   => null
+                };
+
+                if (pickedOverride.Class == e.Class)
                 {
                     Destroy(_classViewController);
-                    _classViewController = _classViewControllerOverride;
+                    _classViewController = pickedOverride;
                 }
                 else
                 {
-                    _debugLogger.ErrorFormat("Class view controller missmatch! Expected {0}, got {1}", e.Class, _classViewControllerOverride.Class);
-                    Destroy(_classViewControllerOverride);
+                    _debugLogger.ErrorFormat("Class view controller mismatch! Expected {0}, got {1}", e.Class, pickedOverride.Class);
+                    Destroy(pickedOverride);
                 }
             }
+
             _classViewController.OnViewInit(this, e.Entity, e.Slot, e.CharacterId);
 
             QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
