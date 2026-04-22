@@ -723,19 +723,19 @@ namespace MenuUI.Scripts.SoulHome
                                     //Horizontal lines
                                     for (int i = 0; i < w; i++)
                                     {
-                                        // One tile above the furniture
+                                        //Below the furniture
                                         HighlightSlot(room, hoveredSlot.column + i, hoveredSlot.row + 1);
-                                        // One tile below the furniture
-                                        HighlightSlot(room, hoveredSlot.column + i, hoveredSlot.row - 2);
+                                        //Above the furniture
+                                        HighlightSlot(room, hoveredSlot.column + i, hoveredSlot.row - size.y);
                                     }
 
                                     //Vertical lines
                                     for (int i = 0; i < h; i++)
                                     {
-                                        // One tile to the left
-                                        HighlightSlot(room, hoveredSlot.column - 1, hoveredSlot.row + i - 1);
-                                        // One tile to the right
-                                        HighlightSlot(room, hoveredSlot.column + w, hoveredSlot.row + i - 1);
+                                        //To the left
+                                        HighlightSlot(room, hoveredSlot.column - 1, hoveredSlot.row + i - size.y + 1);
+                                        //to the right
+                                        HighlightSlot(room, hoveredSlot.column + w, hoveredSlot.row + i - size.y + 1);
                                     }
                                 }
                             }
@@ -801,19 +801,19 @@ namespace MenuUI.Scripts.SoulHome
                                     //Horizontal lines
                                     for (int i = 0; i < w; i++)
                                     {
-                                        // One tile above the furniture
+                                        //Below the furniture
                                         SaveSlot(room, hoveredSlot.column + i, hoveredSlot.row + 1, handling);
-                                        // One tile below the furniture
-                                        SaveSlot(room, hoveredSlot.column + i, hoveredSlot.row - 2, handling);
+                                        //Above the furniture
+                                        SaveSlot(room, hoveredSlot.column + i, hoveredSlot.row - size.y, handling);
                                     }
 
                                     //Vertical lines
                                     for (int i = 0; i < h; i++)
                                     {
-                                        // One tile to the left
-                                        SaveSlot(room, hoveredSlot.column - 1, hoveredSlot.row + i - 1, handling);
-                                        // One tile to the right
-                                        SaveSlot(room, hoveredSlot.column + w, hoveredSlot.row + i - 1, handling);
+                                        //To the left
+                                        SaveSlot(room, hoveredSlot.column - 1, hoveredSlot.row + i - size.y + 1, handling);
+                                        //to the right
+                                        SaveSlot(room, hoveredSlot.column + w, hoveredSlot.row + i - size.y + 1, handling);
                                     }
                                 }
 

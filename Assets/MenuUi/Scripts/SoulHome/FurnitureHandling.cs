@@ -80,7 +80,7 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
 
-        //Gets closest interaction slot for npc to path to
+        //Get closest interaction slot for npc to path to
         public FurnitureSlot GetClosestInteractionSlot(Vector3 npcPosition)
         {
             if (AssignedInteractionSlots == null || AssignedInteractionSlots.Count == 0)
