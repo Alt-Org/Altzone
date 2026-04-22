@@ -8,6 +8,8 @@ var searchData=
   ['handleintersection_5',['HandleIntersection',['../class_battle_1_1_q_simulation_1_1_projectile_1_1_battle_projectile_q_system.html#ab034ab349bbed35ff4ebb662449bdc69',1,'Battle::QSimulation::Projectile::BattleProjectileQSystem']]],
   ['handleoutofplay_6',['HandleOutOfPlay',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a27782b745ef505049fe98a115b6af851',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
   ['handleplayerabandoned_7',['HandlePlayerAbandoned',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a4aa4a6a193d122941721ccfa06f58ccb',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
-  ['handletrail_8',['HandleTrail',['../class_battle_1_1_view_1_1_projectile_1_1_battle_projectile_view_controller.html#a073e65e89120c4d58a4b9cf4f3cd56f2',1,'Battle::View::Projectile::BattleProjectileViewController']]],
-  ['hide_9',['Hide',['../class_battle_1_1_view_1_1_u_i_1_1_battle_ui_load_screen_handler.html#a243893b298cc077e86d1498821d23790',1,'Battle::View::UI::BattleUiLoadScreenHandler']]]
+  ['handlesfxcharacter_8',['HandleSFXCharacter',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a1e8b45614908dcec7987d91f4d2d0956',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
+  ['handlesfxcommon_9',['HandleSFXCommon',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a251101f620b79b2527d5142e929a9169',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
+  ['handletrail_10',['HandleTrail',['../class_battle_1_1_view_1_1_projectile_1_1_battle_projectile_view_controller.html#a073e65e89120c4d58a4b9cf4f3cd56f2',1,'Battle::View::Projectile::BattleProjectileViewController']]],
+  ['hide_11',['Hide',['../class_battle_1_1_view_1_1_u_i_1_1_battle_ui_load_screen_handler.html#a243893b298cc077e86d1498821d23790',1,'Battle::View::UI::BattleUiLoadScreenHandler']]]
 ];

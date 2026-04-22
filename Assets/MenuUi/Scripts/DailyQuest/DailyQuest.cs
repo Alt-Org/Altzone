@@ -116,13 +116,13 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     /// <summary>
     /// Start the task
     /// </summary>
-    public void DailyTaskAccept()
+    /*public void DailyTaskAccept()
     {
         if (!_clickEnabled || _taskData.PlayerId != "")
             return;
 
         StartCoroutine(DailyTaskManager.Instance.AcceptTask(_taskData, null));
-    }
+    }*/
 
     /// <summary>
     /// Returns the best location for the <c>Popup.cs</c> window depending <br/>
@@ -176,8 +176,8 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         }
 
         _taskDebugID.text = _taskData.Id.ToString();
-        _taskPoints.text = _taskData.Points.ToString();
-        _taskCoins.text = _taskData.Coins.ToString();
+        _taskPoints.text = "+" + _taskData.Points.ToString();
+        _taskCoins.text = "+" + _taskData.Coins.ToString();
         _taskAmount.text = _taskData.Amount.ToString();
         _coinIndicator.SetActive(_taskData.Coins >= 0);
 

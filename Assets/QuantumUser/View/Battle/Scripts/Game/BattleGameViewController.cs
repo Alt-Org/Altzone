@@ -527,6 +527,7 @@ namespace Battle.View.Game
             _endOfGameDataHasEnded = true;
             _endOfGameDataWinningTeam = e.WinningTeam;
             _endOfGameDataGameLengthSec = e.GameLengthSec;
+            LobbyManager.NotifyGamePlayedOut();
 
             //{ Calling server to add wins and losses
 

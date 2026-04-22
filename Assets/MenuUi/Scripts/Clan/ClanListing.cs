@@ -73,7 +73,7 @@ public class ClanListing : MonoBehaviour
                     rankActivity++;
                 }
 
-                _activityRankText.text = rankActivity.ToString();
+                //_activityRankText.text = rankActivity.ToString();
             }));
 
             foreach (Transform child in _labelsField) Destroy(child.gameObject);

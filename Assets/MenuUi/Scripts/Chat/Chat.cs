@@ -130,7 +130,7 @@ public class Chat : AltMonoBehaviour
         ChatChannel.OnMessageReceived += DisplayMessage;
 
         // Alustaa chatit ja asettaa kielichatin oletukseksi
-        _currentContent = _clanChat;
+        _currentContent = _clanChatContent;
 
         Debug.Log("Clan Chat is Active");
 
@@ -333,9 +333,9 @@ public class Chat : AltMonoBehaviour
             //DisplayMessage(_inputField.text, GetMessagePrefab(mood, true));
             _inputField.text = "";
             GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
-            if (_currentContent == _clanChat)
+            if (_currentContent == _clanChatContent)
                 _clanChat.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
-            if (_currentContent == _globalChat)
+            if (_currentContent == _globalChatContent)
                 _globalChat.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             MinimizeOptions();
         }
@@ -671,11 +671,5 @@ public class Chat : AltMonoBehaviour
         _allReactions.SetActive(false);
         _usersWhoAdded.SetActive(true);
     }
-
-    //public GameObject giveJoyPref()
-    //{
-    //    return _messagePrefabYellow;
-    //}
-
 
 }
