@@ -67,7 +67,7 @@ public class BattlePopupPanelManager : MonoBehaviour
         }
     }
 
-    private void SwitchToMatchmakingPanel(bool isLeader)
+    public void SwitchToMatchmakingPanel(bool isLeader)
     {
         ClosePanels();
         _matchmakingPanel.SetCancelButton(isLeader);
