@@ -13,7 +13,6 @@ using Quantum;
 
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
-using System;
 
 namespace Battle.QSimulation.Player
 {
