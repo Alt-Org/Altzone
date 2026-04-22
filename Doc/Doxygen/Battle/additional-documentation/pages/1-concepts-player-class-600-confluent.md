@@ -4,6 +4,7 @@
     - Has simulation logic  
       @cref{Battle.QSimulation.Player,BattlePlayerClassConfluent}
     - Has no simulation data component
+    - Has no spec
 
 - **View**
     - Has no view controller
