@@ -8,11 +8,13 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
 using UnityEngine.UI;
 using System.Linq;
+using Photon.Realtime;
 //using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
 
 public class Raid_InventoryPage : MonoBehaviour
 {
     [SerializeField, Header("Assigned scripts")] private Raid_InventoryHandler raid_InventoryHandler;
+    [SerializeField] private Raid_References raid_References;
     [SerializeField] private Raid_InventoryItem ItemPrefab;
     [SerializeField] private RectTransform ContentPanel;
     [SerializeField] private Raid_LootTracking LootTracker;
@@ -33,31 +35,6 @@ public class Raid_InventoryPage : MonoBehaviour
     List<Raid_InventoryItem> ListOfUIItems = new List<Raid_InventoryItem>();
 
     List<GameFurniture> ListOfFurniture = new List<GameFurniture>();
-
-    [SerializeField, Header("Furniture and weight")] private Sprite Image1;
-    [SerializeField] private float ItemWeight1;
-    [SerializeField] private Sprite Image2;
-    [SerializeField] private float ItemWeight2;
-    [SerializeField] private Sprite Image3;
-    [SerializeField] private float ItemWeight3;
-    [SerializeField] private Sprite Image4;
-    [SerializeField] private float ItemWeight4;
-    [SerializeField] private Sprite Image5;
-    [SerializeField] private float ItemWeight5;
-    [SerializeField] private Sprite Image6;
-    [SerializeField] private float ItemWeight6;
-    [SerializeField] private Sprite Image7;
-    [SerializeField] private float ItemWeight7;
-    [SerializeField] private Sprite Image8;
-    [SerializeField] private float ItemWeight8;
-    [SerializeField] private Sprite Image9;
-    [SerializeField] private float ItemWeight9;
-    [SerializeField] private Sprite Image10;
-    [SerializeField] private float ItemWeight10;
-    [SerializeField] private Sprite Image11;
-    [SerializeField] private float ItemWeight11;
-    [SerializeField] private Sprite Image12;
-    [SerializeField] private float ItemWeight12;
 
     //public PhotonView _photonView { get; private set; }
     private void Awake()
@@ -199,21 +176,29 @@ public class Raid_InventoryPage : MonoBehaviour
             {
                 Debug.Log("HUOM SmallItemList on tyhjä!");
             }
-
-            if (raid_InventoryHandler.LargeItemMaxAmount != 0 && LargeItemList.Count != 0)
+            int x = Random.Range(0, 3);
+            switch (x)
             {
-                RandomFurniture = Random.Range(0,LargeItemList.Count);
-                SetInventorySlotDataRPC(LargeItemList,i,RandomFurniture);
-                raid_InventoryHandler.LargeItemMaxAmount--;
-            } else if (raid_InventoryHandler.MediumItemMaxAmount != 0 && MediumItemList.Count != 0)
-            {
-                RandomFurniture = Random.Range(0,MediumItemList.Count);
-                SetInventorySlotDataRPC(MediumItemList,i,RandomFurniture);
-                raid_InventoryHandler.MediumItemMaxAmount--;
-            } else
-            {
-                RandomFurniture = Random.Range(0,SmallItemList.Count);
-                SetInventorySlotDataRPC(SmallItemList,i,RandomFurniture);
+                case 0:
+                    if (raid_InventoryHandler.LargeItemMaxAmount != 0 && LargeItemList.Count != 0)
+                    {
+                        RandomFurniture = Random.Range(0,LargeItemList.Count);
+                        SetInventorySlotDataRPC(LargeItemList,i,RandomFurniture);
+                        raid_InventoryHandler.LargeItemMaxAmount--;
+                    } else {goto case 1;} 
+                    break;
+                case 1:
+                    if (raid_InventoryHandler.MediumItemMaxAmount != 0 && MediumItemList.Count != 0)
+                    {
+                        RandomFurniture = Random.Range(0,MediumItemList.Count);
+                        SetInventorySlotDataRPC(MediumItemList,i,RandomFurniture);
+                        raid_InventoryHandler.MediumItemMaxAmount--;
+                    } else {goto case 2;}
+                    break;
+                case 2:
+                    RandomFurniture = Random.Range(0,SmallItemList.Count);
+                    SetInventorySlotDataRPC(SmallItemList,i,RandomFurniture);
+                    break;
             }
         }
 
@@ -256,122 +241,7 @@ public class Raid_InventoryPage : MonoBehaviour
     {
         GameFurniture furniture = furnitureSet[RandomFurniture];
         ListOfUIItems[Index].ItemWeight = (float)furniture.Weight;
-        ListOfUIItems[Index].SetData(furnitureSet[RandomFurniture].FurnitureInfo.Image ,ListOfUIItems[Index].ItemWeight);
+        ListOfUIItems[Index].SetData(furniture);
         return;
-
-        // switch (RandomFurniture)
-        // {
-            // case 0:
-                // ListOfUIItems[Index].ItemWeight = ItemWeight1;
-                // ListOfUIItems[Index].SetData(Image1, ListOfUIItems[Index].ItemWeight);
-                // break;
-            // case 1:
-                // if (raid_InventoryHandler.MediumItemMaxAmount <= 0)
-                // {
-                    // ListOfUIItems[Index].ItemWeight = ItemWeight1;
-                    // ListOfUIItems[Index].SetData(Image1, ListOfUIItems[Index].ItemWeight);
-                // }
-                // else
-                // {
-                    // ListOfUIItems[Index].ItemWeight = ItemWeight2;
-                    // ListOfUIItems[Index].SetData(Image2, ListOfUIItems[Index].ItemWeight);
-                    // raid_InventoryHandler.MediumItemMaxAmount -= 1;
-                // }
-                // break;
-            // case 2:
-                // if (raid_InventoryHandler.LargeItemMaxAmount <= 0)
-                // {
-                    // ListOfUIItems[Index].ItemWeight = ItemWeight1;
-                    // ListOfUIItems[Index].SetData(Image1, ListOfUIItems[Index].ItemWeight);
-                // }
-                // else
-                // {
-                    // ListOfUIItems[Index].ItemWeight = ItemWeight3;
-                    // ListOfUIItems[Index].SetData(Image3, ListOfUIItems[Index].ItemWeight);
-                    // raid_InventoryHandler.LargeItemMaxAmount -= 1;
-                // }
-                // break;
-            // case 3:
-                // if (raid_InventoryHandler.LargeItemMaxAmount <= 0)
-                // {
-                    // ListOfUIItems[Index].ItemWeight = ItemWeight1;
-                    // ListOfUIItems[Index].SetData(Image1, ListOfUIItems[Index].ItemWeight);
-                // }
-                // else
-                // {
-                    // ListOfUIItems[Index].ItemWeight = ItemWeight4;
-                    // ListOfUIItems[Index].SetData(Image4, ListOfUIItems[Index].ItemWeight);
-                    // raid_InventoryHandler.LargeItemMaxAmount -= 1;
-                // }
-                // break;
-            // case 4:
-                // if (raid_InventoryHandler.LargeItemMaxAmount <= 0)
-                // {
-                    // ListOfUIItems[Index].ItemWeight = ItemWeight1;
-                    // ListOfUIItems[Index].SetData(Image1, ListOfUIItems[Index].ItemWeight);
-                // }
-                // else
-                // {
-                    // ListOfUIItems[Index].ItemWeight = ItemWeight5;
-                    // ListOfUIItems[Index].SetData(Image5, ListOfUIItems[Index].ItemWeight);
-                    // raid_InventoryHandler.LargeItemMaxAmount -= 1;
-                // }
-                // break;
-            // case 5:
-                // ListOfUIItems[Index].ItemWeight = ItemWeight6;
-                // ListOfUIItems[Index].SetData(Image6, ListOfUIItems[Index].ItemWeight);
-                // break;
-            // case 6:
-                // ListOfUIItems[Index].ItemWeight = ItemWeight7;
-                // ListOfUIItems[Index].SetData(Image7, ListOfUIItems[Index].ItemWeight);
-                // break;
-            // case 7:
-                // if (raid_InventoryHandler.MediumItemMaxAmount <= 0)
-                // {
-                    // ListOfUIItems[Index].ItemWeight = ItemWeight1;
-                    // ListOfUIItems[Index].SetData(Image1, ListOfUIItems[Index].ItemWeight);
-                // }
-                // else
-                // {
-                    // ListOfUIItems[Index].ItemWeight = ItemWeight8;
-                    // ListOfUIItems[Index].SetData(Image8, ListOfUIItems[Index].ItemWeight);
-                    // raid_InventoryHandler.MediumItemMaxAmount -= 1;
-                // }
-                // break;
-            // case 8:
-                // if (raid_InventoryHandler.MediumItemMaxAmount <= 0)
-                // {
-                    // ListOfUIItems[Index].ItemWeight = ItemWeight1;
-                    // ListOfUIItems[Index].SetData(Image1, ListOfUIItems[Index].ItemWeight);
-                // }
-                // else
-                // {
-                    // ListOfUIItems[Index].ItemWeight = ItemWeight9;
-                    // ListOfUIItems[Index].SetData(Image9, ListOfUIItems[Index].ItemWeight);
-                    // raid_InventoryHandler.MediumItemMaxAmount -= 1;
-                // }
-                // break;
-            // case 9:
-                // ListOfUIItems[Index].ItemWeight = ItemWeight10;
-                // ListOfUIItems[Index].SetData(Image10, ListOfUIItems[Index].ItemWeight);
-                // break;
-            // case 10:
-                    // ListOfUIItems[Index].ItemWeight = ItemWeight11;
-                    // ListOfUIItems[Index].SetData(Image11, ListOfUIItems[Index].ItemWeight);
-                // break;
-            // case 11:
-                // if (raid_InventoryHandler.LargeItemMaxAmount <= 0)
-                // {
-                    // ListOfUIItems[Index].ItemWeight = ItemWeight1;
-                    // ListOfUIItems[Index].SetData(Image1, ListOfUIItems[Index].ItemWeight);
-                // }
-                // else
-                // {
-                    // ListOfUIItems[Index].ItemWeight = ItemWeight12;
-                    // ListOfUIItems[Index].SetData(Image12, ListOfUIItems[Index].ItemWeight);
-                    // raid_InventoryHandler.LargeItemMaxAmount -= 1;
-                // }
-                // break;
-        // }
     }
 }

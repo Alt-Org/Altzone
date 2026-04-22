@@ -15,9 +15,11 @@ public class Raid_References : MonoBehaviour
     public TextMeshProUGUI OutOfTime;
     public TextMeshProUGUI OutOfSpace;
     public TextMeshProUGUI RaidEndedText;
+    public Raid_InventoryHandler inventoryHandler;
 
     private void Start()
     {
+        inventoryHandler = GameObject.Find("ScriptHolder").GetComponent<Raid_InventoryHandler>();
         RedScreen.SetActive(false);
         EndMenu.SetActive(false);
         OutOfTime.enabled = false;

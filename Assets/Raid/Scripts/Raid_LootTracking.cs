@@ -14,7 +14,7 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
     [SerializeField] private TMP_Text OutOfText;
     [SerializeField] private TMP_Text MaxLootText;
     [SerializeField] private TMP_Text HeartLootText;
-
+    
     [SerializeField, Header("Variables")] public float CurrentLootWeight;
     [SerializeField] public float MaxLootWeight;
 
@@ -61,6 +61,7 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
         if (CurrentLootWeight > MaxLootWeight)
         {
             //EndScreen
+            
             raid_References.RedScreen.SetActive(true);
             raid_References.EndMenu.SetActive(true);
             raid_References.OutOfSpace.enabled = true;
