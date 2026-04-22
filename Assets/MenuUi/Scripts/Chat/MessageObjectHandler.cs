@@ -68,14 +68,20 @@ public class MessageObjectHandler : MonoBehaviour
             extraPadding = 0f;
             _fixSize.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 0); //Fixes the issue from the object not updating the size when its supposed to
         }
-            
+
         //Checks if reaction panel is active and checks which reaction pannel is on
         if (_reactionSize.activeSelf)
-                _baseMessageSize.sizeDelta = new Vector2(_vectorReactionSize.x, Mathf.Max(150, _baseMessageBankerSize.y + _vectorReactionSize.y));
+        {
+            _baseMessageSize.sizeDelta = new Vector2(_vectorReactionSize.x, Mathf.Max(150, _baseMessageBankerSize.y + _vectorReactionSize.y));
+            GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, _baseMessageBankerSize.y + _vectorReactionSize.y);
+        }
 
         //reverts back to orignal
         else
-        _baseMessageSize.sizeDelta = new Vector2(_baseMessageBankerSize.x, Mathf.Max(150, _baseMessageBankerSize.y + extraPadding));
+        {
+            _baseMessageSize.sizeDelta = new Vector2(_baseMessageBankerSize.x, Mathf.Max(150, _baseMessageBankerSize.y + extraPadding));
+            GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, _baseMessageBankerSize.y + extraPadding);
+        }
 
     }
 
