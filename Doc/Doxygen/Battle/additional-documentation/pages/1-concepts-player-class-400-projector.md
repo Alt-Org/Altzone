@@ -5,6 +5,7 @@
       @cref{Battle.QSimulation.Player,BattlePlayerClassProjector}
     - Has simulation data component  
       @cref{Quantum,BattlePlayerClassProjectorDataQComponent}
+    - Has no spec
 
 - **View**
     - Has view controller  
