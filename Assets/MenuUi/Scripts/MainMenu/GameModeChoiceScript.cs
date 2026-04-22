@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Prg.Scripts.Common;
 using UnityEngine.UI;
+using MenuUi.Scripts.Lobby.BattleButton;
+using Altzone.Scripts.Lobby;
 
 
 public class GameModeChoiceScript : MonoBehaviour
@@ -108,6 +110,17 @@ public class GameModeChoiceScript : MonoBehaviour
             gameModeHeader.SetActive(false);
         }
         _gameModeHeaders[currentModeInt].SetActive(true);
+
+        switch (currentModeInt)
+        {
+            case 0:
+                _gameModeButtons[currentModeInt].GetComponent<BattleButton>().SelectedGameType = GameType.Custom;
+                break;
+            case 1:
+                _gameModeButtons[currentModeInt].GetComponent<BattleButton>().SelectedGameType = GameType.Random2v2;
+                break;
+        }
+
     }
 
     public void PressArrowRight() 
@@ -132,5 +145,15 @@ public class GameModeChoiceScript : MonoBehaviour
             gameModeHeader.SetActive(false);
         }
         _gameModeHeaders[currentModeInt].SetActive(true);
+
+        switch (currentModeInt)
+        {
+            case 0:
+                _gameModeButtons[currentModeInt].GetComponent<BattleButton>().SelectedGameType = GameType.Custom;
+                break;
+            case 1:
+                _gameModeButtons[currentModeInt].GetComponent<BattleButton>().SelectedGameType = GameType.Random2v2;
+                break;
+        }
     }
 }

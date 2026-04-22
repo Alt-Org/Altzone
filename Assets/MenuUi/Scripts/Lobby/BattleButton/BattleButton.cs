@@ -34,6 +34,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         private Button _button;
         private SwipeUI _swipe;
 
+        public GameType SelectedGameType { get => _selectedGameType; set => _selectedGameType = value; }
 
         private void Awake()
         {
@@ -107,6 +108,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             }
             else
             {
+                Debug.LogWarning(_selectedGameType);
                 SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
             }
         }
