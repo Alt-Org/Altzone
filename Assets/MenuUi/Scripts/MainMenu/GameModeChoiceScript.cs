@@ -4,14 +4,16 @@ using Prg.Scripts.Common;
 using UnityEngine.UI;
 using MenuUi.Scripts.Lobby.BattleButton;
 using Altzone.Scripts.Lobby;
+using MenuUi.Scripts.ReferenceSheets;
+using System.Linq;
 
 
 public class GameModeChoiceScript : MonoBehaviour
 {
 
-    [SerializeField] private List<GameObject> _gameModeButtons = new();
-    [SerializeField] private List<GameObject> _gameModeHeaders = new();
-    [SerializeField] private List<Button> _gameModeButtonsAsButtons = new();
+    [SerializeField] private GameObject _gameModeButton = new();
+    [SerializeField] private GameObject _gameModeHeader = new();
+    //[SerializeField] private List<Button> _gameModeButtonsAsButtons = new();
 
     private int currentModeInt = 0;
     private int amountOfModes;
@@ -58,7 +60,7 @@ public class GameModeChoiceScript : MonoBehaviour
     {
         if (!_isSwiping)
         {
-            _gameModeButtonsAsButtons[currentModeInt].onClick.Invoke();
+            _gameModeButton.GetComponent<Button>().onClick.Invoke();
         }
         _isSwiping = false;
     }
@@ -71,20 +73,7 @@ public class GameModeChoiceScript : MonoBehaviour
     private void Start()
     {
         currentModeInt = 0;
-        amountOfModes = _gameModeButtons.Count;
-
-        foreach (GameObject gameModeButton in _gameModeButtons)
-        {
-            gameModeButton.SetActive(false);
-        }
-        _gameModeButtons[0].SetActive(true);
-
-        foreach (GameObject gameModeHeader in _gameModeHeaders)
-        {
-            gameModeHeader.SetActive(false);
-        }
-        _gameModeHeaders[0].SetActive(true);
-
+        amountOfModes = GameTypeReference.Instance.GetEnabledCount();
     }
 
     public void PressArrowLeft() 
@@ -98,29 +87,13 @@ public class GameModeChoiceScript : MonoBehaviour
             currentModeInt = amountOfModes - 1;
         }
 
-        foreach (GameObject gameModeButton in _gameModeButtons)  //make correct game mode button active
-        {
-            gameModeButton.SetActive(false);
-        }
-        _gameModeButtons[currentModeInt].SetActive(true);
+        List<GameTypeInfo> list = GameTypeReference.Instance.GetGameTypeInfos().OrderBy(x =>x.gameType).ToList();
 
+        GameTypeInfo gameInfo= list[currentModeInt];
 
-        foreach (GameObject gameModeHeader in _gameModeHeaders) //make correct header active
-        {
-            gameModeHeader.SetActive(false);
-        }
-        _gameModeHeaders[currentModeInt].SetActive(true);
-
-        switch (currentModeInt)
-        {
-            case 0:
-                _gameModeButtons[currentModeInt].GetComponent<BattleButton>().SelectedGameType = GameType.Custom;
-                break;
-            case 1:
-                _gameModeButtons[currentModeInt].GetComponent<BattleButton>().SelectedGameType = GameType.Random2v2;
-                break;
-        }
-
+        _gameModeButton.GetComponent<Image>().sprite = gameInfo.Icon;
+        _gameModeHeader.GetComponent<Image>().sprite = gameInfo.Banner;
+        _gameModeButton.GetComponent<BattleButton>().SelectedGameType = gameInfo.gameType;
     }
 
     public void PressArrowRight() 
@@ -134,26 +107,12 @@ public class GameModeChoiceScript : MonoBehaviour
             currentModeInt = 0;
         }
 
-        foreach (GameObject gameModeButton in _gameModeButtons) //make correct game mode button active
-        {
-            gameModeButton.SetActive(false);
-        }
-        _gameModeButtons[currentModeInt].SetActive(true);
+        List<GameTypeInfo> list = GameTypeReference.Instance.GetGameTypeInfos().OrderBy(x => x.gameType).ToList();
 
-        foreach (GameObject gameModeHeader in _gameModeHeaders)//make correct header active
-        {
-            gameModeHeader.SetActive(false);
-        }
-        _gameModeHeaders[currentModeInt].SetActive(true);
+        GameTypeInfo gameInfo = list[currentModeInt];
 
-        switch (currentModeInt)
-        {
-            case 0:
-                _gameModeButtons[currentModeInt].GetComponent<BattleButton>().SelectedGameType = GameType.Custom;
-                break;
-            case 1:
-                _gameModeButtons[currentModeInt].GetComponent<BattleButton>().SelectedGameType = GameType.Random2v2;
-                break;
-        }
+        _gameModeButton.GetComponent<Image>().sprite = gameInfo.Icon;
+        _gameModeHeader.GetComponent<Image>().sprite = gameInfo.Banner;
+        _gameModeButton.GetComponent<BattleButton>().SelectedGameType = gameInfo.gameType;
     }
 }

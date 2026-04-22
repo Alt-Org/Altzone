@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using Altzone.Scripts.Lobby;
+using Altzone.Scripts.ReferenceSheets;
+using UnityEngine;
 
 namespace MenuUi.Scripts.ReferenceSheets
 {
@@ -11,6 +12,23 @@ namespace MenuUi.Scripts.ReferenceSheets
     //[CreateAssetMenu(menuName = "ALT-Zone/GameTypeReference", fileName = "GameTypeReference")]
     public class GameTypeReference : ScriptableObject
     {
+        private static GameTypeReference _instance;
+        private static bool _hasInstance;
+
+        public static GameTypeReference Instance
+        {
+            get
+            {
+                if (!_hasInstance)
+                {
+                    _instance = Resources.Load<GameTypeReference>(nameof(GameTypeReference));
+                    _hasInstance = _instance != null;
+                }
+                return _instance;
+            }
+        }
+
+
         [SerializeField] private List<GameTypeInfo> _info;
 
         /// <summary>
@@ -21,6 +39,13 @@ namespace MenuUi.Scripts.ReferenceSheets
         {
             return _info;
         }
+
+        public int GetEnabledCount()
+        {
+            int count = 0;
+            count = _info.FindAll(x => x.Enabled).Count;
+            return count;
+        }
     }
 
     /// <summary>
@@ -30,7 +55,9 @@ namespace MenuUi.Scripts.ReferenceSheets
     public class GameTypeInfo
     {
         public Sprite Icon;
+        public Sprite Banner;
         public GameType gameType;
+        public bool Enabled;
         public string FinnishName;
         public string FinnishDescription;
         public string EnglishName;
