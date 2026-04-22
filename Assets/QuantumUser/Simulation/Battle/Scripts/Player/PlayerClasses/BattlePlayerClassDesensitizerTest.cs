@@ -1,6 +1,6 @@
-/// @file BattlePlayerClassDesensitizer.cs
+/// @file BattlePlayerClassDesensitizerTest.cs
 /// <summary>
-/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassDesensitizer} class which handles player character class logic for the 100/Desensitizer class.
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassDesensitizerTest} class which handles player character class logic for the 100/Desensitizer class.
 /// </summary>
 
 // Quantum usings
@@ -19,7 +19,7 @@ namespace Battle.QSimulation.Player
     /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.}<br/>
     /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
     /// @bigtext{concept sivu tähän}
-    public class BattlePlayerClassDesensitizer : BattlePlayerClassBase<BattlePlayerClassDesensitizerDataQComponent>
+    public class BattlePlayerClassDesensitizerTest : BattlePlayerClassBase<BattlePlayerClassDesensitizerDataQComponent>
     {
         /// <summary>
         /// Gets the character class associated with this Class.<br/>

@@ -158,7 +158,7 @@ namespace Battle.QSimulation.Player
             {
                 case BattlePlayerCharacterClass.Desensitizer:
                     if (s_classArray[ClassIndexDesensitizer] != null) break;
-                    s_classArray[ClassIndexDesensitizer] = new BattlePlayerClassDesensitizer();
+                    s_classArray[ClassIndexDesensitizer] = new BattlePlayerClassDesensitizerTest();
                     break;
 
                 case BattlePlayerCharacterClass.Trickster:
