@@ -26,6 +26,9 @@
 ///
 /// @var bool Quantum::BattlePlayerShieldDataQComponent::IsAttached
 /// <summary>Whether this shield is attached or not.</summary>
+///
+/// @var bool Quantum::BattlePlayerShieldDataQComponent::ShieldHitCooldown
+/// <summary>Timer used for the cooldown on the shield getting hit.</summary>
 
 /// @name Quantum Built-in
 /// @{

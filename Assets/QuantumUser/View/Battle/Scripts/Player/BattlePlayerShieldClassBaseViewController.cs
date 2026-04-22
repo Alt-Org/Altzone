@@ -41,6 +41,7 @@ namespace Battle.View.Player
         /// <param name="entityRef">The entity reference for this player shield.</param>
         /// <param name="slot">The player slot associated with this shield.</param>
         /// <param name="characterId">The ID of the shield being initialized.</param>
+        /// <param name="shieldNumber">ShieldNumber of this shield.</param>
         public void OnViewInit(BattlePlayerShieldViewController parent, EntityRef entityRef, BattlePlayerSlot slot, BattlePlayerCharacterID characterId, int shieldNumber)
         {
             _parent = parent;
