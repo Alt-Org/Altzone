@@ -456,8 +456,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 348, y: 0}
-  m_SizeDelta: {x: 696, y: 200}
+  m_AnchoredPosition: {x: 638.45996, y: 0}
+  m_SizeDelta: {x: 1276.9199, y: 100}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &3525508362277776894
 MonoBehaviour:
@@ -807,7 +807,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8513484714183557464}
   m_HandleRect: {fileID: 6308764624544131753}
   m_Direction: 3
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -843,13 +843,14 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2223363202015957424}
   m_Father: {fileID: 7263840750173096045}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &6322510488040832893
 CanvasRenderer:
@@ -898,7 +899,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
-  m_VerticalFit: 2
+  m_VerticalFit: 0
 --- !u!1 &7005784501012616672
 GameObject:
   m_ObjectHideFlags: 0
@@ -931,12 +932,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6091275466212805942}
-  m_Father: {fileID: 5905764035603499003}
+  m_Father: {fileID: 8632396711482958951}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -100}
-  m_SizeDelta: {x: 0, y: 200}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6841353408465428323
 CanvasRenderer:
@@ -1140,7 +1141,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2223363202015957424}
   - {fileID: 7574124366759966838}
   - {fileID: 7263840750173096045}
   - {fileID: 2438173267900762332}
@@ -1201,7 +1201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 778d1fe5f61fd3c42b8489e106783784, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  content: {fileID: 0}
+  content: {fileID: 8632396711482958951}
   horizontallyScrollable: 0
   verticallyScrollable: 1
   scrollingMovementType: 1
@@ -1209,9 +1209,9 @@ MonoBehaviour:
   inertia: 1
   decelerationRate: 0.135
   scrollSensitivity: 1
-  viewportRectTransform: {fileID: 0}
+  viewportRectTransform: {fileID: 7263840750173096045}
   horizontalScrollbar: {fileID: 0}
-  verticalScrollbar: {fileID: 0}
+  verticalScrollbar: {fileID: 7332325182378637158}
   horizontalScrollbarVisibility: 2
   verticalScrollbarVisibility: 2
   horizontalScrollbarSpacing: -3
