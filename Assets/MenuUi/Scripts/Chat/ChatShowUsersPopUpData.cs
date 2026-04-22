@@ -39,6 +39,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
     public void ClosePopup()
     {
+        gameObject.transform.SetParent(ShowUsersPopUp.transform);
         gameObject.SetActive(false);
 
     }

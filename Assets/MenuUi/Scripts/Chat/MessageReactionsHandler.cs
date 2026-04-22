@@ -346,6 +346,9 @@ public class MessageReactionsHandler : AltMonoBehaviour
     private void ShowUsers(ChatReactionHandler reactionHandler)
     {
         _longClick = true;
+
+        _usersWhoAdded.transform.SetParent(Chat.instance.PopUps.transform);
+        _usersWhoAdded.SetActive(true);
         //_chatScript.OpenUsersWhoAddedReactionPanel();
 
         Invoke("ResetLongClick", 2);
