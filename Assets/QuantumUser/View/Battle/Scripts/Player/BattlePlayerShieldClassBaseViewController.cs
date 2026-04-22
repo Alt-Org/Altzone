@@ -41,10 +41,11 @@ namespace Battle.View.Player
         /// <param name="entityRef">The entity reference for this player shield.</param>
         /// <param name="slot">The player slot associated with this shield.</param>
         /// <param name="characterId">The ID of the shield being initialized.</param>
-        public void OnViewInit(BattlePlayerShieldViewController parent, EntityRef entityRef, BattlePlayerSlot slot, int characterId)
+        public void OnViewInit(BattlePlayerShieldViewController parent, EntityRef entityRef, BattlePlayerSlot slot, BattlePlayerCharacterID characterId, int shieldNumber)
         {
             _parent = parent;
             _entityRef = entityRef;
+            _shieldNumber = shieldNumber;
             OnViewInitOverride(slot, characterId);
         }
 
@@ -66,6 +67,8 @@ namespace Battle.View.Player
         protected BattlePlayerShieldViewController _parent;
         /// <summary>Reference to the entity associated with this shield view controller.</summary>
         protected EntityRef _entityRef;
+        /// <summary>Shield number of this shield.</summary>
+        protected int _shieldNumber;
 
         /// <summary>
         /// Provides a hook for derived classes to perform shield class specific custom initialization.<br/>
@@ -76,6 +79,6 @@ namespace Battle.View.Player
         ///
         /// <param name="slot">The player slot associated with this shield.</param>
         /// <param name="characterId">The ID of the shield being initialized.</param>
-        protected virtual void OnViewInitOverride(BattlePlayerSlot slot, int characterId) { }
+        protected virtual void OnViewInitOverride(BattlePlayerSlot slot, BattlePlayerCharacterID characterId) { }
     }
 }
