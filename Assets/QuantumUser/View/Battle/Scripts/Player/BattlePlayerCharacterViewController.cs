@@ -414,7 +414,6 @@ namespace Battle.View.Player
         public override void OnActivate(Frame _) { PreInitSetup(); QuantumEvent.Subscribe(this, (EventBattlePlayerCharacterViewInit e) =>
         {
             if (EntityRef != e.ERef) return;
-            if (!PredictedFrame.Exists(e.ERef)) return;
 
             //{ initialize visuals
 
@@ -491,7 +490,6 @@ namespace Battle.View.Player
         public override void OnUpdateView()
         {
             if (!_isInPlay) return;
-            if (!PredictedFrame.Exists(EntityRef)) return;
             BattlePlayerDataQComponent* playerData = PredictedFrame.Unsafe.GetPointer<BattlePlayerDataQComponent>(EntityRef);
             if (playerData->PlayerRef == PlayerRef.None) return;
 

@@ -81,7 +81,6 @@ namespace Battle.View.Player
         public override void OnActivate(Frame _) { PreInitSetup(); QuantumEvent.Subscribe(this, (EventBattlePlayerShieldViewInit e) =>
         {
             if (EntityRef != e.ERef) return;
-            if (!PredictedFrame.Exists(e.ERef)) return;
 
             _characterEntityRef = e.CharacterRef;
 
@@ -141,7 +140,6 @@ namespace Battle.View.Player
         public void OnShieldHit(EventBattleShieldHit e)
         {
             if (EntityRef != e.ERef) return;
-            if (!PredictedFrame.Exists(e.ERef)) return;
 
             if (_shieldHitParticle != null)
             {
