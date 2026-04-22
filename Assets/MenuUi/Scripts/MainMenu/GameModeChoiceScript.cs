@@ -11,14 +11,15 @@ using System.Linq;
 public class GameModeChoiceScript : MonoBehaviour
 {
 
-    [SerializeField, Header("Game Objects")] private GameObject _gameModeButton;
+    [SerializeField, Header("Battle Button")] private BattleButton _gameModeButton;
 
-    [SerializeField, Header("Buttons")] private Button _arrowLeft;
+    [SerializeField, Header("Selection Buttons")] private Button _arrowLeft;
     [SerializeField] private Button _arrowRight;
 
     private int currentModeInt = 0;
     private int amountOfModes;
 
+    private List<GameTypeInfo> _list;
 
     //For the game mode swipe functionality
     private Vector2 _startTouchPosition;
@@ -61,7 +62,7 @@ public class GameModeChoiceScript : MonoBehaviour
     {
         if (!_isSwiping)
         {
-            _gameModeButton.GetComponent<Button>().onClick.Invoke();
+            _gameModeButton.Button.onClick.Invoke();
         }
         _isSwiping = false;
     }
@@ -76,7 +77,8 @@ public class GameModeChoiceScript : MonoBehaviour
         currentModeInt = 0;
         amountOfModes = GameTypeReference.Instance.GetEnabledCount();
 
-        SetData();
+        _list = GameTypeReference.Instance.GetGameTypeInfos().OrderBy(x => x.gameType).ToList();
+        currentModeInt = _list.FindIndex(x => x.gameType == _gameModeButton.SelectedGameType);
 
         _arrowLeft.onClick.AddListener(PressArrowLeft);
         _arrowRight.onClick.AddListener(PressArrowRight);
@@ -112,10 +114,8 @@ public class GameModeChoiceScript : MonoBehaviour
 
     private void SetData()
     {
-        List<GameTypeInfo> list = GameTypeReference.Instance.GetGameTypeInfos().OrderBy(x => x.gameType).ToList();
+        GameTypeInfo gameInfo = _list[currentModeInt];
 
-        GameTypeInfo gameInfo = list[currentModeInt];
-
-        _gameModeButton.GetComponent<BattleButton>().UpdateGameType(gameInfo);
+        _gameModeButton.UpdateGameType(gameInfo);
     }
 }

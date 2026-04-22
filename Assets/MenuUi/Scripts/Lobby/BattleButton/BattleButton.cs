@@ -33,7 +33,8 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         private Button _button;
         private SwipeUI _swipe;
 
-        public GameType SelectedGameType { get => _selectedGameType; set => _selectedGameType = value; }
+        public GameType SelectedGameType { get => _selectedGameType;}
+        public Button Button { get => _button;}
 
         private void Awake()
         {
