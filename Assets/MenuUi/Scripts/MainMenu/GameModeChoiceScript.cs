@@ -11,8 +11,8 @@ using System.Linq;
 public class GameModeChoiceScript : MonoBehaviour
 {
 
-    [SerializeField] private GameObject _gameModeButton = new();
-    [SerializeField] private GameObject _gameModeHeader = new();
+    [SerializeField] private GameObject _gameModeButton;
+    [SerializeField] private GameObject _gameModeHeader;
     //[SerializeField] private List<Button> _gameModeButtonsAsButtons = new();
 
     private int currentModeInt = 0;
@@ -74,6 +74,15 @@ public class GameModeChoiceScript : MonoBehaviour
     {
         currentModeInt = 0;
         amountOfModes = GameTypeReference.Instance.GetEnabledCount();
+
+        List<GameTypeInfo> list = GameTypeReference.Instance.GetGameTypeInfos().OrderBy(x => x.gameType).ToList();
+
+        GameTypeInfo gameInfo = list[currentModeInt];
+
+        _gameModeButton.GetComponent<Image>().sprite = gameInfo.Icon;
+        _gameModeHeader.GetComponent<Image>().sprite = gameInfo.Banner;
+        _gameModeButton.GetComponent<BattleButton>().SelectedGameType = gameInfo.gameType;
+
     }
 
     public void PressArrowLeft() 

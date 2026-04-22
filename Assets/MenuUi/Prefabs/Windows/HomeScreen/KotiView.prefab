@@ -533,15 +533,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95eca488a59aa3648ad9e095f8ee9dae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gameModeButtons:
-  - {fileID: 4091377289515798502}
-  - {fileID: 2829572788807415862}
-  _gameModeHeaders:
-  - {fileID: 2489717828359045447}
-  - {fileID: 4144495222954848854}
-  _gameModeButtonsAsButtons:
-  - {fileID: 5177981418448575191}
-  - {fileID: 4032366852551734761}
+  _gameModeButton: {fileID: 4091377289515798502}
+  _gameModeHeader: {fileID: 2489717828359045447}
 --- !u!114 &6890109613647481811
 MonoBehaviour:
   m_ObjectHideFlags: 0
