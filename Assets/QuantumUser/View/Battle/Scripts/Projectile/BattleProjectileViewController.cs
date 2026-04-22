@@ -27,14 +27,17 @@ namespace Battle.View.Projectile
 
         /// <summary>[SerializeField] SpriteRenderer reference for projectile's sprite.</summary>
         /// @ref BattleProjectileViewController-SerializeFields
+        [Tooltip("SpriteRenderer reference for projectile's sprite")]
         [SerializeField] private SpriteRenderer _spriteRenderer;
 
         /// <summary>[SerializeField] SpriteRenderer reference for projectile's glow.</summary>
         /// @ref BattleProjectileViewController-SerializeFields
+        [Tooltip("SpriteRenderer reference for projectile's glow")]
         [SerializeField] private SpriteRenderer _spriteGlowRenderer;
 
         /// <summary>[SerializeField] TrailRenderer reference for projectile's trail.</summary>
         /// @ref BattleProjectileViewController-SerializeFields
+        [Tooltip("TrailRenderer reference for projectile's trail")]
         [SerializeField] private TrailRenderer _trailRenderer;
 
         [Tooltip("Sprite 0: Sadness\nSprite 1: Joy\nSprite 2: Playful\nSprite 3: Aggression\nSprite 4: Love")]
@@ -44,30 +47,37 @@ namespace Battle.View.Projectile
 
         /// <summary>[SerializeField] An array of gradient colors for projectile's trail.</summary>
         /// @ref BattleProjectileViewController-SerializeFields
+        [Tooltip("An array of gradient colors for projectile's trail")]
         [SerializeField] private Gradient[] _colorGradients;
 
         /// <summary>[SerializeField] An array of glow colors for projectile's glow.</summary>
         /// @ref BattleProjectileViewController-SerializeFields
+        [Tooltip("An array of glow colors for projectile's glow")]
         [SerializeField] private Color[] _colorGlows;
 
         /// <summary>[SerializeField] A reference to the trail segment prefab.</summary>
         /// @ref BattleProjectileViewController-SerializeFields
+        [Tooltip("A reference to the trail segment prefab")]
         [SerializeField] private GameObject _trailObject;
 
         /// <summary>[SerializeField] Speed change interval at which the trail's length updates.</summary>
         /// @ref BattleProjectileViewController-SerializeFields
+        [Tooltip("Speed change interval at which the trail's length updates")]
         [SerializeField] private float _trailIncreaseSpeed;
 
         /// <summary>[SerializeField] Maximum amount of trail segments that can be active.</summary>
         /// @ref BattleProjectileViewController-SerializeFields
+        [Tooltip("Maximum amount of trail segments that can be active")]
         [SerializeField] private int _maxTrailCount;
 
         /// <summary>[SerializeField] The delay in seconds for each trail segment's movement.</summary>
         /// @ref BattleProjectileViewController-SerializeFields
+        [Tooltip("The delay in seconds for each trail segment's movement")]
         [SerializeField] private float _trailDelaySec;
 
         /// <summary>[SerializeField] The amount by which each segment gets smaller compared to the previous one.</summary>
         /// @ref BattleProjectileViewController-SerializeFields
+        [Tooltip("The amount by which each segment gets smaller compared to the previous one")]
         [SerializeField] private float _trailScaleDegreesAmount;
 
         /// @}
@@ -206,7 +216,7 @@ namespace Battle.View.Projectile
         /// Private method that gets called by Quantum via BattleProjectileChangeSpeed Event.<br/>
         /// Updates saved speed values, and updates the trail if speed has changed enough since previous update.
         /// </summary>
-        /// 
+        ///
         /// <param name="e">BattleProjectileChangeSpeed Event</param>
         private void QEventOnProjectileChangeSpeed(EventBattleProjectileChangeSpeed e)
         {
@@ -283,7 +293,7 @@ namespace Battle.View.Projectile
         /// Private method that gets called by Quantum via BattleViewGameOver Event.<br/>
         /// Disables trailRenderer and resets trail.
         /// </summary>
-        /// 
+        ///
         /// <param name="e">BattleViewGameOver Event</param>
         private void QEventOnGameOver(EventBattleViewGameOver e)
         {

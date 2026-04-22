@@ -41,25 +41,30 @@ namespace Battle.View.Player
 #if UNITY_EDITOR
         /// <summary>[SerializeField] Reference to a struct that holds the character's spritesheet. Only for use in the Unity Editor.</summary>
         /// @ref BattlePlayerShieldViewController-SerializeFields
+        [Tooltip("Reference to a struct that holds the character's spritesheet. Only for use in the Unity Editor")]
         [SerializeField] private BattleSpriteSheet _spriteSheet;
 #endif
 
         /// <summary>[SerializeField] Shield <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</summary>
         /// @ref BattlePlayerShieldViewController-SerializeFields
+        [Tooltip("Shield GameObject")]
         [SerializeField] private SpriteRenderer _shieldSpriteRenderer;
 
         /// <summary>[SerializeField] Reference to the shield hit particle system.</summary>
         /// @ref BattlePlayerShieldViewController-SerializeFields
+        [Tooltip("Reference to the shield hit particle system")]
         [SerializeField] private ParticleSystem _shieldHitParticle;
 
         /// <summary>[SerializeField] Reference to an override character class view controller.</summary>
         /// @ref BattlePlayerShieldViewController-SerializeFields
+        [Tooltip("Reference to an override character class view controller")]
         [SerializeField] private BattlePlayerShieldClassBaseViewController _classViewControllerOverride;
 
         [Header("Settings")]
 
         /// <summary>[SerializeField] Reference to the shield's shieldNumber.</summary>
         /// @ref BattlePlayerShieldViewController-SerializeFields
+        [Tooltip("Reference to the shield's shieldNumber")]
         [SerializeField] private int _shieldNumber;
 
         #endregion

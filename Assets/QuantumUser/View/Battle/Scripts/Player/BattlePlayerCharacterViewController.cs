@@ -256,10 +256,12 @@ namespace Battle.View.Player
 
         /// <summary>[SerializeField] Reference to an override character class view controller.</summary>
         /// @ref BattlePlayerCharacterViewController-SerializeFields
+        [Tooltip("Reference to an override character class view controller")]
         [SerializeField] private BattlePlayerCharacterClassBaseViewController _classViewControllerOverride;
 
         /// <summary>[SerializeField] Reference to a struct that holds the character's spritesheet.</summary>
         /// @ref BattlePlayerCharacterViewController-SerializeFields
+        [Tooltip("Reference to a struct that holds the character's spritesheet")]
         [SerializeField] private BattleSpriteSheet _spriteSheet;
 
         /// <summary>[SerializeField] %Player's child <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> where heart sprite is located.</summary>
@@ -268,10 +270,12 @@ namespace Battle.View.Player
 
         /// <summary>[SerializeField] Array of character <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.</summary>
         /// @ref BattlePlayerCharacterViewController-SerializeFields
+        [Tooltip("Array of character GameObjects")]
         [SerializeField] private GameObject[] _characterGameObjects;
 
         /// <summary>[SerializeField] %Player's local player indicator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</summary>
         /// @ref BattlePlayerCharacterViewController-SerializeFields
+        [Tooltip("Player's local player indicator GameObject")]
         [SerializeField] private GameObject _localPlayerIndicator;
 
         /// <summary>[SerializeField] Reference to the shield hit particle system.</summary>
@@ -279,8 +283,9 @@ namespace Battle.View.Player
 
         [Header("Settings")]
 
-        /// <summary>[SerializeField] The amount of damage flashes.</summary>
+        /// <summary>[SerializeField] The amount of stun flashes.</summary>
         /// @ref BattlePlayerCharacterViewController-SerializeFields
+        [Tooltip("The amount of stun flashes")]
         [SerializeField] private int _stunFlashAmount;
 
         #endregion SerializeFields
