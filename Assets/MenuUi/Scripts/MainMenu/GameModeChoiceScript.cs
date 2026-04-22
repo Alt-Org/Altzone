@@ -11,9 +11,10 @@ using System.Linq;
 public class GameModeChoiceScript : MonoBehaviour
 {
 
-    [SerializeField] private GameObject _gameModeButton;
-    [SerializeField] private GameObject _gameModeHeader;
-    //[SerializeField] private List<Button> _gameModeButtonsAsButtons = new();
+    [SerializeField, Header("Game Objects")] private GameObject _gameModeButton;
+
+    [SerializeField, Header("Buttons")] private Button _arrowLeft;
+    [SerializeField] private Button _arrowRight;
 
     private int currentModeInt = 0;
     private int amountOfModes;
@@ -79,13 +80,13 @@ public class GameModeChoiceScript : MonoBehaviour
 
         GameTypeInfo gameInfo = list[currentModeInt];
 
-        _gameModeButton.GetComponent<Image>().sprite = gameInfo.Icon;
-        _gameModeHeader.GetComponent<Image>().sprite = gameInfo.Banner;
         _gameModeButton.GetComponent<BattleButton>().SelectedGameType = gameInfo.gameType;
 
+        _arrowLeft.onClick.AddListener(PressArrowLeft);
+        _arrowRight.onClick.AddListener(PressArrowRight);
     }
 
-    public void PressArrowLeft() 
+    public void PressArrowLeft()
     {
         if (currentModeInt > 0)
         {
@@ -96,13 +97,11 @@ public class GameModeChoiceScript : MonoBehaviour
             currentModeInt = amountOfModes - 1;
         }
 
-        List<GameTypeInfo> list = GameTypeReference.Instance.GetGameTypeInfos().OrderBy(x =>x.gameType).ToList();
+        List<GameTypeInfo> list = GameTypeReference.Instance.GetGameTypeInfos().OrderBy(x => x.gameType).ToList();
 
-        GameTypeInfo gameInfo= list[currentModeInt];
+        GameTypeInfo gameInfo = list[currentModeInt];
 
-        _gameModeButton.GetComponent<Image>().sprite = gameInfo.Icon;
-        _gameModeHeader.GetComponent<Image>().sprite = gameInfo.Banner;
-        _gameModeButton.GetComponent<BattleButton>().SelectedGameType = gameInfo.gameType;
+        _gameModeButton.GetComponent<BattleButton>().UpdateGameType(gameInfo);
     }
 
     public void PressArrowRight() 
@@ -120,8 +119,6 @@ public class GameModeChoiceScript : MonoBehaviour
 
         GameTypeInfo gameInfo = list[currentModeInt];
 
-        _gameModeButton.GetComponent<Image>().sprite = gameInfo.Icon;
-        _gameModeHeader.GetComponent<Image>().sprite = gameInfo.Banner;
-        _gameModeButton.GetComponent<BattleButton>().SelectedGameType = gameInfo.gameType;
+        _gameModeButton.GetComponent<BattleButton>().UpdateGameType(gameInfo);
     }
 }

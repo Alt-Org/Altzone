@@ -18,6 +18,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
     public class BattleButton : MonoBehaviour
     {
         [SerializeField] private Image _gameTypeIcon;
+        [SerializeField] private Image _gameTypeBanner;
         [SerializeField] private TextLanguageSelectorCaller _gameTypeName;
         [SerializeField] private TextLanguageSelectorCaller _gameTypeDescription;
         [SerializeField] private GameObject _gameTypeSelectionMenu;
@@ -134,9 +135,10 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         }
 
 
-        private void UpdateGameType(GameTypeInfo gameTypeInfo)
+        public void UpdateGameType(GameTypeInfo gameTypeInfo)
         {
             _gameTypeIcon.sprite = gameTypeInfo.Icon;
+            _gameTypeBanner.sprite = gameTypeInfo.Banner;
             _gameTypeName.SetText(gameTypeInfo.Name);
             _gameTypeDescription.SetText(gameTypeInfo.Description);
             _selectedGameType = gameTypeInfo.gameType;
