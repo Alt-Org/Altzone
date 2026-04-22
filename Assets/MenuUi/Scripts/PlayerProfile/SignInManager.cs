@@ -225,7 +225,9 @@ namespace MenuUi.Scripts.Login
             if (_registerUsernameInputField.text == string.Empty || _registerPasswordInputField.text == string.Empty || _registerPassword2InputField.text == string.Empty)
             {
                 ShowMessage(ERROR_EMPTY_FIELD, Color.red);
-                _registerUsernameInputFieldError.gameObject.SetActive(true);
+                if (_registerUsernameInputField.text == string.Empty) _registerUsernameInputFieldError.gameObject.SetActive(true);
+                else if(_registerPasswordInputField.text == string.Empty) _registerPasswordInputFieldError.gameObject.SetActive(true);
+                else if(_registerPassword2InputField.text == string.Empty) _registerPassword2InputFieldError.gameObject.SetActive(true);
                 return;
             }
 

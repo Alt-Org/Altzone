@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class PlayMusic : MonoBehaviour
 {
+    [SerializeField] private bool _startOnEnable = true;
     [SerializeField] private MusicHandler.MusicSwitchType _musicSwitchType;
     [SerializeField] AudioCategoryType _musicCategory;
     [SerializeField] string _musicName;
@@ -18,6 +19,8 @@ public class PlayMusic : MonoBehaviour
 
     private IEnumerator WaitForRequiredClasses()
     {
+        if (!_startOnEnable) yield break;
+
         yield return new WaitUntil(() => (AudioManager.Instance && MusicReference.Instance));
 
         if (_useJukeboxSection)
@@ -74,6 +77,8 @@ public class PlayMusic : MonoBehaviour
 
         return (AudioManager.Instance ? AudioManager.Instance.PlayMusic(_musicCategory, startMusicTrack, _musicSwitchType) : "");
     }
+
+    public void Play() { AudioManager.Instance?.PlayMusic(_musicCategory, _musicName, _musicSwitchType); }
 
     /// <summary>
     /// Plays the given track or the jukebox if jukebox playback is allowed from settings.
