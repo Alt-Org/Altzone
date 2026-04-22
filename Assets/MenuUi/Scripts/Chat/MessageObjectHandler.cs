@@ -62,7 +62,7 @@ public class MessageObjectHandler : MonoBehaviour
         //adds extra size if there reactions have been put or not
         float extraPadding;
         if (reactionField.transform.childCount > 0)
-            extraPadding = 65;
+            extraPadding = 85;
         else
         {
             extraPadding = 0f;
