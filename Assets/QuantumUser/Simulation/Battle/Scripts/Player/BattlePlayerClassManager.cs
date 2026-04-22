@@ -13,6 +13,7 @@ using Quantum;
 
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
+using System;
 
 namespace Battle.QSimulation.Player
 {
@@ -201,6 +202,12 @@ namespace Battle.QSimulation.Player
                 default:
                     break;
             }
+        }
+        public enum ClassType
+        {
+            None,
+            Class,
+            TestClass
         }
 
         /// <summary>
@@ -406,16 +413,13 @@ namespace Battle.QSimulation.Player
         /// <param name="testMode">Is test mode enabled</param>
         private static void LoadClass(BattlePlayerCharacterClass characterClass, int classIndex, BattlePlayerClassBase @class, BattlePlayerClassBase testClass, bool testMode)
         {
-            BattlePlayerClassBase loadedClass;
+            BattlePlayerClassBase loadedClass = PickClass(@class, testClass, testMode) switch
+            {
+                ClassType.Class     => @class,
+                ClassType.TestClass => testClass,
 
-            if (!testMode)
-            {
-                loadedClass = @class;
-            }
-            else
-            {
-                loadedClass = testClass ?? @class;
-            }
+                _                   => null
+            };
 
             if (loadedClass == null)
             {
@@ -432,6 +436,21 @@ namespace Battle.QSimulation.Player
 
             s_classArray[classIndex].Class = loadedClass;
             s_classArray[classIndex].State = ClassState.Loaded;
+        }
+
+        public static ClassType PickClass(object @object, object testObject, bool testMode)
+        {
+            if (!testMode)
+            {
+                return @object != null ? ClassType.Class : ClassType.None;
+            }
+
+            if (testObject != null)
+            {
+                return ClassType.TestClass;
+            }
+
+            return @object != null ? ClassType.Class : ClassType.None;
         }
 
         /// <summary>
