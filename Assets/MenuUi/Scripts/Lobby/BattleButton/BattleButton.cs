@@ -21,8 +21,6 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         [SerializeField] private Image _gameTypeBanner;
         [SerializeField] private TextLanguageSelectorCaller _gameTypeName;
         [SerializeField] private TextLanguageSelectorCaller _gameTypeDescription;
-        [SerializeField] private GameObject _gameTypeSelectionMenu;
-        [SerializeField] private GameObject _gameTypeOptionPrefab;
         [SerializeField] private Button _openBattleUiEditorButton;
         [SerializeField] private GameTypeReference _gameTypeReference;
         [SerializeField] private GameObject _touchBlocker;
@@ -40,10 +38,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         private void Awake()
         {
             _swipe = FindObjectOfType<SwipeUI>();
-            if(_swipe)_swipe.OnCurrentPageChanged += CloseGameTypeSelection;
             SettingsCarrier.OnLanguageChanged += ChangeLanguage;
-
-            _gameTypeSelectionMenu.SetActive(false); // Close selection menu so that it's not open when game opens
 
             _button = GetComponent<Button>();
             _button.onClick.AddListener(RequestBattlePopup);
@@ -51,89 +46,22 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             // Loading selected game type from player prefs Note: Only custom available for now
             _selectedGameType = GameType.Custom; //(GameType)PlayerPrefs.GetInt(SelectedGameTypeKey, (int)_selectedGameType);
 
-            // Instantiate game type option buttons to game type selection menu
-            foreach (GameTypeInfo gameTypeInfo in _gameTypeReference.GetGameTypeInfos())
-            {
-                GameTypeOption gameTypeOption = Instantiate(_gameTypeOptionPrefab).GetComponent<GameTypeOption>();
-                bool selected = gameTypeInfo.gameType == _selectedGameType;
-                gameTypeOption.SetInfo(gameTypeInfo, selected);
-                gameTypeOption.transform.SetParent(_gameTypeSelectionMenu.transform);
-                gameTypeOption.transform.localScale = Vector3.one;
-                _gameTypeOptionList.Add(gameTypeOption);
-
-                if (gameTypeInfo.gameType == _selectedGameType)
-                {
-                    // Initialize visuals for the selected game type
-                    UpdateGameType(gameTypeInfo);
-                }
-            }
-
-            for (int i = 0; i < _gameTypeOptionList.Count; i++)
-            {
-                GameTypeOption gameTypeOption = _gameTypeOptionList[i];
-                gameTypeOption.ButtonComponent.onClick.AddListener(ToggleGameTypeSelection);
-                gameTypeOption.OnGameTypeOptionSelected += UpdateGameType;
-            }
-
             _openBattleUiEditorButton.transform.SetAsLastSibling();
             _openBattleUiEditorButton.onClick.AddListener(OnOpenBattleUiEditorButtonPressed);
         }
 
         private void OnDestroy()
         {
-            for (int i = 0; i < _gameTypeOptionList.Count; i++)
-            {
-                GameTypeOption gameTypeOption = _gameTypeOptionList[i];
-                gameTypeOption.ButtonComponent.onClick.RemoveListener(ToggleGameTypeSelection);
-                gameTypeOption.OnGameTypeOptionSelected -= UpdateGameType;
-            }
-
             _button.onClick.RemoveListener(RequestBattlePopup);
-            if (_swipe) _swipe.OnCurrentPageChanged -= CloseGameTypeSelection;
             _openBattleUiEditorButton.onClick.RemoveListener(OnOpenBattleUiEditorButtonPressed);
             SettingsCarrier.OnLanguageChanged -= ChangeLanguage;
         }
 
 
-        private void OnDisable()
-        {
-            CloseGameTypeSelection();
-        }
-
-
         private void RequestBattlePopup()
         {
-            if (_gameTypeSelectionMenu.activeSelf)
-            {
-                CloseGameTypeSelection();
-            }
-            else
-            {
-                Debug.LogWarning(_selectedGameType);
-                SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
-            }
+            SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
         }
-
-
-        /// <summary>
-        /// Toggle game type selection vertical layout active and not active.
-        /// </summary>
-        public void ToggleGameTypeSelection()
-        {
-            _gameTypeSelectionMenu.SetActive(!_gameTypeSelectionMenu.activeSelf);
-            _touchBlocker.SetActive(_gameTypeSelectionMenu.activeSelf);
-        }
-
-
-        /// <summary>
-        /// Close game type selection vertical panel.
-        /// </summary>
-        public void CloseGameTypeSelection()
-        {
-            _gameTypeSelectionMenu.SetActive(false);
-            _touchBlocker.SetActive(false);
-        }
-
 
         public void UpdateGameType(GameTypeInfo gameTypeInfo)
         {

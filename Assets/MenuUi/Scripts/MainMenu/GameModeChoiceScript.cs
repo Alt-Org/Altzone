@@ -76,11 +76,7 @@ public class GameModeChoiceScript : MonoBehaviour
         currentModeInt = 0;
         amountOfModes = GameTypeReference.Instance.GetEnabledCount();
 
-        List<GameTypeInfo> list = GameTypeReference.Instance.GetGameTypeInfos().OrderBy(x => x.gameType).ToList();
-
-        GameTypeInfo gameInfo = list[currentModeInt];
-
-        _gameModeButton.GetComponent<BattleButton>().SelectedGameType = gameInfo.gameType;
+        SetData();
 
         _arrowLeft.onClick.AddListener(PressArrowLeft);
         _arrowRight.onClick.AddListener(PressArrowRight);
@@ -97,11 +93,7 @@ public class GameModeChoiceScript : MonoBehaviour
             currentModeInt = amountOfModes - 1;
         }
 
-        List<GameTypeInfo> list = GameTypeReference.Instance.GetGameTypeInfos().OrderBy(x => x.gameType).ToList();
-
-        GameTypeInfo gameInfo = list[currentModeInt];
-
-        _gameModeButton.GetComponent<BattleButton>().UpdateGameType(gameInfo);
+        SetData();
     }
 
     public void PressArrowRight() 
@@ -115,6 +107,11 @@ public class GameModeChoiceScript : MonoBehaviour
             currentModeInt = 0;
         }
 
+        SetData();
+    }
+
+    private void SetData()
+    {
         List<GameTypeInfo> list = GameTypeReference.Instance.GetGameTypeInfos().OrderBy(x => x.gameType).ToList();
 
         GameTypeInfo gameInfo = list[currentModeInt];
