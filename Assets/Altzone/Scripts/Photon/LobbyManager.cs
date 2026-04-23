@@ -1475,6 +1475,14 @@ namespace Altzone.Scripts.Lobby
 
             eligibleSoloCount = eligibleSoloPlayers.Count(p => p.UserId != localUserId);
 
+            // Solo selection caps (legacy): if exactly 3 solos are eligible, limit selection to 2;
+            // if exactly 1 solo is eligible, avoid selecting solos to prevent pairing a lone solo.
+            int soloCap;
+            if (eligibleSoloCount == 3) soloCap = 2;
+            else if (eligibleSoloCount == 1) soloCap = 0;
+            else soloCap = int.MaxValue;
+            int solosSelected = 0;
+
             // If there's exactly one eligible solo (excluding the local user), avoid pairing
             // that lone solo into a match — but only defer when the available complete duos
             // cannot satisfy the required followers by themselves. If duos alone suffice,
@@ -1522,7 +1530,7 @@ namespace Altzone.Scripts.Lobby
                 localBlockMembers.Add(teammateId);
                 selectedSet.Add(teammateId);
                 selected.Add(teammateId);
-            }
+                }
             else
             {
                 bool localEligibleSolo = eligibleSoloPlayers.Any(p => p.UserId == localUserId);
@@ -1538,7 +1546,16 @@ namespace Altzone.Scripts.Lobby
                 }
 
                 localBlockMembers.Add(localSoloPartner.UserId);
-                if (selectedSet.Add(localSoloPartner.UserId)) selected.Add(localSoloPartner.UserId);
+                    if (selectedSet.Add(localSoloPartner.UserId))
+                    {
+                        if (soloCap != int.MaxValue && solosSelected >= soloCap)
+                        {
+                            // cannot select solos due to cap; abort selection
+                            return new List<string>();
+                        }
+                        selected.Add(localSoloPartner.UserId);
+                        solosSelected++;
+                    }
             }
 
             var secondDuo = completeDuos.FirstOrDefault(d =>
@@ -1550,21 +1567,24 @@ namespace Altzone.Scripts.Lobby
                 if (selectedSet.Add(secondDuo.leader.UserId)) selected.Add(secondDuo.leader.UserId);
                 if (selectedSet.Add(secondDuo.follower.UserId)) selected.Add(secondDuo.follower.UserId);
             }
-            else
-            {
-                List<Player> remainingSolos = eligibleSoloPlayers
-                    .Where(p => p.UserId != localUserId)
-                    .Where(p => !localBlockMembers.Contains(p.UserId))
-                    .ToList();
-
-                if (remainingSolos.Count < 2)
+                else
                 {
-                    return new List<string>();
-                }
+                    List<Player> remainingSolos = eligibleSoloPlayers
+                        .Where(p => p.UserId != localUserId)
+                        .Where(p => !localBlockMembers.Contains(p.UserId))
+                        .ToList();
 
-                if (selectedSet.Add(remainingSolos[0].UserId)) selected.Add(remainingSolos[0].UserId);
-                if (selectedSet.Add(remainingSolos[1].UserId)) selected.Add(remainingSolos[1].UserId);
-            }
+                    // need two solos to complete the block; respect solo cap when selecting
+                    int need = 2;
+                    int canTake = soloCap == int.MaxValue ? need : Math.Max(0, soloCap - solosSelected);
+                    if (remainingSolos.Count < need || canTake < need)
+                    {
+                        return new List<string>();
+                    }
+
+                    if (selectedSet.Add(remainingSolos[0].UserId)) { selected.Add(remainingSolos[0].UserId); solosSelected++; }
+                    if (selectedSet.Add(remainingSolos[1].UserId)) { selected.Add(remainingSolos[1].UserId); solosSelected++; }
+                }
 
             if (selected.Count != requiredFollowers)
             {
@@ -2078,6 +2098,28 @@ namespace Altzone.Scripts.Lobby
                 return false;
             }
 
+            // Build duo pair key set and member set so we can detect mixed blocks
+            HashSet<string> duoPairKeysNormalized = new(StringComparer.Ordinal);
+            HashSet<string> duoMemberIds = new(StringComparer.Ordinal);
+            try
+            {
+                var duoFlat = room.GetCustomProperty<string[]>(QueueDuoPairsKey, null);
+                if (duoFlat != null)
+                {
+                    for (int i = 0; i + 1 < duoFlat.Length; i += 2)
+                    {
+                        string u1 = duoFlat[i] ?? string.Empty;
+                        string u2 = duoFlat[i + 1] ?? string.Empty;
+                        if (string.IsNullOrEmpty(u1) || string.IsNullOrEmpty(u2) || u1 == u2) continue;
+                        string key = string.CompareOrdinal(u1, u2) <= 0 ? $"{u1}|{u2}" : $"{u2}|{u1}";
+                        duoPairKeysNormalized.Add(key);
+                        duoMemberIds.Add(u1);
+                        duoMemberIds.Add(u2);
+                    }
+                }
+            }
+            catch { }
+
             if (blocks.Count < 2)
             {
                 reason = $"insufficient blocks ({blocks.Count})";
@@ -2090,6 +2132,26 @@ namespace Altzone.Scripts.Lobby
             {
                 bool blockPresent = humanUserIds.Contains(block.userId1) && humanUserIds.Contains(block.userId2);
                 if (!blockPresent) continue;
+
+                // If either member of the present block is known to be part of a duo,
+                // the pair must match a recorded duo pair exactly. This rejects mixed
+                // blocks that would pair a solo with half of a duo.
+                try
+                {
+                    bool hasDuoMember = duoMemberIds.Contains(block.userId1) || duoMemberIds.Contains(block.userId2);
+                    if (hasDuoMember)
+                    {
+                        string normKey = string.CompareOrdinal(block.userId1, block.userId2) <= 0
+                            ? $"{block.userId1}|{block.userId2}"
+                            : $"{block.userId2}|{block.userId1}";
+                        if (!duoPairKeysNormalized.Contains(normKey))
+                        {
+                            reason = $"mixed duo/solo block detected ({block.userId1}/{block.userId2})";
+                            return false;
+                        }
+                    }
+                }
+                catch { }
 
                 presentBlockCount++;
                 coveredHumans.Add(block.userId1);
