@@ -8,6 +8,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1245446991971013946, guid: 92b796eaf17328e479aff63934e1dd03,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1994388819857449150, guid: 92b796eaf17328e479aff63934e1dd03,
         type: 3}
       propertyPath: m_Sprite
@@ -88,11 +93,6 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 4434813383072158809, guid: 92b796eaf17328e479aff63934e1dd03,
-        type: 3}
-      propertyPath: _localPlayerIndicator
-      value: 
-      objectReference: {fileID: 1015448918266262336}
     - target: {fileID: 4434813383072158809, guid: 92b796eaf17328e479aff63934e1dd03,
         type: 3}
       propertyPath: _spriteSheet.Array.Array.size
@@ -871,16 +871,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1247530611, guid: 5cbc783db07ee084e8fd48d8dcbc6c68,
         type: 3}
-    - target: {fileID: 4434813383072158809, guid: 92b796eaf17328e479aff63934e1dd03,
-        type: 3}
-      propertyPath: _characterGameObjects.Array.data[0]
-      value: 
-      objectReference: {fileID: 7569496014043548268}
-    - target: {fileID: 4434813383072158809, guid: 92b796eaf17328e479aff63934e1dd03,
-        type: 3}
-      propertyPath: _characterGameObjects.Array.data[1]
-      value: 
-      objectReference: {fileID: 5328257050965416359}
     - target: {fileID: 4797165695083659882, guid: 92b796eaf17328e479aff63934e1dd03,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -930,6 +920,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5452912965920340657, guid: 92b796eaf17328e479aff63934e1dd03,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 5452912965920340657, guid: 92b796eaf17328e479aff63934e1dd03,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.61
       objectReference: {fileID: 0}
     - target: {fileID: 5539013997019655303, guid: 92b796eaf17328e479aff63934e1dd03,
         type: 3}
@@ -1043,21 +1043,3 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 92b796eaf17328e479aff63934e1dd03, type: 3}
---- !u!1 &1015448918266262336 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1245446991971013946, guid: 92b796eaf17328e479aff63934e1dd03,
-    type: 3}
-  m_PrefabInstance: {fileID: 2260576227097208442}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &5328257050965416359 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6246188768073744349, guid: 92b796eaf17328e479aff63934e1dd03,
-    type: 3}
-  m_PrefabInstance: {fileID: 2260576227097208442}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &7569496014043548268 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8526280139831471126, guid: 92b796eaf17328e479aff63934e1dd03,
-    type: 3}
-  m_PrefabInstance: {fileID: 2260576227097208442}
-  m_PrefabAsset: {fileID: 0}
