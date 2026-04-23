@@ -50,7 +50,7 @@ public class TopBarToggleHandler : MonoBehaviour
     private void GetToggleValue()
     {
         if (_toggle == null) return;
-        
+
         SettingsCarrier carrier = SettingsCarrier.Instance;
         SettingsCarrier.TopBarStyle style =
         carrier != null ? carrier.TopBarStyleSetting : SettingsCarrier.TopBarStyle.NewHelena;
