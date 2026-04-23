@@ -235,7 +235,6 @@ namespace Altzone.Scripts.Chat
 #if !UNITY_WEBGL
         private IEnumerator PollWebSocket()
         {
-            Debug.LogWarning("Started Polling");
             while (true)
             {
                 if (_socket != null && _socket.State == WebSocketState.Open) _socket.DispatchMessageQueue();
@@ -355,13 +354,10 @@ namespace Altzone.Scripts.Chat
         private IEnumerator ResetChatCoroutine()
         {
             yield return new WaitForSeconds(0.5f);
-            Debug.LogWarning("Starting Socket Closing Chat");
             if (_socket != null) CloseSocket();
             yield return new WaitUntil(() => _socket == null);
-            Debug.LogWarning("Starting Socket Opening Chat");
             OpenSocket();
             yield return new WaitUntil(() => _socket != null && _socket.State == WebSocketState.Open);
-            Debug.LogWarning("Initializing Chat");
             yield return InitializeChats();
 
         }
