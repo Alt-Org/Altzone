@@ -36,14 +36,21 @@ namespace Battle.View.Player
         /// @{
         #region SerializeFields
 
-        [Header("References")]
+        [Header("Editor")]
 
 #if UNITY_EDITOR
-        /// <summary>[SerializeField] Reference to a struct that holds the character's spritesheet. Only for use in the Unity Editor.</summary>
+        /// <summary>[SerializeField] Used to set the shield's sprite in the editor. Only for use in the Unity Editor.</summary>
         /// @ref BattlePlayerShieldViewController-SerializeFields
-        [Tooltip("Reference to a struct that holds the character's spritesheet. Only for use in the Unity Editor")]
+        [Tooltip("Sets the shield's sprite in the editor.\nOnly for use in the Unity Editor")]
         [SerializeField] private BattleSpriteSheet _spriteSheet;
 #endif
+
+        [Header("References")]
+
+        /// <summary>[SerializeField] Reference to an override character class view controller.</summary>
+        /// @ref BattlePlayerShieldViewController-SerializeFields
+        [Tooltip("Reference to an override character class view controller")]
+        [SerializeField] private BattlePlayerShieldClassBaseViewController _classViewControllerOverride;
 
         /// <summary>[SerializeField] Shield <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</summary>
         /// @ref BattlePlayerShieldViewController-SerializeFields
@@ -54,11 +61,6 @@ namespace Battle.View.Player
         /// @ref BattlePlayerShieldViewController-SerializeFields
         [Tooltip("Reference to the shield hit particle system")]
         [SerializeField] private ParticleSystem _shieldHitParticle;
-
-        /// <summary>[SerializeField] Reference to an override character class view controller.</summary>
-        /// @ref BattlePlayerShieldViewController-SerializeFields
-        [Tooltip("Reference to an override character class view controller")]
-        [SerializeField] private BattlePlayerShieldClassBaseViewController _classViewControllerOverride;
 
         [Header("Settings")]
 
@@ -139,8 +141,6 @@ namespace Battle.View.Player
         {
             if (EntityRef != e.ERef) return;
 
-            _characterEntityRef = e.CharacterRef;
-
             if (e.ShieldNumber != _shieldNumber)
             {
                 _debugLogger.ErrorFormat(
@@ -150,8 +150,6 @@ namespace Battle.View.Player
                 );
                 _shieldNumber = e.ShieldNumber;
             }
-
-            _debugLogger.DevAssert(_characterEntityRef != null, "Character ref is null");
 
             // initialize visuals
             float scale = (float)e.ModelScale;
@@ -178,6 +176,9 @@ namespace Battle.View.Player
 
             //} initialize class view controller
 
+            _characterEntityRef = e.CharacterRef;
+            _debugLogger.DevAssert(_characterEntityRef != null, "Character ref is null");
+
             // register shield view controller
             BattleViewRegistry.Register(EntityRef, this);
 
@@ -188,6 +189,9 @@ namespace Battle.View.Player
             QuantumEvent.Subscribe<EventBattlePlayStateUpdate>(this, QEventOnPlayStateUpdate);
         });}
 
+        /// <summary>
+        /// Public method that is called when the view should update.
+        /// </summary>
         public override void OnUpdateView()
         {
             if (!_isInPlay) return;
@@ -206,8 +210,6 @@ namespace Battle.View.Player
         /// <param name="e">The event data.</param>
         public void OnShieldHit(EventBattleShieldHit e)
         {
-            if (EntityRef != e.ERef) return;
-
             if (_shieldHitParticle != null)
             {
                 _shieldHitParticle.Play();
@@ -225,17 +227,17 @@ namespace Battle.View.Player
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private BattleDebugLogger _debugLogger;
 
-        /// <summary>EntityRef for the character this shield is assigned to.</summary>
-        private EntityRef _characterEntityRef;
-
         /// <summary>Boolean that tells whether the Quantum Entity this ViewController is attached to is in play.</summary>
         private bool _isInPlay;
 
-        /// <summary>Character view controller this shield view controller is bound to.</summary>
-        private BattlePlayerCharacterViewController _characterViewController;
-
         /// <value>Reference to the active shield class view controller.</value>
         private BattlePlayerShieldClassBaseViewController _classViewController;
+
+        /// <summary>EntityRef for the character this shield is assigned to.</summary>
+        private EntityRef _characterEntityRef;
+
+        /// <summary>Character view controller this shield view controller is bound to.</summary>
+        private BattlePlayerCharacterViewController _characterViewController;
 
         #region Private - Gameflow Methods
 

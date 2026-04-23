@@ -410,7 +410,7 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Public method that is called when entity is activated upon its creation.<br/>
-        /// Calls <see cref="PreInitSetup"/> and subscribes to <see cref="Quantum.EventBattlePlayerCharacterViewInit">EventBattlePlayerCharacterViewInit</see> event with a lambda, which
+        /// Calls <see cref="PreInitSetup"></see> and subscribes to <see cref="Quantum.EventBattlePlayerCharacterViewInit">EventBattlePlayerCharacterViewInit</see> event with a lambda, which
         /// sets the player character model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.
         /// Handles subscribing to QuantumEvents and registering to BattleViewRegistry.
         /// </summary>
@@ -490,7 +490,7 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Public method that is called when the view should update.<br/>
-        /// Calls <see cref="BattlePlayerCharacterViewController.UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to update the player character model's position
+        /// Calls <see cref="UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to update the player character model's position
         /// </summary>
         public override void OnUpdateView()
         {
@@ -592,11 +592,12 @@ namespace Battle.View.Player
         /// Forwards the parameter event to every shield view controller bound to this character view controller.
         /// </summary>
         ///
-        /// <param name="e">Shield take damage event that needs to be forwarded.</param>
+        /// <param name="e">Shield get hit event that needs to be forwarded.</param>
         private void QEventOnShieldHit(EventBattleShieldHit e)
         {
             foreach (BattlePlayerShieldViewController shield in _playerShieldViewControllers)
             {
+                if (shield.EntityRef != e.ERef) return;
                 shield.OnShieldHit(e);
             }
         }

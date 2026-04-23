@@ -141,7 +141,7 @@ namespace Battle.View
                 EditorGUI.LabelField(rect, string.Format("{0}: {1}", label.text, _currentSpriteSheetPath));
                 HandlePlayerSpriteSheetProperty(spritePropertyArray, _referenceSprite);
                 EditorGUI.indentLevel++;
-                EditorGUILayout.PropertyField(spritePropertyArray, new GUIContent("Sprites"), true);
+                EditorGUILayout.PropertyField(spritePropertyArray, new GUIContent("Sprites", property.tooltip), true);
                 EditorGUI.indentLevel--;
             }
 
