@@ -567,6 +567,8 @@ namespace Battle.View.Player
         {
             if (e.ERef != EntityRef) return;
             _isInPlay = e.IsInPlay;
+
+            _classViewController.OnPlayStateUpdate(e);
         }
 
         /// <summary>
@@ -586,6 +588,11 @@ namespace Battle.View.Player
             _damageFlashCoroutine = StartCoroutine(StunFlashCoroutine((float)e.StunFlashDurationSec));
 
             _classViewController.OnCharacterHit(e);
+
+            foreach (BattlePlayerShieldViewController shield in _playerShieldViewControllers)
+            {
+                shield.OnCharacterHit(e);
+            }
         }
 
         /// <summary>

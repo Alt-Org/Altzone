@@ -59,9 +59,10 @@ namespace Battle.QSimulation.Player
         public abstract BattlePlayerCharacterClass Class { get; }
 
         /// <summary>
-        /// Virtual OnCreate method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager
-        /// <see cref="BattlePlayerClassManager.OnCreate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnCreate</see> method.
+        /// Called by the @cref{Battle.QSimulation.Player,BattlePlayerClassManager}
+        /// <see cref="BattlePlayerClassManager.OnCreate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnCreate</see> method
+        /// when character gets created at the start of the game.<br/>
+        /// Provides a hook for derived classes to implement character class specific simulation logic.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -73,9 +74,10 @@ namespace Battle.QSimulation.Player
         public virtual unsafe BattlePlayerClassManager.CreationParameters OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) => BattlePlayerClassManager.CreationParameters.Default;
 
         /// <summary>
-        /// Virtual OnSpawn method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager
-        /// <see cref="BattlePlayerClassManager.OnSpawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnSpawn</see> method.
+        /// Called by the @cref{Battle.QSimulation.Player,BattlePlayerClassManager}
+        /// <see cref="BattlePlayerClassManager.OnSpawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnSpawn</see> method
+        /// each time character is spawned.<br/>
+        /// Provides a hook for derived classes to implement character class specific simulation logic.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -85,9 +87,10 @@ namespace Battle.QSimulation.Player
         public virtual unsafe void OnSpawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
 
         /// <summary>
-        /// Virtual OnDespawn method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager
-        /// <see cref="BattlePlayerClassManager.OnDespawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnDespawn</see> method.
+        /// Called by the @cref{Battle.QSimulation.Player,BattlePlayerClassManager}
+        /// <see cref="BattlePlayerClassManager.OnDespawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnDespawn</see> method
+        /// each time character is despawned.<br/>
+        /// Provides a hook for derived classes to implement character class specific simulation logic.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -97,11 +100,11 @@ namespace Battle.QSimulation.Player
         public virtual unsafe void OnDespawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
 
         /// <summary>
-        /// Virtual OnProjectileHitPlayerCharacter method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager
+        /// Called by the @cref{Battle.QSimulation.Player,BattlePlayerClassManager}
         /// <see cref="BattlePlayerClassManager.OnProjectileHitPlayerCharacter(Frame, BattleCollisionQSystem.ProjectileCollisionData*, BattleCollisionQSystem.PlayerCharacterCollisionData*)">
         /// OnProjectileHitPlayerHitbox
-        /// </see> method.
+        /// </see> method when projectile hits this character.<br/>
+        /// Provides a hook for derived classes to implement character class specific simulation logic.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -110,11 +113,11 @@ namespace Battle.QSimulation.Player
         public virtual unsafe void OnProjectileHitPlayerCharacter(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerCharacterCollisionData* playerCollisionData) { }
 
         /// <summary>
-        /// Virtual OnProjectileHitPlayerShield method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager
+        /// Called by the @cref{Battle.QSimulation.Player,BattlePlayerClassManager}
         /// <see cref="BattlePlayerClassManager.OnProjectileHitPlayerShield(Frame, BattleCollisionQSystem.ProjectileCollisionData*, BattleCollisionQSystem.PlayerShieldCollisionData*)">
         /// OnProjectileHitPlayerShield
-        /// </see> method.
+        /// </see> method when projectile hits this shield.<br/>
+        /// Provides a hook for derived classes to implement character class specific simulation logic.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -123,9 +126,10 @@ namespace Battle.QSimulation.Player
         public virtual unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData) { }
 
         /// <summary>
-        /// Virtual OnUpdate method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager
-        /// <see cref="BattlePlayerClassManager.OnUpdate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, BattlePlayerEntityRef)">OnUpdate</see> method.
+        /// Called by the @cref{Battle.QSimulation.Player,BattlePlayerClassManager}
+        /// <see cref="BattlePlayerClassManager.OnUpdate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, BattlePlayerEntityRef)">OnUpdate</see> method
+        /// once per frame.<br/>
+        /// Provides a hook for derived classes to implement character class specific simulation logic.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>

@@ -23,7 +23,8 @@ namespace Battle.View.Player
     /// Works together with @cref{Battle.View.Player,BattlePlayerCharacterViewController}, which handles the shared player character view logic.
     ///
     /// See [{PlayerCharacterClassViewControllers}](#page-concepts-player-view-character-class-controller) for more info.<br/>
-    /// See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
+    /// See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.<br/>
+    /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
     public abstract class BattlePlayerCharacterClassBaseViewController : MonoBehaviour
     {
         /// <summary>Must be implemented by derived character class view controllers.</summary>
@@ -31,6 +32,8 @@ namespace Battle.View.Player
         public abstract BattlePlayerCharacterClass Class { get; }
 
         /// <summary>
+        /// Called by the @cref{Battle.View.Player,BattlePlayerCharacterViewController} **OnViewInit**
+        /// (<see cref="BattlePlayerCharacterViewController.OnActivate(Frame)">OnActivate</see>).<br/>
         /// Initializes this instance of a character class view controller. Performs base non-specific initialization for all characters classes.<br/>
         /// Stores references to the parent controller and entity, then calls the protected <see cref="OnViewInitOverride"/> method that performs the character class specific initialization.
         /// </summary>
@@ -49,15 +52,39 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Called when the character takes damage.
+        /// Called by the @cref{Battle.View.Player,BattlePlayerCharacterViewController}
+        /// <see cref="BattlePlayerCharacterViewController.QEventOnCharacterHit(EventBattleCharacterHit)">QEventOnCharacterHit</see> method
+        /// when the character gets hit.<br/>
         /// Provides a hook for derived classes to implement character class specific view logic.
         /// </summary>
         ///
-        /// <param name="e">The damage event data.</param>
+        /// <param name="e">The hit event data.</param>
         public virtual void OnCharacterHit(EventBattleCharacterHit e) { }
 
         /// <summary>
-        /// Called once per frame to update the character class view.
+        /// Called by the @cref{Battle.View.Player,BattlePlayerCharacterViewController}
+        /// <see cref="BattlePlayerCharacterViewController.QEventOnShieldHit(EventBattleShieldHit)">QEventOnShieldHit</see> method
+        /// when any of the shields associated with this character get hit.<br/>
+        /// Provides a hook for derived classes to implement character class specific view logic.
+        /// </summary>
+        ///
+        /// <param name="e">The shield hit event data.</param>
+        public virtual void OnShieldHit(EventBattleShieldHit e) { }
+
+        /// <summary>
+        /// Called by the @cref{Battle.View.Player,BattlePlayerCharacterViewController}
+        /// <see cref="BattlePlayerCharacterViewController.QEventOnPlayStateUpdate(EventBattlePlayStateUpdate)">QEventOnPlayStateUpdate</see> method
+        /// when play state updates.<br/>
+        /// Provides a hook for derived classes to implement character class specific view logic.
+        /// </summary>
+        ///
+        /// <param name="e">The play state update event data.</param>
+        public virtual void OnPlayStateUpdate(EventBattlePlayStateUpdate e) { }
+
+        /// <summary>
+        /// Called by the @cref{Battle.View.Player,BattlePlayerCharacterViewController}
+        /// <see cref="BattlePlayerCharacterViewController.OnUpdateView()">OnUpdateView</see> method
+        /// once per frame.<br/>
         /// Provides a hook for derived classes to implement character class specific view logic.
         /// </summary>
         public virtual void OnUpdateView() { }

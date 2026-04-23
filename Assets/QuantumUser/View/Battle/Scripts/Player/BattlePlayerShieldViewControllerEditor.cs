@@ -11,6 +11,7 @@ using UnityEngine;
 
 // Quantum usings
 using Battle.QSimulation;
+
 using SpriteSheetMap = Battle.View.Player.BattlePlayerCharacterViewController.SpriteSheetMap;
 
 namespace Battle.View.Player

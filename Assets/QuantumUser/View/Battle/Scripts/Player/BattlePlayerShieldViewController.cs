@@ -218,6 +218,16 @@ namespace Battle.View.Player
             _classViewController.OnShieldHit(e);
         }
 
+        /// <summary>
+        /// Handler method for EventBattleCharacterHit QuantumEvent.
+        /// </summary>
+        ///
+        /// <param name="e">The event data.</param>
+        public void OnCharacterHit(EventBattleCharacterHit e)
+        {
+            _classViewController.OnCharacterHit(e);
+        }
+
         #endregion Public - Forwarded Quantum Event Handlers
 
         #endregion Public
@@ -282,6 +292,8 @@ namespace Battle.View.Player
         {
             if (e.ERef != EntityRef) return;
             _isInPlay = e.IsInPlay;
+
+            _classViewController.OnPlayStateUpdate(e);
         }
 
         #endregion Private - QuantumEvent Handlers
