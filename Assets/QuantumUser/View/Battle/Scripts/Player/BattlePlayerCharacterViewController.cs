@@ -252,10 +252,23 @@ namespace Battle.View.Player
         /// @{
         #region SerializeFields
 
-        [Header("References")]
+        //{ editor
+
+#if UNITY_EDITOR
+        /// <summary>[SerializeField] Used to disable the automatic sprite setting in the editor. @note Only for use in the Unity Editor.</summary>
+        /// @ref BattlePlayerShieldViewController-SerializeFields
+        [Header("Editor")]
+        [Tooltip("Disables the automatic sprite setting\nOnly for use in the Unity Editor")]
+        [SerializeField] private bool _autoSpriteDisable;
+#endif
+
+        //} editor
+
+        //{ references
 
         /// <summary>[SerializeField] Reference to an override character class view controller.</summary>
         /// @ref BattlePlayerCharacterViewController-SerializeFields
+        [Header("References")]
         [Tooltip("Reference to an override character class view controller")]
         [SerializeField] private BattlePlayerCharacterClassBaseViewController _classViewControllerOverride;
 
@@ -278,20 +291,24 @@ namespace Battle.View.Player
         [Tooltip("Player's local player indicator GameObject")]
         [SerializeField] private GameObject _localPlayerIndicator;
 
-        /// <summary>[SerializeField] Reference to the shield hit particle system.</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
+        //} references
 
-        [Header("Settings")]
+        //{ settings
 
         /// <summary>[SerializeField] The amount of stun flashes.</summary>
         /// @ref BattlePlayerCharacterViewController-SerializeFields
+        [Header("Settings")]
         [Tooltip("The amount of stun flashes")]
         [SerializeField] private int _stunFlashAmount;
+
+        //} settings
 
         #endregion SerializeFields
         /// @}
 
         #region Public
+
+        public BattleSpriteSheet SpriteSheet => _spriteSheet;
 
         #region Public - Sprite Control Methods
 
@@ -559,7 +576,7 @@ namespace Battle.View.Player
         #region Private QuantumEvent Handlers
 
         /// <summary>
-        /// Handler method for EventBattleInPlayStateUpdate QuantumEvent.<br/>
+        /// Handler method for @cref{Quantum,EventBattlePlayStateUpdate} QuantumEvent.<br/>
         /// Updates the _isInPlay bool.
         /// </summary>
         /// <param name="e">The event data.</param>
@@ -572,7 +589,7 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handler method for EventBattleCharacterHit QuantumEvent.<br/>
+        /// Handler method for @cref{Quantum,EventBattleCharacterHit} QuantumEvent.<br/>
         /// Starts <see cref="BattlePlayerCharacterViewController.StunFlashCoroutine">DamageFlashCoroutine</see>.
         /// </summary>
         ///

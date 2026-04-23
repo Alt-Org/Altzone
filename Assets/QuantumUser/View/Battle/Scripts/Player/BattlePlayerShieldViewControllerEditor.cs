@@ -30,11 +30,13 @@ namespace Battle.View.Player
             const SpriteSheetMap.Enum ErrorSpriteValue = SpriteSheetMap.Enum.Base;
             DrawDefaultInspector();
 
-            if (_battleSpriteSheetProperty == null || _shieldSpriteRendererProperty == null) return;
+            if (_battleSpriteSheetProperty == null || _shieldSpriteRendererProperty == null || _spriteDisableProperty == null) return;
 
             BattleSpriteSheet spriteSheet = (BattleSpriteSheet)_battleSpriteSheetProperty.boxedValue;
 
             SpriteRenderer spriteRenderer = (SpriteRenderer)_shieldSpriteRendererProperty.boxedValue;
+
+            bool spriteDisable = (bool)_spriteDisableProperty.boxedValue;
 
             int shieldNumber = (int)_shieldNumberProperty.boxedValue;
 
@@ -55,6 +57,8 @@ namespace Battle.View.Player
                 BattleDebugLogger.ErrorFormat(nameof(BattlePlayerShieldViewControllerEditor), "No valid shield sprite for shield number {0}.", BattleDebugLogger.LogTarget.UnityConsole, shieldNumber);
                 goto Error;
             }
+
+            if (spriteDisable) return;
 
             spriteRenderer.sprite = spriteSheet.GetSprite(sprite);
             return;
@@ -79,13 +83,19 @@ namespace Battle.View.Player
         private SerializedProperty _shieldNumberProperty;
 
         /// <summary>
-        /// Handles getting the spritesheet and shield gameobject to add a default sprite to.
+        /// Serialized property holding the bool for whether to update sprites or not.
+        /// </summary>
+        private SerializedProperty _spriteDisableProperty;
+
+        /// <summary>
+        /// Handles initializing serialized properties.
         /// </summary>
         private void OnEnable()
         {
             _battleSpriteSheetProperty = serializedObject.FindProperty("_spriteSheet");
             _shieldSpriteRendererProperty = serializedObject.FindProperty("_shieldSpriteRenderer");
             _shieldNumberProperty = serializedObject.FindProperty("_shieldNumber");
+            _spriteDisableProperty = serializedObject.FindProperty("_autoSpriteDisable");
         }
     }
 }

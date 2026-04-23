@@ -36,19 +36,28 @@ namespace Battle.View.Player
         /// @{
         #region SerializeFields
 
-        [Header("Editor")]
+        //{ editor
 
 #if UNITY_EDITOR
-        /// <summary>[SerializeField] Used to set the shield's sprite in the editor. Only for use in the Unity Editor.</summary>
+        /// <summary>[SerializeField] Used to set the shield's sprite in the editor. @note Only for use in the Unity Editor.</summary>
         /// @ref BattlePlayerShieldViewController-SerializeFields
+        [Header("Editor")]
         [Tooltip("Sets the shield's sprite in the editor.\nOnly for use in the Unity Editor")]
         [SerializeField] private BattleSpriteSheet _spriteSheet;
+
+        /// <summary>[SerializeField] Used to disable the automatic sprite setting in the editor. @note Only for use in the Unity Editor.</summary>
+        /// @ref BattlePlayerShieldViewController-SerializeFields
+        [Tooltip("Disables the automatic sprite setting\nOnly for use in the Unity Editor")]
+        [SerializeField] private bool _autoSpriteDisable;
 #endif
 
-        [Header("References")]
+        //} editor
+
+        //{ references
 
         /// <summary>[SerializeField] Reference to an override character class view controller.</summary>
         /// @ref BattlePlayerShieldViewController-SerializeFields
+        [Header("References")]
         [Tooltip("Reference to an override character class view controller")]
         [SerializeField] private BattlePlayerShieldClassBaseViewController _classViewControllerOverride;
 
@@ -62,12 +71,17 @@ namespace Battle.View.Player
         [Tooltip("Reference to the shield hit particle system")]
         [SerializeField] private ParticleSystem _shieldHitParticle;
 
-        [Header("Settings")]
+        //} references
+
+        //{ settings
 
         /// <summary>[SerializeField] Reference to the shield's shieldNumber.</summary>
         /// @ref BattlePlayerShieldViewController-SerializeFields
+        [Header("Settings")]
         [Tooltip("Reference to the shield's shieldNumber")]
         [SerializeField] private int _shieldNumber;
+
+        //} settings
 
         #endregion
         /// @}
@@ -122,7 +136,7 @@ namespace Battle.View.Player
                 "{0} Sprite is not a shield sprite", sprite
             );
 
-            _shieldSpriteRenderer.sprite = _spriteSheet.GetSprite(sprite);
+            _shieldSpriteRenderer.sprite = _characterViewController.SpriteSheet.GetSprite(sprite);
         }
 
         #endregion Public - Sprite Control Methods
@@ -131,7 +145,7 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Public method that is called when entity is activated upon its creation.<br/>
-        /// Calls <see cref="PreInitSetup"/> and subscribes to <see cref="Quantum.EventBattlePlayerCharacterViewInit">EventBattlePlayerViewInit</see> event with a lambda, which
+        /// Calls <see cref="PreInitSetup"/> and subscribes to <see cref="EventBattlePlayerCharacterViewInit">EventBattlePlayerViewInit</see> event with a lambda, which
         /// sets the shield model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.
         /// Handles subscribing to QuantumEvents and registering to BattleViewRegistry.
         /// </summary>
@@ -204,7 +218,7 @@ namespace Battle.View.Player
         #region Public - Forwarded Quantum Event Handlers
 
         /// <summary>
-        /// Handler method for EventBattleShieldHit QuantumEvent.
+        /// Handler method for @cref{Quantum,EventBattleShieldHit} QuantumEvent.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -219,7 +233,7 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handler method for EventBattleCharacterHit QuantumEvent.
+        /// Handler method for @cref{Quantum,EventBattleCharacterHit} QuantumEvent.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -283,7 +297,7 @@ namespace Battle.View.Player
         #region Private - QuantumEvent Handlers
 
         /// <summary>
-        /// Handler method for EventBattleInPlayStateUpdate QuantumEvent.<br/>
+        /// Handler method for @cref{Quantum,EventBattlePlayStateUpdate} QuantumEvent.<br/>
         /// Updates the _isInPlay bool.
         /// </summary>
         ///

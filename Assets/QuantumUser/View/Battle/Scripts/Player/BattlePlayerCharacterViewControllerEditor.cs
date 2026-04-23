@@ -32,9 +32,13 @@ namespace Battle.View.Player
 
             DrawDefaultInspector();
 
-            if (_battleSpriteSheetProperty == null || _characterGameObjectsProperty == null) return;
+            if (_battleSpriteSheetProperty == null || _characterGameObjectsProperty == null || _spriteDisableProperty == null) return;
 
             BattleSpriteSheet spriteSheet = (BattleSpriteSheet)_battleSpriteSheetProperty.boxedValue;
+
+            bool spriteDisable = (bool)_spriteDisableProperty.boxedValue;
+
+            if (spriteDisable) return;
 
             for (int i = 0; i < _characterGameObjectsProperty.arraySize; i++)
             {
@@ -46,6 +50,7 @@ namespace Battle.View.Player
                 _bodyPartSpriteRenderers[SpriteRendererHandsIndex]  = gameObject.transform.Find("Hands")  .GetComponent<SpriteRenderer>();
                 _bodyPartSpriteRenderers[SpriteRendererFeetIndex]   = gameObject.transform.Find("Feet")   .GetComponent<SpriteRenderer>();
                 _bodyPartSpriteRenderers[SpriteRendererShadowIndex] = gameObject.transform.Find("Shadow") .GetComponent<SpriteRenderer>();
+
                 if (SpriteSheetMap.Validate(spriteSheet))
                 {
                     _bodyPartSpriteRenderers[SpriteRendererHeadIndex]   .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Head1);
@@ -80,12 +85,18 @@ namespace Battle.View.Player
         private readonly SpriteRenderer[] _bodyPartSpriteRenderers = new SpriteRenderer[5];
 
         /// <summary>
-        /// Handles getting the spritesheet and character gameobjects to add default sprites to.
+        /// Serialized property holding the bool for whether to update sprites or not.
+        /// </summary>
+        private SerializedProperty _spriteDisableProperty;
+
+        /// <summary>
+        /// Handles initializing serialized properties.
         /// </summary>
         private void OnEnable()
         {
             _battleSpriteSheetProperty = serializedObject.FindProperty("_spriteSheet");
             _characterGameObjectsProperty = serializedObject.FindProperty("_characterGameObjects");
+            _spriteDisableProperty = serializedObject.FindProperty("_autoSpriteDisable");
         }
     }
 }
