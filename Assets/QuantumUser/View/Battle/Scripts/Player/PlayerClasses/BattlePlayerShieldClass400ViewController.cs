@@ -9,7 +9,9 @@ using UnityEngine;
 
 // Quantum usings
 using Quantum;
-using Photon.Deterministic;
+
+// Battle QSimulation usings
+using Battle.QSimulation.Game;
 
 // Battle View usings
 using Battle.View.Game;
@@ -61,21 +63,64 @@ namespace Battle.View.Player
 
             Vector3 toProjectileVec3 = projectileRef.transform.position - transform.position;
             Vector2 toProjectileVec2 = new(toProjectileVec3.x, toProjectileVec3.z);
+            Vector3 currentAngles    = _shieldSprite.transform.rotation.eulerAngles;
 
-            //if (toProjectileVec2.sqrMagnitude < 0.0001f) return;
+            if (toProjectileVec2.sqrMagnitude > _maxShieldRotateDistanceSqr)
+            {
+                _shieldSprite.transform.SetLocalPositionAndRotation(
+                    _shieldDefaultPosition,
+                    _shieldDefaultRotation
+                );
+                return;
+            }
 
             float angle = -Vector2.SignedAngle(Vector2.up, toProjectileVec2);
 
             if (_movingShieldFlipped)
             {
-                angle += 180;
+                angle += 180f;
             }
 
-            Vector3 currentAngle = _shieldSprite.transform.rotation.eulerAngles;
-            _shieldSprite.transform.rotation = Quaternion.Euler(currentAngle.x, angle, currentAngle.z);
-
-            float radius = Vector3.Distance(_shieldSprite.transform.position, transform.position);
-            _shieldSprite.transform.position = transform.position + toProjectileVec3.normalized * radius;
+            _shieldSprite.transform.SetPositionAndRotation(
+                transform.position + toProjectileVec3.normalized * _shieldOffset,
+                Quaternion.Euler(currentAngles.x, angle, currentAngles.z)
+            );
         }
+
+        /// <summary>
+        /// Method that is called when view is initialized.<br/>
+        /// Handles character class 400 initialization.
+        /// </summary>
+        ///
+        /// <param name="slot">Slot of the player this shield is associated with.</param>
+        /// <param name="characterId">CharacterID of the character this shield is associated with.</param>
+        protected override void OnViewInitOverride(BattlePlayerSlot slot, BattlePlayerCharacterID characterId)
+        {
+            _maxShieldRotateDistanceSqr = 20f * (float)BattleGridManager.GridScaleFactor;
+            _maxShieldRotateDistanceSqr *= _maxShieldRotateDistanceSqr;
+            _shieldOffset = Vector3.Distance(_shieldSprite.transform.position, transform.position);
+
+            _shieldSprite.transform.GetLocalPositionAndRotation(out _shieldDefaultPosition, out _shieldDefaultRotation);
+        }
+
+        /// <summary>
+        /// Maximum distance where the shield will follow the projectile squared.
+        /// </summary>
+        private float _maxShieldRotateDistanceSqr;
+
+        /// <summary>
+        /// Distance from the player to the shield.
+        /// </summary>
+        private float _shieldOffset;
+
+        /// <summary>
+        /// Default position of the shield.
+        /// </summary>
+        private Vector3 _shieldDefaultPosition;
+
+        /// <summary>
+        /// Default rotation of the shield.
+        /// </summary>
+        private Quaternion _shieldDefaultRotation;
     }
 }
