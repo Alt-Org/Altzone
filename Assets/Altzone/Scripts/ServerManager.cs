@@ -1840,6 +1840,9 @@ public class ServerManager : MonoBehaviour
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 Debug.LogWarning(result);
+                JArray token = (JArray)result["data"]["Friendship"];
+                foreach (JToken token2 in token)
+                    if (int.TryParse(token2["friend"]["avatar"]["head"].ToString(), out int value)) token2["friend"]["avatar"] = string.Empty;
                 List<ServerFriendRequest> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<ServerFriendRequest>>();
 
 
