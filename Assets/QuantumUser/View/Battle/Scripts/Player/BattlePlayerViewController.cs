@@ -43,7 +43,9 @@ namespace Battle.View.Player
         /// @ref BattlePlayerViewController-SerializeFields
         [SerializeField] private BattlePlayerClassBaseViewController _classViewControllerOverride;
 
-        [SerializeField] private BattlePlayerClassBaseViewController _testClassViewControllerOverride;
+        /// <summary>[SerializeField] Reference to an override class test view controller.</summary>
+        /// @ref BattlePlayerViewController-SerializeFields
+        [SerializeField] private BattlePlayerClassBaseViewController _classViewControllerTestOverride;
 
         /// <summary>[SerializeField] Animator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> that handles player animations.</summary>
         /// @ref BattlePlayerViewController-SerializeFields
@@ -129,26 +131,43 @@ namespace Battle.View.Player
                 _localPlayerIndicator.SetActive(true);
             }
 
-            if (_classViewControllerOverride != null || _testClassViewControllerOverride != null)
+            BattlePlayerClassBaseViewController pickedClass = null;
+            BattlePlayerClassBaseViewController notPickedClass = null;
+            bool classPicked = false;
+
+            switch (BattlePlayerClassManager.PickClass(_classViewControllerOverride, _classViewControllerTestOverride, isTestMode))
             {
-                BattlePlayerClassBaseViewController pickedOverride = BattlePlayerClassManager.PickClass(_classViewControllerOverride, _testClassViewControllerOverride, isTestMode) switch
-                {
-                    BattlePlayerClassManager.ClassType.Class     => _classViewControllerOverride,
-                    BattlePlayerClassManager.ClassType.TestClass => _testClassViewControllerOverride,
+                case BattlePlayerClassManager.ClassOption.UseClass:
+                    pickedClass = _classViewControllerOverride;
+                    notPickedClass = _classViewControllerTestOverride;
+                    classPicked = true;
+                    break;
 
-                    _                   => null
-                };
+                case BattlePlayerClassManager.ClassOption.UseTestClass:
+                    pickedClass = _classViewControllerTestOverride;
+                    notPickedClass = _classViewControllerOverride;
+                    classPicked = true;
+                    break;
 
-                if (pickedOverride.Class == e.Class)
+                case BattlePlayerClassManager.ClassOption.UseNone:
+                    Destroy(_classViewControllerOverride);
+                    Destroy(_classViewControllerTestOverride);
+                    break;
+            }
+
+            if (classPicked)
+            {
+                if (pickedClass.Class == e.Class)
                 {
                     Destroy(_classViewController);
-                    _classViewController = pickedOverride;
+                    _classViewController = pickedClass;
                 }
                 else
                 {
-                    _debugLogger.ErrorFormat("Class view controller mismatch! Expected {0}, got {1}", e.Class, pickedOverride.Class);
-                    Destroy(pickedOverride);
+                    _debugLogger.ErrorFormat("Class view controller mismatch! Expected {0}, got {1}", e.Class, pickedClass.Class);
+                    Destroy(pickedClass);
                 }
+                Destroy(notPickedClass);
             }
 
             _classViewController.OnViewInit(this, e.Entity, e.Slot, e.CharacterId);
