@@ -46,17 +46,16 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
     void OnEnable()
     {
-
-
         _reactionField.SetActive(true);
-
-            
-
         reactiontext();
-
-       
     }
 
+
+    //Incane user leaves the chat
+    private void OnDisable()
+    {
+        ClosePopup();
+    }
 
 
     public void reactiontext()

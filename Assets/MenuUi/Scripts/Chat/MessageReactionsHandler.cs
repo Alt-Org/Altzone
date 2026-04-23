@@ -225,7 +225,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
         }
         if(ActiveObjects < ObjectActive + 1)
         {
-           // skip = false; right now this does not work as when there's other users reactions it duplicates them when it should not 
+           skip = false;
         }
         
 
@@ -345,9 +345,14 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
     private void ShowUsers(ChatReactionHandler reactionHandler)
     {
-        _longClick = true;
+        RectTransform rt = _usersWhoAdded.GetComponent<RectTransform>();
 
+        _longClick = true;
         _usersWhoAdded.transform.SetParent(Chat.instance.PopUps.transform);
+
+        rt.offsetMin = Vector2.zero;
+        rt.offsetMax = Vector2.zero;
+
         _usersWhoAdded.SetActive(true);
         //_chatScript.OpenUsersWhoAddedReactionPanel();
 
@@ -393,7 +398,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
         }
         //_chatScript.UpdateContentLayout(reactionsField);
     }
-
 
     [Serializable]
     public class ReactionObject
