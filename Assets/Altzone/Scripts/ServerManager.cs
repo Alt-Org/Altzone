@@ -49,6 +49,8 @@ public class ServerManager : MonoBehaviour
     private static string LATESTDEVBUILDADDRESS = "https://devapi.altzone.fi/latest-release/";
     private static string DEVADDRESS = "https://devapi.altzone.fi/";
 
+    private Coroutine _heartbeatCoroutine;
+
     public static string SERVERADDRESS { get
         {
             if(AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild) return DEVADDRESS;
@@ -130,7 +132,13 @@ public class ServerManager : MonoBehaviour
 
     private void Start()
     {
+        ApplicationController.OnAppResume += ResetHeartBeat;
         if (_automaticallyLogIn) StartCoroutine(LogIn());
+    }
+
+    private void OnDestroy()
+    {
+        ApplicationController.OnAppResume -= ResetHeartBeat;
     }
 
     public void Reset()
@@ -308,7 +316,7 @@ public class ServerManager : MonoBehaviour
             SetPlayerValues(Player, characters, friends, friendRequests);
 
             OnLogInStatusChanged?.Invoke(true);
-            StartCoroutine(ServiceHeartBeat());
+            _heartbeatCoroutine = StartCoroutine(ServiceHeartBeat());
 
             if (Clan == null)
             {
@@ -735,6 +743,12 @@ public class ServerManager : MonoBehaviour
                 timeCurrent += Time.deltaTime;
             }
         }
+    }
+
+    private void ResetHeartBeat()
+    {
+        if (_heartbeatCoroutine != null) StopCoroutine(_heartbeatCoroutine);
+        _heartbeatCoroutine = StartCoroutine(ServiceHeartBeat());
     }
 
     #region Server
