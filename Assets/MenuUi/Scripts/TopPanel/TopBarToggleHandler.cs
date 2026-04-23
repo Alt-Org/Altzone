@@ -14,16 +14,21 @@ public class TopBarToggleHandler : MonoBehaviour
         if (_toggle != null)
             GetToggleValue();
 
-        // ? uusi: päivitys kun TopBar-tyyli vaihtuu
+        // ? uusi: pï¿½ivitys kun TopBar-tyyli vaihtuu
         SettingsCarrier.OnTopBarChanged += HandleTopBarChanged;
     }
 
     private void Start()
     {
-        _toggle = GetComponent<Toggle>();
+        _toggle = GetComponentInChildren<Toggle>();
 
-        GetToggleValue();  
+        if (_toggle == null)
+        {
+            Debug.LogError($"TopBarToggleHandler: Toggle not found under {gameObject.name}", this);
+            return;
+        }
 
+        GetToggleValue();
         _toggle.onValueChanged.AddListener(OnChanged);
     }
 
@@ -44,6 +49,8 @@ public class TopBarToggleHandler : MonoBehaviour
 
     private void GetToggleValue()
     {
+        if (_toggle == null) return;
+        
         SettingsCarrier carrier = SettingsCarrier.Instance;
         SettingsCarrier.TopBarStyle style =
         carrier != null ? carrier.TopBarStyleSetting : SettingsCarrier.TopBarStyle.NewHelena;
