@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -166,6 +167,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public string Title {
             get
             {
+                if (_title == null) return string.Empty;
                 return _title.Fi;
             }
         }
@@ -174,6 +176,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             get
             {
+                if (_title == null) return string.Empty;
                 return _title.En; 
             }
         }
@@ -182,6 +185,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             get
             {
+                if (_content == null) return string.Empty;
                 if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
                     return _content.En;
                 return _content.Fi; // default Finnish
@@ -593,8 +597,8 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public class TaskTitle
         {
-            private readonly string _fi;
-            private readonly string _en;
+            private string _fi;
+            private string _en;
 
             public string Fi { get => _fi;}
             public string En { get => _en; }

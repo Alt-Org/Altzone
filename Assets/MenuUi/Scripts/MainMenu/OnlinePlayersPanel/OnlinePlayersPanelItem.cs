@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Window;
 using MenuUi.Scripts.AvatarEditor;
+using MenuUi.Scripts.Window;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,7 +28,7 @@ public enum OnlineState
     Global
 }
 
-public class OnlinePlayersPanelItem : MonoBehaviour
+public class OnlinePlayersPanelItem : AltMonoBehaviour
 {
     [SerializeField] private RectTransform _topPanel;
     [SerializeField] private RectTransform _bottomPanel;
@@ -42,10 +44,12 @@ public class OnlinePlayersPanelItem : MonoBehaviour
     [SerializeField] private Button _profileButton;
 
     private ServerPlayer _player = null;
+    private FriendPlayer _friend = null;
     private OnlineState _onlineState = OnlineState.Offline;
     private FriendState _friendstate = FriendState.None;
 
     public ServerPlayer Player => _player;
+    public FriendPlayer Friend => _friend;
     public bool IsOnline => _onlineState is OnlineState.Online;
     public FriendState Friendstate => _friendstate;
 
@@ -65,6 +69,30 @@ public class OnlinePlayersPanelItem : MonoBehaviour
         UpdateSize(false);
     }
 
+    public IEnumerator Initialize(FriendPlayer player, OnlineState onlineState = OnlineState.Online, FriendState friendstate = FriendState.None, Action onRemoveClick = null, Action onAcceptClick = null, Action onDeclineClick = null, Action onAddFriendClick = null)
+    {
+        ClanLogo clanLogo = null;
+        AvatarVisualData avatarVisualData = null;
+
+        if (player != null)
+        {
+            _friend = player;
+            avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(player.avatar);
+            SetProfileListener(player._id);
+        }
+
+        _nameText.text = player.name;
+        _onlineState = onlineState;
+        _friendstate = friendstate;
+
+        if (avatarVisualData != null)
+        {
+            _avatarFaceLoader.UpdateVisuals(avatarVisualData);
+        }
+
+        yield return SetStates(player._id, clanLogo, onlineState, friendstate, onRemoveClick, onAcceptClick, onDeclineClick, onAddFriendClick);
+    }
+
     public IEnumerator Initialize(ServerPlayer player, OnlineState onlineState = OnlineState.Online, FriendState friendstate = FriendState.None, Action onRemoveClick = null, Action onAcceptClick = null, Action onDeclineClick = null, Action onAddFriendClick = null)
     {
         ClanLogo clanLogo = null;
@@ -82,12 +110,16 @@ public class OnlinePlayersPanelItem : MonoBehaviour
         _onlineState = onlineState;
         _friendstate = friendstate;
 
-
         if (avatarVisualData != null)
         {
             _avatarFaceLoader.UpdateVisuals(avatarVisualData);
         }
+        
+        yield return SetStates(player._id, clanLogo, onlineState, friendstate, onRemoveClick, onAcceptClick, onDeclineClick, onAddFriendClick);
+    }
 
+    private IEnumerator SetStates(string id, ClanLogo clanLogo, OnlineState onlineState, FriendState friendstate, Action onRemoveClick, Action onAcceptClick, Action onDeclineClick, Action onAddFriendClick)
+    {
         if (onlineState == OnlineState.Global)
         {
             if(clanLogo != null) _clanHeart.SetHeartColors(clanLogo);
@@ -113,7 +145,7 @@ public class OnlinePlayersPanelItem : MonoBehaviour
             //_addfriendButton.gameObject.SetActive(true);
             _addfriendButton.onClick.RemoveAllListeners();
 
-            if (player._id == ServerManager.Instance.Player._id)
+            if (id == ServerManager.Instance.Player._id)
             {
                 _addfriendButton.gameObject.SetActive(false);
             }
@@ -253,7 +285,7 @@ public class OnlinePlayersPanelItem : MonoBehaviour
             _declineFriendButton.gameObject.SetActive(false);
             _removefriendButton.gameObject.SetActive(false);
         }
-        else if (_friendstate is FriendState.Receiving)
+        else if (_friendstate is FriendState.Receiving && _friend != null)
         {
             _addfriendButton.gameObject.SetActive(false);
             _addfriendButton.interactable = false;
@@ -296,7 +328,29 @@ public class OnlinePlayersPanelItem : MonoBehaviour
         _profileButton.onClick.AddListener(() =>
         {
             DataCarrier.AddData(DataCarrier.PlayerProfile, new PlayerData(player));
+            StartCoroutine(_profileButton.GetComponent<WindowNavigation>().Navigate());
         });
+    }
+    private void SetProfileListener(string id)
+    {
+        if (!string.IsNullOrEmpty(id))
+            _profileButton.onClick.AddListener(() =>
+            {
+                StartCoroutine(GetFriendProfile(id));
+            });
+    }
+
+    private IEnumerator GetFriendProfile(string id)
+    {
+        ServerPlayer serverPlayer = null;
+        bool timeout = false;
+
+        StartCoroutine(ServerManager.Instance.GetOtherPlayerFromServer(id, c => serverPlayer = c)); // Get friend data
+        StartCoroutine(WaitUntilTimeout(3, c => timeout = c));
+        yield return new WaitUntil(() => serverPlayer != null || timeout);
+
+        DataCarrier.AddData(DataCarrier.PlayerProfile, new PlayerData(serverPlayer));
+        StartCoroutine(_profileButton.GetComponent<WindowNavigation>().Navigate());
     }
 }
 
