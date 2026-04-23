@@ -101,28 +101,33 @@ public class JukeboxTrackQueueHandler : MonoBehaviour
         _musicTrack = musicTrack;
         _linearIndex = linearIndex;
 
-        if (musicTrack != null)
-            _trackNameText.text = musicTrack.Name;
-        else
-            _trackNameText.text = "";
+        _trackNameText.text = musicTrack != null ? musicTrack.Name : "";
 
-        if (GetVisibility())
+        if (GetVisibility() && musicTrack != null)
             _textAutoScroll.SetContent(musicTrack.Name);
         else
             _textAutoScroll.DisableCoroutines();
 
         _userOwned = userOwned;
         _deleteButton.gameObject.SetActive(userOwned);
-        _favoriteButtonHandler.Setup(likeType, musicTrack.Id);
+
+        if (musicTrack != null) _favoriteButtonHandler.Setup(likeType, musicTrack.Id);
     }
 
     public void SetLinearIndex(int index) { _linearIndex = index; }
 
-    public void Clear() { _id = ""; _musicTrack = null; _trackNameText.text = ""; _linearIndex = -1; SetVisibility(false); }
+    public void Clear()
+    {
+        _id = "";
+        _musicTrack = null;
+        _trackNameText.text = "";
+        _linearIndex = -1;
+        SetVisibility(false);
+    }
 
     public void SetVisibility(bool visible) { gameObject.SetActive(visible); }
 
     public bool GetVisibility() { return gameObject.activeSelf; }
 
-    private void Delete() { if (!_buttonInputCanceled) OnDeleteEvent.Invoke(_chunkIndex, _poolIndex, _linearIndex); }
+    private void Delete() { if (!_buttonInputCanceled) OnDeleteEvent?.Invoke(_chunkIndex, _poolIndex, _linearIndex); }
 }

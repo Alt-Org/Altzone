@@ -26,7 +26,7 @@ public class JukeboxMainDiskHandler : MonoBehaviour
     public delegate void MultiUseButtonPressed();
     public event MultiUseButtonPressed OnMultiUseButtonPressed;
 
-    private List<string> _indicatorTexts = new List<string>()
+    private List<string> _indicatorTexts = new()
     {
         "",
         "Esikuuntelu\r\nPäällä",
@@ -47,20 +47,20 @@ public class JukeboxMainDiskHandler : MonoBehaviour
     }
 
     #region Animation
-    private Vector2 _mainAnchorMinStart = new Vector2(1f, 0f);
-    private Vector2 _mainAnchorMaxStart = new Vector2(1f, 1f);
-    private Vector2 _mainAnchorMinEnd = new Vector2(0f, 0f);
-    private Vector2 _mainAnchorMaxEnd = new Vector2(1f, 1f);
+    private Vector2 _mainAnchorMinStart = new(1f, 0f);
+    private Vector2 _mainAnchorMaxStart = new(1f, 1f);
+    private Vector2 _mainAnchorMinEnd = new(0f, 0f);
+    private Vector2 _mainAnchorMaxEnd = new(1f, 1f);
 
-    private Vector2 _secondaryAnchorMinStart = new Vector2(0f, 0f);
-    private Vector2 _secondaryAnchorMaxStart = new Vector2(1f, 1f);
-    private Vector2 _secondaryAnchorMinEnd = new Vector2(0f, 0f);
-    private Vector2 _secondaryAnchorMaxEnd = new Vector2(0f, 1f);
+    private Vector2 _secondaryAnchorMinStart = new(0f, 0f);
+    private Vector2 _secondaryAnchorMaxStart = new(1f, 1f);
+    private Vector2 _secondaryAnchorMinEnd = new(0f, 0f);
+    private Vector2 _secondaryAnchorMaxEnd = new(0f, 1f);
     #endregion
 
     private void Awake()
     {
-        if (_multiUseButton != null) _multiUseButton.onClick.AddListener(() => OnMultiUseButtonPressed.Invoke());
+        if (_multiUseButton != null) _multiUseButton.onClick.AddListener(() => OnMultiUseButtonPressed?.Invoke());
 
         _mainDiskRectTransform.anchorMin = _mainAnchorMinEnd;
         _mainDiskRectTransform.anchorMax = _mainAnchorMaxEnd;
@@ -150,14 +150,12 @@ public class JukeboxMainDiskHandler : MonoBehaviour
         _secondaryDiskRectTransform.anchorMax = _secondaryAnchorMaxStart;
 
         StopDiskSpin();
-
         StartCoroutine(SwitchDisk((data) => diskSwitchDone = data));
 
         yield return new WaitUntil(() => diskSwitchDone != null);
 
         StartSpinDisk();
-
-        if (done != null) done(true);
+        done?.Invoke(true);
     }
 
     private IEnumerator SwitchDisk(System.Action<bool> done)
@@ -180,7 +178,7 @@ public class JukeboxMainDiskHandler : MonoBehaviour
             _secondaryDiskRectTransform.anchorMax = Vector2.Lerp(_secondaryAnchorMaxStart, _secondaryAnchorMaxEnd, animatedFloat);
         }
 
-        done(true);
+        done?.Invoke(true);
     }
     #endregion
 

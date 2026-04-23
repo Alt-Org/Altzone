@@ -41,7 +41,7 @@ namespace Altzone.Scripts.Audio
                     _rubberbandCurve.Evaluate(timer / _rubberbandDuration));
             }
 
-            if (done != null) done(true);
+            done?.Invoke(true);
         }
     }
 }

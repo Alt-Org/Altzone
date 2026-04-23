@@ -80,42 +80,42 @@ public class PlayMusic : MonoBehaviour
 
     public void Play() { AudioManager.Instance?.PlayMusic(_musicCategory, _musicName, _musicSwitchType); }
 
-    /// <summary>
-    /// Plays the given track or the jukebox if jukebox playback is allowed from settings.
-    /// </summary>
-    /// <param name="musicCategory"></param>
-    /// <param name="musicName"></param>
-    /// <param name="musicSwitchType"></param>
-    /// <param name="currentJukeboxPlayArea"></param>
-    /// <returns>Name of the track that started playing or null if it failed to start.</returns>
-    public static string Play(AudioCategoryType musicCategory, string musicName, MusicHandler.MusicSwitchType musicSwitchType, SettingsCarrier.JukeboxPlayArea currentJukeboxPlayArea)
-    {
-        PlayMusic playMusic = new PlayMusic();
-
-        playMusic._musicCategory = musicCategory;
-        playMusic._musicName = musicName;
-        playMusic._musicSwitchType = musicSwitchType;
-        playMusic._currentJukeboxPlayArea = currentJukeboxPlayArea;
-
-        return new string(playMusic.StartTrackControlExpanded());
-    }
-
-    /// <summary>
-    /// Plays the given track.
-    /// </summary>
-    /// <param name="musicCategory"></param>
-    /// <param name="musicName"></param>
-    /// <param name="musicSwitchType"></param>
-    /// <param name="currentJukeboxPlayArea"></param>
-    /// <returns>Name of the track that started playing or null if it failed to start.</returns>
-    public static string Play(AudioCategoryType musicCategory, string musicName, MusicHandler.MusicSwitchType musicSwitchType)
-    {
-        PlayMusic playMusic = new PlayMusic();
-
-        playMusic._musicCategory = musicCategory;
-        playMusic._musicName = musicName;
-        playMusic._musicSwitchType = musicSwitchType;
-
-        return new string(playMusic.StartTrackControlStandard());
-    }
+    // /// <summary>
+    // /// Plays the given track or the jukebox if jukebox playback is allowed from settings.
+    // /// </summary>
+    // /// <param name="musicCategory"></param>
+    // /// <param name="musicName"></param>
+    // /// <param name="musicSwitchType"></param>
+    // /// <param name="currentJukeboxPlayArea"></param>
+    // /// <returns>Name of the track that started playing or null if it failed to start.</returns>
+    // public static string Play(AudioCategoryType musicCategory, string musicName, MusicHandler.MusicSwitchType musicSwitchType, SettingsCarrier.JukeboxPlayArea currentJukeboxPlayArea)
+    // {
+    //     PlayMusic playMusic = new PlayMusic();
+    //
+    //     playMusic._musicCategory = musicCategory;
+    //     playMusic._musicName = musicName;
+    //     playMusic._musicSwitchType = musicSwitchType;
+    //     playMusic._currentJukeboxPlayArea = currentJukeboxPlayArea;
+    //
+    //     return new string(playMusic.StartTrackControlExpanded());
+    // }
+    //
+    // /// <summary>
+    // /// Plays the given track.
+    // /// </summary>
+    // /// <param name="musicCategory"></param>
+    // /// <param name="musicName"></param>
+    // /// <param name="musicSwitchType"></param>
+    // /// <param name="currentJukeboxPlayArea"></param>
+    // /// <returns>Name of the track that started playing or null if it failed to start.</returns>
+    // public static string Play(AudioCategoryType musicCategory, string musicName, MusicHandler.MusicSwitchType musicSwitchType)
+    // {
+    //     PlayMusic playMusic = new PlayMusic();
+    //
+    //     playMusic._musicCategory = musicCategory;
+    //     playMusic._musicName = musicName;
+    //     playMusic._musicSwitchType = musicSwitchType;
+    //
+    //     return new string(playMusic.StartTrackControlStandard());
+    // }
 }

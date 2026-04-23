@@ -4,15 +4,12 @@ using UnityEngine.UI;
 
 public class JukeboxWebLinkHandler : MonoBehaviour
 {
-    [SerializeField] TMPro.TextMeshProUGUI _weblinkLabel;
-    [SerializeField] Button _weblinkButton;
+    [SerializeField] private TMPro.TextMeshProUGUI _weblinkLabel;
+    [SerializeField] private Button _weblinkButton;
 
     private string _weblinkAddress;
 
-    private void Awake()
-    {
-        _weblinkButton.onClick.AddListener(() => OpenWeblink());
-    }
+    private void Awake() { _weblinkButton.onClick.AddListener(() => OpenWeblink()); }
 
     public bool InUse() { return string.IsNullOrEmpty(_weblinkAddress); }
 

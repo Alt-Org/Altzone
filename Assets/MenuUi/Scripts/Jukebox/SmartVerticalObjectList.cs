@@ -86,7 +86,6 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
         GameObject locationHelper = new GameObject("LocationHelper");
 
         _locationHelper = locationHelper.AddComponent<RectTransform>();
-
         _locationHelper.SetParent(_viewport);
     }
 

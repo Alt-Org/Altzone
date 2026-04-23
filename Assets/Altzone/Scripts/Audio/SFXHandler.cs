@@ -56,14 +56,11 @@ namespace Altzone.Scripts.Audio
 
         private AudioChannelData GetAudioChannelData(int chunkIndex, int poolIndex)
         {
-            bool notValid = (_channelChunks.Count <= chunkIndex || _channelChunks[chunkIndex].AudioChannels.Count <= poolIndex);
-
-            if (notValid) return null;
-
-            return _channelChunks[chunkIndex].AudioChannels[poolIndex];
+            return (_channelChunks.Count <= chunkIndex || _channelChunks[chunkIndex].AudioChannels.Count <= poolIndex) ?
+                null : _channelChunks[chunkIndex].AudioChannels[poolIndex];
         }
 
-        public void SetMaxVoulme(float volume) { _maxVolume = volume; }
+        public void SetMaxVolume(float volume) { _maxVolume = volume; }
 
         public void ChangeVolume(float volume, string target)
         {
@@ -84,10 +81,7 @@ namespace Altzone.Scripts.Audio
                 }
         }
 
-        private float GetVolume(SoundEffect soundEffect)
-        {
-            return soundEffect.Volume * _maxVolume;
-        }
+        private float GetVolume(SoundEffect soundEffect) { return soundEffect.Volume * _maxVolume; }
 
         /// <summary>
         /// Plays a sound effect by given category name and SFXName.
@@ -174,7 +168,7 @@ namespace Altzone.Scripts.Audio
             GetFreeAudioSourceHandler(soundEffect).SetPlayAudioClip(soundEffect.Audio, (soundEffect.Type == SoundPlayType.Loop), pitch);
 
             if ((_activeChannels.Count - 1) >= 0)
-                return _activeChannels[_activeChannels.Count - 1];
+                return _activeChannels[^1];
             else
             {
                 Debug.LogError("SFX Handler Error: Active channels is empty!");
@@ -182,13 +176,13 @@ namespace Altzone.Scripts.Audio
             }
         }
 
-        public bool PlaybackOperation(SFXPlaybackOperationType type, string name, float pitch = 1f)
+        public bool PlaybackOperation(SFXPlaybackOperationType type, string sFXName, float pitch = 1f)
         {
             foreach (ActiveChannelPath channel in _activeChannels)
             {
                 AudioChannelData data = GetAudioChannelData(channel);
 
-                if (data.SoundEffectData.Name.ToLower() == name.ToLower())
+                if (data.SoundEffectData.Name.ToLower() == sFXName.ToLower())
                     switch (type)
                     {
                         case SFXPlaybackOperationType.Stop:
@@ -270,7 +264,6 @@ namespace Altzone.Scripts.Audio
                             AudioChannelData data = GetAudioChannelData(channel);
                             data.audioSourceHandler.Clear();
                             data.SoundEffectData = null;
-                            //GetAudioChannelData(channel).Name = "";
                             break;
                         }
                 }
@@ -289,7 +282,6 @@ namespace Altzone.Scripts.Audio
                 if (_activeChannels[i].Channel == channel)
                 {
                     _activeChannels.RemoveAt(i);
-                    //_channelChunks[chunk].AudioChannels[channel].Name = "";
                     _channelChunks[chunk].AudioChannels[channel].SoundEffectData = null;
                     _channelChunks[chunk].AmountInUse--;
                     return;
@@ -314,8 +306,8 @@ namespace Altzone.Scripts.Audio
 
             //No free AudioSourceHandlers found. Creating new AudioSourceHandler chunk.
             CreateChunk();
-            _channelChunks[_channelChunks.Count - 1].AmountInUse++;
-            _activeChannels.Add(new(_channelChunks.Count - 1, 0));
+            _channelChunks[^1].AmountInUse++;
+            _activeChannels.Add(new ActiveChannelPath(_channelChunks.Count - 1, 0));
 
             return GetAudioChannelData(_channelChunks.Count - 1, 0).audioSourceHandler;
         }

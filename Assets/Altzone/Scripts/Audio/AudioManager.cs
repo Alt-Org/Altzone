@@ -38,6 +38,7 @@ namespace Altzone.Scripts.Audio
 
         private string _fallbackMusicCategory = "";
         public string FallbackMusicCategory { get { return _fallbackMusicCategory; } }
+
         private string _fallbackMusicTrack = "";
         public string FallbackMusicTrack {  get { return _fallbackMusicTrack; } }
 
@@ -82,14 +83,13 @@ namespace Altzone.Scripts.Audio
 
         public void UpdateMaxVolume()
         {
-            _sFXHandler.SetMaxVoulme(SettingsCarrier.Instance.SentVolume(SettingsCarrier.SoundType.sound));
+            _sFXHandler.SetMaxVolume(SettingsCarrier.Instance.SentVolume(SettingsCarrier.SoundType.sound));
             _musicHandler.SetMaxVolume(SettingsCarrier.Instance.SentVolume(SettingsCarrier.SoundType.music));
         }
 
         public float GetMusicVolume() { return _musicHandler.MaxVolume; }
 
         #region SFX
-
         /// <summary>
         /// Plays a sfx sound by given CategoryName and SFXName.
         /// </summary>
