@@ -202,11 +202,12 @@ namespace Battle.QSimulation.Player
                     break;
             }
         }
-        public enum ClassType
+
+        public enum ClassOption
         {
-            None,
-            Class,
-            TestClass
+            UseNone,
+            UseClass,
+            UseTestClass
         }
 
         /// <summary>
@@ -389,21 +390,8 @@ namespace Battle.QSimulation.Player
         private static BattleDebugLogger s_debugLogger;
 
         /// <summary>
-        /// Picks and loads a <b>PlayerClass</b> or a test <b>PlayerClass</b> depending on whether <paramref name="testMode"/> is enabled.
-        ///
-        // /// Decides which Player Class script
-        // /// and <see cref="ClassState"/> to write to a <see cref="ClassEntry"/> in <see cref="s_classArray"/> for a given <see cref="BattlePlayerCharacterClass"/> based on the table below
+        /// Loads a class and saves it to to to @cref{s_classArray} at <paramref name="classIndex"/>
         /// </summary>
-        ///
-        /// See [PlayerClass](#page-concepts-player-simulation-playerclass) for more info<br/>
-        /// See [Player Character Classes](#page-concepts-player-characters-classes) for more info
-        ///
-        /// |                                       | Has none | Has <paramref name="class"/> | Has <paramref name="testClass"/>  | Has both                         |
-        /// |:--------------------------------------|:---------|:-----------------------------|:----------------------------------|:---------------------------------|
-        /// | <paramref name="testMode"/> **false** | use none | use <paramref name="class"/> | use none                          | use <paramref name="class"/>     |
-        /// | <paramref name="testMode"/> **true**  | use none | use <paramref name="class"/> | use <paramref name="testClass"/>  | use <paramref name="testClass"/> |
-        ///
-        /// The loaded class is saved to to @cref{s_classArray} at <paramref name="classIndex"/>
         ///
         /// <param name="characterClass">Character class</param>
         /// <param name="classIndex">Index of the character class</param>
@@ -414,8 +402,8 @@ namespace Battle.QSimulation.Player
         {
             BattlePlayerClassBase loadedClass = PickClass(@class, testClass, testMode) switch
             {
-                ClassType.Class     => @class,
-                ClassType.TestClass => testClass,
+                ClassOption.UseClass     => @class,
+                ClassOption.UseTestClass => testClass,
 
                 _                   => null
             };
@@ -437,19 +425,35 @@ namespace Battle.QSimulation.Player
             s_classArray[classIndex].State = ClassState.Loaded;
         }
 
-        public static ClassType PickClass(object @object, object testObject, bool testMode)
+        /// <summary>
+        /// Decides which <see cref="ClassOption"/> to use depending on available class scripts and whether <paramref name="testMode"/> is enabled.
+        /// </summary>
+        ///
+        /// See [PlayerClass](#page-concepts-player-simulation-playerclass) for more info<br/>
+        /// See [Player Character Classes](#page-concepts-player-characters-classes) for more info
+        ///
+        /// |                                       | has none                   | <paramref name="hasClass"/> | <paramref name="hasTestClass"/> | has both                        |
+        /// | :------------------------------------ | :------------------------- | :-------------------------- | :------------------------------ | :------------------------------ |
+        /// | <paramref name="testMode"/> **false** | @cref{ClassOption,UseNone} | @cref{ClassOption,UseClass} | @cref{ClassOption,UseNone}      | @cref{ClassOption,UseClass}     |
+        /// | <paramref name="testMode"/> **true**  | @cref{ClassOption,UseNone} | @cref{ClassOption,UseClass} | @cref{ClassOption,UseTestClass} | @cref{ClassOption,UseTestClass} |
+        ///
+        /// <param name="hasClass">Normal class script reference to check</param>
+        /// <param name="hasTestClass">Test class script reference to check</param>
+        /// <param name="testMode">Is test mode enabled</param>
+        ///
+        /// <returns>The picked <see cref="ClassOption"/></returns>
+        public static ClassOption PickClass(object hasClass, object hasTestClass, bool testMode)
         {
+            ClassOption useClass = hasClass != null ? ClassOption.UseClass : ClassOption.UseNone;
+
             if (!testMode)
             {
-                return @object != null ? ClassType.Class : ClassType.None;
+                return useClass;
             }
-
-            if (testObject != null)
+            else
             {
-                return ClassType.TestClass;
+                return hasTestClass != null ? ClassOption.UseTestClass : useClass;
             }
-
-            return @object != null ? ClassType.Class : ClassType.None;
         }
 
         /// <summary>
