@@ -30,12 +30,12 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
    {
     if (_rootCanvas == null) return; // turvatarkistus
 
-    // Välikeston konteksti
+    // Vï¿½likeston konteksti
     _originalParent = transform.parent;
     _listContainer = (RectTransform)_originalParent;
     _boundsTransform = (_clampArea != null) ? _clampArea : _listContainer;
 
-    // Placeholder alkuperäiseen paikkaan
+    // Placeholder alkuperï¿½iseen paikkaan
     _placeholderObject = new GameObject("Placeholder", typeof(RectTransform), typeof(LayoutElement));
     _placeholderObject.transform.SetParent(_originalParent, false);
     LayoutElement ple = _placeholderObject.GetComponent<LayoutElement>();
@@ -48,10 +48,10 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     if (_layoutElement != null) _layoutElement.ignoreLayout = true;
     if (_canvasGroup != null) _canvasGroup.blocksRaycasts = false;
 
-    // Siirrä vedettävä root-canvakseen
+    // Siirrï¿½ vedettï¿½vï¿½ root-canvakseen
     transform.SetParent(_rootCanvas.transform, true);
 
-    // Laske osoitinsiirto, jotta elementti ei "hyppää" tarttuessa
+    // Laske osoitinsiirto, jotta elementti ei "hyppï¿½ï¿½" tarttuessa
     RectTransform rootRT = (RectTransform)_rootCanvas.transform;
     _lockedXInRootCanvas = _rectTransform.localPosition.x;
 
@@ -72,7 +72,7 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
     public void OnEndDrag(PointerEventData e)
     {
-       
+
         transform.SetParent(_originalParent, false); // Palaa listaan ennen indeksin asettamista
 
         if (_placeholderObject != null)
@@ -112,31 +112,49 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     private void UpdatePlaceholderIndex(PointerEventData e)
     {
         if (_placeholderObject == null || _listContainer == null) return;
-        List<RaycastResult> hits = new List<RaycastResult>(); EventSystem es = EventSystem.current; if (es != null) es.RaycastAll(e, hits);
-        TopBarToggleDrag row = null;
 
-        foreach (RaycastResult hit in hits)
+        List<TopBarToggleDrag> rows = new List<TopBarToggleDrag>();
+        foreach (Transform child in _listContainer)
         {
-            if (hit.gameObject == null) continue;
+            if (child == _placeholderObject.transform) continue;
 
-            TopBarToggleDrag rowitem = hit.gameObject.GetComponentInParent<TopBarToggleDrag>();
-            if (rowitem != null)
-            {
-                row = rowitem;
-                break;
-            }
+            TopBarToggleDrag drag = child.GetComponent<TopBarToggleDrag>();
+            if (drag != null)
+                rows.Add(drag);
         }
 
-        Transform rt = row != null ? row.transform : null;
-        if (rt != null)
-        {
-            int target = rt.GetSiblingIndex()
-                + (_rectTransform.position.y < ((RectTransform)rt).position.y ? 1 : 0);
+        if (rows.Count == 0) return;
 
-            int ph = _placeholderObject.transform.GetSiblingIndex();
-            _placeholderObject.transform.SetSiblingIndex(
-                Mathf.Clamp(ph < target ? target - 1 : target, 0, _listContainer.childCount));
+        float pointerY = e.position.y;
+
+        RectTransform firstRow = rows[0].GetComponent<RectTransform>();
+        RectTransform lastRow = rows[rows.Count - 1].GetComponent<RectTransform>();
+
+        // IMPORTANT:
+        // pointerY is from PointerEventData (screen space),
+        // while RectTransform.position.y is world space.
+        // This works in Screen Space Overlay canvases.
+        // If using Screen Space Camera or World Space, convert both values to the same space.
+        if (pointerY > firstRow.position.y)
+        {
+            _placeholderObject.transform.SetSiblingIndex(0);
             return;
+        }
+
+        if (pointerY < lastRow.position.y)
+        {
+            _placeholderObject.transform.SetSiblingIndex(_listContainer.childCount - 1);
+            return;
+        }
+
+        for (int i = 0; i < rows.Count; i++)
+        {
+            RectTransform rowRt = rows[i].GetComponent<RectTransform>();
+            if (pointerY > rowRt.position.y)
+            {
+                _placeholderObject.transform.SetSiblingIndex(i);
+                return;
+            }
         }
     }
 }
