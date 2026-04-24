@@ -558,7 +558,6 @@ namespace Quantum.Prototypes {
     public QBoolean RotationInput;
     public FP RotationValue;
     public QBoolean AbilityActivate;
-    public Int32 PlayerCharacterNumber;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
         result.IsValid = this.IsValid;
@@ -571,7 +570,6 @@ namespace Quantum.Prototypes {
         result.RotationInput = this.RotationInput;
         result.RotationValue = this.RotationValue;
         result.AbilityActivate = this.AbilityActivate;
-        result.PlayerCharacterNumber = this.PlayerCharacterNumber;
         MaterializeUser(frame, ref result, in context);
     }
   }
