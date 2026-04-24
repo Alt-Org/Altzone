@@ -67,12 +67,6 @@ namespace Battle.QSimulation
                 inputDebugSummary += "Rotate";
                 inputNotEmpty = true;
             }
-            if (input->AbilityActivate != false)
-            {
-                if (inputDebugSummary != "") inputDebugSummary += ", ";
-                inputDebugSummary += "Ability Activate";
-                inputNotEmpty = true;
-            }
 
             if (inputNotEmpty)
             {
@@ -87,7 +81,6 @@ namespace Battle.QSimulation
                                   "    MovementDirection:             {4},\n" +
                                   "    RotationInput:                 {5},\n" +
                                   "    RotationValue:                 {6},\n" +
-                                  "    AbilityActivate:               {7},\n" +
                                   "}}",
                                   input->MovementInput,
                                   input->MovementDirectionIsNormalized,
@@ -95,8 +88,7 @@ namespace Battle.QSimulation
                                   input->MovementPositionMove,
                                   input->MovementDirection,
                                   input->RotationInput,
-                                  input->RotationValue,
-                                  input->AbilityActivate
+                                  input->RotationValue
                     )
                 );
             }

@@ -172,8 +172,7 @@ namespace Battle.QSimulation.Player
                 MovementPositionMove          = FPVector2.Zero,
                 MovementDirection             = FPVector2.Zero,
                 RotationInput                 = false,
-                RotationValue                 = FP._0,
-                AbilityActivate               = false
+                RotationValue                 = FP._0
             };
         }
     }
