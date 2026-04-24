@@ -3892,7 +3892,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6051262717664460714}
-  m_Father: {fileID: 5720536093127101048}
+  m_Father: {fileID: 1225377520901944351}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -12757,7 +12757,7 @@ RectTransform:
   m_Children:
   - {fileID: 8585613319183185334}
   - {fileID: 2696382562341500846}
-  m_Father: {fileID: 5720536093127101048}
+  m_Father: {fileID: 1225377520901944351}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0.6}
@@ -18314,7 +18314,7 @@ RectTransform:
   - {fileID: 7800668517289319438}
   - {fileID: 4254948277727518604}
   - {fileID: 3287822806366160516}
-  m_Father: {fileID: 5720536093127101048}
+  m_Father: {fileID: 1225377520901944351}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0.6}
@@ -19989,7 +19989,7 @@ RectTransform:
   - {fileID: 2963426634248752262}
   - {fileID: 4943641425180802642}
   - {fileID: 3044151348964322433}
-  m_Father: {fileID: 5720536093127101048}
+  m_Father: {fileID: 1225377520901944351}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0.6}
@@ -20237,7 +20237,7 @@ MonoBehaviour:
   _swipeScrollRect: {fileID: 0}
   _tabLine: {fileID: 5009642048386207442}
   _clanSwipeRoot: {fileID: 3507389722048683969}
-  _tabButtonsRoot: {fileID: 7153313707218281471}
+  _tabButtonsRoot: {fileID: 0}
   _membersPageController: {fileID: 578711181875780854}
   _joinClanButton: {fileID: 7990530695742121514}
   _leaveClanButton: {fileID: 1855435157613808193}
@@ -22760,22 +22760,22 @@ PrefabInstance:
     - target: {fileID: 65864164231725841, guid: 7316bdf50a7cbc2478ed256a2cac4374,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 65864164231725841, guid: 7316bdf50a7cbc2478ed256a2cac4374,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 65864164231725841, guid: 7316bdf50a7cbc2478ed256a2cac4374,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 30
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 65864164231725841, guid: 7316bdf50a7cbc2478ed256a2cac4374,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -35.25
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4591722560903970333, guid: 7316bdf50a7cbc2478ed256a2cac4374,
         type: 3}
@@ -22885,22 +22885,22 @@ PrefabInstance:
     - target: {fileID: 8550413923174453619, guid: 7316bdf50a7cbc2478ed256a2cac4374,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8550413923174453619, guid: 7316bdf50a7cbc2478ed256a2cac4374,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8550413923174453619, guid: 7316bdf50a7cbc2478ed256a2cac4374,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 136.10385
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8550413923174453619, guid: 7316bdf50a7cbc2478ed256a2cac4374,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -35.25
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -29364,11 +29364,6 @@ PrefabInstance:
       propertyPath: _tabLineButtons.Array.size
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 406035742189508960, guid: 57890b7dbec8a984abb7d8148eefe9f6,
-        type: 3}
-      propertyPath: _tabLineButtons.Array.data[3]._tabObjectHandler
-      value: 
-      objectReference: {fileID: 5256988482659745761}
     - target: {fileID: 451323183445821071, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -30571,19 +30566,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8467395331316628293, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
-      propertyPath: _buttons.Array.data[0].Button
-      value: 
-      objectReference: {fileID: 689018572431224189}
-    - target: {fileID: 8467395331316628293, guid: 57890b7dbec8a984abb7d8148eefe9f6,
-        type: 3}
       propertyPath: _buttons.Array.data[0].Window
       value: 
       objectReference: {fileID: 6980330178539043760}
-    - target: {fileID: 8467395331316628293, guid: 57890b7dbec8a984abb7d8148eefe9f6,
-        type: 3}
-      propertyPath: _buttons.Array.data[1].Button
-      value: 
-      objectReference: {fileID: 1729080720207557775}
     - target: {fileID: 8467395331316628293, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: _buttons.Array.data[1].Window
@@ -30732,39 +30717,27 @@ PrefabInstance:
         type: 3}
       insertIndex: 1
       addedObject: {fileID: 6009921370071276407}
-    - targetCorrespondingSourceObject: {fileID: 1100066851907345866, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+    - targetCorrespondingSourceObject: {fileID: 5847431402921993133, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
-      insertIndex: 3
+      insertIndex: -1
       addedObject: {fileID: 5400720388379198547}
-    - targetCorrespondingSourceObject: {fileID: 1100066851907345866, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+    - targetCorrespondingSourceObject: {fileID: 5847431402921993133, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
-      insertIndex: 4
+      insertIndex: -1
       addedObject: {fileID: 7930443158880524603}
-    - targetCorrespondingSourceObject: {fileID: 1100066851907345866, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+    - targetCorrespondingSourceObject: {fileID: 5847431402921993133, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
-      insertIndex: 5
+      insertIndex: -1
       addedObject: {fileID: 5814791538554293689}
-    - targetCorrespondingSourceObject: {fileID: 1100066851907345866, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+    - targetCorrespondingSourceObject: {fileID: 5847431402921993133, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
-      insertIndex: 6
+      insertIndex: -1
       addedObject: {fileID: 2658222722651117880}
     - targetCorrespondingSourceObject: {fileID: 7460509455693929193, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 4362333129766944006}
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8625414895461120740, guid: 57890b7dbec8a984abb7d8148eefe9f6,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4811438505542310079}
-    - targetCorrespondingSourceObject: {fileID: 7620845218128519958, guid: 57890b7dbec8a984abb7d8148eefe9f6,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1144059092517338051}
-    - targetCorrespondingSourceObject: {fileID: 6417290948194480819, guid: 57890b7dbec8a984abb7d8148eefe9f6,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3631611850121953553}
     - targetCorrespondingSourceObject: {fileID: 1270917773428193314, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       insertIndex: -1
@@ -30778,18 +30751,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1205678126523498828}
   m_SourcePrefab: {fileID: 100100000, guid: 57890b7dbec8a984abb7d8148eefe9f6, type: 3}
---- !u!114 &689018572431224189 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5307693372017883855, guid: 57890b7dbec8a984abb7d8148eefe9f6,
-    type: 3}
-  m_PrefabInstance: {fileID: 4622757815620655026}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &854831379015335355 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5475160131856116233, guid: 57890b7dbec8a984abb7d8148eefe9f6,
@@ -30802,64 +30763,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1729080720207557775 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6330293596801491773, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+--- !u!224 &1225377520901944351 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5847431402921993133, guid: 57890b7dbec8a984abb7d8148eefe9f6,
     type: 3}
   m_PrefabInstance: {fileID: 4622757815620655026}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1 &1813149238839534849 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6417290948194480819, guid: 57890b7dbec8a984abb7d8148eefe9f6,
-    type: 3}
-  m_PrefabInstance: {fileID: 4622757815620655026}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &3631611850121953553
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1813149238839534849}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _finnishText: "J\xE4senten toimintaloki"
-  _englishText: Member Activity Log
 --- !u!224 &2859320047806877019 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7460509455693929193, guid: 57890b7dbec8a984abb7d8148eefe9f6,
     type: 3}
   m_PrefabInstance: {fileID: 4622757815620655026}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &3019096086061135012 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7620845218128519958, guid: 57890b7dbec8a984abb7d8148eefe9f6,
-    type: 3}
-  m_PrefabInstance: {fileID: 4622757815620655026}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1144059092517338051
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3019096086061135012}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _finnishText: "J\xE4senet & roolit"
-  _englishText: Members & roles
 --- !u!223 &3093391099001761516 stripped
 Canvas:
   m_CorrespondingSourceObject: {fileID: 7695168990374541662, guid: 57890b7dbec8a984abb7d8148eefe9f6,
@@ -30892,26 +30807,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _finnishText: "J\xE4senten toimintaloki"
   _englishText: Member Activity Log
---- !u!1 &4005094903635275094 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8625414895461120740, guid: 57890b7dbec8a984abb7d8148eefe9f6,
-    type: 3}
-  m_PrefabInstance: {fileID: 4622757815620655026}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &4811438505542310079
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4005094903635275094}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _finnishText: Klaanin profiili
-  _englishText: Clan profile
 --- !u!114 &4074219520292187764 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8695849090593896902, guid: 57890b7dbec8a984abb7d8148eefe9f6,
@@ -30936,24 +30831,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb907510ee6a3054589606cf24e7d2ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5256988482659745761 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 636070301481445459, guid: 57890b7dbec8a984abb7d8148eefe9f6,
-    type: 3}
-  m_PrefabInstance: {fileID: 4622757815620655026}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48bd9b2820919a14b9d5fc0f9e5bfe9d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!224 &5720536093127101048 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 1100066851907345866, guid: 57890b7dbec8a984abb7d8148eefe9f6,
-    type: 3}
-  m_PrefabInstance: {fileID: 4622757815620655026}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &5873926769912852368 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1270917773428193314, guid: 57890b7dbec8a984abb7d8148eefe9f6,
@@ -30974,12 +30851,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _finnishText: Klaanin profiili
   _englishText: Clan profile
---- !u!1 &7153313707218281471 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2549874491624223821, guid: 57890b7dbec8a984abb7d8148eefe9f6,
-    type: 3}
-  m_PrefabInstance: {fileID: 4622757815620655026}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &7261440966492071185 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2657835901824037539, guid: 57890b7dbec8a984abb7d8148eefe9f6,
