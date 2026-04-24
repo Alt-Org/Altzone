@@ -79,12 +79,6 @@ namespace Battle.QSimulation
                 inputDebugSummary += "Character Swap";
                 inputNotEmpty = true;
             }
-            if (input->GiveUpInput != false)
-            {
-                if (inputDebugSummary != "") inputDebugSummary += ", ";
-                inputDebugSummary += "Give Up";
-                inputNotEmpty = true;
-            }
 
             if (inputNotEmpty)
             {
@@ -101,7 +95,6 @@ namespace Battle.QSimulation
                                   "    RotationValue:                 {6},\n" +
                                   "    AbilityActivate:               {7},\n" +
                                   "    PlayerCharacterNumber:         {8},\n" +
-                                  "    GiveUpInput:                   {9}\n" +
                                   "}}",
                                   input->MovementInput,
                                   input->MovementDirectionIsNormalized,
@@ -111,8 +104,7 @@ namespace Battle.QSimulation
                                   input->RotationInput,
                                   input->RotationValue,
                                   input->AbilityActivate,
-                                  input->PlayerCharacterNumber,
-                                  input->GiveUpInput
+                                  input->PlayerCharacterNumber
                     )
                 );
             }

@@ -76,14 +76,6 @@ namespace Battle.View.Player
             _characterNumber = characterNumber;
         }
 
-        /// <summary>
-        /// Called when the player presses the give up button.
-        /// </summary>
-        public void OnGiveUp()
-        {
-            _onGiveUp = true;
-        }
-
         /// @}
 
         /// <summary>
@@ -155,9 +147,6 @@ namespace Battle.View.Player
 
         /// <summary>Saved character number from character swapping input.</summary>
         private int _characterNumber = -1;
-
-        /// <summary>Give up button state</summary>
-        private bool _onGiveUp = false;
 
         /// <summary>Bool to block screen input</summary>
         private bool _blockScreenInput = false;
@@ -263,7 +252,7 @@ namespace Battle.View.Player
             RotationInputInfo rotationInputInfo = new(false, FP._0);
 
             // check button input
-            if (_characterNumber > -1 || _onGiveUp) _blockScreenInput = true;
+            if (_characterNumber > -1) _blockScreenInput = true;
 
             Vector2 clickPosition = Vector2.zero;
             Vector3 unityPosition = Vector3.zero;
@@ -300,7 +289,6 @@ namespace Battle.View.Player
                 RotationValue                 = rotationInputInfo.RotationValue,
                 AbilityActivate               = Time.time - _lastTapTime < DoubleTapInterval && mouseClick && Vector3.Distance(_lastTapPosition, unityPosition) < DoubleTapDistance,
                 PlayerCharacterNumber         = _characterNumber,
-                GiveUpInput                   = _onGiveUp
             };
 
             DeterministicInputFlags inputFlags = DeterministicInputFlags.Repeatable;
@@ -338,7 +326,6 @@ namespace Battle.View.Player
             _inputDebugNumber++;
 
             // reset
-            _onGiveUp        = false;
             _characterNumber = -1;
         }
 

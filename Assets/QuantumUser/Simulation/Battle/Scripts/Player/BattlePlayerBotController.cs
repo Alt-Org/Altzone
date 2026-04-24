@@ -48,7 +48,7 @@ namespace Battle.QSimulation.Player
 
             BattleCharacterBase[] botCharacters = new BattleCharacterBase[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
             for (int i = 0; i < botCharacters.Length; i++)
-            {            
+            {
                 int selectedCharacter;
                 do
                 {
@@ -56,7 +56,7 @@ namespace Battle.QSimulation.Player
                 } while (selectedBotCharacters.Contains(selectedCharacter));
 
                 selectedBotCharacters[i] = selectedCharacter;
-                botCharacters[i]         = playerBotSpec.BotCharacterSelection[selectedCharacter];             
+                botCharacters[i]         = playerBotSpec.BotCharacterSelection[selectedCharacter];
             }
             return botCharacters;
         }
@@ -174,7 +174,6 @@ namespace Battle.QSimulation.Player
                 RotationInput                 = false,
                 RotationValue                 = FP._0,
                 PlayerCharacterNumber         = -1,
-                GiveUpInput                   = false,
                 AbilityActivate               = false
             };
         }
