@@ -979,21 +979,21 @@ namespace Quantum {
   public unsafe partial struct Input {
     public const Int32 SIZE = 80;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(20)]
+    [FieldOffset(16)]
     public QBoolean IsValid;
     [FieldOffset(4)]
     public Int32 DebugNumber;
     [FieldOffset(0)]
     public BattleMovementInputType MovementInput;
-    [FieldOffset(24)]
+    [FieldOffset(20)]
     public QBoolean MovementDirectionIsNormalized;
-    [FieldOffset(32)]
+    [FieldOffset(28)]
     public BattleGridPosition MovementPositionTarget;
     [FieldOffset(64)]
     public FPVector2 MovementPositionMove;
     [FieldOffset(48)]
     public FPVector2 MovementDirection;
-    [FieldOffset(28)]
+    [FieldOffset(24)]
     public QBoolean RotationInput;
     [FieldOffset(40)]
     public FP RotationValue;
@@ -1001,8 +1001,6 @@ namespace Quantum {
     public QBoolean AbilityActivate;
     [FieldOffset(8)]
     public Int32 PlayerCharacterNumber;
-    [FieldOffset(16)]
-    public QBoolean GiveUpInput;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 19249;
@@ -1017,7 +1015,6 @@ namespace Quantum {
         hash = hash * 31 + RotationValue.GetHashCode();
         hash = hash * 31 + AbilityActivate.GetHashCode();
         hash = hash * 31 + PlayerCharacterNumber.GetHashCode();
-        hash = hash * 31 + GiveUpInput.GetHashCode();
         return hash;
       }
     }
@@ -1040,7 +1037,6 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->DebugNumber);
         serializer.Stream.Serialize(&p->PlayerCharacterNumber);
         QBoolean.Serialize(&p->AbilityActivate, serializer);
-        QBoolean.Serialize(&p->GiveUpInput, serializer);
         QBoolean.Serialize(&p->IsValid, serializer);
         QBoolean.Serialize(&p->MovementDirectionIsNormalized, serializer);
         QBoolean.Serialize(&p->RotationInput, serializer);
@@ -1937,7 +1933,6 @@ namespace Quantum {
       i->RotationValue = input.RotationValue;
       i->AbilityActivate = input.AbilityActivate;
       i->PlayerCharacterNumber = input.PlayerCharacterNumber;
-      i->GiveUpInput = input.GiveUpInput;
     }
     public Input* GetPlayerInput(PlayerRef player) {
       if ((int)player >= (int)_globals->input.Length) { throw new System.ArgumentOutOfRangeException("player"); }
