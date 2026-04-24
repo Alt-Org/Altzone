@@ -186,6 +186,11 @@ namespace Battle.QSimulation.Player
                     continue;
                 }
 
+                if (f.GetPlayerCommand(playerData->PlayerRef) is CommandActivateAbility abilityCommand)
+                {
+                    abilityCommand.Execute(f, playerHandle);
+                }
+
                 input = GetInput(f, playerHandle, playerData, &stackInputStorage);
 
                 if (HandleOutOfPlay(f, playerHandle)) continue;
@@ -275,7 +280,6 @@ namespace Battle.QSimulation.Player
                     MovementDirection             = FPVector2.Zero,
                     RotationInput                 = false,
                     RotationValue                 = FP._0,
-                    AbilityActivate               = false
                 };
             }
 
@@ -464,11 +468,6 @@ namespace Battle.QSimulation.Player
         private void HandleInPlay(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity, Transform2D* playerTransform)
         {
             bool updateMovement = true;
-
-            if (input->AbilityActivate)
-            {
-                playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0_50);
-            }
 
             if (!playerData->AbilityCooldownSec.IsRunning(f) && playerData->AbilityActivateBufferSec.IsRunning(f))
             {

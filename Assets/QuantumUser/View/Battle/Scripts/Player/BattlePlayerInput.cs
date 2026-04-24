@@ -28,6 +28,7 @@ using Battle.View.Game;
 
 using MovementInputType = SettingsCarrier.BattleMovementInputType;
 using RotationInputType = SettingsCarrier.BattleRotationInputType;
+using Battle.QSimulation.Player;
 
 namespace Battle.View.Player
 {
@@ -258,6 +259,14 @@ namespace Battle.View.Player
                 _blockScreenInput = false;
             }
 
+            bool abilityActivate = Time.time - _lastTapTime < DoubleTapInterval && mouseClick && Vector3.Distance(_lastTapPosition, unityPosition) < DoubleTapDistance;
+
+            if (abilityActivate)
+            {
+                PlayerRef playerRef = QuantumRunner.Default.Game.GetLocalPlayers()[0];
+                QuantumRunner.Default.Game.SendCommand(playerRef, new CommandActivateAbility());
+            }
+
             //{ create and set input
 
             Input input = new()
@@ -271,7 +280,6 @@ namespace Battle.View.Player
                 MovementDirection             = movementInputInfo.MovementDirection,
                 RotationInput                 = rotationInputInfo.RotationInput,
                 RotationValue                 = rotationInputInfo.RotationValue,
-                AbilityActivate               = Time.time - _lastTapTime < DoubleTapInterval && mouseClick && Vector3.Distance(_lastTapPosition, unityPosition) < DoubleTapDistance,
             };
 
             DeterministicInputFlags inputFlags = DeterministicInputFlags.Repeatable;
