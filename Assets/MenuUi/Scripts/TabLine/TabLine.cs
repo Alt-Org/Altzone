@@ -104,6 +104,8 @@ namespace MenuUi.Scripts.TabLine
 
                 _tabLineButtons[i].SetInactiveVisuals();
             }
+
+            SetTabOnTop(index);
         }
 
 
@@ -119,6 +121,15 @@ namespace MenuUi.Scripts.TabLine
             }
         }
 
+        private void SetTabOnTop(int index)
+        {
+            foreach (TabLineButton tabline in _tabLineButtons)
+            {
+                tabline.TabObjectHandler.transform.SetAsLastSibling();
+            }
+            _tabLineButtons[index].TabObjectHandler.transform.SetAsLastSibling();
+        }
+
 
         [Serializable]
         private class TabLineButton
@@ -127,6 +138,8 @@ namespace MenuUi.Scripts.TabLine
             [SerializeField] private TabObjectHandler _tabObjectHandler;
             [SerializeField] private Sprite _tablineImage;
             [SerializeField] private Color _stripeColour;
+
+            public TabObjectHandler TabObjectHandler { get => _tabObjectHandler;}
 
             public (Sprite, Color) SetActiveVisuals() => _tabObjectHandler.SetActiveVisuals(_tablineImage, _stripeColour);
             public void SetInactiveVisuals() => _tabObjectHandler.SetInactiveVisuals();
