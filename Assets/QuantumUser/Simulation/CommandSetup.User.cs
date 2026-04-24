@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Battle.QSimulation.Player;
 
-
 // Quantum usings
 using Photon.Deterministic;
 
@@ -16,6 +15,7 @@ namespace Quantum
             // factories.Add(new NavMeshAgentTestSystem.RunTest());
 
             factories.Add(new CommandGiveUp());
+            factories.Add(new CommandSwapCharacter());
         }
     }
 }
