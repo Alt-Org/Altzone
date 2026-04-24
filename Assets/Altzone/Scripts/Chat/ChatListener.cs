@@ -137,12 +137,16 @@ namespace Altzone.Scripts.Chat
         {
             ActiveChatChannel = SettingsCarrier.Instance.FetchChatChannel();
             ServerManager.OnLogInStatusChanged += HandleAccountChange;
+            ApplicationController.OnAppResume += ResetChat;
+            ApplicationController.OnAppPause += CloseSocketOnPause;
             HandleAccountChange(ServerManager.Instance.isLoggedIn);
         }
 
         private void OnDestroy()
         {
             ServerManager.OnLogInStatusChanged -= HandleAccountChange;
+            ApplicationController.OnAppResume -= ResetChat;
+            ApplicationController.OnAppPause -= CloseSocketOnPause;
             CloseSocket(true);
         }
 
@@ -207,6 +211,8 @@ namespace Altzone.Scripts.Chat
             await _socket.Connect();
         }
 
+        private void CloseSocketOnPause() => CloseSocket();
+
         private async void CloseSocket(bool onDestroy = false)
         {
             _id = null;
@@ -269,6 +275,7 @@ namespace Altzone.Scripts.Chat
 
         public async void SendMessage(string message, Mood emotion, ChatChannelType channel)
         {
+            if (_socket == null) Debug.LogError("Socket is null");
             if (_socket.State == WebSocketState.Open)
             {
                 string EventType = null;
@@ -340,6 +347,19 @@ namespace Altzone.Scripts.Chat
                 default:
                     return null;
             }
+        }
+
+        private void ResetChat() => StartCoroutine(ResetChatCoroutine());
+
+        private IEnumerator ResetChatCoroutine()
+        {
+            yield return new WaitForSeconds(0.5f);
+            if (_socket != null) CloseSocket();
+            yield return new WaitUntil(() => _socket == null);
+            OpenSocket();
+            yield return new WaitUntil(() => _socket != null && _socket.State == WebSocketState.Open);
+            yield return InitializeChats();
+
         }
     }
 }

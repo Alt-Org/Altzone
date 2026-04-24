@@ -411,7 +411,7 @@ GameObject:
   - component: {fileID: 1549992436996316673}
   - component: {fileID: 4852192207100237568}
   - component: {fileID: 3912996687494485023}
-  - component: {fileID: 3269035029798692982}
+  - component: {fileID: 3206061393854749738}
   - component: {fileID: 5002973413374723598}
   m_Layer: 5
   m_Name: 'Scroll View '
@@ -479,34 +479,35 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3269035029798692982
+--- !u!114 &3206061393854749738
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 437076192524883807}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
+  m_Script: {fileID: 11500000, guid: 86a6ac2cbdfc56347bcf51ef5592b643, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Content: {fileID: 7602696445679119714}
-  m_Horizontal: 1
-  m_Vertical: 0
-  m_MovementType: 2
-  m_Elasticity: 0.1
-  m_Inertia: 1
-  m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 10
-  m_Viewport: {fileID: 4805640095624143514}
-  m_HorizontalScrollbar: {fileID: 9204516740079476461}
-  m_VerticalScrollbar: {fileID: 0}
-  m_HorizontalScrollbarVisibility: 0
-  m_VerticalScrollbarVisibility: 0
-  m_HorizontalScrollbarSpacing: 0
-  m_VerticalScrollbarSpacing: 0
-  m_OnValueChanged:
+  content: {fileID: 7602696445679119714}
+  horizontallyScrollable: 1
+  verticallyScrollable: 1
+  scrollingMovementType: 2
+  elasticity: 0.1
+  inertia: 1
+  decelerationRate: 0.135
+  scrollSensitivity: 10
+  viewportRectTransform: {fileID: 4805640095624143514}
+  horizontalScrollbar: {fileID: 9204516740079476461}
+  verticalScrollbar: {fileID: 0}
+  horizontalScrollbarVisibility: 0
+  verticalScrollbarVisibility: 0
+  horizontalScrollbarSpacing: 0
+  verticalScrollbarSpacing: 0
+  forwardUnusedEventsToContainer: 0
+  onValueChanged:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &5002973413374723598
@@ -516,7 +517,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 437076192524883807}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5017d80d2f08ad44fa43e576bbfa6cd7, type: 3}
   m_Name: 
@@ -8290,7 +8291,7 @@ PrefabInstance:
     - target: {fileID: 6742122783703177881, guid: 796d78f00076b0444a04f0d4828c98c0,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -187.49983
+      value: -187.49994
       objectReference: {fileID: 0}
     - target: {fileID: 6755177275125662699, guid: 796d78f00076b0444a04f0d4828c98c0,
         type: 3}
@@ -10204,7 +10205,7 @@ PrefabInstance:
     - target: {fileID: 406035742189508960, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: _getActiveButtonFromSwipe
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 406035742189508960, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}

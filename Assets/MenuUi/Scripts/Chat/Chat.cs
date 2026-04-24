@@ -12,6 +12,7 @@ using Altzone.Scripts.Chat;
 using Altzone.Scripts.Model.Poco.Player;
 using System.Linq;
 using MenuUi.Scripts.Window;
+using System;
 
 public class Chat : AltMonoBehaviour
 {
@@ -24,13 +25,15 @@ public class Chat : AltMonoBehaviour
     [SerializeField] private GameObject _clanChatContent;
     private GameObject _currentContent; // Tällä hetkellä aktiivinen chatin content
 
-    [Header("Send buttons")]
+    [Header("Emotions buttons")]
     [SerializeField] private GameObject _sendButtonUI;
     [SerializeField] private GameObject _sendButtonSadness;
     [SerializeField] private GameObject _sendButtonAnger;
     [SerializeField] private GameObject _sendButtonJoy;
     [SerializeField] private GameObject _sendButtonPlayful;
     [SerializeField] private GameObject _sendButtonLove;
+    [Header("Send button")]
+    [SerializeField] private GameObject _sendButton;
 
     [Header("InputField")]
     [SerializeField] private TMP_InputField _inputField;
@@ -99,6 +102,7 @@ public class Chat : AltMonoBehaviour
     private bool _sendButtonsAreClosed = true;
 
     [SerializeField] private GameObject _InputArea;
+    [SerializeField] private GameObject _InputAreaArrow;
 
     public delegate void SelectedMessageChanged(MessageObjectHandler handler);
     public static event SelectedMessageChanged OnSelectedMessageChanged;
@@ -107,6 +111,8 @@ public class Chat : AltMonoBehaviour
     public CharacterResponseList characterResponseList;
     public Mood currentMood = Mood.Neutral;
     public GameObject _responsesData;
+
+    private bool _miniMizeReaction = true, _miniMizeQuickMessage = true;
 
     public enum ChatType //What Channel we are in
     {
@@ -234,35 +240,31 @@ public class Chat : AltMonoBehaviour
             if(buttonUsed == _sendButtonSadness)
             {
                 currentMood = Mood.Sad;
-
-                SendChatMessage(Mood.Sad);
                 gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Sadness);
             }
             else if (buttonUsed == _sendButtonAnger)
             {
                 currentMood = Mood.Angry;
-                SendChatMessage(Mood.Angry);
                 gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Anger);
             }
             else if (buttonUsed == _sendButtonJoy)
             {
                 currentMood = Mood.Happy;
-                SendChatMessage(Mood.Happy);
                 gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Joy);
             }
             else if (buttonUsed == _sendButtonPlayful)
             {
                 currentMood = Mood.Wink;
-                SendChatMessage(Mood.Wink);
                 gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Playful);
             }
             else if (buttonUsed == _sendButtonLove)
             {
                 currentMood = Mood.Love;
-                SendChatMessage(Mood.Love);
                 gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Love);
             }
-            AddResponses();
+            _miniMizeQuickMessage = false;
+            MinimizeOptions();
+            //AddResponses();
         }
     }
 
@@ -294,13 +296,20 @@ public class Chat : AltMonoBehaviour
         }
     }
 
-    public void SendChatMessage(Mood mood)
+    public void SendChatMessage()
     {
         // Lähettää käyttäjän syöttämän viestin aktiiviseen chattiin
         if (_currentContent == null)
         {
             Debug.LogWarning("Aktiivista Chat ei ole valittu");
         }
+
+        //Incase user does not picks any Moods it will default to Happy instead
+        if (currentMood == Mood.Neutral)
+        {
+            currentMood = Mood.Happy;
+        }
+
 
         if (_inputField != null && !string.IsNullOrEmpty(_inputField.text) && _inputField.text.Trim().Length >= 3)
         {
@@ -320,7 +329,7 @@ public class Chat : AltMonoBehaviour
                 _inputField.text = "";
                 return;
             }
-            ChatListener.Instance.SendMessage(_inputField.text, mood, ChatListener.Instance.ActiveChatChannel);
+            ChatListener.Instance.SendMessage(_inputField.text, currentMood, ChatListener.Instance.ActiveChatChannel);
             //DisplayMessage(_inputField.text, GetMessagePrefab(mood, true));
             _inputField.text = "";
             GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
@@ -329,7 +338,6 @@ public class Chat : AltMonoBehaviour
             if (_currentContent == _globalChatContent)
                 _globalChat.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             MinimizeOptions();
-            _lastSendButtonUsed.GetComponent<Button>().interactable = false;
         }
         else
         {
@@ -346,10 +354,9 @@ public class Chat : AltMonoBehaviour
             ChatResponseObject convertedResponse = messageList.FirstOrDefault(c => c.ResponseId == message.ResponseId);
             string textFromButton = convertedResponse.Response;
             _reactionAvailable = true;
+            _miniMizeReaction = false;
             MinimizeOptions();
             _inputField.text = textFromButton;
-            GameObject sendButton = _sendButtons[0];
-            CheckSendButton(sendButton);
         }
         else
         {
@@ -587,26 +594,7 @@ public class Chat : AltMonoBehaviour
     public void OpenQuickMessages()
     {
         _quickMessages.SetActive(true);
-        ///This is so that the reaction UI will stay visiable but not useable
-        foreach(Transform child in _InputArea.transform)
-        {
-            if(child.gameObject == _sendButtonUI)
-            {
-            _lastSendButtonUsed.GetComponent<Button>().interactable = false;
-
-                ///Incase if the user happens to have emotion selection on 
-                foreach (var button in _sendButtons)
-                {
-                    button.SetActive(_lastSendButtonUsed == button);
-                }
-                _sendButtonsAreClosed = true;
-
-                continue;
-            }
-
-
-            child.gameObject.SetActive(false);
-        }
+        _InputAreaArrow.transform.rotation =  Quaternion.Euler(0f, 0f, 0f);
         CloseOnButtonClick(true);
     }
 
@@ -615,27 +603,25 @@ public class Chat : AltMonoBehaviour
     /// </summary>
     public void MinimizeOptions()
     {
-        _quickMessages.SetActive(false);
-        ///This is so that the reaction comes back being useable
-        ///To give user a visual interpretation that they cant put a reaction till there's been text inserted
-        foreach (Transform child in _InputArea.transform)
-        {
-            //Checks if there's text in textbox
-            if (child.gameObject == _sendButtonUI)
-            {
-            _lastSendButtonUsed.GetComponent<Button>().interactable = true;
-            continue;
-            }
 
-            child.gameObject.SetActive(true);
+        if (_miniMizeQuickMessage)
+        {
+        _quickMessages.SetActive(false);
+        _InputAreaArrow.transform.rotation = Quaternion.Euler(0f, 0f, 180f);
         }
 
         // Deactivate all but last used button
+
+        if(_miniMizeReaction)
         foreach (var button in _sendButtons)
         {
             button.SetActive(_lastSendButtonUsed == button);
         }
         _sendButtonsAreClosed = true;
+
+
+        _miniMizeQuickMessage = true;
+        _miniMizeReaction = true;
     }
 
     /// <summary>
