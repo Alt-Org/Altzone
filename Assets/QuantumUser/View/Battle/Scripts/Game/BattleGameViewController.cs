@@ -144,8 +144,12 @@ namespace Battle.View.Game
         /// <param name="characterNumber">The character number which the local player selected.</param>
         public void UiInputOnCharacterSelected(int characterNumber)
         {
-            _playerInput.OnCharacterSelected(characterNumber);
-
+            PlayerRef playerRef;
+            playerRef = QuantumRunner.Default.Game.GetLocalPlayers()[0];
+            QuantumRunner.Default.Game.SendCommand(playerRef, new CommandSwapCharacter
+            {
+                CharacterNumber = characterNumber
+            });
             _debugLogger.LogFormat("Character number {0} button pressed!", characterNumber);
         }
 

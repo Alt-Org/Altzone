@@ -180,9 +180,14 @@ namespace Battle.QSimulation.Player
                     continue;
                 }
 
+                if (f.GetPlayerCommand(playerData->PlayerRef) is CommandSwapCharacter swapCharacterCommand)
+                {
+                    swapCharacterCommand.Execute(f, playerHandle);
+                    continue;
+                }
+
                 input = GetInput(f, playerHandle, playerData, &stackInputStorage);
 
-                if (HandleCharacterSwapping(f, input, playerHandle)) continue;
                 if (HandleOutOfPlay(f, playerHandle)) continue;
 
                 HandleInPlay(f, input, playerHandle, playerData, playerEntity, playerTransform);
@@ -270,7 +275,6 @@ namespace Battle.QSimulation.Player
                     MovementDirection             = FPVector2.Zero,
                     RotationInput                 = false,
                     RotationValue                 = FP._0,
-                    PlayerCharacterNumber         = -1,
                     AbilityActivate               = false
                 };
             }
@@ -387,23 +391,19 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Handle of the player.</param>
         ///
         /// <returns>True if character swapped.</returns>
-        private bool HandleCharacterSwapping(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle)
+        public static void HandleCharacterSwapping(Frame f, BattlePlayerManager.PlayerHandle playerHandle, int playerCharacterNumber)
         {
-            if (input->PlayerCharacterNumber < 0) return false;
-
             s_debugLogger.LogFormat(f, "({0}) Character swap input received", playerHandle.Slot);
 
             if (!playerHandle.AllowCharacterSwapping)
             {
                 s_debugLogger.LogFormat(f, "({0}) Character swap input rejected, as AllowCharacterSwapping == false", playerHandle.Slot);
-                return false;
+                return;
             }
 
-            s_debugLogger.LogFormat(f, "({0}) Swapping to character number: {1}", playerHandle.Slot, input->PlayerCharacterNumber);
+            s_debugLogger.LogFormat(f, "({0}) Swapping to character number: {1}", playerHandle.Slot, playerCharacterNumber);
 
-            BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, input->PlayerCharacterNumber);
-
-            return true;
+            BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, playerCharacterNumber);
         }
 
         /// <summary>
