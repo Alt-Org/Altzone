@@ -16,6 +16,7 @@ namespace Quantum
 
             factories.Add(new CommandGiveUp());
             factories.Add(new CommandSwapCharacter());
+            factories.Add(new CommandActivateAbility());
         }
     }
 }
