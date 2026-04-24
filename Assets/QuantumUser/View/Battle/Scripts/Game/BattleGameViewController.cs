@@ -129,7 +129,10 @@ namespace Battle.View.Game
         public void UiInputOnLocalPlayerGiveUp()
         {
             _debugLogger.Log("Give up button pressed");
-            _playerInput.OnGiveUp();
+            PlayerRef playerRef;
+            playerRef = QuantumRunner.Default.Game.GetLocalPlayers()[0];
+            QuantumRunner.Default.Game.SendCommand(playerRef, new CommandGiveUp());
+            _debugLogger.Log("Give up button pressed, command sent");
         }
 
         /// <summary>
