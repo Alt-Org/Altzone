@@ -613,6 +613,7 @@ GameObject:
   - component: {fileID: 3748270704506197941}
   - component: {fileID: 4155894184517576378}
   - component: {fileID: 6962062148109426938}
+  - component: {fileID: 5975376795420855506}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -739,6 +740,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5975376795420855506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2036663653193865101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: 
+  _englishText: 
 --- !u!1 &2082420161837013928
 GameObject:
   m_ObjectHideFlags: 0
@@ -1132,6 +1147,7 @@ GameObject:
   - component: {fileID: 7629587390167403345}
   - component: {fileID: 7272552048441911586}
   - component: {fileID: 1514513068689428654}
+  - component: {fileID: 3697920440054853738}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1258,6 +1274,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3697920440054853738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2954956869144894732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Nykyiset
+  _englishText: Current
 --- !u!1 &3299136287100499292
 GameObject:
   m_ObjectHideFlags: 0
@@ -2311,6 +2341,7 @@ GameObject:
   - component: {fileID: 1234207247718442897}
   - component: {fileID: 7282082418946357659}
   - component: {fileID: 2961708247313983400}
+  - component: {fileID: 7601350075345447447}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -2437,6 +2468,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7601350075345447447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7195826088044203110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Menneet
+  _englishText: Past
 --- !u!1 &7737395783516199858
 GameObject:
   m_ObjectHideFlags: 0
