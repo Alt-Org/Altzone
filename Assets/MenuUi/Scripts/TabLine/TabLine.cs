@@ -14,7 +14,8 @@ namespace MenuUi.Scripts.TabLine
         [SerializeField] private TabLineButton[] _tabLineButtons;
         [SerializeField] private Image _tabLineRibbon;
         [SerializeField] private Image _tabLineImage;
-        [SerializeField] private Color _tabColor;
+        [SerializeField] private Color _tabColorActive;
+        [SerializeField] private Color _tabColorInactive;
 
         private bool _lockActiveFromSwipe = false;
 
@@ -35,8 +36,8 @@ namespace MenuUi.Scripts.TabLine
         {
             foreach (TabLineButton button in _tabLineButtons)
             {
-                if (_tabColor != Color.white) button.SetColour(_tabColor);
-                else button.SetColour(_tabLineRibbon != null ? _tabLineRibbon.color : Color.white);
+                if (_tabColorActive != Color.white || _tabColorInactive != Color.white) button.SetColour(_tabColorActive, _tabColorInactive);
+                else button.SetColour(Color.white, Color.gray);
             }
 
             if (_getActiveButtonFromSwipe)
@@ -122,7 +123,7 @@ namespace MenuUi.Scripts.TabLine
 
             public Sprite SetActiveVisuals() => _tabObjectHandler.SetActiveVisuals(_tablineImage);
             public void SetInactiveVisuals() => _tabObjectHandler.SetInactiveVisuals();
-            public void SetColour(Color colour) => _tabObjectHandler.SetColour(colour);
+            public void SetColour(Color activeColour, Color inactiveColour) => _tabObjectHandler.SetColour(activeColour, inactiveColour);
         }
 
 

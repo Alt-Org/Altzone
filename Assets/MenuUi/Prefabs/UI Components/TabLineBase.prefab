@@ -815,7 +815,8 @@ MonoBehaviour:
     _tablineImage: {fileID: 0}
   _tabLineRibbon: {fileID: 5455678281516419644}
   _tabLineImage: {fileID: 6718291466169380828}
-  _tabColor: {r: 1, g: 1, b: 1, a: 1}
+  _tabColorActive: {r: 1, g: 1, b: 1, a: 1}
+  _tabColorInactive: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &3713396448592114125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1504,7 +1505,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tabBaseComponent: {fileID: 8801200437440582328}
   _tabImageComponent: {fileID: 2168207760192879783}
-  _tabDarkeningImage: {fileID: 0}
   _tabText: {fileID: 1378514343378490103}
 --- !u!1 &4630157755838199081
 GameObject:
@@ -1795,7 +1795,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tabBaseComponent: {fileID: 4361067316935731427}
   _tabImageComponent: {fileID: 535507341082982836}
-  _tabDarkeningImage: {fileID: 0}
   _tabText: {fileID: 1378514343378490103}
 --- !u!1 &4966541303567370034
 GameObject:
@@ -2528,7 +2527,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tabBaseComponent: {fileID: 2578675090702936587}
   _tabImageComponent: {fileID: 2769878643668684609}
-  _tabDarkeningImage: {fileID: 0}
   _tabText: {fileID: 1378514343378490103}
 --- !u!1 &8802836534091945003
 GameObject:
