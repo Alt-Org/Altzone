@@ -73,12 +73,6 @@ namespace Battle.QSimulation
                 inputDebugSummary += "Ability Activate";
                 inputNotEmpty = true;
             }
-            if (input->PlayerCharacterNumber > -1)
-            {
-                if (inputDebugSummary != "") inputDebugSummary += ", ";
-                inputDebugSummary += "Character Swap";
-                inputNotEmpty = true;
-            }
 
             if (inputNotEmpty)
             {
@@ -94,7 +88,6 @@ namespace Battle.QSimulation
                                   "    RotationInput:                 {5},\n" +
                                   "    RotationValue:                 {6},\n" +
                                   "    AbilityActivate:               {7},\n" +
-                                  "    PlayerCharacterNumber:         {8},\n" +
                                   "}}",
                                   input->MovementInput,
                                   input->MovementDirectionIsNormalized,
@@ -103,8 +96,7 @@ namespace Battle.QSimulation
                                   input->MovementDirection,
                                   input->RotationInput,
                                   input->RotationValue,
-                                  input->AbilityActivate,
-                                  input->PlayerCharacterNumber
+                                  input->AbilityActivate
                     )
                 );
             }

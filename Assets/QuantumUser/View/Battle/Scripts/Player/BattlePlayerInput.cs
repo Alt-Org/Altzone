@@ -66,16 +66,6 @@ namespace Battle.View.Player
             _joystickRotationValue = input;
         }
 
-        /// <summary>
-        /// Called when the player presses one of the character selection buttons.
-        /// </summary>
-        ///
-        /// <param name="characterNumber">The number of the character that was selected.</param>
-        public void OnCharacterSelected(int characterNumber)
-        {
-            _characterNumber = characterNumber;
-        }
-
         /// @}
 
         /// <summary>
@@ -144,9 +134,6 @@ namespace Battle.View.Player
 
         /// <summary>Saved time stamp of the previous tap.</summary>
         private float _lastTapTime;
-
-        /// <summary>Saved character number from character swapping input.</summary>
-        private int _characterNumber = -1;
 
         /// <summary>Bool to block screen input</summary>
         private bool _blockScreenInput = false;
@@ -251,9 +238,6 @@ namespace Battle.View.Player
             MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero, FPVector2.Zero);
             RotationInputInfo rotationInputInfo = new(false, FP._0);
 
-            // check button input
-            if (_characterNumber > -1) _blockScreenInput = true;
-
             Vector2 clickPosition = Vector2.zero;
             Vector3 unityPosition = Vector3.zero;
 
@@ -288,7 +272,6 @@ namespace Battle.View.Player
                 RotationInput                 = rotationInputInfo.RotationInput,
                 RotationValue                 = rotationInputInfo.RotationValue,
                 AbilityActivate               = Time.time - _lastTapTime < DoubleTapInterval && mouseClick && Vector3.Distance(_lastTapPosition, unityPosition) < DoubleTapDistance,
-                PlayerCharacterNumber         = _characterNumber,
             };
 
             DeterministicInputFlags inputFlags = DeterministicInputFlags.Repeatable;
@@ -324,9 +307,6 @@ namespace Battle.View.Player
             _previousTime = Time.time;
 
             _inputDebugNumber++;
-
-            // reset
-            _characterNumber = -1;
         }
 
         /// @name Input reading methods
