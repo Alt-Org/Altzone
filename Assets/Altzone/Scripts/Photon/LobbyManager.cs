@@ -507,6 +507,24 @@ namespace Altzone.Scripts.Lobby
                     yield break;
                 }
 
+                // Final safety: if there are pending duo signals from other leaders/followers,
+                // abort forming a new room to avoid splitting an in-flight duo handoff.
+                int pendingLeaders = 0;
+                int pendingExpectedUsers = 0;
+                try
+                {
+                    pendingLeaders = GetQueuePendingLeaderCount();
+                    pendingExpectedUsers = GetQueuePendingExpectedUserCount();
+                }
+                catch { }
+
+                if (pendingLeaders > 0 || pendingExpectedUsers > 0)
+                {
+                    Debug.LogWarning($"FormMatchFromQueue: deferring match creation due to pending duo signals (leaders={pendingLeaders}, expectedUsers={pendingExpectedUsers}).");
+                    reservationFailed = true;
+                    yield break;
+                }
+
                 bool created = false;
                 if ((GameType)roomGameTypeInt == GameType.Clan2v2)
                 {
@@ -532,6 +550,24 @@ namespace Altzone.Scripts.Lobby
                     {
                         createdRoomName = PhotonRealtimeClient.CurrentRoom.Name;
                         Debug.Log($"FormMatchFromQueue: master joined new room '{createdRoomName}'");
+                            // Post-join atomic safety: re-check pending duo signals that may have
+                            // arrived after the pre-notify / pre-create check. If any pending
+                            // leader or expected-user signals are present, abort and requeue
+                            // to avoid splitting an in-flight duo handoff.
+                            try
+                            {
+                                int pendingLeadersPostJoin = 0;
+                                int pendingExpectedUsersPostJoin = 0;
+                                try { pendingLeadersPostJoin = GetQueuePendingLeaderCount(); } catch { }
+                                try { pendingExpectedUsersPostJoin = GetQueuePendingExpectedUserCount(); } catch { }
+                                if (pendingLeadersPostJoin > 0 || pendingExpectedUsersPostJoin > 0)
+                                {
+                                    Debug.LogWarning($"FormMatchFromQueue: aborting post-join due to pending duo signals (leaders={pendingLeadersPostJoin}, expectedUsers={pendingExpectedUsersPostJoin}). Leaving created room and requeueing leader.");
+                                    reservationFailed = true;
+                                    try { if (PhotonRealtimeClient.InRoom) PhotonRealtimeClient.LeaveRoom(); } catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: failed to leave room after post-join abort: {ex.Message}"); }
+                                }
+                            }
+                            catch { }
                             // Mark self as leader for followers and start leader matchmaking wait loop so bot backfill and game start proceed
                             try
                             {
@@ -588,7 +624,16 @@ namespace Altzone.Scripts.Lobby
                                             }
                                     }
 
-                                    if (queueSoloPairBlocks.Count > 0)
+                                    // Safety: never persist a mixed composition where a solo pair
+                                    // contains a member that is part of a recorded duo pair.
+                                    if (ContainsMixedDuoSoloPair(queueCompleteDuoPairs, queueSoloPairBlocks))
+                                    {
+                                        Debug.LogWarning("FormMatchFromQueue: mixed duo/solo block detected in computed queue blocks; aborting match creation and requeueing leader.");
+                                        reservationFailed = true;
+                                        try { if (PhotonRealtimeClient.InRoom) PhotonRealtimeClient.LeaveRoom(); } catch { }
+                                    }
+
+                                    if (!reservationFailed && queueSoloPairBlocks.Count > 0)
                                     {
                                         string[] flatSoloPairs = queueSoloPairBlocks.SelectMany(pair => new[] { pair.userId1, pair.userId2 }).ToArray();
                                         PhotonRealtimeClient.CurrentRoom.SetCustomProperty(QueueSoloPairsKey, flatSoloPairs);
@@ -1117,33 +1162,35 @@ namespace Altzone.Scripts.Lobby
                 string leaderUserId = kv.Key;
                 float validUntil = kv.Value;
 
-                bool shouldRemove = validUntil <= now
-                    || string.IsNullOrEmpty(leaderUserId)
-                    || !playersById.ContainsKey(leaderUserId);
-
-                if (!shouldRemove)
-                {
-                    bool hasFollowerPresent = playersById.Values
-                        .Any(p => p != null
-                            && !string.IsNullOrEmpty(p.UserId)
-                            && p.UserId != leaderUserId
-                            && GetQueuePlayerLeaderId(p) == leaderUserId);
-
-                    if (hasFollowerPresent)
-                    {
-                        shouldRemove = true;
-                    }
-                    else
-                    {
-                        pendingCount++;
-                    }
-                }
-
-                if (shouldRemove)
+                // Expired or invalid entries should be removed
+                if (string.IsNullOrEmpty(leaderUserId) || validUntil <= now)
                 {
                     staleLeaderIds ??= new List<string>();
                     staleLeaderIds.Add(leaderUserId);
+                    continue;
                 }
+
+                // If both leader and a follower that references the leader are present,
+                // the duo is already in-room and the pending entry can be cleared.
+                bool bothMembersPresent = false;
+                try
+                {
+                    bool leaderPresent = playersById.ContainsKey(leaderUserId);
+                    bool followerPresent = playersById.Values
+                        .Any(p => p != null && p.UserId != leaderUserId && GetQueuePlayerLeaderId(p) == leaderUserId);
+                    bothMembersPresent = leaderPresent && followerPresent;
+                }
+                catch { }
+
+                if (bothMembersPresent)
+                {
+                    staleLeaderIds ??= new List<string>();
+                    staleLeaderIds.Add(leaderUserId);
+                    continue;
+                }
+
+                // Otherwise, this leader is considered pending within the grace window.
+                pendingCount++;
             }
 
             if (staleLeaderIds != null)
@@ -1371,7 +1418,30 @@ namespace Altzone.Scripts.Lobby
                 result.Add((userId1, userId2));
             }
 
+            // Defensive cleanup: ensure no duo members slipped into solo pair results.
+            if (duoMemberIds.Count > 0)
+            {
+                result.RemoveAll(p => duoMemberIds.Contains(p.userId1) || duoMemberIds.Contains(p.userId2));
+            }
+
             return result;
+        }
+
+        private bool ContainsMixedDuoSoloPair(IEnumerable<(string userId1, string userId2)> duoPairs, IEnumerable<(string userId1, string userId2)> soloPairs)
+        {
+            if (duoPairs == null || soloPairs == null) return false;
+            var duoMembers = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var d in duoPairs)
+            {
+                if (!string.IsNullOrEmpty(d.userId1)) duoMembers.Add(d.userId1);
+                if (!string.IsNullOrEmpty(d.userId2)) duoMembers.Add(d.userId2);
+            }
+            foreach (var s in soloPairs)
+            {
+                if (!string.IsNullOrEmpty(s.userId1) && duoMembers.Contains(s.userId1)) return true;
+                if (!string.IsNullOrEmpty(s.userId2) && duoMembers.Contains(s.userId2)) return true;
+            }
+            return false;
         }
 
         private bool IsTwoPlayerBlockQueueMode(int roomGameTypeInt)
@@ -1398,6 +1468,30 @@ namespace Altzone.Scripts.Lobby
             bool allowOrphanAsStaleSolo = realPlayers != null
                 && realPlayers.Count <= requiredFollowers + 1
                 && !hasPendingQueueDuoSignals;
+
+            // If any orphan follower currently reports a LeaderId, treat them as a duo member
+            // and do not allow treating them as a stale solo pair. This prevents splitting
+            // a follower who explicitly references a leader (even if that leader momentarily
+            // isn't visible to the master selection snapshot).
+            try
+            {
+                if (allowOrphanAsStaleSolo && orphanFollowerIds != null && orphanFollowerIds.Count > 0)
+                {
+                    foreach (var orphanId in orphanFollowerIds)
+                    {
+                        if (string.IsNullOrEmpty(orphanId)) continue;
+                        if (!playersById.TryGetValue(orphanId, out Player orphanPlayer) || orphanPlayer == null) continue;
+                        string orphanLeaderId = GetQueuePlayerLeaderId(orphanPlayer);
+                        if (!string.IsNullOrEmpty(orphanLeaderId))
+                        {
+                            Debug.Log($"SelectQueueFollowersFromTwoPlayerBlocks: orphan follower {orphanId} has leader mapping {orphanLeaderId}; not treating orphan as stale solo.");
+                            allowOrphanAsStaleSolo = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            catch { }
 
             HashSet<string> completeDuoMemberIds = new();
             foreach (var duo in completeDuos)
@@ -1475,10 +1569,14 @@ namespace Altzone.Scripts.Lobby
 
             eligibleSoloCount = eligibleSoloPlayers.Count(p => p.UserId != localUserId);
 
-            // Solo selection caps (legacy): if exactly 3 solos are eligible, limit selection to 2;
-            // if exactly 1 solo is eligible, avoid selecting solos to prevent pairing a lone solo.
+            // Solo selection caps (legacy): if exactly 3 solos are eligible, limit selection to 2
+            // but only when there are duos present (to avoid splitting them). If no duos are
+            // present (four solos total), allow selecting enough solos to form two solo pairs.
             int soloCap;
-            if (eligibleSoloCount == 3) soloCap = 2;
+            if (eligibleSoloCount == 3)
+            {
+                soloCap = (completeDuos != null && completeDuos.Count > 0) ? 2 : int.MaxValue;
+            }
             else if (eligibleSoloCount == 1) soloCap = 0;
             else soloCap = int.MaxValue;
             int solosSelected = 0;
@@ -1608,12 +1706,59 @@ namespace Altzone.Scripts.Lobby
                 Debug.Log("SelectQueueFollowersFromTwoPlayerBlocks: allowing orphan follower as stale solo in exact-size queue composition.");
             }
 
+            // If the room contains an available complete duo pair that is not included
+            // in the current participant set, and our current selection doesn't include
+            // any duo member, defer selection so the duo can be preserved for the
+            // next formation attempt. This prevents splitting duos when solos would
+            // otherwise fill the match.
+            try
+            {
+                bool hasAvailableUnselectedDuo = completeDuos != null && completeDuos.Any(d =>
+                    d.leader != null && d.follower != null
+                    && playersById.ContainsKey(d.leader.UserId)
+                    && playersById.ContainsKey(d.follower.UserId)
+                    && !participantIds.Contains(d.leader.UserId)
+                    && !participantIds.Contains(d.follower.UserId)
+                );
+
+                if (hasAvailableUnselectedDuo)
+                {
+                    bool anySelectedIsDuoMember = false;
+                    if (completeDuos != null)
+                    {
+                        foreach (var d in completeDuos)
+                        {
+                            if (d.leader == null || d.follower == null) continue;
+                            if (participantIds.Contains(d.leader.UserId) || participantIds.Contains(d.follower.UserId))
+                            {
+                                anySelectedIsDuoMember = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!anySelectedIsDuoMember)
+                    {
+                        Debug.LogWarning("SelectQueueFollowersFromTwoPlayerBlocks: deferring selection because selecting only solos would leave available duo behind.");
+                        return new List<string>();
+                    }
+                }
+            }
+            catch { }
+
             List<(string userId1, string userId2)> selectedDuoPairs = GetQueueCompleteDuoPairsForParticipants(participantIds);
             List<(string userId1, string userId2)> selectedSoloPairs = GetQueueSoloPairBlocksForParticipants(participantIds, selectedDuoPairs);
             int coveredParticipants = selectedDuoPairs.Count * 2 + selectedSoloPairs.Count * 2;
             if (coveredParticipants != participantIds.Count)
             {
                 Debug.LogWarning($"SelectQueueFollowersFromTwoPlayerBlocks: selected composition failed block validation (covered={coveredParticipants}, participants={participantIds.Count}).");
+                return new List<string>();
+            }
+
+            // Ensure we never mix a solo pair with a single member of a duo pair
+            if (ContainsMixedDuoSoloPair(selectedDuoPairs, selectedSoloPairs))
+            {
+                Debug.LogWarning("SelectQueueFollowersFromTwoPlayerBlocks: selected composition mixes solo with duo member; rejecting selection.");
                 return new List<string>();
             }
 
@@ -1738,6 +1883,22 @@ namespace Altzone.Scripts.Lobby
                 {
                     Debug.Log($"SelectQueueFollowersForMatch: players=[{string.Join(",", playersById.Keys)}], completeDuos=[{string.Join(";", duoPairs)}], incomplete=[{string.Join(",", incompleteMemberIds)}], orphans=[{string.Join(",", orphanFollowerIds)}], followersByLeader=[{string.Join(",", followerMap)}], pendingSignals={pending}");
                 }
+
+                // Additional diagnostics: show each player's recorded LeaderId and any pending duo signals
+                try
+                {
+                    var leaderProps = playersById.Values
+                        .Select(p => (p.UserId ?? string.Empty) + "->" + (GetQueuePlayerLeaderId(p) ?? string.Empty))
+                        .ToArray();
+
+                    string pendingLeaders = string.Empty;
+                    string pendingExpected = string.Empty;
+                    try { pendingLeaders = string.Join(",", _queuePendingLeaderUntil.Keys); } catch { }
+                    try { pendingExpected = string.Join(",", _queuePendingExpectedUserUntil.Keys); } catch { }
+
+                    Debug.Log($"SelectQueueFollowersForMatch: leaderProps=[{string.Join(",", leaderProps)}], pendingLeaders=[{pendingLeaders}], pendingExpected=[{pendingExpected}]");
+                }
+                catch { }
             }
             catch { }
 
@@ -7568,6 +7729,40 @@ namespace Altzone.Scripts.Lobby
                                 try { StopCoroutine(_followLeaderHolder); } catch { }
                                 _followLeaderHolder = null;
                                 Debug.Log("RoomChangeRequested: replacing stale follow coroutine for targeted queue pre-notify handoff.");
+                            }
+
+                            // Record pending leader handoff for targeted queue pre-notify (no explicit room name)
+                            try
+                            {
+                                _queuePendingLeaderUntil[leaderUserId] = Time.time + QueuePendingLeaderGraceSeconds;
+                                int pendingExpectedAdded = 0;
+                                HashSet<string> presentQueueUsers = new(
+                                    PhotonRealtimeClient.CurrentRoom.Players.Values
+                                        .Where(p => p != null && !string.IsNullOrEmpty(p.UserId) && p.UserId != "Bot")
+                                        .Select(p => p.UserId),
+                                    StringComparer.Ordinal);
+
+                                if (expectedUsers != null)
+                                {
+                                    foreach (string expectedUserId in expectedUsers)
+                                    {
+                                        if (string.IsNullOrEmpty(expectedUserId) || expectedUserId == leaderUserId) continue;
+                                        if (presentQueueUsers.Contains(expectedUserId)) continue;
+
+                                        _queuePendingExpectedUserUntil[expectedUserId] = Time.time + QueuePendingLeaderGraceSeconds;
+                                        pendingExpectedAdded++;
+                                    }
+                                }
+
+                                Debug.Log($"RoomChangeRequested: recorded pending queue duo handoff for leader {leaderUserId} (expectedUsers={(expectedUsers?.Length ?? 0)}, grace={QueuePendingLeaderGraceSeconds}s).");
+                                if (pendingExpectedAdded > 0)
+                                {
+                                    Debug.Log($"RoomChangeRequested: recorded {pendingExpectedAdded} unresolved expected queue users for pending duo handoff.");
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.LogWarning($"RoomChangeRequested: failed to record pending expected queue users for targeted pre-notify: {ex.Message}");
                             }
 
                             Debug.Log("RoomChangeRequested: targeted queue pre-notify without explicit room name, starting immediate follow flow.");
