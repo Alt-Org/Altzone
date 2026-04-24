@@ -80,17 +80,8 @@ public class DailyTaskView : AltMonoBehaviour
     [SerializeField] private GameObject _clanPlayerPrefab;
     [SerializeField] private RectTransform _clanPlayersList;
 
-    [Header("ClanTaskProgressBar")]
-    [SerializeField] private Slider _clanProgressBarSlider;
-    [SerializeField] private RectTransform _clanProgressBarMarkersBase;
-    [SerializeField] private GameObject _clanProgressBarMarkerPrefab;
+    [SerializeField] private RewardBar _clanRewardBar;
 
-    private List<GameObject> _clanProgressBarMarkers = new List<GameObject>();
-    private int _clanMilestoneLatestRewardIndex = -1;
-
-    //Local Testing, remove later
-    private int _clanProgressBarGoal = 10000;
-    private int _clanProgressBarCurrentPoints = 0;
 
     private List<GameObject> _clanPlayers = new List<GameObject>();
 
@@ -117,7 +108,16 @@ public class DailyTaskView : AltMonoBehaviour
 
         StartCoroutine(ViewSetup());
 
-        _cancelTaskButton.onClick.AddListener(() => StartCancelTask());
+        // Don't allow canceling task on turboeducation
+        if (_gameVersion == VersionType.TurboEducation)
+        {
+            _cancelTaskButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            _cancelTaskButton.onClick.AddListener(() => StartCancelTask());
+        }
+        
         _showMultipleChoiceTaskButton.onClick.AddListener(() => DailyTaskManager.Instance.ShowMultipleChoiceTask());
 
         //Buttons
@@ -176,14 +176,12 @@ public class DailyTaskView : AltMonoBehaviour
 
     void OnTaskAccept()
     {
-        Debug.LogWarning("ONTASKACCEPT");
-
         SwitchTab(SelectedTab.OwnTask);
     }
 
     void OnTaskCancel()
     {
-        Debug.LogWarning("ONTASKCANCEL");
+
         PlayerTask currentTask = DailyTaskManager.Instance.GetCurrentTask();
 
         if (currentTask != null)
@@ -277,11 +275,12 @@ public class DailyTaskView : AltMonoBehaviour
             else
             {
                 PopulateClanPlayers(clanData);
-                SetClanProgressBar(clanData);
+                _clanRewardBar.Initialize(clanData);
+                //SetClanProgressBar(clanData);
             }
         }
 
-        CreateClanProgressBar(); //TODO: Move to inside the brackets when server is ready.
+        //CreateClanProgressBar(); //TODO: Move to inside the brackets when server is ready.
         _viewSetupDone = true;
 
 
@@ -315,7 +314,6 @@ public class DailyTaskView : AltMonoBehaviour
     private void PopulateTasks(System.Action<bool> callback)
     {
 
-
         foreach (PlayerTask task in DailyTaskManager.Instance.ValidTasks.Tasks)
         {
 
@@ -330,7 +328,7 @@ public class DailyTaskView : AltMonoBehaviour
 
         callback(true);
     }
-    
+
 
     public void StartCancelTask()
     {
@@ -380,7 +378,6 @@ public class DailyTaskView : AltMonoBehaviour
         currentQuest.UpdateProgressBar();
     }
 
-
     public Transform GetNormalParentCategory(int points)
     {
         if (points < _dailyCategoryNormalRow1PointsLimit)
@@ -391,6 +388,7 @@ public class DailyTaskView : AltMonoBehaviour
 
         return (_taskListNormalRow3);
     }
+
     public Transform GetEducationParentCategory(EducationCategoryType type)
     {
         return type switch
@@ -512,69 +510,20 @@ public class DailyTaskView : AltMonoBehaviour
 
         DailyTaskManager.Instance.SetHandleOwnTask(playerData.Task);
     }
-    
 
-    
-
-    //TODO: Needs to be moved or overhauled when server is ready.
-    private IEnumerator CalculateClanRewardBarProgress()
+    private DailyQuest FindDailyQuestForTask(PlayerTask task)
     {
-        float sectionLenghts = (1f / (float)_clanProgressBarMarkers.Count);
-
-        for (int i = 0; i < _clanProgressBarMarkers.Count; i++)
+        foreach (GameObject taskCard in DailyTaskCardSlots)
         {
-            int startPoints = (
-                (i) <= 0 ?
-                0 :
-                _clanProgressBarMarkers[i - 1].GetComponent<DailyTaskClanReward>().Data.Threshold
-                );
+            DailyQuest taskQuest = taskCard.GetComponent<DailyQuest>();
 
-            int endPoints = _clanProgressBarMarkers[i].GetComponent<DailyTaskClanReward>().Data.Threshold;
-
-            if ((_clanProgressBarCurrentPoints < endPoints) || (i >= _clanProgressBarMarkers.Count - 1))
+            if (taskQuest.TaskData.Id == task.Id)
             {
-                float startPosition = sectionLenghts * i;
-                float endPosition = ((i + 1) >= _clanProgressBarMarkers.Count ? 1f : (sectionLenghts * (float)(i + 1)));
-
-                float chunkProgress = (float)(_clanProgressBarCurrentPoints - startPoints) / (float)(endPoints - startPoints);
-                Debug.Log("ClanRewardsProgressBar: chunk progress: " + chunkProgress + ", start points: " + startPoints + ", end points: " + endPoints);
-
-                //All but final reward.
-                for (int j = 0; j < i; j++)
-                {
-                    if (j <= _clanMilestoneLatestRewardIndex)
-                        continue;
-
-                    _clanMilestoneLatestRewardIndex = j;
-                    _clanProgressBarMarkers[j].GetComponent<DailyTaskClanReward>().UpdateState(true);
-                    DailyTaskProgressManager.Instance.InvokeOnClanMilestoneReached(); //TODO: Remove when server ready.
-                }
-
-                //Final reward
-                if ((i >= _clanProgressBarMarkers.Count - 1) && chunkProgress == 1)
-                {
-                    _clanProgressBarMarkers[_clanProgressBarMarkers.Count - 1].GetComponent<DailyTaskClanReward>().UpdateState(true);
-                    DailyTaskProgressManager.Instance.InvokeOnClanMilestoneReached(); //TODO: Remove when server ready.
-                }
-
-                _clanProgressBarSlider.value = Mathf.Lerp(startPosition, endPosition, chunkProgress);
-                break;
+                return taskQuest;
             }
         }
 
-        yield return true;
-    }
-
-    private void CreateClanProgressBar()
-    {
-        var datas = TESTGenerateClanRewardsBar(); //TODO: Replace with data from server.
-
-        foreach (var data in datas)
-        {
-            GameObject rewardMarker = Instantiate(_clanProgressBarMarkerPrefab, _clanProgressBarMarkersBase);
-            rewardMarker.GetComponent<DailyTaskClanReward>().Set(data, this);
-            _clanProgressBarMarkers.Add(rewardMarker);
-        }
+        return null;
     }
 
     private void PopulateClanPlayers(ClanData clanData)
@@ -595,44 +544,6 @@ public class DailyTaskView : AltMonoBehaviour
         _clanPlayersList.anchoredPosition = new Vector2(0f, -5000f);
     }
 
-    private void SetClanProgressBar(ClanData clanData)
-    {
-        //TODO: Get clan milestone reward data and fill the clan progress bar based on that data.
-        _clanProgressBarSlider.value = (float)clanData.Points / (float)_clanProgressBarGoal;
-    }
 
-    private List<DailyTaskClanReward.ClanRewardData> TESTGenerateClanRewardsBar() //TODO: Remove when server is ready.
-    {
-        var clanRewardDatas = new List<DailyTaskClanReward.ClanRewardData>()
-        {
-            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 500, null, Random.Range(0,1000)),
-            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 1000, null, Random.Range(0,1000)),
-            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 5000, null, Random.Range(0,1000)),
-            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Chest, 10000, null, Random.Range(0,1000))
-        };
-        return clanRewardDatas;
-    }
-
-    public void TESTAddClanRewardBarPoints(int value)
-    {
-        _clanProgressBarCurrentPoints += value;
-
-        StartCoroutine(CalculateClanRewardBarProgress());
-    }
-
-    private DailyQuest FindDailyQuestForTask(PlayerTask task)
-    {
-        foreach(GameObject taskCard in DailyTaskCardSlots)
-        {
-            DailyQuest taskQuest = taskCard.GetComponent<DailyQuest>();
-
-            if (taskQuest.TaskData.Id == task.Id)
-            {
-                return taskQuest;
-            }
-        }
-
-        return null;
-    }
 
 }

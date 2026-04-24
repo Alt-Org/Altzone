@@ -58,6 +58,11 @@ public class KojuPopup : MonoBehaviour
         removeCancelButton.onClick.AddListener(Close);
     }
 
+    private void OnDisable()
+    {
+        Close();
+    }
+
     // Opens the popup and fills it with the necessary data
     public void Open(GameObject card)
     {
