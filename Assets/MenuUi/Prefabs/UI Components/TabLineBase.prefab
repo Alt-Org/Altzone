@@ -806,11 +806,15 @@ MonoBehaviour:
   _tabLineButtons:
   - _tabObjectHandler: {fileID: 4158722669051155206}
     _tablineImage: {fileID: 0}
+    _stripeColour: {r: 1, g: 1, b: 1, a: 1}
   - _tabObjectHandler: {fileID: 190649913565995768}
     _tablineImage: {fileID: 0}
+    _stripeColour: {r: 1, g: 1, b: 1, a: 1}
   - _tabObjectHandler: {fileID: 4429024172337740739}
     _tablineImage: {fileID: 0}
+    _stripeColour: {r: 1, g: 1, b: 1, a: 1}
   _tabLineRibbon: {fileID: 5455678281516419644}
+  _tabLineStripe: {fileID: 2541406172094747708}
   _tabLineImage: {fileID: 6718291466169380828}
   _tabColorActive: {r: 1, g: 1, b: 1, a: 1}
   _tabColorInactive: {r: 1, g: 1, b: 1, a: 1}
@@ -1054,7 +1058,7 @@ GameObject:
   - component: {fileID: 5669158264328030606}
   - component: {fileID: 2541406172094747708}
   m_Layer: 5
-  m_Name: Image
+  m_Name: StripeImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

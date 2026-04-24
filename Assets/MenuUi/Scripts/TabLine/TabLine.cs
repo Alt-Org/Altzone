@@ -13,6 +13,7 @@ namespace MenuUi.Scripts.TabLine
         [SerializeField] private bool _getActiveButtonFromSwipe = false;
         [SerializeField] private TabLineButton[] _tabLineButtons;
         [SerializeField] private Image _tabLineRibbon;
+        [SerializeField] private Image _tabLineStripe;
         [SerializeField] private Image _tabLineImage;
         [SerializeField] private Color _tabColorActive;
         [SerializeField] private Color _tabColorInactive;
@@ -81,7 +82,7 @@ namespace MenuUi.Scripts.TabLine
                 return;
             }
 
-            Sprite image = _tabLineButtons[index].SetActiveVisuals();
+            (Sprite image, Color stripeColour) = _tabLineButtons[index].SetActiveVisuals();
             if (_tabLineImage != null)
             {
                 if (image != null)
@@ -90,6 +91,11 @@ namespace MenuUi.Scripts.TabLine
                     _tabLineImage.enabled = true;
                 }
                 else if (_tabLineImage.sprite == null) _tabLineImage.enabled = false;
+            }
+            if(_tabLineStripe != null)
+            {
+                if (stripeColour != Color.white)
+                    _tabLineStripe.color = stripeColour;
             }
 
             for (int i = 0; i < _tabLineButtons.Length; i++)
@@ -120,8 +126,9 @@ namespace MenuUi.Scripts.TabLine
             [Header("References to components")]
             [SerializeField] private TabObjectHandler _tabObjectHandler;
             [SerializeField] private Sprite _tablineImage;
+            [SerializeField] private Color _stripeColour;
 
-            public Sprite SetActiveVisuals() => _tabObjectHandler.SetActiveVisuals(_tablineImage);
+            public (Sprite, Color) SetActiveVisuals() => _tabObjectHandler.SetActiveVisuals(_tablineImage, _stripeColour);
             public void SetInactiveVisuals() => _tabObjectHandler.SetInactiveVisuals();
             public void SetColour(Color activeColour, Color inactiveColour) => _tabObjectHandler.SetColour(activeColour, inactiveColour);
         }

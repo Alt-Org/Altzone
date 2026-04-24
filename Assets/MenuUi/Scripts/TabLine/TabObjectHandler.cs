@@ -26,11 +26,11 @@ public class TabObjectHandler : MonoBehaviour
         }
     }
 
-    public Sprite SetActiveVisuals(Sprite tablineImage)
+    public (Sprite, Color) SetActiveVisuals(Sprite tablineImage, Color stripeColour)
     {
         _active = true;
         if (_tabBaseComponent != null) _tabBaseComponent.color = _tabColorActive;
-        return tablineImage;
+        return (tablineImage, stripeColour);
     }
 
 
