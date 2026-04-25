@@ -700,6 +700,7 @@ MonoBehaviour:
   - {fileID: 5136230035178387175}
   - {fileID: 2740718347020518359}
   _fixSize: {fileID: 8560615110091901046}
+  _chatShowUsersPopUpData: {fileID: 1306981942626556396}
   _baseMessageBankerSize: {x: 0, y: 0}
   _baseMessageSize: {fileID: 3363965265471710657}
   backgroundSize: {fileID: 2103742428301501262}
@@ -2326,7 +2327,7 @@ PrefabInstance:
     - target: {fileID: 5315215416532520581, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.00012207031
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5779516826409967922, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
@@ -2390,9 +2391,36 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6221334902879612320, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
+      propertyPath: UserData
+      value: 
+      objectReference: {fileID: 8844569307860996610, guid: d9e96f8283e71824cadeec334b0a267e,
+        type: 3}
+    - target: {fileID: 6221334902879612320, guid: 76aa8b7d736fa8e44955cce276908e74,
+        type: 3}
+      propertyPath: _userData
+      value: 
+      objectReference: {fileID: 8844569307860996610, guid: d9e96f8283e71824cadeec334b0a267e,
+        type: 3}
+    - target: {fileID: 6221334902879612320, guid: 76aa8b7d736fa8e44955cce276908e74,
+        type: 3}
+      propertyPath: UserContent
+      value: 
+      objectReference: {fileID: 3046429649613202671}
+    - target: {fileID: 6221334902879612320, guid: 76aa8b7d736fa8e44955cce276908e74,
+        type: 3}
+      propertyPath: _userContent
+      value: 
+      objectReference: {fileID: 3046429649613202671}
+    - target: {fileID: 6221334902879612320, guid: 76aa8b7d736fa8e44955cce276908e74,
+        type: 3}
       propertyPath: _messageObjectHandler
       value: 
       objectReference: {fileID: 5786829121231365026}
+    - target: {fileID: 6221334902879612320, guid: 76aa8b7d736fa8e44955cce276908e74,
+        type: 3}
+      propertyPath: _UserReaction.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6221990821476817833, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -2724,7 +2752,8 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 6298938317221005100, guid: 76aa8b7d736fa8e44955cce276908e74, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 6581492598490571273, guid: 76aa8b7d736fa8e44955cce276908e74,
@@ -2744,6 +2773,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 4933071098821211212}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1306981942626556396 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6221334902879612320, guid: 76aa8b7d736fa8e44955cce276908e74,
+    type: 3}
+  m_PrefabInstance: {fileID: 4933071098821211212}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 477b38ea3c6f9974491f82799fbc1307, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2243886228130715205 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6581492598490571273, guid: 76aa8b7d736fa8e44955cce276908e74,
@@ -2771,6 +2812,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4933071098821211212}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3046429649613202671 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7940652802514243747, guid: 76aa8b7d736fa8e44955cce276908e74,
+    type: 3}
+  m_PrefabInstance: {fileID: 4933071098821211212}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6600255325117062062 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2300524914144210914, guid: 76aa8b7d736fa8e44955cce276908e74,

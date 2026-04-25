@@ -8,20 +8,22 @@ using static MessageReactionsHandler;
 using MenuUi.Scripts.AvatarEditor;
 using System;
 using Altzone.Scripts.Chat;
+using Assets.Altzone.Scripts.Model.Poco.Player;
+using static ServerChatMessage;
 
 public class ChatShowUsersPopUpData : MonoBehaviour
 {
 
-    [SerializeField] private GameObject _containers;
+    
     [SerializeField] private TextMeshProUGUI ReactionAmounText;
     [SerializeField] private GameObject _reactionField; //Turn this off if "ShowUsersPopUp" isnt active otherwise the reaction system dies
-
+    [SerializeField] private VerticalLayoutGroup _userContent;
     [SerializeField] private Button[] _closeButtons; 
     [SerializeField] private GameObject ShowUsersPopUp;
     [SerializeField] private MessageObjectHandler _messageObjectHandler;
-
-
-    [SerializeField] public List<UserReactionData> _UserReaction;
+    [SerializeField] private GameObject _userData;
+    private List<UsersReactionData> _usersReactionData = new();
+    [SerializeField] private List<UserReactionInfo> _userInfo;
 
 
 
@@ -61,7 +63,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     public void reactiontext()
     {
         int activeChildren = 0;
-        foreach (Transform container in _containers.transform)
+        foreach (Transform container in _reactionField.transform)
         {
             if (container.gameObject.activeInHierarchy)
             {
@@ -74,13 +76,31 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
         //_reactionAmount.SetText(SettingsCarrier.Instance.Language, new string[1] { activeChildren.ToString() });
     }
+
+    public void UsersReaction(ChatMessage message, ServerReactions mood)
+    {
+        _userInfo.Add(new UserReactionInfo { _avatar = message.Avatar, _id = message.Id, _name = message.Username});
+
+        GameObject newUserData = Instantiate(_userData, _userContent.transform);
+        UsersReactionData userData = newUserData.GetComponent<UsersReactionData>();
+        
+
+
+
+        userData.SetReactionInfo(_userInfo[_userInfo.Count - 1]._avatar, _userInfo[_userInfo.Count - 1]._name, _userInfo[_userInfo.Count - 1]._id);
+
+        _usersReactionData.Add(userData);
+
+    }
+
+
 }
 
 [Serializable]
-public class UserReactionData
+public class UserReactionInfo
 {
-    public AvatarFaceLoader _avatar;
-    public TextMeshProUGUI _name;
+    public AvatarData _avatar;
+    public string _name;
     public string _id;
 
     //public Sprite Sprite;

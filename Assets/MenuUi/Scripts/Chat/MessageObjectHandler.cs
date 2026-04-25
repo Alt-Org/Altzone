@@ -20,7 +20,7 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private GameObject _addReactionsControls;
     [SerializeField] private GameObject[] _reactionsPanel;
     [SerializeField] private GameObject _fixSize;
-
+    [SerializeField] private ChatShowUsersPopUpData _chatShowUsersPopUpData;
 
     [Header("Base Message")]
     public Vector2 _baseMessageBankerSize;
@@ -105,6 +105,7 @@ public class MessageObjectHandler : MonoBehaviour
         foreach (var reactionData in message.Reactions)
         {
             ReactionChatCall(reactionData);
+            _chatShowUsersPopUpData.UsersReaction(message);
         }
     }
 
@@ -162,6 +163,9 @@ public class MessageObjectHandler : MonoBehaviour
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
 
 
+
+
+        Debug.LogWarning("FIND ME " + _id);
         int objectAmount = 0;
         foreach (GameObject ReactionPanel in ReactionsPanel)
         {
