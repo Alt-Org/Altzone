@@ -10,20 +10,28 @@ using System;
 using Altzone.Scripts.Chat;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using static ServerChatMessage;
+using System.Linq;
+using NUnit.Framework.Internal.Commands;
 
 public class ChatShowUsersPopUpData : MonoBehaviour
 {
 
     
     [SerializeField] private TextMeshProUGUI ReactionAmounText;
-    [SerializeField] private GameObject _reactionField; //Turn this off if "ShowUsersPopUp" isnt active otherwise the reaction system dies
-    [SerializeField] private VerticalLayoutGroup _userContent;
     [SerializeField] private Button[] _closeButtons; 
     [SerializeField] private GameObject ShowUsersPopUp;
     [SerializeField] private MessageObjectHandler _messageObjectHandler;
+
+    [Header("User Info")]
+
+    [SerializeField] private VerticalLayoutGroup _userContent;
     [SerializeField] private GameObject _userData;
     private List<UsersReactionData> _usersReactionData = new();
     [SerializeField] private List<UserReactionInfo> _userInfo;
+
+    [Header("Reactions")]
+    [SerializeField] private GameObject _reactionField; //Turn this off if "ShowUsersPopUp" isnt active otherwise the reaction system dies
+    [SerializeField] private List<ReactionObject> _reactionList;
 
 
 
@@ -77,31 +85,57 @@ public class ChatShowUsersPopUpData : MonoBehaviour
         //_reactionAmount.SetText(SettingsCarrier.Instance.Language, new string[1] { activeChildren.ToString() });
     }
 
-    public void UsersReaction(ChatMessage message, ServerReactions mood)
+    public void AddUsersReaction(ChatMessage message, ServerReactions Emoji)
     {
-        _userInfo.Add(new UserReactionInfo { _avatar = message.Avatar, _id = message.Id, _name = message.Username});
+        //halts the system if there's already a same user on the list
+        for (int i = _userInfo.Count - 1; i >= 0; i--)
+        {
+            if (_userInfo[i]._id == Emoji.sender_id)
+                return;
+        }
 
-        GameObject newUserData = Instantiate(_userData, _userContent.transform);
-        UsersReactionData userData = newUserData.GetComponent<UsersReactionData>();
+            //Gets sprite
+            Mood mood = (Mood)Enum.Parse(typeof(Mood), Emoji.emoji);
+        Sprite reactionSprite = _reactionList.FirstOrDefault(x => x.Mood == mood)?.Sprite;
+
+
         
 
-
-
-        userData.SetReactionInfo(_userInfo[_userInfo.Count - 1]._avatar, _userInfo[_userInfo.Count - 1]._name, _userInfo[_userInfo.Count - 1]._id);
-
+        //Sets up the Data
+        GameObject newUserData = Instantiate(_userData, _userContent.transform);
+        _userInfo.Add(new UserReactionInfo { _avatar = message.Avatar, _id = Emoji.sender_id, _name = Emoji.playerName, Emoji = reactionSprite, UserDataObj = newUserData});
+        UsersReactionData userData = newUserData.GetComponent<UsersReactionData>();
+       userData.SetReactionInfo(_userInfo[_userInfo.Count - 1]._avatar, _userInfo[_userInfo.Count - 1]._name, _userInfo[_userInfo.Count - 1]._id, _userInfo[_userInfo.Count - 1].Emoji);
         _usersReactionData.Add(userData);
 
     }
 
+    //removes the userData
+    public void RemoveUserReaction(ServerReactions reaction)
+    {
+            for (int i = _userInfo.Count - 1; i >= 0; i--)
+            {
+                if (_userInfo[i]._id == reaction.sender_id)
+                {
+                _userInfo[i].UserDataObj.transform.SetParent(null);
+                Destroy(_userInfo[i].UserDataObj);
+                _userInfo.RemoveAt(i);
+                }
 
-}
+
+            }
+
+        }
+    }
 
 [Serializable]
 public class UserReactionInfo
 {
+    public GameObject UserDataObj;
     public AvatarData _avatar;
     public string _name;
     public string _id;
+    public Sprite Emoji;
 
     //public Sprite Sprite;
     //public Mood Mood;

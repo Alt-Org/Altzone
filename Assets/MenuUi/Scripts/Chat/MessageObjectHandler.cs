@@ -105,7 +105,7 @@ public class MessageObjectHandler : MonoBehaviour
         foreach (var reactionData in message.Reactions)
         {
             ReactionChatCall(reactionData);
-            _chatShowUsersPopUpData.UsersReaction(message);
+            _chatShowUsersPopUpData.AddUsersReaction(message, reactionData);
         }
     }
 
@@ -162,10 +162,6 @@ public class MessageObjectHandler : MonoBehaviour
         //Gets the set data we need to get to import saved reactions
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
 
-
-
-
-        Debug.LogWarning("FIND ME " + _id);
         int objectAmount = 0;
         foreach (GameObject ReactionPanel in ReactionsPanel)
         {
@@ -183,6 +179,7 @@ public class MessageObjectHandler : MonoBehaviour
         //Gets the set data we need to get to import saved reactions
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
 
-        ChildsScript.UpdateReactions(message.Reactions, _id);
+        ChildsScript.UpdateReactions(message.Reactions, _id, message);
+        
     }
 }

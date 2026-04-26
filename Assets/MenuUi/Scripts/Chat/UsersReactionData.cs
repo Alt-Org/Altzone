@@ -14,12 +14,16 @@ public class UsersReactionData : MonoBehaviour
     private string _userID;
     private string _userName;
     [SerializeField] private TextMeshProUGUI _userNameText;
+    private Mood mood;
+    [SerializeField] private Image _reaction;
     // Start is called before the first frame update
-    public void SetReactionInfo(AvatarData Avatar, string UserName, string userID)
+    public void SetReactionInfo(AvatarData Avatar, string UserName, string userID, Sprite image)
     {
         if (Avatar != null) _avatar.UpdateVisuals(AvatarDesignLoader.Instance.CreateAvatarVisualData(Avatar));
         _userID = userID;
         _userName = UserName;
         _userNameText.text = UserName;
+
+        _reaction.sprite = image;
     }
 }

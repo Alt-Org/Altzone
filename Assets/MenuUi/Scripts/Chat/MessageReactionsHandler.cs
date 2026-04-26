@@ -5,6 +5,7 @@ using System.Linq;
 using Altzone.Scripts.Chat;
 using UnityEngine;
 using UnityEngine.UI;
+using static System.Collections.Specialized.BitVector32;
 using static ServerChatMessage;
 
 public class MessageReactionsHandler : AltMonoBehaviour
@@ -176,7 +177,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
     /// <summary>
     /// Updates the all of the reactions of the selected message.
     /// </summary>
-    public void UpdateReactions(List<ServerReactions> reactions, string messageid)
+    public void UpdateReactions(List<ServerReactions> reactions, string messageid, ChatMessage message)
     {
         int objectAmount = 0;
 
@@ -193,6 +194,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
             foreach (ServerReactions reaction in reactions)
             {
                         AddReaction(reaction, (Mood)Enum.Parse(typeof(Mood), reaction.emoji), messageid, true, reactionContent._reactionField, objectAmount);
+                        _chatShowUsersPopUpData.AddUsersReaction(message, reaction);
             }
             List<ChatReactionHandler> removableReactions = new();
             foreach (ChatReactionHandler addedReaction in _reactionHandlers)
@@ -202,7 +204,9 @@ public class MessageReactionsHandler : AltMonoBehaviour
             for (int i = removableReactions.Count - 1; i >= 0; i--)
             {
 
-                RemoveReaction(removableReactions[i]);
+                RemoveReaction(removableReactions[i], message);
+
+
             }
         }
     }
@@ -216,16 +220,20 @@ public class MessageReactionsHandler : AltMonoBehaviour
         int  ObjectActive = 0;
 
 
+
+        
+
+
         ///"foreach" first checks how many the reactionfields are there
         ///"if" is used so that the other Reactionfield receives the same reaction too
 
-        foreach(var i in _reactionPaneldata)
+        foreach (var i in _reactionPaneldata)
         {
                 ObjectActive++;
         }
         if(ActiveObjects < ObjectActive + 1)
         {
-           skip = false;
+           //skip = false;
         }
         
 
@@ -364,8 +372,15 @@ public class MessageReactionsHandler : AltMonoBehaviour
         _longClick = false;
     }
 
-    private void RemoveReaction(ChatReactionHandler reaction)
+    private void RemoveReaction(ChatReactionHandler reaction, ChatMessage message)
     {
+
+        foreach (var reactionData in message.Reactions)
+        {
+            _chatShowUsersPopUpData.RemoveUserReaction(reactionData);
+
+        }
+
         //Checks if the set gameObject is on or not
         foreach (var reactioncontent in _reactionPaneldata)
         {
@@ -380,6 +395,8 @@ public class MessageReactionsHandler : AltMonoBehaviour
                     i.Selected = false;
                 }
             }
+
+            
 
             reaction.transform.SetParent(null);
             _reactionHandlers.Remove(reaction);
