@@ -25,6 +25,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField] private float _roomChangeCooldown = 20f;
         // Percentage chance of avatar changing rooms when moving
         [SerializeField] private float _roomChangeChance = 50f;
+        [SerializeField] private float _furnitureInteractChance = 50f;
         [SerializeField]
         private SortingGroup _sortingGroup;
         [SerializeField]
@@ -182,7 +183,7 @@ namespace MenuUI.Scripts.SoulHome
             }
 
             //Random chance to move towards furniture
-            if (Random.Range(0, 100) < 70)
+            if (Random.Range(0, 100) < _furnitureInteractChance)
             {
                 FurnitureHandling[] items = _roomData.GetComponentsInChildren<FurnitureHandling>();
                 if (items.Length > 0)
@@ -771,7 +772,6 @@ namespace MenuUI.Scripts.SoulHome
 
         private void OnArrival()
         {
-
             if (_targetFurniture != null)
             {
                 Debug.Log($"NPC arrived at: {_targetFurniture.gameObject.name}");
