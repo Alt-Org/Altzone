@@ -10,50 +10,12 @@ namespace Altzone.Scripts.ReferenceSheets
     public class AvatarReference : ScriptableObject
     {
         [SerializeField] private AvatarClass _iraAvatar;
-
         [Space, SerializeField] private AvatarClass _avaritiaAvatar;
-
         [Space, SerializeField] private AvatarClass _invidiaAvatar;
-
-        [Space, SerializeField] private string _projectorNameFinnish;
-        [SerializeField] private string _projectorNameEnglish;
-        [SerializeField] private Color _projectorColor;
-        [SerializeField] private Color _projectorAlternativeColor;
-        [SerializeField] private Sprite _projectorFrame;
-        [SerializeField] private Sprite _projectorCornerIcon;
-        [SerializeField] private Sprite _projectorCharacter;
-        [SerializeField] private string _projectorDescFinnish;
-        [SerializeField] private string _projectorDescEnglish;
-
-        [Space, SerializeField] private string _retroflectorNameFinnish;
-        [SerializeField] private string _retroflectorNameEnglish;
-        [SerializeField] private Color _retroflectorColor;
-        [SerializeField] private Color _retroflectorAlternativeColor;
-        [SerializeField] private Sprite _retroflectorFrame;
-        [SerializeField] private Sprite _retroflectorCornerIcon;
-        [SerializeField] private Sprite _retroflectorCharacter;
-        [SerializeField] private string _retroflectorDescFinnish;
-        [SerializeField] private string _retroflectorDescEnglish;
-
-        [Space, SerializeField] private string _confluentNameFinnish;
-        [SerializeField] private string _confluentNameEnglish;
-        [SerializeField] private Color _confluentColor;
-        [SerializeField] private Color _confluentAlternativeColor;
-        [SerializeField] private Sprite _confluentFrame;
-        [SerializeField] private Sprite _confluentCornerIcon;
-        [SerializeField] private Sprite _confluentCharacter;
-        [SerializeField] private string _confluentDescFinnish;
-        [SerializeField] private string _confluentDescEnglish;
-
-        [Space, SerializeField] private string _intellectualizerNameFinnish;
-        [SerializeField] private string _intellectualizerNameEnglish;
-        [SerializeField] private Color _intellectualizerColor;
-        [SerializeField] private Color _intellectualizerAlternativeColor;
-        [SerializeField] private Sprite _intellectualizerFrame;
-        [SerializeField] private Sprite _intellectualizerCornerIcon;
-        [SerializeField] private Sprite _intellectualizerCharacter;
-        [SerializeField] private string _intellectualizerDescFinnish;
-        [SerializeField] private string _intellectualizerDescEnglish;
+        [Space, SerializeField] private AvatarClass _luxuriaAvatar;
+        [Space, SerializeField] private AvatarClass _gulaAvatar;
+        [Space, SerializeField] private AvatarClass _acediaAvatar;
+        [Space, SerializeField] private AvatarClass _superbiaAvatar;
 
         private static AvatarReference _instance;
         private static bool _hasInstance;
@@ -85,10 +47,10 @@ namespace Altzone.Scripts.ReferenceSheets
                     CharacterClassType.Desensitizer => _iraAvatar.NameFinnish,
                     CharacterClassType.Trickster => _avaritiaAvatar.NameFinnish,
                     CharacterClassType.Obedient => _invidiaAvatar.NameFinnish,
-                    CharacterClassType.Projector => _projectorNameFinnish,
-                    CharacterClassType.Retroflector => _retroflectorNameFinnish,
-                    CharacterClassType.Confluent => _confluentNameFinnish,
-                    CharacterClassType.Intellectualizer => _intellectualizerNameFinnish,
+                    CharacterClassType.Projector => _luxuriaAvatar.NameFinnish,
+                    CharacterClassType.Retroflector => _gulaAvatar.NameFinnish,
+                    CharacterClassType.Confluent => _acediaAvatar.NameFinnish,
+                    CharacterClassType.Intellectualizer => _superbiaAvatar.NameFinnish,
                     _ => "No class name",
                 },
                 SettingsCarrier.LanguageType.English => classType switch
@@ -96,10 +58,10 @@ namespace Altzone.Scripts.ReferenceSheets
                     CharacterClassType.Desensitizer => _iraAvatar.NameEnglish,
                     CharacterClassType.Trickster => _avaritiaAvatar.NameEnglish,
                     CharacterClassType.Obedient => _invidiaAvatar.NameEnglish,
-                    CharacterClassType.Projector => _projectorNameEnglish,
-                    CharacterClassType.Retroflector => _retroflectorNameEnglish,
-                    CharacterClassType.Confluent => _confluentNameEnglish,
-                    CharacterClassType.Intellectualizer => _intellectualizerNameEnglish,
+                    CharacterClassType.Projector => _luxuriaAvatar.NameEnglish,
+                    CharacterClassType.Retroflector => _gulaAvatar.NameEnglish,
+                    CharacterClassType.Confluent => _acediaAvatar.NameEnglish,
+                    CharacterClassType.Intellectualizer => _superbiaAvatar.NameEnglish,
                     _ => "No class name",
                 },
                 _ => "No class name",
@@ -119,10 +81,10 @@ namespace Altzone.Scripts.ReferenceSheets
                 CharacterClassType.Desensitizer => _iraAvatar.EyeColor,
                 CharacterClassType.Trickster => _avaritiaAvatar.EyeColor,
                 CharacterClassType.Obedient => _invidiaAvatar.EyeColor,
-                CharacterClassType.Projector => _projectorColor,
-                CharacterClassType.Retroflector => _retroflectorColor,
-                CharacterClassType.Confluent => _confluentColor,
-                CharacterClassType.Intellectualizer => _intellectualizerColor,
+                CharacterClassType.Projector => _luxuriaAvatar.EyeColor,
+                CharacterClassType.Retroflector => _gulaAvatar.EyeColor,
+                CharacterClassType.Confluent => _acediaAvatar.EyeColor,
+                CharacterClassType.Intellectualizer => _superbiaAvatar.EyeColor,
                 _ => Color.gray,
             };
         }
@@ -140,10 +102,10 @@ namespace Altzone.Scripts.ReferenceSheets
                 CharacterClassType.Desensitizer => _iraAvatar.SkinColor,
                 CharacterClassType.Trickster => _avaritiaAvatar.SkinColor,
                 CharacterClassType.Obedient => _invidiaAvatar.SkinColor,
-                CharacterClassType.Projector => _projectorAlternativeColor,
-                CharacterClassType.Retroflector => _retroflectorAlternativeColor,
-                CharacterClassType.Confluent => _confluentAlternativeColor,
-                CharacterClassType.Intellectualizer => _intellectualizerAlternativeColor,
+                CharacterClassType.Projector => _luxuriaAvatar.SkinColor,
+                CharacterClassType.Retroflector => _gulaAvatar.SkinColor,
+                CharacterClassType.Confluent => _acediaAvatar.SkinColor,
+                CharacterClassType.Intellectualizer => _superbiaAvatar.SkinColor,
                 _ => Color.gray,
             };
         }
@@ -160,10 +122,10 @@ namespace Altzone.Scripts.ReferenceSheets
                 CharacterClassType.Desensitizer => _iraAvatar.Frame,
                 CharacterClassType.Trickster => _avaritiaAvatar.Frame,
                 CharacterClassType.Obedient => _invidiaAvatar.Frame,
-                CharacterClassType.Projector => _projectorFrame,
-                CharacterClassType.Retroflector => _retroflectorFrame,
-                CharacterClassType.Confluent => _confluentFrame,
-                CharacterClassType.Intellectualizer => _intellectualizerFrame,
+                CharacterClassType.Projector => _luxuriaAvatar.Frame,
+                CharacterClassType.Retroflector => _gulaAvatar.Frame,
+                CharacterClassType.Confluent => _acediaAvatar.Frame,
+                CharacterClassType.Intellectualizer => _superbiaAvatar.Frame,
                 _ => null,
             };
         }
@@ -180,10 +142,10 @@ namespace Altzone.Scripts.ReferenceSheets
                 CharacterClassType.Desensitizer => _iraAvatar.CornerIcon,
                 CharacterClassType.Trickster => _avaritiaAvatar.CornerIcon,
                 CharacterClassType.Obedient => _invidiaAvatar.CornerIcon,
-                CharacterClassType.Projector => _projectorCornerIcon,
-                CharacterClassType.Retroflector => _retroflectorCornerIcon,
-                CharacterClassType.Confluent => _confluentCornerIcon,
-                CharacterClassType.Intellectualizer => _intellectualizerCornerIcon,
+                CharacterClassType.Projector => _luxuriaAvatar.CornerIcon,
+                CharacterClassType.Retroflector => _gulaAvatar.CornerIcon,
+                CharacterClassType.Confluent => _acediaAvatar.CornerIcon,
+                CharacterClassType.Intellectualizer => _superbiaAvatar.CornerIcon,
                 _ => null,
             };
         }
@@ -200,10 +162,10 @@ namespace Altzone.Scripts.ReferenceSheets
                 CharacterClassType.Desensitizer => _iraAvatar.Character,
                 CharacterClassType.Trickster => _avaritiaAvatar.Character,
                 CharacterClassType.Obedient => _invidiaAvatar.Character,
-                CharacterClassType.Projector => _projectorCharacter,
-                CharacterClassType.Retroflector => _retroflectorCharacter,
-                CharacterClassType.Confluent => _confluentCharacter,
-                CharacterClassType.Intellectualizer => _intellectualizerCharacter,
+                CharacterClassType.Projector => _luxuriaAvatar.Character,
+                CharacterClassType.Retroflector => _gulaAvatar.Character,
+                CharacterClassType.Confluent => _acediaAvatar.Character,
+                CharacterClassType.Intellectualizer => _superbiaAvatar.Character,
                 _ => null,
             };
         }
@@ -222,10 +184,10 @@ namespace Altzone.Scripts.ReferenceSheets
                     CharacterClassType.Desensitizer => _iraAvatar.DescFinnish,
                     CharacterClassType.Trickster => _avaritiaAvatar.DescFinnish,
                     CharacterClassType.Obedient => _invidiaAvatar.DescFinnish,
-                    CharacterClassType.Projector => _projectorDescFinnish,
-                    CharacterClassType.Retroflector => _retroflectorDescFinnish,
-                    CharacterClassType.Confluent => _confluentDescFinnish,
-                    CharacterClassType.Intellectualizer => _intellectualizerDescFinnish,
+                    CharacterClassType.Projector => _luxuriaAvatar.DescFinnish,
+                    CharacterClassType.Retroflector => _gulaAvatar.DescFinnish,
+                    CharacterClassType.Confluent => _acediaAvatar.DescFinnish,
+                    CharacterClassType.Intellectualizer => _superbiaAvatar.DescFinnish,
                     _ => "No class description",
                 },
                 SettingsCarrier.LanguageType.English => classType switch
@@ -233,10 +195,10 @@ namespace Altzone.Scripts.ReferenceSheets
                     CharacterClassType.Desensitizer => _iraAvatar.DescEnglish,
                     CharacterClassType.Trickster => _avaritiaAvatar.DescEnglish,
                     CharacterClassType.Obedient => _invidiaAvatar.DescEnglish,
-                    CharacterClassType.Projector => _projectorDescEnglish,
-                    CharacterClassType.Retroflector => _retroflectorDescEnglish,
-                    CharacterClassType.Confluent => _confluentDescEnglish,
-                    CharacterClassType.Intellectualizer => _intellectualizerDescEnglish,
+                    CharacterClassType.Projector => _luxuriaAvatar.DescEnglish,
+                    CharacterClassType.Retroflector => _gulaAvatar.DescEnglish,
+                    CharacterClassType.Confluent => _acediaAvatar.DescEnglish,
+                    CharacterClassType.Intellectualizer => _superbiaAvatar.DescEnglish,
                     _ => "No class description",
                 },
                 _ => "No class description",
