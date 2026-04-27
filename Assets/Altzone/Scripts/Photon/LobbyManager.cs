@@ -138,6 +138,9 @@ namespace Altzone.Scripts.Lobby
         private const float QueueWaitSeconds = 30f;
         private const float QueueReadyStartDelaySeconds = 2f;
         private const float QueuePendingLeaderGraceSeconds = 12f;
+        // Grace interval to consider a player as "just joined" so selection defers briefly
+        // allowing a duo partner to arrive and avoid splitting pairs.
+        private const float QueueNewJoinGraceSeconds = 1f;
         // Flag set by OnJoinRoomFailed to signal a join attempt failure to waiting coroutines
         private bool _joinRoomFailed = false;
 
@@ -154,6 +157,9 @@ namespace Altzone.Scripts.Lobby
         private readonly Dictionary<string, float> _declinedInRoomInviteUntil = new();
         private readonly Dictionary<string, float> _queuePendingLeaderUntil = new(StringComparer.Ordinal);
         private readonly Dictionary<string, float> _queuePendingExpectedUserUntil = new(StringComparer.Ordinal);
+        // Record first-seen timestamps for users observed in a matchmaking room to
+        // detect very recent joins and avoid splitting transient duo joins.
+        private readonly Dictionary<string, float> _queuePlayerFirstSeenAt = new(StringComparer.Ordinal);
         private const float InRoomInvitePromptThrottleSeconds = 5f;
         private const float InRoomInviteDeclineCooldownSeconds = 30f;
         private const float InRoomInviteValiditySeconds = 60f;
@@ -1556,6 +1562,21 @@ namespace Altzone.Scripts.Lobby
                 return new List<string>();
             }
 
+            // Build local follower map so we can check if a user has followers
+            // without relying on outer-scope variables.
+            Dictionary<string, List<Player>> localFollowersByLeader = new();
+            foreach (Player p in realPlayers)
+            {
+                string leaderId = GetQueuePlayerLeaderId(p);
+                if (string.IsNullOrEmpty(leaderId) || leaderId == p.UserId) continue;
+                if (!localFollowersByLeader.TryGetValue(leaderId, out List<Player> lst))
+                {
+                    lst = new List<Player>();
+                    localFollowersByLeader[leaderId] = lst;
+                }
+                lst.Add(p);
+            }
+
             List<Player> eligibleSoloPlayers = realPlayers
                 .Where(p => !completeDuoMemberIds.Contains(p.UserId))
                 .Where(p => !incompleteMemberIds.Contains(p.UserId))
@@ -1567,25 +1588,58 @@ namespace Altzone.Scripts.Lobby
                 })
                 .ToList();
 
+            // Exclude very recent solo joins from eligibility unless they show duo relation
+            try
+            {
+                float now = Time.time;
+                var filtered = new List<Player>();
+                foreach (var p in eligibleSoloPlayers)
+                {
+                    if (!string.IsNullOrEmpty(p?.UserId) && _queuePlayerFirstSeenAt.TryGetValue(p.UserId, out float firstAt)
+                        && now - firstAt < QueueNewJoinGraceSeconds)
+                    {
+                        // Keep recently-joined player only if they appear to be part of a duo
+                        string leaderId = GetQueuePlayerLeaderId(p);
+                        bool hasFollower = localFollowersByLeader.TryGetValue(p.UserId, out var fl) && fl != null && fl.Count > 0;
+                        if (string.IsNullOrEmpty(leaderId) && !hasFollower)
+                        {
+                            // skip this just-joined solo player for now
+                            continue;
+                        }
+                    }
+                    filtered.Add(p);
+                }
+
+                eligibleSoloPlayers = filtered;
+            }
+            catch { }
+
+            bool localEligibleSolo = eligibleSoloPlayers.Any(p => p.UserId == localUserId);
             eligibleSoloCount = eligibleSoloPlayers.Count(p => p.UserId != localUserId);
 
             // Solo selection caps (legacy): if exactly 3 solos are eligible, limit selection to 2
             // but only when there are duos present (to avoid splitting them). If no duos are
             // present (four solos total), allow selecting enough solos to form two solo pairs.
+            // If there's exactly one eligible solo (excluding the local user) but the local
+            // master is itself an eligible solo, allow pairing the local+other solo — do not
+            // apply the restrictive solo cap in that case.
             int soloCap;
             if (eligibleSoloCount == 3)
             {
                 soloCap = (completeDuos != null && completeDuos.Count > 0) ? 2 : int.MaxValue;
             }
-            else if (eligibleSoloCount == 1) soloCap = 0;
+            else if (eligibleSoloCount == 1)
+            {
+                soloCap = localEligibleSolo ? int.MaxValue : 0;
+            }
             else soloCap = int.MaxValue;
             int solosSelected = 0;
 
-            // If there's exactly one eligible solo (excluding the local user), avoid pairing
-            // that lone solo into a match — but only defer when the available complete duos
-            // cannot satisfy the required followers by themselves. If duos alone suffice,
-            // allow selection to proceed.
-            if (eligibleSoloCount == 1)
+            // If there's exactly one eligible solo (excluding the local user) and the local
+            // player is not an eligible solo, avoid pairing that lone solo into a match — but
+            // only defer when the available complete duos cannot satisfy the required followers
+            // by themselves. If duos alone suffice, allow selection to proceed.
+            if (eligibleSoloCount == 1 && !localEligibleSolo)
             {
                 int duoPlayers = completeDuos.Count * 2;
                 if (duoPlayers < requiredFollowers)
@@ -1631,7 +1685,6 @@ namespace Altzone.Scripts.Lobby
                 }
             else
             {
-                bool localEligibleSolo = eligibleSoloPlayers.Any(p => p.UserId == localUserId);
                 if (!localEligibleSolo)
                 {
                     return new List<string>();
@@ -1796,6 +1849,24 @@ namespace Altzone.Scripts.Lobby
                 return selected;
             }
 
+            // Track first-seen timestamps for players in the matchmaking room so we can
+            // detect very recent joins and avoid splitting pairs by deferring selection
+            // for transient newcomers.
+            float _qnow = Time.time;
+            try
+            {
+                foreach (var uid in playersById.Keys)
+                {
+                    if (string.IsNullOrEmpty(uid)) continue;
+                    if (!_queuePlayerFirstSeenAt.ContainsKey(uid)) _queuePlayerFirstSeenAt[uid] = _qnow;
+                }
+
+                // Remove stale entries for users no longer present
+                var stale = _queuePlayerFirstSeenAt.Keys.Where(k => !playersById.ContainsKey(k)).ToList();
+                foreach (var k in stale) _queuePlayerFirstSeenAt.Remove(k);
+            }
+            catch { }
+
             void ClearStaleQueuePremadeMetadata(string reason)
             {
                 try
@@ -1921,9 +1992,40 @@ namespace Altzone.Scripts.Lobby
             }
 
             bool hasPendingQueueDuoSignals = HasPendingQueueDuoSignals();
-            orphanFollowerCount = (realPlayers.Count > requiredFollowers + 1 || hasPendingQueueDuoSignals)
-                ? orphanFollowerIds.Count
-                : 0;
+
+            // Count very recent joins observed in the room (within grace window).
+            int recentJoinCount = 0;
+            try
+            {
+                float now = Time.time;
+                recentJoinCount = playersById.Keys.Count(uid => _queuePlayerFirstSeenAt.TryGetValue(uid, out float t) && now - t < QueueNewJoinGraceSeconds);
+            }
+            catch { recentJoinCount = 0; }
+
+            // If there are extra humans beyond the exact-size case, pending duo signals,
+            // or very recent joins, treat the situation as transient/orphan and propagate
+            // a non-zero orphanFollowerCount so higher-level logic defers forming matches
+            // to avoid splitting duo joins.
+            bool considerTransientOrphans = realPlayers.Count > requiredFollowers + 1 || hasPendingQueueDuoSignals || recentJoinCount > 0;
+            if (considerTransientOrphans)
+            {
+                orphanFollowerCount = orphanFollowerIds.Count > 0 ? orphanFollowerIds.Count : recentJoinCount;
+            }
+            else
+            {
+                orphanFollowerCount = 0;
+            }
+
+            // Diagnostic: show recent-join detection results to help debug transient joins
+            try
+            {
+                float nowDbg = Time.time;
+                var ages = _queuePlayerFirstSeenAt
+                    .Select(kv => (kv.Key ?? string.Empty) + ":" + (nowDbg - kv.Value).ToString("F2"))
+                    .ToArray();
+                Debug.Log($"SelectQueueFollowersForMatch: recentJoinCount={recentJoinCount}, considerTransientOrphans={considerTransientOrphans}, orphanFollowerCount={orphanFollowerCount}, firstSeenAges=[{string.Join(",", ages)}]");
+            }
+            catch { }
 
             try
             {
