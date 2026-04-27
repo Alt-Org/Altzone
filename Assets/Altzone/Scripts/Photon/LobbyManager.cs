@@ -645,6 +645,13 @@ namespace Altzone.Scripts.Lobby
                                         queueExpectedProps["eu"] = selected;
                                     }
                                     PhotonRealtimeClient.CurrentRoom.SetCustomProperties(queueExpectedProps);
+                                    try
+                                    {
+                                        int _qe = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>("qe", 0);
+                                        string[] _eu = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string[]>("eu", null);
+                                        Debug.Log($"FormMatchFromQueue: applied queue expected props qe={_qe}, eu=[{(_eu==null?"":string.Join(",", _eu))}]");
+                                    }
+                                    catch { }
                                 }
                                 catch (Exception ex)
                                 {
@@ -1871,12 +1878,13 @@ namespace Altzone.Scripts.Lobby
             return selected;
         }
 
-        private List<string> SelectQueueFollowersForMatch(int roomGameTypeInt, int requiredFollowers, out string preferredMasterUserId, out int completeDuoCount, out int eligibleSoloCount, out int orphanFollowerCount)
+        private List<string> SelectQueueFollowersForMatch(int roomGameTypeInt, int requiredFollowers, out string preferredMasterUserId, out int completeDuoCount, out int eligibleSoloCount, out int orphanFollowerCount, out string singleEligibleSoloUserId)
         {
             preferredMasterUserId = string.Empty;
             completeDuoCount = 0;
             eligibleSoloCount = 0;
             orphanFollowerCount = 0;
+            singleEligibleSoloUserId = string.Empty;
             List<string> selected = new();
 
             Room room = PhotonRealtimeClient.CurrentRoom;
@@ -2336,6 +2344,13 @@ namespace Altzone.Scripts.Lobby
                 .ToList();
 
             eligibleSoloCount = eligibleSolos.Count;
+            // expose single eligible solo id so callers can invite them when forming a queue-formed match
+            try { singleEligibleSoloUserId = eligibleSoloCount == 1 ? (eligibleSolos.Count > 0 ? eligibleSolos[0] : string.Empty) : string.Empty; } catch { singleEligibleSoloUserId = string.Empty; }
+            try
+            {
+                Debug.Log($"SelectQueueFollowersForMatch: eligibleSoloCount={eligibleSoloCount}, singleEligibleSoloUserId='{singleEligibleSoloUserId}', eligibleSolos=[{string.Join(",", eligibleSolos)}]");
+            }
+            catch { }
             // keep a record of how many solos are currently eligible in the queue
             _queuedSoloCount = eligibleSoloCount;
 
@@ -2715,7 +2730,8 @@ namespace Altzone.Scripts.Lobby
                                 int loopCompleteDuoCount;
                                 int loopEligibleSoloCount;
                                 int loopOrphanFollowerCount;
-                                List<string> loopSelected = SelectQueueFollowersForMatch(loopGameTypeInt, loopRequiredFollowers, out loopPreferredMasterUserId, out loopCompleteDuoCount, out loopEligibleSoloCount, out loopOrphanFollowerCount);
+                                string loopSingleEligibleSoloUserId;
+                                List<string> loopSelected = SelectQueueFollowersForMatch(loopGameTypeInt, loopRequiredFollowers, out loopPreferredMasterUserId, out loopCompleteDuoCount, out loopEligibleSoloCount, out loopOrphanFollowerCount, out loopSingleEligibleSoloUserId);
 
                                 if (!string.IsNullOrEmpty(loopPreferredMasterUserId))
                                 {
@@ -2895,7 +2911,13 @@ namespace Altzone.Scripts.Lobby
                     int completeDuoCount;
                     int eligibleSoloCount;
                     int orphanFollowerCount;
-                    List<string> selected = SelectQueueFollowersForMatch(gameTypeInt, requiredFollowers, out preferredMasterUserId, out completeDuoCount, out eligibleSoloCount, out orphanFollowerCount);
+                    string singleEligibleSoloUserId;
+                    List<string> selected = SelectQueueFollowersForMatch(gameTypeInt, requiredFollowers, out preferredMasterUserId, out completeDuoCount, out eligibleSoloCount, out orphanFollowerCount, out singleEligibleSoloUserId);
+                    try
+                    {
+                        Debug.Log($"QueueTimerCoroutine: selection debug -> preferredMaster='{preferredMasterUserId}', completeDuos={completeDuoCount}, eligibleSolos={eligibleSoloCount}, singleEligibleSoloUserId='{singleEligibleSoloUserId}', selectedCount={selected.Count}, selected=[{string.Join(",", selected)}]");
+                    }
+                    catch { }
 
                     if (!string.IsNullOrEmpty(preferredMasterUserId))
                     {
@@ -2907,13 +2929,99 @@ namespace Altzone.Scripts.Lobby
 
                     if (selected.Count < requiredFollowers)
                     {
-                        // If there are no eligible followers at all (no complete duos and no eligible solos),
-                        // proceed to form a queue-formed match so WaitForMatchmakingPlayers can immediately bot-fill.
-                        if (selected.Count == 0 && completeDuoCount == 0 && eligibleSoloCount == 0)
+                        // If there are no selected followers, try to preserve any present duo(s)
+                        // by adding their member IDs so the leader can persist expected-users
+                        // and allow bots to fill remaining slots.
+                        if (selected.Count == 0 && completeDuoCount > 0)
                         {
-                            Debug.Log($"QueueTimerCoroutine: Queue wait expired with no eligible players; forming queue match to trigger botfill (requiredFollowers={requiredFollowers}).");
+                            try
+                            {
+                                var roomScan = PhotonRealtimeClient.CurrentRoom;
+                                if (roomScan?.Players != null)
+                                {
+                                    var humanUserIds = roomScan.Players.Values
+                                        .Where(p => p != null && !string.IsNullOrEmpty(p.UserId) && p.UserId != "Bot")
+                                        .Select(p => p.UserId)
+                                        .ToList();
+
+                                    var roomPairs = GetQueueCompleteDuoPairsForParticipants(humanUserIds);
+                                    if (roomPairs != null && roomPairs.Count > 0)
+                                    {
+                                        // Prefer a pair that doesn't include the local user (leader). If none,
+                                        // fall back to the first available pair and add the non-local member.
+                                        var localId = PhotonRealtimeClient.LocalPlayer?.UserId ?? string.Empty;
+                                        (string userId1, string userId2) chosen = (null, null);
+                                        foreach (var p in roomPairs)
+                                        {
+                                            if (p.userId1 != localId && p.userId2 != localId)
+                                            {
+                                                chosen = p;
+                                                break;
+                                            }
+                                        }
+                                        if (chosen.userId1 == null) chosen = roomPairs[0];
+
+                                        if (!string.IsNullOrEmpty(chosen.userId1) && !string.IsNullOrEmpty(chosen.userId2))
+                                        {
+                                            if (chosen.userId1 != localId) selected.Add(chosen.userId1);
+                                            if (chosen.userId2 != localId) selected.Add(chosen.userId2);
+                                            Debug.Log($"QueueTimerCoroutine: Queue wait expired; added duo [{string.Join(",", selected)}] to selected to preserve duo and allow botfill (requiredFollowers={requiredFollowers}).");
+                                        }
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.LogWarning($"QueueTimerCoroutine: failed to locate duo fallback: {ex.Message}");
+                            }
                         }
-                        else
+
+                        // If we have no selected followers and no complete duos, attempt to salvage
+                        // the timeout by including any available solo humans so the leader can
+                        // persist `qe`/`eu` and WaitForMatchmakingPlayers will preserve them while bots fill.
+                        if (selected.Count == 0 && completeDuoCount == 0 && eligibleSoloCount > 0)
+                        {
+                            // Prefer the singleEligibleSoloUserId when provided by the selector.
+                            if (eligibleSoloCount == 1 && !string.IsNullOrEmpty(singleEligibleSoloUserId))
+                            {
+                                selected.Add(singleEligibleSoloUserId);
+                                Debug.Log($"QueueTimerCoroutine: Queue wait expired with lone solo present; adding solo '{singleEligibleSoloUserId}' to selected and forming queue match (requiredFollowers={requiredFollowers}).");
+                            }
+                            else
+                            {
+                                // Best-effort: scan the room for non-bot, non-local human players and add
+                                // up to `requiredFollowers` of them to `selected` so they become expected.
+                                try
+                                {
+                                    var roomScan = PhotonRealtimeClient.CurrentRoom;
+                                    if (roomScan?.Players != null)
+                                    {
+                                        var candidates = roomScan.Players.Values
+                                            .Where(p => p != null && !string.IsNullOrEmpty(p.UserId) && p.UserId != "Bot" && p.UserId != PhotonRealtimeClient.LocalPlayer?.UserId)
+                                            .Select(p => p.UserId)
+                                            .Where(uid => !selected.Contains(uid))
+                                            .Distinct()
+                                            .Take(requiredFollowers)
+                                            .ToList();
+
+                                        if (candidates.Count > 0)
+                                        {
+                                            foreach (var uid in candidates) selected.Add(uid);
+                                            Debug.Log($"QueueTimerCoroutine: Queue wait expired; added eligible solos [{string.Join(",", candidates)}] to selected (requiredFollowers={requiredFollowers}).");
+                                        }
+                                        else
+                                        {
+                                            Debug.Log($"QueueTimerCoroutine: Queue wait expired but no eligible solo candidates were found in room; forming queue match to trigger botfill (requiredFollowers={requiredFollowers}, eligibleSolos={eligibleSoloCount}).");
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.LogWarning($"QueueTimerCoroutine: failed to locate eligible solos fallback: {ex.Message}");
+                                }
+                            }
+                        }
+                        else if (selected.Count == 0)
                         {
                             Debug.Log($"QueueTimerCoroutine: Queue wait expired but not enough eligible players (requiredFollowers={requiredFollowers}, selectedFollowers={selected.Count}, completeDuos={completeDuoCount}, eligibleSolos={eligibleSoloCount}). Retrying.");
                             continue;
@@ -2990,12 +3098,19 @@ namespace Altzone.Scripts.Lobby
                                         if (!string.IsNullOrEmpty(prem1) && !string.IsNullOrEmpty(prem2)
                                             && playersById.ContainsKey(prem1) && playersById.ContainsKey(prem2))
                                         {
-                                            bool p1Sel = selected.Contains(prem1);
-                                            bool p2Sel = selected.Contains(prem2);
+                                            // Consider a premade user "selected" if they are either in the
+                                            // selected followers list or are the local/master user forming
+                                            // the match. This avoids deferring formation when the local
+                                            // master is part of the premade pair but not present in
+                                            // the `selected` array (expected-users should only list
+                                            // followers, not the leader).
+                                            string localId = PhotonRealtimeClient.LocalPlayer?.UserId ?? string.Empty;
+                                            bool p1Sel = selected.Contains(prem1) || prem1 == localId;
+                                            bool p2Sel = selected.Contains(prem2) || prem2 == localId;
                                             if (!(p1Sel && p2Sel))
                                             {
                                                 allowFinalForm = false;
-                                                Debug.Log($"QueueTimerCoroutine: deferring final formation because premade pair ({prem1},{prem2}) present but not both selected; selected=[{string.Join(",", selected)}].");
+                                                Debug.Log($"QueueTimerCoroutine: deferring final formation because premade pair ({prem1},{prem2}) present but not both included among participants; selected=[{string.Join(",", selected)}], local={localId}.");
                                             }
                                         }
                                     }
@@ -3004,13 +3119,16 @@ namespace Altzone.Scripts.Lobby
 
                                 if (allowFinalForm)
                                 {
+                                    string localId = PhotonRealtimeClient.LocalPlayer?.UserId ?? string.Empty;
                                     foreach (string uid in selected)
                                     {
                                         try
                                         {
                                             if (TryGetQueueLocalTeammateUserId(uid, out string buddy) && !string.IsNullOrEmpty(buddy) && playersById.ContainsKey(buddy))
                                             {
-                                                if (!selected.Contains(buddy))
+                                                // If the buddy is the local/master user, treat them as implicitly
+                                                // present and selected (the leader isn't listed among followers).
+                                                if (!selected.Contains(buddy) && buddy != localId)
                                                 {
                                                     allowFinalForm = false;
                                                     Debug.Log($"QueueTimerCoroutine: deferring final formation because teammate {buddy} of selected user {uid} is present but not selected.");
