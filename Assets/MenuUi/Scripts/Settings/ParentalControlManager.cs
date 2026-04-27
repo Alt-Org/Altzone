@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using Altzone.Scripts.AzDebug;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,7 +17,7 @@ public class ParentalControlManager : MonoBehaviour
     //public Text messageText;
     public TMP_Text messageText;
     public Toggle controlToggle;
-    public TMP_InputField timeLimitInput;
+    
 
     //the password will be set in the pop up
     public GameObject parentalControlPopup;
@@ -32,11 +33,47 @@ public class ParentalControlManager : MonoBehaviour
     public string setPasswordInput;
     public string setConfirmPasswordInput;
 
+
+
+    //the ParentalControl settings
+    //SocialControls
+    public bool internetLinks;
+    public Toggle internetLinksToggle; 
+    public bool chatMessages;
+    public Toggle chatMessagesToggle;
+    public bool emojiComments;
+    public Toggle emojiCommentsToggle;
+    public bool treasureHunt;
+    public Toggle treasureHuntToggle;
+
+    //MoneyControls
+    public float monthlyLimit;
+    public TMP_InputField monthlyLimitInput;
+    public bool independentSpendingActivation;
+    public Toggle independentSpendingActivationToggle;
+
+    //TimeControls
+    public int dailyLimit;
+    public TMP_InputField timeLimitInput;
+    public int timeLimitAccuracy;
+    public TMP_InputField timeLimitAccuracyInput;
+    public bool midMatch;
+    public Toggle midMatchToggle;
+    public bool endMatch;
+    public Toggle endMatchToggle;
+
+
+    
+
+
+
+
     void Start()
     {
         parentalControlSettings.SetActive(false);
         CheckControl();
         GetPassword(); //gets the password that is already set in PlayerPrefs
+        LoadSettings();
         Debug.Log("got the password " + presetPassword);
         Debug.Log("control status " + parentalControl);
 
@@ -93,7 +130,7 @@ public class ParentalControlManager : MonoBehaviour
              }
 
     public void LogIn() {
-        //next two are to ensure that log in works when control first disabled and then set a new in the same session
+        //next two are to ensure that log in works when control is first disabled and then set anew in the same session
         //TODO a more elegant way to ensure this
         CheckControl();
         GetPassword();
@@ -218,6 +255,51 @@ public class ParentalControlManager : MonoBehaviour
         PlayerPrefs.Save();
         parentalControlPopupButton.SetActive(true);
 
+
+    }
+
+    public void SetInternetLinks ()
+    {
+        if (internetLinksToggle.isOn) {
+            PlayerPrefs.SetInt("internetLinks", 1);
+            internetLinksToggle.isOn = true;
+            Debug.Log(PlayerPrefs.GetInt("internetLinks"));
+
+        } else
+        {
+            PlayerPrefs.SetInt("internetLinks", 0);
+            internetLinksToggle.isOn = false;
+        }
+
+    }
+
+
+    public void SaveSettings()
+    {
+        PlayerPrefs.Save();
+
+    }
+
+    public void LoadSettings()
+    {
+        //TODO how to load settings from PlayerPrefs
+
+        int checkLinks = PlayerPrefs.GetInt("internetLinks");
+
+        if (checkLinks == 1)
+        {
+            internetLinks = true;
+            Debug.Log("internetLinks is set to true");
+            
+        }
+        else
+        {
+            internetLinks = false;
+            
+        }
+
+
+        
 
     }
 
