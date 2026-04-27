@@ -138,6 +138,12 @@ namespace Altzone.Scripts.Lobby
         private const float QueueWaitSeconds = 30f;
         private const float QueueReadyStartDelaySeconds = 2f;
         private const float QueuePendingLeaderGraceSeconds = 12f;
+        // Last logged diagnostic state keys for SelectQueueFollowersForMatch (track separately per diagnostic section)
+        private string _lastSelectQueuePlayersKey = string.Empty;
+        private string _lastSelectQueueLeaderPropsKey = string.Empty;
+        private string _lastSelectQueueRecentJoinKey = string.Empty;
+        // Backwards-compat fallback key (unused)
+        private string _lastSelectQueueFollowersState = string.Empty;
         // Grace interval to consider a player as "just joined" so selection defers briefly
         // allowing a duo partner to arrive and avoid splitting pairs.
         private const float QueueNewJoinGraceSeconds = 1f;
@@ -193,6 +199,53 @@ namespace Altzone.Scripts.Lobby
         private static bool _battleStartUiReady = false;
 
         public bool RunnerActive => _runner != null;
+
+        private void LogSelectQueueStateIfChanged(string tag, string key, string msg)
+        {
+            try
+            {
+                bool changed = false;
+                if (string.Equals(tag, "players", StringComparison.Ordinal))
+                {
+                    if (!string.Equals(_lastSelectQueuePlayersKey, key, StringComparison.Ordinal))
+                    {
+                        _lastSelectQueuePlayersKey = key;
+                        changed = true;
+                    }
+                }
+                else if (string.Equals(tag, "leaderProps", StringComparison.Ordinal))
+                {
+                    if (!string.Equals(_lastSelectQueueLeaderPropsKey, key, StringComparison.Ordinal))
+                    {
+                        _lastSelectQueueLeaderPropsKey = key;
+                        changed = true;
+                    }
+                }
+                else if (string.Equals(tag, "recentJoin", StringComparison.Ordinal))
+                {
+                    if (!string.Equals(_lastSelectQueueRecentJoinKey, key, StringComparison.Ordinal))
+                    {
+                        _lastSelectQueueRecentJoinKey = key;
+                        changed = true;
+                    }
+                }
+                else
+                {
+                    if (!string.Equals(_lastSelectQueueFollowersState, key, StringComparison.Ordinal))
+                    {
+                        _lastSelectQueueFollowersState = key;
+                        changed = true;
+                    }
+                }
+
+                if (changed)
+                {
+                    Debug.Log(msg);
+                }
+            }
+            catch { }
+        }
+
         #endregion
 
         #region Delegates & Events
@@ -1945,29 +1998,45 @@ namespace Altzone.Scripts.Lobby
             // Diagnostic: log selection state to help debug missing/partial duo selection
             try
             {
-                var duoPairs = completeDuos.Select(d => (d.leader?.UserId ?? string.Empty) + "/" + (d.follower?.UserId ?? string.Empty)).ToArray();
-                var followerMap = followersByLeader.Select(kv => kv.Key + ":[" + string.Join(",", kv.Value.Where(p => p != null).Select(p => p.UserId)) + "]").ToArray();
+                var duoPairs = completeDuos
+                    .Select(d => (d.leader?.UserId ?? string.Empty) + "/" + (d.follower?.UserId ?? string.Empty))
+                    .OrderBy(s => s)
+                    .ToArray();
+
+                var followerMap = followersByLeader
+                    .OrderBy(kv => kv.Key)
+                    .Select(kv => kv.Key + ":[" + string.Join(",", kv.Value.Where(p => p != null).Select(p => p.UserId).OrderBy(id => id)) + "]")
+                    .ToArray();
+
                 bool pending = HasPendingQueueDuoSignals();
 
                 // Avoid spamming the logs when only a single human player is in the queue
                 if (playersById.Count > 1 || pending)
                 {
-                    Debug.Log($"SelectQueueFollowersForMatch: players=[{string.Join(",", playersById.Keys)}], completeDuos=[{string.Join(";", duoPairs)}], incomplete=[{string.Join(",", incompleteMemberIds)}], orphans=[{string.Join(",", orphanFollowerIds)}], followersByLeader=[{string.Join(",", followerMap)}], pendingSignals={pending}");
+                    var playerKeysOrdered = playersById.Keys.OrderBy(k => k).ToArray();
+                    string key = $"p:{string.Join(",", playerKeysOrdered)}|duos:{string.Join(";", duoPairs)}|inc:{string.Join(",", incompleteMemberIds.OrderBy(id => id))}|orph:{string.Join(",", orphanFollowerIds.OrderBy(id => id))}|followers:{string.Join(",", followerMap)}|pending:{pending}";
+                    string msg = $"SelectQueueFollowersForMatch: players=[{string.Join(",", playerKeysOrdered)}], completeDuos=[{string.Join(";", duoPairs)}], incomplete=[{string.Join(",", incompleteMemberIds)}], orphans=[{string.Join(",", orphanFollowerIds)}], followersByLeader=[{string.Join(",", followerMap)}], pendingSignals={pending}";
+                    LogSelectQueueStateIfChanged("players", key, msg);
                 }
 
                 // Additional diagnostics: show each player's recorded LeaderId and any pending duo signals
                 try
                 {
                     var leaderProps = playersById.Values
+                        .OrderBy(p => p.UserId)
                         .Select(p => (p.UserId ?? string.Empty) + "->" + (GetQueuePlayerLeaderId(p) ?? string.Empty))
                         .ToArray();
 
                     string pendingLeaders = string.Empty;
                     string pendingExpected = string.Empty;
-                    try { pendingLeaders = string.Join(",", _queuePendingLeaderUntil.Keys); } catch { }
-                    try { pendingExpected = string.Join(",", _queuePendingExpectedUserUntil.Keys); } catch { }
+                    try { pendingLeaders = string.Join(",", _queuePendingLeaderUntil.Keys.OrderBy(k => k)); } catch { }
+                    try { pendingExpected = string.Join(",", _queuePendingExpectedUserUntil.Keys.OrderBy(k => k)); } catch { }
 
-                    Debug.Log($"SelectQueueFollowersForMatch: leaderProps=[{string.Join(",", leaderProps)}], pendingLeaders=[{pendingLeaders}], pendingExpected=[{pendingExpected}]");
+                    {
+                        string key2 = $"lp:{string.Join(",", leaderProps)}|pl:{pendingLeaders}|pe:{pendingExpected}";
+                        string msg2 = $"SelectQueueFollowersForMatch: leaderProps=[{string.Join(",", leaderProps)}], pendingLeaders=[{pendingLeaders}], pendingExpected=[{pendingExpected}]";
+                        LogSelectQueueStateIfChanged("leaderProps", key2, msg2);
+                    }
                 }
                 catch { }
             }
@@ -2023,7 +2092,9 @@ namespace Altzone.Scripts.Lobby
                 var ages = _queuePlayerFirstSeenAt
                     .Select(kv => (kv.Key ?? string.Empty) + ":" + (nowDbg - kv.Value).ToString("F2"))
                     .ToArray();
-                Debug.Log($"SelectQueueFollowersForMatch: recentJoinCount={recentJoinCount}, considerTransientOrphans={considerTransientOrphans}, orphanFollowerCount={orphanFollowerCount}, firstSeenAges=[{string.Join(",", ages)}]");
+                string key3 = $"recentJoin:{recentJoinCount}|transient:{considerTransientOrphans}|orphanCount:{orphanFollowerCount}";
+                string msg3 = $"SelectQueueFollowersForMatch: recentJoinCount={recentJoinCount}, considerTransientOrphans={considerTransientOrphans}, orphanFollowerCount={orphanFollowerCount}, firstSeenAges=[{string.Join(",", ages)}]";
+                LogSelectQueueStateIfChanged("recentJoin", key3, msg3);
             }
             catch { }
 
