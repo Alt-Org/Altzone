@@ -100,7 +100,8 @@ public class LeaderboardView : MonoBehaviour
                             if (rank < 4) //The top three are displayed on the podium
                             {
                                 _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, clanData, serverClan);
-                                if (rank == 1)
+
+                                if (rank == 1) //add the podium to scroll view
                                     {
                                         LeaderboardPodium item = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>();                                
                                     }
@@ -150,6 +151,11 @@ public class LeaderboardView : MonoBehaviour
                             if (rank < 4) //The top three are displayed on the podium
                             {
                                 _podium.InitilializePodium(rank, ranking);
+
+                                if (rank == 1) //add the podium to scroll view
+                                {
+                                    LeaderboardPodium item = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>();
+                                }
                             }
                             else
                             {
@@ -193,7 +199,12 @@ public class LeaderboardView : MonoBehaviour
                             if (rank < 4)
                         {
                                 _podium.InitilializePodium(rank, player.Name, player.LeaderBoardWins, playerData);
-                            }
+
+                                if (rank == 1) //add the podium to scroll view
+                                {
+                                    LeaderboardPodium item = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>();
+                                }
+                        }
                             else
                             {
                                 LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
@@ -219,7 +230,12 @@ public class LeaderboardView : MonoBehaviour
                                 if (rank < 4)
                                 {
                                     _podium.InitilializePodium(rank, "", 0, null);
-                                }
+
+                                    if (rank == 1)
+                                    {
+                                        LeaderboardPodium item = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>();
+                                    }
+                            }
                                 else
                                 {
                                     LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
@@ -236,9 +252,15 @@ public class LeaderboardView : MonoBehaviour
 
                     for (int i = 1; i < 20; i++)
                     {
+                        if (i == 1) //add the podium to scroll view
+                        {
+                            LeaderboardPodium itemPod = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>();
+                        }
+
                         if (i < 4)
                         {
                             _podium.InitilializePodium(i, "", 0, null);
+
                     }
                         else
                         {
