@@ -6,7 +6,7 @@ using System.Threading;
 
 public class TopBarToggleHandler : MonoBehaviour
 {
-    public  TopBarDefs.TopBarItem item;
+    public TopBarDefs.TopBarItem item;
     private Toggle _toggle;
 
     private void OnEnable()
@@ -18,9 +18,14 @@ public class TopBarToggleHandler : MonoBehaviour
         SettingsCarrier.OnTopBarChanged += HandleTopBarChanged;
     }
 
+    private void OnDisable()
+    {
+        SettingsCarrier.OnTopBarChanged -= HandleTopBarChanged;
+    }
+
     private void Start()
     {
-        _toggle = GetComponentInChildren<Toggle>();
+        _toggle = GetComponent<Toggle>();
 
         if (_toggle == null)
         {
@@ -53,7 +58,7 @@ public class TopBarToggleHandler : MonoBehaviour
 
         SettingsCarrier carrier = SettingsCarrier.Instance;
         SettingsCarrier.TopBarStyle style =
-        carrier != null ? carrier.TopBarStyleSetting : SettingsCarrier.TopBarStyle.NewHelena;
+            carrier != null ? carrier.TopBarStyleSetting : SettingsCarrier.TopBarStyle.NewHelena;
 
         string key = TopBarDefs.Key(item) + "_" + style; // tyylikohtainen
         _toggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(key, 1) != 0);
@@ -63,5 +68,4 @@ public class TopBarToggleHandler : MonoBehaviour
     {
         GetToggleValue();
     }
-
 }

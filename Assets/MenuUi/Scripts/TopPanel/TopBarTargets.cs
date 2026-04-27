@@ -14,15 +14,16 @@ public class TopBarTargets : MonoBehaviour
 
     public SettingsCarrier.TopBarStyle style;
 
-    [Header("Items (1:1)")]
-    [SerializeField] private List<Row> _rows = new List<Row>();
+    [Header("Items (1:1)")] [SerializeField]
+    private List<Row> _rows = new List<Row>();
 
-    [Header("Spacer (created if null)")]
-    [SerializeField] private RectTransform _flexibleSpacer;
+    [Header("Spacer (created if null)")] [SerializeField]
+    private RectTransform _flexibleSpacer;
+
     [SerializeField] private float _spacerMinWidth = 0f;
 
-    [SerializeField] private GameObject _standaloneLeaderboard;   // erillinen LB-nappi
-    [SerializeField] private GameObject _clanTileLeaderboard;     // LB-nappi clan-ruudussa
+    [SerializeField] private GameObject _standaloneLeaderboard; // erillinen LB-nappi
+    [SerializeField] private GameObject _clanTileLeaderboard; // LB-nappi clan-ruudussa
 
     [SerializeField] private TopBarDefs.TopBarItem _clanItem = TopBarDefs.TopBarItem.ClanTile;
     [SerializeField] private TopBarDefs.TopBarItem _leaderboardItem = TopBarDefs.TopBarItem.Leaderboard;
@@ -49,14 +50,14 @@ public class TopBarTargets : MonoBehaviour
         RectTransform parentRT;
         if (!IsValid(out parentRT)) return;
 
-        // 1) näkyvyys PlayerPrefsistä
+        // 1) nï¿½kyvyys PlayerPrefsistï¿½
         bool[] vis = ReadVisibility();
 
-        // 2) Clan vs Leaderboard -sääntö
-        bool clanOn, lbOn;
-        ApplyClanLeaderboardRule(vis, out clanOn, out lbOn);
+        // 2) Clan vs Leaderboard -sï¿½ï¿½ntï¿½
+        // bool clanOn, lbOn;
+        // ApplyClanLeaderboardRule(vis, out clanOn, out lbOn);
 
-        // 3) Aktivoi/poista näkyvistä rivit
+        // 3) Aktivoi/poista nï¿½kyvistï¿½ rivit
         for (int i = 0; i < _rows.Count; i++)
         {
             if (_rows[i].target != null)
@@ -64,10 +65,10 @@ public class TopBarTargets : MonoBehaviour
         }
 
         // LB-variantit
-        if (_clanTileLeaderboard != null) _clanTileLeaderboard.SetActive(clanOn && lbOn);
-        if (_standaloneLeaderboard != null) _standaloneLeaderboard.SetActive(lbOn && !clanOn);
+        // if (_clanTileLeaderboard != null) _clanTileLeaderboard.SetActive(clanOn && lbOn);
+        // if (_standaloneLeaderboard != null) _standaloneLeaderboard.SetActive(lbOn && !clanOn);
 
-        // 4) Järjestys SettingsCarrierista (List<int>) ja suodata näkyvät
+        // 4) Jï¿½rjestys SettingsCarrierista (List<int>) ja suodata nï¿½kyvï¿½t
         List<int> rawOrder = SettingsCarrier.LoadTopBarOrderStatic(style, _rows.Count);
 
         List<int> orderedVisible = new List<int>(_rows.Count);
@@ -77,21 +78,28 @@ public class TopBarTargets : MonoBehaviour
             if ((uint)idx < (uint)_rows.Count && vis[idx])
                 orderedVisible.Add(idx);
         }
-        // lisää puuttuvat näkyvät loppuun
+
+        // lisï¿½ï¿½ puuttuvat nï¿½kyvï¿½t loppuun
         for (int i = 0; i < _rows.Count; i++)
         {
             if (!vis[i]) continue;
             bool already = false;
             for (int j = 0; j < orderedVisible.Count; j++)
-                if (orderedVisible[j] == i) { already = true; break; }
+                if (orderedVisible[j] == i)
+                {
+                    already = true;
+                    break;
+                }
+
             if (!already) orderedVisible.Add(i);
         }
 
         // 5) Aseta sisarusindeksit spacerilla
-        ApplyOrderWithSpacer(parentRT, orderedVisible);
+        //ApplyOrderWithSpacer(parentRT, orderedVisible);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
     }
 
-    // ---- OrderBridge tarvitsee vain nämä kaksi apuria ----
+    // ---- OrderBridge tarvitsee vain nï¿½mï¿½ kaksi apuria ----
     public int RowCount()
     {
         return _rows != null ? _rows.Count : 0;
@@ -128,6 +136,7 @@ public class TopBarTargets : MonoBehaviour
             Debug.LogWarning("TopBarTargets: parent RectTransform not found.");
             return false;
         }
+
         return true;
     }
 
@@ -145,6 +154,7 @@ public class TopBarTargets : MonoBehaviour
             string key = TopBarDefs.Key(_rows[i].item) + "_" + style; // tyylikohtainen
             vis[i] = PlayerPrefs.GetInt(key, 1) != 0; // default ON
         }
+
         return vis;
     }
 
@@ -157,7 +167,7 @@ public class TopBarTargets : MonoBehaviour
         clanOn = clanIdx >= 0 && vis[clanIdx];
         lbOn = lbIdx >= 0 && vis[lbIdx];
 
-        // molemmat päällä -> piilota standalone LB -rivi
+        // molemmat pï¿½ï¿½llï¿½ -> piilota standalone LB -rivi
         if (clanOn && lbOn && lbIdx >= 0)
             vis[lbIdx] = false;
     }
@@ -165,7 +175,8 @@ public class TopBarTargets : MonoBehaviour
     private int IndexOfItem(TopBarDefs.TopBarItem item)
     {
         for (int i = 0; i < _rows.Count; i++)
-            if (_rows[i].item.Equals(item)) return i;
+            if (_rows[i].item.Equals(item))
+                return i;
         return -1;
     }
 
@@ -188,7 +199,7 @@ public class TopBarTargets : MonoBehaviour
         LayoutElement le = _flexibleSpacer.GetComponent<LayoutElement>();
         le.minWidth = _spacerMinWidth;
         le.preferredWidth = 0f;
-        le.flexibleWidth = 1f; // työntää viimeisen oikealle
+        le.flexibleWidth = 1f; // tyï¿½ntï¿½ï¿½ viimeisen oikealle
         le.minHeight = 0f;
         le.preferredHeight = 0f;
         le.flexibleHeight = 0f;
@@ -237,10 +248,8 @@ public class TopBarTargets : MonoBehaviour
                 return true;
             }
         }
+
         index = -1;
         return false;
     }
-
-
-
 }
