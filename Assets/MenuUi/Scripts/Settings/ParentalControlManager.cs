@@ -93,7 +93,10 @@ public class ParentalControlManager : MonoBehaviour
              }
 
     public void LogIn() {
-
+        //next two are to ensure that log in works when control first disabled and then set a new in the same session
+        //TODO a more elegant way to ensure this
+        CheckControl();
+        GetPassword();
         if (parentalControl == true)
         {
             if (passwordInput.text == presetPassword)
@@ -205,6 +208,17 @@ public class ParentalControlManager : MonoBehaviour
     {
         PlayerPrefs.SetInt("ParentalControl", isEnabled ? 1 : 0);
         PlayerPrefs.Save();
+    }
+
+    public void DisableParentalControl()
+    {
+        //ParentalControl is active only if PlayerPrefs "parentalcontrol" equals 1
+        PlayerPrefs.SetInt("parentalcontrol", 0);
+        PlayerPrefs.SetString("password","");
+        PlayerPrefs.Save();
+        parentalControlPopupButton.SetActive(true);
+
+
     }
 
     public void SetTimeLimit()
