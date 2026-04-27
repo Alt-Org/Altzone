@@ -27,8 +27,9 @@ namespace Battle.View.Player
     /// Handles player character view logic.
     /// </summary>
     ///
-    /// [{Player Overview}](#page-concepts-player-overview)<br/>
-    /// [{Player View Code Overview}](#page-concepts-player-view-overview)
+    /// See [{Player Overview}](#page-concepts-player-overview) for more info.<br/>
+    /// See [{Player View Code Overview}](#page-concepts-player-view-overview) for more info.<br/>
+    /// See [{PlayerCharacterViewController}](#page-concepts-player-character-view-controller) for more info.
     public unsafe class BattlePlayerCharacterViewController : QuantumEntityViewComponent
     {
         /// <summary>
@@ -308,13 +309,20 @@ namespace Battle.View.Player
 
         #region Public
 
+        /// <summary>Public getter for <em>SpriteSheet</em>.</summary>
         public BattleSpriteSheet SpriteSheet => _spriteSheet;
 
+        /// @anchor BattlePlayerCharacterViewController-Public-SpriteControlMethods
+        /// @name Public Sprite Control Methods
+        /// Methods for controlling sprites.
+        /// @{
         #region Public - Sprite Control Methods
 
         /// <summary>
         /// Handles changing the sprite to the base sprite.
         /// </summary>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
         public void SetBaseSprite()
         {
             _bodypartSpriteRenderers[SpriteRendererHeadIndex]   .sprite = null;
@@ -327,6 +335,8 @@ namespace Battle.View.Player
         /// <summary>
         /// Handles changing the sprite for the head gameobject.
         /// </summary>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
         ///
         /// <param name="sprite">Sprite that the head sprite is being changed to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -352,6 +362,8 @@ namespace Battle.View.Player
         /// Handles changing the sprite for the body gameobject.
         /// </summary>
         ///
+        /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
+        ///
         /// <param name="sprite">Sprite that the head sprite is being changed to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetBodySprite(SpriteSheetMap sprite)
@@ -370,6 +382,8 @@ namespace Battle.View.Player
         /// <summary>
         /// Handles changing the sprite for the hand gameobject.
         /// </summary>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
         ///
         /// <param name="sprite">Sprite that the hand sprite is being changed to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -396,6 +410,8 @@ namespace Battle.View.Player
         /// Handles changing the sprite for the feet gameobject.
         /// </summary>
         ///
+        /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
+        ///
         /// <param name="sprite">Sprite that the hand sprite is being changed to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetFeetSprite(SpriteSheetMap sprite)
@@ -411,18 +427,11 @@ namespace Battle.View.Player
         }
 
         #endregion Public - Sprite Control Methods
+        /// @}
 
-        /// <summary>
-        /// Binds the shield view controller to the _playerShieldViewControllers dictionary to be able to call on it later.
-        /// </summary>
-        ///
-        /// <param name="shieldViewController">Pointer to a shield view controller associated with the character.</param>
-        /// <param name="shieldNumber">ShieldNumber of the shield being bound.</param>
-        public void BindShield(BattlePlayerShieldViewController shieldViewController, int shieldNumber)
-        {
-            _playerShieldViewControllers[shieldNumber] = shieldViewController;
-        }
-
+        /// @anchor BattlePlayerCharacterViewController-Public-GameflowMethods
+        /// @name Public Gameflow Methods
+        /// @{
         #region Public - Gameflow Methods
 
         /// <summary>
@@ -431,6 +440,8 @@ namespace Battle.View.Player
         /// sets the player character model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.
         /// Handles subscribing to QuantumEvents and registering to BattleViewRegistry.
         /// </summary>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Public-GameflowMethods "Public Gameflow Methods"
         ///
         /// <param name="_">Current simulation frame.</param>
         public override void OnActivate(Frame _) { PreInitSetup(); QuantumEvent.Subscribe(this, (EventBattlePlayerCharacterViewInit e) =>
@@ -509,6 +520,8 @@ namespace Battle.View.Player
         /// Public method that is called when the view should update.<br/>
         /// Calls <see cref="UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to update the player character model's position
         /// </summary>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Public-GameflowMethods "Public Gameflow Methods"
         public override void OnUpdateView()
         {
             if (!_isInPlay) return;
@@ -523,11 +536,28 @@ namespace Battle.View.Player
             _classViewController.OnUpdateView();
         }
 
+        /// <summary>
+        /// Binds the shield view controller to the _playerShieldViewControllers dictionary during startup to be able to call on it later.
+        /// </summary>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Public-GameflowMethods "Public Gameflow Methods"
+        ///
+        /// <param name="shieldViewController">Pointer to a shield view controller associated with the character.</param>
+        /// <param name="shieldNumber">ShieldNumber of the shield being bound.</param>
+        public void BindShield(BattlePlayerShieldViewController shieldViewController, int shieldNumber)
+        {
+            _playerShieldViewControllers[shieldNumber] = shieldViewController;
+        }
+
         #endregion Public - Gameflow Methods
+        /// @}
 
         #endregion Public
 
         #region Private
+
+        /// @name Constant Private SpriteRenderer Index Attributes
+        /// @{
 
         /// <summary>Constant for the head sprite renderer's index.</summary>
         private const int SpriteRendererHeadIndex = 0;
@@ -540,10 +570,12 @@ namespace Battle.View.Player
         /// <summary>Constant for the shadow sprite renderer's index.</summary>
         private const int SpriteRendererShadowIndex = 4;
 
-        /// <summary>This classes BattleDebugLogger instance.</summary>
+        /// @}
+
+        /// <summary>This classes %BattleDebugLogger instance.</summary>
         private BattleDebugLogger _debugLogger;
 
-        /// <summary>Boolean that tells whether the Quantum Entity this ViewController is attached to is in play.</summary>
+        /// <summary>%Boolean that tells whether the %Quantum Entity this ViewController is attached to is in play.</summary>
         private bool _isInPlay;
 
         /// <value>Reference to the active character class view controller.</value>
@@ -558,12 +590,17 @@ namespace Battle.View.Player
         /// <value>Holder variable for the damage flash coroutine.</value>
         private Coroutine _damageFlashCoroutine = null;
 
+        /// @anchor BattlePlayerCharacterViewController-Private-GameflowMethods
+        /// @name Private Gameflow Methods
+        /// @{
         #region Private Gameflow Methods
 
         /// <summary>
         /// Handles setup that needs to happen before <see cref="Quantum.EventBattlePlayerCharacterViewInit">EventBattlePlayerCharacterViewInit</see> event is received.<br/>
         /// Currently this is needed for initializing character's class as none.
         /// </summary>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Private-GameflowMethods "Private Gameflow Methods"
         private void PreInitSetup()
         {
             _debugLogger = BattleDebugLogger.Create<BattlePlayerCharacterViewController>();
@@ -572,13 +609,21 @@ namespace Battle.View.Player
         }
 
         #endregion Private Gameflow Methods
+        /// @}
 
+        /// @anchor BattlePlayerCharacterViewController-Private-QuantumEventHandlers
+        /// @name Private QuantumEvent Handlers
+        /// Methods for handling QuantumEvents.
+        /// @{
         #region Private QuantumEvent Handlers
 
         /// <summary>
         /// Handler method for @cref{Quantum,EventBattlePlayStateUpdate} QuantumEvent.<br/>
         /// Updates the _isInPlay bool.
         /// </summary>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Private-QuantumEventHandlers "Private QuantumEvent Handlers"
+        ///
         /// <param name="e">The event data.</param>
         private void QEventOnPlayStateUpdate(EventBattlePlayStateUpdate e)
         {
@@ -592,6 +637,8 @@ namespace Battle.View.Player
         /// Handler method for @cref{Quantum,EventBattleCharacterHit} QuantumEvent.<br/>
         /// Starts <see cref="BattlePlayerCharacterViewController.StunFlashCoroutine">DamageFlashCoroutine</see>.
         /// </summary>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Private-QuantumEventHandlers "Private QuantumEvent Handlers"
         ///
         /// <param name="e">The event data.</param>
         private void QEventOnCharacterHit(EventBattleCharacterHit e)
@@ -616,6 +663,8 @@ namespace Battle.View.Player
         /// Forwards the parameter event to every shield view controller bound to this character view controller.
         /// </summary>
         ///
+        /// Part of @ref BattlePlayerCharacterViewController-Private-QuantumEventHandlers "Private QuantumEvent Handlers"
+        ///
         /// <param name="e">Shield get hit event that needs to be forwarded.</param>
         private void QEventOnShieldHit(EventBattleShieldHit e)
         {
@@ -627,6 +676,10 @@ namespace Battle.View.Player
         }
 
         #endregion Private QuantumEvent Handlers
+        /// @}
+
+        /// @name Other Private Methods
+        /// @{
 
         /// <summary>
         /// Updates the player character model's position.
@@ -677,6 +730,8 @@ namespace Battle.View.Player
                 yield return new WaitForSeconds(singleFlashDuration);
             }
         }
+
+        /// @}
 
         #endregion Private
     }

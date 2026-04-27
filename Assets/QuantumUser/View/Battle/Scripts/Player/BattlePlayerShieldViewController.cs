@@ -28,6 +28,9 @@ namespace Battle.View.Player
     /// <span class="brief-h">%Player shield's <a href="https://doc-api.photonengine.com/en/quantum/current/class_quantum_1_1_quantum_entity_view_component.html">QuantumEntityViewComponent@u-exlink</a>.</span><br/>
     /// Handles player shield sprites and animations.
     /// </summary>
+    /// See [{Player Overview}](#page-concepts-player-overview) for more info.<br/>
+    /// See [{Player View Code Overview}](#page-concepts-player-view-overview) for more info.<br/>
+    /// See [{PlayerShieldViewController}](#page-concepts-player-shield-view-controller) for more info.
     public unsafe class BattlePlayerShieldViewController : QuantumEntityViewComponent
     {
         /// @anchor BattlePlayerShieldViewController-SerializeFields
@@ -95,11 +98,17 @@ namespace Battle.View.Player
             Bottom = 1
         }
 
+        /// @anchor BattlePlayerShieldViewController-Public-SpriteControlMethods
+        /// @name Public Sprite Control Methods
+        /// Methods for controlling sprites
+        /// @{
         #region Public - Sprite Control Methods
 
         /// <summary>
         /// Handles changing the sprite for the shield gameobject.
         /// </summary>
+        ///
+        /// Part of @ref BattlePlayerShieldViewController-Public-SpriteControlMethods "Public Sprite Control Methods"
         ///
         /// <param name="shieldNumber">ShieldNumber of the shield.</param>
         /// <param name="side">The side the shield is on.</param>
@@ -140,7 +149,11 @@ namespace Battle.View.Player
         }
 
         #endregion Public - Sprite Control Methods
+        /// @}
 
+        /// @anchor BattlePlayerShieldViewController-Public-GameflowMethods
+        /// @name Public Gameflow Methods
+        /// @{
         #region Public - Gameflow Methods
 
         /// <summary>
@@ -149,6 +162,8 @@ namespace Battle.View.Player
         /// sets the shield model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.
         /// Handles subscribing to QuantumEvents and registering to BattleViewRegistry.
         /// </summary>
+        ///
+        /// Part of @ref BattlePlayerShieldViewController-Public-GameflowMethods "Public Gameflow Methods"
         ///
         /// <param name="_">Current simulation frame.</param>
         public override void OnActivate(Frame _) { PreInitSetup(); QuantumEvent.Subscribe(this, (EventBattlePlayerShieldViewInit e) =>
@@ -206,6 +221,8 @@ namespace Battle.View.Player
         /// <summary>
         /// Public method that is called when the view should update.
         /// </summary>
+        ///
+        /// Part of @ref BattlePlayerShieldViewController-Public-GameflowMethods "Public Gameflow Methods"
         public override void OnUpdateView()
         {
             if (!_isInPlay) return;
@@ -214,12 +231,19 @@ namespace Battle.View.Player
         }
 
         #endregion Public - Gameflow Methods
+        /// @}
 
-        #region Public - Forwarded Quantum Event Handlers
+        /// @anchor BattlePlayerShieldViewController-Public-ForwardedQuantumEventHandlers
+        /// @name Public Forwarded QuantumEvent Handlers
+        /// Methods for handling forwarded QuantumEvents
+        /// @{
+        #region Public - Forwarded QuantumEvent Handlers
 
         /// <summary>
         /// Handler method for @cref{Quantum,EventBattleShieldHit} QuantumEvent.
         /// </summary>
+        ///
+        /// Part of @ref BattlePlayerShieldViewController-Public-ForwardedQuantumEventHandlers "Public Forwarded QuantumEvent Handlers"
         ///
         /// <param name="e">The event data.</param>
         public void OnShieldHit(EventBattleShieldHit e)
@@ -236,22 +260,25 @@ namespace Battle.View.Player
         /// Handler method for @cref{Quantum,EventBattleCharacterHit} QuantumEvent.
         /// </summary>
         ///
+        /// Part of @ref BattlePlayerShieldViewController-Public-ForwardedQuantumEventHandlers "Public Forwarded QuantumEvent Handlers"
+        ///
         /// <param name="e">The event data.</param>
         public void OnCharacterHit(EventBattleCharacterHit e)
         {
             _classViewController.OnCharacterHit(e);
         }
 
-        #endregion Public - Forwarded Quantum Event Handlers
+        #endregion Public - Forwarded QuantumEvent Handlers
+        /// @}
 
         #endregion Public
 
         #region Private
 
-        /// <summary>This classes BattleDebugLogger instance.</summary>
+        /// <summary>This classes %BattleDebugLogger instance.</summary>
         private BattleDebugLogger _debugLogger;
 
-        /// <summary>Boolean that tells whether the Quantum Entity this ViewController is attached to is in play.</summary>
+        /// <summary>%Boolean that tells whether the %Quantum Entity this ViewController is attached to is in play.</summary>
         private bool _isInPlay;
 
         /// <value>Reference to the active shield class view controller.</value>
@@ -263,12 +290,17 @@ namespace Battle.View.Player
         /// <summary>Character view controller this shield view controller is bound to.</summary>
         private BattlePlayerCharacterViewController _characterViewController;
 
+        /// @anchor BattlePlayerShieldViewController-Private-GameflowMethods
+        /// @name Private Gameflow Methods
+        /// @{
         #region Private - Gameflow Methods
 
         /// <summary>
         /// Handles setup that needs to happen before <see cref="Quantum.EventBattlePlayerShieldViewInit">EventBattlePlayerShieldViewInit</see> event is received.<br/>
         /// Currently this is needed for initializing shield's class as none.
         /// </summary>
+        ///
+        /// Part of @ref BattlePlayerShieldViewController-Private-GameflowMethods "Private Gameflow Methods"
         private void PreInitSetup()
         {
             _debugLogger = BattleDebugLogger.Create<BattlePlayerShieldViewController>();
@@ -277,10 +309,19 @@ namespace Battle.View.Player
         }
 
         #endregion Private - Gameflow Methods
+        /// @}
 
-        #region Private - View Registry Callback Handlers
+        /// @anchor BattlePlayerShieldViewController-Private-ViewRegistryCallbackHandlers
+        /// @name Private ViewRegistry Callback Handlers
+        /// Methods for handling ViewRegistry callbacks
+        /// @{
+        #region Private - ViewRegistry Callback Handlers
 
-        /// <summary>Handles binding this shield view controller to the character view controller and vice versa.</summary>
+        /// <summary>
+        /// Handles binding this shield view controller to the character view controller and vice versa.
+        /// </summary>
+        ///
+        /// Part of @ref BattlePlayerShieldViewController-Private-ViewRegistryCallbackHandlers "Private ViewRegistry Callback Handlers"
         private bool OnCharacterRegistered()
         {
             BattlePlayerCharacterViewController characterViewController = BattleViewRegistry.GetObject<BattlePlayerCharacterViewController>(_characterEntityRef);
@@ -292,14 +333,21 @@ namespace Battle.View.Player
             return true;
         }
 
-        #endregion Private - View Registry Callback Handlers
+        #endregion Private - ViewRegistry Callback Handlers
+        /// @}
 
+        /// @anchor BattlePlayerShieldViewController-Private-QuantumEventHandlers
+        /// @name Private QuantumEvent Handlers
+        /// Methods for handling QuantumEvents
+        /// @{
         #region Private - QuantumEvent Handlers
 
         /// <summary>
         /// Handler method for @cref{Quantum,EventBattlePlayStateUpdate} QuantumEvent.<br/>
         /// Updates the _isInPlay bool.
         /// </summary>
+        ///
+        /// Part of @ref BattlePlayerShieldViewController-Private-QuantumEventHandlers "Private QuantumEvent Handlers"
         ///
         /// <param name="e">The event data.</param>
         private void QEventOnPlayStateUpdate(EventBattlePlayStateUpdate e)
@@ -311,6 +359,7 @@ namespace Battle.View.Player
         }
 
         #endregion Private - QuantumEvent Handlers
+        /// @}
 
         #endregion Private
     }
