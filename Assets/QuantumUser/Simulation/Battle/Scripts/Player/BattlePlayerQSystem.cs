@@ -144,9 +144,10 @@ namespace Battle.QSimulation.Player
         ///
         /// Update method has been split into subprocesses.<br/>
         /// see @cref{BattlePlayerQSystem,GetInput}<br/>
-        /// see @cref{BattlePlayerQSystem,HandleGiveUpInput}<br/>
-        /// see @cref{BattlePlayerQSystem,HandleCharacterSwapping}<br/>
+        /// see @cref{Battle.QSimulation.Player,CommandGiveUp}<br/>
+        /// see @cref{Battle.QSimulation.Player,CommandSwapCharacter}<br/>
         /// see @cref{BattlePlayerQSystem,HandleOutOfPlay}<br/>
+        /// see @cref{Battle.QSimulation.Player,CommandActivateAbility}<br/>
         /// see @cref{BattlePlayerQSystem,HandleInPlay}
         ///
         /// <param name="f">Current simulation frame</param>
@@ -365,17 +366,14 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Private helper method for handling player input for giving up during the game play.<br/>
-        /// Subprocess of the <see cref="BattlePlayerQSystem.Update">Update</see> method.
+        /// Public helper method for handling player input for giving up during the game play.<br/>
+        /// Called by @cref{Battle.QSimulation.Player,CommandGiveUp}
         /// </summary>
         ///
         /// Updates give up state and calls <see cref="BattlePlayerQSystem.HandleGiveUpLogic">HandleGiveUpLogic</see> method which handles the rest of the logic.
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="input">Pointer to the player's input data.</param>
         /// <param name="playerHandle">Handle of the player.</param>
-        ///
-        /// <returns>True if the give up input was processed.</returns>
         public static void HandleGiveUp(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
             playerHandle.PlayerGiveUpState = !playerHandle.PlayerGiveUpState;
@@ -386,15 +384,12 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Private helper method for handling character swapping.<br/>
-        /// Subprocess of the <see cref="BattlePlayerQSystem.Update">Update</see> method.
+        /// Public helper method for handling character swapping.<br/>
+        /// Called by @cref{Battle.QSimulation.Player,CommandSwapCharacter}
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="input">Pointer to the player's input data.</param>
         /// <param name="playerHandle">Handle of the player.</param>
-        ///
-        /// <returns>True if character swapped.</returns>
         public static void HandleCharacterSwapping(Frame f, BattlePlayerManager.PlayerHandle playerHandle, int playerCharacterNumber)
         {
             s_debugLogger.LogFormat(f, "({0}) Character swap input received", playerHandle.Slot);
