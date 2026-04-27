@@ -13,15 +13,7 @@ namespace Altzone.Scripts.ReferenceSheets
 
         [Space, SerializeField] private AvatarClass _avaritiaAvatar;
 
-        [Space, SerializeField] private string _obedientNameFinnish;
-        [SerializeField] private string _obedientNameEnglish;
-        [SerializeField] private Color _obedientColor;
-        [SerializeField] private Color _obedientAlternativeColor;
-        [SerializeField] private Sprite _obedientFrame;
-        [SerializeField] private Sprite _obedientCornerIcon;
-        [SerializeField] private Sprite _obedientCharacter;
-        [SerializeField] private string _obedientDescFinnish;
-        [SerializeField] private string _obedientDescEnglish;
+        [Space, SerializeField] private AvatarClass _invidiaAvatar;
 
         [Space, SerializeField] private string _projectorNameFinnish;
         [SerializeField] private string _projectorNameEnglish;
@@ -92,7 +84,7 @@ namespace Altzone.Scripts.ReferenceSheets
                 {
                     CharacterClassType.Desensitizer => _iraAvatar.NameFinnish,
                     CharacterClassType.Trickster => _avaritiaAvatar.NameFinnish,
-                    CharacterClassType.Obedient => _obedientNameFinnish,
+                    CharacterClassType.Obedient => _invidiaAvatar.NameFinnish,
                     CharacterClassType.Projector => _projectorNameFinnish,
                     CharacterClassType.Retroflector => _retroflectorNameFinnish,
                     CharacterClassType.Confluent => _confluentNameFinnish,
@@ -103,7 +95,7 @@ namespace Altzone.Scripts.ReferenceSheets
                 {
                     CharacterClassType.Desensitizer => _iraAvatar.NameEnglish,
                     CharacterClassType.Trickster => _avaritiaAvatar.NameEnglish,
-                    CharacterClassType.Obedient => _obedientNameEnglish,
+                    CharacterClassType.Obedient => _invidiaAvatar.NameEnglish,
                     CharacterClassType.Projector => _projectorNameEnglish,
                     CharacterClassType.Retroflector => _retroflectorNameEnglish,
                     CharacterClassType.Confluent => _confluentNameEnglish,
@@ -126,7 +118,7 @@ namespace Altzone.Scripts.ReferenceSheets
             {
                 CharacterClassType.Desensitizer => _iraAvatar.EyeColor,
                 CharacterClassType.Trickster => _avaritiaAvatar.EyeColor,
-                CharacterClassType.Obedient => _obedientColor,
+                CharacterClassType.Obedient => _invidiaAvatar.EyeColor,
                 CharacterClassType.Projector => _projectorColor,
                 CharacterClassType.Retroflector => _retroflectorColor,
                 CharacterClassType.Confluent => _confluentColor,
@@ -147,7 +139,7 @@ namespace Altzone.Scripts.ReferenceSheets
             {
                 CharacterClassType.Desensitizer => _iraAvatar.SkinColor,
                 CharacterClassType.Trickster => _avaritiaAvatar.SkinColor,
-                CharacterClassType.Obedient => _obedientAlternativeColor,
+                CharacterClassType.Obedient => _invidiaAvatar.SkinColor,
                 CharacterClassType.Projector => _projectorAlternativeColor,
                 CharacterClassType.Retroflector => _retroflectorAlternativeColor,
                 CharacterClassType.Confluent => _confluentAlternativeColor,
@@ -167,7 +159,7 @@ namespace Altzone.Scripts.ReferenceSheets
             {
                 CharacterClassType.Desensitizer => _iraAvatar.Frame,
                 CharacterClassType.Trickster => _avaritiaAvatar.Frame,
-                CharacterClassType.Obedient => _obedientFrame,
+                CharacterClassType.Obedient => _invidiaAvatar.Frame,
                 CharacterClassType.Projector => _projectorFrame,
                 CharacterClassType.Retroflector => _retroflectorFrame,
                 CharacterClassType.Confluent => _confluentFrame,
@@ -187,7 +179,7 @@ namespace Altzone.Scripts.ReferenceSheets
             {
                 CharacterClassType.Desensitizer => _iraAvatar.CornerIcon,
                 CharacterClassType.Trickster => _avaritiaAvatar.CornerIcon,
-                CharacterClassType.Obedient => _obedientCornerIcon,
+                CharacterClassType.Obedient => _invidiaAvatar.CornerIcon,
                 CharacterClassType.Projector => _projectorCornerIcon,
                 CharacterClassType.Retroflector => _retroflectorCornerIcon,
                 CharacterClassType.Confluent => _confluentCornerIcon,
@@ -207,7 +199,7 @@ namespace Altzone.Scripts.ReferenceSheets
             {
                 CharacterClassType.Desensitizer => _iraAvatar.Character,
                 CharacterClassType.Trickster => _avaritiaAvatar.Character,
-                CharacterClassType.Obedient => _obedientCharacter,
+                CharacterClassType.Obedient => _invidiaAvatar.Character,
                 CharacterClassType.Projector => _projectorCharacter,
                 CharacterClassType.Retroflector => _retroflectorCharacter,
                 CharacterClassType.Confluent => _confluentCharacter,
@@ -229,7 +221,7 @@ namespace Altzone.Scripts.ReferenceSheets
                 {
                     CharacterClassType.Desensitizer => _iraAvatar.DescFinnish,
                     CharacterClassType.Trickster => _avaritiaAvatar.DescFinnish,
-                    CharacterClassType.Obedient => _obedientDescFinnish,
+                    CharacterClassType.Obedient => _invidiaAvatar.DescFinnish,
                     CharacterClassType.Projector => _projectorDescFinnish,
                     CharacterClassType.Retroflector => _retroflectorDescFinnish,
                     CharacterClassType.Confluent => _confluentDescFinnish,
@@ -240,7 +232,7 @@ namespace Altzone.Scripts.ReferenceSheets
                 {
                     CharacterClassType.Desensitizer => _iraAvatar.DescEnglish,
                     CharacterClassType.Trickster => _avaritiaAvatar.DescEnglish,
-                    CharacterClassType.Obedient => _obedientDescEnglish,
+                    CharacterClassType.Obedient => _invidiaAvatar.DescEnglish,
                     CharacterClassType.Projector => _projectorDescEnglish,
                     CharacterClassType.Retroflector => _retroflectorDescEnglish,
                     CharacterClassType.Confluent => _confluentDescEnglish,
