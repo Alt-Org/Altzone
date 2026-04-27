@@ -121,9 +121,9 @@ public class DailyTaskView : AltMonoBehaviour
         _showMultipleChoiceTaskButton.onClick.AddListener(() => DailyTaskManager.Instance.ShowMultipleChoiceTask());
 
         //Buttons
-        _dailyTasksTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.Tasks));
-        _ownTaskTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.OwnTask));
-        _clanTaskTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.ClanTask));
+        //_dailyTasksTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.Tasks));
+        //_ownTaskTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.OwnTask));
+        //_clanTaskTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.ClanTask));
 
         //Register to events
         try
