@@ -26,7 +26,7 @@ namespace Altzone.Scripts.ReferenceSheets
             {
                 if (!_hasInstance)
                 {
-                    _instance = Resources.Load<AvatarReference>("Characters/" + nameof(AvatarReference));
+                    _instance = Resources.Load<AvatarReference>(nameof(AvatarReference));
                     _hasInstance = _instance != null;
                 }
                 return _instance;
@@ -74,7 +74,7 @@ namespace Altzone.Scripts.ReferenceSheets
         /// </summary>
         /// <param name="classType">The class id which color to get.</param>
         /// <returns>Class color.</returns>
-        public Color GetColor(CharacterClassType classType)
+        public Color GetColour(CharacterClassType classType)
         {
             return classType switch
             {
@@ -95,7 +95,7 @@ namespace Altzone.Scripts.ReferenceSheets
         /// </summary>
         /// <param name="classType">The class id which alternative color to get.</param>
         /// <returns>Class alternative color.</returns>
-        public Color GetAlternativeColor(CharacterClassType classType)
+        public Color GetAlternativeColour(CharacterClassType classType)
         {
             return classType switch
             {

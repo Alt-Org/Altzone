@@ -34,7 +34,7 @@ public class IntroCharacters : MonoBehaviour
 
             classType = (CharacterClassType)characterIDs[j]; //get classtype from list
 
-            characterCard.GetComponent<Image>().color = _classReference.GetAlternativeColor(classType); //change card color
+            characterCard.GetComponent<Image>().color = avatarreference.GetAlternativeColour(classType); //change card color
 
 
             CharacterThumbnailHandler characterThumbnailHandler = characterCard.GetComponent<CharacterThumbnailHandler>(); // get correct thumbnailhandler 
