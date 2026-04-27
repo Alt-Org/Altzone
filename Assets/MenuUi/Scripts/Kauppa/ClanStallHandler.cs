@@ -33,17 +33,17 @@ public class ClanStallPopupHandler : MonoBehaviour
     [SerializeField ]private ConfirmationPopupHandler _confirmPopup;
 
     [SerializeField] private TMP_Text _clanName;
+    private string _randomClanName;
 
 
     //TO DO: kirpputori äänestys
     void Start()
     {
         //_suggestVotingButton.onClick.AddListener(() => { _confirmPopup.SetPopupActiveClanStall();  });
-        if (ServerManager.Instance.Clan != null)
-        {
-            string name = ServerManager.Instance.Clan.name;
-            showClanName(name);
-        }
+
+           
+        //showClanName(null);
+        
     }
 
     private void OnEnable()
@@ -79,6 +79,8 @@ public class ClanStallPopupHandler : MonoBehaviour
          
             card.GetComponent<FurnitureCardUI>().PopulateCard(_items[i]);
 
+            showClanName(null);
+
             //1. Store the current index so each button remembers its own item
             int itemIndex = i;
 
@@ -97,6 +99,8 @@ public class ClanStallPopupHandler : MonoBehaviour
         {
             showInfo(0);
         }
+
+        
 
     }
 
@@ -127,8 +131,34 @@ public class ClanStallPopupHandler : MonoBehaviour
         _artisticDescription.text = _furn.Info.ArtisticDescription;
     }
 
-    void showClanName (string clan)
+  
+    void randomizeName()
     {
-        _clanName.text = clan;
+        char[] letters = "qwertyuiopasdfghjklzxcvbnmåöä".ToCharArray();
+        System.Random r = new System.Random();
+
+        _randomClanName = "";
+
+        for (int i = 0; i < 8; i++)
+        {
+            _randomClanName += letters[r.Next(0, letters.Length)];
+
+        }
     }
+
+    void showClanName(ClanData clanData)
+    {
+
+        if (clanData == null)
+        {
+            randomizeName();
+            _clanName.text = _randomClanName;
+        }
+        else
+        {
+            _clanName.text = clanData.Name;
+        }
+
+    }
+
 }
