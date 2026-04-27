@@ -13,6 +13,7 @@ namespace Altzone.Scripts.Settings
             Settings,
             ClanTile,
             Jukebox,
+            ClanTextContainer,
         }
 
         public static string Key(TopBarItem item) => $"{KeyPrefix}{item}";
