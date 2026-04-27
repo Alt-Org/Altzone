@@ -2,14 +2,12 @@ using System;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class IntroCharacters : MonoBehaviour
 {
-    [SerializeField]
-    private ClassReference _classReference;
-
     [SerializeField]
     private List<GameObject> characterCards;
 
@@ -27,7 +25,7 @@ public class IntroCharacters : MonoBehaviour
 
         CharacterClassType classType;
         int j = 0;                     //for going through the classtype list
-
+        AvatarReference avatarreference= AvatarReference.Instance;
         foreach (GameObject characterCard in characterCards)
         {
             j++;
@@ -40,14 +38,15 @@ public class IntroCharacters : MonoBehaviour
             CharacterThumbnailHandler characterThumbnailHandler = characterCard.GetComponent<CharacterThumbnailHandler>(); // get correct thumbnailhandler 
 
             Image characterSprite = characterThumbnailHandler._characterSprite;
-            characterSprite.sprite = _classReference.GetCharacter(classType); //set character sprite
+            characterSprite.sprite = avatarreference.GetCharacterSprite(classType); //set character sprite
 
 
             Image emblemSprite = characterThumbnailHandler._emblemSprite; //find emblem-child
-            emblemSprite.sprite = _classReference.GetCornerIcon(classType); //set emblem sprite
+            emblemSprite.sprite = avatarreference.GetCornerIcon(classType); //set emblem sprite
 
-            Image nameSprite = characterThumbnailHandler._nameSprite; //find name-child
-            nameSprite.sprite = _classReference.GetNameIcon(classType); //set name sprite
+            TextMeshProUGUI nameSprite = characterThumbnailHandler._nameText; //find name-child
+            nameSprite.text = avatarreference.GetName(classType); //set name sprite
+            nameSprite.color = avatarreference.GetColour(classType);
 
            
         }
