@@ -1,0 +1,132 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 422bd9a18b9741e4ba404d384ee41b00, type: 3}
+  m_Name: AvatarReference
+  m_EditorClassIdentifier: 
+  _iraNameFinnish: Raivo
+  _iraNameEnglish: Wrath
+  _iraEyeColor: {r: 0.69803923, g: 0.13333334, b: 0.13333334, a: 1}
+  _iraSkinColor: {r: 0.87058824, g: 0.54901963, b: 0.41568628, a: 1}
+  _iraFrame: {fileID: 21300000, guid: 8986eb9b3eef1114f92d2653be2f6cab, type: 3}
+  _iraCornerIcon: {fileID: 21300000, guid: bad414b4c1bae7e4f96d492e83b42bb2, type: 3}
+  _iraCharacter: {fileID: 21300000, guid: ee90161b5d39ec9418fa0aa77146b2f1, type: 3}
+  _iraDescFinnish: "pystyv\xE4t piilottamaan tunteet kovan ulkokuorensa taakse, mutta
+    vaikka vahva olemus suojaakin Egoa kolhuilta, niin kaikella on rajansa."
+  _iraDescEnglish: They can hide their emotions behind a tough exterior, but even
+    through their strong presence protects the Ego from bruises, everything has its
+    limits.
+  _iraAvatar:
+    _nameFinnish: Raivo
+    _nameEnglish: Wrath
+    _eyeColor: {r: 0.69803923, g: 0.13333334, b: 0.13333334, a: 1}
+    _skinColor: {r: 0.8705883, g: 0.54901963, b: 0.4156863, a: 1}
+    _frame: {fileID: 21300000, guid: 8986eb9b3eef1114f92d2653be2f6cab, type: 3}
+    _cornerIcon: {fileID: 21300000, guid: bad414b4c1bae7e4f96d492e83b42bb2, type: 3}
+    _character: {fileID: 21300000, guid: ee90161b5d39ec9418fa0aa77146b2f1, type: 3}
+    _descFinnish: "pystyv\xE4t piilottamaan tunteet kovan ulkokuorensa taakse, mutta
+    vaikka vahva olemus suojaakin Egoa kolhuilta, niin kaikella on rajansa."
+    _descEnglish: They can hide their emotions behind a tough exterior, but even
+    through their strong presence protects the Ego from bruises, everything has its
+    limits.
+  _avaritiaAvatar:
+    _nameFinnish: "H\xE4m\xE4\xE4j\xE4"
+    _nameEnglish: Trickster
+    _eyeColor: {r: 0.37647063, g: 0.7294118, b: 0.37647063, a: 1}
+    _skinColor: {r: 0.46666667, g: 0.8980392, b: 0.46666667, a: 1}
+    _frame: {fileID: 21300000, guid: 7f70ad98f7f01db41bafe5dd07c3fd35, type: 3}
+    _cornerIcon: {fileID: 21300000, guid: 6e84e4c3a2d400f438be437826ed5abd,
+      type: 3}
+    _character: {fileID: 21300000, guid: c6e675e43a2f15f448e640f616d6bfbb,
+      type: 3}
+    _descFinnish: "suojelevat Egoa kohtelemalla tunteita kuin saippuaa - ne
+      lipsautetaan pois ja k\xE4\xE4nnet\xE4\xE4n muualle, jotta Ego v\xE4lttyy kohtaamasta
+      niit\xE4, samalla j\xE4tt\xE4en muut arvailemaan odottamatonta siirtoa."
+    _descEnglish: "They protect the Ego by treating emotions like soap \u2013
+      they slip them away and turn them elsewhere so that the Ego avoids encountering
+      them, while leaving others guessing at an unexpected move. "
+  _obedientNameFinnish: Tottelija
+  _obedientNameEnglish: Obedient
+  _obedientColor: {r: 0.8352941, g: 0.8352941, b: 0.105882354, a: 1}
+  _obedientAlternativeColor: {r: 1, g: 1, b: 0.4, a: 1}
+  _obedientFrame: {fileID: 21300000, guid: a85f88f04776d5140bd521112cdb8a26, type: 3}
+  _obedientCornerIcon: {fileID: 21300000, guid: afc086fe899f85f4ca33ba72d38a607b,
+    type: 3}
+  _obedientCharacter: {fileID: 21300000, guid: a8195e5c386ed2345988b958495c4c19, type: 3}
+  _obedientDescFinnish: "omistavat el\xE4m\xE4ns\xE4 Egon asettamien s\xE4\xE4nt\xF6jen
+    noudattamiselle ja ovat valmiita puolustamaan viimeiseen hengenvetoon asti. Vankkumattoman
+    lojaaleja, vaikkakin kykenem\xE4tt\xF6mi\xE4 kehittym\xE4\xE4n eteenp\xE4in."
+  _obedientDescEnglish: They dedicate their lives to following the rules set by the
+    Ego and are ready to defend them to their last breath. Unwaveringly loyal, yet
+    unable to grow or move forward.
+  _projectorNameFinnish: Peilaaja
+  _projectorNameEnglish: Projector
+  _projectorColor: {r: 0.8745098, g: 0.5254902, b: 0.09019608, a: 1}
+  _projectorAlternativeColor: {r: 0.94509804, g: 0.65882355, b: 0.29411766, a: 1}
+  _projectorFrame: {fileID: 21300000, guid: 801725e4cd15d294182d91861519540c, type: 3}
+  _projectorCornerIcon: {fileID: 21300000, guid: e1f2a882b3e18df4e8d21ca0afe8f5c3,
+    type: 3}
+  _projectorCharacter: {fileID: 21300000, guid: c3ccef0c9c6027b46848eb4ad73c7a2d,
+    type: 3}
+  _projectorDescFinnish: "ly\xF6v\xE4t Egon vastustajat k\xE4\xE4nt\xE4m\xE4ll\xE4
+    tunnehy\xF6kk\xE4ykset takaisin heit\xE4 vastaan. Pilkan osuessa omaan nilkkaan
+    he ovat kuitenkin alttiita luovuttamaan, sill\xE4 he eiv\xE4t kykyne k\xE4sittelem\xE4\xE4n
+    omia sotkujaan tai ottamaan vastuuta."
+  _projectorDescEnglish: "They strike the Ego\u2019s opponents by turning emotions
+    back on them. However, when it backfires on them, they become prone to giving
+    up, as they cannot handle their own messes or take responsibility. "
+  _retroflectorNameFinnish: Torjuja
+  _retroflectorNameEnglish: Retroflector
+  _retroflectorColor: {r: 0.69411767, g: 0.19607843, b: 0.19607843, a: 1}
+  _retroflectorAlternativeColor: {r: 0.9137255, g: 0.33333334, b: 0.33333334, a: 1}
+  _retroflectorFrame: {fileID: 21300000, guid: 2c697fa8ec4259f4fbac2ca0121a27b2, type: 3}
+  _retroflectorCornerIcon: {fileID: 21300000, guid: 07133b819c13bae4c8c6cdc3b3205e95,
+    type: 3}
+  _retroflectorCharacter: {fileID: 21300000, guid: dfdefd46f5298ca45bfe06badbfaa956,
+    type: 3}
+  _retroflectorDescFinnish: "kielt\xE4ytyv\xE4t t\xE4ysin tunteiden olemassaolosta
+    ja uhraavat itsens\xE4 Egon puolesta, vaikka maksavatkin siit\xE4 kovan hinnan
+    turvautuessaan ep\xE4terveellisiin keinoihin."
+  _retroflectorDescEnglish: They deny the existence of emotions and sacrifice themselves
+    for the Ego, even though they pay a heavy price by resorting to unhealthy means.
+  _confluentNameFinnish: Sulautuja
+  _confluentNameEnglish: Confluent
+  _confluentColor: {r: 0.5372549, g: 0.11372549, b: 0.5372549, a: 1}
+  _confluentAlternativeColor: {r: 0.69411767, g: 0.30588236, b: 0.69411767, a: 1}
+  _confluentFrame: {fileID: 21300000, guid: c85d5545634946d4998288d053151ab6, type: 3}
+  _confluentCornerIcon: {fileID: 21300000, guid: 4465914b30e24cd4d8b1c38034b54eaf,
+    type: 3}
+  _confluentCharacter: {fileID: 21300000, guid: 13a8471a6fe8dfd42ac7926700a46b7d,
+    type: 3}
+  _confluentDescFinnish: "ovat vahvimmillaan oman kuplansa sis\xE4ll\xE4, jonka he
+    ovat kehitt\xE4neet Egon suojelemiseksi. Erist\xE4ytymisell\xE4 on kuitenkin
+    hintansa, sill\xE4 ilman tukiverkkoaan heist\xE4 tulee eritt\xE4in haavoittuvaisia."
+  _confluentDescEnglish: They are at their strongest within their own bubble, which
+    they have developed to protect the Ego. However, isolation comes at a cost, as
+    without their support network they become highly vulnerable.
+  _intellectualizerNameFinnish: "\xC4lyllist\xE4j\xE4"
+  _intellectualizerNameEnglish: Intellectualizer
+  _intellectualizerColor: {r: 0.32156864, g: 0.13333334, b: 0.58431375, a: 1}
+  _intellectualizerAlternativeColor: {r: 0.52156866, g: 0.34117648, b: 0.7647059,
+    a: 1}
+  _intellectualizerFrame: {fileID: 21300000, guid: fc12ad5b40d27a3408323ac1cbd3e4b4,
+    type: 3}
+  _intellectualizerCornerIcon: {fileID: 21300000, guid: 7dda66d5aa65dad45b85939de1d20c70,
+    type: 3}
+  _intellectualizerCharacter: {fileID: 21300000, guid: f18115989b2eb6c41814556747fde0dc,
+    type: 3}
+  _intellectualizerDescFinnish: "laskelmoivat ja ennakoivat jokaisen liikkeen, jotta
+    tunteet eiv\xE4t p\xE4\xE4se yll\xE4tt\xE4m\xE4\xE4n. Heid\xE4n analyysins\xE4
+    pit\xE4\xE4 Egon suojassa, mutta loputon yliajattelu saattaakin vied\xE4 maun
+    el\xE4m\xE4st\xE4."
+  _intellectualizerDescEnglish: They calculate and anticipate every move so that
+    emotions cannot take them by surprise. Their analysis keeps the Ego protected,
+    but endless overthinking may drain the joy out of life.
