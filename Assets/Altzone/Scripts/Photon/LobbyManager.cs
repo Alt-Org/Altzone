@@ -5466,6 +5466,29 @@ namespace Altzone.Scripts.Lobby
                     Debug.Log($"Skipping RoomChangeRequested broadcast: Server={PhotonRealtimeClient.Client?.Server}, IsConnectedAndReady={PhotonRealtimeClient.Client?.IsConnectedAndReady}, InRoom={PhotonRealtimeClient.InRoom}");
                 }
 
+                // Stop holder coroutines to clear runtime teammate/premade state immediately
+                try { StopHolderCoroutines(); } catch (Exception ex) { Debug.LogWarning($"OnStopMatchmakingEvent: failed to stop holder coroutines: {ex.Message}"); }
+
+                // If we are the master in a persistent queue room, clear stale premade metadata
+                try
+                {
+                    var currentRoom2 = PhotonRealtimeClient.CurrentRoom;
+                    if (currentRoom2 != null && PhotonRealtimeClient.LocalPlayer != null && PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+                    {
+                        bool isQueueRoom2 = currentRoom2.CustomProperties != null && currentRoom2.CustomProperties.ContainsKey(PhotonBattleRoom.IsQueueKey) && (currentRoom2.CustomProperties[PhotonBattleRoom.IsQueueKey] is bool qb2 && qb2);
+                        if (isQueueRoom2)
+                        {
+                            Debug.Log($"OnStopMatchmakingEvent: clearing premade metadata on queue room '{currentRoom2.Name}'");
+                            currentRoom2.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, false);
+                            currentRoom2.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, string.Empty);
+                            currentRoom2.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
+                            currentRoom2.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, string.Empty);
+                            currentRoom2.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateNone);
+                        }
+                    }
+                }
+                catch (Exception ex) { Debug.LogWarning($"OnStopMatchmakingEvent: failed to clear premade metadata: {ex.Message}"); }
+
                 StartCoroutine(LeaveMatchmaking());
             }
             catch (System.Exception ex)
@@ -7327,6 +7350,7 @@ namespace Altzone.Scripts.Lobby
             _pendingAcceptedInRoomInviteRoomName = string.Empty;
             _pendingAcceptedInRoomInviteStartTime = -100f;
             _queuePendingExpectedUserUntil.Clear();
+            _queuePendingLeaderUntil.Clear();
 
             // Clearing player position key from own custom properties
             if (PhotonRealtimeClient.LocalPlayer.HasCustomProperty(PlayerPositionKey)) PhotonRealtimeClient.LocalPlayer.RemoveCustomProperty(PlayerPositionKey);
