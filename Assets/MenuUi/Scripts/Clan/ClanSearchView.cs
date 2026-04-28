@@ -217,7 +217,7 @@ public class ClanSearchView : MonoBehaviour
             },
             onCancel: () =>
             {
-                ShowOverlay(false);
+                
             },
             confirmText: "Liity",
             cancelText: "Peruuta",
@@ -275,7 +275,7 @@ public class ClanSearchView : MonoBehaviour
                     }));
                 }));
             },
-            onCancel: () => { ShowOverlay(false); },
+            onCancel: () => { },
                 confirmText: "Liity",
                 cancelText: "Peruuta",
                 style: "leave"
