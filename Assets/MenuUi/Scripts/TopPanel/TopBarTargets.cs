@@ -252,4 +252,21 @@ public class TopBarTargets : MonoBehaviour
         index = -1;
         return false;
     }
+
+    public void ApplyOrderFromSettings()
+    {
+        // Get topbar container; exit if setup is invalid.
+        RectTransform parentRT;
+        if (!IsValid(out parentRT)) return;
+        //Debug.Log($"[TopBarTargets] parent = {parentRT.name}");
+
+        // Current on/off-visibility state for each item by PlayerRefs
+        bool[] vis = ReadVisibility();
+
+        // Retrieving the saved order from SettingsCarrier
+        List<int> rawOrder = SettingsCarrier.LoadTopBarOrderStatic(style, _rows.Count);
+
+        // A new list that includes only visible elements.
+        List<int> orderedVisible = new List<int>(_rows.Count);
+    }
 }
