@@ -5,7 +5,7 @@
 /// Input is processed and compiled into an input struct, which is passed over to the Quantum simulation when polled by Quantum.
 /// </summary>
 
-//#define DEBUG_INPUT_TYPE_OVERRIDE
+#define DEBUG_INPUT_TYPE_OVERRIDE
 
 // Unity usings
 using UnityEngine;
@@ -43,8 +43,45 @@ namespace Battle.View.Player
     /// [{Player Overview}](#page-concepts-player-overview)
     public class BattlePlayerInput : MonoBehaviour
     {
-        /// @name Input methods
-        /// Input methods are called by BattleGameViewController when the player gives a %UI input. These methods shouldn't be called any other way.
+        /// @name Command input methods
+        /// Command input methods are called by BattleGameViewController when the player gives a %UI input. These methods shouldn't be called any other way.
+        /// These inputs are sent to Quantum as commands.
+        /// @{
+
+        /// <summary>
+        /// Called when the player presses give up button
+        /// </summary>
+        public void CommandSendGiveUp()
+        {
+            BattleGameViewController.QGame.SendCommand(BattleGameViewController.LocalPlayerRef, new BattleGiveUpQCommand());
+        }
+
+        /// <summary>
+        /// Called when the player presses character swap button
+        /// </summary>
+        ///
+        /// <param name="characterNumber">The character number of the character to swap to</param>
+        public void CommandSendSwapCharacter(int characterNumber)
+        {
+            BattleGameViewController.QGame.SendCommand(BattleGameViewController.LocalPlayerRef, new BattleCharacterSwapQCommand
+            {
+                CharacterNumber = characterNumber
+            });
+        }
+
+        /// <summary>
+        /// Called when the player activates ability
+        /// </summary>
+        public void CommandSendActivateAbility()
+        {
+            BattleGameViewController.QGame.SendCommand(BattleGameViewController.LocalPlayerRef, new BattleCharacterAbilityQCommand());
+        }
+
+        /// @}
+
+        /// @name Queued input methods
+        /// Queued input methods are called by BattleGameViewController when the player gives a %UI input. These methods shouldn't be called any other way.
+        /// These inputs are queued for next time that Quantum polls input.
         /// @{
 
         /// <summary>
@@ -52,7 +89,7 @@ namespace Battle.View.Player
         /// </summary>
         ///
         /// <param name="input">The input value of the movement joystick</param>
-        public void OnJoystickMovement(Vector2 input)
+        public void QueueJoystickMovement(Vector2 input)
         {
             _joystickMovementVector = input;
         }
@@ -62,7 +99,7 @@ namespace Battle.View.Player
         /// </summary>
         ///
         /// <param name="input">The input value of the rotation joystick</param>
-        public void OnJoystickRotation(float input)
+        public void QueueJoystickRotation(float input)
         {
             _joystickRotationValue = input;
         }
@@ -76,17 +113,15 @@ namespace Battle.View.Player
         {
             public BattleMovementInputType MovementInput;
             public bool                    MovementDirectionIsNormalized;
-            public BattleGridPosition      MovementPositionTarget;
-            public FPVector2               MovementPositionMove;
-            public FPVector2               MovementDirection;
+            public BattleGridPosition      MovementGridPosition;
+            public FPVector2               MovementVector;
 
-            public MovementInputInfo(BattleMovementInputType movementInput, bool movementDirectionIsNormalized, BattleGridPosition movementPositionTarget, FPVector2 movementPositionMove, FPVector2 movementDirection)
+            public MovementInputInfo(BattleMovementInputType movementInput, bool movementDirectionIsNormalized, BattleGridPosition movementPositionTarget, FPVector2 movementVector)
             {
                 MovementInput                 = movementInput;
                 MovementDirectionIsNormalized = movementDirectionIsNormalized;
-                MovementPositionTarget        = movementPositionTarget;
-                MovementPositionMove          = movementPositionMove;
-                MovementDirection             = movementDirection;
+                MovementGridPosition        = movementPositionTarget;
+                MovementVector        = movementVector;
             }
         }
 
@@ -200,8 +235,8 @@ namespace Battle.View.Player
 #if DEBUG_INPUT_TYPE_OVERRIDE
             _debugLogger.Warning("DEBUG_INPUT_TYPE_OVERRIDE enabled!");
 
-            _movementInputType = MovementInputType.FollowPointer;
-            _rotationInputType = RotationInputType.TwoFinger;
+            _movementInputType = MovementInputType.PointAndClick;
+            _rotationInputType = RotationInputType.Swipe;
 
             _debugLogger.WarningFormat("Using MovementInputType {0} override", _movementInputType);
             _debugLogger.WarningFormat("Using RotationInputType {0} override", _rotationInputType);
@@ -236,7 +271,7 @@ namespace Battle.View.Player
             const float DoubleTapDistance = 1.0f;
 
             // set default input info
-            MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero, FPVector2.Zero);
+            MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero);
             RotationInputInfo rotationInputInfo = new(false, FP._0);
 
             Vector2 clickPosition = Vector2.zero;
@@ -263,8 +298,7 @@ namespace Battle.View.Player
 
             if (abilityActivate)
             {
-                PlayerRef playerRef = QuantumRunner.Default.Game.GetLocalPlayers()[0];
-                QuantumRunner.Default.Game.SendCommand(playerRef, new CommandActivateAbility());
+                CommandSendActivateAbility();
             }
 
             //{ create and set input
@@ -275,9 +309,8 @@ namespace Battle.View.Player
                 DebugNumber                   = _inputDebugNumber,
                 MovementInput                 = movementInputInfo.MovementInput,
                 MovementDirectionIsNormalized = movementInputInfo.MovementDirectionIsNormalized,
-                MovementPositionTarget        = movementInputInfo.MovementPositionTarget,
-                MovementPositionMove          = movementInputInfo.MovementPositionMove,
-                MovementDirection             = movementInputInfo.MovementDirection,
+                MovementGridPosition          = movementInputInfo.MovementGridPosition,
+                MovementVector                = movementInputInfo.MovementVector,
                 RotationInput                 = rotationInputInfo.RotationInput,
                 RotationValue                 = rotationInputInfo.RotationValue,
             };
@@ -331,7 +364,7 @@ namespace Battle.View.Player
         /// <param name="deltaTime">Time since previous frame</param>
         private MovementInputInfo GetMovementInput(bool mouseDown, bool mouseClick, Vector3 unityPosition, FP deltaTime)
         {
-            MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero, FPVector2.Zero);
+            MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero);
 
             switch (_movementInputType)
             {
@@ -339,7 +372,7 @@ namespace Battle.View.Player
                     if (mouseClick)
                     {
                         movementInputInfo.MovementInput = BattleMovementInputType.PositionTarget;
-                        movementInputInfo.MovementPositionTarget = new()
+                        movementInputInfo.MovementGridPosition = new()
                         {
                             Row = BattleGridManager.WorldYPositionToGridRow(FP.FromFloat_UNSAFE(unityPosition.z)),
                             Col = BattleGridManager.WorldXPositionToGridCol(FP.FromFloat_UNSAFE(unityPosition.x))
@@ -351,7 +384,7 @@ namespace Battle.View.Player
                     if (mouseDown)
                     {
                         movementInputInfo.MovementInput = BattleMovementInputType.PositionMove;
-                        movementInputInfo.MovementPositionMove = new FPVector2
+                        movementInputInfo.MovementVector = new FPVector2
                         (
                             FP.FromFloat_UNSAFE(unityPosition.x),
                             FP.FromFloat_UNSAFE(unityPosition.z)
@@ -360,7 +393,7 @@ namespace Battle.View.Player
                     else
                     {
                         movementInputInfo.MovementInput = BattleMovementInputType.None;
-                        movementInputInfo.MovementPositionMove = FPVector2.Zero;
+                        movementInputInfo.MovementVector = FPVector2.Zero;
                     }
                     break;
 
@@ -388,8 +421,8 @@ namespace Battle.View.Player
                         if (_swipePerformed)
                         {
                             Vector3 direction = unityPosition - _movementStartVector;
-                            movementInputInfo.MovementDirection = new FPVector2(FP.FromFloat_UNSAFE(direction.x), FP.FromFloat_UNSAFE(direction.z)) / deltaTime;
-                            movementInputInfo.MovementDirection *= FP.FromFloat_UNSAFE(_swipeSensitivity);
+                            movementInputInfo.MovementVector = new FPVector2(FP.FromFloat_UNSAFE(direction.x), FP.FromFloat_UNSAFE(direction.z)) / deltaTime;
+                            movementInputInfo.MovementVector *= FP.FromFloat_UNSAFE(_swipeSensitivity);
 
                         }
                         _movementStartVector = unityPosition;
@@ -401,9 +434,9 @@ namespace Battle.View.Player
                     {
                         movementInputInfo.MovementInput = BattleMovementInputType.Direction;
                         movementInputInfo.MovementDirectionIsNormalized = true;
-                        movementInputInfo.MovementDirection = new FPVector2(FP.FromFloat_UNSAFE(_joystickMovementVector.x), FP.FromFloat_UNSAFE(_joystickMovementVector.y));
+                        movementInputInfo.MovementVector = new FPVector2(FP.FromFloat_UNSAFE(_joystickMovementVector.x), FP.FromFloat_UNSAFE(_joystickMovementVector.y));
 
-                        if (BattleGameViewController.LocalPlayerTeam == BattleTeamNumber.TeamBeta) movementInputInfo.MovementDirection *= -1;
+                        if (BattleGameViewController.LocalPlayerTeam == BattleTeamNumber.TeamBeta) movementInputInfo.MovementVector *= -1;
                     }
                     break;
             }

@@ -92,12 +92,12 @@ namespace Battle.QSimulation.Player
                     break;
 
                 case BattleMovementInputType.PositionTarget:
-                    ClampGridPosition(playerData, input->MovementPositionTarget, out playerData->TargetPosition);
+                    ClampGridPosition(playerData, input->MovementGridPosition, out playerData->TargetPosition);
                     playerData->HasTargetPosition = true;
                     break;
 
                 case BattleMovementInputType.PositionMove:
-                    positionNext = FPVector2.MoveTowards(transform->Position, input->MovementPositionMove, playerData->Stats.Speed * f.DeltaTime);
+                    positionNext = FPVector2.MoveTowards(transform->Position, input->MovementVector, playerData->Stats.Speed * f.DeltaTime);
                     if (ClampAndSnapWorldPosition(playerData, positionNext, out FPVector2 clampedNext))
                     {
                         positionNext = clampedNext;
@@ -106,7 +106,7 @@ namespace Battle.QSimulation.Player
                     break;
 
                 case BattleMovementInputType.Direction:
-                    FPVector2 movementDirection = input->MovementDirection * (input->MovementDirectionIsNormalized ? playerData->Stats.Speed : FP._1);
+                    FPVector2 movementDirection = input->MovementVector * (input->MovementDirectionIsNormalized ? playerData->Stats.Speed : FP._1);
                     positionNext = transform->Position + FPVector2.ClampMagnitude(movementDirection, playerData->Stats.Speed) * f.DeltaTime;
                     if (ClampAndSnapWorldPosition(playerData, positionNext, out FPVector2 clampedPosition))
                     {

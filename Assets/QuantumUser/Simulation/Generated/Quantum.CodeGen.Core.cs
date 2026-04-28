@@ -977,7 +977,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Input {
-    public const Int32 SIZE = 72;
+    public const Int32 SIZE = 56;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(8)]
     public QBoolean IsValid;
@@ -988,11 +988,9 @@ namespace Quantum {
     [FieldOffset(12)]
     public QBoolean MovementDirectionIsNormalized;
     [FieldOffset(20)]
-    public BattleGridPosition MovementPositionTarget;
-    [FieldOffset(56)]
-    public FPVector2 MovementPositionMove;
+    public BattleGridPosition MovementGridPosition;
     [FieldOffset(40)]
-    public FPVector2 MovementDirection;
+    public FPVector2 MovementVector;
     [FieldOffset(16)]
     public QBoolean RotationInput;
     [FieldOffset(32)]
@@ -1004,9 +1002,8 @@ namespace Quantum {
         hash = hash * 31 + DebugNumber.GetHashCode();
         hash = hash * 31 + (Int32)MovementInput;
         hash = hash * 31 + MovementDirectionIsNormalized.GetHashCode();
-        hash = hash * 31 + MovementPositionTarget.GetHashCode();
-        hash = hash * 31 + MovementPositionMove.GetHashCode();
-        hash = hash * 31 + MovementDirection.GetHashCode();
+        hash = hash * 31 + MovementGridPosition.GetHashCode();
+        hash = hash * 31 + MovementVector.GetHashCode();
         hash = hash * 31 + RotationInput.GetHashCode();
         hash = hash * 31 + RotationValue.GetHashCode();
         return hash;
@@ -1032,15 +1029,14 @@ namespace Quantum {
         QBoolean.Serialize(&p->IsValid, serializer);
         QBoolean.Serialize(&p->MovementDirectionIsNormalized, serializer);
         QBoolean.Serialize(&p->RotationInput, serializer);
-        Quantum.BattleGridPosition.Serialize(&p->MovementPositionTarget, serializer);
+        Quantum.BattleGridPosition.Serialize(&p->MovementGridPosition, serializer);
         FP.Serialize(&p->RotationValue, serializer);
-        FPVector2.Serialize(&p->MovementDirection, serializer);
-        FPVector2.Serialize(&p->MovementPositionMove, serializer);
+        FPVector2.Serialize(&p->MovementVector, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct _globals_ {
-    public const Int32 SIZE = 1000;
+    public const Int32 SIZE = 904;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public AssetRef<Map> Map;
@@ -1064,12 +1060,12 @@ namespace Quantum {
     public Int32 PlayerConnectedCount;
     [FieldOffset(560)]
     [FramePrinter.FixedArrayAttribute(typeof(Input), 6)]
-    private fixed Byte _input_[432];
-    [FieldOffset(992)]
+    private fixed Byte _input_[336];
+    [FieldOffset(896)]
     public BitSet6 PlayerLastConnectionState;
     public FixedArray<Input> input {
       get {
-        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 72, 6); }
+        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 56, 6); }
       }
     }
     public override Int32 GetHashCode() {
@@ -1918,9 +1914,8 @@ namespace Quantum {
       i->DebugNumber = input.DebugNumber;
       i->MovementInput = input.MovementInput;
       i->MovementDirectionIsNormalized = input.MovementDirectionIsNormalized;
-      i->MovementPositionTarget = input.MovementPositionTarget;
-      i->MovementPositionMove = input.MovementPositionMove;
-      i->MovementDirection = input.MovementDirection;
+      i->MovementGridPosition = input.MovementGridPosition;
+      i->MovementVector = input.MovementVector;
       i->RotationInput = input.RotationInput;
       i->RotationValue = input.RotationValue;
     }
