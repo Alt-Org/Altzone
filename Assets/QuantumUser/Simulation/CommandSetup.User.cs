@@ -13,7 +13,7 @@ using Photon.Deterministic;
 namespace Quantum
 {
     /// <summary>
-    /// Contains all project-specific commands. %Quantum invokes the generated side of this partial class at startup.
+    /// Contains all project-specific commands.
     /// </summary>
     public static partial class DeterministicCommandSetup
     {
