@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
 using System.Runtime.CompilerServices;
 using Photon.Deterministic;
-using UnityEngine;
+using Quantum;
 
-namespace Quantum
+namespace Battle.QSimulation.Game
 {
     public abstract class BattleCommand : DeterministicCommand
     {

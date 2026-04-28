@@ -1,11 +1,13 @@
-/// @file CommandActivateAbility.cs
+/// @file BattleCharacterAbilityQCommand.cs
 /// <summary>
-/// A deterministic command that triggers the ability activation for a specific player.
+/// Contains @cref{Battle.QSimulation.Player,BattleCharacterAbilityQCommand} class which contains a deterministic command that triggers the ability activation for a specific player.
 /// </summary>
 
 // Quantum usings
-using Quantum;
 using Photon.Deterministic;
+
+// Battle QSimulation usings
+using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player
 {

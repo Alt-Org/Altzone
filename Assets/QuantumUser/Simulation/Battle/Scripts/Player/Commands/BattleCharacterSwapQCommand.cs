@@ -1,11 +1,13 @@
-/// @file CommandSwapCharacter.cs
+/// @file BattleCharacterSwapQCommand.cs
 /// <summary>
-/// A deterministic command that triggers the character swapping logic for a specific player.
+/// Contains @cref{Battle.QSimulation.Player,BattleCharacterSwapQCommand} class which contains a deterministic command that triggers the character swapping logic for a specific player.
 /// </summary>
 
 // Quantum usings
-using Quantum;
 using Photon.Deterministic;
+
+// Battle QSimulation usings
+using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player
 {
