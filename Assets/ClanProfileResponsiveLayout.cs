@@ -22,6 +22,9 @@ public class ClanProfileResponsiveLayout : MonoBehaviour
         public float heroRowHeight = 550f;
         public float clanMoodHeight = 230f;
 
+        [Header("Header right icons")]
+        public Vector2 headerInfoIconSize = new Vector2(140f, 120f);
+
         [Header("Hero left side")]
         public float logoColumnWidth = 190f;
         public Vector2 clanLogoSize = new Vector2(170f, 170f);
@@ -57,6 +60,8 @@ public class ClanProfileResponsiveLayout : MonoBehaviour
         heroRowHeight = 550f,
         clanMoodHeight = 230f,
 
+        headerInfoIconSize = new Vector2(140f, 120f),
+
         logoColumnWidth = 190f,
         clanLogoSize = new Vector2(170f, 170f),
         rankingWinsSize = new Vector2(150f, 100f),
@@ -82,6 +87,8 @@ public class ClanProfileResponsiveLayout : MonoBehaviour
         heroRowHeight = 350f,
         clanMoodHeight = 170f,
 
+        headerInfoIconSize = new Vector2(110f, 90f),
+
         logoColumnWidth = 150f,
         clanLogoSize = new Vector2(130f, 130f),
         rankingWinsSize = new Vector2(120f, 80f),
@@ -106,6 +113,9 @@ public class ClanProfileResponsiveLayout : MonoBehaviour
 
     [Header("Header children")]
     [SerializeField] private LayoutElement clanLockSetting;
+    [SerializeField] private LayoutElement memberCount;
+    [SerializeField] private LayoutElement headerRules;
+    [SerializeField] private LayoutElement carbonEmission;
 
     [Header("Hero left children")]
     [SerializeField] private LayoutElement logoRankingStar;
@@ -192,12 +202,15 @@ public class ClanProfileResponsiveLayout : MonoBehaviour
 
     private void ApplyHeaderChildren(LayoutPreset preset)
     {
-        // Optional. Vedä tähän ClanLockSetting vain jos haluat senkin muuttuvan.
         if (clanLockSetting != null)
         {
             float lockSize = lastWasTablet ? 55f : 70f;
             SetPreferredSize(clanLockSetting, new Vector2(lockSize, lockSize));
         }
+
+        SetPreferredSize(memberCount, preset.headerInfoIconSize);
+        SetPreferredSize(headerRules, preset.headerInfoIconSize);
+        SetPreferredSize(carbonEmission, preset.headerInfoIconSize);
     }
 
     private void ApplyHeroLeft(LayoutPreset preset)
