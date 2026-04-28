@@ -203,7 +203,7 @@ public class DailyTaskView : AltMonoBehaviour
     public void SwitchTab(SelectedTab tab)
     {
         //Hide old tab
-        switch (_selectedTab)
+        /*switch (_selectedTab)
         {
             case SelectedTab.Tasks: _dailyTasksView.SetActive(false); break;
             case SelectedTab.OwnTask: _ownTaskView.SetActive(false); break;
@@ -222,7 +222,7 @@ public class DailyTaskView : AltMonoBehaviour
                 UpdateOwnTaskProgress();
                 break;
             default: _clanTaskView.SetActive(true); break;
-        }
+        }*/
         _tabline.ActivateTabButton((int)_selectedTab);
 
         Debug.Log($"Switched to {_selectedTab}.");
@@ -367,10 +367,8 @@ public class DailyTaskView : AltMonoBehaviour
 
         if (taskData == null) return;
 
-        float progress = (float)taskData.TaskProgress / (float)taskData.Amount;
-        StartCoroutine(_ownTaskPageHandler.SetDailyTask(taskData));
-        _ownTaskPageHandler.SetTaskProgress(progress);
-        _ownTaskPageHandler.TESTSetTaskValue(taskData.TaskProgress);
+        // Update OwnTaskPage in case already on OwnTask page
+        _ownTaskPageHandler.UpdateOwnTaskPage();
 
         DailyQuest currentQuest = FindDailyQuestForTask(taskData);
         if (currentQuest == null) return;

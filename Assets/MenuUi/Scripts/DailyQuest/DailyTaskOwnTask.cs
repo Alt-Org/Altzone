@@ -84,6 +84,9 @@ public class DailyTaskOwnTask : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _tasksDoneText;
 
+    public delegate void OwnTaskPageActivated();
+    public static event OwnTaskPageActivated OnOwnTaskPageActivated;
+
     private void Start()
     {
         CreateProgressBarMarkers(_progressMarkersMaxAmount);
@@ -98,10 +101,27 @@ public class DailyTaskOwnTask : MonoBehaviour
 
     private void OnEnable()
     {
-        UpdateDailyStatsUI();
+        UpdateOwnTaskPage();
+        
     }
 
     #region Task
+
+
+    public void UpdateOwnTaskPage()
+    {
+        PlayerTask taskData = DailyTaskProgressManager.Instance.CurrentPlayerTask;
+
+        if (taskData == null) return;
+
+        float progress = (float)taskData.TaskProgress / (float)taskData.Amount;
+        StartCoroutine(SetDailyTask(taskData));
+        SetTaskProgress(progress);
+        TESTSetTaskValue(taskData.TaskProgress);
+
+        UpdateDailyStatsUI();
+    }
+
 
     public IEnumerator SetDailyTask(PlayerTask data)
     {
@@ -201,31 +221,31 @@ public class DailyTaskOwnTask : MonoBehaviour
                 case EducationCategoryType.Action:
                     {
                         _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Toiminnallinen pelilukutaito" : "Functional game literacy";
-                        _taskBackground.color = _actionCategoryColor;
+                        //_taskBackground.color = _actionCategoryColor;
                         break;
                     }
                 case EducationCategoryType.Social:
                     {
                         _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Sosiaalinen pelilukutaito" : "Social game literacy";
-                        _taskBackground.color = _socialCategoryColor;
+                        //_taskBackground.color = _socialCategoryColor;
                         break;
                     }
                 case EducationCategoryType.Story:
                     {
                         _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Tarinallinen pelilukutaito" : "Story-based game literacy";
-                        _taskBackground.color = _storyCategoryColor;
+                        //_taskBackground.color = _storyCategoryColor;
                         break;
                     }
                 case EducationCategoryType.Culture:
                     {
                         _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Kulttuurinen pelilukutaito" : "Cultural game literacy";
-                        _taskBackground.color = _cultureCategoryColor;
+                        //_taskBackground.color = _cultureCategoryColor;
                         break;
                     }
                 case EducationCategoryType.Ethical:
                     {
                         _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Eettinen pelilukutaito" : "Ethical game literacy";
-                        _taskBackground.color = _ethicalCategoryColor;
+                        //_taskBackground.color = _ethicalCategoryColor;
                         break;
                     }
                 default:
