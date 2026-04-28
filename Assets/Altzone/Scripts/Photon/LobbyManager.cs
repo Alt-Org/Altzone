@@ -2967,6 +2967,44 @@ namespace Altzone.Scripts.Lobby
                                             if (chosen.userId2 != localId) selected.Add(chosen.userId2);
                                             Debug.Log($"QueueTimerCoroutine: Queue wait expired; added duo [{string.Join(",", selected)}] to selected to preserve duo and allow botfill (requiredFollowers={requiredFollowers}).");
                                         }
+
+                                        // If adding the duo's member(s) still leaves us short of required followers,
+                                        // try to include any available solo humans so the master can persist expected-users
+                                        // and let bots fill the remainder. This covers the case where the local master
+                                        // is part of a duo and a lone solo is present in the room.
+                                        try
+                                        {
+                                            if (selected.Count > 0 && selected.Count < requiredFollowers && PhotonRealtimeClient.CurrentRoom?.Players != null)
+                                            {
+                                                // Prefer the singleEligibleSoloUserId when provided by the selector and not already selected.
+                                                var localIdCheck = PhotonRealtimeClient.LocalPlayer?.UserId ?? string.Empty;
+                                                if (!string.IsNullOrEmpty(singleEligibleSoloUserId) && !selected.Contains(singleEligibleSoloUserId) && singleEligibleSoloUserId != localIdCheck)
+                                                {
+                                                    selected.Add(singleEligibleSoloUserId);
+                                                    Debug.Log($"QueueTimerCoroutine: Queue wait expired; added solo '{singleEligibleSoloUserId}' alongside duo to selected (requiredFollowers={requiredFollowers}).");
+                                                }
+                                                else
+                                                {
+                                                    var extraCandidates = PhotonRealtimeClient.CurrentRoom.Players.Values
+                                                        .Where(p => p != null && !string.IsNullOrEmpty(p.UserId) && p.UserId != "Bot" && p.UserId != PhotonRealtimeClient.LocalPlayer?.UserId)
+                                                        .Select(p => p.UserId)
+                                                        .Where(uid => !selected.Contains(uid))
+                                                        .Distinct()
+                                                        .Take(requiredFollowers - selected.Count)
+                                                        .ToList();
+
+                                                    if (extraCandidates.Count > 0)
+                                                    {
+                                                        foreach (var uid in extraCandidates) selected.Add(uid);
+                                                        Debug.Log($"QueueTimerCoroutine: Queue wait expired; added solos [{string.Join(",", extraCandidates)}] alongside duo to selected (requiredFollowers={requiredFollowers}).");
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Debug.LogWarning($"QueueTimerCoroutine: failed to add solo alongside duo fallback: {ex.Message}");
+                                        }
                                     }
                                 }
                             }
@@ -2979,7 +3017,10 @@ namespace Altzone.Scripts.Lobby
                         // If we have no selected followers and no complete duos, attempt to salvage
                         // the timeout by including any available solo humans so the leader can
                         // persist `qe`/`eu` and WaitForMatchmakingPlayers will preserve them while bots fill.
-                        if (selected.Count == 0 && completeDuoCount == 0 && eligibleSoloCount > 0)
+                        // NOTE: allow the fallback even when the selector reported 0 eligible solos
+                        // (eligibleSoloCount==0) so transient/filtered solos are still considered
+                        // for botfill when the wait expires.
+                        if (selected.Count == 0 && completeDuoCount == 0)
                         {
                             // Prefer the singleEligibleSoloUserId when provided by the selector.
                             if (eligibleSoloCount == 1 && !string.IsNullOrEmpty(singleEligibleSoloUserId))
