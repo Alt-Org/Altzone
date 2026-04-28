@@ -31,9 +31,9 @@ namespace Quantum
             // Add or remove commands to the collection.
             // factories.Add(new NavMeshAgentTestSystem.RunTest());
 
-            factories.Add(new CommandGiveUp());
-            factories.Add(new CommandSwapCharacter());
-            factories.Add(new CommandActivateAbility());
+            factories.Add(new BattleGiveUpQCommand());
+            factories.Add(new BattleCharacterSwapQCommand());
+            factories.Add(new BattleCharacterAbilityQCommand());
         }
     }
 }

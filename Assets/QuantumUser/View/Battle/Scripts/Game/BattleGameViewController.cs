@@ -87,6 +87,10 @@ namespace Battle.View.Game
 
         #region Public - Static Properties
 
+        public static QuantumGame QGame { get; private set; }
+
+        public static PlayerRef LocalPlayerRef { get; private set; }
+
         /// <summary>The local player's BattlePlayerSlot.</summary>
         public static BattlePlayerSlot LocalPlayerSlot { get; private set; }
 
@@ -128,10 +132,7 @@ namespace Battle.View.Game
         /// </summary>
         public void UiInputOnLocalPlayerGiveUp()
         {
-            _debugLogger.Log("Give up button pressed");
-            PlayerRef playerRef;
-            playerRef = QuantumRunner.Default.Game.GetLocalPlayers()[0];
-            QuantumRunner.Default.Game.SendCommand(playerRef, new CommandGiveUp());
+            _playerInput.CommandSendGiveUp();
             _debugLogger.Log("Give up button pressed, command sent");
         }
 
@@ -144,38 +145,33 @@ namespace Battle.View.Game
         /// <param name="characterNumber">The character number which the local player selected.</param>
         public void UiInputOnCharacterSelected(int characterNumber)
         {
-            PlayerRef playerRef;
-            playerRef = QuantumRunner.Default.Game.GetLocalPlayers()[0];
-            QuantumRunner.Default.Game.SendCommand(playerRef, new CommandSwapCharacter
-            {
-                CharacterNumber = characterNumber
-            });
+            _playerInput.CommandSendSwapCharacter(characterNumber);
             _debugLogger.LogFormat("Character number {0} button pressed!", characterNumber);
         }
 
         /// <summary>
         /// Public method that gets called when local player gives movement joystick input.
-        /// Calls <see cref="Battle.View.Player.BattlePlayerInput.OnJoystickMovement">OnJoystickMovement</see> method
+        /// Calls <see cref="Battle.View.Player.BattlePlayerInput.QueueJoystickMovement">OnJoystickMovement</see> method
         /// in <see cref="BattleGameViewController._playerInput">_playerInput</see>.
         /// </summary>
         ///
         /// <param name="input">The movement direction Vector2.</param>
         public void UiInputOnJoystickMovement(Vector2 input)
         {
-            _playerInput.OnJoystickMovement(input);
+            _playerInput.QueueJoystickMovement(input);
             //Debug.Log($"Move joystick input {input}");
         }
 
         /// <summary>
         /// Public method that gets called when local player gives rotation joystick input.
-        /// Calls <see cref="Battle.View.Player.BattlePlayerInput.OnJoystickRotation">OnJoystickRotation</see> method
+        /// Calls <see cref="Battle.View.Player.BattlePlayerInput.QueueJoystickRotation">OnJoystickRotation</see> method
         /// in <see cref="BattleGameViewController._playerInput">_playerInput</see>.
         /// </summary>
         ///
         /// <param name="input">The rotation input as float.</param>
         public void UiInputOnJoystickRotation(float input)
         {
-            _playerInput.OnJoystickRotation(input);
+            _playerInput.QueueJoystickRotation(input);
             //Debug.Log($"Rotate joystick input {input}");
         }
 
@@ -345,13 +341,14 @@ namespace Battle.View.Game
         /// <param name="e">The event data.</param>
         private void QEventOnViewInit(EventBattleViewInit e)
         {
-            PlayerRef playerRef = default;
+            QGame = QuantumRunner.Default.Game;
+            LocalPlayerRef = default;
 
             // Getting LocalPlayerSlot and LocalPlayerTeam
             if (Utils.TryGetQuantumFrame(out Frame f))
             {
-                playerRef = QuantumRunner.Default.Game.GetLocalPlayers()[0];
-                LocalPlayerSlot = BattlePlayerManager.PlayerHandle.GetSlot(f, playerRef);
+                LocalPlayerRef = QGame.GetLocalPlayers()[0];
+                LocalPlayerSlot = BattlePlayerManager.PlayerHandle.GetSlot(f, LocalPlayerRef);
                 LocalPlayerTeam = BattlePlayerManager.PlayerHandle.GetTeamNumber(LocalPlayerSlot);
             }
 
@@ -386,7 +383,7 @@ namespace Battle.View.Game
             BattleUiMovableElementData dataGiveUpButton = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.GiveUpButton);
             if (dataGiveUpButton != null) _uiController.GiveUpButtonHandler.MovableUiElement.SetData(dataGiveUpButton);
 
-            RuntimePlayer localPlayerData = f.GetPlayerData(playerRef);
+            RuntimePlayer localPlayerData = f.GetPlayerData(LocalPlayerRef);
             RuntimePlayer localTeammateData = f.GetPlayerData(BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, LocalPlayerSlot).PlayerRef);
 
             // Setting local player info
@@ -709,7 +706,7 @@ namespace Battle.View.Game
             if (Utils.TryGetQuantumFrame(out Frame frame))
             {
                 // Try to retrieve the singleton entity reference for the GameSession
-                if (frame.TryGetSingletonEntityRef<BattleGameSessionQSingleton>(out var entity) == false)
+                if (frame.TryGetSingletonEntityRef<BattleGameSessionQSingleton>(out EntityRef _) == false)
                 {
                     // If the GameSession singleton is not found, display an error message
                     _debugLogger.Error(frame, "GameSession singleton not found");
