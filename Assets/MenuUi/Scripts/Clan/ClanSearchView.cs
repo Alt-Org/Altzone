@@ -217,7 +217,7 @@ public class ClanSearchView : MonoBehaviour
             },
             onCancel: () =>
             {
-                ShowOverlay(false);
+                
             },
             confirmText: "Liity",
             cancelText: "Peruuta",
