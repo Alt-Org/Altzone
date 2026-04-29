@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Altzone.Scripts.Settings; // TopBarDefs
+using MenuUI.Scripts.TopPanel;
 
 public class TopBarOrderBridge : MonoBehaviour
 {
@@ -8,8 +9,9 @@ public class TopBarOrderBridge : MonoBehaviour
     [SerializeField] private TopBarTargets[] _targetsByStyle;
 
     private SettingsCarrier.TopBarStyle CurrentStyle =>
-        SettingsCarrier.Instance ? SettingsCarrier.Instance.TopBarStyleSetting
-                                 : SettingsCarrier.TopBarStyle.NewHelena;
+        SettingsCarrier.Instance
+            ? SettingsCarrier.Instance.TopBarStyleSetting
+            : SettingsCarrier.TopBarStyle.NewHelena;
 
     private void OnEnable()
     {
@@ -55,6 +57,7 @@ public class TopBarOrderBridge : MonoBehaviour
             TopBarTargets t = _targetsByStyle[i];
             if (t != null && t.style == style) return t;
         }
+
         return null;
     }
 
@@ -63,8 +66,9 @@ public class TopBarOrderBridge : MonoBehaviour
         TopBarTargets owner = GetTargetsFor(CurrentStyle);
         if (owner == null || _toggleContainer == null) return;
 
-        // --- A) Rakenna pos -> enum dictionary suoraan UI-sisarusjärjestyksestä ---
-        Dictionary<int, TopBarDefs.TopBarItem> order = new Dictionary<int, TopBarDefs.TopBarItem>(_toggleContainer.childCount);
+        // --- A) Rakenna pos -> enum dictionary suoraan UI-sisarusjï¿½rjestyksestï¿½ ---
+        Dictionary<int, TopBarDefs.TopBarItem> order =
+            new Dictionary<int, TopBarDefs.TopBarItem>(_toggleContainer.childCount);
         int nextPos = 0;
 
         foreach (Transform t in _toggleContainer)
@@ -73,12 +77,12 @@ public class TopBarOrderBridge : MonoBehaviour
             if (!t.TryGetComponent<TopBarToggleHandler>(out h)) continue;
 
             TopBarDefs.TopBarItem item = h.item;
-            if (order.ContainsValue(item)) continue;      // vältä duplikaatit
+            if (order.ContainsValue(item)) continue; // vï¿½ltï¿½ duplikaatit
             order[nextPos] = item;
             nextPos++;
         }
 
-        // täydennä puuttuvat ownerin alkuperäisjärjestyksessä
+        // tï¿½ydennï¿½ puuttuvat ownerin alkuperï¿½isjï¿½rjestyksessï¿½
         int total = owner.RowCount();
         for (int i = 0; i < total; i++)
         {
@@ -104,14 +108,22 @@ public class TopBarOrderBridge : MonoBehaviour
             int idx = -1;
             for (int k = 0; k < total; k++)
             {
-                if (owner.GetItemAt(k).Equals(item)) { idx = k; break; }
+                if (owner.GetItemAt(k).Equals(item))
+                {
+                    idx = k;
+                    break;
+                }
             }
+
             if (idx >= 0 && !indices.Contains(idx)) indices.Add(idx);
         }
-        // täydennä puuttuvat
-        for (int i = 0; i < total; i++) if (!indices.Contains(i)) indices.Add(i);
 
-        // --- C) Tallenna ja järjestä toggle-lista heti ---
+        // tï¿½ydennï¿½ puuttuvat
+        for (int i = 0; i < total; i++)
+            if (!indices.Contains(i))
+                indices.Add(i);
+
+        // --- C) Tallenna ja jï¿½rjestï¿½ toggle-lista heti ---
         SettingsCarrier instance = SettingsCarrier.Instance;
         if (instance != null) instance.SaveTopBarOrder(owner.style, indices);
 
@@ -140,19 +152,24 @@ public class TopBarOrderBridge : MonoBehaviour
             order[pos] = item;
             pos++;
         }
-        // täydennä puuttuvat
+
+        // tï¿½ydennï¿½ puuttuvat
         for (int i = 0; i < total; i++)
         {
             TopBarDefs.TopBarItem it = owner.GetItemAt(i);
-            if (!order.ContainsValue(it)) { order[pos] = it; pos++; }
+            if (!order.ContainsValue(it))
+            {
+                order[pos] = it;
+                pos++;
+            }
         }
 
-        // --- C) Sovella toggle-listaan ja päivitä yläpalkki ---
+        // --- C) Sovella toggle-listaan ja pï¿½ivitï¿½ ylï¿½palkki ---
         ApplyOrderToToggleList(order, _toggleContainer, owner);
         owner.ApplyFromSettings();
     }
 
-    // pos->enum järjestyksen soveltaminen toggle-listaan
+    // pos->enum jï¿½rjestyksen soveltaminen toggle-listaan
     private static void ApplyOrderToToggleList(
         Dictionary<int, TopBarDefs.TopBarItem> order,
         RectTransform container,
