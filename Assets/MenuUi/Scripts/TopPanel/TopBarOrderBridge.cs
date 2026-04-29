@@ -63,6 +63,8 @@ public class TopBarOrderBridge : MonoBehaviour
 
     private void OnRowDropped()
     {
+        Debug.Log("[TopBarOrderBridge] OnRowDropped called");
+
         TopBarTargets owner = GetTargetsFor(CurrentStyle);
         if (owner == null || _toggleContainer == null) return;
 
@@ -125,7 +127,16 @@ public class TopBarOrderBridge : MonoBehaviour
 
         // --- C) Tallenna ja j�rjest� toggle-lista heti ---
         SettingsCarrier instance = SettingsCarrier.Instance;
-        if (instance != null) instance.SaveTopBarOrder(owner.style, indices);
+        if (instance != null)
+        {
+            instance.SaveTopBarOrder(owner.style, indices);
+            Debug.Log("[TopBarOrderBridge] Calling owner.ApplyOrderFromSettings()");
+            owner.ApplyFromSettings();
+        }
+        else
+        {
+            Debug.LogWarning("[TopBarOrderBridge] SettingsCarrier instance is null");
+        }
 
         ApplyOrderToToggleList(order, _toggleContainer, owner);
     }

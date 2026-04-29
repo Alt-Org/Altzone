@@ -215,6 +215,8 @@ namespace MenuUI.Scripts.TopPanel
 
         private void ApplyOrderWithSpacer(RectTransform parentRT, List<int> orderedVisible)
         {
+            Debug.Log("[TopBarTargets] orderedVisible = " + string.Join(",", orderedVisible));
+
             int n = orderedVisible.Count;
 
             if (n <= 1)
@@ -263,6 +265,8 @@ namespace MenuUI.Scripts.TopPanel
 
         public void ApplyOrderFromSettings()
         {
+            Debug.Log($"[TopBarTargets] ApplyOrderFromSettings called, style={style}");
+
             // Get topbar container; exit if setup is invalid.
             RectTransform parentRT;
             if (!IsValid(out parentRT)) return;

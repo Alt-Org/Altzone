@@ -37,8 +37,8 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     // creates placeholder, removes row from layout, rebuilds UI,
     // moves row to root canvas and syncs it with pointer.
     // Order of operations is critical to avoid first-drag bugs.
-   public void OnBeginDrag(PointerEventData e)
-   {
+    public void OnBeginDrag(PointerEventData e)
+    {
         if (_rootCanvas == null) return; // Safety check
 
         // Store context
@@ -78,7 +78,7 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
             e.position,
             e.pressEventCamera,
             out lp
-            );
+        );
 
         _lockedXInRootCanvas = _rectTransform.localPosition.x;
 
@@ -86,13 +86,13 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         _pointerOffsetInRootCanvas.x = 0f;
 
         // Sync position immediately
-         FollowPointer(e);
+        FollowPointer(e);
 
-         // Update placeholder immediately
-         UpdatePlaceholderIndex(e);
-   }
+        // Update placeholder immediately
+        UpdatePlaceholderIndex(e);
+    }
 
-   // Handles dragging each frame: moves the row and updates its position in the list.
+    // Handles dragging each frame: moves the row and updates its position in the list.
     public void OnDrag(PointerEventData e)
     {
         // Move dragged row with pointer
@@ -111,7 +111,8 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         // Apply final order using placeholder position
         if (_placeholderObject != null)
         {
-            transform.SetSiblingIndex(_placeholderObject.transform.GetSiblingIndex());  // Aseta lopullinen indeksi ja siivoa placeholder ()
+            transform.SetSiblingIndex(_placeholderObject.transform
+                .GetSiblingIndex()); // Aseta lopullinen indeksi ja siivoa placeholder ()
             Destroy(_placeholderObject);
             _placeholderObject = null;
         }
@@ -125,6 +126,7 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
             _canvasGroup.alpha = 1f;
         }
 
+        Debug.Log($"[TopBarDrag] Dropped row: {gameObject.name}, sibling={transform.GetSiblingIndex()}");
         // Notify listeners (save new order)
         OnDropped?.Invoke();
     }
