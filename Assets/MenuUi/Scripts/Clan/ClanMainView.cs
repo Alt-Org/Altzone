@@ -69,6 +69,12 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private ClanMemberPopupController _memberDetailsPopup;
     [SerializeField] private ClanMembersFiltersPopup _membersFiltersPopup;
 
+    [SerializeField] private GameObject _passwordPopup;
+    [SerializeField] private Button _clanLockButton;
+    [SerializeField] private Button _passwordPopupContinueButton;
+
+    private bool _isCurrentClanLocked;
+
     private string _currentViewedClanId;
     private bool _filtersWired;
 
@@ -149,6 +155,23 @@ public class ClanMainView : MonoBehaviour
 
         ToggleClanPanel(false);
         OpenLink();
+
+        if (_clanLockButton != null)
+        {
+            _clanLockButton.onClick.RemoveListener(OnClickClanLock);
+            _clanLockButton.onClick.AddListener(OnClickClanLock);
+        }
+
+        if (_passwordPopupContinueButton != null)
+        {
+            _passwordPopupContinueButton.onClick.RemoveListener(ClosePasswordPopup);
+            _passwordPopupContinueButton.onClick.AddListener(ClosePasswordPopup);
+        }
+
+        if (_passwordPopup != null)
+        {
+            _passwordPopup.SetActive(false);
+        }
 
         ServerClan clan = DataCarrier.GetData<ServerClan>(DataCarrier.ClanListing, suppressWarning: true);
 
@@ -246,8 +269,15 @@ public class ClanMainView : MonoBehaviour
     {
         if (_tabLine != null && _tabLine.Swipe != null)
             _tabLine.Swipe.OnCurrentPageChanged -= HandleSwipePageChanged;
+
         if (_editButton != null)
             _editButton.onClick.RemoveListener(OnClickEditClanSettings);
+
+        if (_clanLockButton != null)
+            _clanLockButton.onClick.RemoveListener(OnClickClanLock);
+
+        if (_passwordPopupContinueButton != null)
+            _passwordPopupContinueButton.onClick.RemoveListener(ClosePasswordPopup);
     }
 
     private void ResetViewState()
@@ -376,6 +406,7 @@ public class ClanMainView : MonoBehaviour
 
         _clanOpenObject.SetActive(clan.IsOpen);
         _clanLockedObject.SetActive(!clan.IsOpen);
+        _isCurrentClanLocked = !clan.IsOpen;
 
         string rule1 = clan.Rules.Count > 0 ?
             _rule1Text.text = ClanDataTypeConverter.GetRulesText(clan.Rules[0]) : string.Empty;
@@ -827,5 +858,30 @@ public class ClanMainView : MonoBehaviour
             cancelText: "Peruuta",
             style: "join"
             );
+    }
+
+    private void OnClickClanLock()
+    {
+        if (!_isCurrentClanLocked) return;
+
+        OpenPasswordPopup();
+    }
+
+    private void OpenPasswordPopup()
+    {
+        if (_passwordPopup == null) return;
+
+        ShowOverlay(true);
+        _passwordPopup.SetActive(true);
+    }
+
+    private void ClosePasswordPopup()
+    {
+        if (_passwordPopup != null)
+        {
+            _passwordPopup.SetActive(false);
+        }
+
+        ShowOverlay(false);
     }
 }
