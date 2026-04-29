@@ -308,11 +308,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Oletko varma ett\xE4 haluat edustaa #Luokan nimi suojelijaluokkaa pelaajien
-    keskuudessa?"
+  m_text: "Valitse suojelija-avatar jonka haluat edustavan itse\xE4si"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
-  m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
+  m_fontAsset: {fileID: 11400000, guid: 394fb2628c0df214d92079770f57dd8e, type: 2}
+  m_sharedMaterial: {fileID: 4752717343592566078, guid: 394fb2628c0df214d92079770f57dd8e,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -393,9 +392,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99bef45c2704bb147a99ddcb380f3986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _finnishText: "Oletko varma ett\xE4 haluat edustaa {0} suojelijaluokkaa pelaajien
-    keskuudessa?"
-  _englishText: Are you sure you want to represent the {0} among the players?
+  _finnishText: "Valitse suojelija-avatar jonka haluat edustavan itse\xE4si"
+  _englishText: Choose the guardian avatar you want to represent yourself
 --- !u!1 &176886829762642407
 GameObject:
   m_ObjectHideFlags: 0
@@ -2968,6 +2966,7 @@ GameObject:
   - component: {fileID: 6435249800196181072}
   - component: {fileID: 9184401327762069631}
   - component: {fileID: 1931372764182882318}
+  - component: {fileID: 3802144570314317773}
   m_Layer: 5
   m_Name: Text1
   m_TagString: Untagged
@@ -3022,10 +3021,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Valitse defenssi, jonka haluat edustavan itse\xE4si."
+  m_text: "Valitse suojelija-avatar jonka haluat edustavan itse\xE4si"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 35c39ce28c397b848b84f7de2f26c5ac, type: 2}
-  m_sharedMaterial: {fileID: 2109022488393823743, guid: 35c39ce28c397b848b84f7de2f26c5ac,
+  m_fontAsset: {fileID: 11400000, guid: 575dbda903adc434caffae39c1b59109, type: 2}
+  m_sharedMaterial: {fileID: -2998110953030337146, guid: 575dbda903adc434caffae39c1b59109,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -3094,6 +3093,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3802144570314317773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525865288082254925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Valitse suojelija-avatar jonka haluat edustavan itse\xE4si"
+  _englishText: Choose the guardian avatar you want to represent yourself
 --- !u!1 &1785789603731310254
 GameObject:
   m_ObjectHideFlags: 0
@@ -3927,8 +3940,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Et voi vaihtaa valintaasi t\xE4m\xE4n j\xE4lkeen."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
-  m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
+  m_fontAsset: {fileID: 11400000, guid: 394fb2628c0df214d92079770f57dd8e, type: 2}
+  m_sharedMaterial: {fileID: 4752717343592566078, guid: 394fb2628c0df214d92079770f57dd8e,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -5636,8 +5649,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: A small character introduction...
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
-  m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
+  m_fontAsset: {fileID: 11400000, guid: e6de96579f6e6464f89038dac1ad2882, type: 2}
+  m_sharedMaterial: {fileID: -6395784680899376689, guid: e6de96579f6e6464f89038dac1ad2882,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -9379,8 +9392,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Kiinnostava valinta!
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
-  m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
+  m_fontAsset: {fileID: 11400000, guid: 394fb2628c0df214d92079770f57dd8e, type: 2}
+  m_sharedMaterial: {fileID: 4752717343592566078, guid: 394fb2628c0df214d92079770f57dd8e,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -18225,6 +18238,7 @@ GameObject:
   - component: {fileID: 9077136932501890191}
   - component: {fileID: 5348881811485195557}
   - component: {fileID: 4748697068934686908}
+  - component: {fileID: 4257485111238282475}
   m_Layer: 5
   m_Name: Text2
   m_TagString: Untagged
@@ -18279,10 +18293,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Et voi vaihtaa sit\xE4 my\xF6hemmin!"
+  m_text: "Et voi vaihtaa valintaasi t\xE4m\xE4n j\xE4lkeen. "
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 35c39ce28c397b848b84f7de2f26c5ac, type: 2}
-  m_sharedMaterial: {fileID: 2109022488393823743, guid: 35c39ce28c397b848b84f7de2f26c5ac,
+  m_fontAsset: {fileID: 11400000, guid: 575dbda903adc434caffae39c1b59109, type: 2}
+  m_sharedMaterial: {fileID: -2998110953030337146, guid: 575dbda903adc434caffae39c1b59109,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -18351,6 +18365,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4257485111238282475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9148635332737289910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Et voi vaihtaa valintaasi t\xE4m\xE4n j\xE4lkeen. "
+  _englishText: You cannot change your choice after this.
 --- !u!1001 &671126478829269939
 PrefabInstance:
   m_ObjectHideFlags: 0
