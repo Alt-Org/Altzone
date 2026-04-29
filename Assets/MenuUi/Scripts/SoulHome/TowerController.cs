@@ -90,22 +90,28 @@ namespace MenuUI.Scripts.SoulHome
         public bool Rotated { get => _rotated;}
         public Bounds RoomBounds { get => _roomBounds; set {  _roomBounds = value; } }
 
-        // Start is called before the first frame update
-        void Start()
+        void OnEnable()
         {
-            StartCoroutine(StartActions());
-
+            if (_camera != null)
+            {
+                _camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
+                HandleScreenRotation();
+            }
+            else StartCoroutine(StartActions());
+            _rotated = false;
+        }
+        void OnDisable()
+        {
+            if (selectedRoom != null) ZoomOut();
+            if (editingMode) ToggleEdit();
         }
 
         private IEnumerator StartActions()
         {
             yield return new WaitUntil(() => _loadScript.LoadFinished);
-            //AudioManager.Instance?.PlayMusic("Soulhome", "");
             _camera = GetComponent<Camera>();
             SetCameraBounds();
 
-            //Debug.Log(_displayScreen.GetComponent<RectTransform>().rect.x /*.sizeDelta.x*/ + " : " + _displayScreen.GetComponent<RectTransform>().rect.y /*.sizeDelta.y*/);
-            //Camera.aspect = _displayScreen.GetComponent<RectTransform>().sizeDelta.x / _displayScreen.GetComponent<RectTransform>().sizeDelta.y;
             _camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
             _camera.fieldOfView = 90f;
             transform.localPosition = new(0, 0, transform.position.z);
@@ -118,9 +124,6 @@ namespace MenuUI.Scripts.SoulHome
 
             SetScrollSpeed();
 
-            //Debug.Log(currentY + " : " + (cameraMinY + offsetY) + " : " + (cameraMaxY - offsetY));
-            //Debug.Log(currentX + " : " + (cameraMinX + offsetX) + " : " + (cameraMaxX - offsetX));
-
             float y = Mathf.Clamp(currentY, cameraMinY + offsetY, cameraMaxY - offsetY);
             float x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
             transform.position = new(x, y, transform.position.z);
@@ -128,6 +131,7 @@ namespace MenuUI.Scripts.SoulHome
             _maxCameraDistance = GetCameraMaxDistance();
             _minCameraDistance = GetCameraMinDistance();
             _startFinished = true;
+            _displayScreen.transform.GetChild(0).gameObject.SetActive(false);
         }
 
         // Update is called once per frame
@@ -318,22 +322,6 @@ namespace MenuUI.Scripts.SoulHome
             if(ClickStateHandler.GetClickState() is ClickState.End && _selectedFurniture == null && _tempSelectedFurniture != null) _tempSelectedFurniture = null;
         }
 
-        void OnEnable()
-        {
-            if (_camera != null)
-            {
-                _camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
-                HandleScreenRotation();
-            }
-            _rotated = false;
-        }
-
-        void OnDisable()
-        {
-            if (selectedRoom != null) ZoomOut();
-            if (editingMode) ToggleEdit();
-        }
-
         public bool FindRayPoint(Vector2 relPoint, ClickState click)
         {
             //if (click == ClickState.Start) cameraMove = true;
@@ -422,7 +410,7 @@ namespace MenuUI.Scripts.SoulHome
 
                         else if (click == ClickState.End /*&& _selectedFurniture == null*/)
                         {
-                            Vector2 _tempRoomHitEnd = ClickStateHandler.GetClickPosition(ClickInputDevice.Touch);
+                            /*Vector2 _tempRoomHitEnd = ClickStateHandler.GetClickPosition(ClickInputDevice.Touch);
 
                             if (selectedRoom == null && tempSelectedRoom != null
                                 && _tempRoomHitStart.y > _tempRoomHitEnd.y - 3f && _tempRoomHitStart.y < _tempRoomHitEnd.y + 3f
@@ -442,7 +430,7 @@ namespace MenuUI.Scripts.SoulHome
                                 ZoomOut();
                                 selectedRoom = tempSelectedRoom;
                                 ZoomIn(selectedRoom);
-                            }
+                            }*/
                         }
                         hitRoom = true;
                     }
@@ -555,12 +543,9 @@ namespace MenuUI.Scripts.SoulHome
 
         public void ZoomIn(GameObject room)
         {
-            _soulHomeController.SetRoomName(selectedRoom);
             _camera.transform.position = new(room.transform.position.x, room.transform.position.y + room.GetComponent<BoxCollider2D>().size.y / 2,_camera.transform.position.z);
 
             outDelay = Time.time;
-
-            _mainScreen.LeaveRoomButton.SetActive(true);
 
             Vector3 bl = _camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(_camera.transform.position.z)));
 
@@ -582,12 +567,10 @@ namespace MenuUI.Scripts.SoulHome
             {
                 //if (_mainScreen.TrayOpen) _mainScreen.ToggleTray();
                 selectedRoom = null;
-                _soulHomeController.SetRoomName(selectedRoom);
 
                 _camera.transform.position = new(_camera.transform.position.x- _camera.transform.localPosition.x, _camera.transform.position.y, _camera.transform.position.z);
                 inDelay = Time.time;
 
-                _mainScreen.LeaveRoomButton.SetActive(false);
                 Vector3 bl = _camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(_camera.transform.position.z)));
 
                 float offsetY = Mathf.Abs(transform.position.y - bl.y);
@@ -622,7 +605,7 @@ namespace MenuUI.Scripts.SoulHome
         public void PlaceFurniture(Vector2 hitPoint, bool hover)
         {
             Vector2 checkPoint;
-            Vector2Int size = _selectedFurniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
+            Vector3Int size = _selectedFurniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
             if(hitPoint.Equals(Vector2.negativeInfinity)) hitPoint = _selectedFurniture.transform.position + new Vector3(0, 0.001f);
 
             Ray ray = new(transform.position, (Vector3)hitPoint - transform.position);
@@ -882,7 +865,9 @@ namespace MenuUI.Scripts.SoulHome
             _selectedFurniture.GetComponent<FurnitureHandling>().TempSlot = null;
             if (_selectedFurniture.GetComponent<FurnitureHandling>().Slot != null) ChangedFurnitureList.Add(_selectedFurniture);
             else if(ChangedFurnitureList.Contains(_selectedFurniture)) ChangedFurnitureList.Remove(_selectedFurniture);
-            if(_selectedFurniture.GetComponent<FurnitureHandling>().Slot == null)
+            int prevRoomId = (_selectedFurniture?.transform.parent.GetComponent<FurnitureSlot>() != null) ? _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>().roomId : -1;
+            if (prevRoomId >= 0) _rooms.transform.GetChild(prevRoomId).GetChild(0).GetComponent<RoomData>().ClearValidity();
+            if (_selectedFurniture.GetComponent<FurnitureHandling>().Slot == null)
             {
                 Destroy(_selectedFurniture);
                 SelectedFurniture = null;

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using Altzone.Scripts.Chat;
 using MenuUi.Scripts.AvatarEditor;
-using Assets.Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Model.Poco.Player;
 using System.Text;
 using System.Collections;
 

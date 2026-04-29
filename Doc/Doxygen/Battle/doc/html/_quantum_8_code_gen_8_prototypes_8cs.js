@@ -20,7 +20,6 @@ var _quantum_8_code_gen_8_prototypes_8cs =
     [ "Quantum.Prototypes.BattleProjectileSpawnerQComponentPrototype", "class_quantum_1_1_prototypes_1_1_battle_projectile_spawner_q_component_prototype.html", "class_quantum_1_1_prototypes_1_1_battle_projectile_spawner_q_component_prototype" ],
     [ "Quantum.Prototypes.BattleSoulWallQComponentPrototype", "class_quantum_1_1_prototypes_1_1_battle_soul_wall_q_component_prototype.html", "class_quantum_1_1_prototypes_1_1_battle_soul_wall_q_component_prototype" ],
     [ "Quantum.Prototypes.BattleSoulWallTemplatePrototype", "class_quantum_1_1_prototypes_1_1_battle_soul_wall_template_prototype.html", "class_quantum_1_1_prototypes_1_1_battle_soul_wall_template_prototype" ],
-    [ "Quantum.Prototypes.BattleWaitForPlayersDataPrototype", "class_quantum_1_1_prototypes_1_1_battle_wait_for_players_data_prototype.html", "class_quantum_1_1_prototypes_1_1_battle_wait_for_players_data_prototype" ],
     [ "Quantum.Prototypes.InputPrototype", "class_quantum_1_1_prototypes_1_1_input_prototype.html", "class_quantum_1_1_prototypes_1_1_input_prototype" ],
     [ "Quantum.Prototypes.Boolean", "namespace_quantum_1_1_prototypes.html#aa1312b53a189c87f0d3050d2eae48599", null ],
     [ "Quantum.Prototypes.Byte", "namespace_quantum_1_1_prototypes.html#a282fa8f14823f51778aa07f136e70238", null ],

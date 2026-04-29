@@ -34,7 +34,7 @@ namespace MenuUi.Scripts.UIScaling
         private void OnEnable()
         {
             OverlayPanelCheck.OnChatBarToggled += UpdateBottomLine;
-            UpdateBottomLine(OverlayPanelCheck.Instance.ChatActive);
+            if(OverlayPanelCheck.Instance) UpdateBottomLine(OverlayPanelCheck.Instance.ChatActive);
         }
         private void OnDisable()
         {
@@ -56,7 +56,7 @@ namespace MenuUi.Scripts.UIScaling
         protected virtual void SetPanelAnchors()
         {
             float bottomLine = CalculateBottomPanelHeight();
-            if (!OverlayPanelCheck.Instance.ChatActive) bottomLine /= 2f;
+            if (OverlayPanelCheck.Instance && !OverlayPanelCheck.Instance.ChatActive) bottomLine /= 2f;
             _bottomPanelRectTransfrom.anchorMax = new Vector2(1, bottomLine);
 
             _topPanelRectTransfrom.anchorMin = new Vector2(0, 1 - (CalculateTopPanelHeight() + CalculateUnsafeAreaHeight()));

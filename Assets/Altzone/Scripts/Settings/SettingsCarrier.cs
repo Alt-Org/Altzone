@@ -454,6 +454,19 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         return 1 * (otherVolume * masterVolume);
     }
 
+    public float GetVolumeValue(SoundType type)
+    {
+        float otherVolume = 1;
+        switch (type)
+        {
+            case SoundType.menu: otherVolume = menuVolume; break;
+            case SoundType.music: otherVolume = musicVolume; break;
+            case SoundType.sound: otherVolume = soundVolume; break;
+            default: break;
+        }
+        return otherVolume;
+    }
+
     public void SetTextSize(TextSize size)
     {
         _textSize = size;

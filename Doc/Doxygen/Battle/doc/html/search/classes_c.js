@@ -15,6 +15,5 @@ var searchData=
   ['qprototypebattleprojectileqcomponent_12',['QPrototypeBattleProjectileQComponent',['../class_quantum_1_1_q_prototype_battle_projectile_q_component.html',1,'Quantum']]],
   ['qprototypebattleprojectilespawnerqcomponent_13',['QPrototypeBattleProjectileSpawnerQComponent',['../class_quantum_1_1_q_prototype_battle_projectile_spawner_q_component.html',1,'Quantum']]],
   ['qprototypebattlesoulwallqcomponent_14',['QPrototypeBattleSoulWallQComponent',['../class_quantum_1_1_q_prototype_battle_soul_wall_q_component.html',1,'Quantum']]],
-  ['qstring512_15',['QString512',['../struct_quantum_1_1_q_string512.html',1,'Quantum']]],
-  ['qstring64_16',['QString64',['../struct_quantum_1_1_q_string64.html',1,'Quantum']]]
+  ['qstring512_15',['QString512',['../struct_quantum_1_1_q_string512.html',1,'Quantum']]]
 ];

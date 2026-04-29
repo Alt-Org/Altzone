@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Assets.Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using static ServerChatMessage;
 

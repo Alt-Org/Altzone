@@ -13,7 +13,7 @@ namespace MenuUi.Scripts.UIScaling
         protected override void SetPanelAnchors()
         {
             float bottomLine = CalculateBottomPanelHeight();
-            if (!OverlayPanelCheck.Instance.ChatActive) bottomLine /= 2f;
+            if (OverlayPanelCheck.Instance && !OverlayPanelCheck.Instance.ChatActive) bottomLine /= 2f;
             float unsafeAreaLine = 1 - CalculateUnsafeAreaHeight();
             float topLine = unsafeAreaLine - CalculateTopPanelHeight();
             _bottomPanelRectTransfrom.anchorMax = new(1,bottomLine);

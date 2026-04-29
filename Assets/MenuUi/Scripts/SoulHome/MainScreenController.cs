@@ -23,8 +23,6 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _hoverButtons;
         [SerializeField]
-        private GameObject _leaveRoomButton;
-        [SerializeField]
         private GameObject _furnitureButtonTray;
         [SerializeField]
         private GameObject _changeHandleButtonTray;
@@ -47,7 +45,6 @@ namespace MenuUI.Scripts.SoulHome
 
         internal bool TrayOpen { get => _trayOpen; set => _trayOpen = value; }
         internal GameObject SelectedFurnitureTray { get => _selectedFurnitureTray;}
-        public GameObject LeaveRoomButton { get => _leaveRoomButton;}
         public GameObject TempSelectedFurnitureTray { get => _tempSelectedFurnitureTray;}
 
         // Start is called before the first frame update
@@ -561,7 +558,7 @@ namespace MenuUI.Scripts.SoulHome
             if (!_rotated)
             {
                 screen.GetComponent<RectTransform>().anchorMax = new(1f, 1f);
-                screen.GetComponent<RectTransform>().anchorMin = new(0f, 0.1f);
+                screen.GetComponent<RectTransform>().anchorMin = new(0f, 0f);
                 screen.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             }
             else

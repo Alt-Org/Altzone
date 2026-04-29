@@ -21,7 +21,6 @@ var namespace_quantum_1_1_prototypes =
     [ "BattleProjectileSpawnerQComponentPrototype", "class_quantum_1_1_prototypes_1_1_battle_projectile_spawner_q_component_prototype.html", "class_quantum_1_1_prototypes_1_1_battle_projectile_spawner_q_component_prototype" ],
     [ "BattleSoulWallQComponentPrototype", "class_quantum_1_1_prototypes_1_1_battle_soul_wall_q_component_prototype.html", "class_quantum_1_1_prototypes_1_1_battle_soul_wall_q_component_prototype" ],
     [ "BattleSoulWallTemplatePrototype", "class_quantum_1_1_prototypes_1_1_battle_soul_wall_template_prototype.html", "class_quantum_1_1_prototypes_1_1_battle_soul_wall_template_prototype" ],
-    [ "BattleWaitForPlayersDataPrototype", "class_quantum_1_1_prototypes_1_1_battle_wait_for_players_data_prototype.html", "class_quantum_1_1_prototypes_1_1_battle_wait_for_players_data_prototype" ],
     [ "InputPrototype", "class_quantum_1_1_prototypes_1_1_input_prototype.html", "class_quantum_1_1_prototypes_1_1_input_prototype" ],
     [ "Boolean", "namespace_quantum_1_1_prototypes.html#aa1312b53a189c87f0d3050d2eae48599", null ],
     [ "Byte", "namespace_quantum_1_1_prototypes.html#a282fa8f14823f51778aa07f136e70238", null ],

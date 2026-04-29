@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
-namespace Assets.Altzone.Scripts.Model.Poco.Player
+namespace Altzone.Scripts.Model.Poco.Player
 {
     public enum AvatarPiece
     {
@@ -138,6 +137,48 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
             Scale = Vector2.one;
         }
 
+        public AvatarData(AvatarDefault serverData)
+        {
+            Name = serverData.CharacterName;
+            if (serverData.HairId != null)
+            {
+                int.TryParse(serverData.HairId, out Hair);
+                HairColor = "#FFFFFF";
+            }
+            if (serverData.EyesId != null)
+            {
+                int.TryParse(serverData.EyesId, out Eyes);
+                EyesColor = "#FFFFFF";
+            }
+            if (serverData.NoseId != null)
+            {
+                int.TryParse(serverData.NoseId, out Nose);
+                NoseColor = "#FFFFFF";
+            }
+            if (serverData.MouthId != null)
+            {
+                int.TryParse(serverData.MouthId, out Mouth);
+                MouthColor = "#FFFFFF";
+            }
+            if (serverData.BodyId != null)
+            {
+                int.TryParse(serverData.BodyId, out Clothes);
+                ClothesColor = "#FFFFFF";
+            }
+            if (serverData.FeetId != null)
+            {
+                int.TryParse(serverData.FeetId, out Feet);
+                FeetColor = "#FFFFFF";
+            }
+            if (serverData.HandsId != null)
+            {
+                int.TryParse(serverData.HandsId, out Hands);
+                HandsColor = "#FFFFFF";
+            }
+            Color = "#FFFFFF";
+            Scale = Vector2.one;
+        }
+
         // Properties
         public List<string> FeatureIds => new[] { Hair, Eyes, Nose, Mouth, Clothes, Feet, Hands }
                                           .Select(id => id.ToString()).ToList();
@@ -155,7 +196,7 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
         }
 
         // Methods
-        public bool IsValid => !string.IsNullOrWhiteSpace(Name) && !string.IsNullOrWhiteSpace(Color);
+        public bool IsValid => !string.IsNullOrWhiteSpace(Name) && !string.IsNullOrWhiteSpace(Color) && Hair != 0 && Eyes != 0 && Nose != 0 && Mouth != 0 && Clothes != 0 && Feet != 0 && Hands != 0;
         
         public bool Validate() => IsValid;
 

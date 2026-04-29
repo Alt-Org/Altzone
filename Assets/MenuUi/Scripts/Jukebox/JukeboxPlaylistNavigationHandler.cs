@@ -49,7 +49,9 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
 
     private void Start()
     {
-        FillSelectionButtonList();
+        List<MusicTrack> musicTracks = AudioManager.Instance.GetMusicList("Jukebox"); //TODO: Replace with what tracks the clan actually owns when possible.
+
+        FillSelectionButtonList(musicTracks);
         _smartList.OnNewDataRequested += UpdateButtonHandlerData;
 
         #region Filters
@@ -92,9 +94,9 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
     //}
     #endregion
 
-    private void FillSelectionButtonList()
+    private void FillSelectionButtonList(List<MusicTrack> musicTracks)
     {
-        List<MusicTrack> musicTracks = AudioManager.Instance.GetMusicList("Jukebox"); //TODO: Replace with what tracks the clan actually owns when possible.
+        _personalizedMusicTracks.Clear();
 
         foreach (MusicTrack musicTrack in musicTracks)
         {
@@ -114,44 +116,21 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
     #region Filtering
     private void SearchFieldChange(string value) //TODO: Out Of Order! Make compatible with Smart List.
     {
-        return;
+        List<MusicTrack> musicTracks;
 
-        // if (string.IsNullOrEmpty(value)) //Set all track button handlers visible that have a music track.
-        //     foreach (Chunk<JukeboxTrackButtonHandler> chunk in _buttonHandlerChunks)
-        //         foreach (JukeboxTrackButtonHandler handler in chunk.Pool)
-        //             if (handler.MusicTrack != null)
-        //                 handler.SetVisibility(true);
-        //
-        // int textDirection = (_previousSearchLength < value.Length) ? 1 : -1; //1: Forward, -1: Backward.
-        //
-        // _previousSearchLength = value.Length;
+        if (string.IsNullOrEmpty(value)) //Set all track button handlers visible that have a music track.
+        {
+            musicTracks = AudioManager.Instance.GetMusicList("Jukebox"); //TODO: Replace with what tracks the clan actually owns when possible.
 
-        // for (int i = 0; i < _buttonHandlerChunks.Count; i++)
-        // {
-        //     Chunk<JukeboxTrackButtonHandler> chunk = _buttonHandlerChunks[i];
-        //     Chunk<bool> hiddenTrackChunkData = _hiddenTrackHandlers[i];
-        //
-        //     if ((textDirection == 1 && hiddenTrackChunkData.AmountInUse == _trackChunkSize) ||
-        //         (textDirection == -1 && hiddenTrackChunkData.AmountInUse == 0)) continue;
-        //
-        //     for (int j = 0; j < _trackChunkSize; j++)
-        //     {
-        //         JukeboxTrackButtonHandler handler = chunk.Pool[j];
-        //
-        //         if ((handler.MusicTrack == null || handler.MusicTrack.Music == null) ||
-        //             ((textDirection == 1 && hiddenTrackChunkData.Pool[j]) ||
-        //             (textDirection == -1 && !hiddenTrackChunkData.Pool[j]))) continue;
-        //
-        //         bool visible = handler.MusicTrack.Name.Contains(value, System.StringComparison.CurrentCultureIgnoreCase);
-        //
-        //         if ((textDirection == 1 && visible) || (textDirection == -1 && !visible)) continue;
-        //
-        //         if (hiddenTrackChunkData.Pool[j] != !visible) hiddenTrackChunkData.AmountInUse += textDirection;
-        //
-        //         hiddenTrackChunkData.Pool[j] = !visible;
-        //         handler.SetVisibility(visible);
-        //     }
-        // }
+            FillSelectionButtonList(musicTracks);
+
+            return;
+        }
+
+        musicTracks = AudioManager.Instance.GetMusicList("Jukebox").
+            FindAll((data) => data.Name.Contains(value, System.StringComparison.CurrentCultureIgnoreCase)); //TODO: Replace with what tracks the clan actually owns when possible.
+
+        FillSelectionButtonList(musicTracks);
     }
     #endregion
 }

@@ -210,7 +210,7 @@ public static class WebRequests
 
             if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogWarning("Error deleting data from " + address + " - " + request.error + ": " + request.downloadHandler.text);
+                Debug.LogWarning("Error deleting data from " + address + " - " + request.error + ": " /*+ request.downloadHandler.text*/);
             }
 
             if (callback != null)

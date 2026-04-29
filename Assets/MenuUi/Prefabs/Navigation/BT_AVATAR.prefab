@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2646674471352073176}
   - component: {fileID: 2261026606916043575}
   - component: {fileID: 2546953072522480116}
-  - component: {fileID: 3480276211852442890}
+  - component: {fileID: 1390240169696100122}
   m_Layer: 5
   m_Name: BT_AVATAR
   m_TagString: Untagged
@@ -121,7 +121,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &3480276211852442890
+--- !u!114 &1390240169696100122
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -130,8 +130,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2472968820478298304}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
+  m_Script: {fileID: 11500000, guid: 93c08ee9db595824d985a43fafb6567a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _naviTarget: {fileID: 11400000, guid: 6f4124795cdd1ca45abd928b708b100c, type: 2}
+  _naviTarget: {fileID: 11400000, guid: e159432f6bd8572419fea7a32165e31b, type: 2}
+  _useNonDefaultWindow: 0
+  _targetWindow: 0
   _isCurrentPopOutWindow: 0

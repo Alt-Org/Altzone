@@ -1,5 +1,5 @@
 using Altzone.Scripts.AvatarPartsInfo;
-using Assets.Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
 namespace MenuUi.Scripts.AvatarEditor

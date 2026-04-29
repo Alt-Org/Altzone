@@ -113,10 +113,11 @@ public class JukeboxTrackButtonHandler : SmartListItem, IBeginDragHandler, IEndD
         PersonalizedMusicTrack personalizedMusicTrack = data1 as PersonalizedMusicTrack;
 
         _musicTrack = personalizedMusicTrack.Track;
-        _trackNameAutoScroll.SetContent(personalizedMusicTrack.Track.Name);
-        _trackCreditsNamesAutoScroll.SetContent(personalizedMusicTrack.Track.JukeboxInfo.GetArtistNames());
+        _trackNameAutoScroll.SetContent(personalizedMusicTrack.Track.Name, false, false);
+        _trackCreditsNamesAutoScroll.SetContent(personalizedMusicTrack.Track.JukeboxInfo.GetArtistNames(), false, false);
         _trackImage.sprite = personalizedMusicTrack.Track.JukeboxInfo.Disk;
         gameObject.SetActive(true);
+        StopDiskSpin();
 
         _favoriteButtonHandler?.Setup(personalizedMusicTrack.FavoriteType, personalizedMusicTrack.Track.Id);
     }

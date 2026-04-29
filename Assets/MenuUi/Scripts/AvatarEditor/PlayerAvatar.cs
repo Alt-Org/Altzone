@@ -3,7 +3,7 @@ using System.Linq;
 using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
-using Assets.Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
 namespace MenuUi.Scripts.AvatarEditor

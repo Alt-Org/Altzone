@@ -701,6 +701,7 @@ namespace MenuUI.Scripts.SoulHome
         private List<AvatarAnimation> ValidateAnimations(List<AvatarAnimation> animationToValidate)
         {
             List<AvatarAnimation> validatedAnimation = new();
+            if (_class is CharacterClassType.None) _class = CharacterClassType.Trickster;
             foreach (AvatarAnimation animation in animationToValidate)
             {
                 if (animation != null && animation.Clip != null)
@@ -735,7 +736,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void HandleClick()
         {
-            if (_performingAnimation)
+            if (_performingAnimation || _validatedInteractAnimation.Count == 0)
             {
                 return;
             }
@@ -774,6 +775,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (_targetFurniture != null)
             {
+                _targetFurniture.StartInteract(this, this.gameObject);
                 Debug.Log($"NPC arrived at: {_targetFurniture.gameObject.name}");
                 _targetFurniture = null;
 
