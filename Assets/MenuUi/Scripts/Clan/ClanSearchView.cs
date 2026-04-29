@@ -156,7 +156,7 @@ public class ClanSearchView : MonoBehaviour
 
     private void ShowOverlay(bool on)
     {
-        if (OverlayPanelCheck.Instance) OverlayPanelCheck.Instance.gameObject.SetActive(on);
+        if (OverlayPanelCheck.Instance) OverlayPanelCheck.Instance.ToggleOverlay(on);
     }
 
     private string GetCurrentClanName()
