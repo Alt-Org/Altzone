@@ -146,10 +146,10 @@ namespace Battle.QSimulation.Player
         ///
         /// Update method has been split into subprocesses.<br/>
         /// see @cref{BattlePlayerQSystem,GetInput}<br/>
-        /// see @cref{Battle.QSimulation.Player,CommandGiveUp}<br/>
-        /// see @cref{Battle.QSimulation.Player,CommandSwapCharacter}<br/>
+        /// see @cref{Battle.QSimulation.Player,BattleGiveUpQCommand}<br/>
+        /// see @cref{Battle.QSimulation.Player,BattleCharacterSwapQCommand}<br/>
         /// see @cref{BattlePlayerQSystem,HandleOutOfPlay}<br/>
-        /// see @cref{Battle.QSimulation.Player,CommandActivateAbility}<br/>
+        /// see @cref{Battle.QSimulation.Player,BattleCharacterAbilityQCommand}<br/>
         /// see @cref{BattlePlayerQSystem,HandleInPlay}
         ///
         /// <param name="f">Current simulation frame</param>
@@ -298,6 +298,8 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Handle of the player.</param>
+        ///
+        /// <returns>True if the give up input was processed.</returns>
         private static bool HandleGiveUpLogic(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
             BattlePlayerSlot slot = playerHandle.Slot;
@@ -376,6 +378,8 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Handle of the player.</param>
+        ///
+        /// <returns>True if the give up input was processed.</returns>
         private static bool HandleGiveUp(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
             playerHandle.PlayerGiveUpState = !playerHandle.PlayerGiveUpState;
@@ -392,6 +396,8 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Handle of the player.</param>
+        ///
+        /// <returns>True if character swapped.</returns>
         public static bool HandleCharacterSwapping(Frame f, BattlePlayerManager.PlayerHandle playerHandle, int playerCharacterNumber)
         {
             s_debugLogger.LogFormat(f, "({0}) Character swap input received", playerHandle.Slot);
