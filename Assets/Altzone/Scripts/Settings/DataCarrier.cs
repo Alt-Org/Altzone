@@ -21,6 +21,9 @@ namespace Altzone.Scripts.Window
 
         private static Dictionary<string, object> s_datastorage = new();
 
+        public delegate void PlayerProfileRequested();
+        public static event PlayerProfileRequested OnPlayerProfileRequested;
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -58,6 +61,8 @@ namespace Altzone.Scripts.Window
             {
                 AddClassData<object>(key, value);
             }
+
+            if(key.Equals(PlayerProfile)) OnPlayerProfileRequested?.Invoke();
         }
 
         public static void AddClassData<T>(string key, T value) where T : class

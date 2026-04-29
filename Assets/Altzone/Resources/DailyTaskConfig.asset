@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _normalDailyTasks:
   - active: 0
+    deactivateOnTurboEducation: 0
     title: "L\xE4het\xE4 viesti"
     englishTitle: 
     description: 
@@ -24,6 +25,7 @@ MonoBehaviour:
     type: write_chat_message
   _educationDailyTasks:
   - active: 1
+    deactivateOnTurboEducation: 0
     title: Vaihda taustamusiikki
     englishTitle: Switching Music
     description: "Vaihda k\xE4ytt\xF6liittym\xE4n taustamusiikki asetuksista."
@@ -34,6 +36,7 @@ MonoBehaviour:
     educationCategoryType: action
     educationCategoryTaskType: change_song_soulhome
   - active: 0
+    deactivateOnTurboEducation: 0
     title: Muokkaa hahmosi statseja
     englishTitle: Edit Character Stats
     description: 
@@ -44,6 +47,7 @@ MonoBehaviour:
     educationCategoryType: action
     educationCategoryTaskType: change_character_stats
   - active: 1
+    deactivateOnTurboEducation: 0
     title: "Tee n\xE4pp\xE4imill\xE4 musiikkia"
     englishTitle: Make music with buttons
     description: "Alapainikkeiden painaminen j\xE4rjestyksess\xE4 synnytt\xE4\xE4
@@ -56,6 +60,7 @@ MonoBehaviour:
     educationCategoryType: action
     educationCategoryTaskType: make_music_with_buttons
   - active: 0
+    deactivateOnTurboEducation: 0
     title: Muokkaa pelihahmosta nopea
     englishTitle: Make your character fast
     description: 
@@ -66,6 +71,7 @@ MonoBehaviour:
     educationCategoryType: action
     educationCategoryTaskType: change_character_be_fast
   - active: 0
+    deactivateOnTurboEducation: 0
     title: "Muokkaa pelihahmosta kest\xE4v\xE4"
     englishTitle: Make your character strong
     description: 
@@ -76,6 +82,7 @@ MonoBehaviour:
     educationCategoryType: action
     educationCategoryTaskType: change_character_be_resistant
   - active: 1
+    deactivateOnTurboEducation: 0
     title: Muokkaa pelihahmosta voimakas
     englishTitle: Make your character strong
     description: Tee jostakin hahmostasi mahdollissimman voimakas (taso 6).
@@ -87,6 +94,7 @@ MonoBehaviour:
     educationCategoryType: action
     educationCategoryTaskType: change_character_be_strong
   - active: 0
+    deactivateOnTurboEducation: 0
     title: Muokkaa pelihahmosta isokokoinen
     englishTitle: Make your character big
     description: 
@@ -97,6 +105,7 @@ MonoBehaviour:
     educationCategoryType: action
     educationCategoryTaskType: change_character_be_large
   - active: 1
+    deactivateOnTurboEducation: 0
     title: "L\xE4het\xE4 viesti klaanissa"
     englishTitle: Send a clan message
     description: "L\xE4het\xE4 viesti klaanisi j\xE4senille klaanin omassa chatissa."
@@ -107,6 +116,7 @@ MonoBehaviour:
     educationCategoryType: social
     educationCategoryTaskType: write_chat_message_clan
   - active: 0
+    deactivateOnTurboEducation: 0
     title: "Muokkaa avatarisi ulkon\xE4k\xF6\xE4"
     englishTitle: Change your avatars appearance
     description: 
@@ -117,6 +127,7 @@ MonoBehaviour:
     educationCategoryType: social
     educationCategoryTaskType: change_avatar_outlook
   - active: 1
+    deactivateOnTurboEducation: 0
     title: "Luo uusi \xE4\xE4nestys"
     englishTitle: Start a poll
     description: "Aloita uusi \xE4\xE4nestys josta klaanisi voi \xE4\xE4nest\xE4\xE4
@@ -128,6 +139,7 @@ MonoBehaviour:
     educationCategoryType: social
     educationCategoryTaskType: create_clan_voting
   - active: 1
+    deactivateOnTurboEducation: 0
     title: Paina pelihahmon kuvausta
     englishTitle: View a characters description
     description: "Hahmogalleriassa jokaisen hahmon tiedoist pit\xE4isi l\xF6yty\xE4
@@ -140,6 +152,7 @@ MonoBehaviour:
     educationCategoryType: story
     educationCategoryTaskType: press_character_description
   - active: 0
+    deactivateOnTurboEducation: 0
     title: "M\xE4\xE4rittele pelaajatyylisi pelaajaprofiiliin"
     englishTitle: Choose your gaming style in your profile
     description: "M\xE4\xE4rittele pelaajaprofiilissasi oletko aktiivipelaaja, harrastaja,
@@ -151,6 +164,7 @@ MonoBehaviour:
     educationCategoryType: social
     educationCategoryTaskType: define_player_style
   - active: 1
+    deactivateOnTurboEducation: 0
     title: Paina asiaa, jonka voi ostaa
     englishTitle: Press something you can buy
     description: "Etsi jotain mit\xE4 pysyty ostamaan pelin valuttalla."
@@ -161,6 +175,7 @@ MonoBehaviour:
     educationCategoryType: ethical
     educationCategoryTaskType: press_money_stuff
   - active: 0
+    deactivateOnTurboEducation: 0
     title: Vaihda avatarisi vaatteita
     englishTitle: Change your avatars clothes
     description: 
@@ -171,6 +186,7 @@ MonoBehaviour:
     educationCategoryType: action
     educationCategoryTaskType: change_avatar_clothes
   - active: 0
+    deactivateOnTurboEducation: 0
     title: Reagoi emojilla viestiin
     englishTitle: React to a message with an emoji
     description: 
@@ -181,6 +197,7 @@ MonoBehaviour:
     educationCategoryType: social
     educationCategoryTaskType: react_emoji_chat
   - active: 0
+    deactivateOnTurboEducation: 0
     title: "L\xF6yd\xE4 kaikki chat-vaihtoehdot"
     englishTitle: Find all chat options
     description: 
@@ -191,6 +208,7 @@ MonoBehaviour:
     educationCategoryType: social
     educationCategoryTaskType: find_all_chat_options
   - active: 1
+    deactivateOnTurboEducation: 0
     title: "K\xE4yt\xE4 kaikkia eri tunne-emojeita"
     englishTitle: Use all different feeling emojis
     description: "Chatiss\xE4 viestit voivat olla viitt\xE4 eri tunne tyyppi\xE4.
@@ -203,6 +221,7 @@ MonoBehaviour:
     educationCategoryType: social
     educationCategoryTaskType: use_all_chat_feelings
   - active: 0
+    deactivateOnTurboEducation: 0
     title: Vaihda sielunkodin esineen asentoa
     englishTitle: Change the placement of an item in soul home
     description: 
@@ -213,6 +232,7 @@ MonoBehaviour:
     educationCategoryType: action
     educationCategoryTaskType: change_items_position
   - active: 0
+    deactivateOnTurboEducation: 0
     title: "K\xE4yt\xE4 kaikki sielunkotisi esineet"
     englishTitle: Use all items in your soul home
     description: 
@@ -223,6 +243,7 @@ MonoBehaviour:
     educationCategoryType: action
     educationCategoryTaskType: use_all_items_soulhome
   - active: 0
+    deactivateOnTurboEducation: 0
     title: "L\xE4het\xE4 viesti global chatissa"
     englishTitle: Send a message in globat chat
     description: "L\xE4het\xE4 viesti kaikille pelaajille pelin globaalissa chatissa."
@@ -233,6 +254,7 @@ MonoBehaviour:
     educationCategoryType: social
     educationCategoryTaskType: write_chat_message_global
   - active: 1
+    deactivateOnTurboEducation: 0
     title: "Tee yhten\xE4inen sisustus"
     englishTitle: Create unified interior
     description: "Sisusta sielunkotiin huone, jossa on k\xE4ytetty vain yhden malliston
@@ -244,6 +266,7 @@ MonoBehaviour:
     educationCategoryType: story
     educationCategoryTaskType: create_unified_interior
   - active: 0
+    deactivateOnTurboEducation: 0
     title: Tunnista pelihahmon tarinallinen mekaniikka
     englishTitle: Recognize a characters mechanic
     description: 
@@ -254,6 +277,7 @@ MonoBehaviour:
     educationCategoryType: story
     educationCategoryTaskType: recognize_character_mechanic
   - active: 1
+    deactivateOnTurboEducation: 0
     title: "Kest\xE4v\xE4 kuluttaminen"
     englishTitle: Sustainable consumption
     description: "Etsi ja klikkaa kest\xE4v\xE4\xE4n kuluttamiseen liittyvi\xE4 asioita
@@ -266,6 +290,7 @@ MonoBehaviour:
     educationCategoryType: ethical
     educationCategoryTaskType: press_sustainable_consumption_objects
   - active: 1
+    deactivateOnTurboEducation: 0
     title: Klikkaa tunnettuihin teoksiin, ideoihin tai ihmisiin viittaavia asioita
     englishTitle: Click on known art, ideas and things related to people
     description: "Etsi tunnettuihin teoksiin, ideoihin tai ihmisiin viittaavia elementtej\xE4
@@ -279,6 +304,7 @@ MonoBehaviour:
     educationCategoryType: culture
     educationCategoryTaskType: press_famous_thing_referring_objects
   - active: 1
+    deactivateOnTurboEducation: 0
     title: Peligenret ja lajityypit
     englishTitle: Game Genre types
     description: "M\xE4\xE4rit\xE4 mik\xE4 on t\xE4m\xE4n pelin lajityyppi"
@@ -289,6 +315,7 @@ MonoBehaviour:
     educationCategoryType: culture
     educationCategoryTaskType: what_style_types_game_has
   - active: 1
+    deactivateOnTurboEducation: 0
     title: "L\xF6yd\xE4 arvoja pelist\xE4"
     englishTitle: Find values in the game
     description: "Etsi ja klikkaa arvoihin liittyvi\xE4 asioita (Vihje: klaanit)"
@@ -300,6 +327,7 @@ MonoBehaviour:
     educationCategoryType: ethical
     educationCategoryTaskType: press_values_objects
   - active: 1
+    deactivateOnTurboEducation: 0
     title: "Osallistu \xE4\xE4nestykseen"
     englishTitle: Participate in a poll
     description: "Mene \xE4\xE4nestyssivulle ja anna \xE4\xE4nesi, jos \xE4\xE4nestyksi\xE4
@@ -312,6 +340,7 @@ MonoBehaviour:
     educationCategoryType: social
     educationCategoryTaskType: participate_clan_voting
   - active: 1
+    deactivateOnTurboEducation: 0
     title: Ehdota klaanissa tavara kirpputorille
     englishTitle: Suggest to buying/selling an item on the flea market
     description: "Aloita varastossa myynti\xE4\xE4nestys huonekalusta."
@@ -322,6 +351,7 @@ MonoBehaviour:
     educationCategoryType: social
     educationCategoryTaskType: suggest_item_to_flea_market
   - active: 1
+    deactivateOnTurboEducation: 0
     title: "Lis\xE4\xE4 hyv\xE4ksytty tavara klaanin kirpputorille"
     englishTitle: Add an accepted item into the clans flea market
     description: "Mene klaanin kojulle ja lis\xE4\xE4 tavaraa kojuun, mik\xE4li alapalkissa
@@ -334,6 +364,7 @@ MonoBehaviour:
     educationCategoryType: social
     educationCategoryTaskType: add_item_to_flea_market
   - active: 1
+    deactivateOnTurboEducation: 0
     title: Vaihda klaanin motto
     englishTitle: Change the motto of the clan
     description: "Mene klaanin profiilisivulle ja sielt\xE4 klaanin muokkaukseen
@@ -346,6 +377,7 @@ MonoBehaviour:
     educationCategoryType: social
     educationCategoryTaskType: change_clan_motto
   - active: 1
+    deactivateOnTurboEducation: 0
     title: "Etsi k\xE4ytt\xF6liittym\xE4st\xE4 ikkuna, joka k\xE4sittelee valtaa
       tai tasa-arvoa"
     englishTitle: Find a window in the UI that deals with power and equality
@@ -359,6 +391,7 @@ MonoBehaviour:
     educationCategoryType: culture
     educationCategoryTaskType: find_power_or_equality_referring_window
   - active: 0
+    deactivateOnTurboEducation: 0
     title: "L\xF6yd\xE4 muuttuja toiminnassa"
     englishTitle: Find a variable value in game
     description: 
@@ -369,6 +402,7 @@ MonoBehaviour:
     educationCategoryType: action
     educationCategoryTaskType: find_variable_value_in_game
   - active: 0
+    deactivateOnTurboEducation: 0
     title: "Etsi kolme t\xE4rke\xE4\xE4 painiketta"
     englishTitle: Find three important buttons
     description: "Etsi k\xE4ytt\xF6liittym\xE4n kannalta mielest\xE4si 3 t\xE4rkeint\xE4
@@ -380,6 +414,7 @@ MonoBehaviour:
     educationCategoryType: action
     educationCategoryTaskType: find_3_important_buttons
   - active: 1
+    deactivateOnTurboEducation: 0
     title: Pelin tarina
     englishTitle: Story
     description: "Miss\xE4 peli tarinan mukaan tapahtuu?"
@@ -390,6 +425,7 @@ MonoBehaviour:
     educationCategoryType: story
     educationCategoryTaskType: where_game_happens
   - active: 1
+    deactivateOnTurboEducation: 0
     title: Pelin rajallisuus
     englishTitle: Game Limitations
     description: "Etsi piilotettu bugi, paina sit\xE4 3 sekuntia. Vinkki: kurkkaa
@@ -401,6 +437,7 @@ MonoBehaviour:
     educationCategoryType: action
     educationCategoryTaskType: find_bug
   - active: 0
+    deactivateOnTurboEducation: 0
     title: Luo soittolista klaanille
     englishTitle: Create a playlist for the clan
     description: 
@@ -411,6 +448,7 @@ MonoBehaviour:
     educationCategoryType: action
     educationCategoryTaskType: create_clan_playlist
   - active: 0
+    deactivateOnTurboEducation: 0
     title: "Katso kieliasetukset ja klikkaa kohtia jotka muuttuvat eri kielien v\xE4lill\xE4"
     englishTitle: Look at the language settings and click on things that change between
       different languages
@@ -422,6 +460,7 @@ MonoBehaviour:
     educationCategoryType: ethical
     educationCategoryTaskType: change_language
   - active: 1
+    deactivateOnTurboEducation: 0
     title: "Paina kolmea symboliikkaa sis\xE4lt\xE4v\xE4\xE4 huonekalua"
     englishTitle: Press three pieces of furniture with symbolism
     description: "Varastossa, valitse kolme eri symboliikkaa sis\xE4lt\xE4v\xE4\xE4
@@ -435,6 +474,7 @@ MonoBehaviour:
     educationCategoryType: story
     educationCategoryTaskType: press_3_symbol_furniture
   - active: 1
+    deactivateOnTurboEducation: 0
     title: Palkitseminen ja houkuttelu
     englishTitle: Rewarding and temptation
     description: Tunnista kohta, jossa peli palkitsee sinua tavalla, joka houkuttelee
@@ -447,6 +487,7 @@ MonoBehaviour:
     educationCategoryType: ethical
     educationCategoryTaskType: press_prize_giving_items
   - active: 1
+    deactivateOnTurboEducation: 0
     title: "Pelin toimintakulttuuri (yhteis\xF6n k\xE4yt\xE4nn\xF6t)"
     englishTitle: Game practice culture (community practices)
     description: "Mene klaanin profiilinmuokkaukseen ja valitse klaanille toimintakulttuuriset
@@ -459,6 +500,7 @@ MonoBehaviour:
     educationCategoryType: culture
     educationCategoryTaskType: choose_cultural_guideline_cultural_description
   - active: 1
+    deactivateOnTurboEducation: 0
     title: Hahmojen eroavat arvot
     englishTitle: Characters differing values
     description: "N\xE4et kaksi pelihahmoa rinnakkain ja heid\xE4n kuvauksensa \u2013
@@ -472,7 +514,8 @@ MonoBehaviour:
     points: 10
     educationCategoryType: ethical
     educationCategoryTaskType: choose_ethically_better_character
-  - active: 0
+  - active: 1
+    deactivateOnTurboEducation: 1
     title: Voita taistelu
     englishTitle: Win battle
     description: Voita yksi taistelu
@@ -482,7 +525,8 @@ MonoBehaviour:
     points: 10
     educationCategoryType: action
     educationCategoryTaskType: win_battle
-  - active: 0
+  - active: 1
+    deactivateOnTurboEducation: 1
     title: Pelaa ottelu
     englishTitle: Play battle
     description: "Pelaa yksi ottelu (Lopputuloskessa ei v\xE4li\xE4, vaan sill\xE4
@@ -495,6 +539,7 @@ MonoBehaviour:
     educationCategoryType: action
     educationCategoryTaskType: play_battle
   - active: 1
+    deactivateOnTurboEducation: 0
     title: Valitse keskettavin intron osa
     englishTitle: Choose the most touching intro section
     description: "Mene introtarinaan (asetuksista) ja valitse mielest\xE4si vaikuttavin

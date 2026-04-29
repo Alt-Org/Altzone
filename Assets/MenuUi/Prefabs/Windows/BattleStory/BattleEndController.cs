@@ -35,7 +35,7 @@ public class BattleEndController : MonoBehaviour
         _battleStoryButton.onClick.AddListener(SwitchToStory);
         _leaveButton.onClick.AddListener(LeaveToMain);
 
-        OverlayPanelCheck.Instance.gameObject.SetActive(false);
+        OverlayPanelCheck.Instance.ToggleOverlay(false);
 
         bool? winner = DataCarrier.GetData<bool?>(DataCarrier.BattleWinner, false);
 

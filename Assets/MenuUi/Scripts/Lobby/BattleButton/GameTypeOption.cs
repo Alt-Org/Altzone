@@ -63,7 +63,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             _gameTypeInfo = info;
             SetSelected(selected);
 
-            if(info.gameType != GameType.Custom)
+            if(info.gameType == GameType.Clan2v2)
             {
                 ButtonComponent.interactable = false;
                 _settingsButton.gameObject.SetActive(false);
