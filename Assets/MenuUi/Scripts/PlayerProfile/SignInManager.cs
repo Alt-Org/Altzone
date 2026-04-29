@@ -85,7 +85,7 @@ namespace MenuUi.Scripts.Login
             Reset();
             _signInWindow.SetActive(true);
             _registerWindow.SetActive(false);
-            OverlayPanelCheck.Instance?.gameObject.SetActive(false);
+            OverlayPanelCheck.Instance?.ToggleOverlay(false);
             if (ServerManager.Instance.Player == null)
             {
                 _backButton.gameObject.SetActive(false);
@@ -140,25 +140,16 @@ namespace MenuUi.Scripts.Login
         /// </summary>
         public void LogIn(bool guest)
         {
-            string body = "";
-            if (guest)
-            {
-                body = "{\"username\":\"Angel42\",\"password\":\"PRIbXCI9d)Z0UoHP\"}";
+            ClearMessage();
 
-            }
-            else
+            if (_logInUsernameInputField.text == string.Empty || _logInPasswordInputField.text == string.Empty)
             {
-                ClearMessage();
-
-                if (_logInUsernameInputField.text == string.Empty || _logInPasswordInputField.text == string.Empty)
-                {
-                    ShowMessage(ERROR_EMPTY_FIELD, Color.red);
-                    if (_logInUsernameInputField.text == string.Empty) _logInUsernameInputFieldError.gameObject.SetActive(true);
-                    else _logInPasswordInputFieldError.gameObject.SetActive(true);
-                    return;
-                }
-                ServerLogIn(_logInUsernameInputField.text, _logInPasswordInputField.text);
+                ShowMessage(ERROR_EMPTY_FIELD, Color.red);
+                if (_logInUsernameInputField.text == string.Empty) _logInUsernameInputFieldError.gameObject.SetActive(true);
+                else _logInPasswordInputFieldError.gameObject.SetActive(true);
+                return;
             }
+            ServerLogIn(_logInUsernameInputField.text, _logInPasswordInputField.text);
         }
         private void ServerLogIn(string username, string password) {
             string body = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}";

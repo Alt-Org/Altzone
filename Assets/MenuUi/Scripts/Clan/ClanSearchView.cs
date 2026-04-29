@@ -156,7 +156,7 @@ public class ClanSearchView : MonoBehaviour
 
     private void ShowOverlay(bool on)
     {
-        if (OverlayPanelCheck.Instance) OverlayPanelCheck.Instance.gameObject.SetActive(on);
+        if (OverlayPanelCheck.Instance) OverlayPanelCheck.Instance.ToggleOverlay(on);
     }
 
     private string GetCurrentClanName()
@@ -217,7 +217,7 @@ public class ClanSearchView : MonoBehaviour
             },
             onCancel: () =>
             {
-                ShowOverlay(false);
+                
             },
             confirmText: "Liity",
             cancelText: "Peruuta",
@@ -275,7 +275,7 @@ public class ClanSearchView : MonoBehaviour
                     }));
                 }));
             },
-            onCancel: () => { ShowOverlay(false); },
+            onCancel: () => { },
                 confirmText: "Liity",
                 cancelText: "Peruuta",
                 style: "leave"

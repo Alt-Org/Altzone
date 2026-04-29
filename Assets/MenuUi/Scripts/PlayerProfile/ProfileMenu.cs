@@ -211,6 +211,7 @@ public class ProfileMenu : AltMonoBehaviour
         LoadMinutes();
 
         ServerManager.OnLogInStatusChanged += SetPlayerProfileValues;
+        DataCarrier.OnPlayerProfileRequested += FetchPlayerProfile;
         _player = ServerManager.Instance.Player;
 
         if (_player == null)
@@ -232,6 +233,7 @@ public class ProfileMenu : AltMonoBehaviour
         //_characterOptionsPopup.SetActive(false);
         //_closePopupAreaButton.SetActive(false);
         ServerManager.OnLogInStatusChanged -= SetPlayerProfileValues;
+        DataCarrier.OnPlayerProfileRequested -= FetchPlayerProfile;
 
         if (_otherPlayerProfile)
         {
@@ -576,6 +578,11 @@ public class ProfileMenu : AltMonoBehaviour
     private void CloseFriendRequestPopup()
     {
         SetFriendRequestPopupState(false);
+    }
+
+    private void FetchPlayerProfile()
+    {
+        SetPlayerProfileValues(ServerManager.Instance.Player != null);
     }
 
     /// <summary>
