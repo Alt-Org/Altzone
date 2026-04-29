@@ -1,9 +1,38 @@
 /// @file BattlePlayer103Character.prefab
 /// <summary>
-/// Prefab for character 103 "Varjoraivo, Shadowmark".
+/// Prefab for character 103 "Traumaattisuus".
 /// </summary>
 ///
-/// This prefab is a variant of @ref "BattlePlayer000Character(BaseAndTestCharacter).prefab" and has the same structure as the base prefab.
+/// This prefab is a variant of @ref "BattlePlayer100Character(BaseAndTestCharacter).prefab" and has a similar structure as the base prefab.
+///
+/// ### Structure Overrides
+/// - **BattlePlayer103Character**
+///     - *Children:*
+///         - **PlayerViewModel**
+///             - *Components:*
+///                 - @cref{Battle.View.Player,BattlePlayerCharacterViewController}
+///         - *Children:
+///             - **CharacterBottom**
+///                 - *Children:*
+///                     - **Head**
+///                     - **Body**
+///                     - **Hands**
+///                     - **Feet**
+///                     - **Shadow**
+///                     - *Shared components:*
+///                         - SpriteRenderer
+///             - **CharacterTop**
+///                 - *Children:*
+///                     - **Head**
+///                     - **Body**
+///                     - **Hands**
+///                     - **Feet**
+///                     - **Shadow**
+///                     - *Shared components:*
+///                         - SpriteRenderer
+///             - **LocalPlayerIndicator**
+///                 - *components*
+///                     - Transform
 
 /// @file BattlePlayer103CharacterEntityPrototype.qprototype
 /// <summary>

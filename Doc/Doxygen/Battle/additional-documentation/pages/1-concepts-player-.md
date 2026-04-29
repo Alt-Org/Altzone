@@ -808,7 +808,12 @@ digraph PlayerView {
   node [shape=box, style=filled, color=white, fontcolor=white, fillcolor=black];
   edge [color=gray];
 
-  Quantum                            [label="Quantum"];
+  Quantum   [label="Quantum"];
+
+  node [color=transparent, fontcolor=white];
+
+  Reference [label="Has reference"];
+  Forwards  [label="Forwards certain events"];
 
   subgraph cluster_character {
     color="#41C7F1";
@@ -892,7 +897,18 @@ digraph PlayerView {
 
   Quantum -> UpdateCharacterLink, UpdateShieldLink;
   Quantum -> ClassCharacterQuantumLink, ClassShieldQuantumLink;
-  PlayerShieldViewController -> PlayerCharacterViewController [constraint = false, dir=both];
+  Quantum -> Reference;
+  Reference -> Forwards;
+  PlayerCharacterViewController -> Reference [dir=back, constraint=false];
+  PlayerShieldViewController -> Reference [dir=back, constraint=false];
+
+  rank=same;
+  PlayerCharacterViewController;
+  PlayerShieldViewController;
+  Reference;
+
+  PlayerCharacterViewController -> Forwards;
+  PlayerShieldViewController -> Forwards [dir=back];
 }
 ```
 <br/>

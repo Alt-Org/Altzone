@@ -27,16 +27,16 @@ namespace Battle.View.Player
     /// Handles player character view logic.
     /// </summary>
     ///
+    /// See [{PlayerCharacterViewController}](#page-concepts-player-character-view-controller) for more info.<br/>
     /// See [{Player Overview}](#page-concepts-player-overview) for more info.<br/>
-    /// See [{Player View Code Overview}](#page-concepts-player-view-overview) for more info.<br/>
-    /// See [{PlayerCharacterViewController}](#page-concepts-player-character-view-controller) for more info.
+    /// See [{Player View Code Overview}](#page-concepts-player-view-overview) for more info.
     public unsafe class BattlePlayerCharacterViewController : QuantumEntityViewComponent
     {
         /// <summary>
         /// Struct that holds a map for the player's spritesheet and handles getting a sprite from the spritesheet.
         /// </summary>
         ///
-        /// See [{BattleSpriteSheetMap}](page-concepts-battle-sprite-sheet-sprite-sheet-map) for more info.
+        /// See [{BattleSpriteSheetMap}](#page-concepts-battle-sprite-sheet-sprite-sheet-map) for more info.
         public struct SpriteSheetMap : IBattleSpriteSheetMap
         {
             /// <summary>
@@ -257,7 +257,8 @@ namespace Battle.View.Player
 
 #if UNITY_EDITOR
         /// <summary>[SerializeField] Used to disable the automatic sprite setting in the editor. @note Only for use in the Unity Editor.</summary>
-        /// @ref BattlePlayerShieldViewController-SerializeFields
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-SerializeFields "SerializeFields"
         [Header("Editor")]
         [Tooltip("Disables the automatic sprite setting\nOnly for use in the Unity Editor")]
         [SerializeField] private bool _autoSpriteDisable;
@@ -268,27 +269,27 @@ namespace Battle.View.Player
         //{ references
 
         /// <summary>[SerializeField] Reference to an override character class view controller.</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
+        /// Part of @ref BattlePlayerCharacterViewController-SerializeFields "SerializeFields"
+        ///
+        /// See [{PlayerCharacterClassViewControllers}](#page-concepts-player-view-character-class-controller) for more info.
         [Header("References")]
         [Tooltip("Reference to an override character class view controller")]
         [SerializeField] private BattlePlayerCharacterClassBaseViewController _classViewControllerOverride;
 
         /// <summary>[SerializeField] Reference to a struct that holds the character's spritesheet.</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
+        /// Part of @ref BattlePlayerCharacterViewController-SerializeFields "SerializeFields"
+        ///
+        /// See [{BattleSpriteSheet}](#page-concepts-battle-sprite-sheet-sprite-sheet) for more info.
         [Tooltip("Reference to a struct that holds the character's spritesheet")]
         [SerializeField] private BattleSpriteSheet _spriteSheet;
 
-        /// <summary>[SerializeField] %Player's child <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> where heart sprite is located.</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
-        //[SerializeField] private GameObject _heart;
-
         /// <summary>[SerializeField] Array of character <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
+        /// Part of @ref BattlePlayerCharacterViewController-SerializeFields "SerializeFields"
         [Tooltip("Array of character GameObjects")]
         [SerializeField] private GameObject[] _characterGameObjects;
 
         /// <summary>[SerializeField] %Player's local player indicator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
+        /// Part of @ref BattlePlayerCharacterViewController-SerializeFields "SerializeFields"
         [Tooltip("Player's local player indicator GameObject")]
         [SerializeField] private GameObject _localPlayerIndicator;
 
@@ -297,7 +298,7 @@ namespace Battle.View.Player
         //{ settings
 
         /// <summary>[SerializeField] The amount of stun flashes.</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
+        /// Part of @ref BattlePlayerCharacterViewController-SerializeFields "SerializeFields"
         [Header("Settings")]
         [Tooltip("The amount of stun flashes")]
         [SerializeField] private int _stunFlashAmount;
@@ -309,7 +310,9 @@ namespace Battle.View.Player
 
         #region Public
 
-        /// <summary>Public getter for <em>SpriteSheet</em>.</summary>
+        /// <summary>Public getter for <em>@ref _spriteSheet</em>.</summary>
+        ///
+        /// See [{BattleSpriteSheet}](#page-concepts-battle-sprite-sheet-sprite-sheet) for more info.
         public BattleSpriteSheet SpriteSheet => _spriteSheet;
 
         /// @anchor BattlePlayerCharacterViewController-Public-SpriteControlMethods
@@ -319,7 +322,7 @@ namespace Battle.View.Player
         #region Public - Sprite Control Methods
 
         /// <summary>
-        /// Handles changing the sprite to the base sprite.
+        /// Handles changing the sprite to the base sprite which contains the whole character in it's base state, bypassing the individual body part system.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
@@ -333,12 +336,14 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handles changing the sprite for the head gameobject.
+        /// Handles changing the sprite for the head gameobject based on given <paramref name="sprite"/>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
         ///
-        /// <param name="sprite">Sprite that the head sprite is being changed to.</param>
+        /// See [{BattleSpriteSheetMap}](#page-concepts-battle-sprite-sheet-sprite-sheet-map) for more info.
+        ///
+        /// <param name="sprite">MapValue of the desired head sprite.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetHeadSprite(SpriteSheetMap sprite)
         {
@@ -359,12 +364,14 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handles changing the sprite for the body gameobject.
+        /// Handles changing the sprite for the body gameobject based on given <paramref name="sprite"/>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
         ///
-        /// <param name="sprite">Sprite that the head sprite is being changed to.</param>
+        /// See [{BattleSpriteSheetMap}](#page-concepts-battle-sprite-sheet-sprite-sheet-map) for more info.
+        ///
+        /// <param name="sprite">MapValue of the desired body sprite.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetBodySprite(SpriteSheetMap sprite)
         {
@@ -380,12 +387,14 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handles changing the sprite for the hand gameobject.
+        /// Handles changing the sprite for the hand gameobject based on given <paramref name="sprite"/>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
         ///
-        /// <param name="sprite">Sprite that the hand sprite is being changed to.</param>
+        /// See [{BattleSpriteSheetMap}](#page-concepts-battle-sprite-sheet-sprite-sheet-map) for more info.
+        ///
+        /// <param name="sprite">MapValue of the desired hand sprite.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetHandSprite(SpriteSheetMap sprite)
         {
@@ -407,12 +416,14 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handles changing the sprite for the feet gameobject.
+        /// Handles changing the sprite for the feet gameobject based on given <paramref name="sprite"/>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
         ///
-        /// <param name="sprite">Sprite that the hand sprite is being changed to.</param>
+        /// See [{BattleSpriteSheetMap}](#page-concepts-battle-sprite-sheet-sprite-sheet-map) for more info.
+        ///
+        /// <param name="sprite">MapValue of the desired feet sprite.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetFeetSprite(SpriteSheetMap sprite)
         {
@@ -437,8 +448,8 @@ namespace Battle.View.Player
         /// <summary>
         /// Public method that is called when entity is activated upon its creation.<br/>
         /// Calls <see cref="PreInitSetup"></see> and subscribes to <see cref="Quantum.EventBattlePlayerCharacterViewInit">EventBattlePlayerCharacterViewInit</see> event with a lambda, which
-        /// sets the player character model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.
-        /// Handles subscribing to QuantumEvents and registering to BattleViewRegistry.
+        /// sets the player character model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.<br/>
+        /// Handles subscribing to QuantumEvents and registering to %BattleViewRegistry.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-GameflowMethods "Public Gameflow Methods"
@@ -518,7 +529,7 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Public method that is called when the view should update.<br/>
-        /// Calls <see cref="UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to update the player character model's position
+        /// Calls <see cref="UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to adjust the player character model's position.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-GameflowMethods "Public Gameflow Methods"
@@ -537,7 +548,9 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Binds the shield view controller to the _playerShieldViewControllers dictionary during startup to be able to call on it later.
+        /// Binds the <paramref name="shieldViewController"/>
+        /// to the <see cref="_playerShieldViewControllers">_playerShieldViewControllers</see> array based on <paramref name="shieldNumber"/>
+        /// during startup to be able to use it later.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-GameflowMethods "Public Gameflow Methods"
@@ -576,19 +589,25 @@ namespace Battle.View.Player
         private BattleDebugLogger _debugLogger;
 
         /// <summary>%Boolean that tells whether the %Quantum Entity this ViewController is attached to is in play.</summary>
+        ///
+        /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
         private bool _isInPlay;
 
-        /// <value>Reference to the active character class view controller.</value>
+        /// <summary>Reference to the active character class view controller.</summary>
+        ///
+        /// See [{PlayerCharacterClassViewControllers}](#page-concepts-player-view-character-class-controller) for more info.
         private BattlePlayerCharacterClassBaseViewController _classViewController;
 
         /// <summary>Array that holds the SpriteRenderer components of each body part gameobject.</summary>
         private readonly SpriteRenderer[] _bodypartSpriteRenderers = new SpriteRenderer[5];
 
-        /// <summary>Array that holds references to the shield view controllers associated with this character view controller.</summary>
-        private BattlePlayerShieldViewController[] _playerShieldViewControllers;
+        /// <summary>Reference to the currently running <see cref="StunFlashCoroutine(float)">StunFlashCoroutine</see>.</summary>
+        private Coroutine _stunFlashCoroutine = null;
 
-        /// <value>Holder variable for the damage flash coroutine.</value>
-        private Coroutine _damageFlashCoroutine = null;
+        /// <summary>Array that holds references to the shield view controllers associated with this character view controller.</summary>
+        ///
+        /// See [{PlayerShieldViewController}](#page-concepts-player-shield-view-controller) for more info.
+        private BattlePlayerShieldViewController[] _playerShieldViewControllers;
 
         /// @anchor BattlePlayerCharacterViewController-Private-GameflowMethods
         /// @name Private Gameflow Methods
@@ -618,11 +637,13 @@ namespace Battle.View.Player
         #region Private QuantumEvent Handlers
 
         /// <summary>
-        /// Handler method for @cref{Quantum,EventBattlePlayStateUpdate} QuantumEvent.<br/>
-        /// Updates the _isInPlay bool.
+        /// Handler method for <see cref="Quantum.EventBattlePlayStateUpdate">EventBattlePlayStateUpdate</see> QuantumEvent.<br/>
+        /// Updates the <see cref="_isInPlay">_isInPlay</see> bool.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Private-QuantumEventHandlers "Private QuantumEvent Handlers"
+        ///
+        /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
         ///
         /// <param name="e">The event data.</param>
         private void QEventOnPlayStateUpdate(EventBattlePlayStateUpdate e)
@@ -634,7 +655,7 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handler method for @cref{Quantum,EventBattleCharacterHit} QuantumEvent.<br/>
+        /// Handler method for <see cref="Quantum.EventBattleCharacterHit">EventBattleCharacterHit</see> QuantumEvent.<br/>
         /// Starts <see cref="BattlePlayerCharacterViewController.StunFlashCoroutine">DamageFlashCoroutine</see>.
         /// </summary>
         ///
@@ -645,11 +666,11 @@ namespace Battle.View.Player
         {
             if (EntityRef != e.ERef) return;
 
-            if (_damageFlashCoroutine != null)
+            if (_stunFlashCoroutine != null)
             {
-                StopCoroutine(_damageFlashCoroutine);
+                StopCoroutine(_stunFlashCoroutine);
             }
-            _damageFlashCoroutine = StartCoroutine(StunFlashCoroutine((float)e.StunFlashDurationSec));
+            _stunFlashCoroutine = StartCoroutine(StunFlashCoroutine((float)e.StunFlashDurationSec));
 
             _classViewController.OnCharacterHit(e);
 
@@ -660,12 +681,12 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Forwards the parameter event to every shield view controller bound to this character view controller.
+        /// Forwards the <see cref="Quantum.EventBattleShieldHit">EventBattleShieldHit</see> QuantumEvent to every shield view controller bound to this character view controller.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Private-QuantumEventHandlers "Private QuantumEvent Handlers"
         ///
-        /// <param name="e">Shield get hit event that needs to be forwarded.</param>
+        /// <param name="e">The event data that is forwarded.</param>
         private void QEventOnShieldHit(EventBattleShieldHit e)
         {
             foreach (BattlePlayerShieldViewController shield in _playerShieldViewControllers)
@@ -682,10 +703,10 @@ namespace Battle.View.Player
         /// @{
 
         /// <summary>
-        /// Updates the player character model's position.
+        /// Private helper method for adjusting the player character model's position based on <paramref name="targetPosition"/>.
         /// </summary>
         ///
-        /// <param name="targetPosition">Target position Vector3.</param>
+        /// <param name="targetPosition">Target position.</param>
         private void UpdateModelPositionAdjustment(Vector3* targetPosition)
         {
             const float adjustmentDistance = 0.25f;

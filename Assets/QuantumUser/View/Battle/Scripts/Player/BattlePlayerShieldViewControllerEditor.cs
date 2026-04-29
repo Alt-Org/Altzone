@@ -17,13 +17,13 @@ using SpriteSheetMap = Battle.View.Player.BattlePlayerCharacterViewController.Sp
 namespace Battle.View.Player
 {
     /// <summary>
-    /// Adds a default sprite to the shields SpriteRenderer in the editor.
+    /// Sets a default sprite to the shields SpriteRenderer in the Unity Editor.
     /// </summary>
     [CustomEditor(typeof(BattlePlayerShieldViewController))]
     public class BattlePlayerShieldViewControllerEditor : Editor
     {
         /// <summary>
-        /// Override method that handles adding a default sprite to the shield SpriteRenderer.
+        /// Override method that handles setting a default sprite to the shield SpriteRenderer in the Unity Editor.
         /// </summary>
         public override void OnInspectorGUI()
         {

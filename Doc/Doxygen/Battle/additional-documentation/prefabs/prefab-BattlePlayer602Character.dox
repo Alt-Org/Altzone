@@ -1,12 +1,41 @@
 /// @file BattlePlayer602Character.prefab
 /// <summary>
-/// Prefab for character 602 "Pihkaantuminen".
+/// Prefab for character 602 "Ihastuminen".
 /// </summary>
 ///
-/// This prefab is a variant of @ref "BattlePlayer000Character(BaseAndTestCharacter).prefab" and has the same structure as the base prefab.
+/// This prefab is a variant of @ref "BattlePlayer600Character(BaseAndTestCharacter).prefab" and has a similar structure as the base prefab.
 ///
 /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}  
 /// @bigtext{See [{Player Character Class 600 - Confluent}](#page-concepts-player-class-600) for more info.}
+///
+/// ### Structure Overrides
+/// - **BattlePlayer602Character**
+///     - *Children:*
+///         - **PlayerViewModel**
+///             - *Components:*
+///                 - @cref{Battle.View.Player,BattlePlayerCharacterViewController}
+///         - *Children:
+///             - **CharacterBottom**
+///                 - *Children:*
+///                     - **Head**
+///                     - **Body**
+///                     - **Hands**
+///                     - **Feet**
+///                     - **Shadow**
+///                     - *Shared components:*
+///                         - SpriteRenderer
+///             - **CharacterTop**
+///                 - *Children:*
+///                     - **Head**
+///                     - **Body**
+///                     - **Hands**
+///                     - **Feet**
+///                     - **Shadow**
+///                     - *Shared components:*
+///                         - SpriteRenderer
+///             - **LocalPlayerIndicator**
+///                 - *components*
+///                     - Transform
 
 /// @file BattlePlayer602CharacterEntityPrototype.qprototype
 /// <summary>

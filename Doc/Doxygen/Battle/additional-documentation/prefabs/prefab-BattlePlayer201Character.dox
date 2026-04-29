@@ -1,9 +1,38 @@
 /// @file BattlePlayer201Character.prefab
 /// <summary>
-/// Prefab for character 201 "Hupiverho".
+/// Prefab for character 201 "Huumori".
 /// </summary>
 ///
-/// This prefab is a variant of @ref "BattlePlayer000Character(BaseAndTestCharacter).prefab" and has the same structure as the base prefab.
+/// This prefab is a variant of @ref "BattlePlayer200Character(BaseAndTestCharacter).prefab" and has a similar structure as the base prefab.
+///
+/// ### Structure Overrides
+/// - **BattlePlayer201Character**
+///     - *Children:*
+///         - **PlayerViewModel**
+///             - *Components:*
+///                 - @cref{Battle.View.Player,BattlePlayerCharacterViewController}
+///         - *Children:
+///             - **CharacterBottom**
+///                 - *Children:*
+///                     - **Head**
+///                     - **Body**
+///                     - **Hands**
+///                     - **Feet**
+///                     - **Shadow**
+///                     - *Shared components:*
+///                         - SpriteRenderer
+///             - **CharacterTop**
+///                 - *Children:*
+///                     - **Head**
+///                     - **Body**
+///                     - **Hands**
+///                     - **Feet**
+///                     - **Shadow**
+///                     - *Shared components:*
+///                         - SpriteRenderer
+///             - **LocalPlayerIndicator**
+///                 - *components*
+///                     - Transform
 
 /// @file BattlePlayer201CharacterEntityPrototype.qprototype
 /// <summary>

@@ -1,0 +1,20 @@
+/// @file "BattlePlayer300Character(BaseAndTestCharacter).prefab"
+/// <summary>
+/// Prefab for class 300 Base/Test character. This is used for testing purposes and as a base for creating other class 300 characters.
+/// </summary>
+///
+/// This prefab is a variant of @ref "BattlePlayer000Character(BaseAndTestCharacter).prefab" and has a similar structure as the base prefab.
+///
+/// ### Structure Overrides
+/// - **BattlePlayer300Character(BaseAndTestCharacter)**
+///     - *Components:*
+///         - %Quantum Entity Prototype
+///             - @cref{Quantum,BattlePlayerDataTemplateQComponent}
+///
+
+/// @file "BattlePlayer300Character(BaseAndTestCharacter)EntityPrototype.qprototype"
+/// <summary>
+/// EntityPrototype counterpart of @ref "BattlePlayer300Character(BaseAndTestCharacter).prefab"
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).

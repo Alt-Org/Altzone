@@ -14,13 +14,14 @@ using SpriteSheetMap = Battle.View.Player.BattlePlayerCharacterViewController.Sp
 namespace Battle.View.Player
 {
     /// <summary>
-    /// Adds a default sprite to every character body part's SpriteRenderer in the editor.
+    /// Sets a default sprite to every character body part's SpriteRenderer in the Unity Editor.
     /// </summary>
+    ///
     [CustomEditor(typeof(BattlePlayerCharacterViewController))]
     public class BattlePlayerCharacterViewControllerEditor : Editor
     {
         /// <summary>
-        /// Override method that handles adding a default sprite to every character body part's SpriteRenderer in the editor.
+        /// Override method that handles setting a default sprite to every character body part's SpriteRenderer in the Unity Editor.
         /// </summary>
         public override void OnInspectorGUI()
         {

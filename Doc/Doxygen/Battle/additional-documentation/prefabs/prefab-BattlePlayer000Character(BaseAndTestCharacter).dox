@@ -16,12 +16,29 @@
 ///                 - Transform
 ///                 - @cref{Battle.View.Player,BattlePlayerCharacterViewController}
 ///             - *Children:*
-///                 - **CharacterA(Bottom)**
-///                     - Animator
-///                 - **CharacterB(Top)**
-///                     - Animator
+///                 - **CharacterBottom**
+///                 - *Children:*
+///                     - **Head**
+///                     - **Body**
+///                     - **Hands**
+///                     - **Feet**
+///                     - **Shadow**
+///                     - *Shared components:*
+///                         - Transform
+///                         - SpriteRenderer
+///                         - Sprites-Default (Material)
+///                 - **CharacterTop**
+///                 - *Children:*
+///                     - **Head**
+///                     - **Body**
+///                     - **Hands**
+///                     - **Feet**
+///                     - **Shadow**
+///                     - *Shared components:*
+///                         - Transform
+///                         - SpriteRenderer
+///                         - Sprites-Default (Material)
 ///                 - **Heart**
-///                 - **ParticleSource**
 ///                 - **LocalPlayerIndicator**
 ///                 - **BattlePlayerReference**
 ///                 - **OriginReference**

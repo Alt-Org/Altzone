@@ -3,7 +3,36 @@
 /// Prefab for character 701 "Viisastelu".
 /// </summary>
 ///
-/// This prefab is a variant of @ref "BattlePlayer000Character(BaseAndTestCharacter).prefab" and has the same structure as the base prefab.
+/// This prefab is a variant of @ref "BattlePlayer700Character(BaseAndTestCharacter).prefab" and has a similar structure as the base prefab.
+///
+/// ### Structure Overrides
+/// - **BattlePlayer701Character**
+///     - *Children:*
+///         - **PlayerViewModel**
+///             - *Components:*
+///                 - @cref{Battle.View.Player,BattlePlayerCharacterViewController}
+///         - *Children:
+///             - **CharacterBottom**
+///                 - *Children:*
+///                     - **Head**
+///                     - **Body**
+///                     - **Hands**
+///                     - **Feet**
+///                     - **Shadow**
+///                     - *Shared components:*
+///                         - SpriteRenderer
+///             - **CharacterTop**
+///                 - *Children:*
+///                     - **Head**
+///                     - **Body**
+///                     - **Hands**
+///                     - **Feet**
+///                     - **Shadow**
+///                     - *Shared components:*
+///                         - SpriteRenderer
+///             - **LocalPlayerIndicator**
+///                 - *components*
+///                     - Transform
 
 /// @file BattlePlayer701CharacterEntityPrototype.qprototype
 /// <summary>

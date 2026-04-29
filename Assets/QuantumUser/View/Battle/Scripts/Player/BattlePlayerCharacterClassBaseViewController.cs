@@ -23,12 +23,11 @@ namespace Battle.View.Player
     /// Works together with @cref{Battle.View.Player,BattlePlayerCharacterViewController}, which handles the shared player character view logic.
     ///
     /// See [{PlayerCharacterClassViewControllers}](#page-concepts-player-view-character-class-controller) for more info.<br/>
-    /// See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.<br/>
-    /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
+    /// See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
     public abstract class BattlePlayerCharacterClassBaseViewController : MonoBehaviour
     {
-        /// <summary>Must be implemented by derived character class view controllers.</summary>
-        /// <value>The <see cref="BattlePlayerCharacterClass"/> associated with this view controller.</value>
+        /// <summary>The <see cref="BattlePlayerCharacterClass"/> associated with this view controller.</summary>
+        /// Must be implemented by derived character class view controllers.
         public abstract BattlePlayerCharacterClass Class { get; }
 
         /// <summary>
@@ -78,6 +77,8 @@ namespace Battle.View.Player
         /// Provides a hook for derived classes to implement character class specific view logic.
         /// </summary>
         ///
+        /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
+        ///
         /// <param name="e">The play state update event data.</param>
         public virtual void OnPlayStateUpdate(EventBattlePlayStateUpdate e) { }
 
@@ -89,7 +90,7 @@ namespace Battle.View.Player
         /// </summary>
         public virtual void OnUpdateView() { }
 
-        /// <summary>Reference to the parent <see cref="BattlePlayerCharacterViewController">view controller</see> that manages shared player character view logic.</summary>
+        /// <summary>Reference to the parent <see cref="BattlePlayerCharacterViewController">BattlePlayerCharacterViewController</see> that manages shared player character view logic.</summary>
         protected BattlePlayerCharacterViewController _parent;
         /// <summary>Reference to the entity associated with this character view controller.</summary>
         protected EntityRef _entityRef;

@@ -1,12 +1,12 @@
-/// @file BattlePlayer102Character.prefab
+/// @file BattlePlayer303Character.prefab
 /// <summary>
-/// Prefab for character 102 "Ylikunto".
+/// Prefab for character 303 "Lakihenkisyys".
 /// </summary>
 ///
-/// This prefab is a variant of @ref "BattlePlayer100Character(BaseAndTestCharacter).prefab" and has a similar structure as the base prefab.
+/// This prefab is a variant of @ref "BattlePlayer300Character(BaseAndTestCharacter).prefab" and has a similar structure as the base prefab.
 ///
 /// ### Structure Overrides
-/// - **BattlePlayer102Character**
+/// - **BattlePlayer303Character**
 ///     - *Children:*
 ///         - **PlayerViewModel**
 ///             - *Components:*
@@ -30,13 +30,10 @@
 ///                     - **Shadow**
 ///                     - *Shared components:*
 ///                         - SpriteRenderer
-///             - **LocalPlayerIndicator**
-///                 - *components*
-///                     - Transform
 
-/// @file BattlePlayer102CharacterEntityPrototype.qprototype
+/// @file BattlePlayer303CharacterEntityPrototype.qprototype
 /// <summary>
-/// EntityPrototype counterpart of @ref BattlePlayer102Character.prefab
+/// EntityPrototype counterpart of @ref BattlePlayer303Character.prefab
 /// </summary>
 ///
 /// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).
