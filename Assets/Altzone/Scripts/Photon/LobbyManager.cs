@@ -147,8 +147,86 @@ namespace Altzone.Scripts.Lobby
         // Grace interval to consider a player as "just joined" so selection defers briefly
         // allowing a duo partner to arrive and avoid splitting pairs.
         private const float QueueNewJoinGraceSeconds = 1f;
-        // Flag set by OnJoinRoomFailed to signal a join attempt failure to waiting coroutines
-        private bool _joinRoomFailed = false;
+        // Monotonic counter for join attempts so logs can correlate async callbacks to attempts
+        private int _joinAttemptCounter = 0;
+        // Join attempt tracking to correlate Photon callbacks to specific join attempts
+        private readonly object _joinAttemptsLock = new object();
+        private int _currentJoinAttemptId = 0;
+        private readonly Dictionary<int, JoinAttemptInfo> _joinAttempts = new();
+
+        private class JoinAttemptInfo
+        {
+            public string RoomName = string.Empty;
+            public string[] ExpectedUsers = null;
+            public float StartTime = 0f;
+            public bool Completed = false;
+            public bool Success = false;
+            public float CompletionTime = 0f;
+            public short? FailureCode = null;
+            public string FailureMessage = null;
+        }
+
+        private int BeginJoinAttempt(string roomName, string[] expectedUsers = null)
+        {
+            int id = ++_joinAttemptCounter;
+            var info = new JoinAttemptInfo()
+            {
+                RoomName = roomName ?? string.Empty,
+                ExpectedUsers = expectedUsers,
+                StartTime = Time.time,
+                Completed = false,
+                Success = false
+            };
+            lock (_joinAttemptsLock)
+            {
+                _joinAttempts[id] = info;
+                _currentJoinAttemptId = id;
+            }
+            Debug.Log($"JoinAttempt[{id}] BEGIN room='{info.RoomName}' teammates={expectedUsers?.Length ?? 0}");
+            return id;
+        }
+
+        private void MarkJoinAttemptSuccess(int id)
+        {
+            lock (_joinAttemptsLock)
+            {
+                if (id == 0) id = _currentJoinAttemptId;
+                if (id == 0) return;
+                if (_joinAttempts.TryGetValue(id, out var info))
+                {
+                    info.Completed = true;
+                    info.Success = true;
+                    info.CompletionTime = Time.time;
+                    Debug.Log($"JoinAttempt[{id}] SUCCESS room='{info.RoomName}'");
+                }
+                if (_currentJoinAttemptId == id) _currentJoinAttemptId = 0;
+                _joinAttempts.Remove(id);
+            }
+        }
+
+        private void MarkJoinAttemptFailure(int id, short returnCode, string message)
+        {
+            lock (_joinAttemptsLock)
+            {
+                if (id == 0) id = _currentJoinAttemptId;
+                if (id == 0)
+                {
+                    Debug.LogWarning($"JoinAttempt: failure callback with no current attempt (code={returnCode} msg={message})");
+                    return;
+                }
+                if (_joinAttempts.TryGetValue(id, out var info))
+                {
+                    info.Completed = true;
+                    info.Success = false;
+                    info.FailureCode = returnCode;
+                    info.FailureMessage = message;
+                    info.CompletionTime = Time.time;
+                    Debug.Log($"JoinAttempt[{id}] FAILED room='{info.RoomName}' code={returnCode} msg={message}");
+                }
+                if (_currentJoinAttemptId == id) _currentJoinAttemptId = 0;
+                _joinAttempts.Remove(id);
+            }
+        }
 
         // Timestamp of the last CancelGameStart handling (used to detect quick rejoins)
         private float _lastStartCancelTime = -100f;
@@ -536,10 +614,18 @@ namespace Altzone.Scripts.Lobby
                             Debug.Log($"FormMatchFromQueue: pre-notify: selected=[{sel}], queuePremadeMode={queuePremadeMode}, queueLocalTeammate={queueLocalTeammateUserId}, queuePairs=[{pairs}], queueSoloBlocks={queueSoloPairBlocks.Count}");
                         }
                         catch { }
-                        // payload: { leaderUserId, expectedUsers[] }
+                        // payload: { leaderUserId, expectedUsers[], optionalRoomName }
+                        string deterministicRoomName = null;
+                        try
+                        {
+                            GameType targetType = (GameType)roomGameTypeInt;
+                            deterministicRoomName = string.IsNullOrEmpty(clanName) ? $"Matchmaking_{targetType}" : $"Matchmaking_{targetType}_{clanName}";
+                        }
+                        catch { }
+
                         SafeRaiseEvent(
                             PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
-                            new object[] { PhotonRealtimeClient.LocalPlayer.UserId, selected },
+                            new object[] { PhotonRealtimeClient.LocalPlayer.UserId, selected, deterministicRoomName },
                             new RaiseEventArgs { Receivers = ReceiverGroup.Others },
                             SendOptions.SendReliable
                         );
@@ -585,15 +671,16 @@ namespace Altzone.Scripts.Lobby
                 }
 
                 bool created = false;
+                // Use deterministic server-side join-or-create to avoid leader create races.
                 if ((GameType)roomGameTypeInt == GameType.Clan2v2)
                 {
-                    created = PhotonRealtimeClient.CreateClan2v2LobbyRoom(clanName, soulhomeRank, selected, true);
-                    Debug.Log($"FormMatchFromQueue: CreateClan2v2LobbyRoom returned: {created}");
+                    created = PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(GameType.Clan2v2, selected, clanName, soulhomeRank);
+                    Debug.Log($"FormMatchFromQueue: JoinOrCreateMatchmakingRoom(Clan2v2) returned: {created}");
                 }
                 else
                 {
-                    created = PhotonRealtimeClient.CreateRandom2v2LobbyRoom(selected, true);
-                    Debug.Log($"FormMatchFromQueue: CreateRandom2v2LobbyRoom returned: {created}");
+                    created = PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(GameType.Random2v2, selected);
+                    Debug.Log($"FormMatchFromQueue: JoinOrCreateMatchmakingRoom(Random2v2) returned: {created}");
                 }
 
                 string createdRoomName = null;
@@ -3770,21 +3857,38 @@ namespace Altzone.Scripts.Lobby
 
                     if (!shouldTryJoin) continue;
 
-                    // Attempt join and wait until success, explicit failure, or timeout
-                    _joinRoomFailed = false;
-                    PhotonRealtimeClient.JoinRoom(room.Name, _teammates);
+                    // Attempt join and wait until success or timeout. Use scoped attempt id for diagnostics.
+                    int joinAttemptId = BeginJoinAttempt(room.Name, _teammates);
+                    try { PhotonRealtimeClient.JoinRoom(room.Name, _teammates); } catch (Exception ex) { Debug.LogWarning($"JoinAttempt[{joinAttemptId}]: JoinRoom threw: {ex.Message}"); MarkJoinAttemptFailure(joinAttemptId, -1, ex.Message); }
                     float joinStart = Time.time;
-                    yield return new WaitUntil(() => PhotonRealtimeClient.InRoom || _joinRoomFailed || Time.time > joinStart + joinAttemptTimeout);
+                    while (!PhotonRealtimeClient.InRoom && Time.time - joinStart < joinAttemptTimeout)
+                    {
+                        bool attemptCompleted = false;
+                        lock (_joinAttemptsLock) { attemptCompleted = _joinAttempts.TryGetValue(joinAttemptId, out var a) && a.Completed; }
+                        if (attemptCompleted) break;
+                        yield return null;
+                    }
 
                     if (PhotonRealtimeClient.InRoom)
                     {
+                        Debug.Log($"JoinAttempt[{joinAttemptId}]: joined room '{PhotonRealtimeClient.CurrentRoom?.Name}'");
                         roomFound = true;
                         joinedExistingRoom = true;
                         break;
                     }
                     else
                     {
-                        Debug.LogWarning($"JoinRoom failed or timed out for '{room.Name}', trying next candidate.");
+                        bool failed = false;
+                        string failMsg = null;
+                        lock (_joinAttemptsLock) { if (_joinAttempts.TryGetValue(joinAttemptId, out var a) && a.Completed && !a.Success) { failed = true; failMsg = a.FailureMessage; } }
+                        if (failed)
+                        {
+                            Debug.LogWarning($"JoinAttempt[{joinAttemptId}]: failed (error) joining '{room.Name}': {failMsg}");
+                        }
+                        else
+                        {
+                            Debug.LogWarning($"JoinAttempt[{joinAttemptId}]: timed out after {joinAttemptTimeout}s for '{room.Name}', trying next candidate.");
+                        }
                         // try next room
                     }
                 }
@@ -5004,16 +5108,28 @@ namespace Altzone.Scripts.Lobby
                 {
                     if (PhotonRealtimeClient.InLobby)
                     {
-                        Debug.Log($"FollowLeaderToNewRoom: direct room join requested: {leaderRoomName}");
-                        PhotonRealtimeClient.JoinRoom(leaderRoomName);
+                        int joinAttemptId = BeginJoinAttempt(leaderRoomName, followTeammates);
+                        Debug.Log($"FollowLeaderToNewRoom: JoinAttempt[{joinAttemptId}] direct join requested: {leaderRoomName}");
+                        try { PhotonRealtimeClient.JoinRoom(leaderRoomName); } catch (Exception ex) { Debug.LogWarning($"FollowLeaderToNewRoom: JoinAttempt[{joinAttemptId}] JoinRoom threw: {ex.Message}"); MarkJoinAttemptFailure(joinAttemptId, -1, ex.Message); }
                         float joinStartDirect = Time.time;
                         while (!PhotonRealtimeClient.InRoom && Time.time - joinStartDirect < 6f)
                         {
+                            bool attemptCompleted = false;
+                            lock (_joinAttemptsLock) { attemptCompleted = _joinAttempts.TryGetValue(joinAttemptId, out var a) && a.Completed; }
+                            if (attemptCompleted) break;
                             yield return null;
                         }
                         if (PhotonRealtimeClient.InRoom)
                         {
+                            Debug.Log($"FollowLeaderToNewRoom: JoinAttempt[{joinAttemptId}] succeeded, joined '{PhotonRealtimeClient.CurrentRoom?.Name}'");
                             newRoomJoined = true;
+                        }
+                        else
+                        {
+                            bool failed = false; string failMsg = null;
+                            lock (_joinAttemptsLock) { if (_joinAttempts.TryGetValue(joinAttemptId, out var a) && a.Completed && !a.Success) { failed = true; failMsg = a.FailureMessage; } }
+                            if (failed) Debug.LogWarning($"FollowLeaderToNewRoom: JoinAttempt[{joinAttemptId}] failed joining '{leaderRoomName}': {failMsg}");
+                            else Debug.LogWarning($"FollowLeaderToNewRoom: JoinAttempt[{joinAttemptId}] timed out joining '{leaderRoomName}'");
                         }
                     }
 
@@ -5024,14 +5140,16 @@ namespace Altzone.Scripts.Lobby
                         float queueRetryStart = Time.time;
                         while (!newRoomJoined && Time.time - queueRetryStart < 8f)
                         {
-                            try
-                            {
-                                PhotonRealtimeClient.JoinRoom(leaderRoomName);
-                            }
-                            catch (Exception ex)
-                            {
-                                Debug.LogWarning($"FollowLeaderToNewRoom: queue JoinRoom retry failed: {ex.Message}");
-                            }
+                                try
+                                {
+                                    int retryJoinAttemptId = BeginJoinAttempt(leaderRoomName, followTeammates);
+                                    Debug.Log($"FollowLeaderToNewRoom: JoinAttempt[{retryJoinAttemptId}] retry joining queue room: {leaderRoomName}");
+                                    PhotonRealtimeClient.JoinRoom(leaderRoomName);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.LogWarning($"FollowLeaderToNewRoom: queue JoinRoom retry failed: {ex.Message}");
+                                }
 
                             float retryJoinWaitStart = Time.time;
                             while (!PhotonRealtimeClient.InRoom && Time.time - retryJoinWaitStart < 2.5f)
@@ -5048,8 +5166,8 @@ namespace Altzone.Scripts.Lobby
                             yield return new WaitForSeconds(0.4f);
                         }
 
-                        if (!newRoomJoined)
-                        {
+                            if (!newRoomJoined)
+                            {
                             GameType queueGameType = GameType.Random2v2;
                             try
                             {
@@ -5067,7 +5185,9 @@ namespace Altzone.Scripts.Lobby
                             bool joinedOrCreatedQueue = false;
                             try
                             {
-                                joinedOrCreatedQueue = PhotonRealtimeClient.JoinOrCreateQueueRoom(queueGameType);
+                                    int joinOrCreateId = BeginJoinAttempt($"Queue_{queueGameType}", followTeammates);
+                                    Debug.Log($"FollowLeaderToNewRoom: JoinAttempt[{joinOrCreateId}] JoinOrCreateQueueRoom({queueGameType})");
+                                    joinedOrCreatedQueue = PhotonRealtimeClient.JoinOrCreateQueueRoom(queueGameType);
                             }
                             catch (Exception ex)
                             {
@@ -5198,9 +5318,10 @@ namespace Altzone.Scripts.Lobby
                             Debug.Log("FollowLeaderToNewRoom: failed to join leader room; attempting server-side JoinOrCreate matchmaking room.");
                             try
                             {
-                                Debug.Log($"FollowLeaderToNewRoom: calling JoinOrCreateMatchmakingRoom, teammates count={followTeammates?.Length ?? 0}");
+                                int joinOrCreateId = BeginJoinAttempt($"Matchmaking_{GameType.Random2v2}", followTeammates);
+                                Debug.Log($"FollowLeaderToNewRoom: calling JoinOrCreateMatchmakingRoom, teammates count={followTeammates?.Length ?? 0} (JoinAttempt[{joinOrCreateId}])");
                                 PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(GameType.Random2v2, followTeammates);
-                                Debug.Log("FollowLeaderToNewRoom: JoinOrCreateMatchmakingRoom call returned; awaiting join result...");
+                                Debug.Log($"FollowLeaderToNewRoom: JoinOrCreateMatchmakingRoom call returned; awaiting join result (JoinAttempt[{joinOrCreateId}])...");
                             }
                             catch (Exception ex)
                             {
@@ -5215,12 +5336,19 @@ namespace Altzone.Scripts.Lobby
 
                 if (attemptedFollowJoinCreate)
                 {
+                    // Wait for the most recent join attempt to complete or timeout
+                    int observedAttemptId = 0;
+                    lock (_joinAttemptsLock) { observedAttemptId = _currentJoinAttemptId; }
+                    Debug.Log($"FollowLeaderToNewRoom: awaiting JoinAttempt[{observedAttemptId}] result...");
                     float joinStart = Time.time;
                     while (!PhotonRealtimeClient.InRoom && Time.time - joinStart < 5f)
                     {
+                        bool attemptCompleted = false;
+                        lock (_joinAttemptsLock) { attemptCompleted = observedAttemptId != 0 && _joinAttempts.TryGetValue(observedAttemptId, out var a) && a.Completed; }
+                        if (attemptCompleted) break;
                         yield return null;
                     }
-                        Debug.Log($"FollowLeaderToNewRoom: join attempt finished. InRoom={PhotonRealtimeClient.InRoom}");
+                    lock (_joinAttemptsLock) { Debug.Log($"FollowLeaderToNewRoom: JoinAttempt[{observedAttemptId}] finished. InRoom={PhotonRealtimeClient.InRoom}"); }
                     // If still not in a room, wait for MasterServer lobby and retry once
                     if (!PhotonRealtimeClient.InRoom)
                     {
@@ -7155,6 +7283,35 @@ namespace Altzone.Scripts.Lobby
             _pendingAcceptedInRoomInviteRoomName = string.Empty;
             _pendingAcceptedInRoomInviteStartTime = -100f;
 
+            // Correlate OnJoinedRoom to any outstanding join attempt and mark it succeeded.
+            try
+            {
+                string joinedRoomName = PhotonRealtimeClient.CurrentRoom?.Name;
+                int matchedId = 0;
+                lock (_joinAttemptsLock)
+                {
+                    if (_currentJoinAttemptId != 0 && _joinAttempts.TryGetValue(_currentJoinAttemptId, out var cur) && cur.RoomName == joinedRoomName)
+                    {
+                        matchedId = _currentJoinAttemptId;
+                    }
+                    else
+                    {
+                        foreach (var kvp in _joinAttempts)
+                        {
+                            if (kvp.Value.RoomName == joinedRoomName)
+                            {
+                                matchedId = kvp.Key;
+                                break;
+                            }
+                        }
+                    }
+                }
+                // If we found a matching attempt, mark success; otherwise mark current attempt if present.
+                if (matchedId != 0) MarkJoinAttemptSuccess(matchedId);
+                else MarkJoinAttemptSuccess(0);
+            }
+            catch { }
+
             bool preserveQueuePendingSignals = false;
             try
             {
@@ -7594,9 +7751,9 @@ namespace Altzone.Scripts.Lobby
         }
         public void OnJoinRoomFailed(short returnCode, string message)
         {
-            Debug.LogError($"JoinRoomFailed {returnCode} {message}");
-            // Signal to any waiting matchmaking coroutine that a join attempt failed
-            _joinRoomFailed = true;
+            Debug.LogError($"JoinRoomFailed {returnCode} {message} (joinAttemptId={_joinAttemptCounter})");
+            // Correlate this failure to the most recent join attempt
+            try { MarkJoinAttemptFailure(0, returnCode, message); } catch { }
             LobbyOnJoinRoomFailed?.Invoke(returnCode, message);
 
             bool failedInviteAcceptJoin = !string.IsNullOrEmpty(_pendingAcceptedInRoomInviteRoomName);
