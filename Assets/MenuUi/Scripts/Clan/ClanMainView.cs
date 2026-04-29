@@ -30,6 +30,7 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _rule1Text;
     [SerializeField] private TextMeshProUGUI _rule2Text;
     [SerializeField] private TextMeshProUGUI _rule3Text;
+    [SerializeField] private TextMeshProUGUI _clanAgeText;
 
     [Header("Other settings fields")]
     [SerializeField] GameObject _clanOpenObject;
@@ -89,6 +90,33 @@ public class ClanMainView : MonoBehaviour
             if (ai.age == age) return ai.icon;
         }
         return null;
+    }
+
+    private string GetAgeText(ClanAge age)
+    {
+        switch (age)
+        {
+            case ClanAge.None:
+                return "None";
+
+            case ClanAge.Teenagers:
+                return "Teinit";
+
+            case ClanAge.Toddlers:
+                return "Lapset";
+
+            case ClanAge.Adults:
+                return "Aikuiset";
+
+            case ClanAge.Elderly:
+                return "Vanhukset";
+
+            case ClanAge.All:
+                return "Kaikenikäiset";
+
+            default:
+                return string.Empty;
+        }
     }
 
     private enum ClanPage
@@ -331,9 +359,18 @@ public class ClanMainView : MonoBehaviour
         _clanGoal.text = ClanDataTypeConverter.GetGoalText(clan.Goals);
 
         var ageSprite = GetAgeSprite(clan.ClanAge);
-        _clanAgeImage.sprite = ageSprite;
-        _clanAgeImage.preserveAspect = true;
-        _clanAgeImage.enabled = ageSprite != null;
+
+        if (_clanAgeImage != null)
+        {
+            _clanAgeImage.sprite = ageSprite;
+            _clanAgeImage.preserveAspect = true;
+            _clanAgeImage.enabled = ageSprite != null;
+        }
+
+        if (_clanAgeText != null)
+        {
+            _clanAgeText.text = GetAgeText(clan.ClanAge);
+        }
 
         _valuePanel.SetValues(clan.Values);
 
@@ -526,6 +563,11 @@ public class ClanMainView : MonoBehaviour
         {
             _clanAgeImage.sprite = null;
             _clanAgeImage.enabled = false;
+        }
+
+        if (_clanAgeText != null)
+        {
+            _clanAgeText.text = string.Empty;
         }
     }
 
