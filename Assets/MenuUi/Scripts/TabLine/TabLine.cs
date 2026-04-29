@@ -121,7 +121,7 @@ namespace MenuUi.Scripts.TabLine
             }
         }
 
-        private void SetTabOnTop(int index)
+        protected virtual void SetTabOnTop(int index)
         {
             foreach (TabLineButton tabline in _tabLineButtons)
             {
