@@ -3839,7 +3839,8 @@ namespace Altzone.Scripts.Lobby
             }
 
             // Reconcile split groups caused by near-simultaneous room creation.
-            // Strategy: deterministically converge toward one shared room to improve fill/start speed.
+            // Disabled: deterministically converge toward one shared room (commented out).
+            /*
             try
             {
                 if (PhotonRealtimeClient.CurrentRoom != null && PhotonRealtimeClient.CurrentRoom.CustomProperties != null
@@ -3943,6 +3944,7 @@ namespace Altzone.Scripts.Lobby
                 }
             }
             finally { }
+            */
 
             // If room was found setting room properties
             if (roomFound)
@@ -4831,6 +4833,8 @@ namespace Altzone.Scripts.Lobby
                 try { botFillActive = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<bool>(PhotonBattleRoom.BotFillKey, false); }
                 catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: failed to read BotFillKey before start check: {ex.Message}"); }
 
+                // Bot-fill reconcile disabled.
+                /*
                 if (roomGameType == GameType.Random2v2 && botFillActive)
                 {
                     int[] positions = {
@@ -4845,6 +4849,7 @@ namespace Altzone.Scripts.Lobby
                         }
                     }
                 }
+                */
 
                 // Starting gameplay coroutine if all positions are filled (real players + bots), else we loop again.
                 // When botfill is active in Random2v2, allow start even if bot position replication is still catching up.
