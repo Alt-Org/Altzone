@@ -20,9 +20,9 @@ public class DailyTaskView : AltMonoBehaviour
     [SerializeField] private GameObject _clanTaskView;
 
     [Header("TabButtons")]
-    [SerializeField] private Button _dailyTasksTabButton;
+    /*[SerializeField] private Button _dailyTasksTabButton;
     [SerializeField] private Button _ownTaskTabButton;
-    [SerializeField] private Button _clanTaskTabButton;
+    [SerializeField] private Button _clanTaskTabButton;*/
 
     [Header("DailyTaskCard Education Prefabs")]
     [SerializeField] private GameObject _dailyTaskCardEducationSocialPrefab;
