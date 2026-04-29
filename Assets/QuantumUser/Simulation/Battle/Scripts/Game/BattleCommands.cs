@@ -15,6 +15,10 @@ using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Game
 {
+    /// <summary>
+    /// Abstract base class for all deterministic battle commands.</br>
+    /// All new commands must be added to the @cref{Type} enum.
+    /// </summary>
     public abstract class BattleCommand : DeterministicCommand
     {
         public enum Type
@@ -27,6 +31,17 @@ namespace Battle.QSimulation.Game
 
         public abstract Type BattleCommandType { get; }
 
+        /// <summary>
+        /// Gets the command's @cref{Type} and data
+        /// </summary>
+        ///
+        /// <param name="f">The current simulation frame.</param>
+        /// <param name="playerRef">Reference to the player who sent the command</param>
+        /// <param name="commandData">Contains the command, or null if there isn't one</param>
+        ///
+        /// <returns>
+        /// The <see cref="Type"/> of the command, or <see cref="Type.None"/> if no command was found.
+        /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Type GetCommand(Frame f, PlayerRef playerRef, out BattleCommand commandData)
         {
