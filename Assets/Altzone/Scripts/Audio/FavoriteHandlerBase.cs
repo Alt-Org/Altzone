@@ -33,7 +33,7 @@ namespace Altzone.Scripts.Audio
             JukeboxManager manager = JukeboxManager.Instance;
             MusicTrack musicTrack = manager.GetMusicTrack(_musicTrackId);
 
-            if (musicTrack != null) OnFavoriteButtonChange(_musicTrackId, manager.GetTrackFavoriteType(musicTrack));
+            if (musicTrack != null) OnFavoriteButtonChange(_musicTrackId, manager.GetTrackFavoriteType(musicTrack.Id));
         }
 
         public void Setup(MusicTrackFavoriteType type, string musicTrackId)

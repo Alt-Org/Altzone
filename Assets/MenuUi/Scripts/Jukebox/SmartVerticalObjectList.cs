@@ -62,8 +62,13 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
 
     private RectTransform _locationHelper;
 
+    private bool _buildOnEnable = false;
+
     public delegate void NewDataRequested(int targetIndex);
     public event NewDataRequested OnNewDataRequested; //Used to tell the host that new content data is needed.
+
+    public delegate void LateDataRequest();
+    public event LateDataRequest OnLateDataRequest; //Used to get data for the list when this list is enabled.
 
     private enum VerticalDirectionType
     {
@@ -79,7 +84,15 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
         _contentStartAnchoredPosition = _content.anchoredPosition;
     }
 
-    private void Start() { if (_locationHelper == null) CreateLocationHelper(); }
+    private void Start() { if (!_locationHelper) CreateLocationHelper(); }
+
+    private void OnEnable()
+    {
+        if (!_buildOnEnable) return;
+
+        _buildOnEnable = false;
+        OnLateDataRequest?.Invoke();
+    }
 
     private void CreateLocationHelper()
     {
@@ -131,7 +144,13 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
     #region Data
     public void Setup<T>(List<T> data)
     {
-        if (_locationHelper == null) CreateLocationHelper();
+        if (!isActiveAndEnabled || _buildOnEnable)
+        {
+            _buildOnEnable = true;
+            return;
+        }
+
+        if (!_locationHelper) CreateLocationHelper();
 
         _contentListLenght = data.Count;
 
@@ -242,10 +261,13 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
         {
             SmartListItem firstSmartListItem = Instantiate(_contentPrefab, _content).GetComponent<SmartListItem>();
 
+            if (!firstSmartListItem.SelfRectTransform) firstSmartListItem.SetSelfRectTransform();
+
             _smartListItemLocalHeightWithPadding = firstSmartListItem.SelfRectTransform.rect.height + _verticalPadding;
             firstSmartListItem.SelfRectTransform.sizeDelta = new Vector2(_content.rect.width,
                 firstSmartListItem.SelfRectTransform.sizeDelta.y);
 
+            firstSmartListItem.ClearData();
             _smartListItems.Add(firstSmartListItem);
         }
         else
@@ -264,9 +286,12 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
         {
             SmartListItem smartListItem = Instantiate(_contentPrefab, _content).GetComponent<SmartListItem>();
 
+            if (!smartListItem.SelfRectTransform) smartListItem.SetSelfRectTransform();
+
             smartListItem.SelfRectTransform.sizeDelta = new Vector2(_content.rect.width,
                 smartListItem.SelfRectTransform.sizeDelta.y);
 
+            smartListItem.ClearData();
             _smartListItems.Add(smartListItem);
         }
     }
@@ -290,6 +315,8 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
 
     private void ScrollHandling(float distance) //TODO: Add elasticity.
     {
+        if (_smartListItems.Count > _contentListLenght) return; //Nothing or not enough content to scroll.
+
         bool movementCheck = ((_outOfBoundDirection == VerticalDirectionType.Up && _velocity < 0) ||
                               (_outOfBoundDirection == VerticalDirectionType.Down && _velocity > 0));
 

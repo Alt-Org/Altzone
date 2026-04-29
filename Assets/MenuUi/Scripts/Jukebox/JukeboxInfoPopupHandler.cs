@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Audio;
 using Altzone.Scripts.ReferenceSheets;
@@ -85,7 +84,7 @@ public class JukeboxInfoPopupHandler : MonoBehaviour
     {
         if (_musicTrack == null || _musicTrack.Id != musicTrack.Id) ClearWeblinks();
 
-        _favoriteHandler.Setup(JukeboxManager.Instance.GetTrackFavoriteType(musicTrack), musicTrack.Id);
+        _favoriteHandler.Setup(JukeboxManager.Instance.GetTrackFavoriteType(musicTrack.Id), musicTrack.Id);
 
         List<ArtistInfo> artists = musicTrack.JukeboxInfo.Artists;
 

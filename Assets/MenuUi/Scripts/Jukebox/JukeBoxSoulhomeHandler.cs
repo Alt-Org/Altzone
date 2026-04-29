@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Audio;
@@ -257,7 +256,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         if (!JukeboxManager.Instance.JukeboxMuted && _jukeboxObject.activeSelf && track.Music && _mainDiskHandler.StartSpinDisk())
             MainDiskIndicatorControl();
 
-        _favoriteButtonHandler.Setup(JukeboxManager.Instance.GetTrackFavoriteType(track), track.Id);
+        _favoriteButtonHandler.Setup(JukeboxManager.Instance.GetTrackFavoriteType(track.Id), track.Id);
         OnChangeJukeBoxSong?.Invoke(track);
     }
 

@@ -33,7 +33,7 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
         _personalizedMusicTracks.Clear();
 
         foreach (MusicTrack musicTrack in musicTracks)
-            _personalizedMusicTracks.Add(new PersonalizedMusicTrack(musicTrack, JukeboxManager.Instance.GetTrackFavoriteType(musicTrack)));
+            _personalizedMusicTracks.Add(new PersonalizedMusicTrack(musicTrack, JukeboxManager.Instance.GetTrackFavoriteType(musicTrack.Id)));
 
         _smartList.Setup<PersonalizedMusicTrack>(_personalizedMusicTracks);
     }

@@ -33,5 +33,7 @@ namespace Altzone.Scripts.Audio
         public virtual void SetData<T1>(T1 data1) { }
 
         public virtual void ClearData() { }
+
+        public void SetSelfRectTransform() { _selfRectTransform = GetComponent<RectTransform>(); }
     }
 }

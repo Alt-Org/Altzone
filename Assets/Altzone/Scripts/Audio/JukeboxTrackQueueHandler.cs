@@ -9,7 +9,7 @@ using UnityEngine.UI;
 /// <summary>
 /// Handles the visual queue item.
 /// </summary>
-public class JukeboxTrackQueueHandler : MonoBehaviour
+public class JukeboxTrackQueueHandler : SmartListItem, IBeginDragHandler, IEndDragHandler
 {
     [SerializeField] private TextMeshProUGUI _trackNameText;
     [SerializeField] private Button _likeOptionButton;
@@ -24,41 +24,18 @@ public class JukeboxTrackQueueHandler : MonoBehaviour
     private Coroutine _buttonCancelCoroutine;
 
     private string _id; // Id that is used with JukeboxManager.
-    public string Id { get { return _id; } }
-
-    //Index of it self in the JukeboxManager's TrackQueue list.
-    private int _linearIndex = -1;
-    public int LinearIndex { get { return _linearIndex; } }
-
-    private int _chunkIndex = 0;
-    public int ChunkIndex { get { return _chunkIndex; } }
-
-    private int _poolIndex = 0;
-    public int PoolIndex { get { return _poolIndex; } }
-
+    private int _linearIndex = -1; //Index of itself in the JukeboxManager's TrackQueue list.
     private bool _userOwned = false;
-    public bool UserOwned { get { return _userOwned; } }
-
     private MusicTrack _musicTrack = null;
-    public MusicTrack MusicTrack { get { return _musicTrack; } }
 
-    public delegate void DeleteEvent(int chunkIndex, int poolIndex, int linearIndex);
-    public event DeleteEvent OnDeleteEvent;
+    private void Awake() { _selfRectTransform = GetComponent<RectTransform>(); }
 
-    private void Start()
-    {
-        _deleteButton.onClick.AddListener(() => Delete());
-    }
+    private void Start() { _deleteButton.onClick.AddListener(() => Delete()); }
 
     /// <summary>
     /// Use when creating the gameobject that has this class. (Execute only once!)
     /// </summary>
-    public void Setup(int chunkIndex, int poolIndex)
-    {
-        _chunkIndex = chunkIndex;
-        _poolIndex = poolIndex;
-        SetVisibility(false);
-    }
+    public void Setup() { SetVisibility(false); }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
@@ -95,28 +72,34 @@ public class JukeboxTrackQueueHandler : MonoBehaviour
 
     public bool InUse() { return !string.IsNullOrEmpty(_id); }
 
-    public void SetTrack(string id, MusicTrack musicTrack, int linearIndex, bool userOwned, JukeboxManager.MusicTrackFavoriteType likeType)
+    public override void SetData<T1>(T1 data1)
     {
-        _id = id;
-        _musicTrack = musicTrack;
-        _linearIndex = linearIndex;
+        if (!CheckClassType<T1, TrackQueueData>(data1)) return;
 
-        _trackNameText.text = musicTrack != null ? musicTrack.Name : "";
+        TrackQueueData data = data1 as TrackQueueData;
 
-        if (GetVisibility() && musicTrack != null)
-            _textAutoScroll.SetContent(musicTrack.Name);
+        _id = data.ServerSongData.id;
+        _musicTrack = data.MusicTrack;
+        _linearIndex = data.LinearIndex;
+
+        _trackNameText.text = _musicTrack != null ? _musicTrack.Name : "";
+
+        if (GetVisibility() && _musicTrack != null)
+            _textAutoScroll.SetContent(_musicTrack.Name);
         else
             _textAutoScroll.DisableCoroutines();
 
-        _userOwned = userOwned;
-        _deleteButton.gameObject.SetActive(userOwned);
+        _userOwned = data.UserOwned;
+        _deleteButton.gameObject.SetActive(_userOwned);
 
-        if (musicTrack != null) _favoriteButtonHandler.Setup(likeType, musicTrack.Id);
+        if (_musicTrack != null) _favoriteButtonHandler.Setup(data.FavoriteType, _musicTrack.Id);
+
+        SetVisibility(true);
     }
 
     public void SetLinearIndex(int index) { _linearIndex = index; }
 
-    public void Clear()
+    public override void ClearData()
     {
         _id = "";
         _musicTrack = null;
@@ -125,9 +108,10 @@ public class JukeboxTrackQueueHandler : MonoBehaviour
         SetVisibility(false);
     }
 
-    public void SetVisibility(bool visible) { gameObject.SetActive(visible); }
-
     public bool GetVisibility() { return gameObject.activeSelf; }
 
-    private void Delete() { if (!_buttonInputCanceled) OnDeleteEvent?.Invoke(_chunkIndex, _poolIndex, _linearIndex); }
+    private void Delete()
+    {
+        if (!_buttonInputCanceled && _userOwned) JukeboxManager.Instance.DeleteFromQueue(_linearIndex, true);
+    }
 }
