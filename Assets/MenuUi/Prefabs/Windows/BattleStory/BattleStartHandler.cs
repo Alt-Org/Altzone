@@ -35,7 +35,7 @@ public class BattleStartHandler : MonoBehaviour
     private void OnEnable()
     {
         AudioManager.Instance.StopMusic(); //This should have a short sfx clip playing while the battle starts.
-        OverlayPanelCheck.Instance.gameObject.SetActive(false);
+        OverlayPanelCheck.Instance.ToggleOverlay(false);
         LobbyManager.OnStartTimeSet += StartTimer;
         LobbyManager.OnGameStartCancelled += OnGameStartCancelled;
         LobbyManager.NotifyBattleStartUiReady();

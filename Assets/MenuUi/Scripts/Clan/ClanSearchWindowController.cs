@@ -14,12 +14,12 @@ public class ClanSearchWindowController : AltMonoBehaviour
         StartCoroutine(GetPlayerData(callback => data = callback));
         if (string.IsNullOrWhiteSpace(data.ClanId))
         {
-            OverlayPanelCheck.Instance?.gameObject.SetActive(false); //Change this to be false when we want to force players to join a clan.
+            OverlayPanelCheck.Instance?.ToggleOverlay(false); //Change this to be false when we want to force players to join a clan.
             //_overlayCheck.enabled = false;
         }
         else
         {
-            OverlayPanelCheck.Instance?.gameObject.SetActive(true);
+            OverlayPanelCheck.Instance?.ToggleOverlay(true);
         }
     }
 }
