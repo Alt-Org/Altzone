@@ -183,7 +183,7 @@ namespace Battle.QSimulation.Player
                         break;
 
                     case BattleCommand.Type.GiveUp:
-                        HandleGiveUp(f, playerHandle);
+                        if (HandleGiveUp(f, playerHandle)) continue;
                         break;
 
                     case BattleCommand.Type.ActivateAbility:
@@ -192,7 +192,7 @@ namespace Battle.QSimulation.Player
 
                     case BattleCommand.Type.SwapCharacter:
                         BattleCharacterSwapQCommand swapCharacterData = (BattleCharacterSwapQCommand)commandData;
-                        HandleCharacterSwapping(f, playerHandle, swapCharacterData.CharacterNumber);
+                        if (HandleCharacterSwapping(f, playerHandle, swapCharacterData.CharacterNumber)) continue;
                         break;
                 }
 
@@ -298,7 +298,7 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Handle of the player.</param>
-        private static void HandleGiveUpLogic(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
+        private static bool HandleGiveUpLogic(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
             BattlePlayerSlot slot = playerHandle.Slot;
             BattleTeamNumber team = BattlePlayerManager.PlayerHandle.GetTeamNumber(playerHandle.Slot);
@@ -306,7 +306,7 @@ namespace Battle.QSimulation.Player
             if (!playerHandle.PlayerGiveUpState)
             {
                 f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.GiveUpVoteCancel);
-                return;
+                return false;
             }
 
             BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, slot);
@@ -320,7 +320,7 @@ namespace Battle.QSimulation.Player
                 {
                     f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.Abandoned);
                 }
-                if (!teammateHandle.PlayerGiveUpState) return;
+                if (!teammateHandle.PlayerGiveUpState) return false;
             }
             else
             {
@@ -336,7 +336,7 @@ namespace Battle.QSimulation.Player
             };
 
             BattleGameControlQSystem.OnGameOver(f, winningTeam);
-            return;
+            return true;
         }
 
         /// <summary>
@@ -376,13 +376,13 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Handle of the player.</param>
-        private static void HandleGiveUp(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
+        private static bool HandleGiveUp(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
             playerHandle.PlayerGiveUpState = !playerHandle.PlayerGiveUpState;
 
             s_debugLogger.LogFormat(f, "({0}) Give up input received, new state: {1}", playerHandle.Slot, playerHandle.PlayerGiveUpState);
 
-            HandleGiveUpLogic(f, playerHandle);
+            return HandleGiveUpLogic(f, playerHandle);
         }
 
         /// <summary>
@@ -392,19 +392,20 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Handle of the player.</param>
-        public static void HandleCharacterSwapping(Frame f, BattlePlayerManager.PlayerHandle playerHandle, int playerCharacterNumber)
+        public static bool HandleCharacterSwapping(Frame f, BattlePlayerManager.PlayerHandle playerHandle, int playerCharacterNumber)
         {
             s_debugLogger.LogFormat(f, "({0}) Character swap input received", playerHandle.Slot);
 
             if (!playerHandle.AllowCharacterSwapping)
             {
                 s_debugLogger.LogFormat(f, "({0}) Character swap input rejected, as AllowCharacterSwapping == false", playerHandle.Slot);
-                return;
+                return false;
             }
 
             s_debugLogger.LogFormat(f, "({0}) Swapping to character number: {1}", playerHandle.Slot, playerCharacterNumber);
 
             BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, playerCharacterNumber);
+            return true;
         }
 
         /// <summary>
