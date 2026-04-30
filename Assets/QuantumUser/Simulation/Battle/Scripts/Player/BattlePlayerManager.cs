@@ -406,7 +406,7 @@ namespace Battle.QSimulation.Player
                         //} set temp variables
 
                         // load class
-                        BattlePlayerClassManager.LoadClass(playerClass);
+                        BattlePlayerClassManager.LoadClass(f, playerClass);
 
                         // create hitBoxes
                         for (int i = 0; i < 2; i++)
