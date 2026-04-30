@@ -138,10 +138,16 @@ namespace Battle.QSimulation.Player
     /// </summary>
     public static unsafe class BattlePlayerClassManager
     {
+        /// <summary>
+        /// Enum that defines the <see cref="PickClass"/> method's return options.
+        /// </summary>
         public enum ClassOption
         {
+            /// <summary>Use no class script</summary>
             UseNone,
+            /// <summary>Use class script</summary>
             UseClass,
+            /// <summary>Use test class script</summary>
             UseTestClass
         }
 
