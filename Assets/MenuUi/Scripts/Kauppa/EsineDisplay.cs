@@ -116,7 +116,11 @@ public class EsineDisplay : AdPosterHandler
 
     public void OnAdCLicked()
     {
-        _manager.OpenPopup(_furnitures);
+        if (_manager != null)
+        {
+            _manager.OpenPopup(_furnitures);
+        }
+        
     }
 
     public void PassItemToVoting()
