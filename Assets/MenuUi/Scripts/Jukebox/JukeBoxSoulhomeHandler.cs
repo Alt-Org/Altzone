@@ -42,7 +42,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     private List<string> _playlistNames;
 
-    private string _previousAreaName = "";
+    //private AudioCategoryType _previousAreaType = AudioCategoryType.None;
 
     public delegate void ChangeJukeBoxSong(MusicTrack track);
     public static event ChangeJukeBoxSong OnChangeJukeBoxSong;
@@ -192,6 +192,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     {
         AudioManager audioManager = AudioManager.Instance;
 
+        audioManager?.SetJukeboxWindowState(toggle);
         _jukeboxObject.SetActive(toggle);
 
         if (toggle) //Open
@@ -202,8 +203,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
             SetMuteImage(manager.JukeboxMuted);
 
-            _previousAreaName = audioManager.CurrentAreaName;
-            audioManager.SetCurrentAreaCategoryName("Jukebox");
+            //_previousAreaType = audioManager.CurrentAreaType;
+            //audioManager.SetCurrentAreaCategoryName("Jukebox");
 
             if (string.IsNullOrEmpty(manager.TryPlayTrack(false)))
             {
@@ -221,12 +222,13 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         {
             JukeboxManager jukeboxManager = JukeboxManager.Instance;
 
-            audioManager.SetCurrentAreaCategoryName(_previousAreaName);
+            //audioManager.SetCurrentAreaCategoryType(_previousAreaType);
 
             if (jukeboxManager && jukeboxManager.TrackPreviewActive && jukeboxManager.CurrentTrackQueueData != null)
                 jukeboxManager.StopMusicPreview();
             else
-                audioManager.PlayMusic(_previousAreaName);
+                audioManager.PlayFallBackTrack();
+                //audioManager.PlayMusic(_previousAreaType);
 
             _mainDiskHandler.StopDiskSpin();
         }

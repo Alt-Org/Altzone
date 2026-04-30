@@ -78,6 +78,12 @@ public class JukeboxTrackQueueHandler : SmartListItem, IBeginDragHandler, IEndDr
 
         TrackQueueData data = data1 as TrackQueueData;
 
+        if (data?.ServerSongData == null)
+        {
+            ClearData();
+            return;
+        }
+
         _id = data.ServerSongData.id;
         _musicTrack = data.MusicTrack;
         _linearIndex = data.LinearIndex;

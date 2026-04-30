@@ -483,7 +483,7 @@ namespace Altzone.Scripts.Audio
             }
             else
             {
-                trackName = AudioManager.Instance.PlayMusic("Jukebox", trackQueueData.MusicTrack);
+                trackName = AudioManager.Instance.PlayMusic(AudioCategoryType.Jukebox, trackQueueData.MusicTrack);
 
                 if (string.IsNullOrEmpty(trackName))
                 {
@@ -627,7 +627,7 @@ namespace Altzone.Scripts.Audio
                 _currentTrackQueueData = null;
                 StopJukebox();
 
-                if (!string.IsNullOrEmpty(manager.FallbackMusicCategory))
+                if (manager.FallbackMusicCategory != AudioCategoryType.None)
                     manager.PlayMusic(manager.FallbackMusicCategory, manager.FallbackMusicTrack);
 
                 OnStopJukeboxVisuals?.Invoke();
@@ -663,7 +663,8 @@ namespace Altzone.Scripts.Audio
 
             if (updateServer) StartCoroutine(DeleteTrackFromServer(null, data.ServerSongData.id, data.MusicTrack.Name));
 
-            _trackQueue[linearIndex].Clear();
+            _trackQueue.RemoveAt(linearIndex);
+            OnQueueChange?.Invoke();
         }
         #endregion
 

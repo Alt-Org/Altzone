@@ -71,6 +71,7 @@ namespace MenuUI.Scripts.SoulHome
         public void OnDisable()
         {
             JukeBoxSoulhomeHandler.OnChangeJukeBoxSong -= SetSongName;
+            AudioManager.Instance.PlayMusic(AudioCategoryType.MainMenu);
         }
 
         public void AddFurniture(Furniture furniture)

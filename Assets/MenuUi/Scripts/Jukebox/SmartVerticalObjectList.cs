@@ -464,6 +464,7 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
     {
         if (_uniqueGameObjectsAtBottom.Count != 0)
             return _uniqueGameObjectsAtBottom[^1].position.y;
+
         if (_smartListItems.Count != 0)
         {
             int smartIndex = (_smartListItems.Count > _smartListBottomIndex ? _smartListBottomIndex :
@@ -558,6 +559,8 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
         bool outOfBounds = (overTop || overBottom);
         bool outOfRange = ((overTop && _smartListBottomIndex >= _contentListLenght) ||
                            (overBottom && _smartListTopIndex < 0));
+
+        if (outOfBounds && !outOfRange) smartListItem.SetVisibility(false);
 
         if (!outOfBounds || outOfRange) return;
 
