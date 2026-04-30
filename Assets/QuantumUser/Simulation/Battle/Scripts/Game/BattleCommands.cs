@@ -10,9 +10,6 @@ using System.Runtime.CompilerServices;
 using Quantum;
 using Photon.Deterministic;
 
-// Battle QSimulation usings
-using Battle.QSimulation.Game;
-
 namespace Battle.QSimulation.Game
 {
     /// <summary>
@@ -32,12 +29,12 @@ namespace Battle.QSimulation.Game
         public abstract Type BattleCommandType { get; }
 
         /// <summary>
-        /// Gets the command's @cref{Type} and data
+        /// Fetches a command for a <paramref name="playerRef"/>  and returns its <see cref="Type"/>. The <paramref name="commandData"/> out parameter contains the command itself.
         /// </summary>
         ///
         /// <param name="f">The current simulation frame.</param>
-        /// <param name="playerRef">Reference to the player who sent the command</param>
-        /// <param name="commandData">Contains the command, or null if there isn't one</param>
+        /// <param name="playerRef">Reference to the player whose command is fetched.</param>
+        /// <param name="commandData">Contains the command, or null if there isn't one. (<b>out param</b>)</param>
         ///
         /// <returns>
         /// The <see cref="Type"/> of the command, or <see cref="Type.None"/> if no command was found.
@@ -50,10 +47,7 @@ namespace Battle.QSimulation.Game
             return commandData.BattleCommandType;
         }
     }
-}
 
-namespace Battle.QSimulation.Player
-{
     /// <summary>
     /// A deterministic command that triggers the ability activation for a specific player.
     /// </summary>
