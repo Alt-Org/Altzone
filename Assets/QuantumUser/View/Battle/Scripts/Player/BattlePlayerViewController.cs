@@ -107,7 +107,6 @@ namespace Battle.View.Player
             if (EntityRef != e.Entity) return;
             if (!PredictedFrame.Exists(e.Entity)) return;
 
-            bool isTestMode = BattleParameters.GetIsTestMode(f);
             float scale = (float)e.ModelScale;
             transform.localScale = new Vector3(scale, scale, scale);
             _shieldHitParticle.transform.localScale = new Vector3(scale, scale, scale);
@@ -131,22 +130,24 @@ namespace Battle.View.Player
                 _localPlayerIndicator.SetActive(true);
             }
 
-            BattlePlayerClassBaseViewController pickedClass = null;
+            bool isTestMode = BattleParameters.GetIsTestMode(f);
+
+            BattlePlayerClassBaseViewController pickedClass    = null;
             BattlePlayerClassBaseViewController notPickedClass = null;
             bool classPicked = false;
 
             switch (BattlePlayerClassManager.PickClass(_classViewControllerOverride, _classViewControllerTestOverride, isTestMode))
             {
                 case BattlePlayerClassManager.ClassOption.UseClass:
-                    pickedClass = _classViewControllerOverride;
+                    pickedClass    = _classViewControllerOverride;
                     notPickedClass = _classViewControllerTestOverride;
-                    classPicked = true;
+                    classPicked    = true;
                     break;
 
                 case BattlePlayerClassManager.ClassOption.UseTestClass:
-                    pickedClass = _classViewControllerTestOverride;
+                    pickedClass    = _classViewControllerTestOverride;
                     notPickedClass = _classViewControllerOverride;
-                    classPicked = true;
+                    classPicked    = true;
                     break;
 
                 case BattlePlayerClassManager.ClassOption.UseNone:
