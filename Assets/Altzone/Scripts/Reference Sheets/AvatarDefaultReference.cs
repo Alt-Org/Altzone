@@ -1,8 +1,18 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using Altzone.Scripts.AvatarPartsInfo;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ModelV2;
+using Altzone.Scripts.ModelV2.Internal;
+using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.UIElements;
+using static AvatarPartsReference;
 
 [CreateAssetMenu(fileName = "AvatarDefaults", menuName = "Avatar/Default Reference")]
 public class AvatarDefaultReference : ScriptableObject
@@ -221,4 +231,112 @@ public class AvatarPartVariation
     public string BodyId = "";
     public string HandsId = "";
     public string FeetId = "";
+}
+
+[CustomPropertyDrawer(typeof(AvatarDefault))]
+public class AvatarDefaultEditor : PropertyDrawer
+{
+
+    PropertyField CharacterName;
+    SerializedProperty CharacterId;
+    PropertyField HairField;
+    SerializedProperty EyesId;
+    SerializedProperty NoseId;
+    SerializedProperty MouthId;
+    SerializedProperty BodyId;
+    SerializedProperty HandsId;
+    SerializedProperty FeetId;
+
+    /*private void OnEnable()
+    {
+        SerializedObject serializedObject = new SerializedObject(AvatarDefault);
+
+        CharacterName = serializedObject.FindProperty(nameof(AvatarDefault.CharacterName));
+        CharacterId = serializedObject.FindProperty(nameof(AvatarDefault.CharacterId));
+        HairId = serializedObject.FindProperty(nameof(AvatarDefault.HairId));
+        EyesId = serializedObject.FindProperty(nameof(AvatarDefault.EyesId));
+        NoseId = serializedObject.FindProperty(nameof(AvatarDefault.NoseId));
+        MouthId = serializedObject.FindProperty(nameof(AvatarDefault.MouthId));
+        BodyId = serializedObject.FindProperty(nameof(AvatarDefault.BodyId));
+        HandsId = serializedObject.FindProperty(nameof(AvatarDefault.HandsId));
+        FeetId = serializedObject.FindProperty(nameof(AvatarDefault.FeetId));
+    }*/
+
+    public override VisualElement CreatePropertyGUI(SerializedProperty property)
+    {
+        // Create property container element.
+        var container = new VisualElement();
+
+        // Create property fields.
+        CharacterName = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.CharacterName)));
+        PropertyField unitField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.CharacterId)));
+        HairField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.HairId)), "Hair");
+        var hairBox = new ScrollView();
+        PropertyField eyeField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.EyesId)), "Eyes");
+        PropertyField noseField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.NoseId)), "Nose");
+        PropertyField mouthField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.MouthId)), "Mouth");
+        PropertyField bodyField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.BodyId)), "Body");
+        PropertyField handsField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.HandsId)), "Hands");
+        PropertyField feetField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.FeetId)), "Feet");
+
+        // Add fields to the container.
+        container.Add(CharacterName);
+        container.Add(unitField);
+        container.Add(HairField);
+        container.Add(hairBox);
+
+        HairField.RegisterCallback<ChangeEvent<string>, VisualElement>(PartChanged, hairBox);
+        hairBox.style.flexGrow = 1;
+        hairBox.style.backgroundColor = Color.white;
+        hairBox.style.height = 100f;
+        hairBox.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+        container.Add(eyeField);
+        container.Add(noseField);
+        container.Add(mouthField);
+        container.Add(bodyField);
+        container.Add(handsField);
+        container.Add(feetField);
+
+
+
+        return container;
+    }
+
+    private void PartChanged(ChangeEvent<string> @event, VisualElement box)
+    {
+        box.Clear();
+
+        var value = @event.newValue;
+        if(value == null) return;
+
+        var bigBox = new Box();
+
+        List<AvatarPartInfo> info = AvatarPartsReference.Instance.Hair.AvatarParts;
+
+        foreach(var data in info)
+        {
+            var hairBox = new Button();
+            hairBox.Clear();
+            Image image = new();
+            image.sprite = data.IconImage;
+            hairBox.style.width = 50f;
+            hairBox.style.height = 50f;
+            if (data.Id == value) hairBox.style.backgroundColor = Color.blue;
+            else hairBox.style.backgroundColor = Color.gray;
+            hairBox.Add(image);
+            bigBox.Add(hairBox);
+            bigBox.style.width = 500f;
+            bigBox.style.backgroundColor = Color.white;
+            bigBox.style.flexDirection = FlexDirection.Row;
+            bigBox.style.flexWrap = Wrap.Wrap;
+            box.Add(bigBox);
+            //box.style.alignContent = Align.Auto;
+        }
+
+
+        //Image image = new();
+        //image.sprite = AvatarPartsReference.Instance.GetAvatarPartById(value).AvatarImage;
+
+        //box.Add(image);
+    }
 }
