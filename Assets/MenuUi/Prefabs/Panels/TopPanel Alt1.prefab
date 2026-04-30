@@ -677,9 +677,9 @@ RectTransform:
   - {fileID: 6149830515762959213}
   - {fileID: 7504815644500887317}
   - {fileID: 7944441846957364827}
+  - {fileID: 2778533595470406781}
   - {fileID: 6580083112298689753}
   - {fileID: 8125058423723670507}
-  - {fileID: 2778533595470406781}
   m_Father: {fileID: 8476621660179101015}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -4007,19 +4007,20 @@ MonoBehaviour:
   style: 0
   _rows:
   - item: 0
-    target: {fileID: 1609676208198424510}
+    visibilityTarget: {fileID: 1609676208198424510}
+    orderTarget: {fileID: 9212066207485454122}
   - item: 8
-    target: {fileID: 6725284887274007202}
+    visibilityTarget: {fileID: 6725284887274007202}
+    orderTarget: {fileID: 1246185762394002411}
   - item: 5
-    target: {fileID: 5461445729686408018}
-  - item: 1
-    target: {fileID: 574872428332282056}
-  - item: 7
-    target: {fileID: 2455444299381270341}
+    visibilityTarget: {fileID: 5461445729686408018}
+    orderTarget: {fileID: 6149830515762959213}
   - item: 2
-    target: {fileID: 6264391340277126322}
+    visibilityTarget: {fileID: 6264391340277126322}
+    orderTarget: {fileID: 7504815644500887317}
   - item: 6
-    target: {fileID: 8025051726855806519}
+    visibilityTarget: {fileID: 8025051726855806519}
+    orderTarget: {fileID: 7944441846957364827}
   _flexibleSpacer: {fileID: 0}
   _spacerMinWidth: 0
   _standaloneLeaderboard: {fileID: 0}
@@ -6542,7 +6543,7 @@ PrefabInstance:
     - target: {fileID: 7195143674239219267, guid: aa8e51fd0fa1b9841bcdbae45e3284f5,
         type: 3}
       propertyPath: m_Name
-      value: "BT_\xC4\xC4NESTYS"
+      value: BT_Voting
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7032,12 +7033,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 71a38dbc9d18bd44f9de8793036dbead, type: 3}
---- !u!1 &574872428332282056 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5490945982148460650, guid: 71a38dbc9d18bd44f9de8793036dbead,
-    type: 3}
-  m_PrefabInstance: {fileID: 5461064432240570530}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &7757244758250276161 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2337047324238083555, guid: 71a38dbc9d18bd44f9de8793036dbead,

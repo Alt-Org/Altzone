@@ -15,6 +15,8 @@ public class TopBarOrderBridge : MonoBehaviour
 
     private void OnEnable()
     {
+        Debug.Log("[TopBarOrderBridge] Enabled");
+
         if (_targetsByStyle == null || _targetsByStyle.Length == 0)
         {
             TopBarTargets[] found = FindObjectsOfType<TopBarTargets>(true);
@@ -75,8 +77,8 @@ public class TopBarOrderBridge : MonoBehaviour
 
         foreach (Transform t in _toggleContainer)
         {
-            TopBarToggleHandler h;
-            if (!t.TryGetComponent<TopBarToggleHandler>(out h)) continue;
+            TopBarToggleHandler h = t.GetComponentInChildren<TopBarToggleHandler>(true);
+            if (h == null) continue;
 
             TopBarDefs.TopBarItem item = h.item;
             if (order.ContainsValue(item)) continue; // v�lt� duplikaatit
@@ -129,9 +131,10 @@ public class TopBarOrderBridge : MonoBehaviour
         SettingsCarrier instance = SettingsCarrier.Instance;
         if (instance != null)
         {
+            Debug.Log("[TopBarOrderBridge] Saved indices: " + string.Join(",", indices));
             instance.SaveTopBarOrder(owner.style, indices);
             Debug.Log("[TopBarOrderBridge] Calling owner.ApplyOrderFromSettings()");
-            owner.ApplyFromSettings();
+            owner.ApplyOrderFromSettings();
         }
         else
         {
@@ -192,8 +195,8 @@ public class TopBarOrderBridge : MonoBehaviour
 
         foreach (Transform t in container)
         {
-            TopBarToggleHandler h;
-            if (!t.TryGetComponent<TopBarToggleHandler>(out h)) continue;
+            TopBarToggleHandler h = t.GetComponentInChildren<TopBarToggleHandler>(true);
+            if (h == null) continue;
             if (!rowOf.ContainsKey(h.item)) rowOf.Add(h.item, (RectTransform)t);
         }
 

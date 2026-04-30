@@ -11,7 +11,8 @@ namespace MenuUI.Scripts.TopPanel
         private class Row
         {
             public TopBarDefs.TopBarItem item;
-            public GameObject target;
+            public GameObject visibilityTarget;
+            public Transform orderTarget;
         }
 
         public SettingsCarrier.TopBarStyle style;
@@ -68,8 +69,8 @@ namespace MenuUI.Scripts.TopPanel
             // 3) Aktivoi/poista n�kyvist� rivit
             for (int i = 0; i < _rows.Count; i++)
             {
-                if (_rows[i].target != null)
-                    _rows[i].target.SetActive(vis[i]);
+                if (_rows[i].visibilityTarget != null)
+                    _rows[i].visibilityTarget.SetActive(vis[i]);
             }
 
             // LB-variantit
@@ -132,9 +133,9 @@ namespace MenuUI.Scripts.TopPanel
 
             for (int i = 0; i < _rows.Count; i++)
             {
-                if (_rows[i].target != null)
+                if (_rows[i].orderTarget != null)
                 {
-                    parentRT = _rows[i].target.transform.parent as RectTransform;
+                    parentRT = _rows[i].orderTarget.transform.parent as RectTransform;
                     if (parentRT != null) break;
                 }
             }
@@ -217,34 +218,63 @@ namespace MenuUI.Scripts.TopPanel
         {
             Debug.Log("[TopBarTargets] orderedVisible = " + string.Join(",", orderedVisible));
 
-            int n = orderedVisible.Count;
-
-            if (n <= 1)
-            {
-                if (n == 1 && _rows[orderedVisible[0]].target != null)
-                    _rows[orderedVisible[0]].target.transform.SetSiblingIndex(0);
-
-                if (_flexibleSpacer != null) _flexibleSpacer.gameObject.SetActive(false);
-                LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
-                return;
-            }
-
             int sib = 0;
-            for (int i = 0; i < n - 1; i++)
+            HashSet<Transform> alreadyMoved = new HashSet<Transform>();
+
+            for (int i = 0; i < orderedVisible.Count; i++)
             {
-                GameObject go = _rows[orderedVisible[i]].target;
-                if (go != null) go.transform.SetSiblingIndex(sib++);
+                Transform tr = _rows[orderedVisible[i]].orderTarget;
+
+                if (tr == null) continue;
+
+                // Only reorder top-level topbar items.
+                if (tr.parent != parentRT) continue;
+
+                if (alreadyMoved.Contains(tr)) continue;
+
+                tr.transform.SetSiblingIndex(sib++);
+                alreadyMoved.Add(tr);
             }
 
             EnsureSpacer(parentRT);
             _flexibleSpacer.gameObject.SetActive(true);
-            _flexibleSpacer.SetSiblingIndex(sib++);
-
-            GameObject last = _rows[orderedVisible[n - 1]].target;
-            if (last != null) last.transform.SetSiblingIndex(sib);
+            _flexibleSpacer.SetSiblingIndex(sib);
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
         }
+
+        // private void ApplyOrderWithSpacer(RectTransform parentRT, List<int> orderedVisible)
+        // {
+        //     Debug.Log("[TopBarTargets] orderedVisible = " + string.Join(",", orderedVisible));
+        //
+        //     int n = orderedVisible.Count;
+        //
+        //     if (n <= 1)
+        //     {
+        //         if (n == 1 && _rows[orderedVisible[0]].target != null)
+        //             _rows[orderedVisible[0]].target.transform.SetSiblingIndex(0);
+        //
+        //         if (_flexibleSpacer != null) _flexibleSpacer.gameObject.SetActive(false);
+        //         LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
+        //         return;
+        //     }
+        //
+        //     int sib = 0;
+        //     for (int i = 0; i < n - 1; i++)
+        //     {
+        //         GameObject go = _rows[orderedVisible[i]].target;
+        //         if (go != null) go.transform.SetSiblingIndex(sib++);
+        //     }
+        //
+        //     EnsureSpacer(parentRT);
+        //     _flexibleSpacer.gameObject.SetActive(true);
+        //     _flexibleSpacer.SetSiblingIndex(sib++);
+        //
+        //     GameObject last = _rows[orderedVisible[n - 1]].target;
+        //     if (last != null) last.transform.SetSiblingIndex(sib);
+        //
+        //     LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
+        // }
 
         // ... muu TopBarTargets kuten sinulla jo on ...
 
@@ -298,6 +328,32 @@ namespace MenuUI.Scripts.TopPanel
                 if ((uint)idx < (uint)_rows.Count && vis[idx])
                     orderedVisible.Add(idx);
             }
+
+            // Ensure all visible items are included, even if they are missing from saved order.
+            for (int i = 0; i < _rows.Count; i++)
+            {
+                if (!vis[i]) continue;
+
+                bool already = false;
+
+                for (int j = 0; j < orderedVisible.Count; j++)
+                {
+                    if (orderedVisible[j] == i)
+                    {
+                        already = true;
+                        break;
+                    }
+                }
+
+                if (!already)
+                    orderedVisible.Add(i);
+            }
+
+            Debug.Log("[TopBarTargets] Loaded raw order: " + string.Join(",", rawOrder));
+            Debug.Log("[TopBarTargets] orderedVisible = " + string.Join(",", orderedVisible));
+
+            // Apply saved order to topbar.
+            ApplyOrderWithSpacer(parentRT, orderedVisible);
         }
     }
 }

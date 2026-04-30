@@ -105,6 +105,8 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     // Finalizes drag: restores layout, applies new order and cleans up placeholder
     public void OnEndDrag(PointerEventData e)
     {
+        Debug.Log($"[TopBarDrag] OnEndDrag: {gameObject.name}");
+
         // Return dragged row back to original container
         transform.SetParent(_originalParent, false); // Palaa listaan ennen indeksin asettamista
 
