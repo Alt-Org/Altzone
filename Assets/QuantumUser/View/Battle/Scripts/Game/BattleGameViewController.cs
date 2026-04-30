@@ -87,9 +87,8 @@ namespace Battle.View.Game
 
         #region Public - Static Properties
 
+        /// <summary>The Quantum game</summary>
         public static QuantumGame QGame { get; private set; }
-
-        public static PlayerRef LocalPlayerRef { get; private set; }
 
         /// <summary>The local player's BattlePlayerSlot.</summary>
         public static BattlePlayerSlot LocalPlayerSlot { get; private set; }
@@ -342,13 +341,13 @@ namespace Battle.View.Game
         private void QEventOnViewInit(EventBattleViewInit e)
         {
             QGame = QuantumRunner.Default.Game;
-            LocalPlayerRef = default;
+            PlayerRef localPlayerRef = default;
 
             // Getting LocalPlayerSlot and LocalPlayerTeam
             if (Utils.TryGetQuantumFrame(out Frame f))
             {
-                LocalPlayerRef = QGame.GetLocalPlayers()[0];
-                LocalPlayerSlot = BattlePlayerManager.PlayerHandle.GetSlot(f, LocalPlayerRef);
+                localPlayerRef = QGame.GetLocalPlayers()[0];
+                LocalPlayerSlot = BattlePlayerManager.PlayerHandle.GetSlot(f, localPlayerRef);
                 LocalPlayerTeam = BattlePlayerManager.PlayerHandle.GetTeamNumber(LocalPlayerSlot);
             }
 
@@ -383,7 +382,7 @@ namespace Battle.View.Game
             BattleUiMovableElementData dataGiveUpButton = SettingsCarrier.Instance.GetBattleUiMovableElementData(BattleUiElementType.GiveUpButton);
             if (dataGiveUpButton != null) _uiController.GiveUpButtonHandler.MovableUiElement.SetData(dataGiveUpButton);
 
-            RuntimePlayer localPlayerData = f.GetPlayerData(LocalPlayerRef);
+            RuntimePlayer localPlayerData = f.GetPlayerData(localPlayerRef);
             RuntimePlayer localTeammateData = f.GetPlayerData(BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, LocalPlayerSlot).PlayerRef);
 
             // Setting local player info

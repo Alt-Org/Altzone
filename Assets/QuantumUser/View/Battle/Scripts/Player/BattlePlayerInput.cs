@@ -53,7 +53,7 @@ namespace Battle.View.Player
         /// </summary>
         public void CommandSendGiveUp()
         {
-            BattleGameViewController.QGame.SendCommand(BattleGameViewController.LocalPlayerRef, new BattleGiveUpQCommand());
+            BattleGameViewController.QGame.SendCommand(new BattleGiveUpQCommand());
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Battle.View.Player
         /// <param name="characterNumber">The character number of the character to swap to</param>
         public void CommandSendSwapCharacter(int characterNumber)
         {
-            BattleGameViewController.QGame.SendCommand(BattleGameViewController.LocalPlayerRef, new BattleCharacterSwapQCommand
+            BattleGameViewController.QGame.SendCommand(new BattleCharacterSwapQCommand
             {
                 CharacterNumber = characterNumber
             });
@@ -74,7 +74,7 @@ namespace Battle.View.Player
         /// </summary>
         public void CommandSendActivateAbility()
         {
-            BattleGameViewController.QGame.SendCommand(BattleGameViewController.LocalPlayerRef, new BattleCharacterAbilityQCommand());
+            BattleGameViewController.QGame.SendCommand(new BattleCharacterAbilityQCommand());
         }
 
         /// @}
