@@ -32,7 +32,7 @@ public class IntroCharacters : MonoBehaviour
 
             classType = (CharacterClassType)characterIDs[j]; //get classtype from list
 
-            characterCard.GetComponent<Image>().color = avatarreference.GetAlternativeColour(classType); //change card color
+            characterCard.GetComponent<Image>().color = avatarreference.GetColour(classType); //change card color
 
 
             CharacterThumbnailHandler characterThumbnailHandler = characterCard.GetComponent<CharacterThumbnailHandler>(); // get correct thumbnailhandler 
@@ -40,9 +40,6 @@ public class IntroCharacters : MonoBehaviour
             Image characterSprite = characterThumbnailHandler._characterSprite;
             characterSprite.sprite = avatarreference.GetCharacterSprite(classType); //set character sprite
 
-
-            Image emblemSprite = characterThumbnailHandler._emblemSprite; //find emblem-child
-            emblemSprite.sprite = avatarreference.GetCornerIcon(classType); //set emblem sprite
 
             TextMeshProUGUI nameSprite = characterThumbnailHandler._nameText; //find name-child
             nameSprite.text = avatarreference.GetName(classType); //set name sprite
