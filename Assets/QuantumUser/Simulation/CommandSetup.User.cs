@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using Photon.Deterministic;
 
 // Battle QSimulation usings
-using Battle.QSimulation.Player;
+using Battle.QSimulation.Game;
 
 namespace Quantum
 {
