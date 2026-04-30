@@ -65,8 +65,7 @@ public class DailyTaskView : AltMonoBehaviour
     [SerializeField] private DailyTaskOwnTask _ownTaskPageHandler;
     [Space]
     [SerializeField] private List<MoodThreshold> _moodThresholds;
-    [Space]
-    [SerializeField] private Button _showMultipleChoiceTaskButton;
+    
 
     [System.Serializable]
     public struct MoodThreshold
@@ -118,7 +117,6 @@ public class DailyTaskView : AltMonoBehaviour
             _cancelTaskButton.onClick.AddListener(() => StartCancelTask());
         }
         
-        _showMultipleChoiceTaskButton.onClick.AddListener(() => DailyTaskManager.Instance.ShowMultipleChoiceTask());
 
         //Buttons
         //_dailyTasksTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.Tasks));
@@ -133,6 +131,7 @@ public class DailyTaskView : AltMonoBehaviour
             DailyTaskManager.OnAcceptTask += OnTaskAccept;
             DailyTaskManager.OnCancelTask += OnTaskCancel;
             DailyTaskManager.OnMultipleChoiceProgress += OnMultipleChoiceProgress;
+            DailyTaskOwnTask.OnCurrentTaskInfoNeeded += ShowCurrentTaskInfo;
         }
         catch
         {
@@ -161,6 +160,8 @@ public class DailyTaskView : AltMonoBehaviour
             DailyTaskManager.OnAcceptTask -= OnTaskAccept;
             DailyTaskManager.OnCancelTask -= OnTaskCancel;
             DailyTaskManager.OnMultipleChoiceProgress -= OnMultipleChoiceProgress;
+            DailyTaskOwnTask.OnCurrentTaskInfoNeeded -= ShowCurrentTaskInfo;
+
 
         }
         catch
@@ -509,7 +510,7 @@ public class DailyTaskView : AltMonoBehaviour
         DailyTaskManager.Instance.SetHandleOwnTask(playerData.Task);
     }
 
-    private DailyQuest FindDailyQuestForTask(PlayerTask task)
+    public DailyQuest FindDailyQuestForTask(PlayerTask task)
     {
         foreach (GameObject taskCard in DailyTaskCardSlots)
         {
@@ -540,6 +541,35 @@ public class DailyTaskView : AltMonoBehaviour
 
         //Sets DT cards to left side.
         _clanPlayersList.anchoredPosition = new Vector2(0f, -5000f);
+    }
+
+    private void ShowCurrentTaskInfo()
+    {
+        PlayerTask currentTask = DailyTaskManager.Instance.GetCurrentTask();
+
+        if (currentTask == null) return;
+
+
+        // If the current task is a multiple choice task, show the task
+        if (MultipleChoiceOptions.Instance.IsMultipleChoice(currentTask))
+        {
+
+            DailyTaskManager.Instance.ShowMultipleChoiceTask();
+            return;
+        }
+
+        // If the task is not a multiple choice, show the info
+        Vector3 popupLocation = GetScreenCenter();
+        PopupData data = new(currentTask, popupLocation);
+
+        DailyTaskManager.Instance.ShowPopupAndHandleResponse(currentTask.Title, data);
+    }
+
+    private Vector3 GetScreenCenter()
+    {
+        Vector2 screenCenter = new Vector2(Screen.width / 2, Screen.height / 2);
+
+        return screenCenter;
     }
 
 

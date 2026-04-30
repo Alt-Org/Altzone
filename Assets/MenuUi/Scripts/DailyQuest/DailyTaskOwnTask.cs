@@ -84,8 +84,8 @@ public class DailyTaskOwnTask : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _tasksDoneText;
 
-    public delegate void OwnTaskPageActivated();
-    public static event OwnTaskPageActivated OnOwnTaskPageActivated;
+    public delegate void CurrentTaskInfoNeeded();
+    public static event CurrentTaskInfoNeeded OnCurrentTaskInfoNeeded;
 
     private void Start()
     {
@@ -326,5 +326,10 @@ public class DailyTaskOwnTask : MonoBehaviour
             _battlesPlayedText.text = DailyStats.Instance.GetBattlesPlayed() + " battles";
             _tasksDoneText.text = DailyStats.Instance.GetTasksDone() + " tasks";
         }
+    }
+
+    public void ShowCurrentTaskInfo()
+    {
+        OnCurrentTaskInfoNeeded.Invoke();
     }
 }

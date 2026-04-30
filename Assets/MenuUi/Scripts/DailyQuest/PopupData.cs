@@ -65,6 +65,20 @@ public struct PopupData
     }
 
     /// <summary>
+    /// Used for showing task info window.
+    /// </summary>
+    /// <param name="task"></param>
+    /// <param name="location"></param>
+    public PopupData(PlayerTask task, Vector3 location)
+    {
+        _ownPage = task;
+        _clanRewardData = null;
+        _type = PopupDataType.OwnTask;
+        _location = location;
+        _dailyQuest = null;
+    }
+
+    /// <summary>
     /// Used for showing clan milestone info window.
     /// </summary>
     /// <param name="clanRewardData"></param>
