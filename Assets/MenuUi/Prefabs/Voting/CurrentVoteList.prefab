@@ -211,7 +211,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2745182772082903440}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -266,7 +266,7 @@ MonoBehaviour:
   _preferredCellSize: {x: 0, y: 0}
   _cellAspectRatio: 1.6
   _prefab: {fileID: 2192335415255639714, guid: ce0c88b97e317e247a85411a8bda706f, type: 3}
-  _cellSpacing: {x: 0, y: 1}
+  _cellSpacing: {x: 80, y: 50}
   _preventScalingOutOfParentBounds: 0
   _setLayoutElementPreferredSize: 0
 --- !u!1 &3026558564945808407
@@ -807,7 +807,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8513484714183557464}
   m_HandleRect: {fileID: 6308764624544131753}
   m_Direction: 3
-  m_Value: 0
+  m_Value: 0.5
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
