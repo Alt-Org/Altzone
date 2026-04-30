@@ -5,7 +5,7 @@
 /// Input is processed and compiled into an input struct, which is passed over to the Quantum simulation when polled by Quantum.
 /// </summary>
 
-//#define DEBUG_INPUT_TYPE_OVERRIDE
+#define DEBUG_INPUT_TYPE_OVERRIDE
 
 // Unity usings
 using UnityEngine;
@@ -50,20 +50,34 @@ namespace Battle.View.Player
         /// Called when the player interacts with the movement joystick.
         /// </summary>
         ///
-        /// <param name="input">The input value of the movement joystick</param>
-        public void OnJoystickMovement(Vector2 input)
+        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick. (unused)</param>
+        /// <param name="value">The input value of the movement joystick as Vector2.</param>
+        public void OnJoystickMovement(BattleJoystickState state, Vector2 value)
         {
-            _joystickMovementVector = input;
+            _joystickMovementVector = value;
         }
 
         /// <summary>
         /// Called when the player interacts with the rotation joystick.
         /// </summary>
         ///
-        /// <param name="input">The input value of the rotation joystick</param>
-        public void OnJoystickRotation(float input)
+        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick. (unused)</param>
+        /// <param name="value">The input value of the rotation joystick as float.</param>
+        public void OnJoystickRotation(BattleJoystickState state, float value)
         {
-            _joystickRotationValue = input;
+            _joystickRotationValue = value;
+        }
+
+        /// <summary>
+        /// Called when player interacts with the special joystick
+        /// </summary>
+        ///
+        /// <param name="state"><param name="state"><see cref="BattleJoystickState"></see> of the joystick.</param></param>
+        /// <param name="value">Value of the joystick input as Vector2.</param>
+        public void OnJoystickSpecial(BattleJoystickState state, Vector2 value)
+        {
+            _joystickSpecialState = state;
+            _joystickSpecialValue = value;
         }
 
         /// <summary>
@@ -144,11 +158,17 @@ namespace Battle.View.Player
         /// <summary>The vector received from the movement joystick.</summary>
         private Vector2 _joystickMovementVector;
 
+        /// <summary>The vector received from the special joystick.</summary>
+        private Vector2 _joystickSpecialValue;
+
         /// <summary>The float value received from the rotation joystick.</summary>
         private float _joystickRotationValue;
 
         /// <summary>Saved world position of the previous tap position used for double tap input validating.</summary>
         private Vector3 _lastTapPosition;
+
+        /// <summary>The <see cref="BattleJoystickState"></see> of the special joystick</summary>
+        private BattleJoystickState _joystickSpecialState;
 
         /// <summary>Saved time stamp of the previous tap.</summary>
         private float _lastTapTime;
@@ -203,6 +223,12 @@ namespace Battle.View.Player
 
         /// @}
 
+        /// @{
+
+        // Tap once -> Shoot straight up
+        // Hold -> Aim indicator
+        // Release Tap -> Shoot aimed direction
+
         /// <summary>
         /// Saves data from SettingsCarrier to private variables. <br/>
         /// Saves a reference to the play device's gyroscope if there is one. <br/>
@@ -223,8 +249,8 @@ namespace Battle.View.Player
 #if DEBUG_INPUT_TYPE_OVERRIDE
             _debugLogger.Warning("DEBUG_INPUT_TYPE_OVERRIDE enabled!");
 
-            _movementInputType = MovementInputType.FollowPointer;
-            _rotationInputType = RotationInputType.TwoFinger;
+            _movementInputType = MovementInputType.Joystick;
+            _rotationInputType = RotationInputType.Joystick;
 
             _debugLogger.WarningFormat("Using MovementInputType {0} override", _movementInputType);
             _debugLogger.WarningFormat("Using RotationInputType {0} override", _rotationInputType);
@@ -286,7 +312,11 @@ namespace Battle.View.Player
             }
 
             //{ create and set input
-
+            BattleSpecialInput specialInput = new()
+            {
+                JoystickValue = new FPVector2(FP.FromFloat_UNSAFE(_joystickSpecialValue.x), FP.FromFloat_UNSAFE(_joystickSpecialValue.y)),
+                JoystickState = _joystickSpecialState
+            };
             Input input = new()
             {
                 IsValid                       = true,
@@ -300,7 +330,8 @@ namespace Battle.View.Player
                 RotationValue                 = rotationInputInfo.RotationValue,
                 AbilityActivate               = Time.time - _lastTapTime < DoubleTapInterval && mouseClick && Vector3.Distance(_lastTapPosition, unityPosition) < DoubleTapDistance,
                 PlayerCharacterNumber         = _characterNumber,
-                GiveUpInput                   = _onGiveUp
+                GiveUpInput                   = _onGiveUp,
+                Special                       = specialInput
             };
 
             DeterministicInputFlags inputFlags = DeterministicInputFlags.Repeatable;

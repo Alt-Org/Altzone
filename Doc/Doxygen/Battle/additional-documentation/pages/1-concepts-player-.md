@@ -318,7 +318,7 @@ the default collision logic and/or **Unity/View** update logic, changing how dif
 @bigtext{**Implementation**}
 
 In **%Quantum Simulation**, every **Player Character Class** can optionally have a unique **C#** [{PlayerClass}](#page-concepts-player-simulation-playerclass).  
-**Character Classes** can also optionally have a [{PlayerClassData}](#page-concepts-player-simulation-classdata) **QComponent**
+**Character Classes** can also optionally have a [{PlayerClassQSpec}](#page-concepts-player-simulation-QSpec) and [{PlayerClassData}](#page-concepts-player-simulation-classdata) **QComponent**
 attached to the [{Player Character Entities}](#page-concepts-player-character-entity) for additional data the **Class** will use.  
 The **C#** [{PlayerClass}](#page-concepts-player-simulation-playerclass) are stateless and
 there is only one instance for each **Character Class**. These are loaded and managed by [{PlayerClassManager}](#page-concepts-player-simulation-classmanager).
@@ -329,6 +329,7 @@ In **Unity View**, every **Player Character class** can optionally have a [{Play
 
 ### Player Character Class List {#page-concepts-player-characters-class-list}
 
+@subpage page-concepts-player-class-100-desensitizer  
 @subpage page-concepts-player-class-400-projector  
 @subpage page-concepts-player-class-600-confluent
 
@@ -370,7 +371,7 @@ digraph PlayerSimulation {
   PlayerManagerData -> PlayerHandle;
 
   PlayerManager, PlayerQSystem -> PlayerData -> PlayerMovementController, PlayerBotController;
-  PlayerClass -> PlayerClassData;
+  PlayerClass -> Player;
 
   edge [dir=forwards];
 
@@ -455,8 +456,9 @@ See [{Player Character Classes}](#page-concepts-player-characters-classes) for m
 
 Every **Player Character Class** can optionally have a unique **C# class** that inherits one of the two base @cref{Battle.QSimulation.Player,BattlePlayerClassBase} classes
 defined in BattlePlayerClassManager.cs. These classes can choose to implement any of the available methods for functionality.
-**Character Classes** can also optionally have a [{PlayerClassData}](#page-concepts-player-simulation-classdata) **QComponent** for additional data.
+**Character Classes** can also optionally have a [{PlayerClassData}](#page-concepts-player-simulation-classdata) **QComponent** for additional data. <br/>
 When a **Character Class** has a **Data QComponent**, the **C# class** inherits the generic version of the base class using the **Data QComponent** as the generic type parameter.  
+**Character Classes** can also optionally have a [{PlayerClassQSpec}](#page-concepts-player-simulation-QSpec) for additional immutable data. <br/>
 As stated before the **C# class** is optional and can be omitted for **Player Character Classes** that need no additional **%Quantum Simulation** logic.
 
 **C# code example**
@@ -489,7 +491,7 @@ See [{Player Character Classes}](#page-concepts-player-characters-classes) for m
 Every **Player Character Class** can optionally have a **Data QComponent** for additional data.
 
 **Qtn code example**
-```
+```cs
 component BattlePlayerClassExample2DataQComponent
 {
   // ...
@@ -497,6 +499,23 @@ component BattlePlayerClassExample2DataQComponent
 ```
 
 The **Data QComponents** are attached to the [{Player Character Entities}](#page-concepts-player-character-entity) and are used by the **C# class** of the corresponding **Character Class**.
+
+See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.  
+See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
+
+<br/>
+
+### PlayerClassQSpec (%Quantum Spec) {#page-concepts-player-simulation-QSpec}
+
+Every  **Player Character Class** can optionally have a **QSpec** for additional immutable data that is shared between all the [{Player Character Entities}](#page-concepts-player-character-entity) of the corresponding **Character Class**.
+
+**C# code example**
+```cs
+public class BattlePlayerClassExample3QSpec : AssetObject
+{
+  // ...
+}
+```
 
 See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.  
 See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.

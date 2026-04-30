@@ -15,12 +15,13 @@ namespace Battle.QSimulation.Game
 {
     public class BattleQConfig : AssetObject
     {
-        public AssetRef<BattleArenaQSpec>      BattleArenaSpec;
-        public AssetRef<BattleSoulWallQSpec>   BattleSoulWallSpec;
-        public AssetRef<BattleProjectileQSpec> BattleProjectileSpec;
-        public AssetRef<BattleDiamondQSpec>    BattleDiamondSpec;
-        public AssetRef<BattlePlayerQSpec>     BattlePlayerSpec;
-        public AssetRef<BattlePlayerBotQSpec>  BattlePlayerBotSpec;
+        public AssetRef<BattleArenaQSpec>                   BattleArenaSpec;
+        public AssetRef<BattleSoulWallQSpec>                BattleSoulWallSpec;
+        public AssetRef<BattleProjectileQSpec>              BattleProjectileSpec;
+        public AssetRef<BattleDiamondQSpec>                 BattleDiamondSpec;
+        public AssetRef<BattlePlayerQSpec>                  BattlePlayerSpec;
+        public AssetRef<BattlePlayerBotQSpec>               BattlePlayerBotSpec;
+        public AssetRef<BattlePlayerClassDesensitizerQSpec> BattlePlayerClassDesensitizerSpec;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BattleArenaQSpec GetArenaSpec(Frame f)
@@ -57,6 +58,13 @@ namespace Battle.QSimulation.Game
         {
             return f.FindAsset(f.FindAsset(f.RuntimeConfig.BattleConfig).BattlePlayerBotSpec);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static BattlePlayerClassDesensitizerQSpec GetBattlePlayerClassDesensitizerSpec(Frame f)
+        {
+            return f.FindAsset(f.FindAsset(f.RuntimeConfig.BattleConfig).BattlePlayerClassDesensitizerSpec);
+        }
+
     }
 
     [Serializable]

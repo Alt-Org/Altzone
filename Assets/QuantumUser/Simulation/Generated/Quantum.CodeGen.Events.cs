@@ -53,7 +53,7 @@ namespace Quantum {
   public unsafe partial class Frame {
     public unsafe partial struct FrameEvents {
       static partial void GetEventTypeCountCodeGen(ref Int32 eventCount) {
-        eventCount = 25;
+        eventCount = 27;
       }
       static partial void GetParentEventIDCodeGen(Int32 eventID, ref Int32 parentEventID) {
         switch (eventID) {
@@ -85,6 +85,8 @@ namespace Quantum {
           case EventBattleShieldTakeDamage.ID: result = typeof(EventBattleShieldTakeDamage); return;
           case EventBattleGiveUpStateChange.ID: result = typeof(EventBattleGiveUpStateChange); return;
           case EventBattleStoneCharacterPlayHitAnimation.ID: result = typeof(EventBattleStoneCharacterPlayHitAnimation); return;
+          case EventBattleSpecialJoystickVisibilityChange.ID: result = typeof(EventBattleSpecialJoystickVisibilityChange); return;
+          case EventBattlePlayerClassDesensitizerAimIndicatorUpdate.ID: result = typeof(EventBattlePlayerClassDesensitizerAimIndicatorUpdate); return;
           case EventBattleDebugOnScreenMessage.ID: result = typeof(EventBattleDebugOnScreenMessage); return;
           default: break;
         }
@@ -267,6 +269,24 @@ namespace Quantum {
         var ev = _f.Context.AcquireEvent<EventBattleStoneCharacterPlayHitAnimation>(EventBattleStoneCharacterPlayHitAnimation.ID);
         ev.Team = Team;
         ev.Emotion = Emotion;
+        _f.AddEvent(ev);
+        return ev;
+      }
+      public EventBattleSpecialJoystickVisibilityChange BattleSpecialJoystickVisibilityChange(BattlePlayerSlot Slot, QBoolean Show) {
+        if (_f.IsPredicted) return null;
+        var ev = _f.Context.AcquireEvent<EventBattleSpecialJoystickVisibilityChange>(EventBattleSpecialJoystickVisibilityChange.ID);
+        ev.Slot = Slot;
+        ev.Show = Show;
+        _f.AddEvent(ev);
+        return ev;
+      }
+      public EventBattlePlayerClassDesensitizerAimIndicatorUpdate BattlePlayerClassDesensitizerAimIndicatorUpdate(EntityRef ERef, QBoolean Show, BattlePlayerSlot Slot, FPVector2 Direction) {
+        if (_f.IsPredicted) return null;
+        var ev = _f.Context.AcquireEvent<EventBattlePlayerClassDesensitizerAimIndicatorUpdate>(EventBattlePlayerClassDesensitizerAimIndicatorUpdate.ID);
+        ev.ERef = ERef;
+        ev.Show = Show;
+        ev.Slot = Slot;
+        ev.Direction = Direction;
         _f.AddEvent(ev);
         return ev;
       }
@@ -896,13 +916,14 @@ namespace Quantum {
       }
     }
   }
-  public unsafe partial class EventBattleDebugOnScreenMessage : EventBase {
+  public unsafe partial class EventBattleSpecialJoystickVisibilityChange : EventBase {
     public new const Int32 ID = 24;
-    public QString512 Message;
-    protected EventBattleDebugOnScreenMessage(Int32 id, EventFlags flags) : 
+    public BattlePlayerSlot Slot;
+    public QBoolean Show;
+    protected EventBattleSpecialJoystickVisibilityChange(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventBattleDebugOnScreenMessage() : 
+    public EventBattleSpecialJoystickVisibilityChange() : 
         base(24, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {
@@ -916,6 +937,63 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 151;
+        hash = hash * 31 + Slot.GetHashCode();
+        hash = hash * 31 + Show.GetHashCode();
+        return hash;
+      }
+    }
+  }
+  public unsafe partial class EventBattlePlayerClassDesensitizerAimIndicatorUpdate : EventBase {
+    public new const Int32 ID = 25;
+    public EntityRef ERef;
+    public QBoolean Show;
+    public BattlePlayerSlot Slot;
+    public FPVector2 Direction;
+    protected EventBattlePlayerClassDesensitizerAimIndicatorUpdate(Int32 id, EventFlags flags) : 
+        base(id, flags) {
+    }
+    public EventBattlePlayerClassDesensitizerAimIndicatorUpdate() : 
+        base(25, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
+    }
+    public new QuantumGame Game {
+      get {
+        return (QuantumGame)base.Game;
+      }
+      set {
+        base.Game = value;
+      }
+    }
+    public override Int32 GetHashCode() {
+      unchecked {
+        var hash = 157;
+        hash = hash * 31 + ERef.GetHashCode();
+        hash = hash * 31 + Show.GetHashCode();
+        hash = hash * 31 + Slot.GetHashCode();
+        hash = hash * 31 + Direction.GetHashCode();
+        return hash;
+      }
+    }
+  }
+  public unsafe partial class EventBattleDebugOnScreenMessage : EventBase {
+    public new const Int32 ID = 26;
+    public QString512 Message;
+    protected EventBattleDebugOnScreenMessage(Int32 id, EventFlags flags) : 
+        base(id, flags) {
+    }
+    public EventBattleDebugOnScreenMessage() : 
+        base(26, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
+    }
+    public new QuantumGame Game {
+      get {
+        return (QuantumGame)base.Game;
+      }
+      set {
+        base.Game = value;
+      }
+    }
+    public override Int32 GetHashCode() {
+      unchecked {
+        var hash = 163;
         hash = hash * 31 + Message.GetHashCode();
         return hash;
       }

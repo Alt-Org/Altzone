@@ -30,7 +30,7 @@ namespace Battle.QSimulation.Projectile
         /// </summary>
         public struct Filter
         {
-            public EntityRef Entity;
+            public EntityRef EntityRef;
             public BattleProjectileSpawnerQComponent* Spawner;
         }
 
@@ -48,17 +48,17 @@ namespace Battle.QSimulation.Projectile
             _debugLogger = BattleDebugLogger.Create<BattleProjectileSpawnerQSystem>();
 
             // create a new entity
-            EntityRef entity = f.Create();
+            EntityRef entityRef = f.Create();
 
             // add the ProjectileSpawner component
-            f.Add<BattleProjectileSpawnerQComponent>(entity);
+            f.Add<BattleProjectileSpawnerQComponent>(entityRef);
 
             // initialize the ProjectileSpawner component
-            BattleProjectileSpawnerQComponent* spawner = f.Unsafe.GetPointer<BattleProjectileSpawnerQComponent>(entity);
+            BattleProjectileSpawnerQComponent* spawner = f.Unsafe.GetPointer<BattleProjectileSpawnerQComponent>(entityRef);
             spawner->HasSpawned = false;
 
             _debugLogger.Log(f, "ProjectileSpawnerSystem initialized");
-            _debugLogger.Log(f, $"Entity created with ProjectileSpawner component: {entity}");
+            _debugLogger.Log(f, $"Entity created with ProjectileSpawner component: {entityRef}");
         }
 
         /// <summary>
@@ -100,20 +100,46 @@ namespace Battle.QSimulation.Projectile
         /// <param name="childPrototype">Reference to the projectile prototype asset.</param>
         private void SpawnProjectile(Frame f, AssetRef<EntityPrototype> childPrototype)
         {
-            // create a new entity based on the provided prototype.
-            EntityRef projectileEntity = f.Create(childPrototype);
+            // create a new entity based on the provided prototype
+            EntityRef projectileEntityRef = f.Create(childPrototype);
 
-            // get a pointer to the Transform2D component of the created projectile entity.
-            BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntity);
-            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
-            PhysicsCollider2D* projectileCollider = f.Unsafe.GetPointer<PhysicsCollider2D>(projectileEntity);
+            // get a pointer to the Transform2D component of the created projectile entity
+            BattleProjectileQComponent* projectile          = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
+            Transform2D*                projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntityRef);
+            PhysicsCollider2D*          projectileCollider  = f.Unsafe.GetPointer<PhysicsCollider2D>(projectileEntityRef);
 
-            projectile->Radius = projectileCollider->Shape.Circle.Radius;
+            //{create projectile trigger entity
 
-            projectileTransform->Position = new FPVector2(0,0);
+            EntityRef projectileTriggerEntityRef = f.Create();
 
-            projectile->EmotionCurrent = 0;
-            projectile->EmotionBase = 0;
+            // initialize projectile trigger component
+            BattleProjectileTriggerQComponent projectileTrigger = new();
+            projectileTrigger.ProjectileEntityRef = projectileEntityRef;
+
+            // initialize projectile trigger collider
+            PhysicsCollider2D projectileTriggerCollider = PhysicsCollider2D.Create(f,
+                shape:     Shape2D.CreateCircle(projectileCollider->Shape.Circle.Radius),
+                isTrigger: true
+            );
+
+            // initialize projectile collision trigger component
+            BattleCollisionTriggerQComponent projectileCollisionTrigger = new();
+            projectileCollisionTrigger.Type = BattleCollisionTriggerType.Projectile;
+
+            // initialize projectile trigger entity
+            f.Add(projectileTriggerEntityRef, projectileTrigger);
+            f.Add<Transform2D>(projectileTriggerEntityRef);
+            f.Add(projectileTriggerEntityRef, projectileTriggerCollider);
+            f.Add(projectileTriggerEntityRef, projectileCollisionTrigger);
+
+            //} create projectile trigger entity
+
+            // set projectile position and initial values
+            projectileTransform->Position = new FPVector2(0, 0);
+            projectile->TriggerEntityRef  = projectileTriggerEntityRef;
+            projectile->Radius            = projectileCollider->Shape.Circle.Radius;
+            projectile->EmotionCurrent    = 0;
+            projectile->EmotionBase       = 0;
         }
     }
 }

@@ -1,0 +1,46 @@
+/// @file BattleCollisionCollider.qtn
+/// <summary>
+/// Contains enum and component for defining entity's collision collider type.
+/// </summary>
+///
+/// ## Generated Enums
+/// - @cref{Quantum,BattleCollisionColliderType}  
+///   @copybrief Quantum.BattleCollisionColliderType
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattleCollisionColliderQComponent}  
+///   @copybrief Quantum.BattleCollisionColliderQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattleCollisionColliderType
+/// <summary>
+/// Identifies the type of a collision collider.  
+/// Used by the @cref{Quantum,BattleCollisionColliderQComponent}.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleCollisionCollider.qtn}
+
+/// @var Quantum::BattleCollisionColliderType Quantum::BattleCollisionColliderType::Projectile
+/// <summary>Collision collider type of Projectile.</summary>
+///
+/// @var Quantum::BattleCollisionColliderType Quantum::BattleCollisionColliderType::Diamond
+/// <summary>Collision collider type of Diamond.</summary>
+///
+/// @var Quantum::BattleCollisionColliderType Quantum::BattleCollisionColliderType::DesensitizerProjectile
+/// <summary>Collision Collider type of Desensitizer Projectile.</summary>
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleCollisionColliderQComponent
+/// <summary>
+/// Component that marks the entity as a collision collider and contains the type of the collision collider component that the entity has.
+/// </summary>
+///
+/// Streamlines identifying entities as something that can be collided with  
+/// and retrieving the component that is unique to the type of entity that has been collided with.
+///
+/// @bigtext{Generated from @ref BattleCollisionCollider.qtn}
+
+/// @var BattleCollisionColliderType Quantum.BattleCollisionColliderQComponent::Type
+/// <summary>The type of the collision collider component that the entity has.</summary>

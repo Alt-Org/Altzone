@@ -130,7 +130,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer reference to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
-        public virtual unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
+        public virtual unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity, BattleSpecialInput* specialInput) { }
     }
 
     /// <summary>
@@ -158,7 +158,7 @@ namespace Battle.QSimulation.Player
             {
                 case BattlePlayerCharacterClass.Desensitizer:
                     if (s_classArray[ClassIndexDesensitizer] != null) break;
-                    s_classArray[ClassIndexDesensitizer] = new BattlePlayerClassDesensitizer();
+                    s_classArray[ClassIndexDesensitizer] = new BattlePlayerClassDesensitizerTest();
                     break;
 
                 case BattlePlayerCharacterClass.Trickster:
@@ -293,13 +293,13 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer reference to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
-        public static void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
+        public static void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity, BattleSpecialInput* specialInput)
         {
             ReturnCode returnCode = GetClass(playerData->CharacterClass, out BattlePlayerClassBase playerClass);
 
             if (returnCode != ReturnCode.ClassRetrieved) return;
 
-            playerClass.OnUpdate(f, playerHandle, playerData, playerEntity);
+            playerClass.OnUpdate(f, playerHandle, playerData, playerEntity, specialInput);
         }
 
         /// <value>Constant for a class index error.</value>

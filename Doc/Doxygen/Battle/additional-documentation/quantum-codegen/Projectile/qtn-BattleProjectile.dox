@@ -10,6 +10,8 @@
 /// ## Generated Structs
 /// - @cref{Quantum,BattleProjectileQComponent}  
 ///   @copybrief Quantum.BattleProjectileQComponent
+/// - @cref{Quantum,BattleProjectileTriggerQComponent}  
+///   @copybrief Quantum.BattleProjectileTriggerQComponent
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -65,16 +67,15 @@
 /// Property for accessing the @cref{Quantum.BattleProjectileQComponent,_CollisionFlags_} array of flags for projectile's collisions.  
 /// Used to prevent hitting multiple entities per frame.
 /// </summary>
-///
-/// @var byte Quantum.BattleProjectileQComponent::_CollisionFlags_
-/// <summary>
-/// An array used internally for holding flags for projectile's collisions.  
-/// Used to prevent hitting multiple entities per frame.  
-/// Use @cref{Quantum.BattleProjectileQComponent,CollisionFlags} for accessing the flags.
-/// </summary>
+
+/// @var EntityRef Quantum.BattleProjectileQComponent::TriggerEntityRef
+/// <summary>Reference ot the trigger entity of the projectile.</summary>
 
 /// @var FP Quantum.BattleProjectileQComponent::Speed
 /// <summary>Projectile's speed.</summary>
+///
+/// @var FPVector2 Quantum.BattleProjectileQComponent::Position
+/// <summary>Projectile's position.</summary>
 ///
 /// @var FPVector2 Quantum.BattleProjectileQComponent::Direction
 /// <summary>The direction the projectile is going towards.</summary>
@@ -114,3 +115,13 @@
 //
 // @var FP Quantum.BattleProjectileQComponent::AccelerationTimerDuration
 // <summary>Used for setting AccelerationTimer.</summary>
+
+/// @struct Quantum::BattleProjectileTriggerQComponent
+/// <summary>
+/// Contains entity reference to the projectile entity.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleProjectile.qtn}
+
+/// @var EntityRef Quantum.BattleProjectileTriggerQComponent::ProjectileEntityRef
+/// <summary>Used for getting the reference of the projectile entity.</summary>
