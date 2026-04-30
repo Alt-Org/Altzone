@@ -5,7 +5,6 @@ using UnityEngine.UI;
 [ExecuteAlways]
 public class ClanProfileResponsiveLayout : MonoBehaviour
 {
-
     private void OnValidate()
     {
         if (!isActiveAndEnabled)
@@ -21,6 +20,10 @@ public class ClanProfileResponsiveLayout : MonoBehaviour
         public float headerHeight = 200f;
         public float heroRowHeight = 550f;
         public float clanMoodHeight = 230f;
+
+        [Header("Popups")]
+        public float rulesPopupScale = 1f;
+        public float carbonEmissionPopupScale = 1f;
 
         [Header("Header right icons")]
         public Vector2 headerInfoIconSize = new Vector2(140f, 120f);
@@ -60,6 +63,9 @@ public class ClanProfileResponsiveLayout : MonoBehaviour
         heroRowHeight = 550f,
         clanMoodHeight = 230f,
 
+        rulesPopupScale = 1f,
+        carbonEmissionPopupScale = 1f,
+
         headerInfoIconSize = new Vector2(140f, 120f),
 
         logoColumnWidth = 190f,
@@ -86,6 +92,9 @@ public class ClanProfileResponsiveLayout : MonoBehaviour
         headerHeight = 150f,
         heroRowHeight = 350f,
         clanMoodHeight = 170f,
+
+        rulesPopupScale = 0.8f,
+        carbonEmissionPopupScale = 0.75f,
 
         headerInfoIconSize = new Vector2(110f, 90f),
 
@@ -138,6 +147,11 @@ public class ClanProfileResponsiveLayout : MonoBehaviour
     [SerializeField] private TextMeshProUGUI moodLabelText;
     [SerializeField] private LayoutElement clanMoodBoard;
 
+    [Header("Popups")]
+    [SerializeField] private RectTransform rulesPopup;
+    [SerializeField] private RectTransform carbonEmissionPopup;
+
+
     private int lastScreenWidth;
     private int lastScreenHeight;
     private bool lastWasTablet;
@@ -179,6 +193,7 @@ public class ClanProfileResponsiveLayout : MonoBehaviour
         ApplyHeroRight(preset);
         ApplyValuesPanel(preset);
         ApplyClanMood(preset);
+        ApplyPopups(preset);
 
         ForceRebuild();
     }
@@ -256,6 +271,20 @@ public class ClanProfileResponsiveLayout : MonoBehaviour
             moodLabelText.enableAutoSizing = true;
             moodLabelText.fontSizeMax = preset.moodLabelMaxFontSize;
         }
+    }
+
+    private void ApplyPopups(LayoutPreset preset)
+    {
+        SetPopupScale(rulesPopup, preset.rulesPopupScale);
+        SetPopupScale(carbonEmissionPopup, preset.carbonEmissionPopupScale);
+    }
+
+    private void SetPopupScale(RectTransform popup, float scale)
+    {
+        if (popup == null)
+            return;
+
+        popup.localScale = new Vector3(scale, scale, 1f);
     }
 
     private void SetPreferredHeight(LayoutElement element, float height)

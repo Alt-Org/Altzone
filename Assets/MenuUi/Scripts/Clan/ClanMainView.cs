@@ -55,12 +55,25 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private Button _editButton;
     [SerializeField] private GameObject _viewClansButton;
     [SerializeField] private Button _membersFilterButton;
+    [SerializeField] private Button _popupOverlayButton;
 
     private bool _isInClanCached;
     private bool _canEditCached;
     private bool _hasClanViewedCached;
 
     private bool _isProfilePageVisible = true;
+
+    [Header("Rules")]
+    [SerializeField] private Button _rulesButton;
+    [SerializeField] private GameObject _rulesPopup;
+    [SerializeField] private GameObject _openBookObject;
+    [SerializeField] private GameObject _closedBookObject;
+    [SerializeField] private Button _rulesPopupCloseButton;
+
+    [Header("Carbon emission popup")]
+    [SerializeField] private Button _carbonEmissionButton;
+    [SerializeField] private GameObject _carbonEmissionPopup;
+    [SerializeField] private Button _carbonEmissionPopupCloseButton;
 
     [Header("pop ups")]
     [SerializeField] private ClanSearchPopup _clanPopup;
@@ -155,6 +168,34 @@ public class ClanMainView : MonoBehaviour
 
         ToggleClanPanel(false);
         OpenLink();
+
+        if (_carbonEmissionButton != null)
+        {
+            _carbonEmissionButton.onClick.RemoveListener(OpenCarbonEmissionPopup);
+            _carbonEmissionButton.onClick.AddListener(OpenCarbonEmissionPopup);
+        }
+
+        if (_carbonEmissionPopupCloseButton != null)
+        {
+            _carbonEmissionPopupCloseButton.onClick.RemoveListener(CloseCarbonEmissionPopup);
+            _carbonEmissionPopupCloseButton.onClick.AddListener(CloseCarbonEmissionPopup);
+        }
+
+        CloseCarbonEmissionPopup();
+
+        if (_rulesButton != null)
+        {
+            _rulesButton.onClick.RemoveListener(OpenRulesPopup);
+            _rulesButton.onClick.AddListener(OpenRulesPopup);
+        }
+
+        if (_rulesPopupCloseButton != null)
+        {
+            _rulesPopupCloseButton.onClick.RemoveListener(CloseRulesPopup);
+            _rulesPopupCloseButton.onClick.AddListener(CloseRulesPopup);
+        }
+
+        CloseRulesPopup();
 
         if (_clanLockButton != null)
         {
@@ -278,6 +319,19 @@ public class ClanMainView : MonoBehaviour
 
         if (_passwordPopupContinueButton != null)
             _passwordPopupContinueButton.onClick.RemoveListener(ClosePasswordPopup);
+
+        if (_rulesButton != null)
+            _rulesButton.onClick.RemoveListener(OpenRulesPopup);
+
+
+        if (_rulesPopupCloseButton != null)
+            _rulesPopupCloseButton.onClick.RemoveListener(CloseRulesPopup);
+
+        if (_carbonEmissionButton != null)
+            _carbonEmissionButton.onClick.RemoveListener(OpenCarbonEmissionPopup);
+
+        if (_carbonEmissionPopupCloseButton != null)
+            _carbonEmissionPopupCloseButton.onClick.RemoveListener(CloseCarbonEmissionPopup);
     }
 
     private void ResetViewState()
@@ -873,6 +927,12 @@ public class ClanMainView : MonoBehaviour
 
         ShowOverlay(true);
         _passwordPopup.SetActive(true);
+
+        if (_popupOverlayButton != null)
+        {
+            _popupOverlayButton.onClick.RemoveListener(ClosePasswordPopup);
+            _popupOverlayButton.onClick.AddListener(ClosePasswordPopup);
+        }
     }
 
     private void ClosePasswordPopup()
@@ -880,6 +940,93 @@ public class ClanMainView : MonoBehaviour
         if (_passwordPopup != null)
         {
             _passwordPopup.SetActive(false);
+        }
+
+        if (_popupOverlayButton != null)
+        {
+            _popupOverlayButton.onClick.RemoveListener(ClosePasswordPopup);
+        }
+
+        ShowOverlay(false);
+    }
+
+    private void OpenRulesPopup()
+    {
+        if (_rulesPopup != null)
+        {
+            _rulesPopup.SetActive(true);
+        }
+
+        if (_openBookObject != null)
+        {
+            _openBookObject.SetActive(true);
+        }
+
+        if (_closedBookObject != null)
+        {
+            _closedBookObject.SetActive(false);
+        }
+
+        ShowOverlay(true);
+
+        if (_popupOverlayButton != null)
+        {
+            _popupOverlayButton.onClick.RemoveListener(CloseRulesPopup);
+            _popupOverlayButton.onClick.AddListener(CloseRulesPopup);
+        }
+    }
+
+    private void CloseRulesPopup()
+    {
+        if (_rulesPopup != null)
+        {
+            _rulesPopup.SetActive(false);
+        }
+
+        if (_openBookObject != null)
+        {
+            _openBookObject.SetActive(false);
+        }
+
+        if (_closedBookObject != null)
+        {
+            _closedBookObject.SetActive(true);
+        }
+
+        if (_popupOverlayButton != null)
+        {
+            _popupOverlayButton.onClick.RemoveListener(CloseRulesPopup);
+        }
+
+        ShowOverlay(false);
+    }
+
+    private void OpenCarbonEmissionPopup()
+    {
+        if (_carbonEmissionPopup != null)
+        {
+            _carbonEmissionPopup.SetActive(true);
+        }
+
+        ShowOverlay(true);
+
+        if (_popupOverlayButton != null)
+        {
+            _popupOverlayButton.onClick.RemoveListener(CloseCarbonEmissionPopup);
+            _popupOverlayButton.onClick.AddListener(CloseCarbonEmissionPopup);
+        }
+    }
+
+    private void CloseCarbonEmissionPopup()
+    {
+        if (_carbonEmissionPopup != null)
+        {
+            _carbonEmissionPopup.SetActive(false);
+        }
+
+        if (_popupOverlayButton != null)
+        {
+            _popupOverlayButton.onClick.RemoveListener(CloseCarbonEmissionPopup);
         }
 
         ShowOverlay(false);
