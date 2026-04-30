@@ -442,7 +442,7 @@ namespace Battle.QSimulation.Player
                 ClassOption.UseClass     => @class,
                 ClassOption.UseTestClass => testClass,
 
-                _                   => null
+                _ => null
             };
 
             if (loadedClass == null)
