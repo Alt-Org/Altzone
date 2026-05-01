@@ -65,12 +65,12 @@ namespace MenuUI.Scripts.SoulHome
         {
             EditModeTrayResize();
             if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.OpenSoulHome();
-            JukeBoxSoulhomeHandler.OnChangeJukeBoxSong += SetSongName;
+            JukeBoxSoulhomeHandler.OnChangeJukeboxSong += SetSongName;
         }
 
         public void OnDisable()
         {
-            JukeBoxSoulhomeHandler.OnChangeJukeBoxSong -= SetSongName;
+            JukeBoxSoulhomeHandler.OnChangeJukeboxSong -= SetSongName;
             AudioManager.Instance.PlayMusic(AudioCategoryType.MainMenu);
         }
 

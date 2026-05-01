@@ -44,17 +44,16 @@ namespace MenuUi.Scripts.MainMenu
             StartCoroutine(CheckWindowSize());
 
             OverlayPanelCheck.Instance?.gameObject.SetActive(true);
-            AudioManager.Instance?.SetCurrentAreaCategoryName("MainMenu");
 
             try
             {
                 if (jukeboxMainMenu)
                 {
                     if (JukeboxManager.Instance != null && string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
-                        AudioManager.Instance?.PlayMusic("MainMenu");
+                        AudioManager.Instance?.PlayMusic(AudioCategoryType.MainMenu);
                 }
                 else
-                    AudioManager.Instance?.PlayMusic("MainMenu");
+                    AudioManager.Instance?.PlayMusic(AudioCategoryType.MainMenu);
             }
             catch (Exception e) { Debug.LogException(e); }
 

@@ -70,8 +70,6 @@ public class JukeboxTrackQueueHandler : SmartListItem, IBeginDragHandler, IEndDr
         _buttonInputCanceled = true;
     }
 
-    public bool InUse() { return !string.IsNullOrEmpty(_id); }
-
     public override void SetData<T1>(T1 data1)
     {
         if (!CheckClassType<T1, TrackQueueData>(data1)) return;
@@ -84,6 +82,7 @@ public class JukeboxTrackQueueHandler : SmartListItem, IBeginDragHandler, IEndDr
             return;
         }
 
+        InUse = true;
         _id = data.ServerSongData.id;
         _musicTrack = data.MusicTrack;
         _linearIndex = data.LinearIndex;
@@ -107,6 +106,7 @@ public class JukeboxTrackQueueHandler : SmartListItem, IBeginDragHandler, IEndDr
 
     public override void ClearData()
     {
+        InUse = false;
         _id = "";
         _musicTrack = null;
         _trackNameText.text = "";

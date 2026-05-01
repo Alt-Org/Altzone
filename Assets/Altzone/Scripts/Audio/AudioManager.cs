@@ -232,16 +232,6 @@ namespace Altzone.Scripts.Audio
 
         #region Music
 
-        [Obsolete("Use SetCurrentAreaCategoryType instead.")]
-        public void SetCurrentAreaCategoryName(string categoryName)
-        {
-            bool success = Enum.TryParse<AudioCategoryType>(categoryName, out var categoryType);
-
-            if (!success) return;
-
-            _currentAreaType = categoryType;
-        }
-
         private void SetCurrentAreaCategoryType(AudioCategoryType categoryType) { _currentAreaType = categoryType; }
 
         public List<MusicTrack> GetMusicList(string categoryName) { return _musicHandler.GetMusicList(categoryName); }
@@ -309,13 +299,11 @@ namespace Altzone.Scripts.Audio
                 SetCurrentAreaCategoryType(categoryType);
             }
 
-            if (CanPlay(categoryType)) return true;
-
             if (categoryType == AudioCategoryType.MainMenu)
                 _musicHandler.SetMainMenuMusicName(
                     SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic));
 
-            return false;
+            return CanPlay(categoryType);
         }
 
         public string PlayFallBackTrack(MusicSwitchType switchType = MusicSwitchType.CrossFade, bool forcePlay = false)
@@ -332,7 +320,8 @@ namespace Altzone.Scripts.Audio
 
             SettingsCarrier carrier = SettingsCarrier.Instance;
 
-            bool canPlayJukebox = JukeboxManager.Instance.CurrentTrackQueueData != null && (
+            bool canPlayJukebox = (JukeboxManager.Instance.CurrentTrackQueueData != null ||
+                                   JukeboxManager.Instance.TrackPreviewActive) && !JukeboxManager.Instance.JukeboxMuted && (
                 _jukeboxWindowOpen
                 || carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Soulhome) && _currentAreaType == AudioCategoryType.SoulHome
                 || carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.MainMenu) && _currentAreaType == AudioCategoryType.MainMenu
@@ -365,15 +354,9 @@ namespace Altzone.Scripts.Audio
             _musicHandler.StopMusic(_musicHandler.PrimaryChannel);
         }
 
-        public string ContinueMusic(AudioCategoryType categoryType, string trackName, MusicSwitchType switchType, float startLocation, bool forcePlay = false)
+        public string ContinueMusic(AudioCategoryType categoryType, string trackName, MusicSwitchType switchType, float startLocation)
         {
             return HandleFallBack(categoryType, trackName) ? _musicHandler.PlayMusic(categoryType, trackName, switchType, startLocation) : "";
-        }
-
-        [Obsolete("Please use AudioCategoryType version instead of this string version.")]
-        public string ContinueMusic(string categoryName, MusicTrack musicTrack, MusicSwitchType switchType, float startLocation, bool forcePlay = false) //TODO: Jukebox continuing area musics?
-        {
-            return HandleFallBack(categoryName, musicTrack.Name) ? _musicHandler.PlayMusic(categoryName, musicTrack, switchType, startLocation, forcePlay) : "";
         }
 
         public string ContinueMusic(AudioCategoryType categoryType, MusicTrack musicTrack, MusicSwitchType switchType, float startLocation, bool forcePlay = false)

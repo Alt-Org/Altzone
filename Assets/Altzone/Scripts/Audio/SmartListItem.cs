@@ -9,6 +9,8 @@ namespace Altzone.Scripts.Audio
 
         public bool Visible  { get { return gameObject.activeSelf; } }
 
+        public bool InUse { get; protected set; }
+
         public SmartListItem() { }
 
         public SmartListItem(RectTransform selfRectTransform) { _selfRectTransform = selfRectTransform; }
@@ -30,9 +32,9 @@ namespace Altzone.Scripts.Audio
 
         public virtual void SetVisibility(bool visible) { gameObject.SetActive(visible); }
 
-        public virtual void SetData<T1>(T1 data1) { }
+        public virtual void SetData<T1>(T1 data1) { InUse = true; }
 
-        public virtual void ClearData() { }
+        public virtual void ClearData() { InUse = false; }
 
         public void SetSelfRectTransform() { _selfRectTransform = GetComponent<RectTransform>(); }
     }

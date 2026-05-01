@@ -9,10 +9,6 @@ public class PlayMusic : MonoBehaviour
     [SerializeField] private MusicHandler.MusicSwitchType _musicSwitchType;
     [SerializeField] AudioCategoryType _musicCategory;
     [SerializeField] string _musicName;
-    [Header("If in a jukebox area")]
-    [SerializeField] private bool _useJukeboxSection = false;
-    [SerializeField] private TMPro.TextMeshProUGUI _musicNameText;
-    [SerializeField] private SettingsCarrier.JukeboxPlayArea _currentJukeboxPlayArea;
 
     void OnEnable() { StartCoroutine(WaitForRequiredClasses()); }
 
@@ -22,50 +18,11 @@ public class PlayMusic : MonoBehaviour
 
         yield return new WaitUntil(() => (AudioManager.Instance && MusicReference.Instance));
 
-        // if (_useJukeboxSection)
-        //     StartTrackControlExpanded(false);
-        // else
-            StartTrackControlStandard();
-    }
-
-    private string StartTrackControlExpanded(bool playAnimations = true)
-    {
-        AudioManager.Instance?.SetCurrentAreaCategoryName(_musicCategory.ToString());
-
-        bool allowedToPlay = SettingsCarrier.Instance.CanPlayJukeboxInArea(_currentJukeboxPlayArea);
-
-        if (JukeboxManager.Instance && allowedToPlay)
-        {
-            string result = JukeboxManager.Instance.TryPlayTrack(playAnimations);
-
-            if (!string.IsNullOrEmpty(result))
-            {
-                if (_musicNameText)
-                    _musicNameText.text = result;
-                else
-                    return result;
-
-                return "";
-            }
-        }
-        else
-            Debug.LogWarning("Could not try to start jukebox playback.");
-
-        MusicTrack startMusicTrack = MusicReference.Instance.GetTrack(_musicCategory, _musicName);
-
-        if (startMusicTrack == null)
-        {
-            Debug.LogError("Start track is null!");
-            return "";
-        }
-
-        return (AudioManager.Instance ? AudioManager.Instance.PlayMusic(_musicCategory, startMusicTrack, _musicSwitchType) : "");
+        StartTrackControlStandard();
     }
 
     private void StartTrackControlStandard()
     {
-        //AudioManager.Instance?.SetCurrentAreaCategoryType(_musicCategory);
-
         MusicTrack startMusicTrack = MusicReference.Instance.GetTrack(_musicCategory, _musicName);
 
         if (startMusicTrack == null)
@@ -74,7 +31,8 @@ public class PlayMusic : MonoBehaviour
             return;
         }
 
-        AudioManager.Instance?.PlayMusic(_musicCategory, startMusicTrack, _musicSwitchType);
+        if (string.IsNullOrEmpty(AudioManager.Instance?.PlayMusic(_musicCategory, startMusicTrack, _musicSwitchType)))
+            JukeboxManager.Instance?.TryPlayTrack();
     }
 
     public void Play() { AudioManager.Instance?.PlayMusic(_musicCategory, _musicName, _musicSwitchType); }

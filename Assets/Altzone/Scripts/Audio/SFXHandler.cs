@@ -167,13 +167,10 @@ namespace Altzone.Scripts.Audio
 
             GetFreeAudioSourceHandler(soundEffect).SetPlayAudioClip(soundEffect.Audio, (soundEffect.Type == SoundPlayType.Loop), pitch);
 
-            if ((_activeChannels.Count - 1) >= 0)
-                return _activeChannels[^1];
-            else
-            {
-                Debug.LogError("SFX Handler Error: Active channels is empty!");
-                return null;
-            }
+            if ((_activeChannels.Count - 1) >= 0) return _activeChannels[^1];
+
+            Debug.LogError("SFX Handler Error: Active channels is empty!");
+            return null;
         }
 
         public bool PlaybackOperation(SFXPlaybackOperationType type, string sFXName, float pitch = 1f)
@@ -290,14 +287,16 @@ namespace Altzone.Scripts.Audio
 
         private AudioSourceHandler GetFreeAudioSourceHandler(SoundEffect soundEffect)
         {
-            for (int i = 0; i < _channelChunks.Count; i++)
-                if (_channelChunks[i].AmountInUse < _audioChannelAddAmount)
-                    for (int j = 0; j < _channelChunks[i].AudioChannels.Count; j++)
-                        if (!_channelChunks[i].AudioChannels[j].audioSourceHandler.IsInUse())
+            AudioChannelData data;
+
+            for (int chunkIndex = 0; chunkIndex < _channelChunks.Count; chunkIndex++)
+                if (_channelChunks[chunkIndex].AmountInUse < _audioChannelAddAmount)
+                    for (int poolIndex = 0; poolIndex < _channelChunks[chunkIndex].AudioChannels.Count; poolIndex++)
+                        if (!_channelChunks[chunkIndex].AudioChannels[poolIndex].audioSourceHandler.IsInUse())
                         {
-                            _channelChunks[i].AmountInUse++;
-                            _activeChannels.Add(new(i, j));
-                            AudioChannelData data = GetAudioChannelData(i, j);
+                            _channelChunks[chunkIndex].AmountInUse++;
+                            _activeChannels.Add(new ActiveChannelPath(chunkIndex, poolIndex));
+                            data = GetAudioChannelData(chunkIndex, poolIndex);
                             data.SoundEffectData = soundEffect;
                             data.audioSourceHandler.SetVolume(GetVolume(soundEffect));
 
@@ -309,7 +308,11 @@ namespace Altzone.Scripts.Audio
             _channelChunks[^1].AmountInUse++;
             _activeChannels.Add(new ActiveChannelPath(_channelChunks.Count - 1, 0));
 
-            return GetAudioChannelData(_channelChunks.Count - 1, 0).audioSourceHandler;
+            data = GetAudioChannelData(_channelChunks.Count - 1, 0);
+            data.SoundEffectData = soundEffect;
+            data.audioSourceHandler.SetVolume(GetVolume(soundEffect));
+
+            return data.audioSourceHandler;
         }
 
         private void CreateChunk()

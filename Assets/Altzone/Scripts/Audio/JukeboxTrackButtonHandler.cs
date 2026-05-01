@@ -112,6 +112,7 @@ public class JukeboxTrackButtonHandler : SmartListItem, IBeginDragHandler, IEndD
 
         PersonalizedMusicTrack personalizedMusicTrack = data1 as PersonalizedMusicTrack;
 
+        InUse = true;
         _musicTrack = personalizedMusicTrack.Track;
         _trackNameAutoScroll.SetContent(personalizedMusicTrack.Track.Name, false, false);
         _trackCreditsNamesAutoScroll.SetContent(personalizedMusicTrack.Track.JukeboxInfo.GetArtistNames(), false, false);
@@ -122,7 +123,7 @@ public class JukeboxTrackButtonHandler : SmartListItem, IBeginDragHandler, IEndD
         _favoriteButtonHandler?.Setup(personalizedMusicTrack.FavoriteType, personalizedMusicTrack.Track.Id);
     }
 
-    public override void ClearData() { _musicTrack = null; gameObject.SetActive(false); }
+    public override void ClearData() { _musicTrack = null; gameObject.SetActive(false); InUse =  false; }
 
     public void StartDiskSpin() { StopDiskSpin(); _diskSpinCoroutine = StartCoroutine(SpinDisk()); }
 

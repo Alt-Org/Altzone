@@ -401,15 +401,15 @@ namespace Altzone.Scripts.Audio
 
             if (serverCurrentSong == null)
             {
+                _currentTrackQueueData = null;
+
                 if (!_trackPreviewActive)
                 {
                     OnStopJukeboxVisuals?.Invoke();
                     OnClearJukeboxVisuals?.Invoke();
 
-                    AudioManager.Instance.PlayFallBackTrack(MusicHandler.MusicSwitchType.CrossFade);
+                    AudioManager.Instance.PlayFallBackTrack();
                 }
-
-                _currentTrackQueueData = null;
 
                 yield break;
             }
@@ -442,7 +442,7 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        ///
+        /// Tries to play current track in jukebox if any are available.
         /// </summary>
         /// <returns></returns>
         public string TryPlayTrack(bool useAnimations = true)
@@ -517,7 +517,7 @@ namespace Altzone.Scripts.Audio
             {
                 _jukeboxMuted = !_jukeboxMuted;
 
-                if (_jukeboxMuted && _trackPreviewActive) StopMusicPreview();
+                if (_jukeboxMuted && _trackPreviewActive) StopMusicPreview(true);
             }
             else
                 _playbackPaused = !_playbackPaused;
@@ -530,9 +530,7 @@ namespace Altzone.Scripts.Audio
                     PlayTrack();
             }
             else
-                AudioManager.Instance.PlayFallBackTrack(MusicHandler.MusicSwitchType.CrossFade);
-
-            if (_playbackPaused) StopJukebox();
+                AudioManager.Instance.PlayFallBackTrack();
 
             return (muteActivation ? _jukeboxMuted : _playbackPaused);
         }
@@ -565,15 +563,10 @@ namespace Altzone.Scripts.Audio
             OnSetSongInfo?.Invoke(_currentTrackQueueData.MusicTrack);
 
             if (!_jukeboxMuted)
-                return AudioManager.Instance.ContinueMusic("Jukebox", _currentTrackQueueData.MusicTrack,
+                return AudioManager.Instance.ContinueMusic(AudioCategoryType.Jukebox, _currentTrackQueueData.MusicTrack,
                     MusicHandler.MusicSwitchType.CrossFade, _musicElapsedTime, forcePlay);
 
             return null;
-        }
-
-        public void StopJukebox()
-        {
-
         }
 
         private IEnumerator TrackEndingControl(bool playAnimations = true)
@@ -625,7 +618,6 @@ namespace Altzone.Scripts.Audio
             {
                 AudioManager manager = AudioManager.Instance;
                 _currentTrackQueueData = null;
-                StopJukebox();
 
                 if (manager.FallbackMusicCategory != AudioCategoryType.None)
                     manager.PlayMusic(manager.FallbackMusicCategory, manager.FallbackMusicTrack);
@@ -693,7 +685,10 @@ namespace Altzone.Scripts.Audio
                 _currentPreviewTrackCoroutine = null;
             }
 
-            string trackName = AudioManager.Instance.ContinueMusic("Jukebox", musicTrack,
+            _jukeboxMuted = false;
+            _trackPreviewActive = true;
+
+            string trackName = AudioManager.Instance.ContinueMusic(AudioCategoryType.Jukebox, musicTrack,
                 MusicHandler.MusicSwitchType.CrossFade, 0f, true);
 
             if (trackName == null)
@@ -703,10 +698,6 @@ namespace Altzone.Scripts.Audio
             }
 
             OnJukeboxMute?.Invoke(false);
-
-            _jukeboxMuted = false;
-            _trackPreviewActive = true;
-
             OnSetSongInfo?.Invoke(musicTrack);
             OnPreviewStart?.Invoke();
 
@@ -733,7 +724,7 @@ namespace Altzone.Scripts.Audio
             StopMusicPreview();
         }
 
-        public void StopMusicPreview()
+        public void StopMusicPreview(bool muteActivation = false)
         {
             if (_currentPreviewTrackCoroutine != null)
             {
@@ -753,24 +744,22 @@ namespace Altzone.Scripts.Audio
 
             _trackPreviewActive = false;
 
-            if (_currentTrackQueueData == null)
+            if (_currentTrackQueueData == null || string.IsNullOrEmpty(ContinueTrack(muteActivation, true)))
             {
-                AudioManager.Instance.PlayFallBackTrack(MusicHandler.MusicSwitchType.CrossFade);
+                AudioManager.Instance.PlayFallBackTrack();
 
                 OnStopJukeboxVisuals?.Invoke();
-                OnClearJukeboxVisuals?.Invoke();
 
-                return;
-            }
+                if (_currentTrackQueueData != null)
+                    OnSetSongInfo?.Invoke(_currentTrackQueueData.MusicTrack);
+                else
+                    OnClearJukeboxVisuals?.Invoke();
 
-            if (ContinueTrack(false, true) == null)
-            {
-                Debug.LogWarning("Failed to continue track playback.");
+
                 return;
             }
 
             OnSetSongInfo?.Invoke(_currentTrackQueueData.MusicTrack);
-
         }
         #endregion
 
