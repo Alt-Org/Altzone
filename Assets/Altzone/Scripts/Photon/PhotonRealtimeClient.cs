@@ -45,7 +45,6 @@ public static class PhotonRealtimeClient
 
     private static string DefaultGameVersion => $"{Application.version}.{_bundleVersion}";
     private static int _bundleVersion = 0;
-    private static int _matchmakingRoomSequence = 0;
 
     public static string GameVersion
     {
@@ -57,11 +56,6 @@ public static class PhotonRealtimeClient
         }
     }
     private static string gameVersion;
-
-    private static int GetNextMatchmakingRoomSequence()
-    {
-        return ++_matchmakingRoomSequence;
-    }
 
     public static AuthenticationValues AuthValues
     {
@@ -1005,8 +999,8 @@ public static class PhotonRealtimeClient
         return Client.OpJoinRandomOrCreateRoom(joinRandomRoomArgs, enterRoomArgs);
     }
 
-    // Deterministic JoinOrCreate for matchmaking rooms to avoid duplicate queues when multiple clients race.
-    // Uses a fixed room name per gameType so the server will atomically join existing or create one.
+    // Server-side matchmaking room assignment using shared bucket properties.
+    // Room names are allocated by the server when creating new rooms.
     public static bool JoinOrCreateMatchmakingRoom(GameType gameType, string[] expectedUsers = null, string clanName = "", int soulhomeRank = -1)
     {
         if (Client.Server != ServerConnection.MasterServer || !Client.IsConnectedAndReady)
@@ -1015,32 +1009,19 @@ public static class PhotonRealtimeClient
             return false;
         }
 
-        // Unique room name with sequence counter allows concurrent match formations without collision.
-        // When one match is in play and closes its room, the next formation won't fail trying to join a closed room.
-        int sequenceId = GetNextMatchmakingRoomSequence();
-        string roomName = string.IsNullOrEmpty(clanName) ? $"Matchmaking_{gameType}_{sequenceId}" : $"Matchmaking_{gameType}_{clanName}_{sequenceId}";
+        RoomOptions roomOptions = GetRoomOptions(gameType, true, "", Emotion.Blank, "", "", clanName, soulhomeRank);
+        EnterRoomArgs enterRoomArgs = GetEnterRoomArgs("", roomOptions, expectedUsers);
 
-        RoomOptions roomOptions = GetRoomOptions(gameType, true, "", Emotion.Blank, roomName, "", clanName, soulhomeRank);
-        EnterRoomArgs enterRoomArgs = GetEnterRoomArgs(roomName, roomOptions, expectedUsers);
+        JoinRandomRoomArgs joinRandomRoomArgs = new JoinRandomRoomArgs();
+        var expectedProps = new PhotonHashtable{ { PhotonBattleRoom.GameTypeKey, gameType }, { PhotonBattleRoom.IsMatchmakingKey, true } };
+        if (!string.IsNullOrEmpty(clanName)) expectedProps.Add(PhotonBattleRoom.ClanNameKey, clanName);
+        if (soulhomeRank >= 0) expectedProps.Add(PhotonBattleRoom.SoulhomeRank, soulhomeRank);
+        joinRandomRoomArgs.ExpectedCustomRoomProperties = expectedProps;
+        joinRandomRoomArgs.ExpectedMaxPlayers = roomOptions.MaxPlayers;
+        joinRandomRoomArgs.Lobby = enterRoomArgs.Lobby;
+        joinRandomRoomArgs.ExpectedUsers = expectedUsers;
 
-        // Use OpJoinOrCreateRoom if available on the Client API. This performs atomic server-side join-or-create.
-        try
-        {
-            return Client.OpJoinOrCreateRoom(enterRoomArgs);
-        }
-        catch (Exception ex)
-        {
-            Debug.LogWarning($"JoinOrCreateMatchmakingRoom fallback failed: {ex.Message}. Falling back to JoinRandomOrCreate.");
-            // Fallback to JoinRandomOrCreateRoom if OpJoinOrCreateRoom isn't available
-            JoinRandomRoomArgs joinRandomRoomArgs = new JoinRandomRoomArgs();
-            var expectedProps = new PhotonHashtable{ { PhotonBattleRoom.GameTypeKey, gameType }, { PhotonBattleRoom.IsMatchmakingKey, true } };
-            if (!string.IsNullOrEmpty(clanName)) expectedProps.Add(PhotonBattleRoom.ClanNameKey, clanName);
-            joinRandomRoomArgs.ExpectedCustomRoomProperties = expectedProps;
-            joinRandomRoomArgs.ExpectedMaxPlayers = roomOptions.MaxPlayers;
-            joinRandomRoomArgs.Lobby = enterRoomArgs.Lobby;
-            joinRandomRoomArgs.ExpectedUsers = expectedUsers;
-            return Client.OpJoinRandomOrCreateRoom(joinRandomRoomArgs, enterRoomArgs);
-        }
+        return Client.OpJoinRandomOrCreateRoom(joinRandomRoomArgs, enterRoomArgs);
     }
 
     // Join or create a persistent queue room that can hold many players waiting for matches.

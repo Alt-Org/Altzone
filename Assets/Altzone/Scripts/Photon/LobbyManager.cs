@@ -102,6 +102,8 @@ namespace Altzone.Scripts.Lobby
         private const float MatchmakingJoinTimeoutSeconds = 5f;
         // Marker for matchmaking rooms that were created from queue timeout flow.
         private const string QueueFormedMatchKey = "qfm";
+        // When true, clients must enter queue first and never directly create/join matchmaking rooms.
+        private static bool UseQueueAuthoritativeMatchmaking = true;
         // Flattened queue duo list [duo1UserA, duo1UserB, duo2UserA, duo2UserB, ...].
         private const string QueueDuoPairsKey = "qdp";
         // Flattened queue solo-pair list [pair1UserA, pair1UserB, pair2UserA, pair2UserB, ...].
@@ -1125,8 +1127,7 @@ namespace Altzone.Scripts.Lobby
 
                     if (!joined)
                     {
-                        Debug.LogWarning("RequeueToPersistentQueue: JoinOrCreateQueueRoom failed; attempting server-side fallback JoinOrCreateMatchmakingRoom.");
-                        try { PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(gameType, _teammates); } catch (Exception ex) { Debug.LogWarning($"RequeueToPersistentQueue: JoinOrCreateMatchmakingRoom failed: {ex.Message}"); }
+                        Debug.LogWarning("RequeueToPersistentQueue: JoinOrCreateQueueRoom failed; aborting requeue (no direct matchmaking-room fallback in queue-authoritative flow).");
                     }
                     else
                     {
@@ -3807,8 +3808,8 @@ namespace Altzone.Scripts.Lobby
             // Wait for lobby and initial room listing; room search below depends on CurrentRooms.
             yield return new WaitUntil(() => PhotonRealtimeClient.InLobby && CurrentRooms != null);
 
-            // In premade InRoom flow we must join queue first, not a matchmaking room directly.
-            if (_isPremadeMatchmakingFlow)
+            // Queue-authoritative flow: all clients enter queue room first and queue owner forms matches.
+            if (UseQueueAuthoritativeMatchmaking)
             {
                 bool queueJoinRequested = false;
                 try
@@ -3817,7 +3818,7 @@ namespace Altzone.Scripts.Lobby
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogWarning($"StartMatchmaking: JoinOrCreateQueueRoom failed for premade flow: {ex.Message}");
+                    Debug.LogWarning($"StartMatchmaking: JoinOrCreateQueueRoom failed: {ex.Message}");
                 }
 
                 if (queueJoinRequested)
@@ -3862,7 +3863,7 @@ namespace Altzone.Scripts.Lobby
                         }
                         catch (Exception ex)
                         {
-                            Debug.LogWarning($"StartMatchmaking: failed to stamp premade metadata to queue room: {ex.Message}");
+                            Debug.LogWarning($"StartMatchmaking: failed to stamp queue metadata: {ex.Message}");
                         }
 
                         if (broadcastRoomChange && !string.IsNullOrEmpty(queueRoomName))
@@ -3879,19 +3880,23 @@ namespace Altzone.Scripts.Lobby
                         yield break;
                     }
 
-                    Debug.LogWarning("StartMatchmaking: premade queue join did not land in a queue room, falling back to direct matchmaking flow.");
+                    Debug.LogWarning("StartMatchmaking: queue join did not land in a queue room.");
                 }
                 else
                 {
-                    Debug.LogWarning("StartMatchmaking: premade queue join request failed, falling back to direct matchmaking flow.");
+                    Debug.LogWarning("StartMatchmaking: queue join request failed.");
                 }
 
-                // Ensure fallback path starts from lobby if queue join attempt left us in a room.
+                // Ensure failure path starts from lobby if queue join attempt left us in a room.
                 if (PhotonRealtimeClient.InRoom)
                 {
                     PhotonRealtimeClient.LeaveRoom();
                     yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
                 }
+
+                Debug.LogWarning("StartMatchmaking: aborting matchmaking start because queue-authoritative entry failed.");
+                OnFailedToStartMatchmakingGame?.Invoke();
+                yield break;
             }
 
             // Searching for suitable room and attempting to join each candidate.
@@ -5398,20 +5403,16 @@ namespace Altzone.Scripts.Lobby
                         }
                         else
                         {
-                            Debug.Log("FollowLeaderToNewRoom: failed to join leader room; attempting server-side JoinOrCreate matchmaking room.");
+                            Debug.Log("FollowLeaderToNewRoom: failed to join leader room; rejoining queue instead of creating a matchmaking room directly.");
                             try
                             {
-                                Debug.Log($"FollowLeaderToNewRoom: calling JoinOrCreateMatchmakingRoom, teammates count={followTeammates?.Length ?? 0}");
-                                PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(GameType.Random2v2, followTeammates);
-                                
-                                // Track the join attempt with the actual room name that was created
-                                string actualRoomName = PhotonRealtimeClient.CurrentRoom?.Name ?? "Unknown_Matchmaking_Room";
-                                int joinOrCreateId = BeginJoinAttempt(actualRoomName, followTeammates);
-                                Debug.Log($"FollowLeaderToNewRoom: JoinOrCreateMatchmakingRoom created room '{actualRoomName}' (JoinAttempt[{joinOrCreateId}])");
+                                int joinOrCreateId = BeginJoinAttempt($"Queue_{_currentMatchmakingGameType}", followTeammates);
+                                Debug.Log($"FollowLeaderToNewRoom: JoinAttempt[{joinOrCreateId}] JoinOrCreateQueueRoom({_currentMatchmakingGameType})");
+                                PhotonRealtimeClient.JoinOrCreateQueueRoom(_currentMatchmakingGameType);
                             }
                             catch (Exception ex)
                             {
-                                Debug.LogWarning($"FollowLeaderToNewRoom: JoinOrCreateMatchmakingRoom failed: {ex.Message}");
+                                Debug.LogWarning($"FollowLeaderToNewRoom: JoinOrCreateQueueRoom failed: {ex.Message}");
                             }
                         }
 
@@ -5467,11 +5468,11 @@ namespace Altzone.Scripts.Lobby
                             {
                                 try
                                 {
-                                    PhotonRealtimeClient.JoinRandomOrCreateRandom2v2Room(followTeammates, true);
+                                    PhotonRealtimeClient.JoinOrCreateQueueRoom(_currentMatchmakingGameType);
                                 }
                                 catch (Exception ex)
                                 {
-                                    Debug.LogWarning($"FollowLeaderToNewRoom: second JoinRandomOrCreate failed: {ex.Message}");
+                                    Debug.LogWarning($"FollowLeaderToNewRoom: second queue JoinOrCreate failed: {ex.Message}");
                                 }
                             }
 
