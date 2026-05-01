@@ -10,6 +10,8 @@ public class MessageReactionResize : MonoBehaviour
     private RectTransform _rectTranformChild;
     [SerializeField] private RectTransform _rectTranformParent;
     [SerializeField] private GridLayoutGroup _gridLayout;
+    [SerializeField] private int _limitX;
+    [SerializeField] private int _limitY;
 
     private void Awake()
     {
@@ -18,8 +20,16 @@ public class MessageReactionResize : MonoBehaviour
     /// <summary>
     /// This script updates the "AllReactionsScrollView" selections size
     /// </summary>
+    ///
+
+    private void OnEnable()
+    {
+        UpdateSize();
+    }
+
+
     public void UpdateSize()
-    { 
+    {
         int activeChildren = 0;
         //basicly first it count how many childs the object has and then after that counts which one are active or not
         for (int i = 0; i < _rectTranformChild.childCount; i++)
@@ -28,9 +38,9 @@ public class MessageReactionResize : MonoBehaviour
         }
 
         ///Updates the width of the object depending how many reactions there still is and the gridlayout's contraintCount
-        if (activeChildren <= _gridLayout.constraintCount)
-        _rectTranformParent.sizeDelta = new Vector2(Mathf.Clamp(activeChildren * 85, 85, _gridLayout.constraintCount * 85), 85);
-        else _rectTranformParent.sizeDelta = new Vector2(Mathf.Clamp(activeChildren * 85, 85, _gridLayout.constraintCount * 85), 170);
+        ///
+        _rectTranformParent.sizeDelta = new Vector2(Mathf.Clamp(activeChildren * _limitX, _limitX, _gridLayout.constraintCount * _limitX), _limitY);
+
 
         /*//Changes the visual colors if user somehow has put all the reactions in (not in use yet)
          if (i < 0)

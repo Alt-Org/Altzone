@@ -44,6 +44,7 @@ namespace MenuUi.Scripts.MainMenu
             StartCoroutine(CheckWindowSize());
 
             OverlayPanelCheck.Instance?.gameObject.SetActive(true);
+            OverlayPanelCheck.Instance?.ToggleOverlay(true);
 
             try
             {
