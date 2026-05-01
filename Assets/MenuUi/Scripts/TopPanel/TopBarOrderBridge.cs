@@ -181,6 +181,7 @@ public class TopBarOrderBridge : MonoBehaviour
         // --- C) Sovella toggle-listaan ja p�ivit� yl�palkki ---
         ApplyOrderToToggleList(order, _toggleContainer, owner);
         owner.ApplyFromSettings();
+        owner.ApplyOrderFromSettings();
     }
 
     // pos->enum j�rjestyksen soveltaminen toggle-listaan

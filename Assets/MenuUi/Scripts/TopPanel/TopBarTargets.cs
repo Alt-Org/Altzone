@@ -31,53 +31,46 @@ namespace MenuUI.Scripts.TopPanel
         [SerializeField] private TopBarDefs.TopBarItem _clanItem = TopBarDefs.TopBarItem.ClanTile;
         [SerializeField] private TopBarDefs.TopBarItem _leaderboardItem = TopBarDefs.TopBarItem.Leaderboard;
 
-
-        void Start()
-        {
-            Debug.Log($"[TopBarTargets] TopbarTargets Active on {gameObject.name}, rows: {_rows.Count}");
-        }
+        private const bool DebugOn = false;
 
         private void OnEnable()
         {
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : OnEnable()");
+
             ApplyFromSettings();
             SettingsCarrier.OnTopBarChanged += OnCarrierChanged;
         }
 
         private void OnDisable()
         {
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : OnDisable()");
+
             SettingsCarrier.OnTopBarChanged -= OnCarrierChanged;
         }
 
         private void OnCarrierChanged(int styleIndex)
         {
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : OnCarrieChanged()");
+
             if ((SettingsCarrier.TopBarStyle)styleIndex == style)
                 ApplyFromSettings();
         }
 
         public void ApplyFromSettings()
         {
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ApplyFromSettings()");
+
             RectTransform parentRT;
             if (!IsValid(out parentRT)) return;
 
-            // 1) n�kyvyys PlayerPrefsist�
             bool[] vis = ReadVisibility();
 
-            // 2) Clan vs Leaderboard -s��nt�
-            // bool clanOn, lbOn;
-            // ApplyClanLeaderboardRule(vis, out clanOn, out lbOn);
-
-            // 3) Aktivoi/poista n�kyvist� rivit
             for (int i = 0; i < _rows.Count; i++)
             {
                 if (_rows[i].visibilityTarget != null)
                     _rows[i].visibilityTarget.SetActive(vis[i]);
             }
 
-            // LB-variantit
-            // if (_clanTileLeaderboard != null) _clanTileLeaderboard.SetActive(clanOn && lbOn);
-            // if (_standaloneLeaderboard != null) _standaloneLeaderboard.SetActive(lbOn && !clanOn);
-
-            // 4) J�rjestys SettingsCarrierista (List<int>) ja suodata n�kyv�t
             List<int> rawOrder = SettingsCarrier.LoadTopBarOrderStatic(style, _rows.Count);
 
             List<int> orderedVisible = new List<int>(_rows.Count);
@@ -88,7 +81,6 @@ namespace MenuUI.Scripts.TopPanel
                     orderedVisible.Add(idx);
             }
 
-            // lis�� puuttuvat n�kyv�t loppuun
             for (int i = 0; i < _rows.Count; i++)
             {
                 if (!vis[i]) continue;
@@ -103,26 +95,30 @@ namespace MenuUI.Scripts.TopPanel
                 if (!already) orderedVisible.Add(i);
             }
 
-            // 5) Aseta sisarusindeksit spacerilla
-            //ApplyOrderWithSpacer(parentRT, orderedVisible);
             LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
         }
 
-        // ---- OrderBridge tarvitsee vain n�m� kaksi apuria ----
+
         public int RowCount()
         {
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : RowCount()");
+
             return _rows != null ? _rows.Count : 0;
         }
 
         public TopBarDefs.TopBarItem GetItemAt(int index)
         {
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : GetItemAt()");
+
             if (_rows == null || index < 0 || index >= _rows.Count) return default(TopBarDefs.TopBarItem);
             return _rows[index].item;
         }
-        // ------------------------------------------------------
+
 
         private bool IsValid(out RectTransform parentRT)
         {
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : IsValid()");
+
             parentRT = null;
 
             if (_rows == null || _rows.Count == 0)
@@ -151,11 +147,15 @@ namespace MenuUI.Scripts.TopPanel
 
         private static string PrefKeyForItem(TopBarDefs.TopBarItem item)
         {
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : PrefKeyForItem()");
+
             return TopBarDefs.Key(item);
         }
 
         private bool[] ReadVisibility()
         {
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ReadVisibility()");
+
             int count = _rows.Count;
             bool[] vis = new bool[count];
             for (int i = 0; i < count; i++)
@@ -170,19 +170,22 @@ namespace MenuUI.Scripts.TopPanel
 
         private void ApplyClanLeaderboardRule(bool[] vis, out bool clanOn, out bool lbOn)
         {
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ApplyClanLeaderboardRule()");
+
             int clanIdx = IndexOfItem(_clanItem);
             int lbIdx = IndexOfItem(_leaderboardItem);
 
             clanOn = clanIdx >= 0 && vis[clanIdx];
             lbOn = lbIdx >= 0 && vis[lbIdx];
 
-            // molemmat p��ll� -> piilota standalone LB -rivi
             if (clanOn && lbOn && lbIdx >= 0)
                 vis[lbIdx] = false;
         }
 
         private int IndexOfItem(TopBarDefs.TopBarItem item)
         {
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : IndexOfItem()");
+
             for (int i = 0; i < _rows.Count; i++)
                 if (_rows[i].item.Equals(item))
                     return i;
@@ -191,6 +194,8 @@ namespace MenuUI.Scripts.TopPanel
 
         private void EnsureSpacer(RectTransform parent)
         {
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : EnsureSpacer()");
+
             if (_flexibleSpacer == null)
             {
                 GameObject go = new GameObject("FlexibleSpacer", typeof(RectTransform), typeof(LayoutElement));
@@ -208,7 +213,7 @@ namespace MenuUI.Scripts.TopPanel
             LayoutElement le = _flexibleSpacer.GetComponent<LayoutElement>();
             le.minWidth = _spacerMinWidth;
             le.preferredWidth = 0f;
-            le.flexibleWidth = 1f; // ty�nt�� viimeisen oikealle
+            le.flexibleWidth = 1f;
             le.minHeight = 0f;
             le.preferredHeight = 0f;
             le.flexibleHeight = 0f;
@@ -216,7 +221,7 @@ namespace MenuUI.Scripts.TopPanel
 
         private void ApplyOrderWithSpacer(RectTransform parentRT, List<int> orderedVisible)
         {
-            Debug.Log("[TopBarTargets] orderedVisible = " + string.Join(",", orderedVisible));
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ApplyOrderWithSpacer()");
 
             int sib = 0;
             HashSet<Transform> alreadyMoved = new HashSet<Transform>();
@@ -227,7 +232,6 @@ namespace MenuUI.Scripts.TopPanel
 
                 if (tr == null) continue;
 
-                // Only reorder top-level topbar items.
                 if (tr.parent != parentRT) continue;
 
                 if (alreadyMoved.Contains(tr)) continue;
@@ -243,43 +247,10 @@ namespace MenuUI.Scripts.TopPanel
             LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
         }
 
-        // private void ApplyOrderWithSpacer(RectTransform parentRT, List<int> orderedVisible)
-        // {
-        //     Debug.Log("[TopBarTargets] orderedVisible = " + string.Join(",", orderedVisible));
-        //
-        //     int n = orderedVisible.Count;
-        //
-        //     if (n <= 1)
-        //     {
-        //         if (n == 1 && _rows[orderedVisible[0]].target != null)
-        //             _rows[orderedVisible[0]].target.transform.SetSiblingIndex(0);
-        //
-        //         if (_flexibleSpacer != null) _flexibleSpacer.gameObject.SetActive(false);
-        //         LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
-        //         return;
-        //     }
-        //
-        //     int sib = 0;
-        //     for (int i = 0; i < n - 1; i++)
-        //     {
-        //         GameObject go = _rows[orderedVisible[i]].target;
-        //         if (go != null) go.transform.SetSiblingIndex(sib++);
-        //     }
-        //
-        //     EnsureSpacer(parentRT);
-        //     _flexibleSpacer.gameObject.SetActive(true);
-        //     _flexibleSpacer.SetSiblingIndex(sib++);
-        //
-        //     GameObject last = _rows[orderedVisible[n - 1]].target;
-        //     if (last != null) last.transform.SetSiblingIndex(sib);
-        //
-        //     LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
-        // }
-
-        // ... muu TopBarTargets kuten sinulla jo on ...
-
         public bool TryGetRowIndex(TopBarDefs.TopBarItem item, out int index)
         {
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : TryGetRowIndex()");
+
             for (int i = 0; i < _rows.Count; i++)
             {
                 if (_rows[i].item.Equals(item))
@@ -295,14 +266,9 @@ namespace MenuUI.Scripts.TopPanel
 
         public void ApplyOrderFromSettings()
         {
-            Debug.Log($"[TopBarTargets] ApplyOrderFromSettings called, style={style}");
-
-            // Get topbar container; exit if setup is invalid.
-            RectTransform parentRT;
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ApllyOrderFromSettings()");
+ RectTransform parentRT;
             if (!IsValid(out parentRT)) return;
-
-            // Debug: list all children under topbar container
-            Debug.Log($"[TopBarTargets] Children of {parentRT.name}:");
 
             for (int i = 0; i < parentRT.childCount; i++)
             {
@@ -310,26 +276,20 @@ namespace MenuUI.Scripts.TopPanel
                 Debug.Log($"[{i}] {child.name} (active: {child.gameObject.activeSelf})");
             }
 
-            // Current on/off-visibility state for each item by PlayerRefs
             bool[] vis = ReadVisibility();
 
-            // Retrieving the saved order from SettingsCarrier
             List<int> rawOrder = SettingsCarrier.LoadTopBarOrderStatic(style, _rows.Count);
 
-            // A new list that includes only visible elements.
             List<int> orderedVisible = new List<int>(_rows.Count);
 
-            // Build ordered list of visible items based on saved order
             for (int i = 0; i < rawOrder.Count; i++)
             {
                 int idx = rawOrder[i];
 
-                // Add item only if index is valid and the item is visible
                 if ((uint)idx < (uint)_rows.Count && vis[idx])
                     orderedVisible.Add(idx);
             }
 
-            // Ensure all visible items are included, even if they are missing from saved order.
             for (int i = 0; i < _rows.Count; i++)
             {
                 if (!vis[i]) continue;
@@ -349,10 +309,6 @@ namespace MenuUI.Scripts.TopPanel
                     orderedVisible.Add(i);
             }
 
-            Debug.Log("[TopBarTargets] Loaded raw order: " + string.Join(",", rawOrder));
-            Debug.Log("[TopBarTargets] orderedVisible = " + string.Join(",", orderedVisible));
-
-            // Apply saved order to topbar.
             ApplyOrderWithSpacer(parentRT, orderedVisible);
         }
     }
