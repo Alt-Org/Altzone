@@ -30,7 +30,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
         [SerializeField] private TMP_Text _noticeText;
         [SerializeField] private TMP_Text _sendInviteToFriendText;
-        [SerializeField] private TMP_Dropdown _premadeTargetModeDropdown;
+        
         [SerializeField] private Button _inviteOnlinePlayerButton;
         [SerializeField] private InRoomInviteSelectorPanel _inviteSelectorPanel;
 
@@ -44,7 +44,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             //buttons[1].onClick.AddListener(SetPlayerAsSpectator);
             _startGameButton.onClick.AddListener(StartPlaying);
             _backButton.onClick.AddListener(GoBack);
-            if (_premadeTargetModeDropdown != null) _premadeTargetModeDropdown.onValueChanged.AddListener(OnPremadeTargetModeChanged);
+            // premade target-mode selector removed until prefab wiring is fixed
             if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.onClick.AddListener(OnInviteOnlinePlayerButtonPressed);
             //buttons[3].onClick.AddListener(StartRaidTest);
         }
@@ -64,7 +64,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     if (_title != null) _title.text = "Friend Lobby";
                     if (_noticeText != null) _noticeText.text = "Kutsu yksi online-pelaaja ja valitse haettava 2v2 pelimuoto.";
                     if (_sendInviteToFriendText != null) _sendInviteToFriendText.text = "Kutsu online-pelaaja";
-                    ConfigurePremadeTargetSelector();
                     EnsureInviteSelectorPanel();
                     break;
                 case GameType.Random2v2:
@@ -93,7 +92,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private void OnDestroy()
         {
-            if (_premadeTargetModeDropdown != null) _premadeTargetModeDropdown.onValueChanged.RemoveListener(OnPremadeTargetModeChanged);
+            // premade target-mode selector removed until prefab wiring is fixed
             if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.onClick.RemoveListener(OnInviteOnlinePlayerButtonPressed);
             if (_inviteSelectorPanel != null) _inviteSelectorPanel.HideSilently();
             StopInviteLifecycleMonitoring();
@@ -224,25 +223,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             }
         }
 
-        private void ConfigurePremadeTargetSelector()
-        {
-            if (_premadeTargetModeDropdown == null) return;
-
-            _premadeTargetModeDropdown.options = new List<TMP_Dropdown.OptionData>
-            {
-                new TMP_Dropdown.OptionData("Random 2v2"),
-                new TMP_Dropdown.OptionData("Clan 2v2"),
-            };
-
-            int targetValue = InLobbyController.SelectedPremadeTargetGameType == GameType.Clan2v2 ? 1 : 0;
-            _premadeTargetModeDropdown.SetValueWithoutNotify(targetValue);
-            _premadeTargetModeDropdown.interactable = true;
-        }
-
-        private void OnPremadeTargetModeChanged(int value)
-        {
-            InLobbyController.SetPremadeTargetGameType(value == 1 ? GameType.Clan2v2 : GameType.Random2v2);
-        }
+        // Premade target selector UI path temporarily removed.
 
         private void OnInviteOnlinePlayerButtonPressed()
         {

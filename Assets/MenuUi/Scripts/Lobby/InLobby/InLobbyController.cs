@@ -370,10 +370,9 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
             if (!popupShown)
             {
-                Debug.LogWarning("OnInRoomInviteReceived: decision popup unavailable, auto-joining invite.");
-                OpenBattlePopupForInviteAccept();
-                LobbyManager.Instance?.AcceptInRoomInvite(inviteInfo.RoomName);
-                PopupSignalBus.OnChangePopupInfoSignal("Friend Lobby -kutsu saatu, liityttiin automaattisesti.");
+                Debug.LogWarning("OnInRoomInviteReceived: decision popup unavailable, declining invite to fail closed.");
+                LobbyManager.Instance?.DeclineInRoomInvite(inviteInfo.RoomName);
+                PopupSignalBus.OnChangePopupInfoSignal("Friend Lobby -kutsu saatu, mutta vahvistusikkunaa ei voitu avata. Kutsu hylättiin turvallisuussyista.");
             }
         }
 
