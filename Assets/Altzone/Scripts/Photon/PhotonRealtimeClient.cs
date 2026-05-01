@@ -45,6 +45,7 @@ public static class PhotonRealtimeClient
 
     private static string DefaultGameVersion => $"{Application.version}.{_bundleVersion}";
     private static int _bundleVersion = 0;
+    private static int _matchmakingRoomSequence = 0;
 
     public static string GameVersion
     {
@@ -56,6 +57,11 @@ public static class PhotonRealtimeClient
         }
     }
     private static string gameVersion;
+
+    private static int GetNextMatchmakingRoomSequence()
+    {
+        return ++_matchmakingRoomSequence;
+    }
 
     public static AuthenticationValues AuthValues
     {
@@ -1009,8 +1015,10 @@ public static class PhotonRealtimeClient
             return false;
         }
 
-        // Deterministic room name reduces race: all clients attempt to join-or-create the same room.
-        string roomName = string.IsNullOrEmpty(clanName) ? $"Matchmaking_{gameType}" : $"Matchmaking_{gameType}_{clanName}";
+        // Unique room name with sequence counter allows concurrent match formations without collision.
+        // When one match is in play and closes its room, the next formation won't fail trying to join a closed room.
+        int sequenceId = GetNextMatchmakingRoomSequence();
+        string roomName = string.IsNullOrEmpty(clanName) ? $"Matchmaking_{gameType}_{sequenceId}" : $"Matchmaking_{gameType}_{clanName}_{sequenceId}";
 
         RoomOptions roomOptions = GetRoomOptions(gameType, true, "", Emotion.Blank, roomName, "", clanName, soulhomeRank);
         EnterRoomArgs enterRoomArgs = GetEnterRoomArgs(roomName, roomOptions, expectedUsers);

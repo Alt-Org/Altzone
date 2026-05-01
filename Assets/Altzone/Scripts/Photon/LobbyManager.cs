@@ -614,22 +614,18 @@ namespace Altzone.Scripts.Lobby
                             Debug.Log($"FormMatchFromQueue: pre-notify: selected=[{sel}], queuePremadeMode={queuePremadeMode}, queueLocalTeammate={queueLocalTeammateUserId}, queuePairs=[{pairs}], queueSoloBlocks={queueSoloPairBlocks.Count}");
                         }
                         catch { }
-                        // payload: { leaderUserId, expectedUsers[], optionalRoomName }
-                        string deterministicRoomName = null;
-                        try
-                        {
-                            GameType targetType = (GameType)roomGameTypeInt;
-                            deterministicRoomName = string.IsNullOrEmpty(clanName) ? $"Matchmaking_{targetType}" : $"Matchmaking_{targetType}_{clanName}";
-                        }
-                        catch { }
+                        // payload: { leaderUserId, expectedUsers[] }
+                        // DO NOT include room name in pre-notify; followers will wait for explicit room name in post-notify.
+                        // With sequence-numbered room names, including a deterministic pre-notify room name causes followers
+                        // to attempt joining a non-existent room before the actual sequenced room is created.
 
                         SafeRaiseEvent(
                             PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
-                            new object[] { PhotonRealtimeClient.LocalPlayer.UserId, selected, deterministicRoomName },
+                            new object[] { PhotonRealtimeClient.LocalPlayer.UserId, selected },
                             new RaiseEventArgs { Receivers = ReceiverGroup.Others },
                             SendOptions.SendReliable
                         );
-                        Debug.Log("FormMatchFromQueue: pre-notify RoomChangeRequested sent to queue members before leaving.");
+                        Debug.Log("FormMatchFromQueue: pre-notify RoomChangeRequested (no-room) sent to queue members before leaving.");
                     }
                 }
                 catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: pre-notify failed: {ex.Message}"); }
@@ -5318,10 +5314,13 @@ namespace Altzone.Scripts.Lobby
                             Debug.Log("FollowLeaderToNewRoom: failed to join leader room; attempting server-side JoinOrCreate matchmaking room.");
                             try
                             {
-                                int joinOrCreateId = BeginJoinAttempt($"Matchmaking_{GameType.Random2v2}", followTeammates);
-                                Debug.Log($"FollowLeaderToNewRoom: calling JoinOrCreateMatchmakingRoom, teammates count={followTeammates?.Length ?? 0} (JoinAttempt[{joinOrCreateId}])");
+                                Debug.Log($"FollowLeaderToNewRoom: calling JoinOrCreateMatchmakingRoom, teammates count={followTeammates?.Length ?? 0}");
                                 PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(GameType.Random2v2, followTeammates);
-                                Debug.Log($"FollowLeaderToNewRoom: JoinOrCreateMatchmakingRoom call returned; awaiting join result (JoinAttempt[{joinOrCreateId}])...");
+                                
+                                // Track the join attempt with the actual room name that was created
+                                string actualRoomName = PhotonRealtimeClient.CurrentRoom?.Name ?? "Unknown_Matchmaking_Room";
+                                int joinOrCreateId = BeginJoinAttempt(actualRoomName, followTeammates);
+                                Debug.Log($"FollowLeaderToNewRoom: JoinOrCreateMatchmakingRoom created room '{actualRoomName}' (JoinAttempt[{joinOrCreateId}])");
                             }
                             catch (Exception ex)
                             {
