@@ -97,7 +97,7 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
                 {
                     clanData.Polls.Clear();
 
-                    
+
 
                     foreach (ServerPoll poll in polls)
                     {

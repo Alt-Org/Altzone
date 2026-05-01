@@ -211,7 +211,7 @@ public class PollObject : MonoBehaviour
         }
 
 
-       
+
 
 
 
@@ -238,7 +238,8 @@ public class PollObject : MonoBehaviour
         {
             Image.gameObject.SetActive(true);
 
-           
+
+
             Sprite ribbonSprite = null;
             if (furniturePollData.Furniture != null)
             {
@@ -258,9 +259,9 @@ public class PollObject : MonoBehaviour
             {
                 string furnitureName = furniturePollData.Furniture.Name ?? "Unknown Item";
                 string priceText = furniturePollData.Furniture.Value.ToString();
-                if(furniturePollData.FurniturePollType is FurniturePollType.Buying)
+                if (furniturePollData.FurniturePollType is FurniturePollType.Buying)
                     PollDescriptionText.text = $"Buying {furnitureName} for {priceText}";
-                else if(furniturePollData.FurniturePollType is FurniturePollType.Selling)
+                else if (furniturePollData.FurniturePollType is FurniturePollType.Selling)
                     PollDescriptionText.text = $"Suggesting {furnitureName} to be sold for {priceText}";
             }
         }
@@ -487,7 +488,7 @@ public class PollObject : MonoBehaviour
             yield break;
         }
 
-        // Fetch the clan data 
+        // Fetch the clan data
         ClanData clan = null;
         Storefront.Get().GetClanData(player.ClanId, data => clan = data);
         yield return new WaitUntil(() => clan != null);
@@ -517,7 +518,7 @@ public class PollObject : MonoBehaviour
         else
         {
             Debug.LogWarning($"Invalid role string for member {targetMember.Name}: {targetMember.Role}. Defaulting to None.");
-            currentRole = ClanMemberRole.None; // fallback 
+            currentRole = ClanMemberRole.None; // fallback
         }
 
         // Open the clan role popup with the fetched data
