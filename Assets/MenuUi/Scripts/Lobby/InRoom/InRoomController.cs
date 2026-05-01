@@ -257,17 +257,17 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 yield break;
             }
 
-            if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.interactable = false;
+                    SetInviteButtonInteractable(false);
             _inviteSelectorPanel.Show(
                 candidates,
                 selectedPlayer =>
                 {
-                    if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.interactable = true;
+                        SetInviteButtonInteractable(true);
                     SendInviteToOnlinePlayer(selectedPlayer);
                 },
                 () =>
                 {
-                    if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.interactable = true;
+                        SetInviteButtonInteractable(true);
                     PopupSignalBus.OnChangePopupInfoSignal("Kutsun lähetys peruttu.");
                 });
         }
@@ -365,16 +365,52 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 Debug.LogWarning($"TrySendInviteToUserId: failed to set expected users: {ex.Message}");
             }
 
+            ApplyPendingPremadeInviteSelection(invitedUserId, localUserId, InLobbyController.SelectedPremadeTargetGameType);
+
+            return true;
+        }
+
+        private void ApplyPendingPremadeInviteSelection(string invitedUserId, string localUserId, GameType targetGameType)
+        {
             PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, true);
             PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, localUserId);
             PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInvitedUserIdKey, invitedUserId);
             PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStatePending);
             PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)InLobbyController.SelectedPremadeTargetGameType);
+            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)targetGameType);
             PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, localUserId);
             PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
+        }
 
-            return true;
+        private void MarkPremadeInviteAccepted(string invitedUserId)
+        {
+            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateAccepted);
+            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, invitedUserId);
+            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, 0L);
+
+            if (PhotonRealtimeClient.CurrentRoom.PlayerCount >= PhotonRealtimeClient.CurrentRoom.MaxPlayers)
+            {
+                PhotonRealtimeClient.CurrentRoom.IsOpen = false;
+            }
+        }
+
+        private void ExpirePremadeInvite()
+        {
+            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateExpired);
+            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInvitedUserIdKey, string.Empty);
+            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
+            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, 0L);
+
+            try { PhotonRealtimeClient.LobbyCurrentRoom.ClearExpectedUsers(); }
+            catch (Exception ex) { Debug.LogWarning($"InviteLifecycleRoutine: failed to clear expected users on expiry: {ex.Message}"); }
+        }
+
+        private void SetInviteButtonInteractable(bool interactable)
+        {
+            if (_inviteOnlinePlayerButton != null)
+            {
+                _inviteOnlinePlayerButton.interactable = interactable;
+            }
         }
 
         private string GetLocalUserId()
@@ -487,13 +523,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
                 if (IsPlayerAlreadyInCurrentRoom(invitedUserId))
                 {
-                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateAccepted);
-                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, invitedUserId);
-                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, 0L);
-                    if (PhotonRealtimeClient.CurrentRoom.PlayerCount >= PhotonRealtimeClient.CurrentRoom.MaxPlayers)
-                    {
-                        PhotonRealtimeClient.CurrentRoom.IsOpen = false;
-                    }
+                    MarkPremadeInviteAccepted(invitedUserId);
                     yield return delay;
                     continue;
                 }
@@ -522,13 +552,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
                 if (nowSeconds - inviteTimestampSeconds >= InviteExpirationSeconds)
                 {
-                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateExpired);
-                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInvitedUserIdKey, string.Empty);
-                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
-                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, 0L);
-
-                    try { PhotonRealtimeClient.LobbyCurrentRoom.ClearExpectedUsers(); }
-                    catch (Exception ex) { Debug.LogWarning($"InviteLifecycleRoutine: failed to clear expected users on expiry: {ex.Message}"); }
+                    ExpirePremadeInvite();
 
                     PopupSignalBus.OnChangePopupInfoSignal("Kutsu vanheni. Voit lahettaa uuden kutsun.");
                 }
@@ -554,7 +578,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 }
                 return;
             }
-
         }
 
         private void GoBack()
