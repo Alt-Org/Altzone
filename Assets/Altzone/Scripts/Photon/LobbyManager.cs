@@ -137,7 +137,8 @@ namespace Altzone.Scripts.Lobby
         private int _queuedSoloCount = 0;
         private const float QueueWaitSeconds = 30f;
         private const float QueueReadyStartDelaySeconds = 2f;
-        private const float QueuePendingLeaderGraceSeconds = 12f;
+        // Increased grace window to reduce race conditions that can split queued duos.
+        private const float QueuePendingLeaderGraceSeconds = 20f;
         // Last logged diagnostic state keys for SelectQueueFollowersForMatch (track separately per diagnostic section)
         private string _lastSelectQueuePlayersKey = string.Empty;
         private string _lastSelectQueueLeaderPropsKey = string.Empty;
@@ -602,6 +603,7 @@ namespace Altzone.Scripts.Lobby
                 }
 
                 // Notify queue members that leader is forming a match so they can start follow flow
+                bool preNotifySent = false;
                 try
                 {
                     if (PhotonRealtimeClient.InRoom)
@@ -626,9 +628,21 @@ namespace Altzone.Scripts.Lobby
                             SendOptions.SendReliable
                         );
                         Debug.Log("FormMatchFromQueue: pre-notify RoomChangeRequested (no-room) sent to queue members before leaving.");
+                        preNotifySent = true;
                     }
                 }
                 catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: pre-notify failed: {ex.Message}"); }
+
+                // Perform the small yield-based wait outside of the try/catch to avoid CS1626
+                // (cannot yield inside a try with a catch). Only wait if we actually sent pre-notify.
+                if (preNotifySent)
+                {
+                    float preNotifyWaitStart = Time.time;
+                    while (Time.time - preNotifyWaitStart < 0.5f)
+                    {
+                        yield return null;
+                    }
+                }
 
                 float waitStart = Time.time;
                 // If we are not on MasterServer and in lobby, leave the current room and wait until we're back in lobby on MasterServer
@@ -2084,7 +2098,54 @@ namespace Altzone.Scripts.Lobby
                 }
             }
 
-            completeDuoCount = completeDuos.Count;
+            // Merge any persisted queue duo pairs from room metadata. This helps preserve
+            // duos even when LeaderId links are temporarily missing on one or both members.
+            try
+            {
+                string[] queueDuoFlat = room.GetCustomProperty<string[]>(QueueDuoPairsKey, null);
+                if (queueDuoFlat != null && queueDuoFlat.Length >= 2)
+                {
+                    HashSet<string> usedMembers = new(StringComparer.Ordinal);
+                    HashSet<string> existingKeys = new(StringComparer.Ordinal);
+
+                    foreach (var duo in completeDuos)
+                    {
+                        if (duo.leader == null || duo.follower == null) continue;
+                        if (!string.IsNullOrEmpty(duo.leader.UserId)) usedMembers.Add(duo.leader.UserId);
+                        if (!string.IsNullOrEmpty(duo.follower.UserId)) usedMembers.Add(duo.follower.UserId);
+
+                        string existingKey = string.CompareOrdinal(duo.leader.UserId, duo.follower.UserId) <= 0
+                            ? $"{duo.leader.UserId}|{duo.follower.UserId}"
+                            : $"{duo.follower.UserId}|{duo.leader.UserId}";
+                        existingKeys.Add(existingKey);
+                    }
+
+                    for (int i = 0; i + 1 < queueDuoFlat.Length; i += 2)
+                    {
+                        string userId1 = queueDuoFlat[i] ?? string.Empty;
+                        string userId2 = queueDuoFlat[i + 1] ?? string.Empty;
+                        if (string.IsNullOrEmpty(userId1) || string.IsNullOrEmpty(userId2) || userId1 == userId2) continue;
+
+                        if (!playersById.TryGetValue(userId1, out Player player1) || player1 == null) continue;
+                        if (!playersById.TryGetValue(userId2, out Player player2) || player2 == null) continue;
+
+                        string key = string.CompareOrdinal(userId1, userId2) <= 0
+                            ? $"{userId1}|{userId2}"
+                            : $"{userId2}|{userId1}";
+
+                        if (existingKeys.Contains(key)) continue;
+                        if (usedMembers.Contains(userId1) || usedMembers.Contains(userId2)) continue;
+
+                        completeDuos.Add((player1, player2));
+                        usedMembers.Add(userId1);
+                        usedMembers.Add(userId2);
+                        existingKeys.Add(key);
+                        incompleteMemberIds.Remove(userId1);
+                        incompleteMemberIds.Remove(userId2);
+                    }
+                }
+            }
+            catch { }
 
             // Diagnostic: log selection state to help debug missing/partial duo selection
             try
@@ -2292,6 +2353,10 @@ namespace Altzone.Scripts.Lobby
                 }
             }
             catch { }
+
+            // Compute final count after all duo enrichment sources (leader/follower,
+            // queue metadata and premade metadata) have been applied.
+            completeDuoCount = completeDuos.Count;
 
             if (IsTwoPlayerBlockQueueMode(roomGameTypeInt))
             {
@@ -2904,9 +2969,10 @@ namespace Altzone.Scripts.Lobby
                                                                     if (!string.IsNullOrEmpty(prem1) && !string.IsNullOrEmpty(prem2)
                                                                         && playersById.ContainsKey(prem1) && playersById.ContainsKey(prem2))
                                                                     {
-                                                                        bool p1Sel = loopSelected.Contains(prem1);
-                                                                        bool p2Sel = loopSelected.Contains(prem2);
-                                                                        if (!(p1Sel && p2Sel))
+                                                                            string localUserId = PhotonRealtimeClient.LocalPlayer?.UserId ?? string.Empty;
+                                                                            bool p1Sel = prem1 == localUserId || loopSelected.Contains(prem1);
+                                                                            bool p2Sel = prem2 == localUserId || loopSelected.Contains(prem2);
+                                                                            if (!(p1Sel && p2Sel))
                                                                         {
                                                                             allowForm = false;
                                                                             Debug.Log($"QueueTimerCoroutine: deferring formation because premade pair ({prem1},{prem2}) present but not both selected; selected=[{string.Join(",", loopSelected)}].");
@@ -2921,19 +2987,21 @@ namespace Altzone.Scripts.Lobby
                                                             // defer formation to avoid splitting.
                                                             if (allowForm)
                                                             {
-                                                                foreach (string uid in loopSelected)
+                                                                    string localUserId = PhotonRealtimeClient.LocalPlayer?.UserId ?? string.Empty;
+                                                                    foreach (string uid in loopSelected)
                                                                 {
                                                                     try
                                                                     {
-                                                                        if (TryGetQueueLocalTeammateUserId(uid, out string buddy) && !string.IsNullOrEmpty(buddy) && playersById.ContainsKey(buddy))
-                                                                        {
-                                                                            if (!loopSelected.Contains(buddy))
+                                                                            if (TryGetQueueLocalTeammateUserId(uid, out string buddy) && !string.IsNullOrEmpty(buddy) && playersById.ContainsKey(buddy))
                                                                             {
-                                                                                allowForm = false;
-                                                                                Debug.Log($"QueueTimerCoroutine: deferring formation because teammate {buddy} of selected user {uid} is present but not selected.");
-                                                                                break;
+                                                                                bool buddySelected = buddy == localUserId || loopSelected.Contains(buddy);
+                                                                                if (!buddySelected)
+                                                                                {
+                                                                                    allowForm = false;
+                                                                                    Debug.Log($"QueueTimerCoroutine: deferring formation because teammate {buddy} of selected user {uid} is present but not selected.");
+                                                                                    break;
+                                                                                }
                                                                             }
-                                                                        }
                                                                     }
                                                                     catch { }
                                                                 }
@@ -3028,11 +3096,12 @@ namespace Altzone.Scripts.Lobby
                                         .ToList();
 
                                     var roomPairs = GetQueueCompleteDuoPairsForParticipants(humanUserIds);
+                                    var localId = PhotonRealtimeClient.LocalPlayer?.UserId ?? string.Empty;
+
                                     if (roomPairs != null && roomPairs.Count > 0)
                                     {
                                         // Prefer a pair that doesn't include the local user (leader). If none,
                                         // fall back to the first available pair and add the non-local member.
-                                        var localId = PhotonRealtimeClient.LocalPlayer?.UserId ?? string.Empty;
                                         (string userId1, string userId2) chosen = (null, null);
                                         foreach (var p in roomPairs)
                                         {
@@ -3050,44 +3119,62 @@ namespace Altzone.Scripts.Lobby
                                             if (chosen.userId2 != localId) selected.Add(chosen.userId2);
                                             Debug.Log($"QueueTimerCoroutine: Queue wait expired; added duo [{string.Join(",", selected)}] to selected to preserve duo and allow botfill (requiredFollowers={requiredFollowers}).");
                                         }
+                                    }
 
-                                        // If adding the duo's member(s) still leaves us short of required followers,
-                                        // try to include any available solo humans so the master can persist expected-users
-                                        // and let bots fill the remainder. This covers the case where the local master
-                                        // is part of a duo and a lone solo is present in the room.
-                                        try
+                                    // If the duo helper could not re-identify a pair, still salvage the timeout by
+                                    // seeding the match from the visible non-local humans. This lets botfill proceed
+                                    // for duo+solo compositions instead of retrying forever on a transient duo lookup miss.
+                                    if (selected.Count == 0)
+                                    {
+                                        var broadFallbackCandidates = humanUserIds
+                                            .Where(uid => !string.IsNullOrEmpty(uid) && uid != localId)
+                                            .Where(uid => uid != "Bot")
+                                            .Take(requiredFollowers)
+                                            .ToList();
+
+                                        if (broadFallbackCandidates.Count > 0)
                                         {
-                                            if (selected.Count > 0 && selected.Count < requiredFollowers && PhotonRealtimeClient.CurrentRoom?.Players != null)
-                                            {
-                                                // Prefer the singleEligibleSoloUserId when provided by the selector and not already selected.
-                                                var localIdCheck = PhotonRealtimeClient.LocalPlayer?.UserId ?? string.Empty;
-                                                if (!string.IsNullOrEmpty(singleEligibleSoloUserId) && !selected.Contains(singleEligibleSoloUserId) && singleEligibleSoloUserId != localIdCheck)
-                                                {
-                                                    selected.Add(singleEligibleSoloUserId);
-                                                    Debug.Log($"QueueTimerCoroutine: Queue wait expired; added solo '{singleEligibleSoloUserId}' alongside duo to selected (requiredFollowers={requiredFollowers}).");
-                                                }
-                                                else
-                                                {
-                                                    var extraCandidates = PhotonRealtimeClient.CurrentRoom.Players.Values
-                                                        .Where(p => p != null && !string.IsNullOrEmpty(p.UserId) && p.UserId != "Bot" && p.UserId != PhotonRealtimeClient.LocalPlayer?.UserId)
-                                                        .Select(p => p.UserId)
-                                                        .Where(uid => !selected.Contains(uid))
-                                                        .Distinct()
-                                                        .Take(requiredFollowers - selected.Count)
-                                                        .ToList();
+                                            foreach (var uid in broadFallbackCandidates) selected.Add(uid);
+                                            Debug.Log($"QueueTimerCoroutine: Queue wait expired; broad fallback selected [{string.Join(",", broadFallbackCandidates)}] for botfill (requiredFollowers={requiredFollowers}).");
+                                        }
+                                    }
 
-                                                    if (extraCandidates.Count > 0)
-                                                    {
-                                                        foreach (var uid in extraCandidates) selected.Add(uid);
-                                                        Debug.Log($"QueueTimerCoroutine: Queue wait expired; added solos [{string.Join(",", extraCandidates)}] alongside duo to selected (requiredFollowers={requiredFollowers}).");
-                                                    }
+                                    // If adding the duo's member(s) still leaves us short of required followers,
+                                    // try to include any available solo humans so the master can persist expected-users
+                                    // and let bots fill the remainder. This covers the case where the local master
+                                    // is part of a duo and a lone solo is present in the room.
+                                    try
+                                    {
+                                        if (selected.Count > 0 && selected.Count < requiredFollowers && PhotonRealtimeClient.CurrentRoom?.Players != null)
+                                        {
+                                            // Prefer the singleEligibleSoloUserId when provided by the selector and not already selected.
+                                            var localIdCheck = PhotonRealtimeClient.LocalPlayer?.UserId ?? string.Empty;
+                                            if (!string.IsNullOrEmpty(singleEligibleSoloUserId) && !selected.Contains(singleEligibleSoloUserId) && singleEligibleSoloUserId != localIdCheck)
+                                            {
+                                                selected.Add(singleEligibleSoloUserId);
+                                                Debug.Log($"QueueTimerCoroutine: Queue wait expired; added solo '{singleEligibleSoloUserId}' alongside duo to selected (requiredFollowers={requiredFollowers}).");
+                                            }
+                                            else
+                                            {
+                                                var extraCandidates = PhotonRealtimeClient.CurrentRoom.Players.Values
+                                                    .Where(p => p != null && !string.IsNullOrEmpty(p.UserId) && p.UserId != "Bot" && p.UserId != PhotonRealtimeClient.LocalPlayer?.UserId)
+                                                    .Select(p => p.UserId)
+                                                    .Where(uid => !selected.Contains(uid))
+                                                    .Distinct()
+                                                    .Take(requiredFollowers - selected.Count)
+                                                    .ToList();
+
+                                                if (extraCandidates.Count > 0)
+                                                {
+                                                    foreach (var uid in extraCandidates) selected.Add(uid);
+                                                    Debug.Log($"QueueTimerCoroutine: Queue wait expired; added solos [{string.Join(",", extraCandidates)}] alongside duo to selected (requiredFollowers={requiredFollowers}).");
                                                 }
                                             }
                                         }
-                                        catch (Exception ex)
-                                        {
-                                            Debug.LogWarning($"QueueTimerCoroutine: failed to add solo alongside duo fallback: {ex.Message}");
-                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.LogWarning($"QueueTimerCoroutine: failed to add solo alongside duo fallback: {ex.Message}");
                                     }
                                 }
                             }
