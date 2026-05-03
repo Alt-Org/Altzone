@@ -29,12 +29,27 @@ public class ClanSettings : AltMonoBehaviour
     [SerializeField] private TMP_InputField _rule3Input;
     [SerializeField] private RulesSelectionController _ruleSelection;
     [SerializeField] private GameObject _rulesPopup;
+    [SerializeField] private Button _rulesCloseButton;
 
     [Header("Password")]
     [SerializeField] private GameObject _clanPassword;
     [SerializeField] private TMP_InputField _clanPasswordField;
     [SerializeField] private Toggle _clanOpenToggle;
-    //[SerializeField] private ClanGoalSelection _goalSelection;
+
+    [SerializeField] private GameObject _lockClanPopup;
+    [SerializeField] private GameObject _openClanPopup;
+    [SerializeField] private GameObject _createClanPasswordPopup;
+
+    [SerializeField] private Button _lockClanConfirmButton;
+    [SerializeField] private Button _lockClanCancelButton;
+
+    [SerializeField] private Button _openClanConfirmButton;
+    [SerializeField] private Button _openClanCancelButton;
+
+    [SerializeField] private Button _createPasswordConfirmButton;
+    [SerializeField] private Button _createPasswordCancelButton;
+
+    [SerializeField] private ToggleImage _clanLockToggleImage;
 
     [Header("Age")]
     //[SerializeField] private ClanAgeSelection _ageSelection;
@@ -159,6 +174,8 @@ public class ClanSettings : AltMonoBehaviour
     private List<HeartPieceData> _originalHeartPieces = new();
     private List<Rules> _selectedRules = new();
     private bool _originalIsOpen;
+    private bool _selectedIsOpen;
+    private string _selectedPassword = string.Empty;
 
     private void OnEnable()
     {
@@ -203,14 +220,25 @@ public class ClanSettings : AltMonoBehaviour
             if (_cancelConfirmationPopup != null)
                 _cancelConfirmationPopup.SetActive(false);
 
+            if (_lockClanPopup != null)
+                _lockClanPopup.SetActive(false);
+
+            if (_openClanPopup != null)
+                _openClanPopup.SetActive(false);
+
+            if (_createClanPasswordPopup != null)
+                _createClanPasswordPopup.SetActive(false);
+
             //Motto init
             _clanPhraseText.text = clan.Phrase;
             _clanPhraseField.text = clan.Phrase;
             _clanPhrasePopup.SetActive(false);
 
             // Open/closed init TODO password handling
-            _clanOpenToggle.isOn = !clan.IsOpen;
-            _clanPassword.SetActive(!clan.IsOpen);
+            _selectedIsOpen = clan.IsOpen;
+            _selectedPassword = string.Empty;
+
+            UpdateClanOpenUi();
 
             // Rules init
             string rule1 = clan.Rules.Count > 0
@@ -327,8 +355,13 @@ public class ClanSettings : AltMonoBehaviour
         _values.SetValues(_selectedValues);
         _valueSelection.SetSelected(new List<ClanValues>(_originalValues));
 
-        _clanOpenToggle.isOn = !_originalIsOpen;
-        _clanPassword.SetActive(!_originalIsOpen);
+        _selectedIsOpen = _originalIsOpen;
+        _selectedPassword = string.Empty;
+
+        if (_clanPasswordField != null)
+            _clanPasswordField.text = string.Empty;
+
+        UpdateClanOpenUi();
 
         _heartPieces = new List<HeartPieceData>(_originalHeartPieces);
         ResetHeartColorChanger();
@@ -390,8 +423,11 @@ public class ClanSettings : AltMonoBehaviour
         _currentClanData.ClanHeartPieces = _heartPieces;
 
         // These are not saved at the moment
-        bool isOpen = !_clanOpenToggle.isOn;
-        string password = _clanPasswordField.text;
+        _currentClanData.IsOpen = _selectedIsOpen;
+
+        // TODO: lisää tähän password tallennus sitten kun tiedetään oikea ClanData-kenttä / serverimetodi
+        string password = _selectedPassword;
+
         //_currentClanData.ClanRights = _clanRightsPanel.ClanRights;
 
         StartCoroutine(ServerManager.Instance.UpdateClanToServer(_currentClanData, success =>
@@ -445,6 +481,7 @@ public class ClanSettings : AltMonoBehaviour
         if (_openRulesButton) _openRulesButton.onClick.AddListener(OpenClanRulesPopup);
         if (_rulesConfirmButton) _rulesConfirmButton.onClick.AddListener(ConfirmClanRulesEdit);
         if (_rulesCancelButton) _rulesCancelButton.onClick.AddListener(CancelClanRulesEdit);
+        if (_rulesCloseButton) _rulesCloseButton.onClick.AddListener(CancelClanRulesEdit);
 
         // Age popup
         if (_openAgeButton) _openAgeButton.onClick.AddListener(OpenClanAgePopup);
@@ -472,6 +509,18 @@ public class ClanSettings : AltMonoBehaviour
         if (_openRolesButton) _openRolesButton.onClick.AddListener(OpenClanRolesPopup);
         if (_rolesConfirmButton) _rolesConfirmButton.onClick.AddListener(ConfirmClanRolesEdit);
         if (_rolesCancelButton) _rolesCancelButton.onClick.AddListener(CancelClanRolesEdit);
+
+        // Open / locked clan popups
+        if (_clanOpenToggle) _clanOpenToggle.onValueChanged.AddListener(OnClanOpenToggleChanged);
+
+        if (_lockClanConfirmButton) _lockClanConfirmButton.onClick.AddListener(ConfirmLockClanPopup);
+        if (_lockClanCancelButton) _lockClanCancelButton.onClick.AddListener(CancelClanLockChange);
+
+        if (_openClanConfirmButton) _openClanConfirmButton.onClick.AddListener(ConfirmOpenClanPopup);
+        if (_openClanCancelButton) _openClanCancelButton.onClick.AddListener(CancelClanOpenChange);
+
+        if (_createPasswordConfirmButton) _createPasswordConfirmButton.onClick.AddListener(ConfirmCreateClanPassword);
+        if (_createPasswordCancelButton) _createPasswordCancelButton.onClick.AddListener(CancelCreateClanPassword);
 
         // Cancel confirmation popup
         if (_cancelConfirmContinueButton) _cancelConfirmContinueButton.onClick.AddListener(OnClickContinueEditingClanSettings);
@@ -502,6 +551,7 @@ public class ClanSettings : AltMonoBehaviour
         if (_openRulesButton) _openRulesButton.onClick.RemoveListener(OpenClanRulesPopup);
         if (_rulesConfirmButton) _rulesConfirmButton.onClick.RemoveListener(ConfirmClanRulesEdit);
         if (_rulesCancelButton) _rulesCancelButton.onClick.RemoveListener(CancelClanRulesEdit);
+        if (_rulesCloseButton) _rulesCloseButton.onClick.RemoveListener(CancelClanRulesEdit);
 
         if (_openAgeButton) _openAgeButton.onClick.RemoveListener(OpenClanAgePopup);
         if (_ageConfirmButton) _ageConfirmButton.onClick.RemoveListener(OnAgeSelectionConfirmed);
@@ -525,6 +575,17 @@ public class ClanSettings : AltMonoBehaviour
         if (_rolesConfirmButton) _rolesConfirmButton.onClick.RemoveListener(ConfirmClanRolesEdit);
         if (_rolesCancelButton) _rolesCancelButton.onClick.RemoveListener(CancelClanRolesEdit);
 
+        if (_clanOpenToggle) _clanOpenToggle.onValueChanged.RemoveListener(OnClanOpenToggleChanged);
+
+        if (_lockClanConfirmButton) _lockClanConfirmButton.onClick.RemoveListener(ConfirmLockClanPopup);
+        if (_lockClanCancelButton) _lockClanCancelButton.onClick.RemoveListener(CancelClanLockChange);
+
+        if (_openClanConfirmButton) _openClanConfirmButton.onClick.RemoveListener(ConfirmOpenClanPopup);
+        if (_openClanCancelButton) _openClanCancelButton.onClick.RemoveListener(CancelClanOpenChange);
+
+        if (_createPasswordConfirmButton) _createPasswordConfirmButton.onClick.RemoveListener(ConfirmCreateClanPassword);
+        if (_createPasswordCancelButton) _createPasswordCancelButton.onClick.RemoveListener(CancelCreateClanPassword);
+
         if (_cancelConfirmContinueButton) _cancelConfirmContinueButton.onClick.RemoveListener(OnClickContinueEditingClanSettings);
         if (_cancelConfirmDiscardButton) _cancelConfirmDiscardButton.onClick.RemoveListener(OnClickDiscardClanSettingEdits);
     }
@@ -540,6 +601,7 @@ public class ClanSettings : AltMonoBehaviour
             || _originalPhrase != _clanPhraseField.text
             || _originalLanguage != _selectedLanguage
             || _originalAge != _selectedAge
+            || _originalIsOpen != _selectedIsOpen
             || !_originalRules.SequenceEqual(_selectedRules)
             || !_originalValues.SequenceEqual(_selectedValues);
 
@@ -849,6 +911,98 @@ public class ClanSettings : AltMonoBehaviour
         }
 
         HidePopup(_agePopup);
+    }
+
+    private void UpdateClanOpenUi()
+    {
+        if (_clanOpenToggle != null)
+            _clanOpenToggle.SetIsOnWithoutNotify(!_selectedIsOpen);
+
+        if (_clanPassword != null)
+            _clanPassword.SetActive(!_selectedIsOpen);
+
+        if (_clanLockToggleImage != null)
+            _clanLockToggleImage.RefreshImage();
+    }
+
+    private void OnClanOpenToggleChanged(bool isLocked)
+    {
+        bool wantsOpen = !isLocked;
+
+        UpdateClanOpenUi();
+
+        if (wantsOpen == _selectedIsOpen)
+            return;
+
+        if (wantsOpen)
+        {
+            ShowPopup(_openClanPopup);
+        }
+        else
+        {
+            ShowPopup(_lockClanPopup);
+        }
+    }
+
+    public void ConfirmLockClanPopup()
+    {
+        if (_lockClanPopup != null)
+            _lockClanPopup.SetActive(false);
+
+        if (_clanPasswordField != null)
+            _clanPasswordField.text = _selectedPassword;
+
+        ShowPopup(_createClanPasswordPopup);
+    }
+
+    public void CancelClanLockChange()
+    {
+        HidePopup(_lockClanPopup);
+        UpdateClanOpenUi();
+    }
+
+    public void ConfirmCreateClanPassword()
+    {
+        string password = _clanPasswordField != null ? _clanPasswordField.text : string.Empty;
+
+        if (string.IsNullOrWhiteSpace(password))
+        {
+            SignalBus.OnChangePopupInfoSignal("Lisää klaanille salasana.");
+            return;
+        }
+
+        _selectedPassword = password;
+        _selectedIsOpen = false;
+
+        UpdateClanOpenUi();
+        HidePopup(_createClanPasswordPopup);
+    }
+
+    public void CancelCreateClanPassword()
+    {
+        if (_clanPasswordField != null)
+            _clanPasswordField.text = _selectedPassword;
+
+        HidePopup(_createClanPasswordPopup);
+        UpdateClanOpenUi();
+    }
+
+    public void ConfirmOpenClanPopup()
+    {
+        _selectedIsOpen = true;
+        _selectedPassword = string.Empty;
+
+        if (_clanPasswordField != null)
+            _clanPasswordField.text = string.Empty;
+
+        UpdateClanOpenUi();
+        HidePopup(_openClanPopup);
+    }
+
+    public void CancelClanOpenChange()
+    {
+        HidePopup(_openClanPopup);
+        UpdateClanOpenUi();
     }
 
     public void OpenLanguagePopup()

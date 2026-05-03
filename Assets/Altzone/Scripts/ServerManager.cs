@@ -1214,7 +1214,7 @@ public class ServerManager : MonoBehaviour
                 _id = data.Id,
                 name = data.Name,
                 tag = data.Tag,
-                isOpen = Clan.isOpen,
+                isOpen = data.IsOpen,
                 labels = serverValues,
                 ageRange = data.ClanAge,
                 goal = data.Goals,
@@ -1235,7 +1235,7 @@ public class ServerManager : MonoBehaviour
                 {
                     Clan.name = data.Name;
                     Clan.tag = data.Tag;
-                    Clan.isOpen = Clan.isOpen;
+                    Clan.isOpen = data.IsOpen;
                     Clan.ageRange = data.ClanAge;
                     Clan.goal = data.Goals;
                     Clan.phrase = data.Phrase;
