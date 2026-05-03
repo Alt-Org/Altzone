@@ -36,6 +36,7 @@ public class LeaderboardView : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private GameObject _playerWinsItemPrefab;
     [SerializeField] private GameObject _clanPointsItemPrefab;
+    [SerializeField] private GameObject _friendsWinsItemPrefab;
 
     private enum Leaderboard
     {
@@ -264,7 +265,7 @@ public class LeaderboardView : MonoBehaviour
                     }
                         else
                         {
-                            LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
+                            LeaderboardWinsItem item = Instantiate(_friendsWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
                             item.Initialize(i, "", 0, null, "");
 
                             // View player profile button
