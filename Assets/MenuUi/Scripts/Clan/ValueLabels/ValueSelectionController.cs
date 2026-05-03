@@ -32,9 +32,13 @@ public class ValueSelectionController : MonoBehaviour
 
     public void SetSelected(List<ClanValues> selected)
     {
-        SelectedValues = new(selected);
+        SelectedValues = selected != null
+            ? new List<ClanValues>(selected)
+            : new List<ClanValues>();
+
         CreateLabels();
         UpdateSelectedDisplay();
+        StartCoroutine(ResetScrollPosition());
     }
 
     private IEnumerator ResetScrollPosition()
@@ -51,18 +55,33 @@ public class ValueSelectionController : MonoBehaviour
     {
         _labelHandlers.Clear();
 
-        foreach (Transform child in _valueListParent) Destroy(child.gameObject);
+        foreach (Transform child in _valueListParent)
+        {
+            Destroy(child.gameObject);
+        }
 
         foreach (ClanValues value in Enum.GetValues(typeof(ClanValues)))
         {
             GameObject labelPanel = Instantiate(_labelTogglePrefab, _valueListParent);
+
             ValueLabelHandler labelHandler = labelPanel.GetComponent<ValueLabelHandler>();
             labelHandler.SetLabelInfo(value, true);
+
             _labelHandlers.Add(labelHandler);
 
-            if (SelectedValues.Contains(value)) labelHandler.Select();
+            if (SelectedValues.Contains(value))
+            {
+                labelHandler.Select();
+            }
+            else
+            {
+                labelHandler.Unselect();
+            }
 
-            labelHandler._selectButton.onClick.AddListener(() => ToggleValue(labelHandler));
+            if (labelHandler._selectButton != null)
+            {
+                labelHandler._selectButton.onClick.AddListener(() => ToggleValue(labelHandler));
+            }
         }
     }
 
@@ -113,16 +132,21 @@ public class ValueSelectionController : MonoBehaviour
 
     private void UpdateSelectedDisplay()
     {
-        foreach (Transform child in _selectedValuesParent) Destroy(child.gameObject);
+        foreach (Transform child in _selectedValuesParent)
+        {
+            Destroy(child.gameObject);
+        }
 
         foreach (ClanValues value in SelectedValues)
         {
-            GameObject selectedPanel = Instantiate(_labelTogglePrefab, _selectedValuesParent);
-            ValueLabelHandler labelHandlerSelected = selectedPanel.GetComponent<ValueLabelHandler>();
-            labelHandlerSelected.SetLabelInfo(value, false);
-            _labelHandlers.Add(labelHandlerSelected);
+            GameObject selectedPanel = Instantiate(_labelImagePrefab, _selectedValuesParent);
 
-            labelHandlerSelected._selectButton.onClick.AddListener(() => RemoveSelectedValue(labelHandlerSelected));
+            ValueImageHandle imageHandle = selectedPanel.GetComponent<ValueImageHandle>();
+
+            if (imageHandle != null)
+            {
+                imageHandle.SetLabelInfo(value);
+            }
         }
     }
 

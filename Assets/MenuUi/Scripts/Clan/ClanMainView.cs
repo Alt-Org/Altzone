@@ -740,14 +740,25 @@ public class ClanMainView : MonoBehaviour
         {
             _clanSettings.SetActive(false);
         }
+
+        if (_overlay != null)
+        {
+            _overlay.SetActive(false);
+        }
     }
 
     public void ShowSettingsPage()
     {
         if (_inClanPanel != null)
         {
-            _inClanPanel.SetActive(false);
+            _inClanPanel.SetActive(true);
         }
+
+        if (_overlay != null)
+        {
+            _overlay.SetActive(true);
+        }
+
         if (_clanSettings != null)
         {
             _clanSettings.SetActive(true);
@@ -762,13 +773,23 @@ public class ClanMainView : MonoBehaviour
             _swipeScrollRect.velocity = Vector2.zero;
         }
 
-        ShowSettingsPage();
-        SetCurrentPageToSettings();
-
-        if (_tabLine != null)
+        if (_memberDetailsPopup != null)
         {
-            _tabLine.SetLockActiveFromSwipe(true);
+            _memberDetailsPopup.Hide();
         }
+
+        ShowSettingsPage();
+
+        if (_tabLine?.Swipe != null)
+        {
+            _tabLine.Swipe.hardBlocked = true;
+            _tabLine.Swipe.IsEnabled = false;
+            _tabLine.Swipe.ToggleScrollRect(false);
+        }
+
+        SetTabLineSwipeLock(true);
+
+        ApplyButtonsVisibility();
     }
 
     public void SetTabLineSwipeLock(bool locked)

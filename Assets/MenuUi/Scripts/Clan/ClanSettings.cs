@@ -12,11 +12,6 @@ using System.Linq;
 
 public class ClanSettings : AltMonoBehaviour
 {
-    [Header("Static text fields")]
-    [SerializeField] private TextMeshProUGUI _clanName;
-    [SerializeField] private TextMeshProUGUI _clanMembers;
-    [SerializeField] private TextMeshProUGUI _clanWinsRanking;
-
     [Header("Motto")]
     [SerializeField] private TextMeshProUGUI _clanPhraseText;
     [SerializeField] private TMP_InputField _clanPhraseField;
@@ -56,6 +51,9 @@ public class ClanSettings : AltMonoBehaviour
     [SerializeField] private ClanValuePanel _values;
     [SerializeField] private GameObject _valuesPopup;
 
+    [Header("Roles")]
+    [SerializeField] private GameObject _rolesPopup;
+
     [Header("Heart Selector")]
     [SerializeField] private ClanHeartColorChanger _heartColorChanger;
     [SerializeField] private ClanHeartColorSetter _heartColorSetter;
@@ -77,6 +75,7 @@ public class ClanSettings : AltMonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button _saveButton;
     [SerializeField] private Button _cancelEditsButton;
+    [SerializeField] private Button _closeButton;
 
     [SerializeField] private Button _openMottoButton;
     [SerializeField] private Button _mottoConfirmButton;
@@ -98,6 +97,10 @@ public class ClanSettings : AltMonoBehaviour
     [SerializeField] private Button _valuesConfirmButton;
     [SerializeField] private Button _valuesCancelButton;
 
+    [SerializeField] private Button _openRolesButton;
+    [SerializeField] private Button _rolesConfirmButton;
+    [SerializeField] private Button _rolesCancelButton;
+
     [SerializeField] private Button _openHeartEditButton;
     [SerializeField] private Button _heartConfirmButton;
     [SerializeField] private Button _heartCancelButton;
@@ -113,10 +116,30 @@ public class ClanSettings : AltMonoBehaviour
     [SerializeField] private PopupController _errorPopup;
     [SerializeField] private GameObject _cancelConfirmationPopup;
 
-    [Header("Panels")]
-    [SerializeField] private GameObject _mainSettingsPanel;
-
     [SerializeField] private ClanMainView _clanMainView;
+
+    [Header("Values / Roles / Rules Carousel")]
+    [SerializeField] private Button _valuesRolesRulesLeftButton;
+    [SerializeField] private Button _valuesRolesRulesRightButton;
+
+    [SerializeField] private TextMeshProUGUI _valuesRolesRulesTitle;
+
+    [SerializeField] private GameObject _valuesPanel;
+    [SerializeField] private GameObject _rolesPanel;
+    [SerializeField] private GameObject _rulesPanel;
+
+    [SerializeField] private Image _valuesDot;
+    [SerializeField] private Image _rolesDot;
+    [SerializeField] private Image _rulesDot;
+
+    [SerializeField] private Color _activeDotColor = new Color(1f, 0.6f, 0f, 1f);
+    [SerializeField] private Color _inactiveDotColor = new Color(0.75f, 0.85f, 0.9f, 1f);
+
+    private int _valuesRolesRulesIndex = 0;
+
+    private const int ValuesIndex = 0;
+    private const int RolesIndex = 1;
+    private const int RulesIndex = 2;
 
     private List<HeartPieceData> _heartPieces;
     private List<ClanValues> _selectedValues = new();
@@ -137,6 +160,9 @@ public class ClanSettings : AltMonoBehaviour
     {
         RegisterUiListeners();
 
+        _valuesRolesRulesIndex = ValuesIndex;
+        UpdateValuesRolesRulesPanel();
+
         Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clan) =>
         {
             _currentClanData = clan;
@@ -148,17 +174,30 @@ public class ClanSettings : AltMonoBehaviour
 
             SaveOriginalState(clan);
 
-            // Show correct panel
-            _mainSettingsPanel.SetActive(false);
-            _editHeartPanel.SetActive(false);
-            _languagePopup.SetActive(false);
-            _valuesPopup.SetActive(false);
-            _cancelConfirmationPopup.SetActive(false);
+            // Show correct popups closed
+            if (_editHeartPanel != null)
+                _editHeartPanel.SetActive(false);
 
-            // Initialize settings
-            _clanName.text = clan.Name;
-            _clanMembers.text = "Jäsenmäärä: " + clan.Members.Count.ToString();
-            //_clanActivityRanking.text = _clanWinsRanking.text = "-1";
+            if (_languagePopup != null)
+                _languagePopup.SetActive(false);
+
+            if (_agePopup != null)
+                _agePopup.SetActive(false);
+
+            if (_valuesPopup != null)
+                _valuesPopup.SetActive(false);
+
+            if (_rulesPopup != null)
+                _rulesPopup.SetActive(false);
+
+            if (_rolesPopup != null)
+                _rolesPopup.SetActive(false);
+
+            if (_clanPhrasePopup != null)
+                _clanPhrasePopup.SetActive(false);
+
+            if (_cancelConfirmationPopup != null)
+                _cancelConfirmationPopup.SetActive(false);
 
             //Motto init
             _clanPhraseText.text = clan.Phrase;
@@ -382,6 +421,14 @@ public class ClanSettings : AltMonoBehaviour
 
         if (_cancelEditsButton) _cancelEditsButton.onClick.AddListener(OnClickCancelClanSettingEdits);
 
+        if (_closeButton) _closeButton.onClick.AddListener(OnClickCancelClanSettingEdits);
+
+        if (_valuesRolesRulesLeftButton)
+            _valuesRolesRulesLeftButton.onClick.AddListener(ShowPreviousValuesRolesRulesPanel);
+
+        if (_valuesRolesRulesRightButton)
+            _valuesRolesRulesRightButton.onClick.AddListener(ShowNextValuesRolesRulesPanel);
+
         // Motto popup
         if (_openMottoButton) _openMottoButton.onClick.AddListener(OpenClanPhrasePopup);
         if (_mottoConfirmButton) _mottoConfirmButton.onClick.AddListener(ConfirmClanPhraseEdit);
@@ -412,6 +459,11 @@ public class ClanSettings : AltMonoBehaviour
         if (_heartConfirmButton) _heartConfirmButton.onClick.AddListener(ConfirmHeartEdit);
         if (_heartCancelButton) _heartCancelButton.onClick.AddListener(CancelHeartEdit);
 
+        // Roles popup
+        if (_openRolesButton) _openRolesButton.onClick.AddListener(OpenClanRolesPopup);
+        if (_rolesConfirmButton) _rolesConfirmButton.onClick.AddListener(ConfirmClanRolesEdit);
+        if (_rolesCancelButton) _rolesCancelButton.onClick.AddListener(CancelClanRolesEdit);
+
         // Cancel confirmation popup
         if (_cancelConfirmContinueButton) _cancelConfirmContinueButton.onClick.AddListener(OnClickContinueEditingClanSettings);
         if (_cancelConfirmDiscardButton) _cancelConfirmDiscardButton.onClick.AddListener(OnClickDiscardClanSettingEdits);
@@ -424,6 +476,14 @@ public class ClanSettings : AltMonoBehaviour
         if (_fillWholeHeartToggle) _fillWholeHeartToggle.onValueChanged.RemoveListener(OnFillWholeHeartToggleChanged);
 
         if (_cancelEditsButton) _cancelEditsButton.onClick.RemoveListener(OnClickCancelClanSettingEdits);
+
+        if (_closeButton) _closeButton.onClick.RemoveListener(OnClickCancelClanSettingEdits);
+
+        if (_valuesRolesRulesLeftButton)
+            _valuesRolesRulesLeftButton.onClick.RemoveListener(ShowPreviousValuesRolesRulesPanel);
+
+        if (_valuesRolesRulesRightButton)
+            _valuesRolesRulesRightButton.onClick.RemoveListener(ShowNextValuesRolesRulesPanel);
 
         if (_openMottoButton) _openMottoButton.onClick.RemoveListener(OpenClanPhrasePopup);
         if (_mottoConfirmButton) _mottoConfirmButton.onClick.RemoveListener(ConfirmClanPhraseEdit);
@@ -448,6 +508,10 @@ public class ClanSettings : AltMonoBehaviour
         if (_openHeartEditButton) _openHeartEditButton.onClick.RemoveListener(OpenHeartEditPopup);
         if (_heartConfirmButton) _heartConfirmButton.onClick.RemoveListener(ConfirmHeartEdit);
         if (_heartCancelButton) _heartCancelButton.onClick.RemoveListener(CancelHeartEdit);
+
+        if (_openRolesButton) _openRolesButton.onClick.RemoveListener(OpenClanRolesPopup);
+        if (_rolesConfirmButton) _rolesConfirmButton.onClick.RemoveListener(ConfirmClanRolesEdit);
+        if (_rolesCancelButton) _rolesCancelButton.onClick.RemoveListener(CancelClanRolesEdit);
 
         if (_cancelConfirmContinueButton) _cancelConfirmContinueButton.onClick.RemoveListener(OnClickContinueEditingClanSettings);
         if (_cancelConfirmDiscardButton) _cancelConfirmDiscardButton.onClick.RemoveListener(OnClickDiscardClanSettingEdits);
@@ -512,7 +576,8 @@ public class ClanSettings : AltMonoBehaviour
 
     private void ShowProfileTablineButtons()
     {
-        _clanMainView.ExitSettingsToProfile();
+        if (_clanMainView != null)
+            _clanMainView.ExitSettingsToProfile();
 
         if (_editViewButtons != null)
             _editViewButtons.SetActive(false);
@@ -755,12 +820,10 @@ public class ClanSettings : AltMonoBehaviour
 
     public void OpenValuesPopup()
     {
-        ShowPopup(_valuesPopup);
-
         Canvas.ForceUpdateCanvases();
 
         _valueSelection.SetSelected(new List<ClanValues>(_selectedValues));
-
+        ShowPopup(_valuesPopup);
         var popupRect = _valuesPopup.GetComponent<RectTransform>();
         if (popupRect != null)
             LayoutRebuilder.ForceRebuildLayoutImmediate(popupRect);
@@ -787,5 +850,90 @@ public class ClanSettings : AltMonoBehaviour
             LayoutRebuilder.ForceRebuildLayoutImmediate(popupRect);
 
         HidePopup(_valuesPopup);
+    }
+
+    public void OpenClanRolesPopup()
+    {
+        ShowPopup(_rolesPopup);
+    }
+
+    public void ConfirmClanRolesEdit()
+    {
+        HidePopup(_rolesPopup);
+    }
+
+    public void CancelClanRolesEdit()
+    {
+        HidePopup(_rolesPopup);
+    }
+
+    private void ShowPreviousValuesRolesRulesPanel()
+    {
+        _valuesRolesRulesIndex--;
+
+        if (_valuesRolesRulesIndex < ValuesIndex)
+        {
+            _valuesRolesRulesIndex = RulesIndex;
+        }
+
+        UpdateValuesRolesRulesPanel();
+    }
+
+    private void ShowNextValuesRolesRulesPanel()
+    {
+        _valuesRolesRulesIndex++;
+
+        if (_valuesRolesRulesIndex > RulesIndex)
+        {
+            _valuesRolesRulesIndex = ValuesIndex;
+        }
+
+        UpdateValuesRolesRulesPanel();
+    }
+
+    private void UpdateValuesRolesRulesPanel()
+    {
+        if (_valuesPanel != null)
+            _valuesPanel.SetActive(_valuesRolesRulesIndex == ValuesIndex);
+
+        if (_rolesPanel != null)
+            _rolesPanel.SetActive(_valuesRolesRulesIndex == RolesIndex);
+
+        if (_rulesPanel != null)
+            _rulesPanel.SetActive(_valuesRolesRulesIndex == RulesIndex);
+
+        if (_valuesRolesRulesTitle != null)
+        {
+            switch (_valuesRolesRulesIndex)
+            {
+                case ValuesIndex:
+                    _valuesRolesRulesTitle.text = "Klaanin arvot";
+                    break;
+
+                case RolesIndex:
+                    _valuesRolesRulesTitle.text = "Klaanin roolit";
+                    break;
+
+                case RulesIndex:
+                    _valuesRolesRulesTitle.text = "Klaanin säännöt";
+                    break;
+            }
+        }
+
+        UpdateValuesRolesRulesDots();
+    }
+
+    private void UpdateValuesRolesRulesDots()
+    {
+        SetDotColor(_valuesDot, _valuesRolesRulesIndex == ValuesIndex);
+        SetDotColor(_rolesDot, _valuesRolesRulesIndex == RolesIndex);
+        SetDotColor(_rulesDot, _valuesRolesRulesIndex == RulesIndex);
+    }
+
+    private void SetDotColor(Image dot, bool isActive)
+    {
+        if (dot == null) return;
+
+        dot.color = isActive ? _activeDotColor : _inactiveDotColor;
     }
 }
