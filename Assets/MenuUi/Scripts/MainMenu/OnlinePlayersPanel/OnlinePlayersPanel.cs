@@ -65,6 +65,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         ServerManager.OnOnlinePlayersChanged += BuildOnlinePlayerList;
         OverlayPanelCheck.OnToggleOnlinePlayerList += ToggleOnlinePlayersPanel;
         OnlinePlayersPanelItem.OnContentRefreshRequested += RefreshListStatus;
+        OnlinePlayersPanelItem.OnPlayerPanelCloseRequested += Hide;
         ToggleOnlinePlayersPanel(false);
     }
 
@@ -81,6 +82,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         ServerManager.OnOnlinePlayersChanged -= BuildOnlinePlayerList;
         OverlayPanelCheck.OnToggleOnlinePlayerList -= ToggleOnlinePlayersPanel;
         OnlinePlayersPanelItem.OnContentRefreshRequested -= RefreshListStatus;
+        OnlinePlayersPanelItem.OnPlayerPanelCloseRequested -= Hide;
     }
     private bool _closing = false;
 
