@@ -47,8 +47,17 @@ public class ChatMessageScript : MonoBehaviour
 
                 /// This is more better as prefferedHeight will take the height it needs to fit in with the text and
                 /// _BackgroundPadding is for padding so that textBackground wouldn't be too short
-                float newHeight = messageText.preferredHeight + _BackgroundPadding;
+                float newHeight = Mathf.Max(110f, messageText.preferredHeight + _BackgroundPadding);
 
+
+                Debug.LogWarning("FIND ME " + messageText.preferredHeight);
+
+
+                //Changes the message text position when there's more text
+                if(messageText.preferredHeight > 50)
+                {
+                    messageText.alignment = TextAlignmentOptions.TopLeft;
+                }
                 textBackground.sizeDelta = new Vector2(textBackground.sizeDelta.x, newHeight);
 
                 textBackground.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(textBackground.parent.GetComponent<RectTransform>().sizeDelta.x, newHeight);

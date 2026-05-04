@@ -49,6 +49,8 @@ public class ServerManager : MonoBehaviour
     private static string LATESTDEVBUILDADDRESS = "https://devapi.altzone.fi/latest-release/";
     private static string DEVADDRESS = "https://devapi.altzone.fi/";
 
+    private Coroutine _heartbeatCoroutine;
+
     public static string SERVERADDRESS { get
         {
             if(AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild) return DEVADDRESS;
@@ -130,7 +132,13 @@ public class ServerManager : MonoBehaviour
 
     private void Start()
     {
+        ApplicationController.OnAppResume += ResetHeartBeat;
         if (_automaticallyLogIn) StartCoroutine(LogIn());
+    }
+
+    private void OnDestroy()
+    {
+        ApplicationController.OnAppResume -= ResetHeartBeat;
     }
 
     public void Reset()
@@ -184,6 +192,8 @@ public class ServerManager : MonoBehaviour
             bool gettingPlayer = true;
             bool gettingCharacter = true;
             bool gettingTasks = true;
+            bool gettingFriendlist = true;
+            bool gettingFriendRequests = true;
             List<CustomCharacter> characters = null;
             // Checks if we can get Player & player Clan from the server
             yield return StartCoroutine(GetOwnPlayerFromServer(player =>
@@ -216,6 +226,9 @@ public class ServerManager : MonoBehaviour
             bool callFinished = false;
             bool characterAdded = false;
             List<CharacterID> newCharacters = new List<CharacterID>();
+
+            List<ServerFriendPlayer> friends = null;
+            List<ServerFriendRequest> friendRequests = null;
 
             DataStore storefront = Storefront.Get();
             PlayerData playerData = null;
@@ -271,11 +284,39 @@ public class ServerManager : MonoBehaviour
                     }
                 }));
                 yield return new WaitUntil(() => gettingTasks == false);
+
+                yield return StartCoroutine(GetFriendlist(friendlist =>
+                {
+                    if (friendlist == null)
+                    {
+                        Debug.LogError("Failed to fetch friendlist data.");
+                        gettingFriendlist = false;
+                    }
+                    else
+                    {
+                        friends = friendlist;
+                        gettingFriendlist = false;
+                    }
+                }));
+                yield return StartCoroutine(GetFriendlistRequests(requests =>
+                {
+                    if (requests == null)
+                    {
+                        Debug.LogError("Failed to fetch friend request data.");
+                        gettingFriendRequests = false;
+                    }
+                    else
+                    {
+                        friendRequests = requests;
+                        gettingFriendRequests = false;
+                    }
+                }));
+                yield return new WaitUntil(() => gettingFriendlist == false && gettingFriendRequests == false);
             }
-            SetPlayerValues(Player, characters);
+            SetPlayerValues(Player, characters, friends, friendRequests);
 
             OnLogInStatusChanged?.Invoke(true);
-            StartCoroutine(ServiceHeartBeat());
+            _heartbeatCoroutine = StartCoroutine(ServiceHeartBeat());
 
             if (Clan == null)
             {
@@ -344,7 +385,7 @@ public class ServerManager : MonoBehaviour
     /// Sets Player values from server and saves it to DataStorage.
     /// </summary>
     /// <param name="player">ServerPlayer from server containing the most up to date player data.</param>
-    public void SetPlayerValues(ServerPlayer player, List<CustomCharacter> characters)
+    public void SetPlayerValues(ServerPlayer player, List<CustomCharacter> characters, List<ServerFriendPlayer> friends, List<ServerFriendRequest> friendRequests)
     {
         string clanId = player.clan_id;
 
@@ -402,6 +443,23 @@ public class ServerManager : MonoBehaviour
                 playerData.BuildCharacterLists(characters);
             }
             playerData.UpdatePlayerData(player);
+
+            List<FriendPlayer> friendList = new();
+            if (friends != null)
+                foreach (var friend in friends)
+                {
+                    friendList.Add(new(friend));
+                }
+            List<FriendRequest> friendRequestList = new();
+            if(friendRequests != null)
+                foreach (var friendRequest in friendRequests)
+                {
+                    friendRequestList.Add(new(friendRequest));
+                }
+            playerData.friendPlayers = new(friendList);
+            playerData.friendRequests = new(friendRequestList);
+
+            if(player.DailyTask == null) playerData.Task = null; //Reset Task if one cannot be gotten from server.
         }
         PlayerPrefs.SetString("profileId", player.profile_id);
 
@@ -461,7 +519,7 @@ public class ServerManager : MonoBehaviour
                     clanData.UpdateClanData(clan);
                 }
 
-            }); 
+            });
         });
         yield return new WaitUntil(() => clanData != null);
 
@@ -626,7 +684,7 @@ public class ServerManager : MonoBehaviour
         storefront.GetPlayerData(Player.uniqueIdentifier, p => playerData = p);
 
         playerData.BuildCharacterLists(characters);
-        if (setCharacters) { 
+        if (setCharacters) {
             playerData.SelectedCharacterIds = new CustomCharacterListObject[3] {
             new(serverId : characters.FirstOrDefault(x=> x.Id == CharacterID.Booksmart).ServerID, Id: CharacterID.Booksmart),
             new(serverId : characters.FirstOrDefault(x=> x.Id == CharacterID.Artist).ServerID,Id: CharacterID.Artist),
@@ -685,6 +743,12 @@ public class ServerManager : MonoBehaviour
                 timeCurrent += Time.deltaTime;
             }
         }
+    }
+
+    private void ResetHeartBeat()
+    {
+        if (_heartbeatCoroutine != null) StopCoroutine(_heartbeatCoroutine);
+        _heartbeatCoroutine = StartCoroutine(ServiceHeartBeat());
     }
 
     #region Server
@@ -848,6 +912,31 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
+    public IEnumerator GetClanFromServer(string clanId, Action<ServerClan> callback)
+    {
+        if (string.IsNullOrEmpty(clanId))
+        {
+            Debug.LogWarning("GetClanFromServer called with empty clanId.");
+            callback?.Invoke(null);
+            yield break;
+        }
+
+        yield return StartCoroutine(WebRequests.Get(SERVERADDRESS + "clan/" + clanId, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                ServerClan clan = result["data"]["Clan"].ToObject<ServerClan>();
+
+                callback?.Invoke(clan);
+            }
+            else
+            {
+                callback?.Invoke(null);
+            }
+        }));
+    }
+
     public IEnumerator GetAllClans(int page, Action<List<ServerClan>, PaginationData> callback)
     {
         string query = SERVERADDRESS + "clan";//?page=" + page + "&limit=5";
@@ -914,7 +1003,7 @@ public class ServerManager : MonoBehaviour
 
     /// <summary>
     /// Fetches clan members for an arbitrary clan id (used when viewing another clan's profile).
-    /// 
+    ///
     /// NOTE:
     /// - This overload is intentionally separate from GetClanMembersFromServer(Action<...>),
     ///   which uses the local player's clan_id (own clan only).
@@ -1034,8 +1123,9 @@ public class ServerManager : MonoBehaviour
 
                 if (playerData != null)
                 {
-                    playerData.ClanId = "12345";                    //Demo-clan for not logged in players
+                    playerData.ClanId = string.Empty;
                     storefront.SavePlayerData(playerData, null);
+                    OnClanChanged?.Invoke(null);
                 }
                 else
                 {
@@ -1456,6 +1546,8 @@ public class ServerManager : MonoBehaviour
 
     #endregion
 
+    #region Messages
+
     public IEnumerator GetMessageHistory(ChatChannelType channel, Action<List<ServerChatMessage>> callback)
     {
         yield return StartCoroutine(WebRequests.Get($"{DEVADDRESS}chat/history?type={channel.ToString().ToLower()}", AccessToken, request =>
@@ -1478,6 +1570,8 @@ public class ServerManager : MonoBehaviour
             }
         }));
     }
+
+    #endregion
 
     #region BattleCharacter
 
@@ -1724,6 +1818,122 @@ public class ServerManager : MonoBehaviour
         }
 
         yield break;
+    }
+
+    #endregion
+
+    #region Friends
+
+    public IEnumerator GetFriendlist(Action<List<ServerFriendPlayer>> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get($"{SERVERADDRESS}friendship", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                List<ServerFriendPlayer> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<ServerFriendPlayer>>();
+
+
+
+                if (callback != null)
+                    callback(friendList);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+    public IEnumerator GetFriendlistRequests(Action<List<ServerFriendRequest>> callback)
+    {
+        yield return StartCoroutine(WebRequests.Get($"{SERVERADDRESS}friendship/requests", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
+                JArray token = (JArray)result["data"]["Friendship"];
+                foreach (JToken token2 in token)
+                    if (int.TryParse(token2["friend"]["avatar"]["head"].ToString(), out int value)) token2["friend"]["avatar"] = string.Empty;
+                List<ServerFriendRequest> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<ServerFriendRequest>>();
+
+
+
+                if (callback != null)
+                    callback(friendList);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator SendFriendRequest(string id, Action<bool> callback)
+    {
+        yield return StartCoroutine(WebRequests.Post($"{SERVERADDRESS}friendship/add/{id}", "", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                //JObject result = JObject.Parse(request.downloadHandler.text);
+                //Debug.LogWarning(result);
+                //List<bool> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<bool>>();
+
+
+
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
+    public IEnumerator FriendRequestAccept(string id, Action<bool> callback)
+    {
+        Debug.LogWarning("Accepting friend request");
+        yield return StartCoroutine(WebRequests.Post($"{SERVERADDRESS}friendship/accept/{id}", "", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                //JObject result = JObject.Parse(request.downloadHandler.text);
+                //Debug.LogWarning(result);
+                //List<bool> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<bool>>();
+
+
+
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
+    public IEnumerator FriendDelete(string id, Action<bool> callback)
+    {
+        yield return StartCoroutine(WebRequests.Delete($"{SERVERADDRESS}friendship/{id}", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
     }
 
     #endregion
@@ -2321,6 +2531,8 @@ public class ServerManager : MonoBehaviour
     }
     #endregion
 
+    #region Version
+
     public IEnumerator GetAllowedVersion(Action<bool, int> callback)
     {
         StartCoroutine(WebRequests.Get(SERVERADDRESS + "metadata/game/", AccessToken, request =>
@@ -2358,4 +2570,6 @@ public class ServerManager : MonoBehaviour
     }
 
     #endregion
+
+    #endregion Server
 }

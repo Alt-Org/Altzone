@@ -8,7 +8,6 @@ using Altzone.Scripts.ReferenceSheets;
 public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 {
     //Variables
-    private int _selfIndex = -1;
     private PlayerTask _taskData;
     private bool _clickEnabled = true;
     public PlayerTask TaskData { get { return _taskData; } }
@@ -50,16 +49,15 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     [SerializeField] private Image _progressImageDefault;
     [SerializeField] private TMP_Text _progressText;
 
-    [HideInInspector] public DailyTaskManager dailyTaskManager;
-
-    private void OnEnable()
-    {
-        _playerImage.gameObject.SetActive(false);
-    }
-
     private void Start()
     {
         SettingsCarrier.OnLanguageChanged += UpdateLanguage;
+
+        /*Bind this class to PlayerTask for later interactions
+         *between DailyTaskManager and this class.*/
+        //_taskData.OnTaskSelected += SetTaskAvailability(false);
+        //_taskData.OnTaskDeselected += SetTaskAvailability(true);
+        //_taskData.OnTaskUpdated += UpdateProgressBar;
     }
 
     private void OnDestroy()
@@ -83,43 +81,48 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         _clickEnabled = true;
     }
 
+    public void ReserveTask(PlayerTask taskData)
+    {
+        SetTaskData(taskData); // Set task data to make sure the task matches
+        SetTaskAvailability(false);
+    }
+
     public void SetTaskData(PlayerTask taskData)
     {
         _taskData = taskData;
-        TaskSelected();
     }
 
-    public void SetTaskData(PlayerTask taskData, int index)
+    public void SetTaskDataAndPopulate(PlayerTask taskData)
     {
-        _taskData = taskData;
-        _selfIndex = index;
-
-        /*Bind this class to PlayerTask for later interactions
-         *between DailyTaskManager and this class.*/
-        //_taskData.OnTaskSelected += TaskSelected;
-        //_taskData.OnTaskDeselected += TaskDeselected;
-        //_taskData.OnTaskUpdated += UpdateProgressBar;
-
+        SetTaskData(taskData);
         PopulateData();
-        SwitchWindow(TaskWindowType.Available);
     }
 
+
+    /// <summary>
+    /// Opens the window where you see information about the task and can select it
+    /// ("AcceptWindow" under pop.out.container -> UiElements).
+    /// This method is called from the DailyTaskCard OnClick()
+    /// </summary>
     public void DailyTaskInfo()
     {
-        if (!_clickEnabled || _taskData.PlayerId != "")
-            return;
+        if (!_clickEnabled || _taskData.PlayerId != "") return;
 
-        PopupData data = new(_taskData, GetCornerLocation(), _selfIndex);
-        StartCoroutine(dailyTaskManager.ShowPopupAndHandleResponse(_taskData.Title, data));
+        Vector3 popupLocation = GetScreenCenter(); //GetCornerLocation();
+        PopupData data = new(_taskData, popupLocation, this);
+        DailyTaskManager.Instance.ShowPopupAndHandleResponse(_taskData.Title, data);
     }
 
-    public void DailyTaskAccept()
+    /// <summary>
+    /// Start the task
+    /// </summary>
+    /*public void DailyTaskAccept()
     {
         if (!_clickEnabled || _taskData.PlayerId != "")
             return;
 
-        StartCoroutine(dailyTaskManager.AcceptTask(_taskData, null, _selfIndex));
-    }
+        StartCoroutine(DailyTaskManager.Instance.AcceptTask(_taskData, null));
+    }*/
 
     /// <summary>
     /// Returns the best location for the <c>Popup.cs</c> window depending <br/>
@@ -148,6 +151,16 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         }
     }
 
+    private Vector3 GetScreenCenter()
+    {
+        Vector2 screenCenter = new Vector2(Screen.width / 2, Screen.height / 2);
+
+        return screenCenter;
+    }
+
+    /// <summary>
+    /// Show the task data on the task card
+    /// </summary>
     public void PopulateData()
     {
         // Use the current language to pick the correct title
@@ -163,43 +176,35 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         }
 
         _taskDebugID.text = _taskData.Id.ToString();
-        _taskPoints.text = _taskData.Points.ToString();
-        _taskCoins.text = _taskData.Coins.ToString();
+        _taskPoints.text = "+" + _taskData.Points.ToString();
+        _taskCoins.text = "+" + _taskData.Coins.ToString();
         _taskAmount.text = _taskData.Amount.ToString();
         _coinIndicator.SetActive(_taskData.Coins >= 0);
 
         _TaskImage.sprite = _cardImageReference.GetTaskImage(_taskData);
+
+
+        ShowWindowWithType(TaskWindowType.Available);
     }
 
 
-    private string GetShortDescription(TaskNormalType taskType)
+    /// <summary>
+    /// Change the appearance of the task card depending if it's available or not
+    /// </summary>
+    /// <param name="type"></param>
+    public void ShowWindowWithType(TaskWindowType type)
     {
-        switch (taskType)
-        {
-            case TaskNormalType.PlayBattle: return ("Taisteluja");
-            case TaskNormalType.WinBattle: return ("Voittoja");
-            case TaskNormalType.StartBattleDifferentCharacter: return ("Taistele Eri Hahmoilla");
-            case TaskNormalType.WriteChatMessage: return ("Kirjoita viestej�");
-            case TaskNormalType.Vote: return ("��nest�");
-            case TaskNormalType.Undefined: return ("");
-            default: Debug.LogError($"No short descrition available for: {taskType.ToString()}"); return ("Error");
-        }
+        if (_availableWindow != null)
+            _availableWindow.SetActive(type == TaskWindowType.Available);
+        if (_reservedWindow != null)
+            _reservedWindow.SetActive(type == TaskWindowType.Reserved);
     }
 
-    private void SwitchWindow(TaskWindowType type)
-    {
-        _availableWindow.SetActive(type == TaskWindowType.Available);
-        _reservedWindow.SetActive(type == TaskWindowType.Reserved);
-    }
+    
 
-    public void TaskSelected()
-    {
-        SwitchWindow(TaskWindowType.Reserved);
-        _playerImage.gameObject.SetActive(true);
-        //_playerImage.sprite = INSERT PLAYER IMAGE HERE;
-        UpdateProgressBar();
-    }
-
+    /// <summary>
+    /// Update progress bar shown on task card
+    /// </summary>
     public void UpdateProgressBar()
     {
         _progressText.text = $"{TaskData.TaskProgress}/{TaskData.Amount}";
@@ -212,11 +217,22 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         }
     }
 
-    public void TaskDeselected()
+    public void SetTaskAvailability(bool available)
     {
-        SwitchWindow(TaskWindowType.Available);
-        _playerImage.gameObject.SetActive(false);
-        _taskData.ClearPlayerId();
+        if (available)
+        {
+            ShowWindowWithType(TaskWindowType.Available);
+            _playerImage.gameObject.SetActive(false);
+            _taskData.ClearPlayerId();
+            
+        }
+        else
+        {
+            ShowWindowWithType(TaskWindowType.Reserved);
+            _playerImage.gameObject.SetActive(true);
+            //_playerImage.sprite = INSERT PLAYER IMAGE HERE;
+            UpdateProgressBar();
+        }
     }
 
     private void UpdateLanguage(SettingsCarrier.LanguageType language)

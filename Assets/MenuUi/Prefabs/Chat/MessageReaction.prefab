@@ -91,15 +91,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.16862746}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -139,9 +139,6 @@ MonoBehaviour:
   _reactionImage: {fileID: 7841909152802070139}
   _button: {fileID: 2368985395364169221}
   _longClickButton: {fileID: 6568673720982453359}
-  _messageID: 0
-  _count: 0
-  _selected: 0
 --- !u!114 &2368985395364169221
 MonoBehaviour:
   m_ObjectHideFlags: 0

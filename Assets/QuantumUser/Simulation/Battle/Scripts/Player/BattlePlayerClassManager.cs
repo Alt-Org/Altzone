@@ -167,59 +167,113 @@ namespace Battle.QSimulation.Player
             /// </summary>
             public int AttachedShieldNumber;
         }
+
         /// <summary>
-        /// Initializes this classes BattleDebugLogger instance.<br/>
-        /// This method is exclusively for debug logging purposes.
+        /// Enum that defines the <see cref="PickClass"/> method's return options.
+        /// </summary>
+        public enum ClassOption
+        {
+            /// <summary>Use no class script</summary>
+            UseNone,
+            /// <summary>Use class script</summary>
+            UseClass,
+            /// <summary>Use test class script</summary>
+            UseTestClass
+        }
+
+        /// <summary>
+        /// Initializes this classes BattleDebugLogger instance and fills <see cref="s_classArray"/> states with <see cref="ClassState.Notloaded"/>.<br/>
         /// </summary>
         public static void Init()
         {
             s_debugLogger = BattleDebugLogger.Create(typeof(BattlePlayerClassManager));
+
+            for (int i = 0; i < s_classArray.Length; i++)
+            {
+                s_classArray[i].State = ClassState.NotLoaded;
+            }
         }
 
         /// <summary>
         /// Loads the specified class to be ready for use, if it is implemented.
         /// </summary>
         ///
+        /// <param name="f">Current simulation frame.</param>
         /// <param name="characterClass">The class that is to be loaded.</param>
-        public static void LoadClass(BattlePlayerCharacterClass characterClass)
+        public static void LoadClass(Frame f, BattlePlayerCharacterClass characterClass)
         {
+            bool isTestMode = BattleParameters.GetIsTestMode(f);
+
             switch (characterClass)
             {
                 case BattlePlayerCharacterClass.Class100:
-                    if (s_classArray[ClassIndex100] != null) break;
-                    s_classArray[ClassIndex100] = new BattlePlayerClass100();
+                    if (s_classArray[ClassIndex100].State != ClassState.NotLoaded) break;
+                    LoadClass(characterClass, ClassIndex100, new BattlePlayerClass100(), null, isTestMode);
                     break;
 
                 case BattlePlayerCharacterClass.Class200:
-                    if (s_classArray[ClassIndex200] != null) break;
-                    //s_classArray[ClassIndexTrickster] = new BattlePlayerClassTrickster();
+                    if (s_classArray[ClassIndex200].State != ClassState.NotLoaded) break;
+                    LoadClass(characterClass, ClassIndex200, null, null, isTestMode);
                     break;
 
                 case BattlePlayerCharacterClass.Class300:
+                    if (s_classArray[ClassIndex300].State != ClassState.NotLoaded) break;
+                    LoadClass(characterClass, ClassIndex300, null, null, isTestMode);
                     break;
 
                 case BattlePlayerCharacterClass.Class400:
-                    if (s_classArray[ClassIndex400] != null) break;
-                    s_classArray[ClassIndex400] = new BattlePlayerClass400();
+                    if (s_classArray[ClassIndex400].State != ClassState.NotLoaded) break;
+                    LoadClass(characterClass, ClassIndex400, new BattlePlayerClass400(), null, isTestMode);
                     break;
 
                 case BattlePlayerCharacterClass.Class500:
-                    if (s_classArray[ClassIndex500] != null) break;
-                    //s_classArray[ClassIndexRetroflector] = new BattlePlayerClassRetroflector();
+                    if (s_classArray[ClassIndex500].State != ClassState.NotLoaded) break;
+                    LoadClass(characterClass, ClassIndex500, null, null, isTestMode);
                     break;
 
                 case BattlePlayerCharacterClass.Class600:
-                    if (s_classArray[ClassIndex600] != null) break;
-                    s_classArray[ClassIndex600] = new BattlePlayerClass600();
+                    if (s_classArray[ClassIndex600].State != ClassState.NotLoaded) break;
+                    LoadClass(characterClass, ClassIndex600, new BattlePlayerClass600(), null, isTestMode);
                     break;
 
                 case BattlePlayerCharacterClass.Class700:
-                    if (s_classArray[ClassIndex700] != null) break;
-                    //s_classArray[ClassIndexIntellectualizer] = new BattlePlayerClassIntellectualizer();
+                    if (s_classArray[ClassIndex700].State != ClassState.NotLoaded) break;
+                    LoadClass(characterClass, ClassIndex700, null, null, isTestMode);
                     break;
 
                 default:
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Decides which <see cref="ClassOption"/> to use depending on available class scripts and whether <paramref name="testMode"/> is enabled.
+        /// </summary>
+        ///
+        /// See [PlayerClass](#page-concepts-player-simulation-playerclass) for more info<br/>
+        /// See [Player Character Classes](#page-concepts-player-characters-classes) for more info
+        ///
+        /// |                                       | has none                   | <paramref name="hasClass"/> | <paramref name="hasTestClass"/> | has both                        |
+        /// | :------------------------------------ | :------------------------- | :-------------------------- | :------------------------------ | :------------------------------ |
+        /// | <paramref name="testMode"/> **false** | @cref{ClassOption,UseNone} | @cref{ClassOption,UseClass} | @cref{ClassOption,UseNone}      | @cref{ClassOption,UseClass}     |
+        /// | <paramref name="testMode"/> **true**  | @cref{ClassOption,UseNone} | @cref{ClassOption,UseClass} | @cref{ClassOption,UseTestClass} | @cref{ClassOption,UseTestClass} |
+        ///
+        /// <param name="hasClass">Normal class script reference to check</param>
+        /// <param name="hasTestClass">Test class script reference to check</param>
+        /// <param name="testMode">Is test mode enabled</param>
+        ///
+        /// <returns>The picked <see cref="ClassOption"/></returns>
+        public static ClassOption PickClass(object hasClass, object hasTestClass, bool testMode)
+        {
+            ClassOption useClass = hasClass != null ? ClassOption.UseClass : ClassOption.UseNone;
+
+            if (!testMode)
+            {
+                return useClass;
+            }
+            else
+            {
+                return hasTestClass != null ? ClassOption.UseTestClass : useClass;
             }
         }
 
@@ -336,23 +390,23 @@ namespace Battle.QSimulation.Player
         }
 
         /// <value>Constant for a class index error.</value>
-        private const int ClassIndexError = -2;
-        /// <value>Constant for a no code class index.</value>
-        private const int ClassIndexNoCode = -1;
+        private const int ClassIndexError = -1;
         /// <value>Constant for Desensitizer class index.</value>
         private const int ClassIndex100 = 0;
         /// <value>Constant for Trickster class index.</value>
         private const int ClassIndex200 = 1;
+        /// <value>Constant for Obedient class index.</value>
+        private const int ClassIndex300 = 2;
         /// <value>Constant for Projector class index.</value>
-        private const int ClassIndex400 = 2;
+        private const int ClassIndex400 = 3;
         /// <value>Constant for Retroflector class index.</value>
-        private const int ClassIndex500 = 3;
+        private const int ClassIndex500 = 4;
         /// <value>Constant for Confluent class index.</value>
-        private const int ClassIndex600 = 4;
+        private const int ClassIndex600 = 5;
         /// <value>Constant for Intellectualizer class index.</value>
-        private const int ClassIndex700 = 5;
+        private const int ClassIndex700 = 6;
         /// <value>Constant for the amount of classes that exist.</value>
-        private const int ClassCount = 6;
+        private const int ClassCount = 7;
 
         /// <summary>
         /// Enum that defines the <see cref="BattlePlayerClassManager.GetClass">GetClass</see> method's return codes.<br/>
@@ -373,14 +427,74 @@ namespace Battle.QSimulation.Player
             Error = 2
         }
 
-        /// <value>An array containing all of the class scripts that have been implemented and can be used.</value>
-        private static readonly BattlePlayerClassBase[] s_classArray = new BattlePlayerClassBase[ClassCount];
+        /// <summary>
+        /// Enum defines the state of a <see cref="BattlePlayerClassBase">BattlePlayerClass</see> in <see cref="ClassEntry"/>.
+        /// </summary>
+        private enum ClassState
+        {
+            /// <summary>Class is not loaded yet.</summary>
+            NotLoaded,
+            /// <summary>Class has been attempted to be loaded but has no code.</summary>
+            NoCode,
+            /// <summary>Class has been loaded.</summary>
+            Loaded
+        }
+
+        /// <summary>
+        /// Struct that holds the <see cref="BattlePlayerClassBase">BattlePlayerClass</see> script and <see cref="ClassState"/> of an entry in <see cref="s_classArray"/>
+        /// </summary>
+        private struct ClassEntry
+        {
+            /// <summary><see cref="BattlePlayerClassBase">BattlePlayerClass</see> script of a class</summary>
+            public BattlePlayerClassBase Class;
+            /// <summary><see cref="ClassState"/> of a class</summary>
+            public ClassState State;
+        }
+
+        /// <Summary>An array containing a <see cref="ClassEntry"/> for all of the <see cref="Quantum.BattlePlayerCharacterClass">BattlePlayerCharacterClasses</see></Summary>
+        private static readonly ClassEntry[] s_classArray = new ClassEntry[ClassCount];
 
         /// <value>A dictionary used for tracking which classes have already had an error message sent regarding their missing implementation.</value>
         private static readonly Dictionary<BattlePlayerCharacterClass, bool> s_errorMessagesSent = new();
 
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private static BattleDebugLogger s_debugLogger;
+
+        /// <summary>
+        /// Loads a class and saves it to to to @cref{s_classArray} at <paramref name="classIndex"/>
+        /// </summary>
+        ///
+        /// <param name="characterClass">Character class</param>
+        /// <param name="classIndex">Index of the character class</param>
+        /// <param name="class">Normal class script for the given character class</param>
+        /// <param name="testClass">Test class script for the given character class</param>
+        /// <param name="testMode">Is test mode enabled</param>
+        private static void LoadClass(BattlePlayerCharacterClass characterClass, int classIndex, BattlePlayerClassBase @class, BattlePlayerClassBase testClass, bool testMode)
+        {
+            BattlePlayerClassBase loadedClass = PickClass(@class, testClass, testMode) switch
+            {
+                ClassOption.UseClass     => @class,
+                ClassOption.UseTestClass => testClass,
+
+                _ => null
+            };
+
+            if (loadedClass == null)
+            {
+                s_classArray[classIndex].Class = null;
+                s_classArray[classIndex].State = ClassState.NoCode;
+                return;
+            }
+
+            if (loadedClass.Class != characterClass)
+            {
+                s_debugLogger.ErrorFormat("Mapping of character classes is incorrect! Expected {0}, got {1}", characterClass, loadedClass.Class);
+                loadedClass = null;
+            }
+
+            s_classArray[classIndex].Class = loadedClass;
+            s_classArray[classIndex].State = ClassState.Loaded;
+        }
 
         /// <summary>
         /// Returns the class script of the specified class from the class array, if it is implemented.
@@ -394,18 +508,23 @@ namespace Battle.QSimulation.Player
         {
             playerClass = null;
 
+            if (characterClass == BattlePlayerCharacterClass.None)
+            {
+                return ReturnCode.NoClass;
+            }
+
             int classIndex = characterClass switch
             {
-                BattlePlayerCharacterClass.None     => ClassIndexNoCode,
                 BattlePlayerCharacterClass.Class100 => ClassIndex100,
-                BattlePlayerCharacterClass.Class300 => ClassIndexNoCode,
+                BattlePlayerCharacterClass.Class200 => ClassIndex200,
+                BattlePlayerCharacterClass.Class300 => ClassIndex300,
                 BattlePlayerCharacterClass.Class400 => ClassIndex400,
+                BattlePlayerCharacterClass.Class500 => ClassIndex500,
                 BattlePlayerCharacterClass.Class600 => ClassIndex600,
+                BattlePlayerCharacterClass.Class700 => ClassIndex700,
 
                 _ => ClassIndexError,
             };
-
-            if (classIndex == ClassIndexNoCode) return ReturnCode.NoClass;
 
             if (classIndex == ClassIndexError)
             {
@@ -423,21 +542,19 @@ namespace Battle.QSimulation.Player
                 return ReturnCode.Error;
             }
 
-            BattlePlayerClassBase classObj = s_classArray[classIndex];
+            ClassEntry classEntry = s_classArray[classIndex];
 
-            if (classObj == null)
+            if (classEntry.State == ClassState.NoCode)
             {
-                s_debugLogger.ErrorFormat("The {0} class is not in the class array!", characterClass);
+                return ReturnCode.NoClass;
+            }
+
+            if (classEntry.Class.Class != characterClass)
+            {
                 return ReturnCode.Error;
             }
 
-            if (classObj.Class != characterClass)
-            {
-                s_debugLogger.ErrorFormat("Mapping of character classes is incorrect! Expected {0}, got {1}", characterClass, classObj.Class);
-                return ReturnCode.Error;
-            }
-
-            playerClass = classObj;
+            playerClass = classEntry.Class;
             return ReturnCode.ClassRetrieved;
         }
     }

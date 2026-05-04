@@ -276,7 +276,7 @@ namespace Battle.QSimulation.Player
                     }
 
                     // load class
-                    BattlePlayerClassManager.LoadClass(playerCharacterClass);
+                    BattlePlayerClassManager.LoadClass(f, playerCharacterClass);
 
                     // create entity
                     BattlePlayerEntityRef playerCharacterEntity = BattlePlayerEntityRef.Create(f, playerCharacterEntityPrototype);

@@ -41,7 +41,6 @@ var hierarchy =
     [ "Quantum.BattleSoulWallTemplate", "struct_quantum_1_1_battle_soul_wall_template.html", null ],
     [ "Battle.Scripts.BattleTest", "class_battle_1_1_scripts_1_1_battle_test.html", null ],
     [ "Altzone.Scripts.BattleUiShared.BattleUiMovableElementData", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_battle_ui_movable_element_data.html", null ],
-    [ "Quantum.BattleWaitForPlayersData", "struct_quantum_1_1_battle_wait_for_players_data.html", null ],
     [ "Quantum.BitSet128", "struct_quantum_1_1_bit_set128.html", null ],
     [ "Quantum.BitSet2048", "struct_quantum_1_1_bit_set2048.html", null ],
     [ "Quantum.BitSet256", "struct_quantum_1_1_bit_set256.html", null ],
@@ -85,6 +84,7 @@ var hierarchy =
       [ "Quantum.EventBattleShieldTakeDamage", "class_quantum_1_1_event_battle_shield_take_damage.html", null ],
       [ "Quantum.EventBattleSoulWallViewInit", "class_quantum_1_1_event_battle_soul_wall_view_init.html", null ],
       [ "Quantum.EventBattleStoneCharacterPieceViewInit", "class_quantum_1_1_event_battle_stone_character_piece_view_init.html", null ],
+      [ "Quantum.EventBattleStoneCharacterPlayHitAnimation", "class_quantum_1_1_event_battle_stone_character_play_hit_animation.html", null ],
       [ "Quantum.EventBattleViewActivate", "class_quantum_1_1_event_battle_view_activate.html", null ],
       [ "Quantum.EventBattleViewAllPlayersConnected", "class_quantum_1_1_event_battle_view_all_players_connected.html", null ],
       [ "Quantum.EventBattleViewGameOver", "class_quantum_1_1_event_battle_view_game_over.html", null ],
@@ -128,8 +128,7 @@ var hierarchy =
       [ "Battle.View.UI.BattleUiJoystickComponent", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_joystick_component.html", null ]
     ] ],
     [ "System.IEquatable", null, [
-      [ "Quantum.QString512", "struct_quantum_1_1_q_string512.html", null ],
-      [ "Quantum.QString64", "struct_quantum_1_1_q_string64.html", null ]
+      [ "Quantum.QString512", "struct_quantum_1_1_q_string512.html", null ]
     ] ],
     [ "Quantum.Input", "struct_quantum_1_1_input.html", null ],
     [ "Battle.QSimulation.BattleInputDebugUtils.InputDebugInfo", "struct_battle_1_1_q_simulation_1_1_battle_input_debug_utils_1_1_input_debug_info.html", null ],
@@ -141,8 +140,7 @@ var hierarchy =
       [ "Battle.View.UI.BattleUiJoystickComponent", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_joystick_component.html", null ]
     ] ],
     [ "IQString", null, [
-      [ "Quantum.QString512", "struct_quantum_1_1_q_string512.html", null ],
-      [ "Quantum.QString64", "struct_quantum_1_1_q_string64.html", null ]
+      [ "Quantum.QString512", "struct_quantum_1_1_q_string512.html", null ]
     ] ],
     [ "IQuantumUnityPrototypeWrapperForComponent", null, [
       [ "Quantum.QPrototypeBattleArenaBorderQComponent", "class_quantum_1_1_q_prototype_battle_arena_border_q_component.html", null ],
@@ -187,7 +185,6 @@ var hierarchy =
         [ "Altzone.Scripts.BattleUiShared.BattleUiMultiOrientationElement", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_battle_ui_multi_orientation_element.html", null ]
       ] ],
       [ "Altzone.Scripts.BattleUiShared.TextScaler", "class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_text_scaler.html", null ],
-      [ "Battle.View.BattleStoneCharacterViewController", "class_battle_1_1_view_1_1_battle_stone_character_view_controller.html", null ],
       [ "Battle.View.Effect.BattleLightrayEffectViewController", "class_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller.html", null ],
       [ "Battle.View.Effect.BattleScreenEffectViewController", "class_battle_1_1_view_1_1_effect_1_1_battle_screen_effect_view_controller.html", null ],
       [ "Battle.View.Game.BattleCamera", "class_battle_1_1_view_1_1_game_1_1_battle_camera.html", null ],
@@ -198,6 +195,7 @@ var hierarchy =
         [ "Battle.View.Player.BattlePlayerClassProjectorViewController", "class_battle_1_1_view_1_1_player_1_1_battle_player_class_projector_view_controller.html", null ]
       ] ],
       [ "Battle.View.Player.BattlePlayerInput", "class_battle_1_1_view_1_1_player_1_1_battle_player_input.html", null ],
+      [ "Battle.View.SoulWall.BattleStoneCharacterViewController", "class_battle_1_1_view_1_1_soul_wall_1_1_battle_stone_character_view_controller.html", null ],
       [ "Battle.View.UI.BattleUiAnnouncementHandler", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_announcement_handler.html", null ],
       [ "Battle.View.UI.BattleUiCharacterButtonComponent", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_character_button_component.html", null ],
       [ "Battle.View.UI.BattleUiCharacterFrameComponent", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_character_frame_component.html", null ],
@@ -267,7 +265,6 @@ var hierarchy =
       [ "Quantum.Prototypes.BattlePlayerHitboxTemplatePrototype", "class_quantum_1_1_prototypes_1_1_battle_player_hitbox_template_prototype.html", null ],
       [ "Quantum.Prototypes.BattlePlayerStatsPrototype", "class_quantum_1_1_prototypes_1_1_battle_player_stats_prototype.html", null ],
       [ "Quantum.Prototypes.BattleSoulWallTemplatePrototype", "class_quantum_1_1_prototypes_1_1_battle_soul_wall_template_prototype.html", null ],
-      [ "Quantum.Prototypes.BattleWaitForPlayersDataPrototype", "class_quantum_1_1_prototypes_1_1_battle_wait_for_players_data_prototype.html", null ],
       [ "Quantum.Prototypes.InputPrototype", "class_quantum_1_1_prototypes_1_1_input_prototype.html", null ]
     ] ],
     [ "SystemMainThread", null, [

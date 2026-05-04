@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class ClanSearchWindowController : AltMonoBehaviour
 {
-    [SerializeField] private GameObject _overlay;
     [SerializeField] private OverlayPanelCheck _overlayCheck;
 
     private void OnEnable()
@@ -15,12 +14,12 @@ public class ClanSearchWindowController : AltMonoBehaviour
         StartCoroutine(GetPlayerData(callback => data = callback));
         if (string.IsNullOrWhiteSpace(data.ClanId))
         {
-            _overlay.SetActive(false); //Change this to be false when we want to force players to join a clan.
-            _overlayCheck.enabled = false;
+            OverlayPanelCheck.Instance?.ToggleOverlay(false); //Change this to be false when we want to force players to join a clan.
+            //_overlayCheck.enabled = false;
         }
         else
         {
-            _overlay.SetActive(true);
+            OverlayPanelCheck.Instance?.ToggleOverlay(true);
         }
     }
 }
