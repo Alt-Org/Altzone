@@ -174,7 +174,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
             return;
         }
 
-        var defaultAvatars = _avatarDefaultReference.GetAvatar(playerData.SelectedCharacterId);
+        var defaultAvatars = AvatarReference.Instance.GetDefaultAvatar((CharacterClassType)((playerData.SelectedCharacterId / 100) * 100));
         if (defaultAvatars == null)
         {
             Debug.LogError($"No default avatar found for character ID: {playerData.SelectedCharacterId}");

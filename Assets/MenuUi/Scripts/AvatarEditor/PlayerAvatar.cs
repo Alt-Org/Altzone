@@ -93,6 +93,31 @@ namespace MenuUi.Scripts.AvatarEditor
             Scale = Vector2.one;
         }
 
+        public PlayerAvatar(AvatarDefault featureIds)
+        {
+
+            HairId = GetOrDefault(featureIds.HairId);
+            EyesId = GetOrDefault(featureIds.EyesId);
+            NoseId = GetOrDefault(featureIds.NoseId);
+            MouthId = GetOrDefault(featureIds.MouthId);
+            BodyId = GetOrDefault(featureIds.BodyId);
+            HandsId = GetOrDefault(featureIds.HandsId);
+            FeetId = GetOrDefault(featureIds.FeetId);
+
+
+            Name = string.Empty;
+            SkinColor = "#ffffff";
+            ClassColor = "#ffffff";
+            HairColor = "#ffffff";
+            EyesColor = "#ffffff";
+            NoseColor = "#ffffff";
+            MouthColor = "#ffffff";
+            ClothesColor = "#ffffff";
+            HandsColor = "#ffffff";
+            FeetColor = "#ffffff";
+            Scale = Vector2.one;
+        }
+
         public PlayerAvatar(AvatarData data)
         {
             Name = data.Name ?? string.Empty;
