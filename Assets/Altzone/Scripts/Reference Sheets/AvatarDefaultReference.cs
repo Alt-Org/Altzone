@@ -232,7 +232,7 @@ public class AvatarPartVariation
 [CustomPropertyDrawer(typeof(AvatarDefault))]
 public class AvatarDefaultEditor : PropertyDrawer
 {
-    SerializedProperty HairProperty;
+    /*private SerializedProperty HairProperty;
     PropertyField CharacterName;
     PropertyField CharacterId;
     PropertyField HairField;
@@ -241,7 +241,7 @@ public class AvatarDefaultEditor : PropertyDrawer
     PropertyField MouthField;
     PropertyField BodyField;
     PropertyField HandsField;
-    PropertyField FeetField;
+    PropertyField FeetField;*/
 
     /*private void OnEnable()
     {
@@ -264,31 +264,38 @@ public class AvatarDefaultEditor : PropertyDrawer
         var container = new VisualElement();
 
         // Create property fields.
-        HairProperty = property.FindPropertyRelative(nameof(AvatarDefault.HairId));
-        CharacterName = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.CharacterName)));
-        CharacterId = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.CharacterId)));
-        HairField = new PropertyField(HairProperty, "Hair");
+        var CharacterName = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.CharacterName)));
+        var CharacterId = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.CharacterId)));
+        var hairProperty = property.FindPropertyRelative(nameof(AvatarDefault.HairId));
+        var hairField = new PropertyField(hairProperty, "Hair");
         var hairBox = new ScrollView();
-        EyesField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.EyesId)), "Eyes");
+        var eyeProperty = property.FindPropertyRelative(nameof(AvatarDefault.EyesId));
+        var EyesField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.EyesId)), "Eyes");
         var eyesBox = new ScrollView();
-        NoseField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.NoseId)), "Nose");
+        var noseProperty = property.FindPropertyRelative(nameof(AvatarDefault.NoseId));
+        var NoseField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.NoseId)), "Nose");
         var noseBox = new ScrollView();
-        MouthField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.MouthId)), "Mouth");
+        var mouthProperty = property.FindPropertyRelative(nameof(AvatarDefault.MouthId));
+        var MouthField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.MouthId)), "Mouth");
         var mouthBox = new ScrollView();
-        BodyField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.BodyId)), "Body");
+        var bodyProperty = property.FindPropertyRelative(nameof(AvatarDefault.BodyId));
+        var BodyField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.BodyId)), "Body");
         var bodyBox = new ScrollView();
-        HandsField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.HandsId)), "Hands");
+        var handsProperty = property.FindPropertyRelative(nameof(AvatarDefault.HandsId));
+        var HandsField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.HandsId)), "Hands");
         var handsBox = new ScrollView();
-        FeetField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.FeetId)), "Feet");
+        var feetProperty = property.FindPropertyRelative(nameof(AvatarDefault.FeetId));
+        var FeetField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.FeetId)), "Feet");
         var feetBox = new ScrollView();
 
         // Add fields to the container.
         container.Add(CharacterName);
         container.Add(CharacterId);
 
-        container.Add(HairField);
+        container.Add(hairField);
+        hairField.SetEnabled(false);
         container.Add(hairBox);
-        HairField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box=hairBox, Piece=AvatarPiece.Hair });
+        hairField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box=hairBox, Piece=AvatarPiece.Hair, Field=hairProperty });
         hairBox.style.flexGrow = 1;
         hairBox.style.backgroundColor = Color.white;
         hairBox.style.height = 100f;
@@ -296,7 +303,7 @@ public class AvatarDefaultEditor : PropertyDrawer
 
         container.Add(EyesField);
         container.Add(eyesBox);
-        EyesField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = eyesBox, Piece = AvatarPiece.Eyes });
+        EyesField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = eyesBox, Piece = AvatarPiece.Eyes, Field = eyeProperty });
         eyesBox.style.flexGrow = 1;
         eyesBox.style.backgroundColor = Color.white;
         eyesBox.style.height = 100f;
@@ -304,7 +311,7 @@ public class AvatarDefaultEditor : PropertyDrawer
 
         container.Add(NoseField);
         container.Add(noseBox);
-        NoseField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = noseBox, Piece = AvatarPiece.Nose });
+        NoseField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = noseBox, Piece = AvatarPiece.Nose, Field = noseProperty });
         noseBox.style.flexGrow = 1;
         noseBox.style.backgroundColor = Color.white;
         noseBox.style.height = 100f;
@@ -312,7 +319,7 @@ public class AvatarDefaultEditor : PropertyDrawer
 
         container.Add(MouthField);
         container.Add(mouthBox);
-        MouthField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = mouthBox, Piece = AvatarPiece.Mouth });
+        MouthField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = mouthBox, Piece = AvatarPiece.Mouth, Field = mouthProperty });
         mouthBox.style.flexGrow = 1;
         mouthBox.style.backgroundColor = Color.white;
         mouthBox.style.height = 100f;
@@ -320,7 +327,7 @@ public class AvatarDefaultEditor : PropertyDrawer
 
         container.Add(BodyField);
         container.Add(bodyBox);
-        BodyField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = bodyBox, Piece = AvatarPiece.Clothes });
+        BodyField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = bodyBox, Piece = AvatarPiece.Clothes, Field = bodyProperty });
         bodyBox.style.flexGrow = 1;
         bodyBox.style.backgroundColor = Color.white;
         bodyBox.style.height = 100f;
@@ -328,7 +335,7 @@ public class AvatarDefaultEditor : PropertyDrawer
 
         container.Add(HandsField);
         container.Add(handsBox);
-        HandsField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = handsBox, Piece = AvatarPiece.Hands });
+        HandsField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = handsBox, Piece = AvatarPiece.Hands, Field = handsProperty });
         handsBox.style.flexGrow = 1;
         handsBox.style.backgroundColor = Color.white;
         handsBox.style.height = 100f;
@@ -336,7 +343,7 @@ public class AvatarDefaultEditor : PropertyDrawer
 
         container.Add(FeetField);
         container.Add(feetBox);
-        FeetField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = feetBox, Piece = AvatarPiece.Feet });
+        FeetField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = feetBox, Piece = AvatarPiece.Feet, Field = feetProperty });
         feetBox.style.flexGrow = 1;
         feetBox.style.backgroundColor = Color.white;
         feetBox.style.height = 100f;
@@ -354,6 +361,7 @@ public class AvatarDefaultEditor : PropertyDrawer
 
         var value = @event.newValue;
         if (value == null) return;
+        Debug.LogWarning("Test: " + value+": "+boxData.Piece);
 
         var bigBox = new Box();
         List<AvatarPartInfo> info = boxData.Piece switch
@@ -367,6 +375,7 @@ public class AvatarDefaultEditor : PropertyDrawer
             AvatarPiece.Hands => AvatarPartsReference.Instance.Arms.AvatarParts,
             _ => null,
         };
+
         foreach (var data in info)
         {
             var hairBox = new Button();
@@ -387,7 +396,11 @@ public class AvatarDefaultEditor : PropertyDrawer
             box.Add(bigBox);
             //box.style.alignContent = Align.Auto;
 
-            void ClickedThis() => Clicked(data);
+            void ClickedThis()
+            {
+                Debug.LogWarning("TestCharacter");
+                Clicked(data);
+            };
         }
 
 
@@ -398,10 +411,15 @@ public class AvatarDefaultEditor : PropertyDrawer
 
         void Clicked(AvatarPartInfo data)
         {
+            Debug.LogWarning("TestCharacter2: "+ data.Id);
             switch (boxData.Piece)
             {
                 case AvatarPiece.Hair:
-                    HairProperty.stringValue = data.Id;
+                    Debug.LogWarning("TestCharacter3: " + boxData.Field.stringValue);
+                    //property.serializedObject.Update();
+                    boxData.Field.stringValue = data.Id;
+                    boxData.Field.serializedObject.ApplyModifiedProperties();
+                    Debug.LogWarning("TestCharacter4: " + boxData.Field.stringValue);
                     break;
                 default:
                     break;
@@ -413,6 +431,6 @@ public class AvatarDefaultEditor : PropertyDrawer
     {
         public VisualElement Box;
         public AvatarPiece Piece;
-        public PropertyField Field;
+        public SerializedProperty Field;
     }
 }
