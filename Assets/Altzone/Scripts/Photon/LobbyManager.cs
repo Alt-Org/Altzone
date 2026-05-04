@@ -4169,33 +4169,38 @@ namespace Altzone.Scripts.Lobby
                                 yield break;
                             }
                         }
-                        else // Queuing with a teammate TODO: untested code, when queueing with teammate is possible test this and fix any issues
+                        else
                         {
-                            // Checking if position is free and if so setting userid from old room to that position
-                            if (PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition3))
+                            /*
+                            // Queuing with a teammate TODO: untested code, when queueing with teammate is possible test this and fix any issues
                             {
-                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, positionValue3);
-                            }
-                            else // If position is not free
-                            {
-                                // Moving the player at the position to the first free position (should be either 1 or 2 since room max players is 4)
-                                int freePosition = PhotonLobbyRoom.GetFirstFreePlayerPos();
-                                if (!PhotonLobbyRoom.IsValidPlayerPos(freePosition)) yield break;
-                                string newRoomPositionValue3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey3);
-                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.GetPositionKey(freePosition), newRoomPositionValue3);
-                            }
+                                // Checking if position is free and if so setting userid from old room to that position
+                                if (PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition3))
+                                {
+                                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, positionValue3);
+                                }
+                                else // If position is not free
+                                {
+                                    // Moving the player at the position to the first free position (should be either 1 or 2 since room max players is 4)
+                                    int freePosition = PhotonLobbyRoom.GetFirstFreePlayerPos();
+                                    if (!PhotonLobbyRoom.IsValidPlayerPos(freePosition)) yield break;
+                                    string newRoomPositionValue3 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey3);
+                                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.GetPositionKey(freePosition), newRoomPositionValue3);
+                                }
 
-                            if (PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition4))
-                            {
-                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, positionValue4);
+                                if (PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition4))
+                                {
+                                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, positionValue4);
+                                }
+                                else
+                                {
+                                    int freePosition = PhotonLobbyRoom.GetFirstFreePlayerPos();
+                                    if (!PhotonLobbyRoom.IsValidPlayerPos(freePosition)) yield break;
+                                    string newRoomPositionValue4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey4);
+                                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.GetPositionKey(freePosition), newRoomPositionValue4);
+                                }
                             }
-                            else
-                            {
-                                int freePosition = PhotonLobbyRoom.GetFirstFreePlayerPos();
-                                if (!PhotonLobbyRoom.IsValidPlayerPos(freePosition)) yield break;
-                                string newRoomPositionValue4 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PlayerPositionKey4);
-                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.GetPositionKey(freePosition), newRoomPositionValue4);
-                            }
+                            */
                         }
                         break;
                 }
