@@ -20,8 +20,6 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
     private const bool DebugOn = false;
 
-    // Cache required components used during drag.
-    // Assumes all components exist on the same GameObject (except Canvas).
     private void Awake()
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleDrag : Awake()");
@@ -33,11 +31,6 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         _rootCanvas = GetComponentInParent<Canvas>();
     }
 
-
-    // Handles drag initialization:
-    // creates placeholder, removes row from layout, rebuilds UI,
-    // moves row to root canvas and syncs it with pointer.
-    // Order of operations is critical to avoid first-drag bugs.
     public void OnBeginDrag(PointerEventData e)
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleDrag : OnBeginDrag()");
@@ -86,7 +79,6 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         UpdatePlaceholderIndex(e);
     }
 
-    // Handles dragging each frame: moves the row and updates its position in the list.
     public void OnDrag(PointerEventData e)
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleDrag : OnDrag()");
@@ -95,7 +87,6 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         UpdatePlaceholderIndex(e);
     }
 
-    // Finalizes drag: restores layout, applies new order and cleans up placeholder
     public void OnEndDrag(PointerEventData e)
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleDrag : OnEndDrag()");
@@ -121,8 +112,6 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         OnDropped?.Invoke();
     }
 
-    // Moves dragged row with pointer in root canvas
-    // and clamps movement inside defined bounds: Clamp Area
     private void FollowPointer(PointerEventData e)
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleDrag : FollowPointer()");
@@ -156,8 +145,6 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         _rectTransform.localPosition = new Vector2(_lockedXInRootCanvas, y);
     }
 
-    // Calculates and updates placeholder index based on pointer position
-    // Determines where the dragged row should be inserted during drag
     private void UpdatePlaceholderIndex(PointerEventData e)
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleDrag : UpdatePlaceholderIndex()");

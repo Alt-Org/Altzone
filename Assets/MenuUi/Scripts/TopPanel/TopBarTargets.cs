@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Altzone.Scripts.Settings; // TopBarDefs
+using Altzone.Scripts.Settings;
 
 namespace MenuUI.Scripts.TopPanel
 {
@@ -25,9 +25,8 @@ namespace MenuUI.Scripts.TopPanel
 
         [SerializeField] private float _spacerMinWidth = 0f;
 
-        [SerializeField] private GameObject _standaloneLeaderboard; // erillinen LB-nappi
-        [SerializeField] private GameObject _clanTileLeaderboard; // LB-nappi clan-ruudussa
-
+        [SerializeField] private GameObject _standaloneLeaderboard;
+        [SerializeField] private GameObject _clanTileLeaderboard;
         [SerializeField] private TopBarDefs.TopBarItem _clanItem = TopBarDefs.TopBarItem.ClanTile;
         [SerializeField] private TopBarDefs.TopBarItem _leaderboardItem = TopBarDefs.TopBarItem.Leaderboard;
 
@@ -71,29 +70,30 @@ namespace MenuUI.Scripts.TopPanel
                     _rows[i].visibilityTarget.SetActive(vis[i]);
             }
 
-            List<int> rawOrder = SettingsCarrier.LoadTopBarOrderStatic(style, _rows.Count);
-
-            List<int> orderedVisible = new List<int>(_rows.Count);
-            for (int i = 0; i < rawOrder.Count; i++)
-            {
-                int idx = rawOrder[i];
-                if ((uint)idx < (uint)_rows.Count && vis[idx])
-                    orderedVisible.Add(idx);
-            }
-
-            for (int i = 0; i < _rows.Count; i++)
-            {
-                if (!vis[i]) continue;
-                bool already = false;
-                for (int j = 0; j < orderedVisible.Count; j++)
-                    if (orderedVisible[j] == i)
-                    {
-                        already = true;
-                        break;
-                    }
-
-                if (!already) orderedVisible.Add(i);
-            }
+            // List<int> rawOrder = SettingsCarrier.LoadTopBarOrderStatic(style, _rows.Count);
+            //
+            // List<int> orderedVisible = new List<int>(_rows.Count);
+            //
+            // for (int i = 0; i < rawOrder.Count; i++)
+            // {
+            //     int idx = rawOrder[i];
+            //     if ((uint)idx < (uint)_rows.Count && vis[idx])
+            //         orderedVisible.Add(idx);
+            // }
+            //
+            // for (int i = 0; i < _rows.Count; i++)
+            // {
+            //     if (!vis[i]) continue;
+            //     bool already = false;
+            //     for (int j = 0; j < orderedVisible.Count; j++)
+            //         if (orderedVisible[j] == i)
+            //         {
+            //             already = true;
+            //             break;
+            //         }
+            //
+            //     if (!already) orderedVisible.Add(i);
+            // }
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
         }
@@ -145,12 +145,12 @@ namespace MenuUI.Scripts.TopPanel
             return true;
         }
 
-        private static string PrefKeyForItem(TopBarDefs.TopBarItem item)
-        {
-            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : PrefKeyForItem()");
-
-            return TopBarDefs.Key(item);
-        }
+        // private static string PrefKeyForItem(TopBarDefs.TopBarItem item)
+        // {
+        //     if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : PrefKeyForItem()");
+        //
+        //     return TopBarDefs.Key(item);
+        // }
 
         private bool[] ReadVisibility()
         {
@@ -160,8 +160,8 @@ namespace MenuUI.Scripts.TopPanel
             bool[] vis = new bool[count];
             for (int i = 0; i < count; i++)
             {
-                string key = TopBarDefs.Key(_rows[i].item) + "_" + style; // tyylikohtainen
-                vis[i] = PlayerPrefs.GetInt(key, 1) != 0; // default ON
+                string key = TopBarDefs.Key(_rows[i].item) + "_" + style;
+                vis[i] = PlayerPrefs.GetInt(key, 1) != 0;
             }
 
             return vis;
@@ -267,13 +267,17 @@ namespace MenuUI.Scripts.TopPanel
         public void ApplyOrderFromSettings()
         {
             if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ApllyOrderFromSettings()");
- RectTransform parentRT;
+
+            RectTransform parentRT;
             if (!IsValid(out parentRT)) return;
 
-            for (int i = 0; i < parentRT.childCount; i++)
+            if (DebugOn)
             {
-                Transform child = parentRT.GetChild(i);
-                Debug.Log($"[{i}] {child.name} (active: {child.gameObject.activeSelf})");
+                for (int i = 0; i < parentRT.childCount; i++)
+                {
+                    Transform child = parentRT.GetChild(i);
+                    Debug.Log($"[{i}] {child.name} (active: {child.gameObject.activeSelf})");
+                }
             }
 
             bool[] vis = ReadVisibility();

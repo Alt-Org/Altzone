@@ -8,6 +8,8 @@ public class TopBarOrderBridge : MonoBehaviour
     [SerializeField] private RectTransform _toggleContainer;
     [SerializeField] private TopBarTargets[] _targetsByStyle;
 
+    private const bool DebugOn = false;
+
     private SettingsCarrier.TopBarStyle CurrentStyle =>
         SettingsCarrier.Instance
             ? SettingsCarrier.Instance.TopBarStyleSetting
@@ -15,7 +17,7 @@ public class TopBarOrderBridge : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log("[TopBarOrderBridge] Enabled");
+        if (DebugOn) Debug.Log($"[TopBarDebug] TopBarOrderBridge : OnEnable()");
 
         if (_targetsByStyle == null || _targetsByStyle.Length == 0)
         {
@@ -30,17 +32,23 @@ public class TopBarOrderBridge : MonoBehaviour
 
     private void OnDisable()
     {
+        if (DebugOn) Debug.Log($"[TopBarDebug] TopBarOrderBridge : OnDisable()");
+
         SettingsCarrier.OnTopBarChanged -= HandleCarrierChanged;
         SetRowDropEventSubscriptions(false);
     }
 
     private void HandleCarrierChanged(int styleIndex)
     {
+        if (DebugOn) Debug.Log($"[TopBarDebug] TopBarOrderBridge : HandleCarrierChanged()");
+
         UpdateTopBarStyle((SettingsCarrier.TopBarStyle)styleIndex);
     }
 
     private void SetRowDropEventSubscriptions(bool subscribe)
     {
+        if (DebugOn) Debug.Log($"[TopBarDebug] TopBarOrderBridge : SetRowDropEventSubscriptions()");
+
         if (_toggleContainer == null) return;
 
         TopBarToggleDrag[] handles = _toggleContainer.GetComponentsInChildren<TopBarToggleDrag>(true);
@@ -53,6 +61,8 @@ public class TopBarOrderBridge : MonoBehaviour
 
     private TopBarTargets GetTargetsFor(SettingsCarrier.TopBarStyle style)
     {
+        if (DebugOn) Debug.Log($"[TopBarDebug] TopBarOrderBridge : GetTargetsFor()");
+
         if (_targetsByStyle == null) return null;
         for (int i = 0; i < _targetsByStyle.Length; i++)
         {
@@ -65,12 +75,11 @@ public class TopBarOrderBridge : MonoBehaviour
 
     private void OnRowDropped()
     {
-        Debug.Log("[TopBarOrderBridge] OnRowDropped called");
+        if (DebugOn) Debug.Log($"[TopBarDebug] TopBarOrderBridge : OnRowDropped()");
 
         TopBarTargets owner = GetTargetsFor(CurrentStyle);
         if (owner == null || _toggleContainer == null) return;
 
-        // --- A) Rakenna pos -> enum dictionary suoraan UI-sisarusj�rjestyksest� ---
         Dictionary<int, TopBarDefs.TopBarItem> order =
             new Dictionary<int, TopBarDefs.TopBarItem>(_toggleContainer.childCount);
         int nextPos = 0;
@@ -81,12 +90,11 @@ public class TopBarOrderBridge : MonoBehaviour
             if (h == null) continue;
 
             TopBarDefs.TopBarItem item = h.item;
-            if (order.ContainsValue(item)) continue; // v�lt� duplikaatit
+            if (order.ContainsValue(item)) continue;
             order[nextPos] = item;
             nextPos++;
         }
 
-        // t�ydenn� puuttuvat ownerin alkuper�isj�rjestyksess�
         int total = owner.RowCount();
         for (int i = 0; i < total; i++)
         {
@@ -98,7 +106,6 @@ public class TopBarOrderBridge : MonoBehaviour
             }
         }
 
-        // --- B) Muunna dictionary -> List<int> SettingsCarrierin tallennusta varten ---
         List<int> positions = new List<int>(order.Keys);
         positions.Sort();
 
@@ -108,7 +115,6 @@ public class TopBarOrderBridge : MonoBehaviour
             TopBarDefs.TopBarItem item;
             if (!order.TryGetValue(pos, out item)) continue;
 
-            // etsi rivi-indeksi ownerista
             int idx = -1;
             for (int k = 0; k < total; k++)
             {
@@ -122,18 +128,14 @@ public class TopBarOrderBridge : MonoBehaviour
             if (idx >= 0 && !indices.Contains(idx)) indices.Add(idx);
         }
 
-        // t�ydenn� puuttuvat
         for (int i = 0; i < total; i++)
             if (!indices.Contains(i))
                 indices.Add(i);
 
-        // --- C) Tallenna ja j�rjest� toggle-lista heti ---
         SettingsCarrier instance = SettingsCarrier.Instance;
         if (instance != null)
         {
-            Debug.Log("[TopBarOrderBridge] Saved indices: " + string.Join(",", indices));
             instance.SaveTopBarOrder(owner.style, indices);
-            Debug.Log("[TopBarOrderBridge] Calling owner.ApplyOrderFromSettings()");
             owner.ApplyOrderFromSettings();
         }
         else
@@ -146,15 +148,15 @@ public class TopBarOrderBridge : MonoBehaviour
 
     private void UpdateTopBarStyle(SettingsCarrier.TopBarStyle style)
     {
+        if (DebugOn) Debug.Log($"[TopBarDebug] TopBarOrderBridge : UpdateTopBarStyle()");
+
         TopBarTargets owner = GetTargetsFor(style);
         if (owner == null || _toggleContainer == null) return;
 
         int total = owner.RowCount();
 
-        // --- A) Lataa permutaatio listana ---
         List<int> orderList = SettingsCarrier.LoadTopBarOrderStatic(style, total);
 
-        // --- B) Muunna lista -> pos -> enum dictionary soveltamista varten ---
         Dictionary<int, TopBarDefs.TopBarItem> order = new Dictionary<int, TopBarDefs.TopBarItem>(orderList.Count);
         int pos = 0;
 
@@ -162,12 +164,11 @@ public class TopBarOrderBridge : MonoBehaviour
         {
             if ((uint)idx >= (uint)total) continue;
             TopBarDefs.TopBarItem item = owner.GetItemAt(idx);
-            if (order.ContainsValue(item)) continue; // ei duplikaatteja
+            if (order.ContainsValue(item)) continue;
             order[pos] = item;
             pos++;
         }
 
-        // t�ydenn� puuttuvat
         for (int i = 0; i < total; i++)
         {
             TopBarDefs.TopBarItem it = owner.GetItemAt(i);
@@ -178,19 +179,18 @@ public class TopBarOrderBridge : MonoBehaviour
             }
         }
 
-        // --- C) Sovella toggle-listaan ja p�ivit� yl�palkki ---
         ApplyOrderToToggleList(order, _toggleContainer, owner);
         owner.ApplyFromSettings();
         owner.ApplyOrderFromSettings();
     }
 
-    // pos->enum j�rjestyksen soveltaminen toggle-listaan
     private static void ApplyOrderToToggleList(
         Dictionary<int, TopBarDefs.TopBarItem> order,
         RectTransform container,
         TopBarTargets owner)
     {
-        // item -> rivin RectTransform
+        if (DebugOn) Debug.Log($"[TopBarDebug] TopBarOrderBridge : ApplyOrderToToggleList()");
+
         Dictionary<TopBarDefs.TopBarItem, RectTransform> rowOf =
             new Dictionary<TopBarDefs.TopBarItem, RectTransform>(container.childCount);
 
