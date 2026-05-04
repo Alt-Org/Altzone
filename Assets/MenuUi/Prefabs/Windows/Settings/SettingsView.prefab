@@ -12322,7 +12322,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 132.70532, y: -88.470215}
+  m_AnchoredPosition: {x: 0, y: -88.470215}
   m_SizeDelta: {x: 0, y: 176.94043}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5346137426496441981
@@ -13168,7 +13168,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 64.8254, y: -613.1825}
+  m_AnchoredPosition: {x: 0, y: -613.1825}
   m_SizeDelta: {x: 0, y: 172.86774}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &743721110334598278
@@ -25454,19 +25454,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 4235185873375394469}
-        m_TargetAssemblyTypeName: ParentalControlManager, MainMenu
-        m_MethodName: SetInternetLinks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  m_IsOn: 0
+  m_IsOn: 1
 --- !u!114 &9179157796778559163
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27008,7 +26996,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 64.8254, y: -440.31473}
+  m_AnchoredPosition: {x: 0, y: -440.31473}
   m_SizeDelta: {x: 0, y: 172.86774}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7766482377142582589
@@ -29209,7 +29197,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 132.70532, y: -265.41064}
+  m_AnchoredPosition: {x: 0, y: -265.41064}
   m_SizeDelta: {x: 0, y: 176.94043}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7659843953905760263

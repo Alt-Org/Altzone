@@ -83,6 +83,14 @@ public class ParentalControlManager : MonoBehaviour
         controlToggle.isOn = true; // PlayerPrefs.GetInt("ParentalControl", 0) == 1;
         timeLimitInput.text = 10f.ToString(); //PlayerPrefs.GetFloat("MaxPlayTime", 2f).ToString();
 
+        internetLinksToggle.onValueChanged.AddListener(_ => SetInternetLinks());
+        SetInternetLinksToggle();
+
+    }
+
+    private void OnEnable()
+    {
+        SetInternetLinksToggle();
     }
 
     public void OpenPasswordPanel()
@@ -141,6 +149,8 @@ public class ParentalControlManager : MonoBehaviour
                 Debug.Log("correct password, login allowed");
                 //messageText.text = "Access granted!";
                 parentalControlSettings.SetActive(true);
+               
+                               
 
 
 
@@ -262,14 +272,18 @@ public class ParentalControlManager : MonoBehaviour
     {
         if (internetLinksToggle.isOn) {
             PlayerPrefs.SetInt("internetLinks", 1);
-            internetLinksToggle.isOn = true;
-            Debug.Log(PlayerPrefs.GetInt("internetLinks"));
+            
 
         } else
         {
             PlayerPrefs.SetInt("internetLinks", 0);
-            internetLinksToggle.isOn = false;
         }
+
+    }
+
+    public void SetInternetLinksToggle() {
+
+        internetLinksToggle.isOn = (PlayerPrefs.GetInt("internetlinks",0) !=0);
 
     }
 
@@ -283,23 +297,27 @@ public class ParentalControlManager : MonoBehaviour
     public void LoadSettings()
     {
         //TODO how to load settings from PlayerPrefs
-
+        /*
         int checkLinks = PlayerPrefs.GetInt("internetLinks");
 
         if (checkLinks == 1)
         {
             internetLinks = true;
             Debug.Log("internetLinks is set to true");
+
             
+
         }
         else
         {
             internetLinks = false;
+
             
+
         }
+        internetLinksToggle.isOn = internetLinks;
+        */
 
-
-        
 
     }
 
