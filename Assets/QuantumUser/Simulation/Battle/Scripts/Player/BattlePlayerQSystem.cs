@@ -380,7 +380,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Handle of the player.</param>
         ///
         /// <returns>True if the give up input was processed.</returns>
-        private static bool HandleGiveUp(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
+        private bool HandleGiveUp(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
             playerHandle.PlayerGiveUpState = !playerHandle.PlayerGiveUpState;
 
