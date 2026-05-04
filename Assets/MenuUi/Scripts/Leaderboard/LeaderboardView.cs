@@ -55,7 +55,8 @@ public class LeaderboardView : MonoBehaviour
         _globalPlayersLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.GlobalPlayers));
         _clanLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Clan));
         _friendsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Friends));
-        _globalClansLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.GlobalClans)); 
+        _globalClansLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.GlobalClans));
+        _scrollToTopButton.onClick.AddListener(() => ScrollToTop());
 
     }
 
@@ -277,5 +278,22 @@ public class LeaderboardView : MonoBehaviour
                     }
                 break;
         }
+    }
+
+
+    [Header("scrollviewControls")]
+    //[SerializeField] private ScrollView _scrollView;
+    [SerializeField] private ScrollRect _scrollRect;
+    [SerializeField] private Button _scrollToTopButton;
+    [SerializeField] private Button _scrollToMeButton;
+
+    private void ScrollToTop()
+    {
+        _scrollRect.verticalNormalizedPosition = 1;
+    }
+
+    private void ScrollToMe()
+    {
+
     }
 }
