@@ -1,15 +1,16 @@
-using UnityEngine;
 using System.Collections;
-using TMPro;
-using Altzone.Scripts.Model.Poco.Clan;
-using Altzone.Scripts;
-using UnityEngine.UI;
-using Altzone.Scripts.Window;
 using System.Collections.Generic;
+using Altzone.Scripts;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Window;
+using MenuUi.Scripts.SwipeNavigation;
+using MenuUi.Scripts.TabLine;
+using MenuUi.Scripts.Window;
+using TMPro;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using MenuUi.Scripts.TabLine;
-using MenuUi.Scripts.SwipeNavigation;
+using UnityEngine.UI;
 
 public class ClanMainView : MonoBehaviour
 {
@@ -56,6 +57,7 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private GameObject _viewClansButton;
     [SerializeField] private Button _membersFilterButton;
     [SerializeField] private Button _popupOverlayButton;
+    [SerializeField] private ClanSearchNavigator _clanSearchNavigator;
 
     private bool _isInClanCached;
     private bool _canEditCached;
@@ -85,6 +87,12 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private GameObject _passwordPopup;
     [SerializeField] private Button _clanLockButton;
     [SerializeField] private Button _passwordPopupContinueButton;
+
+    [Header("Leave clan hold popup")]
+    [SerializeField] private GameObject _leaveClanHoldPopup;
+    [SerializeField] private HoldToLeaveClanButton _holdLeaveClanButton;
+    [SerializeField] private Button _leaveClanHoldCancelButton;
+    [SerializeField] private Button _leaveClanHoldCloseButton;
 
     private bool _isCurrentClanLocked;
 
@@ -196,6 +204,26 @@ public class ClanMainView : MonoBehaviour
         }
 
         CloseRulesPopup();
+
+        if (_holdLeaveClanButton != null)
+        {
+            _holdLeaveClanButton.OnHoldCompleted -= OnLeaveClanHoldCompleted;
+            _holdLeaveClanButton.OnHoldCompleted += OnLeaveClanHoldCompleted;
+        }
+
+        if (_leaveClanHoldCancelButton != null)
+        {
+            _leaveClanHoldCancelButton.onClick.RemoveListener(CloseLeaveClanHoldPopup);
+            _leaveClanHoldCancelButton.onClick.AddListener(CloseLeaveClanHoldPopup);
+        }
+
+        if (_leaveClanHoldCloseButton != null)
+        {
+            _leaveClanHoldCloseButton.onClick.RemoveListener(CloseLeaveClanHoldPopup);
+            _leaveClanHoldCloseButton.onClick.AddListener(CloseLeaveClanHoldPopup);
+        }
+
+        CloseLeaveClanHoldPopup();
 
         if (_clanLockButton != null)
         {
@@ -332,6 +360,15 @@ public class ClanMainView : MonoBehaviour
 
         if (_carbonEmissionPopupCloseButton != null)
             _carbonEmissionPopupCloseButton.onClick.RemoveListener(CloseCarbonEmissionPopup);
+
+        if (_holdLeaveClanButton != null)
+            _holdLeaveClanButton.OnHoldCompleted -= OnLeaveClanHoldCompleted;
+
+        if (_leaveClanHoldCancelButton != null)
+            _leaveClanHoldCancelButton.onClick.RemoveListener(CloseLeaveClanHoldPopup);
+
+        if (_leaveClanHoldCloseButton != null)
+            _leaveClanHoldCloseButton.onClick.RemoveListener(CloseLeaveClanHoldPopup);
     }
 
     private void ResetViewState()
@@ -713,8 +750,29 @@ public class ClanMainView : MonoBehaviour
     {
         StartCoroutine(ServerManager.Instance.LeaveClan(success =>
         {
-            if (success) Reset();
+            if (!success)
+            {
+                ShowOverlay(false);
+                return;
+            }
+
+            ServerManager.Instance.RaiseClanChangedEvent();
+
+            Reset();
+
+            NavigateToClanSearch();
         }));
+    }
+
+    private void NavigateToClanSearch()
+    {
+        if (_clanSearchNavigator == null)
+        {
+            Debug.LogWarning("[ClanMainView] ClanSearchNavigator is not assigned.");
+            return;
+        }
+
+        _clanSearchNavigator.NavigateToClanSearch();
     }
 
     public void LeaveClan(UnityAction<bool> onComplete)
@@ -818,28 +876,40 @@ public class ClanMainView : MonoBehaviour
 
     private void ShowLeaveClanPopUp()
     {
-        var currentClanName = GetCurrentClanName();
-
         ShowOverlay(true);
-        Debug.Log("[ClanMainView] ShowLeaveClanPopUp called, overlay enabled.");
 
-        _confirmPopup.Show(
-            bodyText: "Haluatko varmasti poistua klaanista " + currentClanName + "?",
-            onConfirm: () =>
-            {
-                LeaveClan();
-                ShowOverlay(false);
-            },
-            onCancel: () =>
-            {
-                ShowOverlay(false);
-            },
-            confirmText: "Poistu",
-            cancelText: "Peruuta",
-            style: "leave"
-        );
+        if (_leaveClanHoldPopup != null)
+            _leaveClanHoldPopup.SetActive(true);
+
+        if (_holdLeaveClanButton != null)
+            _holdLeaveClanButton.ResetHold();
+
+        if (_popupOverlayButton != null)
+        {
+            _popupOverlayButton.onClick.RemoveListener(CloseLeaveClanHoldPopup);
+            _popupOverlayButton.onClick.AddListener(CloseLeaveClanHoldPopup);
+        }
     }
 
+    private void CloseLeaveClanHoldPopup()
+    {
+        if (_leaveClanHoldPopup != null)
+            _leaveClanHoldPopup.SetActive(false);
+
+        if (_holdLeaveClanButton != null)
+            _holdLeaveClanButton.ResetHold();
+
+        if (_popupOverlayButton != null)
+            _popupOverlayButton.onClick.RemoveListener(CloseLeaveClanHoldPopup);
+
+        ShowOverlay(false);
+    }
+
+    private void OnLeaveClanHoldCompleted()
+    {
+        CloseLeaveClanHoldPopup();
+        LeaveClan();
+    }
 
     private void ShowClanPopup(ServerClan clan)
     {
