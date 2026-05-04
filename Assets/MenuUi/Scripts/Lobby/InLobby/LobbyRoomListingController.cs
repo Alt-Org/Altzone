@@ -37,6 +37,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private JoinIntent _pendingJoinIntent = JoinIntent.None;
         private GameType _pendingQueueGameType = GameType.Random2v2;
         private Coroutine _queueRejoinHolder;
+        private bool _createRoomRequestInFlight;
 
         private enum JoinIntent
         {
@@ -92,6 +93,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 StopCoroutine(_queueRejoinHolder);
                 _queueRejoinHolder = null;
             }
+            _createRoomRequestInFlight = false;
             _pendingJoinIntent = JoinIntent.None;
         }
 
@@ -111,6 +113,15 @@ namespace MenuUi.Scripts.Lobby.InLobby
         /// <returns></returns>
         public IEnumerator StartCreatingRoom(GameType gameType, Action callback)
         {
+            if (_createRoomRequestInFlight)
+            {
+                Debug.Log("StartCreatingRoom: room creation already in flight, ignoring duplicate request.");
+                yield break;
+            }
+
+            _createRoomRequestInFlight = true;
+            try
+            {
             // Do not show the creating-room text if the client is in a matchmaking or queue room
             bool isMatchmakingOrQueue = PhotonRealtimeClient.InMatchmakingRoom;
             try
@@ -151,7 +162,12 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 }
             } while (!roomCreated);
 
-            callback();
+            callback?.Invoke();
+            }
+            finally
+            {
+                _createRoomRequestInFlight = false;
+            }
         }
 
         private void CreateCustomRoom()
@@ -266,6 +282,14 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
             if (ShouldRejoinQueueAfterJoinFailed(returnCode, message, out GameType queueGameType))
             {
+                if (LobbyManager.Instance != null && LobbyManager.Instance.IsJoinFailureAutoRequeueInFlight)
+                {
+                    if (creatingTextActive) _creatingRoomText.SetActive(false);
+                    _pendingJoinIntent = JoinIntent.None;
+                    Debug.Log("OnJoinedRoomFailed: skipping queue rejoin because LobbyManager already started recovery.");
+                    return;
+                }
+
                 if (creatingTextActive) _creatingRoomText.SetActive(false);
                 _pendingJoinIntent = JoinIntent.None;
                 StartQueueRejoin(queueGameType);

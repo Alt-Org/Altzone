@@ -270,9 +270,12 @@ namespace Altzone.Scripts.Lobby
         private bool _matchHasStartedInCurrentRoom = false;
         // Debounce UI/event spam so StartMatchmaking cannot re-enter in the same transition window.
         private float _lastStartMatchmakingAcceptedTime = -100f;
+        // Tracks whether a full-room join failure is already being recovered by LobbyManager.
+        private bool _joinFailureAutoRequeueInFlight = false;
 
         public static LobbyManager Instance { get; private set; }
         public bool IsStartFinished {set => _isStartFinished = value; }
+        public bool IsJoinFailureAutoRequeueInFlight => _joinFailureAutoRequeueInFlight;
         public static bool IsActive { get => _isActive;}
 
         private static bool _isActive = false;
@@ -7841,26 +7844,40 @@ namespace Altzone.Scripts.Lobby
             Debug.LogError($"JoinRoomFailed {returnCode} {message} (joinAttemptId={_joinAttemptCounter})");
             // Correlate this failure to the most recent join attempt
             try { MarkJoinAttemptFailure(0, returnCode, message); } catch { }
-            LobbyOnJoinRoomFailed?.Invoke(returnCode, message);
 
             bool failedInviteAcceptJoin = !string.IsNullOrEmpty(_pendingAcceptedInRoomInviteRoomName);
             string failedInviteRoomName = _pendingAcceptedInRoomInviteRoomName;
-            if (failedInviteAcceptJoin)
-            {
-                _pendingAcceptedInRoomInviteRoomName = string.Empty;
-                _pendingAcceptedInRoomInviteStartTime = -100f;
-                Debug.LogWarning($"JoinRoomFailed during accepted InRoom invite join. Room='{failedInviteRoomName}', code={returnCode}, msg={message}");
-                OnInRoomInviteJoinFailed?.Invoke(failedInviteRoomName, returnCode, message);
-                return;
-            }
 
-            // If the failure is a full-game error, loop back to queue/requeue flow
+            bool isGameFull = false;
             try
             {
-                bool isGameFull = false;
-                try { if (!string.IsNullOrEmpty(message) && message.ToLower().Contains("game full")) isGameFull = true; } catch (Exception ex) { Debug.LogWarning($"OnJoinRoomFailed: failed to inspect message: {ex.Message}"); }
-                if (!isGameFull && returnCode == 32765) isGameFull = true;
+                if (!string.IsNullOrEmpty(message) && message.ToLower().Contains("game full")) isGameFull = true;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"OnJoinRoomFailed: failed to inspect message: {ex.Message}");
+            }
+            if (!isGameFull && returnCode == 32765) isGameFull = true;
 
+            if (isGameFull && !failedInviteAcceptJoin)
+            {
+                _joinFailureAutoRequeueInFlight = true;
+            }
+
+            try
+            {
+                LobbyOnJoinRoomFailed?.Invoke(returnCode, message);
+
+                if (failedInviteAcceptJoin)
+                {
+                    _pendingAcceptedInRoomInviteRoomName = string.Empty;
+                    _pendingAcceptedInRoomInviteStartTime = -100f;
+                    Debug.LogWarning($"JoinRoomFailed during accepted InRoom invite join. Room='{failedInviteRoomName}', code={returnCode}, msg={message}");
+                    OnInRoomInviteJoinFailed?.Invoke(failedInviteRoomName, returnCode, message);
+                    return;
+                }
+
+                // If the failure is a full-game error, loop back to queue/requeue flow
                 if (isGameFull)
                 {
                     GameType requeueGameType = _currentMatchmakingGameType;
@@ -7885,6 +7902,10 @@ namespace Altzone.Scripts.Lobby
                 }
             }
             catch (Exception ex) { Debug.LogWarning($"OnJoinRoomFailed: unexpected error: {ex.Message}"); }
+            finally
+            {
+                _joinFailureAutoRequeueInFlight = false;
+            }
         }
         public void OnJoinRandomFailed(short returnCode, string message) { LobbyOnJoinRandomFailed?.Invoke(returnCode, message); }
 
@@ -8790,23 +8811,26 @@ namespace Altzone.Scripts.Lobby
                         PhotonBattleRoom.PlayerPositionKey4
                     };
 
-                    foreach (var key in posKeys)
+                    if (CanMutateRoomPropertiesNow("OnMasterClientSwitched: clear stale positions", true))
                     {
-                        string val = room.GetCustomProperty<string>(key, "");
-                        if (string.IsNullOrEmpty(val)) continue;
-                        if (val == "Bot") continue;
-                        if (!existingUserIds.Contains(val))
+                        foreach (var key in posKeys)
                         {
-                            var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { key, "" } });
-                            var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { key, val } });
-                            try
+                            string val = room.GetCustomProperty<string>(key, "");
+                            if (string.IsNullOrEmpty(val)) continue;
+                            if (val == "Bot") continue;
+                            if (!existingUserIds.Contains(val))
                             {
-                                PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue);
-                                Debug.Log($"Cleared stale position {key} (value {val}) on master switch.");
-                            }
-                            catch (Exception ex)
-                            {
-                                Debug.LogWarning($"Failed to clear stale position {key}: {ex.Message}");
+                                var emptyPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { key, "" } });
+                                var expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { key, val } });
+                                try
+                                {
+                                    PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperties(emptyPosition, expectedValue);
+                                    Debug.Log($"Cleared stale position {key} (value {val}) on master switch.");
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.LogWarning($"Failed to clear stale position {key}: {ex.Message}");
+                                }
                             }
                         }
                     }
