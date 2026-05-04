@@ -15,11 +15,11 @@ using Photon.Deterministic;
 namespace Battle.QSimulation.Game
 {
     /// <summary>
-    /// Abstract base class for all deterministic battle commands.</br>
-    /// All new commands must be added to the @cref{Type} enum.
+    /// Abstract base class for all deterministic battle commands.<br/>
+    /// All new commands must be added to the <see cref="Type"/> enum.
+    /// </summary>
     ///
     /// See [{BattleCommand (base class)}](#page-concepts-commands-battle-qcommand) for more info.
-    /// </summary>
     public abstract class BattleCommand : DeterministicCommand
     {
         /// <summary>

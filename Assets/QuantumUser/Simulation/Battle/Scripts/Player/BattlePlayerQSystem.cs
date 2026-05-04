@@ -391,7 +391,7 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Public helper method for handling character swapping.<br/>
-        /// Called by @cref{Battle.QSimulation.Player,CommandSwapCharacter}
+        /// Called by <see cref="BattleCharacterSwapQCommand"/>
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
