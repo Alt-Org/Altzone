@@ -181,6 +181,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
             return;
         }
         AvatarData defaultAvatarData = new(defaultAvatars);
+        defaultAvatarData.Color = ColorUtility.ToHtmlStringRGB(AvatarReference.Instance.GetAlternativeColour((CharacterClassType)((playerData.SelectedCharacterId / 100) * 100)));
 
         if (avatarData != null)
         {
@@ -192,6 +193,8 @@ public class AvatarDesignLoader : AltMonoBehaviour
                 var newId = playerData.AvatarData?.GetPieceID(piece);
                 replacedPieces.Append($"{piece}:{oldId} to {newId}  ");
             }
+
+            if (!ColorUtility.TryParseHtmlString(avatarData.Color, out _)) playerData.AvatarData.Color = ColorUtility.ToHtmlStringRGB(AvatarReference.Instance.GetAlternativeColour((CharacterClassType)((playerData.SelectedCharacterId / 100) * 100)));
 
             var replacedColors = new System.Text.StringBuilder();
             foreach (AvatarPiece piece in invalidColors)
