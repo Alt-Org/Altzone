@@ -1,19 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using Altzone.Scripts.AvatarPartsInfo;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
-using Altzone.Scripts.ModelV2;
-using Altzone.Scripts.ModelV2.Internal;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static AvatarPartsReference;
 
 [CreateAssetMenu(fileName = "AvatarDefaults", menuName = "Avatar/Default Reference")]
 public class AvatarDefaultReference : ScriptableObject
@@ -237,7 +232,7 @@ public class AvatarPartVariation
 [CustomPropertyDrawer(typeof(AvatarDefault))]
 public class AvatarDefaultEditor : PropertyDrawer
 {
-
+    SerializedProperty HairProperty;
     PropertyField CharacterName;
     PropertyField CharacterId;
     PropertyField HairField;
@@ -269,9 +264,10 @@ public class AvatarDefaultEditor : PropertyDrawer
         var container = new VisualElement();
 
         // Create property fields.
+        HairProperty = property.FindPropertyRelative(nameof(AvatarDefault.HairId));
         CharacterName = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.CharacterName)));
         CharacterId = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.CharacterId)));
-        HairField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.HairId)), "Hair");
+        HairField = new PropertyField(HairProperty, "Hair");
         var hairBox = new ScrollView();
         EyesField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.EyesId)), "Eyes");
         var eyesBox = new ScrollView();
@@ -382,6 +378,7 @@ public class AvatarDefaultEditor : PropertyDrawer
             if (data.Id == value) hairBox.style.backgroundColor = Color.blue;
             else hairBox.style.backgroundColor = Color.gray;
             hairBox.Add(image);
+            hairBox.clicked += ClickedThis;
             bigBox.Add(hairBox);
             bigBox.style.width = 500f;
             bigBox.style.backgroundColor = Color.white;
@@ -389,6 +386,8 @@ public class AvatarDefaultEditor : PropertyDrawer
             bigBox.style.flexWrap = Wrap.Wrap;
             box.Add(bigBox);
             //box.style.alignContent = Align.Auto;
+
+            void ClickedThis() => Clicked(data);
         }
 
 
@@ -396,11 +395,24 @@ public class AvatarDefaultEditor : PropertyDrawer
         //image.sprite = AvatarPartsReference.Instance.GetAvatarPartById(value).AvatarImage;
 
         //box.Add(image);
+
+        void Clicked(AvatarPartInfo data)
+        {
+            switch (boxData.Piece)
+            {
+                case AvatarPiece.Hair:
+                    HairProperty.stringValue = data.Id;
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     private class BoxData
     {
         public VisualElement Box;
         public AvatarPiece Piece;
+        public PropertyField Field;
     }
 }
