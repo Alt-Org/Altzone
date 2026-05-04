@@ -5,8 +5,10 @@ using System.Linq;
 using Altzone.Scripts.AvatarPartsInfo;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.UIElements;
+#endif
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -228,36 +230,10 @@ public class AvatarPartVariation
     public string HandsId = "";
     public string FeetId = "";
 }
-
+#if UNITY_EDITOR
 [CustomPropertyDrawer(typeof(AvatarDefault))]
 public class AvatarDefaultEditor : PropertyDrawer
 {
-    /*private SerializedProperty HairProperty;
-    PropertyField CharacterName;
-    PropertyField CharacterId;
-    PropertyField HairField;
-    PropertyField EyesField;
-    PropertyField NoseField;
-    PropertyField MouthField;
-    PropertyField BodyField;
-    PropertyField HandsField;
-    PropertyField FeetField;*/
-
-    /*private void OnEnable()
-    {
-        SerializedObject serializedObject = new SerializedObject(AvatarDefault);
-
-        CharacterName = serializedObject.FindProperty(nameof(AvatarDefault.CharacterName));
-        CharacterId = serializedObject.FindProperty(nameof(AvatarDefault.CharacterId));
-        HairId = serializedObject.FindProperty(nameof(AvatarDefault.HairId));
-        EyesId = serializedObject.FindProperty(nameof(AvatarDefault.EyesId));
-        NoseId = serializedObject.FindProperty(nameof(AvatarDefault.NoseId));
-        MouthId = serializedObject.FindProperty(nameof(AvatarDefault.MouthId));
-        BodyId = serializedObject.FindProperty(nameof(AvatarDefault.BodyId));
-        HandsId = serializedObject.FindProperty(nameof(AvatarDefault.HandsId));
-        FeetId = serializedObject.FindProperty(nameof(AvatarDefault.FeetId));
-    }*/
-
     public override VisualElement CreatePropertyGUI(SerializedProperty property)
     {
         // Create property container element.
@@ -302,6 +278,7 @@ public class AvatarDefaultEditor : PropertyDrawer
         hairBox.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
 
         container.Add(EyesField);
+        EyesField.SetEnabled(false);
         container.Add(eyesBox);
         EyesField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = eyesBox, Piece = AvatarPiece.Eyes, Field = eyeProperty });
         eyesBox.style.flexGrow = 1;
@@ -310,6 +287,7 @@ public class AvatarDefaultEditor : PropertyDrawer
         eyesBox.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
 
         container.Add(NoseField);
+        NoseField.SetEnabled(false);
         container.Add(noseBox);
         NoseField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = noseBox, Piece = AvatarPiece.Nose, Field = noseProperty });
         noseBox.style.flexGrow = 1;
@@ -318,6 +296,7 @@ public class AvatarDefaultEditor : PropertyDrawer
         noseBox.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
 
         container.Add(MouthField);
+        MouthField.SetEnabled(false);
         container.Add(mouthBox);
         MouthField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = mouthBox, Piece = AvatarPiece.Mouth, Field = mouthProperty });
         mouthBox.style.flexGrow = 1;
@@ -326,6 +305,7 @@ public class AvatarDefaultEditor : PropertyDrawer
         mouthBox.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
 
         container.Add(BodyField);
+        BodyField.SetEnabled(false);
         container.Add(bodyBox);
         BodyField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = bodyBox, Piece = AvatarPiece.Clothes, Field = bodyProperty });
         bodyBox.style.flexGrow = 1;
@@ -334,6 +314,7 @@ public class AvatarDefaultEditor : PropertyDrawer
         bodyBox.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
 
         container.Add(HandsField);
+        HandsField.SetEnabled(false);
         container.Add(handsBox);
         HandsField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = handsBox, Piece = AvatarPiece.Hands, Field = handsProperty });
         handsBox.style.flexGrow = 1;
@@ -342,6 +323,7 @@ public class AvatarDefaultEditor : PropertyDrawer
         handsBox.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
 
         container.Add(FeetField);
+        FeetField.SetEnabled(false);
         container.Add(feetBox);
         FeetField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = feetBox, Piece = AvatarPiece.Feet, Field = feetProperty });
         feetBox.style.flexGrow = 1;
@@ -361,7 +343,6 @@ public class AvatarDefaultEditor : PropertyDrawer
 
         var value = @event.newValue;
         if (value == null) return;
-        Debug.LogWarning("Test: " + value+": "+boxData.Piece);
 
         var bigBox = new Box();
         List<AvatarPartInfo> info = boxData.Piece switch
@@ -394,36 +375,15 @@ public class AvatarDefaultEditor : PropertyDrawer
             bigBox.style.flexDirection = FlexDirection.Row;
             bigBox.style.flexWrap = Wrap.Wrap;
             box.Add(bigBox);
-            //box.style.alignContent = Align.Auto;
 
-            void ClickedThis()
-            {
-                Debug.LogWarning("TestCharacter");
-                Clicked(data);
-            };
+            void ClickedThis() => Clicked(data);
         }
-
-
-        //Image image = new();
-        //image.sprite = AvatarPartsReference.Instance.GetAvatarPartById(value).AvatarImage;
-
-        //box.Add(image);
 
         void Clicked(AvatarPartInfo data)
         {
-            Debug.LogWarning("TestCharacter2: "+ data.Id);
-            switch (boxData.Piece)
-            {
-                case AvatarPiece.Hair:
-                    Debug.LogWarning("TestCharacter3: " + boxData.Field.stringValue);
-                    //property.serializedObject.Update();
-                    boxData.Field.stringValue = data.Id;
-                    boxData.Field.serializedObject.ApplyModifiedProperties();
-                    Debug.LogWarning("TestCharacter4: " + boxData.Field.stringValue);
-                    break;
-                default:
-                    break;
-            }
+            boxData.Field.stringValue = data.Id;
+            boxData.Field.serializedObject.ApplyModifiedProperties();
+            boxData.Field.serializedObject.Update();
         }
     }
 
@@ -433,4 +393,5 @@ public class AvatarDefaultEditor : PropertyDrawer
         public AvatarPiece Piece;
         public SerializedProperty Field;
     }
+#endif
 }
