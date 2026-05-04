@@ -1140,13 +1140,13 @@ namespace Altzone.Scripts.Lobby
                                 shouldTryJoin = true;
                             }
                             break;
-                    }
+                        }
 
-                    if (!shouldTryJoin) continue;
+                        if (!shouldTryJoin) continue;
 
-                    // Attempt join and wait until success, explicit failure, or timeout
-                    _joinRoomFailed = false;
-                    PhotonRealtimeClient.JoinRoom(room.Name, _teammates);
+                        // Attempt join and wait until success, explicit failure, or timeout
+                        _joinRoomFailed = false;
+                        PhotonRealtimeClient.JoinRoom(room.Name, _teammates);
                     float joinStart = Time.time;
                     yield return new WaitUntil(() => PhotonRealtimeClient.InRoom || _joinRoomFailed || Time.time > joinStart + joinAttemptTimeout);
 
@@ -1545,6 +1545,7 @@ namespace Altzone.Scripts.Lobby
                     _redTeamName = opponentClan;
                 }
 
+                // For Random2v2 ensure team names are set (they aren't set by the Clan2v2 block above)
                 if (roomGameType == GameType.Random2v2)
                 {
                     if (string.IsNullOrWhiteSpace(_blueTeamName)) _blueTeamName = "Team Alpha";
@@ -2463,21 +2464,6 @@ namespace Altzone.Scripts.Lobby
 
                 DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.Battle);
                 DebugLogFileHandler.FileOpen(battleID, (int)playerSlot);
-
-                {
-                    string playerGuid = GameConfig.Get().PlayerSettings.PlayerGuid;
-                    PlayerData playerData = null;
-                    Storefront.Get().GetPlayerData(playerGuid, p => playerData = p);
-                    yield return new WaitUntil(() => playerData != null);
-
-                    List<CustomCharacter> selectedCharacters = new();
-                    var battleCharacters = playerData.CurrentBattleCharacters;
-                    for (int i = 0; i < battleCharacters.Count; i++)
-                    {
-                        selectedCharacters.Add(battleCharacters[i]);
-                    }
-                    SetPlayerQuantumCharacters(selectedCharacters);
-                }
 
                 int retryCount=0;
                 do
