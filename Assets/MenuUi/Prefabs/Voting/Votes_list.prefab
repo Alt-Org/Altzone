@@ -5239,6 +5239,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ffc3c1b8d099b8d0b9796fec497ba27a, type: 3}
+--- !u!1 &3476108724658947076 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3203555551286698305, guid: ffc3c1b8d099b8d0b9796fec497ba27a,
+    type: 3}
+  m_PrefabInstance: {fileID: 2038106134900008261}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4201884381000002773 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2745182772082903440, guid: ffc3c1b8d099b8d0b9796fec497ba27a,
@@ -5573,6 +5579,12 @@ GameObject:
 --- !u!1 &1342867615938197547 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2745182772082903440, guid: ffc3c1b8d099b8d0b9796fec497ba27a,
+    type: 3}
+  m_PrefabInstance: {fileID: 3799362243382555067}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1787747737428922618 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3203555551286698305, guid: ffc3c1b8d099b8d0b9796fec497ba27a,
     type: 3}
   m_PrefabInstance: {fileID: 3799362243382555067}
   m_PrefabAsset: {fileID: 0}
@@ -6882,17 +6894,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VotedListContent: {fileID: 0}
   NotVotedListContent: {fileID: 84598278950378995}
+  ShopVotedListContent: {fileID: 4201884381000002773}
+  ShopNotVotedListContent: {fileID: 4201884381000002773}
+  ShopSection: {fileID: 9039082178122166437}
+  NoPollsShop: {fileID: 3476108724658947076}
   AdminNotVotedListContent: {fileID: 1342867615938197547}
   AdminVotedListContent: {fileID: 1342867615938197547}
-  ShopNotVotedListContent: {fileID: 4201884381000002773}
-  ShopVotedListContent: {fileID: 4201884381000002773}
   AdminSection: {fileID: 6161909685429625947}
-  ShopSection: {fileID: 9039082178122166437}
+  NoPollsAdmin: {fileID: 1787747737428922618}
   PollObjectPrefab: {fileID: 2192335415255639714, guid: ce0c88b97e317e247a85411a8bda706f,
     type: 3}
   PollPopup: {fileID: 8037404059670993213}
   Blocker: {fileID: 6127460242155925334}
-  NoPollsText: {fileID: 0}
   AdminThemeColor: {r: 0, g: 1, b: 1, a: 1}
   ShopThemeColor: {r: 1, g: 0.75, b: 0, a: 1}
   pollInfoPopupWindow: {fileID: 8727308919250092538}

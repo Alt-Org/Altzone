@@ -13,18 +13,22 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
     [SerializeField] private GameObject VotedListContent;
     [SerializeField] private GameObject NotVotedListContent;
 
+    [Header ("Shop Content")]
+    [SerializeField] private GameObject ShopVotedListContent;
+    [SerializeField] private GameObject ShopNotVotedListContent;
+    [SerializeField] private GameObject ShopSection;
+    [SerializeField] private GameObject NoPollsShop;
+
+    [Header ("Admin Content")]
     [SerializeField] private GameObject AdminNotVotedListContent;
     [SerializeField] private GameObject AdminVotedListContent;
-    [SerializeField] private GameObject ShopNotVotedListContent;
-    [SerializeField] private GameObject ShopVotedListContent;
-
     [SerializeField] private GameObject AdminSection;
-    [SerializeField] private GameObject ShopSection;
+    [SerializeField] private GameObject NoPollsAdmin;
 
+    [Header ("Stuff")]
     [SerializeField] private GameObject PollObjectPrefab;
     [SerializeField] private GameObject PollPopup;
     [SerializeField] private GameObject Blocker;
-    [SerializeField] private GameObject NoPollsText;
 
     [SerializeField] private Color AdminThemeColor = new Color(0f, 1f, 1f);  // cyan
     [SerializeField] private Color ShopThemeColor = new Color(1f, 0.75f, 0f);  // yellow
@@ -148,7 +152,6 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
         Debug.Log("InstantiatePolls CALLED");
         Debug.Log("Poll list count from manager: " + PollManager.GetPollList().Count);
 
-
         ClearContainer(AdminNotVotedListContent);
         ClearContainer(AdminVotedListContent);
         ClearContainer(ShopNotVotedListContent);
@@ -184,9 +187,7 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
 
         Debug.Log("AdminSection active: " + AdminSection.activeSelf);
         Debug.Log("ShopSection active: " + ShopSection.activeSelf);
-
-
-
+/*
 #if UNITY_EDITOR
         if (pollList.Count == 0)
         {
@@ -208,10 +209,8 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
             }
         }
 #endif
-
+*/
         Debug.Log("Poll count: " + pollList.Count);
-
-
 
         foreach (var pollData in pollList)
         {
@@ -234,6 +233,7 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
 
             bool hasVoted = !pollData.NotVoted.Contains(player.Id);
 
+
             Debug.Log("Instantiating poll " + pollData.Id +
           " | IsShop: " + isShopPoll +
           " | HasVoted: " + hasVoted);
@@ -253,11 +253,8 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
 
             if (obj != null)
             {
-
-
                 PollObject pollObject = obj.GetComponent<PollObject>();
                 pollObject.SetPollId(pollData.Id);
-
                 Debug.Log("About to set theme");
 
                 if (isShopPoll)
@@ -300,16 +297,18 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
         Debug.Log("Admin section visible: " + hasAdminPolls);
         Debug.Log("Shop section visible: " + hasShopPolls);
 
-
         AdminSection.SetActive(hasAdminPolls);
         ShopSection.SetActive(hasShopPolls);
 
+        NoPollsAdmin.SetActive(!hasAdminPolls);
+        NoPollsShop.SetActive(!hasShopPolls);
 
+        /*
         if (Polls.Count == 0)
             NoPollsText.SetActive(true);
         else
             NoPollsText.SetActive(false);
-
+        */
         Canvas.ForceUpdateCanvases();
     }
 
