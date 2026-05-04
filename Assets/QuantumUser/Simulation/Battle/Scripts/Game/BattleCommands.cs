@@ -1,6 +1,8 @@
 /// @file BattleCommands.cs
 /// <summary>
-/// Contains Battlecommand class and all battle commands
+/// Contains @cref{Battle.QSimulation.Game,BattleCommand} class and all battle commands
+///
+/// See [{Custom Quantum Commands}](#page-concepts-commands) for more info.
 /// </summary>
 
 // System usings
@@ -15,14 +17,23 @@ namespace Battle.QSimulation.Game
     /// <summary>
     /// Abstract base class for all deterministic battle commands.</br>
     /// All new commands must be added to the @cref{Type} enum.
+    ///
+    /// See [{BattleCommand (base class)}](#page-concepts-commands-battle-qcommand) for more info.
     /// </summary>
     public abstract class BattleCommand : DeterministicCommand
     {
+        /// <summary>
+        /// Type of the command. None if no command.
+        /// </summary>
         public enum Type
         {
+            /// <summary>No command</summary>
             None,
+            /// <summary><See cref="BattleGiveUpQCommand"/></summary>
             GiveUp,
+            /// <summary><See cref="BattleCharacterAbilityQCommand"/></summary>
             ActivateAbility,
+            /// <summary><See cref="BattleCharacterSwapQCommand"/></summary>
             SwapCharacter
         }
 
@@ -51,6 +62,8 @@ namespace Battle.QSimulation.Game
     /// <summary>
     /// A deterministic command that triggers the ability activation for a specific player.
     /// </summary>
+    ///
+    /// See [{Custom Quantum Commands}](#page-concepts-commands) for more info.
     public class BattleCharacterAbilityQCommand : BattleCommand
     {
         public override Type BattleCommandType => Type.ActivateAbility;
@@ -63,6 +76,8 @@ namespace Battle.QSimulation.Game
     /// <summary>
     /// A deterministic command that triggers the character swapping logic for a specific player.
     /// </summary>
+    ///
+    /// See [{Custom Quantum Commands}](#page-concepts-commands) for more info.
     public class BattleCharacterSwapQCommand : BattleCommand
     {
         public override Type BattleCommandType => Type.SwapCharacter;
@@ -84,6 +99,8 @@ namespace Battle.QSimulation.Game
     /// <summary>
     /// A deterministic command that triggers the give up logic for a specific player.
     /// </summary>
+    ///
+    /// See [{Custom Quantum Commands}](#page-concepts-commands) for more info.
     public class BattleGiveUpQCommand : BattleCommand
     {
         public override Type BattleCommandType => Type.GiveUp;
