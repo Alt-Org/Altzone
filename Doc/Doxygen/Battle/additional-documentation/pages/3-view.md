@@ -129,9 +129,13 @@ They are attached to the **top level parent GameObject** of the @ref BattleUi.pr
 The **handler scripts** also add listeners to call **UiInput** methods in @cref{Battle.View.Game,BattleGameViewController} when the local player gives an UI input.  
 In **%Battle** the **UI Handlers** have a **"Handler"** suffix in addition to the **"Ui"** prefix. [[Naming]](#index-naming)
 
-**BattleUiShared** prefabs can be found in the @dirref{Altzone,Assets/Altzone/Resources/Prefabs/BattleUiShared} directory, and the **Scripts** are in the @dirref{Altzone,Assets/Altzone/Scripts/BattleUiShared} directory.  
-Every one of the **BattleUiShared** prefabs has either a @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement}, @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableJoystickElement} or @cref{Altzone.Scripts.BattleUiShared,BattleUiMultiOrientationElement} script, which allow setting the saved @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElementData}.  
-@cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElementData} holds the anchor and orientation information for each **BattleUiShared** prefab. It is serialized and deserialized in **SettingsCarrier** using **GetBattleUiMovableElementData** and **SetBattleUiMovableElementData** methods.  
+**BattleUiShared** prefabs can be found in the @dirref{Altzone,Assets/Altzone/Resources/Prefabs/BattleUiShared} directory, and the **Scripts**
+are in the @dirref{Altzone,Assets/Altzone/Scripts/BattleUiShared} directory.  
+Every one of the **BattleUiShared** prefabs has either a @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement}, 
+@cref{Altzone.Scripts.BattleUiShared,BattleUiMovableJoystickElement} or @cref{Altzone.Scripts.BattleUiShared,BattleUiMultiOrientationElement} script,
+which allow setting the saved @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElementData}.  
+@cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElementData} holds the anchor and orientation information for each **BattleUiShared** prefab.
+It is serialized and deserialized in **SettingsCarrier** using **GetBattleUiMovableElementData** and **SetBattleUiMovableElementData** methods.  
 
 |  Namespace                                          || Class                                                        | Description                                                      |
 | :------------------ | :----------------------------- | :----------------------------------------------------------- | :--------------------------------------------------------------- |
@@ -153,7 +157,8 @@ Every one of the **BattleUiShared** prefabs has either a @cref{Altzone.Scripts.B
 **UI Components** are helper scripts which can have multiple instances in **BattleUi** prefab's child **GameObjects**.  
 In **%Battle** the **UI Components** have a **"Component"** suffix in addition to the **"Ui"** prefix. [[Naming]](#index-naming)
 
-The **UI Component** scripts exist to make it easier to handle @dirref{Altzone,Assets/Altzone/Resources/Prefabs,BattleUiShared} prefabs which have several instances, for example @ref BattleUiPlayerInfo.prefab.  
+The **UI Component** scripts exist to make it easier to handle @dirref{Altzone,Assets/Altzone/Resources/Prefabs,BattleUiShared}
+prefabs which have several instances, for example @ref BattleUiPlayerInfo.prefab.  
 The different instances of the duplicated prefab each have their own **GameObjects** which need to be accessed to set visual information or attach listeners.  
 
 |  Namespace                                          || Class                                                        | Description                                                      |
