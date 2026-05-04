@@ -18,9 +18,9 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
         // TODO: How to differentiate AvatarPiece Ids - Animation Ids
         // TODO: implement connections with shop
 
-        public List<string> ownedAvatarPiece_Ids;   // I'll focus on this now
-        public List<string> ownedAnimation_Ids;
-        public List<string> OwnedUIStyle_ids;   // Item not implemented yet
+        public List<string> _ownedAvatarPiece_Ids;   // I'll focus on this now
+        public List<string> _ownedAnimation_Ids;
+        public List<string> _ownedUIStyle_ids;   // Item not implemented yet
 
         readonly PlayerData _playerData;
 
@@ -40,10 +40,10 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
             switch (type)
             {
                 case ItemType.AvatarPiece:
-                    ownedAvatarPiece_Ids.Add(id);
+                    _ownedAvatarPiece_Ids.Add(id);
                     break;
                 case ItemType.Animation:
-                    ownedAnimation_Ids.Add(id);
+                    _ownedAnimation_Ids.Add(id);
                     break;
             }
             
@@ -52,29 +52,29 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
 
         public void RemoveItem(string id, ItemType type)
         {
-            if (ownedAvatarPiece_Ids.Contains(id)) ownedAvatarPiece_Ids.Remove(id);
-            if (ownedAnimation_Ids.Contains(id)) ownedAnimation_Ids.Remove(id);
+            if (_ownedAvatarPiece_Ids.Contains(id)) _ownedAvatarPiece_Ids.Remove(id);
+            if (_ownedAnimation_Ids.Contains(id)) _ownedAnimation_Ids.Remove(id);
             SaveItems(type);
         }
 
         public void GetItems()
         {
             //storefront.GetPlayerData(null, null);   // I don't know
-            ownedAvatarPiece_Ids = _playerData.OwnedAvatarPiece_Ids;
-            ownedAnimation_Ids = _playerData.OwnedAnimation_Ids;
+            _ownedAvatarPiece_Ids = _playerData.OwnedAvatarPiece_Ids;
+            _ownedAnimation_Ids = _playerData.OwnedAnimation_Ids;
         }
 
         public void SaveItems(ItemType type)
         {
             //storefront.SavePlayerData(_playerData, null);
-            _playerData.UpdateOwnedAvatarPieceIDs((int)type, ownedAvatarPiece_Ids);    // Propably doesn't work like this
+            _playerData.UpdateOwnedAvatarPieceIDs((int)type, _ownedAvatarPiece_Ids);    // Propably doesn't work like this
             //_playerData.UpdateOwnedAvatarAnimationIDs(ownedAnimation_Ids);
         }
 
         public bool CheckItemOwnership(string id)
         {
-            if (ownedAvatarPiece_Ids.Contains(id)) return true;
-            if (ownedAnimation_Ids.Contains(id)) return true;
+            if (_ownedAvatarPiece_Ids.Contains(id)) return true;
+            if (_ownedAnimation_Ids.Contains(id)) return true;
             
             return false;
         }  

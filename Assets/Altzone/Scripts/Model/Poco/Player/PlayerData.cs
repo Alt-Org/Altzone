@@ -235,16 +235,16 @@ namespace Altzone.Scripts.Model.Poco.Player
             else Storefront.Get().SavePlayerData(this, null);
         }
 
-        public void UpdateOwnedAvatarPieceIDs(int type, List<string> ids)
+        public void UpdateOwnedAvatarPieceIDs(int type, List<string> idList)
         {
             switch (type)
             {
                 case 1:
-                    OwnedAvatarPiece_Ids = ids;
+                    OwnedAvatarPiece_Ids = idList;
                     break;
                 
                 case 2:
-                    OwnedAnimation_Ids = ids;
+                    OwnedAnimation_Ids = idList;
                     break;
             }
         }
