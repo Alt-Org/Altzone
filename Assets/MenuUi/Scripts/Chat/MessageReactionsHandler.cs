@@ -283,7 +283,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
                         _selectedMessage.SetMessageInactive();
                         
                         return;
-                    
+
                 }
             }
 
@@ -339,7 +339,8 @@ public class MessageReactionsHandler : AltMonoBehaviour
             StartCoroutine(GetPlayerData(player =>
             {
                 //Removes the users reaction data from the "chatShowUsersPopUpData"
-                _chatShowUsersPopUpData.RemoveUserReaction(player.Id);
+                if (player != null)
+                    _chatShowUsersPopUpData.RemoveUserReaction(player.Id);
 
             }));
 
@@ -424,7 +425,8 @@ public class MessageReactionsHandler : AltMonoBehaviour
                 StartCoroutine(GetPlayerData(player =>
                 {
                     //Removes the users reaction data from the "chatShowUsersPopUpData"
-                    _chatShowUsersPopUpData.RemoveUserReaction(player.Id);
+                    if (player != null)
+                        _chatShowUsersPopUpData.RemoveUserReaction(player.Id);
                         
                 }));
 
