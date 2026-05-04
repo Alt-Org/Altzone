@@ -24,6 +24,12 @@ public class ClanProfileResponsiveLayout : MonoBehaviour
         [Header("Popups")]
         public float rulesPopupScale = 1f;
         public float carbonEmissionPopupScale = 1f;
+        public float clanSettingsPopupScale = 1f;
+        public float clanValueEditPopupScale = 1f;
+        public float clanLanguageEditPopupScale = 1f;
+        public float clanAgeEditPopupScale = 1f;
+        public float clanPhraseEditPopupScale = 1f;
+        public float clanRulesEditPopupScale = 1f;
 
         [Header("Header right icons")]
         public Vector2 headerInfoIconSize = new Vector2(140f, 120f);
@@ -65,6 +71,12 @@ public class ClanProfileResponsiveLayout : MonoBehaviour
 
         rulesPopupScale = 1f,
         carbonEmissionPopupScale = 1f,
+        clanSettingsPopupScale = 1f,
+        clanValueEditPopupScale = 1f,
+        clanLanguageEditPopupScale = 1f,
+        clanAgeEditPopupScale = 1f,
+        clanPhraseEditPopupScale = 1f,
+        clanRulesEditPopupScale = 1f,
 
         headerInfoIconSize = new Vector2(140f, 120f),
 
@@ -95,6 +107,12 @@ public class ClanProfileResponsiveLayout : MonoBehaviour
 
         rulesPopupScale = 0.8f,
         carbonEmissionPopupScale = 0.75f,
+        clanSettingsPopupScale = 0.8f,
+        clanValueEditPopupScale = 0.8f,
+        clanLanguageEditPopupScale = 0.8f,
+        clanAgeEditPopupScale = 0.8f,
+        clanPhraseEditPopupScale = 0.8f,
+        clanRulesEditPopupScale = 0.8f,
 
         headerInfoIconSize = new Vector2(110f, 90f),
 
@@ -150,7 +168,12 @@ public class ClanProfileResponsiveLayout : MonoBehaviour
     [Header("Popups")]
     [SerializeField] private RectTransform rulesPopup;
     [SerializeField] private RectTransform carbonEmissionPopup;
-
+    [SerializeField] private RectTransform clanSettingsPopup;
+    [SerializeField] private RectTransform clanValueEditPopup;
+    [SerializeField] private RectTransform clanLanguageEditPopup;
+    [SerializeField] private RectTransform clanAgeEditPopup;
+    [SerializeField] private RectTransform clanPhraseEditPopup;
+    [SerializeField] private RectTransform clanRulesEditPopup;
 
     private int lastScreenWidth;
     private int lastScreenHeight;
@@ -277,6 +300,13 @@ public class ClanProfileResponsiveLayout : MonoBehaviour
     {
         SetPopupScale(rulesPopup, preset.rulesPopupScale);
         SetPopupScale(carbonEmissionPopup, preset.carbonEmissionPopupScale);
+
+        SetPopupScale(clanSettingsPopup, preset.clanSettingsPopupScale);
+        SetPopupScale(clanValueEditPopup, preset.clanValueEditPopupScale);
+        SetPopupScale(clanLanguageEditPopup, preset.clanLanguageEditPopupScale);
+        SetPopupScale(clanAgeEditPopup, preset.clanAgeEditPopupScale);
+        SetPopupScale(clanPhraseEditPopup, preset.clanPhraseEditPopupScale);
+        SetPopupScale(clanRulesEditPopup, preset.clanRulesEditPopupScale);
     }
 
     private void SetPopupScale(RectTransform popup, float scale)
