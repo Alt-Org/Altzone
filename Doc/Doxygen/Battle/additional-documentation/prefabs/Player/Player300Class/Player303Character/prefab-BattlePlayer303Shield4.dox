@@ -1,0 +1,25 @@
+/// @file "BattlePlayer303Shield4.prefab"
+/// <summary>
+/// Prefab for the shield number 4 of character 303 "Lakihenkisyys".
+/// </summary>
+///
+/// This prefab is a variant of @ref "BattlePlayer303Shield1(Base).prefab" and has a similar structure as the base prefab.
+///
+/// ### Structure Overrides
+/// - **BattlePlayer303Shield4**
+///     - *Children:*
+///         - **ShieldViewModel**
+///             - *Components:*
+///                 - @cref{Battle.View.Player,BattlePlayerShieldViewController}
+///         - *Children:*
+///             - **Shield**
+///                 - *Components:*
+///                     - SpriteRenderer
+///
+
+/// @file "BattlePlayer303Shield4EntityPrototype.qprototype"
+/// <summary>
+/// EntityPrototype counterpart of @ref "BattlePlayer303Shield4.prefab"
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).

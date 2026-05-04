@@ -897,15 +897,10 @@ digraph PlayerView {
 
   Quantum -> UpdateCharacterLink, UpdateShieldLink;
   Quantum -> ClassCharacterQuantumLink, ClassShieldQuantumLink;
-  Quantum -> Reference;
-  Reference -> Forwards;
+  Quantum -> Reference [style=invis];
+  Reference -> Forwards [style=invis];
   PlayerCharacterViewController -> Reference [dir=back, constraint=false];
   PlayerShieldViewController -> Reference [dir=back, constraint=false];
-
-  rank=same;
-  PlayerCharacterViewController;
-  PlayerShieldViewController;
-  Reference;
 
   PlayerCharacterViewController -> Forwards;
   PlayerShieldViewController -> Forwards [dir=back];

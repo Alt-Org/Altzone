@@ -1,0 +1,28 @@
+/// @file "BattlePlayer400Shield(BaseAndTestCharacter).prefab"
+/// <summary>
+/// Prefab for class 400 Base/Test shield. This is used for testing purposes and as a base for creating other class 400 shields.
+/// </summary>
+///
+/// This prefab is a variant of @ref "BattlePlayer000Shield(BaseAndTestCharacter).prefab" and has a similar structure as the base prefab.
+///
+/// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}  
+/// @bigtext{See [{Player Character Class 400 - Projector}](#page-concepts-player-class-400) for more info.}
+///
+/// ### Structure Overrides
+/// - **BattlePlayer400Shield(BaseAndTestCharacter)**
+///     - *Components:*
+///         - %Quantum Entity Prototype
+///             - @cref{Quantum,BattlePlayerShieldDataTemplateQComponent}
+///     - *Children:*
+///         - **ShieldViewModel**
+///             - *Components*
+///                 - @cref{Battle.View.Player,BattlePlayerShieldViewController}
+///                 - + @cref{Battle.View.Player,BattlePlayerShieldClass400ViewController}
+///
+
+/// @file "BattlePlayer400Shield(BaseAndTestCharacter)EntityPrototype.qprototype"
+/// <summary>
+/// EntityPrototype counterpart of @ref "BattlePlayer400Shield(BaseAndTestCharacter).prefab"
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).
