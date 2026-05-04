@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using Altzone.Scripts.AvatarPartsInfo;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ModelV2.Internal;
 using UnityEditor;
@@ -238,14 +239,14 @@ public class AvatarDefaultEditor : PropertyDrawer
 {
 
     PropertyField CharacterName;
-    SerializedProperty CharacterId;
+    PropertyField CharacterId;
     PropertyField HairField;
-    SerializedProperty EyesId;
-    SerializedProperty NoseId;
-    SerializedProperty MouthId;
-    SerializedProperty BodyId;
-    SerializedProperty HandsId;
-    SerializedProperty FeetId;
+    PropertyField EyesField;
+    PropertyField NoseField;
+    PropertyField MouthField;
+    PropertyField BodyField;
+    PropertyField HandsField;
+    PropertyField FeetField;
 
     /*private void OnEnable()
     {
@@ -269,51 +270,108 @@ public class AvatarDefaultEditor : PropertyDrawer
 
         // Create property fields.
         CharacterName = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.CharacterName)));
-        PropertyField unitField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.CharacterId)));
+        CharacterId = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.CharacterId)));
         HairField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.HairId)), "Hair");
         var hairBox = new ScrollView();
-        PropertyField eyeField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.EyesId)), "Eyes");
-        PropertyField noseField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.NoseId)), "Nose");
-        PropertyField mouthField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.MouthId)), "Mouth");
-        PropertyField bodyField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.BodyId)), "Body");
-        PropertyField handsField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.HandsId)), "Hands");
-        PropertyField feetField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.FeetId)), "Feet");
+        EyesField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.EyesId)), "Eyes");
+        var eyesBox = new ScrollView();
+        NoseField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.NoseId)), "Nose");
+        var noseBox = new ScrollView();
+        MouthField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.MouthId)), "Mouth");
+        var mouthBox = new ScrollView();
+        BodyField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.BodyId)), "Body");
+        var bodyBox = new ScrollView();
+        HandsField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.HandsId)), "Hands");
+        var handsBox = new ScrollView();
+        FeetField = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.FeetId)), "Feet");
+        var feetBox = new ScrollView();
 
         // Add fields to the container.
         container.Add(CharacterName);
-        container.Add(unitField);
+        container.Add(CharacterId);
+
         container.Add(HairField);
         container.Add(hairBox);
-
-        HairField.RegisterCallback<ChangeEvent<string>, VisualElement>(PartChanged, hairBox);
+        HairField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box=hairBox, Piece=AvatarPiece.Hair });
         hairBox.style.flexGrow = 1;
         hairBox.style.backgroundColor = Color.white;
         hairBox.style.height = 100f;
         hairBox.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
-        container.Add(eyeField);
-        container.Add(noseField);
-        container.Add(mouthField);
-        container.Add(bodyField);
-        container.Add(handsField);
-        container.Add(feetField);
+
+        container.Add(EyesField);
+        container.Add(eyesBox);
+        EyesField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = eyesBox, Piece = AvatarPiece.Eyes });
+        eyesBox.style.flexGrow = 1;
+        eyesBox.style.backgroundColor = Color.white;
+        eyesBox.style.height = 100f;
+        eyesBox.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+
+        container.Add(NoseField);
+        container.Add(noseBox);
+        NoseField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = noseBox, Piece = AvatarPiece.Nose });
+        noseBox.style.flexGrow = 1;
+        noseBox.style.backgroundColor = Color.white;
+        noseBox.style.height = 100f;
+        noseBox.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+
+        container.Add(MouthField);
+        container.Add(mouthBox);
+        MouthField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = mouthBox, Piece = AvatarPiece.Mouth });
+        mouthBox.style.flexGrow = 1;
+        mouthBox.style.backgroundColor = Color.white;
+        mouthBox.style.height = 100f;
+        mouthBox.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+
+        container.Add(BodyField);
+        container.Add(bodyBox);
+        BodyField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = bodyBox, Piece = AvatarPiece.Clothes });
+        bodyBox.style.flexGrow = 1;
+        bodyBox.style.backgroundColor = Color.white;
+        bodyBox.style.height = 100f;
+        bodyBox.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+
+        container.Add(HandsField);
+        container.Add(handsBox);
+        HandsField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = handsBox, Piece = AvatarPiece.Hands });
+        handsBox.style.flexGrow = 1;
+        handsBox.style.backgroundColor = Color.white;
+        handsBox.style.height = 100f;
+        handsBox.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+
+        container.Add(FeetField);
+        container.Add(feetBox);
+        FeetField.RegisterCallback<ChangeEvent<string>, BoxData>(PartChanged, new BoxData { Box = feetBox, Piece = AvatarPiece.Feet });
+        feetBox.style.flexGrow = 1;
+        feetBox.style.backgroundColor = Color.white;
+        feetBox.style.height = 100f;
+        feetBox.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
 
 
 
         return container;
     }
 
-    private void PartChanged(ChangeEvent<string> @event, VisualElement box)
+    private void PartChanged(ChangeEvent<string> @event, BoxData boxData)
     {
+        VisualElement box = boxData.Box;
         box.Clear();
 
         var value = @event.newValue;
-        if(value == null) return;
+        if (value == null) return;
 
         var bigBox = new Box();
-
-        List<AvatarPartInfo> info = AvatarPartsReference.Instance.Hair.AvatarParts;
-
-        foreach(var data in info)
+        List<AvatarPartInfo> info = boxData.Piece switch
+        {
+            AvatarPiece.Hair => AvatarPartsReference.Instance.Hair.AvatarParts,
+            AvatarPiece.Eyes => AvatarPartsReference.Instance.Eyes.AvatarParts,
+            AvatarPiece.Nose => AvatarPartsReference.Instance.Nose.AvatarParts,
+            AvatarPiece.Mouth => AvatarPartsReference.Instance.Mouth.AvatarParts,
+            AvatarPiece.Clothes => AvatarPartsReference.Instance.Body.AvatarParts,
+            AvatarPiece.Feet => AvatarPartsReference.Instance.Legs.AvatarParts,
+            AvatarPiece.Hands => AvatarPartsReference.Instance.Arms.AvatarParts,
+            _ => null,
+        };
+        foreach (var data in info)
         {
             var hairBox = new Button();
             hairBox.Clear();
@@ -338,5 +396,11 @@ public class AvatarDefaultEditor : PropertyDrawer
         //image.sprite = AvatarPartsReference.Instance.GetAvatarPartById(value).AvatarImage;
 
         //box.Add(image);
+    }
+
+    private class BoxData
+    {
+        public VisualElement Box;
+        public AvatarPiece Piece;
     }
 }
