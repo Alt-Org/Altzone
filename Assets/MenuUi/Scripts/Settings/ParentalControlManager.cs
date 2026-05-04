@@ -17,6 +17,7 @@ public class ParentalControlManager : MonoBehaviour
     //public Text messageText;
     public TMP_Text messageText;
     public Toggle controlToggle;
+    public Toggle testToggle;
     
 
     //the password will be set in the pop up
@@ -85,13 +86,19 @@ public class ParentalControlManager : MonoBehaviour
 
         internetLinksToggle.onValueChanged.AddListener(_ => SetInternetLinks());
         SetInternetLinksToggle();
+        //internetLinksToggle.isOn = true;
+        testToggle.isOn = true;
+        chatMessagesToggle.isOn = true;
 
     }
 
+    /*
     private void OnEnable()
     {
         SetInternetLinksToggle();
     }
+    */
+
 
     public void OpenPasswordPanel()
     {
@@ -149,8 +156,10 @@ public class ParentalControlManager : MonoBehaviour
                 Debug.Log("correct password, login allowed");
                 //messageText.text = "Access granted!";
                 parentalControlSettings.SetActive(true);
-               
-                               
+                SetInternetLinksToggle();
+                //internetLinksToggle.isOn = true;
+
+
 
 
 
@@ -282,14 +291,39 @@ public class ParentalControlManager : MonoBehaviour
     }
 
     public void SetInternetLinksToggle() {
+        internetLinksToggle.isOn = (PlayerPrefs.GetInt("internetLinks", 0) != 0);
+        Debug.Log("internetLinks, got value" + PlayerPrefs.GetInt("internetLinks"));
+        Debug.Log("internetLinksToggle is set");
 
-        internetLinksToggle.isOn = (PlayerPrefs.GetInt("internetlinks",0) !=0);
+        /*
+        int checkLinks = PlayerPrefs.GetInt("internetLinks");
+        if (checkLinks == 1)
+        {
+            internetLinks = true;
+            Debug.Log("internetLinks is set to true");
+            internetLinksToggle.isOn = true;
+            Debug.Log("internetLinksToggle is set");
+
+
+
+        }
+        else
+        {
+            internetLinks = false;
+            internetLinksToggle.isOn = false;
+            Debug.Log("internetLinksToggle is set");
+        }
+        */
+
+        //internetLinksToggle.isOn = (PlayerPrefs.GetInt("internetlinks",0) !=0);
+
 
     }
 
 
     public void SaveSettings()
     {
+        SetInternetLinks();
         PlayerPrefs.Save();
 
     }
