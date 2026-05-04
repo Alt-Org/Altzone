@@ -16,4 +16,5 @@
       *@ref BattlePlayer603Character.prefab*  
       *@ref BattlePlayer604Character.prefab*
 
-Only character 601 "Sielunsisaruus" is currently implemented. Implementation for it is done in the Confluent character classes script, so it applies to all characters of that class. When other characters are implemented, the code should be adjusted as needed.
+Only character 601 "Sielunsisaruus" is currently implemented. Implementation for it is done in the Confluent character classes script, so it applies to all characters of that class.
+When other characters are implemented, the code should be adjusted as needed.

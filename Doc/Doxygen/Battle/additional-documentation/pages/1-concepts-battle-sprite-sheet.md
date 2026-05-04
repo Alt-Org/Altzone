@@ -23,7 +23,8 @@ Using a sprite from the **Spritesheet** as a reference, the @cref{Battle.View,Ba
 A **%SpriteSheetMap** is a struct that defines the structure of a [{BattleSpriteSheet}](#page-concepts-battle-sprite-sheet-sprite-sheet) by:
 - Wrapping an Enum that defines a [{BattleSpriteSheet}](#page-concepts-battle-sprite-sheet-sprite-sheet)'s structure, giving each sprite index a name.
 - Defining the expected sprite **Count** as a constant.
-- Implementing the @cref{Battle.View,IBattleSpriteSheetMap} interface that defines methods that allow instances of a **%SpriteSheetMap** to be used by [{BattleSpriteSheet}](#page-concepts-battle-sprite-sheet-sprite-sheet) via polymorphism.
+- Implementing the @cref{Battle.View,IBattleSpriteSheetMap} interface that defines methods that allow instances of a **%SpriteSheetMap** to be used by
+[{BattleSpriteSheet}](#page-concepts-battle-sprite-sheet-sprite-sheet) via polymorphism.
 - Implementing methods for handling the **%SpriteSheetMap**.
     - Implicit cast operators for converting a **%SpriteSheetMap** into the wrapped **Enum** and vice versa,
     as well as a `public static %SpriteSheetMap FromInt(int index)` method for converting int to **%SpriteSheetMap**.

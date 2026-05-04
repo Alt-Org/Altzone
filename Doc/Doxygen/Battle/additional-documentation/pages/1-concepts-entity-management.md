@@ -5,20 +5,24 @@
 ## Entity Manager {#page-concepts-entity-management-entity-manager}
 
 The @cref{Battle.QSimulation.Game,BattleEntityManager} handles **%Quantum Entity** management in the game.  
-Uses [{Entity Manager Data}](#page-concepts-entity-management-entity-manager-data) singleton internally to manage [{Registered Entities}](#page-concepts-entity-management-registered-entities).
+Uses [{Entity Manager Data}](#page-concepts-entity-management-entity-manager-data) singleton internally
+to manage [{Registered Entities}](#page-concepts-entity-management-registered-entities).
 
 ### Registered Entities {#page-concepts-entity-management-registered-entities}
 
 **%Quantum Entities** are **Registered** using @clink{Register:Battle.QSimulation.Game.BattleEntityManager.Register(Frame, EntityRef)},
 either individually or as an [{Entity Group}](#page-concepts-entity-management-entity-group), and can be **Retrieved** and **Returned**.<br/>
-**Registered Entities** are stored offscreen when [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate) and are assigned an [{Entity ID}](#page-concepts-entity-management-entity-id) for accessing them.<br/>
+**Registered Entities** are stored offscreen when [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate)
+and are assigned an [{Entity ID}](#page-concepts-entity-management-entity-id) for accessing them.<br/>
 [{Compound Entities}](#page-concepts-entity-management-compound-entities)
 have their own @clink{RegisterCompound:Battle.QSimulation.Game.BattleEntityManager.RegisterCompound(Frame, Battle.QSimulation.Game.BattleEntityManager.CompoundEntityTemplate)} method.<br/>
 
 **Entities** can be **Retrieved** using
-@clink{Get:Battle.QSimulation.Game.BattleEntityManager.Get(Frame, BattleEntityID, bool)} to be used in the arena. [{InPlay}](#page-concepts-entity-management-registered-entities-playstate)<br/>
+@clink{Get:Battle.QSimulation.Game.BattleEntityManager.Get(Frame, BattleEntityID, bool)} to be used in the arena.
+[{InPlay}](#page-concepts-entity-management-registered-entities-playstate)<br/>
 **Entities** can be **Returned** using
-@clink{Return:Battle.QSimulation.Game.BattleEntityManager.Return(Frame, BattleEntityID)}, **teleporting** them back offscreen. [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate)<br/>
+@clink{Return:Battle.QSimulation.Game.BattleEntityManager.Return(Frame, BattleEntityID)}, **teleporting** them back offscreen.
+[{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate)<br/>
 [{Entity Groups}](#page-concepts-entity-management-entity-group)
 have their own @clink{Get:Battle.QSimulation.Game.BattleEntityManager.Get(Frame, BattleEntityID, bool)}
 and @clink{Return:Battle.QSimulation.Game.BattleEntityManager.Return(Frame, BattleEntityID)} methods that take an additional **offset** argument.<br/>
@@ -29,7 +33,8 @@ The **PlayState** isn't explicitly tracked in the simulation. This is just the t
 [{Registered Entities}](#page-concepts-entity-management-registered-entities) have 2 different states, **InPlay** and **OutOfPlay**.  
 When in the arena, a **Registered Entity** is considered **InPlay**. When not in the arena, it is considered **OutOfPlay**.  
 When **OutOfPlay**, **Registered Entities** will be stored offscreen.  
-The **Get** and **Return** methods send a @ref BattlePlayStateUpdate event to update the **Unity/View** code on the **ViewPlayState** so it can use and react to that information.
+The **Get** and **Return** methods send a @ref BattlePlayStateUpdate event to update
+the **Unity/View** code on the **ViewPlayState** so it can use and react to that information.
 
 ### Compound Entity Handling {#page-concepts-entity-management-compound-entity-handling}
 
@@ -58,7 +63,8 @@ The @cref{Quantum,BattleEntityID} struct is used to represent **Entity IDs**.
 ## Entity Group {#page-concepts-entity-management-entity-group}
 
 **Entities** can be registered to [{Entity Manager}](#page-concepts-entity-management-entity-manager) in **Entity Groups**.<br/>
-An **Entity Group** has one [{Entity ID}](#page-concepts-entity-management-entity-id), and individual **Entities** within the **Group** are accessed by using an **offset value**.
+An **Entity Group** has one [{Entity ID}](#page-concepts-entity-management-entity-id), and individual **Entities** within the **Group**
+are accessed by using an **offset value**.
 
 <br/>
 
@@ -80,4 +86,5 @@ The **Parent** has a @cref{Quantum,BattleCompoundEntityQComponent} which contain
 
 ## EntityManagerData (%Quantum Singleton) {#page-concepts-entity-management-entity-manager-data}
 
-The @cref{Quantum,BattleEntityManagerDataQSingleton} struct is a **%Quantum Singleton Component** defined in and generated from BattleEntityManagerData.qtn that is used internally by [{EntityManager}](#page-concepts-entity-management-entity-manager) to manage registered entities.
+The @cref{Quantum,BattleEntityManagerDataQSingleton} struct is a **%Quantum Singleton Component** defined in and generated from BattleEntityManagerData.qtn that
+is used internally by [{EntityManager}](#page-concepts-entity-management-entity-manager) to manage registered entities.

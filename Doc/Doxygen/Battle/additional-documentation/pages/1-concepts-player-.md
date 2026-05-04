@@ -96,9 +96,11 @@ graph PlayerSlotsAndTeams {
 ## Player PlayState {#page-concepts-player-playstate}
 
 This concept extends the more general [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) concept. However, this is tracked explicitly.  
-Each **Player** has a @cref{Quantum,BattlePlayerPlayState} used to track their state in the game, which is detached from [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) that the **Player** controls.  
+Each **Player** has a @cref{Quantum,BattlePlayerPlayState} used to track their state in the game,
+which is detached from [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) that the **Player** controls.  
 Each [{PlayerSlot}](#page-concepts-player-slots-teams) has a **Player PlayState** associated with it including slots that have no player.  
-The general [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) applies to the individual [{Player Character And Shield Entities}](#page-concepts-player-character-and-shield-entity).
+The general [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) applies to
+the individual [{Player Character And Shield Entities}](#page-concepts-player-character-and-shield-entity).
 
 <br/>
 
@@ -178,9 +180,11 @@ digraph PlayerJoining {
 
 **Players** can interact with the game through moving and rotating their [{Player Character Entity}](#page-concepts-player-character-and-shield-entity),
 as well as switching between their available [{Player Character Entities}](#page-concepts-player-character-and-shield-entity).  
-**Player Inputs** are processed and compiled into a @ref Quantum.Input "Quantum Input Struct" on the **Unity/View** side in [{PlayerInput}](#page-concepts-player-view-input).
+**Player Inputs** are processed and compiled into a @ref Quantum.Input "Quantum Input Struct" on the **Unity/View** side in
+[{PlayerInput}](#page-concepts-player-view-input).
 The created **struct** is passed over to **%Quantum Simulation**.  
-**%Quantum** synchronises the **struct** for all connected **clients**, and classes on the [{Quantum Simulation}](#page-concepts-player-simulation) side use the contained data.
+**%Quantum** synchronises the **struct** for all connected **clients**, and classes on the
+[{Quantum Simulation}](#page-concepts-player-simulation) side use the contained data.
 
 See [Input🡵](https://doc.photonengine.com/quantum/current/manual/input) **%Quantum**'s documentation for more info.
 
@@ -289,16 +293,19 @@ digraph PlayerCharacterEntities {
 These **Entities** are created based on **Unity Prefabs**. **Entities** are controlled by **%Quantum Simulation**.
 The **Unity Prefab root GameObject** contains a **%Quantum Entity Prototype** component, where the **Entity** is defined.
 
-During gameplay the **Player Character** and it's **Shield(s)** exists both as a **%Quantum Entity** inside [{Quantum Simulation}](#page-concepts-player-simulation) and a **Unity GameObject** inside **Unity View**,
-which **%Quantum** links together.
+During gameplay the **Player Character** and it's **Shield(s)** exists both as a **%Quantum Entity** inside
+[{Quantum Simulation}](#page-concepts-player-simulation) and a **Unity GameObject** inside **Unity View**, which **%Quantum** links together.
 
-The **Entity** contains **%Quantum Components** used by the **%Quantum Simulation**. The most significant of these are the [{PlayerData}](#page-concepts-player-simulation-gamelogic-playerdata) and the [{ShieldData}](#page-concepts-player-simulation-gamelogic-shielddata),
+The **Entity** contains **%Quantum Components** used by the **%Quantum Simulation**. The most significant of these are
+the [{PlayerData}](#page-concepts-player-simulation-gamelogic-playerdata) and the [{ShieldData}](#page-concepts-player-simulation-gamelogic-shielddata),
 which are our own defined data relating to **Player Character and Shield Entities**. Optionally, the **Character Entity** can have a **Class Data Component**.
 
 See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
 
-The **Unity root GameObject** has the child object **PlayerViewModel** ,or **ShieldViewModel** for **Shields**, containing all things related to the visible elements of **Player Characters and Shields**.  
-The attached [{PlayerCharacterViewController}](#page-concepts-player-character-view-controller) or [{PlayerShieldViewController}](#page-concepts-player-shield-view-controller) component implements **Unity View / Visual** logic for **Player Characters and Shields**.
+The **Unity root GameObject** has the child object **PlayerViewModel** ,or **ShieldViewModel** for **Shields**,
+containing all things related to the visible elements of **Player Characters and Shields**.  
+The attached [{PlayerCharacterViewController}](#page-concepts-player-character-view-controller)
+or [{PlayerShieldViewController}](#page-concepts-player-shield-view-controller) component implements **Unity View / Visual** logic for **Player Characters and Shields**.
 
 ### Player Character Entity/GameObject Graph
 
@@ -403,7 +410,8 @@ digraph PlayerShieldEntity{
 
 ### Player Character Number {#page-concepts-player-character-entity-character-number}
 
-Each **Character %Quantum Entity** is internally assigned a **Character Number** between 0 and 2, each corresponding to one of the **3 Characters** a **Player** controls. It is used to reference a specific **Character** for a given **Player**.
+Each **Character %Quantum Entity** is internally assigned a **Character Number** between 0 and 2, each corresponding to
+one of the **3 Characters** a **Player** controls. It is used to reference a specific **Character** for a given **Player**.
 
 <br/>
 
@@ -423,7 +431,8 @@ This is managed by the [{PlayerManager}](#page-concepts-player-simulation-manage
 
 ### Shield Number {#page-concepts-player-character-entity-shield-number}
 
-Each **Shield %Quantum Entity** is internally assigned a **Shield Number**, each corresponding to one of the **Shields** a **Character** controls. It is used to reference a specific **Shield** for a given **Character**.
+Each **Shield %Quantum Entity** is internally assigned a **Shield Number**, each corresponding to one of the **Shields** a **Character** controls.
+It is used to reference a specific **Shield** for a given **Character**.
 
 <br/>
 
@@ -643,7 +652,8 @@ The data contained in this **%Quantum Singleton Component** is used by the [{Shi
 
 #### ShieldManager {#page-concepts-player-simulation-management-shieldmanager}
 
-The @cref{Battle.QSimulation.Player, BattlePlayerShieldManager} handles [{Shield Entity}](#page-concepts-player-character-and-shield-entity) management, allowing other classes to focus on gameplay logic.  
+The @cref{Battle.QSimulation.Player, BattlePlayerShieldManager} handles [{Shield Entity}](#page-concepts-player-character-and-shield-entity) management,
+allowing other classes to focus on gameplay logic.  
 Provides static methods to **Initialize**, [{Attach}](#page-concepts-player-character-entity-shield-attach), remove and query shield-related data.  
 Handles **Initializing Shields** that are present in the game, as well as attaching and detaching **Shield Entities** from a **Character Entity**.
 
@@ -652,7 +662,8 @@ Handles **Initializing Shields** that are present in the game, as well as attach
 **Shields** can be [{Attached}](#page-concepts-player-character-entity-shield-attach) or **Detached**
 and [{InPlay}](#page-concepts-entity-management-registered-entities-playstate) or [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate).
 
-A **Shield** can be [{Attached}](#page-concepts-player-character-entity-shield-attach) to a player's **Character** using @clink{AttachShield:Battle.QSimulation.Player.BattlePlayerShieldManager.AttachShield(Frame, BattlePlayerSlot, int, int, bool)}.
+A **Shield** can be [{Attached}](#page-concepts-player-character-entity-shield-attach) to a player's **Character**
+using @clink{AttachShield:Battle.QSimulation.Player.BattlePlayerShieldManager.AttachShield(Frame, BattlePlayerSlot, int, int, bool)}.
 This has no effect on the [{InPlay/OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate).  
 If a **Character** already has a shield [{Attached}](#page-concepts-player-character-entity-shield-attach), the shield will be swapped.  
 When [{Attached}](#page-concepts-player-character-entity-shield-attach), [{InPlay/OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate)
@@ -660,10 +671,12 @@ logic is handled by the [{PlayerManager}](#page-concepts-player-simulation-manag
 ([{InPlay}](#page-concepts-entity-management-registered-entities-playstate) when **Character** is [{InPlay}](#page-concepts-entity-management-registered-entities-playstate),
 [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate) when **Character** is [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate))
 
-**Shields** can be used **Detached** using @clink{GetDetachedShieldEntityRef:Battle.QSimulation.Player.BattlePlayerShieldManager.GetDetachedShieldEntityRef(Frame, BattlePlayerSlot, int, int, bool)}.
+**Shields** can be used **Detached**
+using @clink{GetDetachedShieldEntityRef:Battle.QSimulation.Player.BattlePlayerShieldManager.GetDetachedShieldEntityRef(Frame, BattlePlayerSlot, int, int, bool)}.
 The method will retrieve the shield to be used in the arena (**Detached** and [{InPlay}](#page-concepts-entity-management-registered-entities-playstate))
 [{Attached}](#page-concepts-player-character-entity-shield-attach) or not, **Detaching** the **Shield** if needed.  
-A **Shield** can be **Removed** using @clink{RemoveShield:Battle.QSimulation.Player.BattlePlayerShieldManager.RemoveShield(Frame, BattlePlayerSlot, int, int)}, teleporting it out of the arena.
+A **Shield** can be **Removed** using @clink{RemoveShield:Battle.QSimulation.Player.BattlePlayerShieldManager.RemoveShield(Frame, BattlePlayerSlot, int, int)},
+teleporting it out of the arena.
 (**Detached** and [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate))  
 [{Attached}](#page-concepts-player-character-entity-shield-attach) or not, **Detaching** the **Shield** if needed.
 
@@ -671,7 +684,8 @@ A **Shield** can be **Removed** using @clink{RemoveShield:Battle.QSimulation.Pla
 
 ### Game Logic {#page-concepts-player-gamelogic}
 
-This section contains **%Quantum** simulation side **Player** gameplay logic related code, while the management is handled by the [{Management}](#page-concepts-player-simulation-management) code.
+This section contains **%Quantum** simulation side **Player** gameplay logic related code, while the management is handled by the
+[{Management}](#page-concepts-player-simulation-management) code.
 
 <br/>
 
@@ -752,8 +766,10 @@ public class BattlePlayerClassExample2 : BattlePlayerClassBase<BattlePlayerClass
 
 The **C# classes** are stateless and there is only one instance for each **Character Class**
 which are loaded and managed by [{PlayerClassManager}](#page-concepts-player-simulation-class-classmanager).  
-Scripts such as [{PlayerQSystem}](#page-concepts-player-simulation-gamelogic-playerqsystem) call methods in [{PlayerClassManager}](#page-concepts-player-simulation-class-classmanager),
-which then in turn call the corresponding method for the **Character Class** of the specified [{Player Character Entity}](#page-concepts-player-character-and-shield-entity).
+Scripts such as [{PlayerQSystem}](#page-concepts-player-simulation-gamelogic-playerqsystem) call methods in
+[{PlayerClassManager}](#page-concepts-player-simulation-class-classmanager),
+which then in turn call the corresponding method for the **Character Class** of the specified
+[{Player Character Entity}](#page-concepts-player-character-and-shield-entity).
 This way each **Player Characters** possible **Character Class** methods are always correctly called.
 
 See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
@@ -772,7 +788,8 @@ component BattlePlayerClassExample2DataQComponent
 }
 ```
 
-The **Data QComponents** are attached to the [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) and are used by the **C# class** of the corresponding **Character Class**.
+The **Data QComponents** are attached to the [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) and are used by
+the **C# class** of the corresponding **Character Class**.
 
 See [{PlayerClass}](#page-concepts-player-simulation-class-playerclass) for more info.  
 See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
@@ -795,7 +812,8 @@ In a match each **Bot** uses **3** instances of the **base character**.
 
 The **Unity/View** code is separated into **Character** and **Shield** logic.  
 Any **Character** related logic will start with **BattlePlayerCharacter**, while any **Shield** related logic will start with **BattlePlayerShield**.  
-Both **Character** and **Shield** logic use the [{Player Character Class}](#page-concepts-player-characters-classes) term, which is separate from both and should not be confused with either.
+Both **Character** and **Shield** logic use the [{Player Character Class}](#page-concepts-player-characters-classes) term,
+which is separate from both and should not be confused with either.
 **Player Inputs** are also processed in the **Unity/View** code and is then sent over to **%Quantum**.
 
 ```dot
@@ -833,8 +851,8 @@ digraph PlayerView {
 
     node [color="#41C7F1", fontcolor="#41C7F1"];
 
-    PlayerCharacterViewController               [label="PlayerCharacterViewController\n(QuantumEntityViewComponent)\n(Unity Monobehavior)\n\nAttached to each player character gameobject\nHandles player character view logic."];
-    PlayerCharacterClassViewController          [label="PlayerCharacterClassViewController\n(Subclass of BattlePlayerCharacterClassBaseViewController)\n\nAttached to each player character gameobject\nHandles player character class view logic."];
+    PlayerCharacterViewController      [label="PlayerCharacterViewController\n(QuantumEntityViewComponent)\n(Unity Monobehavior)\n\nAttached to each player character gameobject\nHandles player character view logic."];
+    PlayerCharacterClassViewController [label="PlayerCharacterClassViewController\n(Subclass of BattlePlayerCharacterClassBaseViewController)\n\nAttached to each player character gameobject\nHandles player character class view logic."];
 
     UpdateCharacterLink -> PlayerCharacterViewController [dir=forward];
     PlayerCharacterViewController -> ClassPlayerCharacterLink [dir=none];
@@ -860,8 +878,8 @@ digraph PlayerView {
 
     node [color="#41C7F1", fontcolor="#41C7F1"];
 
-    PlayerShieldViewController                  [label="PlayerShieldViewController\n(QuantumEntityViewComponent)\n(Unity Monobehavior)\n\nAttached to each player shield gameobject\nHandles player shield view logic."];
-    PlayerShieldClassViewController             [label="PlayerShieldClassViewController\n(Subclass of BattlePlayerShieldClassBaseViewController)\n\nAttached to each player shield gameobject\nHandles player shield class view logic."];
+    PlayerShieldViewController      [label="PlayerShieldViewController\n(QuantumEntityViewComponent)\n(Unity Monobehavior)\n\nAttached to each player shield gameobject\nHandles player shield view logic."];
+    PlayerShieldClassViewController [label="PlayerShieldClassViewController\n(Subclass of BattlePlayerShieldClassBaseViewController)\n\nAttached to each player shield gameobject\nHandles player shield class view logic."];
 
     UpdateShieldLink -> PlayerShieldViewController [dir=forward];
     PlayerShieldViewController -> ClassPlayerShieldLink [dir=none];
