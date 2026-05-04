@@ -240,7 +240,6 @@ public class AvatarDefaultEditor : PropertyDrawer
         var container = new VisualElement();
 
         // Create property fields.
-        var CharacterName = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.CharacterName)));
         var CharacterId = new PropertyField(property.FindPropertyRelative(nameof(AvatarDefault.CharacterId)));
         var hairProperty = property.FindPropertyRelative(nameof(AvatarDefault.HairId));
         var hairField = new PropertyField(hairProperty, "Hair");
@@ -265,7 +264,6 @@ public class AvatarDefaultEditor : PropertyDrawer
         var feetBox = new ScrollView();
 
         // Add fields to the container.
-        container.Add(CharacterName);
         container.Add(CharacterId);
 
         container.Add(hairField);

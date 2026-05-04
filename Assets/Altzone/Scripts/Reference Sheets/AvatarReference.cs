@@ -204,6 +204,21 @@ namespace Altzone.Scripts.ReferenceSheets
                 _ => "No class description",
             };
         }
+
+        public AvatarDefault GetDefaultAvatar(CharacterClassType classType)
+        {
+            return classType switch
+            {
+                CharacterClassType.Desensitizer => _iraAvatar.Default,
+                CharacterClassType.Trickster => _avaritiaAvatar.Default,
+                CharacterClassType.Obedient => _invidiaAvatar.Default,
+                CharacterClassType.Projector => _luxuriaAvatar.Default,
+                CharacterClassType.Retroflector => _gulaAvatar.Default,
+                CharacterClassType.Confluent => _acediaAvatar.Default,
+                CharacterClassType.Intellectualizer => _superbiaAvatar.Default,
+                _ => _superbiaAvatar.Default,
+            };
+        }
     }
 
     [Serializable]
@@ -218,6 +233,8 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Sprite _character;
         [SerializeField] private string _descFinnish;
         [SerializeField] private string _descEnglish;
+        [Header("Avatar Defaults")]
+        [SerializeField] private AvatarDefault _default;
 
         public string NameFinnish { get => _nameFinnish; }
         public string NameEnglish { get => _nameEnglish; }
@@ -228,5 +245,6 @@ namespace Altzone.Scripts.ReferenceSheets
         public Sprite Character { get => _character; }
         public string DescFinnish { get => _descFinnish; }
         public string DescEnglish { get => _descEnglish; }
+        public AvatarDefault Default { get => _default; }
     }
 }
