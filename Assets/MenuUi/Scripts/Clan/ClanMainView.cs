@@ -174,7 +174,6 @@ public class ClanMainView : MonoBehaviour
             _editButton.onClick.AddListener(OnClickEditClanSettings);
         }
 
-        ToggleClanPanel(false);
         OpenLink();
 
         if (_carbonEmissionButton != null)
@@ -244,53 +243,67 @@ public class ClanMainView : MonoBehaviour
 
         ServerClan clan = DataCarrier.GetData<ServerClan>(DataCarrier.ClanListing, suppressWarning: true);
 
-        if (clan != null && ServerManager.Instance.Clan != null &&
-            clan._id == ServerManager.Instance.Clan._id)
+        string ownClanId = null;
+
+        if (ServerManager.Instance.Clan != null && !string.IsNullOrEmpty(ServerManager.Instance.Clan._id))
+        {
+            ownClanId = ServerManager.Instance.Clan._id;
+        }
+        else if (ServerManager.Instance.Player != null && !string.IsNullOrEmpty(ServerManager.Instance.Player.clan_id))
+        {
+            ownClanId = ServerManager.Instance.Player.clan_id;
+        }
+
+        // If DataCarrier contains the player's own clan, don't treat it as another clan.
+        if (clan != null && !string.IsNullOrEmpty(ownClanId) && clan._id == ownClanId)
         {
             clan = null;
         }
 
-        if (clan != null)
-        {
-            ClanData data = new ClanData(clan);
-            _clanHeart.SetOwnClanHeart = false;
-            _clanHeart.SetOtherClanColors(data);
-            SetClanProfile(data);
-
-            _joinClanButton.onClick.RemoveAllListeners();
-            _joinClanButton.onClick.AddListener(() => { ShowClanPopup(clan); });
-
-        }
-        else if (ServerManager.Instance.Clan != null)
+        if (!string.IsNullOrEmpty(ownClanId))
         {
             _clanHeart.SetOwnClanHeart = true;
-            Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
+
+            Storefront.Get().GetClanData(ownClanId, (clanData) =>
             {
+
+                if (clanData == null)
+                {
+                    ShowNoClanState();
+                    return;
+                }
+
                 SetClanProfile(clanData);
+                ResetSwipeToProfileOnOpen();
             });
 
-            _leaveClanButton.onClick.RemoveAllListeners();
-            _leaveClanButton.onClick.AddListener(() =>
+            if (_leaveClanButton != null)
             {
-                ShowLeaveClanPopUp();
-            });
+                _leaveClanButton.onClick.RemoveAllListeners();
+                _leaveClanButton.onClick.AddListener(ShowLeaveClanPopUp);
+            }
+        }
+        else if (clan != null)
+        {
+            _clanHeart.SetOwnClanHeart = false;
+
+            SetClanProfile(new ClanData(clan));
+
+            if (_joinClanButton != null)
+            {
+                _joinClanButton.onClick.RemoveAllListeners();
+                _joinClanButton.onClick.AddListener(() => { ShowClanPopup(clan); });
+            }
+
+            ResetSwipeToProfileOnOpen();
         }
         else
         {
             _clanHeart.SetOwnClanHeart = false;
-            _inClanButtons.SetActive(false);
-            _notInClanButtons.SetActive(true);
-
-            if (_joinClanButton != null)
-            {
-                _joinClanButton.gameObject.SetActive(false);
-            }
+            ShowNoClanState();
         }
 
         WireMembersFilterButton();
-
-        //Always reset swipe to profile page on open
-        ResetSwipeToProfileOnOpen();
     }
 
     private void WireMembersFilterButton()
@@ -315,22 +328,39 @@ public class ClanMainView : MonoBehaviour
     {
         if (_membersPageController == null) return;
 
-        _membersPageController.ApplyFilters(filters.nameSort, filters.selectedRoles);
+        _membersPageController.ApplyFilters(filters.memberSort, filters.selectedRoles);
     }
 
     private void OpenMembersFiltersPopup()
     {
         if (_membersFiltersPopup == null) return;
 
-        if (_overlay != null) _overlay.SetActive(true);
+        ShowOverlay(true);
+
+        if (_popupOverlayButton != null)
+        {
+            _popupOverlayButton.onClick.RemoveListener(CloseMembersFiltersPopup);
+            _popupOverlayButton.onClick.AddListener(CloseMembersFiltersPopup);
+        }
 
         // Opens filter popup and searches roles from the server
         _membersFiltersPopup.OpenForClan(_currentViewedClanId);
     }
 
+    private void CloseMembersFiltersPopup()
+    {
+        if (_membersFiltersPopup != null)
+            _membersFiltersPopup.CloseWithoutApplying();
+
+        HandleFiltersClosed();
+    }
+
     private void HandleFiltersClosed()
     {
-        if (_overlay != null) _overlay.SetActive(false);
+        if (_popupOverlayButton != null)
+            _popupOverlayButton.onClick.RemoveListener(CloseMembersFiltersPopup);
+
+        ShowOverlay(false);
     }
 
 
@@ -369,6 +399,22 @@ public class ClanMainView : MonoBehaviour
 
         if (_leaveClanHoldCloseButton != null)
             _leaveClanHoldCloseButton.onClick.RemoveListener(CloseLeaveClanHoldPopup);
+
+        if (_popupOverlayButton != null)
+        {
+            _popupOverlayButton.onClick.RemoveListener(ClosePasswordPopup);
+            _popupOverlayButton.onClick.RemoveListener(CloseRulesPopup);
+            _popupOverlayButton.onClick.RemoveListener(CloseCarbonEmissionPopup);
+            _popupOverlayButton.onClick.RemoveListener(CloseLeaveClanHoldPopup);
+        }
+
+        if (_membersFiltersPopup != null)
+        {
+            _membersFiltersPopup.Closed -= HandleFiltersClosed;
+            _membersFiltersPopup.OnFiltersChanged -= HandleMembersFiltersChanged;
+        }
+
+        _filtersWired = false;
     }
 
     private void ResetViewState()
@@ -385,7 +431,17 @@ public class ClanMainView : MonoBehaviour
 
         if (_inClanButtons != null)
         {
-            ApplyButtonsVisibility();
+            _inClanButtons.SetActive(false);
+        }
+
+        if (_notInClanButtons != null)
+        {
+            _notInClanButtons.SetActive(false);
+        }
+
+        if (_clanMemberPageButtons != null)
+        {
+            _clanMemberPageButtons.SetActive(false);
         }
 
         if (_editViewButtons != null)
@@ -397,6 +453,33 @@ public class ClanMainView : MonoBehaviour
         {
             _overlay.SetActive(false);
         }
+    }
+
+    private void ShowNoClanState()
+    {
+        _isInClanCached = false;
+        _canEditCached = false;
+        _hasClanViewedCached = false;
+        _currentPage = ClanPage.Profile;
+
+        ToggleClanPanel(false);
+
+        if (_inClanButtons != null)
+            _inClanButtons.SetActive(false);
+
+        if (_clanMemberPageButtons != null)
+            _clanMemberPageButtons.SetActive(false);
+
+        if (_editViewButtons != null)
+            _editViewButtons.SetActive(false);
+
+        if (_notInClanButtons != null)
+            _notInClanButtons.SetActive(true);
+
+        if (_joinClanButton != null)
+            _joinClanButton.gameObject.SetActive(false);
+
+        ShowOverlay(false);
     }
 
     private bool CanCurrentPlayerEditClan(ClanData clan)
@@ -437,25 +520,32 @@ public class ClanMainView : MonoBehaviour
 
     private void SetClanProfile(ClanData clan)
     {
-        ToggleClanPanel(true);
+        if (clan == null) return;
 
         _currentViewedClanId = clan.Id;
+
+        bool isOwnClanByServerClan =
+    ServerManager.Instance.Clan != null &&
+    !string.IsNullOrEmpty(ServerManager.Instance.Clan._id) &&
+    clan.Id == ServerManager.Instance.Clan._id;
+
+        bool isOwnClanByPlayer =
+            ServerManager.Instance.Player != null &&
+            !string.IsNullOrEmpty(ServerManager.Instance.Player.clan_id) &&
+            clan.Id == ServerManager.Instance.Player.clan_id;
+
+        bool isInClan = isOwnClanByServerClan || isOwnClanByPlayer;
+
+        _isInClanCached = isInClan;
+        _hasClanViewedCached = true;
+        _currentPage = ClanPage.Profile;
+        _canEditCached = CanCurrentPlayerEditClan(clan);
+
+        ToggleClanPanel(true);
 
         if (_membersPageController != null)
         {
             _membersPageController.SetViewedClan(clan.Id);
-            _currentViewedClanId = clan.Id;
-        }
-
-        // Show correct buttons
-        bool isInClan = ServerManager.Instance.Clan != null && clan.Id == ServerManager.Instance.Clan._id;
-        _isInClanCached = isInClan;
-
-        _canEditCached = CanCurrentPlayerEditClan(clan);
-
-        if(_editButton != null)
-        {
-            _editButton.gameObject.SetActive(_canEditCached);
         }
 
         ApplyButtonsVisibility();
@@ -467,14 +557,9 @@ public class ClanMainView : MonoBehaviour
             _joinClanButton.interactable = clan.IsOpen && !isInClan;
         }
 
-        if(_editButton != null)
-        {
-            _editButton.gameObject.SetActive(CanCurrentPlayerEditClan(clan));
-        }
-
         // Show clan profile data
         _clanName.text = clan.Name;
-        _clanMembers.text = "Jäsenmäärä: " + clan.Members.Count;
+        _clanMembers.text = clan.Members.Count + "/30";
         _clanPhrase.text = string.IsNullOrWhiteSpace(clan.Phrase) ? "Klaanilla ei ole mottoa" : clan.Phrase;
         _flagImage.SetFlag(clan.Language);
         _clanGoal.text = ClanDataTypeConverter.GetGoalText(clan.Goals);
@@ -568,25 +653,22 @@ public class ClanMainView : MonoBehaviour
     private void ApplyButtonsVisibility()
     {
         bool isInClan = _isInClanCached;
+        bool hasClanView = _hasClanViewedCached;
 
-        // Profile page buttons only visible when profile page is visible
         if (_inClanButtons != null)
             _inClanButtons.SetActive(isInClan && _currentPage == ClanPage.Profile);
 
         if (_notInClanButtons != null)
-            _notInClanButtons.SetActive(!isInClan && _currentPage == ClanPage.Profile);
+            _notInClanButtons.SetActive(!isInClan && hasClanView && _currentPage == ClanPage.Profile);
 
-        // Members page buttons
         if (_clanMemberPageButtons != null)
             _clanMemberPageButtons.SetActive(isInClan && _currentPage == ClanPage.Members);
 
-        // Settings buttons
         if (_editViewButtons != null)
             _editViewButtons.SetActive(_currentPage == ClanPage.Settings);
 
-        // Makes sure edit buttons behave the right way based on profile rights
         if (_editButton != null)
-            _editButton.gameObject.SetActive(_canEditCached);
+            _editButton.gameObject.SetActive(isInClan && _canEditCached && _currentPage == ClanPage.Profile);
     }
 
     private void ResetSwipeToProfileOnOpen()
@@ -647,9 +729,7 @@ public class ClanMainView : MonoBehaviour
     private void RefreshSwipeEnabledState()
     {
         bool isSettings = _currentPage == ClanPage.Settings;
-        //bool inClan = _isInClanCached;
-
-        bool allowNav = !isSettings && _hasClanViewedCached;
+        bool allowNav = !isSettings && _hasClanViewedCached && _isInClanCached;
 
         if (_tabLine?.Swipe != null)
         {
@@ -697,18 +777,23 @@ public class ClanMainView : MonoBehaviour
     {
         _hasClanViewedCached = showClanPanel;
 
-        _inClanPanel.SetActive(showClanPanel);
-        _noClanPanel.SetActive(!showClanPanel);
+        if (_inClanPanel != null)
+            _inClanPanel.SetActive(showClanPanel);
 
-        if(_clanSwipeRoot != null)
-        {
+        if (_noClanPanel != null)
+            _noClanPanel.SetActive(!showClanPanel);
+
+        if (_clanSwipeRoot != null)
             _clanSwipeRoot.SetActive(showClanPanel);
-        }
 
-        if(_tabLine?.Swipe != null)
+        if (_tabLine?.Swipe != null)
         {
             _tabLine.Swipe.hardBlocked = !showClanPanel;
+            _tabLine.Swipe.IsEnabled = showClanPanel;
         }
+
+        if (showClanPanel)
+            SetTabLineSwipeLock(false);
 
         RefreshSwipeEnabledState();
     }
@@ -719,8 +804,10 @@ public class ClanMainView : MonoBehaviour
         if (_tabButtonsRoot == null) return;
 
         var group = _tabButtonsRoot.GetComponent<CanvasGroup>();
-        if (group == null) group = _tabButtonsRoot.AddComponent<CanvasGroup>();
+        if (group == null)
+            group = _tabButtonsRoot.AddComponent<CanvasGroup>();
 
+        group.alpha = 1f;
         group.interactable = interactable;
         group.blocksRaycasts = interactable;
     }
@@ -768,7 +855,6 @@ public class ClanMainView : MonoBehaviour
     {
         if (_clanSearchNavigator == null)
         {
-            Debug.LogWarning("[ClanMainView] ClanSearchNavigator is not assigned.");
             return;
         }
 

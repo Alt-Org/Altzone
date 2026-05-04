@@ -10,44 +10,41 @@ using Altzone.Scripts;
 
 public class ClanMembersFiltersPopup : MonoBehaviour
 {
-    public enum NameSort
+    public enum MemberSort
     {
-        None,
-        Asc,   // A–Ö
-        Desc   // Ö–A
+        MostWins,
+        OldestMemberFirst,
+        NewestMemberFirst,
+        LeastWins,
+        NameAscending,
+        NameDescending
     }
 
     [Serializable]
     public struct MemberListFilters
     {
-        public NameSort nameSort;
-        public ClanRanking ranking;     
-        public ClanActivity activity;   
+        public MemberSort memberSort;
         public List<string> selectedRoles;
     }
 
-    [Header("Name Selection")]
-    [SerializeField] private TextMeshProUGUI _nameText;
-    [SerializeField] private Button _nameButtonPrevious;
-    [SerializeField] private Button _nameButtonNext;
-
-    [Header("Ranking Selection")]
-    [SerializeField] private TextMeshProUGUI _rankingText;
-    [SerializeField] private Button _rankingButtonPrevious;
-    [SerializeField] private Button _rankingButtonNext;
-
-    [Header("Activity Selection")]
-    [SerializeField] private TextMeshProUGUI _activityText;
-    [SerializeField] private Button _activityButtonPrevious;
-    [SerializeField] private Button _activityButtonNext;
+    [Header("Sort Dropdown")]
+    [SerializeField] private TMP_Dropdown _sortDropdown;
 
     [Header("Roles selection (multi-select list)")]
     [SerializeField] private Transform _rolesContent;
     [SerializeField] private ClanRoleItemTemplate _roleItemPrefab;
 
-    [Header("Buttons")]
+    [Header("All roles")]
+    [SerializeField] private Toggle _allRolesToggle;
+
+    [Header("All roles visuals")]
+    [SerializeField] private GameObject _allRolesChecked;
+    [SerializeField] private GameObject _allRolesUnchecked;
+
+    [Header("Buttonss")]
     [SerializeField] private Button _confirmButton;
-    [SerializeField] private Button _cancelButton;     
+    [SerializeField] private Button _cancelButton;
+    [SerializeField] private Button _closeButton;
     [SerializeField] private GameObject _filtersPopup;  
 
     [SerializeField] private ClanRoleCatalog _roleCatalog;
@@ -57,26 +54,17 @@ public class ClanMembersFiltersPopup : MonoBehaviour
 
     public event Action Closed;
 
-    // Current selections
-    private NameSort _nameSort = NameSort.None;
-    private ClanRanking _clanRanking = ClanRanking.None;
-    private ClanActivity _clanActivity = ClanActivity.None;
+    private MemberSort _memberSort = MemberSort.MostWins;
+    private MemberSort _appliedMemberSort = MemberSort.MostWins;
+
+    private MemberSort[] _sortValues;
+    private int _sortIndex;
+
     private HashSet<string> _selectedRoles = new(StringComparer.OrdinalIgnoreCase);
 
-    // Applied (last confirmed) selections
-    private NameSort _appliedNameSort = NameSort.None;
-    private ClanRanking _appliedRanking = ClanRanking.None;
-    private ClanActivity _appliedActivity = ClanActivity.None;
     private readonly HashSet<string> _appliedRoles = new(StringComparer.OrdinalIgnoreCase);
+    private readonly List<ClanRoleItemTemplate> _roleItems = new();
 
-
-    private NameSort[] _nameValues;
-    private ClanRanking[] _rankingValues;
-    private ClanActivity[] _activityValues;
-
-    private int _nameIndex;
-    private int _rankingIndex;
-    private int _activityIndex;
 
     private void Awake()
     {
@@ -90,18 +78,15 @@ public class ClanMembersFiltersPopup : MonoBehaviour
         SetupButtons();
     }
 
-    private void OnDisable()
-    {
-        // optional: hide popup root
-        if (_filtersPopup != null) _filtersPopup.SetActive(false);
-    }
-
     public void OpenForClan(string clanId)
     {
-        if (_filtersPopup != null) _filtersPopup.SetActive(true);
-        else gameObject.SetActive(true);
+        if (_filtersPopup != null)
+            _filtersPopup.SetActive(true);
+        else
+            gameObject.SetActive(true);
 
-        StartCoroutine(FetchRolesFromServer(clanId));
+        if (isActiveAndEnabled)
+            StartCoroutine(FetchRolesFromServer(clanId));
     }
 
     private IEnumerator FetchRolesFromServer(string clanId)
@@ -127,15 +112,43 @@ public class ClanMembersFiltersPopup : MonoBehaviour
         SetAvailableRoles(roles, _selectedRoles.ToList());
     }
 
+    private void InitializeAllRolesToggle()
+    {
+        if (_allRolesToggle == null) return;
+
+        _allRolesToggle.onValueChanged.RemoveAllListeners();
+
+        bool showAllRoles = _selectedRoles.Count == 0;
+        SetAllRolesVisuals(showAllRoles);
+
+        _allRolesToggle.onValueChanged.AddListener(isOn =>
+        {
+            if (!isOn)
+            {
+                SetAllRolesVisuals(false);
+                return;
+            }
+
+            _selectedRoles.Clear();
+            RefreshRoleToggleVisuals();
+            SetAllRolesVisuals(true);
+        });
+    }
+
+    private void RefreshRoleToggleVisuals()
+    {
+        foreach (var item in _roleItems)
+        {
+            if (item == null) continue;
+
+            item.SetSelectedWithoutNotify(false);
+        }
+    }
+
     private void InitializeEnumArrays()
     {
-        _nameValues = GetEnumValues<NameSort>();
-        _rankingValues = GetEnumValues<ClanRanking>();
-        _activityValues = GetEnumValues<ClanActivity>();
-
-        _nameIndex = FindEnumIndex(_nameValues, _nameSort);
-        _rankingIndex = FindEnumIndex(_rankingValues, _clanRanking);
-        _activityIndex = FindEnumIndex(_activityValues, _clanActivity);
+        _sortValues = GetEnumValues<MemberSort>();
+        _sortIndex = FindEnumIndex(_sortValues, _memberSort);
     }
 
     private T[] GetEnumValues<T>() where T : Enum
@@ -145,147 +158,111 @@ public class ClanMembersFiltersPopup : MonoBehaviour
 
     private int FindEnumIndex<T>(T[] values, T targetValue) where T : Enum
     {
+        if (values == null || values.Length == 0)
+            return 0;
+
         for (int i = 0; i < values.Length; i++)
+        {
             if (values[i].Equals(targetValue))
                 return i;
+        }
+
         return 0;
+    }
+
+    private void SetAllRolesVisuals(bool isOn)
+    {
+        if (_allRolesToggle != null)
+            _allRolesToggle.SetIsOnWithoutNotify(isOn);
+
+        if (_allRolesChecked != null)
+            _allRolesChecked.SetActive(isOn);
+
+        if (_allRolesUnchecked != null)
+            _allRolesUnchecked.SetActive(!isOn);
     }
 
     private void SetupButtons()
     {
         if (_confirmButton != null) _confirmButton.onClick.RemoveAllListeners();
         if (_cancelButton != null) _cancelButton.onClick.RemoveAllListeners();
+        if (_closeButton != null) _closeButton.onClick.RemoveAllListeners();
 
         if (_confirmButton != null)
             _confirmButton.onClick.AddListener(() =>
             {
                 CommitDraftToApplied();
                 UpdateFilters();
-                if (_filtersPopup != null) _filtersPopup.SetActive(false);
-                Closed?.Invoke();
+                Close();
             });
 
         if (_cancelButton != null)
-            _cancelButton.onClick.AddListener(() =>
-            {
-                LoadDraftFromApplied();
-                if (_filtersPopup != null) _filtersPopup.SetActive(false);
-                Closed?.Invoke();
-            });
+            _cancelButton.onClick.AddListener(CloseWithoutApplying);
+
+        if (_closeButton != null)
+            _closeButton.onClick.AddListener(CloseWithoutApplying);
+    }
+
+    public void CloseWithoutApplying()
+    {
+        LoadDraftFromApplied();
+        Close();
+    }
+
+    private void Close()
+    {
+        if (_filtersPopup != null)
+            _filtersPopup.SetActive(false);
+        else
+            gameObject.SetActive(false);
+
+        Closed?.Invoke();
     }
 
     private void InitSelectors()
     {
-        InitializeName();
-        InitializeRanking();
-        InitializeActivity();
+        InitializeSortDropdown();
+        InitializeAllRolesToggle();
     }
 
-    private void InitializeName()
+    private void InitializeSortDropdown()
     {
-        if (_nameText != null)
-            _nameText.text = GetNameSortText(_nameSort);
+        if (_sortDropdown == null) return;
 
-        if (_nameButtonNext != null) _nameButtonNext.onClick.RemoveAllListeners();
-        if (_nameButtonPrevious != null) _nameButtonPrevious.onClick.RemoveAllListeners();
+        _sortDropdown.onValueChanged.RemoveAllListeners();
+        _sortDropdown.ClearOptions();
 
-        if (_nameButtonNext != null)
+        List<string> options = _sortValues
+            .Select(GetMemberSortText)
+            .ToList();
+
+        _sortDropdown.AddOptions(options);
+
+        _sortIndex = FindEnumIndex(_sortValues, _memberSort);
+
+        _sortDropdown.SetValueWithoutNotify(_sortIndex);
+        _sortDropdown.RefreshShownValue();
+
+        _sortDropdown.onValueChanged.AddListener(index =>
         {
-            _nameButtonNext.onClick.AddListener(() =>
-            {
-                _nameIndex = GetNextIndex(_nameIndex, _nameValues.Length);
-                _nameSort = _nameValues[_nameIndex];
-                if (_nameText != null) _nameText.text = GetNameSortText(_nameSort);
-            });
-        }
+            if (index < 0 || index >= _sortValues.Length) return;
 
-        if (_nameButtonPrevious != null)
-        {
-            _nameButtonPrevious.onClick.AddListener(() =>
-            {
-                _nameIndex = GetPreviousIndex(_nameIndex, _nameValues.Length);
-                _nameSort = _nameValues[_nameIndex];
-                if (_nameText != null) _nameText.text = GetNameSortText(_nameSort);
-            });
-        }
+            _sortIndex = index;
+            _memberSort = _sortValues[_sortIndex];
+        });
     }
 
-    private void InitializeRanking()
-    {
-        if (_rankingText != null)
-            _rankingText.text = ClanDataTypeConverter.GetRankingText(_clanRanking);
-
-        if (_rankingButtonNext != null) _rankingButtonNext.onClick.RemoveAllListeners();
-        if (_rankingButtonPrevious != null) _rankingButtonPrevious.onClick.RemoveAllListeners();
-
-        if (_rankingButtonNext != null)
-        {
-            _rankingButtonNext.onClick.AddListener(() =>
-            {
-                _rankingIndex = GetNextIndex(_rankingIndex, _rankingValues.Length);
-                _clanRanking = _rankingValues[_rankingIndex];
-                if (_rankingText != null) _rankingText.text = ClanDataTypeConverter.GetRankingText(_clanRanking);
-            });
-        }
-
-        if (_rankingButtonPrevious != null)
-        {
-            _rankingButtonPrevious.onClick.AddListener(() =>
-            {
-                _rankingIndex = GetPreviousIndex(_rankingIndex, _rankingValues.Length);
-                _clanRanking = _rankingValues[_rankingIndex];
-                if (_rankingText != null) _rankingText.text = ClanDataTypeConverter.GetRankingText(_clanRanking);
-            });
-        }
-    }
-
-    private void InitializeActivity()
-    {
-        if (_activityText != null)
-            _activityText.text = ClanDataTypeConverter.GetActivityText(_clanActivity);
-
-        if (_activityButtonNext != null) _activityButtonNext.onClick.RemoveAllListeners();
-        if (_activityButtonPrevious != null) _activityButtonPrevious.onClick.RemoveAllListeners();
-
-        if (_activityButtonNext != null)
-        {
-            _activityButtonNext.onClick.AddListener(() =>
-            {
-                _activityIndex = GetNextIndex(_activityIndex, _activityValues.Length);
-                _clanActivity = _activityValues[_activityIndex];
-                if (_activityText != null) _activityText.text = ClanDataTypeConverter.GetActivityText(_clanActivity);
-            });
-        }
-
-        if (_activityButtonPrevious != null)
-        {
-            _activityButtonPrevious.onClick.AddListener(() =>
-            {
-                _activityIndex = GetPreviousIndex(_activityIndex, _activityValues.Length);
-                _clanActivity = _activityValues[_activityIndex];
-                if (_activityText != null) _activityText.text = ClanDataTypeConverter.GetActivityText(_clanActivity);
-            });
-        }
-    }
-
-    private int GetNextIndex(int currentIndex, int arrayLength)
-    {
-        return (currentIndex + 1) % arrayLength;
-    }
-
-    private int GetPreviousIndex(int currentIndex, int arrayLength)
-    {
-        return currentIndex == 0 ? arrayLength - 1 : currentIndex - 1;
-    }
-
-    private string GetNameSortText(NameSort sort)
+    private string GetMemberSortText(MemberSort sort)
     {
         return sort switch
         {
-            NameSort.None => "Oletus",
-            NameSort.Asc => "A\u2013\u00D6", // A–Ö
-            NameSort.Desc => "\u00D6\u2013A", // Ö–A
-            _ => "Oletus"
+            MemberSort.MostWins => "Eniten voittoja",
+            MemberSort.OldestMemberFirst => "Vanhin jäsen ensin",
+            MemberSort.NewestMemberFirst => "Uusin jäsen ensin",
+            MemberSort.LeastWins => "Vähiten voittoja",
+            MemberSort.NameAscending => "A - Ö",
+            MemberSort.NameDescending => "Ö - A",
+            _ => "Eniten voittoja"
         };
     }
 
@@ -293,9 +270,7 @@ public class ClanMembersFiltersPopup : MonoBehaviour
     {
         OnFiltersChanged?.Invoke(new MemberListFilters
         {
-            nameSort = _nameSort,
-            ranking = _clanRanking,
-            activity = _clanActivity,
+            memberSort = _memberSort,
             selectedRoles = _selectedRoles.ToList()
         });
     }
@@ -304,15 +279,20 @@ public class ClanMembersFiltersPopup : MonoBehaviour
     {
         if (_rolesContent == null || _roleItemPrefab == null) return;
 
+        _roleItems.Clear();
+
         for (int i = _rolesContent.childCount - 1; i >= 0; i--)
             Destroy(_rolesContent.GetChild(i).gameObject);
 
         _selectedRoles.Clear();
+
         if (preselected != null)
         {
             foreach (var r in preselected)
+            {
                 if (!string.IsNullOrWhiteSpace(r))
                     _selectedRoles.Add(r);
+            }
         }
 
         if (roles == null) return;
@@ -325,44 +305,66 @@ public class ClanMembersFiltersPopup : MonoBehaviour
             string rawName = role.name;
             string displayName = _roleCatalog != null ? _roleCatalog.GetDisplayName(rawName) : rawName;
             var icon = _roleCatalog != null ? _roleCatalog.GetIcon(rawName) : null;
-            if (icon == null) icon = _fallbackIcon;
+
+            if (icon == null)
+                icon = _fallbackIcon;
 
             var item = Instantiate(_roleItemPrefab, _rolesContent);
             item.gameObject.SetActive(true);
 
             bool isOn = _selectedRoles.Contains(rawName);
             item.Init(rawName, displayName, icon, isOn, OnRoleToggled);
+
+            _roleItems.Add(item);
         }
+
+        InitializeAllRolesToggle();
     }
 
     private void OnRoleToggled(string roleName, bool isOn)
     {
         if (string.IsNullOrWhiteSpace(roleName)) return;
 
-        if (isOn) _selectedRoles.Add(roleName);
-        else _selectedRoles.Remove(roleName);
+        if (isOn)
+        {
+            _selectedRoles.Add(roleName);
+            SetAllRolesVisuals(false);
+        }
+        else
+        {
+            _selectedRoles.Remove(roleName);
+
+            if (_selectedRoles.Count == 0)
+                SetAllRolesVisuals(true);
+        }
     }
 
     private void LoadDraftFromApplied()
     {
-        _nameSort = _appliedNameSort;
-        _clanRanking = _appliedRanking;
-        _clanActivity = _appliedActivity;
+        if (_sortValues == null || _sortValues.Length == 0)
+            InitializeEnumArrays();
+
+        _memberSort = _appliedMemberSort;
 
         _selectedRoles.Clear();
-        foreach (var r in _appliedRoles)
-            _selectedRoles.Add(r);
 
-        _nameIndex = FindEnumIndex(_nameValues, _nameSort);
-        _rankingIndex = FindEnumIndex(_rankingValues, _clanRanking);
-        _activityIndex = FindEnumIndex(_activityValues, _clanActivity);
+        foreach (var role in _appliedRoles)
+        {
+            _selectedRoles.Add(role);
+        }
+
+        _sortIndex = FindEnumIndex(_sortValues, _memberSort);
+
+        if (_sortDropdown != null)
+        {
+            _sortDropdown.SetValueWithoutNotify(_sortIndex);
+            _sortDropdown.RefreshShownValue();
+        }
     }
 
     private void CommitDraftToApplied()
     {
-        _appliedNameSort = _nameSort;
-        _appliedRanking = _clanRanking;
-        _appliedActivity = _clanActivity;
+        _appliedMemberSort = _memberSort;
 
         _appliedRoles.Clear();
         foreach (var r in _selectedRoles)
