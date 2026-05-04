@@ -350,17 +350,9 @@ namespace Battle.QSimulation.Player
                                                 playerClass
                                                 );
 
-                        // entity prototype — use pre-resolved Prototype from RuntimePlayer to avoid
-                        // calling View-layer code (BattleAltzoneLink) from Simulation, which breaks determinism.
-                        playerEntityPrototype = battleBaseCharacters[playerCharacterNumber].Prototype;
-                        if (playerEntityPrototype == default)
-                        {
-                            // Prototype was not pre-resolved (e.g. stale RuntimePlayer data).
-                            // Fall back to the View-layer delegate as a last resort.
-                            s_debugLogger.WarningFormat(f, "({0}) Character {1} has no pre-resolved Prototype, falling back to BattleAltzoneLink", playerSlot, playerCharacterId);
-                            playerEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(playerCharacterId);
-                        }
-                        if (playerEntityPrototype == default)
+                        // entity prototype
+                        playerEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(playerCharacterId);
+                        if (playerEntityPrototype == null)
                         {
                             const int FallbackId = 0;
 
@@ -526,8 +518,6 @@ namespace Battle.QSimulation.Player
                             RotationOffset        = FP._0,
 
                             CurrentDefence        = FP._0,
-                            MovementEnabled       = true,
-                            RotationEnabled       = !playerDataTemplate->DisableRotation,
 
                             HitboxShieldEntity    = playerHitboxShieldEntity,
                             HitboxCharacterEntity = playerHitboxCharacterEntity,
@@ -540,11 +530,12 @@ namespace Battle.QSimulation.Player
 #if DEBUG_PLAYER_STAT_OVERRIDE
                         s_debugLogger.Warning(f, "DEBUG_PLAYER_STAT_OVERRIDE enabled!");
 
+                        playerData.Stats.Defence        = FP.FromString("1.0");
                         playerData.Stats.Speed         = FP.FromString("20.0");
                         playerData.Stats.CharacterSize = FP.FromString("1.0");
                         playerData.Stats.Attack        = FP.FromString("1.0");
-                        playerData.Stats.Defence       = FP.FromString("1.0");
 
+                        s_debugLogger.WarningFormat("Using Defence {0} override", playerData.Stats.Defence);
                         s_debugLogger.WarningFormat("Using Speed {0} override", playerData.Stats.Speed);
                         s_debugLogger.WarningFormat("Using CharacterSize {0} override", playerData.Stats.CharacterSize);
                         s_debugLogger.WarningFormat("Using Attack {0} override", playerData.Stats.Attack);
@@ -553,12 +544,14 @@ namespace Battle.QSimulation.Player
                         playerData.CurrentDefence = playerData.Stats.Defence;
 
                         s_debugLogger.LogFormat(f, "({0}) Character number {1} stats:\n" +
-                                                "Speed:         {2}\n" +
-                                                "CharacterSize: {3}\n" +
-                                                "Attack:        {4}\n" +
-                                                "Defence:       {5}",
+                                                "Defence:       {2}\n" +
+                                                "Speed:         {3}\n" +
+                                                "CharacterSize: {4}\n" +
+                                                "Attack:        {5}\n" +
+                                                "Defence:       {6}",
                                                 playerSlot,
                                                 playerCharacterNumber,
+                                                playerData.Stats.Defence,
                                                 playerData.Stats.Speed,
                                                 playerData.Stats.CharacterSize,
                                                 playerData.Stats.Attack,
@@ -589,7 +582,7 @@ namespace Battle.QSimulation.Player
                         playerCharacterEntityArray[playerCharacterNumber] = playerEntity;
 
                         // set playerManagerData for player character
-                        playerHandle.SetCharacterState(playerCharacterNumber, BattlePlayerCharacterState.Alive);
+                        playerHandle.SetCharacterState(playerCharacterNumber, playerData.CurrentDefence > 0 ? BattlePlayerCharacterState.Alive : BattlePlayerCharacterState.Dead);
                     }
                 }
 
@@ -1262,6 +1255,7 @@ namespace Battle.QSimulation.Player
 
             BattleDebugOverlayLink.SetEntries(playerData->Slot, s_debugOverlayStats, new object[]
             {
+                playerData->Stats.Defence,
                 playerData->Stats.Speed,
                 playerData->Stats.CharacterSize,
                 playerData->Stats.Attack,
