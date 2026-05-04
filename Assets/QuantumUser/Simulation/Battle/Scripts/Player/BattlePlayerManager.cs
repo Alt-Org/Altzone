@@ -540,6 +540,7 @@ namespace Battle.QSimulation.Player
                         s_debugLogger.WarningFormat("Using Speed {0} override", playerData.Stats.Speed);
                         s_debugLogger.WarningFormat("Using CharacterSize {0} override", playerData.Stats.CharacterSize);
                         s_debugLogger.WarningFormat("Using Attack {0} override", playerData.Stats.Attack);
+                        s_debugLogger.WarningFormat("Using Defence {0} override", playerData.Stats.Defence);
 #endif
                         playerData.CurrentDefence = playerData.Stats.Defence;
 
@@ -1253,7 +1254,6 @@ namespace Battle.QSimulation.Player
 
             BattleDebugOverlayLink.SetEntries(playerData->Slot, s_debugOverlayStats, new object[]
             {
-                playerData->Stats.Defence,
                 playerData->Stats.Speed,
                 playerData->Stats.CharacterSize,
                 playerData->Stats.Attack,
