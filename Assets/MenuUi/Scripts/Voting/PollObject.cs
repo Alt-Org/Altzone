@@ -30,6 +30,11 @@ public class PollObject : MonoBehaviour
     [SerializeField] private Image Background;
     [SerializeField] private Image InfoBackground;
 
+    [Header("TradeTag")]
+    [SerializeField] private Image TradeBackground;
+    [SerializeField] private TextMeshProUGUI TradeText;
+    [SerializeField] private TextMeshProUGUI Price;
+
     [Header("Buttons")]
     [SerializeField] private Button ClockButton;
     [SerializeField] private GameObject VoteYes;
@@ -53,7 +58,7 @@ public class PollObject : MonoBehaviour
 
     private void Start()
     {
-        ClockButton.onClick.AddListener(OnClockButtonClicked);
+        // ClockButton.onClick.AddListener(OnClockButtonClicked);
 
         if (pollData != null)
         {
@@ -210,19 +215,7 @@ public class PollObject : MonoBehaviour
             //}
         }
 
-
-
-
-
-
-
-        // Handles the Poll Header
-        if (pollData is FurniturePollData)
-        {
-            if (PollTypeText != null)
-                PollTypeText.text = "Furniture Poll";
-        }
-        else if (pollData is ClanRolePollData)
+        if (pollData is ClanRolePollData)
         {
             if (PollTypeText != null)
                 PollTypeText.text = "Clan Poll";
@@ -237,7 +230,20 @@ public class PollObject : MonoBehaviour
         if (pollData is FurniturePollData furniturePollData)
         {
             Image.gameObject.SetActive(true);
+            PollTypeText.text = furniturePollData.Furniture.Name;
 
+            if (furniturePollData.FurniturePollType is FurniturePollType.Buying)
+            {
+                TradeBackground.color = Color.green;
+                TradeText.text = "OSTO";
+                Price.text = furniturePollData.Furniture.Value.ToString();
+            }
+            else
+            {
+                TradeBackground.color = Color.red;
+                TradeText.text = "MYYNTI";
+                Price.text = furniturePollData.Furniture.Value.ToString();
+            }
 
 
             Sprite ribbonSprite = null;
@@ -260,9 +266,13 @@ public class PollObject : MonoBehaviour
                 string furnitureName = furniturePollData.Furniture.Name ?? "Unknown Item";
                 string priceText = furniturePollData.Furniture.Value.ToString();
                 if (furniturePollData.FurniturePollType is FurniturePollType.Buying)
+                {
                     PollDescriptionText.text = $"Buying {furnitureName} for {priceText}";
+                }
                 else if (furniturePollData.FurniturePollType is FurniturePollType.Selling)
+                {
                     PollDescriptionText.text = $"Suggesting {furnitureName} to be sold for {priceText}";
+                }
             }
         }
 
