@@ -104,7 +104,7 @@ public class MessageObjectHandler : MonoBehaviour
 
         foreach (var reactionData in message.Reactions)
         {
-            ReactionChatCall(reactionData);
+            ReactionChatCall(reactionData, message);
             _chatShowUsersPopUpData.AddUsersReaction(message, reactionData);
         }
     }
@@ -157,7 +157,7 @@ public class MessageObjectHandler : MonoBehaviour
     }
 
     //Refreshes the reactions if there is any
-    public void ReactionChatCall(ServerReactions EmojiId)
+    public void ReactionChatCall(ServerReactions EmojiId, ChatMessage message)
     {
         //Gets the set data we need to get to import saved reactions
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
@@ -166,7 +166,7 @@ public class MessageObjectHandler : MonoBehaviour
         foreach (GameObject ReactionPanel in ReactionsPanel)
         {
                 objectAmount++;
-                ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, true, ReactionPanel, objectAmount);
+                ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, true, ReactionPanel, objectAmount, message);
         }
         
     }
