@@ -3685,9 +3685,23 @@ namespace Altzone.Scripts.Lobby
                 bool teammateFound = TryGetQueueLocalTeammateUserId(localUserId, out resolvedPremadeTeammateUserId);
                 if (!teammateFound || string.IsNullOrEmpty(resolvedPremadeTeammateUserId))
                 {
-                    resolvedPremadeTeammateUserId = !string.IsNullOrEmpty(_premadeTeammateUserId)
-                        ? _premadeTeammateUserId
-                        : expectedUsers.FirstOrDefault(id => !string.IsNullOrEmpty(id));
+                    if (!string.IsNullOrEmpty(_premadeTeammateUserId)
+                        && PhotonRealtimeClient.CurrentRoom?.Players?.Values.Any(p => p != null && p.UserId == _premadeTeammateUserId) == true)
+                    {
+                        resolvedPremadeTeammateUserId = _premadeTeammateUserId;
+                    }
+                    else
+                    {
+                        string[] visibleTeammates = expectedUsers
+                            .Where(id => !string.IsNullOrEmpty(id))
+                            .Distinct(StringComparer.Ordinal)
+                            .ToArray();
+
+                        if (visibleTeammates.Length == 1)
+                        {
+                            resolvedPremadeTeammateUserId = visibleTeammates[0];
+                        }
+                    }
                 }
 
                 _premadeTeammateUserId = resolvedPremadeTeammateUserId ?? string.Empty;
@@ -4199,7 +4213,6 @@ namespace Altzone.Scripts.Lobby
             catch { }
 
             bool IsBotValue(string value) => string.Equals(value, "Bot", StringComparison.Ordinal);
-            bool IsRealPlayerValue(string value) => !string.IsNullOrEmpty(value) && !IsBotValue(value);
 
             int FindPosition(Dictionary<int, string> map, string userId)
             {
@@ -8095,6 +8108,23 @@ namespace Altzone.Scripts.Lobby
                         {
                             string localId = PhotonRealtimeClient.LocalPlayer?.UserId;
                             targetedByExpectedUsers = !string.IsNullOrEmpty(localId) && expectedUsers.Contains(localId);
+                        }
+
+                        if (!targetedByExpectedUsers)
+                        {
+                            Room currentRoom = PhotonRealtimeClient.CurrentRoom;
+                            string localId = PhotonRealtimeClient.LocalPlayer?.UserId;
+                            if (currentRoom != null
+                                && currentRoom.CustomProperties != null
+                                && currentRoom.GetCustomProperty<bool>(PhotonBattleRoom.PremadeModeKey, false)
+                                && !string.IsNullOrEmpty(localId)
+                                && !string.IsNullOrEmpty(leaderUserId))
+                            {
+                                string premadeUserId1 = currentRoom.GetCustomProperty<string>(PhotonBattleRoom.PremadeUserId1Key, string.Empty);
+                                string premadeUserId2 = currentRoom.GetCustomProperty<string>(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
+                                targetedByExpectedUsers = (string.Equals(localId, premadeUserId1, StringComparison.Ordinal) && string.Equals(leaderUserId, premadeUserId2, StringComparison.Ordinal))
+                                    || (string.Equals(localId, premadeUserId2, StringComparison.Ordinal) && string.Equals(leaderUserId, premadeUserId1, StringComparison.Ordinal));
+                            }
                         }
                     }
                     catch { }
