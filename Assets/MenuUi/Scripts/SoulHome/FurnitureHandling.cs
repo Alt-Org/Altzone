@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using UnityEngine.Rendering;
-using Debug = Prg.Debug;
 
 namespace MenuUI.Scripts.SoulHome
 {
