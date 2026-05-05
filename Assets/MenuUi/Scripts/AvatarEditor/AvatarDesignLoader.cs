@@ -181,7 +181,6 @@ public class AvatarDesignLoader : AltMonoBehaviour
             return;
         }
         AvatarData defaultAvatarData = new(defaultAvatars);
-        defaultAvatarData.Color = ColorUtility.ToHtmlStringRGB(AvatarReference.Instance.GetAlternativeColour((CharacterClassType)((playerData.SelectedCharacterId / 100) * 100)));
 
         if (avatarData != null)
         {
@@ -194,9 +193,17 @@ public class AvatarDesignLoader : AltMonoBehaviour
                 replacedPieces.Append($"{piece}:{oldId} to {newId}  ");
             }
 
-            if (!ColorUtility.TryParseHtmlString(avatarData.Color, out _)) playerData.AvatarData.Color = ColorUtility.ToHtmlStringRGB(AvatarReference.Instance.GetAlternativeColour((CharacterClassType)((playerData.SelectedCharacterId / 100) * 100)));
-
             var replacedColors = new System.Text.StringBuilder();
+            bool skinColourReplaced = false;
+            if (!ColorUtility.TryParseHtmlString(avatarData.Color, out _))
+            {
+                var oldColor = playerData.AvatarData.Color;
+                playerData.AvatarData.Color = defaultAvatarData.Color;
+                var newColor = playerData.AvatarData.Color;
+                replacedColors.Append($"Skin Colour:{oldColor} to {newColor}  ");
+                skinColourReplaced = true;
+            }
+
             foreach (AvatarPiece piece in invalidColors)
             {
                 var oldcolor = playerData.AvatarData?.GetPieceColor(piece);
@@ -204,7 +211,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
                 var newColor = playerData.AvatarData?.GetPieceColor(piece);
                 replacedColors.Append($"{piece}:{oldcolor} to {newColor}  ");
             }
-            Debug.LogWarning($"Player {name} - replaced {invalidPieces.Count} piece(s): {replacedPieces} and {invalidColors.Count} color(s): {replacedColors}");
+            Debug.LogWarning($"Player {name} - replaced {invalidPieces.Count} piece(s): {replacedPieces} and {invalidColors.Count + (skinColourReplaced?1:0)} color(s): {replacedColors}");
         }
         else
         {

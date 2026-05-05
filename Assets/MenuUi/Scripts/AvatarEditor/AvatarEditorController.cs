@@ -156,7 +156,6 @@ namespace MenuUi.Scripts.AvatarEditor
             {
                 Debug.LogError("AvatarData is null! Using default data.");
                 _playerAvatar = new(AvatarReference.Instance.GetDefaultAvatar((CharacterClassType)((_currentPlayerData.SelectedCharacterId/100)*100)));
-                _playerAvatar.SkinColor = ColorUtility.ToHtmlStringRGB(AvatarReference.Instance.GetAlternativeColour((CharacterClassType)((_currentPlayerData.SelectedCharacterId / 100) * 100)));
             }
             else
             {
@@ -171,7 +170,6 @@ namespace MenuUi.Scripts.AvatarEditor
         private void SetDefaultAvatar()
         {
             _playerAvatar = new(AvatarReference.Instance.GetDefaultAvatar((CharacterClassType)((_currentPlayerData.SelectedCharacterId / 100) * 100)));
-            _playerAvatar.SkinColor = ColorUtility.ToHtmlStringRGB(AvatarReference.Instance.GetAlternativeColour((CharacterClassType)((_currentPlayerData.SelectedCharacterId / 100) * 100)));
             _featureSetter.SetLoadedFeatures(_playerAvatar);
         }
 

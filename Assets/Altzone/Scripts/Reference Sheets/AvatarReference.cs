@@ -209,14 +209,14 @@ namespace Altzone.Scripts.ReferenceSheets
         {
             return classType switch
             {
-                CharacterClassType.Desensitizer => _iraAvatar.Default,
-                CharacterClassType.Trickster => _avaritiaAvatar.Default,
-                CharacterClassType.Obedient => _invidiaAvatar.Default,
-                CharacterClassType.Projector => _luxuriaAvatar.Default,
-                CharacterClassType.Retroflector => _gulaAvatar.Default,
-                CharacterClassType.Confluent => _acediaAvatar.Default,
-                CharacterClassType.Intellectualizer => _superbiaAvatar.Default,
-                _ => _superbiaAvatar.Default,
+                CharacterClassType.Desensitizer => new AvatarDefault(_iraAvatar.Default, _iraAvatar.SkinColor, GetName(CharacterClassType.Desensitizer)),
+                CharacterClassType.Trickster => new AvatarDefault(_avaritiaAvatar.Default, _avaritiaAvatar.SkinColor, GetName(CharacterClassType.Trickster)),
+                CharacterClassType.Obedient => new AvatarDefault(_invidiaAvatar.Default, _invidiaAvatar.SkinColor, GetName(CharacterClassType.Obedient)),
+                CharacterClassType.Projector => new AvatarDefault(_luxuriaAvatar.Default, _luxuriaAvatar.SkinColor, GetName(CharacterClassType.Projector)),
+                CharacterClassType.Retroflector => new AvatarDefault(_gulaAvatar.Default, _gulaAvatar.SkinColor, GetName(CharacterClassType.Retroflector)),
+                CharacterClassType.Confluent => new AvatarDefault(_acediaAvatar.Default, _acediaAvatar.SkinColor, GetName(CharacterClassType.Confluent)),
+                CharacterClassType.Intellectualizer => new AvatarDefault(_superbiaAvatar.Default, _superbiaAvatar.SkinColor, GetName(CharacterClassType.Intellectualizer)),
+                _ => new AvatarDefault(_superbiaAvatar.Default, _superbiaAvatar.SkinColor, GetName(CharacterClassType.Intellectualizer)),
             };
         }
     }
@@ -234,7 +234,7 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private string _descFinnish;
         [SerializeField] private string _descEnglish;
         [Header("Avatar Defaults")]
-        [SerializeField] private AvatarDefault _default;
+        [SerializeField] private AvatarDefaultParts _default;
 
         public string NameFinnish { get => _nameFinnish; }
         public string NameEnglish { get => _nameEnglish; }
@@ -245,6 +245,63 @@ namespace Altzone.Scripts.ReferenceSheets
         public Sprite Character { get => _character; }
         public string DescFinnish { get => _descFinnish; }
         public string DescEnglish { get => _descEnglish; }
-        public AvatarDefault Default { get => _default; }
+        public AvatarDefaultParts Default { get => _default; }
+    }
+
+    public class AvatarDefault
+    {
+        private string _name = "";
+        private Color _skinColour = Color.white;
+        private string _hairId = "";
+        private Color _hairColour = Color.white;
+        private string _eyesId = "";
+        private Color _eyesColour = Color.white;
+        private string _noseId = "";
+        private Color _noseColour = Color.white;
+        private string _mouthId = "";
+        private Color _mouthColour = Color.white;
+        private string _bodyId = "";
+        private Color _bodyColour = Color.white;
+        private string _handsId = "";
+        private Color _handsColour = Color.white;
+        private string _feetId = "";
+        private Color _feetColour = Color.white;
+
+        public AvatarDefault(AvatarDefaultParts defaultParts, Color skinColour, string name)
+        {
+            _name = name;
+            _skinColour = skinColour;
+            _hairId = defaultParts.HairId;
+            _hairColour = defaultParts.HairColour;
+            _eyesId = defaultParts.EyesId;
+            _eyesColour = defaultParts.EyesColour;
+            _noseId = defaultParts.NoseId;
+            _noseColour = defaultParts.NoseColour;
+            _mouthId = defaultParts.MouthId;
+            _mouthColour = defaultParts.MouthColour;
+            _bodyId = defaultParts.BodyId;
+            _bodyColour = defaultParts.BodyColour;
+            _handsId = defaultParts.HandsId;
+            _handsColour = defaultParts.HandsColour;
+            _feetId = defaultParts.FeetId;
+            _feetColour= defaultParts.FeetColour;
+        }
+
+        public string Name { get => _name; }
+        public Color SkinColour { get => _skinColour; }
+        public string HairId { get => _hairId; }
+        public Color HairColour { get => _hairColour; }
+        public string EyesId { get => _eyesId; }
+        public Color EyesColour { get => _eyesColour; }
+        public string NoseId { get => _noseId; }
+        public Color NoseColour { get => _noseColour; }
+        public string MouthId { get => _mouthId; }
+        public Color MouthColour { get => _mouthColour; }
+        public string BodyId { get => _bodyId; }
+        public Color BodyColour { get => _bodyColour; }
+        public string HandsId { get => _handsId; }
+        public Color HandsColour { get => _handsColour; }
+        public string FeetId { get => _feetId; }
+        public Color FeetColour { get => _feetColour; }
     }
 }
