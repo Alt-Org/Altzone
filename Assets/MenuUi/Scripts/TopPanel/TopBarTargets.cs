@@ -30,6 +30,14 @@ namespace MenuUI.Scripts.TopPanel
         [SerializeField] private TopBarDefs.TopBarItem _clanItem = TopBarDefs.TopBarItem.ClanTile;
         [SerializeField] private TopBarDefs.TopBarItem _leaderboardItem = TopBarDefs.TopBarItem.Leaderboard;
 
+        [SerializeField] private Transform _topBarContent;
+        [SerializeField] private Transform _clanPanelRoot;
+        [SerializeField] private Transform _clanPanel;
+
+        [SerializeField] private Transform _clanHeart;
+        [SerializeField] private Transform _textContainer;
+        [SerializeField] private Transform _coinsRow;
+
         private const bool DebugOn = false;
 
         private void OnEnable()
@@ -266,7 +274,7 @@ namespace MenuUI.Scripts.TopPanel
 
         public void ApplyOrderFromSettings()
         {
-            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ApllyOrderFromSettings()");
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ApplyOrderFromSettings()");
 
             RectTransform parentRT;
             if (!IsValid(out parentRT)) return;
@@ -314,6 +322,28 @@ namespace MenuUI.Scripts.TopPanel
             }
 
             ApplyOrderWithSpacer(parentRT, orderedVisible);
+        }
+
+        private void ApplyClanPanelMode(bool clanPanelOn)
+        {
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ApplyClanPanelMode()");
+        }
+
+        private void MoveUnderClanPanel(Transform item)
+        {
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : MoveUnderClanPanel()");
+        }
+
+        private void MoveToTopPanel(Transform item)
+        {
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : MoveToTopPanel()");
+        }
+
+        private bool IsVisible(TopBarDefs.TopBarItem item)
+        {
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : IsVisible()");
+
+            return false;
         }
     }
 }
