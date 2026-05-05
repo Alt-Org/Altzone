@@ -88,6 +88,8 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private Button _clanLockButton;
     [SerializeField] private Button _passwordPopupContinueButton;
 
+    [SerializeField] private ClanAddFriendPopupController _addFriendPopup;
+
     [Header("Leave clan hold popup")]
     [SerializeField] private GameObject _leaveClanHoldPopup;
     [SerializeField] private HoldToLeaveClanButton _holdLeaveClanButton;
@@ -304,6 +306,7 @@ public class ClanMainView : MonoBehaviour
         }
 
         WireMembersFilterButton();
+        ForceCloseMembersFiltersPopup();
     }
 
     private void WireMembersFilterButton()
@@ -1204,6 +1207,51 @@ public class ClanMainView : MonoBehaviour
         if (_popupOverlayButton != null)
         {
             _popupOverlayButton.onClick.RemoveListener(CloseCarbonEmissionPopup);
+        }
+
+        ShowOverlay(false);
+    }
+
+    private void ForceCloseMembersFiltersPopup()
+    {
+        if (_membersFiltersPopup != null)
+        {
+            _membersFiltersPopup.Hide();
+        }
+
+        if (_popupOverlayButton != null)
+        {
+            _popupOverlayButton.onClick.RemoveListener(CloseMembersFiltersPopup);
+        }
+
+        ShowOverlay(false);
+    }
+
+    public void OpenAddFriendPopup(ClanMember member)
+    {
+        if (_addFriendPopup == null) return;
+
+        ShowOverlay(true);
+
+        _addFriendPopup.Show(member);
+
+        if (_popupOverlayButton != null)
+        {
+            _popupOverlayButton.onClick.RemoveListener(CloseAddFriendPopup);
+            _popupOverlayButton.onClick.AddListener(CloseAddFriendPopup);
+        }
+    }
+
+    private void CloseAddFriendPopup()
+    {
+        if (_addFriendPopup != null)
+        {
+            _addFriendPopup.Hide();
+        }
+
+        if (_popupOverlayButton != null)
+        {
+            _popupOverlayButton.onClick.RemoveListener(CloseAddFriendPopup);
         }
 
         ShowOverlay(false);

@@ -6,16 +6,22 @@ using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Clan;
+using TMPro;
 
 public class ClanMembersPageController : MonoBehaviour
 {
     [SerializeField] private Transform _membersContent;
     [SerializeField] private ClanMemberPlaque _memberPlaquePrefab;
     [SerializeField] private ClanMemberPopupController _memberPopup;
+    [SerializeField] private TMP_InputField _memberSearchInput;
+    [SerializeField] private ClanAddFriendPopupController _addFriendPopup;
 
     [SerializeField] private ClanRoleSelectPopupController _roleSelectPopup;
     [SerializeField] private Canvas _canvas;
 
+    [SerializeField] private ClanMainView _clanMainView;
+
+    private string _memberSearchText = string.Empty;
     private string _viewedClanId;
     private HashSet<string> _viewAdminSet;
 
@@ -30,10 +36,31 @@ public class ClanMembersPageController : MonoBehaviour
 
     private void OnEnable()
     {
-        if(!string.IsNullOrEmpty(_viewedClanId))
+        _memberSearchText = string.Empty;
+
+        if (_memberSearchInput != null)
+        {
+            _memberSearchInput.SetTextWithoutNotify(string.Empty);
+        }
+
+        if (_memberSearchInput != null)
+        {
+            _memberSearchInput.onValueChanged.RemoveListener(OnMemberSearchChanged);
+            _memberSearchInput.onValueChanged.AddListener(OnMemberSearchChanged);
+        }
+
+        if (!string.IsNullOrEmpty(_viewedClanId))
         {
             Rebuild();
-        }     
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (_memberSearchInput != null)
+        {
+            _memberSearchInput.onValueChanged.RemoveListener(OnMemberSearchChanged);
+        }
     }
 
     private void Rebuild(bool forceFetch = false)
@@ -108,6 +135,15 @@ public class ClanMembersPageController : MonoBehaviour
             rowsQuery = rowsQuery.Where(r => _roleFilterSet.Contains(r.RoleLabel));
         }
 
+        if (!string.IsNullOrWhiteSpace(_memberSearchText))
+        {
+            string search = _memberSearchText.Trim();
+
+            rowsQuery = rowsQuery.Where(r =>
+                !string.IsNullOrEmpty(r.PlayerName) &&
+                r.PlayerName.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0);
+        }
+
         List<MemberRow> rows;
         switch (_memberSort)
         {
@@ -169,6 +205,10 @@ public class ClanMembersPageController : MonoBehaviour
             bool isOwnClan = string.IsNullOrEmpty(_viewedClanId)
              || (ServerManager.Instance.Clan != null && _viewedClanId == ServerManager.Instance.Clan._id);
 
+            bool isCurrentPlayer = IsCurrentPlayerMember(member);
+
+            plaque.SetAddFriendButtonVisible(!isCurrentPlayer);
+
             plaque.SetVoteInteractable(isOwnClan);
 
             plaque.BindVote(() =>
@@ -183,6 +223,18 @@ public class ClanMembersPageController : MonoBehaviour
                 _roleSelectPopup.ShowAnchored(member, roles, anchor, _canvas);
             });
 
+            plaque.BindAddFriend(() =>
+            {
+                if (!isCurrentPlayer)
+                {
+                    plaque.BindAddFriend(() =>
+                    {
+                        if (_clanMainView == null) return;
+
+                        _clanMainView.OpenAddFriendPopup(member);
+                    });
+                }
+            });
 
             plaque.gameObject.SetActive(true);
 
@@ -222,6 +274,12 @@ public class ClanMembersPageController : MonoBehaviour
         }
 
         _rebuildRoutine = null;
+    }
+
+    private void OnMemberSearchChanged(string searchText)
+    {
+        _memberSearchText = searchText ?? string.Empty;
+        Rebuild(forceFetch: false);
     }
 
     private static int GetMemberWins(ClanMember member)
@@ -315,6 +373,22 @@ public class ClanMembersPageController : MonoBehaviour
             Wins = wins;
             JoinedAt = joinedAt;
         }
+    }
+
+    private static bool IsCurrentPlayerMember(ClanMember member)
+    {
+        if (member == null || ServerManager.Instance == null || ServerManager.Instance.Player == null)
+            return false;
+
+        var currentPlayer = ServerManager.Instance.Player;
+
+        if (!string.IsNullOrEmpty(member.Id) && !string.IsNullOrEmpty(currentPlayer._id))
+            return member.Id == currentPlayer._id;
+
+        if (!string.IsNullOrEmpty(member.Name) && !string.IsNullOrEmpty(currentPlayer.name))
+            return string.Equals(member.Name, currentPlayer.name, StringComparison.OrdinalIgnoreCase);
+
+        return false;
     }
 }
 

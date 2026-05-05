@@ -29,6 +29,8 @@ public class ClanMembersFiltersPopup : MonoBehaviour
 
     [Header("Sort Dropdown")]
     [SerializeField] private TMP_Dropdown _sortDropdown;
+    [SerializeField] private RectTransform _sortDropdownArrow;
+    [SerializeField] private DropdownOpenCloseWatcher _sortDropdownWatcher;
 
     [Header("Roles selection (multi-select list)")]
     [SerializeField] private Transform _rolesContent;
@@ -76,6 +78,16 @@ public class ClanMembersFiltersPopup : MonoBehaviour
         LoadDraftFromApplied();
         InitSelectors();
         SetupButtons();
+    }
+
+    public void Hide()
+    {
+        if (_filtersPopup != null)
+            _filtersPopup.SetActive(false);
+        else
+            gameObject.SetActive(false);
+
+        Closed?.Invoke();
     }
 
     public void OpenForClan(string clanId)
@@ -229,6 +241,11 @@ public class ClanMembersFiltersPopup : MonoBehaviour
     {
         if (_sortDropdown == null) return;
 
+        if (_sortDropdownWatcher != null)
+        {
+            _sortDropdownWatcher.OnDropdownOpenChanged = SetSortDropdownArrow;
+        }
+
         _sortDropdown.onValueChanged.RemoveAllListeners();
         _sortDropdown.ClearOptions();
 
@@ -243,13 +260,30 @@ public class ClanMembersFiltersPopup : MonoBehaviour
         _sortDropdown.SetValueWithoutNotify(_sortIndex);
         _sortDropdown.RefreshShownValue();
 
+        SetSortDropdownArrow(false);
+
         _sortDropdown.onValueChanged.AddListener(index =>
         {
             if (index < 0 || index >= _sortValues.Length) return;
 
+            if (_sortDropdownWatcher != null)
+                _sortDropdownWatcher.Close();
+            else
+                SetSortDropdownArrow(false);
+
             _sortIndex = index;
             _memberSort = _sortValues[_sortIndex];
+
+            SetSortDropdownArrow(false);
         });
+    }
+
+    private void SetSortDropdownArrow(bool isOpen)
+    {
+        if (_sortDropdownArrow == null) return;
+
+        // Close = down, Open = up
+        _sortDropdownArrow.localRotation = Quaternion.Euler(0f, 0f, isOpen ? 90f : -90f);
     }
 
     private string GetMemberSortText(MemberSort sort)

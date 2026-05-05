@@ -9,6 +9,7 @@ public class ClanMemberPlaque : MonoBehaviour
     [SerializeField] private TMP_Text _roleText;
     [SerializeField] private GameObject _rosetteObject;
     [SerializeField] private Button _voteButton;
+    [SerializeField] private Button _addFriendButton;
 
     public RectTransform VoteButtonRect => _voteButton != null ? _voteButton.GetComponent<RectTransform>() : null;
 
@@ -80,6 +81,29 @@ public class ClanMemberPlaque : MonoBehaviour
         if (_voteButton == null) return;
         _voteButton.onClick.RemoveAllListeners();
         if (onVote != null) _voteButton.onClick.AddListener(() => onVote());
+    }
+
+    public void BindAddFriend(System.Action onClick)
+    {
+        if (_addFriendButton == null) return;
+
+        _addFriendButton.onClick.RemoveAllListeners();
+        _addFriendButton.onClick.AddListener(() => onClick?.Invoke());
+    }
+
+    public void SetAddFriendInteractable(bool interactable)
+    {
+        if (_addFriendButton == null) return;
+
+        _addFriendButton.interactable = interactable;
+        _addFriendButton.gameObject.SetActive(interactable);
+    }
+
+    public void SetAddFriendButtonVisible(bool visible)
+    {
+        if (_addFriendButton == null) return;
+
+        _addFriendButton.gameObject.SetActive(visible);
     }
 }
 
