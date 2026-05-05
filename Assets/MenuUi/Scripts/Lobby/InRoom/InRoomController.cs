@@ -37,6 +37,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private Coroutine _inviteLifecycleHolder;
         private const float InviteLifecycleTickSeconds = 1f;
         private const long InviteExpirationSeconds = 60;
+        private Coroutine _customRoomTimeoutHolder;
+        private const float CustomRoomTimeoutSeconds = 60f;
 
         private void Awake()
         {
@@ -59,6 +61,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 case GameType.Custom:
                     if (_title != null) StartCoroutine(SetRoomTitle());
                     if (_conflictText != null) StartCoroutine(CycleConflicts());
+                    StartCustomRoomTimeoutMonitoring();
                     break;
                 case GameType.FriendLobby:
                     if (_title != null) _title.text = "Friend Lobby";
@@ -88,6 +91,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
             {
                 StopInviteLifecycleMonitoring();
             }
+
+            if (InLobbyController.SelectedGameType != GameType.Custom)
+            {
+                StopCustomRoomTimeoutMonitoring();
+            }
         }
 
         private void OnDestroy()
@@ -96,6 +104,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.onClick.RemoveListener(OnInviteOnlinePlayerButtonPressed);
             if (_inviteSelectorPanel != null) _inviteSelectorPanel.HideSilently();
             StopInviteLifecycleMonitoring();
+            StopCustomRoomTimeoutMonitoring();
             _startGameButton.onClick.RemoveAllListeners();
             _backButton.onClick.RemoveAllListeners();
         }
@@ -104,6 +113,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             if (_inviteSelectorPanel != null) _inviteSelectorPanel.HideSilently();
             StopInviteLifecycleMonitoring();
+            StopCustomRoomTimeoutMonitoring();
         }
 
         private void SetPlayerAsGuest()
@@ -463,6 +473,85 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
             StopCoroutine(_inviteLifecycleHolder);
             _inviteLifecycleHolder = null;
+        }
+
+        private void StartCustomRoomTimeoutMonitoring()
+        {
+            if (_customRoomTimeoutHolder != null)
+            {
+                return;
+            }
+
+            _customRoomTimeoutHolder = StartCoroutine(CustomRoomTimeoutRoutine());
+        }
+
+        private void StopCustomRoomTimeoutMonitoring()
+        {
+            if (_customRoomTimeoutHolder == null)
+            {
+                return;
+            }
+
+            StopCoroutine(_customRoomTimeoutHolder);
+            _customRoomTimeoutHolder = null;
+        }
+
+        private IEnumerator CustomRoomTimeoutRoutine()
+        {
+            try
+            {
+                yield return new WaitUntil(() => PhotonRealtimeClient.InRoom || InLobbyController.SelectedGameType != GameType.Custom);
+
+                if (InLobbyController.SelectedGameType != GameType.Custom || !PhotonRealtimeClient.InRoom || PhotonRealtimeClient.CurrentRoom == null)
+                {
+                    yield break;
+                }
+
+                bool isCustomRoom = false;
+                try
+                {
+                    isCustomRoom = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey) == (int)GameType.Custom;
+                }
+                catch { }
+
+                if (!isCustomRoom)
+                {
+                    yield break;
+                }
+
+                yield return new WaitForSecondsRealtime(CustomRoomTimeoutSeconds);
+
+                if (InLobbyController.SelectedGameType != GameType.Custom || !PhotonRealtimeClient.InRoom || PhotonRealtimeClient.CurrentRoom == null)
+                {
+                    yield break;
+                }
+
+                if (_startGameButton != null && !_startGameButton.interactable)
+                {
+                    yield break;
+                }
+
+                try
+                {
+                    isCustomRoom = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey) == (int)GameType.Custom;
+                }
+                catch
+                {
+                    isCustomRoom = false;
+                }
+
+                if (!isCustomRoom)
+                {
+                    yield break;
+                }
+
+                Debug.Log($"Custom room timeout reached after {CustomRoomTimeoutSeconds}s, leaving room.");
+                GoBack();
+            }
+            finally
+            {
+                _customRoomTimeoutHolder = null;
+            }
         }
 
         private IEnumerator InviteLifecycleRoutine()
