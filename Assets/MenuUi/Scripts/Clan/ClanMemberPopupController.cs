@@ -9,6 +9,7 @@ using MenuUi.Scripts.Window.ScriptableObjects;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts;
 using Altzone.Scripts.Window;
+using System;
 
 public class ClanMemberPopupController : MonoBehaviour
 {
@@ -25,25 +26,23 @@ public class ClanMemberPopupController : MonoBehaviour
 
     [Header("Right info")]
     [SerializeField] private TMP_Text _rolesText;           
-    [SerializeField] private TMP_Text _mostPlayedText;      
-    [SerializeField] private TMP_Text _winsText;
-    [SerializeField] private TMP_Text _lossesText;
 
     [Header("Role")]
     [SerializeField] private Image _roleIconImage;
     [SerializeField] private ClanRoleCatalog _roleCatalog;
     [SerializeField] private Sprite _fallbackRoleIcon;
 
-    [Header("Bottom")]
-    [SerializeField] private Button _votesButton;
+    [Header("Button")]
+    [SerializeField] private Button _addFriendButton;
+    //[SerializeField] private Button _votesButton;
 
     [Header("Avatar")]
     [SerializeField] private AvatarLoader _avatarLoader;
 
-    [Header("Vote menus")]
+    /*[Header("Vote menus")]
     [SerializeField] private ClanVoteActionMenu _voteActionMenu;
     [SerializeField] private RectTransform _votesButtonRect;
-    [SerializeField] private ClanRoleSelectPopupController _roleSelectPopup;
+    [SerializeField] private ClanRoleSelectPopupController _roleSelectPopup;*/
 
     [Header("Poll started popup")]
     [SerializeField] private GameObject _pollStartedPopup;
@@ -51,6 +50,8 @@ public class ClanMemberPopupController : MonoBehaviour
 
     [SerializeField] private float _pollStartedVisibleSeconds = 1.2f;
     [SerializeField] private float _pollStartedFadeSeconds = 0.35f;
+
+    private Action<ClanMember> _onAddFriendRequested;
 
     private Coroutine _pollStartedRoutine;
 
@@ -72,41 +73,54 @@ public class ClanMemberPopupController : MonoBehaviour
             _backgroundCloseButton.onClick.AddListener(Hide);
         }
 
-        if (_votesButton != null)
+        /*if (_votesButton != null)
         {
             _votesButton.onClick.AddListener(OnVotesButtonPressed);
-        }
+        }*/
 
         if (_openProfileButton != null)
         {
             _openProfileButton.onClick.AddListener(OnOpenProfileButtonPressed);
         }
 
-        if (_voteActionMenu != null && _votesButtonRect == null)
+        /*if (_voteActionMenu != null && _votesButtonRect == null)
         {
             _votesButtonRect = _votesButton.GetComponent<RectTransform>();
+        }*/
+
+        if (_addFriendButton != null)
+        {
+            _addFriendButton.onClick.AddListener(OnAddFriendButtonPressed);
         }
 
         Hide();
     }
 
-    public void Show(ClanMember member, string roleLabel, bool allowVotes = true)
+    public void Show(
+    ClanMember member,
+    string roleLabel,
+    bool allowVotes = true,
+    bool allowAddFriend = true,
+    Action<ClanMember> onAddFriendRequested = null)
     {
         if (member == null) return;
         _currentMember = member;
 
         _root.SetActive(true);
-
-        if (_votesButton != null)
+        _onAddFriendRequested = onAddFriendRequested;
+        /*if (_votesButton != null)
         {
             _votesButton.interactable = allowVotes;
+        }*/
+
+        if (_addFriendButton != null)
+        {
+            _addFriendButton.gameObject.SetActive(allowAddFriend);
+            _addFriendButton.interactable = allowAddFriend;
         }
 
         _nameText.text = member.Name ?? "";
         SetRole(roleLabel);
-        _mostPlayedText.text = "Eniten pelattu hahmo:";
-        _winsText.text = "Voitot:";
-        _lossesText.text = "Häviöt:";
 
         if (_avatarLoader != null && member.AvatarData != null && AvatarDesignLoader.Instance != null)
         {
@@ -124,25 +138,26 @@ public class ClanMemberPopupController : MonoBehaviour
     public void Hide()
     {
         _currentMember = null;
+        _onAddFriendRequested = null;
 
         _root.SetActive(false);
 
-        _voteActionMenu?.Close();
-        _roleSelectPopup?.Hide();
+        //_voteActionMenu?.Close();
+        //_roleSelectPopup?.Hide();
 
         HidePollStartedPopupImmediate();
     }
 
     private void OnVotesButtonPressed()
     {
-        if (_voteActionMenu == null || _votesButtonRect == null)
+        /*if (_voteActionMenu == null || _votesButtonRect == null)
             return;
 
         _voteActionMenu.Open(
             _votesButtonRect,
             onRoleVote: OnRoleVotePressed,
             onKickVote: OnKickVotePressed
-            );
+            );*/
     }
 
     private void SetRole(string roleName)
@@ -201,9 +216,9 @@ public class ClanMemberPopupController : MonoBehaviour
     private void OnRoleVotePressed()
     {
         var roles = GetCurrentClanRoles();
-        if (roles == null || _roleSelectPopup == null || _currentMember == null) return;
+        /*if (roles == null || _roleSelectPopup == null || _currentMember == null) return;
 
-        _roleSelectPopup.Show(_currentMember, roles);
+        _roleSelectPopup.Show(_currentMember, roles);*/
     }
 
     private void OnKickVotePressed()
@@ -215,6 +230,16 @@ public class ClanMemberPopupController : MonoBehaviour
         ShowPollStartedPopup();
 
         Debug.Log($"Kick vote pressed for member: {_currentMember.Name} ({_currentMember.Id})");
+    }
+
+    private void OnAddFriendButtonPressed()
+    {
+        if (_currentMember == null) return;
+
+        var member = _currentMember;
+        var callback = _onAddFriendRequested;
+
+        callback?.Invoke(member);
     }
 
     private void OnOpenProfileButtonPressed()

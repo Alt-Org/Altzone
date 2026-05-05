@@ -336,6 +336,9 @@ public class ClanMainView : MonoBehaviour
 
     private void OpenMembersFiltersPopup()
     {
+        if (_memberDetailsPopup != null)
+            _memberDetailsPopup.Hide();
+
         if (_membersFiltersPopup == null) return;
 
         ShowOverlay(true);
@@ -418,6 +421,11 @@ public class ClanMainView : MonoBehaviour
         }
 
         _filtersWired = false;
+
+        if (_memberDetailsPopup != null)
+        {
+            _memberDetailsPopup.Hide();
+        }
     }
 
     private void ResetViewState()
@@ -704,6 +712,11 @@ public class ClanMainView : MonoBehaviour
 
     private void ApplyCurrentPage(ClanPage page)
     {
+        if (page != ClanPage.Members && _memberDetailsPopup != null)
+        {
+            _memberDetailsPopup.Hide();
+        }
+
         _currentPage = page;
         ApplyButtonsVisibility();
         RefreshSwipeEnabledState();
@@ -965,6 +978,9 @@ public class ClanMainView : MonoBehaviour
 
     private void ShowLeaveClanPopUp()
     {
+        if (_memberDetailsPopup != null)
+            _memberDetailsPopup.Hide();
+
         ShowOverlay(true);
 
         if (_leaveClanHoldPopup != null)
@@ -1132,6 +1148,9 @@ public class ClanMainView : MonoBehaviour
 
     private void OpenRulesPopup()
     {
+        if (_memberDetailsPopup != null)
+            _memberDetailsPopup.Hide();
+
         if (_rulesPopup != null)
         {
             _rulesPopup.SetActive(true);
@@ -1183,6 +1202,9 @@ public class ClanMainView : MonoBehaviour
 
     private void OpenCarbonEmissionPopup()
     {
+        if (_memberDetailsPopup != null)
+            _memberDetailsPopup.Hide();
+
         if (_carbonEmissionPopup != null)
         {
             _carbonEmissionPopup.SetActive(true);

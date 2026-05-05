@@ -90,7 +90,7 @@ public class ClanAddFriendPopupController : MonoBehaviour
 
         Debug.Log($"Add friend clicked: {_currentMember.Name}");
 
-        // TODO: tähän myöhemmin serverikutsu friend requestille
+        // TODO: add friend logic here, e.g., send a friend request to the server
 
         Hide();
     }

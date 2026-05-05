@@ -57,6 +57,8 @@ public class ClanMembersPageController : MonoBehaviour
 
     private void OnDisable()
     {
+        CloseMemberDetailsPopup();
+
         if (_memberSearchInput != null)
         {
             _memberSearchInput.onValueChanged.RemoveListener(OnMemberSearchChanged);
@@ -66,6 +68,8 @@ public class ClanMembersPageController : MonoBehaviour
     private void Rebuild(bool forceFetch = false)
     {
         if (!isActiveAndEnabled) return;
+
+        CloseMemberDetailsPopup();
 
         if (_rebuildRoutine != null)
         {
@@ -223,18 +227,17 @@ public class ClanMembersPageController : MonoBehaviour
                 _roleSelectPopup.ShowAnchored(member, roles, anchor, _canvas);
             });
 
-            plaque.BindAddFriend(() =>
+            if (!isCurrentPlayer)
             {
-                if (!isCurrentPlayer)
-                {
-                    plaque.BindAddFriend(() =>
-                    {
-                        if (_clanMainView == null) return;
+                var capturedMemberForFriend = member;
 
-                        _clanMainView.OpenAddFriendPopup(member);
-                    });
-                }
-            });
+                plaque.BindAddFriend(() =>
+                {
+                    if (_clanMainView == null) return;
+
+                    _clanMainView.OpenAddFriendPopup(capturedMemberForFriend);
+                });
+            }
 
             plaque.gameObject.SetActive(true);
 
@@ -268,7 +271,19 @@ public class ClanMembersPageController : MonoBehaviour
                 button.onClick.RemoveAllListeners();
                 button.onClick.AddListener(() =>
                 {
-                    _memberPopup.Show(capturedMember, capturedRoleLabel, allowVotes: isOwnClan);
+                    bool isCurrentPlayer = IsCurrentPlayerMember(capturedMember);
+
+                    _memberPopup.Show(
+                        capturedMember,
+                        capturedRoleLabel,
+                        allowVotes: isOwnClan,
+                        allowAddFriend: !isCurrentPlayer,
+                        onAddFriendRequested: memberToAdd =>
+                        {
+                            if (_clanMainView == null) return;
+
+                            _clanMainView.OpenAddFriendPopup(memberToAdd);
+                        });
                 });
             }
         }
@@ -389,6 +404,14 @@ public class ClanMembersPageController : MonoBehaviour
             return string.Equals(member.Name, currentPlayer.name, StringComparison.OrdinalIgnoreCase);
 
         return false;
+    }
+
+    private void CloseMemberDetailsPopup()
+    {
+        if (_memberPopup != null)
+        {
+            _memberPopup.Hide();
+        }
     }
 }
 
