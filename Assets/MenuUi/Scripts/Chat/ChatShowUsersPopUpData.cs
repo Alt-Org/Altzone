@@ -125,7 +125,6 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     //removes the userData
     public void RemoveUserReaction(string Userid)
     {
-        Debug.LogWarning("FIND ME 12 " + Userid);
 
 
         for (int i = _userInfo.Count - 1; i >= 0; i--)
