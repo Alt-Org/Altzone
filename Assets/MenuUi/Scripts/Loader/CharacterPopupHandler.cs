@@ -9,8 +9,6 @@ using Altzone.Scripts.ReferenceSheets;
 public class CharacterPopupHandler : MonoBehaviour
 {
     [SerializeField]
-    List<CharacterListElement> popupOptions = new List<CharacterListElement>();
-    [SerializeField]
     Sprite backupImage;
     [SerializeField]
     TextMeshProUGUI classChoiseText;
@@ -22,9 +20,8 @@ public class CharacterPopupHandler : MonoBehaviour
 
     [SerializeField]
     Image className;
-
     [SerializeField]
-    private ClassReference _classReference;
+    TextMeshProUGUI classNameText;
 
     //function that changes the name and image
 
@@ -33,9 +30,9 @@ public class CharacterPopupHandler : MonoBehaviour
 
         CharacterClassType classType = (int)CharacterClassType.None;
         classType = (CharacterClassType)(id * 100);                             // gets button id and connects it to correct class
+        AvatarReference reference = AvatarReference.Instance;
 
-
-        if (id <= popupOptions.Count)
+        if (classType is not CharacterClassType.None)
         {
             //string cname = popupOptions[id].className;
             /*
@@ -50,11 +47,13 @@ public class CharacterPopupHandler : MonoBehaviour
             //classChoiseText.text = $"Oletko varma että haluat edustaa {cname} suojelijaluokkaa pelaajien keskuudessa?"; //character name switching
             */
 
-            charaterImage.sprite = _classReference.GetCharacter(classType); //show correct character sprite
+            charaterImage.sprite = reference.GetCharacterSprite(classType); //show correct character sprite
 
-            classIntroductionText.text = _classReference.GetDescription(classType); //show correct description
+            classIntroductionText.text = reference.GetDescription(classType); //show correct description
 
-            className.sprite = _classReference.GetNameIcon(classType); // show correct name sprite
+            //className.sprite = reference.GetNameIcon(classType); // show correct name sprite
+            classNameText.text = reference.GetName(classType);
+            classNameText.color = reference.GetColour(classType);
         }
         else //backup image and text just in case an error happens or something
         {
