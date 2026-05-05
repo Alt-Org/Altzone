@@ -1231,14 +1231,7 @@ namespace Altzone.Scripts.Lobby
 
         private int GetQueuePendingLeaderCount()
         {
-            Room room = PhotonRealtimeClient.CurrentRoom;
-            if (room == null || room.Players == null || _queuePendingLeaderUntil.Count == 0) return 0;
-
-            Dictionary<string, Player> playersById = room.Players.Values
-                .Where(p => p != null && !string.IsNullOrEmpty(p.UserId) && p.UserId != "Bot")
-                .GroupBy(p => p.UserId)
-                .Select(g => g.First())
-                .ToDictionary(p => p.UserId, p => p, StringComparer.Ordinal);
+            if (_queuePendingLeaderUntil.Count == 0) return 0;
 
             float now = Time.time;
             int pendingCount = 0;
@@ -1257,26 +1250,8 @@ namespace Altzone.Scripts.Lobby
                     continue;
                 }
 
-                // If both leader and a follower that references the leader are present,
-                // the duo is already in-room and the pending entry can be cleared.
-                bool bothMembersPresent = false;
-                try
-                {
-                    bool leaderPresent = playersById.ContainsKey(leaderUserId);
-                    bool followerPresent = playersById.Values
-                        .Any(p => p != null && p.UserId != leaderUserId && GetQueuePlayerLeaderId(p) == leaderUserId);
-                    bothMembersPresent = leaderPresent && followerPresent;
-                }
-                catch { }
-
-                if (bothMembersPresent)
-                {
-                    staleLeaderIds ??= new List<string>();
-                    staleLeaderIds.Add(leaderUserId);
-                    continue;
-                }
-
-                // Otherwise, this leader is considered pending within the grace window.
+                // Queue-room visibility alone is not a completion signal; keep the entry
+                // pending until the grace window expires or an explicit room transition clears it.
                 pendingCount++;
             }
 
@@ -1294,14 +1269,7 @@ namespace Altzone.Scripts.Lobby
 
         private int GetQueuePendingExpectedUserCount()
         {
-            Room room = PhotonRealtimeClient.CurrentRoom;
-            if (room == null || room.Players == null || _queuePendingExpectedUserUntil.Count == 0) return 0;
-
-            HashSet<string> presentUserIds = new(
-                room.Players.Values
-                    .Where(p => p != null && !string.IsNullOrEmpty(p.UserId) && p.UserId != "Bot")
-                    .Select(p => p.UserId),
-                StringComparer.Ordinal);
+            if (_queuePendingExpectedUserUntil.Count == 0) return 0;
 
             float now = Time.time;
             int pendingCount = 0;
@@ -1312,17 +1280,15 @@ namespace Altzone.Scripts.Lobby
                 string expectedUserId = kv.Key;
                 float validUntil = kv.Value;
 
-                bool shouldRemove = string.IsNullOrEmpty(expectedUserId)
-                    || validUntil <= now
-                    || presentUserIds.Contains(expectedUserId);
-
-                if (shouldRemove)
+                if (string.IsNullOrEmpty(expectedUserId) || validUntil <= now)
                 {
                     staleExpectedUserIds ??= new List<string>();
                     staleExpectedUserIds.Add(expectedUserId);
                 }
                 else
                 {
+                    // A queued expected user arriving in the current room does not mean the
+                    // handoff is done yet; keep the signal until timeout or room transition.
                     pendingCount++;
                 }
             }
@@ -3048,7 +3014,7 @@ namespace Altzone.Scripts.Lobby
                                     // If the duo helper could not re-identify a pair, still salvage the timeout by
                                     // seeding the match from the visible non-local humans. This lets botfill proceed
                                     // for duo+solo compositions instead of retrying forever on a transient duo lookup miss.
-                                    if (selected.Count == 0)
+                                 /*    if (selected.Count == 0)
                                     {
                                         var broadFallbackCandidates = humanUserIds
                                             .Where(uid => !string.IsNullOrEmpty(uid) && uid != localId)
@@ -3061,7 +3027,7 @@ namespace Altzone.Scripts.Lobby
                                             foreach (var uid in broadFallbackCandidates) selected.Add(uid);
                                             Debug.Log($"QueueTimerCoroutine: Queue wait expired; broad fallback selected [{string.Join(",", broadFallbackCandidates)}] for botfill (requiredFollowers={requiredFollowers}).");
                                         }
-                                    }
+                                    } */
 
                                     // If adding the duo's member(s) still leaves us short of required followers,
                                     // try to include any available solo humans so the master can persist expected-users
@@ -8137,12 +8103,27 @@ namespace Altzone.Scripts.Lobby
                             _matchHasStartedInCurrentRoom = false;
                             string localUserId = PhotonRealtimeClient.LocalPlayer?.UserId;
                             bool localIsLeader = !string.IsNullOrEmpty(localUserId) && localUserId == leaderUserId;
-                            bool shouldUpdateLeaderId = targetedByExpectedUsers || localIsLeader;
+                            bool isQueueRoomForLeaderUpdate = false;
+                            try
+                            {
+                                var curr = PhotonRealtimeClient.CurrentRoom;
+                                if (curr != null && curr.CustomProperties != null && curr.CustomProperties.ContainsKey(PhotonBattleRoom.IsQueueKey) && (curr.CustomProperties[PhotonBattleRoom.IsQueueKey] is bool qb && qb))
+                                {
+                                    isQueueRoomForLeaderUpdate = true;
+                                }
+                            }
+                            catch { }
+
+                            bool shouldUpdateLeaderId = localIsLeader || (targetedByExpectedUsers && !isQueueRoomForLeaderUpdate);
                             if (shouldUpdateLeaderId)
                             {
                                 PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, leaderUserId);
                                 try { OnRoomLeaderChanged?.Invoke(leaderUserId == PhotonRealtimeClient.LocalPlayer.UserId); } catch { }
                                 matchmakingLeaderId = leaderUserId;
+                            }
+                            else if (isQueueRoomForLeaderUpdate && targetedByExpectedUsers)
+                            {
+                                Debug.Log("RoomChangeRequested: preserving local follower LeaderIdKey during queue-room handoff; using transient matchmaking leader only.");
                             }
                         }
                     }
