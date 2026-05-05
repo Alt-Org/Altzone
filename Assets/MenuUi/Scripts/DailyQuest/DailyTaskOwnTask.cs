@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Language;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
 using TMPro;
@@ -79,10 +80,10 @@ public class DailyTaskOwnTask : MonoBehaviour
     private TextMeshProUGUI _dailyStatsTitle;
 
     [SerializeField]
-    private TextMeshProUGUI _battlesPlayedText;
+    private TextLanguageSelectorCaller _battlesPlayedText;
 
     [SerializeField]
-    private TextMeshProUGUI _tasksDoneText;
+    private TextLanguageSelectorCaller _tasksDoneText;
 
     public delegate void CurrentTaskInfoNeeded();
     public static event CurrentTaskInfoNeeded OnCurrentTaskInfoNeeded;
@@ -314,18 +315,8 @@ public class DailyTaskOwnTask : MonoBehaviour
 
     private void UpdateDailyStatsUI()
     {
-        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
-        {
-            _dailyStatsTitle.text = "Päivän saldo";
-            _battlesPlayedText.text = DailyStats.Instance.GetBattlesPlayed() + " taistelua";
-            _tasksDoneText.text = DailyStats.Instance.GetTasksDone() + " työtehtävää";
-        }
-        else
-        {
-            _dailyStatsTitle.text = "Daily stats";
-            _battlesPlayedText.text = DailyStats.Instance.GetBattlesPlayed() + " battles";
-            _tasksDoneText.text = DailyStats.Instance.GetTasksDone() + " tasks";
-        }
+        _battlesPlayedText.SetText(SettingsCarrier.Instance.Language, new[] { DailyStats.Instance.GetBattlesPlayed().ToString() });
+        _tasksDoneText.SetText(SettingsCarrier.Instance.Language, new[] { DailyStats.Instance.GetTasksDone().ToString() });
     }
 
     public void ShowCurrentTaskInfo()
