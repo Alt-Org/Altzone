@@ -6195,11 +6195,11 @@ namespace Altzone.Scripts.Lobby
                 DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.Battle);
                 DebugLogFileHandler.FileOpen(battleID, (int)playerSlot);
 
-                // Always load current player characters before AddPlayer.
+                  // Always load current player characters before AddPlayer.
                 // In the Custom room flow, SetPlayerQuantumCharacters is called by RoomSetupManager,
                 // but in the Matchmaking flow it was never called — leaving _player.Characters stale.
                 // Loading here ensures all game types have correct, up-to-date character data
-                // with pre-resolved entity prototypes (critical for Quantum determinism).
+               
                 {
                     string playerGuid = GameConfig.Get().PlayerSettings.PlayerGuid;
                     PlayerData playerData = null;
@@ -6214,7 +6214,6 @@ namespace Altzone.Scripts.Lobby
                     }
                     SetPlayerQuantumCharacters(selectedCharacters);
                 }
-
                 int retryCount=0;
                 do
                 {
@@ -6905,18 +6904,11 @@ namespace Altzone.Scripts.Lobby
                     Speed         = BaseCharacter.GetStatValueFP(StatType.Speed, character.Speed)
                 };
 
-                // Pre-resolve the entity prototype in View code so Simulation never calls into the View layer.
-                // This is critical for Quantum determinism — calling BattleAltzoneLink from Simulation causes checksum errors.
-                int characterId = (int)character.Id;
-                PlayerCharacterPrototype protoInfo = PlayerCharacterPrototypes.GetCharacter(characterId.ToString());
-                AssetRef<EntityPrototype> prototype = protoInfo != null ? protoInfo.BattleEntityPrototype : default;
-
                 _player.Characters[i] = new BattleCharacterBase()
                 {
-                    Id            = characterId,
+                    Id            = (int)character.Id,
                     Class         = (int)character.CharacterClassType,
                     Stats         = stats,
-                    Prototype     = prototype,
                 };
             }
         }
