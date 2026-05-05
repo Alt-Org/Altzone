@@ -7,6 +7,7 @@ using MenuUi.Scripts.TabLine;
 using Altzone.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class LeaderboardView : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class LeaderboardView : MonoBehaviour
     [SerializeField] private TabLine _tablineScript;
     [SerializeField] private Button _globalClansLeaderboardButton; 
     [SerializeField] private Image _globalClansLeaderboardImage;
+    [SerializeField] private List<GameObject> _tablineTitles;
 
     [Header("Tab sprites")]
     [SerializeField] private Sprite _globalWinsSprite;
@@ -58,6 +60,8 @@ public class LeaderboardView : MonoBehaviour
         _globalClansLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.GlobalClans));
         _scrollToTopButton.onClick.AddListener(() => ScrollToTop());
 
+        InitializeTablineTitles();
+        _tablineTitles[0].SetActive(true);
     }
 
     private void OnEnable()
@@ -65,6 +69,12 @@ public class LeaderboardView : MonoBehaviour
         OpenLeaderboard(Leaderboard.GlobalClans);
         _tablineScript.ActivateTabButton(0);
 
+    }
+
+    private void InitializeTablineTitles()
+    {
+        foreach (GameObject title in _tablineTitles) 
+            title.SetActive(false);
     }
 
     private void OpenLeaderboard(Leaderboard leaderboard)
@@ -85,6 +95,9 @@ public class LeaderboardView : MonoBehaviour
         {
             case Leaderboard.GlobalClans: 
                 {
+                    InitializeTablineTitles();
+                    _tablineTitles[0].SetActive(true);
+
                     StartCoroutine(ServerManager.Instance.GetClanLeaderboardFromServer((clanLeaderboard) =>
                     {
 
@@ -133,10 +146,11 @@ public class LeaderboardView : MonoBehaviour
                 break;
             case Leaderboard.GlobalPlayers:
                 {
+                    InitializeTablineTitles();
+                    _tablineTitles[1].SetActive(true);
 
                     StartCoroutine(ServerManager.Instance.GetPlayerLeaderboardFromServer((playerLeaderboard) =>
                     {
-
                         playerLeaderboard.Sort((a, b) => b.WonBattles.CompareTo(a.WonBattles));
 
                         int rank = 1;
@@ -181,12 +195,16 @@ public class LeaderboardView : MonoBehaviour
                 break;
             case Leaderboard.Clan:
 
+                InitializeTablineTitles();
+                _tablineTitles[1].SetActive(true);
+
                 Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
                 {
+                    clanData.Members.Sort((a, b) => b.LeaderBoardWins.CompareTo(a.LeaderBoardWins));
 
-                        clanData.Members.Sort((a, b) => b.LeaderBoardWins.CompareTo(a.LeaderBoardWins));
 
-                        int rank = 1;
+
+                    int rank = 1;
                         foreach (ClanMember player in clanData.Members)
                         {
                             PlayerData playerData = player.GetPlayerData();
@@ -250,9 +268,13 @@ public class LeaderboardView : MonoBehaviour
                 });
                 break;
             case Leaderboard.Friends:
+
+                InitializeTablineTitles();
+                _tablineTitles[2].SetActive(true);
+
                 // For Testing
 
-                    for (int i = 1; i < 20; i++)
+                for (int i = 1; i < 20; i++)
                     {
                         if (i == 1) //add the podium to scroll view
                         {
