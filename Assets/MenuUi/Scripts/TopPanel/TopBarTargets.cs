@@ -38,7 +38,7 @@ namespace MenuUI.Scripts.TopPanel
         [SerializeField] private Transform _textContainer;
         [SerializeField] private Transform _coinsRow;
 
-        private const bool DebugOn = false;
+        private const bool DebugOn = true;
 
         private void OnEnable()
         {
@@ -70,12 +70,15 @@ namespace MenuUI.Scripts.TopPanel
             RectTransform parentRT;
             if (!IsValid(out parentRT)) return;
 
-            bool[] vis = ReadVisibility();
+            bool[] isVisible = ReadVisibility();
+
+            bool clanPanelOn = IsVisible(TopBarDefs.TopBarItem.ClanTile);
+            ApplyClanPanelMode(clanPanelOn);
 
             for (int i = 0; i < _rows.Count; i++)
             {
                 if (_rows[i].visibilityTarget != null)
-                    _rows[i].visibilityTarget.SetActive(vis[i]);
+                    _rows[i].visibilityTarget.SetActive(isVisible[i]);
             }
 
             // List<int> rawOrder = SettingsCarrier.LoadTopBarOrderStatic(style, _rows.Count);
