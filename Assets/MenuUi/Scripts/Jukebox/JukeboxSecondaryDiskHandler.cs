@@ -20,29 +20,29 @@ public class JukeboxSecondaryDiskHandler : MonoBehaviour
     private Coroutine _diskSpinCoroutine;
 
     #region Animation
-    private Vector2 _mainAnchorMinStart = new Vector2(1f, 0f);
-    private Vector2 _mainAnchorMaxStart = new Vector2(1f, 1f);
-    private Vector2 _mainAnchorMinEnd = new Vector2(0f, 0f);
-    private Vector2 _mainAnchorMaxEnd = new Vector2(1f, 1f);
+    private Vector2 _mainAnchorMinStart = new(1f, 0f);
+    private Vector2 _mainAnchorMaxStart = new(1f, 1f);
+    private Vector2 _mainAnchorMinEnd = new(0f, 0f);
+    private Vector2 _mainAnchorMaxEnd = new(1f, 1f);
 
-    private Vector2 _secondaryAnchorMinStart = new Vector2(0f, 0f);
-    private Vector2 _secondaryAnchorMaxStart = new Vector2(1f, 1f);
-    private Vector2 _secondaryAnchorMinEnd = new Vector2(0f, 0f);
-    private Vector2 _secondaryAnchorMaxEnd = new Vector2(0f, 1f);
+    private Vector2 _secondaryAnchorMinStart = new(0f, 0f);
+    private Vector2 _secondaryAnchorMaxStart = new(1f, 1f);
+    private Vector2 _secondaryAnchorMinEnd = new(0f, 0f);
+    private Vector2 _secondaryAnchorMaxEnd = new(0f, 1f);
     #endregion
 
     private void OnEnable()
     {
-        JukeboxManager.Instance.OnPreviewStart += StartSpinDisk;
-        JukeboxManager.Instance.OnPreviewEnd += StopSpinDisk;
+        JukeboxManager.Instance.OnPreviewStart += StartDiskSpin;
+        JukeboxManager.Instance.OnPreviewEnd += StopDiskSpin;
     }
 
     private void OnDisable()
     {
-        JukeboxManager.Instance.OnPreviewStart -= StartSpinDisk;
-        JukeboxManager.Instance.OnPreviewEnd -= StopSpinDisk;
+        JukeboxManager.Instance.OnPreviewStart -= StartDiskSpin;
+        JukeboxManager.Instance.OnPreviewEnd -= StopDiskSpin;
 
-        StopSpinDisk();
+        StopDiskSpin();
     }
 
     #region Base
@@ -56,15 +56,14 @@ public class JukeboxSecondaryDiskHandler : MonoBehaviour
             _mainDiskImage.sprite = sprite;
     }
 
-    public void StartSpinDisk()
+    public void StartDiskSpin()
     {
         if (_diskSpinCoroutine != null) return;
 
         _diskSpinCoroutine = StartCoroutine(SpinDisk());
-        return;
     }
 
-    public void StopSpinDisk()
+    public void StopDiskSpin()
     {
         if (_diskSpinCoroutine != null)
         {
@@ -75,13 +74,13 @@ public class JukeboxSecondaryDiskHandler : MonoBehaviour
         _mainDiskImage.transform.rotation = Quaternion.identity;
     }
 
-    public void ClearDisk() { StopSpinDisk(); _mainDiskImage.sprite = _emptyDiskSprite; }
+    public void ClearDisk() { StopDiskSpin(); _mainDiskImage.sprite = _emptyDiskSprite; }
 
     private IEnumerator SpinDisk()
     {
         while (true)
         {
-            _mainDiskImage.transform.Rotate(Vector3.forward * -_diskRotationSpeed * Time.deltaTime);
+            _mainDiskImage.transform.Rotate(Vector3.forward * (-_diskRotationSpeed * Time.deltaTime));
 
             yield return null;
         }
@@ -102,13 +101,12 @@ public class JukeboxSecondaryDiskHandler : MonoBehaviour
         _secondaryDiskRectTransform.anchorMin = _secondaryAnchorMinStart;
         _secondaryDiskRectTransform.anchorMax = _secondaryAnchorMaxStart;
 
-        StopSpinDisk();
-
+        StopDiskSpin();
         StartCoroutine(SwitchDisk((data) => diskSwitchDone = data));
 
         yield return new WaitUntil(() => diskSwitchDone != null);
 
-        if (done != null) done(true);
+        done?.Invoke(true);
     }
 
     private IEnumerator SwitchDisk(System.Action<bool> done)
@@ -117,11 +115,6 @@ public class JukeboxSecondaryDiskHandler : MonoBehaviour
 
         while (timer < _switchDiskAnimDuration)
         {
-            yield return null;
-
-            timer += Time.deltaTime;
-
-            //Disk switch
             float animatedFloat = _switchDiskAnimCurve.Evaluate(timer / _switchDiskAnimDuration);
 
             _mainDiskRectTransform.anchorMin = Vector2.Lerp(_mainAnchorMinStart, _mainAnchorMinEnd, animatedFloat);
@@ -129,9 +122,13 @@ public class JukeboxSecondaryDiskHandler : MonoBehaviour
 
             _secondaryDiskRectTransform.anchorMin = Vector2.Lerp(_secondaryAnchorMinStart, _secondaryAnchorMinEnd, animatedFloat);
             _secondaryDiskRectTransform.anchorMax = Vector2.Lerp(_secondaryAnchorMaxStart, _secondaryAnchorMaxEnd, animatedFloat);
+
+            yield return null;
+
+            timer += Time.deltaTime;
         }
 
-        done(true);
+        done?.Invoke(true);
     }
     #endregion
 }
