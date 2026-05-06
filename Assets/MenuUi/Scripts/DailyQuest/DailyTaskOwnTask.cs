@@ -319,6 +319,7 @@ public class DailyTaskOwnTask : MonoBehaviour
         _tasksDoneText.SetText(SettingsCarrier.Instance.Language, new[] { DailyStats.Instance.GetTasksDone().ToString() });
     }
 
+    // Currently used on DailyTask OwnTask page on ShowCurrentTaskInfoButton
     public void ShowCurrentTaskInfo()
     {
         OnCurrentTaskInfoNeeded.Invoke();

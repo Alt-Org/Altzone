@@ -369,7 +369,7 @@ public class DailyTaskView : AltMonoBehaviour
         if (taskData == null) return;
 
         // Update OwnTaskPage in case already on OwnTask page
-        _ownTaskPageHandler.UpdateOwnTaskPage();
+        if (_ownTaskPageHandler.isActiveAndEnabled) _ownTaskPageHandler.UpdateOwnTaskPage();
 
         DailyQuest currentQuest = FindDailyQuestForTask(taskData);
         if (currentQuest == null) return;
@@ -510,7 +510,7 @@ public class DailyTaskView : AltMonoBehaviour
         DailyTaskManager.Instance.SetHandleOwnTask(playerData.Task);
     }
 
-    public DailyQuest FindDailyQuestForTask(PlayerTask task)
+    private DailyQuest FindDailyQuestForTask(PlayerTask task)
     {
         foreach (GameObject taskCard in DailyTaskCardSlots)
         {
