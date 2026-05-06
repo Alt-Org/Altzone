@@ -274,7 +274,7 @@ namespace Battle.View.Player
         [SerializeField] private BattlePlayerCharacterClassBaseViewController _classViewControllerOverride;
 
         /// <summary>[SerializeField] Reference to an override class test view controller.</summary>
-        /// @ref BattlePlayerViewController-SerializeFields
+        /// @ref BattlePlayerCharacterViewController-SerializeFields
         [Tooltip("Reference to an override class test view controller")]
         [SerializeField] private BattlePlayerCharacterClassBaseViewController _classViewControllerTestOverride;
 

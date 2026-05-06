@@ -250,7 +250,7 @@ namespace Battle.QSimulation.Player
         /// Decides which <see cref="ClassOption"/> to use depending on available class scripts and whether <paramref name="testMode"/> is enabled.
         /// </summary>
         ///
-        /// See [PlayerClass](#page-concepts-player-simulation-playerclass) for more info<br/>
+        /// See [PlayerClass](#page-concepts-player-simulation-class-playerclass) for more info<br/>
         /// See [Player Character Classes](#page-concepts-player-characters-classes) for more info
         ///
         /// |                                       | has none                   | <paramref name="hasClass"/> | <paramref name="hasTestClass"/> | has both                        |
