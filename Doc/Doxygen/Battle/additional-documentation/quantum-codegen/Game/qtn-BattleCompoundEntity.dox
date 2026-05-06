@@ -6,16 +6,18 @@
 /// ## Generated Structs
 /// - @cref{Quantum,BattleEntityLink}  
 ///   @copybrief Quantum.BattleEntityLink
-/// - @cref{Quantum,BattleCompoundEntityComponent}  
-///   @copybrief Quantum.BattleCompoundEntityComponent
+/// - @cref{Quantum,BattleCompoundEntityQComponent}  
+///   @copybrief Quantum.BattleCompoundEntityQComponent
 
 // ---------------------------------------------------------------------------------------------------- //
 
 /// @struct Quantum::BattleEntityLink
 /// <summary>
 /// Link structure used to reference %Quantum entity and its relative position.  
-/// Used by @cref{Quantum,BattleCompoundEntityComponent} for entity associations.
+/// Used by @cref{Quantum,BattleCompoundEntityQComponent} for entity associations.
 /// </summary>
+///
+/// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
 ///
 /// @bigtext{Generated from @ref BattleCompoundEntity.qtn}
 
@@ -25,7 +27,21 @@
 /// @var FPVector2 Quantum::BattleEntityLink::Offset
 /// <summary>Linked entity's position relative to compound parent.</summary>
 
-/// @struct Quantum::BattleCompoundEntityComponent
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattleEntityLink::SIZE
+/// @var Int32 Quantum::BattleEntityLink::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattleEntityLink::GetHashCode
+///
+/// @fn void Quantum::BattleEntityLink::Serialize
+///
+/// @}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleCompoundEntityQComponent
 /// <summary>
 /// Component that stores one or more **%Quantum entity** links for **Compound Entities**.  
 /// Used by @cref{Battle.QSimulation.Game,BattleEntityManager} to manage **Compound Entities**.
@@ -36,19 +52,19 @@
 ///
 /// @bigtext{Generated from @ref BattleCompoundEntity.qtn}
 
-/// @var list<BattleEntityLink> Quantum::BattleCompoundEntityComponent::LinkedEntities
+/// @var list<BattleEntityLink> Quantum::BattleCompoundEntityQComponent::LinkedEntities
 /// <summary>List of linked %Quantum Entities.</summary>
 
 /// @name Quantum Built-in
 /// @{
 ///
-/// @var Int32 Quantum::BattleCompoundEntityComponent::SIZE
-/// @var Int32 Quantum::BattleCompoundEntityComponent::ALIGNMENT
+/// @var Int32 Quantum::BattleCompoundEntityQComponent::SIZE
+/// @var Int32 Quantum::BattleCompoundEntityQComponent::ALIGNMENT
 ///
-/// @fn Int32 Quantum::BattleCompoundEntityComponent::GetHashCode
-/// @fn void Quantum::BattleCompoundEntityComponent::ClearPointers
+/// @fn Int32 Quantum::BattleCompoundEntityQComponent::GetHashCode
+/// @fn void Quantum::BattleCompoundEntityQComponent::ClearPointers
 ///
-/// @fn void Quantum::BattleCompoundEntityComponent::OnRemoved
-/// @fn void Quantum::BattleCompoundEntityComponent::Serialize
+/// @fn void Quantum::BattleCompoundEntityQComponent::OnRemoved
+/// @fn void Quantum::BattleCompoundEntityQComponent::Serialize
 ///
 /// @}

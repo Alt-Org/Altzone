@@ -77,7 +77,7 @@ public class ClanSettings : AltMonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button _saveButton;
     [SerializeField] private Button _cancelEditsButton;
-    
+
     [SerializeField] private Button _openMottoButton;
     [SerializeField] private Button _mottoConfirmButton;
     [SerializeField] private Button _mottoCancelButton;
@@ -102,7 +102,7 @@ public class ClanSettings : AltMonoBehaviour
     [SerializeField] private Button _heartConfirmButton;
     [SerializeField] private Button _heartCancelButton;
 
-    [SerializeField] private Button _cancelConfirmContinueButton; 
+    [SerializeField] private Button _cancelConfirmContinueButton;
     [SerializeField] private Button _cancelConfirmDiscardButton;
 
     [Header("Tabline buttons")]
@@ -120,6 +120,18 @@ public class ClanSettings : AltMonoBehaviour
 
     private List<HeartPieceData> _heartPieces;
     private List<ClanValues> _selectedValues = new();
+    private Language _selectedLanguage;
+
+    private ClanData _currentClanData;
+
+    private string _originalPhrase;
+    private List<Rules> _originalRules = new();
+    private ClanAge _originalAge;
+    private Language _originalLanguage;
+    private List<ClanValues> _originalValues = new();
+    private List<HeartPieceData> _originalHeartPieces = new();
+    private List<Rules> _selectedRules = new();
+    private bool _originalIsOpen;
 
     private void OnEnable()
     {
@@ -127,6 +139,15 @@ public class ClanSettings : AltMonoBehaviour
 
         Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clan) =>
         {
+            _currentClanData = clan;
+
+            clan.Rules ??= new List<Rules>();
+            clan.Values ??= new List<ClanValues>();
+            clan.Members ??= new List<ClanMember>();
+            clan.ClanHeartPieces ??= new List<HeartPieceData>();
+
+            SaveOriginalState(clan);
+
             // Show correct panel
             _mainSettingsPanel.SetActive(false);
             _editHeartPanel.SetActive(false);
@@ -149,18 +170,23 @@ public class ClanSettings : AltMonoBehaviour
             _clanPassword.SetActive(!clan.IsOpen);
 
             // Rules init
-            string rule1 = clan.Rules.Count > 0 ?
-            _rule1Text.text = ClanDataTypeConverter.GetRulesText(clan.Rules[0]) : string.Empty;
-            string rule2 = clan.Rules.Count > 1 ?
-            _rule1Text.text = ClanDataTypeConverter.GetRulesText(clan.Rules[1]) : string.Empty;
-            string rule3 = clan.Rules.Count > 2 ?
-            _rule1Text.text = ClanDataTypeConverter.GetRulesText(clan.Rules[2]) : string.Empty;
+            string rule1 = clan.Rules.Count > 0
+                ? ClanDataTypeConverter.GetRulesText(clan.Rules[0])
+                : string.Empty;
+            string rule2 = clan.Rules.Count > 1
+                ? ClanDataTypeConverter.GetRulesText(clan.Rules[1])
+                : string.Empty;
+            string rule3 = clan.Rules.Count > 2
+                ? ClanDataTypeConverter.GetRulesText(clan.Rules[2])
+                : string.Empty;
 
             _rule1Text.text = rule1;
             _rule2Text.text = rule2;
             _rule3Text.text = rule3;
 
-            _ruleSelection.SetSelected(clan.Rules);
+            _selectedRules = new List<Rules>(clan.Rules);
+            _ruleSelection.SetSelected(new List<Rules>(_selectedRules));
+            //_ruleSelection.SetSelected(clan.Rules);
             _rulesPopup.SetActive(false);
 
             //Age init     
@@ -173,21 +199,22 @@ public class ClanSettings : AltMonoBehaviour
 
             // Language init
             _languageList.Initialize(clan.Language);
+            _selectedLanguage = clan.Language;
             _flagImageSetter.SetFlag(clan.Language);
 
             // Values init
             _values.SetValues(clan.Values);
             _valueSelection.SetSelected(clan.Values);
-            _selectedValues = clan.Values;
+            _selectedValues = new List<ClanValues>(clan.Values);
 
             // Heart init
             clan.ClanHeartPieces ??= new();
-            _heartPieces = clan.ClanHeartPieces;
+            _heartPieces = new List<HeartPieceData>(clan.ClanHeartPieces);
 
-            if(_heartColorChanger != null && _heartPieces != null)
+            if (_heartColorChanger != null && _heartPieces != null)
                 _heartColorChanger.InitializeClanHeart(_heartPieces);
 
-            if(_heartColorSetter != null && _heartPieces != null)
+            if (_heartColorSetter != null && _heartPieces != null)
                 _heartColorSetter.SetHeartColors(_heartPieces);
 
             if (_fillWholeHeartToggle != null)
@@ -199,28 +226,67 @@ public class ClanSettings : AltMonoBehaviour
             {
                 _heartColorChanger.SetFillWholeHeart(true);
             }
-
-            /*if (_fillWholeHeartToggle != null)
-            {
-                _fillWholeHeartToggle.onValueChanged.RemoveAllListeners();
-                _fillWholeHeartToggle.onValueChanged.AddListener(OnFillWholeHeartToggleChanged);
-
-                _fillWholeHeartToggle.isOn = false;
-                OnFillWholeHeartToggleChanged(_fillWholeHeartToggle.isOn);
-            }
-            else if (_heartColorChanger != null)
-            {
-                _heartColorChanger.SetFillWholeHeart(true);
-            }*/
-
-            //_saveButton.onClick.RemoveAllListeners();
-            //_saveButton.onClick.AddListener(SaveClanSettings);
         });
     }
 
     private void OnDisable()
     {
         UnregisterUiListeners();
+    }
+
+    private void SaveOriginalState(ClanData clan)
+    {
+        if (clan == null) return;
+
+        _originalPhrase = clan.Phrase ?? string.Empty;
+        _originalRules = clan.Rules != null ? new List<Rules>(clan.Rules) : new List<Rules>();
+        _originalAge = clan.ClanAge;
+        _originalLanguage = clan.Language;
+        _originalValues = clan.Values != null ? new List<ClanValues>(clan.Values) : new List<ClanValues>();
+        _originalIsOpen = clan.IsOpen;
+
+        clan.ClanHeartPieces ??= new List<HeartPieceData>();
+        _originalHeartPieces = new List<HeartPieceData>(clan.ClanHeartPieces);
+    }
+
+    private void ResetSettingsToOriginalState()
+    {
+        _clanPhraseText.text = _originalPhrase;
+        _clanPhraseField.text = _originalPhrase;
+
+        _selectedRules = new List<Rules>(_originalRules);
+        _ruleSelection.SetSelected(new List<Rules>(_originalRules));
+
+        string rule1 = _originalRules.Count > 0
+            ? ClanDataTypeConverter.GetRulesText(_originalRules[0])
+            : string.Empty;
+        string rule2 = _originalRules.Count > 1
+            ? ClanDataTypeConverter.GetRulesText(_originalRules[1])
+            : string.Empty;
+        string rule3 = _originalRules.Count > 2
+            ? ClanDataTypeConverter.GetRulesText(_originalRules[2])
+            : string.Empty;
+
+        _rule1Text.text = rule1;
+        _rule2Text.text = rule2;
+        _rule3Text.text = rule3;
+
+        _ageSelection.Initialize(_originalAge);
+        UpdateAgeDisplay();
+
+        _selectedLanguage = _originalLanguage;
+        _languageList.Initialize(_originalLanguage);
+        _flagImageSetter.SetFlag(_originalLanguage);
+
+        _selectedValues = new List<ClanValues>(_originalValues);
+        _values.SetValues(_selectedValues);
+        _valueSelection.SetSelected(new List<ClanValues>(_originalValues));
+
+        _clanOpenToggle.isOn = !_originalIsOpen;
+        _clanPassword.SetActive(!_originalIsOpen);
+
+        _heartPieces = new List<HeartPieceData>(_originalHeartPieces);
+        ResetHeartColorChanger();
     }
 
     private bool CanCurrentPlayerEditClan(ClanData clanData)
@@ -230,7 +296,7 @@ public class ClanSettings : AltMonoBehaviour
 
         var player = serverManager.Player;
         if (player == null) return false;
-    
+
         if (player.clan_id != clanData.Id) return false;
 
         var roleId = player.clanRole_id;
@@ -254,74 +320,58 @@ public class ClanSettings : AltMonoBehaviour
             return;
         }
 
-        Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
+        if (_currentClanData == null)
         {
-            if (!CanCurrentPlayerEditClan(clanData))
-            {
-                SignalBus.OnChangePopupInfoSignal("Mites pääsit tähän ikkunaan? Sinulla ei ole oikeuksia muokata klaanin asetuksia.");
-                _saveButton.interactable = true;
-                return;
-            }
+            SignalBus.OnChangePopupInfoSignal("Klaanin tietoja ei löytynyt.");
+            _saveButton.interactable = true;
+            return;
+        }
 
-            string previousPhrase = clanData.Phrase;
-            clanData.Phrase = _clanPhraseField.text;
-            clanData.Language = _languageList.SelectedLanguage;
-            //clanData.Goals = _goalSelection.GoalsRange;
-            clanData.ClanAge = _ageSelection.ClanAgeRange;
-            clanData.Rules = _ruleSelection.SelectedRules;
-            clanData.Values = _valueSelection.SelectedValues;
-            clanData.ClanHeartPieces = _heartPieces;
-
-            // These are not saved at the moment
-            bool isOpen = !_clanOpenToggle.isOn;
-            string password = _clanPasswordField.text;
-            //clanData.ClanRights = _clanRightsPanel.ClanRights;
-
-            StartCoroutine(ServerManager.Instance.UpdateClanToServer(clanData, success =>
-            {
-                _saveButton.interactable = true;
-                if (success)
-                {
-                    if (_clanMainView != null)
-                    {
-                        _clanMainView.UpdateProfileFromSettings(clanData);
-                        ShowProfileTablineButtons();
-                    }
-
-                    if (!string.IsNullOrEmpty(previousPhrase) && previousPhrase != clanData.Phrase)
-                        gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
-
-                    gameObject.GetComponent<ClanCulturalPractices>().SettingsChanged(clanData);
-                }
-                else
-                {
-                    SignalBus.OnChangePopupInfoSignal("Asetusten tallentaminen ei onnistunut.");
-                }
-            }));
-        });
-    }
-
-    public void OnClickCancelClanSettingEdits()
-    {
-        Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
+        if (!CanCurrentPlayerEditClan(_currentClanData))
         {
-            bool hasMadeEdits = _heartColorChanger.IsAnyPieceChanged()
-                || clanData.Phrase != _clanPhraseField.text
-                || clanData.Language != _languageList.SelectedLanguage
-                /*|| clanData.Goals != _goalSelection.GoalsRange*/
-                || clanData.ClanAge != _ageSelection.ClanAgeRange
-                /*|| !clanData.ClanRights.SequenceEqual(_clanRightsPanel.ClanRights)*/
-                || !clanData.Values.SequenceEqual(_selectedValues) /*clanData.Values != _selectedValues*/;
+            SignalBus.OnChangePopupInfoSignal("Mites pääsit tähän ikkunaan? Sinulla ei ole oikeuksia muokata klaanin asetuksia.");
+            _saveButton.interactable = true;
+            return;
+        }
 
-            if (hasMadeEdits)
+        string previousPhrase = _currentClanData.Phrase;
+
+        _currentClanData.Phrase = _clanPhraseField.text;
+        _currentClanData.Language = _selectedLanguage;
+        //_currentClanData.Goals = _goalSelection.GoalsRange;
+        _currentClanData.ClanAge = _ageSelection.ClanAgeRange;
+        _currentClanData.Rules = new List<Rules>(_selectedRules);
+        _currentClanData.Values = new List<ClanValues>(_selectedValues);
+        _currentClanData.ClanHeartPieces = _heartPieces;
+
+        // These are not saved at the moment
+        bool isOpen = !_clanOpenToggle.isOn;
+        string password = _clanPasswordField.text;
+        //_currentClanData.ClanRights = _clanRightsPanel.ClanRights;
+
+        StartCoroutine(ServerManager.Instance.UpdateClanToServer(_currentClanData, success =>
+        {
+            _saveButton.interactable = true;
+
+            if (success)
             {
-                ShowPopup(_cancelConfirmationPopup);
+                SaveOriginalState(_currentClanData);
+                if (_clanMainView != null)
+                {
+                    _clanMainView.UpdateProfileFromSettings(_currentClanData);
+                    ShowProfileTablineButtons();
+                }
+
+                if (!string.IsNullOrEmpty(previousPhrase) && previousPhrase != _currentClanData.Phrase)
+                    gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+
+                gameObject.GetComponent<ClanCulturalPractices>().SettingsChanged(_currentClanData);
             }
-           else
+            else
             {
-                ShowProfileTablineButtons();
+                SignalBus.OnChangePopupInfoSignal("Asetusten tallentaminen ei onnistunut.");
             }
-        });
+        }));
     }
 
     private void RegisterUiListeners()
@@ -408,21 +458,40 @@ public class ClanSettings : AltMonoBehaviour
         HidePopup(_cancelConfirmationPopup);
     }
 
+    public void OnClickCancelClanSettingEdits()
+    {
+        bool hasMadeEdits = _heartColorChanger.IsAnyPieceChanged()
+            || _originalPhrase != _clanPhraseField.text
+            || _originalLanguage != _selectedLanguage
+            || _originalAge != _ageSelection.ClanAgeRange
+            || !_originalRules.SequenceEqual(_selectedRules)
+            || !_originalValues.SequenceEqual(_selectedValues);
+
+        if (hasMadeEdits)
+        {
+            ShowPopup(_cancelConfirmationPopup);
+        }
+        else
+        {
+            ShowProfileTablineButtons();
+        }
+    }
+
     public void OnClickDiscardClanSettingEdits()
     {
         HidePopup(_cancelConfirmationPopup);
 
-        ResetHeartColorChanger();
+        ResetSettingsToOriginalState();
 
         ShowProfileTablineButtons();
     }
 
     private void ShowPopup(GameObject popup)
     {
-        if(_swipeBlockOverlay != null)
+        if (_swipeBlockOverlay != null)
             _swipeBlockOverlay.SetActive(true);
 
-        if(_chatboxBlockOverlay != null)
+        if (_chatboxBlockOverlay != null)
             _chatboxBlockOverlay.SetActive(true);
 
         if (popup != null)
@@ -494,7 +563,7 @@ public class ClanSettings : AltMonoBehaviour
     {
         ResetHeartColorChanger();
 
-        if(_fillWholeHeartToggle != null)
+        if (_fillWholeHeartToggle != null)
         {
             OnFillWholeHeartToggleChanged(_fillWholeHeartToggle.isOn);
         }
@@ -540,14 +609,14 @@ public class ClanSettings : AltMonoBehaviour
 
     public void CancelClanPhraseEdit()
     {
-        if(DailyTaskProgressManager.Instance.CurrentPlayerTask != null
+        if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null
             && DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationSocialType == Altzone.Scripts.Model.Poco.Game.TaskEducationSocialType.ChangeClanMotto)
         {
             StartCoroutine(GetClanData(c =>
             {
-                if(c != null)
+                if (c != null)
                 {
-                    if(!string.IsNullOrWhiteSpace(_clanPhraseField.text) && c.Phrase != _clanPhraseField.text)
+                    if (!string.IsNullOrWhiteSpace(_clanPhraseField.text) && c.Phrase != _clanPhraseField.text)
                         DailyTaskProgressManager.Instance.UpdateTaskProgress(Altzone.Scripts.Model.Poco.Game.TaskEducationSocialType.ChangeClanMotto, "1");
                 }
             }));
@@ -556,36 +625,59 @@ public class ClanSettings : AltMonoBehaviour
     }
 
     public void OpenClanRulesPopup()
-    {       
+    {
         _rule1Input.text = _rule1Text.text;
         _rule2Input.text = _rule2Text.text;
         _rule3Input.text = _rule3Text.text;
+
         ShowPopup(_rulesPopup);
+
+        Canvas.ForceUpdateCanvases();
+
+        _ruleSelection.SetSelected(new List<Rules>(_selectedRules));
+
+        var popupRect = _rulesPopup.GetComponent<RectTransform>();
+        if (popupRect != null)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(popupRect);
+
+        Canvas.ForceUpdateCanvases();
     }
 
     public void ConfirmClanRulesEdit()
     {
-        string rule1 = _ruleSelection.SelectedRules.Count > 0 ?
-        ClanDataTypeConverter.GetRulesText(_ruleSelection.SelectedRules[0]) : string.Empty;
-        string rule2 = _ruleSelection.SelectedRules.Count > 1 ?
-        ClanDataTypeConverter.GetRulesText(_ruleSelection.SelectedRules[1]) : string.Empty;
-        string rule3 = _ruleSelection.SelectedRules.Count > 2 ?
-        ClanDataTypeConverter.GetRulesText(_ruleSelection.SelectedRules[2]) : string.Empty;
+        _selectedRules = new List<Rules>(_ruleSelection.SelectedRules);
 
-        if (rule1 != _rule1Text.text || rule2 != _rule2Text.text|| rule3 != _rule3Text.text)
+        string rule1 = _selectedRules.Count > 0
+            ? ClanDataTypeConverter.GetRulesText(_selectedRules[0])
+            : string.Empty;
+        string rule2 = _selectedRules.Count > 1
+            ? ClanDataTypeConverter.GetRulesText(_selectedRules[1])
+            : string.Empty;
+        string rule3 = _selectedRules.Count > 2
+            ? ClanDataTypeConverter.GetRulesText(_selectedRules[2])
+            : string.Empty;
+
+        if (rule1 != _rule1Text.text || rule2 != _rule2Text.text || rule3 != _rule3Text.text)
         {
-            if (DailyTaskProgressManager.Instance.CurrentPlayerTask?.EducationCultureType == Altzone.Scripts.Model.Poco.Game.TaskEducationCultureType.ClanCulturalGuideline)
-                DailyTaskProgressManager.Instance.UpdateTaskProgress(Altzone.Scripts.Model.Poco.Game.TaskEducationCultureType.ClanCulturalGuideline, "1");
+            if (DailyTaskProgressManager.Instance.CurrentPlayerTask?.EducationCultureType ==
+                Altzone.Scripts.Model.Poco.Game.TaskEducationCultureType.ClanCulturalGuideline)
+            {
+                DailyTaskProgressManager.Instance.UpdateTaskProgress(
+                    Altzone.Scripts.Model.Poco.Game.TaskEducationCultureType.ClanCulturalGuideline, "1");
+            }
         }
 
         _rule1Text.text = rule1;
         _rule2Text.text = rule2;
         _rule3Text.text = rule3;
+
         HidePopup(_rulesPopup);
     }
 
     public void CancelClanRulesEdit()
     {
+        _ruleSelection.SetSelected(new List<Rules>(_selectedRules));
+
         string rule1 = _ruleSelection.SelectedRules.Count > 0 ?
         ClanDataTypeConverter.GetRulesText(_ruleSelection.SelectedRules[0]) : string.Empty;
         string rule2 = _ruleSelection.SelectedRules.Count > 1 ?
@@ -602,6 +694,13 @@ public class ClanSettings : AltMonoBehaviour
         _rule1Text.text = rule1;
         _rule2Text.text = rule2;
         _rule3Text.text = rule3;
+
+        Canvas.ForceUpdateCanvases();
+
+        var popupRect = _rulesPopup.GetComponent<RectTransform>();
+        if (popupRect != null)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(popupRect);
+
         HidePopup(_rulesPopup);
     }
 
@@ -643,25 +742,35 @@ public class ClanSettings : AltMonoBehaviour
 
     public void ConfirmLanguageEdit()
     {
-        _flagImageSetter.SetFlag(_languageList.SelectedLanguage);
+        _selectedLanguage = _languageList.SaveLanguage();
+        _flagImageSetter.SetFlag(_selectedLanguage);
         HidePopup(_languagePopup);
     }
 
     public void CancelLanguagePopup()
     {
+        _languageList.Initialize(_selectedLanguage);
         HidePopup(_languagePopup);
     }
 
     public void OpenValuesPopup()
     {
-        _valueSelection.SetSelected(_selectedValues);
-
         ShowPopup(_valuesPopup);
+
+        Canvas.ForceUpdateCanvases();
+
+        _valueSelection.SetSelected(new List<ClanValues>(_selectedValues));
+
+        var popupRect = _valuesPopup.GetComponent<RectTransform>();
+        if (popupRect != null)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(popupRect);
+
+        Canvas.ForceUpdateCanvases();
     }
 
     public void ConfirmValuesEdit()
     {
-        _selectedValues = _valueSelection.SelectedValues;
+        _selectedValues = new List<ClanValues>(_valueSelection.SelectedValues);
         _values.SetValues(_selectedValues);
 
         HidePopup(_valuesPopup);
@@ -669,7 +778,14 @@ public class ClanSettings : AltMonoBehaviour
 
     public void CancelValuesEdit()
     {
+        _valueSelection.SetSelected(new List<ClanValues>(_selectedValues));
+
+        Canvas.ForceUpdateCanvases();
+
+        var popupRect = _valuesPopup.GetComponent<RectTransform>();
+        if (popupRect != null)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(popupRect);
+
         HidePopup(_valuesPopup);
     }
-
 }

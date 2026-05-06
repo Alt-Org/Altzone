@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ReferenceSheets;
-using Assets.Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.AvatarEditor;
 using UnityEngine;
 
@@ -68,7 +68,6 @@ public class AvatarDesignLoader : AltMonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
     #endregion
@@ -157,40 +156,121 @@ public class AvatarDesignLoader : AltMonoBehaviour
 
     private void EnsureValidAvatarData(PlayerData playerData)
     {
-        if (playerData.AvatarData?.Validate() == true)
+        AvatarData avatarData = playerData?.AvatarData;
+        List<AvatarPiece> invalidPieces = null;
+        List<AvatarPiece> invalidColors = null;
+
+        string name = playerData?.Name ?? "Unknown";
+
+        if (avatarData != null)
+        {
+            invalidPieces = GetInvalidAvatarPieces(_avatarPartsReference, avatarData);
+            invalidColors = GetInvalidAvatarPieceColors(avatarData);
+        }
+
+        if (invalidPieces?.Count == 0 && invalidColors?.Count == 0)
+        {
+            //Debug.LogError($"Player {name} - all pieces valid. ");
             return;
+        }
 
-        Debug.LogWarning("AvatarData is null or invalid. Using default data.");
-
-        var defaultAvatars = _avatarDefaultReference.GetByCharacterId(playerData.SelectedCharacterId);
-        if (defaultAvatars == null || defaultAvatars.Count == 0)
+        var defaultAvatars = AvatarReference.Instance.GetDefaultAvatar((CharacterClassType)((playerData.SelectedCharacterId / 100) * 100));
+        if (defaultAvatars == null)
         {
             Debug.LogError($"No default avatar found for character ID: {playerData.SelectedCharacterId}");
             return;
+        }
+        AvatarData defaultAvatarData = new(defaultAvatars);
+
+        if (avatarData != null)
+        {
+            var replacedPieces = new System.Text.StringBuilder();
+            foreach (AvatarPiece piece in invalidPieces)
+            {
+                var oldId = playerData.AvatarData?.GetPieceID(piece);
+                playerData.AvatarData?.SetPieceID(piece, defaultAvatarData.GetPieceID(piece));
+                var newId = playerData.AvatarData?.GetPieceID(piece);
+                replacedPieces.Append($"{piece}:{oldId} to {newId}  ");
+            }
+
+            var replacedColors = new System.Text.StringBuilder();
+            bool skinColourReplaced = false;
+            if (!ColorUtility.TryParseHtmlString(avatarData.Color, out _))
+            {
+                var oldColor = playerData.AvatarData.Color;
+                playerData.AvatarData.Color = defaultAvatarData.Color;
+                var newColor = playerData.AvatarData.Color;
+                replacedColors.Append($"Skin Colour:{oldColor} to {newColor}  ");
+                skinColourReplaced = true;
+            }
+
+            foreach (AvatarPiece piece in invalidColors)
+            {
+                var oldcolor = playerData.AvatarData?.GetPieceColor(piece);
+                playerData.AvatarData?.SetPieceColor(piece, defaultAvatarData.GetPieceColor(piece));
+                var newColor = playerData.AvatarData?.GetPieceColor(piece);
+                replacedColors.Append($"{piece}:{oldcolor} to {newColor}  ");
+            }
+            Debug.LogWarning($"Player {name} - replaced {invalidPieces.Count} piece(s): {replacedPieces} and {invalidColors.Count + (skinColourReplaced?1:0)} color(s): {replacedColors}");
+        }
+        else
+        {
+            playerData.AvatarData = defaultAvatarData;
+            avatarData = defaultAvatarData;
+            Debug.LogWarning($"Player {name} - AvatarData was null, assigned full default.");
         }
 
         var playerAvatar = _avatarEditorController?.PlayerAvatar;
         if (playerAvatar == null)
         {
-            playerAvatar = new PlayerAvatar(defaultAvatars[0]);
+            playerAvatar = new PlayerAvatar(avatarData);
         }
-        playerData.AvatarData = new(
-            playerAvatar.Name,
-            null,
-            playerAvatar.SkinColor,
-            null,
-            playerAvatar.Scale
-        );
 
         var list = Enum.GetValues(typeof(AvatarPiece));
-        foreach (AvatarPiece feature in list) //This could possibly be replaced with turning the partlist into ServerAvatar and then giving that to the AvatarData.
+        /*foreach (AvatarPiece feature in list) //This could possibly be replaced with turning the partlist into ServerAvatar and then giving that to the AvatarData.
         {
             playerData.AvatarData.SetPieceID((AvatarPiece)feature, int.Parse(playerAvatar.GetPartId(feature)));
             Debug.Log("The added featureId is " + playerAvatar.GetPartId(feature));
             playerData.AvatarData.SetPieceColor(feature, playerAvatar.GetPartColor(feature));
-        }
+        }*/
         //}
 
+    }
+
+    public bool ValidateAvatarPiece(AvatarPiece piece, AvatarPartsReference partsReference, AvatarData avatarData)
+    {
+        int pieceId = avatarData.GetPieceID(piece);
+        string pieceIdString = pieceId.ToString();
+        // I assume the length should always be 7 but I'm not sure
+        if (pieceIdString.Length < 4) return false;
+        return partsReference.GetAvatarPartById(pieceIdString) != null;
+    }
+
+    public List<AvatarPiece> GetInvalidAvatarPieces(AvatarPartsReference partsReference, AvatarData avatarData)
+    {
+        List<AvatarPiece> invalidPieces = new();
+
+        foreach (AvatarPiece piece in AllAvatarPieces)
+        {
+            if (!ValidateAvatarPiece(piece, partsReference, avatarData))
+            {
+                invalidPieces.Add(piece);
+            }
+        }
+        return invalidPieces;
+    }
+
+    public List<AvatarPiece> GetInvalidAvatarPieceColors(AvatarData avatarData)
+    {
+        List<AvatarPiece> invalidColors = new();
+
+        foreach (AvatarPiece piece in AllAvatarPieces)
+        {
+            string color = avatarData.GetPieceColor(piece);
+            if (!ColorUtility.TryParseHtmlString(color, out _))
+                invalidColors.Add(piece);
+        }
+        return invalidColors;
     }
 
     private void PopulateAvatarPieces(AvatarVisualData avatarVisualData, AvatarData avatarData)

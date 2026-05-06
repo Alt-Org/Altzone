@@ -176,5 +176,18 @@ public class ColorGetter : MonoBehaviour, IPointerDownHandler, IDragHandler, IPo
         Color finalColor = Color.HSVToRGB(_currentHue, _currentSat, _currentVal);
         OnColorChanged?.Invoke(finalColor);
     }
+
+    public void SetColor(Color newColor)
+    {
+        Color.RGBToHSV(newColor, out _currentHue, out _currentSat, out _currentVal);
+
+
+        _gradientSquareImage.color = Color.HSVToRGB(_currentHue, 1, 1);
+
+        SynchronizeCircleHandle();
+        SynchronizeSquareHandle();
+
+        OnColorChanged?.Invoke(newColor);
+    }
 }
 

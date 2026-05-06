@@ -5,7 +5,7 @@
 /// Input is processed and compiled into an input struct, which is passed over to the Quantum simulation when polled by Quantum.
 /// </summary>
 
-#define DEBUG_INPUT_TYPE_OVERRIDE
+//#define DEBUG_INPUT_TYPE_OVERRIDE
 
 // Unity usings
 using UnityEngine;
@@ -223,8 +223,8 @@ namespace Battle.View.Player
 #if DEBUG_INPUT_TYPE_OVERRIDE
             _debugLogger.Warning("DEBUG_INPUT_TYPE_OVERRIDE enabled!");
 
-            _movementInputType = MovementInputType.PointAndClick;
-            _rotationInputType = RotationInputType.Swipe;
+            _movementInputType = MovementInputType.FollowPointer;
+            _rotationInputType = RotationInputType.TwoFinger;
 
             _debugLogger.WarningFormat("Using MovementInputType {0} override", _movementInputType);
             _debugLogger.WarningFormat("Using RotationInputType {0} override", _rotationInputType);

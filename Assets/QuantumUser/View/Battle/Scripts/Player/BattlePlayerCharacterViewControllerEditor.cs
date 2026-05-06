@@ -1,22 +1,27 @@
 #if UNITY_EDITOR
-/// @file BattlePlayerCharacterViewControllerEditor
+/// @file BattlePlayerCharacterViewControllerEditor.cs
 /// <summary>
-/// Contains @cref {Battle.View.Player,BattlePlayerCharacterViewControllerEditor} class which adds a default sprite
+/// Contains @cref{Battle.View.Player,BattlePlayerCharacterViewControllerEditor} class which adds a default sprite
 /// to every character body part's SpriteRenderer in the editor.
 /// </summary>
+
+// Unity usings
 using UnityEditor;
 using UnityEngine;
+
+using SpriteSheetMap = Battle.View.Player.BattlePlayerCharacterViewController.SpriteSheetMap;
 
 namespace Battle.View.Player
 {
     /// <summary>
-    /// Adds a default sprite to every character body part's SpriteRenderer in the editor.
+    /// Sets a default sprite to every character body part's SpriteRenderer in the Unity Editor.
     /// </summary>
+    ///
     [CustomEditor(typeof(BattlePlayerCharacterViewController))]
     public class BattlePlayerCharacterViewControllerEditor : Editor
     {
         /// <summary>
-        /// Override method that handles adding a default sprite to every character body part's SpriteRenderer in the editor.
+        /// Override method that handles setting a default sprite to every character body part's SpriteRenderer in the Unity Editor.
         /// </summary>
         public override void OnInspectorGUI()
         {
@@ -25,59 +30,74 @@ namespace Battle.View.Player
             const int SpriteRendererHandsIndex  = 2;
             const int SpriteRendererFeetIndex   = 3;
             const int SpriteRendererShadowIndex = 4;
+
             DrawDefaultInspector();
 
-            if (_battleSpriteSheetProp == null || _gameObjectProp == null) return;
+            if (_battleSpriteSheetProperty == null || _characterGameObjectsProperty == null || _spriteDisableProperty == null) return;
 
-            BattleSpriteSheet spriteSheet = (BattleSpriteSheet)_battleSpriteSheetProp.boxedValue;
+            BattleSpriteSheet spriteSheet = (BattleSpriteSheet)_battleSpriteSheetProperty.boxedValue;
 
-            for (int i = 0; i < _gameObjectProp.arraySize; i++)
+            bool spriteDisable = (bool)_spriteDisableProperty.boxedValue;
+
+            if (spriteDisable) return;
+
+            for (int i = 0; i < _characterGameObjectsProperty.arraySize; i++)
             {
-                SerializedProperty property = _gameObjectProp.GetArrayElementAtIndex(i);
+                SerializedProperty property = _characterGameObjectsProperty.GetArrayElementAtIndex(i);
                 GameObject gameObject = (GameObject)property.objectReferenceValue;
 
-                _spriteRenderers[SpriteRendererHeadIndex] = gameObject.transform.Find("Head").GetComponent<SpriteRenderer>();
-                _spriteRenderers[SpriteRendererBodyIndex] = gameObject.transform.Find("Body").GetComponent<SpriteRenderer>();
-                _spriteRenderers[SpriteRendererHandsIndex] = gameObject.transform.Find("Hands").GetComponent<SpriteRenderer>();
-                _spriteRenderers[SpriteRendererFeetIndex] = gameObject.transform.Find("Feet").GetComponent<SpriteRenderer>();
-                _spriteRenderers[SpriteRendererShadowIndex] = gameObject.transform.Find("Shadow").GetComponent<SpriteRenderer>();
-                if (spriteSheet.Array.Length == 64)
+                _bodyPartSpriteRenderers[SpriteRendererHeadIndex]   = gameObject.transform.Find("Head")   .GetComponent<SpriteRenderer>();
+                _bodyPartSpriteRenderers[SpriteRendererBodyIndex]   = gameObject.transform.Find("Body")   .GetComponent<SpriteRenderer>();
+                _bodyPartSpriteRenderers[SpriteRendererHandsIndex]  = gameObject.transform.Find("Hands")  .GetComponent<SpriteRenderer>();
+                _bodyPartSpriteRenderers[SpriteRendererFeetIndex]   = gameObject.transform.Find("Feet")   .GetComponent<SpriteRenderer>();
+                _bodyPartSpriteRenderers[SpriteRendererShadowIndex] = gameObject.transform.Find("Shadow") .GetComponent<SpriteRenderer>();
+
+                if (SpriteSheetMap.Validate(spriteSheet))
                 {
-                    _spriteRenderers[SpriteRendererHeadIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.Head1);
-                    _spriteRenderers[SpriteRendererBodyIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.Body1);
-                    _spriteRenderers[SpriteRendererHandsIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.BaseHands);
-                    _spriteRenderers[SpriteRendererFeetIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.BaseShoes);
-                    _spriteRenderers[SpriteRendererShadowIndex].sprite = spriteSheet.GetSprite<BattlePlayerCharacterViewController.SpriteSheetMap>(BattlePlayerCharacterViewController.SpriteSheetMap.Enum.Shadow);
+                    _bodyPartSpriteRenderers[SpriteRendererHeadIndex]   .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Head1);
+                    _bodyPartSpriteRenderers[SpriteRendererBodyIndex]   .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Body1);
+                    _bodyPartSpriteRenderers[SpriteRendererHandsIndex]  .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.BaseHands);
+                    _bodyPartSpriteRenderers[SpriteRendererFeetIndex]   .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.BaseShoes);
+                    _bodyPartSpriteRenderers[SpriteRendererShadowIndex] .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Shadow);
                 }
                 else
                 {
-                    _spriteRenderers[SpriteRendererHeadIndex].sprite = null;
-                    _spriteRenderers[SpriteRendererBodyIndex].sprite = null;
-                    _spriteRenderers[SpriteRendererHandsIndex].sprite = null;
-                    _spriteRenderers[SpriteRendererFeetIndex].sprite = null;
-                    _spriteRenderers[SpriteRendererShadowIndex].sprite = null;
+                    _bodyPartSpriteRenderers[SpriteRendererHeadIndex]   .sprite = null;
+                    _bodyPartSpriteRenderers[SpriteRendererBodyIndex]   .sprite = null;
+                    _bodyPartSpriteRenderers[SpriteRendererHandsIndex]  .sprite = null;
+                    _bodyPartSpriteRenderers[SpriteRendererFeetIndex]   .sprite = null;
+                    _bodyPartSpriteRenderers[SpriteRendererShadowIndex] .sprite = null;
                 }
             }
         }
         /// <summary>
         /// Serialized property holding the spritesheet to get default sprites from.
         /// </summary>
-        private SerializedProperty _battleSpriteSheetProp;
+        private SerializedProperty _battleSpriteSheetProperty;
 
         /// <summary>
         /// Serialized property holding parent objects to get the body part SpriteRenderers from.
         /// </summary>
-        private SerializedProperty _gameObjectProp;
-
-        private SpriteRenderer[] _spriteRenderers = new SpriteRenderer[5];
+        private SerializedProperty _characterGameObjectsProperty;
 
         /// <summary>
-        /// Handles getting the spritesheet and character gameobjects to add default sprites to.
+        /// Array that holds the SpriteRenderer components of each body part gameobject.
+        /// </summary>
+        private readonly SpriteRenderer[] _bodyPartSpriteRenderers = new SpriteRenderer[5];
+
+        /// <summary>
+        /// Serialized property holding the bool for whether to update sprites or not.
+        /// </summary>
+        private SerializedProperty _spriteDisableProperty;
+
+        /// <summary>
+        /// Handles initializing serialized properties.
         /// </summary>
         private void OnEnable()
         {
-            _battleSpriteSheetProp = serializedObject.FindProperty("_spriteSheet");
-            _gameObjectProp = serializedObject.FindProperty("_characterGameObjects");
+            _battleSpriteSheetProperty = serializedObject.FindProperty("_spriteSheet");
+            _characterGameObjectsProperty = serializedObject.FindProperty("_characterGameObjects");
+            _spriteDisableProperty = serializedObject.FindProperty("_autoSpriteDisable");
         }
     }
 }

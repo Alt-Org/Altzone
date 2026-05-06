@@ -3,53 +3,89 @@
 /// Contains @cref{Battle.View,BattleSpriteSheetDrawer} class which handles drawing a custom
 /// inspector for the BattleSpriteSheet struct.
 /// </summary>
-#define UNITY_EDITOR
+
 // System usings
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 // Unity usings
+using UnityEngine;
+
+// Battle QSimulation usings
+using Battle.QSimulation;
+
+// Unity editor using
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-using UnityEngine;
 
 namespace Battle.View
 {
     /// <summary>
-    /// Interface that helps with getting a sprite from BattleSpriteSheet.
+    /// Interface that a BattleSpriteSheetMap should implement.
     /// </summary>
+    ///
+    /// See [{BattleSpriteSheetMap}](page-concepts-battle-sprite-sheet-sprite-sheet-map) for more info.
     public interface IBattleSpriteSheetMap
     {
         /// <summary>
-        /// Method for getting an index to get the correct sprite from the BattleSpriteSheet.
+        /// Method for getting the index of the correct sprite in a %BattleSpriteSheet.
         /// </summary>
-        /// <returns>An index for the BattleSpriteSheet.</returns>
+        ///
+        /// <returns>The index of the sprite.</returns>
         public int GetIndex();
+
+        /// <summary>
+        /// Protected helper method for checking the spritesheet's <paramref name="count"/> with the %SpriteSheetMap's <paramref name="expectedCount"/>.
+        /// </summary>
+        ///
+        /// <param name="expectedCount">Expected count of the %SpriteSheetMap.</param>
+        /// <param name="count">Count of the given spritesheet.</param>
+        ///
+        /// <returns>True if the given parameters match.</returns>
+        protected static bool ValidateCount(int expectedCount, int count)
+        {
+            if (count != expectedCount)
+            {
+                if(count == 0) return false;
+                BattleDebugLogger.ErrorFormat(nameof(IBattleSpriteSheetMap), "Invalid number of sprites in spriteSheet\nCount: {0}\nExpected count: {1}",
+                    count, expectedCount
+                );
+                return false;
+            }
+            return true;
+        }
     }
 
     /// <summary>
-    /// Struct that holds the Spritesheet array and handles getting a sprite from it.
+    /// Struct that holds the Spritesheet array and handles getting a sprite from it based on a %SpriteSheetMap.
     /// </summary>
+    ///
+    /// See [{BattleSpriteSheet}](#page-concepts-battle-sprite-sheet-sprite-sheet) for more info.
     [Serializable]
     public struct BattleSpriteSheet
     {
-        /// <summary>Array that holds the spritesheet.</summary>
-        public Sprite[] Array;
+        /// <summary>Internal array that holds the spritesheet.</summary>
+        [SerializeField] private Sprite[] _array;
+
+        /// <summary>The number of sprites in this spritesheet.</summary>
+        public readonly int Count => _array.Length;
 
         /// <summary>
-        /// Method for getting a sprite from the spritesheet based on an index.
+        /// Fetches a sprite from the spritesheet at <paramref name="spriteMapValue"/> using given %SpriteSheetMap <typeparamref name="T"/>.
         /// </summary>
         ///
-        /// <typeparam name="T">Class that implements the interface</typeparam>
-        /// <param name="SpriteMapValue">Class that implements the interface</param>
+        /// See [{BattleSpriteSheetMap}](#page-concepts-battle-sprite-sheet-sprite-sheet-map) for more info.
         ///
-        /// <returns>A sprite from the spritesheet</returns>
-        public readonly Sprite GetSprite<T>(T SpriteMapValue) where T : IBattleSpriteSheetMap
+        /// <typeparam name="T">%SpriteSheetMap used to fetch a sprite.</typeparam>
+        /// <param name="spriteMapValue">MapValue of the desired sprite.</param>
+        ///
+        /// <returns>The fetched sprite from the spritesheet.</returns>
+        public readonly Sprite GetSprite<T>(T spriteMapValue) where T : IBattleSpriteSheetMap
         {
-            int spriteIndex = SpriteMapValue.GetIndex();
-            return Array[spriteIndex];
+            int spriteIndex = spriteMapValue.GetIndex();
+            return _array[spriteIndex];
         }
     }
 
@@ -57,6 +93,8 @@ namespace Battle.View
     /// <summary>
     /// Handles drawing a custom inspector property for the BattleSpriteSheet struct.
     /// </summary>
+    ///
+    /// See [{BattleSpriteSheet}](#page-concepts-battle-sprite-sheet-sprite-sheet) for more info.
     [CustomPropertyDrawer(typeof(BattleSpriteSheet))]
     public class BattleSpriteSheetDrawer : PropertyDrawer
     {
@@ -64,18 +102,13 @@ namespace Battle.View
         /// Override method that handles drawing the custom inspector property.
         /// </summary>
         ///
-        /// <param name="rect">rect parameter</param>
-        /// <param name="property">SerializedProperty parameter</param>
-        /// <param name="label">GUIContent parameter</param>
+        /// <param name="rect">Rectangle on the screen where the property is drawn.</param>
+        /// <param name="property">Property that is drawn.</param>
+        /// <param name="label">Label of the drawn property.</param>
         public override void OnGUI(Rect rect, SerializedProperty property, GUIContent label)
         {
             // Get BattleSpriteSheet struct values as properties
-            SerializedProperty spritePropertyArray = property.FindPropertyRelative("Array");
-
-            if (_spriteIndexRegexPattern == null)
-            {
-                _spriteIndexRegexPattern = new Regex(@"_([0-9]+)$");
-            }
+            SerializedProperty spritePropertyArray = property.FindPropertyRelative("_array");
 
             // UI
 
@@ -103,14 +136,16 @@ namespace Battle.View
             {
                 if (_currentSpriteSheetPath == string.Empty)
                 {
-                    _currentSpriteSheetPath = GetPath((Sprite)spritePropertyArray.GetArrayElementAtIndex(0).objectReferenceValue);
+                    _currentSpriteSheetPath = AssetDatabase.GetAssetPath((Sprite)spritePropertyArray.GetArrayElementAtIndex(0).objectReferenceValue);
                 }
                 EditorGUI.LabelField(rect, string.Format("{0}: {1}", label.text, _currentSpriteSheetPath));
                 HandlePlayerSpriteSheetProperty(spritePropertyArray, _referenceSprite);
                 EditorGUI.indentLevel++;
-                EditorGUILayout.PropertyField(spritePropertyArray, new GUIContent("Sprites"), true);
+                EditorGUILayout.PropertyField(spritePropertyArray, new GUIContent("Sprites", property.tooltip), true);
                 EditorGUI.indentLevel--;
             }
+
+            // UI
         }
 
         /// <summary>
@@ -119,9 +154,9 @@ namespace Battle.View
         private string _currentSpriteSheetPath = string.Empty;
 
         /// <summary>
-        /// Regex for sorting the spritesheet.
+        /// Regex for extracting index from sprite name.
         /// </summary>
-        private Regex _spriteIndexRegexPattern;
+        private static readonly Regex s_spriteIndexRegexPattern = new(@"_([0-9]+)$");
 
         /// <summary>
         /// Reference sprite to get the rest of the sprites included in the same spritesheet
@@ -141,7 +176,7 @@ namespace Battle.View
 
             // get spritesheet path
             if (spriteReference == null) return;
-            string spriteSheetPath = GetPath(spriteReference);
+            string spriteSheetPath = AssetDatabase.GetAssetPath(spriteReference);
 
             _currentSpriteSheetPath = currentSpriteSheetPathCopy;
 
@@ -151,31 +186,18 @@ namespace Battle.View
 
             // load spritesheet
             Sprite[] sprites = AssetDatabase.LoadAllAssetsAtPath(spriteSheetPath).OfType<Sprite>().ToArray();
-            spritePropertyArray.ClearArray();
+            spritePropertyArray.arraySize = sprites.Length;
             int i = 0;
             foreach (Sprite sprite in sprites.OrderBy(sprite =>
             {
-                Match match = _spriteIndexRegexPattern.Match(sprite.name);
+                Match match = s_spriteIndexRegexPattern.Match(sprite.name);
                 if (!match.Success) return 0;
                 return int.Parse(match.Groups[1].Value);
             }))
             {
-                spritePropertyArray.InsertArrayElementAtIndex(i);
                 spritePropertyArray.GetArrayElementAtIndex(i).objectReferenceValue = sprite;
                 i++;
             }
-        }
-
-        /// <summary>
-        /// Helper method for getting the path a sprite is at.
-        /// </summary>
-        ///
-        /// <param name="sprite">Sprite to get the path from.</param>
-        ///
-        /// <returns>Path</returns>
-        private string GetPath(Sprite sprite)
-        {
-            return AssetDatabase.GetAssetPath(sprite);
         }
     }
 #endif

@@ -35,6 +35,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "Sis\xE4ist\xE4 tyhjyytt\xE4\xE4n ruualla t\xE4ytt\xE4v\xE4,
     tunteensa nielev\xE4 suursy\xF6m\xE4ri."
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: b10576cd877c5c347966ad393961b2e3, type: 2}
   Hp:
     Level: 1
@@ -57,7 +59,7 @@ MonoBehaviour:
   BattleCharacterEntityPrototype:
     Id:
       Value: 1326039720161495895
-  BattleShieldEntityPrototype:
-    Id:
-      Value: 0
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1379632451330175163
   BattleUiSprite: {fileID: 0}

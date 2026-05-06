@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
@@ -6,6 +7,7 @@ using Altzone.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using MenuUi.Scripts.Signals;
+using Altzone.Scripts.Battle.Photon;
 
 namespace MenuUi.Scripts.Signals
 {
@@ -45,7 +47,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
         [SerializeField] private GameObject _popupContents;
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
         [SerializeField] private LobbyRoomListingController _roomListingController;
+        // Expose the runtime instance of the popup contents so other scene components can reference it at runtime.
+        public static GameObject PopupContentsInstance { get; private set; }
 
+        // Fired when `PopupContentsInstance` is assigned or cleared at runtime.
+        public static event Action<GameObject> OnPopupContentsInstanceAssigned;
         private string _currentRegion;
         private Coroutine _creatingRoomCoroutineHolder = null;
 
@@ -55,6 +61,9 @@ namespace MenuUi.Scripts.Lobby.InLobby
         {
             SignalBus.OnBattlePopupRequested += OpenWindow;
             SignalBus.OnCloseBattlePopupRequested += CloseWindow;
+            // Register runtime popup reference for other components to find (safe to set here because serialized field is available in Awake)
+            PopupContentsInstance = _popupContents;
+            OnPopupContentsInstanceAssigned?.Invoke(PopupContentsInstance);
         }
 
 
@@ -62,6 +71,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
         {
             SignalBus.OnBattlePopupRequested -= OpenWindow;
             SignalBus.OnCloseBattlePopupRequested -= CloseWindow;
+            if (PopupContentsInstance == _popupContents)
+            {
+                PopupContentsInstance = null;
+                OnPopupContentsInstanceAssigned?.Invoke(null);
+            }
         }
 
 
@@ -142,6 +156,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             var playerCount = PhotonRealtimeClient.CountOfPlayers;
             _topInfoPanel.LobbyText = new string[2] { _currentRegion, PhotonRealtimeClient.GetPing().ToString()};
             _topInfoPanel.PlayerCountText = playerCount.ToString();
+            _topInfoPanel.MatchmakingCountText = PhotonRealtimeClient.CurrentRoomPlayerCount.ToString();
         }
 
         /*public void OnDisconnected(DisconnectCause cause)
@@ -158,6 +173,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void OpenWindow(GameType gameType)
         {
             _popupContents.SetActive(true);
+            // Ensure top info shows current values when popup opens
+            RefreshTopInfo();
 
             // Checking if we are in room or matchmaking room depending on the game mode which would prevent changing the selected game type
             switch (gameType)
@@ -165,17 +182,36 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 case GameType.Custom:
                     if (PhotonRealtimeClient.InRoom)
                     {
-                        _roomSwitcher.SwitchRoom(GameType.Custom);
-                        return;
+                        if (gameType == SelectedGameType)
+                        {
+                            _roomSwitcher.SwitchRoom(GameType.Custom);
+                            return;
+                        }
+                        else
+                        {
+                            // Stop matchmaking coroutines before leaving to switch game type
+                            LobbyManager.Instance.StopMatchmakingCoroutines();
+                            PhotonRealtimeClient.LeaveRoom();
+                        }
                     }
                     break;
                 case GameType.Clan2v2:
                 case GameType.Random2v2:
-                    if (PhotonRealtimeClient.InMatchmakingRoom) // If we are in matchmaking we don't want to do anything
+                    // Treat persistent queue rooms as matchmaking state so reopening the popup shows matchmaking panel
+                    bool inQueueRoom = false;
+                    try
                     {
+                        var curr = PhotonRealtimeClient.LobbyCurrentRoom;
+                        if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey)) inQueueRoom = true;
+                    }
+                    catch { }
+
+                    if ((PhotonRealtimeClient.InMatchmakingRoom || inQueueRoom) && gameType == SelectedGameType)
+                    {
+                        _roomSwitcher.SwitchToMatchmakingPanel(PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient);
                         return;
                     }
-                    else if (PhotonRealtimeClient.InRoom) // If we are in a normal room
+                    else if (PhotonRealtimeClient.InRoom) // If we are in a room
                     {
                         // Checking if the game type changed, if it didn't we don't want to do anything but if it did we leave the room
                         if (gameType == SelectedGameType)
@@ -184,6 +220,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
                         }
                         else
                         {
+                            // Stop matchmaking coroutines before leaving to switch game type
+                            LobbyManager.Instance.StopMatchmakingCoroutines();
                             PhotonRealtimeClient.LeaveRoom();
                         }
                     }
@@ -208,6 +246,24 @@ namespace MenuUi.Scripts.Lobby.InLobby
         {
             _roomSwitcher.ClosePanels();
             _popupContents.SetActive(false);
+        }
+
+        private void RefreshTopInfo()
+        {
+            try
+            {
+                UpdateTitle();
+                if (_topInfoPanel != null)
+                {
+                    _topInfoPanel.LobbyText = new string[2] { _currentRegion, PhotonRealtimeClient.GetPing().ToString() };
+                    _topInfoPanel.PlayerCountText = PhotonRealtimeClient.CountOfPlayers.ToString();
+                    _topInfoPanel.MatchmakingCountText = PhotonRealtimeClient.CurrentRoomPlayerCount.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"RefreshTopInfo failed: {ex.Message}");
+            }
         }
 
         private void CharacterButtonOnClick()

@@ -37,6 +37,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "Menetysten varjoihin kaivautuva, turvaansa kahlittu
     selviytyj\xE4."
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: f79c6efe173dffa47b5bd2fa311b124d, type: 2}
   Hp:
     Level: 1
@@ -59,7 +61,7 @@ MonoBehaviour:
   BattleCharacterEntityPrototype:
     Id:
       Value: 1350730571434209158
-  BattleShieldEntityPrototype:
-    Id:
-      Value: 0
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1388650063942540551
   BattleUiSprite: {fileID: 0}

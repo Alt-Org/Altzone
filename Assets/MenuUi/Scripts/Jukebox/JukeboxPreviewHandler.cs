@@ -42,7 +42,7 @@ public class JukeboxPreviewHandler : MonoBehaviour
     {
         JukeboxManager.Instance.OnSetVisibleElapsedTime += UpdateSlider;
         JukeboxManager.Instance.OnPreviewEnd += StartStoppingMusicPreview;
-        
+
         _sliderCanvasGroup.blocksRaycasts = false;
         _buttonCanvasGroup.blocksRaycasts = true;
         _sliderCanvasGroup.alpha = 0f;
@@ -88,12 +88,13 @@ public class JukeboxPreviewHandler : MonoBehaviour
         _sliderRubberbandActive = true;
         _buttonCanvasGroup.blocksRaycasts = false;
 
-        OnStartPreview.Invoke(_musicTrack, JukeboxManager.PreviewLocationType.Secondary, _musicTrack.Music.length);
+        OnStartPreview?.Invoke(_musicTrack, JukeboxManager.PreviewLocationType.Secondary, _musicTrack.Music.length);
 
         StopLocalCoroutines();
 
         _switchIndicatorCoroutine = StartCoroutine(SwitchIndicator(IndicatorType.ProgressSlider));
-        _sliderRubberbandCoroutine = StartCoroutine(_sliderRubberband.StartRubberband(0f, _musicTrack.Music.length, (data) => rubberbandDone = data));
+        _sliderRubberbandCoroutine = StartCoroutine(_sliderRubberband.StartRubberband(0f,
+            _musicTrack.Music.length, (data) => rubberbandDone = data));
 
         yield return new WaitUntil(() => rubberbandDone != null);
 
@@ -110,23 +111,24 @@ public class JukeboxPreviewHandler : MonoBehaviour
 
         while (timer < _indicatorSwitchDuration)
         {
-            yield return null;
-            timer += Time.deltaTime;
-
             float progress = _indicatorSwitchAnimationCurve.Evaluate(timer / _indicatorSwitchDuration);
 
             targetOn.alpha = Mathf.Lerp(0f, 1f, progress);
             targetOff.alpha = Mathf.Lerp(1f, 0f, progress);
+
+            yield return null;
+
+            timer += Time.deltaTime;
         }
     }
 
-    private void UpdateSlider(float musicTrackLength, float elapsedTime, JukeboxManager.PreviewLocationType type)
+    private void UpdateSlider(float musicTrackLength, float elapsedTime, JukeboxManager.PreviewLocationType type,
+        bool playAnimations = true)
     {
-        if (type != JukeboxManager.PreviewLocationType.Secondary) return;
+        if (type != JukeboxManager.PreviewLocationType.Secondary || !JukeboxManager.Instance.TrackPreviewActive ||
+            _sliderRubberbandActive) return;
 
-        if (!JukeboxManager.Instance.TrackPreviewActive) return;
-
-        if (!_sliderRubberbandActive) _previewSlider.value = elapsedTime / musicTrackLength;
+        _previewSlider.value = elapsedTime / musicTrackLength;
     }
 
     private void StartStoppingMusicPreview()
@@ -140,6 +142,7 @@ public class JukeboxPreviewHandler : MonoBehaviour
     private IEnumerator PreviewStop()
     {
         bool? rubberbandDone = null;
+
         _sliderRubberbandActive = true;
         _sliderCanvasGroup.blocksRaycasts = false;
 
@@ -154,8 +157,5 @@ public class JukeboxPreviewHandler : MonoBehaviour
         _sliderRubberbandActive = false;
     }
 
-    private void ForceStopPreview()
-    {
-        StopLocalCoroutines();
-    }
+    private void ForceStopPreview() { StopLocalCoroutines(); }
 }

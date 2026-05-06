@@ -2,9 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Prg;
+using UnityEngine;
 using UnityEngine.Networking;
-using static Prg.Debug;
 
 
 /// <summary>
@@ -210,7 +209,7 @@ public static class WebRequests
 
             if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogWarning("Error deleting data from " + address + " - " + request.error + ": " + request.downloadHandler.text);
+                Debug.LogWarning("Error deleting data from " + address + " - " + request.error + ": " /*+ request.downloadHandler.text*/);
             }
 
             if (callback != null)

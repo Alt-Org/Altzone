@@ -5,10 +5,10 @@
 
 // System usings
 using System.Collections;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 // Battle QSimulation usings
 using Battle.QSimulation;
+using Battle.QSimulation.Game;
 using Battle.QSimulation.Player;
 // Battle View usings
 using Battle.View.Game;
@@ -24,70 +24,184 @@ namespace Battle.View.Player
     /// Handles player character view logic.
     /// </summary>
     ///
-    /// [{Player Overview}](#page-concepts-player-overview)<br/>
-    /// [{Player View Code Overview}](#page-concepts-player-view-overview)
+    /// See [{PlayerCharacterViewController}](#page-concepts-player-character-view-controller) for more info.<br/>
+    /// See [{Player Overview}](#page-concepts-player-overview) for more info.<br/>
+    /// See [{Player View Code Overview}](#page-concepts-player-view-overview) for more info.
     public unsafe class BattlePlayerCharacterViewController : QuantumEntityViewComponent
     {
         /// <summary>
         /// Struct that holds a map for the player's spritesheet and handles getting a sprite from the spritesheet.
         /// </summary>
+        ///
+        /// See [{BattleSpriteSheetMap}](#page-concepts-battle-sprite-sheet-sprite-sheet-map) for more info.
         public struct SpriteSheetMap : IBattleSpriteSheetMap
         {
+            /// <summary>
+            /// Constant that defines the exact sprite count of the spritesheet.
+            /// </summary>
+            public const int Count = 64;
+
             /// <summary>
             /// Enum that maps a Sprite name to its index on the player's spritesheet.
             /// </summary>
             public enum Enum
             {
-                Base                = 0,
-                BaseHands           = 1,
-                ScaredHands         = 2,
-                Shadow              = 7,
-                Head1               = 8,
-                Head2               = 9,
-                Head3               = 10,
-                Head4               = 11,
-                Body1               = 12,
-                Body2               = 13,
-                Body3               = 14,
-                Body4               = 15,
-                HandsShieldUp1      = 16,
-                HandsShieldUp2      = 17,
-                HandsShieldUp3      = 18,
-                HandsShieldUp4      = 19,
-                BaseShoes           = 20,
-                RunningShoes1       = 21,
-                RunningShoes2       = 22,
-                HandsShieldDown1    = 24,
-                HandsShieldDown2    = 25,
-                HandsShieldDown3    = 26,
-                HandsShieldDown4    = 27,
-                ShieldUp1           = 32,
-                ShieldUp2           = 33,
-                ShieldUp3           = 34,
-                ShieldUp4           = 35,
-                ShieldUpHit1        = 36,
-                ShieldUpHit2        = 37,
-                ShieldUpHit3        = 38,
-                ShieldUpHit4        = 39,
-                ShieldDown1         = 40,
-                ShieldDown2         = 41,
-                ShieldDown3         = 42,
-                ShieldDown4         = 43,
-                ShieldDownHit1      = 44,
-                ShieldDownHit2      = 45,
-                ShieldDownHit3      = 46,
-                ShieldDownHit4      = 47,
-                Joy                 = 48,
-                Sadness             = 49,
-                Playful             = 50,
-                Agression           = 51,
-                Love                = 52,
-                ShieldBroken        = 56,
-                Defenseless         = 57,
-                Death1              = 58,
-                Death2              = 59,
-                DeadOnTheGround     = 60
+                /// <summary>Index: 00</summary>
+                Base = 0,
+
+                /// <summary>Index: 01</summary>
+                BaseHands = 1,
+
+                /// <summary>Index: 02</summary>
+                ScaredHands = 2,
+
+                /// <summary>Index: 07</summary>
+                Shadow = 7,
+
+                /// <summary>Index: 08</summary>
+                Head1 = 8,
+
+                /// <summary>Index: 09</summary>
+                Head2 = 9,
+
+                /// <summary>Index: 10</summary>
+                Head3 = 10,
+
+                /// <summary>Index: 11</summary>
+                Head4 = 11,
+
+                /// <summary>Index: 12</summary>
+                Body1 = 12,
+
+                /// <summary>Index: 13</summary>
+                Body2 = 13,
+
+                /// <summary>Index: 14</summary>
+                Body3 = 14,
+
+                /// <summary>Index: 15</summary>
+                Body4 = 15,
+
+                /// <summary>Index: 16</summary>
+                HandsShieldUp1 = 16,
+
+                /// <summary>Index: 17</summary>
+                HandsShieldUp2 = 17,
+
+                /// <summary>Index: 18</summary>
+                HandsShieldUp3 = 18,
+
+                /// <summary>Index: 19</summary>
+                HandsShieldUp4 = 19,
+
+                /// <summary>Index: 20</summary>
+                BaseShoes = 20,
+
+                /// <summary>Index: 21</summary>
+                RunningShoes1 = 21,
+
+                /// <summary>Index: 22</summary>
+                RunningShoes2 = 22,
+
+                /// <summary>Index: 24</summary>
+                HandsShieldDown1 = 24,
+
+                /// <summary>Index: 25</summary>
+                HandsShieldDown2 = 25,
+
+                /// <summary>Index: 26</summary>
+                HandsShieldDown3 = 26,
+
+                /// <summary>Index: 27</summary>
+                HandsShieldDown4 = 27,
+
+                /// <summary>Index: 32</summary>
+                ShieldUp1 = 32,
+
+                /// <summary>Index: 33</summary>
+                ShieldUp2 = 33,
+
+                /// <summary>Index: 34</summary>
+                ShieldUp3 = 34,
+
+                /// <summary>Index: 35</summary>
+                ShieldUp4 = 35,
+
+                /// <summary>Index: 36</summary>
+                ShieldUpHit1 = 36,
+
+                /// <summary>Index: 37</summary>
+                ShieldUpHit2 = 37,
+
+                /// <summary>Index: 38</summary>
+                ShieldUpHit3 = 38,
+
+                /// <summary>Index: 39</summary>
+                ShieldUpHit4 = 39,
+
+                /// <summary>Index: 40</summary>
+                ShieldDown1 = 40,
+
+                /// <summary>Index: 41</summary>
+                ShieldDown2 = 41,
+
+                /// <summary>Index: 42</summary>
+                ShieldDown3 = 42,
+
+                /// <summary>Index: 43</summary>
+                ShieldDown4 = 43,
+
+                /// <summary>Index: 44</summary>
+                ShieldDownHit1 = 44,
+
+                /// <summary>Index: 45</summary>
+                ShieldDownHit2 = 45,
+
+                /// <summary>Index: 46</summary>
+                ShieldDownHit3 = 46,
+
+                /// <summary>Index: 47</summary>
+                ShieldDownHit4 = 47,
+
+                /// <summary>Index: 48</summary>
+                Joy = 48,
+
+                /// <summary>Index: 49</summary>
+                Sadness = 49,
+
+                /// <summary>Index: 50</summary>
+                Playful = 50,
+
+                /// <summary>Index: 51</summary>
+                Agression = 51,
+
+                /// <summary>Index: 52</summary>
+                Love = 52,
+
+                /// <summary>Index: 56</summary>
+                ShieldBroken = 56,
+
+                /// <summary>Index: 57</summary>
+                Defenseless = 57,
+
+                /// <summary>Index: 58</summary>
+                Death1 = 58,
+
+                /// <summary>Index: 59</summary>
+                Death2 = 59,
+
+                /// <summary>Index: 60</summary>
+                DeadOnTheGround = 60
             }
+
+            /// <summary>
+            /// Converts int to %SpriteSheetMap
+            /// </summary>
+            ///
+            /// <param name="index">Int to be converted</param>
+            ///
+            /// <returns>EnumValue of the given index.</returns>
+            public static SpriteSheetMap FromInt(int index) => new() { EnumValue = (Enum)index };
 
             /// <summary>
             /// Implicit conversion from PlayerSpriteSheetMap to Enum.
@@ -106,151 +220,134 @@ namespace Battle.View.Player
             public static implicit operator SpriteSheetMap(Enum enumValue) => new() {EnumValue = enumValue };
 
             /// <summary>
+            /// Validates that the given <paramref name="spriteSheet"/> has the expected Sprite <see cref="Count"/>.
+            /// </summary>
+            ///
+            /// Wrapper for @cref{Battle.View,IBattleSpriteSheetMap.ValidateCount}.
+            ///
+            /// <param name="spriteSheet">Spritesheet that is being validated.</param>
+            ///
+            /// <returns>True if the spritesheet has the correct number of sprites.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static bool Validate(BattleSpriteSheet spriteSheet) => IBattleSpriteSheetMap.ValidateCount(Count, spriteSheet.Count);
+
+            /// <summary>
             /// Helper Enum for conversions.
             /// </summary>
             public Enum EnumValue;
 
             /// <summary>
-            /// Getter method that implements the interface
+            /// Method for getting the index of the correct sprite in a %BattleSpriteSheet.
             /// </summary>
             ///
-            /// <returns>EnumValue as an int</returns>
+            /// <returns>The index of the sprite.</returns>
             public readonly int GetIndex() => (int)EnumValue;
         }
+
         /// @anchor BattlePlayerCharacterViewController-SerializeFields
         /// @name SerializeField variables
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
+        #region SerializeFields
 
-        [Header("References")]
+        //{ editor
 
-        /// <summary>[SerializeField] Reference to a struct that holds the character's spritesheet</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
-        [SerializeField] private BattleSpriteSheet _spriteSheet;
+#if UNITY_EDITOR
+        /// <summary>[SerializeField] Used to disable the automatic sprite setting in the editor. @note Only for use in the Unity Editor.</summary>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-SerializeFields "SerializeFields"
+        [Header("Editor")]
+        [Tooltip("Disables the automatic sprite setting\nOnly for use in the Unity Editor")]
+        [SerializeField] private bool _autoSpriteDisable;
+#endif
+
+        //} editor
+
+        //{ references
 
         /// <summary>[SerializeField] Reference to an override character class view controller.</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
+        /// Part of @ref BattlePlayerCharacterViewController-SerializeFields "SerializeFields"
+        ///
+        /// See [{PlayerCharacterClassViewControllers}](#page-concepts-player-view-character-class-controller) for more info.
+        [Header("References")]
+        [Tooltip("Reference to an override character class view controller")]
         [SerializeField] private BattlePlayerCharacterClassBaseViewController _classViewControllerOverride;
 
-        /// <summary>[SerializeField] %Player's child <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> where heart sprite is located.</summary>
+        /// <summary>[SerializeField] Reference to an override class test view controller.</summary>
         /// @ref BattlePlayerCharacterViewController-SerializeFields
-        //[SerializeField] private GameObject _heart;
+        [Tooltip("Reference to an override class test view controller")]
+        [SerializeField] private BattlePlayerCharacterClassBaseViewController _classViewControllerTestOverride;
+
+        /// <summary>[SerializeField] Reference to a struct that holds the character's spritesheet.</summary>
+        /// Part of @ref BattlePlayerCharacterViewController-SerializeFields "SerializeFields"
+        ///
+        /// See [{BattleSpriteSheet}](#page-concepts-battle-sprite-sheet-sprite-sheet) for more info.
+        [Tooltip("Reference to a struct that holds the character's spritesheet")]
+        [SerializeField] private BattleSpriteSheet _spriteSheet;
 
         /// <summary>[SerializeField] Array of character <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
+        /// Part of @ref BattlePlayerCharacterViewController-SerializeFields "SerializeFields"
+        [Tooltip("Array of character GameObjects")]
         [SerializeField] private GameObject[] _characterGameObjects;
 
         /// <summary>[SerializeField] %Player's local player indicator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
+        /// Part of @ref BattlePlayerCharacterViewController-SerializeFields "SerializeFields"
+        [Tooltip("Player's local player indicator GameObject")]
         [SerializeField] private GameObject _localPlayerIndicator;
 
-        /// <summary>[SerializeField] Reference to the shield hit particle system.</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
+        //} references
 
+        //{ settings
+
+        /// <summary>[SerializeField] The amount of stun flashes.</summary>
+        /// Part of @ref BattlePlayerCharacterViewController-SerializeFields "SerializeFields"
         [Header("Settings")]
+        [Tooltip("The amount of stun flashes")]
+        [SerializeField] private int _stunFlashAmount;
 
-        /// <summary>[SerializeField] The transparency effect's range.</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
-        [SerializeField] private float _transparencyEffectRange;
+        //} settings
 
-        /// <summary>[SerializeField] The transparency effect's transition rate.</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
-        [SerializeField] private float _transparencyEffectTransitionRate;
-
-        /// <summary>[SerializeField] The transparency effect's minimum alpha value..</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
-        [SerializeField] private float _transparencyEffectMinimumAlpha;
-
-        /// <summary>[SerializeField] The damage flash animation's duration.</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
-        [SerializeField] private float _damageFlashDuration = 1f;
-
-        /// <summary>[SerializeField] The amount of damage flashes.</summary>
-        /// @ref BattlePlayerCharacterViewController-SerializeFields
-        [SerializeField] private int _damageFlashAmount = 5;
-
+        #endregion SerializeFields
         /// @}
 
+        #region Public
+
+        /// <summary>Public getter for <em>@ref _spriteSheet</em>.</summary>
+        ///
+        /// See [{BattleSpriteSheet}](#page-concepts-battle-sprite-sheet-sprite-sheet) for more info.
+        public BattleSpriteSheet SpriteSheet => _spriteSheet;
+
+        /// @anchor BattlePlayerCharacterViewController-Public-SpriteControlMethods
+        /// @name Public Sprite Control Methods
+        /// Methods for controlling sprites.
+        /// @{
+        #region Public - Sprite Control Methods
+
         /// <summary>
-        /// Public method that is called when entity is activated upon its creation.<br/>
-        /// Calls <see cref="PreInitSetup"/> and subscribes to <see cref="Quantum.EventBattlePlayerCharacterViewInit">EventBattlePlayerCharacterViewInit</see> event with a lambda, which
-        /// sets the player character model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.
-        /// Handles subscribing to QuantumEvents and registering to BattleViewRegistry.
+        /// Handles changing the sprite to the base sprite which contains the whole character in it's base state, bypassing the individual body part system.
         /// </summary>
         ///
-        /// <param name="_">Current simulation frame.</param>
-        public override void OnActivate(Frame _) { PreInitSetup(); QuantumEvent.Subscribe(this, (EventBattlePlayerCharacterViewInit e) =>
+        /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
+        public void SetBaseSprite()
         {
-            if (EntityRef != e.ERef) return;
-            if (!PredictedFrame.Exists(e.ERef)) return;
-
-            if (!_isRegistered)
-            {
-                BattleViewRegistry.Register(EntityRef, this);
-                _isRegistered = true;
-            }
-
-            float scale = (float)e.ModelScale;
-            transform.localScale = new Vector3(scale, scale, scale);
-
-            if (BattlePlayerManager.PlayerHandle.GetTeamNumber(e.Slot) == BattleGameViewController.LocalPlayerTeam)
-            {
-                GameObject characterGameObject = _characterGameObjects[0];
-                characterGameObject.SetActive(true);
-                _spriteRenderer = characterGameObject.GetComponent<SpriteRenderer>();
-                _bodypartSpriteRenderers[0] = characterGameObject.transform.Find("Head").GetComponent<SpriteRenderer>();
-                _bodypartSpriteRenderers[1] = characterGameObject.transform.Find("Body").GetComponent<SpriteRenderer>();
-                _bodypartSpriteRenderers[2] = characterGameObject.transform.Find("Hands").GetComponent<SpriteRenderer>();
-                _bodypartSpriteRenderers[3] = characterGameObject.transform.Find("Feet").GetComponent<SpriteRenderer>();
-                _bodypartSpriteRenderers[4] = characterGameObject.transform.Find("Shadow").GetComponent<SpriteRenderer>();
-            }
-            else
-            {
-                GameObject characterGameObject = _characterGameObjects[1];
-                characterGameObject.SetActive(true);
-                //_heart.SetActive(false);
-                _spriteRenderer = characterGameObject.GetComponent<SpriteRenderer>();
-                _bodypartSpriteRenderers[0] = characterGameObject.transform.Find("Head").GetComponent<SpriteRenderer>();
-                _bodypartSpriteRenderers[1] = characterGameObject.transform.Find("Body").GetComponent<SpriteRenderer>();
-                _bodypartSpriteRenderers[2] = characterGameObject.transform.Find("Hands").GetComponent<SpriteRenderer>();
-                _bodypartSpriteRenderers[3] = characterGameObject.transform.Find("Feet").GetComponent<SpriteRenderer>();
-                _bodypartSpriteRenderers[4] = characterGameObject.transform.Find("Shadow").GetComponent<SpriteRenderer>();
-            }
-
-            if (e.Slot == BattleGameViewController.LocalPlayerSlot)
-            {
-                _localPlayerIndicator.SetActive(true);
-            }
-
-            if (_classViewControllerOverride != null)
-            {
-                if(_classViewControllerOverride.Class == e.Class)
-                {
-                    Destroy(_classViewController);
-                    _classViewController = _classViewControllerOverride;
-                }
-                else
-                {
-                    _debugLogger.ErrorFormat("Class view controller missmatch! Expected {0}, got {1}", e.Class, _classViewControllerOverride.Class);
-                    Destroy(_classViewControllerOverride);
-                }
-            }
-
-            _spriteRenderer.sprite = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Base);
-
-            _classViewController.OnViewInit(this, e.ERef, e.Slot, e.CharacterId);
-
-            QuantumEvent.Subscribe<EventBattleInPlayStateUpdate>(this, QEventOnPlayStateUpdate);
-            QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
-            QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
-        });}
+            _bodypartSpriteRenderers[SpriteRendererHeadIndex]   .sprite = null;
+            _bodypartSpriteRenderers[SpriteRendererBodyIndex]   .sprite = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Base);
+            _bodypartSpriteRenderers[SpriteRendererHandsIndex]  .sprite = null;
+            _bodypartSpriteRenderers[SpriteRendererFeetIndex]   .sprite = null;
+            _bodypartSpriteRenderers[SpriteRendererShadowIndex] .sprite = null;
+        }
 
         /// <summary>
-        /// Handles changing the sprite for the head gameobject.
+        /// Handles changing the sprite for the head gameobject based on given <paramref name="sprite"/>.
         /// </summary>
-        /// <param name="sprite">sprite that the head sprite is being changed to.</param>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
+        ///
+        /// See [{BattleSpriteSheetMap}](#page-concepts-battle-sprite-sheet-sprite-sheet-map) for more info.
+        ///
+        /// <param name="sprite">MapValue of the desired head sprite.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void HeadSprite(SpriteSheetMap sprite)
+        public void SetHeadSprite(SpriteSheetMap sprite)
         {
             BattleDebugLogger.DevAssertFormat(nameof(BattlePlayerCharacterViewController),
                 sprite.EnumValue is
@@ -269,11 +366,16 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handles changing the sprite for the body gameobject.
+        /// Handles changing the sprite for the body gameobject based on given <paramref name="sprite"/>.
         /// </summary>
-        /// <param name="sprite">sprite that the head sprite is being changed to.</param>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
+        ///
+        /// See [{BattleSpriteSheetMap}](#page-concepts-battle-sprite-sheet-sprite-sheet-map) for more info.
+        ///
+        /// <param name="sprite">MapValue of the desired body sprite.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void BodySprite(SpriteSheetMap sprite)
+        public void SetBodySprite(SpriteSheetMap sprite)
         {
             BattleDebugLogger.DevAssertFormat(nameof(BattlePlayerCharacterViewController),
                 sprite.EnumValue is
@@ -287,11 +389,16 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handles changing the sprite for the hand gameobject.
+        /// Handles changing the sprite for the hand gameobject based on given <paramref name="sprite"/>.
         /// </summary>
-        /// <param name="sprite">sprite that the hand sprite is being changed to.</param>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
+        ///
+        /// See [{BattleSpriteSheetMap}](#page-concepts-battle-sprite-sheet-sprite-sheet-map) for more info.
+        ///
+        /// <param name="sprite">MapValue of the desired hand sprite.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void HandSprite(SpriteSheetMap sprite)
+        public void SetHandSprite(SpriteSheetMap sprite)
         {
             BattleDebugLogger.DevAssertFormat(nameof(BattlePlayerCharacterViewController),
                 sprite.EnumValue is
@@ -311,11 +418,16 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handles changing the sprite for the feet gameobject.
+        /// Handles changing the sprite for the feet gameobject based on given <paramref name="sprite"/>.
         /// </summary>
-        /// <param name="sprite">sprite that the hand sprite is being changed to.</param>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
+        ///
+        /// See [{BattleSpriteSheetMap}](#page-concepts-battle-sprite-sheet-sprite-sheet-map) for more info.
+        ///
+        /// <param name="sprite">MapValue of the desired feet sprite.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void FeetSprite(SpriteSheetMap sprite)
+        public void SetFeetSprite(SpriteSheetMap sprite)
         {
             BattleDebugLogger.DevAssertFormat(nameof(BattlePlayerCharacterViewController),
                 sprite.EnumValue is
@@ -327,25 +439,132 @@ namespace Battle.View.Player
             _bodypartSpriteRenderers[3].sprite = _spriteSheet.GetSprite(sprite);
         }
 
+        #endregion Public - Sprite Control Methods
+        /// @}
+
+        /// @anchor BattlePlayerCharacterViewController-Public-GameflowMethods
+        /// @name Public Gameflow Methods
+        /// @{
+        #region Public - Gameflow Methods
+
         /// <summary>
-        /// Handler method for EventBattleInPlayStateUpdate QuantumEvent.<br/>
-        /// Updates the _isInPlay bool.
+        /// Public method that is called when entity is activated upon its creation.<br/>
+        /// Calls <see cref="PreInitSetup"></see> and subscribes to <see cref="Quantum.EventBattlePlayerCharacterViewInit">EventBattlePlayerCharacterViewInit</see> event with a lambda, which
+        /// sets the player character model scale and active <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.<br/>
+        /// Handles subscribing to QuantumEvents and registering to %BattleViewRegistry.
         /// </summary>
-        /// <param name="e">The event data.</param>
-        public void QEventOnPlayStateUpdate(EventBattleInPlayStateUpdate e)
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Public-GameflowMethods "Public Gameflow Methods"
+        ///
+        /// <param name="_">Current simulation frame.</param>
+        public override void OnActivate(Frame _) { PreInitSetup(); QuantumEvent.Subscribe(this, (EventBattlePlayerCharacterViewInit e) =>
         {
-            if (e.ERef != EntityRef) return;
-            _isInPlay = e.IsInPlay;
-        }
+            if (EntityRef != e.ERef) return;
+
+            bool isTestMode = BattleParameters.GetIsTestMode(_);
+
+            //{ initialize visuals
+
+            float scale = (float)e.ModelScale;
+            transform.localScale = new Vector3(scale, scale, scale);
+
+            if (BattlePlayerManager.PlayerHandle.GetTeamNumber(e.Slot) == BattleGameViewController.LocalPlayerTeam)
+            {
+                GameObject characterGameObject = _characterGameObjects[0];
+                characterGameObject.SetActive(true);
+                _bodypartSpriteRenderers[SpriteRendererHeadIndex]   = characterGameObject.transform.Find("Head").GetComponent<SpriteRenderer>();
+                _bodypartSpriteRenderers[SpriteRendererBodyIndex]   = characterGameObject.transform.Find("Body").GetComponent<SpriteRenderer>();
+                _bodypartSpriteRenderers[SpriteRendererHandsIndex]  = characterGameObject.transform.Find("Hands").GetComponent<SpriteRenderer>();
+                _bodypartSpriteRenderers[SpriteRendererFeetIndex]   = characterGameObject.transform.Find("Feet").GetComponent<SpriteRenderer>();
+                _bodypartSpriteRenderers[SpriteRendererShadowIndex] = characterGameObject.transform.Find("Shadow").GetComponent<SpriteRenderer>();
+            }
+            else
+            {
+                GameObject characterGameObject = _characterGameObjects[1];
+                characterGameObject.SetActive(true);
+                //_heart.SetActive(false);
+                _bodypartSpriteRenderers[SpriteRendererHeadIndex]   = characterGameObject.transform.Find("Head").GetComponent<SpriteRenderer>();
+                _bodypartSpriteRenderers[SpriteRendererBodyIndex]   = characterGameObject.transform.Find("Body").GetComponent<SpriteRenderer>();
+                _bodypartSpriteRenderers[SpriteRendererHandsIndex]  = characterGameObject.transform.Find("Hands").GetComponent<SpriteRenderer>();
+                _bodypartSpriteRenderers[SpriteRendererFeetIndex]   = characterGameObject.transform.Find("Feet").GetComponent<SpriteRenderer>();
+                _bodypartSpriteRenderers[SpriteRendererShadowIndex] = characterGameObject.transform.Find("Shadow").GetComponent<SpriteRenderer>();
+            }
+
+            SetBaseSprite();
+
+            if (e.Slot == BattleGameViewController.LocalPlayerSlot)
+            {
+                _localPlayerIndicator.SetActive(true);
+            }
+
+            //} initialize visuals
+
+            //{ initialize class view controller
+
+            BattlePlayerCharacterClassBaseViewController pickedClass = null;
+            BattlePlayerCharacterClassBaseViewController notPickedClass = null;
+            bool classPicked = false;
+
+            switch (BattlePlayerClassManager.PickClass(_classViewControllerOverride, _classViewControllerTestOverride, isTestMode))
+            {
+                case BattlePlayerClassManager.ClassOption.UseClass:
+                    pickedClass = _classViewControllerOverride;
+                    notPickedClass = _classViewControllerTestOverride;
+                    classPicked = true;
+                    break;
+
+                case BattlePlayerClassManager.ClassOption.UseTestClass:
+                    pickedClass = _classViewControllerTestOverride;
+                    notPickedClass = _classViewControllerOverride;
+                    classPicked = true;
+                    break;
+
+                case BattlePlayerClassManager.ClassOption.UseNone:
+                    Destroy(_classViewControllerOverride);
+                    Destroy(_classViewControllerTestOverride);
+                    break;
+            }
+
+            if (classPicked)
+            {
+                if (pickedClass.Class == e.CharacterClass)
+                {
+                    Destroy(_classViewController);
+                    _classViewController = pickedClass;
+                }
+                else
+                {
+                    _debugLogger.ErrorFormat("Class view controller mismatch! Expected {0}, got {1}", e.CharacterClass, pickedClass.Class);
+                    Destroy(pickedClass);
+                }
+                Destroy(notPickedClass);
+            }
+
+            _classViewController.OnViewInit(this, e.ERef, e.Slot, e.CharacterId);
+
+            //} initialize class view controller
+
+            // initialize shield view controller reference array
+            _playerShieldViewControllers = new BattlePlayerShieldViewController[e.ShieldCount];
+
+            // register character view controller
+            BattleViewRegistry.Register(EntityRef, this);
+
+            // subscribe to quantum events
+            QuantumEvent.Subscribe<EventBattlePlayStateUpdate>(this, QEventOnPlayStateUpdate);
+            QuantumEvent.Subscribe<EventBattleCharacterHit>(this, QEventOnCharacterHit);
+            QuantumEvent.Subscribe<EventBattleShieldHit>(this, QEventOnShieldHit);
+        });}
 
         /// <summary>
         /// Public method that is called when the view should update.<br/>
-        /// Calls <see cref="BattlePlayerCharacterViewController.UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to update the player character model's position
+        /// Calls <see cref="UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to adjust the player character model's position.
         /// </summary>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Public-GameflowMethods "Public Gameflow Methods"
         public override void OnUpdateView()
         {
             if (!_isInPlay) return;
-            if (!PredictedFrame.Exists(EntityRef)) return;
             BattlePlayerDataQComponent* playerData = PredictedFrame.Unsafe.GetPointer<BattlePlayerDataQComponent>(EntityRef);
             if (playerData->PlayerRef == PlayerRef.None) return;
 
@@ -353,70 +572,83 @@ namespace Battle.View.Player
             BattleTeamNumber battleTeamNumber = playerData->TeamNumber;
 
             UpdateModelPositionAdjustment(&targetPosition);
-            //UpdateAnimator(&targetPosition, battleTeamNumber);
-
-            //if (BattleGameViewController.ProjectileReference != null)
-            //{
-            //    if (Vector3.Distance(gameObject.transform.position, BattleGameViewController.ProjectileReference.transform.position) <= _transparencyEffectRange && _spriteRenderer.color.a > _transparencyEffectMinimumAlpha)
-            //    {
-            //        Color tempColor = _spriteRenderer.color;
-            //        tempColor.a = Mathf.Clamp(tempColor.a - _transparencyEffectTransitionRate * Time.deltaTime, _transparencyEffectMinimumAlpha, 1);
-            //        _spriteRenderer.color = tempColor;
-            //    }
-            //    else if (_spriteRenderer.color.a < 1)
-            //    {
-            //        Color tempColor = _spriteRenderer.color;
-            //        tempColor.a = Mathf.Clamp(tempColor.a + _transparencyEffectTransitionRate * Time.deltaTime, _transparencyEffectMinimumAlpha, 1);
-            //        _spriteRenderer.color = tempColor;
-            //    }
-            //}
 
             _classViewController.OnUpdateView();
         }
 
         /// <summary>
-        /// Binds the shield view controller to the _playerShieldViewControllers dictionary to be able to call on it later.
+        /// Binds the <paramref name="shieldViewController"/>
+        /// to the <see cref="_playerShieldViewControllers">_playerShieldViewControllers</see> array based on <paramref name="shieldNumber"/>
+        /// during startup to be able to use it later.
         /// </summary>
         ///
-        /// <param name="shieldViewController">pointer to a shield view controller associated with the character.</param>
-        public void BindShield(BattlePlayerShieldViewController shieldViewController)
+        /// Part of @ref BattlePlayerCharacterViewController-Public-GameflowMethods "Public Gameflow Methods"
+        ///
+        /// <param name="shieldViewController">Pointer to a shield view controller associated with the character.</param>
+        /// <param name="shieldNumber">ShieldNumber of the shield being bound.</param>
+        public void BindShield(BattlePlayerShieldViewController shieldViewController, int shieldNumber)
         {
-            _playerShieldViewControllers[shieldViewController.EntityRef] = shieldViewController;
+            _playerShieldViewControllers[shieldNumber] = shieldViewController;
         }
 
-        /*public void UnbindShield(EntityRef shieldEntity)
-        {
-            _playerShieldViewControllers.Remove(shieldEntity);
-        }*/
+        #endregion Public - Gameflow Methods
+        /// @}
 
-        /// <summary>This classes BattleDebugLogger instance.</summary>
+        #endregion Public
+
+        #region Private
+
+        /// @name Constant Private SpriteRenderer Index Attributes
+        /// @{
+
+        /// <summary>Constant for the head sprite renderer's index.</summary>
+        private const int SpriteRendererHeadIndex = 0;
+        /// <summary>Constant for the body sprite renderer's index.</summary>
+        private const int SpriteRendererBodyIndex = 1;
+        /// <summary>Constant for the hands sprite renderer's index.</summary>
+        private const int SpriteRendererHandsIndex = 2;
+        /// <summary>Constant for the feet sprite renderer's index.</summary>
+        private const int SpriteRendererFeetIndex = 3;
+        /// <summary>Constant for the shadow sprite renderer's index.</summary>
+        private const int SpriteRendererShadowIndex = 4;
+
+        /// @}
+
+        /// <summary>This classes %BattleDebugLogger instance.</summary>
         private BattleDebugLogger _debugLogger;
 
-        /// <value>Reference to the active character's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SpriteRenderer.html">SpriteRenderer@u-exlink</a>.</value>
-        private SpriteRenderer _spriteRenderer;
-
-        /// <value>Holder variable for the damage flash coroutine.</value>
-        private Coroutine _damageFlashCoroutine = null;
-
-        /// <value>Reference to the active character class view controller.</value>
-        private BattlePlayerCharacterClassBaseViewController _classViewController;
-
-        /// <summary>Dictionary that holds the shield view controllers associated with this character view controller.</summary>
-        private readonly Dictionary<EntityRef, BattlePlayerShieldViewController> _playerShieldViewControllers = new();
-
-        /// <summary>Boolean that prevents this character view controller from being registered multiple times to the BattleViewRegistry.</summary>
-        private bool _isRegistered = false;
-
-        /// <summary>Boolean that tells whether the Quantum Entity this ViewController is attached to is in play.</summary>
+        /// <summary>%Boolean that tells whether the %Quantum Entity this ViewController is attached to is in play.</summary>
+        ///
+        /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
         private bool _isInPlay;
 
+        /// <summary>Reference to the active character class view controller.</summary>
+        ///
+        /// See [{PlayerCharacterClassViewControllers}](#page-concepts-player-view-character-class-controller) for more info.
+        private BattlePlayerCharacterClassBaseViewController _classViewController;
+
         /// <summary>Array that holds the SpriteRenderer components of each body part gameobject.</summary>
-        private SpriteRenderer[] _bodypartSpriteRenderers;
+        private readonly SpriteRenderer[] _bodypartSpriteRenderers = new SpriteRenderer[5];
+
+        /// <summary>Reference to the currently running <see cref="StunFlashCoroutine(float)">StunFlashCoroutine</see>.</summary>
+        private Coroutine _stunFlashCoroutine = null;
+
+        /// <summary>Array that holds references to the shield view controllers associated with this character view controller.</summary>
+        ///
+        /// See [{PlayerShieldViewController}](#page-concepts-player-shield-view-controller) for more info.
+        private BattlePlayerShieldViewController[] _playerShieldViewControllers;
+
+        /// @anchor BattlePlayerCharacterViewController-Private-GameflowMethods
+        /// @name Private Gameflow Methods
+        /// @{
+        #region Private Gameflow Methods
 
         /// <summary>
         /// Handles setup that needs to happen before <see cref="Quantum.EventBattlePlayerCharacterViewInit">EventBattlePlayerCharacterViewInit</see> event is received.<br/>
         /// Currently this is needed for initializing character's class as none.
         /// </summary>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Private-GameflowMethods "Private Gameflow Methods"
         private void PreInitSetup()
         {
             _debugLogger = BattleDebugLogger.Create<BattlePlayerCharacterViewController>();
@@ -424,24 +656,86 @@ namespace Battle.View.Player
             _classViewController = gameObject.AddComponent<BattlePlayerCharacterClassNoneViewController>();
         }
 
+        #endregion Private Gameflow Methods
+        /// @}
+
+        /// @anchor BattlePlayerCharacterViewController-Private-QuantumEventHandlers
+        /// @name Private QuantumEvent Handlers
+        /// Methods for handling QuantumEvents.
+        /// @{
+        #region Private QuantumEvent Handlers
+
         /// <summary>
-        /// Forwards the parameter event to every shield view controller bound to this character view controller.
+        /// Handler method for <see cref="Quantum.EventBattlePlayStateUpdate">EventBattlePlayStateUpdate</see> QuantumEvent.<br/>
+        /// Updates the <see cref="_isInPlay">_isInPlay</see> bool.
         /// </summary>
         ///
-        /// <param name="e">Shield take damage event that needs to be forwarded.</param>
-        private void QEventOnShieldTakeDamage(EventBattleShieldTakeDamage e)
+        /// Part of @ref BattlePlayerCharacterViewController-Private-QuantumEventHandlers "Private QuantumEvent Handlers"
+        ///
+        /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
+        ///
+        /// <param name="e">The event data.</param>
+        private void QEventOnPlayStateUpdate(EventBattlePlayStateUpdate e)
         {
-            foreach (BattlePlayerShieldViewController shield in _playerShieldViewControllers.Values)
+            if (e.ERef != EntityRef) return;
+            _isInPlay = e.IsInPlay;
+
+            _classViewController.OnPlayStateUpdate(e);
+        }
+
+        /// <summary>
+        /// Handler method for <see cref="Quantum.EventBattleCharacterHit">EventBattleCharacterHit</see> QuantumEvent.<br/>
+        /// Starts <see cref="BattlePlayerCharacterViewController.StunFlashCoroutine">DamageFlashCoroutine</see>.
+        /// </summary>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Private-QuantumEventHandlers "Private QuantumEvent Handlers"
+        ///
+        /// <param name="e">The event data.</param>
+        private void QEventOnCharacterHit(EventBattleCharacterHit e)
+        {
+            if (EntityRef != e.ERef) return;
+
+            if (_stunFlashCoroutine != null)
             {
-                shield.OnShieldTakeDamage(e);
+                StopCoroutine(_stunFlashCoroutine);
+            }
+            _stunFlashCoroutine = StartCoroutine(StunFlashCoroutine((float)e.StunFlashDurationSec));
+
+            _classViewController.OnCharacterHit(e);
+
+            foreach (BattlePlayerShieldViewController shield in _playerShieldViewControllers)
+            {
+                shield.OnCharacterHit(e);
             }
         }
 
         /// <summary>
-        /// Updates the player character model's position.
+        /// Forwards the <see cref="Quantum.EventBattleShieldHit">EventBattleShieldHit</see> QuantumEvent to every shield view controller bound to this character view controller.
         /// </summary>
         ///
-        /// <param name="targetPosition">Target position Vector3.</param>
+        /// Part of @ref BattlePlayerCharacterViewController-Private-QuantumEventHandlers "Private QuantumEvent Handlers"
+        ///
+        /// <param name="e">The event data that is forwarded.</param>
+        private void QEventOnShieldHit(EventBattleShieldHit e)
+        {
+            foreach (BattlePlayerShieldViewController shield in _playerShieldViewControllers)
+            {
+                if (shield.EntityRef != e.ERef) return;
+                shield.OnShieldHit(e);
+            }
+        }
+
+        #endregion Private QuantumEvent Handlers
+        /// @}
+
+        /// @name Other Private Methods
+        /// @{
+
+        /// <summary>
+        /// Private helper method for adjusting the player character model's position based on <paramref name="targetPosition"/>.
+        /// </summary>
+        ///
+        /// <param name="targetPosition">Target position.</param>
         private void UpdateModelPositionAdjustment(Vector3* targetPosition)
         {
             const float adjustmentDistance = 0.25f;
@@ -457,46 +751,38 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handler method for EventBattleCharacterTakeDamage QuantumEvent.<br/>
-        /// Starts <see cref="BattlePlayerCharacterViewController.DamageFlashCoroutine">DamageFlashCoroutine</see>.
-        /// </summary>
-        ///
-        /// <param name="e">The event data.</param>
-        private void QEventOnCharacterTakeDamage(EventBattleCharacterTakeDamage e)
-        {
-            if (EntityRef != e.ERef) return;
-
-            if (_damageFlashCoroutine != null)
-            {
-                StopCoroutine(_damageFlashCoroutine);
-            }
-            _damageFlashCoroutine = StartCoroutine(DamageFlashCoroutine());
-
-            _classViewController.OnCharacterTakeDamage(e);
-        }
-
-        /// <summary>
-        /// Coroutine which plays the damage flash animation.
+        /// Coroutine which plays the stun flash animation.
         /// </summary>
         ///
         /// <returns>Coroutine IEnumerator.</returns>
-        private IEnumerator DamageFlashCoroutine()
+        private IEnumerator StunFlashCoroutine(float stunFlashDurationSec)
         {
             Color tempColor;
-            for (int i = 0; i < _damageFlashAmount; i++)
+            float singleFlashDuration = stunFlashDurationSec / (_stunFlashAmount * 2 - 1);
+            for (int i = 0; i < _stunFlashAmount; i++)
             {
-                tempColor = _spriteRenderer.color;
-                tempColor.a = 0;
-                _spriteRenderer.color = tempColor;
+                foreach (SpriteRenderer sprite in _bodypartSpriteRenderers)
+                {
+                    tempColor = sprite.color;
+                    tempColor.a = 0;
+                    sprite.color = tempColor;
+                }
 
-                yield return new WaitForSeconds(_damageFlashDuration / (2 * _damageFlashAmount));
+                yield return new WaitForSeconds(singleFlashDuration);
 
-                tempColor = _spriteRenderer.color;
-                tempColor.a = 1;
-                _spriteRenderer.color = tempColor;
+                foreach (SpriteRenderer sprite in _bodypartSpriteRenderers)
+                {
+                    tempColor = sprite.color;
+                    tempColor.a = 1;
+                    sprite.color = tempColor;
+                }
 
-                yield return new WaitForSeconds(_damageFlashDuration / (2 * _damageFlashAmount));
+                yield return new WaitForSeconds(singleFlashDuration);
             }
         }
+
+        /// @}
+
+        #endregion Private
     }
 }

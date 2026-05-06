@@ -19,59 +19,6 @@ using Photon.Deterministic;
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
 
-namespace Quantum
-{
-    // Adds functionality to create entities from prototypes and retrieve transform and data components.
-    public unsafe partial struct BattlePlayerEntityRef
-    {
-        /// <summary>
-        /// default BattlePlayerEntityRef
-        /// </summary>
-        public static BattlePlayerEntityRef None => default;
-
-        /// <summary>
-        /// Creates a player entity.
-        /// </summary>
-        /// <param name="f">Current simulation frame.</param>
-        /// <returns>Reference to the created entity.</returns>
-        public static BattlePlayerEntityRef Create(Frame f) => (BattlePlayerEntityRef)f.Create();
-
-        /// <summary>
-        /// Creates a player entity from a prototype.
-        /// </summary>
-        /// <param name="f">Current simulation frame.</param>
-        /// <param name="prototype">Prototype player entity is created from.</param>
-        /// <returns>Reference to the created entity.</returns>
-        public static BattlePlayerEntityRef Create(Frame f, AssetRef<EntityPrototype> prototype) => (BattlePlayerEntityRef)f.Create(prototype);
-
-        /// <summary>
-        /// Implicit conversion from BattlePlayerEntityRef to EntityRef.
-        /// </summary>
-        /// <param name="battlePlayerEntityRef">BattlePlayerEntityRef that's being converted.</param>
-        public static implicit operator EntityRef(BattlePlayerEntityRef battlePlayerEntityRef) => battlePlayerEntityRef.ERef;
-
-        /// <summary>
-        /// Explicit conversion from EntityRef to BattlePlayerEntityRef.
-        /// </summary>
-        /// <param name="entityRef">EntityRef that's being converted.</param>
-        public static explicit operator BattlePlayerEntityRef(EntityRef entityRef) => new() { ERef = entityRef };
-
-        /// <summary>
-        /// Retrieves Transform2D of this entity.
-        /// </summary>
-        /// <param name="f">Current simulation frame.</param>
-        /// <returns>Transform2D of this entity.</returns>
-        public readonly Transform2D* GetTransform(Frame f) => f.Unsafe.GetPointer<Transform2D>(ERef);
-
-        /// <summary>
-        /// Retrieves this entity's player data component's pointer.
-        /// </summary>
-        /// <param name="f">Current simulation frame.</param>
-        /// <returns>This entity's player data component's pointer</returns>
-        public readonly BattlePlayerDataQComponent* GetDataQComponent(Frame f) => f.Unsafe.GetPointer<BattlePlayerDataQComponent>(ERef);
-    }
-}
-
 namespace Battle.QSimulation.Player
 {
     /// <summary>
@@ -79,11 +26,19 @@ namespace Battle.QSimulation.Player
     /// Provides static methods to initialize, spawn, despawn, and query player-related data.
     /// </summary>
     ///
-    /// [{Player Overview}](#page-concepts-player-overview)<br/>
-    /// [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview)
+    /// @bigtext{See [{PlayerManager}](#page-concepts-player-simulation-management-playermanager) for more info.}<br/>
+    /// @bigtext{See [{Player Overview}](#page-concepts-player-overview) for more info.}<br/>
+    /// @bigtext{See [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview) for more info.}<br/>
     ///
     /// Handles initializing players that are present in the game, as well as spawning and despawning player characters.<br/>
-    /// Also contains the public and private PlayerHandle structs.
+    /// The @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandle} and @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandleInternal} structs are used internally.
+    ///
+    /// @anchor BattlePlayerManager-PlayerIndex
+    /// @bigtext{**%Player Index**}
+    ///
+    /// %Player Index is used internally to index player data arrays in @cref{Quantum,BattlePlayerManagerDataQSingleton}.
+    /// %Player [{Slots}](#page-concepts-player-slots-teams) are mapped to the internal %Player Indices using the @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandleInternal}
+    /// @ref BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerIndexGetters "Player Index Getter" methods.
     public static unsafe partial class BattlePlayerManager
     {
         #region Public
@@ -259,261 +214,261 @@ namespace Battle.QSimulation.Player
 
                 BattleEntityManager.CompoundEntityTemplate[] playerCharacterEntityArray = new BattleEntityManager.CompoundEntityTemplate[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
 
-                // create playerEntity for each character
+                //{ create playerEntity for each character
+
+                //{ player temp variables
+                FP   playerRotationBase;
+                int  playerGridExtendTop;
+                int  playerGridExtendBottom;
+                bool playerFlipped;
+                //} player temp variables
+
+                //{ set player common temp variables (used for all characters)
+
+                if (teamNumber == BattleTeamNumber.TeamAlpha)
                 {
-                    //{ player temp variables
-                    FP   playerRotationBase;
-                    int  playerGridExtendTop;
-                    int  playerGridExtendBottom;
-                    bool playerFlipped;
-                    //} player temp variables
+                    playerRotationBase = FP._0;
+                    playerFlipped = false;
+                }
+                else
+                {
+                    playerRotationBase = FP.Rad_180;
+                    playerFlipped = true;
+                }
 
-                    //{ set player common temp variables (used for all characters)
+                //} set player common temp variables
 
-                    //playerHitboxExtents = BattleGridManager.GridScaleFactor * FP._0_50;
+                for (int playerCharacterNumber = 0; playerCharacterNumber < playerCharacterEntityArray.Length; playerCharacterNumber++)
+                {
+                    // set id and class
+                    BattlePlayerCharacterID    playerCharacterId    = battleBaseCharacters[playerCharacterNumber].Id;
+                    BattlePlayerCharacterClass playerCharacterClass = battleBaseCharacters[playerCharacterNumber].Class;
 
-                    if (teamNumber == BattleTeamNumber.TeamAlpha)
+                    s_debugLogger.LogFormat(f, "({0}) Creating character, number {1}\n" +
+                                            "Character ID:    {2},\n" +
+                                            "Character Class: {3}",
+                                            playerSlot,
+                                            playerCharacterNumber,
+                                            playerCharacterId,
+                                            playerCharacterClass
+                    );
+
+                    // get entity prototype
+                    AssetRef<EntityPrototype> playerCharacterEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(playerCharacterId);
+                    if (playerCharacterEntityPrototype == null)
                     {
-                        playerRotationBase = FP._0;
-                        playerFlipped = false;
-                    }
-                    else
-                    {
-                        playerRotationBase = FP.Rad_180;
-                        playerFlipped = true;
-                    }
+                        const int FallbackId = 0;
 
-                    //} set player common temp variables
+                        s_debugLogger.ErrorFormat(f, "({0}) Failed to fetch player character entity prototype ID {1}\nUsing fallback ID {2}", playerSlot, playerCharacterId, FallbackId);
 
-                    for (int playerCharacterNumber = 0; playerCharacterNumber < playerCharacterEntityArray.Length; playerCharacterNumber++)
-                    {
-                        // set id and class
-                        BattlePlayerCharacterID playerCharacterId = battleBaseCharacters[playerCharacterNumber].Id;
-                        BattlePlayerCharacterClass playerClass    = (BattlePlayerCharacterClass)battleBaseCharacters[playerCharacterNumber].Class;
+                        playerCharacterId              = FallbackId;
+                        playerCharacterClass           = BattlePlayerCharacterClass.None;
+                        playerCharacterEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(playerCharacterId);
 
-                        s_debugLogger.LogFormat(f, "({0}) Creating character, number {1}\n" +
+                        s_debugLogger.LogFormat(f, "({0}) Creating fallback character, number {1}\n" +
                                                 "Character ID:    {2},\n" +
                                                 "Character Class: {3}",
                                                 playerSlot,
                                                 playerCharacterNumber,
                                                 playerCharacterId,
-                                                playerClass
+                                                playerCharacterClass
+                        );
+                    }
+
+                    // load class
+                    BattlePlayerClassManager.LoadClass(f, playerCharacterClass);
+
+                    // create entity
+                    BattlePlayerEntityRef playerCharacterEntity = BattlePlayerEntityRef.Create(f, playerCharacterEntityPrototype);
+                    BattleEntityManager.CompoundEntityTemplate playerCharacterEntityTemplate = BattleEntityManager.CompoundEntityTemplate.Create(playerCharacterEntity, 1);
+
+                    // get template data
+                    BattlePlayerDataTemplateQComponent* playerCharacterDataTemplate = f.Unsafe.GetPointer<BattlePlayerDataTemplateQComponent>(playerCharacterEntity);
+                    int playerHitboxListCharacterColliderTemplateCount              = f.TryResolveList(playerCharacterDataTemplate->Hitbox.ColliderTemplateList, out QList<BattlePlayerHitboxColliderTemplate> playerHitboxListCharacterColliderTemplate) ? playerHitboxListCharacterColliderTemplate.Count : 0;
+
+                    //{ set temp variables
+
+                    if (!playerFlipped)
+                    {
+                        playerGridExtendTop    = playerCharacterDataTemplate->GridExtendTop;
+                        playerGridExtendBottom = playerCharacterDataTemplate->GridExtendBottom;
+                    }
+                    else
+                    {
+                        playerGridExtendTop    = playerCharacterDataTemplate->GridExtendBottom;
+                        playerGridExtendBottom = playerCharacterDataTemplate->GridExtendTop;
+                    }
+
+                    //} set temp variables
+
+                    //{ create player hitBox
+
+                    // create hitBox entity
+                    EntityRef playerCharacterHitboxEntity = f.Create();
+                    if (playerHitboxListCharacterColliderTemplateCount <= 0)
+                    {
+                        playerCharacterHitboxEntity = EntityRef.None;
+                        continue;
+                    }
+
+                    // set hitbox temp variables
+                    BattlePlayerCollisionType playerHitboxCollisionType = playerCharacterDataTemplate->Hitbox.CollisionType;
+                    FP                        playerHitboxAngleRad      = FP.Deg2Rad * playerCharacterDataTemplate->Hitbox.NormalAngleDeg;
+
+                    //{ initialize hitBox collider
+
+                    PhysicsCollider2D playerHitboxCollider = PhysicsCollider2D.Create(f,
+                        shape: Shape2D.CreatePersistentCompound(),
+                        isTrigger: true
+                    );
+
+                    int playerHitboxHeight = 0;
+
+                    foreach (BattlePlayerHitboxColliderTemplate playerHitboxColliderTemplate in playerHitboxListCharacterColliderTemplate)
+                    {
+                        playerHitboxHeight = Mathf.Max(playerHitboxColliderTemplate.Position.Y, playerHitboxHeight);
+
+                        FPVector2 playerHitboxExtents = new(
+                            (FP)playerHitboxColliderTemplate.Size.X * BattleGridManager.GridScaleFactor * FP._0_50,
+                            (FP)playerHitboxColliderTemplate.Size.Y * BattleGridManager.GridScaleFactor * FP._0_50
                         );
 
-                        // get entity prototypes
-                        AssetRef<EntityPrototype> playerCharacterEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(playerCharacterId);
-                        if (playerCharacterEntityPrototype == null)
-                        {
-                            const int FallbackId = 0;
-
-                            s_debugLogger.ErrorFormat(f, "({0}) Failed to fetch player character entity prototype ID {1}\nUsing fallback ID {2}", playerSlot, playerCharacterId, FallbackId);
-
-                            playerCharacterId     = FallbackId;
-                            playerClass           = BattlePlayerCharacterClass.None;
-                            playerCharacterEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(playerCharacterId);
-
-                            s_debugLogger.LogFormat(f, "({0}) Creating fallback character, number {1}\n" +
-                                                    "Character ID:    {2},\n" +
-                                                    "Character Class: {3}",
-                                                    playerSlot,
-                                                    playerCharacterNumber,
-                                                    playerCharacterId,
-                                                    playerClass
-                            );
-                        }
-
-                        // create entity
-                        BattlePlayerEntityRef playerCharacterEntity = BattlePlayerEntityRef.Create(f, playerCharacterEntityPrototype);
-
-                        BattleEntityManager.CompoundEntityTemplate playerCharacterEntityTemplate = BattleEntityManager.CompoundEntityTemplate.Create(playerCharacterEntity, 1);
-
-                        // get template data
-                        BattlePlayerDataTemplateQComponent* playerCharacterDataTemplate = f.Unsafe.GetPointer<BattlePlayerDataTemplateQComponent>(playerCharacterEntity);
-                        int playerHitboxListCharacterColliderTemplateCount              = f.TryResolveList(playerCharacterDataTemplate->HitboxCharacter.ColliderTemplateList, out QList<BattlePlayerHitboxColliderTemplate> playerHitboxListCharacterColliderTemplate) ? playerHitboxListCharacterColliderTemplate.Count : 0;
-
-                        //{ set temp variables
-
-                        if (!playerFlipped)
-                        {
-                            playerGridExtendTop    = playerCharacterDataTemplate->GridExtendTop;
-                            playerGridExtendBottom = playerCharacterDataTemplate->GridExtendBottom;
-                        }
-                        else
-                        {
-                            playerGridExtendTop    = playerCharacterDataTemplate->GridExtendBottom;
-                            playerGridExtendBottom = playerCharacterDataTemplate->GridExtendTop;
-                        }
-
-                        //} set temp variables
-
-                        // load class
-                        BattlePlayerClassManager.LoadClass(playerClass);
-
-                        //{ create player hitBox
-
-                        // create hitBox entity
-
-                        EntityRef playerHitboxCharacterEntity = f.Create();
-
-                        //{ initialize collisionTrigger component
-
-                        if (playerHitboxListCharacterColliderTemplateCount <= 0)
-                        {
-                            playerHitboxCharacterEntity = EntityRef.None;
-                            continue;
-                        };
-
-                        BattlePlayerHitboxType playerHitboxType             = BattlePlayerHitboxType.Character;
-                        BattlePlayerCollisionType playerHitboxCollisionType = playerCharacterDataTemplate->HitboxCharacter.CollisionType;
-                        FP playerHitboxAngleRad                             = FP.Deg2Rad * playerCharacterDataTemplate->HitboxCharacter.NormalAngleDeg;
-
-                        BattleCollisionTriggerQComponent collisionTrigger = BattleCollisionQSystem.CreateCollisionTriggerComponent(BattleCollisionTriggerType.Player);
-
-                        // initialize hitBox collider
-                        PhysicsCollider2D playerHitboxCollider = PhysicsCollider2D.Create(f,
-                            shape: Shape2D.CreatePersistentCompound(),
-                            isTrigger: true
+                        FPVector2 playerHitboxPosition = new(
+                            ((FP)playerHitboxColliderTemplate.Position.X - FP._0_50) * BattleGridManager.GridScaleFactor + playerHitboxExtents.X,
+                            ((FP)playerHitboxColliderTemplate.Position.Y + FP._0_50) * BattleGridManager.GridScaleFactor - playerHitboxExtents.Y
                         );
 
-                        // initialize hitbox height
-                        int playerHitboxHeight = 0;
+                        Shape2D playerHitboxColliderPart = Shape2D.CreateBox(playerHitboxExtents, playerHitboxPosition);
+                        playerHitboxCollider.Shape.Compound.AddShape(f, ref playerHitboxColliderPart);
+                    }
 
-                        foreach (BattlePlayerHitboxColliderTemplate playerHitboxColliderTemplate in playerHitboxListCharacterColliderTemplate)
-                        {
-                            playerHitboxHeight = Mathf.Max(playerHitboxColliderTemplate.Position.Y, playerHitboxHeight);
+                    //} initialize hitBox collider
 
-                            FPVector2 playerHitboxExtents = new(
-                                (FP)playerHitboxColliderTemplate.Size.X * BattleGridManager.GridScaleFactor * FP._0_50,
-                                (FP)playerHitboxColliderTemplate.Size.Y * BattleGridManager.GridScaleFactor * FP._0_50
-                            );
+                    // initialize collisionTrigger component
+                    BattleCollisionTriggerQComponent collisionTrigger = BattleCollisionQSystem.CreateCollisionTriggerComponent(BattleCollisionTriggerType.Player);
 
-                            FPVector2 playerHitboxPosition = new(
-                                ((FP)playerHitboxColliderTemplate.Position.X - FP._0_50) * BattleGridManager.GridScaleFactor + playerHitboxExtents.X,
-                                ((FP)playerHitboxColliderTemplate.Position.Y + FP._0_50) * BattleGridManager.GridScaleFactor - playerHitboxExtents.Y
-                            );
+                    // initialize hitBox component
+                    BattlePlayerHitboxQComponent playerHitbox = new()
+                    {
+                        ParentEntityRef    = playerCharacterEntity,
+                        HitboxType         = BattlePlayerHitboxType.Character,
+                        CollisionType      = playerHitboxCollisionType,
+                        NormalAngleRad     = playerHitboxAngleRad,
+                        CollisionMinOffset = ((FP)playerHitboxHeight + FP._0_50) * BattleGridManager.GridScaleFactor
+                    };
 
-                            Shape2D playerHitboxColliderPart = Shape2D.CreateBox(playerHitboxExtents, playerHitboxPosition);
-                            playerHitboxCollider.Shape.Compound.AddShape(f, ref playerHitboxColliderPart);
-                        }
+                    // initialize entity
+                    f.Add(playerCharacterHitboxEntity, playerHitbox);
+                    f.Add<Transform2D>(playerCharacterHitboxEntity);
+                    f.Add(playerCharacterHitboxEntity, playerHitboxCollider);
+                    f.Add(playerCharacterHitboxEntity, collisionTrigger);
 
-                        // initialize hitBox component
-                        BattlePlayerHitboxQComponent playerHitbox = new()
-                        {
-                            ParentEntityRef    = playerCharacterEntity,
-                            HitboxType         = playerHitboxType,
-                            CollisionType      = playerHitboxCollisionType,
-                            NormalAngleRad     = playerHitboxAngleRad,
-                            CollisionMinOffset = ((FP)playerHitboxHeight + FP._0_50) * BattleGridManager.GridScaleFactor
-                        };
+                    // link hitbox
+                    playerCharacterEntityTemplate.Link(playerCharacterHitboxEntity, new FPVector2(0, 0));
 
-                        //} initialize collisionTrigger component
+                    //} create player hitBox
 
-                        f.Add(playerHitboxCharacterEntity, playerHitbox);
-                        f.Add<Transform2D>(playerHitboxCharacterEntity);
-                        f.Add(playerHitboxCharacterEntity, playerHitboxCollider);
-                        f.Add(playerHitboxCharacterEntity, collisionTrigger);
+                    // create player shields
+                    int playerCharacterShieldCount = BattlePlayerShieldManager.CreateShields(f, playerSlot, playerCharacterNumber, playerCharacterId, playerCharacterClass, playerCharacterEntity);
 
-                        //} create player hitBox
+                    //{ initialize playerData
 
-                        // create player shields
-                        int playerCharacterShieldCount = BattlePlayerShieldManager.CreateShields(f, playerSlot, playerCharacterNumber, playerCharacterId, playerCharacterEntity);
+                    BattlePlayerDataQComponent playerData = new()
+                    {
+                        // player's ref's and IDs
+                        PlayerRef              = PlayerRef.None,
+                        Slot                   = playerSlot,
+                        TeamNumber             = teamNumber,
+                        CharacterId            = playerCharacterId,
+                        CharacterClass         = playerCharacterClass,
 
-                        // save entity
-                        playerCharacterEntityTemplate.Link(playerHitboxCharacterEntity, new FPVector2(0, 0));
-                        playerCharacterEntityArray[playerCharacterNumber] = playerCharacterEntityTemplate;
+                        // player's stats
+                        Stats                  = battleBaseCharacters[playerCharacterNumber].Stats,
 
-                        //{ initialize playerData
+                        // player's attributes
+                        GridExtendTop          = playerGridExtendTop,
+                        GridExtendBottom       = playerGridExtendBottom,
+                        DisableRotation        = playerCharacterDataTemplate->DisableRotation,
 
-                        BattlePlayerDataQComponent playerData = new()
-                        {
-                            PlayerRef              = PlayerRef.None,
-                            Slot                   = playerSlot,
-                            TeamNumber             = teamNumber,
-                            CharacterId            = playerCharacterId,
-                            CharacterClass         = playerClass,
+                        // player's current state related data
+                        MovementEnabled        = true,
+                        RotationEnabled        = !playerCharacterDataTemplate->DisableRotation,
+                        CurrentDefence         = FP._0,
 
-                            Stats                  = battleBaseCharacters[playerCharacterNumber].Stats,
+                        // player's movement related data
+                        TargetPosition         = playerCharacterEntity.GetTransform(f)->Position,
+                        RotationBaseRad        = playerRotationBase,
+                        RotationOffsetRad      = FP._0,
 
-                            GridExtendTop          = playerGridExtendTop,
-                            GridExtendBottom       = playerGridExtendBottom,
+                        // player's shield related data
+                        ShieldCount            = playerCharacterShieldCount,
+                        AttachedShieldNumber   = 0,
 
-                            TargetPosition         = playerCharacterEntity.GetTransform(f)->Position,
-                            RotationBaseRad        = playerRotationBase,
-                            RotationOffsetRad      = FP._0,
-
-                            CurrentHp              = FP._0,
-                            CurrentDefence         = FP._0,
-
-                            ShieldCount            = playerCharacterShieldCount,
-                            AttachedShieldNumber   = 0,
-
-                            DisableRotation        = playerCharacterDataTemplate->DisableRotation,
-
-                            BotMovementCooldownSec = FP._0
-                        };
+                        // bot related data
+                        BotMovementCooldownSec = FP._0
+                    };
 
 #if DEBUG_PLAYER_STAT_OVERRIDE
-                        s_debugLogger.Warning(f, "DEBUG_PLAYER_STAT_OVERRIDE enabled!");
+                    s_debugLogger.Warning(f, "DEBUG_PLAYER_STAT_OVERRIDE enabled!");
 
-                        playerData.Stats.Hp            = FP.FromString("3.0");
-                        playerData.Stats.Speed         = FP.FromString("20.0");
-                        playerData.Stats.CharacterSize = FP.FromString("1.0");
-                        playerData.Stats.Attack        = FP.FromString("1.0");
-                        playerData.Stats.Defence       = FP.FromString("1.0");
+                    playerData.Stats.Speed         = FP.FromString("20.0");
+                    playerData.Stats.CharacterSize = FP.FromString("1.0");
+                    playerData.Stats.Attack        = FP.FromString("1.0");
+                    playerData.Stats.Defence       = FP.FromString("1.0");
 
-                        s_debugLogger.WarningFormat("Using Hp {0} override", playerData.Stats.Hp);
-                        s_debugLogger.WarningFormat("Using Speed {0} override", playerData.Stats.Speed);
-                        s_debugLogger.WarningFormat("Using CharacterSize {0} override", playerData.Stats.CharacterSize);
-                        s_debugLogger.WarningFormat("Using Attack {0} override", playerData.Stats.Attack);
-                        s_debugLogger.WarningFormat("Using Defence {0} override", playerData.Stats.Defence);
+                    s_debugLogger.WarningFormat("Using Speed {0} override",         playerData.Stats.Speed);
+                    s_debugLogger.WarningFormat("Using CharacterSize {0} override", playerData.Stats.CharacterSize);
+                    s_debugLogger.WarningFormat("Using Attack {0} override",        playerData.Stats.Attack);
+                    s_debugLogger.WarningFormat("Using Defence {0} override",       playerData.Stats.Defence);
 #endif
-                        playerData.CurrentHp      = playerData.Stats.Hp;
-                        playerData.CurrentDefence = playerData.Stats.Defence;
+                    playerData.CurrentDefence = playerData.Stats.Defence;
 
-                        s_debugLogger.LogFormat(f, "({0}) Character number {1} stats:\n" +
-                                                "Hp:            {2}\n" +
-                                                "Speed:         {3}\n" +
-                                                "CharacterSize: {4}\n" +
-                                                "Attack:        {5}\n" +
-                                                "Defence:       {6}",
-                                                playerSlot,
-                                                playerCharacterNumber,
-                                                playerData.Stats.Hp,
-                                                playerData.Stats.Speed,
-                                                playerData.Stats.CharacterSize,
-                                                playerData.Stats.Attack,
-                                                playerData.Stats.Defence
-                                                );
+                    s_debugLogger.LogFormat(f, "({0}) Character number {1} stats:\n" +
+                                            "Speed:         {2}\n" +
+                                            "CharacterSize: {3}\n" +
+                                            "Attack:        {4}\n" +
+                                            "Defence:       {5}",
+                                            playerSlot,
+                                            playerCharacterNumber,
+                                            playerData.Stats.Speed,
+                                            playerData.Stats.CharacterSize,
+                                            playerData.Stats.Attack,
+                                            playerData.Stats.Defence
+                                            );
 
-                        //} initialize playerData
+                    //} initialize playerData
 
-                        // initialize entity
-                        f.Remove<BattlePlayerDataTemplateQComponent>(playerCharacterEntity);
-                        f.Add(playerCharacterEntity, playerData, out BattlePlayerDataQComponent* playerDataPtr);
+                    // initialize entity
+                    f.Remove<BattlePlayerDataTemplateQComponent>(playerCharacterEntity);
+                    f.Add(playerCharacterEntity, playerData, out BattlePlayerDataQComponent* playerDataPtr);
 
-                        BattlePlayerClassManager.CreationParameters creationParameters = BattlePlayerClassManager.OnCreate(f, playerHandle.ConvertToPublic(), playerDataPtr, playerCharacterEntity);
+                    // save entity
+                    playerCharacterEntityArray[playerCharacterNumber] = playerCharacterEntityTemplate;
 
-                        // attach shield
-                        if (creationParameters.AttachedShieldNumber >= 0)
-                        {
-                            BattlePlayerShieldManager.AttachShield(f, playerSlot, playerCharacterNumber, creationParameters.AttachedShieldNumber, teleport: false);
-                        }
+                    BattlePlayerClassManager.CreationParameters creationParameters = BattlePlayerClassManager.OnCreate(f, playerHandle.ConvertToPublic(), playerDataPtr, playerCharacterEntity);
 
-                        // initialize view
-                        f.Events.BattlePlayerCharacterViewInit(playerCharacterEntity, playerSlot, playerCharacterId, playerClass, BattleGridManager.GridScaleFactor);
-
-                        // set playerManagerData for player character
-                        playerHandle.SetCharacterState(playerCharacterNumber, playerData.CurrentHp > 0 ? BattlePlayerCharacterState.Alive : BattlePlayerCharacterState.Dead);
+                    // attach shield
+                    if (creationParameters.AttachedShieldNumber >= 0)
+                    {
+                        BattlePlayerShieldManager.AttachShield(f, playerSlot, playerCharacterNumber, creationParameters.AttachedShieldNumber, teleport: false);
                     }
+
+                    // initialize view
+                    f.Events.BattlePlayerCharacterViewInit(playerCharacterEntity, playerSlot, playerCharacterId, playerCharacterClass, playerCharacterShieldCount, BattleGridManager.GridScaleFactor);
+
+                    // set playerManagerData for player character
+                    playerHandle.SetCharacterState(playerCharacterNumber, BattlePlayerCharacterState.Alive);
                 }
+
+                //} create playerEntity for each character
 
                 BattleEntityID characterEntityGroupID = BattleEntityManager.RegisterCompound(f, playerCharacterEntityArray);
 
                 // set playerManagerData for player
-                playerHandle.PlayState = BattlePlayerPlayState.OutOfPlay;
-                playerHandle.IsBot = isBot;
+                playerHandle.PlayState              = BattlePlayerPlayState.OutOfPlay;
+                playerHandle.IsBot                  = isBot;
                 playerHandle.AllowCharacterSwapping = true;
-                playerHandle.PlayerGiveUpState = false;
+                playerHandle.GiveUpState      = false;
                 playerHandle.SetCharacterEntityGroupID(characterEntityGroupID);
 
                 s_debugLogger.LogFormat(f, "({0}) Player created successfully", playerSlot);
@@ -603,9 +558,11 @@ namespace Battle.QSimulation.Player
         /// Private helper method for getting the BattlePlayerManagerDataQSingleton from the %Quantum %Frame.
         /// </summary>
         ///
+        /// See [{PlayerManagerData}](#page-concepts-player-simulation-management-playermanagerdata) for more info.
+        ///
         /// <param name="f">Current simulation frame.</param>
         ///
-        /// <returns>Pointer reference to the PlayerManagerData singleton.</returns>
+        /// <returns>Pointer to the PlayerManagerData singleton.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static BattlePlayerManagerDataQSingleton* GetPlayerManagerData(Frame f)
         {
@@ -626,16 +583,18 @@ namespace Battle.QSimulation.Player
         /// <param name="characterNumber">The character number of the character to be spawned.</param>
         private static void SpawnPlayer(Frame f, PlayerHandleInternal playerHandle, int characterNumber)
         {
-            BattlePlayerEntityRef character = (BattlePlayerEntityRef)BattleEntityManager.Get(f, playerHandle.CharacterEntityGroupID, characterNumber, updateViewPlayState: true);
-            BattlePlayerDataQComponent* playerData = character.GetDataQComponent(f);
-            Transform2D* playerTransform = character.GetTransform(f);
-            Transform2D* shieldTransform = playerData->AttachedShield.GetTransform(f);
+            // get references
+            BattlePlayerEntityRef       characterEntityRef = playerHandle.GetCharacterEntityRef(f, characterNumber, updateViewPlayState: true);
+            BattlePlayerDataQComponent* playerData         = characterEntityRef.GetDataQComponent(f);
+            Transform2D*                characterTransform = characterEntityRef.GetTransform(f);
+            Transform2D*                shieldTransform    = playerData->AttachedShield.GetTransform(f);
 
             FPVector2 worldPosition;
 
+            // handle InPlay/OutOfPlay
             if (playerHandle.PlayState.IsInPlay())
             {
-                worldPosition = f.Unsafe.GetPointer<Transform2D>(BattleEntityManager.Get(f, playerHandle.CharacterEntityGroupID, playerHandle.SelectedCharacterNumber))->Position;
+                worldPosition = f.Unsafe.GetPointer<Transform2D>(playerHandle.GetSelectedCharacterEntityRef(f))->Position;
                 DespawnPlayer(f, playerHandle);
             }
             else
@@ -645,33 +604,38 @@ namespace Battle.QSimulation.Player
 
             s_debugLogger.LogFormat(f, "({0}) Spawning character number: {1}", playerData->Slot, characterNumber);
 
-            playerData->PlayerRef = playerHandle.PlayerRef;
+            // update player data
+            playerData->PlayerRef                = playerHandle.PlayerRef;
+            playerData->TargetPosition           = worldPosition;
+            playerData->AbilityCooldownSec       = FrameTimer.FromSeconds(f, FP._3);
+            playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0);
 
-            BattlePlayerMovementController.Teleport(f, playerData, character, worldPosition);
+            // update shield if attached
+            if (playerData->AttachedShield.ERef != EntityRef.None)
+            {
+                f.Events.BattlePlayStateUpdate(playerData->AttachedShield.ERef, true);
+            }
 
-            playerData->TargetPosition = worldPosition;
+            BattlePlayerMovementController.Teleport(f, playerData, characterEntityRef, worldPosition);
 
+            // update player handle
             playerHandle.SetSelectedCharacterNumber(characterNumber);
+            playerHandle.PlayState = BattlePlayerPlayState.InPlay;
 
+            BattlePlayerClassManager.OnSpawn(f, playerHandle.ConvertToPublic(), playerData, characterEntityRef);
+
+            // update debug overlay
             BattleDebugOverlayLink.SetEntries(playerData->Slot, s_debugOverlayStats, new object[]
             {
-                playerData->Stats.Hp,
                 playerData->Stats.Speed,
                 playerData->Stats.CharacterSize,
                 playerData->Stats.Attack,
                 playerData->Stats.Defence
             });
 
+            // update view
             f.Events.BattleCharacterSelected(playerData->Slot, characterNumber);
-
-            playerData->AbilityCooldownSec = FrameTimer.FromSeconds(f, FP._3);
-            playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0);
-
-            playerHandle.PlayState = BattlePlayerPlayState.InPlay;
-
             f.Events.BattleViewSetRotationJoystickVisibility(!playerData->DisableRotation, playerData->Slot);
-
-            BattlePlayerClassManager.OnSpawn(f, playerHandle.ConvertToPublic(), playerData, character);
         }
 
         /// <summary>
@@ -682,28 +646,32 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">PlayerHandle of the player the character will be spawned for.</param>
         private static void DespawnPlayer(Frame f, PlayerHandleInternal playerHandle)
         {
-            BattlePlayerEntityRef selectedCharacter = (BattlePlayerEntityRef)BattleEntityManager.Get(f, playerHandle.CharacterEntityGroupID, playerHandle.SelectedCharacterNumber);
-            BattlePlayerDataQComponent* playerData = selectedCharacter.GetDataQComponent(f);
-            Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(selectedCharacter);
+            // get references
+            BattlePlayerEntityRef       selectedCharacter = playerHandle.GetSelectedCharacterEntityRef(f, updateViewPlayState: true);
+            BattlePlayerDataQComponent* playerData        = selectedCharacter.GetDataQComponent(f);
+            Transform2D*                playerTransform   = f.Unsafe.GetPointer<Transform2D>(selectedCharacter);
 
             s_debugLogger.LogFormat(f, "({0}) Despawning character number: {1}", playerData->Slot, playerHandle.SelectedCharacterNumber);
 
             BattlePlayerClassManager.OnDespawn(f, playerHandle.ConvertToPublic(), playerData, selectedCharacter);
 
-            playerData->PlayerRef = PlayerRef.None;
-
             BattleEntityManager.Return(f, playerHandle.CharacterEntityGroupID, playerHandle.SelectedCharacterNumber);
 
-            if(playerData->AttachedShield.ERef != EntityRef.None)
+            // return shield if attached
+            if (playerData->AttachedShield.ERef != EntityRef.None)
             {
                 BattleEntityManager.Return(f, BattlePlayerShieldManager.Low_GetShieldEntityGroupID(f, playerData->Slot, playerHandle.SelectedCharacterNumber), playerData->AttachedShieldNumber);
             }
 
+            // update data
+            playerData->PlayerRef = PlayerRef.None;
             playerData->TargetPosition = selectedCharacter.GetTransform(f)->Position;
 
+            // update player handle
             playerHandle.UnsetSelectedCharacterNumber();
             playerHandle.PlayState = BattlePlayerPlayState.OutOfPlay;
 
+            // update view
             f.Events.BattleCharacterSelected(playerData->Slot, -1);
         }
 

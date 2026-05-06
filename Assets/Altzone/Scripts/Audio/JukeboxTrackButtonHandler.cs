@@ -85,15 +85,15 @@ public class JukeboxTrackButtonHandler : SmartListItem, IBeginDragHandler, IEndD
 
     public void AddButtonClicked()
     {
-        if (!_buttonInputCanceled && _musicTrack != null) OnTrackPressed.Invoke(_musicTrack);
+        if (!_buttonInputCanceled && _musicTrack != null) OnTrackPressed?.Invoke(_musicTrack);
 
         _buttonInputCanceled = false;
     }
 
     public void PreviewButtonClicked()
     {
-        if (!_buttonInputCanceled && _musicTrack != null && OnPreviewPressed != null)
-            OnPreviewPressed.Invoke(this, JukeboxManager.PreviewLocationType.Main);
+        if (!_buttonInputCanceled && _musicTrack != null)
+            OnPreviewPressed?.Invoke(this, JukeboxManager.PreviewLocationType.Main);
 
         _buttonInputCanceled = false;
     }
@@ -108,17 +108,16 @@ public class JukeboxTrackButtonHandler : SmartListItem, IBeginDragHandler, IEndD
 
     public override void SetData<T1>(T1 data1)
     {
-        if (!CheckClassType<T1, PersonalizedMusicTrack>(data1)) return;
+        if (!CheckClassType<T1, PersonalizedMusicTrack>(data1, out PersonalizedMusicTrack personalizedData)) return;
 
-        PersonalizedMusicTrack personalizedMusicTrack = data1 as PersonalizedMusicTrack;
-
-        _musicTrack = personalizedMusicTrack.Track;
-        _trackNameAutoScroll.SetContent(personalizedMusicTrack.Track.Name);
-        _trackCreditsNamesAutoScroll.SetContent(personalizedMusicTrack.Track.JukeboxInfo.GetArtistNames());
-        _trackImage.sprite = personalizedMusicTrack.Track.JukeboxInfo.Disk;
+        _musicTrack = personalizedData.Track;
+        _trackNameAutoScroll.SetContent(personalizedData.Track.Name, false, false);
+        _trackCreditsNamesAutoScroll.SetContent(personalizedData.Track.JukeboxInfo.GetArtistNames(), false, false);
+        _trackImage.sprite = personalizedData.Track.JukeboxInfo.Disk;
         gameObject.SetActive(true);
+        StopDiskSpin();
 
-        _favoriteButtonHandler?.Setup(personalizedMusicTrack.FavoriteType, personalizedMusicTrack.Track.Id);
+        _favoriteButtonHandler?.Setup(personalizedData.FavoriteType, personalizedData.Track.Id);
     }
 
     public override void ClearData() { _musicTrack = null; gameObject.SetActive(false); }

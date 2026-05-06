@@ -50,8 +50,8 @@ public class ChatReactionHandler : MonoBehaviour
     {
         Image reactionBackground = _messageReaction.GetComponentInChildren<Image>();
         Color selectedColor;
-        selectedColor = Color.cyan;
-        selectedColor.a = 0.3f;
+        selectedColor = new Color(0.2f,0.5f,0.5f);
+        selectedColor.a = 0.5f;
         reactionBackground.color = selectedColor;
 
         _selected = true;
@@ -70,7 +70,7 @@ public class ChatReactionHandler : MonoBehaviour
     {
         Image reactionBackground = _messageReaction.GetComponentInChildren<Image>();
         Color deselectedColor;
-        deselectedColor = Color.gray;
+        deselectedColor = Color.white;
         deselectedColor.a = 0.5f;
         reactionBackground.color = deselectedColor;
 

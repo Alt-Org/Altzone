@@ -13,10 +13,10 @@ using UnityEngine.Scripting;
 using Quantum;
 
 // Battle QSimulation usings
-using Battle.QSimulation.Diamond;
+using Battle.QSimulation.Projectile;
 using Battle.QSimulation.Goal;
 using Battle.QSimulation.Player;
-using Battle.QSimulation.Projectile;
+using Battle.QSimulation.Diamond;
 using Battle.QSimulation.SoulWall;
 
 namespace Battle.QSimulation.Game
@@ -77,9 +77,11 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
-        /// Creates a BattleCollisionTriggerQComponent with the given trigger type.
+        /// Creates a BattleCollisionTriggerQComponent with the given @cref{Quantum,BattleCollisionTriggerType}.
         /// </summary>
+        ///
         /// <param name="triggerType">BattleCollisionTriggerType the component needs to be.</param>
+        ///
         /// <returns>The newly created component.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BattleCollisionTriggerQComponent CreateCollisionTriggerComponent(BattleCollisionTriggerType triggerType)

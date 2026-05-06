@@ -22,6 +22,8 @@ MonoBehaviour:
   CharacterDescriptionEnglish: 
   CharacterShortDescriptionFinnish: 
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 2facde8bf2483534c9d06e0bfc762134, type: 2}
   Hp:
     Level: 6
@@ -42,7 +44,10 @@ MonoBehaviour:
   GalleryHeadImage: {fileID: 3323784572005849981, guid: 6b7f8f6787aebdc4da339e49694e1f45,
     type: 3}
   CharPhotoSeries: {fileID: 0}
-  BattleEntityPrototype:
+  BattleCharacterEntityPrototype:
     Id:
       Value: 1501490107316813305
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1476835292752068211
   BattleUiSprite: {fileID: 0}

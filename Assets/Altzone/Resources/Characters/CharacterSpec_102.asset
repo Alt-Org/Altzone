@@ -33,6 +33,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "Ruumiilliseen t\xE4ydellisyyteen keskittyv\xE4,
     tunteensa torjuva karpaasi."
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 0a0a3cdff0ecc9741a81904da92d277b, type: 2}
   Hp:
     Level: 1
@@ -55,7 +57,7 @@ MonoBehaviour:
   BattleCharacterEntityPrototype:
     Id:
       Value: 1364834009955602738
-  BattleShieldEntityPrototype:
-    Id:
-      Value: 0
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1444741815215406023
   BattleUiSprite: {fileID: 0}

@@ -29,22 +29,6 @@ namespace Battle.QSimulation.Player
         public override BattlePlayerCharacterClass Class => BattlePlayerCharacterClass.Class400;
 
         /// <summary>
-        /// Called when the player is created.
-        /// </summary>
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerHandle">Handle for the player.</param>
-        /// <param name="playerData">Pointer to player data.</param>
-        /// <param name="playerEntity">Entity reference for the player.</param>
-        ///
-        /// <returns>Default CreationParameters.</returns>
-        public override unsafe BattlePlayerClassManager.CreationParameters OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
-        {
-            BattlePlayerClass400DataQComponent* data = GetClassData(f, playerEntity);
-            return BattlePlayerClassManager.CreationParameters.Default;
-        }
-
-        /// <summary>
         /// Called when a projectile hits a player shield.
         /// </summary>
         ///
@@ -57,12 +41,13 @@ namespace Battle.QSimulation.Player
 
             if (projectileCollisionData->Projectile->IsHeld) return;
 
-            BattlePlayerClass400DataQComponent* data = GetClassData(f, shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
-            bool grab = !projectileCollisionData->Projectile->IsPassed;
+            bool grab = playerShieldData->IsAttached && !projectileCollisionData->Projectile->IsPassed;
+            BattlePlayerClass400DataQComponent* data = null;
 
             if (grab)
             {
-                BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef)->Slot);
+                data = GetClassData(f, ((BattlePlayerShieldEntityRef)shieldCollisionData->PlayerShieldHitbox->ParentEntityRef).GetDataQComponent(f)->PlayerEntityRef);
+                BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerShieldData->PlayerEntityRef.GetDataQComponent(f)->Slot);
                 if (!teammateHandle.PlayState.IsInPlay()) grab = false;
             }
             if (grab)
@@ -76,13 +61,23 @@ namespace Battle.QSimulation.Player
                 data->IsHoldingProjectile = true;
                 data->HeldProjectileEntity = projectileCollisionData->ProjectileEntity;
                 data->HeldProjectileAngleRadians = FPVector2.RadiansSigned(FPVector2.Up, toProjectile);
-                data->HeldProjectileDistance = toProjectile.Magnitude;
+                data->HeldProjectileDistance = shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset + projectileCollisionData->Projectile->Radius;
                 data->HoldStartFrame = f.Number;
             }
             else
             {
-                BattleProjectileQSystem.HandleIntersection(f, projectileCollisionData->Projectile, projectileCollisionData->ProjectileEntity, projectileCollisionData->OtherEntity, shieldCollisionData->PlayerShieldHitbox->CalculateNormal(f), shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset);
-                BattleProjectileQSystem.UpdateVelocity(f, projectileCollisionData->Projectile, shieldCollisionData->PlayerShieldHitbox->CalculateNormal(f), BattleProjectileQSystem.SpeedChange.Increment);
+                BattleProjectileQSystem.HandleIntersection(f,
+                    projectileCollisionData->Projectile,
+                    projectileCollisionData->ProjectileEntity,
+                    projectileCollisionData->OtherEntity,
+                    shieldCollisionData->PlayerShieldHitbox->CalculateNormal(f),
+                    shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset
+                );
+                BattleProjectileQSystem.UpdateVelocity(f,
+                    projectileCollisionData->Projectile,
+                    shieldCollisionData->PlayerShieldHitbox->CalculateNormal(f),
+                    BattleProjectileQSystem.SpeedChange.Increment
+                );
             }
         }
 
@@ -94,14 +89,10 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Handle for the player.</param>
         /// <param name="playerData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference for the player.</param>
-        public override unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
+        public override unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity)
         {
             BattlePlayerClass400DataQComponent* data = GetClassData(f, playerEntity);
-            if (!data->IsHoldingProjectile)
-            {
-                playerHandle.AllowCharacterSwapping = true;
-                return;
-            }
+            if (!data->IsHoldingProjectile) return;
 
             playerHandle.AllowCharacterSwapping = false;
 
@@ -135,6 +126,7 @@ namespace Battle.QSimulation.Player
                     BattleProjectileQSystem.UpdateVelocity(f, projectile, newDirection, BattleProjectileQSystem.SpeedChange.Increment, passed: true);
                     BattleProjectileQSystem.SetHeld(f, projectile, false);
                     data->IsHoldingProjectile = false;
+                    playerHandle.AllowCharacterSwapping = true;
                 }
             }
         }

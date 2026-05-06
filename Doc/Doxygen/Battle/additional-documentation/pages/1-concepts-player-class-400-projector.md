@@ -7,15 +7,20 @@
       @cref{Quantum,BattlePlayerClass400DataQComponent}
 
 - **View**
-    - Has view controllers for the character and shield  
-      @cref{Battle.View.Player,BattlePlayerCharacterClass400ViewController}
+    - Has a view controller for the shield  
       @cref{Battle.View.Player,BattlePlayerShieldClass400ViewController}
 
 - **Prefabs**
-    - Base prefab  
-      @ref "BattlePlayer400Character(BaseAndTestCharacter).prefab"
-    - Character prefabs  
+    - Base prefabs  
+      @ref "BattlePlayer400Character(BaseAndTestCharacter).prefab"  
+      @ref "BattlePlayer400Shield(BaseAndTestCharacter).prefab"
+    - Character and Shield prefabs  
       @ref BattlePlayer401Character.prefab  
+      @ref "BattlePlayer401Shield(Base).prefab"  
       @ref BattlePlayer402Character.prefab  
+      @ref "BattlePlayer402Shield(Base).prefab"  
       @ref BattlePlayer403Character.prefab  
-      @ref BattlePlayer404Character.prefab
+      @ref "BattlePlayer403Shield1(Base).prefab"  
+      @ref BattlePlayer403Shield2.prefab  
+      @ref BattlePlayer404Character.prefab  
+      @ref "BattlePlayer404Shield(Base).prefab"

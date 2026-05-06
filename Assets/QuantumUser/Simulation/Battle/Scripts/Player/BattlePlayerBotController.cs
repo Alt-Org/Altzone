@@ -4,7 +4,6 @@
 /// </summary>
 
 // System usings
-using System.Collections.Generic;
 using System.Linq;
 
 // Unity usings

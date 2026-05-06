@@ -11,7 +11,7 @@
 
 /// @struct Quantum::BattleEntityManagerDataQSingleton
 /// <summary>
-/// Singleton component that manages registered entities.
+/// Singleton component that is used internally by @cref{Battle.QSimulation.Game,BattleEntityManager} to manage registered entities.
 /// </summary>
 ///
 /// See [{Entity Manager}](#page-concepts-entity-management-entity-manager) for more info.

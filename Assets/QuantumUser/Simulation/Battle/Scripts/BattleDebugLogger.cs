@@ -482,7 +482,7 @@ namespace Battle.QSimulation
         public static void Error(string source, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
         {
             if (logTarget.HasFlag(LogTarget.UnityConsole)) Debug.LogErrorFormat(StaticFormatUnityNoFrame, source, message);
-            if (logTarget.HasFlag(LogTarget.OnScreenConsole)) s_addLogToOnScreenConsoleFnRef(LogType.Error, string.Format(StaticSourceFormatOnScreenNoFrame, source), message);
+            if (logTarget.HasFlag(LogTarget.OnScreenConsole) && s_addLogToOnScreenConsoleFnRef != null) s_addLogToOnScreenConsoleFnRef(LogType.Error, string.Format(StaticSourceFormatOnScreenNoFrame, source), message);
         }
 
         /// <summary>

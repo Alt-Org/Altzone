@@ -6,7 +6,6 @@ using Altzone.Scripts.AvatarPartsInfo;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ReferenceSheets;
-using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.U2D.Animation;
 

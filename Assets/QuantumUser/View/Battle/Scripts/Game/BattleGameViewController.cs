@@ -57,26 +57,32 @@ namespace Battle.View.Game
 
         /// <summary>[SerializeField] Reference to BattleGridViewController which handles visual functionality for the %Battle arena's grid.</summary>
         /// @ref BattleGameViewController-SerializeFields
+        [Tooltip("Reference to BattleGridViewController which handles visual functionality for the Battle arena's grid")]
         [SerializeField] private BattleGridViewController _gridViewController;
 
         /// <summary>[SerializeField] Reference to BattleUiController which holds references to all of the @ref UIHandlerReferences scripts.</summary>
         /// @ref BattleGameViewController-SerializeFields
+        [Tooltip("Reference to BattleUiController which holds references to all of the @ref UIHandlerReferences scripts")]
         [SerializeField] private BattleUiController _uiController;
 
         /// <summary>[SerializeField] Reference to BattleScreenEffectViewController which handles the screen effects.</summary>
         /// @ref BattleGameViewController-SerializeFields
+        [Tooltip("Reference to BattleScreenEffectViewController which handles the screen effects")]
         [SerializeField] private BattleScreenEffectViewController _screenEffectViewController;
 
         /// <summary>[SerializeField] Reference to BattleStoneCharacterViewController which handles stone character parts visibility.</summary>
         /// @ref BattleGameViewController-SerializeFields
+        [Tooltip("Reference to BattleStoneCharacterViewController which handles stone character parts visibility")]
         [SerializeField] private BattleStoneCharacterViewController _stoneCharacterViewController;
 
         /// <summary>[SerializeField] Reference to BattleLightrayEffectViewController which handles lightray effects visibility.</summary>
         /// @ref BattleGameViewController-SerializeFields
+        [Tooltip("Reference to BattleLightrayEffectViewController which handles lightray effects visibility")]
         [SerializeField] private BattleLightrayEffectViewController _lightrayEffectViewController;
 
         /// <summary>[SerializeField] Reference to BattlePlayerInput which polls player input for %Quantum.</summary>
         /// @ref BattleGameViewController-SerializeFields
+        [Tooltip("Reference to BattlePlayerInput which polls player input for %Quantum")]
         [SerializeField] private BattlePlayerInput _playerInput;
 
         /// @}
@@ -217,6 +223,7 @@ namespace Battle.View.Game
         {
             s_instance = this;
 
+            BattleViewRegistry.Init();
             BattleDebugOverlay.Init();
 
             _debugLogger = BattleDebugLogger.Create<BattleGameViewController>();
@@ -264,8 +271,7 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleLastRowWallDestroyed>(this, QEventOnLastRowWallDestroyed);
             QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
             QuantumEvent.Subscribe<EventBattleCharacterSelected>(this, QEventCharacterSelected);
-            QuantumEvent.Subscribe<EventBattleCharacterTakeDamage>(this, QEventOnCharacterTakeDamage);
-            QuantumEvent.Subscribe<EventBattleShieldTakeDamage>(this, QEventOnShieldTakeDamage);
+            QuantumEvent.Subscribe<EventBattleShieldHit>(this, QEventOnShieldHit);
             QuantumEvent.Subscribe<EventBattleGiveUpStateChange>(this, QEventOnGiveUpStateChange);
             QuantumEvent.Subscribe<EventBattleStoneCharacterPlayHitAnimation>(this, QEventOnStoneCharacterPlayHitAnimation);
 
@@ -527,6 +533,7 @@ namespace Battle.View.Game
             _endOfGameDataHasEnded = true;
             _endOfGameDataWinningTeam = e.WinningTeam;
             _endOfGameDataGameLengthSec = e.GameLengthSec;
+            LobbyManager.NotifyGamePlayedOut();
 
             //{ Calling server to add wins and losses
 
@@ -593,7 +600,7 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleLastRowWallDestroyed QuantumEvent.<br/>
-        /// Handles calling <see cref="BattleStoneCharacterViewController.DestroyCharacterPart">DestroyCharacterPart</see>
+        /// Handles calling <see cref="Battle.View.SoulWall.BattleStoneCharacterViewController.DestroyCharacterPart">DestroyCharacterPart</see>
         /// in <see cref="BattleGameViewController._stoneCharacterViewController">_stoneCharacterViewController</see><br/>
         /// and <see cref="Battle.View.Effect.BattleLightrayEffectViewController.SpawnLightray">SpawnLightray</see>
         /// in <see cref="BattleGameViewController._lightrayEffectViewController">_lightrayEffectViewController</see>.
@@ -623,34 +630,18 @@ namespace Battle.View.Game
         }
 
         /// <summary>
-        /// Private handler method for EventBattleCharacterTakeDamage QuantumEvent.<br/>
-        /// Handles calling <see cref="Battle.View.UI.BattleUiPlayerInfoHandler.UpdateHealthVisual">UpdateHealthVisual</see>
-        /// in <see cref="BattleGameViewController._uiController">_uiController's</see>
-        /// <see cref="Battle.View.UI.BattleUiController.PlayerInfoHandler">PlayerInfoHandler</see>.
-        /// </summary>
-        ///
-        /// <param name="e">The event data.</param>
-        private void QEventOnCharacterTakeDamage(EventBattleCharacterTakeDamage e)
-        {
-            if (e.Team == LocalPlayerTeam)
-            {
-                _uiController.PlayerInfoHandler.UpdateHealthVisual(e.Slot, e.CharacterNumber, (float)e.HealthPercentage);
-            }
-        }
-
-        /// <summary>
-        /// Private handler method for EventBattleShieldTakeDamage QuantumEvent.<br/>
+        /// Private handler method for EventBattleShieldHit QuantumEvent.<br/>
         /// Handles calling <see cref="Battle.View.UI.BattleUiPlayerInfoHandler.UpdateDefenceVisual">UpdateDefenceVisual</see> in
         /// <see cref="BattleGameViewController._uiController">_uiController's</see>
         /// <see cref="Battle.View.UI.BattleUiController.PlayerInfoHandler">PlayerInfoHandler</see>.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
-        private void QEventOnShieldTakeDamage(EventBattleShieldTakeDamage e)
+        private void QEventOnShieldHit(EventBattleShieldHit e)
         {
-            if (e.Team == LocalPlayerTeam)
+            if (e.Team == LocalPlayerTeam && e.ShieldAttached)
             {
-                _uiController.PlayerInfoHandler.UpdateDefenceVisual(e.Slot, e.CharacterNumber, (float)e.DefenceValue);
+                _uiController.PlayerInfoHandler.UpdateDefenceVisual(e.Slot, e.CharacterNumber, (float)e.DefencePercentage);
             }
         }
 

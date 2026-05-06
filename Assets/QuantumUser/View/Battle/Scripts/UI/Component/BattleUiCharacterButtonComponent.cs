@@ -10,7 +10,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Button = UnityEngine.UI.Button;
-using TMPro;
 
 // Quantum usings
 using Quantum;
@@ -51,10 +50,6 @@ namespace Battle.View.UI
         /// <summary>[SerializeField] Reference to the damage fill image of the character button. It is used to display the character's current Hp.</summary>
         /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private Image _damageFill;
-
-        /// <summary>[SerializeField] Reference to the defence value text of the character button.</summary>
-        /// @ref BattleUiCharacterButtonComponent-SerializeFields
-        [SerializeField] private TextMeshProUGUI _defenceValue;
 
         /// <summary>[SerializeField] The duration for damage fill animation.</summary>
         /// @ref BattleUiCharacterButtonComponent-SerializeFields
@@ -109,18 +104,6 @@ namespace Battle.View.UI
             _t = 0f;
             _startDamageFillAmount = _damageFill.fillAmount;
             _targetDamageFillAmount = 1 - percentage;
-        }
-
-        /// <summary>
-        /// Sets the number on the UI to match the defence value.<br/>
-        /// The number does not go below 0.
-        /// </summary>
-        ///
-        /// <param name="defenceValue">The defence value of the character.</param>
-        public void SetDefenceNumber(float defenceValue)
-        {
-            defenceValue = Mathf.Max(defenceValue, 0f);
-            _defenceValue.text = defenceValue.ToString();
         }
 
         /// <value>The starting damage fill amount for the fill animation.</value>

@@ -28,7 +28,7 @@ public class SliderSetting : MonoBehaviour
     {
         if (!CheckValidity()) return;
 
-        _slider.value = _carrier.SentVolume(_type);
+        _slider.value = _carrier.GetVolumeValue(_type);
     }
 
     public void ValueChanged(float value)

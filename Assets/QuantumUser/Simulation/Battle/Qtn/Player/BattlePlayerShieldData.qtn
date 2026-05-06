@@ -1,16 +1,11 @@
-//{ ShieldEntity
-struct BattlePlayerShieldEntityRef
-{
-    EntityRef ERef;
-}
-//} ShieldEntity
-
 //{ ShieldData
 component BattlePlayerShieldDataQComponent
 {
     BattlePlayerEntityRef PlayerEntityRef;
     int ShieldNumber;
     bool IsAttached;
+
+    FrameTimer ShieldHitCooldown;
 }
 //} PlayerData
 

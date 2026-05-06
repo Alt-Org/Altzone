@@ -83,17 +83,17 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleCompoundEntityComponent))]
-  public unsafe class BattleCompoundEntityComponentPrototype : ComponentPrototype<Quantum.BattleCompoundEntityComponent> {
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleCompoundEntityQComponent))]
+  public unsafe class BattleCompoundEntityQComponentPrototype : ComponentPrototype<Quantum.BattleCompoundEntityQComponent> {
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.BattleEntityLinkPrototype[] LinkedEntities = {};
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.BattleCompoundEntityComponent component = default;
+        Quantum.BattleCompoundEntityQComponent component = default;
         Materialize((Frame)f, ref component, in context);
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
-    public void Materialize(Frame frame, ref Quantum.BattleCompoundEntityComponent result, in PrototypeMaterializationContext context = default) {
+    public void Materialize(Frame frame, ref Quantum.BattleCompoundEntityQComponent result, in PrototypeMaterializationContext context = default) {
         if (this.LinkedEntities.Length == 0) {
           result.LinkedEntities = default;
         } else {
@@ -268,6 +268,7 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerClass400DataQComponent))]
   public unsafe class BattlePlayerClass400DataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerClass400DataQComponent> {
+    public FP RotationDurationFrames;
     [HideInInspector()]
     public QBoolean IsHoldingProjectile;
     [HideInInspector()]
@@ -278,19 +279,18 @@ namespace Quantum.Prototypes {
     public FP HeldProjectileAngleRadians;
     [HideInInspector()]
     public FP HeldProjectileDistance;
-    public FP RotationDurationFrames;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerClass400DataQComponent component = default;
         Materialize((Frame)f, ref component, in context);
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattlePlayerClass400DataQComponent result, in PrototypeMaterializationContext context = default) {
+        result.RotationDurationFrames = this.RotationDurationFrames;
         result.IsHoldingProjectile = this.IsHoldingProjectile;
         PrototypeValidator.FindMapEntity(this.HeldProjectileEntity, in context, out result.HeldProjectileEntity);
         result.HoldStartFrame = this.HoldStartFrame;
         result.HeldProjectileAngleRadians = this.HeldProjectileAngleRadians;
         result.HeldProjectileDistance = this.HeldProjectileDistance;
-        result.RotationDurationFrames = this.RotationDurationFrames;
     }
   }
   [System.SerializableAttribute()]
@@ -304,20 +304,21 @@ namespace Quantum.Prototypes {
     public Quantum.Prototypes.BattlePlayerStatsPrototype Stats;
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
+    public QBoolean DisableRotation;
+    public QBoolean MovementEnabled;
+    public QBoolean RotationEnabled;
+    public FP CurrentDefence;
+    public Quantum.Prototypes.FrameTimerPrototype StunCooldown;
     public QBoolean HasTargetPosition;
     public FPVector2 TargetPosition;
     public FP RotationBaseRad;
     public FP RotationOffsetRad;
-    public FP CurrentHp;
-    public FP CurrentDefence;
     public Int32 ShieldCount;
     public Int32 AttachedShieldNumber;
     public Quantum.Prototypes.BattlePlayerShieldEntityRefPrototype AttachedShield;
-    public QBoolean DisableRotation;
-    public Quantum.Prototypes.FrameTimerPrototype DamageCooldown;
-    public FP BotMovementCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityActivateBufferSec;
+    public FP BotMovementCooldownSec;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerDataQComponent component = default;
         Materialize((Frame)f, ref component, in context);
@@ -332,20 +333,21 @@ namespace Quantum.Prototypes {
         this.Stats.Materialize(frame, ref result.Stats, in context);
         result.GridExtendTop = this.GridExtendTop;
         result.GridExtendBottom = this.GridExtendBottom;
+        result.DisableRotation = this.DisableRotation;
+        result.MovementEnabled = this.MovementEnabled;
+        result.RotationEnabled = this.RotationEnabled;
+        result.CurrentDefence = this.CurrentDefence;
+        this.StunCooldown.Materialize(frame, ref result.StunCooldown, in context);
         result.HasTargetPosition = this.HasTargetPosition;
         result.TargetPosition = this.TargetPosition;
         result.RotationBaseRad = this.RotationBaseRad;
         result.RotationOffsetRad = this.RotationOffsetRad;
-        result.CurrentHp = this.CurrentHp;
-        result.CurrentDefence = this.CurrentDefence;
         result.ShieldCount = this.ShieldCount;
         result.AttachedShieldNumber = this.AttachedShieldNumber;
         this.AttachedShield.Materialize(frame, ref result.AttachedShield, in context);
-        result.DisableRotation = this.DisableRotation;
-        this.DamageCooldown.Materialize(frame, ref result.DamageCooldown, in context);
-        result.BotMovementCooldownSec = this.BotMovementCooldownSec;
         this.AbilityCooldownSec.Materialize(frame, ref result.AbilityCooldownSec, in context);
         this.AbilityActivateBufferSec.Materialize(frame, ref result.AbilityActivateBufferSec, in context);
+        result.BotMovementCooldownSec = this.BotMovementCooldownSec;
     }
   }
   [System.SerializableAttribute()]
@@ -353,7 +355,7 @@ namespace Quantum.Prototypes {
   public unsafe partial class BattlePlayerDataTemplateQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerDataTemplateQComponent> {
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
-    public Quantum.Prototypes.BattlePlayerHitboxTemplatePrototype HitboxCharacter;
+    public Quantum.Prototypes.BattlePlayerHitboxTemplatePrototype Hitbox;
     public QBoolean DisableRotation;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerDataTemplateQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
@@ -364,7 +366,7 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.BattlePlayerDataTemplateQComponent result, in PrototypeMaterializationContext context = default) {
         result.GridExtendTop = this.GridExtendTop;
         result.GridExtendBottom = this.GridExtendBottom;
-        this.HitboxCharacter.Materialize(frame, ref result.HitboxCharacter, in context);
+        this.Hitbox.Materialize(frame, ref result.Hitbox, in context);
         result.DisableRotation = this.DisableRotation;
         MaterializeUser(frame, ref result, in context);
     }
@@ -506,6 +508,7 @@ namespace Quantum.Prototypes {
     public Quantum.Prototypes.BattlePlayerEntityRefPrototype PlayerEntityRef;
     public Int32 ShieldNumber;
     public QBoolean IsAttached;
+    public Quantum.Prototypes.FrameTimerPrototype ShieldHitCooldown;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerShieldDataQComponent component = default;
         Materialize((Frame)f, ref component, in context);
@@ -515,6 +518,7 @@ namespace Quantum.Prototypes {
         this.PlayerEntityRef.Materialize(frame, ref result.PlayerEntityRef, in context);
         result.ShieldNumber = this.ShieldNumber;
         result.IsAttached = this.IsAttached;
+        this.ShieldHitCooldown.Materialize(frame, ref result.ShieldHitCooldown, in context);
     }
   }
   [System.SerializableAttribute()]
@@ -577,14 +581,12 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerStats))]
   public unsafe partial class BattlePlayerStatsPrototype : StructPrototype {
-    public FP Hp;
     public FP Speed;
     public FP CharacterSize;
     public FP Attack;
     public FP Defence;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerStats result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.BattlePlayerStats result, in PrototypeMaterializationContext context = default) {
-        result.Hp = this.Hp;
         result.Speed = this.Speed;
         result.CharacterSize = this.CharacterSize;
         result.Attack = this.Attack;

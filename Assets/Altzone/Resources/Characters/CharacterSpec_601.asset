@@ -34,6 +34,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "Toistensa ilmaa hengitt\xE4v\xE4t, purkkakuplaan
     sulkeutuneet sielunsiskot. "
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 60f6f3d30c455c348833976e49b74d00, type: 2}
   Hp:
     Level: 2
@@ -56,7 +58,7 @@ MonoBehaviour:
   BattleCharacterEntityPrototype:
     Id:
       Value: 1460331066001143074
-  BattleShieldEntityPrototype:
-    Id:
-      Value: 0
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1506536183228022840
   BattleUiSprite: {fileID: 0}

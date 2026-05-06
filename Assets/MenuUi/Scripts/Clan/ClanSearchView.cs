@@ -12,6 +12,8 @@ public class ClanSearchView : MonoBehaviour
     [SerializeField] private Transform _clanListParent;
     [SerializeField] private GameObject _loadMoreButton;
     [SerializeField] private GameObject _clanPopup;
+    [SerializeField] private Button _returnToMainClanViewButton;
+    [SerializeField] private Button _returnToMainMenuButton;
 
     [SerializeField] private ClanConfirmPopup _confirmPopup;
     [SerializeField] private GameObject _overlay;
@@ -154,7 +156,7 @@ public class ClanSearchView : MonoBehaviour
 
     private void ShowOverlay(bool on)
     {
-        if (_overlay) _overlay.SetActive(on);
+        if (OverlayPanelCheck.Instance) OverlayPanelCheck.Instance.ToggleOverlay(on);
     }
 
     private string GetCurrentClanName()
@@ -188,7 +190,7 @@ public class ClanSearchView : MonoBehaviour
     {
         string targetName = new ClanData(clan).Name;
 
-        ShowOverlay(true);
+        //ShowOverlay(true);
 
         _confirmPopup.Show(
             bodyText: "Haluatko liittyä klaaniin " + targetName + "?",
@@ -204,15 +206,18 @@ public class ClanSearchView : MonoBehaviour
                     if (newClan != null)
                     {
                         ServerManager.Instance.RaiseClanChangedEvent();
+                        ShowOverlay(true);
+                        _clanPopup.SetActive(false);
+                        if (ServerManager.Instance.FirstJoin)
+                            _returnToMainMenuButton.onClick.Invoke();
+                        else
+                            _returnToMainClanViewButton.onClick.Invoke();
                     }
-
-                    ShowOverlay(false);
-                    _clanPopup.SetActive(false);
                 }));
             },
             onCancel: () =>
             {
-                ShowOverlay(false);
+                
             },
             confirmText: "Liity",
             cancelText: "Peruuta",
@@ -260,16 +265,17 @@ public class ClanSearchView : MonoBehaviour
                         if (newClan != null)
                         {
                             ServerManager.Instance.RaiseClanChangedEvent();
-                            // (ei RemoveDataa jos sitä ei ole)
+                            ShowOverlay(true);
+                            _clanPopup.SetActive(false);
+                            if (ServerManager.Instance.FirstJoin)
+                                _returnToMainMenuButton.onClick.Invoke();
+                            else
+                                _returnToMainClanViewButton.onClick.Invoke();
                         }
-
-                        //ServerManager.Instance.RaiseClanChangedEvent();
-                        ShowOverlay(false);
-                        _clanPopup.SetActive(false);
                     }));
                 }));
             },
-            onCancel: () => { ShowOverlay(false); },
+            onCancel: () => { },
                 confirmText: "Liity",
                 cancelText: "Peruuta",
                 style: "leave"

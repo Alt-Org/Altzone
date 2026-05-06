@@ -37,6 +37,8 @@ MonoBehaviour:
   CharacterDescriptionEnglish: 
   CharacterShortDescriptionFinnish: "Ruusuilta tuoksuva, savusilm\xE4inen syd\xE4ntens\xE4rkij\xE4."
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: fe1d8876c828b8348a0888f0a56faaad, type: 2}
   Hp:
     Level: 2
@@ -59,7 +61,7 @@ MonoBehaviour:
   BattleCharacterEntityPrototype:
     Id:
       Value: 1279321672100397795
-  BattleShieldEntityPrototype:
-    Id:
-      Value: 0
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1474069262847663455
   BattleUiSprite: {fileID: 0}

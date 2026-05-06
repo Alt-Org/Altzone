@@ -16,8 +16,6 @@ using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Model.Poco.Game;
 using System.Collections.ObjectModel;
 using UnityEngine.U2D.Animation;
-using Assets.Altzone.Scripts.Model.Poco.Player;
-using System.Reflection.Emit;
 
 namespace MenuUI.Scripts.SoulHome {
 
@@ -79,6 +77,12 @@ namespace MenuUI.Scripts.SoulHome {
             {
                 _loginStatusChanged = false;
                 _localPlayerId = ServerManager.Instance.Player._id;
+                RefreshSoulHome();
+            }
+            else if (_refreshInProgress)
+            {
+                StopCoroutine(RefreshCoroutine());
+                _refreshInProgress = false;
                 RefreshSoulHome();
             }
         }
@@ -169,18 +173,6 @@ namespace MenuUI.Scripts.SoulHome {
         private IEnumerator WaitForLoadFinish()
         {
             yield return new WaitUntil(() => _runningCoroutines == 0);
-        }
-
-        private void TestCode() //This is test code block that may or may not be unrelated to SoulHome. I just use the opening of the SoulHome to trigger things I need to test and don't have dedicated way of doing so.
-        {
-            List<IMultipartFormSection> body = new();
-
-            body.Add(new MultipartFormFileSection("logFile","test", null,"test.log"));
-
-            ServerManager.Instance.BattleSendDebugLogFile(body, "my_secret", "UploadTestNiko", callback =>
-             {
-                 Debug.LogWarning(callback.error+ "  :"+callback.downloadHandler.text);
-             });
         }
 
         public IEnumerator HomeLoad()

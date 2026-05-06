@@ -9,7 +9,9 @@ using UnityEngine;
 
 // Quantum usings
 using Quantum;
-using Photon.Deterministic;
+
+// Battle QSimulation usings
+using Battle.QSimulation.Game;
 
 // Battle View usings
 using Battle.View.Game;
@@ -31,13 +33,13 @@ namespace Battle.View.Player
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <summary>Reference to the moving shield object.</summary>
-        /// @ref BattlePlayerShieldClass400ViewController-SerializeFields
-        [Tooltip("Reference to the moving shield object.")]
-        [SerializeField] private GameObject _movingShield;
+        /// <summary>Reference to the shield GameObject.</summary>
+        /// Part of @ref BattlePlayerShieldClass400ViewController-SerializeFields "SerializeFields"
+        [Tooltip("Reference to the shield GameObject.")]
+        [SerializeField] private GameObject _shieldSpriteGameObject;
 
         /// <summary>Indicates if the moving shield should be flipped.</summary>
-        /// @ref BattlePlayerShieldClass400ViewController-SerializeFields
+        /// Part of @ref BattlePlayerShieldClass400ViewController-SerializeFields "SerializeFields"
         [Tooltip("Indicates if the moving shield should be flipped.")]
         [SerializeField] private bool _movingShieldFlipped;
 
@@ -50,52 +52,75 @@ namespace Battle.View.Player
         public override BattlePlayerCharacterClass Class => BattlePlayerCharacterClass.Class400;
 
         /// <summary>
-        /// Called when the shield takes damage.<br/>
-        /// Deactivating moving shield when defence value reaches 0.
-        /// </summary>
-        ///
-        /// <param name="e">The shield damage event data.</param>
-        public override void OnShieldTakeDamage(EventBattleShieldTakeDamage e)
-        {
-            if (e.DefenceValue <= FP._0)
-            {
-                _movingShield.SetActive(false);
-            }
-        }
-
-        /// <summary>
         /// Updates the shield view.<br/>
         /// Customized view logic where the shield tracks projectile in an arc.
         /// </summary>
         public override void OnUpdateView()
         {
-            if (_movingShield == null) return;
-
             GameObject projectileRef = BattleGameViewController.ProjectileReference;
+
             if (projectileRef == null) return;
 
-            Vector3 origin = transform.position;
-            Vector3 toProjectile = projectileRef.transform.position - origin;
+            Vector3 toProjectileVec3 = projectileRef.transform.position - transform.position;
+            Vector2 toProjectileVec2 = new(toProjectileVec3.x, toProjectileVec3.z);
+            Vector3 currentAngles    = _shieldSpriteGameObject.transform.rotation.eulerAngles;
 
-            if (toProjectile.sqrMagnitude < 0.0001f) return;
-
-            toProjectile.y = 0f;
-
-            if (toProjectile.sqrMagnitude > 0.0001f)
+            if (toProjectileVec2.sqrMagnitude > _maxShieldRotateDistanceSqr)
             {
-                Quaternion yawRot = Quaternion.LookRotation(toProjectile, Vector3.up);
-
-                if (_movingShieldFlipped)
-                {
-                    yawRot *= Quaternion.Euler(0f, 180f, 0f);
-                }
-
-                Vector3 currentAngle = _movingShield.transform.rotation.eulerAngles;
-                _movingShield.transform.rotation = Quaternion.Euler(currentAngle.x, yawRot.eulerAngles.y, currentAngle.z);
+                _shieldSpriteGameObject.transform.SetLocalPositionAndRotation(
+                    _shieldDefaultPosition,
+                    _shieldDefaultRotation
+                );
+                return;
             }
 
-            float radius = Vector3.Distance(_movingShield.transform.position, origin);
-            _movingShield.transform.position = origin + toProjectile.normalized * radius;
+            float angle = -Vector2.SignedAngle(Vector2.up, toProjectileVec2);
+
+            if (_movingShieldFlipped)
+            {
+                angle += 180f;
+            }
+
+            _shieldSpriteGameObject.transform.SetPositionAndRotation(
+                transform.position + toProjectileVec3.normalized * _shieldOffset,
+                Quaternion.Euler(currentAngles.x, angle, currentAngles.z)
+            );
         }
+
+        /// <summary>
+        /// Method that is called when view is initialized.<br/>
+        /// Handles character class 400 initialization.
+        /// </summary>
+        ///
+        /// <param name="slot">Slot of the player this shield is associated with.</param>
+        /// <param name="characterId">CharacterID of the character this shield is associated with.</param>
+        protected override void OnViewInitOverride(BattlePlayerSlot slot, BattlePlayerCharacterID characterId)
+        {
+            _maxShieldRotateDistanceSqr = 20f * (float)BattleGridManager.GridScaleFactor;
+            _maxShieldRotateDistanceSqr *= _maxShieldRotateDistanceSqr;
+            _shieldOffset = Vector3.Distance(_shieldSpriteGameObject.transform.position, transform.position);
+
+            _shieldSpriteGameObject.transform.GetLocalPositionAndRotation(out _shieldDefaultPosition, out _shieldDefaultRotation);
+        }
+
+        /// <summary>
+        /// Maximum distance where the shield will follow the projectile squared.
+        /// </summary>
+        private float _maxShieldRotateDistanceSqr;
+
+        /// <summary>
+        /// Offset of the <see cref="_shieldSpriteGameObject">_shieldSpriteGameObject</see>.
+        /// </summary>
+        private float _shieldOffset;
+
+        /// <summary>
+        /// Default position of the <see cref="_shieldSpriteGameObject">_shieldSpriteGameObject</see>.
+        /// </summary>
+        private Vector3 _shieldDefaultPosition;
+
+        /// <summary>
+        /// Default rotation of the <see cref="_shieldSpriteGameObject">_shieldSpriteGameObject</see>.
+        /// </summary>
+        private Quaternion _shieldDefaultRotation;
     }
 }

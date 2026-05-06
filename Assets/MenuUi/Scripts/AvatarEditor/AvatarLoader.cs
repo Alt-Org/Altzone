@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Altzone.Scripts.AvatarPartsInfo;
 using Altzone.Scripts.Model.Poco.Player;
-using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
 public class AvatarLoader : MonoBehaviour

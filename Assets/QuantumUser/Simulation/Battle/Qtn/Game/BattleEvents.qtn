@@ -36,7 +36,8 @@ synced event BattlePlayerCharacterViewInit
     EntityRef ERef;
     BattlePlayerSlot Slot;
     BattlePlayerCharacterID CharacterId;
-    BattlePlayerCharacterClass Class;
+    BattlePlayerCharacterClass CharacterClass;
+    int ShieldCount;
     FP ModelScale;
 }
 
@@ -45,6 +46,9 @@ synced event BattlePlayerShieldViewInit
     EntityRef ERef;
     EntityRef CharacterRef;
     BattlePlayerSlot Slot;
+    BattlePlayerCharacterID CharacterId;
+    BattlePlayerCharacterClass CharacterClass;
+    int ShieldNumber;
     FP ModelScale;
 }
 
@@ -117,22 +121,23 @@ synced event BattleCharacterSelected
     int CharacterNumber;
 }
 
-synced event BattleCharacterTakeDamage
+synced event BattleCharacterHit
 {
     EntityRef ERef;
     BattleTeamNumber Team;
     BattlePlayerSlot Slot;
     int CharacterNumber;
-    FP HealthPercentage;
+    FP StunFlashDurationSec;
 }
 
-synced event BattleShieldTakeDamage
+synced event BattleShieldHit
 {
     EntityRef ERef;
     BattleTeamNumber Team;
     BattlePlayerSlot Slot;
     int CharacterNumber;
-    FP DefenceValue;
+    bool ShieldAttached;
+    FP DefencePercentage;
 }
 
 synced event BattleGiveUpStateChange
@@ -142,10 +147,10 @@ synced event BattleGiveUpStateChange
     BattleGiveUpStateUpdate StateUpdate;
 }
 
-synced event BattleInPlayStateUpdate
+synced event BattlePlayStateUpdate
 {
-    bool IsInPlay;
     EntityRef ERef;
+    bool IsInPlay;
 }
 
 synced event BattleStoneCharacterPlayHitAnimation

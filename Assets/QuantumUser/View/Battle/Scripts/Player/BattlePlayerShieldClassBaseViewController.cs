@@ -26,11 +26,13 @@ namespace Battle.View.Player
     /// See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
     public abstract class BattlePlayerShieldClassBaseViewController : MonoBehaviour
     {
-        /// <summary>Must be implemented by derived shield class view controllers.</summary>
-        /// <value>The <see cref="BattlePlayerCharacterClass"/> associated with this shield view controller.</value>
+        /// <summary>The <see cref="BattlePlayerCharacterClass"/> associated with this shield view controller.</summary>
+        /// Must be implemented by derived shield class view controllers.
         public abstract BattlePlayerCharacterClass Class { get; }
 
         /// <summary>
+        /// Called by the @cref{Battle.View.Player,BattlePlayerShieldViewController} **OnViewInit**
+        /// (<see cref="BattlePlayerShieldViewController.OnActivate(Frame)">OnActivate</see>).<br/>
         /// Initializes this instance of a shield class view controller. Performs base non-specific initialization for all shield classes.<br/>
         /// Stores references to the parent controller and entity, then calls the protected <see cref="OnViewInitOverride"/> method that performs the shield class specific initialization.
         /// </summary>
@@ -41,31 +43,63 @@ namespace Battle.View.Player
         /// <param name="entityRef">The entity reference for this player shield.</param>
         /// <param name="slot">The player slot associated with this shield.</param>
         /// <param name="characterId">The ID of the shield being initialized.</param>
-        public void OnViewInit(BattlePlayerShieldViewController parent, EntityRef entityRef, BattlePlayerSlot slot, int characterId)
+        /// <param name="shieldNumber">ShieldNumber of this shield.</param>
+        public void OnViewInit(BattlePlayerShieldViewController parent, EntityRef entityRef, BattlePlayerSlot slot, BattlePlayerCharacterID characterId, int shieldNumber)
         {
             _parent = parent;
             _entityRef = entityRef;
+            _shieldNumber = shieldNumber;
             OnViewInitOverride(slot, characterId);
         }
 
         /// <summary>
-        /// Called when the character's shield takes damage.
-        /// Provides a hook for derived classes to implement shield class specific view logic.
+        /// Called by the @cref{Battle.View.Player,BattlePlayerShieldViewController}
+        /// <see cref="BattlePlayerShieldViewController.OnCharacterHit(EventBattleCharacterHit)">OnCharacterHit</see> method
+        /// when the character associated with this shield gets hit.<br/>
+        /// Provides a hook for derived classes to implement character class specific view logic.
         /// </summary>
         ///
-        /// <param name="e">The shield damage event data.</param>
-        public virtual void OnShieldTakeDamage(EventBattleShieldTakeDamage e) { }
+        /// <param name="e">The hit event data.</param>
+        public virtual void OnCharacterHit(EventBattleCharacterHit e) { }
 
         /// <summary>
-        /// Called once per frame to update the shield class view.
-        /// Provides a hook for derived classes to implement shield class specific view logic.
+        /// Called by the @cref{Battle.View.Player,BattlePlayerShieldViewController}
+        /// <see cref="BattlePlayerShieldViewController.OnShieldHit(EventBattleShieldHit)">OnShieldHit</see> method
+        /// when the shield gets hit.<br/>
+        /// Provides a hook for derived classes to implement character class specific view logic.
+        /// </summary>
+        ///
+        /// <param name="e">The shield hit event data.</param>
+        public virtual void OnShieldHit(EventBattleShieldHit e) { }
+
+        /// <summary>
+        /// Called by the @cref{Battle.View.Player,BattlePlayerShieldViewController}
+        /// <see cref="BattlePlayerShieldViewController.QEventOnPlayStateUpdate(EventBattlePlayStateUpdate)">QEventOnPlayStateUpdate</see> method
+        /// when play state updates.<br/>
+        /// Provides a hook for derived classes to implement character class specific view logic.
+        /// </summary>
+        ///
+        /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
+        ///
+        /// <param name="e">The play state update event data.</param>
+        public virtual void OnPlayStateUpdate(EventBattlePlayStateUpdate e) { }
+
+        /// <summary>
+        ///Called by the @cref{Battle.View.Player,BattlePlayerShieldViewController}
+        /// <see cref="BattlePlayerShieldViewController.OnUpdateView()">OnUpdateView</see> method
+        /// once per frame.<br/>
+        /// Provides a hook for derived classes to implement character class specific view logic.
         /// </summary>
         public virtual void OnUpdateView() { }
 
-        /// <summary>Reference to the parent <see cref="BattlePlayerShieldViewController">shield view controller</see> that manages shared player shield view logic.</summary>
+        /// <summary>Reference to the parent <see cref="BattlePlayerShieldViewController">BattlePlayerShieldViewController</see> that manages shared player shield view logic.</summary>
         protected BattlePlayerShieldViewController _parent;
         /// <summary>Reference to the entity associated with this shield view controller.</summary>
         protected EntityRef _entityRef;
+        /// <summary>Shield number of this shield.</summary>
+        ///
+        /// See [{ShieldNumber}](#page-concepts-player-character-entity-shield-number) for more info.
+        protected int _shieldNumber;
 
         /// <summary>
         /// Provides a hook for derived classes to perform shield class specific custom initialization.<br/>
@@ -76,6 +110,6 @@ namespace Battle.View.Player
         ///
         /// <param name="slot">The player slot associated with this shield.</param>
         /// <param name="characterId">The ID of the shield being initialized.</param>
-        protected virtual void OnViewInitOverride(BattlePlayerSlot slot, int characterId) { }
+        protected virtual void OnViewInitOverride(BattlePlayerSlot slot, BattlePlayerCharacterID characterId) { }
     }
 }

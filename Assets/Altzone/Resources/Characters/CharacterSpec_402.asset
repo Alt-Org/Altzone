@@ -39,9 +39,11 @@ MonoBehaviour:
   CharacterDescriptionEnglish: 
   CharacterShortDescriptionFinnish: "Tunnontuskilla leikittelev\xE4, naruista vetelij\xE4. "
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 0359596f2309630459d767f930e4a3b4, type: 2}
   Hp:
-    Level: 0
+    Level: 6
     Coefficient: 5
   Speed:
     Level: 5
@@ -61,7 +63,7 @@ MonoBehaviour:
   BattleCharacterEntityPrototype:
     Id:
       Value: 1302691685303402647
-  BattleShieldEntityPrototype:
-    Id:
-      Value: 0
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1518843202696386945
   BattleUiSprite: {fileID: 0}
