@@ -198,19 +198,22 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 case GameType.Clan2v2:
                     if (PhotonLobbyRoom.CountRealPlayers() == PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
                     {
-                        // Prevent starting matchmaking when this room is actually a queue room
-                        try
+                        GameType clanTargetGameType = GameType.Clan2v2;
+                        if (PhotonRealtimeClient.CurrentRoom != null)
                         {
-                            var curr = PhotonRealtimeClient.LobbyCurrentRoom;
-                            if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey))
+                            try
                             {
-                                Debug.Log("StartPlaying suppressed: current room is a queue room (Clan2v2).");
-                                RestoreStartButton();
-                                return;
+                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, true);
+                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)clanTargetGameType);
+                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, PhotonRealtimeClient.LocalPlayer?.UserId ?? string.Empty);
+                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateAccepted);
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.LogWarning($"StartPlaying Clan2v2: failed to set premade properties: {ex.Message}");
                             }
                         }
-                        catch { }
-                        this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedGameType));
+                        this.Publish(new LobbyManager.StartMatchmakingEvent(clanTargetGameType, true));
                     }
                     else
                     {
@@ -295,6 +298,47 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             GameType activeGameType = GetActiveRoomGameType();
             List<ServerOnlinePlayer> candidates = new();
+
+            if (activeGameType == GameType.Clan2v2)
+            {
+                List<ServerOnlinePlayer> clanOnlinePlayers = null;
+                if (ServerManager.Instance != null)
+                {
+                    List<ServerOnlinePlayer> fetchedPlayers = null;
+                    yield return StartCoroutine(ServerManager.Instance.GetOnlinePlayersFromServer(players => fetchedPlayers = players));
+                    clanOnlinePlayers = fetchedPlayers ?? ServerManager.Instance.OnlinePlayers;
+                }
+
+                List<ClanMember> clanMembers = null;
+                if (ServerManager.Instance != null)
+                {
+                    yield return StartCoroutine(ServerManager.Instance.GetClanPlayers(list => clanMembers = list));
+                }
+
+                List<string> clanMemberIds = new();
+                if (clanMembers != null)
+                {
+                    foreach (ClanMember clanMember in clanMembers)
+                    {
+                        if (clanMember == null || string.IsNullOrEmpty(clanMember._id)) continue;
+                        clanMemberIds.Add(clanMember._id);
+                    }
+                }
+
+                if (clanOnlinePlayers != null)
+                {
+                    foreach (ServerOnlinePlayer onlinePlayer in clanOnlinePlayers)
+                    {
+                        if (onlinePlayer == null || string.IsNullOrEmpty(onlinePlayer._id)) continue;
+                        if (!clanMemberIds.Contains(onlinePlayer._id)) continue;
+                        candidates.Add(onlinePlayer);
+                    }
+                }
+
+                Debug.Log($"GetInviteCandidatesRoutine: clan invite branch online={clanOnlinePlayers?.Count ?? -1}, clanMembers={clanMembers?.Count ?? -1}, filteredCandidates={candidates.Count}");
+                callback?.Invoke(FilterInviteCandidates(candidates));
+                yield break;
+            }
 
             List<ServerOnlinePlayer> onlinePlayers = null;
             if (ServerManager.Instance != null)

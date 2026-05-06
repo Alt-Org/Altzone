@@ -649,6 +649,21 @@ namespace Altzone.Scripts.Lobby
                                 }
                             }
                             catch { }
+
+                            // Validate Clan2v2 composition immediately after join
+                            if ((GameType)roomGameTypeInt == GameType.Clan2v2 && !reservationFailed)
+                            {
+                                try
+                                {
+                                    if (!ValidateClan2v2MatchComposition(PhotonRealtimeClient.CurrentRoom, out string clanValidationReason))
+                                    {
+                                        // If validation fails, it's likely we don't have 2 clans or have too few players
+                                        // In this case, don't immediately requeue - let WaitForMatchmakingPlayers handle waiting
+                                        Debug.Log($"FormMatchFromQueue: Clan2v2 composition not ready ({clanValidationReason}), WaitForMatchmakingPlayers will defer.");
+                                    }
+                                }
+                                catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: Clan2v2 validation failed: {ex.Message}"); }
+                            }
                             // Mark self as leader for followers and start leader matchmaking wait loop so bot backfill and game start proceed
                             try
                             {
@@ -2249,85 +2264,72 @@ namespace Altzone.Scripts.Lobby
             completeDuoCount = completeDuos.Count;
 
             // Special-case: Clan2v2 must select exactly two distinct clans with two
-            // players each. Ignore solo/duo fallback logic used by Random2v2.
+            // players each. Use complete duo pairs to identify clans (don't rely on ClanNameKey).
             try
             {
                 if ((GameType)roomGameTypeInt == GameType.Clan2v2)
                 {
-                    // Group players by clan name (ignore empty clan entries)
-                    var clanGroups = realPlayers
-                        .Where(p => p != null && !string.IsNullOrEmpty(p.UserId))
-                        .GroupBy(p => p.GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey, string.Empty) ?? string.Empty)
-                        .Where(g => !string.IsNullOrEmpty(g.Key))
-                        .ToDictionary(g => g.Key, g => g.ToList());
-
-                    // Find clans with at least two eligible players (exclude incomplete members)
-                    var eligibleClans = clanGroups
-                        .Select(kv => new { Name = kv.Key, Players = kv.Value.Where(p => p != null && !incompleteMemberIds.Contains(p.UserId) && p.UserId != "Bot").ToList() })
-                        .Where(x => x.Players.Count >= 2)
-                        .OrderByDescending(x => x.Players.Count)
-                        .ToList();
-
-                    if (eligibleClans.Count < 2)
+                    // For Clan2v2, we need exactly 2 complete duo pairs (representing 2 different clans)
+                    if (completeDuos.Count < 2)
                     {
-                        // Not enough clans to form a clan2v2 match
+                        // Not enough duos to form a clan2v2 match
                         return new List<string>();
                     }
 
-                    // Prefer local player's clan if possible
-                    string localClan = string.Empty;
-                    try { localClan = playersById.ContainsKey(localUserId) ? playersById[localUserId].GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey, string.Empty) ?? string.Empty : string.Empty; } catch { }
+                    // Take the first two duos as the two clans
+                    var duo1 = completeDuos[0];
+                    var duo2 = completeDuos[1];
 
-                    var firstClan = eligibleClans.FirstOrDefault(c => !string.IsNullOrEmpty(localClan) && c.Name == localClan) ?? eligibleClans[0];
-                    var secondClan = eligibleClans.FirstOrDefault(c => c.Name != firstClan.Name) ?? eligibleClans.Skip(1).FirstOrDefault();
+                    if (duo1.leader == null || duo1.follower == null || duo2.leader == null || duo2.follower == null)
+                    {
+                        return new List<string>();
+                    }
 
-                    if (secondClan == null) return new List<string>();
+                    // Validate that duo1 and duo2 are from different clans
+                    string duo1Clan = duo1.leader.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
+                    if (string.IsNullOrEmpty(duo1Clan))
+                    {
+                        duo1Clan = duo1.follower.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
+                    }
 
-                    // Select two players from each clan. Prefer members with existing duo links (leader/follower), then fallback to any.
+                    string duo2Clan = duo2.leader.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
+                    if (string.IsNullOrEmpty(duo2Clan))
+                    {
+                        duo2Clan = duo2.follower.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
+                    }
+
+                    // Both duos must have clan names and they must be different
+                    if (string.IsNullOrEmpty(duo1Clan) || string.IsNullOrEmpty(duo2Clan) || duo1Clan == duo2Clan)
+                    {
+                        Debug.Log($"SelectQueueFollowersForMatch: Clan2v2 duos not from different clans (duo1={duo1Clan}, duo2={duo2Clan})");
+                        return new List<string>();
+                    }
+
+                    // Select 1 player from duo1 and 2 players from duo2
+                    // (leader is already in the room, so followers are selected)
                     List<string> selection = new();
 
-                    List<Player> pickFromClan(List<Player> pool)
+                    // Add one from duo1 (prefer follower since leader might be the queue master)
+                    if (!string.IsNullOrEmpty(duo1.follower.UserId) && duo1.follower.UserId != localUserId)
                     {
-                        // try to prefer duo members (leaders first)
-                        var duoMembers = pool.Where(p => completeDuos.Any(d => d.leader != null && d.follower != null && (d.leader.UserId == p.UserId || d.follower.UserId == p.UserId))).ToList();
-                        var result = new List<Player>();
-                        foreach (var p in duoMembers)
-                        {
-                            if (result.Count >= 2) break;
-                            if (!string.IsNullOrEmpty(p.UserId) && !selection.Contains(p.UserId)) result.Add(p);
-                        }
-                        foreach (var p in pool)
-                        {
-                            if (result.Count >= 2) break;
-                            if (!string.IsNullOrEmpty(p.UserId) && !selection.Contains(p.UserId)) result.Add(p);
-                        }
-                        return result;
+                        selection.Add(duo1.follower.UserId);
+                    }
+                    else if (!string.IsNullOrEmpty(duo1.leader.UserId) && duo1.leader.UserId != localUserId)
+                    {
+                        selection.Add(duo1.leader.UserId);
                     }
 
-                    var picksA = pickFromClan(firstClan.Players);
-                    var picksB = pickFromClan(secondClan.Players);
-
-                    if (picksA.Count < 2 || picksB.Count < 2) return new List<string>();
-
-                    // Ensure local user is included if they belong to one of the chosen clans
-                    if (!string.IsNullOrEmpty(localUserId) && playersById.ContainsKey(localUserId))
+                    // Add both from duo2
+                    if (!string.IsNullOrEmpty(duo2.leader.UserId) && duo2.leader.UserId != localUserId)
                     {
-                        string localUserClan = playersById[localUserId].GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey, string.Empty) ?? string.Empty;
-                        if (localUserClan == firstClan.Name && !picksA.Any(p => p.UserId == localUserId))
-                        {
-                            picksA[1] = picksA.FirstOrDefault(p => p.UserId != picksA[0].UserId) ?? picksA[0];
-                            if (!picksA.Any(p => p.UserId == localUserId)) picksA[1] = playersById[localUserId];
-                        }
-                        else if (localUserClan == secondClan.Name && !picksB.Any(p => p.UserId == localUserId))
-                        {
-                            picksB[1] = picksB.FirstOrDefault(p => p.UserId != picksB[0].UserId) ?? picksB[0];
-                            if (!picksB.Any(p => p.UserId == localUserId)) picksB[1] = playersById[localUserId];
-                        }
+                        selection.Add(duo2.leader.UserId);
+                    }
+                    if (!string.IsNullOrEmpty(duo2.follower.UserId) && duo2.follower.UserId != localUserId)
+                    {
+                        selection.Add(duo2.follower.UserId);
                     }
 
-                    selection.AddRange(picksA.Take(2).Select(p => p.UserId));
-                    selection.AddRange(picksB.Take(2).Select(p => p.UserId));
-
+                    // Ensure we have exactly requiredFollowers (3) selected
                     if (selection.Count == requiredFollowers)
                     {
                         return selection;
@@ -2649,6 +2651,44 @@ namespace Altzone.Scripts.Lobby
                 return false;
             }
 
+            return true;
+        }
+
+        private bool ValidateClan2v2MatchComposition(Room room, out string reason)
+        {
+            reason = string.Empty;
+            if (room == null || room.Players == null)
+            {
+                reason = "room missing";
+                return false;
+            }
+
+            // Get all human players
+            var humanPlayers = room.Players.Values
+                .Where(p => p != null && !string.IsNullOrEmpty(p.UserId) && p.UserId != "Bot")
+                .ToList();
+
+            if (humanPlayers.Count < 4)
+            {
+                reason = "waiting for players";
+                return false; // Not enough players yet
+            }
+
+            // Group players by clan
+            var playersByClan = humanPlayers
+                .GroupBy(p => p.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty))
+                .Where(g => !string.IsNullOrEmpty(g.Key))
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            // Must have at least 2 different clans
+            if (playersByClan.Count < 2)
+            {
+                reason = "all players from same clan";
+                return false;
+            }
+
+            // Valid if we have at least 2 clans represented with players in the room
+            // Allow starting with 2 from each clan even if more players from one clan are waiting
             return true;
         }
 
@@ -3850,6 +3890,14 @@ namespace Altzone.Scripts.Lobby
                                 PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, localUserId);
                                 PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, _premadeTeammateUserId);
                             }
+                            
+                            // For Clan2v2, stamp the clan name in the queue room so it's available to queue logic
+                            if (gameType == GameType.Clan2v2 && !string.IsNullOrEmpty(clanName))
+                            {
+                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.ClanNameKey, clanName);
+                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.SoulhomeRank, soulhomeRank);
+                            }
+                            
                             PhotonRealtimeClient.CurrentRoom.SetCustomProperty("qe", _teammates?.Length ?? 0);
                             if (_teammates != null && _teammates.Length > 0)
                             {
@@ -4912,8 +4960,18 @@ namespace Altzone.Scripts.Lobby
                             yield break;
                         }
                     }
+                    
+                    // Validate Clan2v2 composition: must have at least 2 different clans
+                    if (queueGameType == (int)GameType.Clan2v2)
+                    {
+                        if (!ValidateClan2v2MatchComposition(PhotonRealtimeClient.CurrentRoom, out string clanValidationReason))
+                        {
+                            Debug.Log($"WaitForMatchmakingPlayers: Clan2v2 composition not ready ({clanValidationReason}), continuing to wait.");
+                            continue; // Keep waiting for valid composition
+                        }
+                    }
                 }
-                catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: block composition validation failed: {ex.Message}"); }
+                catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: match composition validation failed: {ex.Message}"); }
 
                 foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
                 {
@@ -4940,7 +4998,59 @@ namespace Altzone.Scripts.Lobby
                         // Fall back to side-effect-free room scanning to avoid VerifyPlayerPositions clearing bot slots.
                         if (!PhotonLobbyRoom.IsValidPlayerPos(position))
                         {
-                            position = GetFirstFreePositionWithoutVerification(); // TODO: if Clan2v2 ensure that player ends on the correct side
+                            // For Clan2v2, ensure player ends on correct side based on their clan
+                            try
+                            {
+                                GameType fallbackRoomGameType = (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                                if (fallbackRoomGameType == GameType.Clan2v2)
+                                {
+                                    string playerClan = player.Value.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
+                                    if (!string.IsNullOrEmpty(playerClan))
+                                    {
+                                        // Determine which clan is assigned to positions 1-2 by checking existing position assignments
+                                        string team1Clan = string.Empty;
+                                        
+                                        // Check if position 1 or 2 is already assigned to determine team1 clan
+                                        if (!string.IsNullOrEmpty(positionValue1))
+                                        {
+                                            Player p1 = PhotonRealtimeClient.CurrentRoom.Players.Values.FirstOrDefault(p => p.UserId == positionValue1);
+                                            if (p1 != null) team1Clan = p1.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
+                                        }
+                                        if (string.IsNullOrEmpty(team1Clan) && !string.IsNullOrEmpty(positionValue2))
+                                        {
+                                            Player p2 = PhotonRealtimeClient.CurrentRoom.Players.Values.FirstOrDefault(p => p.UserId == positionValue2);
+                                            if (p2 != null) team1Clan = p2.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
+                                        }
+                                        
+                                        // If team1 clan is unknown, assign this player to team1 (pos 1 or 2)
+                                        if (string.IsNullOrEmpty(team1Clan))
+                                        {
+                                            team1Clan = playerClan;
+                                        }
+                                        
+                                        // Assign position based on which team this player's clan belongs to
+                                        if (playerClan == team1Clan)
+                                        {
+                                            // Assign to team 1 (positions 1-2)
+                                            if (PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition1)) position = PhotonBattleRoom.PlayerPosition1;
+                                            else if (PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition2)) position = PhotonBattleRoom.PlayerPosition2;
+                                        }
+                                        else
+                                        {
+                                            // Assign to team 2 (positions 3-4)
+                                            if (PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition3)) position = PhotonBattleRoom.PlayerPosition3;
+                                            else if (PhotonBattleRoom.CheckIfPositionIsFree(PhotonBattleRoom.PlayerPosition4)) position = PhotonBattleRoom.PlayerPosition4;
+                                        }
+                                    }
+                                }
+                            }
+                            catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: Clan2v2 position assignment failed: {ex.Message}"); }
+                            
+                            // Fallback for non-Clan2v2 or if Clan2v2 assignment didn't work
+                            if (!PhotonLobbyRoom.IsValidPlayerPos(position))
+                            {
+                                position = GetFirstFreePositionWithoutVerification();
+                            }
                         }
 
                         if (!PhotonLobbyRoom.IsValidPlayerPos(position)) continue;

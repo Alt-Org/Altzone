@@ -192,10 +192,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
             {
                 if (clanData != null)
                 {
-                    // Create a non-matchmaking clan lobby room directly (avoid joining queue first)
+                    // Create a direct invite room; matchmaking starts only when the master presses Start.
                     _pendingJoinIntent = JoinIntent.CustomCreate;
                     string clanName = clanData.Name ?? string.Empty;
                     int soulhomeRank = PhotonRealtimeClient.LocalLobbyPlayer?.GetCustomProperty(PhotonBattleRoom.SoulhomeRank, 0) ?? 0;
+                    Debug.Log($"CreateClan2v2Room: creating clan invite room for clan='{clanName}', soulhomeRank={soulhomeRank}");
                     PhotonRealtimeClient.CreateClan2v2LobbyRoom(clanName, soulhomeRank);
                 }
             }));
