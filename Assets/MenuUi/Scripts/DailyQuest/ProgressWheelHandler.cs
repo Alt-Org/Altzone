@@ -26,6 +26,7 @@ public class ProgressWheelHandler : MonoBehaviour
         else
         {
             Instance = this;
+            _wheel.SetActive(false);
         }
     }
 

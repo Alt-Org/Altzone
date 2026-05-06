@@ -12,8 +12,8 @@ public class DailyTaskLongPress : DailyTaskProgressListener, IPointerDownHandler
     [Header("For tracking multiple targets\n(Leave empty if only traking one target)")]
     [SerializeField] private string _uniqueName = "";
 
-    private bool _isHeldDown = false;
-    private Button _button;
+    protected bool _isHeldDown = false;
+    protected Button _button;
     protected bool _oneShot = false;
 
     private GameObject _wheel;

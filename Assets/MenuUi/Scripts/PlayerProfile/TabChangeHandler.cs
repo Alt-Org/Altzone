@@ -19,7 +19,7 @@ public class TabChangeHandler : MonoBehaviour
 
     [SerializeField] protected List<ButtonWindowBind> _buttons = new List<ButtonWindowBind>();
     [SerializeField] protected int _defaultTab = 1;
-
+    [SerializeField] private bool _ignoreChange;
     // Start is called before the first frame update
     protected virtual void Start()
     {
@@ -30,6 +30,11 @@ public class TabChangeHandler : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        TabLine.OnTabChanged += SetVisible;
+    }
+
     protected virtual void OnEnable()
     {
         int? value;
@@ -38,7 +43,14 @@ public class TabChangeHandler : MonoBehaviour
         else
             value = DataCarrier.GetData<int?>(DataCarrier.RequestedWindow, false, suppressWarning: true);
         if (value != null) SetVisible((int)value);
-        else SetVisible(_defaultTab);
+        else
+        //Added "if(!_ignoreChange)" so that "chat channel" tabs wouldn't change
+        if(!_ignoreChange) SetVisible(_defaultTab);
+    }
+
+    private void OnDestroy()
+    {
+        TabLine.OnTabChanged -= SetVisible;
     }
 
     protected virtual void SetVisible(int activeIndex)
@@ -50,6 +62,6 @@ public class TabChangeHandler : MonoBehaviour
                 if (_buttons[i].Window != null) _buttons[i].Window.SetActive(i == activeIndex);
             }
         else _tablineScript.Swipe.CurrentPage = activeIndex;
-        _tablineScript.ActivateTabButton(activeIndex);
+        _tablineScript.UpdateTabVisuals(activeIndex);
     }
 }

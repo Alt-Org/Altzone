@@ -15,13 +15,14 @@ var searchData=
   ['eventbattleshieldtakedamage_12',['EventBattleShieldTakeDamage',['../class_quantum_1_1_event_battle_shield_take_damage.html',1,'Quantum']]],
   ['eventbattlesoulwallviewinit_13',['EventBattleSoulWallViewInit',['../class_quantum_1_1_event_battle_soul_wall_view_init.html',1,'Quantum']]],
   ['eventbattlestonecharacterpieceviewinit_14',['EventBattleStoneCharacterPieceViewInit',['../class_quantum_1_1_event_battle_stone_character_piece_view_init.html',1,'Quantum']]],
-  ['eventbattleviewactivate_15',['EventBattleViewActivate',['../class_quantum_1_1_event_battle_view_activate.html',1,'Quantum']]],
-  ['eventbattleviewallplayersconnected_16',['EventBattleViewAllPlayersConnected',['../class_quantum_1_1_event_battle_view_all_players_connected.html',1,'Quantum']]],
-  ['eventbattleviewgameover_17',['EventBattleViewGameOver',['../class_quantum_1_1_event_battle_view_game_over.html',1,'Quantum']]],
-  ['eventbattleviewgamestart_18',['EventBattleViewGameStart',['../class_quantum_1_1_event_battle_view_game_start.html',1,'Quantum']]],
-  ['eventbattleviewgetreadytoplay_19',['EventBattleViewGetReadyToPlay',['../class_quantum_1_1_event_battle_view_get_ready_to_play.html',1,'Quantum']]],
-  ['eventbattleviewinit_20',['EventBattleViewInit',['../class_quantum_1_1_event_battle_view_init.html',1,'Quantum']]],
-  ['eventbattleviewplayerconnected_21',['EventBattleViewPlayerConnected',['../class_quantum_1_1_event_battle_view_player_connected.html',1,'Quantum']]],
-  ['eventbattleviewsetrotationjoystickvisibility_22',['EventBattleViewSetRotationJoystickVisibility',['../class_quantum_1_1_event_battle_view_set_rotation_joystick_visibility.html',1,'Quantum']]],
-  ['eventbattleviewwaitforplayers_23',['EventBattleViewWaitForPlayers',['../class_quantum_1_1_event_battle_view_wait_for_players.html',1,'Quantum']]]
+  ['eventbattlestonecharacterplayhitanimation_15',['EventBattleStoneCharacterPlayHitAnimation',['../class_quantum_1_1_event_battle_stone_character_play_hit_animation.html',1,'Quantum']]],
+  ['eventbattleviewactivate_16',['EventBattleViewActivate',['../class_quantum_1_1_event_battle_view_activate.html',1,'Quantum']]],
+  ['eventbattleviewallplayersconnected_17',['EventBattleViewAllPlayersConnected',['../class_quantum_1_1_event_battle_view_all_players_connected.html',1,'Quantum']]],
+  ['eventbattleviewgameover_18',['EventBattleViewGameOver',['../class_quantum_1_1_event_battle_view_game_over.html',1,'Quantum']]],
+  ['eventbattleviewgamestart_19',['EventBattleViewGameStart',['../class_quantum_1_1_event_battle_view_game_start.html',1,'Quantum']]],
+  ['eventbattleviewgetreadytoplay_20',['EventBattleViewGetReadyToPlay',['../class_quantum_1_1_event_battle_view_get_ready_to_play.html',1,'Quantum']]],
+  ['eventbattleviewinit_21',['EventBattleViewInit',['../class_quantum_1_1_event_battle_view_init.html',1,'Quantum']]],
+  ['eventbattleviewplayerconnected_22',['EventBattleViewPlayerConnected',['../class_quantum_1_1_event_battle_view_player_connected.html',1,'Quantum']]],
+  ['eventbattleviewsetrotationjoystickvisibility_23',['EventBattleViewSetRotationJoystickVisibility',['../class_quantum_1_1_event_battle_view_set_rotation_joystick_visibility.html',1,'Quantum']]],
+  ['eventbattleviewwaitforplayers_24',['EventBattleViewWaitForPlayers',['../class_quantum_1_1_event_battle_view_wait_for_players.html',1,'Quantum']]]
 ];

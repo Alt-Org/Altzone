@@ -151,8 +151,8 @@ namespace Battle.View.UI
                 // Setting frame
                 characterFrameHandler.SetCharacterFrame((BattlePlayerCharacterClass)characterClasses[i]);
 
-                // Setting defence number
-                characterButton.SetDefenceNumber(characterDefenceNumbers[i]);
+                // Setting damage number
+                characterButton.SetDamageFill(characterDefenceNumbers[i]);
 
                 // Setting if button is enabled
                 characterButton.ButtonComponent.enabled = playerType == PlayerType.LocalPlayer;
@@ -196,35 +196,19 @@ namespace Battle.View.UI
         }
 
         /// <summary>
-        /// Updates character health visual through BattleUiPlayerInfoComponent.
-        /// </summary>
-        ///
-        /// <param name="slot">The player's BattlePlayerSlot who's character health visual to update.</param>
-        /// <param name="characterNumber">The character number which health visual to update.</param>
-        /// <param name="healthPercentage">The updated health percentage for the character.</param>
-        public void UpdateHealthVisual(BattlePlayerSlot slot, int characterNumber, float healthPercentage)
-        {
-            BattleUiPlayerInfoComponent playerInfoComponent = GetPlayerInfoComponent(slot);
-
-            if (playerInfoComponent == null) return;
-
-            playerInfoComponent.CharacterButtons[characterNumber].SetDamageFill(healthPercentage);
-        }
-
-        /// <summary>
-        /// Calls SetDefenceNumber on the character button of the correct players correct character.
+        /// Calls SetDamageFill on the character button of the correct players correct character.
         /// </summary>
         ///
         /// <param name="slot">The slot of the player in question.</param>
         /// <param name="characterNumber">The character number of the character in question.</param>
-        /// <param name="defenceValue">The defence value of the character in question.</param>
-        public void UpdateDefenceVisual(BattlePlayerSlot slot, int characterNumber, float defenceValue)
+        /// <param name="defencePercentage">The defence percentage of the character in question.</param>
+        public void UpdateDefenceVisual(BattlePlayerSlot slot, int characterNumber, float defencePercentage)
         {
             BattleUiPlayerInfoComponent playerInfoComponent = GetPlayerInfoComponent(slot);
 
             if (playerInfoComponent == null) return;
 
-            playerInfoComponent.CharacterButtons[characterNumber].SetDefenceNumber(defenceValue);
+            playerInfoComponent.CharacterButtons[characterNumber].SetDamageFill(defencePercentage);
         }
 
         /// <summary>

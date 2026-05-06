@@ -25,12 +25,12 @@ namespace MenuUi.Scripts.Window
             }
             var windowManager = WindowManager.Get();
             var isCurrentWindow = windowManager.FindIndex(_naviTarget) == 0;
+            button.onClick.AddListener(OnNaviButtonClick);
             if (isCurrentWindow)
             {
                 button.interactable = false;
                 return;
             }
-            button.onClick.AddListener(OnNaviButtonClick);
         }
 
         protected virtual void OnNaviButtonClick()

@@ -57,7 +57,7 @@ namespace Battle.View.Player
         /// <param name="e">The shield damage event data.</param>
         public override void OnShieldTakeDamage(EventBattleShieldTakeDamage e)
         {
-            if (e.DefenceValue <= FP._0)
+            if (e.DefencePercentage <= FP._0)
             {
                 _movingShield.SetActive(false);
             }

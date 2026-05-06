@@ -28,6 +28,7 @@ public class VerticalScrollRect : BaseScrollRect
 
     protected override void OnEnable()
     {
+        base.OnEnable();
         horizontallyScrollable = false;
     }
 

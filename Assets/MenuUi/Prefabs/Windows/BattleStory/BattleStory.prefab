@@ -5740,6 +5740,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: -0.00000006741993
       objectReference: {fileID: 0}
+    - target: {fileID: 4522452604004502935, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4711430747379816853, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_Enabled
@@ -5798,6 +5803,11 @@ PrefabInstance:
     - target: {fileID: 5937350060150394260, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5941332736402343395, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6073106209191891444, guid: 57890b7dbec8a984abb7d8148eefe9f6,
@@ -6041,11 +6051,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0.0000022494264
       objectReference: {fileID: 0}
-    - target: {fileID: 9167956055133618418, guid: 57890b7dbec8a984abb7d8148eefe9f6,
-        type: 3}
-      propertyPath: m_TargetGraphic
-      value: 
-      objectReference: {fileID: 1683284532706751461}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -6065,18 +6070,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 8198285669569388275}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1683284532706751461 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7393242888819109142, guid: 57890b7dbec8a984abb7d8148eefe9f6,
-    type: 3}
-  m_PrefabInstance: {fileID: 8198285669569388275}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &1949093320059512750 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7695168990374541661, guid: 57890b7dbec8a984abb7d8148eefe9f6,

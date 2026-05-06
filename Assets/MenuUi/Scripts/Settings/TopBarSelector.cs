@@ -6,6 +6,8 @@ public class TopBarSelector : MonoBehaviour
 {
     [SerializeField] private List<GameObject> _topBarList;
 
+    private static int s_topbar = 0;
+
     void Start()
     {
         SetPanel((int)SettingsCarrier.Instance.TopBarStyleSetting);
@@ -25,7 +27,7 @@ public class TopBarSelector : MonoBehaviour
 
     private int CheckIndexRange(int index)
     {
-        if (index + 1 > _topBarList.Count)
+        if (index >= _topBarList.Count)
         {
             return 0;
         }
@@ -37,13 +39,13 @@ public class TopBarSelector : MonoBehaviour
 
     private void SetPanel(int index)
     {
-        index = CheckIndexRange(index);
+        s_topbar = CheckIndexRange(index);
 
         foreach (GameObject go in _topBarList)
         {
             go.SetActive(false);
         }
-        _topBarList[index].SetActive(true);
+        _topBarList[s_topbar].SetActive(true);
     }
 
     

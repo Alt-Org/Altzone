@@ -9,8 +9,6 @@ public class TaskBugger : DailyTaskLongPress, IPointerDownHandler, IPointerUpHan
 {
     [SerializeField] private TextMeshProUGUI _buggedText;
     [SerializeField] private Toggle _toggle;
-    [SerializeField] private Button _button;
-    private bool _isHeldDown = false;
 
     [SerializeField] private GameObject _wheelPrefab;
 

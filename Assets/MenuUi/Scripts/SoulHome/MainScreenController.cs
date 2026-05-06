@@ -1,13 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Game;
+using MenuUi.Scripts.Window;
+using Prg.Scripts.Common;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UI;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
-using Prg.Scripts.Common;
-using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -22,13 +23,9 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _hoverButtons;
         [SerializeField]
-        private GameObject _leaveRoomButton;
-        [SerializeField]
         private GameObject _furnitureButtonTray;
         [SerializeField]
         private GameObject _changeHandleButtonTray;
-        [SerializeField]
-        private GameObject _overlayBar;
         [SerializeField]
         private GameObject _verticalItemTray;
         [SerializeField]
@@ -48,7 +45,6 @@ namespace MenuUI.Scripts.SoulHome
 
         internal bool TrayOpen { get => _trayOpen; set => _trayOpen = value; }
         internal GameObject SelectedFurnitureTray { get => _selectedFurnitureTray;}
-        public GameObject LeaveRoomButton { get => _leaveRoomButton;}
         public GameObject TempSelectedFurnitureTray { get => _tempSelectedFurnitureTray;}
 
         // Start is called before the first frame update
@@ -418,7 +414,7 @@ namespace MenuUI.Scripts.SoulHome
             GameObject tray = GetTray();
             if (enable)
             {
-                _overlayBar.SetActive(false);
+                OverlayPanelCheck.Instance.ToggleBottomBar(false);
                 tray.SetActive(true);
                 _changeHandleButtonTray.SetActive(true);
                 _furnitureButtonTray.SetActive(true);
@@ -427,7 +423,7 @@ namespace MenuUI.Scripts.SoulHome
             else
             {
                 if(!_rotated)
-                _overlayBar.SetActive(true);
+                OverlayPanelCheck.Instance.ToggleBottomBar(true);
                 tray.SetActive(false);
                 _changeHandleButtonTray.SetActive(false);
                 _furnitureButtonTray.SetActive(false);
@@ -562,7 +558,7 @@ namespace MenuUI.Scripts.SoulHome
             if (!_rotated)
             {
                 screen.GetComponent<RectTransform>().anchorMax = new(1f, 1f);
-                screen.GetComponent<RectTransform>().anchorMin = new(0f, 0.1f);
+                screen.GetComponent<RectTransform>().anchorMin = new(0f, 0f);
                 screen.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             }
             else
@@ -746,12 +742,12 @@ namespace MenuUI.Scripts.SoulHome
             GameObject horizontalContent = GetHorizontalTrayHandler().GetTrayContent();
             if (_rotated)
             {
-                _overlayBar.gameObject.SetActive(false);
+                OverlayPanelCheck.Instance.ToggleBottomBar(false);
                 SwitchTray(horizontalContent, verticalContent);
             }
             else
             {
-                if(!_trayOpen)_overlayBar.gameObject.SetActive(true);
+                if(!_trayOpen) OverlayPanelCheck.Instance.ToggleBottomBar(true);
                 SwitchTray(verticalContent, horizontalContent);
             }
             GetTrayHandler().GetComponent<ResizeCollider>().Resize();

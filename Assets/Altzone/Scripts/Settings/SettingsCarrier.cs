@@ -1,7 +1,11 @@
 using System;
 using Altzone.Scripts.Audio;
 using Altzone.Scripts.BattleUiShared;
+using Altzone.Scripts.Chat;
+using Newtonsoft.Json.Linq;
+using UnityEditor;
 using UnityEngine;
+using static Altzone.Scripts.Chat.ChatListener;
 
 public class SettingsCarrier : MonoBehaviour // Script for carrying settings data between scenes
 {
@@ -351,6 +355,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     private string _mainMenuMusicName;
     public string MainMenuMusicName { get { return _mainMenuMusicName; } }
 
+    private int? _chatChannel;
+
     public enum SelectionBoxType
     {
         None,
@@ -413,6 +419,13 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _topBarStyleSetting = (TopBarStyle)PlayerPrefs.GetInt(TopBarStyleSettingKey, 1);
 
         _mainMenuMusicName = PlayerPrefs.GetString("MainMenuMusic");
+
+        ChatListener.OnActiveChannelChanged += SaveChatChannel;
+    }
+
+    private void OnDestroy()
+    {
+        ChatListener.OnActiveChannelChanged -= SaveChatChannel;
     }
 
     public void SetVolume(SoundType type, float value)
@@ -439,6 +452,19 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
             default: break;
         }
         return 1 * (otherVolume * masterVolume);
+    }
+
+    public float GetVolumeValue(SoundType type)
+    {
+        float otherVolume = 1;
+        switch (type)
+        {
+            case SoundType.menu: otherVolume = menuVolume; break;
+            case SoundType.music: otherVolume = musicVolume; break;
+            case SoundType.sound: otherVolume = soundVolume; break;
+            default: break;
+        }
+        return otherVolume;
     }
 
     public void SetTextSize(TextSize size)
@@ -547,6 +573,20 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         {
             case SelectionBoxType.MainMenuMusic: _mainMenuMusicName = value; PlayerPrefs.SetString("MainMenuMusic", value); break;
         }
+    }
+
+    public ChatChannelType FetchChatChannel()
+    {
+        _chatChannel ??= PlayerPrefs.GetInt("ActiveChatChannel", 0);
+        if (Enum.IsDefined(typeof(ChatChannelType), _chatChannel))
+            return (ChatChannelType)_chatChannel;
+        else return ChatChannelType.Global;
+    }
+
+    public void SaveChatChannel(ChatChannelType channel)
+    {
+        _chatChannel = (int)channel;
+        PlayerPrefs.SetInt("ActiveChatChannel", (int)channel);
     }
 
     private LanguageType ParseLanguage(string languageName)

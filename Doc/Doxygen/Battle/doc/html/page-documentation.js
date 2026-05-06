@@ -38,14 +38,14 @@ var page_documentation =
         [ "Documenting variables", "page-documentation-documenting-source-code.html#page-documentation-source-code-base-guidelines-variables", null ]
       ] ],
       [ "Documenting Quantum Systems", "page-documentation-documenting-source-code.html#page-documentation-source-code-quantum-systems", [
-        [ "Quantum System Class <a class=\"el\" href=\"page-documentation-doxygen.html#page-documentation-doxygen-terminology-brief-summary\">{brief/summary}</a> format", "page-documentation-documenting-source-code.html#page-documentation-source-code-quantum-systems-system-classes", null ],
-        [ "Quantum System OnInit method <a class=\"el\" href=\"page-documentation-doxygen.html#page-documentation-doxygen-terminology-brief-summary\">{brief/summary}</a> format", "page-documentation-documenting-source-code.html#page-documentation-source-code-quantum-systems-oninit-methods", null ],
-        [ "Quantum System Update method <a class=\"el\" href=\"page-documentation-doxygen.html#page-documentation-doxygen-terminology-brief-summary\">{brief/summary}</a> format", "page-documentation-documenting-source-code.html#page-documentation-source-code-quantum-systems-update-methods", null ],
-        [ "Quantum System Signal method <a class=\"el\" href=\"page-documentation-doxygen.html#page-documentation-doxygen-terminology-brief-summary\">{brief/summary}</a> format", "page-documentation-documenting-source-code.html#page-documentation-source-code-quantum-systems-signal-methods", null ]
+        [ "Quantum System Class <a class=\"el\" href=\"page-documentation-doxygen.html#page-documentation-doxygen-terminology-brief-summary\" title=\"Brief / Summary\">{brief/summary}</a> format", "page-documentation-documenting-source-code.html#page-documentation-source-code-quantum-systems-system-classes", null ],
+        [ "Quantum System OnInit method <a class=\"el\" href=\"page-documentation-doxygen.html#page-documentation-doxygen-terminology-brief-summary\" title=\"Brief / Summary\">{brief/summary}</a> format", "page-documentation-documenting-source-code.html#page-documentation-source-code-quantum-systems-oninit-methods", null ],
+        [ "Quantum System Update method <a class=\"el\" href=\"page-documentation-doxygen.html#page-documentation-doxygen-terminology-brief-summary\" title=\"Brief / Summary\">{brief/summary}</a> format", "page-documentation-documenting-source-code.html#page-documentation-source-code-quantum-systems-update-methods", null ],
+        [ "Quantum System Signal method <a class=\"el\" href=\"page-documentation-doxygen.html#page-documentation-doxygen-terminology-brief-summary\" title=\"Brief / Summary\">{brief/summary}</a> format", "page-documentation-documenting-source-code.html#page-documentation-source-code-quantum-systems-signal-methods", null ]
       ] ],
       [ "Documenting Unity/View", "page-documentation-documenting-source-code.html#page-documentation-source-code-unity-view", [
         [ "Documenting <b>SerializeFields</b>", "page-documentation-documenting-source-code.html#page-documentation-source-code-unity-view-serializefields", null ],
-        [ "UI Handler class method <a class=\"el\" href=\"page-documentation-doxygen.html#page-documentation-doxygen-terminology-brief-summary\">{brief/summary}</a> format", "page-documentation-documenting-source-code.html#page-documentation-source-code-unity-view-ui-handlers", null ]
+        [ "UI Handler class method <a class=\"el\" href=\"page-documentation-doxygen.html#page-documentation-doxygen-terminology-brief-summary\" title=\"Brief / Summary\">{brief/summary}</a> format", "page-documentation-documenting-source-code.html#page-documentation-source-code-unity-view-ui-handlers", null ]
       ] ]
     ] ],
     [ "Documenting Quantum generated code", "page-documentation-codegen.html", [

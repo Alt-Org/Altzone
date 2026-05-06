@@ -527,12 +527,13 @@ namespace Battle.View.Game
             _endOfGameDataHasEnded = true;
             _endOfGameDataWinningTeam = e.WinningTeam;
             _endOfGameDataGameLengthSec = e.GameLengthSec;
+            LobbyManager.NotifyGamePlayedOut();
 
             //{ Calling server to add wins and losses
-            
+
             Utils.TryGetQuantumFrame(out Frame f);
             string[] playerUserIds = BattleParameters.GetPlayerSlotUserIDs(f);
-            
+
             bool isValidWin = false;
             // Temporary solution
             if (e.WinningTeam == LocalPlayerTeam)
@@ -572,9 +573,9 @@ namespace Battle.View.Game
                     {
                         if (!success) _debugLogger.Error("Sending battle result failed.");
                     }
-                )); 
+                ));
             }
-            
+
             //} Calling server to add wins and losses
         }
 
@@ -634,7 +635,7 @@ namespace Battle.View.Game
         {
             if (e.Team == LocalPlayerTeam)
             {
-                _uiController.PlayerInfoHandler.UpdateHealthVisual(e.Slot, e.CharacterNumber, (float)e.HealthPercentage);
+                _uiController.PlayerInfoHandler.UpdateDefenceVisual(e.Slot, e.CharacterNumber, (float)e.HealthPercentage);
             }
         }
 
@@ -650,7 +651,7 @@ namespace Battle.View.Game
         {
             if (e.Team == LocalPlayerTeam)
             {
-                _uiController.PlayerInfoHandler.UpdateDefenceVisual(e.Slot, e.CharacterNumber, (float)e.DefenceValue);
+                _uiController.PlayerInfoHandler.UpdateDefenceVisual(e.Slot, e.CharacterNumber, (float)e.DefencePercentage);
             }
         }
 

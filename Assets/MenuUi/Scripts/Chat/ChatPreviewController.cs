@@ -173,13 +173,13 @@ public class ChatPreviewController : MonoBehaviour
 
     internal void FetchMessagesFromActive(ChatChannelType type)
     {
-        if (type == ChatListener.Instance.GetActiveChannel.ChatChannelType)
+        if (type == ChatListener.Instance.GetActiveChannel?.ChatChannelType)
             MessageReceived(ChatListener.Instance.GetChatChannel(type));
     }
 
     internal void FetchMessagesFromActive(ChatChannelType type, ChatMessage message = null)
     {
-        if(type == ChatListener.Instance.GetActiveChannel.ChatChannelType)
+        if(type == ChatListener.Instance.GetActiveChannel?.ChatChannelType)
         MessageReceived(ChatListener.Instance.GetChatChannel(type));
     }
 

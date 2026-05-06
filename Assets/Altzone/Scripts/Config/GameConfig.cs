@@ -6,9 +6,10 @@ namespace Altzone.Scripts.Config
 {
     public enum VersionType
     {
-        None,
-        Standard,
-        Education
+        None = -1,
+        Standard = 0,
+        Education = 1,
+        TurboEducation = 2
     }
 
     public class GameConfig
@@ -26,7 +27,12 @@ namespace Altzone.Scripts.Config
 
         public static GameConfig Get() => _instance ??= new GameConfig();
 
-        public VersionType GameVersionType { get => _gameVersionType;
+        public VersionType GameVersionType {
+            get
+            {
+                return _gameVersionType;
+
+            }
             set
             {
                 //if(_gameVersionType == VersionType.None)
@@ -46,7 +52,7 @@ namespace Altzone.Scripts.Config
         private GameConfig()
         {
             PlayerSettings = new PlayerSettings();
-            //_gameVersionType = (VersionType)PlayerPrefs.GetInt("Version", 2); Temporarily disabled to force Education mode.
+            _gameVersionType = (VersionType)PlayerPrefs.GetInt("Version", 1);
         }
     }
 }

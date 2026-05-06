@@ -11,6 +11,7 @@ var class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller =
     [ "QEventOnSetRotationJoystickVisibility", "class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html#a645266e65bec7b0b0d7a749ec598c0cf", null ],
     [ "QEventOnShieldTakeDamage", "class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html#a61ca9adc1d3e1de0f1fa79fa2a7f6374", null ],
     [ "QEventOnStoneCharacterPieceViewInit", "class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html#a791675132e69607dfbbafd92a65e63b7", null ],
+    [ "QEventOnStoneCharacterPlayHitAnimation", "class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html#a70b8fb92d4a297152ca1bc19473bc7b7", null ],
     [ "QEventOnViewActivate", "class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html#a8f49a2f6b814df91fafdc967e3a85a93", null ],
     [ "QEventOnViewAllPlayersConnected", "class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html#a92f1a48971de796ec8c7e62eebd51c44", null ],
     [ "QEventOnViewGameOver", "class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html#a0fa4da0325750aa22dc2106ea844929f", null ],

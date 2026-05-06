@@ -5,6 +5,7 @@ using System.Linq;
 using Altzone.Scripts.Common;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Window;
+using MenuUi.Scripts.Window;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
