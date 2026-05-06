@@ -94,10 +94,11 @@ public class DailyTaskView : AltMonoBehaviour
 
     public enum SelectedTab
     {
-        Tasks,
-        OwnTask,
-        ClanTask
+        Tasks = 0,
+        OwnTask = 1,
+        ClanTask = 2
     }
+
     private SelectedTab _selectedTab = SelectedTab.Tasks;
 
 
@@ -223,10 +224,12 @@ public class DailyTaskView : AltMonoBehaviour
                 UpdateOwnTaskProgress();
                 break;
             default: _clanTaskView.SetActive(true); break;
-        }*/
+        }
         _tabline.ActivateTabButton((int)_selectedTab);
 
-        Debug.Log($"Switched to {_selectedTab}.");
+        Debug.Log($"Switched to {_selectedTab}.");*/
+        _tabline.ActivateTabButton((int)tab);
+
     }
 
 
@@ -341,7 +344,7 @@ public class DailyTaskView : AltMonoBehaviour
     {
         UpdateAvatarMood();
         _ownTaskPageHandler.ClearCurrentTask();
-        SwitchTab(DailyTaskView.SelectedTab.Tasks);
+        SwitchTab(SelectedTab.Tasks);
         DailyTaskManager.Instance.ClearCurrentTask();
     }
 
