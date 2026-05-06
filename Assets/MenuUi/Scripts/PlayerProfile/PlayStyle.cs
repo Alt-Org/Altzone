@@ -90,6 +90,15 @@ public class PlayStyle : MonoBehaviour
         PlayerPrefs.SetInt("CurrentPlayStyleIndex", currentIndex);
         PlayerPrefs.Save();
 
-        gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+        DailyTaskProgressListener progressListener = GetComponent<DailyTaskProgressListener>();
+        if (progressListener != null)
+        {
+            progressListener.UpdateProgress("1");
+        }
+    }
+
+    public void RefreshUI()
+    {
+        UpdateStyleText();
     }
 }

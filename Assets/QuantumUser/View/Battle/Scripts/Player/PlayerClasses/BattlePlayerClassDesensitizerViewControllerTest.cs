@@ -24,7 +24,7 @@ namespace Battle.View.Player
     /// @bigtext{See [{PlayerClassViewController}](#page-concepts-player-view-class-controller) for more info.}<br/>
     /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
     /// @bigtext ADD CONCEPT LINK TO DESENSITIZER CLASS HERE}
-    public class BattlePlayerClassDesensitizerViewControllerTest : BattlePlayerClassBaseViewController
+    public class BattlePlayerClassDesensitizerViewControllerTest : BattlePlayerCharacterClassBaseViewController
     {
         /// @anchor BattlePlayerClassDesensitizerViewController-SerializeFields
         /// @name SerializeField variables
@@ -42,7 +42,7 @@ namespace Battle.View.Player
         /// Gets the character class associated with this Class.<br/>
         /// Always returns <see cref="Quantum.BattlePlayerCharacterClass.Desensitizer">BattlePlayerCharacterClass.Desensitizer</see>.
         /// </summary>
-        public override BattlePlayerCharacterClass Class => BattlePlayerCharacterClass.Desensitizer;
+        public override BattlePlayerCharacterClass Class => BattlePlayerCharacterClass.Class100;
 
         /// <summary>
         /// Called when class is initialized.<br/>
@@ -51,7 +51,7 @@ namespace Battle.View.Player
         ///
         /// <param name="slot"><see cref="BattlePlayerSlot"/> of the player (unused)</param>
         /// <param name="characterId">Id of the character (unused)</param>
-        protected override void OnViewInitOverride(BattlePlayerSlot slot, int characterId)
+        protected override void OnViewInitOverride(BattlePlayerSlot slot, BattlePlayerCharacterID characterId)
         {
             QuantumEvent.Subscribe<EventBattlePlayerClassDesensitizerAimIndicatorUpdate>(_parent, QEventOnAimIndicatorUpdate);
         }

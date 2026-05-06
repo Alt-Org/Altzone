@@ -2,11 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Player;
-using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
 using MenuUi.Scripts.Window;
+using Altzone.Scripts.ReferenceSheets;
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
@@ -154,7 +155,7 @@ namespace MenuUi.Scripts.AvatarEditor
             if (_currentPlayerData.AvatarData == null || !_currentPlayerData.AvatarData.Validate())
             {
                 Debug.LogError("AvatarData is null! Using default data.");
-                _playerAvatar = new(_avatarDefaultReference.GetByCharacterId(_currentPlayerData.SelectedCharacterId)[0]);
+                _playerAvatar = new(AvatarReference.Instance.GetDefaultAvatar((CharacterClassType)((_currentPlayerData.SelectedCharacterId/100)*100)));
             }
             else
             {
@@ -168,8 +169,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void SetDefaultAvatar()
         {
-            _playerAvatar = new(_avatarDefaultReference.GetByCharacterId(_currentPlayerData.SelectedCharacterId)[0]);
-
+            _playerAvatar = new(AvatarReference.Instance.GetDefaultAvatar((CharacterClassType)((_currentPlayerData.SelectedCharacterId / 100) * 100)));
             _featureSetter.SetLoadedFeatures(_playerAvatar);
         }
 

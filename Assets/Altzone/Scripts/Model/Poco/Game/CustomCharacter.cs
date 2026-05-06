@@ -4,10 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
 using Newtonsoft.Json;
-using Prg;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Debug = Prg.Debug;
+using Debug = UnityEngine.Debug;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {

@@ -85,6 +85,7 @@ namespace Battle.QSimulation.Game
 
         public BattleEmotionState ProjectileInitialEmotion;
 
+        public bool IsTestMode;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static PlayerType[] GetPlayerSlotTypes(Frame f) => f.RuntimeConfig.BattleParameters.PlayerSlotTypes;
@@ -100,5 +101,8 @@ namespace Battle.QSimulation.Game
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BattleEmotionState GetProjectileInitialEmotion(Frame f) => f.RuntimeConfig.BattleParameters.ProjectileInitialEmotion;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool GetIsTestMode(Frame f) => f.RuntimeConfig.BattleParameters.IsTestMode;
     }
 }

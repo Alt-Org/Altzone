@@ -1,0 +1,69 @@
+/// @file BattlePlayerShieldData.qtn
+/// <summary>
+/// Contains components used for player shield entities.
+/// </summary>
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattlePlayerShieldDataQComponent}  
+///   @copybrief Quantum.BattlePlayerShieldDataQComponent
+/// - @cref{Quantum,BattlePlayerShieldDataTemplateQComponent}  
+///   @copybrief Quantum.BattlePlayerShieldDataTemplateQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattlePlayerShieldDataQComponent
+/// <summary>
+/// Contains player shield's data, including it's associated player entity and hitbox entities.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerShieldData.qtn}
+
+/// @var BattlePlayerShieldEntityRef Quantum::BattlePlayerShieldDataQComponent::PlayerEntityRef
+/// <summary>EntityRef of the player entity the shield belongs to.</summary>
+///
+/// @var int Quantum::BattlePlayerShieldDataQComponent::ShieldNumber
+/// <summary>Shield number of this shield.</summary>
+///
+/// @var bool Quantum::BattlePlayerShieldDataQComponent::IsAttached
+/// <summary>Whether this shield is attached or not.</summary>
+///
+/// @var bool Quantum::BattlePlayerShieldDataQComponent::ShieldHitCooldown
+/// <summary>Timer used for the cooldown on the shield getting hit.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerShieldDataQComponent::SIZE
+/// @var Int32 Quantum::BattlePlayerShieldDataQComponent::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerShieldDataQComponent::GetHashCode
+///
+/// @fn void Quantum::BattlePlayerShieldDataQComponent::Serialize
+///
+/// @}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattlePlayerShieldDataTemplateQComponent
+/// <summary>
+/// Template for creating player shield entity.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerShieldData.qtn}
+
+/// @var QListPtr<BattlePlayerHitboxTemplate> Quantum::BattlePlayerShieldDataTemplateQComponent::HitboxList
+/// <summary>BattlePlayerHitboxTemplate list to allow creating multiple hitbox entities for one shield.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerShieldDataTemplateQComponent::SIZE
+/// @var Int32 Quantum::BattlePlayerShieldDataTemplateQComponent::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerShieldDataTemplateQComponent::GetHashCode
+/// @fn void Quantum::BattlePlayerShieldDataTemplateQComponent::ClearPointers
+///
+/// @fn void Quantum::BattlePlayerShieldDataTemplateQComponent::OnRemoved
+/// @fn void Quantum::BattlePlayerShieldDataTemplateQComponent::Serialize
+///
+/// @}

@@ -20,8 +20,8 @@ namespace MenuUi.Scripts.UIScaling
         const double HighestBottomPanelHeight = 0.25;
 
         // Percentage values for the top panel, lowest is for slim and tall phones and highest is for IPad aspect ratio.
-        const double LowestTopPanelHeight = 0.07;
-        const double HighestTopPanelHeight = 0.09;
+        const double LowestTopPanelHeight = 0.09;
+        const double HighestTopPanelHeight = 0.11;
 
         int _lastScreenWidth = 0;
         int _lastScreenHeight = 0;

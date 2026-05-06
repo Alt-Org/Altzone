@@ -5,6 +5,7 @@ using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static DailyTaskProgressManager;
 
 public class DailyTaskOwnTask : MonoBehaviour
 {
@@ -73,6 +74,16 @@ public class DailyTaskOwnTask : MonoBehaviour
     [SerializeField] private Color _ethicalCategoryColor;
     [SerializeField] private Color _defaultColor;
 
+    [Header("Daily Stats")]
+    [SerializeField]
+    private TextMeshProUGUI _dailyStatsTitle;
+
+    [SerializeField]
+    private TextMeshProUGUI _battlesPlayedText;
+
+    [SerializeField]
+    private TextMeshProUGUI _tasksDoneText;
+
     private void Start()
     {
         CreateProgressBarMarkers(_progressMarkersMaxAmount);
@@ -83,6 +94,11 @@ public class DailyTaskOwnTask : MonoBehaviour
     private void OnDestroy()
     {
         SettingsCarrier.OnLanguageChanged -= UpdateLanguage;
+    }
+
+    private void OnEnable()
+    {
+        UpdateDailyStatsUI();
     }
 
     #region Task
@@ -274,5 +290,21 @@ public class DailyTaskOwnTask : MonoBehaviour
     {
 
 
+    }
+
+    private void UpdateDailyStatsUI()
+    {
+        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+        {
+            _dailyStatsTitle.text = "Päivän saldo";
+            _battlesPlayedText.text = DailyStats.Instance.GetBattlesPlayed() + " taistelua";
+            _tasksDoneText.text = DailyStats.Instance.GetTasksDone() + " työtehtävää";
+        }
+        else
+        {
+            _dailyStatsTitle.text = "Daily stats";
+            _battlesPlayedText.text = DailyStats.Instance.GetBattlesPlayed() + " battles";
+            _tasksDoneText.text = DailyStats.Instance.GetTasksDone() + " tasks";
+        }
     }
 }

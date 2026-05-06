@@ -49,11 +49,11 @@ namespace Battle.View.Diamond
         /// Private handler method for EventBattleDiamondLanded QuantumEvent.<br/>
         /// Sets the alpha of the diamond sprite to 1.
         /// </summary>
-        /// 
+        ///
         /// <param name="e">The event data.</param>
         private void QEventOnDiamondLanded(EventBattleDiamondLanded e)
         {
-            if (e.Entity != EntityRef) return;
+            if (e.ERef != EntityRef) return;
 
             Color color = _spriteRenderer.color;
             color.a = 1f;

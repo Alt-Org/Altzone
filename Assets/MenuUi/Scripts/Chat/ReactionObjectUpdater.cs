@@ -6,13 +6,18 @@ using UnityEngine.UI;
 
 public class ReactionObjectUpdater : MonoBehaviour
 {
-    [SerializeField] private RectTransform _commonReaction;
+    [SerializeField] private RectTransform _selectedReaction;
     [SerializeField] private RectTransform _allReactions;
 
     //Goes on effect when user goes off from
-    private void OnDisable()
+    public void ReactionUpdate()
     {
-        _commonReaction.gameObject.SetActive(true);
+        _selectedReaction.gameObject.SetActive(true);
         _allReactions.gameObject.SetActive(false);
+    }
+
+    public void OnDisable()
+    {
+        ReactionUpdate();
     }
 }

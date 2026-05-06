@@ -14,9 +14,12 @@ namespace MenuUi.Scripts.Window
 
         [SerializeField] private Button[] buttons;
 
+        [SerializeField] private GameObject _topBar;
         [SerializeField] private GameObject _bottomBar;
         [SerializeField] private GameObject _chatBox;
         [SerializeField] private GameObject _buttonsBar;
+
+        [SerializeField] private Button _onlineToggleButton;
 
         private bool _chatActive = true;
 
@@ -25,6 +28,10 @@ namespace MenuUi.Scripts.Window
 
         public delegate void ChatBarToggled(bool active);
         public static event ChatBarToggled OnChatBarToggled;
+
+        public delegate void ToggleOnlinePlayerList(bool? active = null);
+        public static event ToggleOnlinePlayerList OnToggleOnlinePlayerList;
+        
 
         private void Awake()
         {
@@ -48,7 +55,8 @@ namespace MenuUi.Scripts.Window
 
         private void OnEnable()
         {
-            if (GameObject.FindWithTag("OverlayPanel") ? true : SceneManager.GetActiveScene().name != _allowedScene.SceneName) //If OverlayPanel can be found, return, otherwise check if this panel is allowed to be set active.
+            GameObject panel= GameObject.FindWithTag("OverlayPanel");
+            if (panel != gameObject && panel ? true : SceneManager.GetActiveScene().name != _allowedScene.SceneName) //If OverlayPanel can be found, return, otherwise check if this panel is allowed to be set active.
             {
                 return;
             }
@@ -56,6 +64,13 @@ namespace MenuUi.Scripts.Window
 
             if (Instance == this)
                 UpdateButtonContent();
+
+            _onlineToggleButton.onClick.AddListener(ToggleOnlinePlayers);
+        }
+
+        private void OnDisable()
+        {
+            _onlineToggleButton?.onClick.RemoveAllListeners();
         }
 
         private void OnDestroy()
@@ -87,10 +102,20 @@ namespace MenuUi.Scripts.Window
                 }
             }
         }
+        public void ToggleOverlay(bool value)
+        {
+            ToggleBottomBar(value);
+            ToggleTopBar(value);
+        }
 
         public void ToggleBottomBar(bool value)
         {
             _bottomBar.SetActive(value);
+        }
+
+        public void ToggleTopBar(bool value)
+        {
+            _topBar.SetActive(value);
         }
 
         public void ToggleChat(bool value)
@@ -99,6 +124,11 @@ namespace MenuUi.Scripts.Window
             _chatActive = value;
             _buttonsBar.GetComponent<RectTransform>().anchorMax = value ? new Vector2(1, 0.5f) : new Vector2(1, 1f);
             OnChatBarToggled?.Invoke(value);
+        }
+
+        public void ToggleOnlinePlayers()
+        {
+            OnToggleOnlinePlayerList?.Invoke();
         }
 
     }
