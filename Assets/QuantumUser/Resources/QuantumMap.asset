@@ -46,6 +46,8 @@ MonoBehaviour:
     - rid: 9189874137361809408
     - rid: 9189874137361809409
     - rid: 9189874137361809410
+    - rid: 9189874137361809411
+    - rid: 9189874137361809412
   - Components:
     - rid: 3915831314950914048
     - rid: 3915831314950914049
@@ -349,6 +351,15 @@ MonoBehaviour:
         AlphaDiamonds: 0
         BetaDiamonds: 0
     - rid: 9189874137361809409
+      type: {class: BattleEntityManagerDataQSingletonPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
+      data:
+        RegisteredEntities: []
+        EntityOffscreenPositionOffset:
+          Row: 0
+          Col: 0
+        EntitySpacing: 0
+    - rid: 9189874137361809410
       type: {class: BattleGameSessionQSingletonPrototype, ns: Quantum.Prototypes,
         asm: Quantum.Simulation}
       data:
@@ -362,81 +373,32 @@ MonoBehaviour:
           RawValue: 262144
         GameTimeSec:
           RawValue: 0
-    - rid: 9189874137361809410
+    - rid: 9189874137361809411
       type: {class: BattlePlayerManagerDataQSingletonPrototype, ns: Quantum.Prototypes,
         asm: Quantum.Simulation}
       data:
         PlayerCount: 0
-        PlayStates:
-        - Value: 0
-        - Value: 0
-        - Value: 0
-        - Value: 0
         PlayerRefs:
         - _index: 0
         - _index: 0
         - _index: 0
         - _index: 0
-        IsBot:
+        PlayStates:
         - Value: 0
         - Value: 0
         - Value: 0
         - Value: 0
-        IsAbandoned:
+        IsBotStates:
         - Value: 0
         - Value: 0
         - Value: 0
         - Value: 0
-        RespawnTimer:
-        - Mode: 0
-          Frames: 0
-          Seconds:
-            RawValue: 0
-        - Mode: 0
-          Frames: 0
-          Seconds:
-            RawValue: 0
-        - Mode: 0
-          Frames: 0
-          Seconds:
-            RawValue: 0
-        - Mode: 0
-          Frames: 0
-          Seconds:
-            RawValue: 0
-        AllowCharacterSwapping:
+        IsAbandonedStates:
         - Value: 0
         - Value: 0
         - Value: 0
         - Value: 0
-        SelectedCharacters:
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        SelectedCharacterNumbers: 00000000000000000000000000000000
-        AllCharacters:
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        AllCharactersStates:
-        - Value: 0
-        - Value: 0
-        - Value: 0
-        - Value: 0
-        - Value: 0
-        - Value: 0
-        - Value: 0
-        - Value: 0
+        AllowCharacterSwappingStates:
         - Value: 0
         - Value: 0
         - Value: 0
@@ -446,3 +408,89 @@ MonoBehaviour:
         - Value: 0
         - Value: 0
         - Value: 0
+        RespawnTimers:
+        - Mode: 0
+          Frames: 0
+          Seconds:
+            RawValue: 0
+        - Mode: 0
+          Frames: 0
+          Seconds:
+            RawValue: 0
+        - Mode: 0
+          Frames: 0
+          Seconds:
+            RawValue: 0
+        - Mode: 0
+          Frames: 0
+          Seconds:
+            RawValue: 0
+        CharacterSelectedNumbers: 00000000000000000000000000000000
+        CharacterAllEntityGroupIDs:
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        CharactersAllStates:
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+    - rid: 9189874137361809412
+      type: {class: BattlePlayerShieldManagerDataQSingletonPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
+      data:
+        PlayerShieldCounts: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+        PlayerShieldEntityGroupIDs:
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0

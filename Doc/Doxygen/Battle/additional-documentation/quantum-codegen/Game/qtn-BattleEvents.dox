@@ -26,9 +26,11 @@
 ///   @copybrief Quantum.EventBattleViewGameOver
 ///
 /// ### ViewInit events
-/// - <b>synced event</b> @ref BattlePlayerViewInit { EntityRef Entity; FP ModelScale }  
-///   @copybrief Quantum.EventBattlePlayerViewInit
-/// - <b>synced event</b> @ref BattleSoulWallViewInit { EntityRef Entity; FP ModelScale; int EmotionIndicatorColorIndex; int DebugColorIndex }  
+/// - <b>synced event</b> @ref BattlePlayerCharacterViewInit { EntityRef ERef; BattlePlayerSlot Slot; BattlePlayerCharacterID CharacterID; BattlePlayerCharacterClass Class; FP ModelScale }  
+///   @copybrief Quantum.EventBattlePlayerCharacterViewInit
+/// - <b>synced event</b> @ref BattlePlayerShieldViewInit { EntityRef ERef; EntityRef CharacterRef; BattlePlayerSlot Slot; FP ModelScale }
+///   @copybrief Quantum.EventBattlePlayerShieldViewInit
+/// - <b>synced event</b> @ref BattleSoulWallViewInit { EntityRef ERef; FP ModelScale; int EmotionIndicatorColorIndex; int DebugColorIndex }  
 ///   @copybrief Quantum.EventBattleSoulWallViewInit
 /// - <b>synced event</b> @ref BattleStoneCharacterPieceViewInit { int WallNumber; BattleTeamNumber Team; int EmotionIndicatorColorIndex }  
 ///   @copybrief Quantum.EventBattleStoneCharacterPieceViewInit
@@ -48,16 +50,24 @@
 ///   @copybrief Quantum.EventBattlePlaySoundFX
 /// - <b>synced event</b> @ref BattleLastRowWallDestroyed { int WallNumber; BattleTeamNumber Team; FP LightrayRotation; BattleLightrayColor LightrayColor; BattleLightraySize LightraySize }  
 ///   @copybrief Quantum.EventBattleLastRowWallDestroyed
-/// - <b>synced event</b> @ref BattleDiamondLanded { EntityRef Entity }  
+/// - <b>synced event</b> @ref BattleDiamondLanded { EntityRef ERef }  
 ///   @copybrief Quantum.EventBattleDiamondLanded
-/// - <b>synced event</b> @ref BattleCharacterTakeDamage { EntityRef Entity; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; FP HealthPercentage }  
-///   @copybrief Quantum.EventBattleCharacterTakeDamage
-/// - <b>synced event</b> @ref BattleShieldTakeDamage { EntityRef Entity; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; FP DefenceValue }  
-///   @copybrief Quantum.EventBattleShieldTakeDamage
+/// - <b>synced event</b> @ref BattleCharacterSelected { BattlePlayerSlot Slot; int CharacterNumber }  
+///   @copybrief Quantum.EventBattleCharacterSelected
+/// - <b>synced event</b> @ref BattleCharacterHit { EntityRef ERef; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; FP HealthPercentage }  
+///   @copybrief Quantum.EventBattleCharacterHit
+/// - <b>synced event</b> @ref BattleShieldHit { EntityRef ERef; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; FP DefenceValue }  
+///   @copybrief Quantum.EventBattleShieldHit
 /// - <b>synced event</b> @ref BattleGiveUpStateChange {BattleTeamNumber Team; BattlePlayerSlot Slot; BattleGiveUpStateChange StateUpdate }  
 ///   @copybrief Quantum.EventBattleGiveUpStateChange
+/// - <b>synced event</b> @ref BattlePlayStateUpdate { bool IsInPlay; EntityRef ERef}  
+///   @copybrief Quantum.EventBattlePlayStateUpdate
 /// - <b>synced event</b> @ref BattleStoneCharacterPlayHitAnimation { BattleTeamNumber Team; BattleEmotionState Emotion }  
 ///   @copybrief Quantum.EventBattleStoneCharacterPlayHitAnimation
+///
+/// ### Debug events
+/// - <b>synced event</b> @ref BattleDebugOnScreenMessage { QString<512> Message }  
+///   @copybrief Quantum.EventBattleDebugOnScreenMessage
 ///
 /// ---
 ///
@@ -154,12 +164,21 @@
 ///
 /// ---
 ///
-/// @anchor BattlePlayerViewInit
-/// ### BattlePlayerViewInit
-/// @copybrief Quantum.EventBattlePlayerViewInit
+/// @anchor BattlePlayerCharacterViewInit
+/// ### BattlePlayerCharacterViewInit
+/// @copybrief Quantum.EventBattlePlayerCharacterViewInit
 ///
-/// Generated Class @cref{Quantum,EventBattlePlayerViewInit}  
-/// Generated Method @cref{Quantum,Frame.FrameEvents.BattlePlayerViewInit}
+/// Generated Class @cref{Quantum,EventBattlePlayerCharacterViewInit}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattlePlayerCharacterViewInit}
+///
+/// ---
+///
+/// @anchor BattlePlayerShieldViewInit
+/// ### BattlePlayerShieldViewInit
+/// @copybrief Quantum.EventBattlePlayerShieldViewInit
+///
+/// Generated Class @cref{Quantum,EventBattlePlayerShieldViewInit}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattlePlayerShieldViewInit}
 ///
 /// ---
 ///
@@ -256,21 +275,30 @@
 ///
 /// ---
 ///
-/// @anchor BattleCharacterTakeDamage
-/// ### BattleCharacterTakeDamage
-/// @copybrief Quantum.EventBattleCharacterTakeDamage
+/// @anchor BattleCharacterSelected
+/// ### BattleCharacterSelected
+/// @copybrief Quantum.EventBattleCharacterSelected
 ///
-/// Generated Class @cref{Quantum,EventBattleCharacterTakeDamage}  
-/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleCharacterTakeDamage}
+/// Generated Class @cref{Quantum,EventBattleCharacterSelected}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleCharacterSelected}
 ///
 /// ---
 ///
-/// @anchor BattleShieldTakeDamage
-/// ### BattleShieldTakeDamage
-/// @copybrief Quantum.EventBattleShieldTakeDamage
+/// @anchor BattleCharacterHit
+/// ### BattleCharacterHit
+/// @copybrief Quantum.EventBattleCharacterHit
 ///
-/// Generated Class @cref{Quantum,EventBattleShieldTakeDamage}  
-/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleShieldTakeDamage}
+/// Generated Class @cref{Quantum,EventBattleCharacterHit}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleCharacterHit}
+///
+/// ---
+///
+/// @anchor BattleShieldHit
+/// ### BattleShieldHit
+/// @copybrief Quantum.EventBattleShieldHit
+///
+/// Generated Class @cref{Quantum,EventBattleShieldHit}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleShieldHit}
 ///
 /// ---
 ///
@@ -283,12 +311,35 @@
 ///
 /// ---
 ///
+/// @anchor BattlePlayStateUpdate
+/// ### BattlePlayStateUpdate
+/// @copybrief Quantum.EventBattlePlayStateUpdate
+///
+/// Generated class @cref{Quantum, EventBattlePlayStateUpdate}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattlePlayStateUpdate}
+///
+/// ---
+///
 /// @anchor BattleStoneCharacterPlayHitAnimation
 /// ### BattleStoneCharacterPlayHitAnimation
 /// @copybrief Quantum.EventBattleStoneCharacterPlayHitAnimation
 ///
 /// Generated Class @cref{Quantum,EventBattleStoneCharacterPlayHitAnimation }  
 /// Generated Method @cref{Quantum,Frame.FrameEvents.BattleStoneCharacterPlayHitAnimation}
+///
+/// ---
+/// ---
+///
+/// ### Debug events
+///
+/// ---
+///
+/// @anchor BattleDebugOnScreenMessage
+/// ### BattleDebugOnScreenMessage
+/// @copybrief Quantum.EventBattleDebugOnScreenMessage
+///
+/// Generated class @cref{Quantum, EventBattleDebugOnScreenMessage}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleDebugOnScreenMessage}
 ///
 /// ---
 
@@ -356,9 +407,16 @@
 /// Stops timer, hides UI elements, shows game over UI and sets end of game data variables.  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
-/// @class Quantum::EventBattlePlayerViewInit
+/// @class Quantum::EventBattlePlayerCharacterViewInit
 /// <summary>
-/// Synced event. Used to initiate player's view model on Unity side.
+/// Synced event. Used to initiate player character's view model on Unity side.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattlePlayerShieldViewInit
+/// <summary>
+/// Synced event. Used to initiate player shield's view model on Unity side.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleEvents.qtn}
@@ -428,6 +486,14 @@
 /// Sets the alpha of the diamond sprite to 1.  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
+/// @class Quantum::EventBattleCharacterSelected
+/// <summary>
+/// Synced event. Used when a player character is spawned or despawned.
+/// </summary>
+///
+/// Updates character UI elements.  
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
 /// @class Quantum::EventBattleCharacterTakeDamage
 /// <summary>
 /// Synced event. Used when a character takes damage.
@@ -452,9 +518,24 @@
 /// Used to update the UI to reflect change in player's give up state.  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
+/// @class Quantum::EventBattlePlayStateUpdate
+/// <summary>
+/// Synced event. Used when PlayState is changed.
+/// </summary>
+///
+/// Used to signal the View code on whether an entity is in play.  
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
 /// @class Quantum::EventBattleStoneCharacterPlayHitAnimation
 /// <summary>
 /// Synced event. Used to play StoneCharacter animations.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattleDebugOnScreenMessage
+/// <summary>
+/// Synced event. Used to display debug messages on screen.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleEvents.qtn}

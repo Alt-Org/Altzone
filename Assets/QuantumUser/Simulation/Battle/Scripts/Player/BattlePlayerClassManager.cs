@@ -22,17 +22,17 @@ namespace Battle.QSimulation.Player
     /// Class scripts should extend this class if they make use of a class data component.
     /// </summary>
     ///
-    /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.}<br/>
+    /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-class-playerclass) for more info.}<br/>
     /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
     public abstract unsafe class BattlePlayerClassBase<T> : BattlePlayerClassBase where T : unmanaged, IComponent
     {
         /// <summary>
-        /// Returns a pointer reference to the class data of the specified player entity.
+        /// Returns a pointer to the class data of the specified player entity.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
-        /// <returns>A pointer reference to the player's class data.</returns>
+        /// <returns>A pointer to the player's class data.</returns>
         protected T* GetClassData(Frame f, EntityRef playerEntity)
         {
             if (!f.Unsafe.TryGetPointer(playerEntity, out T* component))
@@ -49,7 +49,7 @@ namespace Battle.QSimulation.Player
     /// Class scripts should extend this class if they do not make use of a class data component.
     /// </summary>
     ///
-    /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.}<br/>
+    /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-class-playerclass) for more info.}<br/>
     /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
     public abstract unsafe class BattlePlayerClassBase
     {
@@ -59,47 +59,52 @@ namespace Battle.QSimulation.Player
         public abstract BattlePlayerCharacterClass Class { get; }
 
         /// <summary>
-        /// Virtual OnCreate method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager
-        /// <see cref="BattlePlayerClassManager.OnCreate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnCreate</see> method.
+        /// Called by the @cref{Battle.QSimulation.Player,BattlePlayerClassManager}
+        /// <see cref="BattlePlayerClassManager.OnCreate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnCreate</see> method
+        /// when character gets created at the start of the game.<br/>
+        /// Provides a hook for derived classes to implement character class specific simulation logic.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
-        /// <param name="playerData">Pointer reference to the player data.</param>
+        /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
-        public virtual unsafe void OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
+        ///
+        /// <returns>Default @cref{Battle.QSimulation.Player.BattlePlayerClassManager,CreationParameters} if not overwritten.</returns>
+        public virtual unsafe BattlePlayerClassManager.CreationParameters OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) => BattlePlayerClassManager.CreationParameters.Default;
 
         /// <summary>
-        /// Virtual OnSpawn method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager
-        /// <see cref="BattlePlayerClassManager.OnSpawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnSpawn</see> method.
+        /// Called by the @cref{Battle.QSimulation.Player,BattlePlayerClassManager}
+        /// <see cref="BattlePlayerClassManager.OnSpawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnSpawn</see> method
+        /// each time character is spawned.<br/>
+        /// Provides a hook for derived classes to implement character class specific simulation logic.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
-        /// <param name="playerData">Pointer reference to the player data.</param>
+        /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
         public virtual unsafe void OnSpawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
 
         /// <summary>
-        /// Virtual OnDespawn method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager
-        /// <see cref="BattlePlayerClassManager.OnDespawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnDespawn</see> method.
+        /// Called by the @cref{Battle.QSimulation.Player,BattlePlayerClassManager}
+        /// <see cref="BattlePlayerClassManager.OnDespawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnDespawn</see> method
+        /// each time character is despawned.<br/>
+        /// Provides a hook for derived classes to implement character class specific simulation logic.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
-        /// <param name="playerData">Pointer reference to the player data.</param>
+        /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
         public virtual unsafe void OnDespawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
 
         /// <summary>
-        /// Virtual OnProjectileHitPlayerCharacter method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager
+        /// Called by the @cref{Battle.QSimulation.Player,BattlePlayerClassManager}
         /// <see cref="BattlePlayerClassManager.OnProjectileHitPlayerCharacter(Frame, BattleCollisionQSystem.ProjectileCollisionData*, BattleCollisionQSystem.PlayerCharacterCollisionData*)">
         /// OnProjectileHitPlayerHitbox
-        /// </see> method.
+        /// </see> method when projectile hits this character.<br/>
+        /// Provides a hook for derived classes to implement character class specific simulation logic.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -108,11 +113,11 @@ namespace Battle.QSimulation.Player
         public virtual unsafe void OnProjectileHitPlayerCharacter(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerCharacterCollisionData* playerCollisionData) { }
 
         /// <summary>
-        /// Virtual OnProjectileHitPlayerShield method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager
+        /// Called by the @cref{Battle.QSimulation.Player,BattlePlayerClassManager}
         /// <see cref="BattlePlayerClassManager.OnProjectileHitPlayerShield(Frame, BattleCollisionQSystem.ProjectileCollisionData*, BattleCollisionQSystem.PlayerShieldCollisionData*)">
         /// OnProjectileHitPlayerShield
-        /// </see> method.
+        /// </see> method when projectile hits this shield.<br/>
+        /// Provides a hook for derived classes to implement character class specific simulation logic.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -121,23 +126,48 @@ namespace Battle.QSimulation.Player
         public virtual unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData) { }
 
         /// <summary>
-        /// Virtual OnUpdate method that can be implemented.<br/>
-        /// Called by the public BattlePlayerClassManager
-        /// <see cref="BattlePlayerClassManager.OnUpdate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnUpdate</see> method.
+        /// Called by the @cref{Battle.QSimulation.Player,BattlePlayerClassManager}
+        /// <see cref="BattlePlayerClassManager.OnUpdate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, BattlePlayerEntityRef)">OnUpdate</see> method
+        /// once per frame.<br/>
+        /// Provides a hook for derived classes to implement character class specific simulation logic.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
-        /// <param name="playerData">Pointer reference to the player data.</param>
+        /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
-        public virtual unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
+        public virtual unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity) { }
     }
 
     /// <summary>
     /// Handles the initial loading of player classes and routes individual game events to the correct class scripts.
     /// </summary>
+    ///
+    /// @bigtext{See [{PlayerClassManager}](#page-concepts-player-simulation-class-classmanager) for more info.}<br/>
+    /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
+    /// @bigtext{See [{Player Overview}](#page-concepts-player-overview) for more info.}<br/>
+    /// @bigtext{See [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview) for more info.}<br/>
     public static unsafe class BattlePlayerClassManager
     {
+        /// <summary>
+        /// Gives class code access to creation parameters.
+        /// </summary>
+        public struct CreationParameters
+        {
+            /// <summary>
+            /// Default parameters.
+            /// </summary>
+            public static CreationParameters Default => new()
+            {
+                AttachedShieldNumber = 0
+            };
+
+            /// <summary>
+            /// The ShieldNumber of the attached shield. -1 is none.
+            /// </summary>
+            public int AttachedShieldNumber;
+        }
+
         /// <summary>
         /// Enum that defines the <see cref="PickClass"/> method's return options.
         /// </summary>
@@ -152,7 +182,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Initializes this classes BattleDebugLogger instance and fills <see cref="s_classArray"/> states with <see cref="ClassState.Notloaded"/>
+        /// Initializes this classes BattleDebugLogger instance and fills <see cref="s_classArray"/> states with <see cref="ClassState.Notloaded"/>.<br/>
         /// </summary>
         public static void Init()
         {
@@ -176,39 +206,39 @@ namespace Battle.QSimulation.Player
 
             switch (characterClass)
             {
-                case BattlePlayerCharacterClass.Desensitizer:
-                    if (s_classArray[ClassIndexDesensitizer].State != ClassState.NotLoaded) break;
-                    LoadClass(characterClass, ClassIndexDesensitizer, new BattlePlayerClassDesensitizer(), null, isTestMode);
+                case BattlePlayerCharacterClass.Class100:
+                    if (s_classArray[ClassIndex100].State != ClassState.NotLoaded) break;
+                    LoadClass(characterClass, ClassIndex100, new BattlePlayerClass100(), null, isTestMode);
                     break;
 
-                case BattlePlayerCharacterClass.Trickster:
-                    if (s_classArray[ClassIndexTrickster].State != ClassState.NotLoaded) break;
-                    LoadClass(characterClass, ClassIndexTrickster, null, null, isTestMode);
+                case BattlePlayerCharacterClass.Class200:
+                    if (s_classArray[ClassIndex200].State != ClassState.NotLoaded) break;
+                    LoadClass(characterClass, ClassIndex200, null, null, isTestMode);
                     break;
 
-                case BattlePlayerCharacterClass.Obedient:
-                    if (s_classArray[ClassIndexObedient].State != ClassState.NotLoaded) break;
-                    LoadClass(characterClass, ClassIndexObedient, null, null, isTestMode);
+                case BattlePlayerCharacterClass.Class300:
+                    if (s_classArray[ClassIndex300].State != ClassState.NotLoaded) break;
+                    LoadClass(characterClass, ClassIndex300, null, null, isTestMode);
                     break;
 
-                case BattlePlayerCharacterClass.Projector:
-                    if (s_classArray[ClassIndexProjector].State != ClassState.NotLoaded) break;
-                    LoadClass(characterClass, ClassIndexProjector, new BattlePlayerClassProjector(), null, isTestMode);
+                case BattlePlayerCharacterClass.Class400:
+                    if (s_classArray[ClassIndex400].State != ClassState.NotLoaded) break;
+                    LoadClass(characterClass, ClassIndex400, new BattlePlayerClass400(), null, isTestMode);
                     break;
 
-                case BattlePlayerCharacterClass.Retroflector:
-                    if (s_classArray[ClassIndexRetroflector].State != ClassState.NotLoaded) break;
-                    LoadClass(characterClass, ClassIndexRetroflector, null, null, isTestMode);
+                case BattlePlayerCharacterClass.Class500:
+                    if (s_classArray[ClassIndex500].State != ClassState.NotLoaded) break;
+                    LoadClass(characterClass, ClassIndex500, null, null, isTestMode);
                     break;
 
-                case BattlePlayerCharacterClass.Confluent:
-                    if (s_classArray[ClassIndexConfluent].State != ClassState.NotLoaded) break;
-                    LoadClass(characterClass, ClassIndexConfluent, new BattlePlayerClassConfluent(), null, isTestMode);
+                case BattlePlayerCharacterClass.Class600:
+                    if (s_classArray[ClassIndex600].State != ClassState.NotLoaded) break;
+                    LoadClass(characterClass, ClassIndex600, new BattlePlayerClass600(), null, isTestMode);
                     break;
 
-                case BattlePlayerCharacterClass.Intellectualizer:
-                    if (s_classArray[ClassIndexIntellectualizer].State != ClassState.NotLoaded) break;
-                    LoadClass(characterClass, ClassIndexIntellectualizer, null, null, isTestMode);
+                case BattlePlayerCharacterClass.Class700:
+                    if (s_classArray[ClassIndex700].State != ClassState.NotLoaded) break;
+                    LoadClass(characterClass, ClassIndex700, null, null, isTestMode);
                     break;
 
                 default:
@@ -220,7 +250,7 @@ namespace Battle.QSimulation.Player
         /// Decides which <see cref="ClassOption"/> to use depending on available class scripts and whether <paramref name="testMode"/> is enabled.
         /// </summary>
         ///
-        /// See [PlayerClass](#page-concepts-player-simulation-playerclass) for more info<br/>
+        /// See [PlayerClass](#page-concepts-player-simulation-class-playerclass) for more info<br/>
         /// See [Player Character Classes](#page-concepts-player-characters-classes) for more info
         ///
         /// |                                       | has none                   | <paramref name="hasClass"/> | <paramref name="hasTestClass"/> | has both                        |
@@ -253,23 +283,25 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
-        /// <param name="playerData">Pointer reference to the player data.</param>
+        /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
-        public static void OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
+        ///
+        /// <returns>@cref{Battle.QSimulation.Player.BattlePlayerClassManager,CreationParameters}.</returns>
+        public static CreationParameters OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
             ReturnCode returnCode = GetClass(playerData->CharacterClass, out BattlePlayerClassBase playerClass);
 
             if (returnCode == ReturnCode.Error)
             {
                 s_debugLogger.WarningFormat("The {0} class could not be initialized!", playerData->CharacterClass);
-                return;
+                return CreationParameters.Default;
             }
             if (returnCode == ReturnCode.NoClass)
             {
-                return;
+                return CreationParameters.Default;
             }
 
-            playerClass.OnCreate(f, playerHandle, playerData, playerEntity);
+            return playerClass.OnCreate(f, playerHandle, playerData, playerEntity);
         }
 
         /// <summary>
@@ -278,7 +310,7 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
-        /// <param name="playerData">Pointer reference to the player data.</param>
+        /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
         public static void OnSpawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
@@ -295,7 +327,7 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
-        /// <param name="playerData">Pointer reference to the player data.</param>
+        /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
         public static void OnDespawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
@@ -315,7 +347,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerCollisionData">Collision data related to the player character.</param>
         public static void OnProjectileHitPlayerCharacter(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerCharacterCollisionData* playerCollisionData)
         {
-            ReturnCode returnCode = GetClass(f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->PlayerEntity)->CharacterClass, out BattlePlayerClassBase playerClass);
+            ReturnCode returnCode = GetClass(f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerCollisionData->PlayerCharacterHitbox->ParentEntityRef)->CharacterClass, out BattlePlayerClassBase playerClass);
 
             if (returnCode != ReturnCode.ClassRetrieved) return;
 
@@ -331,7 +363,9 @@ namespace Battle.QSimulation.Player
         /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
         public static void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData)
         {
-            ReturnCode returnCode = GetClass(f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity)->CharacterClass, out BattlePlayerClassBase playerClass);
+            BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
+
+            ReturnCode returnCode = GetClass(f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerShieldData->PlayerEntityRef)->CharacterClass, out BattlePlayerClassBase playerClass);
 
             if (returnCode != ReturnCode.ClassRetrieved) return;
 
@@ -344,9 +378,9 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
-        /// <param name="playerData">Pointer reference to the player data.</param>
+        /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
-        public static void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
+        public static void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity)
         {
             ReturnCode returnCode = GetClass(playerData->CharacterClass, out BattlePlayerClassBase playerClass);
 
@@ -358,19 +392,19 @@ namespace Battle.QSimulation.Player
         /// <value>Constant for a class index error.</value>
         private const int ClassIndexError = -1;
         /// <value>Constant for Desensitizer class index.</value>
-        private const int ClassIndexDesensitizer = 0;
+        private const int ClassIndex100 = 0;
         /// <value>Constant for Trickster class index.</value>
-        private const int ClassIndexTrickster = 1;
+        private const int ClassIndex200 = 1;
         /// <value>Constant for Obedient class index.</value>
-        private const int ClassIndexObedient = 2;
+        private const int ClassIndex300 = 2;
         /// <value>Constant for Projector class index.</value>
-        private const int ClassIndexProjector = 3;
+        private const int ClassIndex400 = 3;
         /// <value>Constant for Retroflector class index.</value>
-        private const int ClassIndexRetroflector = 4;
+        private const int ClassIndex500 = 4;
         /// <value>Constant for Confluent class index.</value>
-        private const int ClassIndexConfluent = 5;
+        private const int ClassIndex600 = 5;
         /// <value>Constant for Intellectualizer class index.</value>
-        private const int ClassIndexIntellectualizer = 6;
+        private const int ClassIndex700 = 6;
         /// <value>Constant for the amount of classes that exist.</value>
         private const int ClassCount = 7;
 
@@ -481,13 +515,13 @@ namespace Battle.QSimulation.Player
 
             int classIndex = characterClass switch
             {
-                BattlePlayerCharacterClass.Desensitizer     => ClassIndexDesensitizer,
-                BattlePlayerCharacterClass.Trickster        => ClassIndexTrickster,
-                BattlePlayerCharacterClass.Obedient         => ClassIndexObedient,
-                BattlePlayerCharacterClass.Projector        => ClassIndexProjector,
-                BattlePlayerCharacterClass.Retroflector     => ClassIndexRetroflector,
-                BattlePlayerCharacterClass.Confluent        => ClassIndexConfluent,
-                BattlePlayerCharacterClass.Intellectualizer => ClassIndexIntellectualizer,
+                BattlePlayerCharacterClass.Class100 => ClassIndex100,
+                BattlePlayerCharacterClass.Class200 => ClassIndex200,
+                BattlePlayerCharacterClass.Class300 => ClassIndex300,
+                BattlePlayerCharacterClass.Class400 => ClassIndex400,
+                BattlePlayerCharacterClass.Class500 => ClassIndex500,
+                BattlePlayerCharacterClass.Class600 => ClassIndex600,
+                BattlePlayerCharacterClass.Class700 => ClassIndex700,
 
                 _ => ClassIndexError,
             };

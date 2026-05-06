@@ -1,6 +1,7 @@
 /// @file BattlePlayerManagerData.qtn
 /// <summary>
-/// Contains enum and component used for managing all players's all characters and their states.
+/// Contains player manager data singleton component that is used internally by @cref{Battle.QSimulation.Player,BattlePlayerManager} to manage players.
+/// Contains enum used for managing all players's states.
 /// </summary>
 ///
 /// ## Generated Enums
@@ -21,7 +22,21 @@
 /// Tracks the state of the player itself and is detached from characters that the player uses.  
 /// Each PlayerSlot has a play state associated with it including slots that have no player.
 ///
+/// @bigtext{Generated from @ref BattlePlayerManagerData.qtn}  
+/// @bigtext{Extended with @cref{Battle.QSimulation.Player,BattlePlayerPlayStateExtension}}
+
+/// @struct Quantum::BattlePlayerManagerDataQSingleton
+/// <summary>
+/// Singleton component that is used internally by @cref{Battle.QSimulation.Player,BattlePlayerManager} to manage players.
+/// </summary>
+///
+/// See [{BattlePlayerManager}](#page-concepts-player-simulation-management-playermanager) for more info.  
+/// See [{Player Overview}](#page-concepts-player-overview) for more info.  
+/// See [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview) for more info.
+///
 /// @bigtext{Generated from @ref BattlePlayerManagerData.qtn}
+
+// ---------------------------------------------------------------------------------------------------- //
 
 /// @var Quantum::BattlePlayerPlayState Quantum::BattlePlayerPlayState::NotInGame
 /// <summary>Player is not in game.</summary>
@@ -41,48 +56,114 @@
 
 // ---------------------------------------------------------------------------------------------------- //
 
-/// @struct Quantum::BattlePlayerManagerDataQSingleton
-/// <summary>
-/// Singleton component that manages players's states, playerRefs, characters, etc.
-/// </summary>
-///
-/// [{Player Overview}](#page-concepts-player-overview)  
-/// [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview)
-///
-/// @bigtext{Generated from @ref BattlePlayerManagerData.qtn}
-
 /// @var int Quantum.BattlePlayerManagerDataQSingleton::PlayerCount
 /// <summary>How many players are in the game session.</summary>
 ///
-/// @var array Quantum.BattlePlayerManagerDataQSingleton::PlayStates
-/// <summary>Array of all characters's current PlayStates.</summary>
-///
 /// @var array Quantum.BattlePlayerManagerDataQSingleton::PlayerRefs
-/// <summary>Array of all PlayerRefs.</summary>
+/// <summary>
+/// Array of all PlayerRefs.  
+/// Public getter for internal @cref{Quantum.BattlePlayerManagerDataQSingleton,_PlayerRefs_} array.
+/// </summary>
+
+/// @anchor PlayerStateArrays
+/// @name Player state related arrays
+/// @{
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::PlayStates
+/// <summary>
+/// Array of all characters's current PlayStates.  
+/// Public getter for internal @cref{Quantum.BattlePlayerManagerDataQSingleton,_PlayStates_} array.
+/// </summary>
 ///
-/// @var array Quantum.BattlePlayerManagerDataQSingleton::IsBot
-/// <summary>Bool array of bot states for all players.</summary>
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::IsBotStates
+/// <summary>
+/// Bool array of bot states for all players.  
+/// Public getter for internal @cref{Quantum.BattlePlayerManagerDataQSingleton,_IsBotStates_} array.
+/// </summary>
 ///
-/// @var array Quantum.BattlePlayerManagerDataQSingleton::IsAbandoned
-/// <summary>Bool array of abandoned states of all players.</summary>
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::IsAbandonedStates
+/// <summary>
+/// Bool array of abandoned states of all players.  
+/// Public getter for internal @cref{Quantum.BattlePlayerManagerDataQSingleton,_IsAbandonedStates_} array.
+/// </summary>
 ///
-/// @var array Quantum.BattlePlayerManagerDataQSingleton::RespawnTimer;
-/// <summary>Array for character respawn timers.</summary>
-///
-/// @var array Quantum.BattlePlayerManagerDataQSingleton::AllowCharacterSwapping;
-/// <summary>Check if player is able to swap characters.</summary>
-///
-/// @var array Quantum.BattlePlayerManagerDataQSingleton::SelectedCharacters
-/// <summary>Array of all currently selected characters.</summary>
-///
-/// @var array Quantum.BattlePlayerManagerDataQSingleton::SelectedCharacterNumbers
-/// <summary>Array of characters's numbers that are currently selected.</summary>
-///
-/// @var array Quantum.BattlePlayerManagerDataQSingleton::AllCharacters
-/// <summary>Array of all characters in the game session.</summary>
-///
-/// @var array Quantum.BattlePlayerManagerDataQSingleton::AllCharactersStates
-/// <summary>Array of all characters states.</summary>
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::AllowCharacterSwappingStates;
+/// <summary>
+/// Check if player is able to swap characters.  
+/// Public getter for internal @cref{Quantum.BattlePlayerManagerDataQSingleton,_AllowCharacterSwappingStates_} array.
+/// </summary>
 ///
 /// @var array Quantum.BattlePlayerManagerDataQSingleton::PlayerGiveUpStates
-/// <summary>Bool array of give up states of all players.</summary>
+/// <summary>
+/// Bool array of give up states of all players.  
+/// Public getter for internal @cref{Quantum.BattlePlayerManagerDataQSingleton,_PlayerGiveUpStates_} array.
+/// </summary>
+/// @}
+
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::RespawnTimers;
+/// <summary>
+/// Array for character respawn timers.  
+/// Public getter for internal @cref{Quantum.BattlePlayerManagerDataQSingleton,_RespawnTimers_} array.
+/// </summary>
+
+/// @anchor PlayerCharacterArrays
+/// @name Player character related arrays
+/// @{
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::CharacterSelectedNumbers
+/// <summary>Array of characters's numbers that are currently selected.</summary>
+///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::CharacterAllEntityGroupIDs
+/// <summary>
+/// Array of entity group IDs for all characters in the game session.  
+/// Public getter for internal @cref{Quantum.BattlePlayerManagerDataQSingleton,_CharacterAllEntityGroupIDs_} array.
+/// </summary>
+///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::CharactersAllStates
+/// <summary>
+/// Array of all characters states.  
+/// Public getter for internal @cref{Quantum.BattlePlayerManagerDataQSingleton,_CharactersAllStates_} array.
+/// </summary>
+/// @}
+
+/// @anchor PrivateArrays
+/// @name Private fixed arrays
+/// @{
+/// @var Byte Quantum.BattlePlayerManagerDataQSingleton::_PlayerRefs_
+/// <summary>Private internal array, access through @cref{Quantum.BattlePlayerManagerDataQSingleton,PlayerRefs}</summary>
+///
+/// @var Byte Quantum.BattlePlayerManagerDataQSingleton::_PlayStates_
+/// <summary>Private internal array, access through @cref{Quantum.BattlePlayerManagerDataQSingleton,PlayStates}</summary>
+///
+/// @var Byte Quantum.BattlePlayerManagerDataQSingleton::_IsBotStates_
+/// <summary>Private internal array, access through @cref{Quantum.BattlePlayerManagerDataQSingleton,IsBotStates}</summary>
+///
+/// @var Byte Quantum.BattlePlayerManagerDataQSingleton::_IsAbandonedStates_
+/// <summary>Private internal array, access through @cref{Quantum.BattlePlayerManagerDataQSingleton,IsAbandonedStates}</summary>
+///
+/// @var Byte Quantum.BattlePlayerManagerDataQSingleton::_AllowCharacterSwappingStates_
+/// <summary>Private internal array, access through @cref{Quantum.BattlePlayerManagerDataQSingleton,AllowCharacterSwappingStates}</summary>
+///
+/// @var Byte Quantum.BattlePlayerManagerDataQSingleton::_PlayerGiveUpStates_
+/// <summary>Private internal array, access through @cref{Quantum.BattlePlayerManagerDataQSingleton,PlayerGiveUpStates}</summary>
+///
+/// @var Byte Quantum.BattlePlayerManagerDataQSingleton::_RespawnTimers_
+/// <summary>Private internal array, access through @cref{Quantum.BattlePlayerManagerDataQSingleton,RespawnTimers}</summary>
+///
+/// @var Byte Quantum.BattlePlayerManagerDataQSingleton::_CharacterAllEntityGroupIDs_
+/// <summary>Private internal array, access through @cref{Quantum.BattlePlayerManagerDataQSingleton,CharacterAllEntityGroupIDs}</summary>
+///
+/// @var Byte Quantum.BattlePlayerManagerDataQSingleton::_CharactersAllStates_
+/// <summary>Private internal array, access through @cref{Quantum.BattlePlayerManagerDataQSingleton,CharactersAllStates}</summary>
+/// @}
+
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerManagerDataQSingleton::SIZE
+/// @var Int32 Quantum::BattlePlayerManagerDataQSingleton::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerManagerDataQSingleton::GetHashCode
+///
+/// @fn void Quantum::BattlePlayerManagerDataQSingleton::Serialize
+///
+/// @}

@@ -1,0 +1,54 @@
+/// @file BattlePlayerClass600.cs
+/// <summary>
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClass600} class which handles player character class logic for the 600/Confluent class.
+/// </summary>
+
+// Quantum usings
+using Quantum;
+using Photon.Deterministic;
+
+// Battle QSimulation usings
+using Battle.QSimulation.Game;
+using Battle.QSimulation.Projectile;
+
+namespace Battle.QSimulation.Player
+{
+    /// <summary>
+    /// %Player character class logic for the 600/Confluent class.
+    /// </summary>
+    ///
+    /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-class-playerclass) for more info.}<br/>
+    /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
+    /// @bigtext{See [{Player Character Class 600 - Confluent}](#page-concepts-player-class-600) for more info.}
+    public class BattlePlayerClass600 : BattlePlayerClassBase
+    {
+        /// <summary>The BattlePlayerCharacterClass this class is for.</summary>
+        public override BattlePlayerCharacterClass Class { get; } = BattlePlayerCharacterClass.Class600;
+
+        /// <summary>
+        /// Called by BattlePlayerClassManager. Reflects the projectile off of the characters hitbox based on a normal calculated from the characters center to the projectiles position.
+        /// Also handles love projectile logic, as it is skipped in BattleProjectileQSystem due to the hitbox collision type being set to none.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
+        /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
+        public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData)
+        {
+            BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
+
+            if (projectileCollisionData->Projectile->IsHeld) return;
+            if (projectileCollisionData->Projectile->EmotionCurrent == BattleEmotionState.Love) return;
+            if (shieldCollisionData->IsLoveProjectileCollision) return;
+
+            Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->ProjectileEntity);
+            Transform2D* transformShield = ((BattlePlayerShieldEntityRef)shieldCollisionData->PlayerShieldHitbox->ParentEntityRef).GetTransform(f);
+
+            FPVector2 normal = transformProjectile->Position - transformShield->Position;
+            FPVector2 direction = FPVector2.Reflect(projectileCollisionData->Projectile->Direction, normal).Normalized;
+
+            BattleProjectileQSystem.HandleIntersection(f, projectileCollisionData->Projectile, projectileCollisionData->ProjectileEntity, projectileCollisionData->OtherEntity, normal, shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset);
+            BattleProjectileQSystem.UpdateVelocity(f, projectileCollisionData->Projectile, direction, BattleProjectileQSystem.SpeedChange.Increment);
+        }
+    }
+}

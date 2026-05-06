@@ -1,0 +1,68 @@
+/// @file BattleCustomEntityReferences.qtn
+/// <summary>
+/// Contains wrapper structs for EntityRefs that are references to specific types of entities.
+/// </summary>
+///
+/// See [{Custom Entity References}](#page-concepts-custom-quantum-entity-references) for more info.
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattlePlayerEntityRef}
+///   @copybrief Quantum.BattlePlayerEntityRef
+/// - @cref{Quantum, BattlePlayerShieldEntityRef}
+///   @copybrief Quantum.BattlePlayerShieldEntityRef
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattlePlayerEntityRef
+/// <summary>
+/// Wrapper struct for an EntityRef that is a reference to a player entity.  
+/// Marks this entityref as a player entityref, and adds functionality to retrieve transform and data components.
+/// </summary>
+///
+/// See [{Custom Entity References}](#page-concepts-custom-quantum-entity-references) for more info.
+///
+/// @bigtext{Generated from @ref BattleCustomEntityReferences.qtn}  
+/// @bigtext{Extended in @ref BattleCustomEntityReferences.cs}
+
+/// @var BattlePlayerEntityRef Quantum::BattlePlayerEntityRef::ERef
+/// <summary>Underlying entity reference.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerEntityRef::SIZE
+/// @var Int32 Quantum::BattlePlayerEntityRef::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerEntityRef::GetHashCode
+///
+/// @fn void Quantum::BattlePlayerEntityRef::Serialize
+///
+/// @}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattlePlayerShieldEntityRef
+/// <summary>
+/// Wrapper struct for an EntityRef that is a reference to a shield entity.  
+/// Marks this entityref as a shield entityref, and adds functionality to retrieve transform and data components.
+/// </summary>
+///
+/// See [{Custom Entity References}](#page-concepts-custom-quantum-entity-references) for more info.
+///
+/// @bigtext{Generated from @ref BattleCustomEntityReferences.qtn}  
+/// @bigtext{Extended in @ref BattleCustomEntityReferences.cs}
+
+/// @var BattlePlayerEntityRef Quantum::BattlePlayerShieldEntityRef::ERef
+/// <summary>Underlying entity reference.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerShieldEntityRef::SIZE
+/// @var Int32 Quantum::BattlePlayerShieldEntityRef::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerShieldEntityRef::GetHashCode
+///
+/// @fn void Quantum::BattlePlayerShieldEntityRef::Serialize
+///
+/// @}

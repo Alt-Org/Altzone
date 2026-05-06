@@ -3,6 +3,9 @@
 /// Contains @cref{Battle.QSimulation.Game,BattleCollisionQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which handles all collisions in the game.
 /// </summary>
 
+// System usings
+using System.Runtime.CompilerServices;
+
 // Unity usings
 using UnityEngine.Scripting;
 
@@ -71,6 +74,22 @@ namespace Battle.QSimulation.Game
         public static void Init()
         {
             s_debugLogger = BattleDebugLogger.Create<BattleCollisionQSystem>();
+        }
+
+        /// <summary>
+        /// Creates a BattleCollisionTriggerQComponent with the given @cref{Quantum,BattleCollisionTriggerType}.
+        /// </summary>
+        ///
+        /// <param name="triggerType">BattleCollisionTriggerType the component needs to be.</param>
+        ///
+        /// <returns>The newly created component.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static BattleCollisionTriggerQComponent CreateCollisionTriggerComponent(BattleCollisionTriggerType triggerType)
+        {
+            BattleCollisionTriggerQComponent component = new();
+            component.Type = triggerType;
+
+            return component;
         }
 
         /// <summary>
