@@ -16,6 +16,7 @@ public class Raid_References : MonoBehaviour
     public TextMeshProUGUI OutOfSpace;
     public TextMeshProUGUI RaidEndedText;
     public Raid_InventoryHandler inventoryHandler;
+    public Raid_LootTracking raid_LootTracking;
 
     private void Start()
     {

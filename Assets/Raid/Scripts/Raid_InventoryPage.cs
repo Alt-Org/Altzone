@@ -137,7 +137,7 @@ public class Raid_InventoryPage : MonoBehaviour
 
             if (itemWeight == item.ItemWeight && itemWeight != 0)
             {
-                LootTracker.SetLootCount(item.ItemWeight,LootTracker.MaxLootWeight);
+                LootTracker.SetLootCount(item.furnitureData,LootTracker.MaxLootWeight);
                 item.RemoveData();
             } else
             {
@@ -236,11 +236,10 @@ public class Raid_InventoryPage : MonoBehaviour
         if (ListOfUIItems[index + 4])
             ListOfUIItems[index + 4].GetComponent<Raid_InventoryItem>().SetLocked();
     }
-    /*[PunRPC]*/
+    
     public void SetInventorySlotDataRPC(List<GameFurniture> furnitureSet,int Index, int RandomFurniture)
     {
         GameFurniture furniture = furnitureSet[RandomFurniture];
-        ListOfUIItems[Index].ItemWeight = (float)furniture.Weight;
         ListOfUIItems[Index].SetData(furniture);
         return;
     }

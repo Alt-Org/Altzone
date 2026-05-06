@@ -14,6 +14,8 @@ public class ExitRaid : MonoBehaviour
 
     public void EndRaid()
     {
+        raid_References.EndMenu.GetComponent<Raid_EndMenu>().SetCollectedLoot(raid_References.raid_LootTracking.ListOfCollectedLoot);
+        
         raidEnded = true;
         OnEndRaid();
         raid_References.RedScreen.SetActive(true);

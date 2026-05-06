@@ -24,12 +24,14 @@ public class GraphicsChanger : MonoBehaviour
     [SerializeField] private Image LungsFull;
     void Start()
     {
+        /*
         Debug.Log("GraphicsChanger");
         //if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
         {
             Debug.Log("Switching to Loser graphics");
             SwitchToLoserGraphics();
         }
+        */
     }
     private void Update()
     {

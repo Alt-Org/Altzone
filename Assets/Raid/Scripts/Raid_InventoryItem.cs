@@ -22,7 +22,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     [SerializeField] public Image Bubble;
     [SerializeField] public Sprite[] Auras;
     [SerializeField] public Sprite[] Bubbles;
-    [SerializeField] public Raid_InventoryHandler inventoryHandler;
+    [SerializeField] public Raid_References raid_References;
     
     private RectTransform target;
     Vector2 endLoc;
@@ -66,7 +66,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         Heart = GameObject.FindWithTag("Heart");
         target = Heart.GetComponent<RectTransform>();
 
-        inventoryHandler = GameObject.Find("ScriptHolder").GetComponent<Raid_InventoryHandler>();
+        raid_References = GameObject.Find("ScriptHolder").GetComponent<Raid_References>();
 
         Raid_Timer raidTimer = FindObjectOfType<Raid_Timer>();
         if (raidTimer != null)
@@ -88,6 +88,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 
     public void SetData(GameFurniture gameFurniture)
     {
+        ItemWeight = (float)gameFurniture.Weight;
         furnitureData = gameFurniture;
         ItemImage.gameObject.SetActive(true);
         ItemImage.sprite = gameFurniture.FurnitureInfo.Image;

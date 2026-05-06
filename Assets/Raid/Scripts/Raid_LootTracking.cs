@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+using Altzone.Scripts.Model.Poco.Game;
 //using Photon.Pun;
 
 public class Raid_LootTracking : MonoBehaviour//PunCallbacks
@@ -19,6 +20,7 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
     [SerializeField] public float MaxLootWeight;
 
     //public PhotonView _photonView { get; private set; }
+    public List<GameFurniture> ListOfCollectedLoot = new List<GameFurniture>();
 
     public void Awake()
     {
@@ -43,14 +45,18 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
 
     public void ResetLootCount()
     {
+        ListOfCollectedLoot = new List<GameFurniture>();
         CurrentLootWeight = 0;
         CurrentLootText.text = CurrentLootWeight.ToString() + " kg";
         OutOfText.text = "Out of";
         MaxLootText.text =  MaxLootWeight.ToString() + " kg";
     }
 
-    public void SetLootCount(float AddedLootWeight, float MaxLootWeight)
+    public void SetLootCount(GameFurniture furniture, float MaxLootWeight)
     {
+        float AddedLootWeight = (float)furniture.Weight;
+        ListOfCollectedLoot.Add(furniture);
+
         float NewLootWeight = CurrentLootWeight + AddedLootWeight;
         CurrentLootWeight = NewLootWeight;
 
@@ -61,7 +67,6 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
         if (CurrentLootWeight > MaxLootWeight)
         {
             //EndScreen
-            
             raid_References.RedScreen.SetActive(true);
             raid_References.EndMenu.SetActive(true);
             raid_References.OutOfSpace.enabled = true;
