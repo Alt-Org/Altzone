@@ -102,7 +102,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             if (_instantiatedMoveJoystick != null) SetDataToUiElement(_instantiatedMoveJoystick);
             if (_instantiatedRotateJoystick != null) SetDataToUiElement(_instantiatedRotateJoystick);
-            OverlayPanelCheck.Instance.gameObject.SetActive(false);
+            OverlayPanelCheck.Instance?.gameObject.SetActive(false);
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             {
                 gameObject.SetActive(false);
             }
-            OverlayPanelCheck.Instance.gameObject.SetActive(true);
+            OverlayPanelCheck.Instance?.gameObject.SetActive(true);
         }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         }
         private void OnDisable()
         {
-            OverlayPanelCheck.Instance.gameObject.SetActive(true);
+            OverlayPanelCheck.Instance?.gameObject.SetActive(true);
         }
 
         private void ScaleEditor()

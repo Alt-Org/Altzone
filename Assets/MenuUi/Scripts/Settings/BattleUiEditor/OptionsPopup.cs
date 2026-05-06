@@ -61,6 +61,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private GameObject _gyroscopeMinAngleHolder;
         [SerializeField] private Slider _gyroscopeMinAngleSlider;
         [SerializeField] private TMP_InputField _gyroscopeMinAngleInputField;
+        [Space]
+        [SerializeField] private GameObject _swipeInstructionImage;
+        [SerializeField] private GameObject _pointAndClickInstructionImage;
+        [SerializeField] private GameObject _joystickInstructionImage;
+        [SerializeField] private GameObject _followPointerInstructionImage;
 
         [Header("Arena options")]
         [SerializeField] private RectTransform _arenaImage;
@@ -95,7 +100,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void Awake()
         {
             _resetButton.onClick.AddListener(_saveReset.OnResetButtonClicked);
-            _closeButton.onClick.AddListener(CloseOptionsPopup);
+            if (_closeButton != null) _closeButton.onClick.AddListener(CloseOptionsPopup);
 
             // Show grid toggle listener
             _showGridToggle.onValueChanged.AddListener((value) =>
@@ -402,6 +407,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _swipeMaxDistanceHolder.SetActive(rotationType == BattleRotationInputType.Swipe);
             _movementSwipeSensitivityHolder.SetActive(movementType == BattleMovementInputType.Swipe);
             _gyroscopeMinAngleHolder.SetActive(rotationType == BattleRotationInputType.Gyroscope);
+
+            if (_swipeInstructionImage != null) _swipeInstructionImage.SetActive(movementType == BattleMovementInputType.Swipe);
+            if (_pointAndClickInstructionImage != null) _pointAndClickInstructionImage.SetActive(movementType == BattleMovementInputType.PointAndClick);
+            if (_joystickInstructionImage != null) _joystickInstructionImage.SetActive(movementType == BattleMovementInputType.Joystick);
+            if (_followPointerInstructionImage != null) _followPointerInstructionImage.SetActive(movementType == BattleMovementInputType.FollowPointer);
 
             // Setting visibility to joysticks
             if (_battleUiEditor._instantiatedMoveJoystick != null) _battleUiEditor._instantiatedMoveJoystick.gameObject.SetActive(movementType == BattleMovementInputType.Joystick);

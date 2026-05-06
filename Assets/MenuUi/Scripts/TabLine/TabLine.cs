@@ -40,7 +40,7 @@ namespace MenuUi.Scripts.TabLine
         {
             foreach (TabLineButton button in _tabLineButtons)
             {
-                if (_tabColorActive != Color.white || _tabColorInactive != Color.white) button.SetColour(_tabColorActive, _tabColorInactive);
+                if (_tabColorActive.a > 0) button.SetColour(_tabColorActive, _tabColorInactive);
                 else button.SetColour(Color.white, Color.gray);
             }
 
