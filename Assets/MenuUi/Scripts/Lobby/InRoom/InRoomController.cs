@@ -7,6 +7,7 @@ using Prg.Scripts.Common.PubSub;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.Model.Poco.Clan;
 
 using SignalBus = MenuUi.Scripts.Signals.SignalBus;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
@@ -54,7 +55,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private void OnEnable()
         {
             if (_startGameButton != null) _startGameButton.interactable = true;
-            if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.interactable = InLobbyController.SelectedGameType == GameType.FriendLobby;
+            if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.interactable = InLobbyController.SelectedGameType == GameType.FriendLobby || InLobbyController.SelectedGameType == GameType.Clan2v2;
 
             switch (InLobbyController.SelectedGameType)
             {
@@ -78,8 +79,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     break;
                 case GameType.Clan2v2:
                     if (_title != null) _title.text = "Klaani 2v2";
-                    if (_noticeText != null) _noticeText.text = "Kutsun lähettäminen ei vielä toimi. Saman klaanin jäsen voi liittyä tähän huoneeseen menemällä peliin 2v2 klaanijäsenen kanssa.";
+                    if (_noticeText != null) _noticeText.text = "Kutsu klaanin jäsenelle ja odota liittymistä.\nKutsun voi lähettää vain huoneen johtaja.";
                     if (_sendInviteToFriendText != null) _sendInviteToFriendText.text = "Lähetä kutsu yhdelle klaanin jäsenelle";
+                    // Ensure invite selector is usable for clan invites
+                    EnsureInviteSelectorPanel();
                     break;
             }
 
@@ -237,12 +240,16 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private void OnInviteOnlinePlayerButtonPressed()
         {
-            if (InLobbyController.SelectedGameType != GameType.FriendLobby) return;
+            GameType activeGameType = GetActiveRoomGameType();
+            Debug.Log($"OnInviteOnlinePlayerButtonPressed: activeGameType={activeGameType}, selectedGameType={InLobbyController.SelectedGameType}");
             StartCoroutine(InviteOnlinePlayerRoutine());
         }
 
         private IEnumerator InviteOnlinePlayerRoutine()
         {
+            GameType activeGameType = GetActiveRoomGameType();
+            Debug.Log($"InviteOnlinePlayerRoutine: start, activeGameType={activeGameType}, selectedGameType={InLobbyController.SelectedGameType}");
+
             if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.CurrentRoom == null) yield break;
 
             if (!PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient)
@@ -254,9 +261,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
             List<ServerOnlinePlayer> candidates = null;
             yield return StartCoroutine(GetInviteCandidatesRoutine(result => candidates = result));
 
+            Debug.Log($"InviteOnlinePlayerRoutine: candidate count={(candidates == null ? -1 : candidates.Count)} for activeGameType={activeGameType}");
+
             if (candidates == null || candidates.Count == 0)
             {
-                PopupSignalBus.OnChangePopupInfoSignal("Ei sopivia online-pelaajia kutsuttavaksi.");
+                PopupSignalBus.OnChangePopupInfoSignal("Ei sopivia pelaajia kutsuttavaksi.");
                 yield break;
             }
 
@@ -284,6 +293,9 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private IEnumerator GetInviteCandidatesRoutine(Action<List<ServerOnlinePlayer>> callback)
         {
+            GameType activeGameType = GetActiveRoomGameType();
+            List<ServerOnlinePlayer> candidates = new();
+
             List<ServerOnlinePlayer> onlinePlayers = null;
             if (ServerManager.Instance != null)
             {
@@ -293,6 +305,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 // Always prefer a fresh server snapshot when opening the invite list.
                 onlinePlayers = fetchedPlayers ?? ServerManager.Instance.OnlinePlayers;
             }
+
+            Debug.Log($"GetInviteCandidatesRoutine: activeGameType={activeGameType}, fetched online count={(onlinePlayers == null ? -1 : onlinePlayers.Count)}");
 
             callback?.Invoke(FilterInviteCandidates(onlinePlayers));
         }
@@ -322,6 +336,9 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 return;
             }
 
+            GameType activeGameType = GetActiveRoomGameType();
+            Debug.Log($"SendInviteToOnlinePlayer: targetPlayer={onlinePlayer._id}, activeGameType={activeGameType}, selectedGameType={InLobbyController.SelectedGameType}");
+
             if (!TrySendInviteToUserId(onlinePlayer._id))
             {
                 return;
@@ -334,6 +351,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.CurrentRoom == null)
             {
+                Debug.LogWarning("TrySendInviteToUserId: not in room or current room missing.");
                 return false;
             }
 
@@ -357,6 +375,9 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 return false;
             }
 
+            GameType activeGameType = GetActiveRoomGameType();
+            Debug.Log($"TrySendInviteToUserId: invitedUserId={invitedUserId}, localUserId={localUserId}, activeGameType={activeGameType}, selectedGameType={InLobbyController.SelectedGameType}");
+
             int inviteState = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateNone);
             string currentInvitedUserId = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PremadeInvitedUserIdKey, string.Empty);
             if (inviteState == PhotonBattleRoom.PremadeInviteStatePending && currentInvitedUserId == invitedUserId)
@@ -375,7 +396,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 Debug.LogWarning($"TrySendInviteToUserId: failed to set expected users: {ex.Message}");
             }
 
-            ApplyPendingPremadeInviteSelection(invitedUserId, localUserId, InLobbyController.SelectedPremadeTargetGameType);
+            // For clan invites, ensure target game type is Clan2v2 so premade flow is reused for clan invites
+            var targetGameType = activeGameType == GameType.Clan2v2 ? GameType.Clan2v2 : InLobbyController.SelectedPremadeTargetGameType;
+            Debug.Log($"TrySendInviteToUserId: applying invite selection with targetGameType={targetGameType}");
+            ApplyPendingPremadeInviteSelection(invitedUserId, localUserId, targetGameType);
+            Debug.Log($"TrySendInviteToUserId: invite state applied to room '{PhotonRealtimeClient.CurrentRoom.Name}' for invitedUserId={invitedUserId}");
 
             return true;
         }
@@ -421,6 +446,23 @@ namespace MenuUi.Scripts.Lobby.InRoom
             {
                 _inviteOnlinePlayerButton.interactable = interactable;
             }
+        }
+
+        private GameType GetActiveRoomGameType()
+        {
+            try
+            {
+                if (PhotonRealtimeClient.InRoom && PhotonRealtimeClient.CurrentRoom != null)
+                {
+                    return (GameType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"GetActiveRoomGameType failed: {ex.Message}");
+            }
+
+            return InLobbyController.SelectedGameType;
         }
 
         private string GetLocalUserId()
@@ -590,7 +632,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     continue;
                 }
 
-                if (roomGameType != GameType.FriendLobby)
+                    if (roomGameType != GameType.FriendLobby && roomGameType != GameType.Clan2v2)
                 {
                     yield return delay;
                     continue;
@@ -673,7 +715,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             Debug.Log($"leavingRoom");
             PhotonRealtimeClient.LeaveRoom();
-            if (InLobbyController.SelectedGameType != GameType.Clan2v2) SignalBus.OnCloseBattlePopupRequestedSignal();
+            SignalBus.OnCloseBattlePopupRequestedSignal();
             //this.Publish(new LobbyManager.StartPlayingEvent());
         }
 

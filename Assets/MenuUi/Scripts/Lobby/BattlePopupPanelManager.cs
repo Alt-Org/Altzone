@@ -23,14 +23,38 @@ public class BattlePopupPanelManager : MonoBehaviour
 
     private void OnEnable()
     {
-        LobbyManager.OnMatchmakingRoomEntered += SwitchToMatchmakingPanel;
+        LobbyManager.OnMatchmakingRoomEntered += HandleMatchmakingRoomEntered;
         SignalBus.OnCustomRoomSettingsRequested += OpenCustomRoomSettings;
     }
 
     private void OnDisable()
     {
-        LobbyManager.OnMatchmakingRoomEntered -= SwitchToMatchmakingPanel;
+        LobbyManager.OnMatchmakingRoomEntered -= HandleMatchmakingRoomEntered;
         SignalBus.OnCustomRoomSettingsRequested -= OpenCustomRoomSettings;
+    }
+
+    private void HandleMatchmakingRoomEntered(bool isLeader)
+    {
+        // If the current room is Clan2v2 (non-queue), show the clan/random waiting room
+        try
+        {
+            var curr = PhotonRealtimeClient.CurrentRoom;
+            if (curr != null && curr.CustomProperties != null && curr.CustomProperties.ContainsKey(PhotonBattleRoom.GameTypeKey))
+            {
+                var gt = (GameType)curr.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                bool isQueue = curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey, false);
+                if (gt == GameType.Clan2v2 && !isQueue)
+                {
+                    ClosePanels();
+                    _clanAndRandom2v2WaitingRoom.SetActive(true);
+                    return;
+                }
+            }
+        }
+        catch { }
+
+        // Fallback to existing matchmaking panel behaviour
+        SwitchToMatchmakingPanel(isLeader);
     }
 
     public void SwitchRoom(GameType gameType)

@@ -7,6 +7,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Window;
+using MenuUi.Scripts.Lobby.InLobby;
 using MenuUi.Scripts.AvatarEditor;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Signals;
@@ -399,7 +400,11 @@ public class OnlinePlayersPanelItem : AltMonoBehaviour
         bool result = false;
         try
         {
-            result = PhotonRealtimeClient.SendPremadeInvite(invitedUserId);
+            GameType targetGameType = InLobbyController.SelectedGameType == GameType.Clan2v2
+                ? GameType.Clan2v2
+                : GameType.Random2v2;
+            Debug.Log($"InviteSelectedPlayerRoutine: sending invite to '{invitedUserId}' for targetGameType={targetGameType}");
+            result = PhotonRealtimeClient.SendPremadeInvite(invitedUserId, targetGameType);
         }
         catch (Exception ex)
         {
@@ -412,10 +417,11 @@ public class OnlinePlayersPanelItem : AltMonoBehaviour
         }
         else
         {
-            // Open the battle popup for Friend Lobby so the in-room waiting panel appears
+            // Open the battle popup for the active invite mode so the in-room waiting panel appears
             try
             {
-                SignalBus.OnBattlePopupRequestedSignal(GameType.FriendLobby);
+                SignalBus.OnBattlePopupRequestedSignal(
+                    InLobbyController.SelectedGameType == GameType.Clan2v2 ? GameType.Clan2v2 : GameType.FriendLobby);
             }
             catch (Exception ex)
             {

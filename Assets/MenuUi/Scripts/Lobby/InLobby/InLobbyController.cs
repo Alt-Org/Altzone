@@ -351,7 +351,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
             string inviterName = ResolveOnlinePlayerName(inviteInfo.LeaderUserId);
             string targetMode = inviteInfo.TargetGameType == GameType.Clan2v2 ? "Clan 2v2" : "Random 2v2";
-            string message = $"{inviterName} kutsui sinut Friend Lobby -huoneeseen. Haettava pelimuoto: {targetMode}. Liitytaanko huoneeseen?";
+            string roomTypeName = inviteInfo.TargetGameType == GameType.Clan2v2 ? "Clan 2v2" : "Friend Lobby";
+            string message = $"{inviterName} kutsui sinut {roomTypeName} -huoneeseen. Haettava pelimuoto: {targetMode}. Liitytäänkö huoneeseen?";
 
             bool popupShown = InviteDecisionPopupHandler.RequestInviteDecisionPrompt(
                 message,
@@ -362,7 +363,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     if (LobbyManager.Instance == null) return;
                     if (accepted)
                     {
-                        OpenBattlePopupForInviteAccept();
+                        OpenBattlePopupForInviteAccept(inviteInfo.TargetGameType);
                         LobbyManager.Instance.AcceptInRoomInvite(inviteInfo.RoomName);
                     }
                     else LobbyManager.Instance.DeclineInRoomInvite(inviteInfo.RoomName);
@@ -376,9 +377,9 @@ namespace MenuUi.Scripts.Lobby.InLobby
             }
         }
 
-        private void OpenBattlePopupForInviteAccept()
+        private void OpenBattlePopupForInviteAccept(GameType targetGameType)
         {
-            SelectedGameType = GameType.FriendLobby;
+            SelectedGameType = targetGameType == GameType.Clan2v2 ? GameType.Clan2v2 : GameType.FriendLobby;
 
             if (_popupContents != null && !_popupContents.activeSelf)
             {
@@ -386,7 +387,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             }
 
             RefreshTopInfo();
-            _roomSwitcher?.SwitchRoom(GameType.FriendLobby);
+            _roomSwitcher?.SwitchRoom(SelectedGameType);
         }
 
         private string ResolveOnlinePlayerName(string userId)

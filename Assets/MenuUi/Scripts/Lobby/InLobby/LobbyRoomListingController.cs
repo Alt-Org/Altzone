@@ -192,10 +192,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
             {
                 if (clanData != null)
                 {
-                    // Join the persistent queue room instead of creating a matchmaking room immediately
-                    _pendingJoinIntent = JoinIntent.QueueJoin;
-                    _pendingQueueGameType = GameType.Clan2v2;
-                    PhotonRealtimeClient.JoinOrCreateQueueRoom(GameType.Clan2v2);
+                    // Create a non-matchmaking clan lobby room directly (avoid joining queue first)
+                    _pendingJoinIntent = JoinIntent.CustomCreate;
+                    string clanName = clanData.Name ?? string.Empty;
+                    int soulhomeRank = PhotonRealtimeClient.LocalLobbyPlayer?.GetCustomProperty(PhotonBattleRoom.SoulhomeRank, 0) ?? 0;
+                    PhotonRealtimeClient.CreateClan2v2LobbyRoom(clanName, soulhomeRank);
                 }
             }));
         }

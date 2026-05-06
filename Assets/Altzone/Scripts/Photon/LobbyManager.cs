@@ -2248,6 +2248,98 @@ namespace Altzone.Scripts.Lobby
             // queue metadata and premade metadata) have been applied.
             completeDuoCount = completeDuos.Count;
 
+            // Special-case: Clan2v2 must select exactly two distinct clans with two
+            // players each. Ignore solo/duo fallback logic used by Random2v2.
+            try
+            {
+                if ((GameType)roomGameTypeInt == GameType.Clan2v2)
+                {
+                    // Group players by clan name (ignore empty clan entries)
+                    var clanGroups = realPlayers
+                        .Where(p => p != null && !string.IsNullOrEmpty(p.UserId))
+                        .GroupBy(p => p.GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey, string.Empty) ?? string.Empty)
+                        .Where(g => !string.IsNullOrEmpty(g.Key))
+                        .ToDictionary(g => g.Key, g => g.ToList());
+
+                    // Find clans with at least two eligible players (exclude incomplete members)
+                    var eligibleClans = clanGroups
+                        .Select(kv => new { Name = kv.Key, Players = kv.Value.Where(p => p != null && !incompleteMemberIds.Contains(p.UserId) && p.UserId != "Bot").ToList() })
+                        .Where(x => x.Players.Count >= 2)
+                        .OrderByDescending(x => x.Players.Count)
+                        .ToList();
+
+                    if (eligibleClans.Count < 2)
+                    {
+                        // Not enough clans to form a clan2v2 match
+                        return new List<string>();
+                    }
+
+                    // Prefer local player's clan if possible
+                    string localClan = string.Empty;
+                    try { localClan = playersById.ContainsKey(localUserId) ? playersById[localUserId].GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey, string.Empty) ?? string.Empty : string.Empty; } catch { }
+
+                    var firstClan = eligibleClans.FirstOrDefault(c => !string.IsNullOrEmpty(localClan) && c.Name == localClan) ?? eligibleClans[0];
+                    var secondClan = eligibleClans.FirstOrDefault(c => c.Name != firstClan.Name) ?? eligibleClans.Skip(1).FirstOrDefault();
+
+                    if (secondClan == null) return new List<string>();
+
+                    // Select two players from each clan. Prefer members with existing duo links (leader/follower), then fallback to any.
+                    List<string> selection = new();
+
+                    List<Player> pickFromClan(List<Player> pool)
+                    {
+                        // try to prefer duo members (leaders first)
+                        var duoMembers = pool.Where(p => completeDuos.Any(d => d.leader != null && d.follower != null && (d.leader.UserId == p.UserId || d.follower.UserId == p.UserId))).ToList();
+                        var result = new List<Player>();
+                        foreach (var p in duoMembers)
+                        {
+                            if (result.Count >= 2) break;
+                            if (!string.IsNullOrEmpty(p.UserId) && !selection.Contains(p.UserId)) result.Add(p);
+                        }
+                        foreach (var p in pool)
+                        {
+                            if (result.Count >= 2) break;
+                            if (!string.IsNullOrEmpty(p.UserId) && !selection.Contains(p.UserId)) result.Add(p);
+                        }
+                        return result;
+                    }
+
+                    var picksA = pickFromClan(firstClan.Players);
+                    var picksB = pickFromClan(secondClan.Players);
+
+                    if (picksA.Count < 2 || picksB.Count < 2) return new List<string>();
+
+                    // Ensure local user is included if they belong to one of the chosen clans
+                    if (!string.IsNullOrEmpty(localUserId) && playersById.ContainsKey(localUserId))
+                    {
+                        string localUserClan = playersById[localUserId].GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey, string.Empty) ?? string.Empty;
+                        if (localUserClan == firstClan.Name && !picksA.Any(p => p.UserId == localUserId))
+                        {
+                            picksA[1] = picksA.FirstOrDefault(p => p.UserId != picksA[0].UserId) ?? picksA[0];
+                            if (!picksA.Any(p => p.UserId == localUserId)) picksA[1] = playersById[localUserId];
+                        }
+                        else if (localUserClan == secondClan.Name && !picksB.Any(p => p.UserId == localUserId))
+                        {
+                            picksB[1] = picksB.FirstOrDefault(p => p.UserId != picksB[0].UserId) ?? picksB[0];
+                            if (!picksB.Any(p => p.UserId == localUserId)) picksB[1] = playersById[localUserId];
+                        }
+                    }
+
+                    selection.AddRange(picksA.Take(2).Select(p => p.UserId));
+                    selection.AddRange(picksB.Take(2).Select(p => p.UserId));
+
+                    if (selection.Count == requiredFollowers)
+                    {
+                        return selection;
+                    }
+                    return new List<string>();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"SelectQueueFollowersForMatch: clan2v2 selection failed: {ex.Message}");
+            }
+
             if (IsTwoPlayerBlockQueueMode(roomGameTypeInt))
             {
                 return SelectQueueFollowersFromTwoPlayerBlocks(
@@ -7614,13 +7706,17 @@ namespace Altzone.Scripts.Lobby
             foreach (LobbyRoomInfo room in roomList)
             {
                 if (room == null || room.RemovedFromList || !room.IsOpen || room.CustomProperties == null) continue;
-                if (!room.CustomProperties.ContainsKey(PhotonBattleRoom.GameTypeKey)) continue;
 
-                GameType gameType;
-                try { gameType = (GameType)room.CustomProperties[PhotonBattleRoom.GameTypeKey]; }
-                catch { continue; }
+                bool hasInvitePayload = room.CustomProperties.ContainsKey(PhotonBattleRoom.PremadeInvitedUserIdKey)
+                    && room.CustomProperties.ContainsKey(PhotonBattleRoom.PremadeInviteStateKey);
+                if (!hasInvitePayload) continue;
 
-                if (gameType != GameType.FriendLobby) continue;
+                GameType gameType = GameType.FriendLobby;
+                if (room.CustomProperties.ContainsKey(PhotonBattleRoom.GameTypeKey))
+                {
+                    try { gameType = (GameType)room.CustomProperties[PhotonBattleRoom.GameTypeKey]; }
+                    catch { gameType = GameType.FriendLobby; }
+                }
 
                 string invitedUserId = room.CustomProperties.ContainsKey(PhotonBattleRoom.PremadeInvitedUserIdKey)
                     ? room.CustomProperties[PhotonBattleRoom.PremadeInvitedUserIdKey]?.ToString()
@@ -7676,12 +7772,12 @@ namespace Altzone.Scripts.Lobby
 
                 if (inviteReceivedHandler == null)
                 {
-                    Debug.LogWarning($"Detected pending FriendLobby invite to room '{room.Name}', but no UI listener is active yet. Will retry shortly.");
+                    Debug.LogWarning($"Detected pending invite to room '{room.Name}', but no UI listener is active yet. Will retry shortly.");
                     break;
                 }
 
                 _pendingInRoomInviteRoomName = room.Name;
-                Debug.Log($"Detected pending FriendLobby invite to room '{room.Name}', requesting decision from UI.");
+                Debug.Log($"Detected pending in-room invite to room '{room.Name}', requesting decision from UI. GameType={gameType}, invitedUserId={invitedUserId}");
                 try
                 {
                     inviteReceivedHandler.Invoke(new InRoomInviteInfo(room.Name, leaderUserId, invitedUserId, targetGameType));

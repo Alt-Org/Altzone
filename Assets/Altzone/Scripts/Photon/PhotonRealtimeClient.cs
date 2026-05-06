@@ -671,10 +671,10 @@ public static class PhotonRealtimeClient
 
         List<string> propertiesShowingToLobby = new() { PhotonBattleRoom.GameTypeKey, PhotonBattleRoom.IsMatchmakingKey };
 
-        if (gameType == GameType.FriendLobby)
+        if (gameType == GameType.FriendLobby || gameType == GameType.Clan2v2)
         {
             customRoomProperties.Add(PhotonBattleRoom.PremadeModeKey, true);
-            customRoomProperties.Add(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)GameType.Random2v2);
+            customRoomProperties.Add(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)(gameType == GameType.Clan2v2 ? GameType.Clan2v2 : GameType.Random2v2));
             customRoomProperties.Add(PhotonBattleRoom.PremadeLeaderUserIdKey, LocalPlayer.UserId);
             customRoomProperties.Add(PhotonBattleRoom.PremadeInvitedUserIdKey, "");
             customRoomProperties.Add(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateNone);
@@ -831,6 +831,8 @@ public static class PhotonRealtimeClient
 
     public static bool SendPremadeInvite(string invitedUserId, GameType targetGameType = GameType.Random2v2)
     {
+        Debug.Log($"SendPremadeInvite: requested for invitedUserId='{invitedUserId}', targetGameType={targetGameType}");
+
         if (string.IsNullOrEmpty(invitedUserId))
         {
             Debug.LogWarning("SendPremadeInvite: invitedUserId is null or empty.");
@@ -873,6 +875,8 @@ public static class PhotonRealtimeClient
             CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, localUserId);
             CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
 
+            Debug.Log($"SendPremadeInvite: created in-room invite to '{invitedUserId}' for targetGameType={targetGameType} in room '{CurrentRoom.Name}'.");
+
             return true;
         }
 
@@ -899,7 +903,23 @@ public static class PhotonRealtimeClient
             Debug.LogWarning($"SendPremadeInvite: failed to prepare room options: {ex.Message}");
         }
 
-        return CreateRoom(roomName: roomName, roomOptions: roomOptions, expectedUsers: new[] { invitedUserId });
+        bool created = CreateRoom(roomName: roomName, roomOptions: roomOptions, expectedUsers: new[] { invitedUserId });
+        if (created)
+        {
+            Debug.Log($"SendPremadeInvite: created invite room '{roomName}' for '{invitedUserId}' with targetGameType={targetGameType}.");
+        }
+        return created;
+    }
+
+    public static bool SendClanInvite(string invitedUserId)
+    {
+        if (string.IsNullOrEmpty(invitedUserId))
+        {
+            Debug.LogWarning("SendClanInvite: invitedUserId is null or empty.");
+            return false;
+        }
+
+        return SendPremadeInvite(invitedUserId, GameType.Clan2v2);
     }
 
     public static bool CreateRoom(string roomName = "", RoomOptions roomOptions = null, TypedLobby typedLobby = null, string[] expectedUsers = null)
