@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Language;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
 using TMPro;
@@ -79,10 +80,13 @@ public class DailyTaskOwnTask : MonoBehaviour
     private TextMeshProUGUI _dailyStatsTitle;
 
     [SerializeField]
-    private TextMeshProUGUI _battlesPlayedText;
+    private TextLanguageSelectorCaller _battlesPlayedText;
 
     [SerializeField]
-    private TextMeshProUGUI _tasksDoneText;
+    private TextLanguageSelectorCaller _tasksDoneText;
+
+    public delegate void CurrentTaskInfoNeeded();
+    public static event CurrentTaskInfoNeeded OnCurrentTaskInfoNeeded;
 
     private void Start()
     {
@@ -98,10 +102,27 @@ public class DailyTaskOwnTask : MonoBehaviour
 
     private void OnEnable()
     {
-        UpdateDailyStatsUI();
+        UpdateOwnTaskPage();
+        
     }
 
     #region Task
+
+
+    public void UpdateOwnTaskPage()
+    {
+        PlayerTask taskData = DailyTaskProgressManager.Instance.CurrentPlayerTask;
+
+        if (taskData == null) return;
+
+        float progress = (float)taskData.TaskProgress / (float)taskData.Amount;
+        StartCoroutine(SetDailyTask(taskData));
+        SetTaskProgress(progress);
+        TESTSetTaskValue(taskData.TaskProgress);
+
+        UpdateDailyStatsUI();
+    }
+
 
     public IEnumerator SetDailyTask(PlayerTask data)
     {
@@ -201,31 +222,31 @@ public class DailyTaskOwnTask : MonoBehaviour
                 case EducationCategoryType.Action:
                     {
                         _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Toiminnallinen pelilukutaito" : "Functional game literacy";
-                        _taskBackground.color = _actionCategoryColor;
+                        //_taskBackground.color = _actionCategoryColor;
                         break;
                     }
                 case EducationCategoryType.Social:
                     {
                         _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Sosiaalinen pelilukutaito" : "Social game literacy";
-                        _taskBackground.color = _socialCategoryColor;
+                        //_taskBackground.color = _socialCategoryColor;
                         break;
                     }
                 case EducationCategoryType.Story:
                     {
                         _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Tarinallinen pelilukutaito" : "Story-based game literacy";
-                        _taskBackground.color = _storyCategoryColor;
+                        //_taskBackground.color = _storyCategoryColor;
                         break;
                     }
                 case EducationCategoryType.Culture:
                     {
                         _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Kulttuurinen pelilukutaito" : "Cultural game literacy";
-                        _taskBackground.color = _cultureCategoryColor;
+                        //_taskBackground.color = _cultureCategoryColor;
                         break;
                     }
                 case EducationCategoryType.Ethical:
                     {
                         _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Eettinen pelilukutaito" : "Ethical game literacy";
-                        _taskBackground.color = _ethicalCategoryColor;
+                        //_taskBackground.color = _ethicalCategoryColor;
                         break;
                     }
                 default:
@@ -294,17 +315,13 @@ public class DailyTaskOwnTask : MonoBehaviour
 
     private void UpdateDailyStatsUI()
     {
-        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
-        {
-            _dailyStatsTitle.text = "Päivän saldo";
-            _battlesPlayedText.text = DailyStats.Instance.GetBattlesPlayed() + " taistelua";
-            _tasksDoneText.text = DailyStats.Instance.GetTasksDone() + " työtehtävää";
-        }
-        else
-        {
-            _dailyStatsTitle.text = "Daily stats";
-            _battlesPlayedText.text = DailyStats.Instance.GetBattlesPlayed() + " battles";
-            _tasksDoneText.text = DailyStats.Instance.GetTasksDone() + " tasks";
-        }
+        _battlesPlayedText.SetText(SettingsCarrier.Instance.Language, new[] { DailyStats.Instance.GetBattlesPlayed().ToString() });
+        _tasksDoneText.SetText(SettingsCarrier.Instance.Language, new[] { DailyStats.Instance.GetTasksDone().ToString() });
+    }
+
+    // Currently used on DailyTask OwnTask page on ShowCurrentTaskInfoButton
+    public void ShowCurrentTaskInfo()
+    {
+        OnCurrentTaskInfoNeeded.Invoke();
     }
 }
