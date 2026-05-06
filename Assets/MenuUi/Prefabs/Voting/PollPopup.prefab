@@ -1388,15 +1388,15 @@ GameObject:
   m_Component:
   - component: {fileID: 8797988898308698721}
   - component: {fileID: 9210473350652313671}
-  - component: {fileID: 6768035810432484120}
   - component: {fileID: 6955271378841950380}
+  - component: {fileID: 8878153897169541975}
   m_Layer: 5
   m_Name: PollPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8797988898308698721
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1426,26 +1426,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3520803720712383946}
   m_CullTransparentMesh: 1
---- !u!114 &6768035810432484120
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3520803720712383946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d27b64261cfc2364fab2ce1d15fc89d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  headerText: {fileID: 5132558659769654777}
-  image: {fileID: 8009850022350836559}
-  yesVotesText: {fileID: 1654143719146667059}
-  noVotesText: {fileID: 3713323092406453962}
-  infoText: {fileID: 3351980463717931492}
-  votesLeftText: {fileID: 0}
-  greenFillAmount: {fileID: 6648425395076108170}
-  playerHeads: {fileID: 0}
 --- !u!114 &6955271378841950380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1465,6 +1445,37 @@ MonoBehaviour:
   _educationCategoryStoryType: 3
   _educationCategoryCultureType: 0
   _educationCategoryEthicalType: 0
+--- !u!114 &8878153897169541975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3520803720712383946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4da6ac16194673c41b0996450b430e2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameText: {fileID: 5132558659769654777}
+  setNameText: {fileID: 5132558659769654777}
+  weightText: {fileID: 0}
+  valueText: {fileID: 6068802293260380600}
+  iconImage: {fileID: 8009850022350836559}
+  descriptionText: {fileID: 0}
+  artistNameText: {fileID: 0}
+  rarityImage: {fileID: 0}
+  frontRarityImage: {fileID: 0}
+  rarityText: {fileID: 0}
+  rarityColourReference: {fileID: 0}
+  closeFurnitureInfoButton: {fileID: 4317531141831346596}
+  closeClanInfoButton: {fileID: 0}
+  furniturePollInfoObject: {fileID: 3520803720712383946}
+  infoBox: {fileID: 0}
+  clanRolePollInfoObject: {fileID: 0}
+  clanPlayerNameText: {fileID: 0}
+  clanCurrentRoleText: {fileID: 0}
+  clanTargetRoleText: {fileID: 0}
 --- !u!1 &3835696065722229585
 GameObject:
   m_ObjectHideFlags: 0
@@ -1542,7 +1553,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0.35, y: 1}
   m_AnchoredPosition: {x: 0, y: 40}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 80}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &8408631355184306207
 MonoBehaviour:
@@ -1641,7 +1652,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6768035810432484120}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PollPopup, MainMenu
         m_MethodName: AddVote
         m_Mode: 6
@@ -2388,7 +2399,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6768035810432484120}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PollPopup, MainMenu
         m_MethodName: AddVote
         m_Mode: 6

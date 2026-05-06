@@ -90,10 +90,11 @@ public class PollInfoPopup : MonoBehaviour
 
         nameText.text = furniture.Name ?? "";
 
-        setNameText.text = furniture.FurnitureInfo?.SetName ?? "";
-        iconImage.sprite = furniture.FurnitureInfo?.Image;
-        descriptionText.text = furniture.FurnitureInfo?.ArtisticDescription ?? "";
+        // setNameText.text = furniture.FurnitureInfo?.SetName ?? "";
+        // iconImage.sprite = furniture.FurnitureInfo?.Image;
+//        descriptionText.text = furniture.FurnitureInfo?.ArtisticDescription ?? "";
 
+        /*
         string artistName = furniture.FurnitureInfo?.ArtistName;
         artistNameText.text = string.IsNullOrEmpty(artistName) ? "" : $"Artist: {artistName}";
 
@@ -112,6 +113,7 @@ public class PollInfoPopup : MonoBehaviour
                 frontRarityImage.color = rarityColor;
             }
         }
+        */
 
         gameObject.SetActive(true);
         furniturePollInfoObject.SetActive(true);
