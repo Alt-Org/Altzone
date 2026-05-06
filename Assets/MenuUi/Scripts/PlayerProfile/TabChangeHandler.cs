@@ -55,7 +55,6 @@ public class TabChangeHandler : MonoBehaviour
 
     protected virtual void SetVisible(int activeIndex)
     {
-        Debug.LogWarning(activeIndex);
         // If the window uses a swipe scroll then send the message to it to change the tab, otherwise switch panels the old way.
         if (_tablineScript.Swipe == null)
             for (int i = 0; i < _buttons.Count; i++)
