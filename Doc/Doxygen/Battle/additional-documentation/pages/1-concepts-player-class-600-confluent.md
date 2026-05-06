@@ -2,19 +2,21 @@
 
 - **Simulation**
     - Has simulation logic  
-      @cref{Battle.QSimulation.Player,BattlePlayerClass400}
+      @cref{Battle.QSimulation.Player,BattlePlayerClass600}
     - Has no simulation data component
 
 - **View**
     - Has no view controller
 
 - **Prefabs**
-    - Has no base prefab
+    - Base prefab  
+      @ref "BattlePlayer600Character(BaseAndTestCharacter).prefab"
     - Character prefabs  
-      @ref BattlePlayer601Character.prefab  
+      *@ref BattlePlayer601Character.prefab*  
       *@ref BattlePlayer602Character.prefab*  
       *@ref BattlePlayer603Character.prefab*  
-      *@ref BattlePlayer604Character.prefab*
+      *@ref BattlePlayer604Character.prefab*  
+      *@ref BattlePlayer605Character.prefab*
 
 Only character 601 "Sielunsisaruus" is currently implemented. Implementation for it is done in the Confluent character classes script, so it applies to all characters of that class.
 When other characters are implemented, the code should be adjusted as needed.
