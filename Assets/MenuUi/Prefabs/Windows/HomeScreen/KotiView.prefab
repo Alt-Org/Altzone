@@ -685,7 +685,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: f68513e208e7e4d44b23a7b4be41599c, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -811,7 +811,7 @@ GameObject:
   - component: {fileID: 5007959017186828509}
   - component: {fileID: 8048074438834549108}
   m_Layer: 5
-  m_Name: Image
+  m_Name: GameModeBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -867,7 +867,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: c7d45312a7e0c884684fb7f526da5dd6, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -1194,6 +1194,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gameTypeIcon: {fileID: 1946781427813003873}
   _gameTypeBanner: {fileID: 2037150196616769309}
+  _gameTypeBackground: {fileID: 6651283089749680988}
   _gameTypeName: {fileID: 3147999362438139014}
   _gameTypeDescription: {fileID: 8321414554157999038}
   _openBattleUiEditorButton: {fileID: 4386448040699221413}
