@@ -33,7 +33,7 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private GameObject infoBox;
 
     [Header("Clan Role Poll UI Elements")]
-    [SerializeField] private GameObject clanRolePollInfoObject; 
+    [SerializeField] private GameObject clanRolePollInfoObject;
     [SerializeField] private TMP_Text clanPlayerNameText;
     [SerializeField] private TMP_Text clanCurrentRoleText;
     [SerializeField] private TMP_Text clanTargetRoleText;
@@ -90,16 +90,18 @@ public class PollInfoPopup : MonoBehaviour
 
         nameText.text = furniture.Name ?? "";
 
-        // setNameText.text = furniture.FurnitureInfo?.SetName ?? "";
-        // iconImage.sprite = furniture.FurnitureInfo?.Image;
-//        descriptionText.text = furniture.FurnitureInfo?.ArtisticDescription ?? "";
+        setNameText.text = furniture.FurnitureInfo?.SetName ?? "";
+        iconImage.sprite = furniture.FurnitureInfo?.Image;
+        descriptionText.text = furniture.FurnitureInfo?.ArtisticDescription ?? "";
 
         /*
         string artistName = furniture.FurnitureInfo?.ArtistName;
         artistNameText.text = string.IsNullOrEmpty(artistName) ? "" : $"Artist: {artistName}";
 
         weightText.text = $"Weight: {furniture.Weight}";
-        valueText.text = $"Value: {furniture.Value}";
+        */
+        valueText.text = $"{furniture.Value}";
+        /*
         rarityText.text = $"Rarity: {furniture.Rarity}";
 
         // Apply colour to the two background images of the card based on rarityColourReference
