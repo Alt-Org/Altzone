@@ -210,5 +210,5 @@ public class AvatarDefaultEditor : PropertyDrawer
         public AvatarPiece Piece;
         public SerializedProperty Field;
     }
-#endif
 }
+#endif
