@@ -230,9 +230,9 @@ public class OnlinePlayersPanel : AltMonoBehaviour
             bool alreadyRequested = _friendRequests.Exists(r => r.friend._id == player._id);
 
             OnlinePlayersPanelItem newItem = Instantiate(_onlinePlayersPanelItemPrefab, _onlinePlayersPanelContent);
-            StartCoroutine(newItem.Initialize(
-                 player: serverPlayer,
-                 onlineState: OnlineState.Global,
+              StartCoroutine(newItem.Initialize(
+                  player: serverPlayer,
+                  onlineState: OnlineState.Online,
                  onRemoveClick: () => { },
                  friendstate: alreadyFriend ? FriendState.Friend : alreadyRequested ?(_friendRequests.Find(r => r.friend._id == player._id).direction is FriendRequestDirection.Incoming ? FriendState.Receiving : FriendState.Sending) : FriendState.None,
                  onAddFriendClick: () =>

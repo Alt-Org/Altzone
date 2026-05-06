@@ -2,12 +2,15 @@
 using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using MenuUi.Scripts.Signals;
 using Altzone.Scripts.Battle.Photon;
+using MenuUi.Scripts.Window;
+using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.Signals
 {
@@ -56,11 +59,22 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private Coroutine _creatingRoomCoroutineHolder = null;
 
         public static GameType SelectedGameType { get; private set; }
+        public static GameType SelectedPremadeTargetGameType { get; private set; } = GameType.Random2v2;
+
+        public static void SetPremadeTargetGameType(GameType gameType)
+        {
+            if (gameType == GameType.Random2v2 || gameType == GameType.Clan2v2)
+            {
+                SelectedPremadeTargetGameType = gameType;
+            }
+        }
 
         private void Awake()
         {
             SignalBus.OnBattlePopupRequested += OpenWindow;
             SignalBus.OnCloseBattlePopupRequested += CloseWindow;
+            LobbyManager.OnInRoomInviteReceived += OnInRoomInviteReceived;
+            LobbyManager.OnInRoomInviteJoinFailed += OnInRoomInviteJoinFailed;
             // Register runtime popup reference for other components to find (safe to set here because serialized field is available in Awake)
             PopupContentsInstance = _popupContents;
             OnPopupContentsInstanceAssigned?.Invoke(PopupContentsInstance);
@@ -71,6 +85,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
         {
             SignalBus.OnBattlePopupRequested -= OpenWindow;
             SignalBus.OnCloseBattlePopupRequested -= CloseWindow;
+            LobbyManager.OnInRoomInviteReceived -= OnInRoomInviteReceived;
+            LobbyManager.OnInRoomInviteJoinFailed -= OnInRoomInviteJoinFailed;
             if (PopupContentsInstance == _popupContents)
             {
                 PopupContentsInstance = null;
@@ -206,7 +222,19 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     }
                     catch { }
 
-                    if ((PhotonRealtimeClient.InMatchmakingRoom || inQueueRoom) && gameType == SelectedGameType)
+                    bool currentRoomGameTypeMatches = false;
+                    try
+                    {
+                        var currRoom = PhotonRealtimeClient.LobbyCurrentRoom;
+                        if (currRoom != null)
+                        {
+                            var gt = currRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                            currentRoomGameTypeMatches = gt == (int)gameType;
+                        }
+                    }
+                    catch { }
+
+                    if ((PhotonRealtimeClient.InMatchmakingRoom || inQueueRoom) && currentRoomGameTypeMatches)
                     {
                         _roomSwitcher.SwitchToMatchmakingPanel(PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient);
                         return;
@@ -214,7 +242,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     else if (PhotonRealtimeClient.InRoom) // If we are in a room
                     {
                         // Checking if the game type changed, if it didn't we don't want to do anything but if it did we leave the room
-                        if (gameType == SelectedGameType)
+                        if (currentRoomGameTypeMatches)
                         {
                             return;
                         }
@@ -224,6 +252,37 @@ namespace MenuUi.Scripts.Lobby.InLobby
                             LobbyManager.Instance.StopMatchmakingCoroutines();
                             PhotonRealtimeClient.LeaveRoom();
                         }
+                    }
+                    break;
+                case GameType.FriendLobby:
+                    bool currentFriendRoomMatches = false;
+                    try
+                    {
+                        var currRoom = PhotonRealtimeClient.LobbyCurrentRoom;
+                        if (currRoom != null)
+                        {
+                            var gt = currRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                            currentFriendRoomMatches = gt == (int)gameType;
+                        }
+                    }
+                    catch { }
+
+                    if (PhotonRealtimeClient.InMatchmakingRoom && currentFriendRoomMatches)
+                    {
+                        _roomSwitcher.SwitchToMatchmakingPanel(PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient);
+                        return;
+                    }
+
+                    if (PhotonRealtimeClient.InRoom)
+                    {
+                        if (currentFriendRoomMatches)
+                        {
+                            _roomSwitcher.SwitchRoom(GameType.FriendLobby);
+                            return;
+                        }
+
+                        LobbyManager.Instance.StopMatchmakingCoroutines();
+                        PhotonRealtimeClient.LeaveRoom();
                     }
                     break;
                 default:
@@ -284,6 +343,87 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void QuickGameButtonOnClick()
         {
             Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState}");
+        }
+
+        private void OnInRoomInviteReceived(LobbyManager.InRoomInviteInfo inviteInfo)
+        {
+            if (inviteInfo == null || string.IsNullOrEmpty(inviteInfo.RoomName)) return;
+
+            string inviterName = ResolveOnlinePlayerName(inviteInfo.LeaderUserId);
+            string targetMode = inviteInfo.TargetGameType == GameType.Clan2v2 ? "Clan 2v2" : "Random 2v2";
+            string message = $"{inviterName} kutsui sinut Friend Lobby -huoneeseen. Haettava pelimuoto: {targetMode}. Liitytaanko huoneeseen?";
+
+            bool popupShown = InviteDecisionPopupHandler.RequestInviteDecisionPrompt(
+                message,
+                "Liity",
+                "Hylkää",
+                accepted =>
+                {
+                    if (LobbyManager.Instance == null) return;
+                    if (accepted)
+                    {
+                        OpenBattlePopupForInviteAccept();
+                        LobbyManager.Instance.AcceptInRoomInvite(inviteInfo.RoomName);
+                    }
+                    else LobbyManager.Instance.DeclineInRoomInvite(inviteInfo.RoomName);
+                });
+
+            if (!popupShown)
+            {
+                Debug.LogWarning("OnInRoomInviteReceived: decision popup unavailable, declining invite to fail closed.");
+                LobbyManager.Instance?.DeclineInRoomInvite(inviteInfo.RoomName);
+                PopupSignalBus.OnChangePopupInfoSignal("Friend Lobby -kutsu saatu, mutta vahvistusikkunaa ei voitu avata. Kutsu hylättiin turvallisuussyista.");
+            }
+        }
+
+        private void OpenBattlePopupForInviteAccept()
+        {
+            SelectedGameType = GameType.FriendLobby;
+
+            if (_popupContents != null && !_popupContents.activeSelf)
+            {
+                _popupContents.SetActive(true);
+            }
+
+            RefreshTopInfo();
+            _roomSwitcher?.SwitchRoom(GameType.FriendLobby);
+        }
+
+        private string ResolveOnlinePlayerName(string userId)
+        {
+            if (string.IsNullOrEmpty(userId)) return "Pelaaja";
+
+            try
+            {
+                var onlinePlayers = ServerManager.Instance?.OnlinePlayers;
+                if (onlinePlayers != null)
+                {
+                    foreach (ServerOnlinePlayer player in onlinePlayers)
+                    {
+                        if (player == null || player._id != userId) continue;
+                        if (!string.IsNullOrWhiteSpace(player.name)) return player.name;
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"ResolveOnlinePlayerName failed: {ex.Message}");
+            }
+
+            return userId;
+        }
+
+        private void OnInRoomInviteJoinFailed(string roomName, short returnCode, string message)
+        {
+            bool isRoomFull = returnCode == 32765
+                || (!string.IsNullOrEmpty(message) && message.ToLowerInvariant().Contains("game full"));
+
+            string popupMessage = isRoomFull
+                ? "Friend Lobby -kutsuun liittyminen epaonnistui: huone on taynna tai kutsu ei ole enaa voimassa."
+                : "Friend Lobby -kutsuun liittyminen epaonnistui. Yrita uudelleen, jos kutsu on yha voimassa.";
+
+            PopupSignalBus.OnChangePopupInfoSignal(popupMessage);
         }
     }
 }

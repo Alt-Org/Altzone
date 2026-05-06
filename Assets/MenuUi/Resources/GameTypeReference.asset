@@ -13,6 +13,22 @@ MonoBehaviour:
   m_Name: GameTypeReference
   m_EditorClassIdentifier: 
   _info:
+  - Icon: {fileID: -581953326, guid: 3eeac8954e19b2f48a903a13b480ec55, type: 3}
+    Banner: {fileID: 21300000, guid: 0f29848d83e6e3949a191807264d256a, type: 3}
+    gameType: 0
+    Enabled: 1
+    FinnishName: Mukautettu
+    FinnishDescription: Taistele kuin haluat
+    EnglishName: Custom
+    EnglishDescription: Battle like YOU want
+  - Icon: {fileID: -872753631, guid: f612be18bdb2e2e478793c6bc3e4e0f9, type: 3}
+    Banner: {fileID: 21300000, guid: 3741fd9807d98434e9a76c8839602e1c, type: 3}
+    gameType: 1
+    Enabled: 1
+    FinnishName: "Ker\xE4ily 2v2"
+    FinnishDescription: "Pelaa satunnaisten pelaajien kanssa satunnaistiimeiss\xE4"
+    EnglishName: Collector 2v2
+    EnglishDescription: Play with random players and teams
   - Icon: {fileID: 1390362308, guid: 2c1ef5c1e2da228448095c34d1370feb, type: 3}
     Banner: {fileID: 21300000, guid: 9438445216aac314daf2381661325c49, type: 3}
     gameType: 2
@@ -23,17 +39,9 @@ MonoBehaviour:
     EnglishDescription: Play against other clans
   - Icon: {fileID: -872753631, guid: f612be18bdb2e2e478793c6bc3e4e0f9, type: 3}
     Banner: {fileID: 21300000, guid: 3741fd9807d98434e9a76c8839602e1c, type: 3}
-    gameType: 1
+    gameType: 3
     Enabled: 1
-    FinnishName: "Ker\xE4ily 2v2"
-    FinnishDescription: "Pelaa satunnaisten pelaajien kanssa satunnaistiimeiss\xE4"
-    EnglishName: Collector 2v2
-    EnglishDescription: Play with random players and teams
-  - Icon: {fileID: -581953326, guid: 3eeac8954e19b2f48a903a13b480ec55, type: 3}
-    Banner: {fileID: 21300000, guid: 0f29848d83e6e3949a191807264d256a, type: 3}
-    gameType: 0
-    Enabled: 1
-    FinnishName: Mukautettu
-    FinnishDescription: Taistele kuin haluat
-    EnglishName: Custom
-    EnglishDescription: Battle like YOU want
+    FinnishName: Duo 2v2
+    FinnishDescription: Pelaa duon kanssa
+    EnglishName: Duo 2v2
+    EnglishDescription: Play with a premade duo

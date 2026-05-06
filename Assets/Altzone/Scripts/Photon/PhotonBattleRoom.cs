@@ -50,6 +50,20 @@ namespace Altzone.Scripts.Battle.Photon
         public const string ClanNameKey = "c";
         public const string ClanOpponentNameKey = "c2";
         public const string LeaderIdKey = "lid";
+        public const string PremadeModeKey = "pm";
+        public const string PremadeTargetGameTypeKey = "ptg";
+        public const string PremadeLeaderUserIdKey = "plid";
+        public const string PremadeInvitedUserIdKey = "piu";
+        public const string PremadeInviteStateKey = "pis";
+        public const string PremadeInviteTimestampKey = "pits";
+        public const string PremadeUserId1Key = "pm1";
+        public const string PremadeUserId2Key = "pm2";
+
+        public const int PremadeInviteStateNone = 0;
+        public const int PremadeInviteStatePending = 1;
+        public const int PremadeInviteStateAccepted = 2;
+        public const int PremadeInviteStateDeclined = 3;
+        public const int PremadeInviteStateExpired = 4;
 
         public static string PlayerPositionKey1 { get => PlayerPosition1.ToString(); }
         public static string PlayerPositionKey2 { get => PlayerPosition2.ToString(); }

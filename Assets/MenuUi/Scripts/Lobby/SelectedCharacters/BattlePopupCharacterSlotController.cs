@@ -57,7 +57,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                 for (int i = 0; i < _selectedCharacterSlots.Length; i++)
                 {
                     CharacterID charID;
-                    if (playerData.SelectedCharacterIds.Length < i)
+                    if (playerData.SelectedCharacterIds == null || playerData.SelectedCharacterIds.Length <= i)
                     {
                         charID = CharacterID.None;
                     }
@@ -88,6 +88,15 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         /// <param name="stats">The stats for all three characters in an int array. Order: Hp, Speed, CharacterSize, Attack, Defence.</param>
         public void SetCharacters(int[] selectedCharacterIds, int[] stats = null)
         {
+            if (selectedCharacterIds == null)
+            {
+                for (int i = 0; i < _selectedCharacterSlots.Length; i++)
+                {
+                    _selectedCharacterSlots[i].SetEmpty(false);
+                }
+                return;
+            }
+
             for (int i = 0; i < Mathf.Min(selectedCharacterIds.Length,_selectedCharacterSlots.Length); i++)
             {
                 if (selectedCharacterIds[i] == (int)CharacterID.None)
@@ -111,7 +120,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         {
             for (int i = 0; i < _selectedCharacterSlots.Length; i++)
             {
-                if (selectedCharacterIds == null || selectedCharacterIds.Length > i || selectedCharacterIds[i] == (int)CharacterID.None)
+                if (selectedCharacterIds == null || selectedCharacterIds.Length <= i || selectedCharacterIds[i] == (int)CharacterID.None)
                 {
                     _selectedCharacterSlots[i].SetBot();
                     continue;
