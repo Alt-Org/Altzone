@@ -320,13 +320,16 @@ namespace Altzone.Scripts.Audio
 
             SettingsCarrier carrier = SettingsCarrier.Instance;
 
-            bool canPlayJukebox = (JukeboxManager.Instance.CurrentTrackQueueData != null ||
-                                   JukeboxManager.Instance.TrackPreviewActive) && !JukeboxManager.Instance.JukeboxMuted && (
+            bool jukeboxHasActiveTrack = JukeboxManager.Instance.CurrentTrackQueueData != null || JukeboxManager.Instance.TrackPreviewActive;
+
+            bool jukeboxAreaCheck = (
                 _jukeboxWindowOpen
-                || carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Soulhome) && _currentAreaType == AudioCategoryType.SoulHome
-                || carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.MainMenu) && _currentAreaType == AudioCategoryType.MainMenu
-                || carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Battle) && _currentAreaType == AudioCategoryType.Battle
+                || (carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Soulhome) && _currentAreaType == AudioCategoryType.SoulHome)
+                || (carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.MainMenu) && _currentAreaType == AudioCategoryType.MainMenu)
+                || (carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Battle) && _currentAreaType == AudioCategoryType.Battle)
             );
+
+            bool canPlayJukebox = jukeboxHasActiveTrack && !JukeboxManager.Instance.JukeboxMuted && jukeboxAreaCheck;
 
             return categoryType != AudioCategoryType.Jukebox ? !canPlayJukebox : canPlayJukebox;
         }

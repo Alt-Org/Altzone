@@ -72,20 +72,17 @@ public class JukeboxTrackQueueHandler : SmartListItem, IBeginDragHandler, IEndDr
 
     public override void SetData<T1>(T1 data1)
     {
-        if (!CheckClassType<T1, TrackQueueData>(data1)) return;
+        if (!CheckClassType<T1, TrackQueueData>(data1, out TrackQueueData queueData)) return;
 
-        TrackQueueData data = data1 as TrackQueueData;
-
-        if (data?.ServerSongData == null)
+        if (queueData?.ServerSongData == null)
         {
             ClearData();
             return;
         }
 
-        InUse = true;
-        _id = data.ServerSongData.id;
-        _musicTrack = data.MusicTrack;
-        _linearIndex = data.LinearIndex;
+        _id = queueData.ServerSongData.id;
+        _musicTrack = queueData.MusicTrack;
+        _linearIndex = queueData.LinearIndex;
 
         _trackNameText.text = _musicTrack != null ? _musicTrack.Name : "";
 
@@ -94,10 +91,10 @@ public class JukeboxTrackQueueHandler : SmartListItem, IBeginDragHandler, IEndDr
         else
             _textAutoScroll.DisableCoroutines();
 
-        _userOwned = data.UserOwned;
+        _userOwned = queueData.UserOwned;
         _deleteButton.gameObject.SetActive(_userOwned);
 
-        if (_musicTrack != null) _favoriteButtonHandler.Setup(data.FavoriteType, _musicTrack.Id);
+        if (_musicTrack != null) _favoriteButtonHandler.Setup(queueData.FavoriteType, _musicTrack.Id);
 
         SetVisibility(true);
     }
@@ -106,7 +103,6 @@ public class JukeboxTrackQueueHandler : SmartListItem, IBeginDragHandler, IEndDr
 
     public override void ClearData()
     {
-        InUse = false;
         _id = "";
         _musicTrack = null;
         _trackNameText.text = "";
@@ -114,7 +110,7 @@ public class JukeboxTrackQueueHandler : SmartListItem, IBeginDragHandler, IEndDr
         SetVisibility(false);
     }
 
-    public bool GetVisibility() { return gameObject.activeSelf; }
+
 
     private void Delete()
     {
