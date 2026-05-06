@@ -4,14 +4,10 @@ input
     int                     DebugNumber;
     BattleMovementInputType MovementInput;
     bool                    MovementDirectionIsNormalized;
-    BattleGridPosition      MovementPositionTarget;
-    FPVector2               MovementPositionMove;
-    FPVector2               MovementDirection;
+    BattleGridPosition      MovementGridPosition;
+    FPVector2               MovementVector;
     bool                    RotationInput;
     FP                      RotationValue;
-    bool                    AbilityActivate;
-    int                     PlayerCharacterNumber;
-    bool                    GiveUpInput;
 }
 
 enum BattleMovementInputType

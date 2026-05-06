@@ -67,24 +67,6 @@ namespace Battle.QSimulation
                 inputDebugSummary += "Rotate";
                 inputNotEmpty = true;
             }
-            if (input->AbilityActivate != false)
-            {
-                if (inputDebugSummary != "") inputDebugSummary += ", ";
-                inputDebugSummary += "Ability Activate";
-                inputNotEmpty = true;
-            }
-            if (input->PlayerCharacterNumber > -1)
-            {
-                if (inputDebugSummary != "") inputDebugSummary += ", ";
-                inputDebugSummary += "Character Swap";
-                inputNotEmpty = true;
-            }
-            if (input->GiveUpInput != false)
-            {
-                if (inputDebugSummary != "") inputDebugSummary += ", ";
-                inputDebugSummary += "Give Up";
-                inputNotEmpty = true;
-            }
 
             if (inputNotEmpty)
             {
@@ -95,24 +77,16 @@ namespace Battle.QSimulation
                                   "    MovementInput:                 {0},\n" +
                                   "    MovementDirectionIsNormalized: {1},\n" +
                                   "    MovementPositionTarget:        {2},\n" +
-                                  "    MovementPositionMove:          {3},\n" +
-                                  "    MovementDirection:             {4},\n" +
-                                  "    RotationInput:                 {5},\n" +
-                                  "    RotationValue:                 {6},\n" +
-                                  "    AbilityActivate:               {7},\n" +
-                                  "    PlayerCharacterNumber:         {8},\n" +
-                                  "    GiveUpInput:                   {9}\n" +
+                                  "    MovementVector:                {3},\n" +
+                                  "    RotationInput:                 {4},\n" +
+                                  "    RotationValue:                 {5},\n" +
                                   "}}",
                                   input->MovementInput,
                                   input->MovementDirectionIsNormalized,
-                                  input->MovementPositionTarget.ConvertToString(),
-                                  input->MovementPositionMove,
-                                  input->MovementDirection,
+                                  input->MovementGridPosition.ConvertToString(),
+                                  input->MovementVector,
                                   input->RotationInput,
-                                  input->RotationValue,
-                                  input->AbilityActivate,
-                                  input->PlayerCharacterNumber,
-                                  input->GiveUpInput
+                                  input->RotationValue
                     )
                 );
             }

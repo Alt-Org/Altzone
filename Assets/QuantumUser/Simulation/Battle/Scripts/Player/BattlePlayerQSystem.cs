@@ -89,7 +89,9 @@ namespace Battle.QSimulation.Player
                     BattleEmotionState.Joy        => SoundEffectTypeCharacter.HitCharacterJoy,
                     BattleEmotionState.Love       => SoundEffectTypeCharacter.HitCharacterLove,
                     BattleEmotionState.Playful    => SoundEffectTypeCharacter.HitCharacterPlayful,
-                    BattleEmotionState.Sadness    => SoundEffectTypeCharacter.HitCharacterSadness
+                    BattleEmotionState.Sadness    => SoundEffectTypeCharacter.HitCharacterSadness,
+
+                    _ => throw new System.NotImplementedException()
                 };
                 HandleSFXCharacter(f, soundEffectType, damagedPlayerData->CharacterId);
             }
@@ -144,9 +146,10 @@ namespace Battle.QSimulation.Player
         ///
         /// Update method has been split into subprocesses.<br/>
         /// see @cref{BattlePlayerQSystem,GetInput}<br/>
-        /// see @cref{BattlePlayerQSystem,HandleGiveUpInput}<br/>
-        /// see @cref{BattlePlayerQSystem,HandleCharacterSwapping}<br/>
+        /// see @cref{Battle.QSimulation.Player,BattleGiveUpQCommand}<br/>
+        /// see @cref{Battle.QSimulation.Player,BattleCharacterSwapQCommand}<br/>
         /// see @cref{BattlePlayerQSystem,HandleOutOfPlay}<br/>
+        /// see @cref{Battle.QSimulation.Player,BattleCharacterAbilityQCommand}<br/>
         /// see @cref{BattlePlayerQSystem,HandleInPlay}
         ///
         /// <param name="f">Current simulation frame</param>
@@ -174,10 +177,27 @@ namespace Battle.QSimulation.Player
                     playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
                 }
 
+                switch (BattleCommand.GetCommand(f, playerData->PlayerRef, out BattleCommand commandData))
+                {
+                    case BattleCommand.Type.None:
+                        break;
+
+                    case BattleCommand.Type.GiveUp:
+                        if (HandleGiveUp(f, playerHandle)) continue;
+                        break;
+
+                    case BattleCommand.Type.ActivateAbility:
+                        playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0_50);
+                        break;
+
+                    case BattleCommand.Type.SwapCharacter:
+                        BattleCharacterSwapQCommand swapCharacterData = (BattleCharacterSwapQCommand)commandData;
+                        if (HandleCharacterSwapping(f, playerHandle, swapCharacterData.CharacterNumber)) continue;
+                        break;
+                }
+
                 input = GetInput(f, playerHandle, playerData, &stackInputStorage);
 
-                if (HandleGiveUpInput(f, input, playerHandle)) continue;
-                if (HandleCharacterSwapping(f, input, playerHandle)) continue;
                 if (HandleOutOfPlay(f, playerHandle)) continue;
 
                 HandleInPlay(f, input, playerHandle, playerData, playerEntity, playerTransform);
@@ -257,16 +277,13 @@ namespace Battle.QSimulation.Player
                 input = stackInputStorage;
                 *stackInputStorage = new Input
                 {
+                    IsValid                       = true,
                     MovementInput                 = BattleMovementInputType.None,
                     MovementDirectionIsNormalized = false,
-                    MovementPositionTarget        = new BattleGridPosition { Col = 0, Row = 0 },
-                    MovementPositionMove          = FPVector2.Zero,
-                    MovementDirection             = FPVector2.Zero,
+                    MovementGridPosition        = new BattleGridPosition { Col = 0, Row = 0 },
+                    MovementVector                = FPVector2.Zero,
                     RotationInput                 = false,
                     RotationValue                 = FP._0,
-                    PlayerCharacterNumber         = -1,
-                    GiveUpInput                   = false,
-                    AbilityActivate               = false
                 };
             }
 
@@ -281,6 +298,8 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Handle of the player.</param>
+        ///
+        /// <returns>True if the give up input was processed.</returns>
         private static bool HandleGiveUpLogic(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
             BattlePlayerSlot slot = playerHandle.Slot;
@@ -353,20 +372,16 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Private helper method for handling player input for giving up during the game play.<br/>
-        /// Subprocess of the <see cref="BattlePlayerQSystem.Update">Update</see> method.
         /// </summary>
         ///
         /// Updates give up state and calls <see cref="BattlePlayerQSystem.HandleGiveUpLogic">HandleGiveUpLogic</see> method which handles the rest of the logic.
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="input">Pointer to the player's input data.</param>
         /// <param name="playerHandle">Handle of the player.</param>
         ///
         /// <returns>True if the give up input was processed.</returns>
-        private bool HandleGiveUpInput(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle)
+        private bool HandleGiveUp(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
-            if (!input->GiveUpInput) return false;
-
             playerHandle.PlayerGiveUpState = !playerHandle.PlayerGiveUpState;
 
             s_debugLogger.LogFormat(f, "({0}) Give up input received, new state: {1}", playerHandle.Slot, playerHandle.PlayerGiveUpState);
@@ -375,19 +390,16 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Private helper method for handling character swapping.<br/>
-        /// Subprocess of the <see cref="BattlePlayerQSystem.Update">Update</see> method.
+        /// Public helper method for handling character swapping.<br/>
+        /// Called by <see cref="BattleCharacterSwapQCommand"/>
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="input">Pointer to the player's input data.</param>
         /// <param name="playerHandle">Handle of the player.</param>
         ///
         /// <returns>True if character swapped.</returns>
-        private bool HandleCharacterSwapping(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle)
+        public static bool HandleCharacterSwapping(Frame f, BattlePlayerManager.PlayerHandle playerHandle, int playerCharacterNumber)
         {
-            if (input->PlayerCharacterNumber < 0) return false;
-
             s_debugLogger.LogFormat(f, "({0}) Character swap input received", playerHandle.Slot);
 
             if (!playerHandle.AllowCharacterSwapping)
@@ -396,10 +408,9 @@ namespace Battle.QSimulation.Player
                 return false;
             }
 
-            s_debugLogger.LogFormat(f, "({0}) Swapping to character number: {1}", playerHandle.Slot, input->PlayerCharacterNumber);
+            s_debugLogger.LogFormat(f, "({0}) Swapping to character number: {1}", playerHandle.Slot, playerCharacterNumber);
 
-            BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, input->PlayerCharacterNumber);
-
+            BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, playerCharacterNumber);
             return true;
         }
 
@@ -462,11 +473,6 @@ namespace Battle.QSimulation.Player
         {
             bool updateMovement = true;
 
-            if (input->AbilityActivate)
-            {
-                playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0_50);
-            }
-
             if (!playerData->AbilityCooldownSec.IsRunning(f) && playerData->AbilityActivateBufferSec.IsRunning(f))
             {
                 AbilityActivate(f, playerData, playerTransform);
@@ -515,7 +521,7 @@ namespace Battle.QSimulation.Player
 
             /**/
             //} Ability test
-
+            s_debugLogger.Error(f, "ability activated");
             playerData->AbilityCooldownSec = FrameTimer.FromSeconds(f, FP._3);
         }
     }

@@ -48,7 +48,7 @@ namespace Battle.QSimulation.Player
 
             BattleCharacterBase[] botCharacters = new BattleCharacterBase[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
             for (int i = 0; i < botCharacters.Length; i++)
-            {            
+            {
                 int selectedCharacter;
                 do
                 {
@@ -56,7 +56,7 @@ namespace Battle.QSimulation.Player
                 } while (selectedBotCharacters.Contains(selectedCharacter));
 
                 selectedBotCharacters[i] = selectedCharacter;
-                botCharacters[i]         = playerBotSpec.BotCharacterSelection[selectedCharacter];             
+                botCharacters[i]         = playerBotSpec.BotCharacterSelection[selectedCharacter];
             }
             return botCharacters;
         }
@@ -168,14 +168,10 @@ namespace Battle.QSimulation.Player
                 IsValid                       = true,
                 MovementInput                 = movementInput,
                 MovementDirectionIsNormalized = false,
-                MovementPositionTarget        = predictedGridPosition,
-                MovementPositionMove          = FPVector2.Zero,
-                MovementDirection             = FPVector2.Zero,
+                MovementGridPosition        = predictedGridPosition,
+                MovementVector                = FPVector2.Zero,
                 RotationInput                 = false,
-                RotationValue                 = FP._0,
-                PlayerCharacterNumber         = -1,
-                GiveUpInput                   = false,
-                AbilityActivate               = false
+                RotationValue                 = FP._0
             };
         }
     }
