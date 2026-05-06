@@ -17,7 +17,8 @@ public class ClanMemberPopupController : MonoBehaviour
 
     [Header("Root / Close")]
     [SerializeField] private GameObject _root;              
-    [SerializeField] private Button _closeButton;           
+    [SerializeField] private Button _closeButton;
+    [SerializeField] private Button _leaveButton;
     [SerializeField] private Button _backgroundCloseButton; 
 
     [Header("Top")]
@@ -66,6 +67,11 @@ public class ClanMemberPopupController : MonoBehaviour
         if (_closeButton != null)
         {
             _closeButton.onClick.AddListener(Hide);
+        }
+
+        if (_leaveButton != null)
+        {
+            _leaveButton.onClick.AddListener(Hide);
         }
 
         if (_backgroundCloseButton != null)

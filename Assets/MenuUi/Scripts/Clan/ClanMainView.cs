@@ -40,10 +40,8 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] GameObject _inClanButtons;
     [SerializeField] GameObject _notInClanButtons;
     [SerializeField] GameObject _clanMemberPageButtons;
-    [SerializeField] GameObject _editViewButtons;
     [SerializeField] ClanValuePanel _valuePanel;
     [SerializeField] ClanHeartColorSetter _clanHeart;
-    [SerializeField] private ScrollRect _swipeScrollRect;
     [SerializeField] private TabLine _tabLine;
     [SerializeField] private GameObject _clanSwipeRoot;
     [SerializeField] private GameObject _tabButtonsRoot;
@@ -152,7 +150,6 @@ public class ClanMainView : MonoBehaviour
     {
         Profile,
         Members,
-        Settings
     }
 
     private ClanPage _currentPage = ClanPage.Profile;
@@ -165,8 +162,8 @@ public class ClanMainView : MonoBehaviour
         // Clear selection to prevent button highlight staying on screen
         EventSystem.current.SetSelectedGameObject(null);
 
-        if (_tabLine != null && _tabLine.Swipe != null)
-            _tabLine.Swipe.OnCurrentPageChanged += HandleSwipePageChanged;
+        /*if (_tabLine != null && _tabLine.Swipe != null)
+            _tabLine.Swipe.OnCurrentPageChanged += HandleSwipePageChanged;*/
 
         ResetViewState();
 
@@ -372,8 +369,8 @@ public class ClanMainView : MonoBehaviour
 
     private void OnDisable()
     {
-        if (_tabLine != null && _tabLine.Swipe != null)
-            _tabLine.Swipe.OnCurrentPageChanged -= HandleSwipePageChanged;
+        /*if (_tabLine != null && _tabLine.Swipe != null)
+            _tabLine.Swipe.OnCurrentPageChanged -= HandleSwipePageChanged;*/
 
         if (_editButton != null)
             _editButton.onClick.RemoveListener(OnClickEditClanSettings);
@@ -408,6 +405,7 @@ public class ClanMainView : MonoBehaviour
 
         if (_popupOverlayButton != null)
         {
+            _popupOverlayButton.onClick.RemoveListener(CloseSettingsPopup);
             _popupOverlayButton.onClick.RemoveListener(ClosePasswordPopup);
             _popupOverlayButton.onClick.RemoveListener(CloseRulesPopup);
             _popupOverlayButton.onClick.RemoveListener(CloseCarbonEmissionPopup);
@@ -455,11 +453,6 @@ public class ClanMainView : MonoBehaviour
             _clanMemberPageButtons.SetActive(false);
         }
 
-        if (_editViewButtons != null)
-        {
-            _editViewButtons.SetActive(false);
-        }
-
         if (_overlay != null)
         {
             _overlay.SetActive(false);
@@ -480,9 +473,6 @@ public class ClanMainView : MonoBehaviour
 
         if (_clanMemberPageButtons != null)
             _clanMemberPageButtons.SetActive(false);
-
-        if (_editViewButtons != null)
-            _editViewButtons.SetActive(false);
 
         if (_notInClanButtons != null)
             _notInClanButtons.SetActive(true);
@@ -613,8 +603,9 @@ public class ClanMainView : MonoBehaviour
 
     public void SetCurrentPageToProfile()
     {
-        if (!_isInClanCached || _currentPage == ClanPage.Settings) return;
-        StopAllCoroutines();
+        if (!_hasClanViewedCached) return;
+
+        ApplyCurrentPage(ClanPage.Profile);
 
         StopAllCoroutines();
         StartCoroutine(ForceSwipeUIPageAfterLayout(0, instant: true));
@@ -622,40 +613,26 @@ public class ClanMainView : MonoBehaviour
 
     public void SetCurrentPageToMembers()
     {
-        if (!_isInClanCached || _currentPage == ClanPage.Settings) return;
-        StopAllCoroutines();
+        if (!_hasClanViewedCached) return;
+
+        ApplyCurrentPage(ClanPage.Members);
 
         StopAllCoroutines();
         StartCoroutine(ForceSwipeUIPageAfterLayout(1, instant: true));
     }
 
-    public void SetCurrentPageToSettings()
+    public void SetCurrentPageFromSwipe(bool onProfilePage)
     {
-        if (_memberDetailsPopup != null)
-            _memberDetailsPopup.Hide();
+        if (!_hasClanViewedCached) return;
 
-        ApplyCurrentPage(ClanPage.Settings);
-
-        if (_tabLine?.Swipe != null)
-        {
-            _tabLine.Swipe.hardBlocked = true;
-            _tabLine.Swipe.IsEnabled = false;
-            _tabLine.Swipe.ToggleScrollRect(false);
-        }
-
-        ApplyButtonsVisibility();
+        ApplyCurrentPage(onProfilePage ? ClanPage.Profile : ClanPage.Members);
     }
 
     public void ExitSettingsToProfile()
     {
-        if (_tabLine?.Swipe != null)
-        {
-            _tabLine.Swipe.hardBlocked = false;
-            _tabLine.Swipe.IsEnabled = true;
-        }
+        CloseSettingsPopup();
 
-        SetTabLineSwipeLock(false);
-        ShowProfilePage();
+        ApplyCurrentPage(ClanPage.Profile);
 
         StopAllCoroutines();
         StartCoroutine(ForceSwipeUIPageAfterLayout(0, instant: true));
@@ -663,23 +640,44 @@ public class ClanMainView : MonoBehaviour
 
     private void ApplyButtonsVisibility()
     {
-        bool isInClan = _isInClanCached;
-        bool hasClanView = _hasClanViewedCached;
-
         if (_inClanButtons != null)
-            _inClanButtons.SetActive(isInClan && _currentPage == ClanPage.Profile);
+            _inClanButtons.SetActive(false);
 
         if (_notInClanButtons != null)
-            _notInClanButtons.SetActive(!isInClan && hasClanView && _currentPage == ClanPage.Profile);
+            _notInClanButtons.SetActive(false);
 
         if (_clanMemberPageButtons != null)
-            _clanMemberPageButtons.SetActive(isInClan && _currentPage == ClanPage.Members);
-
-        if (_editViewButtons != null)
-            _editViewButtons.SetActive(_currentPage == ClanPage.Settings);
+            _clanMemberPageButtons.SetActive(false);
 
         if (_editButton != null)
-            _editButton.gameObject.SetActive(isInClan && _canEditCached && _currentPage == ClanPage.Profile);
+            _editButton.gameObject.SetActive(false);
+
+        if (!_hasClanViewedCached)
+            return;
+
+        switch (_currentPage)
+        {
+            case ClanPage.Profile:
+                if (_isInClanCached)
+                {
+                    if (_inClanButtons != null)
+                        _inClanButtons.SetActive(true);
+
+                    if (_editButton != null)
+                        _editButton.gameObject.SetActive(_canEditCached);
+                }
+                else
+                {
+                    if (_notInClanButtons != null)
+                        _notInClanButtons.SetActive(true);
+                }
+                break;
+
+            case ClanPage.Members:
+                if (_clanMemberPageButtons != null)
+                    _clanMemberPageButtons.SetActive(true);
+                break;
+        }
     }
 
     private void ResetSwipeToProfileOnOpen()
@@ -704,7 +702,6 @@ public class ClanMainView : MonoBehaviour
     private void HandleSwipePageChanged()
     {
         if (_tabLine == null || _tabLine.Swipe == null) return;
-        if (_currentPage == ClanPage.Settings) return;
 
         int page = _tabLine.Swipe.CurrentPage;
         ApplyCurrentPage(page == 0 ? ClanPage.Profile : ClanPage.Members);
@@ -733,8 +730,7 @@ public class ClanMainView : MonoBehaviour
         if (swipe == null) yield break;
 
         swipe.UpdateSwipeAreaValues();
-        if (_currentPage != ClanPage.Settings)
-            swipe.IsEnabled = true;
+        swipe.IsEnabled = true;
 
         yield return swipe.SetScrollBarValue(pageIndex, instant);
 
@@ -744,8 +740,7 @@ public class ClanMainView : MonoBehaviour
 
     private void RefreshSwipeEnabledState()
     {
-        bool isSettings = _currentPage == ClanPage.Settings;
-        bool allowNav = !isSettings && _hasClanViewedCached && _isInClanCached;
+        bool allowNav = _hasClanViewedCached && _isInClanCached;
 
         if (_tabLine?.Swipe != null)
         {
@@ -923,15 +918,41 @@ public class ClanMainView : MonoBehaviour
         {
             _clanSettings.SetActive(true);
         }
+
+        if (_popupOverlayButton != null)
+        {
+            _popupOverlayButton.onClick.RemoveListener(CloseSettingsPopup);
+            _popupOverlayButton.onClick.AddListener(CloseSettingsPopup);
+        }
+    }
+    public void CloseSettingsPopup()
+    {
+        if (_clanSettings != null)
+        {
+            _clanSettings.SetActive(false);
+        }
+
+        ShowOverlay(false);
+
+        if (_tabLine?.Swipe != null)
+        {
+            _tabLine.Swipe.hardBlocked = false;
+            _tabLine.Swipe.IsEnabled = true;
+            _tabLine.Swipe.ToggleScrollRect(true);
+        }
+
+        SetTabLineSwipeLock(false);
+
+        ApplyButtonsVisibility();
     }
 
     public void OnClickEditClanSettings()
     {
-        if (_swipeScrollRect != null)
+        /*if (_swipeScrollRect != null)
         {
             _swipeScrollRect.StopMovement();
             _swipeScrollRect.velocity = Vector2.zero;
-        }
+        }*/
 
         if (_memberDetailsPopup != null)
         {
@@ -960,9 +981,12 @@ public class ClanMainView : MonoBehaviour
         }
     }
 
-    private void ShowOverlay (bool on)
+    private void ShowOverlay(bool on)
     {
-        _overlay.SetActive(on);
+        if (_overlay != null)
+        {
+            _overlay.SetActive(on);
+        }
     }
 
     private string GetCurrentClanName()

@@ -389,9 +389,9 @@ public class ClanSettings : AltMonoBehaviour
     {
         _saveButton.interactable = false;
 
-        if (_valueSelection.SelectedValues.Count == 0)
+        if (_selectedValues == null || _selectedValues.Count != 3)
         {
-            SignalBus.OnChangePopupInfoSignal("Valitse vähintään yksi arvo klaanille.");
+            SignalBus.OnChangePopupInfoSignal("Klaanilla täytyy olla tasan 3 arvoa.");
             _saveButton.interactable = true;
             return;
         }
@@ -650,6 +650,12 @@ public class ClanSettings : AltMonoBehaviour
 
         if (_swipeBlockOverlay != null)
             _swipeBlockOverlay.SetActive(false);
+
+        if (_clanMainView != null)
+        {
+            _clanMainView.CloseSettingsPopup();
+            return;
+        }
 
         if (_clanSettingsPopup != null)
             _clanSettingsPopup.SetActive(false);
@@ -1052,6 +1058,12 @@ public class ClanSettings : AltMonoBehaviour
 
     public void ConfirmValuesEdit()
     {
+        if (_valueSelection.SelectedValues.Count != 3)
+        {
+            SignalBus.OnChangePopupInfoSignal("Valitse klaanille tasan 3 arvoa.");
+            return;
+        }
+
         _selectedValues = new List<ClanValues>(_valueSelection.SelectedValues);
         _values.SetValues(_selectedValues);
 
