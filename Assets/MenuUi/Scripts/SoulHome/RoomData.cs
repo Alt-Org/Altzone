@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using UnityEngine.Rendering;
-using Debug = Prg.Debug;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -294,7 +293,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 _ladder.gameObject.SetActive(true);
                 _ladder.GetComponent<SortingGroup>().sortingOrder = 20;
-                
+
                 foreach(Transform rowTransform in _wallBackFurniturePoints)
                 {
                     rowTransform.GetChild(1).GetComponent<FurnitureSlot>().Ladder = true;
@@ -341,7 +340,7 @@ namespace MenuUI.Scripts.SoulHome
                     }
                 }
             }
-            
+
             _walkableSlots.Clear();
 
             foreach (GridNode node in _grid)
@@ -381,7 +380,7 @@ namespace MenuUI.Scripts.SoulHome
         }
 
         // Add a penalty to tiles to the right or left of furniture, and double penalty if there is furniture to the left and the right,
-        // and also add a penalty to the bottom-right corner + 1 node to the left, and bottom-left corner and 1 node from that to the right, 
+        // and also add a penalty to the bottom-right corner + 1 node to the left, and bottom-left corner and 1 node from that to the right,
         // so the avatar only goes there if there is no other way (makes clipping with furniture less likely, and avatar only chooses to "slip"
         // through the corner of the furniture if there is absolutely no other way to the end position)
         private void CalculatePenalties()

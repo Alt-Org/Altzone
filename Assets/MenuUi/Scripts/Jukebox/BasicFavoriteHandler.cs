@@ -27,9 +27,9 @@ public class BasicFavoriteHandler : FavoriteHandlerBase
     {
         switch (_musicTrackFavoriteType)
         {
-            case MusicTrackFavoriteType.Neutral: _musicTrackFavoriteType = MusicTrackFavoriteType.Like; /*ChangeFavoriteImage(_musicTrackFavoriteType);*/ break;
-            case MusicTrackFavoriteType.Like: _musicTrackFavoriteType = MusicTrackFavoriteType.Neutral; /*ChangeFavoriteImage(_musicTrackFavoriteType); */break;
-            case MusicTrackFavoriteType.Dislike: _musicTrackFavoriteType = MusicTrackFavoriteType.Neutral; /*ChangeFavoriteImage(_musicTrackFavoriteType);*/ break;
+            case MusicTrackFavoriteType.Neutral: _musicTrackFavoriteType = MusicTrackFavoriteType.Like; break;
+            case MusicTrackFavoriteType.Like: _musicTrackFavoriteType = MusicTrackFavoriteType.Neutral; break;
+            case MusicTrackFavoriteType.Dislike: _musicTrackFavoriteType = MusicTrackFavoriteType.Neutral; break;
         }
 
         JukeboxManager.Instance.InvokeOnFavoriteButtonChange(MusicTrackId, _musicTrackFavoriteType);
@@ -38,9 +38,7 @@ public class BasicFavoriteHandler : FavoriteHandlerBase
     protected override void ChangeFavoriteImage(MusicTrackFavoriteType type)
     {
         _favoriteImage.gameObject.SetActive(type == MusicTrackFavoriteType.Like);
-        //Debug.LogError(type == MusicTrackFavoriteType.Like);
-        //Debug.LogError(_favoriteImage.gameObject);
 
-        if (_changeFavoriteStatusToggle != null) _changeFavoriteStatusToggle.isOn = type == MusicTrackFavoriteType.Like;
+        if (_changeFavoriteStatusToggle) _changeFavoriteStatusToggle.isOn = type == MusicTrackFavoriteType.Like;
     }
 }
