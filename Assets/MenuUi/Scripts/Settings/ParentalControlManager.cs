@@ -38,19 +38,19 @@ public class ParentalControlManager : MonoBehaviour
 
     //the ParentalControl settings
     //SocialControls
-    public bool allowLinks;
+    //public bool allowLinks;
     public Toggle internetLinksToggle; 
-    public bool chatMessages;
+    //public bool chatMessages;
     public Toggle chatMessagesToggle;
-    public bool emojiComments;
+    //public bool allowEmojis;
     public Toggle emojiCommentsToggle;
-    public bool treasureHunt;
+    //public bool allowTreasureHunt;
     public Toggle treasureHuntToggle;
 
     //MoneyControls
-    public float monthlyLimit;
+    //public float monthlyLimit;
     public TMP_InputField monthlyLimitInput;
-    public bool independentSpendingActivation;
+    //public bool activatePurchasesSeparately;
     public Toggle independentSpendingActivationToggle;
 
     //TimeControls
@@ -58,9 +58,9 @@ public class ParentalControlManager : MonoBehaviour
     public TMP_InputField timeLimitInput;
     public int timeLimitAccuracy;
     public TMP_InputField timeLimitAccuracyInput;
-    public bool midMatch;
+    //public bool EndMidMatch;
     public Toggle midMatchToggle;
-    public bool endMatch;
+    //public bool EndAfterMatch;
     public Toggle endMatchToggle;
 
 
@@ -87,10 +87,9 @@ public class ParentalControlManager : MonoBehaviour
         testToggle.onValueChanged.AddListener(_ => SetTestToggle());
         internetLinksToggle.onValueChanged.AddListener(_ => SetInternetLinks());
         chatMessagesToggle.onValueChanged.AddListener(_ => SetChatMessages());
-        //SetInternetLinksToggle();
-        //internetLinksToggle.isOn = true;
-        //testToggle.isOn = true;
-        //SetChatMessagesToggle();
+        emojiCommentsToggle.onValueChanged.AddListener(_ => SetEmojis());
+        treasureHuntToggle.onValueChanged.AddListener(_ => SetTreasureHunt());
+
         
 
     }
@@ -101,6 +100,8 @@ public class ParentalControlManager : MonoBehaviour
         SetInternetLinksToggle();
         SetChatMessagesToggle();
         SetTestToggleToggle();
+        SetEmojisToggle();
+        SetTreasureHuntToggle();
     }
     
 
@@ -327,8 +328,6 @@ public class ParentalControlManager : MonoBehaviour
         if (chatMessagesToggle.isOn)
         {
             PlayerPrefs.SetInt("AllowChat", 1);
-
-
         }
         else
         {
@@ -347,6 +346,49 @@ public class ParentalControlManager : MonoBehaviour
     }
 
 
+    public void SetEmojis()
+    {
+        if (emojiCommentsToggle.isOn)
+        {
+            PlayerPrefs.SetInt("AllowEmojis", 1);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("AllowEmojis", 0);
+        }
+
+    }
+    public void SetEmojisToggle()
+    {
+        emojiCommentsToggle.isOn = (PlayerPrefs.GetInt("AllowEmojis", 0) != 0);
+        
+
+    }
+
+
+    public void SetTreasureHunt()
+    {
+        if (treasureHuntToggle.isOn)
+        {
+            PlayerPrefs.SetInt("AllowTreasureHunt", 1);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("AllowTreasureHunt", 0);
+        }
+
+    }
+    public void SetTreasureHuntToggle()
+    {
+        treasureHuntToggle.isOn = (PlayerPrefs.GetInt("AllowTreasureHunt", 0) != 0);
+
+
+    }
+
+
+
+
+
     public void SaveSettings()
     {
         PlayerPrefs.Save();
@@ -355,7 +397,8 @@ public class ParentalControlManager : MonoBehaviour
 
     public void LoadSettings()
     {
-        //TODO how to load settings from PlayerPrefs ?? 
+        //TODO how to load all settings from PlayerPrefs
+        //maybe it would be practical to load them all in the same method, maybe not
 
     }
 
