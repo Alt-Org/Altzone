@@ -135,6 +135,14 @@ public class ClanAddFriendPopupController : MonoBehaviour
         Debug.Log($"Add friend clicked: {_currentMember.Name}");
 
         // TODO: add friend logic here, e.g., send a friend request to the server
+        StartCoroutine(ServerManager.Instance.SendFriendRequest(_currentMember._id, success =>
+        {
+            if (success)
+            {
+                OnlinePlayersPanel.Instance.CallUpdateFriendList();
+                Debug.Log($"Friend request sent to {_currentMember.Name}");
+            }
+        }));
 
         Hide();
     }
