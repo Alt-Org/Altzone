@@ -81,6 +81,8 @@ namespace Battle.QSimulation.Player
             BattlePlayerEntityRef damagedPlayerEntityRef = (BattlePlayerEntityRef)playerCollisionData->PlayerCharacterHitbox->ParentEntityRef;
             BattlePlayerDataQComponent* damagedPlayerData = damagedPlayerEntityRef.GetDataQComponent(f);
 
+            if (damagedPlayerData->StunCooldown.IsRunning(f)) goto Exit;
+
             if (damagedPlayerData->CurrentDefence <= 0) HandleSFXCharacter(f, SoundEffectTypeCharacter.Death, damagedPlayerData->CharacterId);
             else
             {
@@ -110,6 +112,7 @@ namespace Battle.QSimulation.Player
                 projectileCollisionData->ProjectileEmotionCurrent
                 );
 
+        Exit:
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
         }
 
@@ -164,6 +167,11 @@ namespace Battle.QSimulation.Player
 
         ExitHit:
             playerShieldData->ShieldHitCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
+
+            damagedPlayerData->MovementEnabled = false;
+            damagedPlayerData->RotationEnabled = false;
+            damagedPlayerData->StunCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
+
             f.Events.BattleShieldHit(
                 shieldCollisionData->PlayerShieldHitbox->ParentEntityRef,
                 damagedPlayerData->TeamNumber, damagedPlayerData->Slot,
