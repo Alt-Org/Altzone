@@ -4,6 +4,7 @@ using Altzone.Scripts.AzDebug;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using WebSocketSharp;
 
 public class ParentalControlManager : MonoBehaviour
 {
@@ -89,7 +90,8 @@ public class ParentalControlManager : MonoBehaviour
         chatMessagesToggle.onValueChanged.AddListener(_ => SetChatMessages());
         emojiCommentsToggle.onValueChanged.AddListener(_ => SetEmojis());
         treasureHuntToggle.onValueChanged.AddListener(_ => SetTreasureHunt());
-
+        monthlyLimitInput.onValueChanged.AddListener(_ => SetMonthlyLimit());
+        independentSpendingActivationToggle.onValueChanged.AddListener(_ => SetIndependentSpendingActivation());
         
 
     }
@@ -102,6 +104,8 @@ public class ParentalControlManager : MonoBehaviour
         SetTestToggleToggle();
         SetEmojisToggle();
         SetTreasureHuntToggle();
+        GetMonthlyLimit();
+        SetIndependentSpendingActivationToggle();
     }
     
 
@@ -401,6 +405,51 @@ public class ParentalControlManager : MonoBehaviour
         //maybe it would be practical to load them all in the same method, maybe not
 
     }
+
+    public void SetMonthlyLimit()
+    {
+        //money control: monthly spending limit
+        string money = monthlyLimitInput.text;
+        if (money.IsNullOrEmpty())
+        {
+            PlayerPrefs.SetFloat("MonthlyLimit", 0);
+        }
+        else
+        {
+            PlayerPrefs.SetFloat("MonthlyLimit", float.Parse(money));
+        }
+        
+
+
+    }
+
+    public void GetMonthlyLimit()
+    {
+        float getInput = PlayerPrefs.GetFloat("MonthlyLimit");
+        monthlyLimitInput.text = getInput.ToString();
+
+    }
+
+
+    public void SetIndependentSpendingActivation()
+    {
+        if (independentSpendingActivationToggle.isOn)
+        {
+            PlayerPrefs.SetInt("ActivatePurchasesSeparately", 1);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("ActivatePurchasesSeparately", 0);
+        }
+
+    }
+    public void SetIndependentSpendingActivationToggle()
+    {
+        independentSpendingActivationToggle.isOn = (PlayerPrefs.GetInt("ActivatePurchasesSeparately", 0) != 0);
+
+
+    }
+
 
     public void SetTimeLimit()
     {
