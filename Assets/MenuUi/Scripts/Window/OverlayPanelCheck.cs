@@ -99,6 +99,18 @@ namespace MenuUi.Scripts.Window
                 {
                     button.transform.localScale = Vector3.one;
                     button.interactable = true;
+
+                }//ifelse currentwindow
+
+                 // Set opacity
+                Image image = button.GetComponent<Image>();
+                float targetAlpha = isCurrentWindow ? 1f : 0.7f; //if=1 else=0.7f
+
+                if (image != null)
+                {
+                    Color color = image.color;
+                    color.a = targetAlpha;
+                    image.color = color;
                 }
 
                 // find and enable child glow object when button is active
@@ -107,7 +119,7 @@ namespace MenuUi.Scripts.Window
                 {
                     glow.gameObject.SetActive(isCurrentWindow);
                 }
-            }
+            }//for loop
         }
         public void ToggleOverlay(bool value)
         {
