@@ -7509,6 +7509,8 @@ namespace Altzone.Scripts.Lobby
             _pendingInRoomInviteRoomName = string.Empty;
             _pendingAcceptedInRoomInviteRoomName = string.Empty;
             _pendingAcceptedInRoomInviteStartTime = -100f;
+            _lastAutoInviteRoomName = string.Empty;
+            _lastAutoInviteJoinTime = -100f;
             _queuePendingExpectedUserUntil.Clear();
             _queuePendingLeaderUntil.Clear();
 
@@ -7635,17 +7637,17 @@ namespace Altzone.Scripts.Lobby
                 }
                 if (inviteState != PhotonBattleRoom.PremadeInviteStatePending) continue;
 
-                long inviteTimestampSeconds = 0;
+                long inviteTimestampMilliseconds = 0;
                 if (room.CustomProperties.ContainsKey(PhotonBattleRoom.PremadeInviteTimestampKey))
                 {
-                    try { inviteTimestampSeconds = Convert.ToInt64(room.CustomProperties[PhotonBattleRoom.PremadeInviteTimestampKey]); }
-                    catch { inviteTimestampSeconds = 0; }
+                    try { inviteTimestampMilliseconds = Convert.ToInt64(room.CustomProperties[PhotonBattleRoom.PremadeInviteTimestampKey]); }
+                    catch { inviteTimestampMilliseconds = 0; }
                 }
 
-                if (inviteTimestampSeconds > 0)
+                if (inviteTimestampMilliseconds > 0)
                 {
-                    long nowSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-                    if (nowSeconds - inviteTimestampSeconds > InRoomInviteValiditySeconds)
+                    long nowMilliseconds = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                    if (nowMilliseconds - inviteTimestampMilliseconds > (long)(InRoomInviteValiditySeconds * 1000f))
                     {
                         continue;
                     }

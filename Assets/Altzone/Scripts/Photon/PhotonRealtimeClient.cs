@@ -868,7 +868,7 @@ public static class PhotonRealtimeClient
             CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, localUserId);
             CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInvitedUserIdKey, invitedUserId);
             CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStatePending);
-            CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+            CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
             CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)targetGameType);
             CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, localUserId);
             CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
@@ -888,7 +888,7 @@ public static class PhotonRealtimeClient
             }
             roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeInvitedUserIdKey] = invitedUserId;
             roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeInviteStateKey] = PhotonBattleRoom.PremadeInviteStatePending;
-            roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeInviteTimestampKey] = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeInviteTimestampKey] = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeLeaderUserIdKey] = LocalPlayer?.UserId ?? string.Empty;
             roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeTargetGameTypeKey] = (int)targetGameType;
             roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeUserId1Key] = LocalPlayer?.UserId ?? string.Empty;
