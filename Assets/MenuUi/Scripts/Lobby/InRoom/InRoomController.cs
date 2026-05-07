@@ -455,7 +455,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, localUserId);
             PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInvitedUserIdKey, invitedUserId);
             PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStatePending);
-            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
             PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)targetGameType);
             PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, localUserId);
             PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
@@ -703,33 +703,33 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     continue;
                 }
 
-                long inviteTimestampSeconds = 0;
+                long inviteTimestampMilliseconds = 0;
                 try
                 {
                     if (PhotonRealtimeClient.CurrentRoom.CustomProperties != null
                         && PhotonRealtimeClient.CurrentRoom.CustomProperties.ContainsKey(PhotonBattleRoom.PremadeInviteTimestampKey))
                     {
-                        inviteTimestampSeconds = Convert.ToInt64(PhotonRealtimeClient.CurrentRoom.CustomProperties[PhotonBattleRoom.PremadeInviteTimestampKey]);
+                        inviteTimestampMilliseconds = Convert.ToInt64(PhotonRealtimeClient.CurrentRoom.CustomProperties[PhotonBattleRoom.PremadeInviteTimestampKey]);
                     }
                 }
                 catch
                 {
-                    inviteTimestampSeconds = 0;
+                    inviteTimestampMilliseconds = 0;
                 }
 
-                long nowSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-                if (inviteTimestampSeconds <= 0)
+                long nowMilliseconds = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                if (inviteTimestampMilliseconds <= 0)
                 {
-                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, nowSeconds);
+                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, nowMilliseconds);
                     yield return delay;
                     continue;
                 }
 
-                if (nowSeconds - inviteTimestampSeconds >= InviteExpirationSeconds)
+                if (nowMilliseconds - inviteTimestampMilliseconds >= InviteExpirationSeconds * 1000L)
                 {
                     ExpirePremadeInvite();
-
-                    PopupSignalBus.OnChangePopupInfoSignal("Kutsu vanheni. Voit lahettaa uuden kutsun.");
+                    yield return delay;
+                    continue;
                 }
 
                 yield return delay;
