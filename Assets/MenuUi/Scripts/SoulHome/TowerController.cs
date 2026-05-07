@@ -137,7 +137,6 @@ namespace MenuUI.Scripts.SoulHome
         void Update()
         {
             if (!_startFinished) return;
-            CheckScreenRotationStatus();
             SetScrollSpeed();
             //Debug.Log(cameraWidth+" : "+ _mainScreen.transform.GetComponent<RectTransform>().rect.width);
             //Debug.Log(cameraMove);
@@ -867,24 +866,6 @@ namespace MenuUI.Scripts.SoulHome
         {
             _selectedFurniture.GetComponent<FurnitureHandling>().RotateFurniture();
             PlaceFurnitureToCurrent(false);
-        }
-
-        private void CheckScreenRotationStatus()
-        {
-            //Debug.Log(Screen.orientation);
-            if ((AppPlatform.IsMobile || AppPlatform.IsEditor) && Screen.orientation == ScreenOrientation.LandscapeLeft /*&& !rotated*/)
-            {
-                _rotated = true;
-
-                HandleScreenRotation();
-
-            }
-            else if ((AppPlatform.IsMobile || AppPlatform.IsEditor) && Screen.orientation == ScreenOrientation.Portrait /*&& rotated*/)
-            {
-                _rotated = false;
-
-                HandleScreenRotation();
-            }
         }
 
         private void HandleScreenRotation()

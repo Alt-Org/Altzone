@@ -11528,7 +11528,6 @@ MonoBehaviour:
   - {fileID: 8377306250338580511}
   - {fileID: 9122732706432474159}
   _blockerHandler: {fileID: 3498159415290460163}
-  Windows: []
 --- !u!114 &7451472223293345613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12078,8 +12077,6 @@ MonoBehaviour:
   - {fileID: 1645349513576612448}
   - {fileID: 2126002876567161271}
   _blockerHandler: {fileID: 3498159415290460163}
-  Windows:
-  - {fileID: 8850800010838928832}
 --- !u!114 &8316537915591864561
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12651,7 +12648,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &318408154138123610
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12699,7 +12696,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f4b995a6e2d3d924190bf9f62cde3a71, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -16394,7 +16391,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 6113803806275135908}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
@@ -16405,6 +16402,18 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 3211262769046552947}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &7760266816204064796
 MonoBehaviour:
@@ -17198,6 +17207,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 6113803806275135908}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &3703032003006430220
@@ -17213,14 +17234,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.2735849, g: 0.2735849, b: 0.2735849, a: 1}
+  m_Color: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f4b995a6e2d3d924190bf9f62cde3a71, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -21564,9 +21585,6 @@ MonoBehaviour:
   - {fileID: 6752746339146050880}
   - {fileID: 1478342698671005428}
   _blockerHandler: {fileID: 3498159415290460163}
-  Windows:
-  - {fileID: 8850800010838928832}
-  - {fileID: 6935508078923378263}
 --- !u!114 &984656739064859272
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21925,7 +21943,6 @@ MonoBehaviour:
   - {fileID: 6450549574574219563}
   - {fileID: 2541976446447670012}
   _blockerHandler: {fileID: 3498159415290460163}
-  Windows: []
 --- !u!114 &7019136095634686499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25944,7 +25961,6 @@ MonoBehaviour:
   - {fileID: 1448790578392374114}
   - {fileID: 5907402319670386933}
   _blockerHandler: {fileID: 3498159415290460163}
-  Windows: []
 --- !u!114 &6358799282843753064
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31410,8 +31426,6 @@ MonoBehaviour:
   - {fileID: 8163825479565440669}
   - {fileID: 8165823044383738510}
   _blockerHandler: {fileID: 3498159415290460163}
-  Windows:
-  - {fileID: 8850800010838928832}
 --- !u!114 &6629679035118807432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38610,6 +38624,12 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5147194485144078328, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 4961577804787953164, guid: 7573fa126ddb0bd45846faa25129de46,
+        type: 2}
     - target: {fileID: 5222462471029913359, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -39958,8 +39978,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: f4b995a6e2d3d924190bf9f62cde3a71,
-        type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 1565117112789981633, guid: 3a035a942e5180d45947bdb51427e49d,
         type: 3}
       propertyPath: m_Color.b
@@ -39984,6 +40003,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_text
       value: Yleiset
+      objectReference: {fileID: 0}
+    - target: {fileID: 3311946802399729974, guid: 3a035a942e5180d45947bdb51427e49d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3736846768264058694, guid: 3a035a942e5180d45947bdb51427e49d,
         type: 3}
@@ -40263,8 +40287,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: f4b995a6e2d3d924190bf9f62cde3a71,
-        type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 1565117112789981633, guid: 3a035a942e5180d45947bdb51427e49d,
         type: 3}
       propertyPath: m_Color.b
@@ -40294,6 +40317,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSize
       value: 33.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3311946802399729974, guid: 3a035a942e5180d45947bdb51427e49d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3736846768264058694, guid: 3a035a942e5180d45947bdb51427e49d,
         type: 3}
@@ -40702,8 +40730,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: f4b995a6e2d3d924190bf9f62cde3a71,
-        type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 1565117112789981633, guid: 3a035a942e5180d45947bdb51427e49d,
         type: 3}
       propertyPath: m_Color.b
@@ -40722,6 +40749,11 @@ PrefabInstance:
     - target: {fileID: 1565117112789981633, guid: 3a035a942e5180d45947bdb51427e49d,
         type: 3}
       propertyPath: m_PreserveAspect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3311946802399729974, guid: 3a035a942e5180d45947bdb51427e49d,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3736846768264058694, guid: 3a035a942e5180d45947bdb51427e49d,
