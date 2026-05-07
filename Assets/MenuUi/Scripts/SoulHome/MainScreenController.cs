@@ -50,14 +50,6 @@ namespace MenuUI.Scripts.SoulHome
         // Start is called before the first frame update
         void Start()
         {
-            if (AppPlatform.IsMobile || AppPlatform.IsSimulator)
-            {
-                Screen.autorotateToPortrait = true;
-                Screen.autorotateToPortraitUpsideDown = false;
-                Screen.autorotateToLandscapeRight = false;
-                Screen.autorotateToLandscapeLeft = true;
-                Screen.orientation = ScreenOrientation.AutoRotation;
-            }
             EnhancedTouchSupport.Enable();
             EnableTray(false);
             //transform.Find("Itemtray").GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().sizeDelta.x * 0.8f, transform.Find("Itemtray").GetComponent<RectTransform>().sizeDelta.y);
@@ -130,20 +122,11 @@ namespace MenuUI.Scripts.SoulHome
 
         private void OnEnable()
         {
-            if (AppPlatform.IsMobile || AppPlatform.IsSimulator)
-            {
-                Screen.autorotateToPortrait = true;
-                Screen.autorotateToPortraitUpsideDown = false;
-                Screen.autorotateToLandscapeRight = false;
-                Screen.autorotateToLandscapeLeft = true;
-                Screen.orientation = ScreenOrientation.AutoRotation;
-            }
             EnableTray(false);
         }
 
         private void OnDisable()
         {
-            if (AppPlatform.IsMobile || AppPlatform.IsSimulator) Screen.orientation = ScreenOrientation.Portrait;
             _soulHomeTower.ResetChanges();
         }
 

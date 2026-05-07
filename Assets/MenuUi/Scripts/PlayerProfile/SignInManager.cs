@@ -113,7 +113,8 @@ namespace MenuUi.Scripts.Login
             }*/
             _autoLoginToggle.OnToggleStateChanged += SetVersionState;
             _turboEducationToggle.OnToggleStateChanged += SetTurboState;
-
+            _logInUsernameInputField.text = PlayerPrefs.GetString("userName", string.Empty);
+            Debug.LogWarning(PlayerPrefs.GetString("userName", string.Empty));
         }
 
         public void Reset()
@@ -188,7 +189,7 @@ namespace MenuUi.Scripts.Login
                     JObject result = JObject.Parse(request.downloadHandler.text);
                     //Debug.Log(request.downloadHandler.text);
                     if(ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
-                    ServerManager.Instance.SetProfileValues(result);
+                    ServerManager.Instance.SetProfileValues(result, username);
                     if(GameConfig.Get().GameVersionType is VersionType.Standard or VersionType.None) GameConfig.Get().GameVersionType = VersionType.Education;
                     if (_autoLoginToggle.IsOn)
                     {
@@ -338,7 +339,7 @@ namespace MenuUi.Scripts.Login
                     Debug.Log("Registering successful!");
                     JObject result = JObject.Parse(request.downloadHandler.text);;
                     if (ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
-                    ServerManager.Instance.SetProfileValues(result);
+                    ServerManager.Instance.SetProfileValues(result, string.Empty);
                     GameConfig.Get().GameVersionType = VersionType.Education;
                     PlayerPrefs.SetInt("AutomaticLogin", 1);
                     _returnToMainMenuButton.onClick.Invoke();

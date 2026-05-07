@@ -124,7 +124,7 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1486682069875742128}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.05, y: 0.2}
+  m_AnchorMin: {x: 0.05, y: 0.1}
   m_AnchorMax: {x: 0.95, y: 0.8}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
@@ -331,7 +331,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterSprite: {fileID: 7775093215518772866}
-  _emblemSprite: {fileID: 0}
   _nameSprite: {fileID: 5420606738028189157}
   _nameText: {fileID: 5552107887309872655}
 --- !u!1 &6028272122643760052
@@ -563,7 +562,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7057648726299849954
 RectTransform:
   m_ObjectHideFlags: 0
