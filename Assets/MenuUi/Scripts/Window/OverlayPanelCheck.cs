@@ -12,7 +12,7 @@ namespace MenuUi.Scripts.Window
         [SerializeField] private GameObject _overlayObject;
         [SerializeField] private SceneDef _allowedScene;
 
-        [SerializeField] private Button[] buttons;
+        [SerializeField] private Button[] buttons; //Array assigned in inspector, in UIOverlayPanel gameobject
 
         [SerializeField] private GameObject _topBar;
         [SerializeField] private GameObject _bottomBar;
@@ -99,6 +99,13 @@ namespace MenuUi.Scripts.Window
                 {
                     button.transform.localScale = Vector3.one;
                     button.interactable = true;
+                }
+
+                // find and enable child glow object when button is active
+                Transform glow = button.transform.Find("Glow");
+                if (glow != null)
+                {
+                    glow.gameObject.SetActive(isCurrentWindow);
                 }
             }
         }

@@ -84,6 +84,7 @@ namespace MenuUi.Scripts.MainMenu
                 SetMainMenuLayoutDimensions();
             }
             AudioManager.Instance.UpdateMaxVolume();
+            OverlayPanelCheck.Instance?.UpdateButtonContent();
         }
 
         private void OnDestroy()
