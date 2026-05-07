@@ -38,7 +38,7 @@ public class ParentalControlManager : MonoBehaviour
 
     //the ParentalControl settings
     //SocialControls
-    public bool internetLinks;
+    public bool allowLinks;
     public Toggle internetLinksToggle; 
     public bool chatMessages;
     public Toggle chatMessagesToggle;
@@ -304,19 +304,19 @@ public class ParentalControlManager : MonoBehaviour
     public void SetInternetLinks ()
     {
         if (internetLinksToggle.isOn) {
-            PlayerPrefs.SetInt("internetLinks", 1);
+            PlayerPrefs.SetInt("AllowLinks", 1);
             
 
         } else
         {
-            PlayerPrefs.SetInt("internetLinks", 0);
+            PlayerPrefs.SetInt("AllowLinks", 0);
         }
 
     }
 
     public void SetInternetLinksToggle() {
-        internetLinksToggle.isOn = (PlayerPrefs.GetInt("internetLinks", 0) != 0);
-        Debug.Log("internetLinks, got value" + PlayerPrefs.GetInt("internetLinks"));
+        internetLinksToggle.isOn = (PlayerPrefs.GetInt("AllowLinks", 0) != 0);
+        Debug.Log("internetLinks, got value" + PlayerPrefs.GetInt("AllowLinks"));
         Debug.Log("internetLinksToggle is set");
 
        
@@ -326,13 +326,13 @@ public class ParentalControlManager : MonoBehaviour
     {
         if (chatMessagesToggle.isOn)
         {
-            PlayerPrefs.SetInt("chatMessages", 1);
+            PlayerPrefs.SetInt("AllowChat", 1);
 
 
         }
         else
         {
-            PlayerPrefs.SetInt("chatMessages", 0);
+            PlayerPrefs.SetInt("AllowChat", 0);
         }
 
     }
@@ -340,8 +340,8 @@ public class ParentalControlManager : MonoBehaviour
 
     public void SetChatMessagesToggle()
     {
-        chatMessagesToggle.isOn = (PlayerPrefs.GetInt("chatMessages", 0) != 0);
-        Debug.Log("chat, got value" + PlayerPrefs.GetInt("chatMessages"));
+        chatMessagesToggle.isOn = (PlayerPrefs.GetInt("AllowChat", 0) != 0);
+        Debug.Log("chat, got value" + PlayerPrefs.GetInt("AllowChat"));
         Debug.Log("chatMessagesToggle is set");
 
     }
@@ -355,28 +355,7 @@ public class ParentalControlManager : MonoBehaviour
 
     public void LoadSettings()
     {
-        //TODO how to load settings from PlayerPrefs
-        /*
-        int checkLinks = PlayerPrefs.GetInt("internetLinks");
-
-        if (checkLinks == 1)
-        {
-            internetLinks = true;
-            Debug.Log("internetLinks is set to true");
-
-            
-
-        }
-        else
-        {
-            internetLinks = false;
-
-            
-
-        }
-        internetLinksToggle.isOn = internetLinks;
-        */
-
+        //TODO how to load settings from PlayerPrefs ?? 
 
     }
 
