@@ -62,13 +62,13 @@ namespace Battle.View.Player
             public enum Enum
             {
                 /// <summary>Index: 00</summary>
-                Base = 0,
+                CharacterBase = 0,
 
                 /// <summary>Index: 01</summary>
-                BaseHands = 1,
+                HandsNoShield = 1,
 
                 /// <summary>Index: 02</summary>
-                ScaredHands = 2,
+                HandsScared = 2,
 
                 /// <summary>Index: 07</summary>
                 Shadow = 7,
@@ -110,13 +110,13 @@ namespace Battle.View.Player
                 HandsShieldUp4 = 19,
 
                 /// <summary>Index: 20</summary>
-                ShoesStanding = 20,
+                FeetStanding = 20,
 
                 /// <summary>Index: 21</summary>
-                ShoesRunningLeft = 21,
+                FeetRunningLeft = 21,
 
                 /// <summary>Index: 22</summary>
-                ShoesRunningRight = 22,
+                FeetRunningRight = 22,
 
                 /// <summary>Index: 24</summary>
                 HandsShieldDown1 = 24,
@@ -179,34 +179,34 @@ namespace Battle.View.Player
                 ShieldDownHit4 = 47,
 
                 /// <summary>Index: 48</summary>
-                ReactionJoy = 48,
+                HeadJoy = 48,
 
                 /// <summary>Index: 49</summary>
-                ReactionSadness = 49,
+                HeadSadness = 49,
 
                 /// <summary>Index: 50</summary>
-                ReactionPlayful = 50,
+                HeadPlayful = 50,
 
                 /// <summary>Index: 51</summary>
-                ReactionAgression = 51,
+                HeadAgression = 51,
 
                 /// <summary>Index: 52</summary>
-                ReactionLove = 52,
+                HeadLove = 52,
 
                 /// <summary>Index: 56</summary>
-                ShieldBroken = 56,
+                CharacterShieldBroken = 56,
 
                 /// <summary>Index: 57</summary>
-                Defenseless = 57,
+                CharacterDefenseless = 57,
 
                 /// <summary>Index: 58</summary>
-                Death1 = 58,
+                CharacterDeath1 = 58,
 
                 /// <summary>Index: 59</summary>
-                Death2 = 59,
+                CharacterDeath2 = 59,
 
                 /// <summary>Index: 60</summary>
-                DeadOnTheGround = 60
+                CharacterDeadOnTheGround = 60
             }
 
             /// <summary>
@@ -346,7 +346,7 @@ namespace Battle.View.Player
         public void SetBaseSprite()
         {
             _bodypartSpriteRenderers[SpriteRendererHeadIndex]   .sprite = null;
-            _bodypartSpriteRenderers[SpriteRendererBodyIndex]   .sprite = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Base);
+            _bodypartSpriteRenderers[SpriteRendererBodyIndex]   .sprite = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.CharacterBase);
             _bodypartSpriteRenderers[SpriteRendererHandsIndex]  .sprite = null;
             _bodypartSpriteRenderers[SpriteRendererFeetIndex]   .sprite = null;
             _bodypartSpriteRenderers[SpriteRendererShadowIndex] .sprite = null;
@@ -356,8 +356,8 @@ namespace Battle.View.Player
         {
             _bodypartSpriteRenderers[SpriteRendererHeadIndex].sprite   = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Head1);
             _bodypartSpriteRenderers[SpriteRendererBodyIndex].sprite   = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Body1);
-            _bodypartSpriteRenderers[SpriteRendererHandsIndex].sprite  = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.BaseHands);
-            _bodypartSpriteRenderers[SpriteRendererFeetIndex].sprite   = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.ShoesStanding);
+            _bodypartSpriteRenderers[SpriteRendererHandsIndex].sprite  = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.HandsNoShield);
+            _bodypartSpriteRenderers[SpriteRendererFeetIndex].sprite   = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.FeetStanding);
             _bodypartSpriteRenderers[SpriteRendererShadowIndex].sprite = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Shadow);
         }
 
@@ -379,11 +379,11 @@ namespace Battle.View.Player
                     SpriteSheetMap.Enum.Head2 or
                     SpriteSheetMap.Enum.Head3 or
                     SpriteSheetMap.Enum.Head4 or
-                    SpriteSheetMap.Enum.ReactionJoy or
-                    SpriteSheetMap.Enum.ReactionSadness or
-                    SpriteSheetMap.Enum.ReactionPlayful or
-                    SpriteSheetMap.Enum.ReactionAgression or
-                    SpriteSheetMap.Enum.ReactionLove,
+                    SpriteSheetMap.Enum.HeadJoy or
+                    SpriteSheetMap.Enum.HeadSadness or
+                    SpriteSheetMap.Enum.HeadPlayful or
+                    SpriteSheetMap.Enum.HeadAgression or
+                    SpriteSheetMap.Enum.HeadLove,
                 "{0} Sprite is not a head sprite", sprite
             );
             _bodypartSpriteRenderers[0].sprite = _spriteSheet.GetSprite(sprite);
@@ -426,8 +426,8 @@ namespace Battle.View.Player
         {
             BattleDebugLogger.DevAssertFormat(nameof(BattlePlayerCharacterViewController),
                 sprite.EnumValue is
-                    SpriteSheetMap.Enum.BaseHands or
-                    SpriteSheetMap.Enum.ScaredHands or
+                    SpriteSheetMap.Enum.HandsNoShield or
+                    SpriteSheetMap.Enum.HandsScared or
                     SpriteSheetMap.Enum.HandsShieldDown1 or
                     SpriteSheetMap.Enum.HandsShieldDown2 or
                     SpriteSheetMap.Enum.HandsShieldDown3 or
@@ -455,9 +455,9 @@ namespace Battle.View.Player
         {
             BattleDebugLogger.DevAssertFormat(nameof(BattlePlayerCharacterViewController),
                 sprite.EnumValue is
-                    SpriteSheetMap.Enum.ShoesStanding or
-                    SpriteSheetMap.Enum.ShoesRunningLeft or
-                    SpriteSheetMap.Enum.ShoesRunningRight,
+                    SpriteSheetMap.Enum.FeetStanding or
+                    SpriteSheetMap.Enum.FeetRunningLeft or
+                    SpriteSheetMap.Enum.FeetRunningRight,
                 "{0} Sprite is not a feet sprite", sprite
             );
             _bodypartSpriteRenderers[3].sprite = _spriteSheet.GetSprite(sprite);
@@ -599,15 +599,15 @@ namespace Battle.View.Player
 
             if (movementVector == Vector2.zero)
             {
-                SetFeetSprite(SpriteSheetMap.Enum.ShoesStanding);
+                SetFeetSprite(SpriteSheetMap.Enum.FeetStanding);
             }
             else if (movementVector.x < 0)
             {
-                SetFeetSprite(SpriteSheetMap.Enum.ShoesRunningLeft);
+                SetFeetSprite(SpriteSheetMap.Enum.FeetRunningLeft);
             }
             else
             {
-                SetFeetSprite(SpriteSheetMap.Enum.ShoesRunningRight);
+                SetFeetSprite(SpriteSheetMap.Enum.FeetRunningRight);
             }
 
             Vector3 viewPosition = playerData->ViewPosition.ToUnityVector3();
@@ -746,11 +746,11 @@ namespace Battle.View.Player
 
             SpriteSheetMap sprite = e.ProjectileEmotion switch
             {
-                BattleEmotionState.Joy        => SpriteSheetMap.Enum.ReactionJoy,
-                BattleEmotionState.Sadness    => SpriteSheetMap.Enum.ReactionSadness,
-                BattleEmotionState.Playful    => SpriteSheetMap.Enum.ReactionPlayful,
-                BattleEmotionState.Aggression => SpriteSheetMap.Enum.ReactionAgression,
-                BattleEmotionState.Love       => SpriteSheetMap.Enum.ReactionLove,
+                BattleEmotionState.Joy        => SpriteSheetMap.Enum.HeadJoy,
+                BattleEmotionState.Sadness    => SpriteSheetMap.Enum.HeadSadness,
+                BattleEmotionState.Playful    => SpriteSheetMap.Enum.HeadPlayful,
+                BattleEmotionState.Aggression => SpriteSheetMap.Enum.HeadAgression,
+                BattleEmotionState.Love       => SpriteSheetMap.Enum.HeadLove,
 
                 _ => throw new NotImplementedException()
             };
@@ -781,7 +781,7 @@ namespace Battle.View.Player
             }
             if (e.DefencePercentage <= 0)
             {
-                SetHandSprite(SpriteSheetMap.Enum.ScaredHands);
+                SetHandSprite(SpriteSheetMap.Enum.HandsScared);
             }
         }
 
@@ -795,7 +795,7 @@ namespace Battle.View.Player
             }
             else
             {
-                SetHandSprite(SpriteSheetMap.Enum.BaseHands);
+                SetHandSprite(SpriteSheetMap.Enum.HandsNoShield);
             }
         }
 

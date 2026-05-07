@@ -27,7 +27,7 @@ namespace Battle.View.Player
         /// </summary>
         public override void OnInspectorGUI()
         {
-            const SpriteSheetMap.Enum ErrorSpriteValue = SpriteSheetMap.Enum.Base;
+            const SpriteSheetMap.Enum ErrorSpriteValue = SpriteSheetMap.Enum.CharacterBase;
             DrawDefaultInspector();
 
             if (_battleSpriteSheetProperty == null || _shieldSpriteRendererProperty == null || _spriteDisableProperty == null) return;
