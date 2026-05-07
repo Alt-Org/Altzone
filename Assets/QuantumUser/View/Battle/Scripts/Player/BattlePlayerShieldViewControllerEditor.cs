@@ -5,6 +5,9 @@
 /// to the shields SpriteRenderer in the editor.
 /// </summary>
 
+// System usings
+using System;
+
 // Unity usings
 using UnityEditor;
 using UnityEngine;
@@ -27,14 +30,12 @@ namespace Battle.View.Player
         /// </summary>
         public override void OnInspectorGUI()
         {
-            const SpriteSheetMap.Enum ErrorSpriteValue = SpriteSheetMap.Enum.Base;
+            const SpriteSheetMap.Enum ErrorSpriteValue = SpriteSheetMap.Enum.CharacterBase;
             DrawDefaultInspector();
 
-            if (_battleSpriteSheetProperty == null || _shieldSpriteRendererProperty == null || _spriteDisableProperty == null) return;
+            if (_battleSpriteSheetProperty == null || _shieldGameObjectsProperty == null || _spriteDisableProperty == null) return;
 
             BattleSpriteSheet spriteSheet = (BattleSpriteSheet)_battleSpriteSheetProperty.boxedValue;
-
-            SpriteRenderer spriteRenderer = (SpriteRenderer)_shieldSpriteRendererProperty.boxedValue;
 
             bool spriteDisable = (bool)_spriteDisableProperty.boxedValue;
 
@@ -42,7 +43,7 @@ namespace Battle.View.Player
 
             if (!SpriteSheetMap.Validate(spriteSheet)) goto Error;
 
-            SpriteSheetMap sprite = shieldNumber switch
+            SpriteSheetMap spriteUp = shieldNumber switch
             {
                 0 => SpriteSheetMap.Enum.ShieldUp1,
                 1 => SpriteSheetMap.Enum.ShieldUp2,
@@ -52,19 +53,48 @@ namespace Battle.View.Player
                 _ => ErrorSpriteValue,
             };
 
-            if (sprite == ErrorSpriteValue)
+            if (spriteUp == ErrorSpriteValue)
             {
                 BattleDebugLogger.ErrorFormat(nameof(BattlePlayerShieldViewControllerEditor), "No valid shield sprite for shield number {0}.", BattleDebugLogger.LogTarget.UnityConsole, shieldNumber);
                 goto Error;
             }
 
+            SpriteSheetMap spriteDown = shieldNumber switch
+            {
+                0 => SpriteSheetMap.Enum.ShieldDown1,
+                1 => SpriteSheetMap.Enum.ShieldDown2,
+                2 => SpriteSheetMap.Enum.ShieldDown3,
+                3 => SpriteSheetMap.Enum.ShieldDown4,
+
+                _ => throw new Exception("HOW? This should be impossible.")
+            };
+
             if (spriteDisable) return;
 
-            spriteRenderer.sprite = spriteSheet.GetSprite(sprite);
+            for (int i = 0; i < _shieldGameObjectsProperty.arraySize; i++)
+            {
+                SerializedProperty property = _shieldGameObjectsProperty.GetArrayElementAtIndex(i);
+                GameObject gameObject = (GameObject)property.objectReferenceValue;
+
+                if (i == 0)
+                {
+                    gameObject.GetComponent<SpriteRenderer>().sprite = spriteSheet.GetSprite(spriteUp);
+                }
+                else
+                {
+                    gameObject.GetComponent<SpriteRenderer>().sprite = spriteSheet.GetSprite(spriteDown);
+                }
+            }
+
             return;
 
         Error:
-            spriteRenderer.sprite = null;
+            for (int i = 0; i < _shieldGameObjectsProperty.arraySize; i++)
+            {
+                SerializedProperty property = _shieldGameObjectsProperty.GetArrayElementAtIndex(i);
+                GameObject gameObject = (GameObject)property.objectReferenceValue;
+                gameObject.GetComponent<SpriteRenderer>().sprite = null;
+            }
         }
 
         /// <summary>
@@ -75,7 +105,7 @@ namespace Battle.View.Player
         /// <summary>
         /// Serialized property holding the gameobject to add the default sprite to.
         /// </summary>
-        private SerializedProperty _shieldSpriteRendererProperty;
+        private SerializedProperty _shieldGameObjectsProperty;
 
         /// <summary>
         /// Serialized property holding the shield number of the shield to add a default sprite to.
@@ -93,7 +123,7 @@ namespace Battle.View.Player
         private void OnEnable()
         {
             _battleSpriteSheetProperty = serializedObject.FindProperty("_spriteSheet");
-            _shieldSpriteRendererProperty = serializedObject.FindProperty("_shieldSpriteRenderer");
+            _shieldGameObjectsProperty = serializedObject.FindProperty("_shieldGameObjects");
             _shieldNumberProperty = serializedObject.FindProperty("_shieldNumber");
             _spriteDisableProperty = serializedObject.FindProperty("_autoSpriteDisable");
         }

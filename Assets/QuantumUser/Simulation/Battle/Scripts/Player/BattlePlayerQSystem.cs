@@ -81,6 +81,8 @@ namespace Battle.QSimulation.Player
             BattlePlayerEntityRef damagedPlayerEntityRef = (BattlePlayerEntityRef)playerCollisionData->PlayerCharacterHitbox->ParentEntityRef;
             BattlePlayerDataQComponent* damagedPlayerData = damagedPlayerEntityRef.GetDataQComponent(f);
 
+            if (damagedPlayerData->StunCooldown.IsRunning(f)) goto Exit;
+
             if (damagedPlayerData->CurrentDefence <= 0) HandleSFXCharacter(f, SoundEffectTypeCharacter.Death, damagedPlayerData->CharacterId);
             else
             {
@@ -106,9 +108,11 @@ namespace Battle.QSimulation.Player
                 damagedPlayerData->TeamNumber,
                 damagedPlayerData->Slot,
                 BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber,
-                stunCooldown
+                stunCooldown,
+                projectileCollisionData->ProjectileEmotionCurrent
                 );
 
+        Exit:
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
         }
 
@@ -163,6 +167,11 @@ namespace Battle.QSimulation.Player
 
         ExitHit:
             playerShieldData->ShieldHitCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
+
+            damagedPlayerData->MovementEnabled = false;
+            damagedPlayerData->RotationEnabled = false;
+            damagedPlayerData->StunCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
+
             f.Events.BattleShieldHit(
                 shieldCollisionData->PlayerShieldHitbox->ParentEntityRef,
                 damagedPlayerData->TeamNumber, damagedPlayerData->Slot,
@@ -384,7 +393,7 @@ namespace Battle.QSimulation.Player
         /// <param name="characterID">ID of the current character in play</param>
         private static void HandleSFXCharacter(Frame f, SoundEffectTypeCharacter type, BattlePlayerCharacterID characterID)
         {
-            BattleSoundFX soundEffect = (BattleSoundFX)((int)characterID * Constants.BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER) + (int)type;
+            BattleSoundFX soundEffect = (BattleSoundFX)(Constants.BATTLE_SOUND_FX_CHARACTER_START + (int)characterID * Constants.BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER) + (int)type;
             f.Events.BattlePlaySoundFX(soundEffect);
         }
 
@@ -497,6 +506,8 @@ namespace Battle.QSimulation.Player
         /// <param name="playerTransform">Pointer to the player's transform component.</param>
         private void HandleInPlay(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity, Transform2D* playerTransform)
         {
+            playerData->ViewMovementVector = FPVector2.Zero;
+
             bool updateMovement = true;
 
             if (input->AbilityActivate)
