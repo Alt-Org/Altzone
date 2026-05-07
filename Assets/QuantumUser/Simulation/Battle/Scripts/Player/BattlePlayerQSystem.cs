@@ -506,6 +506,8 @@ namespace Battle.QSimulation.Player
         /// <param name="playerTransform">Pointer to the player's transform component.</param>
         private void HandleInPlay(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity, Transform2D* playerTransform)
         {
+            playerData->ViewMovementVector = FPVector2.Zero;
+
             bool updateMovement = true;
 
             if (input->AbilityActivate)
