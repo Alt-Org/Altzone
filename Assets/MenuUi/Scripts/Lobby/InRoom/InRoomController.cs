@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Lobby.Wrappers;
+using Altzone.Scripts.Battle.Photon;
 using MenuUi.Scripts.Lobby.InLobby;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
@@ -98,6 +99,17 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 case GameType.Clan2v2:
                     if (PhotonLobbyRoom.CountRealPlayers() == PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
                     {
+                        // Prevent starting matchmaking when this room is actually a queue room
+                        try
+                        {
+                            var curr = PhotonRealtimeClient.LobbyCurrentRoom;
+                            if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey))
+                            {
+                                Debug.Log("StartPlaying suppressed: current room is a queue room (Clan2v2).");
+                                return;
+                            }
+                        }
+                        catch { }
                         this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedGameType));
                     }
                     else
@@ -106,6 +118,17 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     }
                     break;
                 case GameType.Random2v2:
+                    // Prevent starting matchmaking when this room is a queue room
+                    try
+                    {
+                        var curr = PhotonRealtimeClient.LobbyCurrentRoom;
+                        if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey))
+                        {
+                            Debug.Log("StartPlaying suppressed: current room is a queue room (Random2v2).");
+                            return;
+                        }
+                    }
+                    catch { }
                     this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedGameType));
                     break;
             }

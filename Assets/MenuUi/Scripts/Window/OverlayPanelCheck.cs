@@ -14,6 +14,7 @@ namespace MenuUi.Scripts.Window
 
         [SerializeField] private Button[] buttons;
 
+        [SerializeField] private GameObject _topBar;
         [SerializeField] private GameObject _bottomBar;
         [SerializeField] private GameObject _chatBox;
         [SerializeField] private GameObject _buttonsBar;
@@ -30,6 +31,7 @@ namespace MenuUi.Scripts.Window
 
         public delegate void ToggleOnlinePlayerList(bool? active = null);
         public static event ToggleOnlinePlayerList OnToggleOnlinePlayerList;
+        
 
         private void Awake()
         {
@@ -100,10 +102,20 @@ namespace MenuUi.Scripts.Window
                 }
             }
         }
+        public void ToggleOverlay(bool value)
+        {
+            ToggleBottomBar(value);
+            ToggleTopBar(value);
+        }
 
         public void ToggleBottomBar(bool value)
         {
             _bottomBar.SetActive(value);
+        }
+
+        public void ToggleTopBar(bool value)
+        {
+            _topBar.SetActive(value);
         }
 
         public void ToggleChat(bool value)

@@ -409,7 +409,7 @@ MonoBehaviour:
   _confirmButton: {fileID: 3035634951185363288}
   _expandButton: {fileID: 341251911835178205}
   _hiddenXOffSet: 525
-  _expandTime: 1
+  _expandTime: 0.2
 --- !u!1 &3502211729506147086
 GameObject:
   m_ObjectHideFlags: 0
@@ -1032,14 +1032,14 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1278981149619497284}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: -100, y: 0}
-  m_SizeDelta: {x: 175, y: 175}
+  m_AnchoredPosition: {x: -70, y: 0}
+  m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3492510017319464634
 CanvasRenderer:

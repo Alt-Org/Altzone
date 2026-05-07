@@ -352,7 +352,7 @@ namespace Battle.QSimulation.Player
 
                         // entity prototype
                         playerEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(playerCharacterId);
-                        if (playerEntityPrototype == null)
+                        if (playerEntityPrototype == default)
                         {
                             const int FallbackId = 0;
 
@@ -398,7 +398,7 @@ namespace Battle.QSimulation.Player
                         //} set temp variables
 
                         // load class
-                        BattlePlayerClassManager.LoadClass(playerClass);
+                        BattlePlayerClassManager.LoadClass(f, playerClass);
 
                         // create hitBoxes
                         for (int i = 0; i < 2; i++)
