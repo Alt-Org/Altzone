@@ -1147,6 +1147,147 @@ namespace Altzone.Scripts.Lobby
             }
         }
 
+        private bool HasRecordedQueueDuoPair(string userIdA, string userIdB)
+        {
+            if (string.IsNullOrEmpty(userIdA) || string.IsNullOrEmpty(userIdB) || userIdA == userIdB) return false;
+
+            try
+            {
+                Room room = PhotonRealtimeClient.CurrentRoom;
+                if (room == null) return false;
+
+                string[] queueDuoFlat = room.GetCustomProperty<string[]>(QueueDuoPairsKey, null);
+                if (queueDuoFlat == null || queueDuoFlat.Length < 2) return false;
+
+                for (int i = 0; i + 1 < queueDuoFlat.Length; i += 2)
+                {
+                    string pairUserId1 = queueDuoFlat[i] ?? string.Empty;
+                    string pairUserId2 = queueDuoFlat[i + 1] ?? string.Empty;
+                    if ((pairUserId1 == userIdA && pairUserId2 == userIdB) || (pairUserId1 == userIdB && pairUserId2 == userIdA))
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            return false;
+        }
+
+        private bool ShouldLeaveQueueWhenDuoPartnerLeaves()
+        {
+            if (PhotonRealtimeClient.LocalPlayer == null) { Debug.Log("ShouldLeaveQueueWhenDuoPartnerLeaves: LocalPlayer is null"); return false; }
+            if (!IsQueueRoom(PhotonRealtimeClient.CurrentRoom)) { Debug.Log("ShouldLeaveQueueWhenDuoPartnerLeaves: not a queue room"); return false; }
+
+            string localUserId = PhotonRealtimeClient.LocalPlayer.UserId ?? string.Empty;
+            if (string.IsNullOrEmpty(localUserId)) { Debug.Log("ShouldLeaveQueueWhenDuoPartnerLeaves: localUserId is empty"); return false; }
+
+            Room room = PhotonRealtimeClient.CurrentRoom;
+            if (room == null || room.Players == null) { Debug.Log("ShouldLeaveQueueWhenDuoPartnerLeaves: room or players is null"); return false; }
+
+            HashSet<string> currentHumanUserIds = new(
+                room.Players.Values
+                    .Where(p => p != null && !string.IsNullOrEmpty(p.UserId) && p.UserId != "Bot")
+                    .Select(p => p.UserId),
+                StringComparer.Ordinal);
+
+            // Check 1: Leader ID points to missing player
+            string localLeaderId = GetQueuePlayerLeaderId(PhotonRealtimeClient.LocalPlayer);
+            if (!string.IsNullOrEmpty(localLeaderId) && !currentHumanUserIds.Contains(localLeaderId) && localLeaderId != localUserId)
+            {
+                Debug.Log($"ShouldLeaveQueueWhenDuoPartnerLeaves: leader check passed (localLeaderId={localLeaderId}, notInRoom=true)");
+                return true;
+            }
+
+            // Check 2: Room premade mode with missing partner
+            try
+            {
+                bool roomPremadeMode = room.GetCustomProperty<bool>(PhotonBattleRoom.PremadeModeKey, false);
+                string premadeUserId1 = room.GetCustomProperty<string>(PhotonBattleRoom.PremadeUserId1Key, string.Empty);
+                string premadeUserId2 = room.GetCustomProperty<string>(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
+            
+                Debug.Log($"ShouldLeaveQueueWhenDuoPartnerLeaves: premade check - mode={roomPremadeMode}, userId1={premadeUserId1}, userId2={premadeUserId2}, localUserId={localUserId}");
+            
+                if (roomPremadeMode)
+                {
+                    if (localUserId == premadeUserId1 || localUserId == premadeUserId2)
+                    {
+                        string premadePartnerId = localUserId == premadeUserId1 ? premadeUserId2 : premadeUserId1;
+                        bool partnerMissing = string.IsNullOrEmpty(premadePartnerId) || !currentHumanUserIds.Contains(premadePartnerId);
+                        Debug.Log($"ShouldLeaveQueueWhenDuoPartnerLeaves: premade partner check - partnerId={premadePartnerId}, partnerMissing={partnerMissing}");
+                        if (partnerMissing) return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"ShouldLeaveQueueWhenDuoPartnerLeaves: premade check error: {ex}");
+            }
+
+            // Check 3: QueueDuoPairs array
+            string[] queueDuoFlat = room.GetCustomProperty<string[]>(QueueDuoPairsKey, null);
+            if (queueDuoFlat == null || queueDuoFlat.Length < 2) 
+            { 
+                Debug.Log($"ShouldLeaveQueueWhenDuoPartnerLeaves: queueDuoFlat is null or too short (length={(queueDuoFlat?.Length ?? 0)})");
+                return false;
+            }
+
+            for (int i = 0; i + 1 < queueDuoFlat.Length; i += 2)
+            {
+                string pairUserId1 = queueDuoFlat[i] ?? string.Empty;
+                string pairUserId2 = queueDuoFlat[i + 1] ?? string.Empty;
+                if (string.IsNullOrEmpty(pairUserId1) || string.IsNullOrEmpty(pairUserId2) || pairUserId1 == pairUserId2) continue;
+
+                if (pairUserId1 != localUserId && pairUserId2 != localUserId) continue;
+
+                string partnerUserId = pairUserId1 == localUserId ? pairUserId2 : pairUserId1;
+                if (string.IsNullOrEmpty(partnerUserId)) 
+                { 
+                    Debug.Log($"ShouldLeaveQueueWhenDuoPartnerLeaves: queueDuoFlat check - partner is empty");
+                    return false;
+                }
+                bool partnerStillInRoom = currentHumanUserIds.Contains(partnerUserId);
+                Debug.Log($"ShouldLeaveQueueWhenDuoPartnerLeaves: queueDuoFlat check - partner={partnerUserId}, inRoom={partnerStillInRoom}");
+                if (!partnerStillInRoom) return true;
+            }
+
+            Debug.Log("ShouldLeaveQueueWhenDuoPartnerLeaves: all checks failed, returning false");
+            return false;
+        }
+
+        private void ClearQueueDuoBreakupSignals()
+        {
+            // Clear local pending signal dictionaries
+            _queuePendingLeaderUntil.Clear();
+            _queuePendingExpectedUserUntil.Clear();
+
+            // Clear room-level duo metadata to prevent queue selection from deferring
+            Room room = PhotonRealtimeClient.CurrentRoom;
+            if (room != null && IsQueueRoom(room))
+            {
+                try
+                {
+                    // Clear premade mode flags and user IDs
+                    room.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, false);
+                    room.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, string.Empty);
+                    room.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
+                    room.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, string.Empty);
+                    room.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateNone);
+
+                    // Clear the flattened duo pairs array
+                    room.SetCustomProperty(QueueDuoPairsKey, new string[0]);
+
+                    Debug.Log($"ClearQueueDuoBreakupSignals: cleared local signals and room premade metadata.");
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"ClearQueueDuoBreakupSignals: error clearing room metadata: {ex}");
+                }
+            }
+        }
+
         private bool IsQueueRoom(Room room)
         {
             if (room == null || room.CustomProperties == null) return false;
@@ -7102,6 +7243,33 @@ namespace Altzone.Scripts.Lobby
                             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.LobbyRoom);
                         }
                     }
+                }
+            }
+
+            if (!_matchHasStartedInCurrentRoom && IsQueueRoom(PhotonRealtimeClient.CurrentRoom))
+            {
+                if (ShouldLeaveQueueWhenDuoPartnerLeaves())
+                {
+                    Debug.Log($"OnPlayerLeftRoom: queue duo partner left; leaving queue with local player {PhotonRealtimeClient.LocalPlayer?.UserId}.");
+                    ClearQueueDuoBreakupSignals();
+                    StopQueueTimer();
+                    try { StopMatchmakingCoroutines(); } catch (Exception ex) { Debug.LogWarning($"OnPlayerLeftRoom: failed to stop matchmaking coroutines before duo leave: {ex.Message}"); }
+                    if (PhotonRealtimeClient.InMatchmakingRoom)
+                    {
+                        StartCoroutine(LeaveMatchmaking());
+                    }
+                    else
+                    {
+                        Debug.Log("OnPlayerLeftRoom: duo breakup detected in queue room but InMatchmakingRoom=false; forcing LeaveRoom.");
+                        // Fallback path bypasses LeaveMatchmaking(), so fire stop + UI events explicitly.
+                        OnMatchmakingStopped?.Invoke();
+                        OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.LobbyRoom);
+                        if (PhotonRealtimeClient.Client.State != ClientState.Leaving)
+                        {
+                            PhotonRealtimeClient.LeaveRoom();
+                        }
+                    }
+                    return;
                 }
             }
 

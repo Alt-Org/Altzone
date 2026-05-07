@@ -73,6 +73,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
         {
             SignalBus.OnBattlePopupRequested += OpenWindow;
             SignalBus.OnCloseBattlePopupRequested += CloseWindow;
+            LobbyManager.OnMatchmakingStopped += OnMatchmakingStopped;
             LobbyManager.OnInRoomInviteReceived += OnInRoomInviteReceived;
             LobbyManager.OnInRoomInviteJoinFailed += OnInRoomInviteJoinFailed;
             // Register runtime popup reference for other components to find (safe to set here because serialized field is available in Awake)
@@ -85,6 +86,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
         {
             SignalBus.OnBattlePopupRequested -= OpenWindow;
             SignalBus.OnCloseBattlePopupRequested -= CloseWindow;
+            LobbyManager.OnMatchmakingStopped -= OnMatchmakingStopped;
             LobbyManager.OnInRoomInviteReceived -= OnInRoomInviteReceived;
             LobbyManager.OnInRoomInviteJoinFailed -= OnInRoomInviteJoinFailed;
             if (PopupContentsInstance == _popupContents)
@@ -305,6 +307,12 @@ namespace MenuUi.Scripts.Lobby.InLobby
         {
             _roomSwitcher.ClosePanels();
             _popupContents.SetActive(false);
+        }
+
+        private void OnMatchmakingStopped()
+        {
+            // Any matchmaking stop should close the battle popup to avoid stale queue UI.
+            CloseWindow();
         }
 
         private void RefreshTopInfo()
