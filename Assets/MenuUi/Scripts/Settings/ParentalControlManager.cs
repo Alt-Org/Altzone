@@ -84,20 +84,25 @@ public class ParentalControlManager : MonoBehaviour
         controlToggle.isOn = true; // PlayerPrefs.GetInt("ParentalControl", 0) == 1;
         timeLimitInput.text = 10f.ToString(); //PlayerPrefs.GetFloat("MaxPlayTime", 2f).ToString();
 
+        testToggle.onValueChanged.AddListener(_ => SetTestToggle());
         internetLinksToggle.onValueChanged.AddListener(_ => SetInternetLinks());
-        SetInternetLinksToggle();
+        chatMessagesToggle.onValueChanged.AddListener(_ => SetChatMessages());
+        //SetInternetLinksToggle();
         //internetLinksToggle.isOn = true;
-        testToggle.isOn = true;
-        chatMessagesToggle.isOn = true;
+        //testToggle.isOn = true;
+        //SetChatMessagesToggle();
+        
 
     }
 
-    /*
+    
     private void OnEnable()
     {
         SetInternetLinksToggle();
+        SetChatMessagesToggle();
+        SetTestToggleToggle();
     }
-    */
+    
 
 
     public void OpenPasswordPanel()
@@ -156,8 +161,7 @@ public class ParentalControlManager : MonoBehaviour
                 Debug.Log("correct password, login allowed");
                 //messageText.text = "Access granted!";
                 parentalControlSettings.SetActive(true);
-                SetInternetLinksToggle();
-                //internetLinksToggle.isOn = true;
+                
 
 
 
@@ -277,6 +281,26 @@ public class ParentalControlManager : MonoBehaviour
 
     }
 
+
+    public void SetTestToggle()
+    {
+        if (testToggle.isOn)
+        {
+            PlayerPrefs.SetInt("testToggle", 1);
+
+
+        }
+        else
+        {
+            PlayerPrefs.SetInt("testToggle", 0);
+        }
+
+    }
+
+    public void SetTestToggleToggle() {
+        testToggle.isOn = (PlayerPrefs.GetInt("testToggle", 0) !=0);
+
+    }
     public void SetInternetLinks ()
     {
         if (internetLinksToggle.isOn) {
@@ -295,35 +319,36 @@ public class ParentalControlManager : MonoBehaviour
         Debug.Log("internetLinks, got value" + PlayerPrefs.GetInt("internetLinks"));
         Debug.Log("internetLinksToggle is set");
 
-        /*
-        int checkLinks = PlayerPrefs.GetInt("internetLinks");
-        if (checkLinks == 1)
-        {
-            internetLinks = true;
-            Debug.Log("internetLinks is set to true");
-            internetLinksToggle.isOn = true;
-            Debug.Log("internetLinksToggle is set");
+       
+    }
 
+    public void SetChatMessages()
+    {
+        if (chatMessagesToggle.isOn)
+        {
+            PlayerPrefs.SetInt("chatMessages", 1);
 
 
         }
         else
         {
-            internetLinks = false;
-            internetLinksToggle.isOn = false;
-            Debug.Log("internetLinksToggle is set");
+            PlayerPrefs.SetInt("chatMessages", 0);
         }
-        */
 
-        //internetLinksToggle.isOn = (PlayerPrefs.GetInt("internetlinks",0) !=0);
+    }
 
+
+    public void SetChatMessagesToggle()
+    {
+        chatMessagesToggle.isOn = (PlayerPrefs.GetInt("chatMessages", 0) != 0);
+        Debug.Log("chat, got value" + PlayerPrefs.GetInt("chatMessages"));
+        Debug.Log("chatMessagesToggle is set");
 
     }
 
 
     public void SaveSettings()
     {
-        SetInternetLinks();
         PlayerPrefs.Save();
 
     }
