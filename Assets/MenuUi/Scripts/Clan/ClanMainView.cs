@@ -78,6 +78,7 @@ public class ClanMainView : MonoBehaviour
     [Header("pop ups")]
     [SerializeField] private ClanSearchPopup _clanPopup;
     [SerializeField] private GameObject _overlay;
+    [SerializeField] private GameObject _detailAddFriendRaycastBlocker;
     [SerializeField] private ClanConfirmPopup _confirmPopup;
     [SerializeField] private ClanMemberPopupController _memberDetailsPopup;
     [SerializeField] private ClanMembersFiltersPopup _membersFiltersPopup;
@@ -98,6 +99,7 @@ public class ClanMainView : MonoBehaviour
 
     private string _currentViewedClanId;
     private bool _filtersWired;
+    private bool _addFriendOpenedFromMemberDetails;
 
     [Header("Icons")]
     [SerializeField] private Image _clanAgeImage;
@@ -240,6 +242,12 @@ public class ClanMainView : MonoBehaviour
             _passwordPopup.SetActive(false);
         }
 
+        if (_addFriendPopup != null)
+        {
+            _addFriendPopup.Closed -= HandleAddFriendPopupClosed;
+            _addFriendPopup.Closed += HandleAddFriendPopupClosed;
+        }
+
         ServerClan clan = DataCarrier.GetData<ServerClan>(DataCarrier.ClanListing, suppressWarning: true);
 
         string ownClanId = null;
@@ -306,66 +314,6 @@ public class ClanMainView : MonoBehaviour
         ForceCloseMembersFiltersPopup();
     }
 
-    private void WireMembersFilterButton()
-    {
-        if (_filtersWired) return;
-        _filtersWired = true;
-
-        if (_membersFilterButton == null || _membersFiltersPopup == null) return;
-
-        _membersFilterButton.onClick.RemoveAllListeners();
-        _membersFilterButton.onClick.AddListener(OpenMembersFiltersPopup);
-
-        // Close overlay
-        _membersFiltersPopup.Closed -= HandleFiltersClosed;
-        _membersFiltersPopup.Closed += HandleFiltersClosed;
-
-        _membersFiltersPopup.OnFiltersChanged -= HandleMembersFiltersChanged;
-        _membersFiltersPopup.OnFiltersChanged += HandleMembersFiltersChanged;
-    }
-
-    private void HandleMembersFiltersChanged(ClanMembersFiltersPopup.MemberListFilters filters)
-    {
-        if (_membersPageController == null) return;
-
-        _membersPageController.ApplyFilters(filters.memberSort, filters.selectedRoles);
-    }
-
-    private void OpenMembersFiltersPopup()
-    {
-        if (_memberDetailsPopup != null)
-            _memberDetailsPopup.Hide();
-
-        if (_membersFiltersPopup == null) return;
-
-        ShowOverlay(true);
-
-        if (_popupOverlayButton != null)
-        {
-            _popupOverlayButton.onClick.RemoveListener(CloseMembersFiltersPopup);
-            _popupOverlayButton.onClick.AddListener(CloseMembersFiltersPopup);
-        }
-
-        // Opens filter popup and searches roles from the server
-        _membersFiltersPopup.OpenForClan(_currentViewedClanId);
-    }
-
-    private void CloseMembersFiltersPopup()
-    {
-        if (_membersFiltersPopup != null)
-            _membersFiltersPopup.CloseWithoutApplying();
-
-        HandleFiltersClosed();
-    }
-
-    private void HandleFiltersClosed()
-    {
-        if (_popupOverlayButton != null)
-            _popupOverlayButton.onClick.RemoveListener(CloseMembersFiltersPopup);
-
-        ShowOverlay(false);
-    }
-
 
     private void OnDisable()
     {
@@ -423,6 +371,11 @@ public class ClanMainView : MonoBehaviour
         if (_memberDetailsPopup != null)
         {
             _memberDetailsPopup.Hide();
+        }
+
+        if (_addFriendPopup != null)
+        {
+            _addFriendPopup.Closed -= HandleAddFriendPopupClosed;
         }
     }
 
@@ -989,6 +942,18 @@ public class ClanMainView : MonoBehaviour
         }
     }
 
+    private void SetOverlayClick(UnityAction action)
+    {
+        if (_popupOverlayButton == null) return;
+
+        _popupOverlayButton.onClick.RemoveAllListeners();
+
+        if (action != null)
+        {
+            _popupOverlayButton.onClick.AddListener(action);
+        }
+    }
+
     private string GetCurrentClanName()
     {
         var clanName = ServerManager.Instance.Clan;
@@ -1258,6 +1223,115 @@ public class ClanMainView : MonoBehaviour
         ShowOverlay(false);
     }
 
+    private void WireMembersFilterButton()
+    {
+        if (_filtersWired) return;
+        _filtersWired = true;
+
+        if (_membersFilterButton == null || _membersFiltersPopup == null) return;
+
+        _membersFilterButton.onClick.RemoveAllListeners();
+        _membersFilterButton.onClick.AddListener(OpenMembersFiltersPopup);
+
+        // Close overlay
+        _membersFiltersPopup.Closed -= HandleFiltersClosed;
+        _membersFiltersPopup.Closed += HandleFiltersClosed;
+
+        _membersFiltersPopup.OnFiltersChanged -= HandleMembersFiltersChanged;
+        _membersFiltersPopup.OnFiltersChanged += HandleMembersFiltersChanged;
+    }
+
+    private void HandleMembersFiltersChanged(ClanMembersFiltersPopup.MemberListFilters filters)
+    {
+        if (_membersPageController == null) return;
+
+        _membersPageController.ApplyFilters(filters.memberSort, filters.selectedRoles);
+    }
+
+    private void OpenMembersFiltersPopup()
+    {
+        if (_memberDetailsPopup != null)
+            _memberDetailsPopup.Hide();
+
+        if (_membersFiltersPopup == null) return;
+
+        ShowOverlay(true);
+
+        if (_popupOverlayButton != null)
+        {
+            _popupOverlayButton.onClick.RemoveListener(CloseMembersFiltersPopup);
+            _popupOverlayButton.onClick.AddListener(CloseMembersFiltersPopup);
+        }
+
+        // Opens filter popup and searches roles from the server
+        _membersFiltersPopup.OpenForClan(_currentViewedClanId);
+    }
+
+    private void CloseMembersFiltersPopup()
+    {
+        if (_membersFiltersPopup != null)
+            _membersFiltersPopup.CloseWithoutApplying();
+
+        HandleFiltersClosed();
+    }
+
+    private void HandleFiltersClosed()
+    {
+        if (_popupOverlayButton != null)
+            _popupOverlayButton.onClick.RemoveListener(CloseMembersFiltersPopup);
+
+        ShowOverlay(false);
+    }
+
+    public void OpenMemberDetailsPopup(
+        ClanMember member,
+        string roleLabel,
+        bool allowVotes,
+        bool allowAddFriend)
+    {
+        if (_memberDetailsPopup == null) return;
+
+        ShowOverlay(true);
+
+        SetOverlayClick(CloseMemberDetailsPopup);
+
+        _memberDetailsPopup.SetCloseCallback(CloseMemberDetailsPopup);
+        _memberDetailsPopup.SetCloseButtonsInteractable(true);
+
+        _memberDetailsPopup.Show(
+            member,
+            roleLabel,
+            allowVotes,
+            allowAddFriend,
+            onAddFriendRequested: memberToAdd =>
+            {
+                OpenAddFriendPopupFromMemberDetails(memberToAdd);
+            });
+    }
+
+    public void CloseMemberDetailsPopup()
+    {
+        // If add friend popup is open on top memberdetail popup,
+        // don't let memberdetail popup to close.
+        if (_addFriendOpenedFromMemberDetails)
+        {
+            return;
+        }
+
+        if (_memberDetailsPopup != null)
+        {
+            _memberDetailsPopup.Hide();
+        }
+
+        if (_detailAddFriendRaycastBlocker != null)
+        {
+            _detailAddFriendRaycastBlocker.SetActive(false);
+        }
+
+        SetOverlayClick(null);
+        ShowOverlay(false);
+    }
+
     private void ForceCloseMembersFiltersPopup()
     {
         if (_membersFiltersPopup != null)
@@ -1275,17 +1349,47 @@ public class ClanMainView : MonoBehaviour
 
     public void OpenAddFriendPopup(ClanMember member)
     {
+        OpenAddFriendPopup(member, false);
+    }
+
+    public void OpenAddFriendPopupFromMemberDetails(ClanMember member)
+    {
+        OpenAddFriendPopup(member, true);
+    }
+
+    private void OpenAddFriendPopup(ClanMember member, bool openedFromMemberDetails)
+    {
         if (_addFriendPopup == null) return;
 
-        ShowOverlay(true);
+        _addFriendOpenedFromMemberDetails = openedFromMemberDetails;
+
+        if (openedFromMemberDetails)
+        {
+            if (_memberDetailsPopup != null)
+            {
+                _memberDetailsPopup.SetCloseButtonsInteractable(false);
+            }
+
+            if (_detailAddFriendRaycastBlocker != null)
+            {
+                _detailAddFriendRaycastBlocker.SetActive(true);
+
+                // This blocker does not close anything
+                var blockerButton = _detailAddFriendRaycastBlocker.GetComponent<Button>();
+                if (blockerButton != null)
+                {
+                    blockerButton.onClick.RemoveAllListeners();
+                }
+            }
+        }
+        else
+        {
+            ShowOverlay(true);
+
+            SetOverlayClick(CloseAddFriendPopup);
+        }
 
         _addFriendPopup.Show(member);
-
-        if (_popupOverlayButton != null)
-        {
-            _popupOverlayButton.onClick.RemoveListener(CloseAddFriendPopup);
-            _popupOverlayButton.onClick.AddListener(CloseAddFriendPopup);
-        }
     }
 
     private void CloseAddFriendPopup()
@@ -1293,13 +1397,46 @@ public class ClanMainView : MonoBehaviour
         if (_addFriendPopup != null)
         {
             _addFriendPopup.Hide();
+            return;
         }
+
+        HandleAddFriendPopupClosed();
+    }
+
+    private void HandleAddFriendPopupClosed()
+    {
+        bool wasOpenedFromMemberDetails = _addFriendOpenedFromMemberDetails;
 
         if (_popupOverlayButton != null)
         {
             _popupOverlayButton.onClick.RemoveListener(CloseAddFriendPopup);
         }
 
-        ShowOverlay(false);
+        if (_detailAddFriendRaycastBlocker != null)
+        {
+            _detailAddFriendRaycastBlocker.SetActive(false);
+        }
+
+        if (_memberDetailsPopup != null)
+        {
+            _memberDetailsPopup.SetCloseButtonsInteractable(true);
+        }
+
+        if (!wasOpenedFromMemberDetails)
+        {
+            ShowOverlay(false);
+        }
+        else
+        {
+            ShowOverlay(true);
+
+            if (_popupOverlayButton != null)
+            {
+                _popupOverlayButton.onClick.RemoveListener(CloseMemberDetailsPopup);
+                _popupOverlayButton.onClick.AddListener(CloseMemberDetailsPopup);
+            }
+        }
+
+        _addFriendOpenedFromMemberDetails = false;
     }
 }
