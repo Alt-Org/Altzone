@@ -9,7 +9,7 @@ public class TopBarToggleHandler : MonoBehaviour
     public TopBarDefs.TopBarItem item;
     private Toggle _toggle;
 
-    private const bool DebugOn = false;
+    private const bool DebugOn = true;
 
     private void OnEnable()
     {
@@ -54,6 +54,7 @@ public class TopBarToggleHandler : MonoBehaviour
 
     private void OnChanged(bool isOn)
     {
+        Debug.Log($"[TopBarDebug] CLICK item={item}, isOn={isOn}, go={gameObject.name}");
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleHandler : OnChanged()");
 
         SettingsCarrier carrier = SettingsCarrier.Instance;

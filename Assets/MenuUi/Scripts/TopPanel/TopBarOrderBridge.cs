@@ -8,7 +8,7 @@ public class TopBarOrderBridge : MonoBehaviour
     [SerializeField] private RectTransform _toggleContainer;
     [SerializeField] private TopBarTargets[] _targetsByStyle;
 
-    private const bool DebugOn = false;
+    private const bool DebugOn = true;
 
     private SettingsCarrier.TopBarStyle CurrentStyle =>
         SettingsCarrier.Instance

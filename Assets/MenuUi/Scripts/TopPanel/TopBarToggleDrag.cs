@@ -18,7 +18,7 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     private Vector2 _pointerOffsetInRootCanvas;
     private float _lockedXInRootCanvas;
 
-    private const bool DebugOn = false;
+    private const bool DebugOn = true;
 
     private void Awake()
     {
