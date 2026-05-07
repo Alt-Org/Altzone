@@ -92,8 +92,9 @@ public class ParentalControlManager : MonoBehaviour
         treasureHuntToggle.onValueChanged.AddListener(_ => SetTreasureHunt());
         monthlyLimitInput.onValueChanged.AddListener(_ => SetMonthlyLimit());
         independentSpendingActivationToggle.onValueChanged.AddListener(_ => SetIndependentSpendingActivation());
-        
-
+        timeLimitInput.onValueChanged.AddListener(_ => SetTimeLimit());
+        midMatchToggle.onValueChanged.AddListener(_ => SetEndMidMatch());
+        endMatchToggle.onValueChanged.AddListener(_ => SetEndAfterMatch());
     }
 
     
@@ -106,6 +107,9 @@ public class ParentalControlManager : MonoBehaviour
         SetTreasureHuntToggle();
         GetMonthlyLimit();
         SetIndependentSpendingActivationToggle();
+        GetTimeLimit();
+        SetEndMidMatchToggle();
+        SetEndAfterMatchToggle();
     }
     
 
@@ -459,4 +463,52 @@ public class ParentalControlManager : MonoBehaviour
             PlayerPrefs.Save();
         }
     }
+
+    public void GetTimeLimit()
+    {
+        float getTime = PlayerPrefs.GetFloat("MaxPlayTime");
+        timeLimitInput.text = getTime.ToString();
+
+    }
+
+
+    public void SetEndMidMatch()
+    {
+        if (midMatchToggle.isOn)
+        {
+            PlayerPrefs.SetInt("EndMidMatch", 1);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("EndMidMatch", 0);
+        }
+
+    }
+    public void SetEndMidMatchToggle()
+    {
+        midMatchToggle.isOn = (PlayerPrefs.GetInt("EndMidMatch", 0) != 0);
+
+
+    }
+
+    public void SetEndAfterMatch()
+    {
+        if (endMatchToggle.isOn)
+        {
+            PlayerPrefs.SetInt("EndAfterMatch", 1);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("EndAfterMatch", 0);
+        }
+
+    }
+    public void SetEndAfterMatchToggle()
+    {
+        endMatchToggle.isOn = (PlayerPrefs.GetInt("EndAfterMatch", 0) != 0);
+
+
+    }
+
+
 }
