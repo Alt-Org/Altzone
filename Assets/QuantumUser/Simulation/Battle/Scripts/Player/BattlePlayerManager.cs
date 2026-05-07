@@ -350,16 +350,8 @@ namespace Battle.QSimulation.Player
                                                 playerClass
                                                 );
 
-                        // entity prototype — use pre-resolved Prototype from RuntimePlayer to avoid
-                        // calling View-layer code (BattleAltzoneLink) from Simulation, which breaks determinism.
-                        playerEntityPrototype = battleBaseCharacters[playerCharacterNumber].Prototype;
-                        if (playerEntityPrototype == default)
-                        {
-                            // Prototype was not pre-resolved (e.g. stale RuntimePlayer data).
-                            // Fall back to the View-layer delegate as a last resort.
-                            s_debugLogger.WarningFormat(f, "({0}) Character {1} has no pre-resolved Prototype, falling back to BattleAltzoneLink", playerSlot, playerCharacterId);
-                            playerEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(playerCharacterId);
-                        }
+                        // entity prototype
+                        playerEntityPrototype = BattleAltzoneLink.GetCharacterPrototype(playerCharacterId);
                         if (playerEntityPrototype == default)
                         {
                             const int FallbackId = 0;
@@ -406,7 +398,7 @@ namespace Battle.QSimulation.Player
                         //} set temp variables
 
                         // load class
-                        BattlePlayerClassManager.LoadClass(playerClass);
+                        BattlePlayerClassManager.LoadClass(f, playerClass);
 
                         // create hitBoxes
                         for (int i = 0; i < 2; i++)

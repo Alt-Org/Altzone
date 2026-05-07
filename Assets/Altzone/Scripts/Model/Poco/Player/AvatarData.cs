@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Player
@@ -139,43 +140,43 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public AvatarData(AvatarDefault serverData)
         {
-            Name = serverData.CharacterName;
+            Name = serverData.Name;
             if (serverData.HairId != null)
             {
                 int.TryParse(serverData.HairId, out Hair);
-                HairColor = "#FFFFFF";
+                HairColor = ColorUtility.ToHtmlStringRGB(serverData.HairColour);
             }
             if (serverData.EyesId != null)
             {
                 int.TryParse(serverData.EyesId, out Eyes);
-                EyesColor = "#FFFFFF";
+                EyesColor = ColorUtility.ToHtmlStringRGB(serverData.EyesColour);
             }
             if (serverData.NoseId != null)
             {
                 int.TryParse(serverData.NoseId, out Nose);
-                NoseColor = "#FFFFFF";
+                NoseColor = ColorUtility.ToHtmlStringRGB(serverData.NoseColour);
             }
             if (serverData.MouthId != null)
             {
                 int.TryParse(serverData.MouthId, out Mouth);
-                MouthColor = "#FFFFFF";
+                MouthColor = ColorUtility.ToHtmlStringRGB(serverData.MouthColour);
             }
             if (serverData.BodyId != null)
             {
                 int.TryParse(serverData.BodyId, out Clothes);
-                ClothesColor = "#FFFFFF";
+                ClothesColor = ColorUtility.ToHtmlStringRGB(serverData.BodyColour);
             }
             if (serverData.FeetId != null)
             {
                 int.TryParse(serverData.FeetId, out Feet);
-                FeetColor = "#FFFFFF";
+                FeetColor = ColorUtility.ToHtmlStringRGB(serverData.FeetColour);
             }
             if (serverData.HandsId != null)
             {
                 int.TryParse(serverData.HandsId, out Hands);
-                HandsColor = "#FFFFFF";
+                HandsColor = ColorUtility.ToHtmlStringRGB(serverData.HandsColour);
             }
-            Color = "#FFFFFF";
+            Color = ColorUtility.ToHtmlStringRGB(serverData.SkinColour);
             Scale = Vector2.one;
         }
 

@@ -1,0 +1,176 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 422bd9a18b9741e4ba404d384ee41b00, type: 3}
+  m_Name: AvatarReference
+  m_EditorClassIdentifier: 
+  _iraAvatar:
+    _nameFinnish: Rajanvartija
+    _nameEnglish: The Linewarden
+    _eyeColor: {r: 0.69803923, g: 0.13333334, b: 0.13333334, a: 1}
+    _skinColor: {r: 0.8705883, g: 0.54901963, b: 0.4156863, a: 1}
+    _frame: {fileID: 21300000, guid: 8986eb9b3eef1114f92d2653be2f6cab, type: 3}
+    _cornerIcon: {fileID: 21300000, guid: bad414b4c1bae7e4f96d492e83b42bb2, type: 3}
+    _character: {fileID: 21300000, guid: 49a83944ee9de1246b10639fa038087d, type: 3}
+    _descFinnish: "Kun jokin minulle t\xE4rke\xE4 on uhattuna, puolustan sit\xE4
+      hinnalla mill\xE4 hyv\xE4ns\xE4."
+    _descEnglish: 'When something important to me is threatened, I defend it at any
+      cost. '
+    _default:
+      CharacterName: Default Character
+      CharacterId: 100
+      HairId: 1010001
+      EyesId: 2110001
+      NoseId: 2210001
+      MouthId: 2310001
+      BodyId: 3110001
+      HandsId: 3200000
+      FeetId: 3310101
+      AlternativeVariations: []
+  _avaritiaAvatar:
+    _nameFinnish: Omistuksenvartija
+    _nameEnglish: The Hoardwarden
+    _eyeColor: {r: 0.8, g: 0.8, b: 0, a: 1}
+    _skinColor: {r: 0.9098039, g: 0.7607843, b: 0.61960787, a: 1}
+    _frame: {fileID: 21300000, guid: 7f70ad98f7f01db41bafe5dd07c3fd35, type: 3}
+    _cornerIcon: {fileID: 21300000, guid: 6e84e4c3a2d400f438be437826ed5abd, type: 3}
+    _character: {fileID: 21300000, guid: cd33d7546312a7747acf3596094ed4d7, type: 3}
+    _descFinnish: "Olen aina paikalla, kun jotain on otettavissa. En ker\xE4\xE4
+      itsekkyyden vuoksi. Maailma on arvaamaton ja vain hyvin varautunut selviytyy."
+    _descEnglish: 'I am always present when something can be taken. I do not gather
+      out of selfishness. The world is unpredictable, and only the well-prepared
+      survive. '
+    _default:
+      CharacterName: Default Character
+      CharacterId: 200
+      HairId: 1020001
+      EyesId: 2120101
+      NoseId: 2220101
+      MouthId: 2320101
+      BodyId: 3120001
+      HandsId: 3200000
+      FeetId: 3310101
+      AlternativeVariations: []
+  _invidiaAvatar:
+    _nameFinnish: Vertailunvartija
+    _nameEnglish: The Gazewarden
+    _eyeColor: {r: 0.13333334, g: 0.54509807, b: 0.13333334, a: 1}
+    _skinColor: {r: 0.54509807, g: 0.5647059, b: 0.5686275, a: 1}
+    _frame: {fileID: 21300000, guid: a85f88f04776d5140bd521112cdb8a26, type: 3}
+    _cornerIcon: {fileID: 21300000, guid: afc086fe899f85f4ca33ba72d38a607b, type: 3}
+    _character: {fileID: 21300000, guid: 2ee31512d109cfe4e8576046cbbaa0a1, type: 3}
+    _descFinnish: "Pid\xE4n toiset katseeni alla, jotta kukaan ei nouse minua ylemm\xE4s.
+      Voitto on sit\xE4, kun heid\xE4n aarteensa lakkaavat loistamasta omaani kirkkaammin."
+    _descEnglish: I keep others under my gaze so no one rises above me. Victory is
+      when their treasures no longer shine brighter than mine.
+    _default:
+      CharacterName: Default Character
+      CharacterId: 300
+      HairId: 1030001
+      EyesId: 2130101
+      NoseId: 2230101
+      MouthId: 2330101
+      BodyId: 3130001
+      HandsId: 3200000
+      FeetId: 3370101
+      AlternativeVariations: []
+  _luxuriaAvatar:
+    _nameFinnish: Vietinvartija
+    _nameEnglish: The Longingwarden
+    _eyeColor: {r: 0.78039217, g: 0.08235294, b: 0.52156866, a: 1}
+    _skinColor: {r: 0.85490197, g: 0.70980394, b: 0.6392157, a: 1}
+    _frame: {fileID: 21300000, guid: 801725e4cd15d294182d91861519540c, type: 3}
+    _cornerIcon: {fileID: 21300000, guid: e1f2a882b3e18df4e8d21ca0afe8f5c3, type: 3}
+    _character: {fileID: 21300000, guid: 590ee8632f341a34bb09d4e293205e56, type: 3}
+    _descFinnish: "Edustan kaipausta ja tarvetta tulla hyv\xE4ksytyksi. Kurotan kohti
+      toisia ja etsin samalla itse\xE4ni."
+    _descEnglish: I embody longing and the need to be accepted. I reach toward others
+      while searching for myself.
+    _default:
+      CharacterName: Default Character
+      CharacterId: 400
+      HairId: 1040001
+      EyesId: 2140101
+      NoseId: 2240101
+      MouthId: 2340101
+      BodyId: 3140001
+      HandsId: 3200000
+      FeetId: 3310101
+      AlternativeVariations: []
+  _gulaAvatar:
+    _nameFinnish: "T\xE4yttymyksenvartija"
+    _nameEnglish: The Hungerwarden
+    _eyeColor: {r: 1, g: 0.84313726, b: 0, a: 1}
+    _skinColor: {r: 0.91764706, g: 0.7607843, b: 0.63529414, a: 1}
+    _frame: {fileID: 21300000, guid: 2c697fa8ec4259f4fbac2ca0121a27b2, type: 3}
+    _cornerIcon: {fileID: 21300000, guid: 07133b819c13bae4c8c6cdc3b3205e95, type: 3}
+    _character: {fileID: 21300000, guid: 48d783b2cbb52bd468856d539c326df0, type: 3}
+    _descFinnish: "Olen kyltym\xE4t\xF6n el\xE4m\xE4lle eik\xE4 mik\xE4\xE4n tunnu
+      t\xE4ytt\xE4v\xE4n tarpeitani."
+    _descEnglish: I am insatiable for life, yet nothing ever seems to fulfill my
+      needs.
+    _default:
+      CharacterName: Default Character
+      CharacterId: 500
+      HairId: 1050001
+      EyesId: 2150101
+      NoseId: 2250101
+      MouthId: 2350101
+      BodyId: 3150001
+      HandsId: 3200000
+      FeetId: 3310101
+      AlternativeVariations: []
+  _acediaAvatar:
+    _nameFinnish: Levonvartija
+    _nameEnglish: The Stillwarden
+    _eyeColor: {r: 0.4392157, g: 0.5019608, b: 0.5647059, a: 1}
+    _skinColor: {r: 0.7254902, g: 0.7254902, b: 0.7254902, a: 1}
+    _frame: {fileID: 21300000, guid: c85d5545634946d4998288d053151ab6, type: 3}
+    _cornerIcon: {fileID: 21300000, guid: 4465914b30e24cd4d8b1c38034b54eaf, type: 3}
+    _character: {fileID: 21300000, guid: d90e49211f9bcf940862f95c96d7df61, type: 3}
+    _descFinnish: "Vaatimukset ovat kahleita vapauteni ymp\xE4rill\xE4. Voimani on
+      p\xE4\xE4t\xF6ksess\xE4 olla tekem\xE4tt\xE4 mit\xE4\xE4n."
+    _descEnglish: Demands are chains wrapped around my freedom. My power lies in
+      the decision to do nothing.
+    _default:
+      CharacterName: Default Character
+      CharacterId: 600
+      HairId: 1060001
+      EyesId: 2160001
+      NoseId: 2260001
+      MouthId: 2360001
+      BodyId: 3160001
+      HandsId: 3200000
+      FeetId: 3310101
+      AlternativeVariations: []
+  _superbiaAvatar:
+    _nameFinnish: "Min\xE4nvartija"
+    _nameEnglish: The Crownwarden
+    _eyeColor: {r: 0.5019608, g: 0, b: 0.5019608, a: 1}
+    _skinColor: {r: 0.9529412, g: 0.8, b: 0.64705884, a: 1}
+    _frame: {fileID: 21300000, guid: fc12ad5b40d27a3408323ac1cbd3e4b4, type: 3}
+    _cornerIcon: {fileID: 21300000, guid: 7dda66d5aa65dad45b85939de1d20c70, type: 3}
+    _character: {fileID: 21300000, guid: bba53856f67f0c24c92f766feeb0f68c, type: 3}
+    _descFinnish: "Minulla on kokemusta ja viisautta el\xE4m\xE4st\xE4 ja se tuo
+      minulle valtaa hallita muita."
+    _descEnglish: I carry experience and wisdom of life, and through it I gain the
+      power to govern others.
+    _default:
+      CharacterName: Default Character
+      CharacterId: 700
+      HairId: 1070001
+      EyesId: 2170101
+      NoseId: 2270101
+      MouthId: 2370101
+      BodyId: 3170001
+      HandsId: 3200000
+      FeetId: 3310101
+      AlternativeVariations: []

@@ -8,7 +8,6 @@ public class SettingsPopup : MonoBehaviour
 {
     [SerializeField] private Button[] _closeButtons;   // esim. se n�kym�t�n taustabuttoni
     [SerializeField] private SwipeBlockerPopupHandler _blockerHandler;
-    [SerializeField] private GameObject[] Windows;
 
     private void Start()
     {
@@ -27,14 +26,15 @@ public class SettingsPopup : MonoBehaviour
 
     public void ClosePopup()
     {
+        if (!isActiveAndEnabled) return;
         gameObject.SetActive(false);
 
         _blockerHandler.ClosePopup(gameObject);
 
         //This is here because some buttons shut down more than one tab
-        foreach(GameObject objects in Windows)
+        foreach(Button objects in _closeButtons)
         {
-            objects.SetActive(true);
+            objects.onClick.Invoke();
         }
 
     }
