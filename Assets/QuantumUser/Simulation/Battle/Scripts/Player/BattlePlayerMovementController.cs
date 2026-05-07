@@ -95,6 +95,7 @@ namespace Battle.QSimulation.Player
                 case BattleMovementInputType.PositionTarget:
                     ClampGridPosition(playerData, input->MovementPositionTarget, out playerData->TargetPosition);
                     playerData->HasTargetPosition = true;
+                    playerData->ViewPosition = playerData->TargetPosition;
                     break;
 
                 case BattleMovementInputType.PositionMove:
@@ -103,7 +104,7 @@ namespace Battle.QSimulation.Player
                     {
                         positionNext = clampedNext;
                     }
-                    playerData->TargetPosition = positionNext;
+                    playerData->ViewPosition = positionNext;
                     break;
 
                 case BattleMovementInputType.Direction:
@@ -113,7 +114,7 @@ namespace Battle.QSimulation.Player
                     {
                         positionNext = clampedPosition;
                     }
-                    playerData->TargetPosition = positionNext;
+                    playerData->ViewPosition = positionNext;
                     break;
             }
 
@@ -133,6 +134,7 @@ namespace Battle.QSimulation.Player
             {
                 ClampAndSnapWorldPosition(playerData, transform->Position, out positionNext);
                 playerData->TargetPosition = positionNext;
+                playerData->ViewPosition   = positionNext;
             }
 
             //} handle movement
@@ -207,6 +209,7 @@ namespace Battle.QSimulation.Player
         /// <param name="position">World position to move to.</param>
         public static void Move(Frame f, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntityRef, FPVector2 position)
         {
+            playerData->ViewMovementVector = position - playerData->ViewPosition;
             BattleEntityManager.MoveCompound(f, playerEntityRef, position, playerData->RotationBaseRad);
             if (playerData->AttachedShield.ERef == EntityRef.None) return;
             BattleEntityManager.MoveCompound(f, playerData->AttachedShield, position, playerData->RotationBaseRad + playerData->RotationOffsetRad);
@@ -222,6 +225,7 @@ namespace Battle.QSimulation.Player
         /// <param name="position">New world position.</param>
         public static void Teleport(Frame f, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntityRef, FPVector2 position)
         {
+            playerData->ViewMovementVector = FPVector2.Zero;
             BattleEntityManager.TeleportCompound(f, playerEntityRef, position, playerData->RotationBaseRad);
             if (playerData->AttachedShield.ERef == EntityRef.None) return;
             BattleEntityManager.TeleportCompound(f, playerData->AttachedShield, position, playerData->RotationBaseRad + playerData->RotationOffsetRad);

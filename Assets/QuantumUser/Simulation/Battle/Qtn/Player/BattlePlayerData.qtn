@@ -40,6 +40,10 @@ component BattlePlayerDataQComponent
 
     // Bot related data
     FP BotMovementCooldownSec;
+
+    // View related data
+    FPVector2 ViewPosition;
+    FPVector2 ViewMovementVector;
 }
 
 //} PlayerData

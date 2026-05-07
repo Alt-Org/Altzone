@@ -253,6 +253,7 @@ namespace Battle.QSimulation.Player
                 FPVector2 playerPosition = playerEntityRef.GetTransform(f)->Position;
                 BattleEntityManager.TeleportCompound(f, shieldNewEntityRef, playerPosition, playerData->RotationBaseRad);
             }
+            f.Events.BattleShieldChangeState(playerEntityRef.ERef, playerData->TeamNumber, shieldNewData->IsAttached, shieldNumber);
         }
 
         /// <summary>
@@ -290,6 +291,7 @@ namespace Battle.QSimulation.Player
             playerData->AttachedShield = BattlePlayerShieldEntityRef.None;
             shieldData->IsAttached     = false;
 
+            f.Events.BattleShieldChangeState(shieldData->PlayerEntityRef.ERef, playerData->TeamNumber, shieldData->IsAttached, shieldNumber);
             return shieldEntityRef;
         }
 
@@ -329,6 +331,7 @@ namespace Battle.QSimulation.Player
             shieldData->IsAttached = false;
 
             ReturnShieldEntityRef(f, shieldManagerData, playerSlot, characterNumber, shieldNumber);
+            f.Events.BattleShieldChangeState(shieldData->PlayerEntityRef.ERef, playerData->TeamNumber, shieldData->IsAttached, shieldNumber);
         }
 
         /// <summary>

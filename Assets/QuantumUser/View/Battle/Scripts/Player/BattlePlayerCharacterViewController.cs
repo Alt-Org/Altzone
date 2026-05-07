@@ -4,16 +4,21 @@
 /// </summary>
 
 // System usings
+using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
+
 // Battle QSimulation usings
 using Battle.QSimulation;
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Player;
+
 // Battle View usings
 using Battle.View.Game;
+
 // Quantum usings
 using Quantum;
+
 // Unity usings
 using UnityEngine;
 
@@ -40,6 +45,16 @@ namespace Battle.View.Player
             /// Constant that defines the exact sprite count of the spritesheet.
             /// </summary>
             public const int Count = 64;
+
+            public const int HandSpriteStartBottom = 16;
+
+            public const int HandSpriteStartTop = 24;
+
+            public const int ShieldSpriteStart = 32;
+
+            public const int ShieldCount = 4;
+
+            public const int ShieldStateCount = 2;
 
             /// <summary>
             /// Enum that maps a Sprite name to its index on the player's spritesheet.
@@ -95,13 +110,13 @@ namespace Battle.View.Player
                 HandsShieldUp4 = 19,
 
                 /// <summary>Index: 20</summary>
-                BaseShoes = 20,
+                ShoesStanding = 20,
 
                 /// <summary>Index: 21</summary>
-                RunningShoes1 = 21,
+                ShoesRunningLeft = 21,
 
                 /// <summary>Index: 22</summary>
-                RunningShoes2 = 22,
+                ShoesRunningRight = 22,
 
                 /// <summary>Index: 24</summary>
                 HandsShieldDown1 = 24,
@@ -164,19 +179,19 @@ namespace Battle.View.Player
                 ShieldDownHit4 = 47,
 
                 /// <summary>Index: 48</summary>
-                Joy = 48,
+                ReactionJoy = 48,
 
                 /// <summary>Index: 49</summary>
-                Sadness = 49,
+                ReactionSadness = 49,
 
                 /// <summary>Index: 50</summary>
-                Playful = 50,
+                ReactionPlayful = 50,
 
                 /// <summary>Index: 51</summary>
-                Agression = 51,
+                ReactionAgression = 51,
 
                 /// <summary>Index: 52</summary>
-                Love = 52,
+                ReactionLove = 52,
 
                 /// <summary>Index: 56</summary>
                 ShieldBroken = 56,
@@ -337,6 +352,15 @@ namespace Battle.View.Player
             _bodypartSpriteRenderers[SpriteRendererShadowIndex] .sprite = null;
         }
 
+        public void SetDefaultBodyPartSprites()
+        {
+            _bodypartSpriteRenderers[SpriteRendererHeadIndex].sprite   = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Head1);
+            _bodypartSpriteRenderers[SpriteRendererBodyIndex].sprite   = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Body1);
+            _bodypartSpriteRenderers[SpriteRendererHandsIndex].sprite  = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.BaseHands);
+            _bodypartSpriteRenderers[SpriteRendererFeetIndex].sprite   = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.ShoesStanding);
+            _bodypartSpriteRenderers[SpriteRendererShadowIndex].sprite = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Shadow);
+        }
+
         /// <summary>
         /// Handles changing the sprite for the head gameobject based on given <paramref name="sprite"/>.
         /// </summary>
@@ -355,11 +379,11 @@ namespace Battle.View.Player
                     SpriteSheetMap.Enum.Head2 or
                     SpriteSheetMap.Enum.Head3 or
                     SpriteSheetMap.Enum.Head4 or
-                    SpriteSheetMap.Enum.Joy or
-                    SpriteSheetMap.Enum.Sadness or
-                    SpriteSheetMap.Enum.Playful or
-                    SpriteSheetMap.Enum.Agression or
-                    SpriteSheetMap.Enum.Love,
+                    SpriteSheetMap.Enum.ReactionJoy or
+                    SpriteSheetMap.Enum.ReactionSadness or
+                    SpriteSheetMap.Enum.ReactionPlayful or
+                    SpriteSheetMap.Enum.ReactionAgression or
+                    SpriteSheetMap.Enum.ReactionLove,
                 "{0} Sprite is not a head sprite", sprite
             );
             _bodypartSpriteRenderers[0].sprite = _spriteSheet.GetSprite(sprite);
@@ -431,9 +455,9 @@ namespace Battle.View.Player
         {
             BattleDebugLogger.DevAssertFormat(nameof(BattlePlayerCharacterViewController),
                 sprite.EnumValue is
-                    SpriteSheetMap.Enum.BaseShoes or
-                    SpriteSheetMap.Enum.RunningShoes1 or
-                    SpriteSheetMap.Enum.RunningShoes2,
+                    SpriteSheetMap.Enum.ShoesStanding or
+                    SpriteSheetMap.Enum.ShoesRunningLeft or
+                    SpriteSheetMap.Enum.ShoesRunningRight,
                 "{0} Sprite is not a feet sprite", sprite
             );
             _bodypartSpriteRenderers[3].sprite = _spriteSheet.GetSprite(sprite);
@@ -468,7 +492,9 @@ namespace Battle.View.Player
             float scale = (float)e.ModelScale;
             transform.localScale = new Vector3(scale, scale, scale);
 
-            if (BattlePlayerManager.PlayerHandle.GetTeamNumber(e.Slot) == BattleGameViewController.LocalPlayerTeam)
+            _teamNumber = BattlePlayerManager.PlayerHandle.GetTeamNumber(e.Slot);
+
+            if (_teamNumber == BattleGameViewController.LocalPlayerTeam)
             {
                 GameObject characterGameObject = _characterGameObjects[0];
                 characterGameObject.SetActive(true);
@@ -490,7 +516,7 @@ namespace Battle.View.Player
                 _bodypartSpriteRenderers[SpriteRendererShadowIndex] = characterGameObject.transform.Find("Shadow").GetComponent<SpriteRenderer>();
             }
 
-            SetBaseSprite();
+            SetDefaultBodyPartSprites();
 
             if (e.Slot == BattleGameViewController.LocalPlayerSlot)
             {
@@ -554,6 +580,7 @@ namespace Battle.View.Player
             QuantumEvent.Subscribe<EventBattlePlayStateUpdate>(this, QEventOnPlayStateUpdate);
             QuantumEvent.Subscribe<EventBattleCharacterHit>(this, QEventOnCharacterHit);
             QuantumEvent.Subscribe<EventBattleShieldHit>(this, QEventOnShieldHit);
+            QuantumEvent.Subscribe<EventBattleShieldChangeState>(this, QEventBattleShieldChangeState);
         });}
 
         /// <summary>
@@ -568,10 +595,24 @@ namespace Battle.View.Player
             BattlePlayerDataQComponent* playerData = PredictedFrame.Unsafe.GetPointer<BattlePlayerDataQComponent>(EntityRef);
             if (playerData->PlayerRef == PlayerRef.None) return;
 
-            Vector3 targetPosition = playerData->TargetPosition.ToUnityVector3();
-            BattleTeamNumber battleTeamNumber = playerData->TeamNumber;
+            Vector2 movementVector = playerData->ViewMovementVector.ToUnityVector2();
 
-            UpdateModelPositionAdjustment(&targetPosition);
+            if (movementVector == Vector2.zero)
+            {
+                SetFeetSprite(SpriteSheetMap.Enum.ShoesStanding);
+            }
+            else if (movementVector.x < 0)
+            {
+                SetFeetSprite(SpriteSheetMap.Enum.ShoesRunningLeft);
+            }
+            else
+            {
+                SetFeetSprite(SpriteSheetMap.Enum.ShoesRunningRight);
+            }
+
+            Vector3 viewPosition = playerData->ViewPosition.ToUnityVector3();
+
+            UpdateModelPositionAdjustment(&viewPosition);
 
             _classViewController.OnUpdateView();
         }
@@ -638,6 +679,8 @@ namespace Battle.View.Player
         /// See [{PlayerShieldViewController}](#page-concepts-player-shield-view-controller) for more info.
         private BattlePlayerShieldViewController[] _playerShieldViewControllers;
 
+        private BattleTeamNumber _teamNumber;
+
         /// @anchor BattlePlayerCharacterViewController-Private-GameflowMethods
         /// @name Private Gameflow Methods
         /// @{
@@ -701,6 +744,19 @@ namespace Battle.View.Player
             }
             _stunFlashCoroutine = StartCoroutine(StunFlashCoroutine((float)e.StunFlashDurationSec));
 
+            SpriteSheetMap sprite = e.ProjectileEmotion switch
+            {
+                BattleEmotionState.Joy        => SpriteSheetMap.Enum.ReactionJoy,
+                BattleEmotionState.Sadness    => SpriteSheetMap.Enum.ReactionSadness,
+                BattleEmotionState.Playful    => SpriteSheetMap.Enum.ReactionPlayful,
+                BattleEmotionState.Aggression => SpriteSheetMap.Enum.ReactionAgression,
+                BattleEmotionState.Love       => SpriteSheetMap.Enum.ReactionLove,
+
+                _ => throw new NotImplementedException()
+            };
+
+            SetHeadSprite(sprite);
+
             _classViewController.OnCharacterHit(e);
 
             foreach (BattlePlayerShieldViewController shield in _playerShieldViewControllers)
@@ -723,6 +779,24 @@ namespace Battle.View.Player
                 if (shield.EntityRef != e.ERef) return;
                 shield.OnShieldHit(e);
             }
+            if (e.DefencePercentage <= 0)
+            {
+                SetHandSprite(SpriteSheetMap.Enum.ScaredHands);
+            }
+        }
+
+        private void QEventBattleShieldChangeState(EventBattleShieldChangeState e)
+        {
+            if (EntityRef != e.ERef) return;
+
+            if (e.ShieldAttached)
+            {
+                SetHandOnShieldSprite(e.Team, e.ShieldNumber);
+            }
+            else
+            {
+                SetHandSprite(SpriteSheetMap.Enum.BaseHands);
+            }
         }
 
         #endregion Private QuantumEvent Handlers
@@ -732,17 +806,17 @@ namespace Battle.View.Player
         /// @{
 
         /// <summary>
-        /// Private helper method for adjusting the player character model's position based on <paramref name="targetPosition"/>.
+        /// Private helper method for adjusting the player character model's position based on <paramref name="position"/>.
         /// </summary>
         ///
-        /// <param name="targetPosition">Target position.</param>
-        private void UpdateModelPositionAdjustment(Vector3* targetPosition)
+        /// <param name="position">Target position.</param>
+        private void UpdateModelPositionAdjustment(Vector3* position)
         {
             const float adjustmentDistance = 0.25f;
-            Vector3 distanceToTargetPosition = *targetPosition - transform.position;
+            Vector3 distanceToTargetPosition = *position - transform.position;
             if (distanceToTargetPosition.sqrMagnitude < adjustmentDistance * adjustmentDistance)
             {
-                transform.position = *targetPosition;
+                transform.position = *position;
             }
             else
             {
@@ -779,6 +853,15 @@ namespace Battle.View.Player
 
                 yield return new WaitForSeconds(singleFlashDuration);
             }
+        }
+
+        private void SetHandOnShieldSprite(BattleTeamNumber team, int shieldNumber)
+        {
+            int startIndex = team == BattleGameViewController.LocalPlayerTeam ? SpriteSheetMap.HandSpriteStartBottom : SpriteSheetMap.HandSpriteStartTop;
+
+            int index = startIndex + shieldNumber;
+
+            SetHandSprite(SpriteSheetMap.FromInt(index));
         }
 
         /// @}

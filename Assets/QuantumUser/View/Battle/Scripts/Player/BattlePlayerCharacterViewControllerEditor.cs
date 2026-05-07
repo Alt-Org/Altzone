@@ -57,7 +57,7 @@ namespace Battle.View.Player
                     _bodyPartSpriteRenderers[SpriteRendererHeadIndex]   .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Head1);
                     _bodyPartSpriteRenderers[SpriteRendererBodyIndex]   .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Body1);
                     _bodyPartSpriteRenderers[SpriteRendererHandsIndex]  .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.BaseHands);
-                    _bodyPartSpriteRenderers[SpriteRendererFeetIndex]   .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.BaseShoes);
+                    _bodyPartSpriteRenderers[SpriteRendererFeetIndex]   .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.ShoesStanding);
                     _bodyPartSpriteRenderers[SpriteRendererShadowIndex] .sprite = spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Shadow);
                 }
                 else
