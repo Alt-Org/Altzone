@@ -8,6 +8,12 @@ using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
 
+// Unity usings
+using UnityEngine;
+
+// Quantum usings
+using Quantum;
+
 // Battle QSimulation usings
 using Battle.QSimulation;
 using Battle.QSimulation.Game;
@@ -15,12 +21,6 @@ using Battle.QSimulation.Player;
 
 // Battle View usings
 using Battle.View.Game;
-
-// Quantum usings
-using Quantum;
-
-// Unity usings
-using UnityEngine;
 
 namespace Battle.View.Player
 {

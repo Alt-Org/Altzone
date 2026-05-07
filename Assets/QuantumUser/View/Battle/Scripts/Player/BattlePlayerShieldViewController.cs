@@ -7,17 +7,19 @@
 using System;
 using System.Runtime.CompilerServices;
 
-// Battle QSimulation usings
-using Battle.QSimulation;
-using Battle.QSimulation.Game;
-using Battle.QSimulation.Player;
-using Battle.View.Game;
+// Unity usings
+using UnityEngine;
 
 // Quantum usings
 using Quantum;
 
-// Unity usings
-using UnityEngine;
+// Battle QSimulation usings
+using Battle.QSimulation;
+using Battle.QSimulation.Game;
+using Battle.QSimulation.Player;
+
+// Battle View usings
+using Battle.View.Game;
 
 // Battle Player usings
 using SpriteSheetMap = Battle.View.Player.BattlePlayerCharacterViewController.SpriteSheetMap;
