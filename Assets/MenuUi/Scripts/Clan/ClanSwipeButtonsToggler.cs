@@ -1,68 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
+using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ClanSwipeButtonsToggler : MonoBehaviour
 {
-    [SerializeField] private ScrollRect _scrollRect;
-    [SerializeField] private BaseScrollRect _baseScrollRect;
+    [SerializeField] private SwipeUI _swipeUI;
     [SerializeField] private ClanMainView _clanMainView;
-
-    [Tooltip("Kun horizontalNormalizedPosition ylitt�� t�m�n, tulkitaan ett� ollaan Members-sivulla.")]
-    [Range(0f, 1f)]
-    [SerializeField] private float _membersThreshold = 0.5f;
-
-    private bool _lastOnProfile = true;
 
     private void OnEnable()
     {
-        if (_scrollRect != null)
+        if (_swipeUI != null)
         {
-            _scrollRect.onValueChanged.AddListener(OnScrollChanged);
-
-            UpdateFromScroll();
-        }
-        else if (_baseScrollRect != null)
-        {
-            _baseScrollRect.OnValueChanged.AddListener(OnScrollChanged);
-
-            UpdateFromScroll();
+            _swipeUI.OnCurrentPageChanged += HandleCurrentPageChanged;
+            HandleCurrentPageChanged();
         }
     }
 
     private void OnDisable()
     {
-        if (_scrollRect != null)
+        if (_swipeUI != null)
         {
-            _scrollRect.onValueChanged.RemoveListener(OnScrollChanged);
-        }
-        else if (_baseScrollRect != null)
-        {
-            _baseScrollRect.OnValueChanged.RemoveListener(OnScrollChanged);
+            _swipeUI.OnCurrentPageChanged -= HandleCurrentPageChanged;
         }
     }
 
-    private void OnScrollChanged(Vector2 _)
+    private void HandleCurrentPageChanged()
     {
-        UpdateFromScroll();
-    }
+        if (_swipeUI == null || _clanMainView == null)
+            return;
 
-    private void UpdateFromScroll()
-    {
-        if (_scrollRect == null && _baseScrollRect == null || _clanMainView == null) return;
+        bool onProfilePage = _swipeUI.CurrentPage == 0;
 
-        float x;
-        if (_scrollRect) x = _scrollRect.horizontalNormalizedPosition;
-        else x = _baseScrollRect.HorizontalNormalizedPosition;
-        bool onProfile = x < _membersThreshold;
-
-        if (onProfile == _lastOnProfile) return;
-        _lastOnProfile = onProfile;
-
-        if (onProfile)
-            _clanMainView.SetCurrentPageToProfile();
-        else
-            _clanMainView.SetCurrentPageToMembers();
+        _clanMainView.SetCurrentPageFromSwipe(onProfilePage);
     }
 }
