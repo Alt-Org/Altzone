@@ -18,7 +18,7 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _date;
     [SerializeField] private Button _button;
     [SerializeField] private GameObject _addReactionsControls;
-    [SerializeField] private GameObject[] _reactionsPanel;
+    [SerializeField] private GameObject _reactionsPanel;
     [SerializeField] private GameObject _fixSize;
     [SerializeField] private ChatShowUsersPopUpData _chatShowUsersPopUpData;
 
@@ -27,6 +27,7 @@ public class MessageObjectHandler : MonoBehaviour
     public RectTransform _baseMessageSize;
     [SerializeField] private ChatMessageScript backgroundSize;
     [SerializeField] private GameObject reactionField;
+    public Vector2 reactionFieldVector;
     public GameObject _reactionSize;
     public GameObject _expandedReactionSize;
     [SerializeField] private Vector2 _vectorReactionSize;
@@ -38,7 +39,7 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private Image _extraimage;
     private Action<MessageObjectHandler> _selectMessageAction;
 
-    public GameObject[] ReactionsPanel { get => _reactionsPanel;}
+    public GameObject ReactionsPanel { get => _reactionsPanel;}
 
     [SerializeField] private GameObject ReactionObject;
 
@@ -47,6 +48,7 @@ public class MessageObjectHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        reactionFieldVector = reactionField.transform.position;
         _button.onClick.AddListener(SetMessageActive);
         _image = _button.GetComponent<Image>();
         Chat.OnSelectedMessageChanged += SetMessageInactive;
@@ -162,7 +164,7 @@ public class MessageObjectHandler : MonoBehaviour
         //Gets the set data we need to get to import saved reactions
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
 
-                ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, true, ReactionsPanel, message);
+                ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, ReactionsPanel, message);
         
     }
 

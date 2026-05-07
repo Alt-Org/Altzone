@@ -70,7 +70,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
         foreach (var reactionContent in _reactionPaneldata)
         {
-
             GenarateReactionObjects(reactionContent._reactionsContent);
             UpdateReactionStatus(reactionContent._reactionsContent);
         }
@@ -199,7 +198,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
             }
             foreach (ServerReactions reaction in reactions)
             {
-                AddReaction(reaction, (Mood)Enum.Parse(typeof(Mood), reaction.emoji), messageid, true, new GameObject[] {  reactionContent._reactionField }, message);
+                AddReaction(reaction, (Mood)Enum.Parse(typeof(Mood), reaction.emoji), messageid, reactionContent._reactionField, message);
                 
             }
             List<ChatReactionHandler> removableReactions = new();
@@ -226,7 +225,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
     /// <summary>
     /// Adds the chosen reaction to the selected message.
     /// </summary>
-    public void AddReaction(ServerReactions _reaction, Mood mood, string message_id, bool fromServer = false, GameObject[] ReactionPanel = null, ChatMessage message = null)
+    public void AddReaction(ServerReactions _reaction, Mood mood, string message_id, GameObject ReactionPanel = null, ChatMessage message = null)
     {
 
 
@@ -239,15 +238,8 @@ public class MessageReactionsHandler : AltMonoBehaviour
                 return;
 
 
+            HorizontalLayoutGroup reactionsFields = ReactionPanel.GetComponent<HorizontalLayoutGroup>();
 
-            List<HorizontalLayoutGroup> reactionsFields = new List<HorizontalLayoutGroup>();
-
-            foreach (GameObject ObjectData in ReactionPanel)
-            {
-                HorizontalLayoutGroup reactionsField = ObjectData.GetComponent<HorizontalLayoutGroup>();
-                if(reactionsField != null)
-                    reactionsFields.Add(reactionsField);
-            }
 
 
 
@@ -281,9 +273,8 @@ public class MessageReactionsHandler : AltMonoBehaviour
             }
 
             // Creates a reaction with the needed info and adds it to the selected message.
-            foreach (var ObjectData in reactionsFields)
-            {
-                GameObject newReaction = Instantiate(_addedReactionPrefab, ObjectData.transform);
+
+            GameObject newReaction = Instantiate(_addedReactionPrefab, reactionsFields.transform);
             
             ChatReactionHandler chatReactionHandler = newReaction.GetComponentInChildren<ChatReactionHandler>();
             chatReactionHandler.SetReactionInfo(reactionSprite, messageID, mood);
@@ -311,8 +302,8 @@ public class MessageReactionsHandler : AltMonoBehaviour
             }
             PickCommonReactions();
 
-            LayoutRebuilder.ForceRebuildLayoutImmediate(ObjectData.GetComponent<RectTransform>());
-            }
+            LayoutRebuilder.ForceRebuildLayoutImmediate(ReactionPanel.GetComponent<RectTransform>());
+            
 
             _selectedMessage.SetMessageInactive();
 
@@ -325,7 +316,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
     /// Toggles the added reactions as selected and unselected.
     /// </summary>
     /// <param name="reactionHandler"></param>
-    private void ToggleReaction(ChatReactionHandler reactionHandler)
+    public void ToggleReaction(ChatReactionHandler reactionHandler)
     {
         ChatListener.Instance.SendReaction(!reactionHandler.Selected ? reactionHandler.Mood.ToString() : string.Empty, reactionHandler.MessageID, ChatListener.Instance.ActiveChatChannel);
         if (!_longClick)
@@ -370,7 +361,14 @@ public class MessageReactionsHandler : AltMonoBehaviour
         RectTransform rt = _usersWhoAdded.GetComponent<RectTransform>();
 
         _longClick = true;
+        _reactionPaneldata[0]._reactionField.transform.SetParent(_chatShowUsersPopUpData._reactionFieldNewLocation.transform);
+
+
+
+
+
         _usersWhoAdded.transform.SetParent(Chat.instance.PopUps.transform);
+
 
         rt.offsetMin = Vector2.zero;
         rt.offsetMax = Vector2.zero;

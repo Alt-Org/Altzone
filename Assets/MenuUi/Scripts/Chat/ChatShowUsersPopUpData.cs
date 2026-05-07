@@ -5,13 +5,11 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using static MessageReactionsHandler;
-using MenuUi.Scripts.AvatarEditor;
 using System;
 using Altzone.Scripts.Chat;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using static ServerChatMessage;
 using System.Linq;
-using NUnit.Framework.Internal.Commands;
 
 public class ChatShowUsersPopUpData : MonoBehaviour
 {
@@ -30,9 +28,9 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     [SerializeField] private List<UserReactionInfo> _userInfo;
 
     [Header("Reactions")]
-    [SerializeField] private GameObject _reactionField; //Turn this off if "ShowUsersPopUp" isnt active otherwise the reaction system dies
+    public GameObject _reactionFieldNewLocation;
+    [SerializeField] private GameObject _reactionFieldOldLocation;
     [SerializeField] private List<ReactionObject> _reactionList;
-
 
 
     [SerializeField] private GameObject ReactionObject;
@@ -49,14 +47,19 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
     public void ClosePopup()
     {
+        RectTransform rt = _messageObjectHandler.ReactionsPanel.GetComponent<RectTransform>();
+
         gameObject.transform.SetParent(ShowUsersPopUp.transform);
+
+        _messageObjectHandler.ReactionsPanel.transform.SetParent(_reactionFieldOldLocation.transform);
+        rt.offsetMin = new Vector2(25, 15);
+        rt.offsetMax = new Vector2(0, 70);
         gameObject.SetActive(false);
 
     }
 
     void OnEnable()
     {
-        _reactionField.SetActive(true);
         reactiontext();
     }
 
@@ -84,6 +87,8 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
         //_reactionAmount.SetText(SettingsCarrier.Instance.Language, new string[1] { activeChildren.ToString() });
     }
+
+
 
     public void AddUsersReaction(ChatMessage message, ServerReactions Emoji)
     {
