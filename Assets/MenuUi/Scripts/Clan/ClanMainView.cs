@@ -27,7 +27,7 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _clanMembers;
     [SerializeField] private TextMeshProUGUI _clanWinsRanking;
     [SerializeField] private TextMeshProUGUI _clanPassword;
-    [SerializeField] private TextMeshProUGUI _clanGoal;
+    //[SerializeField] private TextMeshProUGUI _clanGoal;
     [SerializeField] private TextMeshProUGUI _rule1Text;
     [SerializeField] private TextMeshProUGUI _rule2Text;
     [SerializeField] private TextMeshProUGUI _rule3Text;
@@ -563,7 +563,7 @@ public class ClanMainView : MonoBehaviour
         _clanMembers.text = clan.Members.Count + "/30";
         _clanPhrase.text = string.IsNullOrWhiteSpace(clan.Phrase) ? "Klaanilla ei ole mottoa" : clan.Phrase;
         _flagImage.SetFlag(clan.Language);
-        _clanGoal.text = ClanDataTypeConverter.GetGoalText(clan.Goals);
+        //_clanGoal.text = ClanDataTypeConverter.GetGoalText(clan.Goals);
 
         var ageSprite = GetAgeSprite(clan.ClanAge);
 
@@ -770,7 +770,7 @@ public class ClanMainView : MonoBehaviour
             _joinClanButton.gameObject.SetActive(false);
         }
 
-        _clanPassword.text = _clanGoal.text = "";
+        //_clanPassword.text = _clanGoal.text = "";
 
         if (_clanAgeImage != null)
         {
