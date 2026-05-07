@@ -3221,6 +3221,7 @@ namespace Altzone.Scripts.Lobby
                     try { soulhomeRank = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.SoulhomeRank, 0); } catch (Exception ex) { Debug.LogWarning($"QueueTimerCoroutine: failed to read soulhome rank: {ex.Message}"); }
 
                     int requiredFollowers = GetQueueRequiredFollowerCount(gameTypeInt);
+                    bool isClan2v2 = gameTypeInt == (int)GameType.Clan2v2;
                     string preferredMasterUserId;
                     int completeDuoCount;
                     int eligibleSoloCount;
@@ -3239,6 +3240,12 @@ namespace Altzone.Scripts.Lobby
                         {
                             yield break;
                         }
+                    }
+
+                    if (isClan2v2 && selected.Count < requiredFollowers)
+                    {
+                        Debug.Log($"QueueTimerCoroutine: Clan2v2 timeout expired with incomplete selection ({selected.Count}/{requiredFollowers}); waiting for a valid two-duo composition.");
+                        continue;
                     }
 
                     if (selected.Count < requiredFollowers)
