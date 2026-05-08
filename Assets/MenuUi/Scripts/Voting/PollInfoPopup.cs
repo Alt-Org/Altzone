@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.Voting;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Clan;
@@ -20,6 +21,14 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private Image rarityImage;
     [SerializeField] private Image frontRarityImage;
     [SerializeField] private TMP_Text rarityText;
+    [SerializeField] private Image greenFill;
+    [SerializeField] private TMP_Text timer;
+
+    [Header("Votes")]
+    [SerializeField] private GameObject voteYes;
+    [SerializeField] private GameObject voteNo;
+    [SerializeField] private GameObject voteButton;
+    [SerializeField] private GameObject voteBar;
 
     [Header("Rarity Color Reference")]
     [SerializeField] private RarityColourReference rarityColourReference;
@@ -37,6 +46,8 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private TMP_Text clanPlayerNameText;
     [SerializeField] private TMP_Text clanCurrentRoleText;
     [SerializeField] private TMP_Text clanTargetRoleText;
+
+    private PollData _currentPollData;
 
     private void Awake()
     {
@@ -79,29 +90,46 @@ public class PollInfoPopup : MonoBehaviour
         }
     }
 
-    // Opens the popup and fills it with the data from the furniture in question
-    public void OpenFurniturePopup(GameFurniture furniture)
+    public void UpdateTimerDisplay(long secondsLeft)
     {
-        if (furniture == null)
+        if (timer != null)
+        {
+            if (secondsLeft < 60) timer.text = secondsLeft + "s";
+            else if (secondsLeft < 3600) timer.text = (secondsLeft / 60) + "m";
+            else timer.text = (secondsLeft / 3600) + "h";
+        }
+    }
+
+    // Opens the popup and fills it with the data from the furniture in question
+    public void OpenFurniturePopup(PollData pollData)
+    {
+        if (pollData == null)
         {
             Debug.LogWarning("PollInfoPopup Open called with null furniture!");
             return;
         }
 
-        nameText.text = furniture.Name ?? "";
+        _currentPollData = pollData;
 
-        setNameText.text = furniture.FurnitureInfo?.SetName ?? "";
-        iconImage.sprite = furniture.FurnitureInfo?.Image;
-        descriptionText.text = furniture.FurnitureInfo?.ArtisticDescription ?? "";
+        SetValues();
+    }
+
+    // We assume all data is furniture data for now
+    private void SetValues()
+    {
+        var furnitureData = _currentPollData as FurniturePollData;
+
+        nameText.text = furnitureData.Furniture.Name ?? "";
+        setNameText.text = furnitureData.Furniture.FurnitureInfo?.SetName ?? "";
+        iconImage.sprite = furnitureData.Furniture.FurnitureInfo?.Image;
+        descriptionText.text = furnitureData.Furniture.FurnitureInfo?.ArtisticDescription ?? "";
+        valueText.text = $"{furnitureData.Furniture.Value}";
 
         /*
         string artistName = furniture.FurnitureInfo?.ArtistName;
         artistNameText.text = string.IsNullOrEmpty(artistName) ? "" : $"Artist: {artistName}";
 
         weightText.text = $"Weight: {furniture.Weight}";
-        */
-        valueText.text = $"{furniture.Value}";
-        /*
         rarityText.text = $"Rarity: {furniture.Rarity}";
 
         // Apply colour to the two background images of the card based on rarityColourReference
@@ -116,6 +144,14 @@ public class PollInfoPopup : MonoBehaviour
             }
         }
         */
+
+        int yes = _currentPollData.YesVotes.Count;
+        int no = _currentPollData.NoVotes.Count;
+
+        if (yes == 0 && no == 0)
+            greenFill.fillAmount = 0.5f;
+        else
+            greenFill.fillAmount = (float)yes / (yes + no);
 
         gameObject.SetActive(true);
         furniturePollInfoObject.SetActive(true);

@@ -119,6 +119,12 @@ public class PollObject : MonoBehaviour
             Clock.fillAmount = 1 - (float)(secondsLeft) / totalDuration;
             UpdateClockDisplay(secondsLeft);
 
+            if (PollInfoPopup.Instance != null && PollInfoPopup.Instance.gameObject.activeInHierarchy)
+            {
+                PollInfoPopup.Instance.UpdateTimerDisplay(secondsLeft);
+            }
+
+
             yield return new WaitForSeconds(1);
         }
     }
@@ -141,9 +147,9 @@ public class PollObject : MonoBehaviour
         else
         {
             // Display the remaining time, requires the "left" to read properly in-game
-            if (secondsLeft < 60) TimeLeftText.text = secondsLeft + "s\nleft";
-            else if (secondsLeft < 3600) TimeLeftText.text = (secondsLeft / 60) + "m\nleft";
-            else TimeLeftText.text = (secondsLeft / 3600) + "h\nleft";
+            if (secondsLeft < 60) TimeLeftText.text = secondsLeft + "s";
+            else if (secondsLeft < 3600) TimeLeftText.text = (secondsLeft / 60) + "m";
+            else TimeLeftText.text = (secondsLeft / 3600) + "h";
         }
     }
 
@@ -156,7 +162,6 @@ public class PollObject : MonoBehaviour
     {
         pollData.AddVote(answer, result =>
         {
-
             // --- DEBUG CHECK ---
             DataStore store = Storefront.Get();
             PlayerData player = null;
@@ -458,7 +463,7 @@ public class PollObject : MonoBehaviour
         {
             if (PollInfoPopup.Instance != null)
             {
-                PollInfoPopup.Instance.OpenFurniturePopup(furniturePollData.Furniture);
+                PollInfoPopup.Instance.OpenFurniturePopup(pollData);
             }
             else
             {
