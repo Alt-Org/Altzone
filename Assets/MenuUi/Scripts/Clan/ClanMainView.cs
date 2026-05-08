@@ -266,8 +266,24 @@ public class ClanMainView : MonoBehaviour
         {
             clan = null;
         }
+        Debug.LogWarning(clan != null);
 
-        if (!string.IsNullOrEmpty(ownClanId))
+        if (clan != null)
+        {
+            _clanHeart.SetOwnClanHeart = false;
+            ClanData data = new ClanData(clan);
+            SetClanProfile(data);
+            _clanHeart.SetOtherClanColors(data);
+
+            if (_joinClanButton != null)
+            {
+                _joinClanButton.onClick.RemoveAllListeners();
+                _joinClanButton.onClick.AddListener(() => { ShowClanPopup(clan); });
+            }
+
+            ResetSwipeToProfileOnOpen();
+        }
+        else if (!string.IsNullOrEmpty(ownClanId))
         {
             _clanHeart.SetOwnClanHeart = true;
 
@@ -289,20 +305,6 @@ public class ClanMainView : MonoBehaviour
                 _leaveClanButton.onClick.RemoveAllListeners();
                 _leaveClanButton.onClick.AddListener(ShowLeaveClanPopUp);
             }
-        }
-        else if (clan != null)
-        {
-            _clanHeart.SetOwnClanHeart = false;
-
-            SetClanProfile(new ClanData(clan));
-
-            if (_joinClanButton != null)
-            {
-                _joinClanButton.onClick.RemoveAllListeners();
-                _joinClanButton.onClick.AddListener(() => { ShowClanPopup(clan); });
-            }
-
-            ResetSwipeToProfileOnOpen();
         }
         else
         {
