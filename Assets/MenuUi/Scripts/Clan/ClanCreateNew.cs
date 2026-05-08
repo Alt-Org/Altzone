@@ -53,7 +53,7 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private PopupController _warningPopup;
 
     [Header("Buttons")]
-    [SerializeField] private Button _closeLanguageSelect;
+    //[SerializeField] private Button _closeLanguageSelect;
     [SerializeField] private Button _createClanButton;
 
     [SerializeField] private Button _clanLogoButton;
@@ -67,6 +67,8 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private Button _languageCancelButton;
     [SerializeField] private Button _cancelButton;
     [SerializeField] private Button _confirmButton;
+    [SerializeField] private Button _ageCloseButton;
+    [SerializeField] private Button _languageCloseButton;
 
     [Header("Navigation")]
     [SerializeField] protected WindowDef _naviTarget;
@@ -144,17 +146,11 @@ public class ClanCreateNew : MonoBehaviour
 
         if (_ageSaveButton) _ageSaveButton.onClick.AddListener(SaveAgeSelection);
         if (_ageCancelButton) _ageCancelButton.onClick.AddListener(CancelAgeSelection);
+        if (_ageCloseButton) _ageCloseButton.onClick.AddListener(CancelAgeSelection);
 
-        if (_languageSaveButton) _languageSaveButton.onClick.AddListener(() =>
-        {
-            UpdateLanguageDisplay(_languageSelection.SaveLanguage());
-            HidePopup(_languagePanel);
-        });
-
-        if (_languageCancelButton) _languageCancelButton.onClick.AddListener(() =>
-        {
-            HidePopup(_languagePanel);
-        });
+        if (_languageSaveButton) _languageSaveButton.onClick.AddListener(SaveLanguageSelection);
+        if (_languageCancelButton) _languageCancelButton.onClick.AddListener(CancelLanguageSelection);
+        if (_languageCloseButton) _languageCloseButton.onClick.AddListener(CancelLanguageSelection);
 
         if (_createClanButton != null)
             _createClanButton.onClick.AddListener(OnAgreementCreatePressed);
@@ -173,22 +169,17 @@ public class ClanCreateNew : MonoBehaviour
 
         if (_ageSaveButton) _ageSaveButton.onClick.RemoveListener(SaveAgeSelection);
         if (_ageCancelButton) _ageCancelButton.onClick.RemoveListener(CancelAgeSelection);
+        if (_ageCloseButton) _ageCloseButton.onClick.RemoveListener(CancelAgeSelection);
 
-        if (_languageSaveButton) _languageSaveButton.onClick.RemoveListener(() =>
-        {
-            UpdateLanguageDisplay(_languageSelection.SaveLanguage());
-            HidePopup(_languagePanel);
-        });
-
-        if (_languageCancelButton) _languageCancelButton.onClick.RemoveListener(() =>
-        {
-            HidePopup(_languagePanel);
-        });
+        if (_languageSaveButton) _languageSaveButton.onClick.RemoveListener(SaveLanguageSelection);
+        if (_languageCancelButton) _languageCancelButton.onClick.RemoveListener(CancelLanguageSelection);
+        if (_languageCloseButton) _languageCloseButton.onClick.RemoveListener(CancelLanguageSelection);
 
         if (_cancelButton) _cancelButton.onClick.RemoveListener(OnCancelPressed);
         if (_confirmButton) _confirmButton.onClick.RemoveListener(OnConfirmPressed);
 
-        if (_createClanButton != null) _createClanButton.onClick.RemoveListener(OnAgreementCreatePressed);
+        if (_createClanButton != null)
+            _createClanButton.onClick.RemoveListener(OnAgreementCreatePressed);
     }
 
     private void OnAgreementCreatePressed()
@@ -207,7 +198,7 @@ public class ClanCreateNew : MonoBehaviour
 
     private void OnAgePressed()
     {
-        ShowPopup(_clanAgeEditPopup);
+        ShowAgePopup();
     }
 
     private void OnLanguagePressed()
@@ -420,6 +411,17 @@ public class ClanCreateNew : MonoBehaviour
     public void CancelAgeSelection()
     {
         HidePopup(_clanAgeEditPopup);
+    }
+
+    public void SaveLanguageSelection()
+    {
+        UpdateLanguageDisplay(_languageSelection.SaveLanguage());
+        HidePopup(_languagePanel);
+    }
+
+    public void CancelLanguageSelection()
+    {
+        HidePopup(_languagePanel);
     }
 
     public void PostClanToServer()
