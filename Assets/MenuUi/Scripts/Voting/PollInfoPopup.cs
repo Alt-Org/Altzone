@@ -32,6 +32,9 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private Button noButton;
     [SerializeField] private GameObject voteButtons;
     [SerializeField] private GameObject voteBar;
+    [SerializeField] private TMP_Text yesVotes;
+    [SerializeField] private TMP_Text noVotes;
+
 
     [Header("Rarity Color Reference")]
     [SerializeField] private RarityColourReference rarityColourReference;
@@ -149,16 +152,17 @@ public class PollInfoPopup : MonoBehaviour
         */
 
         // Enable and disable vote buttons and list based on whether the player has voted on the poll
-        PlayerData currentPlayer = null;
         Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data =>
         {
-            if (data !=null) {
+            if (data != null)
+            {
                 bool hasNotVoted = _currentPollData.NotVoted.Contains(data.Id);
 
                 voteButtons.SetActive(hasNotVoted);
                 voteBar.SetActive(!hasNotVoted);
 
-                if (hasNotVoted) {
+                if (hasNotVoted)
+                {
                     yesButton.onClick.RemoveAllListeners();
                     noButton.onClick.RemoveAllListeners();
 
@@ -168,8 +172,12 @@ public class PollInfoPopup : MonoBehaviour
             }
         });
 
+
         int yes = _currentPollData.YesVotes.Count;
         int no = _currentPollData.NoVotes.Count;
+
+        yesVotes.text = yes.ToString();
+        noVotes.text = yes.ToString();
 
         if (yes == 0 && no == 0)
             greenFill.fillAmount = 0.5f;
