@@ -142,6 +142,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         private string _id;
         private TaskTitle _title;
         private TaskContent _content;
+        private TaskInstruction _instruction;
         private int _amount;
         private int _amountLeft;
         private TaskNormalType _normalTaskType;
@@ -168,16 +169,9 @@ namespace Altzone.Scripts.Model.Poco.Game
             get
             {
                 if (_title == null) return string.Empty;
-                return _title.Fi;
-            }
-        }
-
-        public string EnglishTitle
-        {
-            get
-            {
-                if (_title == null) return string.Empty;
-                return _title.En; 
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                    return _title.En;
+                return _title.Fi; // default Finnish
             }
         }
 
@@ -189,6 +183,17 @@ namespace Altzone.Scripts.Model.Poco.Game
                 if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
                     return _content.En;
                 return _content.Fi; // default Finnish
+            }
+        }
+
+        public string Instruction
+        {
+            get
+            {
+                if (_instruction == null) return string.Empty;
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                    return _instruction.En;
+                return _instruction.Fi; // default Finnish
             }
         }
 
@@ -213,6 +218,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             _id = task._id;
             _title = new(task.title);
             _content = new(task.description, task.execution);
+            _instruction = new(task.instruction);
             _amount = task.amount;
             _amountLeft = task.amountLeft;
             _coins = task.coins;
@@ -621,6 +627,21 @@ namespace Altzone.Scripts.Model.Poco.Game
             {
                 _fi = (description?.fi ?? "") + "\n\n" + (execution?.fi ?? "");
                 _en = (description?.en ?? "") + "\n\n" + (execution?.en ?? ""); ;
+            }
+        }
+
+        public class TaskInstruction
+        {
+            private string _fi;
+            private string _en;
+
+            public string Fi { get => _fi; }
+            public string En { get => _en; }
+
+            public TaskInstruction(ServerPlayerTask.TaskInstruction instruction)
+            {
+                _fi = instruction?.fi ?? "";
+                _en = instruction?.en ?? "";
             }
         }
 
