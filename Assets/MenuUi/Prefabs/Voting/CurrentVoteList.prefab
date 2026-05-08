@@ -1315,7 +1315,6 @@ GameObject:
   - component: {fileID: 2387710305857525228}
   - component: {fileID: 7829948370349457429}
   - component: {fileID: 2768782256561226356}
-  - component: {fileID: 527542270985586971}
   m_Layer: 5
   m_Name: CurrentVoteList
   m_TagString: Untagged
@@ -1414,26 +1413,3 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &527542270985586971
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9117394405672422095}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3853ac59d034efb4c9ba808b927adf4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PollObjectPrefab: {fileID: 2192335415255639714, guid: ce0c88b97e317e247a85411a8bda706f,
-    type: 3}
-  NoPollsText: {fileID: 0}
-  PastAdminNotVotedListContent: {fileID: 0}
-  PastAdminVotedListContent: {fileID: 0}
-  PastShopNotVotedListContent: {fileID: 0}
-  PastShopVotedListContent: {fileID: 0}
-  PastAdminSection: {fileID: 0}
-  PastShopSection: {fileID: 0}
-  AdminThemeColor: {r: 0, g: 1, b: 1, a: 1}
-  ShopThemeColor: {r: 1, g: 0.75, b: 0, a: 1}

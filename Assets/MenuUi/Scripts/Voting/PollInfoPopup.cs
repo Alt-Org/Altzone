@@ -28,8 +28,8 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private TMP_Text timer;
 
     [Header("Votes")]
-    [SerializeField] private Button voteYes;
-    [SerializeField] private Button voteNo;
+    [SerializeField] private Button yesButton;
+    [SerializeField] private Button noButton;
     [SerializeField] private GameObject voteButtons;
     [SerializeField] private GameObject voteBar;
 
@@ -150,16 +150,23 @@ public class PollInfoPopup : MonoBehaviour
 
         // Enable and disable vote buttons and list based on whether the player has voted on the poll
         PlayerData currentPlayer = null;
-        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => currentPlayer = data);
-
-        if (currentPlayer != null)
+        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data =>
         {
-            bool hasNotVoted = _currentPollData.NotVoted.Contains(currentPlayer.Id);
+            if (data !=null) {
+                bool hasNotVoted = _currentPollData.NotVoted.Contains(data.Id);
 
-            voteButtons.SetActive(hasNotVoted);
-            voteBar.SetActive(!hasNotVoted);
-        }
+                voteButtons.SetActive(hasNotVoted);
+                voteBar.SetActive(!hasNotVoted);
 
+                if (hasNotVoted) {
+                    yesButton.onClick.RemoveAllListeners();
+                    noButton.onClick.RemoveAllListeners();
+
+                    yesButton.onClick.AddListener(() => OnVoteButtonClicked(true));
+                    noButton.onClick.AddListener(() => OnVoteButtonClicked(false));
+                }
+            }
+        });
 
         int yes = _currentPollData.YesVotes.Count;
         int no = _currentPollData.NoVotes.Count;
@@ -172,6 +179,16 @@ public class PollInfoPopup : MonoBehaviour
         gameObject.SetActive(true);
         furniturePollInfoObject.SetActive(true);
         if (clanRolePollInfoObject != null) clanRolePollInfoObject.SetActive(false);
+    }
+
+    public void OnVoteButtonClicked(bool answer)
+    {
+        _currentPollData.AddVote(answer, result =>
+        {
+            SetValues();
+        });
+
+        voteButtons.SetActive(false);
     }
 
     // Opens the popup for clan role polls
