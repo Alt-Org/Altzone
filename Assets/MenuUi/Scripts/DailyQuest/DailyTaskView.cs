@@ -20,9 +20,9 @@ public class DailyTaskView : AltMonoBehaviour
     [SerializeField] private GameObject _clanTaskView;
 
     [Header("TabButtons")]
-    [SerializeField] private Button _dailyTasksTabButton;
+    /*[SerializeField] private Button _dailyTasksTabButton;
     [SerializeField] private Button _ownTaskTabButton;
-    [SerializeField] private Button _clanTaskTabButton;
+    [SerializeField] private Button _clanTaskTabButton;*/
 
     [Header("DailyTaskCard Education Prefabs")]
     [SerializeField] private GameObject _dailyTaskCardEducationSocialPrefab;
@@ -65,8 +65,7 @@ public class DailyTaskView : AltMonoBehaviour
     [SerializeField] private DailyTaskOwnTask _ownTaskPageHandler;
     [Space]
     [SerializeField] private List<MoodThreshold> _moodThresholds;
-    [Space]
-    [SerializeField] private Button _showMultipleChoiceTaskButton;
+    
 
     [System.Serializable]
     public struct MoodThreshold
@@ -95,10 +94,11 @@ public class DailyTaskView : AltMonoBehaviour
 
     public enum SelectedTab
     {
-        Tasks,
-        OwnTask,
-        ClanTask
+        Tasks = 0,
+        OwnTask = 1,
+        ClanTask = 2
     }
+
     private SelectedTab _selectedTab = SelectedTab.Tasks;
 
 
@@ -118,12 +118,11 @@ public class DailyTaskView : AltMonoBehaviour
             _cancelTaskButton.onClick.AddListener(() => StartCancelTask());
         }
         
-        _showMultipleChoiceTaskButton.onClick.AddListener(() => DailyTaskManager.Instance.ShowMultipleChoiceTask());
 
         //Buttons
-        _dailyTasksTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.Tasks));
-        _ownTaskTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.OwnTask));
-        _clanTaskTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.ClanTask));
+        //_dailyTasksTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.Tasks));
+        //_ownTaskTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.OwnTask));
+        //_clanTaskTabButton.onClick.AddListener(() => SwitchTab(SelectedTab.ClanTask));
 
         //Register to events
         try
@@ -133,6 +132,7 @@ public class DailyTaskView : AltMonoBehaviour
             DailyTaskManager.OnAcceptTask += OnTaskAccept;
             DailyTaskManager.OnCancelTask += OnTaskCancel;
             DailyTaskManager.OnMultipleChoiceProgress += OnMultipleChoiceProgress;
+            DailyTaskOwnTask.OnCurrentTaskInfoNeeded += ShowCurrentTaskInfo;
         }
         catch
         {
@@ -161,6 +161,8 @@ public class DailyTaskView : AltMonoBehaviour
             DailyTaskManager.OnAcceptTask -= OnTaskAccept;
             DailyTaskManager.OnCancelTask -= OnTaskCancel;
             DailyTaskManager.OnMultipleChoiceProgress -= OnMultipleChoiceProgress;
+            DailyTaskOwnTask.OnCurrentTaskInfoNeeded -= ShowCurrentTaskInfo;
+
 
         }
         catch
@@ -203,7 +205,7 @@ public class DailyTaskView : AltMonoBehaviour
     public void SwitchTab(SelectedTab tab)
     {
         //Hide old tab
-        switch (_selectedTab)
+        /*switch (_selectedTab)
         {
             case SelectedTab.Tasks: _dailyTasksView.SetActive(false); break;
             case SelectedTab.OwnTask: _ownTaskView.SetActive(false); break;
@@ -225,7 +227,9 @@ public class DailyTaskView : AltMonoBehaviour
         }
         _tabline.ActivateTabButton((int)_selectedTab);
 
-        Debug.Log($"Switched to {_selectedTab}.");
+        Debug.Log($"Switched to {_selectedTab}.");*/
+        _tabline.ActivateTabButton((int)tab);
+
     }
 
 
@@ -340,7 +344,7 @@ public class DailyTaskView : AltMonoBehaviour
     {
         UpdateAvatarMood();
         _ownTaskPageHandler.ClearCurrentTask();
-        SwitchTab(DailyTaskView.SelectedTab.Tasks);
+        SwitchTab(SelectedTab.Tasks);
         DailyTaskManager.Instance.ClearCurrentTask();
     }
 
@@ -367,10 +371,8 @@ public class DailyTaskView : AltMonoBehaviour
 
         if (taskData == null) return;
 
-        float progress = (float)taskData.TaskProgress / (float)taskData.Amount;
-        StartCoroutine(_ownTaskPageHandler.SetDailyTask(taskData));
-        _ownTaskPageHandler.SetTaskProgress(progress);
-        _ownTaskPageHandler.TESTSetTaskValue(taskData.TaskProgress);
+        // Update OwnTaskPage in case already on OwnTask page
+        if (_ownTaskPageHandler.isActiveAndEnabled) _ownTaskPageHandler.UpdateOwnTaskPage();
 
         DailyQuest currentQuest = FindDailyQuestForTask(taskData);
         if (currentQuest == null) return;
@@ -542,6 +544,35 @@ public class DailyTaskView : AltMonoBehaviour
 
         //Sets DT cards to left side.
         _clanPlayersList.anchoredPosition = new Vector2(0f, -5000f);
+    }
+
+    private void ShowCurrentTaskInfo()
+    {
+        PlayerTask currentTask = DailyTaskManager.Instance.GetCurrentTask();
+
+        if (currentTask == null) return;
+
+
+        // If the current task is a multiple choice task, show the task
+        if (MultipleChoiceOptions.Instance.IsMultipleChoice(currentTask))
+        {
+
+            DailyTaskManager.Instance.ShowMultipleChoiceTask();
+            return;
+        }
+
+        // If the task is not a multiple choice, show the info
+        Vector3 popupLocation = GetScreenCenter();
+        PopupData data = new(currentTask, popupLocation);
+
+        DailyTaskManager.Instance.ShowPopupAndHandleResponse(currentTask.Title, data);
+    }
+
+    private Vector3 GetScreenCenter()
+    {
+        Vector2 screenCenter = new Vector2(Screen.width / 2, Screen.height / 2);
+
+        return screenCenter;
     }
 
 

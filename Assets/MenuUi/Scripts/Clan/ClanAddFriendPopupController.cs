@@ -4,6 +4,7 @@ using MenuUi.Scripts.AvatarEditor;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class ClanAddFriendPopupController : MonoBehaviour
 {
@@ -22,10 +23,16 @@ public class ClanAddFriendPopupController : MonoBehaviour
     [SerializeField] private Button _addButton;
 
     private ClanMember _currentMember;
+    private bool _isVisible;
+
+    public event Action Closed;
 
     private void Awake()
     {
-        Hide();
+        if (_popupRoot != null)
+        {
+            _popupRoot.SetActive(false);
+        }
 
         if (_closeButton != null)
         {
@@ -49,14 +56,22 @@ public class ClanAddFriendPopupController : MonoBehaviour
     public void Show(ClanMember member)
     {
         _currentMember = member;
+        _isVisible = true;
+
+        if (!gameObject.activeSelf)
+        {
+            gameObject.SetActive(true);
+        }
 
         if (_popupRoot != null)
+        {
             _popupRoot.SetActive(true);
-        else
-            gameObject.SetActive(true);
+        }
 
         if (_playerNameText != null)
+        {
             _playerNameText.text = member?.Name ?? string.Empty;
+        }
 
         UpdateAvatar(member);
     }
@@ -64,9 +79,36 @@ public class ClanAddFriendPopupController : MonoBehaviour
     public void Hide()
     {
         if (_popupRoot != null)
+        {
             _popupRoot.SetActive(false);
+        }
         else
+        {
             gameObject.SetActive(false);
+        }
+
+        _currentMember = null;
+
+        if (_isVisible)
+        {
+            _isVisible = false;
+            Closed?.Invoke();
+        }
+    }
+
+    public void HideWithoutNotify()
+    {
+        if (_popupRoot != null)
+        {
+            _popupRoot.SetActive(false);
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
+
+        _currentMember = null;
+        _isVisible = false;
     }
 
     private void UpdateAvatar(ClanMember member)
@@ -81,7 +123,9 @@ public class ClanAddFriendPopupController : MonoBehaviour
         var visualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(member.AvatarData);
 
         if (visualData != null)
+        {
             _avatarFaceLoader.UpdateVisuals(visualData);
+        }
     }
 
     private void OnClickAddFriend()
@@ -91,6 +135,14 @@ public class ClanAddFriendPopupController : MonoBehaviour
         Debug.Log($"Add friend clicked: {_currentMember.Name}");
 
         // TODO: add friend logic here, e.g., send a friend request to the server
+        StartCoroutine(ServerManager.Instance.SendFriendRequest(_currentMember._id, success =>
+        {
+            if (success)
+            {
+                OnlinePlayersPanel.Instance.CallUpdateFriendList();
+                Debug.Log($"Friend request sent to {_currentMember.Name}");
+            }
+        }));
 
         Hide();
     }

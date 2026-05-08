@@ -53,6 +53,7 @@ public class ClanMemberPopupController : MonoBehaviour
     [SerializeField] private float _pollStartedFadeSeconds = 0.35f;
 
     private Action<ClanMember> _onAddFriendRequested;
+    private Action _onCloseRequested;
 
     private Coroutine _pollStartedRoutine;
 
@@ -62,62 +63,68 @@ public class ClanMemberPopupController : MonoBehaviour
     {
         if (_root == null) _root = gameObject;
 
-        _pollStartedPopup.SetActive(false);
+        if (_pollStartedPopup != null)
+        {
+            _pollStartedPopup.SetActive(false);
+        }
 
         if (_closeButton != null)
         {
-            _closeButton.onClick.AddListener(Hide);
+            _closeButton.onClick.RemoveListener(RequestClose);
+            _closeButton.onClick.AddListener(RequestClose);
         }
 
         if (_leaveButton != null)
         {
-            _leaveButton.onClick.AddListener(Hide);
+            _leaveButton.onClick.RemoveListener(RequestClose);
+            _leaveButton.onClick.AddListener(RequestClose);
         }
 
         if (_backgroundCloseButton != null)
         {
-            _backgroundCloseButton.onClick.AddListener(Hide);
+            _backgroundCloseButton.onClick.RemoveListener(RequestClose);
+            _backgroundCloseButton.onClick.AddListener(RequestClose);
         }
-
-        /*if (_votesButton != null)
-        {
-            _votesButton.onClick.AddListener(OnVotesButtonPressed);
-        }*/
 
         if (_openProfileButton != null)
         {
             _openProfileButton.onClick.AddListener(OnOpenProfileButtonPressed);
         }
 
-        /*if (_voteActionMenu != null && _votesButtonRect == null)
-        {
-            _votesButtonRect = _votesButton.GetComponent<RectTransform>();
-        }*/
-
         if (_addFriendButton != null)
         {
             _addFriendButton.onClick.AddListener(OnAddFriendButtonPressed);
         }
 
-        Hide();
+        if (_root != null)
+        {
+            _root.SetActive(false);
+        }
+
+        HidePollStartedPopupImmediate();
     }
 
     public void Show(
-    ClanMember member,
-    string roleLabel,
-    bool allowVotes = true,
-    bool allowAddFriend = true,
-    Action<ClanMember> onAddFriendRequested = null)
+        ClanMember member,
+        string roleLabel,
+        bool allowVotes = true,
+        bool allowAddFriend = true,
+        Action<ClanMember> onAddFriendRequested = null)
     {
         if (member == null) return;
-        _currentMember = member;
 
-        _root.SetActive(true);
+        _currentMember = member;
         _onAddFriendRequested = onAddFriendRequested;
-        /*if (_votesButton != null)
+
+        if (!gameObject.activeSelf)
         {
-            _votesButton.interactable = allowVotes;
-        }*/
+            gameObject.SetActive(true);
+        }
+
+        if (_root != null)
+        {
+            _root.SetActive(true);
+        }
 
         if (_addFriendButton != null)
         {
@@ -125,20 +132,21 @@ public class ClanMemberPopupController : MonoBehaviour
             _addFriendButton.interactable = allowAddFriend;
         }
 
-        _nameText.text = member.Name ?? "";
+        if (_nameText != null)
+        {
+            _nameText.text = member.Name ?? "";
+        }
+
         SetRole(roleLabel);
 
         if (_avatarLoader != null && member.AvatarData != null && AvatarDesignLoader.Instance != null)
         {
             var visualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(member.AvatarData);
             if (visualData != null)
+            {
                 _avatarLoader.UpdateVisuals(visualData);
+            }
         }
-    }
-
-    private void OnDisable()
-    {
-        Hide();
     }
 
     public void Hide()
@@ -146,12 +154,41 @@ public class ClanMemberPopupController : MonoBehaviour
         _currentMember = null;
         _onAddFriendRequested = null;
 
-        _root.SetActive(false);
-
-        //_voteActionMenu?.Close();
-        //_roleSelectPopup?.Hide();
+        if (_root != null)
+        {
+            _root.SetActive(false);
+        }
 
         HidePollStartedPopupImmediate();
+    }
+
+    public void SetCloseCallback(Action onCloseRequested)
+    {
+        _onCloseRequested = onCloseRequested;
+    }
+
+    private void RequestClose()
+    {
+        if (_onCloseRequested != null)
+        {
+            _onCloseRequested.Invoke();
+        }
+        else
+        {
+            Hide();
+        }
+    }
+
+    public void SetCloseButtonsInteractable(bool interactable)
+    {
+        if (_closeButton != null)
+            _closeButton.interactable = interactable;
+
+        if (_leaveButton != null)
+            _leaveButton.interactable = interactable;
+
+        if (_backgroundCloseButton != null)
+            _backgroundCloseButton.interactable = interactable;
     }
 
     private void OnVotesButtonPressed()
@@ -240,12 +277,25 @@ public class ClanMemberPopupController : MonoBehaviour
 
     private void OnAddFriendButtonPressed()
     {
-        if (_currentMember == null) return;
+        Debug.Log("MemberDetailsPopup AddFriendButton clicked");
+        Debug.Log($"_currentMember is null: {_currentMember == null}");
+        Debug.Log($"_onAddFriendRequested is null: {_onAddFriendRequested == null}");
 
-        var member = _currentMember;
-        var callback = _onAddFriendRequested;
+        if (_currentMember == null)
+        {
+            Debug.Log("STOP: Cannot open AddFriendPopup because _currentMember is null.");
+            return;
+        }
 
-        callback?.Invoke(member);
+        if (_onAddFriendRequested == null)
+        {
+            Debug.Log("STOP: Cannot open AddFriendPopup because _onAddFriendRequested is null.");
+            return;
+        }
+
+        Debug.Log($"Requesting AddFriendPopup for: {_currentMember.Name}");
+
+        _onAddFriendRequested.Invoke(_currentMember);
     }
 
     private void OnOpenProfileButtonPressed()

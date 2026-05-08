@@ -117,7 +117,7 @@ public class RewardBar : MonoBehaviour
             if (_clanData.Points >= reward.Data.Threshold)
             {
                 
-                if (!reward.Data.Open)
+                if (!reward.Data.IsOpen())
                 {
                     Debug.Log("Points: " + _clanData.Points + " Thresh: " + reward.Data.Threshold);
                     ReachReward(reward);

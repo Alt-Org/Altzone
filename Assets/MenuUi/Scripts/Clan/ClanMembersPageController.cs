@@ -14,7 +14,7 @@ public class ClanMembersPageController : MonoBehaviour
     [SerializeField] private ClanMemberPlaque _memberPlaquePrefab;
     [SerializeField] private ClanMemberPopupController _memberPopup;
     [SerializeField] private TMP_InputField _memberSearchInput;
-    [SerializeField] private ClanAddFriendPopupController _addFriendPopup;
+    //[SerializeField] private ClanAddFriendPopupController _addFriendPopup;
 
     [SerializeField] private ClanRoleSelectPopupController _roleSelectPopup;
     [SerializeField] private Canvas _canvas;
@@ -273,17 +273,13 @@ public class ClanMembersPageController : MonoBehaviour
                 {
                     bool isCurrentPlayer = IsCurrentPlayerMember(capturedMember);
 
-                    _memberPopup.Show(
+                    if (_clanMainView == null) return;
+
+                    _clanMainView.OpenMemberDetailsPopup(
                         capturedMember,
                         capturedRoleLabel,
                         allowVotes: isOwnClan,
-                        allowAddFriend: !isCurrentPlayer,
-                        onAddFriendRequested: memberToAdd =>
-                        {
-                            if (_clanMainView == null) return;
-
-                            _clanMainView.OpenAddFriendPopup(memberToAdd);
-                        });
+                        allowAddFriend: !isCurrentPlayer);
                 });
             }
         }
@@ -408,6 +404,12 @@ public class ClanMembersPageController : MonoBehaviour
 
     private void CloseMemberDetailsPopup()
     {
+        if (_clanMainView != null)
+        {
+            _clanMainView.CloseMemberDetailsPopup();
+            return;
+        }
+
         if (_memberPopup != null)
         {
             _memberPopup.Hide();

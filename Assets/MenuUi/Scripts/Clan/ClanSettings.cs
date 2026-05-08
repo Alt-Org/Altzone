@@ -443,10 +443,10 @@ public class ClanSettings : AltMonoBehaviour
 
                 CloseSettingsPopup();
 
-                if (!string.IsNullOrEmpty(previousPhrase) && previousPhrase != _currentClanData.Phrase)
-                    gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+                //if (!string.IsNullOrEmpty(previousPhrase) && previousPhrase != _currentClanData.Phrase)
+                    //gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
 
-                gameObject.GetComponent<ClanCulturalPractices>().SettingsChanged(_currentClanData);
+                //gameObject.GetComponent<ClanCulturalPractices>().SettingsChanged(_currentClanData);
             }
             else
             {
