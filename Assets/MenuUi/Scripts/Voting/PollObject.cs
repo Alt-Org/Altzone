@@ -329,23 +329,6 @@ public class PollObject : MonoBehaviour
             }
         }
 
-        // Enable and disable vote buttons and list based on whether the player has voted on the poll
-        PlayerData currentPlayer = null;
-        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => currentPlayer = data);
-
-        if (currentPlayer != null)
-        {
-            bool hasNotVoted = pollData.NotVoted.Contains(currentPlayer.Id);
-
-            // Vote buttons
-            VoteYes.SetActive(hasNotVoted);
-            VoteNo.SetActive(hasNotVoted);
-
-            // Voter lists
-            YesVoters.SetActive(!hasNotVoted);
-            NoVoters.SetActive(!hasNotVoted);
-        }
-
         if (YesVotesText != null) YesVotesText.text = pollData.YesVotes.Count.ToString();
         if (NoVotesText != null) NoVotesText.text = pollData.NoVotes.Count.ToString();
 

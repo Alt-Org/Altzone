@@ -1,10 +1,13 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts;
+using Altzone.Scripts.Config;
 using Altzone.Scripts.Voting;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Player;
 
 public class PollInfoPopup : MonoBehaviour
 {
@@ -25,9 +28,9 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private TMP_Text timer;
 
     [Header("Votes")]
-    [SerializeField] private GameObject voteYes;
-    [SerializeField] private GameObject voteNo;
-    [SerializeField] private GameObject voteButton;
+    [SerializeField] private Button voteYes;
+    [SerializeField] private Button voteNo;
+    [SerializeField] private GameObject voteButtons;
     [SerializeField] private GameObject voteBar;
 
     [Header("Rarity Color Reference")]
@@ -144,6 +147,19 @@ public class PollInfoPopup : MonoBehaviour
             }
         }
         */
+
+        // Enable and disable vote buttons and list based on whether the player has voted on the poll
+        PlayerData currentPlayer = null;
+        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => currentPlayer = data);
+
+        if (currentPlayer != null)
+        {
+            bool hasNotVoted = _currentPollData.NotVoted.Contains(currentPlayer.Id);
+
+            voteButtons.SetActive(hasNotVoted);
+            voteBar.SetActive(!hasNotVoted);
+        }
+
 
         int yes = _currentPollData.YesVotes.Count;
         int no = _currentPollData.NoVotes.Count;
