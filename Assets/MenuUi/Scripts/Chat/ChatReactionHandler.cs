@@ -7,7 +7,7 @@ using static ServerChatMessage;
 
 public class ChatReactionHandler : MonoBehaviour
 {
-    [SerializeField] private GameObject _messageReaction;
+    [SerializeField] public GameObject _messageReaction;
     [SerializeField] private TextMeshProUGUI _counter;
     [SerializeField] private Image _reactionImage;
     [SerializeField] private Button _button;

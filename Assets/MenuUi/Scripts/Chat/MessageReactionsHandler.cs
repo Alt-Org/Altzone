@@ -46,6 +46,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
     public MessageObjectHandler _messageObjectHandler;
     [SerializeField] private ChatShowUsersPopUpData _chatShowUsersPopUpData;
+    public LayoutElement layoutElement;
 
     void Start()
     {
@@ -273,9 +274,17 @@ public class MessageReactionsHandler : AltMonoBehaviour
             }
 
             // Creates a reaction with the needed info and adds it to the selected message.
-
             GameObject newReaction = Instantiate(_addedReactionPrefab, reactionsFields.transform);
-            
+
+            //adjusts the imported reactions size if ShowUsersPopUp is active
+            if (_usersWhoAdded.activeSelf == true)
+            {
+                RectTransform rt = newReaction.GetComponent<RectTransform>();
+                ContentSizeFitter SizeFitter = newReaction.GetComponent<ContentSizeFitter>();
+                layoutElement.ignoreLayout = false;
+                SizeFitter.enabled = false;
+                rt.sizeDelta = new Vector2(150, 110);
+            }
             ChatReactionHandler chatReactionHandler = newReaction.GetComponentInChildren<ChatReactionHandler>();
             chatReactionHandler.SetReactionInfo(reactionSprite, messageID, mood);
             chatReactionHandler.AddReaction(_reaction);
@@ -358,20 +367,28 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
     private void ShowUsers(ChatReactionHandler reactionHandler)
     {
-        RectTransform rt = _usersWhoAdded.GetComponent<RectTransform>();
+        RectTransform rtPopUp = _usersWhoAdded.GetComponent<RectTransform>();
+        RectTransform rtReactionField = _reactionPaneldata[0]._reactionField.GetComponent<RectTransform>();
+        foreach(var i in _reactionHandlers)
+        {
+            ContentSizeFitter SizeFitter = i._messageReaction.GetComponent<ContentSizeFitter>();
+            RectTransform transform = i._messageReaction.GetComponent<RectTransform>();
+            layoutElement.ignoreLayout = false;
+            SizeFitter.enabled = false;
+
+            transform.sizeDelta = new Vector2(150,  110);
+        }
 
         _longClick = true;
+
         _reactionPaneldata[0]._reactionField.transform.SetParent(_chatShowUsersPopUpData._reactionFieldNewLocation.transform);
-
-
-
-
-
         _usersWhoAdded.transform.SetParent(Chat.instance.PopUps.transform);
 
+        rtReactionField.offsetMin = Vector2.zero;
+        rtReactionField.offsetMax = Vector2.zero;
 
-        rt.offsetMin = Vector2.zero;
-        rt.offsetMax = Vector2.zero;
+        rtPopUp.offsetMin = Vector2.zero;
+        rtPopUp.offsetMax = Vector2.zero;
 
         _usersWhoAdded.SetActive(true);
         //_chatScript.OpenUsersWhoAddedReactionPanel();
@@ -428,6 +445,23 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
         }
         //_chatScript.UpdateContentLayout(reactionsField);
+    }
+
+    //Reverts reactions size back to orignal size when leaving ShowUserPopUp
+    public void ReactionResize()
+    {
+        layoutElement.ignoreLayout = true;
+        foreach (var i in _reactionHandlers)
+        {
+            ContentSizeFitter SizeFitter = i._messageReaction.GetComponent<ContentSizeFitter>();
+            RectTransform transform = i._messageReaction.GetComponent<RectTransform>();
+            SizeFitter.enabled = true;
+
+            transform.sizeDelta = new Vector2(transform.sizeDelta.x, 70);
+
+
+
+        }
     }
 
     [Serializable]

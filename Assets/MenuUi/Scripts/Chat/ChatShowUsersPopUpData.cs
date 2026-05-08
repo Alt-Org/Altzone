@@ -18,8 +18,10 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     [SerializeField] private TextMeshProUGUI ReactionAmounText;
     [SerializeField] private Button[] _closeButtons; 
     [SerializeField] private GameObject ShowUsersPopUp;
-    [SerializeField] private MessageObjectHandler _messageObjectHandler;
 
+    [Header("Scripts")]
+    [SerializeField] private MessageObjectHandler _messageObjectHandler;
+    [SerializeField] private MessageReactionsHandler _messageReactionsHandler;
     [Header("User Info")]
 
     [SerializeField] private VerticalLayoutGroup _userContent;
@@ -34,7 +36,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
 
     [SerializeField] private GameObject ReactionObject;
-
+    
     //[SerializeField] private TextLanguageSelectorCaller _reactionAmount;
     private void Start()
     {
@@ -45,15 +47,17 @@ public class ChatShowUsersPopUpData : MonoBehaviour
         }
     }
 
+    //Puts back the reactions and popup back to messageobject
     public void ClosePopup()
     {
-        RectTransform rt = _messageObjectHandler.ReactionsPanel.GetComponent<RectTransform>();
+        _messageReactionsHandler.ReactionResize();
 
+        RectTransform rt = _messageObjectHandler.ReactionsPanel.GetComponent<RectTransform>();
         gameObject.transform.SetParent(ShowUsersPopUp.transform);
 
         _messageObjectHandler.ReactionsPanel.transform.SetParent(_reactionFieldOldLocation.transform);
-        rt.offsetMin = new Vector2(25, 15);
-        rt.offsetMax = new Vector2(0, 70);
+        rt.offsetMin = Vector2.zero;
+        rt.offsetMax = Vector2.zero;
         gameObject.SetActive(false);
 
     }
