@@ -16,6 +16,10 @@ public class DailyTaskData
     public string englishTitle;
     public string description;
     public string englishDescription;
+    public string execution;
+    public string englishExecution;
+    public string instruction;
+    public string englishInstruction;
     public int amount;
     public int coins;
     public int points;
