@@ -45,6 +45,7 @@ namespace MenuUi.Scripts.Loader
 
         private void OnEnable()
         {
+            if (OverlayPanelCheck.Instance) OverlayPanelCheck.Instance.ToggleOverlay(false);
             _player.loopPointReached += CheckOver;
             PlayIntroVideo();
         }
@@ -53,6 +54,7 @@ namespace MenuUi.Scripts.Loader
         {
             if (_videoPlaying) EndIntroVideo();
             _player.loopPointReached -= CheckOver;
+            if (OverlayPanelCheck.Instance) OverlayPanelCheck.Instance.ToggleOverlay(true);
         }
 
         public void PlayIntroVideo()
