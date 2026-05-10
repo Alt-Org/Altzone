@@ -124,6 +124,7 @@ public class PollInfoPopup : MonoBehaviour
     private void SetValues()
     {
         var furnitureData = _currentPollData as FurniturePollData;
+        if (furnitureData == null || furnitureData.Furniture == null) return;
 
         nameText.text = furnitureData.Furniture.Name ?? "";
         setNameText.text = furnitureData.Furniture.FurnitureInfo?.SetName ?? "";
@@ -151,9 +152,12 @@ public class PollInfoPopup : MonoBehaviour
         }
         */
 
+        string currentPollId = _currentPollData.Id;
         // Enable and disable vote buttons and list based on whether the player has voted on the poll
         Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data =>
         {
+            if (this == null || data == null) return;
+
             if (data != null)
             {
                 bool hasNotVoted = _currentPollData.NotVoted.Contains(data.Id);
@@ -177,7 +181,7 @@ public class PollInfoPopup : MonoBehaviour
         int no = _currentPollData.NoVotes.Count;
 
         yesVotes.text = yes.ToString();
-        noVotes.text = yes.ToString();
+        noVotes.text = no.ToString();
 
         if (yes == 0 && no == 0)
             greenFill.fillAmount = 0.5f;
