@@ -1431,6 +1431,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3483216698135898357, guid: c52ae9b64172fcb4dbea8997e41641c7,
         type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3483216698135898357, guid: c52ae9b64172fcb4dbea8997e41641c7,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: 
       objectReference: {fileID: 0}
@@ -2876,6 +2881,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 6772848591738572919}
+    - targetCorrespondingSourceObject: {fileID: 8741971913477667481, guid: c52ae9b64172fcb4dbea8997e41641c7,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6171800810494529138}
   m_SourcePrefab: {fileID: 100100000, guid: c52ae9b64172fcb4dbea8997e41641c7, type: 3}
 --- !u!1 &433289345833396516 stripped
 GameObject:
@@ -2911,6 +2920,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _naviTarget: {fileID: 11400000, guid: 5b9ac9c743eac7e4cb9f989e3031a596, type: 2}
+  _useNonDefaultWindow: 1
+  _targetWindow: 1
+  _isCurrentPopOutWindow: 0
+--- !u!114 &6171800810494529138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3607307575819426106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: add5e7c7ed4ccb44095b7029429e7fe3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _naviTarget: {fileID: 11400000, guid: 5b9ac9c743eac7e4cb9f989e3031a596, type: 2}
