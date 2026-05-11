@@ -537,23 +537,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69e40cae554b4484f9958dad7df00262, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _globalPlayersLeaderboardButton: {fileID: 2390377801038705601}
-  _globalPlayersLeaderboardImage: {fileID: 0}
-  _clanLeaderboardButton: {fileID: 2296463331182627709}
-  _clanLeaderboardImage: {fileID: 0}
+  _globalPlayersLeaderboardButton: {fileID: 2296463331182627709}
+  _clanLeaderboardButton: {fileID: 0}
   _friendsLeaderboardButton: {fileID: 6552742382816347420}
-  _friendsLeaderboardImage: {fileID: 0}
   _tablineRibbon: {fileID: 2388488749055727400}
   _tablineScript: {fileID: 7120743843305630683}
   _globalClansLeaderboardButton: {fileID: 3209057412974860466}
-  _globalClansLeaderboardImage: {fileID: 0}
   _tablineTitles:
   - {fileID: 787862547127141413}
   - {fileID: 8308078761998111974}
   - {fileID: 4224975806928776430}
-  _globalWinsSprite: {fileID: 21300000, guid: ccd92ab69a9d8ee4bb51be59c5cceed3, type: 3}
-  _clanWinsSprite: {fileID: 21300000, guid: c022ef603dbc77d4490ec6282ece8daa, type: 3}
-  _friendsWinsSprite: {fileID: 21300000, guid: 821973c2297e61c4e92785bd0e663fe2, type: 3}
   _podium: {fileID: 777619631814482682, guid: 47ef9e03e985cf74da68eebca0076a98, type: 3}
   _winsPanel: {fileID: 5792825386443392324}
   _winsContent: {fileID: 8959575531257436229}
@@ -565,6 +558,7 @@ MonoBehaviour:
     type: 3}
   _scrollRect: {fileID: 5222760960010890803}
   _scrollToTopButton: {fileID: 1636872675834992915}
+  _contentPanel: {fileID: 8959575531257436229}
   _scrollToMeButton: {fileID: 6474857483079348021}
 --- !u!1 &757737945733865640
 GameObject:

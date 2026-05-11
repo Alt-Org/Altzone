@@ -344,14 +344,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: e8f96ba29d24b5e44b78c224917a030e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6f5e6ff2d6816054c9420c13a0309dfa, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -378,6 +378,7 @@ MonoBehaviour:
   _winsText: {fileID: 5482741490182790832}
   _clanHeart: {fileID: 6253194504039477938}
   _avatarFaceLoader: {fileID: 8534578983844424251}
+  _itemBackground: {fileID: 4009705134543901053}
   <OpenProfileButton>k__BackingField: {fileID: 4330713747197579326}
 --- !u!114 &4330713747197579326
 MonoBehaviour:

@@ -13,22 +13,23 @@ public class LeaderboardView : MonoBehaviour
 {
     [Header("Tabline")]
     [SerializeField] private Button _globalPlayersLeaderboardButton;
-    [SerializeField] private Image _globalPlayersLeaderboardImage;
+     private Image _globalPlayersLeaderboardImage;
     [SerializeField] private Button _clanLeaderboardButton;
-    [SerializeField] private Image _clanLeaderboardImage;
+     private Image _clanLeaderboardImage;
     [SerializeField] private Button _friendsLeaderboardButton;
-    [SerializeField] private Image _friendsLeaderboardImage; 
+     private Image _friendsLeaderboardImage; 
     [SerializeField] private Image _tablineRibbon;
     [SerializeField] private TabLine _tablineScript;
     [SerializeField] private Button _globalClansLeaderboardButton; 
-    [SerializeField] private Image _globalClansLeaderboardImage;
+     private Image _globalClansLeaderboardImage;
     [SerializeField] private List<GameObject> _tablineTitles;
 
+    /*
     [Header("Tab sprites")]
     [SerializeField] private Sprite _globalWinsSprite;
     [SerializeField] private Sprite _clanWinsSprite;
     [SerializeField] private Sprite _friendsWinsSprite;
-   
+   */
 
     [Header("Leaderboard panels")]
     [SerializeField] private LeaderboardPodium _podium;
@@ -39,6 +40,9 @@ public class LeaderboardView : MonoBehaviour
     [SerializeField] private GameObject _playerWinsItemPrefab;
     [SerializeField] private GameObject _clanPointsItemPrefab;
     [SerializeField] private GameObject _friendsWinsItemPrefab;
+
+    private ServerPlayer _player; //for checking if player is logged in
+
 
     private enum Leaderboard
     {
@@ -59,9 +63,9 @@ public class LeaderboardView : MonoBehaviour
         _friendsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Friends));
         _globalClansLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.GlobalClans));
         _scrollToTopButton.onClick.AddListener(() => ScrollToTop());
+        _scrollToMeButton.onClick.AddListener(() => ScrollToMe());
 
-        InitializeTablineTitles();
-        _tablineTitles[0].SetActive(true);
+        InitializeTablineTitles(0);
     }
 
     private void OnEnable()
@@ -71,10 +75,13 @@ public class LeaderboardView : MonoBehaviour
 
     }
 
-    private void InitializeTablineTitles()
+    private void InitializeTablineTitles(int tabInt)
     {
-        foreach (GameObject title in _tablineTitles) 
-            title.SetActive(false);
+        foreach (GameObject title in _tablineTitles)
+        {   title.SetActive(false);  }
+        _tablineTitles[tabInt].SetActive(true);
+
+        Debug.Log(tabInt + " AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     private void OpenLeaderboard(Leaderboard leaderboard)
@@ -93,10 +100,12 @@ public class LeaderboardView : MonoBehaviour
       
         switch (_currentLeaderboard)
         {
-            case Leaderboard.GlobalClans: 
+            case Leaderboard.GlobalClans: //tab 1
                 {
-                    InitializeTablineTitles();
-                    _tablineTitles[0].SetActive(true);
+                    InitializeTablineTitles(0);
+
+                    Debug.Log("global clans AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
 
                     StartCoroutine(ServerManager.Instance.GetClanLeaderboardFromServer((clanLeaderboard) =>
                     {
@@ -117,9 +126,9 @@ public class LeaderboardView : MonoBehaviour
                                 _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, clanData, serverClan);
 
                                 if (rank == 1) //add the podium to scroll view
-                                    {
-                                        LeaderboardPodium item = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>();                                
-                                    }
+                                {
+                                    LeaderboardPodium item = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>();
+                                }
                             }
 
                             else
@@ -137,6 +146,16 @@ public class LeaderboardView : MonoBehaviour
                                 {
                                     DataCarrier.AddData(DataCarrier.ClanListing, serverClan); // Transfer the data for use in the leaderboard
                                 });
+
+                                _player = ServerManager.Instance.Player;
+                                if (_player == null) // if not checked, list won't load correctly when not logged in
+                                {
+                                    if (ranking.Clan.Name == ServerManager.Instance.Clan.name.ToString())
+                                    {
+                                        item.RecolorBackground();
+                                        _playerItem = item.GetComponent<RectTransform>();
+                                    }
+                                }
                             }
 
                             rank++;
@@ -144,11 +163,13 @@ public class LeaderboardView : MonoBehaviour
                     }));
                 }
                 break;
-            case Leaderboard.GlobalPlayers:
+            case Leaderboard.GlobalPlayers: //tab 2
                 {
-                    InitializeTablineTitles();
-                    _tablineTitles[1].SetActive(true);
+                    InitializeTablineTitles(1);
 
+                    Debug.Log("global players AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
+                    
                     StartCoroutine(ServerManager.Instance.GetPlayerLeaderboardFromServer((playerLeaderboard) =>
                     {
                         playerLeaderboard.Sort((a, b) => b.WonBattles.CompareTo(a.WonBattles));
@@ -160,7 +181,7 @@ public class LeaderboardView : MonoBehaviour
 
                             //if (ranking.Player.SelectedCharacterId != 0)
                             //{
-                                avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(ranking.Player);
+                            avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(ranking.Player);
                             //}
 
 
@@ -185,18 +206,31 @@ public class LeaderboardView : MonoBehaviour
                                 {
                                     DataCarrier.AddData(DataCarrier.PlayerProfile, ranking.Player); // Transfer the data for use in the leaderboard
                                 });
+                                /*
+                                _player = ServerManager.Instance.Player;
+                                if (_player == null) // if not checked, list won't load correctly when not logged in
+                                {
+                                    if (ranking.Player.Name == ServerManager.Instance.Player.name.ToString())
+                                    {
+                                        item.RecolorBackground();
+                                        _playerItem = item.GetComponent<RectTransform>();
+
+                                    }
+                                }*/
                             }
 
                             rank++;
                         }
 
                     }));
+    
                 }
                 break;
             case Leaderboard.Clan:
 
-                InitializeTablineTitles();
-                _tablineTitles[1].SetActive(true);
+                InitializeTablineTitles(1);
+
+                Debug.Log("CLAN AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
                 Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
                 {
@@ -237,7 +271,7 @@ public class LeaderboardView : MonoBehaviour
                                 });
                             }
 
-                            rank++;
+                        rank++;
                         }
 
                         // Add empty placements to fill out the space if necessary 
@@ -267,10 +301,9 @@ public class LeaderboardView : MonoBehaviour
                         }
                 });
                 break;
-            case Leaderboard.Friends:
+            case Leaderboard.Friends: //tab 3
 
-                InitializeTablineTitles();
-                _tablineTitles[2].SetActive(true);
+                InitializeTablineTitles(2);
 
                 // For Testing
 
@@ -296,7 +329,8 @@ public class LeaderboardView : MonoBehaviour
                             //{
                             //    DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
                             //});
-                        }
+
+                    }
                     }
                 break;
         }
@@ -307,7 +341,11 @@ public class LeaderboardView : MonoBehaviour
     //[SerializeField] private ScrollView _scrollView;
     [SerializeField] private ScrollRect _scrollRect;
     [SerializeField] private Button _scrollToTopButton;
+    [SerializeField] private RectTransform _contentPanel;
+
     [SerializeField] private Button _scrollToMeButton;
+    private RectTransform _playerItem;
+
 
     private void ScrollToTop()
     {
@@ -316,6 +354,21 @@ public class LeaderboardView : MonoBehaviour
 
     private void ScrollToMe()
     {
+        //Canvas.ForceUpdateCanvases();
 
+        if (_playerItem != null)
+        {
+            RectTransform target = _playerItem;
+
+            Vector2 listPostition = _scrollRect.viewport.localPosition;
+            Vector2 targetPostition = target.localPosition;
+
+            Vector2 newPosition = new Vector2(
+                0 /*- (viewportlocalPostition.x + targetlocalPostition.x)*/,
+                0 - (listPostition.y + targetPostition.y)
+                );
+
+            _contentPanel.localPosition = newPosition;
+        }
     }
 }
