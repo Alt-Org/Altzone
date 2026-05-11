@@ -9,8 +9,12 @@ public class TabObjectHandler : MonoBehaviour
     [Header("References to components")]
     [SerializeField] private Image _tabBaseComponent;
     [SerializeField] private Image _tabImageComponent;
-    [SerializeField] private Image _tabDarkeningImage;
     [SerializeField] private TextMeshProUGUI _tabText;
+
+    private Color _tabColorActive = Color.white;
+    private Color _tabColorInactive = Color.gray;
+
+    private bool _active = true;
 
     private void Start()
     {
@@ -22,21 +26,26 @@ public class TabObjectHandler : MonoBehaviour
         }
     }
 
-    public Sprite SetActiveVisuals(Sprite tablineImage)
+    public (Sprite, Color) SetActiveVisuals(Sprite tablineImage, Color stripeColour)
     {
-        if (_tabDarkeningImage != null) _tabDarkeningImage.gameObject.SetActive(false);
-        return tablineImage;
+        _active = true;
+        if (_tabBaseComponent != null) _tabBaseComponent.color = _tabColorActive;
+        return (tablineImage, stripeColour);
     }
 
 
     public void SetInactiveVisuals()
     {
-        if (_tabDarkeningImage != null) _tabDarkeningImage.gameObject.SetActive(true);
+        _active = false;
+        if (_tabBaseComponent != null) _tabBaseComponent.color = _tabColorInactive;
     }
 
 
-    public void SetColour(Color colour)
+    public void SetColour(Color activeColour, Color inactiveColour)
     {
-        if (_tabImageComponent != null) _tabBaseComponent.color = colour;
+        _tabColorActive = activeColour;
+        _tabColorInactive = inactiveColour;
+        if (_active) _tabBaseComponent.color = _tabColorActive;
+        else _tabBaseComponent.color = _tabColorInactive;
     }
 }

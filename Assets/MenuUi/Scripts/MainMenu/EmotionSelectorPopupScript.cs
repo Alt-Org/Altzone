@@ -35,32 +35,40 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Gets the needed playerdata.
-        StartCoroutine(GetPlayerData(data => _playerData = data));
-
-        if (!string.IsNullOrWhiteSpace(_playerData.emotionSelectorDate))
-        {
-            // Checks if the player has given input the same day.
-            if (DateTime.Parse(_playerData.emotionSelectorDate) == DateTime.Today) _bSwitch = false;
-        }
-
-        if (_bSwitch)
-        {
-            // Opens the popup unless the player has given input the same day.
-            _popupPrefab.SetActive(_bSwitch);
-        }
-        else
-        {
-            OnEmotionInsertFinished?.Invoke();
-        }
-
-        // Listeners that listen what button has been pressed and does the method given.
-        // The buttons have their own mood so its easier to add the mood to the list.
         _loveButton.onClick.AddListener(() => SaveMoodData(Emotion.Love));
         _playfulButton.onClick.AddListener(() => SaveMoodData(Emotion.Playful));
         _joyButton.onClick.AddListener(() => SaveMoodData(Emotion.Joy));
         _sadButton.onClick.AddListener(() => SaveMoodData(Emotion.Sorrow));
         _angryButton.onClick.AddListener(() => SaveMoodData(Emotion.Anger));
+
+        StartCoroutine(GetPlayerData(data =>
+        {
+            _playerData = data;
+
+            if (_playerData == null)
+            {
+                Debug.LogError("PlayerData is null in EmotionSelectorPopupScript.");
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(_playerData.emotionSelectorDate))
+            {
+                if (DateTime.Parse(_playerData.emotionSelectorDate).Date == DateTime.Today)
+                {
+                    _bSwitch = false;
+                }
+            }
+
+            if (_bSwitch)
+            {
+                _popupPrefab.SetActive(true);
+            }
+            else
+            {
+                _popupPrefab.SetActive(false);
+                OnEmotionInsertFinished?.Invoke();
+            }
+        }));
     }
 
     // Closes the popup.
@@ -72,7 +80,29 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
     // Saves the mood that the player has chosen.
     public void SaveMoodData(Emotion emotion)
     {
+        if (_playerData == null)
+        {
+            Debug.LogError("PlayerData is null, cannot save emotion.");
+            return;
+        }
+
         List<Emotion> data = _playerData.playerDataEmotionList;
+
+        if (data == null)
+        {
+            data = new List<Emotion>();
+        }
+
+        while (data.Count < 7)
+        {
+            data.Add(Emotion.Blank);
+        }
+
+        if (data.Count > 7)
+        {
+            data = data.GetRange(0, 7);
+        }
+
         int days = 7;
         if (!string.IsNullOrWhiteSpace(_playerData.emotionSelectorDate))
         {
@@ -103,6 +133,9 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
         _playerData.playerDataEmotionList = data;
 
         Debug.Log(days);
+
+        Debug.Log("Saving emotion date: " + _playerData.emotionSelectorDate);
+        Debug.Log("Saving emotions: " + string.Join(", ", _playerData.playerDataEmotionList));
 
         // Saves the playerdata that has been changed.
         StartCoroutine(SavePlayerData(_playerData, null));

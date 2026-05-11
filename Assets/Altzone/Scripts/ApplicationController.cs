@@ -15,7 +15,14 @@ namespace Altzone.Scripts
 {
     public class ApplicationController : MonoBehaviour
     {
-        public static readonly int VersionNumber = 209;
+        public static readonly int VersionNumber = 221;
+
+        public delegate void ApplicationResume();
+        public static event ApplicationResume OnAppResume;
+
+        public delegate void ApplicationPause();
+        public static event ApplicationPause OnAppPause;
+
 
         /// <summary>
         /// Starts the game when (before) first scene is loaded.
@@ -54,6 +61,8 @@ namespace Altzone.Scripts
         private void OnApplicationPause(bool pause)
         {
             Debug.LogFormat("[ApplicationController] OnApplicationPause ({0})", pause);
+            if (pause) OnAppPause?.Invoke();
+            else OnAppResume?.Invoke();
         }
 
         private void OnApplicationQuit()

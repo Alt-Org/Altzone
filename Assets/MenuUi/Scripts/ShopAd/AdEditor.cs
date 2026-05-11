@@ -45,6 +45,11 @@ public class AdEditor : AltMonoBehaviour
         InitializeAd();
     }
 
+    private void OnDisable()
+    {
+       CloseEditor();
+    }
+
     private void InitializeAd()
     {
         StartCoroutine(GetClanData(data =>
@@ -139,6 +144,6 @@ public class AdEditor : AltMonoBehaviour
 
     public void CloseEditor()
     {
-        gameObject.SetActive(false);
+        if(gameObject.activeSelf) gameObject.SetActive(false);
     }
 }

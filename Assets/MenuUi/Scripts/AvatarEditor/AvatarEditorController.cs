@@ -6,6 +6,8 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
 using MenuUi.Scripts.Window;
+using Altzone.Scripts.ReferenceSheets;
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
@@ -81,6 +83,7 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             AspectRatioChangeDetector.OnAspectRatioChange -= UpdateCellSizes;
             OverlayPanelCheck.Instance?.ToggleChat(true);
+            _popUpHandler.HidePopUp();
         }
 
         private void UpdateCellSizes()
@@ -153,7 +156,7 @@ namespace MenuUi.Scripts.AvatarEditor
             if (_currentPlayerData.AvatarData == null || !_currentPlayerData.AvatarData.Validate())
             {
                 Debug.LogError("AvatarData is null! Using default data.");
-                _playerAvatar = new(_avatarDefaultReference.GetByCharacterId(_currentPlayerData.SelectedCharacterId)[0]);
+                _playerAvatar = new(AvatarReference.Instance.GetDefaultAvatar((CharacterClassType)((_currentPlayerData.SelectedCharacterId/100)*100)));
             }
             else
             {
@@ -167,8 +170,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void SetDefaultAvatar()
         {
-            _playerAvatar = new(_avatarDefaultReference.GetByCharacterId(_currentPlayerData.SelectedCharacterId)[0]);
-
+            _playerAvatar = new(AvatarReference.Instance.GetDefaultAvatar((CharacterClassType)((_currentPlayerData.SelectedCharacterId / 100) * 100)));
             _featureSetter.SetLoadedFeatures(_playerAvatar);
         }
 

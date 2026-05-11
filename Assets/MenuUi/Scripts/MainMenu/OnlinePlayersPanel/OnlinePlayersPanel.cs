@@ -53,6 +53,21 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     private List<FriendPlayer> _friendlist = new List<FriendPlayer>();
     private List<FriendRequest> _friendRequests = new List<FriendRequest>();
 
+    public static OnlinePlayersPanel Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
+
     void Start()
 
     {
@@ -65,6 +80,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         ServerManager.OnOnlinePlayersChanged += BuildOnlinePlayerList;
         OverlayPanelCheck.OnToggleOnlinePlayerList += ToggleOnlinePlayersPanel;
         OnlinePlayersPanelItem.OnContentRefreshRequested += RefreshListStatus;
+        OnlinePlayersPanelItem.OnPlayerPanelCloseRequested += Hide;
         ToggleOnlinePlayersPanel(false);
     }
 
@@ -81,6 +97,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         ServerManager.OnOnlinePlayersChanged -= BuildOnlinePlayerList;
         OverlayPanelCheck.OnToggleOnlinePlayerList -= ToggleOnlinePlayersPanel;
         OnlinePlayersPanelItem.OnContentRefreshRequested -= RefreshListStatus;
+        OnlinePlayersPanelItem.OnPlayerPanelCloseRequested -= Hide;
     }
     private bool _closing = false;
 
@@ -311,7 +328,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
         _onlineTitle.text = $"Online-pelaajia {onlinePlayerCount}";
     }
 
-    private void CallUpdateFriendList()
+    public void CallUpdateFriendList()
     {
         StartCoroutine(UpdateFriendList());
     }
