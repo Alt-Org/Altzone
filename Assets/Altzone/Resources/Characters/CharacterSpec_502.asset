@@ -32,6 +32,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "Nousuhumalan tunteensa hukuttava,  morkkiksen
     v\xE4lill\xE4 liit\xE4v\xE4 y\xF6lintu."
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: e0dcda479cce71544906f70dd2112c96, type: 2}
   Hp:
     Level: 1
@@ -51,7 +53,10 @@ MonoBehaviour:
   GalleryImage: {fileID: 21300000, guid: 1ad7ef75f9ecfb945b0d71f9b329269c, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 586b64090f07a7946bfa670f3ee1a33e, type: 3}
   CharPhotoSeries: {fileID: 0}
-  BattleEntityPrototype:
+  BattleCharacterEntityPrototype:
     Id:
       Value: 1410690482395355018
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1298196107789006962
   BattleUiSprite: {fileID: 0}

@@ -1,0 +1,39 @@
+/// @file BattlePlayerClass400Data.qtn
+/// <summary>
+/// Contains component used by Projector character class.
+/// </summary>
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattlePlayerClass400DataQComponent}  
+///   @copybrief Quantum.BattlePlayerClass400DataQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattlePlayerClass400DataQComponent
+/// <summary>
+/// %Player character class data for the Projector class.
+/// </summary>
+///
+/// @bigtext{See [{PlayerClassData}](#page-concepts-player-simulation-class-classdata) for more info.}  
+/// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}  
+/// @bigtext{See [{Player Character Class 400 - Projector}](#page-concepts-player-class-400) for more info.}
+///
+/// @bigtext{Generated from @ref BattlePlayerClass400Data.qtn}
+
+/// @var bool Quantum.BattlePlayerClass400DataQComponent::IsHoldingProjectile
+/// <summary>Is the projectile being held or not.</summary>
+///
+/// @var EntityRef Quantum.BattlePlayerClass400DataQComponent::HeldProjectileEntity
+/// <summary>Reference to the projectile entity being held.</summary>
+///
+/// @var int Quantum.BattlePlayerClass400DataQComponent::HoldStartFrame
+/// <summary>%Quantum Simulation frame on which the player started holding the projectile.</summary>
+///
+/// @var FP Quantum.BattlePlayerClass400DataQComponent::HeldProjectileAngleRadians
+/// <summary>Angle (in radians) from up to the held projectile.</summary>
+///
+/// @var FP Quantum.BattlePlayerClass400DataQComponent::HeldProjectileDistance
+/// <summary>Distance from the player to the held projectile.</summary>
+///
+/// @var FP Quantum.BattlePlayerClass400DataQComponent::RotationDurationFrames
+/// <summary>%Quantum Simulation frames needed to complete a rotation.</summary>
