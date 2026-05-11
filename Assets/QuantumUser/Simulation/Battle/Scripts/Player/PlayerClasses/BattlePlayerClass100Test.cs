@@ -16,9 +16,9 @@ namespace Battle.QSimulation.Player
     /// %Player character class logic for the 100/Desensitizer class.
     /// </summary>
     ///
-    /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.}<br/>
+    /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-class-playerclass) for more info.}<br/>
     /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
-    /// @bigtext{concept sivu tähän}
+    /// @bigtext{See [{Player Class 100}](#page-concepts-player-class-100) for more info.}
     public class BattlePlayerClass100Test : BattlePlayerClassBase<BattlePlayerClass100DataQComponent>
     {
         /// <summary>
