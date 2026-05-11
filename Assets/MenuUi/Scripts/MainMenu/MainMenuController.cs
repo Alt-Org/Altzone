@@ -23,7 +23,6 @@ namespace MenuUi.Scripts.MainMenu
         private int lastWidth;
         private int lastHeight;
 
-        private SetVolume[] audioSources;
         private SettingsCarrier carrier = SettingsCarrier.Instance;
 
         [Header("TurboEducation")]
@@ -84,6 +83,7 @@ namespace MenuUi.Scripts.MainMenu
                 SetMainMenuLayoutDimensions();
             }
             AudioManager.Instance.UpdateMaxVolume();
+            OverlayPanelCheck.Instance?.UpdateButtonContent();
         }
 
         private void OnDestroy()
