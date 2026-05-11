@@ -88,6 +88,9 @@ public class DailyTaskOwnTask : MonoBehaviour
     public delegate void CurrentTaskInfoNeeded();
     public static event CurrentTaskInfoNeeded OnCurrentTaskInfoNeeded;
 
+    public delegate void TaskHintNeeded(PlayerTask task);
+    public static event TaskHintNeeded OnTaskHintNeeded;
+
     private void Start()
     {
         CreateProgressBarMarkers(_progressMarkersMaxAmount);
@@ -127,7 +130,7 @@ public class DailyTaskOwnTask : MonoBehaviour
     public IEnumerator SetDailyTask(PlayerTask data)
     {
         _currentTask = data;
-        SetTaskTitle(data, SettingsCarrier.Instance.Language);
+        SetTaskTitle(data);
         SetTaskCategory(data, SettingsCarrier.Instance.Language);
         _taskPointsReward.text = "" + data.Points;
         _taskCoinsReward.text = "" + data.Coins;
@@ -204,9 +207,9 @@ public class DailyTaskOwnTask : MonoBehaviour
         SetProgressBarMarkers(0);
     }
 
-    private void SetTaskTitle(PlayerTask task, SettingsCarrier.LanguageType language)
+    private void SetTaskTitle(PlayerTask task)
     {
-        _taskDescription.text = language == SettingsCarrier.LanguageType.Finnish ? task.Title : task.EnglishTitle;
+        _taskDescription.text = task.Title;
     }
 
     private void SetTaskCategory(PlayerTask task, SettingsCarrier.LanguageType language)
@@ -264,7 +267,7 @@ public class DailyTaskOwnTask : MonoBehaviour
     {
         if (_currentTask != null)
         {
-            SetTaskTitle(_currentTask, language);
+            SetTaskTitle(_currentTask);
             SetTaskCategory(_currentTask, language);
         }
     }
@@ -323,5 +326,12 @@ public class DailyTaskOwnTask : MonoBehaviour
     public void ShowCurrentTaskInfo()
     {
         OnCurrentTaskInfoNeeded.Invoke();
+    }
+
+    // Currently used on DailyTask OwnTask page on TaskHintButton
+    public void ShowCurrentTaskHint()
+    {
+        if (_currentTask == null) return;
+        OnTaskHintNeeded.Invoke(_currentTask);
     }
 }
