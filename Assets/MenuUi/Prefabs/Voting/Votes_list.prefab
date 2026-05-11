@@ -913,7 +913,7 @@ MonoBehaviour:
   content: {fileID: 3491824192179576033}
   horizontallyScrollable: 0
   verticallyScrollable: 1
-  scrollingMovementType: 2
+  scrollingMovementType: 1
   elasticity: 0.1
   inertia: 1
   decelerationRate: 0.135
@@ -1309,7 +1309,7 @@ MonoBehaviour:
   content: {fileID: 1341545505067081660}
   horizontallyScrollable: 0
   verticallyScrollable: 1
-  scrollingMovementType: 2
+  scrollingMovementType: 1
   elasticity: 0.1
   inertia: 1
   decelerationRate: 0.135
@@ -2093,7 +2093,7 @@ GameObject:
   - component: {fileID: 3491824192179576033}
   - component: {fileID: 6211113953156904429}
   - component: {fileID: 4496745540959318210}
-  - component: {fileID: 8495378381077821467}
+  - component: {fileID: 3566783429254281854}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -2136,14 +2136,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6806921726880215794}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
---- !u!114 &8495378381077821467
+--- !u!114 &3566783429254281854
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2152,7 +2152,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6806921726880215794}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89724a78097b7c54e8309e0280f755c7, type: 3}
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
@@ -2161,23 +2161,14 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  _startCorner: 0
-  _gridFit: 2
-  _minDynamicColumns: 2
-  _maxDynamicColumns: 4
-  _minDynamicRows: 2
-  _maxDynamicRows: 4
-  _columnAmount: 1
-  _rowAmount: 1
-  _gridCellSize: 1
-  _minCellSize: {x: 0, y: 0}
-  _maxCellSize: {x: 0, y: 0}
-  _preferredCellSize: {x: 0, y: 0}
-  _cellAspectRatio: 2.1
-  _prefab: {fileID: 0}
-  _cellSpacing: {x: 0, y: 1}
-  _preventScalingOutOfParentBounds: 0
-  _setLayoutElementPreferredSize: 0
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 1
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &6860663846199322587
 GameObject:
   m_ObjectHideFlags: 0
