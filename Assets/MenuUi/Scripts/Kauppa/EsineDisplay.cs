@@ -1,12 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using Altzone.Scripts.Model.Poco.Clan;
-using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
-using Altzone.Scripts.Store;
 using MenuUi.Scripts.Storage;
-using MenuUI.Scripts.SoulHome;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

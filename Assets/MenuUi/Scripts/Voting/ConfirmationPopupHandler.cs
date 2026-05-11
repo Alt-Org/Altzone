@@ -5,7 +5,6 @@ using Altzone.Scripts.Language;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Voting;
 using MenuUi.Scripts.Storage;
-using MenuUi.Scripts.SwipeNavigation;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

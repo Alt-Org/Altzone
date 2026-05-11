@@ -6,7 +6,6 @@ using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using MenuUi.Scripts.Storage;
-using MenuUI.Scripts.SoulHome;
 using UnityEngine;
 using UnityEngine.UI;
 
