@@ -134,7 +134,7 @@ public class ClanSettings : AltMonoBehaviour
     [SerializeField] private GameObject _clanSettingsPopup;
     [SerializeField] private ClanMainView _clanMainView;
 
-    [Header("Values / Roles / Rules Carousel")]
+    [Header("Values / Roles / Rules / Logo Carousel")]
     [SerializeField] private Button _valuesRolesRulesLeftButton;
     [SerializeField] private Button _valuesRolesRulesRightButton;
 
@@ -143,10 +143,19 @@ public class ClanSettings : AltMonoBehaviour
     [SerializeField] private GameObject _valuesPanel;
     [SerializeField] private GameObject _rolesPanel;
     [SerializeField] private GameObject _rulesPanel;
+    [SerializeField] private GameObject _logoPanel;
 
     [SerializeField] private Image _valuesDot;
     [SerializeField] private Image _rolesDot;
     [SerializeField] private Image _rulesDot;
+    [SerializeField] private Image _logoDot;
+
+    [Header("Logo edit")]
+    [SerializeField] private Button _openLogoEditButton;
+    [SerializeField] private GameObject _logoEditPopup;
+    [SerializeField] private Button _logoEditCloseButton;
+    [SerializeField] private Button _logoEditCancelButton;
+    [SerializeField] private Button _logoConfirmButton;
 
     [SerializeField] private Color _activeDotColor = new Color(1f, 0.6f, 0f, 1f);
     [SerializeField] private Color _inactiveDotColor = new Color(0.75f, 0.85f, 0.9f, 1f);
@@ -156,6 +165,7 @@ public class ClanSettings : AltMonoBehaviour
     private const int ValuesIndex = 0;
     private const int RolesIndex = 1;
     private const int RulesIndex = 2;
+    private const int LogoIndex = 3;
 
     private List<HeartPieceData> _heartPieces;
     private List<ClanValues> _selectedValues = new();
@@ -208,6 +218,9 @@ public class ClanSettings : AltMonoBehaviour
 
             if (_rulesPopup != null)
                 _rulesPopup.SetActive(false);
+
+            if (_logoEditPopup != null)
+                _logoEditPopup.SetActive(false);
 
             /*if (_rolesPopup != null)
                 _rolesPopup.SetActive(false);*/
@@ -501,6 +514,12 @@ public class ClanSettings : AltMonoBehaviour
         if (_valuesCancelButton) _valuesCancelButton.onClick.AddListener(CancelValuesEdit);
         if (_valuesCloseButton) _valuesCloseButton.onClick.AddListener(CancelValuesEdit);
 
+        // Logo popup
+        if (_openLogoEditButton) _openLogoEditButton.onClick.AddListener(OpenHeartEditPopup);
+        if (_logoEditCloseButton) _logoEditCloseButton.onClick.AddListener(CancelHeartEdit);
+        if (_logoEditCancelButton) _logoEditCancelButton.onClick.AddListener(CancelHeartEdit);
+        if (_logoConfirmButton) _logoConfirmButton.onClick.AddListener(ConfirmHeartEdit);
+
         // Heart popup
         /* if (_openHeartEditButton) _openHeartEditButton.onClick.AddListener(OpenHeartEditPopup);
         if (_heartConfirmButton) _heartConfirmButton.onClick.AddListener(ConfirmHeartEdit);
@@ -569,11 +588,12 @@ public class ClanSettings : AltMonoBehaviour
         if (_valuesCancelButton) _valuesCancelButton.onClick.RemoveListener(CancelValuesEdit);
         if (_valuesCloseButton) _valuesCloseButton.onClick.RemoveListener(CancelValuesEdit);
 
-        /*if (_openHeartEditButton) _openHeartEditButton.onClick.RemoveListener(OpenHeartEditPopup);
-        if (_heartConfirmButton) _heartConfirmButton.onClick.RemoveListener(ConfirmHeartEdit);
-        if (_heartCancelButton) _heartCancelButton.onClick.RemoveListener(CancelHeartEdit);
+        if (_openLogoEditButton) _openLogoEditButton.onClick.RemoveListener(OpenHeartEditPopup);
+        if (_logoEditCloseButton) _logoEditCloseButton.onClick.RemoveListener(CancelHeartEdit);
+        if (_logoEditCancelButton) _logoEditCancelButton.onClick.RemoveListener(CancelHeartEdit);
+        if (_logoConfirmButton) _logoConfirmButton.onClick.RemoveListener(ConfirmHeartEdit);
 
-        if (_openRolesButton) _openRolesButton.onClick.RemoveListener(OpenClanRolesPopup);
+        /*if (_openRolesButton) _openRolesButton.onClick.RemoveListener(OpenClanRolesPopup);
         if (_rolesConfirmButton) _rolesConfirmButton.onClick.RemoveListener(ConfirmClanRolesEdit);
         if (_rolesCancelButton) _rolesCancelButton.onClick.RemoveListener(CancelClanRolesEdit);*/
 
@@ -682,8 +702,15 @@ public class ClanSettings : AltMonoBehaviour
 
     public void SetClanHeartFromColorChanges()
     {
+        if (_heartColorChanger == null)
+            return;
+
         _heartPieces = _heartColorChanger.GetHeartPieceDatas();
-        _heartColorSetter.SetHeartColors(_heartPieces);
+
+        if (_heartColorSetter != null)
+        {
+            _heartColorSetter.SetHeartColors(_heartPieces);
+        }
     }
 
     public void ResetHeartColorChanger()
@@ -703,9 +730,19 @@ public class ClanSettings : AltMonoBehaviour
     {
         ResetHeartColorChanger();
 
+        if (_heartColorChanger != null)
+        {
+            _heartColorChanger.SetFillWholeHeart(true);
+        }
+
         if (_fillWholeHeartToggle != null)
         {
-            OnFillWholeHeartToggleChanged(_fillWholeHeartToggle.isOn);
+            _fillWholeHeartToggle.gameObject.SetActive(false);
+        }
+
+        if (_heartModeLabel != null)
+        {
+            _heartModeLabel.text = "Muokkaa logon väriä";
         }
 
         ShowPopup(_editHeartPanel);
@@ -1099,7 +1136,7 @@ public class ClanSettings : AltMonoBehaviour
 
         if (_valuesRolesRulesIndex < ValuesIndex)
         {
-            _valuesRolesRulesIndex = RulesIndex;
+            _valuesRolesRulesIndex = LogoIndex;
         }
 
         Debug.Log("Values/Roles/Rules index: " + _valuesRolesRulesIndex);
@@ -1111,7 +1148,7 @@ public class ClanSettings : AltMonoBehaviour
     {
         _valuesRolesRulesIndex++;
 
-        if (_valuesRolesRulesIndex > RulesIndex)
+        if (_valuesRolesRulesIndex > LogoIndex)
         {
             _valuesRolesRulesIndex = ValuesIndex;
         }
@@ -1130,6 +1167,9 @@ public class ClanSettings : AltMonoBehaviour
         if (_rulesPanel != null)
             _rulesPanel.SetActive(_valuesRolesRulesIndex == RulesIndex);
 
+        if (_logoPanel != null)
+            _logoPanel.SetActive(_valuesRolesRulesIndex == LogoIndex);
+
         if (_valuesRolesRulesTitle != null)
         {
             switch (_valuesRolesRulesIndex)
@@ -1145,6 +1185,10 @@ public class ClanSettings : AltMonoBehaviour
                 case RulesIndex:
                     _valuesRolesRulesTitle.text = "Klaanin säännöt";
                     break;
+
+                case LogoIndex:
+                    _valuesRolesRulesTitle.text = "Klaanin logo";
+                    break;
             }
         }
 
@@ -1156,6 +1200,7 @@ public class ClanSettings : AltMonoBehaviour
         SetDotColor(_valuesDot, _valuesRolesRulesIndex == ValuesIndex);
         SetDotColor(_rolesDot, _valuesRolesRulesIndex == RolesIndex);
         SetDotColor(_rulesDot, _valuesRolesRulesIndex == RulesIndex);
+        SetDotColor(_logoDot, _valuesRolesRulesIndex == LogoIndex);
     }
 
     private void SetDotColor(Image dot, bool isActive)
