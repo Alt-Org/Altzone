@@ -23,12 +23,15 @@ namespace MenuUi.Scripts.MainMenu
         private int lastWidth;
         private int lastHeight;
 
-        private SetVolume[] audioSources;
         private SettingsCarrier carrier = SettingsCarrier.Instance;
 
+        [Header("TurboEducation")]
         [Tooltip("The buttons that should be disabled when a task is active on TurboEducation")]
         [SerializeField]
         private Button[] _buttonsToDisableOnTurboEducationTask;
+        [Tooltip("The game objects that should be disabled when a task is active on TurboEducation")]
+        [SerializeField]
+        private GameObject[] _objectsToDisableOnTurboEducationTask;
 
         private void Awake()
         {
@@ -45,17 +48,16 @@ namespace MenuUi.Scripts.MainMenu
 
             OverlayPanelCheck.Instance?.gameObject.SetActive(true);
             OverlayPanelCheck.Instance?.ToggleOverlay(true);
-            AudioManager.Instance?.SetCurrentAreaCategoryName("MainMenu");
 
             try
             {
                 if (jukeboxMainMenu)
                 {
                     if (JukeboxManager.Instance != null && string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
-                        AudioManager.Instance?.PlayMusic("MainMenu");
+                        AudioManager.Instance?.PlayMusic(AudioCategoryType.MainMenu);
                 }
                 else
-                    AudioManager.Instance?.PlayMusic("MainMenu");
+                    AudioManager.Instance?.PlayMusic(AudioCategoryType.MainMenu);
             }
             catch (Exception e) { Debug.LogException(e); }
 
@@ -64,14 +66,14 @@ namespace MenuUi.Scripts.MainMenu
 
             StartCoroutine(EnableChooseTask());
 
-            UpdateTurboEdButtonsState();
+            UpdateTurboEdObjectsState();
         }
 
         private void Start()
         {
 
-            ChooseTask.OnChooseTaskShown += DisableTurboEdButtons;
-            DailyTaskProgressManager.OnTaskDone += UpdateTurboEdButtonsState;
+            ChooseTask.OnChooseTaskShown += DisableTurboEdObjects;
+            DailyTaskProgressManager.OnTaskDone += UpdateTurboEdObjectsState;
 
             var windowManager = WindowManager.Get();
             if (_swipe)
@@ -81,12 +83,13 @@ namespace MenuUi.Scripts.MainMenu
                 SetMainMenuLayoutDimensions();
             }
             AudioManager.Instance.UpdateMaxVolume();
+            OverlayPanelCheck.Instance?.UpdateButtonContent();
         }
 
         private void OnDestroy()
         {
-            ChooseTask.OnChooseTaskShown -= DisableTurboEdButtons;
-            DailyTaskProgressManager.OnTaskDone -= UpdateTurboEdButtonsState;
+            ChooseTask.OnChooseTaskShown -= DisableTurboEdObjects;
+            DailyTaskProgressManager.OnTaskDone -= UpdateTurboEdObjectsState;
 
         }
         /// <summary>
@@ -152,27 +155,31 @@ namespace MenuUi.Scripts.MainMenu
         }
 
         /// <summary>
-        /// This is to enable/disable specified buttons on TurboEducation when a task is active
+        /// This is to enable/disable specified objects and buttons on TurboEducation when a task is active
         /// </summary>
-        private void UpdateTurboEdButtonsState()
+        private void UpdateTurboEdObjectsState()
         {
             if (GameConfig.Get().GameVersionType == VersionType.TurboEducation)
             {
-                SetTurboEdButtonsState(!DailyTaskProgressManager.Instance.HasOnGoingTask());
+                SetTurboEdObjectsState(!DailyTaskProgressManager.Instance.HasOnGoingTask());
             }
         }
 
-        public void SetTurboEdButtonsState(bool active)
+        public void SetTurboEdObjectsState(bool active)
         {
             foreach (Button button in _buttonsToDisableOnTurboEducationTask)
             {
                 button.interactable = active;
             }
+            foreach (GameObject gameObject in _objectsToDisableOnTurboEducationTask)
+            {
+                gameObject.SetActive(active);
+            }
         }
 
-        private void DisableTurboEdButtons()
+        private void DisableTurboEdObjects()
         {
-            SetTurboEdButtonsState(false);
+            SetTurboEdObjectsState(false);
         }
     }
 }

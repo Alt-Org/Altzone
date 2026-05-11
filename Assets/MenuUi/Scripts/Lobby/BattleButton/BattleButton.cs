@@ -19,6 +19,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
     {
         [SerializeField] private Image _gameTypeIcon;
         [SerializeField] private Image _gameTypeBanner;
+        [SerializeField] private Image _gameTypeBackground;
         [SerializeField] private TextLanguageSelectorCaller _gameTypeName;
         [SerializeField] private TextLanguageSelectorCaller _gameTypeDescription;
         [SerializeField] private Button _openBattleUiEditorButton;
@@ -27,7 +28,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
         private const string SelectedGameTypeKey = "BattleButtonGameType";
 
-        private GameType _selectedGameType = GameType.Custom;
+        private GameType _selectedGameType = GameType.Random2v2;
 
         private List<GameTypeOption> _gameTypeOptionList = new();
         private Button _button;
@@ -45,7 +46,9 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             _button.onClick.AddListener(RequestBattlePopup);
 
             // Loading selected game type from player prefs Note: Only custom available for now
-            _selectedGameType = GameType.Custom; //(GameType)PlayerPrefs.GetInt(SelectedGameTypeKey, (int)_selectedGameType);
+            _selectedGameType = GameType.Random2v2; //(GameType)PlayerPrefs.GetInt(SelectedGameTypeKey, (int)_selectedGameType);
+
+            UpdateGameType(_gameTypeReference.GetGameTypeInfos().Find(x => x.gameType == _selectedGameType));
 
             _openBattleUiEditorButton.transform.SetAsLastSibling();
             _openBattleUiEditorButton.onClick.AddListener(OnOpenBattleUiEditorButtonPressed);
@@ -68,6 +71,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         {
             _gameTypeIcon.sprite = gameTypeInfo.Icon;
             _gameTypeBanner.sprite = gameTypeInfo.Banner;
+            _gameTypeBackground.sprite = gameTypeInfo.Background;
             _gameTypeName.SetText(gameTypeInfo.Name);
             _gameTypeDescription.SetText(gameTypeInfo.Description);
             _selectedGameType = gameTypeInfo.gameType;

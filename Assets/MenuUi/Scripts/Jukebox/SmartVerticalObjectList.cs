@@ -62,8 +62,13 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
 
     private RectTransform _locationHelper;
 
+    private bool _buildOnEnable = false;
+
     public delegate void NewDataRequested(int targetIndex);
     public event NewDataRequested OnNewDataRequested; //Used to tell the host that new content data is needed.
+
+    public delegate void LateDataRequest();
+    public event LateDataRequest OnLateDataRequest; //Used to get data for the list when this list is enabled.
 
     private enum VerticalDirectionType
     {
@@ -79,14 +84,21 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
         _contentStartAnchoredPosition = _content.anchoredPosition;
     }
 
-    private void Start() { if (_locationHelper == null) CreateLocationHelper(); }
+    private void Start() { if (!_locationHelper) CreateLocationHelper(); }
+
+    private void OnEnable()
+    {
+        if (!_buildOnEnable) return;
+
+        _buildOnEnable = false;
+        OnLateDataRequest?.Invoke();
+    }
 
     private void CreateLocationHelper()
     {
         GameObject locationHelper = new GameObject("LocationHelper");
 
         _locationHelper = locationHelper.AddComponent<RectTransform>();
-
         _locationHelper.SetParent(_viewport);
     }
 
@@ -132,7 +144,13 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
     #region Data
     public void Setup<T>(List<T> data)
     {
-        if (_locationHelper == null) CreateLocationHelper();
+        if (!isActiveAndEnabled || _buildOnEnable)
+        {
+            _buildOnEnable = true;
+            return;
+        }
+
+        if (!_locationHelper) CreateLocationHelper();
 
         _contentListLenght = data.Count;
 
@@ -243,10 +261,13 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
         {
             SmartListItem firstSmartListItem = Instantiate(_contentPrefab, _content).GetComponent<SmartListItem>();
 
+            if (!firstSmartListItem.SelfRectTransform) firstSmartListItem.SetSelfRectTransform();
+
             _smartListItemLocalHeightWithPadding = firstSmartListItem.SelfRectTransform.rect.height + _verticalPadding;
             firstSmartListItem.SelfRectTransform.sizeDelta = new Vector2(_content.rect.width,
                 firstSmartListItem.SelfRectTransform.sizeDelta.y);
 
+            firstSmartListItem.ClearData();
             _smartListItems.Add(firstSmartListItem);
         }
         else
@@ -265,9 +286,12 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
         {
             SmartListItem smartListItem = Instantiate(_contentPrefab, _content).GetComponent<SmartListItem>();
 
+            if (!smartListItem.SelfRectTransform) smartListItem.SetSelfRectTransform();
+
             smartListItem.SelfRectTransform.sizeDelta = new Vector2(_content.rect.width,
                 smartListItem.SelfRectTransform.sizeDelta.y);
 
+            smartListItem.ClearData();
             _smartListItems.Add(smartListItem);
         }
     }
@@ -291,6 +315,8 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
 
     private void ScrollHandling(float distance) //TODO: Add elasticity.
     {
+        if (_smartListItems.Count > _contentListLenght) return; //Nothing or not enough content to scroll.
+
         bool movementCheck = ((_outOfBoundDirection == VerticalDirectionType.Up && _velocity < 0) ||
                               (_outOfBoundDirection == VerticalDirectionType.Down && _velocity > 0));
 
@@ -354,7 +380,7 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
     /// <returns>VerticalDirectionType in which there was no more content to be displayed.</returns>
     private VerticalDirectionType ScrollLimiter(float worldDistance, float anchoredDistance)
     {
-        if (_smartListTopIndex * -1 - _uniqueGameObjectsAtTop.Count == 0 && _velocity < 0) //Over top check.
+        if (_smartListTopIndex * -1 - _uniqueGameObjectsAtTop.Count <= 0 && _velocity < 0) //Over top check.
         {
             float topItemTopEdge = GetTopItemEdgeLocalPositionY() + anchoredDistance;
 
@@ -366,7 +392,8 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
 
             return VerticalDirectionType.Up;
         }
-        if (_smartListBottomIndex == (_contentListLenght + _uniqueGameObjectsAtBottom.Count) && _velocity > 0) //Over bottom check.
+
+        if (_smartListBottomIndex >= (_contentListLenght + _uniqueGameObjectsAtBottom.Count) && _velocity > 0) //Over bottom check.
         {
             float bottomItemTopEdge = GetBottomItemEdgeLocalPositionY() + anchoredDistance - _content.rect.height / 2f;
 
@@ -398,8 +425,10 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
     {
         if (_uniqueGameObjectsAtTop.Count != 0)
             return _uniqueGameObjectsAtTop[0].localPosition.y + HalfHeight(_uniqueGameObjectsAtTop[0]) * _smartItemTopStrenghtMultiplier;
+
         if (_smartListItems.Count != 0)
             return _smartListItems[0].SelfRectTransform.localPosition.y + HalfHeight(_smartListItems[0].SelfRectTransform) * _smartItemTopStrenghtMultiplier;
+
         if (_uniqueGameObjectsAtBottom.Count != 0)
             return _uniqueGameObjectsAtBottom[0].localPosition.y + HalfHeight(_uniqueGameObjectsAtBottom[0]) * _smartItemTopStrenghtMultiplier;
 
@@ -408,12 +437,11 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
 
     private float GetTopItemWorldPositionY()
     {
-        if (_uniqueGameObjectsAtTop.Count != 0)
-            return _uniqueGameObjectsAtTop[0].position.y;
-        if (_smartListItems.Count != 0)
-            return _smartListItems[0].SelfRectTransform.position.y;
-        if (_uniqueGameObjectsAtBottom.Count != 0)
-            return _uniqueGameObjectsAtBottom[0].position.y;
+        if (_uniqueGameObjectsAtTop.Count != 0) return _uniqueGameObjectsAtTop[0].position.y;
+
+        if (_smartListItems.Count != 0) return _smartListItems[0].SelfRectTransform.position.y;
+
+        if (_uniqueGameObjectsAtBottom.Count != 0) return _uniqueGameObjectsAtBottom[0].position.y;
 
         return 0f;
     }
@@ -422,12 +450,14 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
     {
         if (_uniqueGameObjectsAtBottom.Count != 0)
             return _uniqueGameObjectsAtBottom[^1].localPosition.y + _uniqueGameObjectsAtBottom[^1].rect.height;
+
         if (_smartListItems.Count != 0)
         {
             int smartIndex = (_smartListBottomIndex - _extraSmartListItems - 1) % _smartListItems.Count;
 
             return _smartListItems[smartIndex].SelfRectTransform.localPosition.y + _smartListItems[smartIndex].SelfRectTransform.rect.height;
         }
+
         if (_uniqueGameObjectsAtTop.Count != 0)
             return _uniqueGameObjectsAtTop[^1].localPosition.y + _uniqueGameObjectsAtTop[^1].rect.height;
 
@@ -436,8 +466,8 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
 
     private float GetBottomItemWorldPositionY()
     {
-        if (_uniqueGameObjectsAtBottom.Count != 0)
-            return _uniqueGameObjectsAtBottom[^1].position.y;
+        if (_uniqueGameObjectsAtBottom.Count != 0) return _uniqueGameObjectsAtBottom[^1].position.y;
+
         if (_smartListItems.Count != 0)
         {
             int smartIndex = (_smartListItems.Count > _smartListBottomIndex ? _smartListBottomIndex :
@@ -445,8 +475,8 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
 
             return _smartListItems[smartIndex].SelfRectTransform.position.y;
         }
-        if (_uniqueGameObjectsAtTop.Count != 0)
-            return _uniqueGameObjectsAtTop[^1].position.y;
+
+        if (_uniqueGameObjectsAtTop.Count != 0) return _uniqueGameObjectsAtTop[^1].position.y;
 
         return 0f;
     }
@@ -532,6 +562,8 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
         bool outOfBounds = (overTop || overBottom);
         bool outOfRange = ((overTop && _smartListBottomIndex >= _contentListLenght) ||
                            (overBottom && _smartListTopIndex < 0));
+
+        //if (outOfRange) smartListItem.ClearData(); //TODO: Add more processing to scroll handling to determine how to display hand handle large velocities witch cause visual bugs.
 
         if (!outOfBounds || outOfRange) return;
 

@@ -27,9 +27,12 @@ namespace MenuUi.Scripts.Login
         [Header("Input Fields")]
         [SerializeField] private TMP_InputField _logInUsernameInputField;
         [SerializeField] private TMP_InputField _logInPasswordInputField;
+        [SerializeField] private Toggle _logInPasswordVisibilityToggle;
         [SerializeField] private TMP_InputField _registerUsernameInputField;
         [SerializeField] private TMP_InputField _registerPasswordInputField;
+        [SerializeField] private Toggle _registerPasswordVisibilityToggle;
         [SerializeField] private TMP_InputField _registerPassword2InputField;
+        [SerializeField] private Toggle _registerPassword2VisibilityToggle;
         [SerializeField] private Toggle _privacyPolicyAuthToggle;
         [SerializeField] private Toggle _registerAgeVerificationCheckToggle;
         [SerializeField] private Toggle _registerAgeVerificationToggle;
@@ -111,9 +114,12 @@ namespace MenuUi.Scripts.Login
             {
                 SetVersionState(true);
             }*/
+            _logInPasswordVisibilityToggle.onValueChanged.AddListener((value) => SetPasswordVisibilityState(_logInPasswordInputField, value));
+            _registerPasswordVisibilityToggle.onValueChanged.AddListener((value) => SetPasswordVisibilityState(_registerPasswordInputField, value));
+            _registerPassword2VisibilityToggle.onValueChanged.AddListener((value) => SetPasswordVisibilityState(_registerPassword2InputField, value));
             _autoLoginToggle.OnToggleStateChanged += SetVersionState;
             _turboEducationToggle.OnToggleStateChanged += SetTurboState;
-
+            _logInUsernameInputField.text = PlayerPrefs.GetString("userName", string.Empty);
         }
 
         public void Reset()
@@ -124,9 +130,12 @@ namespace MenuUi.Scripts.Login
 
             _logInUsernameInputField.text = "";
             _logInPasswordInputField.text = "";
+            _logInPasswordVisibilityToggle.isOn = false;
             _registerUsernameInputField.text = "";
             _registerPasswordInputField.text = "";
+            _registerPasswordVisibilityToggle.isOn = false;
             _registerPassword2InputField.text = "";
+            _registerPassword2VisibilityToggle.isOn = false;
         }
 
         private void OnDisable()
@@ -188,7 +197,7 @@ namespace MenuUi.Scripts.Login
                     JObject result = JObject.Parse(request.downloadHandler.text);
                     //Debug.Log(request.downloadHandler.text);
                     if(ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
-                    ServerManager.Instance.SetProfileValues(result);
+                    ServerManager.Instance.SetProfileValues(result, username);
                     if(GameConfig.Get().GameVersionType is VersionType.Standard or VersionType.None) GameConfig.Get().GameVersionType = VersionType.Education;
                     if (_autoLoginToggle.IsOn)
                     {
@@ -338,7 +347,7 @@ namespace MenuUi.Scripts.Login
                     Debug.Log("Registering successful!");
                     JObject result = JObject.Parse(request.downloadHandler.text);;
                     if (ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
-                    ServerManager.Instance.SetProfileValues(result);
+                    ServerManager.Instance.SetProfileValues(result, string.Empty);
                     GameConfig.Get().GameVersionType = VersionType.Education;
                     PlayerPrefs.SetInt("AutomaticLogin", 1);
                     _returnToMainMenuButton.onClick.Invoke();
@@ -391,6 +400,16 @@ namespace MenuUi.Scripts.Login
                 //PlayerPrefs.SetInt("AutomaticLogin", 0);
                 _autoLoginToggle.SetState(value);
             }
+        }
+
+        private void SetPasswordVisibilityState(TMP_InputField passwordInputField, bool value)
+        {
+            if(value)
+                passwordInputField.contentType = TMP_InputField.ContentType.Standard;
+            else
+                passwordInputField.contentType = TMP_InputField.ContentType.Password;
+
+            passwordInputField.ForceLabelUpdate();
         }
 
         private void SetTurboState(bool value)
