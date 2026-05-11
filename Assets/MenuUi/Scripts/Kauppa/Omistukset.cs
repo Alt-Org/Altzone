@@ -12,7 +12,7 @@ namespace Assets.Altzone.Scripts.Model.Poco.Player
         Animation
     }
 
-    public class Omistukset : MonoBehaviour
+    public class Ownerships : MonoBehaviour
     {
         // TODO: PlayerPrefs -> LocalModels.PlayerData
         // TODO: How to differentiate AvatarPiece Ids - Animation Ids

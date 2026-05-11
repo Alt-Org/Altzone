@@ -235,6 +235,41 @@ namespace Altzone.Scripts.Model.Poco.Player
             else Storefront.Get().SavePlayerData(this, null);
         }
 
+        public enum ItemType
+        {
+            AvatarPiece,
+            Animation
+        }
+        public void AddItem(string id, ItemType type)
+        {
+            // Differentiating types of items seems encumbaring currently
+            // Option 1: add patterns to item_ids can be used to sort them.
+            // Option 2: add every item into one list.
+            // Option 3: first item in the list is identifier
+            switch (type)
+            {
+                case ItemType.AvatarPiece:
+                    OwnedAvatarPiece_Ids.Add(id);
+                    break;
+                case ItemType.Animation:
+                    OwnedAnimation_Ids.Add(id);
+                    break;
+            }
+        }
+
+        public void RemoveItem(string id, ItemType type)
+        {
+            if (OwnedAvatarPiece_Ids.Contains(id)) OwnedAvatarPiece_Ids.Remove(id);
+            if (OwnedAnimation_Ids.Contains(id)) OwnedAnimation_Ids.Remove(id);
+        }
+
+        public bool CheckItemOwnership(string id)
+        {
+            if (OwnedAvatarPiece_Ids.Contains(id)) return true;
+            if (OwnedAnimation_Ids.Contains(id)) return true;
+            return false;
+        }  
+
         public void UpdateOwnedAvatarPieceIDs(int type, List<string> idList)
         {
             switch (type)
@@ -248,11 +283,6 @@ namespace Altzone.Scripts.Model.Poco.Player
                     break;
             }
         }
-
-        /*public void UpdateOwnedAvatarAnimationIDs(List<string> ids)
-        {
-            OwnedAnimation_Ids = ids;
-        }*/
 
 
         public void BuildCharacterLists(List<CustomCharacter> customCharacters)

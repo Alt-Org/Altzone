@@ -224,10 +224,4 @@ public class AvatarPartsReference : ScriptableObject
 
         public int TotalPartsCount => AvatarParts?.Count ?? 0;
     }
-
-    public bool CheckOwnership(string id)
-    {
-        //if (_omistukset._ownedAvatarPiece_Ids.Contains(id)) return true;
-        return false;
-    }
 }

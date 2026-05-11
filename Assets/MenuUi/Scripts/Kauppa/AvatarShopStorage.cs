@@ -6,7 +6,7 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
 using Altzone.Scripts.AvatarPartsInfo;
-using Assets.Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Model.Poco.Player;
 
 public class AvatarShopStorage : ShopPanelStorage
 {
@@ -36,7 +36,7 @@ public class AvatarShopStorage : ShopPanelStorage
     [Header("Avatar Parts Reference")]
     [SerializeField] private AvatarPartsReference _avatarPartsReference;
     
-    [SerializeField] private Omistukset _ownerships;
+    [SerializeField] private PlayerData _playerData;
 
     private Dictionary<string, Transform> _rarityToParent;
     //private Dictionary<FurnitureRarity, Transform> _rarityToParent;
@@ -113,7 +113,7 @@ public class AvatarShopStorage : ShopPanelStorage
                 }
 
                 // Check if the player already owns the item
-                if (_ownerships.CheckItemOwnership(avatarpartData.Id))
+                if (_playerData.CheckItemOwnership(avatarpartData.Id))
                 {
                     continue;
                 }
