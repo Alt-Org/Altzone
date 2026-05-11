@@ -21,6 +21,15 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         // Common
         PlayerCharacterCommonHitShield = BattleSoundFX.PlayerCharacterCommonHitShield,
 
+        // None
+        PlayerCharacterNoneCatchphrase            = BattleSoundFX.PlayerCharacterNoneCatchphrase,
+        PlayerCharacterNoneHitCharacterAggression = BattleSoundFX.PlayerCharacterNoneHitCharacterAggression,
+        PlayerCharacterNoneHitCharacterJoy        = BattleSoundFX.PlayerCharacterNoneHitCharacterJoy,
+        PlayerCharacterNoneHitCharacterLove       = BattleSoundFX.PlayerCharacterNoneHitCharacterLove,
+        PlayerCharacterNoneHitCharacterPlayful    = BattleSoundFX.PlayerCharacterNoneHitCharacterPlayful,
+        PlayerCharacterNoneHitCharacterSadness    = BattleSoundFX.PlayerCharacterNoneHitCharacterSadness,
+        PlayerCharacterNoneDeath                  = BattleSoundFX.PlayerCharacterNoneDeath,
+
         // Racist
         PlayerCharacterRacistCatchphrase            = BattleSoundFX.PlayerCharacterRacistCatchphrase,
         PlayerCharacterRacistHitCharacterAggression = BattleSoundFX.PlayerCharacterRacistHitCharacterAggression,

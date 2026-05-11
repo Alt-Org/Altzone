@@ -4,7 +4,6 @@
 /// </summary>
 
 // System usings
-using System.Collections.Generic;
 using System.Linq;
 
 // Unity usings
@@ -80,9 +79,9 @@ namespace Battle.QSimulation.Player
 
             if (isInPlay)
             {
-                if (playerData->MovementCooldownSec > FP._0)
+                if (playerData->BotMovementCooldownSec > FP._0)
                 {
-                    playerData->MovementCooldownSec -= f.DeltaTime;
+                    playerData->BotMovementCooldownSec -= f.DeltaTime;
                 }
                 else
                 {
@@ -92,7 +91,7 @@ namespace Battle.QSimulation.Player
 
             if (movementInput != BattleMovementInputType.None)
             {
-                playerData->MovementCooldownSec = f.RNG->NextInclusive(playerBotSpec.MovementCooldownSecMin, playerBotSpec.MovementCooldownSecMax); ;
+                playerData->BotMovementCooldownSec = f.RNG->NextInclusive(playerBotSpec.MovementCooldownSecMin, playerBotSpec.MovementCooldownSecMax); ;
                 ComponentFilter<BattleProjectileQComponent> projectiles = f.Filter<BattleProjectileQComponent>();
                 if (projectiles.NextUnsafe(out EntityRef projectileEntity, out BattleProjectileQComponent* projectile))
                 {

@@ -15,7 +15,6 @@ public class ScrollBarHandleSizeFix : MonoBehaviour
 
     private IEnumerator DelayedExecution()
     {
-        //yield return new WaitForSeconds(_time);
         yield return new WaitForEndOfFrame();
 
         transform.GetComponent<Scrollbar>().size = 0;

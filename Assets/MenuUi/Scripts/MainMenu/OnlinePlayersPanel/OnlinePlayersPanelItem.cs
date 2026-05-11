@@ -59,6 +59,9 @@ public class OnlinePlayersPanelItem : AltMonoBehaviour
     public delegate void ContentRefreshRequested();
     public static event ContentRefreshRequested OnContentRefreshRequested;
 
+    public delegate void PlayerPanelCloseRequested();
+    public static event PlayerPanelCloseRequested OnPlayerPanelCloseRequested;
+
     private void OnEnable()
     {
         OnPanelPressed += ButtonPressHandle;
@@ -327,8 +330,7 @@ public class OnlinePlayersPanelItem : AltMonoBehaviour
         if(player != null)
         _profileButton.onClick.AddListener(() =>
         {
-            DataCarrier.AddData(DataCarrier.PlayerProfile, new PlayerData(player));
-            StartCoroutine(_profileButton.GetComponent<WindowNavigation>().Navigate());
+            StartCoroutine(GetProfile(player));
         });
     }
     private void SetProfileListener(string id)
@@ -338,6 +340,14 @@ public class OnlinePlayersPanelItem : AltMonoBehaviour
             {
                 StartCoroutine(GetFriendProfile(id));
             });
+    }
+
+    private IEnumerator GetProfile(ServerPlayer player)
+    {
+        DataCarrier.AddData(DataCarrier.PlayerProfile, new PlayerData(player));
+        yield return _profileButton.GetComponent<WindowNavigation>().Navigate();
+        OnPlayerPanelCloseRequested?.Invoke();
+
     }
 
     private IEnumerator GetFriendProfile(string id)
@@ -350,7 +360,8 @@ public class OnlinePlayersPanelItem : AltMonoBehaviour
         yield return new WaitUntil(() => serverPlayer != null || timeout);
 
         DataCarrier.AddData(DataCarrier.PlayerProfile, new PlayerData(serverPlayer));
-        StartCoroutine(_profileButton.GetComponent<WindowNavigation>().Navigate());
+        yield return _profileButton.GetComponent<WindowNavigation>().Navigate();
+        OnPlayerPanelCloseRequested?.Invoke();
     }
 }
 

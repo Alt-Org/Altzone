@@ -63,8 +63,6 @@ namespace Altzone.Scripts.Audio
             }
 
             _contentSetCoroutine = StartCoroutine(ContentSet(false));
-
-            //SetContent(_textInQueue);
         }
 
         private void OnDisable() { DisableCoroutines(); }
@@ -139,7 +137,7 @@ namespace Altzone.Scripts.Audio
             if (!_textStyleUpdated && _textStyleCloner)
             {
                 _textStyleUpdated = true;
-                _textStyleCloner.SetTextSettings(true);
+                _textStyleCloner.SetTextSettings();
             }
 
             yield return new WaitForEndOfFrame();
@@ -208,7 +206,7 @@ namespace Altzone.Scripts.Audio
             _waitCoroutine = StartCoroutine(Wait());
         }
 
-        private bool Valid(float progress, float target)
+        private static bool Valid(float progress, float target)
         {
             return (target == 1f ? progress < target : progress > target);
         }

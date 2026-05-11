@@ -189,7 +189,7 @@ public class ClanRoleSelectPopupController : MonoBehaviour
                 displayName: displayName,
                 icon: icon,
                 isOn: false,
-                onChanged: (roleName, isOn) =>
+                onToggled: (roleName, isOn) =>
                 {
                     if (!isOn) return;
 
@@ -200,10 +200,18 @@ public class ClanRoleSelectPopupController : MonoBehaviour
                         return;
                     }
 
+                    // Because this popup should be single-select, uncheck the other role items manually
+                    foreach (var spawnedItem in _spawned)
+                    {
+                        if (spawnedItem == null || spawnedItem == item) continue;
+                        spawnedItem.SetSelectedWithoutNotify(false);
+                    }
+
                     _selectedRole = role;
-                    if (_voteButton != null) _voteButton.interactable = true;
-                },
-                toggleGroup: _toggleGroup
+
+                    if (_voteButton != null)
+                        _voteButton.interactable = true;
+                }
             );
 
             // Disable current role so user must pick a different one
