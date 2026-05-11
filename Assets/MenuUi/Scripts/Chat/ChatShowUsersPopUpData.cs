@@ -16,7 +16,8 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
     
     [SerializeField] private TextMeshProUGUI ReactionAmounText;
-    [SerializeField] private Button[] _closeButtons; 
+    [SerializeField] private Button[] _closeButtons;
+    [SerializeField] private Button _closeAllReactionButton;
     [SerializeField] private GameObject ShowUsersPopUp;
 
     [Header("Scripts")]
@@ -33,6 +34,8 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     public GameObject _reactionFieldNewLocation;
     [SerializeField] private GameObject _reactionFieldOldLocation;
     [SerializeField] private List<ReactionObject> _reactionList;
+    [SerializeField] private GameObject _allReactions;
+    [SerializeField] private GameObject _selectedReaction;
 
 
     [SerializeField] private GameObject ReactionObject;
@@ -40,6 +43,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     //[SerializeField] private TextLanguageSelectorCaller _reactionAmount;
     private void Start()
     {
+        _closeAllReactionButton.onClick.AddListener(LayoutButton);
         reactiontext();
         foreach (Button button in _closeButtons)
         {
@@ -151,7 +155,22 @@ public class ChatShowUsersPopUpData : MonoBehaviour
                 reactiontext();
             
     }
+
+
+    //Puts down AllReaction selection if not pressing the reaction
+    void LayoutButton()
+    {
+        if(_allReactions.activeSelf)
+        {
+        _allReactions.SetActive(false);
+        _selectedReaction.SetActive(true);
+        }
+    }
+
+
 }
+
+
 
 [Serializable]
 public class UserReactionInfo
