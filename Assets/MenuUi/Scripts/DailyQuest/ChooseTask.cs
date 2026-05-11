@@ -4,9 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
-using MenuUi.Scripts.Window;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ChooseTask : MonoBehaviour
 {
@@ -24,20 +22,21 @@ public class ChooseTask : MonoBehaviour
     private RectTransform _UIOverlay;
 
     [SerializeField]
-    [Tooltip("Temporary Holder for tutorial controller nutil a more parmanent solution is figured out.")]
+    [Tooltip("Temporary Holder for tutorial controller until a more parmanent solution is figured out.")]
     private MainMenuTutorialController _tutorial;
-
-    private List<Button> _UIOverlayButtons;
 
     private DailyTaskView _dailyTaskView;
     private VersionType _gameVersion;
-
-    //[SerializeField]private NaviButton _dailyTaskNaviButton;
 
     private bool _initialized = false;
 
     public delegate void ChooseTaskShown();
     public static event ChooseTaskShown OnChooseTaskShown;
+
+    public delegate void ChooseTaskHidden();
+    public static event ChooseTaskHidden OnChooseTaskHidden;
+
+    private static bool _shouldShowPopup = false;
 
     IEnumerator Initialize()
     {
@@ -57,17 +56,33 @@ public class ChooseTask : MonoBehaviour
 
         Debug.Log("Initializing ChooseTask.cs... DailyTaskManager ready!");
 
+        // Wait until tutorial has finished
+        yield return new WaitUntil(() => !_tutorial.IsTutorialInProgress);
+        
+
         _dailyTaskView = GameObject.FindObjectOfType<DailyTaskView>(true);
 
         _gameVersion = GameConfig.Get().GameVersionType;
 
-        // If using "TurboEducation" and no task going on currently
-        if (_gameVersion == VersionType.TurboEducation && !DailyTaskProgressManager.Instance.HasOnGoingTask())
+
+        // Show popup every other battle on turboeducation
+        if (_gameVersion == VersionType.TurboEducation)
         {
-            // Wait until view switched and window shown
-            yield return new WaitUntil(()=> !_tutorial.IsTutorialInProgress);
-            ShowSelectionWindow();
+            if (DailyTaskProgressManager.Instance.HasOnGoingTask())
+            {
+                _shouldShowPopup = false;
+            }
+            else
+            {
+                if (_shouldShowPopup)
+                {
+                    ShowSelectionWindow();
+                }
+
+                _shouldShowPopup = !_shouldShowPopup;
+            }
         }
+
         _initialized = true;
         Debug.Log("Initializing ChooseTask.cs... Initialized!");
     }
@@ -87,14 +102,9 @@ public class ChooseTask : MonoBehaviour
         DailyTaskProgressManager.OnTaskChange -= HideSelectionWindow;
     }
 
-    IEnumerator SwitchViewAndShowWindow()
+    private void OnApplicationQuit()
     {
-        yield return new WaitForSeconds(0.2f); //Placeholder
-        // Wait for view to switch before showing the window
-        //yield return _dailyTaskNaviButton.StartCoroutine(_dailyTaskNaviButton.Navigate()); // Switch to dailytask view
-        Debug.Log("Initializing ChooseTask.cs... DailyTaskView ready!");
-
-        ShowSelectionWindow();
+        _shouldShowPopup = false;
     }
 
     /// <summary>
@@ -121,37 +131,7 @@ public class ChooseTask : MonoBehaviour
     {
         _selectionWindow.gameObject.SetActive(false);
         DeleteTaskCards();
-        //EnableUIOverlayButtons(true);
-    }
-
-    /// <summary>
-    /// Enables / Disables the buttons on UI overlay
-    /// </summary>
-    /// <param name="enable">If the buttons should be enabled or not</param>
-    private void EnableUIOverlayButtons(bool enable)
-    {
-        // Store currently enabled buttons to UIOverlayButtons to avoid enabling buttons that should not be enabled
-        if (!enable)
-        {
-            _UIOverlayButtons = new List<Button>();
-
-            // Get every button under UIOverlay
-            foreach (Button btn in _UIOverlay.gameObject.GetComponentsInChildren<Button>())
-            {
-                // If button is interactable (enabled), add it to the list 
-                if (btn.interactable) _UIOverlayButtons.Add(btn);
-            }
-        }
-
-        if (_UIOverlayButtons == null) return; // Should never happen, just a backup
-
-        // Loop through buttons in list and set them to enabled / disabled
-        foreach (Button btn in _UIOverlayButtons)
-        {
-            btn.interactable = enable;
-        }
-
-        
+        OnChooseTaskHidden?.Invoke();
     }
 
 

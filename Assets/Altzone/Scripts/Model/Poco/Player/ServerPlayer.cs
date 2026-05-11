@@ -24,6 +24,12 @@ namespace Altzone.Scripts.Model.Poco.Player
         public ServerPlayerTask DailyTask { get; set; }
         public string clanRole_id { get; set; }
         public ClanLogo clanLogo { get; set; }
+
+        // These are used to show the moods in profile and to check if the player has inserted a mood today.
+        // These might not yet be sent by the server, but they are needed for the mood selector and profile, so they are included here.
+        //public List<string> playerDataEmotionList { get; set; }
+        //public string emotionSelectorDate { get; set; }
+        //public int daysBetweenInput { get; set; }
     }
 
     public class ServerGameStatistics

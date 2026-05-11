@@ -9,84 +9,59 @@ public class ValueLabelHandler : MonoBehaviour
     [SerializeField] private LabelReference _reference;
     [SerializeField] private TextMeshProUGUI _textLabel;
     [SerializeField] private Image _labelImage;
+
+    [Header("Checkbox")]
+    [SerializeField] private GameObject _checkedObject;
+    [SerializeField] private GameObject _uncheckedObject;
+
     [field: SerializeField] public Button _selectButton { get; private set; }
 
     public LabelInfoObject labelInfo { get; private set; }
 
-    [Header("Colors")]
-    [SerializeField] private string _selectedColorHex = "#0dd236";   // Vihreä
-    [SerializeField] private string _unselectedColorHex = "#a0a0a0"; // Harmaa
-
-    private Color _selectedColor;
-    private Color _unselectedColor; 
-
-    void Start()
-    {
-        CheckLabelSize();
-    }
-
-    void Awake()
-    {
-        if(!ColorUtility.TryParseHtmlString(_selectedColorHex, out _selectedColor))
-        {            
-            _selectedColor = Color.green; // Default color
-        }
-
-        if(!ColorUtility.TryParseHtmlString(_unselectedColorHex, out _unselectedColor))
-        {
-            _unselectedColor = Color.gray; // Default color
-        }
-    }
-
     public void SetLabelInfo(ClanValues value, bool showName)
     {
         labelInfo = _reference.GetLabelInfo(value);
-        _labelImage.sprite = labelInfo.Image;
 
-        if (showName)
+        if (_labelImage != null)
         {
-            _textLabel.enabled = true;
-            _textLabel.text = labelInfo.Name;   
+            _labelImage.sprite = labelInfo.Image;
+            _labelImage.preserveAspect = true;
         }
-        else
+
+        if (_textLabel != null)
         {
-            _textLabel.enabled = false;
+            _textLabel.enabled = showName;
+            _textLabel.text = showName ? labelInfo.Name : string.Empty;
         }
 
         SetUnselectedVisuals();
     }
 
-    public void CheckLabelSize()
-    {
-        float imagewidth = _labelImage.GetComponent<RectTransform>().sizeDelta.x;
-        float imageleftpos = _labelImage.GetComponent<RectTransform>().localPosition.x;
-        _textLabel.GetComponent<RectTransform>().offsetMin = new(imagewidth + imageleftpos + 10, _textLabel.GetComponent<RectTransform>().offsetMin.y);
-    }
-
     public void Select()
     {
-        _textLabel.text = labelInfo.Name;
         SetSelectedVisuals();
     }
+
     public void Unselect()
     {
-        _textLabel.text = labelInfo.Name;
         SetUnselectedVisuals();
     }
 
     private void SetSelectedVisuals()
     {
-        if (_selectButton != null && _selectButton.image != null)
-        {
-            _selectButton.image.color = _selectedColor;
-        }
+        if (_checkedObject != null)
+            _checkedObject.SetActive(true);
+
+        if (_uncheckedObject != null)
+            _uncheckedObject.SetActive(false);
     }
 
     private void SetUnselectedVisuals()
     {
-        if (_selectButton != null && _selectButton.image != null)
-        {
-            _selectButton.image.color = _unselectedColor;
-        }
+        if (_checkedObject != null)
+            _checkedObject.SetActive(false);
+
+        if (_uncheckedObject != null)
+            _uncheckedObject.SetActive(true);
     }
 }

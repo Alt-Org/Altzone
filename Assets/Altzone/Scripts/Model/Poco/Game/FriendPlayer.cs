@@ -21,7 +21,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             _id = player._id;
             name = player.name;
             clan_id = player.clan_id;
-            avatar = new(player.name, player.avatar);
+            if(player.avatar != null)avatar = new(player.name, player.avatar);
         }
     }
 }

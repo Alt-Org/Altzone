@@ -12,8 +12,9 @@ namespace MenuUi.Scripts.Window
         [SerializeField] private GameObject _overlayObject;
         [SerializeField] private SceneDef _allowedScene;
 
-        [SerializeField] private Button[] buttons;
+        [SerializeField] private Button[] buttons; //Array assigned in inspector, in UIOverlayPanel gameobject
 
+        [SerializeField] private GameObject _topBar;
         [SerializeField] private GameObject _bottomBar;
         [SerializeField] private GameObject _chatBox;
         [SerializeField] private GameObject _buttonsBar;
@@ -30,6 +31,7 @@ namespace MenuUi.Scripts.Window
 
         public delegate void ToggleOnlinePlayerList(bool? active = null);
         public static event ToggleOnlinePlayerList OnToggleOnlinePlayerList;
+        
 
         private void Awake()
         {
@@ -97,13 +99,42 @@ namespace MenuUi.Scripts.Window
                 {
                     button.transform.localScale = Vector3.one;
                     button.interactable = true;
+
+                }//ifelse currentwindow
+
+                 // Set opacity
+                Image image = button.GetComponent<Image>();
+                float targetAlpha = isCurrentWindow ? 1f : 0.7f; //if=1 else=0.7f
+
+                if (image != null)
+                {
+                    Color color = image.color;
+                    color.a = targetAlpha;
+                    image.color = color;
                 }
-            }
+
+                // find and enable child glow object when button is active
+                Transform glow = button.transform.Find("Glow");
+                if (glow != null)
+                {
+                    glow.gameObject.SetActive(isCurrentWindow);
+                }
+            }//for loop
+        }
+        public void ToggleOverlay(bool value)
+        {
+            ToggleBottomBar(value);
+            ToggleTopBar(value);
         }
 
         public void ToggleBottomBar(bool value)
         {
             _bottomBar.SetActive(value);
+        }
+
+        public void ToggleTopBar(bool value)
+        {
+            _topBar.SetActive(value);
         }
 
         public void ToggleChat(bool value)

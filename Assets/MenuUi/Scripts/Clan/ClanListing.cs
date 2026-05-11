@@ -39,7 +39,7 @@ public class ClanListing : MonoBehaviour
             ClanData clanData = new ClanData(_clan);
 
             _clanName.text = _clan.name;
-            _clanMembers.SetText(SettingsCarrier.Instance.Language,new string[1] { _clan.playerCount + "/30" });
+            _clanMembers.SetText(SettingsCarrier.Instance.Language,new string[1] { _clan.playerCount.ToString() });
             // By default the lock image is locked
             if (_clan.isOpen)
             {
@@ -56,7 +56,7 @@ public class ClanListing : MonoBehaviour
             StartCoroutine(ServerManager.Instance.GetClanLeaderboardFromServer((clanLeaderboard) =>
             {
                 // Wins are not available yet
-                _winsRankText.text = "0";
+                //_winsRankText.text = "0";
 
                 // Activity
                 clanLeaderboard.Sort((a, b) => a.Points.CompareTo(b.Points));

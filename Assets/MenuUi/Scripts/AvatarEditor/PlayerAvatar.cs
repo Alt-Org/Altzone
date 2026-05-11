@@ -68,9 +68,9 @@ namespace MenuUi.Scripts.AvatarEditor
             }
         }
 
-        public PlayerAvatar(AvatarDefaultReference.AvatarDefaultPartInfo featureIds)
+        public PlayerAvatar(AvatarDefault featureIds)
         {
-            
+
             HairId = GetOrDefault(featureIds.HairId);
             EyesId = GetOrDefault(featureIds.EyesId);
             NoseId = GetOrDefault(featureIds.NoseId);
@@ -78,18 +78,18 @@ namespace MenuUi.Scripts.AvatarEditor
             BodyId = GetOrDefault(featureIds.BodyId);
             HandsId = GetOrDefault(featureIds.HandsId);
             FeetId = GetOrDefault(featureIds.FeetId);
-            
+
 
             Name = string.Empty;
-            SkinColor = "#ffffff";
-            ClassColor = "#ffffff";
-            HairColor = "#ffffff";
-            EyesColor = "#ffffff";
-            NoseColor = "#ffffff";
-            MouthColor = "#ffffff";
-            ClothesColor = "#ffffff";
-            HandsColor = "#ffffff";
-            FeetColor = "#ffffff";
+            SkinColor = ColorUtility.ToHtmlStringRGB(featureIds.SkinColour);
+            ClassColor = "#FFFFFFFF";
+            HairColor = ColorUtility.ToHtmlStringRGB(featureIds.HairColour);
+            EyesColor = ColorUtility.ToHtmlStringRGB(featureIds.EyesColour);
+            NoseColor = ColorUtility.ToHtmlStringRGB(featureIds.NoseColour);
+            MouthColor = ColorUtility.ToHtmlStringRGB(featureIds.MouthColour);
+            ClothesColor = ColorUtility.ToHtmlStringRGB(featureIds.BodyColour);
+            HandsColor = ColorUtility.ToHtmlStringRGB(featureIds.HandsColour);
+            FeetColor = ColorUtility.ToHtmlStringRGB(featureIds.FeetColour);
             Scale = Vector2.one;
         }
 
