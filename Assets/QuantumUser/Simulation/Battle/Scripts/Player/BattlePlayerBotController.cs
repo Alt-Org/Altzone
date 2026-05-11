@@ -4,7 +4,6 @@
 /// </summary>
 
 // System usings
-using System.Collections.Generic;
 using System.Linq;
 
 // Unity usings
@@ -48,7 +47,7 @@ namespace Battle.QSimulation.Player
 
             BattleCharacterBase[] botCharacters = new BattleCharacterBase[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
             for (int i = 0; i < botCharacters.Length; i++)
-            {            
+            {
                 int selectedCharacter;
                 do
                 {
@@ -56,7 +55,7 @@ namespace Battle.QSimulation.Player
                 } while (selectedBotCharacters.Contains(selectedCharacter));
 
                 selectedBotCharacters[i] = selectedCharacter;
-                botCharacters[i]         = playerBotSpec.BotCharacterSelection[selectedCharacter];             
+                botCharacters[i]         = playerBotSpec.BotCharacterSelection[selectedCharacter];
             }
             return botCharacters;
         }
@@ -80,9 +79,9 @@ namespace Battle.QSimulation.Player
 
             if (isInPlay)
             {
-                if (playerData->MovementCooldownSec > FP._0)
+                if (playerData->BotMovementCooldownSec > FP._0)
                 {
-                    playerData->MovementCooldownSec -= f.DeltaTime;
+                    playerData->BotMovementCooldownSec -= f.DeltaTime;
                 }
                 else
                 {
@@ -92,7 +91,7 @@ namespace Battle.QSimulation.Player
 
             if (movementInput != BattleMovementInputType.None)
             {
-                playerData->MovementCooldownSec = f.RNG->NextInclusive(playerBotSpec.MovementCooldownSecMin, playerBotSpec.MovementCooldownSecMax); ;
+                playerData->BotMovementCooldownSec = f.RNG->NextInclusive(playerBotSpec.MovementCooldownSecMin, playerBotSpec.MovementCooldownSecMax); ;
                 ComponentFilter<BattleProjectileQComponent> projectiles = f.Filter<BattleProjectileQComponent>();
                 if (projectiles.NextUnsafe(out EntityRef projectileEntity, out BattleProjectileQComponent* projectile))
                 {

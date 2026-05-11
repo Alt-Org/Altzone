@@ -437,6 +437,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 : "Friend Lobby -kutsuun liittyminen epaonnistui. Yrita uudelleen, jos kutsu on yha voimassa.";
 
             PopupSignalBus.OnChangePopupInfoSignal(popupMessage);
+            // Close the battle popup since join failed and we're not in the FriendLobby room
+            try { CloseWindow(); } catch (Exception ex) { Debug.LogWarning($"OnInRoomInviteJoinFailed: failed to close popup: {ex.Message}"); }
         }
     }
 }
