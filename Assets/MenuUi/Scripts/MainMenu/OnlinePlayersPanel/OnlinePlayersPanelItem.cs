@@ -69,10 +69,13 @@ public class OnlinePlayersPanelItem : AltMonoBehaviour
     private void OnEnable()
     {
         OnPanelPressed += ButtonPressHandle;
+        InLobbyController.OnPremadeTargetGameTypeChanged += OnPremadeTargetGameTypeChanged;
+        OnPremadeTargetGameTypeChanged(InLobbyController.SelectedPremadeTargetGameType);
     }
     private void OnDisable()
     {
         OnPanelPressed -= ButtonPressHandle;
+        InLobbyController.OnPremadeTargetGameTypeChanged -= OnPremadeTargetGameTypeChanged;
         UpdateSize(false);
     }
 
@@ -223,8 +226,6 @@ public class OnlinePlayersPanelItem : AltMonoBehaviour
 
         if (_inviteButton != null)
         {
-            _inviteButton.onClick.RemoveAllListeners();
-
             if (id == ServerManager.Instance.Player._id || string.IsNullOrEmpty(id))
             {
                 _inviteButton.gameObject.SetActive(false);
@@ -232,14 +233,7 @@ public class OnlinePlayersPanelItem : AltMonoBehaviour
             else
             {
                 _inviteButton.gameObject.SetActive(true);
-                // Disable the invite button if the player is offline
-                _inviteButton.interactable = IsOnline;
-
-                // Only attempt to send invite if the player is online when the button is pressed
-                _inviteButton.onClick.AddListener(() =>
-                {
-                    if (IsOnline) StartCoroutine(InviteSelectedPlayerRoutine());
-                });
+                RefreshInviteButton();
             }
         }
 
@@ -397,13 +391,14 @@ public class OnlinePlayersPanelItem : AltMonoBehaviour
         else if (_friend != null) invitedUserId = _friend._id;
         if (string.IsNullOrEmpty(invitedUserId)) yield break;
 
+        if (!CanInviteInCurrentMode()) yield break;
+
         bool result = false;
         try
         {
-            GameType targetGameType = InLobbyController.SelectedGameType == GameType.Clan2v2
+            GameType targetGameType = InLobbyController.SelectedPremadeTargetGameType == GameType.Clan2v2
                 ? GameType.Clan2v2
                 : GameType.Random2v2;
-            Debug.Log($"InviteSelectedPlayerRoutine: sending invite to '{invitedUserId}' for targetGameType={targetGameType}");
             result = PhotonRealtimeClient.SendPremadeInvite(invitedUserId, targetGameType);
         }
         catch (Exception ex)
@@ -411,17 +406,12 @@ public class OnlinePlayersPanelItem : AltMonoBehaviour
             Debug.LogWarning($"InviteSelectedPlayerRoutine: exception while sending invite: {ex.Message}");
         }
 
-        if (!result)
+        if (result)
         {
-            Debug.LogWarning($"InviteSelectedPlayerRoutine: invite failed to send to {invitedUserId}");
-        }
-        else
-        {
-            // Open the battle popup for the active invite mode so the in-room waiting panel appears
             try
             {
                 SignalBus.OnBattlePopupRequestedSignal(
-                    InLobbyController.SelectedGameType == GameType.Clan2v2 ? GameType.Clan2v2 : GameType.FriendLobby);
+                    InLobbyController.SelectedPremadeTargetGameType == GameType.Clan2v2 ? GameType.Clan2v2 : GameType.FriendLobby);
             }
             catch (Exception ex)
             {
@@ -432,6 +422,54 @@ public class OnlinePlayersPanelItem : AltMonoBehaviour
         }
 
         yield break;
+    }
+
+    private bool CanInviteInCurrentMode()
+    {
+        if (InLobbyController.SelectedPremadeTargetGameType != GameType.Clan2v2)
+        {
+            return true;
+        }
+
+        string localClanId = ServerManager.Instance?.Player?.clan_id;
+        if (string.IsNullOrEmpty(localClanId))
+        {
+            return false;
+        }
+
+        string invitedClanId = _player?.clan_id;
+        if (string.IsNullOrEmpty(invitedClanId))
+        {
+            invitedClanId = _friend?.clan_id;
+        }
+
+        return !string.IsNullOrEmpty(invitedClanId)
+            && string.Equals(localClanId, invitedClanId, StringComparison.Ordinal);
+    }
+
+    private void OnPremadeTargetGameTypeChanged(GameType newGameType)
+    {
+        RefreshInviteButton();
+    }
+
+    private void RefreshInviteButton()
+    {
+        if (_inviteButton == null)
+        {
+            return;
+        }
+
+        bool canInvite = IsOnline && CanInviteInCurrentMode();
+        _inviteButton.interactable = canInvite;
+        _inviteButton.onClick.RemoveAllListeners();
+
+        if (canInvite)
+        {
+            _inviteButton.onClick.AddListener(() =>
+            {
+                StartCoroutine(InviteSelectedPlayerRoutine());
+            });
+        }
     }
 }
 

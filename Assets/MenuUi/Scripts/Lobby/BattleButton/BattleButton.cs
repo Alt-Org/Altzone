@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using MenuUi.Scripts.Signals;
 using MenuUi.Scripts.SwipeNavigation;
 using Altzone.Scripts.Lobby;
+using MenuUi.Scripts.Lobby.InLobby;
 using TMPro;
 using Altzone.Scripts.Window;
 using Altzone.Scripts.Language;
@@ -69,12 +70,21 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
         public void UpdateGameType(GameTypeInfo gameTypeInfo)
         {
+            if (gameTypeInfo == null)
+            {
+                return;
+            }
+
             _gameTypeIcon.sprite = gameTypeInfo.Icon;
             _gameTypeBanner.sprite = gameTypeInfo.Banner;
             _gameTypeBackground.sprite = gameTypeInfo.Background;
             _gameTypeName.SetText(gameTypeInfo.Name);
             _gameTypeDescription.SetText(gameTypeInfo.Description);
             _selectedGameType = gameTypeInfo.gameType;
+
+            // Keep premade invite target in sync with the visible game mode.
+            var mapped = _selectedGameType == GameType.Clan2v2 ? GameType.Clan2v2 : GameType.Random2v2;
+            InLobbyController.SetPremadeTargetGameType(mapped);
 
             // Saving battle button selected game type to playerprefs
             PlayerPrefs.SetInt(SelectedGameTypeKey, (int)_selectedGameType);

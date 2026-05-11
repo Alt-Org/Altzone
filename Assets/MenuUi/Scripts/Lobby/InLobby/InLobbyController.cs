@@ -61,11 +61,15 @@ namespace MenuUi.Scripts.Lobby.InLobby
         public static GameType SelectedGameType { get; private set; }
         public static GameType SelectedPremadeTargetGameType { get; private set; } = GameType.Random2v2;
 
+        public delegate void PremadeTargetGameTypeChangedHandler(GameType newGameType);
+        public static event PremadeTargetGameTypeChangedHandler OnPremadeTargetGameTypeChanged;
+
         public static void SetPremadeTargetGameType(GameType gameType)
         {
             if (gameType == GameType.Random2v2 || gameType == GameType.Clan2v2)
             {
                 SelectedPremadeTargetGameType = gameType;
+                OnPremadeTargetGameTypeChanged?.Invoke(gameType);
             }
         }
 
