@@ -1,9 +1,9 @@
-/// @file BattlePlayerClassDesensitizerQSpec.cs
+/// @file BattlePlayerClass100QSpec.cs
 /// <summary>
-/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassDesensitizerQSpec} class for defining settings related to the desensitizer player class.
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClass100QSpec} class for defining settings related to the 100 player class.
 /// </summary>
 ///
-/// @bigtext{Filled with data from @ref BattlePLayerClassDesensitizerQSpec.asset "BattlePlayerClassDesensitizerQSpec" data asset.}
+/// @bigtext{Filled with data from @ref BattlePLayerClass100QSpec.asset "BattlePlayerClass100QSpec" data asset.}
 
 // Unity usings
 using UnityEngine;
@@ -15,15 +15,15 @@ using Photon.Deterministic;
 namespace Battle.QSimulation.Player
 {
     /// <summary>
-    /// Class for defining settings related to the desensitizer player class.
+    /// Class for defining settings related to the 100 player class.
     /// </summary>
     ///
     /// This class is used to define the data asset's structure, the data itself is not contained here.<br/>
-    /// @bigtext{Filled with data from @ref BattlePlaerClassDesensitizerQSpec.asset "BattlePlayerClassDesensitizerQSpec" data asset.}
-    public class BattlePlayerClassDesensitizerQSpec : AssetObject
+    /// @bigtext{Filled with data from @ref BattlePlayerClass100QSpec.asset "BattlePlayerClass100QSpec" data asset.}
+    public class BattlePlayerClass100QSpec : AssetObject
     {
-        [Tooltip("Desensitizer projectile entity prototpe")]
-        /// <summary>Desensitizer projectile entity prototpe.</summary>
+        [Tooltip("Player class 100 projectile entity prototpe")]
+        /// <summary>Player class 100 projectile entity prototpe.</summary>
         public AssetRef<EntityPrototype> ProjectileEntityPrototype;
         [Tooltip("Speed of the projectile")]
         /// <summary>Speed of the projectile.</summary>

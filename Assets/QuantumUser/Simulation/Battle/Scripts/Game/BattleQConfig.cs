@@ -21,7 +21,7 @@ namespace Battle.QSimulation.Game
         public AssetRef<BattleDiamondQSpec>                 BattleDiamondSpec;
         public AssetRef<BattlePlayerQSpec>                  BattlePlayerSpec;
         public AssetRef<BattlePlayerBotQSpec>               BattlePlayerBotSpec;
-        public AssetRef<BattlePlayerClassDesensitizerQSpec> BattlePlayerClassDesensitizerSpec;
+        public AssetRef<BattlePlayerClass100QSpec>          BattlePlayerClass100Spec;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BattleArenaQSpec GetArenaSpec(Frame f)
@@ -60,9 +60,9 @@ namespace Battle.QSimulation.Game
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static BattlePlayerClassDesensitizerQSpec GetBattlePlayerClassDesensitizerSpec(Frame f)
+        public static BattlePlayerClass100QSpec GetBattlePlayerClass100Spec(Frame f)
         {
-            return f.FindAsset(f.FindAsset(f.RuntimeConfig.BattleConfig).BattlePlayerClassDesensitizerSpec);
+            return f.FindAsset(f.FindAsset(f.RuntimeConfig.BattleConfig).BattlePlayerClass100Spec);
         }
 
     }

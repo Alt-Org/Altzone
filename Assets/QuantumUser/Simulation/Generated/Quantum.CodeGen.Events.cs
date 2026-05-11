@@ -88,7 +88,7 @@ namespace Quantum {
           case EventBattlePlayStateUpdate.ID: result = typeof(EventBattlePlayStateUpdate); return;
           case EventBattleStoneCharacterPlayHitAnimation.ID: result = typeof(EventBattleStoneCharacterPlayHitAnimation); return;
           case EventBattleSpecialJoystickVisibilityChange.ID: result = typeof(EventBattleSpecialJoystickVisibilityChange); return;
-          case EventBattlePlayerClassDesensitizerAimIndicatorUpdate.ID: result = typeof(EventBattlePlayerClassDesensitizerAimIndicatorUpdate); return;
+          case EventBattlePlayerClass100AimIndicatorUpdate.ID: result = typeof(EventBattlePlayerClass100AimIndicatorUpdate); return;
           case EventBattleDebugOnScreenMessage.ID: result = typeof(EventBattleDebugOnScreenMessage); return;
           default: break;
         }
@@ -305,9 +305,9 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventBattlePlayerClassDesensitizerAimIndicatorUpdate BattlePlayerClassDesensitizerAimIndicatorUpdate(EntityRef ERef, QBoolean Show, BattlePlayerSlot Slot, FPVector2 Direction) {
+      public EventBattlePlayerClass100AimIndicatorUpdate BattlePlayerClass100AimIndicatorUpdate(EntityRef ERef, QBoolean Show, BattlePlayerSlot Slot, FPVector2 Direction) {
         if (_f.IsPredicted) return null;
-        var ev = _f.Context.AcquireEvent<EventBattlePlayerClassDesensitizerAimIndicatorUpdate>(EventBattlePlayerClassDesensitizerAimIndicatorUpdate.ID);
+        var ev = _f.Context.AcquireEvent<EventBattlePlayerClass100AimIndicatorUpdate>(EventBattlePlayerClass100AimIndicatorUpdate.ID);
         ev.ERef = ERef;
         ev.Show = Show;
         ev.Slot = Slot;
@@ -1036,16 +1036,16 @@ namespace Quantum {
       }
     }
   }
-  public unsafe partial class EventBattlePlayerClassDesensitizerAimIndicatorUpdate : EventBase {
+  public unsafe partial class EventBattlePlayerClass100AimIndicatorUpdate : EventBase {
     public new const Int32 ID = 27;
     public EntityRef ERef;
     public QBoolean Show;
     public BattlePlayerSlot Slot;
     public FPVector2 Direction;
-    protected EventBattlePlayerClassDesensitizerAimIndicatorUpdate(Int32 id, EventFlags flags) : 
+    protected EventBattlePlayerClass100AimIndicatorUpdate(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventBattlePlayerClassDesensitizerAimIndicatorUpdate() : 
+    public EventBattlePlayerClass100AimIndicatorUpdate() : 
         base(27, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {

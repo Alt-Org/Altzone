@@ -291,6 +291,25 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerClass100ProjectileQComponent))]
+  public unsafe partial class BattlePlayerClass100ProjectileQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerClass100ProjectileQComponent> {
+    [HideInInspector()]
+    public FPVector2 Direction;
+    [HideInInspector()]
+    public FP Speed;
+    partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerClass100ProjectileQComponent result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.BattlePlayerClass100ProjectileQComponent component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.BattlePlayerClass100ProjectileQComponent result, in PrototypeMaterializationContext context = default) {
+        result.Direction = this.Direction;
+        result.Speed = this.Speed;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerClass400DataQComponent))]
   public unsafe class BattlePlayerClass400DataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerClass400DataQComponent> {
     public FP RotationDurationFrames;
@@ -316,25 +335,6 @@ namespace Quantum.Prototypes {
         result.HoldStartFrame = this.HoldStartFrame;
         result.HeldProjectileAngleRadians = this.HeldProjectileAngleRadians;
         result.HeldProjectileDistance = this.HeldProjectileDistance;
-    }
-  }
-  [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerClassDesensitizerProjectileQComponent))]
-  public unsafe partial class BattlePlayerClassDesensitizerProjectileQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerClassDesensitizerProjectileQComponent> {
-    [HideInInspector()]
-    public FPVector2 Direction;
-    [HideInInspector()]
-    public FP Speed;
-    partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerClassDesensitizerProjectileQComponent result, in PrototypeMaterializationContext context);
-    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.BattlePlayerClassDesensitizerProjectileQComponent component = default;
-        Materialize((Frame)f, ref component, in context);
-        return f.Set(entity, component) == SetResult.ComponentAdded;
-    }
-    public void Materialize(Frame frame, ref Quantum.BattlePlayerClassDesensitizerProjectileQComponent result, in PrototypeMaterializationContext context = default) {
-        result.Direction = this.Direction;
-        result.Speed = this.Speed;
-        MaterializeUser(frame, ref result, in context);
     }
   }
   [System.SerializableAttribute()]

@@ -1,20 +1,20 @@
-# Player Character Class 100 - Desensitizer {#page-concepts-player-class-100-desensitizer}
+# Player Character Class 100 - Desensitizer {#page-concepts-player-class-100}
 
 - **Simulation**
-    - Has simulation logic  
-      @cref{Battle.QSimulation.Player,BattlePlayerClassDesensitizer}
+    - Has test simulation logic  
+      @cref{Battle.QSimulation.Player,BattlePlayerClass100Test}
     - Has simulation data components  
-      @cref{Quantum,BattlePlayerClassDesensitizerDataQComponent}
+      @cref{Quantum,BattlePlayerClass100DataQComponent}
     - Has spec  
-      @cref{Battle.QSimulation.Player,BattlePlayerClassDesensitizerQSpec}
+      @cref{Battle.QSimulation.Player,BattlePlayerClass100QSpec}
     - **Projectile**
         - Has simulation logic  
-         @cref{Battle.QSimulation.Player,BattlePlayerClassDesensitizerProjectileQSystem}
+         @cref{Battle.QSimulation.Player,BattlePlayerClass100ProjectileQSystem}
         - Has simulation data components  
-        @cref{Quantum,BattlePlayerClassDesensitizerProjectileQComponent}
+        @cref{Quantum,BattlePlayerClass100ProjectileQComponent}
 - **View**
-    - Has view controller  
-      @cref{Battle.View.Player,BattlePlayerClassDesensitizerViewController}
+    - Has test view controller  
+      @cref{Battle.View.Player,BattlePlayerClass100ViewControllerTest}
 
 - **Prefabs**
     - Has no base prefab  
@@ -26,4 +26,4 @@
       @ref BattlePlayer105Character.prefab  
       @ref BattlePlayer106Character.prefab
 
-      Only character 103 "Sotaveteraani" is currently implemented. Implementation for it is done in the Desensitizer character classes test script, and it applies to all characters of that class. When other characters are implemented, the code should be adjusted as needed.
+      Only character 103 "Sotaveteraani" is currently implemented. Implementation for it is done in the 100 character classes test script, and it applies to all characters of that class. When other characters are implemented, the code should be adjusted as needed.

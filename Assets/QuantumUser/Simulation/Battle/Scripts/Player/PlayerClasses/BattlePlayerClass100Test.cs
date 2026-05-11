@@ -64,8 +64,8 @@ namespace Battle.QSimulation.Player
         /// <param name="specialInput">Pointer to special input (unused)</param>
         public override unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput)
         {
-            BattlePlayerClassDesensitizerQSpec spec = BattleQConfig.GetBattlePlayerClassDesensitizerSpec(f);
-            //BattleDebugLogger.WarningFormat(f, nameof(BattlePlayerClassDesensitizer), "Joystick ( state: {0}, Direction: {1} )", specialInput->JoystickState, specialInput->JoystickValue);
+            BattlePlayerClass100QSpec spec = BattleQConfig.GetBattlePlayerClass100Spec(f);
+            //BattleDebugLogger.WarningFormat(f, nameof(BattlePlayerClass100), "Joystick ( state: {0}, Direction: {1} )", specialInput->JoystickState, specialInput->JoystickValue);
 
             Transform2D*                                 playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
             BattlePlayerClass100DataQComponent* classData       = GetClassData(f, playerEntity);
@@ -74,7 +74,7 @@ namespace Battle.QSimulation.Player
             bool projectileOnCooldown = classData->CooldownTimer.IsRunning(f);
 
             // Update view
-            if (joystickDown && !projectileOnCooldown) f.Events.BattlePlayerClassDesensitizerAimIndicatorUpdate(playerEntity, Show: true, playerData->Slot, specialInput->JoystickValue);
+            if (joystickDown && !projectileOnCooldown) f.Events.BattlePlayerClass100AimIndicatorUpdate(playerEntity, Show: true, playerData->Slot, specialInput->JoystickValue);
 
             // Exit if no changes in joystick state
             if (joystickDown == classData->JoystickDownPrevious) goto Exit;
@@ -89,7 +89,7 @@ namespace Battle.QSimulation.Player
                 // Handle joystick up
 
                 // Update view
-                f.Events.BattlePlayerClassDesensitizerAimIndicatorUpdate(playerEntity, Show: false, playerData->Slot, FPVector2.Zero);
+                f.Events.BattlePlayerClass100AimIndicatorUpdate(playerEntity, Show: false, playerData->Slot, FPVector2.Zero);
 
                 // exit if projectile ability is on cooldown
                 if (projectileOnCooldown) goto Exit;
@@ -100,7 +100,7 @@ namespace Battle.QSimulation.Player
 
                 if (playerData->TeamNumber == BattleTeamNumber.TeamBeta) direction = FPVector2.Rotate(direction, FP.Rad_180);
                 FPVector2 position = playerTransform->Position + direction * spec.SpawnDistance;
-                BattlePlayerClassDesensitizerProjectileQSystem.Create(f, f.FindAsset(spec.ProjectileEntityPrototype), position, direction, spec.Speed);
+                BattlePlayerClass100ProjectileQSystem.Create(f, f.FindAsset(spec.ProjectileEntityPrototype), position, direction, spec.Speed);
 
                 // start projectile cooldown
                 classData->CooldownTimer = FrameTimer.FromSeconds(f, spec.Cooldown);

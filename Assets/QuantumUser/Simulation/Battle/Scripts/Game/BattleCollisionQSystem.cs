@@ -239,41 +239,41 @@ namespace Battle.QSimulation.Game
                     break;
                 }
 
-                case BattleCollisionColliderType.DesensitizerProjectile:
+                case BattleCollisionColliderType.PlayerClass100Projectile:
                 {
-                    BattlePlayerClassDesensitizerProjectileQComponent* desensitizerProjectile = f.Unsafe.GetPointer<BattlePlayerClassDesensitizerProjectileQComponent>(info.Entity);
+                    BattlePlayerClass100ProjectileQComponent* playerClass100Projectile = f.Unsafe.GetPointer<BattlePlayerClass100ProjectileQComponent>(info.Entity);
 
                     switch (collisionTrigger->Type)
                     {
                         case BattleCollisionTriggerType.Projectile:
                         {
-                            s_debugLogger.Log("Desensitizer projectile hit the Emotion Projectile");
+                            s_debugLogger.Log("Player class 100 projectile hit the Emotion Projectile");
 
                             BattleProjectileTriggerQComponent* trigger           = f.Unsafe.GetPointer<BattleProjectileTriggerQComponent>(info.Other);
                             BattleProjectileQComponent*        emotionProjectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(trigger->ProjectileEntityRef);
 
-                            BattlePlayerClassDesensitizerProjectileQSystem.OnProjectileHitEmotionProjectile(f, desensitizerProjectile, info.Entity, emotionProjectile);
+                            BattlePlayerClass100ProjectileQSystem.OnProjectileHitEmotionProjectile(f, playerClass100Projectile, info.Entity, emotionProjectile);
                             break;
                         }
 
                         case BattleCollisionTriggerType.Goal:
                         {
-                            s_debugLogger.Log("Desensitizer projectile hit the Goal zone");
-                            BattlePlayerClassDesensitizerProjectileQSystem.OnProjectileHitObstacle(f, info.Entity);
+                            s_debugLogger.Log("Player class 100 projectile hit the Goal zone");
+                            BattlePlayerClass100ProjectileQSystem.OnProjectileHitObstacle(f, info.Entity);
                             break;
                         }
 
                         case BattleCollisionTriggerType.SoulWall:
                         {
-                            s_debugLogger.Log("Desensitizer projectile hit the Soul Wall");
-                            BattlePlayerClassDesensitizerProjectileQSystem.OnProjectileHitObstacle(f, info.Entity);
+                            s_debugLogger.Log("Player class 100 projectile hit the Soul Wall");
+                            BattlePlayerClass100ProjectileQSystem.OnProjectileHitObstacle(f, info.Entity);
                             break;
                         }
 
                         case BattleCollisionTriggerType.ArenaBorder:
                         {
-                            s_debugLogger.Log("Desensitizer projectile hit the Arena Border");
-                            BattlePlayerClassDesensitizerProjectileQSystem.OnProjectileHitObstacle(f, info.Entity);
+                            s_debugLogger.Log("Player class 100 projectile hit the Arena Border");
+                            BattlePlayerClass100ProjectileQSystem.OnProjectileHitObstacle(f, info.Entity);
                             break;
                         }
                     }
