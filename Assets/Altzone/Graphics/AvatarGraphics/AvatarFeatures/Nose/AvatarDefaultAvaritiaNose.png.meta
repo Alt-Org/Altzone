@@ -179,19 +179,19 @@ TextureImporter:
       spriteID: 28c03391adc81c64b999076eb8af8b27
       internalID: 855931412
       vertices:
-      - {x: 293, y: 250}
-      - {x: 298, y: 256}
-      - {x: 298, y: 261}
-      - {x: 296, y: 263}
-      - {x: 290, y: 262}
-      - {x: 289, y: 261}
-      - {x: 279, y: 260}
-      - {x: 274, y: 256}
-      - {x: 274, y: 255}
-      - {x: 276, y: 252}
-      - {x: 281, y: 250}
-      - {x: 285, y: 249}
-      - {x: 290, y: 249}
+      - {x: 288, y: 243}
+      - {x: 293, y: 249}
+      - {x: 293, y: 254}
+      - {x: 291, y: 256}
+      - {x: 285, y: 255}
+      - {x: 284, y: 254}
+      - {x: 274, y: 253}
+      - {x: 269, y: 249}
+      - {x: 269, y: 248}
+      - {x: 271, y: 245}
+      - {x: 276, y: 243}
+      - {x: 280, y: 242}
+      - {x: 285, y: 242}
       indices: 000000000500000001000000000000000c00000005000000010000000400000002000000010000000500000004000000020000000400000003000000050000000a00000006000000050000000b0000000a000000050000000c0000000b000000060000000900000007000000060000000a00000009000000070000000900000008000000
       edges:
       - {x: 0, y: 1}
@@ -208,7 +208,7 @@ TextureImporter:
       - {x: 10, y: 11}
       - {x: 11, y: 12}
       weights:
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -216,7 +216,7 @@ TextureImporter:
         boneIndex[1]: 0
         boneIndex[2]: 0
         boneIndex[3]: 0
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -224,7 +224,7 @@ TextureImporter:
         boneIndex[1]: 0
         boneIndex[2]: 0
         boneIndex[3]: 0
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -232,7 +232,7 @@ TextureImporter:
         boneIndex[1]: 0
         boneIndex[2]: 0
         boneIndex[3]: 0
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -240,7 +240,7 @@ TextureImporter:
         boneIndex[1]: 0
         boneIndex[2]: 0
         boneIndex[3]: 0
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -248,7 +248,7 @@ TextureImporter:
         boneIndex[1]: 0
         boneIndex[2]: 0
         boneIndex[3]: 0
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -256,7 +256,7 @@ TextureImporter:
         boneIndex[1]: 0
         boneIndex[2]: 0
         boneIndex[3]: 0
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -264,7 +264,7 @@ TextureImporter:
         boneIndex[1]: 0
         boneIndex[2]: 0
         boneIndex[3]: 0
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -272,7 +272,7 @@ TextureImporter:
         boneIndex[1]: 0
         boneIndex[2]: 0
         boneIndex[3]: 0
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -280,7 +280,7 @@ TextureImporter:
         boneIndex[1]: 0
         boneIndex[2]: 0
         boneIndex[3]: 0
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -288,7 +288,7 @@ TextureImporter:
         boneIndex[1]: 0
         boneIndex[2]: 0
         boneIndex[3]: 0
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -296,7 +296,7 @@ TextureImporter:
         boneIndex[1]: 0
         boneIndex[2]: 0
         boneIndex[3]: 0
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -304,7 +304,7 @@ TextureImporter:
         boneIndex[1]: 0
         boneIndex[2]: 0
         boneIndex[3]: 0
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -316,10 +316,10 @@ TextureImporter:
       name: AvatarDefaultAvaritiaNose_1
       rect:
         serializedVersion: 2
-        x: 276
-        y: 251
-        width: 20
-        height: 10
+        x: 270
+        y: 243
+        width: 22
+        height: 12
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -329,7 +329,7 @@ TextureImporter:
       bones:
       - name: bone_1
         guid: be1cbd86c707b1a4982d793a889cfe4b
-        position: {x: 5, y: -11, z: 0}
+        position: {x: 5, y: 0.27189636, z: 0}
         rotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
         length: 34.65138
         parentId: -1
@@ -339,19 +339,19 @@ TextureImporter:
       spriteID: 8e0c53d8b9dc5f94eb6e60ddfb4b0edf
       internalID: -1938131638
       vertices:
-      - {x: 15.994, y: 0.408}
-      - {x: 19.916, y: 2.931}
-      - {x: 20, y: 3}
-      - {x: 19.715, y: 7.937}
-      - {x: 19, y: 10}
-      - {x: 12.002, y: 9.921}
-      - {x: 7.076, y: 9.5}
-      - {x: 2.737, y: 7.868}
-      - {x: 0.46100044, y: 4.575}
-      - {x: 0.2819996, y: 0.908}
-      - {x: 6.148, y: 0.17700005}
-      - {x: 11.1310005, y: 0.08099985}
-      indices: 000000000300000001000000000000000500000003000000000000000b00000005000000010000000300000002000000030000000500000004000000050000000b00000006000000060000000a00000007000000060000000b0000000a000000070000000a00000008000000080000000a00000009000000
+      - {x: 14.839, y: 0.39699984}
+      - {x: 18.816, y: 2.008}
+      - {x: 21.35, y: 5.246}
+      - {x: 22, y: 10}
+      - {x: 18.873001, y: 11.402}
+      - {x: 14.301, y: 11.209}
+      - {x: 9.438, y: 10.539}
+      - {x: 4.632, y: 9.578}
+      - {x: 0.37199974, y: 7.277}
+      - {x: 0.23999979, y: 3.521}
+      - {x: 5.171, y: 0.9239998}
+      - {x: 9.9279995, y: 0.19199991}
+      indices: 000000000500000001000000000000000600000005000000000000000b00000006000000010000000500000002000000020000000400000003000000020000000500000004000000060000000a00000007000000060000000b0000000a000000070000000900000008000000070000000a00000009000000
       edges:
       - {x: 0, y: 1}
       - {x: 0, y: 11}

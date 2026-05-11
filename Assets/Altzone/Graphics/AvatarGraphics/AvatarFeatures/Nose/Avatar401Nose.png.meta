@@ -165,10 +165,10 @@ TextureImporter:
       name: "graf_nen\xE4_0"
       rect:
         serializedVersion: 2
-        x: 261
-        y: 246
-        width: 26
-        height: 31
+        x: 266
+        y: 242
+        width: 27
+        height: 34
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -409,22 +409,24 @@ TextureImporter:
       spriteID: b5aa61a51c0e3904aa6d6676607251fc
       internalID: 1073230330
       vertices:
-      - {x: 288, y: 255.988}
-      - {x: 276.08398, y: 275}
-      - {x: 268.019, y: 268.699}
-      - {x: 263, y: 250.06}
-      - {x: 267.536, y: 245}
-      - {x: 283, y: 245}
-      indices: 000000000200000001000000000000000300000002000000000000000400000003000000000000000500000004000000
+      - {x: 288.88, y: 243.464}
+      - {x: 293, y: 246}
+      - {x: 290.562, y: 258.582}
+      - {x: 280.827, y: 275}
+      - {x: 270.48, y: 264.123}
+      - {x: 266.305, y: 248.08}
+      - {x: 273.402, y: 242}
+      indices: 000000000200000001000000000000000600000002000000020000000400000003000000020000000600000004000000040000000600000005000000
       edges:
       - {x: 0, y: 1}
-      - {x: 0, y: 5}
+      - {x: 0, y: 6}
       - {x: 1, y: 2}
       - {x: 2, y: 3}
       - {x: 3, y: 4}
       - {x: 4, y: 5}
+      - {x: 5, y: 6}
       weights:
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -432,7 +434,7 @@ TextureImporter:
         boneIndex[1]: 0
         boneIndex[2]: 0
         boneIndex[3]: 0
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -440,7 +442,7 @@ TextureImporter:
         boneIndex[1]: 0
         boneIndex[2]: 0
         boneIndex[3]: 0
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -448,7 +450,7 @@ TextureImporter:
         boneIndex[1]: 0
         boneIndex[2]: 0
         boneIndex[3]: 0
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -456,7 +458,7 @@ TextureImporter:
         boneIndex[1]: 0
         boneIndex[2]: 0
         boneIndex[3]: 0
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -464,7 +466,15 @@ TextureImporter:
         boneIndex[1]: 0
         boneIndex[2]: 0
         boneIndex[3]: 0
-      - weight[0]: 0
+      - weight[0]: 1
+        weight[1]: 0
+        weight[2]: 0
+        weight[3]: 0
+        boneIndex[0]: 0
+        boneIndex[1]: 0
+        boneIndex[2]: 0
+        boneIndex[3]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
