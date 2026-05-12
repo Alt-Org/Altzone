@@ -58,9 +58,40 @@ public class TopBarToggleHandler : MonoBehaviour
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleHandler : OnChanged()");
 
         SettingsCarrier carrier = SettingsCarrier.Instance;
-        if (carrier == null) return;
+        if (carrier == null)
+        {
+            Debug.LogError("[TopBarDebug] SettingsCarrier.Instance is NULL");
+            return;
+        }
 
         string key = TopBarDefs.Key(item) + "_" + carrier.TopBarStyleSetting;
+
+        PlayerPrefs.SetInt(key, isOn ? 1 : 0);
+        PlayerPrefs.Save();
+
+        Debug.Log($"[TopBarDebug] Saved {key} = {(isOn ? 1 : 0)}");
+
+        var targets = FindObjectsOfType<MenuUI.Scripts.TopPanel.TopBarTargets>(true);
+
+        foreach (var target in targets)
+        {
+            Debug.Log(
+                $"[TB] FOUND: {target.name}, style={target.style}, parent={target.transform.parent.name}, ready={target.IsReady()}");
+        }
+
+        foreach (var target in targets)
+        {
+            if (target == null) continue;
+            if (target.style != carrier.TopBarStyleSetting) continue;
+            if (!target.IsReady()) continue;
+
+            Debug.Log($"[TB] APPLYING READY TARGET: {target.name}, parent={target.transform.parent.name}");
+
+            target.ApplyFromSettings();
+            break;
+        }
+
+        TopBarOrderBridge.Active?.RefreshClanSubItemIndent();
     }
 
     private void GetToggleValue()

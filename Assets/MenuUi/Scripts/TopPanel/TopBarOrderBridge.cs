@@ -7,7 +7,9 @@ public class TopBarOrderBridge : MonoBehaviour
 {
     [SerializeField] private RectTransform _toggleContainer;
     [SerializeField] private TopBarTargets[] _targetsByStyle;
+    [SerializeField] private GameObject[] _clanSubItemSpacers;
 
+    public static TopBarOrderBridge Active { get; private set; }
     private const bool DebugOn = true;
 
     private SettingsCarrier.TopBarStyle CurrentStyle =>
@@ -17,6 +19,8 @@ public class TopBarOrderBridge : MonoBehaviour
 
     private void OnEnable()
     {
+        Active = this;
+
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarOrderBridge : OnEnable()");
 
         if (_targetsByStyle == null || _targetsByStyle.Length == 0)
@@ -133,6 +137,13 @@ public class TopBarOrderBridge : MonoBehaviour
                 indices.Add(i);
 
         SettingsCarrier instance = SettingsCarrier.Instance;
+
+        Debug.Log("[TopBarDebugOn] SAVING ORDER INDICES:");
+        foreach (int idx in indices)
+        {
+            Debug.Log($"[TopBarDebugOn] : save idx={idx}, item={owner.GetItemAt(idx)}");
+        }
+
         if (instance != null)
         {
             instance.SaveTopBarOrder(owner.style, indices);
@@ -144,6 +155,13 @@ public class TopBarOrderBridge : MonoBehaviour
         }
 
         ApplyOrderToToggleList(order, _toggleContainer, owner);
+
+        SetClanSubItemIndent(
+            PlayerPrefs.GetInt(
+                TopBarDefs.Key(TopBarDefs.TopBarItem.ClanTile) + "_" + CurrentStyle,
+                1
+            ) != 0
+        );
     }
 
     private void UpdateTopBarStyle(SettingsCarrier.TopBarStyle style)
@@ -182,6 +200,13 @@ public class TopBarOrderBridge : MonoBehaviour
         ApplyOrderToToggleList(order, _toggleContainer, owner);
         owner.ApplyFromSettings();
         owner.ApplyOrderFromSettings();
+
+        bool clanTileOn = PlayerPrefs.GetInt(
+            TopBarDefs.Key(TopBarDefs.TopBarItem.ClanTile) + "_" + style,
+            1
+        ) != 0;
+
+        SetClanSubItemIndent(clanTileOn);
     }
 
     private static void ApplyOrderToToggleList(
@@ -217,5 +242,29 @@ public class TopBarOrderBridge : MonoBehaviour
                 sibling++;
             }
         }
+    }
+
+    private void SetClanSubItemIndent(bool clanTileOn)
+    {
+        Debug.Log($"[TB] SetClanSubItemIndent clanTileOn={clanTileOn}, count={_clanSubItemSpacers?.Length}");
+
+        if (_clanSubItemSpacers == null) return;
+
+        foreach (GameObject spacer in _clanSubItemSpacers)
+        {
+            Debug.Log($"[TB] spacer={spacer?.name}, setActive={clanTileOn}");
+            if (spacer != null)
+                spacer.SetActive(clanTileOn);
+        }
+    }
+
+    public void RefreshClanSubItemIndent()
+    {
+        SetClanSubItemIndent(
+            PlayerPrefs.GetInt(
+                TopBarDefs.Key(TopBarDefs.TopBarItem.ClanTile) + "_" + CurrentStyle,
+                1
+            ) != 0
+        );
     }
 }
