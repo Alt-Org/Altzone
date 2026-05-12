@@ -73,11 +73,13 @@ public class TopBarToggleHandler : MonoBehaviour
 
         var targets = FindObjectsOfType<MenuUI.Scripts.TopPanel.TopBarTargets>(true);
 
-        foreach (var target in targets)
-        {
-            Debug.Log(
-                $"[TB] FOUND: {target.name}, style={target.style}, parent={target.transform.parent.name}, ready={target.IsReady()}");
-        }
+        // foreach (var target in targets)
+        // {
+        //     Debug.Log(
+        //         $"[TB] FOUND: {target.name}, style={target.style}, parent={target.transform.parent.name}, ready={target.IsReady()}");
+        // }
+
+        TopBarOrderBridge.Active?.ApplyCurrentTarget();
 
         foreach (var target in targets)
         {

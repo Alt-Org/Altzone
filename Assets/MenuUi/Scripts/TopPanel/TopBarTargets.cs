@@ -95,6 +95,8 @@ namespace MenuUI.Scripts.TopPanel
 
             ApplyOrderFromSettings();
             LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
+
+            StartCoroutine(CheckAfterFrame());
         }
 
 
@@ -343,17 +345,17 @@ namespace MenuUI.Scripts.TopPanel
                     item == TopBarDefs.TopBarItem.ClanTextContainer ||
                     item == TopBarDefs.TopBarItem.Coins;
 
-                if (clanPanelOn && isClanSubItem)
-                    continue;
+                // if (clanPanelOn && isClanSubItem)
+                //     continue;
 
-                if (!clanPanelOn && item == TopBarDefs.TopBarItem.ClanTile)
-                {
-                    AddIfVisible(TopBarDefs.TopBarItem.Leaderboard, vis, ordered);
-                    AddIfVisible(TopBarDefs.TopBarItem.ClanLogo, vis, ordered);
-                    AddIfVisible(TopBarDefs.TopBarItem.ClanTextContainer, vis, ordered);
-                    AddIfVisible(TopBarDefs.TopBarItem.Coins, vis, ordered);
-                    continue;
-                }
+                // if (!clanPanelOn && item == TopBarDefs.TopBarItem.ClanTile)
+                // {
+                //     AddIfVisible(TopBarDefs.TopBarItem.Leaderboard, vis, ordered);
+                //     AddIfVisible(TopBarDefs.TopBarItem.ClanLogo, vis, ordered);
+                //     AddIfVisible(TopBarDefs.TopBarItem.ClanTextContainer, vis, ordered);
+                //     AddIfVisible(TopBarDefs.TopBarItem.Coins, vis, ordered);
+                //     continue;
+                // }
 
                 if (!vis[idx])
                     continue;
@@ -436,6 +438,22 @@ namespace MenuUI.Scripts.TopPanel
 
             if (!ordered.Contains(idx))
                 ordered.Add(idx);
+        }
+
+        private System.Collections.IEnumerator CheckAfterFrame()
+        {
+            yield return null;
+
+            Debug.Log("[TB AFTER FRAME]");
+            foreach (var row in _rows)
+            {
+                if (row.visibilityTarget == null) continue;
+
+                Debug.Log($"[TB AFTER FRAME] item={row.item}, " +
+                          $"active={row.visibilityTarget.activeSelf}, " +
+                          $"target={row.visibilityTarget.name}, " +
+                          $"parent={row.visibilityTarget.transform.parent.name}");
+            }
         }
     }
 }

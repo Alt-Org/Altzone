@@ -2,12 +2,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using Altzone.Scripts.Settings; // TopBarDefs
 using MenuUI.Scripts.TopPanel;
+using UnityEngine.UI;
+
 
 public class TopBarOrderBridge : MonoBehaviour
 {
     [SerializeField] private RectTransform _toggleContainer;
     [SerializeField] private TopBarTargets[] _targetsByStyle;
     [SerializeField] private GameObject[] _clanSubItemSpacers;
+    [SerializeField] private GameObject[] _clanSubItemRows;
 
     public static TopBarOrderBridge Active { get; private set; }
     private const bool DebugOn = true;
@@ -88,15 +91,39 @@ public class TopBarOrderBridge : MonoBehaviour
             new Dictionary<int, TopBarDefs.TopBarItem>(_toggleContainer.childCount);
         int nextPos = 0;
 
+        bool clanTileOn = PlayerPrefs.GetInt(
+            TopBarDefs.Key(TopBarDefs.TopBarItem.ClanTile) + "_" + CurrentStyle,
+            1
+        ) != 0;
+
         foreach (Transform t in _toggleContainer)
         {
             TopBarToggleHandler h = t.GetComponentInChildren<TopBarToggleHandler>(true);
             if (h == null) continue;
 
             TopBarDefs.TopBarItem item = h.item;
+
+            bool isClanSubItem =
+                item == TopBarDefs.TopBarItem.Leaderboard ||
+                item == TopBarDefs.TopBarItem.ClanLogo ||
+                item == TopBarDefs.TopBarItem.ClanTextContainer ||
+                item == TopBarDefs.TopBarItem.Coins;
+
+            if (clanTileOn && isClanSubItem)
+                continue;
+
             if (order.ContainsValue(item)) continue;
+
             order[nextPos] = item;
             nextPos++;
+
+            if (clanTileOn && item == TopBarDefs.TopBarItem.ClanTile)
+            {
+                order[nextPos++] = TopBarDefs.TopBarItem.Leaderboard;
+                order[nextPos++] = TopBarDefs.TopBarItem.Coins;
+                order[nextPos++] = TopBarDefs.TopBarItem.ClanTextContainer;
+                order[nextPos++] = TopBarDefs.TopBarItem.ClanLogo;
+            }
         }
 
         int total = owner.RowCount();
@@ -256,6 +283,8 @@ public class TopBarOrderBridge : MonoBehaviour
             if (spacer != null)
                 spacer.SetActive(clanTileOn);
         }
+
+        SetClanSubItemRowsLocked(clanTileOn);
     }
 
     public void RefreshClanSubItemIndent()
@@ -266,5 +295,39 @@ public class TopBarOrderBridge : MonoBehaviour
                 1
             ) != 0
         );
+    }
+
+    private void SetClanSubItemRowsLocked(bool clanTileOn)
+    {
+        if (_clanSubItemRows == null) return;
+
+        foreach (GameObject row in _clanSubItemRows)
+        {
+            if (row == null) continue;
+
+            TopBarToggleDrag drag = row.GetComponent<TopBarToggleDrag>();
+            if (drag != null)
+                drag.enabled = !clanTileOn;
+
+            Toggle toggle = row.GetComponentInChildren<Toggle>(true);
+            if (toggle != null)
+                toggle.interactable = !clanTileOn;
+        }
+    }
+
+    public void ApplyCurrentTarget()
+    {
+        TopBarTargets owner = GetTargetsFor(CurrentStyle);
+
+        if (owner == null)
+        {
+            Debug.LogWarning("[TB] No owner found");
+            return;
+        }
+
+        Debug.Log($"[TB] APPLY CURRENT TARGET => {owner.name}");
+
+        owner.ApplyFromSettings();
+        RefreshClanSubItemIndent();
     }
 }
