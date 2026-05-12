@@ -692,6 +692,7 @@ namespace MenuUI.Scripts.SoulHome
             GameObject furnitureObject = Instantiate(furniture.GetComponent<TrayFurniture>().FurnitureObject);
             furnitureObject.GetComponent<FurnitureHandling>().Furniture = furniture.GetComponent<TrayFurniture>().Furniture;
             furnitureObject.GetComponent<FurnitureHandling>().Position = new(-1, -1);
+            furnitureObject.GetComponent<FurnitureHandling>().ResetDirection();
             furnitureObject.GetComponent<FurnitureHandling>().Slot = null;
             _tempSelectedFurniture = furnitureObject;
             SelectedFurniture = _tempSelectedFurniture;
