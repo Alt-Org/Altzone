@@ -683,15 +683,15 @@ namespace Altzone.Scripts.Audio
         /// <summary>
         /// Delete from local track queue.
         /// </summary>
-        /// <param name="linearIndex"></param>
+        /// <param name="serverId"></param>
         /// <param name="updateServer">Notify server of music track deletion.</param>
-        public void DeleteFromQueue(int linearIndex, bool updateServer)
+        public void DeleteFromQueue(string serverId, bool updateServer)
         {
-            TrackQueueData data = _trackQueue[linearIndex];
+            int index = _trackQueue.FindIndex(0, data => data.ServerSongData.id == serverId);
 
-            if (updateServer) StartCoroutine(DeleteTrackFromServer(null, data.ServerSongData.id, data.MusicTrack.Name));
+            if (updateServer) StartCoroutine(DeleteTrackFromServer(null, serverId, _trackQueue[index].MusicTrack.Name));
 
-            _trackQueue.RemoveAt(linearIndex);
+            _trackQueue.RemoveAt(index);
             OnQueueChange?.Invoke();
         }
         #endregion
@@ -835,7 +835,7 @@ namespace Altzone.Scripts.Audio
             {
                 MusicTrack musicTrack = GetMusicTrack(serverPlaylist.songQueue[i].songId);
 
-                _trackQueue.Add(new TrackQueueData(serverPlaylist.songQueue[i], i, musicTrack,
+                _trackQueue.Add(new TrackQueueData(serverPlaylist.songQueue[i], musicTrack,
                     serverPlaylist.songQueue[i].playerId == _currentPlayerData.Id, GetTrackFavoriteType(musicTrack.Id)));
             }
         }
@@ -859,37 +859,35 @@ namespace Altzone.Scripts.Audio
     public class TrackQueueData
     {
         public ServerSong ServerSongData;
-        public int LinearIndex;
         public MusicTrack MusicTrack;
         public bool UserOwned;
         public JukeboxManager.MusicTrackFavoriteType FavoriteType;
 
         public TrackQueueData(ServerSong serverSong, MusicTrack musicTrack) //TODO:Remove
         {
-            SetData(serverSong, -1, musicTrack, false, JukeboxManager.MusicTrackFavoriteType.Neutral);
+            SetData(serverSong, musicTrack, false, JukeboxManager.MusicTrackFavoriteType.Neutral);
         }
 
         public TrackQueueData(ServerSong serverSong, MusicTrack musicTrack, bool userOwned) //TODO:Remove
         {
-            SetData(serverSong, -1, musicTrack, userOwned, JukeboxManager.MusicTrackFavoriteType.Neutral);
+            SetData(serverSong, musicTrack, userOwned, JukeboxManager.MusicTrackFavoriteType.Neutral);
         }
 
-        public TrackQueueData(ServerSong serverSong, int linearIndex, MusicTrack track, bool userOwned, JukeboxManager.MusicTrackFavoriteType favoriteType)
+        public TrackQueueData(ServerSong serverSong, MusicTrack track, bool userOwned, JukeboxManager.MusicTrackFavoriteType favoriteType)
         {
-            SetData(serverSong, linearIndex, track, userOwned, favoriteType);
+            SetData(serverSong, track, userOwned, favoriteType);
         }
 
         public bool InUse() { return ServerSongData != null; }
 
-        public void SetData(TrackQueueData data, int linearIndex)
+        public void SetData(TrackQueueData data)
         {
-            SetData(data.ServerSongData, linearIndex, data.MusicTrack, data.UserOwned, data.FavoriteType);
+            SetData(data.ServerSongData, data.MusicTrack, data.UserOwned, data.FavoriteType);
         }
 
-        public void SetData(ServerSong serverSong, int linearIndex, MusicTrack track, bool userOwned, JukeboxManager.MusicTrackFavoriteType favoriteType)
+        public void SetData(ServerSong serverSong, MusicTrack track, bool userOwned, JukeboxManager.MusicTrackFavoriteType favoriteType)
         {
             ServerSongData = serverSong;
-            LinearIndex = linearIndex;
             MusicTrack = track;
             UserOwned = userOwned;
             FavoriteType = favoriteType;
@@ -900,7 +898,6 @@ namespace Altzone.Scripts.Audio
         public void Clear()
         {
             ServerSongData = null;
-            LinearIndex = -1;
             MusicTrack = null;
         }
     }
