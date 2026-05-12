@@ -35,6 +35,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "Itseens\xE4 j\xE4lki\xE4 viilt\xE4v\xE4, kivun
     hallitsija. "
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 7f34dd59ec3012e48ab2a4e332fac48e, type: 2}
   Hp:
     Level: 1
@@ -54,7 +56,10 @@ MonoBehaviour:
   GalleryImage: {fileID: 21300000, guid: ce39acf52d810734f8389f53d2a83cf0, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 44f8df7a35939434c9b77dd35ae2b2bd, type: 3}
   CharPhotoSeries: {fileID: 0}
-  BattleEntityPrototype:
+  BattleCharacterEntityPrototype:
     Id:
       Value: 1327058558858202722
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1364865773905416372
   BattleUiSprite: {fileID: 0}
