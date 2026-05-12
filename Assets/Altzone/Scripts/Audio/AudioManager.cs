@@ -232,9 +232,21 @@ namespace Altzone.Scripts.Audio
 
         #region Music
 
-        private void SetCurrentAreaCategoryType(AudioCategoryType categoryType) { _currentAreaType = categoryType; }
-
         public List<MusicTrack> GetMusicList(string categoryName) { return _musicHandler.GetMusicList(categoryName); }
+
+        private string PlayMusic_BeginningPart(AudioCategoryType categoryType, string trackName)
+        {
+            HandleFallBack(categoryType, trackName);
+
+            if (categoryType != AudioCategoryType.Jukebox && SettingsCarrier.Instance.CanPlayJukeboxInArea(_currentAreaType) && JukeboxManager.Instance)
+            {
+                string result = JukeboxManager.Instance.TryPlayTrack();
+
+                if (!string.IsNullOrEmpty(result)) return result;
+            }
+
+            return "";
+        }
 
         /// <summary>
         /// Plays music track by given track name.
@@ -242,7 +254,11 @@ namespace Altzone.Scripts.Audio
         /// <returns>Played track name if successfully started playback.</returns>
         public string PlayMusic(AudioCategoryType categoryType, string trackName, MusicSwitchType switchType = MusicSwitchType.CrossFade, bool forcePlay = false)
         {
-            return HandleFallBack(categoryType, trackName) ? _musicHandler.PlayMusic(categoryType, trackName, switchType, forcePlay) : "";
+            string result = PlayMusic_BeginningPart(categoryType, trackName);
+
+            if (!string.IsNullOrEmpty(result)) return result;
+
+            return CanPlay(categoryType) ? _musicHandler.PlayMusic(categoryType, trackName, switchType, forcePlay) : "";
         }
 
         /// <summary>
@@ -252,7 +268,16 @@ namespace Altzone.Scripts.Audio
         [Obsolete("Please use AudioCategoryType version instead of this string version.")]
         public string PlayMusic(string categoryName, MusicSwitchType switchType = MusicSwitchType.CrossFade, bool forcePlay = false)
         {
-            return HandleFallBack(categoryName, "") ? _musicHandler.PlayMusic(categoryName, "", switchType, forcePlay) : "";
+            HandleFallBack(categoryName, "");
+
+            if (categoryName.ToLower() != "Jukebox".ToLower() && SettingsCarrier.Instance.CanPlayJukeboxInArea(_currentAreaType) && JukeboxManager.Instance)
+            {
+                string result = JukeboxManager.Instance.TryPlayTrack();
+
+                if (!string.IsNullOrEmpty(result)) return result;
+            }
+
+            return CanPlay(categoryName) ? _musicHandler.PlayMusic(categoryName, "", switchType, forcePlay) : "";
         }
 
         /// <summary>
@@ -261,7 +286,11 @@ namespace Altzone.Scripts.Audio
         /// <returns>Played music track name if successfully started playback.</returns>
         public string PlayMusic(AudioCategoryType categoryType, MusicSwitchType switchType = MusicSwitchType.CrossFade, bool forcePlay = false)
         {
-            return HandleFallBack(categoryType, "") ? _musicHandler.PlayMusic(categoryType, "", switchType, forcePlay) : "";
+            string result = PlayMusic_BeginningPart(categoryType, "");
+
+            if (!string.IsNullOrEmpty(result)) return result;
+
+            return CanPlay(categoryType) ? _musicHandler.PlayMusic(categoryType, "", switchType, forcePlay) : "";
         }
 
         /// <summary>
@@ -270,7 +299,11 @@ namespace Altzone.Scripts.Audio
         /// <returns>Played track name if successfully started playback.</returns>
         public string PlayMusic(AudioCategoryType categoryType, MusicTrack musicTrack, MusicSwitchType switchType = MusicSwitchType.CrossFade, bool forcePlay = false)
         {
-            return HandleFallBack(categoryType, musicTrack.Name) ? _musicHandler.PlayMusic(categoryType, musicTrack, switchType, forcePlay) : "";
+            string result = PlayMusic_BeginningPart(categoryType, musicTrack.Name);
+
+            if (!string.IsNullOrEmpty(result)) return result;
+
+            return CanPlay(categoryType) ? _musicHandler.PlayMusic(categoryType, musicTrack, switchType, forcePlay) : "";
         }
 
         /// <summary>
@@ -279,44 +312,58 @@ namespace Altzone.Scripts.Audio
         /// <returns>Played track name if successfully started playback.</returns>
         public string PlayMusicById(AudioCategoryType categoryType, string musicTrackId, MusicSwitchType switchType, bool forcePlay = false)
         {
-            return HandleFallBack(categoryType, "") ? _musicHandler.PlayMusicById(categoryType, musicTrackId, switchType, forcePlay) : "";
+            string result = PlayMusic_BeginningPart(categoryType, "");
+
+            if (!string.IsNullOrEmpty(result)) return result;
+
+            return CanPlay(categoryType) ? _musicHandler.PlayMusicById(categoryType, musicTrackId, switchType, forcePlay) : "";
         }
 
         [Obsolete("Please use AudioCategoryType version instead of this string version.")]
-        private bool HandleFallBack(string categoryName, string trackName)
+        private void HandleFallBack(string categoryName, string trackName)
         {
             bool success = Enum.TryParse<AudioCategoryType>(categoryName, out var categoryType);
 
-            return success && HandleFallBack(categoryType, trackName);
+            if (success) HandleFallBack(categoryType, trackName);
         }
 
-        private bool HandleFallBack(AudioCategoryType categoryType, string trackName)
+        private void HandleFallBack(AudioCategoryType categoryType, string trackName)
         {
             if (categoryType != AudioCategoryType.Jukebox)
             {
+                _currentAreaType = categoryType;
                 _fallbackMusicCategory = categoryType;
                 _fallbackMusicTrack = trackName;
-                SetCurrentAreaCategoryType(categoryType);
             }
 
             if (categoryType == AudioCategoryType.MainMenu)
                 _musicHandler.SetMainMenuMusicName(
                     SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic));
-
-            return CanPlay(categoryType);
         }
 
         public string PlayFallBackTrack(MusicSwitchType switchType = MusicSwitchType.CrossFade, bool forcePlay = false)
         {
-            return HandleFallBack(_fallbackMusicCategory, _fallbackMusicTrack) ?
-                _musicHandler.PlayMusic(_fallbackMusicCategory, _fallbackMusicTrack, switchType, forcePlay) : "";
+            string result = PlayMusic_BeginningPart(_fallbackMusicCategory, _fallbackMusicTrack);
+
+            if (!string.IsNullOrEmpty(result)) return result;
+
+            return CanPlay(_fallbackMusicCategory) ? _musicHandler.PlayMusic(_fallbackMusicCategory, _fallbackMusicTrack, switchType, forcePlay) : "";
+        }
+
+        [Obsolete("Please use AudioCategoryType version instead of this string version.")]
+        private bool CanPlay(string categoryName)
+        {
+            bool success = Enum.TryParse<AudioCategoryType>(categoryName, out var categoryType);
+
+            return success && CanPlay(categoryType);
+            return false;
         }
 
         private bool CanPlay(AudioCategoryType categoryType) //TODO: Fix rare null reference possibilities.
         {
             if (!_musicHandler) _musicHandler = GetComponent<MusicHandler>();
 
-            if (_musicHandler.CurrentCategory == null) return true; //Dont block if category is null.
+            if (_musicHandler.CurrentCategory == null) return true; //Don't block if category is null.
 
             SettingsCarrier carrier = SettingsCarrier.Instance;
 
@@ -324,14 +371,14 @@ namespace Altzone.Scripts.Audio
 
             bool jukeboxAreaCheck = (
                 _jukeboxWindowOpen
-                || (carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Soulhome) && _currentAreaType == AudioCategoryType.SoulHome)
-                || (carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.MainMenu) && _currentAreaType == AudioCategoryType.MainMenu)
-                || (carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.Battle) && _currentAreaType == AudioCategoryType.Battle)
+                || (carrier.CanPlayJukeboxInArea(AudioCategoryType.SoulHome) && _currentAreaType == AudioCategoryType.SoulHome)
+                || (carrier.CanPlayJukeboxInArea(AudioCategoryType.MainMenu) && _currentAreaType == AudioCategoryType.MainMenu)
+                || (carrier.CanPlayJukeboxInArea(AudioCategoryType.Battle) && _currentAreaType == AudioCategoryType.Battle)
             );
 
             bool canPlayJukebox = jukeboxHasActiveTrack && !JukeboxManager.Instance.JukeboxMuted && jukeboxAreaCheck;
 
-            return categoryType != AudioCategoryType.Jukebox ? !canPlayJukebox : canPlayJukebox;
+            return categoryType == AudioCategoryType.Jukebox ? canPlayJukebox : !canPlayJukebox;
         }
 
         public string NextMusicTrack(MusicSwitchType switchType = MusicSwitchType.CrossFade)
@@ -359,12 +406,20 @@ namespace Altzone.Scripts.Audio
 
         public string ContinueMusic(AudioCategoryType categoryType, string trackName, MusicSwitchType switchType, float startLocation)
         {
-            return HandleFallBack(categoryType, trackName) ? _musicHandler.PlayMusic(categoryType, trackName, switchType, startLocation) : "";
+            string result = PlayMusic_BeginningPart(categoryType, trackName);
+
+            if (!string.IsNullOrEmpty(result)) return result;
+
+            return CanPlay(categoryType) ? _musicHandler.PlayMusic(categoryType, trackName, switchType, startLocation) : "";
         }
 
         public string ContinueMusic(AudioCategoryType categoryType, MusicTrack musicTrack, MusicSwitchType switchType, float startLocation, bool forcePlay = false)
         {
-            return HandleFallBack(categoryType, musicTrack.Name) ? _musicHandler.PlayMusic(categoryType, musicTrack, switchType, startLocation, forcePlay) : "";
+            string result = PlayMusic_BeginningPart(categoryType, musicTrack.Name);
+
+            if (!string.IsNullOrEmpty(result)) return result;
+
+            return CanPlay(categoryType) ? _musicHandler.PlayMusic(categoryType, musicTrack, switchType, startLocation, forcePlay) : "";
         }
         #endregion
     }

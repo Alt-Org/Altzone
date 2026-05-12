@@ -82,7 +82,7 @@ public class JukeboxMainDiskHandler : MonoBehaviour
 
     public bool StartSpinDisk()
     {
-        if (_diskSpinCoroutine != null) return false;
+        if (_diskSpinCoroutine != null || !isActiveAndEnabled) return false;
 
         _diskSpinCoroutine = StartCoroutine(SpinDisk());
         return true;
