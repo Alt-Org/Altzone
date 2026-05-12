@@ -883,14 +883,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1812059384325265561}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4652c1a74f803348b1460021d8bcd55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   loggedOutPlayerText: 
   _playerNameText: {fileID: 4089725753710964374}
-  _profileNaviButton: {fileID: 0}
+  _profileNaviButton: {fileID: 2831734885815656548}
 --- !u!114 &1176802821891568393
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6037,6 +6037,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2831734885815656548 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1390240169696100122, guid: f8344c471eab70640b21c56b49071030,
+    type: 3}
+  m_PrefabInstance: {fileID: 3749097094265790334}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1609676208198424510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93c08ee9db595824d985a43fafb6567a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &3127662296509799497 stripped
