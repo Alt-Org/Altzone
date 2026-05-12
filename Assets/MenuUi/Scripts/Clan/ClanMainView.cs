@@ -86,6 +86,7 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private GameObject _passwordPopup;
     [SerializeField] private Button _clanLockButton;
     [SerializeField] private Button _passwordPopupContinueButton;
+    [SerializeField] private Button _passwordPopupCloseButton;
 
     [SerializeField] private ClanAddFriendPopupController _addFriendPopup;
 
@@ -237,6 +238,12 @@ public class ClanMainView : MonoBehaviour
             _passwordPopupContinueButton.onClick.AddListener(ClosePasswordPopup);
         }
 
+        if (_passwordPopupCloseButton != null)
+        {
+            _passwordPopupCloseButton.onClick.RemoveListener(ClosePasswordPopup);
+            _passwordPopupCloseButton.onClick.AddListener(ClosePasswordPopup);
+        }
+
         if (_passwordPopup != null)
         {
             _passwordPopup.SetActive(false);
@@ -330,6 +337,9 @@ public class ClanMainView : MonoBehaviour
 
         if (_passwordPopupContinueButton != null)
             _passwordPopupContinueButton.onClick.RemoveListener(ClosePasswordPopup);
+
+        if (_passwordPopupCloseButton != null)
+            _passwordPopupCloseButton.onClick.RemoveListener(ClosePasswordPopup);
 
         if (_rulesButton != null)
             _rulesButton.onClick.RemoveListener(OpenRulesPopup);
