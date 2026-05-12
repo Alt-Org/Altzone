@@ -43,7 +43,7 @@ public class PollObject : MonoBehaviour
     [Header("Results")]
     [SerializeField] private GameObject YesVoters;
     [SerializeField] private GameObject NoVoters;
-    [SerializeField] private GameObject NotYetVoted;
+    [SerializeField] private GameObject ShowVoteButton;
 
     [Header("PlayerHeads")]
     [SerializeField] private AddPlayerHeads playerHeads;
@@ -239,8 +239,8 @@ public class PollObject : MonoBehaviour
 
             if(player != null)
             {
-                bool hasNotVoted = pollData.NotVoted.Contains(player.Id);
-                NotYetVoted.gameObject.SetActive(hasNotVoted);
+                bool hasVoted = !pollData.NotVoted.Contains(player.Id);
+                ShowVoteButton.gameObject.SetActive(!hasVoted);
             }
             else
             {

@@ -161,12 +161,12 @@ public class PollInfoPopup : MonoBehaviour
 
             if (data != null)
             {
-                bool hasNotVoted = _currentPollData.NotVoted.Contains(data.Id);
+                bool hasVoted = !_currentPollData.NotVoted.Contains(data.Id);
 
-                voteButtons.SetActive(hasNotVoted);
-                voteBar.SetActive(!hasNotVoted);
+                voteButtons.SetActive(!hasVoted);
+                voteBar.SetActive(hasVoted);
 
-                if (hasNotVoted)
+                if (!hasVoted)
                 {
                     yesButton.onClick.RemoveAllListeners();
                     noButton.onClick.RemoveAllListeners();
