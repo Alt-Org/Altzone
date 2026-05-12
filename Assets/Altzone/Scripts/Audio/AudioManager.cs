@@ -61,8 +61,6 @@ namespace Altzone.Scripts.Audio
             _sFXHandler = GetComponent<SFXHandler>();
             _musicHandler = GetComponent<MusicHandler>();
 
-            if (SettingsCarrier.Instance == null) return;
-
             StartCoroutine(WaitForSettingsCarrier());
         }
 
@@ -73,6 +71,9 @@ namespace Altzone.Scripts.Audio
             UpdateMaxVolume();
         }
 
+        /// <summary>
+        /// Updates maximum volume of sound effects and music.
+        /// </summary>
         public void UpdateMaxVolume()
         {
             _sFXHandler.SetMaxVolume(SettingsCarrier.Instance.SentVolume(SettingsCarrier.SoundType.sound));
@@ -109,7 +110,7 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        /// Plays a sfx sound by given CategoryName and SFXName.
+        /// Plays a sfx sound by given CategoryName and SFXName. Use only in Battle!
         /// </summary>
         /// <param name="battleSFXName">Battle type name of the sfx audio that is wanted.</param>
         /// <param name="pitch">Optional.</param>
@@ -148,7 +149,7 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        /// Plays a sfx sound by given CategoryName and SFXName.
+        /// Plays a sfx sound by given CategoryName and SFXName. Use only in Battle!
         /// </summary>
         /// <param name="battleSFXName">Name of the sfx audio that is wanted.</param>
         /// <param name="note">Optional.</param>
@@ -234,10 +235,20 @@ namespace Altzone.Scripts.Audio
 
         public List<MusicTrack> GetMusicList(string categoryName) { return _musicHandler.GetMusicList(categoryName); }
 
+        //TODO: add more ACTUAL functionality to "bool forcePlay" params when battle sets it to false or default. Or just remove it.
+
+        /// <summary>
+        /// Handles the first part of trying to play music.
+        /// </summary>
+        /// <param name="categoryType">Music category in which the wanted music track resides.</param>
+        /// <param name="trackName">Music tracks name.</param>
+        /// <returns>Jukebox music name if successful in starting or continuing it, otherwise returns empty or null <c>string</c></returns>
         private string PlayMusic_BeginningPart(AudioCategoryType categoryType, string trackName)
         {
+            // Try to set fallback music category/track and set area type.
             HandleFallBack(categoryType, trackName);
 
+            // Try to play jukebox music if there are any and if it has the correct area permissions and is not muted.
             if (categoryType != AudioCategoryType.Jukebox && SettingsCarrier.Instance.CanPlayJukeboxInArea(_currentAreaType) && JukeboxManager.Instance)
             {
                 string result = JukeboxManager.Instance.TryPlayTrack();
@@ -249,22 +260,27 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        /// Plays music track by given track name.
+        /// Tries to play music track by given track name.
         /// </summary>
-        /// <returns>Played track name if successfully started playback.</returns>
+        /// <param name="categoryType">Music category in which the wanted music track resides.</param>
+        /// <param name="trackName">Music tracks name.</param>
+        /// <param name="switchType"></param>
+        /// <param name="forcePlay">It is not recommended to use this. May have unwanted effects if jukebox is currently active and has permission to play.</param>
+        /// <returns>Music name if successful in starting or continuing it, otherwise returns empty or null <c>string</c></returns>
         public string PlayMusic(AudioCategoryType categoryType, string trackName, MusicSwitchType switchType = MusicSwitchType.CrossFade, bool forcePlay = false)
         {
             string result = PlayMusic_BeginningPart(categoryType, trackName);
 
             if (!string.IsNullOrEmpty(result)) return result;
 
+            // Try to play the given music track.
             return CanPlay(categoryType) ? _musicHandler.PlayMusic(categoryType, trackName, switchType, forcePlay) : "";
         }
 
         /// <summary>
-        /// Plays first music track in the given category.
+        /// Tries to play first music track in the given category.
         /// </summary>
-        /// <returns>Played music track name if successfully started playback.</returns>
+        /// <returns>Music name if successful in starting or continuing it, otherwise returns empty or null <c>string</c></returns>
         [Obsolete("Please use AudioCategoryType version instead of this string version.")]
         public string PlayMusic(string categoryName, MusicSwitchType switchType = MusicSwitchType.CrossFade, bool forcePlay = false)
         {
@@ -281,41 +297,55 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        /// Plays first music track in the given category.
+        /// Tries to play first music track in the given category.
         /// </summary>
-        /// <returns>Played music track name if successfully started playback.</returns>
+        /// <param name="categoryType">Music category where the music is wanted from.</param>
+        /// <param name="switchType"></param>
+        /// <param name="forcePlay">It is not recommended to use this. May have unwanted effects if jukebox is currently active and has permission to play.</param>
+        /// <returns>Music name if successful in starting or continuing it, otherwise returns empty or null <c>string</c></returns>
         public string PlayMusic(AudioCategoryType categoryType, MusicSwitchType switchType = MusicSwitchType.CrossFade, bool forcePlay = false)
         {
             string result = PlayMusic_BeginningPart(categoryType, "");
 
             if (!string.IsNullOrEmpty(result)) return result;
 
+            // Try to play the given music track.
             return CanPlay(categoryType) ? _musicHandler.PlayMusic(categoryType, "", switchType, forcePlay) : "";
         }
 
         /// <summary>
-        /// Plays the given <c>MusicTrack</c>.
+        /// Tries to play the given <c>MusicTrack</c>.
         /// </summary>
-        /// <returns>Played track name if successfully started playback.</returns>
+        /// <param name="categoryType">Music category in which the wanted music track resides.</param>
+        /// <param name="musicTrack">Music track class.</param>
+        /// <param name="switchType"></param>
+        /// <param name="forcePlay">It is not recommended to use this. May have unwanted effects if jukebox is currently active and has permission to play.</param>
+        /// <returns>Music name if successful in starting or continuing it, otherwise returns empty or null <c>string</c></returns>
         public string PlayMusic(AudioCategoryType categoryType, MusicTrack musicTrack, MusicSwitchType switchType = MusicSwitchType.CrossFade, bool forcePlay = false)
         {
             string result = PlayMusic_BeginningPart(categoryType, musicTrack.Name);
 
             if (!string.IsNullOrEmpty(result)) return result;
 
+            // Try to play the given music track.
             return CanPlay(categoryType) ? _musicHandler.PlayMusic(categoryType, musicTrack, switchType, forcePlay) : "";
         }
 
         /// <summary>
-        /// Plays music track by given id.
+        /// Tries to play music track by given id.
         /// </summary>
-        /// <returns>Played track name if successfully started playback.</returns>
+        /// <param name="categoryType">Music category in which the wanted music track resides.</param>
+        /// <param name="musicTrackId">Music tracks id.</param>
+        /// <param name="switchType"></param>
+        /// <param name="forcePlay">It is not recommended to use this. May have unwanted effects if jukebox is currently active and has permission to play.</param>
+        /// <returns>Music name if successful in starting or continuing it, otherwise returns empty or null <c>string</c></returns>
         public string PlayMusicById(AudioCategoryType categoryType, string musicTrackId, MusicSwitchType switchType, bool forcePlay = false)
         {
             string result = PlayMusic_BeginningPart(categoryType, "");
 
             if (!string.IsNullOrEmpty(result)) return result;
 
+            // Try to play the given music track.
             return CanPlay(categoryType) ? _musicHandler.PlayMusicById(categoryType, musicTrackId, switchType, forcePlay) : "";
         }
 
@@ -327,6 +357,11 @@ namespace Altzone.Scripts.Audio
             if (success) HandleFallBack(categoryType, trackName);
         }
 
+        /// <summary>
+        /// Sets fallback category and track and current area type if not jukebox. Also sets main menu music name if <c>AudioCategoryType</c> is <c>MainMenu</c>.
+        /// </summary>
+        /// <param name="categoryType">Music category in which the wanted music track resides.</param>
+        /// <param name="trackName">Track name which is wanted to be played when fallback is used.</param>
         private void HandleFallBack(AudioCategoryType categoryType, string trackName)
         {
             if (categoryType != AudioCategoryType.Jukebox)
@@ -341,12 +376,19 @@ namespace Altzone.Scripts.Audio
                     SettingsCarrier.Instance.GetSelectionBoxData(SettingsCarrier.SelectionBoxType.MainMenuMusic));
         }
 
+        /// <summary>
+        /// Tries to play the given fallback category's given fallback track.
+        /// </summary>
+        /// <param name="switchType"></param>
+        /// <param name="forcePlay">It is not recommended to use this. May have unwanted effects if jukebox is currently active and has permission to play.</param>
+        /// <returns>Music name if successful in starting or continuing it, otherwise returns empty or null <c>string</c></returns>
         public string PlayFallBackTrack(MusicSwitchType switchType = MusicSwitchType.CrossFade, bool forcePlay = false)
         {
             string result = PlayMusic_BeginningPart(_fallbackMusicCategory, _fallbackMusicTrack);
 
             if (!string.IsNullOrEmpty(result)) return result;
 
+            // Try to play the given music track.
             return CanPlay(_fallbackMusicCategory) ? _musicHandler.PlayMusic(_fallbackMusicCategory, _fallbackMusicTrack, switchType, forcePlay) : "";
         }
 
@@ -359,7 +401,12 @@ namespace Altzone.Scripts.Audio
             return false;
         }
 
-        private bool CanPlay(AudioCategoryType categoryType) //TODO: Fix rare null reference possibilities.
+        /// <summary>
+        /// Checks if can play given music category.
+        /// </summary>
+        /// <param name="categoryType">Music category in which the wanted music track resides.</param>
+        /// <returns>True if can play.</returns>
+        private bool CanPlay(AudioCategoryType categoryType)
         {
             if (!_musicHandler) _musicHandler = GetComponent<MusicHandler>();
 
@@ -369,18 +416,23 @@ namespace Altzone.Scripts.Audio
 
             bool jukeboxHasActiveTrack = JukeboxManager.Instance.CurrentTrackQueueData != null || JukeboxManager.Instance.TrackPreviewActive;
 
-            bool jukeboxAreaCheck = (
+            bool jukeboxAreaPermissionOk = (
                 _jukeboxWindowOpen
                 || (carrier.CanPlayJukeboxInArea(AudioCategoryType.SoulHome) && _currentAreaType == AudioCategoryType.SoulHome)
                 || (carrier.CanPlayJukeboxInArea(AudioCategoryType.MainMenu) && _currentAreaType == AudioCategoryType.MainMenu)
                 || (carrier.CanPlayJukeboxInArea(AudioCategoryType.Battle) && _currentAreaType == AudioCategoryType.Battle)
             );
 
-            bool canPlayJukebox = jukeboxHasActiveTrack && !JukeboxManager.Instance.JukeboxMuted && jukeboxAreaCheck;
+            bool canPlayJukebox = jukeboxHasActiveTrack && !JukeboxManager.Instance.JukeboxMuted && jukeboxAreaPermissionOk;
 
             return categoryType == AudioCategoryType.Jukebox ? canPlayJukebox : !canPlayJukebox;
         }
 
+        /// <summary>
+        /// Plays the next track from that music category. Usage not recommended at the moment.
+        /// </summary>
+        /// <param name="switchType"></param>
+        /// <returns>Music name if successful in starting it, otherwise returns empty or null <c>string</c></returns>
         public string NextMusicTrack(MusicSwitchType switchType = MusicSwitchType.CrossFade)
         {
             string trackName = null;
@@ -390,6 +442,11 @@ namespace Altzone.Scripts.Audio
             return trackName;
         }
 
+        /// <summary>
+        /// Plays the previous track from that music category. Usage not recommended at the moment.
+        /// </summary>
+        /// <param name="switchType"></param>
+        /// <returns>Music name if successful in starting it, otherwise returns empty or null <c>string</c></returns>
         public string PrevMusicTrack(MusicSwitchType switchType = MusicSwitchType.CrossFade)
         {
             string trackName = null;
@@ -399,26 +456,48 @@ namespace Altzone.Scripts.Audio
             return trackName;
         }
 
+        /// <summary>
+        /// Stops music playback on primary channel.
+        /// </summary>
         public void StopMusic()
         {
             _musicHandler.StopMusic(_musicHandler.PrimaryChannel);
         }
 
+        /// <summary>
+        /// Tries to play music from given start location.
+        /// </summary>
+        /// <param name="categoryType">Music category in which the wanted music track resides.</param>
+        /// <param name="trackName">Music tracks name.</param>
+        /// <param name="switchType"></param>
+        /// <param name="startLocation">Start location of the music track.</param>
+        /// <returns>Music name if successful in starting or continuing it, otherwise returns empty or null <c>string</c></returns>
         public string ContinueMusic(AudioCategoryType categoryType, string trackName, MusicSwitchType switchType, float startLocation)
         {
             string result = PlayMusic_BeginningPart(categoryType, trackName);
 
             if (!string.IsNullOrEmpty(result)) return result;
 
+            // Try to play the given music track.
             return CanPlay(categoryType) ? _musicHandler.PlayMusic(categoryType, trackName, switchType, startLocation) : "";
         }
 
+        /// <summary>
+        /// Tries to play music from given start location.
+        /// </summary>
+        /// <param name="categoryType">Music category in which the wanted music track resides.</param>
+        /// <param name="musicTrack">Music tracks class.</param>
+        /// <param name="switchType"></param>
+        /// <param name="startLocation">Start location of the music track.</param>
+        /// <param name="forcePlay">It is not recommended to use this. May have unwanted effects if jukebox is currently active and has permission to play.</param>
+        /// <returns>Music name if successful in starting or continuing it, otherwise returns empty or null <c>string</c></returns>
         public string ContinueMusic(AudioCategoryType categoryType, MusicTrack musicTrack, MusicSwitchType switchType, float startLocation, bool forcePlay = false)
         {
             string result = PlayMusic_BeginningPart(categoryType, musicTrack.Name);
 
             if (!string.IsNullOrEmpty(result)) return result;
 
+            // Try to play the given music track.
             return CanPlay(categoryType) ? _musicHandler.PlayMusic(categoryType, musicTrack, switchType, startLocation, forcePlay) : "";
         }
         #endregion
