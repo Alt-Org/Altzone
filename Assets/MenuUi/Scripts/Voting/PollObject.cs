@@ -43,6 +43,7 @@ public class PollObject : MonoBehaviour
     [Header("Results")]
     [SerializeField] private GameObject YesVoters;
     [SerializeField] private GameObject NoVoters;
+    [SerializeField] private GameObject NotYetVoted;
 
     [Header("PlayerHeads")]
     [SerializeField] private AddPlayerHeads playerHeads;
@@ -231,25 +232,34 @@ public class PollObject : MonoBehaviour
                 PollTypeText.text = "General Poll";
         }
 
-        // Handle UI for Furniture Polls
+        PlayerData player = null;
+        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data =>
+        {
+            player = data;
+
+            if(player != null)
+            {
+                bool hasNotVoted = pollData.NotVoted.Contains(player.Id);
+                NotYetVoted.gameObject.SetActive(hasNotVoted);
+            }
+            else
+            {
+                Debug.LogError("Failed to fetch player data!");
+            }
+        });
+
+
+        // Handle
         if (pollData is FurniturePollData furniturePollData)
         {
             Image.gameObject.SetActive(true);
             PollTypeText.text = furniturePollData.Furniture.Name;
 
-            if (furniturePollData.FurniturePollType is FurniturePollType.Buying)
-            {
-                TradeBackground.color = Color.green;
-                TradeText.text = "OSTO";
-                Price.text = furniturePollData.Furniture.Value.ToString();
-            }
-            else
-            {
-                TradeBackground.color = Color.red;
-                TradeText.text = "MYYNTI";
-                Price.text = furniturePollData.Furniture.Value.ToString();
-            }
+            bool isBuying = furniturePollData.FurniturePollType == FurniturePollType.Buying;
+            TradeBackground.color = isBuying ? Color.green : Color.red;
+            TradeText.text = isBuying ? "OSTO" : "MYYNTI";
 
+            Price.text = furniturePollData.Furniture.Value.ToString();
 
             Sprite ribbonSprite = null;
             if (furniturePollData.Furniture != null)
@@ -289,9 +299,6 @@ public class PollObject : MonoBehaviour
             // Default values
             string memberName = "Unknown";
             string roleName = "None";
-
-            PlayerData player = null;
-            Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
 
             if (player != null && !string.IsNullOrEmpty(player.ClanId))
             {
