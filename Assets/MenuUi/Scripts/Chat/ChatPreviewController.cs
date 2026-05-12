@@ -50,6 +50,7 @@ public class ChatPreviewController : MonoBehaviour
             _chatMessageGameobjects[i] = chatMessage;
             chatMessage.GetComponentInChildren<Image>().color = Color.clear;
             chatMessage.GetComponentInChildren<TextMeshProUGUI>().text = "";
+            chatMessage.GetComponent<ChatMessagePrefab>().SetInfo(null);
         }
 
         _chatButtonRect = _toggleChatButton.gameObject.GetComponent<RectTransform>();
