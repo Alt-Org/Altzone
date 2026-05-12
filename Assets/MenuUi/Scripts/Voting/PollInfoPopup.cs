@@ -34,7 +34,8 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private GameObject voteBar;
     [SerializeField] private TMP_Text yesVotes;
     [SerializeField] private TMP_Text noVotes;
-
+    [SerializeField] private TMP_Text yesVotesButton;
+    [SerializeField] private TMP_Text noVotesButton;
 
     [Header("Rarity Color Reference")]
     [SerializeField] private RarityColourReference rarityColourReference;
@@ -177,16 +178,24 @@ public class PollInfoPopup : MonoBehaviour
         });
 
 
-        int yes = _currentPollData.YesVotes.Count;
-        int no = _currentPollData.NoVotes.Count;
+        int yesCount = _currentPollData.YesVotes.Count;
+        int noCount = _currentPollData.NoVotes.Count;
+        int totalCount = yesCount + noCount;
 
-        yesVotes.text = yes.ToString();
-        noVotes.text = no.ToString();
+        float fillValue = 0.5f;
+        string yesPercent = yesCount.ToString() + "%";
+        string noPercent = noCount.ToString() + "%";
 
-        if (yes == 0 && no == 0)
-            greenFill.fillAmount = 0.5f;
-        else
-            greenFill.fillAmount = (float)yes / (yes + no);
+        if (totalCount > 0)
+        {
+            fillValue = (float)yesCount / totalCount;
+            yesPercent = fillValue.ToString("P0");
+            noPercent = (1.0f - fillValue).ToString("P0");
+        }
+
+        greenFill.fillAmount = fillValue;
+        yesVotes.text = yesVotesButton.text = yesPercent;
+        noVotes.text = noVotesButton.text = noPercent;
 
         gameObject.SetActive(true);
         furniturePollInfoObject.SetActive(true);
@@ -201,6 +210,7 @@ public class PollInfoPopup : MonoBehaviour
         });
 
         voteButtons.SetActive(false);
+        voteBar.SetActive(true);
     }
 
     // Opens the popup for clan role polls
