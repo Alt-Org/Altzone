@@ -13,6 +13,7 @@ namespace MenuUi.Scripts.Window
         [SerializeField] private SceneDef _allowedScene;
 
         [SerializeField] private Button[] buttons; //Array assigned in inspector, in UIOverlayPanel gameobject
+        [SerializeField] private Button[] overlayButtons;
 
         [SerializeField] private GameObject _topBar;
         [SerializeField] private GameObject _bottomBar;
@@ -78,7 +79,7 @@ namespace MenuUi.Scripts.Window
             if(Instance == this) Instance = null;
         }
 
-        public void UpdateButtonContent()
+        public void UpdateButtonContent() //Makes buttons bigger and glow when selected
         {
             if (buttons == null || buttons.Length == 0) return;
 
@@ -119,8 +120,24 @@ namespace MenuUi.Scripts.Window
                 {
                     glow.gameObject.SetActive(isCurrentWindow);
                 }
-            }//for loop
-        }
+            }//for
+        }//updatebuttoncontent
+
+        public void UpdateOverlayButtons(Button activeButton) //Same as updatebuttoncontent but for buttons that open overlay instead of a window
+        {
+            foreach (Button button in overlayButtons)
+            {
+                bool isActive = button == activeButton;
+
+                button.transform.localScale = isActive ? Vector3.one * 1.2f : Vector3.one;
+
+                Transform glow = button.transform.Find("Glow");
+
+                if (glow != null)
+                    glow.gameObject.SetActive(isActive);
+            }//foreach
+        }//overlaybutton
+
         public void ToggleOverlay(bool value)
         {
             ToggleBottomBar(value);
@@ -147,6 +164,7 @@ namespace MenuUi.Scripts.Window
 
         public void ToggleOnlinePlayers()
         {
+            UpdateOverlayButtons(_onlineToggleButton); //call when overlay is active
             OnToggleOnlinePlayerList?.Invoke();
         }
 

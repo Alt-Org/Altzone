@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Audio;
 using Altzone.Scripts.ReferenceSheets;
+using MenuUi.Scripts.Window;
+using MenuUI.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
-using MenuUI.Scripts;
 
 public class JukeBoxSoulhomeHandler : MonoBehaviour
 {
@@ -203,6 +204,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         }
         else if (audioManager) //Close
         {
+            OverlayPanelCheck.Instance.UpdateOverlayButtons(null); //call for button highlight logic
+
             if (jukeboxManager && jukeboxManager.TrackPreviewActive /*&& jukeboxManager.CurrentTrackQueueData != null*/)
                 jukeboxManager.StopMusicPreview();
             else

@@ -484,5 +484,6 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     public void Hide()
     {
         _onlinePlayersPanel.SetActive(false);
+        OverlayPanelCheck.Instance.UpdateOverlayButtons(null);
     }
 }

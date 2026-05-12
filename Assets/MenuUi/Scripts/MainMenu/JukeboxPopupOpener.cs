@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,8 @@ public class JukeboxPopupOpener : MonoBehaviour
 
     private void Start()
     {
-        _openJukeboxPopupButton.onClick.AddListener(() => { _jukeboxSoulhomeHandler.ToggleJukeboxScreen(true); });
+        _openJukeboxPopupButton.onClick.AddListener(() => { _jukeboxSoulhomeHandler.ToggleJukeboxScreen(true);
+         OverlayPanelCheck.Instance.UpdateOverlayButtons(_openJukeboxPopupButton); // Call for button highlight script
+        });
     }
 }
