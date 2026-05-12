@@ -698,8 +698,18 @@ namespace Altzone.Scripts.Lobby
                                 {
                                     if (queueCompleteDuoPairs.Count > 0)
                                     {
+                                            // Flatten duo pairs for room metadata
                                             string[] flatPairs = queueCompleteDuoPairs.SelectMany(pair => new[] { pair.userId1, pair.userId2 }).ToArray();
+                                            Debug.Log($"FormMatchFromQueue: flattening {queueCompleteDuoPairs.Count} queue duo pairs into {flatPairs.Length} flat entries: [{string.Join(",", flatPairs)}]");
+                                            
+                                            // Validate flat array parity (must be even: pairs of 2 users each)
+                                            if (flatPairs.Length % 2 != 0)
+                                            {
+                                                Debug.LogWarning($"FormMatchFromQueue: WARNING - flat duo pairs array has odd length {flatPairs.Length}, expected even; this indicates flattening error.");
+                                            }
+                                            
                                             PhotonRealtimeClient.CurrentRoom.SetCustomProperty(QueueDuoPairsKey, flatPairs);
+                                            Debug.Log($"FormMatchFromQueue: successfully wrote QueueDuoPairsKey with {flatPairs.Length} entries to room.");
 
                                             reservationFailed = false;
                                             foreach (var pair in queueCompleteDuoPairs)
@@ -739,7 +749,16 @@ namespace Altzone.Scripts.Lobby
                                     if (!reservationFailed && queueSoloPairBlocks.Count > 0)
                                     {
                                         string[] flatSoloPairs = queueSoloPairBlocks.SelectMany(pair => new[] { pair.userId1, pair.userId2 }).ToArray();
+                                        Debug.Log($"FormMatchFromQueue: flattening {queueSoloPairBlocks.Count} queue solo pair blocks into {flatSoloPairs.Length} flat entries: [{string.Join(",", flatSoloPairs)}]");
+                                        
+                                        // Validate flat array parity
+                                        if (flatSoloPairs.Length % 2 != 0)
+                                        {
+                                            Debug.LogWarning($"FormMatchFromQueue: WARNING - flat solo pairs array has odd length {flatSoloPairs.Length}, expected even; this indicates flattening error.");
+                                        }
+                                        
                                         PhotonRealtimeClient.CurrentRoom.SetCustomProperty(QueueSoloPairsKey, flatSoloPairs);
+                                        Debug.Log($"FormMatchFromQueue: successfully wrote QueueSoloPairsKey with {flatSoloPairs.Length} entries to room.");
                                     }
                                 }
                                 catch (Exception ex) { Debug.LogWarning($"FormMatchFromQueue: failed to apply queue pair reservations: {ex.Message}"); }
@@ -1040,11 +1059,15 @@ namespace Altzone.Scripts.Lobby
                     }
                 }
 
-                Debug.Log($"RequeueToPersistentQueue: rejoining persistent queue for {gameType}");
+                Debug.Log($"RequeueToPersistentQueue: rejoining persistent queue for {gameType}, premadeMode={premadeMode}, pair=({premadeUserId1},{premadeUserId2})");
                 try { StopMatchmakingCoroutines(); } catch (Exception ex) { Debug.LogWarning($"RequeueToPersistentQueue: failed to stop matchmaking coroutines: {ex.Message}"); }
                 try { StopHolderCoroutines(); } catch (Exception ex) { Debug.LogWarning($"RequeueToPersistentQueue: failed to stop holder coroutines: {ex.Message}"); }
 
                 if (PhotonRealtimeClient.InRoom) PhotonRealtimeClient.LeaveRoom();
+                
+                // Allow room leave to fully process on server
+                yield return new WaitForSeconds(0.2f);
+                
                 float waitStart = Time.time;
                 while (!PhotonRealtimeClient.InLobby && Time.time - waitStart < 6f)
                 {
@@ -1083,6 +1106,7 @@ namespace Altzone.Scripts.Lobby
                             {
                                 try
                                 {
+                                    Debug.Log($"RequeueToPersistentQueue: writing premade metadata to queue room; pair=({premadeUserId1},{premadeUserId2})");
                                     PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, true);
                                     PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetGameTypeKey, premadeTargetGameType);
                                     PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, premadeUserId1);
@@ -1173,19 +1197,35 @@ namespace Altzone.Scripts.Lobby
 
                 string[] queueDuoFlat = room.GetCustomProperty<string[]>(QueueDuoPairsKey, null);
                 if (queueDuoFlat == null || queueDuoFlat.Length < 2) return false;
+                
+                // Validate even length (pairs of 2 users each)
+                if (queueDuoFlat.Length % 2 != 0)
+                {
+                    Debug.LogWarning($"HasRecordedQueueDuoPair: WARNING - flat duo pairs array has odd length {queueDuoFlat.Length}, expected even; skipping malformed pair data.");
+                    return false;
+                }
 
                 for (int i = 0; i + 1 < queueDuoFlat.Length; i += 2)
                 {
                     string pairUserId1 = queueDuoFlat[i] ?? string.Empty;
                     string pairUserId2 = queueDuoFlat[i + 1] ?? string.Empty;
+                    
+                    // Skip empty or self-pair entries
+                    if (string.IsNullOrEmpty(pairUserId1) || string.IsNullOrEmpty(pairUserId2))
+                    {
+                        Debug.LogWarning($"HasRecordedQueueDuoPair: skipping empty/null pair at indices [{i},{i+1}]: ({pairUserId1},{pairUserId2})");
+                        continue;
+                    }
+                    
                     if ((pairUserId1 == userIdA && pairUserId2 == userIdB) || (pairUserId1 == userIdB && pairUserId2 == userIdA))
                     {
                         return true;
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.LogWarning($"HasRecordedQueueDuoPair: exception reading queue duo pairs: {ex.Message}");
             }
 
             return false;
@@ -1248,20 +1288,31 @@ namespace Altzone.Scripts.Lobby
                 Debug.Log($"ShouldLeaveQueueWhenDuoPartnerLeaves: queueDuoFlat is null or too short (length={(queueDuoFlat?.Length ?? 0)})");
                 return false;
             }
+            
+            // Validate even length
+            if (queueDuoFlat.Length % 2 != 0)
+            {
+                Debug.LogWarning($"ShouldLeaveQueueWhenDuoPartnerLeaves: WARNING - flat duo pairs array has odd length {queueDuoFlat.Length}, expected even; treating as malformed.");
+                return false;
+            }
 
             for (int i = 0; i + 1 < queueDuoFlat.Length; i += 2)
             {
                 string pairUserId1 = queueDuoFlat[i] ?? string.Empty;
                 string pairUserId2 = queueDuoFlat[i + 1] ?? string.Empty;
-                if (string.IsNullOrEmpty(pairUserId1) || string.IsNullOrEmpty(pairUserId2) || pairUserId1 == pairUserId2) continue;
+                if (string.IsNullOrEmpty(pairUserId1) || string.IsNullOrEmpty(pairUserId2) || pairUserId1 == pairUserId2) 
+                {
+                    Debug.Log($"ShouldLeaveQueueWhenDuoPartnerLeaves: queueDuoFlat check - skipping invalid pair at [{i},{i+1}]: ({pairUserId1},{pairUserId2})");
+                    continue;
+                }
 
                 if (pairUserId1 != localUserId && pairUserId2 != localUserId) continue;
 
                 string partnerUserId = pairUserId1 == localUserId ? pairUserId2 : pairUserId1;
-                if (string.IsNullOrEmpty(partnerUserId)) 
-                { 
-                    Debug.Log($"ShouldLeaveQueueWhenDuoPartnerLeaves: queueDuoFlat check - partner is empty");
-                    return false;
+                if (string.IsNullOrEmpty(partnerUserId))
+                {
+                    Debug.Log($"ShouldLeaveQueueWhenDuoPartnerLeaves: queueDuoFlat check - partner is empty, skipping pair");
+                    continue;
                 }
                 bool partnerStillInRoom = currentHumanUserIds.Contains(partnerUserId);
                 Debug.Log($"ShouldLeaveQueueWhenDuoPartnerLeaves: queueDuoFlat check - partner={partnerUserId}, inRoom={partnerStillInRoom}");
@@ -2151,6 +2202,16 @@ namespace Altzone.Scripts.Lobby
                 string[] queueDuoFlat = room.GetCustomProperty<string[]>(QueueDuoPairsKey, null);
                 if (queueDuoFlat != null && queueDuoFlat.Length >= 2)
                 {
+                    // Validate even length
+                    if (queueDuoFlat.Length % 2 != 0)
+                    {
+                        Debug.LogWarning($"OnRoomPropertiesUpdate: WARNING - flat duo pairs array has odd length {queueDuoFlat.Length}, expected even; will skip malformed pair merge.");
+                    }
+                    else
+                    {
+                        Debug.Log($"OnRoomPropertiesUpdate: merging {queueDuoFlat.Length / 2} recorded queue duo pairs from room metadata: [{string.Join(",", queueDuoFlat)}]");
+                    }
+                    
                     HashSet<string> usedMembers = new(StringComparer.Ordinal);
                     HashSet<string> existingKeys = new(StringComparer.Ordinal);
 
@@ -2166,11 +2227,16 @@ namespace Altzone.Scripts.Lobby
                         existingKeys.Add(existingKey);
                     }
 
+                    int mergedCount = 0;
                     for (int i = 0; i + 1 < queueDuoFlat.Length; i += 2)
                     {
                         string userId1 = queueDuoFlat[i] ?? string.Empty;
                         string userId2 = queueDuoFlat[i + 1] ?? string.Empty;
-                        if (string.IsNullOrEmpty(userId1) || string.IsNullOrEmpty(userId2) || userId1 == userId2) continue;
+                        if (string.IsNullOrEmpty(userId1) || string.IsNullOrEmpty(userId2) || userId1 == userId2) 
+                        {
+                            Debug.Log($"OnRoomPropertiesUpdate: skipping invalid pair at [{i},{i+1}]: ({userId1},{userId2})");
+                            continue;
+                        }
 
                         if (!playersById.TryGetValue(userId1, out Player player1) || player1 == null) continue;
                         if (!playersById.TryGetValue(userId2, out Player player2) || player2 == null) continue;
@@ -2188,10 +2254,12 @@ namespace Altzone.Scripts.Lobby
                         existingKeys.Add(key);
                         incompleteMemberIds.Remove(userId1);
                         incompleteMemberIds.Remove(userId2);
+                        mergedCount++;
                     }
+                    if (mergedCount > 0) Debug.Log($"OnRoomPropertiesUpdate: successfully merged {mergedCount} pairs from queue duo metadata");
                 }
             }
-            catch { }
+            catch (Exception ex) { Debug.LogWarning($"OnRoomPropertiesUpdate: error merging queue duo pairs: {ex.Message}"); }
 
             // Diagnostic: log selection state to help debug missing/partial duo selection
             try
