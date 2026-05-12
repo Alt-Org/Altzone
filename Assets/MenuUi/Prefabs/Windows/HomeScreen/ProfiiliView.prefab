@@ -5376,34 +5376,7 @@ MonoBehaviour:
   styleText: {fileID: 5187488944393398113}
   leftButton: {fileID: 1810056353476956345}
   rightButton: {fileID: 8214112479875496178}
-  finnishStyles:
-  - Harjoittelija
-  - Intohimoinen
-  - Sisustaja
-  - Kilpapelaaja
-  - Kasuaalipelaaja
-  - Sosiaalinen
-  - Taukopelaaja
-  - Grindaaja
-  - "Saavutusten Mets\xE4st\xE4j\xE4"
-  - Tarkka Strategikko
-  - "Fiilistelij\xE4"
-  - Ongelmanratkaisija
-  - "Huono H\xE4vi\xE4j\xE4"
-  englishStyles:
-  - Intern
-  - Passionate
-  - Decorator
-  - Competitive Player
-  - Casual Player
-  - Social
-  - Break Player
-  - Grinder
-  - Achievement Hunter
-  - Precise Strategist
-  - Feeler
-  - Problem Solver
-  - Bad Loser
+  styles: []
 --- !u!114 &7244593444853820937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16616,8 +16589,46 @@ MonoBehaviour:
   styleText: {fileID: 5601986074506828004}
   leftButton: {fileID: 1314398613264532010}
   rightButton: {fileID: 1271946935277589118}
-  finnishStyles: []
-  englishStyles: []
+  styles:
+  - style: 0
+    finnishText: Harjoittelija
+    englishText: Trainee
+  - style: 1
+    finnishText: Intohimoinen
+    englishText: Passionate
+  - style: 2
+    finnishText: Sisustaja
+    englishText: Decorator
+  - style: 3
+    finnishText: Kilpapelaaja
+    englishText: Professional Player
+  - style: 4
+    finnishText: Kasuaali
+    englishText: Casual
+  - style: 5
+    finnishText: Sosiaalinen
+    englishText: Social
+  - style: 6
+    finnishText: Taukopelaaja
+    englishText: Break Player
+  - style: 7
+    finnishText: Grindaaja
+    englishText: Grinder
+  - style: 8
+    finnishText: "Saavutusten Mets\xE4st\xE4j\xE4"
+    englishText: Achievement Hunter
+  - style: 9
+    finnishText: Tarkka Strategikko
+    englishText: Strategist
+  - style: 10
+    finnishText: "Fiilistelij\xE4"
+    englishText: Viber
+  - style: 11
+    finnishText: Ongelmanratkaisija
+    englishText: Problem Solver
+  - style: 12
+    finnishText: "Huono H\xE4vi\xE4j\xE4"
+    englishText: Bad Loser
 --- !u!1 &8014233498752951548
 GameObject:
   m_ObjectHideFlags: 0
@@ -20476,7 +20487,7 @@ PrefabInstance:
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.86688036
+      value: 0.8468803
       objectReference: {fileID: 0}
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -20878,6 +20889,12 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5147194485144078328, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 4961577804787953164, guid: 7573fa126ddb0bd45846faa25129de46,
+        type: 2}
     - target: {fileID: 5222462471029913359, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -21323,7 +21340,7 @@ PrefabInstance:
     - target: {fileID: 7460509455693929193, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.000030517578
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7460509455693929193, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -21744,7 +21761,7 @@ PrefabInstance:
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.86688036
+      value: 0.8468803
       objectReference: {fileID: 0}
     - target: {fileID: 9011883256918754321, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}

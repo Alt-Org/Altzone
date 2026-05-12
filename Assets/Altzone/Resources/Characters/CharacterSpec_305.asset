@@ -38,6 +38,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "\xC4idin kuvalla itse\xE4\xE4n suojaava, oman
     tahtonsa etsij\xE4. "
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 8fa42736d5c360b478967b768755f8ab, type: 2}
   Hp:
     Level: 4
@@ -57,7 +59,10 @@ MonoBehaviour:
   GalleryImage: {fileID: 21300000, guid: 87c045d91e090e4478a0ac2a19b85f5c, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 54d86f4ea828f754898b6a350adf1bc0, type: 3}
   CharPhotoSeries: {fileID: 0}
-  BattleEntityPrototype:
+  BattleCharacterEntityPrototype:
     Id:
       Value: 1358745814927453837
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1374977995588427353
   BattleUiSprite: {fileID: 0}

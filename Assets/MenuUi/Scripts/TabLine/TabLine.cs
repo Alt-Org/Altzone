@@ -22,13 +22,16 @@ namespace MenuUi.Scripts.TabLine
 
         private SwipeUI _swipe;
 
+        public delegate void TabChanged(int newTab);
+        public static event TabChanged OnTabChanged;
+
         public SwipeUI Swipe { get => _swipe;}
 
         private void OnEnable()
         {
             if (_swipe != null && _getActiveButtonFromSwipe)
             {
-                ActivateTabButton(_swipe.CurrentPage);
+                UpdateTabVisuals(_swipe.CurrentPage);
             }
         }
 
@@ -45,11 +48,11 @@ namespace MenuUi.Scripts.TabLine
             {
                 _swipe = FindObjectOfType<SwipeUI>();
                 _swipe.OnCurrentPageChanged += OnSwipeCurrentPageChanged;
-                ActivateTabButton(_swipe.CurrentPage);
+                UpdateTabVisuals(_swipe.CurrentPage);
             }
             else
             {
-                ActivateTabButton(0);
+                //UpdateTabVisuals(0);
             }
         }
 
@@ -66,15 +69,20 @@ namespace MenuUi.Scripts.TabLine
         private void OnSwipeCurrentPageChanged()
         {
             if (_lockActiveFromSwipe) return;
-            ActivateTabButton(_swipe.CurrentPage);
+            UpdateTabVisuals(_swipe.CurrentPage);
         }
 
+
+        public void ActivateTabButton(int index)
+        {
+            OnTabChanged?.Invoke(index);
+        }
 
         /// <summary>
         /// Sets the tab button at the index active and others inactive.
         /// </summary>
         /// <param name="index">The index in tab line buttons array.</param>
-        public void ActivateTabButton(int index)
+        public void UpdateTabVisuals(int index)
         {
             // Check if enough tab button entries in array.
             if (index >= _tabLineButtons.Length || index < 0)

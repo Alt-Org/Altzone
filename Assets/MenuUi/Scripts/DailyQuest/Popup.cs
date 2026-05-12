@@ -337,9 +337,7 @@ public class Popup : MonoBehaviour
 
             if (i == 0) // First element should be the task title (for some reason)
             {
-                _messageTexts[i].text = SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English // Simply, if english language is selected, show it in english
-                    ? task.EnglishTitle
-                    : task.Title;
+                _messageTexts[i].text = task.Title;
             }
             else
             {

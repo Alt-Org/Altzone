@@ -137,7 +137,6 @@ namespace MenuUI.Scripts.SoulHome
         void Update()
         {
             if (!_startFinished) return;
-            CheckScreenRotationStatus();
             SetScrollSpeed();
             //Debug.Log(cameraWidth+" : "+ _mainScreen.transform.GetComponent<RectTransform>().rect.width);
             //Debug.Log(cameraMove);
@@ -693,6 +692,7 @@ namespace MenuUI.Scripts.SoulHome
             GameObject furnitureObject = Instantiate(furniture.GetComponent<TrayFurniture>().FurnitureObject);
             furnitureObject.GetComponent<FurnitureHandling>().Furniture = furniture.GetComponent<TrayFurniture>().Furniture;
             furnitureObject.GetComponent<FurnitureHandling>().Position = new(-1, -1);
+            furnitureObject.GetComponent<FurnitureHandling>().ResetDirection();
             furnitureObject.GetComponent<FurnitureHandling>().Slot = null;
             _tempSelectedFurniture = furnitureObject;
             SelectedFurniture = _tempSelectedFurniture;
@@ -709,7 +709,7 @@ namespace MenuUI.Scripts.SoulHome
             _selectedFurniture.GetComponent<FurnitureHandling>().TempSlot = null;
             if (_selectedFurniture.GetComponent<FurnitureHandling>().Slot != null) ChangedFurnitureList.Add(_selectedFurniture);
             else if(ChangedFurnitureList.Contains(_selectedFurniture)) ChangedFurnitureList.Remove(_selectedFurniture);
-            int prevRoomId = (_selectedFurniture?.transform.parent.GetComponent<FurnitureSlot>() != null) ? _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>().roomId : -1;
+            int prevRoomId = (_selectedFurniture?.transform.parent?.GetComponent<FurnitureSlot>() != null) ? _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>().roomId : -1;
             if (prevRoomId >= 0) _rooms.transform.GetChild(prevRoomId).GetChild(0).GetComponent<RoomData>().ClearValidity();
             if (_selectedFurniture.GetComponent<FurnitureHandling>().Slot == null)
             {
@@ -792,7 +792,7 @@ namespace MenuUI.Scripts.SoulHome
                 int roomId = furniture.GetComponent<FurnitureHandling>().Slot.roomId;
                 _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().SetFurnitureSlots(furniture.GetComponent<FurnitureHandling>());
                 _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().ResetPosition(furniture, false);
-                furniture.GetComponent<FurnitureHandling>().ResetFurniturePosition(_selectedFurniture.GetComponent<FurnitureHandling>().Slot.furnitureGrid is FurnitureGrid.LeftWall);
+                furniture.GetComponent<FurnitureHandling>().ResetFurniturePosition(furniture.GetComponent<FurnitureHandling>().Slot.furnitureGrid == FurnitureGrid.LeftWall);
                 furniture.GetComponent<FurnitureHandling>().SetScale();
                 furniture.GetComponent<FurnitureHandling>().SetTransparency(1f);
                 furniture.GetComponent<FurnitureHandling>().TempSlot = furniture.GetComponent<FurnitureHandling>().Slot;
@@ -867,24 +867,6 @@ namespace MenuUI.Scripts.SoulHome
         {
             _selectedFurniture.GetComponent<FurnitureHandling>().RotateFurniture();
             PlaceFurnitureToCurrent(false);
-        }
-
-        private void CheckScreenRotationStatus()
-        {
-            //Debug.Log(Screen.orientation);
-            if ((AppPlatform.IsMobile || AppPlatform.IsEditor) && Screen.orientation == ScreenOrientation.LandscapeLeft /*&& !rotated*/)
-            {
-                _rotated = true;
-
-                HandleScreenRotation();
-
-            }
-            else if ((AppPlatform.IsMobile || AppPlatform.IsEditor) && Screen.orientation == ScreenOrientation.Portrait /*&& rotated*/)
-            {
-                _rotated = false;
-
-                HandleScreenRotation();
-            }
         }
 
         private void HandleScreenRotation()

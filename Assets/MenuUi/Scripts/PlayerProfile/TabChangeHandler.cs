@@ -30,6 +30,11 @@ public class TabChangeHandler : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        TabLine.OnTabChanged += SetVisible;
+    }
+
     protected virtual void OnEnable()
     {
         int? value;
@@ -43,6 +48,11 @@ public class TabChangeHandler : MonoBehaviour
         if(!_ignoreChange) SetVisible(_defaultTab);
     }
 
+    private void OnDestroy()
+    {
+        TabLine.OnTabChanged -= SetVisible;
+    }
+
     protected virtual void SetVisible(int activeIndex)
     {
         // If the window uses a swipe scroll then send the message to it to change the tab, otherwise switch panels the old way.
@@ -52,6 +62,6 @@ public class TabChangeHandler : MonoBehaviour
                 if (_buttons[i].Window != null) _buttons[i].Window.SetActive(i == activeIndex);
             }
         else _tablineScript.Swipe.CurrentPage = activeIndex;
-        _tablineScript.ActivateTabButton(activeIndex);
+        _tablineScript.UpdateTabVisuals(activeIndex);
     }
 }

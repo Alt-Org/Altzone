@@ -1,0 +1,1128 @@
+/// @file BattlePlayerManagerPlayerHandle.cs
+/// <summary>
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerManager} partial class<br/>
+/// which contains @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandle}
+/// and @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandleInternal} structs.
+/// </summary>
+
+// System usings
+using System.Runtime.CompilerServices;
+
+// Quantum usings
+using Quantum;
+using Photon.Deterministic;
+
+// Battle QSimulation usings
+using Battle.QSimulation.Game;
+
+namespace Battle.QSimulation.Player
+{
+    // Contains PlayerHandle and PlayerHandleInternal structs
+    // Main class implementation and documentation in BattlePlayerManager.cs
+    public static unsafe partial class BattlePlayerManager
+    {
+        /// <summary>
+        /// Public helper struct for getting player information.
+        /// </summary>
+        ///
+        /// Has static helper methods for retrieving player information.<br/>
+        /// Can be instantiated to retrieve a specific player's information.
+        ///
+        /// @bigtext{See [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) for more info.}<br/>
+        /// @bigtext{See [{Player Overview}](#page-concepts-player-overview) for more info.}<br/>
+        /// @bigtext{See [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview) for more info.}<br/>
+        ///
+        /// This is a public wrapper for the private @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandleInternal} that is used
+        /// by the @cref{Battle.QSimulation.Player,BattlePlayerManager} internally.<br/>
+        /// This only exposes the parts of the @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandleInternal} that is meant to be accessible
+        /// outside of @cref{Battle.QSimulation.Player,BattlePlayerManager}.
+        public struct PlayerHandle
+        {
+            #region Public Static Methods
+
+            /// @anchor BattlePlayerManager-PlayerHandle-PublicStaticMethods-PlayerSlotAndTeamNumberGetters
+            /// @name Player Slot and Team Number Getters
+            /// Methods for retrieving the [{Player's Slot and Team}](#page-concepts-player-slots-teams)
+            /// @{
+            #region Public Static Methods - Player Slot and TeamNumber getters
+
+            /// <summary>
+            /// Retrieves slot based on <paramref name="playerRef"/>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandle-PublicStaticMethods-PlayerSlotAndTeamNumberGetters "Player Slot and Team Number Getters"
+            ///
+            /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
+            ///
+            /// <param name="f">Current simulation frame.</param>
+            /// <param name="playerRef">PlayerRef of the desired player.</param>
+            ///
+            /// <returns>The Slot of the given player.</returns>
+            public static BattlePlayerSlot GetSlot(Frame f, PlayerRef playerRef)
+            {
+                BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
+                int playerIndex = PlayerHandleInternal.GetPlayerIndex(playerManagerData, playerRef);
+                return PlayerHandleInternal.GetSlot(playerIndex);
+            }
+
+            /// <summary>
+            /// Retrieves team number based on <paramref name="slot"/>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandle-PublicStaticMethods-PlayerSlotAndTeamNumberGetters "Player Slot and Team Number Getters"
+            ///
+            /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
+            ///
+            /// <param name="slot">Slot of the player whose TeamNumber you want to retrieve.</param>
+            ///
+            /// <returns>The @cref{Quantum,BattleTeamNumber} of the given player.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static BattleTeamNumber GetTeamNumber(BattlePlayerSlot slot) => PlayerHandleInternal.GetTeamNumber(slot);
+
+            #endregion Public Static Methods - Player Slot and TeamNumber getters
+            /// @}
+
+            /// @anchor BattlePlayerManager-PlayerHandle-PublicStaticMethods-PlayerHandleGetters
+            /// @name Player Handle Getters
+            /// Methods for retrieving the player's handle
+            /// @{
+            #region Public Static Methods - Player Handle Getters
+
+            /// <summary>
+            /// Creates PlayerHandle based on <paramref name="slot"/>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandle-PublicStaticMethods-PlayerHandleGetters "Player Handle Getters"
+            ///
+            /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
+            ///
+            /// <param name="f">Current simulation frame.</param>
+            /// <param name="slot">Slot of the desired player.</param>
+            ///
+            /// <returns>A PlayerHandle for the given player.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static PlayerHandle GetPlayerHandle(Frame f, BattlePlayerSlot slot)
+            {
+                BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
+                return new PlayerHandle(PlayerHandleInternal.GetPlayerHandle(playerManagerData, slot));
+            }
+
+            /// <summary>
+            /// Retrieves PlayerHandle of the teammate of a player based on <paramref name="slot"/>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandle-PublicStaticMethods-PlayerHandleGetters "Player Handle Getters"
+            ///
+            /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
+            ///
+            /// <param name="f">Current simulation frame.</param>
+            /// <param name="slot">Slot of the player whose teammate's handle you want to get.</param>
+            ///
+            /// <returns>A PlayerHandle for the given player's teammate.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static PlayerHandle GetTeammateHandle(Frame f, BattlePlayerSlot slot)
+            {
+                BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
+                return new PlayerHandle(PlayerHandleInternal.GetTeammateHandle(playerManagerData, slot));
+            }
+
+            /// <summary>
+            /// Creates an array containing one PlayerHandle for each slot, including players, bots and empty slots.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandle-PublicStaticMethods-PlayerHandleGetters "Player Handle Getters"
+            ///
+            /// <param name="f">Current simulation frame.</param>
+            ///
+            /// <returns>The array containing the PlayerHandles.</returns>
+            public static PlayerHandle[] GetPlayerHandleArray(Frame f)
+            {
+                BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
+                PlayerHandle[] array = new PlayerHandle[Constants.BATTLE_PLAYER_SLOT_COUNT];
+                for (int i = 0; i < array.Length; i++)
+                {
+                    array[i] = new PlayerHandle(new PlayerHandleInternal(playerManagerData, i));
+                }
+                return array;
+            }
+
+            #endregion Public Static Methods - Player Handle Getters
+            /// @}
+
+            /// @name Other Public Static Methods
+            /// @{
+
+            /// <summary>
+            /// Checks if a given <paramref name="characterNumber"/> is valid.
+            /// </summary>
+            ///
+            /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
+            ///
+            /// <param name="characterNumber">The character number to verify.</param>
+            ///
+            /// <returns>True if the given character number is valid, false if it is not.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static bool IsValidCharacterNumber(int characterNumber) => PlayerHandleInternal.IsValidCharacterNumber(characterNumber);
+
+            /// @}
+
+            /// @anchor BattlePlayerManager-PlayerHandle-PublicStaticMethods-LowLevel
+            /// @name Low Level Methods
+            /// @{
+            #region Public static methods - Low level
+
+            /// <summary>
+            /// Creates PlayerHandle from PlayerHandleInternal data (<paramref name="playerManagerData"/> reference and given <paramref name="playerIndex"/>).
+            /// @note Low level method! Only meant for use by <see cref="PlayerHandleInternal"/>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandle-PublicStaticMethods-LowLevel "Low Level Methods"
+            ///
+            /// See @ref BattlePlayerManager-PlayerIndex "Player Index" for more info.
+            ///
+            /// <param name="playerManagerData">Pointer to the player manager data.</param>
+            /// <param name="playerIndex">The index of the desired player.</param>
+            ///
+            /// <returns>A PlayerHandle for the given player.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static PlayerHandle Low_GetPlayerHandleFromInternal(BattlePlayerManagerDataQSingleton* playerManagerData, int playerIndex)
+            {
+                return new PlayerHandle(new PlayerHandleInternal(playerManagerData, playerIndex));
+            }
+
+            /// <summary>
+            /// Retrieves player index based on given <paramref name="slot"/>.
+            /// @note Low level method! <b>%Player index</b> is an internal concept to <b>PlayerManager</b>.<br/>
+            /// <b>%Player slot</b> is preferred when referencing specific players.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandle-PublicStaticMethods-LowLevel "Low Level Methods"
+            ///
+            /// See @ref BattlePlayerManager-PlayerIndex "Player Index" for more info.<br/>
+            /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
+            ///
+            /// <param name="slot">Slot of the desired player.</param>
+            ///
+            /// <returns>The index of the given player.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static int Low_GetPlayerIndex(BattlePlayerSlot slot) => PlayerHandleInternal.GetPlayerIndex(slot);
+
+            #endregion Public static methods - Low level
+            /// @}
+
+            #endregion Public Static Methods
+
+            #region Public Properties
+
+            /// <summary>
+            /// Public getter for <em>Slot</em>.
+            /// </summary>
+            ///
+            /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams)
+            public readonly BattlePlayerSlot Slot
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => PlayerHandleInternal.GetSlot(_internalHandle.Index); }
+
+            /// <summary>
+            /// Public getter for <em>PlayerRef</em>.
+            /// </summary>
+            public readonly PlayerRef PlayerRef
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayerRef; }
+
+            /// @anchor BattlePlayerManager-PlayerHandle-PublicProperties-PlayerState
+            /// @name Player State
+            /// Player state properties
+            /// @{
+            #region Public Properties - Player State
+
+            /// <summary>
+            /// Public getter for <em>PlayState</em>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandle-PublicProperties-PlayerState "Player State Properties"
+            ///
+            /// See [{Player PlayState}](#page-concepts-player-playstate) for more info.
+            public readonly BattlePlayerPlayState PlayState
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayState; }
+
+            /// <summary>
+            /// Public getter for <em>IsBot</em>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandle-PublicProperties-PlayerState "Player State Properties"
+            public readonly bool IsBot
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.IsBot; }
+
+            /// <summary>
+            /// Public getter for <em>IsAbandoned</em>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandle-PublicProperties-PlayerState "Player State Properties"
+            public readonly bool IsAbandoned
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.IsAbandoned; }
+
+            /// <summary>
+            /// Public getter and setter for <em>AllowCharacterSwapping</em>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandle-PublicProperties-PlayerState "Player State Properties"
+            public readonly bool AllowCharacterSwapping
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => _internalHandle.AllowCharacterSwapping;
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                set => _internalHandle.AllowCharacterSwapping = value;
+            }
+
+            /// <summary>
+            /// Public getter and setter for <em>GiveUpState</em>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandle-PublicProperties-PlayerState "Player State Properties"
+            public readonly bool GiveUpState
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => _internalHandle.GiveUpState;
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                set => _internalHandle.GiveUpState = value;
+            }
+
+            #endregion Public Properties - Player State
+            /// @}
+
+            /// @anchor BattlePlayerManager-PlayerHandle-PublicProperties-PlayerCharacter
+            /// @name Player Character
+            /// Player character properties
+            /// @{
+            #region Public Properties - Player Character
+
+            /// <summary>
+            /// Public getter for <em>SelectedCharacterNumber</em>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandle-PublicProperties-PlayerCharacter "Player Character Properties"
+            ///
+            /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.<br/>
+            /// See [{Selected Character}](#page-concepts-player-character-entity-selected-character) for more info.
+            public readonly int SelectedCharacterNumber
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterNumber; }
+
+            /// <summary>
+            /// Public getter for <em>SelectedCharacterState</em>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandle-PublicProperties-PlayerCharacter "Player Character Properties"
+            ///
+            /// See [{Player Character State}](#page-concepts-player-character-entity-character-state) for more info.<br/>
+            /// See [{Selected Character}](#page-concepts-player-character-entity-selected-character) for more info.
+            public readonly BattlePlayerCharacterState SelectedCharacterState
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterState; }
+
+            #endregion Public Properties - Player Character
+            /// @}
+
+            /// @name Other Public Properties
+            /// @{
+
+            /// <summary>
+            /// Public getter and setter for <em>RespawnTimer</em>.
+            /// </summary>
+            public readonly FrameTimer RespawnTimer
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => _internalHandle.RespawnTimer;
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                set => _internalHandle.RespawnTimer = value;
+            }
+
+            /// @}
+
+            #endregion Public Properties
+
+            #region Public Methods
+
+            /// @anchor BattlePlayerManager-PlayerHandle-PublicMethods-PlayerPlayStateSetters
+            /// @name Player PlayState Setters
+            /// Player PlayState Setters
+            /// @{
+            #region Public Methods - Player PlayState Setters
+
+            /// <summary>
+            /// Sets PlayState to OutOfPlayRespawning.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandle-PublicMethods-PlayerPlayStateSetters "Player PlayState Setters"
+            ///
+            /// See [{Player PlayState}](#page-concepts-player-playstate) for more info.
+            public void SetOutOfPlayRespawning()
+            {
+                if (!_internalHandle.PlayState.IsOutOfPlay())
+                {
+                    s_debugLogger.Error("Can not set player that is not OutOfPlay as OutOfPlayRespawning");
+                    return;
+                }
+                _internalHandle.PlayState = BattlePlayerPlayState.OutOfPlayRespawning;
+            }
+
+            /// <summary>
+            /// Sets PlayState to OutOfPlayFinal.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandle-PublicMethods-PlayerPlayStateSetters "Player PlayState Setters"
+            ///
+            /// See [{Player PlayState}](#page-concepts-player-playstate) for more info.
+            public void SetOutOfPlayFinal()
+            {
+                if (!_internalHandle.PlayState.IsOutOfPlay())
+                {
+                    s_debugLogger.Error("Can not set player that is not OutOfPlay as OutOfPlayFinal");
+                    return;
+                }
+                _internalHandle.PlayState = BattlePlayerPlayState.OutOfPlayFinal;
+            }
+
+            #endregion Public Methods - Player PlayState Setters
+            /// @}
+
+            /// @anchor BattlePlayerManager-PlayerHandle-PublicMethods-PlayerCharacterMethods
+            /// @name Player Character Methods
+            /// Player Character Methods
+            /// @{
+            #region Public Methods - Player Character Methods
+
+            /// <summary>
+            /// Retrieves player's CharacterState based on <paramref name="characterNumber"/>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandle-PublicMethods-PlayerCharacterMethods "Player Character Methods"
+            ///
+            /// See [{Player Character State}](#page-concepts-player-character-entity-character-state) for more info.<br/>
+            /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
+            ///
+            /// <param name="characterNumber">CharacterNumber of the desired player's character.</param>
+            ///
+            /// <returns>The CharacterState of the given player.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public readonly BattlePlayerCharacterState GetCharacterState(int characterNumber) => _internalHandle.GetCharacterState(characterNumber);
+
+            /// <summary>
+            /// Retrieves the selected character's EntityRef in the current simulation frame.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandle-PublicMethods-PlayerCharacterMethods "Player Character Methods"
+            ///
+            /// See [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) for more info.<br/>
+            /// See [{Selected Character}](#page-concepts-player-character-entity-selected-character) for more info.
+            ///
+            /// <param name="f">Current simulation frame.</param>
+            ///
+            /// <returns>Selected character's EntityRef.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public readonly BattlePlayerEntityRef GetSelectedCharacterEntityRef(Frame f) => _internalHandle.GetSelectedCharacterEntityRef(f);
+
+            #endregion Public Methods - Player Character Methods
+            /// @}
+
+            #endregion Public Methods
+            #region Private
+
+            /// <summary>
+            /// <see cref="PlayerHandleInternal"/> containing all the data for a player, some of which is exposed to and used by PlayerHandle.
+            /// </summary>
+            private PlayerHandleInternal _internalHandle;
+
+            /// <summary>
+            /// Constructor for PlayerHandle.
+            /// </summary>
+            ///
+            /// <param name="internalHandle"><see cref="PlayerHandleInternal"/> based on which PlayerHandle will be created.</param>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private PlayerHandle(PlayerHandleInternal internalHandle)
+            {
+                _internalHandle = internalHandle;
+            }
+
+            #endregion Private
+        }
+
+        /// <summary>
+        /// Internal helper struct for player information, operations and state management in @cref{Battle.QSimulation.Player,BattlePlayerManager}.
+        /// </summary>
+        ///
+        /// Has static helper methods for player operations.<br/>
+        /// Can be instantiated to handle a specific player's data stored in @cref{Quantum,BattlePlayerManagerDataQSingleton}.
+        ///
+        /// @bigtext{See [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) for more info.}<br/>
+        /// @bigtext{See [{Player Overview}](#page-concepts-player-overview) for more info.}<br/>
+        /// @bigtext{See [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview) for more info.}<br/>
+        ///
+        /// The public @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandle} wrapper is used by code
+        /// outside of @cref{Battle.QSimulation.Player,BattlePlayerManager}.
+        private struct PlayerHandleInternal
+        {
+            #region Public Static Methods
+
+            /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerSlotAndTeamNumberGetters
+            /// @name Player Slot and Team Number Getters
+            /// Methods for retrieving the [{Player's Slot and Team}](#page-concepts-player-slots-teams).
+            /// @{
+            #region Public Static Methods - Player Slot and TeamNumber getters
+
+            /// <summary>
+            /// Retrieves slot based on <paramref name="playerIndex"/>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerSlotAndTeamNumberGetters "Player Slot and Team Number Getters"
+            ///
+            /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.<br/>
+            /// See @ref BattlePlayerManager-PlayerIndex "Player Index" for more info.
+            ///
+            /// @clink{Exposed:PlayerHandle.GetSlot} in public @cref{PlayerHandle}
+            ///
+            /// <param name="playerIndex">Index of the desired player.</param>
+            ///
+            /// <returns>The slot of the given player.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static BattlePlayerSlot GetSlot(int playerIndex)
+            {
+                return playerIndex switch
+                {
+                    0 => BattlePlayerSlot.Slot1,
+                    1 => BattlePlayerSlot.Slot2,
+                    2 => BattlePlayerSlot.Slot3,
+                    3 => BattlePlayerSlot.Slot4,
+
+                    _ => BattlePlayerSlot.Spectator
+                };
+            }
+
+            /// <summary>
+            /// Retrieves team number based on <paramref name="slot"/>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerSlotAndTeamNumberGetters "Player Slot and Team Number Getters"
+            ///
+            /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
+            ///
+            /// @clink{Exposed:PlayerHandle.GetTeamNumber} in public @cref{PlayerHandle}
+            ///
+            /// <param name="slot">Slot of the player whose team number you want to retrieve.</param>
+            ///
+            /// <returns>The @cref{Quantum,BattleTeamNumber} of the given player.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static BattleTeamNumber GetTeamNumber(BattlePlayerSlot slot)
+            {
+                return slot switch
+                {
+                    BattlePlayerSlot.Slot1 => BattleTeamNumber.TeamAlpha,
+                    BattlePlayerSlot.Slot2 => BattleTeamNumber.TeamAlpha,
+                    BattlePlayerSlot.Slot3 => BattleTeamNumber.TeamBeta,
+                    BattlePlayerSlot.Slot4 => BattleTeamNumber.TeamBeta,
+
+                    _ => BattleTeamNumber.NoTeam
+                };
+            }
+
+            #endregion Public Static Methods - Player Slot and TeamNumber getters
+            /// @}
+
+            /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerIndexGetters
+            /// @name Player Index Getters
+            /// Methods for retrieving the @ref BattlePlayerManager-PlayerIndex "Player's Index".
+            /// @{
+            #region Public Static Methods - Player Index Getters
+            /// <summary>
+            /// Maps <paramref name="slot"/> to player index.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerIndexGetters "Player Index Getters"
+            ///
+            /// See @ref BattlePlayerManager-PlayerIndex "Player Index" for more info.<br/>
+            /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
+            ///
+            /// @clink{Exposed:PlayerHandle.Low_GetPlayerIndex} in public @cref{PlayerHandle} as low level.
+            ///
+            /// <param name="slot">Slot of the desired player.</param>
+            ///
+            /// <returns>The index of the given player.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static int GetPlayerIndex(BattlePlayerSlot slot)
+            {
+                return slot switch
+                {
+                    BattlePlayerSlot.Slot1 => 0,
+                    BattlePlayerSlot.Slot2 => 1,
+                    BattlePlayerSlot.Slot3 => 2,
+                    BattlePlayerSlot.Slot4 => 3,
+
+                    _ => -1
+                };
+            }
+
+            /// <summary>
+            /// Fetches the player index from <paramref name="playerManagerData"/> based on <paramref name="playerRef"/>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerIndexGetters "Player Index Getters"
+            ///
+            /// See @ref BattlePlayerManager-PlayerIndex "Player Index" for more info.
+            ///
+            /// Internal only
+            ///
+            /// <param name="playerManagerData">Pointer to the player manager data.</param>
+            /// <param name="playerRef">PlayerRef of the desired player.</param>
+            ///
+            /// <returns>The index of the given player.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static int GetPlayerIndex(BattlePlayerManagerDataQSingleton* playerManagerData, PlayerRef playerRef)
+            {
+                for (int i = 0; i < Constants.BATTLE_PLAYER_SLOT_COUNT; i++)
+                {
+                    if (playerManagerData->PlayerRefs[i] == playerRef) return i;
+                }
+                return -1;
+            }
+
+            /// <summary>
+            /// Maps <paramref name="slot"/> to player's teammate's index.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerIndexGetters "Player Index Getters"
+            ///
+            /// See @ref BattlePlayerManager-PlayerIndex "Player Index" for more info.<br/>
+            /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
+            ///
+            /// Internal only
+            ///
+            /// <param name="slot">Slot of the player whose teammate's index you want to get.</param>
+            ///
+            /// <returns>The index of the given player's teammate.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static int GetTeammatePlayerIndex(BattlePlayerSlot slot)
+            {
+                return slot switch
+                {
+                    BattlePlayerSlot.Slot1 => 1,
+                    BattlePlayerSlot.Slot2 => 0,
+                    BattlePlayerSlot.Slot3 => 3,
+                    BattlePlayerSlot.Slot4 => 2,
+
+                    _ => -1
+                };
+            }
+
+            #endregion Public Static Methods - Player Index Getters
+            /// @}
+
+            /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerHandleGetters
+            /// @name Player Handle Getters
+            /// Methods for creating the player's handle.
+            /// @{
+            #region Public Static Methods - Player Handle Getters
+
+            /// <summary>
+            /// Creates a handle for a player based on <paramref name="slot"/>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerHandleGetters "Player Handle Getters"
+            ///
+            /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
+            ///
+            /// Internal only
+            ///
+            /// <param name="playerManagerData">Pointer to the player manager data.</param>
+            /// <param name="slot">Slot of the desired player.</param>
+            ///
+            /// <returns>A PlayerHandle for the given player.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static PlayerHandleInternal GetPlayerHandle(BattlePlayerManagerDataQSingleton* playerManagerData, BattlePlayerSlot slot)
+            {
+                int playerIndex = GetPlayerIndex(slot);
+                return new PlayerHandleInternal(playerManagerData, playerIndex);
+            }
+
+            /// <summary>
+            /// Creates a handle for the teammate of a player based on <paramref name="slot"/>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerHandleGetters "Player Handle Getters"
+            ///
+            /// See [{Player Slots and Teams}](#page-concepts-player-slots-teams) for more info.
+            ///
+            /// Internal only
+            ///
+            /// <param name="playerManagerData">Pointer to the player manager data.</param>
+            /// <param name="slot">Slot of the player whose teammate's handle you want to get.</param>
+            ///
+            /// <returns>A PlayerHandle for the given player's teammate.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static PlayerHandleInternal GetTeammateHandle(BattlePlayerManagerDataQSingleton* playerManagerData, BattlePlayerSlot slot)
+            {
+                int playerIndex = GetTeammatePlayerIndex(slot);
+                return new PlayerHandleInternal(playerManagerData, playerIndex);
+            }
+
+            #endregion Public Static Methods - Player Handle Getters
+            /// @}
+
+            /// @name Other Public Static Methods
+            /// @{
+
+            /// <summary>
+            /// Sets all players' play states to a given <paramref name="playerPlayState"/>.
+            /// </summary>
+            ///
+            /// See [{Player PlayState}](#page-concepts-player-playstate) for more info.
+            ///
+            /// Internal only
+            ///
+            /// <param name="playerManagerData">Pointer to the player manager data.</param>
+            /// <param name="playerPlayState">The state that all players will be set to.</param>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static void SetAllPlayStates(BattlePlayerManagerDataQSingleton* playerManagerData, BattlePlayerPlayState playerPlayState)
+            {
+                for (int i = 0; i < Constants.BATTLE_PLAYER_SLOT_COUNT; i++)
+                {
+                    playerManagerData->PlayStates[i] = playerPlayState;
+                }
+            }
+
+            /// <summary>
+            /// Checks if a given <paramref name="characterNumber"/> is valid.
+            /// </summary>
+            ///
+            /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
+            ///
+            /// @clink{Exposed:PlayerHandle.IsValidCharacterNumber} in public @cref{PlayerHandle}
+            ///
+            /// <param name="characterNumber">The character number to verify.</param>
+            /// <returns>True if the given character number is valid, false if it is not.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static bool IsValidCharacterNumber(int characterNumber)
+            {
+                if (!(characterNumber >= 0 && characterNumber < Constants.BATTLE_PLAYER_CHARACTER_COUNT))
+                {
+                    s_debugLogger.ErrorFormat("Character number {1} is not valid", characterNumber);
+                    return false;
+                }
+                return true;
+            }
+
+            /// @}
+
+            #endregion Public Static Methods
+
+            #region Public Properties
+
+            /// <summary><em>Index</em> of the player that is associated with this handle.</summary>
+            ///
+            /// See @ref BattlePlayerManager-PlayerIndex "Player Index" for more info.
+            ///
+            /// Internal only
+            public int Index { get; set; }
+
+            /// <summary>
+            /// Gets/Sets player's <em>PlayerRef</em>.
+            /// </summary>
+            ///
+            /// Getter @clink{exposed:PlayerHandle.PlayerRef} in public @cref{PlayerHandle}
+            public readonly PlayerRef PlayerRef
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => _playerManagerData->PlayerRefs[Index];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                set => _playerManagerData->PlayerRefs[Index] = value;
+            }
+
+            /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerState
+            /// @name Player State
+            /// %Player state properties
+            /// @{
+            #region Public Properties - Player State
+
+            /// <summary>
+            /// Gets/Sets player's <em>PlayState</em>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerState "Player State Properties"
+            ///
+            /// See [{Player PlayState}](#page-concepts-player-playstate) for more info.
+            ///
+            /// Getter @clink{exposed:PlayerHandle.PlayState} in public @cref{PlayerHandle}
+            public readonly BattlePlayerPlayState PlayState
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => _playerManagerData->PlayStates[Index];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                set => _playerManagerData->PlayStates[Index] = value;
+            }
+
+            /// <summary>
+            /// Gets/Sets <em>IsBot</em> state.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerState "Player State Properties"
+            ///
+            /// Getter @clink{exposed:PlayerHandle.IsBot} in public @cref{PlayerHandle}
+            public readonly bool IsBot
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => _playerManagerData->IsBotStates[Index];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                set => _playerManagerData->IsBotStates[Index] = value;
+            }
+
+            /// <summary>
+            /// Gets/sets player's <em>IsAbandoned</em> state.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerState "Player State Properties"
+            ///
+            /// Getter @clink{exposed:PlayerHandle.IsAbandoned} in public @cref{PlayerHandle}
+            public readonly bool IsAbandoned
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => _playerManagerData->IsAbandonedStates[Index];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                set => _playerManagerData->IsAbandonedStates[Index] = value;
+            }
+
+            /// <summary>
+            /// Gets/Sets player's <em>AllowCharacterSwapping</em> state.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerState "Player State Properties"
+            ///
+            /// Getter @clink{exposed:PlayerHandle.AllowCharacterSwapping} in public @cref{PlayerHandle}<br/>
+            /// Setter @clink{exposed:PlayerHandle.AllowCharacterSwapping} in public @cref{PlayerHandle}
+            public readonly bool AllowCharacterSwapping
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => _playerManagerData->AllowCharacterSwappingStates[Index];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                set => _playerManagerData->AllowCharacterSwappingStates[Index] = value;
+            }
+
+            /// <summary>
+            /// Gets/Sets player's <em>GiveUpState</em>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerState "Player State Properties"
+            ///
+            /// Getter @clink{exposed:PlayerHandle.GiveUpState} in public @cref{PlayerHandle}<br/>
+            /// Setter @clink{exposed:PlayerHandle.GiveUpState} in public @cref{PlayerHandle}
+            public readonly bool GiveUpState
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => _playerManagerData->PlayerGiveUpStates[Index];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                set => _playerManagerData->PlayerGiveUpStates[Index] = value;
+            }
+
+            #endregion Public Properties - Player State
+            /// @}
+
+            /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerCharacter
+            /// @name Player Character
+            /// %Player character properties
+            /// @{
+            #region Public Properties - Player Character
+
+            /// <summary>
+            /// Gets player's <em>CharacterEntityGroupID</em>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerCharacter "Player Character Properties"
+            ///
+            /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
+            /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.
+            ///
+            /// Internal only
+            public readonly BattleEntityID CharacterEntityGroupID
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => _playerManagerData->CharacterAllEntityGroupIDs[Index];
+            }
+
+            /// <summary>
+            /// Gets player's <em>SelectedCharacterNumber</em>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerCharacter "Player Character Properties"
+            ///
+            /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.<br/>
+            /// See [{Selected Character}](#page-concepts-player-character-entity-selected-character) for more info.
+            ///
+            /// @clink{Exposed:PlayerHandle.SelectedCharacterNumber} in public @cref{PlayerHandle}
+            public readonly int SelectedCharacterNumber
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _playerManagerData->CharacterSelectedNumbers[Index]; }
+
+            /// <summary>
+            /// Gets/Sets player's <em>SelectedCharacterState</em>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerCharacter "Player Character Properties"
+            ///
+            /// See [{Player PlayState}](#page-concepts-player-playstate) for more info.<br/>
+            /// See [{Selected Character}](#page-concepts-player-character-entity-selected-character) for more info.
+            ///
+            /// Getter @clink{exposed:PlayerHandle.SelectedCharacterState} in public @cref{PlayerHandle}
+            public readonly BattlePlayerCharacterState SelectedCharacterState
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => GetCharacterState(SelectedCharacterNumber);
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                set => SetCharacterState(SelectedCharacterNumber, value);
+            }
+
+            #endregion Public Properties - Player Character
+            /// @}
+
+            /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicProperties-OtherPublicProperties
+            /// @name Other Public Properties
+            /// @{
+
+            /// <summary>
+            /// Gets/Sets player's <em>RespawnTimer</em>.
+            /// </summary>
+            ///
+            /// Getter @clink{exposed:PlayerHandle.RespawnTimer} in public @cref{PlayerHandle}<br/>
+            /// Setter @clink{exposed:PlayerHandle.RespawnTimer} in public @cref{PlayerHandle}
+            public readonly FrameTimer RespawnTimer
+            {
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                get => _playerManagerData->RespawnTimers[Index];
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                set => _playerManagerData->RespawnTimers[Index] = value;
+            }
+
+            /// <summary>
+            /// Gets player's <em>SpawnPosition</em>.
+            /// </summary>
+            ///
+            /// Internal only
+            public readonly FPVector2 SpawnPosition
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => s_spawnPoints[Index]; }
+
+            /// @}
+
+            #endregion Public Properties
+
+            /// <summary>
+            /// Constructor for PlayerHandleInternal.
+            /// </summary>
+            ///
+            /// See @ref BattlePlayerManager-PlayerIndex "Player Index" for more info.
+            ///
+            /// <param name="playerManagerData">Pointer to BattlePlayerManagerDataQSingleton.</param>
+            /// <param name="playerIndex">Index of the desired player.</param>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public PlayerHandleInternal(BattlePlayerManagerDataQSingleton* playerManagerData, int playerIndex)
+            {
+                Index = playerIndex;
+                _playerManagerData = playerManagerData;
+            }
+
+            #region Public Methods
+
+            /// <summary>
+            /// Converts PlayerHandleInternal to PlayerHandle.
+            /// </summary>
+            ///
+            /// Internal only
+            ///
+            /// <returns>This PlayerHandleInternal converted to a PlayerHandle.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public readonly PlayerHandle ConvertToPublic()
+            {
+                return PlayerHandle.Low_GetPlayerHandleFromInternal(_playerManagerData, Index);
+            }
+
+            #region Public Methods - Player Character
+
+            /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterNumber
+            /// @name Player Character Number Methods
+            /// Methods for handling [{Character Numbers}](#page-concepts-player-character-entity-character-number).
+            /// @{
+            #region Public Methods - Player Character - Character Number
+
+            /// <summary>
+            /// Sets player's SelectedCharacterNumber.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterNumber "Player Character Number Methods"
+            ///
+            /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.<br/>
+            /// See [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) for more info.<br/>
+            /// See [{Selected Character}](#page-concepts-player-character-entity-selected-character) for more info.
+            ///
+            /// Internal only
+            ///
+            /// <param name="characterNumber">CharacterNumber of the player's selected character.</param>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public readonly void SetSelectedCharacterNumber(int characterNumber)
+            {
+                _playerManagerData->CharacterSelectedNumbers[Index] = characterNumber;
+            }
+
+            /// <summary>
+            /// Unsets player's SelectedCharacterNumber.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterNumber "Player Character Number Methods"
+            ///
+            /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.<br/>
+            /// See [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) for more info.<br/>
+            /// See [{Selected Character}](#page-concepts-player-character-entity-selected-character) for more info.
+            ///
+            /// Internal only
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public readonly void UnsetSelectedCharacterNumber()
+            {
+                _playerManagerData->CharacterSelectedNumbers[Index] = -1;
+            }
+
+            #endregion Public Methods - Player Character - Character Number
+            /// @}
+
+            /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterEntity
+            /// @name Player Character Entity Methods
+            /// Methods for handling character Entities
+            /// @{
+            #region Public Methods - Player Character - Character Entity
+
+            /// <summary>
+            /// Sets the player's characters <paramref name="entityGroupID"/>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterEntity "Player Character Entity Methods"
+            ///
+            /// See [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) for more info.<br/>
+            /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
+            /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.
+            ///
+            /// Internal only
+            ///
+            /// <param name="entityGroupID">Group ID of the player's characters.</param>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public readonly void SetCharacterEntityGroupID(BattleEntityID entityGroupID) => _playerManagerData->CharacterAllEntityGroupIDs[Index] = entityGroupID;
+
+            /// <summary>
+            /// Retrieves the selected character's EntityRef.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterEntity "Player Character Entity Methods"
+            ///
+            /// See [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) for more info.<br/>
+            /// See [{Selected Character}](#page-concepts-player-character-entity-selected-character) for more info.<br/>
+            /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
+            ///
+            /// @clink{Exposed:PlayerHandle.GetSelectedCharacterEntityRef} in public @cref{PlayerHandle}
+            ///
+            /// <param name="f">Current simulation frame.</param>
+            /// <param name="updateViewPlayState">Whether to update play state or not.</param>
+            ///
+            /// <returns>Selected character's EntityRef</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public readonly BattlePlayerEntityRef GetSelectedCharacterEntityRef(Frame f, bool updateViewPlayState = false) => GetCharacterEntityRef(f, SelectedCharacterNumber, updateViewPlayState);
+
+            /// <summary>
+            /// Retrieves a character's EntityRef based on <paramref name="characterNumber"/>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterEntity "Player Character Entity Methods"
+            ///
+            /// See [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) for more info.<br/>
+            /// See [{Character Numbers}](#page-concepts-player-character-entity-character-number) for more info.<br/>
+            /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
+            ///
+            /// Internal only
+            ///
+            /// <param name="f">Current simulation frame.</param>
+            /// <param name="characterNumber">CharacterNumber of the desired player's character.</param>
+            /// <param name="updateViewPlayState">Whether to update view play state or not.</param>
+            ///
+            /// <returns>Character's EntityRef.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public readonly BattlePlayerEntityRef GetCharacterEntityRef(Frame f, int characterNumber, bool updateViewPlayState = false)
+            {
+                return (BattlePlayerEntityRef)BattleEntityManager.Get(f, _playerManagerData->CharacterAllEntityGroupIDs[Index], characterNumber, updateViewPlayState);
+            }
+
+            #endregion Public Methods - Player Character - Character Entity
+            /// @}
+
+            /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterState
+            /// @name Player Character State Methods
+            /// Methods for handling [{Character States}](#page-concepts-player-character-entity-character-state).
+            /// @{
+            #region Public Methods - Player Character - Character State
+
+            /// <summary>
+            /// Retrieves a player's Character's CharacterState based on <paramref name="characterNumber"/>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterState "Player Character State Methods"
+            ///
+            /// See [{Player Character State}](#page-concepts-player-character-entity-character-state) for more info.<br/>
+            /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
+            ///
+            /// Internal only
+            ///
+            /// <param name="characterNumber">CharacterNumber of the desired player's character.</param>
+            ///
+            /// <returns>The CharacterState of the given player.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public readonly BattlePlayerCharacterState GetCharacterState(int characterNumber) => _playerManagerData->CharactersAllStates[GetCharacterIndex(characterNumber)];
+
+            /// <summary>
+            /// Sets a player's Character's Character state to given <paramref name="state"/> based on <paramref name="characterNumber"/>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterState "Player Character State Methods"
+            ///
+            /// See [{Player Character State}](#page-concepts-player-character-entity-character-state) for more info.<br/>
+            /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
+            ///
+            /// Internal only
+            ///
+            /// <param name="characterNumber">CharacterNumber of desired player's character.</param>
+            /// <param name="state">New state of the character.</param>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public readonly void SetCharacterState(int characterNumber, BattlePlayerCharacterState state) => _playerManagerData->CharactersAllStates[GetCharacterIndex(characterNumber)] = state;
+
+            #endregion Public Methods - Player Character - Character State
+            /// @}
+
+            #endregion Public Methods - Player Character
+
+            #endregion Public Methods
+
+            #region Private Fields
+
+            /// <summary>
+            /// Pointer to the BattlePlayerManagerDataQSingleton.
+            /// </summary>
+            private readonly BattlePlayerManagerDataQSingleton* _playerManagerData;
+
+            #endregion Private Fields
+
+            #region Private Methods
+
+            /// <summary>
+            /// Calculates the index where player's characters start in the BattlePlayerManagerDataQSingleton.
+            /// </summary>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private readonly int GetCharacterOffset() => Index * Constants.BATTLE_PLAYER_CHARACTER_COUNT;
+
+            /// <summary>
+            /// Calculates the index of player's character in the BattlePlayerManagerDataQSingleton.
+            /// </summary>
+            ///
+            /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number)
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private readonly int GetCharacterIndex(int characterNumber) => GetCharacterOffset() + characterNumber;
+
+            #endregion Private Methods
+        }
+    }
+}
