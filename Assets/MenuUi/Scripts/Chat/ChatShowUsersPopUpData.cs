@@ -10,6 +10,7 @@ using Altzone.Scripts.Chat;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using static ServerChatMessage;
 using System.Linq;
+using static ChatShowUsersPopUpData;
 
 public class ChatShowUsersPopUpData : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     [SerializeField] private TextMeshProUGUI ReactionAmounText;
     [SerializeField] private Button[] _closeButtons;
     [SerializeField] private Button _closeAllReactionButton;
+    [SerializeField] private Button _listOrderButton;
     [SerializeField] private GameObject ShowUsersPopUp;
 
     [Header("Scripts")]
@@ -39,11 +41,16 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
 
     [SerializeField] private GameObject ReactionObject;
-    
+    private int _listorder = 0;
+    private int currentOrder = 1;
+
+
     //[SerializeField] private TextLanguageSelectorCaller _reactionAmount;
     private void Start()
     {
         _closeAllReactionButton.onClick.AddListener(LayoutButton);
+        _listOrderButton.onClick.AddListener(() => currentOrder++);
+        _listOrderButton.onClick.AddListener(() => ListOrder(currentOrder));
         reactiontext();
         foreach (Button button in _closeButtons)
         {
@@ -100,8 +107,8 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
     public void AddUsersReaction(ChatMessage message, ServerReactions Emoji)
     {
-
-            Mood mood = (Mood)Enum.Parse(typeof(Mood), Emoji.emoji);
+        
+                Mood mood = (Mood)Enum.Parse(typeof(Mood), Emoji.emoji);
            
         //halts the system if there's already a same user on the list
         for (int i = _userInfo.Count - 1; i >= 0; i--)
@@ -125,13 +132,18 @@ public class ChatShowUsersPopUpData : MonoBehaviour
         Sprite reactionSprite = _reactionList.FirstOrDefault(x => x.Mood == mood)?.Sprite;
 
         //Sets up the Data
+
+        if(_userInfo.Count + 1 >= _listorder)
+        {
+        _listorder++;
+        }
         GameObject newUserData = Instantiate(_userData, _userContent.transform);
-        _userInfo.Add(new UserReactionInfo { _avatar = message.Avatar, _id = Emoji.sender_id, _name = Emoji.playerName, Emoji = reactionSprite, UserDataObj = newUserData, _mood = mood});
+        _userInfo.Add(new UserReactionInfo { _avatar = message.Avatar, _id = Emoji.sender_id, _name = Emoji.playerName, Emoji = reactionSprite, UserDataObj = newUserData, _mood = mood, _order = _listorder});
         UsersReactionData userData = newUserData.GetComponent<UsersReactionData>();
        userData.SetReactionInfo(_userInfo[_userInfo.Count - 1]._avatar, _userInfo[_userInfo.Count - 1]._name, _userInfo[_userInfo.Count - 1]._id, _userInfo[_userInfo.Count - 1].Emoji);
         _usersReactionData.Add(userData);
         reactiontext();
-
+        ListOrder(currentOrder);
 
     }
 
@@ -139,7 +151,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     public void RemoveUserReaction(string Userid)
     {
 
-
+        
         for (int i = _userInfo.Count - 1; i >= 0; i--)
             {
 
@@ -166,7 +178,59 @@ public class ChatShowUsersPopUpData : MonoBehaviour
         _selectedReaction.SetActive(true);
         }
     }
+    //Sets the List in certain order
 
+
+
+
+    void ListOrder(int order)
+    {
+        if (order >= 6)
+        {
+            currentOrder = 1;
+            order = currentOrder;
+        }
+        switch (order)
+        {
+            //List Order
+
+            //Oldest => Newest
+            case 1:
+                Debug.LogWarning("FIND ME Order 1");
+                _userInfo = _userInfo.OrderBy(m => m._order).ToList();
+                break;
+
+            //Newest => Oldest
+            case 2:
+                Debug.LogWarning("FIND ME Order 2");
+                _userInfo = _userInfo.OrderByDescending(m => m._order).ToList();
+                break;
+
+            // A => Z By Username
+            case 3:
+                Debug.LogWarning("FIND ME Order 3");
+                _userInfo = _userInfo.OrderBy(m => m._name.ToLower().Trim()).ToList();
+                break;
+
+            // Z => A By Username
+            case 4:
+                Debug.LogWarning("FIND ME Order 4");
+                _userInfo = _userInfo.OrderByDescending(m => m._name.ToLower().Trim()).ToList();
+                break;
+
+            //Sadness => Love by Reactions
+            case 5:
+                Debug.LogWarning("FIND ME Order 5");
+                _userInfo = _userInfo.OrderBy(m => m._mood).ToList();
+                break;
+        }
+
+       //Sets the new arangement
+        for (int i = 0; i < _userInfo.Count; i++) {
+
+            _userInfo[i].UserDataObj.transform.SetSiblingIndex(i);
+        }
+    }
 
 }
 
@@ -175,6 +239,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 [Serializable]
 public class UserReactionInfo
 {
+    public int _order;
     public GameObject UserDataObj;
     public AvatarData _avatar;
     public string _name;
@@ -186,3 +251,5 @@ public class UserReactionInfo
     //public Mood Mood;
 
 }
+
+
