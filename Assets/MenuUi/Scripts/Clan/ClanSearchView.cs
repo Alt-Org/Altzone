@@ -16,7 +16,7 @@ public class ClanSearchView : MonoBehaviour
     [SerializeField] private Button _returnToMainMenuButton;
 
     [SerializeField] private ClanConfirmPopup _confirmPopup;
-    [SerializeField] private GameObject _overlay;
+    [SerializeField] private GameObject _blocker;
 
     [Header("Popup Buttons")]
     [SerializeField] private Button _openFiltersButton;
@@ -145,7 +145,7 @@ public class ClanSearchView : MonoBehaviour
             clanListing.OpenProfileButton.onClick.RemoveAllListeners();
             clanListing.OpenProfileButton.onClick.AddListener(() =>
             {
-                ShowOverlay(true);
+                ToggleBlocker(true);
 
                 if (_clanPopup != null)
                     _clanPopup.SetActive(true);
@@ -211,10 +211,15 @@ public class ClanSearchView : MonoBehaviour
         return true;
     }
 
+    private void ToggleBlocker(bool on)
+    {
+        if (_blocker != null)
+            _blocker.SetActive(on);
+    }
+
     private void ShowOverlay(bool on)
     {
-        if (_overlay != null)
-            _overlay.SetActive(on);
+        if (OverlayPanelCheck.Instance) OverlayPanelCheck.Instance.ToggleOverlay(on);
     }
 
     public void CloseClanPopup()
@@ -225,7 +230,7 @@ public class ClanSearchView : MonoBehaviour
         if (_confirmPopup != null)
             _confirmPopup.gameObject.SetActive(false);
 
-        ShowOverlay(false);
+        ToggleBlocker(false);
     }
 
     private void OpenFiltersPopup()
@@ -233,7 +238,7 @@ public class ClanSearchView : MonoBehaviour
         if (_filtersPanel != null)
             _filtersPanel.gameObject.SetActive(true);
 
-        ShowOverlay(true);
+        ToggleBlocker(true);
     }
 
     private void ConfirmFiltersPopup()
@@ -249,7 +254,7 @@ public class ClanSearchView : MonoBehaviour
         if (_filtersPanel != null)
             _filtersPanel.gameObject.SetActive(false);
 
-        ShowOverlay(false);
+        ToggleBlocker(false);
     }
 
     private string GetCurrentClanName()
@@ -283,7 +288,7 @@ public class ClanSearchView : MonoBehaviour
     {
         string targetName = new ClanData(clan).Name;
 
-        ShowOverlay(true);
+        ToggleBlocker(true);
 
         _confirmPopup.Show(
             bodyText: "Haluatko liittyä klaaniin " + targetName + "?",
@@ -299,6 +304,7 @@ public class ClanSearchView : MonoBehaviour
                     if (newClan != null)
                     {
                         ServerManager.Instance.RaiseClanChangedEvent();
+                        ShowOverlay(true);
                         CloseClanPopup();
 
                         if (ServerManager.Instance.FirstJoin)
@@ -326,7 +332,7 @@ public class ClanSearchView : MonoBehaviour
         string warningText = "Olet jo jäsen klaanissa " + currentClanName + "." +
             " Haluatko varmasti poistua nykyisestä klaanista ja liittyä klaaniin " + targetClanName + "?";
 
-        ShowOverlay(true);
+        ToggleBlocker(true);
 
         _confirmPopup.Show(
             bodyText: warningText,
@@ -341,7 +347,7 @@ public class ClanSearchView : MonoBehaviour
                     if (!success)
                     {
                         _isJoining = false;
-                        ShowOverlay(false);
+                        ToggleBlocker(false);
                         return;
                     }
 
@@ -351,13 +357,14 @@ public class ClanSearchView : MonoBehaviour
 
                         if (newClan == null)
                         {
-                            ShowOverlay(false);
+                            ToggleBlocker(false);
                             return;
                         }
 
                         if (newClan != null)
                         {
                             ServerManager.Instance.RaiseClanChangedEvent();
+                            ShowOverlay(true);
                             CloseClanPopup();
 
                             if (ServerManager.Instance.FirstJoin)

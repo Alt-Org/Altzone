@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Clan;
-using MenuUi.Scripts.DefenceScreen.CharacterStatsWindow;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using MenuUI.Scripts;
@@ -605,7 +604,7 @@ public class ClanCreateNew : MonoBehaviour
                 );
                 return;
             }
-
+            if (OverlayPanelCheck.Instance) OverlayPanelCheck.Instance.ToggleOverlay(true);
             Debug.Log($"naviTarget {_naviTarget} isCurrentPopOutWindow {true}", _naviTarget);
             IWindowManager windowManager = WindowManager.Get();
             if (windowManager == null)
