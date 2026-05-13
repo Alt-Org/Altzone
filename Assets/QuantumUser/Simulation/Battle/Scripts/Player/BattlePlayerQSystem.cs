@@ -252,7 +252,7 @@ namespace Battle.QSimulation.Player
             Death
         }
 
-        /// <summary>Enum used to define common sound effect target</summary>
+        /// <summary>Enum used to define the target of a sound effect</summary>
         ///
         /// Used by @cref{HandleSFX} method.
         private enum SoundEffectTarget
@@ -405,7 +405,7 @@ namespace Battle.QSimulation.Player
         /// Use @cref{HandleSFXCharacter} to play character specific sound effects.
         ///
         /// <param name="f">Current simulation frame</param>
-        /// <param name="slot">Slot of the player that will hear the sound</param>
+        /// <param name="slot"></param>
         /// <param name="type">Type of sound effect to be played</param>
         /// <param name="target"></param>
         private static void HandleSFXCommon(Frame f, BattlePlayerSlot slot, SoundEffectTypeCommon type, SoundEffectTarget target)
@@ -422,8 +422,10 @@ namespace Battle.QSimulation.Player
         /// Use @cref{HandleSFXCommon} to play common sound effects.
         ///
         /// <param name="f">Current simulation frame</param>
+        /// <param name="slot"></param>
         /// <param name="type">Type of sound effect to be played</param>
         /// <param name="characterID">ID of the current character in play</param>
+        /// <param name="target"></param>
         private static void HandleSFXCharacter(Frame f, BattlePlayerSlot slot, SoundEffectTypeCharacter type, BattlePlayerCharacterID characterID, SoundEffectTarget target)
         {
             BattleSoundFX soundEffect = (BattleSoundFX)(Constants.BATTLE_SOUND_FX_CHARACTER_START + (int)characterID * Constants.BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER) + (int)type;
