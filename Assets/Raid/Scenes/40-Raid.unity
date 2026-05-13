@@ -1852,7 +1852,7 @@ PrefabInstance:
     - target: {fileID: 8100441790868650072, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 2550
+      value: 2650.795
       objectReference: {fileID: 0}
     - target: {fileID: 8100441790868650072, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
@@ -2089,32 +2089,32 @@ PrefabInstance:
     - target: {fileID: 8100441791909708575, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8100441791909708575, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8100441791909708575, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 570
       objectReference: {fileID: 0}
     - target: {fileID: 8100441791909708575, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 463
       objectReference: {fileID: 0}
     - target: {fileID: 8100441791909708575, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 325
       objectReference: {fileID: 0}
     - target: {fileID: 8100441791909708575, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -271.5
       objectReference: {fileID: 0}
     - target: {fileID: 8100441791961523161, guid: 1456b9f29a360684da0ae9d727e82bd4,
         type: 3}
@@ -3969,8 +3969,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74cc78280cfa86f47a5c28ae40868e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collectedFurniture: {fileID: 0}
-  content: {fileID: 0}
+  collectedFurniture: {fileID: 1121922996}
+  content: {fileID: 622636365}
   itemPrefab: {fileID: 7481540141435164365, guid: 59f733f3d92449d4a8da7c84514fdf3b,
     type: 3}
 --- !u!1 &1644835073
@@ -4787,9 +4787,9 @@ MonoBehaviour:
   TimerText: {fileID: 251360814}
   StartTimerText: {fileID: 728986462}
   Lungs: {fileID: 53865115}
-  CurrentTime: 4
+  CurrentTime: 10
   CountUp: 0
-  TimeUntilStart: 1
+  TimeUntilStart: 15
   HasLimit: 1
   TimerLimit: 0
   HasFormat: 1
