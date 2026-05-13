@@ -94,7 +94,7 @@ public static class GameLiteracy
                     return string.Empty;
 
                 case GameLiteracyType.InterfaceNavigation:
-                    return "K‰yttˆliittym‰n hallinta";
+                    return "K√§ytt√∂liittym√§n hallinta";
 
                 case GameLiteracyType.GameMechanics:
                     return "Pelimekaniikka";
@@ -106,16 +106,16 @@ public static class GameLiteracy
                     return "Luovuus";
 
                 case GameLiteracyType.Communication:
-                    return "Viestint‰";
+                    return "Viestint√§";
 
                 case GameLiteracyType.DecisionMaking:
-                    return "P‰‰tˆksenteko";
+                    return "P√§√§t√∂ksenteko";
 
                 case GameLiteracyType.ResourceSharing:
                     return "Resurssien jakaminen";
 
                 case GameLiteracyType.Negotiation:
-                    return "Yhteisˆn ja yksilˆn identiteetti";
+                    return "Yhteis√∂n ja yksil√∂n identiteetti";
 
                 case GameLiteracyType.GameStory:
                     return "Pelin tarina";
@@ -124,7 +124,7 @@ public static class GameLiteracy
                     return "Ohjeistus";
 
                 case GameLiteracyType.VisualCoherence:
-                    return "Visuaalinen yhten‰isyys";
+                    return "Visuaalinen yhten√§isyys";
 
                 case GameLiteracyType.Symbolism:
                     return "Symboliikka";
@@ -154,7 +154,7 @@ public static class GameLiteracy
                     return "Moraalinen toiminta";
 
                 case GameLiteracyType.SustainableDevelopment:
-                    return "Kest‰v‰ kehitys";
+                    return "Kest√§v√§ kehitys";
 
                 case GameLiteracyType.Values:
                     return "Arvot";
