@@ -562,7 +562,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             {
                 _statsUpdated = true;
                 _playerData.UpdateCustomCharacter(_customCharacter);
-                OnUpgradeMaterialAmountChanged.Invoke();
+                OnUpgradeMaterialAmountChanged?.Invoke();
                 OnStatUpdated.Invoke(statType);
                 gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
                 switch (statType)
