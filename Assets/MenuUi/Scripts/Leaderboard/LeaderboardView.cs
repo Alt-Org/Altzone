@@ -39,8 +39,6 @@ public class LeaderboardView : MonoBehaviour
     [SerializeField] private GameObject _clanPointsItemPrefab;
     [SerializeField] private GameObject _friendsWinsItemPrefab;
 
-    private ServerPlayer _player; //for checking if player is logged in
-
 
 
     private enum Leaderboard
@@ -64,7 +62,6 @@ public class LeaderboardView : MonoBehaviour
         _scrollToMeButton.onClick.AddListener(() => ScrollToMe());
 
         InitializeTablineTitles(0);
-
     }
 
     private void OnEnable()
@@ -80,7 +77,6 @@ public class LeaderboardView : MonoBehaviour
         { title.SetActive(false); }
         _tablineTitles[tabInt].SetActive(true);
 
-        Debug.Log(tabInt + " AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     private void OpenLeaderboard(Leaderboard leaderboard)
@@ -99,11 +95,9 @@ public class LeaderboardView : MonoBehaviour
       
         switch (_currentLeaderboard)
         {
-            case Leaderboard.GlobalClans: 
+            case Leaderboard.GlobalClans: //tab 1
                 {
                     InitializeTablineTitles(0);
-
-                    Debug.Log("global clans AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
                     StartCoroutine(ServerManager.Instance.GetClanLeaderboardFromServer((clanLeaderboard) =>
                     {
@@ -145,15 +139,14 @@ public class LeaderboardView : MonoBehaviour
                                     DataCarrier.AddData(DataCarrier.ClanListing, serverClan); // Transfer the data for use in the leaderboard
                                 });
 
-                                _player = ServerManager.Instance.Player;
-                                if (_player == null) // if not checked, list won't load correctly when not logged in
+
+                                //Debug.Log("ranking clan name: " + ranking.Clan.Name + " clan: " + ServerManager.Instance.Clan.name;
+                                if (ranking.Clan.Name == ServerManager.Instance.Clan.name.ToString())
                                 {
-                                    if (ranking.Clan.Name == ServerManager.Instance.Clan.name.ToString())
-                                    {
-                                        item.RecolorBackground();
-                                        _playerItem = item.GetComponent<RectTransform>();
-                                    }
+                                    item.RecolorBackground();
+                                    _playerItem = item.GetComponent<RectTransform>();
                                 }
+                                
 
                             }
 
@@ -163,11 +156,9 @@ public class LeaderboardView : MonoBehaviour
 
                 }
                 break;
-            case Leaderboard.GlobalPlayers:
+            case Leaderboard.GlobalPlayers: //tab 2
                 {
                     InitializeTablineTitles(1);
-
-                    Debug.Log("global players AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
                     StartCoroutine(ServerManager.Instance.GetPlayerLeaderboardFromServer((playerLeaderboard) =>
                     {
@@ -208,17 +199,14 @@ public class LeaderboardView : MonoBehaviour
                                     DataCarrier.AddData(DataCarrier.PlayerProfile, ranking.Player); // Transfer the data for use in the leaderboard
                                 });
 
-                                /*
-                                _player = ServerManager.Instance.Player;
-                                if (_player == null) // if not checked, list won't load correctly when not logged in
+                                
+                                
+                                if (ranking.Player.Name == ServerManager.Instance.Player.name.ToString())
                                 {
-                                    if (ranking.Player.Name == ServerManager.Instance.Player.name.ToString())
-                                    {
-                                        item.RecolorBackground();
-                                        _playerItem = item.GetComponent<RectTransform>();
-
-                                    }
-                                }*/
+                                    item.RecolorBackground();
+                                    _playerItem = item.GetComponent<RectTransform>();
+                                }
+                                
 
                             }
 
@@ -230,82 +218,75 @@ public class LeaderboardView : MonoBehaviour
                 break;
             case Leaderboard.Clan:
 
-                InitializeTablineTitles(1);
-
-                Debug.Log("CLAN AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                //InitializeTablineTitles(1);
 
 
                 Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
                 {
 
-                        clanData.Members.Sort((a, b) => b.LeaderBoardWins.CompareTo(a.LeaderBoardWins));
+                    clanData.Members.Sort((a, b) => b.LeaderBoardWins.CompareTo(a.LeaderBoardWins));
 
-                        int rank = 1;
-                        foreach (ClanMember player in clanData.Members)
+                    int rank = 1;
+                    foreach (ClanMember player in clanData.Members)
+                    {
+                        PlayerData playerData = player.GetPlayerData();
+                        AvatarVisualData avatarVisualData = null;
+
+                        //if (playerData.SelectedCharacterId != 0)
+                        //{
+                            avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData);
+                        //}
+
+
+                        if (rank < 4)
                         {
-                            PlayerData playerData = player.GetPlayerData();
-                            AvatarVisualData avatarVisualData = null;
+                            _podium.InitilializePodium(rank, player.Name, player.LeaderBoardWins, playerData);
 
-                            //if (playerData.SelectedCharacterId != 0)
-                            //{
-                                avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData);
-                            //}
-
-
-                            if (rank < 4)
+                            if (rank == 1) //add the podium to scroll view
                             {
-                                _podium.InitilializePodium(rank, player.Name, player.LeaderBoardWins, playerData);
-
-
-                                if (rank == 1) //add the podium to scroll view
-                                {
-                                    LeaderboardPodium item = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>();
-                                }
+                                LeaderboardPodium item = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>();
                             }
+                        }              
+                        else
+                        {
+                            LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
+                            item.Initialize(rank, player.Name, player.LeaderBoardWins, avatarVisualData, ""); 
 
-                    
-                            else
+                            //View player profile button
+                            item.OpenProfileButton.onClick.AddListener(() =>
                             {
-                                LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                                item.Initialize(rank, player.Name, player.LeaderBoardWins, avatarVisualData, ""); 
-
-                                //View player profile button
-                                item.OpenProfileButton.onClick.AddListener(() =>
-                                {
-                                    DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
-                                });
-                            }
-
-                            rank++;
+                                DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
+                            });
                         }
 
-                        // Add empty placements to fill out the space if necessary 
-                        if (clanData.Members.Count < 15)
-                        {
-                            int placements = 15 - clanData.Members.Count;
+                        rank++;
+                    }
 
-                            for (int i = 0; i < placements; i++)
+                    // Add empty placements to fill out the space if necessary 
+                    if (clanData.Members.Count < 15)
+                    {
+                        int placements = 15 - clanData.Members.Count;
+
+                        for (int i = 0; i < placements; i++)
+                        {
+                            if (rank < 4)
                             {
-                                if (rank < 4)
-                                {
-                                    _podium.InitilializePodium(rank, "", 0, null);
+                                _podium.InitilializePodium(rank, "", 0, null);
 
                                 if (rank == 1)
                                 {
                                     LeaderboardPodium item = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>();
-                                }
-                            
-
+                                }                          
                             }
-                                else
-                                {
-                                    LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
-                                    item.Initialize(rank, "", 0, null, "");
-                                }
-
-                                rank++;
+                            else
+                            {
+                                LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
+                                item.Initialize(rank, "", 0, null, "");
                             }
+
+                            rank++;
                         }
+                    }
                 });
                 break;
             case Leaderboard.Friends: //tab 3
@@ -316,30 +297,36 @@ public class LeaderboardView : MonoBehaviour
                 // For Testing
 
                 for (int i = 1; i < 20; i++)
-                    {
+                {
                     if (i == 1) //add the podium to scroll view
                     {
                         LeaderboardPodium itemPod = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>();
                     }
 
-
                     if (i < 4)
-                        {
-                            _podium.InitilializePodium(i, "", 0, null);
-                        }
-                        else
-                        {
+                    {
+                        _podium.InitilializePodium(i, "", 0, null);
+                    }
+                    else
+                    {
                         LeaderboardWinsItem item = Instantiate(_friendsWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
 
                         item.Initialize(i, "", 0, null, "");
 
-                            // View player profile button
-                            //item.OpenProfileButton.onClick.AddListener(() =>
-                            //{
-                            //    DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
-                            //});
-                        }
+                        /*
+                        if (ranking.Player.Name == ServerManager.Instance.Player.name.ToString())
+                        {
+                            item.RecolorBackground();
+                            _playerItem = item.GetComponent<RectTransform>();
+                        }*/
+
+                        // View player profile button
+                        //item.OpenProfileButton.onClick.AddListener(() =>
+                        //{
+                        //    DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
+                        //});
                     }
+                }
                 break;
         }
     }
@@ -365,6 +352,7 @@ public class LeaderboardView : MonoBehaviour
     {
         //Canvas.ForceUpdateCanvases();
 
+
         if (_playerItem != null)
         {
             RectTransform target = _playerItem;
@@ -379,6 +367,7 @@ public class LeaderboardView : MonoBehaviour
 
             _contentPanel.localPosition = newPosition;
         }
+          
     }
 
 }

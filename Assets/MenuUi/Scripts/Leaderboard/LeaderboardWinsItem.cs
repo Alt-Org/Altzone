@@ -35,10 +35,11 @@ public class LeaderboardWinsItem : MonoBehaviour
         {
             _avatarFaceLoader.UpdateVisuals(avatarVisualData);
         }
+        /*
         if (name == ServerManager.Instance.Player.name.ToString())
         {
             RecolorBackground();
-        }
+        }*/
     }
 
     public void Initialize(int rank, PlayerLeaderboard ranking)
