@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
+    
     public enum TaskNormalType
     {
         Undefined,
@@ -143,6 +145,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         private TaskTitle _title;
         private TaskContent _content;
         private TaskInstruction _instruction;
+        private GameLiteracyType _gameLiteracy;
         private int _amount;
         private int _amountLeft;
         private TaskNormalType _normalTaskType;
@@ -197,6 +200,14 @@ namespace Altzone.Scripts.Model.Poco.Game
             }
         }
 
+        public string Literacy
+        {
+            get
+            {
+                return GameLiteracy.Get(_gameLiteracy, SettingsCarrier.Instance.Language);
+            }
+        }
+
         public int TaskProgress { get => _taskProgress;}
         public string PlayerId { get => _playerId; }
         public int AmountLeft { get => _amountLeft; }
@@ -219,6 +230,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             _title = new(task.title);
             _content = new(task.description, task.execution);
             _instruction = new(task.instruction);
+            _gameLiteracy = task.gameLiteracy;
             _amount = task.amount;
             _amountLeft = task.amountLeft;
             _coins = task.coins;
@@ -730,6 +742,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public TaskDescription description;
         public TaskExecution execution;
         public TaskInstruction instruction;
+        public GameLiteracyType gameLiteracy;
         public int amount;
         public int amountLeft;
         public string type;

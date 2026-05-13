@@ -293,6 +293,8 @@ public class DailyTaskManager : AltMonoBehaviour
             serverTask.instruction.fi = normalTasks[i].instruction;
             serverTask.instruction.en = normalTasks[i].englishInstruction;
 
+            serverTask.gameLiteracy = normalTasks[i].gameLiteracy;
+
             serverTask.points = normalTasks[i].points;
             serverTask.coins = normalTasks[i].coins;
             serverTask.type = normalTasks[i].type;
@@ -332,6 +334,8 @@ public class DailyTaskManager : AltMonoBehaviour
             serverTask.instruction = new ServerPlayerTask.TaskInstruction();
             serverTask.instruction.fi = educationTasks[i].instruction;
             serverTask.instruction.en = educationTasks[i].englishInstruction;
+
+            serverTask.gameLiteracy = educationTasks[i].gameLiteracy;
 
             serverTask.points = educationTasks[i].points;
             serverTask.coins = educationTasks[i].coins;

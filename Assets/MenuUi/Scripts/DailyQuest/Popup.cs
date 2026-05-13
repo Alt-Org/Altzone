@@ -64,6 +64,7 @@ public class Popup : MonoBehaviour
     [SerializeField] private TMP_Text _acceptConfirmButtonText;
     [Space]
     [SerializeField] private TextMeshProUGUI _taskDescription;
+    [SerializeField] private TextMeshProUGUI _taskGameLiteracy;
     [SerializeField] private TextMeshProUGUI _taskPointsText;
     [SerializeField] private TextMeshProUGUI _taskCoinsText;
 
@@ -169,6 +170,7 @@ public class Popup : MonoBehaviour
             {
                 Instance.SetTaskImage(data.Value.OwnPage, type);
                 Instance.SetTaskDescription(data.Value.OwnPage);
+                Instance.SetTaskGameLiteracy(data.Value.OwnPage);
                 Instance.SetTaskRewardTexts(data.Value.OwnPage);
                 Instance.SetPopupTaskColor(data.Value.OwnPage, data.Value.Type);
             }
@@ -245,6 +247,12 @@ public class Popup : MonoBehaviour
         _taskDescription.text = data.Content;
     }
 
+    private void SetTaskGameLiteracy(PlayerTask data)
+    {
+        _taskGameLiteracy.text = data.Literacy;
+        _taskGameLiteracy.color = GetTaskColor(data);
+    }
+
     private void SetTaskRewardTexts(PlayerTask data)
     {
         _taskPointsText.text = data.Points.ToString();
@@ -253,12 +261,18 @@ public class Popup : MonoBehaviour
 
     private void SetPopupTaskColor(PlayerTask data, PopupData.PopupDataType type)
     {
+        Debug.LogWarning("COLOR!!");
         Image targetImage = _taskAcceptColorImage;
 
         if (type == PopupData.PopupDataType.CancelTask) targetImage = _taskCancelColorImage;
 
         if (type == PopupData.PopupDataType.MultipleChoice) targetImage = _taskMultipleChoiceColorImage;
 
+        targetImage.color = GetTaskColor(data);
+    }
+
+    private Color GetTaskColor(PlayerTask data)
+    {
         Color taskColor = _defaultColor;
 
         switch (data.EducationCategory)
@@ -271,7 +285,7 @@ public class Popup : MonoBehaviour
             default: break;
         }
 
-        targetImage.color = taskColor;
+        return taskColor;
     }
 
     private void SwitchWindow(PopupWindowType type)
