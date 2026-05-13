@@ -96,8 +96,20 @@ synced event BattleProjectileChangeGlowStrength
     FP Strength;
 }
 
-event BattlePlaySoundFX
+event BattlePlaySoundFxForAll
 {
+    BattleSoundFX Effect;
+}
+
+event BattlePlaySoundFxForTeam
+{
+    BattleTeamNumber Team;
+    BattleSoundFX Effect;
+}
+
+event BattlePlaySoundFxForPlayer
+{
+    BattlePlayerSlot Slot;
     BattleSoundFX Effect;
 }
 
