@@ -43,8 +43,8 @@ public class ClanSearchView : MonoBehaviour
                 loadMoreButton.onClick.AddListener(LoadMoreClans);
         }
 
-        if (_openFiltersButton != null)
-            _openFiltersButton.onClick.AddListener(OpenFiltersPopup);
+        /*if (_openFiltersButton != null)
+            _openFiltersButton.onClick.AddListener(OpenFiltersPopup);*/
 
         if (_filtersConfirmButton != null)
             _filtersConfirmButton.onClick.AddListener(ConfirmFiltersPopup);
@@ -64,8 +64,8 @@ public class ClanSearchView : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (_openFiltersButton != null)
-            _openFiltersButton.onClick.RemoveListener(OpenFiltersPopup);
+        /*if (_openFiltersButton != null)
+            _openFiltersButton.onClick.RemoveListener(OpenFiltersPopup);*/
 
         if (_filtersConfirmButton != null)
             _filtersConfirmButton.onClick.RemoveListener(ConfirmFiltersPopup);
