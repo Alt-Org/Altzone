@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Altzone.Scripts.Model.Poco.Game;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
