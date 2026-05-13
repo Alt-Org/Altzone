@@ -698,6 +698,8 @@ namespace MenuUI.Scripts.SoulHome
 
             SelectStatus();
         }
+
+
         private List<AvatarAnimation> ValidateAnimations(List<AvatarAnimation> animationToValidate)
         {
             List<AvatarAnimation> validatedAnimation = new();
@@ -775,7 +777,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (_targetFurniture != null)
             {
-                _targetFurniture.StartInteract(this, this.gameObject);
+                _targetFurniture.StartInteract(this);
                 Debug.Log($"NPC arrived at: {_targetFurniture.gameObject.name}");
                 _targetFurniture = null;
 

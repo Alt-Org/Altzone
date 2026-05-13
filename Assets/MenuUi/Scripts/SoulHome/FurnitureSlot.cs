@@ -29,6 +29,9 @@ namespace MenuUI.Scripts.SoulHome
 
         public bool IsReserved { get; set; }
 
+        public FurnitureHandling InteractionOwner;
+        public FurnitureHandling SlotOwner;
+
         public Furniture Furniture { get => furniture;
             set
             {

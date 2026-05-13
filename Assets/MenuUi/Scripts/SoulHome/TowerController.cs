@@ -10,6 +10,7 @@ using UnityEngine.InputSystem;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Audio;
 using static MenuUI.Scripts.SoulHome.FurnitureHandling;
+using UnityEditor.Graphs;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -650,8 +651,9 @@ namespace MenuUI.Scripts.SoulHome
                     check = hit2.collider.GetComponent<RoomData>().HandleFurniturePosition(hitArray, _selectedFurniture, hover, hitPoint, hitRoom);
 
                     //Displayment of interact slots during placement
-                    if (hover && _selectedFurniture != null)
+                    if ((hover || check) && _selectedFurniture != null)
                     {
+
                         FurnitureHandling handling = _selectedFurniture.GetComponent<FurnitureHandling>();
                         FurnitureSlot hoveredSlot = GetHoveredSlot(hitArray);
 
@@ -659,9 +661,23 @@ namespace MenuUI.Scripts.SoulHome
                         {
                             if (handling.HasInteractionSlot)
                             {
-                                Vector2Int offset = handling.GetRotatedInteractionOffset();
+                                //Vector2Int offset = handling.GetRotatedInteractionOffset();
                                 RoomData room = hit2.collider.GetComponent<RoomData>();
 
+                                bool isVertical = handling.TempSpriteDirection == Direction.Left || handling.TempSpriteDirection == Direction.Right;
+                                bool facingLeftOrBack = handling.TempSpriteDirection == Direction.Left || handling.TempSpriteDirection == Direction.Back;
+
+                                foreach (Vector2Int customOffset in handling.customInteractionOffsets)
+                                {
+                                    Vector2Int rotatedOffset = RotateOffset(customOffset, isVertical, facingLeftOrBack);
+
+                                    int targetCol = hoveredSlot.column + rotatedOffset.x;
+                                    int targetRow = hoveredSlot.row + rotatedOffset.y;
+
+                                    HighlightSlot(room, targetCol, targetRow);
+                                }
+
+                                /*
                                 if (handling.Pattern == InteractionPattern.FrontRow)
                                 {
                                     bool isVertical = handling.TempSpriteDirection == Direction.Left || handling.TempSpriteDirection == Direction.Right;
@@ -721,8 +737,11 @@ namespace MenuUI.Scripts.SoulHome
                                         HighlightSlot(room, hoveredSlot.column + w, hoveredSlot.row + i - size.y + 1);
                                     }
                                 }
+                                */
                             }
                         }
+
+
                     }
 
                     //Saving of interact slots after placement
@@ -1152,6 +1171,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 FurnitureSlot slot = room.Grid[col, row].FurnitureSlot;
                 handling.AddInteractionSlot(slot);
+                slot.InteractionOwner = handling;
             }
         }
 
@@ -1161,9 +1181,42 @@ namespace MenuUI.Scripts.SoulHome
             if (col >= 0 && col < room.SlotColumns && row >= 0 && row < room.SlotRows)
             {
                 FurnitureSlot interactSlot = room.Grid[col, row].FurnitureSlot;
-                interactSlot.SetValidity(true, true);
+                FurnitureHandling current = _selectedFurniture.GetComponent<FurnitureHandling>();
+
+                bool overlapsFurniture = interactSlot.SlotOwner != null && interactSlot.SlotOwner != current;
+                bool overlapsInteract = interactSlot.InteractionOwner != null && interactSlot.InteractionOwner != current;
+
+                bool isValid = !overlapsFurniture && !overlapsInteract;
+
+
+                if (isValid)
+                {
+                    interactSlot.SetValidity(isValid, true);
+                }
+                else if(!isValid)
+                {
+                    interactSlot.SetValidity(false, false);
+                }
                 room.AddToValidityList(interactSlot);
             }
+        }
+
+        private Vector2Int RotateOffset(Vector2Int offset, bool isVertical, bool facingLeftOrBack)
+        {
+
+            //Front (Default)
+            if (!isVertical && !facingLeftOrBack) return new Vector2Int(offset.x, offset.y);
+
+            //Right
+            if (isVertical && !facingLeftOrBack) return new Vector2Int(offset.y, -offset.x);
+
+            //Back
+            if (!isVertical && facingLeftOrBack) return new Vector2Int(-offset.x, -offset.y);
+
+            //Left
+            if (isVertical && facingLeftOrBack) return new Vector2Int(-offset.y, offset.x);
+
+            return offset;
         }
     }
 }

@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
+using UnityEditor.Graphs;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 using UnityEngine.Rendering;
 using Debug = Prg.Debug;
 
@@ -46,6 +48,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private SortingGroup _sortingGroup;
 
+
         private Furniture _furniture;
         [SerializeField]
         private GameObject _trayFurnitureObject;
@@ -65,9 +68,17 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField] public InteractionPattern Pattern = InteractionPattern.FrontRow;
         public List<FurnitureSlot> AssignedInteractionSlots { get; private set; } = new List<FurnitureSlot>();
 
+        [HideInInspector]
+        public List<Vector2Int> customInteractionOffsets = new List<Vector2Int>();
+
         public void ClearInteractionSlots()
         {
-            foreach (var slot in AssignedInteractionSlots) slot.IsReserved = false;
+            foreach (var slot in AssignedInteractionSlots)
+            {
+                slot.IsReserved = false;
+                slot.InteractionOwner = null;
+                slot.SetValidity(true, false);
+            }
             AssignedInteractionSlots.Clear();
         }
 
@@ -115,21 +126,35 @@ namespace MenuUI.Scripts.SoulHome
             };
         }
 
-        //move the avatar on top of the furniture for now and then places them back in their original position
-        public void StartInteract(SoulHomeAvatarController controller, GameObject go)
+        public void StartInteract(SoulHomeAvatarController controller)
         {
-            GameObject go2 = controller.gameObject;
-            go.SetActive(false);
-            go2.SetActive(true);
-            Instantiate(go2, this.transform);
+            StartCoroutine(InteractRoutine(controller));
         }
 
-        //Called at the end of the npc's movement timer
-        public void EndInteract(GameObject go)
+        private IEnumerator InteractRoutine(SoulHomeAvatarController controller)
         {
-            go.SetActive(false);
-        }
+            GameObject original = controller.gameObject;
+            original.SetActive(false);
 
+            GameObject dummy = Instantiate(original);
+            dummy.SetActive(true);
+
+            dummy.transform.SetParent(this.transform, true);
+            dummy.transform.localPosition = Vector3.zero;
+
+            Animator dummyAnim = dummy.GetComponentInChildren<Animator>();
+            //dummyAnim.Play("");
+
+            //yield return new WaitForEndOfFrame(); // Wait for animator to update
+            //float animLength = dummyAnim.GetCurrentAnimatorStateInfo(0).length;
+            //yield return new WaitForSeconds(animLength);
+
+            //Temporary
+            yield return new WaitForSeconds(10);
+
+            Destroy(dummy);
+            original.SetActive(true);
+        }
 
         public Furniture Furniture { get => _furniture; set => _furniture = value; }
         public Vector2 Position { get => _position; set => _position = value; }
