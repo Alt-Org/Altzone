@@ -126,6 +126,8 @@ namespace Battle.QSimulation.Diamond
                     break;
             }
 
+            f.Events.BattlePlaySoundFX(BattleSoundFX.DiamondPickUp);
+
             // increase right team's diamondcounter
             if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha) diamondCounter->AlphaDiamonds++;
             else diamondCounter->BetaDiamonds++;
