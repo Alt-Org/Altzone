@@ -27,6 +27,7 @@ namespace MenuUi.Scripts.Window
         {
             Debug.Log($"naviTarget {naviTarget} isCurrentPopOutWindow {_isCurrentPopOutWindow}", naviTarget);
             var windowManager = WindowManager.Get();
+            if (windowManager.FindIndex(naviTarget) == 0) yield break;
             yield return new WaitUntil(() => windowManager.ExecutionLevel == 0);
             if (_isCurrentPopOutWindow)
             {

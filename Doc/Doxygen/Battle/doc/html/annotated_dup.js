@@ -90,7 +90,8 @@ var annotated_dup =
           [ "BattleProjectileViewController", "class_battle_1_1_view_1_1_projectile_1_1_battle_projectile_view_controller.html", "class_battle_1_1_view_1_1_projectile_1_1_battle_projectile_view_controller" ]
         ] ],
         [ "SoulWall", "namespace_battle_1_1_view_1_1_soul_wall.html", [
-          [ "BattleSoulWallViewController", "class_battle_1_1_view_1_1_soul_wall_1_1_battle_soul_wall_view_controller.html", "class_battle_1_1_view_1_1_soul_wall_1_1_battle_soul_wall_view_controller" ]
+          [ "BattleSoulWallViewController", "class_battle_1_1_view_1_1_soul_wall_1_1_battle_soul_wall_view_controller.html", "class_battle_1_1_view_1_1_soul_wall_1_1_battle_soul_wall_view_controller" ],
+          [ "BattleStoneCharacterViewController", "class_battle_1_1_view_1_1_soul_wall_1_1_battle_stone_character_view_controller.html", "class_battle_1_1_view_1_1_soul_wall_1_1_battle_stone_character_view_controller" ]
         ] ],
         [ "UI", "namespace_battle_1_1_view_1_1_u_i.html", [
           [ "BattleUiController", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_controller.html", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_controller" ],
@@ -110,7 +111,6 @@ var annotated_dup =
           [ "BattleUiTimerHandler", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_timer_handler.html", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_timer_handler" ]
         ] ],
         [ "BattleDebugOverlay", "class_battle_1_1_view_1_1_battle_debug_overlay.html", "class_battle_1_1_view_1_1_battle_debug_overlay" ],
-        [ "BattleStoneCharacterViewController", "class_battle_1_1_view_1_1_battle_stone_character_view_controller.html", "class_battle_1_1_view_1_1_battle_stone_character_view_controller" ],
         [ "Utils", "class_battle_1_1_view_1_1_utils.html", "class_battle_1_1_view_1_1_utils" ]
       ] ]
     ] ],
@@ -142,7 +142,6 @@ var annotated_dup =
         [ "BattleProjectileSpawnerQComponentPrototype", "class_quantum_1_1_prototypes_1_1_battle_projectile_spawner_q_component_prototype.html", "class_quantum_1_1_prototypes_1_1_battle_projectile_spawner_q_component_prototype" ],
         [ "BattleSoulWallQComponentPrototype", "class_quantum_1_1_prototypes_1_1_battle_soul_wall_q_component_prototype.html", "class_quantum_1_1_prototypes_1_1_battle_soul_wall_q_component_prototype" ],
         [ "BattleSoulWallTemplatePrototype", "class_quantum_1_1_prototypes_1_1_battle_soul_wall_template_prototype.html", "class_quantum_1_1_prototypes_1_1_battle_soul_wall_template_prototype" ],
-        [ "BattleWaitForPlayersDataPrototype", "class_quantum_1_1_prototypes_1_1_battle_wait_for_players_data_prototype.html", "class_quantum_1_1_prototypes_1_1_battle_wait_for_players_data_prototype" ],
         [ "InputPrototype", "class_quantum_1_1_prototypes_1_1_input_prototype.html", "class_quantum_1_1_prototypes_1_1_input_prototype" ]
       ] ],
       [ "BattleCharacterBase", "struct_quantum_1_1_battle_character_base.html", "struct_quantum_1_1_battle_character_base" ],
@@ -157,13 +156,11 @@ var annotated_dup =
       [ "BitSet512", "struct_quantum_1_1_bit_set512.html", "struct_quantum_1_1_bit_set512" ],
       [ "BitSet6", "struct_quantum_1_1_bit_set6.html", "struct_quantum_1_1_bit_set6" ],
       [ "QString512", "struct_quantum_1_1_q_string512.html", "struct_quantum_1_1_q_string512" ],
-      [ "QString64", "struct_quantum_1_1_q_string64.html", "struct_quantum_1_1_q_string64" ],
       [ "BattleGridPosition", "struct_quantum_1_1_battle_grid_position.html", "struct_quantum_1_1_battle_grid_position" ],
       [ "BattlePlayerHitboxColliderTemplate", "struct_quantum_1_1_battle_player_hitbox_collider_template.html", "struct_quantum_1_1_battle_player_hitbox_collider_template" ],
       [ "BattlePlayerHitboxTemplate", "struct_quantum_1_1_battle_player_hitbox_template.html", "struct_quantum_1_1_battle_player_hitbox_template" ],
       [ "BattlePlayerStats", "struct_quantum_1_1_battle_player_stats.html", "struct_quantum_1_1_battle_player_stats" ],
       [ "BattleSoulWallTemplate", "struct_quantum_1_1_battle_soul_wall_template.html", "struct_quantum_1_1_battle_soul_wall_template" ],
-      [ "BattleWaitForPlayersData", "struct_quantum_1_1_battle_wait_for_players_data.html", "struct_quantum_1_1_battle_wait_for_players_data" ],
       [ "Input", "struct_quantum_1_1_input.html", "struct_quantum_1_1_input" ],
       [ "_globals_", "struct_quantum_1_1__globals__.html", "struct_quantum_1_1__globals__" ],
       [ "BattleArenaBorderQComponent", "struct_quantum_1_1_battle_arena_border_q_component.html", "struct_quantum_1_1_battle_arena_border_q_component" ],
@@ -208,6 +205,7 @@ var annotated_dup =
       [ "EventBattleCharacterTakeDamage", "class_quantum_1_1_event_battle_character_take_damage.html", "class_quantum_1_1_event_battle_character_take_damage" ],
       [ "EventBattleShieldTakeDamage", "class_quantum_1_1_event_battle_shield_take_damage.html", "class_quantum_1_1_event_battle_shield_take_damage" ],
       [ "EventBattleGiveUpStateChange", "class_quantum_1_1_event_battle_give_up_state_change.html", "class_quantum_1_1_event_battle_give_up_state_change" ],
+      [ "EventBattleStoneCharacterPlayHitAnimation", "class_quantum_1_1_event_battle_stone_character_play_hit_animation.html", "class_quantum_1_1_event_battle_stone_character_play_hit_animation" ],
       [ "EventBattleDebugOnScreenMessage", "class_quantum_1_1_event_battle_debug_on_screen_message.html", "class_quantum_1_1_event_battle_debug_on_screen_message" ],
       [ "RuntimeConfig", "class_quantum_1_1_runtime_config.html", "class_quantum_1_1_runtime_config" ],
       [ "RuntimePlayer", "class_quantum_1_1_runtime_player.html", "class_quantum_1_1_runtime_player" ],

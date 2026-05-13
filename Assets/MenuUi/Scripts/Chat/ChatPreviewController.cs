@@ -50,6 +50,7 @@ public class ChatPreviewController : MonoBehaviour
             _chatMessageGameobjects[i] = chatMessage;
             chatMessage.GetComponentInChildren<Image>().color = Color.clear;
             chatMessage.GetComponentInChildren<TextMeshProUGUI>().text = "";
+            chatMessage.GetComponent<ChatMessagePrefab>().SetInfo(null);
         }
 
         _chatButtonRect = _toggleChatButton.gameObject.GetComponent<RectTransform>();
@@ -173,13 +174,13 @@ public class ChatPreviewController : MonoBehaviour
 
     internal void FetchMessagesFromActive(ChatChannelType type)
     {
-        if (type == ChatListener.Instance.GetActiveChannel.ChatChannelType)
+        if (type == ChatListener.Instance.GetActiveChannel?.ChatChannelType)
             MessageReceived(ChatListener.Instance.GetChatChannel(type));
     }
 
     internal void FetchMessagesFromActive(ChatChannelType type, ChatMessage message = null)
     {
-        if(type == ChatListener.Instance.GetActiveChannel.ChatChannelType)
+        if(type == ChatListener.Instance.GetActiveChannel?.ChatChannelType)
         MessageReceived(ChatListener.Instance.GetChatChannel(type));
     }
 

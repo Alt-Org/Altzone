@@ -1,3 +1,4 @@
+using Altzone.Scripts.Model.Poco.Game;
 using MenuUi.Scripts.Storage;
 using TMPro;
 using UnityEngine;
@@ -129,6 +130,10 @@ public class InvSlotInfoHandler : MonoBehaviour
         else _coin.SetActive(false);
     }
 
+    public void SetSlotInfo(GameFurniture furn, int sortingBy)
+    {
+        Debug.Log("GameFurniture received");
+    }
 
     private Color GetColorByRarity(string rarity)
     {

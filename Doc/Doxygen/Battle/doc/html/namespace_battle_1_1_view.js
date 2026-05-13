@@ -9,6 +9,5 @@ var namespace_battle_1_1_view =
     [ "SoulWall", "namespace_battle_1_1_view_1_1_soul_wall.html", "namespace_battle_1_1_view_1_1_soul_wall" ],
     [ "UI", "namespace_battle_1_1_view_1_1_u_i.html", "namespace_battle_1_1_view_1_1_u_i" ],
     [ "BattleDebugOverlay", "class_battle_1_1_view_1_1_battle_debug_overlay.html", "class_battle_1_1_view_1_1_battle_debug_overlay" ],
-    [ "BattleStoneCharacterViewController", "class_battle_1_1_view_1_1_battle_stone_character_view_controller.html", "class_battle_1_1_view_1_1_battle_stone_character_view_controller" ],
     [ "Utils", "class_battle_1_1_view_1_1_utils.html", "class_battle_1_1_view_1_1_utils" ]
 ];

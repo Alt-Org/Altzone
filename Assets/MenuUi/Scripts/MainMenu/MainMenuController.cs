@@ -1,16 +1,18 @@
-﻿using System.Collections;
-using Altzone.Scripts.Lobby;
+﻿using System;
+using System.Collections;
 using Altzone.Scripts.Audio;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Lobby;
 using MenuUi.Scripts.SwipeNavigation;
 using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 
 namespace MenuUi.Scripts.MainMenu
 {
     public class MainMenuController : MonoBehaviour
     {
+        [Tooltip("Interval to check window size")]
         public float _interval = 2f;
 
         private SwipeUI _swipe;
@@ -21,8 +23,15 @@ namespace MenuUi.Scripts.MainMenu
         private int lastWidth;
         private int lastHeight;
 
-        private SetVolume[] audioSources;
         private SettingsCarrier carrier = SettingsCarrier.Instance;
+
+        [Header("TurboEducation")]
+        [Tooltip("The buttons that should be disabled when a task is active on TurboEducation")]
+        [SerializeField]
+        private Button[] _buttonsToDisableOnTurboEducationTask;
+        [Tooltip("The game objects that should be disabled when a task is active on TurboEducation")]
+        [SerializeField]
+        private GameObject[] _objectsToDisableOnTurboEducationTask;
 
         private void Awake()
         {
@@ -37,27 +46,35 @@ namespace MenuUi.Scripts.MainMenu
             _swipe = GetComponentInParent<SwipeUI>();
             StartCoroutine(CheckWindowSize());
 
-            OverlayPanelCheck.Instance.gameObject.SetActive(true);
-            AudioManager.Instance?.SetCurrentAreaCategoryName("MainMenu");
+            OverlayPanelCheck.Instance?.gameObject.SetActive(true);
+            OverlayPanelCheck.Instance?.ToggleOverlay(true);
 
             try
             {
                 if (jukeboxMainMenu)
                 {
                     if (JukeboxManager.Instance != null && string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
-                        AudioManager.Instance?.PlayMusic("MainMenu");
+                        AudioManager.Instance?.PlayMusic(AudioCategoryType.MainMenu);
                 }
                 else
-                    AudioManager.Instance?.PlayMusic("MainMenu");
+                    AudioManager.Instance?.PlayMusic(AudioCategoryType.MainMenu);
             }
             catch (Exception e) { Debug.LogException(e); }
 
             if(!LobbyManager.IsActive) LobbyManager.Instance.Activate();
             if (LobbyManager.Instance.RunnerActive) LobbyManager.CloseRunner();
+
+            StartCoroutine(EnableChooseTask());
+
+            UpdateTurboEdObjectsState();
         }
 
         private void Start()
         {
+
+            ChooseTask.OnChooseTaskShown += DisableTurboEdObjects;
+            DailyTaskProgressManager.OnTaskDone += UpdateTurboEdObjectsState;
+
             var windowManager = WindowManager.Get();
             if (_swipe)
             {
@@ -66,8 +83,15 @@ namespace MenuUi.Scripts.MainMenu
                 SetMainMenuLayoutDimensions();
             }
             AudioManager.Instance.UpdateMaxVolume();
+            OverlayPanelCheck.Instance?.UpdateButtonContent();
         }
 
+        private void OnDestroy()
+        {
+            ChooseTask.OnChooseTaskShown -= DisableTurboEdObjects;
+            DailyTaskProgressManager.OnTaskDone -= UpdateTurboEdObjectsState;
+
+        }
         /// <summary>
         /// Sets the correct windows size to swipeable main menu windows.
         /// </summary>
@@ -105,7 +129,7 @@ namespace MenuUi.Scripts.MainMenu
         /// <remarks>
         /// This might only be necessary on PC and Unity Editor
         /// </remarks>
-        private IEnumerator CheckWindowSize() //Tällä saa ikkunan koon.
+        private IEnumerator CheckWindowSize()
         {
             while (_swipe)
             {
@@ -119,6 +143,43 @@ namespace MenuUi.Scripts.MainMenu
 
                 yield return new WaitForSeconds(_interval);
             }
+        }
+
+
+        private IEnumerator EnableChooseTask()
+        {
+            yield return new WaitUntil(() => GameObject.FindObjectOfType<ChooseTask>() != null);
+
+            // Initialize ChooseTask.cs
+            GameObject.FindObjectOfType<ChooseTask>().InitializeChooseTask();
+        }
+
+        /// <summary>
+        /// This is to enable/disable specified objects and buttons on TurboEducation when a task is active
+        /// </summary>
+        private void UpdateTurboEdObjectsState()
+        {
+            if (GameConfig.Get().GameVersionType == VersionType.TurboEducation)
+            {
+                SetTurboEdObjectsState(!DailyTaskProgressManager.Instance.HasOnGoingTask());
+            }
+        }
+
+        public void SetTurboEdObjectsState(bool active)
+        {
+            foreach (Button button in _buttonsToDisableOnTurboEducationTask)
+            {
+                button.interactable = active;
+            }
+            foreach (GameObject gameObject in _objectsToDisableOnTurboEducationTask)
+            {
+                gameObject.SetActive(active);
+            }
+        }
+
+        private void DisableTurboEdObjects()
+        {
+            SetTurboEdObjectsState(false);
         }
     }
 }

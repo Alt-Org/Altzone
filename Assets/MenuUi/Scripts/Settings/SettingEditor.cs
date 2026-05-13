@@ -21,7 +21,8 @@ public class SettingEditor : MonoBehaviour
     [SerializeField] private Button _battleSettingsButton;
     [SerializeField] private BattleUiEditor _battleEditor;
     [SerializeField] private GameObject[] _settingsPopups;
-    [SerializeField] private Button _topBarStyleButton;
+    [SerializeField] private Button _topBarStyleButtonRight;
+    [SerializeField] private Button _topBarStyleButtonLeft;
     [SerializeField] private TextLanguageSelectorCaller _topBarStyleText;
 
     [SerializeField] private Image _languageImage;
@@ -67,7 +68,8 @@ public class SettingEditor : MonoBehaviour
 
         PlayerPrefs.SetFloat("MasterVolume", 1f);
 
-        _topBarStyleButton.onClick.AddListener(() => ChangeTopbarStyle());
+        _topBarStyleButtonRight.onClick.AddListener(() => ChangeTopbarStyle(1));
+        _topBarStyleButtonLeft.onClick.AddListener(() => ChangeTopbarStyle(-1));
         _topBarStyleText.SetText(SettingsCarrier.Instance.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
 
         _introSkipToggle.onValueChanged.AddListener(_ => SetIntroSkip());
@@ -76,6 +78,17 @@ public class SettingEditor : MonoBehaviour
     private void OnDisable()
     {
         SettingsCarrier.OnLanguageChanged -= ChangeLanguage;
+
+
+
+        foreach(GameObject popup in _settingsPopups)
+            {
+            if (popup.activeSelf)
+            {
+                SettingsPopup PopScript = popup.GetComponent<SettingsPopup>();
+                PopScript.ClosePopup();
+            }
+        }
     }
 
     public void SetFromSlider(Slider usedSlider)
@@ -145,13 +158,26 @@ public class SettingEditor : MonoBehaviour
         carrier.ShowButtonLabels = _showButtonLabelsToggle.isOn;
     }
 
-    public void ChangeTopbarStyle()
+    public void ChangeTopbarStyle(int value)
     {
-        if (carrier.TopBarStyleSetting == ((SettingsCarrier.TopBarStyle[])Enum.GetValues(typeof(SettingsCarrier.TopBarStyle))).ToList().Last())
+
+
+        /// Uses the <see cref="TopBarStyle"/>  to get data we need
+        int index = (int)carrier.TopBarStyleSetting;
+        int max = (int)(SettingsCarrier.TopBarStyle)Enum.GetValues(typeof(SettingsCarrier.TopBarStyle)).Length - 1;
+
+        index += value;
+
+        if (index > max)
         {
-            carrier.TopBarStyleSetting = 0;
+            index = 0;
+        } else if(index < 0)
+        {
+            index = max;
         }
-        else carrier.TopBarStyleSetting++;
+
+        carrier.TopBarStyleSetting = (SettingsCarrier.TopBarStyle)index;
+
 
         _topBarStyleText.SetText(SettingsCarrier.Instance.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
 
@@ -170,7 +196,7 @@ public class SettingEditor : MonoBehaviour
                 _languageImage.sprite = _englishSprite;
                 break;
         }
-        _languageCaller.SetText(language, new string[0]);
+        if(_languageCaller != null) _languageCaller.SetText(language, new string[0]);
         _topBarStyleText.SetText(SettingsCarrier.Instance.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
     }
 }

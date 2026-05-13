@@ -89,7 +89,7 @@ var searchData=
   ['battlesoulwalltemplate_86',['BattleSoulWallTemplate',['../struct_quantum_1_1_battle_soul_wall_template.html',1,'Quantum']]],
   ['battlesoulwalltemplateprototype_87',['BattleSoulWallTemplatePrototype',['../class_quantum_1_1_prototypes_1_1_battle_soul_wall_template_prototype.html',1,'Quantum::Prototypes']]],
   ['battlesoulwallviewcontroller_88',['BattleSoulWallViewController',['../class_battle_1_1_view_1_1_soul_wall_1_1_battle_soul_wall_view_controller.html',1,'Battle::View::SoulWall']]],
-  ['battlestonecharacterviewcontroller_89',['BattleStoneCharacterViewController',['../class_battle_1_1_view_1_1_battle_stone_character_view_controller.html',1,'Battle::View']]],
+  ['battlestonecharacterviewcontroller_89',['BattleStoneCharacterViewController',['../class_battle_1_1_view_1_1_soul_wall_1_1_battle_stone_character_view_controller.html',1,'Battle::View::SoulWall']]],
   ['battletest_90',['BattleTest',['../class_battle_1_1_scripts_1_1_battle_test.html',1,'Battle::Scripts']]],
   ['battleuiannouncementhandler_91',['BattleUiAnnouncementHandler',['../class_battle_1_1_view_1_1_u_i_1_1_battle_ui_announcement_handler.html',1,'Battle::View::UI']]],
   ['battleuicharacterbuttoncomponent_92',['BattleUiCharacterButtonComponent',['../class_battle_1_1_view_1_1_u_i_1_1_battle_ui_character_button_component.html',1,'Battle::View::UI']]],
@@ -111,12 +111,10 @@ var searchData=
   ['battleuiplayerinfohandler_108',['BattleUiPlayerInfoHandler',['../class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html',1,'Battle::View::UI']]],
   ['battleuiprefabs_109',['BattleUiPrefabs',['../class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_battle_ui_prefabs.html',1,'Altzone::Scripts::BattleUiShared']]],
   ['battleuitimerhandler_110',['BattleUiTimerHandler',['../class_battle_1_1_view_1_1_u_i_1_1_battle_ui_timer_handler.html',1,'Battle::View::UI']]],
-  ['battlewaitforplayersdata_111',['BattleWaitForPlayersData',['../struct_quantum_1_1_battle_wait_for_players_data.html',1,'Quantum']]],
-  ['battlewaitforplayersdataprototype_112',['BattleWaitForPlayersDataPrototype',['../class_quantum_1_1_prototypes_1_1_battle_wait_for_players_data_prototype.html',1,'Quantum::Prototypes']]],
-  ['bitset128_113',['BitSet128',['../struct_quantum_1_1_bit_set128.html',1,'Quantum']]],
-  ['bitset2048_114',['BitSet2048',['../struct_quantum_1_1_bit_set2048.html',1,'Quantum']]],
-  ['bitset256_115',['BitSet256',['../struct_quantum_1_1_bit_set256.html',1,'Quantum']]],
-  ['bitset4096_116',['BitSet4096',['../struct_quantum_1_1_bit_set4096.html',1,'Quantum']]],
-  ['bitset512_117',['BitSet512',['../struct_quantum_1_1_bit_set512.html',1,'Quantum']]],
-  ['bitset6_118',['BitSet6',['../struct_quantum_1_1_bit_set6.html',1,'Quantum']]]
+  ['bitset128_111',['BitSet128',['../struct_quantum_1_1_bit_set128.html',1,'Quantum']]],
+  ['bitset2048_112',['BitSet2048',['../struct_quantum_1_1_bit_set2048.html',1,'Quantum']]],
+  ['bitset256_113',['BitSet256',['../struct_quantum_1_1_bit_set256.html',1,'Quantum']]],
+  ['bitset4096_114',['BitSet4096',['../struct_quantum_1_1_bit_set4096.html',1,'Quantum']]],
+  ['bitset512_115',['BitSet512',['../struct_quantum_1_1_bit_set512.html',1,'Quantum']]],
+  ['bitset6_116',['BitSet6',['../struct_quantum_1_1_bit_set6.html',1,'Quantum']]]
 ];

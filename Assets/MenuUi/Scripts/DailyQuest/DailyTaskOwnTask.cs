@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Language;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static DailyTaskProgressManager;
 
 public class DailyTaskOwnTask : MonoBehaviour
 {
@@ -73,6 +75,22 @@ public class DailyTaskOwnTask : MonoBehaviour
     [SerializeField] private Color _ethicalCategoryColor;
     [SerializeField] private Color _defaultColor;
 
+    [Header("Daily Stats")]
+    [SerializeField]
+    private TextMeshProUGUI _dailyStatsTitle;
+
+    [SerializeField]
+    private TextLanguageSelectorCaller _battlesPlayedText;
+
+    [SerializeField]
+    private TextLanguageSelectorCaller _tasksDoneText;
+
+    public delegate void CurrentTaskInfoNeeded();
+    public static event CurrentTaskInfoNeeded OnCurrentTaskInfoNeeded;
+
+    public delegate void TaskHintNeeded(PlayerTask task);
+    public static event TaskHintNeeded OnTaskHintNeeded;
+
     private void Start()
     {
         CreateProgressBarMarkers(_progressMarkersMaxAmount);
@@ -85,12 +103,34 @@ public class DailyTaskOwnTask : MonoBehaviour
         SettingsCarrier.OnLanguageChanged -= UpdateLanguage;
     }
 
+    private void OnEnable()
+    {
+        UpdateOwnTaskPage();
+        
+    }
+
     #region Task
+
+
+    public void UpdateOwnTaskPage()
+    {
+        PlayerTask taskData = DailyTaskProgressManager.Instance.CurrentPlayerTask;
+
+        if (taskData == null) return;
+
+        float progress = (float)taskData.TaskProgress / (float)taskData.Amount;
+        StartCoroutine(SetDailyTask(taskData));
+        SetTaskProgress(progress);
+        TESTSetTaskValue(taskData.TaskProgress);
+
+        UpdateDailyStatsUI();
+    }
+
 
     public IEnumerator SetDailyTask(PlayerTask data)
     {
         _currentTask = data;
-        SetTaskTitle(data, SettingsCarrier.Instance.Language);
+        SetTaskTitle(data);
         SetTaskCategory(data, SettingsCarrier.Instance.Language);
         _taskPointsReward.text = "" + data.Points;
         _taskCoinsReward.text = "" + data.Coins;
@@ -167,9 +207,9 @@ public class DailyTaskOwnTask : MonoBehaviour
         SetProgressBarMarkers(0);
     }
 
-    private void SetTaskTitle(PlayerTask task, SettingsCarrier.LanguageType language)
+    private void SetTaskTitle(PlayerTask task)
     {
-        _taskDescription.text = language == SettingsCarrier.LanguageType.Finnish ? task.Title : task.EnglishTitle;
+        _taskDescription.text = task.Title;
     }
 
     private void SetTaskCategory(PlayerTask task, SettingsCarrier.LanguageType language)
@@ -185,31 +225,31 @@ public class DailyTaskOwnTask : MonoBehaviour
                 case EducationCategoryType.Action:
                     {
                         _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Toiminnallinen pelilukutaito" : "Functional game literacy";
-                        _taskBackground.color = _actionCategoryColor;
+                        //_taskBackground.color = _actionCategoryColor;
                         break;
                     }
                 case EducationCategoryType.Social:
                     {
                         _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Sosiaalinen pelilukutaito" : "Social game literacy";
-                        _taskBackground.color = _socialCategoryColor;
+                        //_taskBackground.color = _socialCategoryColor;
                         break;
                     }
                 case EducationCategoryType.Story:
                     {
                         _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Tarinallinen pelilukutaito" : "Story-based game literacy";
-                        _taskBackground.color = _storyCategoryColor;
+                        //_taskBackground.color = _storyCategoryColor;
                         break;
                     }
                 case EducationCategoryType.Culture:
                     {
                         _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Kulttuurinen pelilukutaito" : "Cultural game literacy";
-                        _taskBackground.color = _cultureCategoryColor;
+                        //_taskBackground.color = _cultureCategoryColor;
                         break;
                     }
                 case EducationCategoryType.Ethical:
                     {
                         _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Eettinen pelilukutaito" : "Ethical game literacy";
-                        _taskBackground.color = _ethicalCategoryColor;
+                        //_taskBackground.color = _ethicalCategoryColor;
                         break;
                     }
                 default:
@@ -227,7 +267,7 @@ public class DailyTaskOwnTask : MonoBehaviour
     {
         if (_currentTask != null)
         {
-            SetTaskTitle(_currentTask, language);
+            SetTaskTitle(_currentTask);
             SetTaskCategory(_currentTask, language);
         }
     }
@@ -274,5 +314,24 @@ public class DailyTaskOwnTask : MonoBehaviour
     {
 
 
+    }
+
+    private void UpdateDailyStatsUI()
+    {
+        _battlesPlayedText.SetText(SettingsCarrier.Instance.Language, new[] { DailyStats.Instance.GetBattlesPlayed().ToString() });
+        _tasksDoneText.SetText(SettingsCarrier.Instance.Language, new[] { DailyStats.Instance.GetTasksDone().ToString() });
+    }
+
+    // Currently used on DailyTask OwnTask page on ShowCurrentTaskInfoButton
+    public void ShowCurrentTaskInfo()
+    {
+        OnCurrentTaskInfoNeeded.Invoke();
+    }
+
+    // Currently used on DailyTask OwnTask page on TaskHintButton
+    public void ShowCurrentTaskHint()
+    {
+        if (_currentTask == null) return;
+        OnTaskHintNeeded.Invoke(_currentTask);
     }
 }

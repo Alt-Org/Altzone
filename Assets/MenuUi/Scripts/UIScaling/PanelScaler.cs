@@ -1,3 +1,4 @@
+using MenuUi.Scripts.Window;
 using UnityEngine;
 
 namespace MenuUi.Scripts.UIScaling
@@ -19,8 +20,8 @@ namespace MenuUi.Scripts.UIScaling
         const double HighestBottomPanelHeight = 0.25;
 
         // Percentage values for the top panel, lowest is for slim and tall phones and highest is for IPad aspect ratio.
-        const double LowestTopPanelHeight = 0.07;
-        const double HighestTopPanelHeight = 0.09;
+        const double LowestTopPanelHeight = 0.09;
+        const double HighestTopPanelHeight = 0.11;
 
         int _lastScreenWidth = 0;
         int _lastScreenHeight = 0;
@@ -28,6 +29,16 @@ namespace MenuUi.Scripts.UIScaling
         private void Awake()
         {
             SetPanelAnchors();
+        }
+
+        private void OnEnable()
+        {
+            OverlayPanelCheck.OnChatBarToggled += UpdateBottomLine;
+            if(OverlayPanelCheck.Instance) UpdateBottomLine(OverlayPanelCheck.Instance.ChatActive);
+        }
+        private void OnDisable()
+        {
+            OverlayPanelCheck.OnChatBarToggled -= UpdateBottomLine;
         }
 
 #if (UNITY_EDITOR)
@@ -44,7 +55,9 @@ namespace MenuUi.Scripts.UIScaling
 
         protected virtual void SetPanelAnchors()
         {
-            _bottomPanelRectTransfrom.anchorMax = new Vector2(1, CalculateBottomPanelHeight());
+            float bottomLine = CalculateBottomPanelHeight();
+            if (OverlayPanelCheck.Instance && !OverlayPanelCheck.Instance.ChatActive) bottomLine /= 2f;
+            _bottomPanelRectTransfrom.anchorMax = new Vector2(1, bottomLine);
 
             _topPanelRectTransfrom.anchorMin = new Vector2(0, 1 - (CalculateTopPanelHeight() + CalculateUnsafeAreaHeight()));
             _topPanelRectTransfrom.anchorMax = new Vector2(1, 1 - CalculateUnsafeAreaHeight());
@@ -112,6 +125,13 @@ namespace MenuUi.Scripts.UIScaling
             {
                 return (float)((Screen.currentResolution.height - Screen.safeArea.height) / Screen.currentResolution.height);
             }
+        }
+
+        protected virtual void UpdateBottomLine(bool value)
+        {
+            float bottomLine = CalculateBottomPanelHeight();
+            if (!value) bottomLine /= 2f;
+            _bottomPanelRectTransfrom.anchorMax = new(1, bottomLine);
         }
     }
 }

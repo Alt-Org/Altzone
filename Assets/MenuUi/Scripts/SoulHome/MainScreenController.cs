@@ -23,13 +23,9 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _hoverButtons;
         [SerializeField]
-        private GameObject _leaveRoomButton;
-        [SerializeField]
         private GameObject _furnitureButtonTray;
         [SerializeField]
         private GameObject _changeHandleButtonTray;
-        [SerializeField]
-        private GameObject _overlayBar;
         [SerializeField]
         private GameObject _verticalItemTray;
         [SerializeField]
@@ -49,20 +45,11 @@ namespace MenuUI.Scripts.SoulHome
 
         internal bool TrayOpen { get => _trayOpen; set => _trayOpen = value; }
         internal GameObject SelectedFurnitureTray { get => _selectedFurnitureTray;}
-        public GameObject LeaveRoomButton { get => _leaveRoomButton;}
         public GameObject TempSelectedFurnitureTray { get => _tempSelectedFurnitureTray;}
 
         // Start is called before the first frame update
         void Start()
         {
-            if (AppPlatform.IsMobile || AppPlatform.IsSimulator)
-            {
-                Screen.autorotateToPortrait = true;
-                Screen.autorotateToPortraitUpsideDown = false;
-                Screen.autorotateToLandscapeRight = false;
-                Screen.autorotateToLandscapeLeft = true;
-                Screen.orientation = ScreenOrientation.AutoRotation;
-            }
             EnhancedTouchSupport.Enable();
             EnableTray(false);
             //transform.Find("Itemtray").GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().sizeDelta.x * 0.8f, transform.Find("Itemtray").GetComponent<RectTransform>().sizeDelta.y);
@@ -135,20 +122,11 @@ namespace MenuUI.Scripts.SoulHome
 
         private void OnEnable()
         {
-            if (AppPlatform.IsMobile || AppPlatform.IsSimulator)
-            {
-                Screen.autorotateToPortrait = true;
-                Screen.autorotateToPortraitUpsideDown = false;
-                Screen.autorotateToLandscapeRight = false;
-                Screen.autorotateToLandscapeLeft = true;
-                Screen.orientation = ScreenOrientation.AutoRotation;
-            }
             EnableTray(false);
         }
 
         private void OnDisable()
         {
-            if (AppPlatform.IsMobile || AppPlatform.IsSimulator) Screen.orientation = ScreenOrientation.Portrait;
             _soulHomeTower.ResetChanges();
         }
 
@@ -563,7 +541,7 @@ namespace MenuUI.Scripts.SoulHome
             if (!_rotated)
             {
                 screen.GetComponent<RectTransform>().anchorMax = new(1f, 1f);
-                screen.GetComponent<RectTransform>().anchorMin = new(0f, 0.1f);
+                screen.GetComponent<RectTransform>().anchorMin = new(0f, 0f);
                 screen.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             }
             else
@@ -747,12 +725,12 @@ namespace MenuUI.Scripts.SoulHome
             GameObject horizontalContent = GetHorizontalTrayHandler().GetTrayContent();
             if (_rotated)
             {
-                _overlayBar.gameObject.SetActive(false);
+                OverlayPanelCheck.Instance.ToggleBottomBar(false);
                 SwitchTray(horizontalContent, verticalContent);
             }
             else
             {
-                if(!_trayOpen)_overlayBar.gameObject.SetActive(true);
+                if(!_trayOpen) OverlayPanelCheck.Instance.ToggleBottomBar(true);
                 SwitchTray(verticalContent, horizontalContent);
             }
             GetTrayHandler().GetComponent<ResizeCollider>().Resize();

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using Altzone.Scripts.Chat;
 using MenuUi.Scripts.AvatarEditor;
-using Assets.Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Model.Poco.Player;
 using System.Text;
 using System.Collections;
 
@@ -22,6 +22,9 @@ public class ChatMessagePrefab : MonoBehaviour
 
     internal void SetInfo(ChatMessage message)
     {
+        if (message == null) { _profileImage.gameObject.SetActive(false); return; }
+        else _profileImage.gameObject.SetActive(true);
+
         SetMessage(message.Message);
         SetProfilePicture(message.Avatar);
         SetMood(message.Mood);

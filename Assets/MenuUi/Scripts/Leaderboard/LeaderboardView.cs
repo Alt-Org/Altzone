@@ -13,8 +13,6 @@ public class LeaderboardView : MonoBehaviour
     [Header("Tabline")]
     [SerializeField] private Button _globalPlayersLeaderboardButton;
     [SerializeField] private Image _globalPlayersLeaderboardImage;
-    [SerializeField] private Button _clanLeaderboardButton;
-    [SerializeField] private Image _clanLeaderboardImage;
     [SerializeField] private Button _friendsLeaderboardButton;
     [SerializeField] private Image _friendsLeaderboardImage; 
     [SerializeField] private Image _tablineRibbon;
@@ -52,7 +50,6 @@ public class LeaderboardView : MonoBehaviour
     private void Start()
     {
         _globalPlayersLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.GlobalPlayers));
-        _clanLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Clan));
         _friendsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Friends));
         _globalClansLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.GlobalClans)); 
 
@@ -136,10 +133,10 @@ public class LeaderboardView : MonoBehaviour
                         {
                             AvatarVisualData avatarVisualData = null;
 
-                            if (ranking.Player.SelectedCharacterId != 0)
-                            {
+                            //if (ranking.Player.SelectedCharacterId != 0)
+                            //{
                                 avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(ranking.Player);
-                            }
+                            //}
 
 
                             if (rank < 4) //The top three are displayed on the podium
@@ -179,10 +176,10 @@ public class LeaderboardView : MonoBehaviour
                             PlayerData playerData = player.GetPlayerData();
                             AvatarVisualData avatarVisualData = null;
 
-                            if (playerData.SelectedCharacterId != 0)
-                            {
+                            //if (playerData.SelectedCharacterId != 0)
+                            //{
                                 avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData);
-                            }
+                            //}
 
 
                             if (rank < 4)

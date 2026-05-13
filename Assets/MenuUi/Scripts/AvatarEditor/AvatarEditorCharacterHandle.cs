@@ -1,6 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.AvatarPartsInfo;
-using Assets.Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -87,7 +88,7 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         }
     }
 
-    public void SetMainCharacterImage(AvatarPiece feature, AvatarPartInfo partInfo, Color partColor)
+    public IEnumerator SetMainCharacterImage(AvatarPiece feature, AvatarPartInfo partInfo, Color partColor)
     {
         Sprite image = partInfo ? partInfo.AvatarImage : null;
         Sprite mask = partInfo ? partInfo.MaskImage : null;
@@ -97,12 +98,12 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         {
             case AvatarPiece.Hair:
                 SetImage(_mainHair, image);
-                SetHairImage(_mainHair, mask, partColor, isColorable);
+                yield return (SetHairImage(_mainHair, mask, partColor, isColorable));
                 break;
 
             case AvatarPiece.Eyes:
                 SetImage(_mainEyes, image);
-                SetMaskImage(_mainEyes, mask, partColor, isColorable);
+                yield return (SetMaskImage(_mainEyes, mask, partColor, isColorable));
                 break;
 
             case AvatarPiece.Nose:
@@ -122,13 +123,12 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
 
             case AvatarPiece.Mouth:
                 SetImage(_mainMouth, image);
-                SetMaskImage(_mainMouth, mask, partColor, isColorable);
+                yield return (SetMaskImage(_mainMouth, mask, partColor, isColorable));
                 break;
 
             case AvatarPiece.Clothes:
                 SetImage(_mainBody, image);
-                SetMaskImage(_mainBody, mask, partColor, isColorable);
-
+                yield return (SetMaskImage(_mainBody, mask, partColor, isColorable));
                 if (_mainHair != null && _mainHair.sprite != null)
                 {
                     _mainHair.material.SetTexture("_BodyTex", _mainBody.sprite.texture);
@@ -137,12 +137,12 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
 
             case AvatarPiece.Hands:
                 SetImage(_mainHands, image);
-                SetMaskImage(_mainHands, mask, partColor, isColorable);
+                yield return (SetMaskImage(_mainHands, mask, partColor, isColorable));
                 break;
 
             case AvatarPiece.Feet:
                 SetImage(_mainFeet, image);
-                SetMaskImage(_mainFeet, mask, partColor, isColorable);
+                yield return (SetMaskImage(_mainFeet, mask, partColor, isColorable));
                 break;
         }
     }
@@ -151,7 +151,7 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
     {
         if (image == null)
         {
-            imageComponent.enabled = false;
+            //imageComponent.enabled = false;
             return;
         }
 
@@ -159,12 +159,12 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         imageComponent.sprite = image;
     }
 
-    private void SetHairImage(Image avatarImage, Sprite maskSprite, Color selectedColor, bool isColorable)
+    private IEnumerator SetHairImage(Image avatarImage, Sprite maskSprite, Color selectedColor, bool isColorable)
     {
         // Hair uses a different shader & material to replace parts overlapping the body with transparency
         if (avatarImage.sprite == null)
         {
-            return;
+            yield break;
         }
 
         EnsureHairMaterial();
@@ -182,6 +182,8 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
             maskTex = AvatarMaskUtility.GetSelectedColorMask(avatarImage.sprite.texture);
         }
 
+        yield return new WaitForEndOfFrame();
+
         _mainHair.material.SetFloat("_Colorable", isColorable ? 1f : 0f);
         _mainHair.material.SetTexture("_MaskTex", maskTex);
         _mainHair.material.SetColor("_SkinColor", _skinColor);
@@ -197,6 +199,9 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
             // Without this hair disappears if only showing the head image
             _mainHair.material.SetTexture("_BodyTex", AvatarMaskUtility.GetTransparentTexPixel);
         }
+        _mainHair.gameObject.SetActive(false); // This is a little scuff, but the image doesn't update itself properly otherwise.
+        //yield return null;
+        _mainHair.gameObject.SetActive(true);
     }
 
     private void EnsureHairMaterial()
@@ -208,11 +213,11 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
         }
     }
 
-    private void SetMaskImage(Image avatarImage, Sprite maskSprite, Color selectedColor, bool isColorable)
+    private IEnumerator SetMaskImage(Image avatarImage, Sprite maskSprite, Color selectedColor, bool isColorable)
     {
         if (avatarImage.sprite == null)
         {
-            return;
+            yield break;
         }
 
         EnsureMaterial(avatarImage);
@@ -230,11 +235,17 @@ public class AvatarEditorCharacterHandle : MonoBehaviour
             maskTex = AvatarMaskUtility.GetSelectedColorMask(avatarImage.sprite.texture);
         }
 
+        yield return new WaitForEndOfFrame();
+
         avatarImage.material.SetFloat("_Colorable", isColorable ? 1f : 0f);
         avatarImage.material.SetTexture("_MaskTex", maskTex);
         avatarImage.material.SetColor("_SkinColor", _skinColor);
         avatarImage.material.SetColor("_SelectedColor", selectedColor);
         avatarImage.material.SetColor("_ClassColor", _classColor);
+
+        avatarImage.gameObject.SetActive(false); // This is a little scuff, but the image doesn't update itself properly otherwise.
+        //yield return null;
+        avatarImage.gameObject.SetActive(true);
     }
 
     private void EnsureMaterial(Image image)

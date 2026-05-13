@@ -9,7 +9,10 @@
 // Unity usings
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+using Button = UnityEngine.UI.Button;
+
+// Quantum usings
+using Quantum;
 
 // Altzone usings
 using Altzone.Scripts.ModelV2;
@@ -48,10 +51,6 @@ namespace Battle.View.UI
         /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private Image _damageFill;
 
-        /// <summary>[SerializeField] Reference to the defence value text of the character button.</summary>
-        /// @ref BattleUiCharacterButtonComponent-SerializeFields
-        [SerializeField] private TextMeshProUGUI _defenceValue;
-
         /// <summary>[SerializeField] The duration for damage fill animation.</summary>
         /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private float _damageFillAnimationDuration = 0.5f;
@@ -69,7 +68,7 @@ namespace Battle.View.UI
         /// </summary>
         ///
         /// <param name="characterId">The CharacterId of the character as a int.</param>
-        public void SetCharacterIcon(int characterId)
+        public void SetCharacterIcon(BattlePlayerCharacterID characterId)
         {
             PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(characterId.ToString());
 
@@ -105,18 +104,6 @@ namespace Battle.View.UI
             _t = 0f;
             _startDamageFillAmount = _damageFill.fillAmount;
             _targetDamageFillAmount = 1 - percentage;
-        }
-
-        /// <summary>
-        /// Sets the number on the UI to match the defence value.<br/>
-        /// The number does not go below 0.
-        /// </summary>
-        ///
-        /// <param name="defenceValue">The defence value of the character.</param>
-        public void SetDefenceNumber(float defenceValue)
-        {
-            defenceValue = Mathf.Max(defenceValue, 0f);
-            _defenceValue.text = defenceValue.ToString();
         }
 
         /// <value>The starting damage fill amount for the fill animation.</value>

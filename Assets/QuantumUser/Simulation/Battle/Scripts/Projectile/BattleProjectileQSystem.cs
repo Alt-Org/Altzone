@@ -294,15 +294,15 @@ namespace Battle.QSimulation.Projectile
                     BattleCollisionQSystem.PlayerShieldCollisionData* dataPtr = (BattleCollisionQSystem.PlayerShieldCollisionData*)data;
                     BattlePlayerHitboxQComponent* playerShieldHitbox = dataPtr->PlayerShieldHitbox;
 
-                    if (FPVector2.Dot(playerShieldHitbox->Normal, projectile->Direction.Normalized) >= 0) break;
+                    if (FPVector2.Dot(playerShieldHitbox->CalculateNormal(f), projectile->Direction.Normalized) >= 0) break;
 
                     if (!ProjectileHitPlayerShield(f, projectile, dataPtr, out normal)) break;
-                    
+
                     collisionType      = playerShieldHitbox->CollisionType;
                     collisionMinOffset = playerShieldHitbox->CollisionMinOffset;
                     speedChange        = SpeedChange.Increment;
                     handleCollision    = true;
-                    
+
                     break;
 
                 case BattleCollisionTriggerType.Player:
@@ -310,14 +310,14 @@ namespace Battle.QSimulation.Projectile
 
                     if (projectile->EmotionCurrent == BattleEmotionState.Love) break;
 
-                    if (FPVector2.Dot(playerCharacterHitbox->Normal, projectile->Direction.Normalized) >= 0) break;
+                    if (FPVector2.Dot(playerCharacterHitbox->CalculateNormal(f), projectile->Direction.Normalized) >= 0) break;
 
-                    normal             = playerCharacterHitbox->Normal;
+                    normal             = playerCharacterHitbox->CalculateNormal(f);
                     collisionType      = playerCharacterHitbox->CollisionType;
                     collisionMinOffset = playerCharacterHitbox->CollisionMinOffset;
                     speedChange        = SpeedChange.Increment;
                     handleCollision    = true;
-                    
+
                     break;
 
                 default:
@@ -447,10 +447,11 @@ namespace Battle.QSimulation.Projectile
         {
             normal = FPVector2.Zero;
 
-            if (!shieldCollisionData->PlayerShieldHitbox->IsActive) return false;
+            BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
+
             if (projectile->EmotionCurrent == BattleEmotionState.Love) return false;
 
-            BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
+            BattlePlayerDataQComponent* playerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
 
             bool isOnTopOfTeammate = false;
 
@@ -458,9 +459,9 @@ namespace Battle.QSimulation.Projectile
 
             if (teammateHandle.PlayState.IsInPlay())
             {
-                EntityRef teammateEntity = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot).SelectedCharacterEntity;
+                EntityRef teammateEntity = teammateHandle.GetSelectedCharacterEntityRef(f);
 
-                Transform2D* playerTransform   = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
+                Transform2D* playerTransform   = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
                 Transform2D* teammateTransform = f.Unsafe.GetPointer<Transform2D>(teammateEntity);
 
                 BattleGridPosition playerGridPosition   = BattleGridManager.WorldPositionToGridPosition(playerTransform->Position);
@@ -483,7 +484,7 @@ namespace Battle.QSimulation.Projectile
 
             if (shieldCollisionData->PlayerShieldHitbox->CollisionType == BattlePlayerCollisionType.None) return false;
 
-            normal = shieldCollisionData->PlayerShieldHitbox->Normal;
+            normal = shieldCollisionData->PlayerShieldHitbox->CalculateNormal(f);
             return true;
         }
 
