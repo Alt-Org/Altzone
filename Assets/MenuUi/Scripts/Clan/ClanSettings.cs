@@ -386,15 +386,17 @@ public class ClanSettings : AltMonoBehaviour
         var player = serverManager.Player;
         if (player == null) return false;
 
+        if (clanData == null) return false;
+
         if (player.clan_id != clanData.Id) return false;
 
         var roleId = player.clanRole_id;
         if (string.IsNullOrEmpty(roleId)) return false;
 
         var role = clanData.ClanRoles?.Find(r => r._id == roleId);
-        if (role == null || role.rights == null) return false;
+        if (role == null) return false;
 
-        return role.rights.edit_clan_data;
+        return role.name.Equals("leader", StringComparison.OrdinalIgnoreCase);
     }
 
 
@@ -418,7 +420,7 @@ public class ClanSettings : AltMonoBehaviour
 
         if (!CanCurrentPlayerEditClan(_currentClanData))
         {
-            SignalBus.OnChangePopupInfoSignal("Mites pääsit tähän ikkunaan? Sinulla ei ole oikeuksia muokata klaanin asetuksia.");
+            SignalBus.OnChangePopupInfoSignal("Vain klaanin johtaja voi muokata klaanin asetuksia.");
             _saveButton.interactable = true;
             return;
         }

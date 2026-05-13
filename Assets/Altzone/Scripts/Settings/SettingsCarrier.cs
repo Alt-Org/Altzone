@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
 using static Altzone.Scripts.Chat.ChatListener;
+using Altzone.Scripts.Audio;
 
 public class SettingsCarrier : MonoBehaviour // Script for carrying settings data between scenes
 {
@@ -72,12 +73,12 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         NewNiko
     }
 
-    public enum JukeboxPlayArea
-    {
-        MainMenu,
-        Soulhome,
-        Battle
-    }
+    // public enum JukeboxPlayArea
+    // {
+    //     MainMenu,
+    //     Soulhome,
+    //     Battle
+    // }
 
     public enum SettingsType
     {
@@ -537,19 +538,19 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         PlayerPrefs.SetString($"BattleUi{type}", json);
     }
 
-    public bool CanPlayJukeboxInArea(JukeboxPlayArea playArea)
+    public bool CanPlayJukeboxInArea(AudioCategoryType playArea)
     {
         switch (playArea)
         {
-            case JukeboxPlayArea.MainMenu:
+            case AudioCategoryType.MainMenu:
                 {
                     return jukeboxUI;
                 }
-            case JukeboxPlayArea.Soulhome:
+            case AudioCategoryType.SoulHome:
                 {
                     return jukeboxSoulhome;
                 }
-            case JukeboxPlayArea.Battle:
+            case AudioCategoryType.Battle:
                 {
                     return jukeboxBattle;
                 }

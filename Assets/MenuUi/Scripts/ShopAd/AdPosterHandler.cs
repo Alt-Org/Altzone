@@ -10,15 +10,17 @@ using UnityEngine.UI;
 public class AdPosterHandler : AltMonoBehaviour
 {
     [SerializeField]
-    private Image _adBackground;
+    protected Image _adBackground;
     [SerializeField]
-    private Image _adFrameBorder;
+    protected Image _adFrameBorder;
     [SerializeField]
-    private Image _adItemImage;
+    protected Image _adItemImage;
     [SerializeField]
     private ClanHeartColorSetter _adClanLogo;
     [SerializeField]
     private TextMeshProUGUI _adClanName;
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -37,13 +39,19 @@ public class AdPosterHandler : AltMonoBehaviour
         ClanData.OnAdDataUpdated -= FetchAdData;
     }
 
+
     private void FetchAdData()
     {
         StartCoroutine(GetClanData(data =>
         {
-            if (data != null) SetAdPoster(data.AdData, data.Name, data.ClanHeartPieces);
+            if (data != null)
+            {
+                SetAdPoster(data.AdData, data.Name, data.ClanHeartPieces);
+            }
         }));
     }
+
+
 
     public void SetAdPoster(AdStoreObject data, string clanName, List<HeartPieceData> pieceData)
     {
@@ -61,5 +69,6 @@ public class AdPosterHandler : AltMonoBehaviour
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
         _adClanName.text = clanName;
     }
+
 
 }

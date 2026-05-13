@@ -35,6 +35,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: 'Yhteen sulautunut, lojaaliuttaan panssarina
     kantava jengisoturi. '
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: dedcca6404df91843b73063f8ba52b15, type: 2}
   Hp:
     Level: 1
@@ -54,7 +56,10 @@ MonoBehaviour:
   GalleryImage: {fileID: 21300000, guid: fbc21b1152b52ea468fea725e9b1ed99, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: acaa97b5b4effa043bf130652965e73a, type: 3}
   CharPhotoSeries: {fileID: 0}
-  BattleEntityPrototype:
+  BattleCharacterEntityPrototype:
     Id:
       Value: 1376512642337364809
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1290997752287248048
   BattleUiSprite: {fileID: 0}
