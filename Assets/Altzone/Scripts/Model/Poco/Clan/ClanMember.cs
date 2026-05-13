@@ -25,6 +25,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public int LeaderBoardWins { get => _leaderBoardWins;}
         public int LeaderBoardCoins { get => _leaderBoardCoins;}
         public ServerPlayer Player { get => _player; }
+        public string CreatedAt => _player?.createdAt;
 
         [JsonConstructor]
         private ClanMember() { }
