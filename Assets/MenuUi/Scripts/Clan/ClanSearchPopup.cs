@@ -74,23 +74,6 @@ public class ClanSearchPopup : MonoBehaviour
     private const int MaxClanMembers = 30;
     private const int MaxValues = 3;
 
-    private void OnEnable()
-    {
-        if (_closeButton != null)
-        {
-            _closeButton.onClick.RemoveListener(Hide);
-            _closeButton.onClick.AddListener(Hide);
-        }
-    }
-
-    private void OnDisable()
-    {
-        if (_closeButton != null)
-        {
-            _closeButton.onClick.RemoveListener(Hide);
-        }
-    }
-
     public void Show(ServerClan clan, UnityAction onJoin)
     {
         if (clan == null) return;

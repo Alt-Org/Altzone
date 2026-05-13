@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Clan;
+using MenuUi.Scripts.DefenceScreen.CharacterStatsWindow;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using MenuUI.Scripts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Altzone.Scripts.Model.Poco.Clan;
 
 public class ClanCreateNew : MonoBehaviour
 {
@@ -72,10 +73,12 @@ public class ClanCreateNew : MonoBehaviour
     [Header("Buttons")]
     //[SerializeField] private Button _closeLanguageSelect;
     [SerializeField] private Button _createClanButton;
+    [SerializeField] private Button _agreementCloseButton;
 
     [SerializeField] private Button _clanLogoButton;
     [SerializeField] private Button _heartEditSaveButton;
     [SerializeField] private Button _heartEditCancelButton;
+    [SerializeField] private Button _heartEditCloseButton;
     [SerializeField] private Button _ageButton;
     [SerializeField] private Button _ageSaveButton;
     [SerializeField] private Button _ageCancelButton;
@@ -94,6 +97,7 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private GameObject _raycastBlocker;
     [SerializeField] private AgreementController _agreementController;
     [SerializeField] private GameObject _agreementPopup;
+    [SerializeField] private TMP_Text _agreementClanNameText;
 
     [Header("Default Icons")]
     [SerializeField] private Sprite _defaultAgeSprite;
@@ -180,6 +184,7 @@ public class ClanCreateNew : MonoBehaviour
 
         if (_heartEditSaveButton) _heartEditSaveButton.onClick.AddListener(ConfirmHeartEdit);
         if (_heartEditCancelButton) _heartEditCancelButton.onClick.AddListener(CancelHeartEdit);
+        if (_heartEditCloseButton) _heartEditCloseButton.onClick.AddListener(CancelHeartEdit);
 
         if (_ageSaveButton) _ageSaveButton.onClick.AddListener(SaveAgeSelection);
         if (_ageCancelButton) _ageCancelButton.onClick.AddListener(CancelAgeSelection);
@@ -201,6 +206,9 @@ public class ClanCreateNew : MonoBehaviour
         if (_createClanButton != null)
             _createClanButton.onClick.AddListener(OnAgreementCreatePressed);
 
+        if (_agreementCloseButton != null)
+            _agreementCloseButton.onClick.AddListener(OnCancelPressed);
+
         Reset();
     }
 
@@ -212,6 +220,7 @@ public class ClanCreateNew : MonoBehaviour
 
         if (_heartEditSaveButton) _heartEditSaveButton.onClick.RemoveListener(ConfirmHeartEdit);
         if (_heartEditCancelButton) _heartEditCancelButton.onClick.RemoveListener(CancelHeartEdit);
+        if (_heartEditCloseButton) _heartEditCloseButton.onClick.RemoveListener(CancelHeartEdit);
 
         if (_ageSaveButton) _ageSaveButton.onClick.RemoveListener(SaveAgeSelection);
         if (_ageCancelButton) _ageCancelButton.onClick.RemoveListener(CancelAgeSelection);
@@ -235,6 +244,9 @@ public class ClanCreateNew : MonoBehaviour
 
         if (_createClanButton != null)
             _createClanButton.onClick.RemoveListener(OnAgreementCreatePressed);
+
+        if (_agreementCloseButton != null)
+            _agreementCloseButton.onClick.RemoveListener(OnCancelPressed);
     }
 
     private void OnAgreementCreatePressed()
@@ -268,12 +280,14 @@ public class ClanCreateNew : MonoBehaviour
 
     private void OnConfirmPressed()
     {
-        ShowPopup(_agreementPopup); 
+        UpdateAgreementClanName();
+        ShowPopup(_agreementPopup);
     }
-
 
     private void Reset()
     {
+        CloseAllPopups();
+
         _mainCreatePanel.SetActive(true);
         _languagePanel.SetActive(false);
 
@@ -357,6 +371,36 @@ public class ClanCreateNew : MonoBehaviour
         }
     }
 
+    private void CloseAllPopups()
+    {
+        if (_agreementPopup != null)
+            _agreementPopup.SetActive(false);
+
+        if (_languagePanel != null)
+            _languagePanel.SetActive(false);
+
+        if (_clanAgeEditPopup != null)
+            _clanAgeEditPopup.SetActive(false);
+
+        if (_clanHeartEditPanel != null)
+            _clanHeartEditPanel.SetActive(false);
+
+        if (_heartEditPopup != null)
+            _heartEditPopup.SetActive(false);
+
+        if (_lockClanPopup != null)
+            _lockClanPopup.SetActive(false);
+
+        if (_openClanPopup != null)
+            _openClanPopup.SetActive(false);
+
+        if (_createClanPasswordPopup != null)
+            _createClanPasswordPopup.SetActive(false);
+
+        if (_raycastBlocker != null)
+            _raycastBlocker.SetActive(false);
+    }
+
     public void ShowPopup(GameObject popup)
     {
         if (popup != null)
@@ -375,7 +419,19 @@ public class ClanCreateNew : MonoBehaviour
             _raycastBlocker.SetActive(false);
     }
 
-   public void OpenHeartEditPopup()
+    private void UpdateAgreementClanName()
+    {
+        if (_agreementClanNameText == null || _clanNameField == null)
+            return;
+
+        string clanName = _clanNameField.text.Trim();
+
+        _agreementClanNameText.text = string.IsNullOrWhiteSpace(clanName)
+            ? ""
+            : $"\"{clanName}\"";
+    }
+
+    public void OpenHeartEditPopup()
     {
         if (_heartColorChanger != null && _heartPieces != null)
         {
