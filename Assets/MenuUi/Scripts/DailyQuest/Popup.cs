@@ -261,7 +261,6 @@ public class Popup : MonoBehaviour
 
     private void SetPopupTaskColor(PlayerTask data, PopupData.PopupDataType type)
     {
-        Debug.LogWarning("COLOR!!");
         Image targetImage = _taskAcceptColorImage;
 
         if (type == PopupData.PopupDataType.CancelTask) targetImage = _taskCancelColorImage;
@@ -271,6 +270,11 @@ public class Popup : MonoBehaviour
         targetImage.color = GetTaskColor(data);
     }
 
+    /// <summary>
+    /// Gets a color based on the task education category
+    /// </summary>
+    /// <param name="data">The task to get the color for</param>
+    /// <returns>The color</returns>
     private Color GetTaskColor(PlayerTask data)
     {
         Color taskColor = _defaultColor;

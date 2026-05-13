@@ -1,6 +1,12 @@
 public static class GameLiteracy
 {
 
+    /// <summary>
+    /// Finds a displayable name for the given GameLiteracyType
+    /// </summary>
+    /// <param name="literacy">The literacy to get the displayable name for</param>
+    /// <param name="language">The language to use</param>
+    /// <returns>The displayable name (the game literacy's name that can be shown to player)</returns>
     public static string Get(GameLiteracyType literacy, SettingsCarrier.LanguageType language)
     {
         if (language == SettingsCarrier.LanguageType.English)
