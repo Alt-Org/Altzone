@@ -127,6 +127,8 @@ synced event BattleCharacterHit
     BattleTeamNumber Team;
     BattlePlayerSlot Slot;
     int CharacterNumber;
+    bool ShieldAttached;
+    int ShieldNumber;
     FP StunFlashDurationSec;
     BattleEmotionState ProjectileEmotion;
 }
@@ -138,6 +140,7 @@ synced event BattleShieldHit
     BattlePlayerSlot Slot;
     int CharacterNumber;
     bool ShieldAttached;
+    int ShieldNumber;
     FP DefencePercentage;
 }
 

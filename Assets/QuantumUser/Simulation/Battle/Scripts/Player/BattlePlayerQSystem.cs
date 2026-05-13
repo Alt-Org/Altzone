@@ -108,6 +108,8 @@ namespace Battle.QSimulation.Player
                 damagedPlayerData->TeamNumber,
                 damagedPlayerData->Slot,
                 BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber,
+                damagedPlayerData->AttachedShield.ERef != EntityRef.None,
+                damagedPlayerData->AttachedShieldNumber,
                 stunCooldown,
                 projectileCollisionData->ProjectileEmotionCurrent
                 );
@@ -174,9 +176,11 @@ namespace Battle.QSimulation.Player
 
             f.Events.BattleShieldHit(
                 shieldCollisionData->PlayerShieldHitbox->ParentEntityRef,
-                damagedPlayerData->TeamNumber, damagedPlayerData->Slot,
+                damagedPlayerData->TeamNumber,
+                damagedPlayerData->Slot,
                 characterNumber,
                 playerShieldData->IsAttached,
+                damagedPlayerData->AttachedShieldNumber,
                 defencePercentage
             );
         ExitNoHit:
