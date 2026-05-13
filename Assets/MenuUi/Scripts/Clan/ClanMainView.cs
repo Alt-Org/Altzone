@@ -22,6 +22,7 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private ClanLeaderboard _leaderboard;
 
     [Header("Text fields")]
+    [SerializeField] private TextMeshProUGUI _clanText;
     [SerializeField] private TextMeshProUGUI _clanName;
     [SerializeField] private TextMeshProUGUI _clanPhrase;
     [SerializeField] private TextMeshProUGUI _clanMembers;
@@ -422,6 +423,25 @@ public class ClanMainView : MonoBehaviour
         {
             _overlay.SetActive(false);
         }
+
+        _currentPage = ClanPage.Profile;
+        UpdateClanTextForCurrentPage();
+    }
+
+    private void UpdateClanTextForCurrentPage()
+    {
+        if (_clanText == null) return;
+
+        switch (_currentPage)
+        {
+            case ClanPage.Profile:
+                _clanText.text = "Klaanin profiili";
+                break;
+
+            case ClanPage.Members:
+                _clanText.text = "Jäsenet ja roolit";
+                break;
+        }
     }
 
     private void ShowNoClanState()
@@ -680,6 +700,9 @@ public class ClanMainView : MonoBehaviour
         }
 
         _currentPage = page;
+
+        UpdateClanTextForCurrentPage();
+
         ApplyButtonsVisibility();
         RefreshSwipeEnabledState();
     }
