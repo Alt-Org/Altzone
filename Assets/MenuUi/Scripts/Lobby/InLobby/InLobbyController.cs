@@ -250,6 +250,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                         // Checking if the game type changed, if it didn't we don't want to do anything but if it did we leave the room
                         if (currentRoomGameTypeMatches)
                         {
+                            _roomSwitcher.SwitchRoom(gameType);
                             return;
                         }
                         else
