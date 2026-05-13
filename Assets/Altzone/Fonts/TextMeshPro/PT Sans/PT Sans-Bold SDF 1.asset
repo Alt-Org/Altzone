@@ -5490,9 +5490,9 @@ MonoBehaviour:
   - regularTypeface: {fileID: 0}
     italicTypeface: {fileID: 0}
   fontWeights: []
-  normalStyle: 0
+  normalStyle: 0.5
   normalSpacingOffset: 0
-  boldStyle: 0.75
+  boldStyle: 1
   boldSpacing: 7
   italicStyle: 35
   tabSize: 10
@@ -5597,8 +5597,8 @@ Material:
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
     - _ScaleRatioA: 0.8333333
-    - _ScaleRatioB: 0.6770833
-    - _ScaleRatioC: 0.6770833
+    - _ScaleRatioB: 0.625
+    - _ScaleRatioC: 0.625
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
@@ -5617,12 +5617,12 @@ Material:
     - _UnderlaySoftness: 0
     - _VertexOffsetX: 0
     - _VertexOffsetY: 0
-    - _WeightBold: 0.75
-    - _WeightNormal: 0
+    - _WeightBold: 1
+    - _WeightNormal: 0.5
     m_Colors:
     - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
     - _EnvMatrixRotation: {r: 0, g: 0, b: 0, a: 0}
-    - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FaceColor: {r: 1, g: 0.6313726, b: 0, a: 1}
     - _GlowColor: {r: 0, g: 1, b: 0, a: 0.5}
     - _MaskCoord: {r: 0, g: 0, b: 32767, a: 32767}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
