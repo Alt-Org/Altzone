@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using MenuUi.Scripts.Window;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class DropDownMenu : MonoBehaviour
@@ -9,6 +11,8 @@ public class DropDownMenu : MonoBehaviour
     private GameObject _dropDownPanel;
     [SerializeField]
     private bool _dropDownOpen = false;
+    [SerializeField]
+    private Button _hamburgerButton;
 
 
 
@@ -32,13 +36,15 @@ public class DropDownMenu : MonoBehaviour
         {
             _dropDownPanel.SetActive(true);
             _dropDownOpen = true;
-
+            OverlayPanelCheck.Instance.SetActiveOverlayButton(_hamburgerButton);
         }
         else if (_dropDownOpen)
         {
 
             _dropDownPanel.SetActive(false);
             _dropDownOpen = false;
+
+           // OverlayPanelCheck.Instance.UpdateOverlayButtons(null);
         }
 
     }
@@ -58,6 +64,7 @@ public class DropDownMenu : MonoBehaviour
         _dropDownPanel.SetActive(false);
         _dropDownOpen = false;
 
+        // OverlayPanelCheck.Instance.UpdateOverlayButtons(null);
     }
 
 }

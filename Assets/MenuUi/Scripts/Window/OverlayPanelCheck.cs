@@ -22,6 +22,8 @@ namespace MenuUi.Scripts.Window
 
         [SerializeField] private Button _onlineToggleButton;
 
+        private Button _activeOverlayButton;
+
         private bool _chatActive = true;
 
         public static OverlayPanelCheck Instance { get; private set; }
@@ -123,16 +125,21 @@ namespace MenuUi.Scripts.Window
             }//for
         }//updatebuttoncontent
 
-        public void UpdateOverlayButtons(Button activeButton) //Same as updatebuttoncontent but for buttons that open overlay instead of a window
+        public void SetActiveOverlayButton(Button button)
+        {
+            _activeOverlayButton = button;
+            UpdateOverlayButtons();
+        }
+ 
+        public void UpdateOverlayButtons() //Same as updatebuttoncontent but for buttons that open overlay instead of a window
         {
             foreach (Button button in overlayButtons)
             {
-                bool isActive = button == activeButton;
+                bool isActive = button == _activeOverlayButton;
 
                 button.transform.localScale = isActive ? Vector3.one * 1.2f : Vector3.one;
 
                 Transform glow = button.transform.Find("Glow");
-
                 if (glow != null)
                     glow.gameObject.SetActive(isActive);
             }//foreach
@@ -164,7 +171,7 @@ namespace MenuUi.Scripts.Window
 
         public void ToggleOnlinePlayers()
         {
-            UpdateOverlayButtons(_onlineToggleButton); //call when overlay is active
+            SetActiveOverlayButton(_onlineToggleButton); //call when overlay is active
             OnToggleOnlinePlayerList?.Invoke();
         }
 

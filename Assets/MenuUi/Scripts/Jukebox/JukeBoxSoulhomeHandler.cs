@@ -204,7 +204,6 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         }
         else if (audioManager) //Close
         {
-            OverlayPanelCheck.Instance.UpdateOverlayButtons(null); //call for button highlight logic
 
             if (jukeboxManager && jukeboxManager.TrackPreviewActive /*&& jukeboxManager.CurrentTrackQueueData != null*/)
                 jukeboxManager.StopMusicPreview();
