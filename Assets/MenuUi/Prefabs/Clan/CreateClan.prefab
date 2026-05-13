@@ -1419,6 +1419,7 @@ MonoBehaviour:
   _clanLogoButton: {fileID: 9217343294497236392}
   _heartEditSaveButton: {fileID: 836865155784664050}
   _heartEditCancelButton: {fileID: 4279363842668292766}
+  _heartEditCloseButton: {fileID: 0}
   _ageButton: {fileID: 7704754161456943972}
   _ageSaveButton: {fileID: 6770561097740163599}
   _ageCancelButton: {fileID: 3991894928057147654}
@@ -1433,6 +1434,7 @@ MonoBehaviour:
   _raycastBlocker: {fileID: 4653073615952624794}
   _agreementController: {fileID: 52267561177831572}
   _agreementPopup: {fileID: 3703775532960452220}
+  _agreementClanNameText: {fileID: 0}
   _defaultAgeSprite: {fileID: 21300000, guid: 690309fbd1f46b448ad575022dc29cc6, type: 3}
   _defaultLanguageSprite: {fileID: 21300000, guid: c4fa6dcac97b03f408802486524dd804,
     type: 3}
@@ -5643,7 +5645,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4135977341524957445}
-  - component: {fileID: 4678845708473052815}
   - component: {fileID: 5376588048998593279}
   - component: {fileID: 2898705772829116372}
   m_Layer: 5
@@ -5672,22 +5673,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -40, y: -40}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &4678845708473052815
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5472837497158496475}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab4bc015593df444dbdcc7517b52cd0e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _toggleOnImage: {fileID: 21300000, guid: 5fefa1145a7743b4998c56f6626d87be, type: 3}
-  _toggleOffImage: {fileID: 21300000, guid: daab1c2df6045d24c9d60297b2625ba8, type: 3}
-  _toggle: {fileID: 3367385082243646857}
-  _iconToToggle: {fileID: 2898705772829116372}
 --- !u!222 &5376588048998593279
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -8062,6 +8047,7 @@ GameObject:
   - component: {fileID: 1625668595415507921}
   - component: {fileID: 5398764490539522766}
   - component: {fileID: 3367385082243646857}
+  - component: {fileID: 7827998916547298270}
   m_Layer: 5
   m_Name: Toggle
   m_TagString: Untagged
@@ -8178,6 +8164,22 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
+--- !u!114 &7827998916547298270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7565960094386003926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab4bc015593df444dbdcc7517b52cd0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _toggleOnImage: {fileID: 21300000, guid: 5fefa1145a7743b4998c56f6626d87be, type: 3}
+  _toggleOffImage: {fileID: 21300000, guid: daab1c2df6045d24c9d60297b2625ba8, type: 3}
+  _toggle: {fileID: 3367385082243646857}
+  _iconToToggle: {fileID: 2898705772829116372}
 --- !u!1 &7632673322349140182
 GameObject:
   m_ObjectHideFlags: 0
