@@ -9,6 +9,7 @@ using Altzone.Scripts.ReferenceSheets;
 using UnityEngine.UI;
 using System.Linq;
 using Photon.Realtime;
+using MenuUI.Scripts.SoulHome;
 //using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
 
 public class Raid_InventoryPage : MonoBehaviour
@@ -20,7 +21,7 @@ public class Raid_InventoryPage : MonoBehaviour
     [SerializeField] private Raid_LootTracking LootTracker;
     [SerializeField] private Raid_Timer raid_Timer;
     [SerializeField] private ExitRaid exitraid;
-    [SerializeField] private bool spectator;
+    [SerializeField] private bool spectator = false;
     [SerializeField] private bool firstItem = true;
 
     [System.Serializable]
@@ -49,17 +50,19 @@ public class Raid_InventoryPage : MonoBehaviour
 
     }
 
+    // This function will get all game furniture from the "StorageFurnitureReference"
     public List<GameFurniture> GetGameFurniture()
     {   
         List<GameFurniture> furnitures = null;
-        // (Todo)GetGameFurniture Altzone.Scripts.ReferenceSheets
         StorageFurnitureReference storageFurnitureReference = StorageFurnitureReference.Instance;
         furnitures = storageFurnitureReference.GetAllGameFurniture();
         
+        /* Debug print furnitures
         foreach (GameFurniture furniture in furnitures)
         {
             Debug.Log("(RAID) Nimi : "+furniture.ToString());
         }
+        */
 
         return furnitures;
     }
@@ -147,35 +150,40 @@ public class Raid_InventoryPage : MonoBehaviour
         }
     }
 
-    public List<GameFurniture> WeightQuery(float LowestWeight, float HighestWeight)
+    // Get a list of furniture between LowestWeight and HighestWeight, also it accepts any List<GameFurniture> to allow for seasonal furniture sets
+    public List<GameFurniture> WeightQuery(List<GameFurniture> furnitureList, float LowestWeight, float HighestWeight)
     {
-        return ListOfFurniture.Where(f => f.Weight >= LowestWeight && f.Weight <= HighestWeight).ToList();
+        return furnitureList.Where(f => f.Weight >= LowestWeight && f.Weight <= HighestWeight).ToList();
     } 
 
-    public void SetInventorySlotData(int InventorySize)
+
+    public void RandomizeInventoryContent(int InventorySize)
     {
         // InventorySize = raid_InventoryHandler.InventorySize;
 
+        // Split all furnitures into lists
+        List<GameFurniture> SmallItemList = WeightQuery(ListOfFurniture,0f,50f);
+        List<GameFurniture> MediumItemList = WeightQuery(ListOfFurniture,50f,80f);
+        List<GameFurniture> LargeItemList = WeightQuery(ListOfFurniture,80.1f,999f); 
+
+        // Just so the next one knows that a list might be empty, the spawning logic should still run unless all lists are empty?
+        if (LargeItemList.Count == 0)
+        {
+            Debug.Log("HUOM LargeItemList on tyhjä!"); 
+        } if (MediumItemList.Count == 0)
+        {
+            Debug.Log("HUOM MediumItemList on tyhjä!");
+        }if (SmallItemList.Count == 0)
+        {
+            Debug.Log("HUOM SmallItemList on tyhjä!");
+        }
+
         for (int i = 0; i < InventorySize; i++)
         {
-            // int RandomFurniture = Random.Range(0, 12);
-            int RandomFurniture = 0;
+            int RandomFurniture;
             //_photonView.RPC(nameof(SetInventorySlotDataRPC), RpcTarget.All, i, RandomFurniture);
-            List<GameFurniture> SmallItemList = WeightQuery(0f,50f);
-            List<GameFurniture> MediumItemList = WeightQuery(50f,80f);
-            List<GameFurniture> LargeItemList = WeightQuery(80.1f,999f); 
-            // Ainuttakaan yli 80 painavaa huonekkalua ei ole niin en oikeen tiedä mitä largella sitten ajetaan takaa
 
-            if (LargeItemList.Count == 0)
-            {
-                Debug.Log("HUOM LargeItemList on tyhjä!"); 
-            } if (MediumItemList.Count == 0)
-            {
-                Debug.Log("HUOM MediumItemList on tyhjä!");
-            }if (SmallItemList.Count == 0)
-            {
-                Debug.Log("HUOM SmallItemList on tyhjä!");
-            }
+            // Randomize inventory content and enforce item limits (TODO) randomize better
             int x = Random.Range(0, 3);
             switch (x)
             {
@@ -205,15 +213,17 @@ public class Raid_InventoryPage : MonoBehaviour
     }
     public void RandomizeBombs()
     {
-        Bombs[0].bombIndex = Random.Range(0, (ListOfUIItems.Count / 3));
-        Bombs[1].bombIndex = Random.Range((ListOfUIItems.Count / 3) + 1, (ListOfUIItems.Count / 3) * 2);
-        Bombs[2].bombIndex = Random.Range(((ListOfUIItems.Count / 3) * 2) + 1, ListOfUIItems.Count);
+        Bombs[0].bombIndex = Random.Range(0, ListOfUIItems.Count / 3);
+        Bombs[1].bombIndex = Random.Range((ListOfUIItems.Count / 3) + 1, ListOfUIItems.Count / 3 * 2);
+        Bombs[2].bombIndex = Random.Range((ListOfUIItems.Count / 3 * 2) + 1, ListOfUIItems.Count);
     }
     /*[PunRPC]*/
     public void SendBombLocationsRPC(string jsonBombs)
     {
         Bombs = JsonUtility.FromJson<BombData[]>(jsonBombs);
     }
+
+    // Locks items around passed index.
     public void LockItems(int index)
     {
         int column = -1;
@@ -237,10 +247,11 @@ public class Raid_InventoryPage : MonoBehaviour
             ListOfUIItems[index + 4].GetComponent<Raid_InventoryItem>().SetLocked();
     }
     
-    public void SetInventorySlotDataRPC(List<GameFurniture> furnitureSet,int Index, int RandomFurniture)
+    // Sets the UI slot to a choosen item.
+    public void SetInventorySlotDataRPC(List<GameFurniture> furnitureSet,int UiIndex, int FurnitureIndex)
     {
-        GameFurniture furniture = furnitureSet[RandomFurniture];
-        ListOfUIItems[Index].SetData(furniture);
+        GameFurniture furniture = furnitureSet[FurnitureIndex];
+        ListOfUIItems[UiIndex].SetData(furniture);
         return;
     }
 }

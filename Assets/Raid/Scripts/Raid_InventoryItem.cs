@@ -86,6 +86,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
             BallToHeart();
     }
 
+    // Sets this slots data based on contents of GameFurniture
     public void SetData(GameFurniture gameFurniture)
     {
         ItemWeight = (float)gameFurniture.Weight;
