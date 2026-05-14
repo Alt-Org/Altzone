@@ -48,8 +48,6 @@ public class ChatPreviewController : MonoBehaviour
         {
             GameObject chatMessage = Instantiate(chatPreviewMessagePrefab, _chatMessagesContainer.transform);
             _chatMessageGameobjects[i] = chatMessage;
-            chatMessage.GetComponentInChildren<Image>().color = Color.clear;
-            chatMessage.GetComponentInChildren<TextMeshProUGUI>().text = "";
             chatMessage.GetComponent<ChatMessagePrefab>().SetInfo(null);
         }
 
