@@ -1592,7 +1592,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baac6c8640d855543b63aca7990d8bf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speechBubble: {fileID: 8744086808315654879}
+  _speechBubble: {fileID: 8744086808315654879}
+  _speechText: {fileID: 6966394469573675112}
+  _phrasesFinnish:
+  - "Millaisella mielell\xE4 sin\xE4 olet t\xE4n\xE4\xE4n liikkeell\xE4?"
+  - "Painaako mielt\xE4si jokin, josta haluaisit puhua?"
+  - "Joskus asioiden pid\xE4tteleminen pahentaa niit\xE4."
+  - "Mikset kokeilisi purkaa tunteitasi Ego Clash kent\xE4ll\xE4."
+  _phrasesEnglish:
+  - How are you feeling today?
+  - Is thre something on your mind that you want to talk about?
+  - Sometimes holding things in just makes things worse.
+  - How about releasing some of your emotions in Ego Clash.
 --- !u!114 &2961079961643984079
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1978,7 +1989,7 @@ RectTransform:
   m_AnchorMin: {x: 0.15, y: 0.8}
   m_AnchorMax: {x: 0.85, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 122.10002}
+  m_SizeDelta: {x: 0, y: 131.46002}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &4721301414969847802
 CanvasRenderer:
