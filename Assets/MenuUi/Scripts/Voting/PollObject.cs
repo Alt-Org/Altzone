@@ -204,7 +204,6 @@ public class PollObject : MonoBehaviour
 
         if (InfoBackground != null)
         {
-
             // *** kommentoidaan värityksen testauksen ajaksi pois ***
 
             //if (pollData is ClanRolePollData)
@@ -248,109 +247,112 @@ public class PollObject : MonoBehaviour
             }
         });
 
-
-        // Handle
         if (pollData is FurniturePollData furniturePollData)
         {
-            Image.gameObject.SetActive(true);
-            PollTypeText.text = furniturePollData.Furniture.Name;
-
-            bool isBuying = furniturePollData.FurniturePollType == FurniturePollType.Buying;
-            TradeBackground.color = isBuying ? Color.green : Color.red;
-            TradeText.text = isBuying ? "OSTO" : "MYYNTI";
-
-            Price.text = furniturePollData.Furniture.Value.ToString();
-
-            Sprite ribbonSprite = null;
-            if (furniturePollData.Furniture != null)
-            {
-                // Fetch the furniture info from StorageFurnitureReference
-                var furnitureInfo = StorageFurnitureReference.Instance.GetFurnitureInfo(furniturePollData.Furniture.Name);
-                if (furnitureInfo != null && furnitureInfo.RibbonImage != null)
-                {
-                    ribbonSprite = furnitureInfo.RibbonImage;
-                }
-            }
-
-            // In the case of ribbonSprite is missing, show the normal furniture sprite
-            Image.sprite = ribbonSprite ?? furniturePollData.Sprite;
-
-            // Poll description for Furniture Polls
-            if (PollDescriptionText != null && furniturePollData.Furniture != null)
-            {
-                string furnitureName = furniturePollData.Furniture.Name ?? "Unknown Item";
-                string priceText = furniturePollData.Furniture.Value.ToString();
-                if (furniturePollData.FurniturePollType is FurniturePollType.Buying)
-                {
-                    PollDescriptionText.text = $"Buying {furnitureName} for {priceText}";
-                }
-                else if (furniturePollData.FurniturePollType is FurniturePollType.Selling)
-                {
-                    PollDescriptionText.text = $"Suggesting {furnitureName} to be sold for {priceText}";
-                }
-            }
+            SetFurnitureData(furniturePollData);
         }
-
-        // Handle UI for Clan Polls
         else if (pollData is ClanRolePollData clanRolePoll)
         {
-            avatarHandleGameObject.SetActive(true);
-
-            // Default values
-            string memberName = "Unknown";
-            string roleName = "None";
-
-            if (player != null && !string.IsNullOrEmpty(player.ClanId))
-            {
-                ClanData clan = null;
-                Storefront.Get().GetClanData(player.ClanId, data => clan = data);
-
-                if (clan != null)
-                {
-                    ClanMember targetMember = clan.Members.Find(m => m.Id == clanRolePoll.TargetPlayerId);
-                    if (targetMember != null)
-                    {
-                        memberName = targetMember.Name;
-
-                        if (targetMember.Role != null)
-                        {
-                            roleName = targetMember.Role.name.ToString();
-                        }
-                        else
-                        {
-                            roleName = "None"; // Fallback
-                        }
-
-                        // Load the avatar and apply visuals
-                        StartCoroutine(LoadAndApplyAvatar(targetMember));
-                    }
-                }
-            }
-
-            // Poll Description for Clan Role Polls
-            if (PollDescriptionText != null)
-            {
-                string currentRoleText = string.IsNullOrEmpty(roleName) ? "None" : roleName;
-                string targetRoleText = clanRolePoll.TargetRole.ToString();
-                PollDescriptionText.text = $"Promoting {memberName} from {currentRoleText} to {targetRoleText}";
-            }
+            SetClanRoleData(clanRolePoll);
         }
 
-        if (YesVotesText != null) YesVotesText.text = pollData.YesVotes.Count.ToString();
-        if (NoVotesText != null) NoVotesText.text = pollData.NoVotes.Count.ToString();
+        int yesCount = pollData.YesVotes.Count;
+        int noCount = pollData.NoVotes.Count;
+        int totalCount = yesCount + noCount;
 
-        if (GreenFill != null)
-        {
-            if (pollData.YesVotes.Count == 0 && pollData.NoVotes.Count == 0)
-                GreenFill.fillAmount = 0.5f;
-            else
-                GreenFill.fillAmount = (float)pollData.YesVotes.Count / (pollData.NoVotes.Count + pollData.YesVotes.Count);
-        }
+        float fillValue = (totalCount > 0) ? (float)yesCount / totalCount : 0.5f;
+
+        if (YesVotesText != null) YesVotesText.text = fillValue.ToString("P0");
+        if (NoVotesText != null) NoVotesText.text = (1f - fillValue).ToString("P0");
+
+        GreenFill.fillAmount = fillValue;
 
         playerHeads.InstantiateHeads(pollId);
     }
 
+    private void SetClanRoleData(ClanRolePollData clanRolePoll)
+    {
+        avatarHandleGameObject.SetActive(true);
 
+        string memberName = "Unknown";
+        string roleName = "None";
+        ClanData clan = null;
+        PlayerData player = null;
+
+        if (player == null || string.IsNullOrEmpty(player.ClanId))
+            return;
+
+        Storefront.Get().GetClanData(player.ClanId, data =>
+        {
+            if (clan == null)
+                return;
+
+            ClanMember targetMember = clan.Members.Find(m => m.Id == clanRolePoll.TargetPlayerId);
+            if (targetMember == null)
+                return;
+
+            memberName = targetMember.Name;
+
+            if (targetMember.Role != null)
+            {
+                roleName = targetMember.Role.name.ToString();
+            }
+            else
+            {
+                roleName = "None";
+            }
+
+            StartCoroutine(LoadAndApplyAvatar(targetMember));
+        });
+
+        if (PollDescriptionText != null)
+        {
+            string currentRoleText = string.IsNullOrEmpty(roleName) ? "None" : roleName;
+            string targetRoleText = clanRolePoll.TargetRole.ToString();
+            PollDescriptionText.text = $"Promoting {memberName} from {currentRoleText} to {targetRoleText}";
+        }
+    }
+
+    private void SetFurnitureData(FurniturePollData furniturePollData)
+    {
+        Image.gameObject.SetActive(true);
+        PollTypeText.text = furniturePollData.Furniture.Name;
+
+        bool isBuying = furniturePollData.FurniturePollType == FurniturePollType.Buying;
+        TradeBackground.color = isBuying ? Color.green : Color.red;
+        TradeText.text = isBuying ? "OSTO" : "MYYNTI";
+
+        Price.text = furniturePollData.Furniture.Value.ToString();
+
+        Sprite ribbonSprite = null;
+        if (furniturePollData.Furniture != null)
+        {
+            // Fetch the furniture info from StorageFurnitureReference
+            var furnitureInfo = StorageFurnitureReference.Instance.GetFurnitureInfo(furniturePollData.Furniture.Name);
+            if (furnitureInfo != null && furnitureInfo.RibbonImage != null)
+            {
+                ribbonSprite = furnitureInfo.RibbonImage;
+            }
+        }
+
+        // In the case of ribbonSprite is missing, show the normal furniture sprite
+        Image.sprite = ribbonSprite ?? furniturePollData.Sprite;
+
+        // Poll description for Furniture Polls
+        if (PollDescriptionText != null && furniturePollData.Furniture != null)
+        {
+            string furnitureName = furniturePollData.Furniture.Name ?? "Unknown Item";
+            string priceText = furniturePollData.Furniture.Value.ToString();
+            if (furniturePollData.FurniturePollType is FurniturePollType.Buying)
+            {
+                PollDescriptionText.text = $"Buying {furnitureName} for {priceText}";
+            }
+            else if (furniturePollData.FurniturePollType is FurniturePollType.Selling)
+            {
+                PollDescriptionText.text = $"Suggesting {furnitureName} to be sold for {priceText}";
+            }
+        }
+    }
 
 
 
