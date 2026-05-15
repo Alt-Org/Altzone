@@ -36,15 +36,14 @@ public class DropDownMenu : MonoBehaviour
         {
             _dropDownPanel.SetActive(true);
             _dropDownOpen = true;
-            OverlayPanelCheck.Instance.SetActiveOverlayButton(_hamburgerButton);
+            _hamburgerButton.GetComponent<PopupButtonVisual>().ButtonSelected(true);
         }
         else if (_dropDownOpen)
         {
 
             _dropDownPanel.SetActive(false);
             _dropDownOpen = false;
-
-           // OverlayPanelCheck.Instance.UpdateOverlayButtons(null);
+            _hamburgerButton.GetComponent<PopupButtonVisual>().ButtonSelected(false);
         }
 
     }
@@ -63,8 +62,7 @@ public class DropDownMenu : MonoBehaviour
 
         _dropDownPanel.SetActive(false);
         _dropDownOpen = false;
-
-        // OverlayPanelCheck.Instance.UpdateOverlayButtons(null);
+        _hamburgerButton.GetComponent<PopupButtonVisual>().ButtonSelected(false);
     }
 
 }
