@@ -28,8 +28,11 @@ public class TopBarOrderBridge : MonoBehaviour
 
         if (_targetsByStyle == null || _targetsByStyle.Length == 0)
         {
-            TopBarTargets[] found = FindObjectsOfType<TopBarTargets>(true);
-            if (found != null && found.Length > 0) _targetsByStyle = found;
+            // TopBarTargets[] found = FindObjectsOfType<TopBarTargets>(true);
+            // if (found != null && found.Length > 0) _targetsByStyle = found;
+
+            Debug.LogWarning("[TB] Targets By Style is empty. Assign the correct TopPanel Alt1 manually in Inspector.");
+            return;
         }
 
         SetRowDropEventSubscriptions(true);
@@ -311,7 +314,10 @@ public class TopBarOrderBridge : MonoBehaviour
 
             Toggle toggle = row.GetComponentInChildren<Toggle>(true);
             if (toggle != null)
-                toggle.interactable = !clanTileOn;
+            {
+                // toggle.interactable = !clanTileOn;
+                toggle.interactable = true;
+            }
         }
     }
 
