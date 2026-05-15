@@ -315,6 +315,12 @@ public class PollObject : MonoBehaviour
 
     private void SetFurnitureData(FurniturePollData furniturePollData)
     {
+        if (furniturePollData == null || furniturePollData.Furniture == null)
+        {
+            Debug.LogError("SetFurnitureData received null poll or furniture data!");
+            return;
+        }
+
         Image.gameObject.SetActive(true);
         PollTypeText.text = furniturePollData.Furniture.Name;
 
@@ -325,14 +331,12 @@ public class PollObject : MonoBehaviour
         Price.text = furniturePollData.Furniture.Value.ToString();
 
         Sprite ribbonSprite = null;
-        if (furniturePollData.Furniture != null)
+
+        // Fetch the furniture info from StorageFurnitureReference
+        FurnitureInfo furnitureInfo = StorageFurnitureReference.Instance.GetFurnitureInfo(furniturePollData.Furniture.Name);
+        if (furnitureInfo != null && furnitureInfo.RibbonImage != null)
         {
-            // Fetch the furniture info from StorageFurnitureReference
-            var furnitureInfo = StorageFurnitureReference.Instance.GetFurnitureInfo(furniturePollData.Furniture.Name);
-            if (furnitureInfo != null && furnitureInfo.RibbonImage != null)
-            {
-                ribbonSprite = furnitureInfo.RibbonImage;
-            }
+            ribbonSprite = furnitureInfo.RibbonImage;
         }
 
         // In the case of ribbonSprite is missing, show the normal furniture sprite
