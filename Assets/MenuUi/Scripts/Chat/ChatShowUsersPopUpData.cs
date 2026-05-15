@@ -36,9 +36,8 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     [SerializeField] private List<ReactionObject> _reactionList;
     [SerializeField] private GameObject _allReactions;
     [SerializeField] private GameObject _selectedReaction;
+    [SerializeField] private GameObject _noReactions;
 
-
-    [SerializeField] private GameObject ReactionObject;
     [SerializeField] private Sprite[] _sprites;
     [SerializeField] private Image _image;
     [SerializeField] private TextMeshProUGUI _OrderButtonText;
@@ -69,7 +68,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
         _messageObjectHandler.ReactionsPanel.transform.SetParent(_reactionFieldOldLocation.transform);
         rt.offsetMin = Vector2.zero;
-        rt.offsetMax = Vector2.zero;
+        rt.offsetMax = new Vector2(0, -80);
         gameObject.SetActive(false);
 
     }
@@ -146,6 +145,10 @@ public class ChatShowUsersPopUpData : MonoBehaviour
         _usersReactionData.Add(userData);
         reactiontext();
         ListOrder(currentOrder);
+        if (_messageObjectHandler.ReactionsPanel.transform.childCount > 0)
+        {
+            _noReactions.SetActive(false);
+        }
 
     }
 
@@ -167,9 +170,11 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
             }
                 reactiontext();
-            
+        if(_messageObjectHandler.ReactionsPanel.transform.childCount == 0)
+        {
+            _noReactions.SetActive(true);
+        }
     }
-
 
     //Puts down AllReaction selection if not pressing the reaction
     void LayoutButton()
