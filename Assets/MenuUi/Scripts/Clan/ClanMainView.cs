@@ -22,6 +22,7 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private ClanLeaderboard _leaderboard;
 
     [Header("Text fields")]
+    [SerializeField] private TextMeshProUGUI _clanText;
     [SerializeField] private TextMeshProUGUI _clanName;
     [SerializeField] private TextMeshProUGUI _clanPhrase;
     [SerializeField] private TextMeshProUGUI _clanMembers;
@@ -86,6 +87,7 @@ public class ClanMainView : MonoBehaviour
     [SerializeField] private GameObject _passwordPopup;
     [SerializeField] private Button _clanLockButton;
     [SerializeField] private Button _passwordPopupContinueButton;
+    [SerializeField] private Button _passwordPopupCloseButton;
 
     [SerializeField] private ClanAddFriendPopupController _addFriendPopup;
 
@@ -237,6 +239,12 @@ public class ClanMainView : MonoBehaviour
             _passwordPopupContinueButton.onClick.AddListener(ClosePasswordPopup);
         }
 
+        if (_passwordPopupCloseButton != null)
+        {
+            _passwordPopupCloseButton.onClick.RemoveListener(ClosePasswordPopup);
+            _passwordPopupCloseButton.onClick.AddListener(ClosePasswordPopup);
+        }
+
         if (_passwordPopup != null)
         {
             _passwordPopup.SetActive(false);
@@ -331,6 +339,9 @@ public class ClanMainView : MonoBehaviour
         if (_passwordPopupContinueButton != null)
             _passwordPopupContinueButton.onClick.RemoveListener(ClosePasswordPopup);
 
+        if (_passwordPopupCloseButton != null)
+            _passwordPopupCloseButton.onClick.RemoveListener(ClosePasswordPopup);
+
         if (_rulesButton != null)
             _rulesButton.onClick.RemoveListener(OpenRulesPopup);
 
@@ -411,6 +422,25 @@ public class ClanMainView : MonoBehaviour
         if (_overlay != null)
         {
             _overlay.SetActive(false);
+        }
+
+        _currentPage = ClanPage.Profile;
+        UpdateClanTextForCurrentPage();
+    }
+
+    private void UpdateClanTextForCurrentPage()
+    {
+        if (_clanText == null) return;
+
+        switch (_currentPage)
+        {
+            case ClanPage.Profile:
+                _clanText.text = "Klaanin profiili";
+                break;
+
+            case ClanPage.Members:
+                _clanText.text = "Jäsenet ja roolit";
+                break;
         }
     }
 
@@ -670,6 +700,9 @@ public class ClanMainView : MonoBehaviour
         }
 
         _currentPage = page;
+
+        UpdateClanTextForCurrentPage();
+
         ApplyButtonsVisibility();
         RefreshSwipeEnabledState();
     }

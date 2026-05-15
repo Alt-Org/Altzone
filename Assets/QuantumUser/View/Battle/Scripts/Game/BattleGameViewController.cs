@@ -269,7 +269,9 @@ namespace Battle.View.Game
             // Subscribing to Gameplay events
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
             QuantumEvent.Subscribe<EventBattleLastRowWallDestroyed>(this, QEventOnLastRowWallDestroyed);
-            QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
+            QuantumEvent.Subscribe<EventBattlePlaySoundFxForAll>(this, QEventPlaySoundFxForAll);
+            QuantumEvent.Subscribe<EventBattlePlaySoundFxForTeam>(this, QEventPlaySoundFxForTeam);
+            QuantumEvent.Subscribe<EventBattlePlaySoundFxForPlayer>(this, QEventPlaySoundFxForPlayer);
             QuantumEvent.Subscribe<EventBattleCharacterSelected>(this, QEventCharacterSelected);
             QuantumEvent.Subscribe<EventBattleShieldHit>(this, QEventOnShieldHit);
             QuantumEvent.Subscribe<EventBattleGiveUpStateChange>(this, QEventOnGiveUpStateChange);
@@ -619,8 +621,20 @@ namespace Battle.View.Game
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
-        private void QEventPlaySoundFX(EventBattlePlaySoundFX e)
+        private void QEventPlaySoundFxForAll(EventBattlePlaySoundFxForAll e)
         {
+            BattleAudioViewController.PlaySoundFX(e.Effect);
+        }
+
+        private void QEventPlaySoundFxForTeam(EventBattlePlaySoundFxForTeam e)
+        {
+            if (e.Team != LocalPlayerTeam) return;
+            BattleAudioViewController.PlaySoundFX(e.Effect);
+        }
+
+        private void QEventPlaySoundFxForPlayer(EventBattlePlaySoundFxForPlayer e)
+        {
+            if (e.Slot != LocalPlayerSlot) return;
             BattleAudioViewController.PlaySoundFX(e.Effect);
         }
 

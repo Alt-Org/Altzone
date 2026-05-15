@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Linq;
 using Altzone.Scripts.Config;
 
+
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditorInternal;
@@ -20,6 +21,7 @@ public class DailyTaskData
     public string englishExecution;
     public string instruction;
     public string englishInstruction;
+    public GameLiteracyType gameLiteracy;
     public int amount;
     public int coins;
     public int points;
