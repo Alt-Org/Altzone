@@ -172,7 +172,7 @@ namespace Battle.QSimulation.Player
 
             damagedPlayerData->MovementEnabled = false;
             damagedPlayerData->RotationEnabled = false;
-            damagedPlayerData->StunCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
+            damagedPlayerData->ShieldHitCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
 
             f.Events.BattleShieldHit(
                 shieldCollisionData->PlayerShieldHitbox->ParentEntityRef,
@@ -525,7 +525,7 @@ namespace Battle.QSimulation.Player
                 updateMovement = false;
             }
 
-            if (!playerData->StunCooldown.IsRunning(f))
+            if (!playerData->StunCooldown.IsRunning(f) && !playerData->ShieldHitCooldown.IsRunning(f))
             {
                 playerData->MovementEnabled = true;
                 playerData->RotationEnabled = !playerData->DisableRotation;

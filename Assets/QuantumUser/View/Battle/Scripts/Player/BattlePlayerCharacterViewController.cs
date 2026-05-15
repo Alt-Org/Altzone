@@ -671,7 +671,7 @@ namespace Battle.View.Player
         /// <summary>Array that holds the SpriteRenderer components of each body part gameobject.</summary>
         private readonly SpriteRenderer[] _bodypartSpriteRenderers = new SpriteRenderer[5];
 
-        /// <summary>Reference to the currently running <see cref="StunCoroutine(float)">StunFlashCoroutine</see>.</summary>
+        /// <summary>Reference to the currently running <see cref="StunCoroutine(float)">StunCoroutine</see>.</summary>
         private Coroutine _stunCoroutine = null;
 
         /// <summary>Array that holds references to the shield view controllers associated with this character view controller.</summary>
@@ -728,7 +728,7 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Handler method for <see cref="Quantum.EventBattleCharacterHit">EventBattleCharacterHit</see> QuantumEvent.<br/>
-        /// Starts <see cref="BattlePlayerCharacterViewController.StunCoroutine">DamageFlashCoroutine</see>.
+        /// Starts <see cref="BattlePlayerCharacterViewController.StunCoroutine">StunCoroutine</see>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Private-QuantumEventHandlers "Private QuantumEvent Handlers"
@@ -743,7 +743,7 @@ namespace Battle.View.Player
                 StopCoroutine(_stunCoroutine);
             }
 
-            _stunCoroutine = StartCoroutine(StunCoroutine((float)e.StunFlashDurationSec, e.ProjectileEmotion, e.Team, e.ShieldAttached, e.ShieldNumber));
+            _stunCoroutine = StartCoroutine(StunCoroutine((float)e.StunDurationSec, e.ProjectileEmotion, e.Team, e.ShieldAttached, e.ShieldNumber));
 
             _classViewController.OnCharacterHit(e);
 
@@ -766,10 +766,6 @@ namespace Battle.View.Player
             {
                 if (shield.EntityRef != e.ERef) return;
                 shield.OnShieldHit(e);
-            }
-            if (e.DefencePercentage <= 0)
-            {
-                SetHandSprite(SpriteSheetMap.Enum.HandsScared);
             }
         }
 
@@ -817,7 +813,7 @@ namespace Battle.View.Player
         /// </summary>
         ///
         /// <returns>Coroutine IEnumerator.</returns>
-        private IEnumerator StunCoroutine(float stunFlashDurationSec, BattleEmotionState emotion, BattleTeamNumber teamNumber, bool shieldAttached, int shieldNumber)
+        private IEnumerator StunCoroutine(float stunDurationSec, BattleEmotionState emotion, BattleTeamNumber teamNumber, bool shieldAttached, int shieldNumber)
         {
             if (shieldAttached)
             {
@@ -839,7 +835,7 @@ namespace Battle.View.Player
             SetHeadSprite(sprite);
 
             Color tempColor;
-            float singleFlashDuration = stunFlashDurationSec / (_stunFlashAmount * 2 - 1);
+            float singleFlashDuration = stunDurationSec / (_stunFlashAmount * 2);
             for (int i = 0; i < _stunFlashAmount; i++)
             {
                 foreach (SpriteRenderer spriteRenderer in _bodypartSpriteRenderers)
