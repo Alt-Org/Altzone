@@ -68,7 +68,6 @@ public class MessageObjectHandler : MonoBehaviour
         else
         {
             extraPadding = 0f;
-            _fixSize.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 0); //Fixes the issue from the object not updating the size when its supposed to
         }
             
         //Checks if reaction panel is active and checks which reaction pannel is on
