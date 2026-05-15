@@ -41,6 +41,9 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
 
     [SerializeField] private GameObject ReactionObject;
+    [SerializeField] private Sprite[] _sprites;
+    [SerializeField] private Image _image;
+    [SerializeField] private TextMeshProUGUI _OrderButtonText;
     private int _listorder = 0;
     private int currentOrder = 1;
 
@@ -82,6 +85,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     //Incane user leaves the chat
     private void OnDisable()
     {
+        ListOrder(1);
         ClosePopup();
     }
 
@@ -198,30 +202,41 @@ public class ChatShowUsersPopUpData : MonoBehaviour
             case 1:
                 Debug.LogWarning("FIND ME Order 1");
                 _userInfo = _userInfo.OrderBy(m => m._order).ToList();
+                _OrderButtonText.text = "Old";
+                _image.sprite = null;
                 break;
 
             //Newest => Oldest
             case 2:
                 Debug.LogWarning("FIND ME Order 2");
                 _userInfo = _userInfo.OrderByDescending(m => m._order).ToList();
+                _OrderButtonText.text = "New";
+                _image.sprite = null;
                 break;
 
             // A => Z By Username
             case 3:
                 Debug.LogWarning("FIND ME Order 3");
                 _userInfo = _userInfo.OrderBy(m => m._name.ToLower().Trim()).ToList();
+                _OrderButtonText.text = "A-Z";
+                _image.sprite = null;
                 break;
 
             // Z => A By Username
             case 4:
                 Debug.LogWarning("FIND ME Order 4");
                 _userInfo = _userInfo.OrderByDescending(m => m._name.ToLower().Trim()).ToList();
+                _OrderButtonText.text = "Z-A";
+                _image.sprite = null;
                 break;
 
             //Sadness => Love by Reactions
             case 5:
                 Debug.LogWarning("FIND ME Order 5");
                 _userInfo = _userInfo.OrderBy(m => m._mood).ToList();
+                _OrderButtonText.text = "";
+                if (_sprites[4] != null)
+                _image.sprite = _sprites[4];
                 break;
         }
 
