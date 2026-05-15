@@ -134,6 +134,7 @@ namespace Quantum.Prototypes.Unity {
     public QBoolean RotationEnabled;
     public FP CurrentDefence;
     public Quantum.Prototypes.FrameTimerPrototype StunCooldown;
+    public Quantum.Prototypes.FrameTimerPrototype ShieldHitCooldown;
     public QBoolean HasTargetPosition;
     public FPVector2 TargetPosition;
     public FP RotationBaseRad;
@@ -162,6 +163,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.RotationEnabled, out result.RotationEnabled);
       converter.Convert(this.CurrentDefence, out result.CurrentDefence);
       converter.Convert(this.StunCooldown, out result.StunCooldown);
+      converter.Convert(this.ShieldHitCooldown, out result.ShieldHitCooldown);
       converter.Convert(this.HasTargetPosition, out result.HasTargetPosition);
       converter.Convert(this.TargetPosition, out result.TargetPosition);
       converter.Convert(this.RotationBaseRad, out result.RotationBaseRad);
