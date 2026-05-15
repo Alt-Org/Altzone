@@ -1837,8 +1837,8 @@ public class ServerManager : MonoBehaviour
                 JArray token = (JArray)result["data"]["Friendship"];
                 foreach (JToken token2 in token)
                 {
-                    if (token2["friend"]["avatar"].ToString() == string.Empty) continue;
-                    if (int.TryParse(token2["friend"]["avatar"]["head"].ToString(), out int value)) token2["friend"]["avatar"] = string.Empty;
+                    if (token2["avatar"].ToString() == string.Empty) continue;
+                    if (int.TryParse(token2["avatar"]["head"].ToString(), out int value)) token2["friend"]["avatar"] = string.Empty;
                 }
                 List<ServerFriendPlayer> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<ServerFriendPlayer>>();
 
