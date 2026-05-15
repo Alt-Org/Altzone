@@ -367,13 +367,13 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
     private void ShowUsers(ChatReactionHandler reactionHandler)
     {
-        /*
+        
         RectTransform rtPopUp = _usersWhoAdded.GetComponent<RectTransform>();
         RectTransform rtReactionField = _reactionPaneldata[0]._reactionField.GetComponent<RectTransform>();
         foreach(var i in _reactionHandlers)
         {
-            //ContentSizeFitter SizeFitter = i._messageReaction.GetComponent<ContentSizeFitter>();
-            //RectTransform transform = i._messageReaction.GetComponent<RectTransform>();
+            ContentSizeFitter SizeFitter = i._messageReaction.GetComponent<ContentSizeFitter>();
+            RectTransform transform = i._messageReaction.GetComponent<RectTransform>();
             layoutElement.ignoreLayout = false;
             SizeFitter.enabled = false;
 
@@ -392,7 +392,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
         rtPopUp.offsetMax = Vector2.zero;
 
         _usersWhoAdded.SetActive(true);
-        */
+        
         //_chatScript.OpenUsersWhoAddedReactionPanel();
 
         Invoke("ResetLongClick", 2);
@@ -455,11 +455,11 @@ public class MessageReactionsHandler : AltMonoBehaviour
         layoutElement.ignoreLayout = true;
         foreach (var i in _reactionHandlers)
         {
-            //ContentSizeFitter SizeFitter = i._messageReaction.GetComponent<ContentSizeFitter>();
-            //RectTransform transform = i._messageReaction.GetComponent<RectTransform>();
-            //SizeFitter.enabled = true;
+            ContentSizeFitter SizeFitter = i._messageReaction.GetComponent<ContentSizeFitter>();
+            RectTransform transform = i._messageReaction.GetComponent<RectTransform>();
+            SizeFitter.enabled = true;
 
-            //transform.sizeDelta = new Vector2(transform.sizeDelta.x, 70);
+            transform.sizeDelta = new Vector2(transform.sizeDelta.x, 70);
 
 
 

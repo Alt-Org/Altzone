@@ -103,6 +103,7 @@ public class Chat : AltMonoBehaviour
 
     [SerializeField] private GameObject _InputArea;
     [SerializeField] private GameObject _InputAreaArrow;
+    public GameObject PopUps;
 
     public delegate void SelectedMessageChanged(MessageObjectHandler handler);
     public static event SelectedMessageChanged OnSelectedMessageChanged;
@@ -126,6 +127,8 @@ public class Chat : AltMonoBehaviour
 
     private void Start()
     {
+        instance = this;
+
         ChatChannel.OnMessageHistoryReceived += RefreshChat;
         ChatChannel.OnMessageReceived += DisplayMessage;
 
