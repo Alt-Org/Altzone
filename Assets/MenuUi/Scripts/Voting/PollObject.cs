@@ -425,7 +425,7 @@ public class PollObject : MonoBehaviour
                 if (updateCoroutine != null) StopCoroutine(updateCoroutine);
                 pollEnded = false;
                 showEndTimeManually = false;
-                ClockButton.interactable = true;
+                // ClockButton.interactable = true;
                 updateCoroutine = StartCoroutine(UpdateValues());
             }
         }
