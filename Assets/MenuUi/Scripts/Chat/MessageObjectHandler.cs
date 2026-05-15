@@ -18,15 +18,16 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _date;
     [SerializeField] private Button _button;
     [SerializeField] private GameObject _addReactionsControls;
-    [SerializeField] private GameObject[] _reactionsPanel;
+    [SerializeField] private GameObject _reactionsPanel;
     [SerializeField] private GameObject _fixSize;
-
+    [SerializeField] private ChatShowUsersPopUpData _chatShowUsersPopUpData;
 
     [Header("Base Message")]
     public Vector2 _baseMessageBankerSize;
     public RectTransform _baseMessageSize;
     [SerializeField] private ChatMessageScript backgroundSize;
     [SerializeField] private GameObject reactionField;
+    public Vector2 reactionFieldVector;
     public GameObject _reactionSize;
     public GameObject _expandedReactionSize;
     [SerializeField] private Vector2 _vectorReactionSize;
@@ -38,7 +39,7 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private Image _extraimage;
     private Action<MessageObjectHandler> _selectMessageAction;
 
-    public GameObject[] ReactionsPanel { get => _reactionsPanel;}
+    public GameObject ReactionsPanel { get => _reactionsPanel;}
 
     [SerializeField] private GameObject ReactionObject;
 
@@ -47,6 +48,7 @@ public class MessageObjectHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        reactionFieldVector = reactionField.transform.position;
         _button.onClick.AddListener(SetMessageActive);
         _image = _button.GetComponent<Image>();
         Chat.OnSelectedMessageChanged += SetMessageInactive;
@@ -62,26 +64,20 @@ public class MessageObjectHandler : MonoBehaviour
         //adds extra size if there reactions have been put or not
         float extraPadding;
         if (reactionField.transform.childCount > 0)
-            extraPadding = 85;
+            extraPadding = 65;
         else
         {
             extraPadding = 0f;
             _fixSize.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 0); //Fixes the issue from the object not updating the size when its supposed to
         }
-
+            
         //Checks if reaction panel is active and checks which reaction pannel is on
         if (_reactionSize.activeSelf)
-        {
-            _baseMessageSize.sizeDelta = new Vector2(_vectorReactionSize.x, Mathf.Max(150, _baseMessageBankerSize.y + _vectorReactionSize.y));
-            GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, _baseMessageBankerSize.y + _vectorReactionSize.y);
-        }
+                _baseMessageSize.sizeDelta = new Vector2(_vectorReactionSize.x, Mathf.Max(150, _baseMessageBankerSize.y + _vectorReactionSize.y));
 
         //reverts back to orignal
         else
-        {
-            _baseMessageSize.sizeDelta = new Vector2(_baseMessageBankerSize.x, Mathf.Max(150, _baseMessageBankerSize.y + extraPadding));
-            GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, _baseMessageBankerSize.y + extraPadding);
-        }
+        _baseMessageSize.sizeDelta = new Vector2(_baseMessageBankerSize.x, Mathf.Max(150, _baseMessageBankerSize.y + extraPadding));
 
     }
 
@@ -110,7 +106,8 @@ public class MessageObjectHandler : MonoBehaviour
 
         foreach (var reactionData in message.Reactions)
         {
-            ReactionChatCall(reactionData);
+            ReactionChatCall(reactionData, message);
+            _chatShowUsersPopUpData.AddUsersReaction(message, reactionData);
         }
     }
 
@@ -162,18 +159,12 @@ public class MessageObjectHandler : MonoBehaviour
     }
 
     //Refreshes the reactions if there is any
-    public void ReactionChatCall(ServerReactions EmojiId)
+    public void ReactionChatCall(ServerReactions EmojiId, ChatMessage message)
     {
         //Gets the set data we need to get to import saved reactions
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
 
-
-        int objectAmount = 0;
-        foreach (GameObject ReactionPanel in ReactionsPanel)
-        {
-                objectAmount++;
-                ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, true, ReactionPanel, objectAmount);
-        }
+                ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, ReactionsPanel, message);
         
     }
 
@@ -185,6 +176,7 @@ public class MessageObjectHandler : MonoBehaviour
         //Gets the set data we need to get to import saved reactions
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
 
-        ChildsScript.UpdateReactions(message.Reactions, _id);
+        ChildsScript.UpdateReactions(message.Reactions, _id, message);
+        
     }
 }
