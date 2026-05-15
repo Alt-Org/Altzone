@@ -815,6 +815,8 @@ namespace Battle.View.Player
         /// <returns>Coroutine IEnumerator.</returns>
         private IEnumerator StunCoroutine(float stunDurationSec, BattleEmotionState emotion, BattleTeamNumber teamNumber, bool shieldAttached, int shieldNumber)
         {
+            //{ set stun sprites
+
             SpriteSheetMap sprite = emotion switch
             {
                 BattleEmotionState.Joy        => SpriteSheetMap.Enum.HeadJoy,
@@ -834,6 +836,10 @@ namespace Battle.View.Player
             {
                 _playerShieldViewControllers[shieldNumber].SetShieldNoSprite();
             }
+
+            //} set stun sprites
+
+            //{ stun flash
 
             Color tempColor;
             float singleFlashDuration = stunDurationSec / (_stunFlashAmount * 2);
@@ -858,6 +864,10 @@ namespace Battle.View.Player
                 yield return new WaitForSeconds(singleFlashDuration);
             }
 
+            //} stun flash
+
+            //{ reset sprites
+
             SetHeadSprite(SpriteSheetMap.Enum.Head1);
 
             if (shieldAttached)
@@ -870,6 +880,8 @@ namespace Battle.View.Player
             {
                 SetHandSprite(SpriteSheetMap.Enum.HandsNoShield);
             }
+
+            //} reset sprites
         }
 
         private void SetHandOnShieldSprite(BattleTeamNumber team, int shieldNumber)
