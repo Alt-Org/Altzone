@@ -815,24 +815,25 @@ namespace Battle.View.Player
         /// <returns>Coroutine IEnumerator.</returns>
         private IEnumerator StunCoroutine(float stunDurationSec, BattleEmotionState emotion, BattleTeamNumber teamNumber, bool shieldAttached, int shieldNumber)
         {
+            SpriteSheetMap sprite = emotion switch
+            {
+                BattleEmotionState.Joy        => SpriteSheetMap.Enum.HeadJoy,
+                BattleEmotionState.Sadness    => SpriteSheetMap.Enum.HeadSadness,
+                BattleEmotionState.Playful    => SpriteSheetMap.Enum.HeadPlayful,
+                BattleEmotionState.Aggression => SpriteSheetMap.Enum.HeadAgression,
+                BattleEmotionState.Love       => SpriteSheetMap.Enum.HeadLove,
+
+                _ => throw new NotImplementedException()
+            };
+
+            SetHeadSprite(sprite);
+
+            SetHandSprite(SpriteSheetMap.Enum.HandsScared);
+
             if (shieldAttached)
             {
                 _playerShieldViewControllers[shieldNumber].SetShieldNoSprite();
             }
-            SetHandSprite(SpriteSheetMap.Enum.HandsScared);
-
-                SpriteSheetMap sprite = emotion switch
-                {
-                    BattleEmotionState.Joy => SpriteSheetMap.Enum.HeadJoy,
-                    BattleEmotionState.Sadness => SpriteSheetMap.Enum.HeadSadness,
-                    BattleEmotionState.Playful => SpriteSheetMap.Enum.HeadPlayful,
-                    BattleEmotionState.Aggression => SpriteSheetMap.Enum.HeadAgression,
-                    BattleEmotionState.Love => SpriteSheetMap.Enum.HeadLove,
-
-                    _ => throw new NotImplementedException()
-                };
-
-            SetHeadSprite(sprite);
 
             Color tempColor;
             float singleFlashDuration = stunDurationSec / (_stunFlashAmount * 2);
@@ -858,6 +859,7 @@ namespace Battle.View.Player
             }
 
             SetHeadSprite(SpriteSheetMap.Enum.Head1);
+
             if (shieldAttached)
             {
                 SetHandOnShieldSprite(teamNumber, shieldNumber);
