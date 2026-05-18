@@ -110,6 +110,8 @@ public class ParentalControlManager : MonoBehaviour
         GetTimeLimit();
         SetEndMidMatchToggle();
         SetEndAfterMatchToggle();
+        CheckControl();
+        GetPassword();
     }
     
 
@@ -159,10 +161,8 @@ public class ParentalControlManager : MonoBehaviour
              }
 
     public void LogIn() {
-        //next two are to ensure that log in works when control is first disabled and then set anew in the same session
-        //TODO a more elegant way to ensure this
-        CheckControl();
-        GetPassword();
+        
+        
         if (parentalControl == true)
         {
             if (passwordInput.text == presetPassword)
@@ -185,6 +185,12 @@ public class ParentalControlManager : MonoBehaviour
         }
 
         
+
+    }
+
+    public void LogOut()
+    {
+        parentalControlSettings.SetActive(false);
 
     }
 

@@ -3201,7 +3201,7 @@ GameObject:
   - component: {fileID: 3545210917938659937}
   - component: {fileID: 9110939969377133052}
   m_Layer: 5
-  m_Name: ConfirmChangesButton
+  m_Name: SaveChangesButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3224,7 +3224,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -292, y: -639}
+  m_AnchoredPosition: {x: 288, y: -639}
   m_SizeDelta: {x: 250, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6420406387056544401
@@ -4999,7 +4999,7 @@ GameObject:
   - component: {fileID: 1892137441662710824}
   - component: {fileID: 4379907821514172104}
   m_Layer: 5
-  m_Name: CloseSettingsButton
+  m_Name: LogOffSettingsButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5022,7 +5022,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 244, y: -639}
+  m_AnchoredPosition: {x: -250, y: -639}
   m_SizeDelta: {x: 250, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &291206648385300379
@@ -5107,10 +5107,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 452585707855141714}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 4235185873375394469}
+        m_TargetAssemblyTypeName: ParentalControlManager, MainMenu
+        m_MethodName: LogOut
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -12815,7 +12815,7 @@ GameObject:
   - component: {fileID: 8090411889502724194}
   - component: {fileID: 3781818426219389645}
   m_Layer: 5
-  m_Name: CloseSettingsButtonText
+  m_Name: LogOffSettingsButtonText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12868,7 +12868,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Sulje
+  m_text: Uloskirjaudu
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 35c39ce28c397b848b84f7de2f26c5ac, type: 2}
   m_sharedMaterial: {fileID: 2109022488393823743, guid: 35c39ce28c397b848b84f7de2f26c5ac,
@@ -30776,7 +30776,7 @@ GameObject:
   - component: {fileID: 3107925418403333734}
   - component: {fileID: 7912163078016136569}
   m_Layer: 5
-  m_Name: ConfirmSettingsButtonText
+  m_Name: SaveSettingsButtonText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30829,7 +30829,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Vahvista
+  m_text: Tallenna
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 35c39ce28c397b848b84f7de2f26c5ac, type: 2}
   m_sharedMaterial: {fileID: 2109022488393823743, guid: 35c39ce28c397b848b84f7de2f26c5ac,
