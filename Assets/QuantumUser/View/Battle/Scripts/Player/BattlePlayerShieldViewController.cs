@@ -374,8 +374,10 @@ namespace Battle.View.Player
         /// See [{PlayerCharacterViewController}](#page-concepts-player-character-view-controller) for more info.
         private BattlePlayerCharacterViewController _characterViewController;
 
+        /// <summary>SpriteRenderer component of this shield.</summary>
         private SpriteRenderer _shieldSpriteRenderer;
 
+        /// <summary>Boolean that tells whether this shield is associated with the local player.</summary>
         private bool _isLocalPlayer;
 
         /// @anchor BattlePlayerShieldViewController-Private-GameflowMethods

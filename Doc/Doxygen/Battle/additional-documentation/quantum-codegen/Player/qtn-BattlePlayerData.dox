@@ -88,6 +88,10 @@
 /// @var FrameTimer Quantum::BattlePlayerDataQComponent::StunCooldown
 /// <summary> Timer used for the cooldown on the character being stunned.</summary>
 /// Part of @ref PlayerState "Player's current state related data"
+///
+/// @var FrameTimer Quantum::BattlePlayerDataQComponent::ShieldHitCooldown
+/// <summary> Timer used for preventing the shield from getting hit during the timer.</summary>
+/// Part of @ref PlayerState "Player's current state related data"
 /// @}
 
 /// @anchor PlayerMovement
@@ -144,6 +148,18 @@
 /// @var FP Quantum::BattlePlayerDataQComponent::BotMovementCooldownSec
 /// <summary>Cooldown between bot movements in seconds.</summary>
 /// Part of @ref Bot "Bot related data"
+/// @}
+
+/// @anchor View
+/// @name View related data
+/// @{
+/// @var FPVector2 Quantum::BattlePlayerDataQComponent::ViewPosition
+/// <summary>Position the player is moving towards</summary>
+/// part of @ref View "View related data"
+///
+/// @var FPVector2 Quantum::BattlePlayerDataQComponent::ViewMovementVector
+/// <summary>The direction the player is moving towards</summary>
+/// part of @ref View "View related data"
 /// @}
 
 /// @name Quantum Built-in

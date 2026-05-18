@@ -181,7 +181,9 @@ In **%Battle** all [Quantum Events🡵] are located in BattleEvents.qtn file.
 | @crefd{Quantum}   | @cref{Quantum,EventBattleChangeEmotionState}                | @copybrief Quantum.EventBattleChangeEmotionState                |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleProjectileChangeSpeed}             | @copybrief Quantum.EventBattleProjectileChangeSpeed             |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleProjectileChangeGlowStrength}      | @copybrief Quantum.EventBattleProjectileChangeGlowStrength      |
-| @crefd{Quantum}   | @cref{Quantum,EventBattlePlaySoundFX}                       | @copybrief Quantum.EventBattlePlaySoundFX                       |
+| @crefd{Quantum}   | @cref{Quantum,EventBattlePlaySoundFxForAll}                 | @copybrief Quantum.EventBattlePlaySoundFxForAll                 |
+| @crefd{Quantum}   | @cref{Quantum,EventBattlePlaySoundFxForTeam}                | @copybrief Quantum.EventBattlePlaySoundFxForTeam                |
+| @crefd{Quantum}   | @cref{Quantum,EventBattlePlaySoundFxForPlayer}              | @copybrief Quantum.EventBattlePlaySoundFxForPlayer              |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleLastRowWallDestroyed}              | @copybrief Quantum.EventBattleLastRowWallDestroyed              |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleDiamondLanded}                     | @copybrief Quantum.EventBattleDiamondLanded                     |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleCharacterSelected}                 | @copybrief Quantum.EventBattleCharacterSelected                 |
@@ -190,6 +192,7 @@ In **%Battle** all [Quantum Events🡵] are located in BattleEvents.qtn file.
 | @crefd{Quantum}   | @cref{Quantum,EventBattleGiveUpStateChange}                 | @copybrief Quantum.EventBattleGiveUpStateChange                 |
 | @crefd{Quantum}   | @cref{Quantum,EventBattlePlayStateUpdate}                   | @copybrief Quantum.EventBattlePlayStateUpdate                   |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleStoneCharacterPlayHitAnimation}    | @copybrief Quantum.EventBattleStoneCharacterPlayHitAnimation    |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleShieldChangeState}                 | @copybrief Quantum.EventBattleShieldChangeState                 |
 |                                                                                                                                                 |||
 | @crefd{Quantum}   | @cref{Quantum,EventBattleDebugOnScreenMessage}              | @copybrief Quantum.EventBattleDebugOnScreenMessage              |
 

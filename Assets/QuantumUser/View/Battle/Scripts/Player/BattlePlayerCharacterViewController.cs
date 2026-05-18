@@ -603,7 +603,8 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Public method that is called when the view should update.<br/>
-        /// Calls <see cref="UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to adjust the player character model's position.
+        /// Calls <see cref="UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to adjust the player character model's position.<br/>
+        /// Handles setting feet sprite based on movement direction.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-GameflowMethods "Public Gameflow Methods"
@@ -697,6 +698,9 @@ namespace Battle.View.Player
         /// See [{PlayerShieldViewController}](#page-concepts-player-shield-view-controller) for more info.
         private BattlePlayerShieldViewController[] _playerShieldViewControllers;
 
+        /// <summary>Team number of this character.</summary>
+        ///
+        /// See [{Player Teams}](#page-concepts-player-slots-teams) for more info.
         private BattleTeamNumber _teamNumber;
 
         /// @anchor BattlePlayerCharacterViewController-Private-GameflowMethods

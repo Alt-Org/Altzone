@@ -26,9 +26,9 @@
 ///   @copybrief Quantum.EventBattleViewGameOver
 ///
 /// ### ViewInit events
-/// - <b>synced event</b> @ref BattlePlayerCharacterViewInit { EntityRef ERef; BattlePlayerSlot Slot; BattlePlayerCharacterID CharacterID; BattlePlayerCharacterClass Class; FP ModelScale }  
+/// - <b>synced event</b> @ref BattlePlayerCharacterViewInit { EntityRef ERef; BattlePlayerSlot Slot; BattlePlayerCharacterID CharacterID; BattlePlayerCharacterClass CharacterClass; int ShieldCount; FP ModelScale }  
 ///   @copybrief Quantum.EventBattlePlayerCharacterViewInit
-/// - <b>synced event</b> @ref BattlePlayerShieldViewInit { EntityRef ERef; EntityRef CharacterRef; BattlePlayerSlot Slot; FP ModelScale }
+/// - <b>synced event</b> @ref BattlePlayerShieldViewInit { EntityRef ERef; EntityRef CharacterRef; BattlePlayerSlot Slot; BattlePlayerCharacterID CharacterId; BattlePlayerCharacterClass CharacterClass; int ShieldNumber; FP ModelScale }  
 ///   @copybrief Quantum.EventBattlePlayerShieldViewInit
 /// - <b>synced event</b> @ref BattleSoulWallViewInit { EntityRef ERef; FP ModelScale; int EmotionIndicatorColorIndex; int DebugColorIndex }  
 ///   @copybrief Quantum.EventBattleSoulWallViewInit
@@ -46,17 +46,21 @@
 ///   @copybrief Quantum.EventBattleProjectileChangeSpeed
 /// - <b>synced event</b> @ref BattleProjectileChangeGlowStrength { FP Strength }  
 ///   @copybrief Quantum.EventBattleProjectileChangeGlowStrength
-/// - <b>event</b> @ref BattlePlaySoundFX { BattleSoundFX Effect }  
-///   @copybrief Quantum.EventBattlePlaySoundFX
+/// - <b>event</b> @ref BattlePlaySoundFxForAll { BattleSoundFX Effect }  
+///   @copybrief Quantum.EventBattlePlaySoundFxForAll
+/// - <b>event</b> @ref BattlePlaySoundFxForTeam { BattleTeamNumber Team; BattleSoundFX Effect }  
+///   @copybrief Quantum.EventBattlePlaySoundFxForTeam
+/// - <b>event</b> @ref BattlePlaySoundFxForPlayer { BattlePlayerSlot Slot; BattleSoundFX Effect }  
+///   @copybrief Quantum.EventBattlePlaySoundFxForPlayer
 /// - <b>synced event</b> @ref BattleLastRowWallDestroyed { int WallNumber; BattleTeamNumber Team; FP LightrayRotation; BattleLightrayColor LightrayColor; BattleLightraySize LightraySize }  
 ///   @copybrief Quantum.EventBattleLastRowWallDestroyed
 /// - <b>synced event</b> @ref BattleDiamondLanded { EntityRef ERef }  
 ///   @copybrief Quantum.EventBattleDiamondLanded
 /// - <b>synced event</b> @ref BattleCharacterSelected { BattlePlayerSlot Slot; int CharacterNumber }  
 ///   @copybrief Quantum.EventBattleCharacterSelected
-/// - <b>synced event</b> @ref BattleCharacterHit { EntityRef ERef; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; FP HealthPercentage }  
+/// - <b>synced event</b> @ref BattleCharacterHit { EntityRef ERef; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; bool ShieldAttached; int ShieldNumber; FP StunDurationSec; BattleEmotionState ProjectileEmotion }  
 ///   @copybrief Quantum.EventBattleCharacterHit
-/// - <b>synced event</b> @ref BattleShieldHit { EntityRef ERef; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; FP DefenceValue }  
+/// - <b>synced event</b> @ref BattleShieldHit { EntityRef ERef; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; bool ShieldAttached; int ShieldNumber; FP DefencePercentage }  
 ///   @copybrief Quantum.EventBattleShieldHit
 /// - <b>synced event</b> @ref BattleGiveUpStateChange {BattleTeamNumber Team; BattlePlayerSlot Slot; BattleGiveUpStateChange StateUpdate }  
 ///   @copybrief Quantum.EventBattleGiveUpStateChange
@@ -64,6 +68,8 @@
 ///   @copybrief Quantum.EventBattlePlayStateUpdate
 /// - <b>synced event</b> @ref BattleStoneCharacterPlayHitAnimation { BattleTeamNumber Team; BattleEmotionState Emotion }  
 ///   @copybrief Quantum.EventBattleStoneCharacterPlayHitAnimation
+/// - <b>synced event</b> @ref BattleShieldChangeState { EntityRef ERef; BattleTeamNumber Team; bool ShieldAttached; int ShieldNumber }  
+///   @copybrief Quantum.EventBattleShieldChangeState
 ///
 /// ### Debug events
 /// - <b>synced event</b> @ref BattleDebugOnScreenMessage { QString<512> Message }  
@@ -246,12 +252,30 @@
 ///
 /// ---
 ///
-/// @anchor BattlePlaySoundFX
-/// ### BattlePlaySoundFX
-/// @copybrief Quantum.EventBattlePlaySoundFX
+/// @anchor BattlePlaySoundFxForAll
+/// ### BattlePlaySoundFxForAll
+/// @copybrief Quantum.EventBattlePlaySoundFxForAll
 ///
-/// Generated Class @cref{Quantum,EventBattlePlaySoundFX}  
-/// Generated Method @cref{Quantum,Frame.FrameEvents.BattlePlaySoundFX}
+/// Generated Class @cref{Quantum,EventBattlePlaySoundFxForAll}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattlePlaySoundFxForAll}
+///
+/// ---
+///
+/// @anchor BattlePlaySoundFxForTeam
+/// ### BattlePlaySoundFxForTeam
+/// @copybrief Quantum.EventBattlePlaySoundFxForTeam
+///
+/// Generated Class @cref{Quantum,EventBattlePlaySoundFxForTeam}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattlePlaySoundFxForTeam}
+///
+/// ---
+///
+/// @anchor BattlePlaySoundFxForPlayer
+/// ### BattlePlaySoundFxForPlayer
+/// @copybrief Quantum.EventBattlePlaySoundFxForPlayer
+///
+/// Generated Class @cref{Quantum,EventBattlePlaySoundFxForPlayer}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattlePlaySoundFxForPlayer}
 ///
 /// ---
 ///
@@ -328,6 +352,14 @@
 /// Generated Method @cref{Quantum,Frame.FrameEvents.BattleStoneCharacterPlayHitAnimation}
 ///
 /// ---
+///
+/// @anchor BattleShieldChangeState
+/// ### BattleShieldChangeState
+/// @copybrief Quantum.EventBattleShieldChangeState
+///
+/// Generated Class @cref{Quantum,EventBattleShieldChangeState}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleShieldChangeState}
+///
 /// ---
 ///
 /// ### Debug events
@@ -463,9 +495,23 @@
 ///
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
-/// @class Quantum::EventBattlePlaySoundFX
+/// @class Quantum::EventBattlePlaySoundFxForAll
 /// <summary>
-/// Non-synced Event. Used to play sound effects during battle.
+/// Non-synced Event. Used to play sound effects during battle for everyone.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattlePlaySoundFxForTeam
+/// <summary>
+/// Non-synced Event. Used to play sound effects during battle for the player's team.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattlePlaySoundFxForPlayer
+/// <summary>
+/// Non-synced Event. Used to play sound effects during battle for the player.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleEvents.qtn}
@@ -531,6 +577,14 @@
 /// Synced event. Used to play StoneCharacter animations.
 /// </summary>
 ///
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattleShieldChangeState
+/// <summary>
+/// Synced event. Used when a shield is attached or detached.
+/// <summary>
+///
+/// Used to change the player characters hand sprite.  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
 /// @class Quantum::EventBattleDebugOnScreenMessage
