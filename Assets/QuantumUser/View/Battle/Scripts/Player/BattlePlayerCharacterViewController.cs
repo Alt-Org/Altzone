@@ -46,14 +46,29 @@ namespace Battle.View.Player
             /// </summary>
             public const int Count = 64;
 
+            /// <summary>
+            /// Constant that defines the index of the first bottom hand sprite in the spritesheet.
+            /// </summary>
             public const int HandSpriteStartBottom = 16;
 
+            /// <summary>
+            /// Constant that defines the index of the first top hand sprite in the spritesheet.
+            /// </summary>
             public const int HandSpriteStartTop = 24;
 
+            /// <summary>
+            /// Constant that defines the index of the first shield sprite in the spritesheet.
+            /// </summary>
             public const int ShieldSpriteStart = 32;
 
+            /// <summary>
+            /// Constant that defines the number of shield sprites in the spritesheet.
+            /// </summary>
             public const int ShieldCount = 4;
 
+            /// <summary>
+            /// Constant that defines the number of shield states in the spritesheet.
+            /// </summary>
             public const int ShieldStateCount = 2;
 
             /// <summary>
@@ -352,6 +367,9 @@ namespace Battle.View.Player
             _bodypartSpriteRenderers[SpriteRendererShadowIndex] .sprite = null;
         }
 
+        /// <summary>
+        /// Handles changing the sprite of every body part to their default sprites.
+        /// </summary>
         public void SetDefaultBodyPartSprites()
         {
             _bodypartSpriteRenderers[SpriteRendererHeadIndex].sprite   = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Head1);
@@ -769,6 +787,13 @@ namespace Battle.View.Player
             }
         }
 
+        /// <summary>
+        /// Handler method for <see cref="Quantum.EventBattleShieldChangeState">EventBattleShieldChangeState</see> QuantumEvent.<br/>
+        /// </summary>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Private-QuantumEventHandlers "Private QuantumEvent Handlers"
+        ///
+        /// <param name="e">The event data.</param>
         private void QEventBattleShieldChangeState(EventBattleShieldChangeState e)
         {
             if (EntityRef != e.ERef) return;
@@ -890,6 +915,12 @@ namespace Battle.View.Player
             //} reset sprites
         }
 
+        /// <summary>
+        /// Private helper method for setting the hand sprite based on <paramref name="shieldNumber"/> and <paramref name="team"/>.
+        /// </summary>
+        ///
+        /// <param name="team">TeamNumber of the player whose hand sprite is being set.</param>
+        /// <param name="shieldNumber">ShieldNumber of the current shield.</param>
         private void SetHandOnShieldSprite(BattleTeamNumber team, int shieldNumber)
         {
             int startIndex = team == BattleGameViewController.LocalPlayerTeam ? SpriteSheetMap.HandSpriteStartBottom : SpriteSheetMap.HandSpriteStartTop;
