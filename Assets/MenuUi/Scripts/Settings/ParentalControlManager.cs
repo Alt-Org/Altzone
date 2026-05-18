@@ -82,6 +82,9 @@ public class ParentalControlManager : MonoBehaviour
 
         parentalControlPanel.SetActive(true);
         passwordPanel.SetActive(true);
+        messageText.enabled = false;
+
+        
 
         controlToggle.isOn = true; // PlayerPrefs.GetInt("ParentalControl", 0) == 1;
         timeLimitInput.text = 10f.ToString(); //PlayerPrefs.GetFloat("MaxPlayTime", 2f).ToString();
@@ -171,6 +174,7 @@ public class ParentalControlManager : MonoBehaviour
             {
                 Debug.Log("correct password, login allowed");
                 //messageText.text = "Kirjauduttu sis‰‰n";
+                messageText.enabled = false;
                 parentalControlSettings.SetActive(true);
                 
                 passwordPanel.SetActive(false);
@@ -181,14 +185,15 @@ public class ParentalControlManager : MonoBehaviour
             else if (passwordInput.text != presetPassword)
             {
                 //TODO message: please input correct password
-                messageText.text = "V‰‰r‰ salasana";
+                //messageText.text = "V‰‰r‰ salasana";
+                messageText.enabled = true;
             }
 
         }
         else
         {
             //TODO message: can't log in if ParentalControl not activated
-            messageText.text = "Vanhempien kontrolli ei ole p‰‰ll‰";
+            //messageText.text = "Vanhempien kontrolli ei ole p‰‰ll‰";
 
         }
 
@@ -199,7 +204,7 @@ public class ParentalControlManager : MonoBehaviour
     {
         parentalControlSettings.SetActive(false);
         passwordPanel.SetActive(true);
-        messageText.text = "";
+        
 
     }
 
@@ -315,7 +320,7 @@ public class ParentalControlManager : MonoBehaviour
         PlayerPrefs.SetString("password","");
         PlayerPrefs.Save();
         parentalControlPopupButton.SetActive(true);
-        messageText.text = "";
+        //messageText.text = "";
         //TODO: all checkboxes should uncheck, numbers be set to none
 
 
@@ -432,7 +437,7 @@ public class ParentalControlManager : MonoBehaviour
     {
         PlayerPrefs.Save();
         //TODO pop up when settings are saved
-        messageText.text = "Asetukset tallennettu";
+        //messageText.text = "Asetukset tallennettu";
 
     }
 
