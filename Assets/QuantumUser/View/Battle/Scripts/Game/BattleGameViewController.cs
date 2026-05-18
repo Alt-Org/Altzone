@@ -616,8 +616,8 @@ namespace Battle.View.Game
         }
 
         /// <summary>
-        /// Private handler method for EventBattlePlaySoundFX QuantumEvent.<br/>
-        /// Handles calling <see cref="Battle.View.Audio.BattleAudioViewController.PlaySoundFX">PlaySound</see>
+        /// Private handler method for EventBattlePlaySoundFxForAll QuantumEvent.<br/>
+        /// Handles calling <see cref="Battle.View.Audio.BattleAudioViewController.PlaySoundFX">PlaySoundFX</see>
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
@@ -626,18 +626,38 @@ namespace Battle.View.Game
             BattleAudioViewController.PlaySoundFX(e.Effect);
         }
 
+        /// <summary>
+        /// Private handler method for EventBattlePlaySoundFxForTeam QuantumEvent.<br/>
+        /// Handles calling <see cref="Battle.View.Audio.BattleAudioViewController.PlaySoundFX">PlaySoundFX</see>
+        /// </summary>
+        ///
+        /// <param name="e">The event data.</param>
         private void QEventPlaySoundFxForTeam(EventBattlePlaySoundFxForTeam e)
         {
             if (e.Team != LocalPlayerTeam) return;
             BattleAudioViewController.PlaySoundFX(e.Effect);
         }
 
+        /// <summary>
+        /// Private handler method for EventBattlePlaySoundFxForPlayer QuantumEvent.<br/>
+        /// Handles calling <see cref="Battle.View.Audio.BattleAudioViewController.PlaySoundFX">PlaySoundFX</see>
+        /// </summary>
+        ///
+        /// <param name="e">The event data.</param>
         private void QEventPlaySoundFxForPlayer(EventBattlePlaySoundFxForPlayer e)
         {
             if (e.Slot != LocalPlayerSlot) return;
             BattleAudioViewController.PlaySoundFX(e.Effect);
         }
 
+        /// <summary>
+        /// Private handler method for EventBattleCharacterSelected QuantumEvent.<br/>
+        /// Handles calling <see cref="BattleUiPlayerInfoHandler.SetSelected">SetSeleced</see> in
+        /// <see cref="BattleGameViewController._uiController">_uiController's</see>
+        /// <see cref="Battle.View.UI.BattleUiController.PlayerInfoHandler">PlayerInfoHandler</see>.
+        /// </summary>
+        ///
+        /// <param name="e">The event data.</param>
         private void QEventCharacterSelected(EventBattleCharacterSelected e)
         {
             _uiController.PlayerInfoHandler.SetSelected(e.Slot, e.CharacterNumber);
@@ -675,6 +695,13 @@ namespace Battle.View.Game
             }
         }
 
+        /// <summary>
+        /// Private handler method for EventBattleStoneCharacterPlayHitAnimation QuantumEvent.<br/>
+        /// Handles calling <see cref="BattleStoneCharacterViewController.PlayHitAnimation">PlaySound</see>
+        /// in <see cref="BattleGameViewController._stoneCharacterViewController">_stoneCharacterViewController</see>
+        /// </summary>
+        ///
+        /// <param name="e">The event data.</param>
         private void QEventOnStoneCharacterPlayHitAnimation(EventBattleStoneCharacterPlayHitAnimation e)
         {
             _stoneCharacterViewController.PlayHitAnimation(e.Team, e.Emotion);
