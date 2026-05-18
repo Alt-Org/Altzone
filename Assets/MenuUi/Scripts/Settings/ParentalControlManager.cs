@@ -425,6 +425,7 @@ public class ParentalControlManager : MonoBehaviour
     public void SaveSettings()
     {
         PlayerPrefs.Save();
+        messageText.text = "Asetukset tallennettu";
 
     }
 
