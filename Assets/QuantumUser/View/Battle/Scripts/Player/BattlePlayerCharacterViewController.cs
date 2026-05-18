@@ -671,8 +671,8 @@ namespace Battle.View.Player
         /// <summary>Array that holds the SpriteRenderer components of each body part gameobject.</summary>
         private readonly SpriteRenderer[] _bodypartSpriteRenderers = new SpriteRenderer[5];
 
-        /// <summary>Reference to the currently running <see cref="StunFlashCoroutine(float)">StunFlashCoroutine</see>.</summary>
-        private Coroutine _stunFlashCoroutine = null;
+        /// <summary>Reference to the currently running <see cref="StunCoroutine(float)">StunCoroutine</see>.</summary>
+        private Coroutine _stunCoroutine = null;
 
         /// <summary>Array that holds references to the shield view controllers associated with this character view controller.</summary>
         ///
@@ -728,7 +728,7 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Handler method for <see cref="Quantum.EventBattleCharacterHit">EventBattleCharacterHit</see> QuantumEvent.<br/>
-        /// Starts <see cref="BattlePlayerCharacterViewController.StunFlashCoroutine">DamageFlashCoroutine</see>.
+        /// Starts <see cref="BattlePlayerCharacterViewController.StunCoroutine">StunCoroutine</see>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Private-QuantumEventHandlers "Private QuantumEvent Handlers"
@@ -738,24 +738,12 @@ namespace Battle.View.Player
         {
             if (EntityRef != e.ERef) return;
 
-            if (_stunFlashCoroutine != null)
+            if (_stunCoroutine != null)
             {
-                StopCoroutine(_stunFlashCoroutine);
+                StopCoroutine(_stunCoroutine);
             }
-            _stunFlashCoroutine = StartCoroutine(StunFlashCoroutine((float)e.StunFlashDurationSec));
 
-            SpriteSheetMap sprite = e.ProjectileEmotion switch
-            {
-                BattleEmotionState.Joy        => SpriteSheetMap.Enum.HeadJoy,
-                BattleEmotionState.Sadness    => SpriteSheetMap.Enum.HeadSadness,
-                BattleEmotionState.Playful    => SpriteSheetMap.Enum.HeadPlayful,
-                BattleEmotionState.Aggression => SpriteSheetMap.Enum.HeadAgression,
-                BattleEmotionState.Love       => SpriteSheetMap.Enum.HeadLove,
-
-                _ => throw new NotImplementedException()
-            };
-
-            SetHeadSprite(sprite);
+            _stunCoroutine = StartCoroutine(StunCoroutine((float)e.StunDurationSec, e.ProjectileEmotion, e.Team, e.ShieldAttached, e.ShieldNumber));
 
             _classViewController.OnCharacterHit(e);
 
@@ -778,10 +766,6 @@ namespace Battle.View.Player
             {
                 if (shield.EntityRef != e.ERef) return;
                 shield.OnShieldHit(e);
-            }
-            if (e.DefencePercentage <= 0)
-            {
-                SetHandSprite(SpriteSheetMap.Enum.HandsScared);
             }
         }
 
@@ -829,30 +813,75 @@ namespace Battle.View.Player
         /// </summary>
         ///
         /// <returns>Coroutine IEnumerator.</returns>
-        private IEnumerator StunFlashCoroutine(float stunFlashDurationSec)
+        private IEnumerator StunCoroutine(float stunDurationSec, BattleEmotionState emotion, BattleTeamNumber teamNumber, bool shieldAttached, int shieldNumber)
         {
+            //{ set stun sprites
+
+            SpriteSheetMap sprite = emotion switch
+            {
+                BattleEmotionState.Joy        => SpriteSheetMap.Enum.HeadJoy,
+                BattleEmotionState.Sadness    => SpriteSheetMap.Enum.HeadSadness,
+                BattleEmotionState.Playful    => SpriteSheetMap.Enum.HeadPlayful,
+                BattleEmotionState.Aggression => SpriteSheetMap.Enum.HeadAgression,
+                BattleEmotionState.Love       => SpriteSheetMap.Enum.HeadLove,
+
+                _ => throw new NotImplementedException()
+            };
+
+            SetHeadSprite(sprite);
+
+            SetHandSprite(SpriteSheetMap.Enum.HandsScared);
+
+            if (shieldAttached)
+            {
+                _playerShieldViewControllers[shieldNumber].SetShieldNoSprite();
+            }
+
+            //} set stun sprites
+
+            //{ stun flash
+
             Color tempColor;
-            float singleFlashDuration = stunFlashDurationSec / (_stunFlashAmount * 2 - 1);
+            float singleFlashDuration = stunDurationSec / (_stunFlashAmount * 2);
             for (int i = 0; i < _stunFlashAmount; i++)
             {
-                foreach (SpriteRenderer sprite in _bodypartSpriteRenderers)
+                foreach (SpriteRenderer spriteRenderer in _bodypartSpriteRenderers)
                 {
-                    tempColor = sprite.color;
+                    tempColor = spriteRenderer.color;
                     tempColor.a = 0;
-                    sprite.color = tempColor;
+                    spriteRenderer.color = tempColor;
                 }
 
                 yield return new WaitForSeconds(singleFlashDuration);
 
-                foreach (SpriteRenderer sprite in _bodypartSpriteRenderers)
+                foreach (SpriteRenderer spriteRenderer in _bodypartSpriteRenderers)
                 {
-                    tempColor = sprite.color;
+                    tempColor = spriteRenderer.color;
                     tempColor.a = 1;
-                    sprite.color = tempColor;
+                    spriteRenderer.color = tempColor;
                 }
 
                 yield return new WaitForSeconds(singleFlashDuration);
             }
+
+            //} stun flash
+
+            //{ reset sprites
+
+            SetHeadSprite(SpriteSheetMap.Enum.Head1);
+
+            if (shieldAttached)
+            {
+                SetHandOnShieldSprite(teamNumber, shieldNumber);
+                BattlePlayerShieldViewController.ShieldSide shieldSide = BattleGameViewController.LocalPlayerTeam == teamNumber ? BattlePlayerShieldViewController.ShieldSide.Top : BattlePlayerShieldViewController.ShieldSide.Bottom;
+                _playerShieldViewControllers[shieldNumber].SetShieldSprite(shieldNumber, shieldSide, isHit: false);
+            }
+            else
+            {
+                SetHandSprite(SpriteSheetMap.Enum.HandsNoShield);
+            }
+
+            //} reset sprites
         }
 
         private void SetHandOnShieldSprite(BattleTeamNumber team, int shieldNumber)

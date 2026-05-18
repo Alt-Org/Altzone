@@ -37,7 +37,7 @@ namespace MenuUi.Scripts.ReferenceSheets
         /// <returns>List of GameTypeInfo objects.</returns>
         public List<GameTypeInfo> GetGameTypeInfos()
         {
-            return _info;
+            return _info.FindAll(info => info.Enabled);
         }
 
         public int GetEnabledCount()

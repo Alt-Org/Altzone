@@ -97,7 +97,7 @@ namespace Altzone.Scripts.Lobby
 
         private const long STARTDELAY = 2000;
         // Max time the leader waits before filling remaining Random2v2 slots with bots.
-        private const float MatchmakingTimeoutSeconds = 30f;
+        private const float MatchmakingTimeoutSeconds = 20f;
         // Timeout for followers who join a matchmaking room: if not enough human players join within this interval, auto-leave and requeue.
         private const float MatchmakingJoinTimeoutSeconds = 5f;
         // Marker for matchmaking rooms that were created from queue timeout flow.
@@ -138,7 +138,7 @@ namespace Altzone.Scripts.Lobby
         // Tracks last computed number of eligible solo players in queue (for diagnostics / selection caps)
         private int _queuedSoloCount = 0;
         private readonly JoinAttemptTracker _joinAttemptTracker = new JoinAttemptTracker();
-        private const float QueueWaitSeconds = 30f;
+        private const float QueueWaitSeconds = 20f;
         private const float QueueReadyStartDelaySeconds = 2f;
         // Increased grace window to reduce race conditions that can split queued duos.
         private const float QueuePendingLeaderGraceSeconds = 20f;

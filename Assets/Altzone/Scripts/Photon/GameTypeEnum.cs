@@ -10,6 +10,7 @@ namespace Altzone.Scripts.Lobby
         Random2v2 = 1,
         Clan2v2 = 2,
         FriendLobby = 3,
+        Raid = 10,
     }
 }
 

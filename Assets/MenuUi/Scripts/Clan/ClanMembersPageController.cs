@@ -302,6 +302,16 @@ public class ClanMembersPageController : MonoBehaviour
 
     private static DateTime GetMemberJoinedAt(ClanMember member)
     {
+        if (member == null || string.IsNullOrWhiteSpace(member.CreatedAt))
+        {
+            return DateTime.MaxValue;
+        }
+
+        if (DateTimeOffset.TryParse(member.CreatedAt, out DateTimeOffset parsedDate))
+        {
+            return parsedDate.ToLocalTime().DateTime;
+        }
+
         return DateTime.MaxValue;
     }
 

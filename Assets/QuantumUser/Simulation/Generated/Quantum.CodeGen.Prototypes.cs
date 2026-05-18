@@ -309,6 +309,7 @@ namespace Quantum.Prototypes {
     public QBoolean RotationEnabled;
     public FP CurrentDefence;
     public Quantum.Prototypes.FrameTimerPrototype StunCooldown;
+    public Quantum.Prototypes.FrameTimerPrototype ShieldHitCooldown;
     public QBoolean HasTargetPosition;
     public FPVector2 TargetPosition;
     public FP RotationBaseRad;
@@ -340,6 +341,7 @@ namespace Quantum.Prototypes {
         result.RotationEnabled = this.RotationEnabled;
         result.CurrentDefence = this.CurrentDefence;
         this.StunCooldown.Materialize(frame, ref result.StunCooldown, in context);
+        this.ShieldHitCooldown.Materialize(frame, ref result.ShieldHitCooldown, in context);
         result.HasTargetPosition = this.HasTargetPosition;
         result.TargetPosition = this.TargetPosition;
         result.RotationBaseRad = this.RotationBaseRad;

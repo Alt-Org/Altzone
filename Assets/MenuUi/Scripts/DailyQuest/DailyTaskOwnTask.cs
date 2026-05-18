@@ -6,7 +6,6 @@ using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static DailyTaskProgressManager;
 
 public class DailyTaskOwnTask : MonoBehaviour
 {

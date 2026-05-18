@@ -200,6 +200,17 @@ public static class PollManager // Handles the polls from creation to loading to
         Debug.Log("CreateVotingPoll");
         ShowVotingPopup?.Invoke(furniturePollType);
         Debug.Log($"TODO CreateVotingPoll -> furniturePollType={furniturePollType}, furniture={furniture}, action={callback}");
+        if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null)
+        {
+            if (DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationSocialType == TaskEducationSocialType.ClanVote)
+            {
+                DailyTaskProgressManager.Instance.UpdateTaskProgress(TaskEducationSocialType.ClanVote, "1");
+            }
+            else if (DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationSocialType == TaskEducationSocialType.CreateNewVote)
+            {
+                DailyTaskProgressManager.Instance.UpdateTaskProgress(TaskEducationSocialType.CreateNewVote, "1");
+            }
+        }
 
 
         //for testing purposes, delete later

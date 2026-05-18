@@ -26,7 +26,10 @@ public class ClanMemberPopupController : MonoBehaviour
     [SerializeField] private Button _openProfileButton;    
 
     [Header("Right info")]
-    [SerializeField] private TMP_Text _rolesText;           
+    [SerializeField] private TMP_Text _rolesText;
+
+    [Header("Member info")]
+    [SerializeField] private TMP_Text _joinedText;
 
     [Header("Role")]
     [SerializeField] private Image _roleIconImage;
@@ -137,6 +140,11 @@ public class ClanMemberPopupController : MonoBehaviour
             _nameText.text = member.Name ?? "";
         }
 
+        if (_joinedText != null)
+        {
+            _joinedText.text = FormatJoinedDate(member.CreatedAt);
+        }
+
         SetRole(roleLabel);
 
         if (_avatarLoader != null && member.AvatarData != null && AvatarDesignLoader.Instance != null)
@@ -160,6 +168,22 @@ public class ClanMemberPopupController : MonoBehaviour
         }
 
         HidePollStartedPopupImmediate();
+    }
+
+    private string FormatJoinedDate(string createdAt)
+    {
+        if (string.IsNullOrWhiteSpace(createdAt))
+        {
+            return "Liittynyt -";
+        }
+
+        if (DateTimeOffset.TryParse(createdAt, out DateTimeOffset parsedDate))
+        {
+            DateTime localDate = parsedDate.ToLocalTime().DateTime;
+            return $"Liittynyt {localDate:dd.MM.yyyy}";
+        }
+
+        return "Liittynyt -";
     }
 
     public void SetCloseCallback(Action onCloseRequested)
