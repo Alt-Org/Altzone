@@ -128,12 +128,13 @@ public class PollInfoPopup : MonoBehaviour
         if (furnitureData == null || furnitureData.Furniture == null) return;
 
         nameText.text = furnitureData.Furniture.Name ?? "";
-        setNameText.text = furnitureData.Furniture.FurnitureInfo?.SetName ?? "";
         iconImage.sprite = furnitureData.Furniture.FurnitureInfo?.Image;
         descriptionText.text = furnitureData.Furniture.FurnitureInfo?.ArtisticDescription ?? "";
         valueText.text = $"{furnitureData.Furniture.Value}";
 
         /*
+        setNameText.text = furnitureData.Furniture.FurnitureInfo?.SetName ?? "";
+
         string artistName = furniture.FurnitureInfo?.ArtistName;
         artistNameText.text = string.IsNullOrEmpty(artistName) ? "" : $"Artist: {artistName}";
 

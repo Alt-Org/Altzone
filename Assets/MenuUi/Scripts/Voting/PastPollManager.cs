@@ -51,7 +51,7 @@ public class PastPollManager : MonoBehaviour
 
         var pastPollList = PollManager.GetPastPollList();
 
-
+        /*
 #if UNITY_EDITOR
         if (pastPollList == null || pastPollList.Count == 0)
         {
@@ -77,7 +77,7 @@ public class PastPollManager : MonoBehaviour
         }
         else
 #endif
-
+        */
 
         {
             foreach (var pollData in pastPollList)

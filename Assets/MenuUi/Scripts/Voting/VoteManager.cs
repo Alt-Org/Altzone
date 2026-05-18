@@ -187,29 +187,7 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
 
         Debug.Log("AdminSection active: " + AdminSection.activeSelf);
         Debug.Log("ShopSection active: " + ShopSection.activeSelf);
-/*
-#if UNITY_EDITOR
-        if (pollList.Count == 0)
-        {
-            Debug.Log("TEST MODE: Creating fake UI entries");
 
-            for (int i = 0; i < 7; i++)   // ← 7 test pollia
-            {
-                // ADMIN
-                GameObject admin = Instantiate(PollObjectPrefab, AdminNotVotedListContent.transform);
-                PollObject adminObj = admin.GetComponent<PollObject>();
-                adminObj.SetPollId("ADMIN_TEST_" + i);
-                adminObj.SetTheme(AdminThemeColor);
-
-                // SHOP
-                GameObject shop = Instantiate(PollObjectPrefab, ShopNotVotedListContent.transform);
-                PollObject shopObj = shop.GetComponent<PollObject>();
-                shopObj.SetPollId("SHOP_TEST_" + i);
-                shopObj.SetTheme(ShopThemeColor);
-            }
-        }
-#endif
-*/
         Debug.Log("Poll count: " + pollList.Count);
 
         foreach (var pollData in pollList)
