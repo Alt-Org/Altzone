@@ -167,6 +167,12 @@ namespace Altzone.Scripts.Lobby
         // Record first-seen timestamps for users observed in a matchmaking room to
         // detect very recent joins and avoid splitting transient duo joins.
         private readonly Dictionary<string, float> _queuePlayerFirstSeenAt = new(StringComparer.Ordinal);
+        // Soulhome rank-based matchmaking for Clan2v2: track queue start time and current tolerance
+        private float _queueStartTime = -1f;
+        private int _currentRankTolerance = 200; // Initial soulhome rank tolerance (±200)
+        private const int InitialRankTolerance = 200;
+        private const int RankToleranceRelaxationPerIteration = 50; // +50 every ~2 seconds
+        private const float RankToleranceRelaxationTimerSeconds = 2f; // Relax every queue timer iteration
         private const float InRoomInvitePromptThrottleSeconds = 5f;
         private const float InRoomInviteDeclineCooldownSeconds = 30f;
         private const float InRoomInviteValiditySeconds = 60f;
@@ -2514,6 +2520,13 @@ namespace Altzone.Scripts.Lobby
                         return new List<string>();
                     }
 
+                    // Check soulhome rank compatibility for Clan2v2 matchmaking
+                    if (!IsClans2v2RankMatch(duo1Clan, duo2Clan, _currentRankTolerance))
+                    {
+                        Debug.Log($"SelectQueueFollowersForMatch: Clan2v2 duos rank mismatch: {duo1Clan} vs {duo2Clan}, current tolerance=±{_currentRankTolerance}");
+                        return new List<string>();
+                    }
+
                     // Select 1 player from duo1 and 2 players from duo2
                     // (leader is already in the room, so followers are selected)
                     List<string> selection = new();
@@ -2863,6 +2876,47 @@ namespace Altzone.Scripts.Lobby
             return true;
         }
 
+        private int GetClanSoulhomeRank(string clanName)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(clanName)) return 0;
+                Room room = PhotonRealtimeClient.CurrentRoom;
+                if (room == null || room.Players == null) return 0;
+
+                foreach (Player p in room.Players.Values)
+                {
+                    if (p == null || string.IsNullOrEmpty(p.UserId) || p.UserId == "Bot") continue;
+                    string playerClan = p.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
+                    if (!string.IsNullOrEmpty(playerClan) && playerClan == clanName)
+                    {
+                        int rank = p.GetCustomProperty(PhotonBattleRoom.SoulhomeRank, 0);
+                        return rank;
+                    }
+                }
+            }
+            catch { }
+            return 0;
+        }
+
+        private bool IsClans2v2RankMatch(string clan1, string clan2, int tolerance)
+        {
+            try
+            {
+                int rank1 = GetClanSoulhomeRank(clan1);
+                int rank2 = GetClanSoulhomeRank(clan2);
+                int rankDiff = Math.Abs(rank1 - rank2);
+                bool matches = rankDiff <= tolerance;
+                Debug.Log($"SelectQueueFollowersForMatch: Clan2v2 rank check: {clan1}(rank={rank1}) vs {clan2}(rank={rank2}), diff={rankDiff}, tolerance=±{tolerance}, match={matches}");
+                return matches;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"IsClans2v2RankMatch: failed to check rank: {ex.Message}");
+                return true; // Allow match if rank check fails (graceful fallback)
+            }
+        }
+
         private bool ValidateClan2v2MatchComposition(Room room, out string reason)
         {
             reason = string.Empty;
@@ -3068,6 +3122,8 @@ namespace Altzone.Scripts.Lobby
                 while (true)
                 {
                     float start = Time.time;
+                    _queueStartTime = start; // Initialize queue start time for rank tolerance relaxation
+                    _currentRankTolerance = InitialRankTolerance; // Reset to initial tolerance
                     while (Time.time - start < QueueWaitSeconds)
                     {
                         if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.CurrentRoom == null)
@@ -3095,6 +3151,11 @@ namespace Altzone.Scripts.Lobby
 
                         try
                         {
+                            // Update soulhome rank tolerance for Clan2v2 matchmaking (progressive relaxation)
+                            float queueElapsedSeconds = Time.time - start;
+                            int iterations = (int)(queueElapsedSeconds / RankToleranceRelaxationTimerSeconds);
+                            _currentRankTolerance = InitialRankTolerance + (iterations * RankToleranceRelaxationPerIteration);
+
                             if (_formingMatchHolder == null && Time.time - start >= QueueReadyStartDelaySeconds)
                             {
                                 int loopGameTypeInt = (int)GameType.Random2v2;
