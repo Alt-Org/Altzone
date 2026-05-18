@@ -671,7 +671,7 @@ namespace Battle.View.Player
         /// <summary>Array that holds the SpriteRenderer components of each body part gameobject.</summary>
         private readonly SpriteRenderer[] _bodypartSpriteRenderers = new SpriteRenderer[5];
 
-        /// <summary>Reference to the currently running <see cref="StunCoroutine(float)">StunCoroutine</see>.</summary>
+        /// <summary>Reference to the currently running <see cref="StunCoroutine">StunCoroutine</see>.</summary>
         private Coroutine _stunCoroutine = null;
 
         /// <summary>Array that holds references to the shield view controllers associated with this character view controller.</summary>
@@ -811,6 +811,12 @@ namespace Battle.View.Player
         /// <summary>
         /// Coroutine which plays the stun flash animation.
         /// </summary>
+        ///
+        /// <param name="stunDurationSec">Duration of the stun.</param>
+        /// <param name="emotion">Emotion state during the stun.</param>
+        /// <param name="teamNumber">Team number of the player.</param>
+        /// <param name="shieldAttached">Is shield attached.</param>
+        /// <param name="shieldNumber">Number of the shield.</param>
         ///
         /// <returns>Coroutine IEnumerator.</returns>
         private IEnumerator StunCoroutine(float stunDurationSec, BattleEmotionState emotion, BattleTeamNumber teamNumber, bool shieldAttached, int shieldNumber)
