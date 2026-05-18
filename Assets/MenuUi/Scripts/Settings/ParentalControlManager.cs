@@ -222,9 +222,14 @@ public class ParentalControlManager : MonoBehaviour
 
     public void SetPassword() {
         //this is done in the pop-up
-        //todo: password criteria-check
+        
         Debug.Log(setPasswordInput);
 
+        if (setPasswordInput.Length < 8)            
+        {
+            messageTextPopUp.text = "Salasanan pituuden on oltava vähintään 8 merkkiä";
+            return;
+        }
 
         if (setPasswordInput.Equals(setConfirmPasswordInput)) {
 
