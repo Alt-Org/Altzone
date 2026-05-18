@@ -71,13 +71,26 @@ namespace MenuUI.Scripts.SoulHome
         [HideInInspector]
         public List<Vector2Int> customInteractionOffsets = new List<Vector2Int>();
 
+        public Vector2Int GetRotatedInteractionOffset()
+        {
+            // Rotates the offset based on the current temp direction
+            return _tempSpriteDirection switch
+            {
+                Direction.Front => _interactionOffset,
+                Direction.Right => new Vector2Int(-_interactionOffset.y, _interactionOffset.x),
+                Direction.Back => new Vector2Int(-_interactionOffset.x, -_interactionOffset.y),
+                Direction.Left => new Vector2Int(_interactionOffset.y + GetFurnitureSize().x - 1, -_interactionOffset.x),
+                _ => _interactionOffset
+            };
+        }
+
         public void ClearInteractionSlots()
         {
             foreach (var slot in AssignedInteractionSlots)
             {
                 slot.IsReserved = false;
                 slot.InteractionOwner = null;
-                slot.SetValidity(true, false);
+                slot.ClearValidity();
             }
             AssignedInteractionSlots.Clear();
         }
@@ -110,20 +123,6 @@ namespace MenuUI.Scripts.SoulHome
                 }
             }
             return closest;
-        }
-
-
-        public Vector2Int GetRotatedInteractionOffset()
-        {
-            // Rotates the offset based on the current temp direction
-            return _tempSpriteDirection switch
-            {
-                Direction.Front => _interactionOffset,
-                Direction.Right => new Vector2Int(-_interactionOffset.y, _interactionOffset.x),
-                Direction.Back => new Vector2Int(-_interactionOffset.x, -_interactionOffset.y),
-                Direction.Left => new Vector2Int(_interactionOffset.y + GetFurnitureSize().x - 1, -_interactionOffset.x),
-                _ => _interactionOffset
-            };
         }
 
         public void StartInteract(SoulHomeAvatarController controller)
