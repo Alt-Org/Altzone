@@ -274,10 +274,12 @@ public class ParentalControlManager : MonoBehaviour
         if (checkControl == 1) {
             parentalControl = true;
             parentalControlPopupButton.SetActive(false);
+            passwordPanel.SetActive(true);
 
         } else
         {
             parentalControl = false;
+            passwordPanel.SetActive(false);
 
         }
 
@@ -314,6 +316,7 @@ public class ParentalControlManager : MonoBehaviour
         PlayerPrefs.Save();
         parentalControlPopupButton.SetActive(true);
         messageText.text = "";
+        //TODO: all checkboxes should uncheck, numbers be set to none
 
 
     }
