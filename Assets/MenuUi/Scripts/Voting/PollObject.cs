@@ -100,7 +100,7 @@ public class PollObject : MonoBehaviour
             {
                 pollEnded = true;
                 showEndTimeManually = true;
-                ClockButton.interactable = false;
+                // ClockButton.interactable = false;
                 VoteYes.gameObject.SetActive(false);
                 VoteNo.gameObject.SetActive(false);
                 YesVoters.gameObject.SetActive(true);
@@ -267,7 +267,7 @@ public class PollObject : MonoBehaviour
 
         GreenFill.fillAmount = fillValue;
 
-        playerHeads.InstantiateHeads(pollId);
+        // playerHeads.InstantiateHeads(pollId);
     }
 
     private void SetClanRoleData(ClanRolePollData clanRolePoll)
@@ -433,7 +433,7 @@ public class PollObject : MonoBehaviour
         {
             pollEnded = true;
             showEndTimeManually = true;
-            ClockButton.interactable = false;
+            // ClockButton.interactable = false;
             Clock.fillAmount = 1f;
             UpdateClockDisplay();
         }

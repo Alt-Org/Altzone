@@ -248,6 +248,7 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
                 // ----------------
 
 
+                /*
                 obj.GetComponent<Button>().onClick.AddListener(() =>
                 {
                     if (!HasPlayerVoted(pollData, player.Id))
@@ -260,6 +261,7 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
                         Debug.Log("You have already voted on this poll.");
                     }
                 });
+                */
             }
         }
 

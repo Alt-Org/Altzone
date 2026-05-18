@@ -235,7 +235,7 @@ public class PollInfoPopup : MonoBehaviour
         if (clanRolePollInfoObject != null)
             clanRolePollInfoObject.SetActive(false);
 
-        infoBox.SetActive(false);
+        // infoBox.SetActive(false);
         gameObject.SetActive(false);
     }
 
