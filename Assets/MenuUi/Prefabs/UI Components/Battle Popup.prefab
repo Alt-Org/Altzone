@@ -1952,8 +1952,6 @@ MonoBehaviour:
   _scrollBackgroundImage: {fileID: 901000000000000033}
   _closeButtonImage: {fileID: 901000000000000073}
   _closeButtonText: {fileID: 0}
-  _onlinePlayersRowPrefab: {fileID: 3935509160329979117, guid: 7f8c3d0f53a84a23b89f59c2a4d1e6b7,
-    type: 3}
   _fallbackOverlayColor: {r: 0, g: 0, b: 0, a: 0.62}
   _fallbackCardColor: {r: 1, g: 1, b: 1, a: 0.98}
   _fallbackScrollColor: {r: 0.95, g: 0.95, b: 0.95, a: 0.95}
@@ -2993,7 +2991,6 @@ MonoBehaviour:
   _roomSwitcher: {fileID: 4116104174498300769}
   _noticeText: {fileID: 8001834333424065541}
   _sendInviteToFriendText: {fileID: 6755532399491747094}
-  _premadeTargetModeDropdown: {fileID: 0}
   _inviteOnlinePlayerButton: {fileID: 6233693051039505318}
   _inviteSelectorPanel: {fileID: 901000000000000004}
 --- !u!1 &927223887747304151
@@ -4223,7 +4220,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1349129683053217085}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -6439,7 +6436,6 @@ MonoBehaviour:
   _roomSwitcher: {fileID: 4116104174498300769}
   _noticeText: {fileID: 0}
   _sendInviteToFriendText: {fileID: 0}
-  _premadeTargetModeDropdown: {fileID: 0}
   _inviteOnlinePlayerButton: {fileID: 0}
   _inviteSelectorPanel: {fileID: 0}
 --- !u!1 &2927705854601579417
