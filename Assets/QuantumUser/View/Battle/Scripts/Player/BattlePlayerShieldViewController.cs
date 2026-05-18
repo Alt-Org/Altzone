@@ -165,6 +165,12 @@ namespace Battle.View.Player
             );
 
             _shieldSpriteRenderer.sprite = _characterViewController.SpriteSheet.GetSprite(sprite);
+            _shieldSpriteRenderer.enabled = true;
+        }
+
+        public void SetShieldNoSprite()
+        {
+            _shieldSpriteRenderer.enabled = false;
         }
 
         #endregion Public - Sprite Control Methods

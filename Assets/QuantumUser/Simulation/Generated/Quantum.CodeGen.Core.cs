@@ -1522,7 +1522,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerDataQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 200;
+    public const Int32 SIZE = 208;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(32)]
     public PlayerRef PlayerRef;
@@ -1534,7 +1534,7 @@ namespace Quantum {
     public BattlePlayerCharacterID CharacterId;
     [FieldOffset(0)]
     public BattlePlayerCharacterClass CharacterClass;
-    [FieldOffset(168)]
+    [FieldOffset(176)]
     public BattlePlayerStats Stats;
     [FieldOffset(24)]
     public Int32 GridExtendTop;
@@ -1548,11 +1548,13 @@ namespace Quantum {
     public QBoolean RotationEnabled;
     [FieldOffset(72)]
     public FP CurrentDefence;
-    [FieldOffset(112)]
+    [FieldOffset(120)]
     public FrameTimer StunCooldown;
+    [FieldOffset(112)]
+    public FrameTimer ShieldHitCooldown;
     [FieldOffset(40)]
     public QBoolean HasTargetPosition;
-    [FieldOffset(120)]
+    [FieldOffset(128)]
     public FPVector2 TargetPosition;
     [FieldOffset(80)]
     public FP RotationBaseRad;
@@ -1570,9 +1572,9 @@ namespace Quantum {
     public FrameTimer AbilityActivateBufferSec;
     [FieldOffset(64)]
     public FP BotMovementCooldownSec;
-    [FieldOffset(152)]
+    [FieldOffset(160)]
     public FPVector2 ViewPosition;
-    [FieldOffset(136)]
+    [FieldOffset(144)]
     public FPVector2 ViewMovementVector;
     public override Int32 GetHashCode() {
       unchecked { 
@@ -1590,6 +1592,7 @@ namespace Quantum {
         hash = hash * 31 + RotationEnabled.GetHashCode();
         hash = hash * 31 + CurrentDefence.GetHashCode();
         hash = hash * 31 + StunCooldown.GetHashCode();
+        hash = hash * 31 + ShieldHitCooldown.GetHashCode();
         hash = hash * 31 + HasTargetPosition.GetHashCode();
         hash = hash * 31 + TargetPosition.GetHashCode();
         hash = hash * 31 + RotationBaseRad.GetHashCode();
@@ -1627,6 +1630,7 @@ namespace Quantum {
         FP.Serialize(&p->RotationOffsetRad, serializer);
         FrameTimer.Serialize(&p->AbilityActivateBufferSec, serializer);
         FrameTimer.Serialize(&p->AbilityCooldownSec, serializer);
+        FrameTimer.Serialize(&p->ShieldHitCooldown, serializer);
         FrameTimer.Serialize(&p->StunCooldown, serializer);
         FPVector2.Serialize(&p->TargetPosition, serializer);
         FPVector2.Serialize(&p->ViewMovementVector, serializer);
