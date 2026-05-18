@@ -170,8 +170,10 @@ public class ParentalControlManager : MonoBehaviour
             if (passwordInput.text == presetPassword)
             {
                 Debug.Log("correct password, login allowed");
-                messageText.text = "Kirjauduttu sis‰‰n";
+                //messageText.text = "Kirjauduttu sis‰‰n";
                 parentalControlSettings.SetActive(true);
+                
+                passwordPanel.SetActive(false);
 
 
             }
@@ -196,6 +198,7 @@ public class ParentalControlManager : MonoBehaviour
     public void LogOut()
     {
         parentalControlSettings.SetActive(false);
+        passwordPanel.SetActive(true);
         messageText.text = "";
 
     }
@@ -425,6 +428,7 @@ public class ParentalControlManager : MonoBehaviour
     public void SaveSettings()
     {
         PlayerPrefs.Save();
+        //TODO pop up when settings are saved
         messageText.text = "Asetukset tallennettu";
 
     }
