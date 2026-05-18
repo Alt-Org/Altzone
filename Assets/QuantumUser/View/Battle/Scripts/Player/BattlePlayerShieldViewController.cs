@@ -168,6 +168,9 @@ namespace Battle.View.Player
             _shieldSpriteRenderer.enabled = true;
         }
 
+        /// <summary>
+        /// Disables sprite renderer of the shield.
+        /// </summary>
         public void SetShieldNoSprite()
         {
             _shieldSpriteRenderer.enabled = false;
