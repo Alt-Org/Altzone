@@ -17,6 +17,7 @@ public class ParentalControlManager : MonoBehaviour
     public TMP_InputField confirmPasswordInput;
     //public Text messageText;
     public TMP_Text messageText;
+    public TMP_Text messageTextPopUp;
     public Toggle controlToggle;
     public Toggle testToggle;
     
@@ -122,7 +123,7 @@ public class ParentalControlManager : MonoBehaviour
         messageText.text = "";
     }
 
-    public void CheckPassword()
+    public void CheckPassword() //this function is not in use currently
     {
         if (sessionPassword == "")
         {
@@ -178,7 +179,11 @@ public class ParentalControlManager : MonoBehaviour
 
             }
 
-        } else
+        }
+        else if (passwordInput.text != presetPassword) {
+            //TODO message: please input correct password
+        }
+        else
         {
             //TODO message: can't log in if ParentalControl not activated
 
@@ -236,10 +241,17 @@ public class ParentalControlManager : MonoBehaviour
             Debug.Log(PlayerPrefs.GetInt("parentalcontrol"));
 
             //messageText.text = "Password set!";
+            
+            messageTextPopUp.text = "Salasana asetettu";
+            
+            parentalControlPopup.SetActive(false);
+            CheckControl();
+            GetPassword();
 
         } else
         {
            // messageText.text = "Passwords do not match";
+           messageTextPopUp.text = "Salasanat eiv‰t t‰sm‰‰";
         }
 
         
