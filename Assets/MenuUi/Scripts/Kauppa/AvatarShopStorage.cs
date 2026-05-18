@@ -113,7 +113,7 @@ public class AvatarShopStorage : ShopPanelStorage
                 }
 
                 // Check if the player already owns the item
-                if (_playerData.CheckItemOwnership(avatarpartData.Id))
+                if (_playerData.Ownerships.CheckItemOwnership(avatarpartData.Id))
                 {
                     continue;
                 }

@@ -93,8 +93,7 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public List<CustomCharacter> CustomCharacters { get; private set; }
 
-        public List<string> OwnedAvatarPiece_Ids { get; private set; }
-        public List<string> OwnedAnimation_Ids { get; private set; }
+        public Ownership Ownerships;
 
         public ReadOnlyCollection<CustomCharacter> CurrentBattleCharacters
         {
@@ -192,7 +191,6 @@ namespace Altzone.Scripts.Model.Poco.Player
             Task = player.DailyTask != null ? new(player.DailyTask) : null;
             AvatarData = player.avatar != null ? new(player.name, player.avatar) : null;
             if (!limited) Task = player.DailyTask != null ? new(player.DailyTask) : null;
-
            
             EnsureLoadoutsInitialized();
         }
@@ -234,56 +232,6 @@ namespace Altzone.Scripts.Model.Poco.Player
             if (_characterList.Contains(character) && !SettingsCarrier.Instance.StatDebuggingMode) ServerManager.Instance.StartUpdatingCustomCharacterToServer(character);
             else Storefront.Get().SavePlayerData(this, null);
         }
-
-        public enum ItemType
-        {
-            AvatarPiece,
-            Animation
-        }
-        public void AddItem(string id, ItemType type)
-        {
-            // Differentiating types of items seems encumbaring currently
-            // Option 1: add patterns to item_ids can be used to sort them.
-            // Option 2: add every item into one list.
-            // Option 3: first item in the list is identifier
-            switch (type)
-            {
-                case ItemType.AvatarPiece:
-                    OwnedAvatarPiece_Ids.Add(id);
-                    break;
-                case ItemType.Animation:
-                    OwnedAnimation_Ids.Add(id);
-                    break;
-            }
-        }
-
-        public void RemoveItem(string id, ItemType type)
-        {
-            if (OwnedAvatarPiece_Ids.Contains(id)) OwnedAvatarPiece_Ids.Remove(id);
-            if (OwnedAnimation_Ids.Contains(id)) OwnedAnimation_Ids.Remove(id);
-        }
-
-        public bool CheckItemOwnership(string id)
-        {
-            if (OwnedAvatarPiece_Ids.Contains(id)) return true;
-            if (OwnedAnimation_Ids.Contains(id)) return true;
-            return false;
-        }  
-
-        public void UpdateOwnedAvatarPieceIDs(int type, List<string> idList)
-        {
-            switch (type)
-            {
-                case 1:
-                    OwnedAvatarPiece_Ids = idList;
-                    break;
-                
-                case 2:
-                    OwnedAnimation_Ids = idList;
-                    break;
-            }
-        }
-
 
         public void BuildCharacterLists(List<CustomCharacter> customCharacters)
         {
