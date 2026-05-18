@@ -386,13 +386,13 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Chooses which event to use to play the sound effect based on sound effect <paramref name="target"/>
+        /// Private helper method for playing specified <paramref name="soundEffect"/> for specified sound effect <paramref name="target"/>.
+        /// @note Only handles sending the correct event based on <paramref name="target"/>.
+        /// Use <see cref="HandleSFXCommon">HandleSFXCommon</see> or <see cref="HandleSFXCharacter">HandleSFXCharacter</see> for playing an appropriate sound effect
         /// </summary>
         ///
-        /// @cref{HandleSFXCommon} or @cref{HandleSFXCharacter} should be used to call this.
-        ///
         /// <param name="f">Current simulation frame</param>
-        /// <param name="slot">Slot of the player who, or whose team, will hear the sound if not played for all</param>
+        /// <param name="slot">Slot of the player who, or whose team, will hear the sound depening on the <paramref name="target"/></param>
         /// <param name="soundEffect">Sound effect to be played</param>
         /// <param name="target">Target that will hear the sound effect to be played</param>
         private static void HandleSFX(Frame f, BattlePlayerSlot slot, BattleSoundFX soundEffect, SoundEffectTarget target)
@@ -419,7 +419,7 @@ namespace Battle.QSimulation.Player
         /// Use @cref{HandleSFXCharacter} to play character specific sound effects.
         ///
         /// <param name="f">Current simulation frame</param>
-        /// <param name="slot">Slot of the player who, or whose team, will hear the sound if not played for all</param>
+        /// <param name="slot">Slot of the player who, or whose team, will hear the sound depening on the <paramref name="target"/></param>
         /// <param name="type">Type of sound effect to be played</param>
         /// <param name="target">Target that will hear the sound effect to be played</param>
         private static void HandleSFXCommon(Frame f, BattlePlayerSlot slot, SoundEffectTypeCommon type, SoundEffectTarget target)
@@ -436,7 +436,7 @@ namespace Battle.QSimulation.Player
         /// Use @cref{HandleSFXCommon} to play common sound effects.
         ///
         /// <param name="f">Current simulation frame</param>
-        /// <param name="slot">Slot of the player who, or whose team, will hear the sound if not played for all</param>
+        /// <param name="slot">Slot of the player who, or whose team, will hear the sound depening on the <paramref name="target"/></param>
         /// <param name="type">Type of sound effect to be played</param>
         /// <param name="characterID">ID of the current character in play</param>
         /// <param name="target">Target that will hear the sound effect to be played</param>
