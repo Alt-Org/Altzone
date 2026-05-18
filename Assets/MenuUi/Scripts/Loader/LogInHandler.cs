@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts;
+using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Login;
@@ -89,6 +90,7 @@ namespace MenuUi.Scripts.Loader
         private void AttemptLogIn()
         {
             _loadInfoController.LogIn();
+            if (!AppPlatform.IsEditor || !AppPlatform.IsSimulator) GameConfig.Get().GameVersionType = VersionType.TurboEducation;
             StartCoroutine(ServerManager.Instance.LogIn());
         }
 
