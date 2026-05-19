@@ -184,8 +184,8 @@ synced event BattleSpecialJoystickVisibilityChange
 synced event BattlePlayerClass100AimIndicatorUpdate
 {
     EntityRef ERef;
-    bool Show;
     BattlePlayerSlot Slot;
+    bool Show;
     FPVector2 Direction;
 }
 

@@ -74,7 +74,7 @@ namespace Battle.QSimulation.Player
             bool projectileOnCooldown = classData->CooldownTimer.IsRunning(f);
 
             // Update view
-            if (joystickDown && !projectileOnCooldown) f.Events.BattlePlayerClass100AimIndicatorUpdate(playerEntity, Show: true, playerData->Slot, specialInput->JoystickValue);
+            if (joystickDown && !projectileOnCooldown) f.Events.BattlePlayerClass100AimIndicatorUpdate(playerEntity, playerData->Slot, Show: true, specialInput->JoystickValue);
 
             // Exit if no changes in joystick state
             if (joystickDown == classData->JoystickDownPrevious) goto Exit;
@@ -89,21 +89,21 @@ namespace Battle.QSimulation.Player
                 // Handle joystick up
 
                 // Update view
-                f.Events.BattlePlayerClass100AimIndicatorUpdate(playerEntity, Show: false, playerData->Slot, FPVector2.Zero);
+                f.Events.BattlePlayerClass100AimIndicatorUpdate(playerEntity, playerData->Slot, Show: false, FPVector2.Zero);
 
                 // exit if projectile ability is on cooldown
                 if (projectileOnCooldown) goto Exit;
 
-                bool isJoystickTap = classData->JoystickTimer.IsRunning(f) && classData->JoystickValuePrevious.Magnitude < spec.JoystickFlickDistanceMax;
+                bool isJoystickTap = classData->JoystickTimer.IsRunning(f) && classData->JoystickValuePrevious.Magnitude < spec.JoystickTapDistanceMax;
 
                 FPVector2 direction = isJoystickTap ? FPVector2.Up : classData->JoystickValuePrevious.Normalized;
 
                 if (playerData->TeamNumber == BattleTeamNumber.TeamBeta) direction = FPVector2.Rotate(direction, FP.Rad_180);
-                FPVector2 position = playerTransform->Position + direction * spec.SpawnDistance;
-                BattlePlayerClass100ProjectileQSystem.Create(f, f.FindAsset(spec.ProjectileEntityPrototype), position, direction, spec.Speed);
+                FPVector2 position = playerTransform->Position + direction * spec.ProjectileSpawnDistance;
+                BattlePlayerClass100ProjectileQSystem.Create(f, f.FindAsset(spec.ProjectileEntityPrototype), position, direction, spec.ProjectileSpeed);
 
                 // start projectile cooldown
-                classData->CooldownTimer = FrameTimer.FromSeconds(f, spec.Cooldown);
+                classData->CooldownTimer = FrameTimer.FromSeconds(f, spec.ProjectileSpawnCooldown);
             }
 
             Exit:

@@ -27,18 +27,18 @@ namespace Battle.QSimulation.Player
         public AssetRef<EntityPrototype> ProjectileEntityPrototype;
         [Tooltip("Speed of the projectile")]
         /// <summary>Speed of the projectile.</summary>
-        public FP Speed;
+        public FP ProjectileSpeed;
+        [Tooltip("Distance of how far the projectile is spawned from the player")]
+        /// <summary>Distance of how far the projectile is spawned from the player</summary>
+        public FP ProjectileSpawnDistance;
+        [Tooltip("Time the projectile cannot be spawned again for after spawning one")]
+        /// <summary>Time the projectile cannot be spawned again for after spawning one</summary>
+        public FP ProjectileSpawnCooldown;
         [Tooltip("Maximum duration for pressing to register as a tap instead of hold")]
         /// <summary>Maximum duration for pressing to register as a tap instead of hold.</summary>
         public FP JoystickTapDurationMax;
         [Tooltip("Maximum distance from joystick center for a press to register as pressing the middle")]
         /// <summary>Maximum distance from joystick center for a press to register as pressing the middle</summary>
-        public FP JoystickFlickDistanceMax;
-        [Tooltip("Distance of how far the projectile is spawned from the player")]
-        /// <summary>Distance of how far the projectile is spawned from the player</summary>
-        public FP SpawnDistance;
-        [Tooltip("Time the projectile cannot be launched again for after launching one")]
-        /// <summary>Time the projectile cannot be launched again for after launching one</summary>
-        public FP Cooldown;
+        public FP JoystickTapDistanceMax;
     }
 }
