@@ -142,7 +142,7 @@ public class Chat : AltMonoBehaviour
         else if (ChatListener.Instance.ActiveChatChannel is ChatChannelType.Global) GlobalChatActive();
         else if (ChatListener.Instance.ActiveChatChannel is ChatChannelType.Country) LanguageChatActive();
         else GlobalChatActive();
-        _tablineScript.ActivateTabButton(1);
+        //_tablineScript.ActivateTabButton(1);
         AddResponses();
 
         _lastSendButtonUsed = _sendButtonJoy;
@@ -532,9 +532,10 @@ public class Chat : AltMonoBehaviour
         ChatListener.Instance.ActiveChatChannel = ChatChannelType.Global;
         _currentScrollRect = _globalChatScrollRect;
 
-        _globalChat.SetActive(true);
-        _languageChat.SetActive(false);
-        _clanChat.SetActive(false);
+        //_globalChat.SetActive(true);
+        //_languageChat.SetActive(false);
+        //_clanChat.SetActive(false);
+        _tablineScript.ActivateTabButton(0);
 
         gameObject.GetComponent<FindAllChatOptions>().ChatOptionFound(FindAllChatOptions.ChatType.Global);
         RefreshChat(ChatChannelType.Global);
@@ -556,9 +557,10 @@ public class Chat : AltMonoBehaviour
         ChatListener.Instance.ActiveChatChannel = ChatChannelType.Clan;
         _currentScrollRect = _clanChatScrollRect;
 
-        _clanChat.SetActive(true);
-        _languageChat.SetActive(false);
-        _globalChat.SetActive(false);
+        //_clanChat.SetActive(true);
+        //_languageChat.SetActive(false);
+        //_globalChat.SetActive(false);
+        _tablineScript.ActivateTabButton(1);
 
         gameObject.GetComponent<FindAllChatOptions>().ChatOptionFound(FindAllChatOptions.ChatType.Clan);
         RefreshChat(ChatChannelType.Clan);
@@ -580,9 +582,10 @@ public class Chat : AltMonoBehaviour
         ChatListener.Instance.ActiveChatChannel = ChatChannelType.Country;
         _currentScrollRect = _languageChatScrollRect;
 
-        _languageChat.SetActive(true);
-        _globalChat.SetActive(false);
-        _clanChat.SetActive(false);
+        //_languageChat.SetActive(true);
+        //_globalChat.SetActive(false);
+        //_clanChat.SetActive(false);
+        _tablineScript.ActivateTabButton(2);
 
         gameObject.GetComponent<FindAllChatOptions>().ChatOptionFound(FindAllChatOptions.ChatType.Language);
 

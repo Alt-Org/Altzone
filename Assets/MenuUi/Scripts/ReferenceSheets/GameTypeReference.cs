@@ -37,7 +37,7 @@ namespace MenuUi.Scripts.ReferenceSheets
         /// <returns>List of GameTypeInfo objects.</returns>
         public List<GameTypeInfo> GetGameTypeInfos()
         {
-            return _info;
+            return _info.FindAll(info => info.Enabled);
         }
 
         public int GetEnabledCount()
@@ -56,6 +56,7 @@ namespace MenuUi.Scripts.ReferenceSheets
     {
         public Sprite Icon;
         public Sprite Banner;
+        public Sprite Background;
         public GameType gameType;
         public bool Enabled;
         public string FinnishName;

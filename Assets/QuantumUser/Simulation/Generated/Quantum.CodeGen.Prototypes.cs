@@ -353,6 +353,7 @@ namespace Quantum.Prototypes {
     public QBoolean RotationEnabled;
     public FP CurrentDefence;
     public Quantum.Prototypes.FrameTimerPrototype StunCooldown;
+    public Quantum.Prototypes.FrameTimerPrototype ShieldHitCooldown;
     public QBoolean HasTargetPosition;
     public FPVector2 TargetPosition;
     public FP RotationBaseRad;
@@ -363,6 +364,8 @@ namespace Quantum.Prototypes {
     public Quantum.Prototypes.FrameTimerPrototype AbilityCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityActivateBufferSec;
     public FP BotMovementCooldownSec;
+    public FPVector2 ViewPosition;
+    public FPVector2 ViewMovementVector;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerDataQComponent component = default;
         Materialize((Frame)f, ref component, in context);
@@ -382,6 +385,7 @@ namespace Quantum.Prototypes {
         result.RotationEnabled = this.RotationEnabled;
         result.CurrentDefence = this.CurrentDefence;
         this.StunCooldown.Materialize(frame, ref result.StunCooldown, in context);
+        this.ShieldHitCooldown.Materialize(frame, ref result.ShieldHitCooldown, in context);
         result.HasTargetPosition = this.HasTargetPosition;
         result.TargetPosition = this.TargetPosition;
         result.RotationBaseRad = this.RotationBaseRad;
@@ -392,6 +396,8 @@ namespace Quantum.Prototypes {
         this.AbilityCooldownSec.Materialize(frame, ref result.AbilityCooldownSec, in context);
         this.AbilityActivateBufferSec.Materialize(frame, ref result.AbilityActivateBufferSec, in context);
         result.BotMovementCooldownSec = this.BotMovementCooldownSec;
+        result.ViewPosition = this.ViewPosition;
+        result.ViewMovementVector = this.ViewMovementVector;
     }
   }
   [System.SerializableAttribute()]

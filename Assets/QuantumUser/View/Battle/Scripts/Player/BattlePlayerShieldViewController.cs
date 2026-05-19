@@ -6,14 +6,21 @@
 // System usings
 using System;
 using System.Runtime.CompilerServices;
+
+// Unity usings
+using UnityEngine;
+
+// Quantum usings
+using Quantum;
+
 // Battle QSimulation usings
 using Battle.QSimulation;
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Player;
-// Quantum usings
-using Quantum;
-// Unity usings
-using UnityEngine;
+
+// Battle View usings
+using Battle.View.Game;
+
 // Battle Player usings
 using SpriteSheetMap = Battle.View.Player.BattlePlayerCharacterViewController.SpriteSheetMap;
 
@@ -71,10 +78,10 @@ namespace Battle.View.Player
         [Tooltip("Reference to an override class test view controller")]
         [SerializeField] private BattlePlayerShieldClassBaseViewController _classViewControllerTestOverride;
 
-        /// <summary>[SerializeField] Reference to the shield's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SpriteRenderer.html">SpriteRenderer@u-exlink</a>.</summary>
+        /// <summary>[SerializeField] Array of shield <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObjects@u-exlink</a>.</summary>
         /// Part of @ref BattlePlayerShieldViewController-SerializeFields "SerializeFields"
-        [Tooltip("Reference to the shield's SpriteRenderer")]
-        [SerializeField] private SpriteRenderer _shieldSpriteRenderer;
+        [Tooltip("Array of shield GameObjects")]
+        [SerializeField] private GameObject[] _shieldGameObjects;
 
         /// <summary>[SerializeField] Reference to the shield hit particle system.</summary>
         /// Part of @ref BattlePlayerShieldViewController-SerializeFields "SerializeFields"
@@ -114,7 +121,7 @@ namespace Battle.View.Player
         #region Public - Sprite Control Methods
 
         /// <summary>
-        /// Handles changing the sprite of the shield gameobject based on <paramref name="shieldNumber"/>, <paramref name="side"/> and <paramref name="isHit"/>.
+        /// Changes the sprite of the shield gameobject based on <paramref name="shieldNumber"/>, <paramref name="side"/> and <paramref name="isHit"/>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerShieldViewController-Public-SpriteControlMethods "Public Sprite Control Methods"
@@ -127,11 +134,12 @@ namespace Battle.View.Player
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetShieldSprite(int shieldNumber, ShieldSide side, bool isHit)
         {
-            const int StateCount = 2;
-            const int ShieldCount = 4;
-            const int ShieldSpriteStart = 32;
-
-            int index = ShieldSpriteStart + (int)side * (StateCount * ShieldCount) + Convert.ToInt32(isHit) * ShieldCount + shieldNumber;
+            int index = SpriteSheetMap.ShieldSpriteStart
+                      + (int)side
+                      * (SpriteSheetMap.ShieldStateCount * SpriteSheetMap.ShieldCount)
+                      + Convert.ToInt32(isHit)
+                      * SpriteSheetMap.ShieldCount
+                      + shieldNumber;
 
             SpriteSheetMap sprite = SpriteSheetMap.FromInt(index);
 
@@ -157,6 +165,15 @@ namespace Battle.View.Player
             );
 
             _shieldSpriteRenderer.sprite = _characterViewController.SpriteSheet.GetSprite(sprite);
+            _shieldSpriteRenderer.enabled = true;
+        }
+
+        /// <summary>
+        /// Disables sprite renderer of the shield gameobject.
+        /// </summary>
+        public void SetShieldNoSprite()
+        {
+            _shieldSpriteRenderer.enabled = false;
         }
 
         #endregion Public - Sprite Control Methods
@@ -193,10 +210,28 @@ namespace Battle.View.Player
                 _shieldNumber = e.ShieldNumber;
             }
 
-            // initialize visuals
+            //{ initialize visuals
+
             float scale = (float)e.ModelScale;
             transform.localScale = new Vector3(scale, scale, scale);
             _shieldHitParticle.transform.localScale = new Vector3(scale, scale, scale);
+
+            if (BattlePlayerManager.PlayerHandle.GetTeamNumber(e.Slot) == BattleGameViewController.LocalPlayerTeam)
+            {
+                GameObject characterGameObject = _shieldGameObjects[0];
+                characterGameObject.SetActive(true);
+                _shieldSpriteRenderer = characterGameObject.GetComponent<SpriteRenderer>();
+                _isLocalPlayer = true;
+            }
+            else
+            {
+                GameObject characterGameObject = _shieldGameObjects[1];
+                characterGameObject.SetActive(true);
+                _shieldSpriteRenderer = characterGameObject.GetComponent<SpriteRenderer>();
+                _isLocalPlayer = false;
+            }
+
+            //} initialize visuals
 
             //{ initialize class view controller
 
@@ -291,6 +326,11 @@ namespace Battle.View.Player
                 _shieldHitParticle.Play();
             }
 
+            if (_shieldHitParticle != null)
+            {
+                _shieldHitParticle.Play();
+            }
+
             _classViewController.OnShieldHit(e);
         }
 
@@ -334,6 +374,12 @@ namespace Battle.View.Player
         /// See [{PlayerCharacterViewController}](#page-concepts-player-character-view-controller) for more info.
         private BattlePlayerCharacterViewController _characterViewController;
 
+        /// <summary>SpriteRenderer component of this shield.</summary>
+        private SpriteRenderer _shieldSpriteRenderer;
+
+        /// <summary>Boolean that tells whether this shield is associated with the local player.</summary>
+        private bool _isLocalPlayer;
+
         /// @anchor BattlePlayerShieldViewController-Private-GameflowMethods
         /// @name Private Gameflow Methods
         /// @{
@@ -374,6 +420,14 @@ namespace Battle.View.Player
             _characterViewController = characterViewController;
             _characterViewController.BindShield(this, _shieldNumber);
 
+            if (_isLocalPlayer)
+            {
+                SetShieldSprite(_shieldNumber, ShieldSide.Top, isHit: false);
+            }
+            else
+            {
+                SetShieldSprite(_shieldNumber, ShieldSide.Bottom, isHit: false);
+            }
             return true;
         }
 

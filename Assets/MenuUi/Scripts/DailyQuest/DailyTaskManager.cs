@@ -276,10 +276,25 @@ public class DailyTaskManager : AltMonoBehaviour
             serverTask._id = i.ToString();
             serverTask.amount = normalTasks[i].amount;
             serverTask.amountLeft = serverTask.amount;
+
             serverTask.title = new ServerPlayerTask.TaskTitle();
             serverTask.title.fi = normalTasks[i].title;
-            serverTask.content = new ServerPlayerTask.TaskContent();
-            serverTask.content.fi = normalTasks[i].description;
+            serverTask.title.en = normalTasks[i].englishTitle;
+
+            serverTask.description = new ServerPlayerTask.TaskDescription();
+            serverTask.description.fi = normalTasks[i].description;
+            serverTask.description.en = normalTasks[i].englishDescription;
+
+            serverTask.execution = new ServerPlayerTask.TaskExecution();
+            serverTask.execution.fi = normalTasks[i].execution;
+            serverTask.execution.en = normalTasks[i].englishExecution;
+
+            serverTask.instruction = new ServerPlayerTask.TaskInstruction();
+            serverTask.instruction.fi = normalTasks[i].instruction;
+            serverTask.instruction.en = normalTasks[i].englishInstruction;
+
+            serverTask.gameLiteracy = normalTasks[i].gameLiteracy;
+
             serverTask.points = normalTasks[i].points;
             serverTask.coins = normalTasks[i].coins;
             serverTask.type = normalTasks[i].type;
@@ -303,12 +318,25 @@ public class DailyTaskManager : AltMonoBehaviour
             serverTask._id = i.ToString();
             serverTask.amount = educationTasks[i].amount;
             serverTask.amountLeft = serverTask.amount;
+
             serverTask.title = new ServerPlayerTask.TaskTitle();
             serverTask.title.fi = educationTasks[i].title;
-            serverTask.content = new ServerPlayerTask.TaskContent();
-            serverTask.content.fi = educationTasks[i].description;
             serverTask.title.en = educationTasks[i].englishTitle;
-            serverTask.content.en = educationTasks[i].englishDescription;
+
+            serverTask.description = new ServerPlayerTask.TaskDescription();
+            serverTask.description.fi = educationTasks[i].description;  
+            serverTask.description.en = educationTasks[i].englishDescription;
+
+            serverTask.execution = new ServerPlayerTask.TaskExecution();
+            serverTask.execution.fi = educationTasks[i].execution;
+            serverTask.execution.en = educationTasks[i].englishExecution;
+
+            serverTask.instruction = new ServerPlayerTask.TaskInstruction();
+            serverTask.instruction.fi = educationTasks[i].instruction;
+            serverTask.instruction.en = educationTasks[i].englishInstruction;
+
+            serverTask.gameLiteracy = educationTasks[i].gameLiteracy;
+
             serverTask.points = educationTasks[i].points;
             serverTask.coins = educationTasks[i].coins;
             serverTask.type = "";

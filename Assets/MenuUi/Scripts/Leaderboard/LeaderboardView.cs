@@ -13,8 +13,6 @@ public class LeaderboardView : MonoBehaviour
     [Header("Tabline")]
     [SerializeField] private Button _globalPlayersLeaderboardButton;
     [SerializeField] private Image _globalPlayersLeaderboardImage;
-    [SerializeField] private Button _clanLeaderboardButton;
-    [SerializeField] private Image _clanLeaderboardImage;
     [SerializeField] private Button _friendsLeaderboardButton;
     [SerializeField] private Image _friendsLeaderboardImage; 
     [SerializeField] private Image _tablineRibbon;
@@ -52,7 +50,6 @@ public class LeaderboardView : MonoBehaviour
     private void Start()
     {
         _globalPlayersLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.GlobalPlayers));
-        _clanLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Clan));
         _friendsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Friends));
         _globalClansLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.GlobalClans)); 
 

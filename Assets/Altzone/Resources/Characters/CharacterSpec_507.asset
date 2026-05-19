@@ -37,6 +37,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "Tavarakasojen taakse tunteensa piilottava, ep\xE4mukavuuden
     v\xE4lttelij\xE4"
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: ec08fa0248cbb194fbd74b88a09d70ea, type: 2}
   Hp:
     Level: 1
@@ -56,7 +58,10 @@ MonoBehaviour:
   GalleryImage: {fileID: 21300000, guid: e9fd76bd5dec3ea48b2a959a1bc58699, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 48ce9876c445392448a8d5cfe1ee26fc, type: 3}
   CharPhotoSeries: {fileID: 0}
-  BattleEntityPrototype:
+  BattleCharacterEntityPrototype:
     Id:
-      Value: 1327058558858202722
+      Value: 1345499487237681115
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1284663187542131383
   BattleUiSprite: {fileID: 0}

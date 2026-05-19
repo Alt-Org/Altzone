@@ -364,7 +364,7 @@ public class ServerManager : MonoBehaviour
     /// Profile and Player (<c>ServerPlayer</c>) are not the same as Profile might hold personal information!<br />
     /// Player contains exclusively data related to in game Player.
     /// </remarks>
-    public void SetProfileValues(JObject profileJSON)
+    public void SetProfileValues(JObject profileJSON, string username)
     {
         JToken accessToken = profileJSON["accessToken"];
         Assert.IsNotNull(accessToken);
@@ -378,6 +378,8 @@ public class ServerManager : MonoBehaviour
         Assert.IsNotNull(player);
         PlayerPrefs.SetString("playerId", (string)player["_id"] ?? string.Empty);
 
+        Assert.IsNotNull(username);
+        PlayerPrefs.SetString("userName", username ?? string.Empty);
         //StartCoroutine(LogIn());
     }
 
@@ -1214,7 +1216,7 @@ public class ServerManager : MonoBehaviour
                 _id = data.Id,
                 name = data.Name,
                 tag = data.Tag,
-                isOpen = Clan.isOpen,
+                isOpen = data.IsOpen,
                 labels = serverValues,
                 ageRange = data.ClanAge,
                 goal = data.Goals,
@@ -1235,7 +1237,7 @@ public class ServerManager : MonoBehaviour
                 {
                     Clan.name = data.Name;
                     Clan.tag = data.Tag;
-                    Clan.isOpen = Clan.isOpen;
+                    Clan.isOpen = data.IsOpen;
                     Clan.ageRange = data.ClanAge;
                     Clan.goal = data.Goals;
                     Clan.phrase = data.Phrase;
@@ -1832,6 +1834,12 @@ public class ServerManager : MonoBehaviour
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 Debug.LogWarning(result);
+                JArray token = (JArray)result["data"]["Friendship"];
+                foreach (JToken token2 in token)
+                {
+                    if (token2["avatar"].ToString() == string.Empty) continue;
+                    if (int.TryParse(token2["avatar"]["head"].ToString(), out int value)) token2["friend"]["avatar"] = string.Empty;
+                }
                 List<ServerFriendPlayer> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<ServerFriendPlayer>>();
 
 
@@ -1856,7 +1864,10 @@ public class ServerManager : MonoBehaviour
                 Debug.LogWarning(result);
                 JArray token = (JArray)result["data"]["Friendship"];
                 foreach (JToken token2 in token)
+                {
+                    if (token2["friend"]["avatar"].ToString() == string.Empty) continue;
                     if (int.TryParse(token2["friend"]["avatar"]["head"].ToString(), out int value)) token2["friend"]["avatar"] = string.Empty;
+                }
                 List<ServerFriendRequest> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<ServerFriendRequest>>();
 
 
@@ -2226,6 +2237,7 @@ public class ServerManager : MonoBehaviour
             if (request.result == UnityWebRequest.Result.Success)
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
                 ServerStall stall = result["data"]["Stall"].ToObject<ServerStall>();
 
                 AdStoreObject adObject = new AdStoreObject(stall.adPoster.border, stall.adPoster.colour);

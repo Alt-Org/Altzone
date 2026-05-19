@@ -134,6 +134,7 @@ namespace Quantum.Prototypes.Unity {
     public QBoolean RotationEnabled;
     public FP CurrentDefence;
     public Quantum.Prototypes.FrameTimerPrototype StunCooldown;
+    public Quantum.Prototypes.FrameTimerPrototype ShieldHitCooldown;
     public QBoolean HasTargetPosition;
     public FPVector2 TargetPosition;
     public FP RotationBaseRad;
@@ -144,6 +145,8 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.Prototypes.FrameTimerPrototype AbilityCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityActivateBufferSec;
     public FP BotMovementCooldownSec;
+    public FPVector2 ViewPosition;
+    public FPVector2 ViewMovementVector;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerDataQComponentPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerDataQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerDataQComponentPrototype();
@@ -160,6 +163,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.RotationEnabled, out result.RotationEnabled);
       converter.Convert(this.CurrentDefence, out result.CurrentDefence);
       converter.Convert(this.StunCooldown, out result.StunCooldown);
+      converter.Convert(this.ShieldHitCooldown, out result.ShieldHitCooldown);
       converter.Convert(this.HasTargetPosition, out result.HasTargetPosition);
       converter.Convert(this.TargetPosition, out result.TargetPosition);
       converter.Convert(this.RotationBaseRad, out result.RotationBaseRad);
@@ -170,6 +174,8 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.AbilityCooldownSec, out result.AbilityCooldownSec);
       converter.Convert(this.AbilityActivateBufferSec, out result.AbilityActivateBufferSec);
       converter.Convert(this.BotMovementCooldownSec, out result.BotMovementCooldownSec);
+      converter.Convert(this.ViewPosition, out result.ViewPosition);
+      converter.Convert(this.ViewMovementVector, out result.ViewMovementVector);
       ConvertUser(converter, ref result);
       return result;
     }

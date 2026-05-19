@@ -396,7 +396,7 @@ namespace Battle.QSimulation.Player
                         CurrentDefence         = FP._0,
 
                         // player's movement related data
-                        TargetPosition         = playerCharacterEntity.GetTransform(f)->Position,
+                        TargetPosition         = FPVector2.Zero,
                         RotationBaseRad        = playerRotationBase,
                         RotationOffsetRad      = FP._0,
 
@@ -405,7 +405,11 @@ namespace Battle.QSimulation.Player
                         AttachedShieldNumber   = 0,
 
                         // bot related data
-                        BotMovementCooldownSec = FP._0
+                        BotMovementCooldownSec = FP._0,
+
+                        // view related data
+                        ViewPosition           = playerCharacterEntity.GetTransform(f)->Position,
+                        ViewMovementVector     = FPVector2.Zero
                     };
 
 #if DEBUG_PLAYER_STAT_OVERRIDE
@@ -457,7 +461,8 @@ namespace Battle.QSimulation.Player
                     f.Events.BattlePlayerCharacterViewInit(playerCharacterEntity, playerSlot, playerCharacterId, playerCharacterClass, playerCharacterShieldCount, BattleGridManager.GridScaleFactor);
 
                     // set playerManagerData for player character
-                    playerHandle.SetCharacterState(playerCharacterNumber, BattlePlayerCharacterState.Alive);
+                    BattlePlayerCharacterState playerCharacterState = playerDataPtr->Stats.Defence > 0 ? BattlePlayerCharacterState.Alive : BattlePlayerCharacterState.Dead;
+                    playerHandle.SetCharacterState(playerCharacterNumber, playerCharacterState);
                 }
 
                 //} create playerEntity for each character
@@ -587,7 +592,6 @@ namespace Battle.QSimulation.Player
             BattlePlayerEntityRef       characterEntityRef = playerHandle.GetCharacterEntityRef(f, characterNumber, updateViewPlayState: true);
             BattlePlayerDataQComponent* playerData         = characterEntityRef.GetDataQComponent(f);
             Transform2D*                characterTransform = characterEntityRef.GetTransform(f);
-            Transform2D*                shieldTransform    = playerData->AttachedShield.GetTransform(f);
 
             FPVector2 worldPosition;
 
@@ -606,14 +610,15 @@ namespace Battle.QSimulation.Player
 
             // update player data
             playerData->PlayerRef                = playerHandle.PlayerRef;
-            playerData->TargetPosition           = worldPosition;
             playerData->AbilityCooldownSec       = FrameTimer.FromSeconds(f, FP._3);
             playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0);
+            playerData->ViewPosition             = worldPosition;
 
             // update shield if attached
             if (playerData->AttachedShield.ERef != EntityRef.None)
             {
                 f.Events.BattlePlayStateUpdate(playerData->AttachedShield.ERef, true);
+                f.Events.BattleShieldChangeState(characterEntityRef, playerData->TeamNumber, ShieldAttached: true, playerData->AttachedShieldNumber);
             }
 
             BattlePlayerMovementController.Teleport(f, playerData, characterEntityRef, worldPosition);
@@ -665,7 +670,7 @@ namespace Battle.QSimulation.Player
 
             // update data
             playerData->PlayerRef = PlayerRef.None;
-            playerData->TargetPosition = selectedCharacter.GetTransform(f)->Position;
+            playerData->ViewPosition = selectedCharacter.GetTransform(f)->Position;
 
             // update player handle
             playerHandle.UnsetSelectedCharacterNumber();

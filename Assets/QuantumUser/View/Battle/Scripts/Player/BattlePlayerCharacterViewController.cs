@@ -4,18 +4,23 @@
 /// </summary>
 
 // System usings
+using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
+
+// Unity usings
+using UnityEngine;
+
+// Quantum usings
+using Quantum;
+
 // Battle QSimulation usings
 using Battle.QSimulation;
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Player;
+
 // Battle View usings
 using Battle.View.Game;
-// Quantum usings
-using Quantum;
-// Unity usings
-using UnityEngine;
 
 namespace Battle.View.Player
 {
@@ -42,18 +47,43 @@ namespace Battle.View.Player
             public const int Count = 64;
 
             /// <summary>
+            /// Constant that defines the index of the first bottom hand sprite in the spritesheet.
+            /// </summary>
+            public const int HandSpriteStartBottom = 16;
+
+            /// <summary>
+            /// Constant that defines the index of the first top hand sprite in the spritesheet.
+            /// </summary>
+            public const int HandSpriteStartTop = 24;
+
+            /// <summary>
+            /// Constant that defines the index of the first shield sprite in the spritesheet.
+            /// </summary>
+            public const int ShieldSpriteStart = 32;
+
+            /// <summary>
+            /// Constant that defines the number of shields in the spritesheet.
+            /// </summary>
+            public const int ShieldCount = 4;
+
+            /// <summary>
+            /// Constant that defines the number of shield states in the spritesheet.
+            /// </summary>
+            public const int ShieldStateCount = 2;
+
+            /// <summary>
             /// Enum that maps a Sprite name to its index on the player's spritesheet.
             /// </summary>
             public enum Enum
             {
                 /// <summary>Index: 00</summary>
-                Base = 0,
+                CharacterBase = 0,
 
                 /// <summary>Index: 01</summary>
-                BaseHands = 1,
+                HandsNoShield = 1,
 
                 /// <summary>Index: 02</summary>
-                ScaredHands = 2,
+                HandsScared = 2,
 
                 /// <summary>Index: 07</summary>
                 Shadow = 7,
@@ -95,13 +125,13 @@ namespace Battle.View.Player
                 HandsShieldUp4 = 19,
 
                 /// <summary>Index: 20</summary>
-                BaseShoes = 20,
+                FeetStanding = 20,
 
                 /// <summary>Index: 21</summary>
-                RunningShoes1 = 21,
+                FeetRunningLeft = 21,
 
                 /// <summary>Index: 22</summary>
-                RunningShoes2 = 22,
+                FeetRunningRight = 22,
 
                 /// <summary>Index: 24</summary>
                 HandsShieldDown1 = 24,
@@ -164,34 +194,34 @@ namespace Battle.View.Player
                 ShieldDownHit4 = 47,
 
                 /// <summary>Index: 48</summary>
-                Joy = 48,
+                HeadJoy = 48,
 
                 /// <summary>Index: 49</summary>
-                Sadness = 49,
+                HeadSadness = 49,
 
                 /// <summary>Index: 50</summary>
-                Playful = 50,
+                HeadPlayful = 50,
 
                 /// <summary>Index: 51</summary>
-                Agression = 51,
+                HeadAgression = 51,
 
                 /// <summary>Index: 52</summary>
-                Love = 52,
+                HeadLove = 52,
 
                 /// <summary>Index: 56</summary>
-                ShieldBroken = 56,
+                CharacterShieldBroken = 56,
 
                 /// <summary>Index: 57</summary>
-                Defenseless = 57,
+                CharacterDefenseless = 57,
 
                 /// <summary>Index: 58</summary>
-                Death1 = 58,
+                CharacterDeath1 = 58,
 
                 /// <summary>Index: 59</summary>
-                Death2 = 59,
+                CharacterDeath2 = 59,
 
                 /// <summary>Index: 60</summary>
-                DeadOnTheGround = 60
+                CharacterDeadOnTheGround = 60
             }
 
             /// <summary>
@@ -324,21 +354,35 @@ namespace Battle.View.Player
         #region Public - Sprite Control Methods
 
         /// <summary>
-        /// Handles changing the sprite to the base sprite which contains the whole character in it's base state, bypassing the individual body part system.
+        /// changes the sprite to the base sprite which contains the whole character in it's base state, bypassing the individual body part system.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
         public void SetBaseSprite()
         {
             _bodypartSpriteRenderers[SpriteRendererHeadIndex]   .sprite = null;
-            _bodypartSpriteRenderers[SpriteRendererBodyIndex]   .sprite = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Base);
+            _bodypartSpriteRenderers[SpriteRendererBodyIndex]   .sprite = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.CharacterBase);
             _bodypartSpriteRenderers[SpriteRendererHandsIndex]  .sprite = null;
             _bodypartSpriteRenderers[SpriteRendererFeetIndex]   .sprite = null;
             _bodypartSpriteRenderers[SpriteRendererShadowIndex] .sprite = null;
         }
 
         /// <summary>
-        /// Handles changing the sprite for the head gameobject based on given <paramref name="sprite"/>.
+        /// Changes the sprite of every body part to their default sprites.
+        /// </summary>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
+        public void SetDefaultBodyPartSprites()
+        {
+            _bodypartSpriteRenderers[SpriteRendererHeadIndex].sprite   = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Head1);
+            _bodypartSpriteRenderers[SpriteRendererBodyIndex].sprite   = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Body1);
+            _bodypartSpriteRenderers[SpriteRendererHandsIndex].sprite  = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.HandsNoShield);
+            _bodypartSpriteRenderers[SpriteRendererFeetIndex].sprite   = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.FeetStanding);
+            _bodypartSpriteRenderers[SpriteRendererShadowIndex].sprite = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Shadow);
+        }
+
+        /// <summary>
+        /// Changes the sprite for the head gameobject based on given <paramref name="sprite"/>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
@@ -355,18 +399,18 @@ namespace Battle.View.Player
                     SpriteSheetMap.Enum.Head2 or
                     SpriteSheetMap.Enum.Head3 or
                     SpriteSheetMap.Enum.Head4 or
-                    SpriteSheetMap.Enum.Joy or
-                    SpriteSheetMap.Enum.Sadness or
-                    SpriteSheetMap.Enum.Playful or
-                    SpriteSheetMap.Enum.Agression or
-                    SpriteSheetMap.Enum.Love,
+                    SpriteSheetMap.Enum.HeadJoy or
+                    SpriteSheetMap.Enum.HeadSadness or
+                    SpriteSheetMap.Enum.HeadPlayful or
+                    SpriteSheetMap.Enum.HeadAgression or
+                    SpriteSheetMap.Enum.HeadLove,
                 "{0} Sprite is not a head sprite", sprite
             );
             _bodypartSpriteRenderers[0].sprite = _spriteSheet.GetSprite(sprite);
         }
 
         /// <summary>
-        /// Handles changing the sprite for the body gameobject based on given <paramref name="sprite"/>.
+        /// Changes the sprite for the body gameobject based on given <paramref name="sprite"/>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
@@ -389,7 +433,7 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handles changing the sprite for the hand gameobject based on given <paramref name="sprite"/>.
+        /// Changes the sprite for the hand gameobject based on given <paramref name="sprite"/>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
@@ -402,8 +446,8 @@ namespace Battle.View.Player
         {
             BattleDebugLogger.DevAssertFormat(nameof(BattlePlayerCharacterViewController),
                 sprite.EnumValue is
-                    SpriteSheetMap.Enum.BaseHands or
-                    SpriteSheetMap.Enum.ScaredHands or
+                    SpriteSheetMap.Enum.HandsNoShield or
+                    SpriteSheetMap.Enum.HandsScared or
                     SpriteSheetMap.Enum.HandsShieldDown1 or
                     SpriteSheetMap.Enum.HandsShieldDown2 or
                     SpriteSheetMap.Enum.HandsShieldDown3 or
@@ -418,7 +462,7 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handles changing the sprite for the feet gameobject based on given <paramref name="sprite"/>.
+        /// Changes the sprite for the feet gameobject based on given <paramref name="sprite"/>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
@@ -431,9 +475,9 @@ namespace Battle.View.Player
         {
             BattleDebugLogger.DevAssertFormat(nameof(BattlePlayerCharacterViewController),
                 sprite.EnumValue is
-                    SpriteSheetMap.Enum.BaseShoes or
-                    SpriteSheetMap.Enum.RunningShoes1 or
-                    SpriteSheetMap.Enum.RunningShoes2,
+                    SpriteSheetMap.Enum.FeetStanding or
+                    SpriteSheetMap.Enum.FeetRunningLeft or
+                    SpriteSheetMap.Enum.FeetRunningRight,
                 "{0} Sprite is not a feet sprite", sprite
             );
             _bodypartSpriteRenderers[3].sprite = _spriteSheet.GetSprite(sprite);
@@ -468,7 +512,9 @@ namespace Battle.View.Player
             float scale = (float)e.ModelScale;
             transform.localScale = new Vector3(scale, scale, scale);
 
-            if (BattlePlayerManager.PlayerHandle.GetTeamNumber(e.Slot) == BattleGameViewController.LocalPlayerTeam)
+            _teamNumber = BattlePlayerManager.PlayerHandle.GetTeamNumber(e.Slot);
+
+            if (_teamNumber == BattleGameViewController.LocalPlayerTeam)
             {
                 GameObject characterGameObject = _characterGameObjects[0];
                 characterGameObject.SetActive(true);
@@ -490,7 +536,7 @@ namespace Battle.View.Player
                 _bodypartSpriteRenderers[SpriteRendererShadowIndex] = characterGameObject.transform.Find("Shadow").GetComponent<SpriteRenderer>();
             }
 
-            SetBaseSprite();
+            SetDefaultBodyPartSprites();
 
             if (e.Slot == BattleGameViewController.LocalPlayerSlot)
             {
@@ -554,11 +600,13 @@ namespace Battle.View.Player
             QuantumEvent.Subscribe<EventBattlePlayStateUpdate>(this, QEventOnPlayStateUpdate);
             QuantumEvent.Subscribe<EventBattleCharacterHit>(this, QEventOnCharacterHit);
             QuantumEvent.Subscribe<EventBattleShieldHit>(this, QEventOnShieldHit);
+            QuantumEvent.Subscribe<EventBattleShieldChangeState>(this, QEventBattleShieldChangeState);
         });}
 
         /// <summary>
         /// Public method that is called when the view should update.<br/>
-        /// Calls <see cref="UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to adjust the player character model's position.
+        /// Calls <see cref="UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to adjust the player character model's position.<br/>
+        /// Handles setting feet sprite based on movement direction.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-GameflowMethods "Public Gameflow Methods"
@@ -568,10 +616,24 @@ namespace Battle.View.Player
             BattlePlayerDataQComponent* playerData = PredictedFrame.Unsafe.GetPointer<BattlePlayerDataQComponent>(EntityRef);
             if (playerData->PlayerRef == PlayerRef.None) return;
 
-            Vector3 targetPosition = playerData->TargetPosition.ToUnityVector3();
-            BattleTeamNumber battleTeamNumber = playerData->TeamNumber;
+            Vector2 movementVector = playerData->ViewMovementVector.ToUnityVector2();
 
-            UpdateModelPositionAdjustment(&targetPosition);
+            if (movementVector == Vector2.zero)
+            {
+                SetFeetSprite(SpriteSheetMap.Enum.FeetStanding);
+            }
+            else if (movementVector.x < 0)
+            {
+                SetFeetSprite(SpriteSheetMap.Enum.FeetRunningLeft);
+            }
+            else
+            {
+                SetFeetSprite(SpriteSheetMap.Enum.FeetRunningRight);
+            }
+
+            Vector3 viewPosition = playerData->ViewPosition.ToUnityVector3();
+
+            UpdateModelPositionAdjustment(&viewPosition);
 
             _classViewController.OnUpdateView();
         }
@@ -630,13 +692,18 @@ namespace Battle.View.Player
         /// <summary>Array that holds the SpriteRenderer components of each body part gameobject.</summary>
         private readonly SpriteRenderer[] _bodypartSpriteRenderers = new SpriteRenderer[5];
 
-        /// <summary>Reference to the currently running <see cref="StunFlashCoroutine(float)">StunFlashCoroutine</see>.</summary>
-        private Coroutine _stunFlashCoroutine = null;
+        /// <summary>Reference to the currently running <see cref="StunCoroutine">StunCoroutine</see>.</summary>
+        private Coroutine _stunCoroutine = null;
 
         /// <summary>Array that holds references to the shield view controllers associated with this character view controller.</summary>
         ///
         /// See [{PlayerShieldViewController}](#page-concepts-player-shield-view-controller) for more info.
         private BattlePlayerShieldViewController[] _playerShieldViewControllers;
+
+        /// <summary>Team number of this character.</summary>
+        ///
+        /// See [{Player Teams}](#page-concepts-player-slots-teams) for more info.
+        private BattleTeamNumber _teamNumber;
 
         /// @anchor BattlePlayerCharacterViewController-Private-GameflowMethods
         /// @name Private Gameflow Methods
@@ -685,7 +752,7 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Handler method for <see cref="Quantum.EventBattleCharacterHit">EventBattleCharacterHit</see> QuantumEvent.<br/>
-        /// Starts <see cref="BattlePlayerCharacterViewController.StunFlashCoroutine">DamageFlashCoroutine</see>.
+        /// Starts <see cref="BattlePlayerCharacterViewController.StunCoroutine">StunCoroutine</see>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Private-QuantumEventHandlers "Private QuantumEvent Handlers"
@@ -695,11 +762,12 @@ namespace Battle.View.Player
         {
             if (EntityRef != e.ERef) return;
 
-            if (_stunFlashCoroutine != null)
+            if (_stunCoroutine != null)
             {
-                StopCoroutine(_stunFlashCoroutine);
+                StopCoroutine(_stunCoroutine);
             }
-            _stunFlashCoroutine = StartCoroutine(StunFlashCoroutine((float)e.StunFlashDurationSec));
+
+            _stunCoroutine = StartCoroutine(StunCoroutine((float)e.StunDurationSec, e.ProjectileEmotion, e.Team, e.ShieldAttached, e.ShieldNumber));
 
             _classViewController.OnCharacterHit(e);
 
@@ -725,6 +793,27 @@ namespace Battle.View.Player
             }
         }
 
+        /// <summary>
+        /// Handler method for <see cref="Quantum.EventBattleShieldChangeState">EventBattleShieldChangeState</see> QuantumEvent.<br/>
+        /// </summary>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Private-QuantumEventHandlers "Private QuantumEvent Handlers"
+        ///
+        /// <param name="e">The event data.</param>
+        private void QEventBattleShieldChangeState(EventBattleShieldChangeState e)
+        {
+            if (EntityRef != e.ERef) return;
+
+            if (e.ShieldAttached)
+            {
+                SetHandOnShieldSprite(e.Team, e.ShieldNumber);
+            }
+            else
+            {
+                SetHandSprite(SpriteSheetMap.Enum.HandsNoShield);
+            }
+        }
+
         #endregion Private QuantumEvent Handlers
         /// @}
 
@@ -732,17 +821,17 @@ namespace Battle.View.Player
         /// @{
 
         /// <summary>
-        /// Private helper method for adjusting the player character model's position based on <paramref name="targetPosition"/>.
+        /// Private helper method for adjusting the player character model's position based on <paramref name="position"/>.
         /// </summary>
         ///
-        /// <param name="targetPosition">Target position.</param>
-        private void UpdateModelPositionAdjustment(Vector3* targetPosition)
+        /// <param name="position">Target position.</param>
+        private void UpdateModelPositionAdjustment(Vector3* position)
         {
             const float adjustmentDistance = 0.25f;
-            Vector3 distanceToTargetPosition = *targetPosition - transform.position;
+            Vector3 distanceToTargetPosition = *position - transform.position;
             if (distanceToTargetPosition.sqrMagnitude < adjustmentDistance * adjustmentDistance)
             {
-                transform.position = *targetPosition;
+                transform.position = *position;
             }
             else
             {
@@ -754,31 +843,97 @@ namespace Battle.View.Player
         /// Coroutine which plays the stun flash animation.
         /// </summary>
         ///
+        /// <param name="stunDurationSec">Duration of the stun.</param>
+        /// <param name="emotion">Emotion state during the stun.</param>
+        /// <param name="teamNumber">Team number of the player.</param>
+        /// <param name="shieldAttached">Is shield attached.</param>
+        /// <param name="shieldNumber">Number of the shield.</param>
+        ///
         /// <returns>Coroutine IEnumerator.</returns>
-        private IEnumerator StunFlashCoroutine(float stunFlashDurationSec)
+        private IEnumerator StunCoroutine(float stunDurationSec, BattleEmotionState emotion, BattleTeamNumber teamNumber, bool shieldAttached, int shieldNumber)
         {
+            //{ set stun sprites
+
+            SpriteSheetMap sprite = emotion switch
+            {
+                BattleEmotionState.Joy        => SpriteSheetMap.Enum.HeadJoy,
+                BattleEmotionState.Sadness    => SpriteSheetMap.Enum.HeadSadness,
+                BattleEmotionState.Playful    => SpriteSheetMap.Enum.HeadPlayful,
+                BattleEmotionState.Aggression => SpriteSheetMap.Enum.HeadAgression,
+                BattleEmotionState.Love       => SpriteSheetMap.Enum.HeadLove,
+
+                _ => throw new NotImplementedException()
+            };
+
+            SetHeadSprite(sprite);
+
+            SetHandSprite(SpriteSheetMap.Enum.HandsScared);
+
+            if (shieldAttached)
+            {
+                _playerShieldViewControllers[shieldNumber].SetShieldNoSprite();
+            }
+
+            //} set stun sprites
+
+            //{ stun flash
+
             Color tempColor;
-            float singleFlashDuration = stunFlashDurationSec / (_stunFlashAmount * 2 - 1);
+            float singleFlashDuration = stunDurationSec / (_stunFlashAmount * 2);
             for (int i = 0; i < _stunFlashAmount; i++)
             {
-                foreach (SpriteRenderer sprite in _bodypartSpriteRenderers)
+                foreach (SpriteRenderer spriteRenderer in _bodypartSpriteRenderers)
                 {
-                    tempColor = sprite.color;
+                    tempColor = spriteRenderer.color;
                     tempColor.a = 0;
-                    sprite.color = tempColor;
+                    spriteRenderer.color = tempColor;
                 }
 
                 yield return new WaitForSeconds(singleFlashDuration);
 
-                foreach (SpriteRenderer sprite in _bodypartSpriteRenderers)
+                foreach (SpriteRenderer spriteRenderer in _bodypartSpriteRenderers)
                 {
-                    tempColor = sprite.color;
+                    tempColor = spriteRenderer.color;
                     tempColor.a = 1;
-                    sprite.color = tempColor;
+                    spriteRenderer.color = tempColor;
                 }
 
                 yield return new WaitForSeconds(singleFlashDuration);
             }
+
+            //} stun flash
+
+            //{ reset sprites
+
+            SetHeadSprite(SpriteSheetMap.Enum.Head1);
+
+            if (shieldAttached)
+            {
+                SetHandOnShieldSprite(teamNumber, shieldNumber);
+                BattlePlayerShieldViewController.ShieldSide shieldSide = BattleGameViewController.LocalPlayerTeam == teamNumber ? BattlePlayerShieldViewController.ShieldSide.Top : BattlePlayerShieldViewController.ShieldSide.Bottom;
+                _playerShieldViewControllers[shieldNumber].SetShieldSprite(shieldNumber, shieldSide, isHit: false);
+            }
+            else
+            {
+                SetHandSprite(SpriteSheetMap.Enum.HandsNoShield);
+            }
+
+            //} reset sprites
+        }
+
+        /// <summary>
+        /// Private helper method for setting the hand sprite based on <paramref name="shieldNumber"/> and <paramref name="team"/>.
+        /// </summary>
+        ///
+        /// <param name="team">TeamNumber of the player whose hand sprite is being set.</param>
+        /// <param name="shieldNumber">ShieldNumber of the current shield.</param>
+        private void SetHandOnShieldSprite(BattleTeamNumber team, int shieldNumber)
+        {
+            int startIndex = team == BattleGameViewController.LocalPlayerTeam ? SpriteSheetMap.HandSpriteStartBottom : SpriteSheetMap.HandSpriteStartTop;
+
+            int index = startIndex + shieldNumber;
+
+            SetHandSprite(SpriteSheetMap.FromInt(index));
         }
 
         /// @}

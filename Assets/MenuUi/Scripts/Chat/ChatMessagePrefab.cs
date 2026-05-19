@@ -22,6 +22,9 @@ public class ChatMessagePrefab : MonoBehaviour
 
     internal void SetInfo(ChatMessage message)
     {
+        if (message == null) { _profileImage.gameObject.SetActive(false); return; }
+        else _profileImage.gameObject.SetActive(true);
+
         SetMessage(message.Message);
         SetProfilePicture(message.Avatar);
         SetMood(message.Mood);

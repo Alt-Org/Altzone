@@ -8,6 +8,8 @@ using Altzone.Scripts.Lobby;
 using TMPro;
 using Altzone.Scripts.Window;
 using Altzone.Scripts.Language;
+using MenuUi.Scripts.Window;
+using Altzone.Scripts.Audio;
 
 namespace MenuUi.Scripts.Lobby.BattleButton
 {
@@ -19,15 +21,18 @@ namespace MenuUi.Scripts.Lobby.BattleButton
     {
         [SerializeField] private Image _gameTypeIcon;
         [SerializeField] private Image _gameTypeBanner;
+        [SerializeField] private Image _gameTypeBackground;
         [SerializeField] private TextLanguageSelectorCaller _gameTypeName;
         [SerializeField] private TextLanguageSelectorCaller _gameTypeDescription;
         [SerializeField] private Button _openBattleUiEditorButton;
         [SerializeField] private GameTypeReference _gameTypeReference;
         [SerializeField] private GameObject _touchBlocker;
 
+        [SerializeField] private WindowNavigation _raidNavigation;
+
         private const string SelectedGameTypeKey = "BattleButtonGameType";
 
-        private GameType _selectedGameType = GameType.Custom;
+        private GameType _selectedGameType = GameType.Random2v2;
 
         private List<GameTypeOption> _gameTypeOptionList = new();
         private Button _button;
@@ -45,7 +50,9 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             _button.onClick.AddListener(RequestBattlePopup);
 
             // Loading selected game type from player prefs Note: Only custom available for now
-            _selectedGameType = GameType.Custom; //(GameType)PlayerPrefs.GetInt(SelectedGameTypeKey, (int)_selectedGameType);
+            _selectedGameType = GameType.Random2v2; //(GameType)PlayerPrefs.GetInt(SelectedGameTypeKey, (int)_selectedGameType);
+
+            UpdateGameType(_gameTypeReference.GetGameTypeInfos().Find(x => x.gameType == _selectedGameType));
 
             _openBattleUiEditorButton.transform.SetAsLastSibling();
             _openBattleUiEditorButton.onClick.AddListener(OnOpenBattleUiEditorButtonPressed);
@@ -61,6 +68,12 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
         private void RequestBattlePopup()
         {
+            if (_selectedGameType is GameType.Raid)
+            {
+                AudioManager.Instance.StopMusic();
+                StartCoroutine(_raidNavigation.Navigate());
+                return;
+            }
             SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
         }
 
@@ -68,6 +81,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         {
             _gameTypeIcon.sprite = gameTypeInfo.Icon;
             _gameTypeBanner.sprite = gameTypeInfo.Banner;
+            _gameTypeBackground.sprite = gameTypeInfo.Background;
             _gameTypeName.SetText(gameTypeInfo.Name);
             _gameTypeDescription.SetText(gameTypeInfo.Description);
             _selectedGameType = gameTypeInfo.gameType;

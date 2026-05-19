@@ -22,6 +22,7 @@ component BattlePlayerDataQComponent
     bool       RotationEnabled;
     FP         CurrentDefence;
     FrameTimer StunCooldown;
+    FrameTimer ShieldHitCooldown;
 
     // Player's movement related data
     bool       HasTargetPosition;
@@ -40,6 +41,10 @@ component BattlePlayerDataQComponent
 
     // Bot related data
     FP BotMovementCooldownSec;
+
+    // View related data
+    FPVector2 ViewPosition;
+    FPVector2 ViewMovementVector;
 }
 
 //} PlayerData

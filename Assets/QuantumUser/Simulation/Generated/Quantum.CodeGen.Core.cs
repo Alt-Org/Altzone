@@ -134,6 +134,7 @@ namespace Quantum {
     Character303 = 303,
     Character304 = 304,
     Character305 = 305,
+    Character306 = 306,
     Character401 = 401,
     Character402 = 402,
     Character403 = 403,
@@ -144,6 +145,7 @@ namespace Quantum {
     Character504 = 504,
     Character505 = 505,
     Character506 = 506,
+    Character507 = 507,
     Character601 = 601,
     Character602 = 602,
     Character603 = 603,
@@ -200,252 +202,266 @@ namespace Quantum {
     SoulWallHitPlayful,
     SoulWallHitSadness,
     PlayerCharacterCommonHitShield = 100,
-    PlayerCharacterRacistCatchphrase = 1010,
+    PlayerCharacterCommonCatchphrase,
+    PlayerCharacterCommonHitCharacterAggression,
+    PlayerCharacterCommonHitCharacterJoy,
+    PlayerCharacterCommonHitCharacterLove,
+    PlayerCharacterCommonHitCharacterPlayful,
+    PlayerCharacterCommonHitCharacterSadness,
+    PlayerCharacterCommonDeath,
+    PlayerCharacterNoneCatchphrase = 10000,
+    PlayerCharacterNoneHitCharacterAggression,
+    PlayerCharacterNoneHitCharacterJoy,
+    PlayerCharacterNoneHitCharacterLove,
+    PlayerCharacterNoneHitCharacterPlayful,
+    PlayerCharacterNoneHitCharacterSadness,
+    PlayerCharacterNoneDeath,
+    PlayerCharacterRacistCatchphrase = 11010,
     PlayerCharacterRacistHitCharacterAggression,
     PlayerCharacterRacistHitCharacterJoy,
     PlayerCharacterRacistHitCharacterLove,
     PlayerCharacterRacistHitCharacterPlayful,
     PlayerCharacterRacistHitCharacterSadness,
     PlayerCharacterRacistDeath,
-    PlayerCharacterBodybuilderCatchphrase = 1020,
+    PlayerCharacterBodybuilderCatchphrase = 11020,
     PlayerCharacterBodybuilderHitCharacterAggression,
     PlayerCharacterBodybuilderHitCharacterJoy,
     PlayerCharacterBodybuilderHitCharacterLove,
     PlayerCharacterBodybuilderHitCharacterPlayful,
     PlayerCharacterBodybuilderHitCharacterSadness,
     PlayerCharacterBodybuilderDeath,
-    PlayerCharacterWarVeteranCatchphrase = 1030,
+    PlayerCharacterWarVeteranCatchphrase = 11030,
     PlayerCharacterWarVeteranHitCharacterAggression,
     PlayerCharacterWarVeteranHitCharacterJoy,
     PlayerCharacterWarVeteranHitCharacterLove,
     PlayerCharacterWarVeteranHitCharacterPlayful,
     PlayerCharacterWarVeteranHitCharacterSadness,
     PlayerCharacterWarVeteranDeath,
-    PlayerCharacterBullyCatchphrase = 1040,
+    PlayerCharacterBullyCatchphrase = 11040,
     PlayerCharacterBullyHitCharacterAggression,
     PlayerCharacterBullyHitCharacterJoy,
     PlayerCharacterBullyHitCharacterLove,
     PlayerCharacterBullyHitCharacterPlayful,
     PlayerCharacterBullyHitCharacterSadness,
     PlayerCharacterBullyDeath,
-    PlayerCharacterEgoistCatchphrase = 1050,
+    PlayerCharacterEgoistCatchphrase = 11050,
     PlayerCharacterEgoistHitCharacterAggression,
     PlayerCharacterEgoistHitCharacterJoy,
     PlayerCharacterEgoistHitCharacterLove,
     PlayerCharacterEgoistHitCharacterPlayful,
     PlayerCharacterEgoistHitCharacterSadness,
     PlayerCharacterEgoistDeath,
-    PlayerCharacterDepressedCatchphrase = 1060,
+    PlayerCharacterDepressedCatchphrase = 11060,
     PlayerCharacterDepressedHitCharacterAggression,
     PlayerCharacterDepressedHitCharacterJoy,
     PlayerCharacterDepressedHitCharacterLove,
     PlayerCharacterDepressedHitCharacterPlayful,
     PlayerCharacterDepressedHitCharacterSadness,
     PlayerCharacterDepressedDeath,
-    PlayerCharacterComedianCatchphrase = 2010,
+    PlayerCharacterComedianCatchphrase = 12010,
     PlayerCharacterComedianHitCharacterAggression,
     PlayerCharacterComedianHitCharacterJoy,
     PlayerCharacterComedianHitCharacterLove,
     PlayerCharacterComedianHitCharacterPlayful,
     PlayerCharacterComedianHitCharacterSadness,
     PlayerCharacterComedianDeath,
-    PlayerCharacterJokerCatchphrase = 2020,
+    PlayerCharacterJokerCatchphrase = 12020,
     PlayerCharacterJokerHitCharacterAggression,
     PlayerCharacterJokerHitCharacterJoy,
     PlayerCharacterJokerHitCharacterLove,
     PlayerCharacterJokerHitCharacterPlayful,
     PlayerCharacterJokerHitCharacterSadness,
     PlayerCharacterJokerDeath,
-    PlayerCharacterConmanCatchphrase = 2030,
+    PlayerCharacterConmanCatchphrase = 12030,
     PlayerCharacterConmanHitCharacterAggression,
     PlayerCharacterConmanHitCharacterJoy,
     PlayerCharacterConmanHitCharacterLove,
     PlayerCharacterConmanHitCharacterPlayful,
     PlayerCharacterConmanHitCharacterSadness,
     PlayerCharacterConmanDeath,
-    PlayerCharacterSeducerCatchphrase = 2040,
+    PlayerCharacterSeducerCatchphrase = 12040,
     PlayerCharacterSeducerHitCharacterAggression,
     PlayerCharacterSeducerHitCharacterJoy,
     PlayerCharacterSeducerHitCharacterLove,
     PlayerCharacterSeducerHitCharacterPlayful,
     PlayerCharacterSeducerHitCharacterSadness,
     PlayerCharacterSeducerDeath,
-    PlayerCharacterReligiousCatchphrase = 3010,
+    PlayerCharacterReligiousCatchphrase = 13010,
     PlayerCharacterReligiousHitCharacterAggression,
     PlayerCharacterReligiousHitCharacterJoy,
     PlayerCharacterReligiousHitCharacterLove,
     PlayerCharacterReligiousHitCharacterPlayful,
     PlayerCharacterReligiousHitCharacterSadness,
     PlayerCharacterReligiousDeath,
-    PlayerCharacterYesmanCatchphrase = 3020,
+    PlayerCharacterYesmanCatchphrase = 13020,
     PlayerCharacterYesmanHitCharacterAggression,
     PlayerCharacterYesmanHitCharacterJoy,
     PlayerCharacterYesmanHitCharacterLove,
     PlayerCharacterYesmanHitCharacterPlayful,
     PlayerCharacterYesmanHitCharacterSadness,
     PlayerCharacterYesmanDeath,
-    PlayerCharacterSlaveOfTheLawCatchphrase = 3030,
+    PlayerCharacterSlaveOfTheLawCatchphrase = 13030,
     PlayerCharacterSlaveOfTheLawHitCharacterAggression,
     PlayerCharacterSlaveOfTheLawHitCharacterJoy,
     PlayerCharacterSlaveOfTheLawHitCharacterLove,
     PlayerCharacterSlaveOfTheLawHitCharacterPlayful,
     PlayerCharacterSlaveOfTheLawHitCharacterSadness,
     PlayerCharacterSlaveOfTheLawDeath,
-    PlayerCharacterFashionSlaveCatchphrase = 3040,
+    PlayerCharacterFashionSlaveCatchphrase = 13040,
     PlayerCharacterFashionSlaveHitCharacterAggression,
     PlayerCharacterFashionSlaveHitCharacterJoy,
     PlayerCharacterFashionSlaveHitCharacterLove,
     PlayerCharacterFashionSlaveHitCharacterPlayful,
     PlayerCharacterFashionSlaveHitCharacterSadness,
     PlayerCharacterFashionSlaveDeath,
-    PlayerCharacterMammasBoyCatchphrase = 3050,
+    PlayerCharacterMammasBoyCatchphrase = 13050,
     PlayerCharacterMammasBoyHitCharacterAggression,
     PlayerCharacterMammasBoyHitCharacterJoy,
     PlayerCharacterMammasBoyHitCharacterLove,
     PlayerCharacterMammasBoyHitCharacterPlayful,
     PlayerCharacterMammasBoyHitCharacterSadness,
     PlayerCharacterMammasBoyDeath,
-    PlayerCharacterSuperstitiousCatchphrase = 3060,
+    PlayerCharacterSuperstitiousCatchphrase = 13060,
     PlayerCharacterSuperstitiousHitCharacterAggression,
     PlayerCharacterSuperstitiousHitCharacterJoy,
     PlayerCharacterSuperstitiousHitCharacterLove,
     PlayerCharacterSuperstitiousHitCharacterPlayful,
     PlayerCharacterSuperstitiousHitCharacterSadness,
     PlayerCharacterSuperstitiousDeath,
-    PlayerCharacterArtistCatchphrase = 4010,
+    PlayerCharacterArtistCatchphrase = 14010,
     PlayerCharacterArtistHitCharacterAggression,
     PlayerCharacterArtistHitCharacterJoy,
     PlayerCharacterArtistHitCharacterLove,
     PlayerCharacterArtistHitCharacterPlayful,
     PlayerCharacterArtistHitCharacterSadness,
     PlayerCharacterArtistDeath,
-    PlayerCharacterArguerCatchphrase = 4020,
+    PlayerCharacterArguerCatchphrase = 14020,
     PlayerCharacterArguerHitCharacterAggression,
     PlayerCharacterArguerHitCharacterJoy,
     PlayerCharacterArguerHitCharacterLove,
     PlayerCharacterArguerHitCharacterPlayful,
     PlayerCharacterArguerHitCharacterSadness,
     PlayerCharacterArguerDeath,
-    PlayerCharacterReflectorCatchphrase = 4030,
+    PlayerCharacterReflectorCatchphrase = 14030,
     PlayerCharacterReflectorHitCharacterAggression,
     PlayerCharacterReflectorHitCharacterJoy,
     PlayerCharacterReflectorHitCharacterLove,
     PlayerCharacterReflectorHitCharacterPlayful,
     PlayerCharacterReflectorHitCharacterSadness,
     PlayerCharacterReflectorDeath,
-    PlayerCharacterDelusionalCatchphrase = 4040,
+    PlayerCharacterDelusionalCatchphrase = 14040,
     PlayerCharacterDelusionalHitCharacterAggression,
     PlayerCharacterDelusionalHitCharacterJoy,
     PlayerCharacterDelusionalHitCharacterLove,
     PlayerCharacterDelusionalHitCharacterPlayful,
     PlayerCharacterDelusionalHitCharacterSadness,
     PlayerCharacterDelusionalDeath,
-    PlayerCharacterOvereaterCatchphrase = 5010,
+    PlayerCharacterOvereaterCatchphrase = 15010,
     PlayerCharacterOvereaterHitCharacterAggression,
     PlayerCharacterOvereaterHitCharacterJoy,
     PlayerCharacterOvereaterHitCharacterLove,
     PlayerCharacterOvereaterHitCharacterPlayful,
     PlayerCharacterOvereaterHitCharacterSadness,
     PlayerCharacterOvereaterDeath,
-    PlayerCharacterAlcoholicCatchphrase = 5020,
+    PlayerCharacterAlcoholicCatchphrase = 15020,
     PlayerCharacterAlcoholicHitCharacterAggression,
     PlayerCharacterAlcoholicHitCharacterJoy,
     PlayerCharacterAlcoholicHitCharacterLove,
     PlayerCharacterAlcoholicHitCharacterPlayful,
     PlayerCharacterAlcoholicHitCharacterSadness,
     PlayerCharacterAlcoholicDeath,
-    PlayerCharacterAnorecticCatchphrase = 5030,
+    PlayerCharacterAnorecticCatchphrase = 15030,
     PlayerCharacterAnorecticHitCharacterAggression,
     PlayerCharacterAnorecticHitCharacterJoy,
     PlayerCharacterAnorecticHitCharacterLove,
     PlayerCharacterAnorecticHitCharacterPlayful,
     PlayerCharacterAnorecticHitCharacterSadness,
     PlayerCharacterAnorecticDeath,
-    PlayerCharacterStonerCatchphrase = 5040,
+    PlayerCharacterStonerCatchphrase = 15040,
     PlayerCharacterStonerHitCharacterAggression,
     PlayerCharacterStonerHitCharacterJoy,
     PlayerCharacterStonerHitCharacterLove,
     PlayerCharacterStonerHitCharacterPlayful,
     PlayerCharacterStonerHitCharacterSadness,
     PlayerCharacterStonerDeath,
-    PlayerCharacterMartyrCatchphrase = 5050,
+    PlayerCharacterMartyrCatchphrase = 15050,
     PlayerCharacterMartyrHitCharacterAggression,
     PlayerCharacterMartyrHitCharacterJoy,
     PlayerCharacterMartyrHitCharacterLove,
     PlayerCharacterMartyrHitCharacterPlayful,
     PlayerCharacterMartyrHitCharacterSadness,
     PlayerCharacterMartyrDeath,
-    PlayerCharacterSuicidalCatchphrase = 5060,
+    PlayerCharacterSuicidalCatchphrase = 15060,
     PlayerCharacterSuicidalHitCharacterAggression,
     PlayerCharacterSuicidalHitCharacterJoy,
     PlayerCharacterSuicidalHitCharacterLove,
     PlayerCharacterSuicidalHitCharacterPlayful,
     PlayerCharacterSuicidalHitCharacterSadness,
     PlayerCharacterSuicidalDeath,
-    PlayerCharacterSoulsistersCatchphrase = 6010,
+    PlayerCharacterSoulsistersCatchphrase = 16010,
     PlayerCharacterSoulsistersHitCharacterAggression,
     PlayerCharacterSoulsistersHitCharacterJoy,
     PlayerCharacterSoulsistersHitCharacterLove,
     PlayerCharacterSoulsistersHitCharacterPlayful,
     PlayerCharacterSoulsistersHitCharacterSadness,
     PlayerCharacterSoulsistersDeath,
-    PlayerCharacterLoversCatchphrase = 6020,
+    PlayerCharacterLoversCatchphrase = 16020,
     PlayerCharacterLoversHitCharacterAggression,
     PlayerCharacterLoversHitCharacterJoy,
     PlayerCharacterLoversHitCharacterLove,
     PlayerCharacterLoversHitCharacterPlayful,
     PlayerCharacterLoversHitCharacterSadness,
     PlayerCharacterLoversDeath,
-    PlayerCharacterSleepyHeadCatchphrase = 6030,
+    PlayerCharacterSleepyHeadCatchphrase = 16030,
     PlayerCharacterSleepyHeadHitCharacterAggression,
     PlayerCharacterSleepyHeadHitCharacterJoy,
     PlayerCharacterSleepyHeadHitCharacterLove,
     PlayerCharacterSleepyHeadHitCharacterPlayful,
     PlayerCharacterSleepyHeadHitCharacterSadness,
     PlayerCharacterSleepyHeadDeath,
-    PlayerCharacterTribalistCatchphrase = 6040,
+    PlayerCharacterTribalistCatchphrase = 16040,
     PlayerCharacterTribalistHitCharacterAggression,
     PlayerCharacterTribalistHitCharacterJoy,
     PlayerCharacterTribalistHitCharacterLove,
     PlayerCharacterTribalistHitCharacterPlayful,
     PlayerCharacterTribalistHitCharacterSadness,
     PlayerCharacterTribalistDeath,
-    PlayerCharacterGangBangerCatchphrase = 6050,
+    PlayerCharacterGangBangerCatchphrase = 16050,
     PlayerCharacterGangBangerHitCharacterAggression,
     PlayerCharacterGangBangerHitCharacterJoy,
     PlayerCharacterGangBangerHitCharacterLove,
     PlayerCharacterGangBangerHitCharacterPlayful,
     PlayerCharacterGangBangerHitCharacterSadness,
     PlayerCharacterGangBangerDeath,
-    PlayerCharacterBooksmartCatchphrase = 7010,
+    PlayerCharacterBooksmartCatchphrase = 17010,
     PlayerCharacterBooksmartHitCharacterAggression,
     PlayerCharacterBooksmartHitCharacterJoy,
     PlayerCharacterBooksmartHitCharacterLove,
     PlayerCharacterBooksmartHitCharacterPlayful,
     PlayerCharacterBooksmartHitCharacterSadness,
     PlayerCharacterBooksmartDeath,
-    PlayerCharacterCapitalistCatchphrase = 7020,
+    PlayerCharacterCapitalistCatchphrase = 17020,
     PlayerCharacterCapitalistHitCharacterAggression,
     PlayerCharacterCapitalistHitCharacterJoy,
     PlayerCharacterCapitalistHitCharacterLove,
     PlayerCharacterCapitalistHitCharacterPlayful,
     PlayerCharacterCapitalistHitCharacterSadness,
     PlayerCharacterCapitalistDeath,
-    PlayerCharacterObsessiveCompulsiveCatchphrase = 7030,
+    PlayerCharacterObsessiveCompulsiveCatchphrase = 17030,
     PlayerCharacterObsessiveCompulsiveHitCharacterAggression,
     PlayerCharacterObsessiveCompulsiveHitCharacterJoy,
     PlayerCharacterObsessiveCompulsiveHitCharacterLove,
     PlayerCharacterObsessiveCompulsiveHitCharacterPlayful,
     PlayerCharacterObsessiveCompulsiveHitCharacterSadness,
     PlayerCharacterObsessiveCompulsiveDeath,
-    PlayerCharacterOvercompilatorCatchphrase = 7040,
+    PlayerCharacterOvercompilatorCatchphrase = 17040,
     PlayerCharacterOvercompilatorHitCharacterAggression,
     PlayerCharacterOvercompilatorHitCharacterJoy,
     PlayerCharacterOvercompilatorHitCharacterLove,
     PlayerCharacterOvercompilatorHitCharacterPlayful,
     PlayerCharacterOvercompilatorHitCharacterSadness,
     PlayerCharacterOvercompilatorDeath,
-    PlayerCharacterNitPickerCatchphrase = 7050,
+    PlayerCharacterNitPickerCatchphrase = 17050,
     PlayerCharacterNitPickerHitCharacterAggression,
     PlayerCharacterNitPickerHitCharacterJoy,
     PlayerCharacterNitPickerHitCharacterLove,
@@ -1610,7 +1626,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerDataQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 168;
+    public const Int32 SIZE = 208;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(32)]
     public PlayerRef PlayerRef;
@@ -1622,7 +1638,7 @@ namespace Quantum {
     public BattlePlayerCharacterID CharacterId;
     [FieldOffset(0)]
     public BattlePlayerCharacterClass CharacterClass;
-    [FieldOffset(136)]
+    [FieldOffset(176)]
     public BattlePlayerStats Stats;
     [FieldOffset(24)]
     public Int32 GridExtendTop;
@@ -1636,11 +1652,13 @@ namespace Quantum {
     public QBoolean RotationEnabled;
     [FieldOffset(72)]
     public FP CurrentDefence;
-    [FieldOffset(112)]
+    [FieldOffset(120)]
     public FrameTimer StunCooldown;
+    [FieldOffset(112)]
+    public FrameTimer ShieldHitCooldown;
     [FieldOffset(40)]
     public QBoolean HasTargetPosition;
-    [FieldOffset(120)]
+    [FieldOffset(128)]
     public FPVector2 TargetPosition;
     [FieldOffset(80)]
     public FP RotationBaseRad;
@@ -1658,6 +1676,10 @@ namespace Quantum {
     public FrameTimer AbilityActivateBufferSec;
     [FieldOffset(64)]
     public FP BotMovementCooldownSec;
+    [FieldOffset(160)]
+    public FPVector2 ViewPosition;
+    [FieldOffset(144)]
+    public FPVector2 ViewMovementVector;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 6911;
@@ -1674,6 +1696,7 @@ namespace Quantum {
         hash = hash * 31 + RotationEnabled.GetHashCode();
         hash = hash * 31 + CurrentDefence.GetHashCode();
         hash = hash * 31 + StunCooldown.GetHashCode();
+        hash = hash * 31 + ShieldHitCooldown.GetHashCode();
         hash = hash * 31 + HasTargetPosition.GetHashCode();
         hash = hash * 31 + TargetPosition.GetHashCode();
         hash = hash * 31 + RotationBaseRad.GetHashCode();
@@ -1684,6 +1707,8 @@ namespace Quantum {
         hash = hash * 31 + AbilityCooldownSec.GetHashCode();
         hash = hash * 31 + AbilityActivateBufferSec.GetHashCode();
         hash = hash * 31 + BotMovementCooldownSec.GetHashCode();
+        hash = hash * 31 + ViewPosition.GetHashCode();
+        hash = hash * 31 + ViewMovementVector.GetHashCode();
         return hash;
       }
     }
@@ -1709,8 +1734,11 @@ namespace Quantum {
         FP.Serialize(&p->RotationOffsetRad, serializer);
         FrameTimer.Serialize(&p->AbilityActivateBufferSec, serializer);
         FrameTimer.Serialize(&p->AbilityCooldownSec, serializer);
+        FrameTimer.Serialize(&p->ShieldHitCooldown, serializer);
         FrameTimer.Serialize(&p->StunCooldown, serializer);
         FPVector2.Serialize(&p->TargetPosition, serializer);
+        FPVector2.Serialize(&p->ViewMovementVector, serializer);
+        FPVector2.Serialize(&p->ViewPosition, serializer);
         Quantum.BattlePlayerStats.Serialize(&p->Stats, serializer);
     }
   }
@@ -2161,42 +2189,43 @@ namespace Quantum {
     public const Int32 BATTLE_EMOTION_STATE_COUNT = 5;
     public const Int32 BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER = 10;
     public const Int32 BATTLE_SOUND_FX_CHARACTER_COMMON_START = 100;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_RACIST_START = 1010;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_BODYBUILDER_START = 1020;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_WARVETERAN_START = 1030;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_BULLY_START = 1040;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_EGOIST_START = 1050;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_DEPRESSED_START = 1060;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_COMEDIAN_START = 2010;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_JOKER_START = 2020;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_CONMAN_START = 2030;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_SEDUCER_START = 2040;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_RELIGIOUS_START = 3010;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_YESMAN_START = 3020;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_SLAVEOFTHELAW_START = 3030;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_FASHIONSLAVE_START = 3040;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_MAMMASBOY_START = 3050;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_SUPERSTITIOUS_START = 3060;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_ARTIST_START = 4010;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_ARGUER_START = 4020;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_REFLECTOR_START = 4030;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_DELUSIONAL_START = 4040;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_OVEREATER_START = 5010;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_ALCOHOLIC_START = 5020;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_ANORECTIC_START = 5030;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_STONER_START = 5040;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_MARTYR_START = 5050;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_SUICIDAL_START = 5060;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_SOULSISTERS_START = 6010;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_LOVERS_START = 6020;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_SLEEPYHEAD_START = 6030;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_TRIBALIST_START = 6040;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_GANGBANGER_START = 6050;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_BOOKSMART_START = 7010;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_CAPITALIST_START = 7020;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_OBSESSIVECOMPULSIVE_START = 7030;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_OVERCOMPILATOR_START = 7040;
-    public const Int32 BATTLE_SOUND_FX_CHARACTER_NITPICKER_START = 7050;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_START = 10000;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_RACIST_START = 11010;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_BODYBUILDER_START = 11020;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_WARVETERAN_START = 11030;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_BULLY_START = 11040;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_EGOIST_START = 11050;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_DEPRESSED_START = 11060;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_COMEDIAN_START = 12010;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_JOKER_START = 12020;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_CONMAN_START = 12030;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_SEDUCER_START = 12040;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_RELIGIOUS_START = 13010;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_YESMAN_START = 13020;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_SLAVEOFTHELAW_START = 13030;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_FASHIONSLAVE_START = 13040;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_MAMMASBOY_START = 13050;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_SUPERSTITIOUS_START = 13060;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_ARTIST_START = 14010;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_ARGUER_START = 14020;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_REFLECTOR_START = 14030;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_DELUSIONAL_START = 14040;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_OVEREATER_START = 15010;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_ALCOHOLIC_START = 15020;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_ANORECTIC_START = 15030;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_STONER_START = 15040;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_MARTYR_START = 15050;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_SUICIDAL_START = 15060;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_SOULSISTERS_START = 16010;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_LOVERS_START = 16020;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_SLEEPYHEAD_START = 16030;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_TRIBALIST_START = 16040;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_GANGBANGER_START = 16050;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_BOOKSMART_START = 17010;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_CAPITALIST_START = 17020;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_OBSESSIVECOMPULSIVE_START = 17030;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_OVERCOMPILATOR_START = 17040;
+    public const Int32 BATTLE_SOUND_FX_CHARACTER_NITPICKER_START = 17050;
   }
   public unsafe partial class Frame {
     private ISignalBattleOnDiamondHitPlayer[] _ISignalBattleOnDiamondHitPlayerSystems;

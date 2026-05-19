@@ -16,18 +16,38 @@ public class ClanLanguageList : MonoBehaviour
     {
         SelectedLanguage = firstSelected;
         _tempLanguage = SelectedLanguage;
-        foreach (Transform child in _listParent) Destroy(child.gameObject);
 
-        foreach (Language language in Enum.GetValues(typeof(Language)))
+        foreach (Transform child in _listParent)
         {
-            if (language == Language.None) continue;
+            Destroy(child.gameObject);
+        }
+
+        Language[] allowedLanguages =
+        {
+        Language.Finnish,
+        Language.English
+    };
+
+        foreach (Language language in allowedLanguages)
+        {
             Sprite flag = _languageFlagMap.GetFlag(language);
+
             GameObject listItem = Instantiate(_languageListItemPrefab, _listParent);
-            listItem.GetComponent<Toggle>().group = _toggleGroup;
-            listItem.GetComponent<ClanLanguageListItem>().Initialize(language, flag, language == SelectedLanguage, (bool isOn) =>
-            {
-                _tempLanguage = language;
-            });
+
+            Toggle toggle = listItem.GetComponent<Toggle>();
+            toggle.group = _toggleGroup;
+
+            listItem.GetComponent<ClanLanguageListItem>().Initialize(
+                language,
+                flag,
+                language == SelectedLanguage,
+                (bool isOn) =>
+                {
+                    if (isOn)
+                    {
+                        _tempLanguage = language;
+                    }
+                });
         }
     }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Clan;
 using TMPro;
 using UnityEngine;
@@ -43,7 +44,6 @@ public class ClanSearchFiltersPanel : MonoBehaviour
     [Header("Values selection")]
     [SerializeField] private ClanValuesUIManager _valueManager;
     [Space]
-    [SerializeField] private Button _confirmButton;
     [SerializeField] private GameObject _filtersPopup;
  
 
@@ -79,12 +79,6 @@ public class ClanSearchFiltersPanel : MonoBehaviour
     private void OnEnable()
     {
         InitSelectors();
-        SetupConfirmButton();
-    }
-
-    private void OnDisable()
-    {
-        _filtersPopup.SetActive(false);
     }
 
     private void InitializeEnumArrays()
@@ -116,16 +110,6 @@ public class ClanSearchFiltersPanel : MonoBehaviour
                 return i;
         }
         return 0;
-    }
-
-    private void SetupConfirmButton()
-    {
-        _confirmButton.onClick.RemoveAllListeners();
-        _confirmButton.onClick.AddListener(() =>
-        {
-            UpdateFilters();
-            _filtersPopup.SetActive(false);
-        });
     }
 
     private void InitSelectors()
@@ -286,7 +270,7 @@ public class ClanSearchFiltersPanel : MonoBehaviour
         return currentIndex == 0 ? arrayLength - 1 : currentIndex - 1;
     }
 
-    private void UpdateFilters()
+    public void ApplyFilters()
     {
         OnFiltersChanged?.Invoke(new ClanSearchFilters()
         {
@@ -298,7 +282,7 @@ public class ClanSearchFiltersPanel : MonoBehaviour
             ranking = _clanRanking,
             memberCount = _clanMembers,
             isOpen = _isOpen,
-            values = _valueManager.selectedValues
-        }) ;
+            values = _valueManager != null ? _valueManager.selectedValues : new List<ClanValues>()
+        });
     }
 }
