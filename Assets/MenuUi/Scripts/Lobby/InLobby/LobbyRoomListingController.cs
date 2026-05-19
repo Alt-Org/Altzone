@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 using Prg.Scripts.Common.PubSub;
 
@@ -16,6 +18,7 @@ using ReasonType = Altzone.Scripts.Lobby.LobbyManager.GetKickedEvent.ReasonType;
 using MenuUi.Scripts.Lobby.CreateRoom;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
 using MenuUi.Scripts.Signals;
+using Altzone.Scripts.Lobby.Wrappers;
 
 namespace MenuUi.Scripts.Lobby.InLobby
 {
@@ -49,8 +52,10 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void Awake()
         {
             _photonRoomList = gameObject.GetOrAddComponent<PhotonRoomList>();
+            WireCreateRoomButtonFallback();
             _createRoomCustom.CreateRoomButton.onClick.AddListener(CreateCustomRoom);
-            _createRoomFromMainMenuButton.onClick.AddListener(CreateCustomRoom);
+                _createRoomFromMainMenuButton.onClick.RemoveAllListeners();
+                _createRoomFromMainMenuButton.onClick.AddListener(() => SignalBus.OnCustomRoomSettingsRequestedSignal());
             LobbyManager.OnClanMemberDisconnected += HandleClanMemberDisconnected;
             LobbyManager.OnKickedOutOfTheRoom += HandleKickedOutOfRoom;
         }
@@ -159,12 +164,62 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
             if (_createRoomCustom.IsPrivate && _createRoomCustom.RoomPassword != null && _createRoomCustom.RoomPassword != "")
             {
-                PhotonRealtimeClient.CreateCustomLobbyRoom(roomName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, _createRoomCustom.RoomPassword);
+                PhotonRealtimeClient.CreateCustomLobbyRoom(roomName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, _createRoomCustom.RoomPassword, customGameMode: _createRoomCustom.SelectedCustomGameModeIndex);
             }
             else
             {
-                PhotonRealtimeClient.JoinRandomOrCreateCustomRoom(roomName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion);
+                PhotonRealtimeClient.JoinRandomOrCreateCustomRoom(roomName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, customGameMode: _createRoomCustom.SelectedCustomGameModeIndex);
             }
+        }
+
+        private void WireCreateRoomButtonFallback()
+        {
+            if (_createRoomFromMainMenuButton == null)
+            {
+                Transform buttonTransform = FindDescendantButtonTransform(InLobbyController.PopupContentsInstance != null ? InLobbyController.PopupContentsInstance.transform : transform, "CreateRoom_Button");
+                if (buttonTransform != null)
+                {
+                    _createRoomFromMainMenuButton = buttonTransform.GetComponent<Button>() ?? buttonTransform.GetComponentInChildren<Button>(true);
+                }
+            }
+
+            if (_createRoomFromMainMenuButton == null)
+            {
+                return;
+            }
+
+            _createRoomFromMainMenuButton.onClick.RemoveListener(CreateCustomRoom);
+            _createRoomFromMainMenuButton.onClick.AddListener(CreateCustomRoom);
+
+            TMP_Text buttonText = _createRoomFromMainMenuButton.GetComponentInChildren<TMP_Text>(true);
+            if (buttonText != null)
+            {
+                buttonText.text = "Luo huone";
+            }
+        }
+
+        private static Transform FindDescendantButtonTransform(Transform root, string targetName)
+        {
+            if (root == null)
+            {
+                return null;
+            }
+
+            foreach (Transform child in root)
+            {
+                if (child.name == targetName)
+                {
+                    return child;
+                }
+
+                Transform nested = FindDescendantButtonTransform(child, targetName);
+                if (nested != null)
+                {
+                    return nested;
+                }
+            }
+
+            return null;
         }
 
         private void CreateClan2v2Room()  // soulhome value for matchmaking
@@ -398,8 +453,41 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 var strB = $"{(b.IsOpen ? 0 : 1)}{b.Name}";
                 return string.Compare(strA, strB, StringComparison.Ordinal);
             });
+
+            rooms = FilterCustomRoomsBySelectedMode(rooms);
+
             _searchPanel.RoomsData = rooms;
             _searchPanel.SetOnJoinRoom(JoinRoom);
+        }
+
+        private List<LobbyRoomInfo> FilterCustomRoomsBySelectedMode(List<LobbyRoomInfo> rooms)
+        {
+            if (rooms == null)
+            {
+                return rooms;
+            }
+
+            int selectedMode = _createRoomCustom != null ? _createRoomCustom.SelectedCustomGameModeIndex : (int)CustomGameMode.TwoVersusTwo;
+
+            return rooms.Where(room =>
+            {
+                if (room == null || room.CustomProperties == null)
+                {
+                    return false;
+                }
+
+                if (!room.CustomProperties.TryGetValue(PhotonBattleRoom.GameTypeKey, out object gameTypeValue) || gameTypeValue is not int gameType || gameType != (int)GameType.Custom)
+                {
+                    return false;
+                }
+
+                if (!room.CustomProperties.TryGetValue(PhotonBattleRoom.CustomGameModeKey, out object roomCustomModeValue) || roomCustomModeValue is not int roomCustomMode)
+                {
+                    roomCustomMode = (int)CustomGameMode.TwoVersusTwo;
+                }
+
+                return roomCustomMode == selectedMode;
+            }).ToList();
         }
 
         private void HandleClanMemberDisconnected()

@@ -657,7 +657,7 @@ public static class PhotonRealtimeClient
         }
     }
 
-    private static RoomOptions GetRoomOptions(GameType gameType, bool isMatchmaking = false, string mapId = "", Emotion startingEmotion = Emotion.Blank, string roomName = "", string password = "", string clanName = "", int soulhomeRank = -1)
+    private static RoomOptions GetRoomOptions(GameType gameType, bool isMatchmaking = false, string mapId = "", Emotion startingEmotion = Emotion.Blank, string roomName = "", string password = "", string clanName = "", int soulhomeRank = -1, int customGameMode = -1)
     {
         PhotonHashtable customRoomProperties = new PhotonHashtable
         {
@@ -670,6 +670,12 @@ public static class PhotonRealtimeClient
         };
 
         List<string> propertiesShowingToLobby = new() { PhotonBattleRoom.GameTypeKey, PhotonBattleRoom.IsMatchmakingKey };
+
+        if (gameType == GameType.Custom && customGameMode >= 0)
+        {
+            customRoomProperties.Add(PhotonBattleRoom.CustomGameModeKey, customGameMode);
+            propertiesShowingToLobby.Add(PhotonBattleRoom.CustomGameModeKey);
+        }
 
         int maxPlayers;
 
@@ -778,13 +784,14 @@ public static class PhotonRealtimeClient
         );
     }
 
-    public static bool CreateCustomLobbyRoom(string roomName, string mapId, Emotion startingEmotion, string password = "", string[] expectedUsers = null)
+    public static bool CreateCustomLobbyRoom(string roomName, string mapId, Emotion startingEmotion, string password = "", string[] expectedUsers = null, int customGameMode = -1)
     {
         RoomOptions roomOptions = GetRoomOptions(
             gameType: GameType.Custom,
             mapId: mapId,
             startingEmotion: startingEmotion,
-            password: password
+            password: password,
+            customGameMode: customGameMode
         );
 
         return CreateRoom(
@@ -843,7 +850,7 @@ public static class PhotonRealtimeClient
         return Client.OpJoinRandomOrCreateRoom(joinRandomRoomArgs, enterRoomArgs);
     }
 
-    public static bool JoinRandomOrCreateCustomRoom(string roomName, string mapId, Emotion startingEmotion, string[] expectedUsers = null)
+    public static bool JoinRandomOrCreateCustomRoom(string roomName, string mapId, Emotion startingEmotion, string[] expectedUsers = null, int customGameMode = -1)
     {
         if (Client.Server != ServerConnection.MasterServer || !Client.IsConnectedAndReady)
         {
@@ -854,7 +861,8 @@ public static class PhotonRealtimeClient
             gameType: GameType.Custom,
             roomName: roomName, // For join random or create custom room we use GUID for room name so setting it to room options
             mapId: mapId,
-            startingEmotion: startingEmotion
+            startingEmotion: startingEmotion,
+            customGameMode: customGameMode
         );
         EnterRoomArgs enterRoomArgs = GetEnterRoomArgs("", roomOptions, expectedUsers);
 
