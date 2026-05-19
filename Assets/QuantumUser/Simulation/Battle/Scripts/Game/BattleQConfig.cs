@@ -15,13 +15,13 @@ namespace Battle.QSimulation.Game
 {
     public class BattleQConfig : AssetObject
     {
-        public AssetRef<BattleArenaQSpec>                   BattleArenaSpec;
-        public AssetRef<BattleSoulWallQSpec>                BattleSoulWallSpec;
-        public AssetRef<BattleProjectileQSpec>              BattleProjectileSpec;
-        public AssetRef<BattleDiamondQSpec>                 BattleDiamondSpec;
-        public AssetRef<BattlePlayerQSpec>                  BattlePlayerSpec;
-        public AssetRef<BattlePlayerBotQSpec>               BattlePlayerBotSpec;
-        public AssetRef<BattlePlayerClass100QSpec>          BattlePlayerClass100Spec;
+        public AssetRef<BattleArenaQSpec>          BattleArenaSpec;
+        public AssetRef<BattleSoulWallQSpec>       BattleSoulWallSpec;
+        public AssetRef<BattleProjectileQSpec>     BattleProjectileSpec;
+        public AssetRef<BattleDiamondQSpec>        BattleDiamondSpec;
+        public AssetRef<BattlePlayerQSpec>         BattlePlayerSpec;
+        public AssetRef<BattlePlayerBotQSpec>      BattlePlayerBotSpec;
+        public AssetRef<BattlePlayerClass100QSpec> BattlePlayerClass100Spec;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BattleArenaQSpec GetArenaSpec(Frame f)
