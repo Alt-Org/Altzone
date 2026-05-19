@@ -784,12 +784,14 @@ public static class PhotonRealtimeClient
         );
     }
 
-    public static bool CreateCustomLobbyRoom(string roomName, string mapId, Emotion startingEmotion, string password = "", string[] expectedUsers = null, int customGameMode = -1)
+    public static bool CreateCustomLobbyRoom(string roomName, string mapId, Emotion startingEmotion, string password = "", string[] expectedUsers = null, int customGameMode = -1, string displayName = null)
     {
+        // Use provided displayName for lobby-visible name if given, otherwise fall back to the roomName
         RoomOptions roomOptions = GetRoomOptions(
             gameType: GameType.Custom,
             mapId: mapId,
             startingEmotion: startingEmotion,
+            roomName: displayName ?? roomName,
             password: password,
             customGameMode: customGameMode
         );

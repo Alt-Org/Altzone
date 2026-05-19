@@ -164,11 +164,16 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
             if (_createRoomCustom.IsPrivate && _createRoomCustom.RoomPassword != null && _createRoomCustom.RoomPassword != "")
             {
-                PhotonRealtimeClient.CreateCustomLobbyRoom(roomName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, _createRoomCustom.RoomPassword, customGameMode: _createRoomCustom.SelectedCustomGameModeIndex);
+                // For private rooms keep using the provided password and display name
+                string internalName = $"{roomName}_{Guid.NewGuid()}";
+                PhotonRealtimeClient.CreateCustomLobbyRoom(internalName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, _createRoomCustom.RoomPassword, null, _createRoomCustom.SelectedCustomGameModeIndex, roomName);
             }
             else
             {
-                PhotonRealtimeClient.JoinRandomOrCreateCustomRoom(roomName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, customGameMode: _createRoomCustom.SelectedCustomGameModeIndex);
+                // Always create a new custom room instead of joining an existing one.
+                // Use a unique internal room id to avoid "A game with the specified id already exist." errors
+                string uniqueRoomId = string.IsNullOrWhiteSpace(roomName) ? $"{DefaultRoomNameCustom}{Guid.NewGuid()}" : $"{roomName}_{Guid.NewGuid()}";
+                PhotonRealtimeClient.CreateCustomLobbyRoom(uniqueRoomId, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, "", null, _createRoomCustom.SelectedCustomGameModeIndex, roomName);
             }
         }
 
