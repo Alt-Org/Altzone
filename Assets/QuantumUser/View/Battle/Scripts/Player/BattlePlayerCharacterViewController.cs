@@ -62,7 +62,7 @@ namespace Battle.View.Player
             public const int ShieldSpriteStart = 32;
 
             /// <summary>
-            /// Constant that defines the number of shield sprites in the spritesheet.
+            /// Constant that defines the number of shields in the spritesheet.
             /// </summary>
             public const int ShieldCount = 4;
 
@@ -354,7 +354,7 @@ namespace Battle.View.Player
         #region Public - Sprite Control Methods
 
         /// <summary>
-        /// Handles changing the sprite to the base sprite which contains the whole character in it's base state, bypassing the individual body part system.
+        /// changes the sprite to the base sprite which contains the whole character in it's base state, bypassing the individual body part system.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
@@ -368,8 +368,10 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handles changing the sprite of every body part to their default sprites.
+        /// Changes the sprite of every body part to their default sprites.
         /// </summary>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
         public void SetDefaultBodyPartSprites()
         {
             _bodypartSpriteRenderers[SpriteRendererHeadIndex].sprite   = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Head1);
@@ -380,7 +382,7 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handles changing the sprite for the head gameobject based on given <paramref name="sprite"/>.
+        /// Changes the sprite for the head gameobject based on given <paramref name="sprite"/>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
@@ -408,7 +410,7 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handles changing the sprite for the body gameobject based on given <paramref name="sprite"/>.
+        /// Changes the sprite for the body gameobject based on given <paramref name="sprite"/>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
@@ -431,7 +433,7 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handles changing the sprite for the hand gameobject based on given <paramref name="sprite"/>.
+        /// Changes the sprite for the hand gameobject based on given <paramref name="sprite"/>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
@@ -460,7 +462,7 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handles changing the sprite for the feet gameobject based on given <paramref name="sprite"/>.
+        /// Changes the sprite for the feet gameobject based on given <paramref name="sprite"/>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"

@@ -15,7 +15,7 @@
 
 <br/>
 
-# Configs {#page-resources-configs}
+## Configs {#page-resources-configs}
 **Config files** used in **%Battle**.
 
 | Path                                                  | File                                     | Description                                    |
@@ -27,7 +27,7 @@
 
 <br/>
 
-# Spec Data Assets {#page-resources-specs}
+## Spec Data Assets {#page-resources-specs}
 **Spec data assets** used in **%Battle**.  
 These **assets** only contain the data used by the **Spec**. **Specs**'s structures can be found [here](@ref page-simulation-specs).
 
@@ -42,10 +42,8 @@ These **assets** only contain the data used by the **Spec**. **Specs**'s structu
 
 <br/>
 
-# Prefabs/EntityPrototypes {#page-resources-prefabs}
-All **Prefabs** and **EntityPrototypes** used in **%Battle**.
-
-### Quantum prefabs/EntityPrototypes
+## Prefabs/EntityPrototypes {#page-resources-prefabs}
+**Prefabs** and **EntityPrototypes** used in **%Battle**.
 **%Quantum Entities** have both **Unity Prefab** and **EntityPrototype** while **view-side** **GameObjects** only contain **Unity Prefab**.
 
 | Path                                                                                                                                                                                                    ||| Prefab File                                     | EntityPrototype File                                               | Description                                                                |
@@ -76,10 +74,12 @@ All **Prefabs** and **EntityPrototypes** used in **%Battle**.
 <br/>
 
 ### Player/Shield prefabs/EntityPrototypes
-**Prefabs** and **EntityPrototypes** for the **Player** and their **Shield(s)**.
+Subset of **Prefabs** and **EntityPrototypes**.  
+This section contains the **Player** and **Shield** **Prefabs** and **EntityPrototypes**.
 
 | Path                                                                                                                                                                                                                                ||| Prefab File                                                  | EntityPrototype File                                                            | Description                                                                |
 | :---------------------------------------------------- | :-------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------- |:------------------------------------------------------------ | :------------------------------------------------------------------------------ | :------------------------------------------------------------------------- |
+| @dirref{Altzone,Assets/QuantumUser/Resources/Prefabs}                                                                                                                                                                                                                                                                                                                                                                                                          ||||||
 | @dirref{Altzone,Assets/QuantumUser/Resources,Prefabs} | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,Player/Player000Base}                                                                                                   || @ref "BattlePlayer000Character(BaseAndTestCharacter).prefab" | @ref "BattlePlayer000Character(BaseAndTestCharacter)EntityPrototype.qprototype" | @copybrief BattlePlayer000Character(BaseAndTestCharacter).prefab           |
 | @dirref{Altzone,Assets/QuantumUser/Resources,Prefabs} | @dirref{Altzone/Assets/QuantumUser/Resources/Prefabs,Player/Player000Base}                                                                                                   || @ref "BattlePlayer000Shield(BaseAndTestCharacter).prefab"    | @ref "BattlePlayer000Shield(BaseAndTestCharacter)EntityPrototype.qprototype"    | @copybrief BattlePlayer000Shield(BaseAndTestCharacter).prefab              |
 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                ||||||
@@ -193,8 +193,9 @@ All **Prefabs** and **EntityPrototypes** used in **%Battle**.
 
 <br/>
 
-### UI Shared prefabs/EntityPrototypes
-**Prefabs** that are used both in **%Battle** UI and BattleUiEditor in **MenuUi**.
+### UI Shared prefabs
+Subset of **Prefabs**.  
+This section contains **Prefabs** that are used both in **%Battle** UI and BattleUiEditor in **MenuUi**.
 
 | Path                                                             | Prefab File                      | Description                                                                     |
 | :--------------------------------------------------------------- | :------------------------------- | :------------------------------------------------------------------------------ |
@@ -204,5 +205,3 @@ All **Prefabs** and **EntityPrototypes** used in **%Battle**.
 | @dirref{Altzone,Assets/Altzone/Resources/Prefabs,BattleUiShared} | @ref BattleUiPlayerInfo.prefab   | @copybrief BattleUiPlayerInfo.prefab                                            |
 | @dirref{Altzone,Assets/Altzone/Resources/Prefabs,BattleUiShared} | @ref BattleUiJoystick.prefab     | @copybrief BattleUiJoystick.prefab                                              |
 | @dirref{Altzone,Assets/Altzone/Resources/Prefabs,BattleUiShared} | @ref BattleUiTimer.prefab        | @copybrief BattleUiTimer.prefab                                                 |
-
-<br/>
