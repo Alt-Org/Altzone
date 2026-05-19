@@ -26,6 +26,7 @@ public class BattlePopupPanelManager : MonoBehaviour
         LobbyManager.OnMatchmakingRoomEntered += SwitchToMatchmakingPanel;
         SignalBus.OnCustomRoomSettingsRequested += OpenCustomRoomSettings;
         WireMainPanelButtons();
+        WireCreateRoomButtons();
     }
 
     private void OnDisable()
@@ -79,6 +80,7 @@ public class BattlePopupPanelManager : MonoBehaviour
             {
                 createComp.InitializeCustomRoomOptions();
             }
+            WireCreateRoomButtons();
             _createCustomRoom.SetActive(true);
         }
     }
@@ -100,6 +102,35 @@ public class BattlePopupPanelManager : MonoBehaviour
             if (previewText != null)
             {
                 previewText.text = "Esikatsele";
+            }
+        }
+    }
+
+    private void WireCreateRoomButtons()
+    {
+        if (_createCustomRoom == null) return;
+
+        Button returnButton = FindButtonByName(_createCustomRoom.transform, "ReturnButton") ?? FindButtonByName(_createCustomRoom.transform, "Cancel_Button");
+        if (returnButton != null)
+        {
+            returnButton.onClick.RemoveListener(ReturnToMain);
+            returnButton.onClick.AddListener(ReturnToMain);
+
+            TMP_Text returnText = returnButton.GetComponentInChildren<TMP_Text>(true);
+            if (returnText != null)
+            {
+                returnText.text = "Takaisin";
+            }
+        }
+
+        // Ensure create button caption is localized
+        Button createBtn = FindButtonByName(_createCustomRoom.transform, "CreateRoom_Button") ?? FindButtonByName(_createCustomRoom.transform, "Create_Button");
+        if (createBtn != null)
+        {
+            TMP_Text createText = createBtn.GetComponentInChildren<TMP_Text>(true);
+            if (createText != null)
+            {
+                createText.text = "Luo huone";
             }
         }
     }

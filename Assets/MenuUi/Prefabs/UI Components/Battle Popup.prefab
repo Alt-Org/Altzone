@@ -3757,7 +3757,7 @@ RectTransform:
   m_AnchorMin: {x: 0.85, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -33.30002}
+  m_SizeDelta: {x: 0, y: -48.120026}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8576530089220829316
 CanvasRenderer:
@@ -4288,7 +4288,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0.15, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -101.349976}
+  m_SizeDelta: {x: 0, y: -73.95999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3422916169717348198
 CanvasRenderer:
@@ -4829,7 +4829,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0.15, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -101.349976}
+  m_SizeDelta: {x: 0, y: -73.95999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5719956429263230475
 CanvasRenderer:
@@ -6811,7 +6811,7 @@ RectTransform:
   m_AnchorMin: {x: 0.85, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -101.349976}
+  m_SizeDelta: {x: 0, y: -73.95999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5754931561547481795
 CanvasRenderer:
@@ -7493,7 +7493,7 @@ RectTransform:
   m_AnchorMin: {x: 0.85, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -101.349976}
+  m_SizeDelta: {x: 0, y: -73.95999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2894981738968851318
 CanvasRenderer:
@@ -8035,7 +8035,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -96.479965, y: 0}
+  m_SizeDelta: {x: -109.247986, y: 0}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &6222947876632983049
 CanvasRenderer:
@@ -8453,7 +8453,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -38.160004}
+  m_SizeDelta: {x: 0, y: -53.952026}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &4280170413714996417
 CanvasRenderer:
@@ -10296,7 +10296,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0.15, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -33.299988}
+  m_SizeDelta: {x: 0, y: -48.120026}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7131637952194908805
 CanvasRenderer:
@@ -11588,7 +11588,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -96.479965, y: 0}
+  m_SizeDelta: {x: -109.24796, y: 0}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &8339110276726805585
 CanvasRenderer:
@@ -12771,7 +12771,7 @@ GameObject:
   - component: {fileID: 8292952494949127305}
   - component: {fileID: 4646929315743121399}
   m_Layer: 5
-  m_Name: CancelButton
+  m_Name: ReturnButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12880,10 +12880,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 821737462262444307}
-        m_TargetAssemblyTypeName: MenuUi.Scripts.Lobby.InLobby.InLobbyController,
-          MainMenu
-        m_MethodName: CloseWindow
+      - m_Target: {fileID: 4116104174498300769}
+        m_TargetAssemblyTypeName: BattlePopupPanelManager, MainMenu
+        m_MethodName: ReturnToMain
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -12958,7 +12957,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u200B"
+  m_text: Takaisin
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 35c39ce28c397b848b84f7de2f26c5ac, type: 2}
   m_sharedMaterial: {fileID: 2109022488393823743, guid: 35c39ce28c397b848b84f7de2f26c5ac,
@@ -14065,7 +14064,8 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 21300000, guid: 47f3804936cb29747bf9619ef5303fec,
+        type: 3}
     - target: {fileID: 7811438372343880993, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: m_Color.b
@@ -19709,7 +19709,7 @@ PrefabInstance:
     - target: {fileID: 8703098976634220119, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: m_Name
-      value: Cancel_Button
+      value: ReturnButton
       objectReference: {fileID: 0}
     - target: {fileID: 8703098976634220119, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
@@ -21023,22 +21023,12 @@ PrefabInstance:
     - target: {fileID: 7062704168869414568, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: CloseWindow
-      objectReference: {fileID: 0}
-    - target: {fileID: 7062704168869414568, guid: 3db9db4cd4ab4f84b96799395497bcfa,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: SetActive
+      value: ReturnToMain
       objectReference: {fileID: 0}
     - target: {fileID: 7062704168869414568, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: MenuUi.Scripts.Lobby.InLobby.InLobbyController, MainMenu
-      objectReference: {fileID: 0}
-    - target: {fileID: 7062704168869414568, guid: 3db9db4cd4ab4f84b96799395497bcfa,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: UnityEngine.GameObject, UnityEngine
+      value: BattlePopupPanelManager, MainMenu
       objectReference: {fileID: 0}
     - target: {fileID: 7062704168869414568, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
@@ -21058,12 +21048,12 @@ PrefabInstance:
     - target: {fileID: 7663954824446020484, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: _englishText
-      value: Cancel
+      value: Takaisin
       objectReference: {fileID: 0}
     - target: {fileID: 7663954824446020484, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: _finnishText
-      value: Peruuta
+      value: Takaisin
       objectReference: {fileID: 0}
     - target: {fileID: 7811438372343880993, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
@@ -21074,7 +21064,8 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 21300000, guid: 47f3804936cb29747bf9619ef5303fec,
+        type: 3}
     - target: {fileID: 7811438372343880993, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: m_Color.b
