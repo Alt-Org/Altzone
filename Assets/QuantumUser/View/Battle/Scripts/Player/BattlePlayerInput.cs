@@ -308,11 +308,13 @@ namespace Battle.View.Player
             }
 
             //{ create and set input
+
             BattleSpecialInput specialInput = new()
             {
                 JoystickValue = new FPVector2(FP.FromFloat_UNSAFE(_joystickSpecialValue.x), FP.FromFloat_UNSAFE(_joystickSpecialValue.y)),
                 JoystickState = _joystickSpecialState
             };
+
             Input input = new()
             {
                 IsValid                       = true,
