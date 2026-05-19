@@ -225,10 +225,6 @@ namespace Battle.View.Player
 
         /// @{
 
-        // Tap once -> Shoot straight up
-        // Hold -> Aim indicator
-        // Release Tap -> Shoot aimed direction
-
         /// <summary>
         /// Saves data from SettingsCarrier to private variables. <br/>
         /// Saves a reference to the play device's gyroscope if there is one. <br/>
