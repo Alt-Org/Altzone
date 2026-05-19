@@ -14,7 +14,7 @@ public class ChooseTask : MonoBehaviour
     private RectTransform _selectionWindow;
 
     [SerializeField]
-    [Tooltip("The parent for the task cards")]
+    [Tooltip("The object that's children are going to be the parents of the task cards")]
     private RectTransform _taskCardHolder;
 
     [SerializeField]
@@ -217,22 +217,25 @@ public class ChooseTask : MonoBehaviour
         // Get three random categories
         EducationCategoryType[] ed = GetRandomCategories();
 
+        int i = 0;
         // Create three task cards for the categories
         foreach (EducationCategoryType category in ed)
         {
-            _dailyTaskView.CreateTaskCard(GetRandomTaskFromCategory(category), _taskCardHolder);
+            // Create the task card's under _taskCardHolder's children (taskcardSlots)
+            _dailyTaskView.CreateTaskCard(GetRandomTaskFromCategory(category), _taskCardHolder.GetChild(i));
+            i++;
         }
     }
 
     /// <summary>
-    /// Destroys the current task cards (parented by _taskCardHolder)
+    /// Destroys the current task cards that are parented by _taskCardHolder's children (taskcardSlots)
     /// </summary>
     private void DeleteTaskCards()
-    {
+    { 
         for (int i = 0; i < _taskCardHolder.childCount; i++)
         {
             
-            Destroy(_taskCardHolder.GetChild(i).gameObject);
+            Destroy(_taskCardHolder.GetChild(i).GetChild(0).gameObject);
         }
     }
 }

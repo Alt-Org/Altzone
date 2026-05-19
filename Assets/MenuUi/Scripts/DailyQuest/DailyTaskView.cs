@@ -482,6 +482,18 @@ public class DailyTaskView : AltMonoBehaviour
     /// <returns>The DailyQuest on the task card</returns>
     public DailyQuest CreateTaskCard(PlayerTask task, Transform parent)
     {
+        return CreateTaskCard(task, parent, 0f);
+    }
+
+    /// <summary>
+    /// Creates a task card for the given task and adds it under the given parent with the given y offset
+    /// </summary>
+    /// <param name="task">The task to create a card for</param>
+    /// <param name="parent">The parent for the task card to spawn in</param>
+    /// <param name="yOffSet">The Y offset for the task card</param>
+    /// <returns>The DailyQuest on the task card</returns>
+    public DailyQuest CreateTaskCard(PlayerTask task, Transform parent, float yOffSet)
+    {
         // If given task is null, don't create task card
         if (task == null) return null;
 
@@ -494,6 +506,19 @@ public class DailyTaskView : AltMonoBehaviour
                 );
 
         GameObject taskCard = Instantiate(prefabToInstantiate, parent);
+
+        if (yOffSet != 0f)
+        {
+            taskCard.GetComponent<RectTransform>().pivot = new Vector2(
+                    taskCard.GetComponent<RectTransform>().pivot.x,
+                    taskCard.GetComponent<RectTransform>().pivot.y + yOffSet);
+
+            taskCard.transform.position = new Vector3(
+                    taskCard.transform.position.x,
+                    taskCard.transform.position.y + yOffSet,
+                    taskCard.transform.position.z);
+        }
+        
 
         DailyQuest quest = taskCard.GetComponent<DailyQuest>();
         quest.SetTaskData(task);
