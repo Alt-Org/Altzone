@@ -121,7 +121,7 @@ namespace Battle.View.Player
         #region Public - Sprite Control Methods
 
         /// <summary>
-        /// Handles changing the sprite of the shield gameobject based on <paramref name="shieldNumber"/>, <paramref name="side"/> and <paramref name="isHit"/>.
+        /// Changes the sprite of the shield gameobject based on <paramref name="shieldNumber"/>, <paramref name="side"/> and <paramref name="isHit"/>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerShieldViewController-Public-SpriteControlMethods "Public Sprite Control Methods"
@@ -168,6 +168,9 @@ namespace Battle.View.Player
             _shieldSpriteRenderer.enabled = true;
         }
 
+        /// <summary>
+        /// Disables sprite renderer of the shield gameobject.
+        /// </summary>
         public void SetShieldNoSprite()
         {
             _shieldSpriteRenderer.enabled = false;
@@ -371,8 +374,10 @@ namespace Battle.View.Player
         /// See [{PlayerCharacterViewController}](#page-concepts-player-character-view-controller) for more info.
         private BattlePlayerCharacterViewController _characterViewController;
 
+        /// <summary>SpriteRenderer component of this shield.</summary>
         private SpriteRenderer _shieldSpriteRenderer;
 
+        /// <summary>Boolean that tells whether this shield is associated with the local player.</summary>
         private bool _isLocalPlayer;
 
         /// @anchor BattlePlayerShieldViewController-Private-GameflowMethods

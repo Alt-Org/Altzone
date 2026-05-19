@@ -46,14 +46,29 @@ namespace Battle.View.Player
             /// </summary>
             public const int Count = 64;
 
+            /// <summary>
+            /// Constant that defines the index of the first bottom hand sprite in the spritesheet.
+            /// </summary>
             public const int HandSpriteStartBottom = 16;
 
+            /// <summary>
+            /// Constant that defines the index of the first top hand sprite in the spritesheet.
+            /// </summary>
             public const int HandSpriteStartTop = 24;
 
+            /// <summary>
+            /// Constant that defines the index of the first shield sprite in the spritesheet.
+            /// </summary>
             public const int ShieldSpriteStart = 32;
 
+            /// <summary>
+            /// Constant that defines the number of shields in the spritesheet.
+            /// </summary>
             public const int ShieldCount = 4;
 
+            /// <summary>
+            /// Constant that defines the number of shield states in the spritesheet.
+            /// </summary>
             public const int ShieldStateCount = 2;
 
             /// <summary>
@@ -339,7 +354,7 @@ namespace Battle.View.Player
         #region Public - Sprite Control Methods
 
         /// <summary>
-        /// Handles changing the sprite to the base sprite which contains the whole character in it's base state, bypassing the individual body part system.
+        /// changes the sprite to the base sprite which contains the whole character in it's base state, bypassing the individual body part system.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
@@ -352,6 +367,11 @@ namespace Battle.View.Player
             _bodypartSpriteRenderers[SpriteRendererShadowIndex] .sprite = null;
         }
 
+        /// <summary>
+        /// Changes the sprite of every body part to their default sprites.
+        /// </summary>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
         public void SetDefaultBodyPartSprites()
         {
             _bodypartSpriteRenderers[SpriteRendererHeadIndex].sprite   = _spriteSheet.GetSprite<SpriteSheetMap>(SpriteSheetMap.Enum.Head1);
@@ -362,7 +382,7 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handles changing the sprite for the head gameobject based on given <paramref name="sprite"/>.
+        /// Changes the sprite for the head gameobject based on given <paramref name="sprite"/>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
@@ -390,7 +410,7 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handles changing the sprite for the body gameobject based on given <paramref name="sprite"/>.
+        /// Changes the sprite for the body gameobject based on given <paramref name="sprite"/>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
@@ -413,7 +433,7 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handles changing the sprite for the hand gameobject based on given <paramref name="sprite"/>.
+        /// Changes the sprite for the hand gameobject based on given <paramref name="sprite"/>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
@@ -442,7 +462,7 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handles changing the sprite for the feet gameobject based on given <paramref name="sprite"/>.
+        /// Changes the sprite for the feet gameobject based on given <paramref name="sprite"/>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-SpriteControlMethods "Sprite Control Methods"
@@ -585,7 +605,8 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Public method that is called when the view should update.<br/>
-        /// Calls <see cref="UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to adjust the player character model's position.
+        /// Calls <see cref="UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to adjust the player character model's position.<br/>
+        /// Handles setting feet sprite based on movement direction.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-GameflowMethods "Public Gameflow Methods"
@@ -671,7 +692,7 @@ namespace Battle.View.Player
         /// <summary>Array that holds the SpriteRenderer components of each body part gameobject.</summary>
         private readonly SpriteRenderer[] _bodypartSpriteRenderers = new SpriteRenderer[5];
 
-        /// <summary>Reference to the currently running <see cref="StunCoroutine(float)">StunCoroutine</see>.</summary>
+        /// <summary>Reference to the currently running <see cref="StunCoroutine">StunCoroutine</see>.</summary>
         private Coroutine _stunCoroutine = null;
 
         /// <summary>Array that holds references to the shield view controllers associated with this character view controller.</summary>
@@ -679,6 +700,9 @@ namespace Battle.View.Player
         /// See [{PlayerShieldViewController}](#page-concepts-player-shield-view-controller) for more info.
         private BattlePlayerShieldViewController[] _playerShieldViewControllers;
 
+        /// <summary>Team number of this character.</summary>
+        ///
+        /// See [{Player Teams}](#page-concepts-player-slots-teams) for more info.
         private BattleTeamNumber _teamNumber;
 
         /// @anchor BattlePlayerCharacterViewController-Private-GameflowMethods
@@ -769,6 +793,13 @@ namespace Battle.View.Player
             }
         }
 
+        /// <summary>
+        /// Handler method for <see cref="Quantum.EventBattleShieldChangeState">EventBattleShieldChangeState</see> QuantumEvent.<br/>
+        /// </summary>
+        ///
+        /// Part of @ref BattlePlayerCharacterViewController-Private-QuantumEventHandlers "Private QuantumEvent Handlers"
+        ///
+        /// <param name="e">The event data.</param>
         private void QEventBattleShieldChangeState(EventBattleShieldChangeState e)
         {
             if (EntityRef != e.ERef) return;
@@ -811,6 +842,12 @@ namespace Battle.View.Player
         /// <summary>
         /// Coroutine which plays the stun flash animation.
         /// </summary>
+        ///
+        /// <param name="stunDurationSec">Duration of the stun.</param>
+        /// <param name="emotion">Emotion state during the stun.</param>
+        /// <param name="teamNumber">Team number of the player.</param>
+        /// <param name="shieldAttached">Is shield attached.</param>
+        /// <param name="shieldNumber">Number of the shield.</param>
         ///
         /// <returns>Coroutine IEnumerator.</returns>
         private IEnumerator StunCoroutine(float stunDurationSec, BattleEmotionState emotion, BattleTeamNumber teamNumber, bool shieldAttached, int shieldNumber)
@@ -884,6 +921,12 @@ namespace Battle.View.Player
             //} reset sprites
         }
 
+        /// <summary>
+        /// Private helper method for setting the hand sprite based on <paramref name="shieldNumber"/> and <paramref name="team"/>.
+        /// </summary>
+        ///
+        /// <param name="team">TeamNumber of the player whose hand sprite is being set.</param>
+        /// <param name="shieldNumber">ShieldNumber of the current shield.</param>
         private void SetHandOnShieldSprite(BattleTeamNumber team, int shieldNumber)
         {
             int startIndex = team == BattleGameViewController.LocalPlayerTeam ? SpriteSheetMap.HandSpriteStartBottom : SpriteSheetMap.HandSpriteStartTop;
