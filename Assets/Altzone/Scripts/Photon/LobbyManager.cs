@@ -2159,6 +2159,7 @@ namespace Altzone.Scripts.Lobby
                         MapId = mapId,
                         PlayerCount = playerCount,
                         Seed = Random.Range(int.MinValue, int.MaxValue),
+                        TestMode = SettingsCarrier.Instance.BattleDebug,
                     };
 
                 }
@@ -2355,7 +2356,8 @@ namespace Altzone.Scripts.Lobby
                         PlayerSlotTypes = data.PlayerSlotTypes,
                         PlayerSlotUserIDs = data.PlayerSlotUserIds,
                         PlayerCount = data.PlayerCount,
-                        ProjectileInitialEmotion = (BattleEmotionState)data.ProjectileInitialEmotion
+                        ProjectileInitialEmotion = (BattleEmotionState)data.ProjectileInitialEmotion,
+                        IsTestMode = data.TestMode,
                     }
                 };
 
@@ -4432,6 +4434,7 @@ namespace Altzone.Scripts.Lobby
         public string MapId { get; set; }
         public int PlayerCount { get; set; }
         public int Seed { get; set; }
+        public bool TestMode { get; set; }
 
         public static byte[] Serialize(StartGameData data)
         {
@@ -4445,6 +4448,7 @@ namespace Altzone.Scripts.Lobby
             Serializer.Serialize(b.MapId, ref bytes);
             Serializer.Serialize(b.PlayerCount, ref bytes);
             Serializer.Serialize(b.Seed, ref bytes);
+            Serializer.Serialize(b.TestMode, ref bytes);
 
             return bytes;
         }
@@ -4461,6 +4465,7 @@ namespace Altzone.Scripts.Lobby
             result.MapId = Serializer.DeserializeString(data, ref offset);
             result.PlayerCount = Serializer.DeserializeInt(data, ref offset);
             result.Seed = Serializer.DeserializeInt(data, ref offset);
+            result.TestMode = Serializer.DeserializeBool(data, ref offset);
 
             return result;
         }

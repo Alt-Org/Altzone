@@ -50,6 +50,7 @@ namespace Altzone.Scripts.Battle.Photon
         public const string ClanNameKey = "c";
         public const string ClanOpponentNameKey = "c2";
         public const string LeaderIdKey = "lid";
+        public const string TestModeKey = "tm";
 
         public static string PlayerPositionKey1 { get => PlayerPosition1.ToString(); }
         public static string PlayerPositionKey2 { get => PlayerPosition2.ToString(); }

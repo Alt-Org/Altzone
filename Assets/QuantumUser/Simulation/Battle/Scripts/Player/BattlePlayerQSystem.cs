@@ -83,18 +83,18 @@ namespace Battle.QSimulation.Player
 
             if (damagedPlayerData->StunCooldown.IsRunning(f)) goto Exit;
 
-            if (damagedPlayerData->CurrentDefence <= 0) HandleSFXCharacter(f, damagedPlayerData->Slot, SoundEffectTypeCharacter.Death, damagedPlayerData->CharacterId, SoundEffectTarget.All);
+            if (damagedPlayerData->CurrentDefence <= 0) HandleSFXCommon(f, damagedPlayerData->Slot, SoundEffectTypeCommon.Death, SoundEffectTarget.All);
             else
             {
-                SoundEffectTypeCharacter soundEffectType = projectileCollisionData->ProjectileEmotionCurrent switch
+                SoundEffectTypeCommon soundEffectType = projectileCollisionData->ProjectileEmotionCurrent switch
                 {
-                    BattleEmotionState.Aggression => SoundEffectTypeCharacter.HitCharacterAggression,
-                    BattleEmotionState.Joy        => SoundEffectTypeCharacter.HitCharacterJoy,
-                    BattleEmotionState.Love       => SoundEffectTypeCharacter.HitCharacterLove,
-                    BattleEmotionState.Playful    => SoundEffectTypeCharacter.HitCharacterPlayful,
-                    BattleEmotionState.Sadness    => SoundEffectTypeCharacter.HitCharacterSadness
+                    BattleEmotionState.Aggression => SoundEffectTypeCommon.HitCharacterAggression,
+                    BattleEmotionState.Joy        => SoundEffectTypeCommon.HitCharacterJoy,
+                    BattleEmotionState.Love       => SoundEffectTypeCommon.HitCharacterLove,
+                    BattleEmotionState.Playful    => SoundEffectTypeCommon.HitCharacterPlayful,
+                    BattleEmotionState.Sadness    => SoundEffectTypeCommon.HitCharacterSadness
                 };
-                HandleSFXCharacter(f, damagedPlayerData->Slot, soundEffectType, damagedPlayerData->CharacterId, SoundEffectTarget.All);
+                HandleSFXCommon(f, damagedPlayerData->Slot, soundEffectType, SoundEffectTarget.All);
             }
 
             damagedPlayerData->MovementEnabled = false;
@@ -239,7 +239,14 @@ namespace Battle.QSimulation.Player
         /// Used by @cref{HandleSFXCommon} method.
         private enum SoundEffectTypeCommon
         {
-            HitShield
+            HitShield,
+            Catchphrase,
+            HitCharacterAggression,
+            HitCharacterJoy,
+            HitCharacterLove,
+            HitCharacterPlayful,
+            HitCharacterSadness,
+            Death
         }
 
         /// <summary>Enum used to define character specific sound effect types</summary>
