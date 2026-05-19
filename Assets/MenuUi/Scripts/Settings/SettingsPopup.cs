@@ -8,14 +8,20 @@ public class SettingsPopup : MonoBehaviour
 {
     [SerializeField] private Button[] _closeButtons;   // esim. se n�kym�t�n taustabuttoni
     [SerializeField] private SwipeBlockerPopupHandler _blockerHandler;
-    [SerializeField] private GameObject[] Windows;
 
     private void Start()
     {
         foreach (Button button in _closeButtons)
         {
-            button.onClick.AddListener(ClosePopup);
+            button.onClick.AddListener(() => StartCoroutine(CloseWithDelay()));
         }
+    }
+
+    private void OnDisable()
+    {
+        gameObject.SetActive(false);
+
+        _blockerHandler.ClosePopup(gameObject);
     }
 
     public void OpenPopup()
@@ -25,16 +31,26 @@ public class SettingsPopup : MonoBehaviour
         _blockerHandler.OpenPopup(gameObject);
     }
 
-    public void ClosePopup()
+    public IEnumerator CloseWithDelay()
     {
+        if (!isActiveAndEnabled) yield break;
+        yield return new WaitForSecondsRealtime(0.3f);
+        ClosePopup();
+    }
+
+    public void ClosePopup(bool invokeButtons = true)
+    {
+        if (!isActiveAndEnabled) return;
         gameObject.SetActive(false);
 
         _blockerHandler.ClosePopup(gameObject);
 
+        if (!invokeButtons) return;
+
         //This is here because some buttons shut down more than one tab
-        foreach(GameObject objects in Windows)
+        foreach (Button objects in _closeButtons)
         {
-            objects.SetActive(true);
+            objects.onClick.Invoke();
         }
 
     }

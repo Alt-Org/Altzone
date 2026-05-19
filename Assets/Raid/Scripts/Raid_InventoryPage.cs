@@ -4,17 +4,24 @@ using System.Collections.Generic;
 using UnityEngine;
 //using Photon.Pun;
 using Random = UnityEngine.Random;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ReferenceSheets;
+using UnityEngine.UI;
+using System.Linq;
+using Photon.Realtime;
+using MenuUI.Scripts.SoulHome;
 //using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
 
 public class Raid_InventoryPage : MonoBehaviour
 {
     [SerializeField, Header("Assigned scripts")] private Raid_InventoryHandler raid_InventoryHandler;
+    [SerializeField] private Raid_References raid_References;
     [SerializeField] private Raid_InventoryItem ItemPrefab;
     [SerializeField] private RectTransform ContentPanel;
     [SerializeField] private Raid_LootTracking LootTracker;
     [SerializeField] private Raid_Timer raid_Timer;
     [SerializeField] private ExitRaid exitraid;
-    [SerializeField] private bool spectator;
+    [SerializeField] private bool spectator = false;
     [SerializeField] private bool firstItem = true;
 
     [System.Serializable]
@@ -27,32 +34,8 @@ public class Raid_InventoryPage : MonoBehaviour
     [SerializeField] BombData[] Bombs;
 
     List<Raid_InventoryItem> ListOfUIItems = new List<Raid_InventoryItem>();
-    
 
-    [SerializeField, Header("Furniture and weight")] private Sprite Image1;
-    [SerializeField] private float ItemWeight1;
-    [SerializeField] private Sprite Image2;
-    [SerializeField] private float ItemWeight2;
-    [SerializeField] private Sprite Image3;
-    [SerializeField] private float ItemWeight3;
-    [SerializeField] private Sprite Image4;
-    [SerializeField] private float ItemWeight4;
-    [SerializeField] private Sprite Image5;
-    [SerializeField] private float ItemWeight5;
-    [SerializeField] private Sprite Image6;
-    [SerializeField] private float ItemWeight6;
-    [SerializeField] private Sprite Image7;
-    [SerializeField] private float ItemWeight7;
-    [SerializeField] private Sprite Image8;
-    [SerializeField] private float ItemWeight8;
-    [SerializeField] private Sprite Image9;
-    [SerializeField] private float ItemWeight9;
-    [SerializeField] private Sprite Image10;
-    [SerializeField] private float ItemWeight10;
-    [SerializeField] private Sprite Image11;
-    [SerializeField] private float ItemWeight11;
-    [SerializeField] private Sprite Image12;
-    [SerializeField] private float ItemWeight12;
+    List<GameFurniture> ListOfFurniture = new List<GameFurniture>();
 
     //public PhotonView _photonView { get; private set; }
     private void Awake()
@@ -62,13 +45,32 @@ public class Raid_InventoryPage : MonoBehaviour
         //_photonView.ViewID = 2;
         //if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
         {
-            spectator = true;
+            spectator = false;
         }
 
     }
 
+    // This function will get all game furniture from the "StorageFurnitureReference"
+    public List<GameFurniture> GetGameFurniture()
+    {   
+        List<GameFurniture> furnitures = null;
+        StorageFurnitureReference storageFurnitureReference = StorageFurnitureReference.Instance;
+        furnitures = storageFurnitureReference.GetAllGameFurniture();
+        
+        /* Debug print furnitures
+        foreach (GameFurniture furniture in furnitures)
+        {
+            Debug.Log("(RAID) Nimi : "+furniture.ToString());
+        }
+        */
+
+        return furnitures;
+    }
+
     public void InitializeInventoryUI(int InventorySize)
     {
+        ListOfFurniture = GetGameFurniture();
+
         for (int i = 0; i < InventorySize; i++)
         {
             Raid_InventoryItem UIItem = Instantiate(ItemPrefab, Vector3.zero, Quaternion.identity);
@@ -78,12 +80,19 @@ public class Raid_InventoryPage : MonoBehaviour
             UIItem.OnItemClicked += HandleItemLooting;
         }
 
-        //if (PhotonNetwork.IsMasterClient)
+        /*
+        if (PhotonNetwork.IsMasterClient)
         {
-            //RandomizeBombs();
-            //string jsonBombs = JsonUtility.ToJson(Bombs);
-            //_photonView.RPC("SendBombLocationsRPC", RpcTarget.Others, jsonBombs);
+            RandomizeBombs();
+            string jsonBombs = JsonUtility.ToJson(Bombs);
+            _photonView.RPC("SendBombLocationsRPC", RpcTarget.Others, jsonBombs);
         }
+        */
+
+        RandomizeBombs();
+        //string jsonBombs = JsonUtility.ToJson(Bombs);
+        //SendBombLocationsRPC(jsonBombs);
+
         for (int j = 0; j < Bombs.Length; j++)
         {
             Debug.Log("bombIndex: " + Bombs[j].bombIndex + " Bombs.Length: " + Bombs.Length);
@@ -95,6 +104,7 @@ public class Raid_InventoryPage : MonoBehaviour
     {
         int index = ListOfUIItems.IndexOf(inventoryItem);
         //_photonView.RPC(nameof(HandleItemLootingRPC), RpcTarget.All, index, inventoryItem.ItemWeight);
+        HandleItemLootingRPC(index,inventoryItem.ItemWeight);
     }
 
     /*[PunRPC]*/
@@ -103,7 +113,7 @@ public class Raid_InventoryPage : MonoBehaviour
         if (firstItem)
         {
             raid_Timer.StartTimer();
-            firstItem = false;
+            firstItem = false;  
         }
         if (index == -1)
         {
@@ -115,79 +125,24 @@ public class Raid_InventoryPage : MonoBehaviour
         }
         else
         {
-            if (ListOfUIItems[index].GetComponent<Raid_InventoryItem>().bomb)
+            Raid_InventoryItem item = ListOfUIItems[index];
+            if (item.GetComponent<Raid_InventoryItem>().bomb)
             {
-                ListOfUIItems[index].RemoveData();
-                ListOfUIItems[index].GetComponent<Raid_InventoryItem>().TriggerBomb();
-                if (ListOfUIItems[index].GetComponent<Raid_InventoryItem>()._bombType == 1)
+                item.RemoveData();
+                item.GetComponent<Raid_InventoryItem>().TriggerBomb();
+                if (item.GetComponent<Raid_InventoryItem>()._bombType == 1)
                 {
                     LockItems(index);
                 }
                 return;
             }
-            ListOfUIItems[index].LaunchBall();
+            item.LaunchBall();
 
-            if (itemWeight == ItemWeight1)
+            if (itemWeight == item.ItemWeight && itemWeight != 0)
             {
-                LootTracker.SetLootCount(ItemWeight1, LootTracker.MaxLootWeight);
-                ListOfUIItems[index].RemoveData();
-            }
-            else if (itemWeight == ItemWeight2)
-            {
-                LootTracker.SetLootCount(ItemWeight2, LootTracker.MaxLootWeight);
-                ListOfUIItems[index].RemoveData();
-            }
-            else if (itemWeight == ItemWeight3)
-            {
-                LootTracker.SetLootCount(ItemWeight3, LootTracker.MaxLootWeight);
-                ListOfUIItems[index].RemoveData();
-            }
-            else if (itemWeight == ItemWeight4)
-            {
-                LootTracker.SetLootCount(ItemWeight4, LootTracker.MaxLootWeight);
-                ListOfUIItems[index].RemoveData();
-            }
-            else if (itemWeight == ItemWeight5)
-            {
-                LootTracker.SetLootCount(ItemWeight5, LootTracker.MaxLootWeight);
-                ListOfUIItems[index].RemoveData();
-            }
-            else if (itemWeight == ItemWeight6)
-            {
-                LootTracker.SetLootCount(ItemWeight6, LootTracker.MaxLootWeight);
-                ListOfUIItems[index].RemoveData();
-            }
-            else if (itemWeight == ItemWeight7)
-            {
-                LootTracker.SetLootCount(ItemWeight7, LootTracker.MaxLootWeight);
-                ListOfUIItems[index].RemoveData();
-            }
-            else if (itemWeight == ItemWeight8)
-            {
-                LootTracker.SetLootCount(ItemWeight8, LootTracker.MaxLootWeight);
-                ListOfUIItems[index].RemoveData();
-            }
-            else if (itemWeight == ItemWeight9)
-            {
-                LootTracker.SetLootCount(ItemWeight9, LootTracker.MaxLootWeight);
-                ListOfUIItems[index].RemoveData();
-            }
-            else if (itemWeight == ItemWeight10)
-            {
-                LootTracker.SetLootCount(ItemWeight10, LootTracker.MaxLootWeight);
-                ListOfUIItems[index].RemoveData();
-            }
-            else if (itemWeight == ItemWeight11)
-            {
-                LootTracker.SetLootCount(ItemWeight11, LootTracker.MaxLootWeight);
-                ListOfUIItems[index].RemoveData();
-            }
-            else if (itemWeight == ItemWeight12)
-            {
-                LootTracker.SetLootCount(ItemWeight12, LootTracker.MaxLootWeight);
-                ListOfUIItems[index].RemoveData();
-            }
-            else
+                LootTracker.SetLootCount(item.furnitureData,LootTracker.MaxLootWeight);
+                item.RemoveData();
+            } else
             {
                 Debug.Log("This inventory slot has already been looted!");
             }
@@ -195,27 +150,80 @@ public class Raid_InventoryPage : MonoBehaviour
         }
     }
 
-    public void SetInventorySlotData(int InventorySize)
+    // Get a list of furniture between LowestWeight and HighestWeight, also it accepts any List<GameFurniture> to allow for seasonal furniture sets
+    public List<GameFurniture> WeightQuery(List<GameFurniture> furnitureList, float LowestWeight, float HighestWeight)
     {
-        InventorySize = raid_InventoryHandler.InventorySize;
+        return furnitureList.Where(f => f.Weight >= LowestWeight && f.Weight <= HighestWeight).ToList();
+    } 
+
+
+    public void RandomizeInventoryContent(int InventorySize)
+    {
+        // InventorySize = raid_InventoryHandler.InventorySize;
+
+        // Split all furnitures into lists
+        List<GameFurniture> SmallItemList = WeightQuery(ListOfFurniture,0f,50f);
+        List<GameFurniture> MediumItemList = WeightQuery(ListOfFurniture,50f,80f);
+        List<GameFurniture> LargeItemList = WeightQuery(ListOfFurniture,80.1f,999f); 
+
+        // Just so the next one knows that a list might be empty, the spawning logic should still run unless all lists are empty?
+        if (LargeItemList.Count == 0)
+        {
+            Debug.Log("HUOM LargeItemList on tyhjä!"); 
+        } if (MediumItemList.Count == 0)
+        {
+            Debug.Log("HUOM MediumItemList on tyhjä!");
+        }if (SmallItemList.Count == 0)
+        {
+            Debug.Log("HUOM SmallItemList on tyhjä!");
+        }
+
         for (int i = 0; i < InventorySize; i++)
         {
-            int RandomFurniture = Random.Range(0, 12);
+            int RandomFurniture;
             //_photonView.RPC(nameof(SetInventorySlotDataRPC), RpcTarget.All, i, RandomFurniture);
+
+            // Randomize inventory content and enforce item limits (TODO) randomize better
+            int x = Random.Range(0, 3);
+            switch (x)
+            {
+                case 0:
+                    if (raid_InventoryHandler.LargeItemMaxAmount != 0 && LargeItemList.Count != 0)
+                    {
+                        RandomFurniture = Random.Range(0,LargeItemList.Count);
+                        SetInventorySlotDataRPC(LargeItemList,i,RandomFurniture);
+                        raid_InventoryHandler.LargeItemMaxAmount--;
+                    } else {goto case 1;} 
+                    break;
+                case 1:
+                    if (raid_InventoryHandler.MediumItemMaxAmount != 0 && MediumItemList.Count != 0)
+                    {
+                        RandomFurniture = Random.Range(0,MediumItemList.Count);
+                        SetInventorySlotDataRPC(MediumItemList,i,RandomFurniture);
+                        raid_InventoryHandler.MediumItemMaxAmount--;
+                    } else {goto case 2;}
+                    break;
+                case 2:
+                    RandomFurniture = Random.Range(0,SmallItemList.Count);
+                    SetInventorySlotDataRPC(SmallItemList,i,RandomFurniture);
+                    break;
+            }
         }
 
     }
     public void RandomizeBombs()
     {
-        Bombs[0].bombIndex = Random.Range(0, (ListOfUIItems.Count / 3));
-        Bombs[1].bombIndex = Random.Range((ListOfUIItems.Count / 3) + 1, (ListOfUIItems.Count / 3) * 2);
-        Bombs[2].bombIndex = Random.Range(((ListOfUIItems.Count / 3) * 2) + 1, ListOfUIItems.Count);
+        Bombs[0].bombIndex = Random.Range(0, ListOfUIItems.Count / 3);
+        Bombs[1].bombIndex = Random.Range((ListOfUIItems.Count / 3) + 1, ListOfUIItems.Count / 3 * 2);
+        Bombs[2].bombIndex = Random.Range((ListOfUIItems.Count / 3 * 2) + 1, ListOfUIItems.Count);
     }
     /*[PunRPC]*/
     public void SendBombLocationsRPC(string jsonBombs)
     {
         Bombs = JsonUtility.FromJson<BombData[]>(jsonBombs);
     }
+
+    // Locks items around passed index.
     public void LockItems(int index)
     {
         int column = -1;
@@ -238,122 +246,12 @@ public class Raid_InventoryPage : MonoBehaviour
         if (ListOfUIItems[index + 4])
             ListOfUIItems[index + 4].GetComponent<Raid_InventoryItem>().SetLocked();
     }
-    /*[PunRPC]*/
-    public void SetInventorySlotDataRPC(int Index, int RandomFurniture)
+    
+    // Sets the UI slot to a choosen item.
+    public void SetInventorySlotDataRPC(List<GameFurniture> furnitureSet,int UiIndex, int FurnitureIndex)
     {
-        switch (RandomFurniture)
-        {
-            case 0:
-                ListOfUIItems[Index].ItemWeight = ItemWeight1;
-                ListOfUIItems[Index].SetData(Image1, ListOfUIItems[Index].ItemWeight);
-                break;
-            case 1:
-                if (raid_InventoryHandler.MediumItemMaxAmount <= 0)
-                {
-                    ListOfUIItems[Index].ItemWeight = ItemWeight1;
-                    ListOfUIItems[Index].SetData(Image1, ListOfUIItems[Index].ItemWeight);
-                }
-                else
-                {
-                    ListOfUIItems[Index].ItemWeight = ItemWeight2;
-                    ListOfUIItems[Index].SetData(Image2, ListOfUIItems[Index].ItemWeight);
-                    raid_InventoryHandler.MediumItemMaxAmount -= 1;
-                }
-                break;
-            case 2:
-                if (raid_InventoryHandler.LargeItemMaxAmount <= 0)
-                {
-                    ListOfUIItems[Index].ItemWeight = ItemWeight1;
-                    ListOfUIItems[Index].SetData(Image1, ListOfUIItems[Index].ItemWeight);
-                }
-                else
-                {
-                    ListOfUIItems[Index].ItemWeight = ItemWeight3;
-                    ListOfUIItems[Index].SetData(Image3, ListOfUIItems[Index].ItemWeight);
-                    raid_InventoryHandler.LargeItemMaxAmount -= 1;
-                }
-                break;
-            case 3:
-                if (raid_InventoryHandler.LargeItemMaxAmount <= 0)
-                {
-                    ListOfUIItems[Index].ItemWeight = ItemWeight1;
-                    ListOfUIItems[Index].SetData(Image1, ListOfUIItems[Index].ItemWeight);
-                }
-                else
-                {
-                    ListOfUIItems[Index].ItemWeight = ItemWeight4;
-                    ListOfUIItems[Index].SetData(Image4, ListOfUIItems[Index].ItemWeight);
-                    raid_InventoryHandler.LargeItemMaxAmount -= 1;
-                }
-                break;
-            case 4:
-                if (raid_InventoryHandler.LargeItemMaxAmount <= 0)
-                {
-                    ListOfUIItems[Index].ItemWeight = ItemWeight1;
-                    ListOfUIItems[Index].SetData(Image1, ListOfUIItems[Index].ItemWeight);
-                }
-                else
-                {
-                    ListOfUIItems[Index].ItemWeight = ItemWeight5;
-                    ListOfUIItems[Index].SetData(Image5, ListOfUIItems[Index].ItemWeight);
-                    raid_InventoryHandler.LargeItemMaxAmount -= 1;
-                }
-                break;
-            case 5:
-                ListOfUIItems[Index].ItemWeight = ItemWeight6;
-                ListOfUIItems[Index].SetData(Image6, ListOfUIItems[Index].ItemWeight);
-                break;
-            case 6:
-                ListOfUIItems[Index].ItemWeight = ItemWeight7;
-                ListOfUIItems[Index].SetData(Image7, ListOfUIItems[Index].ItemWeight);
-                break;
-            case 7:
-                if (raid_InventoryHandler.MediumItemMaxAmount <= 0)
-                {
-                    ListOfUIItems[Index].ItemWeight = ItemWeight1;
-                    ListOfUIItems[Index].SetData(Image1, ListOfUIItems[Index].ItemWeight);
-                }
-                else
-                {
-                    ListOfUIItems[Index].ItemWeight = ItemWeight8;
-                    ListOfUIItems[Index].SetData(Image8, ListOfUIItems[Index].ItemWeight);
-                    raid_InventoryHandler.MediumItemMaxAmount -= 1;
-                }
-                break;
-            case 8:
-                if (raid_InventoryHandler.MediumItemMaxAmount <= 0)
-                {
-                    ListOfUIItems[Index].ItemWeight = ItemWeight1;
-                    ListOfUIItems[Index].SetData(Image1, ListOfUIItems[Index].ItemWeight);
-                }
-                else
-                {
-                    ListOfUIItems[Index].ItemWeight = ItemWeight9;
-                    ListOfUIItems[Index].SetData(Image9, ListOfUIItems[Index].ItemWeight);
-                    raid_InventoryHandler.MediumItemMaxAmount -= 1;
-                }
-                break;
-            case 9:
-                ListOfUIItems[Index].ItemWeight = ItemWeight10;
-                ListOfUIItems[Index].SetData(Image10, ListOfUIItems[Index].ItemWeight);
-                break;
-            case 10:
-                    ListOfUIItems[Index].ItemWeight = ItemWeight11;
-                    ListOfUIItems[Index].SetData(Image11, ListOfUIItems[Index].ItemWeight);
-                break;
-            case 11:
-                if (raid_InventoryHandler.LargeItemMaxAmount <= 0)
-                {
-                    ListOfUIItems[Index].ItemWeight = ItemWeight1;
-                    ListOfUIItems[Index].SetData(Image1, ListOfUIItems[Index].ItemWeight);
-                }
-                else
-                {
-                    ListOfUIItems[Index].ItemWeight = ItemWeight12;
-                    ListOfUIItems[Index].SetData(Image12, ListOfUIItems[Index].ItemWeight);
-                    raid_InventoryHandler.LargeItemMaxAmount -= 1;
-                }
-                break;
-        }
+        GameFurniture furniture = furnitureSet[FurnitureIndex];
+        ListOfUIItems[UiIndex].SetData(furniture);
+        return;
     }
 }

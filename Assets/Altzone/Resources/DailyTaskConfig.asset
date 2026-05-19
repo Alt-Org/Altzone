@@ -19,6 +19,11 @@ MonoBehaviour:
     englishTitle: 
     description: 
     englishDescription: 
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 0
     amount: 1
     coins: 100
     points: 10
@@ -30,6 +35,15 @@ MonoBehaviour:
     englishTitle: Banish the earworm
     description: "Pakene nykyist\xE4 tunnetilaasi muuttamalla taustamusiikkia"
     englishDescription: Escape your current mood by changing the background music
+    execution: Vaihda taustamusiikki
+    englishExecution: Change the background music
+    instruction: "Avaa Asetukset ja \xE4\xE4niasetukset. Valitse toinen taustamusiikki
+      ja palaa peliin kuuntelemaan muutosta. Kokeile, miten eri \xE4\xE4nimaisema
+      muuttaa sit\xE4, milt\xE4 pelin maailma tuntuu."
+    englishInstruction: Open Settings and audio settings. Select a different background
+      music and return to the game to listen to the change. Notice how a different
+      soundscape changes how the game world feels.
+    gameLiteracy: 1
     amount: 1
     coins: 10
     points: 100
@@ -37,15 +51,42 @@ MonoBehaviour:
     educationCategoryTaskType: change_song_soulhome
   - active: 0
     deactivateOnTurboEducation: 0
-    title: Muokkaa hahmosi statseja
-    englishTitle: Edit Character Stats
-    description: 
-    englishDescription: 
+    title: Henkinen Valuutta
+    englishTitle: Spiritual Currency
+    description: "Etsi pelist\xE4 henkisenvaluutan symboli."
+    englishDescription: Find the symbol for the Spiritual Currency
+    execution: 3 sekunnin painallus
+    englishExecution: 3 second hold
+    instruction: "Etsi pelist\xE4 valuuttaa kuvaava symboli ja paina sit\xE4. Tarkastele,
+      miss\xE4 sit\xE4 k\xE4ytet\xE4\xE4n ja mit\xE4 saat vastineeksi. Jossain vaiheessa
+      peli alkaa pyyt\xE4\xE4 sinulta my\xF6s vastinetta."
+    englishInstruction: Find a symbol representing currency in the game and press
+      it. Observe where it is used and what you receive in return. At some point,
+      the game also begins to ask something from you.
+    gameLiteracy: 18
     amount: 1
-    coins: 10
-    points: 100
-    educationCategoryType: action
-    educationCategoryTaskType: change_character_stats
+    coins: 100
+    points: 10
+    educationCategoryType: ethical
+    educationCategoryTaskType: press_money_stuff
+  - active: 1
+    deactivateOnTurboEducation: 0
+    title: "Pys\xE4yt\xE4 hahmo "
+    englishTitle: 'Hold the character '
+    description: "Pys\xE4hdy defenssisoturin \xE4\xE4relle ja kuuntele sen taustaa"
+    englishDescription: "Pause and listen to the defencecharacter\u2019s origin"
+    execution: 3 sekunnin painallus
+    englishExecution: 3 second hold
+    instruction: "Etsi pelist\xE4 defenssisoturin kuvaus. Lue se ja huomaa, mit\xE4
+      se kertoo hahmon taustasta ja tarkoituksesta."
+    englishInstruction: "Find a defencesoldier description in the game. Read it and
+      notice what it reveals about the character\u2019s origin and purpose."
+    gameLiteracy: 9
+    amount: 1
+    coins: 100
+    points: 10
+    educationCategoryType: story
+    educationCategoryTaskType: press_character_description
   - active: 1
     deactivateOnTurboEducation: 0
     title: "Soita s\xE4velm\xE4"
@@ -54,6 +95,15 @@ MonoBehaviour:
       Osaatko soittaa sen?"
     englishDescription: As childhood memory "Ukko Nooa" starts playing in your head.
       Can you play the right notes?
+    execution: Soita alapainikkeilla
+    englishExecution: Play using the lower buttons
+    instruction: "Siirry n\xE4kym\xE4\xE4n, jossa alapainikkeet ovat k\xE4yt\xF6ss\xE4.
+      Paina painikkeita yksi kerrallaan ja kokeile eri yhdistelmi\xE4, kunnes tunnistat
+      \u201CUkko Nooa\u201D -melodian. Anna sormien etsi\xE4 oikea s\xE4vel: 1-1-1-3-2-2-2-4-3-3-2-2-1"
+    englishInstruction: "Go to the view where the lower buttons are available. Press
+      the buttons one by one and try different combinations until you recognize the
+      \u201CUkko Nooa\u201D melody. Let your fingers find the correct tune: 1-1-1-3-2-2-2-4-3-3-2-2-1"
+    gameLiteracy: 4
     amount: 1
     coins: 10
     points: 100
@@ -61,132 +111,15 @@ MonoBehaviour:
     educationCategoryTaskType: make_music_with_buttons
   - active: 0
     deactivateOnTurboEducation: 0
-    title: Muokkaa pelihahmosta nopea
-    englishTitle: Make your character fast
-    description: 
-    englishDescription: 
-    amount: 1
-    coins: 10
-    points: 100
-    educationCategoryType: action
-    educationCategoryTaskType: change_character_be_fast
-  - active: 0
-    deactivateOnTurboEducation: 0
-    title: "Muokkaa pelihahmosta kest\xE4v\xE4"
-    englishTitle: Make your character strong
-    description: 
-    englishDescription: 
-    amount: 1
-    coins: 10
-    points: 100
-    educationCategoryType: action
-    educationCategoryTaskType: change_character_be_resistant
-  - active: 1
-    deactivateOnTurboEducation: 0
-    title: Vahvista soturiasi
-    englishTitle: Stronger soldier
-    description: Vahvista defenssisoturin tahdonvoimaa
-    englishDescription: Strengthen the willpower of a defencesoldier
-    amount: 1
-    coins: 10
-    points: 100
-    educationCategoryType: action
-    educationCategoryTaskType: change_character_be_strong
-  - active: 0
-    deactivateOnTurboEducation: 0
-    title: Muokkaa pelihahmosta isokokoinen
-    englishTitle: Make your character big
-    description: 
-    englishDescription: 
-    amount: 1
-    coins: 10
-    points: 100
-    educationCategoryType: action
-    educationCategoryTaskType: change_character_be_large
-  - active: 1
-    deactivateOnTurboEducation: 0
-    title: "Muodosta sis\xE4inen yhteys"
-    englishTitle: Form an inner connection
-    description: "Muodosta sis\xE4inen yhteys"
-    englishDescription: Send a message to the other clan members in your clan chat
-    amount: 1
-    coins: 100
-    points: 10
-    educationCategoryType: social
-    educationCategoryTaskType: write_chat_message_clan
-  - active: 0
-    deactivateOnTurboEducation: 0
-    title: "Muokkaa avatarisi ulkon\xE4k\xF6\xE4"
-    englishTitle: Change your avatars appearance
-    description: 
-    englishDescription: 
-    amount: 1
-    coins: 100
-    points: 10
-    educationCategoryType: social
-    educationCategoryTaskType: change_avatar_outlook
-  - active: 1
-    deactivateOnTurboEducation: 0
-    title: "Sis\xE4inen pohdinta"
-    englishTitle: Inner Discussion
-    description: "Nosta jokin asia sis\xE4iseen pohdintaan."
-    englishDescription: Bring something into an inner discussion.
-    amount: 1
-    coins: 100
-    points: 10
-    educationCategoryType: social
-    educationCategoryTaskType: create_clan_voting
-  - active: 1
-    deactivateOnTurboEducation: 0
-    title: "Pys\xE4yt\xE4 hahmo "
-    englishTitle: 'Hold the character '
-    description: "Pys\xE4hdy defenssisoturin \xE4\xE4relle ja kuuntele sen taustaa"
-    englishDescription: "Pause and listen to the defencecharacter\u2019s origin"
-    amount: 1
-    coins: 100
-    points: 10
-    educationCategoryType: story
-    educationCategoryTaskType: press_character_description
-  - active: 0
-    deactivateOnTurboEducation: 0
-    title: "M\xE4\xE4rittele pelaajatyylisi pelaajaprofiiliin"
-    englishTitle: Choose your gaming style in your profile
-    description: "M\xE4\xE4rittele pelaajaprofiilissasi oletko aktiivipelaaja, harrastaja,
-      kilpapelaaja, vai mik\xE4?"
-    englishDescription: Choose which type of gamer you are
-    amount: 1
-    coins: 100
-    points: 10
-    educationCategoryType: social
-    educationCategoryTaskType: define_player_style
-  - active: 0
-    deactivateOnTurboEducation: 0
-    title: Henkinen Valuutta
-    englishTitle: Spiritual Currency
-    description: "Etsi pelist\xE4 henkisenvaluutan symboli."
-    englishDescription: Find the symbol for the Spiritual Currency
-    amount: 1
-    coins: 100
-    points: 10
-    educationCategoryType: ethical
-    educationCategoryTaskType: press_money_stuff
-  - active: 0
-    deactivateOnTurboEducation: 0
-    title: Vaihda avatarisi vaatteita
-    englishTitle: Change your avatars clothes
-    description: 
-    englishDescription: 
-    amount: 1
-    coins: 100
-    points: 10
-    educationCategoryType: action
-    educationCategoryTaskType: change_avatar_clothes
-  - active: 0
-    deactivateOnTurboEducation: 0
     title: Reagoi emojilla viestiin
     englishTitle: React to a message with an emoji
     description: 
     englishDescription: 
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 0
     amount: 1
     coins: 100
     points: 10
@@ -198,6 +131,11 @@ MonoBehaviour:
     englishTitle: Find all chat options
     description: 
     englishDescription: 
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 0
     amount: 1
     coins: 100
     points: 10
@@ -205,10 +143,72 @@ MonoBehaviour:
     educationCategoryTaskType: find_all_chat_options
   - active: 1
     deactivateOnTurboEducation: 0
+    title: "Sis\xE4inen pohdinta"
+    englishTitle: Inner Discussion
+    description: "Nosta jokin asia sis\xE4iseen pohdintaan."
+    englishDescription: Bring something into an inner discussion.
+    execution: "Luo \xE4\xE4nestys"
+    englishExecution: Create a vote
+    instruction: "Avaa klaanin \xE4\xE4nestykset. Luo uusi \xE4\xE4nestys ja muotoile
+      kysymys, johon muut voivat vastata. Mieti, mit\xE4 haluat nostaa yhteiseen
+      p\xE4\xE4t\xF6kseen."
+    englishInstruction: Open clan voting. Create a new vote and define a question
+      for others to answer. Think about what you want the group to decide.
+    gameLiteracy: 6
+    amount: 1
+    coins: 100
+    points: 10
+    educationCategoryType: social
+    educationCategoryTaskType: create_clan_voting
+  - active: 0
+    deactivateOnTurboEducation: 0
+    title: "Muokkaa avatarisi ulkon\xE4k\xF6\xE4"
+    englishTitle: Change your avatars appearance
+    description: 
+    englishDescription: 
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 0
+    amount: 1
+    coins: 100
+    points: 10
+    educationCategoryType: social
+    educationCategoryTaskType: change_avatar_outlook
+  - active: 1
+    deactivateOnTurboEducation: 0
+    title: "Muodosta sis\xE4inen yhteys"
+    englishTitle: Form an inner connection
+    description: "Muodosta sis\xE4inen yhteys"
+    englishDescription: Send a message to the other clan members in your clan chat
+    execution: "L\xE4het\xE4 viesti klaanin chatissa"
+    englishExecution: Send a message in clan chat
+    instruction: "Avaa klaanin chat ja l\xE4het\xE4 viesti. Huomaa, milt\xE4 tuntuu
+      aloittaa vuorovaikutus. Opit, ett\xE4 viestint\xE4 peliss\xE4 rakentaa suhteita
+      ja merkityksi\xE4, ei vain siirr\xE4 tietoa."
+    englishInstruction: Open clan chat and send a message. Notice how it feels to
+      initiate contact. You learn that communication builds relationships and meaning,
+      not just information.
+    gameLiteracy: 5
+    amount: 1
+    coins: 100
+    points: 10
+    educationCategoryType: social
+    educationCategoryTaskType: write_chat_message_clan
+  - active: 1
+    deactivateOnTurboEducation: 0
     title: Leikittele tunteilla
     englishTitle: Play with emotions
     description: "Anna jokaisen tunteen p\xE4\xE4st\xE4 \xE4\xE4neen."
     englishDescription: Find your own emotional wavelenght.
+    execution: "K\xE4yt\xE4 kaikki tunteet chatissa"
+    englishExecution: Use all emotions in chat
+    instruction: "Avaa klaanin chat. L\xE4het\xE4 viestej\xE4 k\xE4ytt\xE4m\xE4ll\xE4
+      kaikkia eri tunnevaihtoehtoja. Huomaa, miten sama viesti muuttuu eri tunteilla."
+    englishInstruction: Open the clan chat. Send messages using all emotion options.
+      Notice how the same message changes with different emotions.
+    gameLiteracy: 5
     amount: 1
     coins: 100
     points: 10
@@ -216,43 +216,52 @@ MonoBehaviour:
     educationCategoryTaskType: use_all_chat_feelings
   - active: 0
     deactivateOnTurboEducation: 0
-    title: Vaihda sielunkodin esineen asentoa
-    englishTitle: Change the placement of an item in soul home
-    description: 
-    englishDescription: 
-    amount: 1
-    coins: 100
-    points: 10
-    educationCategoryType: action
-    educationCategoryTaskType: change_items_position
-  - active: 0
-    deactivateOnTurboEducation: 0
-    title: "K\xE4yt\xE4 kaikki sielunkotisi esineet"
-    englishTitle: Use all items in your soul home
-    description: 
-    englishDescription: 
-    amount: 1
-    coins: 100
-    points: 10
-    educationCategoryType: action
-    educationCategoryTaskType: use_all_items_soulhome
-  - active: 0
-    deactivateOnTurboEducation: 0
     title: "L\xE4het\xE4 viesti global chatissa"
     englishTitle: Send a message in globat chat
     description: "L\xE4het\xE4 viesti kaikille pelaajille pelin globaalissa chatissa."
     englishDescription: Send a message to all players in the games global chat
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 0
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: social
     educationCategoryTaskType: write_chat_message_global
+  - active: 0
+    deactivateOnTurboEducation: 0
+    title: "M\xE4\xE4rittele pelaajatyylisi pelaajaprofiiliin"
+    englishTitle: Choose your gaming style in your profile
+    description: "M\xE4\xE4rittele pelaajaprofiilissasi oletko aktiivipelaaja, harrastaja,
+      kilpapelaaja, vai mik\xE4?"
+    englishDescription: Choose which type of gamer you are
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 0
+    amount: 1
+    coins: 100
+    points: 10
+    educationCategoryType: social
+    educationCategoryTaskType: define_player_style
   - active: 1
     deactivateOnTurboEducation: 0
     title: 'Rakenna maailmasi '
     englishTitle: Build your  world
     description: "Muodosta Turvapaikkaan yhten\xE4inen kokemus yhdest\xE4 teemasta"
     englishDescription: In Safespace create a unified experience from one theme
+    execution: "Sisusta yhdell\xE4 mallistolla"
+    englishExecution: Decorate using one collection
+    instruction: "Avaa klaanin yhteinen Turvapaikka ja valitse yksi huone. Sisusta
+      se k\xE4ytt\xE4m\xE4ll\xE4 vain yhden malliston huonekaluja. Tarkastele, mit\xE4
+      t\xE4m\xE4 mallisto alkaa kertoa, kun kaikki tilassa viittaa samaan kokemukseen."
+    englishInstruction: "Open the clan\u2019s shared Safe Space and choose a room.
+      Furnish it using only one collection. Observe what this collection starts to
+      express when everything in the space points to the same experience."
+    gameLiteracy: 11
     amount: 1
     coins: 100
     points: 10
@@ -264,6 +273,11 @@ MonoBehaviour:
     englishTitle: Recognize a characters mechanic
     description: 
     englishDescription: 
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 0
     amount: 1
     coins: 100
     points: 10
@@ -275,6 +289,17 @@ MonoBehaviour:
     englishTitle: Eco-friendly
     description: "Huomaa miten toimintasi j\xE4tt\xE4\xE4 j\xE4ljen t\xE4h\xE4n maailmaan."
     englishDescription: Notice how your actions leave a trace to this world
+    execution: 3 sekunnin painallus
+    englishExecution: 3 second hold
+    instruction: "Etsi pelist\xE4 hiilijalanj\xE4lkimittari ja paina sit\xE4. Tarkastele,
+      mit\xE4 se kertoo toiminnastasi peliss\xE4. My\xF6s pelit voivat muistuttaa
+      vaikutuksista pelin ulkopuolella. Opit, ett\xE4 pelit ja pelaaminen vaikuttavat
+      ymp\xE4rist\xF6\xF6n. "
+    englishInstruction: Find the carbon footprint meter in the game and press it.
+      Observe what it reveals about your actions in the game. Games can also remind
+      you of impacts beyond the game world. You learn that games and play affect
+      the environment.
+    gameLiteracy: 21
     amount: 1
     coins: 100
     points: 10
@@ -286,6 +311,14 @@ MonoBehaviour:
     englishTitle: Find the roots
     description: "L\xF6yd\xE4 osa, jossa toisen vaikutus on muokannut sinua"
     englishDescription: Find a part where another's influence has shaped you
+    execution: 3 sekunnin painallus
+    englishExecution: 3 second hold
+    instruction: "Etsi klaanisi kojusta mainoksen kehykset, jotka muistuttavat jotain
+      muuta teosta. Mieti sen alkuper\xE4\xE4. Opit, ett\xE4 pelit rakentuvat vaikutteista."
+    englishInstruction: "Find advertisement frames in your clan\u2019s stall that
+      resemble another work. Think about their origin. You learn that games are built
+      from influences."
+    gameLiteracy: 13
     amount: 1
     coins: 100
     points: 10
@@ -297,6 +330,13 @@ MonoBehaviour:
     englishTitle: Look inside
     description: Tunnista millainen rakenne sinua ohjaa
     englishDescription: Recognize the structure guiding you
+    execution: Valitse oikea vaihtoehto
+    englishExecution: Select correct answer
+    instruction: "Valitse pelin genre monivalinnasta. Mieti, mihin piirteisiin valinta
+      perustuu. Opit, ett\xE4 genret ohjaavat odotuksia."
+    englishInstruction: "Choose the game\u2019s genre from the options. Consider
+      which features your choice is based on. You learn that genres shape expectations."
+    gameLiteracy: 14
     amount: 1
     coins: 100
     points: 10
@@ -308,6 +348,15 @@ MonoBehaviour:
     englishTitle: Hunting for Values
     description: "Miten ohjenuorasi rakentuu. Mink\xE4laisia arvoja edustat?"
     englishDescription: How is your guiding compass formed? What values do you represent?
+    execution: 3 sekunnin painallus
+    englishExecution: 3 second hold
+    instruction: "Etsi pelist\xE4 tilanne, jossa jokin palkitaan tai estet\xE4\xE4n,
+      ja paina sit\xE4. Huomaa, mit\xE4 peli pit\xE4\xE4 t\xE4rke\xE4n\xE4 ja millaista
+      toimintaa se vahvistaa. Arvot n\xE4kyv\xE4t teoissa, eiv\xE4t vain sanoissa."
+    englishInstruction: Find a situation where something is rewarded or restricted
+      and press it. Notice what the game considers important and what kind of behavior
+      it reinforces. Values are shown through actions, not just words.
+    gameLiteracy: 0
     amount: 1
     coins: 100
     points: 10
@@ -321,6 +370,11 @@ MonoBehaviour:
       otetaan huomioon."
     englishDescription: Bring up your own voice. All the voices count towards the
       end result!
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 6
     amount: 1
     coins: 100
     points: 10
@@ -334,6 +388,14 @@ MonoBehaviour:
       ja kysy sis\xE4isen hallintosi mielipidett\xE4"
     englishDescription: Time to let go of some old wounds. Try starting a vote for
       selling something at the Clan's Fleamarket.
+    execution: "Ehdota tavaraa + aloita \xE4\xE4nestys"
+    englishExecution: Propose item + start vote
+    instruction: "Avaa kirpputori ja tee ehdotus tavarasta. K\xE4ynnist\xE4 \xE4\xE4nestys.
+      Opit, ett\xE4 pelit rakentavat merkityksi\xE4 my\xF6s valintojen ja luopumisen
+      kautta."
+    englishInstruction: Open marketplace and propose an item. Start a vote. You learn
+      that meaning emerges through choices and letting go.
+    gameLiteracy: 6
     amount: 1
     coins: 100
     points: 10
@@ -346,6 +408,15 @@ MonoBehaviour:
     description: "V\xE4lit\xE4 osa ker\xE4\xE4m\xE4st\xE4si tiedosta eteenp\xE4in
       muille laittamalla kokemukset kiertoon. "
     englishDescription: Share your knowledge by circulating your experiences.
+    execution: "Lis\xE4\xE4 tavara kirpputorille"
+    englishExecution: Add item to marketplace
+    instruction: "Avaa klaanin kirpputori. Valitse \xE4\xE4nestyksess\xE4 myyt\xE4v\xE4ksi
+      hyv\xE4ksytty tavara ja lis\xE4\xE4 se myyt\xE4v\xE4ksi. Katso, miten muut
+      reagoivat ja milt\xE4 tuntuu kun  tavara alkaa liikkua pelaajien v\xE4lill\xE4."
+    englishInstruction: Open the clan marketplace. Select an approved item from the
+      vote and add it for sale. Observe how others respond and how it feels when
+      item begins to circulate between players.
+    gameLiteracy: 7
     amount: 1
     coins: 100
     points: 10
@@ -357,6 +428,13 @@ MonoBehaviour:
     englishTitle: Inner Voice
     description: "P\xE4ivit\xE4 klaanin sis\xE4inen \xE4\xE4ni."
     englishDescription: Upgrade your Clan's inner voice.
+    execution: Vaihda klaanin motto
+    englishExecution: Change clan motto
+    instruction: "Avaa klaanin asetukset. Muokkaa klaanin mottoa ja tallenna muutos.
+      Mieti, mit\xE4 haluatte viesti\xE4 toisillenne ja muille."
+    englishInstruction: Open clan settings. Edit the clan motto and save the change.
+      Think about what you want to communicate to others.
+    gameLiteracy: 8
     amount: 1
     coins: 100
     points: 10
@@ -370,67 +448,38 @@ MonoBehaviour:
       vaihtoehtoja?"
     englishDescription: Where do you fight your inner power struggles or weigh different
       options?
+    execution: 3 sekunnin painallus
+    englishExecution: 3 second hold
+    instruction: "Etsi k\xE4ytt\xF6liittym\xE4st\xE4 kuvake paikkaan, jossa tehd\xE4\xE4n
+      p\xE4\xE4t\xF6ksi\xE4 tai vaikutetaan muihin. Paina sit\xE4 ja tarkastele,
+      miten valta n\xE4kyy siin\xE4, kuka saa p\xE4\xE4tt\xE4\xE4."
+    englishInstruction: Find a UI button wich leads to place where decisions are
+      made or others are affected. Press it and observe how power appears in who
+      gets to decide.
+    gameLiteracy: 16
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: culture
     educationCategoryTaskType: find_power_or_equality_referring_window
-  - active: 0
-    deactivateOnTurboEducation: 0
-    title: "L\xF6yd\xE4 muuttuja toiminnassa"
-    englishTitle: Find a variable value in game
-    description: 
-    englishDescription: 
-    amount: 1
-    coins: 100
-    points: 10
-    educationCategoryType: action
-    educationCategoryTaskType: find_variable_value_in_game
-  - active: 0
-    deactivateOnTurboEducation: 0
-    title: "Etsi kolme t\xE4rke\xE4\xE4 painiketta"
-    englishTitle: Find three important buttons
-    description: "Etsi k\xE4ytt\xF6liittym\xE4n kannalta mielest\xE4si 3 t\xE4rkeint\xE4
-      painiketta"
-    englishDescription: Seek three buttons in the UI that you think are important
-    amount: 1
-    coins: 100
-    points: 10
-    educationCategoryType: action
-    educationCategoryTaskType: find_3_important_buttons
   - active: 1
     deactivateOnTurboEducation: 0
     title: "Miss\xE4 olet"
     englishTitle: Where are you
     description: "Tunnista tila jossa sis\xE4inen tapahtuma tapahtuu"
     englishDescription: Recognize the space where the inner event occurs
+    execution: Valitse oikea vastaus
+    englishExecution: Select correct answer
+    instruction: "Valitse monivalinnasta, miss\xE4 peli tapahtuu. Mieti, mit\xE4
+      paikka kertoo maailmasta. Opit, ett\xE4 tila rakentaa tarinaa."
+    englishInstruction: Choose where the game takes place from the options. Think
+      what it reveals. You learn that space tells story.
+    gameLiteracy: 9
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: story
     educationCategoryTaskType: where_game_happens
-  - active: 1
-    deactivateOnTurboEducation: 0
-    title: Paljasta virhe
-    englishTitle: Find the error
-    description: "Etsi sis\xE4inen toimintah\xE4iri\xF6"
-    englishDescription: Find an internal malfunction
-    amount: 1
-    coins: 100
-    points: 10
-    educationCategoryType: action
-    educationCategoryTaskType: find_bug
-  - active: 0
-    deactivateOnTurboEducation: 0
-    title: Luo soittolista klaanille
-    englishTitle: Create a playlist for the clan
-    description: 
-    englishDescription: 
-    amount: 1
-    coins: 100
-    points: 10
-    educationCategoryType: action
-    educationCategoryTaskType: create_clan_playlist
   - active: 0
     deactivateOnTurboEducation: 0
     title: Moraaliset dilemmat
@@ -438,6 +487,11 @@ MonoBehaviour:
     description: "Etsi kohta, jossa jouduit pohtimaan oikean ja v\xE4\xE4r\xE4n merkityst\xE4"
     englishDescription: Which parts of the game made you question the right or wrong
       of a decision?
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 20
     amount: 1
     coins: 100
     points: 10
@@ -449,6 +503,15 @@ MonoBehaviour:
     englishTitle: Read the signs
     description: "Etsi symboli joka ei selit\xE4 itse\xE4\xE4n vaan ehdottaa"
     englishDescription: "A symbol doesn\u2019t explain, it suggests"
+    execution: 3 sekunnin painallus
+    englishExecution: 3 second hold
+    instruction: "Kuvat puhuvat kielt\xE4, jota ei aina selitet\xE4. Etsi symboli
+      k\xE4ytt\xF6liittym\xE4st\xE4 ja pys\xE4hdy siihen. Mieti mit\xE4 se vihjaa.
+      Opit, ett\xE4 pelit viestiv\xE4t ep\xE4suorasti."
+    englishInstruction: Images speak a language that is not always explained. Find
+      a symbolic element and pause. Think what it suggests. You learn that games
+      communicate indirectly.
+    gameLiteracy: 12
     amount: 1
     coins: 100
     points: 10
@@ -460,6 +523,11 @@ MonoBehaviour:
     englishTitle: Reward Traps
     description: "Tunnista, miss\xE4 syntyy dopamiinia ja onnistumisen tunnetta."
     englishDescription: Identify where dopamine and a sense of achievement are generated.
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 19
     amount: 1
     coins: 100
     points: 10
@@ -473,6 +541,11 @@ MonoBehaviour:
       ohjeet/s\xE4\xE4nn\xF6t"
     englishDescription: Go to clan profile modification window and choose cultural
       practice rules for the clan
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 0
     amount: 1
     coins: 100
     points: 10
@@ -485,22 +558,88 @@ MonoBehaviour:
     description: Kumpi soturisi kulkee parempaa polkua?
     englishDescription: Which of the two Defence Warriors presented here walks the
       more righteous path in your opinion?
+    execution: Valitse vaihtoehto
+    englishExecution: Select option
+    instruction: "Katso kahta defenssisoturia rinnakkain ja valitse parempi vaihtoehto.
+      Huomaa, mit\xE4 arvot ohjaavat valintaasi. Eettinen valinta ei ole yksiselitteinen,
+      eik\xE4 teht\xE4v\xE4ss\xE4 ole yht\xE4 oikeaa vastausta."
+    englishInstruction: Look at two defencesoldiers side by side and choose the better
+      option. Notice what guides you. Ethical choices are not clear-cut, and there
+      is no single correct answer.
+    gameLiteracy: 22
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: ethical
     educationCategoryTaskType: choose_ethically_better_character
   - active: 0
-    deactivateOnTurboEducation: 1
-    title: Voita taistelu
-    englishTitle: Win battle
-    description: Voita yksi taistelu
-    englishDescription: Win one ego clash
+    deactivateOnTurboEducation: 0
+    title: Muokkaa hahmosi statseja
+    englishTitle: Edit Character Stats
+    description: 
+    englishDescription: 
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 0
     amount: 1
-    coins: 100
-    points: 10
+    coins: 10
+    points: 100
     educationCategoryType: action
-    educationCategoryTaskType: win_battle
+    educationCategoryTaskType: change_character_stats
+  - active: 0
+    deactivateOnTurboEducation: 0
+    title: Muokkaa pelihahmosta nopea
+    englishTitle: Make your character fast
+    description: 
+    englishDescription: 
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 0
+    amount: 1
+    coins: 10
+    points: 100
+    educationCategoryType: action
+    educationCategoryTaskType: change_character_be_fast
+  - active: 0
+    deactivateOnTurboEducation: 0
+    title: "Muokkaa pelihahmosta kest\xE4v\xE4"
+    englishTitle: Make your character strong
+    description: 
+    englishDescription: 
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 0
+    amount: 1
+    coins: 10
+    points: 100
+    educationCategoryType: action
+    educationCategoryTaskType: change_character_be_resistant
+  - active: 1
+    deactivateOnTurboEducation: 0
+    title: Vahvista soturiasi
+    englishTitle: Stronger soldier
+    description: Vahvista defenssisoturin tahdonvoimaa
+    englishDescription: Strengthen the willpower of a defencesoldier
+    execution: "P\xE4ivit\xE4 iskuvoima"
+    englishExecution: Upgrade attack power
+    instruction: "Avaa defenssisoturin kehitys ja nosta iskuvoimaa v\xE4hint\xE4\xE4n
+      kerran. Siirry Egon Taistoon ja pelaa ottelu. Tarkkaile, miten muutos vaikuttaa
+      Tunnetilan liikkeeseen ja pelitilanteen kulkuun."
+    englishInstruction: Open the defencesoldier upgrade and increase attack power
+      at least once. Go to Ego Clash and play a match. Observe how the change affects
+      the emotional force and the flow of the game.
+    gameLiteracy: 2
+    amount: 1
+    coins: 10
+    points: 100
+    educationCategoryType: action
+    educationCategoryTaskType: change_character_be_strong
   - active: 1
     deactivateOnTurboEducation: 1
     title: "K\xE4y taistoon"
@@ -509,11 +648,169 @@ MonoBehaviour:
       ristitulessa"
     englishDescription: Challenge the views of others and defend your way to victory
       in the crossfires of emotions
+    execution: Pelaa ja voita Egon Taisto
+    englishExecution: Play and win Ego Clash
+    instruction: "Avaa Egon Taisto p\xE4\xE4ikkunasta ja liity otteluun. Pelaa ottelu
+      loppuun asti ja keskity siihen, miten suojaat omaa muuria ja ohjaat Tunnetilaa.
+      Huomaa, mit\xE4 peli vaatii sinulta ennen kuin voit voittaa."
+    englishInstruction: Open Ego Clash from the main window and join a match. Play
+      until the end and focus on how you defend your wall and control the emotional
+      force. Notice what the game requires from you before you can win.
+    gameLiteracy: 2
     amount: 1
     coins: 100
     points: 10
     educationCategoryType: action
     educationCategoryTaskType: play_battle
+  - active: 0
+    deactivateOnTurboEducation: 0
+    title: Muokkaa pelihahmosta isokokoinen
+    englishTitle: Make your character big
+    description: 
+    englishDescription: 
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 0
+    amount: 1
+    coins: 10
+    points: 100
+    educationCategoryType: action
+    educationCategoryTaskType: change_character_be_large
+  - active: 0
+    deactivateOnTurboEducation: 0
+    title: Vaihda avatarisi vaatteita
+    englishTitle: Change your avatars clothes
+    description: 
+    englishDescription: 
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 0
+    amount: 1
+    coins: 100
+    points: 10
+    educationCategoryType: action
+    educationCategoryTaskType: change_avatar_clothes
+  - active: 0
+    deactivateOnTurboEducation: 0
+    title: Vaihda sielunkodin esineen asentoa
+    englishTitle: Change the placement of an item in soul home
+    description: 
+    englishDescription: 
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 0
+    amount: 1
+    coins: 100
+    points: 10
+    educationCategoryType: action
+    educationCategoryTaskType: change_items_position
+  - active: 0
+    deactivateOnTurboEducation: 0
+    title: "K\xE4yt\xE4 kaikki sielunkotisi esineet"
+    englishTitle: Use all items in your soul home
+    description: 
+    englishDescription: 
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 0
+    amount: 1
+    coins: 100
+    points: 10
+    educationCategoryType: action
+    educationCategoryTaskType: use_all_items_soulhome
+  - active: 0
+    deactivateOnTurboEducation: 0
+    title: "L\xF6yd\xE4 muuttuja toiminnassa"
+    englishTitle: Find a variable value in game
+    description: 
+    englishDescription: 
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 0
+    amount: 1
+    coins: 100
+    points: 10
+    educationCategoryType: action
+    educationCategoryTaskType: find_variable_value_in_game
+  - active: 1
+    deactivateOnTurboEducation: 0
+    title: Paljasta virhe
+    englishTitle: Find the error
+    description: "Etsi sis\xE4inen toimintah\xE4iri\xF6"
+    englishDescription: Find an internal malfunction
+    execution: 3 sekunnin painallus
+    englishExecution: 3 second hold
+    instruction: "Tutki pelin eri n\xE4kymi\xE4 rauhassa. Etsi kohta, joka toimii
+      odottamattomasti tai n\xE4ytt\xE4\xE4 rikkoutuneelta. Kun l\xF6yd\xE4t sen,
+      paina kohdetta yht\xE4jaksoisesti 3 sekunnin ajan."
+    englishInstruction: Explore different parts of the game. Look for something that
+      behaves unexpectedly or appears broken. When you find it, press and hold the
+      object continuously for 3 seconds.
+    gameLiteracy: 3
+    amount: 1
+    coins: 100
+    points: 10
+    educationCategoryType: action
+    educationCategoryTaskType: find_bug
+  - active: 0
+    deactivateOnTurboEducation: 0
+    title: "Etsi kolme t\xE4rke\xE4\xE4 painiketta"
+    englishTitle: Find three important buttons
+    description: "Etsi k\xE4ytt\xF6liittym\xE4n kannalta mielest\xE4si 3 t\xE4rkeint\xE4
+      painiketta"
+    englishDescription: Seek three buttons in the UI that you think are important
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 0
+    amount: 1
+    coins: 100
+    points: 10
+    educationCategoryType: action
+    educationCategoryTaskType: find_3_important_buttons
+  - active: 0
+    deactivateOnTurboEducation: 0
+    title: Luo soittolista klaanille
+    englishTitle: Create a playlist for the clan
+    description: 
+    englishDescription: 
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 0
+    amount: 1
+    coins: 100
+    points: 10
+    educationCategoryType: action
+    educationCategoryTaskType: create_clan_playlist
+  - active: 0
+    deactivateOnTurboEducation: 1
+    title: Voita taistelu
+    englishTitle: Win battle
+    description: Voita yksi taistelu
+    englishDescription: Win one ego clash
+    execution: 
+    englishExecution: 
+    instruction: 
+    englishInstruction: 
+    gameLiteracy: 0
+    amount: 1
+    coins: 100
+    points: 10
+    educationCategoryType: action
+    educationCategoryTaskType: win_battle
   - active: 1
     deactivateOnTurboEducation: 0
     title: Valitse totuutesi
@@ -522,6 +819,14 @@ MonoBehaviour:
       tunteen "
     englishDescription: Choose the scene in prologue that feels the most familiar
       or meaningful
+    execution: Valitse koskettavin ruutu
+    englishExecution: Select the most impactful moment
+    instruction: "Avaa Prologi. Katso tarina alusta loppuun ja valitse ruutu, joka
+      kosketti sinua eniten. Huomaa, mik\xE4 siin\xE4 her\xE4tti tunteen."
+    englishInstruction: Open the Prologue. Watch the story from beginning to end
+      and choose the moment that affected you the most. Notice what made you feel
+      something.
+    gameLiteracy: 9
     amount: 1
     coins: 100
     points: 10

@@ -1,13 +1,12 @@
 using System;
-using Photon.Deterministic;
 
 namespace Quantum
 {
     [Serializable]
     public struct BattleCharacterBase
     {
-        public int Id;
-        public int Class;
+        public BattlePlayerCharacterID Id;
+        public BattlePlayerCharacterClass Class;
 
         public BattlePlayerStats Stats;
     }

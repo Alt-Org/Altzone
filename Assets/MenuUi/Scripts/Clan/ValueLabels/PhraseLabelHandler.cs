@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Clan;
 using MenuUi.Scripts.Clan;
 using TMPro;
@@ -10,54 +8,65 @@ public class PhraseLabelHandler : MonoBehaviour
 {
     [SerializeField] private LabelReference _reference;
     [SerializeField] private TextMeshProUGUI _textLabel;
+
     [field: SerializeField] public Button _selectButton { get; private set; }
 
     public Phrases labelData { get; private set; }
 
     [Header("Colors")]
-    [SerializeField] private string _selectedColorHex = "#0dd236";   // Vihreä
-    [SerializeField] private string _unselectedColorHex = "#a0a0a0"; // Harmaa
+    [SerializeField] private string _selectedColorHex = "#FFA000";
 
     private Color _selectedColor;
-    private Color _unselectedColor;
+    private readonly Color _unselectedColor = new Color(1f, 1f, 1f, 0f);
 
-    void Awake()
+    private void Awake()
     {
         if (!ColorUtility.TryParseHtmlString(_selectedColorHex, out _selectedColor))
         {
-            _selectedColor = Color.green; // Default color
-        }
-
-        if (!ColorUtility.TryParseHtmlString(_unselectedColorHex, out _unselectedColor))
-        {
-            _unselectedColor = Color.gray; // Default color
+            _selectedColor = new Color(1f, 0.6f, 0f, 1f);
         }
     }
 
     public void SetLabelInfo(Phrases value)
     {
+        labelData = value;
+
+        if (_textLabel != null)
+        {
+            _textLabel.enabled = true;
+            _textLabel.text = ClanDataTypeConverter.GetPhraseText(labelData);
+        }
+
         if (_selectButton != null)
         {
             _selectButton.gameObject.SetActive(true);
-            if (_selectButton.targetGraphic != null)
-                _selectButton.targetGraphic.gameObject.SetActive(true);
-        }
 
-        labelData = value;
-        _textLabel.enabled = true;
-        _textLabel.text = ClanDataTypeConverter.GetPhraseText(labelData);
+            if (_selectButton.targetGraphic != null)
+            {
+                _selectButton.targetGraphic.gameObject.SetActive(true);
+            }
+        }
 
         SetUnselectedVisuals();
     }
 
     public void Select()
     {
-        _textLabel.text = ClanDataTypeConverter.GetPhraseText(labelData);
+        if (_textLabel != null)
+        {
+            _textLabel.text = ClanDataTypeConverter.GetPhraseText(labelData);
+        }
+
         SetSelectedVisuals();
     }
+
     public void Unselect()
     {
-        _textLabel.text = ClanDataTypeConverter.GetPhraseText(labelData);
+        if (_textLabel != null)
+        {
+            _textLabel.text = ClanDataTypeConverter.GetPhraseText(labelData);
+        }
+
         SetUnselectedVisuals();
     }
 

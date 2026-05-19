@@ -194,6 +194,31 @@ public static class PollManager // Handles the polls from creation to loading to
         Debug.Log($"TODO CreateRolePoll -> targetPlayerId={targetPlayerId}, roleName={roleName}, roleId={roleId}");
     }
 
+    
+    //TO DO: kirpputori huonekalu äänestys, ostamassa vai myymässä
+    public static void CreateVotingPoll(FurniturePollType furniturePollType, StorageFurniture furniture, Action<bool> callback)
+    {
+        Debug.Log("CreateVotingPoll");
+        ShowVotingPopup?.Invoke(furniturePollType);
+        Debug.Log($"TODO CreateVotingPoll -> furniturePollType={furniturePollType}, furniture={furniture}, action={callback}");
+        if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null)
+        {
+            if (DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationSocialType == TaskEducationSocialType.ClanVote)
+            {
+                DailyTaskProgressManager.Instance.UpdateTaskProgress(TaskEducationSocialType.ClanVote, "1");
+            }
+            else if (DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationSocialType == TaskEducationSocialType.CreateNewVote)
+            {
+                DailyTaskProgressManager.Instance.UpdateTaskProgress(TaskEducationSocialType.CreateNewVote, "1");
+            }
+        }
+
+
+        //for testing purposes, delete later
+        if (callback != null)
+              callback(false);
+    }
+
     // Create poll for kicking a member from clan
     public static void CreateKickPoll(string targetPlayerId)
     {

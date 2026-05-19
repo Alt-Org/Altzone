@@ -64,6 +64,7 @@ public class Popup : MonoBehaviour
     [SerializeField] private TMP_Text _acceptConfirmButtonText;
     [Space]
     [SerializeField] private TextMeshProUGUI _taskDescription;
+    [SerializeField] private TextMeshProUGUI _taskGameLiteracy;
     [SerializeField] private TextMeshProUGUI _taskPointsText;
     [SerializeField] private TextMeshProUGUI _taskCoinsText;
 
@@ -169,6 +170,7 @@ public class Popup : MonoBehaviour
             {
                 Instance.SetTaskImage(data.Value.OwnPage, type);
                 Instance.SetTaskDescription(data.Value.OwnPage);
+                Instance.SetTaskGameLiteracy(data.Value.OwnPage);
                 Instance.SetTaskRewardTexts(data.Value.OwnPage);
                 Instance.SetPopupTaskColor(data.Value.OwnPage, data.Value.Type);
             }
@@ -245,6 +247,12 @@ public class Popup : MonoBehaviour
         _taskDescription.text = data.Content;
     }
 
+    private void SetTaskGameLiteracy(PlayerTask data)
+    {
+        _taskGameLiteracy.text = data.Literacy;
+        _taskGameLiteracy.color = GetTaskColor(data);
+    }
+
     private void SetTaskRewardTexts(PlayerTask data)
     {
         _taskPointsText.text = data.Points.ToString();
@@ -259,6 +267,16 @@ public class Popup : MonoBehaviour
 
         if (type == PopupData.PopupDataType.MultipleChoice) targetImage = _taskMultipleChoiceColorImage;
 
+        targetImage.color = GetTaskColor(data);
+    }
+
+    /// <summary>
+    /// Gets a color based on the task education category
+    /// </summary>
+    /// <param name="data">The task to get the color for</param>
+    /// <returns>The color</returns>
+    private Color GetTaskColor(PlayerTask data)
+    {
         Color taskColor = _defaultColor;
 
         switch (data.EducationCategory)
@@ -271,7 +289,7 @@ public class Popup : MonoBehaviour
             default: break;
         }
 
-        targetImage.color = taskColor;
+        return taskColor;
     }
 
     private void SwitchWindow(PopupWindowType type)
@@ -337,9 +355,7 @@ public class Popup : MonoBehaviour
 
             if (i == 0) // First element should be the task title (for some reason)
             {
-                _messageTexts[i].text = SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English // Simply, if english language is selected, show it in english
-                    ? task.EnglishTitle
-                    : task.Title;
+                _messageTexts[i].text = task.Title;
             }
             else
             {

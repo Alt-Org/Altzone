@@ -1,9 +1,9 @@
-using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
+    
     public enum TaskNormalType
     {
         Undefined,
@@ -142,6 +142,8 @@ namespace Altzone.Scripts.Model.Poco.Game
         private string _id;
         private TaskTitle _title;
         private TaskContent _content;
+        private TaskInstruction _instruction;
+        private GameLiteracyType _gameLiteracy;
         private int _amount;
         private int _amountLeft;
         private TaskNormalType _normalTaskType;
@@ -168,16 +170,9 @@ namespace Altzone.Scripts.Model.Poco.Game
             get
             {
                 if (_title == null) return string.Empty;
-                return _title.Fi;
-            }
-        }
-
-        public string EnglishTitle
-        {
-            get
-            {
-                if (_title == null) return string.Empty;
-                return _title.En; 
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                    return _title.En;
+                return _title.Fi; // default Finnish
             }
         }
 
@@ -189,6 +184,25 @@ namespace Altzone.Scripts.Model.Poco.Game
                 if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
                     return _content.En;
                 return _content.Fi; // default Finnish
+            }
+        }
+
+        public string Instruction
+        {
+            get
+            {
+                if (_instruction == null) return string.Empty;
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                    return _instruction.En;
+                return _instruction.Fi; // default Finnish
+            }
+        }
+
+        public string Literacy
+        {
+            get
+            {
+                return GameLiteracy.Get(_gameLiteracy, SettingsCarrier.Instance.Language);
             }
         }
 
@@ -212,7 +226,9 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             _id = task._id;
             _title = new(task.title);
-            _content = new(task.content);
+            _content = new(task.description, task.execution);
+            _instruction = new(task.instruction);
+            _gameLiteracy = task.gameLiteracy;
             _amount = task.amount;
             _amountLeft = task.amountLeft;
             _coins = task.coins;
@@ -617,10 +633,25 @@ namespace Altzone.Scripts.Model.Poco.Game
 
             public string Fi { get => _fi;}
             public string En { get => _en;}
-            public TaskContent(ServerPlayerTask.TaskContent content)
+            public TaskContent(ServerPlayerTask.TaskDescription description, ServerPlayerTask.TaskExecution execution)
             {
-                _fi = content?.fi ?? "";
-                _en = content?.en ?? "";
+                _fi = (description?.fi ?? "") + "\n\n" + (execution?.fi ?? "");
+                _en = (description?.en ?? "") + "\n\n" + (execution?.en ?? ""); ;
+            }
+        }
+
+        public class TaskInstruction
+        {
+            private string _fi;
+            private string _en;
+
+            public string Fi { get => _fi; }
+            public string En { get => _en; }
+
+            public TaskInstruction(ServerPlayerTask.TaskInstruction instruction)
+            {
+                _fi = instruction?.fi ?? "";
+                _en = instruction?.en ?? "";
             }
         }
 
@@ -706,7 +737,10 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         public string _id;
         public TaskTitle title;
-        public TaskContent content;
+        public TaskDescription description;
+        public TaskExecution execution;
+        public TaskInstruction instruction;
+        public GameLiteracyType gameLiteracy;
         public int amount;
         public int amountLeft;
         public string type;
@@ -723,7 +757,17 @@ namespace Altzone.Scripts.Model.Poco.Game
             public string fi;
             public string en;
         }
-        public class TaskContent
+        public class TaskDescription
+        {
+            public string fi;
+            public string en;
+        }
+        public class TaskExecution
+        {
+            public string fi;
+            public string en;
+        }
+        public class TaskInstruction
         {
             public string fi;
             public string en;
