@@ -187,8 +187,8 @@ In **%Battle** all [Quantum Events🡵] are located in BattleEvents.qtn file.
 | @crefd{Quantum}   | @cref{Quantum,EventBattleLastRowWallDestroyed}              | @copybrief Quantum.EventBattleLastRowWallDestroyed              |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleDiamondLanded}                     | @copybrief Quantum.EventBattleDiamondLanded                     |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleCharacterSelected}                 | @copybrief Quantum.EventBattleCharacterSelected                 |
-| @crefd{Quantum}   | @cref{Quantum,EventBattleCharacterTakeDamage}               | @copybrief Quantum.EventBattleCharacterTakeDamage               |
-| @crefd{Quantum}   | @cref{Quantum,EventBattleShieldTakeDamage}                  | @copybrief Quantum.EventBattleShieldTakeDamage                  |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleCharacterHit}                      | @copybrief Quantum.EventBattleCharacterHit                      |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleShieldHit}                         | @copybrief Quantum.EventBattleShieldHit                         |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleGiveUpStateChange}                 | @copybrief Quantum.EventBattleGiveUpStateChange                 |
 | @crefd{Quantum}   | @cref{Quantum,EventBattlePlayStateUpdate}                   | @copybrief Quantum.EventBattlePlayStateUpdate                   |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleStoneCharacterPlayHitAnimation}    | @copybrief Quantum.EventBattleStoneCharacterPlayHitAnimation    |

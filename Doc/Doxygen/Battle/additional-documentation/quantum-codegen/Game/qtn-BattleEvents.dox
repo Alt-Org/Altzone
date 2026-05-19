@@ -504,14 +504,14 @@
 
 /// @class Quantum::EventBattlePlaySoundFxForTeam
 /// <summary>
-/// Non-synced Event. Used to play sound effects during battle for the player's team.
+/// Non-synced Event. Used to play sound effects during battle for a player's team.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
 /// @class Quantum::EventBattlePlaySoundFxForPlayer
 /// <summary>
-/// Non-synced Event. Used to play sound effects during battle for the player.
+/// Non-synced Event. Used to play sound effects during battle for a player.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleEvents.qtn}
@@ -540,17 +540,17 @@
 /// Updates character UI elements.  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
-/// @class Quantum::EventBattleCharacterTakeDamage
+/// @class Quantum::EventBattleCharacterHit
 /// <summary>
-/// Synced event. Used when a character takes damage.
+/// Synced event. Used when a character gets hit.
 /// </summary>
 ///
 /// Used to update the UI to reflect change in character HP and plays damage taking animation on character.  
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
-/// @class Quantum::EventBattleShieldTakeDamage
+/// @class Quantum::EventBattleShieldHit
 /// <summary>
-/// Synced event. Used when character's shield takes damage.
+/// Synced event. Used when character's shield gets hit.
 /// </summary>
 ///
 /// Used to update the UI to reflect change in character's defence.  

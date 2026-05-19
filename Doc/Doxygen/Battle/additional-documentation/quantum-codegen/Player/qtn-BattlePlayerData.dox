@@ -86,11 +86,11 @@
 /// Part of @ref PlayerState "Player's current state related data"
 ///
 /// @var FrameTimer Quantum::BattlePlayerDataQComponent::StunCooldown
-/// <summary> Timer used for the cooldown on the character being stunned.</summary>
+/// <summary>Timer used for the cooldown on the character being stunned.</summary>
 /// Part of @ref PlayerState "Player's current state related data"
 ///
 /// @var FrameTimer Quantum::BattlePlayerDataQComponent::ShieldHitCooldown
-/// <summary> Timer used for preventing the shield from getting hit during the timer.</summary>
+/// <summary>Timer used for the cooldown on the shield getting hit.</summary>
 /// Part of @ref PlayerState "Player's current state related data"
 /// @}
 
@@ -154,11 +154,11 @@
 /// @name View related data
 /// @{
 /// @var FPVector2 Quantum::BattlePlayerDataQComponent::ViewPosition
-/// <summary>Position the player is moving towards</summary>
+/// <summary>Position used by view logic for adjusting the player's view model.</summary>
 /// part of @ref View "View related data"
 ///
 /// @var FPVector2 Quantum::BattlePlayerDataQComponent::ViewMovementVector
-/// <summary>The direction the player is moving towards</summary>
+/// <summary>Direction used by view logic for player movement animation.</summary>
 /// part of @ref View "View related data"
 /// @}
 
