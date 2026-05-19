@@ -584,7 +584,7 @@ namespace Battle.QSimulation.Player
                 playerData->RotationEnabled = !playerData->DisableRotation;
             }
 
-            BattlePlayerClassManager.OnUpdate(f, playerHandle, playerData, playerEntity);
+            BattlePlayerClassManager.OnUpdate(f, playerHandle, playerData, playerEntity, &input->Special);
             if (updateMovement) BattlePlayerMovementController.UpdateMovement(f, playerData, playerEntity, playerTransform, input);
         }
 

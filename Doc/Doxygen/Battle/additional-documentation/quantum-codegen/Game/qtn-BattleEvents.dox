@@ -68,6 +68,10 @@
 ///   @copybrief Quantum.EventBattlePlayStateUpdate
 /// - <b>synced event</b> @ref BattleStoneCharacterPlayHitAnimation { BattleTeamNumber Team; BattleEmotionState Emotion }  
 ///   @copybrief Quantum.EventBattleStoneCharacterPlayHitAnimation
+/// - <b>synced event</b> @ref BattleSpecialJoystickVisibilityChange { bool Show; BattlePlayerSlot Slot }  
+///   @copybrief Quantum.EventBattleSpecialJoystickVisibilityChange
+/// - <b>synced event</b> @ref BattlePlayerClass100AimIndicatorUpdate { EntityRef ERef; bool Show; BattlePlayerSlot Slot; FPVector2 Direction; }  
+///   @copybrief Quantum.EventBattlePlayerClass100AimIndicatorUpdate
 /// - <b>synced event</b> @ref BattleShieldChangeState { EntityRef ERef; BattleTeamNumber Team; bool ShieldAttached; int ShieldNumber }  
 ///   @copybrief Quantum.EventBattleShieldChangeState
 ///
@@ -207,7 +211,7 @@
 /// ---
 /// ---
 ///
-/// UI control events
+/// ### UI control events
 ///
 /// ---
 ///
@@ -288,8 +292,6 @@
 ///
 /// ---
 ///
-/// ---
-///
 /// @anchor BattleDiamondLanded
 /// ### BattleDiamondLanded
 /// @copybrief Quantum.EventBattleDiamondLanded
@@ -353,6 +355,24 @@
 ///
 /// ---
 ///
+/// @anchor BattleSpecialJoystickVisibilityChange
+/// ### BattleSpecialJoystickVisibilityChange
+/// @copybrief Quantum.EventBattleSpecialJoystickVisibilityChange
+///
+/// Generated Class @cref{Quantum,EventBattleSpecialJoystickVisibilityChange}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleSpecialJoystickVisibilityChange}
+///
+/// ---
+///
+/// @anchor BattlePlayerClass100AimIndicatorUpdate
+/// ### BattlePlayerClass100AimIndicatorUpdate
+/// @copybrief Quantum.EventBattlePlayerClass100AimIndicatorUpdate
+///
+/// Generated Class @cref{Quantum,EventBattleSpecialJoystickVisibilityChange}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleSpecialJoystickVisibilityChange}
+///
+/// ---
+///
 /// @anchor BattleShieldChangeState
 /// ### BattleShieldChangeState
 /// @copybrief Quantum.EventBattleShieldChangeState
@@ -360,6 +380,7 @@
 /// Generated Class @cref{Quantum,EventBattleShieldChangeState}  
 /// Generated Method @cref{Quantum,Frame.FrameEvents.BattleShieldChangeState}
 ///
+/// ---
 /// ---
 ///
 /// ### Debug events
@@ -575,6 +596,20 @@
 /// @class Quantum::EventBattleStoneCharacterPlayHitAnimation
 /// <summary>
 /// Synced event. Used to play StoneCharacter animations.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattleSpecialJoystickVisibilityChange
+/// <summary>
+/// Synced event. Used to change special joystick visibility.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattlePlayerClass100AimIndicatorUpdate
+/// <summary>
+/// Synced event. Used to update player class 100 aim indicator.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleEvents.qtn}
