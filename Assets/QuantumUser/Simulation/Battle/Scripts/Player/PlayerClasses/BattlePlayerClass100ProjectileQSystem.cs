@@ -56,8 +56,8 @@ namespace Battle.QSimulation.Player
 
             // set Initial projectile direction and speed
             projectileTransform->Position = position;
-            projectile->Direction = direction;
-            projectile->Speed = speed;
+            projectile->Direction         = direction;
+            projectile->Speed             = speed;
         }
 
         /// <summary>
