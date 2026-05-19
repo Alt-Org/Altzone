@@ -67,6 +67,13 @@
 /// Property for accessing the @cref{Quantum.BattleProjectileQComponent,_CollisionFlags_} array of flags for projectile's collisions.  
 /// Used to prevent hitting multiple entities per frame.
 /// </summary>
+///
+/// @var byte Quantum.BattleProjectileQComponent::_CollisionFlags_
+/// <summary>
+/// An array used internally for holding flags for projectile's collisions.  
+/// Used to prevent hitting multiple entities per frame.  
+/// Use @cref{Quantum.BattleProjectileQComponent,CollisionFlags} for accessing the flags.
+/// </summary>
 
 /// @var EntityRef Quantum.BattleProjectileQComponent::TriggerEntityRef
 /// <summary>Reference ot the trigger entity of the projectile.</summary>
