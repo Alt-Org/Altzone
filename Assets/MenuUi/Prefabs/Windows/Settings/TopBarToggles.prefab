@@ -215,7 +215,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: pelaajaprofiili
+  m_text: jukebox
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 60e82e4f80e646e498eed795d845cfe2, type: 2}
   m_sharedMaterial: {fileID: 6181749917240489737, guid: 60e82e4f80e646e498eed795d845cfe2,
@@ -373,6 +373,7 @@ GameObject:
   - component: {fileID: 1267086649750431847}
   - component: {fileID: 5075144850089774571}
   - component: {fileID: 573961920582216201}
+  - component: {fileID: 7290441997142693234}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -395,10 +396,10 @@ RectTransform:
   - {fileID: 2871299197376829037}
   m_Father: {fileID: 851264275347029548}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0.15, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5075144850089774571
 CanvasRenderer:
@@ -438,6 +439,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7290441997142693234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 881557597309316315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AspectMode: 2
+  m_AspectRatio: 1
 --- !u!1 &975039244800074065
 GameObject:
   m_ObjectHideFlags: 0
@@ -795,7 +810,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: pelaajaprofiili
+  m_text: Klaanin teksti
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 60e82e4f80e646e498eed795d845cfe2, type: 2}
   m_sharedMaterial: {fileID: 6181749917240489737, guid: 60e82e4f80e646e498eed795d845cfe2,
@@ -932,7 +947,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: pelaajaprofiili
+  m_text: "\xE4\xE4nestys"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 60e82e4f80e646e498eed795d845cfe2, type: 2}
   m_sharedMaterial: {fileID: 6181749917240489737, guid: 60e82e4f80e646e498eed795d845cfe2,
@@ -1595,18 +1610,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3496838983010906863}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1267086649750431847}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 16, y: 0}
-  m_SizeDelta: {x: 32, y: 32}
-  m_Pivot: {x: 0, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1941429356336477790
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2075,10 +2090,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 851264275347029548}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 30, y: 0}
-  m_SizeDelta: {x: -60, y: 56}
+  m_AnchorMin: {x: 0.25, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3949604820146997293
 CanvasRenderer:
@@ -3892,7 +3907,7 @@ GameObject:
   - component: {fileID: 708237474433263096}
   - component: {fileID: 2937559814352119294}
   - component: {fileID: 8090392558517152767}
-  - component: {fileID: 5032405253288831227}
+  - component: {fileID: 1027568284386727758}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -3907,7 +3922,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8348109178150691024}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3958,7 +3973,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5032405253288831227
+--- !u!114 &1027568284386727758
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
