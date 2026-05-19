@@ -326,12 +326,12 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventBattlePlayerClass100AimIndicatorUpdate BattlePlayerClass100AimIndicatorUpdate(EntityRef ERef, QBoolean Show, BattlePlayerSlot Slot, FPVector2 Direction) {
+      public EventBattlePlayerClass100AimIndicatorUpdate BattlePlayerClass100AimIndicatorUpdate(EntityRef ERef, BattlePlayerSlot Slot, QBoolean Show, FPVector2 Direction) {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventBattlePlayerClass100AimIndicatorUpdate>(EventBattlePlayerClass100AimIndicatorUpdate.ID);
         ev.ERef = ERef;
-        ev.Show = Show;
         ev.Slot = Slot;
+        ev.Show = Show;
         ev.Direction = Direction;
         _f.AddEvent(ev);
         return ev;
@@ -1132,8 +1132,8 @@ namespace Quantum {
   public unsafe partial class EventBattlePlayerClass100AimIndicatorUpdate : EventBase {
     public new const Int32 ID = 29;
     public EntityRef ERef;
-    public QBoolean Show;
     public BattlePlayerSlot Slot;
+    public QBoolean Show;
     public FPVector2 Direction;
     protected EventBattlePlayerClass100AimIndicatorUpdate(Int32 id, EventFlags flags) : 
         base(id, flags) {
@@ -1153,8 +1153,8 @@ namespace Quantum {
       unchecked {
         var hash = 179;
         hash = hash * 31 + ERef.GetHashCode();
-        hash = hash * 31 + Show.GetHashCode();
         hash = hash * 31 + Slot.GetHashCode();
+        hash = hash * 31 + Show.GetHashCode();
         hash = hash * 31 + Direction.GetHashCode();
         return hash;
       }
