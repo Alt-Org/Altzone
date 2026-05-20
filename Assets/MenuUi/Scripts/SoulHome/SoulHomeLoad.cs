@@ -85,6 +85,11 @@ namespace MenuUI.Scripts.SoulHome {
             {
                 StopCoroutine(RefreshCoroutine());
                 _refreshInProgress = false;
+                StopCoroutine(HomeLoad());
+                StopCoroutine(LoadRooms());
+                StopCoroutine(LoadFurniture());
+                StopCoroutine(SpawnAvatar());
+                _runningCoroutines = 0;
                 RefreshSoulHome();
             }
         }
