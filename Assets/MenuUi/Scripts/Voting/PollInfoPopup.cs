@@ -183,15 +183,20 @@ public class PollInfoPopup : MonoBehaviour
         int noCount = _currentPollData.NoVotes.Count;
         int totalCount = yesCount + noCount;
 
-        float fillValue = 0.5f;
-        string yesPercent = yesCount.ToString() + "%";
-        string noPercent = noCount.ToString() + "%";
+        float fillValue;
+        string yesPercent, noPercent;
 
         if (totalCount > 0)
         {
             fillValue = (float)yesCount / totalCount;
             yesPercent = fillValue.ToString("P0");
             noPercent = (1.0f - fillValue).ToString("P0");
+        }
+        else
+        {
+            fillValue = 0.5f;
+            yesPercent = "0%";
+            noPercent = "0%";
         }
 
         greenFill.fillAmount = fillValue;
