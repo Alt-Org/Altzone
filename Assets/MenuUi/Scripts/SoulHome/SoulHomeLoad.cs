@@ -55,6 +55,8 @@ namespace MenuUI.Scripts.SoulHome {
 
         private AvatarRig _localPlayerRig;
 
+        private long _frameTimeStart;
+
         public bool LoadFinished { get => _loadFinished;}
 
         // Start is called before the first frame update
@@ -154,6 +156,7 @@ namespace MenuUI.Scripts.SoulHome {
 
         private IEnumerator TrackedCoroutine(IEnumerator coroutine)
         {
+            _frameTimeStart = DateTime.Now.Ticks;
             _runningCoroutines++;
             try
             {
@@ -240,6 +243,7 @@ namespace MenuUI.Scripts.SoulHome {
 
                     soulHome.Room.Add(room);
                 }
+                yield return FrameCheck();
                 StartCoroutine(GetFurniture());
                 yield return new WaitUntil(()=> _furnitureFetchFinished == true);
                 //Debug.LogWarning("Test");
@@ -307,6 +311,7 @@ namespace MenuUI.Scripts.SoulHome {
                     _towerController.RoomBounds = collider.bounds;
                 }
                 i++;
+                yield return FrameCheck();
             }
             SetSoulhomeHeight();
             _roomsReady = true;
@@ -405,6 +410,7 @@ namespace MenuUI.Scripts.SoulHome {
                 }
                 Furniture storageFurniture = new(clanFurniture, furniture/*, _furnitureReference.GetFurnitureInfo(clanFurniture.GameFurnitureName)*/);
                 items.Add(storageFurniture);
+                yield return FrameCheck();
             }
             _furnitureList = items;
             _furnitureFetchFinished = true;
@@ -429,8 +435,10 @@ namespace MenuUI.Scripts.SoulHome {
                         Furniture storageFurniture = new(new(i*1000+j.ToString(), furniture.Name), furniture);
                         _soulHomeController.AddFurniture(storageFurniture);
                         j++;
+                        yield return FrameCheck();
                     }
                     i++;
+                    yield return FrameCheck();
                 }
             }
             else
@@ -466,6 +474,7 @@ namespace MenuUI.Scripts.SoulHome {
                 }
 
                 rig.ApplyAvatarToRig(playerData);
+                yield return FrameCheck();
             }
             _loadFinished = true;
         }
@@ -479,6 +488,15 @@ namespace MenuUI.Scripts.SoulHome {
             }
 
             _localPlayerRig.ApplyAvatarToRig(playerData);
+        }
+
+        private IEnumerator FrameCheck()
+        {
+            if ((new TimeSpan(DateTime.Now.Ticks - _frameTimeStart)).TotalSeconds > 1f/60f)
+            {
+                yield return null;
+                _frameTimeStart = DateTime.Now.Ticks;
+            }
         }
     }
 }
