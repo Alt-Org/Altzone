@@ -49,7 +49,7 @@ public class ChooseTask : MonoBehaviour
         }
 
         // Wait until player has done their choice on emotion selector
-        yield return new WaitUntil(() => EmotionSelectorPopupScript.EmotionInsertedToday);
+        //yield return new WaitUntil(() => EmotionSelectorPopupScript.EmotionInsertedToday);
 
         // Wait until DailyTaskManager is ready
         yield return new WaitUntil(() => DailyTaskManager.Instance.DataReady);
@@ -82,7 +82,6 @@ public class ChooseTask : MonoBehaviour
                 _shouldShowPopup = !_shouldShowPopup;
             }
         }
-
         _initialized = true;
         Debug.Log("Initializing ChooseTask.cs... Initialized!");
     }
@@ -115,7 +114,6 @@ public class ChooseTask : MonoBehaviour
         GenerateTaskOptions();
         _selectionWindow.gameObject.SetActive(true);
         OnChooseTaskShown?.Invoke();
-        //EnableUIOverlayButtons(false);
     }
 
 
@@ -234,8 +232,12 @@ public class ChooseTask : MonoBehaviour
     { 
         for (int i = 0; i < _taskCardHolder.childCount; i++)
         {
+
+            if (_taskCardHolder.GetChild(i).childCount > 0)
+            {
+                Destroy(_taskCardHolder.GetChild(i).GetChild(0).gameObject);
+            }
             
-            Destroy(_taskCardHolder.GetChild(i).GetChild(0).gameObject);
         }
     }
 }
