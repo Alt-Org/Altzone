@@ -57,6 +57,9 @@ public class PollObject : MonoBehaviour
     private Coroutine updateCoroutine;
     private bool pollEnded = false;
 
+    private readonly Color _green = HexToColor("#2FA36B");
+    private readonly Color _red = HexToColor("#2FA36B");
+
     private void Start()
     {
         // ClockButton.onClick.AddListener(OnClockButtonClicked);
@@ -325,7 +328,7 @@ public class PollObject : MonoBehaviour
         PollTypeText.text = furniturePollData.Furniture.Name;
 
         bool isBuying = furniturePollData.FurniturePollType == FurniturePollType.Buying;
-        TradeBackground.color = isBuying ? Color.green : Color.red;
+        TradeBackground.color = isBuying ? _green : _red;
         TradeText.text = isBuying ? "OSTO" : "MYYNTI";
 
         Price.text = furniturePollData.Furniture.Value.ToString();
@@ -534,5 +537,12 @@ public class PollObject : MonoBehaviour
 
         // Open the clan role popup with the fetched data
         PollInfoPopup.Instance.OpenClanRolePopup(targetMember.Name, currentRole, clanRolePoll.TargetRole);
+    }
+
+    private static Color HexToColor(string hex) {
+        if (ColorUtility.TryParseHtmlString(hex, out Color color)) {
+            return color;
+        }
+        return Color.white;
     }
 }
