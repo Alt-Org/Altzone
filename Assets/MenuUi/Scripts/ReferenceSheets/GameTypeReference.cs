@@ -57,6 +57,7 @@ namespace MenuUi.Scripts.ReferenceSheets
         public Sprite Icon;
         public Sprite Banner;
         public Sprite Background;
+        public Sprite Middleground;
         public GameType gameType;
         public bool Enabled;
         public string FinnishName;
