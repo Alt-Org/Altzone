@@ -47,6 +47,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         GiveUpButton = 4,
         MoveJoystick = 5,
         RotateJoystick = 6,
+        SpecialJoystick = 7,
     }
 
     public enum BattleMovementInputType

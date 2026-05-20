@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 /// <summary>
@@ -24,8 +25,10 @@ namespace Altzone.Scripts.Model.Poco.Player
         public ServerPlayerTask DailyTask { get; set; }
         public string clanRole_id { get; set; }
         public ClanLogo clanLogo { get; set; }
-
         public string createdAt { get; set; }
+        public string carbonFootprint { get; set; }
+        public string playstyle { get; set; }
+        public List<ServerEmotions> emotions { get; set; }
 
         // These are used to show the moods in profile and to check if the player has inserted a mood today.
         // These might not yet be sent by the server, but they are needed for the mood selector and profile, so they are included here.
@@ -92,5 +95,11 @@ namespace Altzone.Scripts.Model.Poco.Player
     {
         public int date { get; set; }
         public int count { get; set; }
+    }
+
+    public class ServerEmotions
+    {
+        public string emotion { get; set; }
+        public string date { get; set; }
     }
 }
