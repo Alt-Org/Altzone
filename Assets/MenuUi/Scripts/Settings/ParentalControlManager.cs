@@ -17,7 +17,8 @@ public class ParentalControlManager : MonoBehaviour
     public TMP_InputField confirmPasswordInput;
     //public Text messageText;
     public TMP_Text messageText;
-    public TMP_Text messageTextPopUp;
+    public TMP_Text messageTextPopUpLength;
+    public TMP_Text messageTextPopUpWrongPassword;
     public Toggle controlToggle;
     public Toggle testToggle;
     
@@ -81,10 +82,11 @@ public class ParentalControlManager : MonoBehaviour
         Debug.Log("control status " + parentalControl);
 
         parentalControlPanel.SetActive(true);
-        passwordPanel.SetActive(true);
+        //passwordPanel.SetActive(true);
         messageText.enabled = false;
 
-        
+        messageTextPopUpWrongPassword.enabled = false;
+        messageTextPopUpLength.enabled = false;
 
         controlToggle.isOn = true; // PlayerPrefs.GetInt("ParentalControl", 0) == 1;
         timeLimitInput.text = 10f.ToString(); //PlayerPrefs.GetFloat("MaxPlayTime", 2f).ToString();
@@ -231,12 +233,14 @@ public class ParentalControlManager : MonoBehaviour
 
     public void SetPassword() {
         //this is done in the pop-up
-        
+
+
         Debug.Log(setPasswordInput);
 
         if (setPasswordInput.Length < 8)            
         {
-            messageTextPopUp.text = "Salasanan pituuden on oltava vähintään 8 merkkiä";
+            messageTextPopUpLength.enabled = true;
+            messageTextPopUpWrongPassword.enabled = false;
             return;
         }
 
@@ -256,7 +260,7 @@ public class ParentalControlManager : MonoBehaviour
 
             //messageText.text = "Password set!";
             
-            messageTextPopUp.text = "Salasana asetettu";
+            //TODO: Pop up when password is set?
             
             parentalControlPopup.SetActive(false);
             CheckControl();
@@ -265,7 +269,8 @@ public class ParentalControlManager : MonoBehaviour
         } else
         {
            // messageText.text = "Passwords do not match";
-           messageTextPopUp.text = "Salasanat eivät täsmää";
+          messageTextPopUpWrongPassword.enabled = true;
+          messageTextPopUpLength.enabled = false;
         }
 
         
