@@ -7,6 +7,11 @@ using UnityEngine.UI;
 public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField] private RectTransform _clampArea;
+    [SerializeField] private ScrollRect _scrollRect;
+
+    private bool _isScrolling;
+    [SerializeField] private float _scrollSpeed = 10f;
+
     public Action OnDropped;
 
     private RectTransform _rectTransform, _listContainer, _boundsTransform;
@@ -24,6 +29,11 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleDrag : Awake()");
 
+        if (_scrollRect == null)
+            _scrollRect = GetComponentInParent<ScrollRect>();
+
+        Debug.Log($"[TopBarDebugScroll] ScrollRect found: {_scrollRect != null}");
+
         _rectTransform = GetComponent<RectTransform>();
         _layoutElement = GetComponent<LayoutElement>();
         _canvasGroup = GetComponent<CanvasGroup>();
@@ -34,6 +44,14 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     public void OnBeginDrag(PointerEventData e)
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleDrag : OnBeginDrag()");
+
+        _isScrolling = Mathf.Abs(e.delta.y) > Mathf.Abs(e.delta.x);
+
+        if (_isScrolling && _scrollRect != null)
+        {
+            _scrollRect.OnBeginDrag(e);
+            return;
+        }
 
         if (_rootCanvas == null) return;
 
@@ -83,6 +101,12 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleDrag : OnDrag()");
 
+        if (_isScrolling && _scrollRect != null)
+        {
+            _scrollRect.OnDrag(e);
+            return;
+        }
+
         FollowPointer(e);
         UpdatePlaceholderIndex(e);
     }
@@ -90,6 +114,12 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     public void OnEndDrag(PointerEventData e)
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleDrag : OnEndDrag()");
+
+        if (_isScrolling && _scrollRect != null)
+        {
+            _scrollRect.OnEndDrag(e);
+            return;
+        }
 
         transform.SetParent(_originalParent, false);
 

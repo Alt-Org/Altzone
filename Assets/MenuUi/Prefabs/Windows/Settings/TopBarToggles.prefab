@@ -1853,6 +1853,7 @@ GameObject:
   - component: {fileID: 5977537012365875117}
   - component: {fileID: 8553567083226097892}
   - component: {fileID: 3278979080022960527}
+  - component: {fileID: 4488955048039476271}
   m_Layer: 5
   m_Name: TopBarToggles
   m_TagString: Untagged
@@ -1908,7 +1909,7 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_Spacing: 20
   m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
+  m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
@@ -1932,6 +1933,20 @@ MonoBehaviour:
   - {fileID: 6818781044047175173, guid: bd46108b0f4ff254a802ed992a377f5d, type: 3}
   _clanSubItemSpacers: []
   _clanSubItemRows: []
+--- !u!114 &4488955048039476271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3611874894249962528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &4048397104228922587
 GameObject:
   m_ObjectHideFlags: 0
