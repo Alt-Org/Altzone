@@ -50,6 +50,8 @@ namespace Altzone.Scripts.Battle.Photon
         public const string SoulhomeRankVariance = "rv";
         public const string ClanNameKey = "c";
         public const string ClanOpponentNameKey = "c2";
+        public const string ShowToFriendsKey = "sf";
+        public const string ShowToClanKey = "sc";
         public const string LeaderIdKey = "lid";
         public const string TestModeKey = "tm";
 

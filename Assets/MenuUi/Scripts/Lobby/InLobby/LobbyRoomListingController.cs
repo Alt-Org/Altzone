@@ -19,6 +19,8 @@ using MenuUi.Scripts.Lobby.CreateRoom;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
 using MenuUi.Scripts.Signals;
 using Altzone.Scripts.Lobby.Wrappers;
+using Altzone.Scripts;
+using Altzone.Scripts.Model.Poco.Player;
 
 namespace MenuUi.Scripts.Lobby.InLobby
 {
@@ -166,14 +168,14 @@ namespace MenuUi.Scripts.Lobby.InLobby
             {
                 // For private rooms keep using the provided password and display name
                 string internalName = $"{roomName}_{Guid.NewGuid()}";
-                PhotonRealtimeClient.CreateCustomLobbyRoom(internalName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, _createRoomCustom.RoomPassword, null, _createRoomCustom.SelectedCustomGameModeIndex, roomName);
+                PhotonRealtimeClient.CreateCustomLobbyRoom(internalName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, _createRoomCustom.RoomPassword, null, _createRoomCustom.SelectedCustomGameModeIndex, _createRoomCustom.ShowToFriends, _createRoomCustom.ShowToClan, roomName);
             }
             else
             {
                 // Always create a new custom room instead of joining an existing one.
                 // Use a unique internal room id to avoid "A game with the specified id already exist." errors
                 string uniqueRoomId = string.IsNullOrWhiteSpace(roomName) ? $"{DefaultRoomNameCustom}{Guid.NewGuid()}" : $"{roomName}_{Guid.NewGuid()}";
-                PhotonRealtimeClient.CreateCustomLobbyRoom(uniqueRoomId, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, "", null, _createRoomCustom.SelectedCustomGameModeIndex, roomName);
+                PhotonRealtimeClient.CreateCustomLobbyRoom(uniqueRoomId, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, "", null, _createRoomCustom.SelectedCustomGameModeIndex, _createRoomCustom.ShowToFriends, _createRoomCustom.ShowToClan, roomName);
             }
         }
 
@@ -474,6 +476,18 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
             int selectedMode = _createRoomCustom != null ? _createRoomCustom.SelectedCustomGameModeIndex : (int)CustomGameMode.TwoVersusTwo;
 
+            // Get local player data (from local DataStore) for friend list and clan id checks
+            PlayerData localPlayerData = null;
+            try
+            {
+                string uniqueId = ServerManager.Instance?.Player?.uniqueIdentifier;
+                if (!string.IsNullOrEmpty(uniqueId))
+                {
+                    Storefront.Get().GetPlayerData(uniqueId, pd => localPlayerData = pd);
+                }
+            }
+            catch { localPlayerData = null; }
+
             return rooms.Where(room =>
             {
                 if (room == null || room.CustomProperties == null)
@@ -491,7 +505,55 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     roomCustomMode = (int)CustomGameMode.TwoVersusTwo;
                 }
 
-                return roomCustomMode == selectedMode;
+                if (roomCustomMode != selectedMode) return false;
+
+                // If room is marked show-to-friends only (sf), only show if the local player is friends with the room leader
+                if (room.CustomProperties.TryGetValue(PhotonBattleRoom.ShowToFriendsKey, out object sfObj) && sfObj is bool sf && sf)
+                {
+                    string leaderId = null;
+                    if (room.CustomProperties.TryGetValue(PhotonBattleRoom.LeaderIdKey, out object lidObj) && lidObj is string lid)
+                    {
+                        leaderId = lid;
+                    }
+
+                    bool allowed = false;
+                    // Allow if the local player is the leader
+                    if (!string.IsNullOrEmpty(leaderId))
+                    {
+                        if (localPlayerData != null && localPlayerData.Id == leaderId) allowed = true;
+                        // Check friend list
+                        if (!allowed && localPlayerData?.friendPlayers != null)
+                        {
+                            foreach (var fp in localPlayerData.friendPlayers)
+                            {
+                                if (fp != null && fp._id == leaderId)
+                                {
+                                    allowed = true; break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!allowed) return false;
+                }
+
+                // If room is marked show-to-clan only (sc), only show if local player's clan matches
+                if (room.CustomProperties.TryGetValue(PhotonBattleRoom.ShowToClanKey, out object scObj) && scObj is bool sc && sc)
+                {
+                    string roomClanId = null;
+                    if (room.CustomProperties.TryGetValue(PhotonBattleRoom.ClanNameKey, out object rclan) && rclan is string rcid)
+                    {
+                        roomClanId = rcid;
+                    }
+
+                    string myClanId = ServerManager.Instance?.Player?.clan_id ?? localPlayerData?.ClanId;
+                    if (string.IsNullOrEmpty(roomClanId) || string.IsNullOrEmpty(myClanId) || !roomClanId.Equals(myClanId, StringComparison.Ordinal))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
             }).ToList();
         }
 

@@ -657,7 +657,7 @@ public static class PhotonRealtimeClient
         }
     }
 
-    private static RoomOptions GetRoomOptions(GameType gameType, bool isMatchmaking = false, string mapId = "", Emotion startingEmotion = Emotion.Blank, string roomName = "", string password = "", string clanName = "", int soulhomeRank = -1, int customGameMode = -1)
+    private static RoomOptions GetRoomOptions(GameType gameType, bool isMatchmaking = false, string mapId = "", Emotion startingEmotion = Emotion.Blank, string roomName = "", string password = "", string clanName = "", int soulhomeRank = -1, int customGameMode = -1, bool showToFriends = false, bool showToClan = false, string leaderId = null)
     {
         PhotonHashtable customRoomProperties = new PhotonHashtable
         {
@@ -721,6 +721,24 @@ public static class PhotonRealtimeClient
             propertiesShowingToLobby.Add(PhotonBattleRoom.ClanNameKey);
         }
 
+        if (showToFriends)
+        {
+            customRoomProperties.Add(PhotonBattleRoom.ShowToFriendsKey, true);
+            propertiesShowingToLobby.Add(PhotonBattleRoom.ShowToFriendsKey);
+        }
+
+        if (showToClan)
+        {
+            customRoomProperties.Add(PhotonBattleRoom.ShowToClanKey, true);
+            propertiesShowingToLobby.Add(PhotonBattleRoom.ShowToClanKey);
+        }
+
+        if (!string.IsNullOrEmpty(leaderId))
+        {
+            customRoomProperties.Add(PhotonBattleRoom.LeaderIdKey, leaderId);
+            propertiesShowingToLobby.Add(PhotonBattleRoom.LeaderIdKey);
+        }
+
         customRoomProperties.Add(PhotonBattleRoom.TestModeKey, SettingsCarrier.Instance.BattleDebug);
 
         if (soulhomeRank != -1)
@@ -733,6 +751,7 @@ public static class PhotonRealtimeClient
 
         var roomOptions = new RoomOptions()
         {
+            // Rooms remain visible on server; clients filter them by custom properties `sf`/`sc`.
             IsVisible = true,
             IsOpen = true,
             MaxPlayers = maxPlayers,
@@ -784,16 +803,26 @@ public static class PhotonRealtimeClient
         );
     }
 
-    public static bool CreateCustomLobbyRoom(string roomName, string mapId, Emotion startingEmotion, string password = "", string[] expectedUsers = null, int customGameMode = -1, string displayName = null)
+    public static bool CreateCustomLobbyRoom(string roomName, string mapId, Emotion startingEmotion, string password = "", string[] expectedUsers = null, int customGameMode = -1, bool showToFriends = false, bool showToClan = false, string displayName = null)
     {
         // Use provided displayName for lobby-visible name if given, otherwise fall back to the roomName
+        string leaderId = null;
+        try
+        {
+            leaderId = ServerManager.Instance?.Player?._id;
+        }
+        catch { leaderId = null; }
+
         RoomOptions roomOptions = GetRoomOptions(
             gameType: GameType.Custom,
             mapId: mapId,
             startingEmotion: startingEmotion,
             roomName: displayName ?? roomName,
             password: password,
-            customGameMode: customGameMode
+            customGameMode: customGameMode,
+            showToFriends: showToFriends,
+            showToClan: showToClan,
+            leaderId: leaderId
         );
 
         return CreateRoom(

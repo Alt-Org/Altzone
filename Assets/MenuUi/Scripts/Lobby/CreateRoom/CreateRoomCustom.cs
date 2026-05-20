@@ -68,6 +68,39 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
         {
             _roomPassword.text = "";
             _privateToggle.isOn = false;
+            // Ensure visibility toggles are mutually exclusive: only one can be on at a time
+            if (_showToFriends != null && _showToClan != null)
+            {
+                _showToFriends.onValueChanged.RemoveListener(HandleShowToFriendsChanged);
+                _showToClan.onValueChanged.RemoveListener(HandleShowToClanChanged);
+                _showToFriends.onValueChanged.AddListener(HandleShowToFriendsChanged);
+                _showToClan.onValueChanged.AddListener(HandleShowToClanChanged);
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (_showToFriends != null && _showToClan != null)
+            {
+                _showToFriends.onValueChanged.RemoveListener(HandleShowToFriendsChanged);
+                _showToClan.onValueChanged.RemoveListener(HandleShowToClanChanged);
+            }
+        }
+
+        private void HandleShowToFriendsChanged(bool isOn)
+        {
+            if (isOn && _showToClan != null && _showToClan.isOn)
+            {
+                _showToClan.isOn = false;
+            }
+        }
+
+        private void HandleShowToClanChanged(bool isOn)
+        {
+            if (isOn && _showToFriends != null && _showToFriends.isOn)
+            {
+                _showToFriends.isOn = false;
+            }
         }
     }
 }
