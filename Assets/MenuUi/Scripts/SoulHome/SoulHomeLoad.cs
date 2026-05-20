@@ -248,7 +248,11 @@ namespace MenuUI.Scripts.SoulHome {
 
                     soulHome.Room.Add(room);
                 }
-                yield return FrameCheck();
+                if (FrameCheck())
+                {
+                    yield return null;
+                    _frameTimeStart = DateTime.Now.Ticks;
+                }
                 StartCoroutine(GetFurniture());
                 yield return new WaitUntil(()=> _furnitureFetchFinished == true);
                 //Debug.LogWarning("Test");
@@ -316,7 +320,11 @@ namespace MenuUI.Scripts.SoulHome {
                     _towerController.RoomBounds = collider.bounds;
                 }
                 i++;
-                yield return FrameCheck();
+                if (FrameCheck())
+                {
+                    yield return null;
+                    _frameTimeStart = DateTime.Now.Ticks;
+                }
             }
             SetSoulhomeHeight();
             _roomsReady = true;
@@ -415,7 +423,11 @@ namespace MenuUI.Scripts.SoulHome {
                 }
                 Furniture storageFurniture = new(clanFurniture, furniture/*, _furnitureReference.GetFurnitureInfo(clanFurniture.GameFurnitureName)*/);
                 items.Add(storageFurniture);
-                yield return FrameCheck();
+                if (FrameCheck())
+                {
+                    yield return null;
+                    _frameTimeStart = DateTime.Now.Ticks;
+                }
             }
             _furnitureList = items;
             _furnitureFetchFinished = true;
@@ -440,10 +452,18 @@ namespace MenuUI.Scripts.SoulHome {
                         Furniture storageFurniture = new(new(i*1000+j.ToString(), furniture.Name), furniture);
                         _soulHomeController.AddFurniture(storageFurniture);
                         j++;
-                        yield return FrameCheck();
+                        if (FrameCheck())
+                        {
+                            yield return null;
+                            _frameTimeStart = DateTime.Now.Ticks;
+                        }
                     }
                     i++;
-                    yield return FrameCheck();
+                    if (FrameCheck())
+                    {
+                        yield return null;
+                        _frameTimeStart = DateTime.Now.Ticks;
+                    }
                 }
             }
             else
@@ -479,7 +499,12 @@ namespace MenuUI.Scripts.SoulHome {
                 }
 
                 rig.ApplyAvatarToRig(playerData);
-                yield return FrameCheck();
+                if (FrameCheck())
+                {
+                    yield return null;
+                    _frameTimeStart = DateTime.Now.Ticks;
+                }
+                
             }
             _loadFinished = true;
         }
@@ -495,13 +520,13 @@ namespace MenuUI.Scripts.SoulHome {
             _localPlayerRig.ApplyAvatarToRig(playerData);
         }
 
-        private IEnumerator FrameCheck()
+        private bool FrameCheck()
         {
             if ((new TimeSpan(DateTime.Now.Ticks - _frameTimeStart)).TotalSeconds > 1f/60f)
             {
-                yield return null;
-                _frameTimeStart = DateTime.Now.Ticks;
+                return true;
             }
+            return false;
         }
     }
 }
