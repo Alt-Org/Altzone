@@ -50,9 +50,6 @@ public class Popup : MonoBehaviour
     [SerializeField] private RectTransform _taskAcceptMovable;
     [SerializeField] private Image _taskAcceptImage;
     [Space]
-    [SerializeField] private Image _taskAcceptColorImage;
-    [SerializeField] private Image _taskCancelColorImage;
-    [Space]
     [SerializeField] private GameObject _taskCancelPopup;
     [Space]
     [Tooltip("Set every TMP text element here that is supposed to show a message from code.")]
@@ -172,7 +169,6 @@ public class Popup : MonoBehaviour
                 Instance.SetTaskDescription(data.Value.OwnPage);
                 Instance.SetTaskGameLiteracy(data.Value.OwnPage);
                 Instance.SetTaskRewardTexts(data.Value.OwnPage);
-                Instance.SetPopupTaskColor(data.Value.OwnPage, data.Value.Type);
             }
 
             if (data.Value.Type == PopupData.PopupDataType.MultipleChoice)
@@ -257,17 +253,6 @@ public class Popup : MonoBehaviour
     {
         _taskPointsText.text = data.Points.ToString();
         _taskCoinsText.text = data.Coins.ToString();
-    }
-
-    private void SetPopupTaskColor(PlayerTask data, PopupData.PopupDataType type)
-    {
-        Image targetImage = _taskAcceptColorImage;
-
-        if (type == PopupData.PopupDataType.CancelTask) targetImage = _taskCancelColorImage;
-
-        if (type == PopupData.PopupDataType.MultipleChoice) targetImage = _taskMultipleChoiceColorImage;
-
-        targetImage.color = GetTaskColor(data);
     }
 
     /// <summary>
