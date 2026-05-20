@@ -175,6 +175,20 @@ synced event BattleStoneCharacterPlayHitAnimation
     BattleEmotionState Emotion;
 }
 
+synced event BattleSpecialJoystickVisibilityChange
+{
+    BattlePlayerSlot Slot;
+    bool Show;
+}
+
+synced event BattlePlayerClass100AimIndicatorUpdate
+{
+    EntityRef ERef;
+    BattlePlayerSlot Slot;
+    bool Show;
+    FPVector2 Direction;
+}
+
 synced event BattleShieldChangeState
 {
     EntityRef ERef;

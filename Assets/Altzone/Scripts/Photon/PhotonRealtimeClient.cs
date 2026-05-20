@@ -737,6 +737,8 @@ public static class PhotonRealtimeClient
             propertiesShowingToLobby.Add(PhotonBattleRoom.ClanNameKey);
         }
 
+        customRoomProperties.Add(PhotonBattleRoom.TestModeKey, SettingsCarrier.Instance.BattleDebug);
+
         if (soulhomeRank != -1)
         {
             customRoomProperties.Add(PhotonBattleRoom.SoulhomeRank, soulhomeRank);

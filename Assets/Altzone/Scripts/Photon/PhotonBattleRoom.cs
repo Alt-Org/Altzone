@@ -64,6 +64,7 @@ namespace Altzone.Scripts.Battle.Photon
         public const int PremadeInviteStateAccepted = 2;
         public const int PremadeInviteStateDeclined = 3;
         public const int PremadeInviteStateExpired = 4;
+        public const string TestModeKey = "tm";
 
         public static string PlayerPositionKey1 { get => PlayerPosition1.ToString(); }
         public static string PlayerPositionKey2 { get => PlayerPosition2.ToString(); }
