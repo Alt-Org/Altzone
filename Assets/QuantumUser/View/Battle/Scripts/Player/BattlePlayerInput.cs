@@ -111,7 +111,7 @@ namespace Battle.View.Player
         ///
         /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick.</param>
         /// <param name="value">Value of the joystick as Vector2.</param>
-        public void OnJoystickSpecial(BattleJoystickState state, Vector2 value)
+        public void QueueJoystickSpecial(BattleJoystickState state, Vector2 value)
         {
             _joystickSpecialState = state;
             _joystickSpecialValue = value;
