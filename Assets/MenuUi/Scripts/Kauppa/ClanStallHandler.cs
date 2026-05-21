@@ -19,6 +19,7 @@ public class ClanStallPopupHandler : MonoBehaviour
     [Header("Information GameObject")]
     [SerializeField] private Image _icon;
     [SerializeField] private TMP_Text _name;
+    [SerializeField] private TMP_Text _price;
     [SerializeField] private TMP_Text _weight;
     [SerializeField] private TMP_Text _diagnoseNumber;
     [SerializeField] private TMP_Text _artist;
@@ -114,17 +115,20 @@ public class ClanStallPopupHandler : MonoBehaviour
         //Furniture name
         _name.text = _furn.Info.SetName + " " + _furn.Info.VisibleName;
 
+        //Furniture price
+        _price.text = _furn.Value.ToString();
+
         //Furniture weight
-        _weight.text = _furn.Weight + " KG";
+        _weight.text = "• Paino " + _furn.Weight + " KG";
 
         //Furniture diagnostic number
-        _diagnoseNumber.text = _furn.Info.DiagnoseNumber;
+        _diagnoseNumber.text = "• " + _furn.Info.DiagnoseNumber;
 
         //Furniture designer/artist
-        _artist.text = "Suunnittelu: " + _furn.Info.ArtistName;
+        _artist.text = "• Suunnittelu: " + _furn.Info.ArtistName;
 
         //Furniture description
-        _artisticDescription.text = _furn.Info.ArtisticDescription;
+        _artisticDescription.text = "• " + _furn.Info.ArtisticDescription;
     }
 
   
