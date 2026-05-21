@@ -319,7 +319,24 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private void OnMatchmakingStopped()
         {
-            // Any matchmaking stop should close the battle popup to avoid stale queue UI.
+            try
+            {
+                bool isMaster = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
+                bool botFillActive = PhotonBattleRoom.IsBotFillActive();
+
+                // Keep the battle popup open for the master while bot-fill is active.
+                // Bot-fill completion can transition matchmaking state without meaning the master should leave the room UI.
+                if (isMaster && botFillActive)
+                {
+                    return;
+                }
+            }
+            catch
+            {
+                // Fall back to the existing close behavior if room state cannot be read safely.
+            }
+
+            // Any other matchmaking stop should close the battle popup to avoid stale queue UI.
             CloseWindow();
         }
 

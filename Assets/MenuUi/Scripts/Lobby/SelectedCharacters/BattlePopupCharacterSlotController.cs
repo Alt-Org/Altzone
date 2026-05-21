@@ -52,6 +52,11 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         /// </summary>
         public void SetCharacters()
         {
+            if (!isActiveAndEnabled)
+            {
+                return;
+            }
+
             StartCoroutine(GetPlayerData(playerData =>
             {
                 for (int i = 0; i < _selectedCharacterSlots.Length; i++)

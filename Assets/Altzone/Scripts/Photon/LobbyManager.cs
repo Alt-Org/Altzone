@@ -5571,11 +5571,38 @@ namespace Altzone.Scripts.Lobby
                 if (PhotonRealtimeClient.InRoom) PhotonRealtimeClient.LeaveRoom();
                 yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
 
-                // If leaderRoomName provided, try to join it directly
+                // If leaderRoomName provided, try to join it directly unless this is a queue handoff.
                 bool newRoomJoined = false;
                 if (!string.IsNullOrEmpty(leaderRoomName))
                 {
-                    if (PhotonRealtimeClient.InLobby)
+                    if (queueRoomRequested)
+                    {
+                        GameType queueGameType = GameType.Random2v2;
+                        try
+                        {
+                            if (leaderRoomName.StartsWith("Queue_", StringComparison.Ordinal)
+                                && Enum.TryParse(leaderRoomName.Substring("Queue_".Length), out GameType parsedQueueType))
+                            {
+                                queueGameType = parsedQueueType;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogWarning($"FollowLeaderToNewRoom: queue game type parse failed: {ex.Message}");
+                        }
+
+                        try
+                        {
+                            int joinOrCreateId = _joinAttemptTracker.BeginJoinAttempt($"Queue_{queueGameType}", followTeammates);
+                            Debug.Log($"FollowLeaderToNewRoom: JoinAttempt[{joinOrCreateId}] queue handoff using JoinOrCreateQueueRoom({queueGameType})");
+                            newRoomJoined = PhotonRealtimeClient.JoinOrCreateQueueRoom(queueGameType);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogWarning($"FollowLeaderToNewRoom: queue JoinOrCreateQueueRoom failed: {ex.Message}");
+                        }
+                    }
+                    else if (PhotonRealtimeClient.InLobby)
                     {
                         int joinAttemptId = _joinAttemptTracker.BeginJoinAttempt(leaderRoomName, followTeammates);
                         Debug.Log($"FollowLeaderToNewRoom: JoinAttempt[{joinAttemptId}] direct join requested: {leaderRoomName}");
