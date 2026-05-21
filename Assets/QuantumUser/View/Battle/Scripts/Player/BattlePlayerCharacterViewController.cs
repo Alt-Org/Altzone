@@ -320,11 +320,6 @@ namespace Battle.View.Player
         [Tooltip("Array of character GameObjects")]
         [SerializeField] private GameObject[] _characterGameObjects;
 
-        /// <summary>[SerializeField] %Player's local player indicator <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</summary>
-        /// Part of @ref BattlePlayerCharacterViewController-SerializeFields "SerializeFields"
-        [Tooltip("Player's local player indicator GameObject")]
-        [SerializeField] private GameObject _localPlayerIndicator;
-
         //} references
 
         //{ settings
@@ -537,11 +532,6 @@ namespace Battle.View.Player
             }
 
             SetDefaultBodyPartSprites();
-
-            if (e.Slot == BattleGameViewController.LocalPlayerSlot)
-            {
-                _localPlayerIndicator.SetActive(true);
-            }
 
             //} initialize visuals
 

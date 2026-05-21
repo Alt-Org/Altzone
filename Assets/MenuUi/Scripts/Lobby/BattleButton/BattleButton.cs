@@ -23,6 +23,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         [SerializeField] private Image _gameTypeIcon;
         [SerializeField] private Image _gameTypeBanner;
         [SerializeField] private Image _gameTypeBackground;
+        [SerializeField] private Image _gameTypeMiddleground;
         [SerializeField] private TextLanguageSelectorCaller _gameTypeName;
         [SerializeField] private TextLanguageSelectorCaller _gameTypeDescription;
         [SerializeField] private Button _openBattleUiEditorButton;
@@ -88,6 +89,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             _gameTypeIcon.sprite = gameTypeInfo.Icon;
             _gameTypeBanner.sprite = gameTypeInfo.Banner;
             _gameTypeBackground.sprite = gameTypeInfo.Background;
+            _gameTypeMiddleground.sprite = gameTypeInfo.Middleground;
             _gameTypeName.SetText(gameTypeInfo.Name);
             _gameTypeDescription.SetText(gameTypeInfo.Description);
             _selectedGameType = gameTypeInfo.gameType;
