@@ -13,15 +13,16 @@ using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Window;
-using MenuUi.Scripts.AvatarEditor;
 using MenuUi.Scripts;
+using MenuUi.Scripts.AvatarEditor;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
+using MenuUI.Scripts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using MenuUI.Scripts;
+using static PlayStyle;
 
 public class ProfileMenu : AltMonoBehaviour
 {
@@ -120,7 +121,7 @@ public class ProfileMenu : AltMonoBehaviour
     [SerializeField] private Button _closeCarbonPopupButton;
 
     private string _tempPlayerName;
-    private int _tempPlayStyleIndex;
+    private PlayStyles _tempPlayStyleIndex;
 
     //private int tempLocalSaveTime;
     //private float tempLocalSaveSecondsTime;
@@ -468,8 +469,8 @@ public class ProfileMenu : AltMonoBehaviour
 
         if (_playStyle != null && _playerData != null)
         {
-            _tempPlayStyleIndex = (int)_playerData.playStyles;
-            _playStyle.CurrentIndex = _tempPlayStyleIndex;
+            _tempPlayStyleIndex = _playerData.playStyles;
+            _playStyle.CurrentStyle = _tempPlayStyleIndex;
             _playStyle.RefreshUI();
         }
 
@@ -488,7 +489,7 @@ public class ProfileMenu : AltMonoBehaviour
 
         if (_playStyle != null)
         {
-            _playStyle.CurrentIndex = _tempPlayStyleIndex;
+            _playStyle.CurrentStyle = _tempPlayStyleIndex;
             _playStyle.RefreshUI();
         }
 
@@ -515,7 +516,7 @@ public class ProfileMenu : AltMonoBehaviour
 
         if (_playStyle != null)
         {
-            _playerData.playStyles = (PlayStyles)_playStyle.CurrentIndex;
+            _playerData.playStyles = (PlayStyles)_playStyle.CurrentStyle;
             RefreshPlayerPlayStyleUI();
         }
 
@@ -837,15 +838,13 @@ public class ProfileMenu : AltMonoBehaviour
 
         if (_playStyle != null)
         {
-            string[] styles = SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English
-                ? _playStyle.englishStyles
-                : _playStyle.finnishStyles;
+            List<StyleText> styles = _playStyle.styles;
 
             int index = (int)_playerData.playStyles;
 
-            if (styles != null && index >= 0 && index < styles.Length)
+            if (styles != null && index >= 0 && index < styles.Count)
             {
-                _playerPlayStyleText.text = styles[index];
+                _playerPlayStyleText.text = styles[index].Text;
                 return;
             }
         }

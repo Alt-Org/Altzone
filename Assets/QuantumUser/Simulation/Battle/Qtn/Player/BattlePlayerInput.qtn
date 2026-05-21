@@ -8,6 +8,7 @@ input
     FPVector2               MovementVector;
     bool                    RotationInput;
     FP                      RotationValue;
+    BattleSpecialInput      Special;
 }
 
 enum BattleMovementInputType
@@ -16,4 +17,17 @@ enum BattleMovementInputType
     PositionTarget,
     PositionMove,
     Direction
+}
+
+enum BattleJoystickState
+{
+    Up,
+    Down,
+    Drag
+}
+
+struct BattleSpecialInput
+{
+    BattleJoystickState JoystickState;
+    FPVector2 JoystickValue;
 }

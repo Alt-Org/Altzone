@@ -25,6 +25,7 @@ public class DailyTaskProgressListenerMakeMusic : DailyTaskProgressListener
     private void OnButtonClick(int index)
     {
         if (DailyTaskProgressManager.Instance.CurrentPlayerTask == null || DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationActionType != _educationCategoryActionType) return;
+        if (_currentSequence.Count >= _targetSequence.Length) _currentSequence.RemoveAt(0);
         _currentSequence.Add(index);
 
         for (int i = 0; i < _currentSequence.Count; i++)

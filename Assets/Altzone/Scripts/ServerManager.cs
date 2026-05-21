@@ -876,6 +876,37 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
+    public IEnumerator UpdateEmotionToServer(string emotion, Action<bool> callback)
+    {
+        if (Player == null)
+        {
+            Debug.LogError("Cannot find Player.");
+            yield break;
+        }
+
+        string body = JObject.FromObject(
+            new
+            {
+                emotion = emotion,
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+        ).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(SERVERADDRESS + "player/emotion", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
     #endregion
 
     #region Clan
@@ -1834,6 +1865,12 @@ public class ServerManager : MonoBehaviour
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 Debug.LogWarning(result);
+                JArray token = (JArray)result["data"]["Friendship"];
+                foreach (JToken token2 in token)
+                {
+                    if (token2["avatar"].ToString() == string.Empty) continue;
+                    if (int.TryParse(token2["avatar"]["head"].ToString(), out int value)) token2["friend"]["avatar"] = string.Empty;
+                }
                 List<ServerFriendPlayer> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<ServerFriendPlayer>>();
 
 
@@ -1858,7 +1895,10 @@ public class ServerManager : MonoBehaviour
                 Debug.LogWarning(result);
                 JArray token = (JArray)result["data"]["Friendship"];
                 foreach (JToken token2 in token)
+                {
+                    if (token2["friend"]["avatar"].ToString() == string.Empty) continue;
                     if (int.TryParse(token2["friend"]["avatar"]["head"].ToString(), out int value)) token2["friend"]["avatar"] = string.Empty;
+                }
                 List<ServerFriendRequest> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<ServerFriendRequest>>();
 
 

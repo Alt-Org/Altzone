@@ -48,8 +48,7 @@ public class ChatPreviewController : MonoBehaviour
         {
             GameObject chatMessage = Instantiate(chatPreviewMessagePrefab, _chatMessagesContainer.transform);
             _chatMessageGameobjects[i] = chatMessage;
-            chatMessage.GetComponentInChildren<Image>().color = Color.clear;
-            chatMessage.GetComponentInChildren<TextMeshProUGUI>().text = "";
+            chatMessage.GetComponent<ChatMessagePrefab>().SetInfo(null);
         }
 
         _chatButtonRect = _toggleChatButton.gameObject.GetComponent<RectTransform>();
@@ -159,8 +158,7 @@ public class ChatPreviewController : MonoBehaviour
     {
         for (int i = 0; i < _chatMessageGameobjects.Length; i++)
         {
-            _chatMessageGameobjects[i].GetComponentInChildren<TextMeshProUGUI>().text = "";
-            _chatMessageGameobjects[i].GetComponentInChildren<Image>().color = Color.clear;
+            _chatMessageGameobjects[i].GetComponent<ChatMessagePrefab>().SetInfo(null);
         }
 
         noMessagesTextGameobject.SetActive(true); 
