@@ -16,6 +16,14 @@ MonoBehaviour:
   - Name: MainMenu
     Type: 1
     MusicTracks:
+    - Name: Default
+      Id: 0
+      Music: {fileID: 8300000, guid: b9203b5398cba4a4bacceff318722fa0, type: 3}
+      JukeboxInfo:
+        Disk: {fileID: 0}
+        Genre: 0
+        Mood: 0
+        Artists: []
     - Name: SlowSteps
       Id: 0
       Music: {fileID: 8300000, guid: 6e18d076df649554985ce212cbdcf42b, type: 3}
