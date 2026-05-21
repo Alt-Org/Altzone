@@ -156,7 +156,7 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Public method that gets called when local player gives movement joystick input.
-        /// Calls <see cref="Battle.View.Player.BattlePlayerInput.QueueJoystickMovement">OnJoystickMovement</see> method
+        /// Calls <see cref="Battle.View.Player.BattlePlayerInput.QueueJoystickMovement">QueueJoystickMovement</see> method
         /// in <see cref="BattleGameViewController._playerInput">_playerInput</see>.
         /// </summary>
         ///
@@ -169,7 +169,7 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Public method that gets called when local player gives rotation joystick input.
-        /// Calls <see cref="Battle.View.Player.BattlePlayerInput.QueueJoystickRotation">OnJoystickRotation</see> method
+        /// Calls <see cref="Battle.View.Player.BattlePlayerInput.QueueJoystickRotation">QueueJoystickRotation</see> method
         /// in <see cref="BattleGameViewController._playerInput">_playerInput</see>.
         /// </summary>
         ///
