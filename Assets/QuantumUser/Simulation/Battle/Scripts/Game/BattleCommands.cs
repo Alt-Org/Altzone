@@ -66,7 +66,12 @@ namespace Battle.QSimulation.Game
     /// See [{Custom Quantum Commands}](#page-concepts-commands) for more info.
     public class BattleCharacterAbilityQCommand : BattleCommand
     {
+        /// <summary>
+        /// Gets the command <see cref="BattleCommand.Type">Type</see> associated with this command.<br/>
+        /// Always returns <see cref="BattleCommand.Type.ActivateAbility">Type.ActivateAbility</see>.
+        /// </summary>
         public override Type BattleCommandType => Type.ActivateAbility;
+
         /// <summary>
         /// Method that is required to be implemented but not needed here.
         /// </summary>
@@ -80,7 +85,12 @@ namespace Battle.QSimulation.Game
     /// See [{Custom Quantum Commands}](#page-concepts-commands) for more info.
     public class BattleCharacterSwapQCommand : BattleCommand
     {
+        /// <summary>
+        /// Gets the command <see cref="BattleCommand.Type">Type</see> associated with this command.<br/>
+        /// Always returns <see cref="BattleCommand.Type.SwapCharacter">Type.SwapCharacter</see>.
+        /// </summary>
         public override Type BattleCommandType => Type.SwapCharacter;
+
         /// <summary>
         /// The number of the character the player is attempting to swap to.
         /// </summary>
@@ -103,6 +113,10 @@ namespace Battle.QSimulation.Game
     /// See [{Custom Quantum Commands}](#page-concepts-commands) for more info.
     public class BattleGiveUpQCommand : BattleCommand
     {
+        /// <summary>
+        /// Gets the command <see cref="BattleCommand.Type">Type</see> associated with this command.<br/>
+        /// Always returns <see cref="BattleCommand.Type.GiveUp">Type.GiveUp</see>.
+        /// </summary>
         public override Type BattleCommandType => Type.GiveUp;
 
         /// <summary>
