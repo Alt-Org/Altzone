@@ -147,13 +147,13 @@ public class Popup : MonoBehaviour
                 // If this is a new task
                 if (currentTaskId == null)
                 {
-                    Instance._acceptConfirmButtonText.text = "Valitse";
+                    Instance._acceptConfirmButtonText.text = "Aloita tehtävä";
                     Instance.ResetOptionButtons();
                 }
                 // If there is already a task running
                 else
                 {
-                    Instance._acceptConfirmButtonText.text = "Vaihda Tehtävä";
+                    Instance._acceptConfirmButtonText.text = "Vaihda tehtävä";
                     
                 }
             }
