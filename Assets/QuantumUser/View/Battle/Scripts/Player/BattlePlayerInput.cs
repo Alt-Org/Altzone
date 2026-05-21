@@ -5,7 +5,7 @@
 /// Input is processed and compiled into an input struct, which is passed over to the Quantum simulation when polled by Quantum.
 /// </summary>
 
-#define DEBUG_INPUT_TYPE_OVERRIDE
+//#define DEBUG_INPUT_TYPE_OVERRIDE
 
 // Unity usings
 using UnityEngine;
