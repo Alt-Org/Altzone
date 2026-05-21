@@ -43,7 +43,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     [SerializeField] private Button _viewAllPlayersButton;
     [SerializeField] private Button _viewFriendListButton;
     [Header("Popup Button")]
-    [SerializeField] private Button _onlinePlayersPopupButton; //for visual selection effect
+    [SerializeField] private PopupButtonVisual _onlinePlayersPopupButton; //for visual selection effect
 
     private OnlinePlayersView _currentView = OnlinePlayersView.Clan;
 
@@ -481,12 +481,12 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     public void OpenPanel()
     {
         _onlinePlayersPanel.SetActive(true);
-        _onlinePlayersPopupButton.GetComponent<PopupButtonVisual>().ButtonSelected(true);
+        _onlinePlayersPopupButton.ButtonSelected(true);
     }
 
     public void Hide()
     {
         _onlinePlayersPanel.SetActive(false);
-        _onlinePlayersPopupButton.GetComponent<PopupButtonVisual>().ButtonSelected(false);
+        _onlinePlayersPopupButton.ButtonSelected(false);
     }
 }

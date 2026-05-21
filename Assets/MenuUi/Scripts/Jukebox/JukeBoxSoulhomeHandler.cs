@@ -22,7 +22,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     [SerializeField] private GameObject _addMusicInfoPopup;
     [SerializeField] private JukeboxInfoPopupHandler _jukeboxInfoPopupHandler;
     [SerializeField] private PopupController _jukeboxTextPopup;
-    [SerializeField] private Button _openJukeboxPopupButton;
+    [SerializeField] private PopupButtonVisual _jukeboxButtonVisual; // for selection effects
 
     private Coroutine _diskSpinCoroutine;
 
@@ -45,14 +45,10 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     public delegate void ChangeJukeboxSong(MusicTrack track);
     public static event ChangeJukeboxSong OnChangeJukeboxSong;
 
-    private PopupButtonVisual _jukeboxButtonVisual;
 
     private void Awake()
     {
         Application.quitting += Quitting;
-
-        if (_openJukeboxPopupButton != null)
-            _jukeboxButtonVisual = _openJukeboxPopupButton.GetComponent<PopupButtonVisual>();
     }
 
     private void Start() { Setup(); }
@@ -185,6 +181,12 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         MainDiskIndicatorControl();
     }
 
+    public void SetJukeboxButtonVisual(PopupButtonVisual visual)
+    {
+        _jukeboxButtonVisual = visual;
+        Debug.Log("Jukebox button visual set to: " + visual?.name);
+    }
+
     public void ToggleJukeboxScreen(bool toggle)
     {
         AudioManager audioManager = AudioManager.Instance;
@@ -195,7 +197,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
         if (toggle) //Open
         {
-            _jukeboxButtonVisual?.ButtonSelected(true);
+            _jukeboxButtonVisual.ButtonSelected(true);
 
             if (!jukeboxManager) return;
 
@@ -215,7 +217,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         }
         else if (audioManager) //Close
         {
-            _jukeboxButtonVisual?.ButtonSelected(false);
+            _jukeboxButtonVisual.ButtonSelected(false);
 
             if (jukeboxManager && jukeboxManager.TrackPreviewActive /*&& jukeboxManager.CurrentTrackQueueData != null*/)
                 jukeboxManager.StopMusicPreview();

@@ -12,7 +12,6 @@ public class JukeboxPopupOpener : MonoBehaviour
     private void Start()
     {
         _openJukeboxPopupButton.onClick.AddListener(() => { _jukeboxSoulhomeHandler.ToggleJukeboxScreen(true);
-        // OverlayPanelCheck.Instance.SetActiveOverlayButton(_openJukeboxPopupButton); // Call for button highlight script
         });
     }
 }

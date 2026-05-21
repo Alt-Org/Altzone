@@ -827,7 +827,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loggedOutPlayerText: 
   _playerNameText: {fileID: 4089725753710964374}
-  _profileNaviButton: {fileID: 309370926395138676}
+  _profileNaviButton: {fileID: 0}
 --- !u!114 &1176802821891568393
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -842,6 +842,81 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 30, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
+--- !u!1 &1910361976699645348
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7325833562894585506}
+  - component: {fileID: 3654710116653698498}
+  - component: {fileID: 7315646135081743658}
+  m_Layer: 5
+  m_Name: Glow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &7325833562894585506
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1910361976699645348}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7195422996332822515}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &3654710116653698498
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1910361976699645348}
+  m_CullTransparentMesh: 1
+--- !u!114 &7315646135081743658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1910361976699645348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 0.7022633, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: e94a2bddf1f7624418b07341c17f945d, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &2109928294446459047
 GameObject:
   m_ObjectHideFlags: 0
@@ -1157,12 +1232,12 @@ GameObject:
   - component: {fileID: 2870349523487861386}
   - component: {fileID: 9214707882203438984}
   m_Layer: 5
-  m_Name: JukeboxImage
+  m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8002919931667480595
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1203,14 +1278,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.7022633, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 22d300900c5b1aa48a16fbf6a7003126, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 45f5b2e20d00a7b40b94b5a8db389ca2, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -2604,6 +2679,7 @@ GameObject:
   - component: {fileID: 6925989263113558197}
   - component: {fileID: 3821786268536363426}
   - component: {fileID: 6875154417010575340}
+  - component: {fileID: 6043145547808673325}
   m_Layer: 5
   m_Name: JukeboxButton
   m_TagString: Untagged
@@ -2630,8 +2706,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.764639, y: 0.22049625}
   m_AnchorMax: {x: 0.86322224, y: 0.915797}
-  m_AnchoredPosition: {x: 0, y: 1.5}
-  m_SizeDelta: {x: 2, y: 0}
+  m_AnchoredPosition: {x: 0, y: 1.4998779}
+  m_SizeDelta: {x: 2, y: -5.420386}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &373647660393144667
 CanvasRenderer:
@@ -2648,20 +2724,20 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3909436128076817061}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.88235295, g: 0.5411765, b: 0.011764706, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2ab30040ac41f3b4ab2e3f34f56e28c4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 22d300900c5b1aa48a16fbf6a7003126, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2759,6 +2835,19 @@ MonoBehaviour:
   _categoryType: 1
   _audioName: Select
   _playType: 0
+--- !u!114 &6043145547808673325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3909436128076817061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c7a3b9eeca4c7f418e56fde8e263cc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _glowSprite: {fileID: 8002919931667480595}
 --- !u!1 &4322773247572311931
 GameObject:
   m_ObjectHideFlags: 0
@@ -3854,6 +3943,8 @@ MonoBehaviour:
   _rankingTextWins: {fileID: 7176456043077001366}
   _rankingTextActivity: {fileID: 1503126664345805168}
   _alternateLeaderboard: 1
+  _jukeboxButtonVisual: {fileID: 0}
+  _jukeboxHandler: {fileID: 0}
 --- !u!1 &6233066034912048802
 GameObject:
   m_ObjectHideFlags: 0
@@ -4447,6 +4538,7 @@ GameObject:
   - component: {fileID: 4835920303244819392}
   - component: {fileID: 153870383646949315}
   - component: {fileID: 5773387617304334091}
+  - component: {fileID: 5613711511997562003}
   m_Layer: 5
   m_Name: DropDownButton
   m_TagString: Untagged
@@ -4466,6 +4558,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 7325833562894585506}
   - {fileID: 2142918817697190372}
   m_Father: {fileID: 8476621660179101015}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4582,6 +4675,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _dropDownPanel: {fileID: 1722599976141329941}
   _dropDownOpen: 0
+  _hamburgerButton: {fileID: 5613711511997562003}
 --- !u!114 &153870383646949315
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4627,6 +4721,19 @@ MonoBehaviour:
   _categoryType: 1
   _audioName: Select
   _playType: 0
+--- !u!114 &5613711511997562003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6598526225909755234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c7a3b9eeca4c7f418e56fde8e263cc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _glowSprite: {fileID: 7325833562894585506}
 --- !u!1 &6901067652087171277
 GameObject:
   m_ObjectHideFlags: 0
@@ -6285,18 +6392,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 7854154580216516761}
   m_SourcePrefab: {fileID: 100100000, guid: f8344c471eab70640b21c56b49071030, type: 3}
---- !u!114 &309370926395138676 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3480276211852442890, guid: f8344c471eab70640b21c56b49071030,
-    type: 3}
-  m_PrefabInstance: {fileID: 3749097094265790334}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1609676208198424510}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 337dca1768bd6a44a9fe3bfb30afa666, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1609676208198424510 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2472968820478298304, guid: f8344c471eab70640b21c56b49071030,

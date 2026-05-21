@@ -5,12 +5,13 @@ using UnityEngine.UI;
 
 public class PopupButtonVisual : MonoBehaviour
 {
-    private Transform _glowSprite;
+    [SerializeField] private Transform _glowSprite;
     private void Awake()
     {
-        _glowSprite = transform.Find("Glow");
-        if (_glowSprite != null)
-             _glowSprite.gameObject.SetActive(false);
+        if (_glowSprite == null)
+            _glowSprite = transform.Find("Glow");
+
+        _glowSprite.gameObject.SetActive(false);
     }//awake
 
     public void ButtonSelected(bool selected)

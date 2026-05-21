@@ -12,7 +12,7 @@ public class DropDownMenu : MonoBehaviour
     [SerializeField]
     private bool _dropDownOpen = false;
     [SerializeField]
-    private Button _hamburgerButton;
+    private PopupButtonVisual _hamburgerButton; // for selection effects
 
 
 
@@ -36,14 +36,14 @@ public class DropDownMenu : MonoBehaviour
         {
             _dropDownPanel.SetActive(true);
             _dropDownOpen = true;
-            _hamburgerButton.GetComponent<PopupButtonVisual>().ButtonSelected(true);
+            _hamburgerButton.ButtonSelected(true);
         }
         else if (_dropDownOpen)
         {
 
             _dropDownPanel.SetActive(false);
             _dropDownOpen = false;
-            _hamburgerButton.GetComponent<PopupButtonVisual>().ButtonSelected(false);
+            _hamburgerButton.ButtonSelected(false);
         }
 
     }
@@ -62,7 +62,7 @@ public class DropDownMenu : MonoBehaviour
 
         _dropDownPanel.SetActive(false);
         _dropDownOpen = false;
-        _hamburgerButton.GetComponent<PopupButtonVisual>().ButtonSelected(false);
+        _hamburgerButton.ButtonSelected(false);
     }
 
 }
