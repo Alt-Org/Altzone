@@ -22,7 +22,6 @@ using Prg.Scripts.Common;
 // Battle QSimulation usings
 using Battle.QSimulation;
 using Battle.QSimulation.Game;
-using Battle.QSimulation.Player;
 
 // Battle View usings
 using Battle.View.Game;
