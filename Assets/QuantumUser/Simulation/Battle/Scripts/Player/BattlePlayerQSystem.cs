@@ -349,7 +349,7 @@ namespace Battle.QSimulation.Player
                     IsValid                       = true,
                     MovementInput                 = BattleMovementInputType.None,
                     MovementDirectionIsNormalized = false,
-                    MovementGridPosition        = new BattleGridPosition { Col = 0, Row = 0 },
+                    MovementGridPosition          = new BattleGridPosition { Col = 0, Row = 0 },
                     MovementVector                = FPVector2.Zero,
                     RotationInput                 = false,
                     RotationValue                 = FP._0,
@@ -360,7 +360,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Private helper method for handling when a player gives up or abandons the match.
+        /// Private helper method for handling when a player wants to give up or has abandoned the match.
         /// </summary>
         ///
         /// Used by <see cref="BattlePlayerQSystem.HandleGiveUpInput">HandleGiveUpInput</see> and <see cref="BattlePlayerQSystem.HandlePlayerAbandoned">HandlePlayerAbandoned</see>.
@@ -368,7 +368,7 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Handle of the player.</param>
         ///
-        /// <returns>True if the give up input was processed.</returns>
+        /// <returns>True if all players on a team have given up.</returns>
         private static bool HandleGiveUpLogic(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
             BattlePlayerSlot slot = playerHandle.Slot;
@@ -473,7 +473,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Private helper method for handling player input for giving up during the game play.<br/>
+        /// Private helper method for handling player give up command.<br/>
         /// Subprocess of <see cref="BattlePlayerQSystem.Update">Update</see> method.
         /// </summary>
         ///
@@ -482,7 +482,7 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Handle of the player.</param>
         ///
-        /// <returns>True if the give up input was processed.</returns>
+        /// <returns>True if all players on a team have given up.</returns>
         private bool HandleGiveUp(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
             playerHandle.GiveUpState = !playerHandle.GiveUpState;
@@ -494,14 +494,14 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Private helper method for handling character swapping.<br/>
-        /// Called by <see cref="BattleCharacterSwapQCommand"/>
+        /// Subprocess of <see cref="BattlePlayerQSystem.Update">Update</see> method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Handle of the player.</param>
         ///
-        /// <returns>True if character swapped.</returns>
-        private static bool HandleCharacterSwapping(Frame f, BattlePlayerManager.PlayerHandle playerHandle, int playerCharacterNumber)
+        /// <returns>True if character was swapped.</returns>
+        private bool HandleCharacterSwapping(Frame f, BattlePlayerManager.PlayerHandle playerHandle, int playerCharacterNumber)
         {
             if (playerCharacterNumber == playerHandle.SelectedCharacterNumber) return false;
 
