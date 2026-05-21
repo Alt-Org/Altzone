@@ -37,6 +37,8 @@ namespace Battle.QSimulation.Game
             SwapCharacter
         }
 
+        public override void Serialize(BitStream stream) { }
+
         public abstract Type BattleCommandType { get; }
 
         /// <summary>
@@ -71,11 +73,6 @@ namespace Battle.QSimulation.Game
         /// Always returns <see cref="BattleCommand.Type.ActivateAbility">Type.ActivateAbility</see>.
         /// </summary>
         public override Type BattleCommandType => Type.ActivateAbility;
-
-        /// <summary>
-        /// Method that is required to be implemented but not needed here.
-        /// </summary>
-        public override void Serialize(BitStream _) { }
     }
 
     /// <summary>
@@ -118,10 +115,5 @@ namespace Battle.QSimulation.Game
         /// Always returns <see cref="BattleCommand.Type.GiveUp">Type.GiveUp</see>.
         /// </summary>
         public override Type BattleCommandType => Type.GiveUp;
-
-        /// <summary>
-        /// Method that is required to be implemented but not needed here.
-        /// </summary>
-        public override void Serialize(BitStream _) { }
     }
 }
