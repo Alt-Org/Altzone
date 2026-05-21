@@ -227,9 +227,9 @@ public class TopBarOrderBridge : MonoBehaviour
             }
         }
 
-        ApplyOrderToToggleList(order, _toggleContainer, owner);
         owner.ApplyFromSettings();
         owner.ApplyOrderFromSettings();
+        ApplyOrderToToggleList(order, _toggleContainer, owner);
 
         bool clanTileOn = PlayerPrefs.GetInt(
             TopBarDefs.Key(TopBarDefs.TopBarItem.ClanTile) + "_" + style,

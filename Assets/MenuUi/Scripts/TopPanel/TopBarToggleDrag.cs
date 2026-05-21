@@ -14,6 +14,8 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
     public Action OnDropped;
 
+    private RectTransform _dragHandle;
+    private RectTransform _row;
     private RectTransform _rectTransform, _listContainer, _boundsTransform;
     private LayoutElement _layoutElement;
     private CanvasGroup _canvasGroup;
@@ -34,30 +36,28 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
         Debug.Log($"[TopBarDebugScroll] ScrollRect found: {_scrollRect != null}");
 
-        _rectTransform = GetComponent<RectTransform>();
-        _layoutElement = GetComponent<LayoutElement>();
-        _canvasGroup = GetComponent<CanvasGroup>();
-
+        _dragHandle = GetComponent<RectTransform>();
+        _row = transform.parent as RectTransform;
+        _layoutElement = _row.GetComponent<LayoutElement>();
+        _canvasGroup = _row.GetComponent<CanvasGroup>();
         _rootCanvas = GetComponentInParent<Canvas>();
+    }
+
+    private void OnEnable()
+    {
+        if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleDrag : OnEnable()");
     }
 
     public void OnBeginDrag(PointerEventData e)
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleDrag : OnBeginDrag()");
 
-        _isScrolling = Mathf.Abs(e.delta.y) > Mathf.Abs(e.delta.x);
-
-        if (_isScrolling && _scrollRect != null)
-        {
-            _scrollRect.OnBeginDrag(e);
-            return;
-        }
-
         if (_rootCanvas == null) return;
 
-        _originalParent = transform.parent;
+        _originalParent = _row.parent;
         _listContainer = (RectTransform)_originalParent;
         _boundsTransform = (_clampArea != null) ? _clampArea : _listContainer;
+        _rectTransform = _row;
 
         _placeholderObject = new GameObject("Placeholder", typeof(RectTransform), typeof(LayoutElement));
         _placeholderObject.transform.SetParent(_originalParent, false);
@@ -67,7 +67,7 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
             ? _layoutElement.preferredHeight
             : _rectTransform.rect.height;
 
-        _placeholderObject.transform.SetSiblingIndex(transform.GetSiblingIndex());
+        _placeholderObject.transform.SetSiblingIndex(_row.GetSiblingIndex());
 
         if (_layoutElement != null) _layoutElement.ignoreLayout = true;
         if (_canvasGroup != null) _canvasGroup.blocksRaycasts = false;
@@ -75,8 +75,8 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         LayoutRebuilder.ForceRebuildLayoutImmediate(_listContainer);
         Canvas.ForceUpdateCanvases();
 
-        transform.SetParent(_rootCanvas.transform, true);
-        _rectTransform.SetAsLastSibling();
+        _row.SetParent(_rootCanvas.transform, true);
+        _row.SetAsLastSibling();
 
         RectTransform rootRT = (RectTransform)_rootCanvas.transform;
 
@@ -101,12 +101,6 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleDrag : OnDrag()");
 
-        if (_isScrolling && _scrollRect != null)
-        {
-            _scrollRect.OnDrag(e);
-            return;
-        }
-
         FollowPointer(e);
         UpdatePlaceholderIndex(e);
     }
@@ -115,17 +109,11 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleDrag : OnEndDrag()");
 
-        if (_isScrolling && _scrollRect != null)
-        {
-            _scrollRect.OnEndDrag(e);
-            return;
-        }
-
-        transform.SetParent(_originalParent, false);
+        _row.SetParent(_originalParent, false);
 
         if (_placeholderObject != null)
         {
-            transform.SetSiblingIndex(_placeholderObject.transform
+            _row.SetSiblingIndex(_placeholderObject.transform
                 .GetSiblingIndex());
             Destroy(_placeholderObject);
             _placeholderObject = null;
@@ -187,7 +175,7 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         {
             if (child == _placeholderObject.transform) continue;
 
-            if (child.GetComponent<TopBarToggleDrag>() != null)
+            if (child.GetComponentInChildren<TopBarToggleDrag>() != null)
                 rows.Add((RectTransform)child);
         }
 
@@ -204,13 +192,23 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
             float rowMiddleY = (corners[1].y + corners[0].y) * 0.5f;
 
+            Debug.Log(
+                $"[TopBarDebug] row={row.name}, " +
+                $"middleY={rowMiddleY}, " +
+                $"pointerY={e.position.y}, " +
+                $"i={i}"
+            );
+
             if (e.position.y < rowMiddleY)
                 insertIndex = i + 1;
             else
                 break;
         }
 
-
+        insertIndex = Mathf.Clamp(insertIndex, 0, _listContainer.childCount - 1);
         _placeholderObject.transform.SetSiblingIndex(insertIndex);
+        Debug.Log($"[TopBarDebug] insertIndex={insertIndex}, " +
+                  $"childCount={_listContainer.childCount}, " +
+                  $"dragging={_row.name}");
     }
 }
