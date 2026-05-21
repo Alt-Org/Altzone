@@ -503,6 +503,8 @@ namespace Battle.QSimulation.Player
         /// <returns>True if character swapped.</returns>
         public static bool HandleCharacterSwapping(Frame f, BattlePlayerManager.PlayerHandle playerHandle, int playerCharacterNumber)
         {
+            if (playerCharacterNumber == playerHandle.SelectedCharacterNumber) return false;
+
             s_debugLogger.LogFormat(f, "({0}) Character swap input received", playerHandle.Slot);
 
             if (!playerHandle.AllowCharacterSwapping)
