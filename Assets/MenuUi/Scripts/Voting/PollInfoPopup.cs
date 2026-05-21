@@ -8,6 +8,7 @@ using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
+using System;
 
 public class PollInfoPopup : MonoBehaviour
 {
@@ -55,6 +56,7 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private TMP_Text clanTargetRoleText;
 
     private PollData _currentPollData;
+    public bool _pollEnded;
 
     private void Awake()
     {
@@ -97,14 +99,32 @@ public class PollInfoPopup : MonoBehaviour
         }
     }
 
-    public void UpdateTimerDisplay(long secondsLeft)
+    public void UpdateTimerDisplay(long secondsLeft = -1)
     {
-        if (timer != null)
-        {
-            if (secondsLeft < 60) timer.text = secondsLeft + "s";
-            else if (secondsLeft < 3600) timer.text = (secondsLeft / 60) + "m";
-            else timer.text = (secondsLeft / 3600) + "h";
+        if (timer == null)
+            return;
+
+        if (_pollEnded) {
+            var endDateTime = DateTimeOffset.FromUnixTimeSeconds(_currentPollData.EndTime).ToLocalTime();
+            timer.text = endDateTime.ToString("d.M. HH:mm");
+            return;
         }
+
+        if (secondsLeft == -1) {
+            long currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            secondsLeft = _currentPollData.EndTime - currentTime;
+        }
+
+        long seconds = secondsLeft % 60;
+        long minutes = (secondsLeft / 60) % 60;
+        long hours = secondsLeft / 3600;
+
+        timer.text = secondsLeft switch
+        {
+            < 60 => $"{seconds}s",
+            < 3600 => $"{minutes}m {seconds}s",
+            _ => $"{hours}h {minutes}m"
+        };
     }
 
     // Opens the popup and fills it with the data from the furniture in question
@@ -153,6 +173,8 @@ public class PollInfoPopup : MonoBehaviour
             }
         }
         */
+
+        UpdateTimerDisplay();
 
         string currentPollId = _currentPollData.Id;
         // Enable and disable vote buttons and list based on whether the player has voted on the poll
