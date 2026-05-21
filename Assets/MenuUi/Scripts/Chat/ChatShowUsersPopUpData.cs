@@ -10,7 +10,6 @@ using Altzone.Scripts.Chat;
 using Altzone.Scripts.Model.Poco.Player;
 using static ServerChatMessage;
 using System.Linq;
-using static ChatShowUsersPopUpData;
 
 public class ChatShowUsersPopUpData : MonoBehaviour
 {
@@ -21,7 +20,6 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     [SerializeField] private GameObject ShowUsersPopUp;
 
     [Header("Scripts")]
-    [SerializeField] private MessageObjectHandler _messageObjectHandler;
     [SerializeField] private MessageReactionsHandler _messageReactionsHandler;
     [Header("User Info")]
 
@@ -31,17 +29,16 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     [SerializeField] private List<UserReactionInfo> _userInfo;
 
     [Header("Reactions")]
-    public GameObject _reactionFieldNewLocation;
-    [SerializeField] private GameObject _reactionFieldOldLocation;
     [SerializeField] private List<ReactionObject> _reactionList;
     [SerializeField] private GameObject _allReactions;
-    [SerializeField] private GameObject _selectedReaction;
+    public GameObject _selectedReaction;
     [SerializeField] private GameObject _noReactions;
+    public GameObject CopiedReactionField;
+    public Transform ReactionFieldLocation;
 
     [SerializeField] private Sprite[] _sprites;
     [SerializeField] private Image _image;
     [SerializeField] private TextMeshProUGUI _OrderButtonText;
-    private int _listorder = 0;
     private int currentOrder = 1;
 
 
@@ -61,14 +58,17 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     //Puts back the reactions and popup back to messageobject
     public void ClosePopup()
     {
-        _messageReactionsHandler.ReactionResize();
 
-        RectTransform rt = _messageObjectHandler.ReactionsPanel.GetComponent<RectTransform>();
-        gameObject.transform.SetParent(ShowUsersPopUp.transform);
+        //---- Put the new data that been added to popup here ----
+        for (int i = _userInfo.Count - 1; i >= 0; i--)
+        {
+            Destroy(_userInfo[i].UserDataObj);
+        }
 
-        _messageObjectHandler.ReactionsPanel.transform.SetParent(_reactionFieldOldLocation.transform);
-        rt.offsetMin = Vector2.zero;
-        rt.offsetMax = new Vector2(0, -80);
+        _userInfo.Clear();
+
+        Destroy(CopiedReactionField);
+        CopiedReactionField = null;
         gameObject.SetActive(false);
 
     }
@@ -82,6 +82,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     //Incane user leaves the chat
     private void OnDisable()
     {
+        
         ListOrder(1);
         ClosePopup();
     }
@@ -106,7 +107,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
 
 
-    public void AddUsersReaction(ChatMessage message, ServerReactions Emoji)
+    public void AddUsersReaction(ChatMessage message, ServerReactions Emoji, int lineOrder)
     {
         
                 Mood mood = (Mood)Enum.Parse(typeof(Mood), Emoji.emoji);
@@ -133,19 +134,15 @@ public class ChatShowUsersPopUpData : MonoBehaviour
         Sprite reactionSprite = _reactionList.FirstOrDefault(x => x.Mood == mood)?.Sprite;
 
         //Sets up the Data
-
-        if(_userInfo.Count + 1 >= _listorder)
-        {
-        _listorder++;
-        }
         GameObject newUserData = Instantiate(_userData, _userContent.transform);
-        _userInfo.Add(new UserReactionInfo { _avatar = message.Avatar, _id = Emoji.sender_id, _name = Emoji.playerName, Emoji = reactionSprite, UserDataObj = newUserData, _mood = mood, _order = _listorder});
+        _userInfo.Add(new UserReactionInfo { _avatar = message.Avatar, _id = Emoji.sender_id, _name = Emoji.playerName, Emoji = reactionSprite, UserDataObj = newUserData, _mood = mood, _order = lineOrder});
         UsersReactionData userData = newUserData.GetComponent<UsersReactionData>();
        userData.SetReactionInfo(_userInfo[_userInfo.Count - 1]._avatar, _userInfo[_userInfo.Count - 1]._name, _userInfo[_userInfo.Count - 1]._id, _userInfo[_userInfo.Count - 1].Emoji);
         _usersReactionData.Add(userData);
         reactiontext();
         ListOrder(currentOrder);
-        if (_messageObjectHandler.ReactionsPanel.transform.childCount > 0)
+
+        if (CopiedReactionField.transform.childCount > 0)
         {
             _noReactions.SetActive(false);
         }
@@ -170,7 +167,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
             }
                 reactiontext();
-        if(_messageObjectHandler.ReactionsPanel.transform.childCount == 0)
+        if(CopiedReactionField.transform.childCount == 0)
         {
             _noReactions.SetActive(true);
         }

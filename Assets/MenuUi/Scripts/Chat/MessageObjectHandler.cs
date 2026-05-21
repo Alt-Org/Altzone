@@ -19,8 +19,6 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private Button _button;
     [SerializeField] private GameObject _addReactionsControls;
     [SerializeField] private GameObject _reactionsPanel;
-    [SerializeField] private GameObject _fixSize;
-    [SerializeField] private ChatShowUsersPopUpData _chatShowUsersPopUpData;
 
     [Header("Base Message")]
     public Vector2 _baseMessageBankerSize;
@@ -106,7 +104,6 @@ public class MessageObjectHandler : MonoBehaviour
         foreach (var reactionData in message.Reactions)
         {
             ReactionChatCall(reactionData, message);
-            _chatShowUsersPopUpData.AddUsersReaction(message, reactionData);
         }
     }
 
@@ -163,8 +160,8 @@ public class MessageObjectHandler : MonoBehaviour
         //Gets the set data we need to get to import saved reactions
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
 
-                ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, ReactionsPanel, message);
-        
+        ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, ReactionsPanel, message);
+        ChildsScript.ReactionData.Add(EmojiId);
     }
 
     private void UpdateReactions(ChatChannelType chatChannelType, ChatMessage message)

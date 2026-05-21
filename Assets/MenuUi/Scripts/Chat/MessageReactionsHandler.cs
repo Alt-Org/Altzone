@@ -5,7 +5,6 @@ using System.Linq;
 using Altzone.Scripts.Chat;
 using UnityEngine;
 using UnityEngine.UI;
-using static System.Collections.Specialized.BitVector32;
 using static ServerChatMessage;
 
 public class MessageReactionsHandler : AltMonoBehaviour
@@ -13,15 +12,8 @@ public class MessageReactionsHandler : AltMonoBehaviour
     [Header("Containers")]
     [SerializeField] private GameObject _commonReactionsPanel;
     [SerializeField] private GameObject _allReactionsPanel;
-    [SerializeField] private GameObject _usersWhoAdded;
 
     [SerializeField] public List<reactionPanelGroup> _reactionPaneldata;
-
-
-
-    [SerializeField] private GameObject _allReactionsPanelPopUp;
-    [SerializeField] private GameObject _selectedReaction;
-
     [Header("Prefabs")]
     [SerializeField] private GameObject _addedReactionPrefab;
 
@@ -37,7 +29,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
     */
     [Header("Buttons")]
     [SerializeField] private Button _openMoreButton;
-    [SerializeField] private Button _openMoreButtonShowUser;
 
     private List<ReactionObjectHandler> _reactions = new();
     private List<ChatReactionHandler> _reactionHandlers = new();
@@ -45,8 +36,9 @@ public class MessageReactionsHandler : AltMonoBehaviour
     private bool _longClick = false;
 
     public MessageObjectHandler _messageObjectHandler;
-    [SerializeField] private ChatShowUsersPopUpData _chatShowUsersPopUpData;
-    public LayoutElement layoutElement;
+
+
+    [SerializeField]public List<ServerReactions> ReactionData = new List<ServerReactions>();
 
     void Start()
     {
@@ -55,12 +47,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
             _allReactionsPanel.SetActive(true);
             _selectedMessage.SizeCall();
             _commonReactionsPanel.SetActive(false);
-            GetComponent<MessageReactionResize>().UpdateSize();
-        }));
-        //For "ShowUsersPopUp"
-        _openMoreButtonShowUser.onClick.AddListener((() => {
-            _allReactionsPanelPopUp.SetActive(true);
-            _selectedReaction.SetActive(false);
             GetComponent<MessageReactionResize>().UpdateSize();
         }));
 
@@ -184,13 +170,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
     public void UpdateReactions(List<ServerReactions> reactions, string messageid, ChatMessage message)
     {
 
-
-
-        foreach (var reactionContent in _reactionPaneldata)
-        {
-
-
-
             foreach (ChatReactionHandler addedReaction in _reactionHandlers)
             {
                 addedReaction.ResetReactions();
@@ -199,7 +178,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
             }
             foreach (ServerReactions reaction in reactions)
             {
-                AddReaction(reaction, (Mood)Enum.Parse(typeof(Mood), reaction.emoji), messageid, reactionContent._reactionField, message);
+                AddReaction(reaction, (Mood)Enum.Parse(typeof(Mood), reaction.emoji), messageid, _reactionPaneldata[0]._reactionField, message);
                 
             }
             List<ChatReactionHandler> removableReactions = new();
@@ -220,7 +199,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
 
             }
-        }
+        
     }
 
     /// <summary>
@@ -230,7 +209,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
     {
 
 
-
+        
         if (_selectedMessage != null)
         {
 
@@ -256,12 +235,16 @@ public class MessageReactionsHandler : AltMonoBehaviour
                     StartCoroutine(GetPlayerData(player =>
                     {
                         if (player != null)
+
                             if (player.Id == _reaction.sender_id)
                             {
+                                
+
+
+                                ReactionData.Add(_reaction);
 
                                 //Removes the selected reaction
                                 _reactionList[i].Selected = true;
-                                _chatShowUsersPopUpData.AddUsersReaction(message, _reaction);
                                 addedReaction.Select();
                             }
                     }));
@@ -277,30 +260,30 @@ public class MessageReactionsHandler : AltMonoBehaviour
             GameObject newReaction = Instantiate(_addedReactionPrefab, reactionsFields.transform);
 
             //adjusts the imported reactions size if ShowUsersPopUp is active
-            if (_usersWhoAdded.activeSelf == true)
+            /*if (_usersWhoAdded.activeSelf == true)
             {
                 RectTransform rt = newReaction.GetComponent<RectTransform>();
                 ContentSizeFitter SizeFitter = newReaction.GetComponent<ContentSizeFitter>();
-                layoutElement.ignoreLayout = false;
+
                 SizeFitter.enabled = false;
                 rt.sizeDelta = new Vector2(150, 110);
-            }
+            }*/
             ChatReactionHandler chatReactionHandler = newReaction.GetComponentInChildren<ChatReactionHandler>();
             chatReactionHandler.SetReactionInfo(reactionSprite, messageID, mood);
             chatReactionHandler.AddReaction(_reaction);
             _reactionHandlers.Add(chatReactionHandler);
 
             chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler));
-            chatReactionHandler.LongClickButton.onLongClick.AddListener(() => ShowUsers(chatReactionHandler));
+            chatReactionHandler.LongClickButton.onLongClick.AddListener(() => ShowUsers(message));
             StartCoroutine(GetPlayerData(player =>
             {
                 if (player != null)
                     if (player.Id == _reaction.sender_id)
                     {
+                        ReactionData.Add(_reaction);
                         chatReactionHandler.Select();
                         //Removes the selected Mood from the list  by checking what sprite is being used
                         _reactionList[i].Selected = true;
-                        _chatShowUsersPopUpData.AddUsersReaction(message, _reaction);
                     }
 
             }));
@@ -333,17 +316,20 @@ public class MessageReactionsHandler : AltMonoBehaviour
             _selectedMessage.SetMessageInactive();
 
             reactionHandler.Deselect();
+
             StartCoroutine(GetPlayerData(player =>
             {
-                //Removes the users reaction data from the "chatShowUsersPopUpData"
-                if (player != null)
-                    _chatShowUsersPopUpData.RemoveUserReaction(player.Id);
-
+                foreach (var j in ReactionData)
+                {
+                    if (j.sender_id == player.Id)
+                    {
+                        ReactionData.Remove(j);
+                    }
+                }
             }));
 
             if (reactionHandler.Selected)
             {
-
 
                 foreach (var i in _reactionList)
                 {
@@ -351,8 +337,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
                     {
                         //Adds the set sprite back in to reaction selection
                         i.Selected = false;
-
-
                     }
                 }
             }
@@ -365,12 +349,29 @@ public class MessageReactionsHandler : AltMonoBehaviour
         }
     }
 
-    private void ShowUsers(ChatReactionHandler reactionHandler)
+    private void ShowUsers(ChatMessage message)
     {
-        
-        RectTransform rtPopUp = _usersWhoAdded.GetComponent<RectTransform>();
-        RectTransform rtReactionField = _reactionPaneldata[0]._reactionField.GetComponent<RectTransform>();
-        foreach(var i in _reactionHandlers)
+
+
+        //NEXT NEXT NEXT FIND AWAY TO ADD THE LIST SCEARTION CONTENT DARTA PLEASE PLEASE
+
+        ChatShowUsersPopUpData Popup = Chat.instance.ChatShowUsersPopUpData;
+        //halts the button as when field get copied it the button will rerun the script again duplicating it twice
+        if(Popup.gameObject.activeSelf)
+            return;
+
+
+        int orderline = 0;
+
+        Popup.gameObject.SetActive(true);
+        Popup.CopiedReactionField = Instantiate(_reactionPaneldata[0]._reactionField, Popup.ReactionFieldLocation);
+        foreach (var reactionData in ReactionData)
+        {
+            orderline++;
+            Popup.AddUsersReaction(message, reactionData, orderline);
+        }
+        // RectTransform rtReactionField = _reactionPaneldata[0]._reactionField.GetComponent<RectTransform>();
+        /*foreach(var i in _reactionHandlers)
         {
             ContentSizeFitter SizeFitter = i._messageReaction.GetComponent<ContentSizeFitter>();
             RectTransform transform = i._messageReaction.GetComponent<RectTransform>();
@@ -378,20 +379,12 @@ public class MessageReactionsHandler : AltMonoBehaviour
             SizeFitter.enabled = false;
 
             transform.sizeDelta = new Vector2(150,  110);
-        }
+        } */
 
         _longClick = true;
 
-        _reactionPaneldata[0]._reactionField.transform.SetParent(_chatShowUsersPopUpData._reactionFieldNewLocation.transform);
-        _usersWhoAdded.transform.SetParent(Chat.instance.PopUps.transform);
 
-        rtReactionField.offsetMin = Vector2.zero;
-        rtReactionField.offsetMax = Vector2.zero;
-
-        rtPopUp.offsetMin = Vector2.zero;
-        rtPopUp.offsetMax = Vector2.zero;
-
-        _usersWhoAdded.SetActive(true);
+        //_usersWhoAdded.SetActive(true);
         
         //_chatScript.OpenUsersWhoAddedReactionPanel();
 
@@ -412,12 +405,23 @@ public class MessageReactionsHandler : AltMonoBehaviour
             HorizontalLayoutGroup reactionsField = reactioncontent._reactionField.GetComponent<HorizontalLayoutGroup>();
 
 
+            StartCoroutine(GetPlayerData(player =>
+            {
+                foreach (var j in ReactionData)
+                {
+                    if (j.sender_id == player.Id)
+                    {
+                        ReactionData.Remove(j);
+                    }
+                }
+            }));
 
-                foreach (var i in _reactionList)
+            foreach (var i in _reactionList)
             {
                 if (i.Mood == reaction.Mood)
                 {
                     i.Selected = false;
+
                 }
             }
 
@@ -435,14 +439,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
             _selectedMessage.SizeCall();
             
             LayoutRebuilder.ForceRebuildLayoutImmediate(reactionsField.GetComponent<RectTransform>());
-                   
-                StartCoroutine(GetPlayerData(player =>
-                {
-                    //Removes the users reaction data from the "chatShowUsersPopUpData"
-                    if (player != null)
-                        _chatShowUsersPopUpData.RemoveUserReaction(player.Id);
-                        
-                }));
+                  
 
 
         }
@@ -452,7 +449,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
     //Reverts reactions size back to orignal size when leaving ShowUserPopUp
     public void ReactionResize()
     {
-        layoutElement.ignoreLayout = true;
         foreach (var i in _reactionHandlers)
         {
             ContentSizeFitter SizeFitter = i._messageReaction.GetComponent<ContentSizeFitter>();
