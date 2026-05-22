@@ -307,7 +307,7 @@ public class ClanSettings : AltMonoBehaviour
             }
             else if (_heartColorChanger != null)
             {
-                _heartColorChanger.SetFillWholeHeart(true);
+                OnFillWholeHeartToggleChanged(true);
             }
         });
     }
@@ -697,7 +697,7 @@ public class ClanSettings : AltMonoBehaviour
 
         if (_heartColorChanger != null)
         {
-            bool fillWholeHeart = !isOn;
+            bool fillWholeHeart = isOn;
             _heartColorChanger.SetFillWholeHeart(fillWholeHeart);
         }
     }
@@ -734,12 +734,12 @@ public class ClanSettings : AltMonoBehaviour
 
         if (_heartColorChanger != null)
         {
-            _heartColorChanger.SetFillWholeHeart(true);
+            OnFillWholeHeartToggleChanged(true);
         }
 
         if (_fillWholeHeartToggle != null)
         {
-            _fillWholeHeartToggle.gameObject.SetActive(false);
+            _fillWholeHeartToggle.gameObject.SetActive(true);
         }
 
         if (_heartModeLabel != null)
