@@ -48,12 +48,11 @@ namespace Battle.View.Game
     /// Accesses all of the @ref UIHandlerReferences through the BattleUiController reference variable <see cref="BattleGameViewController._uiController">_uiController</see>.<br/>
     public class BattleGameViewController : QuantumCallbacks
     {
-        #region SerializeFields
-
         /// @anchor BattleGameViewController-SerializeFields
         /// @name SerializeField variables
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
+        #region SerializeFields
 
         /// <summary>[SerializeField] Reference to BattleGridViewController which handles visual functionality for the %Battle arena's grid.</summary>
         /// @ref BattleGameViewController-SerializeFields
@@ -85,9 +84,8 @@ namespace Battle.View.Game
         [Tooltip("Reference to BattlePlayerInput which polls player input for %Quantum")]
         [SerializeField] private BattlePlayerInput _playerInput;
 
-        /// @}
-
         #endregion SerializeFields
+        /// @}
 
         #region Public
 
@@ -126,11 +124,10 @@ namespace Battle.View.Game
 
         #region Public - Methods
 
-        #region Public - Methods - UiInput
-
         /// @name UiInput methods
         /// UiInput methods are called when the player gives an %UI input, such as presses a button. These methods shouldn't be called any other way.
         /// @{
+        #region Public - Methods - UiInput
 
         /// <summary>
         /// Public method that gets called when the local player pressed the give up button.
@@ -202,9 +199,8 @@ namespace Battle.View.Game
             _playerInput.QueueJoystickSpecial(state, value);
         }
 
-        /// @}
-
         #endregion Public - Methods - UiInput
+        /// @}
 
         #endregion Public - Methods
 
@@ -297,11 +293,10 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleDebugOnScreenMessage>(this, QEventDebugOnScreenMessage);
         }
 
-        #region QuantumEvent handlers
-
         /// @name QuantumEvent handlers
         /// QuantumEvent handler methods are called by QuantumEvents. These methods shouldn't be called any other way.
         /// @{
+        #region QuantumEvent handlers
 
         /// <summary>
         /// Private handler method for EventBattleViewWaitForPlayers QuantumEvent.<br/>
@@ -750,9 +745,10 @@ namespace Battle.View.Game
             _uiController.AnnouncementHandler.SetDebugtext(e.Message);
         }
 
+        #endregion
         /// @}
 
-#endregion
+
 
         /// <summary>
         /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.Update.html">Update@u-exlink</a> method. Handles %UI updates based on the game's state and countdown.
