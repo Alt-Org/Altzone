@@ -53,17 +53,17 @@ public class WeekEmotions : AltMonoBehaviour
         }
 
         // If no date is set, we can't determine the order of the emotions, so we just show them in the order they are in the list.
-        if (string.IsNullOrWhiteSpace(_playerData.emotionSelectorDate))
+        /*if (string.IsNullOrWhiteSpace(_playerData.emotionSelectorDate))
         {
             return;
-        }
+        }*/
 
-        DateTime anchorDate;
-        if (!DateTime.TryParse(_playerData.emotionSelectorDate, out anchorDate))
+        DateTime anchorDate = _playerData.emotionSelectorDate;
+        /*if (!DateTime.TryParse(_playerData.emotionSelectorDate, out anchorDate))
         {
             //Debug.LogError("Could not parse emotionSelectorDate: " + _playerData.emotionSelectorDate);
             return;
-        }
+        }*/
 
         // Changed to DayOfWeek form:
         // Ma=0, Ti=1, Ke=2, To=3, Pe=4, La=5, Su=6
