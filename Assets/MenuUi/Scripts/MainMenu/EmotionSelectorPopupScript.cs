@@ -131,7 +131,7 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
             // Adds the newest item to the list of emotions.
             data.Insert(0, emotion);
 
-            _playerData.emotionSelectorDate = DateTime.Today;
+            _playerData.AddEmotion(emotion);
 
             _playerData.daysBetweenInput = days.ToString();
 

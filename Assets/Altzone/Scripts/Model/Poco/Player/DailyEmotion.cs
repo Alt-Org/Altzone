@@ -20,6 +20,13 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public DailyEmotion() { }
 
+        public DailyEmotion(Emotion emotion)
+        {
+            _emotion = emotion;
+
+            _dateTime = DateTime.UtcNow;
+        }
+
         public DailyEmotion(ServerEmotions serverEmotion)
         {
             try

@@ -515,5 +515,16 @@ namespace Altzone.Scripts.Model.Poco.Player
 
             return emotions;
         }
+
+        public void AddEmotion(Emotion emotion)
+        {
+            List<DailyEmotion> emotions = new();
+
+            _playerDataEmotions.Add(new(emotion));
+
+            _playerDataEmotions = _playerDataEmotions.OrderByDescending(o => o.DateTime).ToList();
+
+            emotionSelectorDate = emotions[0].DateTime;
+        }
     }
 }
