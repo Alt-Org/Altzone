@@ -292,6 +292,7 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleGiveUpStateChange>(this, QEventOnGiveUpStateChange);
             QuantumEvent.Subscribe<EventBattleStoneCharacterPlayHitAnimation>(this, QEventOnStoneCharacterPlayHitAnimation);
             QuantumEvent.Subscribe<EventBattleSpecialJoystickVisibilityChange>(this, QEventOnBattleSpecialJoystickVisibilityChange);
+            QuantumEvent.Subscribe<EventBattleCharacterDeath>(this, QEventOnBattleCharacterDeath);
 
             // Subscribing to Debug events
             QuantumEvent.Subscribe<EventBattleDebugOnScreenMessage>(this, QEventDebugOnScreenMessage);
@@ -689,7 +690,7 @@ namespace Battle.View.Game
         /// <param name="e">The event data.</param>
         private void QEventOnShieldHit(EventBattleShieldHit e)
         {
-            if (e.Team == LocalPlayerTeam && e.ShieldAttached)
+            if (e.Team == LocalPlayerTeam)
             {
                 _uiController.PlayerInfoHandler.UpdateDefenceVisual(e.Slot, e.CharacterNumber, (float)e.DefencePercentage);
             }
@@ -735,6 +736,12 @@ namespace Battle.View.Game
         {
             if (e.Slot != LocalPlayerSlot) return;
             _uiController.JoystickHandler.SetShow(e.Show, BattleUiElementType.SpecialJoystick);
+        }
+
+        private void QEventOnBattleCharacterDeath(EventBattleCharacterDeath e)
+        {
+            _uiController.PlayerInfoHandler.UpdateDefenceVisual(e.Slot, e.CharacterNumber, 0.0f);
+            _uiController.PlayerInfoHandler.SetDeathImage(e.Slot, e.CharacterNumber);
         }
 
         /// <summary>

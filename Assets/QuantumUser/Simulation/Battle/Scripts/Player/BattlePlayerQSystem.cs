@@ -97,6 +97,17 @@ namespace Battle.QSimulation.Player
                 HandleSFXCommon(f, damagedPlayerData->Slot, soundEffectType, SoundEffectTarget.All);
             }
 
+            if (damagedPlayerData->CurrentDefence <= 0)
+            {
+                BattlePlayerManager.PlayerHandle playerHandle = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot);
+                f.Events.BattleCharacterDeath(damagedPlayerData->Slot, playerHandle.SelectedCharacterNumber);
+                BattlePlayerManager.DespawnPlayer(f, damagedPlayerData->Slot, kill: true);
+                playerHandle.RespawnTimer = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).AutoRespawnTimeSec);
+
+                playerHandle.SetOutOfPlayRespawning();
+                goto Exit;
+            }
+
             damagedPlayerData->MovementEnabled = false;
             damagedPlayerData->RotationEnabled = false;
             FP stunCooldown = (int)BattleQConfig.GetPlayerSpec(f).StunDurationSec;

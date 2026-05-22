@@ -197,6 +197,12 @@ synced event BattleShieldChangeState
     int ShieldNumber;
 }
 
+synced event BattleCharacterDeath
+{
+    BattlePlayerSlot Slot;
+    int CharacterNumber;
+}
+
 //} Gameplay events
 
 //{ Debug events
