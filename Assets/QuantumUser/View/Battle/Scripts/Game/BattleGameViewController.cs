@@ -191,7 +191,7 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Public method that gets called when local player gives special joystick input.
-        /// calls <see cref="Battle.View.Player.BattlePlayerInput.OnJoystickSpecial">OnJoystickSpecial</see> method
+        /// calls <see cref="Battle.View.Player.BattlePlayerInput.QueueJoystickSpecial">QueueJoystickSpecial</see> method
         /// in <see cref="BattleGameViewController._playerInput">_playerInput</see>
         /// </summary>
         ///
@@ -199,7 +199,7 @@ namespace Battle.View.Game
         /// <param name="value">The special input as Vector2</param>
         public void UiInputOnJoystickSpecial(BattleJoystickState state, Vector2 value)
         {
-            _playerInput.OnJoystickSpecial(state, value);
+            _playerInput.QueueJoystickSpecial(state, value);
         }
 
         /// @}
