@@ -103,13 +103,13 @@ public class ConfirmationPopupHandler : MonoBehaviour
         switch (SettingsCarrier.Instance.Language)
         {
             case SettingsCarrier.LanguageType.Finnish:
-                _confirmText.SetText("Haluatko varmasti aloittaa äänestyksen tästä huonekalusta?");
+                _confirmText.SetText("Haluatko varmasti aloittaa äänestyksen tästä huonekalusta?\n\nHuom. Tämä ei tällä hetkellä luo vielä oikeaa äänestystä.");
                 break;
             case SettingsCarrier.LanguageType.English:
-                _confirmText.SetText("Are you sure you want to start a vote for this item?");
+                _confirmText.SetText("Are you sure you want to start a vote for this item?\n\nNote. This doesn't yet start an actual proper vote.");
                 break;
             default:
-                _confirmText.SetText("Haluatko varmasti aloittaa äänestyksen tästä huonekalusta?");
+                _confirmText.SetText("Haluatko varmasti aloittaa äänestyksen tästä huonekalusta?\n\nHuom. Tämä ei tällä hetkellä luo vielä oikeaa äänestystä.");
                 break;
         }
 

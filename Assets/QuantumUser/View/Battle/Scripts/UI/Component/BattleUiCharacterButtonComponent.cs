@@ -70,7 +70,7 @@ namespace Battle.View.UI
         /// <param name="characterId">The CharacterId of the character as a int.</param>
         public void SetCharacterIcon(BattlePlayerCharacterID characterId)
         {
-            PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(characterId.ToString());
+            PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(((int)characterId).ToString());
 
             if (info == null) return;
 

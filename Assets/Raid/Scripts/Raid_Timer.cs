@@ -73,6 +73,7 @@ public class Raid_Timer : MonoBehaviour
             {
                 OnTimeEnd();
                 raid_References.RedScreen.SetActive(true);
+                raid_References.EndMenu.GetComponent<Raid_EndMenu>().SetCollectedLoot(raid_References.raid_LootTracking.ListOfCollectedLoot);
                 raid_References.EndMenu.SetActive(true);
                 if (raid_References.OutOfSpace.enabled || raid_References.RaidEndedText.enabled)
                 {
