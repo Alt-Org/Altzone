@@ -2558,6 +2558,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8509604158101261262, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
+      propertyPath: _reactionPaneldata._reactionField
+      value: 
+      objectReference: {fileID: 7999296891796925201}
+    - target: {fileID: 8509604158101261262, guid: 76aa8b7d736fa8e44955cce276908e74,
+        type: 3}
+      propertyPath: _reactionPaneldata._reactionsContent
+      value: 
+      objectReference: {fileID: 7044005991725015127}
+    - target: {fileID: 8509604158101261262, guid: 76aa8b7d736fa8e44955cce276908e74,
+        type: 3}
       propertyPath: _reactionPaneldata.Array.data[0]._reactionField
       value: 
       objectReference: {fileID: 7999296891796925201}
@@ -2628,6 +2638,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9727dc90ced796e4c9ffbdc2ef0b41ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &7044005991725015127 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5187269538509966883, guid: 76aa8b7d736fa8e44955cce276908e74,
+    type: 3}
+  m_PrefabInstance: {fileID: 2755556499939487348}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &7076273800822203925 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4903942317439731809, guid: 76aa8b7d736fa8e44955cce276908e74,

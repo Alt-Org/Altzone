@@ -20,7 +20,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     [SerializeField] private GameObject ShowUsersPopUp;
 
     [Header("Scripts")]
-    [SerializeField] private MessageReactionsHandler _messageReactionsHandler;
+    public MessageReactionsHandler _messageReactionsHandler;
     [Header("User Info")]
 
     [SerializeField] private VerticalLayoutGroup _userContent;
@@ -35,10 +35,11 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     [SerializeField] private GameObject _noReactions;
     public GameObject CopiedReactionField;
     public Transform ReactionFieldLocation;
-
+    public Transform PopUpAllReactions;
     [SerializeField] private Sprite[] _sprites;
     [SerializeField] private Image _image;
     [SerializeField] private TextMeshProUGUI _OrderButtonText;
+    private int LineOrder = 0;
     private int currentOrder = 1;
 
 
@@ -69,7 +70,9 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
         Destroy(CopiedReactionField);
         CopiedReactionField = null;
+        _messageReactionsHandler = null;
         gameObject.SetActive(false);
+        LineOrder = 0;
 
     }
 
@@ -107,11 +110,11 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
 
 
-    public void AddUsersReaction(ChatMessage message, ServerReactions Emoji, int lineOrder)
+    public void AddUsersReaction(ChatMessage message, ServerReactions Emoji)
     {
-        
+        LineOrder++;
                 Mood mood = (Mood)Enum.Parse(typeof(Mood), Emoji.emoji);
-           
+
         //halts the system if there's already a same user on the list
         for (int i = _userInfo.Count - 1; i >= 0; i--)
         {
@@ -135,7 +138,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
         //Sets up the Data
         GameObject newUserData = Instantiate(_userData, _userContent.transform);
-        _userInfo.Add(new UserReactionInfo { _avatar = message.Avatar, _id = Emoji.sender_id, _name = Emoji.playerName, Emoji = reactionSprite, UserDataObj = newUserData, _mood = mood, _order = lineOrder});
+        _userInfo.Add(new UserReactionInfo { _avatar = message.Avatar, _id = Emoji.sender_id, _name = Emoji.playerName, Emoji = reactionSprite, UserDataObj = newUserData, _mood = mood, _order = LineOrder});
         UsersReactionData userData = newUserData.GetComponent<UsersReactionData>();
        userData.SetReactionInfo(_userInfo[_userInfo.Count - 1]._avatar, _userInfo[_userInfo.Count - 1]._name, _userInfo[_userInfo.Count - 1]._id, _userInfo[_userInfo.Count - 1].Emoji);
         _usersReactionData.Add(userData);
@@ -162,6 +165,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
                 _userInfo[i].UserDataObj.transform.SetParent(null);
                 Destroy(_userInfo[i].UserDataObj);
                 _userInfo.RemoveAt(i);
+                LineOrder--;
                 }
 
 

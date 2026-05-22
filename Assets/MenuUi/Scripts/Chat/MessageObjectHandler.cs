@@ -40,7 +40,6 @@ public class MessageObjectHandler : MonoBehaviour
     public GameObject ReactionsPanel { get => _reactionsPanel;}
 
     [SerializeField] private GameObject ReactionObject;
-
     public string Id { get => _id;}
 
     // Start is called before the first frame update
@@ -159,9 +158,7 @@ public class MessageObjectHandler : MonoBehaviour
     {
         //Gets the set data we need to get to import saved reactions
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
-
         ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, ReactionsPanel, message);
-        ChildsScript.ReactionData.Add(EmojiId);
     }
 
     private void UpdateReactions(ChatChannelType chatChannelType, ChatMessage message)
