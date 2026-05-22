@@ -211,6 +211,15 @@ namespace Battle.View.UI
             playerInfoComponent.CharacterButtons[characterNumber].SetDamageFill(defencePercentage);
         }
 
+        public void SetDeathImage(BattlePlayerSlot slot, int characterNumber)
+        {
+            BattleUiPlayerInfoComponent playerInfoComponent = GetPlayerInfoComponent(slot);
+
+            if (playerInfoComponent == null) return;
+
+            playerInfoComponent.CharacterButtons[characterNumber].SetDeathImage();
+        }
+
         /// <summary>
         /// Retrieves the BattleUiPlayerInfoComponent for either the local player or their teammate.
         /// </summary>

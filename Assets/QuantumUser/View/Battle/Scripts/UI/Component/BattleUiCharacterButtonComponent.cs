@@ -51,6 +51,8 @@ namespace Battle.View.UI
         /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private Image _damageFill;
 
+        [SerializeField] private GameObject _deathImage;
+
         /// <summary>[SerializeField] The duration for damage fill animation.</summary>
         /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private float _damageFillAnimationDuration = 0.5f;
@@ -104,6 +106,11 @@ namespace Battle.View.UI
             _t = 0f;
             _startDamageFillAmount = _damageFill.fillAmount;
             _targetDamageFillAmount = 1 - percentage;
+        }
+
+        public void SetDeathImage()
+        {
+            _deathImage.SetActive(true);
         }
 
         /// <value>The starting damage fill amount for the fill animation.</value>
