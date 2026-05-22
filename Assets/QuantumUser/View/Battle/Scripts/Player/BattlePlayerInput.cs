@@ -91,7 +91,7 @@ namespace Battle.View.Player
         /// <param name="value">Value of the joystick as Vector2.</param>
         public void QueueJoystickMovement(BattleJoystickState state, Vector2 value)
         {
-            _joystickMovementVector = value;
+            _queued.JoystickMovementVector = value;
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace Battle.View.Player
         /// <param name="value">Value of the joystick as float.</param>
         public void QueueJoystickRotation(BattleJoystickState state, float value)
         {
-            _joystickRotationValue = value;
+            _queued.JoystickRotationValue = value;
         }
 
         /// <summary>
@@ -113,8 +113,8 @@ namespace Battle.View.Player
         /// <param name="value">Value of the joystick as Vector2.</param>
         public void QueueJoystickSpecial(BattleJoystickState state, Vector2 value)
         {
-            _joystickSpecialState = state;
-            _joystickSpecialValue = value;
+            _queued.JoystickSpecialState = state;
+            _queued.JoystickSpecialValue = value;
         }
 
         /// @}
@@ -133,8 +133,8 @@ namespace Battle.View.Player
             {
                 MovementInput                 = movementInput;
                 MovementDirectionIsNormalized = movementDirectionIsNormalized;
-                MovementGridPosition        = movementPositionTarget;
-                MovementVector        = movementVector;
+                MovementGridPosition          = movementPositionTarget;
+                MovementVector                = movementVector;
             }
         }
 
@@ -153,9 +153,27 @@ namespace Battle.View.Player
             }
         }
 
+        /// <summary>
+        /// Struct containing data related to queued inputs.
+        /// </summary
+        private struct Queued
+        {
+            /// <summary>The vector received from the movement joystick.</summary>
+            public Vector2 JoystickMovementVector;
+            /// <summary>The float value received from the rotation joystick.</summary>
+            public float JoystickRotationValue;
+            /// <summary>The <see cref="BattleJoystickState"></see> of the special joystick</summary>
+            public BattleJoystickState JoystickSpecialState;
+            /// <summary>The vector received from the special joystick.</summary>
+            public Vector2 JoystickSpecialValue;
+        }
+
         /// @name State variables
         /// Variables related to current input states.
         /// @{
+
+        /// <summary>Struct containing data related to queued inputs.</summary>
+        private Queued _queued;
 
         /// <summary>Saved time from previous frame.</summary>
         private float _previousTime;
@@ -172,20 +190,8 @@ namespace Battle.View.Player
         /// <summary>Initial saved vector when movement input is first detected.</summary>
         private Vector3 _movementStartVector;
 
-        /// <summary>The vector received from the movement joystick.</summary>
-        private Vector2 _joystickMovementVector;
-
-        /// <summary>The vector received from the special joystick.</summary>
-        private Vector2 _joystickSpecialValue;
-
-        /// <summary>The float value received from the rotation joystick.</summary>
-        private float _joystickRotationValue;
-
         /// <summary>Saved world position of the previous tap position used for double tap input validating.</summary>
         private Vector3 _lastTapPosition;
-
-        /// <summary>The <see cref="BattleJoystickState"></see> of the special joystick</summary>
-        private BattleJoystickState _joystickSpecialState;
 
         /// <summary>Saved time stamp of the previous tap.</summary>
         private float _lastTapTime;
@@ -326,8 +332,8 @@ namespace Battle.View.Player
 
             BattleSpecialInput specialInput = new()
             {
-                JoystickValue = new FPVector2(FP.FromFloat_UNSAFE(_joystickSpecialValue.x), FP.FromFloat_UNSAFE(_joystickSpecialValue.y)),
-                JoystickState = _joystickSpecialState
+                JoystickValue = new FPVector2(FP.FromFloat_UNSAFE(_queued.JoystickSpecialValue.x), FP.FromFloat_UNSAFE(_queued.JoystickSpecialValue.y)),
+                JoystickState = _queued.JoystickSpecialState
             };
 
             Input input = new()
@@ -458,11 +464,11 @@ namespace Battle.View.Player
                     break;
 
                 case MovementInputType.Joystick:
-                    if (_joystickMovementVector != Vector2.zero)
+                    if (_queued.JoystickMovementVector != Vector2.zero)
                     {
                         movementInputInfo.MovementInput = BattleMovementInputType.Direction;
                         movementInputInfo.MovementDirectionIsNormalized = true;
-                        movementInputInfo.MovementVector = new FPVector2(FP.FromFloat_UNSAFE(_joystickMovementVector.x), FP.FromFloat_UNSAFE(_joystickMovementVector.y));
+                        movementInputInfo.MovementVector = new FPVector2(FP.FromFloat_UNSAFE(_queued.JoystickMovementVector.x), FP.FromFloat_UNSAFE(_queued.JoystickMovementVector.y));
 
                         if (BattleGameViewController.LocalPlayerTeam == BattleTeamNumber.TeamBeta) movementInputInfo.MovementVector *= -1;
                     }
@@ -518,10 +524,10 @@ namespace Battle.View.Player
                     break;
 
                 case RotationInputType.Joystick:
-                    if (_joystickRotationValue != 0)
+                    if (_queued.JoystickRotationValue != 0)
                     {
                         rotationInputInfo.RotationInput = true;
-                        rotationInputInfo.RotationValue = FP.FromFloat_UNSAFE(_joystickRotationValue);
+                        rotationInputInfo.RotationValue = FP.FromFloat_UNSAFE(_queued.JoystickRotationValue);
                         rotationInputInfo.RotationValue *= -1;
                     }
                     break;
