@@ -2491,32 +2491,72 @@ namespace Altzone.Scripts.Lobby
                         return new List<string>();
                     }
 
-                    // Take the first two duos as the two clans
-                    var duo1 = completeDuos[0];
-                    var duo2 = completeDuos[1];
+                    (Player leader, Player follower) duo1 = default;
+                    (Player leader, Player follower) duo2 = default;
 
-                    if (duo1.leader == null || duo1.follower == null || duo2.leader == null || duo2.follower == null)
+                    string GetDuoClan((Player leader, Player follower) duo)
                     {
-                        return new List<string>();
+                        if (duo.leader == null && duo.follower == null)
+                        {
+                            return string.Empty;
+                        }
+
+                        string clan = duo.leader?.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty) ?? string.Empty;
+                        if (string.IsNullOrEmpty(clan))
+                        {
+                            clan = duo.follower?.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty) ?? string.Empty;
+                        }
+
+                        return clan;
                     }
 
-                    // Validate that duo1 and duo2 are from different clans
-                    string duo1Clan = duo1.leader.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
-                    if (string.IsNullOrEmpty(duo1Clan))
+                    string duo1Clan = string.Empty;
+                    string duo2Clan = string.Empty;
+
+                    for (int i = 0; i < completeDuos.Count - 1; i++)
                     {
-                        duo1Clan = duo1.follower.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
+                        var candidate1 = completeDuos[i];
+                        if (candidate1.leader == null || candidate1.follower == null)
+                        {
+                            continue;
+                        }
+
+                        string candidate1Clan = GetDuoClan(candidate1);
+                        if (string.IsNullOrEmpty(candidate1Clan))
+                        {
+                            continue;
+                        }
+
+                        for (int j = i + 1; j < completeDuos.Count; j++)
+                        {
+                            var candidate2 = completeDuos[j];
+                            if (candidate2.leader == null || candidate2.follower == null)
+                            {
+                                continue;
+                            }
+
+                            string candidate2Clan = GetDuoClan(candidate2);
+                            if (string.IsNullOrEmpty(candidate2Clan) || candidate1Clan == candidate2Clan)
+                            {
+                                continue;
+                            }
+
+                            duo1 = candidate1;
+                            duo2 = candidate2;
+                            duo1Clan = candidate1Clan;
+                            duo2Clan = candidate2Clan;
+                            break;
+                        }
+
+                        if (!string.IsNullOrEmpty(duo1Clan) && !string.IsNullOrEmpty(duo2Clan))
+                        {
+                            break;
+                        }
                     }
 
-                    string duo2Clan = duo2.leader.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
-                    if (string.IsNullOrEmpty(duo2Clan))
+                    if (string.IsNullOrEmpty(duo1Clan) || string.IsNullOrEmpty(duo2Clan))
                     {
-                        duo2Clan = duo2.follower.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
-                    }
-
-                    // Both duos must have clan names and they must be different
-                    if (string.IsNullOrEmpty(duo1Clan) || string.IsNullOrEmpty(duo2Clan) || duo1Clan == duo2Clan)
-                    {
-                        Debug.Log($"SelectQueueFollowersForMatch: Clan2v2 duos not from different clans (duo1={duo1Clan}, duo2={duo2Clan})");
+                        Debug.Log($"SelectQueueFollowersForMatch: Clan2v2 duos not from different clans (availableDuos={completeDuos.Count})");
                         return new List<string>();
                     }
 
