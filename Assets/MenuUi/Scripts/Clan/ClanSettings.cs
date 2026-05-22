@@ -162,10 +162,13 @@ public class ClanSettings : AltMonoBehaviour
 
     private int _valuesRolesRulesIndex = 0;
 
-    private const int ValuesIndex = 0;
-    private const int RolesIndex = 1;
-    private const int RulesIndex = 2;
-    private const int LogoIndex = 3;
+    private const int LogoIndex = 0;
+    private const int ValuesIndex = 1;
+    private const int RolesIndex = 2;
+    private const int RulesIndex = 3;
+
+    private const int FirstValuesRolesRulesIndex = LogoIndex;
+    private const int LastValuesRolesRulesIndex = RulesIndex;
 
     private List<HeartPieceData> _heartPieces;
     private List<ClanValues> _selectedValues = new();
@@ -189,7 +192,7 @@ public class ClanSettings : AltMonoBehaviour
     {
         RegisterUiListeners();
 
-        _valuesRolesRulesIndex = ValuesIndex;
+        _valuesRolesRulesIndex = LogoIndex;
         UpdateValuesRolesRulesPanel();
 
         Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clan) =>
@@ -1132,16 +1135,12 @@ public class ClanSettings : AltMonoBehaviour
 
     private void ShowPreviousValuesRolesRulesPanel()
     {
-        Debug.Log("LEFT ARROW CLICKED");
-
         _valuesRolesRulesIndex--;
 
-        if (_valuesRolesRulesIndex < ValuesIndex)
+        if (_valuesRolesRulesIndex < FirstValuesRolesRulesIndex)
         {
-            _valuesRolesRulesIndex = LogoIndex;
+            _valuesRolesRulesIndex = LastValuesRolesRulesIndex;
         }
-
-        Debug.Log("Values/Roles/Rules index: " + _valuesRolesRulesIndex);
 
         UpdateValuesRolesRulesPanel();
     }
@@ -1150,9 +1149,9 @@ public class ClanSettings : AltMonoBehaviour
     {
         _valuesRolesRulesIndex++;
 
-        if (_valuesRolesRulesIndex > LogoIndex)
+        if (_valuesRolesRulesIndex > LastValuesRolesRulesIndex)
         {
-            _valuesRolesRulesIndex = ValuesIndex;
+            _valuesRolesRulesIndex = FirstValuesRolesRulesIndex;
         }
 
         UpdateValuesRolesRulesPanel();
