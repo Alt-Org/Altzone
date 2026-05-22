@@ -348,7 +348,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
         
         //halts the button as when field get copied it the button will rerun the script again duplicating it twice
-        if(Popup.gameObject.activeSelf)
+        /*if(Popup.gameObject.activeSelf)
             return;
 
         //Gets needed data for ChatShowUserPopUpData
