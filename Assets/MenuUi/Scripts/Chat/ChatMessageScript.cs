@@ -50,9 +50,6 @@ public class ChatMessageScript : MonoBehaviour
                 float newHeight = Mathf.Max(110f, messageText.preferredHeight + _BackgroundPadding);
 
 
-                Debug.LogWarning("FIND ME " + messageText.preferredHeight);
-
-
                 //Changes the message text position when there's more text
                 if(messageText.preferredHeight > 50)
                 {
