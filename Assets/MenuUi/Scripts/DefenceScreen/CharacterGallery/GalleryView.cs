@@ -171,7 +171,7 @@ namespace MenuUi.Scripts.CharacterGallery
             GameObject slot = Instantiate(_characterSlotPrefab, parent);
 
             CharacterClassType classType = CustomCharacter.GetClass(charID);
-            Sprite classNameIcon = _classReference.GetNameIcon(classType);
+            string classNameIcon = _classReference.GetName(classType);
             Color bgColor = _classReference.GetColor(classType);
             Color bgAltColor = _classReference.GetAlternativeColor(classType);
             Sprite classIcon = _classReference.GetCornerIcon(classType);
