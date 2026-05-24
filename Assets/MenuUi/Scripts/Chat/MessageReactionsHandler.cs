@@ -34,7 +34,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
     private List<ChatReactionHandler> _reactionHandlers = new();
     private List<int> _commonReactions = new();
     private bool _longClick = false;
-    private ChatShowUsersPopUpData Popup = Chat.instance.ChatShowUsersPopUpData;
+    private ChatShowUsersPopUpData Popup = Chat.instance?.ChatShowUsersPopUpData;
     public MessageObjectHandler _messageObjectHandler;
 
 
