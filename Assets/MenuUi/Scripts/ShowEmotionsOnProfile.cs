@@ -83,8 +83,9 @@ public class WeekEmotions : AltMonoBehaviour
                 //Debug.LogError($"Week emotion target slot {targetSlot} is null on {gameObject.name}");
                 continue;
             }
-
-            Image image = _weekEmotions[(int)_playerData._playerDataEmotions[i].DateTime.DayOfWeek-1].GetComponent<Image>();
+             int weekdayIndex = (int)_playerData._playerDataEmotions[i].DateTime.DayOfWeek - 1;
+            if(weekdayIndex < 0) weekdayIndex+=7;
+            Image image = _weekEmotions[weekdayIndex].GetComponent<Image>();
             if (image == null)
             {
                 //Debug.LogError($"No Image component found on week emotion slot {targetSlot}");
