@@ -84,10 +84,9 @@ namespace Battle.QSimulation.Projectile
         /// Sets whether the projectile is currently held.
         /// </summary>
         ///
-        /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="isHeld">True/False : held / not held.</param>
-        public static void SetHeld(Frame f, BattleProjectileQComponent* projectile, bool isHeld)
+        public static void SetHeld(BattleProjectileQComponent* projectile, bool isHeld)
         {
             projectile->IsHeld = isHeld;
         }
@@ -200,8 +199,8 @@ namespace Battle.QSimulation.Projectile
 
         /// <summary>
         /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a> gets called every frame.</span><br/>
-        /// Launches the projectile if it hasn't been launched yet, moves it if not held,
-        /// updates its speed potential over time, and resets collision flags for the next frame. <br/>
+        /// Moves the projectile if not held, updates its speed potential over time,
+        /// and resets collision flags for the next frame. <br/>
         /// Sets properties based on the <see cref="Battle.QSimulation.Projectile.BattleProjectileQSpec">Projectile spec.</see>
         /// @warning
         /// This method should only be called by Quantum.
@@ -215,10 +214,6 @@ namespace Battle.QSimulation.Projectile
             BattleProjectileQComponent* projectile = filter.Projectile;
             Transform2D* transform = filter.Transform;
             projectile->Position = transform->Position;
-            if (!projectile->IsLaunched)
-            {
-                Launch(f, projectile);
-            }
 
             FP gameTimeSec = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>()->GameTimeSec;
 
@@ -232,40 +227,12 @@ namespace Battle.QSimulation.Projectile
             if (!projectile->IsHeld)
             {
                 // move the projectile
-                Transform2D* triggerTransform = f.Unsafe.GetPointer<Transform2D>(projectile->TriggerEntityRef);
                 FPVector2 newPosition = transform->Position + projectile->Direction * (projectile->Speed * f.DeltaTime);
-                MoveProjectile(transform, triggerTransform, newPosition);
+                BattleEntityManager.MoveCompound(f, GetProjectileEntity(f), newPosition, FP._0);
             }
 
             // reset CollisionFlags for next frame
             projectile->CollisionFlags[(f.Number + 1) % 2 ] = 0;
-        }
-
-        /// <summary>
-        /// Moves the projectile's and it's trigger's transform to a new position.
-        /// </summary>
-        ///
-        /// <param name="projectileTransform">Pointer to the projectile's Transform2D component.</param>
-        /// <param name="triggerTransform">Pointer to the projectile's trigger's Transform2D component.</param>
-        /// <param name="position">The new position the projectile and it's transform is moved to.</param>
-        public static void MoveProjectile(Transform2D* projectileTransform, Transform2D* triggerTransform, FPVector2 position)
-        {
-            projectileTransform->Position = position;
-            triggerTransform->Position = position;
-        }
-
-        /// <summary>
-        /// Teleports the projectile's and it's trigger's transform to a new position
-        /// </summary>
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        /// <param name="projectileTransform">Pointer to the projectile's Transform2D component.</param>
-        /// <param name="triggerTransform">Pointer to the projectile's trigger's Transform2D component.</param>
-        /// <param name="position">The new position the projectile and it's transform is teleported to.</param>
-        public static void TeleportProjectile(Frame f, Transform2D* projectileTransform, Transform2D* triggerTransform, FPVector2 position)
-        {
-            projectileTransform->Teleport(f, position);
-            triggerTransform->Teleport(f, position);
         }
 
         /// <summary>
@@ -382,9 +349,8 @@ namespace Battle.QSimulation.Projectile
 
             BattleProjectileQComponent* projectile                 = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
             Transform2D*                projectileTransform        = f.Unsafe.GetPointer<Transform2D>(projectileEntityRef);
-            Transform2D*                projectileTriggerTransform = f.Unsafe.GetPointer<Transform2D>(projectile->TriggerEntityRef);
 
-            SetHeld(f, projectile, true);
+            SetHeld(projectile, true);
 
             FPVector2 newPosition = winningTeam switch
             {
@@ -394,7 +360,7 @@ namespace Battle.QSimulation.Projectile
                 _ => FPVector2.Zero,
             };
 
-            MoveProjectile(projectileTransform, projectileTriggerTransform, newPosition);
+            BattleEntityManager.MoveCompound(f, projectileEntityRef, newPosition, FP._0);
         }
 
         #endregion Public - Gameflow Methods
@@ -425,9 +391,14 @@ namespace Battle.QSimulation.Projectile
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="projectile">Pointer to the projectile component.</param>
-        private static void Launch(Frame f, BattleProjectileQComponent* projectile)
+        public static void Launch(Frame f)
         {
+            // get projectile component
+            BattleProjectileSystemDataQSingleton* projectileSystemData = GetProjectileSystemData(f);
+            BattleEntityID projectileGroupID = projectileSystemData->ProjectileEntityID;
+            EntityRef projectileRef = BattleEntityManager.Get(f, projectileGroupID);
+            BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileRef);
+
             // retrieve the projectiles spec
             BattleProjectileQSpec spec = BattleQConfig.GetProjectileSpec(f);
 
@@ -453,14 +424,72 @@ namespace Battle.QSimulation.Projectile
             // reset CollisionFlags for this frame
             projectile->CollisionFlags[(f.Number) % 2] = 0;
 
-            // set the IsLaunched field to true to ensure it's launched only once
-            projectile->IsLaunched = true;
+            SetHeld(projectile, false);
 
-            SetHeld(f, projectile, false);
+            BattleEntityManager.TeleportCompound(f, projectileRef, new FPVector2(0, 0), FP._0);
 
             f.Events.BattleProjectileChangeSpeed(projectile->Speed);
 
             s_debugLogger.Log(f, "Projectile Launched");
+        }
+
+        /// <summary>
+        /// Creates a projectile entity and initializes its components.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        public static void CreateProjectile(Frame f)
+        {
+            BattleProjectileQSpec spec = BattleQConfig.GetProjectileSpec(f);
+
+            // create a new entity based on the provided prototype
+            EntityRef projectileEntityRef                                       = f.Create(spec.ProjectilePrototype);
+            BattleEntityManager.CompoundEntityTemplate projectileEntityTemplate = BattleEntityManager.CompoundEntityTemplate.Create(projectileEntityRef);
+
+            // get a pointer to the Transform2D component of the created projectile entity
+            BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
+            Transform2D* projectileTransform       = f.Unsafe.GetPointer<Transform2D>(projectileEntityRef);
+            PhysicsCollider2D* projectileCollider  = f.Unsafe.GetPointer<PhysicsCollider2D>(projectileEntityRef);
+
+            //{create projectile trigger entity
+
+            EntityRef projectileTriggerEntityRef = f.Create();
+
+            // initialize projectile trigger component
+            BattleProjectileTriggerQComponent projectileTrigger = new();
+            projectileTrigger.ProjectileEntityRef               = projectileEntityRef;
+
+            // initialize projectile trigger collider
+            PhysicsCollider2D projectileTriggerCollider = PhysicsCollider2D.Create(f,
+                shape: Shape2D.CreateCircle(projectileCollider->Shape.Circle.Radius),
+                isTrigger: true
+            );
+
+            // initialize projectile collision trigger component
+            BattleCollisionTriggerQComponent projectileCollisionTrigger = new();
+            projectileCollisionTrigger.Type = BattleCollisionTriggerType.Projectile;
+
+            // initialize projectile trigger entity
+            f.Add(projectileTriggerEntityRef, projectileTrigger);
+            f.Add<Transform2D>(projectileTriggerEntityRef);
+            f.Add(projectileTriggerEntityRef, projectileTriggerCollider);
+            f.Add(projectileTriggerEntityRef, projectileCollisionTrigger);
+
+            // link trigger
+            projectileEntityTemplate.Link(projectileTriggerEntityRef, new FPVector2(0, 0));
+
+            //} create projectile trigger entity
+
+            // set projectile position and initial values
+            projectileTransform->Position = new FPVector2(0, 0);
+            projectile->Radius            = projectileCollider->Shape.Circle.Radius;
+            projectile->EmotionCurrent    = 0;
+            projectile->EmotionBase       = 0;
+
+            BattleEntityID projectileEntityGroupID         = BattleEntityManager.RegisterCompound(f, projectileEntityTemplate);
+            GetProjectileSystemData(f)->ProjectileEntityID = projectileEntityGroupID;
+
+            SetHeld(projectile, true);
         }
 
         /// <summary>
@@ -515,6 +544,24 @@ namespace Battle.QSimulation.Projectile
 
             normal = shieldCollisionData->PlayerShieldHitbox->CalculateNormal(f);
             return true;
+        }
+
+        /// <summary>
+        /// Private helper method for getting the BattleProjectileSystemDataQSingleton from the %Quantum %Frame.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        ///
+        /// <returns>Pointer to the BattleProjectileSystemData singleton.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static BattleProjectileSystemDataQSingleton* GetProjectileSystemData(Frame f)
+        {
+            if (!f.Unsafe.TryGetPointerSingleton(out BattleProjectileSystemDataQSingleton* projectileSystemData))
+            {
+                s_debugLogger.Error(f, "ProjectileSystemData singleton not found!");
+            }
+
+            return projectileSystemData;
         }
 
         #endregion Private Static Methods

@@ -179,6 +179,7 @@ namespace Battle.QSimulation.Game
                     // Transition from GetReadyToPlay to Playing
                     if (gameSession->TimeUntilStartSec <= FP._0)
                     {
+                        BattleProjectileQSystem.Launch(f);
                         f.Events.BattleViewGameStart();
                         gameSession->State = BattleGameState.Playing;
                     }
@@ -208,6 +209,7 @@ namespace Battle.QSimulation.Game
 
             BattlePlayerManager.CreatePlayers(f);
             BattlePlayerQSystem.SpawnPlayers(f);
+            BattleProjectileQSystem.CreateProjectile(f);
         }
     }
 }
