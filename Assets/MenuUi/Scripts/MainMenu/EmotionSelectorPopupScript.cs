@@ -51,10 +51,10 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
                 return;
             }
 
-            if (!_playerData.emotionSelectorDate.Equals(DateTime.MinValue))
+            if (!_playerData.EmotionSelectionDate.Equals(DateTime.MinValue))
             {
-                Debug.LogWarning(_playerData.emotionSelectorDate.Date);
-                if (_playerData.emotionSelectorDate.Date == DateTime.Today)
+                Debug.LogWarning(_playerData.EmotionSelectionDate.Date);
+                if (_playerData.EmotionSelectionDate.Date == DateTime.Today)
                 {
                     _bSwitch = false;
                 }
@@ -112,7 +112,7 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
 
             int days = 7;
 
-            TimeSpan span = DateTime.Today - _playerData.emotionSelectorDate;
+            TimeSpan span = DateTime.Today - _playerData.EmotionSelectionDate;
             days = span.Days;
             if (days > 7) days = 7;
 
@@ -139,7 +139,7 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
 
             Debug.Log(days);
 
-            Debug.Log("Saving emotion date: " + _playerData.emotionSelectorDate);
+            Debug.Log("Saving emotion date: " + _playerData.EmotionSelectionDate);
             Debug.Log("Saving emotions: " + string.Join(", ", _playerData.playerDataEmotionList));
 
             // Saves the playerdata that has been changed.

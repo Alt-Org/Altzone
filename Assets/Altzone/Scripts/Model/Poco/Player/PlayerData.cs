@@ -71,7 +71,7 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         private DateTime _emotionSelectorDate = DateTime.MinValue;
 
-        public DateTime emotionSelectorDate => _emotionSelectorDate;
+        public DateTime EmotionSelectionDate => _emotionSelectorDate;
 
         public string daysBetweenInput = "0";
 
