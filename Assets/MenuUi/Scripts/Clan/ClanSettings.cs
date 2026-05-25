@@ -697,8 +697,7 @@ public class ClanSettings : AltMonoBehaviour
 
         if (_heartColorChanger != null)
         {
-            bool fillWholeHeart = isOn;
-            _heartColorChanger.SetFillWholeHeart(fillWholeHeart);
+            _heartColorChanger.SetFillWholeHeart(isOn);
         }
     }
 

@@ -167,8 +167,7 @@ public class ClanCreateNew : MonoBehaviour
 
         if (_heartColorChanger != null)
         {
-            bool fillWholeHeart = !isOn;          
-            _heartColorChanger.SetFillWholeHeart(fillWholeHeart);
+            _heartColorChanger.SetFillWholeHeart(isOn);
         }
     }
 
@@ -360,8 +359,8 @@ public class ClanCreateNew : MonoBehaviour
             OnFillWholeHeartToggleChanged(_fillWholeHeartToggle.isOn);
         }
         else if (_heartColorChanger != null)
-        {          
-            _heartColorChanger.SetFillWholeHeart(true);
+        {
+            OnFillWholeHeartToggleChanged(true);
         }
 
         if (_agreementController != null)
