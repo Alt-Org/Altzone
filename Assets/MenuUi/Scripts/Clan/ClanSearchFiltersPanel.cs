@@ -19,15 +19,21 @@ public class ClanSearchFiltersPanel : MonoBehaviour
 
     [Header("Age Selection")]
     [SerializeField] private TextMeshProUGUI _ageText;
-    [SerializeField] private Button _ageButtonPrevious;
-    [SerializeField] private Button _ageButtonNext;
+    [SerializeField] private Image _ageIconImage;
+
+    [Header("Age Popup")]
+    [SerializeField] private Button _openAgePopupButton;
+    [SerializeField] private GameObject _agePopup;
+    [SerializeField] private ClanAgeList _ageList;
+    [SerializeField] private Button _ageConfirmButton;
+    [SerializeField] private Button _ageCancelButton;
+    [SerializeField] private Button _ageCloseButton;
+
 
     [Header("Language Selection")]
     [SerializeField] private TextMeshProUGUI _languageText;
     [SerializeField] private Image _languageFlagImage;
     [SerializeField] private LanguageFlagMap _languageFlagMap;
-    //[SerializeField] private Button _languageButtonPrevious;
-    //[SerializeField] private Button _languageButtonNext;
 
     [Header("Language Popup")]
     [SerializeField] private Button _openLanguagePopupButton;
@@ -36,6 +42,9 @@ public class ClanSearchFiltersPanel : MonoBehaviour
     [SerializeField] private Button _languageConfirmButton;
     [SerializeField] private Button _languageCancelButton;
     [SerializeField] private Button _languageCloseButton;
+
+    [Header("Raycast Blockers")]
+    [SerializeField] private GameObject _nestedPopupRaycastBlocker;
 
     [Header("Activity Selection")]
     [SerializeField] private TextMeshProUGUI _activityText;
@@ -86,7 +95,8 @@ public class ClanSearchFiltersPanel : MonoBehaviour
     private void OnEnable()
     {
         InitSelectors();
-        CloseLanguagePopup();
+
+        CloseAllPopups();
 
         if (_openLanguagePopupButton != null)
             _openLanguagePopupButton.onClick.AddListener(OpenLanguagePopup);
@@ -99,6 +109,22 @@ public class ClanSearchFiltersPanel : MonoBehaviour
 
         if (_languageCloseButton != null)
             _languageCloseButton.onClick.AddListener(CloseLanguagePopup);
+
+
+        if (_openAgePopupButton != null)
+            _openAgePopupButton.onClick.AddListener(OpenAgePopup);
+
+        if (_ageConfirmButton != null)
+            _ageConfirmButton.onClick.AddListener(ConfirmAgePopup);
+
+        if (_ageCancelButton != null)
+            _ageCancelButton.onClick.AddListener(CloseAgePopup);
+
+        if (_ageCloseButton != null)
+            _ageCloseButton.onClick.AddListener(CloseAgePopup);
+
+        if (_nestedPopupRaycastBlocker != null)
+            _nestedPopupRaycastBlocker.SetActive(false);
     }
 
     private void OnDisable()
@@ -114,6 +140,19 @@ public class ClanSearchFiltersPanel : MonoBehaviour
 
         if (_languageCloseButton != null)
             _languageCloseButton.onClick.RemoveListener(CloseLanguagePopup);
+
+
+        if (_openAgePopupButton != null)
+            _openAgePopupButton.onClick.RemoveListener(OpenAgePopup);
+
+        if (_ageConfirmButton != null)
+            _ageConfirmButton.onClick.RemoveListener(ConfirmAgePopup);
+
+        if (_ageCancelButton != null)
+            _ageCancelButton.onClick.RemoveListener(CloseAgePopup);
+
+        if (_ageCloseButton != null)
+            _ageCloseButton.onClick.RemoveListener(CloseAgePopup);
     }
 
     private void InitializeEnumArrays()
@@ -157,24 +196,7 @@ public class ClanSearchFiltersPanel : MonoBehaviour
 
     private void InitializeAge()
     {
-        _ageText.text = ClanDataTypeConverter.GetAgeText(_clanAge);
-
-        _ageButtonNext.onClick.RemoveAllListeners();
-        _ageButtonPrevious.onClick.RemoveAllListeners();
-
-        _ageButtonNext.onClick.AddListener(() =>
-        {
-            _ageIndex = GetNextIndex(_ageIndex, _ageValues.Length);
-            _clanAge = _ageValues[_ageIndex];
-            _ageText.text = ClanDataTypeConverter.GetAgeText(_clanAge);
-        });
-
-        _ageButtonPrevious.onClick.AddListener(() =>
-        {
-            _ageIndex = GetPreviousIndex(_ageIndex, _ageValues.Length);
-            _clanAge = _ageValues[_ageIndex];
-            _ageText.text = ClanDataTypeConverter.GetAgeText(_clanAge);
-        });
+        UpdateAgeDisplay();
     }
 
     private void InitializeLanguage()
@@ -299,8 +321,23 @@ public class ClanSearchFiltersPanel : MonoBehaviour
         });
     }
 
+    private void CloseAllPopups()
+    {
+        if (_languagePopup != null)
+            _languagePopup.SetActive(false);
+
+        if (_agePopup != null)
+            _agePopup.SetActive(false);
+
+        if (_nestedPopupRaycastBlocker != null)
+            _nestedPopupRaycastBlocker.SetActive(false);
+    }
+
     private void OpenLanguagePopup()
     {
+        if (_nestedPopupRaycastBlocker != null)
+            _nestedPopupRaycastBlocker.SetActive(true);
+
         if (_languagePopup != null)
             _languagePopup.SetActive(true);
 
@@ -324,6 +361,8 @@ public class ClanSearchFiltersPanel : MonoBehaviour
     {
         if (_languagePopup != null)
             _languagePopup.SetActive(false);
+
+        UpdateNestedPopupRaycastBlocker();
     }
 
     private void UpdateLanguageDisplay()
@@ -339,5 +378,60 @@ public class ClanSearchFiltersPanel : MonoBehaviour
         {
             _languageFlagImage.sprite = _languageFlagMap.GetFlag(_clanLanguage);
         }
+    }
+
+    private void OpenAgePopup()
+    {
+        if (_nestedPopupRaycastBlocker != null)
+            _nestedPopupRaycastBlocker.SetActive(true);
+
+        if (_agePopup != null)
+            _agePopup.SetActive(true);
+
+        if (_ageList != null)
+            _ageList.Initialize(_clanAge, true);
+    }
+
+    private void ConfirmAgePopup()
+    {
+        if (_ageList != null)
+        {
+            _clanAge = _ageList.SaveAge();
+            UpdateAgeDisplay();
+        }
+
+        CloseAgePopup();
+    }
+
+    private void CloseAgePopup()
+    {
+        if (_agePopup != null)
+            _agePopup.SetActive(false);
+
+        UpdateNestedPopupRaycastBlocker();
+    }
+
+    private void UpdateAgeDisplay()
+    {
+        if (_ageText != null)
+        {
+            _ageText.text = _clanAge == ClanAge.None
+                ? "Kaikki iät"
+                : ClanDataTypeConverter.GetAgeText(_clanAge);
+        }
+
+        if (_ageIconImage != null && _ageList != null)
+        {
+            _ageIconImage.sprite = _ageList.GetAgeSprite(_clanAge);
+        }
+    }
+
+    private void UpdateNestedPopupRaycastBlocker()
+    {
+        bool languageOpen = _languagePopup != null && _languagePopup.activeSelf;
+        bool ageOpen = _agePopup != null && _agePopup.activeSelf;
+
+        if (_nestedPopupRaycastBlocker != null)
+            _nestedPopupRaycastBlocker.SetActive(languageOpen || ageOpen);
     }
 }

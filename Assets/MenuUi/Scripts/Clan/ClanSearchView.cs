@@ -111,6 +111,7 @@ public class ClanSearchView : MonoBehaviour
         _loadMoreButton.SetActive(false);
         _listedClans.Clear();
         CloseClanPopup();
+        CloseFiltersPopup();    
     }
 
     private void LoadMoreClans()

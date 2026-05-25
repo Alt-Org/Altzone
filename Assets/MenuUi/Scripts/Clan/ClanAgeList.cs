@@ -23,7 +23,7 @@ public class ClanAgeList : MonoBehaviour
 
     public ClanAge ClanAgeRange { get; private set; } = ClanAge.None;
 
-    public void Initialize(ClanAge firstSelected)
+    public void Initialize(ClanAge firstSelected, bool includeNoneOption = false)
     {
         ClanAgeRange = firstSelected;
 
@@ -34,7 +34,12 @@ public class ClanAgeList : MonoBehaviour
 
         foreach (ClanAge age in Enum.GetValues(typeof(ClanAge)).Cast<ClanAge>())
         {
-            if (age == ClanAge.None || age == ClanAge.Toddlers)
+            if (!includeNoneOption && age == ClanAge.None)
+            {
+                continue;
+            }
+
+            if (age == ClanAge.Toddlers)
             {
                 continue;
             }
@@ -42,10 +47,11 @@ public class ClanAgeList : MonoBehaviour
             Sprite icon = GetAgeSprite(age);
 
             GameObject listItem = Instantiate(_ageListItemPrefab, _listParent);
-            var toggle = listItem.GetComponent<Toggle>();
+
+            Toggle toggle = listItem.GetComponent<Toggle>();
             toggle.group = _toggleGroup;
 
-            var item = listItem.GetComponent<ClanAgeListItem>();
+            ClanAgeListItem item = listItem.GetComponent<ClanAgeListItem>();
             item.Initialize(age, icon, age == firstSelected, isOn =>
             {
                 if (isOn)
@@ -56,18 +62,27 @@ public class ClanAgeList : MonoBehaviour
         }
     }
 
-    private Sprite GetAgeSprite(ClanAge age)
+    public Sprite GetAgeSprite(ClanAge age)
     {
         foreach (var ageIcon in _ageIcons)
         {
-            if(ageIcon.age  == age) return ageIcon.icon;
+            if (ageIcon.age == age)
+            {
+                return ageIcon.icon;
+            }
         }
+
         return null;
     }
 
     public Sprite GetSelectedAgeSprite()
     {
         return GetAgeSprite(ClanAgeRange);
+    }
+
+    public ClanAge SaveAge()
+    {
+        return ClanAgeRange;
     }
 
 }
