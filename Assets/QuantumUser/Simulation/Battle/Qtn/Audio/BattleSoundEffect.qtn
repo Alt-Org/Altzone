@@ -68,6 +68,13 @@ enum BattleSoundFX
 
     // Common
     PlayerCharacterCommonHitShield = BATTLE_SOUND_FX_CHARACTER_COMMON_START,
+    PlayerCharacterCommonCatchphrase,
+    PlayerCharacterCommonHitCharacterAggression,
+    PlayerCharacterCommonHitCharacterJoy,
+    PlayerCharacterCommonHitCharacterLove,
+    PlayerCharacterCommonHitCharacterPlayful,
+    PlayerCharacterCommonHitCharacterSadness,
+    PlayerCharacterCommonDeath,
 
     // None
     PlayerCharacterNoneCatchphrase = BATTLE_SOUND_FX_CHARACTER_START,

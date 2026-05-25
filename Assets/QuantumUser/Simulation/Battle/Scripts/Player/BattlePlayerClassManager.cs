@@ -136,7 +136,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
-        public virtual unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity) { }
+        public virtual unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput) { }
     }
 
     /// <summary>
@@ -208,7 +208,7 @@ namespace Battle.QSimulation.Player
             {
                 case BattlePlayerCharacterClass.Class100:
                     if (s_classArray[ClassIndex100].State != ClassState.NotLoaded) break;
-                    LoadClass(characterClass, ClassIndex100, new BattlePlayerClass100(), null, isTestMode);
+                    LoadClass(characterClass, ClassIndex100, null, new BattlePlayerClass100Test(), isTestMode);
                     break;
 
                 case BattlePlayerCharacterClass.Class200:
@@ -380,13 +380,13 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
-        public static void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity)
+        public static void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput)
         {
             ReturnCode returnCode = GetClass(playerData->CharacterClass, out BattlePlayerClassBase playerClass);
 
             if (returnCode != ReturnCode.ClassRetrieved) return;
 
-            playerClass.OnUpdate(f, playerHandle, playerData, playerEntity);
+            playerClass.OnUpdate(f, playerHandle, playerData, playerEntity, specialInput);
         }
 
         /// <value>Constant for a class index error.</value>

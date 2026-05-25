@@ -25,6 +25,8 @@ namespace MenuUi.Scripts.Window
 
         public static OverlayPanelCheck Instance { get; private set; }
         public bool ChatActive => _chatActive;
+        public bool TopBarActive => _topBar.activeSelf;
+        public bool BottomBarActive => _bottomBar.activeSelf;
 
         public delegate void ChatBarToggled(bool active);
         public static event ChatBarToggled OnChatBarToggled;

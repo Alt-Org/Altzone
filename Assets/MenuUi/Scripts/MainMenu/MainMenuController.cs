@@ -41,25 +41,13 @@ namespace MenuUi.Scripts.MainMenu
 
         private void OnEnable()
         {
-            bool jukeboxMainMenu = carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.MainMenu);
-
             _swipe = GetComponentInParent<SwipeUI>();
             StartCoroutine(CheckWindowSize());
 
             OverlayPanelCheck.Instance?.gameObject.SetActive(true);
             OverlayPanelCheck.Instance?.ToggleOverlay(true);
 
-            try
-            {
-                if (jukeboxMainMenu)
-                {
-                    if (JukeboxManager.Instance != null && string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
-                        AudioManager.Instance?.PlayMusic(AudioCategoryType.MainMenu);
-                }
-                else
-                    AudioManager.Instance?.PlayMusic(AudioCategoryType.MainMenu);
-            }
-            catch (Exception e) { Debug.LogException(e); }
+            AudioManager.Instance?.PlayMusic(AudioCategoryType.MainMenu);
 
             if(!LobbyManager.IsActive) LobbyManager.Instance.Activate();
             if (LobbyManager.Instance.RunnerActive) LobbyManager.CloseRunner();

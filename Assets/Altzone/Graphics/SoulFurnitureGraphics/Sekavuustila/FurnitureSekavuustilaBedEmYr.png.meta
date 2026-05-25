@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 515a8f60960e54a48a43e6ea39ceb850
+guid: 78e61e95da2bf5f4fb0eab08ba916de9
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -43,12 +43,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 256
+  spritePixelsToUnits: 120
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 1024
+    maxTextureSize: 256
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -160,49 +160,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: FurnitureSekavuustilaBedEmYr_0
-      rect:
-        serializedVersion: 2
-        x: 8
-        y: 5
-        width: 1315
-        height: 1262
-      alignment: 9
-      pivot: {x: 0.5, y: 0.03}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 574285b1a8d0f784f9c68760a7e97285
-      internalID: -1732356262
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: FurnitureSekavuustilaBedEmYr_1
-      rect:
-        serializedVersion: 2
-        x: 1349
-        y: 8
-        width: 1721
-        height: 1169
-      alignment: 9
-      pivot: {x: 0.53, y: 0.025}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f1ac15a7279a00347a40d54d0d621e36
-      internalID: -1081012078
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     physicsShape: []
     bones: []
@@ -213,9 +171,7 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      FurnitureSekavuustilaBedEmYr_0: -1732356262
-      FurnitureSekavuustilaBedEmYr_1: -1081012078
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

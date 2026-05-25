@@ -18,12 +18,14 @@ public class ClanSearchPopup : MonoBehaviour
     [SerializeField] private GameObject _labelImagePrefab;
     [SerializeField] private Button _joinClanButton;
     [SerializeField] private Button _openClanMainView;
+    [SerializeField] private Button _closeButton;
 
     [SerializeField] private GameObject _clanOpenObject;
     [SerializeField] private GameObject _clanLockedObject;
 
     [SerializeField] private LanguageFlagImage _flagImage;
     [SerializeField] private Image _clanAgeImage;
+    [SerializeField] private TextMeshProUGUI _clanAgeText;
     [SerializeField] private List<AgeIcon> _ageIcons = new List<AgeIcon>();
 
     [System.Serializable]
@@ -40,6 +42,33 @@ public class ClanSearchPopup : MonoBehaviour
             if (ageIcon.age == age) return ageIcon.icon;
         }
         return null;
+    }
+
+    private string GetAgeText(ClanAge age)
+    {
+        switch (age)
+        {
+            case ClanAge.None:
+                return "None";
+
+            case ClanAge.Teenagers:
+                return "Teinit";
+
+            case ClanAge.Toddlers:
+                return "Lapset";
+
+            case ClanAge.Adults:
+                return "Aikuiset";
+
+            case ClanAge.Elderly:
+                return "Vanhukset";
+
+            case ClanAge.All:
+                return "Kaikenikäiset";
+
+            default:
+                return string.Empty;
+        }
     }
 
     private const int MaxClanMembers = 30;
@@ -71,6 +100,11 @@ public class ClanSearchPopup : MonoBehaviour
             _clanAgeImage.sprite = ageSprite;
             _clanAgeImage.preserveAspect = true;
             _clanAgeImage.enabled = ageSprite != null;
+        }
+
+        if (_clanAgeText != null)
+        {
+            _clanAgeText.text = GetAgeText(clanData.ClanAge);
         }
 
         if (_winsRankText) _winsRankText.text = "-";

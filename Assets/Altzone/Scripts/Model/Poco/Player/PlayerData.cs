@@ -69,7 +69,7 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public PlayStyles playStyles;
 
-        public string emotionSelectorDate = null;
+        public DateTime emotionSelectorDate = DateTime.MinValue;
 
         public string daysBetweenInput = "0";
 
@@ -83,6 +83,8 @@ namespace Altzone.Scripts.Model.Poco.Player
             Emotion.Blank.ToString(),
             Emotion.Blank.ToString()
         };
+
+        public List<DailyEmotion> _playerDataEmotions = new();
 
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
 
@@ -280,6 +282,7 @@ namespace Altzone.Scripts.Model.Poco.Player
                     Emotion.Blank, Emotion.Blank, Emotion.Blank,
                     Emotion.Blank, Emotion.Blank, Emotion.Blank, Emotion.Blank
                 };
+            _playerDataEmotions = FormatEmotions(player.emotions);
             if (daysBetweenInput == null) daysBetweenInput = "0";
 
             
@@ -497,6 +500,31 @@ namespace Altzone.Scripts.Model.Poco.Player
             return true;
         }
 
+        private List<DailyEmotion> FormatEmotions(List<ServerEmotions> serverEmotions)
+        {
+            List<DailyEmotion> emotions = new();
 
+            foreach(ServerEmotions emotion in serverEmotions)
+            {
+                emotions.Add(new(emotion));
+            }
+
+            emotions = emotions.OrderByDescending(o => o.DateTime).ToList();
+
+            if(emotions.Count > 0) emotionSelectorDate = emotions[0].DateTime;
+
+            return emotions;
+        }
+
+        public void AddEmotion(Emotion emotion)
+        {
+            List<DailyEmotion> emotions = new();
+
+            _playerDataEmotions.Add(new(emotion));
+
+            _playerDataEmotions = _playerDataEmotions.OrderByDescending(o => o.DateTime).ToList();
+
+            emotionSelectorDate = _playerDataEmotions[0].DateTime;
+        }
     }
 }
