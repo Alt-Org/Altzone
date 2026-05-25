@@ -211,6 +211,12 @@ namespace Battle.View.UI
             playerInfoComponent.CharacterButtons[characterNumber].SetDamageFill(defencePercentage);
         }
 
+        /// <summary>
+        /// Calls SetDeathImage on the character button of the correct players correct character.
+        /// </summary>
+        ///
+        /// <param name="slot">The slot of the player in question.</param>
+        /// <param name="characterNumber">The character number of the character in question.</param>
         public void SetDeathImage(BattlePlayerSlot slot, int characterNumber)
         {
             BattleUiPlayerInfoComponent playerInfoComponent = GetPlayerInfoComponent(slot);
