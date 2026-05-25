@@ -51,6 +51,8 @@ namespace Battle.View.UI
         /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private Image _damageFill;
 
+        /// <summary>[SerializeField] Reference to the dead character image of the character button. It is used to display an image on top of the character button to indicate the character is dead.</summary>
+        /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private GameObject _deathImage;
 
         /// <summary>[SerializeField] The duration for damage fill animation.</summary>
@@ -108,6 +110,9 @@ namespace Battle.View.UI
             _targetDamageFillAmount = 1 - percentage;
         }
 
+        /// <summary>
+        /// Sets the death image gameobject to active.
+        /// </summary>
         public void SetDeathImage()
         {
             _deathImage.SetActive(true);
