@@ -285,6 +285,8 @@ public class ParentalControlManager : MonoBehaviour
             parentalControlPopup.SetActive(false);
             CheckControl();
             GetPassword();
+            parentalControlSettings.SetActive(true);
+            passwordPanel.SetActive(false);
 
         } else
         {
