@@ -6,6 +6,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Voting;
 using UnityEngine;
+using System.Linq;
 using UnityEngine.UI;
 
 public class VoteManager : MonoBehaviour // Manages the display and interaction for polls
@@ -183,12 +184,17 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
 
 
 
-        var pollList = PollManager.GetPollList();
+        List<PollData> pollList = PollManager.GetPollList().Where(p => !p.IsExpired).ToList();
 
         Debug.Log("AdminSection active: " + AdminSection.activeSelf);
         Debug.Log("ShopSection active: " + ShopSection.activeSelf);
 
         Debug.Log("Poll count: " + pollList.Count);
+
+        // Manually tracking the hasPolls value, because apparently Destroy
+        // defers until end of frame, so ghost objects visible(?)
+        bool hasAdminPolls = false;
+        bool hasShopPolls = false;
 
         foreach (var pollData in pollList)
         {
@@ -218,12 +224,14 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
 
             if (isShopPoll)
             {
+                hasShopPolls = true;
                 obj = hasVoted
                     ? Instantiate(PollObjectPrefab, ShopVotedListContent.transform)
                     : Instantiate(PollObjectPrefab, ShopNotVotedListContent.transform);
             }
             else
             {
+                hasAdminPolls = true;
                 obj = hasVoted
                     ? Instantiate(PollObjectPrefab, AdminVotedListContent.transform)
                     : Instantiate(PollObjectPrefab, AdminNotVotedListContent.transform);
@@ -264,15 +272,6 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
                 */
             }
         }
-
-        bool hasAdminPolls =
-            AdminNotVotedListContent.transform.childCount > 0 ||
-            AdminVotedListContent.transform.childCount > 0;
-
-        bool hasShopPolls =
-            ShopNotVotedListContent.transform.childCount > 0 ||
-            ShopVotedListContent.transform.childCount > 0;
-
 
         Debug.Log("Admin section visible: " + hasAdminPolls);
         Debug.Log("Shop section visible: " + hasShopPolls);
