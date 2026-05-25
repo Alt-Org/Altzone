@@ -43,8 +43,8 @@ public class ClanSearchView : MonoBehaviour
                 loadMoreButton.onClick.AddListener(LoadMoreClans);
         }
 
-        /*if (_openFiltersButton != null)
-            _openFiltersButton.onClick.AddListener(OpenFiltersPopup);*/
+        if (_openFiltersButton != null)
+            _openFiltersButton.onClick.AddListener(OpenFiltersPopup);
 
         if (_filtersConfirmButton != null)
             _filtersConfirmButton.onClick.AddListener(ConfirmFiltersPopup);
@@ -64,8 +64,8 @@ public class ClanSearchView : MonoBehaviour
 
     private void OnDestroy()
     {
-        /*if (_openFiltersButton != null)
-            _openFiltersButton.onClick.RemoveListener(OpenFiltersPopup);*/
+        if (_openFiltersButton != null)
+            _openFiltersButton.onClick.RemoveListener(OpenFiltersPopup);
 
         if (_filtersConfirmButton != null)
             _filtersConfirmButton.onClick.RemoveListener(ConfirmFiltersPopup);
@@ -198,16 +198,52 @@ public class ClanSearchView : MonoBehaviour
 
     private bool CheckValues(List<string> labels, List<ClanValues> filterValues)
     {
-        List<ClanValues> valuesfromServer = new();
-        foreach (string point in labels)
+        if (filterValues == null || filterValues.Count == 0)
+            return true;
+
+        if (labels == null || labels.Count == 0)
+            return false;
+
+        List<ClanValues> valuesFromServer = new();
+
+        foreach (string label in labels)
         {
-            valuesfromServer.Add((ClanValues)Enum.Parse(typeof(ClanValues), string.Concat(point[0].ToString().ToUpper(), point.AsSpan(1).ToString()).Replace("ä", "a").Replace("ö", "o").Replace("+", "").Replace(" ", "")));
+            if (string.IsNullOrWhiteSpace(label))
+                continue;
+
+            string normalizedLabel = label
+                .Trim()
+                .ToLower()
+                .Replace("ä", "a")
+                .Replace("ö", "o")
+                .Replace("+", "")
+                .Replace(" ", "")
+                .Replace("-", "");
+
+            foreach (ClanValues clanValue in Enum.GetValues(typeof(ClanValues)))
+            {
+                string normalizedEnumValue = clanValue.ToString()
+                    .ToLower()
+                    .Replace("ä", "a")
+                    .Replace("ö", "o")
+                    .Replace("+", "")
+                    .Replace(" ", "")
+                    .Replace("-", "");
+
+                if (normalizedLabel == normalizedEnumValue)
+                {
+                    valuesFromServer.Add(clanValue);
+                    break;
+                }
+            }
         }
 
         foreach (ClanValues value in filterValues)
         {
-            if (!valuesfromServer.Contains(value)) return false;
+            if (!valuesFromServer.Contains(value))
+                return false;
         }
+
         return true;
     }
 

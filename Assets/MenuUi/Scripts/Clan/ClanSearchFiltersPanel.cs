@@ -24,9 +24,18 @@ public class ClanSearchFiltersPanel : MonoBehaviour
 
     [Header("Language Selection")]
     [SerializeField] private TextMeshProUGUI _languageText;
-    [SerializeField] private LanguageFlagImage _languageFlag;
-    [SerializeField] private Button _languageButtonPrevious;
-    [SerializeField] private Button _languageButtonNext;
+    [SerializeField] private Image _languageFlagImage;
+    [SerializeField] private LanguageFlagMap _languageFlagMap;
+    //[SerializeField] private Button _languageButtonPrevious;
+    //[SerializeField] private Button _languageButtonNext;
+
+    [Header("Language Popup")]
+    [SerializeField] private Button _openLanguagePopupButton;
+    [SerializeField] private GameObject _languagePopup;
+    [SerializeField] private ClanLanguageList _languageList;
+    [SerializeField] private Button _languageConfirmButton;
+    [SerializeField] private Button _languageCancelButton;
+    [SerializeField] private Button _languageCloseButton;
 
     [Header("Activity Selection")]
     [SerializeField] private TextMeshProUGUI _activityText;
@@ -59,14 +68,12 @@ public class ClanSearchFiltersPanel : MonoBehaviour
 
     
     private ClanAge[] _ageValues;
-    private Language[] _languageValues;
     private ClanActivity[] _activityValues;
     private ClanRanking[] _rankingValues;
     private ClanMembers[] _membersValues;
 
     
     private int _ageIndex;
-    private int _languageIndex;
     private int _activityIndex;
     private int _rankingIndex;
     private int _membersIndex;
@@ -79,19 +86,45 @@ public class ClanSearchFiltersPanel : MonoBehaviour
     private void OnEnable()
     {
         InitSelectors();
+        CloseLanguagePopup();
+
+        if (_openLanguagePopupButton != null)
+            _openLanguagePopupButton.onClick.AddListener(OpenLanguagePopup);
+
+        if (_languageConfirmButton != null)
+            _languageConfirmButton.onClick.AddListener(ConfirmLanguagePopup);
+
+        if (_languageCancelButton != null)
+            _languageCancelButton.onClick.AddListener(CloseLanguagePopup);
+
+        if (_languageCloseButton != null)
+            _languageCloseButton.onClick.AddListener(CloseLanguagePopup);
+    }
+
+    private void OnDisable()
+    {
+        if (_openLanguagePopupButton != null)
+            _openLanguagePopupButton.onClick.RemoveListener(OpenLanguagePopup);
+
+        if (_languageConfirmButton != null)
+            _languageConfirmButton.onClick.RemoveListener(ConfirmLanguagePopup);
+
+        if (_languageCancelButton != null)
+            _languageCancelButton.onClick.RemoveListener(CloseLanguagePopup);
+
+        if (_languageCloseButton != null)
+            _languageCloseButton.onClick.RemoveListener(CloseLanguagePopup);
     }
 
     private void InitializeEnumArrays()
     {
         _ageValues = GetEnumValues<ClanAge>();
-        _languageValues = GetEnumValues<Language>();
         _activityValues = GetEnumValues<ClanActivity>();
         _rankingValues = GetEnumValues<ClanRanking>();
         _membersValues = GetEnumValues<ClanMembers>();
 
         
         _ageIndex = FindEnumIndex(_ageValues, _clanAge);
-        _languageIndex = FindEnumIndex(_languageValues, _clanLanguage);
         _activityIndex = FindEnumIndex(_activityValues, _clanActivity);
         _rankingIndex = FindEnumIndex(_rankingValues, _clanRanking);
         _membersIndex = FindEnumIndex(_membersValues, _clanMembers);
@@ -146,27 +179,7 @@ public class ClanSearchFiltersPanel : MonoBehaviour
 
     private void InitializeLanguage()
     {
-        _languageText.text = ClanDataTypeConverter.GetLanguageText(_clanLanguage);
-        _languageFlag.SetFlag(_clanLanguage);
-
-        _languageButtonNext.onClick.RemoveAllListeners();
-        _languageButtonPrevious.onClick.RemoveAllListeners();
-
-        _languageButtonNext.onClick.AddListener(() =>
-        {
-            _languageIndex = GetNextIndex(_languageIndex, _languageValues.Length);
-            _clanLanguage = _languageValues[_languageIndex];
-            _languageText.text = ClanDataTypeConverter.GetLanguageText(_clanLanguage);
-            _languageFlag.SetFlag(_clanLanguage);
-        });
-
-        _languageButtonPrevious.onClick.AddListener(() =>
-        {
-            _languageIndex = GetPreviousIndex(_languageIndex, _languageValues.Length);
-            _clanLanguage = _languageValues[_languageIndex];
-            _languageText.text = ClanDataTypeConverter.GetLanguageText(_clanLanguage);
-            _languageFlag.SetFlag(_clanLanguage);
-        });
+        UpdateLanguageDisplay();
     }
 
     private void InitializeActivity()
@@ -282,7 +295,49 @@ public class ClanSearchFiltersPanel : MonoBehaviour
             ranking = _clanRanking,
             memberCount = _clanMembers,
             isOpen = _isOpen,
-            values = _valueManager != null ? _valueManager.selectedValues : new List<ClanValues>()
+            values = _valueManager != null ? _valueManager.GetSelectedValues() : new List<ClanValues>()
         });
+    }
+
+    private void OpenLanguagePopup()
+    {
+        if (_languagePopup != null)
+            _languagePopup.SetActive(true);
+
+        if (_languageList != null)
+            _languageList.Initialize(_clanLanguage, true);
+    }
+
+    private void ConfirmLanguagePopup()
+    {
+        if (_languageList != null)
+        {
+            _clanLanguage = _languageList.SaveLanguage();
+
+            UpdateLanguageDisplay();
+        }
+
+        CloseLanguagePopup();
+    }
+
+    private void CloseLanguagePopup()
+    {
+        if (_languagePopup != null)
+            _languagePopup.SetActive(false);
+    }
+
+    private void UpdateLanguageDisplay()
+    {
+        if (_languageText != null)
+        {
+            _languageText.text = _clanLanguage == Language.None
+                ? "Kaikki kielet"
+                : ClanDataTypeConverter.GetLanguageText(_clanLanguage);
+        }
+
+        if (_languageFlagImage != null && _languageFlagMap != null)
+        {
+            _languageFlagImage.sprite = _languageFlagMap.GetFlag(_clanLanguage);
+        }
     }
 }

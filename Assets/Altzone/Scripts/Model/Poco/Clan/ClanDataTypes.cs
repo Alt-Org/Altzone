@@ -198,8 +198,8 @@ namespace Altzone.Scripts.Model.Poco.Clan
                 case SettingsCarrier.LanguageType.Finnish:
                     return language switch
                     {
-                        Language.None => "Kieli",
-                        Language.Finnish => "suomi",
+                        Language.None => "Kaikki kielet",
+                        Language.Finnish => "Suomi",
                         Language.Swedish => "svenska",
                         Language.English => "English",
                         Language.Spanish => "espanol",
@@ -211,7 +211,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
                     return language switch
                     {
                         Language.None => "Language",
-                        Language.Finnish => "suomi",
+                        Language.Finnish => "Suomi",
                         Language.Swedish => "svenska",
                         Language.English => "English",
                         Language.Spanish => "espanol",
