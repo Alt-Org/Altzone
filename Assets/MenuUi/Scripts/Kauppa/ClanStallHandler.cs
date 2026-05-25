@@ -134,15 +134,18 @@ public class ClanStallPopupHandler : MonoBehaviour
   
     void randomizeName()
     {
-        char[] letters = "qwertyuiopasdfghjklzxcvbnmåöä".ToCharArray();
+        List<string> clanNames = new List<string> {"Klaani A", "Klaani B", "Klaani C", "Klaani D" };
+
         System.Random r = new System.Random();
 
-        _randomClanName = "";
-
-        for (int i = 0; i < 8; i++)
+        if (clanNames.Count > 0)
         {
-            _randomClanName += letters[r.Next(0, letters.Length)];
+            int randomIndex = r.Next(0, clanNames.Count);
+            _randomClanName = clanNames[randomIndex];
 
+        } else
+        {
+            _randomClanName = "Klaani X";
         }
     }
 
