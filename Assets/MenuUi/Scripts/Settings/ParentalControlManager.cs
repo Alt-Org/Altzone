@@ -13,6 +13,8 @@ public class ParentalControlManager : MonoBehaviour
     public GameObject parentalControlSettings;
     //public InputField passwordInput;
     public TMP_InputField passwordInput;
+    public Toggle logInPasswordVisibilityToggle;
+
     public TMP_InputField popupPasswordInput;
     public TMP_InputField confirmPasswordInput;
     //public Text messageText;
@@ -103,6 +105,9 @@ public class ParentalControlManager : MonoBehaviour
         timeLimitInput.onValueChanged.AddListener(_ => SetTimeLimit());
         midMatchToggle.onValueChanged.AddListener(_ => SetEndMidMatch());
         endMatchToggle.onValueChanged.AddListener(_ => SetEndAfterMatch());
+
+        logInPasswordVisibilityToggle.onValueChanged.AddListener((value) => SetPasswordVisibilityState(passwordInput, value));
+
     }
 
     
@@ -168,6 +173,17 @@ public class ParentalControlManager : MonoBehaviour
 
 
              }
+
+
+    public void SetPasswordVisibilityState(TMP_InputField passwordInputField, bool value)
+    {
+        if (value)
+            passwordInputField.contentType = TMP_InputField.ContentType.Standard;
+        else
+            passwordInputField.contentType = TMP_InputField.ContentType.Password;
+
+        passwordInputField.ForceLabelUpdate();
+    }
 
     public void LogIn()
     {
