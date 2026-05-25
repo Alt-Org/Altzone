@@ -693,7 +693,6 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattleProjectileSystemDataQSingleton))]
   public unsafe partial class BattleProjectileSystemDataQSingletonPrototype : ComponentPrototype<Quantum.BattleProjectileSystemDataQSingleton> {
-    public QBoolean HasSpawned;
     public Quantum.Prototypes.BattleEntityIDPrototype ProjectileEntityID;
     partial void MaterializeUser(Frame frame, ref Quantum.BattleProjectileSystemDataQSingleton result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
@@ -702,7 +701,6 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattleProjectileSystemDataQSingleton result, in PrototypeMaterializationContext context = default) {
-        result.HasSpawned = this.HasSpawned;
         this.ProjectileEntityID.Materialize(frame, ref result.ProjectileEntityID, in context);
         MaterializeUser(frame, ref result, in context);
     }

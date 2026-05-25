@@ -2097,23 +2097,19 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattleProjectileSystemDataQSingleton : Quantum.IComponentSingleton {
-    public const Int32 SIZE = 12;
+    public const Int32 SIZE = 8;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(0)]
-    public QBoolean HasSpawned;
-    [FieldOffset(4)]
     public BattleEntityID ProjectileEntityID;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 17209;
-        hash = hash * 31 + HasSpawned.GetHashCode();
         hash = hash * 31 + ProjectileEntityID.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattleProjectileSystemDataQSingleton*)ptr;
-        QBoolean.Serialize(&p->HasSpawned, serializer);
         Quantum.BattleEntityID.Serialize(&p->ProjectileEntityID, serializer);
     }
   }
