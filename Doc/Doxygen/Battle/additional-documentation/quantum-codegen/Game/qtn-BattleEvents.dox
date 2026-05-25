@@ -74,6 +74,8 @@
 ///   @copybrief Quantum.EventBattlePlayerClass100AimIndicatorUpdate
 /// - <b>synced event</b> @ref BattleShieldChangeState { EntityRef ERef; BattleTeamNumber Team; bool ShieldAttached; int ShieldNumber }  
 ///   @copybrief Quantum.EventBattleShieldChangeState
+/// - <b>synced event</b> @ref BattleCharacterDeath { BattlePlayerSlot Slot; int CharacterNumber; }  
+///   @copybrief Quantum.EventBattleCharacterDeath
 ///
 /// ### Debug events
 /// - <b>synced event</b> @ref BattleDebugOnScreenMessage { QString<512> Message }  
@@ -381,6 +383,15 @@
 /// Generated Method @cref{Quantum,Frame.FrameEvents.BattleShieldChangeState}
 ///
 /// ---
+///
+/// @anchor BattleCharacterDeath
+/// ### BattleCharacterDeath
+/// @copybrief Quantum.EventBattleCharacterDeath
+///
+/// Generated Class @cref{Quantum,EventBattleCharacterDeath}  
+/// Generated Method @cref{Quantum,Frame.FrameEvents.BattleCharacterDeath}
+///
+/// ---
 /// ---
 ///
 /// ### Debug events
@@ -620,6 +631,14 @@
 /// <summary>
 ///
 /// Used to change the player characters hand sprite.  
+/// @bigtext{Generated from @ref BattleEvents.qtn}
+
+/// @class Quantum::EventBattleCharacterDeath
+/// <summary>
+/// Synced event. Used when a player gets hit when his defence is 0 or lower.
+/// <summary>
+///
+/// Used to update defence visuals in player info screen.
 /// @bigtext{Generated from @ref BattleEvents.qtn}
 
 /// @class Quantum::EventBattleDebugOnScreenMessage
