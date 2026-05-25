@@ -646,7 +646,7 @@ namespace Quantum.Prototypes {
   }
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattleProjectileQComponent))]
-  public unsafe class BattleProjectileQComponentPrototype : ComponentPrototype<Quantum.BattleProjectileQComponent> {
+  public unsafe partial class BattleProjectileQComponentPrototype : ComponentPrototype<Quantum.BattleProjectileQComponent> {
     public QBoolean IsLaunched;
     public QBoolean IsHeld;
     public QBoolean IsPassed;
@@ -654,7 +654,6 @@ namespace Quantum.Prototypes {
     public Quantum.QEnum32<BattleEmotionState> EmotionCurrent;
     [ArrayLengthAttribute(2)]
     public Quantum.QEnum8<BattleProjectileCollisionFlags>[] CollisionFlags = new Quantum.QEnum8<BattleProjectileCollisionFlags>[2];
-    public MapEntityId TriggerEntityRef;
     public FP Speed;
     public FPVector2 Position;
     public FPVector2 Direction;
@@ -664,6 +663,7 @@ namespace Quantum.Prototypes {
     public FP SpeedIncrement;
     public FP SpeedMax;
     public FP AttackMax;
+    partial void MaterializeUser(Frame frame, ref Quantum.BattleProjectileQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattleProjectileQComponent component = default;
         Materialize((Frame)f, ref component, in context);
@@ -678,7 +678,6 @@ namespace Quantum.Prototypes {
         for (int i = 0, count = PrototypeValidator.CheckLength(CollisionFlags, 2, in context); i < count; ++i) {
           *result.CollisionFlags.GetPointer(i) = this.CollisionFlags[i];
         }
-        PrototypeValidator.FindMapEntity(this.TriggerEntityRef, in context, out result.TriggerEntityRef);
         result.Speed = this.Speed;
         result.Position = this.Position;
         result.Direction = this.Direction;
@@ -688,20 +687,23 @@ namespace Quantum.Prototypes {
         result.SpeedIncrement = this.SpeedIncrement;
         result.SpeedMax = this.SpeedMax;
         result.AttackMax = this.AttackMax;
+        MaterializeUser(frame, ref result, in context);
     }
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleProjectileSpawnerQComponent))]
-  public unsafe partial class BattleProjectileSpawnerQComponentPrototype : ComponentPrototype<Quantum.BattleProjectileSpawnerQComponent> {
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleProjectileSystemDataQSingleton))]
+  public unsafe partial class BattleProjectileSystemDataQSingletonPrototype : ComponentPrototype<Quantum.BattleProjectileSystemDataQSingleton> {
     public QBoolean HasSpawned;
-    partial void MaterializeUser(Frame frame, ref Quantum.BattleProjectileSpawnerQComponent result, in PrototypeMaterializationContext context);
+    public Quantum.Prototypes.BattleEntityIDPrototype ProjectileEntityID;
+    partial void MaterializeUser(Frame frame, ref Quantum.BattleProjectileSystemDataQSingleton result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.BattleProjectileSpawnerQComponent component = default;
+        Quantum.BattleProjectileSystemDataQSingleton component = default;
         Materialize((Frame)f, ref component, in context);
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
-    public void Materialize(Frame frame, ref Quantum.BattleProjectileSpawnerQComponent result, in PrototypeMaterializationContext context = default) {
+    public void Materialize(Frame frame, ref Quantum.BattleProjectileSystemDataQSingleton result, in PrototypeMaterializationContext context = default) {
         result.HasSpawned = this.HasSpawned;
+        this.ProjectileEntityID.Materialize(frame, ref result.ProjectileEntityID, in context);
         MaterializeUser(frame, ref result, in context);
     }
   }

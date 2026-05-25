@@ -2017,7 +2017,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattleProjectileQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 120;
+    public const Int32 SIZE = 112;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(16)]
     public QBoolean IsLaunched;
@@ -2032,25 +2032,23 @@ namespace Quantum {
     [FieldOffset(0)]
     [FramePrinter.FixedArrayAttribute(typeof(BattleProjectileCollisionFlags), 2)]
     private fixed Byte _CollisionFlags_[2];
-    [FieldOffset(24)]
-    public EntityRef TriggerEntityRef;
-    [FieldOffset(56)]
-    public FP Speed;
-    [FieldOffset(104)]
-    public FPVector2 Position;
-    [FieldOffset(88)]
-    public FPVector2 Direction;
-    [FieldOffset(32)]
-    public FP Attack;
     [FieldOffset(48)]
-    public FP Radius;
-    [FieldOffset(64)]
-    public FP SpeedBase;
-    [FieldOffset(72)]
-    public FP SpeedIncrement;
+    public FP Speed;
+    [FieldOffset(96)]
+    public FPVector2 Position;
     [FieldOffset(80)]
-    public FP SpeedMax;
+    public FPVector2 Direction;
+    [FieldOffset(24)]
+    public FP Attack;
     [FieldOffset(40)]
+    public FP Radius;
+    [FieldOffset(56)]
+    public FP SpeedBase;
+    [FieldOffset(64)]
+    public FP SpeedIncrement;
+    [FieldOffset(72)]
+    public FP SpeedMax;
+    [FieldOffset(32)]
     public FP AttackMax;
     public FixedArray<BattleProjectileCollisionFlags> CollisionFlags {
       get {
@@ -2066,7 +2064,6 @@ namespace Quantum {
         hash = hash * 31 + (Int32)EmotionBase;
         hash = hash * 31 + (Int32)EmotionCurrent;
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(CollisionFlags);
-        hash = hash * 31 + TriggerEntityRef.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
         hash = hash * 31 + Position.GetHashCode();
         hash = hash * 31 + Direction.GetHashCode();
@@ -2087,7 +2084,6 @@ namespace Quantum {
         QBoolean.Serialize(&p->IsHeld, serializer);
         QBoolean.Serialize(&p->IsLaunched, serializer);
         QBoolean.Serialize(&p->IsPassed, serializer);
-        EntityRef.Serialize(&p->TriggerEntityRef, serializer);
         FP.Serialize(&p->Attack, serializer);
         FP.Serialize(&p->AttackMax, serializer);
         FP.Serialize(&p->Radius, serializer);
@@ -2100,21 +2096,25 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
-  public unsafe partial struct BattleProjectileSpawnerQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 4;
+  public unsafe partial struct BattleProjectileSystemDataQSingleton : Quantum.IComponentSingleton {
+    public const Int32 SIZE = 12;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(0)]
     public QBoolean HasSpawned;
+    [FieldOffset(4)]
+    public BattleEntityID ProjectileEntityID;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 2273;
+        var hash = 17209;
         hash = hash * 31 + HasSpawned.GetHashCode();
+        hash = hash * 31 + ProjectileEntityID.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
-        var p = (BattleProjectileSpawnerQComponent*)ptr;
+        var p = (BattleProjectileSystemDataQSingleton*)ptr;
         QBoolean.Serialize(&p->HasSpawned, serializer);
+        Quantum.BattleEntityID.Serialize(&p->ProjectileEntityID, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -2287,8 +2287,8 @@ namespace Quantum {
       BuildSignalsArrayOnComponentRemoved<Quantum.BattlePlayerShieldManagerDataQSingleton>();
       BuildSignalsArrayOnComponentAdded<Quantum.BattleProjectileQComponent>();
       BuildSignalsArrayOnComponentRemoved<Quantum.BattleProjectileQComponent>();
-      BuildSignalsArrayOnComponentAdded<Quantum.BattleProjectileSpawnerQComponent>();
-      BuildSignalsArrayOnComponentRemoved<Quantum.BattleProjectileSpawnerQComponent>();
+      BuildSignalsArrayOnComponentAdded<Quantum.BattleProjectileSystemDataQSingleton>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.BattleProjectileSystemDataQSingleton>();
       BuildSignalsArrayOnComponentAdded<Quantum.BattleProjectileTriggerQComponent>();
       BuildSignalsArrayOnComponentRemoved<Quantum.BattleProjectileTriggerQComponent>();
       BuildSignalsArrayOnComponentAdded<Quantum.BattleSoulWallQComponent>();
@@ -2467,7 +2467,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.BattlePlayerStats), Quantum.BattlePlayerStats.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleProjectileCollisionFlags), 1);
       typeRegistry.Register(typeof(Quantum.BattleProjectileQComponent), Quantum.BattleProjectileQComponent.SIZE);
-      typeRegistry.Register(typeof(Quantum.BattleProjectileSpawnerQComponent), Quantum.BattleProjectileSpawnerQComponent.SIZE);
+      typeRegistry.Register(typeof(Quantum.BattleProjectileSystemDataQSingleton), Quantum.BattleProjectileSystemDataQSingleton.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleProjectileTriggerQComponent), Quantum.BattleProjectileTriggerQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleSoulWallQComponent), Quantum.BattleSoulWallQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleSoulWallRow), 4);
@@ -2577,7 +2577,7 @@ namespace Quantum {
         .Add<Quantum.BattlePlayerShieldDataTemplateQComponent>(Quantum.BattlePlayerShieldDataTemplateQComponent.Serialize, null, Quantum.BattlePlayerShieldDataTemplateQComponent.OnRemoved, ComponentFlags.None)
         .Add<Quantum.BattlePlayerShieldManagerDataQSingleton>(Quantum.BattlePlayerShieldManagerDataQSingleton.Serialize, null, null, ComponentFlags.Singleton)
         .Add<Quantum.BattleProjectileQComponent>(Quantum.BattleProjectileQComponent.Serialize, null, null, ComponentFlags.None)
-        .Add<Quantum.BattleProjectileSpawnerQComponent>(Quantum.BattleProjectileSpawnerQComponent.Serialize, null, null, ComponentFlags.None)
+        .Add<Quantum.BattleProjectileSystemDataQSingleton>(Quantum.BattleProjectileSystemDataQSingleton.Serialize, null, null, ComponentFlags.Singleton)
         .Add<Quantum.BattleProjectileTriggerQComponent>(Quantum.BattleProjectileTriggerQComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.BattleSoulWallQComponent>(Quantum.BattleSoulWallQComponent.Serialize, null, null, ComponentFlags.None)
         .Finish();
