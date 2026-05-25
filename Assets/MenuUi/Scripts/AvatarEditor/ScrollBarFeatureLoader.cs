@@ -3,7 +3,6 @@ using Altzone.Scripts;
 using Altzone.Scripts.AvatarPartsInfo;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
-using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.UI;
 

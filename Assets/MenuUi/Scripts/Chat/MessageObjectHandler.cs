@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Altzone.Scripts.Chat;
 using MenuUi.Scripts.AvatarEditor;
 using TMPro;
@@ -18,18 +19,16 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private Button _button;
     [SerializeField] private GameObject _addReactionsControls;
     [SerializeField] private GameObject _reactionsPanel;
-    [SerializeField] private GameObject _fixSize;
-
 
     [Header("Base Message")]
     public Vector2 _baseMessageBankerSize;
     public RectTransform _baseMessageSize;
     [SerializeField] private ChatMessageScript backgroundSize;
     [SerializeField] private GameObject reactionField;
+    public Vector2 reactionFieldVector;
     public GameObject _reactionSize;
     public GameObject _expandedReactionSize;
     [SerializeField] private Vector2 _vectorReactionSize;
-    [SerializeField] private Vector2 _vectorExpandedReactionSize;
 
 
 
@@ -39,41 +38,37 @@ public class MessageObjectHandler : MonoBehaviour
     private Action<MessageObjectHandler> _selectMessageAction;
 
     public GameObject ReactionsPanel { get => _reactionsPanel;}
-    [SerializeField] private GameObject ReactionObject;
 
+    [SerializeField] private GameObject ReactionObject;
     public string Id { get => _id;}
 
     // Start is called before the first frame update
     void Start()
     {
+        reactionFieldVector = reactionField.transform.position;
         _button.onClick.AddListener(SetMessageActive);
         _image = _button.GetComponent<Image>();
         Chat.OnSelectedMessageChanged += SetMessageInactive;
         ChatChannel.OnReactionReceived += UpdateReactions;
 
-        _vectorReactionSize = new Vector2(_baseMessageSize.sizeDelta.x, _baseMessageSize.sizeDelta.y + _reactionSize.GetComponent<RectTransform>().sizeDelta.y);
+        _vectorReactionSize = new Vector2(_baseMessageSize.sizeDelta.x, _baseMessageSize.sizeDelta.y + _expandedReactionSize.GetComponent<RectTransform>().sizeDelta.y);
         
     }
 
     ///Changes the Basemessages size
     public void SizeCall()
     {
-        _vectorExpandedReactionSize = new Vector2(_baseMessageSize.sizeDelta.x, _expandedReactionSize.GetComponent<RectTransform>().sizeDelta.y);
         //adds extra size if there reactions have been put or not
         float extraPadding;
         if (reactionField.transform.childCount > 0)
-            extraPadding = 50;
+            extraPadding = 65;
         else
         {
             extraPadding = 0f;
-            _fixSize.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 0); //Fixes the issue from the object not updating the size when its supposed to
         }
             
         //Checks if reaction panel is active and checks which reaction pannel is on
         if (_reactionSize.activeSelf)
-            if(_expandedReactionSize.activeSelf)
-                _baseMessageSize.sizeDelta = new Vector2(_vectorExpandedReactionSize.x, Mathf.Max(150, _baseMessageBankerSize.y + _vectorExpandedReactionSize.y));
-            else
                 _baseMessageSize.sizeDelta = new Vector2(_vectorReactionSize.x, Mathf.Max(150, _baseMessageBankerSize.y + _vectorReactionSize.y));
 
         //reverts back to orignal
@@ -94,6 +89,7 @@ public class MessageObjectHandler : MonoBehaviour
         _text.text = messageText;
         _selectMessageAction = selectMessageAction;
     }
+
     public void SetMessageInfo(ChatMessage message, Action<MessageObjectHandler> selectMessageAction)
     {
         if (message.Avatar != null) _avatar.UpdateVisuals(AvatarDesignLoader.Instance.CreateAvatarVisualData(message.Avatar));
@@ -106,7 +102,7 @@ public class MessageObjectHandler : MonoBehaviour
 
         foreach (var reactionData in message.Reactions)
         {
-            ReactionChatCall(reactionData);
+            ReactionChatCall(reactionData, message);
         }
     }
 
@@ -158,13 +154,11 @@ public class MessageObjectHandler : MonoBehaviour
     }
 
     //Refreshes the reactions if there is any
-    public void ReactionChatCall(ServerReactions EmojiId)
+    public void ReactionChatCall(ServerReactions EmojiId, ChatMessage message)
     {
         //Gets the set data we need to get to import saved reactions
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
-
-        ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, true);
-        
+        ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, ReactionsPanel, message);
     }
 
     private void UpdateReactions(ChatChannelType chatChannelType, ChatMessage message)
@@ -175,6 +169,7 @@ public class MessageObjectHandler : MonoBehaviour
         //Gets the set data we need to get to import saved reactions
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
 
-        ChildsScript.UpdateReactions(message.Reactions, _id);
+        ChildsScript.UpdateReactions(message.Reactions, _id, message);
+        
     }
 }

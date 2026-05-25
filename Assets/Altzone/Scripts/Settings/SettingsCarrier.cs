@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
 using static Altzone.Scripts.Chat.ChatListener;
+using Altzone.Scripts.Audio;
 
 public class SettingsCarrier : MonoBehaviour // Script for carrying settings data between scenes
 {
@@ -46,6 +47,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         GiveUpButton = 4,
         MoveJoystick = 5,
         RotateJoystick = 6,
+        SpecialJoystick = 7,
     }
 
     public enum BattleMovementInputType
@@ -72,12 +74,12 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         NewNiko
     }
 
-    public enum JukeboxPlayArea
-    {
-        MainMenu,
-        Soulhome,
-        Battle
-    }
+    // public enum JukeboxPlayArea
+    // {
+    //     MainMenu,
+    //     Soulhome,
+    //     Battle
+    // }
 
     public enum SettingsType
     {
@@ -352,6 +354,32 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         }
     }
 
+    private bool _battleDebug;
+
+    public bool BattleDebug
+    {
+        get => _battleDebug;
+        set
+        {
+            if (_battleDebug == value) return;
+            _battleDebug = value;
+            PlayerPrefs.SetInt("BattleDebug", value ? 1 : 0);
+        }
+    }
+
+    private bool _showFps;
+
+    public bool ShowFps
+    {
+        get => _showFps;
+        set
+        {
+            if (_showFps == value) return;
+            _showFps = value;
+            PlayerPrefs.SetInt("ShowFps", value ? 1 : 0);
+        }
+    }
+
     private string _mainMenuMusicName;
     public string MainMenuMusicName { get { return _mainMenuMusicName; } }
 
@@ -418,6 +446,10 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
         _topBarStyleSetting = (TopBarStyle)PlayerPrefs.GetInt(TopBarStyleSettingKey, 1);
 
+        _battleDebug = PlayerPrefs.GetInt("BattleDebug", 0) == 1;
+
+        _showFps = PlayerPrefs.GetInt("ShowFps", 0) == 1;
+
         _mainMenuMusicName = PlayerPrefs.GetString("MainMenuMusic");
 
         ChatListener.OnActiveChannelChanged += SaveChatChannel;
@@ -454,6 +486,19 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         return 1 * (otherVolume * masterVolume);
     }
 
+    public float GetVolumeValue(SoundType type)
+    {
+        float otherVolume = 1;
+        switch (type)
+        {
+            case SoundType.menu: otherVolume = menuVolume; break;
+            case SoundType.music: otherVolume = musicVolume; break;
+            case SoundType.sound: otherVolume = soundVolume; break;
+            default: break;
+        }
+        return otherVolume;
+    }
+
     public void SetTextSize(TextSize size)
     {
         _textSize = size;
@@ -485,6 +530,24 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         }
     }
 
+    public bool SetBoolValue(string type, bool? value = null)
+    {
+        switch (type)
+        {
+            case "BattleDebug":
+                if (value.HasValue) BattleDebug = value.Value;
+                else BattleDebug = !BattleDebug;
+                return true;
+            case "ShowFps":
+                if (value.HasValue) ShowFps = value.Value;
+                else ShowFps = !ShowFps;
+                return true;
+            default:
+                Debug.LogError($"Cannot find type: {type}. Somebody probably forgot to add it.");
+                return false;
+        }
+    }
+
     public bool? GetBoolValue(SettingsType type)
     {
         switch (type)
@@ -497,6 +560,20 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
                 return jukeboxUI;
             case SettingsType.JukeboxBattleToggle:
                 return jukeboxBattle;
+            default:
+                Debug.LogError($"Cannot find type: {type}. Somebody probably forgot to add it.");
+                return null;
+        }
+    }
+
+    public bool? GetBoolValue(string type)
+    {
+        switch (type)
+        {
+            case "BattleDebug":
+                return _battleDebug;
+            case "ShowFps":
+                return _showFps;
             default:
                 Debug.LogError($"Cannot find type: {type}. Somebody probably forgot to add it.");
                 return null;
@@ -524,19 +601,19 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         PlayerPrefs.SetString($"BattleUi{type}", json);
     }
 
-    public bool CanPlayJukeboxInArea(JukeboxPlayArea playArea)
+    public bool CanPlayJukeboxInArea(AudioCategoryType playArea)
     {
         switch (playArea)
         {
-            case JukeboxPlayArea.MainMenu:
+            case AudioCategoryType.MainMenu:
                 {
                     return jukeboxUI;
                 }
-            case JukeboxPlayArea.Soulhome:
+            case AudioCategoryType.SoulHome:
                 {
                     return jukeboxSoulhome;
                 }
-            case JukeboxPlayArea.Battle:
+            case AudioCategoryType.Battle:
                 {
                     return jukeboxBattle;
                 }

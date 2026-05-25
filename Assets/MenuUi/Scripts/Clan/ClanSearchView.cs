@@ -12,9 +12,20 @@ public class ClanSearchView : MonoBehaviour
     [SerializeField] private Transform _clanListParent;
     [SerializeField] private GameObject _loadMoreButton;
     [SerializeField] private GameObject _clanPopup;
+    [SerializeField] private Button _returnToMainClanViewButton;
+    [SerializeField] private Button _returnToMainMenuButton;
 
     [SerializeField] private ClanConfirmPopup _confirmPopup;
-    [SerializeField] private GameObject _overlay;
+    [SerializeField] private GameObject _blocker;
+
+    [Header("Popup Buttons")]
+    [SerializeField] private Button _openFiltersButton;
+    [SerializeField] private Button _filtersConfirmButton;
+    [SerializeField] private Button _filtersCancelButton;
+    [SerializeField] private Button _filtersCloseButton;
+
+    [SerializeField] private Button _clanPopupCancelButton;
+    [SerializeField] private Button _clanPopupCloseButton;
 
     private int _currentPage;    // Current page found in pagination data
     private int _totalPages;     // Total pages in pagination data
@@ -25,7 +36,51 @@ public class ClanSearchView : MonoBehaviour
 
     private void Awake()
     {
-        _loadMoreButton.GetComponent<Button>().onClick.AddListener(() => { LoadMoreClans(); });
+        if (_loadMoreButton != null)
+        {
+            Button loadMoreButton = _loadMoreButton.GetComponent<Button>();
+            if (loadMoreButton != null)
+                loadMoreButton.onClick.AddListener(LoadMoreClans);
+        }
+
+        /*if (_openFiltersButton != null)
+            _openFiltersButton.onClick.AddListener(OpenFiltersPopup);*/
+
+        if (_filtersConfirmButton != null)
+            _filtersConfirmButton.onClick.AddListener(ConfirmFiltersPopup);
+
+        if (_filtersCancelButton != null)
+            _filtersCancelButton.onClick.AddListener(CloseFiltersPopup);
+
+        if (_filtersCloseButton != null)
+            _filtersCloseButton.onClick.AddListener(CloseFiltersPopup);
+
+        if (_clanPopupCancelButton != null)
+            _clanPopupCancelButton.onClick.AddListener(CloseClanPopup);
+
+        if (_clanPopupCloseButton != null)
+            _clanPopupCloseButton.onClick.AddListener(CloseClanPopup);
+    }
+
+    private void OnDestroy()
+    {
+        /*if (_openFiltersButton != null)
+            _openFiltersButton.onClick.RemoveListener(OpenFiltersPopup);*/
+
+        if (_filtersConfirmButton != null)
+            _filtersConfirmButton.onClick.RemoveListener(ConfirmFiltersPopup);
+
+        if (_filtersCancelButton != null)
+            _filtersCancelButton.onClick.RemoveListener(CloseFiltersPopup);
+
+        if (_filtersCloseButton != null)
+            _filtersCloseButton.onClick.RemoveListener(CloseFiltersPopup);
+
+        if (_clanPopupCancelButton != null)
+            _clanPopupCancelButton.onClick.RemoveListener(CloseClanPopup);
+
+        if (_clanPopupCloseButton != null)
+            _clanPopupCloseButton.onClick.RemoveListener(CloseClanPopup);
     }
 
     private void OnEnable()
@@ -38,9 +93,10 @@ public class ClanSearchView : MonoBehaviour
 
     private void OnDisable()
     {
-        _filtersPanel.OnFiltersChanged -= UpdateFilters;
-        if(_overlay) _overlay.SetActive(false);
-        if(_clanPopup) _clanPopup.SetActive(false);
+        if (_filtersPanel != null)
+            _filtersPanel.OnFiltersChanged -= UpdateFilters;
+
+        CloseClanPopup();
     }
 
     private void Reset()
@@ -54,7 +110,7 @@ public class ClanSearchView : MonoBehaviour
         _currentPage = 0;
         _loadMoreButton.SetActive(false);
         _listedClans.Clear();
-        _clanPopup.SetActive(false);
+        CloseClanPopup();
     }
 
     private void LoadMoreClans()
@@ -89,7 +145,10 @@ public class ClanSearchView : MonoBehaviour
             clanListing.OpenProfileButton.onClick.RemoveAllListeners();
             clanListing.OpenProfileButton.onClick.AddListener(() =>
             {
-                _clanPopup.SetActive(true);
+                ToggleBlocker(true);
+
+                if (_clanPopup != null)
+                    _clanPopup.SetActive(true);
 
                 var popup = _clanPopup.GetComponent<ClanSearchPopup>();
                 popup.Show(clan, onJoin: () =>
@@ -152,9 +211,50 @@ public class ClanSearchView : MonoBehaviour
         return true;
     }
 
+    private void ToggleBlocker(bool on)
+    {
+        if (_blocker != null)
+            _blocker.SetActive(on);
+    }
+
     private void ShowOverlay(bool on)
     {
-        if (_overlay) _overlay.SetActive(on);
+        if (OverlayPanelCheck.Instance) OverlayPanelCheck.Instance.ToggleOverlay(on);
+    }
+
+    public void CloseClanPopup()
+    {
+        if (_clanPopup != null)
+            _clanPopup.SetActive(false);
+
+        if (_confirmPopup != null)
+            _confirmPopup.gameObject.SetActive(false);
+
+        ToggleBlocker(false);
+    }
+
+    private void OpenFiltersPopup()
+    {
+        if (_filtersPanel != null)
+            _filtersPanel.gameObject.SetActive(true);
+
+        ToggleBlocker(true);
+    }
+
+    private void ConfirmFiltersPopup()
+    {
+        if (_filtersPanel != null)
+            _filtersPanel.ApplyFilters();
+
+        CloseFiltersPopup();
+    }
+
+    private void CloseFiltersPopup()
+    {
+        if (_filtersPanel != null)
+            _filtersPanel.gameObject.SetActive(false);
+
+        ToggleBlocker(false);
     }
 
     private string GetCurrentClanName()
@@ -188,7 +288,7 @@ public class ClanSearchView : MonoBehaviour
     {
         string targetName = new ClanData(clan).Name;
 
-        ShowOverlay(true);
+        ToggleBlocker(true);
 
         _confirmPopup.Show(
             bodyText: "Haluatko liittyä klaaniin " + targetName + "?",
@@ -204,15 +304,19 @@ public class ClanSearchView : MonoBehaviour
                     if (newClan != null)
                     {
                         ServerManager.Instance.RaiseClanChangedEvent();
-                    }
+                        ShowOverlay(true);
+                        CloseClanPopup();
 
-                    ShowOverlay(false);
-                    _clanPopup.SetActive(false);
+                        if (ServerManager.Instance.FirstJoin)
+                            _returnToMainMenuButton.onClick.Invoke();
+                        else
+                            _returnToMainClanViewButton.onClick.Invoke();
+                    }
                 }));
             },
             onCancel: () =>
             {
-                ShowOverlay(false);
+                
             },
             confirmText: "Liity",
             cancelText: "Peruuta",
@@ -228,7 +332,7 @@ public class ClanSearchView : MonoBehaviour
         string warningText = "Olet jo jäsen klaanissa " + currentClanName + "." +
             " Haluatko varmasti poistua nykyisestä klaanista ja liittyä klaaniin " + targetClanName + "?";
 
-        ShowOverlay(true);
+        ToggleBlocker(true);
 
         _confirmPopup.Show(
             bodyText: warningText,
@@ -243,7 +347,7 @@ public class ClanSearchView : MonoBehaviour
                     if (!success)
                     {
                         _isJoining = false;
-                        ShowOverlay(false);
+                        ToggleBlocker(false);
                         return;
                     }
 
@@ -253,23 +357,25 @@ public class ClanSearchView : MonoBehaviour
 
                         if (newClan == null)
                         {
-                            ShowOverlay(false);
+                            ToggleBlocker(false);
                             return;
                         }
 
                         if (newClan != null)
                         {
                             ServerManager.Instance.RaiseClanChangedEvent();
-                            // (ei RemoveDataa jos sitä ei ole)
-                        }
+                            ShowOverlay(true);
+                            CloseClanPopup();
 
-                        //ServerManager.Instance.RaiseClanChangedEvent();
-                        ShowOverlay(false);
-                        _clanPopup.SetActive(false);
+                            if (ServerManager.Instance.FirstJoin)
+                                _returnToMainMenuButton.onClick.Invoke();
+                            else
+                                _returnToMainClanViewButton.onClick.Invoke();
+                        }
                     }));
                 }));
             },
-            onCancel: () => { ShowOverlay(false); },
+            onCancel: () => { },
                 confirmText: "Liity",
                 cancelText: "Peruuta",
                 style: "leave"

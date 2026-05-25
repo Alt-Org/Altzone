@@ -4,6 +4,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2;
 using MenuUi.Scripts.Signals;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MenuUi.Scripts.Lobby.SelectedCharacters
 {
@@ -15,6 +16,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         [SerializeField] private BattlePopupSelectedCharacter[] _selectedCharacterSlots;
         [SerializeField] private bool _isInRoom;
         [SerializeField] private Sprite _dragAndDropIcon;
+        [SerializeField] private Button _button;
 
 
         private void Awake()
@@ -32,6 +34,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             {
                 SignalBus.OnReloadCharacterGalleryRequested += SetCharacters;
             }
+            _button.onClick.AddListener(OpenCharacterSelection);
         }
 
 
@@ -74,7 +77,8 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                     }
 
                     PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
-                    _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charID, true);
+                    //_selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charID, true);
+                    _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charID, true);
                 }
             }));
         }
@@ -97,7 +101,8 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
 
                 PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(selectedCharacterIds[i].ToString());
                 int[] statsForCharacter = stats != null ? stats[(i * 5)..(i * 5 + 5)] : null;
-                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false, statsForCharacter);
+                //_selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false, statsForCharacter);
+                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charInfo.CharacterId, false, statsForCharacter);
             }
         }
 
@@ -116,8 +121,14 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                 }
 
                 PlayerCharacterPrototype charInfo = PlayerCharacterPrototypes.GetCharacter(selectedCharacterIds[i].ToString());
-                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false);
+                //_selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false);
+                _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charInfo.CharacterId, false);
             }
+        }
+
+        private void OpenCharacterSelection()
+        {
+            SignalBus.OnDefenceGalleryEditPanelRequestedSignal();
         }
     }
 }

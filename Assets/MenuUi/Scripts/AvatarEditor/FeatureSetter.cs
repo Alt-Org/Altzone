@@ -2,7 +2,7 @@ using System;
 using Altzone.Scripts.AvatarPartsInfo;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
-using Assets.Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
 namespace MenuUi.Scripts.AvatarEditor
@@ -19,7 +19,7 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             _avatarEditorController.PlayerAvatar.SetPart(slot, feature.Id);
             ColorUtility.TryParseHtmlString(_avatarEditorController.PlayerAvatar.GetPartColor(slot), out Color color);
-            _avatarEditorCharacterHandle.SetMainCharacterImage(slot, feature, color);
+            StartCoroutine(_avatarEditorCharacterHandle.SetMainCharacterImage(slot, feature, color));
         }
 
         public void SetLoadedFeatures(PlayerAvatar avatar)
@@ -40,7 +40,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 if (avatarPart != null)
                 {
                     ColorUtility.TryParseHtmlString(avatar.GetPartColor(slot), out Color color);
-                    _avatarEditorCharacterHandle.SetMainCharacterImage(slot, avatarPart, color);
+                    StartCoroutine(_avatarEditorCharacterHandle.SetMainCharacterImage(slot, avatarPart, color));
                 }
             }
 

@@ -232,11 +232,40 @@ namespace Battle.QSimulation.Projectile
             if (!projectile->IsHeld)
             {
                 // move the projectile
-                transform->Position += projectile->Direction * (projectile->Speed * f.DeltaTime);
+                Transform2D* triggerTransform = f.Unsafe.GetPointer<Transform2D>(projectile->TriggerEntityRef);
+                FPVector2 newPosition = transform->Position + projectile->Direction * (projectile->Speed * f.DeltaTime);
+                MoveProjectile(transform, triggerTransform, newPosition);
             }
 
             // reset CollisionFlags for next frame
             projectile->CollisionFlags[(f.Number + 1) % 2 ] = 0;
+        }
+
+        /// <summary>
+        /// Moves the projectile's and it's trigger's transform to a new position.
+        /// </summary>
+        ///
+        /// <param name="projectileTransform">Pointer to the projectile's Transform2D component.</param>
+        /// <param name="triggerTransform">Pointer to the projectile's trigger's Transform2D component.</param>
+        /// <param name="position">The new position the projectile and it's transform is moved to.</param>
+        public static void MoveProjectile(Transform2D* projectileTransform, Transform2D* triggerTransform, FPVector2 position)
+        {
+            projectileTransform->Position = position;
+            triggerTransform->Position = position;
+        }
+
+        /// <summary>
+        /// Teleports the projectile's and it's trigger's transform to a new position
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectileTransform">Pointer to the projectile's Transform2D component.</param>
+        /// <param name="triggerTransform">Pointer to the projectile's trigger's Transform2D component.</param>
+        /// <param name="position">The new position the projectile and it's transform is teleported to.</param>
+        public static void TeleportProjectile(Frame f, Transform2D* projectileTransform, Transform2D* triggerTransform, FPVector2 position)
+        {
+            projectileTransform->Teleport(f, position);
+            triggerTransform->Teleport(f, position);
         }
 
         /// <summary>
@@ -294,7 +323,7 @@ namespace Battle.QSimulation.Projectile
                     BattleCollisionQSystem.PlayerShieldCollisionData* dataPtr = (BattleCollisionQSystem.PlayerShieldCollisionData*)data;
                     BattlePlayerHitboxQComponent* playerShieldHitbox = dataPtr->PlayerShieldHitbox;
 
-                    if (FPVector2.Dot(playerShieldHitbox->Normal, projectile->Direction.Normalized) >= 0) break;
+                    if (FPVector2.Dot(playerShieldHitbox->CalculateNormal(f), projectile->Direction.Normalized) >= 0) break;
 
                     if (!ProjectileHitPlayerShield(f, projectile, dataPtr, out normal)) break;
 
@@ -310,9 +339,9 @@ namespace Battle.QSimulation.Projectile
 
                     if (projectile->EmotionCurrent == BattleEmotionState.Love) break;
 
-                    if (FPVector2.Dot(playerCharacterHitbox->Normal, projectile->Direction.Normalized) >= 0) break;
+                    if (FPVector2.Dot(playerCharacterHitbox->CalculateNormal(f), projectile->Direction.Normalized) >= 0) break;
 
-                    normal             = playerCharacterHitbox->Normal;
+                    normal             = playerCharacterHitbox->CalculateNormal(f);
                     collisionType      = playerCharacterHitbox->CollisionType;
                     collisionMinOffset = playerCharacterHitbox->CollisionMinOffset;
                     speedChange        = SpeedChange.Increment;
@@ -349,23 +378,23 @@ namespace Battle.QSimulation.Projectile
         /// <param name="winningTeam">The BattleTeamNumber of the team that won.</param>
         public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam)
         {
-            EntityRef projectileEntity = GetProjectileEntity(f);
+            EntityRef projectileEntityRef = GetProjectileEntity(f);
 
-            BattleProjectileQComponent* projectile          = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntity);
-            Transform2D*                projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
+            BattleProjectileQComponent* projectile                 = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
+            Transform2D*                projectileTransform        = f.Unsafe.GetPointer<Transform2D>(projectileEntityRef);
+            Transform2D*                projectileTriggerTransform = f.Unsafe.GetPointer<Transform2D>(projectile->TriggerEntityRef);
 
             SetHeld(f, projectile, true);
 
-            // move the projectile out of bounds after a goal is scored
-            switch (winningTeam)
+            FPVector2 newPosition = winningTeam switch
             {
-                case BattleTeamNumber.TeamAlpha:
-                    projectileTransform->Position = new FPVector2(0, 25);
-                    break;
-                case BattleTeamNumber.TeamBeta:
-                    projectileTransform->Position = new FPVector2(0, -25);
-                    break;
-            }
+                BattleTeamNumber.TeamAlpha => new FPVector2(0, 25),
+                BattleTeamNumber.TeamBeta  => new FPVector2(0, -25),
+
+                _ => FPVector2.Zero,
+            };
+
+            MoveProjectile(projectileTransform, projectileTriggerTransform, newPosition);
         }
 
         #endregion Public - Gameflow Methods
@@ -447,10 +476,11 @@ namespace Battle.QSimulation.Projectile
         {
             normal = FPVector2.Zero;
 
-            if (!shieldCollisionData->PlayerShieldHitbox->IsActive) return false;
+            BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
+
             if (projectile->EmotionCurrent == BattleEmotionState.Love) return false;
 
-            BattlePlayerDataQComponent* playerData = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
+            BattlePlayerDataQComponent* playerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
 
             bool isOnTopOfTeammate = false;
 
@@ -458,9 +488,9 @@ namespace Battle.QSimulation.Projectile
 
             if (teammateHandle.PlayState.IsInPlay())
             {
-                EntityRef teammateEntity = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot).SelectedCharacterEntity;
+                EntityRef teammateEntity = teammateHandle.GetSelectedCharacterEntityRef(f);
 
-                Transform2D* playerTransform   = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->PlayerEntity);
+                Transform2D* playerTransform   = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
                 Transform2D* teammateTransform = f.Unsafe.GetPointer<Transform2D>(teammateEntity);
 
                 BattleGridPosition playerGridPosition   = BattleGridManager.WorldPositionToGridPosition(playerTransform->Position);
@@ -483,7 +513,7 @@ namespace Battle.QSimulation.Projectile
 
             if (shieldCollisionData->PlayerShieldHitbox->CollisionType == BattlePlayerCollisionType.None) return false;
 
-            normal = shieldCollisionData->PlayerShieldHitbox->Normal;
+            normal = shieldCollisionData->PlayerShieldHitbox->CalculateNormal(f);
             return true;
         }
 

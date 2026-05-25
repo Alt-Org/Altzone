@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
-using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
 public class ClanPlayerFetcher : MonoBehaviour

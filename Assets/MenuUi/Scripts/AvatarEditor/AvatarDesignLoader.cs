@@ -5,7 +5,6 @@ using System.Linq;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ReferenceSheets;
-using Assets.Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.AvatarEditor;
 using UnityEngine;
 
@@ -175,7 +174,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
             return;
         }
 
-        var defaultAvatars = _avatarDefaultReference.GetAvatar(playerData.SelectedCharacterId);
+        var defaultAvatars = AvatarReference.Instance.GetDefaultAvatar((CharacterClassType)((playerData.SelectedCharacterId / 100) * 100));
         if (defaultAvatars == null)
         {
             Debug.LogError($"No default avatar found for character ID: {playerData.SelectedCharacterId}");
@@ -195,6 +194,16 @@ public class AvatarDesignLoader : AltMonoBehaviour
             }
 
             var replacedColors = new System.Text.StringBuilder();
+            bool skinColourReplaced = false;
+            if (!ColorUtility.TryParseHtmlString(avatarData.Color, out _))
+            {
+                var oldColor = playerData.AvatarData.Color;
+                playerData.AvatarData.Color = defaultAvatarData.Color;
+                var newColor = playerData.AvatarData.Color;
+                replacedColors.Append($"Skin Colour:{oldColor} to {newColor}  ");
+                skinColourReplaced = true;
+            }
+
             foreach (AvatarPiece piece in invalidColors)
             {
                 var oldcolor = playerData.AvatarData?.GetPieceColor(piece);
@@ -202,7 +211,7 @@ public class AvatarDesignLoader : AltMonoBehaviour
                 var newColor = playerData.AvatarData?.GetPieceColor(piece);
                 replacedColors.Append($"{piece}:{oldcolor} to {newColor}  ");
             }
-            Debug.LogWarning($"Player {name} - replaced {invalidPieces.Count} piece(s): {replacedPieces} and {invalidColors.Count} color(s): {replacedColors}");
+            Debug.LogWarning($"Player {name} - replaced {invalidPieces.Count} piece(s): {replacedPieces} and {invalidColors.Count + (skinColourReplaced?1:0)} color(s): {replacedColors}");
         }
         else
         {

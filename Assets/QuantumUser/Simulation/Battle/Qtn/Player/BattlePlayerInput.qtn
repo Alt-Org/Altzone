@@ -12,6 +12,7 @@ input
     bool                    AbilityActivate;
     int                     PlayerCharacterNumber;
     bool                    GiveUpInput;
+    BattleSpecialInput      Special;
 }
 
 enum BattleMovementInputType
@@ -20,4 +21,17 @@ enum BattleMovementInputType
     PositionTarget,
     PositionMove,
     Direction
+}
+
+enum BattleJoystickState
+{
+    Up,
+    Down,
+    Drag
+}
+
+struct BattleSpecialInput
+{
+    BattleJoystickState JoystickState;
+    FPVector2 JoystickValue;
 }

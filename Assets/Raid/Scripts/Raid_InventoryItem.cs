@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using UnityEngine.EventSystems;
+using Altzone.Scripts.Model.Poco.Game;
 //using Photon.Pun;
 //using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
 
@@ -21,7 +22,8 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     [SerializeField] public Image Bubble;
     [SerializeField] public Sprite[] Auras;
     [SerializeField] public Sprite[] Bubbles;
-
+    [SerializeField] public Raid_References raid_References;
+    
     private RectTransform target;
     Vector2 endLoc;
     Vector3 offset;
@@ -49,6 +51,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     public bool bomb = false;
 
     private bool timeEnded = false;
+    public GameFurniture furnitureData;
 
     private AudioSource audioSource;
     public AudioClip pickUp;
@@ -63,6 +66,8 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         Heart = GameObject.FindWithTag("Heart");
         target = Heart.GetComponent<RectTransform>();
 
+        raid_References = GameObject.Find("ScriptHolder").GetComponent<Raid_References>();
+
         Raid_Timer raidTimer = FindObjectOfType<Raid_Timer>();
         if (raidTimer != null)
         {
@@ -73,7 +78,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         empty = true;
 
         //if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
-            spectator = true;
+            spectator = false;
     }
     public void Update()
     {
@@ -81,10 +86,13 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
             BallToHeart();
     }
 
-    public void SetData(Sprite ItemSprite, float LootItemWeight)
+    // Sets this slots data based on contents of GameFurniture
+    public void SetData(GameFurniture gameFurniture)
     {
+        ItemWeight = (float)gameFurniture.Weight;
+        furnitureData = gameFurniture;
         ItemImage.gameObject.SetActive(true);
-        ItemImage.sprite = ItemSprite;
+        ItemImage.sprite = gameFurniture.FurnitureInfo.Image;
         ItemWeightText.text = ItemWeight + "kg";
         empty = false;
         SetBGColor();

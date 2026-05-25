@@ -116,13 +116,13 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     /// <summary>
     /// Start the task
     /// </summary>
-    public void DailyTaskAccept()
+    /*public void DailyTaskAccept()
     {
         if (!_clickEnabled || _taskData.PlayerId != "")
             return;
 
         StartCoroutine(DailyTaskManager.Instance.AcceptTask(_taskData, null));
-    }
+    }*/
 
     /// <summary>
     /// Returns the best location for the <c>Popup.cs</c> window depending <br/>
@@ -163,21 +163,11 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     /// </summary>
     public void PopulateData()
     {
-        // Use the current language to pick the correct title
-        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
-        {
-            _taskShort.text = _taskData.EnglishTitle;
-            //_taskContent.text = _taskData.EnglishContent; // if you have a content field
-        }
-        else
-        {
-            _taskShort.text = _taskData.Title;
-            //_taskContent.text = _taskData.Content;
-        }
+        _taskShort.text = _taskData.Title;
 
         _taskDebugID.text = _taskData.Id.ToString();
-        _taskPoints.text = _taskData.Points.ToString();
-        _taskCoins.text = _taskData.Coins.ToString();
+        _taskPoints.text = "+" + _taskData.Points.ToString();
+        _taskCoins.text = "+" + _taskData.Coins.ToString();
         _taskAmount.text = _taskData.Amount.ToString();
         _coinIndicator.SetActive(_taskData.Coins >= 0);
 
@@ -237,11 +227,6 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
     private void UpdateLanguage(SettingsCarrier.LanguageType language)
     {
-        _taskShort.text = language switch
-        {
-            SettingsCarrier.LanguageType.Finnish => _taskData.Title,
-            SettingsCarrier.LanguageType.English => _taskData.EnglishTitle,
-            _ => _taskData.Title,
-        };
+        _taskShort.text = _taskData.Title;
     }
 }

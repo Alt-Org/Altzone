@@ -105,6 +105,7 @@ public class DailyTaskSelectButtons : DailyTaskProgressListenerHighlighter
             allButtonObjects = allButtonObjectsList.ToArray();
         }
         else allButtonObjects = _limitedButtons.ToArray();
+
         foreach (SelectButtonObject buttonObject in allButtonObjects)
         {
             if (_addedEntries.ContainsKey(buttonObject)) continue;
@@ -122,9 +123,6 @@ public class DailyTaskSelectButtons : DailyTaskProgressListenerHighlighter
             var downEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
             downEntry.callback.AddListener((eventData) =>
             {
-                // This is the indicator that shows if the player is holding down the button
-                ProgressWheelHandler.Instance.StartProgressWheelAtPosition(buttonObject.Button.transform.position, 0.2f, _requiredHoldTime);
-
                 StartCoroutine(ButtonHold(buttonObject));
             });
 
@@ -191,7 +189,13 @@ public class DailyTaskSelectButtons : DailyTaskProgressListenerHighlighter
         while (true)
         {
             timer += Time.deltaTime;
-          
+
+            if (timer >= _coolDownTime)
+            {
+                // This is the indicator that shows if the player is holding down the button
+                ProgressWheelHandler.Instance.StartProgressWheelAtPosition(button.Button.transform.position, _coolDownTime, _requiredHoldTime);
+            }
+
             if (timer >= _requiredHoldTime)
             {
                 ProgressWheelHandler.Instance.DeactivateProgressWheel();

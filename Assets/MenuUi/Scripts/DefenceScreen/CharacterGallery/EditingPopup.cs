@@ -65,8 +65,8 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             if (_rectTransform == null) _rectTransform = GetComponent<RectTransform>();
 
-            _rectTransform.anchorMin = new Vector2(0, PanelScaler.CalculateBottomPanelHeight());
-            _rectTransform.anchorMax = new Vector2(1, 1 - (PanelScaler.CalculateTopPanelHeight() + PanelScaler.CalculateUnsafeAreaHeight()));
+            //_rectTransform.anchorMin = new Vector2(0, PanelScaler.CalculateBottomPanelHeight());
+            //_rectTransform.anchorMax = new Vector2(1, 1 - (PanelScaler.CalculateTopPanelHeight() + PanelScaler.CalculateUnsafeAreaHeight()));
         }
 
         private void OnDestroy()

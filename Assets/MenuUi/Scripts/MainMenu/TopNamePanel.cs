@@ -1,9 +1,10 @@
-using UnityEngine;
-using TMPro;
-using Altzone.Scripts.Model.Poco.Player;
-using Altzone.Scripts.Model.Poco.Clan;
+using System.Security.Claims;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Player;
+using TMPro;
+using UnityEngine;
 
 public class TopNamePanel : MonoBehaviour
 {
@@ -23,6 +24,7 @@ public class TopNamePanel : MonoBehaviour
     private void OnEnable()
     {
         ServerManager.OnLogInStatusChanged += SetPlayerPanelValues;
+        ServerManager.OnClanChanged += SetClanValues;
         _player = ServerManager.Instance.Player;
 
         if (_player == null)
@@ -41,7 +43,9 @@ public class TopNamePanel : MonoBehaviour
     private void OnDisable()
     {
         ServerManager.OnLogInStatusChanged -= SetPlayerPanelValues;
-    }
+        ServerManager.OnClanChanged -= SetClanValues;
+;
+}
 
     /// <summary>
     /// Sets the clan text of clan panel when log in status changes.
@@ -87,6 +91,29 @@ public class TopNamePanel : MonoBehaviour
         else
         {
             Reset();
+        }
+    }
+
+    private void SetClanValues(ServerClan Clan)
+    {
+        ClanData clanData = null;
+        string clanId = "";
+        if (Clan != null) clanData = new(Clan);
+        if (clanData != null)
+        {
+            clanId = clanData.Id;
+            if (clanData != null)
+            {
+                if (_playerClanText != null) _playerClanText.text = clanData.Name;
+            }
+            else
+            {
+                if (_playerClanText != null) _playerClanText.text = "Klaanin tietojen hakeminen ei onnistunut";
+            }
+        }
+        else
+        {
+            if (_playerClanText != null) _playerClanText.text = "Et ole klaanissa";
         }
     }
 }

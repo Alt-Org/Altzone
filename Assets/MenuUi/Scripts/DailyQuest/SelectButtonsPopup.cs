@@ -92,6 +92,7 @@ public class SelectButtonsPopup : MonoBehaviour
     {
         _popupWindow.SetActive(showHide);
         _shown = showHide;
+        ExpandPopup(showHide);
     }
 
     /// <summary>
@@ -99,7 +100,19 @@ public class SelectButtonsPopup : MonoBehaviour
     /// </summary>
     private void ExpandPopup()
     {
-        _expanded = !_expanded;
+        ExpandPopup(!_expanded);
+    }
+
+    /// <summary>
+    /// Moves the popup in or out from the side of the screen
+    /// </summary>
+    /// <param name="expanded">If the popup should expand in</param>
+    private void ExpandPopup(bool expanded)
+    {
+        // If already in the correct state, return
+        if (_expanded == expanded) return;
+
+        _expanded = expanded;
 
         FlipExpandArrow(_expanded);
 
@@ -202,7 +215,7 @@ public class SelectButtonsPopup : MonoBehaviour
             RemoveSelectedButton(emptySlot);
         });
 
-        _popupWindow.SetActive(true);
+        ShowPopup(true);
 
         UpdateConfirmButton();
     }
@@ -230,7 +243,7 @@ public class SelectButtonsPopup : MonoBehaviour
     {
         OnConfirm?.Invoke();
 
-        _popupWindow.SetActive(false);
+        ShowPopup(false);
 
         for (int i = 0; i < _selectedButtons.Length; i++)
         {
@@ -253,6 +266,8 @@ public class SelectButtonsPopup : MonoBehaviour
             }
             _confirmButton.gameObject.SetActive(slotsFull);
             _confirmButton.interactable = slotsFull;
+
+            if (slotsFull) ExpandPopup(true);
         }
     }
 }
