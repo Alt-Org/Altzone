@@ -206,10 +206,10 @@ namespace Battle.QSimulation.Game
             BattleSoulWallQSpec soulWallSpec = BattleQConfig.GetSoulWallSpec(f);
 
             BattleSoulWallQSystem.CreateSoulWalls(f, battleArenaSpec, soulWallSpec);
-
             BattlePlayerManager.CreatePlayers(f);
-            BattlePlayerQSystem.SpawnPlayers(f);
             BattleProjectileQSystem.CreateProjectile(f);
+
+            BattlePlayerQSystem.SpawnPlayers(f);
         }
     }
 }
