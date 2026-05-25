@@ -91,8 +91,10 @@ namespace MenuUI.Scripts.SoulHome
 
         void OnEnable()
         {
+            _displayScreen.transform.GetChild(0).gameObject.SetActive(true);
             if (_camera != null)
             {
+                StartCoroutine(RemoveLoadScreen());
                 _camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
                 HandleScreenRotation();
             }
@@ -130,6 +132,12 @@ namespace MenuUI.Scripts.SoulHome
             _maxCameraDistance = GetCameraMaxDistance();
             _minCameraDistance = GetCameraMinDistance();
             _startFinished = true;
+            _displayScreen.transform.GetChild(0).gameObject.SetActive(false);
+        }
+
+        private IEnumerator RemoveLoadScreen()
+        {
+            yield return new WaitUntil(() => _loadScript.LoadFinished);
             _displayScreen.transform.GetChild(0).gameObject.SetActive(false);
         }
 

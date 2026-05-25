@@ -307,7 +307,7 @@ public class ClanSettings : AltMonoBehaviour
             }
             else if (_heartColorChanger != null)
             {
-                _heartColorChanger.SetFillWholeHeart(true);
+                OnFillWholeHeartToggleChanged(true);
             }
         });
     }
@@ -687,18 +687,17 @@ public class ClanSettings : AltMonoBehaviour
     {
         if (_heartModeLabel != null)
         {
-            _heartModeLabel.text = isOn ? _pieceModeText : _wholeHeartText;
+            _heartModeLabel.text = isOn ? _wholeHeartText: _pieceModeText;
         }
 
         if (_toggleIcon != null)
         {
-            _toggleIcon.sprite = isOn ? _iconPieceMode : _iconWholeHeart;
+            _toggleIcon.sprite = isOn ? _iconWholeHeart : _iconPieceMode;
         }
 
         if (_heartColorChanger != null)
         {
-            bool fillWholeHeart = !isOn;
-            _heartColorChanger.SetFillWholeHeart(fillWholeHeart);
+            _heartColorChanger.SetFillWholeHeart(isOn);
         }
     }
 
@@ -734,12 +733,12 @@ public class ClanSettings : AltMonoBehaviour
 
         if (_heartColorChanger != null)
         {
-            _heartColorChanger.SetFillWholeHeart(true);
+            OnFillWholeHeartToggleChanged(true);
         }
 
         if (_fillWholeHeartToggle != null)
         {
-            _fillWholeHeartToggle.gameObject.SetActive(false);
+            _fillWholeHeartToggle.gameObject.SetActive(true);
         }
 
         if (_heartModeLabel != null)

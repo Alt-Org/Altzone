@@ -876,6 +876,29 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
+    public IEnumerator CheckEmotionInServer(Action<bool> callback)
+    {
+        if (Player == null)
+        {
+            Debug.LogError("Cannot find Player.");
+            yield break;
+        }
+
+        yield return StartCoroutine(WebRequests.Get(SERVERADDRESS + "player/emotioncheck", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
     public IEnumerator UpdateEmotionToServer(string emotion, Action<bool> callback)
     {
         if (Player == null)
