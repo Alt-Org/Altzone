@@ -68,7 +68,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Called by BattleCollisionQSystem. Stuns the player after checking if it is appropriate to do so.
+        /// Called by BattleCollisionQSystem. Stuns the player after checking if it is appropriate to do so and kills the player if he gets hit without a shield.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame</param>
