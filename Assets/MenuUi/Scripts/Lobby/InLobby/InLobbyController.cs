@@ -322,11 +322,17 @@ namespace MenuUi.Scripts.Lobby.InLobby
             try
             {
                 bool isMaster = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
+                // Keep the battle popup open for the master. During queue->match transitions
+                // the leader (master) should retain the popup rather than having it closed.
+                if (isMaster)
+                {
+                    return;
+                }
+
                 bool botFillActive = PhotonBattleRoom.IsBotFillActive();
 
-                // Keep the battle popup open for the master while bot-fill is active.
-                // Bot-fill completion can transition matchmaking state without meaning the master should leave the room UI.
-                if (isMaster && botFillActive)
+                // Keep the battle popup open for non-master clients while bot-fill is active as well.
+                if (botFillActive)
                 {
                     return;
                 }
