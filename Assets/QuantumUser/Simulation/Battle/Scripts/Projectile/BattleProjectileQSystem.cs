@@ -345,22 +345,11 @@ namespace Battle.QSimulation.Projectile
         /// <param name="winningTeam">The BattleTeamNumber of the team that won.</param>
         public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam)
         {
-            EntityRef projectileEntityRef = GetProjectileEntity(f);
-
-            BattleProjectileQComponent* projectile                 = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
-            Transform2D*                projectileTransform        = f.Unsafe.GetPointer<Transform2D>(projectileEntityRef);
+            EntityRef projectileEntityRef          = GetProjectileEntity(f);
+            BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
 
             SetHeld(projectile, true);
-
-            FPVector2 newPosition = winningTeam switch
-            {
-                BattleTeamNumber.TeamAlpha => new FPVector2(0, 25),
-                BattleTeamNumber.TeamBeta  => new FPVector2(0, -25),
-
-                _ => FPVector2.Zero,
-            };
-
-            BattleEntityManager.MoveCompound(f, projectileEntityRef, newPosition, FP._0);
+            BattleEntityManager.Return(f, GetProjectileSystemData(f)->ProjectileEntityID);
         }
 
         #endregion Public - Gameflow Methods
