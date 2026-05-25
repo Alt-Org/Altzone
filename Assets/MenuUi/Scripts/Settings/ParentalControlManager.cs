@@ -27,6 +27,8 @@ public class ParentalControlManager : MonoBehaviour
     public GameObject parentalControlPopup;
     public GameObject parentalControlPopupButton;
 
+    public GameObject controlEnabledButton;
+
     //boolean to check if the ParentalControl is on
     public bool parentalControl;
 
@@ -254,6 +256,7 @@ public class ParentalControlManager : MonoBehaviour
             //boolean is not allowed in PlayerPrefs, otherwise it would be that
             PlayerPrefs.SetInt("parentalcontrol", 1);
             parentalControlPopupButton.SetActive(false);
+            controlEnabledButton.SetActive(true);
 
             Debug.Log(PlayerPrefs.GetString("password"));
             Debug.Log(PlayerPrefs.GetInt("parentalcontrol"));
@@ -285,11 +288,13 @@ public class ParentalControlManager : MonoBehaviour
             parentalControl = true;
             parentalControlPopupButton.SetActive(false);
             passwordPanel.SetActive(true);
+            controlEnabledButton.SetActive(true);
 
         } else
         {
             parentalControl = false;
             passwordPanel.SetActive(false);
+            controlEnabledButton.SetActive(false);
 
         }
 
@@ -347,8 +352,9 @@ public class ParentalControlManager : MonoBehaviour
         SetEndAfterMatchToggle();
 
         parentalControlPopupButton.SetActive(true);
+        controlEnabledButton.SetActive(false);
         //messageText.text = "";
-        //TODO: all checkboxes should uncheck, numbers be set to none
+     
 
 
     }
