@@ -3,7 +3,6 @@ using Altzone.Scripts;
 using Altzone.Scripts.Battle.Photon;
 using MenuUi.Scripts.Lobby;
 using MenuUi.Scripts.Lobby.CreateRoom;
-using Altzone.Scripts.Battle.Photon;
 using MenuUi.Scripts.Signals;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,6 +22,7 @@ public class BattlePopupPanelManager : MonoBehaviour
     [SerializeField] private GameObject _clanAndRandom2v2WaitingRoom;
     [SerializeField] private MatchmakingPanel _matchmakingPanel;
     private Coroutine _delayedMatchCheckHolder;
+    private Coroutine _refreshMainPanelHolder;
 
     private void OnEnable()
     {
@@ -77,12 +77,12 @@ public class BattlePopupPanelManager : MonoBehaviour
                     }
                     catch
                     {
-                        _mainPanel.SetActive(true);
+                        ShowMainPanel();
                     }
                 }
                 else
                 {
-                    _mainPanel.SetActive(true);
+                    ShowMainPanel();
                 }
                 break;
             case GameType.FriendLobby:
@@ -258,6 +258,35 @@ public class BattlePopupPanelManager : MonoBehaviour
         }
 
         ClosePanels();
+        ShowMainPanel();
+    }
+
+    private void ShowMainPanel()
+    {
+        if (_mainPanel == null)
+        {
+            return;
+        }
+
         _mainPanel.SetActive(true);
+
+        if (_refreshMainPanelHolder != null)
+        {
+            StopCoroutine(_refreshMainPanelHolder);
+        }
+
+        _refreshMainPanelHolder = StartCoroutine(RefreshMainPanelCharactersNextFrame());
+    }
+
+    private System.Collections.IEnumerator RefreshMainPanelCharactersNextFrame()
+    {
+        yield return null;
+        MenuUi.Scripts.Lobby.SelectedCharacters.BattlePopupCharacterSlotController[] controllers = _mainPanel.GetComponentsInChildren<MenuUi.Scripts.Lobby.SelectedCharacters.BattlePopupCharacterSlotController>(true);
+        foreach (var controller in controllers)
+        {
+            controller.SetCharacters();
+        }
+
+        _refreshMainPanelHolder = null;
     }
 }
