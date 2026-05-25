@@ -511,7 +511,7 @@ namespace Altzone.Scripts.Model.Poco.Player
 
             emotions = emotions.OrderByDescending(o => o.DateTime).ToList();
 
-            emotionSelectorDate = emotions[0].DateTime;
+            if(emotions.Count > 0) emotionSelectorDate = emotions[0].DateTime;
 
             return emotions;
         }
