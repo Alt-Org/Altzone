@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Altzone.Scripts.AvatarPartsInfo;
+using Altzone.Scripts.Model.Poco.Player;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,6 +32,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private ColorPicker _colorPicker;
         [SerializeField] private Image _bodySlotImage;
         [SerializeField] private GameObject _featureGridContainer;
+        [SerializeField] private PlayerData _playerData;    // A Placeholder 1405
 
         private List<AvatarPartInfo> _avatarPartInfo;
         private readonly Dictionary<string, AvatarPiece> _featureCategoryIdToAvatarPiece = new Dictionary<string, AvatarPiece>
@@ -168,7 +170,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _colorSelection.gameObject.SetActive(isActive);
         }
 
-        public void RefreshFeatureListItems(string categoryId)
+        public void RefreshFeatureListItems(string categoryId)  // Do stuff here
         {
             _featureGridContainer.SetActive(true);
             DestroyFeatureListItems();
@@ -180,6 +182,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
                 foreach (AvatarPartInfo part in _avatarPartInfo)
                 {
+                    if (_playerData.Ownerships.CheckItemOwnership(part.Id)) { continue; }
                     AddFeatureCell(part.IconImage, part);
                 }
                 ColorSelectActive(_selectedCellHandler.IsColorable);
