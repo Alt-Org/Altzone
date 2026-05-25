@@ -202,13 +202,15 @@ namespace Battle.QSimulation.Projectile
             // retrieve the projectiles spec
             BattleProjectileQSpec spec = BattleQConfig.GetProjectileSpec(f);
 
-            // copy data from the spec
-            projectile->Speed          = spec.ProjectileInitialSpeed;
+            // copy settings from the spec
             projectile->SpeedBase      = projectile->Speed;
             projectile->SpeedMax       = spec.SpeedMax;
             projectile->SpeedIncrement = spec.SpeedIncrement;
-            projectile->Direction      = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
             projectile->AttackMax      = spec.AttackMax;
+
+            // set speed and direction
+            projectile->Speed     = spec.ProjectileInitialSpeed;
+            projectile->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
 
             // set emotion and attack
             SetEmotion(f, projectile, BattleParameters.GetProjectileInitialEmotion(f));
