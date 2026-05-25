@@ -323,7 +323,29 @@ public class ParentalControlManager : MonoBehaviour
         //ParentalControl is active only if PlayerPrefs "parentalcontrol" equals 1
         PlayerPrefs.SetInt("parentalcontrol", 0);
         PlayerPrefs.SetString("password","");
+        
+        PlayerPrefs.SetInt("AllowLinks", 0);
+        PlayerPrefs.SetInt("AllowChat", 0);
+        PlayerPrefs.SetInt("AllowEmojis", 0);
+        PlayerPrefs.SetInt("AllowTreasureHunt", 0);
+        PlayerPrefs.SetInt("MonthlyLimit", 0);
+        PlayerPrefs.SetInt("MonthlySpendingLimit", 0);
+        PlayerPrefs.SetInt("ActivatePurchasesSeparately", 0);
+        PlayerPrefs.SetInt("MaxPlayTime", 0);
+        PlayerPrefs.SetInt("DailyTimeLimit", 0);  
+        PlayerPrefs.SetInt("EndMidMatch", 0);
+        PlayerPrefs.SetInt("EndAfterMatch", 1);
         PlayerPrefs.Save();
+        SetInternetLinksToggle();
+        SetChatMessagesToggle();
+        SetEmojisToggle();
+        SetTreasureHuntToggle();
+        GetMonthlyLimit();
+        SetIndependentSpendingActivationToggle();
+        GetTimeLimit();
+        SetEndMidMatchToggle();
+        SetEndAfterMatchToggle();
+
         parentalControlPopupButton.SetActive(true);
         //messageText.text = "";
         //TODO: all checkboxes should uncheck, numbers be set to none
