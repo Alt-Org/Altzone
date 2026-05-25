@@ -135,13 +135,13 @@ namespace Battle.QSimulation.Projectile
             BattleProjectileQSpec spec = BattleQConfig.GetProjectileSpec(f);
 
             // create a new entity based on the provided prototype
-            EntityRef projectileEntityRef = f.Create(spec.ProjectilePrototype);
+            EntityRef projectileEntityRef                                       = f.Create(spec.ProjectilePrototype);
             BattleEntityManager.CompoundEntityTemplate projectileEntityTemplate = BattleEntityManager.CompoundEntityTemplate.Create(projectileEntityRef);
 
             // get a pointer to the Transform2D component of the created projectile entity
             BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
-            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntityRef);
-            PhysicsCollider2D* projectileCollider = f.Unsafe.GetPointer<PhysicsCollider2D>(projectileEntityRef);
+            Transform2D* projectileTransform       = f.Unsafe.GetPointer<Transform2D>(projectileEntityRef);
+            PhysicsCollider2D* projectileCollider  = f.Unsafe.GetPointer<PhysicsCollider2D>(projectileEntityRef);
 
             //{create projectile trigger entity
 
@@ -149,7 +149,7 @@ namespace Battle.QSimulation.Projectile
 
             // initialize projectile trigger component
             BattleProjectileTriggerQComponent projectileTrigger = new();
-            projectileTrigger.ProjectileEntityRef = projectileEntityRef;
+            projectileTrigger.ProjectileEntityRef               = projectileEntityRef;
 
             // initialize projectile trigger collider
             PhysicsCollider2D projectileTriggerCollider = PhysicsCollider2D.Create(f,
@@ -159,7 +159,7 @@ namespace Battle.QSimulation.Projectile
 
             // initialize projectile collision trigger component
             BattleCollisionTriggerQComponent projectileCollisionTrigger = new();
-            projectileCollisionTrigger.Type = BattleCollisionTriggerType.Projectile;
+            projectileCollisionTrigger.Type                             = BattleCollisionTriggerType.Projectile;
 
             // initialize projectile trigger entity
             f.Add(projectileTriggerEntityRef, projectileTrigger);
@@ -174,9 +174,9 @@ namespace Battle.QSimulation.Projectile
 
             // set projectile position and initial values
             projectileTransform->Position = new FPVector2(0, 0);
-            projectile->Radius = projectileCollider->Shape.Circle.Radius;
-            projectile->EmotionCurrent = 0;
-            projectile->EmotionBase = 0;
+            projectile->Radius            = projectileCollider->Shape.Circle.Radius;
+            projectile->EmotionCurrent    = 0;
+            projectile->EmotionBase       = 0;
 
             BattleEntityID projectileEntityGroupID = BattleEntityManager.RegisterCompound(f, projectileEntityTemplate);
             GetProjectileSystemData(f)->ProjectileEntityID = projectileEntityGroupID;
@@ -191,22 +191,24 @@ namespace Battle.QSimulation.Projectile
         /// <param name="f">Current simulation frame.</param>
         public static void Launch(Frame f)
         {
-            // get projectile component
+            // get system data
             BattleProjectileSystemDataQSingleton* projectileSystemData = GetProjectileSystemData(f);
-            BattleEntityID projectileGroupID = projectileSystemData->ProjectileEntityID;
-            EntityRef projectileRef = BattleEntityManager.Get(f, projectileGroupID);
-            BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileRef);
+
+            // get references
+            BattleEntityID              projectileGroupID = projectileSystemData->ProjectileEntityID;
+            EntityRef                   projectileRef     = BattleEntityManager.Get(f, projectileGroupID, updateViewPlayState: true);
+            BattleProjectileQComponent* projectile        = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileRef);
 
             // retrieve the projectiles spec
             BattleProjectileQSpec spec = BattleQConfig.GetProjectileSpec(f);
 
             // copy data from the spec
-            projectile->Speed = spec.ProjectileInitialSpeed;
-            projectile->SpeedBase = projectile->Speed;
-            projectile->SpeedMax = spec.SpeedMax;
+            projectile->Speed          = spec.ProjectileInitialSpeed;
+            projectile->SpeedBase      = projectile->Speed;
+            projectile->SpeedMax       = spec.SpeedMax;
             projectile->SpeedIncrement = spec.SpeedIncrement;
-            projectile->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
-            projectile->AttackMax = spec.AttackMax;
+            projectile->Direction      = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
+            projectile->AttackMax      = spec.AttackMax;
 
             // set emotion and attack
             SetEmotion(f, projectile, BattleParameters.GetProjectileInitialEmotion(f));
