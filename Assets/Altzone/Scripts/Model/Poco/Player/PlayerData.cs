@@ -433,6 +433,9 @@ namespace Altzone.Scripts.Model.Poco.Player
             return true;
         }
 
-
+        public void SaveOwnerships()
+        {
+            Storefront.Get().SavePlayerData(this, null);
+        }
     }
 }
