@@ -121,6 +121,109 @@ namespace Battle.QSimulation.Projectile
             f.Events.BattleProjectileChangeGlowStrength(projectile->Attack / projectile->AttackMax);
         }
 
+        #endregion Public - Helper Methods
+
+        #region Public - Control Methods
+
+        /// <summary>
+        /// Creates a projectile entity and initializes its components.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        public static void CreateProjectile(Frame f)
+        {
+            BattleProjectileQSpec spec = BattleQConfig.GetProjectileSpec(f);
+
+            // create a new entity based on the provided prototype
+            EntityRef projectileEntityRef = f.Create(spec.ProjectilePrototype);
+            BattleEntityManager.CompoundEntityTemplate projectileEntityTemplate = BattleEntityManager.CompoundEntityTemplate.Create(projectileEntityRef);
+
+            // get a pointer to the Transform2D component of the created projectile entity
+            BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
+            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntityRef);
+            PhysicsCollider2D* projectileCollider = f.Unsafe.GetPointer<PhysicsCollider2D>(projectileEntityRef);
+
+            //{create projectile trigger entity
+
+            EntityRef projectileTriggerEntityRef = f.Create();
+
+            // initialize projectile trigger component
+            BattleProjectileTriggerQComponent projectileTrigger = new();
+            projectileTrigger.ProjectileEntityRef = projectileEntityRef;
+
+            // initialize projectile trigger collider
+            PhysicsCollider2D projectileTriggerCollider = PhysicsCollider2D.Create(f,
+                shape: Shape2D.CreateCircle(projectileCollider->Shape.Circle.Radius),
+                isTrigger: true
+            );
+
+            // initialize projectile collision trigger component
+            BattleCollisionTriggerQComponent projectileCollisionTrigger = new();
+            projectileCollisionTrigger.Type = BattleCollisionTriggerType.Projectile;
+
+            // initialize projectile trigger entity
+            f.Add(projectileTriggerEntityRef, projectileTrigger);
+            f.Add<Transform2D>(projectileTriggerEntityRef);
+            f.Add(projectileTriggerEntityRef, projectileTriggerCollider);
+            f.Add(projectileTriggerEntityRef, projectileCollisionTrigger);
+
+            // link trigger
+            projectileEntityTemplate.Link(projectileTriggerEntityRef, new FPVector2(0, 0));
+
+            //} create projectile trigger entity
+
+            // set projectile position and initial values
+            projectileTransform->Position = new FPVector2(0, 0);
+            projectile->Radius = projectileCollider->Shape.Circle.Radius;
+            projectile->EmotionCurrent = 0;
+            projectile->EmotionBase = 0;
+
+            BattleEntityID projectileEntityGroupID = BattleEntityManager.RegisterCompound(f, projectileEntityTemplate);
+            GetProjectileSystemData(f)->ProjectileEntityID = projectileEntityGroupID;
+
+            SetHeld(projectile, true);
+        }
+
+        /// <summary>
+        /// Launches the projectile from an unlaunched state, setting its initial values.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        public static void Launch(Frame f)
+        {
+            // get projectile component
+            BattleProjectileSystemDataQSingleton* projectileSystemData = GetProjectileSystemData(f);
+            BattleEntityID projectileGroupID = projectileSystemData->ProjectileEntityID;
+            EntityRef projectileRef = BattleEntityManager.Get(f, projectileGroupID);
+            BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileRef);
+
+            // retrieve the projectiles spec
+            BattleProjectileQSpec spec = BattleQConfig.GetProjectileSpec(f);
+
+            // copy data from the spec
+            projectile->Speed = spec.ProjectileInitialSpeed;
+            projectile->SpeedBase = projectile->Speed;
+            projectile->SpeedMax = spec.SpeedMax;
+            projectile->SpeedIncrement = spec.SpeedIncrement;
+            projectile->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
+            projectile->AttackMax = spec.AttackMax;
+
+            // set emotion and attack
+            SetEmotion(f, projectile, BattleParameters.GetProjectileInitialEmotion(f));
+            SetAttack(f, projectile, 0);
+
+            // reset CollisionFlags for this frame
+            projectile->CollisionFlags[(f.Number) % 2] = 0;
+
+            SetHeld(projectile, false);
+
+            BattleEntityManager.TeleportCompound(f, projectileRef, new FPVector2(0, 0), FP._0);
+
+            f.Events.BattleProjectileChangeSpeed(projectile->Speed);
+
+            s_debugLogger.Log(f, "Projectile Launched");
+        }
+
         /// <summary>
         /// Sets the direction of the projectile and adjusting its speed depending on the specified <see cref="SpeedChange"/> behavior.
         /// </summary>
@@ -184,7 +287,7 @@ namespace Battle.QSimulation.Projectile
             }
         }
 
-        #endregion Public - Helper Methods
+        #endregion Public - Control Methods
 
         #region Public - Gameflow Methods
 
@@ -199,8 +302,7 @@ namespace Battle.QSimulation.Projectile
 
         /// <summary>
         /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a> gets called every frame.</span><br/>
-        /// Moves the projectile if not held, updates its speed potential over time,
-        /// and resets collision flags for the next frame. <br/>
+        /// Moves the projectile if not held and resets collision flags for the next frame.<br/>
         /// Sets properties based on the <see cref="Battle.QSimulation.Projectile.BattleProjectileQSpec">Projectile spec.</see>
         /// @warning
         /// This method should only be called by Quantum.
@@ -322,105 +424,6 @@ namespace Battle.QSimulation.Projectile
             }
 
             SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Projectile);
-        }
-
-        /// <summary>
-        /// Launches the projectile from an unlaunched state, setting its initial values.
-        /// </summary>
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        public static void Launch(Frame f)
-        {
-            // get projectile component
-            BattleProjectileSystemDataQSingleton* projectileSystemData = GetProjectileSystemData(f);
-            BattleEntityID projectileGroupID = projectileSystemData->ProjectileEntityID;
-            EntityRef projectileRef = BattleEntityManager.Get(f, projectileGroupID);
-            BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileRef);
-
-            // retrieve the projectiles spec
-            BattleProjectileQSpec spec = BattleQConfig.GetProjectileSpec(f);
-
-            // copy data from the spec
-            projectile->Speed = spec.ProjectileInitialSpeed;
-            projectile->SpeedBase = projectile->Speed;
-            projectile->SpeedMax = spec.SpeedMax;
-            projectile->SpeedIncrement = spec.SpeedIncrement;
-            projectile->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
-            projectile->AttackMax = spec.AttackMax;
-
-            // set emotion and attack
-            SetEmotion(f, projectile, BattleParameters.GetProjectileInitialEmotion(f));
-            SetAttack(f, projectile, 0);
-
-            // reset CollisionFlags for this frame
-            projectile->CollisionFlags[(f.Number) % 2] = 0;
-
-            SetHeld(projectile, false);
-
-            BattleEntityManager.TeleportCompound(f, projectileRef, new FPVector2(0, 0), FP._0);
-
-            f.Events.BattleProjectileChangeSpeed(projectile->Speed);
-
-            s_debugLogger.Log(f, "Projectile Launched");
-        }
-
-        /// <summary>
-        /// Creates a projectile entity and initializes its components.
-        /// </summary>
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        public static void CreateProjectile(Frame f)
-        {
-            BattleProjectileQSpec spec = BattleQConfig.GetProjectileSpec(f);
-
-            // create a new entity based on the provided prototype
-            EntityRef projectileEntityRef = f.Create(spec.ProjectilePrototype);
-            BattleEntityManager.CompoundEntityTemplate projectileEntityTemplate = BattleEntityManager.CompoundEntityTemplate.Create(projectileEntityRef);
-
-            // get a pointer to the Transform2D component of the created projectile entity
-            BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
-            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntityRef);
-            PhysicsCollider2D* projectileCollider = f.Unsafe.GetPointer<PhysicsCollider2D>(projectileEntityRef);
-
-            //{create projectile trigger entity
-
-            EntityRef projectileTriggerEntityRef = f.Create();
-
-            // initialize projectile trigger component
-            BattleProjectileTriggerQComponent projectileTrigger = new();
-            projectileTrigger.ProjectileEntityRef = projectileEntityRef;
-
-            // initialize projectile trigger collider
-            PhysicsCollider2D projectileTriggerCollider = PhysicsCollider2D.Create(f,
-                shape: Shape2D.CreateCircle(projectileCollider->Shape.Circle.Radius),
-                isTrigger: true
-            );
-
-            // initialize projectile collision trigger component
-            BattleCollisionTriggerQComponent projectileCollisionTrigger = new();
-            projectileCollisionTrigger.Type = BattleCollisionTriggerType.Projectile;
-
-            // initialize projectile trigger entity
-            f.Add(projectileTriggerEntityRef, projectileTrigger);
-            f.Add<Transform2D>(projectileTriggerEntityRef);
-            f.Add(projectileTriggerEntityRef, projectileTriggerCollider);
-            f.Add(projectileTriggerEntityRef, projectileCollisionTrigger);
-
-            // link trigger
-            projectileEntityTemplate.Link(projectileTriggerEntityRef, new FPVector2(0, 0));
-
-            //} create projectile trigger entity
-
-            // set projectile position and initial values
-            projectileTransform->Position = new FPVector2(0, 0);
-            projectile->Radius = projectileCollider->Shape.Circle.Radius;
-            projectile->EmotionCurrent = 0;
-            projectile->EmotionBase = 0;
-
-            BattleEntityID projectileEntityGroupID = BattleEntityManager.RegisterCompound(f, projectileEntityTemplate);
-            GetProjectileSystemData(f)->ProjectileEntityID = projectileEntityGroupID;
-
-            SetHeld(projectile, true);
         }
 
         /// <summary>
