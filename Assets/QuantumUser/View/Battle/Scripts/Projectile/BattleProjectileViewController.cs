@@ -120,6 +120,7 @@ namespace Battle.View.Projectile
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
             QuantumEvent.Subscribe<EventBattleProjectileChangeSpeed>(this, QEventOnProjectileChangeSpeed);
             QuantumEvent.Subscribe<EventBattleProjectileChangeGlowStrength>(this, QEventOnProjectileChangeGlowStrength);
+            QuantumEvent.Subscribe<EventBattlePlayStateUpdate>(this, QEventOnPlayStateUpdate);
             QuantumEvent.Subscribe<EventBattleViewGameOver>(this, QEventOnGameOver);
 
             BattleGameViewController.AssignProjectileReference(gameObject);
@@ -287,6 +288,17 @@ namespace Battle.View.Projectile
         {
             _glowStrength = (float)e.Strength;
             _spriteGlowRenderer.color = _spriteGlowRenderer.color.Alpha(_glowStrength);
+        }
+
+        /// <summary>
+        /// Handler method for <see cref="Quantum.EventBattlePlayStateUpdate">EventBattlePlayStateUpdate</see> QuantumEvent.<br/>
+        /// </summary>
+        ///
+        /// <param name="e">The event data.</param>
+        private void QEventOnPlayStateUpdate(EventBattlePlayStateUpdate e)
+        {
+            if (e.ERef != EntityRef) return;
+            _trailRenderer.enabled = e.IsInPlay;
         }
 
         /// <summary>
