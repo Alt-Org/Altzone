@@ -215,15 +215,6 @@ namespace Battle.QSimulation.Projectile
             Transform2D* transform = filter.Transform;
             projectile->Position = transform->Position;
 
-            FP gameTimeSec = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>()->GameTimeSec;
-
-            // every 10 seconds increase the speed potential by a set amount (disabled)
-            //if (gameTimeSec >= projectile->AccelerationTimer)
-            //{
-            //    projectile->SpeedPotential += projectile->SpeedIncrement;
-            //    projectile->AccelerationTimer += projectile->AccelerationTimerDuration;
-            //}
-
             if (!projectile->IsHeld)
             {
                 // move the projectile
@@ -334,48 +325,6 @@ namespace Battle.QSimulation.Projectile
         }
 
         /// <summary>
-        /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
-        /// that gets called when <see cref="Quantum.ISignalBattleOnGameOver">ISignalBattleOnGameOver</see> is sent.</span><br/>
-        /// Sets the projectile to held state and teleports it out of the arena.
-        /// @warning
-        /// This method should only be called via Quantum signal.
-        /// </summary>
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        /// <param name="winningTeam">The BattleTeamNumber of the team that won.</param>
-        public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam)
-        {
-            EntityRef projectileEntityRef          = GetProjectileEntity(f);
-            BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
-
-            SetHeld(projectile, true);
-            BattleEntityManager.Return(f, GetProjectileSystemData(f)->ProjectileEntityID);
-        }
-
-        #endregion Public - Gameflow Methods
-
-        #endregion Public
-
-        /// <summary>This classes BattleDebugLogger instance.</summary>
-        private static BattleDebugLogger s_debugLogger;
-
-        #region Private Static Methods
-
-        /// <summary>
-        /// Private helper method to get projectile entity
-        /// </summary>
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        ///
-        /// <returns>Returns projectile entity.</returns>
-        private static EntityRef GetProjectileEntity(Frame f)
-        {
-            ComponentFilter<BattleProjectileQComponent> filter = f.Filter<BattleProjectileQComponent>();
-            filter.Next(out EntityRef entity, out _);
-            return entity;
-        }
-
-        /// <summary>
         /// Launches the projectile from an unlaunched state, setting its initial values.
         /// </summary>
         ///
@@ -395,16 +344,9 @@ namespace Battle.QSimulation.Projectile
             projectile->Speed = spec.ProjectileInitialSpeed;
             projectile->SpeedBase = projectile->Speed;
             projectile->SpeedMax = spec.SpeedMax;
-            //projectile->SpeedPotential = projectile->Speed;
             projectile->SpeedIncrement = spec.SpeedIncrement;
             projectile->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
-            //projectile->AccelerationTimerDuration = spec.AccelerationTimerDuration;
-            //projectile->AccelerationTimer = projectile->AccelerationTimerDuration;
             projectile->AttackMax = spec.AttackMax;
-            //for (int i = 0; i < spec.SpeedMultiplierArray.Length; i++)
-            //{
-            //    projectile->SpeedMultiplierArray[i] = spec.SpeedMultiplierArray[i];
-            //}
 
             // set emotion and attack
             SetEmotion(f, projectile, BattleParameters.GetProjectileInitialEmotion(f));
@@ -432,13 +374,13 @@ namespace Battle.QSimulation.Projectile
             BattleProjectileQSpec spec = BattleQConfig.GetProjectileSpec(f);
 
             // create a new entity based on the provided prototype
-            EntityRef projectileEntityRef                                       = f.Create(spec.ProjectilePrototype);
+            EntityRef projectileEntityRef = f.Create(spec.ProjectilePrototype);
             BattleEntityManager.CompoundEntityTemplate projectileEntityTemplate = BattleEntityManager.CompoundEntityTemplate.Create(projectileEntityRef);
 
             // get a pointer to the Transform2D component of the created projectile entity
             BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
-            Transform2D* projectileTransform       = f.Unsafe.GetPointer<Transform2D>(projectileEntityRef);
-            PhysicsCollider2D* projectileCollider  = f.Unsafe.GetPointer<PhysicsCollider2D>(projectileEntityRef);
+            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntityRef);
+            PhysicsCollider2D* projectileCollider = f.Unsafe.GetPointer<PhysicsCollider2D>(projectileEntityRef);
 
             //{create projectile trigger entity
 
@@ -446,7 +388,7 @@ namespace Battle.QSimulation.Projectile
 
             // initialize projectile trigger component
             BattleProjectileTriggerQComponent projectileTrigger = new();
-            projectileTrigger.ProjectileEntityRef               = projectileEntityRef;
+            projectileTrigger.ProjectileEntityRef = projectileEntityRef;
 
             // initialize projectile trigger collider
             PhysicsCollider2D projectileTriggerCollider = PhysicsCollider2D.Create(f,
@@ -471,14 +413,56 @@ namespace Battle.QSimulation.Projectile
 
             // set projectile position and initial values
             projectileTransform->Position = new FPVector2(0, 0);
-            projectile->Radius            = projectileCollider->Shape.Circle.Radius;
-            projectile->EmotionCurrent    = 0;
-            projectile->EmotionBase       = 0;
+            projectile->Radius = projectileCollider->Shape.Circle.Radius;
+            projectile->EmotionCurrent = 0;
+            projectile->EmotionBase = 0;
 
-            BattleEntityID projectileEntityGroupID         = BattleEntityManager.RegisterCompound(f, projectileEntityTemplate);
+            BattleEntityID projectileEntityGroupID = BattleEntityManager.RegisterCompound(f, projectileEntityTemplate);
             GetProjectileSystemData(f)->ProjectileEntityID = projectileEntityGroupID;
 
             SetHeld(projectile, true);
+        }
+
+        /// <summary>
+        /// <span class="brief-h"><a href = "https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems" > Quantum System Signal method@u-exlink</a>
+        /// that gets called when <see cref="Quantum.ISignalBattleOnGameOver">ISignalBattleOnGameOver</see> is sent.</span><br/>
+        /// Sets the projectile to held state and teleports it out of the arena.
+        /// @warning
+        /// This method should only be called via Quantum signal.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="winningTeam">The BattleTeamNumber of the team that won.</param>
+        public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam)
+        {
+            EntityRef projectileEntityRef = GetProjectileEntity(f);
+            BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
+
+            SetHeld(projectile, true);
+            BattleEntityManager.Return(f, GetProjectileSystemData(f)->ProjectileEntityID);
+        }
+
+        #endregion Public - Gameflow Methods
+
+        #endregion Public
+
+        /// <summary>This classes BattleDebugLogger instance.</summary>
+        private static BattleDebugLogger s_debugLogger;
+
+        #region Private Static Methods
+
+        /// <summary>
+        /// Private helper method to get projectile entity
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        ///
+        /// <returns>Returns projectile entity.</returns>
+        private static EntityRef GetProjectileEntity(Frame f)
+        {
+            ComponentFilter<BattleProjectileQComponent> filter = f.Filter<BattleProjectileQComponent>();
+            filter.Next(out EntityRef entity, out _);
+            return entity;
         }
 
         /// <summary>
