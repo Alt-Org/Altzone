@@ -53,9 +53,10 @@ public class Ownership
         //SaveItems(type);
     }
 
-    public void SaveItems(ItemType type)
+    public void SaveItems()
     {
-        //_playerData.UpdateOwnedAvatarPieceIDs((int)type, _ownedAvatarPiece_Ids);    // Propably doesn't work like this
+        //_playerData.SavePlayerData();    // Propably doesn't work like this
+        // Save PlayerData
     }
 
     public bool CheckItemOwnership(string id)

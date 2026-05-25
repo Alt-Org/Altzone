@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using Altzone.Scripts;
 using Altzone.Scripts.AvatarPartsInfo;
+using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
 using Assets.Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
@@ -32,7 +34,7 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private ColorPicker _colorPicker;
         [SerializeField] private Image _bodySlotImage;
         [SerializeField] private GameObject _featureGridContainer;
-        [SerializeField] private PlayerData _playerData;    // A Placeholder 1405
+        private PlayerData _playerData;     // How to get PlayerData
 
         private List<AvatarPartInfo> _avatarPartInfo;
         private readonly Dictionary<string, AvatarPiece> _featureCategoryIdToAvatarPiece = new Dictionary<string, AvatarPiece>
@@ -170,7 +172,7 @@ namespace MenuUi.Scripts.AvatarEditor
             _colorSelection.gameObject.SetActive(isActive);
         }
 
-        public void RefreshFeatureListItems(string categoryId)  // Do stuff here
+        public void RefreshFeatureListItems(string categoryId)
         {
             _featureGridContainer.SetActive(true);
             DestroyFeatureListItems();
@@ -178,11 +180,12 @@ namespace MenuUi.Scripts.AvatarEditor
             if (categoryId != "")
             {
                 if (_colorSelection.SkinColorSelectActive) _colorSelection.SetColorCells();
-
+                PlayerData playerData = null;
+                Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
                 _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
                 foreach (AvatarPartInfo part in _avatarPartInfo)
                 {
-                    if (_playerData.Ownerships.CheckItemOwnership(part.Id)) { continue; }
+                    if (!playerData.Ownerships.CheckItemOwnership(part.Id)) { continue; }
                     AddFeatureCell(part.IconImage, part);
                 }
                 ColorSelectActive(_selectedCellHandler.IsColorable);
