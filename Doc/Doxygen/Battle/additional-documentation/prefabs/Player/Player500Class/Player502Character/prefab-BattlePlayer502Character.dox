@@ -3,7 +3,33 @@
 /// Prefab for character 502 "Alkoholismi".
 /// </summary>
 ///
-/// This prefab is a variant of @ref "BattlePlayer500Character(BaseAndTestCharacter).prefab" and has the same structure as the base prefab.
+/// This prefab is a variant of @ref "BattlePlayer500Character(BaseAndTestCharacter).prefab" and has a similar structure as the base prefab.
+///
+/// ### Structure Overrides
+/// - **BattlePlayer502Character**
+///     - *Children:*
+///         - **PlayerViewModel**
+///             - *Components:*
+///                 - @cref{Battle.View.Player,BattlePlayerCharacterViewController}
+///         - *Children:*
+///             - **CharacterBottom**
+///                 - *Children:*
+///                     - **Head**
+///                     - **Body**
+///                     - **Hands**
+///                     - **Feet**
+///                     - **Shadow**
+///                     - *Shared components:*
+///                         - SpriteRenderer
+///             - **CharacterTop**
+///                 - *Children:*
+///                     - **Head**
+///                     - **Body**
+///                     - **Hands**
+///                     - **Feet**
+///                     - **Shadow**
+///                     - *Shared components:*
+///                         - SpriteRenderer
 
 /// @file BattlePlayer502CharacterEntityPrototype.qprototype
 /// <summary>

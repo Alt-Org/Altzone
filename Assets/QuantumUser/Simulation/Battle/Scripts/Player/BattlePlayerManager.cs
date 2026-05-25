@@ -461,7 +461,8 @@ namespace Battle.QSimulation.Player
                     f.Events.BattlePlayerCharacterViewInit(playerCharacterEntity, playerSlot, playerCharacterId, playerCharacterClass, playerCharacterShieldCount, BattleGridManager.GridScaleFactor);
 
                     // set playerManagerData for player character
-                    playerHandle.SetCharacterState(playerCharacterNumber, BattlePlayerCharacterState.Alive);
+                    BattlePlayerCharacterState playerCharacterState = playerDataPtr->Stats.Defence > 0 ? BattlePlayerCharacterState.Alive : BattlePlayerCharacterState.Dead;
+                    playerHandle.SetCharacterState(playerCharacterNumber, playerCharacterState);
                 }
 
                 //} create playerEntity for each character
@@ -591,7 +592,6 @@ namespace Battle.QSimulation.Player
             BattlePlayerEntityRef       characterEntityRef = playerHandle.GetCharacterEntityRef(f, characterNumber, updateViewPlayState: true);
             BattlePlayerDataQComponent* playerData         = characterEntityRef.GetDataQComponent(f);
             Transform2D*                characterTransform = characterEntityRef.GetTransform(f);
-            Transform2D*                shieldTransform    = playerData->AttachedShield.GetTransform(f);
 
             FPVector2 worldPosition;
 

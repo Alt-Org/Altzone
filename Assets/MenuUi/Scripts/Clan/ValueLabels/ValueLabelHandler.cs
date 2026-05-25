@@ -10,6 +10,11 @@ public class ValueLabelHandler : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _textLabel;
     [SerializeField] private Image _labelImage;
 
+    [Header("Selection visuals")]
+    [SerializeField] private GameObject _highlightBackground;
+    [SerializeField] private TMP_FontAsset _normalFont;
+    [SerializeField] private TMP_FontAsset _selectedFont;
+
     [Header("Checkbox")]
     [SerializeField] private GameObject _checkedObject;
     [SerializeField] private GameObject _uncheckedObject;
@@ -49,6 +54,12 @@ public class ValueLabelHandler : MonoBehaviour
 
     private void SetSelectedVisuals()
     {
+        if (_highlightBackground != null)
+            _highlightBackground.SetActive(true);
+
+        if (_textLabel != null && _selectedFont != null)
+            _textLabel.font = _selectedFont;
+
         if (_checkedObject != null)
             _checkedObject.SetActive(true);
 
@@ -58,6 +69,12 @@ public class ValueLabelHandler : MonoBehaviour
 
     private void SetUnselectedVisuals()
     {
+        if (_highlightBackground != null)
+            _highlightBackground.SetActive(false);
+
+        if (_textLabel != null && _normalFont != null)
+            _textLabel.font = _normalFont;
+
         if (_checkedObject != null)
             _checkedObject.SetActive(false);
 

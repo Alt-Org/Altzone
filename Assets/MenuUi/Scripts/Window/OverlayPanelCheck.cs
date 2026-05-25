@@ -25,6 +25,8 @@ namespace MenuUi.Scripts.Window
 
         public static OverlayPanelCheck Instance { get; private set; }
         public bool ChatActive => _chatActive;
+        public bool TopBarActive => _topBar.activeSelf;
+        public bool BottomBarActive => _bottomBar.activeSelf;
 
         public delegate void ChatBarToggled(bool active);
         public static event ChatBarToggled OnChatBarToggled;
@@ -102,7 +104,7 @@ namespace MenuUi.Scripts.Window
 
                 }//ifelse currentwindow
 
-                 // Set opacity
+                /* Opacity controller for inactive buttons
                 Image image = button.GetComponent<Image>();
                 float targetAlpha = isCurrentWindow ? 1f : 0.7f; //if=1 else=0.7f
 
@@ -112,7 +114,7 @@ namespace MenuUi.Scripts.Window
                     color.a = targetAlpha;
                     image.color = color;
                 }
-
+                */
                 // find and enable child glow object when button is active
                 Transform glow = button.transform.Find("Glow");
                 if (glow != null)

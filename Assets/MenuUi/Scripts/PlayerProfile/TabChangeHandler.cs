@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using MenuUi.Scripts.TabLine;
 using Altzone.Scripts.Window;
+using MenuUi.Scripts.TabLine;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,6 +21,18 @@ public class TabChangeHandler : MonoBehaviour
     [SerializeField] protected List<ButtonWindowBind> _buttons = new List<ButtonWindowBind>();
     [SerializeField] protected int _defaultTab = 1;
     [SerializeField] private bool _ignoreChange;
+
+    [Header("Optional Tab Context UI")]
+    [SerializeField] private bool _updateTabContextUI;
+    [SerializeField] private int _primaryTabIndex = 0;
+    [SerializeField] private int _secondaryTabIndex = 1;
+
+    [SerializeField] private GameObject _primaryOnlyButton;
+    [SerializeField] private GameObject _secondaryOnlyButton;
+    [SerializeField] private TMP_Text _headerText;
+
+    [SerializeField] private string _primaryHeaderText = "Kaikki klaanit";
+    [SerializeField] private string _secondaryHeaderText = "Luo klaani";
     // Start is called before the first frame update
     protected virtual void Start()
     {
@@ -63,5 +76,23 @@ public class TabChangeHandler : MonoBehaviour
             }
         else _tablineScript.Swipe.CurrentPage = activeIndex;
         _tablineScript.UpdateTabVisuals(activeIndex);
+        UpdateTabContextUI(activeIndex);
+    }
+
+    private void UpdateTabContextUI(int activeIndex)
+    {
+        if (!_updateTabContextUI)
+            return;
+
+        bool isSecondaryTab = activeIndex == _secondaryTabIndex;
+
+        if (_primaryOnlyButton != null)
+            _primaryOnlyButton.SetActive(!isSecondaryTab);
+
+        if (_secondaryOnlyButton != null)
+            _secondaryOnlyButton.SetActive(isSecondaryTab);
+
+        if (_headerText != null)
+            _headerText.text = isSecondaryTab ? _secondaryHeaderText : _primaryHeaderText;
     }
 }

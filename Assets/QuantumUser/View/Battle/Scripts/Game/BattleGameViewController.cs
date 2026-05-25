@@ -158,10 +158,11 @@ namespace Battle.View.Game
         /// in <see cref="BattleGameViewController._playerInput">_playerInput</see>.
         /// </summary>
         ///
-        /// <param name="input">The movement direction Vector2.</param>
-        public void UiInputOnJoystickMovement(Vector2 input)
+        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick.</param>
+        /// <param name="value">The movement direction Vector2.</param>
+        public void UiInputOnJoystickMovement(BattleJoystickState state, Vector2 value)
         {
-            _playerInput.OnJoystickMovement(input);
+            _playerInput.OnJoystickMovement(state, value);
             //Debug.Log($"Move joystick input {input}");
         }
 
@@ -171,10 +172,11 @@ namespace Battle.View.Game
         /// in <see cref="BattleGameViewController._playerInput">_playerInput</see>.
         /// </summary>
         ///
-        /// <param name="input">The rotation input as float.</param>
-        public void UiInputOnJoystickRotation(float input)
+        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick.</param>
+        /// <param name="value">The rotation input as float.</param>
+        public void UiInputOnJoystickRotation(BattleJoystickState state, float value)
         {
-            _playerInput.OnJoystickRotation(input);
+            _playerInput.OnJoystickRotation(state, value);
             //Debug.Log($"Rotate joystick input {input}");
         }
 
@@ -185,6 +187,19 @@ namespace Battle.View.Game
         public void UiInputOnExitGamePressed()
         {
             if (_endOfGameDataHasEnded) LobbyManager.ExitQuantum(_endOfGameDataWinningTeam == LocalPlayerTeam, (float)_endOfGameDataGameLengthSec);
+        }
+
+        /// <summary>
+        /// Public method that gets called when local player gives special joystick input.
+        /// calls <see cref="Battle.View.Player.BattlePlayerInput.OnJoystickSpecial">OnJoystickSpecial</see> method
+        /// in <see cref="BattleGameViewController._playerInput">_playerInput</see>
+        /// </summary>
+        ///
+        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick.</param>
+        /// <param name="value">The special input as Vector2</param>
+        public void UiInputOnJoystickSpecial(BattleJoystickState state, Vector2 value)
+        {
+            _playerInput.OnJoystickSpecial(state, value);
         }
 
         /// @}
@@ -269,11 +284,14 @@ namespace Battle.View.Game
             // Subscribing to Gameplay events
             QuantumEvent.Subscribe<EventBattleChangeEmotionState>(this, QEventOnChangeEmotionState);
             QuantumEvent.Subscribe<EventBattleLastRowWallDestroyed>(this, QEventOnLastRowWallDestroyed);
-            QuantumEvent.Subscribe<EventBattlePlaySoundFX>(this, QEventPlaySoundFX);
+            QuantumEvent.Subscribe<EventBattlePlaySoundFxForAll>(this, QEventPlaySoundFxForAll);
+            QuantumEvent.Subscribe<EventBattlePlaySoundFxForTeam>(this, QEventPlaySoundFxForTeam);
+            QuantumEvent.Subscribe<EventBattlePlaySoundFxForPlayer>(this, QEventPlaySoundFxForPlayer);
             QuantumEvent.Subscribe<EventBattleCharacterSelected>(this, QEventCharacterSelected);
             QuantumEvent.Subscribe<EventBattleShieldHit>(this, QEventOnShieldHit);
             QuantumEvent.Subscribe<EventBattleGiveUpStateChange>(this, QEventOnGiveUpStateChange);
             QuantumEvent.Subscribe<EventBattleStoneCharacterPlayHitAnimation>(this, QEventOnStoneCharacterPlayHitAnimation);
+            QuantumEvent.Subscribe<EventBattleSpecialJoystickVisibilityChange>(this, QEventOnBattleSpecialJoystickVisibilityChange);
 
             // Subscribing to Debug events
             QuantumEvent.Subscribe<EventBattleDebugOnScreenMessage>(this, QEventDebugOnScreenMessage);
@@ -614,16 +632,48 @@ namespace Battle.View.Game
         }
 
         /// <summary>
-        /// Private handler method for EventBattlePlaySoundFX QuantumEvent.<br/>
-        /// Handles calling <see cref="Battle.View.Audio.BattleAudioViewController.PlaySoundFX">PlaySound</see>
+        /// Private handler method for EventBattlePlaySoundFxForAll QuantumEvent.<br/>
+        /// Handles calling <see cref="Battle.View.Audio.BattleAudioViewController.PlaySoundFX">PlaySoundFX</see>
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
-        private void QEventPlaySoundFX(EventBattlePlaySoundFX e)
+        private void QEventPlaySoundFxForAll(EventBattlePlaySoundFxForAll e)
         {
             BattleAudioViewController.PlaySoundFX(e.Effect);
         }
 
+        /// <summary>
+        /// Private handler method for EventBattlePlaySoundFxForTeam QuantumEvent.<br/>
+        /// Handles calling <see cref="Battle.View.Audio.BattleAudioViewController.PlaySoundFX">PlaySoundFX</see>
+        /// </summary>
+        ///
+        /// <param name="e">The event data.</param>
+        private void QEventPlaySoundFxForTeam(EventBattlePlaySoundFxForTeam e)
+        {
+            if (e.Team != LocalPlayerTeam) return;
+            BattleAudioViewController.PlaySoundFX(e.Effect);
+        }
+
+        /// <summary>
+        /// Private handler method for EventBattlePlaySoundFxForPlayer QuantumEvent.<br/>
+        /// Handles calling <see cref="Battle.View.Audio.BattleAudioViewController.PlaySoundFX">PlaySoundFX</see>
+        /// </summary>
+        ///
+        /// <param name="e">The event data.</param>
+        private void QEventPlaySoundFxForPlayer(EventBattlePlaySoundFxForPlayer e)
+        {
+            if (e.Slot != LocalPlayerSlot) return;
+            BattleAudioViewController.PlaySoundFX(e.Effect);
+        }
+
+        /// <summary>
+        /// Private handler method for EventBattleCharacterSelected QuantumEvent.<br/>
+        /// Handles calling <see cref="BattleUiPlayerInfoHandler.SetSelected">SetSeleced</see> in
+        /// <see cref="BattleGameViewController._uiController">_uiController's</see>
+        /// <see cref="Battle.View.UI.BattleUiController.PlayerInfoHandler">PlayerInfoHandler</see>.
+        /// </summary>
+        ///
+        /// <param name="e">The event data.</param>
         private void QEventCharacterSelected(EventBattleCharacterSelected e)
         {
             _uiController.PlayerInfoHandler.SetSelected(e.Slot, e.CharacterNumber);
@@ -661,11 +711,31 @@ namespace Battle.View.Game
             }
         }
 
+        /// <summary>
+        /// Private handler method for EventBattleStoneCharacterPlayHitAnimation QuantumEvent.<br/>
+        /// Handles calling <see cref="BattleStoneCharacterViewController.PlayHitAnimation">PlaySound</see>
+        /// in <see cref="BattleGameViewController._stoneCharacterViewController">_stoneCharacterViewController</see>
+        /// </summary>
+        ///
+        /// <param name="e">The event data.</param>
         private void QEventOnStoneCharacterPlayHitAnimation(EventBattleStoneCharacterPlayHitAnimation e)
         {
             _stoneCharacterViewController.PlayHitAnimation(e.Team, e.Emotion);
         }
 
+        /// <summary>
+        /// Private handler method for EventBattleSpecialJoystickVisibilityChange QuantumEvent.<br/>
+        /// Handles calling <see cref="Battle.View.UI.BattleUiJoystickHandler.SetShow">SetShow</see>
+        /// in <see cref="BattleGameViewController._uiController">_uiController's</see>
+        /// <see cref="Battle.View.UI.BattleUiController.JoystickHandler">JoystickHandler</see>
+        /// </summary>
+        ///
+        /// <param name="e">The event data.</param>
+        private void QEventOnBattleSpecialJoystickVisibilityChange(EventBattleSpecialJoystickVisibilityChange e)
+        {
+            if (e.Slot != LocalPlayerSlot) return;
+            _uiController.JoystickHandler.SetShow(e.Show, BattleUiElementType.SpecialJoystick);
+        }
 
         /// <summary>
         /// Private handler method for EventBattleDebugOnScreenMessage QuantumEvent.<br/>

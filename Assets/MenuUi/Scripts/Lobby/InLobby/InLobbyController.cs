@@ -212,7 +212,10 @@ namespace MenuUi.Scripts.Lobby.InLobby
                             PhotonRealtimeClient.LeaveRoom();
                         }
                     }
-                    break;
+
+                    SelectedGameType = gameType;
+                    _roomSwitcher.SwitchRoom(GameType.Custom);
+                    return;
                 case GameType.Clan2v2:
                 case GameType.Random2v2:
                     // Treat persistent queue rooms as matchmaking state so reopening the popup shows matchmaking panel

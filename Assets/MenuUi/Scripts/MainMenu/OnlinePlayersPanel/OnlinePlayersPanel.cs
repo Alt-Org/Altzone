@@ -54,6 +54,8 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     private List<FriendRequest> _friendRequests = new List<FriendRequest>();
 
     public static OnlinePlayersPanel Instance { get; private set; }
+    public List<FriendPlayer> Friendlist { get => _friendlist; }
+    public List<FriendRequest> FriendRequests { get => _friendRequests; }
 
     private void Awake()
     {

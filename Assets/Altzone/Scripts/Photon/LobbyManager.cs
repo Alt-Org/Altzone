@@ -97,7 +97,7 @@ namespace Altzone.Scripts.Lobby
 
         private const long STARTDELAY = 2000;
         // Max time the leader waits before filling remaining Random2v2 slots with bots.
-        private const float MatchmakingTimeoutSeconds = 30f;
+        private const float MatchmakingTimeoutSeconds = 20f;
         // Timeout for followers who join a matchmaking room: if not enough human players join within this interval, auto-leave and requeue.
         private const float MatchmakingJoinTimeoutSeconds = 5f;
         // Marker for matchmaking rooms that were created from queue timeout flow.
@@ -138,7 +138,7 @@ namespace Altzone.Scripts.Lobby
         // Tracks last computed number of eligible solo players in queue (for diagnostics / selection caps)
         private int _queuedSoloCount = 0;
         private readonly JoinAttemptTracker _joinAttemptTracker = new JoinAttemptTracker();
-        private const float QueueWaitSeconds = 30f;
+        private const float QueueWaitSeconds = 20f;
         private const float QueueReadyStartDelaySeconds = 2f;
         // Increased grace window to reduce race conditions that can split queued duos.
         private const float QueuePendingLeaderGraceSeconds = 20f;
@@ -151,6 +151,9 @@ namespace Altzone.Scripts.Lobby
         // Grace interval to consider a player as "just joined" so selection defers briefly
         // allowing a duo partner to arrive and avoid splitting pairs.
         private const float QueueNewJoinGraceSeconds = 1f;
+        // Flag set by OnJoinRoomFailed to signal a join attempt failure to waiting coroutines
+        private bool _joinRoomFailed = false;
+
         // Timestamp of the last CancelGameStart handling (used to detect quick rejoins)
         private float _lastStartCancelTime = -100f;
         private string[] _teammates = null;
@@ -6015,6 +6018,7 @@ namespace Altzone.Scripts.Lobby
                         MapId = mapId,
                         PlayerCount = playerCount,
                         Seed = Random.Range(int.MinValue, int.MaxValue),
+                        TestMode = SettingsCarrier.Instance.BattleDebug,
                     };
 
                 }
@@ -6214,7 +6218,8 @@ namespace Altzone.Scripts.Lobby
                         PlayerSlotTypes = data.PlayerSlotTypes,
                         PlayerSlotUserIDs = data.PlayerSlotUserIds,
                         PlayerCount = data.PlayerCount,
-                        ProjectileInitialEmotion = (BattleEmotionState)data.ProjectileInitialEmotion
+                        ProjectileInitialEmotion = (BattleEmotionState)data.ProjectileInitialEmotion,
+                        IsTestMode = data.TestMode,
                     }
                 };
 
@@ -9069,6 +9074,7 @@ namespace Altzone.Scripts.Lobby
         public string MapId { get; set; }
         public int PlayerCount { get; set; }
         public int Seed { get; set; }
+        public bool TestMode { get; set; }
 
         public static byte[] Serialize(StartGameData data)
         {
@@ -9082,6 +9088,7 @@ namespace Altzone.Scripts.Lobby
             Serializer.Serialize(b.MapId, ref bytes);
             Serializer.Serialize(b.PlayerCount, ref bytes);
             Serializer.Serialize(b.Seed, ref bytes);
+            Serializer.Serialize(b.TestMode, ref bytes);
 
             return bytes;
         }
@@ -9098,6 +9105,7 @@ namespace Altzone.Scripts.Lobby
             result.MapId = Serializer.DeserializeString(data, ref offset);
             result.PlayerCount = Serializer.DeserializeInt(data, ref offset);
             result.Seed = Serializer.DeserializeInt(data, ref offset);
+            result.TestMode = Serializer.DeserializeBool(data, ref offset);
 
             return result;
         }
