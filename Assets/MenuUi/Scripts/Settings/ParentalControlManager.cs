@@ -120,6 +120,7 @@ public class ParentalControlManager : MonoBehaviour
         SetEndAfterMatchToggle();
         CheckControl();
         GetPassword();
+        
     }
     
 
@@ -180,7 +181,7 @@ public class ParentalControlManager : MonoBehaviour
                 //messageText.text = "Kirjauduttu sis‰‰n";
                 messageText.enabled = false;
                 parentalControlSettings.SetActive(true);
-                
+                passwordInput.text = "";
                 passwordPanel.SetActive(false);
 
 
@@ -262,9 +263,9 @@ public class ParentalControlManager : MonoBehaviour
             Debug.Log(PlayerPrefs.GetInt("parentalcontrol"));
 
             //messageText.text = "Password set!";
-            
+
             //TODO: Pop up when password is set?
-            
+            ClearPasswordFields();
             parentalControlPopup.SetActive(false);
             CheckControl();
             GetPassword();
@@ -277,6 +278,17 @@ public class ParentalControlManager : MonoBehaviour
         }
 
         
+    }
+
+    public void ClearPasswordFields()
+    {
+        //all the three password input fields will be cleared
+
+        popupPasswordInput.text = "";
+        confirmPasswordInput.text = "";
+        passwordInput.text = "";
+
+
     }
 
     public void CheckControl()
