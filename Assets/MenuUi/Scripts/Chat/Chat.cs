@@ -45,7 +45,6 @@ public class Chat : AltMonoBehaviour
     [SerializeField] private GameObject _addReactionsPanel;
     [SerializeField] private GameObject _commonReactions;
     [SerializeField] private GameObject _allReactions;
-    [SerializeField] private GameObject _usersWhoAdded;
 
     [Header("Chat Reactions")]
     [SerializeField] private CharacterResponseList _chatResponseList;
@@ -103,6 +102,8 @@ public class Chat : AltMonoBehaviour
 
     [SerializeField] private GameObject _InputArea;
     [SerializeField] private GameObject _InputAreaArrow;
+    public GameObject ShowUsersPopUp;
+    public ChatShowUsersPopUpData ChatShowUsersPopUpData;
 
     public delegate void SelectedMessageChanged(MessageObjectHandler handler);
     public static event SelectedMessageChanged OnSelectedMessageChanged;
@@ -126,6 +127,8 @@ public class Chat : AltMonoBehaviour
 
     private void Start()
     {
+        instance = this;
+
         ChatChannel.OnMessageHistoryReceived += RefreshChat;
         ChatChannel.OnMessageReceived += DisplayMessage;
 
@@ -664,7 +667,6 @@ public class Chat : AltMonoBehaviour
         _commonReactions.SetActive(true);
         _allReactions.SetActive(false);
         _addReactionsPanel.SetActive(false);
-        _usersWhoAdded.SetActive(false);
     }    
 
     public void OpenUsersWhoAddedReactionPanel()
@@ -672,7 +674,6 @@ public class Chat : AltMonoBehaviour
         _addReactionsPanel.SetActive(true);
         _commonReactions.SetActive(false);
         _allReactions.SetActive(false);
-        _usersWhoAdded.SetActive(true);
     }
 
 }

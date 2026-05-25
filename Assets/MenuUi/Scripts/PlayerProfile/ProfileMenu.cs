@@ -400,19 +400,19 @@ public class ProfileMenu : AltMonoBehaviour
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(_playerData.emotionSelectorDate))
+        if (_playerData.EmotionSelectionDate.Equals(DateTime.MinValue))
         {
             _todaysEmotionImage.sprite = _blankEmotionSprite;
             return;
         }
 
-        if (!DateTime.TryParse(_playerData.emotionSelectorDate, out DateTime anchorDate))
+        /*if (!DateTime.TryParse(_playerData.emotionSelectorDate, out DateTime anchorDate))
         {
             _todaysEmotionImage.sprite = _blankEmotionSprite;
             return;
-        }
+        }*/
         
-        int dayOffset = (DateTime.Now.Date - anchorDate.Date).Days;
+        int dayOffset = (DateTime.Now.Date - _playerData.EmotionSelectionDate.Date).Days;
 
         if (dayOffset < 0 || dayOffset >= emotions.Count)
         {

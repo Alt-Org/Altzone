@@ -51,23 +51,27 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
                 return;
             }
 
-            if (!string.IsNullOrWhiteSpace(_playerData.emotionSelectorDate))
+            if (!_playerData.EmotionSelectionDate.Equals(DateTime.MinValue))
             {
-                if (DateTime.Parse(_playerData.emotionSelectorDate).Date == DateTime.Today)
+                Debug.LogWarning(_playerData.EmotionSelectionDate.Date);
+                if (_playerData.EmotionSelectionDate.Date == DateTime.Today)
                 {
                     _bSwitch = false;
                 }
             }
 
-            if (_bSwitch)
+            StartCoroutine(ServerManager.Instance.CheckEmotionInServer(success =>
             {
-                _popupPrefab.SetActive(true);
-            }
-            else
-            {
-                _popupPrefab.SetActive(false);
-                OnEmotionInsertFinished?.Invoke();
-            }
+                if (!success || _bSwitch)
+                {
+                    _popupPrefab.SetActive(true);
+                }
+                else
+                {
+                    _popupPrefab.SetActive(false);
+                    OnEmotionInsertFinished?.Invoke();
+                }
+            }));
         }));
     }
 
@@ -107,12 +111,10 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
             }
 
             int days = 7;
-            if (!string.IsNullOrWhiteSpace(_playerData.emotionSelectorDate))
-            {
-                TimeSpan span = DateTime.Today - DateTime.Parse(_playerData.emotionSelectorDate);
-                days = span.Days;
-                if (days > 7) days = 7;
-            }
+
+            TimeSpan span = DateTime.Today - _playerData.EmotionSelectionDate;
+            days = span.Days;
+            if (days > 7) days = 7;
 
             for (int i = days - 1; i > 0; i--)
             {
@@ -129,7 +131,7 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
             // Adds the newest item to the list of emotions.
             data.Insert(0, emotion);
 
-            _playerData.emotionSelectorDate = DateTime.Today.ToString();
+            _playerData.AddEmotion(emotion);
 
             _playerData.daysBetweenInput = days.ToString();
 
@@ -137,7 +139,7 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
 
             Debug.Log(days);
 
-            Debug.Log("Saving emotion date: " + _playerData.emotionSelectorDate);
+            Debug.Log("Saving emotion date: " + _playerData.EmotionSelectionDate);
             Debug.Log("Saving emotions: " + string.Join(", ", _playerData.playerDataEmotionList));
 
             // Saves the playerdata that has been changed.

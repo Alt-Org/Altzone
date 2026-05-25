@@ -4,6 +4,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2;
 using MenuUi.Scripts.Signals;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MenuUi.Scripts.Lobby.SelectedCharacters
 {
@@ -15,6 +16,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         [SerializeField] private BattlePopupSelectedCharacter[] _selectedCharacterSlots;
         [SerializeField] private bool _isInRoom;
         [SerializeField] private Sprite _dragAndDropIcon;
+        [SerializeField] private Button _button;
 
 
         private void Awake()
@@ -32,6 +34,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             {
                 SignalBus.OnReloadCharacterGalleryRequested += SetCharacters;
             }
+            _button.onClick.AddListener(OpenCharacterSelection);
         }
 
 
@@ -121,6 +124,11 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                 //_selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false);
                 _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charInfo.CharacterId, false);
             }
+        }
+
+        private void OpenCharacterSelection()
+        {
+            SignalBus.OnDefenceGalleryEditPanelRequestedSignal();
         }
     }
 }
