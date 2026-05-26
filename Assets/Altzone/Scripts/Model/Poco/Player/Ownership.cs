@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Altzone.Scripts.AvatarPartsInfo;
+using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
 
 // In order to sort items and other purchases, we'll have enum for each type.
@@ -18,7 +19,7 @@ public class Ownership
     public List<string> _ownedAnimation_Ids;
     public List<string> _ownedUIStyle_ids;   // Item not implemented yet
 
-    public List<AvatarPartInfo> _defaultOwnerships;     // Add default avatarparts
+    public List<AvatarDefault> _defaultOwnerships;     // Add default avatarparts
 
     public void AddItem(string id, ItemType type)
     {
@@ -61,7 +62,16 @@ public class Ownership
 
     public bool CheckItemOwnership(string id)
     {
-        foreach (AvatarPartInfo part in _defaultOwnerships) { if (part.Id == id) { return true; } }
+        foreach (AvatarDefault part in _defaultOwnerships)
+        {
+            if (part.HairId == id) { return true; }
+            if (part.EyesId == id) { return true; }
+            if (part.NoseId == id) { return true; }
+            if (part.MouthId == id) { return true; }
+            if (part.BodyId == id) { return true; }
+            if (part.HandsId == id) { return true; }
+            if (part.FeetId == id) { return true; }
+        }
         if (_ownedAvatarPiece_Ids.Contains(id)) return true;
         if (_ownedAnimation_Ids.Contains(id)) return true;
         
