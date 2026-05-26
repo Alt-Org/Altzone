@@ -154,8 +154,8 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Struct containing data related to queued inputs.
-        /// </summary
+        /// Struct containing input data that is queued for next time Quantum polls input.
+        /// </summary>
         private struct Queued
         {
             /// <summary>The vector received from the movement joystick.</summary>
@@ -172,7 +172,7 @@ namespace Battle.View.Player
         /// Variables related to current input states.
         /// @{
 
-        /// <summary>Struct containing data related to queued inputs.</summary>
+        /// <summary>input data that is queued for next time Quantum polls input. <see cref="Queued">More</see></summary>
         private Queued _queued;
 
         /// <summary>Saved time from previous frame.</summary>
