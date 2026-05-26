@@ -14,6 +14,7 @@ public class TutorialPanelHandler : MonoBehaviour
     [SerializeField] private GameObject _infoBox;
     [SerializeField] private TextMeshProUGUI _infoText;
     [SerializeField] private GameObject _fadeLayer;
+    [SerializeField] private bool _useCutOut = false;
 
     private List<CutOutHandler> _cutOuts = new();
 
@@ -41,7 +42,7 @@ public class TutorialPanelHandler : MonoBehaviour
                 cutout.sprite = imageToCutOut.sprite;
                 cutout.preserveAspect = imageToCutOut.preserveAspect;
                 cutout.transform.localScale = imageToCutOut.transform.localScale;
-                if (cutout.sprite == null) _fadeLayer.transform.SetAsLastSibling();
+                if (cutout.sprite == null || _useCutOut) _fadeLayer.transform.SetAsLastSibling();
                 else cutout.material = null;
             }
             j++;
