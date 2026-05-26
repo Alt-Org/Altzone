@@ -36,6 +36,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "Marihuanasavuun k\xE4tkeytyv\xE4, todellisuuden
     pakenija. "
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 261fb5b112dc75a4f9eb81028edc7957, type: 2}
   Hp:
     Level: 1
@@ -55,7 +57,16 @@ MonoBehaviour:
   GalleryImage: {fileID: 21300000, guid: d81e0766cb30dfd448de58ee7b563d78, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: bda08c8e8f859e24e881950d6c71ec96, type: 3}
   CharPhotoSeries: {fileID: 21300000, guid: 7d70091c5c5ff034ab1798ad513c9cb9, type: 3}
-  BattleEntityPrototype:
+  BattleCharacterEntityPrototype:
     Id:
       Value: 1483803971126383635
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1419523036812608726
+  - Id:
+      Value: 1383077117118922069
+  - Id:
+      Value: 1470142948279960207
+  - Id:
+      Value: 1410661082482865906
   BattleUiSprite: {fileID: 0}

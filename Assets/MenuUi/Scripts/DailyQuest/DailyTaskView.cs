@@ -337,7 +337,15 @@ public class DailyTaskView : AltMonoBehaviour
     public void StartCancelTask()
     {
         PopupData data = new(PopupData.PopupDataType.CancelTask);
-        DailyTaskManager.Instance.ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Teht�v�n?", data);
+        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+        {
+            DailyTaskManager.Instance.ShowPopupAndHandleResponse("Haluatko peruuttaa nykyisen tehtävän?", data);
+        }
+        else
+        {
+            DailyTaskManager.Instance.ShowPopupAndHandleResponse("Do you want to cancel your current task?", data);
+        }
+
     }
 
     public void ClearCurrentTask()

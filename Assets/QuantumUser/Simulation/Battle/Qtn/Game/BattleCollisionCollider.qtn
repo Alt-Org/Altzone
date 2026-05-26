@@ -1,0 +1,11 @@
+enum BattleCollisionColliderType
+{
+    Projectile,
+    Diamond,
+    PlayerClass100Projectile
+}
+
+component BattleCollisionColliderQComponent
+{
+    BattleCollisionColliderType Type;
+}

@@ -57,7 +57,6 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
     private void OnDisable()
     {
-        ToggleJukeboxScreen(false);
         StopJukeboxVisuals();
 
         JukeboxManager.Instance.OnSetSongInfo -= SetSongInfo;

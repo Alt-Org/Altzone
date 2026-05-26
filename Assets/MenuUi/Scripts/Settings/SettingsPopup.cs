@@ -13,8 +13,15 @@ public class SettingsPopup : MonoBehaviour
     {
         foreach (Button button in _closeButtons)
         {
-            button.onClick.AddListener(ClosePopup);
+            button.onClick.AddListener(() => StartCoroutine(CloseWithDelay()));
         }
+    }
+
+    private void OnDisable()
+    {
+        gameObject.SetActive(false);
+
+        _blockerHandler.ClosePopup(gameObject);
     }
 
     public void OpenPopup()
@@ -24,15 +31,24 @@ public class SettingsPopup : MonoBehaviour
         _blockerHandler.OpenPopup(gameObject);
     }
 
-    public void ClosePopup()
+    public IEnumerator CloseWithDelay()
+    {
+        if (!isActiveAndEnabled) yield break;
+        yield return new WaitForSecondsRealtime(0.3f);
+        ClosePopup();
+    }
+
+    public void ClosePopup(bool invokeButtons = true)
     {
         if (!isActiveAndEnabled) return;
         gameObject.SetActive(false);
 
         _blockerHandler.ClosePopup(gameObject);
 
+        if (!invokeButtons) return;
+
         //This is here because some buttons shut down more than one tab
-        foreach(Button objects in _closeButtons)
+        foreach (Button objects in _closeButtons)
         {
             objects.onClick.Invoke();
         }

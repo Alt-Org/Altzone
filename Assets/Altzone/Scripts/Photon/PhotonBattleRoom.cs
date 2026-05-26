@@ -42,6 +42,7 @@ namespace Altzone.Scripts.Battle.Photon
         public const string RoomNameKey = "n";
         public const string PasswordKey = "pw";
         public const string GameTypeKey = "gt";
+        public const string CustomGameModeKey = "cgm";
         public const string BotFillKey = "bf";
         public const string IsMatchmakingKey = "mm";
         public const string IsQueueKey = "iq";
@@ -49,7 +50,10 @@ namespace Altzone.Scripts.Battle.Photon
         public const string SoulhomeRankVariance = "rv";
         public const string ClanNameKey = "c";
         public const string ClanOpponentNameKey = "c2";
+        public const string ShowToFriendsKey = "sf";
+        public const string ShowToClanKey = "sc";
         public const string LeaderIdKey = "lid";
+        public const string TestModeKey = "tm";
 
         public static string PlayerPositionKey1 { get => PlayerPosition1.ToString(); }
         public static string PlayerPositionKey2 { get => PlayerPosition2.ToString(); }

@@ -37,6 +37,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "Papaateilla h\xE4mment\xE4v\xE4, arvaamattomasti
     v\xE4ist\xE4v\xE4 jekkuilija."
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 5d490b9fb5f49e644a6f88cced79a450, type: 2}
   Hp:
     Level: 2
@@ -56,7 +58,10 @@ MonoBehaviour:
   GalleryImage: {fileID: 21300000, guid: 95be75f57c8fa0348969e12a3058ec56, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 22f309944be80af4aba33ff694f4d7f9, type: 3}
   CharPhotoSeries: {fileID: 0}
-  BattleEntityPrototype:
+  BattleCharacterEntityPrototype:
     Id:
       Value: 1533843990975050063
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1300372855646749955
   BattleUiSprite: {fileID: 0}

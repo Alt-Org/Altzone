@@ -55,6 +55,8 @@ namespace MenuUI.Scripts.SoulHome {
 
         private AvatarRig _localPlayerRig;
 
+        private long _frameTimeStart;
+
         public bool LoadFinished { get => _loadFinished;}
 
         // Start is called before the first frame update
@@ -83,6 +85,11 @@ namespace MenuUI.Scripts.SoulHome {
             {
                 StopCoroutine(RefreshCoroutine());
                 _refreshInProgress = false;
+                StopCoroutine(HomeLoad());
+                StopCoroutine(LoadRooms());
+                StopCoroutine(LoadFurniture());
+                StopCoroutine(SpawnAvatar());
+                _runningCoroutines = 0;
                 RefreshSoulHome();
             }
         }
@@ -154,6 +161,7 @@ namespace MenuUI.Scripts.SoulHome {
 
         private IEnumerator TrackedCoroutine(IEnumerator coroutine)
         {
+            _frameTimeStart = DateTime.Now.Ticks;
             _runningCoroutines++;
             try
             {
@@ -240,6 +248,11 @@ namespace MenuUI.Scripts.SoulHome {
 
                     soulHome.Room.Add(room);
                 }
+                if (FrameCheck())
+                {
+                    yield return null;
+                    _frameTimeStart = DateTime.Now.Ticks;
+                }
                 StartCoroutine(GetFurniture());
                 yield return new WaitUntil(()=> _furnitureFetchFinished == true);
                 //Debug.LogWarning("Test");
@@ -307,6 +320,11 @@ namespace MenuUI.Scripts.SoulHome {
                     _towerController.RoomBounds = collider.bounds;
                 }
                 i++;
+                if (FrameCheck())
+                {
+                    yield return null;
+                    _frameTimeStart = DateTime.Now.Ticks;
+                }
             }
             SetSoulhomeHeight();
             _roomsReady = true;
@@ -405,6 +423,11 @@ namespace MenuUI.Scripts.SoulHome {
                 }
                 Furniture storageFurniture = new(clanFurniture, furniture/*, _furnitureReference.GetFurnitureInfo(clanFurniture.GameFurnitureName)*/);
                 items.Add(storageFurniture);
+                if (FrameCheck())
+                {
+                    yield return null;
+                    _frameTimeStart = DateTime.Now.Ticks;
+                }
             }
             _furnitureList = items;
             _furnitureFetchFinished = true;
@@ -429,8 +452,18 @@ namespace MenuUI.Scripts.SoulHome {
                         Furniture storageFurniture = new(new(i*1000+j.ToString(), furniture.Name), furniture);
                         _soulHomeController.AddFurniture(storageFurniture);
                         j++;
+                        if (FrameCheck())
+                        {
+                            yield return null;
+                            _frameTimeStart = DateTime.Now.Ticks;
+                        }
                     }
                     i++;
+                    if (FrameCheck())
+                    {
+                        yield return null;
+                        _frameTimeStart = DateTime.Now.Ticks;
+                    }
                 }
             }
             else
@@ -466,6 +499,12 @@ namespace MenuUI.Scripts.SoulHome {
                 }
 
                 rig.ApplyAvatarToRig(playerData);
+                if (FrameCheck())
+                {
+                    yield return null;
+                    _frameTimeStart = DateTime.Now.Ticks;
+                }
+                
             }
             _loadFinished = true;
         }
@@ -479,6 +518,15 @@ namespace MenuUI.Scripts.SoulHome {
             }
 
             _localPlayerRig.ApplyAvatarToRig(playerData);
+        }
+
+        private bool FrameCheck()
+        {
+            if ((new TimeSpan(DateTime.Now.Ticks - _frameTimeStart)).TotalSeconds > 1f/60f)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
