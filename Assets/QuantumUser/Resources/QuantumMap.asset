@@ -48,6 +48,7 @@ MonoBehaviour:
     - rid: 9189874137361809410
     - rid: 9189874137361809411
     - rid: 9189874137361809412
+    - rid: 9189874137361809413
   - Components:
     - rid: 3915831314950914048
     - rid: 3915831314950914049
@@ -492,5 +493,13 @@ MonoBehaviour:
           IsCompound:
             Value: 0
         - Int: 0
+          IsCompound:
+            Value: 0
+    - rid: 9189874137361809413
+      type: {class: BattleProjectileSystemDataQSingletonPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
+      data:
+        ProjectileEntityID:
+          Int: 0
           IsCompound:
             Value: 0
