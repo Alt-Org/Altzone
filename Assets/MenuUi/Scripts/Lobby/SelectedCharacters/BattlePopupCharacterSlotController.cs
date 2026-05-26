@@ -34,7 +34,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             {
                 SignalBus.OnReloadCharacterGalleryRequested += SetCharacters;
             }
-            _button.onClick.AddListener(OpenCharacterSelection);
+            //_button.onClick.AddListener(OpenCharacterSelection);
         }
 
 
