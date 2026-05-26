@@ -65,8 +65,8 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             if (_rectTransform == null) _rectTransform = GetComponent<RectTransform>();
 
-            _rectTransform.anchorMin = new Vector2(0, PanelScaler.CalculateBottomPanelHeight());
-            _rectTransform.anchorMax = new Vector2(1, 1 - (PanelScaler.CalculateTopPanelHeight() + PanelScaler.CalculateUnsafeAreaHeight()));
+            //_rectTransform.anchorMin = new Vector2(0, PanelScaler.CalculateBottomPanelHeight());
+            //_rectTransform.anchorMax = new Vector2(1, 1 - (PanelScaler.CalculateTopPanelHeight() + PanelScaler.CalculateUnsafeAreaHeight()));
         }
 
         private void OnDestroy()
@@ -267,6 +267,7 @@ namespace MenuUi.Scripts.CharacterGallery
         }
         private void OpenPopupFromSelected()
         {
+            if (!gameObject.activeInHierarchy) return;
             _openedFromLoadout = false;
             _currentLoadoutIndex = -1;
             Debug.LogWarning("Test");
@@ -275,6 +276,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void OpenPopupFromLoadout(int loadoutIndex)
         {
+            if (!gameObject.activeInHierarchy) return;
             _openedFromLoadout = true;
             _currentLoadoutIndex = loadoutIndex;
             OpenPopup();

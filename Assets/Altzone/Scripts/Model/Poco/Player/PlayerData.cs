@@ -69,7 +69,9 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public PlayStyles playStyles;
 
-        public DateTime emotionSelectorDate = DateTime.MinValue;
+        private DateTime _emotionSelectorDate = DateTime.MinValue;
+
+        public DateTime EmotionSelectionDate => _emotionSelectorDate;
 
         public string daysBetweenInput = "0";
 
@@ -256,7 +258,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         public void UpdatePlayerData(ServerPlayer player)
         {
             Debug.Log("UpdatePlayerData raw emotion count: " + (_playerDataEmotionList == null ? -1 : _playerDataEmotionList.Count));
-            Debug.Log("UpdatePlayerData raw emotion date: " + emotionSelectorDate);
+            Debug.Log("UpdatePlayerData raw emotion date: " + _emotionSelectorDate);
 
             Assert.IsTrue(player._id.IsSet());
             Assert.IsTrue(player.clan_id.IsNullOEmptyOrNonWhiteSpace());
@@ -511,7 +513,7 @@ namespace Altzone.Scripts.Model.Poco.Player
 
             emotions = emotions.OrderByDescending(o => o.DateTime).ToList();
 
-            emotionSelectorDate = emotions[0].DateTime;
+            if(emotions.Count > 0) _emotionSelectorDate = emotions[0].DateTime;
 
             return emotions;
         }
@@ -524,7 +526,7 @@ namespace Altzone.Scripts.Model.Poco.Player
 
             _playerDataEmotions = _playerDataEmotions.OrderByDescending(o => o.DateTime).ToList();
 
-            emotionSelectorDate = emotions[0].DateTime;
+            _emotionSelectorDate = _playerDataEmotions[0].DateTime;
         }
     }
 }

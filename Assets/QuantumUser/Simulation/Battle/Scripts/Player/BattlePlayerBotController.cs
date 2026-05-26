@@ -167,14 +167,10 @@ namespace Battle.QSimulation.Player
                 IsValid                       = true,
                 MovementInput                 = movementInput,
                 MovementDirectionIsNormalized = false,
-                MovementPositionTarget        = predictedGridPosition,
-                MovementPositionMove          = FPVector2.Zero,
-                MovementDirection             = FPVector2.Zero,
+                MovementGridPosition          = predictedGridPosition,
+                MovementVector                = FPVector2.Zero,
                 RotationInput                 = false,
-                RotationValue                 = FP._0,
-                PlayerCharacterNumber         = -1,
-                GiveUpInput                   = false,
-                AbilityActivate               = false
+                RotationValue                 = FP._0
             };
         }
     }

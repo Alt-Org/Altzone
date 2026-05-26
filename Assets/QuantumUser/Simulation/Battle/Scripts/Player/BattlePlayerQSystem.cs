@@ -92,7 +92,9 @@ namespace Battle.QSimulation.Player
                     BattleEmotionState.Joy        => SoundEffectTypeCommon.HitCharacterJoy,
                     BattleEmotionState.Love       => SoundEffectTypeCommon.HitCharacterLove,
                     BattleEmotionState.Playful    => SoundEffectTypeCommon.HitCharacterPlayful,
-                    BattleEmotionState.Sadness    => SoundEffectTypeCommon.HitCharacterSadness
+                    BattleEmotionState.Sadness    => SoundEffectTypeCommon.HitCharacterSadness,
+
+                    _ => throw new System.NotImplementedException()
                 };
                 HandleSFXCommon(f, damagedPlayerData->Slot, soundEffectType, SoundEffectTarget.All);
             }
@@ -206,7 +208,7 @@ namespace Battle.QSimulation.Player
         ///
         /// Update method has been split into subprocesses.<br/>
         /// see @cref{BattlePlayerQSystem,GetInput}<br/>
-        /// see @cref{BattlePlayerQSystem,HandleGiveUpInput}<br/>
+        /// see @cref{BattlePlayerQSystem,HandleGiveUp}<br/>
         /// see @cref{BattlePlayerQSystem,HandleCharacterSwapping}<br/>
         /// see @cref{BattlePlayerQSystem,HandleOutOfPlay}<br/>
         /// see @cref{BattlePlayerQSystem,HandleInPlay}
@@ -236,10 +238,27 @@ namespace Battle.QSimulation.Player
                     playerTransform = playerEntity.GetTransform(f);
                 }
 
+                switch (BattleCommand.GetCommand(f, playerData->PlayerRef, out BattleCommand commandData))
+                {
+                    case BattleCommand.Type.None:
+                        break;
+
+                    case BattleCommand.Type.GiveUp:
+                        if (HandleGiveUp(f, playerHandle)) continue;
+                        break;
+
+                    case BattleCommand.Type.ActivateAbility:
+                        playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0_50);
+                        break;
+
+                    case BattleCommand.Type.SwapCharacter:
+                        BattleCharacterSwapQCommand swapCharacterData = (BattleCharacterSwapQCommand)commandData;
+                        if (HandleCharacterSwapping(f, playerHandle, swapCharacterData.CharacterNumber)) continue;
+                        break;
+                }
+
                 input = GetInput(f, playerHandle, playerData, &stackInputStorage);
 
-                if (HandleGiveUpInput(f, input, playerHandle)) continue;
-                if (HandleCharacterSwapping(f, input, playerHandle)) continue;
                 if (HandleOutOfPlay(f, playerHandle)) continue;
 
                 HandleInPlay(f, input, playerHandle, playerData, playerEntity, playerTransform);
@@ -339,16 +358,13 @@ namespace Battle.QSimulation.Player
                 input = stackInputStorage;
                 *stackInputStorage = new Input
                 {
+                    IsValid                       = true,
                     MovementInput                 = BattleMovementInputType.None,
                     MovementDirectionIsNormalized = false,
-                    MovementPositionTarget        = new BattleGridPosition { Col = 0, Row = 0 },
-                    MovementPositionMove          = FPVector2.Zero,
-                    MovementDirection             = FPVector2.Zero,
+                    MovementGridPosition          = new BattleGridPosition { Col = 0, Row = 0 },
+                    MovementVector                = FPVector2.Zero,
                     RotationInput                 = false,
                     RotationValue                 = FP._0,
-                    PlayerCharacterNumber         = -1,
-                    GiveUpInput                   = false,
-                    AbilityActivate               = false
                 };
             }
 
@@ -356,13 +372,15 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Private helper method for handling when a player gives up or abandons the match.
+        /// Private helper method for handling when a player wants to give up or has abandoned the match.
         /// </summary>
         ///
         /// Used by <see cref="BattlePlayerQSystem.HandleGiveUpInput">HandleGiveUpInput</see> and <see cref="BattlePlayerQSystem.HandlePlayerAbandoned">HandlePlayerAbandoned</see>.
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Handle of the player.</param>
+        ///
+        /// <returns>True if all players on a team have given up.</returns>
         private static bool HandleGiveUpLogic(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
             BattlePlayerSlot slot = playerHandle.Slot;
@@ -467,21 +485,18 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Private helper method for handling player input for giving up during the game play.<br/>
-        /// Subprocess of the <see cref="BattlePlayerQSystem.Update">Update</see> method.
+        /// Private helper method for handling player give up command.<br/>
+        /// Subprocess of <see cref="BattlePlayerQSystem.Update">Update</see> method.
         /// </summary>
         ///
         /// Updates give up state and calls <see cref="BattlePlayerQSystem.HandleGiveUpLogic">HandleGiveUpLogic</see> method which handles the rest of the logic.
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="input">Pointer to the player's input data.</param>
         /// <param name="playerHandle">Handle of the player.</param>
         ///
-        /// <returns>True if the give up input was processed.</returns>
-        private bool HandleGiveUpInput(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle)
+        /// <returns>True if all players on a team have given up.</returns>
+        private bool HandleGiveUp(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
-            if (!input->GiveUpInput) return false;
-
             playerHandle.GiveUpState = !playerHandle.GiveUpState;
 
             s_debugLogger.LogFormat(f, "({0}) Give up input received, new state: {1}", playerHandle.Slot, playerHandle.GiveUpState);
@@ -491,17 +506,16 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Private helper method for handling character swapping.<br/>
-        /// Subprocess of the <see cref="BattlePlayerQSystem.Update">Update</see> method.
+        /// Subprocess of <see cref="BattlePlayerQSystem.Update">Update</see> method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="input">Pointer to the player's input data.</param>
         /// <param name="playerHandle">Handle of the player.</param>
         ///
-        /// <returns>True if character swapped.</returns>
-        private bool HandleCharacterSwapping(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle)
+        /// <returns>True if character was swapped.</returns>
+        private bool HandleCharacterSwapping(Frame f, BattlePlayerManager.PlayerHandle playerHandle, int playerCharacterNumber)
         {
-            if (input->PlayerCharacterNumber < 0) return false;
+            if (playerCharacterNumber == playerHandle.SelectedCharacterNumber) return false;
 
             s_debugLogger.LogFormat(f, "({0}) Character swap input received", playerHandle.Slot);
 
@@ -511,10 +525,9 @@ namespace Battle.QSimulation.Player
                 return false;
             }
 
-            s_debugLogger.LogFormat(f, "({0}) Swapping to character number: {1}", playerHandle.Slot, input->PlayerCharacterNumber);
+            s_debugLogger.LogFormat(f, "({0}) Swapping to character number: {1}", playerHandle.Slot, playerCharacterNumber);
 
-            BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, input->PlayerCharacterNumber);
-
+            BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, playerCharacterNumber);
             return true;
         }
 
@@ -578,11 +591,6 @@ namespace Battle.QSimulation.Player
             playerData->ViewMovementVector = FPVector2.Zero;
 
             bool updateMovement = true;
-
-            if (input->AbilityActivate)
-            {
-                playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0_50);
-            }
 
             if (!playerData->AbilityCooldownSec.IsRunning(f) && playerData->AbilityActivateBufferSec.IsRunning(f))
             {
