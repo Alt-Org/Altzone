@@ -31,6 +31,12 @@ namespace MenuUi.Scripts.Window
         public delegate void ChatBarToggled(bool active);
         public static event ChatBarToggled OnChatBarToggled;
 
+        public delegate void TopBarToggled(bool active);
+        public static event TopBarToggled OnTopBarToggled;
+
+        public delegate void BottomBarToggled(bool active);
+        public static event BottomBarToggled OnBottomBarToggled;
+
         public delegate void ToggleOnlinePlayerList(bool? active = null);
         public static event ToggleOnlinePlayerList OnToggleOnlinePlayerList;
         
@@ -132,11 +138,13 @@ namespace MenuUi.Scripts.Window
         public void ToggleBottomBar(bool value)
         {
             _bottomBar.SetActive(value);
+            OnBottomBarToggled?.Invoke(value);
         }
 
         public void ToggleTopBar(bool value)
         {
             _topBar.SetActive(value);
+            OnTopBarToggled?.Invoke(value);
         }
 
         public void ToggleChat(bool value)

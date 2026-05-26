@@ -58,7 +58,7 @@ public class WeekEmotions : AltMonoBehaviour
             return;
         }*/
 
-        DateTime anchorDate = _playerData.emotionSelectorDate;
+        DateTime anchorDate = _playerData.EmotionSelectionDate;
         /*if (!DateTime.TryParse(_playerData.emotionSelectorDate, out anchorDate))
         {
             //Debug.LogError("Could not parse emotionSelectorDate: " + _playerData.emotionSelectorDate);
