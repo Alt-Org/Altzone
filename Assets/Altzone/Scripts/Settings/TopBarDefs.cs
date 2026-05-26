@@ -6,15 +6,15 @@ namespace Altzone.Scripts.Settings
 
         public enum TopBarItem
         {
-            PlayerProfile,
-            ClanLogo,
+            ClanTile,
             Leaderboard,
             Coins,
-            Settings,
-            ClanTile,
-            Jukebox,
+            ClanLogo,
             ClanTextContainer,
+            Jukebox,
+            PlayerProfile,
             Voting,
+            Settings,
         }
 
         public static string Key(TopBarItem item) => $"{KeyPrefix}{item}";

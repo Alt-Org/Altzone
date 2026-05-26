@@ -20,6 +20,12 @@ public class TopBarOrderBridge : MonoBehaviour
             ? SettingsCarrier.Instance.TopBarStyleSetting
             : SettingsCarrier.TopBarStyle.NewHelena;
 
+
+    private void Awake()
+    {
+        Debug.Log("[TopBarDebug] TopBarOrderBridge : Awake()");
+    }
+
     private void OnEnable()
     {
         Active = this;
@@ -88,6 +94,11 @@ public class TopBarOrderBridge : MonoBehaviour
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarOrderBridge : OnRowDropped()");
 
         TopBarTargets owner = GetTargetsFor(CurrentStyle);
+
+        Debug.Log($"[TopBarDebug] CurrentStyle={CurrentStyle}, " +
+                  $"owner={(owner ? owner.name : "NULL")}, " +
+                  $"toggleContainer={(_toggleContainer ? _toggleContainer.name : "NULL")}");
+
         if (owner == null || _toggleContainer == null) return;
 
         Dictionary<int, TopBarDefs.TopBarItem> order =
@@ -106,27 +117,27 @@ public class TopBarOrderBridge : MonoBehaviour
 
             TopBarDefs.TopBarItem item = h.item;
 
-            bool isClanSubItem =
-                item == TopBarDefs.TopBarItem.Leaderboard ||
-                item == TopBarDefs.TopBarItem.ClanLogo ||
-                item == TopBarDefs.TopBarItem.ClanTextContainer ||
-                item == TopBarDefs.TopBarItem.Coins;
-
-            if (clanTileOn && isClanSubItem)
-                continue;
+            // bool isClanSubItem =
+            //     item == TopBarDefs.TopBarItem.Leaderboard ||
+            //     item == TopBarDefs.TopBarItem.ClanLogo ||
+            //     item == TopBarDefs.TopBarItem.ClanTextContainer ||
+            //     item == TopBarDefs.TopBarItem.Coins;
+            //
+            // if (clanTileOn && isClanSubItem)
+            //     continue;
 
             if (order.ContainsValue(item)) continue;
 
             order[nextPos] = item;
             nextPos++;
 
-            if (clanTileOn && item == TopBarDefs.TopBarItem.ClanTile)
-            {
-                order[nextPos++] = TopBarDefs.TopBarItem.Leaderboard;
-                order[nextPos++] = TopBarDefs.TopBarItem.Coins;
-                order[nextPos++] = TopBarDefs.TopBarItem.ClanTextContainer;
-                order[nextPos++] = TopBarDefs.TopBarItem.ClanLogo;
-            }
+            // if (clanTileOn && item == TopBarDefs.TopBarItem.ClanTile)
+            // {
+            //     order[nextPos++] = TopBarDefs.TopBarItem.Leaderboard;
+            //     order[nextPos++] = TopBarDefs.TopBarItem.Coins;
+            //     order[nextPos++] = TopBarDefs.TopBarItem.ClanTextContainer;
+            //     order[nextPos++] = TopBarDefs.TopBarItem.ClanLogo;
+            // }
         }
 
         int total = owner.RowCount();
@@ -198,7 +209,15 @@ public class TopBarOrderBridge : MonoBehaviour
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarOrderBridge : UpdateTopBarStyle()");
 
+
         TopBarTargets owner = GetTargetsFor(style);
+
+        Debug.Log($"[TopBarDebug] Bridge target = {owner.name}, style={owner.style}, rows={owner.RowCount()}");
+        if (owner != null)
+        {
+            Debug.Log($"[TopBarDebug] Bridge target = {owner.name}, style={owner.style}, rows={owner.RowCount()}");
+        }
+
         if (owner == null || _toggleContainer == null) return;
 
         int total = owner.RowCount();
@@ -209,6 +228,7 @@ public class TopBarOrderBridge : MonoBehaviour
         int pos = 0;
 
         foreach (int idx in orderList)
+
         {
             if ((uint)idx >= (uint)total) continue;
             TopBarDefs.TopBarItem item = owner.GetItemAt(idx);

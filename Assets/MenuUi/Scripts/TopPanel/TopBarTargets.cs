@@ -39,11 +39,20 @@ namespace MenuUI.Scripts.TopPanel
         [SerializeField] private Transform _textContainer;
         [SerializeField] private Transform _coinsRow;
 
+        //SerializeField for slots in ClanPanel
+        [SerializeField] private Transform _slotLeaderboard;
+        [SerializeField] private Transform _slotCoins;
+        [SerializeField] private Transform _slotClanLogo;
+        [SerializeField] private Transform _slotTextContainer;
+
         private const bool DebugOn = true;
 
         private void OnEnable()
         {
             if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : OnEnable()");
+            //
+            // PlayerPrefs.DeleteAll();
+            // PlayerPrefs.Save();
 
             ApplyFromSettings();
             SettingsCarrier.OnTopBarChanged += OnCarrierChanged;
@@ -67,6 +76,10 @@ namespace MenuUI.Scripts.TopPanel
         public void ApplyFromSettings()
         {
             if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ApplyFromSettings()");
+
+            Debug.Log($"[TB] APPLY style={style} " +
+                      $"active={gameObject.activeInHierarchy} " +
+                      $"name={name}");
 
             RectTransform parentRT;
             if (!IsValid(out parentRT)) return;
@@ -132,15 +145,6 @@ namespace MenuUI.Scripts.TopPanel
                 return false;
             }
 
-            // for (int i = 0; i < _rows.Count; i++)
-            // {
-            //     if (_rows[i].orderTarget != null)
-            //     {
-            //         parentRT = _rows[i].orderTarget.transform.parent as RectTransform;
-            //         if (parentRT != null) break;
-            //     }
-            // }
-
             if (parentRT == null)
             {
                 Debug.LogWarning($"[TB] INVALID: _topBarContent missing on {gameObject.name}");
@@ -150,12 +154,12 @@ namespace MenuUI.Scripts.TopPanel
             return true;
         }
 
-        // private static string PrefKeyForItem(TopBarDefs.TopBarItem item)
-        // {
-        //     if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : PrefKeyForItem()");
-        //
-        //     return TopBarDefs.Key(item);
-        // }
+        private static string PrefKeyForItem(TopBarDefs.TopBarItem item)
+        {
+            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : PrefKeyForItem()");
+
+            return TopBarDefs.Key(item);
+        }
 
         private bool[] ReadVisibility()
         {
@@ -167,6 +171,11 @@ namespace MenuUI.Scripts.TopPanel
             {
                 string key = TopBarDefs.Key(_rows[i].item) + "_" + style;
                 vis[i] = PlayerPrefs.GetInt(key, 1) != 0;
+
+                Debug.Log($"[TB] READ row={i} " +
+                          $"item={_rows[i].item} " +
+                          $"style={style} key={key} " +
+                          $"value={vis[i]}");
             }
 
             return vis;
@@ -369,33 +378,28 @@ namespace MenuUI.Scripts.TopPanel
 
         private void ApplyClanPanelMode(bool clanPanelOn)
         {
-            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ApplyClanPanelMode()");
+            if (DebugOn)
+                Debug.Log($"[TB] ApplyClanPanelMode clanPanelOn={clanPanelOn}");
 
             if (clanPanelOn)
             {
                 if (_clanPanelRoot != null)
                     _clanPanelRoot.gameObject.SetActive(true);
 
-                MoveUnderClanPanel(_clanLeaderboardButton);
-                MoveUnderClanPanel(_clanHeart);
-                MoveUnderClanPanel(_textContainer);
-                MoveUnderClanPanel(_coinsRow);
+                MoveToSlot(_clanLeaderboardButton, _slotLeaderboard);
+                MoveToSlot(_coinsRow, _slotCoins);
+                MoveToSlot(_clanHeart, _slotClanLogo);
+                MoveToSlot(_textContainer, _slotTextContainer);
             }
             else
             {
-                //int clanIndex = _clanPanelRoot != null ? _clanPanelRoot.GetSiblingIndex() : 0;
-
-                MoveToTopBar(_clanLeaderboardButton);
-                MoveToTopBar(_textContainer);
-                MoveToTopBar(_clanHeart);
-                MoveToTopBar(_coinsRow);
-
-                // _textContainer.SetSiblingIndex(clanIndex);
-                // _clanHeart.SetSiblingIndex(clanIndex + 1);
-                // _coinsRow.SetSiblingIndex(clanIndex + 2);
-
                 if (_clanPanelRoot != null)
                     _clanPanelRoot.gameObject.SetActive(false);
+
+                MoveToTopBar(_clanLeaderboardButton, _topBarContent);
+                MoveToTopBar(_coinsRow, _topBarContent);
+                MoveToTopBar(_clanHeart, _topBarContent);
+                MoveToTopBar(_textContainer, _topBarContent);
             }
         }
 
@@ -407,12 +411,14 @@ namespace MenuUI.Scripts.TopPanel
             item.SetParent(_clanPanel, false);
         }
 
-        private void MoveToTopBar(Transform item)
+        private void MoveToTopBar(Transform item, Transform parent)
         {
             if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : MoveToTopBar()");
 
-            if (item == null || _topBarContent == null) return;
-            item.SetParent(_topBarContent, false);
+            if (item == null || parent == null) return;
+
+            item.SetParent(parent, false);
+            item.SetParent(parent, false);
             item.gameObject.SetActive(true);
         }
 
@@ -453,6 +459,26 @@ namespace MenuUI.Scripts.TopPanel
                           $"active={row.visibilityTarget.activeSelf}, " +
                           $"target={row.visibilityTarget.name}, " +
                           $"parent={row.visibilityTarget.transform.parent.name}");
+            }
+        }
+
+        private void MoveToSlot(Transform item, Transform slot)
+        {
+            if (item == null || slot == null)
+                return;
+
+            item.SetParent(slot, false);
+            item.SetSiblingIndex(0);
+            item.gameObject.SetActive(true);
+
+            if (item is RectTransform rt)
+            {
+                rt.anchorMin = Vector2.zero;
+                rt.anchorMax = Vector2.one;
+                rt.offsetMin = Vector2.zero;
+                rt.offsetMax = Vector2.zero;
+                rt.anchoredPosition = Vector2.zero;
+                rt.localScale = Vector3.one;
             }
         }
     }

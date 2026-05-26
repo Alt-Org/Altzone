@@ -14,7 +14,7 @@ public class SettingEditor : MonoBehaviour
     private SettingsCarrier carrier = SettingsCarrier.Instance;
     private MainMenuController mainMenuController = null;
 
-    [SerializeField] private Toggle[] fpsButtons;            // 0 - Native, 1 - 60FPS, 2 - 30FPS
+    [SerializeField] private Toggle[] fpsButtons; // 0 - Native, 1 - 60FPS, 2 - 30FPS
     [SerializeField] private Slider[] volumeSliders;
     [SerializeField] private Toggle _introSkipToggle;
     [SerializeField] private Toggle _showButtonLabelsToggle;
@@ -32,7 +32,7 @@ public class SettingEditor : MonoBehaviour
 
     private void OnEnable()
     {
-        if(mainMenuController == null)
+        if (mainMenuController == null)
             mainMenuController = FindObjectOfType<MainMenuController>(true);
 
         foreach (Slider slider in volumeSliders)
@@ -42,8 +42,8 @@ public class SettingEditor : MonoBehaviour
 
         //SetFPSButtons();
         SetIntroSkipToggle();
-        
-        
+
+
         SetShowButtonLabelsToggle();
 
         // Opening Battle Ui Editor if DataCarrier has a bool BattleUiEditorRequested and it's true
@@ -53,13 +53,26 @@ public class SettingEditor : MonoBehaviour
             _battleEditor.OpenEditor();
         }
 
-        foreach(GameObject popup in _settingsPopups)
+        foreach (GameObject popup in _settingsPopups)
         {
             popup.SetActive(false);
         }
 
         SettingsCarrier.OnLanguageChanged += ChangeLanguage;
         ChangeLanguage(SettingsCarrier.Instance.Language);
+
+        carrier = SettingsCarrier.Instance;
+        RefreshTopBarStyleText();
+    }
+
+    private void RefreshTopBarStyleText()
+    {
+        if (carrier == null) carrier = SettingsCarrier.Instance;
+
+        string styleName = carrier.TopBarStyleSetting.ToString();
+        Debug.Log($"[STYLE TEXT] setting text to {styleName}");
+
+        _topBarStyleText.SetText(styleName);
     }
 
     private void Start()
@@ -70,9 +83,12 @@ public class SettingEditor : MonoBehaviour
 
         _topBarStyleButtonRight.onClick.AddListener(() => ChangeTopbarStyle(1));
         _topBarStyleButtonLeft.onClick.AddListener(() => ChangeTopbarStyle(-1));
-        _topBarStyleText.SetText(SettingsCarrier.Instance.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
+        _topBarStyleText.SetText(SettingsCarrier.Instance.Language,
+            new string[1] { carrier.TopBarStyleSetting.ToString() });
 
         _introSkipToggle.onValueChanged.AddListener(_ => SetIntroSkip());
+
+        RefreshTopBarStyleText();
     }
 
     private void OnDisable()
@@ -80,9 +96,8 @@ public class SettingEditor : MonoBehaviour
         SettingsCarrier.OnLanguageChanged -= ChangeLanguage;
 
 
-
-        foreach(GameObject popup in _settingsPopups)
-            {
+        foreach (GameObject popup in _settingsPopups)
+        {
             if (popup.activeSelf)
             {
                 SettingsPopup PopScript = popup.GetComponent<SettingsPopup>();
@@ -96,12 +111,23 @@ public class SettingEditor : MonoBehaviour
         // Somewhat hardcoded, but best i could do way of setting volume to SettingsCarrier from the sliders
         switch (usedSlider.name)
         {
-            case "MasterVolume": carrier.masterVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("MasterVolume", carrier.masterVolume); break;
-            case "MenuSFXVolume": carrier.menuVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("MenuVolume", carrier.menuVolume); break;
-            case "MusicVolume": carrier.musicVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("MusicVolume", carrier.musicVolume); break;
+            case "MasterVolume":
+                carrier.masterVolume = RoundToTwoDecimals(usedSlider.value);
+                PlayerPrefs.SetFloat("MasterVolume", carrier.masterVolume);
+                break;
+            case "MenuSFXVolume":
+                carrier.menuVolume = RoundToTwoDecimals(usedSlider.value);
+                PlayerPrefs.SetFloat("MenuVolume", carrier.menuVolume);
+                break;
+            case "MusicVolume":
+                carrier.musicVolume = RoundToTwoDecimals(usedSlider.value);
+                PlayerPrefs.SetFloat("MusicVolume", carrier.musicVolume);
+                break;
             case "GameSFXVolume":
-                carrier.soundVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("SoundVolume", carrier.soundVolume);
-                carrier.menuVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("MenuVolume", carrier.menuVolume);
+                carrier.soundVolume = RoundToTwoDecimals(usedSlider.value);
+                PlayerPrefs.SetFloat("SoundVolume", carrier.soundVolume);
+                carrier.menuVolume = RoundToTwoDecimals(usedSlider.value);
+                PlayerPrefs.SetFloat("MenuVolume", carrier.menuVolume);
                 break;
         }
 
@@ -131,7 +157,8 @@ public class SettingEditor : MonoBehaviour
     }
 
     private float RoundToTwoDecimals(float toRound)
-    { // Rounding the volume to two decimals so that we dont get extremely specific volumes. aka: 57.2124865223% volume
+    {
+        // Rounding the volume to two decimals so that we dont get extremely specific volumes. aka: 57.2124865223% volume
         float multipliedVal = Mathf.Round(toRound * 100);
         return multipliedVal / 100;
     }
@@ -143,7 +170,7 @@ public class SettingEditor : MonoBehaviour
 
     public void SetIntroSkip()
     {
-        if(_introSkipToggle.isOn) PlayerPrefs.SetInt("SkipIntroVideo", 1);
+        if (_introSkipToggle.isOn) PlayerPrefs.SetInt("SkipIntroVideo", 1);
         else PlayerPrefs.SetInt("SkipIntroVideo", 0);
     }
 
@@ -160,30 +187,56 @@ public class SettingEditor : MonoBehaviour
 
     public void ChangeTopbarStyle(int value)
     {
+        //Debug.Log($"[STYLE TEXT] ChangeTopbarStyle clicked value={value}");
 
+        if (carrier == null) carrier = SettingsCarrier.Instance;
+        if (carrier == null) return;
 
-        /// Uses the <see cref="TopBarStyle"/>  to get data we need
         int index = (int)carrier.TopBarStyleSetting;
-        int max = (int)(SettingsCarrier.TopBarStyle)Enum.GetValues(typeof(SettingsCarrier.TopBarStyle)).Length - 1;
+        int max = Enum.GetValues(typeof(SettingsCarrier.TopBarStyle)).Length - 1;
 
         index += value;
 
-        if (index > max)
-        {
-            index = 0;
-        } else if(index < 0)
-        {
-            index = max;
-        }
+        if (index > max) index = 0;
+        else if (index < 0) index = max;
 
-        carrier.TopBarStyleSetting = (SettingsCarrier.TopBarStyle)index;
+        var newStyle = (SettingsCarrier.TopBarStyle)index;
 
+        //Debug.Log($"[STYLE TEXT] newStyle={newStyle}");
 
-        _topBarStyleText.SetText(SettingsCarrier.Instance.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
+        _topBarStyleText.SetText(newStyle.ToString());
 
+        carrier.TopBarStyleSetting = newStyle;
     }
 
-    public void PlayMainMenuMusic() { AudioManager.Instance.PlayMusic("MainMenu"); }
+    // public void ChangeTopbarStyle(int value)
+    // {
+    //     /// Uses the <see cref="TopBarStyle"/>  to get data we need
+    //     int index = (int)carrier.TopBarStyleSetting;
+    //     int max = (int)(SettingsCarrier.TopBarStyle)Enum.GetValues(typeof(SettingsCarrier.TopBarStyle)).Length - 1;
+    //
+    //     index += value;
+    //
+    //     if (index > max)
+    //     {
+    //         index = 0;
+    //     }
+    //     else if (index < 0)
+    //     {
+    //         index = max;
+    //     }
+    //
+    //     carrier.TopBarStyleSetting = (SettingsCarrier.TopBarStyle)index;
+    //
+    //
+    //     _topBarStyleText.SetText(SettingsCarrier.Instance.Language,
+    //         new string[1] { carrier.TopBarStyleSetting.ToString() });
+    // }
+
+    public void PlayMainMenuMusic()
+    {
+        AudioManager.Instance.PlayMusic("MainMenu");
+    }
 
     private void ChangeLanguage(SettingsCarrier.LanguageType language)
     {
@@ -196,7 +249,9 @@ public class SettingEditor : MonoBehaviour
                 _languageImage.sprite = _englishSprite;
                 break;
         }
-        if(_languageCaller != null) _languageCaller.SetText(language, new string[0]);
-        _topBarStyleText.SetText(SettingsCarrier.Instance.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
+
+        if (_languageCaller != null) _languageCaller.SetText(language, new string[0]);
+        _topBarStyleText.SetText(SettingsCarrier.Instance.Language,
+            new string[1] { carrier.TopBarStyleSetting.ToString() });
     }
 }

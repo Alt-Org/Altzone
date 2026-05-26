@@ -36,8 +36,13 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
         Debug.Log($"[TopBarDebugScroll] ScrollRect found: {_scrollRect != null}");
 
+        TopBarToggleHandler handler = GetComponentInParent<TopBarToggleHandler>();
+        _row = handler != null
+            ? handler.transform as RectTransform
+            : transform.parent as RectTransform;
+
         _dragHandle = GetComponent<RectTransform>();
-        _row = transform.parent as RectTransform;
+        //_row = transform.parent as RectTransform;
         _layoutElement = _row.GetComponent<LayoutElement>();
         _canvasGroup = _row.GetComponent<CanvasGroup>();
         _rootCanvas = GetComponentInParent<Canvas>();
@@ -175,7 +180,7 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         {
             if (child == _placeholderObject.transform) continue;
 
-            if (child.GetComponentInChildren<TopBarToggleDrag>() != null)
+            if (child.GetComponentInChildren<TopBarToggleDrag>(true) != null)
                 rows.Add((RectTransform)child);
         }
 
