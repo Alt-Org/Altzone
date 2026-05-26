@@ -267,6 +267,7 @@ namespace MenuUi.Scripts.CharacterGallery
         }
         private void OpenPopupFromSelected()
         {
+            if (!gameObject.activeInHierarchy) return;
             _openedFromLoadout = false;
             _currentLoadoutIndex = -1;
             Debug.LogWarning("Test");
@@ -275,6 +276,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void OpenPopupFromLoadout(int loadoutIndex)
         {
+            if (!gameObject.activeInHierarchy) return;
             _openedFromLoadout = true;
             _currentLoadoutIndex = loadoutIndex;
             OpenPopup();
