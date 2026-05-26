@@ -229,26 +229,15 @@ namespace Battle.QSimulation.Player
             {
                 BattlePlayerManager.PlayerHandle playerHandle = playerHandleArray[playerNumber];
                 if (playerHandle.PlayState.IsNotInGame()) continue;
-                if (playerHandle.PlayState.IsOutOfPlayFinal()) continue;
 
-                if (playerHandle.PlayState.IsInPlay())
+                BattleCommand.Type commandType = BattleCommand.GetCommand(f, playerHandle.PlayerRef, out BattleCommand commandData);
+
+                //{ non-character logic
+
+                switch(commandType)
                 {
-                    playerEntity    = playerHandle.GetSelectedCharacterEntityRef(f);
-                    playerData      = playerEntity.GetDataQComponent(f);
-                    playerTransform = playerEntity.GetTransform(f);
-                }
-
-                switch (BattleCommand.GetCommand(f, playerData->PlayerRef, out BattleCommand commandData))
-                {
-                    case BattleCommand.Type.None:
-                        break;
-
                     case BattleCommand.Type.GiveUp:
                         if (HandleGiveUp(f, playerHandle)) continue;
-                        break;
-
-                    case BattleCommand.Type.ActivateAbility:
-                        playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0_50);
                         break;
 
                     case BattleCommand.Type.SwapCharacter:
@@ -257,11 +246,28 @@ namespace Battle.QSimulation.Player
                         break;
                 }
 
-                input = GetInput(f, playerHandle, playerData, &stackInputStorage);
-
                 if (HandleOutOfPlay(f, playerHandle)) continue;
 
+                //} non-character logic
+
+                //{ character logic
+
+                playerEntity    = playerHandle.GetSelectedCharacterEntityRef(f);
+                playerData      = playerEntity.GetDataQComponent(f);
+                playerTransform = playerEntity.GetTransform(f);
+
+                switch (commandType)
+                {
+                    case BattleCommand.Type.ActivateAbility:
+                        playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0_50);
+                        break;
+                }
+
+                input = GetInput(f, playerHandle, playerData, &stackInputStorage);
+
                 HandleInPlay(f, input, playerHandle, playerData, playerEntity, playerTransform);
+
+                //} character logic
             }
         }
 
