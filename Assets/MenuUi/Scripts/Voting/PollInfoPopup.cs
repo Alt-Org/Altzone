@@ -27,6 +27,7 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private TMP_Text rarityText;
     [SerializeField] private Image greenFill;
     [SerializeField] private TMP_Text timer;
+    [SerializeField] private TMP_Text tradeTag;
 
     [Header("Votes")]
     [SerializeField] private Button yesButton;
@@ -146,6 +147,9 @@ public class PollInfoPopup : MonoBehaviour
     {
         var furnitureData = _currentPollData as FurniturePollData;
         if (furnitureData == null || furnitureData.Furniture == null) return;
+
+        bool isBuying = furnitureData.FurniturePollType == FurniturePollType.Buying;
+        tradeTag.text = isBuying ? "OSTO" : "MYYNTI";
 
         nameText.text = furnitureData.Furniture.Name ?? "";
         iconImage.sprite = furnitureData.Furniture.FurnitureInfo?.Image;

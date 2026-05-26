@@ -58,7 +58,7 @@ public class PollObject : MonoBehaviour
     private bool pollEnded = false;
 
     private readonly Color _green = HexToColor("#2FA36B");
-    private readonly Color _red = HexToColor("#2FA36B");
+    private readonly Color _red = HexToColor("#C83A2D");
 
     private void Start()
     {
