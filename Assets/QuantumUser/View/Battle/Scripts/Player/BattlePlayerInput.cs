@@ -172,7 +172,7 @@ namespace Battle.View.Player
         /// Variables related to current input states.
         /// @{
 
-        /// <summary>input data that is queued for next time Quantum polls input. <see cref="Queued">More</see></summary>
+        /// <summary>Input data that is queued for next time Quantum polls input. <see cref="Queued">More</see></summary>
         private Queued _queued;
 
         /// <summary>Saved time from previous frame.</summary>
