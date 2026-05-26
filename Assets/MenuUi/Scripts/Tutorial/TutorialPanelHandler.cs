@@ -32,7 +32,6 @@ public class TutorialPanelHandler : MonoBehaviour
             _cutOuts.Add(newCutOut);
         }
 
-        _fadeLayer.transform.SetAsLastSibling();
         int j = 0;
         foreach (Image imageToCutOut in _imageToCutOut)
         {
@@ -42,6 +41,8 @@ public class TutorialPanelHandler : MonoBehaviour
                 cutout.sprite = imageToCutOut.sprite;
                 cutout.preserveAspect = imageToCutOut.preserveAspect;
                 cutout.transform.localScale = imageToCutOut.transform.localScale;
+                if (cutout.sprite == null) _fadeLayer.transform.SetAsLastSibling();
+                else cutout.material = null;
             }
             j++;
         }
