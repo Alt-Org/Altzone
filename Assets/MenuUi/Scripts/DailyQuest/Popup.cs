@@ -338,7 +338,7 @@ public class Popup : MonoBehaviour
         {
             if (!_messageTexts[i].IsActive()) continue;
 
-            if (i == 0) // First element should be the task title (for some reason)
+            if (i == 0 || i == 2) // 0 = Task Accept window, 2 = MultipleChoicewindow, set message as the task title for these
             {
                 _messageTexts[i].text = task.Title;
             }
