@@ -119,7 +119,6 @@ namespace Battle.QSimulation.Player
                 damagedPlayerData->TeamNumber,
                 damagedPlayerData->Slot,
                 BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber,
-                damagedPlayerData->AttachedShield.ERef != EntityRef.None,
                 damagedPlayerData->AttachedShieldNumber,
                 stunCooldown,
                 projectileCollisionData->ProjectileEmotionCurrent
@@ -147,6 +146,7 @@ namespace Battle.QSimulation.Player
             BattlePlayerDataQComponent*       damagedPlayerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
 
             int characterNumber = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber;
+            bool defenceUpdateVisual = false;
             FP defencePercentage = -1;
 
             if (playerShieldData->ShieldHitCooldown.IsRunning(f)) goto ExitNoHit;
@@ -167,6 +167,7 @@ namespace Battle.QSimulation.Player
 
             damagedPlayerData->CurrentDefence = damagedPlayerData->CurrentDefence - damageTaken;
 
+            defenceUpdateVisual = true;
             defencePercentage = damagedPlayerData->CurrentDefence / damagedPlayerData->Stats.Defence;
 
             if (damagedPlayerData->CurrentDefence <= 0)
@@ -190,8 +191,8 @@ namespace Battle.QSimulation.Player
                 damagedPlayerData->TeamNumber,
                 damagedPlayerData->Slot,
                 characterNumber,
-                playerShieldData->IsAttached,
                 damagedPlayerData->AttachedShieldNumber,
+                defenceUpdateVisual,
                 defencePercentage
             );
         ExitNoHit:
