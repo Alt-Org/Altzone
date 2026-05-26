@@ -690,7 +690,7 @@ namespace Battle.View.Game
         /// <param name="e">The event data.</param>
         private void QEventOnShieldHit(EventBattleShieldHit e)
         {
-            if (e.Team == LocalPlayerTeam)
+            if (e.Team == LocalPlayerTeam && e.DefenceUpdateVisual)
             {
                 _uiController.PlayerInfoHandler.UpdateDefenceVisual(e.Slot, e.CharacterNumber, (float)e.DefencePercentage);
             }
