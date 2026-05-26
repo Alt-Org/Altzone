@@ -267,29 +267,28 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventBattleCharacterHit BattleCharacterHit(EntityRef ERef, BattleTeamNumber Team, BattlePlayerSlot Slot, Int32 CharacterNumber, QBoolean ShieldAttached, Int32 ShieldNumber, FP StunDurationSec, BattleEmotionState ProjectileEmotion) {
+      public EventBattleCharacterHit BattleCharacterHit(EntityRef ERef, BattleTeamNumber Team, BattlePlayerSlot Slot, Int32 CharacterNumber, Int32 ShieldNumber, FP StunDurationSec, BattleEmotionState ProjectileEmotion) {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventBattleCharacterHit>(EventBattleCharacterHit.ID);
         ev.ERef = ERef;
         ev.Team = Team;
         ev.Slot = Slot;
         ev.CharacterNumber = CharacterNumber;
-        ev.ShieldAttached = ShieldAttached;
         ev.ShieldNumber = ShieldNumber;
         ev.StunDurationSec = StunDurationSec;
         ev.ProjectileEmotion = ProjectileEmotion;
         _f.AddEvent(ev);
         return ev;
       }
-      public EventBattleShieldHit BattleShieldHit(EntityRef ERef, BattleTeamNumber Team, BattlePlayerSlot Slot, Int32 CharacterNumber, QBoolean ShieldAttached, Int32 ShieldNumber, FP DefencePercentage) {
+      public EventBattleShieldHit BattleShieldHit(EntityRef ERef, BattleTeamNumber Team, BattlePlayerSlot Slot, Int32 CharacterNumber, Int32 ShieldNumber, QBoolean DefenceUpdateVisual, FP DefencePercentage) {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventBattleShieldHit>(EventBattleShieldHit.ID);
         ev.ERef = ERef;
         ev.Team = Team;
         ev.Slot = Slot;
         ev.CharacterNumber = CharacterNumber;
-        ev.ShieldAttached = ShieldAttached;
         ev.ShieldNumber = ShieldNumber;
+        ev.DefenceUpdateVisual = DefenceUpdateVisual;
         ev.DefencePercentage = DefencePercentage;
         _f.AddEvent(ev);
         return ev;
@@ -958,7 +957,6 @@ namespace Quantum {
     public BattleTeamNumber Team;
     public BattlePlayerSlot Slot;
     public Int32 CharacterNumber;
-    public QBoolean ShieldAttached;
     public Int32 ShieldNumber;
     public FP StunDurationSec;
     public BattleEmotionState ProjectileEmotion;
@@ -983,7 +981,6 @@ namespace Quantum {
         hash = hash * 31 + Team.GetHashCode();
         hash = hash * 31 + Slot.GetHashCode();
         hash = hash * 31 + CharacterNumber.GetHashCode();
-        hash = hash * 31 + ShieldAttached.GetHashCode();
         hash = hash * 31 + ShieldNumber.GetHashCode();
         hash = hash * 31 + StunDurationSec.GetHashCode();
         hash = hash * 31 + ProjectileEmotion.GetHashCode();
@@ -997,8 +994,8 @@ namespace Quantum {
     public BattleTeamNumber Team;
     public BattlePlayerSlot Slot;
     public Int32 CharacterNumber;
-    public QBoolean ShieldAttached;
     public Int32 ShieldNumber;
+    public QBoolean DefenceUpdateVisual;
     public FP DefencePercentage;
     protected EventBattleShieldHit(Int32 id, EventFlags flags) : 
         base(id, flags) {
@@ -1021,8 +1018,8 @@ namespace Quantum {
         hash = hash * 31 + Team.GetHashCode();
         hash = hash * 31 + Slot.GetHashCode();
         hash = hash * 31 + CharacterNumber.GetHashCode();
-        hash = hash * 31 + ShieldAttached.GetHashCode();
         hash = hash * 31 + ShieldNumber.GetHashCode();
+        hash = hash * 31 + DefenceUpdateVisual.GetHashCode();
         hash = hash * 31 + DefencePercentage.GetHashCode();
         return hash;
       }
