@@ -41,6 +41,7 @@ public class TutorialPanelHandler : MonoBehaviour
                 Image cutout = _cutOuts[j].GetComponent<Image>();
                 cutout.sprite = imageToCutOut.sprite;
                 cutout.preserveAspect = imageToCutOut.preserveAspect;
+                cutout.transform.localScale = imageToCutOut.transform.localScale;
             }
             j++;
         }
