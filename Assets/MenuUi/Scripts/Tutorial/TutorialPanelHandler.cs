@@ -62,7 +62,7 @@ public class TutorialPanelHandler : MonoBehaviour
     {
         for (int i = 0; i < _cutOuts.Count; i++)
         {
-            _cutOuts[i].SetPosition(_imageToCutOut[i], _fadeLayer);
+            StartCoroutine(_cutOuts[i].SetPosition(_imageToCutOut[i], _fadeLayer));
         }
         yield return null;
         GameObject previousArrow = null;
