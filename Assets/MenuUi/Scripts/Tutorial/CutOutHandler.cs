@@ -9,14 +9,15 @@ public class CutOutHandler : MonoBehaviour
     [SerializeField] private RectTransform _rect;
     [SerializeField] private GameObject _arrow;
     [SerializeField] private TextMeshProUGUI _infoText;
+    [SerializeField] private GameObject _textBox;
     [SerializeField] private bool _keepArrowActive = false;
 
     public GameObject Arrow { get => _arrow; }
     public bool KeepArrowActive { get => _keepArrowActive; }
 
-    public void SetPosition(Image imageToCutOut, GameObject fadeLayer)
+    public IEnumerator SetPosition(Image imageToCutOut, GameObject fadeLayer)
     {
-        if (!imageToCutOut.gameObject.activeInHierarchy) { gameObject.SetActive(false); return; }
+        if (!imageToCutOut.gameObject.activeInHierarchy) { gameObject.SetActive(false); yield break; }
         else gameObject.SetActive(true);
         if (gameObject != null && imageToCutOut != null)
         {
@@ -26,7 +27,9 @@ public class CutOutHandler : MonoBehaviour
             transform.position = imageToCutOut.transform.position;
             _rect.sizeDelta = new(imageToCutOut.GetComponent<RectTransform>().rect.width, imageToCutOut.GetComponent<RectTransform>().rect.height);
 
-            if (!_arrow.activeSelf || fadeLayer == null) return;
+            yield return new WaitForEndOfFrame();
+
+            if (!_arrow.activeSelf || fadeLayer == null) yield break;
 
             float screenWidth = fadeLayer.GetComponent<RectTransform>().rect.width;
             float screenHeight = fadeLayer.GetComponent<RectTransform>().rect.height;
@@ -61,6 +64,14 @@ public class CutOutHandler : MonoBehaviour
             else
             {
                 if (screenWidth - cutoutRightEdge < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(-300 + (screenWidth - cutoutRightEdge), 0);
+            }
+
+            float cutoutPosition = (screenHeight / 2) + _rect.transform.localPosition.y;
+
+            if (screenHeight - cutoutPosition - (_arrow.GetComponent<RectTransform>().sizeDelta.y / 2) < _textBox.GetComponent<RectTransform>().sizeDelta.y)
+            {
+                _textBox.GetComponent<RectTransform>().pivot = Vector2.up;
+                _textBox.GetComponent<RectTransform>().anchoredPosition = new(_textBox.GetComponent<RectTransform>().anchoredPosition.x, -(_arrow.GetComponent<RectTransform>().sizeDelta.y / 2));
             }
         }
     }

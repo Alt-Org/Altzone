@@ -179,6 +179,7 @@ namespace Battle.QSimulation.Game
                     // Transition from GetReadyToPlay to Playing
                     if (gameSession->TimeUntilStartSec <= FP._0)
                     {
+                        BattleProjectileQSystem.Launch(f);
                         f.Events.BattleViewGameStart();
                         gameSession->State = BattleGameState.Playing;
                     }
@@ -205,8 +206,9 @@ namespace Battle.QSimulation.Game
             BattleSoulWallQSpec soulWallSpec = BattleQConfig.GetSoulWallSpec(f);
 
             BattleSoulWallQSystem.CreateSoulWalls(f, battleArenaSpec, soulWallSpec);
-
             BattlePlayerManager.CreatePlayers(f);
+            BattleProjectileQSystem.CreateProjectile(f);
+
             BattlePlayerQSystem.SpawnPlayers(f);
         }
     }

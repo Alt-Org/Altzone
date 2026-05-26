@@ -86,7 +86,7 @@ namespace MenuUi.Scripts.Window
             if(Instance == this) Instance = null;
         }
 
-        public void UpdateButtonContent()
+        public void UpdateButtonContent() //Makes buttons bigger and glow when selected
         {
             if (buttons == null || buttons.Length == 0) return;
 
@@ -127,8 +127,9 @@ namespace MenuUi.Scripts.Window
                 {
                     glow.gameObject.SetActive(isCurrentWindow);
                 }
-            }//for loop
-        }
+            }//for
+        }//updatebuttoncontent
+
         public void ToggleOverlay(bool value)
         {
             ToggleBottomBar(value);
