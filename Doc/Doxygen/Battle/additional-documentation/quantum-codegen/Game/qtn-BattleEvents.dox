@@ -58,9 +58,9 @@
 ///   @copybrief Quantum.EventBattleDiamondLanded
 /// - <b>synced event</b> @ref BattleCharacterSelected { BattlePlayerSlot Slot; int CharacterNumber }  
 ///   @copybrief Quantum.EventBattleCharacterSelected
-/// - <b>synced event</b> @ref BattleCharacterHit { EntityRef ERef; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; bool ShieldAttached; int ShieldNumber; FP StunDurationSec; BattleEmotionState ProjectileEmotion }  
+/// - <b>synced event</b> @ref BattleCharacterHit { EntityRef ERef; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; int ShieldNumber; FP StunDurationSec; BattleEmotionState ProjectileEmotion }  
 ///   @copybrief Quantum.EventBattleCharacterHit
-/// - <b>synced event</b> @ref BattleShieldHit { EntityRef ERef; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; bool ShieldAttached; int ShieldNumber; FP DefencePercentage }  
+/// - <b>synced event</b> @ref BattleShieldHit { EntityRef ERef; BattleTeamNumber Team; BattlePlayerSlot Slot; int CharacterNumber; int ShieldNumber; bool DefenceUpdateVisual; FP DefencePercentage }  
 ///   @copybrief Quantum.EventBattleShieldHit
 /// - <b>synced event</b> @ref BattleGiveUpStateChange {BattleTeamNumber Team; BattlePlayerSlot Slot; BattleGiveUpStateChange StateUpdate }  
 ///   @copybrief Quantum.EventBattleGiveUpStateChange
