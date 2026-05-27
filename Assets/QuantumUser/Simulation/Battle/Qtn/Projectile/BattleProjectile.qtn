@@ -15,8 +15,6 @@ component BattleProjectileQComponent
     BattleEmotionState EmotionCurrent;
     array<BattleProjectileCollisionFlags>[2] CollisionFlags;
 
-    EntityRef TriggerEntityRef;
-
     // variables
     FP Speed;
     FPVector2 Position;
@@ -29,11 +27,6 @@ component BattleProjectileQComponent
     FP SpeedIncrement;
     FP SpeedMax;
     FP AttackMax;
-}
-
-component BattleProjectileTriggerQComponent
-{
-    EntityRef ProjectileEntityRef;
 }
 
 component BattleProjectileTriggerQComponent
