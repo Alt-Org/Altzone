@@ -76,6 +76,7 @@ namespace Battle.QSimulation.Player
             BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
 
             PlayerHandleInternal.SetAllPlayStates(playerManagerData, BattlePlayerPlayState.NotInGame);
+            PlayerHandleInternal.SetAllPreviousCharacterPosition(playerManagerData, s_noPreviousPosition);
             playerManagerData->PlayerCount = 0;
 
             {
@@ -389,6 +390,7 @@ namespace Battle.QSimulation.Player
                         GridExtendTop          = playerGridExtendTop,
                         GridExtendBottom       = playerGridExtendBottom,
                         DisableRotation        = playerCharacterDataTemplate->DisableRotation,
+                        SpawnBehaviour         = playerCharacterDataTemplate->SpawnBehaviour,
 
                         // player's current state related data
                         MovementEnabled        = true,
@@ -557,6 +559,8 @@ namespace Battle.QSimulation.Player
 
         private static readonly FPVector2[] s_spawnPoints = new FPVector2[Constants.BATTLE_PLAYER_SLOT_COUNT];
 
+        private static readonly FPVector2 s_noPreviousPosition = FPVector2.MaxValue;
+
         #region Private - Static Methods
 
         /// <summary>
@@ -593,17 +597,29 @@ namespace Battle.QSimulation.Player
             BattlePlayerDataQComponent* playerData         = characterEntityRef.GetDataQComponent(f);
             Transform2D*                characterTransform = characterEntityRef.GetTransform(f);
 
-            FPVector2 worldPosition;
+            FPVector2 worldPosition = playerHandle.SpawnPosition;
 
-            // handle InPlay/OutOfPlay
+            switch (playerData->SpawnBehaviour)
+            {
+                case BattlePlayerSpawnBehaviour.DefaultPosition:
+                    break;
+                case BattlePlayerSpawnBehaviour.CharactersPreviousPosition:
+                    if (playerHandle.GetPreviousCharacterPosition(characterNumber) != s_noPreviousPosition)
+                    {
+                        worldPosition = playerHandle.GetPreviousCharacterPosition(characterNumber);
+                    }
+                    break;
+                case BattlePlayerSpawnBehaviour.PreviousCharactersPosition:
+                    if (playerHandle.PlayState.IsInPlay())
+                    {
+                        worldPosition = f.Unsafe.GetPointer<Transform2D>(playerHandle.GetSelectedCharacterEntityRef(f))->Position;
+                    }
+                    break;
+            }
+
             if (playerHandle.PlayState.IsInPlay())
             {
-                worldPosition = f.Unsafe.GetPointer<Transform2D>(playerHandle.GetSelectedCharacterEntityRef(f))->Position;
                 DespawnPlayer(f, playerHandle);
-            }
-            else
-            {
-                worldPosition = playerHandle.SpawnPosition;
             }
 
             s_debugLogger.LogFormat(f, "({0}) Spawning character number: {1}", playerData->Slot, characterNumber);
@@ -657,6 +673,8 @@ namespace Battle.QSimulation.Player
             Transform2D*                playerTransform   = f.Unsafe.GetPointer<Transform2D>(selectedCharacter);
 
             s_debugLogger.LogFormat(f, "({0}) Despawning character number: {1}", playerData->Slot, playerHandle.SelectedCharacterNumber);
+
+            playerHandle.SetPreviousCharacterPosition(playerHandle.SelectedCharacterNumber, playerTransform->Position);
 
             BattlePlayerClassManager.OnDespawn(f, playerHandle.ConvertToPublic(), playerData, selectedCharacter);
 
