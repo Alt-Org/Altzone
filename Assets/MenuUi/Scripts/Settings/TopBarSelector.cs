@@ -6,6 +6,13 @@ public class TopBarSelector : MonoBehaviour
 {
     [SerializeField] private List<GameObject> _topBarList;
 
+    // public static TopBarSelector Instance { get; private set; }
+    //
+    // private void Awake()
+    // {
+    //     Instance = this;
+    // }
+
     void Start()
     {
         SetPanel((int)SettingsCarrier.Instance.TopBarStyleSetting);
@@ -43,8 +50,7 @@ public class TopBarSelector : MonoBehaviour
         {
             go.SetActive(false);
         }
+
         _topBarList[index].SetActive(true);
     }
-
-    
 }

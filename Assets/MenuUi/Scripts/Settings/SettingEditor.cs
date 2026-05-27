@@ -67,8 +67,6 @@ public class SettingEditor : MonoBehaviour
 
     private void RefreshTopBarStyleText()
     {
-        if (carrier == null) carrier = SettingsCarrier.Instance;
-
         string styleName = carrier.TopBarStyleSetting.ToString();
         Debug.Log($"[STYLE TEXT] setting text to {styleName}");
 

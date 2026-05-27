@@ -216,10 +216,6 @@ public class TopBarOrderBridge : MonoBehaviour
 
             Debug.Log($"[TopBarDebug] Bridge target = {owner.name}, style={owner.style}, rows={owner.RowCount()}");
 
-        {
-            Debug.Log($"[TopBarDebug] Bridge target = {owner.name}, style={owner.style}, rows={owner.RowCount()}");
-        }
-
         if (owner == null || _toggleContainer == null) return;
 
         int total = owner.RowCount();
