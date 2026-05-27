@@ -185,6 +185,11 @@ namespace Quantum {
     Slot4 = 4,
     Spectator = 10,
   }
+  public enum BattlePlayerSpawnBehaviour : int {
+    DefaultPosition,
+    CharactersPreviousPosition,
+    PreviousCharactersPosition,
+  }
   public enum BattleSoulWallRow : int {
     First = 0,
     Middle = 1,
@@ -1612,11 +1617,11 @@ namespace Quantum {
   public unsafe partial struct BattlePlayerDataQComponent : Quantum.IComponent {
     public const Int32 SIZE = 208;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(32)]
+    [FieldOffset(36)]
     public PlayerRef PlayerRef;
     [FieldOffset(8)]
     public BattlePlayerSlot Slot;
-    [FieldOffset(12)]
+    [FieldOffset(16)]
     public BattleTeamNumber TeamNumber;
     [FieldOffset(4)]
     public BattlePlayerCharacterID CharacterId;
@@ -1624,15 +1629,17 @@ namespace Quantum {
     public BattlePlayerCharacterClass CharacterClass;
     [FieldOffset(176)]
     public BattlePlayerStats Stats;
-    [FieldOffset(24)]
+    [FieldOffset(28)]
     public Int32 GridExtendTop;
-    [FieldOffset(20)]
+    [FieldOffset(24)]
     public Int32 GridExtendBottom;
-    [FieldOffset(36)]
+    [FieldOffset(40)]
     public QBoolean DisableRotation;
-    [FieldOffset(44)]
-    public QBoolean MovementEnabled;
+    [FieldOffset(12)]
+    public BattlePlayerSpawnBehaviour SpawnBehaviour;
     [FieldOffset(48)]
+    public QBoolean MovementEnabled;
+    [FieldOffset(52)]
     public QBoolean RotationEnabled;
     [FieldOffset(72)]
     public FP CurrentDefence;
@@ -1640,7 +1647,7 @@ namespace Quantum {
     public FrameTimer StunCooldown;
     [FieldOffset(112)]
     public FrameTimer ShieldHitCooldown;
-    [FieldOffset(40)]
+    [FieldOffset(44)]
     public QBoolean HasTargetPosition;
     [FieldOffset(128)]
     public FPVector2 TargetPosition;
@@ -1648,9 +1655,9 @@ namespace Quantum {
     public FP RotationBaseRad;
     [FieldOffset(88)]
     public FP RotationOffsetRad;
-    [FieldOffset(28)]
+    [FieldOffset(32)]
     public Int32 ShieldCount;
-    [FieldOffset(16)]
+    [FieldOffset(20)]
     public Int32 AttachedShieldNumber;
     [FieldOffset(56)]
     public BattlePlayerShieldEntityRef AttachedShield;
@@ -1676,6 +1683,7 @@ namespace Quantum {
         hash = hash * 31 + GridExtendTop.GetHashCode();
         hash = hash * 31 + GridExtendBottom.GetHashCode();
         hash = hash * 31 + DisableRotation.GetHashCode();
+        hash = hash * 31 + (Int32)SpawnBehaviour;
         hash = hash * 31 + MovementEnabled.GetHashCode();
         hash = hash * 31 + RotationEnabled.GetHashCode();
         hash = hash * 31 + CurrentDefence.GetHashCode();
@@ -1701,6 +1709,7 @@ namespace Quantum {
         serializer.Stream.Serialize((Int32*)&p->CharacterClass);
         serializer.Stream.Serialize((Int32*)&p->CharacterId);
         serializer.Stream.Serialize((Int32*)&p->Slot);
+        serializer.Stream.Serialize((Int32*)&p->SpawnBehaviour);
         serializer.Stream.Serialize((Int32*)&p->TeamNumber);
         serializer.Stream.Serialize(&p->AttachedShieldNumber);
         serializer.Stream.Serialize(&p->GridExtendBottom);
@@ -1730,14 +1739,16 @@ namespace Quantum {
   public unsafe partial struct BattlePlayerDataTemplateQComponent : Quantum.IComponent {
     public const Int32 SIZE = 32;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(4)]
+    [FieldOffset(8)]
     public Int32 GridExtendTop;
-    [FieldOffset(0)]
+    [FieldOffset(4)]
     public Int32 GridExtendBottom;
     [FieldOffset(16)]
     public BattlePlayerHitboxTemplate Hitbox;
-    [FieldOffset(8)]
+    [FieldOffset(12)]
     public QBoolean DisableRotation;
+    [FieldOffset(0)]
+    public BattlePlayerSpawnBehaviour SpawnBehaviour;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 8821;
@@ -1745,6 +1756,7 @@ namespace Quantum {
         hash = hash * 31 + GridExtendBottom.GetHashCode();
         hash = hash * 31 + Hitbox.GetHashCode();
         hash = hash * 31 + DisableRotation.GetHashCode();
+        hash = hash * 31 + (Int32)SpawnBehaviour;
         return hash;
       }
     }
@@ -1757,6 +1769,7 @@ namespace Quantum {
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattlePlayerDataTemplateQComponent*)ptr;
+        serializer.Stream.Serialize((Int32*)&p->SpawnBehaviour);
         serializer.Stream.Serialize(&p->GridExtendBottom);
         serializer.Stream.Serialize(&p->GridExtendTop);
         QBoolean.Serialize(&p->DisableRotation, serializer);
@@ -1799,7 +1812,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerManagerDataQSingleton : Quantum.IComponentSingleton {
-    public const Int32 SIZE = 232;
+    public const Int32 SIZE = 424;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(80)]
     public Int32 PlayerCount;
@@ -1828,10 +1841,13 @@ namespace Quantum {
     public fixed Int32 CharacterSelectedNumbers[4];
     [FieldOffset(164)]
     [FramePrinter.FixedArrayAttribute(typeof(BattleEntityID), 4)]
-    private fixed Byte _CharacterAllEntityGroupIDs_[32];
+    private fixed Byte _CharacterEntityGroupIDs_[32];
     [FieldOffset(0)]
     [FramePrinter.FixedArrayAttribute(typeof(BattlePlayerCharacterState), 12)]
     private fixed Byte _CharactersAllStates_[48];
+    [FieldOffset(232)]
+    [FramePrinter.FixedArrayAttribute(typeof(FPVector2), 12)]
+    private fixed Byte _CharacterAllPreviousPositions_[192];
     public FixedArray<PlayerRef> PlayerRefs {
       get {
         fixed (byte* p = _PlayerRefs_) { return new FixedArray<PlayerRef>(p, 4, 4); }
@@ -1867,14 +1883,19 @@ namespace Quantum {
         fixed (byte* p = _RespawnTimers_) { return new FixedArray<FrameTimer>(p, 8, 4); }
       }
     }
-    public FixedArray<BattleEntityID> CharacterAllEntityGroupIDs {
+    public FixedArray<BattleEntityID> CharacterEntityGroupIDs {
       get {
-        fixed (byte* p = _CharacterAllEntityGroupIDs_) { return new FixedArray<BattleEntityID>(p, 8, 4); }
+        fixed (byte* p = _CharacterEntityGroupIDs_) { return new FixedArray<BattleEntityID>(p, 8, 4); }
       }
     }
     public FixedArray<BattlePlayerCharacterState> CharactersAllStates {
       get {
         fixed (byte* p = _CharactersAllStates_) { return new FixedArray<BattlePlayerCharacterState>(p, 4, 12); }
+      }
+    }
+    public FixedArray<FPVector2> CharacterAllPreviousPositions {
+      get {
+        fixed (byte* p = _CharacterAllPreviousPositions_) { return new FixedArray<FPVector2>(p, 16, 12); }
       }
     }
     public override Int32 GetHashCode() {
@@ -1889,8 +1910,9 @@ namespace Quantum {
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(PlayerGiveUpStates);
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(RespawnTimers);
         fixed (Int32* p = CharacterSelectedNumbers) hash = hash * 31 + HashCodeUtils.GetArrayHashCode(p, 4);
-        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(CharacterAllEntityGroupIDs);
+        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(CharacterEntityGroupIDs);
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(CharactersAllStates);
+        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(CharacterAllPreviousPositions);
         return hash;
       }
     }
@@ -1905,8 +1927,9 @@ namespace Quantum {
         FixedArray.Serialize(p->IsAbandonedStates, serializer, Statics.SerializeQBoolean);
         FixedArray.Serialize(p->IsBotStates, serializer, Statics.SerializeQBoolean);
         FixedArray.Serialize(p->PlayerGiveUpStates, serializer, Statics.SerializeQBoolean);
-        FixedArray.Serialize(p->CharacterAllEntityGroupIDs, serializer, Statics.SerializeBattleEntityID);
+        FixedArray.Serialize(p->CharacterEntityGroupIDs, serializer, Statics.SerializeBattleEntityID);
         FixedArray.Serialize(p->RespawnTimers, serializer, Statics.SerializeFrameTimer);
+        FixedArray.Serialize(p->CharacterAllPreviousPositions, serializer, Statics.SerializeFPVector2);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -2373,6 +2396,7 @@ namespace Quantum {
     public static FrameSerializer.Delegate SerializeEntityRef;
     public static FrameSerializer.Delegate SerializeBattlePlayerHitboxColliderTemplate;
     public static FrameSerializer.Delegate SerializeQBoolean;
+    public static FrameSerializer.Delegate SerializeFPVector2;
     public static FrameSerializer.Delegate SerializeBattleEntityID;
     public static FrameSerializer.Delegate SerializeBattlePlayerCharacterState;
     public static FrameSerializer.Delegate SerializeBattlePlayerPlayState;
@@ -2386,6 +2410,7 @@ namespace Quantum {
       SerializeEntityRef = EntityRef.Serialize;
       SerializeBattlePlayerHitboxColliderTemplate = Quantum.BattlePlayerHitboxColliderTemplate.Serialize;
       SerializeQBoolean = QBoolean.Serialize;
+      SerializeFPVector2 = FPVector2.Serialize;
       SerializeBattleEntityID = Quantum.BattleEntityID.Serialize;
       SerializeBattlePlayerCharacterState = (v, s) => {{ s.Stream.Serialize((Int32*)v); }};
       SerializeBattlePlayerPlayState = (v, s) => {{ s.Stream.Serialize((Int32*)v); }};
@@ -2440,6 +2465,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.BattlePlayerShieldEntityRef), Quantum.BattlePlayerShieldEntityRef.SIZE);
       typeRegistry.Register(typeof(Quantum.BattlePlayerShieldManagerDataQSingleton), Quantum.BattlePlayerShieldManagerDataQSingleton.SIZE);
       typeRegistry.Register(typeof(Quantum.BattlePlayerSlot), 4);
+      typeRegistry.Register(typeof(Quantum.BattlePlayerSpawnBehaviour), 4);
       typeRegistry.Register(typeof(Quantum.BattlePlayerStats), Quantum.BattlePlayerStats.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleProjectileCollisionFlags), 1);
       typeRegistry.Register(typeof(Quantum.BattleProjectileQComponent), Quantum.BattleProjectileQComponent.SIZE);
@@ -2577,6 +2603,7 @@ namespace Quantum {
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerHitboxType>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerPlayState>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerSlot>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerSpawnBehaviour>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleProjectileCollisionFlags>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleSoulWallRow>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattleSoundFX>();

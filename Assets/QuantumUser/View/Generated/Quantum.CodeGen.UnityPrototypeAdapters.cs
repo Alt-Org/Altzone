@@ -130,6 +130,7 @@ namespace Quantum.Prototypes.Unity {
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
     public QBoolean DisableRotation;
+    public Quantum.QEnum32<BattlePlayerSpawnBehaviour> SpawnBehaviour;
     public QBoolean MovementEnabled;
     public QBoolean RotationEnabled;
     public FP CurrentDefence;
@@ -159,6 +160,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.GridExtendTop, out result.GridExtendTop);
       converter.Convert(this.GridExtendBottom, out result.GridExtendBottom);
       converter.Convert(this.DisableRotation, out result.DisableRotation);
+      converter.Convert(this.SpawnBehaviour, out result.SpawnBehaviour);
       converter.Convert(this.MovementEnabled, out result.MovementEnabled);
       converter.Convert(this.RotationEnabled, out result.RotationEnabled);
       converter.Convert(this.CurrentDefence, out result.CurrentDefence);
