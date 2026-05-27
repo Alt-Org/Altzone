@@ -216,7 +216,7 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame</param>
         public override void Update(Frame f)
         {
-            Input* input;
+            InputData inputData;
             Input stackInputStorage;
 
             BattlePlayerEntityRef playerEntity = BattlePlayerEntityRef.None;
@@ -230,18 +230,25 @@ namespace Battle.QSimulation.Player
                 BattlePlayerManager.PlayerHandle playerHandle = playerHandleArray[playerNumber];
                 if (playerHandle.PlayState.IsNotInGame()) continue;
 
-                BattleCommand.Type commandType = BattleCommand.GetCommand(f, playerHandle.PlayerRef, out BattleCommand commandData);
+                if (playerHandle.PlayState.IsInPlay())
+                {
+                    playerEntity = playerHandle.GetSelectedCharacterEntityRef(f);
+                    playerData = playerEntity.GetDataQComponent(f);
+                    playerTransform = playerEntity.GetTransform(f);
+                }
+
+                inputData = GetInput(f, playerHandle, playerData, &stackInputStorage);
 
                 //{ non-character logic
 
-                switch(commandType)
+                switch (inputData.CommandType)
                 {
                     case BattleCommand.Type.GiveUp:
                         if (HandleGiveUp(f, playerHandle)) continue;
                         break;
 
                     case BattleCommand.Type.SwapCharacter:
-                        BattleCharacterSwapQCommand swapCharacterData = (BattleCharacterSwapQCommand)commandData;
+                        BattleCharacterSwapQCommand swapCharacterData = (BattleCharacterSwapQCommand)inputData.CommandData;
                         if (HandleCharacterSwapping(f, playerHandle, swapCharacterData.CharacterNumber)) continue;
                         break;
                 }
@@ -252,20 +259,14 @@ namespace Battle.QSimulation.Player
 
                 //{ character logic
 
-                playerEntity    = playerHandle.GetSelectedCharacterEntityRef(f);
-                playerData      = playerEntity.GetDataQComponent(f);
-                playerTransform = playerEntity.GetTransform(f);
-
-                switch (commandType)
+                switch (inputData.CommandType)
                 {
                     case BattleCommand.Type.ActivateAbility:
                         playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0_50);
                         break;
                 }
 
-                input = GetInput(f, playerHandle, playerData, &stackInputStorage);
-
-                HandleInPlay(f, input, playerHandle, playerData, playerEntity, playerTransform);
+                HandleInPlay(f, inputData.Input, playerHandle, playerData, playerEntity, playerTransform);
 
                 //} character logic
             }
@@ -313,6 +314,19 @@ namespace Battle.QSimulation.Player
             Player
         }
 
+        /// <summary>
+        /// Struct containing input data from different input methods.
+        /// </summary>
+        private struct InputData
+        {
+        /// <summary>Quantum's default input struct</summary>
+        public Input* Input;
+        /// <summary>Type of the command</summary>
+        public BattleCommand.Type CommandType;
+        /// <summary>Data related to the command</summary>
+        public BattleCommand CommandData;
+        }
+
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private static BattleDebugLogger s_debugLogger;
 
@@ -327,22 +341,28 @@ namespace Battle.QSimulation.Player
         /// <param name="stackInputStorage">Temporary input storage for bots and abandoned players.</param>
         ///
         /// <returns>Pointer to the player's input.</returns>
-        private Input* GetInput(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, Input* stackInputStorage)
+        private InputData GetInput(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, Input* stackInputStorage)
         {
-            Input* input = stackInputStorage;
+            InputData inputData = new()
+            {
+                Input = stackInputStorage,
+                CommandType = BattleCommand.Type.None,
+                CommandData = null
+            };
 
             bool isValid = false;
 
             if (playerHandle.IsBot)
             {
-                BattlePlayerBotController.GetBotInput(f, playerHandle.PlayState.IsInPlay(), playerData, input);
-                isValid = input->IsValid;
+                BattlePlayerBotController.GetBotInput(f, playerHandle.PlayState.IsInPlay(), playerData, inputData.Input, &inputData.CommandType, inputData.CommandData);
+                isValid = inputData.Input->IsValid;
             }
             else if (!playerHandle.IsAbandoned)
             {
-                input = f.GetPlayerInput(playerHandle.PlayerRef);
+                inputData.Input = f.GetPlayerInput(playerHandle.PlayerRef);
+                inputData.CommandType = BattleCommand.GetCommand(f, playerHandle.PlayerRef, out inputData.CommandData);
 
-                BattleInputDebugUtils.InputDebugInfo inputDebugInfo = BattleInputDebugUtils.GenerateDebugInfo(input);
+                BattleInputDebugUtils.InputDebugInfo inputDebugInfo = BattleInputDebugUtils.GenerateDebugInfo(inputData.Input);
 
                 if (inputDebugInfo.NotEmpty)
                 {
@@ -350,18 +370,18 @@ namespace Battle.QSimulation.Player
                                             "({0}) Received input ({1}) ({2})\n" +
                                             "struct: {3}",
                                             playerHandle.Slot,
-                                            input->DebugNumber,
+                                            inputData.Input->DebugNumber,
                                             inputDebugInfo.Summary,
                                             inputDebugInfo.Struct
                     );
                 }
 
-                isValid = input->IsValid;
+                isValid = inputData.Input->IsValid;
             }
 
             if (!isValid)
             {
-                input = stackInputStorage;
+                inputData.Input = stackInputStorage;
                 *stackInputStorage = new Input
                 {
                     IsValid                       = true,
@@ -374,7 +394,7 @@ namespace Battle.QSimulation.Player
                 };
             }
 
-            return input;
+            return inputData;
         }
 
         /// <summary>
