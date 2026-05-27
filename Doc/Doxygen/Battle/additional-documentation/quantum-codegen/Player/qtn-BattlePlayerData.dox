@@ -11,6 +11,24 @@
 
 // ---------------------------------------------------------------------------------------------------- //
 
+/// @enum Quantum::BattlePlayerSpawnBehaviour
+/// <summary>
+/// Enum used to track which spawn method a character uses.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerData.qtn}
+
+/// @var Quantum::BattlePlayerSpawnBehaviour Quantum::BattlePlayerSpawnBehaviour::DefaultPosition
+/// <summary>Character spawns in the position defined in the arena spec.</summary>
+///
+/// @var Quantum::BattlePlayerSpawnBehaviour Quantum::BattlePlayerSpawnBehaviour::CharactersPreviousPosition
+/// <summary>Character spawns in the position it despawned in.</summary>
+///
+/// @var Quantum::BattlePlayerSpawnBehaviour Quantum::BattlePlayerSpawnBehaviour::PreviousCharactersPosition
+/// <summary>Character spawns in the position the last character despawned in.</summary>
+
+// ---------------------------------------------------------------------------------------------------- //
+
 /// @struct Quantum::BattlePlayerDataQComponent
 /// <summary>
 /// Contains player's data, including ids, stats, position, size, hitboxlists, etc.
@@ -66,6 +84,10 @@
 ///
 /// @var bool Quantum::BattlePlayerDataQComponent::DisableRotation
 /// <summary>Whether rotating the character is disabled or not.</summary>
+/// Part of @ref PlayerAttributes "Player's attributes"
+///
+/// @var bool Quantum::BattlePlayerDataQComponent::SpawnBehaviour
+/// <summary>Which spawn method this character uses.</summary>
 /// Part of @ref PlayerAttributes "Player's attributes"
 /// @}
 
@@ -194,6 +216,9 @@
 ///
 /// @var bool Quantum::BattlePlayerDataTemplateQComponent::DisableRotation
 /// <summary>Bool for disabling rotation for character.</summary>
+///
+/// @var bool Quantum::BattlePlayerDataTemplateQComponent::SpawnBehaviour
+/// <summary>Which spawn method this character uses.</summary>
 
 /// @name Quantum Built-in
 /// @{
