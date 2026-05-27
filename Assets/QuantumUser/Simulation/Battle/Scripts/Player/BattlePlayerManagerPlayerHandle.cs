@@ -840,7 +840,7 @@ namespace Battle.QSimulation.Player
             public readonly BattleEntityID CharacterEntityGroupID
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get => _playerManagerData->CharacterAllEntityGroupIDs[Index];
+                get => _playerManagerData->CharacterEntityGroupIDs[Index];
             }
 
             /// <summary>
@@ -1004,7 +1004,7 @@ namespace Battle.QSimulation.Player
             ///
             /// <param name="entityGroupID">Group ID of the player's characters.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public readonly void SetCharacterEntityGroupID(BattleEntityID entityGroupID) => _playerManagerData->CharacterAllEntityGroupIDs[Index] = entityGroupID;
+            public readonly void SetCharacterEntityGroupID(BattleEntityID entityGroupID) => _playerManagerData->CharacterEntityGroupIDs[Index] = entityGroupID;
 
             /// <summary>
             /// Retrieves the selected character's EntityRef.
@@ -1045,7 +1045,7 @@ namespace Battle.QSimulation.Player
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public readonly BattlePlayerEntityRef GetCharacterEntityRef(Frame f, int characterNumber, bool updateViewPlayState = false)
             {
-                return (BattlePlayerEntityRef)BattleEntityManager.Get(f, _playerManagerData->CharacterAllEntityGroupIDs[Index], characterNumber, updateViewPlayState);
+                return (BattlePlayerEntityRef)BattleEntityManager.Get(f, _playerManagerData->CharacterEntityGroupIDs[Index], characterNumber, updateViewPlayState);
             }
 
             #endregion Public Methods - Player Character - Character Entity
