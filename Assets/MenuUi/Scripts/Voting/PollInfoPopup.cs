@@ -186,27 +186,32 @@ public class PollInfoPopup : MonoBehaviour
         {
             if (this == null || data == null) return;
 
-            if (data != null)
+            bool hasVoted = !_currentPollData.NotVoted.Contains(data.Id);
+            Debug.Log(hasVoted);
+
+            voteButtons.SetActive(!hasVoted);
+            voteBar.SetActive(hasVoted);
+
+            if (!hasVoted)
             {
-                bool hasVoted = !_currentPollData.NotVoted.Contains(data.Id);
+                yesButton.onClick.RemoveAllListeners();
+                noButton.onClick.RemoveAllListeners();
 
-                voteButtons.SetActive(!hasVoted);
-                voteBar.SetActive(hasVoted);
-
-                if (!hasVoted)
-                {
-                    yesButton.onClick.RemoveAllListeners();
-                    noButton.onClick.RemoveAllListeners();
-
-                    yesButton.onClick.AddListener(() => OnVoteButtonClicked(true));
-                    noButton.onClick.AddListener(() => OnVoteButtonClicked(false));
-                }
+                yesButton.onClick.AddListener(() => OnVoteButtonClicked(true));
+                noButton.onClick.AddListener(() => OnVoteButtonClicked(false));
             }
         });
 
-
         int yesCount = _currentPollData.YesVotes.Count;
         int noCount = _currentPollData.NoVotes.Count;
+        SetGreenFill(yesCount, noCount);
+
+        gameObject.SetActive(true);
+        furniturePollInfoObject.SetActive(true);
+        if (clanRolePollInfoObject != null) clanRolePollInfoObject.SetActive(false);
+    }
+
+    private void SetGreenFill(int yesCount, int noCount) {
         int totalCount = yesCount + noCount;
 
         float fillValue;
@@ -228,21 +233,22 @@ public class PollInfoPopup : MonoBehaviour
         greenFill.fillAmount = fillValue;
         yesVotes.text = yesVotesButton.text = yesPercent;
         noVotes.text = noVotesButton.text = noPercent;
-
-        gameObject.SetActive(true);
-        furniturePollInfoObject.SetActive(true);
-        if (clanRolePollInfoObject != null) clanRolePollInfoObject.SetActive(false);
     }
 
     public void OnVoteButtonClicked(bool answer)
     {
+        int yesCount = _currentPollData.YesVotes.Count;
+        int noCount = _currentPollData.NoVotes.Count;
+        if (answer) yesCount += 1;
+        else noCount += 1;
+
         _currentPollData.AddVote(answer, result =>
         {
-            SetValues();
+            voteButtons.SetActive(false);
+            voteBar.SetActive(true);
+            SetGreenFill(yesCount, noCount);
+            VotingActions.ReloadPollList?.Invoke();
         });
-
-        voteButtons.SetActive(false);
-        voteBar.SetActive(true);
     }
 
     // Opens the popup for clan role polls
