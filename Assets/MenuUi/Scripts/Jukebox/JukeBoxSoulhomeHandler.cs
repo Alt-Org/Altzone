@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Audio;
 using Altzone.Scripts.ReferenceSheets;
+using MenuUi.Scripts.Window;
+using MenuUI.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
-using MenuUI.Scripts;
 
 public class JukeBoxSoulhomeHandler : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     [SerializeField] private GameObject _addMusicInfoPopup;
     [SerializeField] private JukeboxInfoPopupHandler _jukeboxInfoPopupHandler;
     [SerializeField] private PopupController _jukeboxTextPopup;
+    [SerializeField] private PopupButtonVisual _jukeboxButtonVisual; // for selection effects
 
     private Coroutine _diskSpinCoroutine;
 
@@ -43,7 +45,11 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
     public delegate void ChangeJukeboxSong(MusicTrack track);
     public static event ChangeJukeboxSong OnChangeJukeboxSong;
 
-    private void Awake() { Application.quitting += Quitting; }
+
+    private void Awake()
+    {
+        Application.quitting += Quitting;
+    }
 
     private void Start() { Setup(); }
 
@@ -174,6 +180,12 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         MainDiskIndicatorControl();
     }
 
+    public void SetJukeboxButtonVisual(PopupButtonVisual visual)
+    {
+        _jukeboxButtonVisual = visual;
+        Debug.Log("Jukebox button visual set to: " + visual?.name);
+    }
+
     public void ToggleJukeboxScreen(bool toggle)
     {
         AudioManager audioManager = AudioManager.Instance;
@@ -184,6 +196,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
 
         if (toggle) //Open
         {
+            _jukeboxButtonVisual.ButtonSelected(true);
+
             if (!jukeboxManager) return;
 
             SetMuteImage(jukeboxManager.JukeboxMuted);
@@ -202,6 +216,8 @@ public class JukeBoxSoulhomeHandler : MonoBehaviour
         }
         else if (audioManager) //Close
         {
+            _jukeboxButtonVisual.ButtonSelected(false);
+
             if (jukeboxManager && jukeboxManager.TrackPreviewActive /*&& jukeboxManager.CurrentTrackQueueData != null*/)
                 jukeboxManager.StopMusicPreview();
             else

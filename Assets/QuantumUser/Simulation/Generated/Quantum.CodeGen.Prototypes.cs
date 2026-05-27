@@ -776,14 +776,10 @@ namespace Quantum.Prototypes {
     public Int32 DebugNumber;
     public Quantum.QEnum32<BattleMovementInputType> MovementInput;
     public QBoolean MovementDirectionIsNormalized;
-    public Quantum.Prototypes.BattleGridPositionPrototype MovementPositionTarget;
-    public FPVector2 MovementPositionMove;
-    public FPVector2 MovementDirection;
+    public Quantum.Prototypes.BattleGridPositionPrototype MovementGridPosition;
+    public FPVector2 MovementVector;
     public QBoolean RotationInput;
     public FP RotationValue;
-    public QBoolean AbilityActivate;
-    public Int32 PlayerCharacterNumber;
-    public QBoolean GiveUpInput;
     public Quantum.Prototypes.BattleSpecialInputPrototype Special;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
@@ -791,14 +787,10 @@ namespace Quantum.Prototypes {
         result.DebugNumber = this.DebugNumber;
         result.MovementInput = this.MovementInput;
         result.MovementDirectionIsNormalized = this.MovementDirectionIsNormalized;
-        this.MovementPositionTarget.Materialize(frame, ref result.MovementPositionTarget, in context);
-        result.MovementPositionMove = this.MovementPositionMove;
-        result.MovementDirection = this.MovementDirection;
+        this.MovementGridPosition.Materialize(frame, ref result.MovementGridPosition, in context);
+        result.MovementVector = this.MovementVector;
         result.RotationInput = this.RotationInput;
         result.RotationValue = this.RotationValue;
-        result.AbilityActivate = this.AbilityActivate;
-        result.PlayerCharacterNumber = this.PlayerCharacterNumber;
-        result.GiveUpInput = this.GiveUpInput;
         this.Special.Materialize(frame, ref result.Special, in context);
         MaterializeUser(frame, ref result, in context);
     }
