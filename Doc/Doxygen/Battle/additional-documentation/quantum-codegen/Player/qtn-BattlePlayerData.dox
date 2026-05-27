@@ -13,8 +13,10 @@
 
 /// @enum Quantum::BattlePlayerSpawnBehaviour
 /// <summary>
-/// Enum used to track which spawn method a character uses.
+/// Enum used to define which spawn behaviour a character uses.
 /// </summary>
+///
+/// See [{Player Character Spawn Behaviour}](#page-concepts-player-character-entity-spawn-behaviour) for more info.
 ///
 /// @bigtext{Generated from @ref BattlePlayerData.qtn}
 
@@ -87,7 +89,7 @@
 /// Part of @ref PlayerAttributes "Player's attributes"
 ///
 /// @var bool Quantum::BattlePlayerDataQComponent::SpawnBehaviour
-/// <summary>Which spawn method this character uses.</summary>
+/// <summary>Which spawn behaviour this character uses.</summary>
 /// Part of @ref PlayerAttributes "Player's attributes"
 /// @}
 
@@ -218,7 +220,7 @@
 /// <summary>Bool for disabling rotation for character.</summary>
 ///
 /// @var bool Quantum::BattlePlayerDataTemplateQComponent::SpawnBehaviour
-/// <summary>Which spawn method this character uses.</summary>
+/// <summary>Which spawn behaviour this character uses.</summary>
 
 /// @name Quantum Built-in
 /// @{

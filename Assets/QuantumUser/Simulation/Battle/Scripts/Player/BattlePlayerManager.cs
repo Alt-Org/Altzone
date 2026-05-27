@@ -597,7 +597,7 @@ namespace Battle.QSimulation.Player
             BattlePlayerDataQComponent* playerData         = characterEntityRef.GetDataQComponent(f);
             Transform2D*                characterTransform = characterEntityRef.GetTransform(f);
 
-            FPVector2 worldPosition = playerHandle.SpawnPosition;
+            FPVector2 worldPosition = playerHandle.DefaultSpawnPosition;
 
             switch (playerData->SpawnBehaviour)
             {

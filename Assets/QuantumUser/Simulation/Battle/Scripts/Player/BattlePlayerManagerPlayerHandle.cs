@@ -690,6 +690,8 @@ namespace Battle.QSimulation.Player
             /// Sets all character's previous positions to a given <paramref name="position"/>
             /// </summary>
             ///
+            /// See [{Player Character Spawn Behaviour}](#page-concepts-player-character-entity-spawn-behaviour) for more info.
+            ///
             /// Internal only
             ///
             /// <param name="playerManagerData">Pointer to the player manager data.</param>
@@ -912,11 +914,14 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Gets player's <em>SpawnPosition</em>.
+            /// Gets player's <em>SpawnPosition</em>. Used for default position spawn behaviour.
             /// </summary>
             ///
+            /// See [{Player Character Spawn Behaviour}](#page-concepts-player-character-entity-spawn-behaviour) for more info.
+            ///
             /// Internal only
-            public readonly FPVector2 SpawnPosition
+
+            public readonly FPVector2 DefaultSpawnPosition
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => s_spawnPoints[Index]; }
 
             /// @}
@@ -1113,6 +1118,7 @@ namespace Battle.QSimulation.Player
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterState "Player Character State Methods"
             ///
             /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
+            /// See [{Player Character Spawn Behaviour}](#page-concepts-player-character-entity-spawn-behaviour) for more info.
             ///
             /// Internal only
             ///
@@ -1129,6 +1135,7 @@ namespace Battle.QSimulation.Player
             /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterState "Player Character State Methods"
             ///
             /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
+            /// See [{Player Character Spawn Behaviour}](#page-concepts-player-character-entity-spawn-behaviour) for more info.
             ///
             /// <param name="characterNumber">CharacterNumber of the desired player's character.</param>
             /// <param name="position">New previous position of the character.</param>
