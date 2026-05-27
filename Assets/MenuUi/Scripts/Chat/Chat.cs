@@ -110,6 +110,7 @@ public class Chat : AltMonoBehaviour
     private bool _reactionAvailable = false; //Katsoo jos textboxissa on tekstiä tai ei
     public static Chat instance;
     public Mood currentMood = Mood.Neutral;
+    public Mood lasttimeMood = Mood.Neutral;
     public GameObject _responsesData;
 
     private bool _miniMizeReaction = true, _miniMizeQuickMessage = true;
@@ -192,10 +193,15 @@ public class Chat : AltMonoBehaviour
 
     private void AddResponses()
     {
-        if (currentMood == Mood.Neutral)
-        {
-            currentMood = Mood.Happy;
-        }
+
+        if (currentMood == Mood.Neutral) currentMood = Mood.Happy;
+
+        if (lasttimeMood == currentMood)
+            return;
+
+        
+
+        //Halts the progress if its the same mood so it wont reload already set same data
 
         //Clears the current Responses
         if (_responsesData.transform.childCount > 0)
@@ -218,6 +224,7 @@ public class Chat : AltMonoBehaviour
             }
         }));
 
+        lasttimeMood = currentMood;
     }
 
     /// <summary>
