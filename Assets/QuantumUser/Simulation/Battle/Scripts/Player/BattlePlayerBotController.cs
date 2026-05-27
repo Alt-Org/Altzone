@@ -70,16 +70,22 @@ namespace Battle.QSimulation.Player
         /// <param name="isInPlay">Bool to check if bot is in play.</param>
         /// <param name="playerData">Pointer to player's BattlePlayerDataQComponent.</param>
         /// <param name="outBotInput">Pointer to where bot's %Quantum Input will be written.</param>
-        public static void GetBotInput(Frame f, bool isInPlay, BattlePlayerDataQComponent* playerData, Input* outBotInput)
+        public static void GetBotInput(Frame f, bool isInPlay, BattlePlayerDataQComponent* playerData, Input* outBotInput, BattleCommand.Type* commandType, BattleCommand commandData)
         {
             BattlePlayerBotQSpec playerBotSpec = BattleQConfig.GetPlayerBotSpec(f);
 
-            BattleMovementInputType movementInput         = BattleMovementInputType.None;
-            BattleGridPosition      predictedGridPosition = new() { Col = 0, Row = 0 };
+            BattleMovementInputType movementInput = BattleMovementInputType.None;
+            BattleGridPosition predictedGridPosition = new() { Col = 0, Row = 0 };
 
             if (isInPlay)
             {
-                if (playerData->BotMovementCooldownSec > FP._0)
+                bool botGiveUpState = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, playerData->Slot).GiveUpState;
+                if (BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot).GiveUpState && !botGiveUpState)
+                {
+                    *commandType = BattleCommand.Type.GiveUp;
+                    commandData = new BattleGiveUpQCommand();
+                }
+                else if (playerData->BotMovementCooldownSec > FP._0)
                 {
                     playerData->BotMovementCooldownSec -= f.DeltaTime;
                 }
