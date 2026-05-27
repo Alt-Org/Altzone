@@ -744,13 +744,13 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6149830515762959213}
-  - {fileID: 9212066207485454122}
   - {fileID: 1246185762394002411}
+  - {fileID: 6149830515762959213}
   - {fileID: 7944441846957364827}
-  - {fileID: 6580083112298689753}
   - {fileID: 2778533595470406781}
+  - {fileID: 9212066207485454122}
   - {fileID: 8125058423723670507}
+  - {fileID: 6580083112298689753}
   m_Father: {fileID: 8476621660179101015}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2633,7 +2633,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6149830515762959213
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3254,8 +3254,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4520307583558996948}
   - {fileID: 1919495352340933612}
+  - {fileID: 4520307583558996948}
   - {fileID: 8089712723454362646}
   - {fileID: 2204920010328752272}
   - {fileID: 3816327970030137213}
@@ -3399,7 +3399,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4520307583558996948
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4149,6 +4149,7 @@ MonoBehaviour:
     orderTarget: {fileID: 6580083112298689753}
   _flexibleSpacer: {fileID: 0}
   _spacerMinWidth: 0
+  _clanTileBackground: {fileID: 0}
   _standaloneLeaderboard: {fileID: 0}
   _clanTileLeaderboard: {fileID: 0}
   _clanItem: 0
@@ -7162,6 +7163,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ClanHeart
+      objectReference: {fileID: 0}
+    - target: {fileID: 5490945982148460650, guid: 71a38dbc9d18bd44f9de8793036dbead,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5656563543629351072, guid: 71a38dbc9d18bd44f9de8793036dbead,
         type: 3}
