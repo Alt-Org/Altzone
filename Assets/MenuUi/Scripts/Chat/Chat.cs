@@ -109,7 +109,6 @@ public class Chat : AltMonoBehaviour
     public static event SelectedMessageChanged OnSelectedMessageChanged;
     private bool _reactionAvailable = false; //Katsoo jos textboxissa on tekstiä tai ei
     public static Chat instance;
-    public CharacterResponseList characterResponseList;
     public Mood currentMood = Mood.Neutral;
     public GameObject _responsesData;
 
@@ -193,17 +192,23 @@ public class Chat : AltMonoBehaviour
 
     private void AddResponses()
     {
+        if (currentMood == Mood.Neutral)
+        {
+            currentMood = Mood.Happy;
+        }
+
         //Clears the current Responses
-        /*if(_responsesData.transform.childCount > 0)
+        if (_responsesData.transform.childCount > 0)
          foreach (Transform child in _responsesData.transform)
          {
              
              Destroy(child.gameObject);
-         }*/
+         }
 
         StartCoroutine(GetPlayerData(data =>
         {
-            List<ChatResponseObject> messageList = _chatResponseList.GetChatResponses(CharacterClassType.None);
+
+            List<ChatResponseObject> messageList = _chatResponseList.GetChatResponses(currentMood);
             //List<string> messageList = _chatResponseList.GetChatResponses((CharacterClassType)((data.SelectedCharacterId / 100) * 100));
             foreach (ChatResponseObject message in messageList)
             {
@@ -267,7 +272,7 @@ public class Chat : AltMonoBehaviour
             }
             _miniMizeQuickMessage = false;
             MinimizeOptions();
-            //AddResponses();
+            AddResponses();
         }
     }
 
@@ -353,7 +358,7 @@ public class Chat : AltMonoBehaviour
     {
         if (message != null)
         {
-            List<ChatResponseObject> messageList = _chatResponseList.GetChatResponses((CharacterClassType)((data.SelectedCharacterId / 100) * 100));
+            List<ChatResponseObject> messageList = _chatResponseList.GetChatResponses(currentMood);        
             ChatResponseObject convertedResponse = messageList.FirstOrDefault(c => c.ResponseId == message.ResponseId);
             string textFromButton = convertedResponse.Response;
             _reactionAvailable = true;
